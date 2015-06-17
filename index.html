@@ -3,11 +3,16 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
         <meta charset='utf-8'>
-        <title>iD</title>
+        <title>Hootenanny | Digital Globe</title>
         <link rel='stylesheet' href='css/reset.css'>
         <link rel='stylesheet' href='css/map.css'>
         <link rel='stylesheet' href='css/app.css'>
         <link rel='stylesheet' href='css/feature-icons.css'>
+        <link rel='stylesheet' href='css/dgcarousel.css'>
+        <link rel='stylesheet' href='css/base.css'>
+        <link rel='stylesheet' href='css/style2.css'>
+        <link rel='stylesheet' href='css/hoot-style.css'>
+        <link rel='stylesheet' href='css/translation_assistant.css'>
 
         <!-- mobile devices -->
         <meta name='viewport' content='initial-scale=1.0 maximum-scale=1.0'>
@@ -15,7 +20,7 @@
         <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />
 
         <script src='js/lib/lodash.js'></script>
-        <script src='js/lib/d3.v3.js'></script>
+        <script src='js/lib/d3.min.js'></script>
         <script src='js/lib/osmauth.js'></script>
         <script src='js/lib/jxon.js'></script>
         <script src='js/lib/d3.typeahead.js'></script>
@@ -43,6 +48,7 @@
         <script src='js/id/util/suggest_names.js'></script>
 
         <script src='js/id/services/countrycode.js'></script>
+        <script src='js/id/services/dgservices.js'></script>
         <script src='js/id/services/taginfo.js'></script>
         <script src='js/id/services/wikipedia.js'></script>
 
@@ -59,6 +65,7 @@
         <script src='js/id/renderer/features.js'></script>
         <script src='js/id/renderer/gpx_layer.js'></script>
         <script src='js/id/renderer/tile_layer.js'></script>
+        <script src='js/id/renderer/footprint_layer.js'></script>
         <script src='js/id/renderer/map.js'></script>
         <script src='js/id/renderer/mapillary_layer.js'></script>
 
@@ -121,6 +128,8 @@
         <script src='js/id/ui/entity_editor.js'></script>
         <script src='js/id/ui/disclosure.js'></script>
         <script src='js/id/ui/sidebar.js'></script>
+        <script src='js/id/ui/dgcarousel.js'></script>
+        <script src='js/id/ui/coordinates.js'></script>
 
         <script src='js/id/ui/preset/access.js'></script>
         <script src='js/id/ui/preset/address.js'></script>
@@ -234,36 +243,72 @@
 
         <script src='js/lib/locale.js'></script>
         <script src='data/introGraph.js'></script>
+        <script src='js/hoot/Hoot.js'></script>
+        <script src='js/hoot/tools.js'></script>
+
+
+        <script src='js/hoot/lib/FileSaver.js'></script>
+
+
+
+        <script src="js/id/svg/far.js"></script>
+
+        <script src='js/hoot/demo.js'></script>
+
+        <script src='js/hoot/model/Model.js'></script>
+        <script src='js/hoot/model/Export.js'></script>
+        <script src='js/hoot/model/Import.js'></script>
+        <script src='js/hoot/model/Layers.js'></script>
+        <script src='js/hoot/model/Conflicts.js'></script>
+        <script src='js/hoot/model/Conflate.js'></script>
+        <script src='js/hoot/model/BasemapDataset.js'></script>
+        <script src='js/hoot/model/rest.js'></script>
+
+        <script src='js/hoot/view/View.js'></script>
+        <script src='js/hoot/view/LTDSTags.js'></script>
+        <script src='js/hoot/view/VersionInfo.js'></script>
+        <script src='js/hoot/view/utilities/Utilities.js'></script>
+        <script src='js/hoot/view/utilities/Dataset.js'></script>
+        <script src='js/hoot/view/utilities/WfsDataset.js'></script>
+        <script src='js/hoot/view/utilities/BasemapDataset.js'></script>
+        <script src='js/hoot/view/utilities/Translation.js'></script>
+        <script src='js/hoot/view/utilities/ErrorLog.js'></script>
+        <script src='js/hoot/view/utilities/Reports.js'></script>
+
+        <script src='js/hoot/control/Control.js'></script>
+        <script src='js/hoot/control/Conflate.js'></script>
+        <script src='js/hoot/control/Import.js'></script>
+        <script src='js/hoot/control/Export.js'></script>
+        <script src='js/hoot/control/View.js'></script>
+        <script src='js/hoot/control/Conflicts.js'></script>
+        <script src='js/hoot/control/translation_assistant.js'></script>
+        <script src='js/hoot/control/utilities/Utilities.js'></script>
+        <script src='js/hoot/control/utilities/Translation.js'></script>
+        <script src='js/hoot/control/utilities/BasemapDataset.js'></script>
+        <script src='js/hoot/control/utilities/Dataset.js'></script>
+        <script src='js/hoot/control/utilities/WfsDataset.js'></script>
+        <script src='js/hoot/control/utilities/Reports.js'></script>
+
+
+
+
     </head>
     <body>
         <div id='id-container'></div>
         <script>
+
+            var demo = (window.location.search=='?demo') ? true : false;
             iD.data.load(function() {
-                id = iD()
-                    .presets(iD.data.presets)
+                    if(iD.data.buildInfo && iD.data.buildInfo.version){
+                        iD.version = iD.data.buildInfo.version + "(Hootenanny)";
+                    } else {
+                        iD.version = "Unkown(Hootenanny)";
+                    }
+                    id = iD().presets(iD.data.presets)
                     .imagery(iD.data.imagery)
                     .taginfo(iD.taginfo())
                     .assetPath('dist/');
-
-                d3.select('#id-container')
-                    .call(id.ui());
-
-                d3.select('#about-list').insert('li', '.user-list')
-                    .attr('class', 'source-switch')
-                    .call(iD.ui.SourceSwitch(id)
-                        .keys([
-                            {
-                                "url": "http://www.openstreetmap.org",
-                                "oauth_consumer_key": "5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT",
-                                "oauth_secret": "aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL"
-                            },
-                            {
-                                "url": "http://api06.dev.openstreetmap.org",
-                                "oauth_consumer_key": "zwQZFivccHkLs3a8Rq5CoS412fE5aPCXDw9DZj7R",
-                                "oauth_secret": "aMnOOCwExO2XYtRVWJ1bI9QOdqh1cay2UgpbhA6p"
-                            }
-                        ]));
-
+                    id.hoot().load(demo, function(){d3.select('#id-container').call(id.ui());});
             });
         </script>
     </body>

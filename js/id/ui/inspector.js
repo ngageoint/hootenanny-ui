@@ -37,12 +37,20 @@ iD.ui.Inspector = function(context) {
                 entity.isUsed(graph) ||
                 entity.isHighwayIntersection(graph);
 
+        var appPane = d3.select('#app');
         if (showEditor) {
             $wrap.style('right', '0%');
             $editorPane.call(entityEditor);
+            if(appPane.classed('hidden') == true){
+                appPane.classed('hidden', false);
+            }
+        
         } else {
             $wrap.style('right', '-100%');
             $presetPane.call(presetList);
+            if(appPane.classed('hidden') == false){
+                appPane.classed('hidden', true);
+            }
         }
 
         var $footer = selection.selectAll('.footer')

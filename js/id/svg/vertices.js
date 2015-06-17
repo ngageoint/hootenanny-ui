@@ -10,7 +10,6 @@ iD.svg.Vertices = function(projection, context) {
 
     function siblingAndChildVertices(ids, graph, extent) {
         var vertices = {};
-
         function addChildVertices(entity) {
             if (!context.features().isHiddenFeature(entity, graph, entity.geometry(graph))) {
                 var i;

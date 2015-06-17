@@ -1,5 +1,6 @@
 describe("iD.svg.TagClasses", function () {
     var selection;
+    var hootClasses = '';
 
     beforeEach(function () {
         selection = d3.select(document.createElement('div'));
@@ -16,21 +17,21 @@ describe("iD.svg.TagClasses", function () {
         selection
             .datum(iD.Entity({tags: {highway: 'primary'}}))
             .call(iD.svg.TagClasses());
-        expect(selection.attr('class')).to.equal('tag-highway tag-highway-primary');
+        expect(selection.attr('class')).to.equal('tag-highway tag-highway-primary' );
     });
 
     it('adds only one primary tag', function() {
         selection
             .datum(iD.Entity({tags: {highway: 'primary', railway: 'abandoned'}}))
             .call(iD.svg.TagClasses());
-        expect(selection.attr('class')).to.equal('tag-highway tag-highway-primary');
+        expect(selection.attr('class')).to.equal('tag-highway tag-highway-primary' );
     });
 
     it('orders primary tags', function() {
         selection
             .datum(iD.Entity({tags: {railway: 'abandoned', highway: 'primary'}}))
             .call(iD.svg.TagClasses());
-        expect(selection.attr('class')).to.equal('tag-highway tag-highway-primary');
+        expect(selection.attr('class')).to.equal('tag-highway tag-highway-primary' );
     });
 
     it('adds secondary tags', function() {
@@ -51,7 +52,7 @@ describe("iD.svg.TagClasses", function () {
         selection
             .datum(iD.Entity())
             .call(iD.svg.TagClasses().tags(d3.functor({highway: 'primary'})));
-        expect(selection.attr('class')).to.equal('tag-highway tag-highway-primary');
+        expect(selection.attr('class')).to.equal('tag-highway tag-highway-primary' );
     });
 
     it('removes classes for tags that are no longer present', function() {

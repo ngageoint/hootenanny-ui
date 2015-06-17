@@ -11,13 +11,13 @@ describe('iD.Connection', function () {
 
     describe('#changesetUrl', function() {
         it('provides a changeset url', function() {
-            expect(c.changesetURL(2)).to.eql('http://www.openstreetmap.org/changeset/2');
+            expect(c.changesetURL(2)).to.eql('/hoot-services/osm/changeset/2');
         });
     });
 
     describe('#userURL', function() {
         it('provides a user url', function() {
-            expect(c.userURL('bob')).to.eql('http://www.openstreetmap.org/user/bob');
+            expect(c.userURL('bob')).to.eql('/hoot-services/osm/user/bob');
         });
     });
 
@@ -90,28 +90,42 @@ describe('iD.Connection', function () {
         });
 
         it('loads a node', function(done) {
-            var id = 'n1';
-            c.loadEntity(id, function(err, result) {
-                var entity = _.find(result.data, function(e) { return e.id === id; });
+            c.loadEntity('n1', function(error, entity) {
                 expect(entity).to.be.an.instanceOf(iD.Node);
+                // we have n1_undefined since we do not have mapId we put undefined
+                // BTW this is used by iD only so we do not pass mapId
+                expect(entity.id).to.eql('n1_undefined');
                 done();
             });
 
-            server.respondWith("GET", "http://www.openstreetmap.org/api/0.6/node/1",
+            server.respondWith("GET", "/hoot-services/osm/api/0.6/node/1",
                 [200, { "Content-Type": "text/xml" }, nodeXML]);
             server.respond();
         });
 
         it('loads a way', function(done) {
-            var id = 'w1';
-            c.loadEntity(id, function(err, result) {
-                var entity = _.find(result.data, function(e) { return e.id === id; });
+            c.loadEntity('w1', function(error, entity) {
                 expect(entity).to.be.an.instanceOf(iD.Way);
+                // we have n1_undefined since we do not have mapId we put undefined
+                // BTW this is used by iD only so we do not pass mapId
+                expect(entity.id).to.eql('w1_undefined');
                 done();
             });
 
-            server.respondWith("GET", "http://www.openstreetmap.org/api/0.6/way/1/full",
+            server.respondWith("GET", "/hoot-services/osm/api/0.6/way/1/full",
                 [200, { "Content-Type": "text/xml" }, wayXML]);
+            server.respond();
+        });
+
+        it('emits a load event', function(done) {
+            c.loadEntity('n1');
+            c.on('load', function(error, result) {
+                expect(result.data[0]).to.be.an.instanceOf(iD.Node);
+                done();
+            });
+
+            server.respondWith("GET", "/hoot-services/osm/api/0.6/node/1",
+                [200, { "Content-Type": "text/xml" }, nodeXML]);
             server.respond();
         });
     });
@@ -129,7 +143,6 @@ describe('iD.Connection', function () {
         it('loads ways');
 
     });
-
 
     describe('#osmChangeJXON', function() {
         it('converts change data to JXON', function() {

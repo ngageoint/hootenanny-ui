@@ -38,6 +38,14 @@ iD.ui.PresetIcon = function() {
             } else if (icon === 'multipolygon') {
                 // Special case (geometry === 'area')
                 klass += ' preset-icon-relation';
+            } else if(p['hoot:fcode']) { // hoot code to force showng the icon
+                var found = _.find(p.geometry, function(g){
+                    return (g == 'line');
+                });
+
+                if(found){
+                    klass += ' preset-icon-line';
+                }
             }
 
             return klass;

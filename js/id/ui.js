@@ -9,14 +9,15 @@ iD.ui = function(context) {
         hash();
 
         if (!hash.hadHash) {
-            map.centerZoom([-77.02271, 38.90085], 20);
+            map.centerZoom(context.hoot().center, context.hoot().zoom);
         }
 
         container.append('svg')
             .attr('id', 'defs')
             .call(iD.svg.Defs(context));
 
-        container.append('div')
+        //Create a ref to sidebar, so Hoot can override???
+        var sidebar = container.append('div')
             .attr('id', 'sidebar')
             .attr('class', 'col4')
             .call(ui.sidebar);
@@ -27,6 +28,7 @@ iD.ui = function(context) {
         var bar = content.append('div')
             .attr('id', 'bar')
             .attr('class', 'fillD');
+        bar.style('top', '60px');
 
         var m = content.append('div')
             .attr('id', 'map')
@@ -74,6 +76,12 @@ iD.ui = function(context) {
             .attr('class', 'map-control background-control')
             .call(iD.ui.Background(context));
 
+        if (iD.dgservices().enabled) {
+            controls.append('div')
+                .attr('class', 'map-control carousel-control')
+                .call(iD.ui.dgCarousel(context));
+        }
+
         controls.append('div')
             .attr('class', 'map-control map-data-control')
             .call(iD.ui.MapData(context));
@@ -82,25 +90,23 @@ iD.ui = function(context) {
             .attr('class', 'map-control help-control')
             .call(iD.ui.Help(context));
 
-        var about = content.append('div')
+ //START: Hoot may have wanted to disable this by commenting out
+       var about = content.append('div')
             .attr('id', 'about');
 
-        about.append('div')
+        /*about.append('div')
             .attr('id', 'attrib')
-            .call(iD.ui.Attribution(context));
+            .call(iD.ui.Attribution(context));*/
 
         var footer = about.append('div')
             .attr('id', 'footer')
             .attr('class', 'fillD');
 
-        footer.append('div')
-            .attr('class', 'api-status')
-            .call(iD.ui.Status(context));
-
-        footer.append('div')
+        //UNCOMMENT BELOW TO INCLUDE SCALE BAR...
+        /*footer.append('div')
             .attr('id', 'scale-block')
             .call(iD.ui.Scale(context));
-
+*/
         var aboutList = footer.append('div')
             .attr('id', 'info-block')
             .append('ul')
@@ -110,7 +116,7 @@ iD.ui = function(context) {
             aboutList.call(iD.ui.Account(context));
         }
 
-        aboutList.append('li')
+        /*aboutList.append('li')
             .append('a')
             .attr('target', '_blank')
             .attr('tabindex', -1)
@@ -139,7 +145,34 @@ iD.ui = function(context) {
         aboutList.append('li')
             .attr('class', 'user-list')
             .attr('tabindex', -1)
-            .call(iD.ui.Contributors(context));
+            .call(iD.ui.Contributors(context));*/
+
+        aboutList.append('li')
+          .attr('class','coordinates')
+          .attr('tabindex',-1)
+          .call(iD.ui.Coordinates(context));
+
+        /*footer.append('div')
+            .attr('class', 'api-status')
+            .call(iD.ui.Status(context));*/
+ //END: Hoot may have wanted to disable this by commenting out
+
+        //TODO: Document why this was added for Hoot
+        var app = sidebar.insert('div', ':first-child')
+            .attr('id', 'app')
+            .classed('col12', true)
+            .style('postion', 'absolute');
+        var hootSidebar2 = app.append('div')
+            .attr('id', 'sidebar2')
+            .classed('col12 pad2 sidebar', true);
+
+        context.hoot().control.loadSidebarControls(context, hootSidebar2);
+            //.call(ui.sidebar.hoot);
+        var sdHeight = document.getElementById('app').clientHeight;
+        hootSidebar2.style({
+            'max-height': sdHeight + 'px',
+            'overflow': 'auto'
+        });
 
         window.onbeforeunload = function() {
             return context.save();
@@ -151,6 +184,12 @@ iD.ui = function(context) {
 
         d3.select(window).on('resize.editor', function() {
             map.dimensions(m.dimensions());
+            //TODO: Document why this was modified for Hoot
+            var sdHeight = document.getElementById('app').clientHeight;
+            hootSidebar2.style({
+                'max-height': sdHeight + 'px',
+                'overflow': 'auto'
+            });
         });
 
         function pan(d) {
@@ -194,7 +233,13 @@ iD.ui = function(context) {
     function ui(container) {
         context.container(container);
         context.loadLocale(function() {
+            //TODO: Document why this was added for Hoot
+            context.hoot().loadUtilities(context);
             render(container);
+            //TODO: Document why this was added for Hoot
+            d3.select('.map-overlay').append('ul')
+                .attr('class', 'layer-list layer-list-hoot')
+                .style('font-size','12px');
         });
     }
 

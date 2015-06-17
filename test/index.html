@@ -4,7 +4,7 @@
     <meta charset='utf-8'>
     <title>Mocha Tests</title>
     <link rel="stylesheet" href="../node_modules/mocha/mocha.css">
-    <link rel="stylesheet" href="css/map.css">
+    <link rel="stylesheet" href="../css/map.css">
 </head>
 <body>
     <div id="mocha"></div>
@@ -18,7 +18,7 @@
 
     <!-- include source files here... -->
     <script src='../js/lib/lodash.js'></script>
-    <script src='../js/lib/d3.v3.js'></script>
+    <script src='../js/lib/d3.min.js'></script>
     <script src='../js/lib/jxon.js'></script>
     <script src='../js/lib/d3.typeahead.js'></script>
     <script src='../js/lib/d3.combobox.js'></script>
@@ -58,6 +58,7 @@
     <script src='../js/id/renderer/gpx_layer.js'></script>
     <script src='../js/id/renderer/tile_layer.js'></script>
     <script src='../js/id/renderer/mapillary_layer.js'></script>
+    <script src='../js/id/renderer/footprint_layer.js'></script>
 
     <script src="../js/id/svg.js"></script>
     <script src="../js/id/svg/areas.js"></script>
@@ -215,6 +216,82 @@
 
     <script src='../js/lib/locale.js'></script>
 
+
+    <!-- Begin Hoot js files -->
+
+        <script src='../data/introGraph.js'></script>
+        <script src='../js/hoot/Hoot.js'></script>
+        <script src='../js/hoot/tools.js'></script>
+
+
+        <script src='../js/hoot/lib/FileSaver.js'></script>
+
+
+
+        <script src="../js/id/svg/far.js"></script>
+
+        <script src='../js/hoot/demo.js'></script>
+
+        <script src='../js/hoot/model/Model.js'></script>
+        <script src='../js/hoot/model/Export.js'></script>
+        <script src='../js/hoot/model/Import.js'></script>
+        <script src='../js/hoot/model/Layers.js'></script>
+        <script src='../js/hoot/model/Conflicts.js'></script>
+        <script src='../js/hoot/model/Conflate.js'></script>
+        <script src='../js/hoot/model/BasemapDataset.js'></script>
+        <script src='../js/hoot/model/rest.js'></script>
+
+        <script src='../js/hoot/view/View.js'></script>
+        <script src='../js/hoot/view/LTDSTags.js'></script>
+        <script src='../js/hoot/view/VersionInfo.js'></script>
+        <script src='../js/hoot/view/utilities/Utilities.js'></script>
+        <script src='../js/hoot/view/utilities/Dataset.js'></script>
+        <script src='../js/hoot/view/utilities/WfsDataset.js'></script>
+        <script src='../js/hoot/view/utilities/BasemapDataset.js'></script>
+        <script src='../js/hoot/view/utilities/Translation.js'></script>
+        <script src='../js/hoot/view/utilities/ErrorLog.js'></script>
+        <script src='../js/hoot/view/utilities/Reports.js'></script>
+        
+
+        <script src='../js/hoot/control/Control.js'></script>
+        <script src='../js/hoot/control/Conflate.js'></script>
+        <script src='../js/hoot/control/Import.js'></script>
+        <script src='../js/hoot/control/Export.js'></script>
+        <script src='../js/hoot/control/View.js'></script>
+        <script src='../js/hoot/control/Conflicts.js'></script>
+        <script src='../js/hoot/control/translation_assistant.js'></script>
+        <script src='../js/hoot/control/utilities/Utilities.js'></script>
+        <script src='../js/hoot/control/utilities/Translation.js'></script>
+        <script src='../js/hoot/control/utilities/BasemapDataset.js'></script>
+        <script src='../js/hoot/control/utilities/Dataset.js'></script>
+        <script src='../js/hoot/control/utilities/WfsDataset.js'></script>
+        <script src='../js/hoot/control/utilities/Reports.js'></script>
+
+ <!--   <script src='../data/introGraph.js'></script>
+    <script src='../js/hoot/Hoot.js'></script>
+    <script src='../js/hoot/custom/hoot.js'></script>
+    <script src='../js/hoot/tools.js'></script>
+    <script src='../js/hoot/tools/Import.js'></script>
+    <script src='../js/hoot/tools/View.js'></script>
+    <script src='../js/hoot/tools/Conflate.js'></script>
+    <script src='../js/hoot/tools/Conflicts.js'></script>
+    <script src='../js/hoot/tools/Export.js'></script>
+    <script src='../js/hoot/tools/LTDSTags.js'></script>
+    <script src='../js/hoot/tools/Utilities.js'></script>
+    <script src='../js/hoot/tools/VersionInfo.js'></script>
+    <script src='../js/hoot/tools/ErrorLog.js'></script>
+    <script src='../js/hoot/tools/translation_assistant.js'></script>
+    <script src='../js/hoot/lib/FileSaver.js'></script>
+
+    <script src='../js/hoot/custom/rest.js'></script>
+    <script src='../js/id/svg/far.js'></script>
+    <script src='../js/hoot/demo.js'></script>
+    <script src='../js/hoot/model/Model.js'></script>
+    <script src='../js/hoot/model/Export.js'></script>
+    <script src='../js/hoot/model/Import.js'></script>
+    <script src='../js/hoot/model/Layers.js'></script>   -->
+    <!-- End Hoot js files -->
+
     <script src="spec/spec_helpers.js"></script>
 
     <!-- include spec files here... -->
@@ -312,8 +389,16 @@
     <script src="spec/presets/category.js"></script>
     <script src="spec/id.js"></script>
 
+    <script src="spec/hoot/model/Export.js"></script>
+    <script src="spec/hoot/model/Import.js"></script>
+    <script src="spec/hoot/model/Layers.js"></script>
+    <script src="spec/hoot/controller/translation_assistant.js"></script>
+    <script src="spec/hoot/controller/import.js"></script>
+
     <script>
+
         iD.data.load('../', function() {
+            //id = Hoot();
             (window.mochaPhantomJS || window.mocha).run();
         });
     </script>

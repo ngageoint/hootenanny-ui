@@ -19,7 +19,8 @@
         "osmAuth": false,
         "sexagesimal": false,
         "toGeoJSON": false,
-        "marked": false
+        "marked": false,
+        "Hoot": false
     },
     "browser": true,
     "unused": true,

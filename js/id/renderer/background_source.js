@@ -27,15 +27,37 @@ iD.BackgroundSource = function(data) {
     };
 
     source.url = function(coord) {
+        //This tile extent calculation for
+        //bbox support assumes web mercator,
+        //EPSG:3857
+        var orig = 20037508.342789244;
+        var worldwidth = orig * 2;
+        var ts = worldwidth / Math.pow(2, coord[2]);
+
+        var xx = -1 * orig + (coord[0] * ts),
+            yy = orig - (coord[1] * ts),
+            textent = iD.geo.Extent(
+                        [xx, yy - ts],
+                        [xx + ts, yy]);
+
+      var x = coord[0];
+      var y = coord[1];
+      var z = coord[2];
+
+      if(this.projection === 'mercator'){
+        var ymax = 1 << z;
+          y = ymax - y - 1;
+      }
         return data.template
-            .replace('{x}', coord[0])
-            .replace('{y}', coord[1])
+            .replace('{x}', x)
+            .replace('{y}', y)
             // TMS-flipped y coordinate
-            .replace(/\{[t-]y\}/, Math.pow(2, coord[2]) - coord[1] - 1)
-            .replace(/\{z(oom)?\}/, coord[2])
+            .replace(/\{[t-]y\}/, Math.pow(2, z) - y - 1)
+            .replace(/\{z(oom)?\}/, z)
+            .replace('{bbox}', textent.toParam())
             .replace(/\{switch:([^}]+)\}/, function(s, r) {
                 var subdomains = r.split(',');
-                return subdomains[(coord[0] + coord[1]) % subdomains.length];
+                return subdomains[(x + y) % subdomains.length];
             })
             .replace('{u}', function() {
                 var u = '';

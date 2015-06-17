@@ -31,7 +31,12 @@ iD.behavior.DrawWay = function(context, wayId, index, mode, baseGraph) {
         if (datum.type === 'node' && datum.id !== end.id) {
             loc = datum.loc;
         } else if (datum.type === 'way' && datum.id !== segment.id) {
-            loc = iD.geo.chooseEdge(context.childNodes(datum), context.mouse(), context.projection).loc;
+            if(context.enableSnap){
+                loc = iD.geo.chooseEdge(context.childNodes(datum), context.mouse(), context.projection).loc;
+            } else {
+                loc = context.map().mouseCoordinates();
+            }
+            
         } else {
             loc = context.map().mouseCoordinates();
         }

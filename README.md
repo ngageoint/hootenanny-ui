@@ -1,3 +1,17 @@
+Hoot Server
+======
+
+## Installation
+To run the current development version, clone this project and serve it locally. If you are not connected to the Hoot services, go to http://localhost:8080/?demo to run with a small subset of sample data.
+
+
+## Basics
+
+* npm install - install express server, socket.i.o(beta) & grunt
+* npm start - runs hoot on <strong>http://localhost:8080</strong>
+
+***
+
 # iD - friendly JavaScript editor for [OpenStreetMap](http://www.openstreetmap.org/)
 
 [![Build Status](https://secure.travis-ci.org/openstreetmap/iD.png)](https://travis-ci.org/openstreetmap/iD)

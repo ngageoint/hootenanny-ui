@@ -283,7 +283,7 @@ ul li { list-style: none;}
 }
 
 .fillD {
-    background:rgba(0,0,0,.5);
+    background:#333;/*rgba(0,0,0,.5);*/
     color: white;
 }
 
@@ -609,7 +609,7 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     top:0;
     right:0;
     height:60px;
-    z-index: 9;
+    z-index: 1;
     min-width: 768px;
 }
 
@@ -2199,6 +2199,8 @@ img.wiki-image {
     width: 100%;
     float: left;
     clear: both;
+    height:90px;	/*THIS IS A TEMP FIX*/
+    opacity:0.9;
 }
 
 #scale-block {
@@ -2991,3 +2993,52 @@ img.wiki-image {
     background: rgba(0, 0, 0, 0) url(img/sprite.svg) no-repeat -400px -220px;
     margin: auto;
 }
+
+.custom-conflation {
+    position: relative;
+    float: left;
+    height: 100%;
+    overflow: auto;
+    z-index: 2;
+    background: #f6f6f6;	
+}
+
+.custom-collapse {
+		height:0px;
+		overflow:hidden;
+}
+
+.custom-expand {
+		height:100%;
+		overflow:hidden;
+}
+
+.invalid-input{
+	  background:red		!important;
+	  color:white				!important;	  
+	  font-weight:bold	!important;
+}
+
+table.custom-conflation-table, table.custom-conflation-table td, table.custom-conflation-table th {
+	border: 1px solid #CCC;
+}
+
+table.custom-conflation-table td {
+	padding: 5px;	
+}
+
+table.custom-conflation-table th {
+	font-weight: bold;
+	padding: 5px;	
+	text-transform:capitalize;
+	text-align:center;
+}
+
+#confAdvOptsLnk {
+	color: #CCC;
+}
+
+input:focus::-webkit-input-placeholder { color:transparent; }
+input:focus:-moz-placeholder { color:transparent; } /* Firefox 18- */
+input:focus::-moz-placeholder { color:transparent; } /* Firefox 19+ */
+input:focus:-ms-input-placeholder { color:transparent; } /* oldIE ;) */

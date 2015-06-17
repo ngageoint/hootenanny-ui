@@ -162,6 +162,12 @@ path.shadow {
     stroke-opacity: 0;
 }
 
+path.area.fill {
+    fill:#fff;
+    fill-opacity:0.3;
+    fill-rule: evenodd;
+}
+
 path.shadow.hover:not(.selected) {
     stroke-opacity: 0.3;
 }

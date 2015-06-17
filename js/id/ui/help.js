@@ -100,12 +100,12 @@ iD.ui.Help = function(context) {
         var pane = selection.append('div')
                 .attr('class', 'help-wrap map-overlay fillL col5 content hide'),
             tooltip = bootstrap.tooltip()
-                .placement('left')
-                .html(true)
+            .placement('left')
+            .html(true)
                 .title(iD.ui.tooltipHtml(t('help.title'), key)),
             button = selection.append('button')
-                .attr('tabindex', -1)
-                .on('click', toggle)
+            .attr('tabindex', -1)
+            .on('click', toggle)
                 .call(tooltip),
             shown = false;
 
@@ -129,6 +129,23 @@ iD.ui.Help = function(context) {
             .append('a')
             .text(t('splash.walkthrough'))
             .on('click', clickWalkthrough);
+
+        toc.append('div')
+            .classed('contain',true)
+            .append('label')
+                .text('Enable Test Mode')
+            .append('input')
+                .attr('type','checkbox')
+                .attr('id','enable_test_mode')
+                .on('change',function(){
+                	if(this.checked){
+                		d3.selectAll('#confGetValuesBtn').style('display','inline-block');
+                		d3.selectAll('#confViewValuesSpan').style('display','inline-block');
+                	} else {
+                		d3.selectAll('#confGetValuesBtn').style('display','none');
+                		d3.selectAll('#confViewValuesSpan').style('display','none');
+                	}
+                });
 
         var content = pane.append('div')
             .attr('class', 'left-content');

@@ -1,0 +1,11 @@
+{
+    "JobStatusQueryInterval": 3000,
+    "url": "/hoot-services/osm",
+    "defaultScript":"TDSv61.js",
+    "defaultBaseMap":"Bing",
+    "hootMaxImportZoom" : 16,
+    "hootMapInitialCenter" : [47.43151478334817, 6.770763248109257],
+    "hootMapInitialZoom": 17.2,
+    "maxnodescount" : 10000,
+    "p2pServerPort": "8096"
+}

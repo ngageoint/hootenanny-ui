@@ -33,6 +33,7 @@ iD.ui.Commit = function(context) {
             .attr('class', 'body');
 
         // Comment Section
+/*
         var commentSection = body.append('div')
             .attr('class', 'modal-section form-field commit-form');
 
@@ -49,6 +50,7 @@ iD.ui.Commit = function(context) {
             });
 
         commentField.node().select();
+*/
 
         // Warnings
         var warnings = body.selectAll('div.warning-section')
@@ -90,6 +92,7 @@ iD.ui.Commit = function(context) {
         var saveSection = body.append('div')
             .attr('class','modal-section fillL cf');
 
+/*
         var prose = saveSection.append('p')
             .attr('class', 'commit-info')
             .html(t('commit.upload_explanation'));
@@ -114,13 +117,14 @@ iD.ui.Commit = function(context) {
 
             prose.html(t('commit.upload_explanation_with_user', {user: userLink.html()}));
         });
+*/
 
         // Confirm Button
         var saveButton = saveSection.append('button')
             .attr('class', 'action col6 button')
             .on('click.save', function() {
                 event.save({
-                    comment: commentField.node().value
+                    comment: ''
                 });
             });
 

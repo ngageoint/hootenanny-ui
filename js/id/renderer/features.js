@@ -188,7 +188,9 @@ iD.Features = function(context) {
 
     features.hidden = function(k) {
         if (!arguments.length) {
-            return _.filter(_keys, function(k) { return _features[k].hidden(); });
+            return _.filter(_keys, function(k) { 
+                return _features[k].hidden(); 
+            });
         }
         return _features[k] && _features[k].hidden();
     };

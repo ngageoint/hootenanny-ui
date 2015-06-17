@@ -136,7 +136,8 @@ iD.ui.preset = function(context) {
             })
             .classed('present', function(field) {
                 return field.present();
-            })
+            });
+/* TODO: Document why this behavior was disabled for Hoot
             .each(function(field) {
                 var reference = iD.ui.TagReference(field.reference || {key: field.key}, context);
 
@@ -152,6 +153,7 @@ iD.ui.preset = function(context) {
 
                 field.input.tags(tags);
             });
+*/
 
         $fields.exit()
             .remove();

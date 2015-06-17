@@ -63,47 +63,118 @@ iD.ui.PresetList = function(context) {
             var value = search.property('value');
             list.classed('filtered', value.length);
             if (value.length) {
-                var results = presets.search(value, geometry);
-                message.text(t('inspector.results', {
-                    n: results.collection.length,
-                    search: value
-                }));
-                list.call(drawList, results);
-            } else {
-                list.call(drawList, context.presets().defaults(geometry, 36));
-                message.text(t('inspector.choose'));
+                    var results = presets.search(value, geometry);
+                    message.text(t('inspector.results', {
+                        n: results.collection.length,
+                        search: value
+                    }));
+                    list.call(drawList, results);
+                } else {
+                    list.call(drawList, context.presets().defaults(geometry, 36));
+                    message.text(t('inspector.choose'));
+                }
             }
-        }
 
-        var searchWrap = selection.append('div')
-            .attr('class', 'search-header');
+            var searchWrap = selection.append('div')
+                .attr('class', 'search-header');
 
-        var search = searchWrap.append('input')
-            .attr('class', 'preset-search-input')
-            .attr('placeholder', t('inspector.search'))
-            .attr('type', 'search')
-            .on('keydown', keydown)
-            .on('keypress', keypress)
-            .on('input', inputevent);
+            var search = searchWrap.append('input')
+                .attr('class', 'preset-search-input')
+                .attr('placeholder', t('inspector.search'))
+                .attr('type', 'search')
+                .on('keydown', keydown)
+                .on('keypress', keypress)
+                .on('input', inputevent);
 
-        searchWrap.append('span')
-            .attr('class', 'icon search');
+            searchWrap.append('span')
+                .attr('class', 'icon search');
 
-        if (autofocus) {
-            search.node().focus();
-        }
+            if (autofocus) {
+                search.node().focus();
+            }
 
-        var listWrap = selection.append('div')
-            .attr('class', 'inspector-body');
+
+
+            var listWrap = selection.append('div')
+                .attr('class', 'inspector-body fill-white');
+
+           
+
+            var ftypeWrap = listWrap.append('div')
+                        .classed('fill-white small round', true)
+                        .style('margin-left', '20px')
+                        .style('margin-right', '20px')
+                        .style('margin-top', '10px')
+                        .html(function (field) {
+                            return '<label class="pad1x pad0y strong fill-white round-top keyline-all">' + 'Filter By Type' + '</label>';
+                        });
+
+             var comboIntput = ftypeWrap.append('input')
+                        .attr('id', 'presettranstype')
+                        .attr('type', 'text')
+                        .attr('value', 'OSM');
+
+            var comboData = ['OSM','TDSv61', 'TDSv40'];
+            var combo = d3.combobox()
+                    .data(_.map(comboData, function (n) {
+                        return {
+                            value: n,
+                            title: n
+                        };
+                    }));
+    
+            comboIntput.style('width', '100%')
+                .call(combo);
+
+            comboIntput.on('change', function(param){
+                var container = d3.select('#preset-list-container');
+                container.selectAll('.preset-list-item').remove();
+                var presets = context.presets().defaults(geometry, 36);
+                // Get the current translation filter type
+                var filterType = d3.select('#presettranstype').value();
+                var filteredCollection = getFilteredPresets(filterType, presets.collection);
+                // Replace with filtered
+                presets.collection = filteredCollection;
+
+                container.call(drawList, presets);
+            });
+
+        var presets = context.presets().defaults(geometry, 36);
+        // Get the current translation filter type
+        var filterType = d3.select('#presettranstype').value();
+        var filteredCollection = getFilteredPresets(filterType, presets.collection);
+        // Replace with filtered
+        presets.collection = filteredCollection;
 
         var list = listWrap.append('div')
+            .attr('id', 'preset-list-container')
             .attr('class', 'preset-list fillL cf')
-            .call(drawList, context.presets().defaults(geometry, 36));
+            .call(drawList, presets);
     }
 
+    function getFilteredPresets(filterType, presets) {
+        var filterRes = presets;
+        var filteredPresets = presets;
+        // When OSM type get all that does not have hoot:transtype
+        if(filterType === 'OSM') {
+            filterRes = _.filter(presets, function(prs){
+                return (!prs['hoot:transtype']);
+            });
+        } else {
+            // If not OSM type then get ones with hoot:transtype and further filter
+
+            filterRes = _.filter(presets, function(prs){
+                return (prs['hoot:transtype'] && prs['hoot:transtype'] === filterType);
+            });
+        }
+
+        return filterRes;
+    }
+
+    
     function drawList(list, presets) {
         var collection = presets.collection.map(function(preset) {
-            return preset.members ? CategoryItem(preset) : PresetItem(preset);
+            return preset.members ? CategoryItem(preset) : PresetItem(preset);          
         });
 
         var items = list.selectAll('.preset-list-item')
@@ -200,11 +271,44 @@ iD.ui.PresetList = function(context) {
         item.choose = function() {
             context.presets().choose(preset);
 
-            context.perform(
-                iD.actions.ChangePreset(id, currentPreset, preset),
-                t('operations.change_tags.annotation'));
+            var filterType = d3.select('#presettranstype').value();
+            
 
-            event.choose(preset);
+            if(filterType === 'OSM') {
+
+                context.perform(
+                    iD.actions.ChangePreset(id, currentPreset, preset),
+                    t('operations.change_tags.annotation'));
+
+                event.choose(preset);
+
+            } else {
+                var data = {};
+                data.fcode = preset['hoot:fcode'];
+                // Get directly from object . Value from combo could be description
+                data.translation = preset['hoot:transtype'];
+                // set tags
+                Hoot.model.REST('TDSToOSMByFCode', data, function (resp) {
+                    if(resp){
+                        var cnt = resp.responseText
+                        var osm = JSON.parse(cnt);
+                        for(var key in osm.attrs){
+                            preset.tags[key] = osm.attrs[key];
+                        }
+
+                        context.perform(
+                            iD.actions.ChangePreset(id, currentPreset, preset),
+                            t('operations.change_tags.annotation'));
+
+                        event.choose(preset);
+
+                    } else {
+                        // error
+                    }
+                    
+                });
+            }
+  
         };
 
         item.help = function() {

@@ -20,6 +20,18 @@ iD.Graph = function(other, mutable) {
 };
 
 iD.Graph.prototype = {
+
+   wipe: function(entity) {
+        this.entities[entity.id] = undefined;
+        /*if (this.entities[entity.id] === entity)
+            return this;
+
+        return this.update(function() {
+            this._updateCalculated(this.entities[entity.id], entity);
+            this.entities[entity.id] = entity;
+        });*/
+    },
+
     hasEntity: function(id) {
         return this.entities[id];
     },

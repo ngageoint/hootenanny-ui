@@ -1,0 +1,13 @@
+{
+    "icon": "town-hall",
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Facility",
+    "hoot:transtype":"TDSv61",
+    "hoot:fcode": "AL010",
+    "name": "AL010 (Facility)"
+}

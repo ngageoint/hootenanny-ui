@@ -1,0 +1,13 @@
+{
+    "icon": "lodging",
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Hut",
+    "hoot:transtype":"TDSv61",
+    "hoot:fcode": "AL099",
+    "name": "Hut (AL099)"
+}

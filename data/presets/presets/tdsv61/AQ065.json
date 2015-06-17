@@ -1,0 +1,13 @@
+{
+    "icon": "waterway-stream",
+    "geometry": [
+        "point",
+        "line"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Culvert",
+    "hoot:transtype":"TDSv61",
+    "hoot:fcode": "AQ065",
+    "name": "Culvert (AQ065)"
+}

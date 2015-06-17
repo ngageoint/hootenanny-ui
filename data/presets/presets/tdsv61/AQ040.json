@@ -1,0 +1,14 @@
+{
+    "icon": "highway-unclassified",
+    "geometry": [
+        "point",
+        "line",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Bridge",
+    "hoot:transtype":"TDSv61",
+    "hoot:fcode": "AQ040",
+    "name": "Bridge (AQ040)"
+}

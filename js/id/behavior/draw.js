@@ -1,3 +1,4 @@
+var clickTime = null;
 iD.behavior.Draw = function(context) {
     var event = d3.dispatch('move', 'click', 'clickWay',
         'clickNode', 'undo', 'cancel', 'finish'),
@@ -61,16 +62,40 @@ iD.behavior.Draw = function(context) {
     function click() {
         var d = datum();
         if (d.type === 'way') {
-            var choice = iD.geo.chooseEdge(context.childNodes(d), context.mouse(), context.projection),
+            if(context.enableSnap){
+                var choice = iD.geo.chooseEdge(context.childNodes(d), context.mouse(), context.projection),
                 edge = [d.nodes[choice.index - 1], d.nodes[choice.index]];
-            event.clickWay(choice.loc, edge);
+                event.clickWay(choice.loc, edge);
+            } else {
+                event.click(context.map().mouseCoordinates());
+            }
 
         } else if (d.type === 'node') {
-            event.clickNode(d);
+            
+            var isNodeDblClick = false;
+            
+            if(clickTime){
+                isNodeDblClick = ((+new Date() - clickTime) < 500);
+            } 
+        
+            // use user setting for snapping to point which is the default behavior
+            if(context.enableSnap){
+                isNodeDblClick = context.enableSnap;
+            }
+            
+            if(isNodeDblClick === true){
+                event.clickNode(d);
+                
+            } else {
+                event.click(context.map().mouseCoordinates());
+            }
+            
 
         } else {
             event.click(context.map().mouseCoordinates());
         }
+        
+        clickTime = +new Date();
     }
 
     function backspace() {

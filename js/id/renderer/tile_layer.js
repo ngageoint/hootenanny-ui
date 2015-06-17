@@ -23,9 +23,14 @@ iD.TileLayer = function() {
     function lookUp(d) {
         for (var up = -1; up > -d[2]; up--) {
             var tile = atZoom(d, up);
-            if (cache[source.url(tile)] !== false) {
+            if(source.nocache === true){
                 return tile;
+            } else {
+                if (cache[source.url(tile)] !== false) {
+                    return tile;
+                }
             }
+            
         }
     }
 

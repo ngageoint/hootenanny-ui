@@ -2176,6 +2176,96 @@ en:
       shop/wine:
         name: Wine Shop
         terms: "<translate with synonyms or related terms for 'Wine Shop', separated by commas>"
+      tdsv40/AL010:
+        name: AL010 (Facility)
+        terms: "<translate with synonyms or related terms for 'AL010 (Facility)', separated by commas>"
+      tdsv40/AL013:
+        name: Building (AL013)
+        terms: "<translate with synonyms or related terms for 'Building (AL013)', separated by commas>"
+      tdsv40/AL015:
+        name: Settlement (AL015)
+        terms: "<translate with synonyms or related terms for 'Settlement (AL015)', separated by commas>"
+      tdsv40/AL020:
+        name: Built-up Area (AL020)
+        terms: "<translate with synonyms or related terms for 'Built-up Area (AL020)', separated by commas>"
+      tdsv40/AL099:
+        name: Hut (AL099)
+        terms: "<translate with synonyms or related terms for 'Hut (AL099)', separated by commas>"
+      tdsv40/AN010:
+        name: Railway (AN010)
+        terms: "<translate with synonyms or related terms for 'Railway (AN010)', separated by commas>"
+      tdsv40/AP010:
+        name: Cart Track (AP010)
+        terms: "<translate with synonyms or related terms for 'Cart Track (AP010)', separated by commas>"
+      tdsv40/AP030:
+        name: Road (AP030)
+        terms: "<translate with synonyms or related terms for 'Road (AP030)', separated by commas>"
+      tdsv40/AP050:
+        name: Trail (AP050)
+        terms: "<translate with synonyms or related terms for 'Trail (AP050)', separated by commas>"
+      tdsv40/AQ040:
+        name: Bridge (AQ040)
+        terms: "<translate with synonyms or related terms for 'Bridge (AQ040)', separated by commas>"
+      tdsv40/AQ065:
+        name: Culvert (AQ065)
+        terms: "<translate with synonyms or related terms for 'Culvert (AQ065)', separated by commas>"
+      tdsv40/BH030:
+        name: Ditch (BH030)
+        terms: "<translate with synonyms or related terms for 'Ditch (BH030)', separated by commas>"
+      tdsv40/BH070:
+        name: Ford (BH070)
+        terms: "<translate with synonyms or related terms for 'Ford (BH070)', separated by commas>"
+      tdsv40/BH140:
+        name: River (BH140)
+        terms: "<translate with synonyms or related terms for 'River (BH140)', separated by commas>"
+      tdsv40/GB005:
+        name: Land Aerodrome (GB005)
+        terms: "<translate with synonyms or related terms for 'Land Aerodrome (GB005)', separated by commas>"
+      tdsv61/AL010:
+        name: AL010 (Facility)
+        terms: "<translate with synonyms or related terms for 'AL010 (Facility)', separated by commas>"
+      tdsv61/AL013:
+        name: Building (AL013)
+        terms: "<translate with synonyms or related terms for 'Building (AL013)', separated by commas>"
+      tdsv61/AL015:
+        name: Settlement (AL015)
+        terms: "<translate with synonyms or related terms for 'Settlement (AL015)', separated by commas>"
+      tdsv61/AL020:
+        name: Built-up Area (AL020)
+        terms: "<translate with synonyms or related terms for 'Built-up Area (AL020)', separated by commas>"
+      tdsv61/AL099:
+        name: Hut (AL099)
+        terms: "<translate with synonyms or related terms for 'Hut (AL099)', separated by commas>"
+      tdsv61/AN010:
+        name: Railway (AN010)
+        terms: "<translate with synonyms or related terms for 'Railway (AN010)', separated by commas>"
+      tdsv61/AP010:
+        name: Cart Track (AP010)
+        terms: "<translate with synonyms or related terms for 'Cart Track (AP010)', separated by commas>"
+      tdsv61/AP030:
+        name: Road (AP030)
+        terms: "<translate with synonyms or related terms for 'Road (AP030)', separated by commas>"
+      tdsv61/AP050:
+        name: Trail (AP050)
+        terms: "<translate with synonyms or related terms for 'Trail (AP050)', separated by commas>"
+      tdsv61/AQ040:
+        name: Bridge (AQ040)
+        terms: "<translate with synonyms or related terms for 'Bridge (AQ040)', separated by commas>"
+      tdsv61/AQ065:
+        name: Culvert (AQ065)
+        terms: "<translate with synonyms or related terms for 'Culvert (AQ065)', separated by commas>"
+      tdsv61/BH030:
+        name: Ditch (BH030)
+        terms: "<translate with synonyms or related terms for 'Ditch (BH030)', separated by commas>"
+      tdsv61/BH070:
+        name: Ford (BH070)
+        terms: "<translate with synonyms or related terms for 'Ford (BH070)', separated by commas>"
+      tdsv61/BH140:
+        name: River (BH140)
+        terms: "<translate with synonyms or related terms for 'River (BH140)', separated by commas>"
+      tdsv61/GB005:
+        name: Land Aerodrome (GB005)
+        terms: "<translate with synonyms or related terms for 'Land Aerodrome (GB005)', separated by commas>"
       tourism:
         name: Tourism
         terms: "<translate with synonyms or related terms for 'Tourism', separated by commas>"

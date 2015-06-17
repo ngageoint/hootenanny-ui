@@ -1,0 +1,53 @@
+[
+  {
+    "name":"Translation Assistant",
+    "id":"utilTranslationAssistant",
+    "order":"2",
+    "contentbodyid":"translationAssistant",
+    "callbackcontext":"window",
+    "callback":"Hoot.control.CreateTranslationAssistantContainer"
+  },
+  {
+    "name":"Translation",
+    "id":"utiltranslation",
+    "order":"3",
+    "contentbodyid":"translationContent",
+    "callback":"view.utilities.translation.createContainer"
+  },
+  {
+    "name":"Datasets",
+    "id":"utilDataset",
+    "order":"4",
+    "contentbodyid":"datasettable",
+    "callback":"view.utilities.dataset.createContent",
+    "default":"true"
+  },
+  {
+    "name":"WFS Exports",
+    "id":"utilWFS",
+    "order":"5",
+    "contentbodyid":"wfsdatasettable",
+    "callback":"view.utilities.wfsdataset.createContent"
+  },
+  {
+    "name":"Basemaps",
+    "id":"utilBaseMaps",
+    "order":"6",
+    "contentbodyid":"basemapsdatasettable",
+    "callback":"view.utilities.basemapdataset.createContent"
+  },
+  {
+    "name":"Log",
+    "id":"utilErrorLog",
+    "order":"7",
+    "contentbodyid":"errorlogbody",
+    "callback":"view.utilities.errorlog.createContent"
+  },
+  {
+    "name":"Reports",
+    "id":"utilReports",
+    "order":"8",
+    "contentbodyid":"reportsContent",
+    "callback":"view.utilities.reports.createContent"
+  }
+]

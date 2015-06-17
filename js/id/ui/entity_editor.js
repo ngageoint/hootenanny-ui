@@ -11,6 +11,13 @@ iD.ui.EntityEditor = function(context) {
         .on('change', changeTags);
 
     function entityEditor(selection) {
+
+        var appPane = d3.select('#app');
+        if(appPane.classed('hidden') == true){
+            appPane.classed('hidden', false);
+        }
+
+
         var entity = context.entity(id),
             tags = _.clone(entity.tags);
 
@@ -18,7 +25,7 @@ iD.ui.EntityEditor = function(context) {
             .data([0]);
 
         // Enter
-
+/*
         var $enter = $header.enter().append('div')
             .attr('class', 'header fillL cf');
 
@@ -38,7 +45,7 @@ iD.ui.EntityEditor = function(context) {
             .on('click', function() {
                 context.enter(iD.modes.Browse(context));
             });
-
+*/
         var $body = selection.selectAll('.inspector-body')
             .data([0]);
 
@@ -46,7 +53,7 @@ iD.ui.EntityEditor = function(context) {
 
         $enter = $body.enter().append('div')
             .attr('class', 'inspector-body');
-
+/*
         $enter.append('div')
             .attr('class', 'preset-list-item inspector-inner')
             .append('div')
@@ -98,14 +105,14 @@ iD.ui.EntityEditor = function(context) {
                 .entityID(id)
                 .tags(tags)
                 .state(state));
-
+*/
         $body.select('.raw-tag-editor')
             .call(rawTagEditor
                 .preset(preset)
                 .entityID(id)
                 .tags(tags)
                 .state(state));
-
+/*
         if (entity.type === 'relation') {
             $body.select('.raw-member-editor')
                 .style('display', 'block')
@@ -119,7 +126,7 @@ iD.ui.EntityEditor = function(context) {
         $body.select('.raw-membership-editor')
             .call(iD.ui.RawMembershipEditor(context)
                 .entityID(id));
-
+*/
         function historyChanged() {
             if (state === 'hide') return;
             var entity = context.hasEntity(id);
@@ -154,6 +161,25 @@ iD.ui.EntityEditor = function(context) {
                 t('operations.change_tags.annotation'));
         }
     }
+    entityEditor.changeTags = function(changed, id){
+        var entity = context.entity(id),
+        tags = clean(_.extend({}, entity.tags, changed));
+        if (!_.isEqual(entity.tags, tags)) {
+            context.perform(
+                iD.actions.ChangeTags(id, tags),
+                t('operations.change_tags.annotation'));
+        }
+    };
+
+    entityEditor.removeTags = function(changed, id){
+        var entity = context.entity(id),
+        tags = clean(changed);
+        if (!_.isEqual(entity.tags, tags)) {
+            context.perform(
+                iD.actions.ChangeTags(id, tags),
+                t('operations.change_tags.annotation'));
+        }
+    };
 
     entityEditor.state = function(_) {
         if (!arguments.length) return state;

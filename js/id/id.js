@@ -2,10 +2,12 @@ window.iD = function () {
     window.locale.en = iD.data.en;
     window.locale.current('en');
 
+
     var context = {},
         storage;
 
-    // https://github.com/openstreetmap/iD/issues/772
+    context.enableSnap = true;
+    // https://github.com/systemed/iD/issues/772
     // http://mathiasbynens.be/notes/localstorage-pattern#comment-9
     try { storage = localStorage; } catch (e) {}
     storage = storage || (function() {
@@ -41,17 +43,26 @@ window.iD = function () {
     };
 
     var history = iD.History(context),
-        dispatch = d3.dispatch('enter', 'exit'),
+        dispatch = d3.dispatch('enter', 'exit', 'update'),
         mode,
         container,
         ui = iD.ui(context),
-        connection = iD.Connection(),
+        hoot = Hoot.hoot(context),
+        
+
+        connection = iD.Connection(context),
         locale = iD.detect().locale,
         localePath;
+    var entityEditor = iD.ui.EntityEditor(context);
 
     if (locale && iD.data.locales.indexOf(locale) === -1) {
         locale = locale.split('-')[0];
     }
+
+    connection.on('load.context', function loadContext(err, result) {
+        if(result.data.message==='Bad request'){return;}
+        history.merge(result.data, result.extent);
+    });
 
     context.preauth = function(options) {
         connection.switch(options);
@@ -81,6 +92,8 @@ window.iD = function () {
     context.ui = function() { return ui; };
     context.connection = function() { return connection; };
     context.history = function() { return history; };
+    context.hoot = function() { return hoot; };
+    context.entityEditor = function() {return entityEditor;};
 
     /* Connection */
     function entitiesLoaded(err, result) {
@@ -146,10 +159,14 @@ window.iD = function () {
         if (history.hasChanges()) return t('save.unsaved_changes');
     };
 
-    context.flush = function() {
+    context.flush = function(resetHistory) {
         connection.flush();
         features.reset();
+        if(resetHistory !== undefined && resetHistory !== null && resetHistory === false){
+            // keep history
+        } else {
         history.reset();
+        }
         return context;
     };
 
@@ -200,6 +217,11 @@ window.iD = function () {
         dispatch.enter(mode);
     };
 
+    context.updateMode = function()
+    {
+        dispatch.update();
+    };
+
     context.mode = function() {
         return mode;
     };
@@ -211,6 +233,31 @@ window.iD = function () {
             return [];
         }
     };
+
+    context.loadEntity = function(id, zoomTo) {
+        if (zoomTo !== false) {
+            connection.loadEntity(id, function(error, entity) {
+                if (entity) {
+                    map.zoomTo(entity);
+                }
+            });
+        }
+
+        map.on('drawn.loadEntity', function() {
+            if (!context.hasEntity(id)) return;
+            map.on('drawn.loadEntity', null);
+            context.on('enter.loadEntity', null);
+            context.enter(iD.modes.Select(context, [id]));
+        });
+
+        context.on('enter.loadEntity', function() {
+            if (mode.id !== 'browse') {
+                map.on('drawn.loadEntity', null);
+                context.on('enter.loadEntity', null);
+            }
+        });
+    };
+
 
     /* Behaviors */
     context.install = function(behavior) {
@@ -252,12 +299,18 @@ window.iD = function () {
     context.map = function() { return map; };
     context.layers = function() { return map.layers; };
     context.surface = function() { return map.surface; };
-    context.editable = function() { return map.editable(); };
+    context.editable = function() { 
+        // context.hoot().isModeBtnEnabled() was added to show and hide mode buttons
+        // only when there is layer added.
+        // Has side effect on feature enable disable. See matching test in test/spec/renderer/features.js
+        return map.editable() && (mode && mode.id) !== 'save' && context.hoot().isModeBtnEnabled();
+    };
     context.mouse = map.mouse;
     context.extent = map.extent;
     context.pan = map.pan;
     context.zoomIn = map.zoomIn;
     context.zoomOut = map.zoomOut;
+    context.zoomToExtent = map.zoomToExtent;
 
     context.surfaceRect = function() {
         // Work around a bug in Firefox.

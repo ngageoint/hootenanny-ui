@@ -19,12 +19,18 @@ iD.Entity.id = function(type) {
 
 iD.Entity.id.next = {node: -1, way: -1, relation: -1};
 
+iD.Entity.id.fromOSMPlus = function(type, id, mapId) {
+    return type[0] + id +'_'+mapId;
+};
+
 iD.Entity.id.fromOSM = function(type, id) {
     return type[0] + id;
 };
 
 iD.Entity.id.toOSM = function(id) {
-    return id.slice(1);
+
+var arr = id.match(/[^_]*/i);
+return arr[0].slice(1);
 };
 
 iD.Entity.id.type = function(id) {
@@ -79,7 +85,8 @@ iD.Entity.prototype = {
     },
 
     osmId: function() {
-        return iD.Entity.id.toOSM(this.id);
+		var orig = this.origid || this.id;
+        return iD.Entity.id.toOSM(orig);
     },
 
     isNew: function() {
@@ -116,6 +123,7 @@ iD.Entity.prototype = {
     },
 
     hasInterestingTags: function() {
+        if(this.layerName) {return false;}
         return _.keys(this.tags).some(function(key) {
             return key !== 'attribution' &&
                 key !== 'created_by' &&

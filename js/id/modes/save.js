@@ -1,13 +1,15 @@
 iD.modes.Save = function(context) {
     var ui = iD.ui.Commit(context)
-            .on('cancel', cancel)
-            .on('save', save);
+        .on('cancel', cancel)
+        .on('save', save);
 
     function cancel() {
         context.enter(iD.modes.Browse(context));
     }
 
-    function save(e, tryAgain) {
+    // hootCallback is for hootenany specific callback. This may need to be moved
+    // in the future during upstream merge with iD code
+    function save(e, tryAgain, hootCallback) {
         function withChildNodes(ids, graph) {
             return _.uniq(_.reduce(ids, function(result, id) {
                 var e = graph.entity(id);
@@ -19,7 +21,7 @@ iD.modes.Save = function(context) {
             }, _.clone(ids)));
         }
 
-        var loading = iD.ui.Loading(context).message(t('save.uploading')).blocking(true),
+        var loading = iD.ui.Loading(context).message('Uploading changes to Hootenanny.').blocking(true),
             history = context.history(),
             origChanges = history.changes(iD.actions.DiscardTags(history.difference())),
             localGraph = context.graph(),
@@ -32,16 +34,44 @@ iD.modes.Save = function(context) {
 
         if (!tryAgain) history.perform(iD.actions.Noop());  // checkpoint
         context.container().call(loading);
-
+/*
+        context.connection().putChangeset(
+            context.history().changes(iD.actions.DiscardTags(context.history().difference())),
+            'Hoot Save',
+            context.history().imageryUsed(),
+            function(err, changeset_id) {
+                loading.close();
+                if (err) {
+                    var confirm = iD.ui.confirm(context.container());
+                    confirm
+                        .select('.modal-section.header')
+                        .append('h3')
+                        .text(t('save.error'));
+                    confirm
+                        .select('.modal-section.message-text')
+                        .append('p')
+                        .text(err.responseText || t('save.unknown_error_details'));
+                } else {
+                    context.flush();
+                    if (callback) { callback(); }
+                    //success(e, changeset_id);
+                }
+                context.enter(iD.modes.Browse(context));
+            });
+*/
+        // hootCallback is for hootenany specific callback. This may need to be moved
+        // in the future during upstream merge with iD code
         if (toCheck.length) {
-            context.connection().loadMultiple(toLoad, loaded);
+            context.connection().loadMultiple(toLoad, loaded, hootCallback);
         } else {
-            finalize();
+            finalize(hootCallback);
         }
 
 
+        // hootCallback is for hootenany specific callback. This may need to be moved
+        // in the future during upstream merge with iD code
         // Reload modified entities into an alternate graph and check for conflicts..
-        function loaded(err, result) {
+        function loaded(err, result, hootCallback) {
             if (errors.length) return;
 
             if (err) {
@@ -58,13 +88,15 @@ iD.modes.Save = function(context) {
                 });
 
                 if (!toLoad.length) {
-                    checkConflicts();
+                    checkConflicts(hootCallback);
                 }
             }
         }
 
 
-        function checkConflicts() {
+        // hootCallback is for hootenany specific callback. This may need to be moved
+        // in the future during upstream merge with iD code
+        function checkConflicts(hootCallback) {
             function choice(id, text, action) {
                 return { id: id, text: text, action: function() { history.replace(action); } };
             }
@@ -123,11 +155,12 @@ iD.modes.Save = function(context) {
                 });
             });
 
-            finalize();
+            finalize(hootCallback);
         }
 
-
-        function finalize() {
+        // hootCallback is for hootenany specific callback. This may need to be moved
+        // in the future during upstream merge with iD code
+        function finalize(hootCallback) {
             if (conflicts.length) {
                 conflicts.sort(function(a,b) { return b.id.localeCompare(a.id); });
                 showConflicts();
@@ -136,7 +169,7 @@ iD.modes.Save = function(context) {
             } else {
                 context.connection().putChangeset(
                     history.changes(iD.actions.DiscardTags(history.difference())),
-                    e.comment,
+                    'Hoot Save',
                     history.imageryUsed(),
                     function(err, changeset_id) {
                         if (err) {
@@ -148,8 +181,10 @@ iD.modes.Save = function(context) {
                         } else {
                             loading.close();
                             context.flush();
-                            success(e, changeset_id);
+                            if (hootCallback) { hootCallback(); }
+                            //success(e, changeset_id);
                         }
+                        context.enter(iD.modes.Browse(context));
                     });
             }
         }
@@ -265,14 +300,32 @@ iD.modes.Save = function(context) {
         id: 'save'
     };
 
+    var behaviors = [
+        iD.behavior.Hover(context),
+        iD.behavior.Select(context),
+        iD.behavior.Lasso(context),
+        iD.modes.DragNode(context).behavior];
+
     mode.enter = function() {
+        behaviors.forEach(function(behavior) {
+            context.install(behavior);
+        });
+
         context.connection().authenticate(function() {
             context.ui().sidebar.show(ui);
         });
     };
 
     mode.exit = function() {
+        behaviors.forEach(function(behavior) {
+            context.uninstall(behavior);
+        });
+
         context.ui().sidebar.hide(ui);
+    };
+
+    mode.save = function(e, callback) {
+        save(e, false, callback);
     };
 
     return mode;

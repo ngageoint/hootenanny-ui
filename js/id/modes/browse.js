@@ -15,6 +15,10 @@ iD.modes.Browse = function(context) {
         iD.modes.DragNode(context).behavior];
 
     mode.enter = function() {
+        var appPane = d3.select('#app');
+        if(appPane.node() && appPane.classed('hidden') == true){
+            appPane.classed('hidden', false);
+        }
         behaviors.forEach(function(behavior) {
             context.install(behavior);
         });

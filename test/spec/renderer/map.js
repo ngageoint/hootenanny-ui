@@ -43,7 +43,8 @@ describe('iD.Map', function() {
             expect(map.zoom(4)).to.equal(map);
             map.zoomIn();
             window.setTimeout(function() {
-                expect(map.zoom()).to.equal(5);
+                // map.zoom() may end up with close enough floating point so need round
+                expect(Math.round(map.zoom())).to.equal(5);
                 done();
             }, 500);
         });
@@ -54,7 +55,8 @@ describe('iD.Map', function() {
             expect(map.zoom(4)).to.equal(map);
             map.zoomOut();
             window.setTimeout(function() {
-                expect(map.zoom()).to.equal(3);
+                // map.zoom() may end up with close enough floating point so need round
+                expect(Math.round(map.zoom())).to.equal(3);
                 done();
             }, 500);
         });

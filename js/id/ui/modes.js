@@ -19,9 +19,14 @@ iD.ui.Modes = function(context) {
                if (mode.id === context.mode().id) {
                    context.enter(iD.modes.Browse(context));
                } else {
+                   if(mode.button === 'line' || mode.button === 'area'){
+                       var r = window.confirm('Enable line snap?\nPress OK to enable else Cancel.');
+                       context.enableSnap = r;
+                   }
                    context.enter(mode);
                }
            })
+
            .call(bootstrap.tooltip()
                .placement('bottom')
                .html(true)
@@ -34,6 +39,11 @@ iD.ui.Modes = function(context) {
 
         context
             .on('enter.modes', update);
+
+        context
+            .on('update.modes', update);
+            
+        update();
 
         buttons.append('span')
             .attr('class', function(mode) { return mode.id + ' icon icon-pre-text'; });
@@ -56,7 +66,14 @@ iD.ui.Modes = function(context) {
         var keybinding = d3.keybinding('mode-buttons');
 
         modes.forEach(function(m) {
-            keybinding.on(m.key, function() { if (editable()) context.enter(m); });
+            keybinding.on(m.key, function() { if (editable()) {
+                if(m.button === 'line' || m.button === 'area'){
+                    var r = window.confirm('Enable line snap?\nPress OK to enable else Cancel.');
+                    context.enableSnap = r;
+                }
+                context.enter(m);
+            	} 
+            });
         });
 
         d3.select(document)

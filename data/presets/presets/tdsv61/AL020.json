@@ -1,0 +1,13 @@
+{
+    "icon": "shop",
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Built-up Area",
+    "hoot:transtype":"TDSv61",
+    "hoot:fcode": "AL020",
+    "name": "Built-up Area (AL020)"
+}

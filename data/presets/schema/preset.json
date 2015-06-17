@@ -68,6 +68,18 @@
             "description": "The quality score this preset will receive when being compared with other matches (higher is better)",
             "type": "number",
             "default": 1.0
+        },
+        "hoot:featuretype": {
+            "description": "The TDS English feature type",
+            "type": "string"
+        },
+        "hoot:transtype": {
+            "description": "The TDS schema version",
+            "type": "string"
+        },
+        "hoot:fcode": {
+            "description": "The TDS feature code",
+            "type": "string"
         }
     },
     "additionalProperties": false

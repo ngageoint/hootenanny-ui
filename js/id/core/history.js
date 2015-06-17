@@ -1,6 +1,6 @@
 iD.History = function(context) {
     var stack, index, tree,
-        imageryUsed = ['Bing'],
+        imageryUsed = [iD.data.hootConfig.defaultBaseMap],
         dispatch = d3.dispatch('change', 'undone', 'redone'),
         lock = iD.util.SessionMutex('lock');
 

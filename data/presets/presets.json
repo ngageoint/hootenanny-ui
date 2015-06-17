@@ -8868,6 +8868,358 @@
         },
         "name": "Wine Shop"
     },
+    "tdsv40/AL010": {
+        "icon": "town-hall",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Facility",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "AL010",
+        "name": "AL010 (Facility)"
+    },
+    "tdsv40/AL013": {
+        "icon": "building",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Building",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "AL013",
+        "name": "Building (AL013)"
+    },
+    "tdsv40/AL015": {
+        "icon": "commercial",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Settlement",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "AL015",
+        "name": "Settlement (AL015)"
+    },
+    "tdsv40/AL020": {
+        "icon": "shop",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Built-up Area",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "AL020",
+        "name": "Built-up Area (AL020)"
+    },
+    "tdsv40/AL099": {
+        "icon": "lodging",
+        "geometry": [
+            "point"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Hut",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "AL099",
+        "name": "Hut (AL099)"
+    },
+    "tdsv40/AN010": {
+        "icon": "railway-rail",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Railway",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "AN010",
+        "name": "Railway (AN010)"
+    },
+    "tdsv40/AP010": {
+        "icon": "highway-track",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Cart Track",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "AP010",
+        "name": "Cart Track (AP010)"
+    },
+    "tdsv40/AP030": {
+        "icon": "highway-road",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Road",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "AP030",
+        "name": "Road (AP030)"
+    },
+    "tdsv40/AP050": {
+        "icon": "highway-path",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Trail",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "AP050",
+        "name": "Trail (AP050)"
+    },
+    "tdsv40/AQ040": {
+        "icon": "highway-unclassified",
+        "geometry": [
+            "point",
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Bridge",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "AQ040",
+        "name": "Bridge (AQ040)"
+    },
+    "tdsv40/AQ065": {
+        "icon": "waterway-stream",
+        "geometry": [
+            "point",
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Culvert",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "AQ065",
+        "name": "Culvert (AQ065)"
+    },
+    "tdsv40/BH030": {
+        "icon": "waterway-ditch",
+        "geometry": [
+            "line",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Ditch",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "BH030",
+        "name": "Ditch (BH030)"
+    },
+    "tdsv40/BH070": {
+        "icon": "highway-footway",
+        "geometry": [
+            "point",
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Ford",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "BH070",
+        "name": "Ford (BH070)"
+    },
+    "tdsv40/BH140": {
+        "icon": "waterway-river",
+        "geometry": [
+            "line",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "River",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "BH140",
+        "name": "River (BH140)"
+    },
+    "tdsv40/GB005": {
+        "icon": "airport",
+        "geometry": [
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Land Aerodrome",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "GB005",
+        "name": "Land Aerodrome (GB005)"
+    },
+    "tdsv61/AL010": {
+        "icon": "town-hall",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Facility",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "AL010",
+        "name": "AL010 (Facility)"
+    },
+    "tdsv61/AL013": {
+        "icon": "building",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Building",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "AL013",
+        "name": "Building (AL013)"
+    },
+    "tdsv61/AL015": {
+        "icon": "commercial",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Settlement",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "AL015",
+        "name": "Settlement (AL015)"
+    },
+    "tdsv61/AL020": {
+        "icon": "shop",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Built-up Area",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "AL020",
+        "name": "Built-up Area (AL020)"
+    },
+    "tdsv61/AL099": {
+        "icon": "lodging",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Hut",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "AL099",
+        "name": "Hut (AL099)"
+    },
+    "tdsv61/AN010": {
+        "icon": "railway-rail",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Railway",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "AN010",
+        "name": "Railway (AN010)"
+    },
+    "tdsv61/AP010": {
+        "icon": "highway-track",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Cart Track",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "AP010",
+        "name": "Cart Track (AP010)"
+    },
+    "tdsv61/AP030": {
+        "icon": "highway-road",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Road",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "AP030",
+        "name": "Road (AP030)"
+    },
+    "tdsv61/AP050": {
+        "icon": "highway-path",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Trail",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "AP050",
+        "name": "Trail (AP050)"
+    },
+    "tdsv61/AQ040": {
+        "icon": "highway-unclassified",
+        "geometry": [
+            "point",
+            "line",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Bridge",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "AQ040",
+        "name": "Bridge (AQ040)"
+    },
+    "tdsv61/AQ065": {
+        "icon": "waterway-stream",
+        "geometry": [
+            "point",
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Culvert",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "AQ065",
+        "name": "Culvert (AQ065)"
+    },
+    "tdsv61/BH030": {
+        "icon": "waterway-ditch",
+        "geometry": [
+            "line",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Ditch",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "BH030",
+        "name": "Ditch (BH030)"
+    },
+    "tdsv61/BH070": {
+        "icon": "highway-footway",
+        "geometry": [
+            "point",
+            "line",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Ford",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "BH070",
+        "name": "Ford (BH070)"
+    },
+    "tdsv61/BH140": {
+        "icon": "waterway-river",
+        "geometry": [
+            "line",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "River",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "BH140",
+        "name": "River (BH140)"
+    },
+    "tdsv61/GB005": {
+        "icon": "airport",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Land Aerodrome",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "GB005",
+        "name": "Land Aerodrome (GB005)"
+    },
     "tourism": {
         "fields": [
             "tourism"

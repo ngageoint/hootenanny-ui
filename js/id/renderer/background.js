@@ -4,6 +4,9 @@ iD.Background = function(context) {
             .projection(context.projection),
         gpxLayer = iD.GpxLayer(context, dispatch)
             .projection(context.projection),
+        //Added for EGD-plugin
+        footprintLayer = iD.FootprintLayer(context, dispatch)
+            .projection(context.projection),
         mapillaryLayer = iD.MapillaryLayer(context),
         overlayLayers = [];
 
@@ -55,7 +58,71 @@ iD.Background = function(context) {
         context.history().imageryUsed(imageryUsed);
     }
 
+    //TODO: Document why this was modified for Hoot
     function background(selection) {
+        if (typeof context.hoot === 'function') {
+            var layers = context.hoot().model.layers.getLayers();
+
+            var idx = -1;
+            for(var i=0; i<backgroundSources.length; i++){
+                var bkgSrc = backgroundSources[i];
+                if(bkgSrc.subtype === 'density_raster'){
+                    var lyr = _.find(layers, function(d){
+                        return d.name === bkgSrc.name();
+                    });
+                    if(!lyr){
+                        idx = i;
+                        break;
+                    }
+
+                }
+            }
+
+
+            while(idx > -1){
+                backgroundSources.splice(idx, 1);
+                idx = -1;
+                for(var i=0; i<backgroundSources.length; i++){
+                    var bkgSrc = backgroundSources[i];
+                    if(bkgSrc.subtype === 'density_raster'){
+                        var lyr = _.find(layers, function(d){
+                            return d.name === bkgSrc.name();
+                        });
+                        if(!lyr){
+                            idx = i;
+                            break;
+                        }
+
+                    }
+                }
+
+            }
+
+            for(var key in layers){
+                var lyrName = layers[key].name;
+
+                var lyr = _.find(backgroundSources, function(d){
+                    return d.name() === lyrName;
+                });
+
+                if(!lyr){
+                    var newOverlayer = {};
+                    newOverlayer.name = lyrName;
+                    newOverlayer.type = 'tms';
+                    newOverlayer.descriptions = lyrName;
+                    newOverlayer.template = location.origin +  '/static/' + lyrName + '/{zoom}/{x}/{y}.png';
+                    newOverlayer.scaleExtent = [0,20];
+                    newOverlayer.overlay = true;
+                    newOverlayer.projection = 'mercator';
+                    newOverlayer.subtype = 'density_raster';
+
+                    var newSource = iD.BackgroundSource(newOverlayer);
+                    backgroundSources.push(newSource);
+                }
+
+
+            }
+        }
         var base = selection.selectAll('.background-layer')
             .data([0]);
 
@@ -77,6 +144,15 @@ iD.Background = function(context) {
         overlays.exit()
             .remove();
 
+        //Added for EGD-plugin
+        var footprint = selection.selectAll('.footprint-layer')
+        .data([0]);
+
+        footprint.enter().insert('div', '.layer-data')
+            .attr('class', 'layer-layer footprint-layer');
+
+        footprint.call(footprintLayer);
+
         var gpx = selection.selectAll('.layer-gpx')
             .data([0]);
 
@@ -84,7 +160,6 @@ iD.Background = function(context) {
             .attr('class', 'layer-layer layer-gpx');
 
         gpx.call(gpxLayer);
-
         var mapillary = selection.selectAll('.layer-mapillary')
             .data([0]);
 
@@ -94,15 +169,61 @@ iD.Background = function(context) {
         mapillary.call(mapillaryLayer);
     }
 
+    //TODO: Document why this was added for Hoot
+    //FIXME: Possibly consolidate with addSource below
+    background.addNewBackgroundResource = function (newRes) {
+        var newSource = iD.BackgroundSource(newRes);
+        backgroundSources.push(newSource);
+    };
+
+    //TODO: Document why this was added for Hoot
+    //FIXME: Possibly consolidate with removeSource below
+    background.removeBackgroundResource = function(name){
+        var src;
+
+        for (var i = 0; i < backgroundSources.length; i++) {
+            src = backgroundSources[i];
+            if (src.name() === name) {
+                backgroundSources.splice(i, 1);
+                dispatch.change();
+                updateImagery();
+                return;
+            }
+        }
+    };
+
     background.sources = function(extent) {
         return backgroundSources.filter(function(source) {
             return source.intersects(extent);
         });
     };
 
+    //TODO: Document why this was added for Hoot
+    //FIXME: Possibly consolidate with addNewBackgroundResource above
+    background.addSource = function(d) {
+        var source = iD.BackgroundSource(d);
+        backgroundSources.push(source);
+        background.toggleOverlayLayer(source);
+    };
+
+    //TODO: Document why this was added for Hoot
+    //FIXME: Possibly consolidate with removeBackgroundResource above
+    background.removeSource = function(d) {
+        var source = findSource(d.id);
+        for (var i = backgroundSources.length-1; i >= 0; i--) {
+            var layer = backgroundSources[i];
+            if (layer === source) {
+                backgroundSources.splice(i, 1);
+            }
+        }
+        background.toggleOverlayLayer(source);
+    };
+
     background.dimensions = function(_) {
         baseLayer.dimensions(_);
         gpxLayer.dimensions(_);
+        //Added for EGD-plugin
+        footprintLayer.dimensions(_);
         mapillaryLayer.dimensions(_);
 
         overlayLayers.forEach(function(layer) {
@@ -182,6 +303,9 @@ iD.Background = function(context) {
     background.showsLayer = function(d) {
         return d === baseLayer.source() ||
             (d.id === 'custom' && baseLayer.source().id === 'custom') ||
+            //Added for EGD-plugin
+            (d.id === 'dgBackground' && baseLayer.source().id === 'dgBackground') ||
+            (d.id === 'dgCollection' && overlayLayers.some(function(l) { return l.source().id === 'dgCollection'; })) ||
             overlayLayers.some(function(l) { return l.source() === d; });
     };
 
@@ -189,12 +313,60 @@ iD.Background = function(context) {
         return overlayLayers.map(function (l) { return l.source(); });
     };
 
+    //TODO: Document why this was added for Hoot
+    //FIXME: Possibly consolidate with modified toggleOverlayLayer below
+    background.showOverlayLayer = function(d){
+        var layer;
+
+        for (var i = 0; i < overlayLayers.length; i++) {
+            layer = overlayLayers[i];
+            if (layer.source().name() === d.name()) {
+                return;
+            }
+        }
+
+        layer = iD.TileLayer()
+            .source(d)
+            .projection(context.projection)
+            .dimensions(baseLayer.dimensions());
+
+        overlayLayers.push(layer);
+        dispatch.change();
+        updateImagery();
+    };
+
+    //TODO: Document why this was added for Hoot
+    //FIXME: Possibly consolidate with modified toggleOverlayLayer below
+    background.hideOverlayLayer = function(d) {
+        var layer;
+
+        for (var i = 0; i < overlayLayers.length; i++) {
+            layer = overlayLayers[i];
+            if (layer.source().name() === d.name()) {
+                overlayLayers.splice(i, 1);
+                dispatch.change();
+                updateImagery();
+                return;
+            }
+        }
+
+    };
+
+    //FIXME: Possibly consolidate with modified showOverlayLayer/hideOverlayLayer above
     background.toggleOverlayLayer = function(d) {
         var layer;
 
         for (var i = 0; i < overlayLayers.length; i++) {
             layer = overlayLayers[i];
-            if (layer.source() === d) {
+            //TODO: Document why this was modified for Hoot
+            if (layer.source().name() === d.name()) {
+                overlayLayers.splice(i, 1);
+                dispatch.change();
+                updateImagery();
+                return;
+            }
+
+            if (layer.source() === d || (d.id === 'dgCollection' && d.id === layer.source().id)) {
                 overlayLayers.splice(i, 1);
                 dispatch.change();
                 updateImagery();
@@ -212,6 +384,35 @@ iD.Background = function(context) {
         updateImagery();
     };
 
+    //TODO: Document why this was added for Hoot
+    background.addOrUpdateOverlayLayer = function(d) {
+        var layer;
+
+        for (var i = 0; i < overlayLayers.length; i++) {
+            layer = overlayLayers[i];
+            if (d.id === layer.source().id) {
+                overlayLayers.splice(i, 1);
+//                dispatch.change();
+//                updateImagery();
+//                return;
+            }
+        }
+
+        layer = iD.TileLayer()
+            .source(d)
+            .projection(context.projection)
+            .dimensions(baseLayer.dimensions());
+
+        overlayLayers.push(layer);
+        dispatch.change();
+        updateImagery();
+    };
+
+    //Added for EGD-plugin
+    background.updateFootprintLayer = function(d) {
+        footprintLayer.geojson(d);
+        dispatch.change();
+    };
     background.nudge = function(d, zoom) {
         baseLayer.source().nudge(d, zoom);
         dispatch.change();
@@ -224,7 +425,6 @@ iD.Background = function(context) {
         dispatch.change();
         return background;
     };
-
     background.load = function(imagery) {
         backgroundSources = imagery.map(function(source) {
             if (source.type === 'bing') {
@@ -236,36 +436,36 @@ iD.Background = function(context) {
 
         backgroundSources.unshift(iD.BackgroundSource.None());
 
-        var q = iD.util.stringQs(location.hash.substring(1)),
-            chosen = q.background || q.layer;
+    var q = iD.util.stringQs(location.hash.substring(1)),
+        chosen = q.background || q.layer;
 
-        if (chosen && chosen.indexOf('custom:') === 0) {
-            background.baseLayerSource(iD.BackgroundSource.Custom(chosen.replace(/^custom:/, '')));
-        } else {
-            background.baseLayerSource(findSource(chosen) || findSource('Bing') || backgroundSources[1]);
-        }
+    if (chosen && chosen.indexOf('custom:') === 0) {
+        background.baseLayerSource(iD.BackgroundSource.Custom(chosen.replace(/^custom:/, '')));
+    } else {
+            background.baseLayerSource(findSource(chosen) || findSource(iD.data.hootConfig.defaultBaseMap) || backgroundSources[1]);
+    }
 
-        var locator = _.find(backgroundSources, function(d) {
-            return d.overlay && d.default;
+    var locator = _.find(backgroundSources, function(d) {
+        return d.overlay && d.default;
+    });
+
+    if (locator) {
+        background.toggleOverlayLayer(locator);
+    }
+
+    var overlays = (q.overlays || '').split(',');
+    overlays.forEach(function(overlay) {
+        overlay = findSource(overlay);
+        if (overlay) background.toggleOverlayLayer(overlay);
+    });
+
+    var gpx = q.gpx;
+    if (gpx) {
+        d3.text(gpx, function(err, gpxTxt) {
+            gpxLayer.geojson(toGeoJSON.gpx(toDom(gpxTxt)));
+            dispatch.change();
         });
-
-        if (locator) {
-            background.toggleOverlayLayer(locator);
-        }
-
-        var overlays = (q.overlays || '').split(',');
-        overlays.forEach(function(overlay) {
-            overlay = findSource(overlay);
-            if (overlay) background.toggleOverlayLayer(overlay);
-        });
-
-        var gpx = q.gpx;
-        if (gpx) {
-            d3.text(gpx, function(err, gpxTxt) {
-                gpxLayer.geojson(toGeoJSON.gpx(toDom(gpxTxt)));
-                dispatch.change();
-            });
-        }
+    }
     };
 
     return d3.rebind(background, dispatch, 'on');

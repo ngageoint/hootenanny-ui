@@ -1,6 +1,7 @@
 iD.Map = function(context) {
     var dimensions = [1, 1],
-        dispatch = d3.dispatch('move', 'drawn'),
+        //TODO: Document why this was modified for Hoot
+        dispatch = d3.dispatch('move', 'drawn', 'maxImportZoomChanged', 'drawVector', 'updateBackgroundList'),
         projection = context.projection,
         roundedProjection = iD.svg.RoundProjection(projection),
         zoom = d3.behavior.zoom()
@@ -20,15 +21,25 @@ iD.Map = function(context) {
         labels = iD.svg.Labels(projection, context),
         supersurface, surface,
         mouse,
-        mousemove;
+        mousemove,
+        //TODO: Document why this was added for Hoot
+        editableZoom = 2,
+        visibleZoom = 16,
+        loadVectorOnTilesLoad = false;
+
 
     function map(selection) {
         context.history()
-            .on('change.map', redraw);
+            .on('change.map', function(){
+                redraw(undefined, undefined, true);
+            });
         context.background()
             .on('change.map', redraw);
         context.features()
             .on('redraw.map', redraw);
+        //TODO: Document why this was added for Hoot
+        context.connection()
+            .on('layer', redraw);
 
         selection
             .on('dblclick.map', dblClick)
@@ -100,7 +111,9 @@ iD.Map = function(context) {
         var graph = context.graph(),
             features = context.features(),
             all = context.intersects(map.extent()),
-            data, filter;
+            data, filter,
+            //TODO: Document why this was added for Hoot
+            hidden=context.connection().hiddenLayers();
 
         if (difference) {
             var complete = difference.complete(map.extent());
@@ -121,6 +134,8 @@ iD.Map = function(context) {
                 filter = function(d) { return set.has(d.id); };
 
             } else {
+                //TODO: Document why this was added for Hoot
+                all=_.filter(all, function(a) { return !_.contains(hidden, a.mapId); });
                 data = all;
                 filter = d3.functor(true);
             }
@@ -128,21 +143,48 @@ iD.Map = function(context) {
 
         data = features.filter(data, graph);
 
+        d3.selectAll('.vertex').remove();
+        //d3.selectAll('.shadow').remove();
+
         surface
             .call(vertices, graph, data, filter, map.extent(), map.zoom())
             .call(lines, graph, data, filter)
             .call(areas, graph, data, filter)
             .call(midpoints, graph, data, filter, map.trimmedExtent())
-            .call(labels, graph, data, filter, dimensions, !difference && !extent)
+            //TODO: determine why Hoot has disabled this behavior
+            //.call(labels, graph, data, filter, dimensions, !difference && !extent)
             .call(points, data, filter);
 
+        //TODO: Document why this was added for Hoot
+        var lastLoadedLayer = context.connection().lastLoadedLayer();
+        if(lastLoadedLayer){
+            var modifiedId = lastLoadedLayer.toString();
+            d3.selectAll('.tag-hoot-'+modifiedId).each(function(){d3.select(this).moveToFront();});
+        }
+
+
+        if (typeof context.hoot === 'function') {
+            if(context.hoot().mode()==='edit'){
+                var activeConflict = context.hoot()._conflicts.activeConflict();
+                if(!activeConflict){return;}
+                //FIXME: got to be a better way to get active conflict items
+                var activeConflictReviewItem = context.hoot()._conflicts.activeConflictReviewItem();
+                d3.selectAll('.' + activeConflictReviewItem).classed('activeReviewFeature2', true).moveToFront();
+                d3.selectAll('.' + activeConflict).classed('activeReviewFeature', true).moveToFront();
+            }
+        }
+
         dispatch.drawn({full: true});
+        //TODO: Document why this was added for Hoot
+        dispatch.drawVector();
     }
 
     function editOff() {
         context.features().resetStats();
         surface.selectAll('.layer *').remove();
         dispatch.drawn({full: true});
+        //TODO: Document why this was added for Hoot
+        dispatch.drawVector();
     }
 
     function dblClick() {
@@ -153,7 +195,7 @@ iD.Map = function(context) {
     }
 
     function zoomPan() {
-        if (Math.log(d3.event.scale) / Math.LN2 - 8 < minzoom) {
+        if (Math.log(d3.event.scale) / Math.LN2 - 8 < minzoom + 1) {
             surface.interrupt();
             iD.ui.flash(context.container())
                 .select('.content')
@@ -186,7 +228,8 @@ iD.Map = function(context) {
         return true;
     }
 
-    function redraw(difference, extent) {
+    function redraw(difference, extent, waitOnLoad) {
+        loadVectorOnTilesLoad = waitOnLoad;
 
         if (!surface) return;
 
@@ -209,12 +252,53 @@ iD.Map = function(context) {
             supersurface.call(context.background());
         }
 
-        if (map.editable()) {
-            context.loadTiles(projection, dimensions);
-            drawVector(difference, extent);
+        //TODO: Document why this was modified for Hoot
+        // The reason for implementing loadVectorOnTilesLoad is following
+        // 1. User swaps layer
+        // 2. Tile loads but since tile loading takes long time before all entities loaded vector
+        //    tries to be rendered. But all entities are still being reloaded causing no entity found error.
+        // Since loadVectorOnTilesLoad get set to true only when redraw is called from history
+        // Also reason for keeping the code for rendering drawvector is that if we wait for loadtiles to finish
+        // the drawing line and rendering vectors gets really slow.
+        // So may be we need to loadtiles only when data gets loaded not during panning and zooming
+        if (map.editable() && map.zoom()<=visibleZoom) {
+            context.connection().tileZoom(2);
+
+            context.connection().loadTiles(projection, dimensions,  function(){
+                if(loadVectorOnTilesLoad === true){
+                    map.drawVectorFar(difference, extent);
+                    loadVectorOnTilesLoad = false;
+                }
+                //
+            });
+            if(!loadVectorOnTilesLoad){
+                map.drawVectorFar(difference, extent);
+            }
+
+            //TODO: determine why Hoot has disabled this behavior
+            //drawVector(difference, extent);
+        } else if (map.editable()) {
+            context.connection().tileZoom(16);
+            context.connection().loadTiles(projection, dimensions,  function(){
+                if(loadVectorOnTilesLoad === true){
+                    drawVector(difference, extent);
+                    loadVectorOnTilesLoad = false;
+                }
+
+            });
+            if(!loadVectorOnTilesLoad){
+                drawVector(difference, extent);
+            }
+
+
         } else {
+            //TODO: Document why this was added for Hoot
+            if(map.zoom() >= visibleZoom){
+                context.connection().loadTiles(projection, dimensions);
+            }
             editOff();
         }
+
 
         transformStart = [
             projection.scale() * 2 * Math.PI,
@@ -344,7 +428,45 @@ iD.Map = function(context) {
 
     map.zoom = function(z) {
         if (!arguments.length) {
-            return Math.max(Math.log(projection.scale() * 2 * Math.PI) / Math.LN2 - 8, 0);
+            //TODO: Document why this was modified for Hoot
+            var zoomVal = Math.max(Math.log(projection.scale() * 2 * Math.PI) / Math.LN2 - 8, 0);
+
+            if(document.getElementById('sidebar2')){
+                /*if(zoomVal < hootMaxImportZoom){
+                    var nodes = document.getElementById('sidebar2').getElementsByTagName('*');
+                    for(var i = 0; i < nodes.length; i++)
+                    {
+                         nodes[i].disabled = true;
+                         nodes[i].style.opacity=0.5;
+        }
+
+                    nodes = document.getElementById('sidebar2').getElementsByClassName('button');
+                    for(var i = 0; i < nodes.length; i++)
+                    {
+                        nodes[i].disabled = true;
+                            nodes[i].style.opacity=0.5;
+                    }
+                    dispatch.maxImportZoomChanged();
+                }
+                else*/{
+                    var nodes = document.getElementById('sidebar2').getElementsByTagName('*');
+                    for(var i = 0; i < nodes.length; i++)
+                    {
+                         nodes[i].disabled = false;
+                         nodes[i].style.opacity=1.0;
+                    }
+                    nodes = document.getElementById('sidebar2').getElementsByClassName('button');
+                    for(var i = 0; i < nodes.length; i++)
+                    {
+                        nodes[i].disabled = false;
+                        nodes[i].style.opacity=1.0;
+                    }
+                }
+            }
+
+
+
+            return zoomVal;
         }
 
         if (z < minzoom) {
@@ -369,6 +491,25 @@ iD.Map = function(context) {
         var zoom = map.trimmedExtentZoom(extent);
         zoomLimits = zoomLimits || [context.minEditableZoom(), 20];
         map.centerZoom(extent.center(), Math.min(Math.max(zoom, zoomLimits[0]), zoomLimits[1]));
+    };
+    //TODO: Document why this was added for Hoot
+    map.getZoomLevel = function(minlon, minlat, maxlon, maxlat) {
+        var lowerLeftExtent = iD.geo.Extent([minlon, minlat]);
+        var upperRightExtent = iD.geo.Extent([maxlon, maxlat]);
+        var extent = lowerLeftExtent.extend(upperRightExtent);
+
+        return map.extentZoom(extent);
+    };
+
+    //TODO: Document why this was added for Hoot
+    map.zoomToExtent = function(minlon, minlat, maxlon, maxlat, zoomLimits) {
+        var lowerLeftExtent = iD.geo.Extent([minlon, minlat]);
+        var upperRightExtent = iD.geo.Extent([maxlon, maxlat]);
+        var extent = lowerLeftExtent.extend(upperRightExtent);
+
+        var curZoom = map.getZoomLevel(minlon, minlat, maxlon, maxlat, zoomLimits);
+        zoomLimits = zoomLimits || [6, 20];
+        map.centerZoom(extent.center(), Math.min(Math.max(curZoom, zoomLimits[0]), zoomLimits[1]));
     };
 
     map.centerZoom = function(loc, z) {
@@ -439,9 +580,17 @@ iD.Map = function(context) {
         return calcZoom(iD.geo.Extent(_), trimmed);
     };
 
-    map.editable = function() {
-        return map.zoom() >= context.minEditableZoom();
+    //TODO: Document why this was modified for Hoot
+    map.editable = function(_) {
+        if(!_){
+            return map.zoom() >= editableZoom;
+
+        }
+        editableZoom = _;
+        return map.zoom() >= editableZoom;
     };
+
+
 
     map.minzoom = function(_) {
         if (!arguments.length) return minzoom;
@@ -449,5 +598,78 @@ iD.Map = function(context) {
         return map;
     };
 
+    //TODO: Document why this was added for Hoot
+    map.updateBackground = function(){
+        dispatch.updateBackgroundList();
+    };
+
+    //TODO: Document why this was added for Hoot
+    map.drawVectorFar = function(difference, extent) {
+        var graph = context.graph(),
+            features = context.features(),
+            all = context.intersects(map.extent()),
+            data, filter, hidden=context.connection().hiddenLayers();
+
+        if (difference) {
+            var complete = difference.complete(map.extent());
+            data = _.compact(_.values(complete));
+            filter = function(d) { return d.id in complete; };
+            features.clear(data);
+
+        } else {
+            // force a full redraw if gatherStats detects that a feature
+            // should be auto-hidden (e.g. points or buildings)..
+            if (features.gatherStats(all, graph, dimensions)) {
+                extent = undefined;
+            }
+
+            if (extent) {
+                data = context.intersects(map.extent().intersection(extent));
+                var set = d3.set(_.pluck(data, 'id'));
+                filter = function(d) { return set.has(d.id); };
+
+            } else {
+                all=_.filter(all, function(a) { return !_.contains(hidden, a.mapId); });
+                data = all;
+                filter = d3.functor(true);
+            }
+        }
+
+        data = features.filter(data, graph);
+
+        d3.selectAll('.vertex').remove();
+        //d3.selectAll('.shadow').remove();
+
+        var farLine = iD.svg.FarLine(projection);
+        var farArea = iD.svg.FarArea(projection);
+
+        surface
+        .call(farLine, graph, data, filter)
+        .call(farArea, graph, data, filter)
+        .call(points, data, filter);
+
+        var lastLoadedLayer = context.connection().lastLoadedLayer();
+        if(lastLoadedLayer){
+          var modifiedId = lastLoadedLayer.toString();
+            d3.selectAll('.tag-hoot-'+modifiedId).each(function(){d3.select(this).moveToFront();});
+        }
+
+
+        if (typeof context.hoot === 'function') {
+            if(!context.hoot().model.conflicts.reviews){
+                dispatch.drawVector();
+                return;
+            }
+
+            var mapid = context.hoot().model.layers.getmapIdByName(context.connection().lastLoadedLayer());
+            var reviews = context.hoot().model.conflicts.reviews.reviewableItems;
+            var conflicts = _.map(reviews,function(d){return d.type.charAt(0)+d.id+'_'+ mapid;});
+            _.each(conflicts,function(d){d3.select('.'+d).classed('activeReviewFeature', true).moveToFront();});
+        }
+
+        dispatch.drawn({full: true});
+        dispatch.drawVector();
+
+    };
     return d3.rebind(map, dispatch, 'on');
 };
