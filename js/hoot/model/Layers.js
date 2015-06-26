@@ -83,7 +83,7 @@ Hoot.model.layers = function (context)
                     .property('checked', true);
             }
         });
-        context.flush();
+        context.flush(false);
     };
 
     model_layers.changeLayerCntrlBtnColor = function(lyrId, color){

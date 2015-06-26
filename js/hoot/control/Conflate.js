@@ -241,6 +241,12 @@ Hoot.control.conflate = function (sidebar) {
             .on('click', function () {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
+                
+                if(hoot.checkForSpecialChar(conflate.selectAll('.saveAs').value()) == false)
+                {
+                    alert("Please do not use special character in layer name.");
+                    return;
+                }
 
                 var thisConfType = d3.selectAll('.reset.ConfType');
                 var selVal = thisConfType.value();
@@ -274,7 +280,7 @@ Hoot.control.conflate = function (sidebar) {
             if(Conflate.confAdvOptionsSelectedVal == null){
             	Conflate.confAdvOptionsFields = _getDefaultFields();
             	Conflate.confAdvOptionsSelectedVal = _getSelectedValues(null,Conflate.confAdvOptionsFields);
-            }            
+            }
             console.log(JSON.stringify(Conflate.confAdvOptionsSelectedVal))
         });
         

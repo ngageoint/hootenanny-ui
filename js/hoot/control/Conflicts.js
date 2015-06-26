@@ -10,6 +10,9 @@ Hoot.control.conflicts = function (context, sidebar) {
     var activeConflict, activeConflictReviewItem;
     var btnEnabled = true;
     var mergeFeatures;
+    var activeEntity;
+
+    Conflict.activeEntity = function(){return activeEntity;};
     Conflict.activeConflict = function(){return activeConflict;};
     Conflict.activeConflictReviewItem = function(){return activeConflictReviewItem;};
     Conflict.activate = function (response) {
@@ -25,6 +28,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             .html('<div class="margin2 inline _loadingSmall"><span></span></div>' + '<span class="strong">Checking for conflicts&#8230;</span>');
         return Review;
     };
+    Conflict.highlightLayerTable = null;
     Conflict.startReview = function (data) {
         var entity;
         var mapid = data.mapId;
@@ -32,6 +36,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         var reviewCount = reviewItems.length;
         var index = 0;
         Conflict.reviews = data;
+
 
         function panToBounds(bounds) {
             function boundsToExtent() {
@@ -56,7 +61,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
             // we have entity with same id but different against
 
-            jumpTo(nReviewed, itemCnt);
+            jumpTo(nReviewed, itemCnt, jumpFor);
         };
         var jumpBack = function (nReviewed, itemCnt) {
              index--;
@@ -66,19 +71,24 @@ Hoot.control.conflicts = function (context, sidebar) {
             //updateMeta(index);
             // we have entity with same id but different against
 
-            jumpTo(nReviewed, itemCnt);
+            jumpTo(nReviewed, itemCnt, jumpBack);
        };
 
-        var jumpTo = function (nReviewed, itemCnt) {
+        var jumpTo = function (nReviewed, itemCnt, fn) {
+            entity = reviewItems[index - 1];
+            // skip resolved items
+            if (entity.reviewed) {
+                fn(nReviewed, itemCnt);
+            } else {
+                // we have entity with same id but different against
 
-            // we have entity with same id but different against
-
-            updateMeta(nReviewed, itemCnt);
-             entity = reviewItems[index - 1];
-            activeConflict = reviewItemID(entity);
-            activeConflictReviewItem = reviewAgainstID(entity);
-             panToBounds(entity.displayBounds);
-             highlightLayer(entity);
+                updateMeta(nReviewed, itemCnt);
+                activeConflict = reviewItemID(entity);
+                activeConflictReviewItem = reviewAgainstID(entity);
+                panToBounds(entity.displayBounds);
+                activeEntity = entity;
+                highlightLayer(entity);
+            }
 
         };
 
@@ -91,8 +101,16 @@ Hoot.control.conflicts = function (context, sidebar) {
             var idid = reviewItemID(item);
             var idid2 = reviewAgainstID(item);
             var feature, againstFeature;
+            var max = 20;
+            var calls = 0;
             var getFeatureTimer = setInterval(function () {
-                getFeature();
+                if (calls < max) {
+                    getFeature();
+                    calls++;
+                } else {
+                    getFeatureStopTimer(true);
+                    window.alert('One feature involved in this review was not found in the visible map extent');
+                }
             }, 500);
             var getFeatureStopTimer = function (skip) {
                 clearInterval(getFeatureTimer);
@@ -157,12 +175,16 @@ Hoot.control.conflicts = function (context, sidebar) {
                         mergeFeatures = function() {};
                         getFeatureStopTimer();
                         //window.alert('The review against feature is a relation');
-                    } else {
+                    } else if (context.changes().deleted.some(
+                        function(d) {
+                            return d.id === idid || d.id === idid2;
+                        })
+                    ) {
                         getFeatureStopTimer(true);
                         window.alert('One feature involved in this review has already been deleted');
+                    } else {
+                        console.log('wait for another interval to fire');
                     }
-                    //FIXME: Not sure why the use of setInterval above, maybe to deal with some latency
-                    //but this change may erroneously cause the above alert when a feature is not yet loaded
                 }
             };
             var filterTags = function (tags) {
@@ -215,8 +237,14 @@ Hoot.control.conflicts = function (context, sidebar) {
                 fmerged.forEach(function (d) {
                     var r = ftable.append('tr').classed('', true);
                     r.append('td').classed('key', true).text(d.key);
-                    r.append('td').classed('f1', true).text(d.value[0]);
-                    r.append('td').classed('f2', true).text(d.value[1]);
+                    r.append('td').classed('f1', true).text(d.value[0]).on('click', function(d){
+                        var sel = iD.modes.Select(context, [feats[0].id]);
+                        context.enter(sel);
+                    });
+                    r.append('td').classed('f2', true).text(d.value[1]).on('click', function(d){
+                        var sel = iD.modes.Select(context, [feats[1].id]);
+                        context.enter(sel);
+                    });
 
                 });
             };
@@ -388,7 +416,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
 
             var multiItemInfo = getMultiReviewItemInfo();
-            jumpTo(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+            jumpTo(multiItemInfo.nReviewed, multiItemInfo.itemCnt, jumpFor);
         };
 
         var autoMerge = function() {
@@ -721,7 +749,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
             });
 
-
+        Conflict.highlightLayerTable = highlightLayer;
         jumpFor();
     };
 

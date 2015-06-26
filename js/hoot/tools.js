@@ -246,7 +246,7 @@ Hoot.tools = function (context, selection) {
         hoot.model.layers.changeVisibility(layerName);
     });
     conflicts.on('zoomToConflict', function (entity) {
-        context.hoot().view.ltdstags.activate(entity);
+//        context.hoot().view.ltdstags.activate(entity);
     });
     conflicts.on('exportData', function () {
         var mapid = activeConflateLayer.mapId;

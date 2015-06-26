@@ -68,7 +68,11 @@ iD.ui.preset = function(context) {
 
             preset.fields.forEach(function(field) {
                 if (field.matchGeometry(geometry)) {
-                    fields.push(UIField(field, entity, true));
+                    var doShow = true;
+                    if(field.show && field.show === 'false'){
+                        doShow = false;
+                    }
+                    fields.push(UIField(field, entity, doShow));
                 }
             });
 
@@ -136,8 +140,8 @@ iD.ui.preset = function(context) {
             })
             .classed('present', function(field) {
                 return field.present();
-            });
-/* TODO: Document why this behavior was disabled for Hoot
+            })
+
             .each(function(field) {
                 var reference = iD.ui.TagReference(field.reference || {key: field.key}, context);
 
@@ -153,7 +157,7 @@ iD.ui.preset = function(context) {
 
                 field.input.tags(tags);
             });
-*/
+
 
         $fields.exit()
             .remove();

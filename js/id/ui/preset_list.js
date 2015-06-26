@@ -158,6 +158,9 @@ iD.ui.PresetList = function(context) {
         // When OSM type get all that does not have hoot:transtype
         if(filterType === 'OSM') {
             filterRes = _.filter(presets, function(prs){
+                if(prs === undefined){
+                    return false;
+                }
                 return (!prs['hoot:transtype']);
             });
         } else {

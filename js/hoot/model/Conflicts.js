@@ -122,7 +122,9 @@ Hoot.model.conflicts = function(context)
                     iD.actions.AddEntity(mergedNode),
                     t('operations.add.annotation.point'));
 
-                context.enter(iD.modes.Select(context, [mergedNode.id]));
+                window.setTimeout(function() {
+                    context.enter(iD.modes.Select(context, [mergedNode.id]));
+                }, 500);
 
             }, mapid, layerName);
         }

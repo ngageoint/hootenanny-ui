@@ -206,3 +206,6 @@ td.f1 {
 td.f2 {
     background: rgba(0, 0, 255, 0.5);
 }
+td.f1:hover, td.f2:hover {
+  cursor: pointer;
+}

@@ -1,7 +1,8 @@
 Hoot.control.utilities.dataset = function(context) {
 
 	var hoot_control_utilities_dataset = {};
-
+    var importTranslations;
+    var importTranslationsGeonames;
 
     hoot_control_utilities_dataset.exportDataContainer = function(dataset, translations) {
 
@@ -154,16 +155,34 @@ Hoot.control.utilities.dataset = function(context) {
                 trans.push(emptyObj);
             }
 
+            importTranslations = [];
+            importTranslationsGeonames = [];
+
+            _.each(trans, function(t){
+                if(t.NAME === 'GEONAMES'){
+                    importTranslationsGeonames.push(t);
+                } else {
+                    importTranslations.push(t);
+                }
+            })
+
             var importTypes = [];
             var fileTypes = {};
             fileTypes.value = "FILE";
             fileTypes.title = "File (osm,shp,zip)";
             importTypes.push(fileTypes);
 
+            var geonameTypes = {};
+            geonameTypes.value = "GEONAMES";
+            geonameTypes.title = "File (geonames)";
+            importTypes.push(geonameTypes);
+
             var dirType = {};
             dirType.value = "DIR";
             dirType.title = "Directory (FGDB)";
             importTypes.push(dirType);
+
+            
 
             var d_form = [{
                 label: 'Import Type',
@@ -183,7 +202,7 @@ Hoot.control.utilities.dataset = function(context) {
                 label: 'Translation Schema',
                 placeholder: 'Select Data Translation Schema',
                 type: 'Schema',
-                combobox: trans
+                combobox: importTranslations
             }];
             var modalbg = d3.select('body')
                 .append('div')
@@ -433,6 +452,7 @@ Hoot.control.utilities.dataset = function(context) {
                             .style('width', '100%')
                             .call(comboImportType)
                             .on('change', function(a1,a2,a3){
+                                d3.select('.reset.Schema').value('');
                                 var selectedType = _form.select('.reset.importImportType').value();
                                 var typeName = getTypeName(selectedType);
 
@@ -442,12 +462,40 @@ Hoot.control.utilities.dataset = function(context) {
                                     .attr('multiple', 'false')
                                     .attr('webkitdirectory', '')
                                     .attr('directory', '');
+                                } else if(typeName == 'GEONAMES') {
+                                    d3.select('#ingestfileuploader')
+                                    .attr('multiple', 'false')
+                                    .attr('accept', '.geonames')
+                                    .attr('webkitdirectory', null)
+                                    .attr('directory', null);
                                 } else {
                                     d3.select('#ingestfileuploader')
                                     .attr('multiple', 'true')
                                     .attr('webkitdirectory', null)
                                     .attr('directory', null);
                                 }
+
+                                var geonamesTrans = importTranslations;
+                                if(typeName == 'GEONAMES'){
+                                    geonamesTrans = importTranslationsGeonames;
+                                } 
+                                var comboData = d3.select('.reset.Schema').datum();
+                                comboData.combobox = geonamesTrans;
+                                var combo = d3.combobox()
+                                    .data(_.map(geonamesTrans, function (n) {
+                                        return {
+                                            value: n.DESCRIPTION,
+                                            title: n.DESCRIPTION
+                                        };
+                                    }));
+
+                                d3.select('.reset.Schema')
+                                     .style('width', '100%')
+                                        .call(combo);
+                                if(typeName == 'GEONAMES'){
+                                    d3.select('.reset.Schema').value(importTranslationsGeonames[0].DESCRIPTION);
+                                }
+
                                 d3.select('#ingestfileuploaderspancontainer').classed('hidden', false);
 
                             });

@@ -149,7 +149,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                '/p2pmerge')
            .post(data, function (error, resp) {
                if (error) {
-                   console.warn(error);
+                   _alertError(error, "Poi merge failed.");
                }
                var oParser = new DOMParser();
                var oDOM = oParser.parseFromString(resp.output, "text/xml");
@@ -798,11 +798,14 @@ Hoot.model.REST.WarningHandler = function(resp){
             if(statDetail.children && statDetail.children.length > 0){
                 var isWarning = false;
                 _.each(statDetail.children, function(child){
-                    var childDetail = child.detail.trim();
-                    if(childDetail.indexOf('WARNINGS:') === 0){
-                        isWarning = true;
+                    if(child && child.detail){
+                        var childDetail = child.detail.trim();
+                        if(childDetail.indexOf('WARNINGS:') === 0){
+                            isWarning = true;
 
+                        }
                     }
+                        
                 });
                 if(isWarning === true){
                     alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log');

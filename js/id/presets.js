@@ -150,5 +150,31 @@ iD.presets = function() {
         return all;
     };
 
+    all.addPreset = function(id, rawPreset) {
+        var newPreset = null;
+        if(rawPreset) {
+            newPreset = iD.presets.Preset(id, rawPreset, fields);
+            all.collection.push(newPreset);
+        }
+        return newPreset;
+    };
+
+    all.addField = function(id, rawField) {
+        if(rawField) {
+            fields[id] = iD.presets.Field(id, rawField);
+            if (rawField.universal) universal.push(fields[id]);
+        }
+    };
+
+    all.addCategory = function(id, rawCategory) {
+        all.collection.push(iD.presets.Category(id, rawCategory, all));
+    };
+
+    all.addDefault = function(id, geom ) {
+        var getItem = _.bind(all.item, all);
+        var newItem = getItem(id);
+        defaults.push(newItem);
+    };
+    
     return all;
 };

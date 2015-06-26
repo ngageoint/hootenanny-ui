@@ -33,14 +33,14 @@ iD.ui.Sidebar = function(context) {
                 if (inspector.entityID() !== id || inspector.state() !== 'select') {
                     inspector.state('select').entityID(id).newFeature(newFeature);
                     inspectorWrap.call(inspector);
-                    ltds.activate(id);
+                    //ltds.activate(id);
                 }
             }
             else if (!current) {
                 featureListWrap.classed('inspector-hidden', false);
                 inspectorWrap.classed('inspector-hidden', true);
                 inspector.state('hide');
-                ltds.deactivate();
+                //ltds.deactivate();
             }
         };
         sidebar.show = function(component) {

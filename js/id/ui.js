@@ -16,11 +16,17 @@ iD.ui = function(context) {
             .attr('id', 'defs')
             .call(iD.svg.Defs(context));
 
+
         //Create a ref to sidebar, so Hoot can override???
         var sidebar = container.append('div')
             .attr('id', 'sidebar')
             .attr('class', 'col4')
             .call(ui.sidebar);
+
+        var app = sidebar.append('div')
+            .attr('id', 'app')
+            .classed('col12', true)
+            .style('postion', 'absolute');
 
         var content = container.append('div')
             .attr('id', 'content');
@@ -102,11 +108,10 @@ iD.ui = function(context) {
             .attr('id', 'footer')
             .attr('class', 'fillD');
 
-        //UNCOMMENT BELOW TO INCLUDE SCALE BAR...
-        /*footer.append('div')
+        footer.append('div')
             .attr('id', 'scale-block')
             .call(iD.ui.Scale(context));
-*/
+
         var aboutList = footer.append('div')
             .attr('id', 'info-block')
             .append('ul')
@@ -158,10 +163,7 @@ iD.ui = function(context) {
  //END: Hoot may have wanted to disable this by commenting out
 
         //TODO: Document why this was added for Hoot
-        var app = sidebar.insert('div', ':first-child')
-            .attr('id', 'app')
-            .classed('col12', true)
-            .style('postion', 'absolute');
+
         var hootSidebar2 = app.append('div')
             .attr('id', 'sidebar2')
             .classed('col12 pad2 sidebar', true);
@@ -244,6 +246,8 @@ iD.ui = function(context) {
     }
 
     ui.sidebar = iD.ui.Sidebar(context);
+
+    ui.plugins = iD.ui.plugins();
 
     return ui;
 };

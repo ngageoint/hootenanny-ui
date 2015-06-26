@@ -70,7 +70,11 @@ Hoot.control.import = function (context,selection) {
             .append('a')
             .classed('button dark animate strong block _icon big plus pad2x pad1y js-toggle', true)
             .attr('href', '#')
-            .text('Add dataset')
+            .text(function(){
+            	var pnode = d3.select(d3.select(this).node().parentNode);
+            	if(isPrimary || pnode.node().nextSibling){return 'Add Reference Dataset';}
+                else {return 'Add Secondary Dataset';}
+                })
             .on('click', function () {
 
                 /*if(context.map().zoom() >= hootMaxImportZoom)*/{

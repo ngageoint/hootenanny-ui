@@ -28,27 +28,19 @@ Hoot.view.ltdstags = function (context) {
             .remove();
     };
     meta.activate = function (id) {
-        context.history().on('undone', function(){
+        function refreshTags() {
             var ent = context.hasEntity(id);
             if (!ent) {
                 return;
             }
             var newArray = [];
             var OSMTagsAr = mapTags(ent.tags);
-                    
-            appendTags(OSMTagsAr);
-        })
 
-        context.history().on('redone', function(){
-            var ent = context.hasEntity(id);
-            if (!ent) {
-                return;
-            }
-            var newArray = [];
-            var OSMTagsAr = mapTags(ent.tags);
-                    
             appendTags(OSMTagsAr);
-        })
+        }
+        context.history().on('undone', refreshTags)
+        context.history().on('redone', refreshTags)
+        context.history().on('change', refreshTags)
 
         meta.currentId = id;
         meta.deactivate();
@@ -139,15 +131,15 @@ Hoot.view.ltdstags = function (context) {
                     'position': 'relative',
                     'top': '9px',
                     'display': 'inline-block',
-                    'max-width': '70%', 
+                    'max-width': '70%',
                     'overflow': 'hidden',
-                    'vertical-align': 'middle', 
+                    'vertical-align': 'middle',
                     'opacity': 1
-                    
+
                 })
                 .text(id);
-            
-   
+
+
 
             var ftypeWrap = ltds.append('div')
                         .classed('fill-white small round', true)
@@ -179,13 +171,13 @@ Hoot.view.ltdstags = function (context) {
                                 title: n
                             };
                         }));
-        
+
                     comboIntput.style('width', '100%')
                         .call(combo);
 
-            comboIntput.on('change', function(param){  
+            comboIntput.on('change', function(param){
                 meta.currentTranslation = d3.select('#ltdstranstype').value();
-                             
+
                 meta.activate(id);
             });
 
@@ -214,9 +206,9 @@ Hoot.view.ltdstags = function (context) {
                         OSMTagsAr.push(emptyTag);
                         appendTags(OSMTagsAr, true);
                     }
-                });                
+                });
             }
-    
+
 
 
 
@@ -236,18 +228,18 @@ Hoot.view.ltdstags = function (context) {
         };
         var mapTags = function (tags, fields) {
             return _.map(tags, function (d, e) {
-                
+
                 var obj = {};
                 obj.key = e;
                 obj.value = d;
-                
+
                 if(fields){
                     var col = _.find(fields, function(item){
                         return item.desc == e;
                     });
                     obj.field = col;
                 }
-                
+
                 return obj;
             });
         };
@@ -274,7 +266,7 @@ Hoot.view.ltdstags = function (context) {
                 }
             });
         };
-        
+
         var getOSMTags = function (entity, callback) {
             if (!entity.origid) {
                 callback(false);
@@ -311,10 +303,10 @@ Hoot.view.ltdstags = function (context) {
             var ret = {};
             ret.tableName = '';
             ret.attrs = attrib;
-            callback(ret);  
+            callback(ret);
         }
 
-        
+
         var appendTags = function (tags, isNew) {
             if(!ltdsTags || !tags){return;}
 
@@ -330,7 +322,7 @@ Hoot.view.ltdstags = function (context) {
             if(isNew !== true) {
                 ltdsTags.selectAll('li').remove();
             }
-            
+
             tagsData = tags;
             var tagHolder = ltdsTags.selectAll('ul')
                 .data(tags)
@@ -338,7 +330,7 @@ Hoot.view.ltdstags = function (context) {
             var li = tagHolder.append('li')
                 .classed('cf preset-access-access pad0x', true);
 
-            
+
             if(isNew === true) {
                 li.append('div')
                 .classed('keyline-right col5 label preset-label-access', true)
@@ -353,7 +345,7 @@ Hoot.view.ltdstags = function (context) {
                 .style('border', 'none')
                 .attr('type', 'text')
                 .classed('preset-input-access combobox-input', true)
-                
+
                 .value(function (d) {
                     return d.key;
                 })
@@ -371,7 +363,7 @@ Hoot.view.ltdstags = function (context) {
                     return d.key;
                 });
             }
-            
+
             li.append('div')
                 .classed('col6 preset-input-access-wrap', true)
                 .style('background-color', '#fff')
@@ -382,16 +374,16 @@ Hoot.view.ltdstags = function (context) {
                 .style('border', 'none')
                 .attr('type', 'text')
                 .classed('preset-input-access combobox-input', true)
-                
+
                 .value(function (d) {
                     return d.value;
                 })
                 .on('change', function(orig_entity){
                     if(orig_entity.field){
                         if(orig_entity.field.type == "enumeration"){
-                            
+
                         } else if(orig_entity.field.type == "String") {
-                            
+
                         } else {
                             // numeric
                             if (isNaN(this.value)) // this is the code I need to change
@@ -404,7 +396,7 @@ Hoot.view.ltdstags = function (context) {
                                 }
                                 return ;
                             }
-                        }                        
+                        }
                     }
 
                     if(orig_entity.key.trim().length == 0) {
@@ -414,21 +406,21 @@ Hoot.view.ltdstags = function (context) {
                         return;
                     }
 
-                   
-    
+
+
                     this.oldValue = this.value;
                     var curItem = this;
 
                     var new_entity = {};
-                    _.forEach(tagsData, function(item){                        
+                    _.forEach(tagsData, function(item){
                         if(item.key == orig_entity.key){
                             item.value = curItem.value;
                         }
                         new_entity[item.key] = item.value;
                     });
-                    
+
                     new_entity[orig_entity.key] = this.value;
-                    
+
                     if(meta.currentTranslation == 'OSM') {
                         context.entityEditor().changeTags(new_entity, id);
                     } else {
@@ -446,14 +438,14 @@ Hoot.view.ltdstags = function (context) {
                                 });
                                 context.entityEditor().changeTags(OSMEntities, id);
                             }
-                           
-                        });                        
+
+                        });
                     }
-    
+
                 })
                 .select(function (a) {
                     if(a.field){
-                        
+
                         if(a.field.type == "enumeration"){
                             var combo = d3.combobox()
                             .data(_.map(a.field.enumerations, function (n) {
@@ -466,20 +458,20 @@ Hoot.view.ltdstags = function (context) {
                                 .style('width', '99%')
                                 .call(combo);
                         } else if(a.field.type == "String") {
-                            
+
                         } else {
                             // numeric
                         }
-                        
+
                     }
-                    
+
                 });
 
 
                 if(meta.currentTranslation == 'OSM') {
                     var btnCnt = li.append('div')
                     .classed('keyline-left col1', true);
-                    
+
                     btnCnt.append('button')
                         .classed('pad0 fr _icon trash', true)
                         .style('height', '100%')
@@ -504,15 +496,15 @@ Hoot.view.ltdstags = function (context) {
                             });
                             //ent.tags = OSMEntities;
                             context.entityEditor().removeTags(OSMEntities, id);
-                                    
+
                             appendTags(newArray);
                         });
                 }
 
-    
+
         };
 
-        
+
 
 
         var ent = context.hasEntity(id);
@@ -553,9 +545,9 @@ Hoot.view.ltdstags = function (context) {
                 }
                 var tagsAr = mapTags(ent.tags);
                 //appendTags(tagsAr);
-            });            
+            });
         }
-        
+
     };
     return meta;
 };

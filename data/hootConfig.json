@@ -7,5 +7,6 @@
     "hootMapInitialCenter" : [47.43151478334817, 6.770763248109257],
     "hootMapInitialZoom": 17.2,
     "maxnodescount" : 10000,
-    "p2pServerPort": "8096"
+    "p2pServerPort": "8096",
+    "pluginhost":"hoot"
 }

@@ -4,7 +4,9 @@ iD.ui.RawTagEditor = function(context) {
         state,
         preset,
         tags,
-        id;
+        id,
+        translation,
+        tagInfEndPts;
 
     function rawTagEditor(selection) {
         var count = Object.keys(tags).filter(function(d) { return d; }).length;
@@ -82,7 +84,10 @@ iD.ui.RawTagEditor = function(context) {
 
         // Update
 
-        $items.order();
+        if(!translation) {
+            $items.order();
+        }
+        
 
         $items.each(function(tag) {
             var reference = iD.ui.TagReference({key: tag.key}, context);
@@ -140,24 +145,69 @@ iD.ui.RawTagEditor = function(context) {
 
             key.call(d3.combobox()
                 .fetcher(function(value, callback) {
-                    context.taginfo().keys({
+                    var tagInfoOpts = {
                         debounce: true,
                         geometry: context.geometry(id),
                         query: value
-                    }, function(err, data) {
+                    };
+                    var origTagInfoEndPt = context.taginfo().endpoint();
+                    // passing optional translation info
+                    if(translation){
+                        tagInfoOpts.fcode = translation.fCode;
+                        tagInfoOpts.translation = translation.transType;
+                        var rawGeom = context.geometry(id);
+                        if(rawGeom == 'point'){
+                            rawGeom = 'Point';
+                        } else if(rawGeom == 'line'){
+                            rawGeom = 'Line';
+                        } else if(rawGeom == 'area'){
+                            rawGeom = 'Area';
+                        }
+                        var transTagInfoUrl = window.location.protocol + '//' + 
+                            window.location.hostname + ":" + iD.data.hootConfig.translationServerPort + '/taginfo/';
+
+                        if(!tagInfEndPts){
+                            tagInfEndPts = {};
+                            tagInfEndPts['OSM'] = origTagInfoEndPt;
+                            tagInfEndPts['translation'] = transTagInfoUrl;
+                        } else {
+                            transTagInfoUrl = tagInfEndPts['translation'];
+                        }
+                        tagInfoOpts.rawgeom = rawGeom;
+                        context.taginfo().endpoint(transTagInfoUrl);
+
+                    } else {
+                        if(tagInfEndPts){
+                            var osmTagInfoUrl = tagInfEndPts['OSM'];
+                            context.taginfo().endpoint(osmTagInfoUrl);
+                        }
+                      
+                    }
+
+                    context.taginfo().keys(tagInfoOpts, function(err, data) {
                         if (!err) callback(sort(value, data));
                     });
                 }));
 
             value.call(d3.combobox()
                 .fetcher(function(value, callback) {
-                    context.taginfo().values({
+                    var tagInfoOpts = {
                         debounce: true,
                         key: key.value(),
                         geometry: context.geometry(id),
                         query: value
-                    }, function(err, data) {
+                    };
+                    var origTagInfoEndPt = context.taginfo().endpoint();
+                    // passing optional translation info
+                    if(translation){
+                        tagInfoOpts.fcode = translation.fCode;
+                        tagInfoOpts.translation = translation.transType;
+                        context.taginfo().endpoint(window.location.protocol + '//' + 
+                            window.location.hostname + ":" + iD.data.hootConfig.translationServerPort + '/taginfo/');
+                    }
+                    context.taginfo().values(tagInfoOpts, function(err, data) {
                         if (!err) callback(sort(value, data));
+                        context.taginfo().endpoint(origTagInfoEndPt);
                     });
                 }));
         }
@@ -181,6 +231,7 @@ iD.ui.RawTagEditor = function(context) {
             this.value = kNew;
             event.change(tag);
         }
+
 
         function valueChange(d) {
             var tag = {};
@@ -228,6 +279,12 @@ iD.ui.RawTagEditor = function(context) {
     rawTagEditor.entityID = function(_) {
         if (!arguments.length) return id;
         id = _;
+        return rawTagEditor;
+    };
+
+    rawTagEditor.entityTranslation = function(_) {
+        if (!arguments.length) return translation;
+        translation = _;
         return rawTagEditor;
     };
 
