@@ -27,10 +27,10 @@ iD.ui.Coordinates = function(context){
     	lng_leftover = (lng_leftover-minutes[1])*60;
     	
     	seconds[0] = parseInt(lat_leftover);
-    	hundreths[0] = parseInt(lat_leftover-seconds[0])*100;
+    	hundreths[0] = parseInt((lat_leftover-seconds[0])*100);
     	
     	seconds[1] = parseInt(lng_leftover);
-    	hundreths[1] = parseInt(lng_leftover-seconds[1])*100;
+    	hundreths[1] = parseInt((lng_leftover-seconds[1])*100);
     	
     	return degrees[0]+'°' + minutes[0] + "'" + seconds[0] + '.' + hundreths[0] + '" ' + LatCardinal + "  " + degrees[1]+ '°' + minutes[1] + "'" + seconds[1] + '.' + hundreths[1] + '" ' + LngCardinal;
 	}
