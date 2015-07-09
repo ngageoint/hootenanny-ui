@@ -534,6 +534,7 @@ button.save.has-count .count::before {
 .icon.vertex     { background-position: -580px 0;}
 .icon.data       { background-position: -600px 0;}
 
+.icon.up.light 			   { background-position: -140px -20px;}
 .icon.inspect.light    { background-position: -220px -20px;}
 .icon.plus.light       { background-position: -240px -20px;}
 .icon.zoom-in          { background-position: -240px -20px;}
@@ -1113,6 +1114,7 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 .inspector-hover .toggle-list label,
 .inspector-hover .toggle-list label span,
 .inspector-hover .inspector-inner .add-tag,
+.inspector-hover .inspector-inner .sort-tags,
 .inspector-hover .inspector-inner .add-relation,
 .inspector-hover .toggle-list label.remove .icon {
     height: 0;
@@ -1595,7 +1597,7 @@ div.combobox {
 
 /* Adding form fields to tag editor */
 
-.inspector-inner .add-tag {
+.inspector-inner .add-tag, .inspector-inner .sort-tags {
     width: 40%;
     height: 30px;
     border-top: 0;
@@ -1603,11 +1605,11 @@ div.combobox {
     border-radius: 0 0 4px 4px;
 }
 
-.inspector-inner .add-tag:hover {
+.inspector-inner .add-tag:hover, .inspector-inner  .sort-tags:hover {
     background: rgba(0,0,0,.8);
 }
 
-.inspector-inner .add-tag .label {
+.inspector-inner .add-tag .sort-tags .label {
     display: none;
 }
 

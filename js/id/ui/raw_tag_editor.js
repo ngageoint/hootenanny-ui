@@ -41,11 +41,6 @@ iD.ui.RawTagEditor = function(context) {
 
         var $newTag = $wrap.selectAll('.add-tag')
             .data([0]);
-        
-        var $sortAZ = $newTag.enter().append('button')
-        	.attr('class','sort-tags');
-        $sortAZ.append('span')
-        	.attr('class','icon up light');
 
         var $enter = $newTag.enter().append('button')
             .attr('class', 'add-tag');
@@ -53,6 +48,12 @@ iD.ui.RawTagEditor = function(context) {
         $enter.append('span')
             .attr('class', 'icon plus light');
 
+        var $sortAZ = $newTag.enter().append('button')
+	    	.attr('class','sort-tags')
+	    	.style('margin-left','5px');
+	    $sortAZ.append('span')
+	    	.attr('class','icon up light');
+        
         $newTag.on('click', addTag);
 
         var $items = $list.selectAll('li')
