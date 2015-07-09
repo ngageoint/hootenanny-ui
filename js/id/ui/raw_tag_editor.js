@@ -25,8 +25,14 @@ iD.ui.RawTagEditor = function(context) {
         }
     }
 
-    function content($wrap) {
+    function content($wrap,sortAZ) {
         var entries = d3.entries(tags);
+    	if(sortAZ!=null){
+    		entries.sort(function(a,b){var textA = a.key.toUpperCase();
+	    	    var textB = b.key.toUpperCase();
+	    	    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+	    	});
+    	} 
 
         if (!entries.length || showBlank) {
             showBlank = false;
@@ -48,7 +54,32 @@ iD.ui.RawTagEditor = function(context) {
         $enter.append('span')
             .attr('class', 'icon plus light');
 
-        $newTag.on('click', addTag);
+       var $sortAZ = $newTag.enter().append('div')
+	    	.classed('contain', true)
+	    	.attr('id','sort-tags-div')
+	    	.style('position','absolute').style('right','25px').style('margin','-25px 0')
+	    	.html(function(){
+            	var retval = '<label class="pad1x" style="opacity: 1;">';
+            	retval += '<input type="checkbox" class="reset" id="sort-tags" ';
+            	retval += 'style="opacity: 1;"';
+            	retval += '>Sort A-Z</label>';		                	
+            	return retval;	
+            });
+        	    
+       if(d3.select('#entity_editor_presettranstype').value()=='OSM'){
+    	   d3.select('#sort-tags-div').classed('hidden',false);
+       } else {d3.select('#sort-tags-div').classed('hidden',true);}
+       
+       $sortAZ.on('change',function(){
+        	var sortAZ = d3.select('#sort-tags').property('checked');
+        	if(sortAZ==true){
+        		content($wrap,true);
+        	} else {
+        		content($wrap);
+        	}
+        });
+               
+        $enter.on('click', addTag);
 
         var $items = $list.selectAll('li')
             .data(entries, function(d) { return d.key; });
@@ -255,6 +286,10 @@ iD.ui.RawTagEditor = function(context) {
                 content($wrap);
                 $list.selectAll('li:last-child input.key').node().focus();
             }, 0);
+        }
+        
+        function sortTags() {
+        	content($wrap);
         }
     }
 
