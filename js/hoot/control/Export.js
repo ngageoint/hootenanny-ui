@@ -19,7 +19,7 @@ Hoot.control.export = function (sidebar) {
     });*/
 
     exp.activate = function (layer, translations) {
-        var placeHolder = 'Select Data Translation Schema';
+        var placeHolder = 'NSG Topographic Data Store (TDS) v6.1 (Hootenanny Default)';//'Select Data Translation Schema';
        
         
         var transCombo = [];
@@ -92,7 +92,14 @@ Hoot.control.export = function (sidebar) {
             .append('input')
             .attr('type',function(field){if (field.inputtype=='text') return field.inputtype;})
             .value(function (field) {
-            	if (field.inputtype=='text') return field.placeholder;
+            	if (field.inputtype=='text'){
+            		if(field.transcombo){
+                    	var defTrans = _.findWhere(field.transcombo, {DESCRIPTION: field.placeholder});
+                    	if(defTrans == undefined){return field.transcombo[0].DESCRIPTION}
+                    	else{return defTrans.DESCRIPTION;}
+                    }
+                    else{return field.placeholder;}
+            	} //return field.placeholder;
             })
             .attr('class', function (field) {
                 return 'reset ' + field.type;

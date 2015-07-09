@@ -6,7 +6,7 @@ Hoot.control.utilities.dataset = function(context) {
 
     hoot_control_utilities_dataset.exportDataContainer = function(dataset, translations) {
 
-      var placeHolder = 'Select Data Translation Schema';
+      var placeHolder = 'NSG Topographic Data Store (TDS) v6.1 (Hootenanny Default)';//'Select Data Translation Schema'
       var transCombo = [];
       // filters for exportable translations
       _.each(translations, function(tr){
@@ -84,7 +84,12 @@ Hoot.control.utilities.dataset = function(context) {
             .append('input')
             .attr('type', 'text')
             .attr('placeholder', function (field) {
-                return field.placeholder;
+                if(field.transcombo){
+                	var defTrans = _.findWhere(field.transcombo, {DESCRIPTION: field.placeholder});
+                	if(defTrans == undefined){return field.transcombo[0].DESCRIPTION}
+                	else{return defTrans.DESCRIPTION;}
+                }
+                else{return field.placeholder;}
             })
             .attr('class', function (field) {
                 return 'reset ' + field.type;
