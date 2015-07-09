@@ -227,6 +227,9 @@
         },
         "resolved": {
             "description": "Review is resolved."
+        },
+        "toggletable": {
+            "description": "Hide/Show tag table."
         }
     },
     "tooltip_keyhint": "Shortcut:",

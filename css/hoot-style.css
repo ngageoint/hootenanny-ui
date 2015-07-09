@@ -140,15 +140,15 @@ path.shadow.tag-hoot.area:not(.hover).activeReviewFeature2:not(.selected) {
 }
 
 .review-block {
-    position: absolute;
-    right: 0;
-    bottom: 90px; /*0;*/
+    /*position: absolute;
+    right: 0;*/
+    bottom: 90px; /*0;/
     border-radius: 0;
-    opacity: .9;
+    /*opacity: .9;
     -webkit-transition: opacity 200ms;
     -moz-transition: opacity 200ms;
     transition: opacity 200ms;
-    background: #333;
+    background: #333;*/
 }
 
 .map-controls {
@@ -183,12 +183,13 @@ div.combobox {
 .point{cursor:pointer;}
 
 div.tag-table {
-  position: absolute;
+  /*position: absolute;
   right: 0;
-  bottom: 130px;
-  /*max-height: 200px*/;
+  bottom: 130px;*/
+  max-height: 200px;
   overflow: auto;
 }
+
 .tag-table td {
     padding: 1px;
     color: #FFF;
@@ -196,6 +197,8 @@ div.tag-table {
 .tag-table table {
     border-spacing: 0px;
     table-layout: auto;
+    margin-bottom: 0px;
+    width: auto;
 }
 td.key {
     background: rgba(255, 255, 255, 0.5);

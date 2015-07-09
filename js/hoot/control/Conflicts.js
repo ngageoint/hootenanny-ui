@@ -128,7 +128,9 @@ Hoot.control.conflicts = function (context, sidebar) {
                         d3.selectAll('.' + againstFeature.id)
                             .classed('activeReviewFeature2', true);
                     }
-                    buildPoiTable(d3.select('#content'), [feature, againstFeature]);
+                    buildPoiTable(d3.select('#conflicts-container'), [feature, againstFeature]);
+                    var note = d3.select('.review-note');
+                    note.html(note.html().replace('Review note: ', 'Review note: ' + feature.tags['hoot:review:note']));
                     event.zoomToConflict(feature ? feature.id : againstFeature.id);
                 }
             };
@@ -228,7 +230,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 //console.log(feats);
                 d3.select('div.tag-table').remove();
                 var ftable = elem.insert('div','div.conflicts')
-                    .classed('tag-table', true)
+                    .classed('tag-table block fr', true)
                     .append('table')
                     .classed('round keyline-all', true);
                 var f1 = filterTags(feats[0] ? feats[0].tags : {});
@@ -239,14 +241,17 @@ Hoot.control.conflicts = function (context, sidebar) {
                     r.append('td').classed('key', true).text(d.key);
                     r.append('td').classed('f1', true).text(d.value[0]).on('click', function(d){
                         var sel = iD.modes.Select(context, [feats[0].id]);
+                        //sel.suppressMenu(true);
                         context.enter(sel);
                     });
                     r.append('td').classed('f2', true).text(d.value[1]).on('click', function(d){
                         var sel = iD.modes.Select(context, [feats[1].id]);
+                        //sel.suppressMenu(true);
                         context.enter(sel);
                     });
 
                 });
+                checkToggleText();
             };
         };
         var reviewItemID = function (item) {
@@ -330,7 +335,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             if(itemCnt > 1){
               multiFeatureMsg = ', One to many feature (' + (nReviewed + 1) + ' of ' + itemCnt + ')';
             }
-            meta.html('<strong>' + 'Reviewable conflict '+ index + ' of ' + reviewCount + ': ' + entity_stat +
+            meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflict '+ index + ' of ' + reviewCount + ': ' + entity_stat +
                 '  (Remaining conflicts: ' + numLeft +  multiFeatureMsg + ')</strong>');
         }
         var reviewsRemaining = function (count) {
@@ -422,6 +427,19 @@ Hoot.control.conflicts = function (context, sidebar) {
         var autoMerge = function() {
             //Overridden in highlightLayer
             mergeFeatures();
+        };
+
+        function checkToggleText() {
+            d3.select('a.toggletable')
+                .text(d3.select('div.tag-table').classed('hide') ? 'Show Table' : 'Hide Table')
+                .call(tooltip);
+        }
+
+        var toggleTable = function() {
+            var t = d3.select('div.tag-table');
+            t.classed('block fr', t.classed('hide'));
+            t.classed('hide', !t.classed('hide'));
+            checkToggleText();
         };
 
         var retainFeature = function () {
@@ -596,13 +614,16 @@ Hoot.control.conflicts = function (context, sidebar) {
             });*/
         var conflicts = d3.select('#content')
             .append('div')
-            .classed('conflicts col12 dark pin-bottom fill-darken3 pad1 review-block space', true)
+            .attr('id', 'conflicts-container')
+            .classed('pin-bottom review-block', true)
+            .append('div')
+            .classed('conflicts col12 fillD pad1 space', true)
             //.style('height','90px') //changed from 133px to avoid conflict with footer
             .data(reviewItems);
         var meta = conflicts.append('span')
             .classed('_icon info dark pad0y space', true)
             .html(function () {
-                return '<strong>1 of ' + reviewCount + '</strong>';
+                return '<strong class="review-note">1 of ' + reviewCount + '</strong>';
             });
         var da = [{
             id: 'resolved',
@@ -644,6 +665,15 @@ Hoot.control.conflicts = function (context, sidebar) {
             icon: '_icon plus',
             cmd: iD.ui.cmd('m'),
             action: autoMerge
+        },
+        {
+            id: 'toggletable',
+            name: 'toggle_table',
+            text: 'Hide Table',
+            color: 'fill-grey button round pad0y pad1x dark small strong',
+            //icon: '_icon plus',
+            cmd: iD.ui.cmd('t'),
+            action: toggleTable
         }];
 
         var opts = conflicts.append('span')
@@ -657,6 +687,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         .on(da[1].cmd, function() { d3.event.preventDefault(); da[1].action(); })
         .on(da[2].cmd, function() { d3.event.preventDefault(); da[2].action(); })
         .on(da[3].cmd, function() { d3.event.preventDefault(); da[3].action(); })
+        .on(da[4].cmd, function() { d3.event.preventDefault(); da[4].action(); })
         ;
 
         d3.select(document)
