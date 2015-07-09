@@ -56,6 +56,7 @@ iD.ui.RawTagEditor = function(context) {
 
        var $sortAZ = $newTag.enter().append('div')
 	    	.classed('contain', true)
+	    	.attr('id','sort-tags-div')
 	    	.style('position','absolute').style('right','25px').style('margin','-25px 0')
 	    	.html(function(){
             	var retval = '<label class="pad1x" style="opacity: 1;">';
@@ -64,7 +65,11 @@ iD.ui.RawTagEditor = function(context) {
             	retval += '>Sort A-Z</label>';		                	
             	return retval;	
             });
-        	    	
+        	    
+       if(d3.select('#entity_editor_presettranstype').value()=='OSM'){
+    	   d3.select('#sort-tags-div').classed('hidden',false);
+       } else {d3.select('#sort-tags-div').classed('hidden',true);}
+       
        $sortAZ.on('change',function(){
         	var sortAZ = d3.select('#sort-tags').property('checked');
         	if(sortAZ==true){
