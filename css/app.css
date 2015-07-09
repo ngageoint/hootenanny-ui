@@ -1114,7 +1114,6 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 .inspector-hover .toggle-list label,
 .inspector-hover .toggle-list label span,
 .inspector-hover .inspector-inner .add-tag,
-.inspector-hover .inspector-inner .sort-tags,
 .inspector-hover .inspector-inner .add-relation,
 .inspector-hover .toggle-list label.remove .icon {
     height: 0;
@@ -1597,7 +1596,7 @@ div.combobox {
 
 /* Adding form fields to tag editor */
 
-.inspector-inner .add-tag, .inspector-inner .sort-tags {
+.inspector-inner .add-tag {
     width: 40%;
     height: 30px;
     border-top: 0;
@@ -1605,11 +1604,11 @@ div.combobox {
     border-radius: 0 0 4px 4px;
 }
 
-.inspector-inner .add-tag:hover, .inspector-inner  .sort-tags:hover {
+.inspector-inner .add-tag:hover {
     background: rgba(0,0,0,.8);
 }
 
-.inspector-inner .add-tag .sort-tags .label {
+.inspector-inner .add-tag .label {
     display: none;
 }
 
