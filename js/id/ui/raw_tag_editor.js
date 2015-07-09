@@ -41,6 +41,11 @@ iD.ui.RawTagEditor = function(context) {
 
         var $newTag = $wrap.selectAll('.add-tag')
             .data([0]);
+        
+        var $sortAZ = $newTag.enter().append('button')
+        	.attr('class','sort-tags');
+        $sortAZ.append('span')
+        	.attr('class','icon up light');
 
         var $enter = $newTag.enter().append('button')
             .attr('class', 'add-tag');
