@@ -653,7 +653,7 @@ Hoot.control.conflate = function (sidebar) {
 							}					
 						} else if(submember.hoot_key) {
 							if(setVal==null){setVal=submember.defaultvalue;}
-							fieldsJSON.push({key:submember.hoot_key,value:setVal,group:field.name,id:submember.id});
+							fieldsJSON.push({key:submember.id,value:setVal,group:field.name,id:submember.id});
 						} else if(submember.defaultvalue) {
 							if(setVal==null){setVal=submember.defaultvalue;}
 							fieldsJSON.push({key:submember.id,value:setVal,group:field.name,id:submember.id});
@@ -1036,6 +1036,8 @@ Hoot.control.conflate = function (sidebar) {
 	             			if(target.id.indexOf('enable')>-1){
 								//Need to take care of everything in group that is on/off when enabled/disabled
 	             				var arrInputs = d3.select(d3.select(target).node().parentNode.parentNode.parentNode.parentNode).selectAll('input');
+	             				
+	             				
 	             				arrInputs.each(function(){
 	             					if(setVal)
 	             					{
