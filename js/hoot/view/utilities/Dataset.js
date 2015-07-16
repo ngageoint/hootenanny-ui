@@ -24,10 +24,15 @@ Hoot.view.utilities.dataset = function(context)
         fieldset = form.append('div')
         .attr('id','datasettable')
             .classed('col12 fill-white small strong row10 overflow', true)
-            .call(hoot_view_utilities_dataset.populateDatasets);
+            //.call(hoot_view_utilities_dataset.populateDatasets);
+            .call(hoot_view_utilities_dataset.populateDatasetsSVG);
 
     };
 
+    hoot_view_utilities_dataset.populateDatasetsSVG = function(container) {
+    	context.hoot().control.utilities.folder.createFolderTree(container);
+    }
+    
     hoot_view_utilities_dataset.populateDatasets = function(container) {
         context.hoot().model.layers
             .refresh(function (d) {

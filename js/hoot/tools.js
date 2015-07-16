@@ -191,7 +191,7 @@ Hoot.tools = function (context, selection) {
         d3.select('.loadingLayer').remove();
         hoot.model.layers.addLayer(item);
         var datasettable = d3.select('#datasettable');
-        hoot.view.utilities.dataset.populateDatasets(datasettable);
+        hoot.view.utilities.dataset.populateDatasetsSVG(datasettable);
     }
 
     function renderInputLayer(layerName,params) {

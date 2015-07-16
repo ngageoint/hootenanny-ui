@@ -39,7 +39,6 @@ Hoot.model.layers = function (context)
             _.each(a.layers,function(lyr){
             	if(lyr.name.indexOf('|')==-1){lyr.path='root'}
             	else{lyr.path = lyr.name.slice(0,lyr.name.lastIndexOf('|'));}
-            	lyr.test = 'test';
             });
             
             if (callback) {
@@ -150,7 +149,7 @@ Hoot.model.layers = function (context)
 
     model_layers.addLayerAndCenter = function (key, callback, extent) {
         var name = key.name;
-        var mapId =  model_layers.getmapIdByName(name) || 155;
+        var mapId = key.id || model_layers.getmapIdByName(name) || 155;
         if (layers[name]){return false;}
 
         key.mapId = mapId;
@@ -173,7 +172,7 @@ Hoot.model.layers = function (context)
     model_layers.addLayer = function (key, callback) {
         // this isLayerLoading tracks on till key is added to layers object.
         isLayerLoading = true;
-        var cMapId =  model_layers.getmapIdByName(key.name) || 155;
+        var cMapId = key.id || model_layers.getmapIdByName(key.name) || 155;
         context.connection().getMbrFromUrl(cMapId, function(resp){
             if(resp == null){
 

@@ -2,10 +2,9 @@ Hoot.control.utilities.folder = function(context) {
 
 	var hoot_control_utilities_folder = {};
 
-
     hoot_control_utilities_folder.createFolderTree = function(container) {
     	// http://bl.ocks.org/mbostock/1093025 - Collapsible Indented Tree
-    	
+    	    	
     	var folders = context.hoot().model.layers
 		.getAvailLayersWithFolders();
     	folders= JSON.parse('{"name":"Datasets","children":' + JSON.stringify(folders) +'}');
@@ -88,7 +87,7 @@ Hoot.control.utilities.folder = function(context) {
 	          .attr("class", "node")
 	          .attr("transform", function(d) { return "translate(" + 0 + "," + source.x0 + ")"; })
 	          .style("opacity", 1e-6);
-	      	
+	      	      
 	      // Enter any new nodes at the parent's previous position.
 	      nodeEnter.append("rect")
 	          .attr("y", -barHeight / 2)
@@ -98,18 +97,7 @@ Hoot.control.utilities.folder = function(context) {
 	          .style("fill", color)
 	          .attr("class", rectClass)
 	          .on("click", click);
-
-	      nodeEnter.append('svg:foreignObject')
-		      .attr("width", 20)
-		      .attr("height", 20)
-		      .attr("transform", function(d) { 
-		    	  var dy=5.5+(11*d.depth);
-		    	  return "translate("+ dy +",-11)"; })
-		      .append("xhtml:body")
-		      .html(function(d){
-		    	  if (d.type == 'folder'){return '<i class="_icon folder"></i>'}
-		      });
-	      
+	          
 	      nodeEnter.append("text")
 	          .attr("dy", 3.5)
 	          .attr("dx", function(d){
@@ -118,6 +106,16 @@ Hoot.control.utilities.folder = function(context) {
 	          .attr('lyr-id',function(d){return d.id;})
 	          .text(function(d) { return d.name.substring(d.name.lastIndexOf('|')+1); });
             
+	      nodeEnter.append("g")
+	      	  .append('svg:foreignObject')
+		      .attr("width", 20)
+		      .attr("height", 20)
+		      .attr("transform", function(d) { 
+		    	  var dy=5.5+(11*d.depth);
+		    	  return "translate("+ dy +",-11)"; })
+		      .html(function(d){
+		    	  if (d.type == 'folder'){return '<i class="_icon folder"></i>'}
+		      });
 	      
 	      // Transition nodes to their new position.
 	      nodeEnter.transition()
@@ -174,6 +172,42 @@ Hoot.control.utilities.folder = function(context) {
 	        d.x0 = d.x;
 	        d.y0 = d.y;
 	      });
+
+	      if(container.attr('id')=='datasettable'){
+	    	  container.selectAll('rect').on("contextmenu",function(d,i){
+	              if(!isNaN(parseInt(d.id))){
+	            	  //http://jsfiddle.net/1mo3vmja/2/
+		        	  var items = [{title:'Export',icon:'export'},{title:'Delete',icon:'trash'},{title:'Rename',icon:'info'}];
+		        	  
+		        	  // create the div element that will hold the context menu
+		              d3.selectAll('.context-menu').data([1])
+		              	.enter()
+		                .append('div')
+		                .attr('class', 'context-menu');
+		              // close menu
+		              d3.select('body').on('click.context-menu', function() {d3.select('.context-menu').style('display', 'none');});
+		              // this gets executed when a contextmenu event occurs
+		              d3.selectAll('.context-menu')
+		              	.html('')
+		                .append('ul')
+		                .selectAll('li')
+		                .data(items).enter()
+		                .append('li')
+		                .on('click' , function(d) { 
+		                	console.log(d.title); 
+		                	return d.title; })
+		                .attr("class",function(d){return "_icon " + d.icon})
+	            		.text(function(d) { return d.title; });
+		              	d3.select('.context-menu').style('display', 'none');
+		              // show the context menu
+		              d3.select('.context-menu')
+		                .style('left', (d3.event.pageX - 2) + 'px')
+		                .style('top', (d3.event.pageY - 2) + 'px')
+		                .style('display', 'block');
+	              } else {d3.select('.context-menu').style('display', 'none');}	              
+	              d3.event.preventDefault();
+	          });
+	      } else {container.selectAll('rect').on("contextmenu",function(d,i){d3.event.preventDefault();})}
 	    }
 	
 	    // Toggle children on click.
