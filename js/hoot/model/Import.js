@@ -5,32 +5,21 @@ Hoot.model.import = function (context)
 	var jobIdsArr;
     var mapIdsArr;
 
-    import_layer.createCombo = function(a) {
-        var combo = d3.combobox().data(_.map(a, function (n) {
-            return {
-                value: n.name,
-                title: n.name
-            };
-        }));
-        combo.minItems(1);
-        return combo;
-    }
-    import_layer.updateCombo = function()
+    import_layer.updateTrees = function()
     {
-        var combo = import_layer.createCombo(context.hoot().model.layers.getAvailLayers());
-        var controls = d3.selectAll('.reset.fileImport');
-        var cntrl;
-
-        for (var j = 0; j < controls.length; j++) {
-            cntrl = controls[j];
-            // for each of subitems
-            for(k=0; k<cntrl.length; k++){
-                d3.select(cntrl[k]).style('width', '100%')
-                .call(combo);
-            }
-
-        }       
+    	/*//This function updates the SVG folder/dataset collapsable tree
+    	_.each(d3.select("#sidebar2").node().childNodes,function(f){
+    		if(f.classList.contains('hootImport')){
+    			var _svg = d3.select(f).select('svg');
+    			if(!_svg.empty()){
+    				var container = _svg.node().parentNode;
+    				_svg.remove();
+    				hoot.control.utilities.folder.createFolderTree(d3.select(container));
+    			}
+    		}
+    	});*/
     }
+    
     import_layer.importData = function (container, callback) {
 
 		_initVariables();
@@ -183,7 +172,7 @@ Hoot.model.import = function (context)
     var _uploadHandler = function (uploadJobStat) 
     {
  
-        import_layer.updateCombo();
+        //import_layer.updateCombo();
         //var spin = d3.select('#importspin');
         //spin.remove();
         var datasettable = d3.select('#datasettable');
