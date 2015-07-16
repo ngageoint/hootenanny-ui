@@ -388,7 +388,7 @@ Hoot.model.layers = function (context)
     			l.type = 'dataset';
     			parent.children.push(l);
     		} else {
-    			folders.push({'id':l.name,'parentid':'root','name':l.name,'depth':0,'type':'dataset'});
+    			folders.push({'id':l.id,'parentid':'root','name':l.name,'depth':0,'type':'dataset'});
     		}
     	});
     	

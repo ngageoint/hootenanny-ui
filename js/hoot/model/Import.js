@@ -176,7 +176,7 @@ Hoot.model.import = function (context)
         //var spin = d3.select('#importspin');
         //spin.remove();
         var datasettable = d3.select('#datasettable');
-        context.hoot().view.utilities.dataset.populateDatasets(datasettable);
+        context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);
         if(importCallback){
             var status = {};
             status.info = uploadJobStat.status;

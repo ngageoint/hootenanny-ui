@@ -7,7 +7,7 @@ Hoot.control.utilities.folder = function(context) {
     	    	
     	var folders = context.hoot().model.layers
 		.getAvailLayersWithFolders();
-    	folders= JSON.parse('{"name":"Datasets","children":' + JSON.stringify(folders) +'}');
+    	folders= JSON.parse('{"name":"Datasets","id":"Datasets","children":' + JSON.stringify(folders) +'}');
 	
     	var margin = {top: 10, right: 20, bottom: 30, left: 0},
 	        width = '100%',
@@ -177,7 +177,11 @@ Hoot.control.utilities.folder = function(context) {
 	    	  container.selectAll('rect').on("contextmenu",function(d,i){
 	              if(!isNaN(parseInt(d.id))){
 	            	  //http://jsfiddle.net/1mo3vmja/2/
-		        	  var items = [{title:'Export',icon:'export'},{title:'Delete',icon:'trash'},{title:'Rename',icon:'info'}];
+	            	  var items = [
+		        	      {title:'Export',icon:'export',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
+		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
+		        	      {title:'Rename',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d,container)}'},
+		        	  ];
 		        	  
 		        	  // create the div element that will hold the context menu
 		              d3.selectAll('.context-menu').data([1])
@@ -193,11 +197,10 @@ Hoot.control.utilities.folder = function(context) {
 		                .selectAll('li')
 		                .data(items).enter()
 		                .append('li')
-		                .on('click' , function(d) { 
-		                	console.log(d.title); 
-		                	return d.title; })
-		                .attr("class",function(d){return "_icon " + d.icon})
-	            		.text(function(d) { return d.title; });
+		                .on('click' , function(item) { 
+		                	eval(item.click); })
+		                .attr("class",function(item){return "_icon " + item.icon})
+	            		.text(function(item) { return item.title; });
 		              	d3.select('.context-menu').style('display', 'none');
 		              // show the context menu
 		              d3.select('.context-menu')

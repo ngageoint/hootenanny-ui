@@ -593,7 +593,7 @@ Hoot.control.utilities.dataset = function(context) {
                                              }
 
                                              var datasettable = d3.select('#datasettable');
-                                             context.hoot().view.utilities.dataset.populateDatasets(datasettable);
+                                             context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);
                                              modalbg.remove();
                                          });
 
