@@ -212,6 +212,7 @@ input.round        { border-radius:4px; }
 .rcon.dark.check:after, ._icon.dark.check:before               { background-position:-360px -60px; }
 .rcon.dark.big.check:after, ._icon.dark.big.check:before       { background-position:-360px -80px; }
 
+.rcon.folderplus:after, ._icon.folderplus:before					 		 { background-position:-410px -30px; }
 .rcon.plus:after, ._icon.plus:before                           { background-position:-400px 0; }
 .rcon.big.plus:after, ._icon.big.plus:before                   { background-position:-400px -20px; }
 .rcon.dark.plus:after, ._icon.dark.plus:before                 { background-position:-400px -60px; }
@@ -228,7 +229,7 @@ input.round        { border-radius:4px; }
 .rcon.dark.big.folder:after, ._icon.dark.big.folder:before     { background-position:-480px -80px; }
 
 .rcon.up:after, ._icon.up:before                                 { background-position:-520px 0; }
-.rcon.big.up:after, ._icon.big.up:before                         { background-position:-520px -20px; }
+.rcon.big.up:after, ._icon.big.up:before                         { background-position:-510px 10px; }
 .rcon.dark.up:after, ._icon.dark.up:before                       { background-position:-520px -60px; }
 .rcon.dark.big.up:after, ._icon.dark.big.up:before               { background-position:-520px -80px; }
 

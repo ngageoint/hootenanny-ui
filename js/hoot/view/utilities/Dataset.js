@@ -1,8 +1,7 @@
 Hoot.view.utilities.dataset = function(context)
 {
     var hoot_view_utilities_dataset = {};
-
-
+    
     hoot_view_utilities_dataset.createContent = function(form){
 
         fieldset = form.append('div')

@@ -3039,43 +3039,49 @@ img.wiki-image {
     height: 100%;
     overflow: auto;
     z-index: 2;
-    background: #f6f6f6;
+    background: #f6f6f6;	
 }
 
 .custom-collapse {
-    height:0px;
-    overflow:hidden;
+		height:0px;
+		overflow:hidden;
 }
 
 .custom-expand {
-    height:100%;
-    overflow:hidden;
+		height:100%;
+		overflow:hidden;
 }
 
 .invalid-input{
-    background:red		!important;
-    color:white				!important;
-    font-weight:bold	!important;
+	  background:red		!important;
+	  color:white				!important;	  
+	  font-weight:bold	!important;
 }
 
 table.custom-conflation-table, table.custom-conflation-table td, table.custom-conflation-table th {
-  border: 1px solid #CCC;
+	border: 1px solid #CCC;
 }
 
 table.custom-conflation-table td {
-  padding: 5px;
+	padding: 5px;	
 }
 
 table.custom-conflation-table th {
-  font-weight: bold;
-  padding: 5px;
-  text-transform:capitalize;
-  text-align:center;
+	font-weight: bold;
+	padding: 5px;	
+	text-transform:capitalize;
+	text-align:center;
 }
 
 #confAdvOptsLnk {
-  color: #CCC;
+	color: #CCC;
 }
+
+/* rect css for collapsable folder/dataset menu */
+rect.sel {fill: #ffff99 !important;}
+/*rect.flat {fill: #c6dbef;}
+rect.more {fill: #3182bd;}*/
+
 
 input:focus::-webkit-input-placeholder { color:transparent; }
 input:focus:-moz-placeholder { color:transparent; } /* Firefox 18- */

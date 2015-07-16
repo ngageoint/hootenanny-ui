@@ -25,8 +25,7 @@ Hoot.control.import = function (context,selection) {
 
     
     ETL.render = function (colors, isPrimary) {
-
-        context.map().on("maxImportZoomChanged", function(){
+    	context.map().on("maxImportZoomChanged", function(){
             var imp = d3.selectAll('.hootImport')[0];
             if(imp.length){
                 for(i=0; i<imp.length; i++){
@@ -34,11 +33,8 @@ Hoot.control.import = function (context,selection) {
                     if(n){
                         hideForm(n);
                     }
-
                 }
             }
-
-
         })
 
         var palette = _.filter(context.hoot().palette(), function(d){return d.name!=='green';});
@@ -156,6 +152,7 @@ Hoot.control.import = function (context,selection) {
             
             d3.event.stopPropagation();
             d3.event.preventDefault();
+            
             var self = d3.select(a);
             var color = self.select('.palette .active')
                 .attr('data-color');

@@ -16,9 +16,8 @@ Hoot.model.layers = function (context)
     };
     model_layers.getNameBymapId = function (id) {
         var currAvailLayers = model_layers.getAvailLayers();
-        var layerSort = _.object(_.pluck(currAvailLayers, 'id'), currAvailLayers);
-        var obj = layerSort[id];
-        return obj ? obj.name : null;
+        var layerMatch = _.findWhere(currAvailLayers,{id:id});
+        return layerMatch ? layerMatch.name : null;
     };
 
 
