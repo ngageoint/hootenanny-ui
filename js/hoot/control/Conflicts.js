@@ -469,6 +469,22 @@ Hoot.control.conflicts = function (context, sidebar) {
 
             var multiItemInfo = getMultiReviewItemInfo();
             jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+
+            var reviewedItems = {};
+            var reviewedItemsArr = [];
+
+            var markItem = {};
+            markItem['id'] = item.id;
+            markItem['type'] = item.type;
+            markItem['reviewedAgainstId'] = item.itemToReviewAgainst.id;
+            markItem['reviewedAgainstType'] = item.itemToReviewAgainst.type;
+            reviewedItemsArr.push(markItem);
+            reviewedItems['reviewedItems'] = reviewedItemsArr;
+
+            var reviewMarkData = {};
+                reviewMarkData.mapId = mapid;
+                reviewMarkData.reviewedItems = reviewedItems;
+                Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {  });
         };
 /*        var removeFeature = function () {
             var vicheck = vischeck();

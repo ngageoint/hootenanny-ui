@@ -15,10 +15,20 @@ Hoot.model.layers = function (context)
         return ar[0].id;
     };
     model_layers.getNameBymapId = function (id) {
-        var currAvailLayers = model_layers.getAvailLayers();
+        // Replacing tis code since lodash version used by iD does not have _.object
+       /* var currAvailLayers = model_layers.getAvailLayers();
         var layerSort = _.object(_.pluck(currAvailLayers, 'id'), currAvailLayers);
         var obj = layerSort[id];
-        return obj ? obj.name : null;
+        return obj ? obj.name : null;*/
+        var currAvailLayers = model_layers.getAvailLayers();
+        var found = _.find(currAvailLayers, function(l){
+            return (id == l.id);
+        });
+
+        if(found){
+            return found.name;
+        }
+        return null;
     };
 
 

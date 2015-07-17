@@ -398,14 +398,46 @@ Hoot.tools = function (context, selection) {
     context.connection().on('layerAdded', function (layerName) {
         var params = hoot.model.layers.getLayers(layerName);
         if (loadedLayers[layerName]) return;
-        var merged = loadingLayer.merged || null;
+        /*var merged = loadingLayer.merged || null;
         if (!merged) {
             renderInputLayer(layerName,params);
         }
         if (merged) {
             renderMergedLayer(layerName);
         }
-        conflationCheck(layerName, true);
+        conflationCheck(layerName, true);*/
+        var merged = loadingLayer.merged || null;
+        if(!merged && params.mapId)
+        {
+            Hoot.model.REST('ReviewGetStatistics', params.mapId,function (stat) {
+                var isReviewMode = false;
+                if(stat.numReviewableItems > 0) {
+                    var r = confirm("The layer contains unreviewed items. Do you want to go into review mode?");
+                    if (r == true) {
+                        isReviewMode = true;
+                        loadingLayer = params;
+                        loadingLayer['merged'] = true;
+                        loadingLayer['layers'] = [];
+                        d3.selectAll('.loadingLayer').remove();
+                        d3.selectAll('.hootImport').remove();
+                        d3.selectAll('.hootView').remove();
+                        renderMergedLayer(layerName);
+                    }
+                }
+
+                if(isReviewMode === false) {
+                    renderInputLayer(layerName,params);
+                    conflationCheck(layerName, true);     
+                }
+                    
+            });
+                
+                
+                         
+        } else {
+            renderMergedLayer(layerName);
+            conflationCheck(layerName, true);
+        }
     });
     exportLayer.on('cancelSaveLayer', function () {
         if(exporting){

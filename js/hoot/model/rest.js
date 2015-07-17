@@ -610,6 +610,44 @@ rest.ReviewMarkAll = function(data, callback)
             });
 };
 
+rest.ReviewMarkItem = function(data, callback)
+{
+    var mapId = data.mapId;
+    //console.log("ReviewMarkAll mapId: " + mapId);
+    //markItemsReviewedRequest is required but can be unpopulated when markAll=true
+    var markItemsReviewedRequest = {};
+    markItemsReviewedRequest.reviewedItems = data.reviewedItems;
+    markItemsReviewedRequest.reviewedItemsChangeset = "";
+    d3.json('/hoot-services/job/review?mapId='+mapId+'&markAll=false')
+        .header('Content-Type', 'application/json')
+        .send(
+            'PUT',
+            JSON.stringify(markItemsReviewedRequest),
+            function(error, response)
+            {
+                if (error)
+                {
+                    alert("Review Mark All failed.");
+                }
+                callback(error, response);
+            });
+};
+
+rest.ReviewGetStatistics = function (mapId, callback) {
+            
+        d3.json('/hoot-services/job/review/statistics?mapId=' + mapId, function (error, resp) {
+                if (error) {
+                    var emptyResp = {};
+                    emptyResp['mapId'] = mapId;
+                    emptyResp['numTotalItems'] = mapId;
+                    emptyResp['numReviewableItems'] = 0;
+                    emptyResp['numReviewedItems'] = 0;
+                    return callback(emptyResp);
+                }
+                return callback(resp);
+        });
+    };
+
 rest.getTranslations = function(callback) {
     d3.json('/hoot-services/ingest/customscript/getlist', function (error, resp) {
         if (error) {
