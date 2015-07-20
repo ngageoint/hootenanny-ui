@@ -75,9 +75,9 @@ Hoot.control.view = function (container, context) {
                     d3.select('.hootTags').remove();
 
                     // we need tagTable removed when UI is review mode and was displaying tag table
-                    var tagTable = d3.select('div.tag-table');
-                    if(tagTable) {
-                        tagTable.remove();
+                    var conflictsCont = d3.select('#conflicts-container');
+                    if(conflictsCont) {
+                        conflictsCont.remove();
                     }
                     context.updateMode();
 
