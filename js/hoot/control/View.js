@@ -59,7 +59,13 @@ Hoot.control.view = function (container, context) {
                         primaryLayerName = d3.select(sels[0]).datum().name;
                     }
 
-                    var r = confirm("Are you sure you want to remove layer:" + a.name  + "?");
+                    var hasChange = context.history().hasChanges();
+
+                    var msg = "";
+                    if(hasChange) {
+                        msg = "There is unsaved changes. "
+                    }
+                    var r = confirm(msg + "Are you sure you want to remove layer:" + a.name  + "?");
                     if (r == false) {
                        return;
                     }                         
