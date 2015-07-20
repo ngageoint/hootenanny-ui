@@ -148,6 +148,7 @@ Hoot.tools = function (context, selection) {
 
         var re = new RegExp('/','g');
         var pathname = a.select('.pathname').value()
+        if(pathname=='root'){pathname='';}
         pathname = pathname.replace(re,'|');
         if(pathname !='' && pathname[pathname.length-1]!='|'){pathname += '|';}
         

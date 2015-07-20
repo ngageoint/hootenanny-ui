@@ -429,9 +429,9 @@ Hoot.control.utilities.dataset = function(context) {
                                 }
 
                                 _form.select('.reset.fileImport').value(fileNames.join('; '));
-                                //var first = fileNames[0];
-                                //var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
-                                //_form.select('.reset.LayerName').value(saveName);
+                                var first = fileNames[0];
+                                var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
+                                _form.select('.reset.LayerName').value(saveName);
 
                                 submitExp.classed('hidden', false);
 
@@ -553,6 +553,11 @@ Hoot.control.utilities.dataset = function(context) {
                     .text('Import')
                     .on('click', function () {
                         //check if layer with same name already exists...
+                    	if(_form.select('.reset.LayerName').value()=='' || _form.select('.reset.LayerName').value()==_form.select('.reset.LayerName').attr('placeholder')){
+                    		alert("Please enter an output layer name.");
+                            return;
+                    	}
+                    	
                     	if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f == _form.select('.reset.LayerName').value();})))
                     	{
                             alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.");

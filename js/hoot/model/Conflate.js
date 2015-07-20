@@ -33,7 +33,7 @@ Hoot.model.conflate = function(context)
 
                         context.hoot().model.layers.setAvailLayers(a.layers);
                         var key = {
-                            'name': data.OUTPUT_NAME,
+                            'name': data.OUTPUT_NAME.substring(data.OUTPUT_NAME.lastIndexOf('|')+1), // data.OUTPUT_NAME, <-- updated for conflated layers with path name
                             'color': 'green'
                         };
                         if (callback) {

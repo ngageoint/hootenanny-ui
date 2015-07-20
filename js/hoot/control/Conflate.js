@@ -282,7 +282,12 @@ Hoot.control.conflate = function (sidebar) {
                 d3.event.preventDefault();
                 
               //check if layer with same name already exists...
-            	if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f == conflate.selectAll('.saveAs').value();})))
+            	if(conflate.selectAll('.saveAs').value()==''){
+            		alert("Please enter an output layer name.");
+                    return;
+            	}
+                
+                if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f == conflate.selectAll('.saveAs').value();})))
             	{
                     alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.");
                     return;

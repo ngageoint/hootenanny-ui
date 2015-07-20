@@ -48,10 +48,21 @@ Hoot.model.layers = function (context)
         });
     };
     model_layers.getAvailLayers = function () {
-        return availLayers;
+    	//get path names
+        _.each(availLayers,function(lyr){
+        	if(lyr.name.indexOf('|')==-1){lyr.path='root'}
+        	else{lyr.path = lyr.name.slice(0,lyr.name.lastIndexOf('|'));}
+        });
+    	
+    	return availLayers;
     };
     model_layers.setAvailLayers = function (d) {
-        availLayers = d;
+    	_.each(availLayers,function(lyr){
+        	if(lyr.name.indexOf('|')==-1){lyr.path='root'}
+        	else{lyr.path = lyr.name.slice(0,lyr.name.lastIndexOf('|'));}
+        });
+    	
+    	availLayers = d;
         return availLayers;
     };
     model_layers.getLayers = function (opt) {
