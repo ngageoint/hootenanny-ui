@@ -175,13 +175,23 @@ Hoot.control.utilities.folder = function(context) {
 
 	      if(container.attr('id')=='datasettable'){
 	    	  container.selectAll('rect').on("contextmenu",function(d,i){
-	              if(!isNaN(parseInt(d.id))){
+	              var items = [];
+	    		  if(!isNaN(parseInt(d.id))){
 	            	  //http://jsfiddle.net/1mo3vmja/2/
-	            	  var items = [
+	            	  items = [
 		        	      {title:'Export',icon:'export',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
 		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
 		        	      {title:'Rename',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d,container)}'},
-		        	  ];
+		        	  ]; } else if (d.id != 'Datasets') {
+	        		  items = [
+	 		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
+	 		        	      {title:'Rename',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d,container)}'},
+	 		        	  ];
+		        	  } else {
+		        		  d3.select('.context-menu').style('display', 'none');	              
+			              d3.event.preventDefault();
+			              return;
+		        	  }
 		        	  
 		        	  // create the div element that will hold the context menu
 		              d3.selectAll('.context-menu').data([1])
@@ -207,7 +217,7 @@ Hoot.control.utilities.folder = function(context) {
 		                .style('left', (d3.event.pageX - 2) + 'px')
 		                .style('top', (d3.event.pageY - 2) + 'px')
 		                .style('display', 'block');
-	              } else {d3.select('.context-menu').style('display', 'none');}	              
+	              //} else {d3.select('.context-menu').style('display', 'none');}	              
 	              d3.event.preventDefault();
 	          });
 	      } else {container.selectAll('rect').on("contextmenu",function(d,i){d3.event.preventDefault();})}
