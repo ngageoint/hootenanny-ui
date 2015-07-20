@@ -185,6 +185,12 @@ Hoot.hoot = function (context) {
         }
         return true;
    };
+   
+   hoot.checkForUnallowableWords = function(str){
+	   var unallowable = ['root','dataset','datasets','folder'];
+	   if(unallowable.indexOf(str)>=0){return true;}
+	   return false;
+   }
 
    hoot.isModeBtnEnabled = function()
    {

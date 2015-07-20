@@ -293,6 +293,11 @@ Hoot.control.conflate = function (sidebar) {
                     return;
                 }
                 
+                if(context.hoot().checkForUnallowableWords(conflate.selectAll('.saveAs').value()) == false)
+                {
+                	alert("Please do not name the layer " + conflate.selectAll('.saveAs').value() + ".");
+                    return;
+                }
                 
                 if(hoot.checkForSpecialChar(conflate.selectAll('.saveAs').value()) == false)
                 {
@@ -307,6 +312,12 @@ Hoot.control.conflate = function (sidebar) {
                 		alert("Please do not use special character in path name.");
                         return;
                 	}
+                }
+                
+                if(context.hoot().checkForUnallowableWords(conflate.selectAll('.newfoldername').value()) == false)
+                {
+                	alert("Please do not name the layer " + conflate.selectAll('.newfoldername').value() + ".");
+                    return;
                 }
                 
                 if(hoot.checkForSpecialChar(conflate.selectAll('.newfoldername').value()) == false)

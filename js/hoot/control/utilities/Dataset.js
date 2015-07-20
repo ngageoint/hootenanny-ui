@@ -564,12 +564,18 @@ Hoot.control.utilities.dataset = function(context) {
                             return;
                         }
                     	
-                    	if(context.hoot().checkForSpecialChar(_form.select('.reset.LayerName').value()) == false)
+                    	if(context.hoot().checkForUnallowableWords(_form.select('.reset.LayerName').value()) == false)
                         {
-                            alert("Please do not use special character in layer name.");
+                    		alert("Please do not name the layer " + _form.select('.reset.LayerName').value() + ".");
                             return;
                         }
-                   
+                                       	
+                    	if(context.hoot().checkForSpecialChar(_form.select('.reset.LayerName').value()) == false)
+                        {
+                    		alert("Please do not use special character in layer name.");
+                            return;
+                        }
+                    	
                         if(_form.select('.reset.PathName').value().length > 0)
                         {
                         	var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,{}|\\":<>\?|]/);
@@ -577,6 +583,12 @@ Hoot.control.utilities.dataset = function(context) {
                         		alert("Please do not use special character in path name.");
                                 return;
                         	}
+                        }
+                        
+                    	if(context.hoot().checkForUnallowableWords(_form.select('.reset.NewFolderName').value()) == false)
+                        {
+                    		 alert("Please do not name the layer " + _form.select('.reset.NewFolderName').value() + ".");
+                             return;
                         }
                         
                         if(_form.select('.reset.NewFolderName').value().length > 0)
