@@ -36,7 +36,7 @@ Hoot.control.utilities.dataset = function(context) {
         }, {
             label: 'Output Name',
             type: 'fileExportOutputName',
-            placeholder: dataset.name || 'Output Name',
+            placeholder: dataset.name.substring(dataset.name.lastIndexOf('|')+1) || 'Output Name',
             inputtype:'text'
         }];
         var modalbg = d3.select('body')
@@ -49,7 +49,7 @@ Hoot.control.utilities.dataset = function(context) {
             .append('div')
             .classed('big pad1y keyline-bottom space-bottom2', true)
             .append('h4')
-            .text(dataset.name)
+            .text(dataset.name.substring(dataset.name.lastIndexOf('|')+1) || 'Export Dataset')
             .append('div')
             .classed('fr _icon x point', true)
             .on('click', function () {
@@ -187,6 +187,7 @@ Hoot.control.utilities.dataset = function(context) {
             dirType.title = "Directory (FGDB)";
             importTypes.push(dirType);
 
+            var folderList = hoot.model.layers.getAvailFolders(hoot.model.layers.getAvailLayers()).slice(0);
             
 
             var d_form = [{
@@ -203,6 +204,15 @@ Hoot.control.utilities.dataset = function(context) {
                 label: 'Layer Name',
                 placeholder: 'Save As',
                 type: 'LayerName'
+            }, {
+            	label: 'Path',
+            	placeholder: 'root',
+            	type: 'PathName',
+            	combobox3:folderList 
+            }, {
+            	label: 'Enter Name for New Folder (Leave blank otherwise)',
+            	placeholder:'',
+            	type:'NewFolderName'
             }, {
                 label: 'Translation Schema',
                 placeholder: 'Select Data Translation Schema',
@@ -504,7 +514,31 @@ Hoot.control.utilities.dataset = function(context) {
                                 d3.select('#ingestfileuploaderspancontainer').classed('hidden', false);
 
                             });
+                    }
+                    
+                    if (a.combobox3) {
+                    	var re = new RegExp('--','g');
+                        var comboPathName = d3.combobox()
+                            .data(_.map(a.combobox3, function (n) {
+                                return {
+                                    value: n.id.replace(re,'/'),
+                                    title: n.id.replace(re,'/')
+                                };
+                            }));
 
+                        comboPathName.data().sort(function(a,b){
+                        	var textA = a.title.toUpperCase();
+                        	var textB=b.title.toUpperCase();
+                        	return(textA<textB)?-1 : (textA>textB)?1:0;
+                        });
+                        
+                        comboPathName.data().unshift({value:'root',title:'root'});
+                        
+                        d3.select(this)
+                        	.style('width', '100%')
+                        	.call(comboPathName);
+                        
+                        d3.select(this).attr('readonly',true);                        
                     }
                 });
 
@@ -518,11 +552,37 @@ Hoot.control.utilities.dataset = function(context) {
                 .classed('inline row1 fl col10 pad1y', true)
                     .text('Import')
                     .on('click', function () {
-                        if(context.hoot().checkForSpecialChar(_form.select('.reset.LayerName').value()) == false)
+                        //check if layer with same name already exists...
+                    	if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f == _form.select('.reset.LayerName').value();})))
+                    	{
+                            alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.");
+                            return;
+                        }
+                    	
+                    	if(context.hoot().checkForSpecialChar(_form.select('.reset.LayerName').value()) == false)
                         {
                             alert("Please do not use special character in layer name.");
                             return;
                         }
+                   
+                        if(_form.select('.reset.PathName').value().length > 0)
+                        {
+                        	var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,{}|\\":<>\?|]/);
+                        	if(pattern.test(_form.select('.reset.PathName').value()) == true){
+                        		alert("Please do not use special character in path name.");
+                                return;
+                        	}
+                        }
+                        
+                        if(_form.select('.reset.NewFolderName').value().length > 0)
+                        {
+                        	var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,{}|\\":<>\?|]/);
+                        	if(pattern.test(_form.select('.reset.NewFolderName').value()) == true){
+                        		alert("Please do not use special character in new folder name.");
+                                return;
+                        	}
+                        }
+                                                
                         var importText = submitExp.select('span').text();
                         if(importText == 'Import'){
                             submitExp.select('span').text('Uploading ...');
@@ -592,8 +652,8 @@ Hoot.control.utilities.dataset = function(context) {
 
                                              }
 
-                                             var datasettable = d3.select('#datasettable');
-                                             context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);
+                                             //var datasettable = d3.select('#datasettable');
+                                             //context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);
                                              modalbg.remove();
                                          });
 

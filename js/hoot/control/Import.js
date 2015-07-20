@@ -3,12 +3,10 @@ Hoot.control.import = function (context,selection) {
     var ETL = {};
 
     ETL.createTree = function(a){
-    	console.log('create Tree');
     	hoot.control.utilities.folder.createFolderTree(a);
     }
 
     ETL.renderTree = function(a) {
-        console.log('render tree');
         if(a.tree){
     		ETL.createTree(d3.select(this));
     	}
@@ -33,7 +31,12 @@ Hoot.control.import = function (context,selection) {
             label: 'Layers',
             type: 'fileImport',
             placeholder: 'Select Layer From Database',
-            tree: context.hoot().model.layers.getAvailLayersWithFolders()
+            combobox: _.map(context.hoot().model.layers
+                .getAvailLayers(), function (n) {
+                    return n.name;
+                }),
+            tree: context.hoot().model.layers
+            		.getAvailLayersWithFolders()
         }];
 
         var sels = selection.selectAll('forms');
@@ -73,7 +76,7 @@ Hoot.control.import = function (context,selection) {
             .append('div')
             .style({'height':'150px','margin':'0 0 15px'})
             .select(ETL.renderTree);
-
+        
         fieldset
             .append('div')
             .classed('keyline-all form-field palette clearfix round', true)

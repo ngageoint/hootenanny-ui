@@ -179,7 +179,7 @@ Hoot.control.utilities.folder = function(context) {
 	    		  if(!isNaN(parseInt(d.id))){
 	            	  //http://jsfiddle.net/1mo3vmja/2/
 	            	  items = [
-		        	      {title:'Export',icon:'export',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
+		        	      {title:'Export',icon:'export',click:'context.hoot().view.utilities.dataset.exportDataset(d,container)'},
 		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
 		        	      {title:'Rename',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d,container)}'},
 		        	  ]; } else if (d.id != 'Datasets') {

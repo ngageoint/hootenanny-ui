@@ -131,7 +131,10 @@ Hoot.view.utilities.dataset = function(context)
     
 
     hoot_view_utilities_dataset.populateDatasetsSVG = function(container) {
-    	context.hoot().control.utilities.folder.createFolderTree(container);
+    	var _svg = container.select('svg');
+		if(!_svg.empty()){_svg.remove();
+		}
+		context.hoot().control.utilities.folder.createFolderTree(container);
     }
     
     return hoot_view_utilities_dataset;

@@ -7,7 +7,7 @@ Hoot.model.import = function (context)
 
     import_layer.updateTrees = function()
     {
-    	/*//This function updates the SVG folder/dataset collapsable tree
+    	//This function updates the SVG folder/dataset collapsable tree
     	_.each(d3.select("#sidebar2").node().childNodes,function(f){
     		if(f.classList.contains('hootImport')){
     			var _svg = d3.select(f).select('svg');
@@ -17,7 +17,10 @@ Hoot.model.import = function (context)
     				hoot.control.utilities.folder.createFolderTree(d3.select(container));
     			}
     		}
-    	});*/
+    	});
+    	
+    	var datasettable = d3.select('#datasettable');
+        context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);
     }
     
     import_layer.importData = function (container, callback) {
@@ -71,12 +74,23 @@ Hoot.model.import = function (context)
             }
 
         }
+        
+        //create proper path name, replacing any '/' with '|'
+        var re = new RegExp('/','g')
+        var pathname = container.select('.reset.PathName').value();
+        pathname = pathname.replace(re,'|');
+        if(pathname !='' && pathname[pathname.length-1]!='|'){pathname += '|';}
 
-
+        //determine if a new folder is being added
+        var newfoldername = container.select('.reset.NewFolderName').value();
+        newfoldername = newfoldername.replace(re,'|');
+        if(newfoldername !='' && newfoldername[newfoldername.length-1]!='|'){newfoldername += '|';}
+        if(newfoldername!=''){pathname += newfoldername;}
+        
         var data = {};
         data.INPUT_TYPE = typeName;
         data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';
-        data.INPUT_NAME = container.select('.reset.LayerName').value();
+        data.INPUT_NAME = pathname.concat(container.select('.reset.LayerName').value());//container.select('.reset.LayerName').value();
         data.formData = import_layer.getFormData(/*document.getElementById('ingestfileuploader').files*/);
 
         Hoot.model.REST('Upload', data, _importResultHandler);
@@ -171,12 +185,9 @@ Hoot.model.import = function (context)
 
     var _uploadHandler = function (uploadJobStat) 
     {
- 
-        //import_layer.updateCombo();
-        //var spin = d3.select('#importspin');
-        //spin.remove();
-        var datasettable = d3.select('#datasettable');
-        context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);
+    	context.hoot().model.import.updateTrees();
+        /*var datasettable = d3.select('#datasettable');
+        context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);*/
         if(importCallback){
             var status = {};
             status.info = uploadJobStat.status;

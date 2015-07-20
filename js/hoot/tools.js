@@ -135,6 +135,10 @@ Hoot.tools = function (context, selection) {
         if(refLayerName == data.INPUT2){
             refLayer = '2';
         }
+        
+        var cl = context.hoot().model.layers.getAvailLayers().slice(0);
+        data.INPUT1 = _.findWhere(cl,{id:context.hoot().model.layers.getmapIdByName(data.INPUT1)}).name;
+        data.INPUT2 = _.findWhere(cl,{id:context.hoot().model.layers.getmapIdByName(data.INPUT2)}).name
 
         var _confType = {
             'Reference':'Reference',
@@ -142,7 +146,19 @@ Hoot.tools = function (context, selection) {
             'Cookie Cutter & Horizontal':'Horizontal'
           };
 
-        data.OUTPUT_NAME = a.select('.saveAs').value();
+        var re = new RegExp('/','g');
+        var pathname = a.select('.pathname').value()
+        pathname = pathname.replace(re,'|');
+        if(pathname !='' && pathname[pathname.length-1]!='|'){pathname += '|';}
+        
+        var newfoldername = a.select('.newfoldername').value();
+        newfoldername = newfoldername.replace(re,'|');
+        if(newfoldername !='' && newfoldername[newfoldername.length-1]!='|'){newfoldername += '|';}
+        if(newfoldername!=''){pathname += newfoldername;}
+        
+        var outputname = pathname.concat(a.select('.saveAs').value());
+        
+        data.OUTPUT_NAME = outputname || a.select('.saveAs').value();
         data.CONFLATION_TYPE = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
         //data.CONFLATION_TYPE = a.select('.ConfType').value();
         //data.MATCH_THRESHOLD = a.select('.matchThreshold').value();

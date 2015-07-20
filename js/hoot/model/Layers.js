@@ -9,7 +9,8 @@ Hoot.model.layers = function (context)
     model_layers.layers = layers;
     model_layers.getmapIdByName = function (name) {
         var ar = _.filter(model_layers.getAvailLayers(), function (a) {
-            return a.name === name;
+        	return a.name.substring(a.name.lastIndexOf('|')+1) === name.substring(name.lastIndexOf('|')+1);
+        	//return a.name === name;
         });
         if(!ar.length){return null;}
         return ar[0].id;
@@ -297,30 +298,7 @@ Hoot.model.layers = function (context)
 
     model_layers.RefreshLayers = function ()
     {
-
-        model_layers.refresh(/*function () {
-           var combo = d3.combobox().data(_.map(model_layers.getAvailLayers(), function (n) {
-                return {
-                    value: n.name,
-                    title: n.name
-                };
-            }));
-            var controls = d3.selectAll('.reset.fileImport');
-            var cntrl;
-
-            for (var j = 0; j < controls.length; j++) {
-                cntrl = controls[j];
-                // for each of subitems
-                for(k=0; k<cntrl.length; k++){
-                    d3.select(cntrl[k]).style('width', '100%')
-                    .call(combo);
-                }
-
-            }
-
-        }*/
-        	//context.hoot().model.import.updateCombo);
-        	context.hoot().model.import.updateTrees);
+        model_layers.refresh(context.hoot().model.import.updateTrees);
     };
 
 
