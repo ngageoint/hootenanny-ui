@@ -3,10 +3,6 @@ Hoot.control.view = function (container, context) {
     var View = {};
     View.render = function (options) {
 
-        options.isDeleteEnabled = true;
-        if(options.merged){
-            options.isDeleteEnabled = !options.merged;
-        }
         var sidebar = container
             .selectAll('forms')
             .data([options])
@@ -56,32 +52,34 @@ Hoot.control.view = function (container, context) {
                 .on('click', function (a) {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
-                    if(options.isDeleteEnabled){
-
-                        var primaryLayerName = '';
-                        var sels = d3.select(form.node().parentNode).selectAll('form')[0];
-                        if(sels && sels.length > 0){
-                            primaryLayerName = d3.select(sels[0]).datum().name;
-                        }
-
-                        var r = confirm("Are you sure you want to remove layer:" + a.name  + "?");
-                        if (r == false) {
-                           return;
-                        }                         
-                        var isPrimary = false;
-                        if(a.name == primaryLayerName){
-                            isPrimary = true;
-                        }
-
-
-                        form.remove();
-                        event.layerRemove(a.name, isPrimary);
-                        // this removes the tags field
-                        d3.select('.hootTags').remove();
-                        context.updateMode();
-                    } else {
-                        alert("Can not delete merged layer with conflicts. Please resolve all conflicts!")
+                   
+                    var primaryLayerName = '';
+                    var sels = d3.select(form.node().parentNode).selectAll('form')[0];
+                    if(sels && sels.length > 0){
+                        primaryLayerName = d3.select(sels[0]).datum().name;
                     }
+
+                    var r = confirm("Are you sure you want to remove layer:" + a.name  + "?");
+                    if (r == false) {
+                       return;
+                    }                         
+                    var isPrimary = false;
+                    if(a.name == primaryLayerName){
+                        isPrimary = true;
+                    }
+
+
+                    form.remove();
+                    event.layerRemove(a.name, isPrimary);
+                    // this removes the tags field
+                    d3.select('.hootTags').remove();
+
+                    // we need tagTable removed when UI is review mode and was displaying tag table
+                    var tagTable = d3.select('div.tag-table');
+                    if(tagTable) {
+                        tagTable.remove();
+                    }
+                    context.updateMode();
 
                 });
         });
