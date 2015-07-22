@@ -564,42 +564,24 @@ Hoot.control.utilities.dataset = function(context) {
                             return;
                         }
                     	
-                    	if(context.hoot().checkForUnallowableWords(_form.select('.reset.LayerName').value()) == false)
-                        {
-                    		alert("Please do not name the layer " + _form.select('.reset.LayerName').value() + ".");
-                            return;
-                        }
-                                       	
-                    	if(context.hoot().checkForSpecialChar(_form.select('.reset.LayerName').value()) == false)
-                        {
-                    		alert("Please do not use special character in layer name.");
-                            return;
+                    	var resp = context.hoot().checkForUnallowedChar(_form.select('.reset.LayerName').value());
+                    	if(resp != true){
+                    		alert(resp);
+                    		return;
                         }
                     	
-                        if(_form.select('.reset.PathName').value().length > 0)
-                        {
-                        	var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,{}|\\":<>\?|]/);
-                        	if(pattern.test(_form.select('.reset.PathName').value()) == true){
-                        		alert("Please do not use special character in path name.");
-                                return;
-                        	}
+                    	resp = context.hoot().checkForUnallowedChar(_form.select('.reset.PathName').value());
+                    	if(resp != true){
+                    		alert(resp);
+                    		return;
                         }
-                        
-                    	if(context.hoot().checkForUnallowableWords(_form.select('.reset.NewFolderName').value()) == false)
-                        {
-                    		 alert("Please do not name the new folder " + _form.select('.reset.NewFolderName').value() + ".");
-                             return;
+                    	
+                    	resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
+                    	if(resp != true){
+                    		alert(resp);
+                    		return;
                         }
-                        
-                        if(_form.select('.reset.NewFolderName').value().length > 0)
-                        {
-                        	var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,{}|\\":<>\?|]/);
-                        	if(pattern.test(_form.select('.reset.NewFolderName').value()) == true){
-                        		alert("Please do not use special character in new folder name.");
-                                return;
-                        	}
-                        }
-                                                
+                    	                                                
                         var importText = submitExp.select('span').text();
                         if(importText == 'Import'){
                             submitExp.select('span').text('Uploading ...');

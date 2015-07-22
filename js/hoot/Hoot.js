@@ -191,6 +191,16 @@ Hoot.hoot = function (context) {
 	   if(unallowable.indexOf(str.toLowerCase())>=0){return false;}
 	   return true;
    }
+   
+   hoot.checkForUnallowedChar = function(str){
+	   if(!hoot.checkForSpecialChar(str)){
+		   return "Please do not use special characters: " + str + ".";
+	   }
+	   if(!hoot.checkForUnallowableWords(str)){
+		   return "Please do not use any unallowable terms: " + str + ".";
+	   }
+	   return true;
+   }
 
    hoot.isModeBtnEnabled = function()
    {

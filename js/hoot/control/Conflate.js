@@ -293,38 +293,23 @@ Hoot.control.conflate = function (sidebar) {
                     return;
                 }
                 
-                if(context.hoot().checkForUnallowableWords(conflate.selectAll('.saveAs').value()) == false)
-                {
-                	alert("Please do not name the layer " + conflate.selectAll('.saveAs').value() + ".");
-                    return;
+            	var resp = context.hoot().checkForUnallowedChar(conflate.selectAll('.saveAs').value());
+            	if(resp != true){
+            		alert(resp);
+            		return;
                 }
-                
-                if(hoot.checkForSpecialChar(conflate.selectAll('.saveAs').value()) == false)
-                {
-                    alert("Please do not use special character in layer name.");
-                    return;
+            	
+            	resp = context.hoot().checkForUnallowedChar(conflate.selectAll('.pathname').value());
+            	if(resp != true){
+            		alert(resp);
+            		return;
                 }
-
-                if(conflate.selectAll('.pathname').value().length > 0)
-                {
-                	var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,{}|\\":<>\?|]/);
-                	if(pattern.test(conflate.selectAll('.pathname').value()) == true){
-                		alert("Please do not use special character in path name.");
-                        return;
-                	}
-                }
-                
-                if(context.hoot().checkForUnallowableWords(conflate.selectAll('.newfoldername').value()) == false)
-                {
-                	alert("Please do not name the new folder " + conflate.selectAll('.newfoldername').value() + ".");
-                    return;
-                }
-                
-                if(hoot.checkForSpecialChar(conflate.selectAll('.newfoldername').value()) == false)
-                {
-                    alert("Please do not use special character in folder name.");
-                    return;
-                }
+            	
+            	resp = context.hoot().checkForUnallowedChar(conflate.selectAll('.newfoldername').value());
+            	if(resp != true){
+            		alert(resp);
+            		return;
+                }                
                 
                 var thisConfType = d3.selectAll('.reset.ConfType');
                 var selVal = thisConfType.value();
