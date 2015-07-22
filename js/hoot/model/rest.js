@@ -43,7 +43,24 @@ Hoot.model.REST = function (command, data, callback, option) {
             });
     };
 
-
+    rest.Modify = function (data, callback) {
+        if (!data.inputType || !data.mapid || !data.modifiedName) {
+            callback(false);
+            return false;
+        }
+        /*callback(true);
+        return true;*/
+        d3.json('/hoot-services/osm/api/0.6/map/modify?mapId=' + data.mapid + 
+        		'&inputType=' +  data.inputType + '&modName=' + data.modifiedName)
+        .post(data, function (error, data) {
+            if (error){
+                alert("Modify name failed! For detailed log goto Manage->Log");
+                return error;
+            }
+            callback(data);
+            return data;
+        });
+    };
 
 
     rest.basemapUpload = function (data, callback) {

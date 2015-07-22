@@ -150,6 +150,144 @@ Hoot.control.utilities.dataset = function(context) {
 
         return modalbg;
 	};
+	
+	 hoot_control_utilities_dataset.modifyNameContainer = function(dataset) {
+		 var folderList = hoot.model.layers.getAvailFolders(hoot.model.layers.getAvailLayers()).slice(0);   
+		 
+		 var d_form = [{
+	            label: 'Output Name',
+	            type: 'fileOutputName',
+	            placeholder: dataset.name.substring(dataset.name.lastIndexOf('|')+1),
+	            inputtype:'text'
+	        },{
+            	label: 'Path',
+            	type: 'pathname',
+            	placeholder:'',
+            	combobox:folderList
+            },
+            {
+            	label: 'New Folder Name (leave blank otherwise)',
+            	type: 'newfoldername',
+            	placeholder:''
+            }];
+	        var modalbg = d3.select('body')
+	            .append('div')
+	            .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+	        var ingestDiv = modalbg.append('div')
+	            .classed('contain col4 pad1 fill-white round modal', true);
+	        var _form = ingestDiv.append('form');
+	        _form.classed('round space-bottom1 importableLayer', true)
+	            .append('div')
+	            .classed('big pad1y keyline-bottom space-bottom2', true)
+	            .append('h4')
+	            .text('Rename ' + dataset.type.charAt(0).toUpperCase() + dataset.type.slice(1).toLowerCase())
+	            .append('div')
+	            .classed('fr _icon x point', true)
+	            .on('click', function () {
+	                modalbg.remove();
+	            });
+	        var fieldset = _form.append('fieldset')
+	            .selectAll('.form-field')
+	            .data(d_form)
+	            ;
+	        fieldset.enter()
+	            .append('div')
+	            .classed('form-field fill-white small keyline-all round space-bottom1', true)
+	            .html(function (d) {
+	                	return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + d.label; // + '</label><input type="text" class="reset ' + field.type + '" />';
+	                });
+	        fieldset.append('div')
+	            .classed('contain', true)
+	            .append('input')
+	            .attr('type', 'text')
+	            .attr('placeholder', function (field) {return field.placeholder;})
+	            .attr('class', function (field) {return 'reset ' + field.type;})
+	            .select(function(a){
+	                if (a.combobox){
+	                	var re = new RegExp('--','g');
+	                    var comboPathName = d3.combobox()
+	                        .data(_.map(a.combobox, function (n) {
+	                            return {
+	                                value: n.id.replace(re,'/'),
+	                                title: n.id.replace(re,'/')
+	                            };
+	                        }));
+
+	                    comboPathName.data().sort(function(a,b){
+	                    	var textA = a.title.toUpperCase();
+	                    	var textB=b.title.toUpperCase();
+	                    	return(textA<textB)?-1 : (textA>textB)?1:0;
+	                    });
+	                    
+	                    comboPathName.data().unshift({value:'root',title:'root'});
+	                    
+	                    d3.select(this)
+	                    	.style('width', '100%')
+	                    	.call(comboPathName);
+	                    
+	                    d3.select(this).attr('readonly',true); 
+	                    d3.select(this).attr('placeholder',dataset.path.split('|').join('/'));
+	                    d3.select(this).value(dataset.path.split('|').join('/'));
+	                }
+	            });
+
+	        var submitExp = ingestDiv.append('div')
+	        .classed('form-field col12 center ', true);
+	         submitExp.append('span')
+	        .classed('round strong big loud dark center col10 margin1 point', true)
+	        .classed('inline row1 fl col10 pad1y', true)
+	            .text('Update Name')
+	            .on('click', function () {
+
+	            	var re = new RegExp('/','g');
+	                var pathname = _form.select('.pathname').value()
+	                if(pathname==''){pathname=_form.select('.pathname').attr('placeholder');}
+	                if(pathname=='root'){pathname='';}
+	                pathname = pathname.replace(re,'|');
+	                if(pathname !='' && pathname[pathname.length-1]!='|'){pathname += '|';}
+	                
+	                var newfoldername = _form.select('.newfoldername').value();
+	                newfoldername = newfoldername.replace(re,'|');
+	                if(newfoldername !=''){
+		                var resp = context.hoot().checkForUnallowedChar(newfoldername);
+	                	if(resp != true){
+	                		alert(resp);
+	                		return;
+	                    }
+	                }
+	                if(newfoldername!=''){
+	                	if(newfoldername[newfoldername.length-1]!='|'){newfoldername += '|';}
+	                	pathname += newfoldername;
+	                }
+	                
+	                var outputname =_form.select('.fileOutputName').value();
+	                if(outputname==''){outputname=_form.select('.fileOutputName').attr('placeholder');}
+	                var resp = context.hoot().checkForUnallowedChar(outputname);
+                	if(resp != true){
+                		alert(resp);
+                		return;
+                    }
+                	
+                	var modName = pathname.concat(outputname);
+	                
+	                var spin = submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true);
+	                
+	                // Check to make sure that the layer name is kosher
+                	
+	                
+	                context.hoot().model.layers.updateLayerName(modName, dataset, function(status){
+	                    if(status != true){
+	                        alert('Export has failed or partially failed. For detail please see Manage->Log.');
+	                        modalbg.remove();
+	                    } else {
+	                        modalbg.remove();
+	                        context.hoot().model.layers.RefreshLayers();
+	                    }
+	                });
+	            });
+
+	        return modalbg;
+		};
 
 
     hoot_control_utilities_dataset.importDataContainer = function (trans) {
@@ -565,12 +703,6 @@ Hoot.control.utilities.dataset = function(context) {
                         }
                     	
                     	var resp = context.hoot().checkForUnallowedChar(_form.select('.reset.LayerName').value());
-                    	if(resp != true){
-                    		alert(resp);
-                    		return;
-                        }
-                    	
-                    	resp = context.hoot().checkForUnallowedChar(_form.select('.reset.PathName').value());
                     	if(resp != true){
                     		alert(resp);
                     		return;

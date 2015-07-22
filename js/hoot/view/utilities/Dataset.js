@@ -45,8 +45,11 @@ Hoot.view.utilities.dataset = function(context)
       
         var datasets2remove = [];
         if(d.type=='folder'){
+        	var re = new RegExp('--','g');
+        	var folderId = d.id.replace(re,'|');
+        	
         	datasets2remove = _.filter(hoot.model.layers.getAvailLayers(),function(f){
-        		return f.path.indexOf(d.id)>=0;
+        		return f.path.indexOf(folderId)>=0;
         	});
         } else {
         	var availLayers = context.hoot().model.layers.getAvailLayers();
@@ -125,8 +128,15 @@ Hoot.view.utilities.dataset = function(context)
         });
     }
     
-    hoot_view_utilities_dataset.modifyDataset = function() {
+    hoot_view_utilities_dataset.modifyDataset = function(d) {
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
     	
+    	var data = {};
+    	data.inputType=d.type;
+    	data.mapid=d.id;
+    	
+    	modifyName = context.hoot().control.utilities.dataset.modifyNameContainer(d);
     }
     
 

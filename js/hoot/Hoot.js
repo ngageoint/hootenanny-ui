@@ -190,7 +190,7 @@ Hoot.hoot = function (context) {
 	   var unallowable = ['root','dataset','datasets','folder'];
 	   if(unallowable.indexOf(str.toLowerCase())>=0){return false;}
 	   return true;
-   }
+   };
    
    hoot.checkForUnallowedChar = function(str){
 	   if(!hoot.checkForSpecialChar(str)){
@@ -200,7 +200,7 @@ Hoot.hoot = function (context) {
 		   return "Please do not use any unallowable terms: " + str + ".";
 	   }
 	   return true;
-   }
+   };
 
    hoot.isModeBtnEnabled = function()
    {

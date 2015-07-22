@@ -293,19 +293,13 @@ Hoot.control.conflate = function (sidebar) {
                     return;
                 }
                 
-            	var resp = context.hoot().checkForUnallowedChar(conflate.selectAll('.saveAs').value());
+            	var resp = hoot.checkForUnallowedChar(conflate.selectAll('.saveAs').value());
             	if(resp != true){
             		alert(resp);
             		return;
                 }
-            	
-            	resp = context.hoot().checkForUnallowedChar(conflate.selectAll('.pathname').value());
-            	if(resp != true){
-            		alert(resp);
-            		return;
-                }
-            	
-            	resp = context.hoot().checkForUnallowedChar(conflate.selectAll('.newfoldername').value());
+            	            	
+            	resp = hoot.checkForUnallowedChar(conflate.selectAll('.newfoldername').value());
             	if(resp != true){
             		alert(resp);
             		return;

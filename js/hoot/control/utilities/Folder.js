@@ -181,11 +181,11 @@ Hoot.control.utilities.folder = function(context) {
 	            	  items = [
 		        	      {title:'Export',icon:'export',click:'context.hoot().view.utilities.dataset.exportDataset(d,container)'},
 		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
-		        	      {title:'Rename',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d,container)}'},
+		        	      {title:'Modify',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
 		        	  ]; } else if (d.id != 'Datasets') {
 	        		  items = [
 	 		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
-	 		        	      {title:'Rename',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d,container)}'},
+	 		        	      {title:'Modify',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
 	 		        	  ];
 		        	  } else {
 		        		  d3.select('.context-menu').style('display', 'none');	              

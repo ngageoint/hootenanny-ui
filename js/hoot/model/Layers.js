@@ -385,5 +385,20 @@ Hoot.model.layers = function (context)
     	return model_layers.unflattenFolders(folders);
     };
     
+    model_layers.updateLayerName = function(modName,d,callback){
+    	var data = {};
+    	data.inputType = d.type;
+    	data.mapid=d.id;
+    	data.modifiedName=modName;
+    	
+    	Hoot.model.REST('Modify',data,function(resp){
+    		if(resp.success == true){
+    			if(callback){callback(resp.success);}
+    		}
+    		//return resp.success;
+    	});
+    	//return true;
+    }
+    
     return model_layers;
 }
