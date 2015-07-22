@@ -188,8 +188,8 @@ Hoot.hoot = function (context) {
    
    hoot.checkForUnallowableWords = function(str){
 	   var unallowable = ['root','dataset','datasets','folder'];
-	   if(unallowable.indexOf(str)>=0){return true;}
-	   return false;
+	   if(unallowable.indexOf(str.toLowerCase())>=0){return false;}
+	   return true;
    }
 
    hoot.isModeBtnEnabled = function()

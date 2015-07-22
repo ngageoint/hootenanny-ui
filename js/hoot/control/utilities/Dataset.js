@@ -587,7 +587,7 @@ Hoot.control.utilities.dataset = function(context) {
                         
                     	if(context.hoot().checkForUnallowableWords(_form.select('.reset.NewFolderName').value()) == false)
                         {
-                    		 alert("Please do not name the layer " + _form.select('.reset.NewFolderName').value() + ".");
+                    		 alert("Please do not name the new folder " + _form.select('.reset.NewFolderName').value() + ".");
                              return;
                         }
                         

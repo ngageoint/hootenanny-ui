@@ -316,7 +316,7 @@ Hoot.control.conflate = function (sidebar) {
                 
                 if(context.hoot().checkForUnallowableWords(conflate.selectAll('.newfoldername').value()) == false)
                 {
-                	alert("Please do not name the layer " + conflate.selectAll('.newfoldername').value() + ".");
+                	alert("Please do not name the new folder " + conflate.selectAll('.newfoldername').value() + ".");
                     return;
                 }
                 
