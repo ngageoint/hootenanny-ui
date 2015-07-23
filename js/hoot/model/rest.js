@@ -91,6 +91,15 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
+    rest.getAvailFolders = function (callback) {
+        var request = d3.json('/hoot-services/osm/api/0.6/map/folders');
+        request.get(function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get available folders failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    };
 
     rest.enableBaseMap = function (data, callback) {
         var request = d3.json('/hoot-services/ingest/basemap/enable?NAME=' + data.name + "&ENABLE=true");

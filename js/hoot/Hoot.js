@@ -32,10 +32,15 @@ Hoot.hoot = function (context) {
             hoot.demo = true;
             Hoot.demo(context);
         }
-        hoot.model.layers.refresh(function () {
-            if (callback) {
-                callback();
-            }
+        hoot.model.folders.refresh(function () {
+        	hoot.model.layers.refresh(function(){
+        		if (callback) {
+        			callback();
+        		}
+        	});
+        	/*if (callback) {
+        		callback();
+            }*/
         });
         Hoot.model.REST('GetTranslationServerStatus', function(){});
         

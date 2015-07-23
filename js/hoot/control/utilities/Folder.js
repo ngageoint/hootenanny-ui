@@ -5,8 +5,8 @@ Hoot.control.utilities.folder = function(context) {
     hoot_control_utilities_folder.createFolderTree = function(container) {
     	// http://bl.ocks.org/mbostock/1093025 - Collapsible Indented Tree
     	    	
-    	var folders = context.hoot().model.layers
-		.getAvailLayersWithFolders();
+    	//var folders = context.hoot().model.layers.getAvailLayersWithFolders();
+    	var folders = context.hoot().model.folders.getAvailFoldersWithLayers();
     	folders= JSON.parse('{"name":"Datasets","id":"Datasets","children":' + JSON.stringify(folders) +'}');
 	
     	var margin = {top: 10, right: 20, bottom: 30, left: 0},
@@ -81,7 +81,10 @@ Hoot.control.utilities.folder = function(context) {
 	
 	      // Update the nodes…
 	      var node = svg.selectAll("g.node")
-	          .data(nodes, function(d) { return d.id || (d.id = ++i); });
+	          .data(nodes, function(d) {
+	        	  if(d.type){return d.type.charAt(0) + d.id || d.id || (d.id = ++i);}
+	        	  else{return d.id || (d.id = ++i);}
+	        	  });
 	
 	      var nodeEnter = node.enter().append("g")
 	          .attr("class", "node")
@@ -103,8 +106,16 @@ Hoot.control.utilities.folder = function(context) {
 	          .attr("dx", function(d){
 	        	  if(d.type){return  25.5+(11*d.depth);}
 	        	  else{return 11*d.depth;}})	//5.5
-	          .attr('lyr-id',function(d){return d.id;})
-	          .text(function(d) { return d.name.substring(d.name.lastIndexOf('|')+1); });
+	          .text(function(d) { return d.name.substring(d.name.lastIndexOf('|')+1); })
+	          .each(function(d){
+	        	  var rectNode = d3.select(this);
+	        	  if(d.type=='dataset'){
+	        		  rectNode.attr('lyr-id',function(d){return d.id;})
+	        	 } else if (d.type=='folder'){
+	        		 rectNode.attr('fldr-id',function(d){return d.id;})
+	        	 }
+	          });
+	          //.attr('lyr-id',function(d){return d.id;})
             
 	      nodeEnter.append("g")
 	      	  .append('svg:foreignObject')
