@@ -359,7 +359,9 @@ Hoot.tools = function (context, selection) {
 
             var data = preConflation(a, layerName, advOptions);
             var type = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
-            var conflationExecType = (type === 'Horizontal') ? 'CookieCutterConflate' : 'Conflate';
+            //var conflationExecType = (type === 'Horizontal') ? 'CookieCutterConflate' : 'Conflate';
+            //Bug #6397
+            var conflationExecType = 'Conflate';
             if(data.AUTO_TUNNING == 'true'){
                 var data1 = {};
                 data1.INPUT = data.INPUT1;
