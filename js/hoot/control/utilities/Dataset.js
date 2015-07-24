@@ -36,7 +36,7 @@ Hoot.control.utilities.dataset = function(context) {
         }, {
             label: 'Output Name',
             type: 'fileExportOutputName',
-            placeholder: dataset.name.substring(dataset.name.lastIndexOf('|')+1) || 'Output Name',
+            placeholder: dataset.name || 'Output Name',
             inputtype:'text'
         }];
         var modalbg = d3.select('body')
@@ -49,7 +49,7 @@ Hoot.control.utilities.dataset = function(context) {
             .append('div')
             .classed('big pad1y keyline-bottom space-bottom2', true)
             .append('h4')
-            .text(dataset.name.substring(dataset.name.lastIndexOf('|')+1) || 'Export Dataset')
+            .text(dataset.name || 'Export Dataset')
             .append('div')
             .classed('fr _icon x point', true)
             .on('click', function () {
@@ -226,8 +226,8 @@ Hoot.control.utilities.dataset = function(context) {
 	                    	.call(comboPathName);
 	                    
 	                    d3.select(this).attr('readonly',true); 
-	                    d3.select(this).attr('placeholder',dataset.path.split('|').join('/'));
-	                    d3.select(this).value(dataset.path.split('|').join('/'));
+	                    //d3.select(this).attr('placeholder',dataset.path.split('|').join('/'));
+	                    //d3.select(this).value(dataset.path.split('|').join('/'));
 	                }
 	            });
 
@@ -741,6 +741,16 @@ Hoot.control.utilities.dataset = function(context) {
                                     jobIds = status.jobids;
                                     mapIds = status.mapids;
                                     submitExp.select('span').text('Cancel');
+                                    //create new folder if necessary
+                                    
+                                    //update map linking
+                                    var link = {};
+                                    link.folderid = 1;
+                                    link.mapName = _form.select('.reset.LayerName').value();
+                                    link.newRecord=true;
+                                    Hoot.model.REST('updateMapFolderLink',link,function(a){
+                                    	console.log(a);
+                                    });
                                 } else if(status.info == 'failed'){
                                     alert('Import has failed or partially failed. For detail please see Manage->Log.');
                                     modalbg.remove();

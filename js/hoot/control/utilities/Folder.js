@@ -106,7 +106,7 @@ Hoot.control.utilities.folder = function(context) {
 	          .attr("dx", function(d){
 	        	  if(d.type){return  25.5+(11*d.depth);}
 	        	  else{return 11*d.depth;}})	//5.5
-	          .text(function(d) { return d.name.substring(d.name.lastIndexOf('|')+1); })
+	          .text(function(d) { return d.name; })
 	          .each(function(d){
 	        	  var rectNode = d3.select(this);
 	        	  if(d.type=='dataset'){

@@ -3,6 +3,7 @@ Hoot.model.folders = function (context)
 	var model_folders = {};
 	var folders = {};
 	var availFolders = [];
+	var availLinks = [];
 
     model_folders.folders = folders;
     model_folders.getfolderIdByName = function (name) {
@@ -41,7 +42,31 @@ Hoot.model.folders = function (context)
             }
         });
     };
+    
+    model_folders.refreshLinks = function(callback) {
+    	Hoot.model.REST('getAvailLinks', function (a) {
+
+            if(a.status == 'failed'){
+                if(a.error){
+                    context.hoot().view.utilities.errorlog.reportUIError(a.error);
+                }
+            }
+
+            if (!a.links) {
+                return callback([]);
+            }
+            availLinks = a.links;
+            
+            if (callback) {
+                callback(availLinks);
+            }
+        });
+    }
         
+    model_folders.getAvailLinks = function() {
+    	return availLinks;
+    }
+    
     model_folders.getAvailFolders = function () {   	
     	return availFolders;
     };
@@ -88,9 +113,15 @@ Hoot.model.folders = function (context)
     };
 
     model_folders.getAvailFoldersWithLayers = function(){
+    	var links = model_folders.getAvailLinks();
+
     	var layerList = _.each(_.map(context.hoot().model.layers.getAvailLayers(), _.clone) , function(element, index) {
     		_.extend(element, {type:'dataset'});
-    	});  
+    		var match = _.find(this,function(e){return e.mapId===element.id});
+    		if(match){_.extend(element,{folderId:match.folderId});}
+    		else{_.extend(element,{folderId:0});}
+    	},links);  
+    	
     	var folderList = _.map(model_folders.getAvailFolders(), _.clone); 
     	var flatFolders = [];
     	

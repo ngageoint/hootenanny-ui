@@ -51,10 +51,54 @@ Hoot.model.REST = function (command, data, callback, option) {
         /*callback(true);
         return true;*/
         d3.json('/hoot-services/osm/api/0.6/map/modify?mapId=' + data.mapid + 
-        		'&inputType=' +  data.inputType + '&modName=' + data.modifiedName)
+        		'&inputType=' + data.inputType + '&modName=' + data.modifiedName)
         .post(data, function (error, data) {
             if (error){
                 alert("Modify name failed! For detailed log goto Manage->Log");
+                return error;
+            }
+            callback(data);
+            return data;
+        });
+    };
+    
+    rest.updateMapFolderLinks = function(data,callback){
+        if (!data.folderid || !data.mapid || !data.newRecord) {
+            callback(false);
+            return false;
+        }
+        /*callback(true);
+        return true;*/
+        d3.json('/hoot-services/osm/api/0.6/map/linkMapFolder?mapId=' + data.mapid + 
+        		'&folderId=' + data.folderid + '&newRecord=' + data.newRecord)
+        .post(data, function (error, data) {
+            if (error){
+                alert("Modify name failed! For detailed log goto Manage->Log");
+                return error;
+            }
+            callback(data);
+            return data;
+        });
+    }
+    
+    rest.addFolder = function (data, callback) {
+        /*if (!data.folderName || !data.parentId) {
+            callback(false);
+            return false;
+        }*/
+        /*callback(true);
+        return true;*/
+        
+    	//testing only
+    	var data = {};
+    	data.folderName = 'testing';
+    	data.parentId = 1;
+    	
+    	d3.json('/hoot-services/osm/api/0.6/map/addfolder?folderName=' + data.folderName + 
+        		'&parentId=' + data.parentId)
+        .post(data, function (error, data) {
+            if (error){
+                alert("Add folder failed! For detailed log goto Manage->Log");
                 return error;
             }
             callback(data);
@@ -81,6 +125,16 @@ Hoot.model.REST = function (command, data, callback, option) {
             });
     };
 
+    rest.getAvailLinks = function (callback) {
+        var request = d3.json('/hoot-services/osm/api/0.6/map/links');
+        request.get(function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get available layers failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    };
+    
     rest.getAvailLayers = function (callback) {
         var request = d3.json('/hoot-services/osm/api/0.6/map/layers');
         request.get(function (error, resp) {

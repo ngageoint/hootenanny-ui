@@ -4,23 +4,37 @@ Hoot.view.utilities.dataset = function(context)
     
     hoot_view_utilities_dataset.createContent = function(form){
 
-        fieldset = form.append('div')
-            .classed('pad1y pad2x keyline-bottom col12', true)
-            .append('a')
+    	fieldDiv = form.append('div').classed('pad1y pad2x keyline-bottom col12', true);
+    	
+        fieldset = fieldDiv.append('a')
             .attr('href', '#')
             .text('Add Dataset')
             .classed('dark fr button loud pad2x big _icon plus', true)
-            .on('click', function () {
-                //importData.classed('hidden', false);
-                 Hoot.model.REST('getTranslations', function (d) {
-                     if(d.error){
-                         context.hoot().view.utilities.errorlog.reportUIError(d.error);
-                         return;
-                     }
-                    context.hoot().control.utilities.dataset.importDataContainer(d);
-                 });
-
-            });
+	        .on('click', function () {
+	            //importData.classed('hidden', false);
+	             Hoot.model.REST('getTranslations', function (d) {
+	                 if(d.error){
+	                     context.hoot().view.utilities.errorlog.reportUIError(d.error);
+	                     return;
+	                 }
+	                context.hoot().control.utilities.dataset.importDataContainer(d);
+	             });
+	        });
+        fieldDiv.append('a')
+        .attr('href', '#')
+        .text('Add Folder')
+        .classed('dark fr button loud pad2x big _icon plus', true)
+        .style('margin-right','10px')
+        .on('click', function () {
+            //importData.classed('hidden', false);
+             Hoot.model.REST('addFolder', function (d) {
+                 if(d.error){
+                     context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                     return;
+                 }
+                //context.hoot().control.utilities.dataset.importDataContainer(d);
+             });
+        });
         fieldset = form.append('div')
         .attr('id','datasettable')
             .classed('col12 fill-white small strong row10 overflow', true)

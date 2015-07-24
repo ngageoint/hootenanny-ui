@@ -34,9 +34,11 @@ Hoot.hoot = function (context) {
         }
         hoot.model.folders.refresh(function () {
         	hoot.model.layers.refresh(function(){
-        		if (callback) {
-        			callback();
-        		}
+        		hoot.model.folders.refreshLinks(function(){
+        			if (callback) {
+            			callback();
+            		}
+        		})        		
         	});
         	/*if (callback) {
         		callback();

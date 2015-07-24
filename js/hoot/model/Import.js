@@ -90,7 +90,8 @@ Hoot.model.import = function (context)
         var data = {};
         data.INPUT_TYPE = typeName;
         data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';
-        data.INPUT_NAME = pathname.concat(container.select('.reset.LayerName').value());//container.select('.reset.LayerName').value();
+        data.INPUT_NAME = container.select('.reset.LayerName').value();
+        data.INPUT_FOLDER = 0;
         data.formData = import_layer.getFormData(/*document.getElementById('ingestfileuploader').files*/);
 
         Hoot.model.REST('Upload', data, _importResultHandler);
