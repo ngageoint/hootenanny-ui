@@ -30,7 +30,8 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
         d3.xhr('/hoot-services/ingest/ingest/upload?TRANSLATION=' + data.TRANSLATION + '&INPUT_TYPE=' +
-                data.INPUT_TYPE + '&INPUT_NAME=' + data.INPUT_NAME)
+                data.INPUT_TYPE + '&INPUT_NAME=' + data.INPUT_NAME + '&USER_EMAIL=' + 
+                iD.data.hootConfig.userEmail)
                         .header('access-control-allow-origin', '*')
             .post(data.formData, function (error, json) {
 
@@ -127,6 +128,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             rest.jobStatusInterval = option.queryInterval;
         }
 
+        data.USER_EMAIL = iD.data.hootConfig.userEmail;
         d3.json('/hoot-services/job/conflation/execute')
             .header('Content-Type', 'text/plain')
             .post(JSON.stringify(data), function (error, resp) {
@@ -464,6 +466,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         if (!data.translation || !data.inputtype || !data.input || !data.outputtype) {
             return false;
         }
+        data.USER_EMAIL = iD.data.hootConfig.userEmail;
         d3.json('/hoot-services/job/export/execute')
         .post(data, function (error, data) {
             if (error){

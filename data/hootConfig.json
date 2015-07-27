@@ -10,5 +10,6 @@
     "p2pServerPort": "8096",
     "pluginhost":"hoot",
     "presetMaxLevDistance" : 40,
-    "presetMaxDisplayNum" : 12
+    "presetMaxDisplayNum" : 12,
+    "userEmail":"test@test.com"
 }
