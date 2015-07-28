@@ -34,7 +34,7 @@ Hoot.model.folders = function (context)
             availFolders = a.folders;
                    
             _.each(a.folders,function(fldr){
-            	console.log(fldr.name);
+            	//console.log(fldr.name);
             });
             
             if (callback) {
@@ -84,11 +84,6 @@ Hoot.model.folders = function (context)
     model_folders.addFolder = function (key, callback) {
     	console.log('under construction');
     };
-
-
-    model_folders.removeLayer = function (name) {
-     	console.log('under construction');
-    };
     
     model_folders.unflattenFolders = function(array,parent,tree) {
         tree = typeof tree !== 'undefined' ? tree : [];
@@ -110,6 +105,23 @@ Hoot.model.folders = function (context)
 
         if(parent['type']==undefined){parent['type']='folder'};
         return tree;
+    };
+    
+    model_folders.listFolders = function(array) {
+        _.each(array,function(f){
+        	if(f.parentId==0){
+        		f.folderPath = f.name;
+        	} else {
+        		//use links to get parent folder as far back as possible
+        		var strPath = f.name;
+        		var parentFolder = _.findWhere(hoot.model.folders.getAvailFolders(),{id:f.parentId});
+        		do{
+        			strPath = parentFolder.name+"/"+strPath;
+        			parentFolder = _.findWhere(hoot.model.folders.getAvailFolders(),{id:parentFolder.parentId});
+        		} while (parentFolder)
+        		f.folderPath = strPath;
+        	}
+        })
     };
 
     model_folders.getAvailFoldersWithLayers = function(){

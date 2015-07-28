@@ -152,8 +152,9 @@ Hoot.control.utilities.dataset = function(context) {
 	};
 	
 	 hoot_control_utilities_dataset.modifyNameContainer = function(dataset) {
-		 var folderList = hoot.model.layers.getAvailFolders(hoot.model.layers.getAvailLayers()).slice(0);   
-		 
+			hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
+		    var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+		      
 		 var d_form = [{
 	            label: 'Output Name',
 	            type: 'fileOutputName',
@@ -204,22 +205,21 @@ Hoot.control.utilities.dataset = function(context) {
 	            .attr('class', function (field) {return 'reset ' + field.type;})
 	            .select(function(a){
 	                if (a.combobox){
-	                	var re = new RegExp('--','g');
 	                    var comboPathName = d3.combobox()
 	                        .data(_.map(a.combobox, function (n) {
 	                            return {
-	                                value: n.id.replace(re,'/'),
-	                                title: n.id.replace(re,'/')
+	                            	value: n.folderPath,
+	                                title: n.id
 	                            };
 	                        }));
 
 	                    comboPathName.data().sort(function(a,b){
-	                    	var textA = a.title.toUpperCase();
-	                    	var textB=b.title.toUpperCase();
-	                    	return(textA<textB)?-1 : (textA>textB)?1:0;
-	                    });
+	            		  	var textA = a.value.toUpperCase();
+	            		  	var textB=b.value.toUpperCase();
+	            		  	return(textA<textB)?-1 : (textA>textB)?1:0;
+	            		  });
 	                    
-	                    comboPathName.data().unshift({value:'root',title:'root'});
+	                    comboPathName.data().unshift({value:'root',title:0});
 	                    
 	                    d3.select(this)
 	                    	.style('width', '100%')
@@ -325,7 +325,8 @@ Hoot.control.utilities.dataset = function(context) {
             dirType.title = "Directory (FGDB)";
             importTypes.push(dirType);
 
-            var folderList = hoot.model.layers.getAvailFolders(hoot.model.layers.getAvailLayers()).slice(0);
+            hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
+            var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
             
 
             var d_form = [{
@@ -655,22 +656,21 @@ Hoot.control.utilities.dataset = function(context) {
                     }
                     
                     if (a.combobox3) {
-                    	var re = new RegExp('--','g');
                         var comboPathName = d3.combobox()
                             .data(_.map(a.combobox3, function (n) {
                                 return {
-                                    value: n.id.replace(re,'/'),
-                                    title: n.id.replace(re,'/')
+                                    value: n.folderPath,
+                                    title: n.id
                                 };
                             }));
 
                         comboPathName.data().sort(function(a,b){
-                        	var textA = a.title.toUpperCase();
-                        	var textB=b.title.toUpperCase();
+                        	var textA = a.value.toUpperCase();
+                        	var textB=b.value.toUpperCase();
                         	return(textA<textB)?-1 : (textA>textB)?1:0;
                         });
                         
-                        comboPathName.data().unshift({value:'root',title:'root'});
+                        comboPathName.data().unshift({value:'root',title:0});
                         
                         d3.select(this)
                         	.style('width', '100%')
@@ -808,6 +808,6 @@ Hoot.control.utilities.dataset = function(context) {
                     });
             return modalbg;
         }
-
+    
 	return hoot_control_utilities_dataset;
 };

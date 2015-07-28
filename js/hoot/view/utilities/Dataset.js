@@ -20,21 +20,14 @@ Hoot.view.utilities.dataset = function(context)
 	                context.hoot().control.utilities.dataset.importDataContainer(d);
 	             });
 	        });
-        fieldDiv.append('a')
-        .attr('href', '#')
-        .text('Add Folder')
-        .classed('dark fr button loud pad2x big _icon plus', true)
-        .style('margin-right','10px')
-        .on('click', function () {
-            //importData.classed('hidden', false);
-             Hoot.model.REST('addFolder', function (d) {
-                 if(d.error){
-                     context.hoot().view.utilities.errorlog.reportUIError(d.error);
-                     return;
-                 }
-                //context.hoot().control.utilities.dataset.importDataContainer(d);
-             });
-        });
+       /* fieldDiv.append('a')
+	        .attr('href', '#')
+	        .text('Add Folder')
+	        .classed('dark fr button loud pad2x big _icon plus', true)
+	        .style('margin-right','10px')
+	        .on('click', function () {
+	        	context.hoot().control.utilities.folder.importFolderContainer();
+	        });*/
         fieldset = form.append('div')
         .attr('id','datasettable')
             .classed('col12 fill-white small strong row10 overflow', true)

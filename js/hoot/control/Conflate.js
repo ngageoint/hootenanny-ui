@@ -59,7 +59,8 @@ Hoot.control.conflate = function (sidebar) {
             newName = 'Merged_' + newName.substring + '_' + Math.random().toString(16).substring(7);
         }
         
-        var folderList = hoot.model.layers.getAvailFolders(hoot.model.layers.getAvailLayers()).slice(0);
+        hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
+        var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
         
         var d_form = [
             {
@@ -219,22 +220,21 @@ Hoot.control.conflate = function (sidebar) {
                 }
                 
                 if (a.combobox2){
-                	var re = new RegExp('--','g');
-                    var comboPathName = d3.combobox()
-                        .data(_.map(a.combobox2, function (n) {
-                            return {
-                                value: n.id.replace(re,'/'),
-                                title: n.id.replace(re,'/')
-                            };
-                        }));
+                	var comboPathName = d3.combobox()
+                    .data(_.map(a.combobox2, function (n) {
+                        return {
+                            value: n.folderPath,
+                            title: n.id
+                        };
+                    }));
 
-                    comboPathName.data().sort(function(a,b){
-                    	var textA = a.title.toUpperCase();
-                    	var textB=b.title.toUpperCase();
-                    	return(textA<textB)?-1 : (textA>textB)?1:0;
-                    });
-                    
-                    comboPathName.data().unshift({value:'root',title:'root'});
+            		  comboPathName.data().sort(function(a,b){
+            		  	var textA = a.value.toUpperCase();
+            		  	var textB=b.value.toUpperCase();
+            		  	return(textA<textB)?-1 : (textA>textB)?1:0;
+            		  });
+            		  
+            		  comboPathName.data().unshift({value:'root',title:0});
                     
                     d3.select(this)
                     	.style('width', '100%')

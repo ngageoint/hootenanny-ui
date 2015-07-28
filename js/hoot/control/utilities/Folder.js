@@ -187,16 +187,23 @@ Hoot.control.utilities.folder = function(context) {
 	      if(container.attr('id')=='datasettable'){
 	    	  container.selectAll('rect').on("contextmenu",function(d,i){
 	              var items = [];
-	    		  if(!isNaN(parseInt(d.id))){
+	              if(!d.type){
+	            	  d3.select('.context-menu').style('display', 'none');	              
+		              d3.event.preventDefault();
+		              return;
+	              }
+	              else if(d.type.toLowerCase()=='dataset'){
 	            	  //http://jsfiddle.net/1mo3vmja/2/
 	            	  items = [
 		        	      {title:'Export',icon:'export',click:'context.hoot().view.utilities.dataset.exportDataset(d,container)'},
 		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
 		        	      {title:'Modify',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
-		        	  ]; } else if (d.id != 'Datasets') {
+		        	  ]; } else if (d.type.toLowerCase()=='folder') {
 	        		  items = [
 	 		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
 	 		        	      {title:'Modify',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
+	 		        	      {title:'Add Dataset',icon:'data',click:'Hoot.model.REST("getTranslations",function(d){if(d.error){context.hoot().view.utilities.errorlog.reportUIError(d.error);return;}context.hoot().control.utilities.dataset.importDataContainer(d)});'},
+	 		        	      {title:'Add Folder',icon:'folder',click:'context.hoot().control.utilities.folder.importFolderContainer(d);'}
 	 		        	  ];
 		        	  } else {
 		        		  d3.select('.context-menu').style('display', 'none');	              
@@ -219,7 +226,9 @@ Hoot.control.utilities.folder = function(context) {
 		                .data(items).enter()
 		                .append('li')
 		                .on('click' , function(item) { 
-		                	eval(item.click); })
+		                	eval(item.click);
+		                	d3.select('.context-menu').remove();
+		                })
 		                .attr("class",function(item){return "_icon " + item.icon})
 	            		.text(function(item) { return item.title; });
 		              	d3.select('.context-menu').style('display', 'none');
@@ -269,5 +278,152 @@ Hoot.control.utilities.folder = function(context) {
 	    }
     }
 
+    hoot_control_utilities_folder.importFolderContainer = function (data) {
+    	hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
+        var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+        
+        var d_form = [/*{
+        	label: 'Path',
+        	placeholder: 'root',
+        	type: 'PathName',
+        	combobox3:folderList 
+        },*/ {
+        	label: 'Folder Name',
+        	placeholder:'',
+        	type:'NewFolderName'
+        }];
+        var modalbg = d3.select('body')
+            .append('div')
+            .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+        var ingestDiv = modalbg.append('div')
+            .classed('contain col4 pad1 fill-white round modal', true);
+        var _form = ingestDiv.append('form');
+        _form.classed('round space-bottom1 importableLayer', true)
+            .append('div')
+            .classed('big pad1y keyline-bottom space-bottom2', true)
+            .append('h4')
+            .text('Add Data')
+            .append('div')
+            .classed('fr _icon x point', true)
+            .on('click', function () {
+                //modalbg.classed('hidden', true);
+                modalbg.remove();
+            });
+        var fieldset = _form.append('fieldset')
+            .selectAll('.form-field')
+            .data(d_form);
+        fieldset.enter()
+            .append('div')
+            .classed('form-field fill-white small keyline-all round space-bottom1', true)
+            .append('label')
+            .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
+            .text(function (d) {
+                return d.label;
+            });
+        fieldset.append('div')
+            .classed('contain', true)
+            .append('input')
+            .attr('type', 'text')
+            .attr('placeholder', function (field) {
+                return field.placeholder;
+            })
+            .attr('class', function (field) {
+                return 'reset ' + field.type;
+            })
+            .select(function (a) {
+
+                function getTypeName(desc){
+                    var comboData = _form.select('.reset.importImportType').datum();
+                    var typeName = "";
+                    for(i=0; i<comboData.combobox2.length; i++){
+                        var o = comboData.combobox2[i];
+                        if(o.title == desc){
+                            typeName = o.value;
+                            break;
+                        }
+
+                    }
+                    return typeName;
+                };
+
+                if (a.combobox3) {
+                	var comboPathName = d3.combobox()
+                        .data(_.map(a.combobox3, function (n) {
+                            return {
+                                value: n.name,
+                                title: n.id
+                            };
+                        }));
+
+                    comboPathName.data().sort(function(a,b){
+                    	var textA = a.value.toUpperCase();
+                    	var textB=b.value.toUpperCase();
+                    	return(textA<textB)?-1 : (textA>textB)?1:0;
+                    });
+                    
+                    comboPathName.data().unshift({value:'root',title:0});
+                    
+                    d3.select(this)
+                    	.style('width', '100%')
+                    	.call(comboPathName);
+                    
+                    d3.select(this).attr('readonly',true);                        
+                }
+            });
+
+        	var folderId = 0;
+        	if(_.map(hoot.model.folders.getAvailFolders(),function(n){return n.id}).indexOf(data.id)>=0){
+        		folderId=data.id;
+        	}
+        
+            var submitExp = ingestDiv.append('div')
+            .classed('form-field col12 left ', true);
+             submitExp.append('span')
+            .classed('round strong big loud dark center col10 margin1 point', true)
+            .classed('inline row1 fl col10 pad1y', true)
+                .text('Add Folder')
+                .on('click', function () {
+                    //check if layer with same name already exists...
+                	if(_form.select('.reset.NewFolderName').value()=='' || _form.select('.reset.NewFolderName').value()==_form.select('.reset.NewFolderName').attr('placeholder')){
+                		alert("Please enter an output folder name.");
+                        return;
+                	}
+                	
+                	resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
+                	if(resp != true){
+                		alert(resp);
+                		return;
+                    }
+                	
+                	//Need to make sure that selected ID is legit.  Otherwise, set to 0
+                	//var folderId=0;
+                	/*if(_.map(hoot.model.folders.getAvailFolders(),function(n){return n.id}).indexOf(parseInt(d3.select('.PathName').property('title')))>=0){
+                		folderId=d3.select('.PathName').property('title');
+                	}*/
+                	if(_.map(hoot.model.folders.getAvailFolders(),function(n){return n.id}).indexOf(this.id)>=0){
+                		folderId=this.is;
+                	}
+                	var data={};
+                	data.parentId=folderId;
+                	data.folderName = _form.select('.reset.NewFolderName').value();
+                	
+                	var callback = function(){console.log('success');}
+                	
+                    Hoot.model.REST('addFolder',data,function(){
+                        hoot.model.folders.refresh(function () {
+                        	hoot.model.folders.refreshLinks(function(){
+                        		hoot.model.layers.RefreshLayers(function(){
+                        			if (callback) {
+                            			callback();
+                            		}
+                        		})        		
+                        	});
+                        });
+                    });
+                });
+        return modalbg;
+    }
+
+    
 	return hoot_control_utilities_folder;
 };
