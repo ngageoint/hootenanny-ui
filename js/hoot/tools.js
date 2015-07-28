@@ -188,7 +188,7 @@ Hoot.tools = function (context, selection) {
         _.each(loadedLayers, function (a) {
             a.loadable = false;
         });
-        d3.select('.loadingLayer').remove();
+        //d3.select('.loadingLayer').remove();
         hoot.model.layers.addLayer(item);
         var datasettable = d3.select('#datasettable');
         hoot.view.utilities.dataset.populateDatasets(datasettable);
@@ -405,6 +405,10 @@ Hoot.tools = function (context, selection) {
             renderInputLayer(layerName,params);
         }
         if (merged) {
+            var sel = d3.select('.loadingLayer');
+            if(sel && sel.node()){
+                sel.remove();
+            }
             renderMergedLayer(layerName);
         }
         conflationCheck(layerName, true);
