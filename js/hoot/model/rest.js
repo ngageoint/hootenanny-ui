@@ -26,7 +26,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.jobStatusInterval = 2000;
     rest.Upload = function (data, callback) {
-        if (!data.TRANSLATION || !data.INPUT_TYPE || !data.formData) {
+        if (!data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME) {
             return false;
         }
         d3.xhr('/hoot-services/ingest/ingest/upload?TRANSLATION=' + data.TRANSLATION + '&INPUT_TYPE=' +
@@ -63,7 +63,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
     
     rest.updateMapFolderLinks = function(data,callback){
-        if (!data.folderid || !data.mapid || !data.newRecord) {
+        if (!(data.folderId >= 0) || !data.mapid || !data.newRecord) {
             callback(false);
             return false;
         }
@@ -82,18 +82,13 @@ Hoot.model.REST = function (command, data, callback, option) {
     }
     
     rest.addFolder = function (data, callback) {
-        /*if (!data.folderName || !data.parentId) {
+        if (!data.folderName || !data.parentId) {
             callback(false);
             return false;
-        }*/
+        }
         /*callback(true);
         return true;*/
-        
-    	//testing only
-    	var data = {};
-    	data.folderName = 'testing';
-    	data.parentId = 1;
-    	
+            	
     	d3.json('/hoot-services/osm/api/0.6/map/addfolder?folderName=' + data.folderName + 
         		'&parentId=' + data.parentId)
         .post(data, function (error, data) {

@@ -75,23 +75,20 @@ Hoot.model.import = function (context)
 
         }
         
-        //create proper path name, replacing any '/' with '|'
-        var re = new RegExp('/','g')
-        var pathname = container.select('.reset.PathName').value();
-        pathname = pathname.replace(re,'|');
-        if(pathname !='' && pathname[pathname.length-1]!='|'){pathname += '|';}
-
-        //determine if a new folder is being added
+        // Check new folder name
         var newfoldername = container.select('.reset.NewFolderName').value();
-        newfoldername = newfoldername.replace(re,'|');
-        if(newfoldername !='' && newfoldername[newfoldername.length-1]!='|'){newfoldername += '|';}
-        if(newfoldername!=''){pathname += newfoldername;}
+        if(newfoldername !=''){
+            var resp = context.hoot().checkForUnallowedChar(newfoldername);
+        	if(resp != true){
+        		alert(resp);
+        		return;
+            }
+        }
         
         var data = {};
         data.INPUT_TYPE = typeName;
         data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';
         data.INPUT_NAME = container.select('.reset.LayerName').value();
-        data.INPUT_FOLDER = 0;
         data.formData = import_layer.getFormData(/*document.getElementById('ingestfileuploader').files*/);
 
         Hoot.model.REST('Upload', data, _importResultHandler);
@@ -114,7 +111,7 @@ Hoot.model.import = function (context)
                 var status = {};
                 status.info = 'failed';
                 importCallback(status);
-             }
+             } 
 
             return;
         }

@@ -45,19 +45,24 @@ Hoot.view.utilities.dataset = function(context)
         
         var mapId = d.id;//d3.select(this.parentNode).datum().name;
         
-	    var parentNode  = container.selectAll("text[lyr-id='" + d.id + "']").node().parentNode;
+	    var parentNode;
+	    if(d.type=='dataset'){
+	    	parentNode = container.selectAll("text[lyr-id='" + d.id + "']").node().parentNode;
+	    } else {
+	    	parentNode = container.selectAll("text[fldr-id='" + d.id + "']").node().parentNode;
+	    }
+	    if(!parentNode){return;}
+	    
 	    var rectNode = d3.select(parentNode).select('rect'); 
 	    var currentFill = rectNode.style('fill');
 	    rectNode.style('fill','rgb(255,0,0)');
       
         var datasets2remove = [];
         if(d.type=='folder'){
-        	var re = new RegExp('--','g');
-        	var folderId = d.id.replace(re,'|');
-        	
-        	datasets2remove = _.filter(hoot.model.layers.getAvailLayers(),function(f){
-        		return f.path.indexOf(folderId)>=0;
-        	});
+        	var folderId = d.id;
+        	context.hoot().model.layers.setLayerLinks();
+        	datasets2remove = _.filter(context.hoot().model.layers.getAvailLayers(),function(lyr){
+        		return lyr.folderId==folderId});
         } else {
         	var availLayers = context.hoot().model.layers.getAvailLayers();
             datasets2remove=_.filter(availLayers,function(n){return n.id==mapId;});
@@ -143,7 +148,11 @@ Hoot.view.utilities.dataset = function(context)
     	data.inputType=d.type;
     	data.mapid=d.id;
     	
-    	modifyName = context.hoot().control.utilities.dataset.modifyNameContainer(d);
+    	if(d.type.toLowerCase()=='dataset'){
+    		modifyName = context.hoot().control.utilities.dataset.modifyNameContainer(d);	
+    	} else if(d.type.toLowerCase()=='folder'){
+    		modifyName = context.hoot().control.utilities.folder.modifyNameContainer(d);
+    	}
     }
     
 

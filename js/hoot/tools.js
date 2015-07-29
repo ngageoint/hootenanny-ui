@@ -146,16 +146,27 @@ Hoot.tools = function (context, selection) {
             'Cookie Cutter & Horizontal':'Horizontal'
           };
 
-        var re = new RegExp('/','g');
         var pathname = a.select('.pathname').value()
+        if(pathname==''){pathname=a.select('.reset.PathName').attr('placeholder');}
         if(pathname=='root'){pathname='';}
-        pathname = pathname.replace(re,'|');
-        if(pathname !='' && pathname[pathname.length-1]!='|'){pathname += '|';}
+        var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
         
         var newfoldername = a.select('.newfoldername').value();
-        newfoldername = newfoldername.replace(re,'|');
-        if(newfoldername !='' && newfoldername[newfoldername.length-1]!='|'){newfoldername += '|';}
-        if(newfoldername!=''){pathname += newfoldername;}
+        if(newfoldername !=''){
+        	var resp = context.hoot().checkForUnallowedChar(newfoldername);
+        	if(resp != true){
+        		alert(resp);
+        		return;
+            } else {
+            	//create new folder
+            	var folderData = {};
+            	folderData.folderName = newfoldername;
+            	folderData.parentId = pathId;
+            	Hoot.model.REST('addFolder',folderData,function(a){
+            		 pathId = a.folderId;
+            	 });
+            }
+        }
         
         var outputname = pathname.concat(a.select('.saveAs').value());
         

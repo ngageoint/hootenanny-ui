@@ -155,15 +155,23 @@ Hoot.control.utilities.dataset = function(context) {
 			hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
 		    var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
 		      
+		    var placeholder = 'root';
+			 if(folder.parentId < 0){folder.parentId = 0;}
+			 if(folder.parentId > 0){
+				 if( _.findWhere(folderList,{id:folder.parentId})){
+					 placeholder = _.findWhere(folderList,{id:folder.parentId}).name;
+				 }
+			 }
+		    
 		 var d_form = [{
 	            label: 'Output Name',
 	            type: 'fileOutputName',
-	            placeholder: dataset.name.substring(dataset.name.lastIndexOf('|')+1),
+	            placeholder: dataset.name,
 	            inputtype:'text'
 	        },{
             	label: 'Path',
             	type: 'pathname',
-            	placeholder:'',
+            	placeholder:placeholder,
             	combobox:folderList
             },
             {
@@ -226,8 +234,6 @@ Hoot.control.utilities.dataset = function(context) {
 	                    	.call(comboPathName);
 	                    
 	                    d3.select(this).attr('readonly',true); 
-	                    //d3.select(this).attr('placeholder',dataset.path.split('|').join('/'));
-	                    //d3.select(this).value(dataset.path.split('|').join('/'));
 	                }
 	            });
 
@@ -239,43 +245,48 @@ Hoot.control.utilities.dataset = function(context) {
 	            .text('Update Name')
 	            .on('click', function () {
 
-	            	var re = new RegExp('/','g');
 	                var pathname = _form.select('.pathname').value()
 	                if(pathname==''){pathname=_form.select('.pathname').attr('placeholder');}
 	                if(pathname=='root'){pathname='';}
-	                pathname = pathname.replace(re,'|');
-	                if(pathname !='' && pathname[pathname.length-1]!='|'){pathname += '|';}
+	                var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
 	                
 	                var newfoldername = _form.select('.newfoldername').value();
-	                newfoldername = newfoldername.replace(re,'|');
 	                if(newfoldername !=''){
 		                var resp = context.hoot().checkForUnallowedChar(newfoldername);
 	                	if(resp != true){
 	                		alert(resp);
 	                		return;
+	                    } else {
+	                    	//create new folder
+	                    	var folderData = {};
+	                    	folderData.folderName = newfoldername;
+	                    	folderData.parentId = pathId;
+	                    	Hoot.model.REST('addFolder',folderData,function(a){
+	                    		 pathId = a.folderId;
+	                    	 });
 	                    }
-	                }
-	                if(newfoldername!=''){
-	                	if(newfoldername[newfoldername.length-1]!='|'){newfoldername += '|';}
-	                	pathname += newfoldername;
 	                }
 	                
 	                var outputname =_form.select('.fileOutputName').value();
-	                if(outputname==''){outputname=_form.select('.fileOutputName').attr('placeholder');}
-	                var resp = context.hoot().checkForUnallowedChar(outputname);
-                	if(resp != true){
-                		alert(resp);
-                		return;
-                    }
+	                if(outputname.toLowerCase() != dataset.name.toLowerCase()){
+		                if(outputname==''){outputname=_form.select('.fileOutputName').attr('placeholder');}
+		                var resp = context.hoot().checkForUnallowedChar(outputname);
+	                	if(resp != true){
+	                		alert(resp);
+	                		return;
+	                    }
+	                	
+	                	//Make sure it isn't a duplicate
+	                	 if(context.hoot().model.layers.getLayers()[name]){alert('Layer already exists');return;}
+	                }              	                	
                 	
-                	var modName = pathname.concat(outputname);
-	                
-	                var spin = submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true);
-	                
-	                // Check to make sure that the layer name is kosher
+                	var data = {};
+                	data.inputType = dataset.type;
+                	data.mapid = dataset.id;
+                	data.modifiedName = outputname;
+                	data.folderId = pathId;
                 	
-	                
-	                context.hoot().model.layers.updateLayerName(modName, dataset, function(status){
+	                context.hoot().model.layers.updateLayerName(data, function(status){
 	                    if(status != true){
 	                        alert('Export has failed or partially failed. For detail please see Manage->Log.');
 	                        modalbg.remove();
@@ -736,21 +747,38 @@ Hoot.control.utilities.dataset = function(context) {
                                     if(isCancel == false){
                                         modalbg.remove();
                                     }
+                                    
+                                    var pathname = _form.select('.reset.PathName').value();
+                                    if(pathname==''){pathname=_form.select('.reset.PathName').attr('placeholder');}
+                                    if(pathname=='root'){pathname='';}
+                                    var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+                                    
+                                    //determine if a new folder is being added
+                                    var newfoldername = _form.select('.reset.NewFolderName').value();
+                                    //create new folder if necessary
+                                    if(newfoldername !=''){
+            	                    	//create new folder
+            	                    	var folderData = {};
+            	                    	folderData.folderName = newfoldername;
+            	                    	folderData.parentId = pathId;
+            	                    	Hoot.model.REST('addFolder',folderData,function(a){
+            	                    		 pathId = a.folderId;
+            	                    	 });                	                    
+                	                }
+                                    
+                                    //update map linking
+                                    var link = {};
+                                    link.folderid = parseInt(_form.select('.reset.PathName').property('title'))||0;
+                                    link.mapName = _form.select('.reset.LayerName').value();
+                                    link.newRecord=true;
+                                    Hoot.model.REST('updateMapFolderLinks',link,function(a){
+                                    	context.hoot().model.folders.getAvailLinks();
+                                    });
 
                                 } else if(status.info == 'uploaded'){
                                     jobIds = status.jobids;
                                     mapIds = status.mapids;
                                     submitExp.select('span').text('Cancel');
-                                    //create new folder if necessary
-                                    
-                                    //update map linking
-                                    var link = {};
-                                    link.folderid = 1;
-                                    link.mapName = _form.select('.reset.LayerName').value();
-                                    link.newRecord=true;
-                                    Hoot.model.REST('updateMapFolderLink',link,function(a){
-                                    	console.log(a);
-                                    });
                                 } else if(status.info == 'failed'){
                                     alert('Import has failed or partially failed. For detail please see Manage->Log.');
                                     modalbg.remove();

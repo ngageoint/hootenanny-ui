@@ -115,10 +115,12 @@ Hoot.model.folders = function (context)
         		//use links to get parent folder as far back as possible
         		var strPath = f.name;
         		var parentFolder = _.findWhere(hoot.model.folders.getAvailFolders(),{id:f.parentId});
+        		var i=0;
         		do{
+        			i++;
         			strPath = parentFolder.name+"/"+strPath;
         			parentFolder = _.findWhere(hoot.model.folders.getAvailFolders(),{id:parentFolder.parentId});
-        		} while (parentFolder)
+        		} while (parentFolder || i==10)
         		f.folderPath = strPath;
         	}
         })
@@ -135,11 +137,13 @@ Hoot.model.folders = function (context)
     	},links);  
     	
     	var folderList = _.map(model_folders.getAvailFolders(), _.clone); 
-    	var flatFolders = [];
     	
     	_.each(folderList,function(fldr){
     		fldr.children = _.filter(layerList,function(lyr){return lyr.folderId==fldr.id});
+    		_.extend(fldr,{type:'folder'});
     	});
+    	
+    	folderList = _.union(folderList,_.each(_.filter(layerList,function(lyr){return lyr.folderId==0}),function(lyr){_.extend(lyr,{parentId:0})}));
     	
     	//unflatten
     	return model_folders.unflattenFolders(folderList);

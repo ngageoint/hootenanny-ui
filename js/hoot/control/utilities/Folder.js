@@ -409,7 +409,7 @@ Hoot.control.utilities.folder = function(context) {
                 	
                 	var callback = function(){console.log('success');}
                 	
-                    Hoot.model.REST('addFolder',data,function(){
+                    Hoot.model.REST('addFolder',data,function(a){
                         hoot.model.folders.refresh(function () {
                         	hoot.model.folders.refreshLinks(function(){
                         		hoot.model.layers.RefreshLayers(function(){
@@ -424,6 +424,128 @@ Hoot.control.utilities.folder = function(context) {
         return modalbg;
     }
 
+	 hoot_control_utilities_folder.modifyNameContainer = function(folder) {
+			hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
+		    var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+
+		    var placeholder = 'root';
+		 if(folder.parentId < 0){folder.parentId = 0;}
+		 if(folder.parentId > 0){
+			 if( _.findWhere(folderList,{id:folder.parentId})){
+				 placeholder = _.findWhere(folderList,{id:folder.parentId}).name;
+			 }
+		 }
+		    
+		 var d_form = [{
+	            label: 'Output Name',
+	            type: 'fileOutputName',
+	            placeholder: folder.name,
+	            inputtype:'text'
+	        },{
+         	label: 'Path',
+         	type: 'pathname',
+         	placeholder:placeholder,
+         	combobox:folderList
+         }];
+	        var modalbg = d3.select('body')
+	            .append('div')
+	            .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+	        var ingestDiv = modalbg.append('div')
+	            .classed('contain col4 pad1 fill-white round modal', true);
+	        var _form = ingestDiv.append('form');
+	        _form.classed('round space-bottom1 importableLayer', true)
+	            .append('div')
+	            .classed('big pad1y keyline-bottom space-bottom2', true)
+	            .append('h4')
+	            .text('Rename ' + folder.type.charAt(0).toUpperCase() + folder.type.slice(1).toLowerCase())
+	            .append('div')
+	            .classed('fr _icon x point', true)
+	            .on('click', function () {
+	                modalbg.remove();
+	            });
+	        var fieldset = _form.append('fieldset')
+	            .selectAll('.form-field')
+	            .data(d_form)
+	            ;
+	        fieldset.enter()
+	            .append('div')
+	            .classed('form-field fill-white small keyline-all round space-bottom1', true)
+	            .html(function (d) {
+	                	return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + d.label; // + '</label><input type="text" class="reset ' + field.type + '" />';
+	                });
+	        fieldset.append('div')
+	            .classed('contain', true)
+	            .append('input')
+	            .attr('type', 'text')
+	            .attr('placeholder', function (field) {return field.placeholder;})
+	            .attr('class', function (field) {return 'reset ' + field.type;})
+	            .select(function(a){
+	                if (a.combobox){
+	                    var comboPathName = d3.combobox()
+	                        .data(_.map(a.combobox, function (n) {
+	                            return {
+	                            	value: n.folderPath,
+	                                title: n.id
+	                            };
+	                        }));
+
+	                    comboPathName.data().sort(function(a,b){
+	            		  	var textA = a.value.toUpperCase();
+	            		  	var textB=b.value.toUpperCase();
+	            		  	return(textA<textB)?-1 : (textA>textB)?1:0;
+	            		  });
+	                    
+	                    comboPathName.data().unshift({value:'root',title:0});
+	                    
+	                    d3.select(this)
+	                    	.style('width', '100%')
+	                    	.call(comboPathName);
+	                    
+	                    d3.select(this).attr('readonly',true); 
+	                }
+	            });
+
+	        var submitExp = ingestDiv.append('div')
+	        .classed('form-field col12 center ', true);
+	         submitExp.append('span')
+	        .classed('round strong big loud dark center col10 margin1 point', true)
+	        .classed('inline row1 fl col10 pad1y', true)
+	            .text('Update Name')
+	            .on('click', function () {
+
+	                var pathname = _form.select('.pathname').value()
+	                if(pathname==''){pathname=_form.select('.pathname').attr('placeholder');}
+	                if(pathname=='root'){pathname='';}
+	                var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+	                	                
+	                var outputname =_form.select('.fileOutputName').value();
+	                if(outputname==''){outputname=_form.select('.fileOutputName').attr('placeholder');}
+	                var resp = context.hoot().checkForUnallowedChar(outputname);
+             	if(resp != true){
+             		alert(resp);
+             		return;
+                 }
+             	                	
+             	
+             	var data = {};
+             	data.inputType = folder.type;
+             	data.mapid = folder.id;
+             	data.modifiedName = outputname;
+             	data.folderId = pathId;
+             	
+	                context.hoot().model.layers.updateLayerName(data, function(status){
+	                    if(status != true){
+	                        alert('Export has failed or partially failed. For detail please see Manage->Log.');
+	                        modalbg.remove();
+	                    } else {
+	                        modalbg.remove();
+	                        context.hoot().model.folders.refresh(function(){context.hoot().model.layers.RefreshLayers()});
+	                    }
+	                });
+	            });
+
+	        return modalbg;
+		};
     
 	return hoot_control_utilities_folder;
 };

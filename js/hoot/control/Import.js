@@ -35,8 +35,8 @@ Hoot.control.import = function (context,selection) {
                 .getAvailLayers(), function (n) {
                     return n.name;
                 }),
-            tree: context.hoot().model.layers
-            		.getAvailLayersWithFolders()
+            tree: context.hoot().model.folders
+            		.getAvailFoldersWithLayers()
         }];
 
         var sels = selection.selectAll('forms');
