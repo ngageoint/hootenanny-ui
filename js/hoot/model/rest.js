@@ -63,14 +63,14 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
     
     rest.updateMapFolderLinks = function(data,callback){
-        if (!(data.folderId >= 0) || !data.mapid || !data.newRecord) {
+    	if (!(data.folderId >= 0) || !(data.mapid >= 0) || !data.newRecord) {
             callback(false);
             return false;
         }
         /*callback(true);
         return true;*/
         d3.json('/hoot-services/osm/api/0.6/map/linkMapFolder?mapId=' + data.mapid + 
-        		'&folderId=' + data.folderid + '&newRecord=' + data.newRecord)
+        		'&folderId=' + data.folderId + '&newRecord=' + data.newRecord)
         .post(data, function (error, data) {
             if (error){
                 alert("Modify name failed! For detailed log goto Manage->Log");
@@ -82,7 +82,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     }
     
     rest.addFolder = function (data, callback) {
-        if (!data.folderName || !data.parentId) {
+        if (!data.folderName || !(data.parentId >= 0)) {
             callback(false);
             return false;
         }

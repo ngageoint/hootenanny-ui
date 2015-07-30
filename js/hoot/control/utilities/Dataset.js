@@ -755,8 +755,22 @@ Hoot.control.utilities.dataset = function(context) {
                                     
                                     //determine if a new folder is being added
                                     var newfoldername = _form.select('.reset.NewFolderName').value();
+                                    
+                                    var folderData = {};
+                                    folderData.folderName = newfoldername;
+                                    folderData.parentId = pathId;
+                                    hoot.model.folders.addFolder(folderData,function(a){
+                                    	//update map linking
+                                        var link = {};
+                                        link.folderId = a;//parseInt(_form.select('.reset.PathName').property('title'))||0;
+                                        link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == _form.select('.reset.LayerName').value()}),'id')[0] || 0;
+                                        if(link.mapid==0){return;}
+                                        link.newRecord=true;
+                                        hoot.model.folders.updateLink(link);
+                                    })
+                                    
                                     //create new folder if necessary
-                                    if(newfoldername !=''){
+                                   /* if(newfoldername !=''){
             	                    	//create new folder
             	                    	var folderData = {};
             	                    	folderData.folderName = newfoldername;
@@ -764,16 +778,11 @@ Hoot.control.utilities.dataset = function(context) {
             	                    	Hoot.model.REST('addFolder',folderData,function(a){
             	                    		 pathId = a.folderId;
             	                    	 });                	                    
-                	                }
+                	                } else {
+                	                	
+                	                }*/
                                     
-                                    //update map linking
-                                    var link = {};
-                                    link.folderid = parseInt(_form.select('.reset.PathName').property('title'))||0;
-                                    link.mapName = _form.select('.reset.LayerName').value();
-                                    link.newRecord=true;
-                                    Hoot.model.REST('updateMapFolderLinks',link,function(a){
-                                    	context.hoot().model.folders.getAvailLinks();
-                                    });
+                                    
 
                                 } else if(status.info == 'uploaded'){
                                     jobIds = status.jobids;
