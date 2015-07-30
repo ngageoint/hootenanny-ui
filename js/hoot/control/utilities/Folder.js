@@ -427,14 +427,15 @@ Hoot.control.utilities.folder = function(context) {
 	 hoot_control_utilities_folder.modifyNameContainer = function(folder) {
 			hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
 		    var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
-
+		    var folderId = folder.parentId || 0;
+		    
 		    var placeholder = 'root';
-		 if(folder.parentId < 0){folder.parentId = 0;}
-		 if(folder.parentId > 0){
-			 if( _.findWhere(folderList,{id:folder.parentId})){
-				 placeholder = _.findWhere(folderList,{id:folder.parentId}).name;
+			if(folderId > 0){
+				var match = _.findWhere(folderList,{id:folderId});
+				if(match){
+					if(match){placeholder = match.folderPath};
+				}
 			 }
-		 }
 		    
 		 var d_form = [{
 	            label: 'Output Name',
@@ -457,7 +458,7 @@ Hoot.control.utilities.folder = function(context) {
 	            .append('div')
 	            .classed('big pad1y keyline-bottom space-bottom2', true)
 	            .append('h4')
-	            .text('Rename ' + folder.type.charAt(0).toUpperCase() + folder.type.slice(1).toLowerCase())
+	            .text('Modify ' + folder.type.charAt(0).toUpperCase() + folder.type.slice(1).toLowerCase())
 	            .append('div')
 	            .classed('fr _icon x point', true)
 	            .on('click', function () {
@@ -510,10 +511,9 @@ Hoot.control.utilities.folder = function(context) {
 	         submitExp.append('span')
 	        .classed('round strong big loud dark center col10 margin1 point', true)
 	        .classed('inline row1 fl col10 pad1y', true)
-	            .text('Update Name')
+	            .text('Update')
 	            .on('click', function () {
-
-	                var pathname = _form.select('.pathname').value()
+	            	var pathname = _form.select('.pathname').value()
 	                if(pathname==''){pathname=_form.select('.pathname').attr('placeholder');}
 	                if(pathname=='root'){pathname='';}
 	                var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
@@ -521,26 +521,29 @@ Hoot.control.utilities.folder = function(context) {
 	                var outputname =_form.select('.fileOutputName').value();
 	                if(outputname==''){outputname=_form.select('.fileOutputName').attr('placeholder');}
 	                var resp = context.hoot().checkForUnallowedChar(outputname);
-             	if(resp != true){
-             		alert(resp);
-             		return;
-                 }
-             	                	
-             	
-             	var data = {};
-             	data.inputType = folder.type;
-             	data.mapid = folder.id;
-             	data.modifiedName = outputname;
-             	data.folderId = pathId;
-             	
+	             	if(resp != true){
+	             		alert(resp);
+	             		return;
+	                 }
+	             	
+	             	data = {};
+	             	data.inputType = folder.type;
+	             	data.mapid = folder.id;
+	             	data.modifiedName = outputname;
+	             	data.folderId = pathId;
+	             	
 	                context.hoot().model.layers.updateLayerName(data, function(status){
-	                    if(status != true){
-	                        alert('Export has failed or partially failed. For detail please see Manage->Log.');
-	                        modalbg.remove();
-	                    } else {
-	                        modalbg.remove();
-	                        context.hoot().model.folders.refresh(function(){context.hoot().model.layers.RefreshLayers()});
-	                    }
+	                	//you arent updating a link, you are reassigning a value in the folder table
+	                	var folderData = {};
+	                	folderData.parentId=data.folderId;
+	                	folderData.folderId=data.mapid;
+	                	
+	                	Hoot.model.REST('updateFolder',folderData,function(a){
+	                		hoot.model.folders.refresh(function(){
+	                			context.hoot().model.import.updateTrees();
+	                		});
+	                		modalbg.remove();
+	                	});
 	                });
 	            });
 

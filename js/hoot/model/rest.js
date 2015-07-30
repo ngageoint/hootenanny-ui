@@ -63,7 +63,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
     
     rest.updateMapFolderLinks = function(data,callback){
-    	if (!(data.folderId >= 0) || !(data.mapid >= 0) || !data.newRecord) {
+    	if (!(data.folderId >= 0) || !(data.mapid >= 0) || !(data.newRecord == true || data.newRecord == false)) {
             callback(false);
             return false;
         }
@@ -81,14 +81,29 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     }
     
+    rest.updateFolder = function(data,callback){
+    	if(!(data.parentId >= 0)||!(data.folderId >= 0)||data.parentId==data.folderId){
+    		callback(false);
+            return false;
+    	}
+    	
+    	d3.json('/hoot-services/osm/api/0.6/map/updateParentId?folderId=' + data.folderId + 
+        		'&parentId=' + data.parentId)
+        .post(data, function (error, data) {
+            if (error){
+                return error;
+            }
+            callback(data);
+            return data;
+        });
+    }
+    
     rest.addFolder = function (data, callback) {
         if (!data.folderName || !(data.parentId >= 0)) {
             callback(false);
             return false;
         }
-        /*callback(true);
-        return true;*/
-            	
+                    	
     	d3.json('/hoot-services/osm/api/0.6/map/addfolder?folderName=' + data.folderName + 
         		'&parentId=' + data.parentId)
         .post(data, function (error, data) {

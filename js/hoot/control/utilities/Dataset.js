@@ -154,13 +154,14 @@ Hoot.control.utilities.dataset = function(context) {
 	 hoot_control_utilities_dataset.modifyNameContainer = function(dataset) {
 			hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
 		    var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+		    var folderId = dataset.folderId || 0;
 		      
 		    var placeholder = 'root';
-			 if(folder.parentId < 0){folder.parentId = 0;}
-			 if(folder.parentId > 0){
-				 if( _.findWhere(folderList,{id:folder.parentId})){
-					 placeholder = _.findWhere(folderList,{id:folder.parentId}).name;
-				 }
+			if(folderId > 0){
+				if( _.findWhere(folderList,{id:folderId})){
+					var match = _.findWhere(folderList,{id:folderId});
+					if(match){placeholder = match.folderPath};
+				}
 			 }
 		    
 		 var d_form = [{
@@ -189,7 +190,7 @@ Hoot.control.utilities.dataset = function(context) {
 	            .append('div')
 	            .classed('big pad1y keyline-bottom space-bottom2', true)
 	            .append('h4')
-	            .text('Rename ' + dataset.type.charAt(0).toUpperCase() + dataset.type.slice(1).toLowerCase())
+	            .text('Modify ' + dataset.type.charAt(0).toUpperCase() + dataset.type.slice(1).toLowerCase())
 	            .append('div')
 	            .classed('fr _icon x point', true)
 	            .on('click', function () {
@@ -242,58 +243,62 @@ Hoot.control.utilities.dataset = function(context) {
 	         submitExp.append('span')
 	        .classed('round strong big loud dark center col10 margin1 point', true)
 	        .classed('inline row1 fl col10 pad1y', true)
-	            .text('Update Name')
+	            .text('Update')
 	            .on('click', function () {
-
-	                var pathname = _form.select('.pathname').value()
-	                if(pathname==''){pathname=_form.select('.pathname').attr('placeholder');}
-	                if(pathname=='root'){pathname='';}
-	                var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
-	                
-	                var newfoldername = _form.select('.newfoldername').value();
-	                if(newfoldername !=''){
-		                var resp = context.hoot().checkForUnallowedChar(newfoldername);
-	                	if(resp != true){
-	                		alert(resp);
-	                		return;
-	                    } else {
-	                    	//create new folder
-	                    	var folderData = {};
-	                    	folderData.folderName = newfoldername;
-	                    	folderData.parentId = pathId;
-	                    	Hoot.model.REST('addFolder',folderData,function(a){
-	                    		 pathId = a.folderId;
-	                    	 });
-	                    }
-	                }
-	                
-	                var outputname =_form.select('.fileOutputName').value();
-	                if(outputname.toLowerCase() != dataset.name.toLowerCase()){
-		                if(outputname==''){outputname=_form.select('.fileOutputName').attr('placeholder');}
-		                var resp = context.hoot().checkForUnallowedChar(outputname);
-	                	if(resp != true){
-	                		alert(resp);
-	                		return;
-	                    }
-	                	
-	                	//Make sure it isn't a duplicate
-	                	 if(context.hoot().model.layers.getLayers()[name]){alert('Layer already exists');return;}
-	                }              	                	
-                	
+	            	var pathname = _form.select('.pathname').value();
+	            	if(pathname==''){pathname=_form.select('.pathname').attr('placeholder');}
+                    if(pathname=='root'){pathname='';}
+                    var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+                    
+                    //make sure a change is being made to foldername
+                    var outputname =_form.select('.fileOutputName').value();
+                    
                 	var data = {};
                 	data.inputType = dataset.type;
                 	data.mapid = dataset.id;
                 	data.modifiedName = outputname;
                 	data.folderId = pathId;
+                    
+                    if(outputname == ''){outputname=dataset.name;}
+                    if(outputname.toLowerCase() != dataset.name.toLowerCase()){
+                    	var resp = context.hoot().checkForUnallowedChar(outputname);
+                    	if(resp != true){
+                    		alert(resp);
+                    		return;
+                        }
+                    	if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == outputname})))
+                    	{
+                            alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.");
+                            return;
+                        }
+                    	
+                    	data.newRecord=false;
+                    }
                 	
 	                context.hoot().model.layers.updateLayerName(data, function(status){
-	                    if(status != true){
-	                        alert('Export has failed or partially failed. For detail please see Manage->Log.');
-	                        modalbg.remove();
-	                    } else {
-	                        modalbg.remove();
-	                        context.hoot().model.layers.RefreshLayers();
-	                    }
+	                        //determine if a new folder is being added
+	                        var newfoldername = _form.select('.newfoldername').value();
+	                        resp = context.hoot().checkForUnallowedChar(newfoldername);
+	                    	if(resp != true){
+	                    		alert(resp);
+	                    		return;
+	                        }
+	                        
+	                        var folderData = {};
+	                        folderData.folderName = newfoldername;
+	                        folderData.parentId = pathId;
+	                        hoot.model.folders.addFolder(folderData,function(a){
+	                        	context.hoot().model.layers.refresh(function(){
+		                        	//update map linking
+		                            var link = {};
+		                            link.folderId = a;//parseInt(_form.select('.reset.PathName').property('title'))||0;
+		                            link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == outputname}),'id')[0] || 0;
+		                            if(link.mapid==0){return;}
+		                            link.newRecord=false;
+		                            hoot.model.folders.updateLink(link);
+			                        modalbg.remove();	
+	                        	});	                        
+	                        });
 	                });
 	            });
 

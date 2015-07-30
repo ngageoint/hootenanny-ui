@@ -112,11 +112,8 @@ Hoot.model.import = function (context)
                 status.info = 'failed';
                 importCallback(status);
              } 
-
             return;
         }
-
-
 
         var imprtProg = d3.select('#importprogress'); 
         var imprtProgText = d3.select('#importprogresstext');
@@ -183,15 +180,12 @@ Hoot.model.import = function (context)
 
     var _uploadHandler = function (uploadJobStat) 
     {
-    	context.hoot().model.import.updateTrees();
-        /*var datasettable = d3.select('#datasettable');
-        context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);*/
+    	//context.hoot().model.import.updateTrees(); //moved to when links are refreshed
         if(importCallback){
             var status = {};
             status.info = uploadJobStat.status;
             importCallback(status);
             }
-
     }
 
     var _initVariables = function()
