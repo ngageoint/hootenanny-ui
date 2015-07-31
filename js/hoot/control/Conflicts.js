@@ -97,24 +97,54 @@ Hoot.control.conflicts = function (context, sidebar) {
             d3.selectAll('path').classed('activeReviewFeature2', false);
         };
         var highlightLayer = function (item) {
-            //console.log(item);
+            console.log(item);
             var idid = reviewItemID(item);
             var idid2 = reviewAgainstID(item);
             var feature, againstFeature;
-            var max = 20;
+            var max = 4;
             var calls = 0;
+            var loadedMissing = false;
             var getFeatureTimer = setInterval(function () {
                 if (calls < max) {
                     getFeature();
                     calls++;
+//                } else if (loadedMissing) {
+//                    getFeatureStopTimer(true);
+//                    window.alert('One feature involved in this review was not found in the visible map extent');
                 } else {
-                    getFeatureStopTimer(true);
-                    window.alert('One feature involved in this review was not found in the visible map extent');
+                    //Make a call to grab the individual feature
+                    context.connection().loadMissing([idid, idid2], function(err, entities) {
+                        console.log(entities);
+                        //loadedMissing = true;
+                        //calls = 0;
+                        feature = entities.data.filter(function(d) {
+                            return d.id === idid;
+                        }).pop();
+                        againstFeature = entities.data.filter(function(d) {
+                            return d.id === idid2;
+                        }).pop();
+                        getFeatureStopTimer();
+                    });
                 }
             }, 500);
             var getFeatureStopTimer = function (skip) {
                 clearInterval(getFeatureTimer);
                 if (!skip) {
+                    //Merge currently only works on nodes
+                    if (feature.id.charAt(0) === 'n' && againstFeature.id.charAt(0) === 'n') {
+                        //Show merge button
+                        d3.select('a.merge').classed('hide', false);
+                        //Override with current pair of review features
+                        mergeFeatures = function() {
+                            context.hoot().model.conflicts.autoMergeFeature(feature, againstFeature, mapid);
+                        };
+                    } else {
+                        //Hide merge button
+                        d3.select('a.merge').classed('hide', true);
+                        //Override with no-op
+                        mergeFeatures = function() {};
+                    }
+
                     resetStyles();
                     if (feature) {
                         d3.selectAll('.activeReviewFeature')
@@ -136,13 +166,13 @@ Hoot.control.conflicts = function (context, sidebar) {
             };
             var getFeature = function () {
                 feature = context.hasEntity(idid);
-                //console.log(feature);
+                console.log(feature);
                 if (!feature) {
                     feature = context.hoot().model.conflicts.findDescendent(idid);
                 }
 
                 againstFeature = context.hasEntity(idid2);
-                //console.log(againstFeature);
+                console.log(againstFeature);
                 if (!againstFeature) {
                     againstFeature = context.hoot().model.conflicts.findDescendent(idid2);
                 }
@@ -153,20 +183,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                         getFeatureStopTimer(true);
                         retainFeature();
                     } else {
-                        //Merge currently only works on nodes
-                        if (feature.id.charAt(0) === 'n' && againstFeature.id.charAt(0) === 'n') {
-                            //Show merge button
-                            d3.select('a.merge').classed('hide', false);
-                            //Override with current pair of review features
-                            mergeFeatures = function() {
-                                context.hoot().model.conflicts.autoMergeFeature(feature, againstFeature, mapid);
-                            };
-                        } else {
-                            //Hide merge button
-                            d3.select('a.merge').classed('hide', true);
-                            //Override with no-op
-                            mergeFeatures = function() {};
-                        }
                         getFeatureStopTimer();
                     }
                 } else {
