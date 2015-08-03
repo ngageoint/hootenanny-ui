@@ -63,14 +63,14 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
     
     rest.updateMapFolderLinks = function(data,callback){
-    	if (!(data.folderId >= 0) || !(data.mapid >= 0) || !(data.newRecord == true || data.newRecord == false)) {
+    	if (!(data.folderId >= 0) || !(data.mapid >= 0) || !data.updateType) {
             callback(false);
             return false;
         }
         /*callback(true);
         return true;*/
         d3.json('/hoot-services/osm/api/0.6/map/linkMapFolder?mapId=' + data.mapid + 
-        		'&folderId=' + data.folderId + '&newRecord=' + data.newRecord)
+        		'&folderId=' + data.folderId + '&updateType=' + data.updateType)
         .post(data, function (error, data) {
             if (error){
                 alert("Modify name failed! For detailed log goto Manage->Log");
@@ -116,7 +116,18 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
-
+    rest.deleteFolder = function (folderId,callback) {
+    	if(!(folderId >= 0)) {
+    		callback(false);
+    		return false;
+    	}
+    	
+    	d3.json('/hoot-services/osm/api/0.6/map/deletefolder?folderId=' + d.id)
+        .post(function (error, data) {
+        	callback(true);
+        });
+    }
+    
     rest.basemapUpload = function (data, callback) {
         if (!data.formData) {
             return false;

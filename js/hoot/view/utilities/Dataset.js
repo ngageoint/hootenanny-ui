@@ -68,41 +68,57 @@ Hoot.view.utilities.dataset = function(context)
             datasets2remove=_.filter(availLayers,function(n){return n.id==mapId;});
         }
         
-        datasets2remove.forEach(function(dataset){
-        	var exists = context.hoot().model.layers.getLayers()[dataset.id];
-            if(exists){
-            	alert('Can not remove the layer in use: ' + dataset.name);
-            	rectNode.style('fill',currentFill);
-            	return;
-            }
-            
-            //select the rect using lyr-id
-            var selNode  = this.selectAll("text[lyr-id='" + dataset.id + "']").node().parentNode;
-    	    var selRect = d3.select(selNode).select('rect'); 
-    	    var currentFill = selRect.style('fill');
-    	    selRect.style('fill','rgb(255,0,0)');
-            
-    	    d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + dataset.name)
-        	.header('Content-Type', 'text/plain')
-        	.post("", function (error, data) {
-
-        		var exportJobId = data.jobId;
-
-        		var statusUrl = '/hoot-services/job/status/' + exportJobId;
-        		var statusTimer = setInterval(function () {
-        			d3.json(statusUrl, function (error, result) {
-        				if (result.status !== 'running') {
-        					Hoot.model.REST.WarningHandler(result);
-        					clearInterval(statusTimer);
-        					var btnId = result.jobId;
-        					selNode.remove();
-        					d3.select('.context-menu').style('display', 'none');
-        					context.hoot().model.layers.RefreshLayers();
-        				}
-        			});
-        		}, iD.data.hootConfig.JobStatusQueryInterval);
-        	});
-        },container);
+    	datasets2remove.forEach(function(dataset){
+	    	var exists = context.hoot().model.layers.getLayers()[dataset.id];
+	        if(exists){
+	        	alert('Can not remove the layer in use: ' + dataset.name);
+	        	rectNode.style('fill',currentFill);
+	        	return;
+	        }
+	        
+	        //select the rect using lyr-id
+	        var selNode  = this.selectAll("text[lyr-id='" + dataset.id + "']").node().parentNode;
+		    var selRect = d3.select(selNode).select('rect'); 
+		    var currentFill = selRect.style('fill');
+		    selRect.style('fill','rgb(255,0,0)');
+		    
+		    link={};
+		    link.mapid=dataset.id;
+		    link.folderId=0;
+	        
+		    d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + dataset.name)
+	    	.header('Content-Type', 'text/plain')
+	    	.post("", function (error, data) {
+	
+	    		var exportJobId = data.jobId;
+	
+	    		var statusUrl = '/hoot-services/job/status/' + exportJobId;
+	    		var statusTimer = setInterval(function () {
+	    			d3.json(statusUrl, function (error, result) {
+	    				if (result.status !== 'running') {
+	    					Hoot.model.REST.WarningHandler(result);
+	    					clearInterval(statusTimer);
+	    					var btnId = result.jobId;
+	    					selNode.remove();
+	    					d3.select('.context-menu').style('display', 'none');
+	        					//update map linking
+	    						if(link){
+	                            if(link.mapid!=0){
+	                            	link.updateType='delete';
+	                            	hoot.model.folders.updateLink(link);
+	                            	link = {};
+	                            }}
+	    					context.hoot().model.layers.RefreshLayers();
+	    				}
+	    			});
+	    		}, iD.data.hootConfig.JobStatusQueryInterval);
+	    	});
+	    },container);
+	        	
+	    Hoot.model.REST.deleteFolder(d.id,function(resp){
+	    	context.hoot().model.layers.RefreshLayers();
+	    });
+        	
     }
     
     hoot_view_utilities_dataset.exportDataset = function(d,container) {

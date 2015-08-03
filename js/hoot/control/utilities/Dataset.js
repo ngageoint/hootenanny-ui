@@ -272,7 +272,7 @@ Hoot.control.utilities.dataset = function(context) {
                             return;
                         }
                     	
-                    	data.newRecord=false;
+                    	data.updateType="update";
                     }
                 	
 	                context.hoot().model.layers.updateLayerName(data, function(status){
@@ -294,8 +294,9 @@ Hoot.control.utilities.dataset = function(context) {
 		                            link.folderId = a;//parseInt(_form.select('.reset.PathName').property('title'))||0;
 		                            link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == outputname}),'id')[0] || 0;
 		                            if(link.mapid==0){return;}
-		                            link.newRecord=false;
+		                            link.updateType="update";
 		                            hoot.model.folders.updateLink(link);
+		                            link = {};
 			                        modalbg.remove();	
 	                        	});	                        
 	                        });
@@ -751,7 +752,8 @@ Hoot.control.utilities.dataset = function(context) {
                                 if(status.info == 'complete'){
                                     if(isCancel == false){
                                         modalbg.remove();
-                                    }
+                                        
+                                    //}
                                     
                                     var pathname = _form.select('.reset.PathName').value();
                                     if(pathname==''){pathname=_form.select('.reset.PathName').attr('placeholder');}
@@ -768,26 +770,16 @@ Hoot.control.utilities.dataset = function(context) {
                                     	//update map linking
                                         var link = {};
                                         link.folderId = a;//parseInt(_form.select('.reset.PathName').property('title'))||0;
-                                        link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == _form.select('.reset.LayerName').value()}),'id')[0] || 0;
+                                        link.mapid=0;
+                                        if(_form.select('.reset.LayerName').value())
+                                        {link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == _form.select('.reset.LayerName').value()}),'id')[0] || 0;}
                                         if(link.mapid==0){return;}
-                                        link.newRecord=true;
+                                        link.updateType='new';
                                         hoot.model.folders.updateLink(link);
+                                        link = {};
                                     })
                                     
-                                    //create new folder if necessary
-                                   /* if(newfoldername !=''){
-            	                    	//create new folder
-            	                    	var folderData = {};
-            	                    	folderData.folderName = newfoldername;
-            	                    	folderData.parentId = pathId;
-            	                    	Hoot.model.REST('addFolder',folderData,function(a){
-            	                    		 pathId = a.folderId;
-            	                    	 });                	                    
-                	                } else {
-                	                	
-                	                }*/
-                                    
-                                    
+                                    }
 
                                 } else if(status.info == 'uploaded'){
                                     jobIds = status.jobids;

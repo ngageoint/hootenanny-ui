@@ -335,9 +335,9 @@ Hoot.model.layers = function (context)
     model_layers.updateLayerName = function(data,callback){
     	
     	Hoot.model.REST('Modify',data,function(resp){
-    		if(resp.success == true){
+    		//if(resp.success == true){
     			if(callback){callback(resp.success);}
-    		}
+    		//}
     		//return resp.success;
     	});
     	//return true;

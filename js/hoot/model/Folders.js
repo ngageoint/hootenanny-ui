@@ -47,6 +47,7 @@ Hoot.model.folders = function (context)
     model_folders.addFolder = function(data,callback){
     	if(!data.folderName || !(data.parentId>=0)){
     		if(callback){callback(data.parentId);}
+    		return false;
     	}
     	
     	callbackData = {};

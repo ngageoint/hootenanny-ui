@@ -146,31 +146,7 @@ Hoot.tools = function (context, selection) {
             'Cookie Cutter & Horizontal':'Horizontal'
           };
 
-        var pathname = a.select('.pathname').value()
-        if(pathname==''){pathname=a.select('.reset.PathName').attr('placeholder');}
-        if(pathname=='root'){pathname='';}
-        var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
-        
-        var newfoldername = a.select('.newfoldername').value();
-        if(newfoldername !=''){
-        	var resp = context.hoot().checkForUnallowedChar(newfoldername);
-        	if(resp != true){
-        		alert(resp);
-        		return;
-            } else {
-            	//create new folder
-            	var folderData = {};
-            	folderData.folderName = newfoldername;
-            	folderData.parentId = pathId;
-            	Hoot.model.REST('addFolder',folderData,function(a){
-            		 pathId = a.folderId;
-            	 });
-            }
-        }
-        
-        var outputname = pathname.concat(a.select('.saveAs').value());
-        
-        data.OUTPUT_NAME = outputname || a.select('.saveAs').value();
+        data.OUTPUT_NAME = a.select('.saveAs').value();
         data.CONFLATION_TYPE = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
         //data.CONFLATION_TYPE = a.select('.ConfType').value();
         //data.MATCH_THRESHOLD = a.select('.matchThreshold').value();
@@ -202,7 +178,7 @@ Hoot.tools = function (context, selection) {
         return data;
     }
 
-    function postConflation(item) {
+    function postConflation(item,a) {
         var layers = inputLayers();
 
         _.each(layers, function (d) {
@@ -218,8 +194,33 @@ Hoot.tools = function (context, selection) {
         });
         d3.select('.loadingLayer').remove();
         hoot.model.layers.addLayer(item);
-        var datasettable = d3.select('#datasettable');
-        hoot.view.utilities.dataset.populateDatasetsSVG(datasettable);
+        
+        //Add a folder and update links
+        var pathname = a.select('.pathname').value()
+        if(pathname==''){pathname=a.select('.reset.PathName').attr('placeholder');}
+        if(pathname=='root'){pathname='';}
+        var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+        
+        var newfoldername = a.select('.newfoldername').value();
+        var folderData = {};
+        folderData.folderName = newfoldername;
+        folderData.parentId = pathId;
+        hoot.model.folders.addFolder(folderData,function(folderId){
+        	//update map linking
+            var link = {};
+            link.folderId = folderId || 0;
+            link.mapid = 0;
+            if(a.select('.saveAs').value()){
+            	link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == a.select('.saveAs').value()}),'id')[0] || 0;
+            }
+            if(link.mapid==0){return;}
+            link.updateType='new';
+            hoot.model.folders.updateLink(link);
+            link = {};
+        });
+        
+        /*var datasettable = d3.select('#datasettable');
+        hoot.view.utilities.dataset.populateDatasetsSVG(datasettable);*/
     }
 
     function renderInputLayer(layerName,params) {
@@ -403,7 +404,7 @@ Hoot.tools = function (context, selection) {
                         var result2 = JSON.parse(res2.statusDetail);
                         data.INPUT2_ESTIMATE = "" + result2.EstimatedSize;
                          hoot.model.conflate.conflate(conflationExecType, data, function (item) {
-                             postConflation(item);
+                             postConflation(item,a);
                          });
                     });
                 });
@@ -413,7 +414,7 @@ Hoot.tools = function (context, selection) {
                     if(item.status && item.status == "requested"){
                         conflate.jobid = item.jobid;
                     } else {
-                        postConflation(item);
+                        postConflation(item,a);
                     }
 
                 });
