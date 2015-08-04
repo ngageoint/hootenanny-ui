@@ -138,11 +138,30 @@ Hoot.control.conflicts = function (context, sidebar) {
                         mergeFeatures = function() {
                             context.hoot().model.conflicts.autoMergeFeature(feature, againstFeature, mapid);
                         };
+                        function loadArrow(d) {
+                            if (d3.event) d3.event.preventDefault();
+                            if (d3.event.type === 'mouseover' || d3.event.type === 'mouseenter') {
+                                context.background().updateArrowLayer(d);
+                            } else {
+                                context.background().updateArrowLayer({});
+                            }
+                        }
+                        var arw = { "type": "LineString",
+                                    "coordinates": [ againstFeature.loc, feature.loc]
+                        };
+                        //Add hover handler to show arrow
+                        d3.select('a.merge').on('mouseenter', function() {
+                            loadArrow(arw);
+                        }).on('mouseleave', function() {
+                            loadArrow(arw);
+                        });
                     } else {
                         //Hide merge button
                         d3.select('a.merge').classed('hide', true);
                         //Override with no-op
                         mergeFeatures = function() {};
+                        d3.select('a.merge').on('mouseenter', function() {}).on('mouseleave', function() {});
+
                     }
 
                     resetStyles();
