@@ -212,16 +212,3 @@ td.f2 {
 td.f1:hover, td.f2:hover {
   cursor: pointer;
 }
-
-path.arrow.line {
-    stroke: #ff0000;
-    stroke-width: 3px;
-    fill: none;
-}
-path.arrow.head {
-    fill: #ff0000;
-}
-circle.arrow.tail{
-    stroke: none;
-    fill: #ff0000;
-}

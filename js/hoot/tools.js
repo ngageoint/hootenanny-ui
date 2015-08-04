@@ -188,7 +188,7 @@ Hoot.tools = function (context, selection) {
         _.each(loadedLayers, function (a) {
             a.loadable = false;
         });
-        //d3.select('.loadingLayer').remove();
+        d3.select('.loadingLayer').remove();
         hoot.model.layers.addLayer(item);
         var datasettable = d3.select('#datasettable');
         hoot.view.utilities.dataset.populateDatasets(datasettable);
@@ -359,9 +359,7 @@ Hoot.tools = function (context, selection) {
 
             var data = preConflation(a, layerName, advOptions);
             var type = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
-            //var conflationExecType = (type === 'Horizontal') ? 'CookieCutterConflate' : 'Conflate';
-            //Bug #6397
-            var conflationExecType = 'Conflate';
+            var conflationExecType = (type === 'Horizontal') ? 'CookieCutterConflate' : 'Conflate';
             if(data.AUTO_TUNNING == 'true'){
                 var data1 = {};
                 data1.INPUT = data.INPUT1;
@@ -405,10 +403,6 @@ Hoot.tools = function (context, selection) {
             renderInputLayer(layerName,params);
         }
         if (merged) {
-            var sel = d3.select('.loadingLayer');
-            if(sel && sel.node()){
-                sel.remove();
-            }
             renderMergedLayer(layerName);
         }
         conflationCheck(layerName, true);*/

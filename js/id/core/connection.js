@@ -111,13 +111,6 @@ iD.Connection = function(context) {
             });
     };
 
-    connection.loadMissing = function(ids, callback) {
-        connection.loadMultiple(ids, function(err, entities) {
-            event.load(err, {data: entities});
-            if (callback) callback(err, entities);
-        });
-    };
-
     connection.loadMultiple = function(ids, callback, hootcallback) {
         // TODO: upgrade lodash and just use _.chunk
         function chunk(arr, chunkSize) {

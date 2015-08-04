@@ -8,8 +8,5 @@
     "hootMapInitialZoom": 17.2,
     "maxnodescount" : 10000,
     "p2pServerPort": "8096",
-    "pluginhost":"hoot",
-    "presetMaxLevDistance" : 40,
-    "presetMaxDisplayNum" : 12,
-    "userEmail":"test@test.com"
+    "pluginhost":"hoot"
 }

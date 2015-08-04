@@ -20,7 +20,7 @@ Hoot.model.conflicts = function(context)
                 }
                 if (callback) {
                     response.reviewableItems = _.filter(response.reviewableItems, function (d) {
-                        return true;//d.type !== 'relation';
+                        return d.type !== 'relation';
                     });
                     model_conflicts.reviews = response;
                     callback(response);
