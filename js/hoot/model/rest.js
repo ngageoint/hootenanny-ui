@@ -633,6 +633,77 @@ rest.ReviewMarkItem = function(data, callback)
             });
 };
 
+
+rest.reviewUpdateStatus = function(data, callback)
+{
+    var mapId = data.mapId;
+    //console.log("ReviewMarkAll mapId: " + mapId);
+    //markItemsReviewedRequest is required but can be unpopulated when markAll=true
+    var markItemsReviewedRequest = {};
+    markItemsReviewedRequest.reviewid = data.reviewid;
+    d3.json('/hoot-services/job/review/updatestatus?mapId='+mapId)
+        .header('Content-Type', 'application/json')
+        .send(
+            'PUT',
+            JSON.stringify(markItemsReviewedRequest),
+            function(error, response)
+            {
+                if (error)
+                {
+                    alert("Review Mark All failed.");
+                }
+                callback(error, response);
+            });
+};
+
+rest.reviewResetStatus = function(data, callback)
+{
+    var mapId = data.mapId;
+    //console.log("ReviewMarkAll mapId: " + mapId);
+    //markItemsReviewedRequest is required but can be unpopulated when markAll=true
+    var markItemsReviewedRequest = {};
+    markItemsReviewedRequest.reviewid = data.reviewid;
+    d3.json('/hoot-services/job/review/resetstatus?mapId='+mapId)
+        .header('Content-Type', 'application/json')
+        .send(
+            'PUT',
+            JSON.stringify(markItemsReviewedRequest),
+            function(error, response)
+            {
+                if (error)
+                {
+                    alert("Review Mark All failed.");
+                }
+                callback(error, response);
+            });
+};
+
+rest.reviewGetNext = function(data, callback)
+{
+    var mapId = data.mapId;
+  
+    var markItemsReviewedRequest = {};
+ 
+    markItemsReviewedRequest.offset = data.offset;
+    markItemsReviewedRequest.direction = data.direction;
+    markItemsReviewedRequest.offsetid = data.uuid;
+    d3.json('/hoot-services/job/review/next?mapId='+mapId)
+        .header('Content-Type', 'application/json')
+        .send(
+            'PUT',
+            JSON.stringify(markItemsReviewedRequest),
+            function(error, response)
+            {
+                if (error)
+                {
+                    alert("Get next review failed.");
+                }
+                callback(error, response);
+            });
+};
+
+
+
 rest.ReviewGetStatistics = function (mapId, callback) {
             
         d3.json('/hoot-services/job/review/statistics?mapId=' + mapId, function (error, resp) {
