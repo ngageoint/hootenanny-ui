@@ -27,7 +27,11 @@ iD.ui.RawTagEditor = function(context) {
 
     function content($wrap,sortAZ) {
         var entries = d3.entries(tags);
-    	if(sortAZ!=null){
+    	if(sortAZ==undefined||null){
+    		if(!d3.select('#sort-tags').empty()){sortAZ = d3.select('#sort-tags').property('checked');}
+    		else{sortAZ=false;}
+    	}
+        if(sortAZ){
     		entries.sort(function(a,b){var textA = a.key.toUpperCase();
 	    	    var textB = b.key.toUpperCase();
 	    	    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
@@ -66,9 +70,9 @@ iD.ui.RawTagEditor = function(context) {
             	return retval;	
             });
         	    
-       if(d3.select('#entity_editor_presettranstype').value()=='OSM'){
+      /* if(d3.select('#entity_editor_presettranstype').value()=='OSM'){
     	   d3.select('#sort-tags-div').classed('hidden',false);
-       } else {d3.select('#sort-tags-div').classed('hidden',true);}
+       } else {d3.select('#sort-tags-div').classed('hidden',true);}*/
        
        $sortAZ.on('change',function(){
         	var sortAZ = d3.select('#sort-tags').property('checked');
@@ -115,9 +119,10 @@ iD.ui.RawTagEditor = function(context) {
 
         // Update
 
-        if(!translation) {
+        //removed to allow for A-Z sorting
+        //if(!translation) {
             $items.order();
-        }
+        //}
         
 
         $items.each(function(tag) {
