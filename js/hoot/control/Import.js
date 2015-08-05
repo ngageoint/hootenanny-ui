@@ -74,6 +74,7 @@ Hoot.control.import = function (context,selection) {
             .data(d_form)
             .enter()
             .append('div')
+            .classed('overflow',true)
             .style({'height':'150px','margin':'0 0 15px'})
             .select(ETL.renderTree);
         

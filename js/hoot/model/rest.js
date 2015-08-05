@@ -73,7 +73,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		'&folderId=' + data.folderId + '&updateType=' + data.updateType)
         .post(data, function (error, data) {
             if (error){
-                alert("Modify name failed! For detailed log goto Manage->Log");
+                alert("Folder-Map link failed! For detailed log goto Manage->Log");
                 return error;
             }
             callback(data);
@@ -116,17 +116,21 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
+    
     rest.deleteFolder = function (folderId,callback) {
     	if(!(folderId >= 0)) {
     		callback(false);
     		return false;
     	}
     	
-    	d3.json('/hoot-services/osm/api/0.6/map/deletefolder?folderId=' + d.id)
+    	d3.json('/hoot-services/osm/api/0.6/map/deletefolder?folderId=' + folderId)
         .post(function (error, data) {
-        	callback(true);
+        	if(error){
+        		callback(false);
+        	} else {callback(true);}
+        	return true;
         });
-    }
+    };
     
     rest.basemapUpload = function (data, callback) {
         if (!data.formData) {
@@ -150,7 +154,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         var request = d3.json('/hoot-services/osm/api/0.6/map/links');
         request.get(function (error, resp) {
             if (error) {
-                return callback(_alertError(error, "Get available layers failed! For detailed log goto Manage->Log"));
+                return callback(_alertError(error, "Get available links failed! For detailed log goto Manage->Log"));
             }
             callback(resp);
         });
@@ -577,22 +581,6 @@ Hoot.model.REST = function (command, data, callback, option) {
 
 
     rest.getConflationCustomOpts = function(confType,callback){
-    /*	var confTypes=['custom','horizontal','average','reference'];
-    	_.each(confTypes,function(confType){
-    		var request = d3.json('/hoot-services/info/advancedopts/getoptions?conftype='+confType);
-    		request.get(function (error, resp) {
-                if (error) {
-                    return callback(_alertError(error, "Get custom conflation options failed! For detailed log goto Manage->Log"));
-                } else {
-                	if(confType=='custom'){
-                		iD.data['hootConfAdvOps'] = resp;
-                	} else {
-                		iD.data['hootConfAdvOps_'+confType] = resp;
-                	}
-                }
-            });
-    	});*/
-
         // Doing the stacked load to prevent race condition in loading data
         var request = d3.json('/hoot-services/info/advancedopts/getoptions?conftype=custom');
         request.get(function (error, resp) {

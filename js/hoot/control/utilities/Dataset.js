@@ -218,7 +218,7 @@ Hoot.control.utilities.dataset = function(context) {
 	                        .data(_.map(a.combobox, function (n) {
 	                            return {
 	                            	value: n.folderPath,
-	                                title: n.id
+	                                title: n.folderPath
 	                            };
 	                        }));
 
@@ -291,7 +291,7 @@ Hoot.control.utilities.dataset = function(context) {
 	                        	context.hoot().model.layers.refresh(function(){
 		                        	//update map linking
 		                            var link = {};
-		                            link.folderId = a;//parseInt(_form.select('.reset.PathName').property('title'))||0;
+		                            link.folderId = a;
 		                            link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == outputname}),'id')[0] || 0;
 		                            if(link.mapid==0){return;}
 		                            link.updateType="update";
@@ -307,7 +307,7 @@ Hoot.control.utilities.dataset = function(context) {
 		};
 
 
-    hoot_control_utilities_dataset.importDataContainer = function (trans) {
+    hoot_control_utilities_dataset.importDataContainer = function (trans,incomingFolder) {
             if(trans.length == 1){
                 var emptyObj = {};
                 emptyObj.NAME = "";
@@ -345,6 +345,16 @@ Hoot.control.utilities.dataset = function(context) {
             hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
             var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
             
+            var folderPlaceholder = 'root';
+            if(incomingFolder){
+            	folderId = incomingFolder.id ? incomingFolder.id : 0;
+            	if(folderId > 0){
+            		var match = _.findWhere(folderList,{id:folderId});
+    				if(match){
+    					if(match){folderPlaceholder = match.folderPath};
+    				}
+            	}
+            }            
 
             var d_form = [{
                 label: 'Import Type',
@@ -362,7 +372,7 @@ Hoot.control.utilities.dataset = function(context) {
                 type: 'LayerName'
             }, {
             	label: 'Path',
-            	placeholder: 'root',
+            	placeholder: folderPlaceholder,
             	type: 'PathName',
             	combobox3:folderList 
             }, {
@@ -677,7 +687,7 @@ Hoot.control.utilities.dataset = function(context) {
                             .data(_.map(a.combobox3, function (n) {
                                 return {
                                     value: n.folderPath,
-                                    title: n.id
+                                    title: n.folderPath
                                 };
                             }));
 
@@ -769,7 +779,7 @@ Hoot.control.utilities.dataset = function(context) {
                                     hoot.model.folders.addFolder(folderData,function(a){
                                     	//update map linking
                                         var link = {};
-                                        link.folderId = a;//parseInt(_form.select('.reset.PathName').property('title'))||0;
+                                        link.folderId = a;
                                         link.mapid=0;
                                         if(_form.select('.reset.LayerName').value())
                                         {link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == _form.select('.reset.LayerName').value()}),'id')[0] || 0;}

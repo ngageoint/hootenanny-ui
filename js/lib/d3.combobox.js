@@ -245,7 +245,7 @@ d3.combobox = function() {
             if (!shown) return;
             input
                 .property('value', d.value)
-                .property('title',d.title)
+                //.property('title',d.title)
                 .trigger('change');
             event.accept(d);
             hide();

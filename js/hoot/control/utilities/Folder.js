@@ -43,8 +43,8 @@ Hoot.control.utilities.folder = function(context) {
 	        .attr("width", width)// + margin.left + margin.right)
 	        .attr("height", height)// + margin.left + margin.right)
 	      .append("g")
-	        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-	        .call(zoom);
+	        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	        //.call(zoom);
 	   
 		folders.x0=0;
 		folders.y0=0;
@@ -65,15 +65,16 @@ Hoot.control.utilities.folder = function(context) {
 	      var nodes = tree.nodes(root);
 	
 	      var height = Math.max(400, nodes.length * barHeight + margin.top + margin.bottom);
-	
-	      d3.select("svg").transition()
+	      
+	      //replaced container with d3
+	      container.select("svg").transition()
 	          .duration(duration)
-	          .attr("height", height);
+	          .attr("height", height + "px");
 	
-	      d3.select(self.frameElement).transition()
+	      container.select(self.frameElement).transition()
 	          .duration(duration)
 	          .style("height", height + "px");
-	
+	      	      
 	      // Compute the "layout".
 	      nodes.forEach(function(n, i) {
 	        n.x = i * barHeight;
@@ -126,6 +127,7 @@ Hoot.control.utilities.folder = function(context) {
 		    	  return "translate("+ dy +",-11)"; })
 		      .html(function(d){
 		    	  if (d.type == 'folder'){return '<i class="_icon folder"></i>'}
+		    	  if (d.type == 'dataset'){return '<i class="_icon data"></i>'}
 		      });
 	      
 	      // Transition nodes to their new position.
@@ -202,7 +204,10 @@ Hoot.control.utilities.folder = function(context) {
 	        		  items = [
 	 		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
 	 		        	      {title:'Modify',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
-	 		        	      {title:'Add Dataset',icon:'data',click:'Hoot.model.REST("getTranslations",function(d){if(d.error){context.hoot().view.utilities.errorlog.reportUIError(d.error);return;}context.hoot().control.utilities.dataset.importDataContainer(d)});'},
+	 		        	      {title:'Add Dataset',icon:'data',click:
+	 		        	    	  'Hoot.model.REST("getTranslations",function(e){'+
+	 		        	    	  'if(d.error){context.hoot().view.utilities.errorlog.reportUIError(d.error);return;}'+
+	 		        	    	  'context.hoot().control.utilities.dataset.importDataContainer(e,d)});'},
 	 		        	      {title:'Add Folder',icon:'folder',click:'context.hoot().control.utilities.folder.importFolderContainer(d);'}
 	 		        	  ];
 		        	  } else {
@@ -372,9 +377,11 @@ Hoot.control.utilities.folder = function(context) {
             });
 
         	var folderId = 0;
-        	if(_.map(hoot.model.folders.getAvailFolders(),function(n){return n.id}).indexOf(data.id)>=0){
-        		folderId=data.id;
-        	}
+        	if(data){
+	        	if(_.map(hoot.model.folders.getAvailFolders(),function(n){return n.id}).indexOf(data.id)>=0){
+	        		folderId=data.id;
+	        	}
+	        }
         
             var submitExp = ingestDiv.append('div')
             .classed('form-field col12 left ', true);
@@ -395,11 +402,6 @@ Hoot.control.utilities.folder = function(context) {
                 		return;
                     }
                 	
-                	//Need to make sure that selected ID is legit.  Otherwise, set to 0
-                	//var folderId=0;
-                	/*if(_.map(hoot.model.folders.getAvailFolders(),function(n){return n.id}).indexOf(parseInt(d3.select('.PathName').property('title')))>=0){
-                		folderId=d3.select('.PathName').property('title');
-                	}*/
                 	if(_.map(hoot.model.folders.getAvailFolders(),function(n){return n.id}).indexOf(this.id)>=0){
                 		folderId=this.is;
                 	}
@@ -412,11 +414,8 @@ Hoot.control.utilities.folder = function(context) {
                     Hoot.model.REST('addFolder',data,function(a){
                         hoot.model.folders.refresh(function () {
                         	hoot.model.folders.refreshLinks(function(){
-                        		hoot.model.layers.RefreshLayers(function(){
-                        			if (callback) {
-                            			callback();
-                            		}
-                        		})        		
+                        		hoot.model.layers.RefreshLayers();
+                        		modalbg.remove();
                         	});
                         });
                     });
@@ -486,7 +485,7 @@ Hoot.control.utilities.folder = function(context) {
 	                        .data(_.map(a.combobox, function (n) {
 	                            return {
 	                            	value: n.folderPath,
-	                                title: n.id
+	                                title: n.folderPath
 	                            };
 	                        }));
 

@@ -210,8 +210,7 @@ Hoot.model.layers = function (context)
         });
 
     };
-
-
+    
     model_layers.removeLayer = function (name) {
         //var mapid = model_layers.getLayers()[name].mapId;
         var mapid = model_layers.getLayers(name).mapId;
@@ -244,6 +243,40 @@ Hoot.model.layers = function (context)
         d3.select('.layerControl_' + mapid.toString()).remove();
         context.flush();
     };
+    
+    model_layers.deleteLayer = function(dataset,callback){
+    	if(!dataset.name) {
+    		if(callback){callback(false);}
+    		return false;
+    	}
+    	
+	    d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + dataset.name)
+    	.header('Content-Type', 'text/plain')
+    	.post("", function (error, data) {
+
+    		var exportJobId = data.jobId;
+
+    		var statusUrl = '/hoot-services/job/status/' + exportJobId;
+    		var statusTimer = setInterval(function () {
+    			d3.json(statusUrl, function (error, result) {
+    				if (result.status !== 'running') {
+    					Hoot.model.REST.WarningHandler(result);
+    					clearInterval(statusTimer);
+    					
+    					//update link
+    					var link={};
+    					link.folderId = 0;
+    					link.updateType='delete';
+    				    link.mapid=hoot.model.layers.getmapIdByName(dataset.name)||0;
+    				    hoot.model.layers.refresh(function(){
+    				    	if(callback){callback(true);}
+    					});
+    				}
+    			});
+    		}, iD.data.hootConfig.JobStatusQueryInterval);
+    	});
+    };
+    
     model_layers.changeVisibility = function (name) {
         var layer = model_layers
             .getLayers(name);

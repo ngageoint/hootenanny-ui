@@ -8,6 +8,9 @@ Hoot.model.import = function (context)
     import_layer.updateTrees = function()
     {
     	//This function updates the SVG folder/dataset collapsable tree
+    	var datasettable = d3.select('#datasettable');
+        context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);
+    	
     	_.each(d3.select("#sidebar2").node().childNodes,function(f){
     		if(f.classList.contains('hootImport')){
     			var _svg = d3.select(f).select('svg');
@@ -18,9 +21,6 @@ Hoot.model.import = function (context)
     			}
     		}
     	});
-    	
-    	var datasettable = d3.select('#datasettable');
-        context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);
     }
     
     import_layer.importData = function (container, callback) {

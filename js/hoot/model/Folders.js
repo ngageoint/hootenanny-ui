@@ -44,6 +44,21 @@ Hoot.model.folders = function (context)
         });
     };
     
+    model_folders.deleteFolder = function(folderId,callback){
+    	if(!(folderId >= 0)) {
+    		callback(false);
+    		return false;
+    	}
+    	
+    	Hoot.model.REST('deleteFolder',folderId,function(a){
+    		if(a){
+    			model_folders.refresh(function(b){
+            		if(callback){callback(true);}
+        		});
+    		}
+    	});
+    };
+    
     model_folders.addFolder = function(data,callback){
     	if(!data.folderName || !(data.parentId>=0)){
     		if(callback){callback(data.parentId);}
@@ -65,10 +80,12 @@ Hoot.model.folders = function (context)
    	 	});     
     }
     
-    model_folders.updateLink = function(link) {
+    model_folders.updateLink = function(link,callback) {
     	Hoot.model.REST('updateMapFolderLinks',link,function(a){
             context.hoot().model.folders.refreshLinks(function(){
             	context.hoot().model.import.updateTrees();
+            	
+            	if(callback){callback();}
             });
         });
     }
@@ -83,12 +100,12 @@ Hoot.model.folders = function (context)
             }
 
             if (!a.links) {
-                return callback([]);
+                if(callback){return callback([]);}
             }
             availLinks = a.links;
             
             if (callback) {
-                callback(availLinks);
+                if(callback){callback(availLinks);}
             }
         });
     }

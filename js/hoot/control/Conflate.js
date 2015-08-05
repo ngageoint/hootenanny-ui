@@ -224,7 +224,7 @@ Hoot.control.conflate = function (sidebar) {
                     .data(_.map(a.combobox2, function (n) {
                         return {
                             value: n.folderPath,
-                            title: n.id
+                            title: n.folderPath
                         };
                     }));
 

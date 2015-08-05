@@ -241,7 +241,9 @@ input.round        { border-radius:4px; }
  .rcon.openeye:after, ._icon.openeye:before                     { background-position:-520px -30px; }
  .rcon.closedeye:after, ._icon.closedeye:before  		            { background-position:-480px -30px; }
 
- .rcon.export:after, ._icon.export:before                     { background-position:-330px 0px; }		
+ .rcon.export:after, ._icon.export:before                	      { background-position:-330px 0px; }		
+
+	.rcon.big.refresh:after, ._icon.big.refresh:before						 { background-position:-205px -80px; }
 
 .palette .active:before {
   position:relative;
