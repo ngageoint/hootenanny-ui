@@ -135,6 +135,10 @@ Hoot.tools = function (context, selection) {
         if(refLayerName == data.INPUT2){
             refLayer = '2';
         }
+        
+        var cl = context.hoot().model.layers.getAvailLayers().slice(0);
+        data.INPUT1 = _.findWhere(cl,{id:context.hoot().model.layers.getmapIdByName(data.INPUT1)}).name;
+        data.INPUT2 = _.findWhere(cl,{id:context.hoot().model.layers.getmapIdByName(data.INPUT2)}).name
 
         var _confType = {
             'Reference':'Reference',
@@ -174,7 +178,7 @@ Hoot.tools = function (context, selection) {
         return data;
     }
 
-    function postConflation(item) {
+    function postConflation(item,a) {
         var layers = inputLayers();
 
         _.each(layers, function (d) {
@@ -190,8 +194,33 @@ Hoot.tools = function (context, selection) {
         });
         //d3.select('.loadingLayer').remove();
         hoot.model.layers.addLayer(item);
-        var datasettable = d3.select('#datasettable');
-        hoot.view.utilities.dataset.populateDatasets(datasettable);
+        
+        //Add a folder and update links
+        var pathname = a.select('.pathname').value()
+        if(pathname==''){pathname=a.select('.reset.PathName').attr('placeholder');}
+        if(pathname=='root'){pathname='';}
+        var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+        
+        var newfoldername = a.select('.newfoldername').value();
+        var folderData = {};
+        folderData.folderName = newfoldername;
+        folderData.parentId = pathId;
+        hoot.model.folders.addFolder(folderData,function(folderId){
+        	//update map linking
+            var link = {};
+            link.folderId = folderId || 0;
+            link.mapid = 0;
+            if(a.select('.saveAs').value()){
+            	link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == a.select('.saveAs').value()}),'id')[0] || 0;
+            }
+            if(link.mapid==0){return;}
+            link.updateType='new';
+            hoot.model.folders.updateLink(link);
+            link = {};
+        });
+        
+        /*var datasettable = d3.select('#datasettable');
+        hoot.view.utilities.dataset.populateDatasetsSVG(datasettable);*/
     }
 
     function renderInputLayer(layerName,params) {
@@ -377,7 +406,7 @@ Hoot.tools = function (context, selection) {
                         var result2 = JSON.parse(res2.statusDetail);
                         data.INPUT2_ESTIMATE = "" + result2.EstimatedSize;
                          hoot.model.conflate.conflate(conflationExecType, data, function (item) {
-                             postConflation(item);
+                             postConflation(item,a);
                          });
                     });
                 });
@@ -387,7 +416,7 @@ Hoot.tools = function (context, selection) {
                     if(item.status && item.status == "requested"){
                         conflate.jobid = item.jobid;
                     } else {
-                        postConflation(item);
+                        postConflation(item,a);
                     }
 
                 });

@@ -32,10 +32,17 @@ Hoot.hoot = function (context) {
             hoot.demo = true;
             Hoot.demo(context);
         }
-        hoot.model.layers.refresh(function () {
-            if (callback) {
-                callback();
-            }
+        hoot.model.folders.refresh(function () {
+        	hoot.model.layers.refresh(function(){
+        		hoot.model.folders.refreshLinks(function(){
+        			if (callback) {
+            			callback();
+            		}
+        		})        		
+        	});
+        	/*if (callback) {
+        		callback();
+            }*/
         });
         Hoot.model.REST('GetTranslationServerStatus', function(){});
         
@@ -179,11 +186,27 @@ Hoot.hoot = function (context) {
     };
 
     hoot.checkForSpecialChar = function(str){
-        var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/); 
+        var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/); 
         if (pattern.test(str)) {
             return false;
         }
         return true;
+   };
+   
+   hoot.checkForUnallowableWords = function(str){
+	   var unallowable = ['root','dataset','datasets','folder'];
+	   if(unallowable.indexOf(str.toLowerCase())>=0){return false;}
+	   return true;
+   };
+   
+   hoot.checkForUnallowedChar = function(str){
+	   if(!hoot.checkForSpecialChar(str)){
+		   return "Please do not use special characters: " + str + ".";
+	   }
+	   if(!hoot.checkForUnallowableWords(str)){
+		   return "Please do not use any unallowable terms: " + str + ".";
+	   }
+	   return true;
    };
 
    hoot.isModeBtnEnabled = function()

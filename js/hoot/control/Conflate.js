@@ -58,11 +58,26 @@ Hoot.control.conflate = function (sidebar) {
         else {
             newName = 'Merged_' + newName.substring + '_' + Math.random().toString(16).substring(7);
         }
+        
+        hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
+        var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+        
         var d_form = [
             {
                 label: 'Save As',
                 type: 'saveAs',
                 placeholder: newName
+            },
+            {
+            	label: 'Path',
+            	type: 'pathname',
+            	placeholder:'root',
+            	combobox2:folderList
+            },
+            {
+            	label: 'New Folder Name (leave blank otherwise)',
+            	type: 'newfoldername',
+            	placeholder:''
             },
             {
                 label: 'Type',
@@ -203,6 +218,30 @@ Hoot.control.conflate = function (sidebar) {
 
                  
                 }
+                
+                if (a.combobox2){
+                	var comboPathName = d3.combobox()
+                    .data(_.map(a.combobox2, function (n) {
+                        return {
+                            value: n.folderPath,
+                            title: n.folderPath
+                        };
+                    }));
+
+            		  comboPathName.data().sort(function(a,b){
+            		  	var textA = a.value.toUpperCase();
+            		  	var textB=b.value.toUpperCase();
+            		  	return(textA<textB)?-1 : (textA>textB)?1:0;
+            		  });
+            		  
+            		  comboPathName.data().unshift({value:'root',title:0});
+                    
+                    d3.select(this)
+                    	.style('width', '100%')
+                    	.call(comboPathName);
+                    
+                    d3.select(this).attr('readonly',true);                        
+                }
             });
         var actions = conflate
             .select('fieldset')
@@ -242,12 +281,30 @@ Hoot.control.conflate = function (sidebar) {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
                 
-                if(hoot.checkForSpecialChar(conflate.selectAll('.saveAs').value()) == false)
-                {
-                    alert("Please do not use special character in layer name.");
+              //check if layer with same name already exists...
+            	if(conflate.selectAll('.saveAs').value()==''){
+            		alert("Please enter an output layer name.");
+                    return;
+            	}
+                
+                if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f == conflate.selectAll('.saveAs').value();})))
+            	{
+                    alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.");
                     return;
                 }
-
+                
+            	var resp = hoot.checkForUnallowedChar(conflate.selectAll('.saveAs').value());
+            	if(resp != true){
+            		alert(resp);
+            		return;
+                }
+            	            	
+            	resp = hoot.checkForUnallowedChar(conflate.selectAll('.newfoldername').value());
+            	if(resp != true){
+            		alert(resp);
+            		return;
+                }                
+                
                 var thisConfType = d3.selectAll('.reset.ConfType');
                 var selVal = thisConfType.value();
 

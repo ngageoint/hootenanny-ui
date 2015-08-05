@@ -2,31 +2,19 @@ Hoot.control.import = function (context,selection) {
     var event = d3.dispatch('addLayer', 'finished');
     var ETL = {};
 
-    ETL.createCombo = function (a) {
-        var combo = d3.combobox()
-            .data(_.map(a.combobox, function (n) {
-                return {
-                    value: n,
-                    title: n
-                };
-            }));
-        combo.minItems(1);            
-        return combo;
+    ETL.createTree = function(a){
+    	hoot.control.utilities.folder.createFolderTree(a);
     }
 
-    ETL.renderCombo = function (a) {
-        if (a.combobox) {
-            var combo = ETL.createCombo (a);
-            d3.select(this)
-                .style('width', '100%')
-                .call(combo);
-        }
+    ETL.renderTree = function(a) {
+        if(a.tree){
+    		ETL.createTree(d3.select(this));
+    	}
     }
 
     
     ETL.render = function (colors, isPrimary) {
-
-        context.map().on("maxImportZoomChanged", function(){
+    	context.map().on("maxImportZoomChanged", function(){
             var imp = d3.selectAll('.hootImport')[0];
             if(imp.length){
                 for(i=0; i<imp.length; i++){
@@ -34,11 +22,8 @@ Hoot.control.import = function (context,selection) {
                     if(n){
                         hideForm(n);
                     }
-
                 }
             }
-
-
         })
 
         var palette = _.filter(context.hoot().palette(), function(d){return d.name!=='green';});
@@ -49,7 +34,9 @@ Hoot.control.import = function (context,selection) {
             combobox: _.map(context.hoot().model.layers
                 .getAvailLayers(), function (n) {
                     return n.name;
-                })
+                }),
+            tree: context.hoot().model.folders
+            		.getAvailFoldersWithLayers()
         }];
 
         var sels = selection.selectAll('forms');
@@ -87,19 +74,10 @@ Hoot.control.import = function (context,selection) {
             .data(d_form)
             .enter()
             .append('div')
-            .classed('form-field fill-white small keyline-all round space-bottom1', true)
-            .html(function (field) {
-                return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + field.label + '</label>';
-            })
-            .append('input')
-            .attr('type', 'text')
-            .attr('placeholder', function (field) {
-                return field.placeholder;
-            })
-            .attr('class', function (field) {
-                return 'reset ' + field.type;
-            })
-            .select(ETL.renderCombo);
+            .classed('overflow',true)
+            .style({'height':'150px','margin':'0 0 15px'})
+            .select(ETL.renderTree);
+        
         fieldset
             .append('div')
             .classed('keyline-all form-field palette clearfix round', true)
@@ -156,15 +134,31 @@ Hoot.control.import = function (context,selection) {
             
             d3.event.stopPropagation();
             d3.event.preventDefault();
+            
             var self = d3.select(a);
             var color = self.select('.palette .active')
                 .attr('data-color');
-            var name = self.select('.reset.fileImport')
-                .value();
-                if(!name){alert('Select Layer to Add');return;}
-                if(context.hoot().model.layers.getLayers()[name]){alert('Layer already exists');return;}
+            
+         // make sure something has been selected
+            if(self.select('.sel').empty()){
+            	alert('Please select a dataset to add to the map!');
+                return;
+            }
+            
+            var name,
+            	lyrid;
+            try{
+            	name = d3.select(self.select('.sel').node().parentNode).select('text').text();
+            	lyrid = d3.select(self.select('.sel').node().parentNode).select('text').attr('lyr-id');
+            } catch(e) {
+            	alert('There was an error adding this layer to the map!');
+                return;
+            }
+            if(!name || !lyrid){alert('Select Layer to Add');return;}
+            if(context.hoot().model.layers.getLayers()[name]){alert('Layer already exists');return;}
             var key = {
                 'name': name,
+                'id':lyrid,
                 color: color
             };
 
