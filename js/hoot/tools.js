@@ -470,7 +470,15 @@ Hoot.tools = function (context, selection) {
                 
                          
         } else {
-            renderMergedLayer(layerName);
+            /*renderMergedLayer(layerName);
+            conflationCheck(layerName, true);*/
+            if (merged) {
+                var sel = d3.select('.loadingLayer');
+                if(sel && sel.node()){
+                    sel.remove();
+                }
+                renderMergedLayer(layerName);
+            }
             conflationCheck(layerName, true);
         }
     });
