@@ -89,6 +89,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             var heartBeatData = {};
             heartBeatData.mapId = mapid;
             heartBeatData.reviewid = targetEntity.uuid;
+            heartBeatData.reviewAgainstUuid = targetEntity.itemToReviewAgainst.uuid;
 
             Hoot.model.REST('reviewUpdateStatus', heartBeatData, function (error, response) {
 
@@ -111,6 +112,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 var resetData = {};
                 resetData.mapId = mapid;
                 resetData.reviewid = targetEntity.uuid;
+                resetData.reviewAgainstUuid = targetEntity.itemToReviewAgainst.uuid;
 
                 Hoot.model.REST('reviewResetStatus', resetData, function (error, response) {
                     if(error){
@@ -141,11 +143,12 @@ Hoot.control.conflicts = function (context, sidebar) {
 
             // nReviewed is undefined for very first item
             reviewData.offset = -1;
-            reviewData.uuid = 'none';
+            //reviewData.uuid = 'none';
             if(nReviewed !== undefined){
                 reviewData.offset = lastIndex-1;
                 var lastEnt = reviewItems[lastIndex - 1];
                 reviewData.uuid = lastEnt.uuid;
+                reviewData.reviewAgainstUuid = lastEnt.itemToReviewAgainst.uuid;
             }
             
             reviewData.direction = direction;
@@ -165,9 +168,16 @@ Hoot.control.conflicts = function (context, sidebar) {
                         for(var i=0; i<reviewItems.length; i++){
                             var itm = reviewItems[i];
                             if(itm.uuid == response.nextitemid){
-                                nextEntity = itm;
-                                index = i+1;
-                                break;
+                                var isAgainstMatch = true
+                                if(response.nextagainstitemid ) {
+                                    isAgainstMatch = (itm.itemToReviewAgainst.uuid == response.nextagainstitemid);
+                                }
+                                if(isAgainstMatch === true){
+                                    nextEntity = itm;
+                                    index = i+1;
+                                    break;
+                                }
+                                
                             }
                         }
                         if(nextEntity) {

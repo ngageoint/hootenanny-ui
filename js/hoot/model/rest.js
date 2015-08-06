@@ -733,6 +733,10 @@ rest.reviewUpdateStatus = function(data, callback)
     //markItemsReviewedRequest is required but can be unpopulated when markAll=true
     var markItemsReviewedRequest = {};
     markItemsReviewedRequest.reviewid = data.reviewid;
+    if(data.reviewAgainstUuid) {
+        markItemsReviewedRequest.reviewagainstid = data.reviewAgainstUuid;
+    }
+    
     d3.json('/hoot-services/job/review/updatestatus?mapId='+mapId)
         .header('Content-Type', 'application/json')
         .send(
@@ -755,6 +759,10 @@ rest.reviewResetStatus = function(data, callback)
     //markItemsReviewedRequest is required but can be unpopulated when markAll=true
     var markItemsReviewedRequest = {};
     markItemsReviewedRequest.reviewid = data.reviewid;
+    if(data.reviewAgainstUuid){
+        markItemsReviewedRequest.reviewagainstid = data.reviewAgainstUuid;
+    }
+    
     d3.json('/hoot-services/job/review/resetstatus?mapId='+mapId)
         .header('Content-Type', 'application/json')
         .send(
@@ -779,6 +787,10 @@ rest.reviewGetNext = function(data, callback)
     markItemsReviewedRequest.offset = data.offset;
     markItemsReviewedRequest.direction = data.direction;
     markItemsReviewedRequest.offsetid = data.uuid;
+    if(data.reviewAgainstUuid) {
+        markItemsReviewedRequest.offsetreviewagainstid = data.reviewAgainstUuid;
+    }
+    
     d3.json('/hoot-services/job/review/next?mapId='+mapId)
         .header('Content-Type', 'application/json')
         .send(
