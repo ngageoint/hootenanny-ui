@@ -14,12 +14,12 @@ iD.ArrowLayer = function() {
         },
         {
             id: 'markerArrow',
-            w: 18,
-            h: 18,
-            x: 12,
-            y: 9,
+            w: 44,
+            h: 24,
+            x: 40,
+            y: 11,
             o: 'auto',
-            t: '<path d="M 2,2 2,16 14,9 2,2" class="arrow head" />',
+            t: '<path d="M 2,2 2,20 40,11 2,2" class="arrow head" />',
             u: 'userSpaceOnUse'
         }];
 
