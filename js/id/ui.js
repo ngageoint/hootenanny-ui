@@ -67,6 +67,10 @@ iD.ui = function(context) {
         limiter.append('div')
             .attr('class', 'button-wrap col1')
             .call(iD.ui.Save(context));
+        
+        limiter.append('div')
+	        .attr('class', 'button-wrap col1')
+	        .call(iD.ui.Tools(context));
 
         bar.append('div')
             .attr('class', 'spinner')
