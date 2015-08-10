@@ -403,38 +403,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                 rest.status(resp.jobid, callback);
             });
     };
-/*
-    rest.LTDS = function (data, callback) {
-        if (!data) {
-            return false;
-        }
 
-        d3.json('/hoot-services/ogr/ltds/translate/' + data.id + '?translation=OSM_to_englishTDS.js')
-            .header('Content-Type', 'text/plain')
-            .post(data.osmXml, function (error, json) {
-                if (error) {
-                    return callback(_alertError(error, "TDS translation job failed! For detailed log goto Manage->Log"));
-                }
-                callback(json);
-                return json;
-            });
-    };
-    rest.TDSToOSM = function (data, callback) {
-        if (!data) {
-            return false;
-        }
-        d3.json('/hoot-services/ogr/ltds/translate/tds/' + data.id + '?translation=englishTDS_to_OSM.js')
-            .header('Content-Type', 'text/plain')
-            .post(data.osmXml, function (error, json) {
-                if (error) {
-                    return callback(_alertError(error, "TDS to OSM translation job failed! For detailed log goto Manage->Log"));
-                }
-                callback(json);
-                return json;
-            });
-    };
-
-*/
 
     rest.GetTranslationServerStatus = function(data, callback) {
         d3.json('/hoot-services/ogr/translationserver/status' , function (error, resp) {
