@@ -171,6 +171,16 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
+    rest.getMapTags = function (data, callback) {
+        var request = d3.json('/hoot-services/osm/api/0.6/map/tags?mapid=' + data.mapId);
+        request.get(function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get tags failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    };
+
     rest.getAvailFolders = function (callback) {
         var request = d3.json('/hoot-services/osm/api/0.6/map/folders');
         request.get(function (error, resp) {

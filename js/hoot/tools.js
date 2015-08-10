@@ -223,12 +223,15 @@ Hoot.tools = function (context, selection) {
         hoot.view.utilities.dataset.populateDatasetsSVG(datasettable);*/
     }
 
+
     function renderInputLayer(layerName,params) {
         loadedLayers[layerName] = params;
         loadedLayers[layerName].loadable = true;
+      
         view.render(params);
         loadingLayer = {};
         d3.select('.loadingLayer').remove();
+     
     }
 
     function renderMergedLayer(layerName) {
@@ -457,12 +460,70 @@ Hoot.tools = function (context, selection) {
                         d3.selectAll('.hootImport').remove();
                         d3.selectAll('.hootView').remove();
                         renderMergedLayer(layerName);
+
+                        var reqParam = {};
+                        reqParam.mapId = params.mapId
+                        if(reqParam.mapId) {
+
+                        }
+                        Hoot.model.REST('getMapTags', reqParam,function (tags) {
+                            var input1 = tags.input1;
+                            var input2 = tags.input2;
+
+                            var input1Id = tags.input1id;
+                            var input2Id = tags.input2id;
+
+                            if(input1 && input1Id) {
+                                var key = {
+                                    'name': input1,
+                                    'id':input1Id,
+                                    'color': 'violet',
+                                    'hideinsidebar':'true'
+                                };
+                                context.hoot().model.layers.addLayer(key, function(d){
+                                    context.hoot().model.layers.setLayerInvisible(input1);
+                                });
+                            } else {
+                                alert("Could not determine input layer 1. It will be loaded.");
+                            }
+
+
+                            if(input2 && input2Id) {
+                                var key2 = {
+                                    'name': input2,
+                                    'id':input2Id,
+                                    'color': 'orange',
+                                    'hideinsidebar':'true'
+                                };
+                                context.hoot().model.layers.addLayer(key2, function(d){
+                                    context.hoot().model.layers.setLayerInvisible(input2);
+                                });
+                            } else {
+                                alert("Could not determine input layer 2. It will be loaded.");
+                            }
+                                
+                        });
+
+                        
+                        
                     }
                 }
 
                 if(isReviewMode === false) {
-                    renderInputLayer(layerName,params);
-                    conflationCheck(layerName, true);     
+
+                    var doRenderView = true;
+                    if(params['hideinsidebar'] !== undefined && params['hideinsidebar'] === 'true'){
+                        doRenderView = false;
+                    }
+
+                    if(doRenderView === true){
+                        renderInputLayer(layerName,params);
+                        conflationCheck(layerName, true);    
+                    } else {                     
+                        loadedLayers[layerName] = params;
+                        loadedLayers[layerName].loadable = true;
+                        loadingLayer = {};
+                    }
                 }
                     
             });
