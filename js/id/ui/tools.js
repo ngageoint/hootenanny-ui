@@ -1,16 +1,15 @@
 iD.ui.Tools = function(context) {
-    var history = context.history(),
-        key = iD.ui.cmd('⌘T');
 
     function saving() {
         return context.mode().id === 'tools';
     }
-
+    
     function tools() {
-        var items = [
-      	    {title:'Measure Distance',icon:'add-line',click:'console.log("measure distance");'},
-      	    {title:'Measure Area',icon:'add-area',click:'console.log("measure area");'},
-      	  ];
+    	 var items = [
+          {title:'Measure Point',type:'point',icon:'add-point',mode:iD.modes.AddPoint(context)},
+    	    {title:'Measure Distance',type:'line',icon:'add-line',mode:iD.modes.AddLine(context)},
+    	    {title:'Measure Area',type:'area',icon:'add-area',click:iD.modes.AddArea(context)},
+    	  ];
         
         d3.select('html').append('div').attr('class', 'tools-menu');
                
@@ -20,9 +19,10 @@ iD.ui.Tools = function(context) {
             .selectAll('li')
             .data(items).enter()
             .append('li')
+            .attr('class',function(item){return item.icon + ' measure-distance';})
             .on('click' , function(item) { 
-            	eval(item.click);
-              	d3.select('.tools-menu').remove();
+            	context.enter(iD.modes.Measure(context,item));
+            	d3.select('.tools-menu').remove();
               });
         
             toolsItem.append('span').attr("class",function(item){return item.icon + " icon icon-pre-text"});
@@ -50,27 +50,15 @@ iD.ui.Tools = function(context) {
     }
 
     return function(selection) {
-      /*  var tooltip = bootstrap.tooltip()
-            .placement('bottom')
-            .html(true)
-            .title(iD.ui.tooltipHtml(t('tools.title'), key));*/
-        
         var button = selection.append('button')
         	.attr('class', 'tools col12')
             .attr('tabindex', -1)
             .on('click', tools);
-            //.call(tooltip);
         
         button.append('span')
 	        .attr('class', 'label')
 	        .text(t('tools.title'));
         
-        var keybinding = d3.keybinding('undo-redo')
-            .on(key, tools, true);
-
-        d3.select(document)
-            .call(keybinding);
-
         var numChanges = 0;
     };
 };
