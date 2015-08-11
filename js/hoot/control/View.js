@@ -208,13 +208,15 @@ Hoot.control.view = function (container, context) {
             });
     };
     
-    View.getPrimaryLayerName = function (){
-        var primaryLayerName = '';
+    View.getLayer = function (iLayer){
+        var layer = null;
         var sels = d3.select('#sidebar2').selectAll('form')[0];
-        if(sels && sels.length > 0){
-            primaryLayerName = d3.select(sels[0]).datum().name;
+        if(sels && sels.length > iLayer){
+            layer = d3.select(sels[iLayer]).datum();
         }
-        return primaryLayerName;
+        return layer;
     };
+
+ 
     return d3.rebind(View, event, 'on');
 };

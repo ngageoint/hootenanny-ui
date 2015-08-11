@@ -118,27 +118,18 @@ Hoot.tools = function (context, selection) {
     }
 
     function preConflation(a, layerName, advOpts) {
-        var layers = inputLayers();
-        var primaryName = view.getPrimaryLayerName();
+        // refactored code to use map id instead of map name
         var data = {};
-        data.INPUT1 = layers[0];
-        data.INPUT2 = layers[1];
+        data.INPUT1 = view.getLayer(0).id;
+        data.INPUT2 = view.getLayer(1).id;
 
-        if(primaryName == layers[1]){
-            data.INPUT1 = layers[1];
-            data.INPUT2 = layers[0];
-        }
-
-
+       
         var refLayer = '1';
-        var refLayerName = a.select('.referenceLayer').value();
-        if(refLayerName == data.INPUT2){
+        var oRefLayer = a.select('.referenceLayer').datum();
+        if(oRefLayer.id == data.INPUT2){
             refLayer = '2';
         }
-        
-        var cl = context.hoot().model.layers.getAvailLayers().slice(0);
-        data.INPUT1 = _.findWhere(cl,{id:context.hoot().model.layers.getmapIdByName(data.INPUT1)}).name;
-        data.INPUT2 = _.findWhere(cl,{id:context.hoot().model.layers.getmapIdByName(data.INPUT2)}).name
+
 
         var _confType = {
             'Reference':'Reference',
@@ -470,33 +461,33 @@ Hoot.tools = function (context, selection) {
                             var input1 = tags.input1;
                             var input2 = tags.input2;
 
-                            var input1Id = tags.input1id;
-                            var input2Id = tags.input2id;
+                            var input1Name = tags.input1Name;
+                            var input2Name = tags.input2Name;
 
-                            if(input1 && input1Id) {
+                            if(input1 && input1Name) {
                                 var key = {
-                                    'name': input1,
-                                    'id':input1Id,
+                                    'name': input1Name,
+                                    'id':input1,
                                     'color': 'violet',
                                     'hideinsidebar':'true'
                                 };
                                 context.hoot().model.layers.addLayer(key, function(d){
-                                    context.hoot().model.layers.setLayerInvisible(input1);
+                                    context.hoot().model.layers.setLayerInvisibleById(input1);
                                 });
                             } else {
                                 alert("Could not determine input layer 1. It will be loaded.");
                             }
 
 
-                            if(input2 && input2Id) {
+                            if(input2 && input2Name) {
                                 var key2 = {
-                                    'name': input2,
-                                    'id':input2Id,
+                                    'name': input2Name,
+                                    'id':input2,
                                     'color': 'orange',
                                     'hideinsidebar':'true'
                                 };
                                 context.hoot().model.layers.addLayer(key2, function(d){
-                                    context.hoot().model.layers.setLayerInvisible(input2);
+                                    context.hoot().model.layers.setLayerInvisibleById(input2);
                                 });
                             } else {
                                 alert("Could not determine input layer 2. It will be loaded.");

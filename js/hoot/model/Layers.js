@@ -193,7 +193,9 @@ Hoot.model.layers = function (context)
             .dimensions();
         layers[name] = key;
         context.connection().loadData(key);
+
         model_layers.addLayer2Sidebar(key);
+        
         if (callback) callback();
     }
 
@@ -343,6 +345,25 @@ Hoot.model.layers = function (context)
             return;
         }
         var mapid = layer.mapId;
+        var current = context.connection()
+            .visLayer(mapid);
+        if (current) {
+            context.connection()
+                .hideLayer(mapid.toString());
+            context.flush(false);
+            d3.select('.layerControl_' + mapid)
+                .select('input')
+                .property('checked', false);
+        }
+
+    };
+
+    model_layers.setLayerInvisibleById = function(mapid) {
+
+        if (!mapid) {
+            return;
+        }
+
         var current = context.connection()
             .visLayer(mapid);
         if (current) {
