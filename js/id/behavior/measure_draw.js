@@ -10,9 +10,8 @@ iD.behavior.MeasureDraw = function(context,svg) {
         edit = iD.behavior.Edit(context),
         closeTolerance = 4,
         tolerance = 12,
-        nodeId=-1,
-        line,
-        label,
+        nodeId=0,
+        line,label,rect,
         lastPoint=null,
         totDist=0,
         segmentDist=0;
@@ -84,6 +83,11 @@ iD.behavior.MeasureDraw = function(context,svg) {
     	    label.attr("x", c[0]+10)
 	        	.attr("y", c[1]+10)
 	        	.text(function(d) { return currentDist.toFixed(2) + " m" });
+    	    
+    	    rect.attr("x", c[0])
+        		.attr("y", c[1]-(label.dimensions()[1]/2))
+        		.attr("width",label.dimensions()[0]+5)
+		        .attr("height",label.dimensions()[1]+5);
  	    }
     }
 
@@ -97,13 +101,20 @@ iD.behavior.MeasureDraw = function(context,svg) {
 
 		totDist = totDist + segmentDist;
 		segmentDist = 0;
-		
-		nodeId++;
+
     	
 		if(nodeId>=0){
-			svg.selectAll('g').selectAll('text').remove();
 			lastPoint=context.map().mouseCoordinates();
 			var g = svg.append('g');
+			
+			svg.selectAll('g').selectAll('text').remove();
+		    label = g.append("text")
+		        .attr("x", c[0]+10)
+		        .attr("y", c[1]+10)
+		        .style("fill","red")
+		        .style("font-size","18px")
+		        .text(function(d) { return totDist.toFixed(2) + " m" });
+			
 			line = g.append("line")
 				.classed("measure-line-"+nodeId,true)
 				.style("stroke","red").style("stroke-width","2px").style("stroke-linecap","round")
@@ -112,13 +123,17 @@ iD.behavior.MeasureDraw = function(context,svg) {
 		        .attr("x2", c[0])
 		        .attr("y2", c[1]);
 			
-		    label = g.append("text")
-		        .attr("x", c[0]+10)
-		        .attr("y", c[1]+10)
-		        .style("fill","red")
-		        .style("font-size","18px")
-		        .text(function(d) { return totDist.toFixed(2) + "m" });
+			svg.selectAll('g').selectAll('rect').remove();
+			rect = g.insert("rect",":first-child")
+		        .attr("x", c[0])
+		        .attr("y", c[1]-(label.dimensions()[1]/2))
+		        .attr("width",label.dimensions()[0]+5)
+		        .attr("height",label.dimensions()[1]+5)
+		        .style("fill","black")
+		        .style("fill-opacity","0.5");
 		} 
+		
+		nodeId++;
 		    	    	
        /* var d = datum();
         if (d.type === 'way') {
