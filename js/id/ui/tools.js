@@ -6,8 +6,7 @@ iD.ui.Tools = function(context) {
     
     function tools() {
     	 var items = [
-          {title:'Measure Point',type:'point',icon:'add-point',mode:iD.modes.AddPoint(context)},
-    	    {title:'Measure Distance',type:'line',icon:'add-line',mode:iD.modes.AddLine(context)},
+    	    {title:'Measure Distance',type:'line',icon:'add-line',mode:iD.modes.MeasureAddLine(context)},
     	    {title:'Measure Area',type:'area',icon:'add-area',click:iD.modes.AddArea(context)},
     	  ];
         
@@ -21,7 +20,8 @@ iD.ui.Tools = function(context) {
             .append('li')
             .attr('class',function(item){return item.icon + ' measure-distance';})
             .on('click' , function(item) { 
-            	context.enter(iD.modes.Measure(context,item));
+            	//context.enter(iD.modes.Measure(context,item));
+            	context.enter(item.mode);
             	d3.select('.tools-menu').remove();
               });
         

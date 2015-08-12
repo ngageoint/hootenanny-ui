@@ -59,6 +59,9 @@ iD.modes.Measure = function(context,item) {
     	}
     
     function addNewLine(svg,c,id){
+    	d3.event.stopPropagation();
+        d3.event.preventDefault();
+    	
     	var line;
     	var label;
     	var vertexIdx = 0;
@@ -66,7 +69,7 @@ iD.modes.Measure = function(context,item) {
     	var m = context.map().mouseCoordinates();
     	var c = context.projection(m);
 		var g = svg.append('g');
-    	
+		
     	line = g.append("line")
 			.classed("measure-line",true)
 			.style("stroke","red").style("stroke-width","2px").style("stroke-linecap","round")
@@ -84,21 +87,29 @@ iD.modes.Measure = function(context,item) {
 		
 		d3.select('#id-container').on('mousemove',mousemove)
 			.on("mousedown",mousedown)
-			.on("mouseup",mouseup);
-		
+			.on("dblclick",finish);
+						
     	function mousedown(){
+    		d3.event.stopPropagation();
+            d3.event.preventDefault();
+    		
+    		d3.select('#content').on("dblclick",finish);
     		var c = context.projection(context.map().mouseCoordinates());
     	    line.attr("x2", c[0])
     	        .attr("y2", c[1]);
     	    addNewPoint(svg,c,1);
     	}
     	
-    	function mouseup(){
+    	function finish(){    		
+    		d3.event.stopPropagation();
+            d3.event.preventDefault();
+    		
+    		context.map().dblclickEnable(false);
     		d3.select('#id-container').on('mousedown',undefined)
     			.on('mousemove',undefined)
-    			.on('mouseup',undefined);
+    			.on('dblclick',undefined);
     		//context.background().updateMeasureLayer(d);
-        	context.enter(iD.modes.Browse(context));
+        	//context.enter(iD.modes.Browse(context));
     	}
     	
     	function mousemove() {
@@ -115,11 +126,9 @@ iD.modes.Measure = function(context,item) {
     	    var distance = d3.geo.distance(m,context.map().mouseCoordinates());
     	    distance = distance * 6371007.1809;
     	    
-    	    label.attr("x",function(d){return (x1+x2)/2;})
-	        	.attr("y",function(d){return (y1+y2)/2;})
-	        	.text(function(d) { return distance });
-    	    
-    	    //radians to meters
+    	    label.attr("x",c[0])
+	        	.attr("y",c[1])
+	        	.text(function(d) { return distance.toFixed(2) + " m" });
     	}
     	
     	var newpt=svg.append('g')
