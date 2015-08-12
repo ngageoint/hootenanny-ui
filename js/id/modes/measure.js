@@ -60,18 +60,30 @@ iD.modes.Measure = function(context,item) {
     
     function addNewLine(svg,c,id){
     	var line;
+    	var label;
     	var vertexIdx = 0;
     	
-    	var c = context.projection(context.map().mouseCoordinates());
-		line = svg.append("line")
+    	var m = context.map().mouseCoordinates();
+    	var c = context.projection(m);
+		var g = svg.append('g');
+    	
+    	line = g.append("line")
+			.classed("measure-line",true)
 			.style("stroke","red").style("stroke-width","2px").style("stroke-linecap","round")
     		.attr("x1", c[0])
 	        .attr("y1", c[1])
 	        .attr("x2", c[0])
 	        .attr("y2", c[1]);
-		d3.select('#id-container').on('mousemove',mousemove);
-
-    	d3.select('#id-container').on("mousedown",mousedown)
+		
+	    label = g.append("text")
+	        .attr("x", c[0])
+	        .attr("y", c[1])
+	        .style("fill","red")
+	        .style("font-size","18px")
+	        .text(function(d) { return "" });
+		
+		d3.select('#id-container').on('mousemove',mousemove)
+			.on("mousedown",mousedown)
 			.on("mouseup",mouseup);
 		
     	function mousedown(){
@@ -93,6 +105,21 @@ iD.modes.Measure = function(context,item) {
     	    var c = context.projection(context.map().mouseCoordinates());
     	    line.attr("x2", c[0])
     	        .attr("y2", c[1]);
+    	    
+    	    //place label at midpoint
+    	    var x1 = parseFloat(line.attr('x1'));
+    	    var x2 = parseFloat(line.attr('x2'));
+    	    var y1 = parseFloat(line.attr('y1'));
+    	    var y2 = parseFloat(line.attr('y2'));
+    	    
+    	    var distance = d3.geo.distance(m,context.map().mouseCoordinates());
+    	    distance = distance * 6371007.1809;
+    	    
+    	    label.attr("x",function(d){return (x1+x2)/2;})
+	        	.attr("y",function(d){return (y1+y2)/2;})
+	        	.text(function(d) { return distance });
+    	    
+    	    //radians to meters
     	}
     	
     	var newpt=svg.append('g')
