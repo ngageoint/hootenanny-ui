@@ -47,90 +47,7 @@ Hoot.view.utilities.dataset = function(context)
             .classed('col12 fill-white small strong row10 overflow', true)
             .call(hoot_view_utilities_dataset.populateDatasetsSVG);
     };
-    	
-   /* hoot_view_utilities_dataset.deleteDataset = function(d,container){
-    	d3.event.stopPropagation();
-        d3.event.preventDefault();
-       
-        var warningMsg = d.type =='folder'? 'folder and all data?' : 'dataset?';
-        if(!window.confirm("Are you sure you want to remove the selected " + warningMsg)){return;}
         
-        var mapId = d.id;//d3.select(this.parentNode).datum().name;
-        
-	    var parentNode;
-	    if(d.type=='dataset'){
-	    	parentNode = container.selectAll("text[lyr-id='" + d.id + "']").node().parentNode;
-	    } else {
-	    	parentNode = container.selectAll("text[fldr-id='" + d.id + "']").node().parentNode;
-	    }
-	    if(!parentNode){return;}
-	    
-	    var rectNode = d3.select(parentNode).select('rect'); 
-	    var currentFill = rectNode.style('fill');
-	    rectNode.style('fill','rgb(255,0,0)');
-      
-        var datasets2remove = [];
-        if(d.type=='folder'){
-    		var folderId = d.id;
-        	context.hoot().model.layers.setLayerLinks();
-        	datasets2remove = _.filter(context.hoot().model.layers.getAvailLayers(),function(lyr){
-        		return lyr.folderId==folderId;
-        	});
-        	
-        	context.hoot().model.folders.deleteFolder(d.id,function(resp){
-            	if(resp==false){console.log('Unable to delete folder.  Will delete datasets now.');}
-            	
-        	});
-        } else {
-        	var availLayers = context.hoot().model.layers.getAvailLayers();
-            datasets2remove=_.filter(availLayers,function(n){return n.id==mapId;});
-        }
-        
-        datasets2remove.forEach(function(dataset){
-        	var exists = context.hoot().model.layers.getLayers()[dataset.id];
-	        if(exists){
-	        	alert('Can not remove the layer in use: ' + dataset.name);
-	        	rectNode.style('fill',currentFill);
-	        	return;
-	        }
-	        
-	        //select the rect using lyr-id
-	        var selNode  = this.selectAll("text[lyr-id='" + dataset.id + "']").node().parentNode;
-	        var selRect = d3.select(selNode).select('rect'); 
-		    var currentFill = selRect.style('fill');
-		    selRect.style('fill','rgb(255,0,0)');
-		    
-		    d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + dataset.name)
-	    	.header('Content-Type', 'text/plain')
-	    	.post("", function (error, data) {
-	
-	    		var exportJobId = data.jobId;
-	
-	    		var statusUrl = '/hoot-services/job/status/' + exportJobId;
-	    		var statusTimer = setInterval(function () {
-	    			d3.json(statusUrl, function (error, result) {
-	    				if (result.status !== 'running') {
-	    					Hoot.model.REST.WarningHandler(result);
-	    					clearInterval(statusTimer);
-	    					var btnId = result.jobId;
-	    					selNode.remove();
-	    					d3.select('.context-menu').style('display', 'none');
-	    					
-	    					//update link
-	    					var link={};
-	    					link.folderId = 0;
-	    					link.updateType='delete';
-	    				    link.mapid=hoot.model.layers.getmapIdByName(d3.select(selNode).select('text').text())||0;
-	    				    hoot.model.layers.refresh(function(){
-	    				    	hoot.model.folders.updateLink(link,function(){});
-	    					});
-	    				}
-	    			});
-	    		}, iD.data.hootConfig.JobStatusQueryInterval);
-	    	});
-	    },container);        	
-    } */
-    
     hoot_view_utilities_dataset.deleteDataset = function(d,container){
     	d3.event.stopPropagation();
         d3.event.preventDefault();
@@ -171,7 +88,7 @@ Hoot.view.utilities.dataset = function(context)
     	//datasets2remove.forEach(function(dataset){
         for(var i=0;i<=datasets2remove.length-1;i++){
         	var dataset = datasets2remove[i];
-        	var exists = context.hoot().model.layers.getLayers()[dataset.id];
+        	var exists = context.hoot().model.layers.getLayers()[dataset.name];
 	        if(exists){
 	        	alert('Can not remove the layer in use: ' + dataset.name);
 	        	rectNode.style('fill',currentFill);
@@ -188,13 +105,14 @@ Hoot.view.utilities.dataset = function(context)
 		    
 		    context.hoot().model.layers.deleteLayer(dataset,function(resp){
 		    	selNode.remove();
+		    	
+			    if(i>=datasets2remove.length-1){
+			    	hoot.model.layers.refresh(function(){
+		        		hoot.model.folders.refreshLinks(function(){context.hoot().model.import.updateTrees();})        		
+		        	});
+			    }
 		    });
-		    
-		    if(i==datasets2remove.length-1){
-		    	hoot.model.layers.refresh(function(){
-	        		hoot.model.folders.refreshLinks(function(){context.hoot().model.import.updateTrees();})        		
-	        	});
-		    }
+
 	    }//,container);    
         
         if(datasets2remove.length==0){
