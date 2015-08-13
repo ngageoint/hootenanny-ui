@@ -111,13 +111,13 @@ iD.behavior.MeasureDraw = function(context,svg) {
 		    label = g.append("text")
 		        .attr("x", c[0]+10)
 		        .attr("y", c[1]+10)
-		        .style("fill","red")
+		        .style("fill","white")
 		        .style("font-size","18px")
 		        .text(function(d) { return totDist.toFixed(2) + " m" });
 			
 			line = g.append("line")
 				.classed("measure-line-"+nodeId,true)
-				.style("stroke","red").style("stroke-width","2px").style("stroke-linecap","round")
+				.style("stroke","white").style("stroke-width","2px").style("stroke-linecap","round")
 	    		.attr("x1", c[0])
 		        .attr("y1", c[1])
 		        .attr("x2", c[0])
