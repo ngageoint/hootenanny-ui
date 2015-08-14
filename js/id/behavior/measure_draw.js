@@ -1,5 +1,5 @@
 var clickTime = null;
-iD.behavior.MeasureDraw = function(context,svg) {
+iD.behavior.MeasureDraw = function(context,svg,type) {
     var event = d3.dispatch('move', 'click', 'clickWay',
         'clickNode', 'undo', 'cancel', 'finish','dblclick'),
         keybinding = d3.keybinding('draw'),
@@ -57,7 +57,11 @@ iD.behavior.MeasureDraw = function(context,svg) {
                     d3.select(window).on('click.draw-block', null);
                 }, 500);
 
-                click();
+                if(type=='line'){
+                	click_line();
+                } else {
+                	click_area();
+                }
             }
         });
     }
@@ -91,7 +95,7 @@ iD.behavior.MeasureDraw = function(context,svg) {
  	    }
     }
 
-    function click() {
+    function click_line() {
     	var c = context.projection(context.map().mouseCoordinates());
     	
     	var newpt=svg.append('g')
@@ -134,43 +138,6 @@ iD.behavior.MeasureDraw = function(context,svg) {
 		} 
 		
 		nodeId++;
-		    	    	
-       /* var d = datum();
-        if (d.type === 'way') {
-            if(context.enableSnap){
-                var choice = iD.geo.chooseEdge(context.childNodes(d), context.mouse(), context.projection),
-                edge = [d.nodes[choice.index - 1], d.nodes[choice.index]];
-                event.clickWay(choice.loc, edge);
-            } else {
-                event.click(context.map().mouseCoordinates());
-            }
-
-        } else if (d.type === 'node') {
-            
-            var isNodeDblClick = false;
-            
-            if(clickTime){
-                isNodeDblClick = ((+new Date() - clickTime) < 500);
-            } 
-        
-            // use user setting for snapping to point which is the default behavior
-            if(context.enableSnap){
-                isNodeDblClick = context.enableSnap;
-            }
-            
-            if(isNodeDblClick === true){
-                event.clickNode(d);
-                
-            } else {
-                event.click(context.map().mouseCoordinates());
-            }
-            
-
-        } else {
-            event.click(context.map().mouseCoordinates());
-        }
-        
-        clickTime = +new Date();*/
     }
 
   
