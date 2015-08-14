@@ -7,7 +7,7 @@ iD.ui.Tools = function(context) {
     function tools() {
     	 var items = [
     	    {title:'Measure Distance',type:'line',icon:'add-line',mode:iD.modes.MeasureAddLine(context)},
-    	    {title:'Measure Area',type:'area',icon:'add-area',click:iD.modes.MeasureAddArea(context)},
+    	    {title:'Measure Area',type:'area',icon:'add-area',mode:iD.modes.MeasureAddArea(context)},
     	  ];
         
         d3.select('html').append('div').attr('class', 'tools-menu');

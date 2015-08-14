@@ -7,7 +7,7 @@ iD.modes.MeasureAddLine = function(context) {
     var id = 0;
     
     
-    var behavior = iD.behavior.MeasureDraw(context,svg,'line');
+    var behavior = iD.behavior.MeasureDrawLine(context,svg,'line');
     d3.select('.measure-layer').selectAll('g').remove();
     
     mode.enter = function() {

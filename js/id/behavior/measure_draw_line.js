@@ -1,5 +1,5 @@
 var clickTime = null;
-iD.behavior.MeasureDraw = function(context,svg,type) {
+iD.behavior.MeasureDrawLine = function(context,svg) {
     var event = d3.dispatch('move', 'click', 'clickWay',
         'clickNode', 'undo', 'cancel', 'finish','dblclick'),
         keybinding = d3.keybinding('draw'),
@@ -12,6 +12,7 @@ iD.behavior.MeasureDraw = function(context,svg,type) {
         tolerance = 12,
         nodeId=0,
         line,label,rect,
+        points,
         lastPoint=null,
         totDist=0,
         segmentDist=0;
@@ -57,11 +58,7 @@ iD.behavior.MeasureDraw = function(context,svg,type) {
                     d3.select(window).on('click.draw-block', null);
                 }, 500);
 
-                if(type=='line'){
-                	click_line();
-                } else {
-                	click_area();
-                }
+                click();
             }
         });
     }
@@ -94,8 +91,8 @@ iD.behavior.MeasureDraw = function(context,svg,type) {
 		        .attr("height",label.dimensions()[1]+5);
  	    }
     }
-
-    function click_line() {
+    
+    function click() {
     	var c = context.projection(context.map().mouseCoordinates());
     	
     	var newpt=svg.append('g')
