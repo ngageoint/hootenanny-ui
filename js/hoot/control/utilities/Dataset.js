@@ -641,6 +641,7 @@ Hoot.control.utilities.dataset = function(context) {
                                 if(typeName == 'DIR'){
                                     d3.select('#ingestfileuploader')
                                     .attr('multiple', 'false')
+                                    .attr('accept', null)
                                     .attr('webkitdirectory', '')
                                     .attr('directory', '');
                                 } else if(typeName == 'GEONAMES') {
@@ -652,6 +653,7 @@ Hoot.control.utilities.dataset = function(context) {
                                 } else {
                                     d3.select('#ingestfileuploader')
                                     .attr('multiple', 'true')
+                                    .attr('accept', null)
                                     .attr('webkitdirectory', null)
                                     .attr('directory', null);
                                 }
