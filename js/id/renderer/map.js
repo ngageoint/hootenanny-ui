@@ -238,6 +238,9 @@ iD.Map = function(context) {
 
         clearTimeout(timeoutId);
 
+        //Added for measure layer
+        d3.select('.measure-layer').selectAll('g').remove();
+        
         // If we are in the middle of a zoom/pan, we can't do differenced redraws.
         // It would result in artifacts where differenced entities are redrawn with
         // one transform and unchanged entities with another.

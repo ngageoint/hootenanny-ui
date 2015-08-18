@@ -1,27 +1,26 @@
 var clickTime = null;
 iD.behavior.MeasureDrawLine = function(context,svg) {
-    var event = d3.dispatch('move', 'click', 'clickWay',
-        'clickNode', 'undo', 'cancel', 'finish','dblclick'),
-        keybinding = d3.keybinding('draw'),
-        hover = iD.behavior.Hover(context)
-            .altDisables(true)
-            .on('hover', context.ui().sidebar.hover),
-        tail = iD.behavior.Tail(),
-        edit = iD.behavior.Edit(context),
+    var event = d3.dispatch('move', 'click','cancel', 'finish','dblclick'),
+        keybinding = d3.keybinding('drawline'),
         closeTolerance = 4,
         tolerance = 12,
         nodeId=0,
         line,label,rect,
-        points,
         lastPoint=null,
         totDist=0,
         segmentDist=0;
     
-    function datum() {
-        if (d3.event.altKey) return {};
-        else return d3.event.target.__data__ || {};
+    function ret(element) {
+        d3.event.preventDefault();
+        element.on('dblclick',undefined);
+        event.finish();
     }
-
+    
+    function radiansToMeters(r) {
+        // using WGS84 authalic radius (6371007.1809 m)
+        return r * 6371007.1809;
+    }
+   
     function mousedown() {
 
         function point() {
@@ -36,18 +35,20 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
             time = +new Date(),
             pos = point();
 
-            element.on('dblclick',function(){context.enter(iD.modes.Browse(context));});
-            
-            element.on('mousemove.draw', null);
+            element.on('dblclick',function(){
+            	ret(element);
+            });
+                        
+            element.on('mousemove.drawline', null);
 
-        d3.select(window).on('mouseup.draw', function() {
-            element.on('mousemove.draw', mousemove);
+        d3.select(window).on('mouseup.drawline', function() {
+            element.on('mousemove.drawline', mousemove);
             if (iD.geo.euclideanDistance(pos, point()) < closeTolerance ||
                 (iD.geo.euclideanDistance(pos, point()) < tolerance &&
                 (+new Date() - time) < 500)) {
 
                 // Prevent a quick second click
-                d3.select(window).on('click.draw-block', function() {
+                d3.select(window).on('click.drawline-block', function() {
                     d3.event.stopPropagation();
                 }, true);
 
@@ -55,7 +56,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
 
                 window.setTimeout(function() {
                     context.map().dblclickEnable(true);
-                    d3.select(window).on('click.draw-block', null);
+                    d3.select(window).on('click.drawline-block', null);
                 }, 500);
 
                 click();
@@ -63,27 +64,50 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
         });
     }
 
+    function displayLength(m){
+        var imperial = false;
+    	
+    	var d = m * (imperial ? 3.28084 : 1),
+	        p, unit;
+	
+	    if (imperial) {
+	        if (d >= 5280) {
+	            d /= 5280;
+	            unit = 'mi';
+	        } else {
+	            unit = 'ft';
+	        }
+	    } else {
+	        if (d >= 1000) {
+	            d /= 1000;
+	            unit = 'km';
+	        } else {
+	            unit = 'm';
+	        }
+	    }
+	
+	    // drop unnecessary precision
+	    p = d > 1000 ? 0 : d > 100 ? 1 : 2;
+	
+	    return String(d.toFixed(p)) + ' ' + unit;
+    }
+    
     function mousemove() {
     	var c = context.projection(context.map().mouseCoordinates());
  	    if(nodeId>0){
+ 	    	
  	    	var c = context.projection(context.map().mouseCoordinates());
     	    line.attr("x2", c[0])
     	        .attr("y2", c[1]);
     	    
-    	    //place label at midpoint
-    	    var x1 = parseFloat(line.attr('x1'));
-    	    var x2 = parseFloat(line.attr('x2'));
-    	    var y1 = parseFloat(line.attr('y1'));
-    	    var y2 = parseFloat(line.attr('y2'));
-    	    
     	    var distance = d3.geo.distance(lastPoint,context.map().mouseCoordinates());
-    	    distance = (distance * 6371007.1809);
+    	    distance = radiansToMeters(distance);
     	    segmentDist=distance;
     	    var currentDist = segmentDist+totDist;
-    	        	    
+    	    
     	    label.attr("x", c[0]+10)
 	        	.attr("y", c[1]+10)
-	        	.text(function(d) { return currentDist.toFixed(2) + " m" });
+	        	.text(function(d) { return displayLength(currentDist) });
     	    
     	    rect.attr("x", c[0])
         		.attr("y", c[1]-(label.dimensions()[1]/2))
@@ -102,7 +126,6 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
 
 		totDist = totDist + segmentDist;
 		segmentDist = 0;
-
     	
 		if(nodeId>=0){
 			lastPoint=context.map().mouseCoordinates();
@@ -114,7 +137,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
 		        .attr("y", c[1]+10)
 		        .style("fill","white")
 		        .style("font-size","18px")
-		        .text(function(d) { return totDist.toFixed(2) + " m" });
+		        .text(function(d) { return displayLength(totDist)});
 			
 			line = g.append("line")
 				.classed("measure-line-"+nodeId,true)
@@ -138,28 +161,22 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
     }
 
   
-    function draw(selection) {
-        context.install(hover);
-        context.install(edit);
-
+    function drawline(selection) {
         selection
-            .on('mousedown.draw', mousedown)
-            .on('mousemove.draw', mousemove);
+            .on('mousedown.drawline', mousedown)
+            .on('mousemove.drawline', mousemove);
 
-        return draw;
+        return drawline;
     }
 
-    draw.off = function(selection) {
-        context.uninstall(hover);
-        context.uninstall(edit);
-
-        selection
-            .on('mousedown.draw', null)
-            .on('mousemove.draw', null);
+    drawline.off = function(selection) {
+    	selection
+            .on('mousedown.drawline', null)
+            .on('mousemove.drawline', null);
 
         d3.select(window)
-            .on('mouseup.draw', null);
+            .on('mouseup.drawline', null);
     };
 
-    return d3.rebind(draw, event, 'on');
+    return d3.rebind(drawline, event, 'on');
 };
