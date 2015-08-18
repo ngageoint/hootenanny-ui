@@ -187,7 +187,7 @@ Hoot.tools = function (context, selection) {
         hoot.model.layers.addLayer(item);
         
         //Add a folder and update links
-        var pathname = a.select('.pathname').value()
+        var pathname = a.select('.pathname').value();
         if(pathname==''){pathname=a.select('.reset.PathName').attr('placeholder');}
         if(pathname=='root'){pathname='';}
         var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
