@@ -67,7 +67,11 @@ Hoot.model.export = function (context)
             alert('Please enter valid values.');
             return;
         }
-
+        
+        // Check to see if we are appending to FGDB Template
+        var appendTemplate = container.select('.cboxAppendFGDBTemplate').select('input').property('checked');
+        console.log('Append to FGDB Template: ' + appendTemplate);
+        
         mapId = data.name;
 
         var param = {};

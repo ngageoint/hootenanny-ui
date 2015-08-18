@@ -32,7 +32,12 @@ Hoot.control.utilities.dataset = function(context) {
             type: 'fileExportFileType',
             combobox: ['File Geodatabase', 'Shapefile', 'Web Feature Service (WFS)', 'Open Street Map (OSM)'],
             placeholder: 'File Geodatabase',
-            inputtype:'text'
+            inputtype:'text',
+        }, {
+        	label: 'Append to ESRI FGDB Template?',
+        	type: 'appendFGDBTemplate',
+        	inputtype:'checkbox',
+        	checkbox:'cboxAppendFGDBTemplate'
         }, {
             label: 'Output Name',
             type: 'fileExportOutputName',
@@ -62,18 +67,13 @@ Hoot.control.utilities.dataset = function(context) {
         fieldset.enter()
             .append('div')
             .classed('form-field fill-white small keyline-all round space-bottom1', true)
-            /*.append('label')
-            .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
-            .text(function (d) {
-                return d.label;
-            });*/
+            .each(function(d){
+            	if(d.checkbox){d3.select(this).classed('keyline-all',false);}
+            })
             .html(function (d) {
-                if(d.inputtype=='checkbox'){
-                	var retval = '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + d.label + '</label>';
-                	for (k in d.checkbox){
-                		retval += '<label class="pad1x pad0y round-top keyline-bottom" style="opacity: 1;">';
-                		retval += '<input type="checkbox" class="reset ' + k + '" style="opacity: 1;">'+d.checkbox[k]+'</label>';
-                	}
+            	if(d.checkbox){
+            		var retval = '<label class="pad1x pad0y round-top ' + d.checkbox + '" style="opacity: 1;">';
+               		retval += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">'+d.label+'</label>';
                 	return retval;
                 } else {
                 	return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + d.label; // + '</label><input type="text" class="reset ' + field.type + '" />';
@@ -96,7 +96,7 @@ Hoot.control.utilities.dataset = function(context) {
             })
             .select(function (a) {
             	if (a.checkbox){
-             	   d3.selectAll('input.reset.fileExportOptions').remove();
+             	   d3.selectAll('input.reset.appendFGDBTemplate').remove();
              	}
             	if (a.combobox) {
                     var combo = d3.combobox()
@@ -109,6 +109,11 @@ Hoot.control.utilities.dataset = function(context) {
                     d3.select(this)
                         .style('width', '100%')
                         .call(combo);
+                    
+                    d3.select(this)
+                	.on('change',function(){
+                		checkForTemplate();
+                	});
                 }
 
                 if (a.transcombo) {
@@ -122,6 +127,11 @@ Hoot.control.utilities.dataset = function(context) {
                     d3.select(this)
                         .style('width', '100%')
                         .call(combotrans);
+                    
+                    d3.select(this)
+                    	.on('change',function(){
+                    		checkForTemplate();
+                    	});
                 }
             });;
 
@@ -147,8 +157,35 @@ Hoot.control.utilities.dataset = function(context) {
                     }
                 });
             });
-
-        return modalbg;
+         
+         function checkForTemplate(){
+        	 var hidden=false;
+        	 
+        	 var exportType = d3.select('.fileExportFileType').value();
+        	 var transType = d3.select('.fileExportTranslation').value();
+        	 
+        	 // Check if output type is File Geodatabase
+        	 if (exportType==''){exportType=d3.select('.fileExportFileType').attr('placeholder');}
+        	 if (transType==''){transType=d3.select('.fileExportTranslation').attr('placeholder');}
+        	
+        	 if(exportType!='File Geodatabase'){
+        		 hidden=true;
+        	 }
+        	 
+        	 var selTrans = _.findWhere(transCombo,{"DESCRIPTION":transType});
+        	 if(selTrans){
+        		 if(selTrans.NAME.substring(0,3)!='TDS'){
+        			 hidden=true;
+        		 }
+        	 } else {
+        		 hidden=true;
+        	 }
+        	 
+        	 d3.select('.cboxAppendFGDBTemplate').classed('hidden',hidden);
+        	 if(hidden){
+        		 d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
+        	 }
+         }   
 	};
 	
 	 hoot_control_utilities_dataset.modifyNameContainer = function(dataset) {
