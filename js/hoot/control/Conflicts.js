@@ -134,6 +134,10 @@ Hoot.control.conflicts = function (context, sidebar) {
             
         };
         var jumpTo = function (nReviewed, itemCnt, direction, fn) {
+            for(var z=0; z<reviewItems.length; z++){
+                var msg = reviewItems[z].uuid + ':' + reviewItems[z].itemToReviewAgainst.uuid;
+                console.debug(msg);
+            }
             if(heartBeatTimer){
                 clearInterval(heartBeatTimer);
             }
@@ -429,30 +433,54 @@ Hoot.control.conflicts = function (context, sidebar) {
         };
 
         var done = false;
-        function acceptAll() {done=true;
-            resetStyles();
-            d3.select('div.tag-table').remove();
-            var remaining = reviewsRemaining();
-            _.each(remaining, function (item) {
-                item.retain = true;
-                item.reviewed = true;
-                //var itemKlass = reviewItemID(item);
-                //var itemKlass2 = reviewAgainstID(item);
-                statusCheck();
-            });
+        function acceptAll() {
+            Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {  
+                    //if only locked by self
+                if(resp.count > 1) {
 
+                    var r = confirm("Reviews are being reviewed by other users." + 
+                    " Modified features will be saved but will not be marked as resolved. Do you want to continue? ");
+                    if (r == true) {
+                        done=true;
+                        resetStyles();
+                        d3.select('div.tag-table').remove();
+                        var remaining = reviewsRemaining();
+                        _.each(remaining, function (item) {
+                            item.retain = true;
+                            item.reviewed = true;
+                            //var itemKlass = reviewItemID(item);
+                            //var itemKlass2 = reviewAgainstID(item);
+                            statusCheck();
+                        });
+                    }
+                }
+            });
+ 
             //event.acceptAll(data);
 
         }
 
 
         function discardAll() {
-            resetStyles();
-            d3.select('div.tag-table').remove();
-            Conflict.reviewComplete();
-            d3.select('.hootTags').remove();
-            metaHead.text('Discarding Conflicts.....');
-            event.discardAll(data);
+                    
+
+            Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {  
+                    //if only locked by self
+                if(resp.count > 1) {
+
+                    var r = confirm("Reviews are being reviewed by other users." + 
+                    " Modified features will be saved but will not be marked as resolved. Do you want to continue? ");
+                    if (r == true) {
+                        resetStyles();
+                        d3.select('div.tag-table').remove();
+                        Conflict.reviewComplete();
+                        d3.select('.hootTags').remove();
+                        metaHead.text('Discarding Conflicts.....');
+                        event.discardAll(data);
+                    }
+                }
+            });
+
         }
 
        var statusCheck = function () {
