@@ -111,9 +111,9 @@ Hoot.control.utilities.dataset = function(context) {
                         .call(combo);
                     
                     d3.select(this)
-                	.on('change',function(){
-                		checkForTemplate();
-                	});
+	                	.on('change',function(){
+	                		checkForTemplate();
+	                	});
                 }
 
                 if (a.transcombo) {
