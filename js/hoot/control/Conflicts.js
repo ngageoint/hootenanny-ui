@@ -344,7 +344,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                         getFeatureStopTimer(true);
                         window.alert('One feature involved in this review has already been deleted');
                     } else {
-                        window.console.log('wait for another interval to fire');
+                        //window.console.log('wait for another interval to fire');
                     }
                 }
             };
@@ -397,15 +397,15 @@ Hoot.control.conflicts = function (context, sidebar) {
                 var fmerged = mergeTags([f1, f2]);
                 fmerged.forEach(function (d) {
                     var r = ftable.append('tr').classed('', true);
-                    r.append('td').classed('key', true).text(d.key);
+                    r.append('td').classed('fillD', true).text(d.key);
                     r.append('td').classed('f1', true).text(d.value[0]).on('click', function(d){
                         var sel = iD.modes.Select(context, [feats[0].id]);
-                        //sel.suppressMenu(true);
+                        sel.suppressMenu(true);
                         context.enter(sel);
                     });
                     r.append('td').classed('f2', true).text(d.value[1]).on('click', function(d){
                         var sel = iD.modes.Select(context, [feats[1].id]);
-                        //sel.suppressMenu(true);
+                        sel.suppressMenu(true);
                         context.enter(sel);
                     });
 
