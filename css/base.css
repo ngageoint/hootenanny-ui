@@ -448,7 +448,7 @@ img.inline, .inline           { display:inline-block; }
   }
 
 ::-webkit-scrollbar {
-  height:20px;
+  height:10px;
   overflow:visible;
   width:10px;
   background:white;
