@@ -516,7 +516,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
             var multiFeatureMsg = '';
             if(itemCnt > 1){
-              multiFeatureMsg = ', One to many feature (' + (nReviewed + 1) + ' of ' + itemCnt + ')';
+              multiFeatureMsg = ', One to many feature ( reviewed ' + (nReviewed) + ' of ' + itemCnt + ')';
             }
             meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflict '+ index + ' of ' + reviewCount + ': ' + entity_stat +
                 '  (Remaining conflicts: ' + numLeft +  multiFeatureMsg + ')</strong>');
