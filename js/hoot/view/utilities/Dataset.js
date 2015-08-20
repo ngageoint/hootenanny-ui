@@ -76,10 +76,6 @@ Hoot.view.utilities.dataset = function(context)
         	datasets2remove = _.filter(context.hoot().model.layers.getAvailLayers(),function(lyr){
         		return lyr.folderId==folderId;
         	});
-        	context.hoot().model.folders.deleteFolder(d.id,function(resp){
-        		if(resp==false){console.log('Unable to delete folder.  Will delete datasets now.');}
-        		hoot.model.folders.refresh(function () {});
-        	});
         } else {
         	var availLayers = context.hoot().model.layers.getAvailLayers();
             datasets2remove=_.filter(availLayers,function(n){return n.id==mapId;});
@@ -104,19 +100,31 @@ Hoot.view.utilities.dataset = function(context)
 			d3.select('.context-menu').style('display', 'none');
 		    
 		    context.hoot().model.layers.deleteLayer(dataset,function(resp){
-		    	selNode.remove();
+		    	if(resp==true){
+		    		selNode.remove();
+		    	}
 		    	
 			    if(i>=datasets2remove.length-1){
 			    	hoot.model.layers.refresh(function(){
 		        		hoot.model.folders.refreshLinks(function(){context.hoot().model.import.updateTrees();})        		
 		        	});
+			    	
+		    		//remove folder
+		        	context.hoot().model.folders.deleteFolder(d.id,function(resp){
+		        		if(resp==false){alert('Unable to delete folder.');}
+	                	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
+		        	});
+			    	
 			    }
 		    });
 
 	    }//,container);    
         
         if(datasets2remove.length==0){
-        	context.hoot().model.import.updateTrees();
+        	context.hoot().model.folders.deleteFolder(d.id,function(resp){
+        		if(resp==false){alert('Unable to delete folder.');}
+            	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
+        	});
         }
     } 
     
