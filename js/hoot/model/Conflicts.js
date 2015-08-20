@@ -148,7 +148,27 @@ Hoot.model.conflicts = function(context)
         return ent;
     };
 
+    model_conflicts.getSourceLayerId = function(feature) {
+        var lyrs = d3.entries(hoot.loadedLayers()).filter(function(d) {
+            return parseInt(d.value.mapId) !== parseInt(feature.mapId);
+        });
+        var lyr = lyrs[parseInt(feature.tags['hoot:status']) - 1];
+        return (lyr) ? lyr.value.mapId : null;
+    };
 
+    model_conflicts.getFeatureLayerMerged = function(feature) {
+        var lyr = d3.entries(hoot.loadedLayers()).filter(function(d) {
+            return parseInt(d.value.mapId) === parseInt(feature.mapId);
+        });
+        return (lyr.length > 0) ? lyr[0].value.merged : false;
+    };
+
+    model_conflicts.getFeatureLayer = function(feature) {
+        var lyr = d3.entries(hoot.loadedLayers()).filter(function(d) {
+            return parseInt(d.value.mapId) === parseInt(feature.mapId);
+        });
+        return lyr[0];
+    };
 
   return model_conflicts;
 };

@@ -36,13 +36,34 @@ iD.svg.TagClasses = function() {
                 if (!v || v === 'no') continue;
                 classes += ' tag-' + k + ' tag-' + k + '-' + v;
             }
-            
+
             // For hoot enity id make sure id and origid exist first
             if(entity.id && entity.origid){
                 var lyrid = entity.id.replace(entity.origid+"_","");
-                classes += ' tag-hoot' + ' tag-hoot-'+lyrid.toString();
+                classes += ' tag-hoot';
+
+                // For merged datasets, assign color class of source layer
+                var lyr = hoot.model.conflicts.getFeatureLayer(entity);
+                if (lyr.value.merged) {
+                    var id;
+                    switch(parseInt(t['hoot:status'])) {
+                    case 1:
+                    case 2:
+                        id = hoot.model.conflicts.getSourceLayerId(entity);
+                        break;
+                    case 0:
+                    case 3:
+                    default:
+                        id = lyr.value.mapId;
+                        break;
+                    }
+                    classes += ' tag-hoot-' + id;
+                } else {
+                    classes += ' tag-hoot-'+lyrid.toString();
+                }
             }
-            
+
+
             classes = classes.trim();
 
             if (classes !== value) {
