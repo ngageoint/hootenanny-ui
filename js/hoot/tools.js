@@ -464,6 +464,9 @@ Hoot.tools = function (context, selection) {
                             var input1Name = tags.input1Name;
                             var input2Name = tags.input2Name;
 
+                            var curLayer = loadedLayers[layerName];
+                            curLayer.layers = [input1Name, input2Name];
+
                             if(input1 && input1Name) {
                                 var key = {
                                     'name': input1Name,

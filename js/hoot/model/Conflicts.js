@@ -52,16 +52,26 @@ Hoot.model.conflicts = function(context)
         var hasChanges = context.history().hasChanges();
         if (hasChanges) {
             iD.modes.Save(context).save(context, function () {
-              //This must be called or the services database review database tables will not be
-                //updated and duplicated review items will be returned for subsequent conflation jobs
-                //against the same data.
-                var reviewMarkData = {};
-                reviewMarkData.mapId = data.mapId;
-                Hoot.model.REST('ReviewMarkAll', reviewMarkData, function () {  });
 
-                if (callback) {
-                    callback();
-                }
+                Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {  
+                    //if only locked by self
+                    if(resp.count < 2) {
+                        //This must be called or the services database review database tables will not be
+                        //updated and duplicated review items will be returned for subsequent conflation jobs
+                        //against the same data.
+                        var reviewMarkData = {};
+                        reviewMarkData.mapId = data.mapId;
+                        Hoot.model.REST('ReviewMarkAll', reviewMarkData, function () {  });
+                    } else {
+                        alert("Reviews are being reviewed by other users. Modified features will be saved but will not be marked as resolved.");
+                    }
+                    
+
+                    if (callback) {
+                        callback();
+                    }
+                });
+                 
             });
         }
         else {

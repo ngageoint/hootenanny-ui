@@ -802,6 +802,18 @@ rest.ReviewGetStatistics = function (mapId, callback) {
         });
     };
 
+
+rest.ReviewGetLockCount = function (mapId, callback) {
+            
+        d3.json('/hoot-services/job/review/lockcount?mapId=' + mapId, function (error, resp) {
+                if (error) {
+                    alert("Failed to get lock count.");
+                    return;
+                }
+                return callback(resp);
+        });
+    };
+
 rest.getTranslations = function(callback) {
     d3.json('/hoot-services/ingest/customscript/getlist', function (error, resp) {
         if (error) {
