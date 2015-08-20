@@ -53,7 +53,7 @@ Hoot.model.conflicts = function(context)
         if (hasChanges) {
             iD.modes.Save(context).save(context, function () {
 
-                Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {  
+                Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
                     //if only locked by self
                     if(resp.count < 2) {
                         //This must be called or the services database review database tables will not be
@@ -65,13 +65,13 @@ Hoot.model.conflicts = function(context)
                     } else {
                         alert("Reviews are being reviewed by other users. Modified features will be saved but will not be marked as resolved.");
                     }
-                    
+
 
                     if (callback) {
                         callback();
                     }
                 });
-                 
+
             });
         }
         else {
@@ -154,13 +154,6 @@ Hoot.model.conflicts = function(context)
         });
         var lyr = lyrs[parseInt(feature.tags['hoot:status']) - 1];
         return (lyr) ? lyr.value.mapId : null;
-    };
-
-    model_conflicts.getFeatureLayerMerged = function(feature) {
-        var lyr = d3.entries(hoot.loadedLayers()).filter(function(d) {
-            return parseInt(d.value.mapId) === parseInt(feature.mapId);
-        });
-        return (lyr.length > 0) ? lyr[0].value.merged : false;
     };
 
     model_conflicts.getFeatureLayer = function(feature) {
