@@ -402,9 +402,15 @@ Hoot.control.utilities.folder = function(context) {
                 		return;
                     }
                 	
-                	if(_.map(hoot.model.folders.getAvailFolders(),function(n){return n.id}).indexOf(this.id)>=0){
-                		folderId=this.is;
+                	/*if(_.map(hoot.model.folders.getAvailFolders(),function(n){return n.id}).indexOf(this.id)>=0){
+                		folderId=this.id;
+                	}*/
+                	
+                	if(_.findWhere(hoot.model.folders.getAvailFolders(),{name:_form.select('.reset.NewFolderName').value(),parentId:folderId})){
+                		alert("Please use a different name, as you are about to create a folder with a name identical to a folder at the same level.")
+                		return;
                 	}
+                	
                 	var data={};
                 	data.parentId=folderId;
                 	data.folderName = _form.select('.reset.NewFolderName').value();
