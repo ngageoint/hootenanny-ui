@@ -48,6 +48,7 @@ Hoot.control.utilities.folder = function(context) {
 	   
 		folders.x0=0;
 		folders.y0=0;
+		
 		update(root=folders);
 		
 		function zoomed() {
@@ -255,14 +256,24 @@ Hoot.control.utilities.folder = function(context) {
 	      _.each(nodes,function(n){n.selected=false;});
 	    	
 	      if (d.children) {
-	        d._children = d.children;
-	        d.children = null;
-	        d.selected = false;
+	    	  //folder closing
+	    	  d._children = d.children;
+	    	  d.children = null;
+	    	  d.selected = false;
+	    	  if(d.type=='folder'){
+	    		  context.hoot().model.folders.setOpenFolders(d.id,false);
+	    		  d.state='closed';
+	    	  }
 	      } else {
-	        d.children = d._children;
-	        d._children = null;
-	        //change color to signify selected
-	        if(d.type=='dataset'){d.selected=true;}
+	    	  //folder opening
+	    	  d.children = d._children;
+	    	  d._children = null;
+	    	  //change color to signify selected
+	    	  if(d.type=='dataset'){d.selected=true;}
+	    	  if(d.type=='folder'){
+	    		  context.hoot().model.folders.setOpenFolders(d.id,true);
+	    		  d.state='open';
+	    	  }
 	      }
 	      update(d);
 	    }
