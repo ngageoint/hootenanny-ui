@@ -69,7 +69,12 @@ Hoot.model.export = function (context)
         }
         
         // Check to see if we are appending to FGDB Template
-        var appendTemplate= container.select('.cboxAppendFGDBTemplate').select('input').property('checked');
+        var appendTemplate= '';
+        try{
+        	appendTemplate=container.select('.cboxAppendFGDBTemplate').select('input').property('checked');
+        } catch (e) {
+			appendTemplate=true;
+		}
         mapId = data.name;
 
         var param = {};
@@ -79,7 +84,7 @@ Hoot.model.export = function (context)
         param.outputtype = selectedOutType;
         param.outputname = outputname;
         param.USER_EMAIL = iD.data.hootConfig.userEmail;
-        param.append = appendTemplate;
+        param.append = appendTemplate.toString();
         d3.json('/hoot-services/job/export/execute')
             .header('Content-Type', 'text/plain')
             .post(JSON.stringify(param), function (error, data) {
