@@ -123,7 +123,7 @@ Hoot.tools = function (context, selection) {
         data.INPUT1 = view.getLayer(0).id;
         data.INPUT2 = view.getLayer(1).id;
 
-       
+
         var refLayer = '1';
         var oRefLayer = a.select('.referenceLayer').datum();
         if(oRefLayer.id == data.INPUT2){
@@ -185,31 +185,31 @@ Hoot.tools = function (context, selection) {
         });
         //d3.select('.loadingLayer').remove();
         hoot.model.layers.addLayer(item);
-        
+
         //Add a folder and update links
         var pathname = a.select('.pathname').value();
         if(pathname==''){pathname=a.select('.reset.PathName').attr('placeholder');}
         if(pathname=='root'){pathname='';}
         var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
-        
+
         var newfoldername = a.select('.newfoldername').value();
         var folderData = {};
         folderData.folderName = newfoldername;
         folderData.parentId = pathId;
         hoot.model.folders.addFolder(folderData,function(folderId){
-        	//update map linking
+            //update map linking
             var link = {};
             link.folderId = folderId || 0;
             link.mapid = 0;
             if(a.select('.saveAs').value()){
-            	link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == a.select('.saveAs').value()}),'id')[0] || 0;
+                link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == a.select('.saveAs').value()}),'id')[0] || 0;
             }
             if(link.mapid==0){return;}
             link.updateType='new';
             hoot.model.folders.updateLink(link);
             link = {};
         });
-        
+
         /*var datasettable = d3.select('#datasettable');
         hoot.view.utilities.dataset.populateDatasetsSVG(datasettable);*/
     }
@@ -218,11 +218,11 @@ Hoot.tools = function (context, selection) {
     function renderInputLayer(layerName,params) {
         loadedLayers[layerName] = params;
         loadedLayers[layerName].loadable = true;
-      
+
         view.render(params);
         loadingLayer = {};
         d3.select('.loadingLayer').remove();
-     
+
     }
 
     function renderMergedLayer(layerName) {
@@ -478,7 +478,7 @@ Hoot.tools = function (context, selection) {
                                     context.hoot().model.layers.setLayerInvisibleById(input1);
                                 });
                             } else {
-                                alert("Could not determine input layer 1. It will be loaded.");
+                                alert("Could not determine input layer 1. It will not be loaded.");
                             }
 
 
@@ -493,13 +493,13 @@ Hoot.tools = function (context, selection) {
                                     context.hoot().model.layers.setLayerInvisibleById(input2);
                                 });
                             } else {
-                                alert("Could not determine input layer 2. It will be loaded.");
+                                alert("Could not determine input layer 2. It will not be loaded.");
                             }
-                                
+
                         });
 
-                        
-                        
+
+
                     }
                 }
 
@@ -512,18 +512,18 @@ Hoot.tools = function (context, selection) {
 
                     if(doRenderView === true){
                         renderInputLayer(layerName,params);
-                        conflationCheck(layerName, true);    
-                    } else {                     
+                        conflationCheck(layerName, true);
+                    } else {
                         loadedLayers[layerName] = params;
                         loadedLayers[layerName].loadable = true;
                         loadingLayer = {};
                     }
                 }
-                    
+
             });
-                
-                
-                         
+
+
+
         } else {
             /*renderMergedLayer(layerName);
             conflationCheck(layerName, true);*/
