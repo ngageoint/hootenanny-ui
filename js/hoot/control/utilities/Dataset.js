@@ -97,6 +97,7 @@ Hoot.control.utilities.dataset = function(context) {
             .select(function (a) {
             	if (a.checkbox){
              	   d3.selectAll('input.reset.appendFGDBTemplate').remove();
+              	   d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',true);
              	}
             	if (a.combobox) {
                     var combo = d3.combobox()

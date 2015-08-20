@@ -69,7 +69,7 @@ Hoot.model.export = function (context)
         }
         
         // Check to see if we are appending to FGDB Template
-        var appendTemplate = container.select('.cboxAppendFGDBTemplate').select('input').property('checked');
+        var appendTemplate= container.select('.cboxAppendFGDBTemplate').select('input').property('checked');
         mapId = data.name;
 
         var param = {};
