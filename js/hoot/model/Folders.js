@@ -185,10 +185,14 @@ Hoot.model.folders = function (context)
     		_.extend(fldr,{type:'folder'});
     	});
     	
+    	folderList = model_folders.unflattenFolders(folderList);
     	folderList = _.union(folderList,_.each(_.filter(layerList,function(lyr){return lyr.folderId==0}),function(lyr){_.extend(lyr,{parentId:0})}));
+
     	
     	//unflatten
-    	return model_folders.unflattenFolders(folderList);
+    	//return model_folders.unflattenFolders(folderList);
+        //Updated to avoid root datasets being mistaken for folders
+    	return folderList;
     };
        
     return model_folders;
