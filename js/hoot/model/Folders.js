@@ -4,6 +4,7 @@ Hoot.model.folders = function (context)
 	var folders = {};
 	var availFolders = [];
 	var availLinks = [];
+	var openFolders = [];
 
     model_folders.folders = folders;
     model_folders.getfolderIdByName = function (name) {
@@ -49,6 +50,8 @@ Hoot.model.folders = function (context)
     		callback(false);
     		return false;
     	}
+    	
+    	context.hoot().model.folders.setOpenFolders(folderId,false);
     	
     	Hoot.model.REST('deleteFolder',folderId,function(a){
     		if(a){
@@ -122,10 +125,23 @@ Hoot.model.folders = function (context)
     	availFolders = d;
         return availFolders;
     };
+    
     model_folders.getFolders = function (opt) {
         if (opt) return folders[opt];
         return folders;
     };
+    
+    model_folders.setOpenFolders = function(folderId,add) {
+    	if(add){
+    		openFolders.push(folderId);
+    	} else {
+    		var index = openFolders.indexOf(folderId);
+    		if (index > -1) {
+    			openFolders.splice(index, 1);
+    		}
+    	}
+    	return openFolders;
+    }
        
     model_folders.unflattenFolders = function(array,parent,tree) {
         tree = typeof tree !== 'undefined' ? tree : [];
@@ -138,9 +154,15 @@ Hoot.model.folders = function (context)
             if( parent.id == 0 ){
             	tree = children;   
             }else{
-               if(!parent['children']){parent['children']=[];}
-               _.each(children,function(child){parent['children'].push(child);});
-            }
+            	if(parent.state=='closed'){
+                	if(!parent['_children']){parent['_children']=[];}
+                    _.each(children,function(child){parent['_children'].push(child);});
+	
+            	} else {
+                	if(!parent['children']){parent['children']=[];}
+                    _.each(children,function(child){parent['children'].push(child);});
+            		
+            	}            }
             _.each( children, function( child ){
             	model_folders.unflattenFolders( array, child ) } );                    
         }
@@ -181,17 +203,22 @@ Hoot.model.folders = function (context)
     	var folderList = _.map(model_folders.getAvailFolders(), _.clone); 
     	
     	_.each(folderList,function(fldr){
-    		fldr.children = _.filter(layerList,function(lyr){return lyr.folderId==fldr.id});
+    		if(openFolders.indexOf(fldr.id)>-1){
+    			fldr.children = _.filter(layerList,function(lyr){return lyr.folderId==fldr.id});
+    			fldr.state='open';
+    		} else {
+        		fldr._children = _.filter(layerList,function(lyr){return lyr.folderId==fldr.id});
+        		if(fldr._children.length==0){fldr._children=null;}	
+        		fldr.state='closed';
+    		}
     		_.extend(fldr,{type:'folder'});
     	});
     	
+    	//unflatten
+        //Updated to avoid root datasets being mistaken for folders
     	folderList = model_folders.unflattenFolders(folderList);
     	folderList = _.union(folderList,_.each(_.filter(layerList,function(lyr){return lyr.folderId==0}),function(lyr){_.extend(lyr,{parentId:0})}));
-
-    	
-    	//unflatten
     	//return model_folders.unflattenFolders(folderList);
-        //Updated to avoid root datasets being mistaken for folders
     	return folderList;
     };
        
