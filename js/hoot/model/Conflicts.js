@@ -149,18 +149,15 @@ Hoot.model.conflicts = function(context)
     };
 
     model_conflicts.getSourceLayerId = function(feature) {
-        var lyrs = d3.entries(hoot.loadedLayers()).filter(function(d) {
-            return parseInt(d.value.mapId) !== parseInt(feature.mapId);
-        });
-        var lyr = lyrs[parseInt(feature.tags['hoot:status']) - 1];
-        return (lyr) ? lyr.value.mapId : null;
+        var mergeLayer = hoot.loadedLayers()[feature.layerName];
+        var sourceLayers = mergeLayer.layers;
+        var featureLayerName = sourceLayers[parseInt(feature.tags['hoot:status']) - 1];
+        var sourceLayer = hoot.loadedLayers()[featureLayerName];
+        return (sourceLayer) ? sourceLayer.mapId : null;
     };
 
     model_conflicts.getFeatureLayer = function(feature) {
-        var lyr = d3.entries(hoot.loadedLayers()).filter(function(d) {
-            return parseInt(d.value.mapId) === parseInt(feature.mapId);
-        });
-        return lyr[0];
+        return hoot.loadedLayers()[feature.layerName];
     };
 
   return model_conflicts;

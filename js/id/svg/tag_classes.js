@@ -44,7 +44,7 @@ iD.svg.TagClasses = function() {
 
                 // For merged datasets, assign color class of source layer
                 var lyr = hoot.model.conflicts.getFeatureLayer(entity);
-                if (lyr && lyr.value.merged) {
+                if (lyr && lyr.merged) {
                     var id;
                     switch(parseInt(t['hoot:status'])) {
                     case 1:
@@ -54,7 +54,7 @@ iD.svg.TagClasses = function() {
                     case 0:
                     case 3:
                     default:
-                        id = lyr.value.mapId;
+                        id = lyr.mapId;
                         break;
                     }
                     classes += ' tag-hoot-' + id;
