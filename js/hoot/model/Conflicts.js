@@ -122,6 +122,9 @@ Hoot.model.conflicts = function(context)
                 var mergedNode = entities[0];
                 //FIXME: Temp hack to set version to 0
                 mergedNode.version = 0;
+                //FIXME: Another hack to update hoot:status after merge
+                //this should probably be done by the server merge code
+                mergedNode.tags['hoot:status'] = 3;
                 //Track merged ids in descendents
                 descendents[feature.id] = mergedNode.id;
                 descendents[featureAgainst.id] = mergedNode.id;
