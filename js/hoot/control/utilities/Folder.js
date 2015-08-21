@@ -255,12 +255,15 @@ Hoot.control.utilities.folder = function(context) {
 	      var nodes = tree.nodes(root);
 	      _.each(nodes,function(n){n.selected=false;});
 	    	
+	      d3.select(this).classed("selected",true);
+	      var updateOpenFolders = !d3.select("#datasettable").selectAll('.selected').empty();
+	      
 	      if (d.children) {
 	    	  //folder closing
 	    	  d._children = d.children;
 	    	  d.children = null;
 	    	  d.selected = false;
-	    	  if(d.type=='folder'){
+	    	  if(d.type=='folder' && updateOpenFolders){
 	    		  context.hoot().model.folders.setOpenFolders(d.id,false);
 	    		  d.state='closed';
 	    	  }
@@ -270,11 +273,13 @@ Hoot.control.utilities.folder = function(context) {
 	    	  d._children = null;
 	    	  //change color to signify selected
 	    	  if(d.type=='dataset'){d.selected=true;}
-	    	  if(d.type=='folder'){
+	    	  if(d.type=='folder' && updateOpenFolders){
 	    		  context.hoot().model.folders.setOpenFolders(d.id,true);
 	    		  d.state='open';
 	    	  }
 	      }
+
+	      d3.select(this).classed("selected",false);
 	      update(d);
 	    }
 	
