@@ -20,7 +20,7 @@ Hoot.model.conflicts = function(context)
                 }
                 if (callback) {
                     response.reviewableItems = _.filter(response.reviewableItems, function (d) {
-                        return d.type !== 'relation';
+                        return true;//d.type !== 'relation';
                     });
                     model_conflicts.reviews = response;
                     callback(response);
@@ -52,16 +52,26 @@ Hoot.model.conflicts = function(context)
         var hasChanges = context.history().hasChanges();
         if (hasChanges) {
             iD.modes.Save(context).save(context, function () {
-              //This must be called or the services database review database tables will not be
-                //updated and duplicated review items will be returned for subsequent conflation jobs
-                //against the same data.
-                var reviewMarkData = {};
-                reviewMarkData.mapId = data.mapId;
-                Hoot.model.REST('ReviewMarkAll', reviewMarkData, function () {  });
 
-                if (callback) {
-                    callback();
-                }
+                Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
+                    //if only locked by self
+                    if(resp.count < 2) {
+                        //This must be called or the services database review database tables will not be
+                        //updated and duplicated review items will be returned for subsequent conflation jobs
+                        //against the same data.
+                        var reviewMarkData = {};
+                        reviewMarkData.mapId = data.mapId;
+                        Hoot.model.REST('ReviewMarkAll', reviewMarkData, function () {  });
+                    } else {
+                        alert("Reviews are being reviewed by other users. Modified features will be saved but will not be marked as resolved.");
+                    }
+
+
+                    if (callback) {
+                        callback();
+                    }
+                });
+
             });
         }
         else {
@@ -112,6 +122,9 @@ Hoot.model.conflicts = function(context)
                 var mergedNode = entities[0];
                 //FIXME: Temp hack to set version to 0
                 mergedNode.version = 0;
+                //FIXME: Another hack to update hoot:status after merge
+                //this should probably be done by the server merge code
+                mergedNode.tags['hoot:status'] = 3;
                 //Track merged ids in descendents
                 descendents[feature.id] = mergedNode.id;
                 descendents[featureAgainst.id] = mergedNode.id;
@@ -122,7 +135,9 @@ Hoot.model.conflicts = function(context)
                     iD.actions.AddEntity(mergedNode),
                     t('operations.add.annotation.point'));
 
-                context.enter(iD.modes.Select(context, [mergedNode.id]));
+                window.setTimeout(function() {
+                    context.enter(iD.modes.Select(context, [mergedNode.id]));
+                }, 500);
 
             }, mapid, layerName);
         }
@@ -136,7 +151,17 @@ Hoot.model.conflicts = function(context)
         return ent;
     };
 
+    model_conflicts.getSourceLayerId = function(feature) {
+        var mergeLayer = hoot.loadedLayers()[feature.layerName];
+        var sourceLayers = mergeLayer.layers;
+        var featureLayerName = sourceLayers[parseInt(feature.tags['hoot:status']) - 1];
+        var sourceLayer = hoot.loadedLayers()[featureLayerName];
+        return (sourceLayer) ? sourceLayer.mapId : null;
+    };
 
+    model_conflicts.getFeatureLayer = function(feature) {
+        return hoot.loadedLayers()[feature.layerName];
+    };
 
   return model_conflicts;
 };

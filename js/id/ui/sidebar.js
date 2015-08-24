@@ -8,7 +8,8 @@ iD.ui.Sidebar = function(context) {
         //selection.call(iD.ui.Notice(context));
         var inspectorWrap = selection.append('div').attr('class', 'inspector-hidden inspector-wrap fr');
         sidebar.hover = function(id) {
-            if (!current && id) {
+            // User found hover distracting see ticket Bug #6522
+       /*     if (!current && id) {
                 featureListWrap.classed('inspector-hidden', true);
                 inspectorWrap.classed('inspector-hidden', false).classed('inspector-hover', true);
                 if (inspector.entityID() !== id || inspector.state() !== 'hover') {
@@ -21,7 +22,7 @@ iD.ui.Sidebar = function(context) {
                 featureListWrap.classed('inspector-hidden', false);
                 inspectorWrap.classed('inspector-hidden', true);
                 inspector.state('hide');
-            }
+            }*/
         };
         
         sidebar.hover = _.throttle(sidebar.hover, 200);
@@ -33,14 +34,14 @@ iD.ui.Sidebar = function(context) {
                 if (inspector.entityID() !== id || inspector.state() !== 'select') {
                     inspector.state('select').entityID(id).newFeature(newFeature);
                     inspectorWrap.call(inspector);
-                    ltds.activate(id);
+                    //ltds.activate(id);
                 }
             }
             else if (!current) {
                 featureListWrap.classed('inspector-hidden', false);
                 inspectorWrap.classed('inspector-hidden', true);
                 inspector.state('hide');
-                ltds.deactivate();
+                //ltds.deactivate();
             }
         };
         sidebar.show = function(component) {

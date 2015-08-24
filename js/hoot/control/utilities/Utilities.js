@@ -6,6 +6,7 @@ Hoot.control.utilities = function (context){
 	hoot_control_utilities.dataset = Hoot.control.utilities.dataset(context);
 	hoot_control_utilities.wfsdataset = Hoot.control.utilities.wfsdataset(context);
 	hoot_control_utilities.reports = Hoot.control.utilities.reports(context);
+	hoot_control_utilities.folder = Hoot.control.utilities.folder(context);
 	
 	return hoot_control_utilities;
 };

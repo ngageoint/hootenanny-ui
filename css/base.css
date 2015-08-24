@@ -199,9 +199,9 @@ textarea,
 input[type=text] {
   display:inline-block;
   height:30px;
-  width:95%;
+  width:100%;
   max-width:400px;
-  margin-bottom:10px;
+  /*margin-bottom:10px;*/
   font-size:13px;
   font-weight:500;
   line-height:20px;
@@ -448,7 +448,7 @@ img.inline, .inline           { display:inline-block; }
   }
 
 ::-webkit-scrollbar {
-  height:20px;
+  height:10px;
   overflow:visible;
   width:10px;
   background:white;

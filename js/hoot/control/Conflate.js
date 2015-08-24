@@ -58,11 +58,26 @@ Hoot.control.conflate = function (sidebar) {
         else {
             newName = 'Merged_' + newName.substring + '_' + Math.random().toString(16).substring(7);
         }
+        
+        hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
+        var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+        
         var d_form = [
             {
                 label: 'Save As',
                 type: 'saveAs',
                 placeholder: newName
+            },
+            {
+            	label: 'Path',
+            	type: 'pathname',
+            	placeholder:'root',
+            	combobox2:folderList
+            },
+            {
+            	label: 'New Folder Name (leave blank otherwise)',
+            	type: 'newfoldername',
+            	placeholder:''
             },
             {
                 label: 'Type',
@@ -203,6 +218,30 @@ Hoot.control.conflate = function (sidebar) {
 
                  
                 }
+                
+                if (a.combobox2){
+                	var comboPathName = d3.combobox()
+                    .data(_.map(a.combobox2, function (n) {
+                        return {
+                            value: n.folderPath,
+                            title: n.folderPath
+                        };
+                    }));
+
+            		  comboPathName.data().sort(function(a,b){
+            		  	var textA = a.value.toUpperCase();
+            		  	var textB=b.value.toUpperCase();
+            		  	return(textA<textB)?-1 : (textA>textB)?1:0;
+            		  });
+            		  
+            		  comboPathName.data().unshift({value:'root',title:0});
+                    
+                    d3.select(this)
+                    	.style('width', '100%')
+                    	.call(comboPathName);
+                    
+                    d3.select(this).attr('readonly',true);                        
+                }
             });
         var actions = conflate
             .select('fieldset')
@@ -241,7 +280,31 @@ Hoot.control.conflate = function (sidebar) {
             .on('click', function () {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
-
+                
+              //check if layer with same name already exists...
+            	if(conflate.selectAll('.saveAs').value()==''){
+            		alert("Please enter an output layer name.");
+                    return;
+            	}
+                
+                if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f == conflate.selectAll('.saveAs').value();})))
+            	{
+                    alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.");
+                    return;
+                }
+                
+            	var resp = hoot.checkForUnallowedChar(conflate.selectAll('.saveAs').value());
+            	if(resp != true){
+            		alert(resp);
+            		return;
+                }
+            	            	
+            	resp = hoot.checkForUnallowedChar(conflate.selectAll('.newfoldername').value());
+            	if(resp != true){
+            		alert(resp);
+            		return;
+                }                
+                
                 var thisConfType = d3.selectAll('.reset.ConfType');
                 var selVal = thisConfType.value();
 
@@ -274,7 +337,7 @@ Hoot.control.conflate = function (sidebar) {
             if(Conflate.confAdvOptionsSelectedVal == null){
             	Conflate.confAdvOptionsFields = _getDefaultFields();
             	Conflate.confAdvOptionsSelectedVal = _getSelectedValues(null,Conflate.confAdvOptionsFields);
-            }            
+            }
             console.log(JSON.stringify(Conflate.confAdvOptionsSelectedVal))
         });
         
@@ -647,7 +710,7 @@ Hoot.control.conflate = function (sidebar) {
 							}					
 						} else if(submember.hoot_key) {
 							if(setVal==null){setVal=submember.defaultvalue;}
-							fieldsJSON.push({key:submember.hoot_key,value:setVal,group:field.name,id:submember.id});
+							fieldsJSON.push({key:submember.id,value:setVal,group:field.name,id:submember.id});
 						} else if(submember.defaultvalue) {
 							if(setVal==null){setVal=submember.defaultvalue;}
 							fieldsJSON.push({key:submember.id,value:setVal,group:field.name,id:submember.id});
@@ -1030,6 +1093,8 @@ Hoot.control.conflate = function (sidebar) {
 	             			if(target.id.indexOf('enable')>-1){
 								//Need to take care of everything in group that is on/off when enabled/disabled
 	             				var arrInputs = d3.select(d3.select(target).node().parentNode.parentNode.parentNode.parentNode).selectAll('input');
+	             				
+	             				
 	             				arrInputs.each(function(){
 	             					if(setVal)
 	             					{

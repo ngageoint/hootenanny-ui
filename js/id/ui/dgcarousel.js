@@ -134,7 +134,7 @@ iD.ui.dgCarousel = function(context) {
                         if (error) {
                             window.console.warn(error);
                         } else {
-                            window.console.log(data.totalFeatures);
+                            //window.console.log(data.totalFeatures);
                             //display available images in carousel
 
                             var images = ul.selectAll('li:not(.active)')

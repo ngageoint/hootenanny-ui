@@ -4,7 +4,9 @@ iD.ui.RawTagEditor = function(context) {
         state,
         preset,
         tags,
-        id;
+        id,
+        translation,
+        tagInfEndPts;
 
     function rawTagEditor(selection) {
         var count = Object.keys(tags).filter(function(d) { return d; }).length;
@@ -23,8 +25,18 @@ iD.ui.RawTagEditor = function(context) {
         }
     }
 
-    function content($wrap) {
+    function content($wrap,sortAZ) {
         var entries = d3.entries(tags);
+    	if(sortAZ==undefined||null){
+    		if(!d3.select('#sort-tags').empty()){sortAZ = d3.select('#sort-tags').property('checked');}
+    		else{sortAZ=false;}
+    	}
+        if(sortAZ){
+    		entries.sort(function(a,b){var textA = a.key.toUpperCase();
+	    	    var textB = b.key.toUpperCase();
+	    	    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+	    	});
+    	} 
 
         if (!entries.length || showBlank) {
             showBlank = false;
@@ -46,7 +58,32 @@ iD.ui.RawTagEditor = function(context) {
         $enter.append('span')
             .attr('class', 'icon plus light');
 
-        $newTag.on('click', addTag);
+       var $sortAZ = $newTag.enter().append('div')
+	    	.classed('contain', true)
+	    	.attr('id','sort-tags-div')
+	    	.style('position','absolute').style('right','25px').style('margin','-25px 0')
+	    	.html(function(){
+            	var retval = '<label class="pad1x" style="opacity: 1;">';
+            	retval += '<input type="checkbox" class="reset" id="sort-tags" ';
+            	retval += 'style="opacity: 1;"';
+            	retval += '>Sort A-Z</label>';		                	
+            	return retval;	
+            });
+        	    
+      /* if(d3.select('#entity_editor_presettranstype').value()=='OSM'){
+    	   d3.select('#sort-tags-div').classed('hidden',false);
+       } else {d3.select('#sort-tags-div').classed('hidden',true);}*/
+       
+       $sortAZ.on('change',function(){
+        	var sortAZ = d3.select('#sort-tags').property('checked');
+        	if(sortAZ==true){
+        		content($wrap,true);
+        	} else {
+        		content($wrap);
+        	}
+        });
+               
+        $enter.on('click', addTag);
 
         var $items = $list.selectAll('li')
             .data(entries, function(d) { return d.key; });
@@ -82,7 +119,11 @@ iD.ui.RawTagEditor = function(context) {
 
         // Update
 
-        $items.order();
+        //removed to allow for A-Z sorting
+        //if(!translation) {
+            $items.order();
+        //}
+        
 
         $items.each(function(tag) {
             var reference = iD.ui.TagReference({key: tag.key}, context);
@@ -140,24 +181,69 @@ iD.ui.RawTagEditor = function(context) {
 
             key.call(d3.combobox()
                 .fetcher(function(value, callback) {
-                    context.taginfo().keys({
+                    var tagInfoOpts = {
                         debounce: true,
                         geometry: context.geometry(id),
                         query: value
-                    }, function(err, data) {
+                    };
+                    var origTagInfoEndPt = context.taginfo().endpoint();
+                    // passing optional translation info
+                    if(translation){
+                        tagInfoOpts.fcode = translation.fCode;
+                        tagInfoOpts.translation = translation.transType;
+                        var rawGeom = context.geometry(id);
+                        if(rawGeom == 'point'){
+                            rawGeom = 'Point';
+                        } else if(rawGeom == 'line'){
+                            rawGeom = 'Line';
+                        } else if(rawGeom == 'area'){
+                            rawGeom = 'Area';
+                        }
+                        var transTagInfoUrl = window.location.protocol + '//' + 
+                            window.location.hostname + ":" + iD.data.hootConfig.translationServerPort + '/taginfo/';
+
+                        if(!tagInfEndPts){
+                            tagInfEndPts = {};
+                            tagInfEndPts['OSM'] = origTagInfoEndPt;
+                            tagInfEndPts['translation'] = transTagInfoUrl;
+                        } else {
+                            transTagInfoUrl = tagInfEndPts['translation'];
+                        }
+                        tagInfoOpts.rawgeom = rawGeom;
+                        context.taginfo().endpoint(transTagInfoUrl);
+
+                    } else {
+                        if(tagInfEndPts){
+                            var osmTagInfoUrl = tagInfEndPts['OSM'];
+                            context.taginfo().endpoint(osmTagInfoUrl);
+                        }
+                      
+                    }
+
+                    context.taginfo().keys(tagInfoOpts, function(err, data) {
                         if (!err) callback(sort(value, data));
                     });
                 }));
 
             value.call(d3.combobox()
                 .fetcher(function(value, callback) {
-                    context.taginfo().values({
+                    var tagInfoOpts = {
                         debounce: true,
                         key: key.value(),
                         geometry: context.geometry(id),
                         query: value
-                    }, function(err, data) {
+                    };
+                    var origTagInfoEndPt = context.taginfo().endpoint();
+                    // passing optional translation info
+                    if(translation){
+                        tagInfoOpts.fcode = translation.fCode;
+                        tagInfoOpts.translation = translation.transType;
+                        context.taginfo().endpoint(window.location.protocol + '//' + 
+                            window.location.hostname + ":" + iD.data.hootConfig.translationServerPort + '/taginfo/');
+                    }
+                    context.taginfo().values(tagInfoOpts, function(err, data) {
                         if (!err) callback(sort(value, data));
+                        context.taginfo().endpoint(origTagInfoEndPt);
                     });
                 }));
         }
@@ -182,6 +268,7 @@ iD.ui.RawTagEditor = function(context) {
             event.change(tag);
         }
 
+
         function valueChange(d) {
             var tag = {};
             tag[d.key] = this.value;
@@ -204,6 +291,10 @@ iD.ui.RawTagEditor = function(context) {
                 content($wrap);
                 $list.selectAll('li:last-child input.key').node().focus();
             }, 0);
+        }
+        
+        function sortTags() {
+        	content($wrap);
         }
     }
 
@@ -228,6 +319,12 @@ iD.ui.RawTagEditor = function(context) {
     rawTagEditor.entityID = function(_) {
         if (!arguments.length) return id;
         id = _;
+        return rawTagEditor;
+    };
+
+    rawTagEditor.entityTranslation = function(_) {
+        if (!arguments.length) return translation;
+        translation = _;
         return rawTagEditor;
     };
 

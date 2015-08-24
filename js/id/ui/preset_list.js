@@ -59,21 +59,79 @@ iD.ui.PresetList = function(context) {
             }
         }
 
+        function createPresetFromTDS(schemaElem) {
+            var newPreset = {};
+            //newPreset.icon = "highway-road";
+            newPreset.geometry = schemaElem.geom.toLowerCase();
+            newPreset.tags = {};
+            newPreset['hoot:featuretype'] = schemaElem.desc;
+            newPreset['hoot:transtype'] = filterType;
+            newPreset['hoot:fcode'] = schemaElem.fcode;
+            newPreset.name = schemaElem.desc + ' (' + schemaElem.fcode + ')';
+            return iD.presets.Preset(filterType + '/' + schemaElem.fcode, 
+                newPreset, {});
+        }
+        function searchResHandler (value, results) {
+            
+            message.text(t('inspector.results', {
+                n: results.collection.length,
+                search: value
+            }));
+            list.call(drawList, results);
+        }
+
         function inputevent() {
             var value = search.property('value');
             list.classed('filtered', value.length);
             if (value.length) {
+                var filterType = d3.select('#presettranstype').value();
+
+                if(filterType == 'OSM') {
                     var results = presets.search(value, geometry);
-                    message.text(t('inspector.results', {
-                        n: results.collection.length,
-                        search: value
-                    }));
-                    list.call(drawList, results);
+                    searchResHandler(value, results);
                 } else {
-                    list.call(drawList, context.presets().defaults(geometry, 36));
-                    message.text(t('inspector.choose'));
+                    d3.xhr(window.location.protocol + '//' + window.location.hostname + ":"  + 
+                        iD.data.hootConfig.translationServerPort +
+                    '/schema?geometry='+ geometry + '&translation=' + filterType + '&searchstr=' +
+                    value + '&maxlevdst=' + iD.data.hootConfig.presetMaxLevDistance +
+                    '&limit=' + iD.data.hootConfig.presetMaxDisplayNum )
+                    .get(function(error, resp){
+                       if(!error){
+                        var transSchema = JSON.parse(resp.responseText);
+                        var newCollection = [];
+                        _.each(transSchema, function(elem){
+
+                            var fCode = elem.fcode;
+                            curPreset = _.find(context.presets().collection, 
+                                function(item){
+                                    return item.id == filterType + '/' + fCode;
+                                });
+                            
+                            if(!curPreset){
+                                
+                                var newPreset = createPresetFromTDS(elem);
+                                newCollection.push(newPreset);                               
+                            }
+                            
+                        });
+
+                    
+                        var res = iD.presets.Collection(_.unique(
+                            newCollection
+                        ));
+                        searchResHandler(value, res);
+
+                       }
+
+                    });
                 }
+                
+                
+            } else {
+                list.call(drawList, context.presets().defaults(geometry, 36));
+                message.text(t('inspector.choose'));
             }
+        }
 
             var searchWrap = selection.append('div')
                 .attr('class', 'search-header');
@@ -158,6 +216,9 @@ iD.ui.PresetList = function(context) {
         // When OSM type get all that does not have hoot:transtype
         if(filterType === 'OSM') {
             filterRes = _.filter(presets, function(prs){
+                if(prs === undefined){
+                    return false;
+                }
                 return (!prs['hoot:transtype']);
             });
         } else {

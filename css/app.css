@@ -283,8 +283,13 @@ ul li { list-style: none;}
 }
 
 .fillD {
-    background:#333;/*rgba(0,0,0,.5);*/
+    background:rgba(0,0,0,.5);
     color: white;
+}
+
+.fillD2 {
+		background:rgba(0,0,0,.75);
+		color:white;
 }
 
 .fl { float: left;}
@@ -534,6 +539,7 @@ button.save.has-count .count::before {
 .icon.vertex     { background-position: -580px 0;}
 .icon.data       { background-position: -600px 0;}
 
+.icon.up.light 			   { background-position: -140px -20px;}
 .icon.inspect.light    { background-position: -220px -20px;}
 .icon.plus.light       { background-position: -240px -20px;}
 .icon.zoom-in          { background-position: -240px -20px;}
@@ -764,7 +770,7 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 }
 
 .entity-editor-pane .inspector-body {
-    top: 60px;
+    top: 130px;
 }
 
 .selection-list-pane .inspector-body {
@@ -2149,6 +2155,39 @@ img.wiki-image {
     stroke-width: 5;
 }
 
+/* Info Box
+------------------------------------------------------- */
+.infobox {
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    bottom: 90px; /* 30px; */
+    width: 240px;
+    border-radius: 4px 0 0 0;
+    border-bottom: 1px solid black;
+}
+
+.infobox .selection-heading {
+    display: block;
+    border-radius: 4px 0 0 0;
+    padding: 5px 10px;
+    height: 30px;
+}
+
+.infobox ul {
+    padding: 5px 10px;
+}
+
+.infobox .button {
+    position: absolute;
+    background: #7092ff;
+    border-radius: 2px;
+    padding: 0 4px;
+    color: white;
+    top: 40px;
+    right: 10px;
+}
+
 /* About Section
 ------------------------------------------------------- */
 
@@ -3000,43 +3039,77 @@ img.wiki-image {
     height: 100%;
     overflow: auto;
     z-index: 2;
-    background: #f6f6f6;	
+    background: #f6f6f6;
 }
 
 .custom-collapse {
-		height:0px;
-		overflow:hidden;
+    height:0px;
+    overflow:hidden;
 }
 
 .custom-expand {
-		height:100%;
-		overflow:hidden;
+    height:100%;
+    overflow:hidden;
 }
 
 .invalid-input{
-	  background:red		!important;
-	  color:white				!important;	  
-	  font-weight:bold	!important;
+    background:red		!important;
+    color:white				!important;
+    font-weight:bold	!important;
 }
 
 table.custom-conflation-table, table.custom-conflation-table td, table.custom-conflation-table th {
-	border: 1px solid #CCC;
+  border: 1px solid #CCC;
 }
 
 table.custom-conflation-table td {
-	padding: 5px;	
+  padding: 5px;
 }
 
 table.custom-conflation-table th {
-	font-weight: bold;
-	padding: 5px;	
-	text-transform:capitalize;
-	text-align:center;
+  font-weight: bold;
+  padding: 5px;
+  text-transform:capitalize;
+  text-align:center;
 }
 
 #confAdvOptsLnk {
-	color: #CCC;
+  color: #CCC;
 }
+
+/* rect css for collapsable folder/dataset menu */
+rect.sel {fill: #ffff99 !important;}
+/*rect.flat {fill: #c6dbef;}
+rect.more {fill: #3182bd;}*/
+
+.context-menu, .tools-menu {
+  position: absolute;
+  display: none;
+  background-color: #f2f2f2;
+  border-radius: 4px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  min-width: 150px;
+  border: 1px solid #d4d4d4;
+  z-index:1200;
+}
+
+.context-menu ul, .tools-menu ul {
+  list-style-type: none;
+  margin: 4px 0px;
+  padding: 0px;
+  cursor: default;
+}
+
+.context-menu ul li, .tools-menu ul li {
+  padding: 4px 16px;
+}
+
+.context-menu ul li:hover, .tools-menu ul li:hover {
+  background-color: #4677f8;
+  color: #fefefe;
+}
+
 
 input:focus::-webkit-input-placeholder { color:transparent; }
 input:focus:-moz-placeholder { color:transparent; } /* Firefox 18- */

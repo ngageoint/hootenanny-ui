@@ -7,6 +7,12 @@ iD.Background = function(context) {
         //Added for EGD-plugin
         footprintLayer = iD.FootprintLayer(context, dispatch)
             .projection(context.projection),
+        //Added for Hoot review merge tool
+        arrowLayer = iD.ArrowLayer(context, dispatch)
+            .projection(context.projection),
+        //Added for Hoot measurement tool
+        measureLayer = iD.MeasureLayer(context, dispatch)
+        	.projection(context.projection),
         mapillaryLayer = iD.MapillaryLayer(context),
         overlayLayers = [];
 
@@ -153,6 +159,24 @@ iD.Background = function(context) {
 
         footprint.call(footprintLayer);
 
+        //Added for Hoot review merge tool
+        var arrow = selection.selectAll('.arrow-layer')
+        .data([0]);
+
+        arrow.enter().insert('div', '.layer-data')
+            .attr('class', 'layer-layer arrow-layer');
+
+        arrow.call(arrowLayer);
+        
+        //Added for Hoot measurement tool
+        var measure = selection.selectAll('.measure-layer')
+        .data([0]);
+        
+        measure.enter().insert('div','.layer-data')
+        	.attr('class','layer-layer measure-layer');
+        
+        measure.call(measureLayer);
+
         var gpx = selection.selectAll('.layer-gpx')
             .data([0]);
 
@@ -167,6 +191,7 @@ iD.Background = function(context) {
             .attr('class', 'layer-layer layer-mapillary');
 
         mapillary.call(mapillaryLayer);
+
     }
 
     //TODO: Document why this was added for Hoot
@@ -224,6 +249,10 @@ iD.Background = function(context) {
         gpxLayer.dimensions(_);
         //Added for EGD-plugin
         footprintLayer.dimensions(_);
+        //Added for Hoot review merge tool
+        arrowLayer.dimensions(_);
+        //Added for Hoot measurement tool
+        measureLayer.dimensions(_);
         mapillaryLayer.dimensions(_);
 
         overlayLayers.forEach(function(layer) {
@@ -413,6 +442,19 @@ iD.Background = function(context) {
         footprintLayer.geojson(d);
         dispatch.change();
     };
+
+    //Added for Hoot review merge tool
+    background.updateArrowLayer = function(d) {
+        arrowLayer.geojson(d);
+        dispatch.change();
+    };
+
+  //Added for Hoot measurement tool
+    background.updateMeasureLayer = function(d) {
+    	measureLayer.geojson(d);
+    	dispatch.change();
+    }
+    
     background.nudge = function(d, zoom) {
         baseLayer.source().nudge(d, zoom);
         dispatch.change();

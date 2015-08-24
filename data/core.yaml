@@ -179,6 +179,8 @@ en:
       description: Skip to next review.
     resolved:
       description: Review is resolved.
+    toggletable:
+      description: Hide/Show tag table.
   tooltip_keyhint: "Shortcut:"
   browser_notice: "This editor is supported in Firefox, Chrome, Safari, Opera, and Internet Explorer 9 and above. Please upgrade your browser or use Potlatch 2 to edit the map."
   translate:
@@ -213,6 +215,24 @@ en:
   contributors:
     list: "Edits by {users}"
     truncated_list: "Edits by {users} and {count} others"
+  infobox:
+    selected: "{n} selected"
+    geometry: Geometry
+    closed: closed
+    center: Center
+    perimeter: Perimeter
+    length: Length
+    area: Area
+    centroid: Centroid
+    location: Location
+    metric: Metric
+    imperial: Imperial
+  geometry:
+    point: point
+    vertex: vertex
+    line: line
+    area: area
+    relation: relation
   geocoder:
     search: Search worldwide...
     no_results_visible: No results in visible map area
@@ -362,6 +382,9 @@ en:
         Another user changed some of the same map features you changed.
         Click on each item below for more details about the conflict, and choose whether to keep
         your changes or the other user's changes.
+  tools:
+  	title: Tools
+  	help: "Tools"
   merge_remote_changes:
     conflict:
       deleted: 'This object has been deleted by {user}.'

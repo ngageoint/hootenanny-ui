@@ -118,23 +118,18 @@ Hoot.tools = function (context, selection) {
     }
 
     function preConflation(a, layerName, advOpts) {
-        var layers = inputLayers();
-        var primaryName = view.getPrimaryLayerName();
+        // refactored code to use map id instead of map name
         var data = {};
-        data.INPUT1 = layers[0];
-        data.INPUT2 = layers[1];
-
-        if(primaryName == layers[1]){
-            data.INPUT1 = layers[1];
-            data.INPUT2 = layers[0];
-        }
+        data.INPUT1 = view.getLayer(0).id;
+        data.INPUT2 = view.getLayer(1).id;
 
 
         var refLayer = '1';
-        var refLayerName = a.select('.referenceLayer').value();
-        if(refLayerName == data.INPUT2){
+        var oRefLayer = a.select('.referenceLayer').datum();
+        if(oRefLayer.id == data.INPUT2){
             refLayer = '2';
         }
+
 
         var _confType = {
             'Reference':'Reference',
@@ -174,7 +169,7 @@ Hoot.tools = function (context, selection) {
         return data;
     }
 
-    function postConflation(item) {
+    function postConflation(item,a) {
         var layers = inputLayers();
 
         _.each(layers, function (d) {
@@ -188,18 +183,46 @@ Hoot.tools = function (context, selection) {
         _.each(loadedLayers, function (a) {
             a.loadable = false;
         });
-        d3.select('.loadingLayer').remove();
+        //d3.select('.loadingLayer').remove();
         hoot.model.layers.addLayer(item);
-        var datasettable = d3.select('#datasettable');
-        hoot.view.utilities.dataset.populateDatasets(datasettable);
+
+        //Add a folder and update links
+        var pathname = a.select('.pathname').value();
+        if(pathname==''){pathname=a.select('.reset.PathName').attr('placeholder');}
+        if(pathname=='root'){pathname='';}
+        var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+
+        var newfoldername = a.select('.newfoldername').value();
+        var folderData = {};
+        folderData.folderName = newfoldername;
+        folderData.parentId = pathId;
+        hoot.model.folders.addFolder(folderData,function(folderId){
+            //update map linking
+            var link = {};
+            link.folderId = folderId || 0;
+            link.mapid = 0;
+            if(a.select('.saveAs').value()){
+                link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == a.select('.saveAs').value()}),'id')[0] || 0;
+            }
+            if(link.mapid==0){return;}
+            link.updateType='new';
+            hoot.model.folders.updateLink(link);
+            link = {};
+        });
+
+        /*var datasettable = d3.select('#datasettable');
+        hoot.view.utilities.dataset.populateDatasetsSVG(datasettable);*/
     }
+
 
     function renderInputLayer(layerName,params) {
         loadedLayers[layerName] = params;
         loadedLayers[layerName].loadable = true;
+
         view.render(params);
         loadingLayer = {};
         d3.select('.loadingLayer').remove();
+
     }
 
     function renderMergedLayer(layerName) {
@@ -246,7 +269,7 @@ Hoot.tools = function (context, selection) {
         hoot.model.layers.changeVisibility(layerName);
     });
     conflicts.on('zoomToConflict', function (entity) {
-        context.hoot().view.ltdstags.activate(entity);
+//        context.hoot().view.ltdstags.activate(entity);
     });
     conflicts.on('exportData', function () {
         var mapid = activeConflateLayer.mapId;
@@ -359,7 +382,9 @@ Hoot.tools = function (context, selection) {
 
             var data = preConflation(a, layerName, advOptions);
             var type = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
-            var conflationExecType = (type === 'Horizontal') ? 'CookieCutterConflate' : 'Conflate';
+            //var conflationExecType = (type === 'Horizontal') ? 'CookieCutterConflate' : 'Conflate';
+            //Bug #6397
+            var conflationExecType = 'Conflate';
             if(data.AUTO_TUNNING == 'true'){
                 var data1 = {};
                 data1.INPUT = data.INPUT1;
@@ -375,7 +400,7 @@ Hoot.tools = function (context, selection) {
                         var result2 = JSON.parse(res2.statusDetail);
                         data.INPUT2_ESTIMATE = "" + result2.EstimatedSize;
                          hoot.model.conflate.conflate(conflationExecType, data, function (item) {
-                             postConflation(item);
+                             postConflation(item,a);
                          });
                     });
                 });
@@ -385,7 +410,7 @@ Hoot.tools = function (context, selection) {
                     if(item.status && item.status == "requested"){
                         conflate.jobid = item.jobid;
                     } else {
-                        postConflation(item);
+                        postConflation(item,a);
                     }
 
                 });
@@ -398,14 +423,119 @@ Hoot.tools = function (context, selection) {
     context.connection().on('layerAdded', function (layerName) {
         var params = hoot.model.layers.getLayers(layerName);
         if (loadedLayers[layerName]) return;
-        var merged = loadingLayer.merged || null;
+        /*var merged = loadingLayer.merged || null;
         if (!merged) {
             renderInputLayer(layerName,params);
         }
         if (merged) {
+            var sel = d3.select('.loadingLayer');
+            if(sel && sel.node()){
+                sel.remove();
+            }
             renderMergedLayer(layerName);
         }
-        conflationCheck(layerName, true);
+        conflationCheck(layerName, true);*/
+        var merged = loadingLayer.merged || null;
+        if(!merged && params.mapId)
+        {
+            Hoot.model.REST('ReviewGetStatistics', params.mapId,function (stat) {
+                var isReviewMode = false;
+                if(stat.numReviewableItems > 0) {
+                    var r = confirm("The layer contains unreviewed items. Do you want to go into review mode?");
+                    if (r == true) {
+                        isReviewMode = true;
+                        loadingLayer = params;
+                        loadingLayer['merged'] = true;
+                        loadingLayer['layers'] = [];
+                        d3.selectAll('.loadingLayer').remove();
+                        d3.selectAll('.hootImport').remove();
+                        d3.selectAll('.hootView').remove();
+                        renderMergedLayer(layerName);
+
+                        var reqParam = {};
+                        reqParam.mapId = params.mapId
+                        if(reqParam.mapId) {
+
+                        }
+                        Hoot.model.REST('getMapTags', reqParam,function (tags) {
+                            var input1 = tags.input1;
+                            var input2 = tags.input2;
+
+                            var input1Name = tags.input1Name;
+                            var input2Name = tags.input2Name;
+
+                            var curLayer = loadedLayers[layerName];
+                            curLayer.layers = [input1Name, input2Name];
+
+                            if(input1 && input1Name) {
+                                var key = {
+                                    'name': input1Name,
+                                    'id':input1,
+                                    'color': 'violet',
+                                    'hideinsidebar':'true'
+                                };
+                                context.hoot().model.layers.addLayer(key, function(d){
+                                    context.hoot().model.layers.setLayerInvisibleById(input1);
+                                });
+                            } else {
+                                alert("Could not determine input layer 1. It will not be loaded.");
+                            }
+
+
+                            if(input2 && input2Name) {
+                                var key2 = {
+                                    'name': input2Name,
+                                    'id':input2,
+                                    'color': 'orange',
+                                    'hideinsidebar':'true'
+                                };
+                                context.hoot().model.layers.addLayer(key2, function(d){
+                                    context.hoot().model.layers.setLayerInvisibleById(input2);
+                                });
+                            } else {
+                                alert("Could not determine input layer 2. It will not be loaded.");
+                            }
+
+                        });
+
+
+
+                    }
+                }
+
+                if(isReviewMode === false) {
+
+                    var doRenderView = true;
+                    if(params['hideinsidebar'] !== undefined && params['hideinsidebar'] === 'true'){
+                        doRenderView = false;
+                    }
+
+                    if(doRenderView === true){
+                        renderInputLayer(layerName,params);
+                        conflationCheck(layerName, true);
+                    } else {
+                        loadedLayers[layerName] = params;
+                        loadedLayers[layerName].loadable = true;
+                        loadingLayer = {};
+                    }
+                }
+
+            });
+
+
+
+        } else {
+            /*renderMergedLayer(layerName);
+            conflationCheck(layerName, true);*/
+            if (merged) {
+                var sel = d3.select('.loadingLayer');
+                if(sel && sel.node()){
+                    sel.remove();
+                }
+                renderMergedLayer(layerName);
+            }
+            conflationCheck(layerName, true);
+        }
     });
     exportLayer.on('cancelSaveLayer', function () {
         if(exporting){

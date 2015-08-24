@@ -26,11 +26,12 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.jobStatusInterval = 2000;
     rest.Upload = function (data, callback) {
-        if (!data.TRANSLATION || !data.INPUT_TYPE || !data.formData) {
+        if (!data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME) {
             return false;
         }
         d3.xhr('/hoot-services/ingest/ingest/upload?TRANSLATION=' + data.TRANSLATION + '&INPUT_TYPE=' +
-                data.INPUT_TYPE + '&INPUT_NAME=' + data.INPUT_NAME)
+                data.INPUT_TYPE + '&INPUT_NAME=' + data.INPUT_NAME + '&USER_EMAIL=' + 
+                iD.data.hootConfig.userEmail)
                         .header('access-control-allow-origin', '*')
             .post(data.formData, function (error, json) {
 
@@ -43,9 +44,95 @@ Hoot.model.REST = function (command, data, callback, option) {
             });
     };
 
+    rest.Modify = function (data, callback) {
+        if (!data.inputType || !data.mapid || !data.modifiedName) {
+            callback(false);
+            return false;
+        }
+        /*callback(true);
+        return true;*/
+        d3.json('/hoot-services/osm/api/0.6/map/modify?mapId=' + data.mapid + 
+        		'&inputType=' + data.inputType + '&modName=' + data.modifiedName)
+        .post(data, function (error, data) {
+            if (error){
+                alert("Modify name failed! For detailed log goto Manage->Log");
+                return error;
+            }
+            callback(data);
+            return data;
+        });
+    };
+    
+    rest.updateMapFolderLinks = function(data,callback){
+    	if (!(data.folderId >= 0) || !(data.mapid >= 0) || !data.updateType) {
+            callback(false);
+            return false;
+        }
+        /*callback(true);
+        return true;*/
+        d3.json('/hoot-services/osm/api/0.6/map/linkMapFolder?mapId=' + data.mapid + 
+        		'&folderId=' + data.folderId + '&updateType=' + data.updateType)
+        .post(data, function (error, data) {
+            if (error){
+                alert("Folder-Map link failed! For detailed log goto Manage->Log");
+                return error;
+            }
+            callback(data);
+            return data;
+        });
+    }
+    
+    rest.updateFolder = function(data,callback){
+    	if(!(data.parentId >= 0)||!(data.folderId >= 0)||data.parentId==data.folderId){
+    		callback(false);
+            return false;
+    	}
+    	
+    	d3.json('/hoot-services/osm/api/0.6/map/updateParentId?folderId=' + data.folderId + 
+        		'&parentId=' + data.parentId)
+        .post(data, function (error, data) {
+            if (error){
+                return error;
+            }
+            callback(data);
+            return data;
+        });
+    }
+    
+    rest.addFolder = function (data, callback) {
+        if (!data.folderName || !(data.parentId >= 0)) {
+            callback(false);
+            return false;
+        }
+                    	
+    	d3.json('/hoot-services/osm/api/0.6/map/addfolder?folderName=' + data.folderName + 
+        		'&parentId=' + data.parentId)
+        .post(data, function (error, data) {
+            if (error){
+                alert("Add folder failed! For detailed log goto Manage->Log");
+                return error;
+            }
+            callback(data);
+            return data;
+        });
+    };
 
-
-
+    
+    rest.deleteFolder = function (folderId,callback) {
+    	if(!(folderId >= 0)) {
+    		callback(false);
+    		return false;
+    	}
+    	
+    	d3.json('/hoot-services/osm/api/0.6/map/deletefolder?folderId=' + folderId)
+        .post(function (error, data) {
+        	if(error){
+        		callback(false);
+        	} else {callback(true);}
+        	return true;
+        });
+    };
+    
     rest.basemapUpload = function (data, callback) {
         if (!data.formData) {
             return false;
@@ -64,6 +151,16 @@ Hoot.model.REST = function (command, data, callback, option) {
             });
     };
 
+    rest.getAvailLinks = function (callback) {
+        var request = d3.json('/hoot-services/osm/api/0.6/map/links');
+        request.get(function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get available links failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    };
+    
     rest.getAvailLayers = function (callback) {
         var request = d3.json('/hoot-services/osm/api/0.6/map/layers');
         request.get(function (error, resp) {
@@ -74,6 +171,25 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
+    rest.getMapTags = function (data, callback) {
+        var request = d3.json('/hoot-services/osm/api/0.6/map/tags?mapid=' + data.mapId);
+        request.get(function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get tags failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    };
+
+    rest.getAvailFolders = function (callback) {
+        var request = d3.json('/hoot-services/osm/api/0.6/map/folders');
+        request.get(function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get available folders failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    };
 
     rest.enableBaseMap = function (data, callback) {
         var request = d3.json('/hoot-services/ingest/basemap/enable?NAME=' + data.name + "&ENABLE=true");
@@ -127,6 +243,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             rest.jobStatusInterval = option.queryInterval;
         }
 
+        data.USER_EMAIL = iD.data.hootConfig.userEmail;
         d3.json('/hoot-services/job/conflation/execute')
             .header('Content-Type', 'text/plain')
             .post(JSON.stringify(data), function (error, resp) {
@@ -149,7 +266,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                '/p2pmerge')
            .post(data, function (error, resp) {
                if (error) {
-                   console.warn(error);
+                   _alertError(error, "Poi merge failed.");
                }
                var oParser = new DOMParser();
                var oDOM = oParser.parseFromString(resp.output, "text/xml");
@@ -286,38 +403,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                 rest.status(resp.jobid, callback);
             });
     };
-/*
-    rest.LTDS = function (data, callback) {
-        if (!data) {
-            return false;
-        }
 
-        d3.json('/hoot-services/ogr/ltds/translate/' + data.id + '?translation=OSM_to_englishTDS.js')
-            .header('Content-Type', 'text/plain')
-            .post(data.osmXml, function (error, json) {
-                if (error) {
-                    return callback(_alertError(error, "TDS translation job failed! For detailed log goto Manage->Log"));
-                }
-                callback(json);
-                return json;
-            });
-    };
-    rest.TDSToOSM = function (data, callback) {
-        if (!data) {
-            return false;
-        }
-        d3.json('/hoot-services/ogr/ltds/translate/tds/' + data.id + '?translation=englishTDS_to_OSM.js')
-            .header('Content-Type', 'text/plain')
-            .post(data.osmXml, function (error, json) {
-                if (error) {
-                    return callback(_alertError(error, "TDS to OSM translation job failed! For detailed log goto Manage->Log"));
-                }
-                callback(json);
-                return json;
-            });
-    };
-
-*/
 
     rest.GetTranslationServerStatus = function(data, callback) {
         d3.json('/hoot-services/ogr/translationserver/status' , function (error, resp) {
@@ -464,6 +550,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         if (!data.translation || !data.inputtype || !data.input || !data.outputtype) {
             return false;
         }
+        data.USER_EMAIL = iD.data.hootConfig.userEmail;
         d3.json('/hoot-services/job/export/execute')
         .post(data, function (error, data) {
             if (error){
@@ -476,22 +563,6 @@ Hoot.model.REST = function (command, data, callback, option) {
 
 
     rest.getConflationCustomOpts = function(confType,callback){
-    /*	var confTypes=['custom','horizontal','average','reference'];
-    	_.each(confTypes,function(confType){
-    		var request = d3.json('/hoot-services/info/advancedopts/getoptions?conftype='+confType);
-    		request.get(function (error, resp) {
-                if (error) {
-                    return callback(_alertError(error, "Get custom conflation options failed! For detailed log goto Manage->Log"));
-                } else {
-                	if(confType=='custom'){
-                		iD.data['hootConfAdvOps'] = resp;
-                	} else {
-                		iD.data['hootConfAdvOps_'+confType] = resp;
-                	}
-                }
-            });
-    	});*/
-
         // Doing the stacked load to prevent race condition in loading data
         var request = d3.json('/hoot-services/info/advancedopts/getoptions?conftype=custom');
         request.get(function (error, resp) {
@@ -609,6 +680,139 @@ rest.ReviewMarkAll = function(data, callback)
                 callback(error, response);
             });
 };
+
+rest.ReviewMarkItem = function(data, callback)
+{
+    var mapId = data.mapId;
+    //console.log("ReviewMarkAll mapId: " + mapId);
+    //markItemsReviewedRequest is required but can be unpopulated when markAll=true
+    var markItemsReviewedRequest = {};
+    markItemsReviewedRequest.reviewedItems = data.reviewedItems;
+    markItemsReviewedRequest.reviewedItemsChangeset = "";
+    d3.json('/hoot-services/job/review?mapId='+mapId+'&markAll=false')
+        .header('Content-Type', 'application/json')
+        .send(
+            'PUT',
+            JSON.stringify(markItemsReviewedRequest),
+            function(error, response)
+            {
+                if (error)
+                {
+                    alert("Review Mark All failed.");
+                }
+                callback(error, response);
+            });
+};
+
+
+rest.reviewUpdateStatus = function(data, callback)
+{
+    var mapId = data.mapId;
+    //console.log("ReviewMarkAll mapId: " + mapId);
+    //markItemsReviewedRequest is required but can be unpopulated when markAll=true
+    var markItemsReviewedRequest = {};
+    markItemsReviewedRequest.reviewid = data.reviewid;
+    if(data.reviewAgainstUuid) {
+        markItemsReviewedRequest.reviewagainstid = data.reviewAgainstUuid;
+    }
+    
+    d3.json('/hoot-services/job/review/updatestatus?mapId='+mapId)
+        .header('Content-Type', 'application/json')
+        .send(
+            'PUT',
+            JSON.stringify(markItemsReviewedRequest),
+            function(error, response)
+            {
+                if (error)
+                {
+                    alert("Review Mark All failed.");
+                }
+                callback(error, response);
+            });
+};
+
+rest.reviewResetStatus = function(data, callback)
+{
+    var mapId = data.mapId;
+    //console.log("ReviewMarkAll mapId: " + mapId);
+    //markItemsReviewedRequest is required but can be unpopulated when markAll=true
+    var markItemsReviewedRequest = {};
+    markItemsReviewedRequest.reviewid = data.reviewid;
+    if(data.reviewAgainstUuid){
+        markItemsReviewedRequest.reviewagainstid = data.reviewAgainstUuid;
+    }
+    
+    d3.json('/hoot-services/job/review/resetstatus?mapId='+mapId)
+        .header('Content-Type', 'application/json')
+        .send(
+            'PUT',
+            JSON.stringify(markItemsReviewedRequest),
+            function(error, response)
+            {
+                if (error)
+                {
+                    alert("Review Mark All failed.");
+                }
+                callback(error, response);
+            });
+};
+
+rest.reviewGetNext = function(data, callback)
+{
+    var mapId = data.mapId;
+  
+    var markItemsReviewedRequest = {};
+ 
+    markItemsReviewedRequest.offset = data.offset;
+    markItemsReviewedRequest.direction = data.direction;
+    markItemsReviewedRequest.offsetid = data.uuid;
+    if(data.reviewAgainstUuid) {
+        markItemsReviewedRequest.offsetreviewagainstid = data.reviewAgainstUuid;
+    }
+    
+    d3.json('/hoot-services/job/review/next?mapId='+mapId)
+        .header('Content-Type', 'application/json')
+        .send(
+            'PUT',
+            JSON.stringify(markItemsReviewedRequest),
+            function(error, response)
+            {
+                if (error)
+                {
+                    alert("Get next review failed.");
+                }
+                callback(error, response);
+            });
+};
+
+
+
+rest.ReviewGetStatistics = function (mapId, callback) {
+            
+        d3.json('/hoot-services/job/review/statistics?mapId=' + mapId, function (error, resp) {
+                if (error) {
+                    var emptyResp = {};
+                    emptyResp['mapId'] = mapId;
+                    emptyResp['numTotalItems'] = mapId;
+                    emptyResp['numReviewableItems'] = 0;
+                    emptyResp['numReviewedItems'] = 0;
+                    return callback(emptyResp);
+                }
+                return callback(resp);
+        });
+    };
+
+
+rest.ReviewGetLockCount = function (mapId, callback) {
+            
+        d3.json('/hoot-services/job/review/lockcount?mapId=' + mapId, function (error, resp) {
+                if (error) {
+                    alert("Failed to get lock count.");
+                    return;
+                }
+                return callback(resp);
+        });
+    };
 
 rest.getTranslations = function(callback) {
     d3.json('/hoot-services/ingest/customscript/getlist', function (error, resp) {
@@ -798,11 +1002,14 @@ Hoot.model.REST.WarningHandler = function(resp){
             if(statDetail.children && statDetail.children.length > 0){
                 var isWarning = false;
                 _.each(statDetail.children, function(child){
-                    var childDetail = child.detail.trim();
-                    if(childDetail.indexOf('WARNINGS:') === 0){
-                        isWarning = true;
+                    if(child && child.detail){
+                        var childDetail = child.detail.trim();
+                        if(childDetail.indexOf('WARNINGS:') === 0){
+                            isWarning = true;
 
+                        }
                     }
+                        
                 });
                 if(isWarning === true){
                     alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log');

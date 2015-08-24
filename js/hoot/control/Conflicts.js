@@ -10,6 +10,10 @@ Hoot.control.conflicts = function (context, sidebar) {
     var activeConflict, activeConflictReviewItem;
     var btnEnabled = true;
     var mergeFeatures;
+    var activeEntity;
+    var heartBeatTimer;
+
+    Conflict.activeEntity = function(){return activeEntity;};
     Conflict.activeConflict = function(){return activeConflict;};
     Conflict.activeConflictReviewItem = function(){return activeConflictReviewItem;};
     Conflict.activate = function (response) {
@@ -25,13 +29,16 @@ Hoot.control.conflicts = function (context, sidebar) {
             .html('<div class="margin2 inline _loadingSmall"><span></span></div>' + '<span class="strong">Checking for conflicts&#8230;</span>');
         return Review;
     };
+    Conflict.highlightLayerTable = null;
     Conflict.startReview = function (data) {
         var entity;
         var mapid = data.mapId;
         var reviewItems = data.reviewableItems;
         var reviewCount = reviewItems.length;
         var index = 0;
+        var lastIndex = 0;
         Conflict.reviews = data;
+
 
         function panToBounds(bounds) {
             function boundsToExtent() {
@@ -50,15 +57,21 @@ Hoot.control.conflicts = function (context, sidebar) {
             map.centerZoom(extent.center(), (zoom));
         }
         var jumpFor = function (nReviewed, itemCnt) {
+            // allow other to use
+            //resetReviewStatus();
+            lastIndex = index;
             index++;
             if (index === (reviewCount + 1)) {
                 index = 1;
             }
             // we have entity with same id but different against
 
-            jumpTo(nReviewed, itemCnt);
+            jumpTo(nReviewed, itemCnt, 'forward', jumpFor);
         };
         var jumpBack = function (nReviewed, itemCnt) {
+            // allow other to use
+            //resetReviewStatus();
+            lastIndex = index;
              index--;
              if (index === 0) {
                  index = reviewCount;
@@ -66,19 +79,137 @@ Hoot.control.conflicts = function (context, sidebar) {
             //updateMeta(index);
             // we have entity with same id but different against
 
-            jumpTo(nReviewed, itemCnt);
+            jumpTo(nReviewed, itemCnt, 'backward', jumpBack);
        };
 
-        var jumpTo = function (nReviewed, itemCnt) {
+        // send heartbeat to service so it know the session still exists and target is
+        // still being reviewed.
+        var updateReviewStatus = function(callback) {
+            var targetEntity = reviewItems[index - 1];
+            var heartBeatData = {};
+            heartBeatData.mapId = mapid;
+            heartBeatData.reviewid = targetEntity.uuid;
+            heartBeatData.reviewAgainstUuid = targetEntity.itemToReviewAgainst.uuid;
 
-            // we have entity with same id but different against
+            Hoot.model.REST('reviewUpdateStatus', heartBeatData, function (error, response) {
 
-            updateMeta(nReviewed, itemCnt);
-             entity = reviewItems[index - 1];
-            activeConflict = reviewItemID(entity);
-            activeConflictReviewItem = reviewAgainstID(entity);
-             panToBounds(entity.displayBounds);
-             highlightLayer(entity);
+                if(error){
+                    clearInterval(heartBeatTimer);
+                    alert('failed to update review status.');
+                       return;
+                }
+                if(callback){
+                    callback(response);
+                }
+            });
+        };
+
+        var resetReviewStatus = function(callback) {
+
+            if(lastIndex > 0){
+
+                var targetEntity = reviewItems[lastIndex - 1];
+                var resetData = {};
+                resetData.mapId = mapid;
+                resetData.reviewid = targetEntity.uuid;
+                resetData.reviewAgainstUuid = targetEntity.itemToReviewAgainst.uuid;
+
+                Hoot.model.REST('reviewResetStatus', resetData, function (error, response) {
+                    if(error){
+                       alert('failed reset review status.');
+
+                    }
+                    if(callback){
+                        callback(error, response);
+                    }
+
+
+                });
+            } else {
+
+                if(callback){
+                        callback();
+                    }
+            }
+
+        };
+        var jumpTo = function (nReviewed, itemCnt, direction, fn) {
+            
+            if(heartBeatTimer){
+                clearInterval(heartBeatTimer);
+            }
+
+            entity = reviewItems[index - 1];
+            var reviewData = {};
+
+            // nReviewed is undefined for very first item
+            reviewData.offset = -1;
+            //reviewData.uuid = 'none';
+            if(nReviewed !== undefined){
+                reviewData.offset = lastIndex-1;
+                var lastEnt = reviewItems[lastIndex - 1];
+                reviewData.uuid = lastEnt.uuid;
+                reviewData.reviewAgainstUuid = lastEnt.itemToReviewAgainst.uuid;
+            }
+
+            reviewData.direction = direction;
+
+            reviewData.mapId = mapid;
+
+            resetReviewStatus(function(err, resp){
+                if(err)
+                {
+                    return;
+                }
+
+                Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
+
+                    if(response.status == 'success') {
+                        var nextEntity = null;
+                        for(var i=0; i<reviewItems.length; i++){
+                            var itm = reviewItems[i];
+                            if(itm.uuid == response.nextitemid){
+                                var isAgainstMatch = true
+                                if(response.nextagainstitemid ) {
+                                    isAgainstMatch = (itm.itemToReviewAgainst.uuid == response.nextagainstitemid);
+                                }
+                                if(isAgainstMatch === true){
+                                    nextEntity = itm;
+                                    index = i+1;
+                                    break;
+                                }
+
+                            }
+                        }
+                        if(nextEntity) {
+                            updateReviewStatus(function(response){
+                                var lockPeriod = 150000;
+                                // we will refresh lock at half of service lock length
+                                if(response.locktime){
+                                    lockPeriod = (1*response.locktime)/2;
+                                }
+
+                                heartBeatTimer = setInterval(function() {
+                                    updateReviewStatus();
+                                }, lockPeriod);
+
+                                updateMeta(nReviewed, itemCnt);
+                                activeConflict = reviewItemID(nextEntity);
+                                activeConflictReviewItem = reviewAgainstID(nextEntity);
+                                panToBounds(nextEntity.displayBounds);
+                                activeEntity = nextEntity;
+                                highlightLayer(nextEntity);
+
+                            });
+                        }
+
+                    } else {
+                        alert("All review items are being reviewed by other users!")
+                    }
+
+                });
+            });
+
 
         };
 
@@ -91,12 +222,69 @@ Hoot.control.conflicts = function (context, sidebar) {
             var idid = reviewItemID(item);
             var idid2 = reviewAgainstID(item);
             var feature, againstFeature;
+            var max = 4;
+            var calls = 0;
+            var loadedMissing = false;
             var getFeatureTimer = setInterval(function () {
-                getFeature();
+                if (calls < max) {
+                    getFeature();
+                    calls++;
+//                } else if (loadedMissing) {
+//                    getFeatureStopTimer(true);
+//                    window.alert('One feature involved in this review was not found in the visible map extent');
+                } else {
+                    //Make a call to grab the individual feature
+                    context.connection().loadMissing([idid, idid2], function(err, entities) {
+                        //console.log(entities);
+                        //loadedMissing = true;
+                        //calls = 0;
+                        feature = entities.data.filter(function(d) {
+                            return d.id === idid;
+                        }).pop();
+                        againstFeature = entities.data.filter(function(d) {
+                            return d.id === idid2;
+                        }).pop();
+                        getFeatureStopTimer();
+                    });
+                }
             }, 500);
             var getFeatureStopTimer = function (skip) {
                 clearInterval(getFeatureTimer);
                 if (!skip) {
+                    //Merge currently only works on nodes
+                    if (feature.id.charAt(0) === 'n' && againstFeature.id.charAt(0) === 'n') {
+                        //Show merge button
+                        d3.select('a.merge').classed('hide', false);
+                        //Override with current pair of review features
+                        mergeFeatures = function() {
+                            context.hoot().model.conflicts.autoMergeFeature(feature, againstFeature, mapid);
+                        };
+                        function loadArrow(d) {
+                            if (d3.event) d3.event.preventDefault();
+                            if (d3.event.type === 'mouseover' || d3.event.type === 'mouseenter') {
+                                context.background().updateArrowLayer(d);
+                            } else {
+                                context.background().updateArrowLayer({});
+                            }
+                        }
+                        var arw = { "type": "LineString",
+                                    "coordinates": [ againstFeature.loc, feature.loc]
+                        };
+                        //Add hover handler to show arrow
+                        d3.select('a.merge').on('mouseenter', function() {
+                            loadArrow(arw);
+                        }).on('mouseleave', function() {
+                            loadArrow(arw);
+                        });
+                    } else {
+                        //Hide merge button
+                        d3.select('a.merge').classed('hide', true);
+                        //Override with no-op
+                        mergeFeatures = function() {};
+                        d3.select('a.merge').on('mouseenter', function() {}).on('mouseleave', function() {});
+
+                    }
+
                     resetStyles();
                     if (feature) {
                         d3.selectAll('.activeReviewFeature')
@@ -110,7 +298,9 @@ Hoot.control.conflicts = function (context, sidebar) {
                         d3.selectAll('.' + againstFeature.id)
                             .classed('activeReviewFeature2', true);
                     }
-                    buildPoiTable(d3.select('#content'), [feature, againstFeature]);
+                    buildPoiTable(d3.select('#conflicts-container'), [feature, againstFeature]);
+                    var note = d3.select('.review-note');
+                    note.html(note.html().replace('Review note: ', 'Review note: ' + feature.tags['hoot:review:note']));
                     event.zoomToConflict(feature ? feature.id : againstFeature.id);
                 }
             };
@@ -133,20 +323,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                         getFeatureStopTimer(true);
                         retainFeature();
                     } else {
-                        //Merge currently only works on nodes
-                        if (feature.id.charAt(0) === 'n' && againstFeature.id.charAt(0) === 'n') {
-                            //Show merge button
-                            d3.select('a.merge').classed('hide', false);
-                            //Override with current pair of review features
-                            mergeFeatures = function() {
-                                context.hoot().model.conflicts.autoMergeFeature(feature, againstFeature, mapid);
-                            };
-                        } else {
-                            //Hide merge button
-                            d3.select('a.merge').classed('hide', true);
-                            //Override with no-op
-                            mergeFeatures = function() {};
-                        }
                         getFeatureStopTimer();
                     }
                 } else {
@@ -157,12 +333,16 @@ Hoot.control.conflicts = function (context, sidebar) {
                         mergeFeatures = function() {};
                         getFeatureStopTimer();
                         //window.alert('The review against feature is a relation');
-                    } else {
+                    } else if (context.changes().deleted.some(
+                        function(d) {
+                            return d.id === idid || d.id === idid2;
+                        })
+                    ) {
                         getFeatureStopTimer(true);
                         window.alert('One feature involved in this review has already been deleted');
+                    } else {
+                        //window.console.log('wait for another interval to fire');
                     }
-                    //FIXME: Not sure why the use of setInterval above, maybe to deal with some latency
-                    //but this change may erroneously cause the above alert when a feature is not yet loaded
                 }
             };
             var filterTags = function (tags) {
@@ -206,7 +386,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 //console.log(feats);
                 d3.select('div.tag-table').remove();
                 var ftable = elem.insert('div','div.conflicts')
-                    .classed('tag-table', true)
+                    .classed('tag-table block fr', true)
                     .append('table')
                     .classed('round keyline-all', true);
                 var f1 = filterTags(feats[0] ? feats[0].tags : {});
@@ -214,11 +394,20 @@ Hoot.control.conflicts = function (context, sidebar) {
                 var fmerged = mergeTags([f1, f2]);
                 fmerged.forEach(function (d) {
                     var r = ftable.append('tr').classed('', true);
-                    r.append('td').classed('key', true).text(d.key);
-                    r.append('td').classed('f1', true).text(d.value[0]);
-                    r.append('td').classed('f2', true).text(d.value[1]);
+                    r.append('td').classed('fillD', true).text(d.key);
+                    r.append('td').classed('f1', true).text(d.value[0]).on('click', function(d){
+                        var sel = iD.modes.Select(context, [feats[0].id]);
+                        sel.suppressMenu(true);
+                        context.enter(sel);
+                    });
+                    r.append('td').classed('f2', true).text(d.value[1]).on('click', function(d){
+                        var sel = iD.modes.Select(context, [feats[1].id]);
+                        sel.suppressMenu(true);
+                        context.enter(sel);
+                    });
 
                 });
+                checkToggleText();
             };
         };
         var reviewItemID = function (item) {
@@ -241,31 +430,63 @@ Hoot.control.conflicts = function (context, sidebar) {
         };
 
         var done = false;
-        function acceptAll() {done=true;
-            resetStyles();
-            d3.select('div.tag-table').remove();
-            var remaining = reviewsRemaining();
-            _.each(remaining, function (item) {
-                item.retain = true;
-                item.reviewed = true;
-                //var itemKlass = reviewItemID(item);
-                //var itemKlass2 = reviewAgainstID(item);
-                statusCheck();
-            });
+        function acceptAll() {
+            Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {  
+                var doProceed = true;
+                    //if only locked by self
+                if(resp.count > 1) {
 
+                    var r = confirm("Reviews are being reviewed by other users." + 
+                    " Modified features will be saved but will not be marked as resolved. Do you want to continue? ");
+                    doProceed = r;
+                }
+
+
+                if(doProceed === true) {
+                    done=true;
+                    resetStyles();
+                    d3.select('div.tag-table').remove();
+                    var remaining = reviewsRemaining();
+                    _.each(remaining, function (item) {
+                        item.retain = true;
+                        item.reviewed = true;
+                        //var itemKlass = reviewItemID(item);
+                        //var itemKlass2 = reviewAgainstID(item);
+                        statusCheck();
+                    });
+                }
+            });
+ 
             //event.acceptAll(data);
 
         }
 
 
         function discardAll() {
-            resetStyles();
-            d3.select('div.tag-table').remove();
-            Conflict.reviewComplete();
-            d3.select('.hootTags').remove();
-            metaHead.text('Discarding Conflicts.....');
-            event.discardAll(data);
+                    
+
+            Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {  
+                var doProceed = true;
+                    //if only locked by self
+                if(resp.count > 1) {
+
+                    var r = confirm("Reviews are being reviewed by other users." + 
+                    " Modified features will be saved but will not be marked as resolved. Do you want to continue? ");
+                    doProceed = r;
+                }
+
+                if(doProceed === true) {
+                    resetStyles();
+                    d3.select('div.tag-table').remove();
+                    Conflict.reviewComplete();
+                    d3.select('.hootTags').remove();
+                    metaHead.text('Discarding Conflicts.....');
+                    event.discardAll(data);
+                }
+            });
+
         }
+
 
        var statusCheck = function () {
             var numLeft = reviewsRemaining('count');
@@ -300,9 +521,9 @@ Hoot.control.conflicts = function (context, sidebar) {
 
             var multiFeatureMsg = '';
             if(itemCnt > 1){
-              multiFeatureMsg = ', One to many feature (' + (nReviewed + 1) + ' of ' + itemCnt + ')';
+              multiFeatureMsg = ', One to many feature ( reviewed ' + (nReviewed) + ' of ' + itemCnt + ')';
             }
-            meta.html('<strong>' + 'Reviewable conflict '+ index + ' of ' + reviewCount + ': ' + entity_stat +
+            meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflict '+ index + ' of ' + reviewCount + ': ' + entity_stat +
                 '  (Remaining conflicts: ' + numLeft +  multiFeatureMsg + ')</strong>');
         }
         var reviewsRemaining = function (count) {
@@ -388,7 +609,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
 
             var multiItemInfo = getMultiReviewItemInfo();
-            jumpTo(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+            jumpTo(multiItemInfo.nReviewed, multiItemInfo.itemCnt, 'forward', jumpFor);
         };
 
         var autoMerge = function() {
@@ -396,10 +617,25 @@ Hoot.control.conflicts = function (context, sidebar) {
             mergeFeatures();
         };
 
+        function checkToggleText() {
+            d3.select('a.toggletable')
+                .text(d3.select('div.tag-table').classed('hide') ? 'Show Table' : 'Hide Table')
+                .call(tooltip);
+        }
+
+        var toggleTable = function() {
+            var t = d3.select('div.tag-table');
+            t.classed('block fr', t.classed('hide'));
+            t.classed('hide', !t.classed('hide'));
+            checkToggleText();
+        };
+
         var retainFeature = function () {
             var vicheck = vischeck();
             if(!vicheck){return;}
             var item = reviewItems[index - 1];
+
+
             var contains = item.reviewed;
             if (contains) {
                 window.alert('Item Is Already Resolved!');
@@ -421,8 +657,31 @@ Hoot.control.conflicts = function (context, sidebar) {
                 return;
             }
 
-            var multiItemInfo = getMultiReviewItemInfo();
-            jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+
+
+
+
+            var reviewedItems = {};
+            var reviewedItemsArr = [];
+
+            var markItem = {};
+            markItem['id'] = item.id;
+            markItem['type'] = item.type;
+            markItem['reviewedAgainstId'] = item.itemToReviewAgainst.id;
+            markItem['reviewedAgainstType'] = item.itemToReviewAgainst.type;
+            reviewedItemsArr.push(markItem);
+            reviewedItems['reviewedItems'] = reviewedItemsArr;
+
+            var reviewMarkData = {};
+            reviewMarkData.mapId = mapid;
+            reviewMarkData.reviewedItems = reviewedItems;
+            Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
+                var multiItemInfo = getMultiReviewItemInfo();
+                jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+             });
+
+
+
         };
 /*        var removeFeature = function () {
             var vicheck = vischeck();
@@ -568,13 +827,16 @@ Hoot.control.conflicts = function (context, sidebar) {
             });*/
         var conflicts = d3.select('#content')
             .append('div')
-            .classed('conflicts col12 dark pin-bottom fill-darken3 pad1 review-block space', true)
+            .attr('id', 'conflicts-container')
+            .classed('pin-bottom review-block', true)
+            .append('div')
+            .classed('conflicts col12 fillD pad1 space', true)
             //.style('height','90px') //changed from 133px to avoid conflict with footer
             .data(reviewItems);
         var meta = conflicts.append('span')
             .classed('_icon info dark pad0y space', true)
             .html(function () {
-                return '<strong>1 of ' + reviewCount + '</strong>';
+                return '<strong class="review-note">1 of ' + reviewCount + '</strong>';
             });
         var da = [{
             id: 'resolved',
@@ -616,6 +878,15 @@ Hoot.control.conflicts = function (context, sidebar) {
             icon: '_icon plus',
             cmd: iD.ui.cmd('m'),
             action: autoMerge
+        },
+        {
+            id: 'toggletable',
+            name: 'toggle_table',
+            text: 'Hide Table',
+            color: 'fill-grey button round pad0y pad1x dark small strong',
+            //icon: '_icon plus',
+            cmd: iD.ui.cmd('t'),
+            action: toggleTable
         }];
 
         var opts = conflicts.append('span')
@@ -629,6 +900,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         .on(da[1].cmd, function() { d3.event.preventDefault(); da[1].action(); })
         .on(da[2].cmd, function() { d3.event.preventDefault(); da[2].action(); })
         .on(da[3].cmd, function() { d3.event.preventDefault(); da[3].action(); })
+        .on(da[4].cmd, function() { d3.event.preventDefault(); da[4].action(); })
         ;
 
         d3.select(document)
@@ -721,7 +993,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
             });
 
-
+        Conflict.highlightLayerTable = highlightLayer;
         jumpFor();
     };
 

@@ -85,8 +85,7 @@ iD.Entity.prototype = {
     },
 
     osmId: function() {
-		var orig = this.origid || this.id;
-        return iD.Entity.id.toOSM(orig);
+        return iD.Entity.id.toOSM(this.id);
     },
 
     isNew: function() {
@@ -97,7 +96,7 @@ iD.Entity.prototype = {
         return iD.Entity(this, attrs, {v: 1 + (this.v || 0)});
     },
 
-    mergeTags: function(tags) {
+    mergeTags: function(tags, overwrite) {
         var merged = _.clone(this.tags), changed = false;
         for (var k in tags) {
             var t1 = merged[k],
@@ -107,7 +106,11 @@ iD.Entity.prototype = {
                 merged[k] = t2;
             } else if (t1 !== t2) {
                 changed = true;
-                merged[k] = _.union(t1.split(/;\s*/), t2.split(/;\s*/)).join(';');
+                if (overwrite) {
+                    merged[k] = t2;
+                } else {
+                    merged[k] = _.union(t1.split(/;\s*/), t2.split(/;\s*/)).join(';');
+                }
             }
         }
         return changed ? this.update({tags: merged}) : this;

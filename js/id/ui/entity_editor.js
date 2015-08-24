@@ -9,9 +9,19 @@ iD.ui.EntityEditor = function(context) {
         .on('change', changeTags);
     var rawTagEditor = iD.ui.RawTagEditor(context)
         .on('change', changeTags);
+    
+    var currentTranslation = 'OSM'; // default to OSM
+    var allTranslatedFields = [];
+    var allTransTags;
+    var noShowDefs;
+    var plg;
 
     function entityEditor(selection) {
+        var plugins = context.ui().plugins;
+        plg = plugins.getEntityEditorPlugin(iD.data.hootConfig.pluginhost);
 
+
+        var ltds = context.hoot().view.ltdstags;
         var appPane = d3.select('#app');
         if(appPane.classed('hidden') == true){
             appPane.classed('hidden', false);
@@ -25,7 +35,7 @@ iD.ui.EntityEditor = function(context) {
             .data([0]);
 
         // Enter
-/*
+
         var $enter = $header.enter().append('div')
             .attr('class', 'header fillL cf');
 
@@ -39,13 +49,53 @@ iD.ui.EntityEditor = function(context) {
         // Update
 
         $header.select('h3')
-            .text(t('inspector.edit'));
+            .text(t('inspector.edit') + ': ' + id);
+
+
+
+
+        var ftypeWrap = $enter.append('div')
+            .classed('fill-white small round', true)
+            .style('margin-left', '20px')
+            .style('margin-right', '30px')
+            .style('margin-top', '2px')
+            .html(function (field) {
+                return '<label class="form-label">' + 'Filter By Type' + '</label>';
+            });
+
+         var comboIntput = ftypeWrap.append('input')
+                    .attr('id', 'entity_editor_presettranstype')
+                    .attr('type', 'text')
+                    .attr('value', 'OSM');
+
+        var comboData = plg.getTranslations();
+        var combo = d3.combobox()
+                .data(_.map(comboData, function (n) {
+                    return {
+                        value: n,
+                        title: n
+                    };
+                }));
+
+        comboIntput.style('width', '100%')
+            .call(combo);
+
+
+
+        // When translation combo value change then we get the translation filter
+        // and rerun entity Editor
+        comboIntput.on('change', function(param){
+            var filterType = d3.select('#entity_editor_presettranstype').value();
+            currentTranslation = filterType;
+            entityEditor(selection);
+        });
+
 
         $header.select('.preset-close')
             .on('click', function() {
                 context.enter(iD.modes.Browse(context));
             });
-*/
+
         var $body = selection.selectAll('.inspector-body')
             .data([0]);
 
@@ -53,7 +103,7 @@ iD.ui.EntityEditor = function(context) {
 
         $enter = $body.enter().append('div')
             .attr('class', 'inspector-body');
-/*
+
         $enter.append('div')
             .attr('class', 'preset-list-item inspector-inner')
             .append('div')
@@ -99,34 +149,7 @@ iD.ui.EntityEditor = function(context) {
         $body.select('.preset-list-item .label')
             .text(preset.name());
 
-        $body.select('.inspector-preset')
-            .call(presetEditor
-                .preset(preset)
-                .entityID(id)
-                .tags(tags)
-                .state(state));
-*/
-        $body.select('.raw-tag-editor')
-            .call(rawTagEditor
-                .preset(preset)
-                .entityID(id)
-                .tags(tags)
-                .state(state));
-/*
-        if (entity.type === 'relation') {
-            $body.select('.raw-member-editor')
-                .style('display', 'block')
-                .call(iD.ui.RawMemberEditor(context)
-                    .entityID(id));
-        } else {
-            $body.select('.raw-member-editor')
-                .style('display', 'none');
-        }
 
-        $body.select('.raw-membership-editor')
-            .call(iD.ui.RawMembershipEditor(context)
-                .entityID(id));
-*/
         function historyChanged() {
             if (state === 'hide') return;
             var entity = context.hasEntity(id);
@@ -135,8 +158,58 @@ iD.ui.EntityEditor = function(context) {
             entityEditor(selection);
         }
 
-        context.history()
-            .on('change.entity-editor', historyChanged);
+
+        function populateBody(modPreset, defTags, defRawTags, transInfo, translatedFields, transTags){
+            if(translatedFields !== undefined){
+                allTranslatedFields = translatedFields;
+            }
+            
+            if(transTags !== undefined) {
+                allTransTags = transTags;
+            }
+            
+            $body.select('.inspector-preset')
+                .call(presetEditor
+                    .preset(modPreset)
+                    .entityID(id)
+                    .tags(defTags)
+                    .state(state));
+
+            $body.select('.raw-tag-editor')
+                .call(rawTagEditor
+                    .preset(modPreset)
+                    .entityID(id)
+                    .tags(defRawTags)
+                    .state(state)
+                    .entityTranslation(transInfo));
+
+            if (entity.type === 'relation') {
+                $body.select('.raw-member-editor')
+                    .style('display', 'block')
+                    .call(iD.ui.RawMemberEditor(context)
+                        .entityID(id));
+            } else {
+                $body.select('.raw-member-editor')
+                    .style('display', 'none');
+            }
+
+            $body.select('.raw-membership-editor')
+                .call(iD.ui.RawMembershipEditor(context)
+                    .entityID(id));
+
+
+            context.history()
+                .on('change.entity-editor', historyChanged);                        
+        }
+
+        
+
+        if(currentTranslation == 'OSM') {
+            populateBody(preset, tags, tags);
+        } else {
+            plg.translateEntity(context, entity, currentTranslation, tags, preset, populateBody);            
+        }
+
     }
 
     function clean(o) {
@@ -151,15 +224,38 @@ iD.ui.EntityEditor = function(context) {
         return out;
     }
 
-    function changeTags(changed) {
-        var entity = context.entity(id),
-            tags = clean(_.extend({}, entity.tags, changed));
-
+    function changeTagsHandler(changed) {
+        var entity = context.entity(id);
+        var tags = clean(_.extend({}, entity.tags, changed));
         if (!_.isEqual(entity.tags, tags)) {
             context.perform(
                 iD.actions.ChangeTags(id, tags),
                 t('operations.change_tags.annotation'));
+            var activeConflict = context.hoot().control.conflicts.activeConflict();
+            if(activeConflict){
+                 context.hoot().control.conflicts.highlightLayerTable(context.hoot().control.conflicts.activeEntity());
+            }
         }
+    }
+    function changeTags(changed) {
+        var entity = context.entity(id);
+ 
+        // for all non OSM translation
+        if(currentTranslation != 'OSM') {
+            plg.updateEntityEditor(entity, changed, rawTagEditor, currentTranslation,
+            function(OSMEntities){
+                           // store to internal
+                //entity.tags = {};
+                changeTagsHandler(OSMEntities);
+             
+            }); 
+
+
+        } else {
+            changeTagsHandler(changed);
+        }
+
+        
     }
     entityEditor.changeTags = function(changed, id){
         var entity = context.entity(id),

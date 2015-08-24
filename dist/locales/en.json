@@ -227,6 +227,9 @@
         },
         "resolved": {
             "description": "Review is resolved."
+        },
+        "toggletable": {
+            "description": "Hide/Show tag table."
         }
     },
     "tooltip_keyhint": "Shortcut:",
@@ -267,6 +270,26 @@
     "contributors": {
         "list": "Edits by {users}",
         "truncated_list": "Edits by {users} and {count} others"
+    },
+    "infobox": {
+      "selected": "{n} selected",
+      "geometry": "Geometry",
+      "closed": "closed",
+      "center": "Center",
+      "perimeter": "Perimeter",
+      "length": "Length",
+      "area": "Area",
+      "centroid": "Centroid",
+      "location": "Location",
+      "metric": "Metric",
+      "imperial": "Imperial"
+    },
+    "geometry": {
+        "point": "point",
+        "vertex": "vertex",
+        "line": "line",
+        "area": "area",
+        "relation": "relation"
     },
     "geocoder": {
         "search": "Search worldwide...",
@@ -440,6 +463,9 @@
             "done": "All conflicts resolved!",
             "help": "Another user changed some of the same map features you changed.\nClick on each item below for more details about the conflict, and choose whether to keep\nyour changes or the other user's changes.\n"
         }
+    },
+    "tools": {
+    		"title": "Tools"
     },
     "merge_remote_changes": {
         "conflict": {
