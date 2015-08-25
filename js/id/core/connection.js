@@ -145,12 +145,11 @@ iD.Connection = function(context) {
 
             _.each(chunk(osmIDs, 150), function(arr) {
                 if(currMapId){
-
                     connection.loadFromURL(
                         url + '/api/0.6/' + type + '?mapId=' + currMapId + '&elementIds'  + '=' + arr.join(),
                         function(err, entities) {
 
-                            if (callback) callback(err, {data: entities, force_remote:true}, hootcallback);
+                            if (callback) callback(err, {data: entities}, hootcallback);
                         },currMapId);
                 } else { // we do not know hoot map id so use the default iD behavior
                     connection.loadFromURL(

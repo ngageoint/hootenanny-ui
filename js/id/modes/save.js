@@ -35,11 +35,12 @@ iD.modes.Save = function(context) {
         if (!tryAgain) history.perform(iD.actions.Noop());  // checkpoint
         context.container().call(loading);
 
-        // hootCallback is for hootenany specific callback. This may need to be moved
-        // in the future during upstream merge with iD code
-        if (toCheck.length) {
+        // Disabling toCheck for hoot. iD conflict validation is causing race condition
+        // while retrieving the osm data and saving. 
+       /* if (toCheck.length) {
+            console.debug('call loadMultiple');
             context.connection().loadMultiple(toLoad, loaded, hootCallback);
-        } else {
+        } else*/ {
             finalize(hootCallback);
         }
 
