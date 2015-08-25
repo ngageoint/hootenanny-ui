@@ -317,7 +317,7 @@ Hoot.control.utilities.folder = function(context) {
             .append('div')
             .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
         var ingestDiv = modalbg.append('div')
-            .classed('contain col4 pad1 fill-white round modal', true);
+            .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
         var _form = ingestDiv.append('form');
         _form.classed('round space-bottom1 importableLayer', true)
             .append('div')
@@ -473,7 +473,7 @@ Hoot.control.utilities.folder = function(context) {
 	            .append('div')
 	            .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
 	        var ingestDiv = modalbg.append('div')
-	            .classed('contain col4 pad1 fill-white round modal', true);
+	            .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
 	        var _form = ingestDiv.append('form');
 	        _form.classed('round space-bottom1 importableLayer', true)
 	            .append('div')
