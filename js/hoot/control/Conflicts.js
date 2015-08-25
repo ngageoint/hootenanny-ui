@@ -667,10 +667,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                 return;
             }
 
-
-
-
-
             var reviewedItems = {};
             var reviewedItemsArr = [];
 
@@ -686,62 +682,21 @@ Hoot.control.conflicts = function (context, sidebar) {
             reviewMarkData.mapId = mapid;
             reviewMarkData.reviewedItems = reviewedItems;
 
-
-               
-            var curReviewAgainstUUID = item.itemToReviewAgainst.uuid;
-            var curReviewUUID =  item.uuid;
-            var items = [item];
-            var flagged = _.uniq(_.flatten(_.map(items, function (d) {
-                return [d.type.charAt(0) + d.id + '_' + mapid, d.itemToReviewAgainst.type.charAt(0) + d.itemToReviewAgainst.id + '_' + mapid];
-            })));
-            var inID = _.filter(flagged, function (d) {
-                return context.hasEntity(d);
-            });
-            _.each(inID, function (d) {
-                var ent = context.hasEntity(d);
-                if (!ent) {
-                    return;
-                }
-                var tags = ent.tags;
-                var newTags = _.clone(tags);
-
-                var againstUuids = tags['hoot:review:uuid'];
-                if(againstUuids && againstUuids.length > 0) {
-                    var againstList = againstUuids.split(';');
-                    if(againstList.length > 1) { // have many against
-                        var newAgainstList =[];
-
-                        _.each(againstList, function(v){
-                            if(v != curReviewAgainstUUID) {
-                                newAgainstList.push(v);
-                            }
-                        })
-
-                        var newAgainstTags = newAgainstList.join(';');
-                        newTags['hoot:review:uuid'] = newAgainstTags;
-                    } else {
-                        newTags = _.omit(newTags, function (value, key) {
-                            return key.match(/hoot:review/g);
-                        });
-                    }
-                }
-
-                context.perform(iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
-            });
-
-
             var hasChanges = context.history().hasChanges();
             if (hasChanges) {
-                iD.modes.Save(context).save(context, function () {
-                    Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
-
-
-                        var multiItemInfo = getMultiReviewItemInfo();
-                            jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+              var changes = context.changes(iD.actions.DiscardTags(context.history().difference()));
+              var changesetXml = JXON.stringify(context.connection().osmChangeJXON('-1', changes));
+              console.log(changesetXml);
+              reviewMarkData.reviewedItemsChangeset = changesetXml;
+              console.log(reviewMarkData.reviewedItemsChangeset);
+                Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
+                    var multiItemInfo = getMultiReviewItemInfo();
+                        jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
                         
-                    });
-
-                });
+                    context.flush();
+                    context.history().clearSaved();
+      				context.enter(iD.modes.Browse(context));   
+                  });
             } else {
                 Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
 
@@ -750,11 +705,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                     
                 });
             }
-
-
-
-
-
         };
 
 
