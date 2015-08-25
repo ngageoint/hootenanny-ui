@@ -275,7 +275,7 @@ input.round        { border-radius:4px; }
 .fill-darken0 { background-color:rgba(0,0,0,0.05); }
 .fill-darken1 { background-color:rgba(0,0,0,0.25); }
 .fill-darken2 { background-color:rgba(0,0,0,0.50); }
-.fill-darken3 { background-color:rgba(0,0,0,0.75); }
+.fill-darken3 { background-color:rgba(0,0,0,0.75); overflow:auto;}
 
 .modal {
   /*display:none;*/
@@ -359,6 +359,6 @@ span.logo{
 
 .tall {height:100%;}
 
-
+.hoot-menu {margin-bottom:5px;}
 
 
