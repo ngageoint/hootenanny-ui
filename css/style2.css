@@ -53,7 +53,7 @@ button.loud:hover, .button.loud:hover { background-color:#597be7; }*/
 
 #header       { height:60px; }
 #app          { top:0px; height:100%;}
-#app .sidebar { min-width:240px; z-index:10; }
+#app .sidebar { min-width:240px; z-index:10; padding-bottom:60px; }
 
 nav a       { color:#444; }
 nav a:hover { color:#444; }
