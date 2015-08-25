@@ -136,7 +136,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
 
         };
-       var jumpTo = function (nReviewed, itemCnt, direction, fn) {
+        var jumpTo = function (nReviewed, itemCnt, direction, fn) {
             if(heartBeatTimer){
                 clearInterval(heartBeatTimer);
             }
@@ -309,12 +309,14 @@ Hoot.control.conflicts = function (context, sidebar) {
                 feature = context.hasEntity(idid);
                 //console.log(feature);
                 if (!feature) {
-                    feature = context.hoot().model.conflicts.findDescendent(idid);
+                    idid = context.hoot().model.conflicts.findDescendent(idid);
+                    if (idid) feature = context.hasEntity(idid);
                 }
                 againstFeature = context.hasEntity(idid2);
                 //console.log(againstFeature);
                 if (!againstFeature) {
-                    againstFeature = context.hoot().model.conflicts.findDescendent(idid2);
+                    idid2 = context.hoot().model.conflicts.findDescendent(idid2);
+                    if (idid2) againstFeature = context.hasEntity(idid2);
                 }
 
                 if (feature && againstFeature) {
