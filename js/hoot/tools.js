@@ -340,9 +340,13 @@ Hoot.tools = function (context, selection) {
     conflicts.on('discardAll', function (d) {
         hoot.mode('browse');
         hoot.model.conflicts.RemoveAllReviews(d);
-        hoot.model.conflicts.acceptAll(d, function () {
-            conflicts.reviewNextStep();
+        iD.modes.Save(context).save(context, function () {
+            hoot.model.conflicts.acceptAll(d, function () {
+                conflicts.reviewNextStep();
+            });
+
         });
+        
     });
     conflicts.on('removeFeature', function (d, mapid) {
         hoot.model.conflicts.RemoveFeature(d, mapid);

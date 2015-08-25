@@ -34,31 +34,7 @@ iD.modes.Save = function(context) {
 
         if (!tryAgain) history.perform(iD.actions.Noop());  // checkpoint
         context.container().call(loading);
-/*
-        context.connection().putChangeset(
-            context.history().changes(iD.actions.DiscardTags(context.history().difference())),
-            'Hoot Save',
-            context.history().imageryUsed(),
-            function(err, changeset_id) {
-                loading.close();
-                if (err) {
-                    var confirm = iD.ui.confirm(context.container());
-                    confirm
-                        .select('.modal-section.header')
-                        .append('h3')
-                        .text(t('save.error'));
-                    confirm
-                        .select('.modal-section.message-text')
-                        .append('p')
-                        .text(err.responseText || t('save.unknown_error_details'));
-                } else {
-                    context.flush();
-                    if (callback) { callback(); }
-                    //success(e, changeset_id);
-                }
-                context.enter(iD.modes.Browse(context));
-            });
-*/
+
         // hootCallback is for hootenany specific callback. This may need to be moved
         // in the future during upstream merge with iD code
         if (toCheck.length) {
@@ -88,7 +64,7 @@ iD.modes.Save = function(context) {
                 });
 
                 if (!toLoad.length) {
-                    checkConflicts(hootCallback);
+                    checkConflicts(hootCallback, result.force_remote);
                 }
             }
         }
@@ -96,7 +72,7 @@ iD.modes.Save = function(context) {
 
         // hootCallback is for hootenany specific callback. This may need to be moved
         // in the future during upstream merge with iD code
-        function checkConflicts(hootCallback) {
+        function checkConflicts(hootCallback, doForceRemote) {
             function choice(id, text, action) {
                 return { id: id, text: text, action: function() { history.replace(action); } };
             }
@@ -133,7 +109,12 @@ iD.modes.Save = function(context) {
                 var action = iD.actions.MergeRemoteChanges,
                     merge = action(id, localGraph, remoteGraph, formatUser);
 
-                history.replace(merge);
+                if(doForceRemote !== undefined && doForceRemote === true){
+                    history.replace(merge.withOption('force_remote'));
+                } else {
+                    history.replace(merge);
+                }
+                
 
                 var conflicts = merge.conflicts();
                 if (!conflicts.length) return;  // merged safely
