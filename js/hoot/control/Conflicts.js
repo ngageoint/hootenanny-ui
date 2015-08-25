@@ -686,28 +686,10 @@ Hoot.control.conflicts = function (context, sidebar) {
             reviewMarkData.mapId = mapid;
             reviewMarkData.reviewedItems = reviewedItems;
 
-            /*var changes = context.history().changes(iD.actions.DiscardTags(context.history().difference()));
-            var changeXml =  JXON.stringify(context.connection().osmChangeJXON(0, changes));
-            reviewMarkData.reviewedItemsChangeset = changeXml;*/
-          /*  Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
 
-
-                var hasChanges = context.history().hasChanges();
-                if (hasChanges) {
-
-                    iD.modes.Save(context).save(context, function () {
-                        var multiItemInfo = getMultiReviewItemInfo();
-                        jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
-
-                    });
-                } else {
-                    var multiItemInfo = getMultiReviewItemInfo();
-                    jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
-                }
-                
-             });*/
-
-           /*     
+               
+            var curReviewAgainstUUID = item.itemToReviewAgainst.uuid;
+            var curReviewUUID =  item.uuid;
             var items = [item];
             var flagged = _.uniq(_.flatten(_.map(items, function (d) {
                 return [d.type.charAt(0) + d.id + '_' + mapid, d.itemToReviewAgainst.type.charAt(0) + d.itemToReviewAgainst.id + '_' + mapid];
@@ -722,34 +704,52 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
                 var tags = ent.tags;
                 var newTags = _.clone(tags);
-                newTags = _.omit(newTags, function (value, key) {
-                    return key.match(/hoot:review/g);
-                });
+
+                var againstUuids = tags['hoot:review:uuid'];
+                if(againstUuids && againstUuids.length > 0) {
+                    var againstList = againstUuids.split(';');
+                    if(againstList.length > 1) { // have many against
+                        var newAgainstList =[];
+
+                        _.each(againstList, function(v){
+                            if(v != curReviewAgainstUUID) {
+                                newAgainstList.push(v);
+                            }
+                        })
+
+                        var newAgainstTags = newAgainstList.join(';');
+                        newTags['hoot:review:uuid'] = newAgainstTags;
+                    } else {
+                        newTags = _.omit(newTags, function (value, key) {
+                            return key.match(/hoot:review/g);
+                        });
+                    }
+                }
+
                 context.perform(iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
             });
 
-*/
-                var hasChanges = context.history().hasChanges();
-                if (hasChanges) {
 
-                    iD.modes.Save(context).save(context, function () {
-                        Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
-
-
-                            var multiItemInfo = getMultiReviewItemInfo();
-                                jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
-                            
-                        });
-
-                    });
-                } else {
+            var hasChanges = context.history().hasChanges();
+            if (hasChanges) {
+                iD.modes.Save(context).save(context, function () {
                     Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
 
+
                         var multiItemInfo = getMultiReviewItemInfo();
-                        jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+                            jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
                         
                     });
-                }
+
+                });
+            } else {
+                Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
+
+                    var multiItemInfo = getMultiReviewItemInfo();
+                    jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+                    
+                });
+            }
 
 
 
