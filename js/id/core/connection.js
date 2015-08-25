@@ -145,10 +145,12 @@ iD.Connection = function(context) {
 
             _.each(chunk(osmIDs, 150), function(arr) {
                 if(currMapId){
+
                     connection.loadFromURL(
                         url + '/api/0.6/' + type + '?mapId=' + currMapId + '&elementIds'  + '=' + arr.join(),
                         function(err, entities) {
-                            if (callback) callback(err, {data: entities}, hootcallback);
+
+                            if (callback) callback(err, {data: entities, force_remote:true}, hootcallback);
                         },currMapId);
                 } else { // we do not know hoot map id so use the default iD behavior
                     connection.loadFromURL(
@@ -442,6 +444,7 @@ iD.Connection = function(context) {
         _.each(changesArr, function(a, b) {
             var changemapId = b;
             var changes = a;
+            
             oauth.xhr({
                 method: 'PUT',
                 path: '/api/0.6/changeset/create?mapId=' + changemapId,

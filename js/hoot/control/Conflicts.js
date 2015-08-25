@@ -56,6 +56,10 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
             map.centerZoom(extent.center(), (zoom));
         }
+
+  
+
+ 
         var jumpFor = function (nReviewed, itemCnt) {
             // allow other to use
             //resetReviewStatus();
@@ -105,7 +109,6 @@ Hoot.control.conflicts = function (context, sidebar) {
         };
 
         var resetReviewStatus = function(callback) {
-
             if(lastIndex > 0){
 
                 var targetEntity = reviewItems[lastIndex - 1];
@@ -133,8 +136,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
 
         };
-        var jumpTo = function (nReviewed, itemCnt, direction, fn) {
-            
+       var jumpTo = function (nReviewed, itemCnt, direction, fn) {
             if(heartBeatTimer){
                 clearInterval(heartBeatTimer);
             }
@@ -163,7 +165,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
 
                 Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
-
                     if(response.status == 'success') {
                         var nextEntity = null;
                         for(var i=0; i<reviewItems.length; i++){
@@ -225,7 +226,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             var max = 4;
             var calls = 0;
             var loadedMissing = false;
-            var getFeatureTimer = setInterval(function () {
+            var getFeatureTimer = setInterval(function () { 
                 if (calls < max) {
                     getFeature();
                     calls++;
@@ -310,7 +311,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                 if (!feature) {
                     feature = context.hoot().model.conflicts.findDescendent(idid);
                 }
-
                 againstFeature = context.hasEntity(idid2);
                 //console.log(againstFeature);
                 if (!againstFeature) {
@@ -450,14 +450,15 @@ Hoot.control.conflicts = function (context, sidebar) {
                     _.each(remaining, function (item) {
                         item.retain = true;
                         item.reviewed = true;
-                        //var itemKlass = reviewItemID(item);
-                        //var itemKlass2 = reviewAgainstID(item);
-                        statusCheck();
                     });
+
+                    // finalize
+                    metaHead.text('Saving Conflicts.....');
+                    Conflict.reviewComplete();
+                    d3.select('.hootTags').remove();
+                    event.acceptAll(data);
                 }
             });
- 
-            //event.acceptAll(data);
 
         }
 
@@ -487,8 +488,8 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         }
 
-
-       var statusCheck = function () {
+       /*
+        var statusCheck = function () {
             var numLeft = reviewsRemaining('count');
             if (!numLeft) {
                 //saveOptions();
@@ -500,6 +501,15 @@ Hoot.control.conflicts = function (context, sidebar) {
                 acceptAll();
                 d3.select('.hootTags').remove();
                 event.acceptAll(data);
+                return false;
+            }
+            return true;
+        };*/
+
+         var statusCheck = function () {
+            var numLeft = reviewsRemaining('count');
+            if (!numLeft) {     
+                acceptAll();
                 return false;
             }
             return true;
@@ -675,43 +685,78 @@ Hoot.control.conflicts = function (context, sidebar) {
             var reviewMarkData = {};
             reviewMarkData.mapId = mapid;
             reviewMarkData.reviewedItems = reviewedItems;
-            Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
-                var multiItemInfo = getMultiReviewItemInfo();
-                jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
-             });
+
+            /*var changes = context.history().changes(iD.actions.DiscardTags(context.history().difference()));
+            var changeXml =  JXON.stringify(context.connection().osmChangeJXON(0, changes));
+            reviewMarkData.reviewedItemsChangeset = changeXml;*/
+          /*  Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
+
+
+                var hasChanges = context.history().hasChanges();
+                if (hasChanges) {
+
+                    iD.modes.Save(context).save(context, function () {
+                        var multiItemInfo = getMultiReviewItemInfo();
+                        jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+
+                    });
+                } else {
+                    var multiItemInfo = getMultiReviewItemInfo();
+                    jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+                }
+                
+             });*/
+
+           /*     
+            var items = [item];
+            var flagged = _.uniq(_.flatten(_.map(items, function (d) {
+                return [d.type.charAt(0) + d.id + '_' + mapid, d.itemToReviewAgainst.type.charAt(0) + d.itemToReviewAgainst.id + '_' + mapid];
+            })));
+            var inID = _.filter(flagged, function (d) {
+                return context.hasEntity(d);
+            });
+            _.each(inID, function (d) {
+                var ent = context.hasEntity(d);
+                if (!ent) {
+                    return;
+                }
+                var tags = ent.tags;
+                var newTags = _.clone(tags);
+                newTags = _.omit(newTags, function (value, key) {
+                    return key.match(/hoot:review/g);
+                });
+                context.perform(iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
+            });
+
+*/
+                var hasChanges = context.history().hasChanges();
+                if (hasChanges) {
+
+                    iD.modes.Save(context).save(context, function () {
+                        Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
+
+
+                            var multiItemInfo = getMultiReviewItemInfo();
+                                jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+                            
+                        });
+
+                    });
+                } else {
+                    Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
+
+                        var multiItemInfo = getMultiReviewItemInfo();
+                        jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+                        
+                    });
+                }
+
+
 
 
 
         };
-/*        var removeFeature = function () {
-            var vicheck = vischeck();
-            if(!vicheck){
-              return;
-              }
-            var item = reviewItems[index - 1];
-            var contains = item.reviewed;
 
-            if (contains) {
-                window.alert('Item Is Already Resolved!');
-            } else {
-              item.retain = false;
-                item.reviewed = true;
-                //event.removeFeature(item, mapid);
-                context.hoot().model.conflicts.RemoveFeature(item, mapid);
-                var itemKlass2 = reviewAgainstID(item);
-                d3.selectAll('.' + itemKlass2)
-                    .classed('activeReviewFeature2', false);
-            }
-            var stat = statusCheck();
-            if (!stat) {
-                return;
-            }
-
-
-            var multiItemInfo = getMultiReviewItemInfo();
-            jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
-
-        };*/
 
         function toggleForm(self) {
             var cont = self.select('fieldset');
@@ -817,14 +862,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     acceptAll();
                 });
         }
-  /*      reviewOptions.append('input')
-            .attr('type', 'submit')
-            .attr('value', 'Cancel')
-            .classed('fill-darken0 button round pad0y pad2x small strong', true)
-            .on('click', function () {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-            });*/
+  
         var conflicts = d3.select('#content')
             .append('div')
             .attr('id', 'conflicts-container')
