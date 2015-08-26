@@ -649,6 +649,11 @@ Hoot.control.conflicts = function (context, sidebar) {
         };
 
         var retainFeature = function () {
+            if(isProcessingReview === true){
+                alert("Processing review. Please wait.");
+                return;
+            }
+            isProcessingReview = true;
             var vicheck = vischeck();
             if(!vicheck){
                 isProcessingReview = false;
@@ -978,11 +983,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 return 'fr inline button dark ' + d.color + ' pad0y pad2x keyline-all ' + d.icon + ' ' + d.id;
             })
             .on('click', function (d) {
-                if(isProcessingReview === true){
-                    alert("Processing review. Please wait.");
-                    return;
-                }
-                isProcessingReview = true;
+                
               // We need this delay for iD to have time to add way for adjusting
               // graph history. If you click really fast, request out paces the process
               // and end up with error where entity is not properly deleted.
