@@ -12,6 +12,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     var mergeFeatures;
     var activeEntity;
     var heartBeatTimer;
+    var isProcessingReview = false;
 
     Conflict.activeEntity = function(){return activeEntity;};
     Conflict.activeConflict = function(){return activeConflict;};
@@ -70,7 +71,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
             // we have entity with same id but different against
 
-            jumpTo(nReviewed, itemCnt, 'forward', jumpFor);
+            jumpTo(nReviewed, itemCnt, 'forward');
         };
         var jumpBack = function (nReviewed, itemCnt) {
             // allow other to use
@@ -83,7 +84,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             //updateMeta(index);
             // we have entity with same id but different against
 
-            jumpTo(nReviewed, itemCnt, 'backward', jumpBack);
+            jumpTo(nReviewed, itemCnt, 'backward');
        };
 
         // send heartbeat to service so it know the session still exists and target is
@@ -136,7 +137,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
 
         };
-        var jumpTo = function (nReviewed, itemCnt, direction, fn) {
+        var jumpTo = function (nReviewed, itemCnt, direction, jumptoidx) {
             if(heartBeatTimer){
                 clearInterval(heartBeatTimer);
             }
@@ -146,10 +147,13 @@ Hoot.control.conflicts = function (context, sidebar) {
 
             // nReviewed is undefined for very first item
             reviewData.offset = -1;
-            //reviewData.uuid = 'none';
-            if(nReviewed !== undefined){
-                reviewData.offset = lastIndex-1;
-                var lastEnt = reviewItems[lastIndex - 1];
+            var offsetIdx = lastIndex;
+            if(jumptoidx !== undefined) {
+                offsetIdx = jumptoidx;
+            }
+            if(nReviewed !== undefined && index > 1){
+                reviewData.offset = offsetIdx-1;
+                var lastEnt = reviewItems[offsetIdx - 1];
                 reviewData.uuid = lastEnt.uuid;
                 reviewData.reviewAgainstUuid = lastEnt.itemToReviewAgainst.uuid;
             }
@@ -161,6 +165,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             resetReviewStatus(function(err, resp){
                 if(err)
                 {
+                    isProcessingReview = false;
                     return;
                 }
 
@@ -207,7 +212,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     } else {
                         alert("All review items are being reviewed by other users!")
                     }
-
+                    isProcessingReview = false;
                 });
             });
 
@@ -615,13 +620,14 @@ Hoot.control.conflicts = function (context, sidebar) {
 
 
         var traverseTo = function (toIdx) {
+            lastIndex = index;
             index = toIdx * 1;
             var vicheck = vischeck();
             if(!vicheck){return;}
 
 
             var multiItemInfo = getMultiReviewItemInfo();
-            jumpTo(multiItemInfo.nReviewed, multiItemInfo.itemCnt, 'forward', jumpFor);
+            jumpTo(multiItemInfo.nReviewed, multiItemInfo.itemCnt, 'forward', index);
         };
 
         var autoMerge = function() {
@@ -644,7 +650,10 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         var retainFeature = function () {
             var vicheck = vischeck();
-            if(!vicheck){return;}
+            if(!vicheck){
+                isProcessingReview = false;
+                return;
+            }
             var item = reviewItems[index - 1];
 
 
@@ -666,6 +675,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
             var stat = statusCheck();
             if (!stat) {
+                isProcessingReview = false;
                 return;
             }
 
@@ -702,6 +712,8 @@ Hoot.control.conflicts = function (context, sidebar) {
             _.each(inID, function (d) {
                 var ent = context.hasEntity(d);
                 if (!ent) {
+                    alert("missing entity.");
+                    isProcessingReview = false;
                     return;
                 }
                 var tags = ent.tags;
@@ -966,6 +978,11 @@ Hoot.control.conflicts = function (context, sidebar) {
                 return 'fr inline button dark ' + d.color + ' pad0y pad2x keyline-all ' + d.icon + ' ' + d.id;
             })
             .on('click', function (d) {
+                if(isProcessingReview === true){
+                    alert("Processing review. Please wait.");
+                    return;
+                }
+                isProcessingReview = true;
               // We need this delay for iD to have time to add way for adjusting
               // graph history. If you click really fast, request out paces the process
               // and end up with error where entity is not properly deleted.
@@ -998,7 +1015,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             }, 500);
             if(btnEnabled){
                 btnEnabled = false;
-                traverseTo(idx);
+                traverseTo(idx-1);
             } else {
                 window.alert('Please wait. Processing review.');
             }
