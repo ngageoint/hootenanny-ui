@@ -434,7 +434,7 @@ Hoot.control.TranslationAssistant = function () {
             //update div to attribute mapping control
             el.text(null);
             var icon = el.append('div')
-                .classed('pad1 inline thumbnail fr big _icon trash linktag translate-icon keyline-left', true)
+                .classed('pad1 inline thumbnail fr big _icon blank linktag translate-icon keyline-left', true)
                 .on('click', function() {
                     //toggles between three states
                     //1. write attribute values directly to tag values, e.g. NAME=Main St. -> Geographic Name Information : Full Name=Main St.
@@ -463,7 +463,7 @@ Hoot.control.TranslationAssistant = function () {
 
                 });
             el.append('div')
-                .classed('pad1 inline thumbnail fr big _icon trash removetag translate-icon', true)
+                .classed('pad1 inline thumbnail fr big _icon blank removetag translate-icon', true)
                 .on('click', function() {
                     el.remove();
                     checkNext();
@@ -620,7 +620,7 @@ Hoot.control.TranslationAssistant = function () {
                         .filter( function(val) {
                             return val.key && (val.key.toLowerCase().indexOf(value.toLowerCase()) === 0);
                         });
-                        
+
                         //provide highlighted remaining text of suggestion
                         //can be removed to use substring
                         if (results.length > 0) {
@@ -678,7 +678,7 @@ Hoot.control.TranslationAssistant = function () {
                 var lookup = mappingSection.insert('div', '.add-mapping')
                     .classed('round space-bottom1 fill-white keyline-all lookup', true);
                 lookup.append('div')
-                    .classed('pad1 inline thumbnail big _icon trash searchtag translate-icon keyline-right', true);
+                    .classed('pad1 inline thumbnail big _icon blank searchtag translate-icon keyline-right', true);
 
                 var schemaOption = d3.select('input[type=radio].schema-option:checked').attr('value');
 
@@ -817,7 +817,7 @@ Hoot.control.TranslationAssistant = function () {
                 .classed('hidden', false);
             }
         }
-        
+
         //http://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript-jquery
         function hashCode(input) {
             var hash = 0, i, chr, len;
@@ -855,7 +855,7 @@ Hoot.control.TranslationAssistant = function () {
         return {state: rule1 && rule2,
                 layers: lyrs};
     };
-    
+
     return ta;
 };
 
