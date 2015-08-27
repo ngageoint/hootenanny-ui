@@ -858,7 +858,8 @@ Hoot.control.utilities.dataset = function(context) {
                                     mapIds = status.mapids;
                                     submitExp.select('span').text('Cancel');
                                 } else if(status.info == 'failed'){
-                                    alert('Import has failed or partially failed. For detail please see Manage->Log.');
+                                    var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
+                                	alert(errorMessage);
                                     modalbg.remove();
                                 }
 

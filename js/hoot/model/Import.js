@@ -110,6 +110,7 @@ Hoot.model.import = function (context)
             if(importCallback){
                 var status = {};
                 status.info = 'failed';
+                status.error=resp.errorMessage || '';
                 importCallback(status);
              } 
             return;
