@@ -142,13 +142,28 @@ Hoot.model.conflicts = function(context)
             }, mapid, layerName);
         }
     };
-    model_conflicts.findDescendent = function (id) {
-        //console.log(descendents[id]);
-        var ent = context.hasEntity(descendents[id]);
-        while (typeof ent === 'undefined' && typeof descendents[id] !== 'undefined') {
-            ent = model_conflicts.findDescendent(descendents[id]);
+
+    model_conflicts.findDescendent = function(id) {
+        var descId = descendents[id];
+        if (typeof descId !== 'undefined') {
+            return model_conflicts.findDescendent(descId);
+        } else {
+            return id;
         }
-        return ent;
+    };
+
+    model_conflicts.updateDescendent = function(xhr, mapId) {
+        var nodes = xhr.getElementsByTagName('node');
+        for (var i = 0; i < nodes.length; i++) {
+            var n = nodes[i];
+            if (n.hasAttribute('new_id')) {
+                //TODO: if we support merging ways and relations
+                //we'll have to update the id generation pattern
+                var oldid = 'n' + n.getAttribute('old_id') + '_' + mapId;
+                var newid = 'n' + n.getAttribute('new_id') + '_' + mapId;
+                descendents[oldid] = newid;
+            }
+        }
     };
 
     model_conflicts.getSourceLayerId = function(feature) {
