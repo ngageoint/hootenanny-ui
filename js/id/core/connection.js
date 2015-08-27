@@ -456,8 +456,10 @@ iD.Connection = function(context) {
                     path: '/api/0.6/changeset/' + changeset_id + '/upload?mapId=' + changemapId,
                     options: { header: { 'Content-Type': 'text/xml' } },
                     content: JXON.stringify(connection.osmChangeJXON(changeset_id, changes))
-                }, function(err) {
+                }, function(err, xhr) {
                     if (err) return callback(err);
+                    //hoot handler to manage merged descendents
+                    context.hoot().model.conflicts.updateDescendent(xhr, changemapId);
                     oauth.xhr({
                         method: 'PUT',
                         path: '/api/0.6/changeset/' + changeset_id + '/close?mapId=' + changemapId,

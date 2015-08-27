@@ -12,6 +12,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     var mergeFeatures;
     var activeEntity;
     var heartBeatTimer;
+    var isProcessingReview = false;
 
     Conflict.activeEntity = function(){return activeEntity;};
     Conflict.activeConflict = function(){return activeConflict;};
@@ -56,10 +57,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
             map.centerZoom(extent.center(), (zoom));
         }
-
-  
-
- 
         var jumpFor = function (nReviewed, itemCnt) {
             // allow other to use
             //resetReviewStatus();
@@ -109,6 +106,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         };
 
         var resetReviewStatus = function(callback) {
+
             if(lastIndex > 0){
 
                 var targetEntity = reviewItems[lastIndex - 1];
@@ -136,7 +134,8 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
 
         };
-       var jumpTo = function (nReviewed, itemCnt, direction, jumptoidx) {
+        var jumpTo = function (nReviewed, itemCnt, direction, jumptoidx) {
+            
             if(heartBeatTimer){
                 clearInterval(heartBeatTimer);
             }
@@ -146,7 +145,6 @@ Hoot.control.conflicts = function (context, sidebar) {
 
             // nReviewed is undefined for very first item
             reviewData.offset = -1;
-            //reviewData.uuid = 'none';
             var offsetIdx = lastIndex;
             if(jumptoidx !== undefined) {
                 offsetIdx = jumptoidx;
@@ -165,10 +163,12 @@ Hoot.control.conflicts = function (context, sidebar) {
             resetReviewStatus(function(err, resp){
                 if(err)
                 {
+                    isProcessingReview = false;
                     return;
                 }
 
                 Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
+
                     if(response.status == 'success') {
                         var nextEntity = null;
                         for(var i=0; i<reviewItems.length; i++){
@@ -212,6 +212,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                         alert("All review items are being reviewed by other users!")
                     }
 
+                    isProcessingReview = false;
                 });
             });
 
@@ -230,7 +231,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             var max = 4;
             var calls = 0;
             var loadedMissing = false;
-            var getFeatureTimer = setInterval(function () { 
+            var getFeatureTimer = setInterval(function () {
                 if (calls < max) {
                     getFeature();
                     calls++;
@@ -313,12 +314,15 @@ Hoot.control.conflicts = function (context, sidebar) {
                 feature = context.hasEntity(idid);
                 //console.log(feature);
                 if (!feature) {
-                    feature = context.hoot().model.conflicts.findDescendent(idid);
+                    idid = context.hoot().model.conflicts.findDescendent(idid);
+                    if (idid) feature = context.hasEntity(idid);
                 }
+
                 againstFeature = context.hasEntity(idid2);
                 //console.log(againstFeature);
                 if (!againstFeature) {
-                    againstFeature = context.hoot().model.conflicts.findDescendent(idid2);
+                    idid2 = context.hoot().model.conflicts.findDescendent(idid2);
+                    if (idid2) againstFeature = context.hasEntity(idid2);
                 }
 
                 if (feature && againstFeature) {
@@ -455,7 +459,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                         item.retain = true;
                         item.reviewed = true;
                     });
-
                     // finalize
                     metaHead.text('Saving Conflicts.....');
                     Conflict.reviewComplete();
@@ -463,6 +466,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     event.acceptAll(data);
                 }
             });
+ 
 
         }
 
@@ -492,8 +496,9 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         }
 
+
        /*
-        var statusCheck = function () {
+       var statusCheck = function () {
             var numLeft = reviewsRemaining('count');
             if (!numLeft) {
                 //saveOptions();
@@ -617,7 +622,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
 
         var traverseTo = function (toIdx) {
-			lastIndex = index;
+            lastIndex = index;
             index = toIdx * 1;
             var vicheck = vischeck();
             if(!vicheck){return;}
@@ -646,8 +651,16 @@ Hoot.control.conflicts = function (context, sidebar) {
         };
 
         var retainFeature = function () {
+            if(isProcessingReview === true){
+                alert("Processing review. Please wait.");
+                return;
+            }
+            isProcessingReview = true;
             var vicheck = vischeck();
-            if(!vicheck){return;}
+            if(!vicheck){
+                isProcessingReview = false;
+                return;
+            }
             var item = reviewItems[index - 1];
 
 
@@ -669,6 +682,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
             var stat = statusCheck();
             if (!stat) {
+                isProcessingReview = false;
                 return;
             }
 
@@ -692,7 +706,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             reviewMarkData.reviewedItems = reviewedItems;
 
 
-               
             var curReviewAgainstUUID = item.itemToReviewAgainst.uuid;
             var curReviewUUID =  item.uuid;
             var items = [item];
@@ -705,8 +718,10 @@ Hoot.control.conflicts = function (context, sidebar) {
             _.each(inID, function (d) {
                 var ent = context.hasEntity(d);
                 if (!ent) {
-                    return;
-                }
+                    alert("missing entity.");
+                    isProcessingReview = false;
+              return;
+              }
                 var tags = ent.tags;
                 var newTags = _.clone(tags);
 
@@ -724,12 +739,13 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                         var newAgainstTags = newAgainstList.join(';');
                         newTags['hoot:review:uuid'] = newAgainstTags;
-                    } else {
-                        newTags = _.omit(newTags, function (value, key) {
-                            return key.match(/hoot:review/g);
-                        });
-                    }
-                }
+				    } else {
+				                newTags = _.omit(newTags, function (value, key) {
+				                    return key.match(/hoot:review/g);
+				                });
+				    }
+
+		        }
 
                 context.perform(iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
             });
@@ -740,10 +756,9 @@ Hoot.control.conflicts = function (context, sidebar) {
                 iD.modes.Save(context).save(context, function () {
                     Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
 
+            var multiItemInfo = getMultiReviewItemInfo();
+            jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
 
-                        var multiItemInfo = getMultiReviewItemInfo();
-                            jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
-                        
                     });
 
                 });
@@ -761,7 +776,6 @@ Hoot.control.conflicts = function (context, sidebar) {
 
 
         };
-
 
         function toggleForm(self) {
             var cont = self.select('fieldset');
@@ -867,7 +881,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     acceptAll();
                 });
         }
-  
+
         var conflicts = d3.select('#content')
             .append('div')
             .attr('id', 'conflicts-container')
