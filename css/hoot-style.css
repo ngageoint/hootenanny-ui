@@ -170,7 +170,8 @@ div.combobox {
     margin-top: -1px;
     background: #FFF;
     max-height: 240px;
-    overflow-y: auto;
+    /* overflow-y: auto; */
+    overflow-y: visible;
     overflow-x: hidden;
     border: 1px solid #ccc;
     border-radius: 0 0 4px 4px;

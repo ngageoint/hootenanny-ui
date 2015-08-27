@@ -57,10 +57,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
             map.centerZoom(extent.center(), (zoom));
         }
-
-  
-
- 
         var jumpFor = function (nReviewed, itemCnt) {
             // allow other to use
             //resetReviewStatus();
@@ -110,6 +106,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         };
 
         var resetReviewStatus = function(callback) {
+
             if(lastIndex > 0){
 
                 var targetEntity = reviewItems[lastIndex - 1];
@@ -138,6 +135,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         };
         var jumpTo = function (nReviewed, itemCnt, direction, jumptoidx) {
+            
             if(heartBeatTimer){
                 clearInterval(heartBeatTimer);
             }
@@ -170,6 +168,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
 
                 Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
+
                     if(response.status == 'success') {
                         var nextEntity = null;
                         for(var i=0; i<reviewItems.length; i++){
@@ -212,6 +211,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     } else {
                         alert("All review items are being reviewed by other users!")
                     }
+
                     isProcessingReview = false;
                 });
             });
@@ -231,7 +231,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             var max = 4;
             var calls = 0;
             var loadedMissing = false;
-            var getFeatureTimer = setInterval(function () { 
+            var getFeatureTimer = setInterval(function () {
                 if (calls < max) {
                     getFeature();
                     calls++;
@@ -317,6 +317,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     idid = context.hoot().model.conflicts.findDescendent(idid);
                     if (idid) feature = context.hasEntity(idid);
                 }
+
                 againstFeature = context.hasEntity(idid2);
                 //console.log(againstFeature);
                 if (!againstFeature) {
@@ -458,7 +459,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                         item.retain = true;
                         item.reviewed = true;
                     });
-
                     // finalize
                     metaHead.text('Saving Conflicts.....');
                     Conflict.reviewComplete();
@@ -466,6 +466,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     event.acceptAll(data);
                 }
             });
+ 
 
         }
 
@@ -495,8 +496,9 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         }
 
+
        /*
-        var statusCheck = function () {
+       var statusCheck = function () {
             var numLeft = reviewsRemaining('count');
             if (!numLeft) {
                 //saveOptions();
@@ -712,9 +714,10 @@ Hoot.control.conflicts = function (context, sidebar) {
                         
                     context.flush();
                     context.history().clearSaved();
-      				context.enter(iD.modes.Browse(context));   
+      				      context.enter(iD.modes.Browse(context));   
                   });
-            } else {
+            } 
+            else {
                 Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
 
                     var multiItemInfo = getMultiReviewItemInfo();
@@ -723,7 +726,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                 });
             }
         };
-
 
         function toggleForm(self) {
             var cont = self.select('fieldset');
@@ -829,7 +831,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     acceptAll();
                 });
         }
-  
+
         var conflicts = d3.select('#content')
             .append('div')
             .attr('id', 'conflicts-container')
@@ -931,7 +933,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                 return 'fr inline button dark ' + d.color + ' pad0y pad2x keyline-all ' + d.icon + ' ' + d.id;
             })
             .on('click', function (d) {
-                
               // We need this delay for iD to have time to add way for adjusting
               // graph history. If you click really fast, request out paces the process
               // and end up with error where entity is not properly deleted.
