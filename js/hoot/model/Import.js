@@ -149,10 +149,11 @@ Hoot.model.import = function (context)
                 }
                 var truncatedLastText = a.lasttext;
                     if(truncatedLastText){
-                        var truncatelen = 70;
+                        // Removed truncation per #5565
+                    	/*var truncatelen = 70;
                         if(truncatedLastText.length > truncatelen){
                             truncatedLastText = truncatedLastText.substring(0, truncatelen) + " ...";
-                        }
+                        }*/
                         
                         imprtProgText.text(truncatedLastText);
                     }

@@ -361,4 +361,9 @@ span.logo{
 
 .hoot-menu {margin-bottom:5px;}
 
+.show-link {
+	font-size: 12px;
+	font-weight: bold;
+	font-style: italic;
+}
 
