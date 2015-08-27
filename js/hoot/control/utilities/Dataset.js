@@ -794,9 +794,31 @@ Hoot.control.utilities.dataset = function(context) {
                            prog.attr("max", "100");
                            prog.attr("id", "importprogress");
 
-                           progcont.append("text")
-                            .attr("id", "importprogresstext")
-                            .attr("dy", ".3em").text("Initializing ...")       
+                           var progdiv = progcont.append("div");
+                           progdiv.attr('id','importprogdiv')
+                           		.style("max-height","24px")
+                           		.style("overflow","hidden");
+                           
+                           progdiv.append("text")
+                           		.attr("id", "importprogresstext")
+                           		.attr("dy", ".3em").text("Initializing ...");
+                           
+                           var progShow = progcont.append("a");
+                           progShow.attr("id","importprogressshow")
+                           		.classed('show-link',true)
+                           		.attr('expanded',false)
+                           		.text('Show More')
+                           		.on('click',function(){
+                           			var expanded = !JSON.parse(d3.select(this).attr('expanded'));
+                           			d3.select(this).attr('expanded',expanded);
+                           			if(expanded){
+                           				d3.select('#importprogdiv').style('max-height',undefined);
+                           				d3.select(this).text('Show Less');
+                           			} else {
+                           				d3.select('#importprogdiv').style('max-height','24px');
+                           				d3.select(this).text('Show More');
+                           			}
+                           		});
 
                             context.hoot().model.import.importData(_form,function(status){
                                 if(status.info == 'complete'){
