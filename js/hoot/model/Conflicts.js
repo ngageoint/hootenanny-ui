@@ -31,24 +31,6 @@ Hoot.model.conflicts = function(context)
     model_conflicts.acceptAll = function (data, callback) {
         var items = data.reviewableItems;
         var mapid = data.mapId;
-        var flagged = _.uniq(_.flatten(_.map(items, function (d) {
-            return [d.type.charAt(0) + d.id + '_' + mapid, d.itemToReviewAgainst.type.charAt(0) + d.itemToReviewAgainst.id + '_' + mapid];
-        })));
-        var inID = _.filter(flagged, function (d) {
-            return context.hasEntity(d);
-        });
-        _.each(inID, function (d) {
-            var ent = context.hasEntity(d);
-            if (!ent) {
-                return;
-            }
-            var tags = ent.tags;
-            var newTags = _.clone(tags);
-            newTags = _.omit(newTags, function (value, key) {
-                return key.match(/hoot:review/g);
-            });
-            context.perform(iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
-        });
         var hasChanges = context.history().hasChanges();
         if (hasChanges) {
             iD.modes.Save(context).save(context, function () {

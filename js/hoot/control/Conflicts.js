@@ -703,18 +703,18 @@ Hoot.control.conflicts = function (context, sidebar) {
             
             var hasChanges = context.history().hasChanges();
             if (hasChanges) {
+              //console.log("has changes");
               var changes = context.changes(iD.actions.DiscardTags(context.history().difference()));
               var changesetXml = JXON.stringify(context.connection().osmChangeJXON('-1', changes));
-              console.log(changesetXml);
               reviewMarkData.reviewedItemsChangeset = changesetXml;
-              console.log(reviewMarkData.reviewedItemsChangeset);
+              //console.log(reviewMarkData.reviewedItemsChangeset);
                 Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
                     var multiItemInfo = getMultiReviewItemInfo();
                         jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
                         
-                    context.flush();
-                    context.history().clearSaved();
-      				      context.enter(iD.modes.Browse(context));   
+                        context.flush();
+                        //context.history().clearSaved();
+            			context.enter(iD.modes.Browse(context));
                   });
             } 
             else {
@@ -725,6 +725,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                     
                 });
             }
+            
+            
         };
 
         function toggleForm(self) {
