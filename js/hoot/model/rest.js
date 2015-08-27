@@ -38,6 +38,8 @@ Hoot.model.REST = function (command, data, callback, option) {
 
                 if (json && json.response.indexOf('<html>') !== -1) {
                     error = 'error';
+                } else if (json==undefined && error.response) {
+                	json = {"errorMessage":error.response.replace('java.lang.Exception: ',''),"response":"","responseText":[]};
                 }
                 callback(json);
                 return json;
