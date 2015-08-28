@@ -403,7 +403,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 //console.log(feats);
                 d3.select('div.tag-table').remove();
                 var ftable = elem.insert('div','div.conflicts')
-                    .classed('tag-table block fr', true)
+                    .classed('tag-table block fr clickable', true)
                     .append('table')
                     .classed('round keyline-all', true);
                 var f1 = filterTags(feats[0] ? feats[0].tags : {});
@@ -895,9 +895,9 @@ Hoot.control.conflicts = function (context, sidebar) {
         var conflicts = d3.select('#content')
             .append('div')
             .attr('id', 'conflicts-container')
-            .classed('pin-bottom review-block', true)
+            .classed('pin-bottom review-block unclickable', true)
             .append('div')
-            .classed('conflicts col12 fillD pad1 space', true)
+            .classed('conflicts col12 fillD pad1 space clickable', true)
             //.style('height','90px') //changed from 133px to avoid conflict with footer
             .data(reviewItems);
         var meta = conflicts.append('span')

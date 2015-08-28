@@ -151,6 +151,14 @@ path.shadow.tag-hoot.area:not(.hover).activeReviewFeature2:not(.selected) {
     background: #333;*/
 }
 
+.unclickable {
+    pointer-events: none;
+}
+
+.clickable {
+    pointer-events: auto;
+}
+
 .map-controls {
     right: 0;
     top: 130px;
