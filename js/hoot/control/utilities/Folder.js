@@ -2,9 +2,11 @@ Hoot.control.utilities.folder = function(context) {
 
 	var hoot_control_utilities_folder = {};
 
-    hoot_control_utilities_folder.createFolderTree = function(container) {
+    hoot_control_utilities_folder.createFolderTree = function(container, selectMode) {
     	// http://bl.ocks.org/mbostock/1093025 - Collapsible Indented Tree
     	    	
+    	if(selectMode==null || selectMode==undefined){selectMode=false;}
+    	
     	//var folders = context.hoot().model.layers.getAvailLayersWithFolders();
     	var folders = context.hoot().model.folders.getAvailFoldersWithLayers();
     	folders= JSON.parse('{"name":"Datasets","id":"Datasets","children":' + JSON.stringify(folders) +'}');
@@ -119,8 +121,8 @@ Hoot.control.utilities.folder = function(context) {
 	          });
 	          //.attr('lyr-id',function(d){return d.id;})
             
-	      nodeEnter.append("g")
-	      	  .append('svg:foreignObject')
+	      var nodeg = nodeEnter.append("g");
+	      nodeg.append('svg:foreignObject')
 		      .attr("width", 20)
 		      .attr("height", 20)
 		      .attr("transform", function(d) { 
@@ -133,6 +135,17 @@ Hoot.control.utilities.folder = function(context) {
 		    	  }
 		    	  if (d.type == 'dataset'){return '<i class="_icon data"></i>'}
 		      });
+	      
+	      if(selectMode){
+		      nodeg.append('svg:foreignObject')
+		      .attr("width", 20)
+		      .attr("height", 20)
+		      .attr("transform","translate(2.5,-11)")
+		      .html(function(d){
+		    	  if (d.type == 'folder'){return '';}
+		    	  if (d.type == 'dataset'){return '<input type=checkbox />';}
+		      });
+	      }
 	      
 	      // Transition nodes to their new position.
 	      nodeEnter.transition()
@@ -296,8 +309,12 @@ Hoot.control.utilities.folder = function(context) {
 	    }
 	    
 	    function rectClass(d) {
-		      return d.selected ? "sel" : d._children ? "more" : "flat";
-		    }
+	    	if(selectMode){
+	    		return d._children ? "more" : "flat";
+	    	} else {
+	    		return d.selected ? "sel" : d._children ? "more" : "flat";
+	    	}
+		}
 	    
 	    function getWidth(d) {
 	    	return '100%';
