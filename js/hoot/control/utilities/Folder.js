@@ -1,8 +1,12 @@
 Hoot.control.utilities.folder = function(context) {
-
+	var checkedLayerIDs = [];
+	
 	var hoot_control_utilities_folder = {};
 
     hoot_control_utilities_folder.createFolderTree = function(container, selectMode) {
+    	checkedLayerIDs = [];
+    	context.hoot().model.layers.setCheckedLayers(checkedLayerIDs);
+    	
     	// http://bl.ocks.org/mbostock/1093025 - Collapsible Indented Tree
     	    	
     	if(selectMode==null || selectMode==undefined){selectMode=false;}
@@ -119,8 +123,7 @@ Hoot.control.utilities.folder = function(context) {
 	        		 rectNode.attr('fldr-id',function(d){return d.id;})
 	        	 }
 	          });
-	          //.attr('lyr-id',function(d){return d.id;})
-            
+	      
 	      var nodeg = nodeEnter.append("g");
 	      nodeg.append('svg:foreignObject')
 		      .attr("width", 20)
@@ -143,9 +146,16 @@ Hoot.control.utilities.folder = function(context) {
 		      .attr("transform","translate(2.5,-11)")
 		      .html(function(d){
 		    	  if (d.type == 'folder'){return '';}
-		    	  if (d.type == 'dataset'){return '<input type=checkbox />';}
+		    	  if (d.type == 'dataset'){return '<input type=checkbox class="dataset-option-checkbox" lyrid='+ d.id + ' id="layer-'+ d.id + '-checkbox" />';}
 		      });
 	      }
+	      
+	      d3.selectAll('.dataset-option-checkbox')
+	      	.on('click',function(d){check(this);})
+	      	.each(function(d){
+	      		var lyrid = d3.select(this).attr('lyrid');
+	      		if(checkedLayerIDs.indexOf(lyrid)>-1){this.checked=true;}
+	      	})
 	      
 	      // Transition nodes to their new position.
 	      nodeEnter.transition()
@@ -211,7 +221,7 @@ Hoot.control.utilities.folder = function(context) {
 		              d3.event.preventDefault();
 		              return;
 	              }
-	              else if(d.type.toLowerCase()=='dataset'){
+	              else if(d.type.toLowerCase()=='dataset' && !selectMode){
 	            	  //http://jsfiddle.net/1mo3vmja/2/
 	            	  items = [
 		        	      {title:'Export',icon:'export',click:'context.hoot().view.utilities.dataset.exportDataset(d,container)'},
@@ -265,6 +275,20 @@ Hoot.control.utilities.folder = function(context) {
 	      } else {container.selectAll('rect').on("contextmenu",function(d,i){d3.event.preventDefault();})}
 	    }
 	
+	    function check(d) {
+	    	d3.select(d.parentNode.parentNode.parentNode).select('rect').classed('sel',d.checked);
+	    	var lyrid = d3.select(d).attr('lyrid');
+	    	if(d.checked){
+	    		if(checkedLayerIDs.indexOf(lyrid) == -1){checkedLayerIDs.push(lyrid);}		
+	    	} else {
+	    		var idx = checkedLayerIDs.indexOf(lyrid);
+	    		if(idx > -1){checkedLayerIDs.splice(idx,1);}
+	    	}
+	    	
+	    	context.hoot().model.layers.setCheckedLayers(checkedLayerIDs);
+	    }
+	    
+	    
 	    // Toggle children on click.
 	    // If no children, consider it a dataset!
 	    function click(d) {
@@ -310,7 +334,11 @@ Hoot.control.utilities.folder = function(context) {
 	    
 	    function rectClass(d) {
 	    	if(selectMode){
-	    		return d._children ? "more" : "flat";
+	    		if(d.type=='dataset'){
+	    			return checkedLayerIDs.indexOf(d.id.toString()) > -1 ? "sel" : "flat";
+	    		} else {
+	    			return d._children ? "more" : "flat";
+	    		}
 	    	} else {
 	    		return d.selected ? "sel" : d._children ? "more" : "flat";
 	    	}
@@ -325,12 +353,7 @@ Hoot.control.utilities.folder = function(context) {
     	hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
         var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
         
-        var d_form = [/*{
-        	label: 'Path',
-        	placeholder: 'root',
-        	type: 'PathName',
-        	combobox3:folderList 
-        },*/ {
+        var d_form = [{
         	label: 'Folder Name',
         	placeholder:'',
         	type:'NewFolderName'

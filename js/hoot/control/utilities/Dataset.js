@@ -188,6 +188,132 @@ Hoot.control.utilities.dataset = function(context) {
         	 }
          }   
 	};
+
+	hoot_control_utilities_dataset.bulkModifyContainer = function(datasets) {
+		hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
+	    var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+	    var folderId = 0;
+	    var placeholder = 'root';
+		    
+		 var d_form = [{
+         	label: 'Path',
+         	type: 'pathname',
+         	placeholder:placeholder,
+         	combobox:folderList
+         },
+         {
+         	label: 'New Folder Name (leave blank otherwise)',
+         	type: 'newfoldername',
+         	placeholder:''
+         }];
+		 
+		 var modalbg = d3.select('body')
+	     	.append('div')
+	        .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+        var ingestDiv = modalbg.append('div')
+            .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
+        var _form = ingestDiv.append('form');
+        _form.classed('round space-bottom1 importableLayer', true)
+            .append('div')
+            .classed('big pad1y keyline-bottom space-bottom2', true)
+            .append('h4')
+            .text('Move Datasets')
+            .append('div')
+            .classed('fr _icon x point', true)
+            .on('click', function () {
+                modalbg.remove();
+            });
+        var fieldset = _form.append('fieldset')
+            .selectAll('.form-field')
+            .data(d_form);
+	    fieldset.enter()
+            .append('div')
+            .classed('form-field fill-white small keyline-all round space-bottom1', true)
+            .html(function (d) {
+                	return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + d.label; // + '</label><input type="text" class="reset ' + field.type + '" />';
+                });
+        fieldset.append('div')
+            .classed('contain', true)
+            .append('input')
+            .attr('type', 'text')
+            .attr('placeholder', function (field) {return field.placeholder;})
+            .attr('class', function (field) {return 'reset ' + field.type;})
+            .select(function(a){
+                if (a.combobox){
+                    var comboPathName = d3.combobox()
+                        .data(_.map(a.combobox, function (n) {
+                            return {
+                            	value: n.folderPath,
+                                title: n.folderPath
+                            };
+                        }));
+
+                    comboPathName.data().sort(function(a,b){
+            		  	var textA = a.value.toUpperCase();
+            		  	var textB=b.value.toUpperCase();
+            		  	return(textA<textB)?-1 : (textA>textB)?1:0;
+            		  });
+                    
+                    comboPathName.data().unshift({value:'root',title:0});
+                    
+                    d3.select(this)
+                    	.style('width', '100%')
+                    	.call(comboPathName);
+                    
+                    d3.select(this).attr('readonly',true); 
+                }
+            });
+
+        var submitExp = ingestDiv.append('div')
+	        .classed('form-field col12 center ', true);
+	         submitExp.append('span')
+	        .classed('round strong big loud dark center col10 margin1 point', true)
+	        .classed('inline row1 fl col10 pad1y', true)
+	        .text('Update')
+	        .on('click', function () {
+	        	//TODO: ADD WARNING MESSAGE, REQUIRE CONFIRMATION
+
+	        	var pathname = _form.select('.pathname').value();
+	            if(pathname==''){pathname=_form.select('.pathname').attr('placeholder');}
+                if(pathname=='root'){pathname='';}
+                var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+                 
+                //Add folder if necessary
+                var newfoldername = _form.select('.newfoldername').value();
+     			resp = context.hoot().checkForUnallowedChar(newfoldername);
+	            if(resp != true){
+	            	alert(resp);
+	             	return;
+	            }
+	            
+	            var folderData = {};
+                 folderData.folderName = newfoldername;
+                 folderData.parentId = pathId;
+                 hoot.model.folders.addFolder(folderData,function(a){
+                	 //refresh when done
+                	 context.hoot().model.layers.refresh(function(){
+                	 
+                		 //Now that our folder has been created, loop through datasets and update the link 
+                		 _.each(datasets,function(dataset){
+                			 var lyrId = parseInt(dataset),
+                			 outputname = hoot.model.layers.getNameBymapId(lyrId);
+                			 if(outputname==null){return;}
+                			 
+                			 var link = {};
+                			 link.folderId = a;
+                			 link.mapId = lyrId;
+                			 link.updateType="update";
+	                         hoot.model.folders.updateLink(link);
+	                         link = {}; 
+                		 });
+                		 
+                		 modalbg.remove();	
+                	 });
+                 }); 
+	            });
+
+	        return modalbg;
+		};	
 	
 	 hoot_control_utilities_dataset.modifyNameContainer = function(dataset) {
 			hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());

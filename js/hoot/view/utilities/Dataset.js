@@ -39,7 +39,7 @@ Hoot.view.utilities.dataset = function(context)
                 
                 var items = [
 	         	    {title:'Refresh',icon:'redo',action:'refresh();'},
-	         	    {title:'Select Multiple Datasets',icon:'layers',action:'select();'}
+	         	    {title:'Select Multiple Datasets',icon:'layers',action:'select(true);'}
 	         	  ];
 	             
 	             d3.select('html').append('div').attr('class', 'dataset-options-menu');
@@ -95,21 +95,23 @@ Hoot.view.utilities.dataset = function(context)
 	        .text('Cancel')
 	        .classed('dark fr button loud pad2x big dataset-option', true)
 	        .on('click', function () {
-	        	d3.select('#optionsdiv').classed('hidden',true);
+	        	select(false);
+	        	//d3.select('#optionsdiv').classed('hidden',true);
 	        });
         subfieldset.append('a')
 	        .attr('href', '#')
 	        .text('Delete')
 	        .classed('dark fr button loud pad2x big dataset-option', true)
 	        .on('click', function () {
-	            alert("this is under construction");
+	            //get list of checked datasets
+	        	
 	        });
         subfieldset.append('a')
 	        .attr('href', '#')
 	        .text('Move')
 	        .classed('dark fr button loud pad2x big dataset-option', true)
 	        .on('click', function () {
-	        	alert("this is under construction");
+	        	modifyName = context.hoot().control.utilities.dataset.bulkModifyContainer(context.hoot().model.layers.getCheckedLayers());
 	        });        	
     };
     
@@ -123,12 +125,12 @@ Hoot.view.utilities.dataset = function(context)
         });
     };
     
-    function select(){
-    	d3.select('#optionsdiv').classed('hidden',false);
+    function select(mode){
+    	d3.select('#optionsdiv').classed('hidden',!mode);
     	var container = d3.select("#datasettable");
     	var _svg = container.select('svg');
 		if(!_svg.empty()){_svg.remove();}
-		context.hoot().control.utilities.folder.createFolderTree(container,true);
+		context.hoot().control.utilities.folder.createFolderTree(container,mode);
     };
         
     hoot_view_utilities_dataset.deleteDataset = function(d,container){
