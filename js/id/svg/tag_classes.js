@@ -40,10 +40,10 @@ iD.svg.TagClasses = function() {
             // For hoot enity id make sure id and origid exist first
             if(entity.id && entity.origid){
                 var lyrid = entity.id.replace(entity.origid+"_","");
-                classes += ' tag-hoot';
 
                 // For merged datasets, assign color class of source layer
                 var lyr = hoot.model.conflicts.getFeatureLayer(entity);
+                classes += ' tag-hoot tag-hoot-' + lyr.name;
                 if (lyr && lyr.merged) {
                     var id;
                     switch(parseInt(t['hoot:status'])) {
