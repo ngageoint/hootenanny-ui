@@ -28,24 +28,107 @@ Hoot.view.utilities.dataset = function(context)
 	        .on('click', function () {
 	        	context.hoot().control.utilities.folder.importFolderContainer(0);
 	        });
-        fieldDiv.append('a')
-	        .attr('href', '#')
-	        .text('')
-	        .classed('dark fr button loud pad2x big _icon refresh', true)
-	        .style('margin-right','5px')
-	        .on('click', function () {
-	            hoot.model.folders.refresh(function () {
-	            	hoot.model.layers.refresh(function(){
-	            		hoot.model.folders.refreshLinks(function(){
-	            			context.hoot().model.import.updateTrees();
-	            		})        		
-	            	});
-	            });
-	        });
+        fieldDiv.append('div').style({'display':'inline-block','margin-right':'5px'})
+        	.classed('dark fr button big dark loud big',true)
+        	.append('button')
+        	.attr('class', 'options loud dark big pad2x col12')
+            .attr('tabindex', -1)
+            .on('click', function(){
+            	d3.event.stopPropagation();
+                d3.event.preventDefault();
+                
+                var items = [
+	         	    {title:'Refresh',icon:'redo',action:'refresh();'},
+	         	    {title:'Select Multiple Datasets',icon:'layers',action:'select();'}
+	         	  ];
+	             
+	             d3.select('html').append('div').attr('class', 'dataset-options-menu');
+	                    
+	             var menuItem =  d3.selectAll('.dataset-options-menu')
+	         		.html('')
+	                 .append('ul')
+	                 .selectAll('li')
+	                 .data(items).enter()
+	                 .append('li')
+	                 .attr('class',function(item){return item.icon + ' dataset-option';})
+	                 .on('click' , function(item) { 
+	                 	eval(item.action);
+	                 	d3.select('.dataset-options-menu').remove();
+	                   });
+	             
+	             menuItem.append('span').attr("class",function(item){return item.icon + " icon icon-pre-text"});
+	             menuItem.append('span').text(function(item) { return item.title; });
+	                	
+	             d3.select('.dataset-options-menu').style('display', 'none');
+	             
+	             // show the context menu
+	             d3.select('.dataset-options-menu')
+	             	.style('left', function(){return d3.select('button.options').property('offsetLeft')+'px'||'0px'})
+	                 .style('top', function(){return (185 + d3.select('button.options').property('offsetTop'))+'px'||'0px'})
+	                 .style('display', 'block');
+	
+	             //close menu
+	             var firstOpen = true;
+	             d3.select('html').on('click.dataset-options-menu',function(){
+	                 if(firstOpen){
+	                    firstOpen=false;     
+	                 } else {
+	                     d3.select('.dataset-options-menu').style('display', 'none');
+	                 }
+	             });
+            	})
+            .append('span')
+	        .attr('class', 'label').style('font-size','14px')
+	        .text('Options');
+
         fieldset = form.append('div')
         .attr('id','datasettable')
             .classed('col12 fill-white small strong row10 overflow', true)
             .call(hoot_view_utilities_dataset.populateDatasetsSVG);
+        
+        subfieldset = form.append('div')
+        	.attr('id','optionsdiv')
+        	.classed('pad1y pad2x keyline-bottom col12 hidden',true);
+        
+        subfieldset.append('a')
+	        .attr('href', '#')
+	        .text('Cancel')
+	        .classed('dark fr button loud pad2x big dataset-option', true)
+	        .on('click', function () {
+	        	d3.select('#optionsdiv').classed('hidden',true);
+	        });
+        subfieldset.append('a')
+	        .attr('href', '#')
+	        .text('Delete')
+	        .classed('dark fr button loud pad2x big dataset-option', true)
+	        .on('click', function () {
+	            alert("this is under construction");
+	        });
+        subfieldset.append('a')
+	        .attr('href', '#')
+	        .text('Move')
+	        .classed('dark fr button loud pad2x big dataset-option', true)
+	        .on('click', function () {
+	        	alert("this is under construction");
+	        });        	
+    };
+    
+    function refresh(){
+    	hoot.model.folders.refresh(function () {
+        	hoot.model.layers.refresh(function(){
+        		hoot.model.folders.refreshLinks(function(){
+        			context.hoot().model.import.updateTrees();
+        		})        		
+        	});
+        });
+    };
+    
+    function select(){
+    	d3.select('#optionsdiv').classed('hidden',false);
+    	var container = d3.select("#datasettable");
+    	var _svg = container.select('svg');
+		if(!_svg.empty()){_svg.remove();}
+		context.hoot().control.utilities.folder.createFolderTree(container,true);
     };
         
     hoot_view_utilities_dataset.deleteDataset = function(d,container){
