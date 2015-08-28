@@ -13,6 +13,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     var activeEntity;
     var heartBeatTimer;
     var isProcessingReview = false;
+    var getFeatureTimer;
 
     Conflict.activeEntity = function(){return activeEntity;};
     Conflict.activeConflict = function(){return activeConflict;};
@@ -57,6 +58,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
             map.centerZoom(extent.center(), (zoom));
         }
+
         var jumpFor = function (nReviewed, itemCnt) {
             // allow other to use
             //resetReviewStatus();
@@ -135,7 +137,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         };
         var jumpTo = function (nReviewed, itemCnt, direction, jumptoidx) {
-            
+
             if(heartBeatTimer){
                 clearInterval(heartBeatTimer);
             }
@@ -231,7 +233,8 @@ Hoot.control.conflicts = function (context, sidebar) {
             var max = 4;
             var calls = 0;
             var loadedMissing = false;
-            var getFeatureTimer = setInterval(function () {
+            clearInterval(getFeatureTimer);
+            getFeatureTimer = setInterval(function () {
                 if (calls < max) {
                     getFeature();
                     calls++;
@@ -244,13 +247,18 @@ Hoot.control.conflicts = function (context, sidebar) {
                         //console.log(entities);
                         //loadedMissing = true;
                         //calls = 0;
-                        feature = entities.data.filter(function(d) {
-                            return d.id === idid;
-                        }).pop();
-                        againstFeature = entities.data.filter(function(d) {
-                            return d.id === idid2;
-                        }).pop();
-                        getFeatureStopTimer();
+                        if (entities.data.length) {
+                            feature = entities.data.filter(function(d) {
+                                return d.id === idid;
+                            }).pop();
+                            againstFeature = entities.data.filter(function(d) {
+                                return d.id === idid2;
+                            }).pop();
+                            getFeatureStopTimer();
+                        } else {
+                            window.console.error(entities);
+                        }
+
                     });
                 }
             }, 500);
@@ -439,12 +447,12 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         var done = false;
         function acceptAll() {
-            Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {  
+            Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
                 var doProceed = true;
                     //if only locked by self
                 if(resp.count > 1) {
 
-                    var r = confirm("Reviews are being reviewed by other users." + 
+                    var r = confirm("Reviews are being reviewed by other users." +
                     " Modified features will be saved but will not be marked as resolved. Do you want to continue? ");
                     doProceed = r;
                 }
@@ -466,20 +474,20 @@ Hoot.control.conflicts = function (context, sidebar) {
                     event.acceptAll(data);
                 }
             });
- 
+
 
         }
 
 
         function discardAll() {
-                    
 
-            Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {  
+
+            Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
                 var doProceed = true;
                     //if only locked by self
                 if(resp.count > 1) {
 
-                    var r = confirm("Reviews are being reviewed by other users." + 
+                    var r = confirm("Reviews are being reviewed by other users." +
                     " Modified features will be saved but will not be marked as resolved. Do you want to continue? ");
                     doProceed = r;
                 }
@@ -517,7 +525,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
          var statusCheck = function () {
             var numLeft = reviewsRemaining('count');
-            if (!numLeft) {     
+            if (!numLeft) {
                 acceptAll();
                 return false;
             }
@@ -706,6 +714,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             reviewMarkData.reviewedItems = reviewedItems;
 
 
+
             var curReviewAgainstUUID = item.itemToReviewAgainst.uuid;
             var curReviewUUID =  item.uuid;
             var items = [item];
@@ -739,13 +748,13 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                         var newAgainstTags = newAgainstList.join(';');
                         newTags['hoot:review:uuid'] = newAgainstTags;
-				    } else {
-				                newTags = _.omit(newTags, function (value, key) {
-				                    return key.match(/hoot:review/g);
-				                });
-				    }
+                    } else {
+                                newTags = _.omit(newTags, function (value, key) {
+                                    return key.match(/hoot:review/g);
+                                });
+                    }
 
-		        }
+                }
 
                 context.perform(iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
             });
@@ -767,7 +776,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                     var multiItemInfo = getMultiReviewItemInfo();
                     jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
-                    
+
                 });
             }
 
