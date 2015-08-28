@@ -141,6 +141,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             if(heartBeatTimer){
                 clearInterval(heartBeatTimer);
             }
+            d3.select('div.tag-table').remove();
 
             entity = reviewItems[index - 1];
             var reviewData = {};
