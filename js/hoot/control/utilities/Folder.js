@@ -127,7 +127,10 @@ Hoot.control.utilities.folder = function(context) {
 		    	  var dy=5.5+(11*d.depth);
 		    	  return "translate("+ dy +",-11)"; })
 		      .html(function(d){
-		    	  if (d.type == 'folder'){return '<i class="_icon folder"></i>'}
+		    	  if (d.type == 'folder'){
+		    		  if(d.state=="open"){return '<i class="_icon openfolder"></i>'}
+		    		  else{return '<i class="_icon folder"></i>'}
+		    	  }
 		    	  if (d.type == 'dataset'){return '<i class="_icon data"></i>'}
 		      });
 	      
@@ -266,6 +269,7 @@ Hoot.control.utilities.folder = function(context) {
 	    	  if(d.type=='folder' && updateOpenFolders){
 	    		  context.hoot().model.folders.setOpenFolders(d.id,false);
 	    		  d.state='closed';
+	    		  d3.select(this.parentNode).select('i').classed('folder',true).classed('openfolder',false);
 	    	  }
 	      } else {
 	    	  //folder opening
@@ -276,6 +280,7 @@ Hoot.control.utilities.folder = function(context) {
 	    	  if(d.type=='folder' && updateOpenFolders){
 	    		  context.hoot().model.folders.setOpenFolders(d.id,true);
 	    		  d.state='open';
+	    		  d3.select(this.parentNode).select('i').classed('folder',false).classed('openfolder',true);
 	    	  }
 	      }
 

@@ -228,23 +228,25 @@ input.round        { border-radius:4px; }
 .rcon.dark.folder:after, ._icon.dark.folder:before             { background-position:-480px -60px; }
 .rcon.dark.big.folder:after, ._icon.dark.big.folder:before     { background-position:-480px -80px; }
 
-.rcon.up:after, ._icon.up:before                                 { background-position:-520px 0; }
-.rcon.big.up:after, ._icon.big.up:before                         { background-position:-510px 10px; }
-.rcon.dark.up:after, ._icon.dark.up:before                       { background-position:-520px -60px; }
-.rcon.dark.big.up:after, ._icon.dark.big.up:before               { background-position:-520px -80px; }
+.rcon.up:after, ._icon.up:before                             	 { background-position:-520px 0; }
+.rcon.big.up:after, ._icon.big.up:before                       { background-position:-510px 10px; }
+.rcon.dark.up:after, ._icon.dark.up:before                     { background-position:-520px -60px; }
+.rcon.dark.big.up:after, ._icon.dark.big.up:before             { background-position:-520px -80px; }
 
- .rcon.disk:after, ._icon.disk:before                           { background-position:-560px 0; }
- .rcon.big.disk:after, ._icon.big.disk:before                   { background-position:-560px -20px; }
- .rcon.dark.disk:after, ._icon.dark.disk:before                 { background-position:-560px -60px; }
- .rcon.dark.big.disk:after, ._icon.dark.big.disk:before         { background-position:-560px -80px; }
+ .rcon.disk:after, ._icon.disk:before                          { background-position:-560px 0; }
+ .rcon.big.disk:after, ._icon.big.disk:before                  { background-position:-560px -20px; }
+ .rcon.dark.disk:after, ._icon.dark.disk:before                { background-position:-560px -60px; }
+ .rcon.dark.big.disk:after, ._icon.dark.big.disk:before        { background-position:-560px -80px; }
 
- .rcon.openeye:after, ._icon.openeye:before                     { background-position:-520px -30px; }
- .rcon.closedeye:after, ._icon.closedeye:before  		            { background-position:-480px -30px; }
+ .rcon.openeye:after, ._icon.openeye:before                    { background-position:-520px -30px; }
+ .rcon.closedeye:after, ._icon.closedeye:before  		           { background-position:-480px -30px; }
 
- .rcon.export:after, ._icon.export:before                	      { background-position:-330px 0px; }
+ .rcon.export:after, ._icon.export:before                	     { background-position:-330px 0px; }
 
-    .rcon.big.refresh:after, ._icon.big.refresh:before						 { background-position:-205px -80px; }
- .rcon.big.blank:after, ._icon.big.blank:before                       { background-position:-250px 15px; }
+ .rcon.big.refresh:after, ._icon.big.refresh:before						 { background-position:-205px -80px; }
+ .rcon.big.blank:after, ._icon.big.blank:before                { background-position:-250px 15px; }
+ 
+ .rcon.openfolder:after, ._icon.openfolder:before							 { background-position:-84px 0px; }
 
 .palette .active:before {
   position:relative;
