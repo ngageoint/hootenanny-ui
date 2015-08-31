@@ -301,13 +301,15 @@ Hoot.control.utilities.dataset = function(context) {
                 			 
                 			 var link = {};
                 			 link.folderId = a;
-                			 link.mapId = lyrId;
+                			 link.mapid = lyrId;
                 			 link.updateType="update";
 	                         hoot.model.folders.updateLink(link);
 	                         link = {}; 
                 		 });
                 		 
                 		 modalbg.remove();	
+                		 d3.select('#optionsdiv').classed('hidden',true);
+                		 
                 	 });
                  }); 
 	            });

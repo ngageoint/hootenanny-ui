@@ -298,7 +298,7 @@ Hoot.control.utilities.folder = function(context) {
 	      d3.select(this).classed("selected",true);
 	      var updateOpenFolders = !d3.select("#datasettable").selectAll('.selected').empty();
 	      
-	      if (d.children) {
+	      if (d.children || typeof(d.children)=="object") {
 	    	  //folder closing
 	    	  d._children = d.children;
 	    	  d.children = null;
@@ -368,7 +368,7 @@ Hoot.control.utilities.folder = function(context) {
             .append('div')
             .classed('big pad1y keyline-bottom space-bottom2', true)
             .append('h4')
-            .text('Add Data')
+            .text('Add Folder')
             .append('div')
             .classed('fr _icon x point', true)
             .on('click', function () {
