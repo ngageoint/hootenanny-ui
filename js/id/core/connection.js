@@ -443,7 +443,7 @@ iD.Connection = function(context) {
         _.each(changesArr, function(a, b) {
             var changemapId = b;
             var changes = a;
-            
+
             oauth.xhr({
                 method: 'PUT',
                 path: '/api/0.6/changeset/create?mapId=' + changemapId,
@@ -557,7 +557,7 @@ iD.Connection = function(context) {
         if(loadedData[mapid]){
             loadedData[mapid].vis = false;
             var name = loadedData[mapid].name;
-            d3.selectAll('.tag-hoot-' + mapid.toString()).remove();
+            d3.selectAll('.tag-hoot-' + name).remove();
             _.each(loadedTiles, function (a, b) {
                 if (b.match(',' + mapid.toString() + '$')) {
                     delete loadedTiles[b];

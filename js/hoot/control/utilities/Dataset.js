@@ -812,10 +812,10 @@ Hoot.control.utilities.dataset = function(context) {
                            			var expanded = !JSON.parse(d3.select(this).attr('expanded'));
                            			d3.select(this).attr('expanded',expanded);
                            			if(expanded){
-                           				d3.select('#importprogdiv').style('max-height',undefined);
+                           				d3.select('#importprogdiv').style('max-height',undefined).style('min-height','48px');
                            				d3.select(this).text('Show Less');
                            			} else {
-                           				d3.select('#importprogdiv').style('max-height','24px');
+                           				d3.select('#importprogdiv').style('min-height',undefined).style('max-height','24px');
                            				d3.select(this).text('Show More');
                            			}
                            		});

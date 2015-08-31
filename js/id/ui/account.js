@@ -8,7 +8,7 @@ iD.ui.Account = function(context) {
             return;
         }
 
-        connection.userDetails(function(err, details) {
+/*        connection.userDetails(function(err, details) {
             var userLink = selection.select('#userLink'),
                 logoutLink = selection.select('#logoutLink');
 
@@ -48,7 +48,7 @@ iD.ui.Account = function(context) {
                     d3.event.preventDefault();
                     connection.logout();
                 });
-        });
+        });*/
     }
 
     return function(selection) {

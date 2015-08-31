@@ -11,6 +11,8 @@ iD.ui.Coordinates = function(context){
     	var direction = new Array(' ',' ');
     	var hundreths = new Array(0.0,0.0);
     	
+    	var leadingZero = new Array('','');
+    	
     	var LatCardinal = ((lat>0)?"N":"S");
     	var LngCardinal = ((lng>0)?"E":"W");
     	
@@ -28,11 +30,13 @@ iD.ui.Coordinates = function(context){
     	
     	seconds[0] = parseInt(lat_leftover);
     	hundreths[0] = parseInt((lat_leftover-seconds[0])*100);
+    	if(hundreths[0]<10){leadingZero[0]="0";}
     	
     	seconds[1] = parseInt(lng_leftover);
     	hundreths[1] = parseInt((lng_leftover-seconds[1])*100);
-    	
-    	return degrees[0]+'°' + minutes[0] + "'" + seconds[0] + '.' + hundreths[0] + '" ' + LatCardinal + "  " + degrees[1]+ '°' + minutes[1] + "'" + seconds[1] + '.' + hundreths[1] + '" ' + LngCardinal;
+    	if(hundreths[1]<10){leadingZero[1]="0";}
+    	    	
+    	return degrees[0]+'°' + minutes[0] + "'" + seconds[0] + '.' + leadingZero[0] + hundreths[0] + '" ' + LatCardinal + "  " + degrees[1]+ '°' + minutes[1] + "'" + seconds[1] + '.' + leadingZero[1] + hundreths[1] + '" ' + LngCardinal;
 	}
 	
 	function update(selection,coords) {
