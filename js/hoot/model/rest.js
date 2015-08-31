@@ -702,21 +702,6 @@ rest.ReviewMarkItem = function(data, callback)
                 {
                   alert("Review Mark All failed.");
                 }
-                else
-                {
-                  var changesetResponseDoc = response.responseXML;
-                  //console.log(changesetResponseDoc);
-				  /*var numReviewedItemsFromServer = 
-					changesetResponseDoc
-					  .evaluate(
-					    "//osm/diffResult/@numReviewedItems",
-						changesetResponseDoc,
-					    changesetResponseDoc.createNSResolver(changesetResponseDoc),
-					    XPathResult.NUMBER_TYPE,
-					    null)
-					  .numberValue;
-					  console.log(numReviewedItemsFromServer + " items marked as reviewed.");*/
-                }
                 callback(error, response);
             });
 };

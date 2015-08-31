@@ -712,19 +712,22 @@ Hoot.control.conflicts = function (context, sidebar) {
             
             var hasChanges = context.history().hasChanges();
             if (hasChanges) {
-              //console.log("has changes");
               var changes = context.changes(iD.actions.DiscardTags(context.history().difference()));
               var changesetXml = JXON.stringify(context.connection().osmChangeJXON('-1', changes));
               reviewMarkData.reviewedItemsChangeset = changesetXml;
-              //console.log(reviewMarkData.reviewedItemsChangeset);
-                Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
-                    var multiItemInfo = getMultiReviewItemInfo();
-                        jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
-                        
-                        context.flush();
-                        //context.history().clearSaved();
-            			context.enter(iD.modes.Browse(context));
-                  });
+                Hoot.model.REST('ReviewMarkItem', reviewMarkData, function (error, response) 
+                {
+                  var multiItemInfo = getMultiReviewItemInfo();
+                  jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+                      
+                  var xmlParser = new DOMParser();
+                  var changesetDoc = 
+                	xmlParser.parseFromString(response.changesetUploadResponse, "text/xml");
+                  context.hoot().model.conflicts.updateDescendent(changesetDoc, response.mapId);
+                  context.flush();
+                  //context.history().clearSaved();
+                  context.enter(iD.modes.Browse(context));
+                });
             } 
             else {
                 Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
