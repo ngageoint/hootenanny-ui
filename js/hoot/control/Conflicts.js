@@ -15,6 +15,9 @@ Hoot.control.conflicts = function (context, sidebar) {
     var isProcessingReview = false;
     var getFeatureTimer;
 
+    var previousReviewItem = null;
+    var currentReviewItem = null;
+
     Conflict.activeEntity = function(){return activeEntity;};
     Conflict.activeConflict = function(){return activeConflict;};
     Conflict.activeConflictReviewItem = function(){return activeConflictReviewItem;};
@@ -33,14 +36,17 @@ Hoot.control.conflicts = function (context, sidebar) {
     };
     Conflict.highlightLayerTable = null;
     Conflict.startReview = function (data) {
-        var entity;
         var mapid = data.mapId;
-        var reviewItems = data.reviewableItems;
-        var reviewCount = reviewItems.length;
-        var index = 0;
-        var lastIndex = 0;
-        Conflict.reviews = data;
+        var reviewCount = 0;
+        Conflict.reviews;
 
+        function getCurrentReviewItem() {
+            return currentReviewItem;
+        }
+
+        function setCurrentReviewItem(itm) {
+            currentReviewItem = itm;
+        }
 
         function panToBounds(bounds) {
             function boundsToExtent() {
@@ -60,167 +66,91 @@ Hoot.control.conflicts = function (context, sidebar) {
         }
 
         var jumpFor = function (nReviewed, itemCnt) {
-            // allow other to use
-            //resetReviewStatus();
-            lastIndex = index;
-            index++;
-            if (index === (reviewCount + 1)) {
-                index = 1;
-            }
-            // we have entity with same id but different against
-
-            jumpTo(nReviewed, itemCnt, 'forward');
+            jumpTo('forward');
         };
         var jumpBack = function (nReviewed, itemCnt) {
-            // allow other to use
-            //resetReviewStatus();
-            lastIndex = index;
-             index--;
-             if (index === 0) {
-                 index = reviewCount;
-             }
-            //updateMeta(index);
-            // we have entity with same id but different against
-
-            jumpTo(nReviewed, itemCnt, 'backward');
+            jumpTo('backward');
        };
 
         // send heartbeat to service so it know the session still exists and target is
         // still being reviewed.
         var updateReviewStatus = function(callback) {
-            var targetEntity = reviewItems[index - 1];
-            var heartBeatData = {};
-            heartBeatData.mapId = mapid;
-            heartBeatData.reviewid = targetEntity.uuid;
-            heartBeatData.reviewAgainstUuid = targetEntity.itemToReviewAgainst.uuid;
+            var targetEntity = getCurrentReviewItem();
+            if(targetEntity){
+                
+                var heartBeatData = {};
+                heartBeatData.mapId = mapid;
+                heartBeatData.reviewid = targetEntity.uuid;
+                heartBeatData.reviewAgainstUuid = targetEntity.itemToReviewAgainst.uuid;
 
-            Hoot.model.REST('reviewUpdateStatus', heartBeatData, function (error, response) {
+                Hoot.model.REST('reviewUpdateStatus', heartBeatData, function (error, response) {
 
-                if(error){
-                    clearInterval(heartBeatTimer);
-                    alert('failed to update review status.');
-                       return;
-                }
-                if(callback){
-                    callback(response);
-                }
-            });
-        };
-
-        var resetReviewStatus = function(callback) {
-
-            if(lastIndex > 0){
-
-                var targetEntity = reviewItems[lastIndex - 1];
-                var resetData = {};
-                resetData.mapId = mapid;
-                resetData.reviewid = targetEntity.uuid;
-                resetData.reviewAgainstUuid = targetEntity.itemToReviewAgainst.uuid;
-
-                Hoot.model.REST('reviewResetStatus', resetData, function (error, response) {
                     if(error){
-                       alert('failed reset review status.');
-
+                        clearInterval(heartBeatTimer);
+                        alert('failed to update review status.');
+                           return;
                     }
                     if(callback){
-                        callback(error, response);
+                        callback(response);
                     }
-
-
                 });
-            } else {
-
-                if(callback){
-                        callback();
-                    }
             }
-
+                
         };
-        var jumpTo = function (nReviewed, itemCnt, direction, jumptoidx) {
 
-            if(heartBeatTimer){
-                clearInterval(heartBeatTimer);
-            }
-            d3.select('div.tag-table').remove();
 
-            entity = reviewItems[index - 1];
-            var reviewData = {};
+        var jumpTo = function(direction) {
+            var targetReviewItem = getCurrentReviewItem();
+            // Handle first review we assume first when do not have currentReviewItem
+            if(!targetReviewItem) {
+                var reviewData = {};
+                reviewData.direction = direction;
+                reviewData.mapId = mapid;
+                
+            } else {
+                previousReviewItem = targetReviewItem;
+                var reviewData = {};
+                reviewData.direction = direction;
+                reviewData.mapId = mapid;
 
-            // nReviewed is undefined for very first item
-            reviewData.offset = -1;
-            var offsetIdx = lastIndex;
-            if(jumptoidx !== undefined) {
-                offsetIdx = jumptoidx;
-            }
-            if(nReviewed !== undefined && index > 1){
-                reviewData.offset = offsetIdx-1;
-                var lastEnt = reviewItems[offsetIdx - 1];
-                reviewData.uuid = lastEnt.uuid;
-                reviewData.reviewAgainstUuid = lastEnt.itemToReviewAgainst.uuid;
+                reviewData.offset = targetReviewItem.reviewId;
+
             }
 
-            reviewData.direction = direction;
-
-            reviewData.mapId = mapid;
-
-            resetReviewStatus(function(err, resp){
-                if(err)
-                {
+            Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
+                if(error){
                     isProcessingReview = false;
+                    alert('Failed get Next Item.');
                     return;
                 }
-
-                Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
-
-                    if(response.status == 'success') {
-                        var nextEntity = null;
-                        for(var i=0; i<reviewItems.length; i++){
-                            var itm = reviewItems[i];
-                            if(itm.uuid == response.nextitemid){
-                                var isAgainstMatch = true
-                                if(response.nextagainstitemid ) {
-                                    isAgainstMatch = (itm.itemToReviewAgainst.uuid == response.nextagainstitemid);
-                                }
-                                if(isAgainstMatch === true){
-                                    nextEntity = itm;
-                                    index = i+1;
-                                    break;
-                                }
-
-                            }
-                        }
-                        if(nextEntity) {
-                            updateReviewStatus(function(response){
-                                var lockPeriod = 150000;
-                                // we will refresh lock at half of service lock length
-                                if(response.locktime){
-                                    lockPeriod = (1*response.locktime)/2;
-                                }
-
-                                heartBeatTimer = setInterval(function() {
-                                    updateReviewStatus();
-                                }, lockPeriod);
-
-                                updateMeta(nReviewed, itemCnt);
-                                activeConflict = reviewItemID(nextEntity);
-                                activeConflictReviewItem = reviewAgainstID(nextEntity);
-                                panToBounds(nextEntity.displayBounds);
-                                activeEntity = nextEntity;
-                                highlightLayer(nextEntity);
-
-                            });
-                        }
-
-                    } else {
-                        alert("All review items are being reviewed by other users!")
+                if(response.status == 'success'){
+                    Conflict.reviews = response;
+                    
+                    setCurrentReviewItem(response.reviewItem);
+                    var lockPeriod = 150000;
+                    // we will refresh lock at half of service lock length
+                    if(response.locktime){
+                        lockPeriod = (1*response.locktime)/2;
                     }
+                    // ping so till done so we keep the lock alive
+                    heartBeatTimer = setInterval(function() {
+                        updateReviewStatus();
+                    }, lockPeriod);
 
-                    isProcessingReview = false;
-                });
-            });
-
-
-        };
+                    var newReviewItem = getCurrentReviewItem();
+                    nReviewed = response.reviewedcnt;
+                    itemCnt = response.total;
+                    updateMeta(nReviewed, itemCnt);
+                    activeConflict = reviewItemID(newReviewItem);
+                    activeConflictReviewItem = reviewAgainstID(newReviewItem);
+                    panToBounds(newReviewItem.displayBounds);
+                    activeEntity = newReviewItem;
+                    highlightLayer(newReviewItem);
+                } else {
+                    alert("All review items are being reviewed by other users!")
+                }
+            });                            
+        }
 
         var resetStyles = function () {
             d3.selectAll('path').classed('activeReviewFeature', false);
@@ -448,7 +378,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         var done = false;
         function acceptAll() {
-            Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
+ /*           Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
                 var doProceed = true;
                     //if only locked by self
                 if(resp.count > 1) {
@@ -463,11 +393,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     done=true;
                     resetStyles();
                     d3.select('div.tag-table').remove();
-                    var remaining = reviewsRemaining();
-                    _.each(remaining, function (item) {
-                        item.retain = true;
-                        item.reviewed = true;
-                    });
+ 
                     // finalize
                     metaHead.text('Saving Conflicts.....');
                     Conflict.reviewComplete();
@@ -476,13 +402,13 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
             });
 
-
+*/
         }
 
 
         function discardAll() {
 
-
+/*
             Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
                 var doProceed = true;
                     //if only locked by self
@@ -501,70 +427,25 @@ Hoot.control.conflicts = function (context, sidebar) {
                     metaHead.text('Discarding Conflicts.....');
                     event.discardAll(data);
                 }
-            });
+            });*/
 
         }
 
 
-       /*
-       var statusCheck = function () {
-            var numLeft = reviewsRemaining('count');
-            if (!numLeft) {
-                //saveOptions();
-                //metaHead.text('All Conflicts Resolved!');
-
-                metaHead.text('Saving Conflicts.....');
-                Conflict.reviewComplete();
-                done=true;
-                acceptAll();
-                d3.select('.hootTags').remove();
-                event.acceptAll(data);
-                return false;
-            }
-            return true;
-        };*/
-
-         var statusCheck = function () {
-            var numLeft = reviewsRemaining('count');
-            if (!numLeft) {
-                acceptAll();
-                return false;
-            }
-            return true;
-        };
 
         function updateMeta(nReviewed, itemCnt) {
-            var numLeft = reviewsRemaining('count');
-
-            var cur_entity = reviewItems[index - 1];
-            var entity_stat = 'Unreviewed';
-            if(cur_entity.reviewed === true){
-                entity_stat = 'Reviewed and ';
-                if(cur_entity.retain === true){
-                    entity_stat += ' accepted';
-                } else if(cur_entity.retain === false){
-                    entity_stat += ' discarded';
-                }
-            }
-
+ 
+            entity_stat = 'unreviewed';
+            numLeft = itemCnt - nReviewed;
             var multiFeatureMsg = '';
             if(itemCnt > 1){
               multiFeatureMsg = ', One to many feature ( reviewed ' + (nReviewed) + ' of ' + itemCnt + ')';
             }
-            meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflict '+ index + ' of ' + reviewCount + ': ' + entity_stat +
+            meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflict  of ' + reviewCount + ': ' + entity_stat +
                 '  (Remaining conflicts: ' + numLeft +  multiFeatureMsg + ')</strong>');
         }
-        var reviewsRemaining = function (count) {
-            var features = _.filter(reviewItems, function (d) {
-                return !d.reviewed;
-            });
-            if (count) {
-                return features.length;
-            }
-            else {
-                return features;
-            }
-        };
+
+
         var vischeck = function(){
             var layers=context.hoot().model.layers.getLayers();
             var vis = _.filter(layers, function(d){return d.vis;});
@@ -573,74 +454,22 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         };
 
-        var getMultiReviewItemInfo = function() {
-            var nReviewed = 0;
-            var itemCnt = 0;
-            var iItem = 0;
-
-            var nextItem = reviewItems[index];
-            if(nextItem){
-                _.each(reviewItems, function(r){
-                    if(r.id === nextItem.id){
-                        itemCnt++;
-                    }
-                });
-                if(itemCnt > 1){
-                    _.all(reviewItems, function(r){
-
-                        if(r.id === nextItem.id){
-                            if(r.reviewed === true && iItem < index){
-                                nReviewed++;
-                            }
-                            if(iItem >= index){
-                                return false;
-                            }
-                        }
-                        iItem++;
-                        return true;
-                    });
-                }
-
-            }
-
-            var ret = {};
-            ret.nReviewed = nReviewed;
-            ret.itemCnt = itemCnt;
-
-           return ret;
-        };
-
 
         var traverseForward = function () {
             var vicheck = vischeck();
             if(!vicheck){return;}
-
-            var multiItemInfo = getMultiReviewItemInfo();
-
-            jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+            jumpFor();
         };
 
         var traverseBackward = function () {
             var vicheck = vischeck();
             if(!vicheck){return;}
-
-            var multiItemInfo = getMultiReviewItemInfo();
-            jumpBack(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+            jumpBack();
         };
 
 
 
-        var traverseTo = function (toIdx) {
-            lastIndex = index;
-            index = toIdx * 1;
-            var vicheck = vischeck();
-            if(!vicheck){return;}
-
-
-            var multiItemInfo = getMultiReviewItemInfo();
-            jumpTo(multiItemInfo.nReviewed, multiItemInfo.itemCnt, 'forward', index);
-        };
-
+ 
         var autoMerge = function() {
             //Overridden in highlightLayer
             mergeFeatures();
@@ -670,7 +499,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 isProcessingReview = false;
                 return;
             }
-            var item = reviewItems[index - 1];
+            var item = getCurrentReviewItem();
 
 
             var contains = item.reviewed;
@@ -689,11 +518,12 @@ Hoot.control.conflicts = function (context, sidebar) {
                 d3.select('div.tag-table').remove();
             }
 
-            var stat = statusCheck();
+            // if no more remaining then acceptall
+           /* var stat = statusCheck();
             if (!stat) {
                 isProcessingReview = false;
                 return;
-            }
+            }*/
 
             var reviewedItems = {};
             var reviewedItemsArr = [];
@@ -717,8 +547,7 @@ Hoot.control.conflicts = function (context, sidebar) {
               reviewMarkData.reviewedItemsChangeset = changesetXml;
                 Hoot.model.REST('ReviewMarkItem', reviewMarkData, function (error, response) 
                 {
-                  var multiItemInfo = getMultiReviewItemInfo();
-                  jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+                  jumpFor();
                       
                   var xmlParser = new DOMParser();
                   var changesetDoc = 
@@ -732,8 +561,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             else {
                 Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
 
-                    var multiItemInfo = getMultiReviewItemInfo();
-                    jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+                   jumpFor();
 
                 });
             }
@@ -774,86 +602,50 @@ Hoot.control.conflicts = function (context, sidebar) {
 
 
         confData.isDeleteEnabled = true;
-        if (!reviewCount) {
-            var txt;
-            if (reviewCount === 0) {
-                txt = 'There are 0 Conflicts!';
-            }
-            else {
-                txt = 'Fail Reviewing';
-            }
-            metaHead.text(txt);
-            reviewOptions = Review.selectAll('fieldset');
-            reviewOptions.append('div')
-                .classed('form-field pill col12', true);
-            reviewOptions.append('input')
-                .attr('type', 'submit')
-                .attr('value', 'Export Data')
-                .classed('fill-dark round pad0y pad2x dark small strong space-bottom0 margin0 conflictSaveOptions', true)
-                .on('click', function () {
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
-                    //event.removeConflicts();
-                    event.exportData();
-                });
-            reviewOptions.append('input')
-                .attr('type', 'submit')
-                .attr('value', 'Add Another Dataset')
-                .classed('fill-dark round pad0y pad2x dark small strong space-bottom0 margin0 conflictSaveOptions', true)
-                .on('click', function () {
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
-                    //event.keepConflicts();
-                    event.addData();
-                });
-            return;
-        }
+       
 
 
-        if (data.numItemsReturned) {
-          confData.isDeleteEnabled = false;
+        confData.isDeleteEnabled = false;
 
-            metaHead.text('There are ' + data.numItemsReturned + ' conflicts:');
-            reviewOptions = Review.selectAll('fieldset')
-                .append('div')
-                .classed('col12 space-bottom1', true);
-            metaHeadDiscard = reviewOptions.append('div')
-                .classed('small keyline-left keyline-top keyline-right round-top hoverDiv', true)
-                .append('label')
-                .classed('pad1x pad1y', true)
-                .append('a')
-                .attr('href', '#')
-                .text('Discard all conflicts')
-                .on('click', function () {
+        metaHead.text('There are ' + data.numItemsReturned + ' conflicts:');
+        reviewOptions = Review.selectAll('fieldset')
+            .append('div')
+            .classed('col12 space-bottom1', true);
+        metaHeadDiscard = reviewOptions.append('div')
+            .classed('small keyline-left keyline-top keyline-right round-top hoverDiv', true)
+            .append('label')
+            .classed('pad1x pad1y', true)
+            .append('a')
+            .attr('href', '#')
+            .text('Discard all conflicts')
+            .on('click', function () {
 
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
-                    discardAll();
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+                discardAll();
 
-                });
-            metaHeadAccept = reviewOptions.append('div')
-                .classed('small keyline-all round-bottom space-bottom1', true)
-                .append('label')
-                .classed('pad1x pad1y', true)
-                .append('a')
-                .attr('href', '#')
-                .text('Accept all conflicts')
-                .on('click', function () {
+            });
+        metaHeadAccept = reviewOptions.append('div')
+            .classed('small keyline-all round-bottom space-bottom1', true)
+            .append('label')
+            .classed('pad1x pad1y', true)
+            .append('a')
+            .attr('href', '#')
+            .text('Accept all conflicts')
+            .on('click', function () {
 
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
-                    acceptAll();
-                });
-        }
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+                acceptAll();
+            });
 
         var conflicts = d3.select('#content')
             .append('div')
             .attr('id', 'conflicts-container')
             .classed('pin-bottom review-block unclickable', true)
             .append('div')
-            .classed('conflicts col12 fillD pad1 space clickable', true)
-            //.style('height','90px') //changed from 133px to avoid conflict with footer
-            .data(reviewItems);
+            .classed('conflicts col12 fillD pad1 space clickable', true);
+            
         var meta = conflicts.append('span')
             .classed('_icon info dark pad0y space', true)
             .html(function () {
@@ -867,12 +659,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             icon: '_icon check',
             cmd: iD.ui.cmd('r'),
             action: retainFeature
-//        }, {
-//            name: confData.layers[0],
-//            text: 'Discard',
-//            color: 'loud-red',
-//            icon: '_icon x',
-//            action: removeFeature
         },
         {
             id: 'next',
@@ -962,57 +748,6 @@ Hoot.control.conflicts = function (context, sidebar) {
 
             })
             .call(tooltip);
-
-        var _gotoConflict = function() {
-            var idx = d3.select('#conflict_idx').value();
-
-            if(isNaN(idx) || (idx*1) > reviewCount || (idx*1) < 1) {
-                window.alert ('Please enter value in range of: 1 - ' + reviewCount );
-                d3.select(this).value(index);
-                return;
-            }
-            // We need this delay for iD to have time to add way for adjusting
-            // graph history. If you click really fast, request out paces the process
-            // and end up with error where entity is not properly deleted.
-            setTimeout(function () {
-                btnEnabled = true;
-            }, 500);
-            if(btnEnabled){
-                btnEnabled = false;
-                traverseTo(idx-1);
-            } else {
-                window.alert('Please wait. Processing review.');
-            }
-        };
-
-
-        opts.append('a')
-            .attr('href', '#')
-            .text('Go')
-            .style('background-color', 'loud')
-            .style('color', '#fff')
-            .style('margin-right', '50px')
-            .attr('class', function () {
-                return 'fr inline button dark loud pad0y pad2x keyline-all ';
-            })
-            .on('click', function () {
-
-                _gotoConflict();
-
-            });
-
-            var idxInput = opts.append('input')
-                .style('width', '40px')
-                .attr('id', 'conflict_idx')
-                .attr('type', 'text')
-                .attr('class', 'fr inline')
-                .attr('onkeypress','return event.charCode >= 48 && event.charCode <= 57');
-
-            idxInput.on('keyup', function () {
-                if(d3.event.keyCode === 13){
-                    _gotoConflict();
-                }
-            });
 
         Conflict.highlightLayerTable = highlightLayer;
         jumpFor();

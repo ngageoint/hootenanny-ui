@@ -767,10 +767,7 @@ rest.reviewGetNext = function(data, callback)
  
     markItemsReviewedRequest.offset = data.offset;
     markItemsReviewedRequest.direction = data.direction;
-    markItemsReviewedRequest.offsetid = data.uuid;
-    if(data.reviewAgainstUuid) {
-        markItemsReviewedRequest.offsetreviewagainstid = data.reviewAgainstUuid;
-    }
+    
     
     d3.json('/hoot-services/job/review/next?mapId='+mapId)
         .header('Content-Type', 'application/json')

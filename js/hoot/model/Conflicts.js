@@ -6,26 +6,7 @@ Hoot.model.conflicts = function(context)
     model_conflicts.beginReview = function (layer, callback) {
         var mapid = layer.mapId;
         context.hoot().model.layers.refresh(function () {
-            Hoot.model.REST('ReviewGet', mapid, function (response) {
-                if(response.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(response.error);
-                    if(response.reset){
-                        context.hoot().reset();
-                    }
-                    return;
-                }
-
-                if (!response.reviewableItems || !response.reviewableItems.length) {
-                    return callback(response);
-                }
-                if (callback) {
-                    response.reviewableItems = _.filter(response.reviewableItems, function (d) {
-                        return true;//d.type !== 'relation';
-                    });
-                    model_conflicts.reviews = response;
-                    callback(response);
-                }
-            });
+            callback(layer);
         });
     };
     model_conflicts.acceptAll = function (data, callback) {
