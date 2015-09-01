@@ -194,7 +194,7 @@ Hoot.control.utilities.dataset = function(context) {
 	    var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
 	    var folderId = 0;
 	    var placeholder = 'root';
-		    
+	    
 		 var d_form = [{
          	label: 'Path',
          	type: 'pathname',
@@ -223,6 +223,7 @@ Hoot.control.utilities.dataset = function(context) {
             .on('click', function () {
                 modalbg.remove();
             });
+        
         var fieldset = _form.append('fieldset')
             .selectAll('.form-field')
             .data(d_form);
@@ -308,7 +309,6 @@ Hoot.control.utilities.dataset = function(context) {
                 		 });
                 		 
                 		 modalbg.remove();	
-                		 d3.select('#optionsdiv').classed('hidden',true);
                 		 
                 	 });
                  }); 

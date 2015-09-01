@@ -4,7 +4,7 @@ Hoot.model.layers = function (context)
 	var layers = {};
 	var availLayers = [];
     var isLayerLoading = false;
-    var checkedLayers = [];
+    var selectedLayers = [];
 
 
     model_layers.layers = layers;
@@ -408,13 +408,13 @@ Hoot.model.layers = function (context)
     	//return true;
     };
     
-    model_layers.getCheckedLayers = function() {
-    	return checkedLayers;
+    model_layers.getSelectedLayers = function() {
+    	return selectedLayers;
     };
     
-    model_layers.setCheckedLayers = function(d) {
-    	checkedLayers = d;
-    	return checkedLayers;
+    model_layers.setSelectedLayers = function(d) {
+    	selectedLayers = d;
+    	return selectedLayers;
     };
     
     

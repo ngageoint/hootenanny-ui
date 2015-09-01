@@ -1,15 +1,13 @@
 Hoot.control.utilities.folder = function(context) {
-	var checkedLayerIDs = [];
+	var selectedLayerIDs = [];
 	
 	var hoot_control_utilities_folder = {};
 
-    hoot_control_utilities_folder.createFolderTree = function(container, selectMode) {
-    	checkedLayerIDs = [];
-    	context.hoot().model.layers.setCheckedLayers(checkedLayerIDs);
+    hoot_control_utilities_folder.createFolderTree = function(container) {
+    	selectedLayerIDs = [];
+    	context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
     	
     	// http://bl.ocks.org/mbostock/1093025 - Collapsible Indented Tree
-    	    	
-    	if(selectMode==null || selectMode==undefined){selectMode=false;}
     	
     	//var folders = context.hoot().model.layers.getAvailLayersWithFolders();
     	var folders = context.hoot().model.folders.getAvailFoldersWithLayers();
@@ -44,12 +42,28 @@ Hoot.control.utilities.folder = function(context) {
 	
 	    var diagonal = d3.svg.diagonal()
 	        .projection(function(d) { return [d.y, d.x]; });
-	
-	    var svg = container.append("svg")
+	   
+	    //Remove any existing nodes
+	    var svg;
+	    var _svg = container.selectAll('svg');
+		if(!_svg.empty()){
+			//_svg.remove();
+			_svg.selectAll('g').remove();
+			svg = _svg.append("g")	
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		} else {
+			svg = container.append("svg")
+	        	.attr("width", width)// + margin.left + margin.right)
+	        	.attr("height", height)// + margin.left + margin.right)
+	        	.append("g")
+	        	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		}
+		
+		/*var svg = container.append("svg")
 	        .attr("width", width)// + margin.left + margin.right)
 	        .attr("height", height)// + margin.left + margin.right)
-	      .append("g")
-	        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	        .append("g")
+	        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");*/
 	        //.call(zoom);
 	   
 		folders.x0=0;
@@ -70,7 +84,7 @@ Hoot.control.utilities.folder = function(context) {
 	
 	      // Compute the flattened node list. TODO use d3.layout.hierarchy.
 	      var nodes = tree.nodes(root);
-	
+
 	      var height = Math.max(400, nodes.length * barHeight + margin.top + margin.bottom);
 	      
 	      //replaced container with d3
@@ -138,25 +152,7 @@ Hoot.control.utilities.folder = function(context) {
 		    	  }
 		    	  if (d.type == 'dataset'){return '<i class="_icon data"></i>'}
 		      });
-	      
-	      if(selectMode){
-		      nodeg.append('svg:foreignObject')
-		      .attr("width", 20)
-		      .attr("height", 20)
-		      .attr("transform","translate(2.5,-11)")
-		      .html(function(d){
-		    	  if (d.type == 'folder'){return '';}
-		    	  if (d.type == 'dataset'){return '<input type=checkbox class="dataset-option-checkbox" lyrid='+ d.id + ' id="layer-'+ d.id + '-checkbox" />';}
-		      });
-	      }
-	      
-	      d3.selectAll('.dataset-option-checkbox')
-	      	.on('click',function(d){check(this);})
-	      	.each(function(d){
-	      		var lyrid = d3.select(this).attr('lyrid');
-	      		if(checkedLayerIDs.indexOf(lyrid)>-1){this.checked=true;}
-	      	})
-	      
+	            
 	      // Transition nodes to their new position.
 	      nodeEnter.transition()
 	          .duration(duration)
@@ -221,16 +217,23 @@ Hoot.control.utilities.folder = function(context) {
 		              d3.event.preventDefault();
 		              return;
 	              }
-	              else if(d.type.toLowerCase()=='dataset' && !selectMode){
+	              else if(d.type.toLowerCase()=='dataset'){
+	            	  d.selected=true;
+	            	  d3.select(this).classed('sel',true);
+	            	  if(selectedLayerIDs.indexOf(d.id) == -1){selectedLayerIDs.push(d.id);}
+	            	  context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
+	            	  
 	            	  //http://jsfiddle.net/1mo3vmja/2/
 	            	  items = [
 		        	      {title:'Export',icon:'export',click:'context.hoot().view.utilities.dataset.exportDataset(d,container)'},
-		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
-		        	      {title:'Modify',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
-		        	  ]; } else if (d.type.toLowerCase()=='folder') {
+		        	      {title:'Delete (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
+		        	      {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'context.hoot().view.utilities.dataset.moveDatasets(hoot.model.layers.getSelectedLayers())'},
+		        	      {title:'Rename ' + d.name,icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
+		        	  ]; 
+            	  } else if (d.type.toLowerCase()=='folder') {
 	        		  items = [
 	 		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
-	 		        	      {title:'Modify',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
+	 		        	      {title:'Rename/Move ' + d.name,icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
 	 		        	      {title:'Add Dataset',icon:'data',click:
 	 		        	    	  'Hoot.model.REST("getTranslations",function(e){'+
 	 		        	    	  'if(d.error){context.hoot().view.utilities.errorlog.reportUIError(d.error);return;}'+
@@ -274,29 +277,19 @@ Hoot.control.utilities.folder = function(context) {
 	          });
 	      } else {container.selectAll('rect').on("contextmenu",function(d,i){d3.event.preventDefault();})}
 	    }
-	
-	    function check(d) {
-	    	d3.select(d.parentNode.parentNode.parentNode).select('rect').classed('sel',d.checked);
-	    	var lyrid = d3.select(d).attr('lyrid');
-	    	if(d.checked){
-	    		if(checkedLayerIDs.indexOf(lyrid) == -1){checkedLayerIDs.push(lyrid);}		
-	    	} else {
-	    		var idx = checkedLayerIDs.indexOf(lyrid);
-	    		if(idx > -1){checkedLayerIDs.splice(idx,1);}
-	    	}
-	    	
-	    	context.hoot().model.layers.setCheckedLayers(checkedLayerIDs);
-	    }
-	    
 	    
 	    // Toggle children on click.
 	    // If no children, consider it a dataset!
 	    function click(d) {
 	      var nodes = tree.nodes(root);
-	      _.each(nodes,function(n){n.selected=false;});
+	      
+	      if(!event.ctrlKey){
+	    	  _.each(nodes,function(n){n.selected=false;});  
+	      }
 	    	
 	      d3.select(this).classed("selected",true);
 	      var updateOpenFolders = !d3.select("#datasettable").selectAll('.selected').empty();
+	      
 	      
 	      if (d.children || typeof(d.children)=="object") {
 	    	  //folder closing
@@ -322,6 +315,7 @@ Hoot.control.utilities.folder = function(context) {
 	      }
 
 	      d3.select(this).classed("selected",false);
+
 	      update(d);
 	    }
 	
@@ -333,15 +327,19 @@ Hoot.control.utilities.folder = function(context) {
 	    }
 	    
 	    function rectClass(d) {
-	    	if(selectMode){
-	    		if(d.type=='dataset'){
-	    			return checkedLayerIDs.indexOf(d.id.toString()) > -1 ? "sel" : "flat";
-	    		} else {
-	    			return d._children ? "more" : "flat";
-	    		}
-	    	} else {
-	    		return d.selected ? "sel" : d._children ? "more" : "flat";
+	    	//set selected layers
+	    	if(d.type=='dataset'){
+	    		var lyrid = d.id;
+		    	if(d.selected){
+		    		if(selectedLayerIDs.indexOf(lyrid) == -1){selectedLayerIDs.push(lyrid);}		
+		    	} else {
+		    		var idx = selectedLayerIDs.indexOf(lyrid);
+		    		if(idx > -1){selectedLayerIDs.splice(idx,1);}
+		    	}	      
+		    	context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);		      
 	    	}
+	    	
+	    	return d.selected ? "sel" : d._children ? "more" : "flat";
 		}
 	    
 	    function getWidth(d) {
