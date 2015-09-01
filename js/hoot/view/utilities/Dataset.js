@@ -48,7 +48,7 @@ Hoot.view.utilities.dataset = function(context)
             .classed('col12 fill-white small strong row10 overflow', true)
             .call(hoot_view_utilities_dataset.populateDatasetsSVG);  	
     };
-        
+    
     hoot_view_utilities_dataset.deleteDataset = function(d,container){
     	d3.event.stopPropagation();
         d3.event.preventDefault();
@@ -69,6 +69,7 @@ Hoot.view.utilities.dataset = function(context)
 	    var rectNode = d3.select(parentNode).select('rect'); 
 	    var currentFill = rectNode.style('fill');
 	    rectNode.style('fill','rgb(255,0,0)');
+	    rectNode.classed('sel',false);
       
         var datasets2remove = [];
         if(d.type=='folder'){
@@ -111,11 +112,12 @@ Hoot.view.utilities.dataset = function(context)
 		        	});
 			    	
 		    		//remove folder
-		        	context.hoot().model.folders.deleteFolder(d.id,function(resp){
-		        		if(resp==false){alert('Unable to delete folder.');}
-	                	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
-		        	});
-			    	
+			    	if(d.type=='folder'){
+			        	context.hoot().model.folders.deleteFolder(d.id,function(resp){
+			        		if(resp==false){alert('Unable to delete folder.');}
+		                	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
+			        	});
+			    	}
 			    }
 		    });
 
@@ -162,6 +164,63 @@ Hoot.view.utilities.dataset = function(context)
                 exportData = context.hoot().control.utilities.dataset.exportDataContainer(d, trans);
             });
         });
+    }
+    
+    hoot_view_utilities_dataset.deleteDatasets = function(d,container) {
+    	if(d.length==0){return;}
+    	else if(d.length==1){
+    		var dataset = _.findWhere(context.hoot().model.layers.getAvailLayers(),{id:d[0]});
+    		if(dataset==undefined){
+    			alert("Could not locate dataset with id: " + d[0].toString() + ".");
+    			return;
+    		} else {
+    			dataset.type='dataset';
+    		}
+    		hoot_view_utilities_dataset.deleteDataset(dataset, container);
+    	} else {
+        	d3.event.stopPropagation();
+            d3.event.preventDefault();
+           
+            var warningMsg = "You are about to delete " + d.length + " datasets.  Do you want to proceed?"
+            if(!window.confirm(warningMsg)){return;}
+            
+            // Populate datasets2remove
+            var availLayers = context.hoot().model.layers.getAvailLayers();
+            var selectedLayers = context.hoot().model.layers.getSelectedLayers();
+            var datasets2remove = [];
+            _.each(selectedLayers,function(f){if(_.findWhere(availLayers,{id:f})){datasets2remove.push(_.findWhere(availLayers,{id:f}))}})
+            
+            for(var i=0;i<=datasets2remove.length-1;i++){
+            	var dataset = datasets2remove[i];
+            	var exists = context.hoot().model.layers.getLayers()[dataset.name];
+    	        if(exists){
+    	        	alert('Can not remove the layer in use: ' + dataset.name);
+    	        	rectNode.style('fill',currentFill);
+    	        	return;
+    	        }
+    	        
+    	        //select the rect using lyr-id
+    	        var selNode  = container.selectAll("text[lyr-id='" + dataset.id + "']").node().parentNode;
+    	        var selRect = d3.select(selNode).select('rect'); 
+    		    var currentFill = selRect.style('fill');
+    		    selRect.style('fill','rgb(255,0,0)');
+    		    selRect.classed('sel',false);
+    		    
+    			d3.select('.context-menu').style('display', 'none');
+    		    
+    		    context.hoot().model.layers.deleteLayer(dataset,function(resp){
+    		    	if(resp==true){
+    		    		selNode.remove();
+    		    	}
+    		    	
+    			    if(i>=datasets2remove.length-1){
+    			    	hoot.model.layers.refresh(function(){
+    		        		hoot.model.folders.refreshLinks(function(){context.hoot().model.import.updateTrees();})        		
+    		        	});
+    			    }
+    		    });
+    	    }//,container);    
+    	}
     }
     
     hoot_view_utilities_dataset.moveDatasets = function(d) {

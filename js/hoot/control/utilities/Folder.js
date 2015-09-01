@@ -226,7 +226,7 @@ Hoot.control.utilities.folder = function(context) {
 	            	  //http://jsfiddle.net/1mo3vmja/2/
 	            	  items = [
 		        	      {title:'Export',icon:'export',click:'context.hoot().view.utilities.dataset.exportDataset(d,container)'},
-		        	      {title:'Delete (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
+		        	      {title:'Delete (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDatasets(hoot.model.layers.getSelectedLayers(),container)'},
 		        	      {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'context.hoot().view.utilities.dataset.moveDatasets(hoot.model.layers.getSelectedLayers())'},
 		        	      {title:'Rename ' + d.name,icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
 		        	  ]; 
