@@ -283,13 +283,14 @@ Hoot.control.utilities.folder = function(context) {
 	    function click(d) {
 	      var nodes = tree.nodes(root);
 	      
-	      if(!event.ctrlKey){
+	      if(!event.ctrlKey || container.attr('id')==null){
 	    	  _.each(nodes,function(n){n.selected=false;});  
 	      }
 	    	
+	      if(d.type=='folder'){context.hoot().model.layers.setSelectedLayers([]);}
+	      
 	      d3.select(this).classed("selected",true);
 	      var updateOpenFolders = !d3.select("#datasettable").selectAll('.selected').empty();
-	      
 	      
 	      if (d.children || typeof(d.children)=="object") {
 	    	  //folder closing
@@ -315,7 +316,6 @@ Hoot.control.utilities.folder = function(context) {
 	      }
 
 	      d3.select(this).classed("selected",false);
-
 	      update(d);
 	    }
 	
