@@ -96,22 +96,59 @@ Hoot.view.utilities.dataset = function(context)
 	        .classed('dark fr button loud pad2x big dataset-option', true)
 	        .on('click', function () {
 	        	select(false);
-	        	//d3.select('#optionsdiv').classed('hidden',true);
 	        });
         subfieldset.append('a')
 	        .attr('href', '#')
 	        .text('Delete')
 	        .classed('dark fr button loud pad2x big dataset-option', true)
 	        .on('click', function () {
-	            //get list of checked datasets
+	        	// Delete layers using same logic as delete layers
+	        	var datasets2remove = _.map(hoot.model.layers.getCheckedLayers(),function(f){return parseInt(f);})
+	        	var availLayers = hoot.model.layers.getAvailLayers();
+	        	context.hoot().model.layers.setLayerLinks();
 	        	
+	        	var container = d3.select("#datasettable");
+	        	
+	            for(var i=0;i<=datasets2remove.length-1;i++){
+	            	var dataset = _.findWhere(availLayers,{id:parseInt(datasets2remove[i])});
+	            	if(dataset==undefined){return;}
+	            	
+	            	var exists = context.hoot().model.layers.getLayers()[dataset.name];
+	    	        if(exists){
+	    	        	alert('Can not remove the layer in use: ' + dataset.name);
+	    	        	rectNode.style('fill',currentFill);
+	    	        	return;
+	    	        }
+	    	        
+	    	        //select the rect using lyr-id
+	    	        var selNode  = container.selectAll("text[lyr-id='" + dataset.id + "']").node().parentNode;
+	    	        var selRect = d3.select(selNode).select('rect'); 
+	    	        selRect.classed('sel',false)
+	    		    var currentFill = selRect.style('fill');
+	    		    selRect.style('fill','rgb(255,0,0)');
+	    		    
+	    			d3.select('.context-menu').style('display', 'none');
+	    		    
+	    		    context.hoot().model.layers.deleteLayer(dataset,function(resp){
+	    		    	if(resp==true){
+	    		    		selNode.remove();
+	    		    	}
+	    		    	
+	    			    if(i>=datasets2remove.length-1){
+	    			    	hoot.model.layers.refresh(function(){
+	    		        		hoot.model.folders.refreshLinks(function(){context.hoot().model.import.updateTrees();})        		
+	    		        	});
+	    			    	select(false);
+	    			    }
+	    		    });
+	    	    }
 	        });
         subfieldset.append('a')
 	        .attr('href', '#')
 	        .text('Move')
 	        .classed('dark fr button loud pad2x big dataset-option', true)
 	        .on('click', function () {
-	        	modifyName = context.hoot().control.utilities.dataset.bulkModifyContainer(context.hoot().model.layers.getCheckedLayers());
+	        	modifyDatasets = context.hoot().control.utilities.dataset.bulkModifyContainer(context.hoot().model.layers.getCheckedLayers());
 	        });        	
     };
     
