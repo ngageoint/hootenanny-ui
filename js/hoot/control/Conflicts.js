@@ -15,7 +15,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     var isProcessingReview = false;
     var getFeatureTimer;
 
-    var previousReviewItem = null;
+    var currentReviewableMeta = null;
     var currentReviewItem = null;
 
     Conflict.activeEntity = function(){return activeEntity;};
@@ -39,6 +39,16 @@ Hoot.control.conflicts = function (context, sidebar) {
         var mapid = data.mapId;
         var reviewCount = 0;
         Conflict.reviews;
+
+
+
+        function getCurrentReviewMeta() {
+            return currentReviewableMeta;
+        }
+
+        function setCurrentReviewMeta(itm) {
+            currentReviewableMeta = itm;
+        }
 
         function getCurrentReviewItem() {
             return currentReviewItem;
@@ -65,10 +75,10 @@ Hoot.control.conflicts = function (context, sidebar) {
             map.centerZoom(extent.center(), (zoom));
         }
 
-        var jumpFor = function (nReviewed, itemCnt) {
+        var jumpFor = function () {
             jumpTo('forward');
         };
-        var jumpBack = function (nReviewed, itemCnt) {
+        var jumpBack = function () {
             jumpTo('backward');
        };
 
@@ -108,7 +118,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 reviewData.mapId = mapid;
                 
             } else {
-                previousReviewItem = targetReviewItem;
+               
                 var reviewData = {};
                 reviewData.direction = direction;
                 reviewData.mapId = mapid;
@@ -125,7 +135,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
                 if(response.status == 'success'){
                     Conflict.reviews = response;
-                    
+                    setCurrentReviewMeta(response);
                     setCurrentReviewItem(response.reviewItem);
                     var lockPeriod = 150000;
                     // we will refresh lock at half of service lock length
@@ -138,9 +148,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                     }, lockPeriod);
 
                     var newReviewItem = getCurrentReviewItem();
-                    nReviewed = response.reviewedcnt;
-                    itemCnt = response.total;
-                    updateMeta(nReviewed, itemCnt);
+                    
+                    updateMeta();
                     activeConflict = reviewItemID(newReviewItem);
                     activeConflictReviewItem = reviewAgainstID(newReviewItem);
                     panToBounds(newReviewItem.displayBounds);
@@ -433,16 +442,52 @@ Hoot.control.conflicts = function (context, sidebar) {
 
 
 
-        function updateMeta(nReviewed, itemCnt) {
- 
-            entity_stat = 'unreviewed';
-            numLeft = itemCnt - nReviewed;
+        function updateMeta() {
             var multiFeatureMsg = '';
-            if(itemCnt > 1){
-              multiFeatureMsg = ', One to many feature ( reviewed ' + (nReviewed) + ' of ' + itemCnt + ')';
+            var curItem = getCurrentReviewItem();
+            var curMeta = getCurrentReviewMeta();
+
+            var nTotal = 0;
+            var nReviewed = 0;
+            var nLocked = 0;
+            if(curItem){
+                nTotal = curMeta.total;
+                nReviewed = curMeta.reviewedcnt;
+                nLocked = curMeta.lockedcnt;
+
+                var fId = reviewItemID(curItem);
+                var ent = context.hasEntity(fId);
+                if(ent){
+                    var reviewAgainstIds = ent.tags['hoot:review:uuid'];
+                    var ragList = reviewAgainstIds.split(';');
+                    var totalAgCnt = ragList.length;
+                    if(totalAgCnt > 1){
+
+                        // Since this is raw value we need check against the ragList
+                        var availCnt = 0;
+
+                        var metaList = curItem.againstList.split(';');
+                        for(var ii=0; ii<metaList.length; ii++){
+                            for(var jj=0; jj<ragList.length; jj++){
+                                if(metaList[ii] == ragList[jj]){
+                                    availCnt++;
+                                    break;
+                                }
+                            }
+                        }
+                        var nAgReviewed = totalAgCnt - availCnt;
+                        multiFeatureMsg = ', One to many feature ( reviewed ' + 
+                            nAgReviewed + ' of ' + totalAgCnt + ')';
+                    }
+                }
             }
-            meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflict  of ' + reviewCount + ': ' + entity_stat +
-                '  (Remaining conflicts: ' + numLeft +  multiFeatureMsg + ')</strong>');
+            
+   
+            meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflict  of ' + 
+                nTotal + ': ' + 
+                '  (Reviewed conflicts: ' + nReviewed +  
+                    ', Locked: ' + nLocked +
+                    multiFeatureMsg + ')</strong>');
         }
 
 
