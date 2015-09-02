@@ -425,7 +425,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 node: 'n',
                 relation: 'r'
             };
-            return a[item.type] + item.itemToReviewAgainst.id + '_' + mapid;
+            return a[item.itemToReviewAgainst.type] + item.itemToReviewAgainst.id + '_' + mapid;
         };
 
         var done = false;
