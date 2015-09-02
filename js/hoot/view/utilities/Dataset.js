@@ -19,7 +19,47 @@ Hoot.view.utilities.dataset = function(context)
 	                 }
 	                context.hoot().control.utilities.dataset.importDataContainer(d);
 	             });
-	        });
+	        })
+            .on("contextmenu",function(d,i){
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+            	//Create context menu to offer bulk option
+                var items = [{title:'Bulk Import',icon:'plus',action:'hoot_view_utilities_dataset.importDatasets();'}];
+	            d3.select('html').append('div').attr('class', 'dataset-options-menu');
+	                    
+	             var menuItem =  d3.selectAll('.dataset-options-menu')
+	             	.html('')
+	                .append('ul')
+	                .selectAll('li')
+	                .data(items).enter()
+	                .append('li')
+	                .attr('class',function(item){return item.icon + ' dataset-option';})
+	                .on('click' , function(item) { 
+	                	eval(item.action);
+	                 	d3.select('.dataset-options-menu').remove();
+                   });
+	             
+	             menuItem.append('span').attr("class",function(item){return item.icon + " icon icon-pre-text"});
+	             menuItem.append('span').text(function(item) { return item.title; });
+	                	
+	             d3.select('.dataset-options-menu').style('display', 'none');
+	             
+	             // show the context menu
+	             d3.select('.dataset-options-menu')
+	             	.style('left', function(){return d3.event.x +'px'||'0px'})
+	                 .style('top', function(){return d3.event.y +'px'||'0px'})
+	                 .style('display', 'block');
+	
+	             //close menu
+	             var firstOpen = true;
+	             d3.select('html').on('click.dataset-options-menu',function(){
+	                 if(firstOpen){
+	                    firstOpen=false;     
+	                 } else {
+	                     d3.select('.dataset-options-menu').style('display', 'none');
+	                 }
+	             });
+            });
         fieldDiv.append('a')
 	        .attr('href', '#')
 	        .text('Add Folder')
@@ -221,6 +261,16 @@ Hoot.view.utilities.dataset = function(context)
     		    });
     	    }//,container);    
     	}
+    }
+    
+    hoot_view_utilities_dataset.importDatasets = function(d) {
+    	Hoot.model.REST('getTranslations', function (d) {
+            if(d.error){
+                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                return;
+            }
+           context.hoot().control.utilities.dataset.bulkImportDataContainer(d);
+        });
     }
     
     hoot_view_utilities_dataset.moveDatasets = function(d) {
