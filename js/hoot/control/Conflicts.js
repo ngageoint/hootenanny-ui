@@ -128,35 +128,64 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
 
             Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
-                if(error){
-                    isProcessingReview = false;
-                    alert('Failed get Next Item.');
-                    return;
-                }
-                if(response.status == 'success'){
-                    Conflict.reviews = response;
-                    setCurrentReviewMeta(response);
-                    setCurrentReviewItem(response.reviewItem);
-                    var lockPeriod = 150000;
-                    // we will refresh lock at half of service lock length
-                    if(response.locktime){
-                        lockPeriod = (1*response.locktime)/2;
-                    }
-                    // ping so till done so we keep the lock alive
-                    heartBeatTimer = setInterval(function() {
-                        updateReviewStatus();
-                    }, lockPeriod);
+                try {
 
-                    var newReviewItem = getCurrentReviewItem();
+
+                    if(error){
+                        isProcessingReview = false;
+                        alert('Failed get Next Item.');
+                        return;
+                    }
+
+                    if(response.status == 'success'){
+                        Conflict.reviews = response;
+                        setCurrentReviewMeta(response);
+                        setCurrentReviewItem(response.reviewItem);
+                        var lockPeriod = 150000;
+                        // we will refresh lock at half of service lock length
+                        if(response.locktime){
+                            lockPeriod = (1*response.locktime)/2;
+                        }
+                        // ping so till done so we keep the lock alive
+                        heartBeatTimer = setInterval(function() {
+                            updateReviewStatus();
+                        }, lockPeriod);
+
+                        var newReviewItem = getCurrentReviewItem();
+                        
+                        updateMeta();
+                        activeConflict = reviewItemID(newReviewItem);
+                        activeConflictReviewItem = reviewAgainstID(newReviewItem);
+                        panToBounds(newReviewItem.displayBounds);
+                        activeEntity = newReviewItem;
+                        highlightLayer(newReviewItem);
+                    } else {
+                        if(response.status == 'noneavailable'){
+                            Conflict.reviews = response;
+                            setCurrentReviewMeta(response);
+                            setCurrentReviewItem(response.reviewItem);
+                            updateMeta();
+                            alert('There are no more available reviewables!');
+                            done=true;
+                            resetStyles();
+                            d3.select('div.tag-table').remove();
+         
+                            // finalize
+                            metaHead.text('Saving Conflicts.....');
+                            Conflict.reviewComplete();
+                            d3.select('.hootTags').remove();
+                            Conflict.reviewNextStep();
+                        } else {
+                            alert("Failed to retrieve next reviewable!")
+                        }
+                        
+                    }
                     
-                    updateMeta();
-                    activeConflict = reviewItemID(newReviewItem);
-                    activeConflictReviewItem = reviewAgainstID(newReviewItem);
-                    panToBounds(newReviewItem.displayBounds);
-                    activeEntity = newReviewItem;
-                    highlightLayer(newReviewItem);
-                } else {
-                    alert("All review items are being reviewed by other users!")
+                }
+                catch (ex) {
+                    alert(ex);
+                } finally {
+                    isProcessingReview = false;
                 }
             });                            
         }
@@ -387,13 +416,13 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         var done = false;
         function acceptAll() {
- /*           Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
+            Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
                 var doProceed = true;
                     //if only locked by self
                 if(resp.count > 1) {
 
                     var r = confirm("Reviews are being reviewed by other users." +
-                    " Modified features will be saved but will not be marked as resolved. Do you want to continue? ");
+                    " You may overwrite reviews being reviewed by other users. Do you want to continue? ");
                     doProceed = r;
                 }
 
@@ -411,10 +440,10 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
             });
 
-*/
+
         }
 
-
+        // decided to disable discard all since we determined it was too much of nuclear option
         function discardAll() {
 
 /*
@@ -438,6 +467,9 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
             });*/
 
+            // mark all
+            // get the list
+            // delete from UI and save
         }
 
 
@@ -450,37 +482,41 @@ Hoot.control.conflicts = function (context, sidebar) {
             var nTotal = 0;
             var nReviewed = 0;
             var nLocked = 0;
-            if(curItem){
+            if(curMeta){
                 nTotal = curMeta.total;
                 nReviewed = curMeta.reviewedcnt;
                 nLocked = curMeta.lockedcnt;
 
-                var fId = reviewItemID(curItem);
-                var ent = context.hasEntity(fId);
-                if(ent){
-                    var reviewAgainstIds = ent.tags['hoot:review:uuid'];
-                    var ragList = reviewAgainstIds.split(';');
-                    var totalAgCnt = ragList.length;
-                    if(totalAgCnt > 1){
+                if(curItem){
+                    
+                    var fId = reviewItemID(curItem);
+                    var ent = context.hasEntity(fId);
+                    if(ent){
+                        var reviewAgainstIds = ent.tags['hoot:review:uuid'];
+                        var ragList = reviewAgainstIds.split(';');
+                        var totalAgCnt = ragList.length;
+                        if(totalAgCnt > 1){
 
-                        // Since this is raw value we need check against the ragList
-                        var availCnt = 0;
+                            // Since this is raw value we need check against the ragList
+                            var availCnt = 0;
 
-                        var metaList = curItem.againstList.split(';');
-                        for(var ii=0; ii<metaList.length; ii++){
-                            for(var jj=0; jj<ragList.length; jj++){
-                                if(metaList[ii] == ragList[jj]){
-                                    availCnt++;
-                                    break;
+                            var metaList = curItem.againstList.split(';');
+                            for(var ii=0; ii<metaList.length; ii++){
+                                for(var jj=0; jj<ragList.length; jj++){
+                                    if(metaList[ii] == ragList[jj]){
+                                        availCnt++;
+                                        break;
+                                    }
                                 }
                             }
+                            var nAgReviewed = totalAgCnt - availCnt;
+                            multiFeatureMsg = ', One to many feature ( reviewed ' + 
+                                nAgReviewed + ' of ' + totalAgCnt + ')';
                         }
-                        var nAgReviewed = totalAgCnt - availCnt;
-                        multiFeatureMsg = ', One to many feature ( reviewed ' + 
-                            nAgReviewed + ' of ' + totalAgCnt + ')';
                     }
-                }
+                }               
             }
+    
             
    
             meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflict  of ' + 
@@ -534,84 +570,96 @@ Hoot.control.conflicts = function (context, sidebar) {
         };
 
         var retainFeature = function () {
-            if(isProcessingReview === true){
-                alert("Processing review. Please wait.");
-                return;
-            }
-            isProcessingReview = true;
-            var vicheck = vischeck();
-            if(!vicheck){
+            try {
+
+
+                if(isProcessingReview === true){
+                    alert("Processing review. Please wait.");
+                    return;
+                }
+                isProcessingReview = true;
+                var vicheck = vischeck();
+                if(!vicheck){
+                    isProcessingReview = false;
+                    return;
+                }
+                var item = getCurrentReviewItem();
+
+                if(item) {
+                    var contains = item.reviewed;
+                    if (contains) {
+                        window.alert('Item Is Already Resolved!');
+
+                    } else {
+                      item.retain = true;
+                        item.reviewed = true;
+                        var itemKlass = reviewItemID(item);
+                        var itemKlass2 = reviewAgainstID(item);
+                        d3.selectAll('.' + itemKlass)
+                            .classed('activeReviewFeature', false);
+                        d3.selectAll('.' + itemKlass2)
+                            .classed('activeReviewFeature2', false);
+                        d3.select('div.tag-table').remove();
+                    }
+
+                    // if no more remaining then acceptall
+                   /* var stat = statusCheck();
+                    if (!stat) {
+                        isProcessingReview = false;
+                        return;
+                    }*/
+
+                    var reviewedItems = {};
+                    var reviewedItemsArr = [];
+
+                    var markItem = {};
+                    markItem['id'] = item.id;
+                    markItem['type'] = item.type;
+                    markItem['reviewedAgainstId'] = item.itemToReviewAgainst.id;
+                    markItem['reviewedAgainstType'] = item.itemToReviewAgainst.type;
+                    reviewedItemsArr.push(markItem);
+                    reviewedItems['reviewedItems'] = reviewedItemsArr;
+
+                    var reviewMarkData = {};
+                    reviewMarkData.mapId = mapid;
+                    reviewMarkData.reviewedItems = reviewedItems;
+                    
+                    var hasChanges = context.history().hasChanges();
+                    if (hasChanges) {
+                      var changes = context.changes(iD.actions.DiscardTags(context.history().difference()));
+                      var changesetXml = JXON.stringify(context.connection().osmChangeJXON('-1', changes));
+                      reviewMarkData.reviewedItemsChangeset = changesetXml;
+                        Hoot.model.REST('ReviewMarkItem', reviewMarkData, function (error, response) 
+                        {
+                          jumpFor();
+                              
+                          var xmlParser = new DOMParser();
+                          var changesetDoc = 
+                            xmlParser.parseFromString(response.changesetUploadResponse, "text/xml");
+                          context.hoot().model.conflicts.updateDescendent(changesetDoc, response.mapId);
+                          context.flush();
+                          //context.history().clearSaved();
+                          context.enter(iD.modes.Browse(context));
+                        });
+                    } 
+                    else {
+                        Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
+
+                           jumpFor();
+
+                        });
+                    }                    
+                } else {
+                    alert("Nothing to review.");
+                }
+
+
+            
+            } catch (err) {
+                alert(err);
+            } finally {
                 isProcessingReview = false;
-                return;
             }
-            var item = getCurrentReviewItem();
-
-
-            var contains = item.reviewed;
-            if (contains) {
-                window.alert('Item Is Already Resolved!');
-
-            } else {
-              item.retain = true;
-                item.reviewed = true;
-                var itemKlass = reviewItemID(item);
-                var itemKlass2 = reviewAgainstID(item);
-                d3.selectAll('.' + itemKlass)
-                    .classed('activeReviewFeature', false);
-                d3.selectAll('.' + itemKlass2)
-                    .classed('activeReviewFeature2', false);
-                d3.select('div.tag-table').remove();
-            }
-
-            // if no more remaining then acceptall
-           /* var stat = statusCheck();
-            if (!stat) {
-                isProcessingReview = false;
-                return;
-            }*/
-
-            var reviewedItems = {};
-            var reviewedItemsArr = [];
-
-            var markItem = {};
-            markItem['id'] = item.id;
-            markItem['type'] = item.type;
-            markItem['reviewedAgainstId'] = item.itemToReviewAgainst.id;
-            markItem['reviewedAgainstType'] = item.itemToReviewAgainst.type;
-            reviewedItemsArr.push(markItem);
-            reviewedItems['reviewedItems'] = reviewedItemsArr;
-
-            var reviewMarkData = {};
-            reviewMarkData.mapId = mapid;
-            reviewMarkData.reviewedItems = reviewedItems;
-            
-            var hasChanges = context.history().hasChanges();
-            if (hasChanges) {
-              var changes = context.changes(iD.actions.DiscardTags(context.history().difference()));
-              var changesetXml = JXON.stringify(context.connection().osmChangeJXON('-1', changes));
-              reviewMarkData.reviewedItemsChangeset = changesetXml;
-                Hoot.model.REST('ReviewMarkItem', reviewMarkData, function (error, response) 
-                {
-                  jumpFor();
-                      
-                  var xmlParser = new DOMParser();
-                  var changesetDoc = 
-                	xmlParser.parseFromString(response.changesetUploadResponse, "text/xml");
-                  context.hoot().model.conflicts.updateDescendent(changesetDoc, response.mapId);
-                  context.flush();
-                  //context.history().clearSaved();
-                  context.enter(iD.modes.Browse(context));
-                });
-            } 
-            else {
-                Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
-
-                   jumpFor();
-
-                });
-            }
-            
-            
         };
 
         function toggleForm(self) {
@@ -656,7 +704,10 @@ Hoot.control.conflicts = function (context, sidebar) {
         reviewOptions = Review.selectAll('fieldset')
             .append('div')
             .classed('col12 space-bottom1', true);
-        metaHeadDiscard = reviewOptions.append('div')
+
+        // we have decided that Discard All is too much of nuclear option so
+        // disabling it.
+        /*metaHeadDiscard = reviewOptions.append('div')
             .classed('small keyline-left keyline-top keyline-right round-top hoverDiv', true)
             .append('label')
             .classed('pad1x pad1y', true)
@@ -669,14 +720,14 @@ Hoot.control.conflicts = function (context, sidebar) {
                 d3.event.preventDefault();
                 discardAll();
 
-            });
+            });*/
         metaHeadAccept = reviewOptions.append('div')
             .classed('small keyline-all round-bottom space-bottom1', true)
             .append('label')
             .classed('pad1x pad1y', true)
             .append('a')
             .attr('href', '#')
-            .text('Accept all conflicts')
+            .text('Resolve all remaining reviews')
             .on('click', function () {
 
                 d3.event.stopPropagation();
