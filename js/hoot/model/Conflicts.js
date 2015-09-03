@@ -19,22 +19,23 @@ Hoot.model.conflicts = function(context)
 
                 var reviewMarkData = {};
                 reviewMarkData.mapId = data.mapId;
-                Hoot.model.REST('ReviewMarkAll', reviewMarkData, function () {  });
+                Hoot.model.REST('ReviewMarkAll', reviewMarkData, function () {  
+                    if (callback) {
+                        callback();
+                    }
 
-                if (callback) {
-                    callback();
-                }
+                });               
 
             });
         }
         else {
             var reviewMarkData = {};
             reviewMarkData.mapId = data.mapId;
-            Hoot.model.REST('ReviewMarkAll', reviewMarkData, function () {  });
-
-            if (callback) {
-                callback();
-            }
+            Hoot.model.REST('ReviewMarkAll', reviewMarkData, function () { 
+                if (callback) {
+                    callback();
+                }
+            });
         }
     };
 
