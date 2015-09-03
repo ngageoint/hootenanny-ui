@@ -381,14 +381,28 @@ Hoot.control.conflicts = function (context, sidebar) {
                     var r = ftable.append('tr').classed('', true);
                     r.append('td').classed('fillD', true).text(d.key);
                     r.append('td').classed('f1', true).text(d.value[0]).on('click', function(d){
-                        var sel = iD.modes.Select(context, [feats[0].id]);
-                        sel.suppressMenu(true);
-                        context.enter(sel);
+                        // validate if in viewport
+                        var ent = context.hasEntity(feats[0].id)
+                        if(ent) {
+                            var sel = iD.modes.Select(context, [feats[0].id]);
+                            sel.suppressMenu(true);
+                            context.enter(sel);
+                        } else {
+                            alert('The feature:' + feats[0].id + ' is not visible and attribute can not be displayed.')
+                        }
+                            
                     });
                     r.append('td').classed('f2', true).text(d.value[1]).on('click', function(d){
-                        var sel = iD.modes.Select(context, [feats[1].id]);
-                        sel.suppressMenu(true);
-                        context.enter(sel);
+                        // validate if in viewport
+                        var ent = context.hasEntity(feats[1].id)
+                        if(ent) {
+                            var sel = iD.modes.Select(context, [feats[1].id]);
+                            sel.suppressMenu(true);
+                            context.enter(sel);
+                        }  else {
+                            alert('The feature:' + feats[1].id + ' is not visible and attribute can not be displayed.')
+                        }
+                            
                     });
 
                 });

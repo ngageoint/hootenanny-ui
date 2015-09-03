@@ -496,10 +496,13 @@ Hoot.tools = function (context, selection) {
                                             context.hoot().model.layers.addLayer(key2, function(d){
                                                 context.hoot().model.layers.setLayerInvisibleById(input2);
 
-
-                                                hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
-                                                    conflicts.startReview(d);
-                                                });
+                                                if(d === undefined)
+                                                {
+                                                    hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
+                                                        conflicts.startReview(d);
+                                                    });
+                                                }
+                                                
 
                                             });
                                         } else {
