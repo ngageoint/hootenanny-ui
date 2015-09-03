@@ -1,10 +1,14 @@
 Hoot.control.utilities.folder = function(context) {
-
+	var selectedLayerIDs = [];
+	
 	var hoot_control_utilities_folder = {};
 
     hoot_control_utilities_folder.createFolderTree = function(container) {
+    	selectedLayerIDs = [];
+    	context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
+    	
     	// http://bl.ocks.org/mbostock/1093025 - Collapsible Indented Tree
-    	    	
+    	
     	//var folders = context.hoot().model.layers.getAvailLayersWithFolders();
     	var folders = context.hoot().model.folders.getAvailFoldersWithLayers();
     	folders= JSON.parse('{"name":"Datasets","id":"Datasets","children":' + JSON.stringify(folders) +'}');
@@ -38,12 +42,28 @@ Hoot.control.utilities.folder = function(context) {
 	
 	    var diagonal = d3.svg.diagonal()
 	        .projection(function(d) { return [d.y, d.x]; });
-	
-	    var svg = container.append("svg")
+	   
+	    //Remove any existing nodes
+	    var svg;
+	    var _svg = container.selectAll('svg');
+		if(!_svg.empty()){
+			//_svg.remove();
+			_svg.selectAll('g').remove();
+			svg = _svg.append("g")	
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		} else {
+			svg = container.append("svg")
+	        	.attr("width", width)// + margin.left + margin.right)
+	        	.attr("height", height)// + margin.left + margin.right)
+	        	.append("g")
+	        	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		}
+		
+		/*var svg = container.append("svg")
 	        .attr("width", width)// + margin.left + margin.right)
 	        .attr("height", height)// + margin.left + margin.right)
-	      .append("g")
-	        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	        .append("g")
+	        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");*/
 	        //.call(zoom);
 	   
 		folders.x0=0;
@@ -64,7 +84,7 @@ Hoot.control.utilities.folder = function(context) {
 	
 	      // Compute the flattened node list. TODO use d3.layout.hierarchy.
 	      var nodes = tree.nodes(root);
-	
+
 	      var height = Math.max(400, nodes.length * barHeight + margin.top + margin.bottom);
 	      
 	      //replaced container with d3
@@ -117,10 +137,9 @@ Hoot.control.utilities.folder = function(context) {
 	        		 rectNode.attr('fldr-id',function(d){return d.id;})
 	        	 }
 	          });
-	          //.attr('lyr-id',function(d){return d.id;})
-            
-	      nodeEnter.append("g")
-	      	  .append('svg:foreignObject')
+	      
+	      var nodeg = nodeEnter.append("g");
+	      nodeg.append('svg:foreignObject')
 		      .attr("width", 20)
 		      .attr("height", 20)
 		      .attr("transform", function(d) { 
@@ -133,7 +152,7 @@ Hoot.control.utilities.folder = function(context) {
 		    	  }
 		    	  if (d.type == 'dataset'){return '<i class="_icon data"></i>'}
 		      });
-	      
+	            
 	      // Transition nodes to their new position.
 	      nodeEnter.transition()
 	          .duration(duration)
@@ -199,15 +218,22 @@ Hoot.control.utilities.folder = function(context) {
 		              return;
 	              }
 	              else if(d.type.toLowerCase()=='dataset'){
+	            	  d.selected=true;
+	            	  d3.select(this).classed('sel',true);
+	            	  if(selectedLayerIDs.indexOf(d.id) == -1){selectedLayerIDs.push(d.id);}
+	            	  context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
+	            	  
 	            	  //http://jsfiddle.net/1mo3vmja/2/
 	            	  items = [
 		        	      {title:'Export',icon:'export',click:'context.hoot().view.utilities.dataset.exportDataset(d,container)'},
-		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
-		        	      {title:'Modify',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
-		        	  ]; } else if (d.type.toLowerCase()=='folder') {
+		        	      {title:'Delete (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDatasets(hoot.model.layers.getSelectedLayers(),container)'},
+		        	      {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'context.hoot().view.utilities.dataset.moveDatasets(hoot.model.layers.getSelectedLayers())'},
+		        	      {title:'Rename ' + d.name,icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
+		        	  ]; 
+            	  } else if (d.type.toLowerCase()=='folder') {
 	        		  items = [
 	 		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
-	 		        	      {title:'Modify',icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
+	 		        	      {title:'Rename/Move ' + d.name,icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
 	 		        	      {title:'Add Dataset',icon:'data',click:
 	 		        	    	  'Hoot.model.REST("getTranslations",function(e){'+
 	 		        	    	  'if(d.error){context.hoot().view.utilities.errorlog.reportUIError(d.error);return;}'+
@@ -251,17 +277,22 @@ Hoot.control.utilities.folder = function(context) {
 	          });
 	      } else {container.selectAll('rect').on("contextmenu",function(d,i){d3.event.preventDefault();})}
 	    }
-	
+	    
 	    // Toggle children on click.
 	    // If no children, consider it a dataset!
 	    function click(d) {
 	      var nodes = tree.nodes(root);
-	      _.each(nodes,function(n){n.selected=false;});
+	      
+	      if(!event.ctrlKey || container.attr('id')==null){
+	    	  _.each(nodes,function(n){n.selected=false;});  
+	      }
 	    	
+	      if(d.type=='folder'){context.hoot().model.layers.setSelectedLayers([]);}
+	      
 	      d3.select(this).classed("selected",true);
 	      var updateOpenFolders = !d3.select("#datasettable").selectAll('.selected').empty();
 	      
-	      if (d.children) {
+	      if (d.children || typeof(d.children)=="object") {
 	    	  //folder closing
 	    	  d._children = d.children;
 	    	  d.children = null;
@@ -296,8 +327,20 @@ Hoot.control.utilities.folder = function(context) {
 	    }
 	    
 	    function rectClass(d) {
-		      return d.selected ? "sel" : d._children ? "more" : "flat";
-		    }
+	    	//set selected layers
+	    	if(d.type=='dataset'){
+	    		var lyrid = d.id;
+		    	if(d.selected){
+		    		if(selectedLayerIDs.indexOf(lyrid) == -1){selectedLayerIDs.push(lyrid);}		
+		    	} else {
+		    		var idx = selectedLayerIDs.indexOf(lyrid);
+		    		if(idx > -1){selectedLayerIDs.splice(idx,1);}
+		    	}	      
+		    	context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);		      
+	    	}
+	    	
+	    	return d.selected ? "sel" : d._children ? "more" : "flat";
+		}
 	    
 	    function getWidth(d) {
 	    	return '100%';
@@ -308,12 +351,7 @@ Hoot.control.utilities.folder = function(context) {
     	hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
         var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
         
-        var d_form = [/*{
-        	label: 'Path',
-        	placeholder: 'root',
-        	type: 'PathName',
-        	combobox3:folderList 
-        },*/ {
+        var d_form = [{
         	label: 'Folder Name',
         	placeholder:'',
         	type:'NewFolderName'
@@ -328,7 +366,7 @@ Hoot.control.utilities.folder = function(context) {
             .append('div')
             .classed('big pad1y keyline-bottom space-bottom2', true)
             .append('h4')
-            .text('Add Data')
+            .text('Add Folder')
             .append('div')
             .classed('fr _icon x point', true)
             .on('click', function () {

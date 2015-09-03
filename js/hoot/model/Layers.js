@@ -4,6 +4,7 @@ Hoot.model.layers = function (context)
 	var layers = {};
 	var availLayers = [];
     var isLayerLoading = false;
+    var selectedLayers = [];
 
 
     model_layers.layers = layers;
@@ -405,7 +406,17 @@ Hoot.model.layers = function (context)
     		//return resp.success;
     	});
     	//return true;
-    }
+    };
+    
+    model_layers.getSelectedLayers = function() {
+    	return selectedLayers;
+    };
+    
+    model_layers.setSelectedLayers = function(d) {
+    	selectedLayers = d;
+    	return selectedLayers;
+    };
+    
     
     return model_layers;
 }

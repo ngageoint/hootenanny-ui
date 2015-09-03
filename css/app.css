@@ -3082,7 +3082,11 @@ rect.sel {fill: #ffff99 !important;}
 /*rect.flat {fill: #c6dbef;}
 rect.more {fill: #3182bd;}*/
 
-.context-menu, .tools-menu {
+.options:hover, .options:focus, .options:active, .options:visited {
+	background-color:#7092ff;
+}
+
+.context-menu, .tools-menu, .dataset-options-menu {
   position: absolute;
   display: none;
   background-color: #f2f2f2;
@@ -3094,22 +3098,26 @@ rect.more {fill: #3182bd;}*/
   z-index:1200;
 }
 
-.context-menu ul, .tools-menu ul {
+.context-menu ul, .tools-menu ul, .dataset-options-menu ul {
   list-style-type: none;
   margin: 4px 0px;
   padding: 0px;
   cursor: default;
 }
 
-.context-menu ul li, .tools-menu ul li {
+.context-menu ul li, .tools-menu ul li, .dataset-options-menu ul li {
   padding: 4px 16px;
 }
 
-.context-menu ul li:hover, .tools-menu ul li:hover {
+.context-menu ul li:hover, .tools-menu ul li:hover, .dataset-options-menu ul li:hover {
   background-color: #4677f8;
   color: #fefefe;
 }
 
+.button.dataset-option {
+	margin-right:5px;
+	color:#fff;	
+}
 
 input:focus::-webkit-input-placeholder { color:transparent; }
 input:focus:-moz-placeholder { color:transparent; } /* Firefox 18- */

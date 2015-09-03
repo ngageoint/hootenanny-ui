@@ -19,7 +19,47 @@ Hoot.view.utilities.dataset = function(context)
 	                 }
 	                context.hoot().control.utilities.dataset.importDataContainer(d);
 	             });
-	        });
+	        })
+            .on("contextmenu",function(d,i){
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+            	//Create context menu to offer bulk option
+                var items = [{title:'Bulk Import',icon:'plus',action:'hoot_view_utilities_dataset.importDatasets();'}];
+	            d3.select('html').append('div').attr('class', 'dataset-options-menu');
+	                    
+	             var menuItem =  d3.selectAll('.dataset-options-menu')
+	             	.html('')
+	                .append('ul')
+	                .selectAll('li')
+	                .data(items).enter()
+	                .append('li')
+	                .attr('class',function(item){return item.icon + ' dataset-option';})
+	                .on('click' , function(item) { 
+	                	eval(item.action);
+	                 	d3.select('.dataset-options-menu').remove();
+                   });
+	             
+	             menuItem.append('span').attr("class",function(item){return item.icon + " icon icon-pre-text"});
+	             menuItem.append('span').text(function(item) { return item.title; });
+	                	
+	             d3.select('.dataset-options-menu').style('display', 'none');
+	             
+	             // show the context menu
+	             d3.select('.dataset-options-menu')
+	             	.style('left', function(){return d3.event.x +'px'||'0px'})
+	                 .style('top', function(){return d3.event.y +'px'||'0px'})
+	                 .style('display', 'block');
+	
+	             //close menu
+	             var firstOpen = true;
+	             d3.select('html').on('click.dataset-options-menu',function(){
+	                 if(firstOpen){
+	                    firstOpen=false;     
+	                 } else {
+	                     d3.select('.dataset-options-menu').style('display', 'none');
+	                 }
+	             });
+            });
         fieldDiv.append('a')
 	        .attr('href', '#')
 	        .text('Add Folder')
@@ -34,7 +74,7 @@ Hoot.view.utilities.dataset = function(context)
 	        .classed('dark fr button loud pad2x big _icon refresh', true)
 	        .style('margin-right','5px')
 	        .on('click', function () {
-	            hoot.model.folders.refresh(function () {
+	        	hoot.model.folders.refresh(function () {
 	            	hoot.model.layers.refresh(function(){
 	            		hoot.model.folders.refreshLinks(function(){
 	            			context.hoot().model.import.updateTrees();
@@ -42,12 +82,13 @@ Hoot.view.utilities.dataset = function(context)
 	            	});
 	            });
 	        });
+
         fieldset = form.append('div')
         .attr('id','datasettable')
             .classed('col12 fill-white small strong row10 overflow', true)
-            .call(hoot_view_utilities_dataset.populateDatasetsSVG);
+            .call(hoot_view_utilities_dataset.populateDatasetsSVG);  	
     };
-        
+    
     hoot_view_utilities_dataset.deleteDataset = function(d,container){
     	d3.event.stopPropagation();
         d3.event.preventDefault();
@@ -68,6 +109,7 @@ Hoot.view.utilities.dataset = function(context)
 	    var rectNode = d3.select(parentNode).select('rect'); 
 	    var currentFill = rectNode.style('fill');
 	    rectNode.style('fill','rgb(255,0,0)');
+	    rectNode.classed('sel',false);
       
         var datasets2remove = [];
         if(d.type=='folder'){
@@ -110,11 +152,12 @@ Hoot.view.utilities.dataset = function(context)
 		        	});
 			    	
 		    		//remove folder
-		        	context.hoot().model.folders.deleteFolder(d.id,function(resp){
-		        		if(resp==false){alert('Unable to delete folder.');}
-	                	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
-		        	});
-			    	
+			    	if(d.type=='folder'){
+			        	context.hoot().model.folders.deleteFolder(d.id,function(resp){
+			        		if(resp==false){alert('Unable to delete folder.');}
+		                	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
+			        	});
+			    	}
 			    }
 		    });
 
@@ -163,6 +206,76 @@ Hoot.view.utilities.dataset = function(context)
         });
     }
     
+    hoot_view_utilities_dataset.deleteDatasets = function(d,container) {
+    	if(d.length==0){return;}
+    	else if(d.length==1){
+    		var dataset = _.findWhere(context.hoot().model.layers.getAvailLayers(),{id:d[0]});
+    		if(dataset==undefined){
+    			alert("Could not locate dataset with id: " + d[0].toString() + ".");
+    			return;
+    		} else {
+    			dataset.type='dataset';
+    		}
+    		hoot_view_utilities_dataset.deleteDataset(dataset, container);
+    	} else {
+        	d3.event.stopPropagation();
+            d3.event.preventDefault();
+           
+            var warningMsg = "You are about to delete " + d.length + " datasets.  Do you want to proceed?"
+            if(!window.confirm(warningMsg)){return;}
+            
+            // Populate datasets2remove
+            var availLayers = context.hoot().model.layers.getAvailLayers();
+            var selectedLayers = context.hoot().model.layers.getSelectedLayers();
+            var datasets2remove = [];
+            _.each(selectedLayers,function(f){if(_.findWhere(availLayers,{id:f})){datasets2remove.push(_.findWhere(availLayers,{id:f}))}})
+            
+            for(var i=0;i<=datasets2remove.length-1;i++){
+            	var dataset = datasets2remove[i];
+            	var exists = context.hoot().model.layers.getLayers()[dataset.name];
+    	        if(exists){
+    	        	alert('Can not remove the layer in use: ' + dataset.name);
+    	        	return;
+    	        }
+    	        
+    	        //select the rect using lyr-id
+    	        var selNode  = container.selectAll("text[lyr-id='" + dataset.id + "']").node().parentNode;
+    	        var selRect = d3.select(selNode).select('rect'); 
+    		    var currentFill = selRect.style('fill');
+    		    selRect.style('fill','rgb(255,0,0)');
+    		    selRect.classed('sel',false);
+    		    
+    			d3.select('.context-menu').style('display', 'none');
+    		    
+    		    context.hoot().model.layers.deleteLayer(dataset,function(resp){
+    		    	if(resp==true){
+    		    		selNode.remove();
+    		    	}
+    		    	
+    			    if(i>=datasets2remove.length-1){
+    			    	hoot.model.layers.refresh(function(){
+    		        		hoot.model.folders.refreshLinks(function(){context.hoot().model.import.updateTrees();})        		
+    		        	});
+    			    }
+    		    });
+    	    }//,container);    
+    	}
+    }
+    
+    hoot_view_utilities_dataset.importDatasets = function(d) {
+    	Hoot.model.REST('getTranslations', function (d) {
+            if(d.error){
+                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                return;
+            }
+           context.hoot().control.utilities.dataset.bulkImportDataContainer(d);
+        });
+    }
+    
+    hoot_view_utilities_dataset.moveDatasets = function(d) {
+    	modifyName = context.hoot().control.utilities.dataset.bulkModifyContainer(d);
+    }
+    
     hoot_view_utilities_dataset.modifyDataset = function(d) {
         d3.event.stopPropagation();
         d3.event.preventDefault();
@@ -171,22 +284,17 @@ Hoot.view.utilities.dataset = function(context)
     	data.inputType=d.type;
     	data.mapid=d.id;
     	
-    	if(d.type.toLowerCase()=='dataset'){
-    		modifyName = context.hoot().control.utilities.dataset.modifyNameContainer(d);	
-    	} else if(d.type.toLowerCase()=='folder'){
+    	if(d.type=='dataset'){
+    		modifyName = context.hoot().control.utilities.dataset.modifyNameContainer(d);
+    	} else if(d.type=='folder'){
     		modifyName = context.hoot().control.utilities.folder.modifyNameContainer(d);
     	}
     }
     
 
     hoot_view_utilities_dataset.populateDatasetsSVG = function(container) {
-    	var _svg = container.select('svg');
-		if(!_svg.empty()){_svg.remove();
-		}
 		context.hoot().control.utilities.folder.createFolderTree(container);
     }
     
     return hoot_view_utilities_dataset;
 }
-
-
