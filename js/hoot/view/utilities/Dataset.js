@@ -235,7 +235,6 @@ Hoot.view.utilities.dataset = function(context)
             	var exists = context.hoot().model.layers.getLayers()[dataset.name];
     	        if(exists){
     	        	alert('Can not remove the layer in use: ' + dataset.name);
-    	        	rectNode.style('fill',currentFill);
     	        	return;
     	        }
     	        

@@ -24,7 +24,6 @@ Hoot.model.import = function (context)
     }
     
     import_layer.importData = function (container, callback) {
-
 		_initVariables();
     	importCallback = callback;
 
@@ -76,28 +75,38 @@ Hoot.model.import = function (context)
         }
         
         // Check new folder name
-        var newfoldername = container.select('.reset.NewFolderName').value();
-        if(newfoldername !=''){
-            var resp = context.hoot().checkForUnallowedChar(newfoldername);
-        	if(resp != true){
-        		alert(resp);
-        		return;
-            }
-        }
+        try{
+	        var newfoldername = container.select('.reset.NewFolderName').value();
+	        if(newfoldername !=''){
+	            var resp = context.hoot().checkForUnallowedChar(newfoldername);
+	        	if(resp != true){
+	        		alert(resp);
+	        		return;
+	            }
+	        }
+        } catch (e) {
+			// TODO: handle exception
+		}
         
         var data = {};
         data.INPUT_TYPE = typeName;
         data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';
         data.INPUT_NAME = container.select('.reset.LayerName').value();
-        data.formData = import_layer.getFormData(/*document.getElementById('ingestfileuploader').files*/);
-
+        
+        var fileUploader;
+        if(container.attr('id').substring(0,3)=='row'){
+        	data.formData = import_layer.getFormData(document.getElementById('ingestfileuploader'+container.attr('id').substring(3)).files);
+        } else {
+        	data.formData = import_layer.getFormData(document.getElementById('ingestfileuploader').files);	
+        }
+        
         Hoot.model.REST('Upload', data, _importResultHandler);
     };
 
-    import_layer.getFormData = function()
+    import_layer.getFormData = function(files)
     {
         var formData = new FormData();
-        var files = document.getElementById('ingestfileuploader').files;
+        //var files = document.getElementById('ingestfileuploader').files;
 
         _.each(files, function(d,l){
             formData.append('eltuploadfile' + l, d);
@@ -156,7 +165,9 @@ Hoot.model.import = function (context)
                             truncatedLastText = truncatedLastText.substring(0, truncatelen) + " ...";
                         }*/
                         
-                        imprtProgText.text(truncatedLastText);
+                    	//imprtProgText.text(truncatedLastText);
+                    	d3.select('#importprogdiv').append('br');
+                    	d3.select('#importprogdiv').append('text').text(truncatedLastText);
                     }
                     
                     imprtProg.value(a.percentcomplete);
