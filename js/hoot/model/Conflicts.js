@@ -5,9 +5,10 @@ Hoot.model.conflicts = function(context)
 
     model_conflicts.beginReview = function (layer, callback) {
         var mapid = layer.mapId;
-        context.hoot().model.layers.refresh(function () {
+       /* context.hoot().model.layers.refresh(function () {
             callback(layer);
-        });
+        });*/
+        callback(layer);
     };
     model_conflicts.acceptAll = function (data, callback) {
 
