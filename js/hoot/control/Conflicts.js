@@ -58,7 +58,31 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
             map.centerZoom(extent.center(), (zoom));
         }
-
+        
+        function panToEntity(entity) {
+        	//only pan if feature is not on screen
+        	var map = context.map();
+        	var entityExtent = entity.extent(context.graph());
+        	var mapExtent = map.extent();
+        	var entityCenter = entityExtent.center();
+        	
+        	// convert to map coordinates
+        	var entity_lr = entityExtent[0],
+        		entity_ul = entityExtent[1],
+        		map_lr = mapExtent[0],
+        		map_ul = mapExtent[1];
+        	            
+        	if(context.hasEntity(entity.id)==undefined){
+            	
+            	
+            	var zoom = Math.min(20, map.zoom());
+                if (zoom < 16) {
+                    zoom = 16;
+                }
+            	map.centerZoom(entityCenter,(zoom));	
+        	}
+        }
+        
         var jumpFor = function (nReviewed, itemCnt) {
             // allow other to use
             //resetReviewStatus();
@@ -416,11 +440,13 @@ Hoot.control.conflicts = function (context, sidebar) {
                         var sel = iD.modes.Select(context, [feats[0].id]);
                         sel.suppressMenu(true);
                         context.enter(sel);
+                        panToEntity(context.entity(feats[0].id));
                     });
                     r.append('td').classed('f2', true).text(d.value[1]).on('click', function(d){
                         var sel = iD.modes.Select(context, [feats[1].id]);
                         sel.suppressMenu(true);
                         context.enter(sel);
+                        panToEntity(context.entity(feats[1].id));
                     });
 
                 });
