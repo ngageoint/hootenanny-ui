@@ -94,10 +94,10 @@ Hoot.model.import = function (context)
         data.INPUT_NAME = container.select('.reset.LayerName').value();
         
         var fileUploader;
-        if(container.attr('id').substring(0,3)=='row'){
+        if(container.attr('id') == null){
+        	data.formData = import_layer.getFormData(document.getElementById('ingestfileuploader').files);
+        } else if(container.attr('id').substring(0,3)=='row'){
         	data.formData = import_layer.getFormData(document.getElementById('ingestfileuploader'+container.attr('id').substring(3)).files);
-        } else {
-        	data.formData = import_layer.getFormData(document.getElementById('ingestfileuploader').files);	
         }
         
         Hoot.model.REST('Upload', data, _importResultHandler);
