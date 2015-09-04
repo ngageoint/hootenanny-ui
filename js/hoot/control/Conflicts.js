@@ -74,9 +74,42 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
             map.centerZoom(extent.center(), (zoom));
         }
+        
+        function panToEntity(entity) {
+        	//only pan if feature is not on screen
+        	var map = context.map();
+        	var entityExtent = entity.extent(context.graph());
+        	var mapExtent = map.extent();
+        	var entityCenter = entityExtent.center();
+        	
+        	// convert to map coordinates
+        	var entity_lr = entityExtent[0],
+        		entity_ul = entityExtent[1],
+        		map_lr = mapExtent[0],
+        		map_ul = mapExtent[1];
+        	            
+        	if(context.hasEntity(entity.id)==undefined){
+            	
+            	
+            	var zoom = Math.min(20, map.zoom());
+                if (zoom < 16) {
+                    zoom = 16;
+                }
+            	map.centerZoom(entityCenter,(zoom));	
+        	}
+        }
+        
+        var jumpFor = function (nReviewed, itemCnt) {
+            // allow other to use
+            //resetReviewStatus();
+            lastIndex = index;
+            index++;
+            if (index === (reviewCount + 1)) {
+                index = 1;
+            }
+            // we have entity with same id but different against
 
-        var jumpFor = function () {
-            jumpTo('forward');
+            jumpTo(nReviewed, itemCnt, 'forward');
         };
         var jumpBack = function () {
             jumpTo('backward');
@@ -381,28 +414,16 @@ Hoot.control.conflicts = function (context, sidebar) {
                     var r = ftable.append('tr').classed('', true);
                     r.append('td').classed('fillD', true).text(d.key);
                     r.append('td').classed('f1', true).text(d.value[0]).on('click', function(d){
-                        // validate if in viewport
-                        var ent = context.hasEntity(feats[0].id)
-                        if(ent) {
-                            var sel = iD.modes.Select(context, [feats[0].id]);
-                            sel.suppressMenu(true);
-                            context.enter(sel);
-                        } else {
-                            alert('The feature:' + feats[0].id + ' is not visible and attribute can not be displayed.')
-                        }
-                            
+                        var sel = iD.modes.Select(context, [feats[0].id]);
+                        sel.suppressMenu(true);
+                        context.enter(sel);
+                        panToEntity(context.entity(feats[0].id));
                     });
                     r.append('td').classed('f2', true).text(d.value[1]).on('click', function(d){
-                        // validate if in viewport
-                        var ent = context.hasEntity(feats[1].id)
-                        if(ent) {
-                            var sel = iD.modes.Select(context, [feats[1].id]);
-                            sel.suppressMenu(true);
-                            context.enter(sel);
-                        }  else {
-                            alert('The feature:' + feats[1].id + ' is not visible and attribute can not be displayed.')
-                        }
-                            
+                        var sel = iD.modes.Select(context, [feats[1].id]);
+                        sel.suppressMenu(true);
+                        context.enter(sel);
+                        panToEntity(context.entity(feats[1].id));
                     });
 
                 });
