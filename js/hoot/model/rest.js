@@ -690,7 +690,7 @@ rest.ReviewMarkItem = function(data, callback)
     //markItemsReviewedRequest is required but can be unpopulated when markAll=true
     var markItemsReviewedRequest = {};
     markItemsReviewedRequest.reviewedItems = data.reviewedItems;
-    markItemsReviewedRequest.reviewedItemsChangeset = "";
+    markItemsReviewedRequest.reviewedItemsChangeset = data.reviewedItemsChangeset;
     d3.json('/hoot-services/job/review?mapId='+mapId+'&markAll=false')
         .header('Content-Type', 'application/json')
         .send(
@@ -700,7 +700,7 @@ rest.ReviewMarkItem = function(data, callback)
             {
                 if (error)
                 {
-                    alert("Review Mark All failed.");
+                  alert("Review Mark All failed.");
                 }
                 callback(error, response);
             });
@@ -1020,6 +1020,3 @@ Hoot.model.REST.WarningHandler = function(resp){
         }
     }
 };
-
-
-
