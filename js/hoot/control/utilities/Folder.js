@@ -227,8 +227,9 @@ Hoot.control.utilities.folder = function(context) {
 	            	  items = [
 		        	      {title:'Export',icon:'export',click:'context.hoot().view.utilities.dataset.exportDataset(d,container)'},
 		        	      {title:'Delete (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDatasets(hoot.model.layers.getSelectedLayers(),container)'},
-		        	      {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'context.hoot().view.utilities.dataset.moveDatasets(hoot.model.layers.getSelectedLayers())'},
+		        	      {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'info',click:'context.hoot().view.utilities.dataset.moveDatasets(hoot.model.layers.getSelectedLayers())'},
 		        	      {title:'Rename ' + d.name,icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
+		        	      {title:'Prepare for Validation',icon:'sprocket',click:'alert("Prepare for validation is currently under construction.");'}
 		        	  ]; 
             	  } else if (d.type.toLowerCase()=='folder') {
 	        		  items = [
