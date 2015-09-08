@@ -65,19 +65,11 @@ Hoot.control.conflicts = function (context, sidebar) {
         	var entityExtent = entity.extent(context.graph());
         	var mapExtent = map.extent();
         	var entityCenter = entityExtent.center();
-        	
-        	// convert to map coordinates
-        	var entity_lr = entityExtent[0],
-        		entity_ul = entityExtent[1],
-        		map_lr = mapExtent[0],
-        		map_ul = mapExtent[1];
-        	            
-        	if(context.hasEntity(entity.id)==undefined){
-            	
-            	
+        	        	            
+        	if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
             	var zoom = Math.min(20, map.zoom());
                 if (zoom < 16) {
-                    zoom = 16;
+                    zoom = 16.01;
                 }
             	map.centerZoom(entityCenter,(zoom));	
         	}
@@ -438,15 +430,15 @@ Hoot.control.conflicts = function (context, sidebar) {
                     r.append('td').classed('fillD', true).text(d.key);
                     r.append('td').classed('f1', true).text(d.value[0]).on('click', function(d){
                         var sel = iD.modes.Select(context, [feats[0].id]);
+                        panToEntity(context.entity(feats[0].id));
                         sel.suppressMenu(true);
                         context.enter(sel);
-                        panToEntity(context.entity(feats[0].id));
                     });
                     r.append('td').classed('f2', true).text(d.value[1]).on('click', function(d){
                         var sel = iD.modes.Select(context, [feats[1].id]);
+                        panToEntity(context.entity(feats[1].id));
                         sel.suppressMenu(true);
                         context.enter(sel);
-                        panToEntity(context.entity(feats[1].id));
                     });
 
                 });
