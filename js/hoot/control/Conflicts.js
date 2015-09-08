@@ -62,10 +62,15 @@ Hoot.control.conflicts = function (context, sidebar) {
         function panToEntity(entity) {
         	//only pan if feature is not on screen
         	var map = context.map();
-        	var entityExtent = entity.extent(context.graph());
+        	var entityExtent = entity.extent(context.graph())? entity.extent(context.graph()) : undefined;
         	var mapExtent = map.extent();
         	var entityCenter = entityExtent.center();
         	        	            
+        	if(entityExtent == undefined){
+        		alert("Could not locate selected feature with id: " + entity.id + ".")
+        		return;
+        	}
+        	
         	if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
             	var zoom = Math.min(20, map.zoom());
                 if (zoom < 16) {
