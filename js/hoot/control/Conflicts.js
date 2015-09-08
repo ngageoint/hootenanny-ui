@@ -58,7 +58,23 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
             map.centerZoom(extent.center(), (zoom));
         }
-
+        
+        function panToEntity(entity) {
+        	//only pan if feature is not on screen
+        	var map = context.map();
+        	var entityExtent = entity.extent(context.graph());
+        	var mapExtent = map.extent();
+        	var entityCenter = entityExtent.center();
+        	        	            
+        	if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
+            	var zoom = Math.min(20, map.zoom());
+                if (zoom < 16) {
+                    zoom = 16.01;
+                }
+            	map.centerZoom(entityCenter,(zoom));	
+        	}
+        }
+        
         var jumpFor = function (nReviewed, itemCnt) {
             // allow other to use
             //resetReviewStatus();
@@ -414,11 +430,13 @@ Hoot.control.conflicts = function (context, sidebar) {
                     r.append('td').classed('fillD', true).text(d.key);
                     r.append('td').classed('f1', true).text(d.value[0]).on('click', function(d){
                         var sel = iD.modes.Select(context, [feats[0].id]);
+                        panToEntity(context.entity(feats[0].id));
                         sel.suppressMenu(true);
                         context.enter(sel);
                     });
                     r.append('td').classed('f2', true).text(d.value[1]).on('click', function(d){
                         var sel = iD.modes.Select(context, [feats[1].id]);
+                        panToEntity(context.entity(feats[1].id));
                         sel.suppressMenu(true);
                         context.enter(sel);
                     });
