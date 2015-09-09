@@ -1,11 +1,10 @@
 Hoot.control.conflicts = function (context, sidebar) {
-    var event = d3.dispatch('acceptAll', 'discardAll', 'removeFeature', 'exportData', 'addData', 'reviewDone','zoomToConflict');
+    var event = d3.dispatch('acceptAll', 'removeFeature', 'exportData', 'addData', 'reviewDone','zoomToConflict');
     var Conflict = {};
     var confData;
     var Review;
     var reviewOptions;
     var metaHead;
-    var metaHeadDiscard;
     var metaHeadAccept;
     var activeConflict, activeConflictReviewItem;
     var btnEnabled = true;
@@ -36,12 +35,14 @@ Hoot.control.conflicts = function (context, sidebar) {
     };
     Conflict.highlightLayerTable = null;
     Conflict.startReview = function (data) {
+    	var entity;
         var mapid = data.mapId;
         var reviewCount = 0;
+        var index = 0;
         Conflict.reviews;
-
-
-
+        
+        context.connection().allowChangesToUnreviewedFeatures = true;
+        
         function getCurrentReviewMeta() {
             return currentReviewableMeta;
         }
@@ -149,13 +150,10 @@ Hoot.control.conflicts = function (context, sidebar) {
                 reviewData.mapId = mapid;
 
                 reviewData.offset = targetReviewItem.reviewId;
-
             }
 
             Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
                 try {
-
-
                     if(error){
                         isProcessingReview = false;
                         alert('Failed get Next Item.');
@@ -202,10 +200,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                             Conflict.reviewNextStep();
                         } else {
                             alert("Failed to retrieve next reviewable!")
-                        }
-                        
+                        }  
                     }
-                    
                 }
                 catch (ex) {
                     alert(ex);
@@ -316,14 +312,16 @@ Hoot.control.conflicts = function (context, sidebar) {
                 feature = context.hasEntity(idid);
                 //console.log(feature);
                 if (!feature) {
-                    idid = context.hoot().model.conflicts.findDescendent(idid);
+                    //idid = context.hoot().model.conflicts.findDescendent(idid);
+                	idid = ''; //TODO: fix
                     if (idid) feature = context.hasEntity(idid);
                 }
 
                 againstFeature = context.hasEntity(idid2);
                 //console.log(againstFeature);
                 if (!againstFeature) {
-                    idid2 = context.hoot().model.conflicts.findDescendent(idid2);
+                    //idid2 = context.hoot().model.conflicts.findDescendent(idid2);
+                	idid2 = ''; //TODO: fix
                     if (idid2) againstFeature = context.hasEntity(idid2);
                 }
 
@@ -453,7 +451,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                     doProceed = r;
                 }
 
-
                 if(doProceed === true) {
                     done=true;
                     resetStyles();
@@ -469,37 +466,6 @@ Hoot.control.conflicts = function (context, sidebar) {
 
 
         }
-
-        // decided to disable discard all since we determined it was too much of nuclear option
-        function discardAll() {
-
-/*
-            Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
-                var doProceed = true;
-                    //if only locked by self
-                if(resp.count > 1) {
-
-                    var r = confirm("Reviews are being reviewed by other users." +
-                    " Modified features will be saved but will not be marked as resolved. Do you want to continue? ");
-                    doProceed = r;
-                }
-
-                if(doProceed === true) {
-                    resetStyles();
-                    d3.select('div.tag-table').remove();
-                    Conflict.reviewComplete();
-                    d3.select('.hootTags').remove();
-                    metaHead.text('Discarding Conflicts.....');
-                    event.discardAll(data);
-                }
-            });*/
-
-            // mark all
-            // get the list
-            // delete from UI and save
-        }
-
-
 
         function updateMeta() {
             var multiFeatureMsg = '';
@@ -543,8 +509,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                     }
                 }               
             }
-    
-            
    
             meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflict  of ' + 
                 nTotal + ': ' + 
@@ -553,13 +517,11 @@ Hoot.control.conflicts = function (context, sidebar) {
                     multiFeatureMsg + ')</strong>');
         }
 
-
         var vischeck = function(){
             var layers=context.hoot().model.layers.getLayers();
             var vis = _.filter(layers, function(d){return d.vis;});
             if(vis.length>1){window.alert('Swap to Conflated Layer before accepting!');return false;}
             return true;
-
         };
 
 
@@ -575,9 +537,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             jumpBack();
         };
 
-
-
- 
         var autoMerge = function() {
             //Overridden in highlightLayer
             mergeFeatures();
@@ -598,8 +557,6 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         var retainFeature = function () {
             try {
-
-
                 if(isProcessingReview === true){
                     alert("Processing review. Please wait.");
                     return;
@@ -628,60 +585,72 @@ Hoot.control.conflicts = function (context, sidebar) {
                             .classed('activeReviewFeature2', false);
                         d3.select('div.tag-table').remove();
                     }
-
-                    // if no more remaining then acceptall
-                   /* var stat = statusCheck();
-                    if (!stat) {
-                        isProcessingReview = false;
-                        return;
-                    }*/
-
-                    var reviewedItems = {};
-                    var reviewedItemsArr = [];
-
-                    var markItem = {};
-                    markItem['id'] = item.id;
-                    markItem['type'] = item.type;
-                    markItem['reviewedAgainstId'] = item.itemToReviewAgainst.id;
-                    markItem['reviewedAgainstType'] = item.itemToReviewAgainst.type;
-                    reviewedItemsArr.push(markItem);
-                    reviewedItems['reviewedItems'] = reviewedItemsArr;
-
-                    var reviewMarkData = {};
-                    reviewMarkData.mapId = mapid;
-                    reviewMarkData.reviewedItems = reviewedItems;
                     
+                    //TODO: tag management
+                    
+                    var curReviewAgainstUUID = item.itemToReviewAgainst.uuid;
+                    var curReviewUUID =  item.uuid;
+                    var items = [item];
+                    var flagged = _.uniq(_.flatten(_.map(items, function (d) {
+                        return [d.type.charAt(0) + d.id + '_' + mapid, d.itemToReviewAgainst.type.charAt(0) + d.itemToReviewAgainst.id + '_' + mapid];
+                    })));
+                    var inID = _.filter(flagged, function (d) {
+                        return context.hasEntity(d);
+                    });
+                    _.each(inID, function (d) {
+                        var ent = context.hasEntity(d);
+                        if (!ent) {
+                            alert("missing entity.");
+                            isProcessingReview = false;
+                      return;
+                      }
+                        var tags = ent.tags;
+                        var newTags = _.clone(tags);
+
+                        var againstUuids = tags['hoot:review:uuid'];
+                        if(againstUuids && againstUuids.length > 0) {
+                            var againstList = againstUuids.split(';');
+                            if(againstList.length > 1) { // have many against
+                                var newAgainstList =[];
+
+                                _.each(againstList, function(v){
+                                    if(v != curReviewAgainstUUID) {
+                                        newAgainstList.push(v);
+                                    }
+                                })
+
+                                var newAgainstTags = newAgainstList.join(';');
+                                newTags['hoot:review:uuid'] = newAgainstTags;
+                            } else {
+                                        newTags = _.omit(newTags, function (value, key) {
+                                            return key.match(/hoot:review/g);
+                                        });
+                            }
+                        }
+
+                        context.perform(iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
+                    });
+
                     var hasChanges = context.history().hasChanges();
                     if (hasChanges) {
-                      var changes = context.changes(iD.actions.DiscardTags(context.history().difference()));
-                      var changesetXml = JXON.stringify(context.connection().osmChangeJXON('-1', changes));
-                      reviewMarkData.reviewedItemsChangeset = changesetXml;
-                        Hoot.model.REST('ReviewMarkItem', reviewMarkData, function (error, response) 
-                        {
-                          jumpFor();
-                              
-                          var xmlParser = new DOMParser();
-                          var changesetDoc = 
-                            xmlParser.parseFromString(response.changesetUploadResponse, "text/xml");
-                          context.hoot().model.conflicts.updateDescendent(changesetDoc, response.mapId);
-                          context.flush();
-                          //context.history().clearSaved();
-                          context.enter(iD.modes.Browse(context));
+                        iD.modes.Save(context).save(context, function () {
+                            
+
+                        var multiItemInfo = getMultiReviewItemInfo();
+                        jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+
                         });
-                    } 
-                    else {
+                    } /*else {
                         Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
 
-                           jumpFor();
+                            var multiItemInfo = getMultiReviewItemInfo();
+                            jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
 
                         });
-                    }                    
+                    }*/                  
                 } else {
                     alert("Nothing to review.");
                 }
-
-
-            
             } catch (err) {
                 alert(err);
             } finally {
@@ -701,10 +670,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             .append('span')
             .classed('_icon info reviewCount', true);
 
-
-
-
-
         var head = Review.select('a');
             d3.selectAll(head.node()
                 .childNodes)
@@ -719,11 +684,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     toggleForm(Review, this);
                 });
 
-
-
         confData.isDeleteEnabled = true;
-       
-
 
         confData.isDeleteEnabled = false;
 
@@ -732,22 +693,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             .append('div')
             .classed('col12 space-bottom1', true);
 
-        // we have decided that Discard All is too much of nuclear option so
-        // disabling it.
-        /*metaHeadDiscard = reviewOptions.append('div')
-            .classed('small keyline-left keyline-top keyline-right round-top hoverDiv', true)
-            .append('label')
-            .classed('pad1x pad1y', true)
-            .append('a')
-            .attr('href', '#')
-            .text('Discard all conflicts')
-            .on('click', function () {
-
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-                discardAll();
-
-            });*/
         metaHeadAccept = reviewOptions.append('div')
             .classed('small keyline-all round-bottom space-bottom1', true)
             .append('label')
@@ -876,11 +821,6 @@ Hoot.control.conflicts = function (context, sidebar) {
         jumpFor();
     };
 
-
-
-
-
-
     Conflict.reviewNextStep = function () {
 
       confData.isDeleteEnabled = true;
@@ -918,6 +858,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             .remove();
     };
     Conflict.reviewComplete = function () {
+    	context.connection().allowChangesToUnreviewedFeatures = false;
         d3.select('.conflicts')
             .remove();
     };

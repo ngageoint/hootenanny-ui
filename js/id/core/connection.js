@@ -24,6 +24,7 @@ iD.Connection = function(context) {
         layerZoomArray = [],
         totalNodesCnt = 0 ,
         maxNodesCnt = 0,
+        allowChangesToUnreviewedFeatures = false,
         off;
 
     //TODO: Document why this was added for Hoot
@@ -50,6 +51,11 @@ iD.Connection = function(context) {
 
     connection.userURL = function(username) {
         return url + '/user/' + username;
+    };
+    
+    connection.allowChangesToUnreviewedFeatures = function() 
+    {
+      return allowChangesToUnreviewedFeatures;
     };
 
   //TODO: Document why this was modified for Hoot
@@ -453,13 +459,13 @@ iD.Connection = function(context) {
                 if (err) return callback(err);
                 oauth.xhr({
                     method: 'POST',
-                    path: '/api/0.6/changeset/' + changeset_id + '/upload?mapId=' + changemapId,
+                    path: '/api/0.6/changeset/' + changeset_id + '/upload?mapId=' + changemapId + '&allowChangesToUnreviewedFeatures=' + allowChangesToUnreviewedFeatures,
                     options: { header: { 'Content-Type': 'text/xml' } },
                     content: JXON.stringify(connection.osmChangeJXON(changeset_id, changes))
                 }, function(err, xhr) {
                     if (err) return callback(err);
                     //hoot handler to manage merged descendents
-                    context.hoot().model.conflicts.updateDescendent(xhr, changemapId);
+                    //context.hoot().model.conflicts.updateDescendent(xhr, changemapId);
                     oauth.xhr({
                         method: 'PUT',
                         path: '/api/0.6/changeset/' + changeset_id + '/close?mapId=' + changemapId,

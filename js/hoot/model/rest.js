@@ -645,7 +645,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
-    rest.ReviewGet = function (mapId, callback) {
+    /*rest.ReviewGet = function (mapId, callback) {
             var numItems = 1000;
             var highestReviewScoreFirst = true;
             var reviewScoreThresholdMinimum = '0';
@@ -658,102 +658,61 @@ Hoot.model.REST = function (command, data, callback, option) {
                 }
                 return callback(resp);
         });
-    };
+    };*/
 
-rest.ReviewMarkAll = function(data, callback)
+rest.ReviewGetRefs = function (mapId, featureUniqueIds, callback) 
 {
-    var mapId = data.mapId;
-    //console.log("ReviewMarkAll mapId: " + mapId);
-    //markItemsReviewedRequest is required but can be unpopulated when markAll=true
-    var markItemsReviewedRequest = {};
-    markItemsReviewedRequest.reviewedItems = {};
-    markItemsReviewedRequest.reviewedItemsChangeset = "";
-    d3.json('/hoot-services/job/review?mapId='+mapId+'&markAll=true')
+  d3.json(
+    '/hoot-services/job/review/refs?mapId=' + mapId + '&featureUniqueIds=' + featureUniqueIds, 
+    function (error, resp) 
+    {
+      if (error) 
+      {
+        return callback(_alertError(error, "Get review refs failed!"));
+      }
+      return callback(resp);
+    });
+};
+
+rest.ReviewGetRefs = function(mapId, featureUniqueIds, callback)
+{
+    var reviewRefsRequest = {};
+    reviewRefsRequest.featureUniqueIds = featureUniqueIds;
+    
+    d3.json('/hoot-services/job/review/refs?mapId=' + mapId)
         .header('Content-Type', 'application/json')
         .send(
-            'PUT',
-            JSON.stringify(markItemsReviewedRequest),
+            'GET',
+            JSON.stringify(reviewRefsRequest),
             function(error, response)
             {
                 if (error)
                 {
-                    alert("Review Mark All failed.");
+                  alert("Review get refs failed.");
                 }
                 callback(error, response);
             });
 };
-
-rest.ReviewMarkItem = function(data, callback)
-{
-    var mapId = data.mapId;
-    //console.log("ReviewMarkAll mapId: " + mapId);
-    //markItemsReviewedRequest is required but can be unpopulated when markAll=true
-    var markItemsReviewedRequest = {};
-    markItemsReviewedRequest.reviewedItems = data.reviewedItems;
-    markItemsReviewedRequest.reviewedItemsChangeset = data.reviewedItemsChangeset;
-    d3.json('/hoot-services/job/review?mapId='+mapId+'&markAll=false')
-        .header('Content-Type', 'application/json')
-        .send(
-            'PUT',
-            JSON.stringify(markItemsReviewedRequest),
-            function(error, response)
-            {
-                if (error)
-                {
-                  alert("Review Mark All failed.");
-                }
-                callback(error, response);
-            });
-};
-
-
+    
 rest.reviewUpdateStatus = function(data, callback)
 {
     var mapId = data.mapId;
-    //console.log("ReviewMarkAll mapId: " + mapId);
-    //markItemsReviewedRequest is required but can be unpopulated when markAll=true
-    var markItemsReviewedRequest = {};
-    markItemsReviewedRequest.reviewid = data.reviewid;
+    var reviewUpdateRequest = {};
+    reviewUpdateRequest.reviewid = data.reviewid;
     if(data.reviewAgainstUuid) {
-        markItemsReviewedRequest.reviewagainstid = data.reviewAgainstUuid;
+    	reviewUpdateRequest.reviewagainstid = data.reviewAgainstUuid;
     }
     
     d3.json('/hoot-services/job/review/updatestatus?mapId='+mapId)
         .header('Content-Type', 'application/json')
         .send(
             'PUT',
-            JSON.stringify(markItemsReviewedRequest),
+            JSON.stringify(reviewUpdateRequest),
             function(error, response)
             {
                 if (error)
                 {
-                    alert("Review Mark All failed.");
-                }
-                callback(error, response);
-            });
-};
-
-rest.reviewResetStatus = function(data, callback)
-{
-    var mapId = data.mapId;
-    //console.log("ReviewMarkAll mapId: " + mapId);
-    //markItemsReviewedRequest is required but can be unpopulated when markAll=true
-    var markItemsReviewedRequest = {};
-    markItemsReviewedRequest.reviewid = data.reviewid;
-    if(data.reviewAgainstUuid){
-        markItemsReviewedRequest.reviewagainstid = data.reviewAgainstUuid;
-    }
-    
-    d3.json('/hoot-services/job/review/resetstatus?mapId='+mapId)
-        .header('Content-Type', 'application/json')
-        .send(
-            'PUT',
-            JSON.stringify(markItemsReviewedRequest),
-            function(error, response)
-            {
-                if (error)
-                {
-                    alert("Review Mark All failed.");
+                    alert("Review update status failed.");
                 }
                 callback(error, response);
             });
@@ -763,17 +722,16 @@ rest.reviewGetNext = function(data, callback)
 {
     var mapId = data.mapId;
   
-    var markItemsReviewedRequest = {};
+    var reviewGetNextRequest = {};
  
-    markItemsReviewedRequest.offset = data.offset;
-    markItemsReviewedRequest.direction = data.direction;
-    
+    reviewGetNextRequest.offset = data.offset;
+    reviewGetNextRequest.direction = data.direction;
     
     d3.json('/hoot-services/job/review/next?mapId='+mapId)
         .header('Content-Type', 'application/json')
         .send(
             'PUT',
-            JSON.stringify(markItemsReviewedRequest),
+            JSON.stringify(reviewGetNextRequest),
             function(error, response)
             {
                 if (error)
@@ -783,8 +741,6 @@ rest.reviewGetNext = function(data, callback)
                 callback(error, response);
             });
 };
-
-
 
 rest.ReviewGetStatistics = function (mapId, callback) {
             
@@ -800,7 +756,6 @@ rest.ReviewGetStatistics = function (mapId, callback) {
                 return callback(resp);
         });
     };
-
 
 rest.ReviewGetLockCount = function (mapId, callback) {
             
@@ -934,12 +889,8 @@ rest.getDebugLog = function (data, callback) {
     });
 };
 
-
-
-
 rest.exportLog = function()
 {
-
     var sUrl = '/hoot-services/info/logging/export';
     var link = document.createElement('a');
     link.href = sUrl;
@@ -957,10 +908,8 @@ rest.exportLog = function()
     }
 }
 
-
 rest.downloadReport = function(data)
 {
-
     var sUrl = '/hoot-services/info/reports/get?id=' + data.id + '&reportname=' + data.outputname;
     var link = document.createElement('a');
     link.href = sUrl;
@@ -980,8 +929,6 @@ rest.downloadReport = function(data)
 
     rest['' + command + ''](data, callback, option);
 };
-
-
 
 Hoot.model.REST.WarningHandler = function(resp){
     if(resp.statusDetail){

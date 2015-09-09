@@ -1,7 +1,7 @@
 Hoot.model.conflicts = function(context)
 {
   var model_conflicts = {};
-  var descendents = {};
+  //var descendents = {};
 
     model_conflicts.beginReview = function (layer, callback) {
         var mapid = layer.mapId;
@@ -10,34 +10,50 @@ Hoot.model.conflicts = function(context)
         });*/
         callback(layer);
     };
+
     model_conflicts.acceptAll = function (data, callback) {
-
-        var mapid = data.mapId;
-        var hasChanges = context.history().hasChanges();
-        if (hasChanges) {
-            iD.modes.Save(context).save(context, function () {
-
-                var reviewMarkData = {};
-                reviewMarkData.mapId = data.mapId;
-                Hoot.model.REST('ReviewMarkAll', reviewMarkData, function () {  
-                    if (callback) {
-                        callback();
-                    }
-
-                });               
-
+    	    //TODO: tag management
+    	
+    	    var items = data.reviewableItems;
+            var mapid = data.mapId;
+            var flagged = _.uniq(_.flatten(_.map(items, function (d) {
+                return [d.type.charAt(0) + d.id + '_' + mapid, d.itemToReviewAgainst.type.charAt(0) + d.itemToReviewAgainst.id + '_' + mapid];
+            })));
+            var inID = _.filter(flagged, function (d) {
+                return context.hasEntity(d);
             });
-        }
-        else {
-            var reviewMarkData = {};
-            reviewMarkData.mapId = data.mapId;
-            Hoot.model.REST('ReviewMarkAll', reviewMarkData, function () { 
-                if (callback) {
-                    callback();
+            _.each(inID, function (d) {
+                var ent = context.hasEntity(d);
+                if (!ent) {
+                    return;
                 }
+                var tags = ent.tags;
+                var newTags = _.clone(tags);
+                newTags = _.omit(newTags, function (value, key) {
+                    return key.match(/hoot:review/g);
+                });
+                context.perform(iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
             });
-        }
-    };
+            var hasChanges = context.history().hasChanges();
+            if (hasChanges) {
+                iD.modes.Save(context).save(context, function () {
+
+                    Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
+                        //if only locked by self
+                        if(resp.count >= 2) {
+                        	 alert("Reviews are being reviewed by other users. Modified features will be saved but will not be marked as resolved.");
+                        } 
+
+                        if (callback) {
+                            callback();
+                        }
+                    });
+                });
+            }
+            else {
+                callback();
+            }
+        };
 
     model_conflicts.RemoveAllReviews = function (data) {
         var items = data.reviewableItems;
@@ -75,7 +91,9 @@ Hoot.model.conflicts = function(context)
 
             context.connection().loadFromHootRest('poiMerge', osmXml, function(error, entities) {
 
-                //Remove two input entities
+                //TODO: tag management
+            	
+            	//Remove two input entities
                 iD.operations.Delete([feature.id, featureAgainst.id], context)();
 
                 //Add merged entity
@@ -86,8 +104,8 @@ Hoot.model.conflicts = function(context)
                 //this should probably be done by the server merge code
                 mergedNode.tags['hoot:status'] = 3;
                 //Track merged ids in descendents
-                descendents[feature.id] = mergedNode.id;
-                descendents[featureAgainst.id] = mergedNode.id;
+                //descendents[feature.id] = mergedNode.id;
+                //descendents[featureAgainst.id] = mergedNode.id;
 
                 //console.log(descendents);
 
@@ -103,7 +121,7 @@ Hoot.model.conflicts = function(context)
         }
     };
 
-    model_conflicts.findDescendent = function(id) {
+    /*model_conflicts.findDescendent = function(id) {
         var descId = descendents[id];
         if (typeof descId !== 'undefined') {
             return model_conflicts.findDescendent(descId);
@@ -124,7 +142,7 @@ Hoot.model.conflicts = function(context)
                 descendents[oldid] = newid;
             }
         }
-    };
+    };*/
 
     model_conflicts.getSourceLayerId = function(feature) {
         var mergeLayer = hoot.loadedLayers()[feature.layerName];
