@@ -337,9 +337,9 @@ Hoot.tools = function (context, selection) {
             conflicts.reviewNextStep();
         });
     });
-    conflicts.on('removeFeature', function (d, mapid) {
+    /*conflicts.on('removeFeature', function (d, mapid) {
         hoot.model.conflicts.RemoveFeature(d, mapid);
-    });
+    });*/
     conflate.on('merge', function (a, layerName, advOptions) {
 
         var layers = inputLayers();

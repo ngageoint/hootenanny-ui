@@ -149,7 +149,14 @@ iD.modes.Save = function(context) {
             } else if (errors.length) {
                 showErrors();
             } else {
-                context.connection().putChangeset(
+                
+            	//TODO: if the review against feature was deleted, remove its review against id from
+                //the reviewable feature review against tag (if the reviewable feature is deleted, 
+                //the review will be auto-resolved, so no action necessary for that)
+            	var changes = history.changes(iD.actions.DiscardTags(history.difference()));
+            	console.log(changes);
+            	
+            	context.connection().putChangeset(
                     history.changes(iD.actions.DiscardTags(history.difference())),
                     'Hoot Save',
                     history.imageryUsed(),

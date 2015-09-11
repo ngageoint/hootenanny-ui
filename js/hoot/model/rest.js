@@ -214,7 +214,6 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
-
     rest.getMapSize = function (mapId, callback) {
         var request = d3.json('/hoot-services/info/map/size?mapid=' + mapId);
         request.get(function (error, resp) {
@@ -289,8 +288,6 @@ Hoot.model.REST = function (command, data, callback, option) {
            });
    };
 
-
-
    rest.statusWithResponse = function(jobStatus, callback) {
         var status = function() {
             d3.json('/hoot-services/job/status/' + jobStatus, function (error, resp) {
@@ -336,8 +333,6 @@ Hoot.model.REST = function (command, data, callback, option) {
                         if(showError){
                             alert("Requested job failed! For detailed log goto Manage->Log");
                         }
-
-
                     }
                     else
                     {
@@ -359,10 +354,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             };
     };
 
-
     rest.cancel = function(data, callback) {
-
-
         d3.json('/hoot-services/job/cancel')
         .header('Content-Type', 'text/plain')
         .post(JSON.stringify(data), function (error, resp) {
@@ -370,12 +362,9 @@ Hoot.model.REST = function (command, data, callback, option) {
                 console.log(error);
                 return error;
             }
-
-
             rest.status(resp.jobid, callback);
         });
     };
-
 
     rest.CookieCutterConflate = function (data, callback, option) {
             data.INPUT1_TYPE = data.INPUT1_TYPE || 'DB';
@@ -405,7 +394,6 @@ Hoot.model.REST = function (command, data, callback, option) {
                 rest.status(resp.jobid, callback);
             });
     };
-
 
     rest.GetTranslationServerStatus = function(data, callback) {
         d3.json('/hoot-services/ogr/translationserver/status' , function (error, resp) {
@@ -516,7 +504,6 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
 
-
         var reqData = {};
         reqData.command = 'translate';
         reqData.translation = data.translation;
@@ -562,7 +549,6 @@ Hoot.model.REST = function (command, data, callback, option) {
             return data;
         });
     };
-
 
     rest.getConflationCustomOpts = function(confType,callback){
         // Doing the stacked load to prevent race condition in loading data
@@ -624,7 +610,6 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     }
 
-
     rest.getWFSList = function(callback) {
         var request = d3.json('/hoot-services/job/export/wfs/resources');
         request.get(function (error, resp) {
@@ -645,53 +630,37 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
-    /*rest.ReviewGet = function (mapId, callback) {
-            var numItems = 1000;
-            var highestReviewScoreFirst = true;
-            var reviewScoreThresholdMinimum = '0';
-            var geospatialBounds = '-180,-90,180,90';
-            var boundsDisplayMethod = 'reviewableItemOnly';
-        d3.json('/hoot-services/job/review?mapId=' + mapId + '&boundsDisplayMethod=' + boundsDisplayMethod + '&numItems=' + numItems + '&highestReviewScoreFirst=' + highestReviewScoreFirst + '&reviewScoreThresholdMinimum=' + reviewScoreThresholdMinimum + '&geospatialBounds=' + geospatialBounds, function (error, resp) {
-                if (error) {
-                    return callback(_confirmError(error, "Get review failed! Do you want to reset layers? \n " +
-                            "(Note: For detailed error log goto Manage->Log)"));
-                }
-                return callback(resp);
-        });
-    };*/
-
-rest.ReviewGetRefs = function (mapId, featureUniqueIds, callback) 
+rest.getReviewRefs = function(mapId, id, callback)
 {
-  d3.json(
-    '/hoot-services/job/review/refs?mapId=' + mapId + '&featureUniqueIds=' + featureUniqueIds, 
-    function (error, resp) 
-    {
-      if (error) 
-      {
-        return callback(_alertError(error, "Get review refs failed!"));
-      }
-      return callback(resp);
-    });
-};
-
-rest.ReviewGetRefs = function(mapId, featureUniqueIds, callback)
-{
-    var reviewRefsRequest = {};
-    reviewRefsRequest.featureUniqueIds = featureUniqueIds;
+  //return a[item.type] + item.id + '_' + mapid;
+  //console.log(id);
+  var elementTypeAbbrev = id.substring(0, 1);
+  //console.log(elementTypeAbbrev);
+  var elementType;
+  if (elementTypeAbbrev == 'n')
+  {
+	elementType = "node";
+  }
+  else if (elementTypeAbbrev == 'w')
+  {
+	elementType = "way";
+  }
+  if (elementTypeAbbrev == 'r')
+  {
+	elementType = "relation";
+  }
+  var elementId = id.substring(1, id.length - 1).split("_")[0];
     
-    d3.json('/hoot-services/job/review/refs?mapId=' + mapId)
-        .header('Content-Type', 'application/json')
-        .send(
-            'GET',
-            JSON.stringify(reviewRefsRequest),
-            function(error, response)
-            {
-                if (error)
-                {
-                  alert("Review get refs failed.");
-                }
-                callback(error, response);
-            });
+  d3.json('/hoot-services/job/review/refs?mapId=' + mapId + "&elementId=" + elementId + 
+	"&elementType=" + elementType,
+    function(error, response)
+    {
+      if (error)
+      {
+        alert("Review get refs failed.");
+      }
+      callback(error, response);
+    });
 };
     
 rest.reviewUpdateStatus = function(data, callback)

@@ -1,5 +1,5 @@
 Hoot.control.conflicts = function (context, sidebar) {
-    var event = d3.dispatch('acceptAll', 'removeFeature', 'exportData', 'addData', 'reviewDone','zoomToConflict');
+    var event = d3.dispatch('acceptAll', /*'removeFeature',*/ 'exportData', 'addData', 'reviewDone','zoomToConflict');
     var Conflict = {};
     var confData;
     var Review;
@@ -41,6 +41,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         var index = 0;
         Conflict.reviews;
         
+        //tell the osm changeset saving that we are starting to review features for this dataset
         context.connection().allowChangesToUnreviewedFeatures = true;
         
         function getCurrentReviewMeta() {
@@ -138,7 +139,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
                 
         };
-
 
         var jumpTo = function(direction) {
             var targetReviewItem = getCurrentReviewItem();
@@ -291,7 +291,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                         //Override with no-op
                         mergeFeatures = function() {};
                         d3.select('a.merge').on('mouseenter', function() {}).on('mouseleave', function() {});
-
                     }
 
                     resetStyles();
@@ -317,16 +316,14 @@ Hoot.control.conflicts = function (context, sidebar) {
                 feature = context.hasEntity(idid);
                 //console.log(feature);
                 if (!feature) {
-                    //idid = context.hoot().model.conflicts.findDescendent(idid);
-                	idid = ''; //TODO: fix
+                    idid = context.hoot().model.conflicts.findDescendent(idid);
                     if (idid) feature = context.hasEntity(idid);
                 }
 
                 againstFeature = context.hasEntity(idid2);
                 //console.log(againstFeature);
                 if (!againstFeature) {
-                    //idid2 = context.hoot().model.conflicts.findDescendent(idid2);
-                	idid2 = ''; //TODO: fix
+                    idid2 = context.hoot().model.conflicts.findDescendent(idid2);
                     if (idid2) againstFeature = context.hasEntity(idid2);
                 }
 
@@ -468,8 +465,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                     event.acceptAll(data);
                 }
             });
-
-
         }
 
         function updateMeta() {
@@ -528,7 +523,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             if(vis.length>1){window.alert('Swap to Conflated Layer before accepting!');return false;}
             return true;
         };
-
 
         var traverseForward = function () {
             var vicheck = vischeck();
@@ -591,8 +585,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                         d3.select('div.tag-table').remove();
                     }
                     
-                    //TODO: tag management
-                    
+                    //drop all review tags from the all reviewed features, since they're all being 
+                    //marked as reviewed
                     var curReviewAgainstUUID = item.itemToReviewAgainst.uuid;
                     var curReviewUUID =  item.uuid;
                     var items = [item];
@@ -640,7 +634,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                     if (hasChanges) {
                         iD.modes.Save(context).save(context, function () {
                             
-
                         var multiItemInfo = getMultiReviewItemInfo();
                         jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
 
@@ -863,6 +856,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             .remove();
     };
     Conflict.reviewComplete = function () {
+    	//tell the osm changeset saving that we are done reviewing features for this dataset
     	context.connection().allowChangesToUnreviewedFeatures = false;
         d3.select('.conflicts')
             .remove();
