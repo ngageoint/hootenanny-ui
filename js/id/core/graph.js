@@ -21,7 +21,12 @@ iD.Graph = function(other, mutable) {
 
 iD.Graph.prototype = {
 
-   wipe: function(entity) {
+		//for testing purposes only
+		/*put: function(entity) {
+	        this.entities[entity.id] = entity;
+	    },*/
+	
+	wipe: function(entity) {
         this.entities[entity.id] = undefined;
         /*if (this.entities[entity.id] === entity)
             return this;

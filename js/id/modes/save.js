@@ -153,6 +153,8 @@ iD.modes.Save = function(context) {
             	//TODO: if the review against feature was deleted, remove its review against id from
                 //the reviewable feature review against tag (if the reviewable feature is deleted, 
                 //the review will be auto-resolved, so no action necessary for that)
+            	//TODO: a check still needs to be put in place that prevents a user from deleting
+            	//any feature that has more than one review reference (?)
             	var changes = history.changes(iD.actions.DiscardTags(history.difference()));
             	console.log(changes);
             	
