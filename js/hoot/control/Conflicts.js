@@ -41,9 +41,6 @@ Hoot.control.conflicts = function (context, sidebar) {
         var index = 0;
         Conflict.reviews;
         
-        //tell the osm changeset saving that we are starting to review features for this dataset
-        context.connection().allowChangesToUnreviewedFeatures = true;
-        
         function getCurrentReviewMeta() {
             return currentReviewableMeta;
         }
@@ -567,7 +564,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                     return;
                 }
                 var item = getCurrentReviewItem();
-
                 if(item) {
                     var contains = item.reviewed;
                     if (contains) {
@@ -627,18 +623,23 @@ Hoot.control.conflicts = function (context, sidebar) {
                             }
                         }
 
-                        context.perform(iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
+                        context.perform(
+                          iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
                     });
 
                     var hasChanges = context.history().hasChanges();
                     if (hasChanges) {
-                        iD.modes.Save(context).save(context, function () {
+                    	
+                    	//console.log(
+                          //context.history().changes(
+                            //iD.actions.DiscardTags(context.history().difference())));
+                    	
+                    	iD.modes.Save(context).save(context, function () {
                             
                         jumpFor();
 
                         });
                     } else {
-                        
                         	jumpFor();
                     }              
                 } else {
@@ -851,8 +852,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             .remove();
     };
     Conflict.reviewComplete = function () {
-    	//tell the osm changeset saving that we are done reviewing features for this dataset
-    	context.connection().allowChangesToUnreviewedFeatures = false;
         d3.select('.conflicts')
             .remove();
     };

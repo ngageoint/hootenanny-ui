@@ -21,10 +21,10 @@ iD.Graph = function(other, mutable) {
 
 iD.Graph.prototype = {
 
-		//for testing purposes only
-		/*put: function(entity) {
+		//TODO: hack
+		put: function(entity) {
 	        this.entities[entity.id] = entity;
-	    },*/
+	    },
 	
 	wipe: function(entity) {
         this.entities[entity.id] = undefined;
