@@ -122,7 +122,7 @@ Hoot.model.conflicts = function(context)
         }
         //console.log(revieableItemiDFeatureIds);
         // retrieve the features
-        context/*.connection()*/.loadMultiple(reviewableItemiDFeatureIds, function(err, entities) 
+        context.connection().loadMultiple(reviewableItemiDFeatureIds, function(err, entities) 
         {
           //console.log(entities.data);
           for (var i = 0; i < entities.data.length; i++)

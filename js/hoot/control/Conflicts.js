@@ -634,18 +634,13 @@ Hoot.control.conflicts = function (context, sidebar) {
                     if (hasChanges) {
                         iD.modes.Save(context).save(context, function () {
                             
-                        var multiItemInfo = getMultiReviewItemInfo();
-                        jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
+                        jumpFor();
 
                         });
-                    } /*else {
-                        Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
-
-                            var multiItemInfo = getMultiReviewItemInfo();
-                            jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
-
-                        });
-                    }*/                  
+                    } else {
+                        
+                        	jumpFor();
+                    }              
                 } else {
                     alert("Nothing to review.");
                 }
