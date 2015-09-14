@@ -58,28 +58,28 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
             map.centerZoom(extent.center(), (zoom));
         }
-        
+
         function panToEntity(entity) {
         	//only pan if feature is not on screen
         	var map = context.map();
         	var entityExtent = entity.extent(context.graph())? entity.extent(context.graph()) : undefined;
         	var mapExtent = map.extent();
         	var entityCenter = entityExtent.center();
-        	        	            
+
         	if(entityExtent == undefined){
         		alert("Could not locate selected feature with id: " + entity.id + ".")
         		return;
         	}
-        	
+
         	if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
             	var zoom = Math.min(20, map.zoom());
                 if (zoom < 16) {
                     zoom = 16.01;
                 }
-            	map.centerZoom(entityCenter,(zoom));	
+            	map.centerZoom(entityCenter,(zoom));
         	}
         }
-        
+
         var jumpFor = function (nReviewed, itemCnt) {
             // allow other to use
             //resetReviewStatus();
@@ -256,6 +256,13 @@ Hoot.control.conflicts = function (context, sidebar) {
             var calls = 0;
             var loadedMissing = false;
             clearInterval(getFeatureTimer);
+            //HACK alert:
+            //TODO: come up with a better way to manage the active layer name
+            var layerNames = d3.entries(hoot.loadedLayers()).filter(function(d) {
+                return 1*d.value.mapId === mapid;
+            });
+            var layerName = layerNames[0].key;
+
             getFeatureTimer = setInterval(function () {
                 if (calls < max) {
                     getFeature();
@@ -265,7 +272,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 //                    window.alert('One feature involved in this review was not found in the visible map extent');
                 } else {
                     //Make a call to grab the individual feature
-                    context.connection().loadMissing([idid, idid2], function(err, entities) {
+                    context.loadMissing([idid, idid2], function(err, entities) {
                         //console.log(entities);
                         //loadedMissing = true;
                         //calls = 0;
@@ -281,7 +288,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                             window.console.error(entities);
                         }
 
-                    });
+                    }, layerName);
                 }
             }, 500);
             var getFeatureStopTimer = function (skip) {
@@ -733,26 +740,26 @@ Hoot.control.conflicts = function (context, sidebar) {
             var reviewMarkData = {};
             reviewMarkData.mapId = mapid;
             reviewMarkData.reviewedItems = reviewedItems;
-            
+
             var hasChanges = context.history().hasChanges();
             if (hasChanges) {
               var changes = context.changes(iD.actions.DiscardTags(context.history().difference()));
               var changesetXml = JXON.stringify(context.connection().osmChangeJXON('-1', changes));
               reviewMarkData.reviewedItemsChangeset = changesetXml;
-                Hoot.model.REST('ReviewMarkItem', reviewMarkData, function (error, response) 
+                Hoot.model.REST('ReviewMarkItem', reviewMarkData, function (error, response)
                 {
                   var multiItemInfo = getMultiReviewItemInfo();
                   jumpFor(multiItemInfo.nReviewed, multiItemInfo.itemCnt);
-                      
+
                   var xmlParser = new DOMParser();
-                  var changesetDoc = 
+                  var changesetDoc =
                 	xmlParser.parseFromString(response.changesetUploadResponse, "text/xml");
                   context.hoot().model.conflicts.updateDescendent(changesetDoc, response.mapId);
                   context.flush();
                   //context.history().clearSaved();
                   context.enter(iD.modes.Browse(context));
                 });
-            } 
+            }
             else {
                 Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
 
@@ -761,8 +768,8 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                 });
             }
-            
-            
+
+
         };
 
         function toggleForm(self) {
