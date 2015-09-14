@@ -111,14 +111,14 @@ iD.Connection = function(context) {
             });
     };
 
-    connection.loadMissing = function(ids, callback) {
+    connection.loadMissing = function(ids, callback, layerName) {
         connection.loadMultiple(ids, function(err, entities) {
-            event.load(err, {data: entities});
+            //event.load(err, entities);
             if (callback) callback(err, entities);
-        });
+        }, null, layerName);
     };
 
-    connection.loadMultiple = function(ids, callback, hootcallback) {
+    connection.loadMultiple = function(ids, callback, hootcallback, layerName) {
         // TODO: upgrade lodash and just use _.chunk
         function chunk(arr, chunkSize) {
             var result = [];
@@ -150,7 +150,7 @@ iD.Connection = function(context) {
                         function(err, entities) {
 
                             if (callback) callback(err, {data: entities}, hootcallback);
-                        },currMapId);
+                        },currMapId, layerName);
                 } else { // we do not know hoot map id so use the default iD behavior
                     connection.loadFromURL(
                         url + '/api/0.6/' + type + '?' + type + '=' + arr.join(),
@@ -916,6 +916,13 @@ iD.Connection = function(context) {
                                 }
                                 if(totalNodesCnt > maxNodesCnt){
                                     connection.showDensityRaster(true);
+
+                                    if (context.hoot().control.conflicts.reviewIds) {
+                                        context.loadMissing(context.hoot().control.conflicts.reviewIds, function(err, entities) {
+                                            event.loaded();
+                                            event.layerAdded(layerName);
+                                        }, layerName);
+                                    }
                                 } else {
                                     connection.showDensityRaster(false);
                                 }
