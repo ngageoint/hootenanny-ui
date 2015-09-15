@@ -303,6 +303,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                         d3.selectAll('.' + againstFeature.id)
                             .classed('activeReviewFeature2', true);
                     }
+                    Conflict.reviewIds = [feature.id, againstFeature.id];
                     buildPoiTable(d3.select('#conflicts-container'), [feature, againstFeature]);
                     var note = d3.select('.review-note');
                     note.html(note.html().replace('Review note: ', 'Review note: ' + feature.tags['hoot:review:note']));

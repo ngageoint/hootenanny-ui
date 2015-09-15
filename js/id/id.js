@@ -48,7 +48,7 @@ window.iD = function () {
         container,
         ui = iD.ui(context),
         hoot = Hoot.hoot(context),
-        
+
 
         connection = iD.Connection(context),
         locale = iD.detect().locale,
@@ -114,6 +114,14 @@ window.iD = function () {
             if (callback) callback(err, result);
         }
         connection.loadEntity(id, done);
+    };
+
+    context.loadMissing = function(ids, callback, layerName) {
+        function done(err, result) {
+            entitiesLoaded(err, result);
+            if (callback) callback(err, result);
+        }
+        connection.loadMissing(ids, done, layerName);
     };
 
     context.zoomToEntity = function(id, zoomTo) {
@@ -299,7 +307,7 @@ window.iD = function () {
     context.map = function() { return map; };
     context.layers = function() { return map.layers; };
     context.surface = function() { return map.surface; };
-    context.editable = function() { 
+    context.editable = function() {
         // context.hoot().isModeBtnEnabled() was added to show and hide mode buttons
         // only when there is layer added.
         // Has side effect on feature enable disable. See matching test in test/spec/renderer/features.js
