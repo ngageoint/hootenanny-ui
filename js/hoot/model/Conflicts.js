@@ -63,47 +63,34 @@ Hoot.model.conflicts = function(context)
      * Updates the review against tag for the merged feature with the contents of the review
      * against items
      */
-    var updateMergedFeatureReviewAgainstTag = function(mergedFeature, reviewAgainstItems) 
+    var updateMergedFeatureReviewAgainstTag = 
+      function(mergedFeature, reviewAgainstItems) 
     {
       //console.log(mergedFeature);
       //console.log(reviewAgainstItems);
       if (reviewAgainstItems.length > 0)
       {
     	// add these feature ID's to the hoot:review:uuid tag of the new feature created
-        // by the merge
-        var mergedFeatureExistingReviewAgainstIdsStr = mergedFeature.tags['hoot:review:uuid'];
-        var updatedMergedFeatureReviewAgainstIdsStr = "";
-        if (mergedFeatureExistingReviewAgainstIdsStr && 
-        	  typeof mergedFeatureExistingReviewAgainstIdsStr != 'undefined')
-        {
-          var mergedFeatureExistingReviewAgainstIds;
-          if (mergedFeatureExistingReviewAgainstIdsStr.indexOf(";") != -1)
-          {
-            mergedFeatureExistingReviewAgainstIds = 
-              mergedFeatureExistingReviewAgainstIdsStr.split(";");
-          }
-          else
-          {
-            mergedFeatureExistingReviewAgainstIds = [];
-            mergedFeatureExistingReviewAgainstIds[0] = mergedFeatureExistingReviewAgainstIdsStr;
-          }
-            	 
-          for (var i = 0; i < mergedFeatureExistingReviewAgainstIds.length; i++)
-          {
-            updatedMergedFeatureReviewAgainstIdsStr += mergedFeatureExistingReviewAgainstIds[i] + ";"
-          }
-        }
+        // by the merge; the new merged feature shouldn't have any hoot:review:uuid's so don't
+    	// check for that tag
+    	var updatedMergedFeatureReviewAgainstIdsStr = "";
         for (var i = 0; i < reviewAgainstItems.length; i++)
-        {
-          //console.log(reviewAgainstItems[i]);
-          updatedMergedFeatureReviewAgainstIdsStr += 
-            reviewAgainstItems[i].reviewAgainstItemId + ";";
+        {   
+          var reviewAgainstItemId = reviewAgainstItems[i].reviewAgainstItemId;
+          //console.log(reviewAgainstItemId);
+          if (updatedMergedFeatureReviewAgainstIdsStr.indexOf(reviewAgainstItemId) == -1)
+          {
+        	updatedMergedFeatureReviewAgainstIdsStr += reviewAgainstItemId + ";";
+          }
         }
-        //this is a new feature which hasn't been created yet, so we're adding the tag to the 
-        //feature object vs calling the ChangeTags action
-        mergedFeature.tags['hoot:review:uuid'] = updatedMergedFeatureReviewAgainstIdsStr;  
-      }
-        
+        if (updatedMergedFeatureReviewAgainstIdsStr != "")
+        {
+          //this is a new feature which hasn't been created yet, so we're adding the tag to the 
+          //feature object vs calling the ChangeTags action
+          mergedFeature.tags['hoot:review:uuid'] = updatedMergedFeatureReviewAgainstIdsStr;  
+          mergedFeature.tags['hoot:review:needs'] = "yes";
+        }
+      } 
       //console.log(mergedFeature);
       return mergedFeature;
     }
@@ -133,34 +120,144 @@ Hoot.model.conflicts = function(context)
     
     /*
      * Adds the id of the merged feature to the review against tag of the features passed in for
-     * update
+     * update; also removes any id in the uuidsToRemove list from the features passed in
      */
     var updateTagsForFeaturesReferencingFeaturesDeletedByMerge = 
-      function(mergedFeature, featuresToUpdate, mapId)
+      function(mergedFeature, featuresToUpdate, uuidsToRemove)
     {
       //console.log(featuresToUpdate.data);
       for (var i = 0; i < featuresToUpdate.data.length; i++)
       {
+    	var featureUpdated = false;
         var featureToUpdate = featuresToUpdate.data[i];
+
         //console.log(featureToUpdate);
-        // add the feature id of the new merged feature to the hoot:review:uuid tag
-        // of each of the retrieved features 
+        
         var featureReviewAgainstIdsStr = featureToUpdate.tags['hoot:review:uuid'];
-        if (!featureReviewAgainstIdsStr || typeof featureReviewAgainstIdsStr == 'undefined')
+        
+        //remove the ids in the remove list if they are present
+        if (!featureReviewAgainstIdsStr || typeof featureReviewAgainstIdsStr == 'undefined' ||
+        	featureReviewAgainstIdsStr == 'undefined')
         {
           featureReviewAgainstIdsStr = ""; 
         }
-        featureReviewAgainstIdsStr = featureReviewAgainstIdsStr + ";" + mergedFeature.tags["uuid"]; 
-        featureToUpdate.tags = featureReviewAgainstIdsStr;
+        else if (featureReviewAgainstIdsStr.indexOf(";") != -1)
+        {
+          var featureReviewAgainstIdsArr = featureReviewAgainstIdsStr.split(";");
+          featureReviewAgainstIdsStr = "";
+          for (var j = 0; i < featureReviewAgainstIdsArr.length; j++)
+          {
+        	var id = featureReviewAgainstIdsArr[j];
+            if (uuidsToRemove.indexOf(id) == -1)
+            {
+              featureReviewAgainstIdsStr += id + ";";
+              featureUpdated = true;
+            }
+          }
+        }
+        else
+        {
+          if (uuidsToRemove.indexOf(featureReviewAgainstIdsStr) != -1)
+          {
+        	featureReviewAgainstIdsStr = ""; 
+        	featureUpdated = true;
+          }
+        }
+        
+        // add the feature id of the new merged feature to the hoot:review:uuid tag
+        // of each of the retrieved features 
+        //We would have a big problem here if we weren't replacing the uuid on the merged 
+        //feature b/c the mergedFeature would have had a concatenated uuid made up of the
+        //deleted uuid's, which would cause review back end problems later on.
+        var mergedFeatureUuid = mergedFeature.tags["uuid"];
+        //console.log(mergedFeatureUuid);
+        //don't think there is any way the feature would contained the new merged feature's uuid,
+        //or be in the uuidsToRemove list, but let's check anyway
+        if (featureReviewAgainstIdsStr.indexOf(mergedFeatureUuid) == -1 && 
+        	uuidsToRemove.indexOf(mergedFeatureUuid) == -1)
+        {
+          if (featureReviewAgainstIdsStr != "")
+          {
+        	featureReviewAgainstIdsStr = featureReviewAgainstIdsStr + ";" + mergedFeatureUuid;   
+          }
+          else
+          {
+        	featureReviewAgainstIdsStr = mergedFeatureUuid;
+          }
+          featureUpdated = true;
+        }
+        
+        if (featureReviewAgainstIdsStr == "")
+        {
+          //nothing left to review against, so drop all review tags
+          featureToUpdate.tags = 
+        	_.omit(featureToUpdate.tags, 
+        		   function (value, key) 
+        		   {
+                     return key.match(/hoot:review/g);
+                   });
+          featureUpdated = true;
+        }
+        else
+        {
+          featureToUpdate.tags["hoot:review:uuid"] = featureReviewAgainstIdsStr;
+          featureToUpdate.tags['hoot:review:needs'] = "yes";
+        }
         //console.log(featureToUpdate);
-
-        context.graph().put(featureToUpdate); //TODO: hack
-        context.perform(
-          iD.actions.ChangeTags(
-            featureToUpdate.id, featureToUpdate.tags), t('operations.change_tags.annotation'));
+        
+        if (featureUpdated)
+        {
+          context.graph().put(featureToUpdate); //TODO: hack
+          context.perform(
+            iD.actions.ChangeTags(
+              featureToUpdate.id, featureToUpdate.tags), t('operations.change_tags.annotation'));
+        }
       }
     }
     
+    /*
+     * This assumes all features are nodes; I'm sure there's a more succinct js way to do this...
+     */
+    var removeItems = function(reviewItems, iDidsToRemove)
+    {
+      //iD id format: item type first char + item osm id + '_' + map id;
+      var idsToRemove = new Array();
+      for (var i = 0; i < iDidsToRemove.length; i++)
+      {
+    	var iDid = iDidsToRemove[i];
+    	var elementId = Number(iDid.substring(1, iDid.length - 1).split("_")[0]);  
+    	idsToRemove.push(elementId);
+    	//console.log(elementId);
+      }
+      
+      var modifiedReviewItems = new Array();
+      for (var i = 0; i < reviewItems.length; i++)
+      {
+        var reviewItem = reviewItems[i];
+        //console.log(reviewItem.id);
+        if (idsToRemove.indexOf(reviewItem.id) == -1)
+        {
+          //console.log(reviewItem.id);
+          modifiedReviewItems.push(reviewItem)
+        }
+      }
+      return modifiedReviewItems;
+    }
+    
+    function guid() {
+    	  function s4() {
+    	    return Math.floor((1 + Math.random()) * 0x10000)
+    	      .toString(16)
+    	      .substring(1);
+    	  }
+    	  return "{" + s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    	    s4() + '-' + s4() + s4() + s4() + "}";
+    	}
+    
+    /*
+     * The code in this method is making the assumption that only nodes are merged here, which
+     * is currently the case.  If this changes, then the code will need to be updated. 
+     */
     model_conflicts.autoMergeFeature = function (feature, featureAgainst, mapid) {
         var layerName = feature.layerName;
 
@@ -172,30 +269,30 @@ Hoot.model.conflicts = function(context)
 
             context.connection().loadFromHootRest('poiMerge', osmXml, function(error, entities) {
             	
+            	//Remove two input entities
+                //console.log("test9");
+                //grab these uuid's before the delete happens
+                var uuidsToRemove = new Array();
+                uuidsToRemove.push(context.entity(feature.id).tags["uuid"]); 
+                uuidsToRemove.push(context.entity(featureAgainst.id).tags["uuid"]);
+                iD.operations.Delete([feature.id, featureAgainst.id], context)();
+                //logDiff();
+            	
             	//newly merged entity
                 var mergedNode = entities[0];
-                console.log(mergedNode);
                 //FIXME: Temp hack to set version to 0
                 //mergedNode.version = 0;
                 //This would possibly make more sense done server-side, but there are 
                 //severe problems with data consistency client-side when updating tags 
                 //on the server, rather than on the client.
                 mergedNode.tags['hoot:status'] = 3;
-                context.perform(
-                  iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
-                
-                //Track merged ids in descendents
-                //console.log(descendents);
-                //descendents[feature.id] = mergedNode.id;
-                //descendents[featureAgainst.id] = mergedNode.id;
-                
-                window.setTimeout(function() {
-                  context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
-                
-                //Remove two input entities
-                console.log("test9");
-                iD.operations.Delete([feature.id, featureAgainst.id], context)();
-                logDiff();
+                mergedNode.tags['hoot:review:uuid'] = "";
+                //TODO: hack - The UUID of the merged node made of up the UUID's of the deleted
+                //merged in items is going to wreak havoc in the review back end down the line.
+                //For now, replacing it with a new one...unfortunately will lose provenance...but
+                //since the merged in elements are deleted anyway, does it really matter?
+                mergedNode.tags['uuid'] = guid();
+                //console.log(mergedNode);
                 
                 //manage the tags for the deleted feature and those who ref them
                 
@@ -215,6 +312,11 @@ Hoot.model.conflicts = function(context)
                     // result of the merge, still reference as needing to be reviewed against (the 
                     // deleted features' hoot:review:uuid tags contain the id's of these features).
                     var reviewAgainstItems1 = response.reviewAgainstItems;
+                    //go through and remove any references to the two features being deleted, since
+                    //we no longer care about any review tag updates involving them
+                    //console.log("reviewAgainstItems1: " + reviewAgainstItems1);
+                    reviewAgainstItems1 = 
+                      removeItems(reviewAgainstItems1, [feature.id, featureAgainst.id]);
                     //console.log("reviewAgainstItems1: " + reviewAgainstItems1);
                     // These are all features that reference the above deleted features, as a 
                     // result of the merge, as still needing to be reviewed against (these 
@@ -222,7 +324,10 @@ Hoot.model.conflicts = function(context)
                     // tags).
                     var reviewableItems1 = response.reviewableItems;
                     //console.log("reviewableItems1: " + reviewableItems1);
-                      
+                    reviewableItems1 = 
+                      removeItems(reviewableItems1, [feature.id, featureAgainst.id]);
+                    //console.log("reviewableItems1: " + reviewableItems1);
+                    
                     //get references to review data for the review against feature
                     Hoot.model.REST('getReviewRefs', mapid, featureAgainst.id,
                       function (error, response) 
@@ -238,71 +343,118 @@ Hoot.model.conflicts = function(context)
                         // see comments above on these data structures
                         var reviewAgainstItems2 = response.reviewAgainstItems;
                         //console.log("reviewAgainstItems2: " + reviewAgainstItems2);
+                        reviewAgainstItems2 = 
+                          removeItems(reviewAgainstItems2, [feature.id, featureAgainst.id]);
+                        //console.log("reviewAgainstItems2: " + reviewAgainstItems2);
                         var reviewableItems2 = response.reviewableItems;
                         //console.log("reviewableItems2: " + reviewableItems2);
+                        reviewableItems2 = 
+                          removeItems(reviewableItems2, [feature.id, featureAgainst.id]);
+                        //console.log("reviewableItems2: " + reviewableItems2);
                             
-                        //update the review tags on the new merged feature
+                        //update the review tags on the new merged feature; exclude the feature/
+                        //feature against uuid's from being added to review tags, since those
+                        //features will no longer exist after the changeset delete
                         mergedNode = 
                           updateMergedFeatureReviewAgainstTag(mergedNode, reviewAgainstItems1);
                         mergedNode = 
                           updateMergedFeatureReviewAgainstTag(mergedNode, reviewAgainstItems2);
+                        
+                        var mergedNodeReviewAgainstIds = mergedNode["hoot:review:uuid"];
+                        if (!mergedNodeReviewAgainstIds || 
+                        	typeof mergedNodeReviewAgainstIds == 'undefined' ||
+                        	mergedNodeReviewAgainstIds == 'undefined' || 
+                        	mergedNodeReviewAgainstIds == "")
+                        {
+                          //nothing left to review against, so drop all review tags
+                          mergedNode.tags = 
+                            _.omit(mergedNode.tags, 
+                              function (value, key) 
+                              {
+                                return key.match(/hoot:review/g);
+                              });
+                        }
+                        
                         //console.log(mergedNode);
-                        console.log("test1");
-                        logDiff();
+                        //console.log("test1");
+                        //logDiff();
                         
                         //TODO: There is some duplicated logic here, but having it was the only
                         //way I could get the events to trigger properly, since loadMultiple
                         //doesn't seem to execute at all if you pass an empty set of ID's to it.
                         //Need to clean this up
-                          
+                        
                         var reviewableItemiDFeatureIds1 = 
                           reviewableItemsToIdFeatureIds(reviewableItems1, mapid);
                         if (reviewableItemiDFeatureIds1.length > 0)
                         {
-                          console.log("test2");
-                          //console.log(revieableItemiDFeatureIds);
+                          //console.log("test2");
+                          //console.log(reviewableItemiDFeatureIds1);
                           // retrieve the features
                           context.connection().loadMultiple(reviewableItemiDFeatureIds1, 
                             function(err, entities1) 
                           {
-                        	console.log("test3");
+                        	//console.log("test3");
                             //add the merged node tag to the review tags for features 
-                            //referencing the deleted features
+                            //referencing the deleted features - see note above about excluding
+                        	//feature/featureAgainst uuids
                             updateTagsForFeaturesReferencingFeaturesDeletedByMerge(
-                              mergedNode, entities1, mapid);
-                            logDiff();
+                              mergedNode, entities1, uuidsToRemove);
+                            //logDiff();
                                 	
                             var reviewableItemiDFeatureIds2 = 
                               reviewableItemsToIdFeatureIds(reviewableItems2, mapid);
                             if (reviewableItemiDFeatureIds2.length > 0)
                             {
-                              console.log("test4");
+                              //console.log("test4");
                               context.connection().loadMultiple(reviewableItemiDFeatureIds2, 
                                 function(err, entities2) 
                                 {
-                                  console.log("test5");
+                                  //console.log("test5");
                                   updateTagsForFeaturesReferencingFeaturesDeletedByMerge(
-                                    mergedNode, entities2, mapid);
-                                  logDiff();
+                                    mergedNode, entities2, uuidsToRemove);
+                                  
+                                  context.perform(
+                                    iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
+                                  //logDiff();
+                                  
+                                   //Track merged ids in descendents
+                                   //console.log(descendents);
+                                   //descendents[feature.id] = mergedNode.id;
+                                   //descendents[featureAgainst.id] = mergedNode.id;
+                                        
+                                   window.setTimeout(function() {
+                                     context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
                                 });
                             }
                          });
                         }
                         else
                         {
-                          console.log("test6");
+                          //console.log("test6");
                           var reviewableItemiDFeatureIds2 = 
                             reviewableItemsToIdFeatureIds(reviewableItems2, mapid);
                           if (reviewableItemiDFeatureIds2.length > 0)
                           {
-                        	console.log("test7");
+                        	//console.log("test7");
                         	context.connection().loadMultiple(reviewableItemiDFeatureIds2, 
                               function(err, entities2) 
                               {
-                        		console.log("test8");
+                        		//console.log("test8");
                                 updateTagsForFeaturesReferencingFeaturesDeletedByMerge(
-                                  mergedNode, entities2, mapid);
-                                logDiff();
+                                  mergedNode, entities2, uuidsToRemove);
+                                
+                                context.perform(
+                                  iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
+                                //logDiff();
+                                
+                                //Track merged ids in descendents
+                                //console.log(descendents);
+                                //descendents[feature.id] = mergedNode.id;
+                                //descendents[featureAgainst.id] = mergedNode.id;
+                                            
+                                window.setTimeout(function() {
+                                  context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
                               });
                           }
                           
