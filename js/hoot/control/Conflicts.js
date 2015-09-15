@@ -312,17 +312,17 @@ Hoot.control.conflicts = function (context, sidebar) {
             var getFeature = function () {
                 feature = context.hasEntity(idid);
                 //console.log(feature);
-                if (!feature) {
+                /*if (!feature) {
                     idid = context.hoot().model.conflicts.findDescendent(idid);
                     if (idid) feature = context.hasEntity(idid);
-                }
+                }*/
 
                 againstFeature = context.hasEntity(idid2);
                 //console.log(againstFeature);
-                if (!againstFeature) {
+                /*if (!againstFeature) {
                     idid2 = context.hoot().model.conflicts.findDescendent(idid2);
                     if (idid2) againstFeature = context.hasEntity(idid2);
-                }
+                }*/
 
                 if (feature && againstFeature) {
                     if (feature.id === againstFeature.id) {

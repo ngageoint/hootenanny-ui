@@ -460,7 +460,7 @@ iD.Connection = function(context) {
                 }, function(err, xhr) {
                     if (err) return callback(err);
                     //hoot handler to manage merged descendents
-                    context.hoot().model.conflicts.updateDescendent(xhr, changemapId);
+                    //context.hoot().model.conflicts.updateDescendent(xhr, changemapId);
                     oauth.xhr({
                         method: 'PUT',
                         path: '/api/0.6/changeset/' + changeset_id + '/close?mapId=' + changemapId,

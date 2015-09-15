@@ -1,7 +1,7 @@
 Hoot.model.conflicts = function(context)
 {
   var model_conflicts = {};
-  var descendents = {};
+  //var descendents = {};
 
     model_conflicts.beginReview = function (layer, callback) {
         var mapid = layer.mapId;
@@ -174,7 +174,7 @@ Hoot.model.conflicts = function(context)
             	
             	//newly merged entity
                 var mergedNode = entities[0];
-                console.log("mergedNode: " + mergedNode);
+                console.log(mergedNode);
                 //FIXME: Temp hack to set version to 0
                 //mergedNode.version = 0;
                 //This would possibly make more sense done server-side, but there are 
@@ -186,8 +186,8 @@ Hoot.model.conflicts = function(context)
                 
                 //Track merged ids in descendents
                 //console.log(descendents);
-                descendents[feature.id] = mergedNode.id;
-                descendents[featureAgainst.id] = mergedNode.id;
+                //descendents[feature.id] = mergedNode.id;
+                //descendents[featureAgainst.id] = mergedNode.id;
                 
                 window.setTimeout(function() {
                   context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
@@ -215,13 +215,13 @@ Hoot.model.conflicts = function(context)
                     // result of the merge, still reference as needing to be reviewed against (the 
                     // deleted features' hoot:review:uuid tags contain the id's of these features).
                     var reviewAgainstItems1 = response.reviewAgainstItems;
-                    console.log("reviewAgainstItems1: " + reviewAgainstItems1);
+                    //console.log("reviewAgainstItems1: " + reviewAgainstItems1);
                     // These are all features that reference the above deleted features, as a 
                     // result of the merge, as still needing to be reviewed against (these 
                     // features contain the ID's of the deleted features in their hoot:review:uuid 
                     // tags).
                     var reviewableItems1 = response.reviewableItems;
-                    console.log("reviewableItems1: " + reviewableItems1);
+                    //console.log("reviewableItems1: " + reviewableItems1);
                       
                     //get references to review data for the review against feature
                     Hoot.model.REST('getReviewRefs', mapid, featureAgainst.id,
@@ -237,18 +237,23 @@ Hoot.model.conflicts = function(context)
                           
                         // see comments above on these data structures
                         var reviewAgainstItems2 = response.reviewAgainstItems;
-                        console.log("reviewAgainstItems2: " + reviewAgainstItems2);
+                        //console.log("reviewAgainstItems2: " + reviewAgainstItems2);
                         var reviewableItems2 = response.reviewableItems;
-                        console.log("reviewableItems2: " + reviewableItems2);
+                        //console.log("reviewableItems2: " + reviewableItems2);
                             
                         //update the review tags on the new merged feature
                         mergedNode = 
                           updateMergedFeatureReviewAgainstTag(mergedNode, reviewAgainstItems1);
                         mergedNode = 
                           updateMergedFeatureReviewAgainstTag(mergedNode, reviewAgainstItems2);
-                        console.log("mergedNode: " + mergedNode);
+                        //console.log(mergedNode);
                         console.log("test1");
                         logDiff();
+                        
+                        //TODO: There is some duplicated logic here, but having it was the only
+                        //way I could get the events to trigger properly, since loadMultiple
+                        //doesn't seem to execute at all if you pass an empty set of ID's to it.
+                        //Need to clean this up
                           
                         var reviewableItemiDFeatureIds1 = 
                           reviewableItemsToIdFeatureIds(reviewableItems1, mapid);
@@ -322,7 +327,7 @@ Hoot.model.conflicts = function(context)
       }
     }
 
-    model_conflicts.findDescendent = function(id) {
+    /*model_conflicts.findDescendent = function(id) {
         var descId = descendents[id];
         if (typeof descId !== 'undefined') {
             return model_conflicts.findDescendent(descId);
@@ -343,7 +348,7 @@ Hoot.model.conflicts = function(context)
                 descendents[oldid] = newid;
             }
         }
-    };
+    };*/
 
     model_conflicts.getSourceLayerId = function(feature) {
         var mergeLayer = hoot.loadedLayers()[feature.layerName];
