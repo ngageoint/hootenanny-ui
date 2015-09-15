@@ -207,7 +207,6 @@ Hoot.model.conflicts = function(context)
         
         if (featureUpdated)
         {
-          context.graph().put(featureToUpdate); //TODO: hack
           context.perform(
             iD.actions.ChangeTags(
               featureToUpdate.id, featureToUpdate.tags), t('operations.change_tags.annotation'));
@@ -390,8 +389,14 @@ Hoot.model.conflicts = function(context)
                         {
                           //console.log("test2");
                           //console.log(reviewableItemiDFeatureIds1);
+                          //HACK alert:
+                          //TODO: come up with a better way to manage the active layer name
+                          var layerNames = d3.entries(hoot.loadedLayers()).filter(function(d) {
+                             return 1*d.value.mapId === 1*mapid;
+                          });
+                          var layerName = layerNames[0].key;
                           // retrieve the features
-                          context.connection().loadMultiple(reviewableItemiDFeatureIds1, 
+                          context.loadMissing(reviewableItemiDFeatureIds1, 
                             function(err, entities1) 
                           {
                         	//console.log("test3");
@@ -416,7 +421,7 @@ Hoot.model.conflicts = function(context)
                                   
                                   context.perform(
                                     iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
-                                  //logDiff();
+                                  logDiff();
                                   
                                    //Track merged ids in descendents
                                    //console.log(descendents);
@@ -427,7 +432,8 @@ Hoot.model.conflicts = function(context)
                                      context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
                                 });
                             }
-                         });
+                         },
+                         layerName);
                         }
                         else
                         {
@@ -437,7 +443,7 @@ Hoot.model.conflicts = function(context)
                           if (reviewableItemiDFeatureIds2.length > 0)
                           {
                         	//console.log("test7");
-                        	context.connection().loadMultiple(reviewableItemiDFeatureIds2, 
+                        	context.loadMissing(reviewableItemiDFeatureIds2, 
                               function(err, entities2) 
                               {
                         		//console.log("test8");
@@ -446,7 +452,7 @@ Hoot.model.conflicts = function(context)
                                 
                                 context.perform(
                                   iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
-                                //logDiff();
+                                logDiff();
                                 
                                 //Track merged ids in descendents
                                 //console.log(descendents);
@@ -455,9 +461,9 @@ Hoot.model.conflicts = function(context)
                                             
                                 window.setTimeout(function() {
                                   context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
-                              });
+                              },
+                              layerName);
                           }
-                          
                         }
                    });
                });
