@@ -279,12 +279,19 @@ Hoot.model.conflicts = function(context)
             	
             	//newly merged entity
                 var mergedNode = entities[0];
-                //FIXME: Temp hack to set version to 0
-                //mergedNode.version = 0;
-                //This would possibly make more sense done server-side, but there are 
-                //severe problems with data consistency client-side when updating tags 
+                
+                //The following tag updates would possibly make more sense done server-side, but 
+                //there are severe problems with data consistency client-side when updating tags 
                 //on the server, rather than on the client.
+                
+                //OSM services expect new elements to have version = 0.  I thought iD would handle
+                //this during changeset creation, but it doesn't look like it does.
+                mergedNode.version = 0;
+                //TODO: is this right?  Technically, this new feature was auto-merged from source
+                //1 and 2 features, so should get a conflated status...right?
                 mergedNode.tags['hoot:status'] = 3;
+                //The new feature should start out with no review against tags.  It may pick some
+                //up later as we update references to the deleted nodes.
                 mergedNode.tags['hoot:review:uuid'] = "";
                 //TODO: hack - The UUID of the merged node made of up the UUID's of the deleted
                 //merged in items is going to wreak havoc in the review back end down the line.
@@ -421,7 +428,7 @@ Hoot.model.conflicts = function(context)
                                   
                                   context.perform(
                                     iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
-                                  logDiff();
+                                  //logDiff();
                                   
                                    //Track merged ids in descendents
                                    //console.log(descendents);
@@ -452,7 +459,7 @@ Hoot.model.conflicts = function(context)
                                 
                                 context.perform(
                                   iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
-                                logDiff();
+                                //logDiff();
                                 
                                 //Track merged ids in descendents
                                 //console.log(descendents);
