@@ -226,6 +226,13 @@ Hoot.control.conflicts = function (context, sidebar) {
             var calls = 0;
             var loadedMissing = false;
             clearInterval(getFeatureTimer);
+            //HACK alert:
+            //TODO: come up with a better way to manage the active layer name
+            var layerNames = d3.entries(hoot.loadedLayers()).filter(function(d) {
+                return 1*d.value.mapId === mapid;
+            });
+            var layerName = layerNames[0].key;
+
             getFeatureTimer = setInterval(function () {
                 if (calls < max) {
                     getFeature();
@@ -235,7 +242,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 //                    window.alert('One feature involved in this review was not found in the visible map extent');
                 } else {
                     //Make a call to grab the individual feature
-                    context.connection().loadMissing([idid, idid2], function(err, entities) {
+                    context.loadMissing([idid, idid2], function(err, entities) {
                         //console.log(entities);
                         //loadedMissing = true;
                         //calls = 0;
@@ -251,7 +258,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                             window.console.error(entities);
                         }
 
-                    });
+                    }, layerName);
                 }
             }, 500);
             var getFeatureStopTimer = function (skip) {
@@ -651,6 +658,8 @@ Hoot.control.conflicts = function (context, sidebar) {
             } finally {
                 isProcessingReview = false;
             }
+            
+            
         };
 
         function toggleForm(self) {
