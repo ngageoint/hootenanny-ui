@@ -40,7 +40,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         var reviewCount = 0;
         var index = 0;
         Conflict.reviews;
-        
+
         function getCurrentReviewMeta() {
             return currentReviewableMeta;
         }
@@ -73,28 +73,28 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
             map.centerZoom(extent.center(), (zoom));
         }
-        
+
         function panToEntity(entity) {
         	//only pan if feature is not on screen
         	var map = context.map();
         	var entityExtent = entity.extent(context.graph())? entity.extent(context.graph()) : undefined;
         	var mapExtent = map.extent();
         	var entityCenter = entityExtent.center();
-        	        	            
+
         	if(entityExtent == undefined){
         		alert("Could not locate selected feature with id: " + entity.id + ".")
         		return;
         	}
-        	
+
         	if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
             	var zoom = Math.min(20, map.zoom());
                 if (zoom < 16) {
                     zoom = 16.01;
                 }
-            	map.centerZoom(entityCenter,(zoom));	
+            	map.centerZoom(entityCenter,(zoom));
         	}
         }
-        
+
         var jumpFor = function (nReviewed, itemCnt) {
             // allow other to use
             //resetReviewStatus();
@@ -116,7 +116,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         var updateReviewStatus = function(callback) {
             var targetEntity = getCurrentReviewItem();
             if(targetEntity){
-                
+
                 var heartBeatData = {};
                 heartBeatData.mapId = mapid;
                 heartBeatData.reviewid = targetEntity.uuid;
@@ -134,7 +134,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     }
                 });
             }
-                
+
         };
 
         var jumpTo = function(direction) {
@@ -144,9 +144,9 @@ Hoot.control.conflicts = function (context, sidebar) {
                 var reviewData = {};
                 reviewData.direction = direction;
                 reviewData.mapId = mapid;
-                
+
             } else {
-               
+
                 var reviewData = {};
                 reviewData.direction = direction;
                 reviewData.mapId = mapid;
@@ -177,7 +177,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                         }, lockPeriod);
 
                         var newReviewItem = getCurrentReviewItem();
-                        
+
                         updateMeta();
                         activeConflict = reviewItemID(newReviewItem);
                         activeConflictReviewItem = reviewAgainstID(newReviewItem);
@@ -194,7 +194,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                             done=true;
                             resetStyles();
                             d3.select('div.tag-table').remove();
-         
+
                             // finalize
                             metaHead.text('Saving Conflicts.....');
                             Conflict.reviewComplete();
@@ -202,7 +202,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                             Conflict.reviewNextStep();
                         } else {
                             alert("Failed to retrieve next reviewable!")
-                        }  
+                        }
                     }
                 }
                 catch (ex) {
@@ -210,7 +210,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 } finally {
                     isProcessingReview = false;
                 }
-            });                            
+            });
         }
 
         var resetStyles = function () {
@@ -229,7 +229,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             //HACK alert:
             //TODO: come up with a better way to manage the active layer name
             var layerNames = d3.entries(hoot.loadedLayers()).filter(function(d) {
-                return 1*d.value.mapId === mapid;
+                return 1*d.value.mapId === 1*mapid;
             });
             var layerName = layerNames[0].key;
 
@@ -462,7 +462,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     done=true;
                     resetStyles();
                     d3.select('div.tag-table').remove();
- 
+
                     // finalize
                     metaHead.text('Saving Conflicts.....');
                     Conflict.reviewComplete();
@@ -486,7 +486,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 nLocked = curMeta.lockedcnt;
 
                 if(curItem){
-                    
+
                     var fId = reviewItemID(curItem);
                     var ent = context.hasEntity(fId);
                     if(ent){
@@ -508,16 +508,16 @@ Hoot.control.conflicts = function (context, sidebar) {
                                 }
                             }
                             var nAgReviewed = totalAgCnt - availCnt;
-                            multiFeatureMsg = ', One to many feature ( reviewed ' + 
+                            multiFeatureMsg = ', One to many feature ( reviewed ' +
                                 nAgReviewed + ' of ' + totalAgCnt + ')';
                         }
                     }
-                }               
+                }
             }
-   
-            meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflict  of ' + 
-                nTotal + ': ' + 
-                '  (Reviewed conflicts: ' + nReviewed +  
+
+            meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflict  of ' +
+                nTotal + ': ' +
+                '  (Reviewed conflicts: ' + nReviewed +
                     ', Locked: ' + nLocked +
                     multiFeatureMsg + ')</strong>');
         }
@@ -588,8 +588,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                             .classed('activeReviewFeature2', false);
                         d3.select('div.tag-table').remove();
                     }
-                    
-                    //drop all review tags from the all reviewed features, since they're all being 
+
+                    //drop all review tags from the all reviewed features, since they're all being
                     //marked as reviewed
                     var curReviewAgainstUUID = item.itemToReviewAgainst.uuid;
                     var curReviewUUID =  item.uuid;
@@ -637,19 +637,19 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                     var hasChanges = context.history().hasChanges();
                     if (hasChanges) {
-                    	
+
                     	//console.log(
                           //context.history().changes(
                             //iD.actions.DiscardTags(context.history().difference())));
-                    	
+
                     	iD.modes.Save(context).save(context, function () {
-                            
+
                         jumpFor();
 
                         });
                     } else {
                         	jumpFor();
-                    }              
+                    }
                 } else {
                     alert("Nothing to review.");
                 }
@@ -658,8 +658,8 @@ Hoot.control.conflicts = function (context, sidebar) {
             } finally {
                 isProcessingReview = false;
             }
-            
-            
+
+
         };
 
         function toggleForm(self) {
@@ -717,7 +717,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             .classed('pin-bottom review-block unclickable', true)
             .append('div')
             .classed('conflicts col12 fillD pad1 space clickable', true);
-            
+
         var meta = conflicts.append('span')
             .classed('_icon info dark pad0y space', true)
             .html(function () {
