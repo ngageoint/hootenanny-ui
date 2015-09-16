@@ -229,7 +229,8 @@ Hoot.control.utilities.folder = function(context) {
 		        	      {title:'Delete (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDatasets(hoot.model.layers.getSelectedLayers(),container)'},
 		        	      {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'info',click:'context.hoot().view.utilities.dataset.moveDatasets(hoot.model.layers.getSelectedLayers())'},
 		        	      {title:'Rename ' + d.name,icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
-		        	      {title:'Prepare for Validation',icon:'sprocket',click:'alert("Prepare for validation is currently under construction.");'}
+		        	      {title:'Prepare for Validation',icon:'sprocket',click:'alert("Prepare for validation is currently under construction.");'},
+		        	      {title:'Filter non-HGIS POIs',icon:'sprocket',click:'alert("Filter non-HGIS POIs is currently under construction.");'}
 		        	  ]; 
             	  } else if (d.type.toLowerCase()=='folder') {
 	        		  items = [
