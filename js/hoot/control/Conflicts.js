@@ -230,6 +230,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             //TODO: come up with a better way to manage the active layer name
             var layerNames = d3.entries(hoot.loadedLayers()).filter(function(d) {
                 return 1*d.value.mapId === 1*mapid;
+
             });
             var layerName = layerNames[0].key;
 
@@ -637,7 +638,6 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                     var hasChanges = context.history().hasChanges();
                     if (hasChanges) {
-
                     	//console.log(
                           //context.history().changes(
                             //iD.actions.DiscardTags(context.history().difference())));
