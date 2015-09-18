@@ -96,16 +96,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         }
 
         var jumpFor = function (nReviewed, itemCnt) {
-            // allow other to use
-            //resetReviewStatus();
-            lastIndex = index;
-            index++;
-            if (index === (reviewCount + 1)) {
-                index = 1;
-            }
-            // we have entity with same id but different against
-
-            jumpTo(nReviewed, itemCnt, 'forward');
+            jumpTo('forward');
         };
         var jumpBack = function () {
             jumpTo('backward');
@@ -560,8 +551,11 @@ Hoot.control.conflicts = function (context, sidebar) {
             checkToggleText();
         };
 
+
         var retainFeature = function () {
             try {
+
+
                 if(isProcessingReview === true){
                     alert("Processing review. Please wait.");
                     return;
@@ -573,6 +567,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     return;
                 }
                 var item = getCurrentReviewItem();
+
                 if(item) {
                     var contains = item.reviewed;
                     if (contains) {
@@ -590,77 +585,60 @@ Hoot.control.conflicts = function (context, sidebar) {
                         d3.select('div.tag-table').remove();
                     }
 
-                    //drop all review tags from the all reviewed features, since they're all being
-                    //marked as reviewed
-                    var curReviewAgainstUUID = item.itemToReviewAgainst.uuid;
-                    var curReviewUUID =  item.uuid;
-                    var items = [item];
-                    var flagged = _.uniq(_.flatten(_.map(items, function (d) {
-                        return [d.type.charAt(0) + d.id + '_' + mapid, d.itemToReviewAgainst.type.charAt(0) + d.itemToReviewAgainst.id + '_' + mapid];
-                    })));
-                    var inID = _.filter(flagged, function (d) {
-                        return context.hasEntity(d);
-                    });
-                    _.each(inID, function (d) {
-                        var ent = context.hasEntity(d);
-                        if (!ent) {
-                            alert("missing entity.");
-                            isProcessingReview = false;
-                      return;
-                      }
-                        var tags = ent.tags;
-                        var newTags = _.clone(tags);
+                  
+                    var reviewedItems = {};
+                    var reviewedItemsArr = [];
 
-                        var againstUuids = tags['hoot:review:uuid'];
-                        if(againstUuids && againstUuids.length > 0) {
-                            var againstList = againstUuids.split(';');
-                            if(againstList.length > 1) { // have many against
-                                var newAgainstList =[];
+                    var markItem = {};
+                    markItem['id'] = item.id;
+                    markItem['type'] = item.type;
+                    markItem['reviewedAgainstId'] = item.itemToReviewAgainst.id;
+                    markItem['reviewedAgainstType'] = item.itemToReviewAgainst.type;
+                    reviewedItemsArr.push(markItem);
+                    reviewedItems['reviewedItems'] = reviewedItemsArr;
 
-                                _.each(againstList, function(v){
-                                    if(v != curReviewAgainstUUID) {
-                                        newAgainstList.push(v);
-                                    }
-                                })
-
-                                var newAgainstTags = newAgainstList.join(';');
-                                newTags['hoot:review:uuid'] = newAgainstTags;
-                            } else {
-                                        newTags = _.omit(newTags, function (value, key) {
-                                            return key.match(/hoot:review/g);
-                                        });
-                            }
-                        }
-
-                        context.perform(
-                          iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
-                    });
-
+                    var reviewMarkData = {};
+                    reviewMarkData.mapId = mapid;
+                    reviewMarkData.reviewedItems = reviewedItems;
+                    
                     var hasChanges = context.history().hasChanges();
                     if (hasChanges) {
-                    	//console.log(
-                          //context.history().changes(
-                            //iD.actions.DiscardTags(context.history().difference())));
+                      var changes = context.changes(iD.actions.DiscardTags(context.history().difference()));
+                      var changesetXml = JXON.stringify(context.connection().osmChangeJXON('-1', changes));
+                      reviewMarkData.reviewedItemsChangeset = changesetXml;
+                        Hoot.model.REST('ReviewMarkItem', reviewMarkData, function (error, response) 
+                        {
+                          jumpFor();
+                              
+                          var xmlParser = new DOMParser();
+                          var changesetDoc = 
+                            xmlParser.parseFromString(response.changesetUploadResponse, "text/xml");
+                          context.hoot().model.conflicts.updateDescendent(changesetDoc, response.mapId);
+                          context.flush();
+                          //context.history().clearSaved();
+                          context.enter(iD.modes.Browse(context));
+                        });
+                    } 
+                    else {
+                        Hoot.model.REST('ReviewMarkItem', reviewMarkData, function () {
 
-                    	iD.modes.Save(context).save(context, function () {
-
-                        jumpFor();
+                           jumpFor();
 
                         });
-                    } else {
-                        	jumpFor();
-                    }
+                    }                    
                 } else {
                     alert("Nothing to review.");
                 }
+
+
+            
             } catch (err) {
                 alert(err);
             } finally {
                 isProcessingReview = false;
             }
-
-
         };
+
 
         function toggleForm(self) {
             var cont = self.select('fieldset');
