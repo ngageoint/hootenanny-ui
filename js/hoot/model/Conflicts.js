@@ -510,6 +510,16 @@ Hoot.model.conflicts = function(context)
                               },
                               layerName);
                           }
+                          else
+                          {
+                        	//console.log("test10");
+                        	context.perform(
+                              iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
+                            //logDiff();
+                            
+                            window.setTimeout(function() {
+                              context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
+                          }
                         }
                    });
                });
