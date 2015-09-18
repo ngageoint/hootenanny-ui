@@ -673,6 +673,7 @@ Hoot.model.REST = function (command, data, callback, option) {
       {
         if (error)
         {
+          console.log(error);
           alert("Review get refs failed.");
         }
         callback(error, response);
@@ -697,7 +698,8 @@ Hoot.model.REST = function (command, data, callback, option) {
             {
                 if (error)
                 {
-                    alert("Review update status failed.");
+                  console.log(error);
+                  alert("Review update status failed.");
                 }
                 callback(error, response);
             });
