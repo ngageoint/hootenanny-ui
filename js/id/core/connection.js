@@ -854,8 +854,18 @@ iD.Connection = function(context) {
             }
             totalNodesCnt = 1*resp.nodescount;
             maxNodesCnt = 1*iD.data.hootConfig.maxnodescount;
-
+            
             var currShowBbox = totalNodesCnt > maxNodesCnt;
+
+            if(totalNodesCnt > 0 && context.intersects(context.map().extent()).length == 0){
+            	// Inform user if features are loaded but not located in the map extent
+            	d3.select('.warning').call(iD.ui.Warning(context,true,'There is no data in the current map extent.  Try panning the map or zooming to a layer.'));
+            } else if(currShowBbox){
+                // Inform user if features are hidden if user is zoomed out too far
+            	d3.select('.warning').call(iD.ui.Warning(context,true,'Zoom in to view features!'));
+            } else {
+            	d3.select('.warning').call(iD.ui.Warning(context,false,''));
+            }
 
             if(currShowBbox !== lastShowBBox){
 
@@ -956,6 +966,7 @@ iD.Connection = function(context) {
         loadedTiles = {};
         inflight = {};
         d3.select('.spinner').style('opacity',0);
+        d3.select('.warning').style('opacity',0);
         return connection;
     };
 

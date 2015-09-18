@@ -75,6 +75,10 @@ iD.ui = function(context) {
         bar.append('div')
             .attr('class', 'spinner')
             .call(iD.ui.Spinner(context));
+        
+        bar.append('div')
+        	.attr('class','warning')
+        	.call(iD.ui.Warning(context,false,''));
 
         var controls = bar.append('div')
             .attr('class', 'map-controls');
