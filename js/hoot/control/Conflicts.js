@@ -441,7 +441,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         var done = false;
         function acceptAll() {
             Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
-                var doProceed = true;
+            	var doProceed = true;
                     //if only locked by self
                 if(resp.count > 1) {
 
@@ -451,15 +451,18 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
 
                 if(doProceed === true) {
-                    done=true;
-                    resetStyles();
-                    d3.select('div.tag-table').remove();
+                	Hoot.model.REST('setAllItemsReviewed', data.mapId, function (error, response) 
+                	{
+                	  done=true;
+                      resetStyles();
+                      d3.select('div.tag-table').remove();
 
-                    // finalize
-                    metaHead.text('Saving Conflicts.....');
-                    Conflict.reviewComplete();
-                    d3.select('.hootTags').remove();
-                    event.acceptAll(data);
+                      // finalize
+                      metaHead.text('Saving Conflicts.....');
+                      Conflict.reviewComplete();
+                      d3.select('.hootTags').remove();
+                      event.acceptAll(data);
+                    });
                 }
             });
         }

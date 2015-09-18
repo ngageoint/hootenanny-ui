@@ -629,42 +629,58 @@ Hoot.model.REST = function (command, data, callback, option) {
             callback(resp);
         });
     };
-
-rest.getReviewRefs = function(mapId, id, callback)
-{
-  //return a[item.type] + item.id + '_' + mapid;
-  //console.log(id);
-  var elementTypeAbbrev = id.substring(0, 1);
-  //console.log(elementTypeAbbrev);
-  var elementType;
-  if (elementTypeAbbrev == 'n')
-  {
-	elementType = "node";
-  }
-  else if (elementTypeAbbrev == 'w')
-  {
-	elementType = "way";
-  }
-  if (elementTypeAbbrev == 'r')
-  {
-	elementType = "relation";
-  }
-  var elementId = id.substring(1, id.length - 1).split("_")[0];
     
-  d3.json('/hoot-services/job/review/refs?mapId=' + mapId + "&elementId=" + elementId + 
-	"&elementType=" + elementType,
-    function(error, response)
+    rest.setAllItemsReviewed = function(mapId, callback)
     {
-      if (error)
-      {
-        alert("Review get refs failed.");
-      }
-      callback(error, response);
-    });
-};
+      d3.json('/hoot-services/job/review/setallreviewed?mapId=' + mapId)
+        .send(
+          'PUT',
+          '',
+          function(error, response)
+    	  {
+    	    if (error)
+    	    {
+    	      alert("Set all reviewed failed.");
+    	    }
+    	    callback(error, response);
+    	  });
+    }
+
+  rest.getReviewRefs = function(mapId, id, callback)
+  {
+    //return a[item.type] + item.id + '_' + mapid;
+    //console.log(id);
+    var elementTypeAbbrev = id.substring(0, 1);
+    //console.log(elementTypeAbbrev);
+    var elementType;
+    if (elementTypeAbbrev == 'n')
+    {
+	  elementType = "node";
+    }
+    else if (elementTypeAbbrev == 'w')
+    {
+	  elementType = "way";
+    }
+    if (elementTypeAbbrev == 'r')
+    {
+	  elementType = "relation";
+    }
+    var elementId = id.substring(1, id.length - 1).split("_")[0];
     
-rest.reviewUpdateStatus = function(data, callback)
-{
+    d3.json('/hoot-services/job/review/refs?mapId=' + mapId + "&elementId=" + elementId + 
+	  "&elementType=" + elementType,
+      function(error, response)
+      {
+        if (error)
+        {
+          alert("Review get refs failed.");
+        }
+        callback(error, response);
+      });
+  };
+    
+  rest.reviewUpdateStatus = function(data, callback)
+  {
     var mapId = data.mapId;
     var reviewUpdateRequest = {};
     reviewUpdateRequest.reviewid = data.reviewid;
@@ -685,10 +701,10 @@ rest.reviewUpdateStatus = function(data, callback)
                 }
                 callback(error, response);
             });
-};
+  };
 
-rest.reviewGetNext = function(data, callback)
-{
+  rest.reviewGetNext = function(data, callback)
+  {
     var mapId = data.mapId;
   
     var reviewGetNextRequest = {};
@@ -709,7 +725,7 @@ rest.reviewGetNext = function(data, callback)
                 }
                 callback(error, response);
             });
-};
+  };
 
 rest.ReviewGetStatistics = function (mapId, callback) {
             
