@@ -11,6 +11,42 @@ Hoot.model.conflicts = function(context)
         callback(layer);
     };
 
+
+    var reloadLayer = function (lyrInfo) {
+        
+        context.hoot().model.layers.removeLayer(lyrInfo.name);
+        var self = d3.select('.hootView');
+        var origHtml = self.html();
+
+        self.html("");
+
+
+        self.append('div')
+        .classed('contain keyline-all round controller', true)
+        .html('<div class="pad1 inline _loading"><span></span></div>' +
+            '<span class="strong pad1x">Refreshing &#8230;</span>' +
+            '<button class="keyline-left action round-right inline _icon trash"></button>')
+        .select('button')
+        .on('click', function () {
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
+            if (window.confirm('Are you sure you want to delete?')) {
+                resetForm(self);
+                return;
+            }
+
+        });
+        var key = {
+            'name': lyrInfo.name,
+            'id':lyrInfo.mapId,
+            color: lyrInfo.color
+        };
+
+        context.hoot().model.layers.addLayer(key, function(res){
+            self.html(origHtml);
+        });
+
+    };
     model_conflicts.acceptAll = function (data, callback) {
     	    
     	    var items = data.reviewableItems;
@@ -42,6 +78,8 @@ Hoot.model.conflicts = function(context)
             if (hasChanges) {
                 iD.modes.Save(context).save(context, function () {
 
+                    reloadLayer(data);
+
                     Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
                         //if only locked by self
                         if(resp.count >= 2) {
@@ -55,6 +93,7 @@ Hoot.model.conflicts = function(context)
                 });
             }
             else {
+              reloadLayer(data);
                 callback();
             }
         };

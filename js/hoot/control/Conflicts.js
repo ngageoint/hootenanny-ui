@@ -96,16 +96,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         }
 
         var jumpFor = function (nReviewed, itemCnt) {
-            // allow other to use
-            //resetReviewStatus();
-            lastIndex = index;
-            index++;
-            if (index === (reviewCount + 1)) {
-                index = 1;
-            }
-            // we have entity with same id but different against
-
-            jumpTo(nReviewed, itemCnt, 'forward');
+            jumpTo('forward');
         };
         var jumpBack = function () {
             jumpTo('backward');
@@ -519,8 +510,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
             }
 
-            meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflict  of ' +
-                nTotal + ': ' +
+            meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflicts remaining: ' +
+                (nTotal-nReviewed) +
                 '  (Reviewed conflicts: ' + nReviewed +
                     ', Locked: ' + nLocked +
                     multiFeatureMsg + ')</strong>');
