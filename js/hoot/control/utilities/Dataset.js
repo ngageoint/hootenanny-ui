@@ -1186,7 +1186,7 @@ Hoot.control.utilities.dataset = function(context) {
                 //Loop through each row and treat as separate import function
             	//var rowNum = d3.select(this.parentElement.parentElement).select('input').attr('row');
             	var rowArray = d3.select("#bulkImportTable").selectAll("tr[id^='row-']");
-            	importRow(rowArray[0],0);
+            	importRow(rowArray[0],0, modalbg);
             	return;
             })
             
@@ -1197,9 +1197,12 @@ Hoot.control.utilities.dataset = function(context) {
          			addRow(d3.select("#bulkImportTable").select('tbody'));
          		});
         
-        function importRow(rowArray,rowNumber){
+        function importRow(rowArray,rowNumber,modalbg){
     		var row = d3.select(rowArray[rowNumber]);
-    		if(row.empty()){return;}
+    		if(row.empty()){
+    			modalbg.remove();
+    			return;
+    		}
     		
         	//check if layer with same name already exists...
     		if(row.select('.reset.LayerName').value()=='' || row.select('.reset.LayerName').value()==row.select('.reset.LayerName').attr('placeholder')){
@@ -1249,7 +1252,7 @@ Hoot.control.utilities.dataset = function(context) {
                         	submitExp.select('span').text('Import');
                         	//go to next row in array if neccessary
                         	rowNumber++;
-                        	importRow(rowArray,rowNumber);
+                        	importRow(rowArray,rowNumber,modalbg);
             			} 
         			} else if(status.info=="uploaded"){
         				jobIds = status.jobids;
@@ -1262,7 +1265,7 @@ Hoot.control.utilities.dataset = function(context) {
                        
                     	//go to next row in array if neccessary
                     	rowNumber++;
-                    	importRow(rowArray,rowNumber);
+                    	importRow(rowArray,rowNumber,modalbg);
                     }
             	});
         	} else if (importText == 'Cancel') {
@@ -1300,7 +1303,7 @@ Hoot.control.utilities.dataset = function(context) {
                                  
                              	//go to next row in array if neccessary
                              	rowNumber++;
-                             	importRow(rowArray,rowNumber);
+                             	importRow(rowArray,rowNumber,modalbg);
                              });
                         });
                     }
