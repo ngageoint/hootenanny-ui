@@ -13,7 +13,7 @@ Hoot.model.conflicts = function(context)
 
 
     var reloadLayer = function (lyrInfo) {
-        
+
         context.hoot().model.layers.removeLayer(lyrInfo.name);
         var self = d3.select('.hootView');
         var origHtml = self.html();
@@ -48,14 +48,14 @@ Hoot.model.conflicts = function(context)
 
     };
     model_conflicts.acceptAll = function (data, callback) {
-    	    
+
     	    var items = data.reviewableItems;
             var mapid = data.mapId;
-            //drop all review tags from the all reviewed features, since they're all being 
+            //drop all review tags from the all reviewed features, since they're all being
             //marked as reviewed
             var flagged = _.uniq(_.flatten(_.map(items, function (d) {
-                return [d.type.charAt(0) + d.id + '_' + 
-                  mapid, d.itemToReviewAgainst.type.charAt(0) + d.itemToReviewAgainst.id + '_' + 
+                return [d.type.charAt(0) + d.id + '_' +
+                  mapid, d.itemToReviewAgainst.type.charAt(0) + d.itemToReviewAgainst.id + '_' +
                   mapid];
             })));
             var inID = _.filter(flagged, function (d) {
@@ -72,8 +72,8 @@ Hoot.model.conflicts = function(context)
                     return key.match(/hoot:review/g);
                 });
                 context.perform(iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
-            });            
-            
+            });
+
             var hasChanges = context.history().hasChanges();
             if (hasChanges) {
                 iD.modes.Save(context).save(context, function () {
@@ -84,7 +84,7 @@ Hoot.model.conflicts = function(context)
                         //if only locked by self
                         if(resp.count >= 2) {
                         	 alert("Reviews are being reviewed by other users. Modified features will be saved but will not be marked as resolved.");
-                        } 
+                        }
 
                         if (callback) {
                             callback();
@@ -97,13 +97,13 @@ Hoot.model.conflicts = function(context)
                 callback();
             }
         };
-    
+
     /*
      * Updates the review against tag for the merged feature with the contents of the review
      * against items
      */
-    var updateMergedFeatureReviewAgainstTag = 
-      function(mergedFeature, reviewAgainstItems) 
+    var updateMergedFeatureReviewAgainstTag =
+      function(mergedFeature, reviewAgainstItems)
     {
       //console.log(mergedFeature);
       //console.log(reviewAgainstItems);
@@ -114,7 +114,7 @@ Hoot.model.conflicts = function(context)
     	// check for that tag
     	var updatedMergedFeatureReviewAgainstIdsStr = "";
         for (var i = 0; i < reviewAgainstItems.length; i++)
-        {   
+        {
           var reviewAgainstItemId = reviewAgainstItems[i].reviewAgainstItemId;
           //console.log(reviewAgainstItemId);
           if (updatedMergedFeatureReviewAgainstIdsStr.indexOf(reviewAgainstItemId) == -1)
@@ -124,16 +124,16 @@ Hoot.model.conflicts = function(context)
         }
         if (updatedMergedFeatureReviewAgainstIdsStr != "")
         {
-          //this is a new feature which hasn't been created yet, so we're adding the tag to the 
+          //this is a new feature which hasn't been created yet, so we're adding the tag to the
           //feature object vs calling the ChangeTags action
-          mergedFeature.tags['hoot:review:uuid'] = updatedMergedFeatureReviewAgainstIdsStr;  
+          mergedFeature.tags['hoot:review:uuid'] = updatedMergedFeatureReviewAgainstIdsStr;
           mergedFeature.tags['hoot:review:needs'] = "yes";
         }
-      } 
+      }
       //console.log(mergedFeature);
       return mergedFeature;
     }
-    
+
     /*
      * Converts reviewable items to iD feature ID's
      */
@@ -156,12 +156,12 @@ Hoot.model.conflicts = function(context)
       //console.log(reviewableItemiDFeatureIds);
       return reviewableItemiDFeatureIds;
     }
-    
+
     /*
      * Adds the id of the merged feature to the review against tag of the features passed in for
      * update; also removes any id in the uuidsToRemove list from the features passed in
      */
-    var updateTagsForFeaturesReferencingFeaturesDeletedByMerge = 
+    var updateTagsForFeaturesReferencingFeaturesDeletedByMerge =
       function(mergedFeature, featuresToUpdate, uuidsToRemove)
     {
       //console.log(featuresToUpdate.data);
@@ -171,14 +171,14 @@ Hoot.model.conflicts = function(context)
         var featureToUpdate = featuresToUpdate.data[i];
 
         //console.log(featureToUpdate);
-        
+
         var featureReviewAgainstIdsStr = featureToUpdate.tags['hoot:review:uuid'];
-        
+
         //remove the ids in the remove list if they are present
         if (!featureReviewAgainstIdsStr || typeof featureReviewAgainstIdsStr == 'undefined' ||
         	featureReviewAgainstIdsStr == 'undefined')
         {
-          featureReviewAgainstIdsStr = ""; 
+          featureReviewAgainstIdsStr = "";
         }
         else if (featureReviewAgainstIdsStr.indexOf(";") != -1)
         {
@@ -198,26 +198,26 @@ Hoot.model.conflicts = function(context)
         {
           if (uuidsToRemove.indexOf(featureReviewAgainstIdsStr) != -1)
           {
-        	featureReviewAgainstIdsStr = ""; 
+        	featureReviewAgainstIdsStr = "";
         	featureUpdated = true;
           }
         }
-        
+
         // add the feature id of the new merged feature to the hoot:review:uuid tag
-        // of each of the retrieved features 
-        //We would have a big problem here if we weren't replacing the uuid on the merged 
+        // of each of the retrieved features
+        //We would have a big problem here if we weren't replacing the uuid on the merged
         //feature b/c the mergedFeature would have had a concatenated uuid made up of the
         //deleted uuid's, which would cause review back end problems later on.
         var mergedFeatureUuid = mergedFeature.tags["uuid"];
         //console.log(mergedFeatureUuid);
         //don't think there is any way the feature would contained the new merged feature's uuid,
         //or be in the uuidsToRemove list, but let's check anyway
-        if (featureReviewAgainstIdsStr.indexOf(mergedFeatureUuid) == -1 && 
+        if (featureReviewAgainstIdsStr.indexOf(mergedFeatureUuid) == -1 &&
         	uuidsToRemove.indexOf(mergedFeatureUuid) == -1)
         {
           if (featureReviewAgainstIdsStr != "")
           {
-        	featureReviewAgainstIdsStr = featureReviewAgainstIdsStr + ";" + mergedFeatureUuid;   
+        	featureReviewAgainstIdsStr = featureReviewAgainstIdsStr + ";" + mergedFeatureUuid;
           }
           else
           {
@@ -225,13 +225,13 @@ Hoot.model.conflicts = function(context)
           }
           featureUpdated = true;
         }
-        
+
         if (featureReviewAgainstIdsStr == "")
         {
           //nothing left to review against, so drop all review tags
-          featureToUpdate.tags = 
-        	_.omit(featureToUpdate.tags, 
-        		   function (value, key) 
+          featureToUpdate.tags =
+        	_.omit(featureToUpdate.tags,
+        		   function (value, key)
         		   {
                      return key.match(/hoot:review/g);
                    });
@@ -243,7 +243,7 @@ Hoot.model.conflicts = function(context)
           featureToUpdate.tags['hoot:review:needs'] = "yes";
         }
         //console.log(featureToUpdate);
-        
+
         if (featureUpdated)
         {
           context.perform(
@@ -252,7 +252,7 @@ Hoot.model.conflicts = function(context)
         }
       }
     }
-    
+
     /*
      * This assumes all features are nodes; I'm sure there's a more succinct js way to do this...
      */
@@ -263,11 +263,11 @@ Hoot.model.conflicts = function(context)
       for (var i = 0; i < iDidsToRemove.length; i++)
       {
     	var iDid = iDidsToRemove[i];
-    	var elementId = Number(iDid.substring(1, iDid.length - 1).split("_")[0]);  
+    	var elementId = Number(iDid.substring(1, iDid.length - 1).split("_")[0]);
     	idsToRemove.push(elementId);
     	//console.log(elementId);
       }
-      
+
       var modifiedReviewItems = new Array();
       for (var i = 0; i < reviewItems.length; i++)
       {
@@ -281,7 +281,7 @@ Hoot.model.conflicts = function(context)
       }
       return modifiedReviewItems;
     }
-    
+
     function guid() {
     	  function s4() {
     	    return Math.floor((1 + Math.random()) * 0x10000)
@@ -291,10 +291,10 @@ Hoot.model.conflicts = function(context)
     	  return "{" + s4() + s4() + '-' + s4() + '-' + s4() + '-' +
     	    s4() + '-' + s4() + s4() + s4() + "}";
     	}
-    
+
     /*
      * The code in this method is making the assumption that only nodes are merged here, which
-     * is currently the case.  If this changes, then the code will need to be updated. 
+     * is currently the case.  If this changes, then the code will need to be updated.
      */
     model_conflicts.autoMergeFeature = function (feature, featureAgainst, mapid) {
         var layerName = feature.layerName;
@@ -306,23 +306,23 @@ Hoot.model.conflicts = function(context)
                 JXON.stringify(feature.asJXON()) + JXON.stringify(featureAgainst.asJXON()) + '</osm>';
 
             context.connection().loadFromHootRest('poiMerge', osmXml, function(error, entities) {
-            	
+
             	//Remove two input entities
                 //console.log("test9");
                 //grab these uuid's before the delete happens
                 var uuidsToRemove = new Array();
-                uuidsToRemove.push(context.entity(feature.id).tags["uuid"]); 
+                uuidsToRemove.push(context.entity(feature.id).tags["uuid"]);
                 uuidsToRemove.push(context.entity(featureAgainst.id).tags["uuid"]);
                 iD.operations.Delete([feature.id, featureAgainst.id], context)();
                 //logDiff();
-            	
+
             	//newly merged entity
                 var mergedNode = entities[0];
-                
-                //The following tag updates would possibly make more sense done server-side, but 
-                //there are severe problems with data consistency client-side when updating tags 
+
+                //The following tag updates would possibly make more sense done server-side, but
+                //there are severe problems with data consistency client-side when updating tags
                 //on the server, rather than on the client.
-                
+
                 //OSM services expect new elements to have version = 0.  I thought iD would handle
                 //this during changeset creation, but it doesn't look like it does.
                 mergedNode.version = 0;
@@ -338,12 +338,12 @@ Hoot.model.conflicts = function(context)
                 //since the merged in elements are deleted anyway, does it really matter?
                 mergedNode.tags['uuid'] = guid();
                 //console.log(mergedNode);
-                
+
                 //manage the tags for the deleted feature and those who ref them
-                
+
                 //get references to review data for the reviewable feature
                 Hoot.model.REST('getReviewRefs', mapid, feature.id,
-                  function (error, response) 
+                  function (error, response)
                   {
                 	//console.log(response);
                   	if (error)
@@ -352,30 +352,30 @@ Hoot.model.conflicts = function(context)
                       alert('failed to retrieve review refs.');
                       return;
                     }
-                      
-                    // These are the all features that the just deleted features, as a 
-                    // result of the merge, still reference as needing to be reviewed against (the 
+
+                    // These are the all features that the just deleted features, as a
+                    // result of the merge, still reference as needing to be reviewed against (the
                     // deleted features' hoot:review:uuid tags contain the id's of these features).
                     var reviewAgainstItems1 = response.reviewAgainstItems;
                     //go through and remove any references to the two features being deleted, since
                     //we no longer care about any review tag updates involving them
                     //console.log("reviewAgainstItems1: " + reviewAgainstItems1);
-                    reviewAgainstItems1 = 
+                    reviewAgainstItems1 =
                       removeItems(reviewAgainstItems1, [feature.id, featureAgainst.id]);
                     //console.log("reviewAgainstItems1: " + reviewAgainstItems1);
-                    // These are all features that reference the above deleted features, as a 
-                    // result of the merge, as still needing to be reviewed against (these 
-                    // features contain the ID's of the deleted features in their hoot:review:uuid 
+                    // These are all features that reference the above deleted features, as a
+                    // result of the merge, as still needing to be reviewed against (these
+                    // features contain the ID's of the deleted features in their hoot:review:uuid
                     // tags).
                     var reviewableItems1 = response.reviewableItems;
                     //console.log("reviewableItems1: " + reviewableItems1);
-                    reviewableItems1 = 
+                    reviewableItems1 =
                       removeItems(reviewableItems1, [feature.id, featureAgainst.id]);
                     //console.log("reviewableItems1: " + reviewableItems1);
-                    
+
                     //get references to review data for the review against feature
                     Hoot.model.REST('getReviewRefs', mapid, featureAgainst.id,
-                      function (error, response) 
+                      function (error, response)
                       {
                     	//console.log(response);
                         if (error)
@@ -384,52 +384,52 @@ Hoot.model.conflicts = function(context)
                           alert('failed to retrieve review refs.');
                           return;
                         }
-                          
+
                         // see comments above on these data structures
                         var reviewAgainstItems2 = response.reviewAgainstItems;
                         //console.log("reviewAgainstItems2: " + reviewAgainstItems2);
-                        reviewAgainstItems2 = 
+                        reviewAgainstItems2 =
                           removeItems(reviewAgainstItems2, [feature.id, featureAgainst.id]);
                         //console.log("reviewAgainstItems2: " + reviewAgainstItems2);
                         var reviewableItems2 = response.reviewableItems;
                         //console.log("reviewableItems2: " + reviewableItems2);
-                        reviewableItems2 = 
+                        reviewableItems2 =
                           removeItems(reviewableItems2, [feature.id, featureAgainst.id]);
                         //console.log("reviewableItems2: " + reviewableItems2);
-                            
+
                         //update the review tags on the new merged feature; exclude the feature/
                         //feature against uuid's from being added to review tags, since those
                         //features will no longer exist after the changeset delete
-                        mergedNode = 
+                        mergedNode =
                           updateMergedFeatureReviewAgainstTag(mergedNode, reviewAgainstItems1);
-                        mergedNode = 
+                        mergedNode =
                           updateMergedFeatureReviewAgainstTag(mergedNode, reviewAgainstItems2);
-                        
+
                         var mergedNodeReviewAgainstIds = mergedNode["hoot:review:uuid"];
-                        if (!mergedNodeReviewAgainstIds || 
+                        if (!mergedNodeReviewAgainstIds ||
                         	typeof mergedNodeReviewAgainstIds == 'undefined' ||
-                        	mergedNodeReviewAgainstIds == 'undefined' || 
+                        	mergedNodeReviewAgainstIds == 'undefined' ||
                         	mergedNodeReviewAgainstIds == "")
                         {
                           //nothing left to review against, so drop all review tags
-                          mergedNode.tags = 
-                            _.omit(mergedNode.tags, 
-                              function (value, key) 
+                          mergedNode.tags =
+                            _.omit(mergedNode.tags,
+                              function (value, key)
                               {
                                 return key.match(/hoot:review/g);
                               });
                         }
-                        
+
                         //console.log(mergedNode);
                         //console.log("test1");
                         //logDiff();
-                        
+
                         //TODO: There is some duplicated logic here, but having it was the only
                         //way I could get the events to trigger properly, since loadMultiple
                         //doesn't seem to execute at all if you pass an empty set of ID's to it.
                         //Need to clean this up
-                        
-                        var reviewableItemiDFeatureIds1 = 
+
+                        var reviewableItemiDFeatureIds1 =
                           reviewableItemsToIdFeatureIds(reviewableItems1, mapid);
                         if (reviewableItemiDFeatureIds1.length > 0)
                         {
@@ -442,38 +442,38 @@ Hoot.model.conflicts = function(context)
                           });
                           var layerName = layerNames[0].key;
                           // retrieve the features
-                          context.loadMissing(reviewableItemiDFeatureIds1, 
-                            function(err, entities1) 
+                          context.loadMissing(reviewableItemiDFeatureIds1,
+                            function(err, entities1)
                           {
                         	//console.log("test3");
-                            //add the merged node tag to the review tags for features 
+                            //add the merged node tag to the review tags for features
                             //referencing the deleted features - see note above about excluding
                         	//feature/featureAgainst uuids
                             updateTagsForFeaturesReferencingFeaturesDeletedByMerge(
                               mergedNode, entities1, uuidsToRemove);
                             //logDiff();
-                                	
-                            var reviewableItemiDFeatureIds2 = 
+
+                            var reviewableItemiDFeatureIds2 =
                               reviewableItemsToIdFeatureIds(reviewableItems2, mapid);
                             if (reviewableItemiDFeatureIds2.length > 0)
                             {
                               //console.log("test4");
-                              context.connection().loadMultiple(reviewableItemiDFeatureIds2, 
-                                function(err, entities2) 
+                              context.connection().loadMultiple(reviewableItemiDFeatureIds2,
+                                function(err, entities2)
                                 {
                                   //console.log("test5");
                                   updateTagsForFeaturesReferencingFeaturesDeletedByMerge(
                                     mergedNode, entities2, uuidsToRemove);
-                                  
+
                                   context.perform(
                                     iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
                                   //logDiff();
-                                  
+
                                    //Track merged ids in descendents
                                    //console.log(descendents);
                                    //descendents[feature.id] = mergedNode.id;
                                    //descendents[featureAgainst.id] = mergedNode.id;
-                                        
+
                                    window.setTimeout(function() {
                                      context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
                                 });
@@ -484,27 +484,27 @@ Hoot.model.conflicts = function(context)
                         else
                         {
                           //console.log("test6");
-                          var reviewableItemiDFeatureIds2 = 
+                          var reviewableItemiDFeatureIds2 =
                             reviewableItemsToIdFeatureIds(reviewableItems2, mapid);
                           if (reviewableItemiDFeatureIds2.length > 0)
                           {
                         	//console.log("test7");
-                        	context.loadMissing(reviewableItemiDFeatureIds2, 
-                              function(err, entities2) 
+                        	context.loadMissing(reviewableItemiDFeatureIds2,
+                              function(err, entities2)
                               {
                         		//console.log("test8");
                                 updateTagsForFeaturesReferencingFeaturesDeletedByMerge(
                                   mergedNode, entities2, uuidsToRemove);
-                                
+
                                 context.perform(
                                   iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
                                 //logDiff();
-                                
+
                                 //Track merged ids in descendents
                                 //console.log(descendents);
                                 //descendents[feature.id] = mergedNode.id;
                                 //descendents[featureAgainst.id] = mergedNode.id;
-                                            
+
                                 window.setTimeout(function() {
                                   context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
                               },
@@ -516,7 +516,7 @@ Hoot.model.conflicts = function(context)
                         	context.perform(
                               iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
                             //logDiff();
-                            
+
                             window.setTimeout(function() {
                               context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
                           }
@@ -526,7 +526,7 @@ Hoot.model.conflicts = function(context)
             }, mapid, layerName);
         }
     };
-    
+
     var logDiff = function()
     {
       var hasChanges = context.history().hasChanges();
@@ -535,7 +535,7 @@ Hoot.model.conflicts = function(context)
         console.log(
           context.history().changes(
             iD.actions.DiscardTags(context.history().difference())));
-        //var modified = 
+        //var modified =
           //_.filter(context.history().difference().summary(), {changeType: 'modified'});
         //console.log(modified);
       }
@@ -574,6 +574,24 @@ Hoot.model.conflicts = function(context)
 
     model_conflicts.getFeatureLayer = function(feature) {
         return hoot.loadedLayers()[feature.layerName];
+    };
+
+    model_conflicts.mergeDisplayBounds = function(a, b) {
+        var c = a.split(','),
+            d = b.split(',');
+        return [Math.min(c[0], d[0]), Math.min(c[1], d[1]), Math.max(c[2], d[2]), Math.max(c[3], d[3])].join(',');
+    };
+
+    //Expand the first bounding box to include the second
+    //bounding box, then buffer it a bit more
+    model_conflicts.expandDisplayBounds = function(a, b) {
+        var c = a.split(','),
+            d = b.split(',');
+        var dx = Math.max(Math.abs(c[0] - d[2]), Math.abs(c[2] - d[0])) * 1.25,
+            dy = Math.max(Math.abs(c[1] - d[3]), Math.abs(c[3] - d[1])) * 1.75;
+        var buffer = Math.max(dx, dy);
+
+        return [(1*c[0] - buffer), (1*c[1] - buffer), (1*c[2] + buffer), (1*c[3] + buffer)].join(',');
     };
 
   return model_conflicts;

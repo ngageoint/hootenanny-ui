@@ -68,9 +68,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             var extent = boundsToExtent();
             var map = context.map();
             var zoom = Math.min(20, (map.extentZoom(extent)));
-            if (zoom < 16) {
-                zoom = 16;
-            }
             map.centerZoom(extent.center(), (zoom));
         }
 
@@ -175,7 +172,15 @@ Hoot.control.conflicts = function (context, sidebar) {
                         updateMeta();
                         activeConflict = reviewItemID(newReviewItem);
                         activeConflictReviewItem = reviewAgainstID(newReviewItem);
-                        panToBounds(newReviewItem.displayBounds);
+                        //If there's a review against feature, re-calculate the
+                        //displayBounds to include that feature
+                        if (newReviewItem.itemToReviewAgainst) {
+                            var expandedBounds = context.hoot().model.conflicts.expandDisplayBounds(newReviewItem.displayBounds,
+                                newReviewItem.itemToReviewAgainst.displayBounds)
+                            panToBounds(expandedBounds);
+                        } else {
+                            panToBounds(newReviewItem.displayBounds);
+                        }
                         activeEntity = newReviewItem;
                         highlightLayer(newReviewItem);
                     } else {
@@ -447,7 +452,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
 
                 if(doProceed === true) {
-                	Hoot.model.REST('setAllItemsReviewed', data.mapId, function (error, response) 
+                	Hoot.model.REST('setAllItemsReviewed', data.mapId, function (error, response)
                 	{
                       finalizeReviewSession('Saving Conflicts.....');
                       event.acceptAll(data);
