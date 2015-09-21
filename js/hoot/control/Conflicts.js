@@ -128,6 +128,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         };
 
+        
         var jumpTo = function(direction) {
             var targetReviewItem = getCurrentReviewItem();
             // Handle first review we assume first when do not have currentReviewItem
@@ -150,6 +151,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                     if(error){
                         isProcessingReview = false;
                         alert('Failed get Next Item.');
+                        exitReviewSession('Exiting review session...');
+
                         return;
                     }
 
@@ -182,18 +185,11 @@ Hoot.control.conflicts = function (context, sidebar) {
                             setCurrentReviewItem(response.reviewItem);
                             updateMeta();
                             alert('There are no more available reviewables!');
-                            done=true;
-                            resetStyles();
-                            d3.select('div.tag-table').remove();
 
-                            // finalize
-                            metaHead.text('Saving Conflicts.....');
-                            Conflict.reviewComplete();
-                            d3.select('.hootTags').remove();
-                            Conflict.reviewNextStep();
                         } else {
                             alert("Failed to retrieve next reviewable!")
                         }
+                        exitReviewSession('Exiting review session...');
                     }
                 }
                 catch (ex) {
@@ -453,14 +449,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 if(doProceed === true) {
                 	Hoot.model.REST('setAllItemsReviewed', data.mapId, function (error, response) 
                 	{
-                	  done=true;
-                      resetStyles();
-                      d3.select('div.tag-table').remove();
-
-                      // finalize
-                      metaHead.text('Saving Conflicts.....');
-                      Conflict.reviewComplete();
-                      d3.select('.hootTags').remove();
+                      finalizeReviewSession('Saving Conflicts.....');
                       event.acceptAll(data);
                     });
                 }
@@ -661,6 +650,21 @@ Hoot.control.conflicts = function (context, sidebar) {
             var text = (cont.classed('hidden')) ? false : true;
             cont.classed('hidden', text);
         }
+
+        var finalizeReviewSession = function(userMsg) {
+            done=true;
+            resetStyles();
+            d3.select('div.tag-table').remove();
+            metaHead.text(userMsg);
+            Conflict.reviewComplete();
+            d3.select('.hootTags').remove();
+        }
+
+        var exitReviewSession = function(msg) {
+            finalizeReviewSession(msg);
+            Conflict.reviewNextStep();
+        }
+
         var reviewBody = Review.insert('fieldset', 'fieldset')
             .classed('pad1 keyline-left keyline-right keyline-bottom round-bottom fill-white hidden', true);
         metaHead = reviewBody.append('div')
