@@ -856,8 +856,10 @@ iD.Connection = function(context) {
             maxNodesCnt = 1*iD.data.hootConfig.maxnodescount;
             
             var currShowBbox = totalNodesCnt > maxNodesCnt;
-
-            if(totalNodesCnt > 0 && context.intersects(context.map().extent()).length == 0){
+            
+            if(Object.keys(inflight).length > 0) {
+        		d3.select('.warning').call(iD.ui.Warning(context,true,'Data is loading...'));
+        	} else if((!_.isEmpty(loadedData) && totalNodesCnt == 0)||(totalNodesCnt > 0 && context.intersects(context.map().extent()).length == 0)){
             	// Inform user if features are loaded but not located in the map extent
             	d3.select('.warning').call(iD.ui.Warning(context,true,'There is no data in the current map extent.  Try panning the map or zooming to a layer.'));
             } else if(currShowBbox){
@@ -908,7 +910,7 @@ iD.Connection = function(context) {
 
                             // When there is no more inflight item then we are done so do post processing
                             event.tileAdded();
-                            if (_.isEmpty(inflight)) {
+                            if (_.isEmpty(inflight)) {                            	
                                 var hootLyrs = d3.selectAll('.hootLayers');
                                 if(hootLyrs[0] !== undefined){
                                     for(var i=hootLyrs[0].length-1; i>-1; i--){
