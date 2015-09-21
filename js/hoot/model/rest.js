@@ -317,6 +317,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             d3.json('/hoot-services/job/status/' + jobStatus, function (error, resp) {
                 if (error) {
                     console.log(error);
+                    JobStatusStopTimer();
                     return error;
                 }
 
@@ -914,6 +915,19 @@ rest.downloadReport = function(data)
     }
 }
 
+    rest.createValidationMap = function (data, callback) {
+        
+        d3.json('/hoot-services/job/review/custom/HGIS/preparevalidation')
+            .header('Content-Type', 'application/json')
+            .post(JSON.stringify(data), function (error, resp) {
+                
+                if (error) {
+                    return callback(_alertError(error, "Requested job failed! For detailed log goto Manage->Log"));
+                }
+                rest.status(resp.jobId, callback);
+            });
+    };
+
     rest['' + command + ''](data, callback, option);
 };
 
@@ -951,3 +965,5 @@ Hoot.model.REST.WarningHandler = function(resp){
         }
     }
 };
+
+
