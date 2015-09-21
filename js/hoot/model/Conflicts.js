@@ -184,7 +184,7 @@ Hoot.model.conflicts = function(context)
         {
           var featureReviewAgainstIdsArr = featureReviewAgainstIdsStr.split(";");
           featureReviewAgainstIdsStr = "";
-          for (var j = 0; i < featureReviewAgainstIdsArr.length; j++)
+          for (var j = 0; j < featureReviewAgainstIdsArr.length; j++)
           {
         	var id = featureReviewAgainstIdsArr[j];
             if (uuidsToRemove.indexOf(id) == -1)
