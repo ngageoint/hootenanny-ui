@@ -20,6 +20,41 @@ Hoot.control.view = function (container, context) {
                 return d.color;
             });
         var _a = form.append('div');
+        
+        //add context menu
+        _a.on("contextmenu",function(d,i){
+        	items = [{title:'Zoom to Layer',click:'context.zoomToExtent(d.extent.minlon, d.extent.minlat, d.extent.maxlon, d.extent.maxlat);'},];
+        	 // create the div element that will hold the context menu
+            d3.selectAll('.context-menu').data([1])
+            	.enter()
+            	.append('div')
+            	.attr('class', 'context-menu');
+            // close menu
+            d3.select('body').on('click.context-menu', function() {d3.select('.context-menu').style('display', 'none');});
+            // this gets executed when a contextmenu event occurs
+            d3.selectAll('.context-menu')
+            	.html('')
+            	.append('ul')
+            	.selectAll('li')
+            	.data(items).enter()
+            	.append('li')
+            	.on('click' , function(item) { 
+            		eval(item.click);
+            		d3.select('.context-menu').remove();
+            	})
+            	/*.attr("class",function(item){return "_icon " + item.icon})*/
+            	.text(function(item) { return item.title; });
+            d3.select('.context-menu').style('display', 'none');
+            // show the context menu
+            d3.select('.context-menu')
+              	.style('left', (d3.event.pageX - 2) + 'px')
+              	.style('top', (d3.event.pageY - 2) + 'px')
+              	.style('display', 'block');
+            //} else {d3.select('.context-menu').style('display', 'none');}	              
+            d3.event.preventDefault();
+        });
+        
+        
         _a.append('div').attr('class', function (d) {
             if(d.color == 'osm'){
                 return 'pad1 inline thumbnail dark big _icon _osm ';

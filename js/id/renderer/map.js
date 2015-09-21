@@ -232,7 +232,7 @@ iD.Map = function(context) {
     }
 
     function redraw(difference, extent, waitOnLoad) {
-        loadVectorOnTilesLoad = waitOnLoad;
+    	loadVectorOnTilesLoad = waitOnLoad;
 
         if (!surface) return;
 
