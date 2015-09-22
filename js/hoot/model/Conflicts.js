@@ -117,7 +117,8 @@ Hoot.model.conflicts = function(context)
         {
           var reviewAgainstItemId = reviewAgainstItems[i].reviewAgainstItemId;
           //console.log(reviewAgainstItemId);
-          if (updatedMergedFeatureReviewAgainstIdsStr.indexOf(reviewAgainstItemId) == -1)
+          if (updatedMergedFeatureReviewAgainstIdsStr.indexOf(reviewAgainstItemId) == -1 &&
+        	  reviewAgainstItemId && reviewAgainstItemId != "" && reviewAgainstItemId != "undefined")
           {
         	updatedMergedFeatureReviewAgainstIdsStr += reviewAgainstItemId + ";";
           }
@@ -187,7 +188,7 @@ Hoot.model.conflicts = function(context)
           for (var j = 0; j < featureReviewAgainstIdsArr.length; j++)
           {
         	var id = featureReviewAgainstIdsArr[j];
-            if (uuidsToRemove.indexOf(id) == -1)
+            if (uuidsToRemove.indexOf(id) == -1 && id && id != "" && id != "undefined")
             {
               featureReviewAgainstIdsStr += id + ";";
               featureUpdated = true;
@@ -215,7 +216,8 @@ Hoot.model.conflicts = function(context)
         if (featureReviewAgainstIdsStr.indexOf(mergedFeatureUuid) == -1 &&
         	uuidsToRemove.indexOf(mergedFeatureUuid) == -1)
         {
-          if (featureReviewAgainstIdsStr != "")
+          if (featureReviewAgainstIdsStr != "" && featureReviewAgainstIdsStr && 
+        	  featureReviewAgainstIdsStr != "undefined")
           {
         	featureReviewAgainstIdsStr = featureReviewAgainstIdsStr + ";" + mergedFeatureUuid;
           }
