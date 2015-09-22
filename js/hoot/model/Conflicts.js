@@ -536,6 +536,7 @@ Hoot.model.conflicts = function(context)
       }
     }
 
+    //test comment
     /*model_conflicts.findDescendent = function(id) {
         var descId = descendents[id];
         if (typeof descId !== 'undefined') {
