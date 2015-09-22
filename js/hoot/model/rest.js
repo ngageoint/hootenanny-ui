@@ -646,7 +646,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     	    {
     	      console.log(error);
     	      console.log(response);
-    	      alert("Set all reviewed failed.");
+    	      //alert("Set all reviewed failed.");
     	    }
     	    callback(error, response);
     	  });
