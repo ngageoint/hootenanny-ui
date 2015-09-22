@@ -470,7 +470,6 @@ Hoot.model.conflicts = function(context)
                                   //logDiff();
 
                                    //Track merged ids in descendents
-                                   //console.log(descendents);
                                    //descendents[feature.id] = mergedNode.id;
                                    //descendents[featureAgainst.id] = mergedNode.id;
 
@@ -501,7 +500,6 @@ Hoot.model.conflicts = function(context)
                                 //logDiff();
 
                                 //Track merged ids in descendents
-                                //console.log(descendents);
                                 //descendents[feature.id] = mergedNode.id;
                                 //descendents[featureAgainst.id] = mergedNode.id;
 
@@ -535,9 +533,6 @@ Hoot.model.conflicts = function(context)
         console.log(
           context.history().changes(
             iD.actions.DiscardTags(context.history().difference())));
-        //var modified =
-          //_.filter(context.history().difference().summary(), {changeType: 'modified'});
-        //console.log(modified);
       }
     }
 

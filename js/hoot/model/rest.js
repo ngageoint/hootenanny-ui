@@ -633,14 +633,19 @@ Hoot.model.REST = function (command, data, callback, option) {
     
     rest.setAllItemsReviewed = function(mapId, callback)
     {
-      d3.json('/hoot-services/job/review/setallreviewed?mapId=' + mapId)
+      var request = {};
+      request.mapId = mapId;
+      d3.json('/hoot-services/job/review/setallreviewed')
+        .header('Content-Type', 'application/json')
         .send(
           'PUT',
-          '',
+          JSON.stringify(request),
           function(error, response)
     	  {
     	    if (error)
     	    {
+    	      console.log(error);
+    	      console.log(response);
     	      alert("Set all reviewed failed.");
     	    }
     	    callback(error, response);
