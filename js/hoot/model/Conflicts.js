@@ -190,7 +190,12 @@ Hoot.model.conflicts = function(context)
         	var id = featureReviewAgainstIdsArr[j];
             if (uuidsToRemove.indexOf(id) == -1 && id && id != "" && id != "undefined")
             {
-              featureReviewAgainstIdsStr += id + ";";
+
+              if(j == 0) {
+                featureReviewAgainstIdsStr += id;
+              } else {
+                featureReviewAgainstIdsStr += ";" + id;
+              }
               featureUpdated = true;
             }
           }
