@@ -304,6 +304,7 @@ Hoot.model.conflicts = function(context)
      * is currently the case.  If this changes, then the code will need to be updated.
      */
     model_conflicts.autoMergeFeature = function (feature, featureAgainst, mapid) {
+        context.hoot().control.conflicts.setProcessing(true);
         var layerName = feature.layerName;
 
         if (!feature && !featureAgainst) {
@@ -357,6 +358,7 @@ Hoot.model.conflicts = function(context)
                     {
                   	  console.log(error);
                       alert('failed to retrieve review refs.');
+                      context.hoot().control.conflicts.setProcessing(false);
                       return;
                     }
 
@@ -389,6 +391,7 @@ Hoot.model.conflicts = function(context)
                         {
                           console.log(error);
                           alert('failed to retrieve review refs.');
+                          context.hoot().control.conflicts.setProcessing(false);
                           return;
                         }
 
@@ -481,6 +484,7 @@ Hoot.model.conflicts = function(context)
                                    //descendents[featureAgainst.id] = mergedNode.id;
 
                                    window.setTimeout(function() {
+                                    context.hoot().control.conflicts.setProcessing(false);
                                      context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
                                 });
                             }
@@ -511,7 +515,10 @@ Hoot.model.conflicts = function(context)
                                 //descendents[featureAgainst.id] = mergedNode.id;
 
                                 window.setTimeout(function() {
-                                  context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
+                                  context.hoot().control.conflicts.setProcessing(false);
+                                  context.enter(iD.modes.Select(context, [mergedNode.id])); 
+                                  
+                                }, 500);
                               },
                               layerName);
                           }
@@ -523,6 +530,7 @@ Hoot.model.conflicts = function(context)
                             //logDiff();
 
                             window.setTimeout(function() {
+                              context.hoot().control.conflicts.setProcessing(false);
                               context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
                           }
                         }

@@ -11,12 +11,13 @@ Hoot.control.conflicts = function (context, sidebar) {
     var mergeFeatures;
     var activeEntity;
     var heartBeatTimer;
-    var isProcessingReview = false;
+    //var isProcessingReview = false;
     var getFeatureTimer;
 
     var currentReviewableMeta = null;
     var currentReviewItem = null;
 
+    Conflict.isProcessingReview = false;
     Conflict.activeEntity = function(){return activeEntity;};
     Conflict.activeConflict = function(){return activeConflict;};
     Conflict.activeConflictReviewItem = function(){return activeConflictReviewItem;};
@@ -33,6 +34,23 @@ Hoot.control.conflicts = function (context, sidebar) {
             .html('<div class="margin2 inline _loadingSmall"><span></span></div>' + '<span class="strong">Checking for conflicts&#8230;</span>');
         return Review;
     };
+
+    Conflict.setProcessing = function(isProc){
+        if(isProc === true){
+            if(Conflict.isProcessingReview === true){
+                alert("Processing review. Please wait.");
+                return;
+            }
+            Conflict.isProcessingReview = true;
+            setTimeout(function () {
+                Conflict.isProcessingReview = false;
+            }, 2000);
+        } else {
+            Conflict.isProcessingReview = false;
+        }
+        
+    }
+
     Conflict.highlightLayerTable = null;
     Conflict.startReview = function (data) {
     	var entity;
@@ -146,7 +164,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
                 try {
                     if(error){
-                        isProcessingReview = false;
+                        Conflict.isProcessingReview = false;
                         alert('Failed get Next Item.');
                         exitReviewSession('Exiting review session...');
 
@@ -185,22 +203,32 @@ Hoot.control.conflicts = function (context, sidebar) {
                         highlightLayer(newReviewItem);
                     } else {
                         if(response.status == 'noneavailable'){
-                            Conflict.reviews = response;
-                            setCurrentReviewMeta(response);
-                            setCurrentReviewItem(response.reviewItem);
-                            updateMeta();
+                            
                             alert('There are no more available reviewables!');
 
                         } else {
                             alert("Failed to retrieve next reviewable!")
                         }
-                        exitReviewSession('Exiting review session...');
+                        var currTotal = 1*response.total;
+                        var reviewedcnt = 1*response.reviewedcnt;
+                        var lockcnt = 1*response.lockedcnt;
+                        if(currTotal > 0){
+                            if(currTotal === (reviewedcnt + lockcnt))
+                            {
+                                Conflict.reviews = response;
+                                setCurrentReviewMeta(response);
+                                setCurrentReviewItem(response.reviewItem);
+                                updateMeta();
+                                exitReviewSession('Exiting review session...');
+                            }
+                        }
+                        
                     }
                 }
                 catch (ex) {
                     alert(ex);
                 } finally {
-                    isProcessingReview = false;
+                    Conflict.isProcessingReview = false;
                 }
             });
         }
@@ -550,14 +578,11 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         var retainFeature = function () {
             try {
-                if(isProcessingReview === true){
-                    alert("Processing review. Please wait.");
-                    return;
-                }
-                isProcessingReview = true;
+                
+                Conflict.setProcessing(true);
                 var vicheck = vischeck();
                 if(!vicheck){
-                    isProcessingReview = false;
+                    Conflict.isProcessingReview = false;
                     return;
                 }
                 var item = getCurrentReviewItem();
@@ -593,7 +618,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                         var ent = context.hasEntity(d);
                         if (!ent) {
                             alert("missing entity.");
-                            isProcessingReview = false;
+                            Conflict.isProcessingReview = false;
                       return;
                       }
                         var tags = ent.tags;
@@ -644,7 +669,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             } catch (err) {
                 alert(err);
             } finally {
-                isProcessingReview = false;
+                Conflict.isProcessingReview = false;
             }
 
 
