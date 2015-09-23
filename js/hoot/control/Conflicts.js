@@ -31,7 +31,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         Review.append('a')
             .classed('button dark animate strong block big pad2x pad1y js-toggle white', true)
             .style('text-align','left')
-            .html('<div class="margin2 inline _loadingSmall"><span></span></div>' + '<span class="strong">Checking for conflicts&#8230;</span>');
+            .html('<div class="margin2 inline _loadingSmall"><span></span></div>' + '<span class="strong">Checking for review items&#8230;</span>');
         return Review;
     };
 
