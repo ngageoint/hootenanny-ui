@@ -143,7 +143,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         };
 
-        
+
         var jumpTo = function(direction) {
             var targetReviewItem = getCurrentReviewItem();
             // Handle first review we assume first when do not have currentReviewItem
@@ -482,7 +482,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 if(doProceed === true) {
                 	Hoot.model.REST('setAllItemsReviewed', data.mapId, function (error, response)
                 	{
-                      finalizeReviewSession('Saving Conflicts.....');
+                      finalizeReviewSession('Saving All Review Features.....');
                       event.acceptAll(data);
                     });
                 }
@@ -532,9 +532,9 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
             }
 
-            meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Reviewable conflicts remaining: ' +
+            meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Review items remaining: ' +
                 (nTotal-nReviewed) +
-                '  (Reviewed conflicts: ' + nReviewed +
+                '  (Resolved: ' + nReviewed +
                     ', Locked: ' + nLocked +
                     multiFeatureMsg + ')</strong>');
         }
@@ -720,7 +720,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         confData.isDeleteEnabled = false;
 
-        metaHead.text('There are ' + data.numItemsReturned + ' conflicts:');
+        metaHead.text('There are ' + data.numItemsReturned + ' review items:');
         reviewOptions = Review.selectAll('fieldset')
             .append('div')
             .classed('col12 space-bottom1', true);
@@ -856,7 +856,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     Conflict.reviewNextStep = function () {
 
       confData.isDeleteEnabled = true;
-        metaHead.text('All Conflicts Resolved!');
+        metaHead.text('All Review Items Resolved!');
 
         d3.selectAll(reviewOptions.node().childNodes).remove();
 

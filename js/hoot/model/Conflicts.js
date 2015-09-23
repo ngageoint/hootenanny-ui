@@ -310,6 +310,18 @@ Hoot.model.conflicts = function(context)
         if (!feature && !featureAgainst) {
              window.alert('Merge error, one feature is missing');
         } else {
+            //Check that both features are still in the map graph,
+            //and load them if not
+
+            if (!context.hasEntity(feature.id) || !context.hasEntity(featureAgainst.id)) {
+                context.loadMissing([feature.id, featureAgainst.id], function(err, entities) {
+                    doMerge();
+                    }, layerName);
+            } else {
+                doMerge();
+            }
+
+            function doMerge() {
             var osmXml = '<osm version=\'0.6\' upload=\'true\' generator=\'JOSM\'>' +
                 JXON.stringify(feature.asJXON()) + JXON.stringify(featureAgainst.asJXON()) + '</osm>';
 
@@ -537,6 +549,7 @@ Hoot.model.conflicts = function(context)
                    });
                });
             }, mapid, layerName);
+            }
         }
     };
 
