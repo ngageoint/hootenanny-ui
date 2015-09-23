@@ -85,6 +85,12 @@ Hoot.control.utilities.folder = function(context) {
 			context.hoot().control.utilities.validation.validationPopup(dataset.name, function(jobs){
 			});
 		}
+
+		function showFilterPopup(selLayer) {
+			var dataset = _.findWhere(context.hoot().model.layers.getAvailLayers(),{id:selLayer[0]});
+			context.hoot().control.utilities.filter.filterPopup(dataset.name, function(jobs){
+			});
+		}
 	
 	    function update(source) {
 	
@@ -236,7 +242,7 @@ Hoot.control.utilities.folder = function(context) {
 		        	      {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'info',click:'context.hoot().view.utilities.dataset.moveDatasets(hoot.model.layers.getSelectedLayers())'},
 		        	      {title:'Rename ' + d.name,icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
 		        	      {title:'Prepare for Validation',icon:'sprocket',click:'showPrepValidationPopup(hoot.model.layers.getSelectedLayers());'},
-		        	      {title:'Filter non-HGIS POIs',icon:'sprocket',click:'alert("Filter non-HGIS POIs is currently under construction.");'}
+		        	      {title:'Filter non-HGIS POIs',icon:'sprocket',click:'showFilterPopup(hoot.model.layers.getSelectedLayers());'}
 		        	  ]; 
             	  } else if (d.type.toLowerCase()=='folder') {
 	        		  items = [

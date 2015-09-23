@@ -22,5 +22,66 @@ Hoot.control = function (context){
                 Hoot.tools(context, sidebar);
 	}
 
+        // TODO: Update this to be more generic..
+        hoot_control.createModalDialog = function(context, dlgMetadata, formMetaData, btnMetaData) {
+                var modalbg = d3.select('body')
+                    .append('div')
+                    .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+                var modalDiv = modalbg.append('div')
+                    .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
+                var _form = modalDiv.append('form');
+                _form.classed('round space-bottom1 importableLayer', true)
+                    .append('div')
+                    .classed('big pad1y keyline-bottom space-bottom2', true)
+                    .append('h4')
+                    .text(dlgMetadata.label)
+                    .append('div')
+                    .classed('fr _icon x point', true)
+                    .on('click', function () {
+                        
+                        modalbg.remove();
+                    });
+                var fieldset = _form.append('fieldset')
+                    .selectAll('.form-field')
+                    .data(formMetaData);
+                fieldset.enter()
+                    .append('div')
+                    .classed('form-field fill-white small keyline-all round space-bottom1', true)
+                    .append('label')
+                    .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
+                    .text(function (d) {
+                        return d.label;
+                    });
+                fieldset.append('div')
+                    .classed('contain', true)
+                    .append('input')
+                    .attr('type', 'text')
+                    .attr('placeholder', function (field) {
+                        return field.placeholder;
+                    })
+                    .attr('class', function (field) {
+                        return 'reset ' + field.type;
+                    })
+                    .select(function (a) {
+
+                    });
+
+                var submitExp = modalDiv.append('div')
+                    .classed('form-field col12 center ', true);
+                
+
+                var btn = submitExp.append('span')
+                    .classed('round strong big loud dark center col10 margin1 point', true)
+                    .classed('inline row1 fl col10 pad1y', true)
+                    .text(btnMetaData.label)
+                    .on('click', function () {
+                        btnMetaData.action(modalbg, submitExp, _form);
+                    });
+
+                    
+                
+                return modalbg;
+     
+        }
 	return hoot_control;
 };

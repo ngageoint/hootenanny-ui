@@ -1,35 +1,33 @@
-Hoot.control.utilities.validation = function(context) {
-	var hoot_control_utilities_validation = {};
+Hoot.control.utilities.filter = function(context) {
+	var hoot_control_utilities_filter = {};
 
-    hoot_control_utilities_validation.validationPopup = function(srcName, callback) {
+    hoot_control_utilities_filter.filterPopup = function(srcName, callback) {
 
         var source = srcName;
         var d_form = [{
             label: 'Output Name',
             placeholder: 'Save As',
-            type: 'ValidationName'
+            type: 'FilterName'
         }];
-
-
 
         var d_btn = {
             'label' : 'Run',
             'action' : function(formContainer, btnContainer, form){
                 // spinner
                 var spinDiv =  btnContainer.append('div')
-                    .classed('form-field col1 center valspinner', true);
+                    .classed('form-field col1 center filspinner', true);
                 spinDiv.call(iD.ui.Spinner(context));
           
-                var output = form.select('.reset.ValidationName').value();
+                var output = form.select('.reset.FilterName').value();
 
                 if(output){
                     var reqParam = {};
-                    reqParam.sourceMap = source;
-                    reqParam.outputMap = output;
+                    reqParam.source = source;
+                    reqParam.output = output;
 
-                    Hoot.model.REST('createValidationMap', reqParam, function (resp) {   
+                    Hoot.model.REST('createFilteredMap', reqParam, function (resp) {   
                         if(resp.status != 'complete') {
-                            alert("Failed to create validation. See log for detail.");
+                            alert("Failed to create filtered layer. See log for detail.");
                         } else {
                             // refresh both folder and layer list
                             context.hoot().model.layers.refresh(function(){
@@ -49,7 +47,7 @@ Hoot.control.utilities.validation = function(context) {
         };
 
         var d_container = {};
-        d_container.label = 'Prepare For Validation';
+        d_container.label = 'Filtered POI';
         var modalbg = context.hoot().control.createModalDialog(context, d_container, d_form, d_btn); 
 
             
@@ -59,5 +57,5 @@ Hoot.control.utilities.validation = function(context) {
 
 
 
-	return hoot_control_utilities_validation;
+	return hoot_control_utilities_filter;
 }

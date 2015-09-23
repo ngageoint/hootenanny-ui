@@ -933,6 +933,20 @@ rest.downloadReport = function(data)
             });
     };
 
+
+    rest.createFilteredMap = function (data, callback) {
+        
+        d3.json('/hoot-services/job/filter/custom/HGIS/filternonhgispois')
+            .header('Content-Type', 'application/json')
+            .post(JSON.stringify(data), function (error, resp) {
+                
+                if (error) {
+                    return callback(_alertError(error, "Requested job failed! For detailed log goto Manage->Log"));
+                }
+                rest.status(resp.jobId, callback);
+            });
+    };
+
     rest['' + command + ''](data, callback, option);
 };
 
