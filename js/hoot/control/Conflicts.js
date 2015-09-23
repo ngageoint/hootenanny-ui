@@ -609,8 +609,9 @@ Hoot.control.conflicts = function (context, sidebar) {
                         	//We also need to drop id's for the review against item from its 
                         	//hoot:review:id tag (the reason for adding && v != curReviewUUID to
                         	//the if statement below).  This is b/c hoot core creates the tags as 
-                        	//relexive, whereas the presented database records are not stored as 
-                        	//reflexive in order to avoid showing duplicated reviews.
+                        	//relexive ("review A against B" AND "review B against A"), whereas the 
+                        	//presented database records are not stored as reflexive in order to 
+                        	//avoid showing duplicated reviews.
                         	if(v != curReviewAgainstUUID && v != curReviewUUID) {
                                 newAgainstList.push(v);
                             }
