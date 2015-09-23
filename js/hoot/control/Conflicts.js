@@ -15,6 +15,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
     var currentReviewableMeta = null;
     var currentReviewItem = null;
+    var processingTimer;
 
     Conflict.isProcessingReview = false;
     Conflict.activeEntity = function(){return activeEntity;};
@@ -41,10 +42,18 @@ Hoot.control.conflicts = function (context, sidebar) {
                 return;
             }
             Conflict.isProcessingReview = true;
-            setTimeout(function () {
+            if(processingTimer){
+                clearTimeout(processingTimer);
+            }
+            
+            processingTimer = setTimeout(function () {
                 Conflict.isProcessingReview = false;
             }, 2000);
         } else {
+            if(processingTimer){
+                clearTimeout(processingTimer);
+            }
+            
             Conflict.isProcessingReview = false;
         }
     }
@@ -141,6 +150,10 @@ Hoot.control.conflicts = function (context, sidebar) {
         };
 
         var jumpTo = function(direction) {
+            if(heartBeatTimer){
+                clearInterval(heartBeatTimer);
+            }
+            
             var targetReviewItem = getCurrentReviewItem();
             // Handle first review we assume first when do not have currentReviewItem
             if(!targetReviewItem) {
