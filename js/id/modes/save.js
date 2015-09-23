@@ -156,8 +156,13 @@ iD.modes.Save = function(context) {
                     history.imageryUsed(),
                     function(err, changeset_id) {
                         if (err) {
+                            var errMsg = err.responseText;
+                            if(err.status === 404){
+                                errMsg += " (The feature may have been deleted by other " +
+                                    "user and may require reloading of the layer.)";
+                            }
                             errors.push({
-                                msg: err.responseText,
+                                msg: errMsg,
                                 details: [ t('save.status_code', { code: err.status }) ]
                             });
                             showErrors();
