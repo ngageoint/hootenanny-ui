@@ -1,5 +1,5 @@
 Hoot.control.conflicts = function (context, sidebar) {
-    var event = d3.dispatch('acceptAll', /*'removeFeature',*/ 'exportData', 'addData', 'reviewDone','zoomToConflict');
+    var event = d3.dispatch('acceptAll', 'exportData', 'addData', 'reviewDone','zoomToConflict');
     var Conflict = {};
     var confData;
     var Review;
@@ -11,7 +11,6 @@ Hoot.control.conflicts = function (context, sidebar) {
     var mergeFeatures;
     var activeEntity;
     var heartBeatTimer;
-    //var isProcessingReview = false;
     var getFeatureTimer;
 
     var currentReviewableMeta = null;
@@ -48,7 +47,6 @@ Hoot.control.conflicts = function (context, sidebar) {
         } else {
             Conflict.isProcessingReview = false;
         }
-        
     }
 
     Conflict.highlightLayerTable = null;
@@ -140,9 +138,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     }
                 });
             }
-
         };
-
 
         var jumpTo = function(direction) {
             var targetReviewItem = getCurrentReviewItem();
@@ -221,8 +217,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                                 updateMeta();
                                 exitReviewSession('Exiting review session...');
                             }
-                        }
-                        
+                        }                    
                     }
                 }
                 catch (ex) {
@@ -449,7 +444,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             };
         };
         var reviewItemID = function (item) {
-            // if(item.type=='relation'){window.alert('cant do relations yet');return}
             var a = {
                 way: 'w',
                 node: 'n',
@@ -458,7 +452,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             return a[item.type] + item.id + '_' + mapid;
         };
         var reviewAgainstID = function (item) {
-            //if(item.type=='relation'){window.alert('cant do relations yet');return}
             var a = {
                 way: 'w',
                 node: 'n',
@@ -575,6 +568,70 @@ Hoot.control.conflicts = function (context, sidebar) {
             t.classed('hide', !t.classed('hide'));
             checkToggleText();
         };
+        
+        var updateReviewTagsForResolve = function(item, reviewableFeatureId, reviewAgainstFeatureId)
+        {
+            //drop current review against id from the current reviewed feature's hoot:review:uuid
+        	//tags; if doing so would leave hoot:review:uuid empty, then drop all review tags
+        	//(hoot:review:*)
+            var curReviewUUID =  reviewableFeatureId; 
+            //console.log(curReviewUUID);
+            var curReviewAgainstUUID = reviewAgainstFeatureId;
+            //console.log(curReviewAgainstUUID);
+            var items = [item];
+            var flagged = _.uniq(_.flatten(_.map(items, function (d) {
+                return [d.type.charAt(0) + d.id + '_' + mapid, 
+                        d.itemToReviewAgainst.type.charAt(0) + d.itemToReviewAgainst.id + '_' + mapid];
+            })));
+            var inID = _.filter(flagged, function (d) {
+                return context.hasEntity(d);
+            });
+            _.each(inID, function (d) {
+                var ent = context.hasEntity(d);
+                if (!ent) {
+                    alert("missing entity.");
+                    isProcessingReview = false;
+              return;
+              }
+                var tags = ent.tags;
+                //console.log(tags);
+                var newTags = _.clone(tags);
+
+                var againstUuids = tags['hoot:review:uuid'];
+                //console.log(againstUuids);
+                if(againstUuids && againstUuids.length > 0) {
+                    var againstList = againstUuids.split(';');
+                    //console.log(againstList);
+                    if(againstList.length > 1) { // have many against
+                        var newAgainstList =[];
+
+                        _.each(againstList, function(v){
+                        	//We also need to drop id's for the review against item from its 
+                        	//hoot:review:id tag (the reason for adding && v != curReviewUUID to
+                        	//the if statement below).  This is b/c hoot core creates the tags as 
+                        	//relexive, whereas the presented database records are not stored as 
+                        	//reflexive in order to avoid showing duplicated reviews.
+                        	if(v != curReviewAgainstUUID && v != curReviewUUID) {
+                                newAgainstList.push(v);
+                            }
+                        })
+
+                        var newAgainstTags = newAgainstList.join(';');
+                        //console.log(newAgainstTags);
+                        newTags['hoot:review:uuid'] = newAgainstTags;
+                    } else {
+                                newTags = _.omit(newTags, function (value, key) {
+                                    return key.match(/hoot:review/g);
+                                });
+                                //console.log(newTags);
+                    }
+                }
+
+                //console.log(newTags);
+                context.perform(
+                  iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
+            });
+        }
 
         var retainFeature = function () {
             try {
@@ -603,58 +660,13 @@ Hoot.control.conflicts = function (context, sidebar) {
                         d3.select('div.tag-table').remove();
                     }
 
-                    //drop all review tags from the all reviewed features, since they're all being
-                    //marked as reviewed
-                    var curReviewAgainstUUID = item.itemToReviewAgainst.uuid;
-                    var curReviewUUID =  item.uuid;
-                    var items = [item];
-                    var flagged = _.uniq(_.flatten(_.map(items, function (d) {
-                        return [d.type.charAt(0) + d.id + '_' + mapid, d.itemToReviewAgainst.type.charAt(0) + d.itemToReviewAgainst.id + '_' + mapid];
-                    })));
-                    var inID = _.filter(flagged, function (d) {
-                        return context.hasEntity(d);
-                    });
-                    _.each(inID, function (d) {
-                        var ent = context.hasEntity(d);
-                        if (!ent) {
-                            alert("missing entity.");
-                            Conflict.isProcessingReview = false;
-                      return;
-                      }
-                        var tags = ent.tags;
-                        var newTags = _.clone(tags);
-
-                        var againstUuids = tags['hoot:review:uuid'];
-                        if(againstUuids && againstUuids.length > 0) {
-                            var againstList = againstUuids.split(';');
-                            if(againstList.length > 1) { // have many against
-                                var newAgainstList =[];
-
-                                _.each(againstList, function(v){
-                                    if(v != curReviewAgainstUUID) {
-                                        newAgainstList.push(v);
-                                    }
-                                })
-
-                                var newAgainstTags = newAgainstList.join(';');
-                                newTags['hoot:review:uuid'] = newAgainstTags;
-                            } else {
-                                        newTags = _.omit(newTags, function (value, key) {
-                                            return key.match(/hoot:review/g);
-                                        });
-                            }
-                        }
-
-                        context.perform(
-                          iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
-                    });
-
+                    updateReviewTagsForResolve(item, item.uuid, item.itemToReviewAgainst.uuid);
+                    
                     var hasChanges = context.history().hasChanges();
                     if (hasChanges) {
                     	//console.log(
                           //context.history().changes(
                             //iD.actions.DiscardTags(context.history().difference())));
-
                     	iD.modes.Save(context).save(context, function () {
 
                         jumpFor();
@@ -671,8 +683,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             } finally {
                 Conflict.isProcessingReview = false;
             }
-
-
         };
 
         function toggleForm(self) {
