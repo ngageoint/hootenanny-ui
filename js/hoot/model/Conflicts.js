@@ -331,8 +331,12 @@ Hoot.model.conflicts = function(context)
                 //console.log("test9");
                 //grab these uuid's before the delete happens
                 var uuidsToRemove = new Array();
-                uuidsToRemove.push(context.entity(feature.id).tags["uuid"]);
-                uuidsToRemove.push(context.entity(featureAgainst.id).tags["uuid"]);
+                var reviewableUuid = feature.tags["uuid"];
+                //console.log(reviewableUuid);
+                var reviewAgainstUuid = featureAgainst.tags["uuid"];
+                //console.log(reviewAgainstUuid);
+                uuidsToRemove.push(reviewableUuid);
+                uuidsToRemove.push(reviewAgainstUuid);
                 iD.operations.Delete([feature.id, featureAgainst.id], context)();
                 //logDiff();
 
@@ -362,7 +366,7 @@ Hoot.model.conflicts = function(context)
                 //manage the tags for the deleted feature and those who ref them
 
                 //get references to review data for the reviewable feature
-                Hoot.model.REST('getReviewRefs', mapid, feature.id,
+                Hoot.model.REST('getReviewRefs', mapid, reviewableUuid,
                   function (error, response)
                   {
                 	//console.log(response);
@@ -395,7 +399,7 @@ Hoot.model.conflicts = function(context)
                     //console.log("reviewableItems1: " + reviewableItems1);
 
                     //get references to review data for the review against feature
-                    Hoot.model.REST('getReviewRefs', mapid, featureAgainst.id,
+                    Hoot.model.REST('getReviewRefs', mapid, reviewAgainstUuid,
                       function (error, response)
                       {
                     	//console.log(response);
@@ -494,6 +498,8 @@ Hoot.model.conflicts = function(context)
                                    //Track merged ids in descendents
                                    //descendents[feature.id] = mergedNode.id;
                                    //descendents[featureAgainst.id] = mergedNode.id;
+                                  
+                                   checkMergeChangeset();
 
                                    window.setTimeout(function() {
                                     context.hoot().control.conflicts.setProcessing(false);
@@ -525,6 +531,8 @@ Hoot.model.conflicts = function(context)
                                 //Track merged ids in descendents
                                 //descendents[feature.id] = mergedNode.id;
                                 //descendents[featureAgainst.id] = mergedNode.id;
+                                
+                                checkMergeChangeset();
 
                                 window.setTimeout(function() {
                                   context.hoot().control.conflicts.setProcessing(false);
@@ -540,6 +548,8 @@ Hoot.model.conflicts = function(context)
                         	context.perform(
                               iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
                             //logDiff();
+                        	
+                        	checkMergeChangeset();
 
                             window.setTimeout(function() {
                               context.hoot().control.conflicts.setProcessing(false);
@@ -550,8 +560,21 @@ Hoot.model.conflicts = function(context)
                });
             }, mapid, layerName);
             }
-        }
+        } 
     };
+    
+    //only call this at the very end of a node merge operation
+    var checkMergeChangeset = function()
+    {
+      var hasChanges = context.history().hasChanges();
+      context.hoot().assert(hasChanges);
+      var changes = 
+    	context.history().changes(
+          iD.actions.DiscardTags(context.history().difference()));
+      context.hoot().assert(changes.created.length == 1);
+      context.hoot().assert(changes.deleted.length == 2);
+      //the modified length will vary
+    }
 
     var logDiff = function()
     {
@@ -564,7 +587,6 @@ Hoot.model.conflicts = function(context)
       }
     }
 
-    //test comment
     /*model_conflicts.findDescendent = function(id) {
         var descId = descendents[id];
         if (typeof descId !== 'undefined') {

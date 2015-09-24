@@ -244,6 +244,14 @@ Hoot.hoot = function (context) {
             });
         }
     };
+    
+    hoot.assert = function(condition)
+    {
+      if (!condition)
+      {
+    	throw "Assertion failed";  
+      }
+    }
 
     getBrowserInfo = function(){
         var browserInfo = {};

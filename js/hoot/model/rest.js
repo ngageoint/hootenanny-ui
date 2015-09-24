@@ -652,29 +652,9 @@ Hoot.model.REST = function (command, data, callback, option) {
     	  });
     }
 
-  rest.getReviewRefs = function(mapId, id, callback)
+  rest.getReviewRefs = function(mapId, elementUniqueId, callback)
   {
-    //return a[item.type] + item.id + '_' + mapid;
-    //console.log(id);
-    var elementTypeAbbrev = id.substring(0, 1);
-    //console.log(elementTypeAbbrev);
-    var elementType;
-    if (elementTypeAbbrev == 'n')
-    {
-	  elementType = "node";
-    }
-    else if (elementTypeAbbrev == 'w')
-    {
-	  elementType = "way";
-    }
-    if (elementTypeAbbrev == 'r')
-    {
-	  elementType = "relation";
-    }
-    var elementId = id.substring(1, id.length - 1).split("_")[0];
-    
-    d3.json('/hoot-services/job/review/refs?mapId=' + mapId + "&elementId=" + elementId + 
-	  "&elementType=" + elementType,
+    d3.json('/hoot-services/job/review/refs?mapId=' + mapId + "&elementUniqueId=" + elementUniqueId,
       function(error, response)
       {
         if (error)
@@ -984,5 +964,3 @@ Hoot.model.REST.WarningHandler = function(resp){
         }
     }
 };
-
-
