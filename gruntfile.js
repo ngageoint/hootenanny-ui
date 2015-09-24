@@ -28,6 +28,7 @@ module.exports = function(grunt) {
                     'hoot/js/ui.js',
                     'hoot/js/ui/sidebar.js',
                     'hoot/js/ui/entity_editor.js',
+                    'hoot/js/ui/processing.js',
                     'hoot/js/ui/spinner.js',
                     'hoot/js/ui/warning.js',
                     'hoot/js/svg/surface.js',
