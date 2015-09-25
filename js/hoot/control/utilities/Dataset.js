@@ -797,6 +797,7 @@ Hoot.control.utilities.dataset = function(context) {
 
                         d3.select(this)
                             .style('width', '100%')
+                            .attr('readonly',true)
                             .call(comboImportType)
                             .on('change', function(a1,a2,a3){
                                 d3.select('.reset.Schema').value('');
@@ -1538,6 +1539,7 @@ Hoot.control.utilities.dataset = function(context) {
 
                     d3.select(this)
                         .style('width', '100%')
+                        .attr('readonly',true)
                         .call(comboImportType)
                         .on('change', function(a1,a2,a3){
                         	var selRowNum = d3.select(this.parentElement.parentElement).select('input').attr('row');
@@ -1611,9 +1613,7 @@ Hoot.control.utilities.dataset = function(context) {
                     
                     d3.select(this)
                     	.style('width', '100%')
-                    	.call(comboPathName);
-                    
-                    d3.select(this).attr('readonly',true);                        
+                    	.call(comboPathName);          
                 }
             });
         	
