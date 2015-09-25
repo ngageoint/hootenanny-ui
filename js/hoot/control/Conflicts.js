@@ -175,13 +175,29 @@ Hoot.control.conflicts = function (context, sidebar) {
                 try {
                     if(error){
                         Conflict.isProcessingReview = false;
-                        alert('Failed get Next Item.');
-                        //exitReviewSession('Exiting review session...');
+                        alert('Failed to get Next Item. Moving to next available item.');
                         jumpFor();
                         return;
                     }
 
+                    if(response) {
+                        var currTotal = 1*response.total;
+                        var reviewedcnt = 1*response.reviewedcnt;
+                        var lockcnt = 1*response.lockedcnt;
+
+                        if(currTotal === (reviewedcnt + lockcnt))
+                        {
+                            Conflict.reviews = response;
+                            setCurrentReviewMeta(response);
+                            setCurrentReviewItem(response.reviewItem);
+                            updateMeta();
+                            exitReviewSession('Exiting review session...');
+                            return;
+                        }          
+                    }
+
                     if(response.status == 'success'){
+                        if(1*response.total > 0){}
                         Conflict.reviews = response;
                         setCurrentReviewMeta(response);
                         setCurrentReviewItem(response.reviewItem);
@@ -212,26 +228,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                         activeEntity = newReviewItem;
                         highlightLayer(newReviewItem);
                     } else {
-                        if(response.status == 'noneavailable'){
-                            
-                            alert('There are no more available reviewables!');
-
-                        } else {
-                            alert("Failed to retrieve next reviewable!")
-                        }
-                        var currTotal = 1*response.total;
-                        var reviewedcnt = 1*response.reviewedcnt;
-                        var lockcnt = 1*response.lockedcnt;
-                        if(currTotal > 0){
-                            if(currTotal === (reviewedcnt + lockcnt))
-                            {
-                                Conflict.reviews = response;
-                                setCurrentReviewMeta(response);
-                                setCurrentReviewItem(response.reviewItem);
-                                updateMeta();
-                                exitReviewSession('Exiting review session...');
-                            }
-                        }                    
+                        alert('Failed to get next item. Moving to next available item.');
+                        jumpFor();
                     }
                 }
                 catch (ex) {
