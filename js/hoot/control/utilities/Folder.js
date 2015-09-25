@@ -299,6 +299,9 @@ Hoot.control.utilities.folder = function(context) {
 	      
 	      if(!event.ctrlKey || container.attr('id')==null){
 	    	  _.each(nodes,function(n){n.selected=false;});  
+	    	  if(d.type=='dataset'){d.selected=true;}
+	      } else if(event.ctrlKey && container.attr('id')=='datasettable' && d.type=='dataset') {
+	    	  d.selected = !d.selected;
 	      }
 	    	
 	      if(d.type=='folder'){context.hoot().model.layers.setSelectedLayers([]);}
@@ -306,27 +309,37 @@ Hoot.control.utilities.folder = function(context) {
 	      d3.select(this).classed("selected",true);
 	      var updateOpenFolders = !d3.select("#datasettable").selectAll('.selected').empty();
 	      
-	      if (d.children || typeof(d.children)=="object") {
-	    	  //folder closing
-	    	  d._children = d.children;
-	    	  d.children = null;
-	    	  d.selected = false;
-	    	  if(d.type=='folder' && updateOpenFolders){
-	    		  context.hoot().model.folders.setOpenFolders(d.id,false);
-	    		  d.state='closed';
-	    		  d3.select(this.parentNode).select('i').classed('folder',true).classed('openfolder',false);
-	    	  }
-	      } else {
-	    	  //folder opening
-	    	  d.children = d._children;
-	    	  d._children = null;
-	    	  //change color to signify selected
-	    	  if(d.type=='dataset'){d.selected=true;}
-	    	  if(d.type=='folder' && updateOpenFolders){
-	    		  context.hoot().model.folders.setOpenFolders(d.id,true);
-	    		  d.state='open';
-	    		  d3.select(this.parentNode).select('i').classed('folder',false).classed('openfolder',true);
-	    	  }
+	      
+	      if(d.type=='folder'){
+	    	  if (d.children || typeof(d.children)=="object") {
+		    	  //folder closing
+		    	  d._children = d.children;
+		    	  d.children = null;
+		    	  d.selected = false;
+		    	  if(updateOpenFolders){
+		    		  context.hoot().model.folders.setOpenFolders(d.id,false);
+		    		  d.state='closed';
+		    		  d3.select(this.parentNode).select('i').classed('folder',true).classed('openfolder',false);
+		    	  }
+		      } else if(d.children==null && d._children==null){
+		    	  //toggle an empty folder
+		    	  if (d.state=="open"){
+		    		  d.state="closed";
+		    		  d3.select(this.parentNode).select('i').classed('folder',true).classed('openfolder',false);
+		    	  } else {
+		    		  d.state="open";
+		    		  d3.select(this.parentNode).select('i').classed('folder',true).classed('openfolder',true);
+		    	  }
+		      } else {
+		    	  //folder opening
+		    	  d.children = d._children;
+		    	  d._children = null;
+		    	  if(updateOpenFolders){
+		    		  context.hoot().model.folders.setOpenFolders(d.id,true);
+		    		  d.state='open';
+		    		  d3.select(this.parentNode).select('i').classed('folder',false).classed('openfolder',true);
+		    	  }
+		      }	    	  
 	      }
 
 	      d3.select(this).classed("selected",false);
