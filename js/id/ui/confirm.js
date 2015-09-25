@@ -15,11 +15,14 @@ iD.ui.confirm = function(selection) {
     var buttons = section.append('div')
         .attr('class', 'modal-section buttons cf');
 
-    modal.okButton = function() {
+    modal.okButton = function(callback) {
         buttons
             .append('button')
             .attr('class', 'action col4')
             .on('click.confirm', function() {
+                if(callback){
+                    callback();
+                }
                 modal.remove();
             })
             .text(t('confirm.okay'));
