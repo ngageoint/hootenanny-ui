@@ -299,6 +299,9 @@ Hoot.control.utilities.folder = function(context) {
 	      
 	      if(!event.ctrlKey || container.attr('id')==null){
 	    	  _.each(nodes,function(n){n.selected=false;});  
+	    	  if(d.type=='dataset'){d.selected=true;}
+	      } else if(event.ctrlKey && container.attr('id')=='datasettable' && d.type=='dataset') {
+	    	  d.selected = !d.selected;
 	      }
 	    	
 	      if(d.type=='folder'){context.hoot().model.layers.setSelectedLayers([]);}
@@ -321,7 +324,7 @@ Hoot.control.utilities.folder = function(context) {
 	    	  d.children = d._children;
 	    	  d._children = null;
 	    	  //change color to signify selected
-	    	  if(d.type=='dataset'){d.selected=true;}
+	    	  //if(d.type=='dataset'){d.selected=true;}
 	    	  if(d.type=='folder' && updateOpenFolders){
 	    		  context.hoot().model.folders.setOpenFolders(d.id,true);
 	    		  d.state='open';
