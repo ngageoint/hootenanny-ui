@@ -156,16 +156,31 @@ iD.modes.Save = function(context) {
                     history.imageryUsed(),
                     function(err, changeset_id) {
                         if (err) {
+                            var isReviewing = context.hoot().control.conflicts.isConflictReviewExist();
                             var errMsg = err.responseText;
-                            if(err.status === 404){
-                                errMsg += " (The feature may have been deleted by other " +
-                                    "user and may require reloading of the layer.)";
+                            errMsg += " (The feature may have been deleted by other " +
+                                "user and may require reloading of the layer.";
+                            if(isReviewing === true){
+                                errMsg += " Will jump to next valid review item";
                             }
+                            errMsg += ")";
                             errors.push({
                                 msg: errMsg,
                                 details: [ t('save.status_code', { code: err.status }) ]
                             });
-                            showErrors();
+                            
+                            if(isReviewing === true){
+                                showErrors(
+                                    function(){
+                                        context.hoot().control.conflicts.gotoNext();
+                                    }
+                                    
+                                );
+                                
+                            } else {
+                                showErrors();
+                            }
+
                         } else {
                             loading.close();
                             context.flush();
@@ -205,7 +220,7 @@ iD.modes.Save = function(context) {
         }
 
 
-        function showErrors() {
+        function showErrors(callback) {
             var selection = iD.ui.confirm(context.container());
 
             history.pop();
@@ -217,7 +232,12 @@ iD.modes.Save = function(context) {
                 .text(t('save.error'));
 
             addErrors(selection, errors);
-            selection.okButton();
+            if(callback){
+                selection.okButton(callback);
+            } else {
+                selection.okButton();
+            }
+            
         }
 
 

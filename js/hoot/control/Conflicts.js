@@ -1,5 +1,5 @@
 Hoot.control.conflicts = function (context, sidebar) {
-    var event = d3.dispatch('acceptAll', 'exportData', 'addData', 'reviewDone','zoomToConflict');
+    var event = d3.dispatch('acceptAll', 'exportData', 'addData', 'reviewDone','zoomToConflict', 'jumpToNext');
     var Conflict = {};
     var confData;
     var Review;
@@ -34,6 +34,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             .html('<div class="margin2 inline _loadingSmall"><span></span></div>' + '<span class="strong">Checking for review items&#8230;</span>');
         return Review;
     };
+    Conflict.nextFunction;
 
     Conflict.setProcessing = function(isProc){
         if(isProc === true){
@@ -117,7 +118,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         	}
         }
 
-        var jumpFor = function (nReviewed, itemCnt) {
+        var jumpFor = function () {
             jumpTo('forward');
         };
         var jumpBack = function () {
@@ -508,33 +509,19 @@ Hoot.control.conflicts = function (context, sidebar) {
                 nReviewed = curMeta.reviewedcnt;
                 nLocked = curMeta.lockedcnt;
 
+                
                 if(curItem){
+                    var allAgCnt = curItem.allReviewAgainstCnt;
+                    if(allAgCnt > 1) {
+                        var metaList = curItem.againstList.split(';');
+                        var availCnt = metaList.length;
+                        
 
-                    var fId = reviewItemID(curItem);
-                    var ent = context.hasEntity(fId);
-                    if(ent){
-                        var reviewAgainstIds = ent.tags['hoot:review:uuid'];
-                        var ragList = reviewAgainstIds.split(';');
-                        var totalAgCnt = ragList.length;
-                        if(totalAgCnt > 1){
-
-                            // Since this is raw value we need check against the ragList
-                            var availCnt = 0;
-
-                            var metaList = curItem.againstList.split(';');
-                            for(var ii=0; ii<metaList.length; ii++){
-                                for(var jj=0; jj<ragList.length; jj++){
-                                    if(metaList[ii] == ragList[jj]){
-                                        availCnt++;
-                                        break;
-                                    }
-                                }
-                            }
-                            var nAgReviewed = totalAgCnt - availCnt;
-                            multiFeatureMsg = ', One to many feature ( reviewed ' +
-                                nAgReviewed + ' of ' + totalAgCnt + ')';
-                        }
+                        var nAgReviewed = allAgCnt - availCnt;
+                        multiFeatureMsg = ', One to many feature ( reviewed ' +
+                                    nAgReviewed + ' of ' + allAgCnt + ')';
                     }
+                        
                 }
             }
 
@@ -557,6 +544,8 @@ Hoot.control.conflicts = function (context, sidebar) {
             if(!vicheck){return;}
             jumpFor();
         };
+
+        Conflict.nextFunction = traverseForward;
 
         var traverseBackward = function () {
             var vicheck = vischeck();
@@ -904,6 +893,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                     d3.event.preventDefault();
                     event.addData();
             });
+
+      
     };
 
 
@@ -917,5 +908,19 @@ Hoot.control.conflicts = function (context, sidebar) {
         d3.select('.conflicts')
             .remove();
     };
+
+
+    Conflict.isConflictReviewExist = function() {
+        var exist = false;
+        if(d3.select('.conflicts')){
+            exist = true;
+        }
+        return exist;
+    };
+
+    Conflict.gotoNext = function() {
+        context.flush(true);
+        Conflict.nextFunction();
+    }
     return d3.rebind(Conflict, event, 'on');
 };
