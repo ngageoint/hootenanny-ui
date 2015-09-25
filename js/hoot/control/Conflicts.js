@@ -176,8 +176,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                     if(error){
                         Conflict.isProcessingReview = false;
                         alert('Failed get Next Item.');
-                        exitReviewSession('Exiting review session...');
-
+                        //exitReviewSession('Exiting review session...');
+                        jumpFor();
                         return;
                     }
 
@@ -342,9 +342,13 @@ Hoot.control.conflicts = function (context, sidebar) {
                     }
                     Conflict.reviewIds = [feature.id, againstFeature.id];
                     buildPoiTable(d3.select('#conflicts-container'), [feature, againstFeature]);
-                    var note = d3.select('.review-note');
-                    note.html(note.html().replace('Review note: ', 'Review note: ' + feature.tags['hoot:review:note']));
-                    event.zoomToConflict(feature ? feature.id : againstFeature.id);
+                    //var note = d3.select('.review-note');
+                    //note.html(note.html().replace('Review note: ', 'Review note: ' + feature.tags['hoot:review:note']));
+                    // seems like dead code
+                    //event.zoomToConflict(feature ? feature.id : againstFeature.id);
+
+                    updateMeta(feature.tags['hoot:review:note']);
+                    panToEntity(context.entity(feature ? feature.id : againstFeature.id));
                 }
             };
             var getFeature = function () {
@@ -496,7 +500,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             });
         }
 
-        function updateMeta() {
+        function updateMeta(note) {
             var multiFeatureMsg = '';
             var curItem = getCurrentReviewItem();
             var curMeta = getCurrentReviewMeta();
@@ -524,8 +528,11 @@ Hoot.control.conflicts = function (context, sidebar) {
                         
                 }
             }
-
-            meta.html('<strong class="review-note">' + 'Review note: <br>' + 'Review items remaining: ' +
+            var noteText = "";
+            if(note){
+                noteText = note;
+            }
+            meta.html('<strong class="review-note">' + 'Review note: ' + noteText + '<br>' + 'Review items remaining: ' +
                 (nTotal-nReviewed) +
                 '  (Resolved: ' + nReviewed +
                     ', Locked: ' + nLocked +
