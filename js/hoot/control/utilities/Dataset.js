@@ -531,7 +531,8 @@ Hoot.control.utilities.dataset = function(context) {
                 label: 'Import Data',
                 type: 'fileImport',
                 placeholder: 'Select File',
-                icon: 'folder'
+                icon: 'folder',
+                readonly:'readonly'
             }, {
                 label: 'Layer Name',
                 placeholder: 'Save As',
@@ -605,6 +606,9 @@ Hoot.control.utilities.dataset = function(context) {
                         return typeName;
                     };
 
+                    if (a.readonly){
+                    	d3.select(this).attr('readonly',true); 
+                    }
 
                     if (a.icon) {
                         d3.select(this.parentNode)
@@ -1087,7 +1091,7 @@ Hoot.control.utilities.dataset = function(context) {
         
         var _columns = [
            {label:'Import Type', placeholder: 'Select Import Type', type: 'importImportType', combobox2: importTypes},
-           {label:'Import Data', placeholder: 'Select File', type: 'fileImport',icon:'folder'},
+           {label:'Import Data', placeholder: 'Select File', type: 'fileImport',icon:'folder',readonly:'readonly'},
            {label:'Layer Name', placeholder: 'Save As',	 type: 'LayerName'},
            {label:'Path', placeholder: 'root', type: 'PathName', combobox3:folderList },
            {label:'Translation', placeholder: 'Select Data Translation Schema',	type: 'Schema', combobox: importTranslations},
@@ -1350,6 +1354,10 @@ Hoot.control.utilities.dataset = function(context) {
                     return typeName;
                 };
 
+                if (a.readonly){
+                	d3.select(this).attr('readonly',true); 
+                }
+                
                 if (a.icon) {
                     if(a.type=="deleteRow"){
                     	var parentNode = d3.select(this.parentNode);
