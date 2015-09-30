@@ -126,9 +126,11 @@ Hoot.view.utilities = function (context){
                 d3.event.preventDefault();
                 var vis = d3.selectAll('#jobsBG')
                     .style('display') === 'none' ? false : true;
+                var txt = vis ? "Manage" : "Return to Map";
                 d3.select(this)
                     .classed('fill-light', !vis)
-                    .classed('dark', vis);
+                    .classed('dark', vis)
+                    .text(txt);
                 d3.selectAll('#jobsBG')
                     .classed('hidden', vis);
             });
