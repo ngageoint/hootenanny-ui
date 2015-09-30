@@ -6,6 +6,8 @@ Hoot.control.conflate = function (sidebar) {
     
     var Conflate = {};
     
+    Conflate.lastAdvSettingsText = 'Last Advanced Settings';
+    
     Conflate.jobid = "test";
     Conflate.activate = function (data) {
         function subCompare(words, min_substring_length) {
@@ -30,6 +32,11 @@ Hoot.control.conflate = function (sidebar) {
                 found: 0
             };
         }
+        
+        // Capture previous values if they exist
+        Conflate.lastAdvFields = Conflate.lastAdvFields ? Conflate.lastAdvFields : null;
+        Conflate.lastAdvValues = Conflate.lastAdvValues ? Conflate.lastAdvValues : null;
+        Conflate.lastAdvDlg = Conflate.lastAdvDlg ? Conflate.lastAdvDlg : null;
 
         // Remove any previousely running advanced opt dlg
         if(Conflate.confAdvOptsDlg){Conflate.confAdvOptsDlg.remove();}
@@ -83,7 +90,7 @@ Hoot.control.conflate = function (sidebar) {
                 label: 'Type',
                 type: 'ConfType',
                 placeholder: 'Reference',
-                combobox: ['Reference', 'Average', 'Cookie Cutter & Horizontal'],
+                combobox3: ['Reference', 'Average', 'Cookie Cutter & Horizontal'],
                 onchange: function(d){
                 	//reset form
 					Conflate.confAdvOptionsFields = null;
@@ -136,9 +143,31 @@ Hoot.control.conflate = function (sidebar) {
             .on('click', function () {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
-              /*  sidebar.selectAll('fieldset').each(function () {
-                    d3.select(this).classed('hidden', true);
-                });*/
+
+                //hide adv conf dlg if visible - treat as if cancel
+	        	if (Conflate.confLastSetVals != null){
+	        		//replace current inputs with Conflate.confLastSetVals
+	        		_.each(Conflate.confLastSetVals,function(ai){
+	        			var selAI = d3.select('#'+ai.id);
+	        			if(ai.type=='checkbox'){
+	        				selAI.property('checked',ai.checked);
+	        			} else {
+	        				selAI.value(ai.value);
+	        			}
+	        			
+	        			selAI.property('disabled',ai.disabled);
+	        			if(ai.hidden.length>0){d3.select(selAI.node().parentNode).style('display',ai.hidden);}
+	        		});
+	        		
+	        		Conflate.confAdvOptsDlg.classed('hidden', true);
+	        	} else {
+	        		Conflate.confLastSetVals = null;
+	        		Conflate.confAdvOptionsSelectedVal = null;
+                    if(Conflate.confAdvOptsDlg){Conflate.confAdvOptsDlg.remove();}
+                    Conflate.confAdvOptsDlg = null;
+                 }
+	        	_advOpsFormEvent(false);
+                
                 toggleForm(this);
             });
         var layerRef = conflate
@@ -242,6 +271,28 @@ Hoot.control.conflate = function (sidebar) {
                     
                     d3.select(this).attr('readonly',true);                        
                 }
+                
+                if (a.combobox3) {
+                	
+                	if(Conflate.lastAdvDlg){a.combobox3.push(Conflate.lastAdvSettingsText);}
+                	
+                    var combo = d3.combobox()
+                        .data(_.map(a.combobox3, function (n) {
+                            return {
+                                value: n,
+                                title: n
+                            };
+                        }));
+                    var comboCnt = d3.select(this);
+                    comboCnt.style('width', '100%')
+                        .call(combo);
+
+                    if(a.onchange){
+                        comboCnt.on('change', a.onchange);
+                    }
+
+                 
+                }
             });
         var actions = conflate
             .select('fieldset')
@@ -308,10 +359,25 @@ Hoot.control.conflate = function (sidebar) {
                 var thisConfType = d3.selectAll('.reset.ConfType');
                 var selVal = thisConfType.value();
 
+				if(selVal==Conflate.lastAdvSettingsText){
+					Conflate.confAdvOptionsFields = Conflate.lastAdvFields;
+            		Conflate.confAdvOptionsSelectedVal = Conflate.lastAdvValues;
+				}
+
                 if(Conflate.confAdvOptionsSelectedVal == null){
                 	//set Conflate.confAdvOptionsSelectedVal equal to defaults for default values
                 	Conflate.confAdvOptionsFields = _getDefaultFields();
                 	Conflate.confAdvOptionsSelectedVal = _getSelectedValues(null,Conflate.confAdvOptionsFields);
+                }
+                
+                if(d3.selectAll('.reset.ConfType').value()=='Advanced Conflation'){
+                	Conflate.lastAdvFields = _.map(Conflate.confAdvOptionsFields,_.clone);
+                	Conflate.lastAdvValues = _.map(Conflate.confAdvOptionsSelectedVal,_.clone);
+                	Conflate.lastAdvDlg = [];
+	            	_.each(d3.select("#CustomConflationForm").selectAll('form').selectAll('input')[0],function(ai){
+	            		var selAI = d3.select('#'+ai.id);
+	            		Conflate.lastAdvDlg.push({id:ai.id,type:ai.type, checked:ai.checked, value:ai.value, disabled:selAI.property('disabled'),hidden:d3.select(selAI.node().parentNode).style('display')});
+	            	});	 
                 }
                 
                 submitLayer(conflate);
@@ -334,9 +400,14 @@ Hoot.control.conflate = function (sidebar) {
             d3.event.stopPropagation();
             d3.event.preventDefault();
             
-            if(Conflate.confAdvOptionsSelectedVal == null){
-            	Conflate.confAdvOptionsFields = _getDefaultFields();
-            	Conflate.confAdvOptionsSelectedVal = _getSelectedValues(null,Conflate.confAdvOptionsFields);
+            if(d3.selectAll('.reset.ConfType').value()==Conflate.lastAdvSettingsText){
+            	Conflate.confAdvOptionsFields = Conflate.lastAdvFields;
+            	Conflate.confAdvOptionsSelectedVal = Conflate.lastAdvValues;
+            } else {
+            	if(Conflate.confAdvOptionsSelectedVal == null){
+            		Conflate.confAdvOptionsFields = _getDefaultFields();
+                	Conflate.confAdvOptionsSelectedVal = _getSelectedValues(null,Conflate.confAdvOptionsFields);            		
+            	}
             }
             console.log(JSON.stringify(Conflate.confAdvOptionsSelectedVal))
         });
@@ -351,6 +422,34 @@ Hoot.control.conflate = function (sidebar) {
             {
             	_advOpsFormEvent(true);
                 Conflate.confAdvOptsDlg = Conflate.advancedOptionsDlg();
+               
+                if(d3.selectAll('.reset.ConfType').value()==Conflate.lastAdvSettingsText && Conflate.lastAdvDlg){
+            		_.each(Conflate.lastAdvDlg,function(ai){
+            			var selAI = d3.select('#'+ai.id);
+            			if(ai.type=='checkbox'){
+            				selAI.property('checked',ai.checked);
+            			} else {
+            				selAI.value(ai.value);
+            			}
+
+            			selAI.property('disabled',ai.disabled);
+            			if(ai.hidden.length>0){d3.select(selAI.node().parentNode).style('display',ai.hidden);}
+            		});
+                } else {
+                    //replace current inputs with Last advanced options if required...
+            		_.each(Conflate.confLastSetVals,function(ai){
+            			var selAI = d3.select('#'+ai.id);
+            			if(ai.type=='checkbox'){
+            				selAI.property('checked',ai.checked);
+            			} else {
+            				selAI.value(ai.value);
+            			}
+
+            			selAI.property('disabled',ai.disabled);
+            			if(ai.hidden.length>0){d3.select(selAI.node().parentNode).style('display',ai.hidden);}
+            		});                	
+                }
+                
                 if(Conflate.confAdvOptsDlg==null){_onCustomConflationFormError();}
                 else{
                 	//exitadvopts
@@ -568,7 +667,7 @@ Hoot.control.conflate = function (sidebar) {
           		'Cookie Cutter & Horizontal':'horizontal'
           	};
     	var type = 'iD.data.hootConfAdvOps_'.concat(_confType[thisConfType.value()]);
-        
+    	
     	//load in specific values for custom conflation
         var overrideOps = eval(type);
     	if(overrideOps){
@@ -816,12 +915,13 @@ Hoot.control.conflate = function (sidebar) {
                 
             });
         }
+        
         return formFields;
     };
     
     // Iterate through meta value and get user selected values
     _getSelectedValues = function(advform, fieldsMetaData){
-        var results = [];
+    	var results = [];
         if(fieldsMetaData){
             for( var i=0; i<fieldsMetaData.length; i++){
                 var meta = fieldsMetaData[i];
@@ -1038,10 +1138,17 @@ Hoot.control.conflate = function (sidebar) {
     Conflate.advancedOptionsDlg = function () { 
         try{
 	    	var advancedOptionsEvents = d3.dispatch('exitadvopts');
-	        if(Conflate.confAdvOptionsFields==null){
-	        	Conflate.confAdvOptionsFields = _getDefaultFields();
+	        
+	    	if(Conflate.confAdvOptionsFields==null){
+	        	if(d3.selectAll('.reset.ConfType').value()==Conflate.lastAdvSettingsText){
+	        		Conflate.confAdvOptionsFields = Conflate.lastAdvFields;
+	        	} else {
+	        		Conflate.confAdvOptionsFields = _getDefaultFields();
+	        	}
 	        }
-	        var d_form = _generateFields(Conflate.confAdvOptionsFields);
+	        
+    	    var d_form = _generateFields(Conflate.confAdvOptionsFields);
+    	    	
 	        var modalbg = d3.select('#content') //body
 	            .append('div')
 	            .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true)
