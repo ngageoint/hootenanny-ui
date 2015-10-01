@@ -79,7 +79,8 @@ Hoot.control.conflate = function (sidebar) {
             	label: 'Path',
             	type: 'pathname',
             	placeholder:'root',
-            	combobox2:folderList
+            	combobox2:folderList,
+            	readonly:'readonly'
             },
             {
             	label: 'New Folder Name (leave blank otherwise)',
@@ -98,24 +99,15 @@ Hoot.control.conflate = function (sidebar) {
 					if(Conflate.confAdvOptsDlg){Conflate.confAdvOptsDlg.remove();}
 					Conflate.confAdvOptsDlg = null;
 					_advOpsFormEvent(false);
-                }
+                },
+                readonly:'readonly'
             },
-         /*   {
-                label: 'Match Threshold',
-                type: 'matchThreshold',
-                placeholder: 0.6
-            },
-            {
-                label: 'Miss Threshold',
-                type: 'missThreshold',
-                placeholder: 0.6
-            },*/
-
             {
                 label: 'Attribute Reference Layer',
                 type: 'referenceLayer',
                 placeholder: primaryLayerName,
-                combobox: refLayers
+                combobox: refLayers,
+                readonly:'readonly'
             },
             {
                 label: 'Generate Report?',
@@ -124,16 +116,14 @@ Hoot.control.conflate = function (sidebar) {
                 combobox: ['true','false'],
                 onchange: function(d){ 
                     var selVal = d3.selectAll('.reset.isGenerateReport').value();
-                   
-                }
+                },
+                readonly:'readonly'
             }
         ];
 
         conflate = sidebar
             .append('form')
             .classed('hootConflate round space-bottom1', true);
-
-
 
         conflate.data(data)
             .append('a')
@@ -145,7 +135,7 @@ Hoot.control.conflate = function (sidebar) {
                 d3.event.preventDefault();
 
                 //hide adv conf dlg if visible - treat as if cancel
-	        	if (Conflate.confLastSetVals != null){
+	        	if (Conflate.confLastSetVals !== null){
 	        		//replace current inputs with Conflate.confLastSetVals
 	        		_.each(Conflate.confLastSetVals,function(ai){
 	        			var selAI = d3.select('#'+ai.id);
@@ -229,7 +219,11 @@ Hoot.control.conflate = function (sidebar) {
                 return 'reset ' + field.type;
             })
             .select(function (a) {
-                if (a.combobox) {
+                if (a.readonly){
+                	d3.select(this).attr('readonly',true); 
+                }
+            	
+            	if (a.combobox) {
                     var combo = d3.combobox()
                         .data(_.map(a.combobox, function (n) {
                             return {
@@ -267,9 +261,7 @@ Hoot.control.conflate = function (sidebar) {
                     
                     d3.select(this)
                     	.style('width', '100%')
-                    	.call(comboPathName);
-                    
-                    d3.select(this).attr('readonly',true);                        
+                    	.call(comboPathName);                       
                 }
                 
                 if (a.combobox3) {
@@ -333,7 +325,7 @@ Hoot.control.conflate = function (sidebar) {
                 d3.event.preventDefault();
                 
               //check if layer with same name already exists...
-            	if(conflate.selectAll('.saveAs').value()==''){
+            	if(conflate.selectAll('.saveAs').value()===''){
             		alert("Please enter an output layer name.");
                     return;
             	}
@@ -345,13 +337,13 @@ Hoot.control.conflate = function (sidebar) {
                 }
                 
             	var resp = hoot.checkForUnallowedChar(conflate.selectAll('.saveAs').value());
-            	if(resp != true){
+            	if(resp !== true){
             		alert(resp);
             		return;
                 }
             	            	
             	resp = hoot.checkForUnallowedChar(conflate.selectAll('.newfoldername').value());
-            	if(resp != true){
+            	if(resp !== true){
             		alert(resp);
             		return;
                 }                
@@ -364,7 +356,7 @@ Hoot.control.conflate = function (sidebar) {
             		Conflate.confAdvOptionsSelectedVal = Conflate.lastAdvValues;
 				}
 
-                if(Conflate.confAdvOptionsSelectedVal == null){
+                if(Conflate.confAdvOptionsSelectedVal === null){
                 	//set Conflate.confAdvOptionsSelectedVal equal to defaults for default values
                 	Conflate.confAdvOptionsFields = _getDefaultFields();
                 	Conflate.confAdvOptionsSelectedVal = _getSelectedValues(null,Conflate.confAdvOptionsFields);
@@ -409,7 +401,7 @@ Hoot.control.conflate = function (sidebar) {
                 	Conflate.confAdvOptionsSelectedVal = _getSelectedValues(null,Conflate.confAdvOptionsFields);            		
             	}
             }
-            console.log(JSON.stringify(Conflate.confAdvOptionsSelectedVal))
+            console.log(JSON.stringify(Conflate.confAdvOptionsSelectedVal));
         });
         
         d3.select("#confAdvOptsLnk").on('click',function(){
@@ -450,7 +442,7 @@ Hoot.control.conflate = function (sidebar) {
             		});                	
                 }
                 
-                if(Conflate.confAdvOptsDlg==null){_onCustomConflationFormError();}
+                if(Conflate.confAdvOptsDlg===null){_onCustomConflationFormError();}
                 else{
                 	//exitadvopts
                     Conflate.confAdvOptsDlg.on('exitadvopts', function(){
@@ -462,7 +454,7 @@ Hoot.control.conflate = function (sidebar) {
                         }
                         Conflate.confAdvOptsDlg = null;
                         _advOpsFormEvent(false);
-                    })
+                    });
                 }
             }
             else
@@ -554,9 +546,9 @@ Hoot.control.conflate = function (sidebar) {
 		var target = d3.select('#' + data.property('id'));
 		if(target.node().classList.contains('list')){
 			//validate combobox entry
-			var curOpts = _.findWhere(target.data()[0].children,{'id':data.property('id')})
+			var curOpts = _.findWhere(target.data()[0].children,{'id':data.property('id')});
 			var curVal = target.node().value;
-			if(_.findWhere(curOpts.combobox,{'name':curVal})==undefined){
+			if(_.findWhere(curOpts.combobox,{'name':curVal})===undefined){
 				target.value(curOpts.placeholder);
 			}	
 		} else {
@@ -600,7 +592,7 @@ Hoot.control.conflate = function (sidebar) {
 
             var entity = _.find(confData, function(d){
                 return d.name === name;
-            })
+            });
 
             if(entity) {
                 var color = entity.color;
@@ -757,13 +749,13 @@ Hoot.control.conflate = function (sidebar) {
 					setVal = d3.select("#"+subfield.id).property('checked');
 				} else {
 					setVal = d3.select("#"+subfield.id).value();
-					if(setVal==''){setVal=d3.select("#"+subfield.id).attr('placeholder');}
+					if(setVal===''){setVal=d3.select("#"+subfield.id).attr('placeholder');}
 				}
 
 				if(subfield.hoot_val){
 					// add to list if true
-					if(setVal==null){setVal=subfield.hoot_val;}
-					if(setVal==true){
+					if(setVal===null){setVal=subfield.hoot_val;}
+					if(setVal===true){
 						//see if hoot_key is already in list
 						var hk = _.findWhere(fieldsJSON,{'key':field.hoot_key});
 						if(hk){
@@ -773,10 +765,10 @@ Hoot.control.conflate = function (sidebar) {
 						}
 					}					
 				} else if(subfield.hoot_key) {
-					if(setVal==null){setVal=subfield.defaultvalue;}
+					if(setVal===null){setVal=subfield.defaultvalue;}
 					fieldsJSON.push({key:subfield.hoot_key,value:setVal,group:field.name,id:subfield.id});
 				} else {
-					if(setVal==null){setVal=subfield.defaultvalue;}
+					if(setVal===null){setVal=subfield.defaultvalue;}
 					fieldsJSON.push({key:subfield.id,value:setVal,group:field.name,id:subfield.id});
 				}
 
@@ -792,13 +784,13 @@ Hoot.control.conflate = function (sidebar) {
 							setVal = d3.select("#"+submember.id).property('checked');
 						} else if(submember.elem_type) {
 							setVal = d3.select("#"+submember.id).value();
-							if(setVal==''){setVal=d3.select("#"+submember.id).attr('placeholder');}
+							if(setVal===''){setVal=d3.select("#"+submember.id).attr('placeholder');}
 						}
 
 						if(submember.hoot_val){
 							// add to list if true
-							if(setVal==null){setVal=submember.hoot_val;}
-							if(setVal==true){
+							if(setVal===null){setVal=submember.hoot_val;}
+							if(setVal===true){
 								//see if hoot_key is already in list
 								var hk = _.findWhere(fieldsJSON,{'key':subfield.hoot_key});
 								if(hk){
@@ -808,10 +800,10 @@ Hoot.control.conflate = function (sidebar) {
 								}
 							}					
 						} else if(submember.hoot_key) {
-							if(setVal==null){setVal=submember.defaultvalue;}
+							if(setVal===null){setVal=submember.defaultvalue;}
 							fieldsJSON.push({key:submember.id,value:setVal,group:field.name,id:submember.id});
 						} else if(submember.defaultvalue) {
-							if(setVal==null){setVal=submember.defaultvalue;}
+							if(setVal===null){setVal=submember.defaultvalue;}
 							fieldsJSON.push({key:submember.id,value:setVal,group:field.name,id:submember.id});
 						}
 		    		});
@@ -819,7 +811,7 @@ Hoot.control.conflate = function (sidebar) {
     		});
     		
     		//change all in group to disabled if necessary
-    		if(groupEnabled==false){
+    		if(groupEnabled===false){
     			_.each(_.filter(fieldsJSON,{group:field.name}),function(p){p.value='Disabled';});
     		}
     		
@@ -907,8 +899,8 @@ Hoot.control.conflate = function (sidebar) {
                         	subfield.required=submeta.required;
                         }
 
-                        field.children.push(subfield)
-                    })
+                        field.children.push(subfield);
+                    });
                 }
                 
                 formFields.push(field);
@@ -936,7 +928,7 @@ Hoot.control.conflate = function (sidebar) {
 					advform? enabled = advform.select('#' + meta.members[0].id).property('checked') : enabled = eval(meta.members[0].defaultvalue);
 				} 
 
-				if (enabled==true){				
+				if (enabled===true){				
 					_.each(meta.members,function(submeta){
 						var res = {};
 						var selVal = '';
@@ -1038,7 +1030,7 @@ Hoot.control.conflate = function (sidebar) {
 							if(fieldId){
 								//var isHidden = advform.select('#' + fieldId).classed('hidden');
 								advform? selVal = advform.select('#' + fieldId).value(): selVal = submeta.defaultvalue;
-								if(selVal != null)
+								if(selVal !== null)
 								{if(selVal.length === 0 && submeta.defaultvalue.length > 0){selVal = submeta.defaultvalue;}
 								// Add only there is default value or user selected value
 								if(selVal.length > 0){// && !isHidden){
