@@ -6,7 +6,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     function _alertError(error, errorText){
         console.log(error);
-        iD.ui.Alert(errorText,'warning');
+        iD.ui.Alert(errorText,'error');
         var localResp = {};
         localResp.status = "failed";
         localResp.error = error;
@@ -57,7 +57,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		'&inputType=' + data.inputType + '&modName=' + data.modifiedName)
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Modify name failed! For detailed log goto Manage->Log",'warning');
+            	iD.ui.Alert("Modify name failed! For detailed log goto Manage->Log",'error');
                 return error;
             }
             callback(data);
@@ -76,7 +76,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		'&folderId=' + data.folderId + '&updateType=' + data.updateType)
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Folder-Map link failed! For detailed log goto Manage->Log",'warning');
+            	iD.ui.Alert("Folder-Map link failed! For detailed log goto Manage->Log",'error');
                 return error;
             }
             callback(data);
@@ -111,7 +111,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		'&parentId=' + data.parentId)
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Add folder failed! For detailed log goto Manage->Log",'warning');
+            	iD.ui.Alert("Add folder failed! For detailed log goto Manage->Log",'error');
                 return error;
             }
             callback(data);
@@ -332,7 +332,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
                         }
                         if(showError){
-                        	iD.ui.Alert("Requested job failed! For detailed log goto Manage->Log",'warning');
+                        	iD.ui.Alert("Requested job failed! For detailed log goto Manage->Log",'error');
                         }
                     }
                     else
@@ -544,7 +544,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         d3.json('/hoot-services/job/export/execute')
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Export job failed! For detailed log goto Manage->Log",'warning');
+            	iD.ui.Alert("Export job failed! For detailed log goto Manage->Log",'error');
                 return error;
             }
             return data;
@@ -660,7 +660,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         if (error)
         {
           console.log(error);
-          iD.ui.Alert("Review get refs failed.",'warning');
+          iD.ui.Alert("Review get refs failed.",'error');
         }
         callback(error, response);
       });
@@ -685,7 +685,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                 if (error)
                 {
                   console.log(error);
-                  iD.ui.Alert("Review update status failed.",'warning');
+                  iD.ui.Alert("Review update status failed.",'error');
                 }
                 callback(error, response);
             });
@@ -734,7 +734,7 @@ rest.ReviewGetLockCount = function (mapId, callback) {
             
         d3.json('/hoot-services/job/review/lockcount?mapId=' + mapId, function (error, resp) {
                 if (error) {
-                	iD.ui.Alert("Failed to get lock count.",'warning');
+                	iD.ui.Alert("Failed to get lock count.",'error');
                     return;
                 }
                 return callback(resp);

@@ -157,7 +157,7 @@ Hoot.view.utilities.dataset = function(context)
 		    		//remove folder
 			    	if(d.type=='folder'){
 			        	context.hoot().model.folders.deleteFolder(d.id,function(resp){
-			        		if(resp==false){iD.ui.Alert('Unable to delete folder.','warning');}
+			        		if(resp==false){iD.ui.Alert('Unable to delete folder.','error');}
 		                	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
 			        	});
 			    	}
@@ -168,7 +168,7 @@ Hoot.view.utilities.dataset = function(context)
         
         if(datasets2remove.length==0){
         	context.hoot().model.folders.deleteFolder(d.id,function(resp){
-        		if(resp==false){iD.ui.Alert('Unable to delete folder.','warning');}
+        		if(resp==false){iD.ui.Alert('Unable to delete folder.','error');}
             	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
         	});
         }
@@ -214,7 +214,7 @@ Hoot.view.utilities.dataset = function(context)
     	else if(d.length==1){
     		var dataset = _.findWhere(context.hoot().model.layers.getAvailLayers(),{id:d[0]});
     		if(dataset==undefined){
-    			iD.ui.Alert("Could not locate dataset with id: " + d[0].toString() + ".",'warning');
+    			iD.ui.Alert("Could not locate dataset with id: " + d[0].toString() + ".",'error');
     			return;
     		} else {
     			dataset.type='dataset';

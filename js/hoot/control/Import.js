@@ -128,7 +128,7 @@ Hoot.control.import = function (context,selection) {
 
         var submitLayer = function (a) {
             if(context.hoot().model.layers.isLayerLoading() === true){
-            	iD.ui.Alert('Please wait utill loading first layer is done!','warning');
+            	iD.ui.Alert('Please wait utill loading first layer is done!','notice');
                 return;
             }
             

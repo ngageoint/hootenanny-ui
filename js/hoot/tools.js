@@ -565,7 +565,7 @@ Hoot.tools = function (context, selection) {
         var spinner = cont.append('span').attr('class', 'spinner-hoot').call(iD.ui.Spinner(context));
         hoot.model.export.exportData(cont, data, function (status) {
             if(status == 'failed'){
-            	iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','warning');
+            	iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error');
             }
 
             if(exportType && exportType === 'Web Feature Service (WFS)'){

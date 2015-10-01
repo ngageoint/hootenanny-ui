@@ -186,7 +186,7 @@ Hoot.plugins.entityeditor.prototype.getTranslations = function(){
 Hoot.plugins.entityeditor.prototype.requestTranslationToServer = function(reqType, data, respHandler) {
 	Hoot.model.REST(reqType, data, function (resp) {
         if(resp.error){
-        	iD.ui.Alert('Failed to retrieve translation: ' + resp.error,'warning');
+        	iD.ui.Alert('Failed to retrieve translation: ' + resp.error,'error');
             return;
         }
         if (respHandler) {

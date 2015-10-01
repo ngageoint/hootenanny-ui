@@ -143,7 +143,7 @@ Hoot.control.TranslationAssistant = function () {
         err += '\n\nOr a zip file containing one or more shapefiles or a folder that is a file geodatabase.';
         err += '\n\nFolders can contain one or more shapefiles or be a file geodatabase.';
 
-        iD.ui.Alert(err,'warning');
+        iD.ui.Alert(err,'error');
         /*openfile.append('div')
         .text(err)
         .style('color', 'red')

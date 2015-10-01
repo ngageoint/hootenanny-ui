@@ -992,7 +992,7 @@ Hoot.control.utilities.dataset = function(context) {
                                     submitExp.select('span').text('Cancel');
                                 } else if(status.info == 'failed'){
                                     var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
-                                    iD.ui.Alert(errorMessage,'warning');
+                                    iD.ui.Alert(errorMessage,'error');
                                     modalbg.remove();
                                 }
 
@@ -1009,7 +1009,7 @@ Hoot.control.utilities.dataset = function(context) {
                                     data.jobid = curJobId;
                                     data.mapid = curMapId;
                                     Hoot.model.REST('cancel', data, function (a) {
-                                    	iD.ui.Alert('Job ID: ' + curJobId + ' has been cancelled. ','warning');
+                                    	iD.ui.Alert('Job ID: ' + curJobId + ' has been cancelled. ','notice');
 
 
 
@@ -1284,7 +1284,7 @@ Hoot.control.utilities.dataset = function(context) {
                         data.jobid = curJobId;
                         data.mapid = curMapId;
                         Hoot.model.REST('cancel', data, function (a) {
-                        	iD.ui.Alert('Job ID: ' + curJobId + ' has been cancelled. ','warning');
+                        	iD.ui.Alert('Job ID: ' + curJobId + ' has been cancelled. ','notice');
                             d3.select('#importprogdiv').append('br');
                             d3.select('#importprogdiv').append('text').text('Job ID: ' + curJobId + ' has been cancelled. ');
                             context.hoot().model.layers.refresh(function () {

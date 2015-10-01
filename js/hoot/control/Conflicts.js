@@ -39,7 +39,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     Conflict.setProcessing = function(isProc){
         if(isProc === true){
             if(Conflict.isProcessingReview === true){
-            	iD.ui.Alert("Processing review. Please wait.",'warning');
+            	iD.ui.Alert("Processing review. Please wait.",'notice');
                 return;
             }
             Conflict.isProcessingReview = true;
@@ -233,7 +233,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     }
                 }
                 catch (ex) {
-                	iD.ui.Alert(ex,'warning');
+                	iD.ui.Alert(ex,'error');
                 } finally {
                     Conflict.isProcessingReview = false;
                 }
@@ -684,10 +684,10 @@ Hoot.control.conflicts = function (context, sidebar) {
                         	jumpFor();
                     }
                 } else {
-                	iD.ui.Alert("Nothing to review.",'warning');
+                	iD.ui.Alert("Nothing to review.",'notice');
                 }
             } catch (err) {
-            	iD.ui.Alert(err,'warning');
+            	iD.ui.Alert(err,'error');
             } finally {
                 Conflict.isProcessingReview = false;
             }
@@ -861,7 +861,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 btnEnabled = false;
                 d.action();
               } else {
-            	  iD.ui.Alert('Please wait. Processing review.','warning');
+            	  iD.ui.Alert('Please wait. Processing review.','notice');
               }
 
             })

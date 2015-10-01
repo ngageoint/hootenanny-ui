@@ -324,7 +324,7 @@ Hoot.model.conflicts = function(context)
         var layerName = feature.layerName;
 
         if (!feature && !featureAgainst) {
-             window.iD.ui.Alert('Merge error, one feature is missing','warning');
+             window.iD.ui.Alert('Merge error, one feature is missing','error');
         } else {
             //Check that both features are still in the map graph,
             //and load them if not

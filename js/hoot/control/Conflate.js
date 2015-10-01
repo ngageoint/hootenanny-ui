@@ -525,7 +525,7 @@ Hoot.control.conflate = function (sidebar) {
                         data.jobid = jobId;
                         data.mapid = mapId;
                         Hoot.model.REST('cancel', data, function (a) {
-                        	iD.ui.Alert('Job ID: ' + jobId + ' has been cancelled. ','warning');
+                        	iD.ui.Alert('Job ID: ' + jobId + ' has been cancelled. ','notice');
 
                         });
                         //resetForm(self);
@@ -1599,7 +1599,7 @@ Hoot.control.conflate = function (sidebar) {
      };
 
     _onCustomConflationFormError = function(){
-    	iD.ui.Alert('An error occurred while trying to open a custom conflation window. If this problem persists, default values will be used for conflation based on selected type.','warning');
+    	iD.ui.Alert('An error occurred while trying to open a custom conflation window. If this problem persists, default values will be used for conflation based on selected type.','error');
     	Conflate.confAdvOptsDlg = null;
     	Conflate.confAdvValsDlg = null;
     	d3.select('#content').selectAll('div .custom-conflation').remove();
