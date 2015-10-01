@@ -658,10 +658,15 @@ Hoot.control.conflate = function (sidebar) {
           		'Average':'average',
           		'Cookie Cutter & Horizontal':'horizontal'
           	};
-    	var type = 'iD.data.hootConfAdvOps_'.concat(_confType[thisConfType.value()]);
     	
     	//load in specific values for custom conflation
-        var overrideOps = eval(type);
+        var overrideOps;
+        switch (_confType[thisConfType.value()]) {
+		case 'reference': overrideOps = iD.data.hootConfAdvOps_reference; break;
+		case 'average' : overrideOps = iD.data.hootConfAdvOps_average; break;
+		case 'horizontal' : overrideOps = iD.data.hootConfAdvOps_horizontal; break;
+		default: break;
+		}
     	if(overrideOps){
         	//loop through each and look for hoot_key to replace within hootConfAdvOps
         	if(overrideOps.length>0){
@@ -925,7 +930,7 @@ Hoot.control.conflate = function (sidebar) {
 				//If so, use Enabled value to continue
 				var enabled = true;
 				if(meta.members[0].name=='Enabled'){
-					advform? enabled = advform.select('#' + meta.members[0].id).property('checked') : enabled = eval(meta.members[0].defaultvalue);
+					advform? enabled = advform.select('#' + meta.members[0].id).property('checked') : enabled = (meta.members[0].defaultvalue == 'true');
 				} 
 
 				if (enabled===true){				
@@ -979,7 +984,7 @@ Hoot.control.conflate = function (sidebar) {
 								if(submeta.elem_type=='checkplus'){
 									//Only take value if checkplus is true!
 									var cplusEnabled = false;
-									advform? cplusEnabled = advform.select('#' + submeta.id).property('checked').toString() : eval(submeta.defaultvalue);			
+									advform? cplusEnabled = advform.select('#' + submeta.id).property('checked').toString() : submeta.defaultvalue == 'true';			
 									if (cplusEnabled == true){
 									_.each(submeta.members,function(c){
 										var res = {};
@@ -1296,7 +1301,7 @@ Hoot.control.conflate = function (sidebar) {
 	                var parent = d3.select('#'+s.id+'_group');
 					var enableInputs = false;
 					if(s.children[0].label=='Enabled'){
-						enableInputs = !eval(s.children[0].placeholder);
+						enableInputs = !(s.children[0].placeholder == 'true');
 					}
 	
 	                //now loop through children

@@ -24,7 +24,7 @@ Hoot.view.utilities.dataset = function(context)
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
             	//Create context menu to offer bulk option
-                var items = [{title:'Bulk Import',icon:'plus',action:'hoot_view_utilities_dataset.importDatasets();'}];
+                var items = [{title:'Bulk Import',icon:'plus',action:'bulkImport'}];
 	            d3.select('html').append('div').attr('class', 'dataset-options-menu');
 	                    
 	             var menuItem =  d3.selectAll('.dataset-options-menu')
@@ -35,7 +35,10 @@ Hoot.view.utilities.dataset = function(context)
 	                .append('li')
 	                .attr('class',function(item){return item.icon + ' dataset-option';})
 	                .on('click' , function(item) { 
-	                	eval(item.action);
+	                	switch (item.action) {
+						case 'bulkImport': hoot_view_utilities_dataset.importDatasets(); break;
+						default: break;
+						}
 	                 	d3.select('.dataset-options-menu').remove();
                    });
 	             

@@ -235,24 +235,23 @@ Hoot.control.utilities.folder = function(context) {
 	            	  if(selectedLayerIDs.indexOf(d.id) == -1){selectedLayerIDs.push(d.id);}
 	            	  context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
 	            	  
+	            	  
+	            	  
 	            	  //http://jsfiddle.net/1mo3vmja/2/
 	            	  items = [
-		        	      {title:'Export',icon:'export',click:'context.hoot().view.utilities.dataset.exportDataset(d,container)'},
-		        	      {title:'Delete (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDatasets(hoot.model.layers.getSelectedLayers(),container)'},
-		        	      {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'info',click:'context.hoot().view.utilities.dataset.moveDatasets(hoot.model.layers.getSelectedLayers())'},
-		        	      {title:'Rename ' + d.name,icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
-		        	      {title:'Prepare for Validation',icon:'sprocket',click:'showPrepValidationPopup(hoot.model.layers.getSelectedLayers());'},
-		        	      {title:'Filter non-HGIS POIs',icon:'sprocket',click:'showFilterPopup(hoot.model.layers.getSelectedLayers());'}
+		        	      {title:'Export',icon:'export',click:'exportDataset'},
+		        	      {title:'Delete (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
+		        	      {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'},
+		        	      {title:'Rename ' + d.name,icon:'info',click:'renameDataset'},
+		        	      {title:'Prepare for Validation',icon:'sprocket',click:'prepValidation'},
+		        	      {title:'Filter non-HGIS POIs',icon:'sprocket',click:'filter'}
 		        	  ]; 
             	  } else if (d.type.toLowerCase()=='folder') {
 	        		  items = [
-	 		        	      {title:'Delete',icon:'trash',click:'context.hoot().view.utilities.dataset.deleteDataset(d,container)'},
-	 		        	      {title:'Rename/Move ' + d.name,icon:'info',click:'context.hoot().view.utilities.dataset.modifyDataset(d)'},
-	 		        	      {title:'Add Dataset',icon:'data',click:
-	 		        	    	  'Hoot.model.REST("getTranslations",function(e){'+
-	 		        	    	  'if(d.error){context.hoot().view.utilities.errorlog.reportUIError(d.error);return;}'+
-	 		        	    	  'context.hoot().control.utilities.dataset.importDataContainer(e,d)});'},
-	 		        	      {title:'Add Folder',icon:'folder',click:'context.hoot().control.utilities.folder.importFolderContainer(d);'}
+	 		        	      {title:'Delete',icon:'trash',click:'deleteFolder'},
+	 		        	      {title:'Rename/Move ' + d.name,icon:'info',click:'modifyFolder'},
+	 		        	      {title:'Add Dataset',icon:'data',click:'addDataset'},
+	 		        	      {title:'Add Folder',icon:'folder',click:'addFolder'}
 	 		        	  ];
 		        	  } else {
 		        		  d3.select('.context-menu').style('display', 'none');	              
@@ -275,7 +274,27 @@ Hoot.control.utilities.folder = function(context) {
 		                .data(items).enter()
 		                .append('li')
 		                .on('click' , function(item) { 
-		                	eval(item.click);
+		                	switch (item.click) {
+		                	//Datasets
+		                	case 'exportDataset': context.hoot().view.utilities.dataset.exportDataset(d,container); break;
+		                	case 'deleteDataset': context.hoot().view.utilities.dataset.deleteDatasets(hoot.model.layers.getSelectedLayers(),container); break;
+		                	case 'moveDataset': context.hoot().view.utilities.dataset.moveDatasets(hoot.model.layers.getSelectedLayers()); break;
+		                	case 'renameDataset': context.hoot().view.utilities.dataset.modifyDataset(d); break;
+		                	case 'prepValidation': showPrepValidationPopup(hoot.model.layers.getSelectedLayers()); break;
+		                	case 'filter': showFilterPopup(hoot.model.layers.getSelectedLayers()); break;
+		                	
+		                	//Folders
+							case 'deleteFolder': context.hoot().view.utilities.dataset.deleteDataset(d,container); break;
+							case 'modifyFolder': context.hoot().view.utilities.dataset.modifyDataset(d); break;
+							case 'addDataset': Hoot.model.REST("getTranslations",function(e){
+											   		if(d.error){context.hoot().view.utilities.errorlog.reportUIError(d.error);return;}
+											   		context.hoot().control.utilities.dataset.importDataContainer(e,d)
+											   	}); break;
+							case 'addFolder': context.hoot().control.utilities.folder.importFolderContainer(d); break;
+							default:
+								break;
+							}
+
 		                	d3.select('.context-menu').remove();
 		                })
 		                .attr("class",function(item){return "_icon " + item.icon})

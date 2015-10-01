@@ -23,7 +23,7 @@ Hoot.control.view = function (container, context) {
         
         //add context menu
         _a.on("contextmenu",function(d,i){
-        	items = [{title:'Zoom to Layer',click:'context.zoomToExtent(d.extent.minlon, d.extent.minlat, d.extent.maxlon, d.extent.maxlat);'},];
+        	items = [{title:'Zoom to Layer',click:'zoom2layer'},];
         	 // create the div element that will hold the context menu
             d3.selectAll('.context-menu').data([1])
             	.enter()
@@ -39,7 +39,10 @@ Hoot.control.view = function (container, context) {
             	.data(items).enter()
             	.append('li')
             	.on('click' , function(item) { 
-            		eval(item.click);
+            		switch (item.click) {
+					case 'zoom2layer': context.zoomToExtent(d.extent.minlon, d.extent.minlat, d.extent.maxlon, d.extent.maxlat); break;
+					default: break;
+					}
             		d3.select('.context-menu').remove();
             	})
             	/*.attr("class",function(item){return "_icon " + item.icon})*/
