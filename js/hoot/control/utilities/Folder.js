@@ -497,13 +497,13 @@ Hoot.control.utilities.folder = function(context) {
                 .on('click', function () {
                     //check if layer with same name already exists...
                 	if(_form.select('.reset.NewFolderName').value()=='' || _form.select('.reset.NewFolderName').value()==_form.select('.reset.NewFolderName').attr('placeholder')){
-                		alert("Please enter an output folder name.");
+                		iD.ui.Alert("Please enter an output folder name.",'warning');
                         return;
                 	}
                 	
                 	resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
                 	if(resp != true){
-                		alert(resp);
+                		iD.ui.Alert(resp,'warning');
                 		return;
                     }
                 	
@@ -512,7 +512,7 @@ Hoot.control.utilities.folder = function(context) {
                 	}*/
                 	
                 	if(_.findWhere(hoot.model.folders.getAvailFolders(),{name:_form.select('.reset.NewFolderName').value(),parentId:folderId})){
-                		alert("Please use a different name, as you are about to create a folder with a name identical to a folder at the same level.")
+                		iD.ui.Alert("Please use a different name, as you are about to create a folder with a name identical to a folder at the same level.",'warning')
                 		return;
                 	}
                 	
@@ -632,7 +632,7 @@ Hoot.control.utilities.folder = function(context) {
 	                if(outputname==''){outputname=_form.select('.fileOutputName').attr('placeholder');}
 	                var resp = context.hoot().checkForUnallowedChar(outputname);
 	             	if(resp != true){
-	             		alert(resp);
+	             		iD.ui.Alert(resp,'warning');
 	             		return;
 	                 }
 	             	

@@ -26,7 +26,7 @@ Hoot.model.basemapdataset = function(context)
        Hoot.model.REST('basemapUpload', data, function (resp) {
            if (resp.responseText.length === 0 || resp.response==='[]') {
                if(callback){callback(false);}
-               alert('Failed publish basemap.');
+               iD.ui.Alert('Failed publish basemap.','warning');
                return;
            }
 

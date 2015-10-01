@@ -6,7 +6,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     function _alertError(error, errorText){
         console.log(error);
-        alert(errorText);
+        iD.ui.Alert(errorText,'warning');
         var localResp = {};
         localResp.status = "failed";
         localResp.error = error;
@@ -57,7 +57,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		'&inputType=' + data.inputType + '&modName=' + data.modifiedName)
         .post(data, function (error, data) {
             if (error){
-                alert("Modify name failed! For detailed log goto Manage->Log");
+            	iD.ui.Alert("Modify name failed! For detailed log goto Manage->Log",'warning');
                 return error;
             }
             callback(data);
@@ -76,7 +76,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		'&folderId=' + data.folderId + '&updateType=' + data.updateType)
         .post(data, function (error, data) {
             if (error){
-                alert("Folder-Map link failed! For detailed log goto Manage->Log");
+            	iD.ui.Alert("Folder-Map link failed! For detailed log goto Manage->Log",'warning');
                 return error;
             }
             callback(data);
@@ -111,7 +111,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		'&parentId=' + data.parentId)
         .post(data, function (error, data) {
             if (error){
-                alert("Add folder failed! For detailed log goto Manage->Log");
+            	iD.ui.Alert("Add folder failed! For detailed log goto Manage->Log",'warning');
                 return error;
             }
             callback(data);
@@ -332,7 +332,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
                         }
                         if(showError){
-                            alert("Requested job failed! For detailed log goto Manage->Log");
+                        	iD.ui.Alert("Requested job failed! For detailed log goto Manage->Log",'warning');
                         }
                     }
                     else
@@ -409,7 +409,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                 }
                 else
                 {
-                    alert('Can not find translation server info. Is it running?');
+                	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
                 }
             });
     }
@@ -417,7 +417,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 // This uses translation node js server using CORS
     rest.LTDS = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
-            alert('Can not find translation server info. Is it running?');
+        	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
             return;
         }
         if (!data) {
@@ -479,7 +479,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     // This uses translation node js server using CORS
     rest.TDSToOSMByFCode = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
-            alert('Can not find translation server info. Is it running?');
+        	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
             return;
         }
 
@@ -498,7 +498,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.TDSToOSM = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
-            alert('Can not find translation server info. Is it running?');
+        	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
             return;
         }
         if (!data) {
@@ -544,7 +544,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         d3.json('/hoot-services/job/export/execute')
         .post(data, function (error, data) {
             if (error){
-                alert("Export job failed! For detailed log goto Manage->Log");
+            	iD.ui.Alert("Export job failed! For detailed log goto Manage->Log",'warning');
                 return error;
             }
             return data;
@@ -660,7 +660,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         if (error)
         {
           console.log(error);
-          alert("Review get refs failed.");
+          iD.ui.Alert("Review get refs failed.",'warning');
         }
         callback(error, response);
       });
@@ -685,7 +685,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                 if (error)
                 {
                   console.log(error);
-                  alert("Review update status failed.");
+                  iD.ui.Alert("Review update status failed.",'warning');
                 }
                 callback(error, response);
             });
@@ -734,7 +734,7 @@ rest.ReviewGetLockCount = function (mapId, callback) {
             
         d3.json('/hoot-services/job/review/lockcount?mapId=' + mapId, function (error, resp) {
                 if (error) {
-                    alert("Failed to get lock count.");
+                	iD.ui.Alert("Failed to get lock count.",'warning');
                     return;
                 }
                 return callback(resp);
@@ -939,7 +939,7 @@ Hoot.model.REST.WarningHandler = function(resp){
         } catch (e) {
             // must be string so try to see if it is warning
             if(detail.indexOf('WARNINGS:') === 0){
-               alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log');
+               iD.ui.Alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log','warning');
                return;
             }
         }
@@ -958,7 +958,7 @@ Hoot.model.REST.WarningHandler = function(resp){
                         
                 });
                 if(isWarning === true){
-                    alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log');
+                	iD.ui.Alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log','warning');
                 }
             }
         }

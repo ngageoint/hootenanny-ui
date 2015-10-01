@@ -76,7 +76,7 @@ iD.Connection = function(context) {
                 .header('Content-Type', 'text/plain')
                 .post(JSON.stringify(data), function (error, resp) {
                     if (error) {
-                        window.alert(error.responseText);
+                    	iD.ui.Alert(error.responseText,'warning');
                         return ;
                     }
                     callback(resp);
@@ -89,7 +89,7 @@ iD.Connection = function(context) {
         request.get(function (error, resp) {
             if (error) {
                 window.console.log(error);
-                window.alert(error.responseText);
+                iD.ui.Alert(error.responseText,'warning');
                 return callback(null);
 
             }
@@ -395,7 +395,7 @@ iD.Connection = function(context) {
             defaultmapid = vis[0];
         }
         if (!go) {
-            window.alert('New way created with multiple layers visible. Turn off all layer but target layer');
+        	iD.ui.Alert('New way created with multiple layers visible. Turn off all layer but target layer.','warning');
             return false;
         }
         var mapids = _.compact(_.unique(_.map(_.flatten(_.map(changes, function (a) {

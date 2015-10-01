@@ -128,7 +128,7 @@ Hoot.control.import = function (context,selection) {
 
         var submitLayer = function (a) {
             if(context.hoot().model.layers.isLayerLoading() === true){
-                alert('Please wait utill loading first layer is done!');
+            	iD.ui.Alert('Please wait utill loading first layer is done!','warning');
                 return;
             }
             
@@ -141,7 +141,7 @@ Hoot.control.import = function (context,selection) {
             
          // make sure something has been selected
             if(self.select('.sel').empty()){
-            	alert('Please select a dataset to add to the map!');
+            	iD.ui.Alert('Please select a dataset to add to the map!','warning');
                 return;
             }
             
@@ -151,11 +151,11 @@ Hoot.control.import = function (context,selection) {
             	name = d3.select(self.select('.sel').node().parentNode).select('text').text();
             	lyrid = d3.select(self.select('.sel').node().parentNode).select('text').attr('lyr-id');
             } catch(e) {
-            	alert('There was an error adding this layer to the map!');
+            	iD.ui.Alert('There was an error adding this layer to the map!','warning');
                 return;
             }
-            if(!name || !lyrid){alert('Select Layer to Add');return;}
-            if(context.hoot().model.layers.getLayers()[name]){alert('Layer already exists');return;}
+            if(!name || !lyrid){iD.ui.Alert('Select Layer to Add','warning');return;}
+            if(context.hoot().model.layers.getLayers()[name]){iD.ui.Alert('Layer already exists','warning');return;}
             var key = {
                 'name': name,
                 'id':lyrid,

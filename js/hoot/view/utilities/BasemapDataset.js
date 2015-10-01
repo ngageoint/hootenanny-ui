@@ -83,7 +83,7 @@ Hoot.view.utilities.basemapdataset = function(context)
               d3.json('/hoot-services/ingest/basemap/delete?NAME=' + bmId,
                 function (error, data) {
                       if(error){
-                        alert("Delete failed.");
+                    	  iD.ui.Alert("Delete failed.",'warning');
                       } else {
                         var bm;
 

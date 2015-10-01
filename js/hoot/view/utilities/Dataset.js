@@ -131,7 +131,7 @@ Hoot.view.utilities.dataset = function(context)
         	var dataset = datasets2remove[i];
         	var exists = context.hoot().model.layers.getLayers()[dataset.name];
 	        if(exists){
-	        	alert('Can not remove the layer in use: ' + dataset.name);
+	        	iD.ui.Alert('Can not remove the layer in use: ' + dataset.name,'warning');
 	        	rectNode.style('fill',currentFill);
 	        	return;
 	        }
@@ -157,7 +157,7 @@ Hoot.view.utilities.dataset = function(context)
 		    		//remove folder
 			    	if(d.type=='folder'){
 			        	context.hoot().model.folders.deleteFolder(d.id,function(resp){
-			        		if(resp==false){alert('Unable to delete folder.');}
+			        		if(resp==false){iD.ui.Alert('Unable to delete folder.','warning');}
 		                	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
 			        	});
 			    	}
@@ -168,7 +168,7 @@ Hoot.view.utilities.dataset = function(context)
         
         if(datasets2remove.length==0){
         	context.hoot().model.folders.deleteFolder(d.id,function(resp){
-        		if(resp==false){alert('Unable to delete folder.');}
+        		if(resp==false){iD.ui.Alert('Unable to delete folder.','warning');}
             	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
         	});
         }
@@ -214,7 +214,7 @@ Hoot.view.utilities.dataset = function(context)
     	else if(d.length==1){
     		var dataset = _.findWhere(context.hoot().model.layers.getAvailLayers(),{id:d[0]});
     		if(dataset==undefined){
-    			alert("Could not locate dataset with id: " + d[0].toString() + ".");
+    			iD.ui.Alert("Could not locate dataset with id: " + d[0].toString() + ".",'warning');
     			return;
     		} else {
     			dataset.type='dataset';
@@ -237,7 +237,7 @@ Hoot.view.utilities.dataset = function(context)
             	var dataset = datasets2remove[i];
             	var exists = context.hoot().model.layers.getLayers()[dataset.name];
     	        if(exists){
-    	        	alert('Can not remove the layer in use: ' + dataset.name);
+    	        	iD.ui.Alert('Can not remove the layer in use: ' + dataset.name,'warning');
     	        	return;
     	        }
     	        

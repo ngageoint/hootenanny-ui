@@ -117,9 +117,9 @@ Hoot.control.utilities.basemapdataset = function(context) {
                     });
 
                     if(found){
-                        alert('Base map with name "' + name + '" already exists. '
+                        iD.ui.Alert('Base map with name "' + name + '" already exists. '
                                  + 'If no name is assigned please specify a name or'+
-                                 ' if already specified please use different name.');
+                                 ' if already specified please use different name.','warning');
                     } else {
                         context.hoot().model.basemapdataset.publishBasemap(_form,function(d){
                             callback(d);
