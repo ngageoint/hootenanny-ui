@@ -404,7 +404,8 @@ iD.Map = function(context) {
     }
 
     map.pan = function(d) {
-        var t = projection.translate();
+        if(!d3.select('#jobsBG').classed('hidden')){return;}
+    	var t = projection.translate();
         t[0] += d[0];
         t[1] += d[1];
         projection.translate(t);
@@ -441,7 +442,7 @@ iD.Map = function(context) {
     };
 
     map.zoom = function(z) {
-        if (!arguments.length) {
+    	if (!arguments.length) {
             //TODO: Document why this was modified for Hoot
             var zoomVal = Math.max(Math.log(projection.scale() * 2 * Math.PI) / Math.LN2 - 8, 0);
 
