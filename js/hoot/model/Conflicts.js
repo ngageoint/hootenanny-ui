@@ -431,10 +431,8 @@ Hoot.model.conflicts = function(context)
                     //update the review tags on the new merged feature; exclude the feature/
                     //feature against uuid's from being added to review tags, since those
                     //features will no longer exist after the changeset delete
-                    mergedNode =
-                      updateMergedFeatureReviewAgainstTag(mergedNode, reviewAgainstItems1);
-                    mergedNode =
-                      updateMergedFeatureReviewAgainstTag(mergedNode, reviewAgainstItems2);
+                    var reviewAgainstItems = _.uniq(reviewAgainstItems1.concat(reviewAgainstItems2));
+                    mergedNode = updateMergedFeatureReviewAgainstTag(mergedNode, reviewAgainstItems);
 
                     var mergedNodeReviewAgainstIds = mergedNode["hoot:review:uuid"];
                     if (!mergedNodeReviewAgainstIds ||
@@ -453,14 +451,10 @@ Hoot.model.conflicts = function(context)
 
                     //console.log(mergedNode);
 
-                    //TODO: There is some duplicated logic here, but having it was the only
-                    //way I could get the events to trigger properly, since loadMultiple
-                    //doesn't seem to execute at all if you pass an empty set of ID's to it.
-                    //Need to clean this up
-
-                    var reviewableItemiDFeatureIds1 =
-                      reviewableItemsToIdFeatureIds(reviewableItems1, mapid);
-                    if (reviewableItemiDFeatureIds1.length > 0)
+                    var reviewableItems = _.uniq(reviewableItems1.concat(reviewableItems2));
+                    var reviewableItemiDFeatureIds =
+                      reviewableItemsToIdFeatureIds(reviewableItems, mapid);
+                    if (reviewableItemiDFeatureIds.length > 0)
                     {
                       //console.log(reviewableItemiDFeatureIds1);
                       //HACK alert:
@@ -470,66 +464,23 @@ Hoot.model.conflicts = function(context)
                       });
                       var layerName = layerNames[0].key;
                       // retrieve the features
-                      context.loadMissing(reviewableItemiDFeatureIds1,
-                        function(err, entities1)
+                      context.loadMissing(reviewableItemiDFeatureIds,
+                        function(err, entities)
                       {
                         //add the merged node tag to the review tags for features
                         //referencing the deleted features - see note above about excluding
                         //feature/featureAgainst uuids
                         updateTagsForFeaturesReferencingFeaturesDeletedByMerge(
-                          mergedNode, entities1, uuidsToRemove);
+                          mergedNode, entities, uuidsToRemove);
                         //logDiff();
-
-                        var reviewableItemiDFeatureIds2 =
-                          reviewableItemsToIdFeatureIds(reviewableItems2, mapid);
-                        if (reviewableItemiDFeatureIds2.length > 0)
-                        {
-                          context.loadMissing(reviewableItemiDFeatureIds2,
-                            function(err, entities2)
-                            {
-                              updateTagsForFeaturesReferencingFeaturesDeletedByMerge(
-                                mergedNode, entities2, uuidsToRemove);
-                                  
-                               checkMergeChangeset();
-
-                               window.setTimeout(function() {
-                                context.hoot().control.conflicts.setProcessing(false);
-                                 context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
-                            });
-                        }
-                     },
-                     layerName);
-                    }
-                    else
-                    {
-                      var reviewableItemiDFeatureIds2 =
-                        reviewableItemsToIdFeatureIds(reviewableItems2, mapid);
-                      if (reviewableItemiDFeatureIds2.length > 0)
-                      {
-                        context.loadMissing(reviewableItemiDFeatureIds2,
-                          function(err, entities2)
-                          {
-                            updateTagsForFeaturesReferencingFeaturesDeletedByMerge(
-                              mergedNode, entities2, uuidsToRemove);
-                                
-                            checkMergeChangeset();
-
-                            window.setTimeout(function() {
-                              context.hoot().control.conflicts.setProcessing(false);
-                              context.enter(iD.modes.Select(context, [mergedNode.id])); 
-                                  
-                            }, 500);
-                          },
-                          layerName);
-                      }
-                      else
-                      {
+                        
                         checkMergeChangeset();
 
                         window.setTimeout(function() {
-                          context.hoot().control.conflicts.setProcessing(false);
+                         context.hoot().control.conflicts.setProcessing(false);
                           context.enter(iD.modes.Select(context, [mergedNode.id])); }, 500);
-                      }
+                     },
+                     layerName);
                     }
                });
             }, mapid, layerName);
