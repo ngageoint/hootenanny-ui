@@ -126,6 +126,11 @@ Hoot.model.conflicts = function(context)
           //console.log(updatedMergedFeatureReviewAgainstIdsStr);
           var tags = mergedFeature.tags;
           var newTags = _.clone(tags);
+          if (updatedMergedFeatureReviewAgainstIdsStr.startsWith(";"))
+          {
+        	updatedMergedFeatureReviewAgainstIdsStr = 
+        	  updatedMergedFeatureReviewAgainstIdsStr.substring(1);
+          }
           newTags["hoot:review:uuid"] = updatedMergedFeatureReviewAgainstIdsStr;
           newTags["hoot:review:needs"] = "yes";
           context.perform(
@@ -254,6 +259,10 @@ Hoot.model.conflicts = function(context)
         }
         else
         {
+          if (featureReviewAgainstIdsStr.startsWith(";"))
+          {
+        	featureReviewAgainstIdsStr = featureReviewAgainstIdsStr.substring(1);
+          }
           newTags["hoot:review:uuid"] = featureReviewAgainstIdsStr;
           newTags['hoot:review:needs'] = "yes";
           featureUpdated = true;
