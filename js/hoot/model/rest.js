@@ -652,9 +652,10 @@ Hoot.model.REST = function (command, data, callback, option) {
     	  });
     }
 
-  rest.getReviewRefs = function(mapId, elementUniqueId, callback)
+  rest.getReviewRefs = function(mapId, elementUniqueIds, callback)
   {
-    d3.json('/hoot-services/job/review/refs?mapId=' + mapId + "&elementUniqueId=" + elementUniqueId,
+    d3.json('/hoot-services/job/review/refs?mapId=' + mapId + "&elementUniqueIds=" + 
+    		elementUniqueIds.join(";"),
       function(error, response)
       {
         if (error)
