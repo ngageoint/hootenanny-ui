@@ -149,7 +149,7 @@ Hoot.control.utilities.dataset = function(context) {
                  
                     
                     if(status == 'failed'){
-                        alert('Export has failed or partially failed. For detail please see Manage->Log.');
+                    	iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','warning');
                         modalbg.remove();
                     } else {
                         var tblContainer = d3.select('#wfsdatasettable');
@@ -283,7 +283,7 @@ Hoot.control.utilities.dataset = function(context) {
                 var newfoldername = _form.select('.newfoldername').value();
      			resp = context.hoot().checkForUnallowedChar(newfoldername);
 	            if(resp != true){
-	            	alert(resp);
+	            	iD.ui.Alert(resp,'warning');
 	             	return;
 	            }
 	            
@@ -429,12 +429,12 @@ Hoot.control.utilities.dataset = function(context) {
                     if(outputname.toLowerCase() != dataset.name.toLowerCase()){
                     	var resp = context.hoot().checkForUnallowedChar(outputname);
                     	if(resp != true){
-                    		alert(resp);
+                    		iD.ui.Alert(resp,'warning');
                     		return;
                         }
                     	if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == outputname})))
                     	{
-                            alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.");
+                    		iD.ui.Alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.",'warning');
                             return;
                         }
                     	
@@ -446,7 +446,7 @@ Hoot.control.utilities.dataset = function(context) {
 	                        var newfoldername = _form.select('.newfoldername').value();
 	                        resp = context.hoot().checkForUnallowedChar(newfoldername);
 	                    	if(resp != true){
-	                    		alert(resp);
+	                    		iD.ui.Alert(resp,'warning');
 	                    		return;
 	                        }
 	                        
@@ -634,7 +634,7 @@ Hoot.control.utilities.dataset = function(context) {
                                 var selType = getTypeName(_form.select('.reset.importImportType').value());
 
                                 if(!selType){
-                                    alert("Please select Import Type.");
+                                    iD.ui.Alert("Please select Import Type.",'warning');
                                     return;
                                 }
 
@@ -660,7 +660,7 @@ Hoot.control.utilities.dataset = function(context) {
                                                 var ext = folderName.substring(folderName.length - 4);
                                                 var fgdbName = folderName.substring(0, folderName.length - 4);
                                                 if(ext.toLowerCase() != '.gdb'){
-                                                    alert("Please select valid FGDB.");
+                                                	iD.ui.Alert("Please select valid FGDB.",'warning');
                                                     return;
                                                 } else {
                                                     var inputName = _form.select('.reset.LayerName').value();
@@ -738,7 +738,7 @@ Hoot.control.utilities.dataset = function(context) {
                                     });
 
                                     if(!isValid){
-                                        alert("Missing shapefile dependency. Import requires shp, shx and dbf." );
+                                    	iD.ui.Alert("Missing shapefile dependency. Import requires shp, shx and dbf.",'warning');
                                         return;
                                     }
                                 }
@@ -746,12 +746,12 @@ Hoot.control.utilities.dataset = function(context) {
                                 var totalCnt = shpCnt + osmCnt + zipCnt;
                                 if((shpCnt > 0 && shpCnt != totalCnt) || (osmCnt > 0 && osmCnt != totalCnt) 
                                     || (zipCnt > 0 && zipCnt != totalCnt)){
-                                    alert("Please select only single type of files. (i.e. can not mix zip with osm)");
+                                	iD.ui.Alert("Please select only single type of files. (i.e. can not mix zip with osm)",'warning');
                                     return;
                                 }
 
                                 if(osmCnt > 1) {
-                                    alert("Multiple osm files can not be ingested. Please select one.");
+                                	iD.ui.Alert("Multiple osm files can not be ingested. Please select one.",'warning');
                                     return;
                                 }
 
@@ -892,25 +892,25 @@ Hoot.control.utilities.dataset = function(context) {
                     .on('click', function () {
                         //check if layer with same name already exists...
                     	if(_form.select('.reset.LayerName').value()=='' || _form.select('.reset.LayerName').value()==_form.select('.reset.LayerName').attr('placeholder')){
-                    		alert("Please enter an output layer name.");
+                    		iD.ui.Alert("Please enter an output layer name.",'warning');
                             return;
                     	}
                     	
                     	if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f == _form.select('.reset.LayerName').value();})))
                     	{
-                            alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.");
+                    		iD.ui.Alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.",'warning');
                             return;
                         }
                     	
                     	var resp = context.hoot().checkForUnallowedChar(_form.select('.reset.LayerName').value());
                     	if(resp != true){
-                    		alert(resp);
+                    		iD.ui.Alert(resp,'warning');
                     		return;
                         }
                     	
                     	resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
                     	if(resp != true){
-                    		alert(resp);
+                    		iD.ui.Alert(resp,'warning');
                     		return;
                         }
                     	                                                
@@ -992,7 +992,7 @@ Hoot.control.utilities.dataset = function(context) {
                                     submitExp.select('span').text('Cancel');
                                 } else if(status.info == 'failed'){
                                     var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
-                                	alert(errorMessage);
+                                    iD.ui.Alert(errorMessage,'error');
                                     modalbg.remove();
                                 }
 
@@ -1009,7 +1009,7 @@ Hoot.control.utilities.dataset = function(context) {
                                     data.jobid = curJobId;
                                     data.mapid = curMapId;
                                     Hoot.model.REST('cancel', data, function (a) {
-                                        alert('Job ID: ' + curJobId + ' has been cancelled. ');
+                                    	iD.ui.Alert('Job ID: ' + curJobId + ' has been cancelled. ','notice');
 
 
 
@@ -1284,7 +1284,7 @@ Hoot.control.utilities.dataset = function(context) {
                         data.jobid = curJobId;
                         data.mapid = curMapId;
                         Hoot.model.REST('cancel', data, function (a) {
-                            alert('Job ID: ' + curJobId + ' has been cancelled. ');
+                        	iD.ui.Alert('Job ID: ' + curJobId + ' has been cancelled. ','notice');
                             d3.select('#importprogdiv').append('br');
                             d3.select('#importprogdiv').append('text').text('Job ID: ' + curJobId + ' has been cancelled. ');
                             context.hoot().model.layers.refresh(function () {
@@ -1318,7 +1318,7 @@ Hoot.control.utilities.dataset = function(context) {
             
         function addRow(_table){
         	if(rowNum>10){
-        		alert("Please limit bulk import to 10 datasets or less.")
+        		iD.ui.Alert("Please limit bulk import to 10 datasets or less.",'warning')
         		return;
         	}
         	
@@ -1390,7 +1390,7 @@ Hoot.control.utilities.dataset = function(context) {
 	                            var selType = getTypeName(d3.select(".reset.importImportType[row='" + selRowNum + "']").value());
 	
 	                            if(!selType){
-	                                alert("Please select Import Type.");
+	                            	iD.ui.Alert("Please select Import Type.",'warning');
 	                                return;
 	                            }
 	
@@ -1416,7 +1416,7 @@ Hoot.control.utilities.dataset = function(context) {
 	                                            var ext = folderName.substring(folderName.length - 4);
 	                                            var fgdbName = folderName.substring(0, folderName.length - 4);
 	                                            if(ext.toLowerCase() != '.gdb'){
-	                                                alert("Please select valid FGDB.");
+	                                            	iD.ui.Alert("Please select valid FGDB.",'warning');
 	                                                return;
 	                                            } else {
 	                                                var inputName = d3.select(".reset.LayerName[row='" + selRowNum + "']").value();
@@ -1490,7 +1490,7 @@ Hoot.control.utilities.dataset = function(context) {
 	                                });
 	
 	                                if(!isValid){
-	                                    alert("Missing shapefile dependency. Import requires shp, shx and dbf." );
+	                                	iD.ui.Alert("Missing shapefile dependency. Import requires shp, shx and dbf.",'warning' );
 	                                    return;
 	                                }
 	                            }
@@ -1498,12 +1498,12 @@ Hoot.control.utilities.dataset = function(context) {
 	                            var totalCnt = shpCnt + osmCnt + zipCnt;
 	                            if((shpCnt > 0 && shpCnt != totalCnt) || (osmCnt > 0 && osmCnt != totalCnt) 
 	                                || (zipCnt > 0 && zipCnt != totalCnt)){
-	                                alert("Please select only single type of files. (i.e. can not mix zip with osm)");
+	                            	iD.ui.Alert("Please select only single type of files. (i.e. can not mix zip with osm)",'warning');
 	                                return;
 	                            }
 	
 	                            if(osmCnt > 1) {
-	                                alert("Multiple osm files can not be ingested. Please select one.");
+	                            	iD.ui.Alert("Multiple osm files can not be ingested. Please select one.",'warning');
 	                                return;
 	                            }
 	

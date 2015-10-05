@@ -494,13 +494,13 @@ Hoot.tools = function (context, selection) {
 
                                             });
                                         } else {
-                                            alert("Could not determine input layer 2. It will not be loaded.");
+                                        	iD.ui.Alert("Could not determine input layer 2. It will not be loaded.",'warning');
                                         }
 
 
                                     });
                                 } else {
-                                    alert("Could not determine input layer 1. It will not be loaded.");
+                                	iD.ui.Alert("Could not determine input layer 1. It will not be loaded.",'warning');
                                 }
 
 
@@ -547,7 +547,7 @@ Hoot.tools = function (context, selection) {
     });
     exportLayer.on('cancelSaveLayer', function () {
         if(exporting){
-            alert("Can not cancel. Export in progress.");
+        	iD.ui.Alert("Can not cancel. Export in progress.",'warning');
             return;
         }
         exportLayer.deactivate();
@@ -565,7 +565,7 @@ Hoot.tools = function (context, selection) {
         var spinner = cont.append('span').attr('class', 'spinner-hoot').call(iD.ui.Spinner(context));
         hoot.model.export.exportData(cont, data, function (status) {
             if(status == 'failed'){
-                alert('Export has failed or partially failed. For detail please see Manage->Log.');
+            	iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error');
             }
 
             if(exportType && exportType === 'Web Feature Service (WFS)'){

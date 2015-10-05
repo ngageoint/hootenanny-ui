@@ -379,3 +379,27 @@ span.logo{
  	border: 1px lightgray;
  }
  
+#alerts {
+	position: fixed;
+	z-index: 1;
+	clear:both;
+	margin-left:10px;
+	float:right;
+	right:0;
+}
+
+.alertDiv {
+	width: 250px;
+	padding:3px 0px 3px 5px;
+	background:rgba(150,150,150,.5);
+}
+
+.alertDiv.red 		{	background:rgba(255,0,0,.5);	}
+.alertDiv.yellow 	{	background:rgba(255,255,0,.5);	}
+.alertDiv.green 	{	background:rgba(0,255,0,.5);	}
+.alertDiv.blue 		{ background:rgba(50,50,255,.5);	}}
+
+.alertDiv h1, h2, h3, h4, h5 {
+	/* margin-left: 10px;
+	display: inline-block; */
+}

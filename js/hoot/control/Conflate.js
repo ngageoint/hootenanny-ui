@@ -326,25 +326,25 @@ Hoot.control.conflate = function (sidebar) {
                 
               //check if layer with same name already exists...
             	if(conflate.selectAll('.saveAs').value()===''){
-            		alert("Please enter an output layer name.");
+            		iD.ui.Alert("Please enter an output layer name.",'warning');
                     return;
             	}
                 
                 if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f == conflate.selectAll('.saveAs').value();})))
             	{
-                    alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.");
+                	iD.ui.Alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.",'warning');
                     return;
                 }
                 
             	var resp = hoot.checkForUnallowedChar(conflate.selectAll('.saveAs').value());
             	if(resp !== true){
-            		alert(resp);
+            		iD.ui.Alert(resp,'warning');
             		return;
                 }
             	            	
             	resp = hoot.checkForUnallowedChar(conflate.selectAll('.newfoldername').value());
             	if(resp !== true){
-            		alert(resp);
+            		iD.ui.Alert(resp,'warning');
             		return;
                 }                
                 
@@ -525,7 +525,7 @@ Hoot.control.conflate = function (sidebar) {
                         data.jobid = jobId;
                         data.mapid = mapId;
                         Hoot.model.REST('cancel', data, function (a) {
-                            alert('Job ID: ' + jobId + ' has been cancelled. ');
+                        	iD.ui.Alert('Job ID: ' + jobId + ' has been cancelled. ','notice');
 
                         });
                         //resetForm(self);
@@ -1524,7 +1524,7 @@ Hoot.control.conflate = function (sidebar) {
 		            d3.select('.ConfType').value('Advanced Conflation');
 	            } else{
 	            	//notify that some values are invalid and leave window open
-	            	 window.alert('Some values in the form are invalid and must be adjusted before completing custom conflation.');
+	            	iD.ui.Alert('Some values in the form are invalid and must be adjusted before completing custom conflation.','warning');
 	            }            	
 	        });
          
@@ -1599,7 +1599,7 @@ Hoot.control.conflate = function (sidebar) {
      };
 
     _onCustomConflationFormError = function(){
-    	window.alert('An error occurred while trying to open a custom conflation window. If this problem persists, default values will be used for conflation based on selected type.');
+    	iD.ui.Alert('An error occurred while trying to open a custom conflation window. If this problem persists, default values will be used for conflation based on selected type.','error');
     	Conflate.confAdvOptsDlg = null;
     	Conflate.confAdvValsDlg = null;
     	d3.select('#content').selectAll('div .custom-conflation').remove();

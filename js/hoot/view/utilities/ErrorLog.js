@@ -28,7 +28,7 @@ Hoot.view.utilities.errorlog = function(context){
       .append('a')
       .attr('href', '#')
       .text('Refresh')
-      .classed('dark fr button loud pad2x big _icon check', true)
+      .classed('dark fr button loud pad2x big _icon refresh', true)
       .on('click', function () {
           errorlog.update();
       });
@@ -36,18 +36,60 @@ Hoot.view.utilities.errorlog = function(context){
 
       errTextFieldset = form.append('div')
       .attr('id','errorlogbody')
-          .classed('col12 fill-white small strong row10', true)
+          .classed('col12 fill-white small strong', true)
           .call(errorlog.showLog);
     };
     
     errorlog.showLog = function(container){ 
-        container.append('textarea')
-        .classed('col12 row10 overflow', true)
-        .attr('id', 'hooterrorlogtext')
-        .attr('readonly','readonly')
-        .text("");
+    	//Error Log
+    	var errorContainer = container.append('div').classed('col12',true);
+    	errorContainer.append('label')
+        	.classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
+        	.style('display','block')
+        	.attr('id','errorLogLabel')
+        	.text('Hide Error Log')
+        	.on('click', function () {
+        		if(d3.select("#hooterrorlogtext").style('display')=='none'){
+        			d3.select("#hooterrorlogtext").style('display','block');
+        			d3.select("#errorLogLabel").text('Hide Error Log');
+        		} else {
+        			d3.select("#hooterrorlogtext").style('display','none');
+        			d3.select("#errorLogLabel").text('Show Error Log');
+        		}
+	        });
+        	    	
+    	errorContainer.append('textarea')
+	        .classed('col12 row5 overflow', true)
+	        .attr('id', 'hooterrorlogtext')
+	        .attr('readonly','readonly')
+	        .style('display','block')
+	        .text("");
         
         errorlog.update();
+        
+        //UI Log
+        var uiContainer = container.append('div').classed('col12',true);
+        uiContainer.append('label')
+	    	.classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
+	    	.attr('id','uiLogLabel')
+	    	.style('display','block')
+	    	.text('Hide UI Log')
+	    	.on('click', function () {
+	    		if(d3.select("#hootuilogtext").style('display')=='none'){
+	    			d3.select("#hootuilogtext").style('display','block');
+	    			d3.select("#uiLogLabel").text('Hide UI Log');
+	    		} else {
+	    			d3.select("#hootuilogtext").style('display','none');
+	    			d3.select("#uiLogLabel").text('Show UI Log');
+	    		}
+	        });
+        
+        uiContainer.append('div').append('textarea')
+	        .classed('col12 row5 overflow', true)
+	        .attr('id', 'hootuilogtext')
+	        .attr('readonly','readonly')
+	        .style('display','block')
+	        .text("");
         
     };
     
@@ -152,10 +194,12 @@ Hoot.view.utilities.errorlog = function(context){
                                             text += "COREDETAIL:\n" + coreDetail + "\n";
                                             text += "SERVICEDETAIL:\n" + serviceDetail + "\n";
                                             text += "TOMCATLOG (Truncated if > 50k):\n" + logStr + "\n";
-                                    
-                                            text += "UI LAST ERROR:\n" + JSON.stringify(iD.data.hootConfig.currentError) + "\n";
                                             d3.select('#hooterrorlogtext').text(text).value(text);
-                                                
+                                            
+                                            if(iD.data.hootConfig.currentError){
+                                                var uitext = JSON.stringify(iD.data.hootConfig.currentError) + "\n" + d3.select('#hootuilogtext').text();
+                                                d3.select("#hootuilogtext").text(uitext).value(uitext);                                                	
+                                            }
                                         }
                                     );
                                     

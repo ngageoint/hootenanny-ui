@@ -39,7 +39,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     Conflict.setProcessing = function(isProc){
         if(isProc === true){
             if(Conflict.isProcessingReview === true){
-                alert("Processing review. Please wait.");
+            	iD.ui.Alert("Processing review. Please wait.",'notice');
                 return;
             }
             Conflict.isProcessingReview = true;
@@ -105,7 +105,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         	var entityCenter = entityExtent.center();
 
         	if(entityExtent == undefined){
-        		alert("Could not locate selected feature with id: " + entity.id + ".")
+        		iD.ui.Alert("Could not locate selected feature with id: " + entity.id + ".",'warning')
         		return;
         	}
 
@@ -140,7 +140,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                     if(error){
                         clearInterval(heartBeatTimer);
-                        alert('failed to update review status.');
+                        iD.ui.Alert('failed to update review status.','warning');
                            return;
                     }
                     if(callback){
@@ -175,7 +175,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 try {
                     if(error){
                         Conflict.isProcessingReview = false;
-                        alert('Failed to get Next Item. Moving to next available item.');
+                        iD.ui.Alert('Failed to get Next Item. Moving to next available item.','warning');
                         jumpFor();
                         return;
                     }
@@ -228,12 +228,12 @@ Hoot.control.conflicts = function (context, sidebar) {
                         activeEntity = newReviewItem;
                         highlightLayer(newReviewItem);
                     } else {
-                        alert('Failed to get next item. Moving to next available item.');
+                    	iD.ui.Alert('Failed to get next item. Moving to next available item.','warning');
                         jumpFor();
                     }
                 }
                 catch (ex) {
-                    alert(ex);
+                	iD.ui.Alert(ex,'error');
                 } finally {
                     Conflict.isProcessingReview = false;
                 }
@@ -395,7 +395,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                         })
                     ) {
                         getFeatureStopTimer(true);
-                        window.alert('One feature involved in this review has already been deleted');
+                        iD.ui.Alert('One feature involved in this review has already been deleted','warning');
                     } else {
                         //window.console.log('wait for another interval to fire');
                     }
@@ -549,7 +549,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         var vischeck = function(){
             var layers=context.hoot().model.layers.getLayers();
             var vis = _.filter(layers, function(d){return d.vis;});
-            if(vis.length>1){window.alert('Swap to Conflated Layer before accepting!');return false;}
+            if(vis.length>1){iD.ui.Alert('Swap to Conflated Layer before accepting!','warning');return false;}
             return true;
         };
 
@@ -605,7 +605,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             _.each(inID, function (d) {
                 var ent = context.hasEntity(d);
                 if (!ent) {
-                    alert("missing entity.");
+                	iD.ui.Alert("missing entity.",'warning');
                     isProcessingReview = false;
               return;
               }
@@ -663,7 +663,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 if(item) {
                     var contains = item.reviewed;
                     if (contains) {
-                        window.alert('Item Is Already Resolved!');
+                    	iD.ui.Alert('Item Is Already Resolved!','warning');
 
                     } else {
                       item.retain = true;
@@ -693,10 +693,10 @@ Hoot.control.conflicts = function (context, sidebar) {
                         	jumpFor();
                     }
                 } else {
-                    alert("Nothing to review.");
+                	iD.ui.Alert("Nothing to review.",'notice');
                 }
             } catch (err) {
-                alert(err);
+            	iD.ui.Alert(err,'error');
             } finally {
                 Conflict.isProcessingReview = false;
             }
@@ -870,7 +870,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 btnEnabled = false;
                 d.action();
               } else {
-                window.alert('Please wait. Processing review.');
+            	  iD.ui.Alert('Please wait. Processing review.','notice');
               }
 
             })

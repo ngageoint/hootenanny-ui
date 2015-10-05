@@ -78,7 +78,7 @@ Hoot.model.conflicts = function(context)
                     Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
                         //if only locked by self
                         if(resp.count >= 2) {
-                        	 alert("Reviews are being reviewed by other users. Modified features will be saved but will not be marked as resolved.");
+                        	iD.ui.Alert("Reviews are being reviewed by other users. Modified features will be saved but will not be marked as resolved.",'warning');
                         }
 
                         if (callback) {
@@ -329,7 +329,7 @@ Hoot.model.conflicts = function(context)
         var layerName = feature.layerName;
 
         if (!feature && !featureAgainst) {
-             window.alert('Merge error, one feature is missing');
+        	iD.ui.Alert('Merge error, one feature is missing','error');
         } else {
             //Check that both features are still in the map graph,
             //and load them if not
@@ -397,7 +397,7 @@ Hoot.model.conflicts = function(context)
                   	if (error)
                     {
                   	  //console.log(error);
-                      alert('failed to retrieve review refs.');
+                  	  iD.ui.Alert('failed to retrieve review refs.','warning');
                       context.hoot().control.conflicts.setProcessing(false);
                       return;
                     }

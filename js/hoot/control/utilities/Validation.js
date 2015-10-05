@@ -29,7 +29,7 @@ Hoot.control.utilities.validation = function(context) {
 
                     Hoot.model.REST('createValidationMap', reqParam, function (resp) {   
                         if(resp.status != 'complete') {
-                            alert("Failed to create validation. See log for detail.");
+                            iD.ui.Alert("Failed to create validation. See log for detail.",'warning');
                         } else {
                             // refresh both folder and layer list
                             context.hoot().model.layers.refresh(function(){
@@ -42,7 +42,7 @@ Hoot.control.utilities.validation = function(context) {
                         
                     });
                 } else {
-                    alert('Please specify valid Output Name!');
+                	iD.ui.Alert('Please specify valid Output Name!','warning');
                     spinDiv.remove();
                 }
             }

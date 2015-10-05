@@ -167,6 +167,12 @@ Hoot.view.utilities = function (context){
            .classed('row2 fill-light round-top keyline-all', true);
         /////////////////////////////////////////
 
+         ////////////ALERTS///////////////////
+         var alertsDiv = d3.select('body')
+         	.append('div')
+         	.attr('id','alerts');
+         /////////////////////////////////////////         
+         
         _createTabs(jobsBG);
     };
 

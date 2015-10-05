@@ -143,7 +143,7 @@ Hoot.control.TranslationAssistant = function () {
         err += '\n\nOr a zip file containing one or more shapefiles or a folder that is a file geodatabase.';
         err += '\n\nFolders can contain one or more shapefiles or be a file geodatabase.';
 
-        window.alert(err);
+        iD.ui.Alert(err,'error');
         /*openfile.append('div')
         .text(err)
         .style('color', 'red')
@@ -801,7 +801,7 @@ Hoot.control.TranslationAssistant = function () {
                     if ( schema === 'TDSv61' ) {
                         var isValid = ta.validateMapping(jsonMapping);
                         if (!isValid.state) {
-                            window.alert('A mapping for Feature Code is required for ' + isValid.layers.join(', '));
+                        	iD.ui.Alert('A mapping for Feature Code is required for ' + isValid.layers.join(', '),'warning');
                             return;
                         }
                         output = output.replace('var schema;', 'var schema = \'' + schema + '\';');

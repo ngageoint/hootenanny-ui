@@ -35,7 +35,7 @@ iD.ui = function(context) {
             .attr('id', 'bar')
             .attr('class', 'fillD');
         bar.style('top', '60px');
-
+        
         var m = content.append('div')
             .attr('id', 'map')
             .call(map);

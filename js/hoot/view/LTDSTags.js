@@ -313,7 +313,7 @@ Hoot.view.ltdstags = function (context) {
             if(isNew){
                 if(tagsData.length == 1){
                     if(tagsData[0].key.trim().length == 0 || tagsData[0].value.trim().length == 0){
-                        alert("Please save last new attribute before adding new.");
+                    	iD.ui.Alert("Please save last new attribute before adding new.",'warning');
                         return;
                     }
                 }
@@ -388,7 +388,7 @@ Hoot.view.ltdstags = function (context) {
                             // numeric
                             if (isNaN(this.value)) // this is the code I need to change
                             {
-                                alert("Please enter a numeric value!");
+                            	iD.ui.Alert("Please enter a numeric value!",'warning');
                                 if(this.oldValue){
                                     this.value = this.oldValue;
                                 } else {
@@ -400,7 +400,7 @@ Hoot.view.ltdstags = function (context) {
                     }
 
                     if(orig_entity.key.trim().length == 0) {
-                        alert('Missing or invalid key.');
+                    	iD.ui.Alert('Missing or invalid key.','warning');
                         var curval = this.value;
                         this.value = "";
                         return;
