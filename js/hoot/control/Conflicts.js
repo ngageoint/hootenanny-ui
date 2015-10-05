@@ -298,10 +298,19 @@ Hoot.control.conflicts = function (context, sidebar) {
                         d3.select('a.merge').classed('hide', false);
                         //Override with current pair of review features
                         mergeFeatures = function() {
-                            context.hoot().model.conflicts.autoMergeFeature(feature, againstFeature, mapid);
+                        	if(context.graph().entities[feature.id] && context.graph().entities[againstFeature.id]){
+                        		context.hoot().model.conflicts.autoMergeFeature(feature, againstFeature, mapid);
+                        	} else {
+                        		context.hoot().view.utilities.errorlog.reportUIError('Nothing to merge...');
+                            	return;
+                        	}
                         };
                         function loadArrow(d) {
                             if (d3.event) d3.event.preventDefault();
+                            if(!context.graph().entities[feature.id] || !context.graph().entities[againstFeature.id]){
+                        		context.background().updateArrowLayer({});
+                        		return;
+                        	} 
                             if (d3.event.type === 'mouseover' || d3.event.type === 'mouseenter') {
                                 context.background().updateArrowLayer(d);
                             } else {
