@@ -175,7 +175,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                 try {
                     if(error){
                         Conflict.isProcessingReview = false;
-                        iD.ui.Alert('Failed to get Next Item. Moving to next available item.','warning');
+                        //iD.ui.Alert('Failed to get Next Item. Moving to next available item.','warning');
+                        window.alert('Failed to get Next Item. Moving to next available item.');
                         jumpFor();
                         return;
                     }
@@ -228,7 +229,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                         activeEntity = newReviewItem;
                         highlightLayer(newReviewItem);
                     } else {
-                    	iD.ui.Alert('Failed to get next item. Moving to next available item.','warning');
+                    	//iD.ui.Alert('Failed to get Next Item. Moving to next available item.','warning');
+                        window.alert('Failed to get Next Item. Moving to next available item.');
                         jumpFor();
                     }
                 }
