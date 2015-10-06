@@ -18,6 +18,7 @@ Hoot.control = function (context){
                 hoot_control.export = Hoot.control.export( sidebar);
                 hoot_control.view = Hoot.control.view(sidebar, context);
                 hoot_control.conflicts = Hoot.control.conflicts(context, sidebar);
+                hoot_control.validation = Hoot.control.validation(context, sidebar);
                 // tools will go away till then
                 Hoot.tools(context, sidebar);
 	}
@@ -38,7 +39,7 @@ Hoot.control = function (context){
                     .append('div')
                     .classed('fr _icon x point', true)
                     .on('click', function () {
-                        
+
                         modalbg.remove();
                     });
                 var fieldset = _form.append('fieldset')
@@ -68,7 +69,7 @@ Hoot.control = function (context){
 
                 var submitExp = modalDiv.append('div')
                     .classed('form-field col12 center ', true);
-                
+
 
                 var btn = submitExp.append('span')
                     .classed('round strong big loud dark center col10 margin1 point', true)
@@ -78,10 +79,10 @@ Hoot.control = function (context){
                         btnMetaData.action(modalbg, submitExp, _form);
                     });
 
-                    
-                
+
+
                 return modalbg;
-     
+
         }
 	return hoot_control;
 };

@@ -429,7 +429,10 @@ Hoot.tools = function (context, selection) {
                     if(reqParam.mapId) {
                         Hoot.model.REST('getMapTags', reqParam,function (tags) {
                             if (tags.reviewtype === 'hgisvalidation') {
-                                console.log('got a validation');
+                                var r = confirm("The layer has been prepared for validation. Do you want to go into validation mode?");
+                                if (r == true) {
+                                    context.hoot().control.validation.begin(params.mapId);
+                                }
                             } else {
                                 var r = confirm("The layer contains unreviewed items. Do you want to go into review mode?");
                                 if (r == true) {
