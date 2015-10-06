@@ -46,7 +46,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             if(processingTimer){
                 clearTimeout(processingTimer);
             }
-            
+
             processingTimer = setTimeout(function () {
                 Conflict.isProcessingReview = false;
             }, 2000);
@@ -54,7 +54,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             if(processingTimer){
                 clearTimeout(processingTimer);
             }
-            
+
             Conflict.isProcessingReview = false;
         }
     }
@@ -154,7 +154,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             if(heartBeatTimer){
                 clearInterval(heartBeatTimer);
             }
-            
+
             var targetReviewItem = getCurrentReviewItem();
             // Handle first review we assume first when do not have currentReviewItem
             if(!targetReviewItem) {
@@ -193,7 +193,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                             updateMeta();
                             exitReviewSession('Exiting review session...');
                             return;
-                        }          
+                        }
                     }
 
                     if(response.status == 'success'){
@@ -310,7 +310,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                             if(!context.graph().entities[feature.id] || !context.graph().entities[againstFeature.id]){
                         		context.background().updateArrowLayer({});
                         		return;
-                        	} 
+                        	}
                             if (d3.event.type === 'mouseover' || d3.event.type === 'mouseenter') {
                                 context.background().updateArrowLayer(d);
                             } else {
@@ -439,6 +439,13 @@ Hoot.control.conflicts = function (context, sidebar) {
             };
 
             var buildPoiTable = function (elem, feats) {
+                function addEllipsis(val) {
+                    var max = 32;
+                    if (val && val.length > max) {
+                        return val.substring(0, max) + '...';
+                    }
+                    return val;
+                }
                 //console.log(feats);
                 d3.select('div.tag-table').remove();
                 var ftable = elem.insert('div','div.conflicts')
@@ -451,13 +458,15 @@ Hoot.control.conflicts = function (context, sidebar) {
                 fmerged.forEach(function (d) {
                     var r = ftable.append('tr').classed('', true);
                     r.append('td').classed('fillD', true).text(d.key);
-                    r.append('td').classed('f1', true).text(d.value[0]).on('click', function(d){
+                    r.append('td').classed('f1', true).text(addEllipsis(d.value[0]))
+                    .on('click', function(d){
                         var sel = iD.modes.Select(context, [feats[0].id]);
                         panToEntity(context.entity(feats[0].id));
                         sel.suppressMenu(true);
                         context.enter(sel);
                     });
-                    r.append('td').classed('f2', true).text(d.value[1]).on('click', function(d){
+                    r.append('td').classed('f2', true).text(addEllipsis(d.value[1]))
+                    .on('click', function(d){
                         var sel = iD.modes.Select(context, [feats[1].id]);
                         panToEntity(context.entity(feats[1].id));
                         sel.suppressMenu(true);
@@ -520,19 +529,19 @@ Hoot.control.conflicts = function (context, sidebar) {
                 nReviewed = curMeta.reviewedcnt;
                 nLocked = curMeta.lockedcnt;
 
-                
+
                 if(curItem){
                     var allAgCnt = curItem.allReviewAgainstCnt;
                     if(allAgCnt > 1) {
                         var metaList = curItem.againstList.split(';');
                         var availCnt = metaList.length;
-                        
+
 
                         var nAgReviewed = allAgCnt - availCnt;
                         multiFeatureMsg = ', One to many feature ( reviewed ' +
                                     nAgReviewed + ' of ' + allAgCnt + ')';
                     }
-                        
+
                 }
             }
             var noteText = "";
@@ -584,19 +593,19 @@ Hoot.control.conflicts = function (context, sidebar) {
             t.classed('hide', !t.classed('hide'));
             checkToggleText();
         };
-        
+
         var updateReviewTagsForResolve = function(item, reviewableFeatureId, reviewAgainstFeatureId)
         {
             //drop current review against id from the current reviewed feature's hoot:review:uuid
         	//tags; if doing so would leave hoot:review:uuid empty, then drop all review tags
         	//(hoot:review:*)
-            var curReviewUUID =  reviewableFeatureId; 
+            var curReviewUUID =  reviewableFeatureId;
             //console.log(curReviewUUID);
             var curReviewAgainstUUID = reviewAgainstFeatureId;
             //console.log(curReviewAgainstUUID);
             var items = [item];
             var flagged = _.uniq(_.flatten(_.map(items, function (d) {
-                return [d.type.charAt(0) + d.id + '_' + mapid, 
+                return [d.type.charAt(0) + d.id + '_' + mapid,
                         d.itemToReviewAgainst.type.charAt(0) + d.itemToReviewAgainst.id + '_' + mapid];
             })));
             var inID = _.filter(flagged, function (d) {
@@ -622,11 +631,11 @@ Hoot.control.conflicts = function (context, sidebar) {
                         var newAgainstList =[];
 
                         _.each(againstList, function(v){
-                        	//We also need to drop id's for the review against item from its 
+                        	//We also need to drop id's for the review against item from its
                         	//hoot:review:id tag (the reason for adding && v != curReviewUUID to
-                        	//the if statement below).  This is b/c hoot core creates the tags as 
-                        	//relexive ("review A against B" AND "review B against A"), whereas the 
-                        	//presented database records are not stored as reflexive in order to 
+                        	//the if statement below).  This is b/c hoot core creates the tags as
+                        	//relexive ("review A against B" AND "review B against A"), whereas the
+                        	//presented database records are not stored as reflexive in order to
                         	//avoid showing duplicated reviews.
                         	if(v != curReviewAgainstUUID && v != curReviewUUID) {
                                 newAgainstList.push(v);
@@ -652,7 +661,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         var retainFeature = function () {
             try {
-                
+
                 Conflict.setProcessing(true);
                 var vicheck = vischeck();
                 if(!vicheck){
@@ -678,7 +687,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     }
 
                     updateReviewTagsForResolve(item, item.uuid, item.itemToReviewAgainst.uuid);
-                    
+
                     var hasChanges = context.history().hasChanges();
                     if (hasChanges) {
                     	//console.log(
@@ -908,7 +917,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     event.addData();
             });
 
-      
+
     };
 
 
