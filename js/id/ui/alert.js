@@ -8,6 +8,7 @@ iD.ui.Alert = function(message,type) {
 		})
 		;
     
+    type = type.toLowerCase();
     
     var displayTime = 10000;
     var fadeTime = 5000;

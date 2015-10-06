@@ -301,7 +301,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                         	if(context.graph().entities[feature.id] && context.graph().entities[againstFeature.id]){
                         		context.hoot().model.conflicts.autoMergeFeature(feature, againstFeature, mapid);
                         	} else {
-                        		context.hoot().view.utilities.errorlog.reportUIError('Nothing to merge...');
+                        		iD.ui.Alert("Nothing to merge.",'notice');
                             	return;
                         	}
                         };
