@@ -134,29 +134,7 @@ Hoot.control.conflate = function (sidebar) {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
-                //hide adv conf dlg if visible - treat as if cancel
-	        	if (Conflate.confLastSetVals !== null){
-	        		//replace current inputs with Conflate.confLastSetVals
-	        		_.each(Conflate.confLastSetVals,function(ai){
-	        			var selAI = d3.select('#'+ai.id);
-	        			if(ai.type=='checkbox'){
-	        				selAI.property('checked',ai.checked);
-	        			} else {
-	        				selAI.value(ai.value);
-	        			}
-	        			
-	        			selAI.property('disabled',ai.disabled);
-	        			if(ai.hidden.length>0){d3.select(selAI.node().parentNode).style('display',ai.hidden);}
-	        		});
-	        		
-	        		Conflate.confAdvOptsDlg.classed('hidden', true);
-	        	} else {
-	        		Conflate.confLastSetVals = null;
-	        		Conflate.confAdvOptionsSelectedVal = null;
-                    if(Conflate.confAdvOptsDlg){Conflate.confAdvOptsDlg.remove();}
-                    Conflate.confAdvOptsDlg = null;
-                 }
-	        	_advOpsFormEvent(false);
+                if(d3.select("#sidebar2").selectAll("input").property('disabled')){return;}
                 
                 toggleForm(this);
             });
