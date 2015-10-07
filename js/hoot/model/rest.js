@@ -406,6 +406,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                 if(resp.port && resp.isRunning === true)
                 {
                     iD.data.hootConfig.translationServerPort = resp.port;
+                    callback();
                 }
                 else
                 {
@@ -430,6 +431,8 @@ Hoot.model.REST = function (command, data, callback, option) {
         reqData.uid = data.id;
         reqData.input = data.osmXml;
 
+        var osmToTdsAttribFilter = data.filterMeta;
+
         d3.xhr(window.location.protocol + '//' + window.location.hostname + ":" + iD.data.hootConfig.translationServerPort + '/osmtotds')
             .header('Content-Type', 'text/plain')
             .post(JSON.stringify(reqData), function (error, json) {
@@ -439,21 +442,40 @@ Hoot.model.REST = function (command, data, callback, option) {
                 var xmlDoc = parser.parseFromString(tdsXml,"text/xml");
                 var tagslist = xmlDoc.getElementsByTagName("tag");
                 var attribs = {};
-                var fcode = null;
-                _.each(tagslist, function(tag){
-                    var key = tag.attributes['k'].value;
-                    var val = tag.attributes['v'].value;
-                    attribs[key] = val;
-                    if(key == 'Feature Code'){
-                        var parts = val.split(':');
-                        fcode = parts[0].trim();
-                    }
-                });
+                //var fcode = null;
+                var idVal = null;
+                var idelem = null;
+
+               
+                if(osmToTdsAttribFilter){
+                    idelem = osmToTdsAttribFilter.filtertagname;
+                    _.each(tagslist, function(tag){
+                        var key = tag.attributes['k'].value;
+                        var val = tag.attributes['v'].value;
+                        attribs[key] = val;
+                        if(key == osmToTdsAttribFilter.filterkey){
+                            idVal = val;
+                        }
+                    });
+                } else {
+                    idelem = 'fcode';
+                    _.each(tagslist, function(tag){
+                        var key = tag.attributes['k'].value;
+                        var val = tag.attributes['v'].value;
+                        attribs[key] = val;
+                        if(key == 'Feature Code'){
+                            var parts = val.split(':');
+                            idVal = parts[0].trim();
+                        }
+                    });
+                }
+
+     
                 // This is where we get the fields list based on fcode
-                if(fcode){
+                if(idVal){
                     d3.xhr(window.location.protocol + '//' + window.location.hostname + ":"  +
-                        iD.data.hootConfig.translationServerPort + '/osmtotds?fcode='+fcode +
-                         '&geom=' + data.geom + '&translation=' + data.translation)
+                        iD.data.hootConfig.translationServerPort + '/osmtotds?idval='+idVal +
+                         '&geom=' + data.geom + '&translation=' + data.translation + '&idelem=' + idelem)
                         .get(function(error, resp){
                             var ret = {};
                             ret.tableName = '';
@@ -927,6 +949,15 @@ rest.downloadReport = function(data)
                 rest.status(resp.jobId, callback);
             });
     };
+
+    rest.getTransaltionCapabilities = function(data, callback) {
+        d3.xhr(window.location.protocol + '//' + window.location.hostname + ":"  +
+            iD.data.hootConfig.translationServerPort + '/capabilities')
+            .get(function(error, resp){               
+                callback(error, resp);
+            });
+    }
+
 
     rest['' + command + ''](data, callback, option);
 };

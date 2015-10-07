@@ -189,7 +189,13 @@ iD.ui.RawTagEditor = function(context) {
                     var origTagInfoEndPt = context.taginfo().endpoint();
                     // passing optional translation info
                     if(translation){
-                        tagInfoOpts.fcode = translation.fCode;
+                        // TODO: Refactor out the fCode
+                        if(translation.fCode){
+                            tagInfoOpts.fcode = translation.fCode;
+                        } /*else {
+                            tagInfoOpts.lyrname = translation.name;
+                        }*/
+                        
                         tagInfoOpts.translation = translation.transType;
                         var rawGeom = context.geometry(id);
                         if(rawGeom == 'point'){

@@ -24,7 +24,7 @@ Hoot.plugins.entityeditor = function() {
         }
     };
 
-    this.getLTDSTags =function (entity, transType, callback) {
+    this.getLTDSTags =function (entity, transType, meta, callback) {
       
 	    var geom = this.getGeomType(entity);
 	    var filterType = transType;
@@ -35,6 +35,7 @@ Hoot.plugins.entityeditor = function() {
 	    data.osmXml = osmXml;
 	    data.translation = filterType;
 	    data.geom = geom;
+        data.filterMeta = meta;
 	    this.requestTranslationToServer('LTDS', data, callback);
 	};
 
@@ -65,12 +66,17 @@ Hoot.plugins.entityeditor = function() {
 	    
 	    
 
-	    if(me._selectedId == null || me._selectedId !== id){
+	    /*if(me._selectedId == null || me._selectedId !== id){
 	    	me.defaultTags = {};
             me.defaultRawTags = {};
 	    	me._selectedId = id;
 	    	
-	    }
+	    }*/
+
+        me.defaultTags = {};
+        me.defaultRawTags = {};
+        me._selectedId = id;
+
 	     _.each(rawCurFields, function(f){
 	         var val = rawTags[f.desc]
 	         if(val) {
@@ -108,6 +114,20 @@ Hoot.plugins.entityeditor = function() {
 	    return newPreset;
 
 	}
+
+    this.createPresetByName = function( geom, ftype, trans, name) {
+        // create new preset
+        var newPreset = {};
+        //newPreset.icon = "highway-road";
+        newPreset.geometry = geom;
+        newPreset.tags = {};
+        newPreset['hoot:featuretype'] = ftype;
+        newPreset['hoot:transtype'] = trans;
+        newPreset['hoot:name'] = name;
+        newPreset.name = ftype + ' (' + name + ')';
+        return newPreset;
+
+    }
 
 	this.createField = function(fieldInfo) {
 		var newField = {};
@@ -173,10 +193,26 @@ Hoot.plugins.entityeditor.noShowDefs = {'-999999.0':'-999999.0', 'No Information
 				'Closed Interval': 'Closed Interval'};
 
 Hoot.plugins.entityeditor.prototype = Object.create(iD.ui.plugins.IEntityEditor);
-Hoot.plugins.entityeditor.prototype.getTranslations = function(){
-	var ret = ['OSM','TDSv61', 'TDSv40'];
 
-	return ret;
+/*
+[{'name':'OSM'},
+                {'name':'TDSv61'}, 
+                {'name':'TDSv40'}, 
+                {'name':'HGISv20',
+                 'meta':{'filtertagname':'name', 'filterkey':'HGIS_Layer'}}];*/
+Hoot.plugins.entityeditor.prototype.getTranslations = function(){
+
+    var trans = [];
+    var retArr = _.forEach(iD.data.hootConfig.translationCapabilites, function(v,k){
+        var pair = {};
+        pair['name'] = k;
+        if(v.meta){
+            pair['meta'] = v.meta;
+        }
+        trans.push(pair);
+    });
+
+	return trans;
 }
 
 
@@ -197,9 +233,9 @@ Hoot.plugins.entityeditor.prototype.requestTranslationToServer = function(reqTyp
 
 
 Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, currentTranslation, 
-		tags, preset, populateBodyCallback){
+		tags, preset, meta, populateBodyCallback){
 	var me = this;
-    this.getLTDSTags(entity, currentTranslation, function(resp){
+    this.getLTDSTags(entity, currentTranslation, meta, function(resp){
         // Search fields and presets and if does not exist then add
         var transInfo = {};
         var curGeom = context.geometry(entity.id);
@@ -261,6 +297,54 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
             }
             transInfo.transType = currentTranslation;
             transInfo.fCode = fCode;
+        } else {
+            var lyrName = resp.attrs['HGIS_Layer'];
+            var fType = resp.attrs['TYPE1'];
+
+            var rawCurFields = JSON.parse(resp.fields).columns;
+            curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs)   
+            
+            var newPreset = me.createPresetByName(curGeom, fType, currentTranslation, lyrName);
+
+            curPreset = context.presets().addPreset(currentTranslation + '/' + fCode, newPreset);
+
+                curPreset.fields = [];
+                me.allTranslatedFields = [];
+                _.each(rawCurFields, function(f){
+                    // create field using field data from service
+                    var newField = me.createField(f);
+
+                    // add to global list of preset fields
+                    context.presets().addField(currentTranslation + '/' + f.name, newField);
+
+                    // create field tob added to inspector preset
+                    var fieldObj = context.presets().field(currentTranslation + '/' + f.name, newField);
+
+                    // create new field for label. This is hack to by-pass the iD's language support t()
+                    // where it generates localized langugage for the label.
+                    // Since we are creating the label from the description from translation server there
+                    // is no way to translate English to local language at runtime. We will stick with English
+                    // for translated preset.
+                    fieldObj.rawLabel = f.desc;
+                    fieldObj.label = function() {
+                        return this.rawLabel;
+                    };
+
+                    // custom override for indeterminate and checked value for check box
+                    if(fieldObj.type == 'check') {
+                        fieldObj.customBoxProp = {};
+                        fieldObj.customBoxProp['indeterminate'] = 'No Information';
+                        fieldObj.customBoxProp['checked'] = 'True';                            
+                    }
+
+                    // for now we initially hide fields but iD will show populated fields
+                    fieldObj.show = 'false';
+                    curPreset.fields.push(fieldObj);
+                    me.allTranslatedFields.push(fieldObj);
+
+                });    
+                transInfo.transType = currentTranslation;
+                transInfo.name = name;                
         }
 
         // create entity editor body

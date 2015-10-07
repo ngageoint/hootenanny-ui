@@ -11,5 +11,6 @@
     "pluginhost":"hoot",
     "presetMaxLevDistance" : 40,
     "presetMaxDisplayNum" : 12,
-    "userEmail":"test@test.com"
+    "userEmail":"test@test.com",
+    "translationCapabilites":{}
 }

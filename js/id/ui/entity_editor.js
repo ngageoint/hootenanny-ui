@@ -11,6 +11,7 @@ iD.ui.EntityEditor = function(context) {
         .on('change', changeTags);
     
     var currentTranslation = 'OSM'; // default to OSM
+    var currentMeta;
     var allTranslatedFields = [];
     var allTransTags;
     var noShowDefs;
@@ -72,8 +73,8 @@ iD.ui.EntityEditor = function(context) {
         var combo = d3.combobox()
                 .data(_.map(comboData, function (n) {
                     return {
-                        value: n,
-                        title: n
+                        value: n.name,
+                        title: n.name
                     };
                 }));
 
@@ -87,6 +88,11 @@ iD.ui.EntityEditor = function(context) {
         comboIntput.on('change', function(param){
             var filterType = d3.select('#entity_editor_presettranstype').value();
             currentTranslation = filterType;
+            var currentData = _.find(comboData, function(d){
+                return d.name === filterType;
+            });
+
+            currentMeta = currentData.meta;
             entityEditor(selection);
         });
 
@@ -207,7 +213,8 @@ iD.ui.EntityEditor = function(context) {
         if(currentTranslation == 'OSM') {
             populateBody(preset, tags, tags);
         } else {
-            plg.translateEntity(context, entity, currentTranslation, tags, preset, populateBody);            
+            plg.translateEntity(context, entity, currentTranslation, tags, 
+                preset, currentMeta, populateBody);            
         }
 
     }
