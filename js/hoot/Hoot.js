@@ -44,7 +44,16 @@ Hoot.hoot = function (context) {
         		callback();
             }*/
         });
-        Hoot.model.REST('GetTranslationServerStatus', function(){});
+        Hoot.model.REST('GetTranslationServerStatus', function(){
+            Hoot.model.REST('getTransaltionCapabilities', function (error, resp) {
+                if(error){
+                    alert('Failed to retrieve translation capabilities: ' + error);
+                    return;
+                }
+                iD.data.hootConfig.translationCapabilites = JSON.parse(resp.responseText);
+            });
+
+        });
         
         Hoot.model.REST('getConflationCustomOpts',function(){});
        
@@ -58,6 +67,9 @@ Hoot.hoot = function (context) {
             iD.data.hootConfig.ingest_size_threshold = 1*thresholds.ingest_threshold;
             iD.data.hootConfig.conflate_size_threshold = 1*thresholds.conflate_threshold;
         });
+
+
+        
     };
     hoot.palette = function (co) {
         var palette = [{
