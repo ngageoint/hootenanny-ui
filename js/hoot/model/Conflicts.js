@@ -39,6 +39,25 @@ Hoot.model.conflicts = function(context)
 
         context.hoot().model.layers.addLayer(key, function(res){
             self.html(origHtml);
+            
+            d3.select('button.action.trash').on('click',function(){
+                conflicts.deactivate();
+            	context.hoot().mode('browse');
+            	
+            	d3.select('[data-layer=' + self.select('span').text() + ']').remove();
+                _.each(hoot.loadedLayers, function(d) {
+                    hoot.model.layers.removeLayer(d.name);
+                    var modifiedId = d.mapId.toString();
+                    d3.select('[data-layer="' + modifiedId + '"]').remove();
+                    delete loadedLayers[d.name];
+                });
+            	
+                var mapID =  hoot.model.layers.getmapIdByName(self.select('span').text());
+                d3.selectAll(d3.select('#sidebar2').node().childNodes).remove();
+                d3.select('[data-layer="' + mapID + '"]').remove();
+                
+                hoot.reset();
+            });
         });
 
     };
