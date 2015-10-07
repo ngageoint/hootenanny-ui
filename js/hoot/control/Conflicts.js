@@ -512,6 +512,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 	Hoot.model.REST('setAllItemsReviewed', data.mapId, function (error, response)
                 	{
                       finalizeReviewSession('Saving All Review Features.....');
+                      d3.select('body').call(iD.ui.Processing(context,true,"Saving All Review Features..."));
                       event.acceptAll(data);
                     });
                 }
@@ -893,6 +894,8 @@ Hoot.control.conflicts = function (context, sidebar) {
 
     Conflict.reviewNextStep = function () {
 
+    	d3.select('body').call(iD.ui.Processing(context,false));
+    	
       confData.isDeleteEnabled = true;
         metaHead.text('All Review Items Resolved!');
 
@@ -918,8 +921,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                     d3.event.preventDefault();
                     event.addData();
             });
-
-
+        
+        
     };
 
 
