@@ -12,11 +12,7 @@ Hoot.control.validation = function(context, sidebar) {
             ;
 
         var meta = container.append('span')
-            .classed('_icon info dark pad0y space', true)
-            // .html(function () {
-            //     return '<strong class="review-note">1 of ' + 'X' + '</strong>';
-            // })
-            ;
+            .classed('_icon info dark pad0y space', true);
 
         var buttons = [
             {
@@ -26,7 +22,7 @@ Hoot.control.validation = function(context, sidebar) {
                 color: 'loud',
                 icon: '_icon check',
                 cmd: iD.ui.cmd('v'),
-                action: this.verify
+                action: validation.verify
             },
             {
                 id: 'next',
@@ -35,7 +31,7 @@ Hoot.control.validation = function(context, sidebar) {
                 color: 'fill-grey button round pad0y pad1x dark small strong',
                 input: 'test',
                 cmd: iD.ui.cmd('n'),
-                action: function() { this.getItem('forward'); }
+                action: function() { validation.getItem(mapid, 'forward'); }
             },
             {
                 id: 'previous',
@@ -43,15 +39,9 @@ Hoot.control.validation = function(context, sidebar) {
                 text: 'Previous',
                 color: 'fill-grey button round pad0y pad1x dark small strong',
                 cmd: iD.ui.cmd('p'),
-                action: function() { this.getItem('backward'); }
+                action: function() { validation.getItem(mapid, 'backward'); }
             }
         ];
-
-        var opts = container.append('span')
-            .classed('fr space', true);
-        var optcont = opts.selectAll('a')
-            .data(buttons)
-            .enter();
 
         var keybinding = d3.keybinding('validation');
         buttons.forEach(function(d) {
@@ -68,8 +58,13 @@ Hoot.control.validation = function(context, sidebar) {
             return iD.ui.tooltipHtml(t('review.' + d.id + '.description'), d.cmd);
         });
 
-        optcont.append('a')
+        var buttonbar = container.append('span')
+            .classed('fr space', true);
+        buttonbar.selectAll('a')
+            .data(buttons)
+            .enter().append('a')
             .attr('href', '#')
+            .attr('enabled', true)
             .text(function (d) {
                 return d.text;
             })
@@ -81,21 +76,24 @@ Hoot.control.validation = function(context, sidebar) {
                 return 'fr inline button dark ' + d.color + ' pad0y pad2x keyline-all ' + d.icon + ' ' + d.id;
             })
             .on('click', function (d) {
-              // We need this delay for iD to have time to add way for adjusting
-              // graph history. If you click really fast, request out paces the process
-              // and end up with error where entity is not properly deleted.
-              setTimeout(function () {
-                btnEnabled = true;
-                }, 500);
-              if(btnEnabled){
-                btnEnabled = false;
-                d.action();
-              } else {
-                  iD.ui.Alert('Please wait. Processing review.','notice');
-              }
+                var b = d3.select(this);
+                if (b.attr('enabled')) {
+                    d.action();
+                    b.attr('enabled', false);
 
+                    //Wait for map data to load to enable button, add handler for 'loaded' event
+                    var e = 'loaded.validation.button';
+                    context.connection().on(e, function() {
+                        console.log(e);
+                        b.attr('enabled', true);
+                        context.connection().on(e, null);
+                    });
+                } else {
+                    iD.ui.Alert('Please wait. Processing validation.','notice');
+                }
             })
             .call(tooltip);
+
 
         //Remove UI elements when layer is removed
         context.hoot().control.view.on('layerRemove.validation', function (layerName, isPrimary) {
@@ -141,8 +139,6 @@ Hoot.control.validation = function(context, sidebar) {
                     //Update metadata for validation workflow
                     _.extend(response, {tags: feature.tags});
                     validation.updateMeta(response);
-
-
                 });
             } else {
 
