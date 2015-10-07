@@ -150,6 +150,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
         };
 
+
         var jumpTo = function(direction) {
             if(heartBeatTimer){
                 clearInterval(heartBeatTimer);
@@ -186,7 +187,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                         var reviewedcnt = 1*response.reviewedcnt;
                         var lockcnt = 1*response.lockedcnt;
 
-                        if(currTotal === (reviewedcnt + lockcnt))
+                        if(currTotal === reviewedcnt || response.status == 'noneavailable')
                         {
                             Conflict.reviews = response;
                             setCurrentReviewMeta(response);
@@ -195,6 +196,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                             exitReviewSession('Exiting review session...');
                             return;
                         }
+
                     }
 
                     if(response.status == 'success'){
