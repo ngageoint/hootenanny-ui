@@ -1,5 +1,8 @@
 Hoot.control.validation = function(context, sidebar) {
     var validation = {};
+    //Tracks the current review id, used as offset param to unlock review
+    //when Previous or Next buttons are used
+    var currentReviewId;
 
     validation.begin = function(mapid) {
         //Add the UI elements
@@ -118,10 +121,10 @@ Hoot.control.validation = function(context, sidebar) {
             var choices = d3.entries(d).filter(function(c) {
                 return c.key.indexOf('hoot:review:choices') === 0;
             }).map(function(c) {
-                return JSON.parse(c.value);
+                return JSON.parse(c.value);//JSON.parse(c.value.replace(/\\/g,''));
             });
 
-            console.log(choices);
+            //console.log(choices);
 
             choiceButtons = choices.map(function(b, i) {
                 var n = i + 1;
@@ -134,7 +137,7 @@ Hoot.control.validation = function(context, sidebar) {
                     action: function() { validation.verify(choices[i]); }
                 };
             });
-            console.log(choiceButtons);
+            //console.log(JSON.stringify(choiceButtons));
 
             //Disable iD edit tool keybinding
             //TODO: Not sure how to re-enable yet (F5 anyone?)
@@ -203,20 +206,22 @@ Hoot.control.validation = function(context, sidebar) {
     validation.getItem = function(mapid, direction) {
         var data = {
             mapId: mapid,
-            direction: direction
+            direction: direction,
+            offset: currentReviewId
         };
 
         Hoot.model.REST('reviewGetNext', data, function (error, response) {
-            console.log(response);
+            //console.log(response);
             if (response.status === 'success') {
                 //Position the map
                 var item = response.reviewItem;
+                currentReviewId = item.reviewId;
                 var center = item.displayBounds.split(',').slice(0, 2).map(function(d) { return +d; });
                 context.map().centerZoom(center, 19);
 
                 //Wait for map data to load, add handler for 'loaded' event
                 context.connection().on('loaded.validation', function() {
-                    //console.log('loaded.validation');
+                    console.log('loaded.validation');
 
                     var fid = item.type.charAt(0) + item.id + '_' + mapid;
 
@@ -225,6 +230,8 @@ Hoot.control.validation = function(context, sidebar) {
 
                     var feature = context.hasEntity(fid);
                     //console.log(feature);
+
+                    //Unregister the loaded handler
                     context.connection().on('loaded.validation', null);
 
                     //Update metadata for validation workflow
