@@ -232,6 +232,17 @@
             "description": "Hide/Show tag table."
         }
     },
+    "verification": {
+        "previous": {
+            "description": "Skip to previous validation item."
+        },
+        "next": {
+            "description": "Skip to next validation item."
+        },
+        "verified": {
+            "description": "Feature has been verified."
+        }
+    },
     "tooltip_keyhint": "Shortcut:",
     "browser_notice": "This editor is supported in Firefox, Chrome, Safari, Opera, and Internet Explorer 9 and above. Please upgrade your browser or use Potlatch 2 to edit the map.",
     "translate": {
@@ -272,17 +283,17 @@
         "truncated_list": "Edits by {users} and {count} others"
     },
     "infobox": {
-      "selected": "{n} selected",
-      "geometry": "Geometry",
-      "closed": "closed",
-      "center": "Center",
-      "perimeter": "Perimeter",
-      "length": "Length",
-      "area": "Area",
-      "centroid": "Centroid",
-      "location": "Location",
-      "metric": "Metric",
-      "imperial": "Imperial"
+        "selected": "{n} selected",
+        "geometry": "Geometry",
+        "closed": "closed",
+        "center": "Center",
+        "perimeter": "Perimeter",
+        "length": "Length",
+        "area": "Area",
+        "centroid": "Centroid",
+        "location": "Location",
+        "metric": "Metric",
+        "imperial": "Imperial"
     },
     "geometry": {
         "point": "point",
@@ -465,7 +476,8 @@
         }
     },
     "tools": {
-    		"title": "Tools"
+        "title": "Tools",
+        "help": "Tools"
     },
     "merge_remote_changes": {
         "conflict": {

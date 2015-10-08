@@ -52,7 +52,7 @@ Hoot.control.validation = function(context, sidebar) {
         .placement('top')
         .html(true)
         .title(function (d) {
-            return iD.ui.tooltipHtml(t('validation.' + d.id + '.description'), d.cmd);
+            return iD.ui.tooltipHtml(t('verification.' + d.id + '.description'), d.cmd);
         });
 
         var buttonbar = container.append('span')
