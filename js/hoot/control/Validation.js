@@ -16,14 +16,14 @@ Hoot.control.validation = function(context, sidebar) {
 
 
         var buttons = [
-            {
-                id: 'verified',
-                text: 'Verified',
-                color: 'loud',
-                icon: '_icon check',
-                cmd: iD.ui.cmd('v'),
-                action: validation.verify
-            },
+            // {
+            //     id: 'verified',
+            //     text: 'Verified',
+            //     color: 'loud',
+            //     icon: '_icon check',
+            //     cmd: iD.ui.cmd('v'),
+            //     action: validation.verify
+            // },
             {
                 id: 'next',
                 text: 'Next',
@@ -99,6 +99,11 @@ Hoot.control.validation = function(context, sidebar) {
         context.hoot().control.view.on('layerRemove.validation', function (layerName, isPrimary) {
             d3.select('#validation-container').remove();
             context.hoot().control.view.on('layerRemove.validation', null);
+
+            //Disable validation keybindings
+            d3.keybinding('validation').off();
+            d3.keybinding('choices').off();
+
         });
 
         validation.updateMeta = function(d) {
@@ -124,16 +129,22 @@ Hoot.control.validation = function(context, sidebar) {
                     id: 'choice' + n,
                     text: n + '. ' + b.label,
                     description: b.description,
-                    color: 'fill-grey button round pad0y pad1x dark small strong',
-                    cmd: iD.ui.cmd(n.toString()),
+                    color: 'loud',
+                    key: n.toString(),
                     action: function() { validation.verify(choices[i]); }
                 };
             });
             console.log(choiceButtons);
 
+            //Disable iD edit tool keybinding
+            //TODO: Not sure how to re-enable yet (F5 anyone?)
+            d3.keybinding('mode-buttons').off();
+
             var keybinding = d3.keybinding('choices');
             choiceButtons.forEach(function(d) {
-                keybinding.on(d.cmd, function() { d3.event.preventDefault(); d.action(); })
+
+                keybinding.on(d.key, function() { d3.event.preventDefault(); d.action(); });
+                keybinding.on('num-' + d.key, function() { d3.event.preventDefault(); d.action(); });
             });
 
             d3.select(document)
@@ -143,7 +154,7 @@ Hoot.control.validation = function(context, sidebar) {
             .placement('top')
             .html(true)
             .title(function (d) {
-                return iD.ui.tooltipHtml(d.description, d.cmd);
+                return iD.ui.tooltipHtml(d.description, d.key);
             });
 
             var choicebuttons = choicesbar.selectAll('a')
@@ -220,8 +231,14 @@ Hoot.control.validation = function(context, sidebar) {
                     _.extend(response, {tags: feature.tags});
                     validation.updateMeta(response);
 
+                    // Returns a random integer between min (included) and max (included)
+                    // Using Math.round() will give you a non-uniform distribution!
+                    function getRandomIntInclusive(min, max) {
+                      return Math.floor(Math.random() * (max - min + 1)) + min;
+                    }
                     //Present the verification choices
-                    var mock = {
+                    var mock = [
+                    {
                       "place": "town",
                       "hoot:review:needs": "yes",
                       "poi": "yes",
@@ -230,8 +247,22 @@ Hoot.control.validation = function(context, sidebar) {
                       "hoot:review:choices:3": "{\"label\":\"Reported\",\"description\":\"Imagery is pixelated or cloudy -- can not be assessed.\",\"changes\":{\"replaceTags\":{\"hgis:imagery_confirmed\":\"reported\"},\"appendTags\":{\"source:geometry\":\"${BASEMAP_IMAGE_SOURCE}\",\"source:geometry:sensor\":\"${BASEMAP_IMAGE_SENSOR}\",\"source:geometry:date\":\"${BASEMAP_IMAGE_DATETIME}\",\"source:geometry:id\":\"${BASEMAP_IMAGE_ID}\"}}}",
                       "hoot:review:note": "Flagged for imagery validation",
                       "name": "Manitou Springs"
+                    },
+                    {
+                      "poi": "yes",
+                      "hoot:review:choices:1": "{\"label\":\"Foo\",\"description\":\"You can look at the point and tell what it is (e.g. mosque or airport)\",\"changes\":{\"replaceTags\":{\"hgis:imagery_confirmed\":\"confirmed\",\"hgis:accuracy\":\"high\"},\"appendTags\":{\"source:geometry\":\"${BASEMAP_IMAGE_SOURCE}\",\"source:geometry:sensor\":\"${BASEMAP_IMAGE_SENSOR}\",\"source:geometry:date\":\"${BASEMAP_IMAGE_DATETIME}\",\"source:geometry:id\":\"${BASEMAP_IMAGE_ID}\"}}}",
+                      "hoot:review:choices:2": "{\"label\":\"Bar\",\"description\":\"The point is on a building, but you can't verify its type (e.g. hair salon).\",\"changes\":{\"replaceTags\":{\"hgis:imagery_confirmed\":\"assessed\",\"hgis:accuracy\":\"high\"},\"appendTags\":{\"source:geometry\":\"${BASEMAP_IMAGE_SOURCE}\",\"source:geometry:sensor\":\"${BASEMAP_IMAGE_SENSOR}\",\"source:geometry:date\":\"${BASEMAP_IMAGE_DATETIME}\",\"source:geometry:id\":\"${BASEMAP_IMAGE_ID}\"}}}",
+                      "hoot:review:choices:3": "{\"label\":\"Baz\",\"description\":\"Imagery is pixelated or cloudy -- can not be assessed.\",\"changes\":{\"replaceTags\":{\"hgis:imagery_confirmed\":\"reported\"},\"appendTags\":{\"source:geometry\":\"${BASEMAP_IMAGE_SOURCE}\",\"source:geometry:sensor\":\"${BASEMAP_IMAGE_SENSOR}\",\"source:geometry:date\":\"${BASEMAP_IMAGE_DATETIME}\",\"source:geometry:id\":\"${BASEMAP_IMAGE_ID}\"}}}",
+                      "hoot:status": "1",
+                      "hoot:review:needs": "yes",
+                      "name": "Garden of the Gods",
+                      "leisure": "park",
+                      "uuid": "{87ba9abc-16dc-4e59-a9cc-fef70051fd97}",
+                      "error:circular": "1000",
+                      "hoot": "Merged_AllDataTypes_validate"
                     }
-                    validation.presentChoices(mock);
+                    ]
+                    validation.presentChoices(mock[getRandomIntInclusive(0,1)]);
 
                     //console.log(JSON.stringify(feature.tags));
                 });
