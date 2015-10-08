@@ -1,4 +1,5 @@
 Hoot.control.validation = function(context, sidebar) {
+    var event = d3.dispatch('featureLoaded');
     var validation = {};
     //Tracks the current review id, used as offset param to unlock review
     //when Previous or Next buttons are used
@@ -82,11 +83,11 @@ Hoot.control.validation = function(context, sidebar) {
                     b.attr('enabled', false);
 
                     //Wait for map data to load to enable button, add handler for 'loaded' event
-                    var e = 'loaded.validation.button';
-                    context.connection().on(e, function() {
+                    var e = 'featureLoaded';
+                    context.hoot().control.validation.on(e, function() {
                         console.log(e);
                         b.attr('enabled', true);
-                        context.connection().on(e, null);
+                        context.hoot().control.validation.on(e, null);
                     });
                 } else {
                     iD.ui.Alert('Please wait. Processing validation.','notice');
@@ -186,11 +187,11 @@ Hoot.control.validation = function(context, sidebar) {
                         b.attr('enabled', false);
 
                         //Wait for map data to load to enable button, add handler for 'loaded' event
-                        var e = 'loaded.validation.button';
-                        context.connection().on(e, function() {
+                        var e = 'featureLoaded';
+                        context.hoot().control.validation.on(e, function() {
                             console.log(e);
                             b.attr('enabled', true);
-                            context.connection().on(e, null);
+                            context.hoot().control.validation.on(e, null);
                         });
                     } else {
                         iD.ui.Alert('Please wait. Processing validation.','notice');
@@ -219,9 +220,23 @@ Hoot.control.validation = function(context, sidebar) {
                 var center = item.displayBounds.split(',').slice(0, 2).map(function(d) { return +d; });
                 context.map().centerZoom(center, 19);
 
-                //Wait for map data to load, add handler for 'loaded' event
-                context.connection().on('loaded.validation', function() {
-                    console.log('loaded.validation');
+                //See if the feature has already been loaded in the map view
+                var fid = item.type.charAt(0) + item.id + '_' + mapid;
+                var feature = context.hasEntity(fid);
+                if (feature) {
+                    loadFeature();
+                } else {
+                    //Wait for map data to load, add handler for 'loaded' event
+                    var e = 'loaded.validation';
+                    context.connection().on(e, function() {
+                        console.log(e);
+                        loadFeature();
+                        //Unregister the loaded handler
+                        context.connection().on(e, null);
+                    });
+                }
+
+                function loadFeature() {
 
                     var fid = item.type.charAt(0) + item.id + '_' + mapid;
 
@@ -230,9 +245,6 @@ Hoot.control.validation = function(context, sidebar) {
 
                     var feature = context.hasEntity(fid);
                     //console.log(feature);
-
-                    //Unregister the loaded handler
-                    context.connection().on('loaded.validation', null);
 
                     //Update metadata for validation workflow
                     _.extend(response, {tags: feature.tags});
@@ -272,7 +284,8 @@ Hoot.control.validation = function(context, sidebar) {
                     validation.presentChoices(mock[getRandomIntInclusive(0,1)]);
 
                     //console.log(JSON.stringify(feature.tags));
-                });
+                    event.featureLoaded();
+                }
             } else {
 
             }
