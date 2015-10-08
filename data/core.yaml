@@ -181,6 +181,13 @@ en:
       description: Review is resolved.
     toggletable:
       description: Hide/Show tag table.
+  validation:
+    previous:
+      description: Skip to previous validation item.
+    next:
+      description: Skip to next validation item.
+    verify:
+      description: Feature is verified.
   tooltip_keyhint: "Shortcut:"
   browser_notice: "This editor is supported in Firefox, Chrome, Safari, Opera, and Internet Explorer 9 and above. Please upgrade your browser or use Potlatch 2 to edit the map."
   translate:
