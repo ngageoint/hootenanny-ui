@@ -150,6 +150,14 @@ Hoot.control.utilities.folder = function(context) {
 	        	 }
 	          });
 	      
+	      nodeEnter.filter(function(d){return d.type=='dataset'}).append("text")
+	      		.attr("dy",3.5)
+	    		.attr("dx",function(d){
+	    			return '90%';
+	    		})
+	    		.attr('text-anchor','end')
+	    		.text(function(d) { return d.depth; });	  
+	      
 	      var nodeg = nodeEnter.append("g");
 	      nodeg.append('svg:foreignObject')
 		      .attr("width", 20)
