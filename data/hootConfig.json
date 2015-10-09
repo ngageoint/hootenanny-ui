@@ -4,7 +4,7 @@
     "defaultScript":"TDSv61.js",
     "defaultBaseMap":"Bing",
     "hootMaxImportZoom" : 16,
-    "hootMapInitialCenter" : [47.43151478334817, 6.770763248109257],
+    "hootMapInitialCenter" : [-105.00217,39.91295],
     "hootMapInitialZoom": 17.2,
     "maxnodescount" : 10000,
     "p2pServerPort": "8096",
