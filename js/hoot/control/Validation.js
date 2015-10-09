@@ -4,6 +4,8 @@ Hoot.control.validation = function(context, sidebar) {
     //Tracks the current review id, used as offset param to unlock review
     //when Previous or Next buttons are used
     var currentReviewId;
+    //Keeps the item lock alive while the browser session is active
+    var heartBeatTimer;
 
     validation.begin = function(mapid) {
         //Add the UI elements
@@ -205,6 +207,11 @@ Hoot.control.validation = function(context, sidebar) {
     };
 
     validation.getItem = function(mapid, direction) {
+        //Stop keeping the current review alive
+        if (heartBeatTimer) {
+            clearInterval(heartBeatTimer);
+        }
+
         var data = {
             mapId: mapid,
             direction: direction,
@@ -219,6 +226,36 @@ Hoot.control.validation = function(context, sidebar) {
                 currentReviewId = item.reviewId;
                 var center = item.displayBounds.split(',').slice(0, 2).map(function(d) { return +d; });
                 context.map().centerZoom(center, 19);
+
+                var lockPeriod = 150000;
+                //Refresh lock at half of service lock length
+                if (response.locktime) {
+                    lockPeriod = (1 * response.locktime) / 2;
+                }
+                //Ping until advancing to next item so we keep the lock alive
+                heartBeatTimer = setInterval(function() {
+                    if(item){
+
+                        var heartBeatData = {
+                            mapId: mapid,
+                            reviewid: item.uuid,
+                            reviewAgainstUuid: item.itemToReviewAgainst.uuid
+                        };
+
+                        Hoot.model.REST('reviewUpdateStatus', heartBeatData, function (error, response) {
+
+                            if(error){
+                                clearInterval(heartBeatTimer);
+                                iD.ui.Alert('Failed to update review status.','warning');
+                                   return;
+                            }
+                            if(callback){
+                                callback(response);
+                            }
+                        });
+                    }
+                }, lockPeriod);
+
 
                 //See if the feature has already been loaded in the map view
                 var fid = item.type.charAt(0) + item.id + '_' + mapid;
