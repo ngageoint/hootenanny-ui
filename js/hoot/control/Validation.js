@@ -22,14 +22,6 @@ Hoot.control.validation = function(context, sidebar) {
 
 
         var buttons = [
-            // {
-            //     id: 'verified',
-            //     text: 'Verified',
-            //     color: 'loud',
-            //     icon: '_icon check',
-            //     cmd: iD.ui.cmd('v'),
-            //     action: validation.verify
-            // },
             {
                 id: 'next',
                 text: 'Next',
@@ -87,7 +79,6 @@ Hoot.control.validation = function(context, sidebar) {
                     //Wait for map data to load to enable button, add handler for 'loaded' event
                     var e = 'featureLoaded';
                     context.hoot().control.validation.on(e, function() {
-                        console.log(e);
                         b.attr('enabled', true);
                         context.hoot().control.validation.on(e, null);
                     });
@@ -119,15 +110,13 @@ Hoot.control.validation = function(context, sidebar) {
                 + ', Locked: ' + d.lockedcnt + ')</strong>');
         };
 
-        validation.presentChoices = function(d) {
+        validation.presentChoices = function(feature, d) {
             //Separate out the choice tags
             var choices = d3.entries(d).filter(function(c) {
                 return c.key.indexOf('hoot:review:choices') === 0;
             }).map(function(c) {
-                return JSON.parse(c.value);//JSON.parse(c.value.replace(/\\/g,''));
+                return JSON.parse(c.value.replace(/\\/g,''));
             });
-
-            //console.log(choices);
 
             choiceButtons = choices.map(function(b, i) {
                 var n = i + 1;
@@ -137,10 +126,9 @@ Hoot.control.validation = function(context, sidebar) {
                     description: b.description,
                     color: 'loud',
                     key: n.toString(),
-                    action: function() { validation.verify(choices[i]); }
+                    action: function() { validation.verify(feature, choices[i]); }
                 };
             });
-            //console.log(JSON.stringify(choiceButtons));
 
             //Disable iD edit tool keybinding
             //TODO: Not sure how to re-enable yet (F5 anyone?)
@@ -203,7 +191,7 @@ Hoot.control.validation = function(context, sidebar) {
         };
 
         //Get the first validation item
-        this.getItem(mapid, 'forward');
+        validation.getItem(mapid, 'forward');
     };
 
     validation.getItem = function(mapid, direction) {
@@ -219,7 +207,6 @@ Hoot.control.validation = function(context, sidebar) {
         };
 
         Hoot.model.REST('reviewGetNext', data, function (error, response) {
-            //console.log(response);
             if (response.status === 'success') {
                 //Position the map
                 var item = response.reviewItem;
@@ -243,14 +230,10 @@ Hoot.control.validation = function(context, sidebar) {
                         };
 
                         Hoot.model.REST('reviewUpdateStatus', heartBeatData, function (error, response) {
-
                             if(error){
                                 clearInterval(heartBeatTimer);
                                 iD.ui.Alert('Failed to update review status.','warning');
                                    return;
-                            }
-                            if(callback){
-                                callback(response);
                             }
                         });
                     }
@@ -281,46 +264,13 @@ Hoot.control.validation = function(context, sidebar) {
                     context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
 
                     var feature = context.hasEntity(fid);
-                    //console.log(feature);
 
                     //Update metadata for validation workflow
                     _.extend(response, {tags: feature.tags});
                     validation.updateMeta(response);
 
-                    // Returns a random integer between min (included) and max (included)
-                    // Using Math.round() will give you a non-uniform distribution!
-                    function getRandomIntInclusive(min, max) {
-                      return Math.floor(Math.random() * (max - min + 1)) + min;
-                    }
-                    //Present the verification choices
-                    var mock = [
-                    {
-                      "place": "town",
-                      "hoot:review:needs": "yes",
-                      "poi": "yes",
-                      "hoot:review:choices:1": "{\"label\":\"Confirmed\",\"description\":\"You can look at the point and tell what it is (e.g. mosque or airport)\",\"changes\":{\"replaceTags\":{\"hgis:imagery_confirmed\":\"confirmed\",\"hgis:accuracy\":\"high\"},\"appendTags\":{\"source:geometry\":\"${BASEMAP_IMAGE_SOURCE}\",\"source:geometry:sensor\":\"${BASEMAP_IMAGE_SENSOR}\",\"source:geometry:date\":\"${BASEMAP_IMAGE_DATETIME}\",\"source:geometry:id\":\"${BASEMAP_IMAGE_ID}\"}}}",
-                      "hoot:review:choices:2": "{\"label\":\"Assessed\",\"description\":\"The point is on a building, but you can't verify its type (e.g. hair salon).\",\"changes\":{\"replaceTags\":{\"hgis:imagery_confirmed\":\"assessed\",\"hgis:accuracy\":\"high\"},\"appendTags\":{\"source:geometry\":\"${BASEMAP_IMAGE_SOURCE}\",\"source:geometry:sensor\":\"${BASEMAP_IMAGE_SENSOR}\",\"source:geometry:date\":\"${BASEMAP_IMAGE_DATETIME}\",\"source:geometry:id\":\"${BASEMAP_IMAGE_ID}\"}}}",
-                      "hoot:review:choices:3": "{\"label\":\"Reported\",\"description\":\"Imagery is pixelated or cloudy -- can not be assessed.\",\"changes\":{\"replaceTags\":{\"hgis:imagery_confirmed\":\"reported\"},\"appendTags\":{\"source:geometry\":\"${BASEMAP_IMAGE_SOURCE}\",\"source:geometry:sensor\":\"${BASEMAP_IMAGE_SENSOR}\",\"source:geometry:date\":\"${BASEMAP_IMAGE_DATETIME}\",\"source:geometry:id\":\"${BASEMAP_IMAGE_ID}\"}}}",
-                      "hoot:review:note": "Flagged for imagery validation",
-                      "name": "Manitou Springs"
-                    },
-                    {
-                      "poi": "yes",
-                      "hoot:review:choices:1": "{\"label\":\"Foo\",\"description\":\"You can look at the point and tell what it is (e.g. mosque or airport)\",\"changes\":{\"replaceTags\":{\"hgis:imagery_confirmed\":\"confirmed\",\"hgis:accuracy\":\"high\"},\"appendTags\":{\"source:geometry\":\"${BASEMAP_IMAGE_SOURCE}\",\"source:geometry:sensor\":\"${BASEMAP_IMAGE_SENSOR}\",\"source:geometry:date\":\"${BASEMAP_IMAGE_DATETIME}\",\"source:geometry:id\":\"${BASEMAP_IMAGE_ID}\"}}}",
-                      "hoot:review:choices:2": "{\"label\":\"Bar\",\"description\":\"The point is on a building, but you can't verify its type (e.g. hair salon).\",\"changes\":{\"replaceTags\":{\"hgis:imagery_confirmed\":\"assessed\",\"hgis:accuracy\":\"high\"},\"appendTags\":{\"source:geometry\":\"${BASEMAP_IMAGE_SOURCE}\",\"source:geometry:sensor\":\"${BASEMAP_IMAGE_SENSOR}\",\"source:geometry:date\":\"${BASEMAP_IMAGE_DATETIME}\",\"source:geometry:id\":\"${BASEMAP_IMAGE_ID}\"}}}",
-                      "hoot:review:choices:3": "{\"label\":\"Baz\",\"description\":\"Imagery is pixelated or cloudy -- can not be assessed.\",\"changes\":{\"replaceTags\":{\"hgis:imagery_confirmed\":\"reported\"},\"appendTags\":{\"source:geometry\":\"${BASEMAP_IMAGE_SOURCE}\",\"source:geometry:sensor\":\"${BASEMAP_IMAGE_SENSOR}\",\"source:geometry:date\":\"${BASEMAP_IMAGE_DATETIME}\",\"source:geometry:id\":\"${BASEMAP_IMAGE_ID}\"}}}",
-                      "hoot:status": "1",
-                      "hoot:review:needs": "yes",
-                      "name": "Garden of the Gods",
-                      "leisure": "park",
-                      "uuid": "{87ba9abc-16dc-4e59-a9cc-fef70051fd97}",
-                      "error:circular": "1000",
-                      "hoot": "Merged_AllDataTypes_validate"
-                    }
-                    ]
-                    validation.presentChoices(mock[getRandomIntInclusive(0,1)]);
+                    validation.presentChoices(feature, feature.tags);
 
-                    //console.log(JSON.stringify(feature.tags));
                     event.featureLoaded();
                 }
             } else {
@@ -329,8 +279,35 @@ Hoot.control.validation = function(context, sidebar) {
         });
     };
 
-    validation.verify = function(choice) {
+    validation.verify = function(feature, choice) {
         console.log(JSON.stringify(choice));
+
+        var newTags = _.clone(feature.tags);
+
+        //Perform tag changes
+        _.extend(newTags, choice.changes.replaceTags);
+        _.extend(newTags, choice.changes.appendTags);
+
+        //Remove hoot:review:* tags
+        newTags = _.omit(newTags, function (value, key) {
+            return key.match(/hoot:review/g);
+        });
+
+        //Change tags
+        context.perform(
+           iD.actions.ChangeTags(feature.id, newTags), t('operations.change_tags.annotation'));
+
+        //Mark reviewed
+
+        //Save tag changes
+        //var hasChanges = context.history().hasChanges();
+        //if (hasChanges) {
+            iD.modes.Save(context).save(context, function () {
+                //Advance to next item
+                validation.getItem(mapid, 'forward');
+            });
+        //}
+
     };
 
     return d3.rebind(validation, event, 'on');
