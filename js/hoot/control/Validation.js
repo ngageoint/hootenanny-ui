@@ -112,12 +112,21 @@ Hoot.control.validation = function(context, sidebar) {
 
         validation.presentChoices = function(feature, d) {
             //Separate out the choice tags
-            //FIXME: d3 entries does not preserver order of choice tags
-            var choices = d3.entries(d).filter(function(c) {
-                return c.key.indexOf('hoot:review:choices') === 0;
-            }).map(function(c) {
-                return JSON.parse(c.value.replace(/\\/g,''));
-            });
+            var choices = d3.entries(d)
+                .filter(function(c) {
+                    return c.key.indexOf('hoot:review:choices') === 0;
+                }).sort(function (a, b) {
+                    if (a.key > b.key) {
+                        return 1;
+                    }
+                    if (a.key < b.key) {
+                        return -1;
+                    }
+                    // a must be equal to b
+                    return 0;
+                }).map(function(c) {
+                    return JSON.parse(c.value.replace(/\\/g,''));
+                });
 
             choiceButtons = choices.map(function(b, i) {
                 var n = i + 1;
