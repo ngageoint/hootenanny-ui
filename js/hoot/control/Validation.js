@@ -112,6 +112,7 @@ Hoot.control.validation = function(context, sidebar) {
 
         validation.presentChoices = function(feature, d) {
             //Separate out the choice tags
+            //FIXME: d3 entries does not preserver order of choice tags
             var choices = d3.entries(d).filter(function(c) {
                 return c.key.indexOf('hoot:review:choices') === 0;
             }).map(function(c) {
@@ -244,8 +245,10 @@ Hoot.control.validation = function(context, sidebar) {
                 var fid = item.type.charAt(0) + item.id + '_' + mapid;
                 var feature = context.hasEntity(fid);
                 if (feature) {
+                    console.log('already have feature');
                     loadFeature();
                 } else {
+                    console.log('must wait for feature to load');
                     //Wait for map data to load, add handler for 'loaded' event
                     var e = 'loaded.validation';
                     context.connection().on(e, function() {
@@ -259,11 +262,10 @@ Hoot.control.validation = function(context, sidebar) {
                 function loadFeature() {
 
                     var fid = item.type.charAt(0) + item.id + '_' + mapid;
-
-                    //Select the feature
-                    context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
-
                     var feature = context.hasEntity(fid);
+                    //Select the feature
+                    //FIXME: for some reason this fails after loaded.validation
+                    context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
 
                     //Update metadata for validation workflow
                     _.extend(response, {tags: feature.tags});
@@ -280,7 +282,7 @@ Hoot.control.validation = function(context, sidebar) {
     };
 
     validation.verify = function(feature, choice) {
-        console.log(JSON.stringify(choice));
+        //console.log(JSON.stringify(choice));
 
         var newTags = _.clone(feature.tags);
 
@@ -295,18 +297,14 @@ Hoot.control.validation = function(context, sidebar) {
 
         //Change tags
         context.perform(
-           iD.actions.ChangeTags(feature.id, newTags), t('operations.change_tags.annotation'));
-
-        //Mark reviewed
+           iD.actions.ChangeTags(feature.id, newTags), t('operations.change_tags.annotation')
+        );
 
         //Save tag changes
-        //var hasChanges = context.history().hasChanges();
-        //if (hasChanges) {
-            iD.modes.Save(context).save(context, function () {
-                //Advance to next item
-                validation.getItem(mapid, 'forward');
-            });
-        //}
+        iD.modes.Save(context).save(context, function () {
+            //Advance to next item
+            validation.getItem(feature.mapId, 'forward');
+        });
 
     };
 
