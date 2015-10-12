@@ -189,7 +189,7 @@ Hoot.control.validation = function(context, sidebar) {
                         //Wait for map data to load to enable button, add handler for 'loaded' event
                         var e = 'featureLoaded';
                         context.hoot().control.validation.on(e, function() {
-                            console.log(e);
+                            //console.log(e);
                             b.attr('enabled', true);
                             context.hoot().control.validation.on(e, null);
                         });
@@ -254,16 +254,16 @@ Hoot.control.validation = function(context, sidebar) {
                 var fid = item.type.charAt(0) + item.id + '_' + mapid;
                 var feature = context.hasEntity(fid);
                 if (feature) {
-                    console.log('already have feature');
+                    //console.log('already have feature');
                     loadFeature();
                 } else {
-                    console.log('must wait for feature to load');
+                    //console.log('must wait for feature to load');
                     //Wait for map data to load, add handler for 'loaded' event
                     var e = 'loaded.validation';
                     context.connection().on(e, function() {
-                        console.log(e);
+                        //console.log(e);
                         loadFeature();
-                        //Unregister the loaded handler
+                        //Unregister the handler
                         context.connection().on(e, null);
                     });
                 }
@@ -273,8 +273,13 @@ Hoot.control.validation = function(context, sidebar) {
                     var fid = item.type.charAt(0) + item.id + '_' + mapid;
                     var feature = context.hasEntity(fid);
                     //Select the feature
-                    //FIXME: for some reason this fails after loaded.validation
-                    context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
+                    var ev = 'drawVector.validation';
+                    context.map().on(ev, function() {
+                        //console.log(ev);
+                        context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
+                        //Unregister the handler
+                        context.map().on(ev, null);
+                    });
 
                     //Update metadata for validation workflow
                     _.extend(response, {tags: feature.tags});
