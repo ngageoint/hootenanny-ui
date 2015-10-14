@@ -168,8 +168,16 @@ Hoot.model.REST = function (command, data, callback, option) {
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, "Get available layers failed! For detailed log goto Manage->Log"));
+            } else {
+            	layerlist = resp;
+            	Hoot.model.REST('getMapSizes', _.pluck(resp.layers,'id').toString(),function (sizeInfo) {
+            		layerlist.layers = _.map(layerlist.layers, function(lyr){
+            		    return _.extend(lyr, _.findWhere(sizeInfo.layers, { id: lyr.id} ));
+            		});
+
+            		callback(layerlist);
+            	 });
             }
-            callback(resp);
         });
     };
 
@@ -234,6 +242,17 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
+    rest.getMapSizes = function (mapIds, callback){
+    	if(!mapIds){return;}
+    	var request = d3.json('/hoot-services/info/map/sizes?mapid=' + mapIds);
+        request.get(function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get map sizes failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    };
+    
     rest.Conflate = function (data, callback, option) {
          data.INPUT1_TYPE = data.INPUT1_TYPE || 'DB';
          data.INPUT2_TYPE = data.INPUT2_TYPE || 'DB';
