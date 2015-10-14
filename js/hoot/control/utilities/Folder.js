@@ -91,7 +91,7 @@ Hoot.control.utilities.folder = function(context) {
 			context.hoot().control.utilities.filter.filterPopup(dataset.name, function(jobs){
 			});
 		}
-	
+		
 	    function update(source) {
 	
 	      // Compute the flattened node list. TODO use d3.layout.hierarchy.
@@ -156,7 +156,16 @@ Hoot.control.utilities.folder = function(context) {
 	    			return '90%';
 	    		})
 	    		.attr('text-anchor','end')
-	    		.text(function(d) { return d.depth; });	  
+	    		.text(function(d) { 
+	    			if(Math.abs(d.size) < 1000) {return d.size + ' B';}
+	    			var units = ['kB','MB','GB','TB','PB','EB','ZB','YB'];
+	    			var u = -1;
+	    			do {
+	    				d.size /= 1000;
+	    		        ++u;
+	    		    } while(Math.abs(d.size) >= 1000 && u < units.length - 1);
+	    		    return d.size.toFixed(1)+' '+units[u];
+    			});	  
 	      
 	      var nodeg = nodeEnter.append("g");
 	      nodeg.append('svg:foreignObject')
