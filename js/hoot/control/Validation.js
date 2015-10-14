@@ -70,7 +70,7 @@ Hoot.control.validation = function(context, sidebar) {
             .attr('class', function (d) {
                 return 'fr inline button dark ' + d.color + ' pad0y pad2x keyline-all ' + d.icon + ' ' + d.id;
             })
-            .on('click', function (d) {
+            .on('click', function (d) { //TODO: Can maybe use _debounce here
                 var b = d3.select(this);
                 if (b.attr('enabled')) {
                     d.action();
