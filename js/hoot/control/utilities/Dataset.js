@@ -3,6 +3,7 @@ Hoot.control.utilities.dataset = function(context) {
 	var hoot_control_utilities_dataset = {};
     var importTranslations;
     var importTranslationsGeonames;
+    var importTranslationsOsm;
 
     hoot_control_utilities_dataset.exportDataContainer = function(dataset, translations) {
 
@@ -483,10 +484,20 @@ Hoot.control.utilities.dataset = function(context) {
 
             importTranslations = [];
             importTranslationsGeonames = [];
+            importTranslationsOsm = [];
 
             _.each(trans, function(t){
                 if(t.NAME === 'GEONAMES'){
                     importTranslationsGeonames.push(t);
+                } else if(t.NAME === 'OSM'){
+                    var emptyObj = {};
+                    emptyObj.NAME = 'NONE';
+                    emptyObj.PATH = 'NONE';
+                    emptyObj.DESCRIPTION = "No Translation";
+                    emptyObj.NONE = 'true';
+                    importTranslationsOsm.push(emptyObj);
+
+                    importTranslationsOsm.push(t);
                 } else {
                     importTranslations.push(t);
                 }
@@ -495,8 +506,13 @@ Hoot.control.utilities.dataset = function(context) {
             var importTypes = [];
             var fileTypes = {};
             fileTypes.value = "FILE";
-            fileTypes.title = "File (osm,shp,zip)";
+            fileTypes.title = "File (shp,zip)";
             importTypes.push(fileTypes);
+
+            var osmTypes = {};
+            osmTypes.value = "OSM";
+            osmTypes.title = "File (osm)";
+            importTypes.push(osmTypes);
 
             var geonameTypes = {};
             geonameTypes.value = "GEONAMES";
@@ -821,6 +837,12 @@ Hoot.control.utilities.dataset = function(context) {
                                     .attr('accept', '.geonames')
                                     .attr('webkitdirectory', null)
                                     .attr('directory', null);
+                                } else if(typeName == 'OSM') {
+                                    d3.select('#ingestfileuploader')
+                                    .attr('multiple', 'false')
+                                    .attr('accept', '.osm')
+                                    .attr('webkitdirectory', null)
+                                    .attr('directory', null);
                                 } else {
                                     d3.select('#ingestfileuploader')
                                     .attr('multiple', 'true')
@@ -829,14 +851,19 @@ Hoot.control.utilities.dataset = function(context) {
                                     .attr('directory', null);
                                 }
 
-                                var geonamesTrans = importTranslations;
+                                var translationsList = importTranslations;
+
                                 if(typeName == 'GEONAMES'){
-                                    geonamesTrans = importTranslationsGeonames;
-                                } 
+                                    translationsList = importTranslationsGeonames;
+                                } else if(typeName == 'OSM') {
+                                    translationsList = importTranslationsOsm;
+                                }
+
+
                                 var comboData = d3.select('.reset.Schema').datum();
-                                comboData.combobox = geonamesTrans;
+                                comboData.combobox = translationsList;
                                 var combo = d3.combobox()
-                                    .data(_.map(geonamesTrans, function (n) {
+                                    .data(_.map(translationsList, function (n) {
                                         return {
                                             value: n.DESCRIPTION,
                                             title: n.DESCRIPTION
@@ -848,7 +875,9 @@ Hoot.control.utilities.dataset = function(context) {
                                         .call(combo);
                                 if(typeName == 'GEONAMES'){
                                     d3.select('.reset.Schema').value(importTranslationsGeonames[0].DESCRIPTION);
-                                }
+                                } else if(typeName == 'OSM'){
+                                    d3.select('.reset.Schema').value(importTranslationsOsm[0].DESCRIPTION);
+                                } 
 
                                 d3.select('#ingestfileuploaderspancontainer').classed('hidden', false);
 
@@ -1059,20 +1088,36 @@ Hoot.control.utilities.dataset = function(context) {
 
         importTranslations = [];
         importTranslationsGeonames = [];
+        importTranslationsOsm = [];
 
         _.each(trans, function(t){
             if(t.NAME === 'GEONAMES'){
                 importTranslationsGeonames.push(t);
-            } else {
-                importTranslations.push(t);
+            } else if(t.NAME === 'OSM'){
+                var emptyObj = {};
+                emptyObj.NAME = 'NONE';
+                emptyObj.PATH = 'NONE';
+                emptyObj.DESCRIPTION = "No Translation";
+                emptyObj.NONE = 'true';
+                importTranslationsOsm.push(emptyObj);
+
+                importTranslationsOsm.push(t);
+            }  else {
+            importTranslations.push(t);
             }
         })
 
         var importTypes = [];
         var fileTypes = {};
         fileTypes.value = "FILE";
-        fileTypes.title = "File (osm,shp,zip)";
+        fileTypes.title = "File (shp,zip)";
         importTypes.push(fileTypes);
+
+        var osmTypes = {};
+        osmTypes.value = "OSM";
+        osmTypes.title = "File (osm)";
+        importTypes.push(osmTypes);
+
 
         var geonameTypes = {};
         geonameTypes.value = "GEONAMES";
@@ -1568,6 +1613,12 @@ Hoot.control.utilities.dataset = function(context) {
                                 .attr('accept', '.geonames')
                                 .attr('webkitdirectory', null)
                                 .attr('directory', null);
+                            } else if(typeName == 'OSM') {
+                                d3.select('#ingestfileuploader-'+selRowNum)
+                                .attr('multiple', 'false')
+                                .attr('accept', '.osm')
+                                .attr('webkitdirectory', null)
+                                .attr('directory', null);
                             } else {
                                 d3.select('#ingestfileuploader-'+selRowNum)
                                 .attr('multiple', 'true')
@@ -1576,14 +1627,16 @@ Hoot.control.utilities.dataset = function(context) {
                                 .attr('directory', null);
                             }
 
-                            var geonamesTrans = importTranslations;
+                            var translationsList = importTranslations;
                             if(typeName == 'GEONAMES'){
-                                geonamesTrans = importTranslationsGeonames;
-                            } 
+                                translationsList = importTranslationsGeonames;
+                            }  else if(typeName == 'OSM') {
+                                translationsList = importTranslationsOsm;
+                            }
                             var comboData = d3.select(".reset.Schema[row='" + selRowNum + "']").datum();
-                            comboData.combobox = geonamesTrans;
+                            comboData.combobox = translationsList;
                             var combo = d3.combobox()
-                                .data(_.map(geonamesTrans, function (n) {
+                                .data(_.map(translationsList, function (n) {
                                     return {
                                         value: n.DESCRIPTION,
                                         title: n.DESCRIPTION
@@ -1595,7 +1648,9 @@ Hoot.control.utilities.dataset = function(context) {
                                     .call(combo);
                             if(typeName == 'GEONAMES'){
                             	d3.select(".reset.Schema[row='" + selRowNum + "']").value(importTranslationsGeonames[0].DESCRIPTION);
-                            }
+                            } else if(typeName == 'OSM'){
+                                d3.select(".reset.Schema[row='" + selRowNum + "']").value(importTranslationsOsm[0].DESCRIPTION);
+                            } 
 
                             d3.select('#ingestfileuploaderspancontainer-'+selRowNum).classed('hidden', false);
 

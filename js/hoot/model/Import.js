@@ -89,6 +89,12 @@ Hoot.model.import = function (context)
 		}
         
         var data = {};
+        if(oTrans && oTrans.NONE === 'true'){
+            data.NONE_TRANSLATION = true;
+        } else {
+            data.NONE_TRANSLATION = false;
+        }
+
         data.INPUT_TYPE = typeName;
         data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';
         data.INPUT_NAME = container.select('.reset.LayerName').value();

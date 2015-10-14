@@ -31,7 +31,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         }
         d3.xhr('/hoot-services/ingest/ingest/upload?TRANSLATION=' + data.TRANSLATION + '&INPUT_TYPE=' +
                 data.INPUT_TYPE + '&INPUT_NAME=' + data.INPUT_NAME + '&USER_EMAIL=' + 
-                iD.data.hootConfig.userEmail)
+                iD.data.hootConfig.userEmail + '&NONE_TRANSLATION=' + data.NONE_TRANSLATION)
                         .header('access-control-allow-origin', '*')
             .post(data.formData, function (error, json) {
 
