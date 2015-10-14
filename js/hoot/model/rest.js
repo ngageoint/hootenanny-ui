@@ -234,6 +234,16 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
+    rest.getMapSizes = function (mapIds, callback){
+    	var request = d3.json('/hoot-services/info/map/sizes?mapid=' + mapIds);
+        request.get(function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get map sizes failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    };
+    
     rest.Conflate = function (data, callback, option) {
          data.INPUT1_TYPE = data.INPUT1_TYPE || 'DB';
          data.INPUT2_TYPE = data.INPUT2_TYPE || 'DB';
