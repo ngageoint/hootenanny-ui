@@ -423,91 +423,97 @@ Hoot.tools = function (context, selection) {
             Hoot.model.REST('ReviewGetStatistics', params.mapId,function (stat) {
                 var isReviewMode = false;
                 if(stat.numReviewableItems > 0) {
-                    var r = confirm("The layer contains unreviewed items. Do you want to go into review mode?");
-                    if (r == true) {
-                        isReviewMode = true;
-                        loadingLayer = params;
-                        loadingLayer['merged'] = true;
-                        loadingLayer['layers'] = [];
-                        d3.selectAll('.loadingLayer').remove();
-                        d3.selectAll('.hootImport').remove();
-                        d3.selectAll('.hootView').remove();
-                        //renderMergedLayer(layerName);
-                        // Broke a part renderMergedLayer
-                        // The fix was to handle where loading source layers
-                        // preempted the loading of the feature used by review
-                        // moving the viewed location to wrong place.
-                        // old sequence was
-                        // load reviewed feature by control/conflicts.js
-                        // load source 1
-                        // load source 2
-                        // hence we load review feature and move the center of source 2..
-                        loadedLayers[layerName] = loadingLayer;
-                        loadedLayers[layerName].loadable = true;
-                        loadedLayers[layerName].merged = true;
-                        activeConflateLayer = loadingLayer;
-                        loadedLayers[layerName] = _.extend(loadedLayers[layerName], loadingLayer);
-                        view.render(loadingLayer);
-                        loadingLayer = {};
-                        conflicts.activate(loadedLayers[layerName]);
-                        hoot.mode('edit');
 
-                        var reqParam = {};
-                        reqParam.mapId = params.mapId
-                        if(reqParam.mapId) {
-                            Hoot.model.REST('getMapTags', reqParam,function (tags) {
-                                var input1 = tags.input1;
-                                var input2 = tags.input2;
+                    var reqParam = {};
+                    reqParam.mapId = params.mapId
+                    if(reqParam.mapId) {
+                        Hoot.model.REST('getMapTags', reqParam,function (tags) {
+                            if (tags.reviewtype === 'hgisvalidation') {
+                                var r = confirm("The layer has been prepared for validation. Do you want to go into validation mode?");
+                                if (r == true) {
+                                    context.hoot().control.validation.begin(params.mapId);
+                                }
+                            } else {
+                                var r = confirm("The layer contains unreviewed items. Do you want to go into review mode?");
+                                if (r == true) {
+                                    isReviewMode = true;
+                                    loadingLayer = params;
+                                    loadingLayer['merged'] = true;
+                                    loadingLayer['layers'] = [];
+                                    d3.selectAll('.loadingLayer').remove();
+                                    d3.selectAll('.hootImport').remove();
+                                    d3.selectAll('.hootView').remove();
+                                    //renderMergedLayer(layerName);
+                                    // Broke a part renderMergedLayer
+                                    // The fix was to handle where loading source layers
+                                    // preempted the loading of the feature used by review
+                                    // moving the viewed location to wrong place.
+                                    // old sequence was
+                                    // load reviewed feature by control/conflicts.js
+                                    // load source 1
+                                    // load source 2
+                                    // hence we load review feature and move the center of source 2..
+                                    loadedLayers[layerName] = loadingLayer;
+                                    loadedLayers[layerName].loadable = true;
+                                    loadedLayers[layerName].merged = true;
+                                    activeConflateLayer = loadingLayer;
+                                    loadedLayers[layerName] = _.extend(loadedLayers[layerName], loadingLayer);
+                                    view.render(loadingLayer);
+                                    loadingLayer = {};
+                                    conflicts.activate(loadedLayers[layerName]);
+                                    hoot.mode('edit');
 
-                                var input1Name = tags.input1Name;
-                                var input2Name = tags.input2Name;
+                                    if(tags) {
+                                        var input1 = tags.input1;
+                                        var input2 = tags.input2;
 
-                                var curLayer = loadedLayers[layerName];
-                                curLayer.layers = [input1Name, input2Name];
+                                        var input1Name = tags.input1Name;
+                                        var input2Name = tags.input2Name;
 
-                                if(input1 && input1Name) {
-                                    var key = {
-                                        'name': input1Name,
-                                        'id':input1,
-                                        'color': 'violet',
-                                        'hideinsidebar':'true'
-                                    };
-                                    context.hoot().model.layers.addLayer(key, function(d){
-                                        context.hoot().model.layers.setLayerInvisibleById(input1);
+                                        var curLayer = loadedLayers[layerName];
+                                        curLayer.layers = [input1Name, input2Name];
 
-                                        if(input2 && input2Name) {
-                                            var key2 = {
-                                                'name': input2Name,
-                                                'id':input2,
-                                                'color': 'orange',
+                                        if(input1 && input1Name) {
+                                            var key = {
+                                                'name': input1Name,
+                                                'id':input1,
+                                                'color': 'violet',
                                                 'hideinsidebar':'true'
                                             };
-                                            context.hoot().model.layers.addLayer(key2, function(d){
-                                                context.hoot().model.layers.setLayerInvisibleById(input2);
+                                            context.hoot().model.layers.addLayer(key, function(d){
+                                                context.hoot().model.layers.setLayerInvisibleById(input1);
 
-                                                if(d === undefined){
-                                                    hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
-                                                        conflicts.startReview(d);
+                                                if(input2 && input2Name) {
+                                                    var key2 = {
+                                                        'name': input2Name,
+                                                        'id':input2,
+                                                        'color': 'orange',
+                                                        'hideinsidebar':'true'
+                                                    };
+                                                    context.hoot().model.layers.addLayer(key2, function(d){
+                                                        context.hoot().model.layers.setLayerInvisibleById(input2);
+
+                                                        if(d === undefined){
+                                                            hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
+                                                                conflicts.startReview(d);
+                                                            });
+                                                        }
+
+
                                                     });
+                                                } else {
+                                                	iD.ui.Alert("Could not determine input layer 2. It will not be loaded.",'warning');
                                                 }
-                                                
+
 
                                             });
                                         } else {
-                                        	iD.ui.Alert("Could not determine input layer 2. It will not be loaded.",'warning');
+                                        	iD.ui.Alert("Could not determine input layer 1. It will not be loaded.",'warning');
                                         }
-
-
-                                    });
-                                } else {
-                                	iD.ui.Alert("Could not determine input layer 1. It will not be loaded.",'warning');
+                                    }
                                 }
-
-
-        
-                            });
-                        }
-    
+                            }
+                        });
                     }
                 }
 
