@@ -95,7 +95,7 @@ Hoot.view.utilities.errorlog = function(context){
     
     errorlog.reportUIError = function(error){
         iD.data.hootConfig.currentError = error;
-        errorlog.update();
+        errorlog.updateUIlog();
     };
     
     errorlog.update = function(){
@@ -112,7 +112,8 @@ Hoot.view.utilities.errorlog = function(context){
           function(response) 
           {
               if(response.error){
-                  iD.data.hootConfig.currentError = response.error;
+                  //iD.data.hootConfig.currentError = response.error;
+                  coreInfo = "ERROR: " + response.error.responseText;
               } else {
                   coreInfo =
                       response.name + " - Version: " + response.version + " - Built By: " + response.builtBy;
@@ -124,7 +125,8 @@ Hoot.view.utilities.errorlog = function(context){
               function(response) 
               {
                 if(response.error){
-                    iD.data.hootConfig.currentError = response.error;
+                    //iD.data.hootConfig.currentError = response.error;
+                    serviceInfo = "ERROR: " + response.error.responseText;
                 } else {
                     serviceInfo =
                     response.name + " - Version: " + response.version + " - Built By: " + response.builtBy;
@@ -163,7 +165,8 @@ Hoot.view.utilities.errorlog = function(context){
                     {
                                 
                         if(response.error){
-                            iD.data.hootConfig.currentError = response.error;
+                            //iD.data.hootConfig.currentError = response.error;
+                            coreDetail = "ERROR: " + response.error.responseText;
                         } else {
                             coreDetail = JSON.stringify(response, undefined, 2);
                         }
@@ -173,7 +176,8 @@ Hoot.view.utilities.errorlog = function(context){
                              function(response) 
                              {
                                 if(response.error){
-                                    iD.data.hootConfig.currentError = response.error;
+                                    //iD.data.hootConfig.currentError = response.error;
+                                    serviceDetail = "ERROR: " + response.error.responseText;
                                 } else {
                                     serviceDetail = JSON.stringify(response, undefined, 2);
                                 }
@@ -184,7 +188,8 @@ Hoot.view.utilities.errorlog = function(context){
                                         function(response) {
                                             var logStr = "";
                                             if(response.error){
-                                                iD.data.hootConfig.currentError = response.error;
+                                                //iD.data.hootConfig.currentError = response.error;
+                                                logStr = "ERROR: " + response.error.responseText;
                                             } else {
                                                 logStr = response.log;
                                             }
@@ -210,7 +215,12 @@ Hoot.view.utilities.errorlog = function(context){
   
     }
     
-
+    errorlog.updateUIlog = function(){
+    	if(iD.data.hootConfig.currentError){
+    		var uitext = JSON.stringify(iD.data.hootConfig.currentError) + "\n" + d3.select('#hootuilogtext').text();
+    		d3.select("#hootuilogtext").text(uitext).value(uitext);  
+    	}
+    }
     
     return d3.rebind(errorlog, dispatch, 'on');
 }
