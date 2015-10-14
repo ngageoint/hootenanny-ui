@@ -70,7 +70,7 @@ Hoot.control.validation = function(context, sidebar) {
             .attr('class', function (d) {
                 return 'fr inline button dark ' + d.color + ' pad0y pad2x keyline-all ' + d.icon + ' ' + d.id;
             })
-            .on('click', function (d) { //TODO: Can maybe use _debounce here
+            .on('click', function (d) { //TODO: Can maybe use _debounce here, instead of enabled attr
                 var b = d3.select(this);
                 if (b.attr('enabled')) {
                     d.action();
@@ -94,14 +94,16 @@ Hoot.control.validation = function(context, sidebar) {
 
         //Remove UI elements when layer is removed
         context.hoot().control.view.on('layerRemove.validation', function (layerName, isPrimary) {
-            d3.select('#validation-container').remove();
             context.hoot().control.view.on('layerRemove.validation', null);
+            validation.end();
+        });
 
+        validation.end = function() {
+            d3.select('#validation-container').remove();
             //Disable validation keybindings
             d3.keybinding('validation').off();
             d3.keybinding('choices').off();
-
-        });
+        };
 
         validation.updateMeta = function(d) {
             meta.html('<strong class="review-note">' + 'Note: ' + d.tags['hoot:review:note'] + '<br>'
@@ -217,7 +219,10 @@ Hoot.control.validation = function(context, sidebar) {
         };
 
         Hoot.model.REST('reviewGetNext', data, function (error, response) {
-            if (response.status === 'success') {
+            if (response.status == 'noneavailable') {
+                validation.end();
+                iD.ui.Alert('Validation complete', 'notice');
+            } else if (response.status === 'success') {
                 //Position the map
                 var item = response.reviewItem;
                 currentReviewId = item.reviewId;
@@ -290,7 +295,7 @@ Hoot.control.validation = function(context, sidebar) {
                     event.featureLoaded();
                 }
             } else {
-
+                iD.ui.Alert(response.status, 'notice');
             }
         });
     };
