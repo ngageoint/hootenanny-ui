@@ -278,6 +278,8 @@ Hoot.control.validation = function(context, sidebar) {
                     var fid = item.type.charAt(0) + item.id + '_' + mapid;
                     var feature = context.hasEntity(fid);
                     //Select the feature
+                    context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
+                    //Have to call Select twice because the feature might not be drawn yet
                     var ev = 'drawVector.validation';
                     context.map().on(ev, function() {
                         //console.log(ev);
