@@ -307,6 +307,9 @@ Hoot.control.validation = function(context, sidebar) {
 
         var newTags = _.clone(feature.tags);
 
+        console.log(context.history().getVisibleImagery());
+        console.log(JSON.stringify(context.dgservices().imagemeta.sources));
+
         //Perform tag changes
         _.extend(newTags, choice.changes.replaceTags);
         _.extend(newTags, choice.changes.appendTags);

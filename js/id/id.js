@@ -48,8 +48,7 @@ window.iD = function () {
         container,
         ui = iD.ui(context),
         hoot = Hoot.hoot(context),
-
-
+        dgservices = iD.dgservices(),
         connection = iD.Connection(context),
         locale = iD.detect().locale,
         localePath;
@@ -94,6 +93,7 @@ window.iD = function () {
     context.history = function() { return history; };
     context.hoot = function() { return hoot; };
     context.entityEditor = function() {return entityEditor;};
+    context.dgservices = function(){ return dgservices; };
 
     /* Connection */
     function entitiesLoaded(err, result) {

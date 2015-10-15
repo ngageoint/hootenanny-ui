@@ -3,7 +3,7 @@ iD.dgservices  = function() {
         gbm_proxy = '/hoot-services/gbm',
         egd_proxy = '/hoot-services/egd',
         gbm_host = 'https://services.digitalglobe.com',
-        egd_host = 'https://rdog.digitalglobe.com',
+        egd_host = 'https://evwhs.digitalglobe.com',
         gbm_connectId = 'REPLACE_ME',
         egd_connectId = 'REPLACE_ME',
         wmts_template = '/earthservice/wmtsaccess?CONNECTID={connectId}&request=GetTile&version=1.0.0&layer=DigitalGlobe:ImageryTileService&featureProfile={profile}&style=default&format=image/png&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:{zoom}&TileRow={y}&TileCol={x}',
@@ -11,11 +11,12 @@ iD.dgservices  = function() {
         //wfs should use featureProfile param, but results aren't consistent
         wfs_template = '/catalogservice/wfsaccess?connectid={connectId}&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&typeName=FinishedFeature&outputFormat=json&BBOX={bbox}',
         collection_template = '/mapservice/wmsaccess?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=imagery_footprint&env=color:ff6600&FORMAT=image/png8&LAYERS=DigitalGlobe:ImageryFootprint&featureProfile={profile}&TRANSPARENT=true&SRS=EPSG:3857&SUPEROVERLAY=true&FORMAT_OPTIONS=OPACITY:0.6;GENERALIZE:true&connectId={connectId}&FRESHNESS={freshness}&BBOX={bbox}&WIDTH=256&HEIGHT=256',
-        //service = 'EGD',
+        imagemeta_template = '/myDigitalGlobe/viewportsettings';
+        //service = 'GBM',
         defaultProfile = 'Global_Currency_Profile',
         defaultCollection = '24h';
 
-    dg.enabled = false;
+    dg.enabled = true;
 
     dg.profiles = [
        {value: 'Global_Currency_Profile', text: t('background.dgbg_profiles.Global_Currency_Profile')},
@@ -26,6 +27,13 @@ iD.dgservices  = function() {
     ];
 
     dg.defaultProfile = defaultProfile;
+
+    dg.getProfile = function(value) {
+        var p = dg.profiles.filter(function(d) {
+            return d.value === (value);
+        });
+        return (p.length > 0) ? p[0].text : null;
+    };
 
     dg.collections = [
         {value: '24h', text: t('background.dgcl_collections.24h')},
@@ -103,6 +111,53 @@ iD.dgservices  = function() {
         }
     };
 
+    dg.imagemeta = {};
+    dg.imagemeta.sources = {};
+    dg.imagemeta.add = function(source, feature) {
+        /*
+        ${BASEMAP_IMAGE_SOURCE} - Source of imagery. E.g. "digitalglobe", "bing"
+        ${BASEMAP_IMAGE_SENSOR} - Name of the source sensor. E.g. "WV02"
+        ${BASEMAP_IMAGE_DATETIME} - Date time the source was acquired. E.g. "2012-03-28 11:22:29"
+        ${BASEMAP_IMAGE_ID} - Unique identifier for the image. E.g. 32905903099a73faec6d7de72b9a2bdb
+        */
+        dg.imagemeta.sources[source] = {
+            '${BASEMAP_IMAGE_SOURCE}': source,
+            '${BASEMAP_IMAGE_SENSOR}': feature.properties.source,
+            '${BASEMAP_IMAGE_DATETIME}': feature.properties.acquisitionDate,
+            '${BASEMAP_IMAGE_ID}': feature.properties.featureId
+        };
+    };
+    dg.imagemeta.remove = function(source) {
+        delete dg.imagemeta.sources[source];
+    };
+    dg.imagemeta.getViewportSettings = function(service, connectId, profile, extent, callback) {
+        var url = '';
+        if (!service || service === 'GBM') {
+            url += gbm_proxy + imagemeta_template;
+            url.replace('{connectId}', connectId || gbm_connectId);
+        } else if (service === 'EGD') {
+            url += egd_proxy + imagemeta_template;
+            url.replace('{connectId}', connectId || egd_connectId)
+        }
+        var payload = {
+            mapViewport: {
+                zoomLevel: 13,
+                leftLong: -43.28304290771484,
+                topLat: -22.838053354027927,
+                rightLong: -42.9646110534668,
+                bottomLat: -22.954125528268552,
+                widthInPixels: 1855,
+                heightInPixels: 734
+            },
+            layerControlFilters: {},
+            stackingProfile: profile,
+            useCloudlessGeometry: false
+        }
+        d3.json(url).post(
+            JSON.stringify(payload),
+            callback
+        );
+    };
 
     dg.terms = function(service) {
         if (!service || service === 'GBM') {
@@ -116,9 +171,9 @@ iD.dgservices  = function() {
         var template = this.wmts.getTile(service, connectId, profile);
         var terms = this.terms(service);
         var source = {
-                'name': 'DigitalGlobe Imagery',//dg.profile,
+                'name': function() { return 'DigitalGlobe Imagery'; },
                 'type': 'wmts',
-                'description': 'Satellite imagery from ' + service || 'GBM',
+                'description': 'Satellite imagery from ' + (service || 'GBM'),
                 'template': template,
                 'scaleExtent': [
                     0,
@@ -150,7 +205,7 @@ iD.dgservices  = function() {
                 ],
                 'terms_url': terms,
                 'terms_text': '© DigitalGlobe',
-                'id': 'dgBackground',
+                'id': 'DigitalGlobe ' + (service || 'GBM') + ' - ' + (dg.getProfile(profile) || defaultProfile),
                 'overlay': false
             };
         return source;
@@ -160,7 +215,7 @@ iD.dgservices  = function() {
         var template = this.collection.getMap(service, connectId, profile, freshness);
         var terms = this.terms(service);
         var source = {
-                'name': 'DigitalGlobe Imagery Collection',//dg.profile,
+                'name': function() { return 'DigitalGlobe Imagery Collection'; },
                 'type': 'wms',
                 'description': 'Satellite imagery collection from ' + service || 'GBM',
                 'template': template,
@@ -194,6 +249,9 @@ iD.dgservices  = function() {
                 ],
                 'terms_url': terms,
                 'terms_text': '© DigitalGlobe',
+                // 'id': 'DigitalGlobe Collection Footprint - ' + dg.collections.filter(function(d) {
+                //     return d.value === profile || defaultCollection;
+                // })[0].text,
                 'id': 'dgCollection',
                 'overlay': true
             };
