@@ -15,13 +15,26 @@ Hoot.control.utilities.validation = function(context) {
         var d_btn = {
             'label' : 'Run',
             'action' : function(formContainer, btnContainer, form){
-                // spinner
+                var output = form.select('.reset.ValidationName').value();
+
+                //Check output validation name for special characters
+                try{
+        	        if(output !=''){
+        	            var resp = context.hoot().checkForUnallowedChar(output);
+        	        	if(resp != true){
+        	        		iD.ui.Alert(resp,'warning');
+        	        		return;
+        	            }
+        	        }
+                } catch (e) {
+        			// TODO: handle exception
+        		}
+                
+             // spinner
                 var spinDiv =  btnContainer.append('div')
                     .classed('form-field col1 center valspinner', true);
                 spinDiv.call(iD.ui.Spinner(context));
-          
-                var output = form.select('.reset.ValidationName').value();
-
+                
                 if(output){
                     var reqParam = {};
                     reqParam.sourceMap = source;
