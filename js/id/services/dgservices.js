@@ -205,7 +205,7 @@ iD.dgservices  = function() {
                 ],
                 'terms_url': terms,
                 'terms_text': '© DigitalGlobe',
-                'id': 'DigitalGlobe ' + (service || 'GBM') + ' - ' + (dg.getProfile(profile) || defaultProfile),
+                'id': 'DigitalGlobe ' + (service || 'GBM') + ' - ' + (dg.getProfile(profile) || dg.getProfile(defaultProfile)),
                 'overlay': false
             };
         return source;
