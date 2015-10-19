@@ -511,7 +511,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
 
                 if(doProceed === true) {
-                	Hoot.model.REST('setAllItemsReviewed', data.mapId, function (error, response)
+                	Hoot.model.REST('resolveAllReviews', data.mapId, function (error, response)
                 	{
                       finalizeReviewSession('Saving All Review Features.....');
                       d3.select('body').call(iD.ui.Processing(context,true,"Saving All Review Features..."));

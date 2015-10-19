@@ -683,11 +683,11 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
     
-    rest.setAllItemsReviewed = function(mapId, callback)
+    rest.resolveAllReviews = function(mapId, callback)
     {
       var request = {};
       request.mapId = mapId;
-      d3.json('/hoot-services/job/review/setallreviewed')
+      d3.json('/hoot-services/job/review/resolveall')
         .header('Content-Type', 'application/json')
         .send(
           'PUT',
@@ -697,8 +697,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     	    if (error)
     	    {
     	      console.log(error);
-    	      console.log(response);
-    	      //alert("Set all reviewed failed.");
+    	      iD.ui.Alert("Resolve all reviews failed.",'error');
     	    }
     	    callback(error, response);
     	  });
