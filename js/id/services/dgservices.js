@@ -12,7 +12,7 @@ iD.dgservices  = function() {
         wfs_template = '/catalogservice/wfsaccess?connectid={connectId}&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&typeName=FinishedFeature&outputFormat=json&BBOX={bbox}',
         collection_template = '/mapservice/wmsaccess?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=imagery_footprint&env=color:ff6600&FORMAT=image/png8&LAYERS=DigitalGlobe:ImageryFootprint&featureProfile={profile}&TRANSPARENT=true&SRS=EPSG:3857&SUPEROVERLAY=true&FORMAT_OPTIONS=OPACITY:0.6;GENERALIZE:true&connectId={connectId}&FRESHNESS={freshness}&BBOX={bbox}&WIDTH=256&HEIGHT=256',
         imagemeta_template = '/myDigitalGlobe/viewportsettings';
-        //service = 'GBM',
+        //service = 'EGD',
         defaultProfile = 'Global_Currency_Profile',
         defaultCollection = '24h';
 
@@ -129,34 +129,6 @@ iD.dgservices  = function() {
     };
     dg.imagemeta.remove = function(source) {
         delete dg.imagemeta.sources[source];
-    };
-    dg.imagemeta.getViewportSettings = function(service, connectId, profile, extent, callback) {
-        var url = '';
-        if (!service || service === 'GBM') {
-            url += gbm_proxy + imagemeta_template;
-            url.replace('{connectId}', connectId || gbm_connectId);
-        } else if (service === 'EGD') {
-            url += egd_proxy + imagemeta_template;
-            url.replace('{connectId}', connectId || egd_connectId)
-        }
-        var payload = {
-            mapViewport: {
-                zoomLevel: 13,
-                leftLong: -43.28304290771484,
-                topLat: -22.838053354027927,
-                rightLong: -42.9646110534668,
-                bottomLat: -22.954125528268552,
-                widthInPixels: 1855,
-                heightInPixels: 734
-            },
-            layerControlFilters: {},
-            stackingProfile: profile,
-            useCloudlessGeometry: false
-        }
-        d3.json(url).post(
-            JSON.stringify(payload),
-            callback
-        );
     };
 
     dg.terms = function(service) {

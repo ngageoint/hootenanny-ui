@@ -132,13 +132,6 @@ iD.ui.dgCarousel = function(context) {
                     var dg = context.dgservices();
                     var activeService = (d3.select('#dgServiceSwitch').property('checked')) ? 'EGD' : 'GBM';
                     var activeProfile = d3.select('#dgProfiles').selectAll('li.active').attr('value');
-                    // dg.imagemeta.getViewportSettings(activeService, null/*connectId*/, activeProfile/*profile*/, extent, function(error, data) {
-                    //     if (error) {
-                    //         window.console.warn(error);
-                    //     } else {
-                    //         window.console.log(data);
-                    //     }
-                    // });
                     dg.wfs.getFeature(activeService, null/*connectId*/, activeProfile/*profile*/, extent, function(error, data) {
                         if (error) {
                             window.console.warn(error);
@@ -150,9 +143,6 @@ iD.ui.dgCarousel = function(context) {
                             //in the stacking profile.  Record this metadata.
                             dg.imagemeta.add('DigitalGlobe ' + activeService + ' - ' + dg.getProfile(activeProfile),
                                 data.features[0]);
-
-
-
 
                             //display available images in carousel
 
