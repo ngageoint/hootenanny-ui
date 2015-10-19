@@ -16,7 +16,7 @@ iD.dgservices  = function() {
         defaultProfile = 'Global_Currency_Profile',
         defaultCollection = '24h';
 
-    dg.enabled = true;
+    dg.enabled = false;
 
     dg.profiles = [
        {value: 'Global_Currency_Profile', text: t('background.dgbg_profiles.Global_Currency_Profile')},

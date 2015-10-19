@@ -367,6 +367,11 @@ Hoot.control.validation = function(context, sidebar) {
         });
         //console.log(newTags);
 
+        //Remove token tags that have not be substituted
+        newTags = _.omit(newTags, function(v, k) {
+            return v.match(/\${.*}/g);
+        });
+
         //Change tags
         context.perform(
            iD.actions.ChangeTags(feature.id, newTags), t('operations.change_tags.annotation')
