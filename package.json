@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jshint js/id && jshint js/hoot && mocha-phantomjs test/index.html && make && mocha-phantomjs test/index_packaged.html"
+    "test": "mocha-phantomjs test/index.html && make && mocha-phantomjs test/index_packaged.html"
   },
   "repository": {
     "type": "git",
