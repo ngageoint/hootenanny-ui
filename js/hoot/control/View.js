@@ -20,7 +20,7 @@ Hoot.control.view = function (container, context) {
                 return d.color;
             });
         var _a = form.append('div');
-        
+
         //add context menu
         _a.on("contextmenu",function(d,i){
         	items = [{title:'Zoom to Layer',click:'zoom2layer'},];
@@ -38,7 +38,7 @@ Hoot.control.view = function (container, context) {
             	.selectAll('li')
             	.data(items).enter()
             	.append('li')
-            	.on('click' , function(item) { 
+            	.on('click' , function(item) {
             		switch (item.click) {
 					case 'zoom2layer': context.zoomToExtent(d.extent.minlon, d.extent.minlat, d.extent.maxlon, d.extent.maxlat); break;
 					default: break;
@@ -53,11 +53,11 @@ Hoot.control.view = function (container, context) {
               	.style('left', (d3.event.pageX - 2) + 'px')
               	.style('top', (d3.event.pageY - 2) + 'px')
               	.style('display', 'block');
-            //} else {d3.select('.context-menu').style('display', 'none');}	              
+            //} else {d3.select('.context-menu').style('display', 'none');}
             d3.event.preventDefault();
         });
-        
-        
+
+
         _a.append('div').attr('class', function (d) {
             if(d.color == 'osm'){
                 return 'pad1 inline thumbnail dark big _icon _osm ';
@@ -90,7 +90,7 @@ Hoot.control.view = function (container, context) {
                 .on('click', function (a) {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
-                   
+
                     var primaryLayerName = '';
                     var sels = d3.select(form.node().parentNode).selectAll('form')[0];
                     if(sels && sels.length > 0){
@@ -106,7 +106,7 @@ Hoot.control.view = function (container, context) {
                     var r = confirm(msg + "Are you sure you want to remove layer:" + a.name  + "?");
                     if (r == false) {
                        return;
-                    }                         
+                    }
                     var isPrimary = false;
                     if(a.name == primaryLayerName){
                         isPrimary = true;
@@ -118,11 +118,6 @@ Hoot.control.view = function (container, context) {
                     // this removes the tags field
                     d3.select('.hootTags').remove();
 
-                    // we need tagTable removed when UI is review mode and was displaying tag table
-                    var conflictsCont = d3.select('#conflicts-container');
-                    if(conflictsCont) {
-                        conflictsCont.remove();
-                    }
                     context.updateMode();
 
                 });
@@ -171,7 +166,7 @@ Hoot.control.view = function (container, context) {
                     .classed('active _icon check', false);
                 d3.select(this)
                     .classed('active _icon check', true);
-               
+
                 var selColor = d3.select(this).datum().name;
 
                 var lyr = context.hoot().model.layers.getLayers(options.name);
@@ -184,10 +179,10 @@ Hoot.control.view = function (container, context) {
                     }
                     form.attr('data-color', selColor);
                     var modifiedId = lyr.mapId.toString();
-                    form.attr('class', 'fill-white hootView layer_' + modifiedId + 
+                    form.attr('class', 'fill-white hootView layer_' + modifiedId +
                         ' round keyline-all contain controller space-bottom1 ' + selColor);
 
-                    var iconSym = d3.select('#viewicon-' + modifiedId); 
+                    var iconSym = d3.select('#viewicon-' + modifiedId);
 
                     if(iconSym && iconSym.size()>0){
                         if(selColor === 'osm') {
@@ -208,7 +203,7 @@ Hoot.control.view = function (container, context) {
                     if(context.hoot().control.conflate){
                         context.hoot().control.conflate.changeSymbology(options.name);
                     }
-                    
+
                 }
             });
         var params = form.append('fieldset');
@@ -245,7 +240,7 @@ Hoot.control.view = function (container, context) {
                 d3.event.preventDefault();
             });
     };
-    
+
     View.getLayer = function (iLayer){
         var layer = null;
         var sels = d3.select('#sidebar2').selectAll('form')[0];
@@ -255,6 +250,6 @@ Hoot.control.view = function (container, context) {
         return layer;
     };
 
- 
+
     return d3.rebind(View, event, 'on');
 };
