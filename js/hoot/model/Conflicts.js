@@ -15,7 +15,6 @@ Hoot.model.conflicts = function(context)
 
         self.html("");
 
-
         self.append('div')
         .classed('contain keyline-all round controller', true)
         .html('<div class="pad1 inline _loading"><span></span></div>' +
@@ -61,6 +60,7 @@ Hoot.model.conflicts = function(context)
         });
 
     };
+    
     model_conflicts.acceptAll = function (data, callback) {
 
     	    var items = data.reviewableItems;
@@ -241,8 +241,9 @@ Hoot.model.conflicts = function(context)
                   	{
                   	  reviewRelationIds.push(reviewRefs.reviewRelationId);
                   	}
-                  	//TODO: add the review relation ID for the merged features (need to have it
-                  	//returned when retrieving reviews)
+                    //TODO: add code to retrieve mergedReviewRelation during review get
+                  	var mergedReviewRelation;
+                  	reviewRelationIds.push(mergedReviewRelation.id)
                   	
                   	//retrieve all the associated review relations
                   	context.loadMissing(reviewRelationIds,
@@ -251,22 +252,44 @@ Hoot.model.conflicts = function(context)
                   		for (var i = 0; i < entities.length; i++)
                   		{
                   		  var reviewRelation = entities[i];
-                  	      if (reviewRelation.id != mergeRelation.id)
+                  	      if (reviewRelation.id == mergedReviewRelation.id)
                   	      {
-                  	    	//TODO: add a changeset which resolves this review
-                  	    	
+                  	    	//add a changeset which resolves this review
+                  	    	var newTags = _.clone(reviewRelation.tags);
+                            newTags["hoot:review:needs"] = "no";
+                            context.perform(
+                              iD.actions.ChangeTags(reviewRelation, newTags), 
+                              t('operations.change_tags.annotation'));
                   	    	//logDiff();
                   	      }
                   	      else
                   	      {
-                  	    	//TODO: for all other review relations, and update them to point to the 
-                          	//newly created feature as a result of the merge
-                  	    	 
+                  	    	//for all other review relations, update them to point to the newly 
+                  	    	//created feature as a result of the merge
+                            
+                  	    	//delete the members corresponding to the features deleted as a result 
+                  	    	//of the merge
+                  	    	var queryElement1Member = reviewRelation.memberById(queryElement1.id);
+                  	    	if (queryElement1Member != null)
+                  	    	{
+                  	    	  iD.ui.RawMembershipEditor(context).deleteMembership(
+                  	    	    queryElement1Member);
+                  	    	}
+                  	    	var queryElement2Member = reviewRelation.memberById(queryElement2.id);
+                  	    	if (queryElement2Member != null)
+                  	    	{
+                  	    	  iD.ui.RawMembershipEditor(context).deleteMembership(
+                  	    	    queryElement2Member);
+                  	    	}
                   	    	//logDiff();
+                  	    	
+                  	    	//add the updated member
+                  	    	iD.ui.RawMembershipEditor(context).addMembership(mergedNode, "reviewee");
+                  	        //logDiff();
                   	      }
                   		}
                         
-                      	checkMergeChangeset();
+                      	validateMergeChangeset();
                   	  },
                   	  layerName);
                   });
@@ -276,7 +299,7 @@ Hoot.model.conflicts = function(context)
     };
     
     //only call this at the very end of a node merge operation
-    var checkMergeChangeset = function()
+    var validateMergeChangeset = function()
     {
       var hasChanges = context.history().hasChanges();
       context.hoot().assert(hasChanges);
@@ -285,8 +308,10 @@ Hoot.model.conflicts = function(context)
           iD.actions.DiscardTags(context.history().difference()));
       context.hoot().assert(changes.created.length == 1);
       context.hoot().assert(changes.deleted.length == 2);
-      //the modified length will vary depending on the number of review references returned by
-      //the features deleted as a result of the merge
+      //The modified length will vary depending on the number of review references returned by
+      //the features deleted as a result of the merge, but will always at least contain the resolved
+      //review of the two features deleted as a result of the merge.
+      context.hoot().assert(changes.modified.length >= 1);
     }
 
     var logDiff = function()
