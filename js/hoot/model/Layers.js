@@ -49,11 +49,11 @@ Hoot.model.layers = function (context)
             availLayers = a.layers;
             
             //get path names
-            _.each(a.layers,function(lyr){
+            /*_.each(a.layers,function(lyr){
             	if(lyr.name.indexOf('|')==-1){lyr.path='root'}
             	else{lyr.path = lyr.name.slice(0,lyr.name.lastIndexOf('|'));}
-            });
-            
+            });*/
+                    	
             if (callback) {
                 callback(availLayers);
             }
@@ -69,7 +69,7 @@ Hoot.model.layers = function (context)
         return availLayers;
     };
     
-    model_layers.setLayerLinks = function() {
+    model_layers.setLayerLinks = function(callback) {
     	var links = context.hoot().model.folders.getAvailLinks();
     	
     	var layerList = _.each(_.map(model_layers.getAvailLayers(), _.clone) , function(element, index) {
@@ -80,6 +80,10 @@ Hoot.model.layers = function (context)
     	},links);  
     	
     	availLayers = layerList;
+    	
+    	if (callback){
+    		callback(availLayers);
+    	}
     }
     
     model_layers.getLayers = function (opt) {
