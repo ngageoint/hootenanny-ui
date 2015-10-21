@@ -113,35 +113,26 @@ Hoot.model.conflicts = function(context)
         };
 
     /*
-     * Removes any items reviewRefs whose element id matches the iD element id passed in 
-     * iDidsToRemove
+     * Removes any items reviewRefs whose element id matches the element id passed in idsToRemove
      */
-    var removeReviewRefs = function(reviewRefs, iDidsToRemove)
+    var removeReviewRefs = function(reviewRefs, idsToRemove)
     {
-      //console.log(reviewItems);
-      //console.log(iDidsToRemove);
-      //iD id format: item type first char + item osm id + '_' + map id;
-      var idsToRemove = new Array();
-      for (var i = 0; i < iDidsToRemove.length; i++)
-      {
-    	var iDid = iDidsToRemove[i];
-    	var elementId = Number(iDid.substring(1, iDid.length - 1).split("_")[0]);
-    	idsToRemove.push(elementId);
-    	//console.log(elementId);
-      }
+      console.log("reviewRefs: " + reviewRefs);
+      console.log("idsToRemove: " + idsToRemove);
 
       var modifiedReviewRefs = new Array();
       for (var i = 0; i < reviewRefs.length; i++)
       {
         var reviewRef = reviewRefs[i];
-        //console.log(reviewRef.id);
+        console.log("reviewRef.id: " + reviewRef.id);
+        console.log("idsToRemove.indexOf(reviewRef.id): " + idsToRemove.indexOf(reviewRef.id));
         if (idsToRemove.indexOf(reviewRef.id) == -1)
         {
-          //console.log(reviewRef.id);
+          console.log("adding reviewRef.id: " + reviewRef.id);
           modifiedReviewRefs.push(reviewRef);
         }
       }
-      //console.log(modifiedReviewRefs);
+      console.log("modifiedReviewRefs: " + modifiedReviewRefs);
       return modifiedReviewRefs;
     }
 
@@ -214,84 +205,108 @@ Hoot.model.conflicts = function(context)
                 queryElements.push(queryElement2);
                 
                 Hoot.model.REST('getReviewRefs', queryElements,
-                  function (error, response)
-                  {
-                  	if (error)
-                    {
-                  	  console.log(error);
-                  	  iD.ui.Alert('failed to retrieve review refs.','warning');
-                      context.hoot().control.conflicts.setProcessing(false);
-                      return;
-                    }
+        	      function (error, response)
+        	      {
+        	      	if (error)
+        	        {
+        	      	  console.log(error);
+        	      	  iD.ui.Alert('failed to retrieve review refs.','warning');
+        	          context.hoot().control.conflicts.setProcessing(false);
+        	          return;
+        	        }
+        	      	console.log(response);
 
-                  	context.hoot().assert(
-                  	  response.reviewRefsResponses.length == queryElements.length);
-                  	
-                  	var reviewRefs = 
-                      _.uniq(
-                        response.reviewRefsResponses[0].reviewRefs.concat(
-                          response.reviewRefsResponses[1].reviewRefs));
-                  	//console.log("reviewRefs: " + reviewRefs);
-                    //if either of the two merged features reference each other, remove those
-                  	//references from this list
-                  	reviewRefs = removeReviewRefs(reviewRefs, [queryElement1.id, queryElement2.id]);
-                    //console.log("reviewRefs: " + reviewRefs);
-                  	
-                  	var reviewRelationIds = new Array();
-                  	for (var i = 0; i < reviewRefs.length; i++)
-                  	{
-                  	  reviewRelationIds.push(reviewRefs.reviewRelationId);
-                  	}
-                  	reviewRelationIds.push(reviewMergeRelationId);
-                  	
-                  	//retrieve all the associated review relations
-                  	context.loadMissing(reviewRelationIds,
-                  	  function(err, entities)
-                  	  {
-                  		for (var i = 0; i < entities.length; i++)
-                  		{
-                  		  var reviewRelation = entities[i];
-                  	      if (reviewRelation.id == reviewMergeRelationId)
-                  	      {
-                  	    	//add a changeset which resolves this review
-                  	    	var newTags = _.clone(reviewRelation.tags);
-                            newTags["hoot:review:needs"] = "no";
-                            context.perform(
-                              iD.actions.ChangeTags(reviewRelation, newTags), 
-                              t('operations.change_tags.annotation'));
-                  	    	//logDiff();
-                  	      }
-                  	      else
-                  	      {
-                  	    	//for all other review relations, update them to point to the newly 
-                  	    	//created feature as a result of the merge
-                            
-                  	    	//delete the members corresponding to the features deleted as a result 
-                  	    	//of the merge
-                  	    	var queryElement1Member = reviewRelation.memberById(queryElement1.id);
-                  	    	if (queryElement1Member != null)
-                  	    	{
-                  	    	  iD.ui.RawMembershipEditor(context).deleteMembership(
-                  	    	    queryElement1Member);
-                  	    	}
-                  	    	var queryElement2Member = reviewRelation.memberById(queryElement2.id);
-                  	    	if (queryElement2Member != null)
-                  	    	{
-                  	    	  iD.ui.RawMembershipEditor(context).deleteMembership(
-                  	    	    queryElement2Member);
-                  	    	}
-                  	    	//logDiff();
-                  	    	
-                  	    	//add the updated member
-                  	    	iD.ui.RawMembershipEditor(context).addMembership(mergedNode, "reviewee");
-                  	        //logDiff();
-                  	      }
-                  		}
-                        
-                      	validateMergeChangeset();
-                  	  },
-                  	  layerName);
-                  });
+        	      	context.hoot().assert(
+        	      	  response.reviewRefsResponses.length == queryElements.length);
+        	      	
+        	      	console.log(response.reviewRefsResponses[0].reviewRefs);
+        	      	console.log(response.reviewRefsResponses[1].reviewRefs);
+        	      	var reviewRefs = 
+        	          _.uniq(
+        	            response.reviewRefsResponses[0].reviewRefs.concat(
+        	              response.reviewRefsResponses[1].reviewRefs));
+        	      	console.log("reviewRefs: " + reviewRefs);
+        	        //if either of the two merged features reference each other, remove those
+        	      	//references from this list
+        	      	reviewRefs = removeReviewRefs(reviewRefs, [queryElement1.id, queryElement2.id]);
+        	        console.log("reviewRefs: " + reviewRefs);
+        	      	
+        	      	var reviewRelationIds = new Array();
+        	      	for (var i = 0; i < reviewRefs.length; i++)
+        	      	{
+        	      	  console.log("reviewRefs.reviewRelationId: " + reviewRefs[i].reviewRelationId);
+        	      	  //iD feature ID: <OSM element type first char> + <OSM element ID> + '_' + <mapid>;
+        	      	  reviewRelationIds.push(
+        	      	    "r" + reviewRefs[i].reviewRelationId.toString() + "_" + mapId.toString());
+        	      	}
+        	      	reviewRelationIds.push(reviewMergeRelationId);
+        	      	console.log(reviewRelationIds);
+        	      	
+        	      	//retrieve all the associated review relations
+        	      	context.loadMissing(reviewRelationIds,
+        	      	  function(err, entities)
+        	      	  {
+        	      		console.log("entities.data[0]: " + entities.data[0]);
+        	      		console.log("entities.data: " + entities.data);
+        	      		console.log("entities.data.length: " + entities.data.length);
+        	      		console.log("test3");  
+        	      		for (var i = 0; i < entities.data.length; i++)
+        	      		{
+        	      		  var reviewRelation = entities.data[i];
+        	      		  console.log("reviewRelation: " + reviewRelation);
+        	      		  console.log("reviewRelation.id: " + reviewRelation.id);
+        	      	      if (reviewRelation.id == reviewMergeRelationId)
+        	      	      {
+        	      	    	console.log("test1");
+        	      	    	//add a changeset which resolves this review
+        	      	    	var newTags = _.clone(reviewRelation.tags);
+        	                newTags["hoot:review:needs"] = "no";
+        	                context.perform(
+        	                  iD.actions.ChangeTags(reviewRelation.id, newTags), 
+        	                  t('operations.change_tags.annotation'));
+        	      	    	logDiff();
+        	      	      }
+        	      	      else
+        	      	      {
+        	      	    	console.log("test2");  
+        	      	    	//for all other review relations, update them to point to the newly 
+        	      	    	//created feature as a result of the merge
+        	                	
+        	      	    	//delete the members corresponding to the features deleted as a result 
+        	      	    	//of the merge
+        	      	    	var queryElement1Member = reviewRelation.memberById(queryElement1.id);
+        	      	    	if (queryElement1Member != null)
+        	      	    	{
+        	      	    	  context.perform(
+        	        	        iD.actions.DeleteMember(queryElement1Member.relation.id, queryElement1Member.index),
+        	        	        t('operations.delete_member.annotation'));
+        	      	    	  logDiff();
+        	      	    	}
+        	      	    	var queryElement2Member = reviewRelation.memberById(queryElement2.id);
+        	      	    	if (queryElement2Member != null)
+        	      	    	{
+        	      	    	  context.perform(
+        	            	    iD.actions.DeleteMember(queryElement2Member.relation.id, queryElement2Member.index),
+        	            	    t('operations.delete_member.annotation'));
+        	      	    	  logDiff();
+        	      	    	}
+        	      	    	
+        	      	    	//add the new merged node as a new member
+        	      	    	var newMember = {};
+        	      	    	newMember.id = mergedNode.id;
+        	      	    	newMember.type = "node";
+        	      	    	newMember.role = "reviewee";
+        	      	    	context.perform(
+        	      	          iD.actions.AddMember(newMember.id, newMember),
+        	      	            t('operations.add.annotation.relation'));
+        	      	        logDiff();
+        	      	      }
+        	      		}
+        	            
+        	          	validateMergeChangeset();
+        	      	  },
+        	      	  layerName);
+                        });
                }, mapid, layerName);
             }
         } 
@@ -354,4 +369,3 @@ Hoot.model.conflicts = function(context)
     };
 
   return model_conflicts;
-};
