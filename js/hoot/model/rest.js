@@ -705,9 +705,11 @@ Hoot.model.REST = function (command, data, callback, option) {
 
   rest.getReviewRefs = function(queryElements, callback)
   {
+	var request = {};
+	request.queryElements = queryElements;
     d3.json('/hoot-services/job/review/refs')
       .header('Content-Type', 'application/json')
-      .post(JSON.stringify(queryElements),
+      .post(JSON.stringify(request),
       function(error, response)
       {
         if (error)
