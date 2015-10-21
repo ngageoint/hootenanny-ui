@@ -35,7 +35,7 @@ iD.ui = function(context) {
             .attr('id', 'bar')
             .attr('class', 'fillD');
         bar.style('top', '60px');
-        
+
         var m = content.append('div')
             .attr('id', 'map')
             .call(map);
@@ -49,7 +49,7 @@ iD.ui = function(context) {
         	.attr('class','infobox fillD2')
         	.style('display','none')
         	.call(iD.ui.Info(context));
-        
+
         bar.append('div')
             .attr('class', 'spacer col4');
 
@@ -58,8 +58,8 @@ iD.ui = function(context) {
 
         limiter.append('div')
 	        .attr('class', 'button-wrap col1')
-	        .call(iD.ui.Tools(context));        
-        
+	        .call(iD.ui.Tools(context));
+
         limiter.append('div')
             .attr('class', 'button-wrap joined col3')
             .call(iD.ui.Modes(context), limiter);
@@ -75,7 +75,7 @@ iD.ui = function(context) {
         bar.append('div')
             .attr('class', 'spinner')
             .call(iD.ui.Spinner(context));
-        
+
         bar.append('div')
         	.attr('class','warning')
         	.call(iD.ui.Warning(context,false,''));
@@ -95,7 +95,7 @@ iD.ui = function(context) {
             .attr('class', 'map-control background-control')
             .call(iD.ui.Background(context));
 
-        if (iD.dgservices().enabled) {
+        if (context.dgservices().enabled) {
             controls.append('div')
                 .attr('class', 'map-control carousel-control')
                 .call(iD.ui.dgCarousel(context));
