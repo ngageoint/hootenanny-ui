@@ -141,7 +141,9 @@ iD.Map = function(context) {
             }
         }
 
-        data = features.filter(data, graph);
+        //Disable autoHidden feature filtering when in review mode
+        if (!(context.hoot().control.conflicts && context.hoot().control.conflicts.reviewIds))
+            data = features.filter(data, graph);
 
         d3.selectAll('.vertex').remove();
         //d3.selectAll('.shadow').remove();
