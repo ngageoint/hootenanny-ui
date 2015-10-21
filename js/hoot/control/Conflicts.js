@@ -303,7 +303,10 @@ Hoot.control.conflicts = function (context, sidebar) {
                         //Override with current pair of review features
                         mergeFeatures = function() {
                         	if(context.graph().entities[feature.id] && context.graph().entities[againstFeature.id]){
-                        		context.hoot().model.conflicts.autoMergeFeature(feature, againstFeature, mapid);
+                        		//TODO: actually populate reviewMergeRelationId with the review relation
+                        		//id for the two features being merged
+                        		context.hoot().model.conflicts.autoMergeFeature(
+                        		  feature, againstFeature, mapid, reviewMergeRelationId);
                         	} else {
                         		iD.ui.Alert("Nothing to merge.",'notice');
                             	return;

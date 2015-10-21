@@ -113,7 +113,8 @@ Hoot.model.conflicts = function(context)
         };
 
     /*
-     * This assumes all features are nodes.
+     * Removes any items reviewRefs whose element id matches the iD element id passed in 
+     * iDidsToRemove
      */
     var removeReviewRefs = function(reviewRefs, iDidsToRemove)
     {
@@ -148,7 +149,7 @@ Hoot.model.conflicts = function(context)
      * The code in this method is making the assumption that only nodes are merged here, which
      * is currently the case.  If this changes, then the code will need to be updated.
      */
-    model_conflicts.autoMergeFeature = function (feature, featureAgainst, mapid) {
+    model_conflicts.autoMergeFeature = function (feature, featureAgainst, mapid, reviewMergeRelationId) {
         context.hoot().control.conflicts.setProcessing(true);
         var layerName = feature.layerName;
 
@@ -241,9 +242,7 @@ Hoot.model.conflicts = function(context)
                   	{
                   	  reviewRelationIds.push(reviewRefs.reviewRelationId);
                   	}
-                    //TODO: add code to retrieve mergedReviewRelation during review get
-                  	var mergedReviewRelation;
-                  	reviewRelationIds.push(mergedReviewRelation.id)
+                  	reviewRelationIds.push(reviewMergeRelationId);
                   	
                   	//retrieve all the associated review relations
                   	context.loadMissing(reviewRelationIds,
@@ -252,7 +251,7 @@ Hoot.model.conflicts = function(context)
                   		for (var i = 0; i < entities.length; i++)
                   		{
                   		  var reviewRelation = entities[i];
-                  	      if (reviewRelation.id == mergedReviewRelation.id)
+                  	      if (reviewRelation.id == reviewMergeRelationId)
                   	      {
                   	    	//add a changeset which resolves this review
                   	    	var newTags = _.clone(reviewRelation.tags);
