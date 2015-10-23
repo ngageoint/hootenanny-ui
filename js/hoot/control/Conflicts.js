@@ -726,6 +726,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             done=true;
             resetStyles();
             d3.select('div.tag-table').remove();
+            Conflict.reviewIds = null;
             metaHead.text(userMsg);
             Conflict.reviewComplete();
             d3.select('.hootTags').remove();
@@ -747,10 +748,10 @@ Hoot.control.conflicts = function (context, sidebar) {
             d3.selectAll(head.node()
                 .childNodes)
                 .remove();
-            head.classed('button dark animate strong block _icon big disk pad2x pad1y js-toggle white', true)
+            head.classed('button dark animate strong block _icon big check pad2x pad1y js-toggle white', true)
                 .style('text-align','center')
                 .style('color','#fff')
-                .text('Save')
+                .text('Complete Review')
                 .on('click', function () {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
@@ -897,7 +898,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     Conflict.reviewNextStep = function () {
 
     	d3.select('body').call(iD.ui.Processing(context,false));
-    	
+
       confData.isDeleteEnabled = true;
         metaHead.text('All Review Items Resolved!');
 
@@ -923,8 +924,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                     d3.event.preventDefault();
                     event.addData();
             });
-        
-        
+
+
     };
 
 
@@ -952,5 +953,14 @@ Hoot.control.conflicts = function (context, sidebar) {
         context.flush(true);
         Conflict.nextFunction();
     }
+
+
+    //Register listener for review layer cleanup
+    context.hoot().control.view.on('layerRemove.validation', function (layerName, isPrimary) {
+        // we need tagTable removed when UI is review mode and was displaying tag table
+        d3.select('#conflicts-container').remove();
+        Conflict.reviewIds = null;
+    });
+
     return d3.rebind(Conflict, event, 'on');
 };

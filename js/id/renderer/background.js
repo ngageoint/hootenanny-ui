@@ -1,5 +1,5 @@
 iD.Background = function(context) {
-    var dispatch = d3.dispatch('change'),
+    var dispatch = d3.dispatch('change','baseLayerChange'),
         baseLayer = iD.TileLayer()
             .projection(context.projection),
         gpxLayer = iD.GpxLayer(context, dispatch)
@@ -167,14 +167,14 @@ iD.Background = function(context) {
             .attr('class', 'layer-layer arrow-layer');
 
         arrow.call(arrowLayer);
-        
+
         //Added for Hoot measurement tool
         var measure = selection.selectAll('.measure-layer')
         .data([0]);
-        
+
         measure.enter().insert('div','.layer-data')
         	.attr('class','layer-layer measure-layer');
-        
+
         measure.call(measureLayer);
 
         var gpx = selection.selectAll('.layer-gpx')
@@ -265,6 +265,7 @@ iD.Background = function(context) {
 
         baseLayer.source(d);
         dispatch.change();
+        dispatch.baseLayerChange();
         updateImagery();
 
         return background;
@@ -333,8 +334,10 @@ iD.Background = function(context) {
         return d === baseLayer.source() ||
             (d.id === 'custom' && baseLayer.source().id === 'custom') ||
             //Added for EGD-plugin
-            (d.id === 'dgBackground' && baseLayer.source().id === 'dgBackground') ||
-            (d.id === 'dgCollection' && overlayLayers.some(function(l) { return l.source().id === 'dgCollection'; })) ||
+            (d.name() === 'DigitalGlobe Imagery' && baseLayer.source().id.indexOf('DigitalGlobe') === 0) ||
+            (d.name() === 'DigitalGlobe Imagery Collection' && overlayLayers.some(function(l) {
+                return l.source().id  === 'dgCollection';
+            })) ||
             overlayLayers.some(function(l) { return l.source() === d; });
     };
 
@@ -454,7 +457,7 @@ iD.Background = function(context) {
     	measureLayer.geojson(d);
     	dispatch.change();
     }
-    
+
     background.nudge = function(d, zoom) {
         baseLayer.source().nudge(d, zoom);
         dispatch.change();

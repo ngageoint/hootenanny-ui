@@ -236,7 +236,70 @@ Hoot.control.conflate = function (sidebar) {
             		  });
             		  
             		  comboPathName.data().unshift({value:'root',title:0});
-                    
+            		  
+                      commonId = 0;
+                      
+            		  //get common path between lyrA and lyrB using folderID
+            		  hoot.model.layers.setLayerLinks(function(a){
+                		  var sels = d3.select('#sidebar2').selectAll('form')[0];
+    	        	      var lyrA, lyrB;
+                		  if(sels && sels.length > 1){
+                			  lyrA = d3.select(sels[0]).datum().name;
+    	        	          lyrB = d3.select(sels[1]).datum().name;
+    	        	        }
+                		  
+                		  hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
+                          var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+                          
+                		  //build the path array for lyrA
+                		  var lyrApath = [];
+                		  lyrA = _.findWhere(hoot.model.layers.getAvailLayers(),{'name':lyrA});
+                		  if(lyrA){
+                			  lyrApath.push(lyrA.folderId);
+                			  
+                			  var folderId = lyrA.folderId;
+                			  while (folderId!=0){
+                				  var fldr = _.findWhere(folderList,{'id':folderId});
+                				  if(fldr){
+                					  lyrApath.push(fldr.parentId);
+                					  folderId = fldr.parentId;
+                				  }
+                			  }
+                		  }
+                		  
+                		  //if(lyrApath) is only 0, keep as root and move on
+                		  
+                		  lyrB = _.findWhere(hoot.model.layers.getAvailLayers(),{'name':lyrB});
+                		  if(lyrB){
+                			  var folderId = lyrB.folderId;
+                			  if(lyrApath.indexOf(folderId)>-1){
+                				  commonId = folderId;
+                				  return;
+                			  } else {
+                    			  while (folderId!=0){
+                    				  var fldr = _.findWhere(folderList,{'id':folderId});
+                    				  if(fldr){
+                    					  if(lyrApath.indexOf(fldr.parentId)>-1){
+                            				  commonId = fldr.parentId;
+                            				  return;
+                            			  }
+                    					  folderId = fldr.parentId;
+                    				  }
+                    			  }  
+                			  }
+                		  }
+            		  });
+            		 
+            		  if(commonId!=0){
+            			  var match = _.findWhere(folderList,{id:commonId});
+            			  if(match){
+            				  if(match){
+            					  d3.select(this).value(match.folderPath)
+            					  d3.select(this).attr('placeholder',match.folderPath)
+            				  };
+            			  }
+            		  }
+
                     d3.select(this)
                     	.style('width', '100%')
                     	.call(comboPathName);                       

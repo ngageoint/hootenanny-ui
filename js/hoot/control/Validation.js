@@ -316,6 +316,62 @@ Hoot.control.validation = function(context, sidebar) {
             return key.match(/hoot:review/g);
         });
 
+        //Format the token tags
+        var imagery = context.history().getVisibleImagery();
+        var metadata = context.dgservices().imagemeta.sources;
+        var tokenTags = _.map(imagery, function(i) {
+            return metadata[i] || {'${BASEMAP_IMAGE_SOURCE}': i};
+        });
+        var tokenMap = _.reduce(tokenTags, function(obj, lyr) {
+            _.each(_.keys(lyr), function(k) {
+                if (obj[k]) {
+                    obj[k].push(lyr[k]);
+                } else {
+                    obj[k] = [lyr[k]];
+                }
+            });
+            return obj;
+        }, {});
+        //console.log(JSON.stringify(tokenMap));
+
+        //Substitute for the token tags
+        //Need to update to full lodash.js build to use _.invert, _.has and other functions
+        // var invertTags = _.invert(newTags);
+        // _.each(_.keys(tokenMap), function(t) {
+        //     if (_.has(invertTags, t)) {
+        //         newTags[invertTags[t]] = tokenMap[t].join(';');
+        //     }
+        // });
+        var invert = function(obj) {
+
+            var new_obj = {};
+
+            for (var prop in obj) {
+                if (obj.hasOwnProperty(prop)) {
+                    new_obj[obj[prop]] = prop;
+                }
+            }
+
+            return new_obj;
+        };
+
+        var invertTags = invert(newTags);
+        //console.log(invertTags);
+
+        _.each(_.keys(tokenMap), function(t) {
+            if (_.some(_.keys(invertTags), function(i) {
+                    return i === t;
+                })) {
+                newTags[invertTags[t]] = tokenMap[t].join(';');
+            }
+        });
+        //console.log(newTags);
+
+        //Remove token tags that have not be substituted
+        newTags = _.omit(newTags, function(v, k) {
+            return v.match(/\${.*}/g);
+        });
+
         //Change tags
         context.perform(
            iD.actions.ChangeTags(feature.id, newTags), t('operations.change_tags.annotation')

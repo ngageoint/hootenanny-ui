@@ -10,7 +10,7 @@ iD.ui.Background = function(context) {
             (+context.storage('background-opacity')) : 0.5,
         customTemplate = '',
         //Added for EGD-plugin
-        dgServices = iD.dgservices();
+        dgServices = context.dgservices();
 
     // Can be 0 from <1.3.0 use or due to issue #1923.
     if (opacityDefault === 0) opacityDefault = 0.5;

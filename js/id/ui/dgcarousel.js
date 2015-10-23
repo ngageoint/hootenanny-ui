@@ -110,6 +110,8 @@ iD.ui.dgCarousel = function(context) {
         context.map()
         .on('move.carousel-update', _.debounce(getImageMetadata, 1000));
 
+        context.background()
+        .on('baseLayerChange.carousel-update', _.debounce(getImageMetadata, 1000));
 
         var keybinding = d3.keybinding('dgcarousel')
             .on(key, toggle);
@@ -127,7 +129,7 @@ iD.ui.dgCarousel = function(context) {
                 var extent = context.map().extent();
                 if (extent) {
                     //get features from wfs
-                    var dg = iD.dgservices();
+                    var dg = context.dgservices();
                     var activeService = (d3.select('#dgServiceSwitch').property('checked')) ? 'EGD' : 'GBM';
                     var activeProfile = d3.select('#dgProfiles').selectAll('li.active').attr('value');
                     dg.wfs.getFeature(activeService, null/*connectId*/, activeProfile/*profile*/, extent, function(error, data) {
@@ -135,6 +137,17 @@ iD.ui.dgCarousel = function(context) {
                             window.console.warn(error);
                         } else {
                             //window.console.log(data.totalFeatures);
+
+                            //Update dgservices variables tracking visible image metadata
+                            //The first feature in the response is the top (visible) image
+                            //in the stacking profile.  Record this metadata.
+                            //FIXME: Until feature profile param can be passed to WFS, only record
+                            //detailed metadata for Most Recent
+                            if (activeProfile === 'Global_Currency_Profile') {
+                                dg.imagemeta.add('DigitalGlobe ' + activeService + ' - ' + dg.getProfile(activeProfile),
+                                    data.features[0]);
+                            }
+
                             //display available images in carousel
 
                             var images = ul.selectAll('li:not(.active)')
@@ -233,7 +246,7 @@ iD.ui.dgCarousel = function(context) {
         }
 
         function loadImage(d, active) {
-            var dg = iD.dgservices();
+            var dg = context.dgservices();
             var activeService = (d3.select('#dgServiceSwitch').property('checked')) ? 'EGD' : 'GBM';
             var activeProfile = d3.select('#dgProfiles').selectAll('li.active').attr('value');
             var template = dg.wms.getMap(activeService, null/*connectId*/, activeProfile/*profile*/, d.properties.featureId);
@@ -273,14 +286,18 @@ iD.ui.dgCarousel = function(context) {
                     ],
                     'terms_url': terms,
                     'terms_text': d.properties.copyright,
-                    'id': d.properties.featureId,
+                    'id': 'DigitalGlobe ' + activeService + ' - ' + d.properties.featureId,
                     'overlay': true
                 };
 
             if (active) {
                 context.background().addSource(source);
+                //Add image to dg.imagemeta
+                dg.imagemeta.add(source.id, d);
             } else {
                 context.background().removeSource(source);
+                //Remove image from dg.imagemeta
+                dg.imagemeta.remove(source.id);
             }
 
         }

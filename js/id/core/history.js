@@ -168,6 +168,12 @@ iD.History = function(context) {
             return this.difference().length() > 0;
         },
 
+        //Added for hoot to get visible imagery
+        //outside of edit history
+        getVisibleImagery: function() {
+            return imageryUsed;
+        },
+
         imageryUsed: function(sources) {
             if (sources) {
                 imageryUsed = sources;
