@@ -98,10 +98,6 @@ iD.ui.Background = function(context) {
             context.storage('background-custom-template', template);
         }
         
-        function zoomToBackground(d){
-        	
-        }
-
         function clickSetOverlay(d) {
             d3.event.preventDefault();
             context.background().toggleOverlayLayer(d);
