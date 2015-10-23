@@ -748,10 +748,10 @@ Hoot.control.conflicts = function (context, sidebar) {
             d3.selectAll(head.node()
                 .childNodes)
                 .remove();
-            head.classed('button dark animate strong block _icon big disk pad2x pad1y js-toggle white', true)
+            head.classed('button dark animate strong block _icon big check pad2x pad1y js-toggle white', true)
                 .style('text-align','center')
                 .style('color','#fff')
-                .text('Save')
+                .text('Complete Review')
                 .on('click', function () {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
