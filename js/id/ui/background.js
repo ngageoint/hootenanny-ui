@@ -64,11 +64,19 @@ iD.ui.Background = function(context) {
                 .classed('active', active);
             //collections.classed('hide', true);
         }
-
+        
         function clickSetSource(d) {
             d3.event.preventDefault();
             context.background().baseLayerSource(d);
             selectLayer();
+
+            //Added to zoom to imported basemap            
+            if(d.extent() && d.type=='tms'){
+            	//ask if user wants to zoom to basemap
+            	if(window.confirm('Do you want to zoom to base layer?')){
+            		context.zoomToExtent(d.extent().miny, d.extent().minx, d.extent().maxy, d.extent().maxx);	
+            	}
+            }
         }
 
         function editCustom() {
@@ -88,6 +96,10 @@ iD.ui.Background = function(context) {
             context.background().baseLayerSource(iD.BackgroundSource.Custom(template));
             selectLayer();
             context.storage('background-custom-template', template);
+        }
+        
+        function zoomToBackground(d){
+        	
         }
 
         function clickSetOverlay(d) {

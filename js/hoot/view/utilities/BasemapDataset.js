@@ -31,14 +31,15 @@ Hoot.view.utilities.basemapdataset = function(context)
 
     };
 
-    hoot_view_utilities_basemapdataset.addBasemapItem = function(name){
+    hoot_view_utilities_basemapdataset.addBasemapItem = function(bm){
       var newRes = {};
-      newRes.name = name;
+      newRes.name = bm.name;
       newRes.type = 'tms';
       newRes.projection = "mercator";
-      newRes.template = location.origin + "/static/BASEMAP/" + name + "/{zoom}/{x}/{y}.png";
+      newRes.template = location.origin + "/static/BASEMAP/" + bm.name + "/{zoom}/{x}/{y}.png";
       newRes.default = true;
       newRes.nocache = true;
+      newRes.extent = bm.extent;
 
       context.background().addNewBackgroundResource(newRes);
       context.map().updateBackground();
@@ -128,7 +129,7 @@ Hoot.view.utilities.basemapdataset = function(context)
                         d3.select(bmToggleBtn).classed('keyline-left fr _icon closedeye pad2 col1', false);
                         d3.select(bmToggleBtn).classed('keyline-left fr _icon openeye pad2 col1', true);
                         bm.status="enabled";
-                        hoot_view_utilities_basemapdataset.addBasemapItem(bm.name);
+                        hoot_view_utilities_basemapdataset.addBasemapItem(bm);
                     });
                 } else if(d.status == 'enabled'){
                     //
@@ -190,7 +191,7 @@ Hoot.view.utilities.basemapdataset = function(context)
                         d3.select(this).classed('keyline-left fr _icon openeye pad2 col1', false);
                         d3.select(this).classed('keyline-left fr _icon closedeye pad2 col1', true);
                     } else if(sel.status == 'enabled') {
-                        hoot_view_utilities_basemapdataset.addBasemapItem(sel.name);
+                        hoot_view_utilities_basemapdataset.addBasemapItem(sel);
                     }
 
                 }
