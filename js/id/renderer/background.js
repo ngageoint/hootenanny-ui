@@ -334,7 +334,7 @@ iD.Background = function(context) {
         return d === baseLayer.source() ||
             (d.id === 'custom' && baseLayer.source().id === 'custom') ||
             //Added for EGD-plugin
-            (d.name() === 'DigitalGlobe Imagery' && baseLayer.source().id.indexOf('DigitalGlobe') === 0) ||
+            (d.name() === 'DigitalGlobe Imagery' && (baseLayer.source().id && baseLayer.source().id.indexOf('DigitalGlobe') === 0)) ||
             (d.name() === 'DigitalGlobe Imagery Collection' && overlayLayers.some(function(l) {
                 return l.source().id  === 'dgCollection';
             })) ||

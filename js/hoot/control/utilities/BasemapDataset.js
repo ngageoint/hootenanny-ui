@@ -7,7 +7,8 @@ Hoot.control.utilities.basemapdataset = function(context) {
             label: 'Basemap Raster File',
             type: 'basemapfileImport',
             placeholder: 'Select File',
-            icon: 'folder'
+            icon: 'folder',
+            readonly:'readonly'
         }, {
             label: 'Basemap Name',
             placeholder: 'Save As',
@@ -44,6 +45,9 @@ Hoot.control.utilities.basemapdataset = function(context) {
         fieldset.append('div')
             .classed('contain', true)
             .append('input')
+            .each(function(d){
+            	if(d.readonly){d3.select(this).attr('readonly',true);}
+            })
             .attr('type', 'text')
             .attr('placeholder', function (field) {
                 return field.placeholder;

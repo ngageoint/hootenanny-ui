@@ -150,22 +150,34 @@ Hoot.control.utilities.folder = function(context) {
 	        	 }
 	          });
 	      
+	      if(container.attr('id')=='datasettable'){
+		      nodeEnter.filter(function(d){return d.type=='dataset'}).append("text")
+		      		.attr("dy",3.5)
+		    		.attr("dx",function(d){
+		    			return '75%';
+		    		})
+		    		.attr('text-anchor','end')
+		    		.text(function(d) { 
+		    			return d.date;
+	    			});
+	      }
+	      
 	      nodeEnter.filter(function(d){return d.type=='dataset'}).append("text")
-	      		.attr("dy",3.5)
-	    		.attr("dx",function(d){
-	    			return '90%';
-	    		})
-	    		.attr('text-anchor','end')
-	    		.text(function(d) { 
-	    			if(Math.abs(d.size) < 1000) {return d.size + ' B';}
-	    			var units = ['kB','MB','GB','TB','PB','EB','ZB','YB'];
-	    			var u = -1;
-	    			do {
-	    				d.size /= 1000;
-	    		        ++u;
-	    		    } while(Math.abs(d.size) >= 1000 && u < units.length - 1);
-	    		    return d.size.toFixed(1)+' '+units[u];
-    			});	  
+    		.attr("dy",3.5)
+	  		.attr("dx",function(d){
+	  			return '90%';
+	  		})
+	  		.attr('text-anchor','end')
+	  		.text(function(d) { 
+	  			if(Math.abs(d.size) < 1000) {return d.size + ' B';}
+	  			var units = ['kB','MB','GB','TB','PB','EB','ZB','YB'];
+	  			var u = -1;
+	  			do {
+	  				d.size /= 1000;
+	  		        ++u;
+	  		    } while(Math.abs(d.size) >= 1000 && u < units.length - 1);
+	  		    return d.size.toFixed(1)+' '+units[u];
+			});	  
 	      
 	      var nodeg = nodeEnter.append("g");
 	      nodeg.append('svg:foreignObject')
