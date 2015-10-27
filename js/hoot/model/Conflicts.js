@@ -185,7 +185,6 @@ Hoot.model.conflicts = function(context)
                 context.perform(
                   iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
                 //console.log(mergedNode);
-                //logDiff();
 
                 //get references to unresolved review data involving the features deleted as a
                 //result of the merge
@@ -214,27 +213,27 @@ Hoot.model.conflicts = function(context)
         	          context.hoot().control.conflicts.setProcessing(false);
         	          return;
         	        }
-        	      	console.log(response);
+        	      	//console.log(response);
 
         	      	context.hoot().assert(
         	      	  response.reviewRefsResponses.length == queryElements.length);
         	      	
-        	      	console.log(response.reviewRefsResponses[0].reviewRefs);
-        	      	console.log(response.reviewRefsResponses[1].reviewRefs);
+        	      	//console.log(response.reviewRefsResponses[0].reviewRefs);
+        	      	//console.log(response.reviewRefsResponses[1].reviewRefs);
         	      	var reviewRefs = 
         	          _.uniq(
         	            response.reviewRefsResponses[0].reviewRefs.concat(
         	              response.reviewRefsResponses[1].reviewRefs));
-        	      	console.log("reviewRefs: " + reviewRefs);
+        	      	//console.log("reviewRefs: " + reviewRefs);
         	        //if either of the two merged features reference each other, remove those
         	      	//references from this list
         	      	reviewRefs = removeReviewRefs(reviewRefs, [queryElement1.id, queryElement2.id]);
-        	        console.log("reviewRefs: " + reviewRefs);
+        	        //console.log("reviewRefs: " + reviewRefs);
         	      	
         	      	var reviewRelationIds = new Array();
         	      	for (var i = 0; i < reviewRefs.length; i++)
         	      	{
-        	      	  console.log("reviewRefs.reviewRelationId: " + reviewRefs[i].reviewRelationId);
+        	      	  //console.log("reviewRefs.reviewRelationId: " + reviewRefs[i].reviewRelationId);
         	      	  //iD feature ID: <OSM element type first char> + <OSM element ID> + '_' + <mapid>;
         	      	  reviewRelationIds.push(
         	      	    "r" + reviewRefs[i].reviewRelationId.toString() + "_" + mapId.toString());
@@ -246,31 +245,30 @@ Hoot.model.conflicts = function(context)
         	      	context.loadMissing(reviewRelationIds,
         	      	  function(err, entities)
         	      	  {
-        	      		console.log("entities.data[0]: " + entities.data[0]);
-        	      		console.log("entities.data: " + entities.data);
-        	      		console.log("entities.data.length: " + entities.data.length);
-        	      		console.log("test3");  
+        	      		//console.log("entities.data[0]: " + entities.data[0]);
+        	      		//console.log("entities.data: " + entities.data);
+        	      		//console.log("entities.data.length: " + entities.data.length);
+        	      		//console.log("test3");  
         	      		for (var i = 0; i < entities.data.length; i++)
         	      		{
         	      		  var reviewRelation = entities.data[i];
-        	      		  console.log("reviewRelation: " + reviewRelation);
-        	      		  console.log("reviewRelation.id: " + reviewRelation.id);
-        	      		  console.log("reviewMergeRelationId: " + reviewMergeRelationId);
-        	      		  console.log("reviewRelation members: " + reviewRelation.members);
+        	      		  //console.log("reviewRelation: " + reviewRelation);
+        	      		  //console.log("reviewRelation.id: " + reviewRelation.id);
+        	      		  ///console.log("reviewMergeRelationId: " + reviewMergeRelationId);
+        	      		  //console.log("reviewRelation members: " + reviewRelation.members);
         	      	      if (reviewRelation.id == reviewMergeRelationId)
         	      	      {
-        	      	    	console.log("test1");
+        	      	    	//console.log("test1");
         	      	    	//add a changeset which resolves this review
         	      	    	var newTags = _.clone(reviewRelation.tags);
         	                newTags["hoot:review:needs"] = "no";
         	                context.perform(
         	                  iD.actions.ChangeTags(reviewRelation.id, newTags), 
         	                  t('operations.change_tags.annotation'));
-        	      	    	logDiff();
         	      	      }
         	      	      else
         	      	      {
-        	      	    	console.log("test2");  
+        	      	    	//console.log("test2");  
         	      	    	//for all other review relations, update them to point to the newly 
         	      	    	//created feature as a result of the merge
         	                	
@@ -279,43 +277,48 @@ Hoot.model.conflicts = function(context)
         	      	    	var queryElement1iDid = 
         	      	    	  "n" + queryElement1.id.toString() + "_" + mapId.toString();
         	      	    	var queryElement1Member = reviewRelation.memberById(queryElement1iDid);
-        	      	    	console.log("queryElement1Member: " + queryElement1Member);
+        	      	    	//console.log("queryElement1Member: " + queryElement1Member);
         	      	    	if (queryElement1Member != null)
         	      	    	{
         	      	    	  context.perform(
         	        	        iD.actions.DeleteMember(reviewRelation.id, queryElement1Member.index),
         	        	        t('operations.delete_member.annotation'));
-        	      	    	  logDiff();
         	      	    	}
         	      	    	var queryElement2iDid = 
         	      	    	  "n" + queryElement2.id.toString() + "_" + mapId.toString();
         	      	    	var queryElement2Member = reviewRelation.memberById(queryElement2iDid);
-        	      	    	console.log("queryElement2Member: " + queryElement2Member);
+        	      	    	//console.log("queryElement2Member: " + queryElement2Member);
         	      	    	if (queryElement2Member != null)
         	      	    	{
         	      	    	  context.perform(
         	            	    iD.actions.DeleteMember(reviewRelation.id, queryElement2Member.index),
         	            	    t('operations.delete_member.annotation'));
-        	      	    	  logDiff();
         	      	    	}
         	      	    	
         	      	    	//add the new merged node as a new member
-        	      	    	var newMember = {};
+        	      	    	var newMember = new iD.Node();
         	      	    	newMember.id = mergedNode.id;
         	      	    	newMember.type = "node";
         	      	    	newMember.role = "reviewee";
-        	      	    	newMember.index = queryElement1Member.index;
+        	      	        //at least one of the query elements should be a member of this relation
+        	      	    	if (queryElement1Member != null)
+        	      	    	{
+        	      	    	  newMember.index = queryElement1Member.index;
+        	      	    	}
+        	      	    	else if (queryElement2Member != null)
+        	      	    	{
+        	      	    	  newMember.index = queryElement2Member.index;
+        	      	    	}
         	      	    	context.perform(
         	      	          iD.actions.AddMember(reviewRelation.id, newMember, newMember.index),
         	      	            t('operations.add.annotation.relation'));
-        	      	        logDiff();
         	      	      }
         	      		}
         	            
         	          	validateMergeChangeset();
         	      	  },
         	      	  layerName);
-                        });
+                    });
                }, mapid, layerName);
             }
         } 
@@ -329,12 +332,14 @@ Hoot.model.conflicts = function(context)
       var changes = 
     	context.history().changes(
           iD.actions.DiscardTags(context.history().difference()));
+      //console.log(changes);
+      //console.log(JXON.stringify(context.connection().osmChangeJXON(1, changes)));
       context.hoot().assert(changes.created.length == 1);
-      context.hoot().assert(changes.deleted.length == 2);
       //The modified length will vary depending on the number of review references returned by
       //the features deleted as a result of the merge, but will always at least contain the resolved
       //review of the two features deleted as a result of the merge.
       context.hoot().assert(changes.modified.length >= 1);
+      context.hoot().assert(changes.deleted.length == 2);
     }
 
     var logDiff = function()
