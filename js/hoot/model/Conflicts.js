@@ -255,6 +255,8 @@ Hoot.model.conflicts = function(context)
         	      		  var reviewRelation = entities.data[i];
         	      		  console.log("reviewRelation: " + reviewRelation);
         	      		  console.log("reviewRelation.id: " + reviewRelation.id);
+        	      		  console.log("reviewMergeRelationId: " + reviewMergeRelationId);
+        	      		  console.log("reviewRelation members: " + reviewRelation.members);
         	      	      if (reviewRelation.id == reviewMergeRelationId)
         	      	      {
         	      	    	console.log("test1");
@@ -274,19 +276,25 @@ Hoot.model.conflicts = function(context)
         	                	
         	      	    	//delete the members corresponding to the features deleted as a result 
         	      	    	//of the merge
-        	      	    	var queryElement1Member = reviewRelation.memberById(queryElement1.id);
+        	      	    	var queryElement1iDid = 
+        	      	    	  "n" + queryElement1.id.toString() + "_" + mapId.toString();
+        	      	    	var queryElement1Member = reviewRelation.memberById(queryElement1iDid);
+        	      	    	console.log("queryElement1Member: " + queryElement1Member);
         	      	    	if (queryElement1Member != null)
         	      	    	{
         	      	    	  context.perform(
-        	        	        iD.actions.DeleteMember(queryElement1Member.relation.id, queryElement1Member.index),
+        	        	        iD.actions.DeleteMember(reviewRelation.id, queryElement1Member.index),
         	        	        t('operations.delete_member.annotation'));
         	      	    	  logDiff();
         	      	    	}
-        	      	    	var queryElement2Member = reviewRelation.memberById(queryElement2.id);
+        	      	    	var queryElement2iDid = 
+        	      	    	  "n" + queryElement2.id.toString() + "_" + mapId.toString();
+        	      	    	var queryElement2Member = reviewRelation.memberById(queryElement2iDid);
+        	      	    	console.log("queryElement2Member: " + queryElement2Member);
         	      	    	if (queryElement2Member != null)
         	      	    	{
         	      	    	  context.perform(
-        	            	    iD.actions.DeleteMember(queryElement2Member.relation.id, queryElement2Member.index),
+        	            	    iD.actions.DeleteMember(reviewRelation.id, queryElement2Member.index),
         	            	    t('operations.delete_member.annotation'));
         	      	    	  logDiff();
         	      	    	}
@@ -296,8 +304,9 @@ Hoot.model.conflicts = function(context)
         	      	    	newMember.id = mergedNode.id;
         	      	    	newMember.type = "node";
         	      	    	newMember.role = "reviewee";
+        	      	    	newMember.index = queryElement1Member.index;
         	      	    	context.perform(
-        	      	          iD.actions.AddMember(newMember.id, newMember),
+        	      	          iD.actions.AddMember(reviewRelation.id, newMember, newMember.index),
         	      	            t('operations.add.annotation.relation'));
         	      	        logDiff();
         	      	      }
