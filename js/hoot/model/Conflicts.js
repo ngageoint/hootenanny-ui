@@ -369,3 +369,5 @@ Hoot.model.conflicts = function(context)
     };
 
   return model_conflicts;
+
+}
