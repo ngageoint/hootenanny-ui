@@ -1,23 +1,22 @@
 Hoot.demo = function(context) {
         
-	//To run this:  
-	// - conflate the AllDataTypes files
-	// - update your hardcoded map id and layer below
-	// - rename this file to demo.js
-	// - set the demo var in index.html to true
-	// - load the ui
+	//see #7278 for instructions on how to run this
 	
-	var layerName = "Merged_AllDataTypes_19d"; //TODO: change this based on your dataset
-	var mapId = 3; //TODO: change this based on your dataset
+	var layerName = "AllDataTypesOut"; //TODO: change this based on your dataset
+	var mapId = 1195; //TODO: change this based on your dataset
 	//iD feature ID: <OSM element type first char> + <OSM element ID> + '_' + <mapid>;
 	reviewMergeRelationId = "r2_" + mapId.toString();
 	
 	//fake a merged node
-	var mergedNode = {};
+	var mergedNode = new iD.Node();
+	mergedNode.id = iD.Entity.id("node") + "_" + mapId.toString();  //TODO: fix?
     mergedNode.version = 0;
     mergedNode.tags = {};
     mergedNode.tags['uuid'] = "{a44f5118-15f6-46ce-a175-7939853ef310}";
     mergedNode.tags['hoot:status'] = 3;
+    mergedNode.loc = [];
+    mergedNode.loc[0] = 0;
+    mergedNode.loc[1] = 0;
     context.perform(
       iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
 	
@@ -86,6 +85,8 @@ Hoot.demo = function(context) {
       		  var reviewRelation = entities.data[i];
       		  console.log("reviewRelation: " + reviewRelation);
       		  console.log("reviewRelation.id: " + reviewRelation.id);
+      		  console.log("reviewMergeRelationId: " + reviewMergeRelationId);
+      		  console.log("reviewRelation members: " + reviewRelation.members);
       	      if (reviewRelation.id == reviewMergeRelationId)
       	      {
       	    	console.log("test1");
@@ -95,7 +96,6 @@ Hoot.demo = function(context) {
                 context.perform(
                   iD.actions.ChangeTags(reviewRelation.id, newTags), 
                   t('operations.change_tags.annotation'));
-      	    	logDiff();
       	      }
       	      else
       	      {
@@ -105,32 +105,42 @@ Hoot.demo = function(context) {
                 	
       	    	//delete the members corresponding to the features deleted as a result 
       	    	//of the merge
-      	    	var queryElement1Member = reviewRelation.memberById(queryElement1.id);
+      	    	var queryElement1iDid = "n" + queryElement1.id.toString() + "_" + mapId.toString();
+      	    	var queryElement1Member = reviewRelation.memberById(queryElement1iDid);
+      	    	console.log("queryElement1Member: " + queryElement1Member);
       	    	if (queryElement1Member != null)
       	    	{
       	    	  context.perform(
-        	        iD.actions.DeleteMember(queryElement1Member.relation.id, queryElement1Member.index),
+        	        iD.actions.DeleteMember(reviewRelation.id, queryElement1Member.index),
         	        t('operations.delete_member.annotation'));
-      	    	  logDiff();
       	    	}
-      	    	var queryElement2Member = reviewRelation.memberById(queryElement2.id);
+      	    	var queryElement2iDid = "n" + queryElement2.id.toString() + "_" + mapId.toString();
+      	    	var queryElement2Member = reviewRelation.memberById(queryElement2iDid);
+      	    	console.log("queryElement2Member: " + queryElement2Member);
       	    	if (queryElement2Member != null)
       	    	{
       	    	  context.perform(
-            	    iD.actions.DeleteMember(queryElement2Member.relation.id, queryElement2Member.index),
+            	    iD.actions.DeleteMember(reviewRelation.id, queryElement2Member.index),
             	    t('operations.delete_member.annotation'));
-      	    	  logDiff();
       	    	}
       	    	
-      	    	//add the new merged node as a new member
-      	    	var newMember = {};
+      	    	//add the new merged node as a new review relation member
+      	    	var newMember = new iD.Node();
       	    	newMember.id = mergedNode.id;
       	    	newMember.type = "node";
       	    	newMember.role = "reviewee";
+      	    	//at least one of the query elements should be a member of this relation
+      	    	if (queryElement1Member != null)
+      	    	{
+      	    	  newMember.index = queryElement1Member.index;
+      	    	}
+      	    	else if (queryElement2Member != null)
+      	    	{
+      	    	  newMember.index = queryElement2Member.index;
+      	    	}
       	    	context.perform(
-      	          iD.actions.AddMember(newMember.id, newMember),
+      	          iD.actions.AddMember(reviewRelation.id, newMember, newMember.index),
       	            t('operations.add.annotation.relation'));
-      	        logDiff();
       	      }
       		}
             
@@ -171,12 +181,16 @@ Hoot.demo = function(context) {
       var changes = 
     	context.history().changes(
           iD.actions.DiscardTags(context.history().difference()));
+      console.log(changes);
+      console.log(JXON.stringify(context.connection().osmChangeJXON(1, changes)));
       context.hoot().assert(changes.created.length == 1);
-      context.hoot().assert(changes.deleted.length == 2);
       //The modified length will vary depending on the number of review references returned by
       //the features deleted as a result of the merge, but will always at least contain the resolved
       //review of the two features deleted as a result of the merge.
       context.hoot().assert(changes.modified.length >= 1);
+      //you won't see these deletion in the changeset in this demo example, but will during an
+      //actual merge
+      //context.hoot().assert(changes.deleted.length == 2);
     }
 
     var logDiff = function()
