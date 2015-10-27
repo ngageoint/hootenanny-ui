@@ -202,7 +202,11 @@ Hoot.view.utilities.errorlog = function(context){
                                             d3.select('#hooterrorlogtext').text(text).value(text);
                                             
                                             if(iD.data.hootConfig.currentError){
-                                                var uitext = JSON.stringify(iD.data.hootConfig.currentError) + "\n" + d3.select('#hootuilogtext').text();
+                                                //check if currentError has already been listed
+                                            	var uitext = d3.select('#hootuilogtext').text();
+                                            	if(uitext.split('\n').indexOf(JSON.stringify(iD.data.hootConfig.currentError)) === -1){
+                                            		uitext = JSON.stringify(iD.data.hootConfig.currentError) + "\n" + d3.select('#hootuilogtext').text();
+                                            	}
                                                 d3.select("#hootuilogtext").text(uitext).value(uitext);                                                	
                                             }
                                         }

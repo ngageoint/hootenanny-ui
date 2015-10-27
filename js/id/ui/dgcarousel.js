@@ -141,8 +141,12 @@ iD.ui.dgCarousel = function(context) {
                             //Update dgservices variables tracking visible image metadata
                             //The first feature in the response is the top (visible) image
                             //in the stacking profile.  Record this metadata.
-                            dg.imagemeta.add('DigitalGlobe ' + activeService + ' - ' + dg.getProfile(activeProfile),
-                                data.features[0]);
+                            //FIXME: Until feature profile param can be passed to WFS, only record
+                            //detailed metadata for Most Recent
+                            if (activeProfile === 'Global_Currency_Profile') {
+                                dg.imagemeta.add('DigitalGlobe ' + activeService + ' - ' + dg.getProfile(activeProfile),
+                                    data.features[0]);
+                            }
 
                             //display available images in carousel
 
