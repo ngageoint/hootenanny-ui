@@ -201,7 +201,7 @@ Hoot.view.utilities.errorlog = function(context){
                                             text += "TOMCATLOG (Truncated if > 50k):\n" + logStr + "\n";
                                             d3.select('#hooterrorlogtext').text(text).value(text);
                                             
-                                            if(iD.data.hootConfig.currentError){
+                                            if(iD.data.hootConfig.currentError && !d3.select("#hootuilogtext").empty()){
                                                 //check if currentError has already been listed
                                             	var uitext = d3.select('#hootuilogtext').text();
                                             	if(uitext.split('\n').indexOf(JSON.stringify(iD.data.hootConfig.currentError)) === -1){
@@ -220,7 +220,7 @@ Hoot.view.utilities.errorlog = function(context){
     }
     
     errorlog.updateUIlog = function(){
-    	if(iD.data.hootConfig.currentError){
+    	if(iD.data.hootConfig.currentError && !d3.select("#hootuilogtext").empty()){
     		var uitext = JSON.stringify(iD.data.hootConfig.currentError) + "\n" + d3.select('#hootuilogtext').text();
     		d3.select("#hootuilogtext").text(uitext).value(uitext);  
     	}

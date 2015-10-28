@@ -25,7 +25,11 @@ iD.ui.Alert = function(message,type) {
 	alertDiv.append('h3').text(message);
 
 	var d = new Date().toLocaleString();
-	hoot.view.utilities.errorlog.reportUIError(d + ": " + message);
+	try{
+		hoot.view.utilities.errorlog.reportUIError(d + ": " + message);
+	} catch(e){
+		alert(message);
+	}
 	
 	function fadeOut(selection){
 		selection.style("opacity",1).transition().duration(fadeTime).style("opacity",0).remove();

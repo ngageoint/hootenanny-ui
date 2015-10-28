@@ -203,6 +203,13 @@ Hoot.model.import = function (context)
         if(importCallback){
             var status = {};
             status.info = uploadJobStat.status;
+            if(status.info==='failed'){
+            	try{
+            		status.error = JSON.parse(uploadJobStat.statusDetail).children[0].detail || undefined;
+            	} catch(e) {
+            		status.error = undefined;
+            	}
+            }
             importCallback(status);
             }
     }
