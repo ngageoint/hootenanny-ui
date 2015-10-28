@@ -239,8 +239,8 @@
         "next": {
             "description": "Skip to next validation item."
         },
-        "verified": {
-            "description": "Feature has been verified."
+        "select": {
+            "description": "Select the validation feature."
         }
     },
     "tooltip_keyhint": "Shortcut:",
