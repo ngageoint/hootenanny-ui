@@ -586,11 +586,13 @@ Hoot.control.TranslationAssistant = function () {
                             break;
                         // up arrow
                         case 38:
-                            d3.event.preventDefault();
+                        	scroll('up',this);
+                        	d3.event.preventDefault();
                             break;
                         // down arrow
                         case 40:
-                            d3.event.preventDefault();
+                        	scroll('down',this);
+                        	d3.event.preventDefault();
                             break;
                     }
                     d3.event.stopPropagation();
@@ -609,6 +611,31 @@ Hoot.control.TranslationAssistant = function () {
                     }
                 }
 
+                function scroll(dir,that){
+                	var overflowList = d3.select(that).node().nextSibling;
+                	var results = d3.select(overflowList).selectAll('div');
+                	
+                	if(!_.isEmpty(results[0])){
+                		var overflowTags = [];
+                    	for (var i = 0; i < results[0].length; i += 1) {
+                    		overflowTags.push(results[0][i].innerHTML);
+                    		}
+                    	
+                    	//get index of current
+                    	var curIdx = overflowTags.indexOf(searchTag.property('value'));
+
+                    	if(dir==='up'){curIdx -= 1;}
+                    	else if(dir==='down'){curIdx += 1;}
+                    	
+                    	curIdx < 0? 0 : curIdx;
+                    	curIdx > overflowTags.length-1? overflowTags.length-1 : curIdx;
+                    	
+                    	//scroll to curIdx
+                    	overflowList.scrollTop = results[0][curIdx].offsetTop - overflowList.offsetTop;
+                    	searchTag.property('value',overflowTags[curIdx]);	
+                	}                	
+                }
+                
                 function change() {
                     //window.console.log(d3.event);
 
