@@ -326,7 +326,8 @@ Hoot.tools = function (context, selection) {
 
         hoot.model.layers.addLayer({
             'name': activeConflateLayer.name,
-            'color': 'orange'
+            'color': 'orange',
+            'id': activeConflateLayer.mapId.toString()
         });
 
         activeConflateLayer = {};

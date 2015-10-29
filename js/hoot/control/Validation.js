@@ -35,6 +35,13 @@ Hoot.control.validation = function(context, sidebar) {
                 color: 'fill-grey button round pad0y pad1x dark small strong',
                 cmd: iD.ui.cmd('p'),
                 action: function() { validation.getItem(mapid, 'backward'); }
+            },
+            {
+                id: 'select',
+                text: 'Select',
+                color: 'fill-grey button round pad0y pad1x dark small strong',
+                cmd: iD.ui.cmd('s'),
+                action: function() { validation.selectItem(); }
             }
         ];
 
@@ -296,6 +303,12 @@ Hoot.control.validation = function(context, sidebar) {
 
                     event.featureLoaded();
                 }
+
+                //Update selectItem to work with the current feature
+                validation.selectItem = function() {
+                    context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
+                };
+
             } else {
                 iD.ui.Alert(response.status, 'notice');
             }
