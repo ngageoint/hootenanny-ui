@@ -198,7 +198,8 @@ iD.Map = function(context) {
 
     function zoomPan() {
     	//Added for measure layer
-        d3.select('.measure-layer').selectAll('g').remove();
+        if(context.mode().id=='measure-add-line' || context.mode().id=='measure-add-area'){return;}
+        else{d3.select('.measure-layer').selectAll('g').remove();}
 
     	if (Math.log(d3.event.scale) / Math.LN2 - 8 < minzoom + 1) {
             surface.interrupt();
