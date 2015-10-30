@@ -6,11 +6,20 @@ iD.dgservices  = function() {
         egd_host = 'https://evwhs.digitalglobe.com',
         gbm_connectId = 'REPLACE_ME',
         egd_connectId = 'REPLACE_ME',
-        wmts_template = '/earthservice/wmtsaccess?CONNECTID={connectId}&request=GetTile&version=1.0.0&layer=DigitalGlobe:ImageryTileService&featureProfile={profile}&style=default&format=image/png&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:{zoom}&TileRow={y}&TileCol={x}',
-        wms_template = '/mapservice/wmsaccess?connectId={connectId}&SERVICE=WMS&REQUEST=GetMap&SERVICE=WMS&VERSION=1.1.1&LAYERS=DigitalGlobe:Imagery&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&featureProfile={profile}&SRS=EPSG:3857&FEATURECOLLECTION={featureId}&BBOX={bbox}&WIDTH=256&HEIGHT=256',
-        //wfs should use featureProfile param, but results aren't consistent
-        wfs_template = '/catalogservice/wfsaccess?connectid={connectId}&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&typeName=FinishedFeature&outputFormat=json&BBOX={bbox}',
-        collection_template = '/mapservice/wmsaccess?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=imagery_footprint&env=color:ff6600&FORMAT=image/png8&LAYERS=DigitalGlobe:ImageryFootprint&featureProfile={profile}&TRANSPARENT=true&SRS=EPSG:3857&SUPEROVERLAY=true&FORMAT_OPTIONS=OPACITY:0.6;GENERALIZE:true&connectId={connectId}&FRESHNESS={freshness}&BBOX={bbox}&WIDTH=256&HEIGHT=256',
+        wmts_template = '/earthservice/wmtsaccess?CONNECTID={connectId}&request=GetTile&version=1.0.0'
+            + '&layer=DigitalGlobe:ImageryTileService&featureProfile={profile}&style=default&format=image/png'
+            + '&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:{zoom}&TileRow={y}&TileCol={x}',
+        wms_template = '/mapservice/wmsaccess?connectId={connectId}&SERVICE=WMS&REQUEST=GetMap&SERVICE=WMS&VERSION=1.1.1'
+            + '&LAYERS=DigitalGlobe:Imagery&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE'
+            + '&featureProfile={profile}&SRS=EPSG:3857&FEATURECOLLECTION={featureId}&BBOX={bbox}&WIDTH=256&HEIGHT=256',
+        wfs_template = '/catalogservice/wfsaccess?connectid={connectId}&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature'
+            + '&typeName=FinishedFeature&featureProfile={profile}&outputFormat=json'
+            + '&BBOX={bbox}&HEIGHT={height}&WIDTH={width}',
+        collection_template = '/mapservice/wmsaccess?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap'
+            + '&STYLES=imagery_footprint&env=color:ff6600&FORMAT=image/png8&LAYERS=DigitalGlobe:ImageryFootprint'
+            + '&featureProfile={profile}&TRANSPARENT=true&SRS=EPSG:3857&SUPEROVERLAY=true'
+            + '&FORMAT_OPTIONS=OPACITY:0.6;GENERALIZE:true&connectId={connectId}&FRESHNESS={freshness}'
+            + '&BBOX={bbox}&WIDTH=256&HEIGHT=256',
         imagemeta_template = '/myDigitalGlobe/viewportsettings';
         //service = 'EGD',
         defaultProfile = 'Global_Currency_Profile',
@@ -46,74 +55,65 @@ iD.dgservices  = function() {
 
     dg.defaultCollection = defaultCollection;
 
+    function getUrl(service, connectId, profile, template, proxy) {
+        var host,
+            connectid;
+        if (!service || service === 'GBM') {
+            host = (proxy) ? gbm_proxy : gbm_host;
+            connectid = connectId || gbm_connectId;
+        } else if (service === 'EGD') {
+            host = (proxy) ? egd_proxy : egd_host;
+            connectid = connectId || egd_connectId;
+        }
+        return (host + template)
+            .replace('{connectId}', connectid)
+            .replace('{profile}', profile || defaultProfile);
+    }
 
     dg.wmts = {};
     dg.wmts.getTile = function(service, connectId, profile) {
-        var url = '';
-        if (!service || service === 'GBM') {
-            url += gbm_host + wmts_template;
-            return url.replace('{connectId}', connectId || gbm_connectId)
-                .replace('{profile}', profile || defaultProfile);
-        } else if (service === 'EGD') {
-            url += egd_host + wmts_template;
-            return url.replace('{connectId}', connectId || egd_connectId)
-                .replace('{profile}', profile || defaultProfile);
-        }
+        return getUrl(service, connectId, profile, wmts_template);
     };
 
     dg.wms = {};
     dg.wms.getMap = function(service, connectId, profile, featureId) {
-        var url = '';
-        if (!service || service === 'GBM') {
-            url += gbm_host + wms_template;
-            return url.replace('{connectId}', connectId || gbm_connectId)
-                .replace('{profile}', profile || defaultProfile)
-                .replace('{featureId}', featureId);
-        } else if (service === 'EGD') {
-            url += egd_host + wms_template;
-            return url.replace('{connectId}', connectId || egd_connectId)
-                .replace('{profile}', profile || defaultProfile)
-                .replace('{featureId}', featureId);
-        }
+        return getUrl(service, connectId, profile, wms_template)
+            .replace('{featureId}', featureId);
     };
 
     dg.wfs = {};
-    dg.wfs.getFeature = function(service, connectId, profile, extent, callback) {
-        var url = '';
-        if (!service || service === 'GBM') {
-            url += gbm_proxy + wfs_template;
-            url = url.replace('{connectId}', connectId || gbm_connectId)
-                .replace('{profile}', profile || defaultProfile)
-                .replace('{bbox}', extent.toParam());
-        } else if (service === 'EGD') {
-            url += egd_proxy + wfs_template;
-            url = url.replace('{connectId}', connectId || egd_connectId)
-                .replace('{profile}', profile || defaultProfile)
-                .replace('{bbox}', extent.toParam());
+    function getWfsFeature(service, connectId, profile, extent, size, callback, addlParam) {
+        var url = getUrl(service, connectId, profile, wfs_template, true/*proxy*/);
+        if (addlParam) {
+            url += '&' + d3.entries(addlParam).map(function(d) {
+                return d.key + '=' + d.value;
+            }).join('&');
         }
+        url = url.replace('{width}', size[0])
+            .replace('{height}', size[1])
+            .replace('{bbox}', extent.toParam());
 
         d3.json(url, callback);
+    }
+    dg.wfs.getFeature = function(service, connectId, profile, extent, size, callback) {
+        getWfsFeature(service, connectId, profile, extent, size, callback);
+    };
+    dg.wfs.getFeatureInRaster = function(service, connectId, profile, extent, size, callback) {
+        getWfsFeature(service, connectId, profile, extent, size, callback, {
+            showTheRasterReturned: 'TRUE'
+        });
     };
 
     dg.collection = {};
     dg.collection.getMap = function(service, connectId, profile, freshness) {
-        var url = '';
-        if (!service || service === 'GBM') {
-            url += gbm_host + collection_template;
-            return url.replace('{connectId}', connectId || gbm_connectId)
-                .replace('{profile}', profile || defaultProfile)
-                .replace('{freshness}', freshness || defaultCollection);
-        } else if (service === 'EGD') {
-            url += egd_host + collection_template;
-            return url.replace('{connectId}', connectId || egd_connectId)
-                .replace('{profile}', profile || defaultProfile)
-                .replace('{freshness}', freshness || defaultCollection);
-        }
+        return getUrl(service, connectId, profile, collection_template)
+            .replace('{freshness}', freshness || defaultCollection);
+
     };
 
     dg.imagemeta = {};
     dg.imagemeta.sources = {};
-    dg.imagemeta.add = function(source, feature) {
+    dg.imagemeta.add = function(source, features) {
         /*
         ${BASEMAP_IMAGE_SOURCE} - Source of imagery. E.g. "digitalglobe", "bing"
         ${BASEMAP_IMAGE_SENSOR} - Name of the source sensor. E.g. "WV02"
@@ -122,9 +122,9 @@ iD.dgservices  = function() {
         */
         dg.imagemeta.sources[source] = {
             '${BASEMAP_IMAGE_SOURCE}': source,
-            '${BASEMAP_IMAGE_SENSOR}': feature.properties.source,
-            '${BASEMAP_IMAGE_DATETIME}': feature.properties.acquisitionDate,
-            '${BASEMAP_IMAGE_ID}': feature.properties.featureId
+            '${BASEMAP_IMAGE_SENSOR}': features.map(function(d) { return d.properties.source; }).join(';'),
+            '${BASEMAP_IMAGE_DATETIME}': features.map(function(d) { return d.properties.acquisitionDate; }).join(';'),
+            '${BASEMAP_IMAGE_ID}': features.map(function(d) { return d.properties.featureId; }).join(';')
         };
     };
     dg.imagemeta.remove = function(source) {
