@@ -88,6 +88,8 @@ iD.ui.RawTagEditor = function(context) {
         var $items = $list.selectAll('li')
             .data(entries, function(d) { return d.key; });
 
+        var protectedKeys = ['hoot','uuid'];
+        
         // Enter
 
         $enter = $items.enter().append('li')
@@ -146,10 +148,22 @@ iD.ui.RawTagEditor = function(context) {
             .value(function(d) { return d.value; })
             .on('blur', valueChange)
             .on('change', valueChange)
-            .on('keydown.push-more', pushMore);
+            .on('keydown.push-more', pushMore)
+            .each(function(d){
+            	if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item)==0;}))){
+            		d3.select(this).attr('readonly',true);
+            	}
+            });
+
 
         $items.select('button.remove')
-            .on('click', removeTag);
+            .on('click', function(d){
+            	if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item)==0;}))){
+            		return iD.ui.Alert("Cannot remove a protected tag!","warning");
+            	} else {
+            		return removeTag;
+            	}
+            });
 
         $items.exit()
             .remove();
