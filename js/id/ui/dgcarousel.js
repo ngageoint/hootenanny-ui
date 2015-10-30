@@ -127,27 +127,28 @@ iD.ui.dgCarousel = function(context) {
             if (context.map().zoom() > 13) {
                 //get extent
                 var extent = context.map().extent();
-                if (extent) {
+                var size = context.map().dimensions();
+                if (extent && size) {
                     //get features from wfs
                     var dg = context.dgservices();
                     var activeService = (d3.select('#dgServiceSwitch').property('checked')) ? 'EGD' : 'GBM';
                     var activeProfile = d3.select('#dgProfiles').selectAll('li.active').attr('value');
-                    dg.wfs.getFeature(activeService, null/*connectId*/, activeProfile/*profile*/, extent, function(error, data) {
+                    dg.wfs.getFeatureInRaster(activeService, null/*connectId*/, activeProfile/*profile*/, extent, size, function(error, data) {
+                        if (error) {
+                            window.console.warn(error);
+                        } else {
+                            //Update dgservices variables tracking visible image metadata
+                            //The first feature in the response is the top (visible) image
+                            //in the stacking profile.  Record this metadata.
+                            dg.imagemeta.add('DigitalGlobe ' + activeService + ' - ' + dg.getProfile(activeProfile),
+                                data.features);
+                        }
+                    });
+                    dg.wfs.getFeature(activeService, null/*connectId*/, activeProfile/*profile*/, extent, size, function(error, data) {
                         if (error) {
                             window.console.warn(error);
                         } else {
                             //window.console.log(data.totalFeatures);
-
-                            //Update dgservices variables tracking visible image metadata
-                            //The first feature in the response is the top (visible) image
-                            //in the stacking profile.  Record this metadata.
-                            //FIXME: Until feature profile param can be passed to WFS, only record
-                            //detailed metadata for Most Recent
-                            if (activeProfile === 'Global_Currency_Profile') {
-                                dg.imagemeta.add('DigitalGlobe ' + activeService + ' - ' + dg.getProfile(activeProfile),
-                                    data.features[0]);
-                            }
-
                             //display available images in carousel
 
                             var images = ul.selectAll('li:not(.active)')
@@ -293,7 +294,7 @@ iD.ui.dgCarousel = function(context) {
             if (active) {
                 context.background().addSource(source);
                 //Add image to dg.imagemeta
-                dg.imagemeta.add(source.id, d);
+                dg.imagemeta.add(source.id, [d]);
             } else {
                 context.background().removeSource(source);
                 //Remove image from dg.imagemeta
