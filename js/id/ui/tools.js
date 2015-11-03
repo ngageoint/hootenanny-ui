@@ -8,6 +8,9 @@ iD.ui.Tools = function(context) {
     	 var items = [
     	    {title:'Measure Length',type:'line',icon:'add-line',mode:iD.modes.MeasureAddLine(context)},
     	    {title:'Measure Area',type:'area',icon:'add-area',mode:iD.modes.MeasureAddArea(context)},
+    	    {title:'Crop to Visual Extent',type:'area',icon:'add-area',action:'cropVisualExtent'},
+    	    {title:'Crop to Bounding Box',type:'area',icon:'add-area',mode:null},//iD.modes.CropBoundingBox(context)},
+    	    {title:'Crop to Custom Area',type:'area',icon:'add-area',mode:null},//iD.modes.CropCustomArea(context)}
     	  ];
         
         d3.select('html').append('div').attr('class', 'tools-menu');
@@ -20,8 +23,17 @@ iD.ui.Tools = function(context) {
             .append('li')
             .attr('class',function(item){return item.icon + ' measure-distance';})
             .on('click' , function(item) { 
-            	//context.enter(iD.modes.Measure(context,item));
-            	context.enter(item.mode);
+            	if(item.mode){
+                	context.enter(item.mode);	
+            	} else if (item.action=='cropVisualExtent'){
+            		//Call crop map
+            		if(!_.isEmpty(hoot.model.layers.getLayers())){
+            			console.log("This is where we would call cropmap.")
+                		console.log("Input IDs: " + _.pluck(hoot.model.layers.getLayers(),'id'));
+                		console.log("Input Names: " + _.pluck(hoot.model.layers.getLayers(),'name'));
+                		console.log("Bounding Box: " + id.map().extent());
+            		}
+            	}
             	d3.select('.tools-menu').remove();
               });
         
