@@ -29,9 +29,30 @@ iD.ui.Tools = function(context) {
             		//Call crop map
             		if(!_.isEmpty(hoot.model.layers.getLayers())){
             			console.log("This is where we would call cropmap.")
-                		console.log("Input IDs: " + _.pluck(hoot.model.layers.getLayers(),'id'));
-                		console.log("Input Names: " + _.pluck(hoot.model.layers.getLayers(),'name'));
-                		console.log("Bounding Box: " + id.map().extent());
+                		var params = [];
+            			//Provide input ID(s) of dataset(s)
+            			_.each(hoot.model.layers.getLayers(),function(d){
+            				var param = {};
+            				param.id = d.id;
+            				
+            				//create name, ensuring it is unique
+            				var uniquename = false;
+            				var name = d.name + '_crop';
+            				var i = 1;
+            				while (uniquename==false){
+            					if(context.hoot().model.layers.getLayers()[name]){
+            						name = d.name + '_crop_' + i.toString();
+            						i++;
+            					} else {
+            						uniquename = true;
+            					}
+            				}
+            				param.name = name;            				
+            				param.bbox = id.map().extent();
+            				params.push(param);
+            			});
+            			
+            			console.log(params);
             		}
             	}
             	d3.select('.tools-menu').remove();
