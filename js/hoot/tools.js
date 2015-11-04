@@ -424,12 +424,6 @@ Hoot.tools = function (context, selection) {
             Hoot.model.REST('ReviewGetStatistics', params.mapId,function (stat) {
                 var isReviewMode = false;
                 if(stat.numReviewableItems > 0) {
-                    //populate the map in map displaying review items location and status
-                    Hoot.model.REST('ReviewGetGeoJson', params.mapId, function (gj) {
-                        context.MapInMap.loadGeoJson(gj);
-
-                    });
-
                     var reqParam = {};
                     reqParam.mapId = params.mapId
                     if(reqParam.mapId) {

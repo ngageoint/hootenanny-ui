@@ -360,6 +360,12 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                     updateMeta(feature.tags['hoot:review:note']);
                     panToEntity(context.entity(feature ? feature.id : againstFeature.id));
+
+                    //Populate the map-in-map with review items location and status
+                    Hoot.model.REST('ReviewGetGeoJson', mapid, function (gj) {
+                        context.MapInMap.loadGeoJson(gj.features);
+                    });
+
                 }
             };
             var getFeature = function () {
@@ -960,6 +966,9 @@ Hoot.control.conflicts = function (context, sidebar) {
         // we need tagTable removed when UI is review mode and was displaying tag table
         d3.select('#conflicts-container').remove();
         Conflict.reviewIds = null;
+        //Clear map-in-map
+        context.MapInMap.loadGeoJson([]);
+
     });
 
     return d3.rebind(Conflict, event, 'on');

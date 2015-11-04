@@ -110,6 +110,8 @@ Hoot.control.validation = function(context, sidebar) {
             //Disable validation keybindings
             d3.keybinding('validation').off();
             d3.keybinding('choices').off();
+            //Clear map-in-map
+            context.MapInMap.loadGeoJson([]);
         };
 
         validation.updateMeta = function(d) {
@@ -308,6 +310,11 @@ Hoot.control.validation = function(context, sidebar) {
                 validation.selectItem = function() {
                     context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
                 };
+
+                //Populate the map-in-map with review items location and status
+                Hoot.model.REST('ReviewGetGeoJson', mapid, function (gj) {
+                    context.MapInMap.loadGeoJson(gj.features);
+                });
 
             } else {
                 iD.ui.Alert(response.status, 'notice');

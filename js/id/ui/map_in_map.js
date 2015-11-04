@@ -221,7 +221,7 @@ iD.ui.MapInMap = function(context) {
                     .attr('class', 'map-in-map-geojson');
 
                 var path = g.selectAll('.map-in-map-geojson')
-                    .data(geojson.features);
+                    .data(geojson);
 
                 path.enter()
                     .append('path')
@@ -276,6 +276,7 @@ iD.ui.MapInMap = function(context) {
 
         map_in_map.loadGeoJson = function(gj) {
             geojson = gj;
+            redraw();
         };
 
         selection
@@ -290,7 +291,9 @@ iD.ui.MapInMap = function(context) {
             .on('drawn.map-in-map', function(drawn) {
                 if (drawn.full === true) redraw();
             });
+
         context.MapInMap = map_in_map;
+
         redraw();
 
         var keybinding = d3.keybinding('map-in-map')

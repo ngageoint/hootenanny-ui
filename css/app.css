@@ -2169,16 +2169,14 @@ img.wiki-image {
     stroke-width: 5;
 }
 
-.map-in-map-geojson {
-/*    stroke: #F00;
-    stroke-width: 1;
-    shape-rendering: crispEdges;*/
-}
 .map-in-map-geojson.open {
-    fill: #F00;
+    fill: #ffc425;
 }
 .map-in-map-geojson.resolved {
-    fill: #0F0;
+    fill: #00b159;
+}
+.map-in-map-geojson.locked {
+    fill: #d11141;
 }
 /* Info Box
 ------------------------------------------------------- */
