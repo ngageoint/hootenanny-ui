@@ -9,8 +9,8 @@ iD.ui.Tools = function(context) {
     	    {title:'Measure Length',type:'line',icon:'add-line',mode:iD.modes.MeasureAddLine(context)},
     	    {title:'Measure Area',type:'area',icon:'add-area',mode:iD.modes.MeasureAddArea(context)},
     	    {title:'Crop to Visual Extent',type:'area',icon:'add-area',action:'cropVisualExtent'},
-    	    {title:'Crop to Bounding Box',type:'area',icon:'add-area',mode:null},//iD.modes.CropBoundingBox(context)},
-    	    {title:'Crop to Custom Area',type:'area',icon:'add-area',mode:null},//iD.modes.CropCustomArea(context)}
+    	    //{title:'Crop to Bounding Box',type:'area',icon:'add-area',mode:iD.modes.CropBoundingBox(context)},
+    	    //{title:'Crop to Custom Area',type:'area',icon:'add-area',mode:iD.modes.CropCustomArea(context)}
     	  ];
         
         d3.select('html').append('div').attr('class', 'tools-menu');
