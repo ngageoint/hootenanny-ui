@@ -362,8 +362,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                     panToEntity(context.entity(feature ? feature.id : againstFeature.id));
 
                     //Populate the map-in-map with review items location and status
-                    Hoot.model.REST('ReviewGetGeoJson', mapid, function (gj) {
-                        context.MapInMap.loadGeoJson(gj.features);
+                    Hoot.model.REST('ReviewGetGeoJson', mapid, context.MapInMap.extent(), function (gj) {
+                        context.MapInMap.loadGeoJson(gj.features || []);
                     });
 
                 }

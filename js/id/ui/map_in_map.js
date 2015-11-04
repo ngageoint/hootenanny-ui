@@ -1,5 +1,6 @@
 iD.ui.MapInMap = function(context) {
     var key = '/';
+    var dispatch = d3.dispatch('zoomPan');
 
     function map_in_map(selection) {
         var backgroundLayer = iD.TileLayer(),
@@ -12,7 +13,7 @@ iD.ui.MapInMap = function(context) {
             panning = false,
             zDiff = 6,    // by default, minimap renders at (main zoom - 6)
             tStart, tLast, tCurr, kLast, kCurr, tiles, svg, timeoutId,
-            geojson;
+            geojson = [];
 
         function ztok(z) { return 256 * Math.pow(2, z); }
         function ktoz(k) { return Math.log(k) / Math.LN2 - 8; }
@@ -224,22 +225,19 @@ iD.ui.MapInMap = function(context) {
                     .data(geojson);
 
                 path.enter()
-                    .append('path')
+                    .append('path');
+                path.exit().remove();
+                path.attr('d', getPath)
                     .attr('class', function(d) {
                         return 'map-in-map-geojson ' + d.properties.class;
                     });
-
-                path.exit().remove();
-
-                path
-                    .attr('d', getPath);
             }
         }
 
 
         function queueRedraw() {
             clearTimeout(timeoutId);
-            timeoutId = setTimeout(function() { redraw(); }, 300);
+            timeoutId = setTimeout(function() { redraw(); dispatch.zoomPan(); }, 300);
         }
 
 
@@ -279,6 +277,11 @@ iD.ui.MapInMap = function(context) {
             redraw();
         };
 
+        map_in_map.extent = function() {
+            return new iD.geo.Extent(projection.invert([0, selection.dimensions()[1]]),
+                                 projection.invert([selection.dimensions()[0], 0]));
+        };
+
         selection
             .on('mousedown.map-in-map', startMouse)
             .on('mouseup.map-in-map', endMouse);
@@ -303,5 +306,5 @@ iD.ui.MapInMap = function(context) {
             .call(keybinding);
     }
 
-    return map_in_map;
+    return d3.rebind(map_in_map, dispatch, 'on');
 };

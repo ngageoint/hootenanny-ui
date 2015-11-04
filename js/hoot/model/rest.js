@@ -794,8 +794,17 @@ rest.ReviewGetLockCount = function (mapId, callback) {
         });
     };
 
-rest.ReviewGetGeoJson = function (mapId, callback) {
-        d3.json('/hoot-services/job/review/getallreviewableitems?mapId=' + mapId, function (error, resp) {
+rest.ReviewGetGeoJson = function (mapId, extent, callback) {
+        d3.json('/hoot-services/job/review/getallreviewableitems?mapId=' + mapId
+            // + '&minx=' + '-180'
+            // + '&miny=' + '-90'
+            // + '&maxx=' + '180'
+            // + '&maxy=' + '90'
+            + '&minx=' + (extent[0][0]).toFixed(6)
+            + '&miny=' + (extent[0][1]).toFixed(6)
+            + '&maxx=' + (extent[1][0]).toFixed(6)
+            + '&maxy=' + (extent[1][1]).toFixed(6)
+            , function (error, resp) {
                 if (error) {
                     iD.ui.Alert("Failed to get review geojson.",'error');
                     return;
