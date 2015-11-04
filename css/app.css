@@ -2151,7 +2151,7 @@ img.wiki-image {
     user-select: none;
 }
 
-.map-in-map-svg {
+.map-in-map-svg, .map-in-map-svg-geojson {
     position: relative;
     overflow: hidden;
     height: 100%;
@@ -2169,6 +2169,17 @@ img.wiki-image {
     stroke-width: 5;
 }
 
+.map-in-map-geojson {
+/*    stroke: #F00;
+    stroke-width: 1;
+    shape-rendering: crispEdges;*/
+}
+.map-in-map-geojson.open {
+    fill: #F00;
+}
+.map-in-map-geojson.resolved {
+    fill: #0F0;
+}
 /* Info Box
 ------------------------------------------------------- */
 .infobox {
@@ -3130,7 +3141,7 @@ rect.more {fill: #3182bd;}*/
 
 .button.dataset-option {
 	margin-right:5px;
-	color:#fff;	
+	color:#fff;
 }
 
 input:focus::-webkit-input-placeholder { color:transparent; }

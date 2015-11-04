@@ -787,11 +787,58 @@ rest.ReviewGetLockCount = function (mapId, callback) {
 
         d3.json('/hoot-services/job/review/lockcount?mapId=' + mapId, function (error, resp) {
                 if (error) {
-                	iD.ui.Alert("Failed to get lock count.",'error');
+                    iD.ui.Alert("Failed to get lock count.",'error');
                     return;
                 }
                 return callback(resp);
         });
+    };
+
+rest.ReviewGetGeoJson = function (mapId, callback) {
+
+        // d3.json('/hoot-services/job/review/geojson?mapId=' + mapId, function (error, resp) {
+        //         if (error) {
+        //             iD.ui.Alert("Failed to get review geojson.",'error');
+        //             return;
+        //         }
+                var resp = { "type": "FeatureCollection",
+                        "features": [
+                          { "type": "Feature",
+                            "geometry": {"type": "Point", "coordinates": [-77.0328, 38.9194]},
+                            "properties": {"class": "open"}
+                            },
+                          { "type": "Feature",
+                            "geometry": {"type": "Point", "coordinates": [-77.03386, 38.925]},
+                            "properties": {"class": "resolved"}
+                            },
+                          { "type": "Feature",
+                            "geometry": {"type": "Point", "coordinates": [-77.0355, 38.9242]},
+                            "properties": {"class": "open"}
+                            },
+                          { "type": "Feature",
+                            "geometry": {"type": "Point", "coordinates": [-77.036, 38.924]},
+                            "properties": {"class": "resolved"}
+                            },
+                          { "type": "Feature",
+                            "geometry": {"type": "Point", "coordinates": [-77.03858, 38.9195]},
+                            "properties": {"class": "open"}
+                            },
+                          { "type": "Feature",
+                            "geometry": {"type": "Point", "coordinates": [-77.0451, 38.9238]},
+                            "properties": {"class": "open"}
+                            },
+                          { "type": "Feature",
+                            "geometry": {"type": "Point", "coordinates": [-77.04831, 38.9192]},
+                            "properties": {"class": "resolved"}
+                            },
+                          { "type": "Feature",
+                            "geometry": {"type": "Point", "coordinates": [-77.04831, 38.9176]},
+                            "properties": {"class": "open"}
+                            }
+                           ]
+                         };
+                if(callback){callback(resp);}
+    //    });
     };
 
 rest.getTranslations = function(callback) {

@@ -11,7 +11,8 @@ iD.ui.MapInMap = function(context) {
             transformed = false,
             panning = false,
             zDiff = 6,    // by default, minimap renders at (main zoom - 6)
-            tStart, tLast, tCurr, kLast, kCurr, tiles, svg, timeoutId;
+            tStart, tLast, tCurr, kLast, kCurr, tiles, svg, timeoutId,
+            geojson;
 
         function ztok(z) { return 256 * Math.pow(2, z); }
         function ktoz(k) { return Math.log(k) / Math.LN2 - 8; }
@@ -207,6 +208,32 @@ iD.ui.MapInMap = function(context) {
                     .attr('d', getPath)
                     .classed('thick', function(d) { return getPath.area(d) < 30; });
             }
+
+            // redraw geojson layers
+            if (!panning) {
+                var getPath = d3.geo.path().projection(projection);
+
+                var g = svg.selectAll('.map-in-map-geojson')
+                    .data([0]);
+
+                g.enter()
+                    .insert('g', '.map-in-map-bbox')
+                    .attr('class', 'map-in-map-geojson');
+
+                var path = g.selectAll('.map-in-map-geojson')
+                    .data(geojson.features);
+
+                path.enter()
+                    .append('path')
+                    .attr('class', function(d) {
+                        return 'map-in-map-geojson ' + d.properties.class;
+                    });
+
+                path.exit().remove();
+
+                path
+                    .attr('d', getPath);
+            }
         }
 
 
@@ -247,6 +274,9 @@ iD.ui.MapInMap = function(context) {
             }
         }
 
+        map_in_map.loadGeoJson = function(gj) {
+            geojson = gj;
+        };
 
         selection
             .on('mousedown.map-in-map', startMouse)
@@ -260,7 +290,7 @@ iD.ui.MapInMap = function(context) {
             .on('drawn.map-in-map', function(drawn) {
                 if (drawn.full === true) redraw();
             });
-
+        context.MapInMap = map_in_map;
         redraw();
 
         var keybinding = d3.keybinding('map-in-map')
