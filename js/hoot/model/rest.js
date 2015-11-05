@@ -703,10 +703,13 @@ Hoot.model.REST = function (command, data, callback, option) {
     	  });
     }
 
-  rest.getReviewRefs = function(mapId, elementUniqueIds, callback)
+  rest.getReviewRefs = function(queryElements, callback)
   {
-    d3.json('/hoot-services/job/review/refs?mapId=' + mapId + "&elementUniqueIds=" +
-    		elementUniqueIds.join(";"),
+	var request = {};
+	request.queryElements = queryElements;
+    d3.json('/hoot-services/job/review/refs')
+      .header('Content-Type', 'application/json')
+      .post(JSON.stringify(request),
       function(error, response)
       {
         if (error)
