@@ -125,8 +125,8 @@ Hoot.model.conflicts = function(context)
       {
         var reviewRef = reviewRefs[i];
         console.log("reviewRef.id: " + reviewRef.id);
-        console.log("idsToRemove.indexOf(reviewRef.id): " + idsToRemove.indexOf(reviewRef.id));
-        if (idsToRemove.indexOf(reviewRef.id) == -1)
+        console.log("idsToRemove.indexOf(reviewRef.id): " + idsToRemove.indexOf(""+reviewRef.id));
+        if (idsToRemove.indexOf(""+reviewRef.id) == -1)
         {
           console.log("adding reviewRef.id: " + reviewRef.id);
           modifiedReviewRefs.push(reviewRef);
@@ -169,7 +169,7 @@ Hoot.model.conflicts = function(context)
                 //Remove the two input entities
                 iD.operations.Delete([feature.id, featureAgainst.id], context)();
 
-            	//newly merged entity
+                //newly merged entity
                 var mergedNode = entities[0];
 
                 //The following tag updates would possibly make more sense done server-side, but
@@ -193,13 +193,13 @@ Hoot.model.conflicts = function(context)
                 
                 var queryElement1 = {};
                 queryElement1.mapId = mapid;
-                queryElement1.id = feature.id;
+                queryElement1.id = feature.origid.substring(1);
                 queryElement1.type = feature.type;
                 queryElements.push(queryElement1);
                 
                 var queryElement2 = {};
                 queryElement2.mapId = mapid;
-                queryElement2.id = featureAgainst.id;
+                queryElement2.id = featureAgainst.origid.substring(1);
                 queryElement2.type = featureAgainst.type;
                 queryElements.push(queryElement2);
                 
@@ -236,9 +236,9 @@ Hoot.model.conflicts = function(context)
         	      	  //console.log("reviewRefs.reviewRelationId: " + reviewRefs[i].reviewRelationId);
         	      	  //iD feature ID: <OSM element type first char> + <OSM element ID> + '_' + <mapid>;
         	      	  reviewRelationIds.push(
-        	      	    "r" + reviewRefs[i].reviewRelationId.toString() + "_" + mapId.toString());
+        	      	    "r" + reviewRefs[i].reviewRelationId.toString() + "_" + mapid);
         	      	}
-        	      	reviewRelationIds.push(reviewMergeRelationId);
+        	      	reviewRelationIds.push("r" + reviewMergeRelationId + "_" + mapid);
         	      	console.log(reviewRelationIds);
         	      	
         	      	//retrieve all the associated review relations
@@ -272,28 +272,30 @@ Hoot.model.conflicts = function(context)
         	      	    	//for all other review relations, update them to point to the newly 
         	      	    	//created feature as a result of the merge
         	                	
-        	      	    	//delete the members corresponding to the features deleted as a result 
-        	      	    	//of the merge
-        	      	    	var queryElement1iDid = 
-        	      	    	  "n" + queryElement1.id.toString() + "_" + mapId.toString();
-        	      	    	var queryElement1Member = reviewRelation.memberById(queryElement1iDid);
-        	      	    	//console.log("queryElement1Member: " + queryElement1Member);
-        	      	    	if (queryElement1Member != null)
-        	      	    	{
-        	      	    	  context.perform(
-        	        	        iD.actions.DeleteMember(reviewRelation.id, queryElement1Member.index),
-        	        	        t('operations.delete_member.annotation'));
-        	      	    	}
-        	      	    	var queryElement2iDid = 
-        	      	    	  "n" + queryElement2.id.toString() + "_" + mapId.toString();
-        	      	    	var queryElement2Member = reviewRelation.memberById(queryElement2iDid);
-        	      	    	//console.log("queryElement2Member: " + queryElement2Member);
-        	      	    	if (queryElement2Member != null)
-        	      	    	{
-        	      	    	  context.perform(
-        	            	    iD.actions.DeleteMember(reviewRelation.id, queryElement2Member.index),
-        	            	    t('operations.delete_member.annotation'));
-        	      	    	}
+
+                            //delete the members corresponding to the features deleted as a result 
+                            //of the merge
+                            var queryElement1iDid = 
+                              "n" + queryElement1.id.toString() + "_" + mapid;
+                            var queryElement1Member = reviewRelation.memberById(queryElement1iDid);
+                            //console.log("queryElement1Member: " + queryElement1Member);
+                            if (queryElement1Member != null && context.hasEntity(queryElement1iDid))
+                            {
+                              context.perform(
+                                iD.actions.DeleteMember(reviewRelation.id, queryElement1Member.index),
+                                t('operations.delete_member.annotation'));
+                            }
+                            var queryElement2iDid = 
+                              "n" + queryElement2.id.toString() + "_" + mapid;
+                            var queryElement2Member = reviewRelation.memberById(queryElement2iDid);
+                            //console.log("queryElement2Member: " + queryElement2Member);
+                            if (queryElement2Member != null && context.hasEntity(queryElement2iDid))
+                            {
+                              context.perform(
+                                iD.actions.DeleteMember(reviewRelation.id, queryElement2Member.index),
+                                t('operations.delete_member.annotation'));
+                            }
+        	      	    	
         	      	    	
         	      	    	//add the new merged node as a new member
         	      	    	var newMember = new iD.Node();
@@ -312,10 +314,22 @@ Hoot.model.conflicts = function(context)
         	      	    	context.perform(
         	      	          iD.actions.AddMember(reviewRelation.id, newMember, newMember.index),
         	      	            t('operations.add.annotation.relation'));
+
+
+                            
         	      	      }
         	      		}
         	            
-        	          	validateMergeChangeset();
+                        var hasChanges = context.history().hasChanges();
+                        if (hasChanges) {                          
+                            iD.modes.Save(context).save(context, function () { 
+                                context.hoot().control.conflicts.setProcessing(false);
+                            });
+                        } else {
+                            context.hoot().control.conflicts.setProcessing(false);
+                        }
+                
+        	          	//validateMergeChangeset();
         	      	  },
         	      	  layerName);
                     });

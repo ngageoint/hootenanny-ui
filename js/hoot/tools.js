@@ -421,9 +421,9 @@ Hoot.tools = function (context, selection) {
         var merged = loadingLayer.merged || null;
         if(!merged && params.mapId)
         {
-            Hoot.model.REST('ReviewGetStatistics', params.mapId,function (stat) {
+            Hoot.model.REST('ReviewGetStatistics', params.mapId,function (error, stat) {
                 var isReviewMode = false;
-                if(stat.numReviewableItems > 0) {
+                if(stat.unreviewedCount > 0) {
 
                     var reqParam = {};
                     reqParam.mapId = params.mapId
