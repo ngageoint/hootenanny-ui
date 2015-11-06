@@ -8,9 +8,9 @@ iD.ui.Tools = function(context) {
     	 var items = [
     	    {title:'Measure Length',type:'line',icon:'add-line',mode:iD.modes.MeasureAddLine(context)},
     	    {title:'Measure Area',type:'area',icon:'add-area',mode:iD.modes.MeasureAddArea(context)},
-    	    {title:'Crop to Visual Extent',type:'area',icon:'add-area',action:'cropVisualExtent'},
-    	    //{title:'Crop to Bounding Box',type:'area',icon:'add-area',mode:iD.modes.CropBoundingBox(context)},
-    	    //{title:'Crop to Custom Area',type:'area',icon:'add-area',mode:iD.modes.CropCustomArea(context)}
+    	    {title:'Clip to Visual Extent',type:'area',icon:'add-area',action:'clipVisualExtent'},
+    	    {title:'Clip to Bounding Box',type:'area',icon:'add-area',mode:iD.modes.ClipBoundingBox(context)},
+    	    //{title:'Clip to Custom Area',type:'area',icon:'add-area',mode:iD.modes.ClipCustomArea(context)}
     	  ];
         
         d3.select('html').append('div').attr('class', 'tools-menu');
@@ -25,10 +25,10 @@ iD.ui.Tools = function(context) {
             .on('click' , function(item) { 
             	if(item.mode){
                 	context.enter(item.mode);	
-            	} else if (item.action=='cropVisualExtent'){
-            		//Call crop map
+            	} else if (item.action=='clipVisualExtent'){
+            		//Call clip map
             		if(!_.isEmpty(hoot.model.layers.getLayers())){
-            			console.log("This is where we would call cropmap.")
+            			console.log("This is where we would call clipmap.")
                 		var params = [];
             			//Provide input ID(s) of dataset(s)
             			_.each(hoot.model.layers.getLayers(),function(d){
@@ -37,11 +37,11 @@ iD.ui.Tools = function(context) {
             				
             				//create name, ensuring it is unique
             				var uniquename = false;
-            				var name = d.name + '_crop';
+            				var name = d.name + '_clip';
             				var i = 1;
             				while (uniquename==false){
             					if(context.hoot().model.layers.getLayers()[name]){
-            						name = d.name + '_crop_' + i.toString();
+            						name = d.name + '_clip_' + i.toString();
             						i++;
             					} else {
             						uniquename = true;

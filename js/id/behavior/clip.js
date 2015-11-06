@@ -1,7 +1,7 @@
 var clickTime = null;
-iD.behavior.crop = function(context,svg,type) {
+iD.behavior.clip = function(context,svg,type) {
     var event = d3.dispatch('move', 'click','cancel', 'finish','dblclick'),
-        keybinding = d3.keybinding('croparea'),
+        keybinding = d3.keybinding('cliparea'),
         rect,
         lastPoint=null,firstPoint=null;
     
@@ -17,13 +17,13 @@ iD.behavior.crop = function(context,svg,type) {
     		ret(element);
     	});
     	
-    	element.on('mousemove.croparea',null);
+    	element.on('mousemove.cliparea',null);
     	
-    	d3.select(window).on('mouseup.croparea',function(){
-    		element.on('mousemove.croparea',mousemove);
+    	d3.select(window).on('mouseup.cliparea',function(){
+    		element.on('mousemove.cliparea',mousemove);
     		
     		// Prevent a quick second click
-    		d3.select(window).on('click.croparea-block',function(){
+    		d3.select(window).on('click.cliparea-block',function(){
     			d3.event.stopPropagation();
     		},true);
     		
@@ -31,7 +31,7 @@ iD.behavior.crop = function(context,svg,type) {
     		
             window.setTimeout(function() {
                 context.map().dblclickEnable(true);
-                d3.select(window).on('click.croparea-block', null);
+                d3.select(window).on('click.cliparea-block', null);
             }, 500);
 
             click();
@@ -77,7 +77,7 @@ iD.behavior.crop = function(context,svg,type) {
     	svg.select( "rect").remove();
     }
     
-    function croparea(selection){
+    function cliparea(selection){
     	var g = svg.append('g');
     	rect = g.append('rect');
     }
