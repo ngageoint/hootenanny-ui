@@ -119,7 +119,7 @@ iD.ui.MapInMap = function(context) {
 
 
         function redraw() {
-            if (hidden()) return;
+            if (map_in_map.hidden()) return;
 
             updateProjection();
 
@@ -241,7 +241,7 @@ iD.ui.MapInMap = function(context) {
         }
 
 
-        function hidden() {
+        map_in_map.hidden = function() {
             return selection.style('display') === 'none';
         }
 
@@ -249,7 +249,7 @@ iD.ui.MapInMap = function(context) {
         function toggle() {
             if (d3.event) d3.event.preventDefault();
 
-            if (hidden()) {
+            if (map_in_map.hidden()) {
                 selection
                     .style('display', 'block')
                     .style('opacity', 0)
