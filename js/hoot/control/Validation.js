@@ -306,6 +306,7 @@ Hoot.control.validation = function(context, sidebar) {
 
                 //Update selectItem to work with the current feature
                 validation.selectItem = function() {
+                    context.map().centerZoom(center, 19);
                     context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
                 };
 
