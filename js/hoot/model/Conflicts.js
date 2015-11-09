@@ -117,22 +117,22 @@ Hoot.model.conflicts = function(context)
      */
     var removeReviewRefs = function(reviewRefs, idsToRemove)
     {
-      console.log("reviewRefs: " + reviewRefs);
-      console.log("idsToRemove: " + idsToRemove);
+      //console.log("reviewRefs: " + reviewRefs);
+      //console.log("idsToRemove: " + idsToRemove);
 
       var modifiedReviewRefs = new Array();
       for (var i = 0; i < reviewRefs.length; i++)
       {
         var reviewRef = reviewRefs[i];
-        console.log("reviewRef.id: " + reviewRef.id);
-        console.log("idsToRemove.indexOf(reviewRef.id): " + idsToRemove.indexOf(""+reviewRef.id));
+        //console.log("reviewRef.id: " + reviewRef.id);
+        //console.log("idsToRemove.indexOf(reviewRef.id): " + idsToRemove.indexOf(""+reviewRef.id));
         if (idsToRemove.indexOf(""+reviewRef.id) == -1)
         {
-          console.log("adding reviewRef.id: " + reviewRef.id);
+          //console.log("adding reviewRef.id: " + reviewRef.id);
           modifiedReviewRefs.push(reviewRef);
         }
       }
-      console.log("modifiedReviewRefs: " + modifiedReviewRefs);
+      //console.log("modifiedReviewRefs: " + modifiedReviewRefs);
       return modifiedReviewRefs;
     }
 
@@ -239,7 +239,7 @@ Hoot.model.conflicts = function(context)
         	      	    "r" + reviewRefs[i].reviewRelationId.toString() + "_" + mapid);
         	      	}
         	      	reviewRelationIds.push("r" + reviewMergeRelationId + "_" + mapid);
-        	      	console.log(reviewRelationIds);
+        	      	//console.log(reviewRelationIds);
         	      	
         	      	//retrieve all the associated review relations
         	      	context.loadMissing(reviewRelationIds,
@@ -271,7 +271,6 @@ Hoot.model.conflicts = function(context)
         	      	    	//console.log("test2");  
         	      	    	//for all other review relations, update them to point to the newly 
         	      	    	//created feature as a result of the merge
-        	                	
 
                             //delete the members corresponding to the features deleted as a result 
                             //of the merge
@@ -314,22 +313,14 @@ Hoot.model.conflicts = function(context)
         	      	    	context.perform(
         	      	          iD.actions.AddMember(reviewRelation.id, newMember, newMember.index),
         	      	            t('operations.add.annotation.relation'));
-
-
-                            
         	      	      }
         	      		}
-        	            
-                        var hasChanges = context.history().hasChanges();
-                        if (hasChanges) {                          
-                            iD.modes.Save(context).save(context, function () { 
-                                context.hoot().control.conflicts.setProcessing(false);
-                            });
-                        } else {
-                            context.hoot().control.conflicts.setProcessing(false);
-                        }
-                
-        	          	//validateMergeChangeset();
+        	      		
+        	      		//there will always be changes at this point
+        	      		validateMergeChangeset();                 
+                        iD.modes.Save(context).save(context, function () { 
+                          context.hoot().control.conflicts.setProcessing(false);
+                        });
         	      	  },
         	      	  layerName);
                     });
