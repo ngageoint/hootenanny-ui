@@ -28,31 +28,32 @@ iD.ui.Tools = function(context) {
             	} else if (item.action=='clipVisualExtent'){
             		//Call clip map
             		if(!_.isEmpty(hoot.model.layers.getLayers())){
-            			console.log("This is where we would call clipmap.")
-                		var params = [];
+                		//var params = [];
             			//Provide input ID(s) of dataset(s)
             			_.each(hoot.model.layers.getLayers(),function(d){
             				var param = {};
-            				param.id = d.id;
+            				param.INPUT_NAME = d.name;
             				
             				//create name, ensuring it is unique
             				var uniquename = false;
             				var name = d.name + '_clip';
             				var i = 1;
             				while (uniquename==false){
-            					if(context.hoot().model.layers.getLayers()[name]){
+            					if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
             						name = d.name + '_clip_' + i.toString();
             						i++;
             					} else {
             						uniquename = true;
             					}
             				}
-            				param.name = name;            				
-            				param.bbox = id.map().extent();
-            				params.push(param);
+            				param.OUTPUT_NAME = name;
+            				param.BBOX = id.map().extent().toString();
+            				//params.push(param);
+                			//console.log(params);
+	               			 Hoot.model.REST('clipDataset', param, function (a) {
+                            	iD.ui.Alert("Clip Dataset Complete!",'success');
+                            });
             			});
-            			
-            			console.log(params);
             		}
             	}
             	d3.select('.tools-menu').remove();

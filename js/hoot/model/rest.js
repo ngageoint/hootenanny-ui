@@ -263,6 +263,26 @@ Hoot.model.REST = function (command, data, callback, option) {
             callback(resp);
         });
     };
+    
+    rest.clipDataset = function (data, callback) {
+        if(!data.INPUT_NAME || !data.BBOX || !data.OUTPUT_NAME){return false;}
+        
+        /*if(option == 'bbox'){*/
+        	//Clip to bounding box
+    	    d3.json('/hoot-services/job/clipdataset/execute')
+		        .header('Content-Type', 'text/plain')
+		        .post(JSON.stringify(data), function (error, resp) {
+		            if (error) {
+		                return callback(_alertError(error, "Clip Dataset job failed! For detailed log goto Manage->Log"));
+		            }
+		            rest.status(resp.jobid, callback);
+	        });
+        /*}
+        else {
+        	console.log('under construction');
+        	return false;
+        }*/
+    };
 
     rest.Conflate = function (data, callback, option) {
          data.INPUT1_TYPE = data.INPUT1_TYPE || 'DB';
