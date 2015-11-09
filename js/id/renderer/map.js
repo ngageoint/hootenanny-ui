@@ -171,8 +171,8 @@ iD.Map = function(context) {
                 if(!activeConflict){return;}
                 //FIXME: got to be a better way to get active conflict items
                 var activeConflictReviewItem = context.hoot()._conflicts.activeConflictReviewItem();
-                d3.selectAll('.' + activeConflictReviewItem).classed('activeReviewFeature2', true).moveToFront();
-                d3.selectAll('.' + activeConflict).classed('activeReviewFeature', true).moveToFront();
+                d3.selectAll('.' + activeConflictReviewItem).classed('tag-hoot activeReviewFeature2', true).moveToFront();
+                d3.selectAll('.' + activeConflict).classed('tag-hoot activeReviewFeature', true).moveToFront();
             }
         }
 

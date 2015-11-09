@@ -1,5 +1,6 @@
 // https://github.com/openstreetmap/potlatch2/blob/master/net/systemeD/halcyon/connection/actions/DeleteRelationAction.as
 iD.actions.DeleteRelation = function(relationId) {
+
     function deleteEntity(entity, graph) {
         return !graph.parentWays(entity).length &&
             !graph.parentRelations(entity).length &&
