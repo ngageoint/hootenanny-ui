@@ -850,7 +850,7 @@ Hoot.control.TranslationAssistant = function () {
 	                        .classed('keyline-bottom', false);
 	                    
 	                    //open the ingestDiv and copy values into paste box
-	                    hoot.control.utilities.translation.newTranslationPopup('test');
+	                    hoot.control.utilities.translation.newTranslationPopup(output);
                     }
 
                 });
