@@ -166,8 +166,7 @@ Hoot.model.conflicts = function(context)
             	//console.log(feature);
             	//console.log(featureAgainst);
                 
-                //Remove the two input entities
-                iD.operations.Delete([feature.id, featureAgainst.id], context)();
+                
 
                 //newly merged entity
                 var mergedNode = entities[0];
@@ -316,6 +315,19 @@ Hoot.model.conflicts = function(context)
         	      	      }
         	      		}
         	      		
+
+                        //Remove the two input entities
+                        iD.operations.Delete([feature.id, featureAgainst.id], context)();
+
+                        var newReviewIds = [];
+                        _.each(context.hoot().control.conflicts.reviewIds, function(r){
+                            if(r !== feature.id && r !== featureAgainst.id){
+                                newReviewIds.push(r);
+                            }
+                        });
+                        newReviewIds.push('r' + reviewMergeRelationId + '_' + mapid);
+                        context.hoot().control.conflicts.reviewIds = newReviewIds;
+
         	      		//there will always be changes at this point
         	      		validateMergeChangeset();                 
                         iD.modes.Save(context).save(context, function () { 
