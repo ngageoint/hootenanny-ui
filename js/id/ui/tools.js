@@ -50,8 +50,8 @@ iD.ui.Tools = function(context) {
             				param.BBOX = id.map().extent().toString();
             				//params.push(param);
                 			//console.log(params);
-	               			 Hoot.model.REST('clipDataset', param, function (a) {
-                            	iD.ui.Alert("Clip Dataset Complete!",'success');
+	               			 Hoot.model.REST('clipDataset', param, function (a,outputname) {
+                            	if(a.status=='complete'){iD.ui.Alert("Success: " + outputname + " has been created!",'success');}
                             });
             			});
             		}
