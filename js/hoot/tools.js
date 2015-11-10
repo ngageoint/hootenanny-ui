@@ -424,7 +424,6 @@ Hoot.tools = function (context, selection) {
             Hoot.model.REST('ReviewGetStatistics', params.mapId,function (stat) {
                 var isReviewMode = false;
                 if(stat.numReviewableItems > 0) {
-
                     var reqParam = {};
                     reqParam.mapId = params.mapId
                     if(reqParam.mapId) {

@@ -360,6 +360,14 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                     updateMeta(feature.tags['hoot:review:note']);
                     panToEntity(context.entity(feature ? feature.id : againstFeature.id));
+
+                    if (!context.MapInMap.hidden()) {
+                        //Populate the map-in-map with review items location and status
+                        Hoot.model.REST('ReviewGetGeoJson', mapid, context.MapInMap.extent(), function (gj) {
+                            context.MapInMap.loadGeoJson(gj.features || []);
+                        });
+                    }
+
                 }
             };
             var getFeature = function () {
@@ -893,6 +901,27 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         Conflict.highlightLayerTable = highlightLayer;
         jumpFor();
+
+        //Register listener for review layer cleanup
+        context.hoot().control.view.on('layerRemove.conflicts', function (layerName, isPrimary) {
+            // we need tagTable removed when UI is review mode and was displaying tag table
+            d3.select('#conflicts-container').remove();
+            Conflict.reviewIds = null;
+            //Clear map-in-map
+            context.MapInMap.loadGeoJson([]);
+            context.MapInMap.on('zoomPan.conflicts', null);
+
+        });
+
+        context.MapInMap.on('zoomPan.conflicts', function() {
+            if (!context.MapInMap.hidden()) {
+                //Populate the map-in-map with review items location and status
+                Hoot.model.REST('ReviewGetGeoJson', mapid, context.MapInMap.extent(), function (gj) {
+                    context.MapInMap.loadGeoJson(gj.features);
+                });
+            }
+        });
+
     };
 
     Conflict.reviewNextStep = function () {
@@ -953,14 +982,6 @@ Hoot.control.conflicts = function (context, sidebar) {
         context.flush(true);
         Conflict.nextFunction();
     }
-
-
-    //Register listener for review layer cleanup
-    context.hoot().control.view.on('layerRemove.validation', function (layerName, isPrimary) {
-        // we need tagTable removed when UI is review mode and was displaying tag table
-        d3.select('#conflicts-container').remove();
-        Conflict.reviewIds = null;
-    });
 
     return d3.rebind(Conflict, event, 'on');
 };

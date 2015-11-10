@@ -787,10 +787,27 @@ rest.ReviewGetLockCount = function (mapId, callback) {
 
         d3.json('/hoot-services/job/review/lockcount?mapId=' + mapId, function (error, resp) {
                 if (error) {
-                	iD.ui.Alert("Failed to get lock count.",'error');
+                    iD.ui.Alert("Failed to get lock count.",'error');
                     return;
                 }
                 return callback(resp);
+        });
+    };
+
+rest.ReviewGetGeoJson = function (mapId, extent, callback) {
+        d3.json('/hoot-services/job/review/getallreviewableitems?mapId=' + mapId
+            + '&minx=' + (extent[0][0]).toFixed(6)
+            + '&miny=' + (extent[0][1]).toFixed(6)
+            + '&maxx=' + (extent[1][0]).toFixed(6)
+            + '&maxy=' + (extent[1][1]).toFixed(6)
+            , function (error, resp) {
+                if (error) {
+                    iD.ui.Alert("Failed to get review geojson.",'error');
+                    return;
+                }
+                if (callback) {
+                    callback(resp);
+                }
         });
     };
 

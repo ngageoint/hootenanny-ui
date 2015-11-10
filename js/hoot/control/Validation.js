@@ -105,11 +105,23 @@ Hoot.control.validation = function(context, sidebar) {
             validation.end();
         });
 
+        context.MapInMap.on('zoomPan.validation', function() {
+            if (!context.MapInMap.hidden()) {
+                //Populate the map-in-map with review items location and status
+                Hoot.model.REST('ReviewGetGeoJson', mapid, context.MapInMap.extent(), function (gj) {
+                    context.MapInMap.loadGeoJson(gj.features);
+                });
+            }
+        });
+
         validation.end = function() {
             d3.select('#validation-container').remove();
             //Disable validation keybindings
             d3.keybinding('validation').off();
             d3.keybinding('choices').off();
+            //Clear map-in-map
+            context.MapInMap.loadGeoJson([]);
+            context.MapInMap.on('zoomPan.validation', null);
         };
 
         validation.updateMeta = function(d) {
@@ -309,6 +321,13 @@ Hoot.control.validation = function(context, sidebar) {
                     context.map().centerZoom(center, 19);
                     context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
                 };
+
+                if (!context.MapInMap.hidden()) {
+                    //Populate the map-in-map with review items location and status
+                    Hoot.model.REST('ReviewGetGeoJson', mapid, context.MapInMap.extent(), function (gj) {
+                        context.MapInMap.loadGeoJson(gj.features);
+                    });
+                }
 
             } else {
                 iD.ui.Alert(response.status, 'notice');
