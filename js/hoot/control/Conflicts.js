@@ -114,23 +114,73 @@ Hoot.control.conflicts = function (context, sidebar) {
             jumpTo('backward');
         };
 
- 
+        var getLoadedRelationMembersCount = function(fid){
+            var nCnt = 0
+            try
+            {
+                var f = context.hasEntity(fid);
+                if(f){
+                    for(var i=0; i<f.members.length; i++){
+                        if(context.hasEntity(f.members[i].id)){
+                            nCnt++;
+                        }
+                    }
+                }
+            }
+            catch(error)
+            {
+
+            }
+            finally
+            {
+
+            }
+                
+                
+            return nCnt;
+        }
+
         // Returns the entity for the specified relation
         // If it is not loaded in iD then we use loadMissing to load
         // Relation and the members.
         var getRelationFeature = function(mapid, relationid, callback){
             var fid = 'r' + relationid + '_' + mapid;
             var f = context.hasEntity(fid);
+           
 
             if(f) {
                 // for merged automerge should have loaded relation and members to ui
                 // at this point so it will not try to reload..
-                callback(f);
+
+                var nMemCnt = getLoadedRelationMembersCount(fid) ;
+                                    
+                if(nMemCnt > 0){
+                    if(nMemCnt === 1){
+                        disableMergeButton(true);
+                    }
+                    callback(f);
+                } else {
+                    iD.ui.Alert('There are not members in review relation.','warning');
+                }
             } else {
                 var layerNames = d3.entries(hoot.loadedLayers()).filter(function(d) {
                     return 1*d.value.mapId === 1*mapid;
 
                 });
+
+                var validateMemberCnt = function(fid, fnc) {
+                    var nMemCnt = getLoadedRelationMembersCount(fid) ;
+                    var f = context.hasEntity(fid);          
+                    if(nMemCnt > 0){
+                        if(nMemCnt === 1){
+                            disableMergeButton(true);
+                        }
+                        panToEntity(f, true);
+                        fnc(f);
+                    } else {
+                        iD.ui.Alert('There are not members in review relation.','warning');
+                    }
+                }
                 var layerName = layerNames[0].key;
 
                 context.loadMissing([fid], function(err, entities) {
@@ -143,6 +193,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                             // Gets the relation from UI not back end
                             f = context.hasEntity(fid);
 
+
                             var members = [];
                             for(var i=0; i<f.members.length; i++){
                                 // Load entities only when they are missing
@@ -153,13 +204,10 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                             if(members.length > 0){
                                 context.loadMissing(members, function(err2, entities2) {
-                                    panToEntity(f, true);
-                                    callback(f);
+                                    validateMemberCnt(fid, callback);
                                 });
                             } else {
-                                // just pan to it since we already have them
-                                panToEntity(f, true);
-                                callback(f);
+                                validateMemberCnt(fid, callback);
                             }
                             
                             
@@ -169,7 +217,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     }
                     catch (err)
                     {
-                        iD.ui.Alert(err.message,'error');
+                        iD.ui.Alert(err,'error');
                     }
                     finally
                     {
@@ -249,15 +297,34 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         }
 
+        var disableMergeButton = function (doDisable){
+            var btn = d3.select('.merge');
+            if(btn){
+                if(doDisable === true){
+                    btn.classed('hide', true);
+                } else {
+                    btn.classed('hide', false);
+                }
+            }
+        }
         // This clears all icon high lights
         var resetStyles = function () {
             d3.selectAll('path').classed('activeReviewFeature', false);
             d3.selectAll('path').classed('activeReviewFeature2', false);
         };
         var highlightLayer = function (ritem, raitem) {
+            var revieweeList = [];
             //console.log(item);
-            var idid = ritem.id;
-            var idid2 = raitem.id;
+            var idid = null;
+            if(ritem){
+                idid = ritem.id;
+                revieweeList.push(idid);
+            }
+            var idid2 = null;
+            if(raitem) {
+                idid2 = raitem.id;
+                revieweeList.push(idid2);
+            }
             var feature, againstFeature;
             var max = 4;
             var calls = 0;
@@ -277,7 +344,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     calls++;
                 } else {
                     //Make a call to grab the individual feature
-                    context.loadMissing([idid, idid2], function(err, entities) {
+                    context.loadMissing(revieweeList, function(err, entities) {
                      
                         if (entities.data.length) {
                             feature = entities.data.filter(function(d) {
@@ -298,14 +365,16 @@ Hoot.control.conflicts = function (context, sidebar) {
                 clearInterval(getFeatureTimer);
                 if (!skip) {
                     //Merge currently only works on nodes
-                    if (feature.id.charAt(0) === 'n' && againstFeature.id.charAt(0) === 'n') {
+                    if ((feature && againstFeature) && (feature.id.charAt(0) === 'n' && againstFeature.id.charAt(0) === 'n')) {
                         //Show merge button
                         d3.select('a.merge').classed('hide', false);
                         //Override with current pair of review features
                         mergeFeatures = function() {
                         	if(context.graph().entities[feature.id] && context.graph().entities[againstFeature.id]){
-                        		context.hoot().model.conflicts.autoMergeFeature(
-                                  feature, againstFeature, mapid, currentReviewable.relationId);
+                        		disableMergeButton(true);
+                                context.hoot().model.conflicts.autoMergeFeature(
+                                  feature, againstFeature, mapid, currentReviewable.relationId
+                                );
                         	} else {
                         		iD.ui.Alert("Nothing to merge.",'notice');
                             	return;
@@ -345,29 +414,46 @@ Hoot.control.conflicts = function (context, sidebar) {
                     }
 
                     resetStyles();
+                    Conflict.reviewIds = [];
+                    var panToId = null;
                     if (feature) {
+                        Conflict.reviewIds.push(feature);
+                        panToId = feature.id;
                         d3.selectAll('.activeReviewFeature')
                             .classed('activeReviewFeature', false);
                         d3.selectAll('.' + feature.id)
                             .classed('tag-hoot activeReviewFeature', true);
+                        
                     }
                     if (againstFeature) {
+                        Conflict.reviewIds.push(againstFeature);
+                        if(!panToId){
+                            panToId = againstFeature.id;
+                        }
                         d3.selectAll('.activeReviewFeature2')
                             .classed('activeReviewFeature2', false);
                         d3.selectAll('.' + againstFeature.id)
                             .classed('tag-hoot activeReviewFeature2', true);
                     }
-                    Conflict.reviewIds = [feature.id, againstFeature.id];
 
-                    buildPoiTable(d3.select('#conflicts-container'), [feature, againstFeature]);
+                    buildPoiTable(d3.select('#conflicts-container'), Conflict.reviewIds);
+                    updateMeta(null);
+                    if(panToId) {
+                        panToEntity(context.entity(panToId));
+                    }
 
-                    updateMeta(feature.tags['hoot:review:note']);
-                    panToEntity(context.entity(feature ? feature.id : againstFeature.id));
+                    
                 }
             };
             var getFeature = function () {
-                feature = context.hasEntity(idid);
-                againstFeature = context.hasEntity(idid2);
+                feature = null;
+                if(idid){
+                    feature = context.hasEntity(idid);
+                }
+                againstFeature = null;
+                if(idid2){
+                    againstFeature = context.hasEntity(idid2);
+                }
                
 
                 if (feature && againstFeature) {
@@ -511,7 +597,16 @@ Hoot.control.conflicts = function (context, sidebar) {
                 nUnreviewed = 1*curMeta.unreviewedCount;
                 nReviewed = nTotal - nUnreviewed;
             }
+            var rId = 'r' + currentReviewable.relationId + '_' + mapid;
+            var rf = context.hasEntity(rId);
+
             var noteText = "";
+            if(rf){
+                var rfNote = rf.tags['hoot:review:note'];
+                if(rfNote){
+                    noteText = rfNote;
+                }
+            }
             if(note){
                 noteText = note;
             }
@@ -613,7 +708,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 	iD.ui.Alert("Nothing to review.",'notice');
                 }
             } catch (err) {
-            	iD.ui.Alert(err.message,'error');
+            	iD.ui.Alert(err,'error');
             } finally {
                 Conflict.setProcessing(false);
             }
