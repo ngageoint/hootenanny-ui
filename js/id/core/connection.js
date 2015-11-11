@@ -232,6 +232,7 @@ iD.Connection = function(context) {
                 tags: getTags(obj, layerName),
                 layerName: layerName,
                 mapId: mapId,
+                hootMeta:{},
                 visible: getVisible(attrs)
             });
         },

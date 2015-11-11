@@ -328,6 +328,16 @@ Hoot.model.conflicts = function(context)
                                                   }
                                                 }
                                                 
+                                                var fe = context.hasEntity(feature.id);
+                                                if(fe){
+                                                    fe.hootMeta = {'isReviewDel':true};
+                                                }
+
+                                                fe = context.hasEntity(featureAgainst.id);
+                                                if(fe){
+                                                    fe.hootMeta = {'isReviewDel':true};
+                                                }
+                                                
 
                                                 //Remove the two input entities
                                                 iD.operations.Delete([feature.id, featureAgainst.id], context)();
@@ -343,9 +353,10 @@ Hoot.model.conflicts = function(context)
 
                                                 //there will always be changes at this point
                                                 validateMergeChangeset();                 
-                                                iD.modes.Save(context).save(context, function () { 
+                                               /* iD.modes.Save(context).save(context, function () { 
                                                   context.hoot().control.conflicts.setProcessing(false);
-                                                });
+                                                });*/
+                                                context.hoot().control.conflicts.setProcessing(false);
 
                                             }
                                             catch(loadMissingErr)

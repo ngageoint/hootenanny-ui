@@ -39,6 +39,7 @@ iD.actions.DeleteNode = function(nodeId) {
                 parent = parent.removeMembersWithID(nodeId);
                 graph = graph.replace(parent);
 
+                
                 if (parent.isDegenerate()) {
                     // If we are in hoot review mode then do not delete relation
                     // This can happen only during hootenanny POI automerge
@@ -47,6 +48,10 @@ iD.actions.DeleteNode = function(nodeId) {
                     } else {
                         graph = updateHootReviewTags(parent, graph);
 
+                    }
+                } else {
+                    if(!node.hootMeta || (node.hootMeta && !node.hootMeta.isReviewDel)){
+                        graph = updateHootReviewTags(parent, graph);
                     }
                 }
             });

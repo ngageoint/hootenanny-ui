@@ -18,8 +18,10 @@ Hoot.control.conflicts = function (context, sidebar) {
     var processingTimer;
 
     var currentReviewable = null;
+    var disableMergeButton = null;
 
     Conflict.isProcessingReview = false;
+
     Conflict.activeEntity = function(){return activeEntity;};
     Conflict.activeConflict = function(){return activeConflict;};
     Conflict.activeConflictReviewItem = function(){return activeConflictReviewItem;};
@@ -36,6 +38,31 @@ Hoot.control.conflicts = function (context, sidebar) {
             .html('<div class="margin2 inline _loadingSmall"><span></span></div>' + '<span class="strong">Checking for review items&#8230;</span>');
         return Review;
     };
+
+    Conflict.updateMergeButton = function(){
+        if(currentReviewable){
+            var relId = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
+            var rel = context.hasEntity(relId);
+            var isReview = null;
+            if(rel){
+                isReview = rel.tags['hoot:review:needs'];
+            }
+
+            if(disableMergeButton){
+                if(rel && rel.members.length > 1 && (isReview && isReview === 'yes')){
+                    if(context.graph().entities[rel.members[0].id] && 
+                        context.graph().entities[rel.members[1].id]){
+                            disableMergeButton(false);                       
+                        } else {
+                            //disableMergeButton(true);    
+                        }              
+                } else {
+                    //disableMergeButton(true);   
+                }            
+            }
+    
+        }
+    }
     Conflict.nextFunction;
     Conflict.highlightLayerTable = null;
 
@@ -237,6 +264,12 @@ Hoot.control.conflicts = function (context, sidebar) {
         // reviewable.
         var jumpTo = function(direction) {
 
+            var hasChange = context.history().hasChanges();
+            if(hasChange === true) {
+                alert('Please resolve or undo merge befor proceeding to next reviewable item.');
+                return;
+            }
+
             Hoot.model.REST('ReviewGetStatistics', mapid, function (error, response) {
                 if(error){
                     iD.ui.Alert('Failed to get statistics.','warning');
@@ -297,7 +330,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         }
 
-        var disableMergeButton = function (doDisable){
+        disableMergeButton = function (doDisable){
             var btn = d3.select('.merge');
             if(btn){
                 if(doDisable === true){
@@ -415,10 +448,12 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                     resetStyles();
                     Conflict.reviewIds = [];
+                    var poiTableCols= [];
                     var panToId = null;
                     if (feature) {
-                        Conflict.reviewIds.push(feature);
+                        Conflict.reviewIds.push(feature.id);
                         panToId = feature.id;
+                        poiTableCols.push(feature);
                         d3.selectAll('.activeReviewFeature')
                             .classed('activeReviewFeature', false);
                         d3.selectAll('.' + feature.id)
@@ -426,7 +461,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                         
                     }
                     if (againstFeature) {
-                        Conflict.reviewIds.push(againstFeature);
+                        poiTableCols.push(againstFeature);
+                        Conflict.reviewIds.push(againstFeature.id);
                         if(!panToId){
                             panToId = againstFeature.id;
                         }
@@ -436,7 +472,10 @@ Hoot.control.conflicts = function (context, sidebar) {
                             .classed('tag-hoot activeReviewFeature2', true);
                     }
 
-                    buildPoiTable(d3.select('#conflicts-container'), Conflict.reviewIds);
+                    buildPoiTable(d3.select('#conflicts-container'), poiTableCols);
+
+                    var relId = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
+                    Conflict.reviewIds.push(relId);
                     updateMeta(null);
                     if(panToId) {
                         panToEntity(context.entity(panToId));
@@ -951,6 +990,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         context.flush(true);
         Conflict.nextFunction();
     }
+
 
     // It sets processing marker to prevent user from click resolve before
     // previous resolve is not done
