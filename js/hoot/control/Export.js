@@ -112,7 +112,7 @@ Hoot.control.export = function (sidebar) {
             .select(function (a) {
             	if (a.checkbox){
               	   d3.selectAll('input.reset.appendFGDBTemplate').remove();
-              	   d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',true);
+              	   d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
               	}
             	if (a.combobox) {
                     var combo = d3.combobox()
