@@ -247,7 +247,7 @@ Hoot.model.conflicts = function(context)
                                     }
                                     reviewRelationIds.push("r" + reviewMergeRelationId + "_" + mapid);
                                     //console.log(reviewRelationIds);
-                                    
+                                   
                                     //retrieve all the associated review relations
                                     context.loadMissing(reviewRelationIds,
                                         function(err, entities)
@@ -268,7 +268,7 @@ Hoot.model.conflicts = function(context)
                                                   //console.log("reviewRelation.id: " + reviewRelation.id);
                                                   ///console.log("reviewMergeRelationId: " + reviewMergeRelationId);
                                                   //console.log("reviewRelation members: " + reviewRelation.members);
-                                                  if (reviewRelation.id == reviewMergeRelationId)
+                                                  if (reviewRelation.id == ("r" + reviewMergeRelationId + "_" + mapid))
                                                   {
                                                     //console.log("test1");
                                                     //add a changeset which resolves this review
@@ -277,6 +277,14 @@ Hoot.model.conflicts = function(context)
                                                     context.perform(
                                                       iD.actions.ChangeTags(reviewRelation.id, newTags), 
                                                       t('operations.change_tags.annotation'));
+
+                                                    // remove all relations member so it does not interact
+                                                    // when updating osm in service
+                                                    for(var ii=0; ii <reviewRelation.members.length; ii++){
+                                                        context.perform(
+                                                        iD.actions.DeleteMember(reviewRelation.id, ii),
+                                                        t('operations.delete_member.annotation'));
+                                                    }
                                                   }
                                                   else
                                                   {
