@@ -1033,8 +1033,6 @@ Hoot.control.conflicts = function (context, sidebar) {
         Conflict.nextFunction();
     }
 
-<<<<<<< HEAD
-
     // It sets processing marker to prevent user from click resolve before
     // previous resolve is not done
     Conflict.setProcessing = function(isProc){
@@ -1067,7 +1065,5 @@ Hoot.control.conflicts = function (context, sidebar) {
         Conflict.reviewIds = null;
     });
 
-=======
->>>>>>> develop
     return d3.rebind(Conflict, event, 'on');
 };
