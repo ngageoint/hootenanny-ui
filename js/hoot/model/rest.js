@@ -748,7 +748,6 @@ rest.ReviewGetStatistics = function (mapId, callback) {
         });
     };
 
-
 rest.getTranslations = function(callback) {
     d3.json('/hoot-services/ingest/customscript/getlist', function (error, resp) {
         if (error) {

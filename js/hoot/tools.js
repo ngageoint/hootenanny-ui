@@ -423,8 +423,8 @@ Hoot.tools = function (context, selection) {
         {
             Hoot.model.REST('ReviewGetStatistics', params.mapId,function (error, stat) {
                 var isReviewMode = false;
-                if(stat.unreviewedCount > 0) {
 
+                if(stat.unreviewedCount > 0) {
                     var reqParam = {};
                     reqParam.mapId = params.mapId
                     if(reqParam.mapId) {

@@ -480,8 +480,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                     if(panToId) {
                         panToEntity(context.entity(panToId));
                     }
-
-                    
                 }
             };
             var getFeature = function () {
@@ -930,6 +928,27 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         Conflict.highlightLayerTable = highlightLayer;
         jumpFor();
+
+        //Register listener for review layer cleanup
+        context.hoot().control.view.on('layerRemove.conflicts', function (layerName, isPrimary) {
+            // we need tagTable removed when UI is review mode and was displaying tag table
+            d3.select('#conflicts-container').remove();
+            Conflict.reviewIds = null;
+            //Clear map-in-map
+            context.MapInMap.loadGeoJson([]);
+            context.MapInMap.on('zoomPan.conflicts', null);
+
+        });
+
+        context.MapInMap.on('zoomPan.conflicts', function() {
+            if (!context.MapInMap.hidden()) {
+                //Populate the map-in-map with review items location and status
+                Hoot.model.REST('ReviewGetGeoJson', mapid, context.MapInMap.extent(), function (gj) {
+                    context.MapInMap.loadGeoJson(gj.features);
+                });
+            }
+        });
+
     };
     // This function is to exit from review session and do all clean ups
     Conflict.reviewNextStep = function () {
@@ -991,6 +1010,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         Conflict.nextFunction();
     }
 
+<<<<<<< HEAD
 
     // It sets processing marker to prevent user from click resolve before
     // previous resolve is not done
@@ -1024,5 +1044,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         Conflict.reviewIds = null;
     });
 
+=======
+>>>>>>> develop
     return d3.rebind(Conflict, event, 'on');
 };
