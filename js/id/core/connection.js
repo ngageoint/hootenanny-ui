@@ -452,6 +452,39 @@ iD.Connection = function(context) {
                 content: JXON.stringify(connection.changesetJXON(connection.changesetTags(comment, imageryUsed)))
             }, function(err, changeset_id) {
                 if (err) return callback(err);
+
+                var mergedPoiReviewItems = context.hoot().model.conflicts.getReviewMergedElements();
+         
+                if(mergedPoiReviewItems){
+                    _.each(mergedPoiReviewItems, function(itm){
+                        var curRefId = itm.id;
+                        var newMember = itm.obj;   
+
+                        // first see if changes.modified has the relation
+                        var changeRel = _.find(changes.modified, function(mod){
+                            return mod.id === curRefId;
+                        });  
+
+                        if(changeRel){ // if exists in changes.modified
+                            if(changeRel.members.length >= newMember.index){
+                                changeRel.members.splice(newMember.index, 0, newMember);
+                            } else {
+                                changeRel.members.push(newMember);
+                            }
+                        } else { // need to add to changes.modified
+                            var modRelation = context.hasEntity(curRefId);
+                            if(modRelation){
+                                if(modRelation.members.length >= newMember.index){
+                                    modRelation.members.splice(newMember.index, 0, newMember);
+                                } else {
+                                    modRelation.members.push(newMember);
+                                }
+                            }
+                            changes.modified.push(modRelation);
+                        }
+                    });
+                }
+
                 oauth.xhr({
                     method: 'POST',
                     path: '/api/0.6/changeset/' + changeset_id + '/upload?mapId=' + changemapId,

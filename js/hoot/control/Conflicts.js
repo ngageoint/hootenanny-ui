@@ -44,11 +44,22 @@ Hoot.control.conflicts = function (context, sidebar) {
             var relId = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
             var rel = context.hasEntity(relId);
             var isReview = null;
+            var isPoiReview = true;
             if(rel){
                 isReview = rel.tags['hoot:review:needs'];
+                if(rel.members.length > 1){
+                    for(var i=0; i<rel.members.length; i++){
+                        var mem = rel.members[i];
+                        if(mem.type !== 'node'){
+                            isPoiReview = false;
+                            break;
+                        }
+
+                    }
+                }
             }
 
-            if(disableMergeButton){
+            if(disableMergeButton && isPoiReview){
                 if(rel && rel.members.length > 1 && (isReview && isReview === 'yes')){
                     if(context.graph().entities[rel.members[0].id] && 
                         context.graph().entities[rel.members[1].id]){
@@ -59,6 +70,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                 } else {
                     //disableMergeButton(true);   
                 }            
+            } else {
+                disableMergeButton(true);  
             }
     
         }
@@ -289,7 +302,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 } else {
                     reviewData.mapId = data.mapId;
                     // something less then -1 will get random reviewable
-                    reviewData.sequence = -999;
+                    reviewData.sequence = 1594;//-999;1587
                     reviewData.direction = direction;
                 }
             
@@ -699,7 +712,17 @@ Hoot.control.conflicts = function (context, sidebar) {
                 var newTags = _.clone(tags);
                 newTags['hoot:review:needs'] = 'no';
                 context.perform(
-                  iD.actions.ChangeTags(reviewRelationEntity.id, newTags), t('operations.change_tags.annotation'));
+                  iD.actions.ChangeTags(reviewRelationEntity.id, newTags), 
+                  t('operations.change_tags.annotation'));
+
+
+                // remove all relations member so it does not interact
+                // when updating osm in service
+                for(var ii=0; ii <reviewRelationEntity.members.length; ii++){
+                    context.perform(
+                    iD.actions.DeleteMember(reviewRelationEntity.id, ii),
+                    t('operations.delete_member.annotation'));
+                }
         }
 
         // This function resolves a reviewable item
