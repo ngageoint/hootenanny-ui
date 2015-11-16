@@ -180,13 +180,133 @@ Hoot.control.conflicts = function (context, sidebar) {
             return nCnt;
         }
 
+        var gMissing = {};
+        var currentFid = null;
+        var currentCallback = null;
+
+        var validateMemberCnt = function(fid, fnc) {
+            var nMemCnt = getLoadedRelationMembersCount(fid) ;
+            var f = context.hasEntity(fid);          
+            if(nMemCnt > 0){
+                if(nMemCnt === 1){
+                    disableMergeButton(true);
+                }
+                panToEntity(f, true);
+                fnc(f);
+            } else {
+                iD.ui.Alert('There are not members in review relation.','warning');
+            }
+        }
+
+        var loadMissingHandler = function(err, entities) {
+            try
+            {
+                if(err){
+                    throw 'Failed to load Missing Entities.';
+                }
+                if (entities.data.length) {
+                    
+                    // first check to see if anyone is relation
+                    var relFound = _.find(entities.data, function(e){
+                        return e.type == 'relation';
+                    });
+
+                    // if there is one or more relation then recurse    
+                    if(relFound){
+                        for(var i=0; i<entities.data.length; i++){
+                            var f = entities.data[i];
+                            
+                            if(f.type == 'relation'){
+                                gMissing[f.id] = 1*f.members.length;
+                                console.debug('relation:' + f.id + ':' + gMissing[f.id] );
+                                for(var ii=0; ii<f.members.length; ii++){
+                                    context.loadMissing([f.members[ii].id], 
+                                        loadMissingHandler);
+                                }
+                            } else {
+
+                            }
+                        }
+
+                    } else { // if there no relations then reduce child count
+                        //gMissing[fid]
+                        
+                        for(var i=0; i<entities.data.length; i++){
+                            var f = entities.data[i];
+                            var parents = context.graph().parentRelations(f);
+                            if(parents){
+                                _.each(parents, function(p){
+                                    if(gMissing[p.id]){
+                                        var nParentChildsCnt = 1*gMissing[p.id];
+                                        if(nParentChildsCnt > 1){
+                                            gMissing[p.id] = (nParentChildsCnt-1);
+                                            console.debug('parent:' + p.id + ':' + gMissing[p.id] );
+                                        } else {
+                                            // now zero or less so remove from queue
+                                            delete gMissing[p.id];
+                                            var pps = context.graph().parentRelations(p);
+
+
+                                            var cleanOutParentTree = function(pps) {
+                                                _.each(pps, function(pp){
+                                                    console.debug('Searching idx for:' + pp.id);
+                                                    var ppIdxCnt = gMissing[pp.id];
+                                                    if(ppIdxCnt !== undefined){
+                                                        if(ppIdxCnt > 1){
+                                                            gMissing[pp.id] = ppIdxCnt - 1;
+                                                            console.debug('found idx for:' + gMissing);
+                                                        } else {
+                                                            delete gMissing[pp.id]; 
+                                                            console.debug('del idx for:' + gMissing);
+                                                        }
+                                                        var curPps = context.graph().parentRelations(pp);
+                                                        if(curPps){
+                                                            cleanOutParentTree(curPps);
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                            cleanOutParentTree(pps);
+
+                                        }
+                                        
+                                    }
+                                        
+                                });
+                            }
+                                
+                        }
+                    }
+
+    
+                    
+                } else {
+                    throw 'Failed to load Missing Entities.';
+                }
+            }
+            catch (err)
+            {
+                iD.ui.Alert(err,'error');
+            }
+            finally
+            {
+                console.debug( gMissing );
+                if(Object.keys(gMissing).length == 0){
+                    // Done so do final clean ups
+                    console.debug('done');
+                    validateMemberCnt(currentFid, currentCallback);
+                }
+            }
+        }
         // Returns the entity for the specified relation
         // If it is not loaded in iD then we use loadMissing to load
         // Relation and the members.
         var getRelationFeature = function(mapid, relationid, callback){
+            gMissing = {};
             var fid = 'r' + relationid + '_' + mapid;
             var f = context.hasEntity(fid);
-           
+            currentFid = fid;
+            currentCallback = callback;
 
             if(f) {
                 // for merged automerge should have loaded relation and members to ui
@@ -208,62 +328,10 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                 });
 
-                var validateMemberCnt = function(fid, fnc) {
-                    var nMemCnt = getLoadedRelationMembersCount(fid) ;
-                    var f = context.hasEntity(fid);          
-                    if(nMemCnt > 0){
-                        if(nMemCnt === 1){
-                            disableMergeButton(true);
-                        }
-                        panToEntity(f, true);
-                        fnc(f);
-                    } else {
-                        iD.ui.Alert('There are not members in review relation.','warning');
-                    }
-                }
+
                 var layerName = layerNames[0].key;
 
-                context.loadMissing([fid], function(err, entities) {
-                    try
-                    {
-                        if(err){
-                            throw 'Failed to load Missing Entities.';
-                        }
-                        if (entities.data.length) {
-                            // Gets the relation from UI not back end
-                            f = context.hasEntity(fid);
-
-
-                            var members = [];
-                            for(var i=0; i<f.members.length; i++){
-                                // Load entities only when they are missing
-                                if(!context.hasEntity(f.members[i].id)){
-                                    members.push(f.members[i].id);
-                                }
-                            }
-
-                            if(members.length > 0){
-                                context.loadMissing(members, function(err2, entities2) {
-                                    validateMemberCnt(fid, callback);
-                                });
-                            } else {
-                                validateMemberCnt(fid, callback);
-                            }
-                            
-                            
-                        } else {
-                            throw 'Failed to load Missing Entities.';
-                        }
-                    }
-                    catch (err)
-                    {
-                        iD.ui.Alert(err,'error');
-                    }
-                    finally
-                    {
-                        
-                    }
-                    }, layerName);
+                context.loadMissing([fid], loadMissingHandler, layerName);
             }
         }
 
@@ -302,7 +370,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 } else {
                     reviewData.mapId = data.mapId;
                     // something less then -1 will get random reviewable
-                    reviewData.sequence = -999;1
+                    reviewData.sequence = -999;
                     reviewData.direction = direction;
                 }
             
@@ -718,11 +786,12 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                 // remove all relations member so it does not interact
                 // when updating osm in service
-                for(var ii=0; ii <reviewRelationEntity.members.length; ii++){
+                while(context.hasEntity(reviewRelationEntity.id).members.length > 0){
                     context.perform(
-                    iD.actions.DeleteMember(reviewRelationEntity.id, ii),
+                    iD.actions.DeleteMember(reviewRelationEntity.id, 0),
                     t('operations.delete_member.annotation'));
                 }
+
         }
 
         // This function resolves a reviewable item
