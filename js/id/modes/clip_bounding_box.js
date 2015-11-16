@@ -21,6 +21,7 @@ iD.modes.ClipBoundingBox = function(context) {
     };
 
     mode.exit = function() {
+    	d3.select('.measure-layer').selectAll('g').remove();
     	context.map().dblclickEnable(true);
     	context.uninstall(behavior);
     };
