@@ -3,12 +3,12 @@ iD.modes.ClipBoundingBox = function(context) {
         id: 'clip-bounding-box'
     };
 
-   /* d3.select('.measure-layer').selectAll('g').remove();
+   d3.select('.measure-layer').selectAll('g').remove();
     
     var svg = d3.select('.measure-layer').select('svg');
     var id = 0;
     
-    var behavior = iD.behavior.clip(context,svg,'bbox')
+    var behavior = iD.behavior.Clip(context,svg,'bbox')
     .on('finish',finish);
         
     function finish() {
@@ -23,7 +23,7 @@ iD.modes.ClipBoundingBox = function(context) {
     mode.exit = function() {
     	context.map().dblclickEnable(true);
     	context.uninstall(behavior);
-    };*/
+    };
 
     return mode;
 };
