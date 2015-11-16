@@ -7,6 +7,10 @@ Hoot.model.conflicts = function(context)
         return review_mergedElements;
     }
 
+    model_conflicts.setReviewMergedElements = function(val) {
+        review_mergedElements = val;
+    }
+
     model_conflicts.beginReview = function (layer, callback) {
         var mapid = layer.mapId;
         callback(layer);

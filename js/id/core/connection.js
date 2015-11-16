@@ -483,6 +483,7 @@ iD.Connection = function(context) {
                             changes.modified.push(modRelation);
                         }
                     });
+                    context.hoot().model.conflicts.setReviewMergedElements(null);
                 }
 
                 oauth.xhr({
