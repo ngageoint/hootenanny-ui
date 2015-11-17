@@ -10,9 +10,9 @@ iD.ui.Tools = function(context) {
     	    	{title:'Measure Length',group:'measure',type:'line',icon:'add-line',mode:iD.modes.MeasureAddLine(context)},
     	    	{title:'Measure Area',group:'measure',type:'area',icon:'add-area',mode:iD.modes.MeasureAddArea(context)},
     	    ]},
-    	    {title:'Clip Tools',icon:'add-line',group:'clip',items:[
-    	    	{title:'Clip to Visual Extent',group:'clip',type:'area',icon:'add-area',action:'clipVisualExtent'},
-    	    	{title:'Clip to Bounding Box',group:'clip',type:'area',icon:'add-area',mode:iD.modes.ClipBoundingBox(context)},
+    	    {title:'Clip Tools',icon:'scissors',group:'clip',items:[
+    	    	{title:'Clip to Visual Extent',group:'clip',type:'area',icon:'scissors',action:'clipVisualExtent'},
+    	    	{title:'Clip to Bounding Box',group:'clip',type:'area',icon:'scissors',mode:iD.modes.ClipBoundingBox(context)},
     	    //	{title:'Clip to Custom Area',group:'clip',type:'area',icon:'add-area',mode:iD.modes.ClipCustomArea(context)}
     	    ]},
     	  ];
@@ -87,7 +87,7 @@ iD.ui.Tools = function(context) {
             	subTools.append('span').text(function(item) { return item.title; });
             });
         
-            toolsItem.append('span').attr("class",function(item){return item.icon + " icon icon-pre-text"});
+            toolsItem.append('span').attr("class",function(item){return "icon-pre-text"});
             toolsItem.append('span').text(function(item) { return item.title; });
            	
         d3.select('.tools-menu').style('display', 'none');
