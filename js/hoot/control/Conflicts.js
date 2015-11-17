@@ -180,7 +180,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             return nCnt;
         }
 
-        var gMissing = {};
+        var relTreeIdx = {};
         var currentFid = null;
         var currentCallback = null;
 
@@ -198,12 +198,71 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
         }
 
+        // see if there are parent relations
+        // we do not care about way or node parent
+        // since all reviews are in relations
+        var updateParentRelations = function(fid) {
+           var f = context.hasEntity(fid);
+            var parents = context.graph().parentRelations(f);
+            if(parents){
+                // go through each parents and if it is in
+                // relation index then update member counts
+                // or remove if the unprocessed member count goes to 0
+                _.each(parents, function(p){
+                    if(relTreeIdx[p.id]){
+                        var nParentChildsCnt = 1*relTreeIdx[p.id];
+                        if(nParentChildsCnt > 1){
+                            relTreeIdx[p.id] = (nParentChildsCnt-1);
+                            console.debug('parent:' + p.id + ':' + relTreeIdx[p.id] );
+                        } else {
+                            // now zero or less so remove from queue
+                            delete relTreeIdx[p.id];
+                            var pps = context.graph().parentRelations(p);
+
+                            // We traverse the parent tree and update
+                            // index for relation in relation
+                            var cleanOutParentTree = function(pps) {
+                                _.each(pps, function(pp){
+                                    console.debug('Searching idx for:' + pp.id);
+                                    var ppIdxCnt = relTreeIdx[pp.id];
+                                    if(ppIdxCnt !== undefined){
+                                        if(ppIdxCnt > 1){
+                                            relTreeIdx[pp.id] = ppIdxCnt - 1;
+                                            console.debug('found idx for:' + relTreeIdx);
+                                        } else {
+                                            delete relTreeIdx[pp.id]; 
+                                            console.debug('del idx for:' + relTreeIdx);
+                                        }
+                                        var curPps = context.graph().parentRelations(pp);
+                                        if(curPps){
+                                            cleanOutParentTree(curPps);
+                                        }
+                                    }
+                                });
+                            }
+                            cleanOutParentTree(pps);
+
+                        }
+                        
+                    }
+                        
+                });
+            }
+
+        }
+
         var loadMissingHandler = function(err, entities) {
             try
             {
                 if(err){
                     throw 'Failed to load Missing Entities.';
                 }
+
+                // Make sure we do not go into infinite loop
+                if(Object.keys(relTreeIdx).length > 500){
+                    throw 'Relation tree size too big. May be went into infinite loop?';
+                }
+
                 if (entities.data.length) {
                     
                     // first check to see if anyone is relation
@@ -213,69 +272,31 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                     // if there is one or more relation then recurse    
                     if(relFound){
-                        for(var i=0; i<entities.data.length; i++){
-                            var f = entities.data[i];
-                            
+                        _.each(entities.data, function(f){                            
+                            // if feature type is relation recurse to load
+                            // if not do nothing since it has been loaded properly
                             if(f.type == 'relation'){
-                                gMissing[f.id] = 1*f.members.length;
-                                console.debug('relation:' + f.id + ':' + gMissing[f.id] );
-                                for(var ii=0; ii<f.members.length; ii++){
-                                    context.loadMissing([f.members[ii].id], 
-                                        loadMissingHandler);
-                                }
-                            } else {
-
-                            }
-                        }
+                                relTreeIdx[f.id] = f.members.length;
+                                console.debug('relation:' + f.id + ':' + relTreeIdx[f.id] );
+                                _.each(f.members, function(m){
+                                    console.debug('recurse relation:' + m.id);
+                                    if(!context.hasEntity(m.id) || m.type === 'relation') {
+                                        console.debug('loading recurse relation:' + m.id);
+                                        context.loadMissing([m.id], loadMissingHandler);
+                                    } else {
+                                        updateParentRelations(m.id);
+                                    }
+                                    
+                                });
+                                
+                            } 
+                        });
 
                     } else { // if there no relations then reduce child count
-                        //gMissing[fid]
-                        
-                        for(var i=0; i<entities.data.length; i++){
-                            var f = entities.data[i];
-                            var parents = context.graph().parentRelations(f);
-                            if(parents){
-                                _.each(parents, function(p){
-                                    if(gMissing[p.id]){
-                                        var nParentChildsCnt = 1*gMissing[p.id];
-                                        if(nParentChildsCnt > 1){
-                                            gMissing[p.id] = (nParentChildsCnt-1);
-                                            console.debug('parent:' + p.id + ':' + gMissing[p.id] );
-                                        } else {
-                                            // now zero or less so remove from queue
-                                            delete gMissing[p.id];
-                                            var pps = context.graph().parentRelations(p);
 
-
-                                            var cleanOutParentTree = function(pps) {
-                                                _.each(pps, function(pp){
-                                                    console.debug('Searching idx for:' + pp.id);
-                                                    var ppIdxCnt = gMissing[pp.id];
-                                                    if(ppIdxCnt !== undefined){
-                                                        if(ppIdxCnt > 1){
-                                                            gMissing[pp.id] = ppIdxCnt - 1;
-                                                            console.debug('found idx for:' + gMissing);
-                                                        } else {
-                                                            delete gMissing[pp.id]; 
-                                                            console.debug('del idx for:' + gMissing);
-                                                        }
-                                                        var curPps = context.graph().parentRelations(pp);
-                                                        if(curPps){
-                                                            cleanOutParentTree(curPps);
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                            cleanOutParentTree(pps);
-
-                                        }
-                                        
-                                    }
-                                        
-                                });
-                            }
-                                
-                        }
+                        _.each(entities.data, function(f){
+                            updateParentRelations(f.id);
+                        });//_.each(entities.data, function(f){
                     }
 
     
@@ -290,8 +311,8 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
             finally
             {
-                console.debug( gMissing );
-                if(Object.keys(gMissing).length == 0){
+                console.debug( relTreeIdx );
+                if(Object.keys(relTreeIdx).length == 0){
                     // Done so do final clean ups
                     console.debug('done');
                     validateMemberCnt(currentFid, currentCallback);
@@ -302,7 +323,10 @@ Hoot.control.conflicts = function (context, sidebar) {
         // If it is not loaded in iD then we use loadMissing to load
         // Relation and the members.
         var getRelationFeature = function(mapid, relationid, callback){
-            gMissing = {};
+            relTreeIdx = {};
+            currentFid = null;
+            currentCallback = null;
+
             var fid = 'r' + relationid + '_' + mapid;
             var f = context.hasEntity(fid);
             currentFid = fid;
