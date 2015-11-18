@@ -968,10 +968,16 @@ iD.Connection = function(context) {
                                     connection.showDensityRaster(true);
 
                                     if (context.hoot().control.conflicts.reviewIds) {
+                                        // When zoomed out during review load reviewable items and the dependent relations
                                         context.loadMissing(context.hoot().control.conflicts.reviewIds, function(err, entities) {
-                                            event.loaded();
-                                            event.layerAdded(layerName);
+                                            context.hoot().model.conflicts.loadMissingFeatureDependencies(mapId, 
+                                                layerName, context.hoot().control.conflicts.reviewIds, function(error){
+                                                event.loaded();
+                                                event.layerAdded(layerName);
+                                            });                                            
+                                            
                                         }, layerName);
+
                                     }
                                 } else {
                                     connection.showDensityRaster(false);

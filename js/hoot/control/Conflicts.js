@@ -213,7 +213,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                         var nParentChildsCnt = 1*relTreeIdx[p.id];
                         if(nParentChildsCnt > 1){
                             relTreeIdx[p.id] = (nParentChildsCnt-1);
-                            console.debug('parent:' + p.id + ':' + relTreeIdx[p.id] );
                         } else {
                             // now zero or less so remove from queue
                             delete relTreeIdx[p.id];
@@ -223,15 +222,12 @@ Hoot.control.conflicts = function (context, sidebar) {
                             // index for relation in relation
                             var cleanOutParentTree = function(pps) {
                                 _.each(pps, function(pp){
-                                    console.debug('Searching idx for:' + pp.id);
                                     var ppIdxCnt = relTreeIdx[pp.id];
                                     if(ppIdxCnt !== undefined){
                                         if(ppIdxCnt > 1){
                                             relTreeIdx[pp.id] = ppIdxCnt - 1;
-                                            console.debug('found idx for:' + relTreeIdx);
                                         } else {
                                             delete relTreeIdx[pp.id]; 
-                                            console.debug('del idx for:' + relTreeIdx);
                                         }
                                         var curPps = context.graph().parentRelations(pp);
                                         if(curPps){
@@ -277,11 +273,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                             // if not do nothing since it has been loaded properly
                             if(f.type == 'relation'){
                                 relTreeIdx[f.id] = f.members.length;
-                                console.debug('relation:' + f.id + ':' + relTreeIdx[f.id] );
                                 _.each(f.members, function(m){
-                                    console.debug('recurse relation:' + m.id);
                                     if(!context.hasEntity(m.id) || m.type === 'relation') {
-                                        console.debug('loading recurse relation:' + m.id);
                                         context.loadMissing([m.id], loadMissingHandler);
                                     } else {
                                         updateParentRelations(m.id);
@@ -311,10 +304,9 @@ Hoot.control.conflicts = function (context, sidebar) {
             }
             finally
             {
-                console.debug( relTreeIdx );
+
                 if(Object.keys(relTreeIdx).length == 0){
                     // Done so do final clean ups
-                    console.debug('done');
                     validateMemberCnt(currentFid, currentCallback);
                 }
             }
@@ -394,7 +386,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 } else {
                     reviewData.mapId = data.mapId;
                     // something less then -1 will get random reviewable
-                    reviewData.sequence = -999;
+                    reviewData.sequence = 1594;//-999; //1594
                     reviewData.direction = direction;
                 }
             
@@ -806,15 +798,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                 context.perform(
                   iD.actions.ChangeTags(reviewRelationEntity.id, newTags), 
                   t('operations.change_tags.annotation'));
-
-
-                // remove all relations member so it does not interact
-                // when updating osm in service
-                while(context.hasEntity(reviewRelationEntity.id).members.length > 0){
-                    context.perform(
-                    iD.actions.DeleteMember(reviewRelationEntity.id, 0),
-                    t('operations.delete_member.annotation'));
-                }
 
         }
 

@@ -21,6 +21,7 @@ iD.actions.DeleteNode = function(nodeId) {
 
     }
 
+
     var action = function(graph) {
         var node = graph.entity(nodeId);
 

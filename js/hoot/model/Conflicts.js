@@ -146,6 +146,173 @@ Hoot.model.conflicts = function(context)
     }
 
 
+    // This function loads missing and the dependencies
+    // Used when we zoom out during review and to operate on the dependencies during delete
+    model_conflicts.loadMissingFeatureDependencies = function (mapid, layerName, featureIds, callback) {
+
+        try
+        {
+         
+            var queryElements = new Array();
+        
+            
+            _.each(featureIds, function(id){
+                var f = context.hasEntity(id);
+                if(f && f.type != 'relation'){
+                    var queryElement = {};
+                    queryElement.mapId = mapid;
+                    queryElement.id = f.origid.substring(1);
+                    queryElement.type = f.type;
+                    queryElements.push(queryElement);
+                }
+    
+            });
+    
+            if(queryElements.length === 0){
+                return;
+            }
+            Hoot.model.REST('getReviewRefs', queryElements,
+                function (error, response)
+                {
+                    try
+                    {
+                        if (error)
+                        {
+                          console.log(error);
+                          iD.ui.Alert('failed to retrieve review refs.','warning');
+                          context.hoot().control.conflicts.setProcessing(false);
+                          throw error;
+                        }
+                        //console.log(response);
+
+                        context.hoot().assert(
+                          response.reviewRefsResponses.length == queryElements.length);
+                        
+                        var loadedTypes = {};
+                       
+               
+                        var missingIds = {};
+                        _.each(response.reviewRefsResponses, function(r){
+
+                            _.each(r.reviewRefs, function(reviewRef){
+                                if(reviewRef){
+                                    var fullId = null;
+                                    if(reviewRef.type === 'node'){
+                                        fullId = 'n' + reviewRef.id + '_'+ mapid;
+                                        if(!context.hasEntity(fullId)){
+                                            missingIds[fullId] = 'node';
+                                            loadedTypes['node'] = true;
+                                        }
+                                    } else if(reviewRef.type === 'way'){
+                                        fullId = 'w' + reviewRef.id + '_'+ mapid;
+                                        if(!context.hasEntity(fullId)){
+                                            missingIds[fullId] = 'way';
+                                            loadedTypes['way'] = true;
+                                        }
+                                    } else if(reviewRef.type === 'relation'){
+                                        fullId = 'r' + reviewRef.id + '_'+ mapid;
+                                        if(!context.hasEntity(fullId)){
+                                            missingIds[fullId] = 'relation';
+                                            loadedTypes['relation'] = true;
+                                        }
+                                    }
+                                    
+
+                                    var fullRelId = "r" + reviewRef.reviewRelationId + "_" + mapid;
+                                    if(!context.hasEntity(fullRelId)){
+                                        missingIds[fullRelId] = 'relation';
+                                        loadedTypes['relation'] = true;
+                                    }
+                                }
+                            });
+    
+                        });
+
+                        
+                       
+                        if(Object.keys(missingIds).length == 0){
+                            if(callback){
+                                callback();
+                            }
+                            return;
+                        }
+
+                        context.loadMissing(Object.keys(missingIds),
+                            function(err, entities)
+                            {
+                                if(err){
+                                    if(callback) {
+                                        callback();
+                                    }
+                                    return;
+                                }
+                                _.each(entities.data, function(d){
+                                    delete missingIds[d.id];
+                                    if(d.id.charAt(0) == 'n'){
+                                        if(loadedTypes['node']){
+                                            delete loadedTypes['node'];
+                                        }
+                                    }
+
+                                    if(d.id.charAt(0) == 'w'){
+                                        if(loadedTypes['way']){
+                                            delete loadedTypes['way'];
+                                        }
+                                        
+                                    }
+
+                                    if(d.id.charAt(0) == 'r'){
+                                        if(loadedTypes['relation']){
+                                            delete loadedTypes['relation'];
+                                        }
+                                        
+                                    }
+                                });
+
+
+                                if(Object.keys(missingIds).length === 0 || Object.keys(loadedTypes).length === 0 ){
+                                    if(callback) {
+                                        callback();
+                                    }
+                                } 
+                                
+                            }, // loadMissing callback
+                          layerName);
+                    }
+                    catch (getReviewRefsErr)
+                    {
+                        iD.ui.Alert(getReviewRefsErr,'error');
+                        console.error(getReviewRefsErr);
+                        if(callback){
+                            callback(getReviewRefsErr);
+                        }
+                    }
+                    finally
+                    {
+                     
+                    }
+                } );// getreviewRef
+
+
+        }
+        catch(mergeErr)
+        {
+            iD.ui.Alert(mergeErr,'error');
+            console.error(mergeErr);
+            if(callback){
+                callback(mergeErr);
+            }
+        }
+        finally
+        {
+            
+            
+        }
+
+    };
+
+
+
     // This function is to store the reference relation items so we can process 
     // when we resolve and save.
     // We also deletes the merged features.
@@ -234,8 +401,11 @@ Hoot.model.conflicts = function(context)
                 newReviewIds.push('r' + reviewMergeRelationId + '_' + mapid);
                 context.hoot().control.conflicts.reviewIds = newReviewIds;
 
-                //there will always be changes at this point
-                validateMergeChangeset();                 
+                // This validation may be wrong if user performs delete/create/modify
+                // outside of review process..
+                // For exmaple user deletes a node and presses merge..
+                // Disablling
+                //validateMergeChangeset();                 
 
             }//reviewRefs
 
@@ -486,7 +656,12 @@ Hoot.model.conflicts = function(context)
 
      
     };
-    
+
+    // This validation may be wrong if user performs delete/create/modify
+    // outside of review process..
+    // For exmaple user deletes a node and presses merge..
+    // Disablling
+    /*
     //only call this at the very end of a node merge operation
     var validateMergeChangeset = function()
     {
@@ -503,7 +678,7 @@ Hoot.model.conflicts = function(context)
       //review of the two features deleted as a result of the merge.
       context.hoot().assert(changes.modified.length >= 1);
       context.hoot().assert(changes.deleted.length == 2);
-    }
+    }*/
 
     var logDiff = function()
     {
