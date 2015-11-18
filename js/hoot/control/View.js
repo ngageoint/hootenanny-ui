@@ -137,8 +137,9 @@ Hoot.control.view = function (container, context) {
             palette = Hoot.hoot().palette();
         }
         var paletteFieldset = form.append('fieldset');
+        var mapid = options.id || options.mapId || 0;
         paletteFieldset
-            .attr('id','palette-'+options.id.toString())
+            .attr('id','palette-'+mapid.toString())
         	.classed('pad1 keyline-top', true)
             .style('border-top', '1px solid rgba(0, 0, 0, 0.2)')
             .style('height', '60px')
