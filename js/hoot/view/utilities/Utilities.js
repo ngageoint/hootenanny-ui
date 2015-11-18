@@ -141,7 +141,8 @@ Hoot.view.utilities = function (context){
             .attr('id', 'jobsBG')
             .classed('col12 fill-white pin-bottom pin-top hidden', true)
             .style('position', 'absolute')
-            .style('top', '60px');
+            .style('top', '60px')
+            .style('z-index',999);
         jobsBG.append('div')
             .classed('row2 fill-light round-top keyline-all', true);
 

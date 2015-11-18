@@ -112,10 +112,10 @@ Hoot.hoot = function (context) {
             .palette(color);
         var lighter = d3.rgb(color)
             .brighter();
-        sheets.insertRule('path.stroke.tag-hoot-' + modifiedId + ' { stroke:' + color + '}', sheets.rules.length - 1);
-        sheets.insertRule('path.shadow.tag-hoot-' + modifiedId + ' { stroke:' + lighter + '}', sheets.rules.length - 1);
-        sheets.insertRule('path.fill.tag-hoot-' + modifiedId + ' { fill:' + lighter + '}', sheets.rules.length - 1);
-        sheets.insertRule('g.point.tag-hoot-' + modifiedId + ' .stroke { fill:' + color + '}', sheets.rules.length - 1);
+        sheets.insertRule('path.stroke.tag-hoot-' + modifiedId + ' { stroke:' + color + '}', sheets.cssRules.length - 1);
+        sheets.insertRule('path.shadow.tag-hoot-' + modifiedId + ' { stroke:' + lighter + '}', sheets.cssRules.length - 1);
+        sheets.insertRule('path.fill.tag-hoot-' + modifiedId + ' { fill:' + lighter + '}', sheets.cssRules.length - 1);
+        sheets.insertRule('g.point.tag-hoot-' + modifiedId + ' .stroke { fill:' + color + '}', sheets.cssRules.length - 1);
     };
  
     hoot.removeColor = function (lyrid) {
@@ -233,8 +233,8 @@ Hoot.hoot = function (context) {
             this.parentNode.appendChild(this);
         });
     };
-    document.onkeydown = function () {
-        if (event.altKey && (event.which === 66)) {
+    document.onkeydown = function (event) {
+    	if (event.altKey && (event.which === 66)) {
             id.hoot().model.layers.layerSwap();
         } else if (event.altKey && (event.which === 78)) {
             var curlayers = id.hoot().model.layers.getLayers();
@@ -291,7 +291,7 @@ Hoot.hoot = function (context) {
     
     var bInfo = getBrowserInfo();
     if(bInfo.name !== 'Chrome' && bInfo.name !== 'Chromium'){
-        alert("Hootenanny supports only Chrome or Chromium browser! \nHootenanny will not function normally under " + bInfo.name + " v. " + bInfo.version);
+        //alert("Hootenanny supports only Chrome or Chromium browser! \nHootenanny will not function normally under " + bInfo.name + " v. " + bInfo.version);
     }
 
     return hoot;
