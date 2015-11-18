@@ -345,10 +345,10 @@ Hoot.control.utilities.folder = function(context) {
 	    function click(d) {
 	      var nodes = tree.nodes(root);
 	      
-	      if(!event.ctrlKey || container.attr('id')==null){
+	      if(!d3.event.ctrlKey || container.attr('id')==null){
 	    	  _.each(nodes,function(n){n.selected=false;});  
 	    	  if(d.type=='dataset'){d.selected=true;}
-	      } else if(event.ctrlKey && container.attr('id')=='datasettable' && d.type=='dataset') {
+	      } else if(d3.event.ctrlKey && container.attr('id')=='datasettable' && d.type=='dataset') {
 	    	  d.selected = !d.selected;
 	      }
 	    	

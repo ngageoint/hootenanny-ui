@@ -70,6 +70,14 @@ Hoot.control.view = function (container, context) {
             return 'viewicon-' + modifiedId;
         })
         .on('click', function(d){
+        	var paletteDiv = d3.select("#palette-"+d.id);
+        	if(!paletteDiv.empty()){
+        		if(paletteDiv.style('display')!='none'){
+        			paletteDiv.style('display','none');
+            	}else{
+            		paletteDiv.style('display','block');
+            	}	
+        	}
             //context.hoot().toggleColor(d.name);
         });
         _a.append('span')
@@ -129,10 +137,13 @@ Hoot.control.view = function (container, context) {
             palette = Hoot.hoot().palette();
         }
         var paletteFieldset = form.append('fieldset');
+        var mapid = options.id || options.mapId || 0;
         paletteFieldset
-            .classed('pad1 keyline-top', true)
+            .attr('id','palette-'+mapid.toString())
+        	.classed('pad1 keyline-top', true)
             .style('border-top', '1px solid rgba(0, 0, 0, 0.2)')
-            .style('height', '60px');
+            .style('height', '60px')
+            .style('display','none');
 
         paletteFieldset
             .append('div')
