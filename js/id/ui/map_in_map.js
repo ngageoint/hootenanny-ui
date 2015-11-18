@@ -277,6 +277,10 @@ iD.ui.MapInMap = function(context) {
             redraw();
         };
 
+        map_in_map.redrawMap = function() {
+        	redraw();
+        };
+        
         map_in_map.extent = function() {
             return new iD.geo.Extent(projection.invert([0, selection.dimensions()[1]]),
                                  projection.invert([selection.dimensions()[0], 0]));
