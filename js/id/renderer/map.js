@@ -225,9 +225,6 @@ iD.Map = function(context) {
         queueRedraw();
 
         dispatch.move(map);
-        
-        //update map in map
-        if(!context.MapInMap.hidden()){context.MapInMap.redrawMap();}
     }
 
     function resetTransform() {
