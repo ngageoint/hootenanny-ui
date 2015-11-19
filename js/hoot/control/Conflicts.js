@@ -386,7 +386,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 } else {
                     reviewData.mapId = data.mapId;
                     // something less then -1 will get random reviewable
-                    reviewData.sequence = 1594;//-999; //1594
+                    reviewData.sequence = -999;
                     reviewData.direction = direction;
                 }
             
