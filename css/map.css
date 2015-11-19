@@ -1097,6 +1097,11 @@ g.turn circle {
     cursor: url(img/cursor-select-acting.png), pointer; /* FF */
 }
 
+.mode-clip-bounding-box #map {
+		cursor: crosshair; /* Opera */
+    cursor: url(img/cursor-draw.png) 9 9, crosshair; /* FF */
+}
+
 .mode-draw-line #map,
 .mode-draw-area #map,
 .mode-add-line  #map,
