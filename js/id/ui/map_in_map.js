@@ -293,7 +293,8 @@ iD.ui.MapInMap = function(context) {
         context.map()
             .on('drawn.map-in-map', function(drawn) {
                 if (drawn.full === true) redraw();
-            });
+            })
+            .on('move.map-in-map', redraw);
 
         context.MapInMap = map_in_map;
 
