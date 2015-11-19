@@ -24,17 +24,29 @@ Hoot.view.utilities = function (context){
             jobsBG.node()
                 .appendChild(thisbody);
             d3.selectAll('.utilHootHead')
-                .classed('fill-white', false)
-                .classed('keyline-bottom', true);
+                //.classed('fill-white', false);
+                //.classed('keyline-bottom', true);
+            	.style('font-weight','normal');
             d3.select(d)
-                .classed('fill-white', true)
-                .classed('keyline-bottom', false);
+                //.classed('fill-white', true);
+                //.classed('keyline-bottom', false);
+            .style('font-weight','bold');
         };
 
         _createTabs = function(jobsBG)
         {
             if(iD.data.hootManageTabs) {
-                var defaultTab = null;
+                var settingsSidebar = jobsBG.append('div')
+            		.classed('col3 pad2 pin-bottom pin-top fill-light keyline-right',true)
+            		.attr('id','settingsSidebar');
+                
+                var settingsHeader = settingsSidebar.append('div')
+	            	.classed('keyline-bottom block strong center margin2 pad1y  utilHootHead point',true)
+	            	.append('label').text('Settings')
+	            	.style('font-weight','bolder')
+	            	.style('font-size','large');
+            	
+            	var defaultTab = null;
                 _.each(iD.data.hootManageTabs, function(tabMeta){
                     var tabName = tabMeta.name;
                     var tabId = tabMeta.id;
@@ -48,26 +60,33 @@ Hoot.view.utilities = function (context){
                     if(tabMeta.pady !== undefined && tabMeta.pady === 'false'){
                         pady = '';
                     }
-
+                    
                     var tabBody = jobsBG.append('div')
-                    .classed('top2 pad2 round-top keyline-bottom fill-light pin-left pin-top utilHoot', true)
-                    .attr('id', tabId);
+                    .classed('pad2 round-top fill-light pin-left pin-top utilHoot', true)
+                    .attr('id', tabId)
+                    .style('left','25%');
 
 
-                    var bodyStyle = 'block strong center col1 margin' + tabOrder + ' pin-top ' + pady + 
-                    ' keyline-top keyline-right keyline-left keyline-bottom utilHootHead point';
+                    /*var bodyStyle = 'block strong center col1 margin' + tabOrder + ' pin-top ' + pady + 
+                    ' keyline-top keyline-right keyline-left keyline-bottom utilHootHead point';*/
 
-                    var tabHeader = tabBody.append('div')
-                    .classed(bodyStyle, true)
-                    .style('top', '-44px')
-                    .attr('data', '#' + tabId)
-                    .text(tabName)
-                    .on('click', function () {
-                        _toggleOpts(this);
-                    });
+                    var bodyStyle = 'block strong center margin2 pad1y  utilHootHead point';
+                    
+                    var tabHeader = settingsSidebar.append('div')
+	                    .classed(bodyStyle, true)
+	                    /*.style('top', '-44px')*/
+	                    .attr('data', '#' + tabId)
+	                    /*.text(tabName)*/
+	                    .on('click', function () {
+	                        _toggleOpts(this);
+	                    });
+                    
+                    var tabLabel = tabHeader.append('label')
+                    	.text(tabName)
+                    	.style('font-style','normal');
                     
                     var containerForm = tabBody.append('form');
-                    containerForm.classed('center margin2 col7 round keyline-all', true);
+                    containerForm.classed('center round', true);
 
                     var callbackContext = context.hoot();
 
@@ -139,12 +158,10 @@ Hoot.view.utilities = function (context){
         var jobsBG = d3.select('body')
             .append('div')
             .attr('id', 'jobsBG')
-            .classed('col12 fill-white pin-bottom pin-top hidden', true)
+            .classed('col12 pin-bottom pin-top hidden', true)
             .style('position', 'absolute')
             .style('top', '60px')
             .style('z-index',999);
-        jobsBG.append('div')
-            .classed('row2 fill-light round-top keyline-all', true);
 
         ////////////VERSION///////////////////
 
