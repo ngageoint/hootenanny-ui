@@ -114,16 +114,36 @@ iD.Background = function(context) {
                 if(!lyr){
                     var newOverlayer = {};
                     newOverlayer.name = lyrName;
+                    newOverlayer.id = layers[key].mapId;
                     newOverlayer.type = 'tms';
                     newOverlayer.descriptions = lyrName;
-                    newOverlayer.template = location.origin +  '/static/' + lyrName + '/{zoom}/{x}/{y}.png';
-                    newOverlayer.scaleExtent = [0,20];
+                    //newOverlayer.template = location.origin +  '/static/' + lyrName + '/{zoom}/{x}/{y}.png';
+                    newOverlayer.template = 'http://192.168.33.11:8000/?z={zoom}&x={x}&y={y}&color='
+                        + encodeURIComponent(context.hoot().palette(layers[key].color))
+                        + '&mapid=' + layers[key].mapId;
+                    newOverlayer.scaleExtent = [0,18];
                     newOverlayer.overlay = true;
                     newOverlayer.projection = 'mercator';
                     newOverlayer.subtype = 'density_raster';
 
                     var newSource = iD.BackgroundSource(newOverlayer);
                     backgroundSources.push(newSource);
+
+                    context.hoot().control.view.on('layerColor.background', function(name, color, mapid) {
+                        background.addOrUpdateOverlayLayer(iD.BackgroundSource({
+                            name: name,
+                            id: mapid,
+                            type: 'tms',
+                            descriptions: name,
+                            template: 'http://192.168.33.11:8000/?z={zoom}&x={x}&y={y}&color='
+                                + encodeURIComponent(context.hoot().palette(color))
+                                + '&mapid=' + mapid,
+                            scaleExtent: [0,18],
+                            overlay: true,
+                            projection: 'mercator',
+                            subtype: 'density_raster'
+                        }));
+                    });
                 }
 
 
@@ -512,6 +532,5 @@ iD.Background = function(context) {
         });
     }
     };
-
     return d3.rebind(background, dispatch, 'on');
 };
