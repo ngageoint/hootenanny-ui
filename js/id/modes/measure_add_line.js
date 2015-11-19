@@ -1,6 +1,7 @@
 iD.modes.MeasureAddLine = function(context) {
     var mode = {
-        id: 'measure-add-line'
+        id: 'measure-add-line',
+        key: 'n'
     };
 
     var svg = d3.select('.measure-layer').select('svg');

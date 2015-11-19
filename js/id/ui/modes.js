@@ -64,7 +64,7 @@ iD.ui.Modes = function(context) {
         });
 
         var keybinding = d3.keybinding('mode-buttons');
-
+        
         modes.forEach(function(m) {
             keybinding.on(m.key, function() { if (editable()) {
                 if(m.button === 'line' || m.button === 'area'){
@@ -75,7 +75,7 @@ iD.ui.Modes = function(context) {
             	} 
             });
         });
-
+        
         d3.select(document)
             .call(keybinding);
 
