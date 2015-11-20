@@ -70,56 +70,20 @@ Hoot.model.conflicts = function(context)
 
     };
     
-    model_conflicts.acceptAll = function (data, callback) {
-
-    	    var items = data.reviewableItems;
-            var mapid = data.mapId;
-            //drop all review tags from the all reviewed features, since they're all being
-            //marked as reviewed
-            var flagged = _.uniq(_.flatten(_.map(items, function (d) {
-                return [d.type.charAt(0) + d.id + '_' +
-                  mapid, d.itemToReviewAgainst.type.charAt(0) + d.itemToReviewAgainst.id + '_' +
-                  mapid];
-            })));
-            var inID = _.filter(flagged, function (d) {
-                return context.hasEntity(d);
-            });
-            _.each(inID, function (d) {
-                var ent = context.hasEntity(d);
-                if (!ent) {
-                    return;
-                }
-                var tags = ent.tags;
-                var newTags = _.clone(tags);
-                newTags = _.omit(newTags, function (value, key) {
-                    return key.match(/hoot:review/g);
-                });
-                context.perform(iD.actions.ChangeTags(d, newTags), t('operations.change_tags.annotation'));
-            });
-
+    model_conflicts.acceptAll = function (data, callback) 
+    {
             var hasChanges = context.history().hasChanges();
             if (hasChanges) {
-                iD.modes.Save(context).save(context, function () {
-
+                iD.modes.Save(context).save(context, function () 
+                {
                     reloadLayer(data);
-
-                    Hoot.model.REST('ReviewGetLockCount', data.mapId, function (resp) {
-                        //if only locked by self
-                        if(resp.count >= 2) {
-                        	iD.ui.Alert("Reviews are being reviewed by other users. Modified features will be saved but will not be marked as resolved.",'warning');
-                        }
-
-                        if (callback) {
-                            callback();
-                        }
-                    });
                 });
             }
             else {
               reloadLayer(data);
                 callback();
             }
-        };
+    };
 
     /*
      * Removes any items reviewRefs whose element id matches the element id passed in idsToRemove
@@ -149,13 +113,10 @@ Hoot.model.conflicts = function(context)
     // This function loads missing and the dependencies
     // Used when we zoom out during review and to operate on the dependencies during delete
     model_conflicts.loadMissingFeatureDependencies = function (mapid, layerName, featureIds, callback) {
-
         try
         {
-         
             var queryElements = new Array();
         
-            
             _.each(featureIds, function(id){
                 var f = context.hasEntity(id);
                 if(f && f.type != 'relation'){
@@ -217,7 +178,6 @@ Hoot.model.conflicts = function(context)
                                         }
                                     }
                                     
-
                                     var fullRelId = "r" + reviewRef.reviewRelationId + "_" + mapid;
                                     if(!context.hasEntity(fullRelId)){
                                         missingIds[fullRelId] = 'relation';
@@ -225,10 +185,7 @@ Hoot.model.conflicts = function(context)
                                     }
                                 }
                             });
-    
                         });
-
-                        
                        
                         if(Object.keys(missingIds).length == 0){
                             if(callback){
@@ -258,17 +215,14 @@ Hoot.model.conflicts = function(context)
                                         if(loadedTypes['way']){
                                             delete loadedTypes['way'];
                                         }
-                                        
                                     }
 
                                     if(d.id.charAt(0) == 'r'){
                                         if(loadedTypes['relation']){
                                             delete loadedTypes['relation'];
-                                        }
-                                        
+                                        }   
                                     }
                                 });
-
 
                                 if(Object.keys(missingIds).length === 0 || Object.keys(loadedTypes).length === 0 ){
                                     if(callback) {
@@ -289,11 +243,8 @@ Hoot.model.conflicts = function(context)
                     }
                     finally
                     {
-                     
                     }
                 } );// getreviewRef
-
-
         }
         catch(mergeErr)
         {
@@ -305,23 +256,15 @@ Hoot.model.conflicts = function(context)
         }
         finally
         {
-            
-            
         }
-
     };
 
-
-
     // This function is to store the reference relation items so we can process 
-    // when we resolve and save.
-    // We also deletes the merged features.
-    // So what is happening is we store all reference relations for deleted nodes
-    // and delete.
+    // when we resolve and save.  We also deletes the merged features.  So what is happening is 
+    // we store all reference relations for deleted nodes and delete.
     var processMerge = function(reviewRefs, mapid, queryElement1, queryElement2, 
         feature, featureAgainst, mergedNode, reviewMergeRelationId)
     {
-
         try
         {
             if(reviewRefs){
@@ -329,7 +272,6 @@ Hoot.model.conflicts = function(context)
                 //var reviewRelationIds = new Array();
                 for (var i = 0; i < reviewRefs.length; i++)
                 {
-                  
                     var fullRelId = "r" + reviewRefs[i].reviewRelationId.toString() + "_" + mapid;
        
                     var reviewRelation = context.hasEntity(fullRelId);
@@ -348,10 +290,8 @@ Hoot.model.conflicts = function(context)
                         if(queryElement2){
                             var queryElement2iDid = 
                               "n" + queryElement2.id + "_" + mapid;
-                            queryElement2Member = reviewRelation.memberById(queryElement2iDid);
-                            
+                            queryElement2Member = reviewRelation.memberById(queryElement2iDid);  
                         }
-                        
 
                         var newMember = new iD.Node();
                         newMember.id = mergedNode.id;
@@ -370,13 +310,9 @@ Hoot.model.conflicts = function(context)
                         var newObj = {};
                         newObj['id'] = fullRelId;
                         newObj['obj'] = newMember;
-                        review_mergedElements.push(newObj);
-                                              
+                        review_mergedElements.push(newObj);                       
                     }
-
-                  
                 }
-
                 
                 var fe = context.hasEntity(feature.id);
                 if(fe){
@@ -387,7 +323,6 @@ Hoot.model.conflicts = function(context)
                 if(fe){
                     fe.hootMeta = {'isReviewDel':true};
                 }
-                
 
                 //Remove the two input entities
                 iD.operations.Delete([feature.id, featureAgainst.id], context)();
@@ -408,7 +343,6 @@ Hoot.model.conflicts = function(context)
                 //validateMergeChangeset();                 
 
             }//reviewRefs
-
         }
         catch (err)
         {
@@ -418,9 +352,6 @@ Hoot.model.conflicts = function(context)
         {
             context.hoot().control.conflicts.setProcessing(false);
         }
-        
-        
-
     }// processMerge
 
     /*
@@ -428,8 +359,8 @@ Hoot.model.conflicts = function(context)
      * is currently the case.  If this changes, then the code will need to be updated.
      */
     model_conflicts.autoMergeFeature = function (feature, featureAgainst, 
-        mapid, reviewMergeRelationId, callback) {
-
+        mapid, reviewMergeRelationId, callback) 
+    {
         try
         {
             context.hoot().control.conflicts.setProcessing(true);
@@ -448,7 +379,8 @@ Hoot.model.conflicts = function(context)
                     doMerge();
                 }
 
-                function doMerge() {
+                function doMerge() 
+                {
                     try
                     {
                         var osmXml = '<osm version=\'0.6\' upload=\'true\' generator=\'JOSM\'>' +
@@ -458,21 +390,15 @@ Hoot.model.conflicts = function(context)
 
                         //console.log(feature);
                         //console.log(featureAgainst);
-                        
-                        
 
                         //newly merged entity
                         var mergedNode = entities[0];
                         //review_mergedNode = mergedNode;
 
-                        //The following tag updates would possibly make more sense done server-side, but
-                        //there are severe problems with data consistency client-side when updating tags
-                        //on the server, rather than on the client.
-
                         //OSM services expect new elements to have version = 0.  I thought iD would handle
                         //this during changeset creation, but it doesn't look like it does.
                         mergedNode.version = 0;
-                        //TODO: is this right?  Technically, this new feature was auto-merged from source
+                        //Is this right?  Technically, this new feature was auto-merged from source
                         //1 and 2 features, so should get a conflated status...right?
                         mergedNode.tags['hoot:status'] = 3;
                         context.perform(
@@ -496,8 +422,6 @@ Hoot.model.conflicts = function(context)
                         queryElement2.type = featureAgainst.type;
                         queryElements.push(queryElement2);
 
-                        
-                        
                         Hoot.model.REST('getReviewRefs', queryElements,
                             function (error, response)
                             {
@@ -524,16 +448,15 @@ Hoot.model.conflicts = function(context)
                                     //console.log("reviewRefs: " + reviewRefs);
                                     //if either of the two merged features reference each other, remove those
                                     //references from this list
-                                    reviewRefs = removeReviewRefs(reviewRefs, [queryElement1.id, queryElement2.id]);
+                                    reviewRefs = 
+                                      removeReviewRefs(reviewRefs, [queryElement1.id, queryElement2.id]);
                                     //console.log("reviewRefs: " + reviewRefs);
-                                    
                                     
                                     var reviewRelationIdsMissing = new Array();
                                     for (var i = 0; i < reviewRefs.length; i++)
                                     {
                                         //console.log("reviewRefs.reviewRelationId: " + reviewRefs[i].reviewRelationId);
                                         //iD feature ID: <OSM element type first char> + <OSM element ID> + '_' + <mapid>;
-
                                         var fullRelId = "r" + reviewRefs[i].reviewRelationId.toString() + "_" + mapid;
                                         if(!context.hasEntity(fullRelId)){
                                             reviewRelationIdsMissing.push(fullRelId);
@@ -545,7 +468,6 @@ Hoot.model.conflicts = function(context)
                                    
                                     var isMergeProcessed = false;
                                     //retrieve all the associated review relations
-
                                     if(reviewRelationIdsMissing.length > 0){
                                         context.loadMissing(reviewRelationIdsMissing,
                                             function(err, entities)
@@ -558,12 +480,10 @@ Hoot.model.conflicts = function(context)
                                                     //console.log("entities.data[0]: " + entities.data[0]);
                                                     //console.log("entities.data: " + entities.data);
                                                     //console.log("entities.data.length: " + entities.data.length);
-                                             
-
                                                     //console.log("test3");  
                                                    
-                                                    _.each(entities.data, function(ent){
-                                                      
+                                                    _.each(entities.data, function(ent)
+                                                    {
                                                         var idx = reviewRelationIdsMissing.indexOf(ent.id);
                                                         if(idx){
                                                             reviewRelationIdsMissing.splice(idx, 1);
@@ -575,16 +495,15 @@ Hoot.model.conflicts = function(context)
                                                         var exist = context.hasEntity(missing);
                                                         if(!exist){
                                                             nUnloaded++;
-                                                        }
-                                                        
+                                                        }                                                        
                                                     })
                                                     // this for preventing stack overflow when there are large numbers of one to many
                                                     // When there is more than 150 missing, then we go into chunck where we load
                                                     // chunk of 150. see connection.loadMultiple
                                                     // Each chunk load calls callback and we need to have way to find if all has been
                                                     // loaded..
-                                                    if(nUnloaded == 0 && isMergeProcessed == false) {
-
+                                                    if (nUnloaded == 0 && isMergeProcessed == false) 
+                                                    {
                                                         isMergeProcessed = true;
                                                         processMerge(reviewRefs, mapid, queryElement1, 
                                                             queryElement2, feature, featureAgainst, mergedNode, reviewMergeRelationId);
@@ -624,7 +543,6 @@ Hoot.model.conflicts = function(context)
                                 }
                             } );// getreviewRef
                        }, mapid, layerName);
-
                     }
                     catch(mergeErr)
                     {
@@ -636,7 +554,6 @@ Hoot.model.conflicts = function(context)
                         if(callback){
                             callback();
                         }
-                        
                     }
                 }
             }        
@@ -652,9 +569,6 @@ Hoot.model.conflicts = function(context)
                 callback();
             }
         }
-
-
-     
     };
 
     // This validation may be wrong if user performs delete/create/modify
@@ -721,5 +635,4 @@ Hoot.model.conflicts = function(context)
     };
 
   return model_conflicts;
-
 }
