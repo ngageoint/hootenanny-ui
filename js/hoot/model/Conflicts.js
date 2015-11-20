@@ -90,25 +90,17 @@ Hoot.model.conflicts = function(context)
      */
     var removeReviewRefs = function(reviewRefs, idsToRemove)
     {
-      //console.log("reviewRefs: " + reviewRefs);
-      //console.log("idsToRemove: " + idsToRemove);
-
       var modifiedReviewRefs = new Array();
       for (var i = 0; i < reviewRefs.length; i++)
       {
         var reviewRef = reviewRefs[i];
-        //console.log("reviewRef.id: " + reviewRef.id);
-        //console.log("idsToRemove.indexOf(reviewRef.id): " + idsToRemove.indexOf(""+reviewRef.id));
         if (idsToRemove.indexOf(""+reviewRef.id) == -1)
         {
-          //console.log("adding reviewRef.id: " + reviewRef.id);
           modifiedReviewRefs.push(reviewRef);
         }
       }
-      //console.log("modifiedReviewRefs: " + modifiedReviewRefs);
       return modifiedReviewRefs;
     }
-
 
     // This function loads missing and the dependencies
     // Used when we zoom out during review and to operate on the dependencies during delete
@@ -126,7 +118,6 @@ Hoot.model.conflicts = function(context)
                     queryElement.type = f.type;
                     queryElements.push(queryElement);
                 }
-    
             });
     
             if(queryElements.length === 0){
@@ -144,14 +135,12 @@ Hoot.model.conflicts = function(context)
                           context.hoot().control.conflicts.setProcessing(false);
                           throw error;
                         }
-                        //console.log(response);
 
                         context.hoot().assert(
                           response.reviewRefsResponses.length == queryElements.length);
                         
                         var loadedTypes = {};
                        
-               
                         var missingIds = {};
                         _.each(response.reviewRefsResponses, function(r){
 
@@ -259,7 +248,6 @@ Hoot.model.conflicts = function(context)
         }
     };
 
-
     var createNewRelationNodeMeta = function(mergedNodeId, relationId, mergeIndx,currentMapId) {
         var m = new iD.Node();
         m.id = mergedNodeId;
@@ -272,7 +260,19 @@ Hoot.model.conflicts = function(context)
         o['obj'] = m;
         return o;
     }
-
+    
+    var containsRelationMemberMeta = function(memberMeta, arr)
+    {
+      for (var i = 0; i < arr.length; i++)
+      {
+    	var arrMember = arr[i];
+        if (arrMember.obj.id == memberMeta.obj.id)
+        {
+          return true;	
+        }
+      }
+      return false;
+    } 
 
     // This function is to store the reference relation items so we can process 
     // when we resolve and save.  We also deletes the merged features.  So what is happening is 
@@ -282,7 +282,7 @@ Hoot.model.conflicts = function(context)
     {
         try
         {
-            if(reviewRefs){
+            if (reviewRefs){
                 review_mergedElements = [];
                 
                 var newNodeMeta = createNewRelationNodeMeta(mergedNode.id, reviewMergeRelationId, 0, mapid);
@@ -299,8 +299,7 @@ Hoot.model.conflicts = function(context)
                         if(queryElement1){
                             var queryElement1iDid = 
                               "n" + queryElement1.id + "_" + mapid;
-                            queryElement1Member = reviewRelation.memberById(queryElement1iDid);
-                           
+                            queryElement1Member = reviewRelation.memberById(queryElement1iDid);                          
                         }
                         
                         var queryElement2Member = null;
@@ -320,10 +319,15 @@ Hoot.model.conflicts = function(context)
                         {
                           newMemIdx = queryElement2Member.index;
                         }
-
-                        var newObj = createNewRelationNodeMeta(mergedNode.id, 
-                            reviewRefs[i].reviewRelationId, newMemIdx, mapid);
-                        review_mergedElements.push(newObj);                     
+                        
+                        var newObj = 
+                          createNewRelationNodeMeta(
+                        	mergedNode.id, reviewRefs[i].reviewRelationId, newMemIdx, mapid);
+                        //don't write duplicate relation members
+                        if (!containsRelationMemberMeta(newObj, review_mergedElements))
+                        {
+                          review_mergedElements.push(newObj);
+                        }
                     }
                 }
                 
@@ -336,9 +340,6 @@ Hoot.model.conflicts = function(context)
                 if(fe){
                     fe.hootMeta = {'isReviewDel':true};
                 }
-
-                //Remove the two input entities
-                iD.operations.Delete([feature.id, featureAgainst.id], context)();
 
                 var newReviewIds = [];
                 _.each(context.hoot().control.conflicts.reviewIds, function(r){
@@ -401,23 +402,6 @@ Hoot.model.conflicts = function(context)
 
                         context.connection().loadFromHootRest('poiMerge', osmXml, function(error, entities) {
 
-                        //console.log(feature);
-                        //console.log(featureAgainst);
-
-                        //newly merged entity
-                        var mergedNode = entities[0];
-                        //review_mergedNode = mergedNode;
-
-                        //OSM services expect new elements to have version = 0.  I thought iD would handle
-                        //this during changeset creation, but it doesn't look like it does.
-                        mergedNode.version = 0;
-                        //Is this right?  Technically, this new feature was auto-merged from source
-                        //1 and 2 features, so should get a conflated status...right?
-                        mergedNode.tags['hoot:status'] = 3;
-                        context.perform(
-                          iD.actions.AddEntity(mergedNode), t('operations.add.annotation.point'));
-                        //console.log(mergedNode);
-
                         //get references to unresolved review data involving the features deleted as a
                         //result of the merge
                         
@@ -447,37 +431,57 @@ Hoot.model.conflicts = function(context)
                                       context.hoot().control.conflicts.setProcessing(false);
                                       throw error;
                                     }
-                                    //console.log(response);
 
                                     context.hoot().assert(
                                       response.reviewRefsResponses.length == queryElements.length);
                                     
-                                    //console.log(response.reviewRefsResponses[0].reviewRefs);
-                                    //console.log(response.reviewRefsResponses[1].reviewRefs);
+                                    //newly merged entity
+                                    var mergedNode = entities[0];
+                                    var featureToUpdate = feature;
+                                    var featureToDelete = featureAgainst;
+                                    //set the merged node equal to whichever of the two nodes that 
+                                    //were merged into that have the least total review references
+                                    if (response.reviewRefsResponses[0].reviewRefs.length > 
+                                        response.reviewRefsResponses[1].reviewRefs.length)
+                                    {
+                                      featureToUpdate = featureAgainst;
+                                      featureToDelete = feature;
+                                    }
+                                    
+                                    //back up the tags for the new merged feature before setting it
+                                    //equal to the update feature
+                                    var tagsTemp = mergedNode.tags;
+                                    mergedNode = featureToUpdate;
+                                    mergedNode.tags = tagsTemp;
+                                    //This new feature was auto-merged from source 1 and 2 features, 
+                                    //so should get a conflated status.
+                                    mergedNode.tags['hoot:status'] = 3;
+                                    context.perform(
+                                      iD.actions.ChangeTags(mergedNode.id, mergedNode.tags), 
+                                      t('operations.change_tags.annotation'));
+                                    
+                                    //delete the review feature not being updated with the merged 
+                                    //node
+                                    iD.operations.Delete([featureToDelete.id], context)();
+                                    
                                     var reviewRefs = 
                                       _.uniq(
                                         response.reviewRefsResponses[0].reviewRefs.concat(
                                           response.reviewRefsResponses[1].reviewRefs));
-                                    //console.log("reviewRefs: " + reviewRefs);
                                     //if either of the two merged features reference each other, remove those
                                     //references from this list
                                     reviewRefs = 
                                       removeReviewRefs(reviewRefs, [queryElement1.id, queryElement2.id]);
-                                    //console.log("reviewRefs: " + reviewRefs);
                                     
                                     var reviewRelationIdsMissing = new Array();
                                     for (var i = 0; i < reviewRefs.length; i++)
                                     {
-                                        //console.log("reviewRefs.reviewRelationId: " + reviewRefs[i].reviewRelationId);
                                         //iD feature ID: <OSM element type first char> + <OSM element ID> + '_' + <mapid>;
                                         var fullRelId = "r" + reviewRefs[i].reviewRelationId.toString() + "_" + mapid;
                                         if(!context.hasEntity(fullRelId)){
                                             reviewRelationIdsMissing.push(fullRelId);
                                         }
                                     }
-
-                                    //reviewRelationIds2.push("r" + reviewMergeRelationId + "_" + mapid);
-                                    //console.log(reviewRelationIds);
                                    
                                     var isMergeProcessed = false;
                                     //retrieve all the associated review relations
@@ -490,10 +494,6 @@ Hoot.model.conflicts = function(context)
                                                     if(err){
                                                         throw err;
                                                     }
-                                                    //console.log("entities.data[0]: " + entities.data[0]);
-                                                    //console.log("entities.data: " + entities.data);
-                                                    //console.log("entities.data.length: " + entities.data.length);
-                                                    //console.log("test3");  
                                                    
                                                     _.each(entities.data, function(ent)
                                                     {
@@ -521,7 +521,6 @@ Hoot.model.conflicts = function(context)
                                                         processMerge(reviewRefs, mapid, queryElement1, 
                                                             queryElement2, feature, featureAgainst, mergedNode, reviewMergeRelationId);
                                                     }
-
                                                 }
                                                 catch(loadMissingErr)
                                                 {
@@ -584,10 +583,8 @@ Hoot.model.conflicts = function(context)
         }
     };
 
-    // This validation may be wrong if user performs delete/create/modify
-    // outside of review process..
-    // For exmaple user deletes a node and presses merge..
-    // Disablling
+    // This validation may be wrong if user performs delete/create/modify outside of review process..
+    // For exmaple user deletes a node and presses merge..Disablling
     /*
     //only call this at the very end of a node merge operation
     var validateMergeChangeset = function()
