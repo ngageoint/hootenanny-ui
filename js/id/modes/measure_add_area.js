@@ -1,6 +1,7 @@
 iD.modes.MeasureAddArea = function(context) {
     var mode = {
-        id: 'measure-add-area'
+        id: 'measure-add-area',
+        key: 'm'
     };
 
     d3.select('.measure-layer').selectAll('g').remove();

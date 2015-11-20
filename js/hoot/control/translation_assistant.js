@@ -837,6 +837,21 @@ Hoot.control.TranslationAssistant = function () {
 
                     var blob = new Blob([output], {type: 'text/plain;charset=utf-8'});
                     window.saveAs(blob, fileName + '-translation.js');
+                    
+                    if(window.confirm("Do you want to add this to internal translation list?")){
+                    	console.log("under construction");
+                    	var thisbody = d3.select("#utiltranslation").node()
+                    	d3.select(jobsBG).node().appendChild(thisbody);
+	                    d3.selectAll('.utilHootHead')
+	                        .classed('fill-white', false)
+	                        .classed('keyline-bottom', true);
+	                    d3.select(thisbody.children[0])
+	                        .classed('fill-white', true)
+	                        .classed('keyline-bottom', false);
+	                    
+	                    //open the ingestDiv and copy values into paste box
+	                    hoot.control.utilities.translation.newTranslationPopup(output);
+                    }
 
                 });
             } else {

@@ -274,11 +274,11 @@ input.round        { border-radius:4px; }
 .fill-light   { background-color:#f8f8f8; }
 .fill-white   { background-color:#fff; }
 .fill-dark    { background-color:#444; }
-.fill-darken  { background-color:rgba(0,0,0,0.25); }
-.fill-darken0 { background-color:rgba(0,0,0,0.05); }
-.fill-darken1 { background-color:rgba(0,0,0,0.25); }
-.fill-darken2 { background-color:rgba(0,0,0,0.50); }
-.fill-darken3 { background-color:rgba(0,0,0,0.75); overflow:auto;}
+.fill-darken  { background-color:rgba(0,0,0,0.25); z-index:1000;}
+.fill-darken0 { background-color:rgba(0,0,0,0.05); z-index:1000; }
+.fill-darken1 { background-color:rgba(0,0,0,0.25); z-index:1000; }
+.fill-darken2 { background-color:rgba(0,0,0,0.50); z-index:1000; }
+.fill-darken3 { background-color:rgba(0,0,0,0.75); z-index:1000; overflow:auto;}
 
 .modal {
   /*display:none;*/

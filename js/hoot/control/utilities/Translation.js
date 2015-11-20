@@ -2,8 +2,10 @@ Hoot.control.utilities.translation = function(context) {
 	var hoot_control_utilities_translation = {};
 
 
-    hoot_control_utilities_translation.newTranslationPopup = function () {
+    hoot_control_utilities_translation.newTranslationPopup = function (transText) {
         var exportData,transTemplateText;
+        
+        if(transText){transTemplateText=transText;}
         
         var modalbg = d3.select('body')
             .append('div')
