@@ -253,7 +253,7 @@ iD.ui = function(context) {
             render(container);
             //TODO: Document why this was added for Hoot
             d3.select('.map-overlay').append('ul')
-                .attr('class', 'layer-list layer-list-hoot')
+                .attr('class', 'layer-list layer-list-hoot hidden')
                 .style('font-size','12px');
         });
     }

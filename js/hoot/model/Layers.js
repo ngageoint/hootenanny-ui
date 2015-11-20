@@ -144,7 +144,7 @@ Hoot.model.layers = function (context)
     model_layers.addLayer2Sidebar = function (options) {
         var layerName = options.name;
         var modifiedId = options.mapId.toString();
-        var parent = d3.select('.layer-list-hoot');
+        var parent = d3.select('.layer-list-hoot').classed('hidden', false);
         var layerLinks = parent.insert('li', ':first-child')
             .attr('class', 'layers active hootLayers layerControl_' + modifiedId);
         var btn = layerLinks.append('button')
@@ -258,6 +258,9 @@ Hoot.model.layers = function (context)
 
         context.connection().loadedDataRemove(mapid.toString());
         d3.select('.layerControl_' + mapid.toString()).remove();
+        d3.select('.layer-list-hoot').classed('hidden', function() {
+            return d3.select(this).selectAll('li').size() == 0;
+        });
         context.flush();
     };
 
