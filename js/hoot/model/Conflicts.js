@@ -259,6 +259,21 @@ Hoot.model.conflicts = function(context)
         }
     };
 
+
+    var createNewRelationNodeMeta = function(mergedNodeId, relationId, mergeIndx,currentMapId) {
+        var m = new iD.Node();
+        m.id = mergedNodeId;
+        m.type = "node";
+        m.role = "reviewee";
+        m.index = mergeIndx;
+
+        var o = {};
+        o['id'] = "r" + relationId + "_" + currentMapId;
+        o['obj'] = m;
+        return o;
+    }
+
+
     // This function is to store the reference relation items so we can process 
     // when we resolve and save.  We also deletes the merged features.  So what is happening is 
     // we store all reference relations for deleted nodes and delete.
@@ -269,7 +284,10 @@ Hoot.model.conflicts = function(context)
         {
             if(reviewRefs){
                 review_mergedElements = [];
-                //var reviewRelationIds = new Array();
+                
+                var newNodeMeta = createNewRelationNodeMeta(mergedNode.id, reviewMergeRelationId, 0, mapid);
+                review_mergedElements.push(newNodeMeta);
+
                 for (var i = 0; i < reviewRefs.length; i++)
                 {
                     var fullRelId = "r" + reviewRefs[i].reviewRelationId.toString() + "_" + mapid;
@@ -293,24 +311,19 @@ Hoot.model.conflicts = function(context)
                             queryElement2Member = reviewRelation.memberById(queryElement2iDid);  
                         }
 
-                        var newMember = new iD.Node();
-                        newMember.id = mergedNode.id;
-                        newMember.type = "node";
-                        newMember.role = "reviewee";
-                        //at least one of the query elements should be a member of this relation
+                        var newMemIdx = 0;
                         if (queryElement1Member != null)
                         {
-                          newMember.index = queryElement1Member.index;
+                          newMemIdx = queryElement1Member.index;
                         }
                         else if (queryElement2Member != null)
                         {
-                          newMember.index = queryElement2Member.index;
+                          newMemIdx = queryElement2Member.index;
                         }
 
-                        var newObj = {};
-                        newObj['id'] = fullRelId;
-                        newObj['obj'] = newMember;
-                        review_mergedElements.push(newObj);                       
+                        var newObj = createNewRelationNodeMeta(mergedNode.id, 
+                            reviewRefs[i].reviewRelationId, newMemIdx, mapid);
+                        review_mergedElements.push(newObj);                     
                     }
                 }
                 
