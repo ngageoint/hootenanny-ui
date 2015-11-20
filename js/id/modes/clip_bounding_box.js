@@ -1,18 +1,16 @@
-iD.modes.MeasureAddLine = function(context) {
+iD.modes.ClipBoundingBox = function(context) {
     var mode = {
-        id: 'measure-add-line',
-        key: 'n'
+        id: 'clip-bounding-box'
     };
 
+   d3.select('.measure-layer').selectAll('g').remove();
+    
     var svg = d3.select('.measure-layer').select('svg');
     var id = 0;
     
-    
-    var behavior = iD.behavior.MeasureDrawLine(context,svg,'line')
-    	.on('finish',finish);
-    
-    d3.select('.measure-layer').selectAll('g').remove();
-    
+    var behavior = iD.behavior.Clip(context,svg,'bbox')
+    .on('finish',finish);
+        
     function finish() {
         d3.event.stopPropagation();
         context.enter(iD.modes.Browse(context));
@@ -23,6 +21,8 @@ iD.modes.MeasureAddLine = function(context) {
     };
 
     mode.exit = function() {
+    	d3.select('.measure-layer').selectAll('g').remove();
+    	context.map().dblclickEnable(true);
     	context.uninstall(behavior);
     };
 
