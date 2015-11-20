@@ -189,6 +189,7 @@ Hoot.control.import = function (context,selection) {
                         }
 
                     });
+                    context.background().addSource(getNodeMapnikSource(key));
                 }
                 function getNodeMapnikSource(d) {
                     var source = {
@@ -220,7 +221,6 @@ Hoot.control.import = function (context,selection) {
                         id: mapId
                     }));
                 });
-                context.background().addSource(getNodeMapnikSource(key));
             });
 
         };

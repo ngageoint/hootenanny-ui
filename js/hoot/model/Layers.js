@@ -233,29 +233,6 @@ Hoot.model.layers = function (context)
         var mapid = model_layers.getLayers(name).mapId;
         delete layers[name];
 
-
-        // var lyrList = d3.selectAll('.layer-list');
-        // if(lyrList && lyrList.length > 0){
-
-        //     for(var i=0; i<lyrList.length; i++){
-        //         for(var j=0; j<lyrList[i].length; j++){
-        //             var dataArray = d3.select(d3.selectAll('.layer-list')[i][j]).selectAll('li.layer').data();
-        //             if(dataArray){
-
-        //                 _.each(dataArray, function(d){
-        //                     if(typeof d === 'object'){
-        //                         if(d.name()==name){
-        //                             //context.background().hideOverlayLayer(d);
-        //                         }
-        //                     }
-
-        //                 });
-        //             }
-        //         }
-
-        //     }
-        // }
-
         context.connection().loadedDataRemove(mapid.toString());
         d3.select('.layerControl_' + mapid.toString()).remove();
         d3.select('.layer-list-hoot').classed('hidden', function() {
