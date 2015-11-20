@@ -263,6 +263,49 @@ Hoot.model.REST = function (command, data, callback, option) {
             callback(resp);
         });
     };
+    
+    rest.clipDataset = function (data, callback) {
+        if(!data.INPUT_NAME || !data.BBOX || !data.OUTPUT_NAME){return false;}
+                  
+        var postClip = function(a){
+        	if(a.status=='complete'){
+        		hoot.model.layers.refresh(function(){
+        			hoot.model.layers.setLayerLinks(function(){
+        				var availLayers = hoot.model.layers.getAvailLayers();
+        				var input = _.findWhere(availLayers,{name:'DcGisRoads'});
+        				if(input!=undefined){
+        					if(input.folderId){
+        						var output = _.findWhere(availLayers,{name:data.OUTPUT_NAME});
+            					if(output!=undefined){
+            	        			var link = {'folderId':input.folderId,"mapid":output.id,"updateType":"update"};
+            	                    hoot.model.folders.updateLink(link);
+            	                    callback(a,data.OUTPUT_NAME);
+            					}	
+        					}
+        				}
+        			});
+        		});
+        	}
+        }
+        
+        // Commented out section below placeholder for future alpha-shape clipping
+        /*if(option == 'bbox'){*/
+        	//Clip to bounding box
+    	    d3.json('/hoot-services/job/clipdataset/execute')
+		        .header('Content-Type', 'text/plain')
+		        .post(JSON.stringify(data), function (error, resp) {
+		        	if (error) {
+		                return callback(_alertError(error, "Clip Dataset job failed! For detailed log goto Manage->Log"));
+		            }
+		            iD.ui.Alert("Clip " + data.INPUT_NAME +  " has been submitted.",'notice');
+		            rest.status(resp.jobid, postClip);
+	        });
+        /*}
+        else {
+        	console.log('under construction');
+        	return false;
+        }*/
+    };
 
     rest.Conflate = function (data, callback, option) {
          data.INPUT1_TYPE = data.INPUT1_TYPE || 'DB';
