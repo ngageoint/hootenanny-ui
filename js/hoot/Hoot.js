@@ -264,6 +264,18 @@ Hoot.hoot = function (context) {
     	throw "Assertion failed";  
       }
     }
+    
+    hoot.containsObj = function(obj, arr)
+    {
+      for (var i = 0; i < arr.length; i++)
+      {
+        if (arr[i] === obj)
+        {
+          return true;	
+        }
+      }
+      return false;
+    }
 
     getBrowserInfo = function(){
         var browserInfo = {};
