@@ -190,12 +190,12 @@ Hoot.control.import = function (context,selection) {
 
                     });
                 }
-                function addNodeMapnikLayer(d) {
+                function getNodeMapnikSource(d) {
                     var source = {
                             name: d.name,
                             id: d.id,
                             type: 'tms',
-                            descriptions: d.name,
+                            description: d.name,
                             template: 'http://192.168.33.11:8000/?z={zoom}&x={x}&y={y}&color='
                                 + encodeURIComponent(context.hoot().palette(d.color))
                                 + '&mapid=' + d.id,
@@ -204,16 +204,23 @@ Hoot.control.import = function (context,selection) {
                             projection: 'mercator',
                             subtype: 'density_raster'
                         };
-                        context.background().addOrUpdateOverlayLayer(iD.BackgroundSource(source));
+                    return source;
                 }
                 context.hoot().control.view.on('layerColor.background', function(name, color, mapid) {
-                    addNodeMapnikLayer({
+                    var updateSource = getNodeMapnikSource({
                         name: name,
                         color: color,
                         id: mapid
                     });
+                    context.background().updateSource(updateSource)
                 });
-                addNodeMapnikLayer(key);
+                context.hoot().control.view.on('layerRemove.background', function (layerName, isPrimary, mapId) {
+                    context.background().removeSource(getNodeMapnikSource({
+                        name: layerName,
+                        id: mapId
+                    }));
+                });
+                context.background().addSource(getNodeMapnikSource(key));
             });
 
         };

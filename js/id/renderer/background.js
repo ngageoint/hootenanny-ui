@@ -168,6 +168,18 @@ iD.Background = function(context) {
         background.toggleOverlayLayer(source);
     };
 
+    background.updateSource = function(d) {
+        var source = findSource(d.id);
+        for (var i = backgroundSources.length-1; i >= 0; i--) {
+            var layer = backgroundSources[i];
+            if (layer === source) {
+                backgroundSources[i] = iD.BackgroundSource(d);
+                background.addOrUpdateOverlayLayer(backgroundSources[i]);
+                break;
+            }
+        }
+    };
+
     //TODO: Document why this was added for Hoot
     //FIXME: Possibly consolidate with removeBackgroundResource above
     background.removeSource = function(d) {
@@ -176,9 +188,10 @@ iD.Background = function(context) {
             var layer = backgroundSources[i];
             if (layer === source) {
                 backgroundSources.splice(i, 1);
+                background.toggleOverlayLayer(source);
+                break;
             }
         }
-        background.toggleOverlayLayer(source);
     };
 
     background.dimensions = function(_) {
@@ -361,9 +374,6 @@ iD.Background = function(context) {
             layer = overlayLayers[i];
             if (d.id === layer.source().id) {
                 overlayLayers.splice(i, 1);
-//                dispatch.change();
-//                updateImagery();
-//                return;
             }
         }
 
