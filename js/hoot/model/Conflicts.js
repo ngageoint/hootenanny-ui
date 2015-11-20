@@ -260,6 +260,19 @@ Hoot.model.conflicts = function(context)
         o['obj'] = m;
         return o;
     }
+    
+    var containsRelationMemberMeta = function(memberMeta, arr)
+    {
+      for (var i = 0; i < arr.length; i++)
+      {
+    	var arrMember = arr[i];
+        if (arrMember.obj.id == memberMeta.obj.id)
+        {
+          return true;	
+        }
+      }
+      return false;
+    } 
 
     // This function is to store the reference relation items so we can process 
     // when we resolve and save.  We also deletes the merged features.  So what is happening is 
@@ -310,7 +323,8 @@ Hoot.model.conflicts = function(context)
                         var newObj = 
                           createNewRelationNodeMeta(
                         	mergedNode.id, reviewRefs[i].reviewRelationId, newMemIdx, mapid);
-                        if (!context.hoot().containsObj(newObj, review_mergedElements))
+                        //don't write duplicate relation members
+                        if (!containsRelationMemberMeta(newObj, review_mergedElements))
                         {
                           review_mergedElements.push(newObj);
                         }
