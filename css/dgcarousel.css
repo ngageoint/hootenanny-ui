@@ -167,12 +167,12 @@ div.dgprofile {
 }
 
 //from http://proto.io/freebies/onoff/
-/*.onoffswitch {
+.onoffswitch {
     position: relative;
     width: 40px;
     -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
 }
-*/
+
 .onoffswitch-checkbox {
     display: none;
 }
