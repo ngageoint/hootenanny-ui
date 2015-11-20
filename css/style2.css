@@ -403,3 +403,9 @@ span.logo{
 	/* margin-left: 10px;
 	display: inline-block; */
 }
+
+/*** SETTINGS ***/
+#settingsSidebar{width:200px;}
+ #settingsHeader{font-weight:bolder;font-size:large;}
+.utilHoot{left:200px;} 
+
