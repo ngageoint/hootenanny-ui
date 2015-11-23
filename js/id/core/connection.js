@@ -471,6 +471,9 @@ iD.Connection = function(context) {
                             } else {
                                 changeRel.members.push(newMember);
                             }
+                            if(changeRel.members.length < 2){
+                                changeRel.tags['hoot:review:needs'] = 'no';
+                            }
                         } else { // need to add to changes.modified
                             var modRelation = context.hasEntity(curRefId);
                             if(modRelation){
@@ -479,6 +482,9 @@ iD.Connection = function(context) {
                                 } else {
                                     modRelation.members.push(newMember);
                                 }
+                            }
+                            if(modRelation.members.length < 2){
+                                modRelation.tags['hoot:review:needs'] = 'no';
                             }
                             changes.modified.push(modRelation);
                         }
