@@ -1686,6 +1686,70 @@ Hoot.control.utilities.dataset = function(context) {
             
         return modalbg;
     }
+
+    hoot_control_utilities_dataset.clipDatasetContainer = function(datasets) {
+		// 3 options: Clip to visual extent, clip to bounding box, clip to lat/long pair
+    	// Will add clip alpha shape in future
+	    
+    	var clipOptions = [
+    	    {'title':'Clip to Visual Extent','action':'visualExtent'},
+    	    {'title':'Clip to Bounding Box','action':'boundingBox'},
+    	    {'title':'Clip to Lat/Long Pair','action':'coordinatePair'}
+    	];
+    			 
+		var modalbg = d3.select('body')
+	     	.append('div')
+	        .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+        var ingestDiv = modalbg.append('div')
+            .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
+        var _form = ingestDiv.append('form');
+        _form.classed('round space-bottom1 importableLayer', true)
+            .append('div')
+            .classed('big pad1y keyline-bottom space-bottom2', true)
+            .append('h4')
+            .text('Clip Dataset Options')
+            .append('div')
+            .classed('fr _icon x point', true)
+            .on('click', function () {
+                modalbg.remove();
+            });
+        
+        var fieldset = _form.append('fieldset')
+            .selectAll('.form-field')
+            .data(clipOptions)
+            .enter()
+            .append('label')
+            .text(function(d){return d.title;})
+            .insert("input")
+            .attr({
+            	type:"radio",
+            	class:"shape",
+            	name:"mode",
+            	value: function(d){return d.action;}
+            })
+            .property("checked",function(d){return d==='visualExtent';});
+            
+	    /*fieldset.enter()
+            .append('div')
+            .classed('form-field fill-white small keyline-all round space-bottom1', true)
+        */    
+            
+            
+        var submitExp = ingestDiv.append('div')
+	        .classed('form-field col12 center ', true);
+	         submitExp.append('span')
+	        .classed('round strong big loud dark center col10 margin1 point', true)
+	        .classed('inline row1 fl col10 pad1y', true)
+	        .text('Clip')
+	        .on('click', function () {
+	        	
+	        	
+	        	//modalbg.remove();
+	            });
+
+	        return modalbg;
+		};	
+
     
 	return hoot_control_utilities_dataset;
 };

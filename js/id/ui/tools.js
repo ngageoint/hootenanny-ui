@@ -11,10 +11,11 @@ iD.ui.Tools = function(context) {
     	    	{title:'Measure Area',group:'measure',type:'area',icon:'add-area',mode:iD.modes.MeasureAddArea(context)},
     	    ]},
     	    {title:'Clip Tools',icon:'scissors',group:'clip',items:[
-    	    	{title:'Clip to Visual Extent',group:'clip',type:'area',icon:'scissors',action:'clipVisualExtent'},
+    	        {title:'Clip Options',group:'clip',type:'',icon:'scissors',action:'clipOptionsWindow'}
+    	    	/*{title:'Clip to Visual Extent',group:'clip',type:'area',icon:'scissors',action:'clipVisualExtent'},
     	    	{title:'Clip to Bounding Box',group:'clip',type:'area',icon:'scissors',mode:iD.modes.ClipBoundingBox(context)},
     	    //	{title:'Clip to Custom Area',group:'clip',type:'area',icon:'add-area',mode:iD.modes.ClipCustomArea(context)}
-    	    ]},
+*/    	    ]},
     	  ];
         
         d3.select('html').append('div').attr('class', 'tools-menu');
@@ -48,7 +49,15 @@ iD.ui.Tools = function(context) {
                     	if(item.items){return;}
                     	if(item.mode){
                         	context.enter(item.mode);	
-                    	} else if (item.action=='clipVisualExtent'){
+                    	} else if (item.action=='clipOptionsWindow'){
+                    		if(!_.isEmpty(hoot.model.layers.getLayers())){
+                        		var d = hoot.model.layers.getLayers();
+                        		context.hoot().control.utilities.dataset.clipDatasetContainer(d);                    			
+                    		} else {
+                    			iD.ui.Alert("Please add datasets to the map to clip!","notice");
+                    		}
+                    	}
+                    	/*} else if (item.action=='clipVisualExtent'){
                     		//Call clip map
                     		if(!_.isEmpty(hoot.model.layers.getLayers())){
                         		//var params = [];
@@ -78,7 +87,7 @@ iD.ui.Tools = function(context) {
                                     });
                     			});
                     		}
-                    	}
+                    	}*/
                     	d3.select('.tools-menu').remove();
                     	d3.select('.sub-menu').remove();
                       });
