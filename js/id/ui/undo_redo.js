@@ -49,6 +49,13 @@ iD.ui.UndoRedo = function(context) {
             .on('enter.undo_redo', update);
 
         function update() {
+            if(!context.history().hasChanges()){
+                if(context.hoot().control.conflicts){
+                    context.hoot().control.conflicts.updateMergeButton();
+                }
+                
+            }
+            
             buttons
                 .property('disabled', saving())
                 .classed('disabled', function(d) { return !d.annotation(); })

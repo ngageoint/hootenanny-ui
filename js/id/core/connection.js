@@ -232,6 +232,7 @@ iD.Connection = function(context) {
                 tags: getTags(obj, layerName),
                 layerName: layerName,
                 mapId: mapId,
+                hootMeta:{},
                 visible: getVisible(attrs)
             });
         },
@@ -451,6 +452,46 @@ iD.Connection = function(context) {
                 content: JXON.stringify(connection.changesetJXON(connection.changesetTags(comment, imageryUsed)))
             }, function(err, changeset_id) {
                 if (err) return callback(err);
+
+                var mergedPoiReviewItems = context.hoot().model.conflicts.getReviewMergedElements();
+         
+                if(mergedPoiReviewItems){
+                    _.each(mergedPoiReviewItems, function(itm){
+                        var curRefId = itm.id;
+                        var newMember = itm.obj;   
+
+                        // first see if changes.modified has the relation
+                        var changeRel = _.find(changes.modified, function(mod){
+                            return mod.id === curRefId;
+                        });  
+
+                        if(changeRel){ // if exists in changes.modified
+                            if(changeRel.members.length >= newMember.index){
+                                changeRel.members.splice(newMember.index, 0, newMember);
+                            } else {
+                                changeRel.members.push(newMember);
+                            }
+                            if(changeRel.members.length < 2){
+                                changeRel.tags['hoot:review:needs'] = 'no';
+                            }
+                        } else { // need to add to changes.modified
+                            var modRelation = context.hasEntity(curRefId);
+                            if(modRelation){
+                                if(modRelation.members.length >= newMember.index){
+                                    modRelation.members.splice(newMember.index, 0, newMember);
+                                } else {
+                                    modRelation.members.push(newMember);
+                                }
+                            }
+                            if(modRelation.members.length < 2){
+                                modRelation.tags['hoot:review:needs'] = 'no';
+                            }
+                            changes.modified.push(modRelation);
+                        }
+                    });
+                    context.hoot().model.conflicts.setReviewMergedElements(null);
+                }
+
                 oauth.xhr({
                     method: 'POST',
                     path: '/api/0.6/changeset/' + changeset_id + '/upload?mapId=' + changemapId,
@@ -933,10 +974,16 @@ iD.Connection = function(context) {
                                     connection.showDensityRaster(true);
 
                                     if (context.hoot().control.conflicts.reviewIds) {
+                                        // When zoomed out during review load reviewable items and the dependent relations
                                         context.loadMissing(context.hoot().control.conflicts.reviewIds, function(err, entities) {
-                                            event.loaded();
-                                            event.layerAdded(layerName);
+                                            context.hoot().model.conflicts.loadMissingFeatureDependencies(mapId, 
+                                                layerName, context.hoot().control.conflicts.reviewIds, function(error){
+                                                event.loaded();
+                                                event.layerAdded(layerName);
+                                            });                                            
+                                            
                                         }, layerName);
+
                                     }
                                 } else {
                                     connection.showDensityRaster(false);

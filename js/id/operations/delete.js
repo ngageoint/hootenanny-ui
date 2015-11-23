@@ -42,9 +42,32 @@ iD.operations.Delete = function(selectedIDs, context) {
             context.enter(iD.modes.Browse(context));
         }
 
-        context.perform(
-            action,
-            annotation);
+        if (context.hoot().control.conflicts.reviewIds) {
+            if(selectedIDs.length > 0){
+                var selId = selectedIDs[0];
+                var sel = context.hasEntity(selId);
+                var mapId = sel.mapId;
+                var layerName = sel.layerName;
+               
+                if(sel.hootMeta && sel.hootMeta['isReviewDel'] === true ){
+                    context.perform(
+                        action,
+                        annotation); 
+                } else {
+                    context.hoot().model.conflicts.loadMissingFeatureDependencies(mapId, 
+                        layerName, selectedIDs, function(error){
+                        context.perform(
+                            action,
+                            annotation);        
+                    }); 
+                }
+                    
+            } 
+        } else {
+            context.perform(
+                    action,
+                    annotation);
+        }
     };
 
     operation.available = function() {

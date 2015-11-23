@@ -119,7 +119,6 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
-
     rest.deleteFolder = function (folderId,callback) {
     	if(!(folderId >= 0)) {
     		callback(false);
@@ -218,7 +217,6 @@ Hoot.model.REST = function (command, data, callback, option) {
             callback(resp);
         });
     };
-
 
     rest.disableBaseMap = function (data, callback) {
         var request = d3.json('/hoot-services/ingest/basemap/enable?NAME=' + data.name + "&ENABLE=false");
@@ -402,7 +400,6 @@ Hoot.model.REST = function (command, data, callback, option) {
                             if(detail.indexOf("User requested termination") > -1){
                                 showError = false;
                             }
-
                         }
                         if(showError){
                         	iD.ui.Alert("Requested job failed! For detailed log goto Manage->Log",'error');
@@ -488,7 +485,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             });
     }
 
-// This uses translation node js server using CORS
+    // This uses translation node js server using CORS
     rest.LTDS = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
         	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
@@ -519,7 +516,6 @@ Hoot.model.REST = function (command, data, callback, option) {
                 var idVal = null;
                 var idelem = null;
 
-
                 if(osmToTdsAttribFilter){
                     idelem = osmToTdsAttribFilter.filtertagname;
                     _.each(tagslist, function(tag){
@@ -543,7 +539,6 @@ Hoot.model.REST = function (command, data, callback, option) {
                     });
                 }
 
-
                 // This is where we get the fields list based on fcode
                 if(idVal){
                     d3.xhr(window.location.protocol + '//' + window.location.hostname + ":"  +
@@ -565,10 +560,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                     ret.fields = '{}';
                     callback(ret);
                 }
-
-
             });
-
     };
 
     // This uses translation node js server using CORS
@@ -577,7 +569,6 @@ Hoot.model.REST = function (command, data, callback, option) {
         	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
             return;
         }
-
 
         if(data){
             var fcode = data.fcode;
@@ -725,12 +716,12 @@ Hoot.model.REST = function (command, data, callback, option) {
             callback(resp);
         });
     };
-
-    rest.setAllItemsReviewed = function(mapId, callback)
+    
+    rest.resolveAllReviews = function(mapId, callback)
     {
       var request = {};
       request.mapId = mapId;
-      d3.json('/hoot-services/job/review/setallreviewed')
+      d3.json('/hoot-services/job/review/resolveall')
         .header('Content-Type', 'application/json')
         .send(
           'PUT',
@@ -740,17 +731,19 @@ Hoot.model.REST = function (command, data, callback, option) {
     	    if (error)
     	    {
     	      console.log(error);
-    	      console.log(response);
-    	      //alert("Set all reviewed failed.");
+    	      iD.ui.Alert("Resolve all reviews failed.",'error');
     	    }
     	    callback(error, response);
     	  });
     }
 
-  rest.getReviewRefs = function(mapId, elementUniqueIds, callback)
+  rest.getReviewRefs = function(queryElements, callback)
   {
-    d3.json('/hoot-services/job/review/refs?mapId=' + mapId + "&elementUniqueIds=" +
-    		elementUniqueIds.join(";"),
+	var request = {};
+	request.queryElements = queryElements;
+    d3.json('/hoot-services/job/review/refs')
+      .header('Content-Type', 'application/json')
+      .post(JSON.stringify(request),
       function(error, response)
       {
         if (error)
@@ -762,99 +755,33 @@ Hoot.model.REST = function (command, data, callback, option) {
       });
   };
 
-  rest.reviewUpdateStatus = function(data, callback)
-  {
-    var mapId = data.mapId;
-    var reviewUpdateRequest = {};
-    reviewUpdateRequest.reviewid = data.reviewid;
-    if(data.reviewAgainstUuid) {
-    	reviewUpdateRequest.reviewagainstid = data.reviewAgainstUuid;
-    }
-
-    d3.json('/hoot-services/job/review/updatestatus?mapId='+mapId)
-        .header('Content-Type', 'application/json')
-        .send(
-            'PUT',
-            JSON.stringify(reviewUpdateRequest),
-            function(error, response)
-            {
-                if (error)
-                {
-                  console.log(error);
-                  iD.ui.Alert("Review update status failed.",'error');
-                }
-                callback(error, response);
-            });
-  };
-
   rest.reviewGetNext = function(data, callback)
   {
     var mapId = data.mapId;
-
-    var reviewGetNextRequest = {};
-
-    reviewGetNextRequest.offset = data.offset;
-    reviewGetNextRequest.direction = data.direction;
-
-    d3.json('/hoot-services/job/review/next?mapId='+mapId)
-        .header('Content-Type', 'application/json')
-        .send(
-            'PUT',
-            JSON.stringify(reviewGetNextRequest),
-            function(error, response)
+    var seq = data.sequence;
+    var direction = data.direction;
+    
+    d3.json('/hoot-services/job/review/next?mapid='+ mapId + '&offsetseqid=' + seq
+        + '&direction=' + direction,
+       function(error, response)
             {
                 if (error)
                 {
                     alert("Get next review failed.");
                 }
                 callback(error, response);
-            });
+            }
+        );
   };
-
-rest.ReviewGetStatistics = function (mapId, callback) {
-
-        d3.json('/hoot-services/job/review/statistics?mapId=' + mapId, function (error, resp) {
-                if (error) {
-                    var emptyResp = {};
-                    emptyResp['mapId'] = mapId;
-                    emptyResp['numTotalItems'] = mapId;
-                    emptyResp['numReviewableItems'] = 0;
-                    emptyResp['numReviewedItems'] = 0;
-                    return callback(emptyResp);
-                }
-                return callback(resp);
+  
+  rest.ReviewGetStatistics = function (mapId, callback) {
+            
+        d3.json('/hoot-services/job/review/statistics?mapId=' + mapId, function (error, resp) {             
+                return callback(error,resp);
         });
     };
 
-rest.ReviewGetLockCount = function (mapId, callback) {
-
-        d3.json('/hoot-services/job/review/lockcount?mapId=' + mapId, function (error, resp) {
-                if (error) {
-                    iD.ui.Alert("Failed to get lock count.",'error');
-                    return;
-                }
-                return callback(resp);
-        });
-    };
-
-rest.ReviewGetGeoJson = function (mapId, extent, callback) {
-        d3.json('/hoot-services/job/review/getallreviewableitems?mapId=' + mapId
-            + '&minx=' + (extent[0][0]).toFixed(6)
-            + '&miny=' + (extent[0][1]).toFixed(6)
-            + '&maxx=' + (extent[1][0]).toFixed(6)
-            + '&maxy=' + (extent[1][1]).toFixed(6)
-            , function (error, resp) {
-                if (error) {
-                    iD.ui.Alert("Failed to get review geojson.",'error');
-                    return;
-                }
-                if (callback) {
-                    callback(resp);
-                }
-        });
-    };
-
-rest.getTranslations = function(callback) {
+  rest.getTranslations = function(callback) {
     d3.json('/hoot-services/ingest/customscript/getlist', function (error, resp) {
         if (error) {
             return callback(_alertError(error, "Get Translations failed! For detailed log goto Manage->Log"));
@@ -911,7 +838,6 @@ d3.json('/hoot-services/ingest/customscript/save?SCRIPT_NAME='+data.NAME+'&SCRIP
                 return resp;
             });
 };
-
 
 rest.servicesVersionInfo = function(callback)
 {
@@ -1025,7 +951,6 @@ rest.downloadReport = function(data)
                 rest.status(resp.jobId, callback);
             });
     };
-
 
     rest.createFilteredMap = function (data, callback) {
 
