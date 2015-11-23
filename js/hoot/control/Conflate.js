@@ -359,6 +359,7 @@ Hoot.control.conflate = function (sidebar) {
             .append('input')
             .attr('type', 'submit')
             .attr('value', 'Conflate')
+            .attr('id', 'conflate2')
             .classed('fill-dark button round pad0y pad2x dark small strong margin0', true)
             .attr('border-radius','4px')
             .on('click', function () {
