@@ -35,7 +35,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         Review.append('a')
             .classed('button dark animate strong block big pad2x pad1y js-toggle white', true)
             .style('text-align','left')
-            .html('<div class="margin2 inline _loadingSmall"><span></span></div>' + '<span class="strong">Checking for review items&#8230;</span>');
+            .html('<div class="margin2 inline _loadingSmall"><span></span></div>' + '<span class="strong">Checking for reviewable features...&#8230;</span>');
         return Review;
     };
 
@@ -194,7 +194,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 panToEntity(f, true);
                 fnc(f);
             } else {
-                iD.ui.Alert('There are not members in review relation.','warning');
+                iD.ui.Alert('There are no members in the review relation.','warning');
             }
         }
 
@@ -251,12 +251,12 @@ Hoot.control.conflicts = function (context, sidebar) {
             try
             {
                 if(err){
-                    throw 'Failed to load Missing Entities.';
+                    throw 'Failed to load missing features.';
                 }
 
                 // Make sure we do not go into infinite loop
                 if(Object.keys(relTreeIdx).length > 500){
-                    throw 'Relation tree size too big. May be went into infinite loop?';
+                    throw 'Review relation tree size is too big.  Maybe went into an infinite loop?';
                 }
 
                 if (entities.data.length) {
@@ -295,7 +295,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     
                     
                 } else {
-                    throw 'Failed to load Missing Entities.';
+                    throw 'Failed to load missing features.';
                 }
             }
             catch (err)
@@ -336,7 +336,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     }
                     callback(f);
                 } else {
-                    iD.ui.Alert('There are not members in review relation.','warning');
+                    iD.ui.Alert('There are no members in the review relation.','warning');
                 }
             } else {
                 var layerNames = d3.entries(hoot.loadedLayers()).filter(function(d) {
@@ -363,13 +363,13 @@ Hoot.control.conflicts = function (context, sidebar) {
 
             var hasChange = context.history().hasChanges();
             if(hasChange === true) {
-                alert('Please resolve or undo merge befor proceeding to next reviewable item.');
+            	iD.ui.Alert('Please resolve or undo the current feature changes before proceeding to the next review.', 'warning');
                 return;
             }
 
             Hoot.model.REST('ReviewGetStatistics', mapid, function (error, response) {
                 if(error){
-                    iD.ui.Alert('Failed to get statistics.','warning');
+                    iD.ui.Alert('Failed to get review statistics.','warning');
                     // there was error so throw error and exit review since this was major melt down?
                     return;
                 }
@@ -394,7 +394,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
                     try {
                         if(error){
-                            throw 'Failed to retrieve next reviewable from service!';
+                            throw 'Failed to retrieve next set of reviewable features from service!';
                         }
 
 
@@ -408,13 +408,13 @@ Hoot.control.conflicts = function (context, sidebar) {
                             });
                                 
                         } else {
-                            iD.ui.Alert('There are no more available review item. Exiting review session.',
+                            iD.ui.Alert('There are no more available features to review.  Exiting the review session.',
                                 'info');
                             exitReviewSession('Exiting review session...');
                         }
                     }
                     catch (ex) {
-                        var r = confirm('Failed to retrieve next reviewable! Do you want to continue?');
+                        var r = confirm('Failed to retrieve the next features for review!  Do you want to continue?');
                         if(r === false){
                             exitReviewSession('Exiting review session...');
                         }
@@ -605,7 +605,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                         })
                     ) {
                         getFeatureStopTimer(true);
-                        iD.ui.Alert('One feature involved in this review has already been deleted','warning');
+                        iD.ui.Alert('One feature involved in this review has already been deleted.','warning');
                     } else {
                         //window.console.log('wait for another interval to fire');
                     }
@@ -711,8 +711,8 @@ Hoot.control.conflicts = function (context, sidebar) {
 
             Hoot.model.REST('resolveAllReviews', data.mapId, function (error, response)
             {
-              finalizeReviewSession('Saving All Review Features.....');
-              d3.select('body').call(iD.ui.Processing(context,true,"Saving All Review Features..."));
+              finalizeReviewSession('Resolving all reviewable features...');
+              d3.select('body').call(iD.ui.Processing(context,true,"Resolving all reviewable features..."));
               event.acceptAll(data);
             });
         }
@@ -744,7 +744,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             if(note){
                 noteText = note;
             }
-            meta.html('<strong class="review-note">' + 'Review note: ' + noteText + '<br>' + 'Review items remaining: ' +
+            meta.html('<strong class="review-note">' + 'Review note: ' + noteText + '<br>' + 'Reviews remaining: ' +
                 nUnreviewed +
                 '  (Resolved: ' + nReviewed +
                     multiFeatureMsg + ')</strong>');
@@ -896,7 +896,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         confData.isDeleteEnabled = false;
 
-        metaHead.text('There are ' + data.numItemsReturned + ' review items:');
+        metaHead.text('There are ' + data.numItemsReturned + ' reviews:');
         reviewOptions = Review.selectAll('fieldset')
             .append('div')
             .classed('col12 space-bottom1', true);
@@ -1019,7 +1019,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 btnEnabled = false;
                 d.action();
               } else {
-            	  iD.ui.Alert('Please wait. Processing review.','notice');
+            	  iD.ui.Alert('Please wait.  Processing review.','notice');
               }
 
             })
@@ -1055,7 +1055,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     	d3.select('body').call(iD.ui.Processing(context,false));
 
       confData.isDeleteEnabled = true;
-        metaHead.text('All Review Items Resolved!');
+        metaHead.text('All Reviews Resolved!');
 
         d3.selectAll(reviewOptions.node().childNodes).remove();
 
@@ -1114,7 +1114,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     Conflict.setProcessing = function(isProc){
         if(isProc === true){
             if(Conflict.isProcessingReview === true){
-                iD.ui.Alert("Processing review. Please wait.",'notice');
+                iD.ui.Alert("Processing review.  Please wait.",'notice');
                 return;
             }
             Conflict.isProcessingReview = true;
