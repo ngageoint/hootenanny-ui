@@ -51,6 +51,10 @@ Hoot.hoot = function (context) {
                     return;
                 }
                 iD.data.hootConfig.translationCapabilites = JSON.parse(resp.responseText);
+
+                // we do this to make sure OSM is in list and not duplicate
+                // which can happen if it is included in the list from server
+                iD.data.hootConfig.translationCapabilites['OSM'] = {"isvailable":"true"};
             });
 
         });
