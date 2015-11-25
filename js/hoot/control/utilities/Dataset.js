@@ -1705,7 +1705,7 @@ Hoot.control.utilities.dataset = function(context) {
         var _form = ingestDiv.append('form');
         _form.classed('round space-bottom1 importableLayer', true)
             .append('div')
-            .classed('big pad1y keyline-bottom space-bottom2', true)
+            .classed('big pad1y keyline-bottom', true)
             .append('h4')
             .text('Clip Dataset Options')
             .append('div')
@@ -1714,7 +1714,9 @@ Hoot.control.utilities.dataset = function(context) {
                 modalbg.remove();
             });
         
-        var fieldset = _form.append('fieldset')
+        var fieldset = _form.append('div')
+			.classed('big pad1y keyline-bottom',true)
+        	.append('fieldset')
             .selectAll('.form-field')
             .data(clipOptions)
             .enter()
@@ -1724,10 +1726,21 @@ Hoot.control.utilities.dataset = function(context) {
             .attr({
             	type:"radio",
             	class:"shape",
-            	name:"mode",
+            	name:"clipmode",
             	value: function(d){return d.action;}
             })
-            .property("checked",function(d){return d==='visualExtent';});
+            .property("checked",function(d){return d.action==='visualExtent';})
+            .on('change',function(d){
+            	var updateText = d3.select('input[name="clipmode"]:checked').node().value;
+            	d3.select("#clipInfo").text(updateText);
+            });
+
+        var infoBox = _form.append('div')
+        	.classed('pad1y space-bottom1',true)
+        	.append('span')
+        	.attr('id','clipInfo')
+        	.text(function(){
+        		return d3.select('input[name="clipmode"]:checked').node().value;});
             
 	    /*fieldset.enter()
             .append('div')
