@@ -1690,13 +1690,31 @@ Hoot.control.utilities.dataset = function(context) {
     hoot_control_utilities_dataset.clipDatasetContainer = function(datasets) {
 		// 3 options: Clip to visual extent, clip to bounding box, clip to lat/long pair
     	// Will add clip alpha shape in future
-	    
+
     	var clipOptions = [
-    	    {'title':'Clip to Visual Extent','action':'visualExtent'},
-    	    {'title':'Clip to Bounding Box','action':'boundingBox'},
-    	    {'title':'Clip to Lat/Long Pair','action':'coordinatePair'}
+    	    {'title':'Clip to Visual Extent','action':'visualExtent','text':'Clip to visual extent.'},
+    	    {'title':'Clip to Bounding Box','action':'boundingBox','text':'Draw bounding box for clip area. Click once to start drawing and again to complete area.'},
+    	    {'title':'Clip to Lat/Long Pair','action':'coordinatePair','text':'Enter coordinates to determine bounding box for clip area.'}
     	];
-    			 
+
+    	var d_form = [{
+    		label:'Clip Area',
+    		type:'cliparea',
+    		placeholder:'Clip to Visual Extent',
+    		combobox:clipOptions
+    	},{
+    		label:'Datasets',
+    		type:'datasetList',
+    		placeholder:_.map(hoot.model.layers.getLayers(),_.clone)[0].name,
+    		combobox2:_.map(hoot.model.layers.getLayers(),_.clone)
+    	},{
+    		label:'Coordinates',
+    		type:'coordinateInputs',
+    		placeholder:'',
+    		coordinateInputs:true
+    	}];
+
+		 
 		var modalbg = d3.select('body')
 	     	.append('div')
 	        .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
@@ -1714,39 +1732,81 @@ Hoot.control.utilities.dataset = function(context) {
                 modalbg.remove();
             });
         
-        var fieldset = _form.append('div')
-			.classed('big pad1y keyline-bottom',true)
-        	.append('fieldset')
-            .selectAll('.form-field')
-            .data(clipOptions)
-            .enter()
-            .append('label')
-            .text(function(d){return d.title;})
-            .insert("input")
-            .attr({
-            	type:"radio",
-            	class:"shape",
-            	name:"clipmode",
-            	value: function(d){return d.action;}
-            })
-            .property("checked",function(d){return d.action==='visualExtent';})
-            .on('change',function(d){
-            	var updateText = d3.select('input[name="clipmode"]:checked').node().value;
-            	d3.select("#clipInfo").text(updateText);
+		var fieldset = _form.append('fieldset').selectAll('form-field').data(d_form);
+
+        fieldset.enter()
+        	.append('div')
+			.classed('form-field  space-bottom1', true)  
+			.html(function (d) {
+				return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + d.label; // + '</label><input type="text" class="reset ' + field.type + '" />';
             });
 
-        var infoBox = _form.append('div')
-        	.classed('pad1y space-bottom1',true)
-        	.append('span')
-        	.attr('id','clipInfo')
-        	.text(function(){
-        		return d3.select('input[name="clipmode"]:checked').node().value;});
-            
-	    /*fieldset.enter()
-            .append('div')
-            .classed('form-field fill-white small keyline-all round space-bottom1', true)
-        */    
-            
+		fieldset.append('div')
+			.classed('contain',true)
+			.append('input')
+			.attr('type','text')
+			.attr('placeholder',function(field){return field.placeholder;})
+			.attr('class',function(field){return 'reset ' + field.type;})
+			.select(function(a){
+				if(a.combobox){
+					var comboClipAction = d3.combobox()
+						.data(_.map(a.combobox,function(n){
+							return{value:n.title,title:n.title};
+						}));
+
+					d3.select(this)
+                    	.style('width', '100%')
+                    	.call(comboClipAction);
+                    
+					d3.select(this).on('change',function(d){
+						console.log(d3.select('.cliparea').value());
+						//TODO: Insert span and update with the text object 
+					});
+
+                    d3.select(this).attr('readonly',true); 
+				} else if (a.combobox2){
+					var comboDatasets = d3.combobox()
+                        .data(_.map(a.combobox2, function (n) {
+                            return {value: n.name,title: n.name};
+                        }));
+
+                    comboDatasets.data().sort(function(a,b){
+            		  	var textA = a.value.toUpperCase();
+            		  	var textB=b.value.toUpperCase();
+            		  	return(textA<textB)?-1 : (textA>textB)?1:0;
+            		  });
+                    
+                    if(_.map(hoot.model.layers.getLayers(),_.clone).length>1)
+                    {comboDatasets.data().unshift({value:'Both Datasets',title:'Both Datasets'});}
+                    
+                    d3.select(this)
+                    	.style('width', '100%')
+                    	.call(comboDatasets);
+                    
+                    d3.select(this).attr('readonly',true); 
+				} else if (a.coordinateInputs){
+					var parentDiv = d3.select(this.parentElement);
+					parentDiv.select('input').remove();
+					var coordinates = [{id:'minX',title:'Min X:'},
+						{id:'minY',title:'Min Y:'},
+						{id:'maxX',title:'Max X:'},
+						{id:'maxY',title:'Max Y:'}];
+
+					var coordinateTable = parentDiv.append('table');
+					_.each(coordinates,function(d){
+						var row = coordinateTable.append('tr');
+						row.append('td').text(d.title)
+							.style('border','none').style('width','60px')
+							.style('padding-left','10px').style('padding-top','10px');
+						row.append('td').style('border','none')
+							.append('input')
+							.attr('type','text')
+							.attr('id',d.id);
+					})
+				}
+			});
+		
+            //TODO: Insert divs for new dataset name and folder 
             
         var submitExp = ingestDiv.append('div')
 	        .classed('form-field col12 center ', true);
@@ -1755,7 +1815,7 @@ Hoot.control.utilities.dataset = function(context) {
 	        .classed('inline row1 fl col10 pad1y', true)
 	        .text('Clip')
 	        .on('click', function () {
-	        	
+	        	//TODO: Add actions for clip depending on selecting mode 
 	        	
 	        	//modalbg.remove();
 	            });
