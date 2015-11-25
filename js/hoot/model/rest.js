@@ -437,34 +437,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
-    rest.CookieCutterConflate = function (data, callback, option) {
-            data.INPUT1_TYPE = data.INPUT1_TYPE || 'DB';
-            data.INPUT2_TYPE = data.INPUT2_TYPE || 'DB';
-            data.CONFLATION_TYPE = 'Horizontal';
-            data.alpha = data.alpha || '2500';
-            data.buffer = data.buffer || '0';
-            data.crop = data.crop || 'false';
-            data.outputbuffer = data.outputbuffer || '-1000';
-            data.cuttershape = data.INPUT1;
-            data.inputtype= 'DB';
-            data.cuttershapetype = 'DB';
-            data.outputname = data.outputname = 'layer_' + Math.random().toString(16).substring(7);
-            data.input = data.INPUT2;
-        if (!data.INPUT1 || !data.INPUT2 || !data.OUTPUT_NAME) {
-            return false;
-        }
-        if(option.queryInterval){
-            rest.jobStatusInterval = option.queryInterval;
-        }
-        d3.json('/hoot-services/job/cookiecutter/execute')
-            .header('Content-Type', 'text/plain')
-            .post(JSON.stringify(data), function (error, resp) {
-                if (error) {
-                    return callback(_alertError(error, "Cookie Cutter Conflate job failed! For detailed log goto Manage->Log"));
-                }
-                rest.status(resp.jobid, callback);
-            });
-    };
+
 
     rest.GetTranslationServerStatus = function(data, callback) {
         d3.json('/hoot-services/ogr/translationserver/status' , function (error, resp) {
