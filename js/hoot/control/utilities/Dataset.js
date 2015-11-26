@@ -1686,6 +1686,130 @@ Hoot.control.utilities.dataset = function(context) {
             
         return modalbg;
     }
+
+    hoot_control_utilities_dataset.clipDatasetContainer = function(datasets) {
+		if(_.isEmpty(hoot.model.layers.getLayers())){
+			iD.ui.Alert('Please add at least one dataset to the map to clip.','notice');
+			return;
+		}
+
+        hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
+        var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+
+        var _columns = [
+           {label:'Dataset',type:'datasetName'},
+           {label:'Clip?', checkbox:true},
+		   {label:'Output Name', placeholder: 'Save As',	 type: 'LayerName'},
+		   {label:'Path', placeholder: 'root', type: 'PathName', combobox3:folderList }
+        ];
+        
+        var _row = [{'datasetName':'','checkbox':'','LayerName':'','PathName':''}];
+        
+        var modalbg = d3.select('body')
+	        .append('div')
+	        .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+	    var ingestDiv = modalbg.append('div')
+	        .classed('contain col10 pad1 hoot-menu fill-white round modal', true)
+	        .style({'display':'block','margin-left':'auto','margin-right':'auto','left':'0%'});
+	    var _form = ingestDiv.append('form');
+	    _form.classed('round space-bottom1 importableLayer', true)
+	        .append('div')
+	        .classed('big pad1y keyline-bottom space-bottom2', true)
+	        .append('h4')
+	        .text('Clip Data Options')
+	        .append('div')
+	        .classed('fr _icon x point', true)
+	        .on('click', function () {
+	            modalbg.remove();
+	        });
+	    
+	    var _table = _form.append('table').attr('id','clipTable');
+	    //set column width for last column
+	    var colgroup = _table.append('colgroup');
+	    colgroup.append('col').attr('span','4').style('width','100%');
+	    colgroup.append('col').style('width','30px');
+	    
+	    _table.append('thead').append('tr')
+    		.selectAll('th')
+    		.data(_columns).enter()
+    		.append('th')
+    		.attr('class',function(d){return d.cl})
+    		.text(function(d){return d.label});
+	    
+	    _table.append('tbody');
+	    _.each(hoot.model.layers.getLayers(),function(d){
+			var _tableBody = d3.select("#clipTable").select('tbody');
+			_tableBody.append('tr').attr('id','row-'+d.name)
+				.selectAll('td')
+				.data(function(row,i){
+					// evaluate column objects against the current row
+					return _columns.map(function(c) {
+						var cell = {};
+						d3.keys(c).forEach(function(k) {
+							cell[k] = typeof c[k] == 'function' ? c[k](row,i) : c[k];
+						});
+						return cell;
+					});
+				}).enter()
+				.append('td')
+				.append('div').classed('contain bulk-import',true).append('input')
+				.attr('class', function(d){return 'reset  bulk-import ' + d.type})
+		    	.attr('row',d.name)
+		    	.attr('placeholder',function(d){return d.placeholder})
+		    	.select(function (a) {
+					if(a.checkbox){
+						var parentDiv = d3.select(this.parentElement);
+						parentDiv.selectAll('input').remove();
+						parentDiv.append('input').attr('type','checkbox').attr('checked',true);
+					}
+
+					if(a.type=='datasetName'){
+						d3.select(this).attr('placeholder',function(){
+							return d.name}).attr('readonly',true);
+					}
+
+					if (a.readonly){
+						d3.select(this).attr('readonly',true); 
+					}
+
+					if (a.combobox3) {
+						var comboPathName = d3.combobox()
+							.data(_.map(a.combobox3, function (n) {
+								return {
+									value: n.folderPath,
+									title: n.folderPath
+								};
+							}));
+
+						comboPathName.data().sort(function(a,b){
+							var textA = a.value.toUpperCase();
+							var textB=b.value.toUpperCase();
+							return(textA<textB)?-1 : (textA>textB)?1:0;
+						});
+
+						comboPathName.data().unshift({value:'root',title:0});
+
+						d3.select(this)
+							.style('width', '100%')
+							.call(comboPathName);          
+					}
+				});
+			});
+
+			var submitExp = ingestDiv.append('div')
+				.classed('form-field col12 left ', true);
+
+			submitExp.append('span')
+				.classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
+				.text('Clip')
+				.on('click', function () {
+					return;
+				})
+
+
+			return modalbg;
+		};	
+
     
 	return hoot_control_utilities_dataset;
 };
