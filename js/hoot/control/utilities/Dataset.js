@@ -1768,6 +1768,21 @@ Hoot.control.utilities.dataset = function(context) {
 							return d.name}).attr('readonly',true);
 					}
 
+					if(a.type=='LayerName'){
+						var uniquename = false;
+						var name = d.name + '_clip';
+						var i = 1;
+						while (uniquename==false){
+							if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
+								name = d.name + '_clip_' + i.toString();
+								i++;
+							} else {
+								uniquename = true;
+							}
+						}
+						d3.select(this).attr('placeholder',function(){return name;});
+					}
+
 					if (a.readonly){
 						d3.select(this).attr('readonly',true); 
 					}
@@ -1791,7 +1806,27 @@ Hoot.control.utilities.dataset = function(context) {
 
 						d3.select(this)
 							.style('width', '100%')
-							.call(comboPathName);          
+							.call(comboPathName);  
+
+						d3.select(this).attr('placeholder',function(){
+							if(_.isEmpty(_.findWhere(hoot.model.layers.getAvailLayers(),{'name':d.name}))){
+								return 'root';
+							} else {
+								var folderPath = 'root';
+								try{
+									hoot.model.layers.setLayerLinks(function(){
+										var fID = _.findWhere(hoot.model.layers.getAvailLayers(),{'name':d.name}).folderId || 0;
+										var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+										folderPath =  _.findWhere(folderList,{id:fID}).folderPath || 'root';
+									});
+										
+								} catch (err) {
+									folderPath = 'root';
+								}
+
+								return folderPath;
+							}
+						})        
 					}
 				});
 			});
