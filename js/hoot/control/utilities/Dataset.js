@@ -1688,139 +1688,130 @@ Hoot.control.utilities.dataset = function(context) {
     }
 
     hoot_control_utilities_dataset.clipDatasetContainer = function(datasets) {
-		// 3 options: Clip to visual extent, clip to bounding box, clip to lat/long pair
-    	// Will add clip alpha shape in future
+		if(_.isEmpty(hoot.model.layers.getLayers())){
+			iD.ui.Alert('Please add at least one dataset to the map to clip.','notice');
+			return;
+		}
 
-    	var clipOptions = [
-    	    {'title':'Clip to Visual Extent','action':'visualExtent','text':'Clip to visual extent.'},
-    	    {'title':'Clip to Bounding Box','action':'boundingBox','text':'Draw bounding box for clip area. Click once to start drawing and again to complete area.'},
-    	    {'title':'Clip to Lat/Long Pair','action':'coordinatePair','text':'Enter coordinates to determine bounding box for clip area.'}
-    	];
+        hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
+        var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
 
-    	var d_form = [{
-    		label:'Clip Area',
-    		type:'cliparea',
-    		placeholder:'Clip to Visual Extent',
-    		combobox:clipOptions
-    	},{
-    		label:'Datasets',
-    		type:'datasetList',
-    		placeholder:_.map(hoot.model.layers.getLayers(),_.clone)[0].name,
-    		combobox2:_.map(hoot.model.layers.getLayers(),_.clone)
-    	},{
-    		label:'Coordinates',
-    		type:'coordinateInputs',
-    		placeholder:'',
-    		coordinateInputs:true
-    	}];
-
-		 
-		var modalbg = d3.select('body')
-	     	.append('div')
-	        .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
-        var ingestDiv = modalbg.append('div')
-            .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
-        var _form = ingestDiv.append('form');
-        _form.classed('round space-bottom1 importableLayer', true)
-            .append('div')
-            .classed('big pad1y keyline-bottom', true)
-            .append('h4')
-            .text('Clip Dataset Options')
-            .append('div')
-            .classed('fr _icon x point', true)
-            .on('click', function () {
-                modalbg.remove();
-            });
+        var _columns = [
+           {label:'Dataset',type:'datasetName'},
+           {label:'Clip?', checkbox:true},
+		   {label:'Output Name', placeholder: 'Save As',	 type: 'LayerName'},
+		   {label:'Path', placeholder: 'root', type: 'PathName', combobox3:folderList }
+        ];
         
-		var fieldset = _form.append('fieldset').selectAll('form-field').data(d_form);
-
-        fieldset.enter()
-        	.append('div')
-			.classed('form-field  space-bottom1', true)  
-			.html(function (d) {
-				return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + d.label; // + '</label><input type="text" class="reset ' + field.type + '" />';
-            });
-
-		fieldset.append('div')
-			.classed('contain',true)
-			.append('input')
-			.attr('type','text')
-			.attr('placeholder',function(field){return field.placeholder;})
-			.attr('class',function(field){return 'reset ' + field.type;})
-			.select(function(a){
-				if(a.combobox){
-					var comboClipAction = d3.combobox()
-						.data(_.map(a.combobox,function(n){
-							return{value:n.title,title:n.title};
-						}));
-
-					d3.select(this)
-                    	.style('width', '100%')
-                    	.call(comboClipAction);
-                    
-					d3.select(this).on('change',function(d){
-						console.log(d3.select('.cliparea').value());
-						//TODO: Insert span and update with the text object 
+        var _row = [{'datasetName':'','checkbox':'','LayerName':'','PathName':''}];
+        
+        var modalbg = d3.select('body')
+	        .append('div')
+	        .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+	    var ingestDiv = modalbg.append('div')
+	        .classed('contain col10 pad1 hoot-menu fill-white round modal', true)
+	        .style({'display':'block','margin-left':'auto','margin-right':'auto','left':'0%'});
+	    var _form = ingestDiv.append('form');
+	    _form.classed('round space-bottom1 importableLayer', true)
+	        .append('div')
+	        .classed('big pad1y keyline-bottom space-bottom2', true)
+	        .append('h4')
+	        .text('Clip Data Options')
+	        .append('div')
+	        .classed('fr _icon x point', true)
+	        .on('click', function () {
+	            modalbg.remove();
+	        });
+	    
+	    var _table = _form.append('table').attr('id','clipTable');
+	    //set column width for last column
+	    var colgroup = _table.append('colgroup');
+	    colgroup.append('col').attr('span','4').style('width','100%');
+	    colgroup.append('col').style('width','30px');
+	    
+	    _table.append('thead').append('tr')
+    		.selectAll('th')
+    		.data(_columns).enter()
+    		.append('th')
+    		.attr('class',function(d){return d.cl})
+    		.text(function(d){return d.label});
+	    
+	    _table.append('tbody');
+	    _.each(hoot.model.layers.getLayers(),function(d){
+			var _tableBody = d3.select("#clipTable").select('tbody');
+			_tableBody.append('tr').attr('id','row-'+d.name)
+				.selectAll('td')
+				.data(function(row,i){
+					// evaluate column objects against the current row
+					return _columns.map(function(c) {
+						var cell = {};
+						d3.keys(c).forEach(function(k) {
+							cell[k] = typeof c[k] == 'function' ? c[k](row,i) : c[k];
+						});
+						return cell;
 					});
+				}).enter()
+				.append('td')
+				.append('div').classed('contain bulk-import',true).append('input')
+				.attr('class', function(d){return 'reset  bulk-import ' + d.type})
+		    	.attr('row',d.name)
+		    	.attr('placeholder',function(d){return d.placeholder})
+		    	.select(function (a) {
+					if(a.checkbox){
+						var parentDiv = d3.select(this.parentElement);
+						parentDiv.selectAll('input').remove();
+						parentDiv.append('input').attr('type','checkbox').attr('checked',true);
+					}
 
-                    d3.select(this).attr('readonly',true); 
-				} else if (a.combobox2){
-					var comboDatasets = d3.combobox()
-                        .data(_.map(a.combobox2, function (n) {
-                            return {value: n.name,title: n.name};
-                        }));
+					if(a.type=='datasetName'){
+						d3.select(this).attr('placeholder',function(){
+							return d.name}).attr('readonly',true);
+					}
 
-                    comboDatasets.data().sort(function(a,b){
-            		  	var textA = a.value.toUpperCase();
-            		  	var textB=b.value.toUpperCase();
-            		  	return(textA<textB)?-1 : (textA>textB)?1:0;
-            		  });
-                    
-                    if(_.map(hoot.model.layers.getLayers(),_.clone).length>1)
-                    {comboDatasets.data().unshift({value:'Both Datasets',title:'Both Datasets'});}
-                    
-                    d3.select(this)
-                    	.style('width', '100%')
-                    	.call(comboDatasets);
-                    
-                    d3.select(this).attr('readonly',true); 
-				} else if (a.coordinateInputs){
-					var parentDiv = d3.select(this.parentElement);
-					parentDiv.select('input').remove();
-					var coordinates = [{id:'minX',title:'Min X:'},
-						{id:'minY',title:'Min Y:'},
-						{id:'maxX',title:'Max X:'},
-						{id:'maxY',title:'Max Y:'}];
+					if (a.readonly){
+						d3.select(this).attr('readonly',true); 
+					}
 
-					var coordinateTable = parentDiv.append('table');
-					_.each(coordinates,function(d){
-						var row = coordinateTable.append('tr');
-						row.append('td').text(d.title)
-							.style('border','none').style('width','60px')
-							.style('padding-left','10px').style('padding-top','10px');
-						row.append('td').style('border','none')
-							.append('input')
-							.attr('type','text')
-							.attr('id',d.id);
-					})
-				}
+					if (a.combobox3) {
+						var comboPathName = d3.combobox()
+							.data(_.map(a.combobox3, function (n) {
+								return {
+									value: n.folderPath,
+									title: n.folderPath
+								};
+							}));
+
+						comboPathName.data().sort(function(a,b){
+							var textA = a.value.toUpperCase();
+							var textB=b.value.toUpperCase();
+							return(textA<textB)?-1 : (textA>textB)?1:0;
+						});
+
+						comboPathName.data().unshift({value:'root',title:0});
+
+						d3.select(this)
+							.style('width', '100%')
+							.call(comboPathName);          
+					}
+				});
 			});
 		
             //TODO: Insert divs for new dataset name and folder 
             
-        var submitExp = ingestDiv.append('div')
-	        .classed('form-field col12 center ', true);
-	         submitExp.append('span')
-	        .classed('round strong big loud dark center col10 margin1 point', true)
-	        .classed('inline row1 fl col10 pad1y', true)
-	        .text('Clip')
-	        .on('click', function () {
-	        	//TODO: Add actions for clip depending on selecting mode 
-	        	
-	        	//modalbg.remove();
-	            });
 
-	        return modalbg;
+
+			var submitExp = ingestDiv.append('div')
+				.classed('form-field col12 left ', true);
+
+			submitExp.append('span')
+				.classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
+				.text('Clip')
+				.on('click', function () {
+					return;
+				})
+
+
+			return modalbg;
 		};	
 
     
