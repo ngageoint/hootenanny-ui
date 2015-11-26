@@ -1687,7 +1687,10 @@ Hoot.control.utilities.dataset = function(context) {
         return modalbg;
     }
 
-    hoot_control_utilities_dataset.clipDatasetContainer = function(datasets) {
+    hoot_control_utilities_dataset.clipDatasetContainer = function(clipType) {
+		//exit if already open
+		if(!d3.select('#clipDatasetContainer').empty()){return;}
+
 		if(_.isEmpty(hoot.model.layers.getLayers())){
 			iD.ui.Alert('Please add at least one dataset to the map to clip.','notice');
 			return;
@@ -1707,6 +1710,7 @@ Hoot.control.utilities.dataset = function(context) {
         
         var modalbg = d3.select('body')
 	        .append('div')
+	        .attr('id','clipDatasetContainer')
 	        .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
 	    var ingestDiv = modalbg.append('div')
 	        .classed('contain col10 pad1 hoot-menu fill-white round modal', true)
@@ -1834,10 +1838,47 @@ Hoot.control.utilities.dataset = function(context) {
 			var submitExp = ingestDiv.append('div')
 				.classed('form-field col12 left ', true);
 
+			if(clipType==undefined){clipType='visualExtent';}
+			var typeDiv = ingestDiv.append('div').attr('id','clipType').classed('hidden',true).attr('clipType',clipType);
+
 			submitExp.append('span')
 				.classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
 				.text('Clip')
 				.on('click', function () {
+					var clipType = d3.select('#clipType').attr('clipType');
+					console.log('test');
+					if(clipType=='visualExtent'){
+						//var params = [];
+            			//Provide input ID(s) of dataset(s)
+            			
+						//TODO: Get the checked layers
+
+            			_.each(hoot.model.layers.getLayers(),function(d){
+            				var param = {};
+            				param.INPUT_NAME = d.name;
+            				
+            				//create name, ensuring it is unique
+            				var uniquename = false;
+            				var name = d.name + '_clip';
+            				var i = 1;
+            				while (uniquename==false){
+            					if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
+            						name = d.name + '_clip_' + i.toString();
+            						i++;
+            					} else {
+            						uniquename = true;
+            					}
+            				}
+            				param.OUTPUT_NAME = name;
+            				param.BBOX = id.map().extent().toString();
+            				//params.push(param);
+                			//console.log(params);
+	               			 Hoot.model.REST('clipDataset', param, function (a,outputname) {
+                            	if(a.status=='complete'){iD.ui.Alert("Success: " + outputname + " has been created!",'success');}
+                            });
+            			});
+					}
+					
 					return;
 				})
 
