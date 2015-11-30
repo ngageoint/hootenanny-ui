@@ -405,3 +405,4 @@ span.logo{
 }
 
 .clipInfo {font-weight:bold;}
+.invalidName {border:1px solid red !important;}

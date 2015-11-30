@@ -1785,6 +1785,17 @@ Hoot.control.utilities.dataset = function(context) {
 							}
 						}
 						d3.select(this).attr('placeholder',function(){return name;});
+						
+						d3.select(this).on('change',function(){
+							//ensure output name is valid
+							console.log(this);
+							var resp = context.hoot().checkForUnallowedChar(this.value);
+							if(resp != true){
+								d3.select(this).classed('invalidName',true).attr('title',resp);
+							} else {
+								d3.select(this).classed('invalidName',false).attr('title',null);
+							}
+						});
 					}
 
 					if (a.readonly){
@@ -1846,6 +1857,8 @@ Hoot.control.utilities.dataset = function(context) {
 				.classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
 				.text('Clip')
 				.on('click', function () {
+					if(!d3.selectAll('.invalidName').empty()){return;}
+					
 					var clipType = d3.select('#clipType').attr('clipType');
 					var checkedRows = d3.select('#clipTable').selectAll('tr').selectAll("[type=checkbox]");
 						var selectedLayers = [];
@@ -1854,66 +1867,45 @@ Hoot.control.utilities.dataset = function(context) {
 								if(d3.select(d[0]).property('checked')){selectedLayers.push(d.parentNode.id.replace('row-',''));}								
 							}
 						});
-					if(clipType=='visualExtent'){
-						_.each(hoot.model.layers.getLayers(),function(d){
-            				if(selectedLayers.indexOf(d.name)==-1){return;}
-
-            				var param = {};
-            				param.INPUT_NAME = d.name;
-
-            				//TODO: test output name for validitiy
-            				
-            				//create name, ensuring it is unique
-            				var uniquename = false;
-            				var name = d.name + '_clip';
-            				var i = 1;
-            				while (uniquename==false){
-            					if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
-            						name = d.name + '_clip_' + i.toString();
-            						i++;
-            					} else {
-            						uniquename = true;
-            					}
-            				}
-            				param.OUTPUT_NAME = name;
-            				param.BBOX = id.map().extent().toString();
-            				//params.push(param);
-                			//console.log(params);
-	               			 Hoot.model.REST('clipDataset', param, function (a,outputname) {
+						
+					//Set up params for clipping
+					var params = [];
+					_.each(hoot.model.layers.getLayers(),function(d){
+						if(selectedLayers.indexOf(d.name)==-1){return;}
+						
+						var param = {};
+						param.INPUT_NAME = d.name;
+						
+						var uniquename = false;
+						var name = d.name + '_clip';
+						var i = 1;
+						while (uniquename==false){
+							if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
+								name = d.name + '_clip_' + i.toString();
+								i++;
+							} else {
+								uniquename = true;
+							}
+						}
+						param.OUTPUT_NAME = name;
+						
+						var resp = context.hoot().checkForUnallowedChar(param.OUTPUT_NAME);
+						if(resp != true){
+			        		iD.ui.Alert(resp,'warning');
+			        		return;
+			            }
+						
+						if(clipType=='visualExtent'){param.BBOX = id.map().extent().toString();}
+						else if(clipType=='boundingBox'){param.BBOX=rect;}
+						
+						params.push(param); 
+					});
+					
+					_.each(params,function(param){
+						Hoot.model.REST('clipDataset', param, function (a,outputname) {
                             	if(a.status=='complete'){iD.ui.Alert("Success: " + outputname + " has been created!",'success');}
                             });
-            			});
-					}
-					else if(clipType=='boundingBox'){
-						_.each(hoot.model.layers.getLayers(),function(d){
-							if(selectedLayers.indexOf(d.name)==-1){return;}
-
-							var param = {};
-							param.INPUT_NAME = d.name;
-
-							//create name, ensuring it is unique
-							var uniquename = false;
-							var name = d.name + '_clip';
-							var i = 1;
-							while (uniquename==false){
-								if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
-									name = d.name + '_clip_' + i.toString();
-									i++;
-								} else {
-									uniquename = true;
-								}
-							}
-							param.OUTPUT_NAME = name;
-
-							//var bboxPt1 = context.projection.invert([parseFloat(rect.attr('x')),parseFloat(rect.attr('y'))]).toString();
-							//var bboxPt2 = context.projection.invert([parseFloat(rect.attr('x'))+parseFloat(rect.attr('width')),parseFloat(rect.attr('y'))+parseFloat(rect.attr('height'))]).toString();
-							param.BBOX = rect;
-
-							Hoot.model.REST('clipDataset', param, function (a,outputname) {
-								if(a.status=='complete'){iD.ui.Alert("Success: " + outputname + " has been created!",'success');}
-							});
-						});
-					}
+					})
 
 					modalbg.remove();
 					return;
