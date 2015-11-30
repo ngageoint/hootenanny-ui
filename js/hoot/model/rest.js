@@ -270,7 +270,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		hoot.model.layers.refresh(function(){
         			hoot.model.layers.setLayerLinks(function(){
         				var availLayers = hoot.model.layers.getAvailLayers();
-        				var input = _.findWhere(availLayers,{name:'DcGisRoads'});
+        				var input = _.findWhere(availLayers,{name:data.INPUT_NAME});
         				if(input!=undefined){
         					if(input.folderId){
         						var output = _.findWhere(availLayers,{name:data.OUTPUT_NAME});

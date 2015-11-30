@@ -403,3 +403,6 @@ span.logo{
 	/* margin-left: 10px;
 	display: inline-block; */
 }
+
+.clipInfo {font-weight:bold;}
+.invalidName {border:1px solid red !important;}
