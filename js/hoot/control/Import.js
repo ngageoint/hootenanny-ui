@@ -199,7 +199,7 @@ Hoot.control.import = function (context,selection) {
                             description: d.name,
                             template: 'http://192.168.33.11:8000/?z={zoom}&x={x}&y={y}&color='
                                 + encodeURIComponent(context.hoot().palette(d.color))
-                                + '&mapid=' + d.id,
+                                + '&name=' + d.name,
                             scaleExtent: [0,18],
                             overlay: true,
                             projection: 'mercator',
