@@ -51,32 +51,7 @@ iD.ui.Tools = function(context) {
                     	} else if (item.action=='clipVisualExtent'){
                     		//Call clip map
                     		if(!_.isEmpty(hoot.model.layers.getLayers())){
-                        		//var params = [];
-                    			//Provide input ID(s) of dataset(s)
-                    			_.each(hoot.model.layers.getLayers(),function(d){
-                    				var param = {};
-                    				param.INPUT_NAME = d.name;
-                    				
-                    				//create name, ensuring it is unique
-                    				var uniquename = false;
-                    				var name = d.name + '_clip';
-                    				var i = 1;
-                    				while (uniquename==false){
-                    					if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
-                    						name = d.name + '_clip_' + i.toString();
-                    						i++;
-                    					} else {
-                    						uniquename = true;
-                    					}
-                    				}
-                    				param.OUTPUT_NAME = name;
-                    				param.BBOX = id.map().extent().toString();
-                    				//params.push(param);
-                        			//console.log(params);
-        	               			 Hoot.model.REST('clipDataset', param, function (a,outputname) {
-                                    	if(a.status=='complete'){iD.ui.Alert("Success: " + outputname + " has been created!",'success');}
-                                    });
-                    			});
+                    			hoot.control.utilities.dataset.clipDatasetContainer('visualExtent');                    			
                     		}
                     	}
                     	d3.select('.tools-menu').remove();

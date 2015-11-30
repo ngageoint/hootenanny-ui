@@ -252,7 +252,16 @@ Hoot.control.utilities.folder = function(context) {
 
 	      if(container.attr('id')=='datasettable'){
 	    	  container.selectAll('rect').on("contextmenu",function(d,i){
-	              var items = [];
+	    		  if(!d3.event.ctrlKey || container.attr('id')==null){
+	    	    	  _.each(nodes,function(n){n.selected=false;});  
+	    	    	  if(d.type=='dataset'){d.selected=true;}
+	    	      } else if(d3.event.ctrlKey && container.attr('id')=='datasettable' && d.type=='dataset') {
+	    	    	  d.selected = !d.selected;
+	    	      }
+	    		  
+	    		  update(d);
+	    		  
+	    		  var items = [];
 	              if(!d.type){
 	            	  d3.select('.context-menu').style('display', 'none');	              
 		              d3.event.preventDefault();
@@ -352,7 +361,7 @@ Hoot.control.utilities.folder = function(context) {
 	    	  d.selected = !d.selected;
 	      }
 	    	
-	      if(d.type=='folder'){context.hoot().model.layers.setSelectedLayers([]);}
+	      if(d.type=='folder'){selectedLayerIDs = context.hoot().model.layers.setSelectedLayers([]);}
 	      
 	      d3.select(this).classed("selected",true);
 	      var updateOpenFolders = !d3.select("#datasettable").selectAll('.selected').empty();
@@ -403,7 +412,7 @@ Hoot.control.utilities.folder = function(context) {
 	    
 	    function rectClass(d) {
 	    	//set selected layers
-	    	if(d.type=='dataset'){
+	    	if(d.type=='dataset' && container.attr('id')=='datasettable'){
 	    		var lyrid = d.id;
 		    	if(d.selected){
 		    		if(selectedLayerIDs.indexOf(lyrid) == -1){selectedLayerIDs.push(lyrid);}		

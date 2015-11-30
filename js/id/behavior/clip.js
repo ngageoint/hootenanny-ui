@@ -92,7 +92,10 @@ iD.behavior.Clip = function(context,svg,type) {
  		rect.attr("x",c[0]).attr("y",c[1]);
  	}
  	else{
- 		var clip2bbox = window.confirm("Do you want to clip to this bounding box?");
+ 		var bboxPt1 = context.projection.invert([parseFloat(rect.attr('x')),parseFloat(rect.attr('y'))]).toString();
+    				var bboxPt2 = context.projection.invert([parseFloat(rect.attr('x'))+parseFloat(rect.attr('width')),parseFloat(rect.attr('y'))+parseFloat(rect.attr('height'))]).toString();
+    				
+ 		/*var clip2bbox = window.confirm("Do you want to clip to this bounding box?");
  		if(clip2bbox){
     		if(!_.isEmpty(hoot.model.layers.getLayers())){
         		//var params = [];
@@ -124,8 +127,11 @@ iD.behavior.Clip = function(context,svg,type) {
                     });
     			});
     		}
- 		}
+ 		}*/
  		ret(d3.select("#surface"));
+ 		if(!_.isEmpty(hoot.model.layers.getLayers())){
+			hoot.control.utilities.dataset.clipDatasetContainer('boundingBox',bboxPt1.concat(',',bboxPt2));                    			
+		}
  	}
  	    	
 	nodeId++;

@@ -137,33 +137,36 @@ Hoot.view.utilities.dataset = function(context)
 	        }
 	        
 	        //select the rect using lyr-id
-	        var selNode  = container.selectAll("text[lyr-id='" + dataset.id + "']").node().parentNode;
-	        var selRect = d3.select(selNode).select('rect'); 
-		    var currentFill = selRect.style('fill');
-		    selRect.style('fill','rgb(255,0,0)');
-		    
-			d3.select('.context-menu').style('display', 'none');
-		    
-		    context.hoot().model.layers.deleteLayer(dataset,function(resp){
-		    	if(resp==true){
-		    		selNode.remove();
-		    	}
-		    	
-			    if(i>=datasets2remove.length-1){
-			    	hoot.model.layers.refresh(function(){
-		        		hoot.model.folders.refreshLinks(function(){context.hoot().model.import.updateTrees();})        		
-		        	});
-			    	
-		    		//remove folder
-			    	if(d.type=='folder'){
-			        	context.hoot().model.folders.deleteFolder(d.id,function(resp){
-			        		if(resp==false){iD.ui.Alert('Unable to delete folder.','error');}
-		                	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
-			        	});
+	        try {
+		        var selNode  = container.selectAll("text[lyr-id='" + dataset.id + "']").node().parentNode;
+		        var selRect = d3.select(selNode).select('rect'); 
+			    var currentFill = selRect.style('fill');
+			    selRect.style('fill','rgb(255,0,0)');
+			    
+				d3.select('.context-menu').style('display', 'none');
+			    
+			    context.hoot().model.layers.deleteLayer(dataset,function(resp){
+			    	if(resp==true){
+			    		selNode.remove();
 			    	}
-			    }
-		    });
-
+			    	
+				    if(i>=datasets2remove.length-1){
+				    	hoot.model.layers.refresh(function(){
+			        		hoot.model.folders.refreshLinks(function(){context.hoot().model.import.updateTrees();})        		
+			        	});
+				    	
+			    		//remove folder
+				    	if(d.type=='folder'){
+				        	context.hoot().model.folders.deleteFolder(d.id,function(resp){
+				        		if(resp==false){iD.ui.Alert('Unable to delete folder.','error');}
+			                	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
+				        	});
+				    	}
+				    }
+			    });
+			} catch (e) {
+				iD.ui.Alert('Unable to delete dataset ' + dataset.name + '. ' + e,'error')
+			} 
 	    }//,container);    
         
         if(datasets2remove.length==0){

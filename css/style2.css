@@ -381,7 +381,7 @@ span.logo{
  
 #alerts {
 	position: fixed;
-	z-index: 1;
+	z-index: 1003;
 	clear:both;
 	margin-left:10px;
 	float:right;
@@ -403,3 +403,6 @@ span.logo{
 	/* margin-left: 10px;
 	display: inline-block; */
 }
+
+.clipInfo {font-weight:bold;}
+.invalidName {border:1px solid red !important;}
