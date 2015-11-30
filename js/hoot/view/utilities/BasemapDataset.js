@@ -4,7 +4,7 @@ Hoot.view.utilities.basemapdataset = function(context)
 
     hoot_view_utilities_basemapdataset.createContent = function(form){
         var mbFieldset = form.append('div')
-        .classed('pad1y pad2x keyline-bottom col12', true)
+        .classed('pad1y pad1x col12', true)
         .append('a')
         .attr('href', '#')
         .text('New Basemap')
@@ -26,7 +26,7 @@ Hoot.view.utilities.basemapdataset = function(context)
 
         baseMapsFieldset = form.append('div')
         .attr('id','basemapsdatasettable')
-            .classed('col12 fill-white small strong row10 overflow', true)
+            .classed('col12 fill-white small strong row10 overflow keyline-all', true)
             .call(hoot_view_utilities_basemapdataset.populateBaseMapsDatasets);
 
     };
@@ -68,7 +68,7 @@ Hoot.view.utilities.basemapdataset = function(context)
                 return d.name;
             });
         la3.append('button')
-            .classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
+            .classed('keyline-left fr _icon trash pad2 col1', true)
             .style('height', '100%')
             .on('click', function () {
               d3.event.stopPropagation();

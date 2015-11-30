@@ -9,6 +9,7 @@ Hoot.view.utilities = function (context){
 	utilities.translation = Hoot.view.utilities.translation(context);
 	utilities.errorlog = Hoot.view.utilities.errorlog(context);
     utilities.reports = Hoot.view.utilities.reports(context);
+    utilities.about = Hoot.view.utilities.about(context);
 
     utilities.basemaplist = null;
 
@@ -57,19 +58,12 @@ Hoot.view.utilities = function (context){
                     var tabBody = jobsBG.append('div')
                     .classed('pad2 round-top fill-light pin-left pin-top utilHoot', true)
                     .attr('id', tabId);
-                    /*.style('left','25%');*/
-
-
-                    /*var bodyStyle = 'block strong center col1 margin' + tabOrder + ' pin-top ' + pady + 
-                    ' keyline-top keyline-right keyline-left keyline-bottom utilHootHead point';*/
 
                     var bodyStyle = 'block strong center margin2 pad1y  utilHootHead';
                     
                     var tabHeader = settingsSidebar.append('div')
 	                    .classed(bodyStyle, true)
-	                    /*.style('top', '-44px')*/
 	                    .attr('data', '#' + tabId)
-	                    /*.text(tabName)*/
 	                    .on('click', function () {
 	                        _toggleOpts(this);
 	                    });
@@ -113,22 +107,6 @@ Hoot.view.utilities = function (context){
             .insert('div', ':first-child')
             .attr('id', 'header')
             .classed('contain pad2x dark fill-dark', true);
-        /*header.append('div')
-            .attr('href', '/')
-            .classed('inline dark strong _logo pad2x pad2y keyline-right keyline-left', true)
-            .style('color', '#fff')
-           .html('Hootenanny<span class=\'logo\'> | </span>InnoVision');*/
-        /*header.append('nav')
-            .classed('contain inline fr', true)
-            .append('a')
-            .attr('href', '#jobs')
-            .classed('point center pad2 block keyline-left keyline-right _icon dark strong small plus', true)
-            .text('New Job')
-            .on('click', function () {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-                context.hoot().reset();
-            });*/
         header.append('nav')
             .classed('contain inline fr', true)
             .append('div')

@@ -16,7 +16,7 @@
     "callback":"Hoot.control.CreateTranslationAssistantContainer"
   },
   {
-    "name":"Translation",
+    "name":"Translations",
     "id":"utiltranslation",
     "order":"4",
     "contentbodyid":"translationContent",
@@ -49,5 +49,12 @@
     "order":"8",
     "contentbodyid":"reportsContent",
     "callback":"view.utilities.reports.createContent"
+  },
+  {
+    "name":"About",
+    "id":"utilAbout",
+    "order":"9",
+    "contentbodyid":"aboutContent",
+    "callback":"view.utilities.about.createContent"
   }
 ]

@@ -4,7 +4,7 @@ Hoot.view.utilities.dataset = function(context)
     
     hoot_view_utilities_dataset.createContent = function(form){
 
-    	fieldDiv = form.append('div').classed('pad1y pad2x keyline-bottom col12', true);
+    	fieldDiv = form.append('div').classed('pad1y pad1x col12', true);
     	
         fieldset = fieldDiv.append('a')
             .attr('href', '#')
@@ -88,7 +88,7 @@ Hoot.view.utilities.dataset = function(context)
 
         fieldset = form.append('div')
         .attr('id','datasettable')
-            .classed('col12 fill-white small strong row10 overflow', true)
+            .classed('col12 fill-white small strong row10 overflow keyline-all', true)
             .call(hoot_view_utilities_dataset.populateDatasetsSVG);  	
     };
     

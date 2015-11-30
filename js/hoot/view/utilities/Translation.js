@@ -5,7 +5,7 @@ Hoot.view.utilities.translation = function(context) {
     hoot_view_utilities_translation.createContainer = function(form){
 
         var fieldset = form.append('div')
-            .classed('pad1y pad2x keyline-bottom col12', true)
+            .classed('pad1y pad1x col12', true)
             .append('a')
             .attr('href', '#')
             .text('Add New Translation')
@@ -14,7 +14,7 @@ Hoot.view.utilities.translation = function(context) {
                 context.hoot().control.utilities.translation.newTranslationPopup();
             });
         hoot_view_utilities_translation.datasetcontainer = form.append('div')
-            .classed('col12 fill-white small  row10 overflow', true)
+            .classed('col12 fill-white small  row10 overflow keyline-all', true)
             .call(hoot_view_utilities_translation.populateTranslations);
     };
 

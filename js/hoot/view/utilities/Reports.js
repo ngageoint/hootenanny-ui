@@ -4,7 +4,7 @@ Hoot.view.utilities.reports = function(context) {
     hoot_view_utilities_reports.createContent = function(form){
 
         hoot_view_utilities_reports.datasetcontainer = form.append('div')
-            .classed('col12 fill-white small  row10 overflow', true)
+            .classed('col12 fill-white small  row10 overflow keyline-all', true)
             .call(hoot_view_utilities_reports.populateReports);
     }
 	hoot_view_utilities_reports.populateReports = function(container) {
@@ -49,7 +49,7 @@ Hoot.view.utilities.reports = function(context) {
                     }
                     
 
-                    d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1',false);
+                    d3.select(this).classed('keyline-left fr _icon trash pad2 col1',false);
                     d3.select(this).classed('keyline-left keyline-right pad1 row1  col1 fr',true).call(iD.ui.Spinner(context));
 
 

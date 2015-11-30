@@ -9,24 +9,21 @@ Hoot.view.utilities.errorlog = function(context){
     };
 
     errorlog.createContent = function(form){
-      var loggingControls = form.append('div');
+      var loggingControls = form.append('div').classed('pad1y pad1x col12',true);
         
       loggingControls
-      .classed('pad1y pad2x keyline-bottom col12', true)
       .append('a')
       .attr('href', '#')
       .text('Export Full Log')
-      .classed('dark fr button loud pad2x big _icon plus margin0', true)
+      .classed('dark fr button loud pad2x big _icon plus', true)
       .on('click', function () {
-          Hoot.model.REST('exportLog', function(){
-
-          });
+          Hoot.model.REST('exportLog', function(){});
       });
      
       loggingControls
-      .classed('pad1y pad2x keyline-bottom col12', true)
       .append('a')
       .attr('href', '#')
+      .style('margin-right','5px')
       .text('Refresh')
       .classed('dark fr button loud pad2x big _icon refresh', true)
       .on('click', function () {
@@ -42,21 +39,13 @@ Hoot.view.utilities.errorlog = function(context){
     
     errorlog.showLog = function(container){ 
     	//Error Log
-    	var errorContainer = container.append('div').classed('col12',true);
+    	var errorContainer = container.append('div').classed('col12 fill-light',true);
     	errorContainer.append('label')
-        	.classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
+        	.classed('logHeader', true)
         	.style('display','block')
         	.attr('id','errorLogLabel')
-        	.text('Hide Error Log')
-        	.on('click', function () {
-        		if(d3.select("#hooterrorlogtext").style('display')=='none'){
-        			d3.select("#hooterrorlogtext").style('display','block');
-        			d3.select("#errorLogLabel").text('Hide Error Log');
-        		} else {
-        			d3.select("#hooterrorlogtext").style('display','none');
-        			d3.select("#errorLogLabel").text('Show Error Log');
-        		}
-	        });
+        	.text('Error Log');
+        	
         	    	
     	errorContainer.append('textarea')
 	        .classed('col12 row5 overflow', true)
@@ -68,21 +57,12 @@ Hoot.view.utilities.errorlog = function(context){
         errorlog.update();
         
         //UI Log
-        var uiContainer = container.append('div').classed('col12',true);
+        var uiContainer = container.append('div').classed('col12 pad2y fill-light',true);
         uiContainer.append('label')
-	    	.classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
+	    	.classed('logHeader', true)
 	    	.attr('id','uiLogLabel')
 	    	.style('display','block')
-	    	.text('Hide UI Log')
-	    	.on('click', function () {
-	    		if(d3.select("#hootuilogtext").style('display')=='none'){
-	    			d3.select("#hootuilogtext").style('display','block');
-	    			d3.select("#uiLogLabel").text('Hide UI Log');
-	    		} else {
-	    			d3.select("#hootuilogtext").style('display','none');
-	    			d3.select("#uiLogLabel").text('Show UI Log');
-	    		}
-	        });
+	    	.text('UI Log');
         
         uiContainer.append('div').append('textarea')
 	        .classed('col12 row5 overflow', true)
