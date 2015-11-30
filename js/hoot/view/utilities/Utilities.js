@@ -170,7 +170,7 @@ Hoot.view.utilities = function (context){
 
          ////////////ALERTS///////////////////
          var alertsDiv = d3.select('body')
-         	.append('div')
+         	.insert('div',":first-child")
          	.attr('id','alerts');
          /////////////////////////////////////////         
          
