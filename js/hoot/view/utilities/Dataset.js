@@ -4,12 +4,13 @@ Hoot.view.utilities.dataset = function(context)
     
     hoot_view_utilities_dataset.createContent = function(form){
 
-    	fieldDiv = form.append('div').classed('pad1y pad1x col12', true);
+    	fieldDiv = form.append('div').classed('pad1y col12', true);
     	
         fieldset = fieldDiv.append('a')
             .attr('href', '#')
             .text('Add Dataset')
-            .classed('dark fr button loud pad2x big _icon plus', true)
+            .classed('dark fl button loud pad2x big _icon plus', true)
+            .style('margin-right','5px')
 	        .on('click', function () {
 	            //importData.classed('hidden', false);
 	             Hoot.model.REST('getTranslations', function (d) {
@@ -66,7 +67,7 @@ Hoot.view.utilities.dataset = function(context)
         fieldDiv.append('a')
 	        .attr('href', '#')
 	        .text('Add Folder')
-	        .classed('dark fr button loud pad2x big _icon plus', true)
+	        .classed('dark fl button loud pad2x big _icon plus', true)
 	        .style('margin-right','5px')
 	        .on('click', function () {
 	        	context.hoot().control.utilities.folder.importFolderContainer(0);
@@ -74,7 +75,7 @@ Hoot.view.utilities.dataset = function(context)
         fieldDiv.append('a')
 	        .attr('href', '#')
 	        .text('')
-	        .classed('dark fr button loud pad2x big _icon refresh', true)
+	        .classed('dark fl button loud pad2x big _icon refresh', true)
 	        .style('margin-right','5px')
 	        .on('click', function () {
 	        	hoot.model.folders.refresh(function () {

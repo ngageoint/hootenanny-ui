@@ -10,28 +10,28 @@ Hoot.view.utilities.about = function(context){
 
     about.createContent = function(form){
       form.append('div')
-      	.classed('pad1y pad1x col12',true)
+      	.classed('col12',true)
       	.append('label')
       	.classed('logHeader', true)
     	.style('display','block')
     	.attr('id','aboutLabel')
     	.text('About Hootenanny');
       
-      var mainContainer = form.append('div').classed('col12 fill-light',true);
+      var mainContainer = form.append('div').classed('col12 pad1y fill-light',true);
       mainContainer.append('label')
-      	.classed('aboutHeader pad1x',true)
+      	.classed('aboutHeader',true)
       	.style('display','block')
       	.attr('id','maindetaillbl')
       	.text('Main Versions:');
       
-      var mainVerCont = mainContainer.append('div').classed('center pad1x col12', true).style('display','inline-block');
+      var mainVerCont = mainContainer.append('div').classed('center col12', true).style('display','inline-block');
       _mainVer = mainVerCont.append('div');
-      _mainVer.classed('center row2  round keyline-all overflow', true);      
+      _mainVer.classed('center round keyline-all overflow', true);      
       
-      var detailContainer = form.append('div').classed('col12 fill-light',true);
+      var detailContainer = form.append('div').classed('col12 pad1y fill-light',true);
       var detailVersionLbl = detailContainer.append('div');
       detailVersionLbl.append('label')
-          .classed('aboutHeader pad1x',true)
+          .classed('aboutHeader',true)
           .style('display','block')
           .attr('id', 'versiondetaillbl')
           .text('Detail: ** Please select a row from Main Versions table. **');
@@ -113,16 +113,16 @@ Hoot.view.utilities.about = function(context){
       
       
       formCont = detailContainer.append('div');
-      formCont.classed('center pad1x col12', true).style('display','inline-block');
+      formCont.classed('center col12', true).style('display','inline-block');
       _form = formCont.append('div');
       _form.classed('center row10  round keyline-all fill-white', true);
 
       var btnDoc = formCont.append('div')
-          .classed('pad1y pad2x', true)
+          .classed('pad1y', true)
           .append('a')
           .attr('href', '#')
           .text('Download User Guide')
-          .classed('dark fr button loud pad2x big _icon plus', true)
+          .classed('dark fl button loud pad2x big _icon plus', true)
           .on('click', function () {
 
               var sUrl = '/hoot-services/info/document/export';

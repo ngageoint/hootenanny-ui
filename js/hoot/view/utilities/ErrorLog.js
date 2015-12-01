@@ -9,13 +9,14 @@ Hoot.view.utilities.errorlog = function(context){
     };
 
     errorlog.createContent = function(form){
-      var loggingControls = form.append('div').classed('pad1y pad1x col12',true);
+      var loggingControls = form.append('div').classed('pad1y col12',true);
         
       loggingControls
       .append('a')
       .attr('href', '#')
       .text('Export Full Log')
-      .classed('dark fr button loud pad2x big _icon plus', true)
+      .classed('dark fl button loud pad2x big _icon plus', true)
+      .style('margin-right','5px')
       .on('click', function () {
           Hoot.model.REST('exportLog', function(){});
       });
@@ -23,9 +24,8 @@ Hoot.view.utilities.errorlog = function(context){
       loggingControls
       .append('a')
       .attr('href', '#')
-      .style('margin-right','5px')
       .text('Refresh')
-      .classed('dark fr button loud pad2x big _icon refresh', true)
+      .classed('dark fl button loud pad2x big _icon refresh', true)
       .on('click', function () {
           errorlog.update();
       });

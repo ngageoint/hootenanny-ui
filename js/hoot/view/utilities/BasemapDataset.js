@@ -4,11 +4,11 @@ Hoot.view.utilities.basemapdataset = function(context)
 
     hoot_view_utilities_basemapdataset.createContent = function(form){
         var mbFieldset = form.append('div')
-        .classed('pad1y pad1x col12', true)
+        .classed('pad1y col12', true)
         .append('a')
         .attr('href', '#')
         .text('New Basemap')
-        .classed('dark fr button loud pad2x big _icon plus', true)
+        .classed('dark fl button loud pad2x big _icon plus', true)
         .on('click', function () {
             var bm = context.hoot().control.utilities.basemapdataset.newBasemapPopup(function(jobs){
                 // We need this timer due to
