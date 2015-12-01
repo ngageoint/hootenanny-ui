@@ -5,7 +5,7 @@ Hoot.view.utilities.wfsdataset = function(context)
     hoot_view_utilities_wfsdataset.createContent = function(container){
         var wfsFieldset = container.append('div')
         .attr('id','wfsdatasettable')
-            .classed('col12 fill-white small strong row10 overflow', true)
+            .classed('col12 fill-white small strong row10 overflow keyline-all', true)
             .call(hoot_view_utilities_wfsdataset.populateWFSDatasets);
     }
 
@@ -31,7 +31,7 @@ Hoot.view.utilities.wfsdataset = function(context)
                         return d.id;
                     });
                 la3.append('button')
-                .classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
+                .classed('keyline-left fr _icon trash pad2 col1', true)
                 .style('height', '100%')
                 .on('click', function () {
                   d3.event.stopPropagation();

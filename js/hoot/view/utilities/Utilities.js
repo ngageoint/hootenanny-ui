@@ -9,6 +9,7 @@ Hoot.view.utilities = function (context){
 	utilities.translation = Hoot.view.utilities.translation(context);
 	utilities.errorlog = Hoot.view.utilities.errorlog(context);
     utilities.reports = Hoot.view.utilities.reports(context);
+    utilities.about = Hoot.view.utilities.about(context);
 
     utilities.basemaplist = null;
 
@@ -23,18 +24,23 @@ Hoot.view.utilities = function (context){
                 .node();
             jobsBG.node()
                 .appendChild(thisbody);
-            d3.selectAll('.utilHootHead')
-                .classed('fill-white', false)
-                .classed('keyline-bottom', true);
-            d3.select(d)
-                .classed('fill-white', true)
-                .classed('keyline-bottom', false);
+            d3.selectAll('.utilHootHead').style('font-weight','normal');
+            d3.select(d).style('font-weight','bold');
         };
 
         _createTabs = function(jobsBG)
         {
             if(iD.data.hootManageTabs) {
-                var defaultTab = null;
+                var settingsSidebar = jobsBG.append('div')
+            		.classed('pad2 pin-bottom pin-top fill-light keyline-right',true)
+            		.attr('id','settingsSidebar');
+                
+                var settingsHeader = settingsSidebar.append('div')
+	            	.classed('keyline-bottom block strong center margin2 pad1y utilHootHead point',true)
+	            	.style('height','60px')
+	            	.append('label').text('Settings').attr('id','settingsHeader');
+            	
+            	var defaultTab = null;
                 _.each(iD.data.hootManageTabs, function(tabMeta){
                     var tabName = tabMeta.name;
                     var tabId = tabMeta.id;
@@ -48,26 +54,28 @@ Hoot.view.utilities = function (context){
                     if(tabMeta.pady !== undefined && tabMeta.pady === 'false'){
                         pady = '';
                     }
-
+                    
                     var tabBody = jobsBG.append('div')
-                    .classed('top2 pad2 round-top keyline-bottom fill-light pin-left pin-top utilHoot', true)
+                    .classed('pad2 round-top fill-light pin-left pin-top utilHoot', true)
                     .attr('id', tabId);
 
-
-                    var bodyStyle = 'block strong center col1 margin' + tabOrder + ' pin-top ' + pady + 
-                    ' keyline-top keyline-right keyline-left keyline-bottom utilHootHead point';
-
-                    var tabHeader = tabBody.append('div')
-                    .classed(bodyStyle, true)
-                    .style('top', '-44px')
-                    .attr('data', '#' + tabId)
-                    .text(tabName)
-                    .on('click', function () {
-                        _toggleOpts(this);
-                    });
+                    var bodyStyle = 'block strong center margin2 pad1y  utilHootHead';
+                    
+                    var tabHeader = settingsSidebar.append('div')
+	                    .classed(bodyStyle, true)
+	                    .attr('data', '#' + tabId)
+	                    .on('click', function () {
+	                        _toggleOpts(this);
+	                    });
+                    
+                    var tabLabel = tabHeader.append('label')
+                    	.text(tabName)
+                    	.classed('point',true)
+                    	.style('font-style','normal');
                     
                     var containerForm = tabBody.append('form');
-                    containerForm.classed('center margin2 col7 round keyline-all', true);
+                    containerForm.classed('center round', true)
+                    .style('margin-top','60px');
 
                     var callbackContext = context.hoot();
 
@@ -99,28 +107,12 @@ Hoot.view.utilities = function (context){
             .insert('div', ':first-child')
             .attr('id', 'header')
             .classed('contain pad2x dark fill-dark', true);
-        /*header.append('div')
-            .attr('href', '/')
-            .classed('inline dark strong _logo pad2x pad2y keyline-right keyline-left', true)
-            .style('color', '#fff')
-           .html('Hootenanny<span class=\'logo\'> | </span>InnoVision');*/
-        /*header.append('nav')
-            .classed('contain inline fr', true)
-            .append('a')
-            .attr('href', '#jobs')
-            .classed('point center pad2 block keyline-left keyline-right _icon dark strong small plus', true)
-            .text('New Job')
-            .on('click', function () {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-                context.hoot().reset();
-            });*/
         header.append('nav')
             .classed('contain inline fr', true)
             .append('div')
             .attr('href', '#jobs')
             .classed('point pad2 block keyline-left _icon dark strong small sprocket', true)
-            .text('Manage')
+            .text('Settings')
             .on('click', function () {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
@@ -139,12 +131,10 @@ Hoot.view.utilities = function (context){
         var jobsBG = d3.select('body')
             .append('div')
             .attr('id', 'jobsBG')
-            .classed('col12 fill-white pin-bottom pin-top hidden', true)
+            .classed('col12 pin-bottom pin-top hidden', true)
             .style('position', 'absolute')
             .style('top', '60px')
             .style('z-index',999);
-        jobsBG.append('div')
-            .classed('row2 fill-light round-top keyline-all', true);
 
         ////////////VERSION///////////////////
 
