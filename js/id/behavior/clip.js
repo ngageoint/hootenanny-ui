@@ -7,7 +7,7 @@ iD.behavior.Clip = function(context,svg,type) {
      nodeId=0,
      rect,anchorPt,
      lastPoint=null,firstPoint=null;
- 
+	 
  function ret(element) {
      d3.event.preventDefault();
      element.on('dblclick',undefined);
@@ -90,51 +90,20 @@ iD.behavior.Clip = function(context,svg,type) {
  	if(nodeId==0){
  		anchorPt = c;
  		rect.attr("x",c[0]).attr("y",c[1]);
+ 		nodeId=1;
  	}
  	else{
  		var bboxPt1 = context.projection.invert([parseFloat(rect.attr('x')),parseFloat(rect.attr('y'))]).toString();
-    				var bboxPt2 = context.projection.invert([parseFloat(rect.attr('x'))+parseFloat(rect.attr('width')),parseFloat(rect.attr('y'))+parseFloat(rect.attr('height'))]).toString();
+ 		var bboxPt2 = context.projection.invert([parseFloat(rect.attr('x'))+parseFloat(rect.attr('width')),parseFloat(rect.attr('y'))+parseFloat(rect.attr('height'))]).toString();
     				
- 		/*var clip2bbox = window.confirm("Do you want to clip to this bounding box?");
- 		if(clip2bbox){
-    		if(!_.isEmpty(hoot.model.layers.getLayers())){
-        		//var params = [];
-    			//Provide input ID(s) of dataset(s)
-    			_.each(hoot.model.layers.getLayers(),function(d){
-    				var param = {};
-    				param.INPUT_NAME = d.name;
-    				
-    				//create name, ensuring it is unique
-    				var uniquename = false;
-    				var name = d.name + '_clip';
-    				var i = 1;
-    				while (uniquename==false){
-    					if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
-    						name = d.name + '_clip_' + i.toString();
-    						i++;
-    					} else {
-    						uniquename = true;
-    					}
-    				}
-    				param.OUTPUT_NAME = name;
-    				
-    				var bboxPt1 = context.projection.invert([parseFloat(rect.attr('x')),parseFloat(rect.attr('y'))]).toString();
-    				var bboxPt2 = context.projection.invert([parseFloat(rect.attr('x'))+parseFloat(rect.attr('width')),parseFloat(rect.attr('y'))+parseFloat(rect.attr('height'))]).toString();
-    				param.BBOX = bboxPt1.concat(',',bboxPt2);
-          			
-    				Hoot.model.REST('clipDataset', param, function (a,outputname) {
-                    	if(a.status=='complete'){iD.ui.Alert("Success: " + outputname + " has been created!",'success');}
-                    });
-    			});
-    		}
- 		}*/
  		ret(d3.select("#surface"));
  		if(!_.isEmpty(hoot.model.layers.getLayers())){
 			hoot.control.utilities.dataset.clipDatasetContainer('boundingBox',bboxPt1.concat(',',bboxPt2));                    			
+		} else {
+			iD.ui.Alert("Add data to map before clipping.","notice");
 		}
+ 		nodeId=0;
  	}
- 	    	
-	nodeId++;
  }
 
 
@@ -160,8 +129,8 @@ iD.behavior.Clip = function(context,svg,type) {
      return cliparea;
  }
 
- cliparea.off = function(selection) {
-     selection
+ cliparea.off = function(selection) {	 
+	 selection
          .on('mousedown.cliparea', null)
          .on('mousemove.cliparea', null);
 

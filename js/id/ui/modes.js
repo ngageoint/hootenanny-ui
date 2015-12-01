@@ -3,6 +3,11 @@ iD.ui.Modes = function(context) {
         iD.modes.AddPoint(context),
         iD.modes.AddLine(context),
         iD.modes.AddArea(context)];
+    
+    var toolModes = [
+        iD.modes.MeasureAddLine(context),
+        iD.modes.MeasureAddArea(context),
+        iD.modes.ClipBoundingBox(context)];
 
     function editable() {
         return context.editable() && context.mode().id !== 'save';
@@ -75,6 +80,12 @@ iD.ui.Modes = function(context) {
             	} 
             });
         });
+        
+        toolModes.forEach(function(m){
+        	keybinding.on(m.key, function() {context.enter(m);});
+        });
+        
+        keybinding.on('9',function(){hoot.control.utilities.dataset.clipDatasetContainer('visualExtent');});
         
         d3.select(document)
             .call(keybinding);

@@ -12,8 +12,7 @@ iD.ui.Tools = function(context) {
     	    ]},
     	    {title:'Clip Tools',icon:'scissors',group:'clip',items:[
     	    	{title:'Clip to Visual Extent',group:'clip',type:'area',icon:'scissors',action:'clipVisualExtent'},
-    	    	{title:'Clip to Bounding Box',group:'clip',type:'area',icon:'scissors',mode:iD.modes.ClipBoundingBox(context)},
-    	    //	{title:'Clip to Custom Area',group:'clip',type:'area',icon:'add-area',mode:iD.modes.ClipCustomArea(context)}
+    	    	{title:'Clip to Bounding Box',group:'clip',type:'area',icon:'scissors',mode:iD.modes.ClipBoundingBox(context)}
     	    ]},
     	  ];
         
@@ -52,6 +51,8 @@ iD.ui.Tools = function(context) {
                     		//Call clip map
                     		if(!_.isEmpty(hoot.model.layers.getLayers())){
                     			hoot.control.utilities.dataset.clipDatasetContainer('visualExtent');                    			
+                    		} else {
+                    			iD.ui.Alert("Add data to map before clipping.","notice");
                     		}
                     	}
                     	d3.select('.tools-menu').remove();
