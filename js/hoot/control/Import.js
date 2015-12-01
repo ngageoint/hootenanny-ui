@@ -197,7 +197,8 @@ Hoot.control.import = function (context,selection) {
                             id: d.id,
                             type: 'tms',
                             description: d.name,
-                            template: 'http://192.168.33.11:8000/?z={zoom}&x={x}&y={y}&color='
+                            template: window.location.protocol + '//' + window.location.hostname + ':'
+                                + '8000/?z={zoom}&x={x}&y={y}&color='
                                 + encodeURIComponent(context.hoot().palette(d.color))
                                 + '&name=' + d.name,
                             scaleExtent: [0,18],
