@@ -5,16 +5,16 @@ Hoot.view.utilities.translation = function(context) {
     hoot_view_utilities_translation.createContainer = function(form){
 
         var fieldset = form.append('div')
-            .classed('pad1y pad2x keyline-bottom col12', true)
+            .classed('pad1y col12', true)
             .append('a')
             .attr('href', '#')
             .text('Add New Translation')
-            .classed('dark fr button loud pad2x big _icon plus', true)
+            .classed('dark fl button loud pad2x big _icon plus', true)
             .on('click', function () {
                 context.hoot().control.utilities.translation.newTranslationPopup();
             });
         hoot_view_utilities_translation.datasetcontainer = form.append('div')
-            .classed('col12 fill-white small  row10 overflow', true)
+            .classed('col12 fill-white small  row10 overflow keyline-all', true)
             .call(hoot_view_utilities_translation.populateTranslations);
     };
 

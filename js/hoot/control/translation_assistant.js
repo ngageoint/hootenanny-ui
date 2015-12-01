@@ -64,7 +64,7 @@ Hoot.control.TranslationAssistant = function () {
 
     var openfile = sidebar.append('div');
     openfile.append('a')
-        .classed('space-bottom1 button dark animate strong block _icon big plus wd49 mr1 pad1 js-toggle', true)
+        .classed('space-bottom1 button dark animate strong block _icon big plus wd48 mr1 ml1 pad1 js-toggle', true)
         .attr('href','#')
         .text('Upload file(s)')
         .on('click', function() {
@@ -80,7 +80,7 @@ Hoot.control.TranslationAssistant = function () {
         });
 
     openfile.append('a')
-        .classed('space-bottom1 button dark animate strong block _icon big plus wd49 ml1 pad1 js-toggle', true)
+        .classed('space-bottom1 button dark animate strong block _icon big plus wd48 ml1 pad1 js-toggle', true)
         .attr('href','#')
         .text('Upload folder')
         .on('click', function() {
@@ -371,7 +371,7 @@ Hoot.control.TranslationAssistant = function () {
                 ;
             var ignore = navigation.selectAll('a.ignore').data([attributeValues]).enter()
                 .append('a')
-                .classed('button strong bigger pad2 wd49 mr1 whitetext ignore', true)
+                .classed('button strong bigger pad2 wd48 mr1 ml1 ml1 whitetext ignore', true)
                 .attr('href', '#')
                 .text('Ignore');
             ignore.on('click', function(d) {
@@ -379,7 +379,7 @@ Hoot.control.TranslationAssistant = function () {
                 });
             var next = navigation.selectAll('a.next').data([attributeValues]).enter()
                 .append('a')
-                .classed('button strong bigger pad2 wd49 ml1 next-attribute disabled next', true)
+                .classed('button strong bigger pad2 wd48 ml1 next-attribute disabled next', true)
                 .attr('href', '#')
                 .text('Next');
             next.on('click', function(d) {
@@ -903,6 +903,6 @@ Hoot.control.TranslationAssistant = function () {
 
 Hoot.control.CreateTranslationAssistantContainer = function (form) {
     form.classed('center margin2 col7 round keyline-all', false);
-    form.classed('margin2 col5 pad2 round keyline-all overflow row90pctmax', true)
+    form.classed('round keyline-all overflow row90pctmax', true)
             .attr('id', 'translationAssistant');
 };

@@ -1,26 +1,26 @@
 [
+    {
+    "name":"Datasets",
+    "id":"utilDataset",
+    "order":"2",
+    "contentbodyid":"datasettable",
+    "callback":"view.utilities.dataset.createContent",
+    "default":"true"
+  },
   {
     "name":"Translation Assistant",
     "id":"utilTranslationAssistant",
-    "order":"2",
+    "order":"3",
     "contentbodyid":"translationAssistant",
     "callbackcontext":"window",
     "callback":"Hoot.control.CreateTranslationAssistantContainer"
   },
   {
-    "name":"Translation",
+    "name":"Translations",
     "id":"utiltranslation",
-    "order":"3",
+    "order":"4",
     "contentbodyid":"translationContent",
     "callback":"view.utilities.translation.createContainer"
-  },
-  {
-    "name":"Datasets",
-    "id":"utilDataset",
-    "order":"4",
-    "contentbodyid":"datasettable",
-    "callback":"view.utilities.dataset.createContent",
-    "default":"true"
   },
   {
     "name":"WFS Exports",
@@ -49,5 +49,12 @@
     "order":"8",
     "contentbodyid":"reportsContent",
     "callback":"view.utilities.reports.createContent"
+  },
+  {
+    "name":"About",
+    "id":"utilAbout",
+    "order":"9",
+    "contentbodyid":"aboutContent",
+    "callback":"view.utilities.about.createContent"
   }
 ]

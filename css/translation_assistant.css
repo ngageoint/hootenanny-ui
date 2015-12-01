@@ -3,6 +3,7 @@
 .ml1        { margin-left: 1%; }
 .mr1        { margin-right: 1%; }
 .wd49       { display: inline-block; width: 49%; }
+.wd48       { display: inline-block; width: 48%; }
 
 .button.fill-transp {
   background-color:transparent;

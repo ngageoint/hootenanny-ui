@@ -404,5 +404,15 @@ span.logo{
 	display: inline-block; */
 }
 
+
 .clipInfo {font-weight:bold;}
 .invalidName {border:1px solid red !important;}
+
+/*** SETTINGS ***/
+#settingsSidebar{width:220px;}
+ #settingsHeader{font-weight:bolder;font-size:large;}
+.utilHoot{left:220px;} 
+
+.logHeader{font-weight:bolder;font-size:large;float:left;}
+
+.aboutHeader{float:left;font-weight:bold;width:100%;text-align:left;}
