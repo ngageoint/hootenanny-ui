@@ -694,6 +694,12 @@ Hoot.control.utilities.dataset = function(context) {
 
                                     if(selType == 'FILE'){
                                         var fName = curFileName.substring(0, curFileName.length - 4);
+                                        // I guess only way to deal with shp.xml extension
+                                        if(curFileName.toLowerCase().indexOf('.shp.xml') > -1){
+                                            fName = curFileName.substring(0, curFileName.length - 8);
+                                        }
+
+                                        
                                         var fObj = _.find(filesList, function(f){
                                             return f.name == fName;
                                         });
@@ -1360,7 +1366,7 @@ Hoot.control.utilities.dataset = function(context) {
                 }
         	} 
         }
-            
+    
         function addRow(_table){
         	if(rowNum>10){
         		iD.ui.Alert("Please limit bulk import to 10 datasets or less.",'warning')
@@ -1475,6 +1481,11 @@ Hoot.control.utilities.dataset = function(context) {
 	                                
 	                                if(selType == 'FILE'){
 	                                    var fName = curFileName.substring(0, curFileName.length - 4);
+                                        // I guess only way to deal with shp.xml extension
+                                        if(curFileName.toLowerCase().indexOf('.shp.xml') > -1){
+                                            fName = curFileName.substring(0, curFileName.length - 8);
+                                        }
+
 	                                    var fObj = _.find(filesList, function(f){
 	                                        return f.name == fName;
 	                                    });
