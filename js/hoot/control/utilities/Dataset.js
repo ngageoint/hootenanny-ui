@@ -1731,7 +1731,11 @@ Hoot.control.utilities.dataset = function(context) {
 	        .append('div')
 	        .classed('big pad1y keyline-bottom space-bottom2', true)
 	        .append('h4')
-	        .text('Clip Data Options')
+	        .text(function(){
+	        	if(clipType=='visualExtent'){return 'Clip Data to Visual Extent'}
+	        	else if(clipType=='boundingBox'){return 'Clip Data to Bounding Box'}
+	        	else{return 'Clip Data'}
+	        })
 	        .append('div')
 	        .classed('fr _icon x point', true)
 	        .on('click', function () {

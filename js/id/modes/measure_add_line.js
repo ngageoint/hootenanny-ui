@@ -1,7 +1,7 @@
 iD.modes.MeasureAddLine = function(context) {
     var mode = {
         id: 'measure-add-line',
-        key: 'n'
+        key: '6'
     };
 
     var svg = d3.select('.measure-layer').select('svg');
@@ -19,6 +19,7 @@ iD.modes.MeasureAddLine = function(context) {
     }
     
     mode.enter = function() {
+    	d3.select('.measure-layer').selectAll('g').remove();
         context.install(behavior);
     };
 

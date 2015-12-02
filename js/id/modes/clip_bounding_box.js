@@ -1,6 +1,7 @@
 iD.modes.ClipBoundingBox = function(context) {
     var mode = {
-        id: 'clip-bounding-box'
+        id: 'clip-bounding-box',
+        key: '8'
     };
 
    d3.select('.measure-layer').selectAll('g').remove();
@@ -17,6 +18,7 @@ iD.modes.ClipBoundingBox = function(context) {
     }
     
     mode.enter = function() {
+    	d3.select('.measure-layer').selectAll('g').remove();
         context.install(behavior);
     };
 
