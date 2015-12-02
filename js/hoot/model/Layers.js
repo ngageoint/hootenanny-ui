@@ -15,7 +15,7 @@ Hoot.model.layers = function (context)
         if(!ar.length){return null;}
         return ar[0].id;
     };
-    
+
     model_layers.getNameBymapId = function (id) {
         // Replacing tis code since lodash version used by iD does not have _.object
        /* var currAvailLayers = model_layers.getAvailLayers();
@@ -47,45 +47,45 @@ Hoot.model.layers = function (context)
                 return callback([]);
             }
             availLayers = a.layers;
-            
+
             //get path names
             /*_.each(a.layers,function(lyr){
             	if(lyr.name.indexOf('|')==-1){lyr.path='root'}
             	else{lyr.path = lyr.name.slice(0,lyr.name.lastIndexOf('|'));}
             });*/
-                    	
+
             if (callback) {
                 callback(availLayers);
             }
         });
     };
-        
+
     model_layers.getAvailLayers = function () {
     	return availLayers;
     };
-    
+
     model_layers.setAvailLayers = function (d) {
     	availLayers = d;
         return availLayers;
     };
-    
+
     model_layers.setLayerLinks = function(callback) {
     	var links = context.hoot().model.folders.getAvailLinks();
-    	
+
     	var layerList = _.each(_.map(model_layers.getAvailLayers(), _.clone) , function(element, index) {
     		_.extend(element, {type:'dataset'});
     		var match = _.find(this,function(e){return e.mapId===element.id});
     		if(match){_.extend(element,{folderId:match.folderId});}
     		else{_.extend(element,{folderId:0});}
-    	},links);  
-    	
+    	},links);
+
     	availLayers = layerList;
-    	
+
     	if (callback){
     		callback(availLayers);
     	}
     }
-    
+
     model_layers.getLayers = function (opt) {
         if (opt) return layers[opt];
         return layers;
@@ -144,7 +144,7 @@ Hoot.model.layers = function (context)
     model_layers.addLayer2Sidebar = function (options) {
         var layerName = options.name;
         var modifiedId = options.mapId.toString();
-        var parent = d3.select('.layer-list-hoot');
+        var parent = d3.select('.layer-list-hoot').classed('hidden', false);
         var layerLinks = parent.insert('li', ':first-child')
             .attr('class', 'layers active hootLayers layerControl_' + modifiedId);
         var btn = layerLinks.append('button')
@@ -200,7 +200,7 @@ Hoot.model.layers = function (context)
         context.connection().loadData(key);
 
         model_layers.addLayer2Sidebar(key);
-        
+
         if (callback) callback();
     }
 
@@ -227,46 +227,26 @@ Hoot.model.layers = function (context)
         });
 
     };
-    
+
     model_layers.removeLayer = function (name) {
         //var mapid = model_layers.getLayers()[name].mapId;
         var mapid = model_layers.getLayers(name).mapId;
         delete layers[name];
 
-
-        var lyrList = d3.selectAll('.layer-list');
-        if(lyrList && lyrList.length > 0){
-
-            for(var i=0; i<lyrList.length; i++){
-                for(var j=0; j<lyrList[i].length; j++){
-                    var dataArray = d3.select(d3.selectAll('.layer-list')[i][j]).selectAll('li.layer').data();
-                    if(dataArray){
-
-                        _.each(dataArray, function(d){
-                            if(typeof d === 'object'){
-                                if(d.name()==name){
-                                    context.background().hideOverlayLayer(d);
-                                }
-                            }
-                            
-                        });
-                    }
-                }
-
-            }
-        }
-
         context.connection().loadedDataRemove(mapid.toString());
         d3.select('.layerControl_' + mapid.toString()).remove();
+        d3.select('.layer-list-hoot').classed('hidden', function() {
+            return d3.select(this).selectAll('li').size() == 0;
+        });
         context.flush();
     };
-    
+
     model_layers.deleteLayer = function(dataset,callback){
     	if(!dataset.name) {
     		if(callback){callback(false);}
     		return false;
     	}
-    	
+
 	    d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + dataset.name)
     	.header('Content-Type', 'text/plain')
     	.post("", function (error, data) {
@@ -279,7 +259,7 @@ Hoot.model.layers = function (context)
     				if (result.status !== 'running') {
     					Hoot.model.REST.WarningHandler(result);
     					clearInterval(statusTimer);
-    					
+
     					//update link
     					var link={};
     					link.folderId = 0;
@@ -293,7 +273,7 @@ Hoot.model.layers = function (context)
     		}, iD.data.hootConfig.JobStatusQueryInterval);
     	});
     };
-    
+
     model_layers.changeVisibility = function (name) {
         var layer = model_layers
             .getLayers(name);
@@ -400,9 +380,9 @@ Hoot.model.layers = function (context)
         });
         return merged;
     };
-    
+
     model_layers.updateLayerName = function(data,callback){
-    	
+
     	Hoot.model.REST('Modify',data,function(resp){
     		//if(resp.success == true){
     			if(callback){callback(resp.success);}
@@ -411,16 +391,16 @@ Hoot.model.layers = function (context)
     	});
     	//return true;
     };
-    
+
     model_layers.getSelectedLayers = function() {
     	return selectedLayers;
     };
-    
+
     model_layers.setSelectedLayers = function(d) {
     	selectedLayers = d;
     	return selectedLayers;
     };
-    
-    
+
+
     return model_layers;
 }

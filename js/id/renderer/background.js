@@ -66,69 +66,6 @@ iD.Background = function(context) {
 
     //TODO: Document why this was modified for Hoot
     function background(selection) {
-        if (typeof context.hoot === 'function') {
-            var layers = context.hoot().model.layers.getLayers();
-
-            var idx = -1;
-            for(var i=0; i<backgroundSources.length; i++){
-                var bkgSrc = backgroundSources[i];
-                if(bkgSrc.subtype === 'density_raster'){
-                    var lyr = _.find(layers, function(d){
-                        return d.name === bkgSrc.name();
-                    });
-                    if(!lyr){
-                        idx = i;
-                        break;
-                    }
-
-                }
-            }
-
-
-            while(idx > -1){
-                backgroundSources.splice(idx, 1);
-                idx = -1;
-                for(var i=0; i<backgroundSources.length; i++){
-                    var bkgSrc = backgroundSources[i];
-                    if(bkgSrc.subtype === 'density_raster'){
-                        var lyr = _.find(layers, function(d){
-                            return d.name === bkgSrc.name();
-                        });
-                        if(!lyr){
-                            idx = i;
-                            break;
-                        }
-
-                    }
-                }
-
-            }
-
-            for(var key in layers){
-                var lyrName = layers[key].name;
-
-                var lyr = _.find(backgroundSources, function(d){
-                    return d.name() === lyrName;
-                });
-
-                if(!lyr){
-                    var newOverlayer = {};
-                    newOverlayer.name = lyrName;
-                    newOverlayer.type = 'tms';
-                    newOverlayer.descriptions = lyrName;
-                    newOverlayer.template = location.origin +  '/static/' + lyrName + '/{zoom}/{x}/{y}.png';
-                    newOverlayer.scaleExtent = [0,20];
-                    newOverlayer.overlay = true;
-                    newOverlayer.projection = 'mercator';
-                    newOverlayer.subtype = 'density_raster';
-
-                    var newSource = iD.BackgroundSource(newOverlayer);
-                    backgroundSources.push(newSource);
-                }
-
-
-            }
-        }
         var base = selection.selectAll('.background-layer')
             .data([0]);
 
@@ -231,6 +168,18 @@ iD.Background = function(context) {
         background.toggleOverlayLayer(source);
     };
 
+    background.updateSource = function(d) {
+        var source = findSource(d.id);
+        for (var i = backgroundSources.length-1; i >= 0; i--) {
+            var layer = backgroundSources[i];
+            if (layer === source) {
+                backgroundSources[i] = iD.BackgroundSource(d);
+                background.addOrUpdateOverlayLayer(backgroundSources[i]);
+                break;
+            }
+        }
+    };
+
     //TODO: Document why this was added for Hoot
     //FIXME: Possibly consolidate with removeBackgroundResource above
     background.removeSource = function(d) {
@@ -239,9 +188,10 @@ iD.Background = function(context) {
             var layer = backgroundSources[i];
             if (layer === source) {
                 backgroundSources.splice(i, 1);
+                background.toggleOverlayLayer(source);
+                break;
             }
         }
-        background.toggleOverlayLayer(source);
     };
 
     background.dimensions = function(_) {
@@ -424,9 +374,6 @@ iD.Background = function(context) {
             layer = overlayLayers[i];
             if (d.id === layer.source().id) {
                 overlayLayers.splice(i, 1);
-//                dispatch.change();
-//                updateImagery();
-//                return;
             }
         }
 
@@ -481,36 +428,36 @@ iD.Background = function(context) {
 
         backgroundSources.unshift(iD.BackgroundSource.None());
 
-    var q = iD.util.stringQs(location.hash.substring(1)),
-        chosen = q.background || q.layer;
+        var q = iD.util.stringQs(location.hash.substring(1)),
+            chosen = q.background || q.layer;
 
-    if (chosen && chosen.indexOf('custom:') === 0) {
-        background.baseLayerSource(iD.BackgroundSource.Custom(chosen.replace(/^custom:/, '')));
-    } else {
-            background.baseLayerSource(findSource(chosen) || findSource(iD.data.hootConfig.defaultBaseMap) || backgroundSources[1]);
-    }
+        if (chosen && chosen.indexOf('custom:') === 0) {
+            background.baseLayerSource(iD.BackgroundSource.Custom(chosen.replace(/^custom:/, '')));
+        } else {
+                background.baseLayerSource(findSource(chosen) || findSource(iD.data.hootConfig.defaultBaseMap) || backgroundSources[1]);
+        }
 
-    var locator = _.find(backgroundSources, function(d) {
-        return d.overlay && d.default;
-    });
-
-    if (locator) {
-        background.toggleOverlayLayer(locator);
-    }
-
-    var overlays = (q.overlays || '').split(',');
-    overlays.forEach(function(overlay) {
-        overlay = findSource(overlay);
-        if (overlay) background.toggleOverlayLayer(overlay);
-    });
-
-    var gpx = q.gpx;
-    if (gpx) {
-        d3.text(gpx, function(err, gpxTxt) {
-            gpxLayer.geojson(toGeoJSON.gpx(toDom(gpxTxt)));
-            dispatch.change();
+        var locator = _.find(backgroundSources, function(d) {
+            return d.overlay && d.default;
         });
-    }
+
+        if (locator) {
+            background.toggleOverlayLayer(locator);
+        }
+
+        var overlays = (q.overlays || '').split(',');
+        overlays.forEach(function(overlay) {
+            overlay = findSource(overlay);
+            if (overlay) background.toggleOverlayLayer(overlay);
+        });
+
+        var gpx = q.gpx;
+        if (gpx) {
+            d3.text(gpx, function(err, gpxTxt) {
+                gpxLayer.geojson(toGeoJSON.gpx(toDom(gpxTxt)));
+                dispatch.change();
+            });
+        }
     };
 
     return d3.rebind(background, dispatch, 'on');

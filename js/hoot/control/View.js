@@ -76,7 +76,7 @@ Hoot.control.view = function (container, context) {
         			paletteDiv.style('display','none');
             	}else{
             		paletteDiv.style('display','block');
-            	}	
+            	}
         	}
             //context.hoot().toggleColor(d.name);
         });
@@ -122,7 +122,7 @@ Hoot.control.view = function (container, context) {
 
 
                     form.remove();
-                    event.layerRemove(a.name, isPrimary);
+                    event.layerRemove(a.name, isPrimary, a.mapId);
                     // this removes the tags field
                     d3.select('.hootTags').remove();
 

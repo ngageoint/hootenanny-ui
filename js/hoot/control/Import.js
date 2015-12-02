@@ -12,7 +12,7 @@ Hoot.control.import = function (context,selection) {
     	}
     }
 
-    
+
     ETL.render = function (colors, isPrimary) {
     	context.map().on("maxImportZoomChanged", function(){
             var imp = d3.selectAll('.hootImport')[0];
@@ -77,7 +77,7 @@ Hoot.control.import = function (context,selection) {
             .classed('overflow',true)
             .style({'height':'150px','margin':'0 0 15px'})
             .select(ETL.renderTree);
-        
+
         fieldset
             .append('div')
             .classed('keyline-all form-field palette clearfix round', true)
@@ -131,20 +131,20 @@ Hoot.control.import = function (context,selection) {
             	iD.ui.Alert('Please wait utill loading first layer is done!','notice');
                 return;
             }
-            
+
             d3.event.stopPropagation();
             d3.event.preventDefault();
-            
+
             var self = d3.select(a);
             var color = self.select('.palette .active')
                 .attr('data-color');
-            
+
          // make sure something has been selected
             if(self.select('.sel').empty()){
             	iD.ui.Alert('Please select a dataset to add to the map!','warning');
                 return;
             }
-            
+
             var name,
             	lyrid;
             try{
@@ -167,7 +167,7 @@ Hoot.control.import = function (context,selection) {
                     self
                     .attr('class', function () {
                         if(color == 'osm'){
-                            return 'round space-bottom1 loadingLayer _osm' 
+                            return 'round space-bottom1 loadingLayer _osm'
                         }
                         return 'round space-bottom1 loadingLayer ' + color;
                     })
@@ -189,7 +189,39 @@ Hoot.control.import = function (context,selection) {
                         }
 
                     });
+                    context.background().addSource(getNodeMapnikSource(key));
                 }
+                function getNodeMapnikSource(d) {
+                    var source = {
+                            name: d.name,
+                            id: d.id,
+                            type: 'tms',
+                            description: d.name,
+                            template: window.location.protocol + '//' + window.location.hostname + ':'
+                                + '8000/?z={zoom}&x={x}&y={y}&color='
+                                + encodeURIComponent(context.hoot().palette(d.color))
+                                + '&name=' + d.name,
+                            scaleExtent: [0,18],
+                            overlay: true,
+                            projection: 'mercator',
+                            subtype: 'density_raster'
+                        };
+                    return source;
+                }
+                context.hoot().control.view.on('layerColor.background', function(name, color, mapid) {
+                    var updateSource = getNodeMapnikSource({
+                        name: name,
+                        color: color,
+                        id: mapid
+                    });
+                    context.background().updateSource(updateSource)
+                });
+                context.hoot().control.view.on('layerRemove.background', function (layerName, isPrimary, mapId) {
+                    context.background().removeSource(getNodeMapnikSource({
+                        name: layerName,
+                        id: mapId
+                    }));
+                });
             });
 
         };
