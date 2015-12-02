@@ -252,14 +252,7 @@ Hoot.control.utilities.folder = function(context) {
 
 	      if(container.attr('id')=='datasettable'){
 	    	  container.selectAll('rect').on("contextmenu",function(d,i){
-	    		  if(!d3.event.ctrlKey || container.attr('id')==null){
-	    	    	  _.each(nodes,function(n){n.selected=false;});  
-	    	    	  if(d.type=='dataset'){d.selected=true;}
-	    	      } else if(d3.event.ctrlKey && container.attr('id')=='datasettable' && d.type=='dataset') {
-	    	    	  d.selected = !d.selected;
-	    	      }
-	    		  
-	    		  update(d);
+	    		  //on right click capture rect clicked as well as all other selected items
 	    		  
 	    		  var items = [];
 	              if(!d.type){
@@ -268,22 +261,27 @@ Hoot.control.utilities.folder = function(context) {
 		              return;
 	              }
 	              else if(d.type.toLowerCase()=='dataset'){
-	            	  d.selected=true;
-	            	  d3.select(this).classed('sel',true);
-	            	  if(selectedLayerIDs.indexOf(d.id) == -1){selectedLayerIDs.push(d.id);}
-	            	  context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
-	            	  
-	            	  
-	            	  
 	            	  //http://jsfiddle.net/1mo3vmja/2/
-	            	  items = [
-		        	      {title:'Export',icon:'export',click:'exportDataset'},
-		        	      {title:'Delete (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
-		        	      {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'},
-		        	      {title:'Rename ' + d.name,icon:'info',click:'renameDataset'},
-		        	      {title:'Prepare for Validation',icon:'sprocket',click:'prepValidation'},
-		        	      {title:'Filter non-HGIS POIs',icon:'sprocket',click:'filter'}
-		        	  ]; 
+	            	  if(hoot.model.layers.getSelectedLayers().length==1){
+	            		  items = [
+		     		        	      {title:'Export',icon:'export',click:'exportDataset'},
+		     		        	      {title:'Delete (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
+		     		        	      {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'},
+		     		        	      {title:'Rename ' + d.name,icon:'info',click:'renameDataset'},
+		     		        	      {title:'Prepare for Validation',icon:'sprocket',click:'prepValidation'},
+		     		        	      {title:'Filter non-HGIS POIs',icon:'sprocket',click:'filter'}
+		     		        	  ]; 
+	            	  }
+	            	  else if(hoot.model.layers.getSelectedLayers().length>1){
+	            		  items = [
+	     		        	      {title:'Delete (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
+	     		        	      {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'}
+	     		        	  ]; 
+	            	  } else {
+	            		  d3.select('.context-menu').style('display', 'none');	              
+			              d3.event.preventDefault();
+			              return;
+	            	  }
             	  } else if (d.type.toLowerCase()=='folder') {
 	        		  items = [
 	 		        	      {title:'Delete',icon:'trash',click:'deleteFolder'},
@@ -354,16 +352,18 @@ Hoot.control.utilities.folder = function(context) {
 	    function click(d) {
 	      var nodes = tree.nodes(root);
 	      
+	      var selected = d.selected;
+	      
 	      if(!d3.event.ctrlKey || container.attr('id')==null){
 	    	  _.each(nodes,function(n){n.selected=false;});  
-	    	  if(d.type=='dataset'){d.selected=true;}
+	    	  if(d.type=='dataset'){d.selected=!selected;}
 	      } else if(d3.event.ctrlKey && container.attr('id')=='datasettable' && d.type=='dataset') {
 	    	  d.selected = !d.selected;
 	      }
 	    	
 	      if(d.type=='folder'){selectedLayerIDs = context.hoot().model.layers.setSelectedLayers([]);}
 	      
-	      d3.select(this).classed("selected",true);
+	      d3.select(this).classed("selected",d.selected);
 	      var updateOpenFolders = !d3.select("#datasettable").selectAll('.selected').empty();
 	      
 	      
