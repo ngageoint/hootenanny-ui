@@ -76,7 +76,7 @@ iD.Connection = function(context) {
                 .header('Content-Type', 'text/plain')
                 .post(JSON.stringify(data), function (error, resp) {
                     if (error) {
-                    	iD.ui.Alert(error.responseText,'error');
+                    	iD.ui.Alert(error.responseText,'error');                       
                         return ;
                     }
                     callback(resp);
@@ -90,6 +90,7 @@ iD.Connection = function(context) {
             if (error) {
                 window.console.log(error);
                 iD.ui.Alert(error.responseText,'error');
+                context.hoot().reset();
                 return callback(null);
 
             }
