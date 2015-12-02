@@ -254,15 +254,6 @@ Hoot.control.utilities.folder = function(context) {
 	    	  container.selectAll('rect').on("contextmenu",function(d,i){
 	    		  //on right click capture rect clicked as well as all other selected items
 	    		  
-	    		  /*if(!d3.event.ctrlKey || container.attr('id')==null){
-	    	    	  _.each(nodes,function(n){n.selected=false;});  
-	    	    	  if(d.type=='dataset'){d.selected=true;}
-	    	      } else if(d3.event.ctrlKey && container.attr('id')=='datasettable' && d.type=='dataset') {
-	    	    	  d.selected = !d.selected;
-	    	      }*/
-	    		  
-	    		  //update(d);
-	    		  
 	    		  var items = [];
 	              if(!d.type){
 	            	  d3.select('.context-menu').style('display', 'none');	              
@@ -270,11 +261,6 @@ Hoot.control.utilities.folder = function(context) {
 		              return;
 	              }
 	              else if(d.type.toLowerCase()=='dataset'){
-	            	 /* d.selected=true;
-	            	  d3.select(this).classed('sel',true);
-	            	  if(selectedLayerIDs.indexOf(d.id) == -1){selectedLayerIDs.push(d.id);}
-	            	  context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);*/
-	            	  
 	            	  //http://jsfiddle.net/1mo3vmja/2/
 	            	  if(hoot.model.layers.getSelectedLayers().length==1){
 	            		  items = [
@@ -366,16 +352,18 @@ Hoot.control.utilities.folder = function(context) {
 	    function click(d) {
 	      var nodes = tree.nodes(root);
 	      
+	      var selected = d.selected;
+	      
 	      if(!d3.event.ctrlKey || container.attr('id')==null){
 	    	  _.each(nodes,function(n){n.selected=false;});  
-	    	  if(d.type=='dataset'){d.selected=true;}
+	    	  if(d.type=='dataset'){d.selected=!selected;}
 	      } else if(d3.event.ctrlKey && container.attr('id')=='datasettable' && d.type=='dataset') {
 	    	  d.selected = !d.selected;
 	      }
 	    	
 	      if(d.type=='folder'){selectedLayerIDs = context.hoot().model.layers.setSelectedLayers([]);}
 	      
-	      d3.select(this).classed("selected",true);
+	      d3.select(this).classed("selected",d.selected);
 	      var updateOpenFolders = !d3.select("#datasettable").selectAll('.selected').empty();
 	      
 	      
