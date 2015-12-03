@@ -12,5 +12,6 @@
     "presetMaxLevDistance" : 40,
     "presetMaxDisplayNum" : 12,
     "userEmail":"test@test.com",
-    "translationCapabilites":{}
+    "translationCapabilites":{},
+    "nodeMapnikServerPort": 8000
 }

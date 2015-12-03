@@ -198,7 +198,8 @@ Hoot.control.import = function (context,selection) {
                             type: 'tms',
                             description: d.name,
                             template: window.location.protocol + '//' + window.location.hostname + ':'
-                                + '8000/?z={zoom}&x={x}&y={y}&color='
+                                + iD.data.hootConfig.nodeMapnikServerPort
+                                + '/?z={zoom}&x={x}&y={y}&color='
                                 + encodeURIComponent(context.hoot().palette(d.color))
                                 + '&name=' + d.name,
                             scaleExtent: [0,18],
