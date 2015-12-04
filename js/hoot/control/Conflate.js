@@ -117,7 +117,8 @@ Hoot.control.conflate = function (sidebar) {
                 onchange: function(d){ 
                     var selVal = d3.selectAll('.reset.isGenerateReport').value();
                 },
-                readonly:'readonly'
+                readonly:'readonly',
+                testmode:true
             }
         ];
 
@@ -188,6 +189,17 @@ Hoot.control.conflate = function (sidebar) {
                 	return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + field.label + '</label>';	
                 }            	
             })
+            .style('display',function(a){
+            	if(a.type=='isGenerateReport'){
+            		d3.select(this).style('display',function(){
+        	        	if(d3.select('#enable_test_mode').property('checked')){
+        	        		return 'block';
+        	        	} else {
+        	        		return 'none';
+        	        	}
+        	         })	
+            	} else {return 'block';}
+            })
             .append('input')
             .attr('type', 'text')
             .attr('value', function (a) {
@@ -199,6 +211,11 @@ Hoot.control.conflate = function (sidebar) {
             .select(function (a) {
                 if (a.readonly){
                 	d3.select(this).attr('readonly',true); 
+                }
+                
+                if (a.testmode){
+                	if(!d3.select('#enable_test_mode').property('checked'))
+            		{d3.select(this.parentNode).style('display','none');}
                 }
             	
             	if (a.combobox) {
