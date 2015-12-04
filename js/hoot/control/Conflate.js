@@ -189,17 +189,6 @@ Hoot.control.conflate = function (sidebar) {
                 	return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + field.label + '</label>';	
                 }            	
             })
-            .style('display',function(a){
-            	if(a.type=='isGenerateReport'){
-            		d3.select(this).style('display',function(){
-        	        	if(d3.select('#enable_test_mode').property('checked')){
-        	        		return 'block';
-        	        	} else {
-        	        		return 'none';
-        	        	}
-        	         })	
-            	} else {return 'block';}
-            })
             .append('input')
             .attr('type', 'text')
             .attr('value', function (a) {
