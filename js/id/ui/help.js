@@ -141,9 +141,11 @@ iD.ui.Help = function(context) {
                 	if(this.checked){
                 		d3.selectAll('#confGetValuesBtn').style('display','inline-block');
                 		d3.selectAll('#confViewValuesSpan').style('display','inline-block');
+                		d3.selectAll('#containerofisGenerateReport').style('display','block');
                 	} else {
                 		d3.selectAll('#confGetValuesBtn').style('display','none');
                 		d3.selectAll('#confViewValuesSpan').style('display','none');
+                		d3.selectAll('#containerofisGenerateReport').style('display','none');
                 	}
                 });
 

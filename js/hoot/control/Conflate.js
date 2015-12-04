@@ -117,7 +117,8 @@ Hoot.control.conflate = function (sidebar) {
                 onchange: function(d){ 
                     var selVal = d3.selectAll('.reset.isGenerateReport').value();
                 },
-                readonly:'readonly'
+                readonly:'readonly',
+                testmode:true
             }
         ];
 
@@ -199,6 +200,11 @@ Hoot.control.conflate = function (sidebar) {
             .select(function (a) {
                 if (a.readonly){
                 	d3.select(this).attr('readonly',true); 
+                }
+                
+                if (a.testmode){
+                	if(!d3.select('#enable_test_mode').property('checked'))
+            		{d3.select(this.parentNode).style('display','none');}
                 }
             	
             	if (a.combobox) {
