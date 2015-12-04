@@ -11,7 +11,11 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
         segmentDist=0;
     
     function ret(element) {
-        d3.event.preventDefault();
+        //reset variables
+    	nodeId=0;
+    	lastPoint=null;
+        totDist=0;  segmentDist=0;
+    	d3.event.preventDefault();
         element.on('dblclick',undefined);
         event.finish();
     }
@@ -89,7 +93,8 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
 	    // drop unnecessary precision
 	    p = d > 1000 ? 0 : d > 100 ? 1 : 2;
 	
-	    return String(d.toFixed(p)) + ' ' + unit;
+	    var retval = String(d.toFixed(p)) + ' ' + unit;
+	    return retval.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
     
     function mousemove() {
