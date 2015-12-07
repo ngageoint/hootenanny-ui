@@ -395,7 +395,12 @@ Hoot.model.conflicts = function(context)
                 // outside of review process..
                 // For exmaple user deletes a node and presses merge..
                 // Disablling
-                //validateMergeChangeset();                 
+                //validateMergeChangeset();    
+                
+                window.setTimeout(function() {
+                    context.hoot().control.conflicts.setProcessing(false);
+                    context.enter(iD.modes.Select(context, [mergedNode.id])); 
+                  }, 500);
 
             }//reviewRefs
         }
