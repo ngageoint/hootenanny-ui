@@ -1032,7 +1032,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         //Register listener for review layer cleanup
         context.hoot().control.view.on('layerRemove.conflicts', function (layerName, isPrimary) {
             // we need tagTable removed when UI is review mode and was displaying tag table
-            d3.select('#conflicts-container').remove();
+            Conflict.reviewComplete();
             Conflict.reviewIds = null;
             //Clear map-in-map
             context.MapInMap.loadGeoJson([]);
@@ -1084,16 +1084,48 @@ Hoot.control.conflicts = function (context, sidebar) {
 
     };
 
+    // This cleans up all class variable. If not clean then it will get resued
+    // when we load conflict UI..
+    var resetAllVariables = function(){
+        confData = undefined;
+        Review = undefined;
+        reviewOptions = undefined;
+        metaHead = undefined;
+        metaHeadAccept = undefined;
+        activeConflict = undefined;
+        activeConflictReviewItem = undefined;
+        btnEnabled = true;
+        mergeFeatures = undefined;
+        activeEntity = undefined;
+        if(getFeatureTimer){
+            clearInterval(getFeatureTimer);
+        }
+        getFeatureTimer = undefined;
+
+        currentReviewableMeta = null;
+
+        if(processingTimer){
+            clearTimeout(processingTimer);
+        }
+        processingTimer = undefined;
+
+        currentReviewable = null;
+        disableMergeButton = null;
+
+        Conflict.isProcessingReview = false;
+        Conflict.nextFunction = undefined;
+        Conflict.highlightLayerTable = null;
+    }
 
     Conflict.deactivate = function () {
         d3.select('.review')
             .remove();
-        d3.select('.conflicts')
-            .remove();
+        Conflict.reviewComplete();
     };
     Conflict.reviewComplete = function () {
-        d3.select('.conflicts')
+        d3.select('#conflicts-container')
             .remove();
+        resetAllVariables();
     };
 
 
@@ -1138,7 +1170,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     //Register listener for review layer cleanup
     context.hoot().control.view.on('layerRemove.validation', function (layerName, isPrimary) {
         // we need tagTable removed when UI is review mode and was displaying tag table
-        d3.select('#conflicts-container').remove();
+        Conflict.reviewComplete();
         Conflict.reviewIds = null;
     });
 
