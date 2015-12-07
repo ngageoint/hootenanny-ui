@@ -6,7 +6,8 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
         tolerance = 12,
         nodeId=0,
         polygon,label,rect,lengthLabel,areaLabel,
-        points="",ptArr=[],
+        points="",
+        ptArr=[],rectArr=[],
         lastPoint=null,firstPoint=null,
         totDist=0,
         segmentDist=0,
@@ -15,7 +16,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     
     function ret(element) {
         // reset variables
-        nodeId=0;points="";ptArr=[];
+        nodeId=0;points="";ptArr=[];rectArr=[];
         lastPoint=null;firstPoint=null;
         totDist=0;segmentDist=0;lastSegmentDist=0;    	
     	d3.event.preventDefault();
@@ -33,12 +34,21 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
         return r / 12.56637 * 510065621724000;
     }
         
-    function getArea(){    	
-    	var json = {type: 'Polygon',coordinates: [ptArr]};
+    function getArea(){  
+    	//build rect arr
+    	rectArr=[firstPoint];
+    	rectArr = rectArr.concat(ptArr);
+    	rectArr.push(context.map().mouseCoordinates());
+    	rectArr.push(firstPoint);
+    	
+    	console.log(rectArr);
+    	
+    	var json = {type: 'Polygon',coordinates: [rectArr]};
     	var area = d3.geo.area(json);
     	
     	 if (area > 2 * Math.PI) {
-             json.coordinates[0] = json.coordinates[0].reverse();
+    		 console.log('t');
+    		 json.coordinates[0] = json.coordinates[0].reverse();
              area = d3.geo.area(json);
          }
     	 
@@ -167,7 +177,9 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     function mousemove() {
     	var c = context.projection(context.map().mouseCoordinates());
  	    if(nodeId>0){
- 	    	ptArr[1]=context.map().mouseCoordinates();
+ 	    	//ptArr[1]=context.map().mouseCoordinates();
+ 	    	ptArr.splice(ptArr.length-1,1);
+ 	    	ptArr.push(context.map().mouseCoordinates());
  	    	
  	    	polygon.attr("points",points.concat(" " + c.toString()));
 
@@ -202,13 +214,22 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     	
     	points = points + " " + c;
     	
-    	if(nodeId==0){
+    	if(nodeId==1){
+    		ptArr.splice(ptArr.length-1,1);
+    		for (var i = 0; i < 2; i++) {ptArr.push(context.map().mouseCoordinates());}
+    	} else if (nodeId>1){
+    		ptArr.splice(ptArr.length-1,1);
+    		for (var i = 0; i < 2; i++) {ptArr.push(context.map().mouseCoordinates());}
+    	}
+
+    	
+    	/*if(nodeId==0){
     		for (var i = 0; i < 3; i++) {ptArr.push(context.map().mouseCoordinates());}
     	}
     	else{
     		ptArr.splice(1,1);
     		for (var i = 0; i < 2; i++) {ptArr.splice(1,0,context.map().mouseCoordinates());}
-    	}
+    	}*/
     	    	
     	var newpt=svg.append('g')
 			.classed('node point',true)
