@@ -3,6 +3,7 @@ Hoot.model.layers = function (context)
 	var model_layers = {};
 	var layers = {};
 	var availLayers = [];
+	var recentlyUsedLayers = [];
     var isLayerLoading = false;
     var selectedLayers = [];
 
@@ -68,6 +69,20 @@ Hoot.model.layers = function (context)
     	availLayers = d;
         return availLayers;
     };
+    
+    model_layers.getRecentlyUsedLayers = function() {
+    	return recentlyUsedLayers;
+    };
+    
+    model_layers.setRecentlyUsedLayers = function(lyr) {
+    	//remove old layers
+    	recentlyUsedLayers = _.intersection(_.map(hoot.model.layers.getAvailLayers(),'name'),recentlyUsedLayers);
+    	
+    	if(recentlyUsedLayers.indexOf(lyr)>-1){return;}		//Already in list
+    	
+    	if(recentlyUsedLayers.length>5){recentlyUsedLayers.splice(0,1);} 
+    	recentlyUsedLayers.push(lyr);
+    }
 
     model_layers.setLayerLinks = function(callback) {
     	var links = context.hoot().model.folders.getAvailLinks();

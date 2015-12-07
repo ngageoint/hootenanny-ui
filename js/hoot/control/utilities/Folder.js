@@ -401,6 +401,16 @@ Hoot.control.utilities.folder = function(context) {
 
 	      d3.select(this).classed("selected",false);
 	      update(d);
+	      
+	      //remove selected from recently used layers if present
+	      //find parent div
+	      var parent = this;var p=0;
+	      while(parent.nodeName!='FIELDSET'){
+	    	  parent = parent.parentNode;
+	    	  p++;
+	    	  if(p>5){return;}
+	      }
+	      if(!d3.select(parent.parentNode).select('.usedLayersInput').empty()){d3.select(parent.parentNode).select('.usedLayersInput').value('');}
 	    }
 	
 	    function color(d) {

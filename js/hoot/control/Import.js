@@ -62,12 +62,7 @@ Hoot.control.import = function (context,selection) {
             	if(isPrimary || pnode.node().nextSibling){return 'Add Reference Dataset';}
                 else {return 'Add Secondary Dataset';}
                 })
-            .on('click', function () {
-
-                /*if(context.map().zoom() >= hootMaxImportZoom)*/{
-                    toggleForm(this);
-                }
-            });
+            .on('click', function () {toggleForm(this);});
         var fieldset = _form.append('fieldset');
         fieldset.classed('pad1 keyline-left keyline-right keyline-bottom round-bottom hidden', true)
             .selectAll('.form-field')
@@ -77,6 +72,37 @@ Hoot.control.import = function (context,selection) {
             .classed('overflow',true)
             .style({'height':'150px','margin':'0 0 15px'})
             .select(ETL.renderTree);
+        
+        var recentLayersDiv = fieldset.append('div')
+        	.classed('form-field fill-white small keyline-all round space-bottom1',true);
+        recentLayersDiv.append('label')
+        	.classed('pad1x pad0y strong fill-light round-top keyline-bottom',true)
+        	.text('Recently Used Layers');
+        recentLayersDiv.append('div').classed('contain',true).append('input')
+        	.attr('type','text')
+        	.attr('placeholder','Recently Used Layers')
+        	.classed('reset usedLayersInput combobox-input',true)
+        	.attr('readonly',true)
+        	.select(function(){
+        		if(hoot.model.layers.getRecentlyUsedLayers().length==0){
+        			d3.select(this.parentNode.parentNode).attr('hidden',true);
+        			return;
+        		}
+        		var comboData = hoot.model.layers.getRecentlyUsedLayers();
+        		var combo = d3.combobox()
+	            	.data(_.map(comboData, function (n) {
+	            		return {
+	                         value: n.name,
+	                         title: n.name
+	                     };
+	                 }));
+	             d3.select(this)
+	                 .style('width', '100%')
+	                 .call(combo)
+	                 .on('change',function(){
+	                	 d3.select(this.parentNode.parentNode.parentNode).selectAll('svg').selectAll('rect').classed('sel',false);
+	                 });
+        	})	
 
         fieldset
             .append('div')
@@ -139,23 +165,30 @@ Hoot.control.import = function (context,selection) {
             var color = self.select('.palette .active')
                 .attr('data-color');
 
-         // make sure something has been selected
-            if(self.select('.sel').empty()){
-            	iD.ui.Alert('Please select a dataset to add to the map!','warning');
-                return;
-            }
-
             var name,
             	lyrid;
             try{
-            	name = d3.select(self.select('.sel').node().parentNode).select('text').text();
-            	lyrid = d3.select(self.select('.sel').node().parentNode).select('text').attr('lyr-id');
+                // make sure something has been selected
+                if(self.select('.sel').empty()){
+                	//Check to see if one is selected in Recently Used
+                	if(self.selectAll('.usedLayersInput').value()==''){
+                    	iD.ui.Alert('Please select a dataset to add to the map!','warning');
+                        return;            		
+                	} else {
+                		name = self.selectAll('.usedLayersInput').value();
+                    	lyrid = hoot.model.layers.getmapIdByName(name);
+                    	if(lyrid==null){throw new Error("Invalid layer selected");}
+                	}
+                } else {
+                	name = d3.select(self.select('.sel').node().parentNode).select('text').text();
+                	lyrid = d3.select(self.select('.sel').node().parentNode).select('text').attr('lyr-id');
+                }
             } catch(e) {
             	iD.ui.Alert('There was an error adding this layer to the map!','warning');
                 return;
             }
             if(!name || !lyrid){iD.ui.Alert('Select Layer to Add','warning');return;}
-            if(context.hoot().model.layers.getLayers()[name]){iD.ui.Alert('Layer already exists','warning');return;}
+            if(context.hoot().model.layers.getLayers()[name]){iD.ui.Alert('A layer with this name has already been added to the map!','warning');return;}
             var key = {
                 'name': name,
                 'id':lyrid,
@@ -163,7 +196,9 @@ Hoot.control.import = function (context,selection) {
             };
 
             context.hoot().model.layers.addLayer(key, function(res){
-                if(res == 'showprogress'){
+                hoot.model.layers.setRecentlyUsedLayers(key.name);
+            	
+            	if(res == 'showprogress'){
                     self
                     .attr('class', function () {
                         if(color == 'osm'){
