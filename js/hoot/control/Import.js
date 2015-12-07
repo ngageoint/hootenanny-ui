@@ -84,16 +84,16 @@ Hoot.control.import = function (context,selection) {
         	.classed('reset usedLayersInput combobox-input',true)
         	.attr('readonly',true)
         	.select(function(){
-        		if(hoot.model.layers.getRecentlyUsedLayers().length==0){
+        		/*if(hoot.model.layers.getRecentlyUsedLayers().length==0){
         			d3.select(this.parentNode.parentNode).attr('hidden',true);
         			return;
-        		}
+        		}*/
         		var comboData = hoot.model.layers.getRecentlyUsedLayers();
         		var combo = d3.combobox()
 	            	.data(_.map(comboData, function (n) {
 	            		return {
-	                         value: n.name,
-	                         title: n.name
+	                         value: n,
+	                         title: n
 	                     };
 	                 }));
 	             d3.select(this)
@@ -197,6 +197,12 @@ Hoot.control.import = function (context,selection) {
 
             context.hoot().model.layers.addLayer(key, function(res){
                 hoot.model.layers.setRecentlyUsedLayers(key.name);
+                //update combo boxes
+                var comboData = hoot.model.layers.getRecentlyUsedLayers();
+        		var combo = d3.combobox().data(_.map(comboData, function (n) {return {value: n,title: n};}));
+        		d3.selectAll('.usedLayersInput').each(function(){
+        			d3.select(this).call(combo);
+        		});
             	
             	if(res == 'showprogress'){
                     self
