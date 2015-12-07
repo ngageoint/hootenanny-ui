@@ -1167,12 +1167,5 @@ Hoot.control.conflicts = function (context, sidebar) {
         }
     }
 
-    //Register listener for review layer cleanup
-    context.hoot().control.view.on('layerRemove.validation', function (layerName, isPrimary) {
-        // we need tagTable removed when UI is review mode and was displaying tag table
-        Conflict.reviewComplete();
-        Conflict.reviewIds = null;
-    });
-
     return d3.rebind(Conflict, event, 'on');
 };
