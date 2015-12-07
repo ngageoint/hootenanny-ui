@@ -2,7 +2,7 @@ d3.combobox = function() {
     var event = d3.dispatch('accept'),
         data = [],
         suggestions = [],
-        minItems = 2;
+        minItems = 1;//2;
 
     var fetcher = function(val, cb) {
         cb(data.filter(function(d) {
