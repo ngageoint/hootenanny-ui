@@ -414,6 +414,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                         }
                     }
                     catch (ex) {
+                        console.error(ex);
                         var r = confirm('Failed to retrieve the next features for review!  Do you want to continue?');
                         if(r === false){
                             exitReviewSession('Exiting review session...');
