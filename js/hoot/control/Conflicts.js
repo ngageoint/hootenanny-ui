@@ -124,19 +124,10 @@ Hoot.control.conflicts = function (context, sidebar) {
         		return;
         	}
 
-            if(force && force === true){
-                var zoom = Math.min(20, map.zoom());
-                if (zoom < 16) {
-                    zoom = 16.01;
-                }
-                map.centerZoom(entityCenter,(zoom));
-            } else {
+            if(force && force === true){map.centerZoom(entityCenter,(map.zoom()));} 
+            else {
                 if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
-                    var zoom = Math.min(20, map.zoom());
-                    if (zoom < 16) {
-                        zoom = 16.01;
-                    }
-                    map.centerZoom(entityCenter,(zoom));
+                    map.centerZoom(entityCenter,(map.zoom()));
                 }
             }
             	
