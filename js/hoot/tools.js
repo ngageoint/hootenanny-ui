@@ -457,6 +457,12 @@ Hoot.tools = function (context, selection) {
                                     loadedLayers[layerName] = loadingLayer;
                                     loadedLayers[layerName].loadable = true;
                                     loadedLayers[layerName].merged = true;
+
+                                    //change color to green
+                                    var selColor = "green";
+                                    loadedLayers[layerName].color = selColor;
+                                    context.hoot().replaceColor(loadedLayers[layerName].id,selColor);
+
                                     activeConflateLayer = loadingLayer;
                                     loadedLayers[layerName] = _.extend(loadedLayers[layerName], loadingLayer);
                                     view.render(loadingLayer);
