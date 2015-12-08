@@ -252,10 +252,8 @@ Hoot.control.utilities.folder = function(context) {
 
 	      if(container.attr('id')=='datasettable'){
 	    	  container.selectAll('rect').on("contextmenu",function(d,i){
-	    		  //on right click capture rect clicked as well as all other selected items
-	    		  
 	    		  var items = [];
-	              if(!d.type){
+	              if(!d.selected||!d.type){
 	            	  d3.select('.context-menu').style('display', 'none');	              
 		              d3.event.preventDefault();
 		              return;
