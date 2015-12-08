@@ -26,6 +26,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     Conflict.activeConflict = function(){return activeConflict;};
     Conflict.activeConflictReviewItem = function(){return activeConflictReviewItem;};
     Conflict.activate = function (response) {
+        resetAllVariables();
         confData = response;
         Review = sidebar.append('form')
             .classed('review round space-bottom1', true);
@@ -1114,7 +1115,6 @@ Hoot.control.conflicts = function (context, sidebar) {
         disableMergeButton = null;
 
         Conflict.isProcessingReview = false;
-        Conflict.nextFunction = undefined;
         Conflict.highlightLayerTable = null;
     }
 
@@ -1126,7 +1126,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     Conflict.reviewComplete = function () {
         d3.select('#conflicts-container')
             .remove();
-        resetAllVariables();
+        
     };
 
 
