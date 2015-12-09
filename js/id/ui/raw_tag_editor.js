@@ -161,7 +161,7 @@ iD.ui.RawTagEditor = function(context) {
             	if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item)==0;}))){
             		return iD.ui.Alert("Cannot remove a protected tag!","warning");
             	} else {
-            		return removeTag;
+            		return removeTag(d);
             	}
             });
 
