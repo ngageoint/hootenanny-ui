@@ -125,12 +125,24 @@ Hoot.control.conflicts = function (context, sidebar) {
         		return;
         	}
 
-            if(force && force === true){map.centerZoom(entityCenter,(map.zoom()));} 
+        	if(force && force === true){
+        		map.extent(entityExtent);
+        		map.center(entityCenter);
+        		map.zoom(map.zoom()-1);
+        	} else {
+                if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
+            		map.extent(entityExtent);
+            		map.center(entityCenter);
+            		map.zoom(map.zoom()-1);
+                }
+            }
+        	
+            /*if(force && force === true){map.centerZoom(entityCenter,(map.zoom()));} 
             else {
                 if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
                     map.centerZoom(entityCenter,(map.zoom()));
                 }
-            }
+            }*/
 
         }
 
