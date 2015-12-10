@@ -26,6 +26,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     Conflict.activeConflict = function(){return activeConflict;};
     Conflict.activeConflictReviewItem = function(){return activeConflictReviewItem;};
     Conflict.activate = function (response) {
+        resetAllVariables();
         confData = response;
         Review = sidebar.append('form')
             .classed('review round space-bottom1', true);
@@ -61,19 +62,19 @@ Hoot.control.conflicts = function (context, sidebar) {
 
             if(disableMergeButton && isPoiReview){
                 if(rel && rel.members.length > 1 && (isReview && isReview === 'yes')){
-                    if(context.graph().entities[rel.members[0].id] && 
+                    if(context.graph().entities[rel.members[0].id] &&
                         context.graph().entities[rel.members[1].id]){
-                            disableMergeButton(false);                       
+                            disableMergeButton(false);
                         } else {
-                            //disableMergeButton(true);    
-                        }              
+                            //disableMergeButton(true);
+                        }
                 } else {
-                    //disableMergeButton(true);   
-                }            
+                    //disableMergeButton(true);
+                }
             } else {
-                disableMergeButton(true);  
+                disableMergeButton(true);
             }
-    
+
         }
     }
     Conflict.nextFunction;
@@ -124,7 +125,6 @@ Hoot.control.conflicts = function (context, sidebar) {
         		return;
         	}
 
-        	
         	if(force && force === true){
         		map.extent(entityExtent);
         		map.center(entityCenter);
@@ -145,7 +145,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                     map.centerZoom(entityCenter,(map.zoom()));
                 }
             }*/
-            	
         }
 
         // Helper function for jumping to next reviewable
@@ -181,8 +180,8 @@ Hoot.control.conflicts = function (context, sidebar) {
             {
 
             }
-                
-                
+
+
             return nCnt;
         }
 
@@ -192,7 +191,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         var validateMemberCnt = function(fid, fnc) {
             var nMemCnt = getLoadedRelationMembersCount(fid) ;
-            var f = context.hasEntity(fid);          
+            var f = context.hasEntity(fid);
             if(nMemCnt > 0){
                 if(nMemCnt === 1){
                     disableMergeButton(true);
@@ -233,7 +232,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                                         if(ppIdxCnt > 1){
                                             relTreeIdx[pp.id] = ppIdxCnt - 1;
                                         } else {
-                                            delete relTreeIdx[pp.id]; 
+                                            delete relTreeIdx[pp.id];
                                         }
                                         var curPps = context.graph().parentRelations(pp);
                                         if(curPps){
@@ -245,9 +244,9 @@ Hoot.control.conflicts = function (context, sidebar) {
                             cleanOutParentTree(pps);
 
                         }
-                        
+
                     }
-                        
+
                 });
             }
 
@@ -266,15 +265,15 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
 
                 if (entities.data.length) {
-                    
+
                     // first check to see if anyone is relation
                     var relFound = _.find(entities.data, function(e){
                         return e.type == 'relation';
                     });
 
-                    // if there is one or more relation then recurse    
+                    // if there is one or more relation then recurse
                     if(relFound){
-                        _.each(entities.data, function(f){                            
+                        _.each(entities.data, function(f){
                             // if feature type is relation recurse to load
                             // if not do nothing since it has been loaded properly
                             if(f.type == 'relation'){
@@ -285,10 +284,10 @@ Hoot.control.conflicts = function (context, sidebar) {
                                     } else {
                                         updateParentRelations(m.id);
                                     }
-                                    
+
                                 });
-                                
-                            } 
+
+                            }
                         });
 
                     } else { // if there no relations then reduce child count
@@ -298,8 +297,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                         });//_.each(entities.data, function(f){
                     }
 
-    
-                    
+
+
                 } else {
                     throw 'Failed to load missing features.';
                 }
@@ -335,7 +334,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 // at this point so it will not try to reload..
 
                 var nMemCnt = getLoadedRelationMembersCount(fid) ;
-                                    
+
                 if(nMemCnt > 0){
                     if(nMemCnt === 1){
                         disableMergeButton(true);
@@ -383,7 +382,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 setCurrentReviewMeta(response);
 
                 // this handles only for first time
-                // Modify to able to handle when pressed next 
+                // Modify to able to handle when pressed next
                 var reviewData = {};
                 if(currentReviewable){
                     reviewData.mapId = currentReviewable.mapId;
@@ -395,7 +394,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     reviewData.sequence = -999;
                     reviewData.direction = direction;
                 }
-            
+
 
                 Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
                     try {
@@ -412,7 +411,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                                 // Move this to proper location since highlightLayer is timer asynch
                                 panToEntity(newReviewItem, true);
                             });
-                                
+
                         } else {
                             iD.ui.Alert('There are no more available features to review.  Exiting the review session.',
                                 'info');
@@ -420,6 +419,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                         }
                     }
                     catch (ex) {
+                        console.error(ex);
                         var r = confirm('Failed to retrieve the next features for review!  Do you want to continue?');
                         if(r === false){
                             exitReviewSession('Exiting review session...');
@@ -427,9 +427,9 @@ Hoot.control.conflicts = function (context, sidebar) {
                     } finally {
                         Conflict.setProcessing(false);
                     }
-                });                
+                });
             });
-            
+
 
         }
 
@@ -481,7 +481,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 } else {
                     //Make a call to grab the individual feature
                     context.loadMissing(revieweeList, function(err, entities) {
-                     
+
                         if (entities.data.length) {
                             feature = entities.data.filter(function(d) {
                                 return d.id === idid;
@@ -561,7 +561,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                             .classed('activeReviewFeature', false);
                         d3.selectAll('.' + feature.id)
                             .classed('tag-hoot activeReviewFeature', true);
-                        
+                        activeConflict = feature.id;
                     }
                     if (againstFeature) {
                         poiTableCols.push(againstFeature);
@@ -573,6 +573,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                             .classed('activeReviewFeature2', false);
                         d3.selectAll('.' + againstFeature.id)
                             .classed('tag-hoot activeReviewFeature2', true);
+                        activeConflictReviewItem = againstFeature.id;
                     }
 
                     buildPoiTable(d3.select('#conflicts-container'), poiTableCols);
@@ -594,7 +595,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 if(idid2){
                     againstFeature = context.hasEntity(idid2);
                 }
-               
+
 
                 if (feature && againstFeature) {
                     if (feature.id === againstFeature.id) {
@@ -802,7 +803,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 var newTags = _.clone(tags);
                 newTags['hoot:review:needs'] = 'no';
                 context.perform(
-                  iD.actions.ChangeTags(reviewRelationEntity.id, newTags), 
+                  iD.actions.ChangeTags(reviewRelationEntity.id, newTags),
                   t('operations.change_tags.annotation'));
 
         }
@@ -812,15 +813,15 @@ Hoot.control.conflicts = function (context, sidebar) {
             try {
                 Conflict.setProcessing(true);
                 var vicheck = vischeck();
-                if(!vicheck){                
+                if(!vicheck){
                     return;
                 }
 
                 if(currentReviewable) {
-                  
+
                     var fid = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
                     var reviewableRelEntity = context.hasEntity(fid);
-                    
+
                     for(var i=0; i<reviewableRelEntity.members.length; i++) {
                         var itemKlass = reviewableRelEntity.members[i].id;
                         var classid = 'activeReviewFeature';
@@ -837,7 +838,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                     var hasChanges = context.history().hasChanges();
                     if (hasChanges) {
-                    	
+
                     	iD.modes.Save(context).save(context, function () {
 
                         jumpFor();
@@ -1037,7 +1038,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         //Register listener for review layer cleanup
         context.hoot().control.view.on('layerRemove.conflicts', function (layerName, isPrimary) {
             // we need tagTable removed when UI is review mode and was displaying tag table
-            d3.select('#conflicts-container').remove();
+            Conflict.reviewComplete();
             Conflict.reviewIds = null;
             //Clear map-in-map
             context.MapInMap.loadGeoJson([]);
@@ -1089,16 +1090,47 @@ Hoot.control.conflicts = function (context, sidebar) {
 
     };
 
+    // This cleans up all class variable. If not clean then it will get resued
+    // when we load conflict UI..
+    var resetAllVariables = function(){
+        confData = undefined;
+        Review = undefined;
+        reviewOptions = undefined;
+        metaHead = undefined;
+        metaHeadAccept = undefined;
+        activeConflict = undefined;
+        activeConflictReviewItem = undefined;
+        btnEnabled = true;
+        mergeFeatures = undefined;
+        activeEntity = undefined;
+        if(getFeatureTimer){
+            clearInterval(getFeatureTimer);
+        }
+        getFeatureTimer = undefined;
+
+        currentReviewableMeta = null;
+
+        if(processingTimer){
+            clearTimeout(processingTimer);
+        }
+        processingTimer = undefined;
+
+        currentReviewable = null;
+        disableMergeButton = null;
+
+        Conflict.isProcessingReview = false;
+        Conflict.highlightLayerTable = null;
+    }
 
     Conflict.deactivate = function () {
         d3.select('.review')
             .remove();
-        d3.select('.conflicts')
-            .remove();
+        Conflict.reviewComplete();
     };
     Conflict.reviewComplete = function () {
-        d3.select('.conflicts')
+        d3.select('#conflicts-container')
             .remove();
+        
     };
 
 
@@ -1139,13 +1171,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             Conflict.isProcessingReview = false;
         }
     }
-
-    //Register listener for review layer cleanup
-    context.hoot().control.view.on('layerRemove.validation', function (layerName, isPrimary) {
-        // we need tagTable removed when UI is review mode and was displaying tag table
-        d3.select('#conflicts-container').remove();
-        Conflict.reviewIds = null;
-    });
 
     return d3.rebind(Conflict, event, 'on');
 };
