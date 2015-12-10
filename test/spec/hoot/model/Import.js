@@ -48,7 +48,7 @@ describe('iD.Hoot.Model.Import', function(){
                         var val = {};
                         val.CANEXPORT = false;
                         val.DEFAULT = true;
-                        val.DESCRIPTION = "CASI (Hootenanny Default)";
+                        val.DESCRIPTION = "CASI";
                         val.NAME = "CASI";
                         val.PATH = "translations/CASI.js";
                         vals.push(val);
