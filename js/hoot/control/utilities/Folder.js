@@ -193,7 +193,12 @@ Hoot.control.utilities.folder = function(context) {
 		    	  }
 		    	  if (d.type == 'dataset'){return '<i class="_icon data"></i>'}
 		      })
-		      .on('click',click);
+		      .on('click',click)
+		      .on("contextmenu",function(d,i){
+			 		d3.select('.context-menu').style('display', 'none');	              
+		        	d3.event.preventDefault();
+		        	return;
+	           });
 	            
 	      // Transition nodes to their new position.
 	      nodeEnter.transition()
@@ -254,7 +259,7 @@ Hoot.control.utilities.folder = function(context) {
 	      if(container.attr('id')=='datasettable'){
 	    	  container.selectAll('rect').on("contextmenu",function(d,i){
 	    		  var items = [];
-	              if(!d.selected||!d.type){
+	              if(!d.type||(d.type=='dataset' && !d.selected)){
 	            	  d3.select('.context-menu').style('display', 'none');	              
 		              d3.event.preventDefault();
 		              return;
