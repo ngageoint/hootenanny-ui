@@ -19,7 +19,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
     var currentReviewable = null;
     var disableMergeButton = null;
-
+    var clearFeatureVars;
     Conflict.isProcessingReview = false;
 
     Conflict.activeEntity = function(){return activeEntity;};
@@ -138,8 +138,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                     map.zoom(zoom);
                 }
             }
-        	
-            /*if(force && force === true){map.centerZoom(entityCenter,(map.zoom()));} 
+
+            /*if(force && force === true){map.centerZoom(entityCenter,(map.zoom()));}
             else {
                 if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
                     map.centerZoom(entityCenter,(map.zoom()));
@@ -445,8 +445,8 @@ Hoot.control.conflicts = function (context, sidebar) {
         }
         // This clears all icon high lights
         var resetStyles = function () {
-            d3.selectAll('path').classed('activeReviewFeature', false);
-            d3.selectAll('path').classed('activeReviewFeature2', false);
+            d3.selectAll('.activeReviewFeature').classed('activeReviewFeature', false);
+            d3.selectAll('.activeReviewFeature2').classed('activeReviewFeature2', false);
         };
         var highlightLayer = function (ritem, raitem) {
             var revieweeList = [];
@@ -462,6 +462,10 @@ Hoot.control.conflicts = function (context, sidebar) {
                 revieweeList.push(idid2);
             }
             var feature, againstFeature;
+            clearFeatureVars = function() {
+                feature = null;
+                againstFeature = null;
+            }
             var max = 4;
             var calls = 0;
             var loadedMissing = false;
@@ -865,6 +869,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         var finalizeReviewSession = function(userMsg) {
             done=true;
+            clearFeatureVars();
             resetStyles();
             d3.select('div.tag-table').remove();
             Conflict.reviewIds = null;
@@ -1130,7 +1135,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     Conflict.reviewComplete = function () {
         d3.select('#conflicts-container')
             .remove();
-        
+
     };
 
 
