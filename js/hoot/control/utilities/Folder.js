@@ -192,7 +192,8 @@ Hoot.control.utilities.folder = function(context) {
 		    		  else{return '<i class="_icon folder"></i>'}
 		    	  }
 		    	  if (d.type == 'dataset'){return '<i class="_icon data"></i>'}
-		      });
+		      })
+		      .on('click',click);
 	            
 	      // Transition nodes to their new position.
 	      nodeEnter.transition()
