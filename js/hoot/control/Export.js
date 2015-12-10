@@ -19,7 +19,7 @@ Hoot.control.export = function (sidebar) {
     });*/
 
     exp.activate = function (layer, translations) {
-        var placeHolder = 'NSG Topographic Data Store (TDS) v6.1 (Hootenanny Default)';//'Select Data Translation Schema';
+        var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema';
        
         
         var transCombo = [];
