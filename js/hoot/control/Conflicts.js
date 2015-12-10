@@ -136,13 +136,13 @@ Hoot.control.conflicts = function (context, sidebar) {
             		map.zoom(map.zoom()-1);
                 }
             }
-        	
-            /*if(force && force === true){map.centerZoom(entityCenter,(map.zoom()));} 
+
+            /*if(force && force === true){map.centerZoom(entityCenter,(map.zoom()));}
             else {
                 if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
                     map.centerZoom(entityCenter,(map.zoom()));
                 }
-            }
+            }*/
 
         }
 
@@ -515,61 +515,43 @@ Hoot.control.conflicts = function (context, sidebar) {
                             	return;
                         	}
                         };
-                        function loadArrow(d) {
-                            if (d3.event) d3.event.preventDefault();
+                        function loadArrow(mode) {
+                            //if (d3.event) d3.event.preventDefault();
                             if(!context.graph()){
                                 return;
                             }
                             if(!context.graph().entities[feature.id] ||
                              !context.graph().entities[againstFeature.id]){
-                        		context.background().updateArrowLayer({});
-                        		return;
-                        	}
-                            if (d3.event.type === 'mouseover' || d3.event.type === 'mouseenter') {
-                                context.background().updateArrowLayer(d);
-                            } else {
                                 context.background().updateArrowLayer({});
+                                return;
                             }
+                            var coord = [ againstFeature.loc, feature.loc];
+                            if (mode === 'reverse') coord = coord.reverse();
+                            var gj = {
+                                "type": "LineString",
+                                "coordinates": coord
+                            };
+                            if (mode === 'remove') gj = {};
+                            context.background().updateArrowLayer(gj);
                         }
                         //Add hover handler to show arrow
                         d3.select('a.merge').on('mouseenter', function() {
                             this.focus();
                             d3.select(this).on('keydown', function() {
-                                console.log(d3.event);
                                 if (d3.event.ctrlKey) {
-                                    console.log('keydown');
-                                    loadArrow(
-                                        { "type": "LineString",
-                                            "coordinates": [ feature.loc, againstFeature.loc]
-                                        }
-                                    );
+                                    loadArrow('reverse');
                                 }
                             }).on('keyup', function() {
-                                console.log(d3.event);
-                                //if (d3.event.ctrlKey) {
-                                    console.log('keyup');
-                                    loadArrow(
-                                        { "type": "LineString",
-                                            "coordinates": [ againstFeature.loc, feature.loc]
-                                        }
-                                    );
-                                //}
+                                loadArrow();
                             });
-
-                            var coord = [];
                             if (d3.event.ctrlKey) {
-                                coord = [ againstFeature.loc, feature.loc];
+                                loadArrow('reverse');
                             } else {
-                                coord = [ feature.loc, againstFeature.loc];
+                                loadArrow();
                             }
-                            loadArrow(
-                                { "type": "LineString",
-                                    "coordinates": coord
-                                }
-                            );
                         }).on('mouseleave', function() {
-                            //this.blur();
-                            loadArrow();
+                            this.blur();
+                            loadArrow('remove');
                         });
                     } else {
                         //Hide merge button
@@ -1160,7 +1142,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     Conflict.reviewComplete = function () {
         d3.select('#conflicts-container')
             .remove();
-        
+
     };
 
 

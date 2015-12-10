@@ -217,7 +217,7 @@
     },
     "review": {
         "merge": {
-            "description": "Merge review features."
+            "description": "Merge review features. Hold Ctrl to reverse."
         },
         "previous": {
             "description": "Skip to previous review."

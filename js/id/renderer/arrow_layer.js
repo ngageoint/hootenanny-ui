@@ -50,8 +50,7 @@ iD.ArrowLayer = function() {
             .selectAll('path.arrow.line')
             .data([gj]);
 
-        paths
-            .enter()
+        paths.enter()
             .append('path')
             .attr('class', 'arrow line')
             .attr('style', 'marker-end: url(#markerArrow);')
@@ -61,8 +60,7 @@ iD.ArrowLayer = function() {
         var path = d3.geo.path()
             .projection(projection);
 
-        paths
-            .attr('d', path);
+        paths.attr('d', path);
 
 //        if (typeof gj.features !== 'undefined') {
 //            svg
