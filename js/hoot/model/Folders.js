@@ -142,6 +142,13 @@ Hoot.model.folders = function (context)
     	}
     	return openFolders;
     }
+
+    model_folders.duplicateFolderCheck = function(folder){
+        // Make sure that a folder at same level does not exist with same name
+        if(!_.isEmpty(_.findWhere(hoot.model.folders.getAvailFolders(),{name:folder.name,parentId:folder.parentId}))){
+            return "Please use a different name, as you are about to create a folder with a name identical to a folder at the same level.";
+        } else {return true;}
+    }
        
     model_folders.unflattenFolders = function(array,parent,tree) {
         tree = typeof tree !== 'undefined' ? tree : [];

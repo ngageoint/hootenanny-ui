@@ -287,6 +287,12 @@ Hoot.control.utilities.dataset = function(context) {
 	            	iD.ui.Alert(resp,'warning');
 	             	return;
 	            }
+
+                resp = hoot.model.folders.duplicateFolderCheck({name:newfoldername,parentId:pathId});
+                if(resp != true){
+                    iD.ui.Alert(resp,'warning');
+                    return;
+                }
 	            
 	            var folderData = {};
                  folderData.folderName = newfoldername;
@@ -450,6 +456,12 @@ Hoot.control.utilities.dataset = function(context) {
 	                    		iD.ui.Alert(resp,'warning');
 	                    		return;
 	                        }
+
+                             resp = hoot.model.folders.duplicateFolderCheck({name:newfoldername,parentId:pathId});
+                            if(resp != true){
+                                iD.ui.Alert(resp,'warning');
+                                return;
+                            }
 	                        
 	                        var folderData = {};
 	                        folderData.folderName = newfoldername;
@@ -947,6 +959,13 @@ Hoot.control.utilities.dataset = function(context) {
                     	if(resp != true){
                     		iD.ui.Alert(resp,'warning');
                     		return;
+                        }
+
+                        var parId = hoot.model.folders.getfolderIdByName(_form.select('.reset.PathName').value()) || 0;
+                        resp = hoot.model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:parId});
+                        if(resp != true){
+                            iD.ui.Alert(resp,'warning');
+                            return;
                         }
                     	                                                
                         var importText = submitExp.select('span').text();

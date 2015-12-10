@@ -558,15 +558,12 @@ Hoot.control.utilities.folder = function(context) {
                 		iD.ui.Alert(resp,'warning');
                 		return;
                     }
-                	
-                	/*if(_.map(hoot.model.folders.getAvailFolders(),function(n){return n.id}).indexOf(this.id)>=0){
-                		folderId=this.id;
-                	}*/
-                	
-                	if(_.findWhere(hoot.model.folders.getAvailFolders(),{name:_form.select('.reset.NewFolderName').value(),parentId:folderId})){
-                		iD.ui.Alert("Please use a different name, as you are about to create a folder with a name identical to a folder at the same level.",'warning')
+
+                    resp = hoot.model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
+                    if(resp != true){
+                		iD.ui.Alert(resp,'warning');
                 		return;
-                	}
+                    }
                 	
                 	var data={};
                 	data.parentId=folderId;
