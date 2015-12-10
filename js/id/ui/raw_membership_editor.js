@@ -129,12 +129,23 @@ iD.ui.RawMembershipEditor = function(context) {
                 .attr('maxlength', 255)
                 .attr('placeholder', t('inspector.role'))
                 .property('value', function(d) { return d.member.role; })
-                .on('change', changeRole);
+                .on('change', changeRole)
+                .each(function(d){
+	            	if(d.member.role=='reviewee'){
+	            		d3.select(this).attr('readonly',true);
+	            	}
+	            });
 
             $enter.append('button')
                 .attr('tabindex', -1)
                 .attr('class', 'remove button-input-action member-delete minor')
-                .on('click', deleteMembership)
+                .on('click', function(d){
+                	if(d.member.role=='reviewee'){
+                		return iD.ui.Alert("Cannot remove reviewee relation!","warning");
+                	} else {
+                		return deleteMembership(d);
+                	}
+                })
                 .append('span')
                 .attr('class', 'icon delete');
 
