@@ -7,7 +7,7 @@ Hoot.control.utilities.dataset = function(context) {
 
     hoot_control_utilities_dataset.exportDataContainer = function(dataset, translations) {
 
-      var placeHolder = 'NSG Topographic Data Store (TDS) v6.1 (Hootenanny Default)';//'Select Data Translation Schema'
+      var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema'
       var transCombo = [];
       // filters for exportable translations
       _.each(translations, function(tr){

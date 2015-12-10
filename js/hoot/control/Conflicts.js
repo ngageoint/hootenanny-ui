@@ -128,12 +128,14 @@ Hoot.control.conflicts = function (context, sidebar) {
         	if(force && force === true){
         		map.extent(entityExtent);
         		map.center(entityCenter);
-        		map.zoom(map.zoom()-1);
+                var zoom = Math.min(18, map.zoom()-1);
+        		map.zoom(zoom);
         	} else {
                 if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
             		map.extent(entityExtent);
             		map.center(entityCenter);
-            		map.zoom(map.zoom()-1);
+            		var zoom = Math.min(18, map.zoom()-1);
+                    map.zoom(zoom);
                 }
             }
 
