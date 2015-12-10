@@ -192,7 +192,13 @@ Hoot.control.utilities.folder = function(context) {
 		    		  else{return '<i class="_icon folder"></i>'}
 		    	  }
 		    	  if (d.type == 'dataset'){return '<i class="_icon data"></i>'}
-		      });
+		      })
+		      .on('click',click)
+		      .on("contextmenu",function(d,i){
+			 		d3.select('.context-menu').style('display', 'none');	              
+		        	d3.event.preventDefault();
+		        	return;
+	           });
 	            
 	      // Transition nodes to their new position.
 	      nodeEnter.transition()
@@ -253,7 +259,7 @@ Hoot.control.utilities.folder = function(context) {
 	      if(container.attr('id')=='datasettable'){
 	    	  container.selectAll('rect').on("contextmenu",function(d,i){
 	    		  var items = [];
-	              if(!d.selected||!d.type){
+	              if(!d.type||(d.type=='dataset' && !d.selected)){
 	            	  d3.select('.context-menu').style('display', 'none');	              
 		              d3.event.preventDefault();
 		              return;
@@ -552,15 +558,12 @@ Hoot.control.utilities.folder = function(context) {
                 		iD.ui.Alert(resp,'warning');
                 		return;
                     }
-                	
-                	/*if(_.map(hoot.model.folders.getAvailFolders(),function(n){return n.id}).indexOf(this.id)>=0){
-                		folderId=this.id;
-                	}*/
-                	
-                	if(_.findWhere(hoot.model.folders.getAvailFolders(),{name:_form.select('.reset.NewFolderName').value(),parentId:folderId})){
-                		iD.ui.Alert("Please use a different name, as you are about to create a folder with a name identical to a folder at the same level.",'warning')
+
+                    resp = hoot.model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
+                    if(resp != true){
+                		iD.ui.Alert(resp,'warning');
                 		return;
-                	}
+                    }
                 	
                 	var data={};
                 	data.parentId=folderId;

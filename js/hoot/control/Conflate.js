@@ -394,7 +394,14 @@ Hoot.control.conflate = function (sidebar) {
             	if(resp !== true){
             		iD.ui.Alert(resp,'warning');
             		return;
-                }                
+                }    
+
+                var parId = hoot.model.folders.getfolderIdByName(conflate.selectAll('.pathname').value()) || 0;
+                resp = hoot.model.folders.duplicateFolderCheck({name:conflate.selectAll('.newfoldername').value(),parentId:parId});
+                if(resp != true){
+                    iD.ui.Alert(resp,'warning');
+                    return;
+                }          
                 
                 var thisConfType = d3.selectAll('.reset.ConfType');
                 var selVal = thisConfType.value();

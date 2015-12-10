@@ -20,6 +20,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     var currentReviewable = null;
     var disableMergeButton = null;
 
+    var clearFeatureVars;
     Conflict.isProcessingReview = false;
 
     Conflict.activeEntity = function(){return activeEntity;};
@@ -62,19 +63,19 @@ Hoot.control.conflicts = function (context, sidebar) {
 
             if(disableMergeButton && isPoiReview){
                 if(rel && rel.members.length > 1 && (isReview && isReview === 'yes')){
-                    if(context.graph().entities[rel.members[0].id] && 
+                    if(context.graph().entities[rel.members[0].id] &&
                         context.graph().entities[rel.members[1].id]){
-                            disableMergeButton(false);                       
+                            disableMergeButton(false);
                         } else {
-                            //disableMergeButton(true);    
-                        }              
+                            //disableMergeButton(true);
+                        }
                 } else {
-                    //disableMergeButton(true);   
-                }            
+                    //disableMergeButton(true);
+                }
             } else {
-                disableMergeButton(true);  
+                disableMergeButton(true);
             }
-    
+
         }
     }
     Conflict.nextFunction;
@@ -125,7 +126,6 @@ Hoot.control.conflicts = function (context, sidebar) {
         		return;
         	}
 
-        	
         	if(force && force === true){
         		map.extent(entityExtent);
         		map.center(entityCenter);
@@ -146,7 +146,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                     map.centerZoom(entityCenter,(map.zoom()));
                 }
             }*/
-            	
         }
 
         // Helper function for jumping to next reviewable
@@ -182,8 +181,8 @@ Hoot.control.conflicts = function (context, sidebar) {
             {
 
             }
-                
-                
+
+
             return nCnt;
         }
 
@@ -193,7 +192,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         var validateMemberCnt = function(fid, fnc) {
             var nMemCnt = getLoadedRelationMembersCount(fid) ;
-            var f = context.hasEntity(fid);          
+            var f = context.hasEntity(fid);
             if(nMemCnt > 0){
                 if(nMemCnt === 1){
                     disableMergeButton(true);
@@ -234,7 +233,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                                         if(ppIdxCnt > 1){
                                             relTreeIdx[pp.id] = ppIdxCnt - 1;
                                         } else {
-                                            delete relTreeIdx[pp.id]; 
+                                            delete relTreeIdx[pp.id];
                                         }
                                         var curPps = context.graph().parentRelations(pp);
                                         if(curPps){
@@ -246,9 +245,9 @@ Hoot.control.conflicts = function (context, sidebar) {
                             cleanOutParentTree(pps);
 
                         }
-                        
+
                     }
-                        
+
                 });
             }
 
@@ -267,15 +266,15 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
 
                 if (entities.data.length) {
-                    
+
                     // first check to see if anyone is relation
                     var relFound = _.find(entities.data, function(e){
                         return e.type == 'relation';
                     });
 
-                    // if there is one or more relation then recurse    
+                    // if there is one or more relation then recurse
                     if(relFound){
-                        _.each(entities.data, function(f){                            
+                        _.each(entities.data, function(f){
                             // if feature type is relation recurse to load
                             // if not do nothing since it has been loaded properly
                             if(f.type == 'relation'){
@@ -286,10 +285,10 @@ Hoot.control.conflicts = function (context, sidebar) {
                                     } else {
                                         updateParentRelations(m.id);
                                     }
-                                    
+
                                 });
-                                
-                            } 
+
+                            }
                         });
 
                     } else { // if there no relations then reduce child count
@@ -299,8 +298,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                         });//_.each(entities.data, function(f){
                     }
 
-    
-                    
+
+
                 } else {
                     throw 'Failed to load missing features.';
                 }
@@ -336,7 +335,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 // at this point so it will not try to reload..
 
                 var nMemCnt = getLoadedRelationMembersCount(fid) ;
-                                    
+
                 if(nMemCnt > 0){
                     if(nMemCnt === 1){
                         disableMergeButton(true);
@@ -384,7 +383,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 setCurrentReviewMeta(response);
 
                 // this handles only for first time
-                // Modify to able to handle when pressed next 
+                // Modify to able to handle when pressed next
                 var reviewData = {};
                 if(currentReviewable){
                     reviewData.mapId = currentReviewable.mapId;
@@ -396,7 +395,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     reviewData.sequence = -999;
                     reviewData.direction = direction;
                 }
-            
+
 
                 Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
                     try {
@@ -413,7 +412,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                                 // Move this to proper location since highlightLayer is timer asynch
                                 panToEntity(newReviewItem, true);
                             });
-                                
+
                         } else {
                             iD.ui.Alert('There are no more available features to review.  Exiting the review session.',
                                 'info');
@@ -429,9 +428,9 @@ Hoot.control.conflicts = function (context, sidebar) {
                     } finally {
                         Conflict.setProcessing(false);
                     }
-                });                
+                });
             });
-            
+
 
         }
 
@@ -447,8 +446,8 @@ Hoot.control.conflicts = function (context, sidebar) {
         }
         // This clears all icon high lights
         var resetStyles = function () {
-            d3.selectAll('path').classed('activeReviewFeature', false);
-            d3.selectAll('path').classed('activeReviewFeature2', false);
+            d3.selectAll('.activeReviewFeature').classed('activeReviewFeature', false);
+            d3.selectAll('.activeReviewFeature2').classed('activeReviewFeature2', false);
         };
         var highlightLayer = function (ritem, raitem) {
             var revieweeList = [];
@@ -464,6 +463,10 @@ Hoot.control.conflicts = function (context, sidebar) {
                 revieweeList.push(idid2);
             }
             var feature, againstFeature;
+            clearFeatureVars = function() {
+                feature = null;
+                againstFeature = null;
+            }
             var max = 4;
             var calls = 0;
             var loadedMissing = false;
@@ -483,7 +486,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 } else {
                     //Make a call to grab the individual feature
                     context.loadMissing(revieweeList, function(err, entities) {
-                     
+
                         if (entities.data.length) {
                             feature = entities.data.filter(function(d) {
                                 return d.id === idid;
@@ -576,7 +579,6 @@ Hoot.control.conflicts = function (context, sidebar) {
                             .classed('activeReviewFeature', false);
                         d3.selectAll('.' + feature.id)
                             .classed('tag-hoot activeReviewFeature', true);
-                        
                         activeConflict = feature.id;
                     }
                     if (againstFeature) {
@@ -611,7 +613,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 if(idid2){
                     againstFeature = context.hasEntity(idid2);
                 }
-               
+
 
                 if (feature && againstFeature) {
                     if (feature.id === againstFeature.id) {
@@ -819,7 +821,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 var newTags = _.clone(tags);
                 newTags['hoot:review:needs'] = 'no';
                 context.perform(
-                  iD.actions.ChangeTags(reviewRelationEntity.id, newTags), 
+                  iD.actions.ChangeTags(reviewRelationEntity.id, newTags),
                   t('operations.change_tags.annotation'));
 
         }
@@ -829,15 +831,15 @@ Hoot.control.conflicts = function (context, sidebar) {
             try {
                 Conflict.setProcessing(true);
                 var vicheck = vischeck();
-                if(!vicheck){                
+                if(!vicheck){
                     return;
                 }
 
                 if(currentReviewable) {
-                  
+
                     var fid = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
                     var reviewableRelEntity = context.hasEntity(fid);
-                    
+
                     for(var i=0; i<reviewableRelEntity.members.length; i++) {
                         var itemKlass = reviewableRelEntity.members[i].id;
                         var classid = 'activeReviewFeature';
@@ -854,7 +856,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
                     var hasChanges = context.history().hasChanges();
                     if (hasChanges) {
-                    	
+
                     	iD.modes.Save(context).save(context, function () {
 
                         jumpFor();
@@ -881,6 +883,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         var finalizeReviewSession = function(userMsg) {
             done=true;
+            clearFeatureVars();
             resetStyles();
             d3.select('div.tag-table').remove();
             Conflict.reviewIds = null;
@@ -1146,6 +1149,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     Conflict.reviewComplete = function () {
         d3.select('#conflicts-container')
             .remove();
+        
     };
 
 
@@ -1186,7 +1190,6 @@ Hoot.control.conflicts = function (context, sidebar) {
             Conflict.isProcessingReview = false;
         }
     }
-
 
     return d3.rebind(Conflict, event, 'on');
 };
