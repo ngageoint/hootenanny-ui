@@ -54,7 +54,7 @@ iD.ArrowLayer = function() {
             .append('path')
             .attr('class', 'arrow line')
             .attr('style', 'marker-end: url(#markerArrow);')
-            //.attr('style', 'marker-start: url(#markerCircle); marker-end: url(#markerCircle);')
+            //.attr('style', 'marker-start: url(#markerCircle); marker-end: url(#markerArrow);')
             ;
 
         var path = d3.geo.path()
