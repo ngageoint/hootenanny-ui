@@ -428,16 +428,6 @@ Hoot.model.conflicts = function(context)
             if (!feature && !featureAgainst) {
                 iD.ui.Alert('Merge error, one feature is missing','error');
             } else {
-                //Check that both features are still in the map graph,
-                //and load them if not
-                if (!context.hasEntity(feature.id) || !context.hasEntity(featureAgainst.id)) {
-                    context.loadMissing([feature.id, featureAgainst.id], function(err, entities) {
-                        doMerge();
-                        }, layerName);
-                } else {
-                    doMerge();
-                }
-
                 function doMerge()
                 {
                     try
@@ -618,6 +608,15 @@ Hoot.model.conflicts = function(context)
                             callback();
                         }
                     }
+                }
+                //Check that both features are still in the map graph,
+                //and load them if not
+                if (!context.hasEntity(feature.id) || !context.hasEntity(featureAgainst.id)) {
+                    context.loadMissing([feature.id, featureAgainst.id], function(err, entities) {
+                        doMerge();
+                        }, layerName);
+                } else {
+                    doMerge();
                 }
             }
         }
