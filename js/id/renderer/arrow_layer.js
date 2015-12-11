@@ -50,20 +50,17 @@ iD.ArrowLayer = function() {
             .selectAll('path.arrow.line')
             .data([gj]);
 
-        paths
-            .enter()
+        paths.enter()
             .append('path')
             .attr('class', 'arrow line')
-            //Disable arrowhead per #67
-            //.attr('style', 'marker-end: url(#markerArrow);')
-            .attr('style', 'marker-start: url(#markerCircle); marker-end: url(#markerCircle);')
+            .attr('style', 'marker-end: url(#markerArrow);')
+            //.attr('style', 'marker-start: url(#markerCircle); marker-end: url(#markerArrow);')
             ;
 
         var path = d3.geo.path()
             .projection(projection);
 
-        paths
-            .attr('d', path);
+        paths.attr('d', path);
 
 //        if (typeof gj.features !== 'undefined') {
 //            svg

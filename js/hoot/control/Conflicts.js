@@ -19,6 +19,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
     var currentReviewable = null;
     var disableMergeButton = null;
+
     var clearFeatureVars;
     Conflict.isProcessingReview = false;
 
@@ -138,8 +139,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                     map.zoom(zoom);
                 }
             }
-
-            /*if(force && force === true){map.centerZoom(entityCenter,(map.zoom()));}
+        	
+            /*if(force && force === true){map.centerZoom(entityCenter,(map.zoom()));} 
             else {
                 if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
                     map.centerZoom(entityCenter,(map.zoom()));
@@ -520,8 +521,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                             	return;
                         	}
                         };
-                        function loadArrow(d) {
-                            if (d3.event) d3.event.preventDefault();
+                        function loadArrow(mode) {
+                            //if (d3.event) d3.event.preventDefault();
                             if(!context.graph()){
                                 return;
                             }
@@ -530,20 +531,33 @@ Hoot.control.conflicts = function (context, sidebar) {
                         		context.background().updateArrowLayer({});
                         		return;
                         	}
-                            if (d3.event.type === 'mouseover' || d3.event.type === 'mouseenter') {
-                                context.background().updateArrowLayer(d);
-                            } else {
-                                context.background().updateArrowLayer({});
+                            var coord = [ againstFeature.loc, feature.loc];
+                            if (mode === 'reverse') coord = coord.reverse();
+                            var gj = {
+                                "type": "LineString",
+                                "coordinates": coord
+                            };
+                            if (mode === 'remove') gj = {};
+                            context.background().updateArrowLayer(gj);
                             }
-                        }
-                        var arw = { "type": "LineString",
-                                    "coordinates": [ againstFeature.loc, feature.loc]
-                        };
                         //Add hover handler to show arrow
                         d3.select('a.merge').on('mouseenter', function() {
-                            loadArrow(arw);
+                            this.focus();
+                            d3.select(this).on('keydown', function() {
+                                if (d3.event.ctrlKey) {
+                                    loadArrow('reverse');
+                                }
+                            }).on('keyup', function() {
+                                loadArrow();
+                            });
+                            if (d3.event.ctrlKey) {
+                                loadArrow('reverse');
+                            } else {
+                                loadArrow();
+                            }
                         }).on('mouseleave', function() {
-                            loadArrow(arw);
+                            this.blur();
+                            loadArrow('remove');
                         });
                     } else {
                         //Hide merge button
@@ -1135,7 +1149,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     Conflict.reviewComplete = function () {
         d3.select('#conflicts-container')
             .remove();
-
+        
     };
 
 
