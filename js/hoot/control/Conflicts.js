@@ -139,8 +139,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                     map.zoom(zoom);
                 }
             }
-        	
-            /*if(force && force === true){map.centerZoom(entityCenter,(map.zoom()));} 
+
+            /*if(force && force === true){map.centerZoom(entityCenter,(map.zoom()));}
             else {
                 if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
                     map.centerZoom(entityCenter,(map.zoom()));
@@ -797,6 +797,8 @@ Hoot.control.conflicts = function (context, sidebar) {
         };
 
         var autoMerge = function() {
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
             //Overridden in highlightLayer
             mergeFeatures();
         };
@@ -1149,7 +1151,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     Conflict.reviewComplete = function () {
         d3.select('#conflicts-container')
             .remove();
-        
+
     };
 
 
