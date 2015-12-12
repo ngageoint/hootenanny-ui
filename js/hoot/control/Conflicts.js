@@ -466,6 +466,8 @@ Hoot.control.conflicts = function (context, sidebar) {
             clearFeatureVars = function() {
                 feature = null;
                 againstFeature = null;
+                activeConflict = undefined;
+                activeConflictReviewItem = undefined;
             }
             var max = 4;
             var calls = 0;
