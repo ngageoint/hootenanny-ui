@@ -364,24 +364,20 @@ Hoot.control.utilities.folder = function(context) {
 	      } else if(d3.event.ctrlKey && container.attr('id')=='datasettable' && d.type=='dataset') {
 	    	  d.selected = !d.selected;
 	      }
-	    	
+	      if(d.type=='dataset'){d3.select(this).classed("selected",d.selected);}	    	
 	      if(d.type=='folder'){selectedLayerIDs = context.hoot().model.layers.setSelectedLayers([]);}
 	      
-	      d3.select(this).classed("selected",d.selected);
-	      var updateOpenFolders = !d3.select("#datasettable").selectAll('.selected').empty();
-	      
-	      
+	      var updateOpenFolders = container.attr('id')=='datasettable';//!d3.select("#datasettable").selectAll('.selected').empty();
+	      	      
 	      if(d.type=='folder'){
 	    	  if (d.children || typeof(d.children)=="object") {
 		    	  //folder closing
 		    	  d._children = d.children;
 		    	  d.children = null;
 		    	  d.selected = false;
-		    	  if(updateOpenFolders){
-		    		  context.hoot().model.folders.setOpenFolders(d.id,false);
-		    		  d.state='closed';
-		    		  d3.select(this.parentNode).select('i').classed('folder',true).classed('openfolder',false);
-		    	  }
+		    	  if(updateOpenFolders){context.hoot().model.folders.setOpenFolders(d.id,false);}
+		    	  d.state='closed';
+		    	  d3.select(this.parentNode).select('i').classed('folder',true).classed('openfolder',false);
 		      } else if(d.children==null && d._children==null){
 		    	  //toggle an empty folder
 		    	  if (d.state=="open"){
@@ -395,11 +391,9 @@ Hoot.control.utilities.folder = function(context) {
 		    	  //folder opening
 		    	  d.children = d._children;
 		    	  d._children = null;
-		    	  if(updateOpenFolders){
-		    		  context.hoot().model.folders.setOpenFolders(d.id,true);
-		    		  d.state='open';
-		    		  d3.select(this.parentNode).select('i').classed('folder',false).classed('openfolder',true);
-		    	  }
+		    	  if(updateOpenFolders){context.hoot().model.folders.setOpenFolders(d.id,true);}
+	    		  d.state='open';
+	    		  d3.select(this.parentNode).select('i').classed('folder',false).classed('openfolder',true);
 		      }	    	  
 	      }
 
