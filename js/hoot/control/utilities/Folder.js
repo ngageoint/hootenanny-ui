@@ -685,6 +685,12 @@ Hoot.control.utilities.folder = function(context) {
 	             		return;
 	                 }
 	             	
+					resp = hoot.model.folders.duplicateFolderCheck({name:outputname,parentId:pathId});
+                    if(resp != true){
+                		iD.ui.Alert(resp,'warning');
+                		return;
+                    }
+
 	             	data = {};
 	             	data.inputType = folder.type;
 	             	data.mapid = folder.id;
