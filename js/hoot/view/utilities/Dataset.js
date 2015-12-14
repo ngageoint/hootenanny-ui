@@ -139,16 +139,20 @@ Hoot.view.utilities.dataset = function(context)
 	        
 	        //select the rect using lyr-id
 	        try {
-		        var selNode  = container.selectAll("text[lyr-id='" + dataset.id + "']").node().parentNode;
-		        var selRect = d3.select(selNode).select('rect'); 
-			    var currentFill = selRect.style('fill');
-			    selRect.style('fill','rgb(255,0,0)');
-			    
+		        // If the folder is closed, you will not be able to change the rect color...
+                var selNode;
+                if(!container.selectAll("text[lyr-id='" + dataset.id + "']").empty()){
+                    selNode  = container.selectAll("text[lyr-id='" + dataset.id + "']").node().parentNode;
+                    var selRect = d3.select(selNode).select('rect'); 
+                    var currentFill = selRect.style('fill');
+                    selRect.style('fill','rgb(255,0,0)');
+                }
+                			    
 				d3.select('.context-menu').style('display', 'none');
 			    
 			    context.hoot().model.layers.deleteLayer(dataset,function(resp){
 			    	if(resp==true){
-			    		selNode.remove();
+			    		if(selNode){selNode.remove();}
 			    	}
 			    	
 				    if(i>=datasets2remove.length-1){
