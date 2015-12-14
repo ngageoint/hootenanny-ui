@@ -906,7 +906,7 @@ iD.Connection = function(context) {
             	d3.select('.warning').call(iD.ui.Warning(context,true,'There is no data in the current map extent.  Try panning the map or zooming to a layer.'));
             } else if(currShowBbox){
                 // Inform user if features are hidden if user is zoomed out too far
-            	d3.select('.warning').call(iD.ui.Warning(context,true,'Zoom in to view features!'));
+            	d3.select('.warning').call(iD.ui.Warning(context,true,'Zoom in to edit features!'));
             } else if (_.isEmpty(context.features().filter(context.intersects(context.map().extent()),context.graph())) && context.intersects(context.map().extent()).length > 0){
             	//context.features().filter(context.intersects(map.extent()),graph)
             	d3.select('.warning').call(iD.ui.Warning(context,true,'Features are loaded, but are currently not visible.  Try zooming in for better results.'));
