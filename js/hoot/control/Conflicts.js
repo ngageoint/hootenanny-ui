@@ -604,7 +604,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                     if(panToId) {
                         panToEntity(context.entity(panToId));
                     }
-                    console.log('update map in map');
+
                     //Populate the map-in-map with review items location and status
                     Hoot.model.REST('ReviewGetGeoJson', mapid, context.MapInMap.extent(), function (gj) {
                         context.MapInMap.loadGeoJson(gj.features || []);
@@ -1069,8 +1069,11 @@ Hoot.control.conflicts = function (context, sidebar) {
             Conflict.reviewComplete();
             Conflict.reviewIds = null;
             //Clear map-in-map
-            context.MapInMap.loadGeoJson([]);
             context.MapInMap.on('zoomPan.conflicts', null);
+            context.map().on('drawn.conflicts', null);
+            //Have to use timeout because zoomPanHandler
+            //is being debounced below
+            setTimeout(function() { context.MapInMap.loadGeoJson([]); }, 700);
 
         });
 
