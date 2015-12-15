@@ -604,6 +604,11 @@ Hoot.control.conflicts = function (context, sidebar) {
                     if(panToId) {
                         panToEntity(context.entity(panToId));
                     }
+                    console.log('update map in map');
+                    //Populate the map-in-map with review items location and status
+                    Hoot.model.REST('ReviewGetGeoJson', mapid, context.MapInMap.extent(), function (gj) {
+                        context.MapInMap.loadGeoJson(gj.features || []);
+                    });
                 }
             };
             var getFeature = function () {
