@@ -605,10 +605,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                         panToEntity(context.entity(panToId));
                     }
 
-                    //Populate the map-in-map with review items location and status
-                    Hoot.model.REST('ReviewGetGeoJson', mapid, context.MapInMap.extent(), function (gj) {
-                        context.MapInMap.loadGeoJson(gj.features || []);
-                    });
+                    loadReviewFeaturesMapInMap();
+
                 }
             };
             var getFeature = function () {
@@ -1071,22 +1069,27 @@ Hoot.control.conflicts = function (context, sidebar) {
             //Clear map-in-map
             context.MapInMap.on('zoomPan.conflicts', null);
             context.map().on('drawn.conflicts', null);
-            //Have to use timeout because zoomPanHandler
+            //Have to use timeout because drawn.conflicts handler
             //is being debounced below
             setTimeout(function() { context.MapInMap.loadGeoJson([]); }, 700);
 
         });
 
-        var zoomPanHandler = function() {
+        var loadReviewFeaturesMapInMap = function() {
             if (!context.MapInMap.hidden()) {
                 //Populate the map-in-map with review items location and status
                 Hoot.model.REST('ReviewGetGeoJson', mapid, context.MapInMap.extent(), function (gj) {
-                    context.MapInMap.loadGeoJson(gj.features);
+                    context.MapInMap.loadGeoJson(gj.features.map(function(d) {
+                        if (d.properties.relationid === currentReviewable.relationId) {
+                            d.properties.class = 'locked'
+                        }
+                        return d;
+                    }) || []);
                 });
             }
         }
-        context.MapInMap.on('zoomPan.conflicts', zoomPanHandler);
-        context.map().on('drawn.conflicts', _.debounce(zoomPanHandler, 300));
+        context.MapInMap.on('zoomPan.conflicts', loadReviewFeaturesMapInMap);
+        context.map().on('drawn.conflicts', _.debounce(loadReviewFeaturesMapInMap, 300));
 
     };
     // This function is to exit from review session and do all clean ups
