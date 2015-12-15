@@ -1074,14 +1074,16 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         });
 
-        context.MapInMap.on('zoomPan.conflicts', function() {
+        var zoomPanHandler = function() {
             if (!context.MapInMap.hidden()) {
                 //Populate the map-in-map with review items location and status
                 Hoot.model.REST('ReviewGetGeoJson', mapid, context.MapInMap.extent(), function (gj) {
                     context.MapInMap.loadGeoJson(gj.features);
                 });
             }
-        });
+        }
+        context.MapInMap.on('zoomPan.conflicts', zoomPanHandler);
+        context.map().on('drawn.conflicts', _.debounce(zoomPanHandler, 300));
 
     };
     // This function is to exit from review session and do all clean ups
