@@ -268,9 +268,7 @@ Hoot.tools = function (context, selection) {
     view.on('layerVis', function (layerName) {
         hoot.model.layers.changeVisibility(layerName);
     });
-    conflicts.on('zoomToConflict', function (entity) {
-//        context.hoot().view.ltdstags.activate(entity);
-    });
+ 
     conflicts.on('exportData', function () {
         var mapid = activeConflateLayer.mapId;
         Hoot.model.REST('getMapSize', mapid,function (sizeInfo) {
@@ -332,12 +330,7 @@ Hoot.tools = function (context, selection) {
 
         activeConflateLayer = {};
     });
-    conflicts.on('acceptAll', function (d) {
-        hoot.mode('browse');
-        hoot.model.conflicts.acceptAll(d, function () {
-            conflicts.reviewNextStep();
-        });
-    });
+    
     /*conflicts.on('removeFeature', function (d, mapid) {
         hoot.model.conflicts.RemoveFeature(d, mapid);
     });*/

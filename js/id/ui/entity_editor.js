@@ -238,9 +238,10 @@ iD.ui.EntityEditor = function(context) {
             context.perform(
                 iD.actions.ChangeTags(id, tags),
                 t('operations.change_tags.annotation'));
-            var activeConflict = context.hoot().control.conflicts.activeConflict();
+            var activeConflict = context.hoot().control.conflicts.activeConflict(0);
             if(activeConflict){
-                 context.hoot().control.conflicts.highlightLayerTable(context.hoot().control.conflicts.activeEntity());
+                 context.hoot().control.conflicts.map.featurehighlighter
+                 .highlightLayer(context.hoot().control.conflicts.activeEntity());
             }
         }
     }

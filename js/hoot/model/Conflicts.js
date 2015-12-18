@@ -140,7 +140,7 @@ Hoot.model.conflicts = function(context)
                         {
                           console.log(error);
                           iD.ui.Alert('failed to retrieve review refs.','warning');
-                          context.hoot().control.conflicts.setProcessing(false);
+                          //context.hoot().control.conflicts.setProcessing(false);
                           throw error;
                         }
 
@@ -398,7 +398,7 @@ Hoot.model.conflicts = function(context)
                 //validateMergeChangeset();
 
                 window.setTimeout(function() {
-                    context.hoot().control.conflicts.setProcessing(false);
+                    //context.hoot().control.conflicts.setProcessing(false);
                     context.enter(iD.modes.Select(context, [mergedNode.id]));
                   }, 500);
             }//reviewRefs
@@ -409,7 +409,7 @@ Hoot.model.conflicts = function(context)
         }
         finally
         {
-            context.hoot().control.conflicts.setProcessing(false);
+            //context.hoot().control.conflicts.setProcessing(false);
         }
     }// processMerge
 
@@ -422,7 +422,7 @@ Hoot.model.conflicts = function(context)
     {
         try
         {
-            context.hoot().control.conflicts.setProcessing(true);
+            //context.hoot().control.conflicts.setProcessing(true);
             var layerName = feature.layerName;
 
             if (!feature && !featureAgainst) {
@@ -466,7 +466,7 @@ Hoot.model.conflicts = function(context)
                                     {
                                       console.log(error);
                                       iD.ui.Alert('failed to retrieve review refs.','warning');
-                                      context.hoot().control.conflicts.setProcessing(false);
+                                      //context.hoot().control.conflicts.setProcessing(false);
                                       throw error;
                                     }
 
