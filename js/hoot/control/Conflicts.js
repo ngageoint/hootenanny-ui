@@ -404,9 +404,15 @@ Hoot.control.conflicts = function (context, sidebar) {
     **/
     var _resetAllVariables = function(){
         _confData = undefined;
-        _review = undefined;
-        _reviewOptions = undefined;
-        _btnEnabled = true;
+		_review = undefined;
+		_reviewOptions = undefined;
+		_btnEnabled = true;
+		_mapid = undefined
+		_too1Tip = undefined;
+
+        _instance.actions.reset();
+        _instance.info.reset();
+        _instance.map.reset();
     }
 
     /**
