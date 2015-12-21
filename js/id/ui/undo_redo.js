@@ -51,7 +51,7 @@ iD.ui.UndoRedo = function(context) {
         function update() {
             if(!context.history().hasChanges()){
                 if(context.hoot().control.conflicts){
-                    context.hoot().control.conflicts.updateMergeButton();
+                    context.hoot().control.conflicts.actions.poimerge.updateMergeButton();
                 }
                 
             }
