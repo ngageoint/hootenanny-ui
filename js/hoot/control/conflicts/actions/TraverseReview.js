@@ -51,99 +51,114 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     * @param direction -  forward |  backward
     **/
     _instance.jumpTo = function(direction) {
-        // First check to see if we have all needed params
-        if(!_isInitialized()){
-            iD.ui.Alert('Traverse control not initialized. Please contact administrator!', 'Error');
-            return;
-        }
-
-        // if we have unsaved changes then exit.
-        // We do this to prevent the miss-match of changeset between backend and 
-        // iD entity graph
-        var hasChange = context.history().hasChanges();
-        if(hasChange === true) {
-        	iD.ui.Alert('Please resolve or undo the current feature' + 
-                'changes before proceeding to the next review.', 'warning');
-            return;
-        }
-
-        // Now get the information of all reviewable items for the current map id
-        Hoot.model.REST('ReviewGetStatistics', _mapid, function (error, response) {
-            if(error){
-                iD.ui.Alert('Failed to get review statistics.','warning');
-                // there was error so throw error and exit review since this was major melt down?
+        try {
+            _parent().setProcessing(false);
+            _parent().setProcessing(true, 'Please wait while stepping to next review item.');
+            // First check to see if we have all needed params
+            if(!_isInitialized()){
+                throw 'Traverse control not initialized. Please contact administrator!';
                 return;
             }
 
-            // Store the review statics in metadata so we can show it when we
-            // get to the reviewable item. (we wait to get note of a reviewable)
-            _parent().info.metadata.setCurrentReviewMeta(response);
-
-            // this handles only for first time
-            // Modify to able to handle when pressed next
-            var reviewData = {};
-            if(_currentReviewable){
-                reviewData.mapId = _currentReviewable.mapId;
-                reviewData.sequence = _currentReviewable.sortOrder;
-                reviewData.direction = direction;
-            } else {
-                reviewData.mapId = _mapid;
-                // something less then -1 will get random reviewable
-                reviewData.sequence = -999;
-                reviewData.direction = direction;
+            // if we have unsaved changes then exit.
+            // We do this to prevent the miss-match of changeset between backend and 
+            // iD entity graph
+            var hasChange = context.history().hasChanges();
+            if(hasChange === true) {
+                _parent().setProcessing(false);
+                iD.ui.Alert('Please resolve or undo the current feature' + 
+                    'changes before proceeding to the next review.', 'warning');
+                return;
             }
 
-
-            Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
+            // Now get the information of all reviewable items for the current map id
+            Hoot.model.REST('ReviewGetStatistics', _mapid, function (error, response) {
                 try {
                     if(error){
-                        throw 'Failed to retrieve next set of reviewable features from service!';
+                        throw 'Failed to get review statistics.';
                     }
 
+                    // Store the review statics in metadata so we can show it when we
+                    // get to the reviewable item. (we wait to get note of a reviewable)
+                    _parent().info.metadata.setCurrentReviewMeta(response);
 
-                    if((1*response.resultCount) > 0){
-                        _currentReviewable = response;
-                        _parent().actions.idgraphsynch.getRelationFeature
-                        (reviewData.mapId, response.relationId, function(newReviewItem){
-                            _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
-                                newReviewItem.members[1]);
-
-                            // Move this to proper location since highlightLayer is timer asynch
-                            _parent().map.featureNavigator.panToEntity(newReviewItem, 
-                                true);
-                        });
-
+                    // this handles only for first time
+                    // Modify to able to handle when pressed next
+                    var reviewData = {};
+                    if(_currentReviewable){
+                        reviewData.mapId = _currentReviewable.mapId;
+                        reviewData.sequence = _currentReviewable.sortOrder;
+                        reviewData.direction = direction;
                     } else {
-                        iD.ui.Alert('There are no more available features to review. ' + 
-                            'Exiting the review session.',
-                            'info');
-                        _exitReviewSession();
+                        reviewData.mapId = _mapid;
+                        // something less then -1 will get random reviewable
+                        reviewData.sequence = -999;
+                        reviewData.direction = direction;
                     }
-                }
-                catch (ex) {
-                    console.error(ex);
-                    var r = confirm('Failed to retrieve the next features for review!' +
-                        '  Do you want to continue?');
-                    if(r === false){
-                        _exitReviewSession();
-                    }
-                } finally {
-                   // context.hoot().control.conflicts.setProcessing(false);
+
+
+                    Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
+                        try {
+                            if(error){
+                                throw 'Failed to retrieve next set of reviewable features from service!';
+                            }
+
+
+                            if((1*response.resultCount) > 0){
+                                _currentReviewable = response;
+                                _parent().actions.idgraphsynch.getRelationFeature
+                                (reviewData.mapId, response.relationId, function(newReviewItem){
+                                    _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
+                                        newReviewItem.members[1]);
+
+                                    // Move this to proper location since highlightLayer is timer asynch
+                                    _parent().map.featureNavigator.panToEntity(newReviewItem, 
+                                        true);
+                                });
+
+                            } else {
+                                iD.ui.Alert('There are no more available features to review. ' + 
+                                    'Exiting the review session.',
+                                    'info');
+                                _exitReviewSession();
+                            }
+                        }
+                        catch (ex) {
+                            console.error(ex);
+                            var r = confirm('Failed to retrieve the next features for review!' +
+                                '  Do you want to continue?');
+                            if(r === false){
+                                _exitReviewSession();
+                            }
+                        } finally {
+                           _parent().setProcessing(false);
+                        }
+                    });
+     
+                } catch (err) {
+                    _handleError(err, true);
                 }
             });
-        });
 
+        } catch (err) {
+            _handleError(err, true);
+        }
+    
 
     }
 
-
+    /**
+    * @desc public interface for go to next
+    **/
     _instance.gotoNext = function() {
         context.flush(true);
         _instance.jumpTo('forward');
     };
 
 
-    
+    /**
+    * @desc  Go forward with layer visibility validation
+    **/
     _instance.traverseForward = function () {
         var vicheck = _vischeck();
         if(!vicheck){
@@ -152,7 +167,9 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         _instance.jumpTo('forward');
     };
 
-
+    /**
+    * @desc  Go backward with layer visibility validation
+    **/
     _instance.traverseBackward = function () {
         var vicheck = _vischeck();
         if(!vicheck){
@@ -161,6 +178,10 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         _instance.jumpTo('backward');
     };
 
+    /**
+    * @desc  controls visibility of next and previous button
+    * @param doDisable - switch for enable/disable
+    **/
     _instance.disableButton = function (doDisable){
         if(_nextid && _previd) {
             var btn = d3.select('.' + _nextid);
@@ -184,22 +205,42 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         
     }
 
+    /**
+    * @desc  controls visibility of next and previous button
+    **/
     _instance.getCurrentReviewable = function(){
         return _currentReviewable;
     }
 
+    /**
+    * @desc  initialization validation
+    **/
     var _isInitialized = function()
     {
         return (_nextid && _previd && _mapid);
     }
     
- 
+    /**
+    * @desc  Exit review session
+    * @param msg - optional message for user
+    **/
     var _exitReviewSession = function(msg) {
         _parent().deactivate(msg);
         _parent().reviewNextStep();
     }
 
-
+    /**
+    * @desc Helper function for error handling. Logs error cleans out screen lock and alerts user optionally
+    * @param err - the error message
+    * @param doAlertUser - switch to show user alert
+    **/
+    var _handleError = function(err, doAlertUser) {
+        console.error(err);
+        _parent().setProcessing(false);
+        if(doAlertUser === true) {
+            iD.ui.Alert(err,'error');
+        }
+    }
     var _vischeck = function(){
         return _parent().vischeck();
     };

@@ -377,6 +377,16 @@ Hoot.control.conflicts = function (context, sidebar) {
         return activeFeatureId;
     };
 
+
+    _instance.setProcessing = function(lock, message) {
+        if(lock) {
+            d3.select('body').call(iD.ui.Processing(context,true,message));
+        } else {
+            d3.select('body').call(iD.ui.Processing(context,false));
+        }
+
+    };
+
     _instance.getToolTip = function() {
         return _toolTip;
     }

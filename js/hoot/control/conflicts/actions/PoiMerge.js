@@ -28,15 +28,27 @@ Hoot.control.conflicts.actions.poimerge = function (context)
         _feature = r;
         _againstFeature = ra;
 
+        
+
     	if(doEnable === true){
     		_mergeFeatures = function() {
 		    	if(context.graph().entities[_feature.id] && context.graph().entities[_againstFeature.id]){
-		    		_instance.disableMergeButton(true);
-                    var currentReviewable = _parent().actions.traversereview.getCurrentReviewable();
-		            context.hoot().model.conflicts.autoMergeFeature(
-		              _feature, _againstFeature, currentReviewable.mapId, currentReviewable.relationId
-		            );
+                    try {
+                        _instance.disableMergeButton(true);
+                        var currentReviewable = _parent().actions.traversereview.getCurrentReviewable();
+                        context.hoot().model.conflicts.autoMergeFeature(
+                          _feature, _againstFeature, currentReviewable.mapId, currentReviewable.relationId,
+                          function(){
+                            _parent().setProcessing(false);
+                          }
+                        );
+                    } catch (err) {
+                        _handleError(err, true);
+                    }
+
+    		    		
 		    	} else {
+                    _parent().setProcessing(false);
 		    		iD.ui.Alert("Nothing to merge.",'notice');
 		        	return;
 		    	}
@@ -50,10 +62,16 @@ Hoot.control.conflicts.actions.poimerge = function (context)
     * @desc Performs auto merge
     **/
 	_instance.autoMerge = function() {
-        d3.event.stopPropagation();
-        d3.event.preventDefault();
-        //Overridden in highlightLayer
-        _mergeFeatures();
+        _parent().setProcessing(true, 'Please wait while merging review items.');
+        try{
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
+            //Overridden in highlightLayer
+            _mergeFeatures();
+        } catch (err) {
+            _handleError(err, true);
+        }
+        
     };
 
     /**
@@ -113,6 +131,18 @@ Hoot.control.conflicts.actions.poimerge = function (context)
         }
     }
 
+    /**
+    * @desc Helper function for error handling. Logs error cleans out screen lock and alerts user optionally
+    * @param err - the error message
+    * @param doAlertUser - switch to show user alert
+    **/
+    var _handleError = function(err, doAlertUser) {
+        console.error(err);
+        _parent().setProcessing(false);
+        if(doAlertUser === true) {
+            iD.ui.Alert(err,'error');
+        }
+    }
 
     var _parent = function() {
         return context.hoot().control.conflicts;

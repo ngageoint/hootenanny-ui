@@ -426,7 +426,7 @@ Hoot.model.conflicts = function(context)
             var layerName = feature.layerName;
 
             if (!feature && !featureAgainst) {
-                iD.ui.Alert('Merge error, one feature is missing','error');
+                throw 'Merge error, one feature is missing';
             } else {
                 function doMerge()
                 {
@@ -466,7 +466,7 @@ Hoot.model.conflicts = function(context)
                                     {
                                       console.log(error);
                                       iD.ui.Alert('failed to retrieve review refs.','warning');
-                                      //context.hoot().control.conflicts.setProcessing(false);
+                                      
                                       throw error;
                                     }
 
@@ -565,6 +565,7 @@ Hoot.model.conflicts = function(context)
                                                 }
                                                 catch(loadMissingErr)
                                                 {
+                                                    context.hoot().control.conflicts.setProcessing(false);
                                                     iD.ui.Alert(loadMissingErr,'error');
                                                     console.error(loadMissingErr);
                                                 }
@@ -585,6 +586,7 @@ Hoot.model.conflicts = function(context)
                                 }
                                 catch (getReviewRefsErr)
                                 {
+                                    context.hoot().control.conflicts.setProcessing(false);
                                     iD.ui.Alert(getReviewRefsErr,'error');
                                     console.error(getReviewRefsErr);
                                 }
@@ -599,6 +601,7 @@ Hoot.model.conflicts = function(context)
                     }
                     catch(mergeErr)
                     {
+                        context.hoot().control.conflicts.setProcessing(false);
                         iD.ui.Alert(mergeErr,'error');
                         console.error(mergeErr);
                     }
@@ -622,6 +625,7 @@ Hoot.model.conflicts = function(context)
         }
         catch(err)
         {
+            context.hoot().control.conflicts.setProcessing(false);
             iD.ui.Alert(err,'error');
             console.error(err);
         }

@@ -16,9 +16,10 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
     **/
     _instance.retainFeature = function () {
         try {
-           // Conflict.setProcessing(true);
+            _parent().setProcessing(true, 'Please wait while resolving review item.');
             var vicheck = _vischeck();
             if(!vicheck){
+                _parent().setProcessing(false);
                 return;
             }
             var currentReviewable = _parent().actions.traversereview.getCurrentReviewable();
@@ -43,10 +44,15 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
 
                 var hasChanges = context.history().hasChanges();
                 if (hasChanges) {
-
+                    _parent().setProcessing(false);
                 	iD.modes.Save(context).save(context, function () {
+                        try {
+                            _parent().actions.traversereview.jumpTo('forward');
 
-                    _parent().actions.traversereview.jumpTo('forward');
+                        } catch (err) {
+                            _handleError(err, true);
+                        }
+                        
 
                     });
                 } else {
@@ -56,7 +62,7 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
             	iD.ui.Alert("Nothing to review.",'notice');
             }
         } catch (err) {
-        	iD.ui.Alert(err,'error');
+            _handleError(err, true);
         } finally {
 //            Conflict.setProcessing(false);
         }
@@ -69,16 +75,32 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
     _instance.acceptAll = function(data) {
         var doProceed = true;
 
-        Hoot.model.REST('resolveAllReviews', data.mapId, function (error, response)
-        {
-            _parent().deactivate();
-            d3.select('body').call(iD.ui.Processing(context,true,"Resolving all reviewable features..."));
-            // removed event.acceptAll(data) and brought in to direct call below
-            context.hoot().mode('browse');
-            context.hoot().model.conflicts.acceptAll(data, function () {
-                _parent().reviewNextStep();
+        try{
+            _parent().setProcessing(true, 'Please wait while resolving all review items.');
+            Hoot.model.REST('resolveAllReviews', data.mapId, function (error, response)
+            {
+                try {
+                     _parent().deactivate();
+                    d3.select('body').call(iD.ui.Processing(context,true,"Resolving all reviewable features..."));
+                    // removed event.acceptAll(data) and brought in to direct call below
+                    context.hoot().mode('browse');
+                    context.hoot().model.conflicts.acceptAll(data, function () {
+                        try {
+                            _parent().reviewNextStep();
+                        } catch (err) {
+                            _handleError(err, true);
+                        }
+                        
+                    });
+                } catch (err) {
+                    _handleError(err, true);
+                }
+                   
             });
-        });
+        } catch (err) {
+            _handleError(err, true);
+        }
+    
     }
 
 
@@ -89,6 +111,19 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
         return _parent().vischeck();
     };
 
+
+    /**
+    * @desc Helper function for error handling. Logs error cleans out screen lock and alerts user optionally
+    * @param err - the error message
+    * @param doAlertUser - switch to show user alert
+    **/
+    var _handleError = function(err, doAlertUser) {
+        console.error(err);
+        _parent().setProcessing(false);
+        if(doAlertUser === true) {
+            iD.ui.Alert(err,'error');
+        }
+    }
     var _parent = function() {
         return context.hoot().control.conflicts;
     }
