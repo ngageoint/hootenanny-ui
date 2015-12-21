@@ -265,16 +265,25 @@ Hoot.control.conflicts = function (context, sidebar) {
             _instance.deactivate();
         });
 
-        context.MapInMap.on('zoomPan.conflicts', function() {
-            if (!context.MapInMap.hidden()) {
-                //Populate the map-in-map with review items location and status
-                Hoot.model.REST('ReviewGetGeoJson', _mapid, context.MapInMap.extent(), function (gj) {
-                    context.MapInMap.loadGeoJson(gj.features);
-                });
-            }
-        });
-
+        
+        context.MapInMap.on('zoomPan.conflicts', _instance.loadReviewFeaturesMapInMap);
+        context.map().on('drawn.conflicts', _.debounce(_instance.loadReviewFeaturesMapInMap, 300));
     };
+
+    _instance.loadReviewFeaturesMapInMap = function() {
+        if (!context.MapInMap.hidden()) {
+            //Populate the map-in-map with review items location and status
+            Hoot.model.REST('ReviewGetGeoJson', _mapid, context.MapInMap.extent(), function (gj) {
+                context.MapInMap.loadGeoJson(gj.features.map(function(d) {
+                    var currentReviewable = _instance.actions.traversereview.getCurrentReviewable();
+                    if (d.properties.relationid === currentReviewable.relationId) {
+                        d.properties.class = 'locked'
+                    }
+                    return d;
+                }) || []);
+            });
+        }
+    }
 
     /**
     * @desc This function is to exit from review session and do all clean ups
@@ -329,8 +338,11 @@ Hoot.control.conflicts = function (context, sidebar) {
         d3.select('.review')
             .remove();
         //Clear map-in-map
-        context.MapInMap.loadGeoJson([]);
         context.MapInMap.on('zoomPan.conflicts', null);
+        context.map().on('drawn.conflicts', null);
+        //Have to use timeout because zoomPanHandler
+        //is being debounced below
+        setTimeout(function() { context.MapInMap.loadGeoJson([]); }, 700);
     };
   
 

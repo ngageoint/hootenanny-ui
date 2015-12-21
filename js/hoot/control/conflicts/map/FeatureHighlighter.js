@@ -90,7 +90,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
             _parent().map.featureNavigator.panToEntity(context.entity(panToId));
         }
    
-        
+        _parent().loadReviewFeaturesMapInMap();
     };
 
     /**
