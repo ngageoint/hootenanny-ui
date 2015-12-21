@@ -773,6 +773,23 @@ rest.getExportResources = function(name,callback) {
 };
 
 
+rest.ReviewGetGeoJson = function (mapId, extent, callback) {
+        d3.json('/hoot-services/job/review/allreviewables?mapid=' + mapId
+            + '&minlon=' + (extent[0][0]).toFixed(6)
+            + '&minlat=' + (extent[0][1]).toFixed(6)
+            + '&maxlon=' + (extent[1][0]).toFixed(6)
+            + '&maxlat=' + (extent[1][1]).toFixed(6)
+            , function (error, resp) {
+                if (error) {
+                    iD.ui.Alert("Failed to get review geojson.",'error');
+                    return;
+                }
+                if (callback) {
+                    callback(resp.geojson);
+                }
+        });
+    };
+
 rest.getTranslation = function(name,callback) {
     d3.text('/hoot-services/ingest/customscript/getscript?SCRIPT_NAME='+ name, function (error, resp) {
         if (error) {

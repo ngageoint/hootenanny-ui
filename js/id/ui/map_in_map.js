@@ -231,6 +231,7 @@ iD.ui.MapInMap = function(context) {
                     .attr('class', function(d) {
                         return 'map-in-map-geojson ' + d.properties.class;
                     });
+                d3.select('path.map-in-map-geojson.locked').moveToFront();
             }
         }
 

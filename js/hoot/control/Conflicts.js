@@ -30,7 +30,6 @@
 // Modifications:
 //      18 Dec. 2015
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 Hoot.control.conflicts = function (context, sidebar) {
     var _events = d3.dispatch('exportData', 'addData');
     var _instance = {};
@@ -86,17 +85,18 @@ Hoot.control.conflicts = function (context, sidebar) {
         _confData.isDeleteEnabled = false;
 
         // sidebar review control toggle handler
+
         function toggleForm(self) {
             var cont = self.select('fieldset');
             var text = (cont.classed('hidden')) ? false : true;
             cont.classed('hidden', text);
         }
 
-        
+
         // add the meta data container at the bottom
         var reviewBody = _review.insert('fieldset', 'fieldset')
             .classed('pad1 keyline-left keyline-right keyline-bottom round-bottom fill-white hidden', true);
-        
+
         _instance.info.metadata.activate(reviewBody);
 
 
@@ -105,17 +105,17 @@ Hoot.control.conflicts = function (context, sidebar) {
                 .childNodes)
                 .remove();
         // This is the sidebar item
-        head.classed('button dark animate strong block _icon big check pad2x pad1y js-toggle white', true)
-            .style('text-align','center')
-            .style('color','#fff')
-            .text('Complete Review')
-            .on('click', function () {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
+            head.classed('button dark animate strong block _icon big check pad2x pad1y js-toggle white', true)
+                .style('text-align','center')
+                .style('color','#fff')
+                .text('Complete Review')
+                .on('click', function () {
+                    d3.event.stopPropagation();
+                    d3.event.preventDefault();
                 toggleForm(_review, this);
-            });
+                });
 
-       
+
 
         // create link Accept all in sidebar
         _reviewOptions = _review.selectAll('fieldset')
@@ -149,9 +149,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             .html(function () {
                 return '<strong class="review-note">Initialzing...</strong>';
             });
-
         _instance.info.metadata.setNoteContainer(meta);
-
         var da = [{
             id: 'resolved',
             name: _confData.layers[1],
@@ -238,7 +236,6 @@ Hoot.control.conflicts = function (context, sidebar) {
               // We need this delay for iD to have time to add way for adjusting
               // graph history. If you click really fast, request out paces the process
               // and end up with error where entity is not properly deleted.
-
               // @TODO: remove timer and replace with event if possible...
               setTimeout(function () {
                 _btnEnabled = true;
@@ -263,16 +260,16 @@ Hoot.control.conflicts = function (context, sidebar) {
         //Register listener for review layer cleanup
         context.hoot().control.view.on('layerRemove.conflicts', function (layerName, isPrimary) {
             _instance.deactivate();
+
         });
 
-        
         context.MapInMap.on('zoomPan.conflicts', _instance.loadReviewFeaturesMapInMap);
         context.map().on('drawn.conflicts', _.debounce(_instance.loadReviewFeaturesMapInMap, 300));
     };
 
     _instance.loadReviewFeaturesMapInMap = function() {
-        if (!context.MapInMap.hidden()) {
-            //Populate the map-in-map with review items location and status
+            if (!context.MapInMap.hidden()) {
+                //Populate the map-in-map with review items location and status
             Hoot.model.REST('ReviewGetGeoJson', _mapid, context.MapInMap.extent(), function (gj) {
                 context.MapInMap.loadGeoJson(gj.features.map(function(d) {
                     var currentReviewable = _instance.actions.traversereview.getCurrentReviewable();
@@ -281,8 +278,8 @@ Hoot.control.conflicts = function (context, sidebar) {
                     }
                     return d;
                 }) || []);
-            });
-        }
+                });
+            }
     }
 
     /**
@@ -344,7 +341,8 @@ Hoot.control.conflicts = function (context, sidebar) {
         //is being debounced below
         setTimeout(function() { context.MapInMap.loadGeoJson([]); }, 700);
     };
-  
+
+
 
     /**
     * @desc checks for review class existence
@@ -356,7 +354,6 @@ Hoot.control.conflicts = function (context, sidebar) {
         }
         return exist;
     };
-
 
     /**
     * @desc current map id
@@ -375,7 +372,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         if(vis.length>1){
             iD.ui.Alert('Swap to Conflated Layer before accepting!','warning');
             return false;
-        }
+            }
         return true;
     };
 
@@ -385,24 +382,22 @@ Hoot.control.conflicts = function (context, sidebar) {
         var activeFeatureId = null;
         if(cols[colIdx]) {
             activeFeatureId = cols[colIdx].id;
-        }
+            }
         return activeFeatureId;
     };
-
 
     _instance.setProcessing = function(lock, message) {
         if(lock) {
             d3.select('body').call(iD.ui.Processing(context,true,message));
         } else {
             d3.select('body').call(iD.ui.Processing(context,false));
-        }
+            }
 
     };
 
     _instance.getToolTip = function() {
         return _toolTip;
-    }
-
+        }
     /**
     * @desc This cleans up all class variable. If not clean then it will get resued
     * when we load conflict UI..
@@ -412,8 +407,6 @@ Hoot.control.conflicts = function (context, sidebar) {
         _review = undefined;
         _reviewOptions = undefined;
         _btnEnabled = true;
-
-
     }
 
     /**

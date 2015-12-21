@@ -145,7 +145,12 @@ Hoot.model.folders = function (context)
 
     model_folders.duplicateFolderCheck = function(folder){
         // Make sure that a folder at same level does not exist with same name
-        if(!_.isEmpty(_.findWhere(hoot.model.folders.getAvailFolders(),{name:folder.name,parentId:folder.parentId}))){
+        // Check regardless of upper/lower case
+        var folderList = _.each(_.map(hoot.model.folders.getAvailFolders(),_.clone),function(e){
+            e.name = e.name.toLowerCase();
+        });
+
+        if(!_.isEmpty(_.findWhere(folderList,{name:folder.name.toLowerCase(),parentId:folder.parentId}))){
             return "Please use a different name, as you are about to create a folder with a name identical to a folder at the same level.";
         } else {return true;}
     }
