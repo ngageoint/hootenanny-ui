@@ -131,7 +131,10 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                                 _exitReviewSession();
                             }
                         } finally {
-                           _parent().setProcessing(false);
+                            // removing this since when connection is
+                            // done loading tiles we will set Processing to false
+                           //_parent().setProcessing(false);
+
                         }
                     });
      

@@ -1,7 +1,8 @@
 //TODO: Document why this was modified for Hoot
 iD.Connection = function(context) {
 
-    var event = d3.dispatch('authenticating', 'authenticated', 'auth', 'loading', 'load', 'loaded', 'layer', 'layerAdding', 'layerAdded','tileAdded'),
+    var event = d3.dispatch('authenticating', 'authenticated', 'auth', 'loading', 'load', 'loaded', 'layer'
+        , 'layerAdding', 'layerAdded','tileAdded', 'reviewLayerAdded'),
         url = (context && iD.data.hootConfig) ? iD.data.hootConfig.url : 'http://www.openstreetmap.org',
         connection = {},
         inflight = {},
@@ -923,6 +924,11 @@ iD.Connection = function(context) {
 
             lastShowBBox = currShowBbox;
 
+            if(context.hoot().control.conflicts && 
+                    context.hoot().control.conflicts.isConflictReviewExist() && 
+                    tiles.length == 0){
+                event.reviewLayerAdded(null, true);
+            }
             tiles.forEach(function (tile) {
                 var mapId = tile.mapId || mapId;
                 var layerName = tile.layerName || layerName;
@@ -932,7 +938,30 @@ iD.Connection = function(context) {
                     return layer.mapId === mapId;
                 });
 
-                if (!vis) return;
+                if (!vis) {
+                    event.reviewLayerAdded(layerName, false);
+                    return;
+                } 
+
+                if(context.hoot().control.conflicts && 
+                    context.hoot().control.conflicts.isConflictReviewExist()){
+                    // if all tiles are already loded then let review know
+                    var foundUnloaded = false;
+                    for(var ii=0; ii<tiles.length; ii++){
+                        var t = tiles[ii];
+                        var id = t.id + ',' + mapId;
+                        if (!loadedTiles[id]){
+                            foundUnloaded = true;
+                           break;
+                        }
+                    }
+                    if(!foundUnloaded){
+                        event.reviewLayerAdded(layerName, false);
+                    }
+
+                }
+     
+
                 var id = tile.id + ',' + mapId;
                 if (loadedTiles[id] || inflight[id]){
                     if(callback){
@@ -988,6 +1017,10 @@ iD.Connection = function(context) {
                                     }
                                 } else {
                                     connection.showDensityRaster(false);
+                                }
+                                if(context.hoot().control.conflicts && 
+                                    context.hoot().control.conflicts.isConflictReviewExist()){
+                                    event.reviewLayerAdded(layerName, false);
                                 }
                                 if(callback){
                                     callback();

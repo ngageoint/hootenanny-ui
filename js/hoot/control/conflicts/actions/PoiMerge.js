@@ -79,14 +79,7 @@ Hoot.control.conflicts.actions.poimerge = function (context)
     * @param doDisable - switch
     **/
     _instance.disableMergeButton = function (doDisable){
-        var btn = d3.select('.merge');
-        if(btn){
-            if(doDisable === true){
-                btn.classed('hide', true);
-            } else {
-                btn.classed('hide', false);
-            }
-        }
+        d3.select('.merge').classed('hide', doDisable);
     };
 
     /**

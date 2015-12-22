@@ -47,6 +47,9 @@ Hoot.control.conflicts.map.featureNavigator = function (context)
     		return;
     	}
 
+        // we are locking screen until connection.js is done loading tiles
+        _parent().setProcessing(false);
+        _parent().setProcessing(true, 'Please wait while panning to next review item.');
     	if(force && force === true){
     		map.extent(entityExtent);
     		map.center(entityCenter);
@@ -61,6 +64,10 @@ Hoot.control.conflicts.map.featureNavigator = function (context)
             }
         }
     }
+
+    var _parent = function() {
+        return context.hoot().control.conflicts;
+    };
 
 	return d3.rebind(_instance, _events, 'on');
 }

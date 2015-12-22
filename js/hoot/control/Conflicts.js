@@ -71,7 +71,19 @@ Hoot.control.conflicts = function (context, sidebar) {
         _review.append('a')
             .classed('button dark animate strong block big pad2x pad1y js-toggle white', true)
             .style('text-align','left')
-            .html('<div class="margin2 inline _loadingSmall"><span></span></div>' + '<span class="strong">Checking for reviewable features...&#8230;</span>');
+            .html('<div class="margin2 inline _loadingSmall"><span></span></div>' + 
+                '<span class="strong">Checking for reviewable features...&#8230;</span>');
+
+        context.connection().on('reviewLayerAdded', function (layerName, force) {
+            if(force === true) {
+                _instance.setProcessing(false);
+            } else {
+                var confLayerName = context.hoot().model.layers.getNameBymapId(_mapid);
+                if(layerName === confLayerName) {
+                    _instance.setProcessing(false);
+                }
+            }
+        });
         return _review;
     };
 
@@ -334,6 +346,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         d3.select('.hootTags').remove();
         d3.select('.review')
             .remove();
+
         //Clear map-in-map
         context.MapInMap.on('zoomPan.conflicts', null);
         context.map().on('drawn.conflicts', null);
@@ -376,7 +389,10 @@ Hoot.control.conflicts = function (context, sidebar) {
         return true;
     };
 
-
+    /**
+    * @desc  gets active review item
+    * @param coldIdx - table column index
+    **/
     _instance.activeConflict = function(colIdx){
         var cols = _instance.info.reviewtable.poiTableCols();
         var activeFeatureId = null;
@@ -386,14 +402,27 @@ Hoot.control.conflicts = function (context, sidebar) {
         return activeFeatureId;
     };
 
+    /**
+    * @desc Locks up the screen while processing
+    * @param lock - lock switch
+    * @param message - message to show during lock 
+    **/
     _instance.setProcessing = function(lock, message) {
         if(lock) {
             d3.select('body').call(iD.ui.Processing(context,true,message));
+            _screenLockFree();
         } else {
             d3.select('body').call(iD.ui.Processing(context,false));
             }
 
     };
+
+    /**
+    * @desc make sure that screen does not get locked up forever
+    **/
+    _screenLockFree = _.debounce(function(){
+        d3.select('body').call(iD.ui.Processing(context,false));
+    },10000);
 
     _instance.getToolTip = function() {
         return _toolTip;
@@ -413,6 +442,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         _instance.actions.reset();
         _instance.info.reset();
         _instance.map.reset();
+        _instance.reviewIds = null;
     }
 
     /**

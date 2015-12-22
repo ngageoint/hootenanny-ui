@@ -172,7 +172,7 @@ iD.modes.Save = function(context) {
                             if(isReviewing === true){
                                 showErrors(
                                     function(){
-                                        context.hoot().control.conflicts.gotoNext();
+                                        context.hoot().control.conflicts.actions.traversereview.gotoNext();
                                     }
                                     
                                 );
