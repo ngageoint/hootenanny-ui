@@ -1911,7 +1911,7 @@ Hoot.control.utilities.dataset = function(context) {
 						param.INPUT_NAME = d.name;
 						
 						var uniquename = false;
-						var name = d.name + '_clip';
+                        var name = d3.select('#row-' + d.name).select('div .LayerName').value();
 						var i = 1;
 						while (uniquename==false){
 							if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
