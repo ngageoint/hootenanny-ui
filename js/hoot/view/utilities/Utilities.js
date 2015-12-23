@@ -112,7 +112,7 @@ Hoot.view.utilities = function (context){
             .append('div')
             .attr('href', '#jobs')
             .classed('point pad2 block keyline-left _icon dark strong small sprocket', true)
-            .text('Settings')
+            .text('Manage')
             .on('click', function () {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
