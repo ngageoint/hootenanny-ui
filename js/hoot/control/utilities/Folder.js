@@ -525,6 +525,18 @@ Hoot.control.utilities.folder = function(context) {
                     
                     d3.select(this).attr('readonly',true);                        
                 }
+
+                if(a.type=='NewFolderName'){
+                    d3.select(this).on('change',function(){
+                        //ensure output name is valid
+                        var resp = context.hoot().checkForUnallowedChar(this.value);
+                        if(resp != true){
+                            d3.select(this).classed('invalidName',true).attr('title',resp);
+                        } else {
+                            d3.select(this).classed('invalidName',false).attr('title',null);
+                        }
+                    });
+                }
             });
 
         	var folderId = 0;
@@ -541,6 +553,8 @@ Hoot.control.utilities.folder = function(context) {
             .classed('inline row1 fl col10 pad1y', true)
                 .text('Add Folder')
                 .on('click', function () {
+                    if(!d3.selectAll('.invalidName').empty()){return;}
+
                     //check if layer with same name already exists...
                 	if(_form.select('.reset.NewFolderName').value()=='' || _form.select('.reset.NewFolderName').value()==_form.select('.reset.NewFolderName').attr('placeholder')){
                 		iD.ui.Alert("Please enter an output folder name.",'warning');
@@ -656,6 +670,17 @@ Hoot.control.utilities.folder = function(context) {
 	                    	.call(comboPathName);
 	                    
 	                    d3.select(this).attr('readonly',true); 
+	                } else {
+	                	// Show if invalid entry
+	                	d3.select(this).on('change',function(){
+							//ensure output name is valid
+							var resp = context.hoot().checkForUnallowedChar(this.value);
+							if(resp != true){
+								d3.select(this).classed('invalidName',true).attr('title',resp);
+							} else {
+								d3.select(this).classed('invalidName',false).attr('title',null);
+							}
+	                	});
 	                }
 	            });
 
@@ -666,6 +691,8 @@ Hoot.control.utilities.folder = function(context) {
 	        .classed('inline row1 fl col10 pad1y', true)
 	            .text('Update')
 	            .on('click', function () {
+					if(!d3.selectAll('.invalidName').empty()){return;}
+
 	            	var pathname = _form.select('.pathname').value()
 	                if(pathname==''){pathname=_form.select('.pathname').attr('placeholder');}
 	                if(pathname=='root'){pathname='';}
