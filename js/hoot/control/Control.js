@@ -64,7 +64,17 @@ Hoot.control = function (context){
                         return 'reset ' + field.type;
                     })
                     .select(function (a) {
-
+                        if(a.label=='Output Name'){
+                            d3.select(this).on('change',function(){
+                                //ensure output name is valid
+                                var resp = context.hoot().checkForUnallowedChar(this.value);
+                                if(resp != true){
+                                    d3.select(this).classed('invalidName',true).attr('title',resp);
+                                } else {
+                                    d3.select(this).classed('invalidName',false).attr('title',null);
+                                }
+                            });
+                        }
                     });
 
                 var submitExp = modalDiv.append('div')
@@ -76,6 +86,7 @@ Hoot.control = function (context){
                     .classed('inline row1 fl col10 pad1y', true)
                     .text(btnMetaData.label)
                     .on('click', function () {
+                        if(!d3.selectAll('.invalidName').empty()){return;}
                         btnMetaData.action(modalbg, submitExp, _form);
                     });
 

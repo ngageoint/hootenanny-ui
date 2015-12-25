@@ -135,6 +135,18 @@ Hoot.control.utilities.dataset = function(context) {
                     		checkForTemplate();
                     	});
                 }
+
+                if(a.label=='Output Name'){
+                    d3.select(this).on('change',function(){
+                        //ensure output name is valid
+                        var resp = context.hoot().checkForUnallowedChar(this.value);
+                        if(resp != true){
+                            d3.select(this).classed('invalidName',true).attr('title',resp);
+                        } else {
+                            d3.select(this).classed('invalidName',false).attr('title',null);
+                        }
+                    });
+                }
             });;
 
         var submitExp = ingestDiv.append('div')
@@ -144,6 +156,8 @@ Hoot.control.utilities.dataset = function(context) {
         .classed('inline row1 fl col10 pad1y', true)
             .text('Export')
             .on('click', function () {
+                if(!d3.selectAll('.invalidName').empty()){return;}
+
 
                 var spin = submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true);
                 context.hoot().model.export.exportData(_form, dataset, function(status){
@@ -409,6 +423,18 @@ Hoot.control.utilities.dataset = function(context) {
 	                    
 	                    d3.select(this).attr('readonly',true); 
 	                }
+
+                    if(a.type=='newfoldername' || a.type=='fileOutputName'){
+                        d3.select(this).on('change',function(){
+                            //ensure output name is valid
+                            var resp = context.hoot().checkForUnallowedChar(this.value);
+                            if(resp != true){
+                                d3.select(this).classed('invalidName',true).attr('title',resp);
+                            } else {
+                                d3.select(this).classed('invalidName',false).attr('title',null);
+                            }
+                        });
+                    }
 	            });
 
 	        var submitExp = ingestDiv.append('div')
@@ -418,6 +444,8 @@ Hoot.control.utilities.dataset = function(context) {
 	        .classed('inline row1 fl col10 pad1y', true)
 	            .text('Update')
 	            .on('click', function () {
+                    if(!d3.selectAll('.invalidName').empty()){return;}
+
 	            	var pathname = _form.select('.pathname').value();
 	            	if(pathname==''){pathname=_form.select('.pathname').attr('placeholder');}
                     if(pathname=='root'){pathname='';}
@@ -619,6 +647,17 @@ Hoot.control.utilities.dataset = function(context) {
                     return 'reset ' + field.type;
                 })
                 .select(function (a) {
+                    if(a.type=='LayerName' || a.type == 'NewFolderName'){
+                        d3.select(this).on('change',function(){
+                            //ensure output name is valid
+                            var resp = context.hoot().checkForUnallowedChar(this.value);
+                            if(resp != true){
+                                d3.select(this).classed('invalidName',true).attr('title',resp);
+                            } else {
+                                d3.select(this).classed('invalidName',false).attr('title',null);
+                            }
+                        });
+                    }
 
                     function getTypeName(desc){
                         var comboData = _form.select('.reset.importImportType').datum();
@@ -938,6 +977,8 @@ Hoot.control.utilities.dataset = function(context) {
                     .text('Import')
                     .on('click', function () {
                         //check if layer with same name already exists...
+                        if(!d3.selectAll('.invalidName').empty()){return;}
+
                     	if(_form.select('.reset.LayerName').value()=='' || _form.select('.reset.LayerName').value()==_form.select('.reset.LayerName').attr('placeholder')){
                     		iD.ui.Alert("Please enter an output layer name.",'warning');
                             return;
@@ -1214,9 +1255,11 @@ Hoot.control.utilities.dataset = function(context) {
          	.classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
          	.text('Import')
             .on('click', function () {
-            	//remove any existing progress info
+                //remove any existing progress info
             	d3.select('#importprogress').remove();
             	d3.select('#importprogdiv').remove();
+
+                if(!d3.selectAll('.invalidName').empty()){return;}
             	
             	var progcont = submitExp.append('div');
                 progcont.classed('form-field', true);
@@ -1410,7 +1453,19 @@ Hoot.control.utilities.dataset = function(context) {
 		    .attr('row',rowNum)
 		    .attr('placeholder',function(d){return d.placeholder})
 		    .select(function (a) {
-		    	function getTypeName(desc){
+                if(a.type=='LayerName'){
+                    d3.select(this).on('change',function(){
+                        //ensure output name is valid
+                        var resp = context.hoot().checkForUnallowedChar(this.value);
+                        if(resp != true){
+                            d3.select(this).classed('invalidName',true).attr('title',resp);
+                        } else {
+                            d3.select(this).classed('invalidName',false).attr('title',null);
+                        }
+                    });
+                }
+
+                function getTypeName(desc){
                     var comboData = _form.select('.reset.importImportType').datum();
                     var typeName = "";
                     for(i=0; i<comboData.combobox2.length; i++){
@@ -1822,7 +1877,6 @@ Hoot.control.utilities.dataset = function(context) {
 						
 						d3.select(this).on('change',function(){
 							//ensure output name is valid
-							console.log(this);
 							var resp = context.hoot().checkForUnallowedChar(this.value);
 							if(resp != true){
 								d3.select(this).classed('invalidName',true).attr('title',resp);

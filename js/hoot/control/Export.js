@@ -149,6 +149,18 @@ Hoot.control.export = function (sidebar) {
 	                		checkForTemplate();
 	                	});
                 }   
+
+                if(a.label=='Output Name'){
+                    d3.select(this).on('change',function(){
+                        //ensure output name is valid
+                        var resp = context.hoot().checkForUnallowedChar(this.value);
+                        if(resp != true){
+                            d3.select(this).classed('invalidName',true).attr('title',resp);
+                        } else {
+                            d3.select(this).classed('invalidName',false).attr('title',null);
+                        }
+                    });
+                }
             });
         
         function checkForTemplate(){
