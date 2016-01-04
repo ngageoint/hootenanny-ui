@@ -66,7 +66,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
             var hasChange = context.history().hasChanges();
             if(hasChange === true) {
                 _parent().setProcessing(false);
-                iD.ui.Alert('Please resolve or undo the current feature' + 
+                iD.ui.Alert('Please resolve or undo the current feature ' + 
                     'changes before proceeding to the next review.', 'warning');
                 return;
             }
