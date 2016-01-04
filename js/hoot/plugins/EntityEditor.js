@@ -301,12 +301,14 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
             var lyrName = resp.attrs['HGIS_Layer'];
             var fType = resp.attrs['TYPE1'];
 
-            var rawCurFields = JSON.parse(resp.fields).columns;
-            curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs)   
-            
-            var newPreset = me.createPresetByName(curGeom, fType, currentTranslation, lyrName);
+            // handle HGIS translation
+            if(lyrName && fType) {
+                var rawCurFields = JSON.parse(resp.fields).columns;
+                curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs)   
+                
+                var newPreset = me.createPresetByName(curGeom, fType, currentTranslation, lyrName);
 
-            curPreset = context.presets().addPreset(currentTranslation + '/' + fCode, newPreset);
+                curPreset = context.presets().addPreset(currentTranslation + '/' + fCode, newPreset);
 
                 curPreset.fields = [];
                 me.allTranslatedFields = [];
@@ -344,7 +346,17 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
 
                 });    
                 transInfo.transType = currentTranslation;
-                transInfo.name = name;                
+                transInfo.name = name; 
+            } else {
+                // Don't know what to do so empty it out
+                me.defaultTags = {};
+                me.defaultRawTags = {};
+                transInfo = {};
+                me.allTranslatedFields = {};
+                me.allTransTags = {};
+            }
+
+                   
         }
 
         // create entity editor body
