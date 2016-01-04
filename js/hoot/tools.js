@@ -437,6 +437,7 @@ Hoot.tools = function (context, selection) {
                                     d3.selectAll('.loadingLayer').remove();
                                     d3.selectAll('.hootImport').remove();
                                     d3.selectAll('.hootView').remove();
+                                    d3.selectAll('.hootConflate').remove();
                                     //renderMergedLayer(layerName);
                                     // Broke a part renderMergedLayer
                                     // The fix was to handle where loading source layers
