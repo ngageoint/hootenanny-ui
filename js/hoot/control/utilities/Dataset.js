@@ -1965,7 +1965,7 @@ Hoot.control.utilities.dataset = function(context) {
 						param.INPUT_NAME = d.name;
 						
 						var uniquename = false;
-                        var name = d3.select('#row-' + d.name).select('div .LayerName').value();
+                        var name = d3.select('#row-' + d.name).select('div .LayerName').value() || d3.select('#row-' + d.name).select('div .LayerName').attr('placeholder');
 						var i = 1;
 						while (uniquename==false){
 							if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
@@ -1986,6 +1986,8 @@ Hoot.control.utilities.dataset = function(context) {
 						if(clipType=='visualExtent'){param.BBOX = id.map().extent().toString();}
 						else if(clipType=='boundingBox'){param.BBOX=rect;}
 						
+                        param.PATH_NAME = d3.select('#row-' + d.name).select('div .PathName').value() || d3.select('#row-' + d.name).select('div .PathName').attr('placeholder') || 'root';
+
 						params.push(param); 
 					});
 					
