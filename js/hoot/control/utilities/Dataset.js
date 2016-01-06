@@ -1969,7 +1969,7 @@ Hoot.control.utilities.dataset = function(context) {
 						var i = 1;
 						while (uniquename==false){
 							if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
-								name = d.name + '_clip_' + i.toString();
+								name = name + '_clip_' + i.toString();
 								i++;
 							} else {
 								uniquename = true;
