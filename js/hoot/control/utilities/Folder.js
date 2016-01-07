@@ -169,14 +169,15 @@ Hoot.control.utilities.folder = function(context) {
 	  		})
 	  		.attr('text-anchor','end')
 	  		.text(function(d) { 
-	  			if(Math.abs(d.size) < 1000) {return d.size + ' B';}
+	  			var _size = d.size;
+	  			if(Math.abs(_size) < 1000) {return _size + ' B';}
 	  			var units = ['kB','MB','GB','TB','PB','EB','ZB','YB'];
 	  			var u = -1;
 	  			do {
-	  				d.size /= 1000;
+	  				_size /= 1000;
 	  		        ++u;
-	  		    } while(Math.abs(d.size) >= 1000 && u < units.length - 1);
-	  		    return d.size.toFixed(1)+' '+units[u];
+	  		    } while(Math.abs(_size) >= 1000 && u < units.length - 1);
+	  		    return _size.toFixed(1)+' '+units[u];
 			});	  
 	      
 	      var nodeg = nodeEnter.append("g");
