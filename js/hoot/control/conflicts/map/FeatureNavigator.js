@@ -49,7 +49,7 @@ Hoot.control.conflicts.map.featureNavigator = function (context)
 
         // we are locking screen until connection.js is done loading tiles
         _parent().setProcessing(false);
-        _parent().setProcessing(true, 'Please wait while panning to next review item.');
+        _parent().setProcessing(true, 'Please wait while panning to review item.');
     	if(force && force === true){
     		map.extent(entityExtent);
     		map.center(entityCenter);
