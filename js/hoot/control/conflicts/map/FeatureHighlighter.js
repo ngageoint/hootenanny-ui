@@ -9,6 +9,8 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      18 Dec. 2015
+//      8 Jan. 2016
+//          - added moveFront and _moveFrontRecursive to fix hootenanny-ui/issues/122
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Hoot.control.conflicts.map.featurehighlighter = function (context)
@@ -99,6 +101,36 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     _instance.resetHighlight = function(){
         d3.selectAll('.activeReviewFeature').classed('activeReviewFeature', false);
         d3.selectAll('.activeReviewFeature2').classed('activeReviewFeature2', false);
+    }
+
+    /**
+    * @desc Resets hightlights and move front
+    **/
+    _instance.moveFront = function(){
+        if(context.hoot().mode()==='edit'){
+            var activeConflict = _parent().activeConflict(0);
+            if(!activeConflict){return;}
+            var activeConflictReviewItem = _parent().activeConflict(1);
+            _moveFrontRecursive(activeConflictReviewItem, 'activeReviewFeature2');
+            _moveFrontRecursive(activeConflict, 'activeReviewFeature');
+        }
+    }
+
+    /**
+    * @desc Recursively re highlight and move each feature front for relation members
+    **/
+    var _moveFrontRecursive = function(fid, className) {
+        var f = context.hasEntity(fid);
+        if(f){
+            if(f.type === 'relation') {
+                for(var i=0; i<f.members.length; i++){
+                    _moveFrontRecursive(f.members[i].id, className);
+                }
+            } else {
+               d3.selectAll('.' + fid).classed('tag-hoot ' + className, true).moveToFront();
+            }
+        }
+            
     }
 
     var _parent = function() {
