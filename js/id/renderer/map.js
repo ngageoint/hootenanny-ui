@@ -165,17 +165,6 @@ iD.Map = function(context) {
         }
 
 
-        if (typeof context.hoot === 'function') {
-            if(context.hoot().mode()==='edit'){
-                var activeConflict = context.hoot()._conflicts.activeConflict(0);
-                if(!activeConflict){return;}
-                //FIXME: got to be a better way to get active conflict items
-                var activeConflictReviewItem = context.hoot()._conflicts.activeConflict(1);
-                d3.selectAll('.' + activeConflictReviewItem).classed('tag-hoot activeReviewFeature2', true).moveToFront();
-                d3.selectAll('.' + activeConflict).classed('tag-hoot activeReviewFeature', true).moveToFront();
-            }
-        }
-
         dispatch.drawn({full: true});
         //TODO: Document why this was added for Hoot
         dispatch.drawVector();

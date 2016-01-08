@@ -84,6 +84,11 @@ Hoot.control.conflicts = function (context, sidebar) {
                 }
             }
         });
+
+        context.map().on('drawn', function(){
+            _instance.map.featurehighlighter.moveFront();
+        });
+
         return _review;
     };
 
@@ -347,6 +352,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         d3.select('.review')
             .remove();
 
+        context.map().on('drawn', null);
         //Clear map-in-map
         context.MapInMap.on('zoomPan.conflicts', null);
         context.map().on('drawn.conflicts', null);
