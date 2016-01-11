@@ -212,7 +212,7 @@ Hoot.control.view = function (container, context) {
                     context.hoot().model.layers.changeLayerCntrlBtnColor(options.mapId.toString(), selColor);
                     event.layerColor(options.name, selColor, options.mapId);
                     if(context.hoot().control.conflate){
-                        context.hoot().control.conflate.changeSymbology(options.name);
+                        context.hoot().control.conflate.symbology.changeSymbology(options.name);
                     }
 
                 }
