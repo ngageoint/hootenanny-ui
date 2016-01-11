@@ -367,11 +367,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     * @desc checks for review class existence
     **/
     _instance.isConflictReviewExist = function() {
-        var exist = false;
-        if(d3.select('.conflicts')){
-            exist = true;
-        }
-        return exist;
+        return !(d3.select('#conflicts-container').empty());
     };
 
     /**
