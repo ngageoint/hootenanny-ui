@@ -385,7 +385,8 @@ span.logo{
 	clear:both;
 	margin-left:10px;
 	float:right;
-	right:0;
+	right:45;
+  top:130px;
 }
 
 .alertDiv {

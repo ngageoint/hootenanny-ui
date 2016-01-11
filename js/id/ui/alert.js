@@ -21,7 +21,7 @@ iD.ui.Alert = function(message,type) {
     if(type=='success'){alertDiv.classed('green',true);}
     
     alertDiv.append('div')
-		.classed('fr _icon x point', true)
+		.classed('fr _icon x dark point', true)
 		.on('click',function() {this.parentNode.remove();});
 	
 	alertDiv.append('h3').text(message);
