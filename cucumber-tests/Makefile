@@ -12,6 +12,7 @@ HOOT_OPTS+= -D osm2ogr.ops=hoot::DecomposeBuildingRelationsVisitor
 HOOT_OPTS+= -D services.db.writer.overwrite.map=true -D services.db.writer.create.user=true
 HOOT_OPTS+= -D "services.db.writer.email=test@test.com" -D "services.db.reader.email=test@test.com"
 
+DB_URL=postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)
 
 
 test: tmp/TestRun.log
