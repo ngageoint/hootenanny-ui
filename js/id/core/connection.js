@@ -1003,16 +1003,18 @@ iD.Connection = function(context) {
                                 if(totalNodesCnt > maxNodesCnt){
                                     connection.showDensityRaster(true);
 
-                                    if (context.hoot().control.conflicts.reviewIds) {
+                                    if (context.hoot().control.conflicts.isConflictReviewExist()) {
                                         // When zoomed out during review load reviewable items and the dependent relations
-                                        context.loadMissing(context.hoot().control.conflicts.reviewIds, function(err, entities) {
+                                        var currReviewable = context.hoot().control.conflicts.actions.traversereview.getCurrentReviewable();
+                                         context.hoot().control.conflicts.actions.idgraphsynch.getRelationFeature
+                                            (currReviewable.mapId, currReviewable.relationId, function(newReviewItem){
+                                            
                                             context.hoot().model.conflicts.loadMissingFeatureDependencies(mapId, 
                                                 layerName, context.hoot().control.conflicts.reviewIds, function(error){
                                                 event.loaded();
                                                 event.layerAdded(layerName);
-                                            });                                            
-                                            
-                                        }, layerName);
+                                            });     
+                                        });
 
                                     }
                                 } else {
