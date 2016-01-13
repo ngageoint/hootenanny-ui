@@ -208,7 +208,7 @@ Hoot.control.conflate = function (sidebar) {
         });
 
         if(commonId!=0){
-          var match = _.findWhere(folderList,{id:commonId});
+          var match = _.findWhere(a.combobox.data,{id:commonId});
           if(match){
               if(match){
                   d3.select(this).value(match.folderPath)
