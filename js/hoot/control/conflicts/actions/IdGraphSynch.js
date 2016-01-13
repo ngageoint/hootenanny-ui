@@ -236,7 +236,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             if(nMemCnt === 1){
                 _parent().actions.poimerge.disableMergeButton(true);
             }
-            _parent().map.featureNavigator.panToEntity(f, true);
+            //_parent().map.featureNavigator.panToEntity(f, true);
             fnc(f);
         } else {
             iD.ui.Alert('There are no members in the review relation.','warning');
