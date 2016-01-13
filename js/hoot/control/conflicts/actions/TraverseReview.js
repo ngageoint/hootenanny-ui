@@ -111,9 +111,6 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                                     _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
                                         newReviewItem.members[1]);
 
-                                    // Move this to proper location since highlightLayer is timer asynch
-                                    _parent().map.featureNavigator.panToEntity(newReviewItem, 
-                                        true);
                                 });
 
                             } else {

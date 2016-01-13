@@ -39,6 +39,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     var _btnEnabled = true;
     var _mapid;
     var _too1Tip;
+    var _timeout;
 
 
     /**
@@ -220,11 +221,11 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         // hotkey bindings
         var keybinding = d3.keybinding('conflicts')
-        .on(da[0].cmd, function() { d3.event.preventDefault(); da[0].action(); })
-        .on(da[1].cmd, function() { d3.event.preventDefault(); da[1].action(); })
-        .on(da[2].cmd, function() { d3.event.preventDefault(); da[2].action(); })
-        .on(da[3].cmd, function() { d3.event.preventDefault(); da[3].action(); })
-        .on(da[4].cmd, function() { d3.event.preventDefault(); da[4].action(); })
+        .on(da[0].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[0]); })
+        .on(da[1].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[1]); })
+        .on(da[2].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[2]); })
+        .on(da[3].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[3]); })
+        .on(da[4].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[4]); })
         ;
 
         d3.select(document)
@@ -283,6 +284,9 @@ Hoot.control.conflicts = function (context, sidebar) {
         context.MapInMap.on('zoomPan.conflicts', _instance.loadReviewFeaturesMapInMap);
         context.map().on('drawn.conflicts', _.debounce(_instance.loadReviewFeaturesMapInMap, 300));
     };
+
+
+    
 
     _instance.loadReviewFeaturesMapInMap = function() {
             if (!context.MapInMap.hidden()) {
@@ -411,20 +415,29 @@ Hoot.control.conflicts = function (context, sidebar) {
     **/
     _instance.setProcessing = function(lock, message) {
         if(lock) {
-            d3.select('body').call(iD.ui.Processing(context,true,message));
-            _screenLockFree();
-        } else {
-            d3.select('body').call(iD.ui.Processing(context,false));
+            if(d3.selectAll('#processingDiv').empty() === true) {
+                d3.select('body').call(iD.ui.Processing(context,true,message));
+            } else {
+                d3.select('#processingDivLabel').text(message);
             }
-
+            _screenLockFree(10000);
+        } else {
+            _screenLockFree(700);
+        }
     };
 
     /**
     * @desc make sure that screen does not get locked up forever
     **/
-    _screenLockFree = _.debounce(function(){
-        d3.select('body').call(iD.ui.Processing(context,false));
-    },10000);
+    _screenLockFree = function(delay){
+        if(_timeout){
+            clearTimeout(_timeout);
+        }
+        _timeout = setTimeout(function(){
+            _timeout = null;
+            d3.select('body').call(iD.ui.Processing(context,false));
+        },delay)
+    }
 
     _instance.getToolTip = function() {
         return _toolTip;
@@ -440,11 +453,23 @@ Hoot.control.conflicts = function (context, sidebar) {
 		_btnEnabled = true;
 		_mapid = undefined
 		_too1Tip = undefined;
+        _timeout = undefined;
 
         _instance.actions.reset();
         _instance.info.reset();
         _instance.map.reset();
         _instance.reviewIds = null;
+    }
+
+    /**
+    * @desc Hotkey callback wrapper function with lock validation
+    * @param da - action data object
+    **/
+    var _callHotkeyAction = function(da) {
+        if(d3.selectAll('#processingDiv').empty() === false) {
+            return;
+        }
+        da.action();
     }
 
     /**

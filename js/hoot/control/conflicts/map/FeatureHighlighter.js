@@ -89,7 +89,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         _parent().reviewIds.push(relId);
         _parent().info.metadata.updateMeta(null);
         if(panToId) {
-            _parent().map.featureNavigator.panToEntity(context.entity(panToId));
+            _parent().map.featureNavigator.panToEntity(context.entity(panToId), true);
         }
    
         _parent().loadReviewFeaturesMapInMap();
