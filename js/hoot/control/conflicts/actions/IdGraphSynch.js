@@ -121,6 +121,8 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             }
 
             if (entities.data.length) {
+                var curReviewItem = _parent().actions.traversereview.getCurrentReviewable();
+                var currLayerName = context.hoot().model.layers.getNameBymapId(curReviewItem.mapId);
 
                 // first check to see if anyone is relation
                 var relFound = _.find(entities.data, function(e){
@@ -136,7 +138,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                             _relTreeIdx[f.id] = f.members.length;
                             _.each(f.members, function(m){
                                 if(!context.hasEntity(m.id) || m.type === 'relation') {
-                                    context.loadMissing([m.id], _loadMissingHandler);
+                                    context.loadMissing([m.id], _loadMissingHandler, currLayerName);
                                 } else {
                                     _updateParentRelations(m.id);
                                 }
