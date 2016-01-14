@@ -1,5 +1,6 @@
 iD.behavior.PasteTags = function(context) {
-    var keybinding = d3.keybinding('paste_tags');
+    var keybindingOverwrite = d3.keybinding('paste_tags_overwrite');
+    var keybindingAppend = d3.keybinding('paste_tags_append');
 
     function omitTag(v, k) {
         return (
@@ -25,7 +26,8 @@ iD.behavior.PasteTags = function(context) {
         );
     }
 
-    function doPasteTags() {
+    function doPasteTags(overwrite) {
+        console.log(d3.event);
         d3.event.preventDefault();
 
         var oldIDs = context.copyIDs(),
@@ -43,7 +45,7 @@ iD.behavior.PasteTags = function(context) {
                 var oldEntity = oldGraph.entity(oldIDs[i]);
 
                 //console.log(_.omit(oldEntity.tags, omitTag));
-                selectEntity = selectEntity.mergeTags(_.omit(oldEntity.tags, omitTag), true/*overwrite*/);
+                selectEntity = selectEntity.mergeTags(_.omit(oldEntity.tags, omitTag), d3.event.shiftKey /*overwrite*/);
             }
             context.perform(iD.actions.ChangeTags(selectEntity.id, selectEntity.tags),
                             t('operations.change_tags.annotation'));
@@ -52,13 +54,16 @@ iD.behavior.PasteTags = function(context) {
     }
 
     function pasteTags() {
-        keybinding.on(iD.ui.cmd('⌘⇧V'), doPasteTags);
-        d3.select(document).call(keybinding);
+        keybindingOverwrite.on(iD.ui.cmd('⌘⇧V'), doPasteTags);
+        d3.select(document).call(keybindingOverwrite);
+        keybindingAppend.on(iD.ui.cmd('⌘⌥V'), doPasteTags);
+        d3.select(document).call(keybindingAppend);
         return pasteTags;
     }
 
     pasteTags.off = function() {
-        d3.select(document).call(keybinding.off);
+        d3.select(document).call(keybindingOverwrite.off);
+        d3.select(document).call(keybindingAppend.off);
     };
 
     return pasteTags;
