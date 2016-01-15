@@ -36,7 +36,7 @@ iD.ui.RawTagEditor = function(context) {
 	    	    var textB = b.key.toUpperCase();
 	    	    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
 	    	});
-    	} 
+    	}
 
         if (!entries.length || showBlank) {
             showBlank = false;
@@ -66,14 +66,14 @@ iD.ui.RawTagEditor = function(context) {
             	var retval = '<label class="pad1x" style="opacity: 1;">';
             	retval += '<input type="checkbox" class="reset" id="sort-tags" ';
             	retval += 'style="opacity: 1;"';
-            	retval += '>Sort A-Z</label>';		                	
-            	return retval;	
+            	retval += '>Sort A-Z</label>';
+            	return retval;
             });
-        	    
+
       /* if(d3.select('#entity_editor_presettranstype').value()=='OSM'){
     	   d3.select('#sort-tags-div').classed('hidden',false);
        } else {d3.select('#sort-tags-div').classed('hidden',true);}*/
-       
+
        $sortAZ.on('change',function(){
         	var sortAZ = d3.select('#sort-tags').property('checked');
         	if(sortAZ==true){
@@ -82,14 +82,14 @@ iD.ui.RawTagEditor = function(context) {
         		content($wrap);
         	}
         });
-               
+
         $enter.on('click', addTag);
 
         var $items = $list.selectAll('li')
             .data(entries, function(d) { return d.key; });
 
         var protectedKeys = ['hoot','uuid'];
-        
+
         // Enter
 
         $enter = $items.enter().append('li')
@@ -125,18 +125,28 @@ iD.ui.RawTagEditor = function(context) {
         //if(!translation) {
             $items.order();
         //}
-        
+        $items.on('click', function() {
+
+        });
+
+        // $items.each(function(tag) {
+        //     var reference = iD.ui.TagReference({key: tag.key}, context);
+
+        //     if (state === 'hover') {
+        //         reference.showing(false);
+        //     }
+
+        //     d3.select(this)
+        //         .call(reference.button)
+        //         .call(reference.body);
+        // });
 
         $items.each(function(tag) {
-            var reference = iD.ui.TagReference({key: tag.key}, context);
-
-            if (state === 'hover') {
-                reference.showing(false);
-            }
+            var copier = iD.ui.TagCopy({key: tag.key}, context);
 
             d3.select(this)
-                .call(reference.button)
-                .call(reference.body);
+                .call(copier.button)
+                .call(copier.body);
         });
 
         $items.select('input.key')
@@ -209,7 +219,7 @@ iD.ui.RawTagEditor = function(context) {
                         } /*else {
                             tagInfoOpts.lyrname = translation.name;
                         }*/
-                        
+
                         tagInfoOpts.translation = translation.transType;
                         var rawGeom = context.geometry(id);
                         if(rawGeom == 'point'){
@@ -219,7 +229,7 @@ iD.ui.RawTagEditor = function(context) {
                         } else if(rawGeom == 'area'){
                             rawGeom = 'Area';
                         }
-                        var transTagInfoUrl = window.location.protocol + '//' + 
+                        var transTagInfoUrl = window.location.protocol + '//' +
                             window.location.hostname + ":" + iD.data.hootConfig.translationServerPort + '/taginfo/';
 
                         if(!tagInfEndPts){
@@ -237,7 +247,7 @@ iD.ui.RawTagEditor = function(context) {
                             var osmTagInfoUrl = tagInfEndPts['OSM'];
                             context.taginfo().endpoint(osmTagInfoUrl);
                         }
-                      
+
                     }
 
                     context.taginfo().keys(tagInfoOpts, function(err, data) {
@@ -258,7 +268,7 @@ iD.ui.RawTagEditor = function(context) {
                     if(translation){
                         tagInfoOpts.fcode = translation.fCode;
                         tagInfoOpts.translation = translation.transType;
-                        context.taginfo().endpoint(window.location.protocol + '//' + 
+                        context.taginfo().endpoint(window.location.protocol + '//' +
                             window.location.hostname + ":" + iD.data.hootConfig.translationServerPort + '/taginfo/');
                     }
                     context.taginfo().values(tagInfoOpts, function(err, data) {
@@ -312,7 +322,7 @@ iD.ui.RawTagEditor = function(context) {
                 $list.selectAll('li:last-child input.key').node().focus();
             }, 0);
         }
-        
+
         function sortTags() {
         	content($wrap);
         }

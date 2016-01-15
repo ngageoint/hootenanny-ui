@@ -35,7 +35,7 @@ iD.ui.TagReference = function(tag, context) {
 
         context.taginfo().docs(tag, function(err, docs) {
             if (!err && docs) {
-                docs = findLocal(docs);
+                docs = findLocal(docs.data);
             }
 
             body.html('');

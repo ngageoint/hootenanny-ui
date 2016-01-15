@@ -277,11 +277,19 @@ window.iD = function () {
     };
 
     /* Copy/Paste */
-    var copyIDs = [], copyGraph;
+    var copyIDs = [], copyGraph, copyTags;
     context.copyGraph = function() { return copyGraph; };
     context.copyIDs = function(_) {
         if (!arguments.length) return copyIDs;
         copyIDs = _;
+        copyTags = null;
+        copyGraph = history.graph();
+        return context;
+    };
+    context.copyTags = function(_) {
+        if (!arguments.length) return copyTags;
+        copyIDs = null;
+        copyTags = _;
         copyGraph = history.graph();
         return context;
     };
