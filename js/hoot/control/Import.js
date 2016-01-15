@@ -50,7 +50,7 @@ Hoot.control.import = function (context,selection) {
             _form = sidebar.append('form');
         }
 
-        _form.classed('hootImport round space-bottom1 importableLayer fill-white', true)
+        _form.classed('hootImport round space-bottom1 importableLayer fill-white strong', true)
             .on('submit', function () {
                 submitLayer(this);
             })

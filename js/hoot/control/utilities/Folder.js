@@ -110,7 +110,7 @@ Hoot.control.utilities.folder = function(context) {
 	      	      
 	      // Compute the "layout".
 	      nodes.forEach(function(n, i) {
-	        n.x = i * barHeight;
+	        n.x = (i-1) * barHeight;	//This will remove the 'Datasets' title
 	      });
 	
 	      // Update the nodes…
@@ -131,15 +131,17 @@ Hoot.control.utilities.folder = function(context) {
 	          .attr("height", barHeight)
 	          .attr("width", function(d){
 	        	  return '100%';})
-	          .style("fill", color)
+	          .style("fill", fillColor)
 	          .attr("class", rectClass)
 	          .on("click", click);
 	          
 	      nodeEnter.append("text")
+	          .style("fill",fontColor)
 	          .attr("dy", 3.5)
 	          .attr("dx", function(d){
-	        	  if(d.type){return  25.5+(11*d.depth);}
-	        	  else{return 11*d.depth;}})	//5.5
+	        	  var dd = d.depth-1;
+	        	  if(d.type){return  25.5+(11*dd);}
+	        	  else{return 11*dd;}})	//5.5
 	          .text(function(d) { return d.name; })
 	          .each(function(d){
 	        	  var rectNode = d3.select(this);
@@ -152,6 +154,7 @@ Hoot.control.utilities.folder = function(context) {
 	      
 	      if(container.attr('id')=='datasettable'){
 		      nodeEnter.filter(function(d){return d.type=='dataset'}).append("text")
+		      		.style("fill",fontColor)
 		      		.attr("dy",3.5)
 		    		.attr("dx",function(d){
 		    			return '75%';
@@ -163,6 +166,7 @@ Hoot.control.utilities.folder = function(context) {
 	      }
 	      
 	      nodeEnter.filter(function(d){return d.type=='dataset'}).append("text")
+	      	.style("fill",fontColor)
     		.attr("dy",3.5)
 	  		.attr("dx",function(d){
 	  			return '90%';
@@ -179,13 +183,28 @@ Hoot.control.utilities.folder = function(context) {
 	  		    } while(Math.abs(_size) >= 1000 && u < units.length - 1);
 	  		    return _size.toFixed(1)+' '+units[u];
 			});	  
-	      
+/*	      
+	  	  nodeEnter.filter(function(d){return d.depth>1}).append("line")
+	  	  	.attr("x1",function(d){return 2.5+(11*(d.depth-1));})
+	  	  	.attr("x2",function(d){return 9.5+(11*(d.depth-1));})
+	  	  	.attr("y1",0)
+	  	  	.attr("y2",0)
+	  	  	.style("stroke","rgb(0,0,0)");
+
+	  	  nodeEnter.filter(function(d){return d.depth>1}).append("line")
+	  	  	.attr("x1",function(d){return 2.5+(11*(d.depth-1));})
+	  	  	.attr("x2",function(d){return 2.5+(11*(d.depth-1));})
+	  	  	.attr("y1",-18)
+	  	  	.attr("y2",0)
+	  	  	.style("stroke","rgb(0,0,0)");	  	
+*/
 	      var nodeg = nodeEnter.append("g");
 	      nodeg.append('svg:foreignObject')
 		      .attr("width", 20)
 		      .attr("height", 20)
 		      .attr("transform", function(d) { 
-		    	  var dy=5.5+(11*d.depth);
+		    	  var dd = d.depth-1;
+		    	  var dy=5.5+(11*dd);
 		    	  return "translate("+ dy +",-11)"; })
 		      .html(function(d){
 		    	  if (d.type == 'folder'){
@@ -212,7 +231,7 @@ Hoot.control.utilities.folder = function(context) {
 	          .attr("transform", function(d) { return "translate(" + 0 + "," + d.x + ")"; })
 	          .style("opacity", 1)
 	        .select("rect")
-	          .style("fill", color)
+	          .style("fill", fillColor)
 	          .attr("class", rectClass);
 	
 	      // Transition exiting nodes to the parent's new position.
@@ -412,11 +431,16 @@ Hoot.control.utilities.folder = function(context) {
 	      if(!d3.select(parent.parentNode).select('.usedLayersInput').empty()){d3.select(parent.parentNode).select('.usedLayersInput').value('');}
 	    }
 	
-	    function color(d) {
-	      //return d.selected ? "#ffff99" : d._children ? "#3182bd" : "#c6dbef";
-	    	//http://meyerweb.com/eric/tools/color-blend
-	    	var gradient = ['#84B3D9','#8DB9DC','#97BEDF','#A0C4E2','#AACAE6','#B3D0E9','#BDD5EC','#C6DBEF']
-	    	return d._children ? "#3182bd" : d.depth<=gradient.length-1 ? gradient[d.depth] : gradient[gradient.length-1];
+	    function fillColor(d) {
+	    	if(d.type=='folder'){return "#7092ff"}	
+	    	else if(d.type=='dataset'){return "#efefef";}	
+	    	else {return "#ffffff";}
+	    }
+
+	    function fontColor(d){
+			if(d.type=='folder'){return "#ffffff";}
+	    	else if(d.type=='dataset'){return "#7092ff";}
+	    	else {return "#ffffff";}
 	    }
 	    
 	    function rectClass(d) {
