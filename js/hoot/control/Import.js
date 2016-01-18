@@ -180,8 +180,9 @@ Hoot.control.import = function (context,selection) {
                     	if(lyrid==null){throw new Error("Invalid layer selected");}
                 	}
                 } else {
-                	name = d3.select(self.select('.sel').node().parentNode).select('text').text();
-                	lyrid = d3.select(self.select('.sel').node().parentNode).select('text').attr('lyr-id');
+                	var gNode = d3.select(self.select('.sel').node().parentNode);
+                    name = gNode.select('title').text();
+                	lyrid = gNode.select('.dnameTxt').attr('lyr-id');
                 }
             } catch(e) {
             	iD.ui.Alert('There was an error adding this layer to the map!','warning');

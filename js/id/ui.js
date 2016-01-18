@@ -28,6 +28,10 @@ iD.ui = function(context) {
             .classed('col12', true)
             .style('postion', 'absolute');
 
+        var resizer = sidebar.append('div')
+            .style({'position':'absolute','width':'10px','top':'0',
+                'bottom':'0','right':'-5px','background':'orange','opacity':'0.5','cursor':'pointer'});
+
         var content = container.append('div')
             .attr('id', 'content');
 
@@ -108,6 +112,17 @@ iD.ui = function(context) {
         controls.append('div')
             .attr('class', 'map-control help-control')
             .call(iD.ui.Help(context));
+
+    // Make sidebar expandable
+        var dragResize = d3.behavior.drag().on('drag',function(){
+            x = d3.mouse(this.parentNode)[0];
+            x = Math.max(240,x);
+            console.log(x);
+            app.style('width',x+'px');
+            //content.style('width',window.innerWidth-x + 'px');
+        });
+        resizer.call(dragResize);
+
 
  //START: Hoot may have wanted to disable this by commenting out
        var about = content.append('div')

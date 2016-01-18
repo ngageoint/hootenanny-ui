@@ -197,6 +197,7 @@ Hoot.control.utilities.folder = function(context) {
 
 	      	nodeEnter.append("text")
 	      		.style("fill",fontColor)
+	      		.classed('dnameTxt',true)
 	          	.attr("dy", 3.5)
 	          	.attr("dx", function(d){
     				var dd = d.depth-1;
