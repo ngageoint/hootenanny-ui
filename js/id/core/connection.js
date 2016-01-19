@@ -897,8 +897,13 @@ iD.Connection = function(context) {
         // Get the node count from service
         connection.getTileNodesCountFromURL(url + '/api/0.6/map/nodescount', params, function(resp){
             if(context.hoot().control.conflicts && 
-                    context.hoot().control.conflicts.isConflictReviewExist() ){
-                context.hoot().control.conflicts.setProcessing(true, 'Please wait while loading vector tiles.');
+                    context.hoot().control.conflicts.isConflictReviewExist() 
+                    ){
+
+                if(context.hoot().control.conflicts.map.reviewarrowrenderer.isOn() === false){                                  
+                    context.hoot().control.conflicts.setProcessing(true, 'Please wait while loading vector tiles.');
+                }
+                
             }
             
             function showOnTop(){

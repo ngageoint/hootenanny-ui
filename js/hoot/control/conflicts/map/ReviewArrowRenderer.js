@@ -44,16 +44,26 @@ Hoot.control.conflicts.map.reviewarrowrenderer = function (context)
 	}
 
 	/**
+	* @desc Checks to see if arrow is shwon
+	**/
+	_instance.isOn = function() {
+		return !d3.selectAll('.arrow.line').empty();
+	}
+
+
+	/**
 	* @desc Display arrow
 	**/
 	var _loadArrow = function(mode) {
 	    //if (d3.event) d3.event.preventDefault();
 	    if(!context.graph()){
+	    	
 	        return;
 	    }
 	    if(!context.graph().entities[_feature.id] ||
 	     !context.graph().entities[_againstFeature.id]){
 			context.background().updateArrowLayer({});
+	
 			return;
 		}
 	    var coord = [ _againstFeature.loc, _feature.loc];
@@ -64,6 +74,7 @@ Hoot.control.conflicts.map.reviewarrowrenderer = function (context)
 	    };
 	    if (mode === 'remove') gj = {};
 	    context.background().updateArrowLayer(gj);
+
     }
 
 	return d3.rebind(_instance, _events, 'on');
