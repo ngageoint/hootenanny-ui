@@ -181,7 +181,8 @@ Hoot.control.import = function (context,selection) {
                 	}
                 } else {
                 	var gNode = d3.select(self.select('.sel').node().parentNode);
-                    name = gNode.select('title').text();
+                    if(!gNode.selectAll('title').empty()){name = gNode.select('title').text();}
+                    else{name = gNode.select('.dnameTxt').text();}
                 	lyrid = gNode.select('.dnameTxt').attr('lyr-id');
                 }
             } catch(e) {

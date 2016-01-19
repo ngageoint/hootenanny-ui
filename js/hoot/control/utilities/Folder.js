@@ -160,7 +160,6 @@ Hoot.control.utilities.folder = function(context) {
 	          	.style("fill", fillColor)
 	          	.attr("class", rectClass)
 		        .on("click", click);
-//		        .append("title").text(function(d){return d.name;}).each(wrap);
 
 	      nodeEnter.filter(function(d){return d.type=='dataset'}).append("text")
 	      	.classed('dsizeTxt',true)
@@ -212,6 +211,7 @@ Hoot.control.utilities.folder = function(context) {
 	        	 	}
 	          	})
 	          	.append('tspan').text(function(d){return d.name;}).each(wrap);
+	          	// TODO: Need to account for datasets outside of folders...make dynamic
 	      
 	  	  nodeEnter.filter(function(d){return d.depth>1}).append("line")
 	  	  	.attr("x1",function(d){return 2.5+(11*(d.depth-1));})
