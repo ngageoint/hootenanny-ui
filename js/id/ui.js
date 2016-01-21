@@ -122,7 +122,9 @@ iD.ui = function(context) {
         var dragResize = d3.behavior.drag().on('drag',function(){
             sidebar.classed('col4',false);
             x = d3.mouse(this.parentNode)[0];
-            x = Math.max(Math.min(x, window.innerWidth), 0.333*window.innerWidth);
+            console.log(x,window.innerWidth,0.333*window.innerWidth);
+            x = Math.max(Math.min(x, window.innerWidth), Math.min(400,0.333*window.innerWidth));
+            console.log(x);
             sidebar.style('width',x+'px');
         });
         resizer.call(dragResize);
