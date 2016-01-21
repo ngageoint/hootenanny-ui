@@ -124,11 +124,11 @@ iD.ui.Help = function(context) {
             .text(function(d) { return d.title; })
             .on('click', clickHelp);
 
-        toc.append('li')
+       /* toc.append('li')
             .attr('class','walkthrough')
             .append('a')
             .text(t('splash.walkthrough'))
-            .on('click', clickWalkthrough);
+            .on('click', clickWalkthrough);*/
 
         toc.append('div')
             .classed('contain',true)

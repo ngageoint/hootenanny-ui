@@ -23,22 +23,22 @@ iD.ui.Splash = function(context) {
             .append('p')
             .html(t('splash.text', {
                 version: iD.version,
-                website: '<a href="http://ideditor.com/">ideditor.com</a>',
-                github: '<a href="https://github.com/openstreetmap/iD">github.com</a>'
+                id: '<a href="https://github.com/openstreetmap/iD">iD Editor</a>',
+                hootenanny: '<a href="https://github.com/ngageoint/hootenanny">Hootenanny</a>'
             }));
 
         var buttons = introModal.append('div').attr('class', 'modal-actions cf');
 
-        buttons.append('button')
+       /* buttons.append('button')
             .attr('class', 'col6 walkthrough')
             .text(t('splash.walkthrough'))
             .on('click', function() {
                 d3.select(document.body).call(iD.ui.intro(context));
                 modal.close();
-            });
+            });*/
 
         buttons.append('button')
-            .attr('class', 'col6 start')
+            .attr('class', 'col12 start')
             .text(t('splash.start'))
             .on('click', modal.close);
 
