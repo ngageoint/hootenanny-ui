@@ -70,7 +70,7 @@ Hoot.control.import = function (context,selection) {
             .enter()
             .append('div')
             .classed('overflow',true)
-            .style({'height':'150px','margin':'0 0 15px'})
+            .style({'height':'150px','margin':'0 0 15px','resize':'vertical'})
             .select(ETL.renderTree);
         
         var recentLayersDiv = fieldset.append('div')

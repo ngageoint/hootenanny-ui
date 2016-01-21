@@ -124,7 +124,7 @@ Hoot.control.utilities.folder = function(context) {
 	    	// Compute the flattened node list. TODO use d3.layout.hierarchy.
 	      	var nodes = tree.nodes(root);
 
-	      	var height = Math.max(400, nodes.length * barHeight + margin.top + margin.bottom);
+	      	var height = Math.max(150, nodes.length * barHeight + margin.top + margin.bottom);
 	      
 	      	//replaced container with d3
 	      	container.select("svg").transition()
