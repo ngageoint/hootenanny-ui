@@ -20,8 +20,17 @@ iD.ui = function(context) {
         //Create a ref to sidebar, so Hoot can override???
         var sidebar = container.append('div')
             .attr('id', 'sidebar')
-            .attr('class', 'col4')
+            .classed('col4',true)
             .call(ui.sidebar);
+
+        var resizer = sidebar.append('div')
+            .style({'position':'absolute','width':'10px','top':'0',
+                'bottom':'0','right':'-5px','background':'#999','opacity':'0.5','cursor':'col-resize'})
+            .on('dblclick',function(){
+                x = 0.33*window.innerWidth;
+                sidebar.style('width',x+'px');
+                sidebar.classed('col4',true);
+            })
 
         var app = sidebar.append('div')
             .attr('id', 'app')
@@ -108,6 +117,17 @@ iD.ui = function(context) {
         controls.append('div')
             .attr('class', 'map-control help-control')
             .call(iD.ui.Help(context));
+
+    // Make sidebar expandable
+        var dragResize = d3.behavior.drag().on('drag',function(){
+            sidebar.classed('col4',false);
+            x = d3.mouse(this.parentNode)[0];
+            console.log(x,window.innerWidth,0.333*window.innerWidth);
+            x = Math.max(Math.min(x, window.innerWidth), Math.min(400,0.333*window.innerWidth));
+            console.log(x);
+            sidebar.style('width',x+'px');
+        });
+        resizer.call(dragResize);
 
  //START: Hoot may have wanted to disable this by commenting out
        var about = content.append('div')

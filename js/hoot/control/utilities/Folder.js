@@ -4,6 +4,34 @@ Hoot.control.utilities.folder = function(context) {
 	var hoot_control_utilities_folder = {};
 
     hoot_control_utilities_folder.createFolderTree = function(container) {
+		function wrap() {
+			var pN = this.parentNode.parentNode;
+			width=pN.getBoundingClientRect().width > 0 ? pN.getBoundingClientRect().width*.65 : 165;
+			dsizeWidth = 0;
+			if(container.attr('id')=='datasettable'){dsizeWidth = width*0.25;}
+			else{
+				_.each(pN.getElementsByTagName("text"),function(t){
+					if(this.parentNode != t){dsizeWidth += t.getBoundingClientRect().width;}
+				},this);
+			}
+			width -= dsizeWidth;
+			padding=2;
+			datasetName = this.textContent;
+			var self = d3.select(this),
+	            textLength = self.node().getComputedTextLength(),
+	            text = self.text();
+	        while (textLength > (width - 2 * padding) && text.length > 0) {
+	            text = text.slice(0, -1);
+	            self.text(text + '...');
+	            textLength = self.node().getComputedTextLength();
+	        }
+
+	        if(datasetName!=self.text()){	            
+	        	d3.select(pN).selectAll('title').remove()
+	            d3.select(pN).append("title").text(datasetName);
+	        }
+	    } 
+
     	selectedLayerIDs = [];
     	context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
     	
@@ -16,8 +44,7 @@ Hoot.control.utilities.folder = function(context) {
     	var margin = {top: 10, right: 20, bottom: 30, left: 0},
 	        width = '100%',
 	        height = '100%',
-	        barHeight = 20,
-	        barWidth = 100;
+	        barHeight = 20;
     	
     	var x = d3.scale.linear()
 	    	.domain([0, 0])
@@ -34,7 +61,7 @@ Hoot.control.utilities.folder = function(context) {
 			.on("zoom", zoomed);
     	
 	    var i = 0,
-	        duration = 400,
+	        duration = 0,//400,
 	        root;
 	
 	    var tree = d3.layout.tree()
@@ -94,78 +121,52 @@ Hoot.control.utilities.folder = function(context) {
 		
 	    function update(source) {
 	
-	      // Compute the flattened node list. TODO use d3.layout.hierarchy.
-	      var nodes = tree.nodes(root);
+	    	// Compute the flattened node list. TODO use d3.layout.hierarchy.
+	      	var nodes = tree.nodes(root);
 
-	      var height = Math.max(400, nodes.length * barHeight + margin.top + margin.bottom);
+	      	var height = Math.max(150, nodes.length * barHeight + margin.top + margin.bottom);
 	      
-	      //replaced container with d3
-	      container.select("svg").transition()
-	          .duration(duration)
-	          .attr("height", height + "px");
-	
-	      container.select(self.frameElement).transition()
-	          .duration(duration)
-	          .style("height", height + "px");
+	      	//replaced container with d3
+	      	container.select("svg").transition()
+	        	  .duration(duration)
+	          	.attr("height", height + "px");
+
+		      container.select(self.frameElement).transition()
+	          	.duration(duration)
+	          	.style("height", height + "px");
 	      	      
-	      // Compute the "layout".
-	      nodes.forEach(function(n, i) {
-	        n.x = i * barHeight;
-	      });
+	      	// Compute the "layout".
+	      	nodes.forEach(function(n, i) {
+		        n.x = (i-1) * barHeight;	//This will remove the 'Datasets' title
+	      	});
 	
-	      // Update the nodes…
-	      var node = svg.selectAll("g.node")
-	          .data(nodes, function(d) {
-	        	  if(d.type){return d.type.charAt(0) + d.id || d.id || (d.id = ++i);}
-	        	  else{return d.id || (d.id = ++i);}
-	        	  });
+	      	// Update the nodes…
+	      	var node = svg.selectAll("g.node")
+	          	.data(nodes, function(d) {
+	        	  	if(d.type){return d.type.charAt(0) + d.id || d.id || (d.id = ++i);}
+	        	  	else{return d.id || (d.id = ++i);}
+        	  	});
 	
-	      var nodeEnter = node.enter().append("g")
-	          .attr("class", "node")
-	          .attr("transform", function(d) { return "translate(" + 0 + "," + source.x0 + ")"; })
-	          .style("opacity", 1e-6);
+	      	var nodeEnter = node.enter().append("g")
+	          	.attr("class", "node")
+	          	.attr("transform", function(d) { return "translate(" + 0 + "," + source.x0 + ")"; })
+	          	.style("opacity", 1e-6);
 	      	      
-	      // Enter any new nodes at the parent's previous position.
-	      nodeEnter.append("rect")
-	          .attr("y", -barHeight / 2)
-	          .attr("height", barHeight)
-	          .attr("width", function(d){
-	        	  return '100%';})
-	          .style("fill", color)
-	          .attr("class", rectClass)
-	          .on("click", click);
-	          
-	      nodeEnter.append("text")
-	          .attr("dy", 3.5)
-	          .attr("dx", function(d){
-	        	  if(d.type){return  25.5+(11*d.depth);}
-	        	  else{return 11*d.depth;}})	//5.5
-	          .text(function(d) { return d.name; })
-	          .each(function(d){
-	        	  var rectNode = d3.select(this);
-	        	  if(d.type=='dataset'){
-	        		  rectNode.attr('lyr-id',function(d){return d.id;})
-	        	 } else if (d.type=='folder'){
-	        		 rectNode.attr('fldr-id',function(d){return d.id;})
-	        	 }
-	          });
-	      
-	      if(container.attr('id')=='datasettable'){
-		      nodeEnter.filter(function(d){return d.type=='dataset'}).append("text")
-		      		.attr("dy",3.5)
-		    		.attr("dx",function(d){
-		    			return '75%';
-		    		})
-		    		.attr('text-anchor','end')
-		    		.text(function(d) { 
-		    			return d.date;
-	    			});
-	      }
-	      
+	      	// Enter any new nodes at the parent's previous position.
+	      	nodeRect = nodeEnter.append("rect")
+	          	.attr("y", -barHeight / 2)
+	          	.attr("height", barHeight)
+	          	.attr("width", function(d){return '100%';})
+	          	.style("fill", fillColor)
+	          	.attr("class", rectClass)
+		        .on("click", click);
+
 	      nodeEnter.filter(function(d){return d.type=='dataset'}).append("text")
+	      	.classed('dsizeTxt',true)
+	      	.style("fill",fontColor)
     		.attr("dy",3.5)
 	  		.attr("dx",function(d){
-	  			return '90%';
+	  			return '98%';
 	  		})
 	  		.attr('text-anchor','end')
 	  		.text(function(d) { 
@@ -178,14 +179,61 @@ Hoot.control.utilities.folder = function(context) {
 	  		        ++u;
 	  		    } while(Math.abs(_size) >= 1000 && u < units.length - 1);
 	  		    return _size.toFixed(1)+' '+units[u];
-			});	  
+			});	 
+	          
+	      	if(container.attr('id')=='datasettable'){
+		     	nodeEnter.filter(function(d){return d.type=='dataset'}).append("text")
+		      		.style("fill",fontColor)
+		      		.attr("dy",3.5)
+		    		.attr("dx",function(d){
+		    			return '75%';
+		    		})
+		    		.attr('text-anchor','end')
+		    		.text(function(d) { 
+		    			return d.date;
+	    			});
+	      	}
+
+	      	nodeEnter.append("text")
+	      		.style("fill",fontColor)
+	      		.classed('dnameTxt',true)
+	          	.attr("dy", 3.5)
+	          	.attr("dx", function(d){
+    				var dd = d.depth-1;
+	        	  	if(d.type){return  25.5+(11*dd);}
+	        	  	else{return 11*dd;}})	//5.5
+	          	.each(function(d){
+	        		var rectNode = d3.select(this);
+	        	  	if(d.type=='dataset'){
+	        			rectNode.attr('lyr-id',function(d){return d.id;})
+	        	 	} else if (d.type=='folder'){
+	        			rectNode.attr('fldr-id',function(d){return d.id;})
+	        	 	}
+	          	})
+	          	.append('tspan').text(function(d){return d.name;}).each(wrap);
+	          	// TODO: Need to account for datasets outside of folders...make dynamic
 	      
+	  	  nodeEnter.filter(function(d){return d.depth>1}).append("line")
+	  	  	.attr("x1",function(d){return 2.5+(11*(d.depth-1));})
+	  	  	.attr("x2",function(d){return 9.5+(11*(d.depth-1));})
+	  	  	.attr("y1",0)
+	  	  	.attr("y2",0)
+	  	  	.style("stroke","#444444");
+
+	  	  nodeEnter.filter(function(d){return d.depth>1}).append("line")
+	  	  	.attr("x1",function(d){return 2.5+(11*(d.depth-1));})
+	  	  	.attr("x2",function(d){return 2.5+(11*(d.depth-1));})
+	  	  	.attr("y1",-20)
+	  	  	.attr("y2",0)
+	  	  	.style("stroke","#444444");	  	
+
 	      var nodeg = nodeEnter.append("g");
 	      nodeg.append('svg:foreignObject')
 		      .attr("width", 20)
 		      .attr("height", 20)
 		      .attr("transform", function(d) { 
-		    	  var dy=5.5+(11*d.depth);
+		    	  var dd = d.depth-1;
+		    	  var dy=5.5+(11*dd);
 		    	  return "translate("+ dy +",-11)"; })
 		      .html(function(d){
 		    	  if (d.type == 'folder'){
@@ -212,7 +260,7 @@ Hoot.control.utilities.folder = function(context) {
 	          .attr("transform", function(d) { return "translate(" + 0 + "," + d.x + ")"; })
 	          .style("opacity", 1)
 	        .select("rect")
-	          .style("fill", color)
+	          .style("fill", fillColor)
 	          .attr("class", rectClass);
 	
 	      // Transition exiting nodes to the parent's new position.
@@ -412,11 +460,16 @@ Hoot.control.utilities.folder = function(context) {
 	      if(!d3.select(parent.parentNode).select('.usedLayersInput').empty()){d3.select(parent.parentNode).select('.usedLayersInput').value('');}
 	    }
 	
-	    function color(d) {
-	      //return d.selected ? "#ffff99" : d._children ? "#3182bd" : "#c6dbef";
-	    	//http://meyerweb.com/eric/tools/color-blend
-	    	var gradient = ['#84B3D9','#8DB9DC','#97BEDF','#A0C4E2','#AACAE6','#B3D0E9','#BDD5EC','#C6DBEF']
-	    	return d._children ? "#3182bd" : d.depth<=gradient.length-1 ? gradient[d.depth] : gradient[gradient.length-1];
+	    function fillColor(d) {
+	    	if(d.type=='folder'){return "#7092ff"}	
+	    	else if(d.type=='dataset'){return "#efefef";}	
+	    	else {return "#ffffff";}
+	    }
+
+	    function fontColor(d){
+			if(d.type=='folder'){return "#ffffff";}
+	    	else if(d.type=='dataset'){return "#7092ff";}
+	    	else {return "#ffffff";}
 	    }
 	    
 	    function rectClass(d) {
