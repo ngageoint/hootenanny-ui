@@ -413,10 +413,9 @@ en:
     okay: "Okay"
     cancel: "Cancel"
   splash:
-    welcome: Welcome to the iD OpenStreetMap editor
-    text: "iD is a friendly but powerful tool for contributing to the world's best free world map. This is version {version}. For more information see {website} and report bugs at {github}."
-    walkthrough: "Start the Walkthrough"
-    start: "Edit Now"
+    welcome: "Welcome to Hootenanny"
+    text: "Hootenanny is an open-source semi-automated conflation engine.  This is version {version}. For more information or to report bugs, see {hootenanny}.  For more information on the UI component, visit {id}."
+    start: "Get Started"
   source_switch:
     live: live
     lose_changes: "You have unsaved changes. Switching the map server will discard them. Are you sure you want to switch servers?"
@@ -453,270 +452,403 @@ en:
     help: |
       # Help
 
-      This is an editor for [OpenStreetMap](http://www.openstreetmap.org/), the
-      free and editable map of the world. You can use it to add and update
-      data in your area, making an open-source and open-data map of the world
-      better for everyone.
+      This is a UI for [Hootenanny](https://github.com/ngageoint/hootenanny), the
+      open-source, semi-automated conflation engine. The UI is based on [iD editor](http://ideditor.com/), 
+      a collaborative project with [source code available on GitHub](https://github.com/openstreetmap/iD).
+      iD Editor is the web platform for editing and contributing to [OpenStreetMap](https://www.openstreetmap.org/).
+
+    background: |
+      # Background
+
+      Hootenanny is designed to facilitate automated and semi-automated
+      conflation of critical Foundation GEOINT features in the topographic domain, 
+      namely roads (polylines), buildings (polygons), and points-of-interest (POIs) (points).
+
+      Hootenanny currently supports the conflation of POIs, Building polygons, 
+      Transportation polylines, and (experimentally) Waterway polylines.  When conflating 
+      these features, it is important to note that conflation occurs between similar feature types 
+      (e.g. POI to POI, Building to Building, Transportation polyline to Transportation polyline, etc.) 
+      but not across feature domains (POI to Polygon, POI to Polyline, etc.).
+
+      Depending on the data and selected conflation options, the process of resolving 
+      ambiguous features is handled by an interactive conflict resolution workflow. 
+      Hootenanny cues up conflicts and drives the user to each conflict to make 
+      the appropriate geometry or attribute fix. Additionally, the user has the option 
+      to edit other features they may come across that need correcting while working 
+      through the conflict queue. There is also the option to accept all or discard 
+      all conflicts. This becomes a user choice and ultimately a risk assessment between 
+      accepting geometry and attribute errors resulting from automated algorithms versus 
+      the use purpose of the end product.
+
+    adding_layers: |
+      # Adding Layers     
+
+      During conflation, source datasets are merged based on user-specified 
+      conflation parameters to create an output layer that is ultimately superior 
+      in terms of complete geometry and attribution. Two datasets are required to 
+      perform a conflation: Reference and Secondary. To add a new Reference 
+      Dataset to the map, click on the Add Reference Dataset button on the left side.
+      A list of available layers will appear in the drop down menu. In order to add a 
+      layer, it must be imported into Hootenanny through the Manage page.
+
+      ### Zoom to Layer
+
+      To zoom to the layer extent simply right-click on the layer and click on the 
+      Zoom to Layer button that appears on the layer name. This is useful when panning 
+      or zooming outside of the viewable extent or scale of the data.
+      
+    editing: |
+      # Editing Features 
+
+      Users can select any point, line, or polygon feature and modify both the geometry 
+      and attribution displayed. Hootenanny provides the additional functionality of 
+      allowing users to toggle between different display tag schemas 
+      (OSM, TDS 6.1, and TDS 4.0) by changing the *Filter By Type* drop down to the 
+      desired tag format. This does not modify the underlying data but merely changes the displayed tag schema in the left panel.
+
+      ## Modifying Layer Attributes
+      When a feature has been selected (or a new one has been added), it is possible 
+      to modify both its geometry and the associated attribute values. First it’s 
+      important to note that each tag schema maintains it’s own set of default presets. 
+      If a type does not appear listed, type the name (e.g. Culvert) in the Search window 
+      that appears when you click on the icon. Values for each field can be edited by 
+      clicking in each attribute and either typing or selecting from a set of 
+      pre-populated values. Note that both OSM and TDS schemas will only support a set 
+      of limited values for certain fields so it’s best to consult domain subject 
+      matter experts when modifying.
+
+      New fields can be added by clicking on the *Add Field* drop down menu and selecting 
+      an appropriate value. Additional tags can be added by clicking on the **+** button at 
+      the bottom of the *All tags* section. To delete or display additional info about a 
+      tag, click on either the trash can or info icons that appear next to each tag. 
+      Note that any changes will not be final to a layer until the user clicks on Save 
+      to commit the edits to the Hootenanny database. For OSM tags, users can check the 
+      *Sort A-Z* box to sort tags in alphabetical order.
+
+      ## Modifying Layer Geometry
+      To modify the feature geometry, click on the feature to expose the *editing palette* 
+      that pertains to the particular selected feature. Note that each unique geometry 
+      type and shape present their own options that may not display for other features. 
+      For instance, selecting a linear feature exposes editing options to straighten or 
+      change the directionality whereas clicking on a feature that traces a square, 
+      rectangle or circular path exposes options to make the feature a square or circle. 
+      Editing options include adding additional nodes by double clicking on a line segment, 
+      moving a node to manually modify the shape or path of a line or polygon, moving a point, 
+      and deleting features. 
+
+      ## Saving Edits
+      In order to save any edits applied to a layer click on the Save button displayed on top 
+      in the map view or to revert to a previous edit. Save will commit any edits on a particular 
+      layer to the hoot database where as the Undo/Redo buttons will step back/forward through 
+      any modifications applied to either that layer’s geometry or attribution. The number displayed 
+      next to the Save button indicates the number of edits that will be committed to the database 
+      for a given session.
+
+    adding_features: |
+      # Adding New Features
+
+      It is also possible to create new features for a given layer, but any new feature 
+      added must be done with at least one layer present. Any new features added without an 
+      associated layer cannot be saved. 
+
+      ### Adding a point feature
+
+      To add a new point, click on the *Point* button appearing in the Map Viewer or use the 1 shortcut key. 
+      Points can be used to represent features such as shops, restaurants, parks and monuments, etc. 
+      They mark a specific location and describe the feature based on the OSM/TDS tag relationship. 
+      Once a new point is added to the map, a panel will appear on the map prompting you to select an 
+      appropriate feature type (park, cafe, etc) and any associated tags. Note that even though OSM 
+      values are presented, the data is stored on the database using the TDS tag equivalent. 
+      The next time it is edited within Hootenanny it will display the values using the english translated LTDS schema.
+
+      ### Adding a linear feature
+
+      To add a new linear feature, click on the *Line* button or use the 2 shortcut key and begin digitizing on the map. 
+      A pop-up message will appear if you would like to snap to an existing linear feature. Click on a single location 
+      to begin the linear feature and then continue clicking until feature has been completed. Double-click to complete 
+      the process and edit any attribution as needed. Repeat process for a new *Area* feature. Click *Save* to save all 
+      edits or step back/forward using the undo/redo buttons as needed.
+
+    copying: |
+      # Copying Features/Tags
+
+      In certain circumstances it may be useful to utilize copy/paste functionality when editing layers and addressing 
+      conflict reviews within Hootenanny. For example, if users need to create multiple copies of a selected feature 
+      (or set of features) within the same map layer or they would like to copy attributes from a feature 
+      (or multiple selected features) in the reference layer to similar feature in the secondary layer when reviewing 
+      conflicts, they could use the following currently supported work flows.
+
+      ### Copying Features/Tags Within a Single Layer
+
+      To copy a feature(s) within a single layer, select the feature or set of features that you wish to copy using the 
+      left-mouse button or by clicking on the red/blue conflict review table field. Note that you can select multiple 
+      features by pressing the shift key as you select each feature. When multiple features are selected they will appear 
+      listed on the left under the Selected items. Type *Ctrl + c* to copy the selected feature(s) and then *Ctrl + v* to 
+      display the copied feature(s) on the map. Once the copied feature(s) appear on the map they can be placed in the desired location.
+
+      To copy tags within a single layer from one feature to another (or multiple selected features), select the feature 
+      to copy and type *Ctrl + c*, then select the target feature(s) to paste and use *Shift + Ctrl + v*. This will replace 
+      all of the selected feature tags (except name and those listed in the note below) with the copied source tags.
+
+      ### Copying Tags Between Two Layers
+
+      When reviewing conflicts or performing any manual editing with two layers, it maybe useful to copy tags from a selected feature(s)
+      in the Reference layer to a feature(s) in a Secondary layer. For example, if during conflation a set of features has been identified as
+      needing review, a user can use the copy/paste tag functionality to ensure that a set of attributes are included in the merged output.
+      Click on any field in either the blue/red conflict review table (selecting either the blue/red field will depend on which represents
+      the reference or secondary layer) to select a feature to copy from (or by clicking on the feature geometry) and hit *Ctrl + c* to
+      copy the tags. Then select to target feature(s) to paste to by clicking on target field and hit *Shift + Ctrl + v*. This will copy
+      all of the tags to the selected feature(s). You may see a pop-up message indicating that an error occurred due to two active layer
+      being present. If that is the case you can turn off the source layer by unchecking it from the background settings 
+      temporarily before pasting. If you have all tags displayed you will notice that in addition to the pre-existing tags all copied tags
+      from the source feature will appear listed.
+
+    tools: |
+      # Tools
+
+      ## Hootenanny Map Tools
+      Map navigation options appear in the upper right portion of the map viewer. To view a maptip and/or 
+      shortcut, hover the cursor over each button and information concerning the functionality of a particular feature will appear.
+
+      ### Map Navigation
+
+      Clicking on either **+** or **-** buttons will zoom the user one level higher/lower in the map. Alternatively users can use the middle scroll
+      wheel of their mouse to zoom up or down levels. To open the map to your current location, click on the arrow button noting that
+      some browser security settings do not allow users to share their location information.
+
+      ### Background Settings
+
+      Clicking on the *Background Settings* button opens up a panel displaying different background layer display
+      options. To set the brightness for the background layer, click on the palette next to Background for 100%, 75%, 50%, or 25%
+      brightness. Users can select from a range of publicly available basemaps such as Bing aerial imagery, MapQuest Open Aerial,
+      Mapbox Satellite, OpenStreetMap, or create a custom basemap URL using the following URL template shown below. Any user
+      uploaded Basemap images will appear in this panel. For those users with access to DigitalGlobe EV Web Hosting Service (EVWHS),
+      the GBM/EGD imagery service can be selected using different imagery profiles e.g. Most Recent, Most Aesthetic Color, Least Cloud
+      Cover. To get register for an account please visit: https://evwhs.digitalglobe.com/myDigitalGlobeAdmin/RegistrationRequest.html
+
+      #### Image Carousel
+      The image carousel displays all of the available images by timestamp and sensor that are in the DigitalGlobe GBM/EGD service if
+      the service has been enabled. Users can select a particular DigitalGlobe image from the listed sensors/dates displayed in the carousel
+      by clicking on the *Image Carousel* button or typing the *c* shortcut key.
+
+      ### Map Data
+
+      The Map data settings allow users to add map overlay information such as a photo overlay from Mapillary or a local GPX file,
+      modify the display settings for vector data, and filter existing Map Features. Mapillary is a crowd source platform that allows users
+      to upload street level photos (not commonly used for conflation but part of the core OSM iD interface) when available. Users can
+      also drag and drop a local GPX (GPS generated dataset) or use the file browser to add.
+
+      Fill Areas allows users to select from three different options for displaying relevant vector data. The first option is *No Fill or
+      Wireframe* which makes it easier to display background imagery. *Partial Fill* displays fill areas around their
+      inner edges only. *Full Fill* displays features with complete fill turned. Finally, users can filter Map Features of interest by simply
+      checking or unchecking the boxes next to the common map features such as Points, Major Roads, Buildings, etc. To access the
+      settings click on the *Map Data*.
+
+      # Tools
+
+      The Tools button provides users with a quick set of customized tools for measuring length/area and cropping layers to smaller
+      subsets using either the visual extent or user defined bounding box. To access both options click on the Tools button and select
+      either Measurement or Clip Tools.
+
+      ### Measurement Tools
+
+      There are two measurement tools currently provided; Measure linear distance or length of an object and measure the area of an
+      object. To measure the length of an object on the map, click on the Tools button and select Measurement Tools | Measure Length.
+
+      The cursor will then change into crosshairs indicating that you are able to measure a feature by drawing a line. To continue a drawing,
+      left click to add nodes as needed. To complete the measurement double-click. To measure an area/perimeter of a feature, select the
+      Measure Area option and click on the screen to add nodes and double click to complete the measurement. The measurement values
+      will appear with the perimeter value listed above the area.
+
+
+      ### Clip Tools
+
+      The clip tools provide a simple mechanism for cropping map layers using either the current visual extent of the map or a user defined
+      bounding box. An example use case might be if the user ingests a country level dataset into Hootenanny but is only interested in
+      conflating a region or city within that data. Rather than conflate the entire country dataset, the user would clip the area using the
+      Clip Tools to reduce it to a specific AOI and then run the conflation against that clipped dataset. Two options are provided; clip to
+      visual extent and clip to bounding box. When clip to visual extent is selected the current visible map is used as the clip AOI. If the
+      preference is to define a bounding box on the map, the user can select clip to bounding box and then single left-click on any location
+      dragging the displayed box to the desired size and direction. Keep in mind the first point clicked on the map is either the top or
+      bottom corner depending on where the box is positioned.
+      
+      Once a bounding box (or visual extent) has been selected, a dialog box will pop up with options to specify an output name and path
+      of the clipped dataset. After the job has successfully completed it will appear in the list of available datasets.
+
+
+
+    shortcuts: |
+      # Shortcuts
+
+      Shortcut | Action
+      ------------- | -------------
+      1  | Create new Point feature
+      2  | Create new Line feature
+      3  | Create new Area feature
+      6  | Measure Length
+      7  | Measure Area
+      8  | Clip to Bounding Box
+      9  | Clip to Visual Extent
+      Ctrl + z  | Undo
+      Ctrl + y  | Redo
+      Ctrl + s  | Save
+      Ctrl + c  | Copies feature geometry/tags
+      Ctrl + v  | Pastes selected feature geometry/tags
+      Ctrl + Backspace  | Deletes object permanently
+      Shift + Ctrl + v  | Pastes copied source layer tags into selected target layer tags
+      Shift + Left mouse click  | Selects multiple features geometry/tags within layer
+      Alt + b  | Switches b/w layers during post-conflation conflict review
+      Alt + n  | Toggles layer visibility on/off
+      +  | Zoom in 1 level
+      -  | Zoom out 1 level
+      /  | Toggles display of overview map and map-in-map results during Conflict Review
+      a  | Continue drawing a line at the selected node
+      b  | Display background layer switcher
+      c  | Open Image Carousel
+      d  | Disconnect lines/areas from selected node
+      f  | Displays Map data settings
+      h  | Display in-editor help/documentation
+      i  | Display feature info such as length and centroid coords
+      m  | Move selected feature / Merge during POI Review
+      n  | Advances to next review during Conflict Review
+      o  | Make feature a circle (must be poly or closed loop line)
+      p  | Steps back to previous review during Conflict Review
+      r  | Rotate object around center / Resolved during Conflict Review
+      s  | Straighten a line or square corner of area
+      x  | Split line into two at selected node
+      ↓,↑,←,→  | Pan map in direction
+      v  | Make line go in opposite direction
+      w  | Toggles wireframe vector display on/off
+      Enter/Esc  | Stops drawing feature
+      F11  | Sets browser to full screen
+
+    options: |
+      # Conflation options
+
+      ### Save As
+      
+      The name of the conflated data output that you would like to save. By default, a file name Merged_* is populated in this field but
+      this can be overwritten manually by entering a specific layer name.
+      
+      ### Path
+      
+      The existing folder path where you want to save the conflated output. To create a new folder to save the output enter that in the New
+      Folder Name field.
+      
+      ### New Folder Name
+      
+      The name of a new folder if you wish to create one to save the output. Note that it will be created at the level specified in the Path.
+      Leave blank if no new folder is required.
+
+      ### Type
+      There are four types of conflation that are exposed in the UI: Reference, Average, Cookie Cutter & Horizontal and Advanced.  For more information
+      on these conflation types, please consult the Hootenanny User Guides.
+
+      ### Attribute Reference Layer
+      During conflation, the attributes of reference data are used to update any secondary data. By default, the reference layer contains
+      both the reference geometry and attribution. In many cases, however, reference geometry and attribution exists across multiple
+      layers hence the need for conflation. To support this use case, select either the reference or secondary layer as the attribute reference
+      layer.
+
+    review: |
+      # Reviewing Conflicts
+
+      When conflating data it is inevitable that conflicts may arise due to the lack of a clear solution as a result of ambiguous relationships
+      between matched features. When this occurs, reviewable items are flagged and presented to the user in the UI through an iterative
+      review process where the user must decide a particular action (e.g. accept as resolved, modify or delete, or merge) before merging the
+      final conflated output.
+      
+      During review, a single feature is compared with another (based on convergence of geometry and attribution) to determine whether
+      a merge or alternative action is required. Note that feature merging is only available for POI to POI conflation. Otherwise the user
+      can modify Features flagged for review will appear highlighted on the map in either red or blue corresponding to the Reference and
+      Secondary input data. Clicking in any of the highlighted fields in the review table will select the feature in question and display 
+      its attribute in the left tag panel (see Figure 28). Users can toggle the review items table by clicking on the Hide/Show Table button
+      located in the conflict review bar at the bottom. In order to complete the review process, all reviews must be resolved either by
+      stepping through each individually or by clicking the Complete Review button to resolve remaining reviews and either export the
+      data to the desired output format or add another layer for conflation.
+
+      ### Review Text
+      For more information on messages during reviews, please consult the Hootenanny User Interface Guide.
+
+      ### Map-in-Map
+
+      In Hootenanny, the concept of Map-in-Map is used here to describe an inset or overview map that contains additional spatial
+      information relating to the conflation i.e where reviews occur within the AOI. When a conflation job completes and reviews are
+      generated, users can display an overview map showing colored points representing the location (or centroid of the location) where
+      unresolved, merged, and currently reviewed features occur for the corresponding AOI. To view this map, press the / key when
+      reviewing features and the smaller overview map should display a set of points representing the review layer.
+
+      Depending on the density of data flagged for review, the features are represented in the following manner: yellow dots corresponding
+      to the location of unresolved reviews; a single red dot indicating the currently reviewed feature in the user’s session; and green dots
+      representing any resolved or merged features. This visual aid becomes useful particularly when multiple users are editing the same
+      layer simultaneously since it provides a map of the spatial distribution of reviews in real or near-real time.
+
+      ### Multi-user Conflict Reviewing
+      
+      Hootenanny supports the notion of multi-user layer editing in the context of conflation reviews by adding business logic to the
+      application that minimizes the likelihood that different users loading the same layer will be presented with the exact same review.
+      Bear in mind that datasets containing fewer reviews (<50) will have a higher likelihood of two different users encountering the same
+      conflict at the same time but given that most reviews require on average 15-20 seconds to resolve, the possible of simultaneous
+      editing is relatively low. The ideal scenario for multi-user conflict reviewing is when a conflation job generates a large number
+      of reviews in excess of several hundred or thousand where this work can be parsed out among users accessing the same layer to
+      minimize down time when conflating data.
+
+    manage: |
+      # Manage Hootenanny
+
+      The Manage capabilities within Hootenanny provide a set of administrative tools and data management options for users. This will 
+      provide a brief overview of the Manage Page for Hootenanny.  For more information, please consult the Hootenanny User Interface Guide.
+
+      ### Translation Assistant
+
+      The Translation Assistant was developed to facilitate the translation of "shoebox" (one-off or custom) datasets into Hootenanny’s
+      internal format of OSM xml. Users must map attribute names and values from the source dataset to a common schema so that
+      conflation operations can occur. The available target schemas in the current release include OSM and TDSv61. The choice of target
+      schema is dependent on the users fluency with said schema and how conversant they will be in defining an accurate mapping, as
+      well as technical factors noted below. All translations end up in the internal OSM schema when stored in the database and used
+      during conflation operations.
+
+      ### Translations
+
+      The Translation settings page contains all of the predefined translations (MGCP, OSM, TDSv40, TDSv61) in addition to any custom
+      translations that have been generated from the translation assistant. To add a new translation, click on the Add New Translation
+      button. Populate the Name and Description fields in this form and copy/paste your Translation Assistant generated Javascript. Note
+      that the translation assistant adds the translation file to the list of available translations as part of the custom translation workflow so
+      users are not required to use the add new translation option and manually paste in their generated translation file. The pre-defined
+      translations are displayed as read-only and cannot be edited by users however any custom translation will be editable by clicking on
+      the folder icon and editing any Javascript as needed.
+
+      ### Datasets
+
+      The Datasets settings page provides users with options for managing data that they wish to use in Hootenanny including importing
+      from source (shapefile, osm, geonames, FGDB), organizing data into a folder structure, renaming/deleting/moving data that has
+      been already ingested, and exporting data from Hootenanny into pre-defined output formats and translation schemas.
+
+      ### WFS Exports
+      
+      The WFS Export tab lists all of the available WFS Services that have been generated from previous conflation jobs. Click on the up
+      arrow icon to display the WFS Resource URL. Copy/Paste the URL into a third party application that supports WFS. Note that the
+      URL provided is the full GetCapabilities document describing the service.
+
+      ### Manage Basemaps
+
+      Hootenanny provides users with the capability to generate their own custom basemap service using a georeferenced image. Currently
+      Hootenanny only supports GeoTIFF or png file types. To generate a new basemap that can be displayed in Hootenanny, click on the
+      Basemap tab and the New Basemap button. Use the file browser to upload your local georeferenced image (GeoTIFF or png only).
+
+      ### Log
+
+      The Log tab provides both the Application and UI log for users to troubleshoot any issues that may occur during a user session.
+      There are two panels that are provided here; The Error log which provides core and service logging detail (i.e. tomcat catalina.out)
+      and the UI log which provides errors generated from the iD web client. The full log can be exported by clicking on the export
+      full log button. Note that any UI issues will also appear on the map map in the upper right corner in red highlight when they are
+      triggered. This messages are maintained in the UI log until the browser session is reloaded.
+
+      ### Reports
+
+      The Reports tab contains all of the generated reports for conflation jobs where Generate Report = True has been specified. To
+      download a report, click on the arrow and save the file to your local desktop.
 
-      Edits that you make on this map will be visible to everyone who uses
-      OpenStreetMap. In order to make an edit, you'll need to
-      [log in](https://www.openstreetmap.org/login).
-
-      The [iD editor](http://ideditor.com/) is a collaborative project with [source
-      code available on GitHub](https://github.com/openstreetmap/iD).
-    editing_saving: |
-      # Editing & Saving
-
-      This editor is designed to work primarily online, and you're accessing
-      it through a website right now.
-
-      ### Selecting Features
-
-      To select a map feature, like a road or point of interest, click
-      on it on the map. This will highlight the selected feature, open a panel with
-      details about it, and show a menu of things you can do with the feature.
-
-      To select multiple features, hold down the 'Shift' key. Then either click
-      on the features you want to select, or drag on the map to draw a rectangle.
-      This will draw a box and select all the points within it.
-
-      ### Saving Edits
-
-      When you make changes like editing roads, buildings, and places, these are
-      stored locally until you save them to the server. Don't worry if you make
-      a mistake - you can undo changes by clicking the undo button, and redo
-      changes by clicking the redo button.
-
-      Click 'Save' to finish a group of edits - for instance, if you've completed
-      an area of town and would like to start on a new area. You'll have a chance
-      to review what you've done, and the editor supplies helpful suggestions
-      and warnings if something doesn't seem right about the changes.
-
-      If everything looks good, you can enter a short comment explaining the change
-      you made, and click 'Save' again to post the changes
-      to [OpenStreetMap.org](http://www.openstreetmap.org/), where they are visible
-      to all other users and available for others to build and improve upon.
-
-      If you can't finish your edits in one sitting, you can leave the editor
-      window and come back (on the same browser and computer), and the
-      editor application will offer to restore your work.
-    roads: |
-      # Roads
-
-      You can create, fix, and delete roads with this editor. Roads can be all
-      kinds: paths, highways, trails, cycleways, and more - any often-crossed
-      segment should be mappable.
-
-      ### Selecting
-
-      Click on a road to select it. An outline should become visible, along
-      with a small tools menu on the map and a sidebar showing more information
-      about the road.
-
-      ### Modifying
-
-      Often you'll see roads that aren't aligned to the imagery behind them
-      or to a GPS track. You can adjust these roads so they are in the correct
-      place.
-
-      First click on the road you want to change. This will highlight it and show
-      control points along it that you can drag to better locations. If
-      you want to add new control points for more detail, double-click a part
-      of the road without a node, and one will be added.
-
-      If the road connects to another road, but doesn't properly connect on
-      the map, you can drag one of its control points onto the other road in
-      order to join them. Having roads connect is important for the map
-      and essential for providing driving directions.
-
-      You can also click the 'Move' tool or press the `M` shortcut key to move the entire road at
-      one time, and then click again to save that movement.
-
-      ### Deleting
-
-      If a road is entirely incorrect - you can see that it doesn't exist in satellite
-      imagery and ideally have confirmed locally that it's not present - you can delete
-      it, which removes it from the map. Be cautious when deleting features -
-      like any other edit, the results are seen by everyone and satellite imagery
-      is often out of date, so the road could simply be newly built.
-
-      You can delete a road by clicking on it to select it, then clicking the
-      trash can icon or pressing the 'Delete' key.
-
-      ### Creating
-
-      Found somewhere there should be a road but there isn't? Click the 'Line'
-      icon in the top-left of the editor or press the shortcut key `2` to start drawing
-      a line.
-
-      Click on the start of the road on the map to start drawing. If the road
-      branches off from an existing road, start by clicking on the place where they connect.
-
-      Then click on points along the road so that it follows the right path, according
-      to satellite imagery or GPS. If the road you are drawing crosses another road, connect
-      it by clicking on the intersection point. When you're done drawing, double-click
-      or press 'Return' or 'Enter' on your keyboard.
-    gps: |
-      # GPS
-
-      GPS data is the most trusted source of data for OpenStreetMap. This editor
-      supports local traces - `.gpx` files on your local computer. You can collect
-      this kind of GPS trace with a number of smartphone applications as well as
-      personal GPS hardware.
-
-      For information on how to perform a GPS survey, read
-      [Surveying with a GPS](http://learnosm.org/en/beginner/using-gps/).
-
-      To use a GPX track for mapping, drag and drop the GPX file onto the map
-      editor. If it's recognized, it will be added to the map as a bright purple
-      line. Click on the 'Map Data' menu on the right side to enable,
-      disable, or zoom to this new GPX-powered layer.
-
-      The GPX track isn't directly uploaded to OpenStreetMap - the best way to
-      use it is to draw on the map, using it as a guide for the new features that
-      you add, and also to [upload it to OpenStreetMap](http://www.openstreetmap.org/trace/create)
-      for other users to use.
-    imagery: |
-      # Imagery
-
-      Aerial imagery is an important resource for mapping. A combination of
-      airplane flyovers, satellite views, and freely-compiled sources are available
-      in the editor under the 'Background Settings' menu on the right.
-
-      By default a [Bing Maps](http://www.bing.com/maps/) satellite layer is
-      presented in the editor, but as you pan and zoom the map to new geographical
-      areas, new sources will become available. Some countries, like the United
-      States, France, and Denmark have very high-quality imagery available for some areas.
-
-      Imagery is sometimes offset from the map data because of a mistake on the
-      imagery provider's side. If you see a lot of roads shifted from the background,
-      don't immediately move them all to match the background. Instead you can adjust
-      the imagery so that it matches the existing data by clicking 'Fix alignment' at
-      the bottom of the Background Settings UI.
-    addresses: |
-      # Addresses
-
-      Addresses are some of the most useful information for the map.
-
-      Although addresses are often represented as parts of streets, in OpenStreetMap
-      they're recorded as attributes of buildings and places along streets.
-
-      You can add address information to places mapped as building outlines
-      as well as those mapped as single points. The optimal source of address
-      data is from an on-the-ground survey or personal knowledge - as with any
-      other feature, copying from commercial sources like Google Maps is strictly
-      forbidden.
-    inspector: |
-      # Using the Inspector
-
-      The inspector is the section on the left side of the page that allows you to
-      edit the details of the selected feature.
-
-      ### Selecting a Feature Type
-
-      After you add a point, line, or area, you can choose what type of feature it
-      is, like whether it's a highway or residential road, supermarket or cafe.
-      The inspector will display buttons for common feature types, and you can
-      find others by typing what you're looking for in the search box.
-
-      Click the 'i' in the bottom-right-hand corner of a feature type button to
-      learn more about it. Click a button to choose that type.
-
-      ### Using Forms and Editing Tags
-
-      After you choose a feature type, or when you select a feature that already
-      has a type assigned, the inspector will display fields with details about
-      the feature like its name and address.
-
-      Below the fields you see, you can click icons to add other details,
-      like [Wikipedia](http://www.wikipedia.org/) information, wheelchair
-      access, and more.
-
-      At the bottom of the inspector, click 'Additional tags' to add arbitrary
-      other tags to the element. [Taginfo](http://taginfo.openstreetmap.org/) is a
-      great resource for learn more about popular tag combinations.
-
-      Changes you make in the inspector are automatically applied to the map.
-      You can undo them at any time by clicking the 'Undo' button.
-    buildings: |
-      # Buildings
-
-      OpenStreetMap is the world's largest database of buildings. You can create
-      and improve this database.
-
-      ### Selecting
-
-      You can select a building by clicking on its border. This will highlight the
-      building and open a small tools menu and a sidebar showing more information
-      about the building.
-
-      ### Modifying
-
-      Sometimes buildings are incorrectly placed or have incorrect tags.
-
-      To move an entire building, select it, then click the 'Move' tool. Move your
-      mouse to shift the building, and click when it's correctly placed.
-
-      To fix the specific shape of a building, click and drag the nodes that form
-      its border into better places.
-
-      ### Creating
-
-      One of the main questions around adding buildings to the map is that
-      OpenStreetMap records buildings both as shapes and points. The rule of thumb
-      is to _map a building as a shape whenever possible_, and map companies, homes,
-      amenities, and other things that operate out of buildings as points placed
-      within the building shape.
-
-      Start drawing a building as a shape by clicking the 'Area' button in the top
-      left of the interface, and end it either by pressing 'Return' on your keyboard
-      or clicking on the first node drawn to close the shape.
-
-      ### Deleting
-
-      If a building is entirely incorrect - you can see that it doesn't exist in satellite
-      imagery and ideally have confirmed locally that it's not present - you can delete
-      it, which removes it from the map. Be cautious when deleting features -
-      like any other edit, the results are seen by everyone and satellite imagery
-      is often out of date, so the building could simply be newly built.
-
-      You can delete a building by clicking on it to select it, then clicking the
-      trash can icon or pressing the 'Delete' key.
-    relations: |
-      # Relations
-
-      A relation is a special type of feature in OpenStreetMap that groups together
-      other features. For example, two common types of relations are *route relations*,
-      which group together sections of road that belong to a specific freeway or
-      highway, and *multipolygons*, which group together several lines that define
-      a complex area (one with several pieces or holes in it like a donut).
-
-      The group of features in a relation are called *members*. In the sidebar, you can
-      see which relations a feature is a member of, and click on a relation there
-      to select the it. When the relation is selected, you can see all of its
-      members listed in the sidebar and highlighted on the map.
-
-      For the most part, iD will take care of maintaining relations automatically
-      while you edit. The main thing you should be aware of is that if you delete a
-      section of road to redraw it more accurately, you should make sure that the
-      new section is a member of the same relations as the original.
-
-      ## Editing Relations
-
-      If you want to edit relations, here are the basics.
-
-      To add a feature to a relation, select the feature, click the "+" button in the
-      "All relations" section of the sidebar, and select or type the name of the relation.
-
-      To create a new relation, select the first feature that should be a member,
-      click the "+" button in the "All relations" section, and select "New relation...".
-
-      To remove a feature from a relation, select the feature and click the trash
-      button next to the relation you want to remove it from.
-
-      You can create multipolygons with holes using the "Merge" tool. Draw two areas (inner
-      and outer), hold the Shift key and click on each of them to select them both, and then
-      click the "Merge" (+) button.
   #Added for EGD-plugin
   dgcarousel:
     title: "Image Carousel"

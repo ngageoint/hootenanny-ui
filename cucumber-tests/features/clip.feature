@@ -6,7 +6,7 @@ Feature: Hootenanny Clip Dataset Test
 
 	Scenario: Clip Feature
 		Given I am on the Hootenanny site
-		Then I click Edit Now
+		Then I click Get Started
 		When I click the "Add Reference Dataset" link
 		And I click the "DcGisRoadsCucumber" Dataset
 		Then I click first "Add Layer"

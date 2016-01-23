@@ -6,7 +6,7 @@ Feature: Hootenanny Settings Test
 
 	Scenario: Starting Hootenanny
 		Given I am on the Hootenanny site
-		Then I click Edit Now
+		Then I click Get Started
 
 	Scenario: Validating Hootenanny Version
 		When I click the "Hootenanny" link

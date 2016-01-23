@@ -2,7 +2,7 @@ Given(/^I am on the Hootenanny site$/) do
   visit "http://localhost:8080/hootenanny-id" # may need to change URL
 end
 
-When(/^I click Edit Now$/) do
+When(/^I click Get Started$/) do
   begin
     el = find('.col6.start')
   rescue Capybara::ElementNotFound
