@@ -3,12 +3,13 @@ require 'capybara'
 require 'capybara/dsl'
 require 'rspec'
 require 'capybara/webkit'
+require 'capybara-screenshot/cucumber'
 
-Capybara.register_driver :chrome do |app|
+Capybara.register_driver :selenium do |app|
   Capybara::Selenium::Driver.new(app, :browser => :chrome)
 end
-Capybara.javascript_driver = :chrome # :selenium
-Capybara.default_driver = :chrome #:selenium
+Capybara.javascript_driver = :selenium
+Capybara.default_driver = :selenium
 
 Capybara.run_server = false
 Capybara.default_selector = :css
@@ -22,3 +23,6 @@ module Helpers
 end
 
 World(Capybara::DSL, Helpers)
+
+# Keep only the screenshots generated from the last failing test suite
+Capybara::Screenshot.prune_strategy = :keep_last_run

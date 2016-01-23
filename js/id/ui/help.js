@@ -3,14 +3,16 @@ iD.ui.Help = function(context) {
 
     var docKeys = [
         'help.help',
-        'help.editing_saving',
-        'help.roads',
-        'help.gps',
-        'help.imagery',
-        'help.addresses',
-        'help.inspector',
-        'help.buildings',
-        'help.relations'];
+        'help.background',
+        'help.adding_layers',
+        'help.editing',
+        'help.adding_features',
+        'help.copying',
+        'help.tools',
+        'help.shortcuts',
+        'help.options',
+        'help.review',
+        'help.manage'];
 
     var docs = docKeys.map(function(key) {
         var text = t(key);
@@ -124,11 +126,11 @@ iD.ui.Help = function(context) {
             .text(function(d) { return d.title; })
             .on('click', clickHelp);
 
-        toc.append('li')
+       /* toc.append('li')
             .attr('class','walkthrough')
             .append('a')
             .text(t('splash.walkthrough'))
-            .on('click', clickWalkthrough);
+            .on('click', clickWalkthrough);*/
 
         toc.append('div')
             .classed('contain',true)

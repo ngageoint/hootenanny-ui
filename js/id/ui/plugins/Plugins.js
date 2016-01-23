@@ -7,9 +7,6 @@ iD.ui.plugins = function() {
 		if(current_plugin === null){
 			if(type === 'hoot') {
 				current_plugin = new Hoot.plugins.entityeditor();
-			} else if (type === 'mapedit') {
-				// not implemented yet
-				current_plugin = null;
 			}
 		}
 		return current_plugin;

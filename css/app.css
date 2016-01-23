@@ -553,6 +553,7 @@ button.save.has-count .count::before {
 .icon.vertex     { background-position: -580px 0;}
 .icon.data       { background-position: -600px 0;}
 
+.icon.apply.light      { background-position: -120px -20px;}
 .icon.up.light 			   { background-position: -140px -20px;}
 .icon.inspect.light    { background-position: -220px -20px;}
 .icon.plus.light       { background-position: -240px -20px;}

@@ -9,6 +9,7 @@ iD.ui.Processing = function(context,status,txt) {
         	var processingDiv = modalbg.append('div')
             	.classed('contain col4 pad1 hoot-menu fill-white round modal', true);
         	processingDiv.append('h1')
+                .attr('id','processingDivLabel')
         		.style({'text-align': 'center'})
         		.text(txt);
         	processingDiv.append('img')
