@@ -50,8 +50,8 @@ Hoot.view.utilities.dataset = function(context)
 	             
 	             // show the context menu
 	             d3.select('.dataset-options-menu')
-	             	.style('left', function(){return d3.event.x +'px'||'0px'})
-	                 .style('top', function(){return d3.event.y +'px'||'0px'})
+	             	.style('left', function(){return d3.event.clientX +'px'||'0px'})
+	                 .style('top', function(){return d3.event.clientY +'px'||'0px'})
 	                 .style('display', 'block');
 	
 	             //close menu
