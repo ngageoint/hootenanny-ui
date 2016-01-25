@@ -117,7 +117,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                                 iD.ui.Alert('There are no more available features to review. ' + 
                                     'Exiting the review session.',
                                     'info');
-                                _exitReviewSession();
+                                _exitReviewSession(false);
                             }
                         }
                         catch (ex) {
@@ -125,7 +125,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                             var r = confirm('Failed to retrieve the next features for review!' +
                                 '  Do you want to continue?');
                             if(r === false){
-                                _exitReviewSession();
+                                _exitReviewSession(true);
                             }
                         } finally {
                             // removing this since when connection is
@@ -224,8 +224,8 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     * @desc  Exit review session
     * @param msg - optional message for user
     **/
-    var _exitReviewSession = function(msg) {
-        _parent().deactivate(msg);
+    var _exitReviewSession = function(removeFromSidebar) {
+        _parent().deactivate(!removeFromSidebar);
         _parent().reviewNextStep();
     }
 

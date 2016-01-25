@@ -343,7 +343,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     /**
     * @desc cleans out all review related objects
     **/
-    _instance.deactivate = function () {
+    _instance.deactivate = function (doNotRemoveFromSidebar) {
 
         _resetStyles();
         d3.select('div.tag-table').remove();
@@ -353,8 +353,11 @@ Hoot.control.conflicts = function (context, sidebar) {
             .remove();
 
         d3.select('.hootTags').remove();
-        d3.select('.review')
+        if(!doNotRemoveFromSidebar) {
+            d3.select('.review')
             .remove();
+        }
+        
 
         context.map().on('drawn', null);
         //Clear map-in-map
