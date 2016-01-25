@@ -107,7 +107,8 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
     **/
     var _getSelectedValue = function(f, d, fid) {
     	var selVal = '';
-    	selVal = (f) ?  f.select('#' + fid).value() : d;
+    	//selVal = (f) ?  f.select('#' + fid).value() : d;
+    	selVal = (f) ? (f.select('#' + fid).value() == "" ? d: f.select('#' + fid).value()) : d;
     	return selVal;
     }
 
@@ -183,15 +184,20 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
 			if(selMember.members){
 				_.each(selMember.members,function(subMember){
 					var res = {};
-					if(subMember.hoot_key && subMember.defaultvalue.length>0){
+
+					//see if subMember has value.  If not, take default value.
+					var f = d3.select('#' + subMember.id);
+					var subMemberVal = (f) ? (f.value() == "" ? subMember.defaultvalue : f.value()) : subMember.defaultvalue;
+
+					if(subMember.hoot_key && subMemberVal.length>0){
 						//see if hoot_key already exists.  If it does, add to value.  If not, create.
 						var idx = results.indexOf(_.find(results,function(obj){return obj.name == subMember.hoot_key}));
 						if(idx>-1){
-							if(results[idx].value.indexOf(subMember.defaultvalue)==-1)
-							{results[idx].value += ';'+subMember.defaultvalue ;}
+							if(results[idx].value.indexOf(subMemberVal)==-1)
+							{results[idx].value += ';'+subMemberVal;}
 						} else {
 							res.name = subMember.hoot_key;
-							res.value = subMember.defaultvalue;
+							res.value = subMemberVal;
 							results.push(res);
 						}
 					}
