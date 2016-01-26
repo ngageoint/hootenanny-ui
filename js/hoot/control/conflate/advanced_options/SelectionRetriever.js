@@ -187,7 +187,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
 
 					//see if subMember has value.  If not, take default value.
 					var f = d3.select('#' + subMember.id);
-					var subMemberVal = (f) ? (f.value() == "" ? subMember.defaultvalue : f.value()) : subMember.defaultvalue;
+					var subMemberVal = (f.empty()) ? subMember.defaultvalue : (f.value() == "" ? subMember.defaultvalue : f.value());
 
 					if(subMember.hoot_key && subMemberVal.length>0){
 						//see if hoot_key already exists.  If it does, add to value.  If not, create.
