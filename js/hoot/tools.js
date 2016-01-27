@@ -144,6 +144,7 @@ Hoot.tools = function (context, selection) {
         //data.MISS_THRESHOLD = a.select('.missThreshold').value();
         //Disable till swap approval
         data.GENERATE_REPORT = a.select('.isGenerateReport').value();
+        data.COLLECT_STATS = a.select('.isCollectStats').value();
 
         var n = (new Date()).getTime();
         data.TIME_STAMP = "" + n;
@@ -268,7 +269,7 @@ Hoot.tools = function (context, selection) {
     view.on('layerVis', function (layerName) {
         hoot.model.layers.changeVisibility(layerName);
     });
- 
+
     conflicts.on('exportData', function () {
         var mapid = activeConflateLayer.mapId;
         Hoot.model.REST('getMapSize', mapid,function (sizeInfo) {
@@ -330,7 +331,7 @@ Hoot.tools = function (context, selection) {
 
         activeConflateLayer = {};
     });
-    
+
     /*conflicts.on('removeFeature', function (d, mapid) {
         hoot.model.conflicts.RemoveFeature(d, mapid);
     });*/
@@ -422,6 +423,7 @@ Hoot.tools = function (context, selection) {
                     reqParam.mapId = params.mapId
                     if(reqParam.mapId) {
                         Hoot.model.REST('getMapTags', reqParam,function (tags) {
+                            console.log(tags);
                             if (tags.reviewtype === 'hgisvalidation') {
                                 var r = confirm("The layer has been prepared for validation. Do you want to go into validation mode?");
                                 if (r == true) {
