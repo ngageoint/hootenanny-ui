@@ -22,7 +22,6 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     var _nextid;
     var _previd;
 
-
     /**
     * @desc Initializes control with id of of next and previous buttons and map id
     * @return returns true when all params are correct else false
@@ -44,7 +43,6 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         _instance.disableButton(false);
         return true;
     }
-
 
     /**
     * @desc jumps to next available reviewable relation.
@@ -97,46 +95,13 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                     }
 
 
-                    Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
-                        try {
-                            if(error){
-                                throw 'Failed to retrieve next set of reviewable features from service!';
-                            }
-
-
-                            if((1*response.resultCount) > 0){
-                                _currentReviewable = response;
-                                _parent().actions.idgraphsynch.getRelationFeature
-                                (reviewData.mapId, response.relationId, function(newReviewItem){
-                                    _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
-                                        newReviewItem.members[1]);
-
-                                    // Move this to proper location since highlightLayer is timer asynch
-                                    _parent().map.featureNavigator.panToEntity(newReviewItem, 
-                                        true);
-                                });
-
-                            } else {
-                                iD.ui.Alert('There are no more available features to review. ' + 
-                                    'Exiting the review session.',
-                                    'info');
-                                _exitReviewSession();
-                            }
-                        }
-                        catch (ex) {
-                            console.error(ex);
-                            var r = confirm('Failed to retrieve the next features for review!' +
-                                '  Do you want to continue?');
-                            if(r === false){
-                                _exitReviewSession();
-                            }
-                        } finally {
-                            // removing this since when connection is
-                            // done loading tiles we will set Processing to false
-                           //_parent().setProcessing(false);
-
-                        }
-                    });
+                    var forcedReviewableItem = context.hoot().view.utilities.reviewbookmarknotes.getForcedReviewableItem();
+                    if(forcedReviewableItem){
+                        _reviewGetNextHandler(null, forcedReviewableItem);
+                        context.hoot().view.utilities.reviewbookmarknotes.setForcedReviewableItem(null);
+                    } else {
+                        Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
+                    }
      
                 } catch (err) {
                     _handleError(err, true);
@@ -148,6 +113,47 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         }
     
 
+    }
+
+    var _reviewGetNextHandler = function (error, response) {
+        try {
+            if(error){
+                throw 'Failed to retrieve next set of reviewable features from service!';
+            }
+
+
+            if((1*response.resultCount) > 0){
+                _currentReviewable = response;
+                _parent().actions.idgraphsynch.getRelationFeature
+                (response.mapId, response.relationId, function(newReviewItem){
+                    _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
+                        newReviewItem.members[1]);
+
+                    // Move this to proper location since highlightLayer is timer asynch
+                    _parent().map.featureNavigator.panToEntity(newReviewItem, 
+                        true);
+                });
+
+            } else {
+                iD.ui.Alert('There are no more available features to review. ' + 
+                    'Exiting the review session.',
+                    'info');
+                _exitReviewSession();
+            }
+        }
+        catch (ex) {
+            console.error(ex);
+            var r = confirm('Failed to retrieve the next features for review!' +
+                '  Do you want to continue?');
+            if(r === false){
+                _exitReviewSession();
+            }
+        } finally {
+            // removing this since when connection is
+            // done loading tiles we will set Processing to false
+           //_parent().setProcessing(false);
+
+        }
     }
 
     /**

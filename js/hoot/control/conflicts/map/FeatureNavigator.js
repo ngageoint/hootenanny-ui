@@ -61,6 +61,8 @@ Hoot.control.conflicts.map.featureNavigator = function (context)
         		map.center(entityCenter);
         		var zoom = Math.min(18, map.zoom()-1);
                 map.zoom(zoom);
+            } else {
+                _parent().setProcessing(false);
             }
         }
     }

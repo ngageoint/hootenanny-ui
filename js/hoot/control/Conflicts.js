@@ -210,6 +210,15 @@ Hoot.control.conflicts = function (context, sidebar) {
             //icon: '_icon plus',
             cmd: iD.ui.cmd('t'),
             action: _instance.info.reviewtable.toggleTable // Review table
+        },
+        {
+            id: 'sharereview',
+            name: 'share_review',
+            text: 'Share Review',
+            color: 'fill-grey button round pad0y pad1x dark small strong',
+            icon: '_icon plus',
+            cmd: iD.ui.cmd('s'),
+            action: _instance.actions.sharereview.publish // Review table
         }];
 
         var opts = conflicts.append('span')
@@ -225,6 +234,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         .on(da[2].cmd, function() { d3.event.preventDefault(); da[2].action(); })
         .on(da[3].cmd, function() { d3.event.preventDefault(); da[3].action(); })
         .on(da[4].cmd, function() { d3.event.preventDefault(); da[4].action(); })
+        .on(da[5].cmd, function() { d3.event.preventDefault(); da[5].action(); })
         ;
 
         d3.select(document)

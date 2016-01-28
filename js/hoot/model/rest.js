@@ -962,6 +962,37 @@ rest.downloadReport = function(data)
             });
     }
 
+    rest.saveReviewBookmark = function(data, callback) {
+        d3.json('/hoot-services/job/review/bookmarks/save')
+            .header('Content-Type', 'application/json')
+            .post(JSON.stringify(data), function (error, resp) {
+
+                if (error) {
+                    return callback(_alertError(error, "Requested job failed! For detailed log goto Manage->Log"));
+                }
+                callback(resp);
+            });
+    }
+
+    rest.getAllReviewBookmarks = function(data, callback) {
+         d3.json('/hoot-services/job/review/bookmarks/getall?orderBy=' + data.orderBy + '&asc=' + data.asc + 
+            '&limit=' + data.limit + '&offset=' + data.offset, function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get all bookmarks failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    }
+
+    rest.getReviewBookmark = function(data, callback) {
+         d3.json('/hoot-services/job/review/bookmarks/get?bookmarkId=' + data.bookmarkId, function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get bookmarkt failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    }
+
 
     rest['' + command + ''](data, callback, option);
 };

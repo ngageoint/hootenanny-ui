@@ -6,7 +6,7 @@ Hoot.hoot = function (context) {
         //layers = {},
         availLayers = [];
     
-
+    hoot.ui = Hoot.ui(context);
     hoot.model = Hoot.model(context);
     hoot.view = Hoot.view(context);
     hoot.control = Hoot.control(context);
@@ -28,6 +28,7 @@ Hoot.hoot = function (context) {
         return Hoot.LTDSTags(context);
     };*/
     hoot.load = function (demo, callback) {
+
         if (demo) {
             hoot.demo = true;
             Hoot.demo(context);
