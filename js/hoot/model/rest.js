@@ -993,6 +993,19 @@ rest.downloadReport = function(data)
         });
     }
 
+    rest.deleteReviewBookmark = function(data, callback) {
+        d3.json('/hoot-services/job/review/bookmarks/delete?bookmarkId=' + data.bookmarkId)
+        .send('DELETE',function (error, resp) {
+
+                if (error) {
+                    return callback(_alertError(error, "Requested job failed! For detailed log goto Manage->Log"));
+                }
+                callback(resp);
+            });
+
+
+    }
+
 
     rest['' + command + ''](data, callback, option);
 };

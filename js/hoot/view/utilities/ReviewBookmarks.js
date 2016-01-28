@@ -1,6 +1,6 @@
 Hoot.view.utilities.reviewbookmarks = function(context) {
 	var _instance = {};
-
+    var _lastSortRequest;
 
     _instance.createContent = function(form){
 
@@ -12,6 +12,12 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             .attr('id', 'reviewBookmarksContent')
             .classed('col12 fill-white small  row10 overflow keyline-all', true)
             .call(_instance.populatePopulateBookmarks);
+
+            context.hoot().view.utilities.on('tabToggled', function(d){
+                if(d === '#utilReviewBookmarks') {
+                    _instance.populatePopulateBookmarks(null, _lastSortRequest);
+                }
+            });
     };
 
    var _globalSortClickHandler = function(a){
@@ -57,12 +63,12 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
 
     var _sortData = function(field, order) {
-        request = {};
-        request['orderBy'] = field;
-        request['asc'] = order;
-        request['limit'] = 200;
-        request['offset'] = 0;
-        _instance.populatePopulateBookmarks(null, request);
+        var req = {};
+        req['orderBy'] = field;
+        req['asc'] = order;
+        req['limit'] = 200;
+        req['offset'] = 0;
+        _instance.populatePopulateBookmarks(null, req);
         _globalSortClickHandler();
     }
     var _createSortMenu = function(form) {
@@ -92,15 +98,15 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                 container = _instance.datasetcontainer;
             }
 
-            request = {};
-            request['orderBy'] = 'createdAt';
-            request['asc'] = 'false';
-            request['limit'] = 200;
-            request['offset'] = 0;
+            _lastSortRequest = {};
+            _lastSortRequest['orderBy'] = 'createdAt';
+            _lastSortRequest['asc'] = 'false';
+            _lastSortRequest['limit'] = 200;
+            _lastSortRequest['offset'] = 0;
             if(overrideReq) {
-                request = overrideReq;
+                _lastSortRequest = overrideReq;
             }
-            Hoot.model.REST('getAllReviewBookmarks', request, function (d) {
+            Hoot.model.REST('getAllReviewBookmarks', _lastSortRequest, function (d) {
                 if(d.error){
                     context.hoot().view.utilities.errorlog.reportUIError(d.error);
                     return;
@@ -189,9 +195,21 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         d3.event.stopPropagation();
         d3.event.preventDefault();
         
-        var r = confirm("Are you sure you want to delete selected translaton?");
+
+        var r = confirm("Are you sure you want to delete selected bookmark?");
         if (r == true) {
 
+            request = {};
+            request['bookmarkId'] = d.id;
+   
+            Hoot.model.REST('deleteReviewBookmark', request, function (d) {
+                if(d.error){
+                    context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                    return;
+                }
+                _instance.populatePopulateBookmarks(null, _lastSortRequest);
+               
+            });
         } else {
             return;
         }

@@ -1,6 +1,6 @@
 Hoot.view.utilities = function (context){
 
-    var event = d3.dispatch('activate', 'uploadFile');
+    var event = d3.dispatch('activate', 'uploadFile', 'tabToggled');
     var utilities = {};
  
 	utilities.dataset = Hoot.view.utilities.dataset(context);
@@ -42,6 +42,7 @@ Hoot.view.utilities = function (context){
                 .appendChild(thisbody);
             d3.selectAll('.utilHootHead').style('font-weight','normal');
             d3.select(d).style('font-weight','bold');
+            event.tabToggled(bodyid);
         };
 
         _createTabs = function(jobsBG)
@@ -81,7 +82,7 @@ Hoot.view.utilities = function (context){
 	                    .classed(bodyStyle, true)
 	                    .attr('data', '#' + tabId)
 	                    .on('click', function () {
-	                        _toggleOpts(this);
+	                        _toggleOpts(this);                            
 	                    });
                     
                     var tabLabel = tabHeader.append('label')
