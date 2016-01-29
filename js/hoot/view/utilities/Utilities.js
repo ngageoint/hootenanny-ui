@@ -66,6 +66,7 @@ Hoot.view.utilities = function (context){
                     var contentId = tabMeta.contentbodyid;
                     var callbackCntxMeta = tabMeta.callbackcontext;
                     var isDefault = tabMeta.default;
+                    var isHidden = tabMeta.hidden;
 
                     if(tabMeta.pady !== undefined && tabMeta.pady === 'false'){
                         pady = '';
@@ -83,11 +84,17 @@ Hoot.view.utilities = function (context){
 	                    .on('click', function () {
 	                        _toggleOpts(this);                            
 	                    });
+
                     
                     var tabLabel = tabHeader.append('label')
                     	.text(tabName)
                     	.classed('point',true)
                     	.style('font-style','normal');
+
+                    if(isHidden) {
+                        tabHeader.on('click', null);
+                        tabLabel.classed('hidden', true);
+                    }
                     
                     var containerForm = tabBody.append('form')
                     .attr('id', 'containerForm' + tabId);

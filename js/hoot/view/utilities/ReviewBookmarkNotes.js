@@ -63,7 +63,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
             .classed('round importableLayer', true);
 
       var mainBarDiv = mainBar.append('div')
-            .classed('big pad0y pad0x col12 keyline-bottom', true);
+            .classed('big pad0y pad0x col12 fill-darken0 keyline-bottom', true);
 
       
       mainBarDiv.append('div')
@@ -91,11 +91,15 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
             
 
             mainBarDiv.append('div')
-              .classed('fr icon undo point', true)
+              .classed('fr icon search point', true)
               .on('click', function () {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
-                _jumpToReviewItem();
+                var r = confirm("If you continue Hootenanny will load selected review item and you will lose all unsaved changes. "+
+                  "Do you want to continue?");
+                 if (r == true) {
+                  _jumpToReviewItem();
+                }
               });
 
 
@@ -104,6 +108,16 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
           }
             
       });
+
+
+      mainBarDiv.append('div')
+        .classed('fr _icon disk', true)
+        .on('click', function () {
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+          _refresh();
+        });
+
 
 
           
@@ -202,7 +216,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       reqParam['detail'] = _currentBookmark.detail;
 
       Hoot.model.REST('saveReviewBookmark', reqParam, function (resp) {   
-        _instance.createContent(d3.select('#containerFormutilReviewBookmarkNotes'));
+        _refresh();
       });
     }
 
@@ -237,7 +251,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
             reqParam['detail'] = _currentBookmark.detail;
 
             Hoot.model.REST('saveReviewBookmark', reqParam, function (resp) {   
-              _instance.createContent(d3.select('#containerFormutilReviewBookmarkNotes'));
+              _refresh();
             });
             
           }
@@ -257,7 +271,9 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     }
 
 
-    
+    var _refresh = function() {
+      _instance.createContent(d3.select('#containerFormutilReviewBookmarkNotes'));
+    }
 
   
     return d3.rebind(_instance, _events, 'on');

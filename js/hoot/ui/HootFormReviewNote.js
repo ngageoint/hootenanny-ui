@@ -46,7 +46,7 @@ Hoot.ui.hootformreviewnote = function ()
         var form = formDiv.append('form');
         var hdBar = form.classed('round importableLayer', true)
                 .append('div')
-                .classed('big pad0y keyline-bottom', true);
+                .classed('big pad0y fill-darken1', true);
 
         var hdLabel = hdBar.append('h4')
                 .text(formTitle);
@@ -54,7 +54,7 @@ Hoot.ui.hootformreviewnote = function ()
         if(!isNew) {
             hdLabel
                 .append('div')
-                .classed('fr _icon disk', true)
+                .classed('fr _icon plus', true)
                 .on('click', function () {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
@@ -110,7 +110,7 @@ Hoot.ui.hootformreviewnote = function ()
 
                     // add header and label
                     field
-                    .classed('form-field fill-white small keyline-all round space-bottom1', true)
+                    .classed('form-field fill-white small space-bottom1', true)
                     .style('height','120px');
 
 

@@ -1,7 +1,7 @@
 Hoot.view.utilities.reviewbookmarks = function(context) {
 	var _instance = {};
     var _lastSortRequest;
-    var _DEFAULT_PAGE_COUNT = 5;
+    var _DEFAULT_PAGE_COUNT = 50;
     var _currentPage = 1;
 
     _instance.createContent = function(form){

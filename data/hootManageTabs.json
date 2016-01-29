@@ -66,6 +66,7 @@
   },
   {
     "name":"Review Bookmark Notes",
+    "hidden":true,
     "id":"utilReviewBookmarkNotes",
     "order":"11",
     "contentbodyid":"reviewbookmarknotesbody",
