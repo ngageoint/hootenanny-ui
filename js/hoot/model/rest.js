@@ -746,6 +746,23 @@ Hoot.model.REST = function (command, data, callback, option) {
         );
   };
   
+
+  rest.reviewGetReviewItem = function(data, callback)
+  {
+    var mapId = data.mapId;
+    var seq = data.sequence;
+    
+    d3.json('/hoot-services/job/review/reviewable?mapid='+ mapId + '&offsetseqid=' + seq,
+            function(error, resp)
+            {
+               if (error) {
+                    return callback(_alertError(error, "Requested job failed! For detailed log goto Manage->Log"));
+                }
+                callback(resp);
+            }
+        );
+  };
+
   rest.ReviewGetStatistics = function (mapId, callback) {
             
         d3.json('/hoot-services/job/review/statistics?mapId=' + mapId, function (error, resp) {             
@@ -986,6 +1003,15 @@ rest.downloadReport = function(data)
 
     rest.getReviewBookmark = function(data, callback) {
          d3.json('/hoot-services/job/review/bookmarks/get?bookmarkId=' + data.bookmarkId, function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get bookmarkt failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    }
+
+    rest.getReviewBookmarkStat = function(data, callback) {
+         d3.json('/hoot-services/job/review/bookmarks/stat', function (error, resp) {
             if (error) {
                 return callback(_alertError(error, "Get bookmarkt failed! For detailed log goto Manage->Log"));
             }

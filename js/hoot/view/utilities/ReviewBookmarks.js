@@ -1,6 +1,8 @@
 Hoot.view.utilities.reviewbookmarks = function(context) {
 	var _instance = {};
     var _lastSortRequest;
+    var _DEFAULT_PAGE_COUNT = 5;
+    var _currentPage = 1;
 
     _instance.createContent = function(form){
 
@@ -10,7 +12,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
         _instance.datasetcontainer = form.append('div')
             .attr('id', 'reviewBookmarksContent')
-            .classed('col12 fill-white small  row10 overflow keyline-all', true)
+            .classed('col12 fill-white small  row16 overflow keyline-all', true)
             .call(_instance.populatePopulateBookmarks);
 
             context.hoot().view.utilities.on('tabToggled', function(d){
@@ -18,6 +20,63 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                     _instance.populatePopulateBookmarks(null, _lastSortRequest);
                 }
             });
+
+
+
+
+
+
+          var btnContainer = form.append('div')
+                .attr('id', 'bmkPageBtnContainer')
+                .classed('form-field col12', true);
+
+        var btnPrevPageContainer = btnContainer.append('div')
+                .attr('id', 'btnPrevPageContainer')
+                .classed('form-field col1 pad1y pad1x ', true);
+
+
+                
+                 btnPrevPageContainer.append('span')
+                .classed('strong center col12 ', true)
+                .classed('row1 keyline-all', true)
+                .text("Prev")
+                .on('click', function(){
+//_pageBtnClickHandler
+                    var prevBtn = d3.select('#bmkPageBtn' + (_currentPage - 1));
+                    if(prevBtn && !prevBtn.empty()) {
+                        _currentPage--;
+                        _populateCurrentPage();
+                    }
+
+                });
+
+        var btnNextPageContainer = btnContainer.append('div')
+                .attr('id', 'btnNextPageContainer')
+                .classed('form-field col1 pad1y pad1x ', true);
+
+                 btnNextPageContainer.append('span')
+                .classed('strong center col12 ', true)
+                .classed('row1 keyline-all', true)
+                .text("Next")
+                .on('click', function(){
+                    var nextBtn = d3.select('#bmkPageBtn' + (_currentPage + 1));
+                    if(nextBtn && !nextBtn.empty()) {
+                        _currentPage++;
+                        _populateCurrentPage();
+                    }
+                });
+
+        var btnNumsContainer = btnContainer.append('div')
+                .attr('id', 'bmkPageNumBtnContainer')
+                .classed('form-field col10 pad1y pad1x overflow', true);
+
+   
+
+
+
+
+
+
     };
 
    var _globalSortClickHandler = function(a){
@@ -66,7 +125,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         var req = {};
         req['orderBy'] = field;
         req['asc'] = order;
-        req['limit'] = 200;
+        req['limit'] = _DEFAULT_PAGE_COUNT;
         req['offset'] = 0;
         _instance.populatePopulateBookmarks(null, req);
         _globalSortClickHandler();
@@ -93,6 +152,17 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         _createMenu(form, 'reviewBookmarksSortDiv', 'Sort', meta)
     }
 
+    var _pageBtnClickHandler = function() {
+
+        _currentPage = (1*d3.select(this).text());
+        _populateCurrentPage();
+    }
+
+    var _populateCurrentPage = function() {
+        var offset = (_currentPage-1) * _DEFAULT_PAGE_COUNT;
+        _lastSortRequest['offset'] = offset;
+        _instance.populatePopulateBookmarks(null, _lastSortRequest);
+    }
 	_instance.populatePopulateBookmarks = function(container, overrideReq) {
             if(!container){
                 container = _instance.datasetcontainer;
@@ -101,53 +171,81 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             _lastSortRequest = {};
             _lastSortRequest['orderBy'] = 'createdAt';
             _lastSortRequest['asc'] = 'false';
-            _lastSortRequest['limit'] = 200;
+            _lastSortRequest['limit'] = _DEFAULT_PAGE_COUNT;
             _lastSortRequest['offset'] = 0;
             if(overrideReq) {
                 _lastSortRequest = overrideReq;
             }
-            Hoot.model.REST('getAllReviewBookmarks', _lastSortRequest, function (d) {
-                if(d.error){
+
+            Hoot.model.REST('getReviewBookmarkStat', null, function (resp) {
+                if(resp.error){
                     context.hoot().view.utilities.errorlog.reportUIError(d.error);
                     return;
                 }
 
-               
-                var bookmarksArray = d.reviewBookmarks;
-         
-    
-                container.selectAll('div').remove();
-                var tla = container.selectAll('div')
-                    .data(bookmarksArray)
-                    .enter();
-                var tla2 = tla.append('div')
-                    .classed('col12 fill-white small keyline-bottom hoverDiv2', true);
-                var tla3 = tla2.append('span')
-                    .classed('text-left big col12 strong', true)
-                    .append('a')
-                    .text(_renderLinkText)
-                    .on('click', _linkClickHandler);
+                var total = 1*resp.totalCount;
+                var nPages = Math.ceil(total/_DEFAULT_PAGE_COUNT);
 
-                var tla22 = tla2.append('div')
-                    .classed('col12 small keyline-bottom', true);
+                var pgBtnContainer = d3.select('#bmkPageNumBtnContainer');
+                // Clean since each time setting tab item is click we refresh
+                pgBtnContainer.selectAll('span').remove();
+                for(var i=1; i<=nPages; i++) {
+                    pgBtnContainer.append('span')
+                    .attr('id', 'bmkPageBtn' + i)
+                    .classed('strong center col0 ', true)
+                    .classed('row1 keyline-all', true)
+                    .text(i)
+                    .on('click', _pageBtnClickHandler);
 
-                tla22.append('span')
-                    .classed('text-left big col12 quiet', true)
+                }
 
-                    .text(_createSubText);
+                d3.select('#bmkPageBtn' + _currentPage).classed('loud',true);
+
+                Hoot.model.REST('getAllReviewBookmarks', _lastSortRequest, function (d) {
+                    if(d.error){
+                        context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                        return;
+                    }
+
+                   
+                    var bookmarksArray = d.reviewBookmarks;
+             
+        
+                    container.selectAll('div').remove();
+                    var tla = container.selectAll('div')
+                        .data(bookmarksArray)
+                        .enter();
+                    var tla2 = tla.append('div')
+                        .classed('col12 fill-white small keyline-bottom hoverDiv2', true);
+                    var tla3 = tla2.append('span')
+                        .classed('text-left big col12 strong', true)
+                        .append('a')
+                        .text(_renderLinkText)
+                        .on('click', _linkClickHandler);
+
+                    var tla22 = tla2.append('div')
+                        .classed('col12 small keyline-bottom', true);
+
+                    tla22.append('span')
+                        .classed('text-left big col12 quiet', true)
+
+                        .text(_createSubText);
 
 
 
-                tla3.append('button')
-                //.classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
-                .style('height', '100%')
-                .on('click', _deleteBtnHandler)
-                .select(function (sel) {
-                    d3.select(this).classed('fr _icon trash', true);
+                    tla3.append('button')
+                    //.classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
+                    .style('height', '100%')
+                    .on('click', _deleteBtnHandler)
+                    .select(function (sel) {
+                        d3.select(this).classed('fr _icon trash', true);
+                    });
+
+                   
                 });
 
-               
             });
+                
     };
 
    

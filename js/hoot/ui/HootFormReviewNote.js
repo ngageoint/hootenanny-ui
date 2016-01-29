@@ -2,12 +2,12 @@ Hoot.ui.hootformreviewnote = function ()
 {
     var _events = d3.dispatch();
     var _instance = {};
-
+    var _rawData;
 
     _instance.createForm = function(containerId, formMetaData) {
         var form;
         try{
-
+            _rawData = formMetaData.rawData;
             var btnMeta = formMetaData['button'];
             var formMeta = formMetaData['form'];
             var formTitle = formMetaData['title'];
@@ -21,7 +21,7 @@ Hoot.ui.hootformreviewnote = function ()
 
             var container = d3.select('#' + containerId);
             var formDiv = _createFormDiv(container);
-            form =  _createForm(container, formDiv, formTitle)
+            form =  _createForm(container, formDiv, formTitle, formMetaData.modifyHandler, formMetaData.isNew);
             var fieldset = _createFieldSet(form, formMeta);
             _createButtons(btnMeta, formDiv); 
 
@@ -41,22 +41,59 @@ Hoot.ui.hootformreviewnote = function ()
                 .classed('fill-white round keyline-all col12', true);
     }
 
-    var _createForm = function(container, formDiv, formTitle) { 
-
+    var _createForm = function(container, formDiv, formTitle, modifyHandler, isNew) { 
+        var myInstance = _instance;
         var form = formDiv.append('form');
-        form.classed('round importableLayer', true)
+        var hdBar = form.classed('round importableLayer', true)
                 .append('div')
-                .classed('big pad0y keyline-bottom', true)
-                .append('h4')
-                .text(formTitle)
+                .classed('big pad0y keyline-bottom', true);
+
+        var hdLabel = hdBar.append('h4')
+                .text(formTitle);
+
+        if(!isNew) {
+            hdLabel
                 .append('div')
-                .classed('fr _icon x point', true)
+                .classed('fr _icon disk', true)
                 .on('click', function () {
-                    container.remove();
+                    d3.event.stopPropagation();
+                    d3.event.preventDefault();
+
+                    formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', null);
+
+                    var d_btn = [
+                        {
+                          text: 'Modify',
+                          location: 'right',
+                          onclick: function(){
+                            var newNote = formDiv.select('#bmkNoteText' + _rawData.id).value();
+                            _rawData.note = newNote;
+                            modifyHandler(_rawData);   
+                          }
+                        },
+                        {
+                          text: 'Cancel',
+                          location: 'right',
+                          onclick: function(){
+                            d3.event.stopPropagation();
+                            d3.event.preventDefault();   
+                            formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', 'readonly'); 
+                            d3.select('#reviewBookmarkNotesBtnContainer').remove();    
+                          }
+                        }
+                    ];
+
+
+
+                    _createButtons(d_btn, formDiv);
                 });
+        }
+
+            
         return form;
     }
 
+   
     var _createFieldSet = function(form, formMeta) {
         var fieldset = form.append('fieldset')
                 .selectAll('.form-field')
@@ -109,15 +146,18 @@ Hoot.ui.hootformreviewnote = function ()
     }
 
     var _createButtons = function(btnMeta, formDiv) {
-        _.each(btnMeta, function(m){
+        if(btnMeta){
+            var btnContainer = formDiv.append('div')
+                .attr('id', 'reviewBookmarkNotesBtnContainer')
+                .classed('form-field col12 pad1y pad1x ', true);
+            _.each(btnMeta, function(m){
 
-                
+                    
                 var onClick = function(){};
                 if(m.onclick){
                     onClick = m.onclick;
                 }
-                var btnContainer = formDiv.append('div')
-                .classed('form-field col12 pad1y pad1x ', true);
+                
                  btnContainer.append('span')
                 .classed('round strong big loud dark center col2 margin1 point', true)
                 .classed('inline row1 fr pad1y', true)
@@ -126,6 +166,8 @@ Hoot.ui.hootformreviewnote = function ()
 
 
             });       
+        }
+        
     }
 
 

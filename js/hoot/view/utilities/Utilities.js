@@ -17,17 +17,16 @@ Hoot.view.utilities = function (context){
 
 
     utilities.forceResetManageTab = function () {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-                var vis =  true;
-                var txt = "Manage";
-                d3.select('#manageTabBtn')
-                    .classed('fill-light', !vis)
-                    .classed('dark', vis)
-                    .text(txt);
-                d3.selectAll('#jobsBG')
-                    .classed('hidden', vis);
-            }
+        
+        var vis =  true;
+        var txt = "Manage";
+        d3.select('#manageTabBtn')
+            .classed('fill-light', !vis)
+            .classed('dark', vis)
+            .text(txt);
+        d3.selectAll('#jobsBG')
+            .classed('hidden', vis);
+    }
 
     utilities.activate = function () {
 

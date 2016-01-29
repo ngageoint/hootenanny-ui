@@ -5,6 +5,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     var _bookmarkId;
     var _currentBookmark;
     var _forcedReviewableItem;
+    var _currentNotes;
 
     _instance.getForcedReviewableItem = function() {
         return _forcedReviewableItem;
@@ -25,8 +26,9 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
 
       form.append('div')
       .attr('id','reviewbookmarknotesbody')
-          .classed('col12 fill-white small strong row10 overflow keyline-all', true)
+          .classed('col12 fill-white small strong row16 overflow keyline-all', true)
           .call(_instance.getNotes);
+
     };
 
     _instance.getNotes = function(container) {
@@ -35,6 +37,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       Hoot.model.REST('getReviewBookmark', reqParam, function (resp) {   
                 
         if(resp && resp.reviewBookmarks && resp.reviewBookmarks.length > 0) {
+          _currentNotes= {};
           _currentBookmark = resp.reviewBookmarks[0];
           var noteList = _currentBookmark.detail.bookmarknotes;
           _createHeader(_currentBookmark.detail.bookmarkdetail.title, _currentBookmark.id);
@@ -64,26 +67,82 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
 
       
       mainBarDiv.append('div')
+            .attr('id', 'bmkNoteHdLabel')
             .classed('fl', true)
             .append('h1')
             .text(title + ' #' + bookmarkId);
 
-      mainBarDiv.append('div')
-          .classed('fr icon undo point', true)
-          .on('click', function () {
-            context.hoot().view.utilities.forceResetManageTab();
-            context.hoot().reset();
 
-            _forcedReviewableItem = _currentBookmark.detail.bookmarkreviewitem;
-            var key = {
-                'name': context.hoot().model.layers.getNameBymapId(_currentBookmark.mapId),
-                'id':_currentBookmark.mapId,
-                color: 'violet'
-            };
-            context.hoot().control.import.forceAddLayer(key, d3.select(d3.selectAll('.hootImport').node()), key.color, key.name);
-          });
+
+
+      var currentReviewable = _currentBookmark.detail.bookmarkreviewitem;
+
+      var reqParam = {};
+      reqParam.mapId = currentReviewable.mapId;
+      reqParam.sequence = currentReviewable.sortOrder;
+      Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {  
+
+          if(resp.error){
+              context.hoot().view.utilities.errorlog.reportUIError(d.error);
+              return;
+          } 
+
+          if(resp.resultCount > 0){
+            
+
+            mainBarDiv.append('div')
+              .classed('fr icon undo point', true)
+              .on('click', function () {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+                _jumpToReviewItem();
+              });
+
+
+          } else {
+            d3.select('#bmkNoteHdLabel').text(title + ' #' + bookmarkId + ' - ( **** RESOLVED **** )');
+          }
+            
+      });
+
+
+          
     }
 
+
+    var _jumpToReviewItem = function() {
+      _forcedReviewableItem = _currentBookmark.detail.bookmarkreviewitem;
+
+        var reqParam = {};
+        reqParam.mapId = _forcedReviewableItem.mapId;
+        reqParam.sequence = _forcedReviewableItem.sortOrder;
+        Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {  
+
+            if(resp.error){
+                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                return;
+            } 
+
+            if(resp.resultCount < 1){
+              alert('The review item already has been resolved. Can not go to review item.');
+            } else {
+              context.hoot().view.utilities.forceResetManageTab();
+              context.hoot().reset();
+
+              
+              var key = {
+                  'name': context.hoot().model.layers.getNameBymapId(_currentBookmark.mapId),
+                  'id':_currentBookmark.mapId,
+                  color: 'violet'
+              };
+              context.hoot().control.import.forceAddLayer(key, d3.select(d3.selectAll('.hootImport')
+                .node()), key.color, key.name);
+          
+            }
+
+              
+        });
+    }
 
     var _createContainerDiv = function() {
       d3.select('#reviewbookmarknotesbody')
@@ -93,13 +152,13 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     }
 
     var _appendNotes = function(noteList) {
-      
+      _currentNotes= {};
       for(var i=0; i<noteList.length; i++) {
         var nt = noteList[i];
         var d_form = [
         {
           label: 'Note',
-          id: 'reviewBookmarkNoteText' + i,
+          id: 'bmkNoteText' + nt.id,
           placeholder:'',
           inputtype:'textarea',
           inputText: nt.note,
@@ -112,9 +171,39 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
         var meta = {};
         meta.title = 'User ' + nt.userId + ' commented at ' + dateToStr;
         meta.form = d_form; 
-        context.hoot().ui.hootformreviewnote.createForm('reviewbookmarknotesdiv', meta);
+        meta.rawData = nt;
+        meta.modifyHandler = _modifyNoteHandler;
+        //context.hoot().ui.hootformreviewnote.createForm('reviewbookmarknotesdiv', meta);
+
+
+        var hootformreviewnote = Hoot.ui.hootformreviewnote();
+        hootformreviewnote.createForm('reviewbookmarknotesdiv', meta);
+        _currentNotes[nt.id] = hootformreviewnote;
 
       }
+    }
+
+    var _modifyNoteHandler = function(noteMeta) {
+      var notes = _currentBookmark.detail.bookmarknotes;
+
+      var modified = _.find(notes, function(n){
+        return n.id === noteMeta.id;
+      });
+    
+      if(modified) {
+        modified.note = noteMeta.note;
+      }
+
+      var reqParam = {};
+      reqParam['bookmarkId'] = _currentBookmark.id;
+      reqParam['mapId'] = _currentBookmark.mapId;
+      reqParam['relationId'] = _currentBookmark.relationId;
+      reqParam['userId'] = _currentBookmark.userId;
+      reqParam['detail'] = _currentBookmark.detail;
+
+      Hoot.model.REST('saveReviewBookmark', reqParam, function (resp) {   
+        _instance.createContent(d3.select('#containerFormutilReviewBookmarkNotes'));
+      });
     }
 
 
@@ -122,7 +211,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       var d_form = [
       {
         label: 'Note',
-        id: 'reviewBookmarkNoteText' + noteList.length,
+        id: 'bmkNoteTextNew',
         placeholder:'Enter a new comment',
         inputtype:'textarea',
         readonly: false
@@ -134,7 +223,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
           location: 'right',
           onclick: function(){
             var reqParam = {};
-            var newNote = d3.select('#reviewBookmarkNoteText' + noteList.length).value();
+            var newNote = d3.select('#bmkNoteTextNew').value();
 
             var bmNote = {};
             bmNote['userId'] = -1;
@@ -160,7 +249,11 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       meta.title = 'New';
       meta.form = d_form; 
       meta.button = d_btn;
-      context.hoot().ui.hootformreviewnote.createForm('reviewbookmarknotesdiv', meta);
+      meta.isNew = true;
+      //context.hoot().ui.hootformreviewnote.createForm('reviewbookmarknotesdiv', meta);
+      var hootformreviewnote = Hoot.ui.hootformreviewnote();
+      hootformreviewnote.createForm('reviewbookmarknotesdiv', meta);
+      _currentNotes['new'] = hootformreviewnote;
     }
 
 
