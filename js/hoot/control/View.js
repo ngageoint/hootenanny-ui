@@ -80,7 +80,7 @@ Hoot.control.view = function (container, context) {
         	}
             //context.hoot().toggleColor(d.name);
         });
-        _a.append('span')
+        var spn = _a.append('span')
             .attr('class', 'strong pad1x')
             .text(function (d) {
                 return d.name;
@@ -88,10 +88,10 @@ Hoot.control.view = function (container, context) {
             .style('display', 'inline-block')
             .style('max-width', '70%')
             .style('overflow', 'hidden')
-            .style('vertical-align', 'middle')
-            .select(function () {
+            .style('vertical-align', 'middle');
+        spn.select(function () {
                 _a.append('button').attr('class', function () {
-                    return 'keyline-left action round-right inline _icon trash';
+                    return 'keyline-left map-button round-right inline _icon trash';
                 })
                  .style('float', 'right')
                 .style('position', 'relative')
@@ -129,6 +129,12 @@ Hoot.control.view = function (container, context) {
                     context.updateMode();
 
                 });
+                //Add map metadata (params, stats) display control
+                if (_a.datum().tags && (_a.datum().tags.params || _a.datum().tags.stats)) {
+                    spn.style('max-width', '60%');
+                    var mapMetadata = iD.ui.MapMetadata(_a.datum(), context);
+                    _a.call(mapMetadata.button).call(mapMetadata.body);
+                }
         });
 
 
