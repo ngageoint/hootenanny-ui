@@ -244,6 +244,7 @@ Hoot.tools = function (context, selection) {
             hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
                 conflicts.startReview(d);
             });
+            conflationCheck(layerName, true);
         });
     }
 
@@ -555,8 +556,9 @@ Hoot.tools = function (context, selection) {
                     sel.remove();
                 }
                 renderMergedLayer(layerName, params.mapId);
+            } else {
+                conflationCheck(layerName, true);
             }
-            conflationCheck(layerName, true);
         }
     });
     exportLayer.on('cancelSaveLayer', function () {
