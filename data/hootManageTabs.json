@@ -37,23 +37,30 @@
     "callback":"view.utilities.basemapdataset.createContent"
   },
   {
+    "name":"UI Settings",
+    "id":"utilUISettings",
+    "order":"7",
+    "contentbodyid":"basemapsdatasettable",
+    "callback":"view.utilities.uisettings.createContent"
+  },  
+  {
     "name":"Log",
     "id":"utilErrorLog",
-    "order":"7",
+    "order":"8",
     "contentbodyid":"errorlogbody",
     "callback":"view.utilities.errorlog.createContent"
   },
   {
     "name":"Reports",
     "id":"utilReports",
-    "order":"8",
+    "order":"9",
     "contentbodyid":"reportsContent",
     "callback":"view.utilities.reports.createContent"
   },
   {
     "name":"About",
     "id":"utilAbout",
-    "order":"9",
+    "order":"10",
     "contentbodyid":"aboutContent",
     "callback":"view.utilities.about.createContent"
   }

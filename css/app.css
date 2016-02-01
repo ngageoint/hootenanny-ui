@@ -179,7 +179,7 @@ input[type=email] {
     border:1px solid #ccc;
     padding:5px 10px;
     height:30px;
-    width: 100%;
+    /*width: 100%;*/
     border-radius:4px;
     text-overflow: ellipsis;
 }
@@ -1255,32 +1255,32 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 /* preset form numbers */
 
 input[type=number] {
-    position: relative;
-    padding-right: 20%;
+    width: 50%;
+    padding-right: 65px;
 }
 
 .spin-control {
-    width: 20%;
-    height: 29px;
+    width: 60px;
+    height: 30px;
+    border-left: 1px solid #CCC;
     display: inline-block;
-    margin-left: -20%;
+    margin-left: -60px;
     margin-bottom: -11px;
     position: relative;
 }
 
 .spin-control button {
-    right: 1px;
     position: relative;
     float: left;
     height: 100%;
     width: 50%;
-    border-left: 1px solid #CCC;
+    border: 1px solid #CCC;
     border-radius: 0;
-    background: rgba(0, 0, 0, 0);
+    border-left: 0;
 }
 
-.spin-control button.decrement {
-    border-bottom-right-radius: 3px;
+.spin-control button.descend {
+    border-bottom-right-radius: 4px;
 }
 
 .spin-control button.decrement::after,

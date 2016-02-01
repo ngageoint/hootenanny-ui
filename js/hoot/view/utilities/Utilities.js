@@ -10,6 +10,7 @@ Hoot.view.utilities = function (context){
 	utilities.errorlog = Hoot.view.utilities.errorlog(context);
     utilities.reports = Hoot.view.utilities.reports(context);
     utilities.about = Hoot.view.utilities.about(context);
+    utilities.uisettings = Hoot.view.utilities.uisettings(context);
 
     utilities.basemaplist = null;
 
