@@ -4,6 +4,8 @@ iD.ui.Scale = function(context) {
         maxLength = 180,
         tickHeight = 8;
 
+    context.imperial = imperial;
+
     function scaleDefs(loc1, loc2) {
         var lat = (loc2[1] + loc1[1]) / 2,
             conversion = (imperial ? 3.28084 : 1),
@@ -75,6 +77,7 @@ iD.ui.Scale = function(context) {
             .style({'pointer-events':'all','cursor':'default'})
             .on('click',function(){
                 imperial = imperial == false ? (iD.detect().locale.toLowerCase() === 'en-us') : false;
+                context.imperial = imperial;
                 update(selection);
             });
 

@@ -6,6 +6,7 @@ window.iD = function () {
     var context = {},
         storage;
 
+    context.imperial = context.imperial ? context.imperial : false;
     context.enableSnap = true;
     // https://github.com/systemed/iD/issues/772
     // http://mathiasbynens.be/notes/localstorage-pattern#comment-9
