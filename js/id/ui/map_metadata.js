@@ -245,6 +245,7 @@ iD.ui.MapMetadata = function(data, context) {
     function show() {
         loaded = true;
 
+        body.style('display', null);
         body.classed('keyline-top pad1', true);
         body.transition()
             .duration(200)
@@ -263,6 +264,7 @@ iD.ui.MapMetadata = function(data, context) {
             .each('end', function() {
                 body.classed('keyline-top pad1', false);
             });
+        body.style('display', 'none');
 
         showing = false;
     }
