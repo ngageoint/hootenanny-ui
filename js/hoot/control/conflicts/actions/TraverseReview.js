@@ -22,6 +22,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     var _nextid;
     var _previd;
 
+
     /**
     * @desc Initializes control with id of of next and previous buttons and map id
     * @return returns true when all params are correct else false
@@ -43,6 +44,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         _instance.disableButton(false);
         return true;
     }
+
 
     /**
     * @desc jumps to next available reviewable relation.
@@ -116,44 +118,43 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     }
 
     var _reviewGetNextHandler = function (error, response) {
-        try {
-            if(error){
-                throw 'Failed to retrieve next set of reviewable features from service!';
-            }
+                        try {
+                            if(error){
+                                throw 'Failed to retrieve next set of reviewable features from service!';
+                            }
 
 
-            if((1*response.resultCount) > 0){
-                _currentReviewable = response;
-                _parent().actions.idgraphsynch.getRelationFeature
+                            if((1*response.resultCount) > 0){
+                                _currentReviewable = response;
+                                _parent().actions.idgraphsynch.getRelationFeature
                 (response.mapId, response.relationId, function(newReviewItem){
-                    _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
-                        newReviewItem.members[1]);
+                                    _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
+                                        newReviewItem.members[1]);
 
-                    // Move this to proper location since highlightLayer is timer asynch
-                    _parent().map.featureNavigator.panToEntity(newReviewItem, 
-                        true);
-                });
+          
+                                });
 
-            } else {
-                iD.ui.Alert('There are no more available features to review. ' + 
-                    'Exiting the review session.',
-                    'info');
-                _exitReviewSession();
-            }
-        }
-        catch (ex) {
-            console.error(ex);
-            var r = confirm('Failed to retrieve the next features for review!' +
-                '  Do you want to continue?');
-            if(r === false){
-                _exitReviewSession();
-            }
-        } finally {
-            // removing this since when connection is
-            // done loading tiles we will set Processing to false
-           //_parent().setProcessing(false);
+                            } else {
+                                iD.ui.Alert('There are no more available features to review. ' + 
+                                    'Exiting the review session.',
+                                    'info');
+                                _exitReviewSession(false);
+                            }
+                        }
+                        catch (ex) {
+                            console.error(ex);
+                            var r = confirm('Failed to retrieve the next features for review!' +
+                                '  Do you want to continue?');
+                            if(r === false){
+                                _exitReviewSession(true);
+                            }
+                        } finally {
+                            // removing this since when connection is
+                            // done loading tiles we will set Processing to false
+                           //_parent().setProcessing(false);
 
-        }
+                        }
+
     }
 
     /**
@@ -233,8 +234,8 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     * @desc  Exit review session
     * @param msg - optional message for user
     **/
-    var _exitReviewSession = function(msg) {
-        _parent().deactivate(msg);
+    var _exitReviewSession = function(removeFromSidebar) {
+        _parent().deactivate(!removeFromSidebar);
         _parent().reviewNextStep();
     }
 

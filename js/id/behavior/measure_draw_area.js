@@ -58,7 +58,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     }
     
     function displayArea(m2) {
-    	var imperial = false;
+    	var imperial = context.imperial;
     	
     	var d = m2 * (imperial ? 10.7639111056 : 1),
             d1, d2, p1, p2, unit1, unit2;
@@ -102,7 +102,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     }
     
     function displayLength(m){
-        var imperial = false;
+        var imperial = context.imperial;
     	
     	var d = m * (imperial ? 3.28084 : 1),
 	        p, unit;

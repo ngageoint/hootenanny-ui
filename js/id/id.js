@@ -6,6 +6,7 @@ window.iD = function () {
     var context = {},
         storage;
 
+    context.imperial = context.imperial ? context.imperial : false;
     context.enableSnap = true;
     // https://github.com/systemed/iD/issues/772
     // http://mathiasbynens.be/notes/localstorage-pattern#comment-9
@@ -277,11 +278,19 @@ window.iD = function () {
     };
 
     /* Copy/Paste */
-    var copyIDs = [], copyGraph;
+    var copyIDs = [], copyGraph, copyTags;
     context.copyGraph = function() { return copyGraph; };
     context.copyIDs = function(_) {
         if (!arguments.length) return copyIDs;
         copyIDs = _;
+        copyTags = null;
+        copyGraph = history.graph();
+        return context;
+    };
+    context.copyTags = function(_) {
+        if (!arguments.length) return copyTags;
+        copyIDs = null;
+        copyTags = _;
         copyGraph = history.graph();
         return context;
     };

@@ -69,7 +69,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
     }
 
     function displayLength(m){
-        var imperial = false;
+        var imperial = context.imperial;
     	
     	var d = m * (imperial ? 3.28084 : 1),
 	        p, unit;

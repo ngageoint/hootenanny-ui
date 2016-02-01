@@ -142,6 +142,26 @@ Hoot.view.utilities.about = function(context){
               }
 
           });
+
+          formCont.append('div')
+            .classed('col2',true)
+            .style('float','right')
+            .append('label')
+                .text('Enable Test Mode')
+            .append('input')
+                .attr('type','checkbox')
+                .attr('id','enable_test_mode')
+                .on('change',function(){
+                  if(this.checked){
+                    d3.selectAll('#confGetValuesBtn').style('display','inline-block');
+                    d3.selectAll('#confViewValuesSpan').style('display','inline-block');
+                    d3.selectAll('#containerofisGenerateReport').style('display','block');
+                  } else {
+                    d3.selectAll('#confGetValuesBtn').style('display','none');
+                    d3.selectAll('#confViewValuesSpan').style('display','none');
+                    d3.selectAll('#containerofisGenerateReport').style('display','none');
+                  }
+                });
     };
     
     about.populateDatasets = function(container, data) {

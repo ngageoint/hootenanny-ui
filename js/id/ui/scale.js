@@ -1,8 +1,10 @@
 iD.ui.Scale = function(context) {
     var projection = context.projection,
-        imperial = false,//(iD.detect().locale.toLowerCase() === 'en-us'),
+        imperial = false,
         maxLength = 180,
         tickHeight = 8;
+
+    context.imperial = imperial;
 
     function scaleDefs(loc1, loc2) {
         var lat = (loc2[1] + loc1[1]) / 2,
@@ -71,7 +73,13 @@ iD.ui.Scale = function(context) {
             .attr('transform', 'translate(10,11)');
 
         g.append('path').attr('id', 'scalepath');
-        g.append('text').attr('id', 'scaletext');
+        g.append('text').attr('id', 'scaletext')
+            .style({'pointer-events':'all','cursor':'default'})
+            .on('click',function(){
+                imperial = imperial == false ? (iD.detect().locale.toLowerCase() === 'en-us') : false;
+                context.imperial = imperial;
+                update(selection);
+            });
 
         update(selection);
 

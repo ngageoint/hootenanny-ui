@@ -1863,11 +1863,11 @@ Hoot.control.utilities.dataset = function(context) {
 
 					if(a.type=='LayerName'){
 						var uniquename = false;
-						var name = d.name + '_clip';
+						var name = d.name;
 						var i = 1;
 						while (uniquename==false){
 							if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
-								name = d.name + '_clip_' + i.toString();
+								name = d.name + i.toString();
 								i++;
 							} else {
 								uniquename = true;
@@ -1969,7 +1969,7 @@ Hoot.control.utilities.dataset = function(context) {
 						var i = 1;
 						while (uniquename==false){
 							if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
-								name = name + '_clip_' + i.toString();
+								name = name + i.toString();
 								i++;
 							} else {
 								uniquename = true;

@@ -80,7 +80,7 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
             Hoot.model.REST('resolveAllReviews', data.mapId, function (error, response)
             {
                 try {
-                     _parent().deactivate();
+                     _parent().deactivate(true);
                     d3.select('body').call(iD.ui.Processing(context,true,"Resolving all reviewable features..."));
                     // removed event.acceptAll(data) and brought in to direct call below
                     context.hoot().mode('browse');

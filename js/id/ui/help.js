@@ -3,14 +3,16 @@ iD.ui.Help = function(context) {
 
     var docKeys = [
         'help.help',
-        'help.editing_saving',
-        'help.roads',
-        'help.gps',
-        'help.imagery',
-        'help.addresses',
-        'help.inspector',
-        'help.buildings',
-        'help.relations'];
+        'help.background',
+        'help.adding_layers',
+        'help.editing',
+        'help.adding_features',
+        'help.copying',
+        'help.tools',
+        'help.shortcuts',
+        'help.options',
+        'help.review',
+        'help.manage'];
 
     var docs = docKeys.map(function(key) {
         var text = t(key);
@@ -123,31 +125,6 @@ iD.ui.Help = function(context) {
             .append('a')
             .text(function(d) { return d.title; })
             .on('click', clickHelp);
-
-        toc.append('li')
-            .attr('class','walkthrough')
-            .append('a')
-            .text(t('splash.walkthrough'))
-            .on('click', clickWalkthrough);
-
-        toc.append('div')
-            .classed('contain',true)
-            .append('label')
-                .text('Enable Test Mode')
-            .append('input')
-                .attr('type','checkbox')
-                .attr('id','enable_test_mode')
-                .on('change',function(){
-                	if(this.checked){
-                		d3.selectAll('#confGetValuesBtn').style('display','inline-block');
-                		d3.selectAll('#confViewValuesSpan').style('display','inline-block');
-                		d3.selectAll('#containerofisGenerateReport').style('display','block');
-                	} else {
-                		d3.selectAll('#confGetValuesBtn').style('display','none');
-                		d3.selectAll('#confViewValuesSpan').style('display','none');
-                		d3.selectAll('#containerofisGenerateReport').style('display','none');
-                	}
-                });
 
         var content = pane.append('div')
             .attr('class', 'left-content');

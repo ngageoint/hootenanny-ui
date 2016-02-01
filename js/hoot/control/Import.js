@@ -50,7 +50,7 @@ Hoot.control.import = function (context,selection) {
             _form = sidebar.append('form');
         }
 
-        _form.classed('hootImport round space-bottom1 importableLayer fill-white', true)
+        _form.classed('hootImport round space-bottom1 importableLayer fill-white strong', true)
             .on('submit', function () {
                 submitLayer(this);
             })
@@ -70,7 +70,7 @@ Hoot.control.import = function (context,selection) {
             .enter()
             .append('div')
             .classed('overflow',true)
-            .style({'height':'150px','margin':'0 0 15px'})
+            .style({'height':'150px','margin':'0 0 15px','resize':'vertical'})
             .select(ETL.renderTree);
         
         var recentLayersDiv = fieldset.append('div')
@@ -180,8 +180,10 @@ Hoot.control.import = function (context,selection) {
                     	if(lyrid==null){throw new Error("Invalid layer selected");}
                 	}
                 } else {
-                	name = d3.select(self.select('.sel').node().parentNode).select('text').text();
-                	lyrid = d3.select(self.select('.sel').node().parentNode).select('text').attr('lyr-id');
+                	var gNode = d3.select(self.select('.sel').node().parentNode);
+                    if(!gNode.selectAll('title').empty()){name = gNode.select('title').text();}
+                    else{name = gNode.select('.dnameTxt').text();}
+                	lyrid = gNode.select('.dnameTxt').attr('lyr-id');
                 }
             } catch(e) {
             	iD.ui.Alert('There was an error adding this layer to the map!','warning');

@@ -1,9 +1,15 @@
 Given(/^I am on the Hootenanny site$/) do
-  visit "http://localhost:8080/hoot-ui/hoot-ui" # may need to change URL
+  visit "http://localhost:8080/hootenanny-id" # may need to change URL
 end
 
-When(/^I click Edit Now$/) do
-  find('.col6.start').click
+When(/^I click Get Started$/) do
+  begin
+    el = find('.col6.start')
+  rescue Capybara::ElementNotFound
+    # In Capybara 0.4+ #find_field raises an error instead of returning nil
+    el = nil
+  end
+  el.click unless el.nil?
 end
 
 When(/^I click the "([^"]*)" link$/) do |linkText|
@@ -35,7 +41,7 @@ When (/^I click first "([^"]*)"$/) do |text|
   elements[0].click
   Capybara.ignore_hidden_elements = true
 end
- 
+
 When (/^I click second "([^"]*)"$/) do |text|
   Capybara.ignore_hidden_elements = false
   e1 = all('a', :text => text)

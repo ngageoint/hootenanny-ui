@@ -39,25 +39,25 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             var nMemCnt = _getLoadedRelationMembersCount(fid) ;
 
             if(nMemCnt > 0){
-                if(nMemCnt === 1){
-                    _parent().actions.poimerge.disableMergeButton(true);
+                // loaded members count not matching the entity members count
+                if(nMemCnt !== f.members.length){
+                    _loadMissingFeatures(mapid, fid);
+                } else {
+                    if(nMemCnt === 1){
+                        _parent().actions.poimerge.disableMergeButton(true);
+                    }
+                    callback(f);
                 }
-                callback(f);
+                    
             } else {
                 iD.ui.Alert('There are no members in the review relation.','warning');
             }
         } else {
-            var layerNames = d3.entries(hoot.loadedLayers()).filter(function(d) {
-                return 1*d.value.mapId === 1*mapid;
-
-            });
-
-
-            var layerName = layerNames[0].key;
-
-            context.loadMissing([fid], _loadMissingHandler, layerName);
+            _loadMissingFeatures(mapid, fid);
         }
     }
+
+    
 
     /**
     * @desc Updates hoot:review:needs tag when resolved
@@ -121,6 +121,8 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             }
 
             if (entities.data.length) {
+                var curReviewItem = _parent().actions.traversereview.getCurrentReviewable();
+                var currLayerName = context.hoot().model.layers.getNameBymapId(curReviewItem.mapId);
 
                 // first check to see if anyone is relation
                 var relFound = _.find(entities.data, function(e){
@@ -136,7 +138,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                             _relTreeIdx[f.id] = f.members.length;
                             _.each(f.members, function(m){
                                 if(!context.hasEntity(m.id) || m.type === 'relation') {
-                                    context.loadMissing([m.id], _loadMissingHandler);
+                                    context.loadMissing([m.id], _loadMissingHandler, currLayerName);
                                 } else {
                                     _updateParentRelations(m.id);
                                 }
@@ -236,13 +238,25 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             if(nMemCnt === 1){
                 _parent().actions.poimerge.disableMergeButton(true);
             }
-            _parent().map.featureNavigator.panToEntity(f, true);
             fnc(f);
         } else {
             iD.ui.Alert('There are no members in the review relation.','warning');
         }
     }
 
+    /**
+    * @desc load any missing features from backend
+    * @param mapid - target map id
+    * @param fid - the feature id
+    **/
+    var _loadMissingFeatures = function(mapid, fid) {
+        var layerNames = d3.entries(hoot.loadedLayers()).filter(function(d) {
+            return 1*d.value.mapId === 1*mapid;
+        });
+
+        var layerName = layerNames[0].key;
+        context.loadMissing([fid], _loadMissingHandler, layerName);
+    }
 
     var _parent = function() {
         return context.hoot().control.conflicts;

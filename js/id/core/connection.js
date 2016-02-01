@@ -114,6 +114,10 @@ iD.Connection = function(context) {
     };
 
     connection.loadMissing = function(ids, callback, layerName) {
+        if(context.hoot().control.conflicts && 
+                    context.hoot().control.conflicts.isConflictReviewExist() ){
+                context.hoot().control.conflicts.setProcessing(true, 'Please wait while loading missing features.');
+            }
         connection.loadMultiple(ids, function(err, entities) {
             //event.load(err, entities);
             if (callback) callback(err, entities);
@@ -121,6 +125,7 @@ iD.Connection = function(context) {
     };
 
     connection.loadMultiple = function(ids, callback, hootcallback, layerName) {
+      
         // TODO: upgrade lodash and just use _.chunk
         function chunk(arr, chunkSize) {
             var result = [];
@@ -891,7 +896,16 @@ iD.Connection = function(context) {
         };
         // Get the node count from service
         connection.getTileNodesCountFromURL(url + '/api/0.6/map/nodescount', params, function(resp){
+            if(context.hoot().control.conflicts && 
+                    context.hoot().control.conflicts.isConflictReviewExist() 
+                    ){
 
+                if(context.hoot().control.conflicts.map.reviewarrowrenderer.isOn() === false){                                  
+                    context.hoot().control.conflicts.setProcessing(true, 'Please wait while loading vector tiles.');
+                }
+                
+            }
+            
             function showOnTop(){
                 d3.select(this).moveToFront();
             }
@@ -929,6 +943,30 @@ iD.Connection = function(context) {
                     tiles.length == 0){
                 event.reviewLayerAdded(null, true);
             }
+
+
+
+            if(context.hoot().control.conflicts && 
+                    context.hoot().control.conflicts.isConflictReviewExist()){
+                    var layerName;
+                    // if all tiles are already loded then let review know
+                    var foundUnloaded = false;
+                    for(var ii=0; ii<tiles.length; ii++){
+                        var t = tiles[ii];
+                        var id = t.id + ',' + t.mapId;
+                        layerName = t.layerName;
+                        if (!loadedTiles[id]){                            
+                            foundUnloaded = true;
+                           break;
+                        }
+                    }
+                    if(!foundUnloaded){
+                        event.reviewLayerAdded(layerName, true);
+                    }
+
+
+                }
+
             tiles.forEach(function (tile) {
                 var mapId = tile.mapId || mapId;
                 var layerName = tile.layerName || layerName;
@@ -943,24 +981,7 @@ iD.Connection = function(context) {
                     return;
                 } 
 
-                if(context.hoot().control.conflicts && 
-                    context.hoot().control.conflicts.isConflictReviewExist()){
-                    // if all tiles are already loded then let review know
-                    var foundUnloaded = false;
-                    for(var ii=0; ii<tiles.length; ii++){
-                        var t = tiles[ii];
-                        var id = t.id + ',' + mapId;
-                        if (!loadedTiles[id]){
-                            foundUnloaded = true;
-                           break;
-                        }
-                    }
-                    if(!foundUnloaded){
-                        event.reviewLayerAdded(layerName, false);
-                    }
-
-                }
-     
+          
 
                 var id = tile.id + ',' + mapId;
                 if (loadedTiles[id] || inflight[id]){
@@ -1003,16 +1024,18 @@ iD.Connection = function(context) {
                                 if(totalNodesCnt > maxNodesCnt){
                                     connection.showDensityRaster(true);
 
-                                    if (context.hoot().control.conflicts.reviewIds) {
+                                    if (context.hoot().control.conflicts.isConflictReviewExist()) {
                                         // When zoomed out during review load reviewable items and the dependent relations
-                                        context.loadMissing(context.hoot().control.conflicts.reviewIds, function(err, entities) {
+                                        var currReviewable = context.hoot().control.conflicts.actions.traversereview.getCurrentReviewable();
+                                         context.hoot().control.conflicts.actions.idgraphsynch.getRelationFeature
+                                            (currReviewable.mapId, currReviewable.relationId, function(newReviewItem){
+                                            
                                             context.hoot().model.conflicts.loadMissingFeatureDependencies(mapId, 
                                                 layerName, context.hoot().control.conflicts.reviewIds, function(error){
                                                 event.loaded();
                                                 event.layerAdded(layerName);
-                                            });                                            
-                                            
-                                        }, layerName);
+                                            });     
+                                        });
 
                                     }
                                 } else {

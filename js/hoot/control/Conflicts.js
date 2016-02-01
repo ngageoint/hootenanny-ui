@@ -39,6 +39,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     var _btnEnabled = true;
     var _mapid;
     var _too1Tip;
+    var _timeout;
 
 
     /**
@@ -229,12 +230,11 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         // hotkey bindings
         var keybinding = d3.keybinding('conflicts')
-        .on(da[0].cmd, function() { d3.event.preventDefault(); da[0].action(); })
-        .on(da[1].cmd, function() { d3.event.preventDefault(); da[1].action(); })
-        .on(da[2].cmd, function() { d3.event.preventDefault(); da[2].action(); })
-        .on(da[3].cmd, function() { d3.event.preventDefault(); da[3].action(); })
-        .on(da[4].cmd, function() { d3.event.preventDefault(); da[4].action(); })
-        .on(da[5].cmd, function() { d3.event.preventDefault(); da[5].action(); })
+        .on(da[0].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[0]); })
+        .on(da[1].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[1]); })
+        .on(da[2].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[2]); })
+        .on(da[3].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[3]); })
+        .on(da[4].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[4]); })
         ;
 
         d3.select(document)
@@ -349,7 +349,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     /**
     * @desc cleans out all review related objects
     **/
-    _instance.deactivate = function () {
+    _instance.deactivate = function (doNotRemoveFromSidebar) {
 
         _resetStyles();
         d3.select('div.tag-table').remove();
@@ -359,8 +359,10 @@ Hoot.control.conflicts = function (context, sidebar) {
             .remove();
 
         d3.select('.hootTags').remove();
+        if(!doNotRemoveFromSidebar) {
         d3.select('.review')
             .remove();
+        }
 
         context.map().on('drawn', null);
         //Clear map-in-map
@@ -377,11 +379,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     * @desc checks for review class existence
     **/
     _instance.isConflictReviewExist = function() {
-        var exist = false;
-        if(d3.select('.conflicts')){
-            exist = true;
-        }
-        return exist;
+        return !(d3.select('#conflicts-container').empty());
     };
 
     /**
@@ -425,20 +423,30 @@ Hoot.control.conflicts = function (context, sidebar) {
     **/
     _instance.setProcessing = function(lock, message) {
         if(lock) {
+            if(d3.selectAll('#processingDiv').empty() === true) {
             d3.select('body').call(iD.ui.Processing(context,true,message));
-            _screenLockFree();
         } else {
-            d3.select('body').call(iD.ui.Processing(context,false));
+                d3.select('#processingDivLabel').text(message);
             }
 
+            _screenLockFree(10000);
+        } else {
+            _screenLockFree(700);
+        }
     };
 
     /**
     * @desc make sure that screen does not get locked up forever
     **/
-    _screenLockFree = _.debounce(function(){
+    _screenLockFree = function(delay){
+        if(_timeout){
+            clearTimeout(_timeout);
+        }
+        _timeout = setTimeout(function(){
+            _timeout = null;
         d3.select('body').call(iD.ui.Processing(context,false));
-    },10000);
+        },delay)
+    }
 
     _instance.getToolTip = function() {
         return _toolTip;
@@ -454,11 +462,23 @@ Hoot.control.conflicts = function (context, sidebar) {
 		_btnEnabled = true;
 		_mapid = undefined
 		_too1Tip = undefined;
+        _timeout = undefined;
 
         _instance.actions.reset();
         _instance.info.reset();
         _instance.map.reset();
         _instance.reviewIds = null;
+    }
+
+    /**
+    * @desc Hotkey callback wrapper function with lock validation
+    * @param da - action data object
+    **/
+    var _callHotkeyAction = function(da) {
+        if(d3.selectAll('#processingDiv').empty() === false) {
+            return;
+        }
+        da.action();
     }
 
     /**

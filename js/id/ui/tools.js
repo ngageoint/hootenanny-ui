@@ -5,16 +5,19 @@ iD.ui.Tools = function(context) {
     }
     
     function tools() {
-    	 var items = [
-    	    {title:'Measurement Tools',icon:'add-line',group:'measure',items:[   	    
-    	    	{title:'Measure Length',tooltip:'Shortcut: 6',group:'measure',type:'line',icon:'add-line',mode:iD.modes.MeasureAddLine(context)},
-    	    	{title:'Measure Area',tooltip:'Shortcut: 7',group:'measure',type:'area',icon:'add-area',mode:iD.modes.MeasureAddArea(context)},
-    	    ]},
-    	    {title:'Clip Tools',icon:'scissors',group:'clip',items:[
-    	    	{title:'Clip to Visual Extent',tooltip:'Shortcut: 9',group:'clip',type:'area',icon:'scissors',action:'clipVisualExtent'},
-    	    	{title:'Clip to Bounding Box',tooltip:'Shortcut: 8',group:'clip',type:'area',icon:'scissors',mode:iD.modes.ClipBoundingBox(context)}
-    	    ]},
-    	  ];
+    	 // If in review mode, do not include Clip tools
+         var items = [];
+         items.push({title:'Measurement Tools',icon:'add-line',group:'measure',items:[          
+                {title:'Measure Length',tooltip:'Shortcut: 6',group:'measure',type:'line',icon:'add-line',mode:iD.modes.MeasureAddLine(context)},
+                {title:'Measure Area',tooltip:'Shortcut: 7',group:'measure',type:'area',icon:'add-area',mode:iD.modes.MeasureAddArea(context)},
+            ]});
+
+        if (!hoot.control.conflicts.isConflictReviewExist()) {
+            items.push({title:'Clip Tools',icon:'scissors',group:'clip',items:[
+                {title:'Clip to Visual Extent',tooltip:'Shortcut: 9',group:'clip',type:'area',icon:'scissors',action:'clipVisualExtent'},
+                {title:'Clip to Bounding Box',tooltip:'Shortcut: 8',group:'clip',type:'area',icon:'scissors',mode:iD.modes.ClipBoundingBox(context)}
+            ]})
+        };
         
         d3.select('html').append('div').attr('class', 'tools-menu');
                

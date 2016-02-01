@@ -80,7 +80,7 @@ Hoot.tools = function (context, selection) {
         if (!add) {
             confLayers = loadedLayers[layerName].layers;
             if (confLayers) {
-                conflicts.deactivate();
+                conflicts.deactivate(true);
                 context.hoot().mode('browse');
                 _.each(confLayers, function (d) {
                     hoot.model.layers.removeLayer(d);
