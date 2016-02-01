@@ -1,8 +1,10 @@
-Hoot.ui.hootformreviewnote = function () 
+Hoot.ui.hootformreviewnote = function (context) 
 {
     var _events = d3.dispatch();
     var _instance = {};
     var _rawData;
+    var _parent = context.hoot().view.utilities.reviewbookmarknotes;
+    var _currentUserForm;
 
     _instance.createForm = function(containerId, formMetaData) {
         var form;
@@ -11,6 +13,7 @@ Hoot.ui.hootformreviewnote = function ()
             var btnMeta = formMetaData['button'];
             var formMeta = formMetaData['form'];
             var formTitle = formMetaData['title'];
+
             if(!formMeta) {
                 throw 'Failed to create UI. Invalid form meta data.';
             }
@@ -48,7 +51,12 @@ Hoot.ui.hootformreviewnote = function ()
                 .append('div')
                 .classed('big pad0y fill-darken1', true);
 
+        var labelId = 'NEW';
+        if(_rawData) {
+            labelId = _rawData.id;
+        }
         var hdLabel = hdBar.append('h4')
+                .attr('id', 'bmkNoteFormHdLabel' + labelId)
                 .text(formTitle);
 
         if(!isNew) {
@@ -58,6 +66,12 @@ Hoot.ui.hootformreviewnote = function ()
                 .on('click', function () {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
+
+                    d3.select('#bmkNoteFormHdLabel' + _rawData.id) 
+                        .append('div')     
+                        .attr('id', 'bmkNoteFormUser' + _rawData.id)
+                        .classed('fr icon avatar', true)
+                        .on('click', _bmkUserClickHanlder) ;         
 
                     formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', null);
 
@@ -78,7 +92,9 @@ Hoot.ui.hootformreviewnote = function ()
                             d3.event.stopPropagation();
                             d3.event.preventDefault();   
                             formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', 'readonly'); 
-                            d3.select('#reviewBookmarkNotesBtnContainer').remove();    
+                            d3.select('#reviewBookmarkNotesBtnContainer').remove();  
+                            d3.select('#bmkNoteFormUser' + _rawData.id).remove();  
+                              
                           }
                         }
                     ];
@@ -87,13 +103,82 @@ Hoot.ui.hootformreviewnote = function ()
 
                     _createButtons(d_btn, formDiv);
                 });
+        } else {
+            d3.select('#bmkNoteFormHdLabel' + 'NEW') 
+            .append('div')     
+            .attr('id', 'bmkNoteFormUser' + 'NEW')
+            .classed('fr icon avatar', true)
+            .on('click', _bmkUserClickHanlder) ; 
         }
 
             
         return form;
     }
 
-   
+    var _bmkUserClickHanlder = function() {
+
+        var userEmail = null;
+        var userInfo = _parent.getUser();
+        if(userInfo.id > -1) {
+            userEmail = _userInfo.email;
+        }
+        var d_form = [
+            {
+                label: 'Creator Email',
+                id: 'rbmkNoteCreatorEmail',
+                placeholder: '',
+                inputtype:'text',
+                text: userEmail
+            }];
+
+        var d_btn = [
+                        {
+                            text: 'Set',
+                            location: 'right',
+                            onclick: _storeUser
+                        }
+                    ];
+
+        var meta = {};
+        meta.title = 'Set User For Session';
+        meta.form = d_form;
+        meta.button = d_btn;
+
+        _currentUserForm = context.hoot().ui.formfactory.create('body', meta);
+
+    }
+
+    var _storeUser = function() {
+
+        var creatorEmail = d3.select('#rbmkNoteCreatorEmail').value();
+        if(!rbmkNoteCreatorEmail || rbmkNoteCreatorEmail.length === 0){
+            alert('Creator Email field is empty and it will not be set.');
+            if(_currentUserForm) {
+                _currentUserForm.remove();
+            }
+        }
+        else
+        {
+            var req = {};
+            req.email=creatorEmail;
+            Hoot.model.REST('getSaveUser', req, function (resp) {   
+            
+                if(resp.error){
+                    context.hoot().view.utilities.errorlog.reportUIError(resp.error);
+                    return;
+                }
+                if(resp.user) {
+                    _parent.setUser(resp.user);
+                }
+                context.hoot().getAllusers();
+                if(_currentUserForm) {
+                    _currentUserForm.remove();
+                }
+              
+            });
+        }
+                        
+    }
     var _createFieldSet = function(form, formMeta) {
         var fieldset = form.append('fieldset')
                 .selectAll('.form-field')

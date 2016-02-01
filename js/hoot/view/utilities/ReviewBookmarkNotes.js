@@ -6,7 +6,15 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     var _currentBookmark;
     var _forcedReviewableItem;
     var _currentNotes;
+    var _currentUser = {'id':-1, 'displayName':'anonymous', 'email':''};
 
+    _instance.getUser = function() {
+      return _currentUser;
+    }
+
+    _instance.setUser = function(usr) {
+      return _currentUser = usr;
+    }
     _instance.getForcedReviewableItem = function() {
         return _forcedReviewableItem;
     }
@@ -106,6 +114,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
           } else {
             d3.select('#bmkNoteHdLabel').text(title + ' #' + bookmarkId + ' - ( **** RESOLVED **** )');
           }
+
             
       });
 
@@ -153,7 +162,21 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
                 .node()), key.color, key.name);
           
             }
+            if(!d3.select('#reviewbookmarknotesbody').empty()){
+              d3.select('#reviewbookmarknotesbody').remove();
+            }
 
+
+            //context.hoot().view.utilities.reviewbookmarknotes.setCurrentBookmarkId(d.id);
+            //context.hoot().view.utilities.reviewbookmarknotes.createContent(d3.select('#containerFormutilReviewBookmarkNotes'));
+            var jobsBG = d3.select('#jobsBG');
+      
+            var thisbody = d3.select('#utilReviewBookmarks')
+                .node();
+            jobsBG.node()
+                .appendChild(thisbody);
+            d3.selectAll('.utilHootHead').style('font-weight','normal');
+            d3.select('#utilHootHeadDivutilReviewBookmarks').style('font-weight','bold');
               
         });
     }
@@ -183,14 +206,25 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
         var date = new Date(nt.modifiedAt);
         var dateToStr = date.toUTCString();
         var meta = {};
-        meta.title = 'User ' + nt.userId + ' commented at ' + dateToStr;
+
+        var createdByEmail = 'anonymous';
+        var ntUid = nt.userId;
+        if(nt.modifiedBy) {
+          ntUid = nt.modifiedBy;
+        }
+        if(ntUid && (1*ntUid) > -1) {
+            createdByEmail = iD.data.hootConfig.users[1*ntUid].email;
+        }
+
+        meta.title = 'User ' + createdByEmail + ' commented at ' + dateToStr;
         meta.form = d_form; 
         meta.rawData = nt;
         meta.modifyHandler = _modifyNoteHandler;
+
         //context.hoot().ui.hootformreviewnote.createForm('reviewbookmarknotesdiv', meta);
 
 
-        var hootformreviewnote = Hoot.ui.hootformreviewnote();
+        var hootformreviewnote = Hoot.ui.hootformreviewnote(context);
         hootformreviewnote.createForm('reviewbookmarknotesdiv', meta);
         _currentNotes[nt.id] = hootformreviewnote;
 
@@ -205,14 +239,18 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       });
     
       if(modified) {
+        var d = new Date();
+        var n = d.getTime(); 
         modified.note = noteMeta.note;
+        modified.modifiedAt = n;
+        modified.modifiedBy = _currentUser.id;
       }
 
       var reqParam = {};
       reqParam['bookmarkId'] = _currentBookmark.id;
       reqParam['mapId'] = _currentBookmark.mapId;
       reqParam['relationId'] = _currentBookmark.relationId;
-      reqParam['userId'] = _currentBookmark.userId;
+      reqParam['userId'] = _currentUser.id;
       reqParam['detail'] = _currentBookmark.detail;
 
       Hoot.model.REST('saveReviewBookmark', reqParam, function (resp) {   
@@ -240,14 +278,14 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
             var newNote = d3.select('#bmkNoteTextNew').value();
 
             var bmNote = {};
-            bmNote['userId'] = -1;
+            bmNote['userId'] = _currentUser.id;
             bmNote['note'] = newNote;
             _currentBookmark.detail.bookmarknotes.push(bmNote);
 
             reqParam['bookmarkId'] = _currentBookmark.id;
             reqParam['mapId'] = _currentBookmark.mapId;
             reqParam['relationId'] = _currentBookmark.relationId;
-            reqParam['userId'] = _currentBookmark.userId;
+            reqParam['userId'] = _currentUser.id;
             reqParam['detail'] = _currentBookmark.detail;
 
             Hoot.model.REST('saveReviewBookmark', reqParam, function (resp) {   
@@ -264,8 +302,9 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       meta.form = d_form; 
       meta.button = d_btn;
       meta.isNew = true;
+
       //context.hoot().ui.hootformreviewnote.createForm('reviewbookmarknotesdiv', meta);
-      var hootformreviewnote = Hoot.ui.hootformreviewnote();
+      var hootformreviewnote = Hoot.ui.hootformreviewnote(context);
       hootformreviewnote.createForm('reviewbookmarknotesdiv', meta);
       _currentNotes['new'] = hootformreviewnote;
     }

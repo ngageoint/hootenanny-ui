@@ -73,9 +73,24 @@ Hoot.hoot = function (context) {
             iD.data.hootConfig.conflate_size_threshold = 1*thresholds.conflate_threshold;
         });
 
-
+        hoot.getAllusers();
         
     };
+    hoot.getAllusers = function() {
+        Hoot.model.REST('getAllUsers', function (resp) {
+            if(resp.error){
+                alert('Failed to retrieve users: ' + resp.error);
+                return;
+            }
+
+            iD.data.hootConfig.users = {};
+            _.each(resp.users, function(r){
+                iD.data.hootConfig.users[1*r.id] = r;
+            });
+
+        });
+
+    }
     hoot.palette = function (co) {
         var palette = [{
                 name: 'gold',

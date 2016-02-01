@@ -1033,6 +1033,27 @@ rest.downloadReport = function(data)
     }
 
 
+    rest.getSaveUser = function(data, callback) {
+        d3.json('/hoot-services/osm/user/-1?userEmail=' + data.email)
+            .header('Content-Type', 'application/json')
+            .post(JSON.stringify(data), function (error, resp) {
+
+                if (error) {
+                    return callback(_alertError(error, "Requested job failed! For detailed log goto Manage->Log"));
+                }
+                callback(resp);
+            });
+    }
+
+    rest.getAllUsers = function(callback) {
+        d3.json('/hoot-services/osm/user/-1/all', function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get all users failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    }
+
     rest['' + command + ''](data, callback, option);
 };
 

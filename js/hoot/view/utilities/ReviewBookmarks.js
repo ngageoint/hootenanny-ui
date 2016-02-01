@@ -136,6 +136,10 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             {'name': 'Created At (dsc)', 'action':function(){_sortData('createdAt', 'false');}},
             {'name': 'Created By (asc)', 'action':function(){_sortData('createdBy', 'true');}},
             {'name': 'Created By (dsc)', 'action':function(){_sortData('createdBy', 'false');}},
+            {'name': 'Modified At (asc)', 'action':function(){_sortData('lastModifiedAt', 'true');}},
+            {'name': 'Modified At (dsc)', 'action':function(){_sortData('lastModifiedAt', 'false');}},
+            {'name': 'Modified By (asc)', 'action':function(){_sortData('lastModifiedBy', 'true');}},
+            {'name': 'Modified By (dsc)', 'action':function(){_sortData('lastModifiedBy', 'false');}},
             {'name': 'Review ID (asc)', 'action':function(){ _sortData('id', 'true');}},
             {'name': 'Review ID (dsc)', 'action':function(){ _sortData('id', 'false');}},
             {'name': 'Map ID (asc)', 'action':function(){ _sortData('mapId', 'true');}},
@@ -285,8 +289,26 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         var date = new Date(createdAt);
         var dateToStr = date.toUTCString();
         //var cleanDate = dateToStr[2] + ' ' + dateToStr[1] ;
+        var createdByEmail = 'anonymous';
+        if(createdBy && (1*createdBy) > -1) {
+            createdByEmail = iD.data.hootConfig.users[1*createdBy].email;
+        }
+        var subStr = '#' + bookmarkId + ' created at ' + dateToStr + ' by user ' + createdByEmail;
 
-        return '#' + bookmarkId + ' created at ' + dateToStr + ' by user ' + createdBy;
+        if(lastModifiedAt) {
+            var lastMddate = new Date(lastModifiedAt);
+            var lastMdDateStr = lastMddate.toUTCString();
+            subStr += ' modified at ' + lastMdDateStr;
+
+            var modifiedByEmail = 'anonymous';
+            if(lastModifiedBy && (1*lastModifiedBy) > -1) {
+                modifiedByEmail = iD.data.hootConfig.users[1*lastModifiedBy].email;
+            }
+
+            subStr += ' modified by ' + modifiedByEmail;
+        }
+
+        return subStr;
     }
 
     var _deleteBtnHandler = function(d) {

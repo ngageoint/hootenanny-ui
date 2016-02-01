@@ -168,6 +168,10 @@ Hoot.ui.hootformbase = function ()
                         .attr('class', function (field) {
                             return field.className;
                         });
+
+                        if(a.text) {
+                            inputField.value(a.text);
+                        }
                         if(a.id) {
                             inputField.attr('id', a.id);
                         }
