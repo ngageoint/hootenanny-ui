@@ -263,8 +263,8 @@ iD.ui.MapMetadata = function(data, context) {
             .style('opacity', '0')
             .each('end', function() {
                 body.classed('keyline-top pad1', false);
+                body.style('display', 'none');
             });
-        body.style('display', 'none');
 
         showing = false;
     }
