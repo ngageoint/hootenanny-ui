@@ -192,6 +192,8 @@ input.round        { border-radius:4px; }
 .rcon.dark.trash:after, ._icon.dark.trash:before               { background-position:-200px -60px; }
 .rcon.dark.big.trash:after, ._icon.dark.big.trash:before       { background-position:-200px -80px; }
 
+.rcon.reload:after, ._icon.reload:before                         { background-position:-240px 0; }
+
 .rcon.linestring:after, ._icon.linestring:before               { background-position:-240px 0; }
 .rcon.big.linestring:after, ._icon.big.linestring:before       { background-position:-240px -20px; }
 .rcon.dark.linestring:after, ._icon.dark.linestring:before          { background-position:-240px -60px; }

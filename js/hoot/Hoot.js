@@ -88,6 +88,8 @@ Hoot.hoot = function (context) {
                 iD.data.hootConfig.users[1*r.id] = r;
             });
 
+            iD.data.hootConfig.usersRaw = resp.users;
+
         });
 
     }

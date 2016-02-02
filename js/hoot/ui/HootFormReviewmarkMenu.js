@@ -1,10 +1,24 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.ui.hootformreviewmarkmenu is for creating menu items for book marks list. 
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      02 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 Hoot.ui.hootformreviewmarkmenu = function () 
 {
     var _events = d3.dispatch();
     var _instance = {};
     var _currentContainerId;
 
-    
+    /**
+    * @desc Create basic hoot form
+    * @param containerId - id of container div
+    * @param formMetaData - meta data object that describes the form
+    * @return returns created form.
+    **/
     _instance.createForm = function(containerId, formMetaData) {
         var container;
         try{
@@ -17,7 +31,7 @@ Hoot.ui.hootformreviewmarkmenu = function ()
             }
 
             container = _createContainer(containerId);
-            var formDiv = _createFormDiv(container)
+            var formDiv = _createFormDiv(container, containerId)
             var form =  _createForm(container, formDiv, formTitle)
             var fieldset = _createFieldSet(form, formMetaData);
 
@@ -30,7 +44,11 @@ Hoot.ui.hootformreviewmarkmenu = function ()
     }
 
    
-
+    /**
+    * @desc Create dark back ground mask
+    * @param containerId - id of container div
+    * @return returns created div.
+    **/
     var _createContainer = function(containerId) {
         
         return d3.select('#' + containerId)
@@ -42,16 +60,31 @@ Hoot.ui.hootformreviewmarkmenu = function ()
                 });
     }
 
-    var _createFormDiv = function(container) {
-        var left = d3.select('#reviewBookmarksSortDiv').node().offsetLeft;
-        var top = d3.select('#reviewBookmarksSortDiv').node().offsetTop;
-        var height = d3.select('#reviewBookmarksSortDiv').node().offsetHeight;
-        var width = d3.select('#reviewBookmarksSortDiv').node().offsetWidth;
+
+    /**
+    * @desc Create form container div. It checks for the caller button's location
+    *       and creates it a the location.
+    * @param container - id of container div
+    * @return returns created div.
+    **/
+    var _createFormDiv = function(container, containerId) {
+        var left = d3.select('#' + containerId).node().offsetLeft;
+        var top = d3.select('#' + containerId).node().offsetTop;
+        var height = d3.select('#' + containerId).node().offsetHeight;
+        var width = d3.select('#' + containerId).node().offsetWidth;
         return container.append('div')
                 .classed('contain col3 row8 hoot-menu fill-white keyline-all round modal', true)
                 .style('top', (top + height) + 'px')
                 .style('left', (left + width) + 'px');
     }
+
+    /**
+    * @desc Create form shell
+    * @param container - container div
+    * @param formDiv - id of container div
+    * @param formTitle - dialog title
+    * @return returns created form.
+    **/
     var _createForm = function(container, formDiv, formTitle) { 
 
         var form = formDiv.append('form');
@@ -73,25 +106,31 @@ Hoot.ui.hootformreviewmarkmenu = function ()
         return form;
     }
 
+    /**
+    * @desc Create form fields. Currently handles textarea, combo and text field
+    * @param form - container form
+    * @param formMeta - fields meta data
+    * @return returns created fields.
+    **/
     var _createFieldSet = function(form, formMeta) {
     
-                var container = form.append('div')
-                .classed('row6 overflow', true);
-                var tla = container.selectAll('div')
-                    .data(formMeta.data)
-                    .enter();
-                var tla2 = tla.append('div')
-                    .classed('col12 fill-white small keyline-bottom hoverDiv2', true);
-                var tla3 = tla2.append('span')
-                    .classed('text-left big col12 strong', true)
-                    .append('a')
-                    .text(function(d){ 
-                        return d.name;
-                    })
-                    .on('click', function(d){
-                        d.action();
-                    });
-
+        var container = form.append('div')
+        .classed('row6 overflow', true);
+        var tla = container.selectAll('div')
+            .data(formMeta.data)
+            .enter();
+        var tla2 = tla.append('div')
+            .classed('col12 fill-white small keyline-bottom hoverDiv2', true);
+        var tla3 = tla2.append('span')
+            .classed('text-left big col12 strong', true)
+            .append('a')
+            .text(function(d){ 
+                return d.name;
+            })
+            .on('click', function(d){
+                d.action(d);
+            });
+       
     }
 
 

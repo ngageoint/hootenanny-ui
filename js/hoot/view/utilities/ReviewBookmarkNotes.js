@@ -1,3 +1,11 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.ui.reviewbookmarknotes is is container form  for hosting multiple notes forms for a book mark item.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      02 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Hoot.view.utilities.reviewbookmarknotes = function(context){
     var _events = d3.dispatch();
     var _instance = {};
@@ -8,29 +16,67 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     var _currentNotes;
     var _currentUser = {'id':-1, 'displayName':'anonymous', 'email':''};
 
+    /**
+    * @desc Getter for current user being used.
+    * @return current user.
+    **/
     _instance.getUser = function() {
       return _currentUser;
     }
 
+    /**
+    * @desc Setter for current user being used.
+    * @param usr - current user
+    **/
     _instance.setUser = function(usr) {
-      return _currentUser = usr;
+       _currentUser = usr;
     }
+
+    /**
+    * @desc Getter for reviewable item to be used for loading reviewable item
+    *   by TraverseReview. TraverseReview checks to see if there is item to use for getting
+    *   review item and if does it uses it. This is centeral point for jumping to review item
+    *   when user presses search (magnify glass) button
+    * @return Reviewable Item.
+    **/
     _instance.getForcedReviewableItem = function() {
         return _forcedReviewableItem;
     }
 
+    /**
+    * @desc Setter for reviewable item to be used for loading reviewable item
+    *   by TraverseReview. TraverseReview checks to see if there is item to use for getting
+    *   review item and if does it uses it. This is centeral point for jumping to review item
+    *   when user presses search (magnify glass) button
+    * @param itm - Item.
+    **/
     _instance.setForcedReviewableItem = function(itm) {
         _forcedReviewableItem = itm;
     }
 
+    /**
+    * @desc Removes itself
+    **/
+    _instance.removeNotes = function() {
+      _removeSelf();
+    }
 
+    /**
+    * @desc Resets view to the bookmarks list view.
+    **/
+    _instance.resetToList = function() {
+      _resetToList();
+    }
+
+    /**
+    * @desc Creates container for note forms.
+    * @param form - parent form.
+    **/
     _instance.createContent = function(form){
       if(!_bookmarkId) {
         return;
       }
-      if(!d3.select('#reviewbookmarknotesbody').empty()){
-        d3.select('#reviewbookmarknotesbody').remove();
-      }
+      _removeSelf();
 
       form.append('div')
       .attr('id','reviewbookmarknotesbody')
@@ -39,6 +85,10 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
 
     };
 
+    /**
+    * @desc Retrieves notes for selected book mark.
+    * @param container - container form.
+    **/
     _instance.getNotes = function(container) {
       var reqParam = {};
       reqParam.bookmarkId = _bookmarkId;
@@ -60,11 +110,20 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
 
     }
 
+    /**
+    * @desc Sets current book mark id.
+    * @param bmkId - bookmark id.
+    **/
     _instance.setCurrentBookmarkId = function(bmkId) {
       _bookmarkId = bmkId;
     }
 
 
+    /**
+    * @desc Creates header for notes list. Contains label. jump to review button and refresh button.
+    * @param title - title.
+    * @param bmkId - bookmark id.
+    **/
     var _createHeader = function(title, bookmarkId) {
       var mainBar = d3.select('#reviewbookmarknotesbody')
             .append('form')
@@ -120,7 +179,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
 
 
       mainBarDiv.append('div')
-        .classed('fr _icon disk', true)
+        .classed('fr _icon reload point', true)
         .on('click', function () {
           d3.event.stopPropagation();
           d3.event.preventDefault();
@@ -133,6 +192,10 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     }
 
 
+    /**
+    * @desc Initiates the jump to review item. Jumping has many dependencies so eventually it ends up in TraverReview
+    *   and the value in _forcedReviewableItem gets used to display review item.
+    **/
     var _jumpToReviewItem = function() {
       _forcedReviewableItem = _currentBookmark.detail.bookmarkreviewitem;
 
@@ -162,25 +225,18 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
                 .node()), key.color, key.name);
           
             }
-            if(!d3.select('#reviewbookmarknotesbody').empty()){
-              d3.select('#reviewbookmarknotesbody').remove();
-            }
+            _removeSelf();
 
-
-            //context.hoot().view.utilities.reviewbookmarknotes.setCurrentBookmarkId(d.id);
-            //context.hoot().view.utilities.reviewbookmarknotes.createContent(d3.select('#containerFormutilReviewBookmarkNotes'));
-            var jobsBG = d3.select('#jobsBG');
-      
-            var thisbody = d3.select('#utilReviewBookmarks')
-                .node();
-            jobsBG.node()
-                .appendChild(thisbody);
-            d3.selectAll('.utilHootHead').style('font-weight','normal');
-            d3.select('#utilHootHeadDivutilReviewBookmarks').style('font-weight','bold');
+            // reset to list
+            _resetToList();
               
         });
     }
 
+
+    /**
+    * @desc Creates container div for notes.
+    **/
     var _createContainerDiv = function() {
       d3.select('#reviewbookmarknotesbody')
           .append('div')
@@ -188,6 +244,10 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
               .classed('col6 fill-white', true);
     }
 
+    /**
+    * @desc appends existing notes.
+    * @param noteList - list of notes to add.
+    **/
     var _appendNotes = function(noteList) {
       _currentNotes= {};
       for(var i=0; i<noteList.length; i++) {
@@ -204,7 +264,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
 
 
         var date = new Date(nt.modifiedAt);
-        var dateToStr = date.toUTCString();
+        var dateToStr = date.toLocaleString();
         var meta = {};
 
         var createdByEmail = 'anonymous';
@@ -231,6 +291,10 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       }
     }
 
+    /**
+    * @desc Handler for Modify button click.
+    * @param noteMeta - Meta data for clicked note.
+    **/
     var _modifyNoteHandler = function(noteMeta) {
       var notes = _currentBookmark.detail.bookmarknotes;
 
@@ -258,7 +322,10 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       });
     }
 
-
+    /**
+    * @desc Adds empty new note.
+    * @param noteList - list of notes to add.
+    **/
     var _appendNewEmptyNoteForm = function(noteList) {
       var d_form = [
       {
@@ -276,6 +343,11 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
           onclick: function(){
             var reqParam = {};
             var newNote = d3.select('#bmkNoteTextNew').value();
+
+            if(!newNote || newNote.length == 0) {
+              alert('Please enter a note.');
+              return;
+            }
 
             var bmNote = {};
             bmNote['userId'] = _currentUser.id;
@@ -309,11 +381,30 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       _currentNotes['new'] = hootformreviewnote;
     }
 
-
+    /**
+    * @desc refresh notes form.
+    **/
     var _refresh = function() {
       _instance.createContent(d3.select('#containerFormutilReviewBookmarkNotes'));
     }
 
+    var _removeSelf = function() {
+      if(!d3.select('#reviewbookmarknotesbody').empty()){
+        d3.select('#reviewbookmarknotesbody').remove();
+      }
+    }
+
+    var _resetToList = function() {
+      // reset to list
+      var jobsBG = d3.select('#jobsBG');
+
+      var thisbody = d3.select('#utilReviewBookmarks')
+          .node();
+      jobsBG.node()
+          .appendChild(thisbody);
+      d3.selectAll('.utilHootHead').style('font-weight','normal');
+      d3.select('#utilHootHeadDivutilReviewBookmarks').style('font-weight','bold');
+    }
   
     return d3.rebind(_instance, _events, 'on');
 }

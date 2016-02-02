@@ -992,8 +992,12 @@ rest.downloadReport = function(data)
     }
 
     rest.getAllReviewBookmarks = function(data, callback) {
-         d3.json('/hoot-services/job/review/bookmarks/getall?orderBy=' + data.orderBy + '&asc=' + data.asc + 
-            '&limit=' + data.limit + '&offset=' + data.offset, function (error, resp) {
+        var url = '/hoot-services/job/review/bookmarks/getall?orderBy=' + data.orderBy + '&asc=' + data.asc + 
+            '&limit=' + data.limit + '&offset=' + data.offset;
+        if(data.filterbyval && data.filterby) {
+            url += '&filterby=' + data.filterby + '&filterbyval=' + data.filterbyval;
+        }
+         d3.json(url, function (error, resp) {
             if (error) {
                 return callback(_alertError(error, "Get all bookmarks failed! For detailed log goto Manage->Log"));
             }

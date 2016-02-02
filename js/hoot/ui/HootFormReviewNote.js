@@ -1,11 +1,26 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.ui.hootformreviewnote is a specialized hoot form for bookmark note.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      02 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 Hoot.ui.hootformreviewnote = function (context) 
 {
     var _events = d3.dispatch();
     var _instance = {};
     var _rawData;
     var _parent = context.hoot().view.utilities.reviewbookmarknotes;
-    var _currentUserForm;
+    var _currentUserForm; // user input form
 
+    /**
+    * @desc Create basic hoot form
+    * @param containerId - id of container div
+    * @param formMetaData - meta data object that describes the form
+    * @return returns created form.
+    **/
     _instance.createForm = function(containerId, formMetaData) {
         var form;
         try{
@@ -36,7 +51,11 @@ Hoot.ui.hootformreviewnote = function (context)
     }
 
 
-
+    /**
+    * @desc Create form container div
+    * @param container - id of container div
+    * @return returns created div.
+    **/
     var _createFormDiv = function(container) {
         var bufferForDiv = container.append('div')
                 .classed('pad1y col12', true);
@@ -44,6 +63,15 @@ Hoot.ui.hootformreviewnote = function (context)
                 .classed('fill-white round keyline-all col12', true);
     }
 
+    /**
+    * @desc Create form shell
+    * @param container - id of container div
+    * @param formDiv - id of container div
+    * @param formTitle - dialog title
+    * @param modifyHandler - handler function for when user presses modify button
+    * @param isNew - [true | false] true if the form is empty new note form
+    * @return returns created form.
+    **/
     var _createForm = function(container, formDiv, formTitle, modifyHandler, isNew) { 
         var myInstance = _instance;
         var form = formDiv.append('form');
@@ -62,7 +90,7 @@ Hoot.ui.hootformreviewnote = function (context)
         if(!isNew) {
             hdLabel
                 .append('div')
-                .classed('fr _icon plus', true)
+                .classed('fr _icon plus point', true)
                 .on('click', function () {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
@@ -70,7 +98,7 @@ Hoot.ui.hootformreviewnote = function (context)
                     d3.select('#bmkNoteFormHdLabel' + _rawData.id) 
                         .append('div')     
                         .attr('id', 'bmkNoteFormUser' + _rawData.id)
-                        .classed('fr icon avatar', true)
+                        .classed('fr icon avatar point', true)
                         .on('click', _bmkUserClickHanlder) ;         
 
                     formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', null);
@@ -115,12 +143,15 @@ Hoot.ui.hootformreviewnote = function (context)
         return form;
     }
 
+    /**
+    * @desc Create user form when avatar icon is clicked
+    **/
     var _bmkUserClickHanlder = function() {
 
         var userEmail = null;
         var userInfo = _parent.getUser();
         if(userInfo.id > -1) {
-            userEmail = _userInfo.email;
+            userEmail = userInfo.email;
         }
         var d_form = [
             {
@@ -148,6 +179,9 @@ Hoot.ui.hootformreviewnote = function (context)
 
     }
 
+    /**
+    * @desc Saves get/saved user to be reused during current session. It also refreshes global users lit.
+    **/
     var _storeUser = function() {
 
         var creatorEmail = d3.select('#rbmkNoteCreatorEmail').value();
@@ -169,7 +203,10 @@ Hoot.ui.hootformreviewnote = function (context)
                 }
                 if(resp.user) {
                     _parent.setUser(resp.user);
+                    // sets user back to share dialog. (We need to refactor this)
+                    context.hoot().control.conflicts.actions.sharereview.setUserInfo(resp.user);
                 }
+                // relaod global users list
                 context.hoot().getAllusers();
                 if(_currentUserForm) {
                     _currentUserForm.remove();
@@ -179,6 +216,13 @@ Hoot.ui.hootformreviewnote = function (context)
         }
                         
     }
+
+    /**
+    * @desc Create textarea for note. 
+    * @param form - container form.
+    * @param formMeta - fields meta data
+    * @return returns created fields.
+    **/
     var _createFieldSet = function(form, formMeta) {
         var fieldset = form.append('fieldset')
                 .selectAll('.form-field')
@@ -230,6 +274,12 @@ Hoot.ui.hootformreviewnote = function (context)
         return fieldset;
     }
 
+    /**
+    * @desc Create form buttons
+    * @param btnMeta - buttons meta data
+    * @param formDiv - id of container div
+    * @return returns created fields.
+    **/
     var _createButtons = function(btnMeta, formDiv) {
         if(btnMeta){
             var btnContainer = formDiv.append('div')

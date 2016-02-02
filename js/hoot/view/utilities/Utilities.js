@@ -150,6 +150,10 @@ Hoot.view.utilities = function (context){
                     .text(txt);
                 d3.selectAll('#jobsBG')
                     .classed('hidden', vis);
+
+                if(txt === 'Manage') {
+                    context.hoot().view.utilities.reviewbookmarknotes.resetToList();
+                }
             });
 
 

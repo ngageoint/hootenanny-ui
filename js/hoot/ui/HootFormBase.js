@@ -1,9 +1,22 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.ui.hootformbase creates basic hoot modal dialog.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      02 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Hoot.ui.hootformbase = function () 
 {
     var _events = d3.dispatch();
     var _instance = {};
 
-
+    /**
+    * @desc Create basic hoot form
+    * @param containerId - id of container div
+    * @param formMetaData - meta data object that describes the form
+    * @return returns created form.
+    **/
     _instance.createForm = function(containerId, formMetaData) {
         var container;
         try{
@@ -32,43 +45,35 @@ Hoot.ui.hootformbase = function ()
         return container;
     }
 
-    _instance.createChildForm = function(container, formDiv, formMetaData) {
-        var form;
-        try{
-
-            var btnMeta = formMetaData['button'];
-            var formMeta = formMetaData['form'];
-            var formTitle = formMetaData['title'];
-            if(!btnMeta || !formMeta) {
-                throw 'Failed to create UI. Invalid form meta data.';
-            }
-
-            if(!formTitle){
-                formTitle = 'Hootenanny Form';
-            }
-
-            form =  _createForm(container, formDiv, formTitle)
-            var fieldset = _createFieldSet(form, formMeta);
-            _createButtons(btnMeta, formDiv); 
-
-
-        } catch (error) {
-            console.error(error);
-        }
-    
-        return form;
-    }
-
+  
+    /**
+    * @desc Create dark back ground mask
+    * @param containerId - id of container div
+    * @return returns created div.
+    **/
     var _createContainer = function(containerId) {
         return d3.select(containerId)
                 .append('div')
                 .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
     }
 
+    /**
+    * @desc Create form container div
+    * @param container - id of container div
+    * @return returns created div.
+    **/
     var _createFormDiv = function(container) {
         return container.append('div')
                 .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
     }
+
+    /**
+    * @desc Create form shell
+    * @param container - id of container div
+    * @param formDiv - id of container div
+    * @param formTitle - dialog title
+    * @return returns created form.
+    **/
     var _createForm = function(container, formDiv, formTitle) { 
 
         var form = formDiv.append('form');
@@ -85,6 +90,12 @@ Hoot.ui.hootformbase = function ()
         return form;
     }
 
+    /**
+    * @desc Create form fields. Currently handles textarea, combo and text field
+    * @param form - container form
+    * @param formMeta - fields meta data
+    * @return returns created fields.
+    **/
     var _createFieldSet = function(form, formMeta) {
         var fieldset = form.append('fieldset')
                 .selectAll('.form-field')
@@ -193,7 +204,12 @@ Hoot.ui.hootformbase = function ()
         return fieldset;
     }
 
-
+    /**
+    * @desc Create form buttons
+    * @param btnMeta - buttons meta data
+    * @param formDiv - id of container div
+    * @return returns created fields.
+    **/
     var _createButtons = function(btnMeta, formDiv) {
         _.each(btnMeta, function(m){
 
@@ -218,7 +234,10 @@ Hoot.ui.hootformbase = function ()
             });       
     }
 
-
+    /**
+    * @desc Create default combo.
+    * @param a - combo meta data
+    **/
     var _createDefaultCombo = function(a) {
         var combo = d3.combobox()
             .data(_.map(a.combobox, function (n) {
