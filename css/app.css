@@ -171,7 +171,7 @@ textarea  {
 textarea,
 input[type=text],
 input[type=search],
-input[type=number],
+/*input[type=number],*/
 input[type=url],
 input[type=tel],
 input[type=email] {
@@ -179,7 +179,7 @@ input[type=email] {
     border:1px solid #ccc;
     padding:5px 10px;
     height:30px;
-    /*width: 100%;*/
+    width: 100%;
     border-radius:4px;
     text-overflow: ellipsis;
 }
@@ -1151,7 +1151,7 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 .inspector-hover .entity-editor-pane button.minor,
 .inspector-hover .combobox-caret,
 .inspector-hover .entity-editor-pane .header button,
-.inspector-hover .spin-control,
+/*.inspector-hover .spin-control,*/
 .inspector-hover .hide-toggle:before,
 .inspector-hover .more-fields,
 .inspector-hover .form-label-button-wrap,
@@ -1255,32 +1255,39 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 /* preset form numbers */
 
 input[type=number] {
-    width: 50%;
-    padding-right: 65px;
+    position: relative;
+    padding-right: 20%;
+}
+
+input[type=number].hoot-input {padding-right:0;}
+input[type="number"].hoot-input::-webkit-inner-spin-button,
+input[type="number"].hoot-input::-webkit-outer-spin-button {
+    display: initial;
+    opacity: 1;
 }
 
 .spin-control {
-    width: 60px;
-    height: 30px;
-    border-left: 1px solid #CCC;
+    width: 20%;
+    height: 29px;
     display: inline-block;
-    margin-left: -60px;
+    margin-left: -20%;
     margin-bottom: -11px;
     position: relative;
 }
 
 .spin-control button {
+    right: 1px;
     position: relative;
     float: left;
     height: 100%;
     width: 50%;
-    border: 1px solid #CCC;
+    border-left: 1px solid #CCC;
     border-radius: 0;
-    border-left: 0;
+    background: rgba(0, 0, 0, 0);
 }
 
-.spin-control button.descend {
-    border-bottom-right-radius: 4px;
+.spin-control button.decrement {
+    border-bottom-right-radius: 3px;
 }
 
 .spin-control button.decrement::after,
@@ -3143,6 +3150,32 @@ rect.more {fill: #3182bd;}*/
 .button.dataset-option {
 	margin-right:5px;
 	color:#fff;
+}
+
+/* Settings Tab */
+.settings-section {
+    -webkit-padding-start: 18px;
+    margin-bottom: 24px;
+    margin-top: 8px;
+}
+
+.settings-row {
+    display: block;
+    margin: 0.65em 0;
+}
+
+.settings-label {
+    position: relative;
+    padding: 5px 0 5px 10px;
+    display: block;
+    border-radius: 4px 4px 0 0;
+    overflow: hidden;
+    float:left;
+}
+
+.settings-span {
+    display: inline-block;
+    min-width:100px;
 }
 
 input:focus::-webkit-input-placeholder { color:transparent; }
