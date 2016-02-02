@@ -111,7 +111,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     * @param meta - meta data for menu dialog
     * @param menuContainer - container div
     **/
-    var _createMenu = function(form, menuDivName, displayText, meta, menuContainer) {
+    var _createMenu = function(form, menuDivName, displayText, meta, menuContainer, callback) {
         
         var dd = menuContainer.append('div')
         .attr('id', menuDivName)
@@ -125,7 +125,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             if(!self.empty()) {
                 self.remove();
             } else {
-                context.hoot().ui.hootformreviewmarkmenu.createForm(menuDivName, meta);
+                callback(menuDivName, meta);
             }
             
         });
@@ -183,7 +183,9 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
         document.body.removeEventListener('click', _globalSortClickHandler ); 
         document.body.addEventListener('click', _globalSortClickHandler ); 
-        _createMenu(form, 'reviewBookmarksSortDiv', 'Sort', meta, menuContainer);
+        _createMenu(form, 'reviewBookmarksSortDiv', 'Sort', meta, menuContainer, function(divName, m){
+            context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
+        });
     }
 
     /**
@@ -217,6 +219,26 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     **/
     var _createFilterByCreatorMenu = function(form, menuContainer) {
 
+        
+        var data = _generateUsersData();
+        
+        var meta = {};
+        meta.title = 'Created By';
+        meta.data  = data;
+
+        document.body.removeEventListener('click', _globalFilterByCreatorClickHandler ); 
+        document.body.addEventListener('click', _globalFilterByCreatorClickHandler ); 
+        // we have callback to data gets refreshed whenever we press button
+        _createMenu(form, 'reviewBookmarksFilterByCreatorDiv', 'Creator', meta, menuContainer, function(divName, m){
+            var d = _generateUsersData();
+            m.data = d;
+            context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
+        });
+    }
+    /**
+    * @desc Help function to generate users meta data
+    **/
+    var _generateUsersData = function() {
         var usersList = iD.data.hootConfig.usersRaw;
         var data = [];
 
@@ -238,14 +260,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             data.push(newobj);
         }
 
-        
-        var meta = {};
-        meta.title = 'Created By';
-        meta.data  = data;
-
-        document.body.removeEventListener('click', _globalFilterByCreatorClickHandler ); 
-        document.body.addEventListener('click', _globalFilterByCreatorClickHandler ); 
-        _createMenu(form, 'reviewBookmarksFilterByCreatorDiv', 'Creator', meta, menuContainer);
+        return data;
     }
 
     /**
