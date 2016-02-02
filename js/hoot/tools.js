@@ -144,6 +144,7 @@ Hoot.tools = function (context, selection) {
         //data.MISS_THRESHOLD = a.select('.missThreshold').value();
         //Disable till swap approval
         data.GENERATE_REPORT = a.select('.isGenerateReport').value();
+        data.COLLECT_STATS = a.select('.isCollectStats').value();
 
         var n = (new Date()).getTime();
         data.TIME_STAMP = "" + n;
@@ -225,18 +226,25 @@ Hoot.tools = function (context, selection) {
 
     }
 
-    function renderMergedLayer(layerName) {
-        loadedLayers[layerName] = loadingLayer;
-        loadedLayers[layerName].loadable = true;
-        loadedLayers[layerName].merged = true;
-        activeConflateLayer = loadingLayer;
-        loadedLayers[layerName] = _.extend(loadedLayers[layerName], loadingLayer);
-        view.render(loadingLayer);
-        loadingLayer = {};
-        conflicts.activate(loadedLayers[layerName]);
-        hoot.mode('edit');
-        hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
-            conflicts.startReview(d);
+    function renderMergedLayer(layerName, mapid) {
+        //Get tags for loaded layer
+        Hoot.model.REST('getMapTags', {mapId: mapid}, function (tags) {
+            //console.log(tags);
+            loadingLayer.tags = tags;
+
+            loadedLayers[layerName] = loadingLayer;
+            loadedLayers[layerName].loadable = true;
+            loadedLayers[layerName].merged = true;
+            activeConflateLayer = loadingLayer;
+            loadedLayers[layerName] = _.extend(loadedLayers[layerName], loadingLayer);
+            view.render(loadingLayer);
+            loadingLayer = {};
+            conflicts.activate(loadedLayers[layerName]);
+            hoot.mode('edit');
+            hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
+                conflicts.startReview(d);
+            });
+            conflationCheck(layerName, true);
         });
     }
 
@@ -268,7 +276,7 @@ Hoot.tools = function (context, selection) {
     view.on('layerVis', function (layerName) {
         hoot.model.layers.changeVisibility(layerName);
     });
- 
+
     conflicts.on('exportData', function () {
         var mapid = activeConflateLayer.mapId;
         Hoot.model.REST('getMapSize', mapid,function (sizeInfo) {
@@ -330,7 +338,7 @@ Hoot.tools = function (context, selection) {
 
         activeConflateLayer = {};
     });
-    
+
     /*conflicts.on('removeFeature', function (d, mapid) {
         hoot.model.conflicts.RemoveFeature(d, mapid);
     });*/
@@ -422,6 +430,7 @@ Hoot.tools = function (context, selection) {
                     reqParam.mapId = params.mapId
                     if(reqParam.mapId) {
                         Hoot.model.REST('getMapTags', reqParam,function (tags) {
+                            //console.log(tags);
                             if (tags.reviewtype === 'hgisvalidation') {
                                 var r = confirm("The layer has been prepared for validation. Do you want to go into validation mode?");
                                 if (r == true) {
@@ -432,6 +441,7 @@ Hoot.tools = function (context, selection) {
                                 if (r == true) {
                                     isReviewMode = true;
                                     loadingLayer = params;
+                                    loadingLayer.tags = tags;
                                     loadingLayer['merged'] = true;
                                     loadingLayer['layers'] = [];
                                     d3.selectAll('.loadingLayer').remove();
@@ -545,9 +555,10 @@ Hoot.tools = function (context, selection) {
                 if(sel && sel.node()){
                     sel.remove();
                 }
-                renderMergedLayer(layerName);
+                renderMergedLayer(layerName, params.mapId);
+            } else {
+                conflationCheck(layerName, true);
             }
-            conflationCheck(layerName, true);
         }
     });
     exportLayer.on('cancelSaveLayer', function () {
