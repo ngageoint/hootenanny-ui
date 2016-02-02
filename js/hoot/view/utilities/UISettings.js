@@ -14,6 +14,7 @@ Hoot.view.utilities.uisettings = function(context) {
 
             var settings = [
                 {'group':'Feature Rendering','id':'ui-settings-feature-rendering',items:[
+                    {'label':'Line Width','default_option':true,'type':'number','name':'_linewidth','min':1,'max':25,'step':1,'value':7},
                     {'label':'Line Width','default_option':true,'type':'number','name':'_linewidth','min':1,'max':25,'step':1,'value':7}
                 ]
                 }
@@ -26,6 +27,7 @@ Hoot.view.utilities.uisettings = function(context) {
                 .text(function(d){return d.group;})
                 .each(function(d){
                     var settingsGroup = d3.select(this.parentNode).append('div').attr('id',d.id);
+                    var section = settingsGroup.append('section').classed('settings-section',true);
                     _.each(d.items,function(j){
                         /*this.append('label').classed('settings-label fl',true).attr('for',j.name).text(j.label);
                         var inpt = this.append('input').classed('hoot-input',true).attr('id',j.name).attr('placeholder','');
@@ -33,12 +35,16 @@ Hoot.view.utilities.uisettings = function(context) {
                             inpt.attr('type','number').attr('min',j.min).attr('max',j.max);
                         }*/
 
-                        var section = this.append('section');
-                        section.append('h3').text('test');
-                        var sectionDiv = section.append('div').append('div').classed('settings-row',true);
-                        sectionDiv.append('label').append('span').text('SPAN');
-                        sectionDiv.append('input').attr('type','number').classed('hoot-input',true).attr('id',j.name).attr('placeholder','');
-                    },settingsGroup)
+                        
+                        var sectionDiv = this.append('div').append('div').classed('settings-row',true);
+                        sectionDiv.append('label')
+                            .classed('settings-label fl',true).text(j.label)
+                            .append('input').attr('type','number')
+                            .classed('hoot-input',true)
+                            .attr('id',j.name)
+                            .attr('placeholder','');
+                        if(j.type=='number'){sectionDiv.select('input').attr('min',j.min).attr('max',j.max);}
+                    },section)
                 })
             ;
         };

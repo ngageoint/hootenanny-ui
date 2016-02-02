@@ -3170,12 +3170,12 @@ rect.more {fill: #3182bd;}*/
     display: block;
     border-radius: 4px 4px 0 0;
     overflow: hidden;
-    float:left;
+    clear: both;
 }
 
-.settings-span {
+.settings-input {
     display: inline-block;
-    min-width:100px;
+    clear:both;
 }
 
 input:focus::-webkit-input-placeholder { color:transparent; }
