@@ -56,5 +56,20 @@
     "order":"9",
     "contentbodyid":"aboutContent",
     "callback":"view.utilities.about.createContent"
+  },
+  {
+    "name":"Review Bookmarks",
+    "id":"utilReviewBookmarks",
+    "order":"10",
+    "contentbodyid":"reviewBookmarksContent",
+    "callback":"view.utilities.reviewbookmarks.createContent"
+  },
+  {
+    "name":"Review Bookmark Notes",
+    "hidden":true,
+    "id":"utilReviewBookmarkNotes",
+    "order":"11",
+    "contentbodyid":"reviewbookmarknotesbody",
+    "callback":"view.utilities.reviewbookmarknotes.createContent"
   }
 ]

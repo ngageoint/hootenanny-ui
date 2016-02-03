@@ -6,7 +6,7 @@ Hoot.hoot = function (context) {
         //layers = {},
         availLayers = [];
     
-
+    hoot.ui = Hoot.ui(context);
     hoot.model = Hoot.model(context);
     hoot.view = Hoot.view(context);
     hoot.control = Hoot.control(context);
@@ -28,6 +28,7 @@ Hoot.hoot = function (context) {
         return Hoot.LTDSTags(context);
     };*/
     hoot.load = function (demo, callback) {
+
         if (demo) {
             hoot.demo = true;
             Hoot.demo(context);
@@ -72,9 +73,29 @@ Hoot.hoot = function (context) {
             iD.data.hootConfig.conflate_size_threshold = 1*thresholds.conflate_threshold;
         });
 
-
+        hoot.getAllusers();
         
     };
+    hoot.getAllusers = function(callback) {
+        Hoot.model.REST('getAllUsers', function (resp) {
+            if(resp.error){
+                alert('Failed to retrieve users: ' + resp.error);
+                return;
+            }
+
+            iD.data.hootConfig.users = {};
+            _.each(resp.users, function(r){
+                iD.data.hootConfig.users[1*r.id] = r;
+            });
+
+            iD.data.hootConfig.usersRaw = resp.users;
+            if(callback) {
+                callback(resp.users);
+            }
+
+        });
+
+    }
     hoot.palette = function (co) {
         var palette = [{
                 name: 'gold',

@@ -1,6 +1,6 @@
 Hoot.view.utilities = function (context){
 
-    var event = d3.dispatch('activate', 'uploadFile');
+    var event = d3.dispatch('activate', 'uploadFile', 'tabToggled');
     var utilities = {};
  
 	utilities.dataset = Hoot.view.utilities.dataset(context);
@@ -10,8 +10,23 @@ Hoot.view.utilities = function (context){
 	utilities.errorlog = Hoot.view.utilities.errorlog(context);
     utilities.reports = Hoot.view.utilities.reports(context);
     utilities.about = Hoot.view.utilities.about(context);
+    utilities.reviewbookmarks = Hoot.view.utilities.reviewbookmarks(context);
+    utilities.reviewbookmarknotes = Hoot.view.utilities.reviewbookmarknotes(context);
 
     utilities.basemaplist = null;
+
+
+    utilities.forceResetManageTab = function () {
+        
+        var vis =  true;
+        var txt = "Manage";
+        d3.select('#manageTabBtn')
+            .classed('fill-light', !vis)
+            .classed('dark', vis)
+            .text(txt);
+        d3.selectAll('#jobsBG')
+            .classed('hidden', vis);
+    }
 
     utilities.activate = function () {
 
@@ -26,6 +41,7 @@ Hoot.view.utilities = function (context){
                 .appendChild(thisbody);
             d3.selectAll('.utilHootHead').style('font-weight','normal');
             d3.select(d).style('font-weight','bold');
+            event.tabToggled(bodyid);
         };
 
         _createTabs = function(jobsBG)
@@ -50,6 +66,7 @@ Hoot.view.utilities = function (context){
                     var contentId = tabMeta.contentbodyid;
                     var callbackCntxMeta = tabMeta.callbackcontext;
                     var isDefault = tabMeta.default;
+                    var isHidden = tabMeta.hidden;
 
                     if(tabMeta.pady !== undefined && tabMeta.pady === 'false'){
                         pady = '';
@@ -65,15 +82,22 @@ Hoot.view.utilities = function (context){
 	                    .classed(bodyStyle, true)
 	                    .attr('data', '#' + tabId)
 	                    .on('click', function () {
-	                        _toggleOpts(this);
+	                        _toggleOpts(this);                            
 	                    });
+
                     
                     var tabLabel = tabHeader.append('label')
                     	.text(tabName)
                     	.classed('point',true)
                     	.style('font-style','normal');
+
+                    if(isHidden) {
+                        tabHeader.on('click', null);
+                        tabLabel.classed('hidden', true);
+                    }
                     
-                    var containerForm = tabBody.append('form');
+                    var containerForm = tabBody.append('form')
+                    .attr('id', 'containerForm' + tabId);
                     containerForm.classed('center round', true)
                     .style('margin-top','60px');
 
@@ -110,6 +134,7 @@ Hoot.view.utilities = function (context){
         header.append('nav')
             .classed('contain inline fr', true)
             .append('div')
+            .attr('id', 'manageTabBtn')
             .attr('href', '#jobs')
             .classed('point pad2 block keyline-left _icon dark strong small sprocket', true)
             .text('Manage')
@@ -125,6 +150,10 @@ Hoot.view.utilities = function (context){
                     .text(txt);
                 d3.selectAll('#jobsBG')
                     .classed('hidden', vis);
+
+                if(txt === 'Manage') {
+                    context.hoot().view.utilities.reviewbookmarknotes.resetToList();
+                }
             });
 
 
