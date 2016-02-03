@@ -76,7 +76,7 @@ Hoot.hoot = function (context) {
         hoot.getAllusers();
         
     };
-    hoot.getAllusers = function() {
+    hoot.getAllusers = function(callback) {
         Hoot.model.REST('getAllUsers', function (resp) {
             if(resp.error){
                 alert('Failed to retrieve users: ' + resp.error);
@@ -89,6 +89,9 @@ Hoot.hoot = function (context) {
             });
 
             iD.data.hootConfig.usersRaw = resp.users;
+            if(callback) {
+                callback(resp.users);
+            }
 
         });
 

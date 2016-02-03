@@ -26,6 +26,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
       
         _createSortMenu(form, aa);
         _createFilterByCreatorMenu(form, aa);
+        _createFilterByMapIdMenu(form, aa);
         
 
         _instance.datasetcontainer = form.append('div')
@@ -223,7 +224,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         var data = _generateUsersData();
         
         var meta = {};
-        meta.title = 'Created By';
+        meta.title = 'Filter By Created By';
         meta.data  = data;
 
         document.body.removeEventListener('click', _globalFilterByCreatorClickHandler ); 
@@ -235,6 +236,9 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
         });
     }
+
+
+
     /**
     * @desc Help function to generate users meta data
     **/
@@ -262,6 +266,77 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
         return data;
     }
+
+
+    /**
+    * @desc Helper function for handling closing filter menu when user clicks outside of menu.
+    * @TODO: Filter and sort should be refactored into one..
+    **/
+    var _globalFilterByMapIdClickHandler = function(a){
+        var self = d3.select('#reviewMenuForm' + 'reviewBookmarksFilterByMapIdDiv');
+        if(!self.empty()) {
+            self.remove();
+        }
+    }
+
+    /**
+    * @desc Filter list .
+    * @param d - filter data
+    **/
+
+    var _filterByMapIdData = function(d) {
+        
+        _lastSortRequest['filterby'] = 'mapId';
+        _lastSortRequest['filterbyval'] = d.id;
+        _instance.populatePopulateBookmarks(null, _lastSortRequest);
+        _globalFilterByMapIdClickHandler();
+    }
+
+    /**
+    * @desc Filter menu popup.
+    * @param form - container
+    * @param menuContainer - pass through for menu container
+    **/
+    var _createFilterByMapIdMenu = function(form, menuContainer) {
+
+        
+        var data = _generateLayerData();
+        
+        var meta = {};
+        meta.title = 'Filter By Layers';
+        meta.data  = data;
+
+        document.body.removeEventListener('click', _globalFilterByMapIdClickHandler ); 
+        document.body.addEventListener('click', _globalFilterByMapIdClickHandler ); 
+        // we have callback to data gets refreshed whenever we press button
+        _createMenu(form, 'reviewBookmarksFilterByMapIdDiv', 'Layers', meta, menuContainer, function(divName, m){
+            var d = _generateLayerData();
+            m.data = d;
+            context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
+        });
+    }
+
+
+
+    var _generateLayerData = function() {
+        var curLayers = context.hoot().model.layers.getAvailLayers();
+
+        var data = [];
+
+        for(var i=0; i<curLayers.length; i++) {
+            var lyr = curLayers[i];
+
+            var newobj = {};
+            newobj.name = lyr.name;
+            newobj.id = lyr.id;
+            newobj.action = function(d){_filterByMapIdData(d);}
+            data.push(newobj);
+        }
+
+        return data;
+
+    }
+
 
     /**
     * @desc Button for page.
@@ -291,83 +366,91 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                 container = _instance.datasetcontainer;
             }
 
-            _lastSortRequest = {};
-            _lastSortRequest['orderBy'] = 'createdAt';
-            _lastSortRequest['asc'] = 'false';
-            _lastSortRequest['limit'] = _DEFAULT_PAGE_COUNT;
-            _lastSortRequest['offset'] = 0;
-            if(overrideReq) {
-                _lastSortRequest = overrideReq;
-            }
+            context.hoot().getAllusers(function(r){
 
-            Hoot.model.REST('getReviewBookmarkStat', null, function (resp) {
-                if(resp.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(d.error);
-                    return;
+                _lastSortRequest = {};
+                _lastSortRequest['orderBy'] = 'createdAt';
+                _lastSortRequest['asc'] = 'false';
+                _lastSortRequest['limit'] = _DEFAULT_PAGE_COUNT;
+                _lastSortRequest['offset'] = 0;
+                if(overrideReq) {
+                    _lastSortRequest = overrideReq;
                 }
 
-                var total = 1*resp.totalCount;
-                var nPages = Math.ceil(total/_DEFAULT_PAGE_COUNT);
-
-                var pgBtnContainer = d3.select('#bmkPageNumBtnContainer');
-                // Clean since each time setting tab item is click we refresh
-                pgBtnContainer.selectAll('span').remove();
-                for(var i=1; i<=nPages; i++) {
-                    pgBtnContainer.append('span')
-                    .attr('id', 'bmkPageBtn' + i)
-                    .classed('strong center col0 ', true)
-                    .classed('row1 keyline-all', true)
-                    .text(i)
-                    .on('click', _pageBtnClickHandler);
-
-                }
-
-                d3.select('#bmkPageBtn' + _currentPage).classed('loud',true);
-
-                Hoot.model.REST('getAllReviewBookmarks', _lastSortRequest, function (d) {
-                    if(d.error){
+                Hoot.model.REST('getReviewBookmarkStat', null, function (resp) {
+                    if(resp.error){
                         context.hoot().view.utilities.errorlog.reportUIError(d.error);
                         return;
                     }
 
-                   
-                    var bookmarksArray = d.reviewBookmarks;
-             
-        
-                    container.selectAll('div').remove();
-                    var tla = container.selectAll('div')
-                        .data(bookmarksArray)
-                        .enter();
-                    var tla2 = tla.append('div')
-                        .classed('col12 fill-white small keyline-bottom hoverDiv2', true);
-                    var tla3 = tla2.append('span')
-                        .classed('text-left big col12 strong', true)
-                        .append('a')
-                        .text(_renderLinkText)
-                        .on('click', _linkClickHandler);
+                    var total = 1*resp.totalCount;
+                    var nPages = Math.ceil(total/_DEFAULT_PAGE_COUNT);
 
-                    var tla22 = tla2.append('div')
-                        .classed('col12 small keyline-bottom', true);
+                    var pgBtnContainer = d3.select('#bmkPageNumBtnContainer');
+                    // Clean since each time setting tab item is click we refresh
+                    pgBtnContainer.selectAll('span').remove();
+                    for(var i=1; i<=nPages; i++) {
+                        pgBtnContainer.append('span')
+                        .attr('id', 'bmkPageBtn' + i)
+                        .classed('strong center col0 ', true)
+                        .classed('row1 keyline-all', true)
+                        .text(i)
+                        .on('click', _pageBtnClickHandler);
 
-                    tla22.append('span')
-                        .classed('text-left big col12 quiet', true)
+                    }
 
-                        .text(_createSubText);
+                    d3.select('#bmkPageBtn' + _currentPage).classed('loud',true);
+
+                    Hoot.model.REST('getAllReviewBookmarks', _lastSortRequest, function (d) {
+                        if(d.error){
+                            context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                            return;
+                        }
+
+                       
+                        var bookmarksArray = d.reviewBookmarks;
+                 
+            
+                        container.selectAll('div').remove();
+                        var tla = container.selectAll('div')
+                            .data(bookmarksArray)
+                            .enter();
+                        var tla2 = tla.append('div')
+                            .classed('col12 fill-white small keyline-bottom hoverDiv2', true);
+                        var tla3 = tla2.append('span')
+                            .classed('text-left big col12 strong', true)
+                            .append('a')
+                            .text(_renderLinkText)
+                            .on('click', _linkClickHandler);
+
+                        var tla22 = tla2.append('div')
+                            .classed('col12 small keyline-bottom', true);
+
+                        tla22.append('span')
+                            .classed('text-left big col12 quiet', true)
+
+                            .text(_createSubText);
 
 
 
-                    tla3.append('button')
-                    //.classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
-                    .style('height', '100%')
-                    .on('click', _deleteBtnHandler)
-                    .select(function (sel) {
-                        d3.select(this).classed('fr _icon trash', true);
+                        tla3.append('button')
+                        //.classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
+                        .style('height', '100%')
+                        .on('click', _deleteBtnHandler)
+                        .select(function (sel) {
+                            d3.select(this).classed('fr _icon trash', true);
+                        });
+
+                       
                     });
 
-                   
                 });
 
+
+
             });
+            
+            
                 
     };
 

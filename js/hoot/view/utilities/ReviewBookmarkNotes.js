@@ -183,7 +183,10 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
         .on('click', function () {
           d3.event.stopPropagation();
           d3.event.preventDefault();
-          _refresh();
+          context.hoot().getAllusers(function(r){
+            _refresh();
+          });
+          
         });
 
 
