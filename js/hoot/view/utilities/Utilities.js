@@ -2,6 +2,7 @@ Hoot.view.utilities = function (context){
 
     var event = d3.dispatch('activate', 'uploadFile', 'tabToggled');
     var utilities = {};
+    var _activeSettingsTabId;
  
 	utilities.dataset = Hoot.view.utilities.dataset(context);
 	utilities.wfsdataset = Hoot.view.utilities.wfsdataset(context);
@@ -15,6 +16,7 @@ Hoot.view.utilities = function (context){
     utilities.reviewbookmarknotes = Hoot.view.utilities.reviewbookmarknotes(context);
 
     utilities.basemaplist = null;
+
 
 
     utilities.forceResetManageTab = function () {
@@ -36,6 +38,7 @@ Hoot.view.utilities = function (context){
         var _toggleOpts = function (d) {
             var bodyid = d3.select(d)
                 .attr('data');
+            _activeSettingsTabId = bodyid;
             var thisbody = d3.select(bodyid)
                 .node();
             jobsBG.node()
@@ -152,7 +155,7 @@ Hoot.view.utilities = function (context){
                 d3.selectAll('#jobsBG')
                     .classed('hidden', vis);
 
-                if(txt === 'Manage') {
+                if(_activeSettingsTabId && _activeSettingsTabId === '#utilReviewBookmarks' && txt === 'Manage') {
                     context.hoot().view.utilities.reviewbookmarknotes.resetToList();
                 }
             });
