@@ -37,16 +37,16 @@ Hoot.control.conflate = function (sidebar) {
     var _container;
     var _confData;
     var _newName;
-    
+
 
     var _instance = {};
 
 
     _instance.advancedoptions = Hoot.control.conflate.advancedoptions(_instance, sidebar);
     _instance.symbology = Hoot.control.conflate.symbology(_instance, sidebar);
-    
+
     _instance.lastAdvSettingsText = 'Last Advanced Settings';
-    
+
     _instance.jobid = "";
 
 
@@ -55,8 +55,8 @@ Hoot.control.conflate = function (sidebar) {
     * @param data - input parameters object needed for conflation
     **/
     _instance.activate = function (data) {
-        
-        
+
+
         // Capture previous values if they exist
         _restorePrevValues();
 
@@ -64,11 +64,11 @@ Hoot.control.conflate = function (sidebar) {
         _removeLastAdvanceOptDlg();
 
         _confData = data;
-             
+
         _newName = _getSaveAsOutputName(data);
-        
+
         hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
-               
+
 
         var formMeta = _getFormMeta();
 
@@ -84,10 +84,10 @@ Hoot.control.conflate = function (sidebar) {
         _createCancelBtn(actions);
         _createConflationSubmitBtn(actions);
         _createGetValuesBtn(actions);
-              
-        
-        d3.select("#confAdvOptsLnk").on('click',_advanceOptionsLnkHandler);       
-     
+
+
+        d3.select("#confAdvOptsLnk").on('click',_advanceOptionsLnkHandler);
+
     };
 
    /**
@@ -106,7 +106,7 @@ Hoot.control.conflate = function (sidebar) {
         _container = null;
         _confData = null;
         _newName = null;
-        _instance.lastAdvSettingsText = 'Last Advanced Settings';    
+        _instance.lastAdvSettingsText = 'Last Advanced Settings';
         _instance.jobid = "";
     };
 
@@ -164,16 +164,16 @@ Hoot.control.conflate = function (sidebar) {
               lyrA = d3.select(sels[0]).datum().name;
               lyrB = d3.select(sels[1]).datum().name;
             }
-          
+
           hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
           var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
-          
+
           //build the path array for lyrA
           var lyrApath = [];
           lyrA = _.findWhere(hoot.model.layers.getAvailLayers(),{'name':lyrA});
           if(lyrA){
               lyrApath.push(lyrA.folderId);
-              
+
               var folderId = lyrA.folderId;
               while (folderId!=0){
                   var fldr = _.findWhere(folderList,{'id':folderId});
@@ -183,9 +183,9 @@ Hoot.control.conflate = function (sidebar) {
                   }
               }
           }
-          
+
           //if(lyrApath) is only 0, keep as root and move on
-          
+
           lyrB = _.findWhere(hoot.model.layers.getAvailLayers(),{'name':lyrB});
           if(lyrB){
               var folderId = lyrB.folderId;
@@ -202,7 +202,7 @@ Hoot.control.conflate = function (sidebar) {
                           }
                           folderId = fldr.parentId;
                       }
-                  }  
+                  }
               }
           }
         });
@@ -219,7 +219,7 @@ Hoot.control.conflate = function (sidebar) {
 
         d3.select(this)
         .style('width', '100%')
-        .call(comboPathName);                       
+        .call(comboPathName);
     }
 
     /**
@@ -227,11 +227,11 @@ Hoot.control.conflate = function (sidebar) {
     * @param a item in fieldset meta data list.
     **/
     var _populateReferenceCombo = function(a) {
-                    
+
         if(_instance.lastAdvDlg){
             a.combobox.data.push(_instance.lastAdvSettingsText);
         }
-        
+
         var combo = d3.combobox()
             .data(_.map(a.combobox.data, function (n) {
                 return {
@@ -247,7 +247,7 @@ Hoot.control.conflate = function (sidebar) {
             comboCnt.on('change', a.onchange);
         }
 
-     
+
     }
 
     /**
@@ -256,9 +256,9 @@ Hoot.control.conflate = function (sidebar) {
     **/
     var _populateFields = function (a) {
         if (a.readonly){
-            d3.select(this).attr('readonly',true); 
+            d3.select(this).attr('readonly',true);
         }
-        
+
         if (a.testmode){
             if(!d3.select('#enable_test_mode').property('checked'))
             {d3.select(this.parentNode).style('display','none');}
@@ -275,15 +275,15 @@ Hoot.control.conflate = function (sidebar) {
                 }
             });
         }
-        
+
         if (a.combobox) {
             if(a.combobox.data && a.combobox.command) {
                 a.combobox.command.call(this, a);
             }  else {
                 _populateDefaultCombo.call(this, a);
-            }               
+            }
         }
-                       
+
     }
 
     /**
@@ -292,7 +292,7 @@ Hoot.control.conflate = function (sidebar) {
     var _removeAdvancedOptionsDlg = function(){
         _instance.confLastSetVals = null;
         _instance.confAdvOptionsSelectedVal = null;
-        
+
         if(_instance.confAdvOptsDlg){
             _instance.confAdvOptsDlg.remove();
         }
@@ -323,14 +323,14 @@ Hoot.control.conflate = function (sidebar) {
         {
             _instance.advancedoptions.advOpsFormEvent(true);
             _instance.confAdvOptsDlg = _instance.advancedoptions.activate();
-           
+
             if(d3.selectAll('.reset.ConfType').value()==_instance.lastAdvSettingsText && _instance.lastAdvDlg){
                 _.each(_instance.lastAdvDlg, displayHandler);
             } else {
                 //replace current inputs with Last advanced options if required...
-                _.each(_instance.confLastSetVals, displayHandler);                 
+                _.each(_instance.confLastSetVals, displayHandler);
             }
-            
+
             if(_instance.confAdvOptsDlg===null){
                 _instance.advancedoptions.onCustomConflationFormError();
             } else {
@@ -349,7 +349,7 @@ Hoot.control.conflate = function (sidebar) {
             } else {
                 if (window.confirm('Exit will remove any previously selected advanced options. Are you sure you want to exit?')){
                     _removeAdvancedOptionsDlg();
-                }                   
+                }
             }
         }
     }
@@ -361,13 +361,13 @@ Hoot.control.conflate = function (sidebar) {
         if(!d3.selectAll('.invalidName').empty()){
             return false;
         }
-        
+
       //check if layer with same name already exists...
         if(_container.selectAll('.saveAs').value()===''){
             iD.ui.Alert("Please enter an output layer name.",'warning');
             return false;
         }
-        
+
         if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){
                 return l.substring(l.lastIndexOf('|')+1);
             }),function(f){
@@ -375,30 +375,30 @@ Hoot.control.conflate = function (sidebar) {
             }
         )))
         {
-            iD.ui.Alert("A layer already exists with this name." + 
+            iD.ui.Alert("A layer already exists with this name." +
                 " Please remove the current layer or select a new name for this layer.",'warning');
             return false;
         }
-        
+
         var resp = hoot.checkForUnallowedChar(_container.selectAll('.saveAs').value());
         if(resp !== true){
             iD.ui.Alert(resp,'warning');
             return false;
         }
-                        
+
         resp = hoot.checkForUnallowedChar(_container.selectAll('.newfoldername').value());
         if(resp !== true){
             iD.ui.Alert(resp,'warning');
             return false;
-        }    
+        }
 
         var parId = hoot.model.folders.getfolderIdByName(_container.selectAll('.pathname').value()) || 0;
         resp = hoot.model.folders.duplicateFolderCheck({name:_container.selectAll('.newfoldername').value(),parentId:parId});
         if(resp != true){
             iD.ui.Alert(resp,'warning');
             return false;
-        }          
-        
+        }
+
         return true;
     }
 
@@ -408,7 +408,7 @@ Hoot.control.conflate = function (sidebar) {
     var _conflateBtnClickHandler = function () {
         d3.event.stopPropagation();
         d3.event.preventDefault();
-       
+
         if(!_isFieldsValuesValid()) {
             return;
         }
@@ -427,7 +427,7 @@ Hoot.control.conflate = function (sidebar) {
             _instance.confAdvOptionsFields = _instance.advancedoptions.fieldsretriever.getDefaultFields();
             _instance.confAdvOptionsSelectedVal = _instance.advancedoptions.selectionretriever.getSelectedValues(null,_instance.confAdvOptionsFields);
         }
-        
+
         if(d3.selectAll('.reset.ConfType').value()=='Advanced Conflation'){
             _instance.lastAdvFields = _.map(_instance.confAdvOptionsFields,_.clone);
             _instance.lastAdvValues = _.map(_instance.confAdvOptionsSelectedVal,_.clone);
@@ -435,9 +435,9 @@ Hoot.control.conflate = function (sidebar) {
             _.each(d3.select("#CustomConflationForm").selectAll('form').selectAll('input')[0],function(ai){
                 var selAI = d3.select('#'+ai.id);
                 _instance.lastAdvDlg.push({id:ai.id,type:ai.type, checked:ai.checked, value:ai.value, disabled:selAI.property('disabled'),hidden:d3.select(selAI.node().parentNode).style('display')});
-            });  
+            });
         }
-        
+
         _submitLayer(_container);
         _event.merge(_container, _newName, _instance.confAdvOptionsSelectedVal);
     }
@@ -586,11 +586,21 @@ Hoot.control.conflate = function (sidebar) {
                 readonly:'readonly'
             },
             {
+                label: 'Collect Statistics?',
+                type: 'isCollectStats',
+                placeholder: "false",
+                combobox: ['true','false'],
+                onchange: function(d){
+                    var selVal = d3.selectAll('.reset.isCollectStats').value();
+                },
+                readonly:'readonly'
+            },
+            {
                 label: 'Generate Report?',
                 type: 'isGenerateReport',
                 placeholder: "false",
                 combobox: ['true','false'],
-                onchange: function(d){ 
+                onchange: function(d){
                     var selVal = d3.selectAll('.reset.isGenerateReport').value();
                 },
                 readonly:'readonly',
@@ -602,7 +612,7 @@ Hoot.control.conflate = function (sidebar) {
 
     /**
     * @desc Help function for new name generation
-    * @param words - 
+    * @param words -
     * @param min_substring_length -
     **/
     var _subCompare = function(words, min_substring_length) {
@@ -664,7 +674,7 @@ Hoot.control.conflate = function (sidebar) {
                 d3.event.preventDefault();
 
                 if(d3.select("#sidebar2").selectAll("input").property('disabled')){return;}
-                
+
                 _toggleForm(this);
             });
     }
@@ -720,8 +730,8 @@ Hoot.control.conflate = function (sidebar) {
                     retval += '</label><a id="confAdvOptsLnk" class="button pad1x pad0y strong fill-light round-top keyline-bottom" href="#" style="opacity: 1; max-width: 10%; display: inline-block;">►</a></div>';
                     return retval;
                 } else {
-                    return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + field.label + '</label>'; 
-                }               
+                    return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + field.label + '</label>';
+                }
             })
             .append('input')
             .attr('type', 'text')
@@ -766,7 +776,7 @@ Hoot.control.conflate = function (sidebar) {
                     sidebar.selectAll('.js-toggle')
                         .classed('active', false);
                 }
-                
+
             });
     }
 
@@ -806,14 +816,14 @@ Hoot.control.conflate = function (sidebar) {
         .on('click', function () {
             d3.event.stopPropagation();
             d3.event.preventDefault();
-            
+
             if(d3.selectAll('.reset.ConfType').value()==_instance.lastAdvSettingsText){
                 _instance.confAdvOptionsFields = _instance.lastAdvFields;
                 _instance.confAdvOptionsSelectedVal = _instance.lastAdvValues;
             } else {
                 if(_instance.confAdvOptionsSelectedVal == null){
                     _instance.confAdvOptionsFields = _instance.advancedoptions.fieldsretriever.getDefaultFields();
-                    _instance.confAdvOptionsSelectedVal = _instance.advancedoptions.selectionretriever.getSelectedValues(null,_instance.confAdvOptionsFields);                  
+                    _instance.confAdvOptionsSelectedVal = _instance.advancedoptions.selectionretriever.getSelectedValues(null,_instance.confAdvOptionsFields);
                 }
             }
             console.log(JSON.stringify(_instance.confAdvOptionsSelectedVal));

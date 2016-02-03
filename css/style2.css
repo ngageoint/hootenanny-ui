@@ -245,7 +245,7 @@ input.round        { border-radius:4px; }
 
  .rcon.big.refresh:after, ._icon.big.refresh:before						 { background-position:-205px -80px; }
  .rcon.big.blank:after, ._icon.big.blank:before                { background-position:-250px 15px; }
- 
+
  .rcon.openfolder:after, ._icon.openfolder:before							 { background-position:-84px 0px; }
 
 .palette .active:before {
@@ -372,13 +372,13 @@ span.logo{
  div.bulk-import {
  	padding-right: 10px;
  }
- 
+
  input.bulk-import {
  	padding-right: 10px;
  	width:100%;
  	border: 1px lightgray;
  }
- 
+
 #alerts {
 	position: fixed;
 	z-index: 1003;
@@ -412,8 +412,50 @@ span.logo{
 /*** SETTINGS ***/
 #settingsSidebar{width:220px;}
  #settingsHeader{font-weight:bolder;font-size:large;}
-.utilHoot{left:220px;} 
+.utilHoot{left:220px;}
 
 .logHeader{font-weight:bolder;font-size:large;float:left;}
 
 .aboutHeader{float:left;font-weight:bold;width:100%;text-align:left;}
+
+.map-button {
+  width:40px;
+  height:60px;
+}
+.tag-row .map-metadata {
+    float: left;
+    height: 30px;
+    overflow: hidden;
+    padding: 4px 6px;
+    color: #a0a0a0;
+    font-size: 13px;
+}
+.tag-row .map-metadata.key {
+    width: 70%;
+    font-weight: bold;
+}
+.tag-row .map-metadata.value {
+    width: 30%;
+}
+.tar {
+    text-align: right;
+}
+tr.tag-row td {
+    padding: 4px 6px;
+    overflow: hidden;
+}
+tr.tag-row td.key {
+    font-weight: bold;
+}
+tr.tag-row:last-child td {
+    border-bottom: none;
+}
+
+table.map-metadata {
+    border-collapse:separate;
+    border: 1px solid #cfcfcf;
+    border-radius: 4px;
+    overflow: hidden;
+    color: #a0a0a0;
+    font-size: 13px;
+}
