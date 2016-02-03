@@ -14,53 +14,57 @@ Hoot.view.utilities.uisettings = function(context) {
 
             var settings = [
                 {'group':'Feature Rendering','id':'ui-settings-feature-rendering',items:[
-                    {'label':'Line Width','default_option':true,'type':'number','name':'_linewidth','min':1,'max':25,'step':1,'value':7},
-                    {'label':'Line Width','default_option':true,'type':'number','name':'_linewidth','min':1,'max':25,'step':1,'value':7}
-                ]
+                    {
+                        'label':'Path Width','name':'_pathwidth','default_option':true,
+                        'selector':'path','declaration':'stroke-width',
+                        'type':'number','min':1,'max':25,'step':1,'value':7}
+                    ]
                 }
             ]
 
-            var _fieldset = container.append('form').append('fieldset').selectAll('.form-field').data(settings);
-            _fieldset.enter()
-                .append('div')
-                .append('label').classed('pad1x pad0y strong fl', true)
-                .text(function(d){return d.group;})
+            var _form = container.append('form').selectAll('.form-field').data(settings);
+            _form.enter()
+                .append('fieldset')
+                .append('div').classed('settings-row',true)
+                .append('h3').classed('settings-header',true).text(function(d){return d.group;})
                 .each(function(d){
-                    var settingsGroup = d3.select(this.parentNode).append('div').attr('id',d.id);
-                    var section = settingsGroup.append('section').classed('settings-section',true);
+                   var _fieldset = d3.select(this.parentNode);
                     _.each(d.items,function(j){
-                        /*this.append('label').classed('settings-label fl',true).attr('for',j.name).text(j.label);
-                        var inpt = this.append('input').classed('hoot-input',true).attr('id',j.name).attr('placeholder','');
-                        if(j.type=='number'){
-                            inpt.attr('type','number').attr('min',j.min).attr('max',j.max);
-                        }*/
+                        var uiSetting = this.append('div').append('label')
+                            .classed('settings-label',true)
+                            .text(j.label)
+                            .append('input').attr('type',j.type)
+                            .classed('hoot-input settings-input',true)
+                            .attr('id',j.name).property('disabled',true)
+                            .on('change',function(){
+                                // Delete rule if it already exists
+                                var sheets = document.styleSheets[document.styleSheets.length - 1];
+                                _.find(sheets.cssRules, function(cssItem, cssIdx){ 
+                                   if(cssItem.selectorText == j.selector){ sheets.deleteRule(cssIdx);return true;};
+                                });
 
-                        
-                        var sectionDiv = this.append('div').append('div').classed('settings-row',true);
-                        sectionDiv.append('label')
-                            .classed('settings-label fl',true).text(j.label)
-                            .append('input').attr('type','number')
-                            .classed('hoot-input',true)
-                            .attr('id',j.name)
-                            .attr('placeholder','');
-                        if(j.type=='number'){sectionDiv.select('input').attr('min',j.min).attr('max',j.max);}
-                    },section)
+                                sheets.insertRule(j.selector + '{' + j.declaration + ':' + this.value + ' !important}',sheets.cssRules.length-1);
+                            });
+                        if(j.type=='number'){uiSetting.attr('min',j.min).attr('max',j.max).attr('value',j.value);}
+                        if(j.default_option==true){
+                            this.select('label').append('label').classed('settings-checkbox',true)
+                                .attr('for',j.name + '_default').text('Use default value')
+                                .append('input').attr('name',j.name + '_default')
+                                .attr('type','checkbox').attr('checked',true)
+                                .on('change',function(){
+                                    d3.select('#' + this.name.replace('_default','')).property('disabled',this.checked);
+                                    // Delete rule if it already exists
+                                    var sheets = document.styleSheets[document.styleSheets.length - 1];
+                                    _.find(sheets.cssRules, function(cssItem, cssIdx){ 
+                                       if(cssItem.selectorText == j.selector){ sheets.deleteRule(cssIdx);return true;};
+                                    });
+                                    if(!this.checked){
+                                        sheets.insertRule(j.selector + '{' + j.declaration + ':' + d3.select('#'+j.name).value() + ' !important}',sheets.cssRules.length-1);
+                                    }
+                                });}
+                    },_fieldset);
                 })
-            ;
         };
-
-/*<section id="web-content-section">
-    <h3 i18n-content="advancedSectionTitleContent">Web content</h3>
-    <div>
-      <div class="settings-row">
-        <label class="web-content-select-label">
-          <span i18n-content="defaultZoomFactorLabel">Page zoom:</span>
-          <select id="defaultZoomFactor" datatype="double"><option value="0.25">25%</option><option value="0.333">33%</option><option value="0.5">50%</option><option value="0.666">67%</option><option value="0.75">75%</option><option value="0.9">90%</option><option value="1">100%</option><option value="1.1">110%</option><option value="1.25">125%</option><option value="1.5">150%</option><option value="1.75">175%</option><option value="2">200%</option><option value="2.5">250%</option><option value="3">300%</option><option value="4">400%</option><option value="5">500%</option></select>
-        </label>
-      </div>
-
-    </div>
-  </section>*/
 
 	return hoot_view_utilities_uisettings;
 }

@@ -3164,6 +3164,16 @@ rect.more {fill: #3182bd;}*/
     margin: 0.65em 0;
 }
 
+.settings-header {
+    position: relative;
+    padding: 5px;
+    display: block;
+    border-radius: 4px 4px 0 0;
+    overflow: hidden;
+    clear: left;
+    text-align: left;
+}
+
 .settings-label {
     position: relative;
     padding: 5px 0 5px 10px;
@@ -3171,11 +3181,24 @@ rect.more {fill: #3182bd;}*/
     border-radius: 4px 4px 0 0;
     overflow: hidden;
     clear: both;
+    text-align: left;
+    width:400px;
 }
 
 .settings-input {
     display: inline-block;
     clear:both;
+    left:80px;
+    margin:10px;
+    border: none;
+    width:60px;
+}
+
+.settings-checkbox {
+    display:inline-block;
+    position:relative;
+    left:100px;
+    margin-left:10px;
 }
 
 input:focus::-webkit-input-placeholder { color:transparent; }
