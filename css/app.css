@@ -1259,6 +1259,20 @@ input[type=number] {
     padding-right: 20%;
 }
 
+input[type=number].hoot-input {
+    padding-right:0;
+    background-color: white;
+    border:none;
+    height:30px;
+    width: 60px;
+    text-overflow: ellipsis;
+}
+input[type="number"].hoot-input::-webkit-inner-spin-button,
+input[type="number"].hoot-input::-webkit-outer-spin-button {
+    display: initial;
+    opacity: 1;
+}
+
 .spin-control {
     width: 20%;
     height: 29px;
@@ -3143,6 +3157,55 @@ rect.more {fill: #3182bd;}*/
 .button.dataset-option {
 	margin-right:5px;
 	color:#fff;
+}
+
+/* Settings Tab */
+.settings-section {
+    -webkit-padding-start: 18px;
+    margin-bottom: 24px;
+    margin-top: 8px;
+}
+
+.settings-row {
+    display: block;
+    margin: 0.65em 0;
+}
+
+.settings-header {
+    position: relative;
+    padding: 5px;
+    display: block;
+    border-radius: 4px 4px 0 0;
+    overflow: hidden;
+    clear: left;
+    text-align: left;
+}
+
+.settings-label {
+    position: relative;
+    padding: 5px 0 5px 10px;
+    display: block;
+    border-radius: 4px 4px 0 0;
+    overflow: hidden;
+    clear: both;
+    text-align: left;
+    width:400px;
+}
+
+.settings-input {
+    display: inline-block;
+    clear:both;
+    left:80px;
+    margin:10px;
+    border: none;
+    width:60px;
+}
+
+.settings-checkbox {
+    display:inline-block;
+    position:relative;
+    left:100px;
+    margin-left:10px;
 }
 
 input:focus::-webkit-input-placeholder { color:transparent; }
