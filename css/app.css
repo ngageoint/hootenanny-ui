@@ -171,7 +171,7 @@ textarea  {
 textarea,
 input[type=text],
 input[type=search],
-/*input[type=number],*/
+input[type=number],
 input[type=url],
 input[type=tel],
 input[type=email] {
@@ -1151,7 +1151,7 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 .inspector-hover .entity-editor-pane button.minor,
 .inspector-hover .combobox-caret,
 .inspector-hover .entity-editor-pane .header button,
-/*.inspector-hover .spin-control,*/
+.inspector-hover .spin-control,
 .inspector-hover .hide-toggle:before,
 .inspector-hover .more-fields,
 .inspector-hover .form-label-button-wrap,
@@ -1259,7 +1259,14 @@ input[type=number] {
     padding-right: 20%;
 }
 
-input[type=number].hoot-input {padding-right:0;}
+input[type=number].hoot-input {
+    padding-right:0;
+    background-color: white;
+    border:none;
+    height:30px;
+    width: 60px;
+    text-overflow: ellipsis;
+}
 input[type="number"].hoot-input::-webkit-inner-spin-button,
 input[type="number"].hoot-input::-webkit-outer-spin-button {
     display: initial;
