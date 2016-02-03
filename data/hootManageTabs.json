@@ -58,16 +58,9 @@
     "callback":"view.utilities.reports.createContent"
   },
   {
-    "name":"About",
-    "id":"utilAbout",
-    "order":"10",
-    "contentbodyid":"aboutContent",
-    "callback":"view.utilities.about.createContent"
-  },
-  {
     "name":"Review Bookmarks",
     "id":"utilReviewBookmarks",
-    "order":"11",
+    "order":"10",
     "contentbodyid":"reviewBookmarksContent",
     "callback":"view.utilities.reviewbookmarks.createContent"
   },
@@ -75,8 +68,15 @@
     "name":"Review Bookmark Notes",
     "hidden":true,
     "id":"utilReviewBookmarkNotes",
-    "order":"12",
+    "order":"11",
     "contentbodyid":"reviewbookmarknotesbody",
     "callback":"view.utilities.reviewbookmarknotes.createContent"
+  },
+  {
+    "name":"About",
+    "id":"utilAbout",
+    "order":"12",
+    "contentbodyid":"aboutContent",
+    "callback":"view.utilities.about.createContent"
   }
 ]
