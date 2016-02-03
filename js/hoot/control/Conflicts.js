@@ -211,6 +211,15 @@ Hoot.control.conflicts = function (context, sidebar) {
             //icon: '_icon plus',
             cmd: iD.ui.cmd('t'),
             action: _instance.info.reviewtable.toggleTable // Review table
+        },
+        {
+            id: 'sharereview',
+            name: 'share_review',
+            text: 'Share Review',
+            color: 'fill-grey button round pad0y pad1x dark small strong',
+            icon: '_icon plus',
+            cmd: iD.ui.cmd('s'),
+            action: _instance.actions.sharereview.publish // Review table
         }];
 
         var opts = conflicts.append('span')
@@ -285,9 +294,6 @@ Hoot.control.conflicts = function (context, sidebar) {
         context.map().on('drawn.conflicts', _.debounce(_instance.loadReviewFeaturesMapInMap, 300));
     };
 
-
-    
-
     _instance.loadReviewFeaturesMapInMap = function() {
             if (!context.MapInMap.hidden()) {
                 //Populate the map-in-map with review items location and status
@@ -354,10 +360,9 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         d3.select('.hootTags').remove();
         if(!doNotRemoveFromSidebar) {
-            d3.select('.review')
+        d3.select('.review')
             .remove();
         }
-        
 
         context.map().on('drawn', null);
         //Clear map-in-map
@@ -419,10 +424,11 @@ Hoot.control.conflicts = function (context, sidebar) {
     _instance.setProcessing = function(lock, message) {
         if(lock) {
             if(d3.selectAll('#processingDiv').empty() === true) {
-                d3.select('body').call(iD.ui.Processing(context,true,message));
-            } else {
+            d3.select('body').call(iD.ui.Processing(context,true,message));
+        } else {
                 d3.select('#processingDivLabel').text(message);
             }
+
             _screenLockFree(10000);
         } else {
             _screenLockFree(700);
@@ -438,7 +444,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         }
         _timeout = setTimeout(function(){
             _timeout = null;
-            d3.select('body').call(iD.ui.Processing(context,false));
+        d3.select('body').call(iD.ui.Processing(context,false));
         },delay)
     }
 

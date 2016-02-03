@@ -97,7 +97,27 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                     }
 
 
-                    Hoot.model.REST('reviewGetNext', reviewData, function (error, response) {
+                    var forcedReviewableItem = context.hoot().view.utilities.reviewbookmarknotes.getForcedReviewableItem();
+                    if(forcedReviewableItem){
+                        _reviewGetNextHandler(null, forcedReviewableItem);
+                        context.hoot().view.utilities.reviewbookmarknotes.setForcedReviewableItem(null);
+                    } else {
+                        Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
+                    }
+     
+                } catch (err) {
+                    _handleError(err, true);
+                }
+            });
+
+        } catch (err) {
+            _handleError(err, true);
+        }
+    
+
+    }
+
+    var _reviewGetNextHandler = function (error, response) {
                         try {
                             if(error){
                                 throw 'Failed to retrieve next set of reviewable features from service!';
@@ -107,10 +127,11 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                             if((1*response.resultCount) > 0){
                                 _currentReviewable = response;
                                 _parent().actions.idgraphsynch.getRelationFeature
-                                (reviewData.mapId, response.relationId, function(newReviewItem){
+                (response.mapId, response.relationId, function(newReviewItem){
                                     _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
                                         newReviewItem.members[1]);
 
+          
                                 });
 
                             } else {
@@ -133,17 +154,6 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                            //_parent().setProcessing(false);
 
                         }
-                    });
-     
-                } catch (err) {
-                    _handleError(err, true);
-                }
-            });
-
-        } catch (err) {
-            _handleError(err, true);
-        }
-    
 
     }
 

@@ -8,19 +8,20 @@ Hoot.control = function (context){
 	hoot_control.loadSidebarControls = function(context, sidebar){
 		// Clear existing
 		d3.select('.header.fillL.cf').remove();
-                d3.select('.search-header').remove();
-                d3.select('.feature-list-pane').style('display', 'none');
-                d3.select('.sidebar-component').style('background-color', '#fff');
-                //d3.selectAll('.save').style('display','none');
+        d3.select('.search-header').remove();
+        d3.select('.feature-list-pane').style('display', 'none');
+        d3.select('.sidebar-component').style('background-color', '#fff');
+        //d3.selectAll('.save').style('display','none');
 
-                hoot_control.conflate = Hoot.control.conflate(sidebar);
-                hoot_control.import = Hoot.control.import(context, sidebar);
-                hoot_control.export = Hoot.control.export( sidebar);
-                hoot_control.view = Hoot.control.view(sidebar, context);
-                hoot_control.conflicts = Hoot.control.conflicts(context, sidebar);
-                hoot_control.validation = Hoot.control.validation(context, sidebar);
-                // tools will go away till then
-                Hoot.tools(context, sidebar);
+        hoot_control.conflate = Hoot.control.conflate(sidebar);
+        hoot_control.import = Hoot.control.import(context, sidebar);
+        hoot_control.export = Hoot.control.export( sidebar);
+        hoot_control.view = Hoot.control.view(sidebar, context);
+        hoot_control.conflicts = Hoot.control.conflicts(context, sidebar);
+        hoot_control.validation = Hoot.control.validation(context, sidebar);
+        
+        // tools will go away till then
+        Hoot.tools(context, sidebar);
 	}
 
         // TODO: Update this to be more generic..

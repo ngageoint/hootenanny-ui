@@ -746,6 +746,23 @@ Hoot.model.REST = function (command, data, callback, option) {
         );
   };
   
+
+  rest.reviewGetReviewItem = function(data, callback)
+  {
+    var mapId = data.mapId;
+    var seq = data.sequence;
+    
+    d3.json('/hoot-services/job/review/reviewable?mapid='+ mapId + '&offsetseqid=' + seq,
+            function(error, resp)
+            {
+               if (error) {
+                    return callback(_alertError(error, "Requested job failed! For detailed log goto Manage->Log"));
+                }
+                callback(resp);
+            }
+        );
+  };
+
   rest.ReviewGetStatistics = function (mapId, callback) {
             
         d3.json('/hoot-services/job/review/statistics?mapId=' + mapId, function (error, resp) {             
@@ -962,6 +979,84 @@ rest.downloadReport = function(data)
             });
     }
 
+    rest.saveReviewBookmark = function(data, callback) {
+        d3.json('/hoot-services/job/review/bookmarks/save')
+            .header('Content-Type', 'application/json')
+            .post(JSON.stringify(data), function (error, resp) {
+
+                if (error) {
+                    return callback(_alertError(error, "Requested job failed! For detailed log goto Manage->Log"));
+                }
+                callback(resp);
+            });
+    }
+
+    rest.getAllReviewBookmarks = function(data, callback) {
+        var url = '/hoot-services/job/review/bookmarks/getall?orderBy=' + data.orderBy + '&asc=' + data.asc + 
+            '&limit=' + data.limit + '&offset=' + data.offset;
+        if(data.filterbyval && data.filterby) {
+            url += '&filterby=' + data.filterby + '&filterbyval=' + data.filterbyval;
+        }
+         d3.json(url, function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get all bookmarks failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    }
+
+    rest.getReviewBookmark = function(data, callback) {
+         d3.json('/hoot-services/job/review/bookmarks/get?bookmarkId=' + data.bookmarkId, function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get bookmarkt failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    }
+
+    rest.getReviewBookmarkStat = function(data, callback) {
+         d3.json('/hoot-services/job/review/bookmarks/stat', function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get bookmarkt failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    }
+
+    rest.deleteReviewBookmark = function(data, callback) {
+        d3.json('/hoot-services/job/review/bookmarks/delete?bookmarkId=' + data.bookmarkId)
+        .send('DELETE',function (error, resp) {
+
+                if (error) {
+                    return callback(_alertError(error, "Requested job failed! For detailed log goto Manage->Log"));
+                }
+                callback(resp);
+            });
+
+
+    }
+
+
+    rest.getSaveUser = function(data, callback) {
+        d3.json('/hoot-services/osm/user/-1?userEmail=' + data.email)
+            .header('Content-Type', 'application/json')
+            .post(JSON.stringify(data), function (error, resp) {
+
+                if (error) {
+                    return callback(_alertError(error, "Requested job failed! For detailed log goto Manage->Log"));
+                }
+                callback(resp);
+            });
+    }
+
+    rest.getAllUsers = function(callback) {
+        d3.json('/hoot-services/osm/user/-1/all', function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Get all users failed! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    }
 
     rest['' + command + ''](data, callback, option);
 };
