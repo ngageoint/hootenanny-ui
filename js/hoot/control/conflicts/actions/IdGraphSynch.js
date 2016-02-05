@@ -14,7 +14,6 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
 
     var _relTreeIdx = {};
     var _currentFid = null;
-    var _currentCallback = null;
 
 
     /**
@@ -30,7 +29,6 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
         var fid = 'r' + relationid + '_' + mapid;
         var f = context.hasEntity(fid);
         _currentFid = fid;
-        _currentCallback = callback;
 
         if(f) {
             // for merged automerge should have loaded relation and members to ui
@@ -41,7 +39,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             if(nMemCnt > 0){
                 // loaded members count not matching the entity members count
                 if(nMemCnt !== f.members.length){
-                    _loadMissingFeatures(mapid, fid);
+                    _loadMissingFeatures(mapid, fid, callback);
                 } else {
                     if(nMemCnt === 1){
                         _parent().actions.poimerge.disableMergeButton(true);
@@ -53,7 +51,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                 iD.ui.Alert('There are no members in the review relation.','warning');
             }
         } else {
-            _loadMissingFeatures(mapid, fid);
+            _loadMissingFeatures(mapid, fid, callback);
         }
     }
 
@@ -108,7 +106,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
     * @param err - error object
     * @param entities - loaded entities list
     **/
-    var _loadMissingHandler = function(err, entities) {
+    var _loadMissingHandler = function(err, entities, currentCallback) {
         try
         {
             if(err){
@@ -138,7 +136,9 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                             _relTreeIdx[f.id] = f.members.length;
                             _.each(f.members, function(m){
                                 if(!context.hasEntity(m.id) || m.type === 'relation') {
-                                    context.loadMissing([m.id], _loadMissingHandler, currLayerName);
+                                    context.loadMissing([m.id], function(err, ent){
+                                        _loadMissingHandler(err,ent,currentCallback);
+                                    }, currLayerName);
                                 } else {
                                     _updateParentRelations(m.id);
                                 }
@@ -170,7 +170,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
 
             if(Object.keys(_relTreeIdx).length == 0){
                 // Done so do final clean ups
-                _validateMemberCnt(_currentFid, _currentCallback);
+                _validateMemberCnt(_currentFid, currentCallback);
             }
         }
     }
@@ -249,13 +249,15 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
     * @param mapid - target map id
     * @param fid - the feature id
     **/
-    var _loadMissingFeatures = function(mapid, fid) {
+    var _loadMissingFeatures = function(mapid, fid, callback) {
         var layerNames = d3.entries(hoot.loadedLayers()).filter(function(d) {
             return 1*d.value.mapId === 1*mapid;
         });
 
         var layerName = layerNames[0].key;
-        context.loadMissing([fid], _loadMissingHandler, layerName);
+        context.loadMissing([fid], function(err, ent){
+            _loadMissingHandler(err,ent,callback);
+        }, layerName);
     }
 
     var _parent = function() {
