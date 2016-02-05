@@ -135,9 +135,9 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 d3.selectAll('.' + poiTableCols[0].id).on('mouseleave', null);
                 d3.selectAll('.' + poiTableCols[0].id)
                 .on('mouseenter', function(d) {
-                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature', true);
+                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2', true);
                 }).on('mouseleave', function(d) {
-                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature', false);
+                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2',false);
                 });
             }
 
@@ -146,9 +146,9 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 d3.selectAll('.' + poiTableCols[1].id).on('mouseleave', null);
                 d3.selectAll('.' + poiTableCols[1].id)
                 .on('mouseenter', function(d) {
-                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature2', true);
+                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature', true);
                 }).on('mouseleave', function(d) {
-                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature2', false);
+                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature', false);
                 });
             }
         }
@@ -160,19 +160,20 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     * @desc Highlights each feature and flashes
     * @param fid - feature id to highlight
     * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
+    * @param ftyp - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
     * @param on -  show or hide
     **/
-    var _highlightRelFeatures = function(fid, ftype, on) {
+    var _highlightRelFeatures = function(fid, ftype, offType, on) {
         if(on === true) {
             var curToggle = on;
             _flashingTimer = window.setInterval(function(){
                 curToggle = !curToggle;
-                _performHighlight(fid, ftype, curToggle) ;
+                _performHighlight(fid, ftype, offType, curToggle) ;
             }, 500);
         } else {
             if(_flashingTimer) {
                 clearInterval(_flashingTimer);
-                _performHighlight(fid, ftype, on) ;
+                _performHighlight(fid, ftype, offType, on) ;
             }
             
         }
@@ -185,15 +186,17 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     * @desc Highlights each feature
     * @param fid - feature id to highlight
     * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
+    * @param ftyp - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
     * @param on -  show or hide
     **/
-    var _performHighlight = function(fid, ftype, on) {
+    var _performHighlight = function(fid, ftype, offType, on) {
         var feature = context.graph().entity(fid);
 
         context.graph().parentRelations(feature)
             .forEach(function(parent) {
                 _.each(parent.members, function(mem){
                     var mid = mem.id;
+                    d3.selectAll('.' + mid).classed(offType, false);
                     d3.selectAll('.' + mid).classed(ftype, on);
                 });
             });
