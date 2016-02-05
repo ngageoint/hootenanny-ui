@@ -17,6 +17,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
 {
 	var _events = d3.dispatch();
 	var _instance = {};
+    var _flashingTimer;
 
     /**
     * @desc highlights the reviewable items on map and performs associated operation
@@ -154,13 +155,39 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
 
     }
 
+    
     /**
-    * @desc Highlights each feature
+    * @desc Highlights each feature and flashes
     * @param fid - feature id to highlight
     * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
     * @param on -  show or hide
     **/
     var _highlightRelFeatures = function(fid, ftype, on) {
+        if(on === true) {
+            var curToggle = on;
+            _flashingTimer = window.setInterval(function(){
+                curToggle = !curToggle;
+                _performHighlight(fid, ftype, curToggle) ;
+            }, 500);
+        } else {
+            if(_flashingTimer) {
+                clearInterval(_flashingTimer);
+                _performHighlight(fid, ftype, on) ;
+            }
+            
+        }
+    
+        
+            
+    }
+
+     /**
+    * @desc Highlights each feature
+    * @param fid - feature id to highlight
+    * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
+    * @param on -  show or hide
+    **/
+    var _performHighlight = function(fid, ftype, on) {
         var feature = context.graph().entity(fid);
 
         context.graph().parentRelations(feature)
