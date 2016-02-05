@@ -67,6 +67,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 .classed('activeReviewFeature', false);
             d3.selectAll('.' + feature.id)
                 .classed('tag-hoot activeReviewFeature', true);
+                
          
         }
         if (againstFeature) {
@@ -93,7 +94,11 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         }
    
         _parent().loadReviewFeaturesMapInMap();
+
+
     };
+
+    
 
     /**
     * @desc Clear highlight
@@ -114,6 +119,57 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
             _moveFrontRecursive(activeConflictReviewItem, 'activeReviewFeature2');
             _moveFrontRecursive(activeConflict, 'activeReviewFeature');
         }
+    }
+
+    /**
+    * @desc Highlights 1 degree dependencies
+    **/
+    _instance.hightligtDependents = function() {
+
+        var poiTableCols = _parent().info.reviewtable.poiTableCols();
+
+        if(poiTableCols) {
+            if(poiTableCols[0]) {
+                d3.selectAll('.' + poiTableCols[0].id).on('mouseenter', null);
+                d3.selectAll('.' + poiTableCols[0].id).on('mouseleave', null);
+                d3.selectAll('.' + poiTableCols[0].id)
+                .on('mouseenter', function(d) {
+                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature', true);
+                }).on('mouseleave', function(d) {
+                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature', false);
+                });
+            }
+
+            if(poiTableCols[1]) {
+                d3.selectAll('.' + poiTableCols[1].id).on('mouseenter', null);
+                d3.selectAll('.' + poiTableCols[1].id).on('mouseleave', null);
+                d3.selectAll('.' + poiTableCols[1].id)
+                .on('mouseenter', function(d) {
+                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature2', true);
+                }).on('mouseleave', function(d) {
+                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature2', false);
+                });
+            }
+        }
+
+    }
+
+    /**
+    * @desc Highlights each feature
+    * @param fid - feature id to highlight
+    * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
+    * @param on -  show or hide
+    **/
+    var _highlightRelFeatures = function(fid, ftype, on) {
+        var feature = context.graph().entity(fid);
+
+        context.graph().parentRelations(feature)
+            .forEach(function(parent) {
+                _.each(parent.members, function(mem){
+                    var mid = mem.id;
+                    d3.selectAll('.' + mid).classed(ftype, on);
+                });
+            });
     }
 
     /**
