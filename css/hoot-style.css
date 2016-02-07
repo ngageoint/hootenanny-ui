@@ -50,6 +50,11 @@ path.stroke.tag-hoot.selected.activeReviewFeature {
     stroke: #f59;
 }*/
 
+path.shadow.tag-hoot.activeReviewFeature.extra-highlight,
+path.shadow.tag-hoot.activeReviewFeature2.extra-highlight {
+    stroke-width: 30;
+}
+
 path.shadow.tag-hoot.activeReviewFeature,
 path.shadow.tag-hoot.activeReviewFeature2 {
     stroke-width: 20;
@@ -86,8 +91,6 @@ g.tag-hoot.activeReviewFeature > path.shadow {
 g.tag-hoot.activeReviewFeature2 > path.shadow {
     stroke: #00F;
 }
-
-
 
 
 path.stroke.tag-hoot.area:not(.hover):not(.selected) {
