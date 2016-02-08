@@ -139,7 +139,11 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                         _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2');
                     });
                 } else {
-                    _toggleMouseEvent(poiTableCols[0].id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2');
+                    var offFid = null;
+                    if(poiTableCols[1]) {
+                        offFid = poiTableCols[1].id;
+                    }
+                    _toggleMouseEvent(poiTableCols[0].id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2', offFid);
                 }
                 
             }
@@ -154,7 +158,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                         _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature');
                     });
                 } else {
-                    _toggleMouseEvent(poiTableCols[1].id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature');
+                    _toggleMouseEvent(poiTableCols[1].id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature', poiTableCols[0].id);
                 }
                     
             }
@@ -167,15 +171,16 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     * @param fid - feature id to highlight
     * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
     * @param offType - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
+    * @param offFid - member fid that should not be highlighted
     **/
-    var _toggleMouseEvent = function(fid, ftype, offType) {
+    var _toggleMouseEvent = function(fid, ftype, offType, offFid) {
         d3.selectAll('.' + fid).on('mouseenter', null);
         d3.selectAll('.' + fid).on('mouseleave', null);
         d3.selectAll('.' + fid)
         .on('mouseenter', function(d) {
-            _highlightRelFeatures(d.id, ftype, offType, true);
+            _highlightRelFeatures(d.id, ftype, offType, true, offFid);
         }).on('mouseleave', function(d) {
-            _highlightRelFeatures(d.id, ftype, offType, false);
+            _highlightRelFeatures(d.id, ftype, offType, false, offFid);
         });
     }
     
@@ -185,18 +190,19 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
     * @param offType - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
     * @param on -  show or hide
+    * @param offFid - member fid that should not be highlighted
     **/
-    var _highlightRelFeatures = function(fid, ftype, offType, on) {
+    var _highlightRelFeatures = function(fid, ftype, offType, on, offFid) {
         if(on === true) {
             var curToggle = on;
             _flashingTimer = window.setInterval(function(){
                 curToggle = !curToggle;
-                _performHighlight(fid, ftype, offType, curToggle) ;
+                _performHighlight(fid, ftype, offType, curToggle, offFid) ;
             }, 500);
         } else {
             if(_flashingTimer) {
                 clearInterval(_flashingTimer);
-                _performHighlight(fid, ftype, offType, on) ;
+                _performHighlight(fid, ftype, offType, on, offFid) ;
             }
             
         }
@@ -211,16 +217,22 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
     * @param offType - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
     * @param on -  show or hide
+    * @param offFid - member fid that should not be highlighted
     **/
-    var _performHighlight = function(fid, ftype, offType, on) {
+    var _performHighlight = function(fid, ftype, offType, on, offFid) {
         var feature = context.graph().entity(fid);
 
         context.graph().parentRelations(feature)
             .forEach(function(parent) {
                 _.each(parent.members, function(mem){
                     var mid = mem.id;
-                    d3.selectAll('.' + mid).classed(offType, false);
-                    d3.selectAll('.' + mid).classed(ftype, on);
+
+                    var mFeature = context.hasEntity(mid);
+                    if(mFeature && mid != offFid) {
+                        d3.selectAll('.' + mid).classed(offType, false);
+                        d3.selectAll('.' + mid).classed(ftype, on);
+                    }
+                        
                 });
             });
     }
