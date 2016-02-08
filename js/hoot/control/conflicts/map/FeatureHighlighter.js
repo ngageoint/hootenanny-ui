@@ -131,36 +131,59 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
 
         if(poiTableCols) {
             if(poiTableCols[0]) {
-                d3.selectAll('.' + poiTableCols[0].id).on('mouseenter', null);
-                d3.selectAll('.' + poiTableCols[0].id).on('mouseleave', null);
-                d3.selectAll('.' + poiTableCols[0].id)
-                .on('mouseenter', function(d) {
-                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2', true);
-                }).on('mouseleave', function(d) {
-                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2',false);
-                });
+                var fid = poiTableCols[0].id;
+                var feature = context.graph().entity(fid);
+                if(feature.type == 'relation') {
+                    feature.members 
+                    .forEach(function(member) {                
+                        _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2');
+                    });
+                } else {
+                    _toggleMouseEvent(poiTableCols[0].id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2');
+                }
+                
             }
 
             if(poiTableCols[1]) {
-                d3.selectAll('.' + poiTableCols[1].id).on('mouseenter', null);
-                d3.selectAll('.' + poiTableCols[1].id).on('mouseleave', null);
-                d3.selectAll('.' + poiTableCols[1].id)
-                .on('mouseenter', function(d) {
-                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature', true);
-                }).on('mouseleave', function(d) {
-                    _highlightRelFeatures(d.id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature', false);
-                });
+
+                var fid = poiTableCols[1].id;
+                var feature = context.graph().entity(fid);
+                if(feature.type == 'relation') {
+                    feature.members 
+                    .forEach(function(member) {                
+                        _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature');
+                    });
+                } else {
+                    _toggleMouseEvent(poiTableCols[1].id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature');
+                }
+                    
             }
         }
 
     }
 
+    /**
+    * @desc Mouse event toggler
+    * @param fid - feature id to highlight
+    * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
+    * @param offType - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
+    **/
+    var _toggleMouseEvent = function(fid, ftype, offType) {
+        d3.selectAll('.' + fid).on('mouseenter', null);
+        d3.selectAll('.' + fid).on('mouseleave', null);
+        d3.selectAll('.' + fid)
+        .on('mouseenter', function(d) {
+            _highlightRelFeatures(d.id, ftype, offType, true);
+        }).on('mouseleave', function(d) {
+            _highlightRelFeatures(d.id, ftype, offType, false);
+        });
+    }
     
     /**
     * @desc Highlights each feature and flashes
     * @param fid - feature id to highlight
     * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
-    * @param ftyp - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
+    * @param offType - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
     * @param on -  show or hide
     **/
     var _highlightRelFeatures = function(fid, ftype, offType, on) {
@@ -186,7 +209,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     * @desc Highlights each feature
     * @param fid - feature id to highlight
     * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
-    * @param ftyp - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
+    * @param offType - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
     * @param on -  show or hide
     **/
     var _performHighlight = function(fid, ftype, offType, on) {
@@ -201,6 +224,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 });
             });
     }
+
 
     /**
     * @desc Recursively re highlight and move each feature front for relation members
