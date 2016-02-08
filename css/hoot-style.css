@@ -55,6 +55,11 @@ path.shadow.tag-hoot.activeReviewFeature2.extra-highlight {
     stroke-width: 30;
 }
 
+g.tag-hoot.activeReviewFeature.extra-highlight > path.shadow,
+g.tag-hoot.activeReviewFeature2.extra-highlight > path.shadow {
+    stroke-width: 15;
+}
+
 path.shadow.tag-hoot.activeReviewFeature,
 path.shadow.tag-hoot.activeReviewFeature2 {
     stroke-width: 20;
