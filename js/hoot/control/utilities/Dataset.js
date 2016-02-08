@@ -837,10 +837,15 @@ Hoot.control.utilities.dataset = function(context) {
                                     }
                                 }
 
-                                _form.select('.reset.fileImport').value(fileNames.join('; '));
-                                var first = fileNames[0];
-                                var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
-                                _form.select('.reset.LayerName').value(saveName);
+                                if(selType == 'DIR'){
+                                    _form.select('.reset.fileImport').value(folderName);
+                                    _form.select('.reset.LayerName').value(fgdbName);  
+                                } else {
+                                    _form.select('.reset.fileImport').value(fileNames.join('; '));
+                                    var first = fileNames[0];
+                                    var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
+                                    _form.select('.reset.LayerName').value(saveName);    
+                                }
 
                                 submitExp.classed('hidden', false);
 
