@@ -128,6 +128,18 @@ Hoot.ui.hootformbase = function ()
                         var inputField = fieldDiv
                         .append('textarea')
                         .attr('placeholder', function (field) {
+                            if(_.isObject(field.placeholder) === true){
+                                var oPlaceHolder = field.placeholder;
+                                if(oPlaceHolder['default'] && oPlaceHolder.command){
+                                    return oPlaceHolder.command(field);
+                                } else {
+                                    if(oPlaceHolder['default'] ) {
+                                        return oPlaceHolder['default'] ;
+                                    } else {
+                                        return '';
+                                    }
+                                }
+                            }
                             return field.placeholder;
                         })
                         .classed('col12 row5 overflow', true)
@@ -148,6 +160,18 @@ Hoot.ui.hootformbase = function ()
                         .append('input')
                         .attr('type', 'text')
                         .attr('placeholder', function (field) {
+                            if(_.isObject(field.placeholder) === true){
+                                var oPlaceHolder = field.placeholder;
+                                if(oPlaceHolder['default'] && oPlaceHolder.command){
+                                    return oPlaceHolder.command(field);
+                                } else {
+                                    if(oPlaceHolder['default'] ) {
+                                        return oPlaceHolder['default'] ;
+                                    } else {
+                                        return '';
+                                    }
+                                }
+                            }
                             return field.placeholder;
                         })
                         .attr('class', function (field) {
@@ -166,6 +190,28 @@ Hoot.ui.hootformbase = function ()
                             }     
                         } 
 
+                    } else if(a.inputtype == 'checkbox'){
+                        var chkHtml = '<label class="pad1x pad0y round-top ' + a.checkbox + '" style="opacity: 1;">';
+                        chkHtml += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">'+a.label+'</label>';
+                        field.html(chkHtml);
+                        field.classed('keyline-all',false);
+                    } else if(a.inputtype == 'multipart') {
+                        var wrapper = d3.select(this.parentNode)
+                            .append('span')
+                            .classed('point keyline-left _icon folder pin-right pad0x pad0y hidden', true)
+                            .attr('id', 'ingestfileuploaderspancontainer');
+
+                        var mpInput = wrapper    
+                            .append('input')
+                            .attr('id', 'ingestfileuploader')
+                            .attr('type', 'file')
+                            .attr('multiple', 'true')
+                            .attr('accept', '.shp,.shx,.dbf,.prj,.osm,.zip')
+                            .classed('point pin-top', true)
+                            .style({
+                                'text-indent': '-9999px',
+                                'width': '31px'
+                            });
                     } else {
                         var fieldDiv = field
                         .classed('contain', true);
@@ -174,6 +220,18 @@ Hoot.ui.hootformbase = function ()
                         .append('input')
                         .attr('type', 'text')
                         .attr('placeholder', function (field) {
+                            if(_.isObject(field.placeholder) === true){
+                                var oPlaceHolder = field.placeholder;
+                                if(oPlaceHolder['default'] && oPlaceHolder.command){
+                                    return oPlaceHolder.command(field);
+                                } else {
+                                    if(oPlaceHolder['default'] ) {
+                                        return oPlaceHolder['default'] ;
+                                    } else {
+                                        return '';
+                                    }
+                                }
+                            }
                             return field.placeholder;
                         })
                         .attr('class', function (field) {
@@ -230,6 +288,9 @@ Hoot.ui.hootformbase = function ()
                 .text(m.text)
                 .on('click', onClick);
 
+                if(m.id) {
+                    btnContainer.attr('id', m.id);
+                }
 
             });       
     }

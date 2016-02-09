@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Hoot.ui.hootformreviewmarkmenu is for creating menu items for book marks list. 
+// Hoot.ui.hootformfgdbexportmenu is for creating menu items for book marks list. 
 //
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
@@ -7,7 +7,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Hoot.ui.hootformreviewmarkmenu = function () 
+Hoot.ui.hootformfgdbexportmenu = function () 
 {
     var _events = d3.dispatch();
     var _instance = {};
@@ -129,7 +129,16 @@ Hoot.ui.hootformreviewmarkmenu = function ()
             })
             .on('click', function(d){
                 d.action(d);
-            });       
+            });  
+
+        tla3
+        .append('input')
+        .attr('type', 'checkbox')
+        .on('click', function(d) {
+            var isChecked = d3.select(this).node().checked;
+        });
+
+
     }
 
 

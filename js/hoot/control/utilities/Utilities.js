@@ -9,6 +9,9 @@ Hoot.control.utilities = function (context){
 	hoot_control_utilities.folder = Hoot.control.utilities.folder(context);
 	hoot_control_utilities.validation = Hoot.control.utilities.validation(context);
 	hoot_control_utilities.filter = Hoot.control.utilities.filter(context);
+	hoot_control_utilities.exportdataset = Hoot.control.utilities.exportdataset(context);
+	hoot_control_utilities.bulkmodifydataset = Hoot.control.utilities.bulkmodifydataset(context);
+	hoot_control_utilities.modifydataset = Hoot.control.utilities.modifydataset(context);
 	
 	return hoot_control_utilities;
 };

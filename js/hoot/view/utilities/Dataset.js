@@ -212,7 +212,7 @@ Hoot.view.utilities.dataset = function(context)
                     context.hoot().view.utilities.errorlog.reportUIError(trans.error);
                     return;
                 }
-                exportData = context.hoot().control.utilities.dataset.exportDataContainer(d, trans);
+                exportData = context.hoot().control.utilities.exportdataset.exportDataContainer(d, trans);
             });
         });
     }
@@ -284,7 +284,7 @@ Hoot.view.utilities.dataset = function(context)
     }
     
     hoot_view_utilities_dataset.moveDatasets = function(d) {
-    	modifyName = context.hoot().control.utilities.dataset.bulkModifyContainer(d);
+    	modifyName = context.hoot().control.utilities.bulkmodifydataset.bulkModifyContainer(d);
     }
     
     hoot_view_utilities_dataset.modifyDataset = function(d) {
@@ -296,7 +296,7 @@ Hoot.view.utilities.dataset = function(context)
     	data.mapid=d.id;
     	
     	if(d.type=='dataset'){
-    		modifyName = context.hoot().control.utilities.dataset.modifyNameContainer(d);
+    		modifyName = context.hoot().control.utilities.modifydataset.modifyNameContainer(d);
     	} else if(d.type=='folder'){
     		modifyName = context.hoot().control.utilities.folder.modifyNameContainer(d);
     	}
