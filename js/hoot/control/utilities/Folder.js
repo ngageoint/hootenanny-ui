@@ -736,6 +736,8 @@ Hoot.control.utilities.folder = function(context) {
 							}
 	                	});
 	                }
+
+	                if(a.inputtype=='text'){d3.select(this).value(a.placeholder);}
 	            });
 
 	        var submitExp = ingestDiv.append('div')
