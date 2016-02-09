@@ -50,14 +50,16 @@ path.stroke.tag-hoot.selected.activeReviewFeature {
     stroke: #f59;
 }*/
 
+/* Extra Highlight for hover in review table */
+
 path.shadow.tag-hoot.activeReviewFeature.extra-highlight,
 path.shadow.tag-hoot.activeReviewFeature2.extra-highlight {
-    stroke-width: 30;
+    stroke-width: 25 !important;
 }
 
 g.tag-hoot.activeReviewFeature.extra-highlight > path.shadow,
 g.tag-hoot.activeReviewFeature2.extra-highlight > path.shadow {
-    stroke-width: 15;
+    stroke-width: 15 !important;
 }
 
 path.shadow.tag-hoot.activeReviewFeature,
