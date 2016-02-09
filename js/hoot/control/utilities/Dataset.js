@@ -424,6 +424,8 @@ Hoot.control.utilities.dataset = function(context) {
 	                    d3.select(this).attr('readonly',true); 
 	                }
 
+                    if(a.inputtype=='text'){d3.select(this).value(a.placeholder);}
+
                     if(a.type=='newfoldername' || a.type=='fileOutputName'){
                         d3.select(this).on('change',function(){
                             //ensure output name is valid
