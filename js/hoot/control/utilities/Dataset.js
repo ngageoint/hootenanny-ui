@@ -687,7 +687,7 @@ Hoot.control.utilities.dataset = function(context) {
                             .append('input')
                             .attr('id', 'ingestfileuploader')
                             .attr('type', 'file')
-                            .attr('multiple', 'true')
+                            .property('multiple', false)
                             .attr('accept', '.shp,.shx,.dbf,.prj,.osm,.zip')
                             .classed('point pin-top', true)
                             .style({
@@ -884,6 +884,8 @@ Hoot.control.utilities.dataset = function(context) {
                             .attr('readonly',true)
                             .call(comboImportType)
                             .on('change', function(a1,a2,a3){
+                                d3.select('.reset.fileImport').value('');
+                                d3.select('.reset.LayerName').value('');
                                 d3.select('.reset.Schema').value('');
                                 var selectedType = _form.select('.reset.importImportType').value();
                                 var typeName = getTypeName(selectedType);
@@ -891,25 +893,25 @@ Hoot.control.utilities.dataset = function(context) {
 
                                 if(typeName == 'DIR'){
                                     d3.select('#ingestfileuploader')
-                                    .attr('multiple', 'false')
+                                    .property('multiple', false)
                                     .attr('accept', null)
                                     .attr('webkitdirectory', '')
                                     .attr('directory', '');
                                 } else if(typeName == 'GEONAMES') {
                                     d3.select('#ingestfileuploader')
-                                    .attr('multiple', 'false')
+                                    .property('multiple', false)
                                     .attr('accept', '.geonames')
                                     .attr('webkitdirectory', null)
                                     .attr('directory', null);
                                 } else if(typeName == 'OSM') {
                                     d3.select('#ingestfileuploader')
-                                    .attr('multiple', 'false')
+                                    .property('multiple', false)
                                     .attr('accept', '.osm')
                                     .attr('webkitdirectory', null)
                                     .attr('directory', null);
                                 } else {
                                     d3.select('#ingestfileuploader')
-                                    .attr('multiple', 'true')
+                                    .property('multiple', true)
                                     .attr('accept', null)
                                     .attr('webkitdirectory', null)
                                     .attr('directory', null);
