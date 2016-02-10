@@ -12,6 +12,7 @@ Hoot.control.utilities = function (context){
 	hoot_control_utilities.exportdataset = Hoot.control.utilities.exportdataset(context);
 	hoot_control_utilities.bulkmodifydataset = Hoot.control.utilities.bulkmodifydataset(context);
 	hoot_control_utilities.modifydataset = Hoot.control.utilities.modifydataset(context);
+	hoot_control_utilities.importdataset = Hoot.control.utilities.importdataset(context);
 	
 	return hoot_control_utilities;
 };

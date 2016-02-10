@@ -32,9 +32,9 @@ Hoot.model.import = function (context)
 
         jobIdsArr = [];
         mapIdsArr = [];
-        var transType = container.select('.reset.Schema').value();
+        var transType = container.select('#importDatasetSchema').value();
 
-        var comboData = container.select('.reset.Schema').datum();
+        var comboData = container.select('#importDatasetSchema').datum();
         var transName = transType;
         var oTrans = null;
         for(i=0; i<comboData.combobox.length; i++){
@@ -61,12 +61,12 @@ Hoot.model.import = function (context)
             transcriptName = 'customscript/' + transName + '.js';
         }
 
-        var selType = container.select('.reset.importImportType').value();
+        var selType = container.select('#importDatasetImportType').value();
 
-        var comboData = container.select('.reset.importImportType').datum();
+        var comboData = container.select('#importDatasetImportType').datum();
         var typeName = "";
-        for(i=0; i<comboData.combobox2.length; i++){
-            var o = comboData.combobox2[i];
+        for(i=0; i<comboData.combobox.data.length; i++){
+            var o = comboData.combobox.data[i];
             if(o.title == selType){
                 typeName = o.value;
                 break;
@@ -76,7 +76,7 @@ Hoot.model.import = function (context)
         
         // Check new folder name
         try{
-	        var newfoldername = container.select('.reset.NewFolderName').value();
+	        var newfoldername = container.select('#importDatasetNewFolderName').value();
 	        if(newfoldername !=''){
 	            var resp = context.hoot().checkForUnallowedChar(newfoldername);
 	        	if(resp != true){
@@ -97,7 +97,7 @@ Hoot.model.import = function (context)
 
         data.INPUT_TYPE = typeName;
         data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';
-        data.INPUT_NAME = container.select('.reset.LayerName').value();
+        data.INPUT_NAME = container.select('#importDatasetLayerName').value();
         
         var fileUploader;
         if(container.attr('id') == null){

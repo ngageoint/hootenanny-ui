@@ -18,7 +18,7 @@ Hoot.view.utilities.dataset = function(context)
 	                     context.hoot().view.utilities.errorlog.reportUIError(d.error);
 	                     return;
 	                 }
-	                context.hoot().control.utilities.dataset.importDataContainer(d);
+	                context.hoot().control.utilities.importdataset.importDataContainer(d);
 	             });
 	        })
             .on("contextmenu",function(d,i){

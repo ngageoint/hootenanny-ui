@@ -112,7 +112,7 @@ Hoot.ui.hootformbase = function ()
 
                     // add header and label
                     field
-                    .classed('form-field fill-white small keyline-all round space-bottom1', true)
+                    .classed('form-field fill-white small keyline-all round space-bottom1', true)                   
                     .append('label')
                     .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
                     .text(a.label);
@@ -195,15 +195,15 @@ Hoot.ui.hootformbase = function ()
                         chkHtml += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">'+a.label+'</label>';
                         field.html(chkHtml);
                         field.classed('keyline-all',false);
-                    } else if(a.inputtype == 'multipart') {
+                    } /*else if(a.inputtype == 'multipart') {
                         var wrapper = d3.select(this.parentNode)
                             .append('span')
                             .classed('point keyline-left _icon folder pin-right pad0x pad0y hidden', true)
-                            .attr('id', 'ingestfileuploaderspancontainer');
+                            .attr('id', a.multipartid + 'spancontainer');
 
                         var mpInput = wrapper    
                             .append('input')
-                            .attr('id', 'ingestfileuploader')
+                            .attr('id', a.multipartid)
                             .attr('type', 'file')
                             .attr('multiple', 'true')
                             .attr('accept', '.shp,.shx,.dbf,.prj,.osm,.zip')
@@ -212,8 +212,9 @@ Hoot.ui.hootformbase = function ()
                                 'text-indent': '-9999px',
                                 'width': '31px'
                             });
-                    } else {
+                    }*/ else {
                         var fieldDiv = field
+                        .append('div')
                         .classed('contain', true);
 
                         var inputField = fieldDiv
@@ -251,6 +252,32 @@ Hoot.ui.hootformbase = function ()
 
                         if(a.onclick) {
                             inputField.on('click',a.onclick);
+                        }
+
+                        if(a.inputtype == 'multipart') {
+                            var mpDiv = fieldDiv
+                                .classed('contain', true);
+
+                            var wrapper = mpDiv
+                                .append('span')
+                                .classed('point keyline-left _icon folder pin-right pad0x pad0y hidden', true)
+                                .attr('id', a.multipartid + 'spancontainer');
+
+                            var mpInput = wrapper    
+                                .append('input')
+                                .attr('id', a.multipartid)
+                                .attr('type', 'file')
+                                .attr('multiple', 'true')
+                                .attr('accept', '.shp,.shx,.dbf,.prj,.osm,.zip')
+                                .classed('point pin-top', true)
+                                .style({
+                                    'text-indent': '-9999px',
+                                    'width': '31px'
+                                });
+
+                            if(a.onchange) {
+                                mpInput.on('change', a.onchange);
+                            }
                         }
                     }
 
@@ -290,6 +317,10 @@ Hoot.ui.hootformbase = function ()
 
                 if(m.id) {
                     btnContainer.attr('id', m.id);
+                }
+
+                if(m.ishidden === true) {
+                    btnContainer.classed('hidden', true);
                 }
 
             });       

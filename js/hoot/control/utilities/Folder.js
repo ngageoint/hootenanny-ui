@@ -377,7 +377,7 @@ Hoot.control.utilities.folder = function(context) {
 							case 'modifyFolder': context.hoot().view.utilities.dataset.modifyDataset(d); break;
 							case 'addDataset': Hoot.model.REST("getTranslations",function(e){
 											   		if(d.error){context.hoot().view.utilities.errorlog.reportUIError(d.error);return;}
-											   		context.hoot().control.utilities.dataset.importDataContainer(e,d)
+											   		context.hoot().control.utilities.importdataset.importDataContainer(e,d)
 											   	}); break;
 							case 'addFolder': context.hoot().control.utilities.folder.importFolderContainer(d); break;
 							default:
