@@ -37,30 +37,23 @@
     "callback":"view.utilities.basemapdataset.createContent"
   },
   {
-    "name":"UI Settings",
-    "id":"utilUISettings",
-    "order":"7",
-    "contentbodyid":"basemapsdatasettable",
-    "callback":"view.utilities.uisettings.createContent"
-  },  
-  {
     "name":"Log",
     "id":"utilErrorLog",
-    "order":"8",
+    "order":"7",
     "contentbodyid":"errorlogbody",
     "callback":"view.utilities.errorlog.createContent"
   },
   {
     "name":"Reports",
     "id":"utilReports",
-    "order":"9",
+    "order":"8",
     "contentbodyid":"reportsContent",
     "callback":"view.utilities.reports.createContent"
   },
   {
     "name":"Review Bookmarks",
     "id":"utilReviewBookmarks",
-    "order":"10",
+    "order":"9",
     "contentbodyid":"reviewBookmarksContent",
     "callback":"view.utilities.reviewbookmarks.createContent"
   },
@@ -68,14 +61,14 @@
     "name":"Review Bookmark Notes",
     "hidden":true,
     "id":"utilReviewBookmarkNotes",
-    "order":"11",
+    "order":"10",
     "contentbodyid":"reviewbookmarknotesbody",
     "callback":"view.utilities.reviewbookmarknotes.createContent"
   },
   {
     "name":"About",
     "id":"utilAbout",
-    "order":"12",
+    "order":"11",
     "contentbodyid":"aboutContent",
     "callback":"view.utilities.about.createContent"
   }

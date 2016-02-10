@@ -424,6 +424,8 @@ Hoot.control.utilities.dataset = function(context) {
 	                    d3.select(this).attr('readonly',true); 
 	                }
 
+                    if(a.inputtype=='text'){d3.select(this).value(a.placeholder);}
+
                     if(a.type=='newfoldername' || a.type=='fileOutputName'){
                         d3.select(this).on('change',function(){
                             //ensure output name is valid
@@ -837,10 +839,15 @@ Hoot.control.utilities.dataset = function(context) {
                                     }
                                 }
 
-                                _form.select('.reset.fileImport').value(fileNames.join('; '));
-                                var first = fileNames[0];
-                                var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
-                                _form.select('.reset.LayerName').value(saveName);
+                                if(selType == 'DIR'){
+                                    _form.select('.reset.fileImport').value(folderName);
+                                    _form.select('.reset.LayerName').value(fgdbName);  
+                                } else {
+                                    _form.select('.reset.fileImport').value(fileNames.join('; '));
+                                    var first = fileNames[0];
+                                    var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
+                                    _form.select('.reset.LayerName').value(saveName);    
+                                }
 
                                 submitExp.classed('hidden', false);
 

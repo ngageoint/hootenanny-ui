@@ -78,6 +78,9 @@ Hoot.control.conflicts = function (context, sidebar) {
         context.connection().on('reviewLayerAdded', function (layerName, force) {
             if(force === true) {
                 _instance.setProcessing(false);
+                
+                _instance.map.featurehighlighter.hightligtDependents();
+
             } else {
                 var confLayerName = context.hoot().model.layers.getNameBymapId(_mapid);
                 if(layerName === confLayerName) {
@@ -92,6 +95,8 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         return _review;
     };
+
+    
 
     /**
     * @desc This is the main call for review session where it renders all sub controls 

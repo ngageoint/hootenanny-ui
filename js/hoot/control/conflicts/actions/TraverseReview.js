@@ -117,43 +117,43 @@ Hoot.control.conflicts.actions.traversereview = function (context)
 
     }
 
+
     var _reviewGetNextHandler = function (error, response) {
-                        try {
-                            if(error){
-                                throw 'Failed to retrieve next set of reviewable features from service!';
-                            }
+        try {
+            if(error){
+                throw 'Failed to retrieve next set of reviewable features from service!';
+            }
 
 
-                            if((1*response.resultCount) > 0){
-                                _currentReviewable = response;
-                                _parent().actions.idgraphsynch.getRelationFeature
-                (response.mapId, response.relationId, function(newReviewItem){
-                                    _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
-                                        newReviewItem.members[1]);
+            if((1*response.resultCount) > 0){
+                _currentReviewable = response;
+                _parent().actions.idgraphsynch.getRelationFeature(response.mapId, response.relationId, 
+                    function(newReviewItem){
+                        _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
+                            newReviewItem.members[1]);
+                       
+                    });
 
-          
-                                });
+            } else {
+                iD.ui.Alert('There are no more available features to review. ' + 
+                    'Exiting the review session.',
+                    'info');
+                _exitReviewSession(false);
+            }
+        }
+        catch (ex) {
+            console.error(ex);
+            var r = confirm('Failed to retrieve the next features for review!' +
+                '  Do you want to continue?');
+            if(r === false){
+                _exitReviewSession(true);
+            }
+        } finally {
+            // removing this since when connection is
+            // done loading tiles we will set Processing to false
+           //_parent().setProcessing(false);
 
-                            } else {
-                                iD.ui.Alert('There are no more available features to review. ' + 
-                                    'Exiting the review session.',
-                                    'info');
-                                _exitReviewSession(false);
-                            }
-                        }
-                        catch (ex) {
-                            console.error(ex);
-                            var r = confirm('Failed to retrieve the next features for review!' +
-                                '  Do you want to continue?');
-                            if(r === false){
-                                _exitReviewSession(true);
-                            }
-                        } finally {
-                            // removing this since when connection is
-                            // done loading tiles we will set Processing to false
-                           //_parent().setProcessing(false);
-
-                        }
+        }
 
     }
 

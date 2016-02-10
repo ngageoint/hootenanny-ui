@@ -17,6 +17,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
 {
 	var _events = d3.dispatch();
 	var _instance = {};
+    var _flashingTimer;
 
     /**
     * @desc highlights the reviewable items on map and performs associated operation
@@ -67,6 +68,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 .classed('activeReviewFeature', false);
             d3.selectAll('.' + feature.id)
                 .classed('tag-hoot activeReviewFeature', true);
+                
          
         }
         if (againstFeature) {
@@ -93,7 +95,11 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         }
    
         _parent().loadReviewFeaturesMapInMap();
+
+
     };
+
+    
 
     /**
     * @desc Clear highlight
@@ -115,6 +121,122 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
             _moveFrontRecursive(activeConflict, 'activeReviewFeature');
         }
     }
+
+    /**
+    * @desc Highlights 1 degree dependencies
+    **/
+    _instance.hightligtDependents = function() {
+
+        var poiTableCols = _parent().info.reviewtable.poiTableCols();
+
+        if(poiTableCols) {
+            if(poiTableCols[0]) {
+                var fid = poiTableCols[0].id;
+                var feature = context.graph().entity(fid);
+                if(feature.type == 'relation') {
+                    feature.members 
+                    .forEach(function(member) {                
+                        _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2');
+                    });
+                } else {
+                    var offFid = null;
+                    if(poiTableCols[1]) {
+                        offFid = poiTableCols[1].id;
+                    }
+                    _toggleMouseEvent(poiTableCols[0].id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2', offFid);
+                }
+                
+            }
+
+            if(poiTableCols[1]) {
+
+                var fid = poiTableCols[1].id;
+                var feature = context.graph().entity(fid);
+                if(feature.type == 'relation') {
+                    feature.members 
+                    .forEach(function(member) {                
+                        _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature');
+                    });
+                } else {
+                    _toggleMouseEvent(poiTableCols[1].id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature', poiTableCols[0].id);
+                }
+                    
+            }
+        }
+
+    }
+
+    /**
+    * @desc Mouse event toggler
+    * @param fid - feature id to highlight
+    * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
+    * @param offType - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
+    * @param offFid - member fid that should not be highlighted
+    **/
+    var _toggleMouseEvent = function(fid, ftype, offType, offFid) {
+        d3.selectAll('.' + fid).on('mouseenter', null);
+        d3.selectAll('.' + fid).on('mouseleave', null);
+        d3.selectAll('.' + fid)
+        .on('mouseenter', function(d) {
+            _highlightRelFeatures(d.id, ftype, offType, true, offFid);
+        }).on('mouseleave', function(d) {
+            _highlightRelFeatures(d.id, ftype, offType, false, offFid);
+        });
+    }
+    
+    /**
+    * @desc Highlights each feature and flashes
+    * @param fid - feature id to highlight
+    * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
+    * @param offType - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
+    * @param on -  show or hide
+    * @param offFid - member fid that should not be highlighted
+    **/
+    var _highlightRelFeatures = function(fid, ftype, offType, on, offFid) {
+        if(on === true) {
+            var curToggle = on;
+            _flashingTimer = window.setInterval(function(){
+                curToggle = !curToggle;
+                _performHighlight(fid, ftype, offType, curToggle, offFid) ;
+            }, 500);
+        } else {
+            if(_flashingTimer) {
+                clearInterval(_flashingTimer);
+                _performHighlight(fid, ftype, offType, on, offFid) ;
+            }
+            
+        }
+    
+        
+            
+    }
+
+     /**
+    * @desc Highlights each feature
+    * @param fid - feature id to highlight
+    * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
+    * @param offType - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
+    * @param on -  show or hide
+    * @param offFid - member fid that should not be highlighted
+    **/
+    var _performHighlight = function(fid, ftype, offType, on, offFid) {
+        var feature = context.graph().entity(fid);
+
+        context.graph().parentRelations(feature)
+            .forEach(function(parent) {
+                _.each(parent.members, function(mem){
+                    var mid = mem.id;
+
+                    var mFeature = context.hasEntity(mid);
+                    if(mFeature && mid != offFid) {
+                        d3.selectAll('.' + mid).classed(offType, false);
+                        d3.selectAll('.' + mid).classed(ftype, on);
+                    }
+                        
+                });
+            });
+    }
+
 
     /**
     * @desc Recursively re highlight and move each feature front for relation members

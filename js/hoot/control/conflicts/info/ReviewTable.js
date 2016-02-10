@@ -47,14 +47,18 @@ Hoot.control.conflicts.info.reviewtable = function (context)
                 _panToEntity(context.entity(feats[0].id));
                 sel.suppressMenu(true);
                 context.enter(sel);
-            });
+            })
+            .on('mouseenter',function(d){d3.selectAll('.activeReviewFeature').classed('extra-highlight',true);})
+            .on('mouseleave',function(d){d3.selectAll('.activeReviewFeature').classed('extra-highlight',false);});
             r.append('td').classed('f2', true).text(addEllipsis(d.value[1]))
             .on('click', function(d){
                 var sel = iD.modes.Select(context, [feats[1].id]);
                 _panToEntity(context.entity(feats[1].id));
                 sel.suppressMenu(true);
                 context.enter(sel);
-            });
+            })
+            .on('mouseenter',function(d){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',true);})
+            .on('mouseleave',function(d){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',false);});
 
         });
         _checkToggleText();
