@@ -1261,11 +1261,12 @@ input[type=number] {
 }
 
 input[type=number].hoot-input {
-    padding-right:0;
+    position:inherit;
+    padding:0px;
     background-color: white;
     border:none;
     height:30px;
-    width: 60px;
+    width: 35px;
     text-overflow: ellipsis;
 }
 input[type="number"].hoot-input::-webkit-inner-spin-button,
@@ -3204,7 +3205,7 @@ rect.more {fill: #3182bd;}*/
 
 .settings-checkbox {
     display:inline-block;
-    position:relative;
+    position:inherit;
     left:100px;
     margin-left:10px;
 }
