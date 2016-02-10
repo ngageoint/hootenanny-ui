@@ -281,6 +281,54 @@ iD.ui.MapData = function(context) {
         var fillList = fillContainer.append('ul')
             .attr('class', 'layer-list');
 
+        // line width
+        content.append('a')
+            .text(t('map_data.line_width'))
+            .attr('href', '#')
+            .classed('hide-toggle', true)
+            .classed('expanded', false)
+            .on('click', function() {
+                var exp = d3.select(this).classed('expanded');
+                widthContainer.style('display', exp ? 'none' : 'block');
+                d3.select(this).classed('expanded', !exp);
+                d3.event.preventDefault();
+            });
+
+        var widthContainer = content.append('div')
+            .attr('class', 'filters')
+            .style('display', 'none');
+
+       //var widthLabel = widthContainer.append('div').append('label').text('Path Width');
+        
+        widthContainer.append('input').attr('type','number')
+            .classed('hoot-input settings-input',true)
+            .attr('id','path-width').property('disabled',true)
+            .attr('min',1).attr('max',25).attr('value',7)
+            .on('change',function(){
+                // Delete rule if it already exists
+                var sheets = document.styleSheets[document.styleSheets.length - 1];
+                _.find(sheets.cssRules, function(cssItem, cssIdx){ 
+                   if(cssItem.selectorText == 'path'){ sheets.deleteRule(cssIdx);return true;};
+                });
+
+                sheets.insertRule('path {stroke-width:' + this.value + ' !important}',sheets.cssRules.length-1);
+            });
+
+        widthContainer.append('label').classed('settings-checkbox',true)
+            .attr('for','path-width_default').text('Use default value')
+            .append('input').attr('name','path-width_default')
+            .attr('type','checkbox').attr('checked',true)
+            .on('change',function(){
+                d3.select('#' + this.name.replace('_default','')).property('disabled',this.checked);
+                // Delete rule if it already exists
+                var sheets = document.styleSheets[document.styleSheets.length - 1];
+                _.find(sheets.cssRules, function(cssItem, cssIdx){ 
+                   if(cssItem.selectorText == 'path'){ sheets.deleteRule(cssIdx);return true;};
+                });
+                if(!this.checked){
+                    sheets.insertRule('path {stroke-width:' + this.value + ' !important}',sheets.cssRules.length-1);
+                }
+            });
 
         // feature filters
         content.append('a')

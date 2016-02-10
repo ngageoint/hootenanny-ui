@@ -311,6 +311,7 @@ en:
     description: Map Data
     data_layers: Data Layers
     fill_area: Fill Areas
+    line_width: Line Width
     map_features: Map Features
     autohidden: "These features have been automatically hidden because too many would be shown on the screen.  You can zoom in to edit them."
   feature:
