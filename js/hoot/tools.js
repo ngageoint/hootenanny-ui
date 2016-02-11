@@ -440,7 +440,7 @@ Hoot.tools = function (context, selection) {
                             if (tags.reviewtype === 'hgisvalidation') {
                                 var r = confirm("The layer has been prepared for validation. Do you want to go into validation mode?");
                                 if (r == true) {
-                                    context.hoot().control.validation.begin(params.mapId);
+                                    context.hoot().control.validation.begin(params);
                                 }
                             } else {
                                 var r = confirm("The layer contains unreviewed items. Do you want to go into review mode?");
