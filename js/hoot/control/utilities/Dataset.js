@@ -545,6 +545,9 @@ Hoot.control.utilities.dataset = function(context) {
                 }
             })
 
+            var bInfo = hoot.getBrowserInfo();
+            if(_.isEmpty(bInfo)){bInfo = {'name':'Unknown','version':'Unknown'};};
+
             var importTypes = [];
             var fileTypes = {};
             fileTypes.value = "FILE";
@@ -563,7 +566,9 @@ Hoot.control.utilities.dataset = function(context) {
 
             var dirType = {};
             dirType.value = "DIR";
-            dirType.title = "Directory (FGDB)";
+            if(bInfo.name.substring(0,3) == "Chr"){dirType.title = "Directory (FGDB)";}
+            else {dirType.title = "Directory (gdb.zip)";}
+            
             importTypes.push(dirType);
 
             hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
@@ -723,29 +728,45 @@ Hoot.control.utilities.dataset = function(context) {
                                     fileNames.push(curFileName);
                                     if(l == 0){
                                         if(selType == 'DIR'){
-                                            var parts = curFile.webkitRelativePath.split("/");
-                                            var folderName = parts[0];
-                                            if(folderName.length > 4){
-                                                var ext = folderName.substring(folderName.length - 4);
-                                                var fgdbName = folderName.substring(0, folderName.length - 4);
-                                                if(ext.toLowerCase() != '.gdb'){
-                                                	iD.ui.Alert("Please select valid FGDB.",'warning');
-                                                    return;
-                                                } else {
-                                                    var inputName = _form.select('.reset.LayerName').value();
-                                                    if(!inputName){
-                                                        _form.select('.reset.LayerName').value(fgdbName);
+                                            if(bInfo.name.substring(0,3) == "Chr"){
+                                                var parts = curFile.webkitRelativePath.split("/");
+                                                var folderName = parts[0];
+                                                if(folderName.length > 4){
+                                                    var ext = folderName.substring(folderName.length - 4);
+                                                    var fgdbName = folderName.substring(0, folderName.length - 4);
+                                                    if(ext.toLowerCase() != '.gdb'){
+                                                        iD.ui.Alert("Please select valid FGDB.",'warning');
+                                                        return;
+                                                    } else {
+                                                        var inputName = _form.select('.reset.LayerName').value();
+                                                        if(!inputName){
+                                                            _form.select('.reset.LayerName').value(fgdbName);
+                                                        }
                                                     }
                                                 }
-
+                                            } else {
+                                                var parts = curFile.name.split("/");
+                                                var folderName = parts[0];
+                                                if(folderName.length > 4){
+                                                    var ext = folderName.substring(folderName.length - 4);
+                                                    var fgdbName = folderName.substring(0, folderName.length - 4);
+                                                    if(ext.toLowerCase() != '.zip'){
+                                                        iD.ui.Alert("Please select a zipped folder containing a FGDB.",'warning');
+                                                        return;
+                                                    } else {
+                                                        var inputName = _form.select('.reset.LayerName').value();
+                                                        if(!inputName){
+                                                            _form.select('.reset.LayerName').value(fgdbName);
+                                                        }
+                                                    }
+                                                }
                                             }
-
                                         }
                                     }
 
 
 
-                                    if(selType == 'FILE'){
+                                    if(selType == 'FILE' || (selType == 'DIR' && bInfo.name.substring(0,3) != "Chr")){
                                         var fName = curFileName.substring(0, curFileName.length - 4);
                                         // I guess only way to deal with shp.xml extension
                                         if(curFileName.toLowerCase().indexOf('.shp.xml') > -1){
@@ -791,7 +812,7 @@ Hoot.control.utilities.dataset = function(context) {
                                         }
 
                                         if(curFileName.toLowerCase().lastIndexOf('.zip') > -1){
-                                            zipCnt++
+                                            zipCnt++;
                                             fObj.isZIP = true;
                                         }
                                     }
@@ -840,8 +861,12 @@ Hoot.control.utilities.dataset = function(context) {
                                 }
 
                                 if(selType == 'DIR'){
-                                    _form.select('.reset.fileImport').value(folderName);
-                                    _form.select('.reset.LayerName').value(fgdbName);  
+                                    if(bInfo.name.substring(0,3) == "Chr"){
+                                        _form.select('.reset.fileImport').value(folderName);
+                                        _form.select('.reset.LayerName').value(fgdbName);  
+                                    } else {
+
+                                    }
                                 } else {
                                     _form.select('.reset.fileImport').value(fileNames.join('; '));
                                     var first = fileNames[0];
@@ -892,11 +917,19 @@ Hoot.control.utilities.dataset = function(context) {
 
 
                                 if(typeName == 'DIR'){
-                                    d3.select('#ingestfileuploader')
-                                    .property('multiple', false)
-                                    .attr('accept', null)
-                                    .attr('webkitdirectory', '')
-                                    .attr('directory', '');
+                                    if(bInfo.name.substring(0,3) == "Chr"){
+                                        d3.select('#ingestfileuploader')
+                                        .property('multiple', false)
+                                        .attr('accept', null)
+                                        .attr('webkitdirectory', '')
+                                        .attr('directory', '');
+                                    } else {
+                                        d3.select('#ingestfileuploader')
+                                        .property('multiple', false)
+                                        .attr('accept', '.zip')
+                                        .attr('webkitdirectory', null)
+                                        .attr('directory', null);
+                                    }
                                 } else if(typeName == 'GEONAMES') {
                                     d3.select('#ingestfileuploader')
                                     .property('multiple', false)
@@ -1023,7 +1056,7 @@ Hoot.control.utilities.dataset = function(context) {
                             submitExp.select('span').text('Uploading ...');
                             //var spin = submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true).attr('id', 'importspin');
 
-                            var progcont = submitExp.append('div');
+                        var progcont = submitExp.append('div');
                            progcont.classed('form-field', true);
                            var prog = progcont.append('span').append('progress');
                            prog.classed('form-field', true);
