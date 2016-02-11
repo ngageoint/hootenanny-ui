@@ -551,7 +551,11 @@ Hoot.control.utilities.dataset = function(context) {
             var importTypes = [];
             var fileTypes = {};
             fileTypes.value = "FILE";
-            fileTypes.title = "File (shp,zip)";
+            if(bInfo.name.substring(0,3) == "Chr"){
+                fileTypes.title = "File (shp,zip)";
+            } else {
+                fileTypes.title = "File (shp,zip,gdb.zip)";
+            }
             importTypes.push(fileTypes);
 
             var osmTypes = {};
@@ -564,12 +568,12 @@ Hoot.control.utilities.dataset = function(context) {
             geonameTypes.title = "File (geonames)";
             importTypes.push(geonameTypes);
 
+
             var dirType = {};
             dirType.value = "DIR";
-            if(bInfo.name.substring(0,3) == "Chr"){dirType.title = "Directory (FGDB)";}
-            else {dirType.title = "Directory (gdb.zip)";}
-            
-            importTypes.push(dirType);
+            dirType.title = "Directory (FGDB)";
+                        
+            if(bInfo.name.substring(0,3) == "Chr"){importTypes.push(dirType);}
 
             hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
             var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
@@ -744,29 +748,12 @@ Hoot.control.utilities.dataset = function(context) {
                                                         }
                                                     }
                                                 }
-                                            } else {
-                                                var parts = curFile.name.split("/");
-                                                var folderName = parts[0];
-                                                if(folderName.length > 4){
-                                                    var ext = folderName.substring(folderName.length - 4);
-                                                    var fgdbName = folderName.substring(0, folderName.length - 4);
-                                                    if(ext.toLowerCase() != '.zip'){
-                                                        iD.ui.Alert("Please select a zipped folder containing a FGDB.",'warning');
-                                                        return;
-                                                    } else {
-                                                        var inputName = _form.select('.reset.LayerName').value();
-                                                        if(!inputName){
-                                                            _form.select('.reset.LayerName').value(fgdbName);
-                                                        }
-                                                    }
-                                                }
                                             }
                                         }
                                     }
 
 
-
-                                    if(selType == 'FILE' || (selType == 'DIR' && bInfo.name.substring(0,3) != "Chr")){
+                                    if(selType == 'FILE'){
                                         var fName = curFileName.substring(0, curFileName.length - 4);
                                         // I guess only way to deal with shp.xml extension
                                         if(curFileName.toLowerCase().indexOf('.shp.xml') > -1){
@@ -861,12 +848,8 @@ Hoot.control.utilities.dataset = function(context) {
                                 }
 
                                 if(selType == 'DIR'){
-                                    if(bInfo.name.substring(0,3) == "Chr"){
                                         _form.select('.reset.fileImport').value(folderName);
                                         _form.select('.reset.LayerName').value(fgdbName);  
-                                    } else {
-
-                                    }
                                 } else {
                                     _form.select('.reset.fileImport').value(fileNames.join('; '));
                                     var first = fileNames[0];
