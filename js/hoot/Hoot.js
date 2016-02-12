@@ -302,7 +302,7 @@ Hoot.hoot = function (context) {
       return false;
     }
 
-    getBrowserInfo = function(){
+    hoot.getBrowserInfo = function(){
         var browserInfo = {};
         var appVerStr = navigator.userAgent;
         var appVer = appVerStr.match(/(chrome|chromium|opera|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []; 
@@ -326,9 +326,9 @@ Hoot.hoot = function (context) {
         
     };
     
-    var bInfo = getBrowserInfo();
-    if(bInfo.name !== 'Chrome' && bInfo.name !== 'Chromium'){
-        //alert("Hootenanny supports only Chrome or Chromium browser! \nHootenanny will not function normally under " + bInfo.name + " v. " + bInfo.version);
+    var bInfo = hoot.getBrowserInfo();
+    if(bInfo.name !== 'Chrome' && bInfo.name !== 'Chromium' && bInfo.name !== 'Firefox'){
+        alert("Hootenanny will not function normally under " + bInfo.name + " v. " + bInfo.version);
     }
 
     return hoot;
