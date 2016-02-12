@@ -311,7 +311,7 @@ iD.ui.MapData = function(context) {
                    if(cssItem.selectorText == 'path'){ sheets.deleteRule(cssIdx);return true;};
                 });
 
-                sheets.insertRule('path {stroke-width:' + this.value + ' !important}',sheets.cssRules.length-1);
+                sheets.insertRule('path.way {stroke-width:' + this.value + ' !important}',sheets.cssRules.length-1);
             });
 
         widthContainer.append('label').classed('settings-checkbox',true)
@@ -326,7 +326,7 @@ iD.ui.MapData = function(context) {
                    if(cssItem.selectorText == 'path'){ sheets.deleteRule(cssIdx);return true;};
                 });
                 if(!this.checked){
-                    sheets.insertRule('path {stroke-width:' + this.value + ' !important}',sheets.cssRules.length-1);
+                    sheets.insertRule('path.way {stroke-width:' + this.value + ' !important}',sheets.cssRules.length-1);
                 }
             });
 
