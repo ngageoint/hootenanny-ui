@@ -96,7 +96,9 @@ Hoot.control.utilities.dataset = function(context) {
                 return 'reset ' + field.type;
             })
             .select(function (a) {
-            	if (a.checkbox){
+            	if(a.inputtype=='text'){d3.select(this).value(a.placeholder);}
+
+                if (a.checkbox){
              	   d3.selectAll('input.reset.appendFGDBTemplate').remove();
               	   d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
              	}
@@ -1898,7 +1900,7 @@ Hoot.control.utilities.dataset = function(context) {
 								uniquename = true;
 							}
 						}
-						d3.select(this).attr('placeholder',function(){return name;});
+                        d3.select(this).value(function(){return name;});
 						
 						d3.select(this).on('change',function(){
 							//ensure output name is valid
