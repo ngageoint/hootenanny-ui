@@ -305,13 +305,7 @@ iD.ui.MapData = function(context) {
             .attr('id','path-width').property('disabled',true)
             .attr('min',1).attr('max',25).attr('value',7)
             .on('change',function(){
-                // Delete rule if it already exists
-                var sheets = document.styleSheets[document.styleSheets.length - 1];
-                _.find(sheets.cssRules, function(cssItem, cssIdx){ 
-                   if(cssItem.selectorText == 'path'){ sheets.deleteRule(cssIdx);return true;};
-                });
-
-                sheets.insertRule('path {stroke-width:' + this.value + ' !important}',sheets.cssRules.length-1);
+                setLineWidth(true,d3.select('#path-width').value());
             });
 
         widthContainer.append('label').classed('settings-checkbox',true)
@@ -320,15 +314,17 @@ iD.ui.MapData = function(context) {
             .attr('type','checkbox').attr('checked',true)
             .on('change',function(){
                 d3.select('#' + this.name.replace('_default','')).property('disabled',this.checked);
-                // Delete rule if it already exists
-                var sheets = document.styleSheets[document.styleSheets.length - 1];
-                _.find(sheets.cssRules, function(cssItem, cssIdx){ 
-                   if(cssItem.selectorText == 'path'){ sheets.deleteRule(cssIdx);return true;};
-                });
-                if(!this.checked){
-                    sheets.insertRule('path {stroke-width:' + this.value + ' !important}',sheets.cssRules.length-1);
-                }
+                setLineWidth(!this.checked,d3.select('#path-width').value());
             });
+
+        function setLineWidth(setWidth,width){
+            var sheets = document.styleSheets[document.styleSheets.length - 1];
+            _.find(sheets.cssRules, function(cssItem, cssIdx){ 
+               if(cssItem.selectorText == 'path.way'){ sheets.deleteRule(cssIdx);return true;};
+            });
+
+            if(setWidth){sheets.insertRule('path.way {stroke-width:' + width + ' !important}',sheets.cssRules.length-1);}
+        }
 
         // feature filters
         content.append('a')
