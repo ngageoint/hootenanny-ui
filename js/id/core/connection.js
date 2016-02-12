@@ -77,7 +77,7 @@ iD.Connection = function(context) {
                 .header('Content-Type', 'text/plain')
                 .post(JSON.stringify(data), function (error, resp) {
                     if (error) {
-                    	iD.ui.Alert(error.responseText,'error');                       
+                    	iD.ui.Alert(error.responseText,'error');
                         return ;
                     }
                     callback(resp);
@@ -101,20 +101,19 @@ iD.Connection = function(context) {
     connection.isShowBBox = function(){
         return totalNodesCnt > maxNodesCnt;
     };
-    connection.loadEntity = function(id, callback) {
+    connection.loadEntity = function(id, callback, mapId, layerName) {
         var type = iD.Entity.id.type(id),
             osmID = iD.Entity.id.toOSM(id);
 
         connection.loadFromURL(
-            url + '/api/0.6/' + type + '/' + osmID + (type !== 'node' ? '/full' : ''),
+            url + '/api/0.6/' + type + '/' + osmID + (type !== 'node' ? '/full' : '') + (mapId !== null ? '?mapId=' + mapId : ''),
             function(err, entities) {
-                event.load(err, {data: entities});
-                if (callback) callback(err, entities && _.find(entities, function(e) { return e.origid === id ; })); //Modified by Hoot
-            });
+                if (callback) callback(err, {data: entities});
+            }, mapId, layerName);
     };
 
     connection.loadMissing = function(ids, callback, layerName) {
-        if(context.hoot().control.conflicts && 
+        if(context.hoot().control.conflicts &&
                     context.hoot().control.conflicts.isConflictReviewExist() ){
                 context.hoot().control.conflicts.setProcessing(true, 'Please wait while loading missing features.');
             }
@@ -125,7 +124,7 @@ iD.Connection = function(context) {
     };
 
     connection.loadMultiple = function(ids, callback, hootcallback, layerName) {
-      
+
         // TODO: upgrade lodash and just use _.chunk
         function chunk(arr, chunkSize) {
             var result = [];
@@ -461,16 +460,16 @@ iD.Connection = function(context) {
                 if (err) return callback(err);
 
                 var mergedPoiReviewItems = context.hoot().model.conflicts.getReviewMergedElements();
-         
+
                 if(mergedPoiReviewItems){
                     _.each(mergedPoiReviewItems, function(itm){
                         var curRefId = itm.id;
-                        var newMember = itm.obj;   
+                        var newMember = itm.obj;
 
                         // first see if changes.modified has the relation
                         var changeRel = _.find(changes.modified, function(mod){
                             return mod.id === curRefId;
-                        });  
+                        });
 
                         if(changeRel){ // if exists in changes.modified
                             if(changeRel.members.length >= newMember.index){
@@ -896,24 +895,24 @@ iD.Connection = function(context) {
         };
         // Get the node count from service
         connection.getTileNodesCountFromURL(url + '/api/0.6/map/nodescount', params, function(resp){
-            if(context.hoot().control.conflicts && 
-                    context.hoot().control.conflicts.isConflictReviewExist() 
+            if(context.hoot().control.conflicts &&
+                    context.hoot().control.conflicts.isConflictReviewExist()
                     ){
 
-                if(context.hoot().control.conflicts.map.reviewarrowrenderer.isOn() === false){                                  
+                if(context.hoot().control.conflicts.map.reviewarrowrenderer.isOn() === false){
                     context.hoot().control.conflicts.setProcessing(true, 'Please wait while loading vector tiles.');
                 }
-                
+
             }
-            
+
             function showOnTop(){
                 d3.select(this).moveToFront();
             }
             totalNodesCnt = 1*resp.nodescount;
             maxNodesCnt = 1*iD.data.hootConfig.maxnodescount;
-            
+
             var currShowBbox = totalNodesCnt > maxNodesCnt;
-            
+
             if(Object.keys(inflight).length > 0) {
         		d3.select('.warning').call(iD.ui.Warning(context,true,'Data is loading...'));
         	} else if((!_.isEmpty(loadedData) && totalNodesCnt == 0)||(totalNodesCnt > 0 && context.intersects(context.map().extent()).length == 0)){
@@ -938,15 +937,15 @@ iD.Connection = function(context) {
 
             lastShowBBox = currShowBbox;
 
-            if(context.hoot().control.conflicts && 
-                    context.hoot().control.conflicts.isConflictReviewExist() && 
+            if(context.hoot().control.conflicts &&
+                    context.hoot().control.conflicts.isConflictReviewExist() &&
                     tiles.length == 0){
                 event.reviewLayerAdded(null, true);
             }
 
 
 
-            if(context.hoot().control.conflicts && 
+            if(context.hoot().control.conflicts &&
                     context.hoot().control.conflicts.isConflictReviewExist()){
                     var layerName;
                     // if all tiles are already loded then let review know
@@ -955,7 +954,7 @@ iD.Connection = function(context) {
                         var t = tiles[ii];
                         var id = t.id + ',' + t.mapId;
                         layerName = t.layerName;
-                        if (!loadedTiles[id]){                            
+                        if (!loadedTiles[id]){
                             foundUnloaded = true;
                            break;
                         }
@@ -979,9 +978,9 @@ iD.Connection = function(context) {
                 if (!vis) {
                     event.reviewLayerAdded(layerName, false);
                     return;
-                } 
+                }
 
-          
+
 
                 var id = tile.id + ',' + mapId;
                 if (loadedTiles[id] || inflight[id]){
@@ -1005,7 +1004,7 @@ iD.Connection = function(context) {
 
                             // When there is no more inflight item then we are done so do post processing
                             event.tileAdded();
-                            if (_.isEmpty(inflight)) {                            	
+                            if (_.isEmpty(inflight)) {
                                 var hootLyrs = d3.selectAll('.hootLayers');
                                 if(hootLyrs[0] !== undefined){
                                     for(var i=hootLyrs[0].length-1; i>-1; i--){
@@ -1030,21 +1029,21 @@ iD.Connection = function(context) {
                                         if(currReviewable) {
                                             context.hoot().control.conflicts.actions.idgraphsynch.getRelationFeature
                                                 (currReviewable.mapId, currReviewable.relationId, function(newReviewItem){
-                                                
-                                                context.hoot().model.conflicts.loadMissingFeatureDependencies(mapId, 
+
+                                                context.hoot().model.conflicts.loadMissingFeatureDependencies(mapId,
                                                     layerName, context.hoot().control.conflicts.reviewIds, function(error){
                                                     event.loaded();
                                                     event.layerAdded(layerName);
-                                                });     
+                                                });
                                             });
                                         }
-                                            
+
 
                                     }
                                 } else {
                                     connection.showDensityRaster(false);
                                 }
-                                if(context.hoot().control.conflicts && 
+                                if(context.hoot().control.conflicts &&
                                     context.hoot().control.conflicts.isConflictReviewExist()){
                                     event.reviewLayerAdded(layerName, false);
                                 }

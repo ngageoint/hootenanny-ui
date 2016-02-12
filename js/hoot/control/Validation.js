@@ -1,13 +1,12 @@
 Hoot.control.validation = function(context, sidebar) {
     var event = d3.dispatch('featureLoaded');
     var validation = {};
-    //Tracks the current review id, used as offset param to unlock review
-    //when Previous or Next buttons are used
-    var currentReviewId;
-    //Keeps the item lock alive while the browser session is active
-    var heartBeatTimer;
+    var feature, relation, member;
+    var mapid, layerName;
 
-    validation.begin = function(mapid) {
+    validation.begin = function(params) {
+        mapid = params.mapId;
+        layerName = params.name;
         //Add the UI elements
         var container = d3.select('#content')
             .append('div')
@@ -27,14 +26,14 @@ Hoot.control.validation = function(context, sidebar) {
                 text: 'Next',
                 color: 'fill-grey button round pad0y pad1x dark small strong',
                 cmd: iD.ui.cmd('n'),
-                action: function() { validation.getItem(mapid, 'forward'); }
+                action: function() { validation.getItem('forward'); }
             },
             {
                 id: 'previous',
                 text: 'Previous',
                 color: 'fill-grey button round pad0y pad1x dark small strong',
                 cmd: iD.ui.cmd('p'),
-                action: function() { validation.getItem(mapid, 'backward'); }
+                action: function() { validation.getItem('backward'); }
             },
             {
                 id: 'select',
@@ -126,13 +125,14 @@ Hoot.control.validation = function(context, sidebar) {
 
         validation.updateMeta = function(d) {
             meta.html('<strong class="review-note">' + 'Note: ' + d.tags['hoot:review:note'] + '<br>'
-                + 'Validation items remaining: ' + (+d.total - +d.reviewedcnt)
-                + '  (Verified: ' + d.reviewedcnt
-                + ', Locked: ' + d.lockedcnt + ')</strong>');
+                + 'Validation items remaining: ' + d.unreviewedCount
+                //+ '  (Verified: ' + (+d.totalCount - +d.unreviewedCount) + ')';
+                + '</strong>');
         };
 
-        validation.presentChoices = function(feature, d) {
+        validation.presentChoices = function() {
             //Separate out the choice tags
+            var d = relation.tags;
             var choices = d3.entries(d)
                 .filter(function(c) {
                     return c.key.indexOf('hoot:review:choices') === 0;
@@ -157,7 +157,7 @@ Hoot.control.validation = function(context, sidebar) {
                     description: b.description,
                     color: 'loud',
                     key: n.toString(),
-                    action: function() { validation.verify(feature, choices[i]); }
+                    action: function() { validation.verify(choices[i]); }
                 };
             });
 
@@ -222,125 +222,111 @@ Hoot.control.validation = function(context, sidebar) {
         };
 
         //Get the first validation item
-        validation.getItem(mapid, 'forward');
+        validation.getItem('forward');
     };
 
-    validation.getItem = function(mapid, direction) {
-        //Stop keeping the current review alive
-        if (heartBeatTimer) {
-            clearInterval(heartBeatTimer);
-        }
+    validation.getItem = function(direction) {
+        Hoot.model.REST('ReviewGetStatistics', mapid, function (error, response) {
+            //console.log(response);
+            var metadata = response;
+            var data = {
+                mapId: mapid,
+                direction: direction,
+                sequence: -999
+            };
 
-        var data = {
-            mapId: mapid,
-            direction: direction,
-            offset: currentReviewId
-        };
+            Hoot.model.REST('reviewGetNext', data, function (error, response) {
+                //console.log(response);
+                if (response.resultCount === 0) {
+                    validation.end();
+                    iD.ui.Alert('Validation complete', 'notice');
+                } else if (response.resultCount === 1) {
 
-        Hoot.model.REST('reviewGetNext', data, function (error, response) {
-            if (response.status == 'noneavailable') {
-                validation.end();
-                iD.ui.Alert('Validation complete', 'notice');
-            } else if (response.status === 'success') {
-                //Position the map
-                var item = response.reviewItem;
-                currentReviewId = item.reviewId;
-                var center = item.displayBounds.split(',').slice(0, 2).map(function(d) { return +d; });
-                context.map().centerZoom(center, 19);
-
-                var lockPeriod = 150000;
-                //Refresh lock at half of service lock length
-                if (response.locktime) {
-                    lockPeriod = (1 * response.locktime) / 2;
-                }
-                //Ping until advancing to next item so we keep the lock alive
-                heartBeatTimer = setInterval(function() {
-                    if(item){
-
-                        var heartBeatData = {
-                            mapId: mapid,
-                            reviewid: item.uuid,
-                            reviewAgainstUuid: item.itemToReviewAgainst.uuid
-                        };
-
-                        Hoot.model.REST('reviewUpdateStatus', heartBeatData, function (error, response) {
-                            if(error){
-                                clearInterval(heartBeatTimer);
-                                iD.ui.Alert('Failed to update review status.','warning');
-                                   return;
+                    //See if the validation relation has already been loaded in the map view
+                    var rid = 'r' + response.relationId + '_' + mapid;
+                    var fid, extent;
+                    relation = context.hasEntity(rid);
+                    if (relation) {
+                        //console.log('already have relation');
+                        loadFeature();
+                    } else {
+                        //console.log('must wait for relation to load');
+                        context.loadEntity(rid, function(err, ent) {
+                            relation = ent.data[0];
+                            //Temp workaround to load member until https://github.com/ngageoint/hootenanny/issues/324
+                            //is resolved.
+                            var mid = relation.members[0].id;
+                            feature = context.hasEntity(mid);
+                            if (!feature) {
+                                //console.log('must wait for feature to load');
+                                context.loadEntity(mid, function(err, ent) {
+                                    loadFeature();
+                                }, mapid, layerName);
+                            } else {
+                                loadFeature();
                             }
+                        }, mapid, layerName);
+                    }
+
+                    function loadFeature() {
+                        relation = context.hasEntity(rid);
+
+                        //Position the map
+                        extent = relation.extent(context.graph());
+                        //console.log(extent);
+                        context.map().centerZoom(extent.center(), 19);
+
+                        //Get the relation member
+                        member = relation.memberByRole('reviewee');
+                        fid = member.id;
+                        //Get the full feature
+                        feature = context.hasEntity(fid);
+
+                        //Select the feature
+                        context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
+                        //Have to call Select twice because the feature might not be drawn yet
+                        var ev = 'drawVector.validation';
+                        context.map().on(ev, function() {
+                            //console.log(ev);
+                            context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
+                            //Unregister the handler
+                            context.map().on(ev, null);
+                        });
+
+                        //Update metadata for validation workflow
+                        _.extend(metadata, {tags: relation.tags});
+                        validation.updateMeta(metadata);
+
+                        validation.presentChoices();
+
+                        event.featureLoaded();
+                    }
+
+                    //Update selectItem to work with the current feature
+                    validation.selectItem = function() {
+                        context.map().centerZoom(extent.center(), 19);
+                        context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
+                    };
+
+                    if (!context.MapInMap.hidden()) {
+                        //Populate the map-in-map with review items location and status
+                        Hoot.model.REST('ReviewGetGeoJson', mapid, context.MapInMap.extent(), function (gj) {
+                            context.MapInMap.loadGeoJson(gj.features);
                         });
                     }
-                }, lockPeriod);
 
-
-                //See if the feature has already been loaded in the map view
-                var fid = item.type.charAt(0) + item.id + '_' + mapid;
-                var feature = context.hasEntity(fid);
-                if (feature) {
-                    //console.log('already have feature');
-                    loadFeature();
                 } else {
-                    //console.log('must wait for feature to load');
-                    //Wait for map data to load, add handler for 'loaded' event
-                    var e = 'loaded.validation';
-                    context.connection().on(e, function() {
-                        //console.log(e);
-                        loadFeature();
-                        //Unregister the handler
-                        context.connection().on(e, null);
-                    });
+                    iD.ui.Alert(JSON.stringify(response), 'notice');
                 }
-
-                function loadFeature() {
-
-                    var fid = item.type.charAt(0) + item.id + '_' + mapid;
-                    var feature = context.hasEntity(fid);
-                    //Select the feature
-                    context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
-                    //Have to call Select twice because the feature might not be drawn yet
-                    var ev = 'drawVector.validation';
-                    context.map().on(ev, function() {
-                        //console.log(ev);
-                        context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
-                        //Unregister the handler
-                        context.map().on(ev, null);
-                    });
-
-                    //Update metadata for validation workflow
-                    _.extend(response, {tags: feature.tags});
-                    validation.updateMeta(response);
-
-                    validation.presentChoices(feature, feature.tags);
-
-                    event.featureLoaded();
-                }
-
-                //Update selectItem to work with the current feature
-                validation.selectItem = function() {
-                    context.map().centerZoom(center, 19);
-                    context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
-                };
-
-                if (!context.MapInMap.hidden()) {
-                    //Populate the map-in-map with review items location and status
-                    Hoot.model.REST('ReviewGetGeoJson', mapid, context.MapInMap.extent(), function (gj) {
-                        context.MapInMap.loadGeoJson(gj.features);
-                    });
-                }
-
-            } else {
-                iD.ui.Alert(response.status, 'notice');
-            }
+            });
         });
     };
 
-    validation.verify = function(feature, choice) {
+    validation.verify = function(choice) {
         //console.log(JSON.stringify(choice));
 
         var newTags = _.clone(feature.tags);
-
-        //Perform tag changes
+        //Add the validation tags from the users choice
         _.extend(newTags, choice.changes.replaceTags);
         _.extend(newTags, choice.changes.appendTags);
 
@@ -404,16 +390,25 @@ Hoot.control.validation = function(context, sidebar) {
         newTags = _.omit(newTags, function(v, k) {
             return v.match(/\${.*}/g);
         });
+        //console.log(newTags);
 
         //Change tags
         context.perform(
            iD.actions.ChangeTags(feature.id, newTags), t('operations.change_tags.annotation')
         );
 
+        //Remove the review relation
+        context.perform(
+            iD.actions.DeleteMember(relation.id, member.index), t('operations.delete_member.annotation')
+        );
+        context.perform(
+            iD.actions.DeleteRelation(relation.id), t('operations.delete.annotation.relation')
+        );
+
         //Save tag changes
         iD.modes.Save(context).save(context, function () {
             //Advance to next item
-            validation.getItem(feature.mapId, 'forward');
+            validation.getItem('forward');
         });
 
     };
