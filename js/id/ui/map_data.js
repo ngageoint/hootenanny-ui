@@ -319,11 +319,16 @@ iD.ui.MapData = function(context) {
 
         function setLineWidth(setWidth,width){
             var sheets = document.styleSheets[document.styleSheets.length - 1];
-            _.find(sheets.cssRules, function(cssItem, cssIdx){ 
-               if(cssItem.selectorText == 'path.way'){ sheets.deleteRule(cssIdx);return true;};
-            });
+            var selectTxt = 'path.way.stroke';
+            var reviewTxt = 'path.shadow.activeReviewFeature, path.shadow.activeReviewFeature2';
 
-            if(setWidth){sheets.insertRule('path.way {stroke-width:' + width + ' !important}',sheets.cssRules.length-1);}
+            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText == selectTxt){ sheets.deleteRule(cssIdx);return true;};});
+            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText == reviewTxt){ sheets.deleteRule(cssIdx);return true;};});
+
+            var reviewWidth = (parseInt(width)+10).toString();
+
+            if(setWidth){sheets.insertRule(selectTxt + ' {stroke-width:' + width + ' !important}',sheets.cssRules.length-1);}
+            if(setWidth){sheets.insertRule(reviewTxt + ' {stroke-width:' + reviewWidth + ' !important}',sheets.cssRules.length-1);}
         }
 
         // feature filters
