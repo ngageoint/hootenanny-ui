@@ -27,7 +27,7 @@ Hoot.control.utilities.folder = function(context) {
         self.text(container.name);
         var textLength = self.node().getComputedTextLength();
         
-        if(textLength == 0 svgContainer.id!='datasettable'){
+        if(textLength == 0 && svgContainer.id!='datasettable'){
         	if(text.length>24){
         		text = text.substring(0,24)+'...';
         		self.text(text);
