@@ -30,6 +30,7 @@ iD.ui = function(context) {
                 x = 0.33*window.innerWidth;
                 sidebar.style('width',x+'px');
                 sidebar.classed('col4',true);
+                sidebar.selectAll('tspan').each(context.hoot().control.utilities.folder.wrap);
             })
 
         var app = sidebar.append('div')
