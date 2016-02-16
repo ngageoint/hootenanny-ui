@@ -6,9 +6,12 @@ Hoot.control.utilities.folder = function(context) {
 	hoot_control_utilities_folder.wrap = function(container) {
 		var pN = this.parentNode.parentNode;
 		d3.select(pN).selectAll('title').remove();
-		width=pN.getBoundingClientRect().width > 0 ? pN.getBoundingClientRect().width*.65 : 165;
+		var svgContainer = pN.parentNode.parentNode.parentNode;
+
+		width=pN.getBoundingClientRect().width > 0 ? pN.getBoundingClientRect().width*.8 : 165;
+		
 		dsizeWidth = 0;
-		if(container.id=='datasettable'){dsizeWidth = width*0.25;}
+		if(svgContainer.id=='datasettable'){dsizeWidth = width*0.25;}
 		else{
 			_.each(pN.getElementsByTagName("text"),function(t){
 				if(this.parentNode != t){dsizeWidth += t.getBoundingClientRect().width;}
@@ -21,15 +24,23 @@ Hoot.control.utilities.folder = function(context) {
             text = container.name,
             paddedWidth = (width - 2 * padding);
 
-        self.text('');
-        for (var i = 0; i < text.length+1; i++) {
-		    self.text(text.substring(0,i));
-		    if(self.node().getComputedTextLength() > paddedWidth){
-		    	self.text(text.substring(0,i) + '...');
-            	d3.select(pN).append("title").text(container.name);
-		    	return;
-		    }
-		}
+        self.text(container.name);
+        var textLength = self.node().getComputedTextLength();
+        
+        if(textLength == 0 svgContainer.id!='datasettable'){
+        	if(text.length>24){
+        		text = text.substring(0,24)+'...';
+        		self.text(text);
+        		d3.select(pN).append("title").text(container.name);
+        	}
+        } else {
+	        while (textLength > (width*.95) && text.length > 0) {
+	            text = text.slice(0, -1);
+	            self.text(text + '...');
+	            textLength = self.node().getComputedTextLength();
+	            d3.select(pN).append("title").text(container.name);
+	        }
+        }
 	}
 
     hoot_control_utilities_folder.createFolderTree = function(container) {
