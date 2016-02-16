@@ -95,8 +95,6 @@ Hoot.control.utilities.basemapdataset = function(context) {
             .classed('inline row1 fl col10 pad1y', true)
                 .text('Publish')
                 .on('click', function () {
-                    //var spin = submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true).attr('id', 'basemapimportspin');
-
                     var name = _form.select('.reset.BasemapName').value();
                     if(!name){
                         var files = document.getElementById('basemapfileuploader').files;
@@ -125,6 +123,9 @@ Hoot.control.utilities.basemapdataset = function(context) {
                                  + 'If no name is assigned please specify a name or'+
                                  ' if already specified please use different name.','warning');
                     } else {
+                        d3.select(this).text('Publishing...');
+                        d3.select(this).style('pointer-events','none');
+                        var spin = submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true).attr('id', 'basemapimportspin');
                         context.hoot().model.basemapdataset.publishBasemap(_form,function(d){
                             callback(d);
                             modalbg.remove();
