@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.control.utilities.modifydataset provides user control for existing dataset modification.
+//  Allows the modification of Output Name, Path and allows placement into new folder
+//
+// 
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      17 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Hoot.control.utilities.modifydataset = function(context) {
 	var _events = d3.dispatch();
 	var _instance = {};
@@ -6,11 +16,18 @@ Hoot.control.utilities.modifydataset = function(context) {
 	var _container;
 
 
+    /**
+    * @desc Entry point where it creates form.
+    * @param dataset - Target dataset meta data.
+    **/
 	_instance.modifyNameContainer = function(dataset) {
-		_createContainer(dataset);
-	  
+		_createContainer(dataset);	  
 	};
 
+    /**
+    * @desc Entry point where it creates form.
+    * @param dataset - Target dataset meta data.
+    **/
 	var _createContainer = function(dataset) {
 		_dataset = dataset;
 
@@ -64,6 +81,10 @@ Hoot.control.utilities.modifydataset = function(context) {
 		_container = context.hoot().ui.formfactory.create('body', meta);
 	}
 
+
+    /**
+    * @desc Submit handler. Sends modified request to back end.
+    **/
 	var _submitClickHandler = function() {
 		if(!d3.selectAll('.invalidName').empty()){return;}
 
@@ -131,7 +152,10 @@ Hoot.control.utilities.modifydataset = function(context) {
         });
 	}
 
-
+    /**
+    * @desc Populates existing pathes into drop down list.
+    * @param field - Combobox data.
+    **/
 	var _populatePaths = function(field) {
 		var comboPathName = d3.combobox()
             .data(_.map(field.combobox.data, function (n) {
@@ -156,6 +180,9 @@ Hoot.control.utilities.modifydataset = function(context) {
         d3.select(this).attr('readonly',true);
 	}
 
+    /**
+    * @desc Validates input fields.
+    **/
 	var _validateInput = function() {
 		//ensure output name is valid
         var resp = context.hoot().checkForUnallowedChar(this.value);

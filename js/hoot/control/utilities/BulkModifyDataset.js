@@ -1,3 +1,11 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.control.utilities.bulkmodifydataset for moving existing datasets to a folder.
+//
+// 
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      17 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.bulkmodifydataset = function(context) {
 	var _events = d3.dispatch();
 	var _instance = {};
@@ -6,10 +14,18 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
 	var _container;
 
 
+    /**
+    * @desc Entry point where it creates form.
+    * @param datasets - Target datasets meta data.
+    **/
 	_instance.bulkModifyContainer = function(datasets) {
 		_createContainer(datasets);
 	};	
 
+    /**
+    * @desc Internal form creation.
+    * @param datasets - Target datasets meta data.
+    **/
 	var _createContainer = function(datasets) {
 		_datasets = datasets;
 		hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
@@ -48,6 +64,10 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
 		_container = context.hoot().ui.formfactory.create('body', meta);
 	}
 
+    /**
+    * @desc Populates folders list.
+    * @param field - fieldset meta data.
+    **/
 	var _populatePaths = function(field) {
 		var comboPathName = d3.combobox()
             .data(_.map(field.combobox.data, function (n) {
@@ -73,6 +93,9 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
 	}
 
 
+    /**
+    * @desc Move request click handler.
+    **/
 	var _submitClickHandler = function() {
 	    //TODO: ADD WARNING MESSAGE, REQUIRE CONFIRMATION
 

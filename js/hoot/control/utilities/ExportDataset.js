@@ -1,3 +1,12 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.control.utilities.exportdataset Export control for ingested dataset.
+//
+// 
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      17 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Hoot.control.utilities.exportdataset = function(context) {
 	var _events = d3.dispatch();
 	var _instance = {};
@@ -6,10 +15,20 @@ Hoot.control.utilities.exportdataset = function(context) {
 	var _dataset;
 
 
+	/**
+    * @desc Entry point where it creates form.
+    * @param dataset - Target dataset meta data.
+    * @param translations - Translations meta data.
+    **/
 	_instance.exportDataContainer = function(dataset, translations) {
 		_createDialog(dataset, translations);  
 	};
 
+	/**
+    * @desc Internal form creation.
+    * @param dataset - Target dataset meta data.
+    * @param translations - Translations meta data.
+    **/
 	var _createDialog = function(dataset, translations) {
 		_dataset = dataset;
 		var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema'
@@ -71,6 +90,9 @@ Hoot.control.utilities.exportdataset = function(context) {
 		_container = context.hoot().ui.formfactory.create('body', meta);
 	}
 
+	/**
+    * @desc Export request click handler,
+    **/
 	var _submitClickHandler = function() {
 		if(!d3.selectAll('.invalidName').empty()){
 			return;
@@ -91,6 +113,10 @@ Hoot.control.utilities.exportdataset = function(context) {
             }
         });
 	}
+
+	/**
+    * @desc Output name validation helper function.
+    **/
 	var _validateOutputName = function() {
 		//ensure output name is valid
         var resp = context.hoot().checkForUnallowedChar(this.value);
@@ -100,6 +126,11 @@ Hoot.control.utilities.exportdataset = function(context) {
             d3.select(this).classed('invalidName',false).attr('title',null);
         }
 	}
+
+	/**
+    * @desc Helper function to retrieve place holder text
+    * @param field - fieldset metadata.
+    **/
 	var _getTranslationComboPlaceHolder = function(field) {
 		var defTrans = _.findWhere(field.combobox.data, {DESCRIPTION: field.placeholder['default']});
     	if(defTrans == undefined){
@@ -109,6 +140,10 @@ Hoot.control.utilities.exportdataset = function(context) {
     	}
 	}
 
+	/**
+    * @desc Populate available translations.
+    * @param a - Translations list combo meta data.
+    **/
 	var _populateTranslations = function(a) {
 		var combo = d3.combobox()
             .data(_.map(a.combobox.data, function (n) {
@@ -127,6 +162,9 @@ Hoot.control.utilities.exportdataset = function(context) {
         	});
 	}
 
+	/**
+    * @desc Toggler for Append to ESRI FGDB Template checkbox.
+    **/
 	var _checkForTemplate = function(){
 		var hidden=false;
 

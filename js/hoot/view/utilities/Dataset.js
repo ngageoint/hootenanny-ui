@@ -279,7 +279,7 @@ Hoot.view.utilities.dataset = function(context)
                 context.hoot().view.utilities.errorlog.reportUIError(d.error);
                 return;
             }
-           context.hoot().control.utilities.dataset.bulkImportDataContainer(d);
+           context.hoot().control.utilities.bulkimportdataset.bulkImportDataContainer(d);
         });
     }
     
