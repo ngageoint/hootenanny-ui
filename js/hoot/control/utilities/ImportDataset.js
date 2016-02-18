@@ -59,7 +59,7 @@ Hoot.control.utilities.importdataset = function(context) {
         _bInfo = hoot.getBrowserInfo();
         if(_.isEmpty(_bInfo)){_bInfo = {'name':'Unknown','version':'Unknown'};};
 
-        _getImportTranslations(_trans, _importTranslations, 
+        _instance.getImportTranslations(_trans, _importTranslations, 
 				_importTranslationsGeonames, _importTranslationsOsm);
 
         var importTypes = _instance.getImportTypes();
@@ -95,6 +95,12 @@ Hoot.control.utilities.importdataset = function(context) {
             inputtype:'multipart',
             onchange: _multipartHandler,
             multipartid: 'ingestfileuploader'
+        }, {
+            label: 'FGDB Feature Classes',
+            placeholder: folderPlaceholder,
+            id: 'importDatasetFGDBFeatureClasses',
+            combobox: {'data':folderList, 'command': _populateFolderList },
+            inputtype: 'combobox'
         }, {
             label: 'Layer Name',
             placeholder: 'Save As',
@@ -722,6 +728,11 @@ Hoot.control.utilities.importdataset = function(context) {
     * @desc Helper function to return import types.
     **/
 	_instance.getImportTypes = function() {
+        if(!_bInfo) {
+            _bInfo = hoot.getBrowserInfo();
+            if(_.isEmpty(_bInfo)){_bInfo = {'name':'Unknown','version':'Unknown'};};
+        }
+        
  		var importTypes = [];
         var fileTypes = {};
         fileTypes.value = "FILE";
@@ -755,7 +766,7 @@ Hoot.control.utilities.importdataset = function(context) {
     /**
     * @desc Helper function to return import types.
     **/
-	var _getImportTranslations = function(trans, importTranslations,
+	_instance.getImportTranslations = function(trans, importTranslations,
         importTranslationsGeonames, importTranslationsOsm) {
 		_.each(trans, function(t){
 		    if(t.NAME === 'GEONAMES'){
