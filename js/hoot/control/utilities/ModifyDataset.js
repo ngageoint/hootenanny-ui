@@ -49,6 +49,7 @@ Hoot.control.utilities.modifydataset = function(context) {
             id: 'modifyDatasetFileOutputName',
             placeholder: dataset.name,
             inputtype:'text',
+            text:  dataset.name,
             onchange: _validateInput
         },{
         	label: 'Path',

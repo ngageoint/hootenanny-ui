@@ -288,7 +288,7 @@ Hoot.ui.hootformbase = function ()
                 .append('input')
                 .attr('id', a.multipartid)
                 .attr('type', 'file')
-                .attr('multiple', 'true')
+                .property('multiple', false)
                 .attr('accept', '.shp,.shx,.dbf,.prj,.osm,.zip')
                 .classed('point pin-top', true)
                 .style({

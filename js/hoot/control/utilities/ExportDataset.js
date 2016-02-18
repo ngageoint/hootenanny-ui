@@ -69,6 +69,7 @@ Hoot.control.utilities.exportdataset = function(context) {
 		    id: 'fileExportOutputName',
 		    placeholder: dataset.name || 'Output Name',
 		    inputtype:'text',
+		    text: dataset.name || 'Output Name',
 		    onchange: _validateOutputName
 		}];
 

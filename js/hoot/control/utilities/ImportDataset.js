@@ -24,6 +24,7 @@ Hoot.control.utilities.importdataset = function(context) {
     var _isCancel = false;
     var _jobIds = null;
     var _mapIds = null;
+    var _bInfo;
 
 
     /**
@@ -54,6 +55,9 @@ Hoot.control.utilities.importdataset = function(context) {
         _importTranslations = [];
         _importTranslationsGeonames = [];
         _importTranslationsOsm = [];
+
+        _bInfo = hoot.getBrowserInfo();
+        if(_.isEmpty(_bInfo)){_bInfo = {'name':'Unknown','version':'Unknown'};};
 
         _getImportTranslations(_trans, _importTranslations, 
 				_importTranslationsGeonames, _importTranslationsOsm);
@@ -423,26 +427,34 @@ Hoot.control.utilities.importdataset = function(context) {
     **/
     var _setMultipartForType = function(typeName) {
         if(typeName == 'DIR'){
-            d3.select('#ingestfileuploader')
-            .attr('multiple', 'false')
-            .attr('accept', null)
-            .attr('webkitdirectory', '')
-            .attr('directory', '');
+            if(_bInfo.name.substring(0,3) == "Chr"){
+                d3.select('#ingestfileuploader')
+                .property('multiple', false)
+                .attr('accept', null)
+                .attr('webkitdirectory', '')
+                .attr('directory', '');
+            } else {
+                d3.select('#ingestfileuploader')
+                .property('multiple', false)
+                .attr('accept', '.zip')
+                .attr('webkitdirectory', null)
+                .attr('directory', null);
+            }
         } else if(typeName == 'GEONAMES') {
             d3.select('#ingestfileuploader')
-            .attr('multiple', 'false')
+            .property('multiple', 'false')
             .attr('accept', '.geonames')
             .attr('webkitdirectory', null)
             .attr('directory', null);
         } else if(typeName == 'OSM') {
             d3.select('#ingestfileuploader')
-            .attr('multiple', 'false')
+            .property('multiple', 'false')
             .attr('accept', '.osm')
             .attr('webkitdirectory', null)
             .attr('directory', null);
         } else {
             d3.select('#ingestfileuploader')
-            .attr('multiple', 'true')
+            .property('multiple', 'true')
             .attr('accept', null)
             .attr('webkitdirectory', null)
             .attr('directory', null);
@@ -469,6 +481,8 @@ Hoot.control.utilities.importdataset = function(context) {
         .attr('readonly',true)
         .call(comboImportType)
         .on('change', function(a1,a2,a3){
+            d3.select('importDatasetFileImport').value('');
+            d3.select('#importDatasetLayerName').value('');
             d3.select('#importDatasetSchema').value('');
             var selectedType = _container.select('#importDatasetImportType').value();
             var typeName = _getTypeName(selectedType);
@@ -596,22 +610,25 @@ Hoot.control.utilities.importdataset = function(context) {
 
             fileNames.push(curFileName);
             if(l == 0){
+                
                 if(selType == 'DIR'){
-                    var parts = curFile.webkitRelativePath.split("/");
-                    var folderName = parts[0];
-                    if(folderName.length > 4){
-                        var ext = folderName.substring(folderName.length - 4);
-                        var fgdbName = folderName.substring(0, folderName.length - 4);
-                        if(ext.toLowerCase() != '.gdb'){
-                            iD.ui.Alert("Please select valid FGDB.",'warning');
-                            return;
-                        } else {
-                            var inputName = _container.select('#importDatasetLayerName').value();
-                            if(!inputName){
-                                _container.select('#importDatasetLayerName').value(fgdbName);
+                    if(_bInfo.name.substring(0,3) == "Chr"){
+                        var parts = curFile.webkitRelativePath.split("/");
+                        var folderName = parts[0];
+                        if(folderName.length > 4){
+                            var ext = folderName.substring(folderName.length - 4);
+                            var fgdbName = folderName.substring(0, folderName.length - 4);
+                            if(ext.toLowerCase() != '.gdb'){
+                                iD.ui.Alert("Please select valid FGDB.",'warning');
+                                return;
+                            } else {
+                                var inputName = _container.select('#importDatasetLayerName').value();
+                                if(!inputName){
+                                    _container.select('#importDatasetLayerName').value(fgdbName);
+                                }
                             }
-                        }
 
+                        }
                     }
 
                 }
@@ -630,10 +647,17 @@ Hoot.control.utilities.importdataset = function(context) {
             return;
         }
 
-        _container.select('#importDatasetFileImport').value(fileNames.join('; '));
-        var first = fileNames[0];
-        var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
-        _container.select('#importDatasetLayerName').value(saveName);
+
+        if(selType == 'DIR'){
+                _container.select('#importDatasetFileImport').value(folderName);
+                _container.select('#importDatasetLayerName').value(fgdbName);  
+        } else {
+            _container.select('#importDatasetFileImport').value(fileNames.join('; '));
+            var first = fileNames[0];
+            var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
+            _container.select('#importDatasetLayerName').value(saveName);    
+        }
+
 
 
         d3.select('#importDatasetBtnContainer').classed('hidden', false);
@@ -698,10 +722,14 @@ Hoot.control.utilities.importdataset = function(context) {
     * @desc Helper function to return import types.
     **/
 	_instance.getImportTypes = function() {
-		var importTypes = [];
+ 		var importTypes = [];
         var fileTypes = {};
         fileTypes.value = "FILE";
-        fileTypes.title = "File (shp,zip)";
+        if(_bInfo.name.substring(0,3) == "Chr"){
+            fileTypes.title = "File (shp,zip)";
+        } else {
+            fileTypes.title = "File (shp,zip,gdb.zip)";
+        }
         importTypes.push(fileTypes);
 
         var osmTypes = {};
@@ -717,7 +745,9 @@ Hoot.control.utilities.importdataset = function(context) {
         var dirType = {};
         dirType.value = "DIR";
         dirType.title = "Directory (FGDB)";
-        importTypes.push(dirType);
+                    
+        if(_bInfo.name.substring(0,3) == "Chr"){importTypes.push(dirType);}
+
 
         return importTypes;
 	}

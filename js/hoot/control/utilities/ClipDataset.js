@@ -160,7 +160,7 @@ Hoot.control.utilities.clipdataset = function(context) {
 				uniquename = true;
 			}
 		}
-		d3.select(this).attr('placeholder',function(){return name;});
+		d3.select(this).value(function(){return name;});
 		
 		d3.select(this).on('change',function(){
 			//ensure output name is valid
