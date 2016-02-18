@@ -578,6 +578,9 @@ en:
       (or set of features) within the same map layer or they would like to copy attributes from a feature 
       (or multiple selected features) in the reference layer to similar feature in the secondary layer when reviewing 
       conflicts, they could use the following currently supported work flows.
+	  
+	  Note:  It is currently _not_ possible to copy/paste a feature from the Reference Dataset to the Secondary Dataset (or vice-versa) 
+	  manually and if attempted the application will enter a idle state requiring refresh.
 
       ### Copying Features/Tags Within a Single Layer
 
@@ -591,18 +594,21 @@ en:
       to copy and type *Ctrl + c*, then select the target feature(s) to paste and use *Shift + Ctrl + v*. This will replace 
       all of the selected feature tags (except name and those listed in the note below) with the copied source tags.
 
-      ### Copying Tags Between Two Layers
+      ### Copying Tags Between Two Layers/Features
 
-      When reviewing conflicts or performing any manual editing with two layers, it maybe useful to copy tags from a selected feature(s)
-      in the Reference layer to a feature(s) in a Secondary layer. For example, if during conflation a set of features has been identified as
-      needing review, a user can use the copy/paste tag functionality to ensure that a set of attributes are included in the merged output.
-      Click on any field in either the blue/red conflict review table (selecting either the blue/red field will depend on which represents
-      the reference or secondary layer) to select a feature to copy from (or by clicking on the feature geometry) and hit *Ctrl + c* to
-      copy the tags. Then select to target feature(s) to paste to by clicking on target field and hit *Shift + Ctrl + v*. This will copy
-      all of the tags to the selected feature(s). You may see a pop-up message indicating that an error occurred due to two active layer
-      being present. If that is the case you can turn off the source layer by unchecking it from the background settings 
-      temporarily before pasting. If you have all tags displayed you will notice that in addition to the pre-existing tags all copied tags
-      from the source feature will appear listed.
+      When reviewing  conflicts or editing features it is often useful to be able to copy tags from a selected feature and either 
+	  append or overwrite the tags of another feature that can be within the same layer or in a different layer.  For example, when 
+	  conflating two layers a selected set of features are flagged for the user to review and determine whether any further action is 
+	  required. Users may decide that they need to copy a targeted set of tags from one feature to another.  The following workflow 
+	  describes how that can be done.
+	  
+	  1. Select a feature and check the boxes next to each tag in the All Tags list that you wish to copy to the other feature. 
+	  2. Select a different feature in the target layer and expand the All Tags list to display the existing tags. 
+	  3. To append the copied tags, select the OSM POI (pink highlighted marker) and hit `Ctrl + Alt + v`.  Note that this action 
+	  will produce a semicolon delimited list for any existing value e.g. name, source along with any new tags added from the source POI. 
+	  To commit changes click the Save button or to undo click the undo button.
+	  4. To overwrite the copied tags in the target feature, select the OSM POI feature and `Ctrl + Shift + v`. Note that this action 
+	  will overwrite any existing tag values.
 
     tools: |
       # Tools
@@ -628,6 +634,7 @@ en:
       Cover. To get register for an account please visit: https://evwhs.digitalglobe.com/myDigitalGlobeAdmin/RegistrationRequest.html
 
       #### Image Carousel
+	  
       The image carousel displays all of the available images by timestamp and sensor that are in the DigitalGlobe GBM/EGD service if
       the service has been enabled. Users can select a particular DigitalGlobe image from the listed sensors/dates displayed in the carousel
       by clicking on the *Image Carousel* button or typing the *c* shortcut key.
@@ -640,10 +647,10 @@ en:
       also drag and drop a local GPX (GPS generated dataset) or use the file browser to add.
 
       Fill Areas allows users to select from three different options for displaying relevant vector data. The first option is *No Fill or
-      Wireframe* which makes it easier to display background imagery. *Partial Fill* displays fill areas around their
-      inner edges only. *Full Fill* displays features with complete fill turned. Finally, users can filter Map Features of interest by simply
-      checking or unchecking the boxes next to the common map features such as Points, Major Roads, Buildings, etc. To access the
-      settings click on the *Map Data*.
+      Wireframe* which makes it easier to display background imagery. *Partial Fill* displays fill areas around their inner edges only. 
+	  *Full Fill* displays features with complete fill turned. Users can adjust the *Line Width* by unchecking the use default value and 
+	  setting the width value accordingly. Finally, users can filter Map Features of interest by simply checking or unchecking the boxes 
+	  next to the common map features such as Points, Major Roads, Buildings, etc. To access the settings click on the *Map Data*.
 
       # Tools
 
@@ -696,7 +703,8 @@ en:
       Ctrl + c  | Copies feature geometry/tags
       Ctrl + v  | Pastes selected feature geometry/tags
       Ctrl + Backspace  | Deletes object permanently
-      Shift + Ctrl + v  | Pastes copied source layer tags into selected target layer tags
+	  Ctrl + Shift + v | Pastes selected tags using the overwrite option
+	  Ctrl + Alt + v | Pastes selected tags using the append option
       Shift + Left mouse click  | Selects multiple features geometry/tags within layer
       Alt + b  | Switches b/w layers during post-conflation conflict review
       Alt + n  | Toggles layer visibility on/off
@@ -742,14 +750,27 @@ en:
       Leave blank if no new folder is required.
 
       ### Type
+	  
       There are four types of conflation that are exposed in the UI: Reference, Average, Cookie Cutter & Horizontal and Advanced.  For more information
       on these conflation types, please consult the Hootenanny User Guides.
 
       ### Attribute Reference Layer
+	  
       During conflation, the attributes of reference data are used to update any secondary data. By default, the reference layer contains
       both the reference geometry and attribution. In many cases, however, reference geometry and attribution exists across multiple
       layers hence the need for conflation. To support this use case, select either the reference or secondary layer as the attribute reference
       layer.
+	  
+	  ### Collect Stats
+	  
+	  Hootenanny provides users with the ability to generate statistics and display information pertaining to each conflation and associated input 
+	  layers. If false, Hootenanny will display only the conflation parameters i.e. the Reference/Secondary layer names and Conflation Type, and 
+	  Options, i.e. what args were included in the conflation job, for the merged layer after the conflation job has completed. If true, Hootenanny 
+	  will generate statistics such as the counts for all nodes, ways and relations in each of the input and output layers (similarly for counts of 
+	  pois, roads, and buildings), counts of unmatched, merged, and review features as well as percentages for each.  These formatted statistics are 
+	  displayed in the *Statistics* section of the layer info.  In addition, users can also view the raw statistics that Hootenanny collects when 
+	  this option has been enabled.  These values appear as comma separated lists (e.g. Total Conflatable Features = 374,227,0) pertaining to the 
+	  Reference Layer, Secondary Layer, and Merged Output Layer next to each statistic parameter.  
 
     review: |
       # Reviewing Conflicts
@@ -763,12 +784,13 @@ en:
       a merge or alternative action is required. Note that feature merging is only available for POI to POI conflation. Otherwise the user
       can modify Features flagged for review will appear highlighted on the map in either red or blue corresponding to the Reference and
       Secondary input data. Clicking in any of the highlighted fields in the review table will select the feature in question and display 
-      its attribute in the left tag panel (see Figure 28). Users can toggle the review items table by clicking on the Hide/Show Table button
+      its attribute in the left tag panel. Users can toggle the review items table by clicking on the Hide/Show Table button
       located in the conflict review bar at the bottom. In order to complete the review process, all reviews must be resolved either by
       stepping through each individually or by clicking the Complete Review button to resolve remaining reviews and either export the
       data to the desired output format or add another layer for conflation.
 
       ### Review Text
+	  
       For more information on messages during reviews, please consult the Hootenanny User Interface Guide.
 
       ### Map-in-Map
@@ -793,6 +815,14 @@ en:
       editing is relatively low. The ideal scenario for multi-user conflict reviewing is when a conflation job generates a large number
       of reviews in excess of several hundred or thousand where this work can be parsed out among users accessing the same layer to
       minimize down time when conflating data.
+	  
+	  ### Sharing Reviews
+	  
+	  To assist with the multi-user conflict reviewing, there is a new mechanism to allow users to better collaborate on reviews. When a 
+	  user encounters a review that requires additional feedback prior to resolving, they can click the Share Review button.  This will pop-up 
+	  a dialog box allowing them to enter some details about the review which others can then open separately as a bookmark from the Review 
+	  Bookmarks in Manage.  A second user can then open the review bookmark, add additional comments and view that review to take any additional 
+	  action required.
 
     manage: |
       # Manage Hootenanny
@@ -849,6 +879,16 @@ en:
 
       The Reports tab contains all of the generated reports for conflation jobs where Generate Report = True has been specified. To
       download a report, click on the arrow and save the file to your local desktop.
+	  
+	  ### Review Bookmarks
+	  
+	  The Review Bookmarks tab stores all of the shared reviews saved by various Hootenanny users.  Each bookmark can be edited to add any additional notes or comments. To 
+	  view the bookmarked review in the map, click on the magnifying glass in the opened bookmark in the top right corner.  Once a review has been resolved the bookmark will
+	  remain with the status, RESOLVED, and the user will no longer be able to display the review.
+	  
+	  ### About Hootenanny
+	  
+	  This tab provides all of the version information for Hootenanny Core, Web Services and iD Editor versions and provides a link to download the Hootenanny User Interface Guide.  	  
 
   #Added for EGD-plugin
   dgcarousel:
