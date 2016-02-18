@@ -3,39 +3,48 @@ Hoot.control.utilities.folder = function(context) {
 	
 	var hoot_control_utilities_folder = {};
 
-    hoot_control_utilities_folder.createFolderTree = function(container) {
-		function wrap() {
-			var pN = this.parentNode.parentNode;
-			width=pN.getBoundingClientRect().width > 0 ? pN.getBoundingClientRect().width*.65 : 165;
-			dsizeWidth = 0;
-			if(container.attr('id')=='datasettable'){dsizeWidth = width*0.25;}
-			else{
-				_.each(pN.getElementsByTagName("text"),function(t){
-					if(this.parentNode != t){dsizeWidth += t.getBoundingClientRect().width;}
-				},this);
-			}
-			width -= dsizeWidth;
-			padding=2;
-			datasetName = this.textContent;
-			var self = d3.select(this),
-	            textLength = self.node().getComputedTextLength(),
-	            text = self.text();
-	        while (textLength > (width - 2 * padding) && text.length > 0) {
+	hoot_control_utilities_folder.wrap = function(container) {
+		var pN = this.parentNode.parentNode;
+		d3.select(pN).selectAll('title').remove();
+		var svgContainer = pN.parentNode.parentNode.parentNode;
+
+		width=pN.getBoundingClientRect().width > 0 ? pN.getBoundingClientRect().width*.8 : 165;
+		
+		dsizeWidth = 0;
+		if(svgContainer.id=='datasettable'){dsizeWidth = width*0.25;}
+		else{
+			_.each(pN.getElementsByTagName("text"),function(t){
+				if(this.parentNode != t){dsizeWidth += t.getBoundingClientRect().width;}
+			},this);
+		}
+		width -= dsizeWidth;
+		padding=2;
+
+		var self = d3.select(this),
+            text = container.name,
+            paddedWidth = (width - 2 * padding);
+
+        self.text(container.name);
+        var textLength = self.node().getComputedTextLength();
+        
+        if(textLength == 0 && svgContainer.id!='datasettable'){
+        	if(text.length>24){
+        		text = text.substring(0,24)+'...';
+        		self.text(text);
+        		d3.select(pN).append("title").text(container.name);
+        	}
+        } else {
+	        while (textLength > (width*.95) && text.length > 0) {
 	            text = text.slice(0, -1);
 	            self.text(text + '...');
 	            textLength = self.node().getComputedTextLength();
+	            d3.select(pN).append("title").text(container.name);
 	        }
+        }
+	}
 
-	        if(datasetName!=self.text()){	            
-	        	d3.select(pN).selectAll('title').remove()
-	            d3.select(pN).append("title").text(datasetName);
-	        }
-	    } 
-
-    	selectedLayerIDs = [];
-    	context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
-    	
-    	// http://bl.ocks.org/mbostock/1093025 - Collapsible Indented Tree
+    hoot_control_utilities_folder.createFolderTree = function(container) {
+		// http://bl.ocks.org/mbostock/1093025 - Collapsible Indented Tree
     	
     	//var folders = context.hoot().model.layers.getAvailLayersWithFolders();
     	var folders = context.hoot().model.folders.getAvailFoldersWithLayers();
@@ -210,7 +219,7 @@ Hoot.control.utilities.folder = function(context) {
 	        			rectNode.attr('fldr-id',function(d){return d.id;})
 	        	 	}
 	          	})
-	          	.append('tspan').text(function(d){return d.name;}).each(wrap);
+	          	.append('tspan').text(function(d){return d.name;}).each(context.hoot().control.utilities.folder.wrap);
 	          	// TODO: Need to account for datasets outside of folders...make dynamic
 	      
 	  	  nodeEnter.filter(function(d){return d.depth>1}).append("line")
@@ -736,6 +745,8 @@ Hoot.control.utilities.folder = function(context) {
 							}
 	                	});
 	                }
+
+	                if(a.inputtype=='text'){d3.select(this).value(a.placeholder);}
 	            });
 
 	        var submitExp = ingestDiv.append('div')

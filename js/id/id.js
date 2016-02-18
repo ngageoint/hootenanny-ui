@@ -109,12 +109,12 @@ window.iD = function () {
         connection.loadTiles(projection, dimensions, done);
     };
 
-    context.loadEntity = function(id, callback) {
+    context.loadEntity = function(id, callback, mapId, layerName) {
         function done(err, result) {
             entitiesLoaded(err, result);
             if (callback) callback(err, result);
         }
-        connection.loadEntity(id, done);
+        connection.loadEntity(id, done, mapId, layerName);
     };
 
     context.loadMissing = function(ids, callback, layerName) {
@@ -242,31 +242,6 @@ window.iD = function () {
             return [];
         }
     };
-
-    context.loadEntity = function(id, zoomTo) {
-        if (zoomTo !== false) {
-            connection.loadEntity(id, function(error, entity) {
-                if (entity) {
-                    map.zoomTo(entity);
-                }
-            });
-        }
-
-        map.on('drawn.loadEntity', function() {
-            if (!context.hasEntity(id)) return;
-            map.on('drawn.loadEntity', null);
-            context.on('enter.loadEntity', null);
-            context.enter(iD.modes.Select(context, [id]));
-        });
-
-        context.on('enter.loadEntity', function() {
-            if (mode.id !== 'browse') {
-                map.on('drawn.loadEntity', null);
-                context.on('enter.loadEntity', null);
-            }
-        });
-    };
-
 
     /* Behaviors */
     context.install = function(behavior) {

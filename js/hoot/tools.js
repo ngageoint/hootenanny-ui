@@ -217,13 +217,19 @@ Hoot.tools = function (context, selection) {
 
 
     function renderInputLayer(layerName,params) {
-        loadedLayers[layerName] = params;
-        loadedLayers[layerName].loadable = true;
+        //Get tags for loaded layer
+        Hoot.model.REST('getMapTags', {mapId: params.mapId}, function (tags) {
+            //console.log(tags);
+            loadedLayers[layerName] = tags;
+            loadedLayers[layerName] = params;
+            loadedLayers[layerName].loadable = true;
+            loadedLayers[layerName].tags = tags;
 
-        view.render(params);
-        loadingLayer = {};
-        d3.select('.loadingLayer').remove();
-
+            view.render(params);
+            loadingLayer = {};
+            d3.select('.loadingLayer').remove();
+            conflationCheck(layerName, true);
+        });
     }
 
     function renderMergedLayer(layerName, mapid) {
@@ -434,7 +440,7 @@ Hoot.tools = function (context, selection) {
                             if (tags.reviewtype === 'hgisvalidation') {
                                 var r = confirm("The layer has been prepared for validation. Do you want to go into validation mode?");
                                 if (r == true) {
-                                    context.hoot().control.validation.begin(params.mapId);
+                                    context.hoot().control.validation.begin(params);
                                 }
                             } else {
                                 var r = confirm("The layer contains unreviewed items. Do you want to go into review mode?");
@@ -535,7 +541,6 @@ Hoot.tools = function (context, selection) {
 
                     if(doRenderView === true){
                         renderInputLayer(layerName,params);
-                        conflationCheck(layerName, true);
                     } else {
                         loadedLayers[layerName] = params;
                         loadedLayers[layerName].loadable = true;

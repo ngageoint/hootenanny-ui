@@ -30,6 +30,7 @@ iD.ui = function(context) {
                 x = 0.33*window.innerWidth;
                 sidebar.style('width',x+'px');
                 sidebar.classed('col4',true);
+                sidebar.selectAll('tspan').each(context.hoot().control.utilities.folder.wrap);
             })
 
         var app = sidebar.append('div')
@@ -122,10 +123,11 @@ iD.ui = function(context) {
         var dragResize = d3.behavior.drag().on('drag',function(){
             sidebar.classed('col4',false);
             x = d3.mouse(this.parentNode)[0];
-            console.log(x,window.innerWidth,0.333*window.innerWidth);
             x = Math.max(Math.min(x, window.innerWidth), Math.min(400,0.333*window.innerWidth));
-            console.log(x);
             sidebar.style('width',x+'px');
+
+            //update text
+            sidebar.selectAll('tspan').each(context.hoot().control.utilities.folder.wrap);
         });
         resizer.call(dragResize);
 
@@ -186,9 +188,48 @@ iD.ui = function(context) {
             .call(iD.ui.Contributors(context));*/
 
         aboutList.append('li')
-          .attr('class','coordinates')
-          .attr('tabindex',-1)
-          .call(iD.ui.Coordinates(context));
+            .attr('class','coordinates')
+            .attr('tabindex',-1)
+            .on('contextmenu',function(){
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+                //Create context menu to offer bulk option
+                var items = ['DD','DMS','UTM'];
+                d3.select('html').append('div').classed('coordinates-options-menu',true);
+                        
+                 var menuItem =  d3.selectAll('.coordinates-options-menu')
+                    .html('')
+                    .append('ul')
+                    .selectAll('li')
+                    .data(items).enter()
+                    .append('li')
+                    .attr('class',function(item){return ' coordinate-option';})
+                    .on('click' , function(item) { 
+                        context.coordinateDisplay = item;
+                        d3.select('.coordinates-options-menu').remove();
+                   });
+                 
+                 menuItem.append('span').text(function(item) { return item; });
+                        
+                 d3.select('.coordinates-options-menu').style('display', 'none');
+                 
+                 // show the context menu
+                 d3.select('.coordinates-options-menu')
+                    .style('right','0px')
+                     .style('bottom','33px')
+                     .style('display', 'block');
+    
+                 //close menu
+                 var firstOpen = true;
+                 d3.select('html').on('click.coordinates-options-menu',function(){
+                     if(firstOpen){
+                        firstOpen=false;     
+                     } else {
+                         d3.select('.coordinates-options-menu').style('display', 'none');
+                     }
+                 });
+             })
+            .call(iD.ui.Coordinates(context));
 
         /*footer.append('div')
             .attr('class', 'api-status')

@@ -281,6 +281,55 @@ iD.ui.MapData = function(context) {
         var fillList = fillContainer.append('ul')
             .attr('class', 'layer-list');
 
+        // line width
+        content.append('a')
+            .text(t('map_data.line_width'))
+            .attr('href', '#')
+            .classed('hide-toggle', true)
+            .classed('expanded', false)
+            .on('click', function() {
+                var exp = d3.select(this).classed('expanded');
+                widthContainer.style('display', exp ? 'none' : 'block');
+                d3.select(this).classed('expanded', !exp);
+                d3.event.preventDefault();
+            });
+
+        var widthContainer = content.append('div')
+            .attr('class', 'filters')
+            .style('display', 'none');
+
+       //var widthLabel = widthContainer.append('div').append('label').text('Path Width');
+        
+        widthContainer.append('input').attr('type','number')
+            .classed('hoot-input settings-input',true)
+            .attr('id','path-width').property('disabled',true)
+            .attr('min',1).attr('max',25).attr('value',7)
+            .on('change',function(){
+                setLineWidth(true,d3.select('#path-width').value());
+            });
+
+        widthContainer.append('label').classed('settings-checkbox',true)
+            .attr('for','path-width_default').text('Use default value')
+            .append('input').attr('name','path-width_default')
+            .attr('type','checkbox').attr('checked',true)
+            .on('change',function(){
+                d3.select('#' + this.name.replace('_default','')).property('disabled',this.checked);
+                setLineWidth(!this.checked,d3.select('#path-width').value());
+            });
+
+        function setLineWidth(setWidth,width){
+            var sheets = document.styleSheets[document.styleSheets.length - 1];
+            var selectTxt = 'path.way.stroke';
+            var reviewTxt = 'path.shadow.activeReviewFeature, path.shadow.activeReviewFeature2';
+
+            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText == selectTxt){ sheets.deleteRule(cssIdx);return true;};});
+            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText == reviewTxt){ sheets.deleteRule(cssIdx);return true;};});
+
+            var reviewWidth = (parseInt(width)+10).toString();
+
+            if(setWidth){sheets.insertRule(selectTxt + ' {stroke-width:' + width + ' !important}',sheets.cssRules.length-1);}
+            if(setWidth){sheets.insertRule(reviewTxt + ' {stroke-width:' + reviewWidth + ' !important}',sheets.cssRules.length-1);}
+        }
 
         // feature filters
         content.append('a')

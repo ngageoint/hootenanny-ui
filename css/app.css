@@ -1261,11 +1261,12 @@ input[type=number] {
 }
 
 input[type=number].hoot-input {
-    padding-right:0;
+    position:inherit;
+    padding:0px;
     background-color: white;
     border:none;
     height:30px;
-    width: 60px;
+    width: 35px;
     text-overflow: ellipsis;
 }
 input[type="number"].hoot-input::-webkit-inner-spin-button,
@@ -3127,7 +3128,8 @@ rect.more {fill: #3182bd;}*/
 	background-color:#7092ff;
 }
 
-.context-menu, .tools-menu, .dataset-options-menu {
+.context-menu, .tools-menu, 
+.dataset-options-menu, .coordinates-options-menu {
   position: absolute;
   display: none;
   background-color: #f2f2f2;
@@ -3139,23 +3141,29 @@ rect.more {fill: #3182bd;}*/
   z-index:1200;
 }
 
-.context-menu ul, .tools-menu ul, .dataset-options-menu ul {
+.context-menu ul, .tools-menu ul, 
+.dataset-options-menu ul, coordinates-option-menu ul {
   list-style-type: none;
   margin: 4px 0px;
   padding: 0px;
   cursor: default;
 }
 
-.context-menu ul li, .tools-menu ul li, .dataset-options-menu ul li {
+.context-menu ul li, .tools-menu ul li, 
+.dataset-options-menu ul li {
   padding: 4px 16px;
 }
 
-.context-menu ul li:hover, .tools-menu ul li:hover, .dataset-options-menu ul li:hover {
+.coordinates-options-menu {min-width:50px;}
+.coordinates-options-menu ul li { padding: 4px; }
+
+.context-menu ul li:hover, .tools-menu ul li:hover, 
+.dataset-options-menu ul li:hover, .coordinates-options-menu ul li:hover {
   background-color: #4677f8;
   color: #fefefe;
 }
 
-.button.dataset-option {
+.button.dataset-option, .button.coordinate-option {
 	margin-right:5px;
 	color:#fff;
 }
@@ -3204,7 +3212,7 @@ rect.more {fill: #3182bd;}*/
 
 .settings-checkbox {
     display:inline-block;
-    position:relative;
+    position:inherit;
     left:100px;
     margin-left:10px;
 }
