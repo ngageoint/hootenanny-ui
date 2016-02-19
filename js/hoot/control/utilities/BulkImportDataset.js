@@ -75,9 +75,10 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         _columns = [
            {label:'Import Type', placeholder: 'Select Import Type', type: 'importImportType', combobox: {data: importTypes, command:_importTypeComboHandler}},
            {label:'Import Data', placeholder: 'Select File', type: 'fileImport',icon:'folder',readonly:'readonly'},
+           {label: 'FGDB Feature Classes', placeholder: '', type: 'bulkImportDatasetFGDBFeatureClasses',readonly:'readonly'},
            {label:'Layer Name', placeholder: 'Save As',  type: 'LayerName'},
            {label:'Path', placeholder: 'root', type: 'PathName', combobox:{data:folderList, command:_folderListComboHandler }},
-           {label:'Translation', placeholder: 'Select Data Translation Schema', type: 'Schema', combobox: {data:_importTranslations, command:_translationComboHandler}},
+           {label:'Translation', placeholder: 'Select Translation Schema', type: 'Schema', combobox: {data:_importTranslations, command:_translationComboHandler}},
            {label:'', placeholder:'',type:'deleteRow',icon:'trash'}
         ];
 
@@ -139,7 +140,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         _table = _form.append('table').attr('id','bulkImportTable');
         //set column width for last column
         var colgroup = _table.append('colgroup');
-        colgroup.append('col').attr('span','5').style('width','100%');
+        colgroup.append('col').attr('span','6').style('width','100%');
         colgroup.append('col').style('width','30px');
         
         _table.append('thead').append('tr')
@@ -376,6 +377,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 '.reset.importImportType',
                 null,
                 '.reset.LayerName',
+                '.reset.bulkImportDatasetFGDBFeatureClasses',
                 function(status){
                 if(status.info=='complete'){
                     if(_isCancel == false){
@@ -513,6 +515,10 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         if(!isValid) {
             return;
         }
+
+        if(selType == 'DIR'){  
+            _retrieveFeatureClasses(selRowNum);
+        } 
 
         d3.select(".reset.fileImport[row='" + selRowNum + "']").value(fileNames.join('; '));
         var first = fileNames[0];
@@ -842,6 +848,84 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         _submitExp = null;
     }
     
+    /**
+    * @desc Uploads filed GDB to get Ogr Info of the target from Service.
+    * @param selRowNum - Selected row number
+    **/
+    var _retrieveFeatureClasses = function(selRowNum) {
+
+        var spin = 
+            d3.select(".reset.bulkImportDatasetFGDBFeatureClasses[row='" + selRowNum + "']")
+            .classed('_icon _loading col1 f1',true)
+            .style('height', '30px')
+            .style('margin-top', '-8px');
+
+        var filesList = document.getElementById('ingestfileuploader-' + selRowNum).files;
+        var formData = new FormData();
+        for(var i=0; i<filesList.length; i++) {
+            var f = filesList[i];
+            formData.append(i, f);
+        }
+
+        //reset the file input value so on change will fire
+        //if the same files/folder is selected twice in a row, #5624
+        this.value = null;
+
+        var data = {};
+        data.formData = formData;
+        data.type = 'DIR';
+
+        Hoot.model.REST('uploadFGDBForStats', data, function (resp, jobId) {
+            var jobData = {};
+            jobData.jobId = jobId;
+
+            Hoot.model.REST('getFGDBStat', jobData, function (json) {
+                if(spin) {
+                    spin.classed('_icon _loading col1 f1',false);
+                }
+                
+                var list = [];
+                d3.values(json).forEach(function(v) {
+                    list = list.concat(Object.keys(v));
+                });
+
+                var field = {};
+                field['combobox'] = {data:list};
+
+                _populateFeatureClasses(field, selRowNum);
+            });
+        });
+
+    }
+
+
+    /**
+    * @desc Populate checkbox combobox with feature classes infor.
+    * @param a - Field meta data.
+    * @param selRowNum - Selected row number
+    **/
+    var _populateFeatureClasses = function (a, selRowNum) {
+
+        var comboPathName = Hoot.ui.checkcombobox()
+            .data(_.map(a.combobox.data, function (n) {
+                return {
+                    value: n,
+                    title: n
+                };
+            }));
+
+        var curRowNum = 0;
+        if(selRowNum){
+            curRowNum = selRowNum;
+        }
+        
+        d3.select(".reset.bulkImportDatasetFGDBFeatureClasses[row='" + curRowNum + "']")
+            .style('width', '100%')
+            .call(comboPathName);
+        
+        d3.select(".reset.bulkImportDatasetFGDBFeatureClasses[row='" + curRowNum + "']").attr('readonly',true); 
+    }
+
 
     return d3.rebind(_instance, _events, 'on');
 }

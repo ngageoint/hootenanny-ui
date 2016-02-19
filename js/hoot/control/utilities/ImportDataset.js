@@ -410,85 +410,41 @@ Hoot.control.utilities.importdataset = function(context) {
         d3.select(this).attr('readonly',true); 
     }
 
+    /**
+    * @desc Uploads filed GDB to get Ogr Info of the target from Service.
+    **/
     var _retrieveFeatureClasses = function() {
-        var spin;
-        function upload(type) {
-            //d3.select('body').call(iD.ui.Processing(context,true,'Please wait while loading FGDB Feature Classes'));
-            spin = d3.select(d3.select('#importDatasetFGDBFeatureClasses')
+        //getFGDBStats
+        //Hoot.model.REST('cancel', data, function (a) {
+        var spin = d3.select(d3.select('#importDatasetFGDBFeatureClasses')
                 .node().parentNode).select('label').insert('div',':first-child')
             .classed('_icon _loading col1 fr',true)
             .style('height', '30px')
             .style('margin-top', '-8px');
 
-            d3.selectAll('a, div').classed('wait', true);
-            var filesList = document.getElementById('ingestfileuploader').files;
-            var formData = new FormData();
-            for(var i=0; i<filesList.length; i++) {
-                var f = filesList[i];
-                formData.append(i, f);
-            }
-
-            //reset the file input value so on change will fire
-            //if the same files/folder is selected twice in a row, #5624
-            this.value = null;
-
-            d3.json('/hoot-services/ogr/info/upload?INPUT_TYPE=' + type)
-                .post(formData, function(error, json) {
-                    if (error || json.status === 'failed') {
-                        showError('Upload request failed.\n' + error);
-                        return;
-                    }
-                    pollJob(json.jobId, loadAttrValues);
-                });
+        var filesList = document.getElementById('ingestfileuploader').files;
+        var formData = new FormData();
+        for(var i=0; i<filesList.length; i++) {
+            var f = filesList[i];
+            formData.append(i, f);
         }
 
-        function pollJob(jobId, callback) {
-            d3.json('/hoot-services/job/status/' + jobId, function(error, json) {
-                if (error || json.status === 'failed') {
-                    window.console.warn(error || json.statusDetail);
-                    showError('Job failed.\n' + json.statusDetail);
-                    return;
-                }
-                if (json.status === 'complete') {
-                    callback(jobId);
-                }
-                if (json.status === 'running') {
-                    setTimeout(function() {
-                        pollJob(jobId, callback);
-                    }, 2000);
-                }
-            });
-        }
+        //reset the file input value so on change will fire
+        //if the same files/folder is selected twice in a row, #5624
+        this.value = null;
 
-        function showError(err) {
+        var data = {};
+        data.formData = formData;
+        data.type = 'DIR';
 
-            err += '\n\nFiles can be one or more shapefiles, consisting of .shp, .shx, and .dbf components at a minimum.';
-            err += '\n\nOr a zip file containing one or more shapefiles or a folder that is a file geodatabase.';
-            err += '\n\nFolders can contain one or more shapefiles or be a file geodatabase.';
+        Hoot.model.REST('uploadFGDBForStats', data, function (resp, jobId) {
+            var jobData = {};
+            jobData.jobId = jobId;
 
-            iD.ui.Alert(err,'error');
-            /*openfile.append('div')
-            .text(err)
-            .style('color', 'red')
-            .classed('space-bottom1 inline', true)
-            .transition()
-            .duration(7000)
-            .style('opacity', 0)
-            .remove();*/
-        }
-
-        function loadAttrValues(jobId) {
-            d3.json('/hoot-services/ogr/info/' + jobId, function(error, json) {
-                //d3.select('body').call(iD.ui.Processing(context, false));
+            Hoot.model.REST('getFGDBStat', jobData, function (json) {
                 if(spin) {
                     spin.remove();
                 }
-                if (error) {
-                    window.console.warn(error);
-                    showError('Retrieving unique attributes failed.\n' + error);
-                    return;
-                }
-                d3.selectAll('a, div').classed('wait', false);
                 
                 var list = [];
                 d3.values(json).forEach(function(v) {
@@ -500,21 +456,14 @@ Hoot.control.utilities.importdataset = function(context) {
 
                 _populateFeatureClasses(field);
             });
-        }
-
-        //Convert json to necessary d3.map/d3.set data structure for the UI
-        function convertUniqueValues(json) {
-            var list = [];
-            d3.values(json).forEach(function(v) {
-                list = list.concat(Object.keys(v));
-            });
-            return list;
-        }
-
-        upload('DIR');
+        });
 
     }
 
+    /**
+    * @desc Populate checkbox combobox with feature classes infor.
+    * @param a - Field meta data.
+    **/
     var _populateFeatureClasses = function (a) {
 
         var comboPathName = Hoot.ui.checkcombobox()

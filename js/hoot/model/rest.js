@@ -29,10 +29,14 @@ Hoot.model.REST = function (command, data, callback, option) {
         if (!data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME) {
             return false;
         }
-        d3.xhr('/hoot-services/ingest/ingest/upload?TRANSLATION=' + data.TRANSLATION + '&INPUT_TYPE=' +
+        var url = '/hoot-services/ingest/ingest/upload?TRANSLATION=' + data.TRANSLATION + '&INPUT_TYPE=' +
                 data.INPUT_TYPE + '&INPUT_NAME=' + data.INPUT_NAME + '&USER_EMAIL=' +
-                iD.data.hootConfig.userEmail + '&NONE_TRANSLATION=' + data.NONE_TRANSLATION)
-                        .header('access-control-allow-origin', '*')
+                iD.data.hootConfig.userEmail + '&NONE_TRANSLATION=' + data.NONE_TRANSLATION;
+
+        if(data.FGDB_FC) {
+            url += '&FGDB_FC=' + data.FGDB_FC;
+        }
+        d3.xhr(url).header('access-control-allow-origin', '*')
             .post(data.formData, function (error, json) {
 
 
@@ -419,7 +423,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         var JobStatusStopTimer = function(resp) {
                 clearInterval(JobStatusTimer);
                 if (callback) {
-                    callback(resp);
+                    callback(resp, jobStatus);
                 }
             };
     };
@@ -1058,8 +1062,32 @@ rest.downloadReport = function(data)
         });
     }
 
-    rest['' + command + ''](data, callback, option);
-};
+    rest.uploadFGDBForStats = function(data, callback) {
+        var formData = data.formData;
+
+        d3.json('/hoot-services/ogr/info/upload?INPUT_TYPE=' + data.type)
+            .post(formData, function(error, json) {
+                if (error || json.status === 'failed') {
+                    return callback(_alertError(error, "Failed to load FGDB feature classes."));
+                }
+                rest.status(json.jobId, callback);
+            });
+    }
+
+
+
+
+    rest.getFGDBStat = function(data, callback) {
+        d3.json('/hoot-services/ogr/info/' + data.jobId, function(error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Failed to get FGDB feature classes stat! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    }
+
+        rest['' + command + ''](data, callback, option);
+    };
 
 Hoot.model.REST.WarningHandler = function(resp){
     if(resp.statusDetail){

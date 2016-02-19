@@ -93,7 +93,7 @@ Hoot.model.import = function (context)
             
         var fgdbFCList;
         if(FgdbFeatureClassElemId) {
-            fgdbFCList = d3.select(FgdbFeatureClassElemId).value();
+            fgdbFCList = container.select(FgdbFeatureClassElemId).value();
         }
         
         var data = {};
