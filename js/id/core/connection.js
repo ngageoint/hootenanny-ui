@@ -610,6 +610,7 @@ iD.Connection = function(context) {
                     delete loadedTiles[b];
                 }
             });
+            return event.layer();
         }
     };
 
