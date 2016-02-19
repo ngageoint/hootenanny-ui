@@ -97,10 +97,11 @@ Hoot.control.utilities.importdataset = function(context) {
             multipartid: 'ingestfileuploader'
         }, {
             label: 'FGDB Feature Classes',
-            placeholder: folderPlaceholder,
+            placeholder: '',
             id: 'importDatasetFGDBFeatureClasses',
-            combobox: {'data':folderList, 'command': _populateFolderList },
-            inputtype: 'combobox'
+            combobox: {'data':[], 'command': _populateFeatureClasses },
+            inputtype: 'combobox',
+            hidden: true
         }, {
             label: 'Layer Name',
             placeholder: 'Save As',
@@ -262,6 +263,7 @@ Hoot.control.utilities.importdataset = function(context) {
                 '#importDatasetImportType',
                 '#importDatasetNewFolderName',
                 '#importDatasetLayerName',
+                '#importDatasetFGDBFeatureClasses',
                 function(status){
                 if(status.info == 'complete'){
                     if(_isCancel == false){
@@ -408,6 +410,129 @@ Hoot.control.utilities.importdataset = function(context) {
         d3.select(this).attr('readonly',true); 
     }
 
+    var _retrieveFeatureClasses = function() {
+        var spin;
+        function upload(type) {
+            //d3.select('body').call(iD.ui.Processing(context,true,'Please wait while loading FGDB Feature Classes'));
+            spin = d3.select(d3.select('#importDatasetFGDBFeatureClasses')
+                .node().parentNode).select('label').insert('div',':first-child')
+            .classed('_icon _loading col1 fr',true)
+            .style('height', '30px')
+            .style('margin-top', '-8px');
+
+            d3.selectAll('a, div').classed('wait', true);
+            var filesList = document.getElementById('ingestfileuploader').files;
+            var formData = new FormData();
+            for(var i=0; i<filesList.length; i++) {
+                var f = filesList[i];
+                formData.append(i, f);
+            }
+
+            //reset the file input value so on change will fire
+            //if the same files/folder is selected twice in a row, #5624
+            this.value = null;
+
+            d3.json('/hoot-services/ogr/info/upload?INPUT_TYPE=' + type)
+                .post(formData, function(error, json) {
+                    if (error || json.status === 'failed') {
+                        showError('Upload request failed.\n' + error);
+                        return;
+                    }
+                    pollJob(json.jobId, loadAttrValues);
+                });
+        }
+
+        function pollJob(jobId, callback) {
+            d3.json('/hoot-services/job/status/' + jobId, function(error, json) {
+                if (error || json.status === 'failed') {
+                    window.console.warn(error || json.statusDetail);
+                    showError('Job failed.\n' + json.statusDetail);
+                    return;
+                }
+                if (json.status === 'complete') {
+                    callback(jobId);
+                }
+                if (json.status === 'running') {
+                    setTimeout(function() {
+                        pollJob(jobId, callback);
+                    }, 2000);
+                }
+            });
+        }
+
+        function showError(err) {
+
+            err += '\n\nFiles can be one or more shapefiles, consisting of .shp, .shx, and .dbf components at a minimum.';
+            err += '\n\nOr a zip file containing one or more shapefiles or a folder that is a file geodatabase.';
+            err += '\n\nFolders can contain one or more shapefiles or be a file geodatabase.';
+
+            iD.ui.Alert(err,'error');
+            /*openfile.append('div')
+            .text(err)
+            .style('color', 'red')
+            .classed('space-bottom1 inline', true)
+            .transition()
+            .duration(7000)
+            .style('opacity', 0)
+            .remove();*/
+        }
+
+        function loadAttrValues(jobId) {
+            d3.json('/hoot-services/ogr/info/' + jobId, function(error, json) {
+                //d3.select('body').call(iD.ui.Processing(context, false));
+                if(spin) {
+                    spin.remove();
+                }
+                if (error) {
+                    window.console.warn(error);
+                    showError('Retrieving unique attributes failed.\n' + error);
+                    return;
+                }
+                d3.selectAll('a, div').classed('wait', false);
+                
+                var list = [];
+                d3.values(json).forEach(function(v) {
+                    list = list.concat(Object.keys(v));
+                });
+
+                var field = {};
+                field['combobox'] = {data:list};
+
+                _populateFeatureClasses(field);
+            });
+        }
+
+        //Convert json to necessary d3.map/d3.set data structure for the UI
+        function convertUniqueValues(json) {
+            var list = [];
+            d3.values(json).forEach(function(v) {
+                list = list.concat(Object.keys(v));
+            });
+            return list;
+        }
+
+        upload('DIR');
+
+    }
+
+    var _populateFeatureClasses = function (a) {
+
+        var comboPathName = Hoot.ui.checkcombobox()
+            .data(_.map(a.combobox.data, function (n) {
+                return {
+                    value: n,
+                    title: n
+                };
+            }));
+
+        
+        d3.select('#importDatasetFGDBFeatureClasses')
+            .style('width', '100%')
+            .call(comboPathName);
+        
+        d3.select('#importDatasetFGDBFeatureClasses').attr('readonly',true); 
+    }
+
     /**
     * @desc Populate available translations.
     * @param a - Translations list combo meta data.
@@ -432,7 +557,9 @@ Hoot.control.utilities.importdataset = function(context) {
     * @param typeName - Import type name.
     **/
     var _setMultipartForType = function(typeName) {
+        var isDir = false;
         if(typeName == 'DIR'){
+            isDir = true;
             if(_bInfo.name.substring(0,3) == "Chr"){
                 d3.select('#ingestfileuploader')
                 .property('multiple', false)
@@ -464,6 +591,14 @@ Hoot.control.utilities.importdataset = function(context) {
             .attr('accept', null)
             .attr('webkitdirectory', null)
             .attr('directory', null);
+        }
+
+        if(isDir) {
+            d3.select(d3.select('#importDatasetFGDBFeatureClasses')
+                .node().parentNode).classed('hidden',false);
+        } else {
+            d3.select(d3.select('#importDatasetFGDBFeatureClasses')
+                .node().parentNode).classed('hidden',true);
         }
     }
 
@@ -657,6 +792,7 @@ Hoot.control.utilities.importdataset = function(context) {
         if(selType == 'DIR'){
                 _container.select('#importDatasetFileImport').value(folderName);
                 _container.select('#importDatasetLayerName').value(fgdbName);  
+                _retrieveFeatureClasses();
         } else {
             _container.select('#importDatasetFileImport').value(fileNames.join('; '));
             var first = fileNames[0];

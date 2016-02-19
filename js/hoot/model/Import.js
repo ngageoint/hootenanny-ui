@@ -23,7 +23,8 @@ Hoot.model.import = function (context)
     	});
     }
     
-    import_layer.importData = function (container, schemaElemId, typeElemId, newfolderElemId, layerNameElemId, callback) {
+    import_layer.importData = function (container, schemaElemId, typeElemId, 
+        newfolderElemId, layerNameElemId, FgdbFeatureClassElemId, callback) {
 		_initVariables();
     	importCallback = callback;
 
@@ -90,6 +91,10 @@ Hoot.model.import = function (context)
             }
         }
             
+        var fgdbFCList;
+        if(FgdbFeatureClassElemId) {
+            fgdbFCList = d3.select(FgdbFeatureClassElemId).value();
+        }
         
         var data = {};
         if(oTrans && oTrans.NONE === 'true'){
@@ -101,6 +106,9 @@ Hoot.model.import = function (context)
         data.INPUT_TYPE = typeName;
         data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';
         data.INPUT_NAME = container.select(layerNameElemId).value();
+        if(fgdbFCList && fgdbFCList.length > 0) {
+            data.FGDB_FC = fgdbFCList;
+        }
         
         var fileUploader;
         if(container.attr('id') == null){

@@ -226,6 +226,10 @@ Hoot.ui.hootformbase = function ()
             }     
         } 
 
+        if (a.hidden === true) {
+            field.classed('hidden', true);
+        }
+
     }
 
     /**
