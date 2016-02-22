@@ -30,8 +30,15 @@ iD.Map = function(context) {
 
     function map(selection) {
         context.history()
-            .on('change.map', function(){
-                redraw(undefined, undefined, true);
+            .on('change.map', function() {
+                redraw();
+                //Add 'edited' class to edited but unsaved features
+                d3.selectAll('.edited').classed('edited', false);
+                context.history().difference().summary().map(function(d) {
+                    return d.entity.id;
+                }).forEach(function(d) {
+                    d3.selectAll('.' + d).classed('edited', true);
+                });
             });
         context.background()
             .on('change.map', redraw);

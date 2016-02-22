@@ -122,6 +122,16 @@ path.shadow.tag-hoot.area:not(.hover).activeReviewFeature2:not(.selected) {
   stroke-width:2;
 }
 
+g.point.edited .shadow {
+    stroke: #FFDF00 !important;
+    stroke-opacity: 0.7 !important;
+}
+
+path.shadow.edited {
+    stroke: #FFDF00 !important;
+    stroke-opacity: 0.7 !important;
+    stroke-width: 10 !important;
+}
 
 
 
