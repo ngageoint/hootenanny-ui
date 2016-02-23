@@ -367,7 +367,10 @@ iD.ui.MapData = function(context) {
                 .title(t('highlight-edited.tooltip'))
                 .placement('top'));
         hEditedLabel.append('input')
-            .attr('type', 'checkbox');
+            .attr('type', 'checkbox')
+            .on('click', function() {
+                context.map().updateEditedHighlights();
+            });
         hEditedLabel.append('span')
             .text(t('highlight-edited.title'));
 
