@@ -203,8 +203,6 @@ Hoot.control.TranslationAssistant = function () {
 
         var jsonMapping = {};
 
-        var ignoreCount = 0;
-
         //Remove existing controls
         mapping.selectAll('div, a').remove();
 
@@ -294,9 +292,12 @@ Hoot.control.TranslationAssistant = function () {
                 });
             }
 
-            //If all attributes are in the mapping display the translate button
-            if (layers.every(function(d) {
-                return d3.keys(jsonMapping[d]).length === attributeValuesMap[d].entries().length;
+            //Have at least one layer mapping at least one attribute to save the translation
+            if (layers.some(function(d) {
+                //Have at least one attribute mapped
+                return d3.entries(jsonMapping[d]).some(function(e) {
+                    return e.value !== 'IGNORED';
+                });
             })) {
                 enableTranslate();
             }
@@ -567,15 +568,6 @@ Hoot.control.TranslationAssistant = function () {
 
                 function keydown() {
                     switch (d3.event.keyCode) {
-                        // backspace, delete
-                        case 8:
-                        case 46:
-                            searchTag.on('input.searchtag', function() {
-                                var start = searchTag.property('selectionStart');
-                                searchTag.node().setSelectionRange(start, start);
-                                searchTag.on('input.searchtag', change);
-                            });
-                            break;
                         // tab
                         case 9:
                             accept();
@@ -614,28 +606,28 @@ Hoot.control.TranslationAssistant = function () {
                 function scroll(dir,that){
                 	var overflowList = d3.select(that).node().nextSibling;
                 	var results = d3.select(overflowList).selectAll('div');
-                	
+
                 	if(!_.isEmpty(results[0])){
                 		var overflowTags = [];
                     	for (var i = 0; i < results[0].length; i += 1) {
                     		overflowTags.push(results[0][i].innerHTML);
                     		}
-                    	
+
                     	//get index of current
                     	var curIdx = overflowTags.indexOf(searchTag.property('value'));
 
                     	if(dir==='up'){curIdx -= 1;}
                     	else if(dir==='down'){curIdx += 1;}
-                    	
+
                     	curIdx < 0? 0 : curIdx;
                     	curIdx > overflowTags.length-1? overflowTags.length-1 : curIdx;
-                    	
+
                     	//scroll to curIdx
                     	overflowList.scrollTop = results[0][curIdx].offsetTop - overflowList.offsetTop;
-                    	searchTag.property('value',overflowTags[curIdx]);	
-                	}                	
+                    	searchTag.property('value',overflowTags[curIdx]);
+                	}
                 }
-                
+
                 function change() {
                     //window.console.log(d3.event);
 
@@ -645,25 +637,16 @@ Hoot.control.TranslationAssistant = function () {
                     if (value.length) {
                         results = tags[schemaOption]
                         .filter( function(val) {
-                            return val.key && (val.key.toLowerCase().indexOf(value.toLowerCase()) === 0);
+                            return val.key && (val.key.toLowerCase().indexOf(value.toLowerCase()) > -1);
                         });
-
-                        //provide highlighted remaining text of suggestion
-                        //can be removed to use substring
-                        if (results.length > 0) {
-                            var suggestion = results[0].key;
-                            searchTag.property('value', suggestion);
-                            searchTag.node().setSelectionRange(value.length, suggestion.length);
-                            searchTag.node().focus();
-                        }
                     } else {
                         results = [];
                     }
 
-                    updateResults(results);
+                    updateResults(results, value);
                 }
 
-                function updateResults(results) {
+                function updateResults(results, value) {
 
                     //The search tag results
                     var searchtags = resultsList.selectAll('.search-result')
@@ -673,7 +656,7 @@ Hoot.control.TranslationAssistant = function () {
                         .classed('search-result pad1x pad1y keyline-left keyline-top', true);
 
                     searchtags
-                        .text( function(d) { return !d || d.key; })
+                        .html( function(d) { return !d || d.key.replace(value, '<span class="match">' + value + '</span>'); })
                         .on('click', function(d) {
                             var lookup = d3.select(searchTag.node().parentNode);
                             selectTag(lookup, d);
@@ -776,29 +759,8 @@ Hoot.control.TranslationAssistant = function () {
         function updateAttributeMapping(d, mapping) {
             var key = d.keys()[currentIndex[layer]];
             jsonMapping[layer][key] = mapping;
-
-            if (mapping === 'IGNORED') {
-                ignoreCount++;
-            } else {
-                ignoreCount = 0;
-            }
-            if (ignoreCount > 3) {
-                if (window.confirm('Ignore remaining attributes?')) {
-                    ignoreRemaining(d, mapping);
-                }
-                ignoreCount = 0;
-            }
-
             forward();
             updateAttributes();
-        }
-
-        function ignoreRemaining(d, mapping) {
-            d.keys().filter(function(a) {
-                return !(jsonMapping[layer][a]);
-            }).forEach(function(a) {
-                jsonMapping[layer][a] = mapping;
-            });
         }
 
         function enableTranslate() {
@@ -837,9 +799,8 @@ Hoot.control.TranslationAssistant = function () {
 
                     var blob = new Blob([output], {type: 'text/plain;charset=utf-8'});
                     window.saveAs(blob, fileName + '-translation.js');
-                    
+
                     if(window.confirm("Do you want to add this to internal translation list?")){
-                    	console.log("under construction");
                     	var thisbody = d3.select("#utiltranslation").node()
                     	d3.select(jobsBG).node().appendChild(thisbody);
 	                    d3.selectAll('.utilHootHead')
@@ -848,7 +809,7 @@ Hoot.control.TranslationAssistant = function () {
 	                    d3.select(thisbody.children[0])
 	                        .classed('fill-white', true)
 	                        .classed('keyline-bottom', false);
-	                    
+
 	                    //open the ingestDiv and copy values into paste box
 	                    hoot.control.utilities.translation.newTranslationPopup(output);
                     }
