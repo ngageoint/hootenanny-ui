@@ -130,7 +130,7 @@ g.point.edited.unsaved .shadow {
 path.shadow.edited.unsaved {
     stroke: #FFDF00;
     stroke-opacity: 0.7;
-    stroke-width: 10;
+    stroke-width: 15;
 }
 
 
