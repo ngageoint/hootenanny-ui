@@ -33,13 +33,13 @@ iD.Map = function(context) {
             .on('change.map', function() {
                 redraw();
                 //Clear any 'edited' class from features
-                d3.selectAll('.edited').classed('edited', false);
+                d3.selectAll('.edited').classed('edited unsaved', false);
                 if (d3.select('div.highlight-edited input').node().checked) {
                     //Add 'edited' class to edited but unsaved features
                     context.history().difference().summary().map(function(d) {
                         return d.entity.id;
                     }).forEach(function(d) {
-                        d3.selectAll('.' + d).classed('edited', true);
+                        d3.selectAll('.' + d).classed('edited unsaved', true);
                     });
                 }
             });
