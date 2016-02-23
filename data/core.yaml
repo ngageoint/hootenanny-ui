@@ -173,6 +173,8 @@ en:
   review:
     merge:
       description: Merge review features. Hold Ctrl to reverse.
+    sharereview:
+      description: Save review to share with others.
     previous:
       description: Skip to previous review.
     next:
