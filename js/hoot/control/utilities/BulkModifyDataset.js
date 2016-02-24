@@ -139,7 +139,7 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
                      link = {}; 
         		 });
         		 
-        		 modalbg.remove();	
+        		 _container.remove();	
         		 
         	 });
          }); 

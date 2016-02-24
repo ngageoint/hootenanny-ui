@@ -13,6 +13,7 @@ Hoot.control.utilities.exportdataset = function(context) {
 
 	var _container;
 	var _dataset;
+	var _transCombo;
 
 
 	/**
@@ -32,24 +33,24 @@ Hoot.control.utilities.exportdataset = function(context) {
 	var _createDialog = function(dataset, translations) {
 		_dataset = dataset;
 		var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema'
-		var transCombo = [];
+		_transCombo = [];
 		// filters for exportable translations
 		_.each(translations, function(tr){
 		  if(tr.CANEXPORT && tr.CANEXPORT == true){
-		      transCombo.push(tr);
+		      _transCombo.push(tr);
 		  }
 		});
 
-		if(transCombo.length == 1){
+		if(_transCombo.length == 1){
 		  var emptyObj = {};
 		  emptyObj.NAME="";
 		  emptyObj.DESCRIPTION="";
-		  transCombo.push(emptyObj);
+		  _transCombo.push(emptyObj);
 		}
 		var d_form = [{
 		    label: 'Translation',
 		    id: 'fileExportTranslation',
-		    combobox: {'data':transCombo, 'command': _populateTranslations },//transCombo,//exportResources,
+		    combobox: {'data':_transCombo, 'command': _populateTranslations },//transCombo,//exportResources,
 		    placeholder: { 'default': placeHolder, 'command': _getTranslationComboPlaceHolder} ,//'LTDS 4.0'
 		    inputtype:'combobox'
 		}, {
@@ -169,18 +170,18 @@ Hoot.control.utilities.exportdataset = function(context) {
 	var _checkForTemplate = function(){
 		var hidden=false;
 
-		var exportType = d3.select('.fileExportFileType').value();
-		var transType = d3.select('.fileExportTranslation').value();
+		var exportType = d3.select('#fileExportFileType').value();
+		var transType = d3.select('#fileExportTranslation').value();
 
 		// Check if output type is File Geodatabase
-		if (exportType==''){exportType=d3.select('.fileExportFileType').attr('placeholder');}
-		if (transType==''){transType=d3.select('.fileExportTranslation').attr('placeholder');}
+		if (exportType==''){exportType=d3.select('#fileExportFileType').attr('placeholder');}
+		if (transType==''){transType=d3.select('#fileExportTranslation').attr('placeholder');}
 
 		if(exportType!='File Geodatabase'){
 		 hidden=true;
 		}
 
-		var selTrans = _.findWhere(transCombo,{"DESCRIPTION":transType});
+		var selTrans = _.findWhere(_transCombo,{"DESCRIPTION":transType});
 		if(selTrans){
 		 if(selTrans.NAME.substring(0,3)!='TDS'){
 			 hidden=true;
