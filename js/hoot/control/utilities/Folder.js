@@ -393,6 +393,9 @@ Hoot.control.utilities.folder = function(context) {
 								break;
 							}
 
+							selectedLayerIDs = context.hoot().model.layers.setSelectedLayers([]);
+							context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
+
 		                	d3.select('.context-menu').remove();
 		                })
 		                .attr("class",function(item){return "_icon " + item.icon})
@@ -467,6 +470,8 @@ Hoot.control.utilities.folder = function(context) {
 	    	  if(p>5){return;}
 	      }
 	      if(!d3.select(parent.parentNode).select('.usedLayersInput').empty()){d3.select(parent.parentNode).select('.usedLayersInput').value('');}
+
+	      context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
 	    }
 	
 	    function fillColor(d) {
@@ -490,8 +495,7 @@ Hoot.control.utilities.folder = function(context) {
 		    	} else {
 		    		var idx = selectedLayerIDs.indexOf(lyrid);
 		    		if(idx > -1){selectedLayerIDs.splice(idx,1);}
-		    	}	      
-		    	context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);		      
+		    	}
 	    	}
 	    	
 	    	return d.selected ? "sel" : d._children ? "more" : "flat";
