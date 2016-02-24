@@ -299,7 +299,7 @@ iD.ui.MapData = function(context) {
             .style('display', 'none');
 
        //var widthLabel = widthContainer.append('div').append('label').text('Path Width');
-        
+
         widthContainer.append('input').attr('type','number')
             .classed('hoot-input settings-input',true)
             .attr('id','path-width').property('disabled',true)
@@ -340,6 +340,7 @@ iD.ui.MapData = function(context) {
             .on('click', function() {
                 var exp = d3.select(this).classed('expanded');
                 featureContainer.style('display', exp ? 'none' : 'block');
+                hEditedContainer.style('display', exp ? 'none' : 'block');
                 d3.select(this).classed('expanded', !exp);
                 d3.event.preventDefault();
             });
@@ -354,6 +355,24 @@ iD.ui.MapData = function(context) {
 
         context.features()
             .on('change.map_data-update', update);
+
+        var hEditedContainer = content.append('div')
+            .attr('class', 'highlight-edited')
+            .style('display', 'none');
+        var hEditedItem = hEditedContainer.append('ul')
+            .attr('class', 'layer-list')
+            .append('li');
+        var hEditedLabel = hEditedItem.append('label')
+            .call(bootstrap.tooltip()
+                .title(t('highlight-edited.tooltip'))
+                .placement('top'));
+        hEditedLabel.append('input')
+            .attr('type', 'checkbox')
+            .on('click', function() {
+                context.map().updateEditedHighlights();
+            });
+        hEditedLabel.append('span')
+            .text(t('highlight-edited.title'));
 
         setFill(fillDefault);
 
