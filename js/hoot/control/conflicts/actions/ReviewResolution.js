@@ -70,11 +70,35 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
 
 
     /**
-    * @desc Resolves all reviewables
+    * @desc Checks for any unsaved item and then resolves all reviewables
+    * @param data - resolved items
     **/
     _instance.acceptAll = function(data) {
         var doProceed = true;
 
+        var hasChanges = context.history().hasChanges();
+        if (hasChanges) {
+            _parent().setProcessing(false);
+            iD.modes.Save(context).save(context, function () {
+                try {
+                    _performAcceptAll(data);
+
+                } catch (err) {
+                    _handleError(err, true);
+                }
+                
+
+            });
+        } else {
+            _performAcceptAll(data);
+        }   
+    }
+
+    /**
+    * @desc Resolves all reviewables
+    * @param data - resolved items
+    **/
+    _performAcceptAll = function(data) {
         try{
             _parent().setProcessing(true, 'Please wait while resolving all review items.');
             Hoot.model.REST('resolveAllReviews', data.mapId, function (error, response)
@@ -100,7 +124,6 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
         } catch (err) {
             _handleError(err, true);
         }
-    
     }
 
 

@@ -132,34 +132,39 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         if(poiTableCols) {
             if(poiTableCols[0]) {
                 var fid = poiTableCols[0].id;
-                var feature = context.graph().entity(fid);
-                if(feature.type == 'relation') {
-                    feature.members 
-                    .forEach(function(member) {                
-                        _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2');
-                    });
-                } else {
-                    var offFid = null;
-                    if(poiTableCols[1]) {
-                        offFid = poiTableCols[1].id;
+                var feature = context.hasEntity(fid);
+                if(feature){
+                    if(feature.type == 'relation') {
+                        feature.members 
+                        .forEach(function(member) {                
+                            _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2');
+                        });
+                    } else {
+                        var offFid = null;
+                        if(poiTableCols[1]) {
+                            offFid = poiTableCols[1].id;
+                        }
+                        _toggleMouseEvent(poiTableCols[0].id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2', offFid);
                     }
-                    _toggleMouseEvent(poiTableCols[0].id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2', offFid);
                 }
-                
+                                    
             }
 
             if(poiTableCols[1]) {
 
                 var fid = poiTableCols[1].id;
-                var feature = context.graph().entity(fid);
-                if(feature.type == 'relation') {
-                    feature.members 
-                    .forEach(function(member) {                
-                        _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature');
-                    });
-                } else {
-                    _toggleMouseEvent(poiTableCols[1].id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature', poiTableCols[0].id);
+                var feature = context.hasEntity(fid);
+                if(feature) {
+                    if(feature.type == 'relation') {
+                        feature.members 
+                        .forEach(function(member) {                
+                            _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature');
+                        });
+                    } else {
+                        _toggleMouseEvent(poiTableCols[1].id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature', poiTableCols[0].id);
+                    }
                 }
+                    
                     
             }
         }
