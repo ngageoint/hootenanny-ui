@@ -23,7 +23,8 @@ Hoot.model.import = function (context)
     	});
     }
     
-    import_layer.importData = function (container, callback) {
+    import_layer.importData = function (container, schemaElemId, typeElemId, 
+        newfolderElemId, layerNameElemId, FgdbFeatureClassElemId, callback) {
 		_initVariables();
     	importCallback = callback;
 
@@ -32,9 +33,9 @@ Hoot.model.import = function (context)
 
         jobIdsArr = [];
         mapIdsArr = [];
-        var transType = container.select('.reset.Schema').value();
+        var transType = container.select(schemaElemId).value();
 
-        var comboData = container.select('.reset.Schema').datum();
+        var comboData = container.select(schemaElemId).datum();
         var transName = transType;
         var oTrans = null;
         for(i=0; i<comboData.combobox.length; i++){
@@ -61,12 +62,12 @@ Hoot.model.import = function (context)
             transcriptName = 'customscript/' + transName + '.js';
         }
 
-        var selType = container.select('.reset.importImportType').value();
+        var selType = container.select(typeElemId).value();
 
-        var comboData = container.select('.reset.importImportType').datum();
+        var comboData = container.select(typeElemId).datum();
         var typeName = "";
-        for(i=0; i<comboData.combobox2.length; i++){
-            var o = comboData.combobox2[i];
+        for(i=0; i<comboData.combobox.data.length; i++){
+            var o = comboData.combobox.data[i];
             if(o.title == selType){
                 typeName = o.value;
                 break;
@@ -74,19 +75,26 @@ Hoot.model.import = function (context)
 
         }
         
-        // Check new folder name
-        try{
-	        var newfoldername = container.select('.reset.NewFolderName').value();
-	        if(newfoldername !=''){
-	            var resp = context.hoot().checkForUnallowedChar(newfoldername);
-	        	if(resp != true){
-	        		iD.ui.Alert(resp,'warning');
-	        		return;
-	            }
-	        }
-        } catch (e) {
-			// TODO: handle exception
-		}
+        if(newfolderElemId) {
+            // Check new folder name
+            try{
+                var newfoldername = container.select(newfolderElemId).value();
+                if(newfoldername !=''){
+                    var resp = context.hoot().checkForUnallowedChar(newfoldername);
+                    if(resp != true){
+                        iD.ui.Alert(resp,'warning');
+                        return;
+                    }
+                }
+            } catch (e) {
+                // TODO: handle exception
+            }
+        }
+            
+        var fgdbFCList;
+        if(FgdbFeatureClassElemId) {
+            fgdbFCList = container.select(FgdbFeatureClassElemId).value();
+        }
         
         var data = {};
         if(oTrans && oTrans.NONE === 'true'){
@@ -97,7 +105,10 @@ Hoot.model.import = function (context)
 
         data.INPUT_TYPE = typeName;
         data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';
-        data.INPUT_NAME = container.select('.reset.LayerName').value();
+        data.INPUT_NAME = container.select(layerNameElemId).value();
+        if(fgdbFCList && fgdbFCList.length > 0) {
+            data.FGDB_FC = fgdbFCList;
+        }
         
         var fileUploader;
         if(container.attr('id') == null){

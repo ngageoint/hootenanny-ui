@@ -53,7 +53,7 @@ iD.ui.Tools = function(context) {
                     	} else if (item.action=='clipVisualExtent'){
                     		//Call clip map
                     		if(!_.isEmpty(hoot.model.layers.getLayers())){
-                    			hoot.control.utilities.dataset.clipDatasetContainer('visualExtent');                    			
+                    			hoot.control.utilities.clipdataset.clipDatasetContainer('visualExtent');                    			
                     		} else {
                     			iD.ui.Alert("Add data to map before clipping.","notice");
                     		}

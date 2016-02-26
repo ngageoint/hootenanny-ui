@@ -18,12 +18,12 @@ Hoot.model.export = function (context)
     model_export.exportData = function (container, data, callback) {
         _initVariables();
         exportCallback = callback;
-        outputname = container.select('.reset.fileExportOutputName').value() || 
-                container.select('.reset.fileExportOutputName').attr('placeholder');
+        outputname = container.select('#fileExportOutputName').value() || 
+                container.select('#fileExportOutputName').attr('placeholder');
         selectedInput = data.name || outputname;
 
-        selExportTypeDesc = container.select('.reset.fileExportFileType')
-            .value() || container.select('.reset.fileExportFileType').attr('placeholder');
+        selExportTypeDesc = container.select('#fileExportFileType')
+            .value() || container.select('#fileExportFileType').attr('placeholder');
         var _expType = {
             'File Geodatabase': 'gdb',
             'Shapefile': 'shp',
@@ -32,13 +32,13 @@ Hoot.model.export = function (context)
         };
         selectedOutType = _expType[selExportTypeDesc] || selExportTypeDesc;
 
-        var transType = container.select('.reset.fileExportTranslation').value();
+        var transType = container.select('#fileExportTranslation').value();
 
-        var comboData = container.select('.reset.fileExportTranslation').datum();
+        var comboData = container.select('#fileExportTranslation').datum();
         var transName = null;
         var oTrans = null;
-        for(i=0; i<comboData.transcombo.length; i++){
-            var o = comboData.transcombo[i];
+        for(i=0; i<comboData.combobox.data.length; i++){
+            var o = comboData.combobox.data[i];
             if(o.DESCRIPTION == transType){
                 transName = o.NAME;
                 oTrans = o;

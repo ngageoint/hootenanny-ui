@@ -85,7 +85,7 @@ iD.ui.Modes = function(context) {
         	keybinding.on(m.key, function() {context.enter(m);});
         });
         
-        keybinding.on('9',function(){hoot.control.utilities.dataset.clipDatasetContainer('visualExtent');});
+        keybinding.on('9',function(){hoot.control.utilities.clipdataset.clipDatasetContainer('visualExtent');});
         
         d3.select(document)
             .call(keybinding);

@@ -430,9 +430,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                             .classed('text-left big col12 quiet', true)
 
                             .text(_createSubText);
-
-
-
+                       
                         tla3.append('button')
                         //.classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
                         .style('height', '100%')

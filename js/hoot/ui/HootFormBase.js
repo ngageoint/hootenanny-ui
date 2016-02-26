@@ -4,6 +4,8 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      02 Feb. 2016
+//      18 Feb. 2016
+//          - Refactored _createFieldSet
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Hoot.ui.hootformbase = function () 
@@ -112,88 +114,24 @@ Hoot.ui.hootformbase = function ()
 
                     // add header and label
                     field
-                    .classed('form-field fill-white small keyline-all round space-bottom1', true)
+                    .classed('form-field fill-white small keyline-all round space-bottom1', true)                   
                     .append('label')
                     .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
                     .text(a.label);
 
 
                     if(a.inputtype == 'textarea') {
-                        field.style('height', '98px');//.classed('row3', true);
-
-                        var fieldDiv = field
-                        .append('div')
-                        .classed('contain', true);
-
-                        var inputField = fieldDiv
-                        .append('textarea')
-                        .attr('placeholder', function (field) {
-                            return field.placeholder;
-                        })
-                        .classed('col12 row5 overflow', true)
-                        .style('display','block');
-
-                        if(a.readonly === true){
-                            inputField.attr('readonly','readonly');
-                        }
-                        if(a.id) {
-                            inputField.attr('id', a.id);
-                        }
+                        _createTextArea(a, field);
                     } else if(a.inputtype == 'combobox') {
-                        var fieldDiv = field
-                        .classed('contain', true);
+                        _createCombobox(a, field);
 
-                        var inputField = 
-                        fieldDiv
-                        .append('input')
-                        .attr('type', 'text')
-                        .attr('placeholder', function (field) {
-                            return field.placeholder;
-                        })
-                        .attr('class', function (field) {
-                            return field.className;
-                        });
-                      
-                        if(a.id) {
-                            inputField.attr('id', a.id);
-                        }
-
-                        if (a.combobox){
-                            if(a.combobox.data && a.combobox.command) {
-                                a.combobox.command.call(inputField.node(), a);
-                            }  else {
-                                _createDefaultCombo.call(inputField.node(), a);
-                            }     
-                        } 
-
-                    } else {
-                        var fieldDiv = field
-                        .classed('contain', true);
-
-                        var inputField = fieldDiv
-                        .append('input')
-                        .attr('type', 'text')
-                        .attr('placeholder', function (field) {
-                            return field.placeholder;
-                        })
-                        .attr('class', function (field) {
-                            return field.className;
-                        });
-
-                        if(a.text) {
-                            inputField.value(a.text);
-                        }
-                        if(a.id) {
-                            inputField.attr('id', a.id);
-                        }
-
-                        if(a.onchange) {
-                            inputField.on('change',a.onchange);
-                        }
-
-                        if(a.onclick) {
-                            inputField.on('click',a.onclick);
-                        }
+                    } else if(a.inputtype == 'checkbox'){
+                        var chkHtml = '<label class="pad1x pad0y round-top ' + a.checkbox + '" style="opacity: 1;">';
+                        chkHtml += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">'+a.label+'</label>';
+                        field.html(chkHtml);
+                        field.classed('keyline-all',false);
+                    }  else {
+                        _createDefaultTextField(a, field);
                     }
 
                     
@@ -202,6 +140,170 @@ Hoot.ui.hootformbase = function ()
 
 
         return fieldset;
+    }
+
+    /**
+    * @desc Create text area form field.
+    * @param a - field meta data.
+    * @param field - fields container div
+    **/
+    var _createTextArea = function(a, field) {
+        field.style('height', '98px');//.classed('row3', true);
+
+        var fieldDiv = field
+        .append('div')
+        .classed('contain', true);
+
+        var inputField = fieldDiv
+        .append('textarea')
+        .attr('placeholder', function (field) {
+            if(_.isObject(field.placeholder) === true){
+                var oPlaceHolder = field.placeholder;
+                if(oPlaceHolder['default'] && oPlaceHolder.command){
+                    return oPlaceHolder.command(field);
+                } else {
+                    if(oPlaceHolder['default'] ) {
+                        return oPlaceHolder['default'] ;
+                    } else {
+                        return '';
+                    }
+                }
+            }
+            return field.placeholder;
+        })
+        .classed('col12 row5 overflow', true)
+        .style('display','block');
+
+        if(a.readonly === true){
+            inputField.attr('readonly','readonly');
+        }
+        if(a.id) {
+            inputField.attr('id', a.id);
+        }
+    }
+
+    /**
+    * @desc Create combobox form field.
+    * @param a - field meta data.
+    * @param field - fields container div
+    **/
+    var _createCombobox = function(a, field) {
+        var fieldDiv = field
+        .classed('contain', true);
+
+        var inputField = 
+        fieldDiv
+        .append('input')
+        .attr('type', 'text')
+        .attr('placeholder', function (field) {
+            if(_.isObject(field.placeholder) === true){
+                var oPlaceHolder = field.placeholder;
+                if(oPlaceHolder['default'] && oPlaceHolder.command){
+                    return oPlaceHolder.command(field);
+                } else {
+                    if(oPlaceHolder['default'] ) {
+                        return oPlaceHolder['default'] ;
+                    } else {
+                        return '';
+                    }
+                }
+            }
+            return field.placeholder;
+        })
+        .attr('class', function (field) {
+            return field.className;
+        });
+      
+        if(a.id) {
+            inputField.attr('id', a.id);
+        }
+
+        if (a.combobox){
+            if(a.combobox.data && a.combobox.command) {
+                a.combobox.command.call(inputField.node(), a);
+            }  else {
+                _createDefaultCombo.call(inputField.node(), a);
+            }     
+        } 
+
+        if (a.hidden === true) {
+            field.classed('hidden', true);
+        }
+
+    }
+
+    /**
+    * @desc Create text form field.
+    * @param a - field meta data.
+    * @param field - fields container div
+    **/
+    var _createDefaultTextField = function(a, field) {
+        var fieldDiv = field
+        .append('div')
+        .classed('contain', true);
+
+        var inputField = fieldDiv
+        .append('input')
+        .attr('type', 'text')
+        .attr('placeholder', function (field) {
+            if(_.isObject(field.placeholder) === true){
+                var oPlaceHolder = field.placeholder;
+                if(oPlaceHolder['default'] && oPlaceHolder.command){
+                    return oPlaceHolder.command(field);
+                } else {
+                    if(oPlaceHolder['default'] ) {
+                        return oPlaceHolder['default'] ;
+                    } else {
+                        return '';
+                    }
+                }
+            }
+            return field.placeholder;
+        })
+        .attr('class', function (field) {
+            return field.className;
+        });
+
+        if(a.text) {
+            inputField.value(a.text);
+        }
+        if(a.id) {
+            inputField.attr('id', a.id);
+        }
+
+        if(a.onchange) {
+            inputField.on('change',a.onchange);
+        }
+
+        if(a.onclick) {
+            inputField.on('click',a.onclick);
+        }
+
+        if(a.inputtype == 'multipart') {
+            var mpDiv = fieldDiv
+                .classed('contain', true);
+
+            var wrapper = mpDiv
+                .append('span')
+                .classed('point keyline-left _icon folder pin-right pad0x pad0y hidden', true)
+                .attr('id', a.multipartid + 'spancontainer');
+
+            var mpInput = wrapper    
+                .append('input')
+                .attr('id', a.multipartid)
+                .attr('type', 'file')
+                .property('multiple', false)
+                .attr('accept', '.shp,.shx,.dbf,.prj,.osm,.zip')
+                .classed('point pin-top', true)
+                .style({
+                    'text-indent': '-9999px',
+                    'width': '31px'
+                });
+
+            if(a.onchange) {
+                mpInput.on('change', a.onchange);
+            }
+        }
     }
 
     /**
@@ -230,6 +332,13 @@ Hoot.ui.hootformbase = function ()
                 .text(m.text)
                 .on('click', onClick);
 
+                if(m.id) {
+                    btnContainer.attr('id', m.id);
+                }
+
+                if(m.ishidden === true) {
+                    btnContainer.classed('hidden', true);
+                }
 
             });       
     }
