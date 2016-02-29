@@ -461,6 +461,7 @@ Hoot.control.utilities.folder = function(context) {
 	      d3.select(this).classed("selected",false);
 	      update(d);
 	      
+	      context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
 	      //remove selected from recently used layers if present
 	      //find parent div
 	      var parent = this;var p=0;
@@ -471,7 +472,7 @@ Hoot.control.utilities.folder = function(context) {
 	      }
 	      if(!d3.select(parent.parentNode).select('.usedLayersInput').empty()){d3.select(parent.parentNode).select('.usedLayersInput').value('');}
 
-	      context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
+	      
 	    }
 	
 	    function fillColor(d) {
