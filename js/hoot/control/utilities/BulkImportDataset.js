@@ -75,7 +75,8 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         _columns = [
            {label:'Import Type', placeholder: 'Select Import Type', type: 'importImportType', combobox: {data: importTypes, command:_importTypeComboHandler}},
            {label:'Import Data', placeholder: 'Select File', type: 'fileImport',icon:'folder',readonly:'readonly'},
-           {label: 'FGDB Feature Classes', placeholder: '', type: 'bulkImportDatasetFGDBFeatureClasses',readonly:'readonly'},
+           // Disabling util we figure out how to cache ogr info
+           //{label: 'FGDB Feature Classes', placeholder: '', type: 'bulkImportDatasetFGDBFeatureClasses',readonly:'readonly'},
            {label:'Layer Name', placeholder: 'Save As',  type: 'LayerName'},
            {label:'Path', placeholder: 'root', type: 'PathName', combobox:{data:folderList, command:_folderListComboHandler }},
            {label:'Translation', placeholder: 'Select Translation Schema', type: 'Schema', combobox: {data:_importTranslations, command:_translationComboHandler}},
@@ -140,7 +141,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         _table = _form.append('table').attr('id','bulkImportTable');
         //set column width for last column
         var colgroup = _table.append('colgroup');
-        colgroup.append('col').attr('span','6').style('width','100%');
+        colgroup.append('col').attr('span','5').style('width','100%');
         colgroup.append('col').style('width','30px');
         
         _table.append('thead').append('tr')
@@ -853,7 +854,9 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     * @param selRowNum - Selected row number
     **/
     var _retrieveFeatureClasses = function(selRowNum) {
-
+        if(d3.select(".reset.bulkImportDatasetFGDBFeatureClasses[row='" + selRowNum + "']").empty()) {
+            return;
+        }
         var spin = 
             d3.select(".reset.bulkImportDatasetFGDBFeatureClasses[row='" + selRowNum + "']")
             .classed('_icon _loading col1 f1',true)

@@ -95,14 +95,14 @@ Hoot.control.utilities.importdataset = function(context) {
             inputtype:'multipart',
             onchange: _multipartHandler,
             multipartid: 'ingestfileuploader'
-        }, {
+        }, /*{ //Disabling FGDB Feature class untill we figure out how to cache ogr info
             label: 'FGDB Feature Classes',
             placeholder: '',
             id: 'importDatasetFGDBFeatureClasses',
             combobox: {'data':[], 'command': _populateFeatureClasses },
             inputtype: 'combobox',
             hidden: true
-        }, {
+        },*/ {
             label: 'Layer Name',
             placeholder: 'Save As',
             id: 'importDatasetLayerName',
@@ -414,6 +414,9 @@ Hoot.control.utilities.importdataset = function(context) {
     * @desc Uploads filed GDB to get Ogr Info of the target from Service.
     **/
     var _retrieveFeatureClasses = function() {
+        if(d3.select('#importDatasetFGDBFeatureClasses').empty()) {
+            return;
+        }
         //getFGDBStats
         //Hoot.model.REST('cancel', data, function (a) {
         var spin = d3.select(d3.select('#importDatasetFGDBFeatureClasses')
@@ -542,13 +545,16 @@ Hoot.control.utilities.importdataset = function(context) {
             .attr('directory', null);
         }
 
-        if(isDir) {
-            d3.select(d3.select('#importDatasetFGDBFeatureClasses')
-                .node().parentNode).classed('hidden',false);
-        } else {
-            d3.select(d3.select('#importDatasetFGDBFeatureClasses')
-                .node().parentNode).classed('hidden',true);
+        if(!d3.select('#importDatasetFGDBFeatureClasses').empty()) {
+            if(isDir) {
+                d3.select(d3.select('#importDatasetFGDBFeatureClasses')
+                    .node().parentNode).classed('hidden',false);
+            } else {
+                d3.select(d3.select('#importDatasetFGDBFeatureClasses')
+                    .node().parentNode).classed('hidden',true);
+            }
         }
+        
     }
 
 
@@ -740,7 +746,7 @@ Hoot.control.utilities.importdataset = function(context) {
 
         if(selType == 'DIR'){
                 _container.select('#importDatasetFileImport').value(folderName);
-                _container.select('#importDatasetLayerName').value(fgdbName);  
+                _container.select('#importDatasetLayerName').value(fgdbName);
                 _retrieveFeatureClasses();
         } else {
             _container.select('#importDatasetFileImport').value(fileNames.join('; '));

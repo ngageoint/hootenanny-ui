@@ -92,7 +92,7 @@ Hoot.model.import = function (context)
         }
             
         var fgdbFCList;
-        if(FgdbFeatureClassElemId) {
+        if(FgdbFeatureClassElemId && !container.select(FgdbFeatureClassElemId).empty()) {
             fgdbFCList = container.select(FgdbFeatureClassElemId).value();
         }
         
