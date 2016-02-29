@@ -193,6 +193,10 @@ iD.ui.RawTagEditor = function(context) {
             function sort(value, data) {
                 var sameletter = [],
                     other = [];
+                data.sort(function(a,b){var textA = a.value.toUpperCase();
+                    var textB = b.value.toUpperCase();
+                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                });
                 for (var i = 0; i < data.length; i++) {
                     if (data[i].value.substring(0, value.length) === value) {
                         sameletter.push(data[i]);
