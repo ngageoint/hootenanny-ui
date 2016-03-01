@@ -84,7 +84,7 @@ iD.ui.PresetList = function(context) {
             var value = search.property('value');
             list.classed('filtered', value.length);
             if (value.length) {
-                presets = context.presets().matchGeometry(geometry)
+                presets = context.presets().matchGeometry(geometry);
 
                 var filterType = d3.select('#presettranstype').value();
 
