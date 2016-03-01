@@ -20,6 +20,9 @@
 .search-result {
     margin-left:60px;
 }
+.search-result:hover {
+  background-color: #ececec;
+}
 .searchtag {
   background:transparent url(img/magnify.svg) no-repeat 4px 4px;
 }
@@ -97,4 +100,8 @@ a.whitetext {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+span.match {
+  font-weight: bold;
 }
