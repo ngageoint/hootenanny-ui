@@ -204,7 +204,10 @@ iD.ui.PresetList = function(context) {
                     if(d3.select('#entity_editor_presettranstype').value()!=filterType){
                         iD.util.changeComboValue('#entity_editor_presettranstype',filterType);
                     }
-                }                
+                }   
+
+                // Trigger search on input value
+                search.trigger('input');  
             });
 
         var presets = context.presets().defaults(geometry, 36);
