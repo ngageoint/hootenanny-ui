@@ -114,11 +114,11 @@ path.shadow.tag-hoot.area:not(.hover).activeReviewFeature2:not(.selected) {
     stroke-width: 12;
 }
 
-.low-zoom path.stroke.tag-hoot:not(.activeReviewFeature):not(.activeReviewFeature2){
+.low-zoom path.stroke.tag-hoot:not(.activeReviewFeature):not(.activeReviewFeature2):not(.unsaved) {
   stroke-width:2;
 }
 
-.low-zoom path.way.tag-hoot:not(.activeReviewFeature):not(.activeReviewFeature2){
+.low-zoom path.way.tag-hoot:not(.activeReviewFeature):not(.activeReviewFeature2):not(.unsaved) {
   stroke-width:2;
 }
 
