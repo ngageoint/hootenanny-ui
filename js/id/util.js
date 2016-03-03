@@ -175,3 +175,19 @@ iD.util.wrap = function(index, length) {
         index += Math.ceil(-index/length)*length;
     return index % length;
 };
+
+iD.util.changeComboValue = function(elem,value) {
+    if(!_.isEmpty(elem)){
+        d3.select(elem).property('value',value);
+        d3.select(elem).trigger('change');
+        return;
+    }
+}
+
+var currentTranslation = 'OSM';
+iD.util.setCurrentTranslation = function(trans){
+    currentTranslation = trans;
+};
+iD.util.getCurrentTranslation = function(){
+    return currentTranslation;
+};

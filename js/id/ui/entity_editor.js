@@ -64,10 +64,11 @@ iD.ui.EntityEditor = function(context) {
                 return '<label class="form-label">' + 'Filter By Type' + '</label>';
             });
 
+        currentTranslation = iD.util.getCurrentTranslation();
          var comboIntput = ftypeWrap.append('input')
                     .attr('id', 'entity_editor_presettranstype')
                     .attr('type', 'text')
-                    .attr('value', 'OSM');
+                    .attr('value', currentTranslation);
 
         var comboData = plg.getTranslations();
         var combo = d3.combobox()
@@ -88,12 +89,19 @@ iD.ui.EntityEditor = function(context) {
         comboIntput.on('change', function(param){
             var filterType = d3.select('#entity_editor_presettranstype').value();
             currentTranslation = filterType;
+            iD.util.setCurrentTranslation(currentTranslation);
             var currentData = _.find(comboData, function(d){
                 return d.name === filterType;
             });
 
             currentMeta = currentData.meta;
             entityEditor(selection);
+
+            if(!d3.select('#presettranstype').empty()){
+                if(d3.select('#presettranstype').value()!=filterType){
+                    iD.util.changeComboValue('#presettranstype',filterType);
+                }
+            } 
         });
 
 
@@ -166,6 +174,10 @@ iD.ui.EntityEditor = function(context) {
 
 
         function populateBody(modPreset, defTags, defRawTags, transInfo, translatedFields, transTags){
+            if(!d3.select('#entity_editor_presettranstype').empty()){
+                currentTranslation = iD.util.getCurrentTranslation(); //d3.select('#entity_editor_presettranstype').value();             
+            }
+
             if(translatedFields !== undefined){
                 allTranslatedFields = translatedFields;
             }
