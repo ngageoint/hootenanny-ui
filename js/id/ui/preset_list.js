@@ -84,6 +84,8 @@ iD.ui.PresetList = function(context) {
             var value = search.property('value');
             list.classed('filtered', value.length);
             if (value.length) {
+                presets = context.presets().matchGeometry(geometry);
+
                 var filterType = d3.select('#presettranstype').value();
 
                 if(filterType == 'OSM') {
@@ -170,7 +172,7 @@ iD.ui.PresetList = function(context) {
              var comboIntput = ftypeWrap.append('input')
                         .attr('id', 'presettranstype')
                         .attr('type', 'text')
-                        .attr('value', 'OSM');
+                        .attr('value', iD.util.getCurrentTranslation());
 
             // TODO: Link this with plg.getTranslations();
             var comboData = ['OSM','TDSv61', 'TDSv40'];
@@ -192,10 +194,20 @@ iD.ui.PresetList = function(context) {
                 // Get the current translation filter type
                 var filterType = d3.select('#presettranstype').value();
                 var filteredCollection = getFilteredPresets(filterType, presets.collection);
+                iD.util.setCurrentTranslation(filterType);
                 // Replace with filtered
                 presets.collection = filteredCollection;
 
                 container.call(drawList, presets);
+
+                if(!d3.select('#entity_editor_presettranstype').empty()){
+                    if(d3.select('#entity_editor_presettranstype').value()!=filterType){
+                        iD.util.changeComboValue('#entity_editor_presettranstype',filterType);
+                    }
+                }   
+
+                // Trigger search on input value
+                search.trigger('input');  
             });
 
         var presets = context.presets().defaults(geometry, 36);
