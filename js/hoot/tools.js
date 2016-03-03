@@ -526,14 +526,24 @@ Hoot.tools = function (context, selection) {
                                         	iD.ui.Alert("Could not determine input layer 1. It will not be loaded.",'warning');
                                         }
                                     }
+                                } else {
+                                    var doRenderView = true;
+                                    if(params['hideinsidebar'] !== undefined && params['hideinsidebar'] === 'true'){
+                                        doRenderView = false;
+                                    }
+
+                                    if(doRenderView === true){
+                                        renderInputLayer(layerName,params);
+                                    } else {
+                                        loadedLayers[layerName] = params;
+                                        loadedLayers[layerName].loadable = true;
+                                        loadingLayer = {};
+                                    } 
                                 }
                             }
                         });
                     }
-                }
-
-                if(isReviewMode === false) {
-
+                } else {
                     var doRenderView = true;
                     if(params['hideinsidebar'] !== undefined && params['hideinsidebar'] === 'true'){
                         doRenderView = false;
@@ -545,9 +555,8 @@ Hoot.tools = function (context, selection) {
                         loadedLayers[layerName] = params;
                         loadedLayers[layerName].loadable = true;
                         loadingLayer = {};
-                    }
+                    }                    
                 }
-
             });
 
 
