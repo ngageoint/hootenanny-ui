@@ -16,6 +16,13 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
     **/
     _instance.retainFeature = function () {
         try {
+            // Related to hootenanny-ui/issues/284
+            // When user merges and presses resolve since in control/Conflicts.js
+            // call to context.enter(iD.modes.Select(context, [mergedNode.id])); locks in select mode
+            // and ends up element not found error
+            context.exit();
+            context.ui().sidebar.hide();
+
             _parent().setProcessing(true, 'Please wait while resolving review item.');
             var vicheck = _vischeck();
             if(!vicheck){

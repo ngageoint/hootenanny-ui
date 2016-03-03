@@ -226,6 +226,13 @@ window.iD = function () {
         dispatch.enter(mode);
     };
 
+    context.exit = function() {
+        if (mode) {
+            mode.exit();
+            dispatch.exit(mode);
+        }
+    };
+
     context.updateMode = function()
     {
         dispatch.update();
