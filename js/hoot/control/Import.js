@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Hoot.control.import
+// Hoot.control.import is sidebar control for loading ingested Hootenanny layer into map pane.
 //
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
@@ -80,6 +80,7 @@ Hoot.control.import = function (context,selection) {
             .style({'height':'150px','margin':'0 0 15px','resize':'vertical'})
             .select(ETL.renderTree);
         
+        // Recently Used Layers
         var recentLayersDiv = fieldset.append('div')
         	.classed('form-field fill-white small keyline-all round space-bottom1',true);
         recentLayersDiv.append('label')
@@ -111,6 +112,7 @@ Hoot.control.import = function (context,selection) {
 	                 });
         	})	
 
+        // Symbology control for selecting layer color
         fieldset
             .append('div')
             .classed('keyline-all form-field palette clearfix round', true)
@@ -158,7 +160,7 @@ Hoot.control.import = function (context,selection) {
             .attr('border-radius','4px');
 
 
-
+        // Add Layer click handler
         var submitLayer = function (a) {
             if(context.hoot().model.layers.isLayerLoading() === true){
             	iD.ui.Alert('Please wait utill loading first layer is done!','notice');

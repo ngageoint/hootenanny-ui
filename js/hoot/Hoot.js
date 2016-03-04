@@ -34,6 +34,13 @@ Hoot.hoot = function (context) {
     hoot.LTDSTags = function () {
         return Hoot.LTDSTags(context);
     };*/
+
+    /**
+    * @desc This function is invoke from iD.data.load in index.html during
+    *       application initialization and performs Hootenanny specific initialization
+    * @param demo - demo switch which turns on Hootenanny demo mode. (demo should be deprecated)
+    * @param callback
+    **/
     hoot.load = function (demo, callback) {
 
         if (demo) {
@@ -83,6 +90,11 @@ Hoot.hoot = function (context) {
         hoot.getAllusers();
         
     };
+
+    /**
+    * @desc Retrieves users list from server
+    * @param callback - callback
+    **/
     hoot.getAllusers = function(callback) {
         Hoot.model.REST('getAllUsers', function (resp) {
             if(resp.error){
@@ -103,6 +115,11 @@ Hoot.hoot = function (context) {
         });
 
     }
+
+    /**
+    * @desc Returns availabe symbology palette
+    * @param co - filter object
+    **/
     hoot.palette = function (co) {
         var palette = [{
                 name: 'gold',
@@ -137,6 +154,13 @@ Hoot.hoot = function (context) {
         });
         return (obj.name === co) ? obj.hex : obj.name;
     };
+
+
+    /**
+    * @desc Changes layer features to selected color
+    * @param lyrid - target layer id
+    * @param color - selected color
+    **/
     hoot.changeColor = function (lyrid, color) {
         var modifiedId = lyrid.toString();
         var sheets = document.styleSheets[document.styleSheets.length - 1];
@@ -150,6 +174,10 @@ Hoot.hoot = function (context) {
         sheets.insertRule('g.point.tag-hoot-' + modifiedId + ' .stroke { fill:' + color + '}', sheets.cssRules.length - 1);
     };
  
+    /**
+    * @desc Removes layer color
+    * @param lyrid - target layer id
+    **/
     hoot.removeColor = function (lyrid) {
         var isDone = false;
         var modifiedId = lyrid.toString();
@@ -172,6 +200,11 @@ Hoot.hoot = function (context) {
      };
 
 
+    /**
+    * @desc Switches the feature color of a layer
+    * @param name - target layer id
+    * @param color - new color
+    **/
     hoot.replaceColor = function (name, color) {
         hoot.removeColor(name);
         hoot.changeColor(name, color);
@@ -193,6 +226,11 @@ Hoot.hoot = function (context) {
         return hootRulesList;
     };
 
+
+    /**
+    * @desc Toggles between current layer color and osm symbology
+    * @param name - target layer name
+    **/
     hoot.toggleColor = function(name){
         //get layer id
     	var lyrid = hoot.model.layers.getmapIdByName(name);
@@ -204,13 +242,13 @@ Hoot.hoot = function (context) {
             if(lyr){
                 hoot.changeColor(lyrid, lyr.color);
             }
-        } else {// eles remove which reveals osm symbology
+        } else {// else remove which reveals osm symbology
             hoot.removeColor(lyrid);
         }
         
     };
 
-
+    // Appears to be dead code and after verification should be deprecated.
     hoot.autotune = function (type, data, callback) {
         Hoot.model.REST(type, data, function (res) {
             if (callback) {
@@ -220,6 +258,9 @@ Hoot.hoot = function (context) {
     };
 
 
+    /**
+    * @desc Instantiate classes in Manage tab
+    **/
     hoot.loadUtilities = function () {
      /*   if(!hoot.utilities){
             hoot.utilities = Hoot.Utilities(context);
@@ -237,6 +278,10 @@ Hoot.hoot = function (context) {
         return true;
    };
    
+   /**
+    * @desc Special character validation helper function
+    * @param str - target string
+    **/
    hoot.checkForUnallowableWords = function(str){
 	   var unallowable = ['root','dataset','datasets','folder'];
 	   if(unallowable.indexOf(str.toLowerCase())>=0){return false;}
@@ -265,6 +310,11 @@ Hoot.hoot = function (context) {
             this.parentNode.appendChild(this);
         });
     };
+
+    /**
+    * @desc Hotkey for swapping layers
+    * @param event - key stroke event
+    **/
     document.onkeydown = function (event) {
     	if (event.altKey && (event.which === 66)) {
             id.hoot().model.layers.layerSwap();
@@ -309,6 +359,9 @@ Hoot.hoot = function (context) {
       return false;
     }
 
+    /**
+    * @desc Returns browser information.
+    **/
     hoot.getBrowserInfo = function(){
         var browserInfo = {};
         var appVerStr = navigator.userAgent;
