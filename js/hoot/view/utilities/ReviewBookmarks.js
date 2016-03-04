@@ -45,7 +45,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
 
 
-          var btnContainer = form.append('div')
+        var btnContainer = form.append('div')
                 .attr('id', 'bmkPageBtnContainer')
                 .classed('form-field col12', true);
 
