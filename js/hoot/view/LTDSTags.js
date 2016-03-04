@@ -1,3 +1,4 @@
+// Verify but this should be deprecated
 Hoot.view.ltdstags = function (context) {
     var meta = {};
 
