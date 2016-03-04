@@ -1,3 +1,11 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.view.utilities.dataset is Datasets view in Manage tab where user can view all ingested Hootenanny layers
+//  and performs CRUD operations.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.view.utilities.dataset = function(context)
 {
     var hoot_view_utilities_dataset = {};

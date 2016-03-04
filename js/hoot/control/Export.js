@@ -1,3 +1,11 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.control.export is export control which provides export when all resolution has been resolved.
+//  This control seats in sidebar.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.export = function (sidebar) {
     var exportResources = ['LTDS 4.0', 'MGCP'];
     var event = d3.dispatch('saveLayer', 'cancelSaveLayer');
@@ -6,19 +14,6 @@ Hoot.control.export = function (sidebar) {
     exp.deactivate = function () {
         save.remove();
     };
- // This was for UTP FOUO but not necessary since user have know about it before creating custom translation
-  /*  Hoot.model.REST('getExportResources', function (e) {
-        if(e){
-            exportResources = [];
-            var resp = JSON.parse(e);
-            _.each(resp, function(o){
-                exportResources.push(o.description);
-            });
-        }
-
-    });*/
-
-
 
     exp.activate = function (layer, translations) {
         var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema';

@@ -1,3 +1,12 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.tools is collection of various helper functions.
+//
+//  NOTE: All functions should be moved to coresponding modules and this module should be deprecated..
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.tools = function (context, selection) {
     var loadingLayer = {},
         loadedLayers = {},

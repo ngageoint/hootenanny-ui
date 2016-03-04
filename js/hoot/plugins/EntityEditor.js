@@ -1,3 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.plugins.entityeditor is for providing TDS preset injection to iD editor entity editor.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.plugins = {};
 Hoot.plugins.entityeditor = function() {
 	this.allTranslatedFields = null;

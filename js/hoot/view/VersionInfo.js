@@ -1,3 +1,11 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.view.versioninfo is version informatin popup which gets activated when "Hootenanny | Innovision"
+//  logo clicked. Contains details on version information of core, service and UI.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.view.versioninfo = function(context){
 
     // events
