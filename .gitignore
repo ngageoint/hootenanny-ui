@@ -7,3 +7,5 @@ dist/presets.js
 dist/imagery.js
 transifex.auth
 data/buildInfo.json
+test/spec/hoot/npm-debug.log
+test/spec/npm-debug.log
