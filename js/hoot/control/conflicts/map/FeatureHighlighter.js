@@ -225,6 +225,9 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     * @param offFid - member fid that should not be highlighted
     **/
     var _performHighlight = function(fid, ftype, offType, on, offFid) {
+                //make sure there is actually an entity
+        if(context.hasEntity(fid) == undefined || context.hasEntity(offFid) == undefined){return;}
+
         var feature = context.graph().entity(fid);
 
         context.graph().parentRelations(feature)
