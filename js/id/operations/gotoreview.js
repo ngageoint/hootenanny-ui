@@ -9,7 +9,7 @@ iD.operations.Gotoreview = function(selectedIDs, context) {
     var operation = function() {
         var annotation = 'Go to related review item';
 
-        _performHighlight(context.graph());
+        _selectReview(context.graph());
     };
 
     operation.available = function() {
@@ -37,36 +37,34 @@ iD.operations.Gotoreview = function(selectedIDs, context) {
 
                     var mFeature = context.hasEntity(mid);
                     if(mFeature && (entityId != mid)) {
-                        var coord = [ feature.loc, mFeature.loc];
-                        console.log(coord);
-
                         //take this coord, convert to SVG, add to map
-
-                    }
+                        var c = context.projection(mFeature.loc);
+                        var g = svg.append('g');
                         
+                        rect = g.append('rect').style('fill','black').style('fill-opacity','0.5');
+                        label = g.append('text').style('fill','white').style('font-size','18px');        
+
+                        lengthLabel = label.append("tspan").text("TEST");
+
+                        rect.attr("x", c[0]+10)
+                            .attr("y", c[1]-(label.dimensions()[1]/2))
+                            .attr("width",label.dimensions()[0]+5)
+                            .attr("height",label.dimensions()[1]+5)
+                            .on('click',function(){
+                                console.log(mem);
+                            })
+
+                        label.attr("x", c[0]+rectMargin)
+                            .attr("y", c[1]+rectMargin)
+                            .on('click',function(){
+                                console.log('test');
+                            });
+                        lengthLabel.attr("x", c[0]+10)
+                            .attr("y", c[1])
+                            .text(function(d) { return 'test'});
+                    }                        
                 });
             });
-
-        
-        var g = svg.append('g');
-        
-        //rect = g.append('rect').style('fill','black').style('fill-opacity','0.5');
-        label = g.append('text').style('fill','white').style('font-size','18px');        
-
-        lengthLabel = label.append("tspan").text("TEST");
-        
-        c = [200,200];
-
-        /*rect.attr("x", c[0]+10)
-            .attr("y", c[1]-(label.dimensions()[1]/2))
-            .attr("width",label.dimensions()[0]+5)
-            .attr("height",label.dimensions()[1]+5);*/
-
-        label.attr("x", c[0]+rectMargin)
-            .attr("y", c[1]+rectMargin);
-        lengthLabel.attr("x", c[0]+10)
-            .attr("y", c[1])
-            .text(function(d) { return 'test'});
     }
     
 
