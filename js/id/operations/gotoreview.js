@@ -29,6 +29,10 @@ iD.operations.Gotoreview = function(selectedIDs, context) {
         // Create a label above all POIs in relation
         var svg = d3.select('.layer-label');
 
+        var currentAlpha = 97,
+        endingAlpha = 122,
+        doubleLetter = false;
+
         var feature = context.hasEntity(entityId);
         graph.parentRelations(feature)
             .forEach(function(parent) {
@@ -39,30 +43,25 @@ iD.operations.Gotoreview = function(selectedIDs, context) {
                     if(mFeature && (entityId != mid)) {
                         //take this coord, convert to SVG, add to map
                         var c = context.projection(mFeature.loc);
-                        var g = svg.append('g');
-                        
-                        rect = g.append('rect').style('fill','black').style('fill-opacity','0.5');
-                        label = g.append('text').style('fill','white').style('font-size','18px');        
-
-                        lengthLabel = label.append("tspan").text("TEST");
-
-                        rect.attr("x", c[0]+10)
-                            .attr("y", c[1]-(label.dimensions()[1]/2))
-                            .attr("width",label.dimensions()[0]+5)
-                            .attr("height",label.dimensions()[1]+5)
-                            .on('click',function(){
-                                console.log(mem);
-                            })
-
-                        label.attr("x", c[0]+rectMargin)
-                            .attr("y", c[1]+rectMargin)
-                            .on('click',function(){
-                                console.log('test');
+                        var transform = 'translate('.concat(c[0],',',c[1]-50,')');
+                        var g = svg.append('g').attr('transform',transform).attr('loc',mFeature.loc).classed('gotoreview',true);
+                        g.append('circle').attr('r','20')
+                            .attr('stroke','white').attr('stroke-width','3')
+                            .attr('fill','green').attr('fill-opacity','0.5');
+                        g.append('text').attr('dx','-6').attr('dy','6')
+                            .style('fill','white').style('font-size','16px').attr('font-weight','bold')
+                            .text(function(){
+                                if(!doubleLetter){return String.fromCharCode(currentAlpha).toUpperCase();}
+                                else{return String.fromCharCode(currentAlpha).toUpperCase().concat(String.fromCharCode(currentAlpha).toUpperCase());}
                             });
-                        lengthLabel.attr("x", c[0]+10)
-                            .attr("y", c[1])
-                            .text(function(d) { return 'test'});
-                    }                        
+                        g.on('click',function(){
+                            var loc = d3.select('.layer-label').select('g').attr('loc').split(/,/).map(parseFloat);
+                            console.log(loc);
+                        });
+
+                        currentAlpha += 1;
+                        if(currentAlpha > 122){currentAlpha = 97; doubleLetter = true;}                      
+                    }  
                 });
             });
     }
