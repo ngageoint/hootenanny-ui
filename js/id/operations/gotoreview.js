@@ -26,6 +26,8 @@ iD.operations.Gotoreview = function(selectedIDs, context) {
     };
 
     var _selectReview = function(graph) {
+        d3.selectAll('.gotoreview').remove();
+
         // Create a label above all POIs in relation
         var svg = d3.select('.layer-label');
 
@@ -54,15 +56,38 @@ iD.operations.Gotoreview = function(selectedIDs, context) {
                                 if(!doubleLetter){return String.fromCharCode(currentAlpha).toUpperCase();}
                                 else{return String.fromCharCode(currentAlpha).toUpperCase().concat(String.fromCharCode(currentAlpha).toUpperCase());}
                             });
+                        
+                        var reqParam = {
+                            'mapId':this.mapId,
+                            'sequence':this.tags['hoot:review:sort_order']
+                        };
+
+                        var _parent = function() {return context.hoot().control.conflicts;};
+
                         g.on('click',function(){
-                            var loc = d3.select('.layer-label').select('g').attr('loc').split(/,/).map(parseFloat);
-                            console.log(loc);
+                            Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {  
+                                if(resp.error){
+                                    context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                                    return;
+                                } 
+
+                                if(resp.resultCount < 1){
+                                  alert('The review item already has been resolved. Can not go to review item.');
+                                } else {
+                                    context.background().updateArrowLayer({});
+                                    _parent().actions.idgraphsynch.getRelationFeature(resp.mapId, resp.relationId, 
+                                    function(newReviewItem){
+                                        _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
+                                            newReviewItem.members[1]);
+                                    });                              
+                                }
+                            });
                         });
 
                         currentAlpha += 1;
                         if(currentAlpha > 122){currentAlpha = 97; doubleLetter = true;}                      
                     }  
-                });
+                },parent);
             });
     }
     
