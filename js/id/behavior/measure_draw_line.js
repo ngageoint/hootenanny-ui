@@ -103,7 +103,8 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
  	    	
  	    	var c = context.projection(context.map().mouseCoordinates());
     	    line.attr("x2", c[0])
-    	        .attr("y2", c[1]);
+    	        .attr("y2", c[1])
+                .attr('loc2',context.map().mouseCoordinates());
     	    
     	    var distance = d3.geo.distance(lastPoint,context.map().mouseCoordinates());
     	    distance = radiansToMeters(distance);
@@ -112,10 +113,12 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
     	    
     	    label.attr("x", c[0]+10)
 	        	.attr("y", c[1]+10)
+                .attr("loc", context.map().mouseCoordinates())
 	        	.text(function(d) { return displayLength(currentDist) });
-    	    
+
     	    rect.attr("x", c[0])
         		.attr("y", c[1]-(label.dimensions()[1]/2))
+                .attr("loc", context.map().mouseCoordinates())
         		.attr("width",label.dimensions()[0]+5)
 		        .attr("height",label.dimensions()[1]+5);
  	    }
@@ -140,6 +143,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
 		    label = g.append("text")
 		        .attr("x", c[0]+10)
 		        .attr("y", c[1]+10)
+                .attr("loc", context.map().mouseCoordinates())
 		        .style("fill","white")
 		        .style("font-size","18px")
 		        .text(function(d) { return displayLength(totDist)});
@@ -150,12 +154,15 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
 	    		.attr("x1", c[0])
 		        .attr("y1", c[1])
 		        .attr("x2", c[0])
-		        .attr("y2", c[1]);
+		        .attr("y2", c[1])
+                .attr('loc1',context.map().mouseCoordinates())
+                .attr('loc2',context.map().mouseCoordinates());
 			
-			svg.selectAll('g').selectAll('rect').remove();
+            svg.selectAll('g').selectAll('rect').remove();
 			rect = g.insert("rect",":first-child")
 		        .attr("x", c[0])
 		        .attr("y", c[1]-(label.dimensions()[1]/2))
+                .attr("loc", context.map().mouseCoordinates())
 		        .attr("width",label.dimensions()[0]+5)
 		        .attr("height",label.dimensions()[1]+5)
 		        .style("fill","black")
