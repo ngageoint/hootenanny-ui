@@ -235,7 +235,6 @@ iD.Map = function(context) {
         d3.select('.measure-layer').selectAll('g').remove();
 
         //Added for goto feature bubbles
-        d3.selectAll('.gotoreview').remove();
         var gotoBubbles = d3.selectAll('.gotoreview');
         if(!gotoBubbles.empty())        {
             _.each(gotoBubbles[0],function(b){
