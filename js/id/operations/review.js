@@ -25,8 +25,23 @@ iD.operations.Review = function(selectedIDs, context) {
         return 'Show review relations for this feature';
     };
 
+    var _getLocation = function(feature){
+        var eId = feature.id;
+        if(feature.type=='node'){
+            return feature.loc;
+        } else if (feature.type=='way'){
+            //return context.entity(eId).extent(context.graph())[0];
+            var entityExtent = context.entity(eId).extent(context.graph());
+            var x = (entityExtent[0][0]+entityExtent[1][0])/2;
+            var y = (entityExtent[0][1]+entityExtent[1][1])/2;
+            return [x,y];
+            //return context.entity(feature.nodes[Math.round(feature.nodes.length/2)]).extent(context.graph())[0];
+        }
+    }
+
     var _performHighlight = function(graph) {
         var feature = context.hasEntity(entityId);
+        var featureLoc = _getLocation(feature);
 
         var multiLines = [];
         graph.parentRelations(feature)
@@ -36,17 +51,17 @@ iD.operations.Review = function(selectedIDs, context) {
 
                     var mFeature = context.hasEntity(mid);
                     if(mFeature && (entityId != mid)) {
-                        var coord = [ feature.loc, mFeature.loc];
+                        mFeatureLoc = _getLocation(mFeature);
+                        var coord = [ featureLoc,mFeatureLoc];
                         multiLines.push(coord);
-                    }
-                        
+                    }                        
                 });
             });
 
-        _loadArrow('', multiLines);
+        _loadReview('', multiLines);
     }
 
-    var _loadArrow = function(mode, multiLines) {
+    var _loadReview = function(mode, multiLines) {
         //if (d3.event) d3.event.preventDefault();
         if(!context.graph()){
             
@@ -58,7 +73,7 @@ iD.operations.Review = function(selectedIDs, context) {
             "coordinates": multiLines
         };
         if (mode === 'remove') gj = {};
-        context.background().updateArrowLayer(gj);
+        context.background().updateReviewLayer(gj);
 
     }
 
@@ -73,17 +88,23 @@ iD.operations.Review = function(selectedIDs, context) {
         doubleLetter = false;
 
         var feature = context.hasEntity(entityId);
+        var featureLoc = _getLocation(feature);
+
         graph.parentRelations(feature)
             .forEach(function(parent) {
                 _.each(parent.members, function(mem){
                     var mid = mem.id;
 
                     var mFeature = context.hasEntity(mid);
+                    mFeatureLoc = _getLocation(mFeature);
+
+                    var circleOffset = feature.type == 'node' ? 50 : 0;
+
                     if(mFeature && (entityId != mid)) {
                         //take this coord, convert to SVG, add to map
-                        var c = context.projection(mFeature.loc);
-                        var transform = 'translate('.concat(c[0],',',c[1]-50,')');
-                        var g = svg.append('g').attr('transform',transform).attr('loc',mFeature.loc).classed('gotoreview',true);
+                        var c = context.projection(mFeatureLoc);
+                        var transform = 'translate('.concat(c[0],',',c[1]-circleOffset,')');
+                        var g = svg.append('g').attr('transform',transform).attr('loc',mFeatureLoc).classed('gotoreview',true);
                         g.append('circle').attr('r','20')
                             .attr('stroke','white').attr('stroke-width','3')
                             .attr('fill','green').attr('fill-opacity','0.5');
@@ -111,7 +132,7 @@ iD.operations.Review = function(selectedIDs, context) {
                                 if(resp.resultCount < 1){
                                   alert('The review item already has been resolved. Can not go to review item.');
                                 } else {
-                                    context.background().updateArrowLayer({});
+                                    //context.background().updateReviewLayer({});
                                     _parent().actions.idgraphsynch.getRelationFeature(resp.mapId, resp.relationId, 
                                     function(newReviewItem){
                                         _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
