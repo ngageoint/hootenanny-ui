@@ -1,3 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.model.REST is static collection of various REST request made to Hoot service and Node JS server. 
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.model.REST = function (command, data, callback, option) {
     if (typeof (data) === 'function' && !callback) {
         callback = data;

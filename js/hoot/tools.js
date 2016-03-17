@@ -1,3 +1,12 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.tools is collection of various helper functions.
+//
+//  NOTE: All functions should be moved to coresponding modules and this module should be deprecated..
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.tools = function (context, selection) {
     var loadingLayer = {},
         loadedLayers = {},
@@ -19,6 +28,13 @@ Hoot.tools = function (context, selection) {
         resetAllLayers();
     };
 
+
+    /**
+    * @desc Observes loaded layers and toggle confation control in sidebar
+    * @param layerName - loaded layer name
+    * @param add - add indicator
+    * @param isPrimary - is loaded layer primary layer?
+    **/
     function conflationCheck(layerName, add, isPrimary) {
         function returnNewColor() {
             var imports = d3.selectAll('.hootImport').data();
@@ -103,6 +119,9 @@ Hoot.tools = function (context, selection) {
         addConflationCheck();
     }
 
+    /**
+    * @desc Helper function which resets Hootenanny to initial state
+    **/
     function resetAllLayers() {
         _.each(loadedLayers, function (d) {
             hoot.model.layers.removeLayer(d.name);
@@ -117,6 +136,12 @@ Hoot.tools = function (context, selection) {
 
     }
 
+    /**
+    * @desc Preconflation conflation request parameter setup
+    * @param a - Conflation sidebar control container
+    * @param layerName - layer name
+    * @param advOpts - Advanced options list
+    **/
     function preConflation(a, layerName, advOpts) {
         // refactored code to use map id instead of map name
         var data = {};
@@ -170,6 +195,11 @@ Hoot.tools = function (context, selection) {
         return data;
     }
 
+    /**
+    * @desc Called when conflation job has ended
+    * @param item - new merged layer
+    * @param a - container
+    **/
     function postConflation(item,a) {
         var layers = inputLayers();
 
@@ -215,7 +245,11 @@ Hoot.tools = function (context, selection) {
         hoot.view.utilities.dataset.populateDatasetsSVG(datasettable);*/
     }
 
-
+    /**
+    * @desc Retrieves input layers for conflated layer. Input layers are stored in hstore column of Maps table.
+    * @param params - merged layer meta data needed for getMapTags request
+    * @param layerName - new merged layer
+    **/
     function renderInputLayer(layerName,params) {
         //Get tags for loaded layer
         Hoot.model.REST('getMapTags', {mapId: params.mapId}, function (tags) {
@@ -232,6 +266,11 @@ Hoot.tools = function (context, selection) {
         });
     }
 
+    /**
+    * @desc Retrieves conflated layer and goes into review mode if needed.
+    * @param layerName - new merged layer
+    * @param mapid - merged layer map id.
+    **/
     function renderMergedLayer(layerName, mapid) {
         //Get tags for loaded layer
         Hoot.model.REST('getMapTags', {mapId: mapid}, function (tags) {
@@ -348,6 +387,14 @@ Hoot.tools = function (context, selection) {
     /*conflicts.on('removeFeature', function (d, mapid) {
         hoot.model.conflicts.RemoveFeature(d, mapid);
     });*/
+
+
+    /**
+    * @desc Conflate event handler where it performs conflation by makeing request to server.
+    * @param a - conflation control container
+    * @param layerName - new merged layer
+    * @param advOptions - selected advanced options.
+    **/
     conflate.on('merge', function (a, layerName, advOptions) {
 
         var layers = inputLayers();
@@ -421,6 +468,12 @@ Hoot.tools = function (context, selection) {
 
 
     });
+
+    /**
+    * @desc Post conflated layer load event handler where it loads input layers and goes into review mode
+    *       if there is remaining review items.
+    * @param layerName - new merged layer
+    **/
     context.connection().on('layerAdded', function (layerName) {
         var params = hoot.model.layers.getLayers(layerName);
         if (loadedLayers[layerName]) return;
@@ -589,6 +642,12 @@ Hoot.tools = function (context, selection) {
         });*/
         activeConflateLayer = {};
     });
+
+    /**
+    * @desc Export newly merged layer event handler which gets fired from sidebar export control.
+    * @param cont - export control container
+    * @param data - exported layer meta data
+    **/
     exportLayer.on('saveLayer', function (cont, data) {
         var exportType = cont.select('.reset.fileExportFileType.combobox-input').value();
         exporting = true;

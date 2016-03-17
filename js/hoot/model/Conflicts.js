@@ -1,3 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.model.conflicts provides functions to handle conflict resolution by connection to service REST endpoint.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.model.conflicts = function(context)
 {
     var model_conflicts = {};
@@ -673,6 +680,18 @@ Hoot.model.conflicts = function(context)
         var sourceLayers = mergeLayer.layers;
         var featureLayerName = sourceLayers[parseInt(feature.tags['hoot:status']) - 1];
         var sourceLayer = hoot.loadedLayers()[featureLayerName];
+        if(!sourceLayer){
+            // try using tags of mergeLayer, which is loaded
+            var tags = _.clone(hoot.loadedLayers()[mergeLayer.name].tags);
+            for(var prop in tags) {
+                if(tags.hasOwnProperty(prop)) {
+                    if(tags[prop] === featureLayerName) {
+                        sourceLayer = _.find(hoot.model.layers.getAvailLayers(),{'name':featureLayerName});
+                        return sourceLayer.id;
+                    }
+                }
+            }
+        }
         return (sourceLayer) ? sourceLayer.mapId : null;
     };
 

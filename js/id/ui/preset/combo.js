@@ -25,10 +25,12 @@ iD.ui.preset.typeCombo = function(field, context) {
             .on('blur', change)
             .each(function() {
                 if (optstrings) {
-                    _.each(optstrings, function(v, k) {
-                        strings[k] = field.t('options.' + k, { 'default': v });
-                    });
-                    stringsLoaded();
+                    sortObject(optstrings,function(d){
+                        _.each(d, function(v, k) {
+                            strings[k] = field.t('options.' + k, { 'default': v });
+                        });
+                        stringsLoaded();
+                    });                    
                 } else if (optarray) {
                     _.each(optarray, function(k) {
                         strings[k] = k.replace(/_+/g, ' ');
@@ -37,6 +39,11 @@ iD.ui.preset.typeCombo = function(field, context) {
                 } else if (context.taginfo()) {
                     context.taginfo().values({key: field.key}, function(err, data) {
                         if (!err) {
+                            data.sort(function(a,b){var textA = a.value.toUpperCase();
+                                var textB = b.value.toUpperCase();
+                                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                            });
+
                             _.each(_.pluck(data, 'value'), function(k) {
                                 strings[k] = k.replace(/_+/g, ' ');
                             });
@@ -78,6 +85,25 @@ iD.ui.preset.typeCombo = function(field, context) {
         var t = {};
         t[field.key] = value || undefined;
         event.change(t);
+    }
+
+    function sortObject(o,callback) {
+        data = [];
+        for (var value in o){
+            data.push([value, o[value]]);
+            data.sort(function(a,b){var textA = a[1];
+                var textB = b[1];
+                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+            });
+        }
+    
+
+        var sorted = {};
+        _.each(data,function(d){
+            sorted[d[0]] = d[1];
+        });
+
+        if(callback){callback(sorted);}
     }
 
     combo.tags = function(tags) {

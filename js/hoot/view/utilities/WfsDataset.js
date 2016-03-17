@@ -1,3 +1,11 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.view.utilities.wfsdataset is WFS Exports view in Manage tab where user can perform CRUD operations
+//  on published WFS exports.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.view.utilities.wfsdataset = function(context)
 {
 	var hoot_view_utilities_wfsdataset = {};

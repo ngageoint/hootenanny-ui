@@ -1,3 +1,11 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.view.utilities.basemapdataset is basemap view in Manage tab where it shows all ingested basemap in
+//  table format and allows CRUD opertion on each basemaps.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.view.utilities.basemapdataset = function(context)
 {
 	var hoot_view_utilities_basemapdataset = {};

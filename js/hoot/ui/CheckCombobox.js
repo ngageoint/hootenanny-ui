@@ -1,3 +1,11 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.ui.checkcombobox is a helper class where it provides combobox with checkbox in each combobox item.
+//  This is rehashing of d3.combobox with checkbox.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.ui.checkcombobox = function() {
     var event = d3.dispatch('accept'),
         data = [],
