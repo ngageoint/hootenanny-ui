@@ -62,6 +62,7 @@ Hoot.control.conflicts.actions.poimerge = function (context)
     * @desc Performs auto merge
     **/
 	_instance.autoMerge = function() {
+        context.background().updateReviewLayer({});
         _parent().setProcessing(true, 'Please wait while merging review items.');
         try{
             d3.event.stopPropagation();
