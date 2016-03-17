@@ -7,7 +7,13 @@ iD.operations.Review = function(selectedIDs, context) {
 
     var operation = function() {
         var annotation = 'Show review relations for this feature';
-        //context.perform(action, annotation);
+        // If selected node is current review item AND relations are already visualized, turn off
+        if(!d3.select('.review-layer').selectAll('.' + entityId + '_edge').empty()){
+            d3.selectAll("[class*=edge]").classed( entityId + '_edge',false);
+            context.background().updateReviewLayer({},"");
+            return;
+        } 
+
         _performHighlight(context.graph());
         _selectReview(context.graph());
     };
@@ -30,13 +36,55 @@ iD.operations.Review = function(selectedIDs, context) {
         if(feature.type=='node'){
             return feature.loc;
         } else if (feature.type=='way'){
-            //return context.entity(eId).extent(context.graph())[0];
-            var entityExtent = context.entity(eId).extent(context.graph());
-            var x = (entityExtent[0][0]+entityExtent[1][0])/2;
-            var y = (entityExtent[0][1]+entityExtent[1][1])/2;
-            return [x,y];
-            //return context.entity(feature.nodes[Math.round(feature.nodes.length/2)]).extent(context.graph())[0];
+            return _getClosestPoint(feature);            
         }
+    }
+
+    var _getClosestPoint = function(feature) {
+        var path = d3.select('path.'+feature.id);
+        var pathNode = path.node();
+        var centerPt = context.projection(context.entity(feature.id).extent(context.graph()).center());
+
+        var pathLength = pathNode.getTotalLength(),
+            precision = 8,
+            best,
+            bestLength,
+            bestDistance = Infinity;
+
+        // linear scan for coarse approximation
+        for (var scan, scanLength = 0, scanDistance; scanLength <= pathLength; scanLength += precision) {
+            if ((scanDistance = distance2(scan = pathNode.getPointAtLength(scanLength),centerPt)) < bestDistance) {
+                best = scan, bestLength = scanLength, bestDistance = scanDistance;
+            }
+        }
+
+        // binary search for precise estimate
+        precision /= 2;
+        while (precision > 0.5) {
+            var before,
+            after,
+            beforeLength,
+            afterLength,
+            beforeDistance,
+            afterDistance;
+            if ((beforeLength = bestLength - precision) >= 0 && (beforeDistance = distance2(before = pathNode.getPointAtLength(beforeLength),centerPt)) < bestDistance) {
+                best = before, bestLength = beforeLength, bestDistance = beforeDistance;
+            } else if ((afterLength = bestLength + precision) <= pathLength && (afterDistance = distance2(after = pathNode.getPointAtLength(afterLength),centerPt)) < bestDistance) {
+                best = after, bestLength = afterLength, bestDistance = afterDistance;
+            } else {
+                precision /= 2;
+            }
+        }
+
+        best = [best.x, best.y];
+        best.distance = Math.sqrt(bestDistance);
+        return context.projection.invert(best);
+    }
+
+    var distance2 = function(p,point){
+        var dx = p.x - point[0],
+        dy = p.y - point[1];
+        return dx * dx + dy * dy;
     }
 
     var _performHighlight = function(graph) {
@@ -73,7 +121,7 @@ iD.operations.Review = function(selectedIDs, context) {
             "coordinates": multiLines
         };
         if (mode === 'remove') gj = {};
-        context.background().updateReviewLayer(gj);
+        context.background().updateReviewLayer(gj, entityId);
 
     }
 
@@ -132,7 +180,6 @@ iD.operations.Review = function(selectedIDs, context) {
                                 if(resp.resultCount < 1){
                                   alert('The review item already has been resolved. Can not go to review item.');
                                 } else {
-                                    //context.background().updateReviewLayer({});
                                     _parent().actions.idgraphsynch.getRelationFeature(resp.mapId, resp.relationId, 
                                     function(newReviewItem){
                                         _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 

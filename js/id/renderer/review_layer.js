@@ -2,6 +2,7 @@ iD.ReviewLayer = function() {
     var projection,
         gj = {},
         enable = true,
+        entityId = '',
         svg;
 
     function render(selection) {
@@ -16,12 +17,16 @@ iD.ReviewLayer = function() {
 
 
         var paths = svg
-            .selectAll('path.arrow.line')
+            .selectAll('path.review.line')
+            .attr('class','')
+            .classed('review line ',true)
+            .classed(entityId,true)
             .data([gj]);
+
 
         paths.enter()
             .append('path')
-            .attr('class', 'arrow line')
+            .classed('review line ',true)
             ;
 
         var path = d3.geo.path()
@@ -45,6 +50,7 @@ iD.ReviewLayer = function() {
     render.geojson = function(_) {
         if (!arguments.length) return gj;
         gj = _;
+        entityId = arguments[1] ? arguments[1] + '_edge' : "";
         return render;
     };
 
