@@ -152,7 +152,7 @@ iD.operations.Review = function(selectedIDs, context) {
                         //take this coord, convert to SVG, add to map
                         var c = context.projection(mFeatureLoc);
                         var transform = 'translate('.concat(c[0],',',c[1]-circleOffset,')');
-                        var g = svg.append('g').attr('transform',transform).attr('loc',mFeatureLoc).classed('gotoreview',true);
+                        var g = svg.append('g').attr('transform',transform).attr('loc',mFeatureLoc).classed('gotoreview _' + mFeature.type,true);
                         g.append('circle').attr('r','20')
                             .attr('stroke','white').attr('stroke-width','3')
                             .attr('fill','green').attr('fill-opacity','0.5');
@@ -197,7 +197,7 @@ iD.operations.Review = function(selectedIDs, context) {
     }
 
     operation.id = 'review';
-    operation.keys = ['R'];
+    operation.keys = ['Shift+R'];
     operation.title = 'Review';
 
     return operation;

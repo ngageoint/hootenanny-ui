@@ -238,9 +238,10 @@ iD.Map = function(context) {
         var gotoBubbles = d3.selectAll('.gotoreview');
         if(!gotoBubbles.empty())        {
             _.each(gotoBubbles[0],function(b){
+                var offsetDiff = d3.select(b).classed('_way') ? 0 : 50;
                 var loc = d3.select(b).attr('loc').split(/,/).map(parseFloat);
                 var c = context.projection(loc);
-                var transform = 'translate('.concat(c[0],',',c[1]-50,')');
+                var transform = 'translate('.concat(c[0],',',c[1]-offsetDiff,')');
                 d3.select(b).attr('transform',transform);
             });
         }
