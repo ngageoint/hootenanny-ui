@@ -47,8 +47,6 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                     callback(f);
                 }
                     
-            } else {
-                iD.ui.Alert('There are no members in the review relation.','warning');
             }
         } else {
             _loadMissingFeatures(mapid, fid, callback);

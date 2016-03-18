@@ -76,18 +76,25 @@ Hoot.control.conflicts = function (context, sidebar) {
                 '<span class="strong">Checking for reviewable features...&#8230;</span>');
 
         context.connection().on('reviewLayerAdded', function (layerName, force) {
-            if(force === true) {
-                _instance.setProcessing(false);
-                
-                _instance.map.featurehighlighter.hightligtDependents();
 
+            var curReviewable = _instance.actions.traversereview.getCurrentReviewable();
+            
+            if(curReviewable) {
+                // make sure to load any missing elements
+                _instance.actions.idgraphsynch.getRelationFeature(curReviewable.mapId, curReviewable.relationId, 
+                function(newReviewItem){
+ 
+                    _cleanupProcessing(layerName, force);         
+                   
+                });
+                
             } else {
-                var confLayerName = context.hoot().model.layers.getNameBymapId(_mapid);
-                if(layerName === confLayerName) {
-                    _instance.setProcessing(false);
-                }
+                _cleanupProcessing(layerName, force);
             }
+  
+
         });
+
 
         context.map().on('drawn', function(){
             _instance.map.featurehighlighter.moveFront();
@@ -492,6 +499,25 @@ Hoot.control.conflicts = function (context, sidebar) {
     var _resetStyles = function () {
         _instance.map.featurehighlighter.resetHighlight();
     };
+
+    /**
+    * @desc Clears processing and do post layer loading
+    * @param layerName
+    * @param force
+    **/
+    var _cleanupProcessing = function(layerName, force) {
+        if(force === true) {
+            _instance.setProcessing(false);
+            
+            _instance.map.featurehighlighter.hightligtDependents();
+
+        } else {
+            var confLayerName = context.hoot().model.layers.getNameBymapId(_mapid);
+            if(layerName === confLayerName) {
+                _instance.setProcessing(false);
+            }
+        }        
+    }
 
     return d3.rebind(_instance, _events, 'on');
 };
