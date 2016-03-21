@@ -14,19 +14,6 @@ Hoot.control.export = function (sidebar) {
     exp.deactivate = function () {
         save.remove();
     };
- // This was for UTP FOUO but not necessary since user have know about it before creating custom translation
-  /*  Hoot.model.REST('getExportResources', function (e) {
-        if(e){
-            exportResources = [];
-            var resp = JSON.parse(e);
-            _.each(resp, function(o){
-                exportResources.push(o.description);
-            });
-        }
-
-    });*/
-
-
 
     exp.activate = function (layer, translations) {
         var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema';
