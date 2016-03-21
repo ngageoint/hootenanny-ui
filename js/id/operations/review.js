@@ -183,7 +183,7 @@ iD.operations.Review = function(selectedIDs, context) {
                                     _parent().actions.idgraphsynch.getRelationFeature(resp.mapId, resp.relationId, 
                                     function(newReviewItem){
                                         _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
-                                            newReviewItem.members[1]);
+                                            newReviewItem.members[1],false);
                                     });                              
                                 }
                             });
