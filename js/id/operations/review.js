@@ -19,7 +19,11 @@ iD.operations.Review = function(selectedIDs, context) {
     };
 
     operation.available = function() {
-        return context.hoot().control.conflicts.isConflictReviewExist();
+        //return context.hoot().control.conflicts.isConflictReviewExist();
+        //return only if there is a need for review
+        var feature = context.hasEntity(entityId);
+        var graph = context.graph();
+        return !_.isEmpty(_.find(graph.parentRelations(feature),function(item){return item.tags['hoot:review:needs'] == 'yes'}));
     };
 
     operation.disabled = function() {

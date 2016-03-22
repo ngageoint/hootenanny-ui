@@ -282,6 +282,7 @@ Hoot.control.conflicts = function (context, sidebar) {
               if(_btnEnabled){
                 _btnEnabled = false;
                 d.action();
+                context.background().updateReviewLayer({});
               } else {
             	  iD.ui.Alert('Please wait.  Processing review.','notice');
               }
