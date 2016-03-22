@@ -188,9 +188,9 @@ iD.Map = function(context) {
 
     function zoomPan() {
     	//Added for measure layer
-        if(context.mode().id=='measure-add-line' || context.mode().id=='measure-add-area' || context.mode().id=='clip-bounding-box'){return;}
+       /* if(context.mode().id=='measure-add-line' || context.mode().id=='measure-add-area' || context.mode().id=='clip-bounding-box'){return;}
         else{d3.select('.measure-layer').selectAll('g').remove();}
-
+*/
     	if (Math.log(d3.event.scale) / Math.LN2 - 8 < minzoom + 1) {
             surface.interrupt();
             iD.ui.flash(context.container())
@@ -232,7 +232,72 @@ iD.Map = function(context) {
         clearTimeout(timeoutId);
 
         //Added for measure layer
-        d3.select('.measure-layer').selectAll('g').remove();
+        //d3.select('.measure-layer').selectAll('g').remove();
+        //Update measurement lines
+        var measureLines = d3.selectAll("[class*=measure-line-]");
+        if(!measureLines.empty()){
+            _.each(measureLines[0],function(b){
+                var line = d3.select(b);
+                var loc1 = line.attr('loc1').split(/,/).map(parseFloat);
+                var c1 = context.projection(loc1);
+                line.attr('x1',c1[0].toString()).attr('y1',c1[1].toString());
+                var loc2 = line.attr('loc2').split(/,/).map(parseFloat);
+                var c2 = context.projection(loc2);
+                line.attr('x2',c2[0].toString()).attr('y2',c2[1].toString());
+            });
+        }
+
+        var measureArea = d3.selectAll('.measure-area');
+        if(!measureArea.empty()){
+            _.each(measureArea[0],function(a){
+                var measArea = d3.select(a);
+                var newpts = "";
+                var pts = measArea.attr('loc').trim().split(/ /);
+                _.each(pts,function(pt){
+                    var newpt = pt.split(/,/).map(parseFloat);
+                    var c = context.projection(newpt);
+                    newpts += c.toString() + " ";
+                })
+                measArea.attr('points',newpts);
+            });
+        }
+
+        var measureRect = d3.select('.measure-layer').select('rect');
+        if(!measureRect.empty()){
+            var labelmargin = !measureLines.empty() ? 10 : 30;
+            var rectmargin = !measureLines.empty() ? 0 : 10;
+
+            var measureLabel = d3.select('.measure-layer').select('text');
+            if(!measureLabel.empty()){
+                var loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
+                var c = context.projection(loc);
+                d3.select(measureLabel[0][0]).attr('x',c[0]+labelmargin).attr('y',c[1]+labelmargin);
+
+                var tspans = measureLabel.selectAll('tspan');
+                if(!tspans.empty()){
+                    var diff = 0;
+                    _.each(tspans[0],function(t){
+                        d3.select(t).attr('x',c[0]+10).attr('y',c[1]+diff);
+                        diff+=25;
+                    });
+                }
+            }
+
+            var loc = d3.select(measureRect[0][0]).attr('loc').split(/,/).map(parseFloat);
+            var c = context.projection(loc);
+            d3.select(measureRect[0][0]).attr("x", c[0]+rectmargin).attr('y',c[1]-(measureLabel.dimensions()[1]/2));
+        }
+
+        //Added for goto feature bubbles
+        var gotoBubbles = d3.selectAll('.gotoreview');
+        if(!gotoBubbles.empty())        {
+            _.each(gotoBubbles[0],function(b){
+                var loc = d3.select(b).attr('loc').split(/,/).map(parseFloat);
+                var c = context.projection(loc);
+                var transform = 'translate('.concat(c[0],',',c[1]-50,')');
+                d3.select(b).attr('transform',transform);
+            });
+        }
 
         // If we are in the middle of a zoom/pan, we can't do differenced redraws.
         // It would result in artifacts where differenced entities are redrawn with

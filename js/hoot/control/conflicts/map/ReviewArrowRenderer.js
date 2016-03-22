@@ -24,6 +24,7 @@ Hoot.control.conflicts.map.reviewarrowrenderer = function (context)
 		_againstFeature = ra;
 		 //Add hover handler to show arrow
         d3.select('a.merge').on('mouseenter', function() {
+			d3.selectAll('.gotoreview').remove();
             this.focus();
             d3.select(this).on('keydown', function() {
                 if (d3.event.ctrlKey) {

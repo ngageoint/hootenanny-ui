@@ -6,7 +6,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
         tolerance = 12,
         nodeId=0,
         polygon,label,rect,lengthLabel,areaLabel,
-        points="",
+        points="",loc="",
         ptArr=[],rectArr=[],
         lastPoint=null,firstPoint=null,
         totDist=0,
@@ -16,7 +16,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     
     function ret(element) {
         // reset variables
-        nodeId=0;points="";ptArr=[];rectArr=[];
+        nodeId=0;points="";loc="";ptArr=[];rectArr=[];
         lastPoint=null;firstPoint=null;
         totDist=0;segmentDist=0;lastSegmentDist=0;    	
     	d3.event.preventDefault();
@@ -41,13 +41,10 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     	rectArr.push(context.map().mouseCoordinates());
     	rectArr.push(firstPoint);
     	
-    	console.log(rectArr);
-    	
     	var json = {type: 'Polygon',coordinates: [rectArr]};
     	var area = d3.geo.area(json);
     	
     	 if (area > 2 * Math.PI) {
-    		 console.log('t');
     		 json.coordinates[0] = json.coordinates[0].reverse();
              area = d3.geo.area(json);
          }
@@ -182,6 +179,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
  	    	ptArr.push(context.map().mouseCoordinates());
  	    	
  	    	polygon.attr("points",points.concat(" " + c.toString()));
+            polygon.attr("loc",loc.concat(" " + context.map().mouseCoordinates()));
 
  	    	var distance = d3.geo.distance(lastPoint,context.map().mouseCoordinates());
     	    distance = radiansToMeters(distance);
@@ -194,7 +192,8 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     	    var currentDist = segmentDist+totDist+lastSegmentDist;
     	    
     	    label.attr("x", c[0]+rectMargin)
-	        	.attr("y", c[1]+rectMargin);
+	        	.attr("y", c[1]+rectMargin)
+                .attr("loc", context.map().mouseCoordinates());
     	    lengthLabel.attr("x", c[0]+10)
 	        	.attr("y", c[1])
 	        	.text(function(d) { return displayLength(currentDist)});
@@ -204,6 +203,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     	    
     	    rect.attr("x", c[0]+10)
         		.attr("y", c[1]-(label.dimensions()[1]/2))
+                .attr("loc", context.map().mouseCoordinates())
         		.attr("width",label.dimensions()[0]+5)
 		        .attr("height",label.dimensions()[1]+5);
  	    }
@@ -213,6 +213,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     	var c = context.projection(context.map().mouseCoordinates());
     	
     	points = points + " " + c;
+        loc = loc + " " + context.map().mouseCoordinates();
     	
     	if(nodeId==1){
     		ptArr.splice(ptArr.length-1,1);
@@ -246,6 +247,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 			
 			label.attr("x", c[0]+rectMargin)
         		.attr("y", c[1]+rectMargin)
+                .attr("loc", context.map().mouseCoordinates())
 		        .style("fill","white")
 		        .style("font-size","18px");	
 		    lengthLabel.attr("x", c[0]+10)
@@ -258,6 +260,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 			//rect = g.insert("rect",":first-child")
 		      rect.attr("x", c[0])
 		        .attr("y", c[1]-(label.dimensions()[1]/2))
+                .attr("loc", context.map().mouseCoordinates())
 		        .attr("width",label.dimensions()[0]+5)
 		        .attr("height",label.dimensions()[1]+5)
 		        .style("fill","black")
@@ -279,7 +282,8 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 			.style("stroke-linecap","round")
 			.style("fill","black")
 		    .style("fill-opacity","0.3")
-			.attr("points","");
+			.attr("points","")
+            .attr("loc","");
 
 		rect = g.append("rect")//insert("rect",":first-child")
 	        .style("fill","black")
