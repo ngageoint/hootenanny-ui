@@ -305,7 +305,11 @@ iD.ui.MapData = function(context) {
             .attr('id','path-width').property('disabled',true)
             .attr('min',1).attr('max',25).attr('value',7)
             .on('change',function(){
-                setLineWidth(true,d3.select('#path-width').value());
+                var lineWidth = d3.select('#path-width').value();
+                if(lineWidth > -1 && lineWidth < 26) {lineWidth=lineWidth}
+                else { lineWidth = lineWidth < 0 ? 0 : 25 }
+                d3.select('#path-width').value(lineWidth);
+                setLineWidth(true,lineWidth);
             });
 
         widthContainer.append('label').classed('settings-checkbox',true)
@@ -314,7 +318,11 @@ iD.ui.MapData = function(context) {
             .attr('type','checkbox').attr('checked',true)
             .on('change',function(){
                 d3.select('#' + this.name.replace('_default','')).property('disabled',this.checked);
-                setLineWidth(!this.checked,d3.select('#path-width').value());
+                var lineWidth = d3.select('#path-width').value();
+                if(lineWidth > -1 && lineWidth < 26) {lineWidth=lineWidth}
+                else { lineWidth = lineWidth < 0 ? 0 : 25 }
+                d3.select('#path-width').value(lineWidth);
+                setLineWidth(!this.checked,lineWidth);
             });
 
         function setLineWidth(setWidth,width){
