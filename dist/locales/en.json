@@ -98,6 +98,12 @@
             "too_bendy": "This can't be straightened because it bends too much.",
             "connected_to_hidden": "This line can't be straightened because it is connected to a hidden feature."
         },
+        "toggle": {
+            "title": "Toggle",
+            "description": "Toggle Conflated Layer with Inputs",
+            "key": "T",
+            "annotation": "Toggle layers"
+        },
         "delete": {
             "title": "Delete",
             "description": "Delete object permanently.",
@@ -218,6 +224,9 @@
     "review": {
         "merge": {
             "description": "Merge review features. Hold Ctrl to reverse."
+        },
+        "sharereview": {
+            "description": "Save review to share with others."
         },
         "previous": {
             "description": "Skip to previous review."

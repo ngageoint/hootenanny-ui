@@ -62,37 +62,6 @@ iD.ui.RadialMenu = function(context, operations) {
             .attr('clip-path', 'url(#clip-square-20)')
             .attr('xlink:href', function(d) { if(d.id==='reverse'){d.id='rotate';} return '#icon-operation-' + (d.disabled() ? 'disabled-' : '') + d.id; });
 
-      //DG Hack
-      // There is better place for this but we want to separate iD and DG code for merge
-      function dgRadialOp(radial_id) {
-        var mergedLayer = context.hoot().model.layers.getMergedLayer();
-        if(mergedLayer.length > 0){
-            context.hoot().model.layers.layerSwap();
-        } else {
-            var currOp = null;
-            _.each(operations, function(op){
-                if(op.id === radial_id){
-                    currOp = op;
-                }
-            })
-            click(currOp);
-        }
-      }
-
-      function doNothing(){}
-      d3.select('.radial-menu-item-reverse')
-                  .on('click', function(){dgRadialOp('reverse');})
-                  .on('mousedown', doNothing)
-                  //.on('mouseover', doNothing)
-                  .on('mouseout', doNothing);
-
-
-      d3.select('.radial-menu-item-rotate')
-                  .on('click', function(){ dgRadialOp('rotate');})
-                  .on('mousedown', doNothing)
-                  //.on('mouseover', doNothing)
-                  .on('mouseout', doNothing);
-
     /////////////////////////////////////////////////////////////////////
 
 
@@ -108,7 +77,7 @@ iD.ui.RadialMenu = function(context, operations) {
             var mergedLayer = context.hoot().model.layers.getMergedLayer();
             var text = iD.ui.tooltipHtml(d.tooltip(), d.keys[0]);
             if(mergedLayer.length > 0){
-                text = (i===4) ?  'Toggle Conflated Layer with Inputs' : iD.ui.tooltipHtml(d.tooltip(), d.keys[0]);
+                //text = (i===4) ?  'Toggle Conflated Layer with Inputs' : iD.ui.tooltipHtml(d.tooltip(), d.keys[0]);
             }
             var rect = context.surfaceRect(),
                 angle = a0 + i * a,
