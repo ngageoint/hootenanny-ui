@@ -78,8 +78,9 @@ Hoot.control.conflicts = function (context, sidebar) {
         context.connection().on('reviewLayerAdded', function (layerName, force) {
 
             var curReviewable = _instance.actions.traversereview.getCurrentReviewable();
-            
-            if(curReviewable) {
+            var mergedLayer = context.hoot().model.layers.getMergedLayer();
+
+            if(curReviewable && mergedLayer.length>0){
                 // make sure to load any missing elements
                 _instance.actions.idgraphsynch.getRelationFeature(curReviewable.mapId, curReviewable.relationId, 
                 function(newReviewItem){
@@ -282,6 +283,7 @@ Hoot.control.conflicts = function (context, sidebar) {
               if(_btnEnabled){
                 _btnEnabled = false;
                 d.action();
+                context.background().updateReviewLayer({});
               } else {
             	  iD.ui.Alert('Please wait.  Processing review.','notice');
               }

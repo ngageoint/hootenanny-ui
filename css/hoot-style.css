@@ -257,3 +257,8 @@ circle.arrow.tail{
     stroke: none;
     fill: #ff0000;
 }
+path.review.line {
+    stroke: #34B72B;
+    stroke-width: 3px;
+    fill: none;
+}
