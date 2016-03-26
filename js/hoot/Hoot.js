@@ -271,7 +271,7 @@ Hoot.hoot = function (context) {
     };
 
     hoot.checkForSpecialChar = function(str){
-        var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/); 
+        var pattern = new RegExp(/[~`!#$%\^&*+=\-\/\s/[\]\\';,/{}|\\":<>\?|]/); 
         if (pattern.test(str)) {
             return false;
         }
@@ -290,7 +290,7 @@ Hoot.hoot = function (context) {
    
    hoot.checkForUnallowedChar = function(str){
 	   if(!hoot.checkForSpecialChar(str)){
-		   return "Please do not use special characters: " + str + ".";
+		   return "Please do not use special characters or spaces: " + str + ".";
 	   }
 	   if(!hoot.checkForUnallowableWords(str)){
 		   return "Please do not use any unallowable terms: " + str + ".";
