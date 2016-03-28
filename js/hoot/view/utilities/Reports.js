@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.view.utilities.reports is reports view in manage tab where it lists all reports generated during
+// conflation/
+//
+//  NOTE: This feature has been disbaled till customer site setup issue has been resolved..
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.view.utilities.reports = function(context) {
 	var hoot_view_utilities_reports = {};
 

@@ -1,3 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.view.utilities.translation is translations view in Manage tab where user can perform CURD operations.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.view.utilities.translation = function(context) {
 	var hoot_view_utilities_translation = {};
 
@@ -92,7 +99,7 @@ Hoot.view.utilities.translation = function(context) {
                         d3.select(this).on('click', function (n) {
                             d3.event.stopPropagation();
                             d3.event.preventDefault();
-                            iD.ui.Alert("Can not delete default translation.",'warning');
+                            iD.ui.Alert("Can not delete default translation.",'warning',new Error().stack);
                         });
                     }
                     else {

@@ -1,3 +1,12 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.control.validation is HGIS validation cotrol which performs review processing on HGIS validation layer.
+//
+//  NOTE: This should be merged with Conflicts review modules.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.validation = function(context, sidebar) {
     var event = d3.dispatch('featureLoaded');
     var validation = {};

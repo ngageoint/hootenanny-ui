@@ -1,3 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.plugins.entityeditor is for providing TDS preset injection to iD editor entity editor.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.plugins = {};
 Hoot.plugins.entityeditor = function() {
 	this.allTranslatedFields = null;
@@ -6,6 +13,11 @@ Hoot.plugins.entityeditor = function() {
     this.defaultRawTags = null;
 	this._selectedId = null;
 
+    /**
+    * @desc Using the first character in entity id figure out feature type
+    * @param entity - Feature entity
+    * @return [Point | Area | Line]
+    **/
 	this.getGeomType = function(entity) {
         var obj = {
             'n': 'node',
@@ -24,6 +36,13 @@ Hoot.plugins.entityeditor = function() {
         }
     };
 
+    /**
+    * @desc Populate target feature OSM xml in parameter and send request for translation
+    * @param entity - Feature entity
+    * @param transType - Translation type i.e. TDSv40
+    * @param meta - Filter meta data
+    * @param callback
+    **/
     this.getLTDSTags =function (entity, transType, meta, callback) {
       
 	    var geom = this.getGeomType(entity);
@@ -40,7 +59,12 @@ Hoot.plugins.entityeditor = function() {
 	};
 
 
-
+    /**
+    * @desc Translate TDS to OSM
+    * @param entity - Feature entity
+    * @param transType - Translation type i.e. TDSv40
+    * @param callback
+    **/
 	this.getOSMTags =function(entity, transType, callback) {
 
 	    var filterType = transType;
@@ -101,6 +125,13 @@ Hoot.plugins.entityeditor = function() {
 	     return modTags;
 	}
 
+    /**
+    * @desc Create internal preset object
+    * @param geom - Feature geom type
+    * @param ftype - Feature type
+    * @param trans - Translation type i.e. TDSv40
+    * @param fcode 
+    **/
 	this.createPreset = function( geom, ftype, trans, fcode) {
 		// create new preset
 	    var newPreset = {};
@@ -115,6 +146,13 @@ Hoot.plugins.entityeditor = function() {
 
 	}
 
+    /**
+    * @desc Create internal preset object
+    * @param geom - Feature geom type
+    * @param ftype - Feature type
+    * @param trans - Translation type i.e. TDSv40
+    * @param name - Feature name 
+    **/
     this.createPresetByName = function( geom, ftype, trans, name) {
         // create new preset
         var newPreset = {};
@@ -129,6 +167,10 @@ Hoot.plugins.entityeditor = function() {
 
     }
 
+    /**
+    * @desc Create feature tag fields
+    * @param fieldInfo - Fields meta data
+    **/
 	this.createField = function(fieldInfo) {
 		var newField = {};
 	    newField.key = fieldInfo.name;
@@ -187,7 +229,9 @@ Hoot.plugins.entityeditor = function() {
 
 
 
-
+/**
+* @desc Map of tag values which should be hidden
+**/
 Hoot.plugins.entityeditor.noShowDefs = {'-999999.0':'-999999.0', 'No Information':'No Information',
 				'noInformation':'noInformation', '-999999':'-999999',
 				'Closed Interval': 'Closed Interval'};
@@ -222,7 +266,7 @@ Hoot.plugins.entityeditor.prototype.getTranslations = function(){
 Hoot.plugins.entityeditor.prototype.requestTranslationToServer = function(reqType, data, respHandler) {
 	Hoot.model.REST(reqType, data, function (resp) {
         if(resp.error){
-        	iD.ui.Alert('Failed to retrieve translation: ' + resp.error,'error');
+        	iD.ui.Alert('Failed to retrieve translation: ' + resp.error,'error',new Error().stack);
             return;
         }
         if (respHandler) {
@@ -231,7 +275,16 @@ Hoot.plugins.entityeditor.prototype.requestTranslationToServer = function(reqTyp
     });
 }
 
-
+/**
+* @desc Translate entity tags to requested translation type
+* @param context - Hootenanny global context
+* @param entity - Target entity
+* @param currentTranslation - Target translation
+* @param tags - new tags
+* @param preset - new preset
+* @param meta - new meta
+* @param populateBodyCallback - callback
+**/
 Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, currentTranslation, 
 		tags, preset, meta, populateBodyCallback){
 	var me = this;
@@ -366,6 +419,14 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
 }
 
 
+/**
+* @desc Update entity editor tag when selected preset changes
+* @param entity - Target entity
+* @param changed - new tag 
+* @param rawTagEditor - Raw tag editor object
+* @param currentTranslation - Translation to use for update
+* @param callback - callback
+**/
 Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, changed, rawTagEditor,
 	currentTranslation, callback) {
 

@@ -173,6 +173,8 @@ en:
   review:
     merge:
       description: Merge review features. Hold Ctrl to reverse.
+    sharereview:
+      description: Save review to share with others.
     previous:
       description: Skip to previous review.
     next:
@@ -448,13 +450,16 @@ en:
     tooltip: "Street-level photos from Mapillary"
     title: "Photo Overlay (Mapillary)"
     view_on_mapillary: "View this image on Mapillary"
+  highlight-edited:
+    tooltip: "Places a gold halo around edited but unsaved features"
+    title: "Highlight edited features"
   help:
     title: "Help"
     help: |
       # Help
 
       This is a UI for [Hootenanny](https://github.com/ngageoint/hootenanny), the
-      open-source, semi-automated conflation engine. The UI is based on [iD editor](http://ideditor.com/), 
+      open-source, semi-automated conflation engine. The UI is based on [iD editor](http://ideditor.com/),
       a collaborative project with [source code available on GitHub](https://github.com/openstreetmap/iD).
       iD Editor is the web platform for editing and contributing to [OpenStreetMap](https://www.openstreetmap.org/).
 
@@ -462,112 +467,112 @@ en:
       # Background
 
       Hootenanny is designed to facilitate automated and semi-automated
-      conflation of critical Foundation GEOINT features in the topographic domain, 
+      conflation of critical Foundation GEOINT features in the topographic domain,
       namely roads (polylines), buildings (polygons), and points-of-interest (POIs) (points).
 
-      Hootenanny currently supports the conflation of POIs, Building polygons, 
-      Transportation polylines, and (experimentally) Waterway polylines.  When conflating 
-      these features, it is important to note that conflation occurs between similar feature types 
-      (e.g. POI to POI, Building to Building, Transportation polyline to Transportation polyline, etc.) 
+      Hootenanny currently supports the conflation of POIs, Building polygons,
+      Transportation polylines, and (experimentally) Waterway polylines.  When conflating
+      these features, it is important to note that conflation occurs between similar feature types
+      (e.g. POI to POI, Building to Building, Transportation polyline to Transportation polyline, etc.)
       but not across feature domains (POI to Polygon, POI to Polyline, etc.).
 
-      Depending on the data and selected conflation options, the process of resolving 
-      ambiguous features is handled by an interactive conflict resolution workflow. 
-      Hootenanny cues up conflicts and drives the user to each conflict to make 
-      the appropriate geometry or attribute fix. Additionally, the user has the option 
-      to edit other features they may come across that need correcting while working 
-      through the conflict queue. There is also the option to accept all or discard 
-      all conflicts. This becomes a user choice and ultimately a risk assessment between 
-      accepting geometry and attribute errors resulting from automated algorithms versus 
+      Depending on the data and selected conflation options, the process of resolving
+      ambiguous features is handled by an interactive conflict resolution workflow.
+      Hootenanny cues up conflicts and drives the user to each conflict to make
+      the appropriate geometry or attribute fix. Additionally, the user has the option
+      to edit other features they may come across that need correcting while working
+      through the conflict queue. There is also the option to accept all or discard
+      all conflicts. This becomes a user choice and ultimately a risk assessment between
+      accepting geometry and attribute errors resulting from automated algorithms versus
       the use purpose of the end product.
 
     adding_layers: |
-      # Adding Layers     
+      # Adding Layers
 
-      During conflation, source datasets are merged based on user-specified 
-      conflation parameters to create an output layer that is ultimately superior 
-      in terms of complete geometry and attribution. Two datasets are required to 
-      perform a conflation: Reference and Secondary. To add a new Reference 
+      During conflation, source datasets are merged based on user-specified
+      conflation parameters to create an output layer that is ultimately superior
+      in terms of complete geometry and attribution. Two datasets are required to
+      perform a conflation: Reference and Secondary. To add a new Reference
       Dataset to the map, click on the Add Reference Dataset button on the left side.
-      A list of available layers will appear in the drop down menu. In order to add a 
+      A list of available layers will appear in the drop down menu. In order to add a
       layer, it must be imported into Hootenanny through the Manage page.
 
       ### Zoom to Layer
 
-      To zoom to the layer extent simply right-click on the layer and click on the 
-      Zoom to Layer button that appears on the layer name. This is useful when panning 
+      To zoom to the layer extent simply right-click on the layer and click on the
+      Zoom to Layer button that appears on the layer name. This is useful when panning
       or zooming outside of the viewable extent or scale of the data.
-      
-    editing: |
-      # Editing Features 
 
-      Users can select any point, line, or polygon feature and modify both the geometry 
-      and attribution displayed. Hootenanny provides the additional functionality of 
-      allowing users to toggle between different display tag schemas 
-      (OSM, TDS 6.1, and TDS 4.0) by changing the *Filter By Type* drop down to the 
+    editing: |
+      # Editing Features
+
+      Users can select any point, line, or polygon feature and modify both the geometry
+      and attribution displayed. Hootenanny provides the additional functionality of
+      allowing users to toggle between different display tag schemas
+      (OSM, TDS 6.1, and TDS 4.0) by changing the *Filter By Type* drop down to the
       desired tag format. This does not modify the underlying data but merely changes the displayed tag schema in the left panel.
 
       ## Modifying Layer Attributes
-      When a feature has been selected (or a new one has been added), it is possible 
-      to modify both its geometry and the associated attribute values. First it’s 
-      important to note that each tag schema maintains it’s own set of default presets. 
-      If a type does not appear listed, type the name (e.g. Culvert) in the Search window 
-      that appears when you click on the icon. Values for each field can be edited by 
-      clicking in each attribute and either typing or selecting from a set of 
-      pre-populated values. Note that both OSM and TDS schemas will only support a set 
-      of limited values for certain fields so it’s best to consult domain subject 
+      When a feature has been selected (or a new one has been added), it is possible
+      to modify both its geometry and the associated attribute values. First it’s
+      important to note that each tag schema maintains it’s own set of default presets.
+      If a type does not appear listed, type the name (e.g. Culvert) in the Search window
+      that appears when you click on the icon. Values for each field can be edited by
+      clicking in each attribute and either typing or selecting from a set of
+      pre-populated values. Note that both OSM and TDS schemas will only support a set
+      of limited values for certain fields so it’s best to consult domain subject
       matter experts when modifying.
 
-      New fields can be added by clicking on the *Add Field* drop down menu and selecting 
-      an appropriate value. Additional tags can be added by clicking on the **+** button at 
-      the bottom of the *All tags* section. To delete or display additional info about a 
-      tag, click on either the trash can or info icons that appear next to each tag. 
-      Note that any changes will not be final to a layer until the user clicks on Save 
-      to commit the edits to the Hootenanny database. For OSM tags, users can check the 
+      New fields can be added by clicking on the *Add Field* drop down menu and selecting
+      an appropriate value. Additional tags can be added by clicking on the **+** button at
+      the bottom of the *All tags* section. To delete or display additional info about a
+      tag, click on either the trash can or info icons that appear next to each tag.
+      Note that any changes will not be final to a layer until the user clicks on Save
+      to commit the edits to the Hootenanny database. For OSM tags, users can check the
       *Sort A-Z* box to sort tags in alphabetical order.
 
       ## Modifying Layer Geometry
-      To modify the feature geometry, click on the feature to expose the *editing palette* 
-      that pertains to the particular selected feature. Note that each unique geometry 
-      type and shape present their own options that may not display for other features. 
-      For instance, selecting a linear feature exposes editing options to straighten or 
-      change the directionality whereas clicking on a feature that traces a square, 
-      rectangle or circular path exposes options to make the feature a square or circle. 
-      Editing options include adding additional nodes by double clicking on a line segment, 
-      moving a node to manually modify the shape or path of a line or polygon, moving a point, 
-      and deleting features. 
+      To modify the feature geometry, click on the feature to expose the *editing palette*
+      that pertains to the particular selected feature. Note that each unique geometry
+      type and shape present their own options that may not display for other features.
+      For instance, selecting a linear feature exposes editing options to straighten or
+      change the directionality whereas clicking on a feature that traces a square,
+      rectangle or circular path exposes options to make the feature a square or circle.
+      Editing options include adding additional nodes by double clicking on a line segment,
+      moving a node to manually modify the shape or path of a line or polygon, moving a point,
+      and deleting features.
 
       ## Saving Edits
-      In order to save any edits applied to a layer click on the Save button displayed on top 
-      in the map view or to revert to a previous edit. Save will commit any edits on a particular 
-      layer to the hoot database where as the Undo/Redo buttons will step back/forward through 
-      any modifications applied to either that layer’s geometry or attribution. The number displayed 
-      next to the Save button indicates the number of edits that will be committed to the database 
+      In order to save any edits applied to a layer click on the Save button displayed on top
+      in the map view or to revert to a previous edit. Save will commit any edits on a particular
+      layer to the hoot database where as the Undo/Redo buttons will step back/forward through
+      any modifications applied to either that layer’s geometry or attribution. The number displayed
+      next to the Save button indicates the number of edits that will be committed to the database
       for a given session.
 
     adding_features: |
       # Adding New Features
 
-      It is also possible to create new features for a given layer, but any new feature 
-      added must be done with at least one layer present. Any new features added without an 
-      associated layer cannot be saved. 
+      It is also possible to create new features for a given layer, but any new feature
+      added must be done with at least one layer present. Any new features added without an
+      associated layer cannot be saved.
 
       ### Adding a point feature
 
-      To add a new point, click on the *Point* button appearing in the Map Viewer or use the 1 shortcut key. 
-      Points can be used to represent features such as shops, restaurants, parks and monuments, etc. 
-      They mark a specific location and describe the feature based on the OSM/TDS tag relationship. 
-      Once a new point is added to the map, a panel will appear on the map prompting you to select an 
-      appropriate feature type (park, cafe, etc) and any associated tags. Note that even though OSM 
-      values are presented, the data is stored on the database using the TDS tag equivalent. 
+      To add a new point, click on the *Point* button appearing in the Map Viewer or use the 1 shortcut key.
+      Points can be used to represent features such as shops, restaurants, parks and monuments, etc.
+      They mark a specific location and describe the feature based on the OSM/TDS tag relationship.
+      Once a new point is added to the map, a panel will appear on the map prompting you to select an
+      appropriate feature type (park, cafe, etc) and any associated tags. Note that even though OSM
+      values are presented, the data is stored on the database using the TDS tag equivalent.
       The next time it is edited within Hootenanny it will display the values using the english translated LTDS schema.
 
       ### Adding a linear feature
 
-      To add a new linear feature, click on the *Line* button or use the 2 shortcut key and begin digitizing on the map. 
-      A pop-up message will appear if you would like to snap to an existing linear feature. Click on a single location 
-      to begin the linear feature and then continue clicking until feature has been completed. Double-click to complete 
-      the process and edit any attribution as needed. Repeat process for a new *Area* feature. Click *Save* to save all 
+      To add a new linear feature, click on the *Line* button or use the 2 shortcut key and begin digitizing on the map.
+      A pop-up message will appear if you would like to snap to an existing linear feature. Click on a single location
+      to begin the linear feature and then continue clicking until feature has been completed. Double-click to complete
+      the process and edit any attribution as needed. Repeat process for a new *Area* feature. Click *Save* to save all
       edits or step back/forward using the undo/redo buttons as needed.
 
     copying: |
@@ -584,14 +589,14 @@ en:
 
       ### Copying Features/Tags Within a Single Layer
 
-      To copy a feature(s) within a single layer, select the feature or set of features that you wish to copy using the 
-      left-mouse button or by clicking on the red/blue conflict review table field. Note that you can select multiple 
-      features by pressing the shift key as you select each feature. When multiple features are selected they will appear 
-      listed on the left under the Selected items. Type *Ctrl + c* to copy the selected feature(s) and then *Ctrl + v* to 
+      To copy a feature(s) within a single layer, select the feature or set of features that you wish to copy using the
+      left-mouse button or by clicking on the red/blue conflict review table field. Note that you can select multiple
+      features by pressing the shift key as you select each feature. When multiple features are selected they will appear
+      listed on the left under the Selected items. Type *Ctrl + c* to copy the selected feature(s) and then *Ctrl + v* to
       display the copied feature(s) on the map. Once the copied feature(s) appear on the map they can be placed in the desired location.
 
-      To copy tags within a single layer from one feature to another (or multiple selected features), select the feature 
-      to copy and type *Ctrl + c*, then select the target feature(s) to paste and use *Shift + Ctrl + v*. This will replace 
+      To copy tags within a single layer from one feature to another (or multiple selected features), select the feature
+      to copy and type *Ctrl + c*, then select the target feature(s) to paste and use *Shift + Ctrl + v*. This will replace
       all of the selected feature tags (except name and those listed in the note below) with the copied source tags.
 
       ### Copying Tags Between Two Layers
@@ -614,7 +619,7 @@ en:
       # Tools
 
       ## Hootenanny Map Tools
-      Map navigation options appear in the upper right portion of the map viewer. To view a maptip and/or 
+      Map navigation options appear in the upper right portion of the map viewer. To view a maptip and/or
       shortcut, hover the cursor over each button and information concerning the functionality of a particular feature will appear.
 
       ### Map Navigation
@@ -679,7 +684,7 @@ en:
       preference is to define a bounding box on the map, the user can select clip to bounding box and then single left-click on any location
       dragging the displayed box to the desired size and direction. Keep in mind the first point clicked on the map is either the top or
       bottom corner depending on where the box is positioned.
-      
+
       Once a bounding box (or visual extent) has been selected, a dialog box will pop up with options to specify an output name and path
       of the clipped dataset. After the job has successfully completed it will appear in the list of available datasets.
 
@@ -735,17 +740,17 @@ en:
       # Conflation options
 
       ### Save As
-      
+
       The name of the conflated data output that you would like to save. By default, a file name Merged_* is populated in this field but
       this can be overwritten manually by entering a specific layer name.
-      
+
       ### Path
-      
+
       The existing folder path where you want to save the conflated output. To create a new folder to save the output enter that in the New
       Folder Name field.
-      
+
       ### New Folder Name
-      
+
       The name of a new folder if you wish to create one to save the output. Note that it will be created at the level specified in the Path.
       Leave blank if no new folder is required.
 
@@ -777,11 +782,11 @@ en:
       between matched features. When this occurs, reviewable items are flagged and presented to the user in the UI through an iterative
       review process where the user must decide a particular action (e.g. accept as resolved, modify or delete, or merge) before merging the
       final conflated output.
-      
+
       During review, a single feature is compared with another (based on convergence of geometry and attribution) to determine whether
       a merge or alternative action is required. Note that feature merging is only available for POI to POI conflation. Otherwise the user
       can modify Features flagged for review will appear highlighted on the map in either red or blue corresponding to the Reference and
-      Secondary input data. Clicking in any of the highlighted fields in the review table will select the feature in question and display 
+      Secondary input data. Clicking in any of the highlighted fields in the review table will select the feature in question and display
       its attribute in the left tag panel (see Figure 28). Users can toggle the review items table by clicking on the Hide/Show Table button
       located in the conflict review bar at the bottom. In order to complete the review process, all reviews must be resolved either by
       stepping through each individually or by clicking the Complete Review button to resolve remaining reviews and either export the
@@ -804,7 +809,7 @@ en:
       layer simultaneously since it provides a map of the spatial distribution of reviews in real or near-real time.
 
       ### Multi-user Conflict Reviewing
-      
+
       Hootenanny supports the notion of multi-user layer editing in the context of conflation reviews by adding business logic to the
       application that minimizes the likelihood that different users loading the same layer will be presented with the exact same review.
       Bear in mind that datasets containing fewer reviews (<50) will have a higher likelihood of two different users encountering the same
@@ -824,7 +829,7 @@ en:
     manage: |
       # Manage Hootenanny
 
-      The Manage capabilities within Hootenanny provide a set of administrative tools and data management options for users. This will 
+      The Manage capabilities within Hootenanny provide a set of administrative tools and data management options for users. This will
       provide a brief overview of the Manage Page for Hootenanny.  For more information, please consult the Hootenanny User Interface Guide.
 
       ### Translation Assistant
@@ -853,7 +858,7 @@ en:
       been already ingested, and exporting data from Hootenanny into pre-defined output formats and translation schemas.
 
       ### WFS Exports
-      
+
       The WFS Export tab lists all of the available WFS Services that have been generated from previous conflation jobs. Click on the up
       arrow icon to display the WFS Resource URL. Copy/Paste the URL into a third party application that supports WFS. Note that the
       URL provided is the full GetCapabilities document describing the service.

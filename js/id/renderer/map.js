@@ -30,8 +30,9 @@ iD.Map = function(context) {
 
     function map(selection) {
         context.history()
-            .on('change.map', function(){
-                redraw(undefined, undefined, true);
+            .on('change.map', function() {
+                redraw();
+                map.updateEditedHighlights();
             });
         context.background()
             .on('change.map', redraw);
@@ -678,5 +679,18 @@ iD.Map = function(context) {
         dispatch.drawVector();
 
     };
+
+    map.updateEditedHighlights = function() {
+        //Clear any 'edited' class from features
+        d3.selectAll('.edited').classed('edited unsaved', false);
+        if (d3.select('div.highlight-edited input').node().checked) {
+            //Add 'edited' class to edited but unsaved features
+            context.history().difference().summary().map(function(d) {
+                return d.entity.id;
+            }).forEach(function(d) {
+                d3.selectAll('.' + d).classed('edited unsaved', true);
+            });
+        }
+    }
     return d3.rebind(map, dispatch, 'on');
 };

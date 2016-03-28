@@ -1,3 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.control.utilities.wfsdataset provides dialog which contains detail information on ingested WFS layer.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.wfsdataset = function(context) {
 	var hoot_control_utilities_wfsdataset = {};
 

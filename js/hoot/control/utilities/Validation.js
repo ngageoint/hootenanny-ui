@@ -1,3 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.control.utilities.validation provide input dialog for HGIS prepare validation feature.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.validation = function(context) {
 	var hoot_control_utilities_validation = {};
 
@@ -22,7 +29,7 @@ Hoot.control.utilities.validation = function(context) {
         	        if(output !=''){
         	            var resp = context.hoot().checkForUnallowedChar(output);
         	        	if(resp != true){
-        	        		iD.ui.Alert(resp,'warning');
+        	        		iD.ui.Alert(resp,'warning',new Error().stack);
         	        		return;
         	            }
         	        }
@@ -42,7 +49,7 @@ Hoot.control.utilities.validation = function(context) {
 
                     Hoot.model.REST('createValidationMap', reqParam, function (resp) {   
                         if(resp.status != 'complete') {
-                            iD.ui.Alert("Failed to create validation. See log for detail.",'warning');
+                            iD.ui.Alert("Failed to create validation. See log for detail.",'warning',new Error().stack);
                         } else {
                             // refresh both folder and layer list
                             context.hoot().model.layers.refresh(function(){
@@ -55,7 +62,7 @@ Hoot.control.utilities.validation = function(context) {
                         
                     });
                 } else {
-                	iD.ui.Alert('Please specify valid Output Name!','warning');
+                	iD.ui.Alert('Please specify valid Output Name!','warning',new Error().stack);
                     spinDiv.remove();
                 }
             }

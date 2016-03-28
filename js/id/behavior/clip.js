@@ -98,9 +98,9 @@ iD.behavior.Clip = function(context,svg,type) {
     				
  		ret(d3.select("#surface"));
  		if(!_.isEmpty(hoot.model.layers.getLayers())){
-			hoot.control.utilities.dataset.clipDatasetContainer('boundingBox',bboxPt1.concat(',',bboxPt2));                    			
+			hoot.control.utilities.clipdataset.clipDatasetContainer('boundingBox',bboxPt1.concat(',',bboxPt2));                    			
 		} else {
-			iD.ui.Alert("Add data to map before clipping.","notice");
+			iD.ui.Alert("Add data to map before clipping.","notice",new Error().stack);
 		}
  		nodeId=0;
  	}

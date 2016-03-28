@@ -45,7 +45,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
 
 
-          var btnContainer = form.append('div')
+        var btnContainer = form.append('div')
                 .attr('id', 'bmkPageBtnContainer')
                 .classed('form-field col12', true);
 
@@ -430,9 +430,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                             .classed('text-left big col12 quiet', true)
 
                             .text(_createSubText);
-
-
-
+                       
                         tla3.append('button')
                         //.classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
                         .style('height', '100%')

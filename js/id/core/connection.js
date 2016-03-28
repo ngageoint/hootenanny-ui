@@ -77,7 +77,7 @@ iD.Connection = function(context) {
                 .header('Content-Type', 'text/plain')
                 .post(JSON.stringify(data), function (error, resp) {
                     if (error) {
-                    	iD.ui.Alert(error.responseText,'error');
+                    	iD.ui.Alert(error.responseText,'error',new Error().stack);
                         return ;
                     }
                     callback(resp);
@@ -90,7 +90,7 @@ iD.Connection = function(context) {
         request.get(function (error, resp) {
             if (error) {
                 window.console.log(error);
-                iD.ui.Alert(error.responseText,'error');
+                iD.ui.Alert(error.responseText,'error',new Error().stack);
                 context.hoot().reset();
                 return callback(null);
 
@@ -610,6 +610,7 @@ iD.Connection = function(context) {
                     delete loadedTiles[b];
                 }
             });
+            return event.layer();
         }
     };
 

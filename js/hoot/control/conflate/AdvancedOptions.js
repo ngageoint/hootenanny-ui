@@ -254,7 +254,7 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
             } else{
             	//notify that some values are invalid and leave window open
             	iD.ui.Alert('Some values in the form are invalid and must be adjusted before completing custom conflation.',
-            		'warning');
+            		'warning',new Error().stack);
             }            	
         });
 	}

@@ -1,3 +1,11 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.control.export is export control which provides export when all resolution has been resolved.
+//  This control seats in sidebar.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.export = function (sidebar) {
     var exportResources = ['LTDS 4.0', 'MGCP'];
     var event = d3.dispatch('saveLayer', 'cancelSaveLayer');
@@ -6,17 +14,6 @@ Hoot.control.export = function (sidebar) {
     exp.deactivate = function () {
         save.remove();
     };
- // This was for UTP FOUO but not necessary since user have know about it before creating custom translation
-  /*  Hoot.model.REST('getExportResources', function (e) {
-        if(e){
-            exportResources = [];
-            var resp = JSON.parse(e);
-            _.each(resp, function(o){
-                exportResources.push(o.description);
-            });
-        }
-
-    });*/
 
     exp.activate = function (layer, translations) {
         var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema';
@@ -41,13 +38,16 @@ Hoot.control.export = function (sidebar) {
         var d_save = [{
             label: 'Translation',
             type: 'fileExportTranslation',
-            transcombo: transCombo,//exportResources,
+            id: 'fileExportTranslation',
+            combobox: {'data':transCombo },//exportResources,
             placeholder: placeHolder,//'LTDS 4.0'
             inputtype:'text'
         }, {
             label: 'Export Format',
             type: 'fileExportFileType',
-            combobox: ['File Geodatabase', 'Shapefile', 'Web Feature Service (WFS)', 'Open Street Map (OSM)'],
+            id: 'fileExportFileType',
+            combobox: {'data': [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'}, 
+                        {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}]},
             placeholder: 'File Geodatabase',
             inputtype:'text'
         }, {
@@ -58,6 +58,7 @@ Hoot.control.export = function (sidebar) {
         }, {
             label: 'Output Name',
             type: 'fileExportOutputName',
+            id: 'fileExportOutputName',
             placeholder: layer.name || 'Output Name',
             inputtype:'text'
         }];
@@ -116,25 +117,7 @@ Hoot.control.export = function (sidebar) {
               	}
             	if (a.combobox) {
                     var combo = d3.combobox()
-                        .data(_.map(a.combobox, function (n) {
-                            return {
-                                value: n,
-                                title: n
-                            };
-                        }));
-                    d3.select(this)
-                        .style('width', '100%')
-                        .call(combo);
-                    
-                    d3.select(this)
-	                	.on('change',function(){
-	                		checkForTemplate();
-	                	});
-                }
-                
-                if (a.transcombo) {
-                    var combotrans = d3.combobox()
-                        .data(_.map(a.transcombo, function (n) {
+                        .data(_.map(a.combobox.data, function (n) {
                             return {
                                 value: n.DESCRIPTION,
                                 title: n.DESCRIPTION
@@ -142,13 +125,15 @@ Hoot.control.export = function (sidebar) {
                         }));
                     d3.select(this)
                         .style('width', '100%')
-                        .call(combotrans);
+                        .call(combo);
                     
                     d3.select(this)
-	                	.on('change',function(){
-	                		checkForTemplate();
-	                	});
-                }   
+                        .on('change',function(){
+                            checkForTemplate();
+                        });
+                }
+                
+               
 
                 if(a.label=='Output Name'){
                     d3.select(this).on('change',function(){
@@ -160,6 +145,10 @@ Hoot.control.export = function (sidebar) {
                             d3.select(this).classed('invalidName',false).attr('title',null);
                         }
                     });
+                }
+
+                if(a.id) {
+                    d3.select(this).attr('id', a.id);
                 }
             });
         

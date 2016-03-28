@@ -141,7 +141,7 @@ iD.ui.RawMembershipEditor = function(context) {
                 .attr('class', 'remove button-input-action member-delete minor')
                 .on('click', function(d){
                 	if(d.member.role=='reviewee'){
-                		return iD.ui.Alert("Cannot remove reviewee relation!","warning");
+                		return iD.ui.Alert("Cannot remove reviewee relation!","warning",new Error().stack);
                 	} else {
                 		return deleteMembership(d);
                 	}

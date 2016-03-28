@@ -1,3 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.control.utilities.filter
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.folder = function(context) {
 	var selectedLayerIDs = [];
 	
@@ -386,7 +393,7 @@ Hoot.control.utilities.folder = function(context) {
 							case 'modifyFolder': context.hoot().view.utilities.dataset.modifyDataset(d); break;
 							case 'addDataset': Hoot.model.REST("getTranslations",function(e){
 											   		if(d.error){context.hoot().view.utilities.errorlog.reportUIError(d.error);return;}
-											   		context.hoot().control.utilities.dataset.importDataContainer(e,d)
+											   		context.hoot().control.utilities.importdataset.importDataContainer(e,d)
 											   	}); break;
 							case 'addFolder': context.hoot().control.utilities.folder.importFolderContainer(d); break;
 							default:
@@ -625,19 +632,19 @@ Hoot.control.utilities.folder = function(context) {
 
                     //check if layer with same name already exists...
                 	if(_form.select('.reset.NewFolderName').value()=='' || _form.select('.reset.NewFolderName').value()==_form.select('.reset.NewFolderName').attr('placeholder')){
-                		iD.ui.Alert("Please enter an output folder name.",'warning');
+                		iD.ui.Alert("Please enter an output folder name.",'warning',new Error().stack);
                         return;
                 	}
                 	
                 	resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
                 	if(resp != true){
-                		iD.ui.Alert(resp,'warning');
+                		iD.ui.Alert(resp,'warning',new Error().stack);
                 		return;
                     }
 
                     resp = hoot.model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
                     if(resp != true){
-                		iD.ui.Alert(resp,'warning');
+                		iD.ui.Alert(resp,'warning',new Error().stack);
                 		return;
                     }
                 	
@@ -772,13 +779,13 @@ Hoot.control.utilities.folder = function(context) {
 	                if(outputname==''){outputname=_form.select('.fileOutputName').attr('placeholder');}
 	                var resp = context.hoot().checkForUnallowedChar(outputname);
 	             	if(resp != true){
-	             		iD.ui.Alert(resp,'warning');
+	             		iD.ui.Alert(resp,'warning',new Error().stack);
 	             		return;
 	                 }
 	             	
 					resp = hoot.model.folders.duplicateFolderCheck({name:outputname,parentId:pathId});
                     if(resp != true){
-                		iD.ui.Alert(resp,'warning');
+                		iD.ui.Alert(resp,'warning',new Error().stack);
                 		return;
                     }
 

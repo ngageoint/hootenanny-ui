@@ -1,3 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.model.REST is static collection of various REST request made to Hoot service and Node JS server. 
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.model.REST = function (command, data, callback, option) {
     if (typeof (data) === 'function' && !callback) {
         callback = data;
@@ -6,7 +13,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     function _alertError(error, errorText){
         console.error(error);
-        iD.ui.Alert(errorText,'error');
+        iD.ui.Alert(errorText,'error',new Error().stack);
         var localResp = {};
         localResp.status = "failed";
         localResp.error = error;
@@ -29,10 +36,14 @@ Hoot.model.REST = function (command, data, callback, option) {
         if (!data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME) {
             return false;
         }
-        d3.xhr('/hoot-services/ingest/ingest/upload?TRANSLATION=' + data.TRANSLATION + '&INPUT_TYPE=' +
+        var url = '/hoot-services/ingest/ingest/upload?TRANSLATION=' + data.TRANSLATION + '&INPUT_TYPE=' +
                 data.INPUT_TYPE + '&INPUT_NAME=' + data.INPUT_NAME + '&USER_EMAIL=' +
-                iD.data.hootConfig.userEmail + '&NONE_TRANSLATION=' + data.NONE_TRANSLATION)
-                        .header('access-control-allow-origin', '*')
+                iD.data.hootConfig.userEmail + '&NONE_TRANSLATION=' + data.NONE_TRANSLATION;
+
+        if(data.FGDB_FC) {
+            url += '&FGDB_FC=' + data.FGDB_FC;
+        }
+        d3.xhr(url).header('access-control-allow-origin', '*')
             .post(data.formData, function (error, json) {
 
 
@@ -57,7 +68,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		'&inputType=' + data.inputType + '&modName=' + data.modifiedName)
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Modify name failed! For detailed log goto Manage->Log",'error');
+            	iD.ui.Alert("Modify name failed! For detailed log goto Manage->Log",'error',new Error().stack);
                 return error;
             }
             callback(data);
@@ -76,7 +87,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		'&folderId=' + data.folderId + '&updateType=' + data.updateType)
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Folder-Map link failed! For detailed log goto Manage->Log",'error');
+            	iD.ui.Alert("Folder-Map link failed! For detailed log goto Manage->Log",'error',new Error().stack);
                 return error;
             }
             callback(data);
@@ -111,7 +122,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		'&parentId=' + data.parentId)
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Add folder failed! For detailed log goto Manage->Log",'error');
+            	iD.ui.Alert("Add folder failed! For detailed log goto Manage->Log",'error',new Error().stack);
                 return error;
             }
             callback(data);
@@ -401,7 +412,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                             }
                         }
                         if(showError){
-                        	iD.ui.Alert("Requested job failed! For detailed log goto Manage->Log",'error');
+                        	iD.ui.Alert("Requested job failed! For detailed log goto Manage->Log",'error',new Error().stack);
                         }
                     }
                     else
@@ -419,7 +430,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         var JobStatusStopTimer = function(resp) {
                 clearInterval(JobStatusTimer);
                 if (callback) {
-                    callback(resp);
+                    callback(resp, jobStatus);
                 }
             };
     };
@@ -452,7 +463,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                 }
                 else
                 {
-                	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
+                	iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
                 }
             });
     }
@@ -460,7 +471,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     // This uses translation node js server using CORS
     rest.LTDS = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
-        	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
+        	iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
             return;
         }
         if (!data) {
@@ -538,7 +549,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     // This uses translation node js server using CORS
     rest.TDSToOSMByFCode = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
-        	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
+        	iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
             return;
         }
 
@@ -556,7 +567,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.TDSToOSM = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
-        	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
+        	iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
             return;
         }
         if (!data) {
@@ -602,7 +613,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         d3.json('/hoot-services/job/export/execute')
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Export job failed! For detailed log goto Manage->Log",'error');
+            	iD.ui.Alert("Export job failed! For detailed log goto Manage->Log",'error',new Error().stack);
                 return error;
             }
             return data;
@@ -703,7 +714,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     	    if (error)
     	    {
     	      console.log(error);
-    	      iD.ui.Alert("Resolve all reviews failed.",'error');
+    	      iD.ui.Alert("Resolve all reviews failed.",'error',new Error().stack);
     	    }
     	    callback(error, response);
     	  });
@@ -721,7 +732,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         if (error)
         {
           console.log(error);
-          iD.ui.Alert("Review get refs failed.",'error');
+          iD.ui.Alert("Review get refs failed.",'error',new Error().stack);
         }
         callback(error, response);
       });
@@ -797,7 +808,7 @@ rest.ReviewGetGeoJson = function (mapId, extent, callback) {
             + '&maxlat=' + (extent[1][1]).toFixed(6)
             , function (error, resp) {
                 if (error) {
-                    iD.ui.Alert("Failed to get review geojson.",'error');
+                    iD.ui.Alert("Failed to get review geojson.",'error',new Error().stack);
                     return;
                 }
                 if (callback) {
@@ -1058,8 +1069,32 @@ rest.downloadReport = function(data)
         });
     }
 
-    rest['' + command + ''](data, callback, option);
-};
+    rest.uploadFGDBForStats = function(data, callback) {
+        var formData = data.formData;
+
+        d3.json('/hoot-services/ogr/info/upload?INPUT_TYPE=' + data.type)
+            .post(formData, function(error, json) {
+                if (error || json.status === 'failed') {
+                    return callback(_alertError(error, "Failed to load FGDB feature classes."));
+                }
+                rest.status(json.jobId, callback);
+            });
+    }
+
+
+
+
+    rest.getFGDBStat = function(data, callback) {
+        d3.json('/hoot-services/ogr/info/' + data.jobId, function(error, resp) {
+            if (error) {
+                return callback(_alertError(error, "Failed to get FGDB feature classes stat! For detailed log goto Manage->Log"));
+            }
+            callback(resp);
+        });
+    }
+
+        rest['' + command + ''](data, callback, option);
+    };
 
 Hoot.model.REST.WarningHandler = function(resp){
     if(resp.statusDetail){
@@ -1070,7 +1105,7 @@ Hoot.model.REST.WarningHandler = function(resp){
         } catch (e) {
             // must be string so try to see if it is warning
             if(detail.indexOf('WARNINGS:') === 0){
-               iD.ui.Alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log','warning');
+               iD.ui.Alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log','warning',new Error().stack);
                return;
             }
         }
@@ -1089,7 +1124,7 @@ Hoot.model.REST.WarningHandler = function(resp){
 
                 });
                 if(isWarning === true){
-                	iD.ui.Alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log','warning');
+                	iD.ui.Alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log','warning',new Error().stack);
                 }
             }
         }

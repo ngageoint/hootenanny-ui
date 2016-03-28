@@ -1,3 +1,4 @@
+// Verify but this should be deprecated
 Hoot.view.ltdstags = function (context) {
     var meta = {};
 
@@ -313,7 +314,7 @@ Hoot.view.ltdstags = function (context) {
             if(isNew){
                 if(tagsData.length == 1){
                     if(tagsData[0].key.trim().length == 0 || tagsData[0].value.trim().length == 0){
-                    	iD.ui.Alert("Please save last new attribute before adding new.",'warning');
+                    	iD.ui.Alert("Please save last new attribute before adding new.",'warning',new Error().stack);
                         return;
                     }
                 }
@@ -388,7 +389,7 @@ Hoot.view.ltdstags = function (context) {
                             // numeric
                             if (isNaN(this.value)) // this is the code I need to change
                             {
-                            	iD.ui.Alert("Please enter a numeric value!",'warning');
+                            	iD.ui.Alert("Please enter a numeric value!",'warning',new Error().stack);
                                 if(this.oldValue){
                                     this.value = this.oldValue;
                                 } else {
@@ -400,7 +401,7 @@ Hoot.view.ltdstags = function (context) {
                     }
 
                     if(orig_entity.key.trim().length == 0) {
-                    	iD.ui.Alert('Missing or invalid key.','warning');
+                    	iD.ui.Alert('Missing or invalid key.','warning',new Error().stack);
                         var curval = this.value;
                         this.value = "";
                         return;

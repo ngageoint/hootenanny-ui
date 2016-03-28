@@ -1,3 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.model.conflicts provides functions to handle conflict resolution by connection to service REST endpoint.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      03 Feb. 2016
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.model.conflicts = function(context)
 {
     var model_conflicts = {};
@@ -139,7 +146,7 @@ Hoot.model.conflicts = function(context)
                         if (error)
                         {
                           console.log(error);
-                          iD.ui.Alert('failed to retrieve review refs.','warning');
+                          iD.ui.Alert('failed to retrieve review refs.','warning',new Error().stack);
                           //context.hoot().control.conflicts.setProcessing(false);
                           throw error;
                         }
@@ -232,7 +239,7 @@ Hoot.model.conflicts = function(context)
                     }
                     catch (getReviewRefsErr)
                     {
-                        iD.ui.Alert(getReviewRefsErr,'error');
+                        iD.ui.Alert(getReviewRefsErr,'error',new Error().stack);
                         console.error(getReviewRefsErr);
                         if(callback){
                             callback(getReviewRefsErr);
@@ -245,7 +252,7 @@ Hoot.model.conflicts = function(context)
         }
         catch(mergeErr)
         {
-            iD.ui.Alert(mergeErr,'error');
+            iD.ui.Alert(mergeErr,'error',new Error().stack);
             console.error(mergeErr);
             if(callback){
                 callback(mergeErr);
@@ -465,7 +472,7 @@ Hoot.model.conflicts = function(context)
                                     if (error)
                                     {
                                       console.log(error);
-                                      iD.ui.Alert('failed to retrieve review refs.','warning');
+                                      iD.ui.Alert('failed to retrieve review refs.','warning',new Error().stack);
                                       
                                       throw error;
                                     }
@@ -566,7 +573,7 @@ Hoot.model.conflicts = function(context)
                                                 catch(loadMissingErr)
                                                 {
                                                     context.hoot().control.conflicts.setProcessing(false);
-                                                    iD.ui.Alert(loadMissingErr,'error');
+                                                    iD.ui.Alert(loadMissingErr,'error',new Error().stack);
                                                     console.error(loadMissingErr);
                                                 }
                                                 finally
@@ -587,7 +594,7 @@ Hoot.model.conflicts = function(context)
                                 catch (getReviewRefsErr)
                                 {
                                     context.hoot().control.conflicts.setProcessing(false);
-                                    iD.ui.Alert(getReviewRefsErr,'error');
+                                    iD.ui.Alert(getReviewRefsErr,'error',new Error().stack);
                                     console.error(getReviewRefsErr);
                                 }
                                 finally
@@ -602,7 +609,7 @@ Hoot.model.conflicts = function(context)
                     catch(mergeErr)
                     {
                         context.hoot().control.conflicts.setProcessing(false);
-                        iD.ui.Alert(mergeErr,'error');
+                        iD.ui.Alert(mergeErr,'error',new Error().stack);
                         console.error(mergeErr);
                     }
                     finally
@@ -626,7 +633,7 @@ Hoot.model.conflicts = function(context)
         catch(err)
         {
             context.hoot().control.conflicts.setProcessing(false);
-            iD.ui.Alert(err,'error');
+            iD.ui.Alert(err,'error',new Error().stack);
             console.error(err);
         }
         finally

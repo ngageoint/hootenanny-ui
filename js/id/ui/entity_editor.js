@@ -82,8 +82,6 @@ iD.ui.EntityEditor = function(context) {
         comboIntput.style('width', '100%')
             .call(combo);
 
-
-
         // When translation combo value change then we get the translation filter
         // and rerun entity Editor
         comboIntput.on('change', function(param){
@@ -219,8 +217,6 @@ iD.ui.EntityEditor = function(context) {
             context.history()
                 .on('change.entity-editor', historyChanged);                        
         }
-
-        
 
         if(currentTranslation == 'OSM') {
             populateBody(preset, tags, tags);

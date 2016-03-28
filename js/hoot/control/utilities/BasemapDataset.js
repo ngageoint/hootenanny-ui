@@ -1,3 +1,11 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Hoot.control.utilities.basemapdataset provides popup dialog for creating new basemap. It is invoked from
+//  Hoot.view.utilities.basemapdataset view.
+//
+// NOTE: Please add to this section with any modification/addtion/deletion to the behavior
+// Modifications:
+//      18 Dec. 2015
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.basemapdataset = function(context) {
 	var hoot_control_utilities_basemapdataset = {};
 
@@ -14,9 +22,12 @@ Hoot.control.utilities.basemapdataset = function(context) {
             placeholder: 'Save As',
             type: 'BasemapName'
         }];
+        // Modal background (Dark back ground)
         var modalbg = d3.select('body')
             .append('div')
             .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+
+        // Create form div
         var ingestDiv = modalbg.append('div')
             .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
         var _form = ingestDiv.append('form');
@@ -121,7 +132,7 @@ Hoot.control.utilities.basemapdataset = function(context) {
                     if(found){
                         iD.ui.Alert('Base map with name "' + name + '" already exists. '
                                  + 'If no name is assigned please specify a name or'+
-                                 ' if already specified please use different name.','warning');
+                                 ' if already specified please use different name.','warning',new Error().stack);
                     } else {
                         d3.select(this).text('Publishing...');
                         d3.select(this).style('pointer-events','none');
