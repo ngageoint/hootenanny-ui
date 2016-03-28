@@ -161,7 +161,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
         }
         catch (err)
         {
-            iD.ui.Alert(err,'error');
+            iD.ui.Alert(err,'error',new Error().stack);
         }
         finally
         {
@@ -238,7 +238,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             }
             fnc(f);
         } else {
-            iD.ui.Alert('There are no members in the review relation.','warning');
+            iD.ui.Alert('There are no members in the review relation.','warning',new Error().stack);
         }
     }
 

@@ -140,7 +140,7 @@ Hoot.view.utilities.dataset = function(context)
         	var dataset = datasets2remove[i];
         	var exists = context.hoot().model.layers.getLayers()[dataset.name];
 	        if(exists){
-	        	iD.ui.Alert('Can not remove the layer in use: ' + dataset.name,'warning');
+	        	iD.ui.Alert('Can not remove the layer in use: ' + dataset.name,'warning',new Error().stack);
 	        	rectNode.style('fill',currentFill);
 	        	return;
 	        }
@@ -171,20 +171,20 @@ Hoot.view.utilities.dataset = function(context)
 			    		//remove folder
 				    	if(d.type=='folder'){
 				        	context.hoot().model.folders.deleteFolder(d.id,function(resp){
-				        		if(resp==false){iD.ui.Alert('Unable to delete folder.','error');}
+				        		if(resp==false){iD.ui.Alert('Unable to delete folder.','error',new Error().stack);}
 			                	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
 				        	});
 				    	}
 				    }
 			    });
 			} catch (e) {
-				iD.ui.Alert('Unable to delete dataset ' + dataset.name + '. ' + e,'error')
+				iD.ui.Alert('Unable to delete dataset ' + dataset.name + '. ' + e,'error',new Error().stack)
 			} 
 	    }//,container);    
         
         if(datasets2remove.length==0){
         	context.hoot().model.folders.deleteFolder(d.id,function(resp){
-        		if(resp==false){iD.ui.Alert('Unable to delete folder.','error');}
+        		if(resp==false){iD.ui.Alert('Unable to delete folder.','error',new Error().stack);}
             	hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});	
         	});
         }
@@ -230,7 +230,7 @@ Hoot.view.utilities.dataset = function(context)
     	else if(d.length==1){
     		var dataset = _.findWhere(context.hoot().model.layers.getAvailLayers(),{id:d[0]});
     		if(dataset==undefined){
-    			iD.ui.Alert("Could not locate dataset with id: " + d[0].toString() + ".",'error');
+    			iD.ui.Alert("Could not locate dataset with id: " + d[0].toString() + ".",'error',new Error().stack);
     			return;
     		} else {
     			dataset.type='dataset';
@@ -253,7 +253,7 @@ Hoot.view.utilities.dataset = function(context)
             	var dataset = datasets2remove[i];
             	var exists = context.hoot().model.layers.getLayers()[dataset.name];
     	        if(exists){
-    	        	iD.ui.Alert('Can not remove the layer in use: ' + dataset.name,'warning');
+    	        	iD.ui.Alert('Can not remove the layer in use: ' + dataset.name,'warning',new Error().stack);
     	        	return;
     	        }
     	        

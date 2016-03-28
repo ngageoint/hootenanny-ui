@@ -169,7 +169,7 @@ iD.ui.RawTagEditor = function(context) {
         $items.select('button.remove')
             .on('click', function(d){
             	if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item)==0;}))){
-            		return iD.ui.Alert("Cannot remove a protected tag!","warning");
+            		return iD.ui.Alert("Cannot remove a protected tag!","warning",new Error().stack);
             	} else {
             		return removeTag(d);
             	}

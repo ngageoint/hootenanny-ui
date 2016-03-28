@@ -89,7 +89,7 @@ Hoot.model.import = function (context)
                 if(newfoldername !=''){
                     var resp = context.hoot().checkForUnallowedChar(newfoldername);
                     if(resp != true){
-                        iD.ui.Alert(resp,'warning');
+                        iD.ui.Alert(resp,'warning',new Error().stack);
                         return;
                     }
                 }

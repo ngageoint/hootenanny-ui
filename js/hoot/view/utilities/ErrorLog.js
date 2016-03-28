@@ -80,8 +80,8 @@ Hoot.view.utilities.errorlog = function(context){
         
     };
     
-    errorlog.reportUIError = function(error){
-        iD.data.hootConfig.currentError = error;
+    errorlog.reportUIError = function(error,stack){
+        iD.data.hootConfig.currentError = stack != undefined ? error + "\n" + stack : JSON.stringify(error);
         errorlog.updateUIlog();
     };
     
@@ -208,7 +208,7 @@ Hoot.view.utilities.errorlog = function(context){
     
     errorlog.updateUIlog = function(){
     	if(iD.data.hootConfig.currentError && !d3.select("#hootuilogtext").empty()){
-    		var uitext = JSON.stringify(iD.data.hootConfig.currentError) + "\n" + d3.select('#hootuilogtext').text();
+    		var uitext = iD.data.hootConfig.currentError + "\n\n" + d3.select('#hootuilogtext').text();
     		d3.select("#hootuilogtext").text(uitext).value(uitext);  
     	}
     }

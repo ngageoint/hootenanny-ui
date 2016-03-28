@@ -364,7 +364,7 @@ Hoot.control.conflate = function (sidebar) {
 
       //check if layer with same name already exists...
         if(_container.selectAll('.saveAs').value()===''){
-            iD.ui.Alert("Please enter an output layer name.",'warning');
+            iD.ui.Alert("Please enter an output layer name.",'warning',new Error().stack);
             return false;
         }
 
@@ -376,26 +376,26 @@ Hoot.control.conflate = function (sidebar) {
         )))
         {
             iD.ui.Alert("A layer already exists with this name." +
-                " Please remove the current layer or select a new name for this layer.",'warning');
+                " Please remove the current layer or select a new name for this layer.",'warning',new Error().stack);
             return false;
         }
 
         var resp = hoot.checkForUnallowedChar(_container.selectAll('.saveAs').value());
         if(resp !== true){
-            iD.ui.Alert(resp,'warning');
+            iD.ui.Alert(resp,'warning',new Error().stack);
             return false;
         }
 
         resp = hoot.checkForUnallowedChar(_container.selectAll('.newfoldername').value());
         if(resp !== true){
-            iD.ui.Alert(resp,'warning');
+            iD.ui.Alert(resp,'warning',new Error().stack);
             return false;
         }
 
         var parId = hoot.model.folders.getfolderIdByName(_container.selectAll('.pathname').value()) || 0;
         resp = hoot.model.folders.duplicateFolderCheck({name:_container.selectAll('.newfoldername').value(),parentId:parId});
         if(resp != true){
-            iD.ui.Alert(resp,'warning');
+            iD.ui.Alert(resp,'warning',new Error().stack);
             return false;
         }
 

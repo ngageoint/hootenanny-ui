@@ -99,7 +99,7 @@ Hoot.view.utilities.translation = function(context) {
                         d3.select(this).on('click', function (n) {
                             d3.event.stopPropagation();
                             d3.event.preventDefault();
-                            iD.ui.Alert("Can not delete default translation.",'warning');
+                            iD.ui.Alert("Can not delete default translation.",'warning',new Error().stack);
                         });
                     }
                     else {

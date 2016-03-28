@@ -133,7 +133,7 @@ Hoot.control.conflicts.actions.poimerge = function (context)
         console.error(err);
         _parent().setProcessing(false);
         if(doAlertUser === true) {
-            iD.ui.Alert(err,'error');
+            iD.ui.Alert(err,'error',new Error().stack);
         }
     }
 
