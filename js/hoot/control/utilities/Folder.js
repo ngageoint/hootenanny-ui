@@ -632,19 +632,19 @@ Hoot.control.utilities.folder = function(context) {
 
                     //check if layer with same name already exists...
                 	if(_form.select('.reset.NewFolderName').value()=='' || _form.select('.reset.NewFolderName').value()==_form.select('.reset.NewFolderName').attr('placeholder')){
-                		iD.ui.Alert("Please enter an output folder name.",'warning');
+                		iD.ui.Alert("Please enter an output folder name.",'warning',new Error().stack);
                         return;
                 	}
                 	
                 	resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
                 	if(resp != true){
-                		iD.ui.Alert(resp,'warning');
+                		iD.ui.Alert(resp,'warning',new Error().stack);
                 		return;
                     }
 
                     resp = hoot.model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
                     if(resp != true){
-                		iD.ui.Alert(resp,'warning');
+                		iD.ui.Alert(resp,'warning',new Error().stack);
                 		return;
                     }
                 	
@@ -779,13 +779,13 @@ Hoot.control.utilities.folder = function(context) {
 	                if(outputname==''){outputname=_form.select('.fileOutputName').attr('placeholder');}
 	                var resp = context.hoot().checkForUnallowedChar(outputname);
 	             	if(resp != true){
-	             		iD.ui.Alert(resp,'warning');
+	             		iD.ui.Alert(resp,'warning',new Error().stack);
 	             		return;
 	                 }
 	             	
 					resp = hoot.model.folders.duplicateFolderCheck({name:outputname,parentId:pathId});
                     if(resp != true){
-                		iD.ui.Alert(resp,'warning');
+                		iD.ui.Alert(resp,'warning',new Error().stack);
                 		return;
                     }
 

@@ -181,7 +181,7 @@ Hoot.control.import = function (context,selection) {
                 if(self.select('.sel').empty()){
                 	//Check to see if one is selected in Recently Used
                 	if(self.selectAll('.usedLayersInput').value()==''){
-                    	iD.ui.Alert('Please select a dataset to add to the map!','warning');
+                    	iD.ui.Alert('Please select a dataset to add to the map!','warning',new Error().stack);
                         return;            		
                 	} else {
                 		name = self.selectAll('.usedLayersInput').value();
@@ -195,11 +195,11 @@ Hoot.control.import = function (context,selection) {
                 	lyrid = gNode.select('.dnameTxt').attr('lyr-id');
                 }
             } catch(e) {
-            	iD.ui.Alert('There was an error adding this layer to the map!','warning');
+            	iD.ui.Alert('There was an error adding this layer to the map!','warning',new Error().stack);
                 return;
             }
             if(!name || !lyrid){iD.ui.Alert('Select Layer to Add','warning');return;}
-            if(context.hoot().model.layers.getLayers()[name]){iD.ui.Alert('A layer with this name has already been added to the map!','warning');return;}
+            if(context.hoot().model.layers.getLayers()[name]){iD.ui.Alert('A layer with this name has already been added to the map!','warning',new Error().stack);return;}
             var key = {
                 'name': name,
                 'id':lyrid,

@@ -151,7 +151,7 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
         console.error(err);
         _parent().setProcessing(false);
         if(doAlertUser === true) {
-            iD.ui.Alert(err,'error');
+            iD.ui.Alert(err,'error',new Error().stack);
         }
     }
     var _parent = function() {
