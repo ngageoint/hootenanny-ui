@@ -33,7 +33,7 @@ Hoot.model.basemapdataset = function(context)
        Hoot.model.REST('basemapUpload', data, function (resp) {
            if (resp.responseText.length === 0 || resp.response==='[]') {
                if(callback){callback(false);}
-               iD.ui.Alert('Failed publish basemap.','warning');
+               iD.ui.Alert('Failed publish basemap.','warning',new Error().stack);
                return;
            }
 

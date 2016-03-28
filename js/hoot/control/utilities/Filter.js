@@ -34,7 +34,7 @@ Hoot.control.utilities.filter = function(context) {
 
                     Hoot.model.REST('createFilteredMap', reqParam, function (resp) {   
                         if(resp.status != 'complete') {
-                        	iD.ui.Alert("Failed to create filtered layer. See log for detail.",'warning');
+                        	iD.ui.Alert("Failed to create filtered layer. See log for detail.",'warning',new Error().stack);
                         } else {
                             // refresh both folder and layer list
                             context.hoot().model.layers.refresh(function(){
@@ -47,7 +47,7 @@ Hoot.control.utilities.filter = function(context) {
                         
                     });
                 } else {
-                	iD.ui.Alert('Please specify valid Output Name!','warning');
+                	iD.ui.Alert('Please specify valid Output Name!','warning',new Error().stack);
                     spinDiv.remove();
                 }
             }

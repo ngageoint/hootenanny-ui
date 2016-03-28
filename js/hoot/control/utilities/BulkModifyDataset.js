@@ -108,13 +108,13 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
         var newfoldername = _container.select('#bulkModifyNewfoldername').value();
 			resp = context.hoot().checkForUnallowedChar(newfoldername);
         if(resp != true){
-        	iD.ui.Alert(resp,'warning');
+        	iD.ui.Alert(resp,'warning',new Error().stack);
          	return;
         }
 
         resp = hoot.model.folders.duplicateFolderCheck({name:newfoldername,parentId:pathId});
         if(resp != true){
-            iD.ui.Alert(resp,'warning');
+            iD.ui.Alert(resp,'warning',new Error().stack);
             return;
         }
         

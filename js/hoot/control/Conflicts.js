@@ -409,7 +409,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         var layers=context.hoot().model.layers.getLayers();
         var vis = _.filter(layers, function(d){return d.vis;});
         if(vis.length>1){
-            iD.ui.Alert('Swap to Conflated Layer before accepting!','warning');
+            iD.ui.Alert('Swap to Conflated Layer before accepting!','warning',new Error().stack);
             return false;
             }
         return true;

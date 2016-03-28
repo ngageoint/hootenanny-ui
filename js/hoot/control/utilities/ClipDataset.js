@@ -260,7 +260,7 @@ Hoot.control.utilities.clipdataset = function(context) {
 			
 			var resp = context.hoot().checkForUnallowedChar(param.OUTPUT_NAME);
 			if(resp != true){
-        		iD.ui.Alert(resp,'warning');
+        		iD.ui.Alert(resp,'warning',new Error().stack);
         		return;
             }
 			

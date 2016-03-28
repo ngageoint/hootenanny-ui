@@ -29,12 +29,12 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     **/
     _instance.initialize = function(opts) {
         if(!opts.nextid || !opts.previd){
-            iD.ui.Alert('Traverse control not initialized. Invalid id!', 'Error');
+            iD.ui.Alert('Traverse control not initialized. Invalid id!', 'Error',new Error().stack);
             return false;
         }
         
         if(!opts.mapid){   
-            iD.ui.Alert('Traverse control not initialized. Invalid mapid!', 'Error');  
+            iD.ui.Alert('Traverse control not initialized. Invalid mapid!', 'Error',new Error().stack);  
             _instance.disableButton(true);       
             return false;
         }
@@ -67,7 +67,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
             if(hasChange === true) {
                 _parent().setProcessing(false);
                 iD.ui.Alert('Please resolve or undo the current feature ' + 
-                    'changes before proceeding to the next review.', 'warning');
+                    'changes before proceeding to the next review.', 'warning',new Error().stack);
                 return;
             }
 
@@ -137,7 +137,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
             } else {
                 iD.ui.Alert('There are no more available features to review. ' + 
                     'Exiting the review session.',
-                    'info');
+                    'info',new Error().stack);
                 _exitReviewSession(false);
             }
         }
@@ -248,7 +248,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         console.error(err);
         _parent().setProcessing(false);
         if(doAlertUser === true) {
-            iD.ui.Alert(err,'error');
+            iD.ui.Alert(err,'error',new Error().stack);
         }
     }
     var _vischeck = function(){

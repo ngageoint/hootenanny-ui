@@ -107,12 +107,12 @@ Hoot.control.utilities.modifydataset = function(context) {
         if(outputname.toLowerCase() != _dataset.name.toLowerCase()){
         	var resp = context.hoot().checkForUnallowedChar(outputname);
         	if(resp != true){
-        		iD.ui.Alert(resp,'warning');
+        		iD.ui.Alert(resp,'warning',new Error().stack);
         		return;
             }
         	if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == outputname})))
         	{
-        		iD.ui.Alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.",'warning');
+        		iD.ui.Alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.",'warning',new Error().stack);
                 return;
             }
         	
@@ -124,13 +124,13 @@ Hoot.control.utilities.modifydataset = function(context) {
                 var newfoldername = _container.select('#modifyDatasetNewFolderName').value();
                 resp = context.hoot().checkForUnallowedChar(newfoldername);
             	if(resp != true){
-            		iD.ui.Alert(resp,'warning');
+            		iD.ui.Alert(resp,'warning',new Error().stack);
             		return;
                 }
 
                  resp = hoot.model.folders.duplicateFolderCheck({name:newfoldername,parentId:pathId});
                 if(resp != true){
-                    iD.ui.Alert(resp,'warning');
+                    iD.ui.Alert(resp,'warning',new Error().stack);
                     return;
                 }
                 
