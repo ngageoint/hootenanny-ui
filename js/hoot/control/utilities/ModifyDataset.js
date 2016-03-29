@@ -38,8 +38,8 @@ Hoot.control.utilities.modifydataset = function(context) {
 	      
 	    var placeholder = 'root';
 		if(folderId > 0){
-			if( _.findWhere(folderList,{id:folderId})){
-				var match = _.findWhere(folderList,{id:folderId});
+			if( _.find(folderList,{id:folderId})){
+				var match = _.find(folderList,{id:folderId});
 				if(match){placeholder = match.folderPath};
 			}
 		 }

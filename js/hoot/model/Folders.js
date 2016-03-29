@@ -24,7 +24,7 @@ Hoot.model.folders = function (context)
     };
     model_folders.getNameBymapId = function (id) {
         var currAvailFolders = model_folders.getAvailFolders();
-        var folderMatch = _.findWhere(currAvailFolders,{id:id});
+        var folderMatch = _.find(currAvailFolders,{id:id});
         return folderMatch ? folderMatch.name : null;
     };
 
@@ -157,7 +157,7 @@ Hoot.model.folders = function (context)
             e.name = e.name.toLowerCase();
         });
 
-        if(!_.isEmpty(_.findWhere(folderList,{name:folder.name.toLowerCase(),parentId:folder.parentId}))){
+        if(!_.isEmpty(_.find(folderList,{name:folder.name.toLowerCase(),parentId:folder.parentId}))){
             return "Please use a different name, as you are about to create a folder with a name identical to a folder at the same level.";
         } else {return true;}
     }
@@ -197,12 +197,12 @@ Hoot.model.folders = function (context)
         	} else {
         		//use links to get parent folder as far back as possible
         		var strPath = f.name;
-        		var parentFolder = _.findWhere(hoot.model.folders.getAvailFolders(),{id:f.parentId});
+        		var parentFolder = _.find(hoot.model.folders.getAvailFolders(),{id:f.parentId});
         		var i=0;
         		do{
         			i++;
         			strPath = parentFolder.name+"/"+strPath;
-        			parentFolder = _.findWhere(hoot.model.folders.getAvailFolders(),{id:parentFolder.parentId});
+        			parentFolder = _.find(hoot.model.folders.getAvailFolders(),{id:parentFolder.parentId});
         		} while (parentFolder || i==10)
         		f.folderPath = strPath;
         	}

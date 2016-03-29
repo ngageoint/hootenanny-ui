@@ -73,7 +73,7 @@ Hoot.control.utilities.importdataset = function(context) {
         if(incomingFolder){
         	folderId = incomingFolder.id ? incomingFolder.id : 0;
         	if(folderId > 0){
-        		var match = _.findWhere(folderList,{id:folderId});
+        		var match = _.find(folderList,{id:folderId});
 				if(match){
 					if(match){folderPlaceholder = match.folderPath};
 				}

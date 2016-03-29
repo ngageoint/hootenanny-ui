@@ -202,15 +202,15 @@ Hoot.control.utilities.clipdataset = function(context) {
 			.call(comboPathName);  
 
 		d3.select(this).attr('placeholder',function(){
-			if(_.isEmpty(_.findWhere(hoot.model.layers.getAvailLayers(),{'name':d.name}))){
+			if(_.isEmpty(_.find(hoot.model.layers.getAvailLayers(),{'name':d.name}))){
 				return 'root';
 			} else {
 				var folderPath = 'root';
 				try{
 					hoot.model.layers.setLayerLinks(function(){
-						var fID = _.findWhere(hoot.model.layers.getAvailLayers(),{'name':d.name}).folderId || 0;
+						var fID = _.find(hoot.model.layers.getAvailLayers(),{'name':d.name}).folderId || 0;
 						var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
-						folderPath =  _.findWhere(folderList,{id:fID}).folderPath || 'root';
+						folderPath =  _.find(folderList,{id:fID}).folderPath || 'root';
 					});
 						
 				} catch (err) {

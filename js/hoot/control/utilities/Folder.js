@@ -124,13 +124,13 @@ Hoot.control.utilities.folder = function(context) {
 		}
 
 		function showPrepValidationPopup(selLayer) {
-			var dataset = _.findWhere(context.hoot().model.layers.getAvailLayers(),{id:selLayer[0]});
+			var dataset = _.find(context.hoot().model.layers.getAvailLayers(),{id:selLayer[0]});
 			context.hoot().control.utilities.validation.validationPopup(dataset.name, function(jobs){
 			});
 		}
 
 		function showFilterPopup(selLayer) {
-			var dataset = _.findWhere(context.hoot().model.layers.getAvailLayers(),{id:selLayer[0]});
+			var dataset = _.find(context.hoot().model.layers.getAvailLayers(),{id:selLayer[0]});
 			context.hoot().control.utilities.filter.filterPopup(dataset.name, function(jobs){
 			});
 		}
@@ -673,7 +673,7 @@ Hoot.control.utilities.folder = function(context) {
 		    
 		    var placeholder = 'root';
 			if(folderId > 0){
-				var match = _.findWhere(folderList,{id:folderId});
+				var match = _.find(folderList,{id:folderId});
 				if(match){
 					if(match){placeholder = match.folderPath};
 				}
