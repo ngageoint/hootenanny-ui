@@ -39,19 +39,10 @@ iD.taginfo = function() {
         return _.omit(parameters, 'geometry', 'debounce');
     }
 
-    function shorten(parameters) {
-        if (!parameters.query) {
-            delete parameters.query;
-        } else {
-            parameters.query = parameters.query.slice(0, 3);
-        }
-        return parameters;
-    }
-
     function popularKeys(parameters) {
         var pop_field = 'count_all';
         if (parameters.filter) pop_field = 'count_' + parameters.filter;
-        return function(d) { return parseFloat(d[pop_field]) > 10000; };
+        return function(d) { return parseFloat(d[pop_field]) > 5000 || d.in_wiki; };
     }
 
     function popularValues() {
@@ -86,7 +77,7 @@ iD.taginfo = function() {
 
     taginfo.keys = function(parameters, callback) {
         var debounce = parameters.debounce;
-        parameters = clean(shorten(setSort(parameters)));
+        parameters = clean(setSort(parameters));
         request(endpoint + 'keys/all?' +
             iD.util.qsString(_.extend({
                 rp: 10,
@@ -101,7 +92,7 @@ iD.taginfo = function() {
 
     taginfo.values = function(parameters, callback) {
         var debounce = parameters.debounce;
-        parameters = clean(shorten(setSort(setFilter(parameters))));
+        parameters = clean(setSort(setFilter(parameters)));
         request(endpoint + 'key/values?' +
             iD.util.qsString(_.extend({
                 rp: 25,
@@ -122,8 +113,21 @@ iD.taginfo = function() {
         if (parameters.value) path = 'tag/wiki_pages?';
         else if (parameters.rtype) path = 'relation/wiki_pages?';
 
+        var decoratedCallback;
+        if (parameters.value) {
+            decoratedCallback = function(err, data) {
+                // The third argument to callback is the softfail flag, to
+                // make the callback function not show a message to the end
+                // user when no docs are found but just return false.
+                var docsFound = callback(err, data, true);
+                if (!docsFound) {
+                    taginfo.docs(_.omit(parameters, 'value'), callback);
+                }
+            };
+        }
+
         request(endpoint + path +
-            iD.util.qsString(parameters), debounce, callback);
+            iD.util.qsString(parameters), debounce, decoratedCallback || callback);
     };
 
     taginfo.endpoint = function(_) {

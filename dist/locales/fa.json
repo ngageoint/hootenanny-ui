@@ -213,11 +213,11 @@
     "commit": {
         "title": "ذخیره تغییرات",
         "description_placeholder": "شرح مختصری از کمک های شما",
-        "message_label": "پیام تعهد",
         "upload_explanation": "تغییراتی که بارگذاری میکنید در همه ی نقشه هایی که از داده های OpenStreetMap استفاده میکنند پدیدار میشوند.",
         "upload_explanation_with_user": "تفییراتی که شما به عنوان {user} بارگذاری میکنید در همه ی نقشه هایی که از داده های OpenStreetMap استفاده میکنند پدیدار میشوند.",
         "save": "ذخیره",
         "cancel": "لغو",
+        "changes": "{count} تغییر",
         "warnings": "اخطارها",
         "modified": "اصلاح شد",
         "deleted": "حذف شد",
@@ -256,6 +256,10 @@
         "incomplete": "<دانلود نشده>",
         "feature_list": "جستجوی ویژگی ها",
         "edit": "ویرایش ویژگی",
+        "check": {
+            "yes": "بله",
+            "no": "خیر"
+        },
         "none": "هیچ",
         "node": "گره",
         "way": "راه",
@@ -272,6 +276,28 @@
         "fix_misalignment": "تعمیر تراز",
         "reset": "باز نشاندن"
     },
+    "map_data": {
+        "title": "نقشه داده",
+        "description": "نقشه داده",
+        "data_layers": "لایها داده ها"
+    },
+    "feature": {
+        "points": {
+            "description": "نقاط"
+        },
+        "paths": {
+            "description": "مسیرها"
+        },
+        "buildings": {
+            "description": "ساختمانها"
+        },
+        "boundaries": {
+            "description": "مرزها"
+        },
+        "rail": {
+            "tooltip": "راه آهن"
+        }
+    },
     "restore": {
         "heading": "شما تغییرات ذخیره نشده دارید",
         "description": "آیا مایلید تغییرات ذخیره نشده جلسه قبل را بازیابی کنید؟",
@@ -282,9 +308,12 @@
         "title": "ذخیره",
         "help": "ذخیره تغییرات در OpenStreetMap, آنها را برای دیگران قابل نمایش می سازد.",
         "no_changes": "تغییراتی برای دخیره نیست.",
-        "error": "هنگام تلاش برای ذخیره خطایی رخ داده است",
         "uploading": "در حال بارگذاری تغییرات در OpenStreetMap.",
-        "unsaved_changes": "شما تغییرات ذخیره نشده دارید"
+        "unsaved_changes": "شما تغییرات ذخیره نشده دارید",
+        "conflict": {
+            "previous": "قبلی >",
+            "next": "< بعد"
+        }
     },
     "success": {
         "edited_osm": "OSMویرایش شد!",
@@ -296,7 +325,8 @@
         "help_html": "تغییرات شما در نمای \"استاندارد\" در چند دقیقه قابل رؤیت است. سایر نما ها، و ویژگی های خاص، ممکن است بیشتر طول کشد\n(<a href='https://help.openstreetmap.org/questions/4705/why-havent-my-changes-appeared-on-the-map' target='_blank'>جزییات</a>).\n"
     },
     "confirm": {
-        "okay": "باشه"
+        "okay": "باشه",
+        "cancel": "لغو"
     },
     "splash": {
         "welcome": "به ویرایشگر ID OpenStreetMap خوش آمدید",
@@ -419,50 +449,44 @@
         },
         "fields": {
             "access": {
-                "label": "دسترسي",
-                "placeholder": "ناشناخته",
-                "types": {
-                    "access": "عمومی",
-                    "foot": "پیاده",
-                    "motor_vehicle": "وسایل نقلیه موتوری",
-                    "bicycle": "دوچرخه ها",
-                    "horse": "اسب ها"
-                },
                 "options": {
-                    "yes": {
-                        "title": "مجاز",
-                        "description": "دسترسی مجاز طبق قانون: حق از راه"
-                    },
-                    "no": {
-                        "title": "ممنوع",
-                        "description": "دسترسی برای عموم مردم مجاز نیست"
-                    },
-                    "permissive": {
-                        "title": "مجاز",
-                        "description": "دسترسی تا وقتی صاحبش مجوز را لغو نکند مجاز است"
-                    },
-                    "private": {
-                        "title": "خصوصی",
-                        "description": "دسترسی فقط با اجازه از صاحب بصورت انفرادی مجاز است"
-                    },
                     "designated": {
-                        "title": "تعیین شده",
-                        "description": "دسترسی با توجه به علائم و قوانین محلی مجاز است"
+                        "description": "دسترسی با توجه به علائم و قوانین محلی مجاز است",
+                        "title": "تعیین شده"
                     },
                     "destination": {
-                        "title": "مقصد",
-                        "description": "دسترسی فقط برای رسیدن به مقصدی مجاز است"
+                        "description": "دسترسی فقط برای رسیدن به مقصدی مجاز است",
+                        "title": "مقصد"
+                    },
+                    "no": {
+                        "description": "دسترسی برای عموم مردم مجاز نیست",
+                        "title": "ممنوع"
+                    },
+                    "permissive": {
+                        "description": "دسترسی تا وقتی صاحبش مجوز را لغو نکند مجاز است",
+                        "title": "مجاز"
+                    },
+                    "private": {
+                        "description": "دسترسی فقط با اجازه از صاحب بصورت انفرادی مجاز است",
+                        "title": "خصوصی"
+                    },
+                    "yes": {
+                        "description": "دسترسی مجاز طبق قانون: حق از راه",
+                        "title": "مجاز"
                     }
+                },
+                "types": {
+                    "bicycle": "دوچرخه ها",
+                    "foot": "پیاده",
+                    "horse": "اسب ها",
+                    "motor_vehicle": "وسایل نقلیه موتوری"
                 }
-            },
-            "access_simple": {
-                "label": "دسترسی"
             },
             "address": {
                 "label": "ادرس",
                 "placeholders": {
-                    "street": "خيابان",
-                    "city": "شهر"
+                    "city": "شهر",
+                    "street": "خيابان"
                 }
             },
             "admin_level": {
@@ -538,8 +562,8 @@
             "clock_direction": {
                 "label": "جهت",
                 "options": {
-                    "clockwise": "ساعتگرد",
-                    "anticlockwise": "پاد ساعتگرد"
+                    "anticlockwise": "پاد ساعتگرد",
+                    "clockwise": "ساعتگرد"
                 }
             },
             "collection_times": {
@@ -644,9 +668,9 @@
             "internet_access": {
                 "label": "دسترسی اینترنت",
                 "options": {
-                    "wlan": "واي فاي",
+                    "terminal": "پايانه",
                     "wired": "سيمي",
-                    "terminal": "پايانه"
+                    "wlan": "واي فاي"
                 }
             },
             "landuse": {
@@ -789,13 +813,13 @@
             },
             "structure": {
                 "label": "ساختاری",
-                "placeholder": "ناشناخته",
                 "options": {
                     "bridge": "پل",
-                    "tunnel": "تونل",
+                    "cutting": "برش",
                     "embankment": "خاکریز",
-                    "cutting": "برش"
-                }
+                    "tunnel": "تونل"
+                },
+                "placeholder": "ناشناخته"
             },
             "studio_type": {
                 "label": "نوع"
@@ -1439,9 +1463,6 @@
             "entrance": {
                 "name": "ورود/خروج"
             },
-            "footway/crossing": {
-                "name": "خط عابر پیاده"
-            },
             "footway/sidewalk": {
                 "name": "پیاده رو"
             },
@@ -1481,10 +1502,6 @@
                 "name": "ایستگاه اتوبوس",
                 "terms": "<ترجمه با مترادف یا اصطلاحات مشابه برای 'ایستگاه اتوبوس'، با کاما جدا میشوند>"
             },
-            "highway/crossing": {
-                "name": "محل عبور عابر",
-                "terms": "<ترجمه با مترادف یا اصطلاحات مشابه برای 'خط کشی عابر پیاده'، با کاما جدا میشوند>"
-            },
             "highway/cycleway": {
                 "name": "مسیر دوچرخه سواری",
                 "terms": "<ترجمه با مترادف یا اصطلاحات مشابه برای 'مسیر دوچرخه'، با کاما جدا میشوند>"
@@ -1516,10 +1533,6 @@
             "highway/path": {
                 "name": "مسیر",
                 "terms": "<ترجمه با مترادف یا اصطلاحات مشابه برای 'مسیر'، با کاما جدا میشوند>"
-            },
-            "highway/pedestrian": {
-                "name": "عبور پیاده",
-                "terms": "<ترجمه با مترادف یا اصطلاحات مشابه برای   'Pedestrian'، با کاما جدا میشوند>"
             },
             "highway/primary": {
                 "name": "جاده اصلی",
@@ -1641,9 +1654,6 @@
             },
             "historic/wayside_shrine": {
                 "name": "آرامگاه کنار جاده"
-            },
-            "landuse": {
-                "name": "کاربری زمین ها"
             },
             "landuse/allotments": {
                 "name": "بخش پرورش گل و سبزیجات"
@@ -1995,9 +2005,6 @@
             },
             "railway/halt": {
                 "name": "توقف گاه راه آهن"
-            },
-            "railway/level_crossing": {
-                "name": "تقاطع راه آهن"
             },
             "railway/monorail": {
                 "name": "ترن هوایی"

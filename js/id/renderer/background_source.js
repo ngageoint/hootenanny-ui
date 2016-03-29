@@ -80,7 +80,7 @@ iD.BackgroundSource = function(data) {
     source.intersects = function(extent) {
         extent = extent.polygon();
         return !data.polygon || data.polygon.some(function(polygon) {
-            return iD.geo.polygonIntersectsPolygon(polygon, extent);
+            return iD.geo.polygonIntersectsPolygon(polygon, extent, true);
         });
     };
 

@@ -63,6 +63,14 @@ iD.modes.Select = function(context, selectedIDs) {
         }
     }
 
+    function toggleMenu() {
+        if (d3.select('.radial-menu').empty()) {
+            showMenu();
+        } else {
+            closeMenu();
+        }
+    }
+
     mode.selectedIDs = function() {
         return selectedIDs;
     };
@@ -149,9 +157,9 @@ iD.modes.Select = function(context, selectedIDs) {
 
         operations.unshift(iD.operations.Delete(selectedIDs, context));
 
-        keybinding.on('⎋', function() {
-            context.enter(iD.modes.Browse(context));
-        }, true);
+        keybinding
+            .on('⎋', function() { context.enter(iD.modes.Browse(context)); }, true)
+            .on('space', toggleMenu);
 
         operations.forEach(function(operation) {
             operation.keys.forEach(function(key) {

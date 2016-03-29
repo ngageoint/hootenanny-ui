@@ -82,6 +82,11 @@ iD.ui = function(context) {
             .attr('class', 'button-wrap col1')
             .call(iD.ui.Save(context));
 
+		//iD v1.7.5
+        bar.append('div')
+            .attr('class', 'full-screen')
+            .call(iD.ui.FullScreen(context));
+
         bar.append('div')
             .attr('class', 'spinner')
             .call(iD.ui.Spinner(context));
@@ -142,6 +147,11 @@ iD.ui = function(context) {
         var footer = about.append('div')
             .attr('id', 'footer')
             .attr('class', 'fillD');
+
+		//Comment out - do not include in Hoot
+        /*footer.append('div')
+            .attr('class', 'api-status')
+            .call(iD.ui.Status(context));*/
 
         footer.append('div')
             .attr('id', 'scale-block')
@@ -258,7 +268,10 @@ iD.ui = function(context) {
             context.history().unlock();
         };
 
+        var mapDimensions = map.dimensions();
+
         d3.select(window).on('resize.editor', function() {
+            mapDimensions = m.dimensions();
             map.dimensions(m.dimensions());
             //TODO: Document why this was modified for Hoot
             var sdHeight = document.getElementById('app').clientHeight;
@@ -270,6 +283,7 @@ iD.ui = function(context) {
 
         function pan(d) {
             return function() {
+                d3.event.preventDefault();
                 context.pan(d);
             };
         }
@@ -282,7 +296,15 @@ iD.ui = function(context) {
             .on('←', pan([pa, 0]))
             .on('↑', pan([0, pa]))
             .on('→', pan([-pa, 0]))
-            .on('↓', pan([0, -pa]));
+            .on('↓', pan([0, -pa]))
+            .on('⇧←', pan([mapDimensions[0], 0]))
+            .on('⇧↑', pan([0, mapDimensions[1]]))
+            .on('⇧→', pan([-mapDimensions[0], 0]))
+            .on('⇧↓', pan([0, -mapDimensions[1]]))
+            .on(iD.ui.cmd('⌘←'), pan([mapDimensions[0], 0]))
+            .on(iD.ui.cmd('⌘↑'), pan([0, mapDimensions[1]]))
+            .on(iD.ui.cmd('⌘→'), pan([-mapDimensions[0], 0]))
+            .on(iD.ui.cmd('⌘↓'), pan([0, -mapDimensions[1]]));
 
         d3.select(document)
             .call(keybinding);

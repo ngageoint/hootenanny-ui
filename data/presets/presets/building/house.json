@@ -11,5 +11,11 @@
     "tags": {
         "building": "house"
     },
+    "terms": [
+        "home",
+        "family",
+        "residence",
+        "dwelling"
+    ],
     "name": "House"
 }

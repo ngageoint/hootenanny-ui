@@ -1,5 +1,5 @@
 iD.ui.Info = function(context) {
-    var key = iD.ui.cmd('i'),
+    var key = iD.ui.cmd('⌘I'),
         imperial = (iD.detect().locale.toLowerCase() === 'en-us');
 
     function info(selection) {
@@ -98,7 +98,7 @@ iD.ui.Info = function(context) {
             if (hidden()) return;
 
             var resolver = context.graph(),
-                selected = context.selectedIDs(),
+                selected = _.filter(context.selectedIDs(), function(e) { return context.hasEntity(e); }),
                 singular = selected.length === 1 ? selected[0] : null,
                 extent = iD.geo.Extent(),
                 entity;

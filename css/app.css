@@ -302,8 +302,8 @@ ul li { list-style: none;}
 }
 
 .fillD2 {
-		background:rgba(0,0,0,.75);
-		color:white;
+    background:rgba(0,0,0,.75);
+    color: white;
 }
 
 .fl { float: left;}
@@ -572,6 +572,8 @@ button.save.has-count .count::before {
 .icon.forward.blue     { background-position: -440px -20px;}
 
 .icon.scissors         { background-position: -60px -140px;}
+.icon.full-screen              { background-position: -620px -20px;}
+.active .icon.full-screen      { background-position: -640px -20px;}
 
 button[disabled] .icon.alert      { background-position:   0 -40px;}
 button[disabled] .icon.add-point  { background-position: -20px -40px;}
@@ -1253,6 +1255,21 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     border-bottom-right-radius: 4px;
 }
 
+/* preset form cycleway */
+
+.form-field-cycleway .preset-input-wrap li {
+    border-bottom: 1px solid #CCC;
+}
+.form-field-cycleway .preset-input-wrap li:last-child {
+    border-bottom: 0;
+}
+
+.preset-input-cycleway-wrap input {
+    border-radius: 0;
+    border-width: 0;
+    border-left-width: 1px;
+}
+
 /* preset form numbers */
 
 input[type=number] {
@@ -1759,6 +1776,27 @@ img.wiki-image {
     background: rgba(0,0,0,.8);
 }
 
+/* Fullscreen button */
+div.full-screen {
+    float: right;
+    width: 40px;
+    margin-right: 10px;
+}
+
+div.full-screen .tooltip {
+    min-width: 160px;
+}
+
+div.full-screen > button, div.full-screen > button.active {
+    width: 40px;
+    height: 40px;
+    background: transparent;
+}
+
+div.full-screen > button:hover {
+    background-color: rgba(0, 0, 0, .8);
+}
+
 /* Map Controls */
 
 .map-controls {
@@ -1819,7 +1857,7 @@ img.wiki-image {
     padding-bottom: 10px;
 }
 
-.layer-list {
+.layer-list, .controls-list {
     margin-bottom: 10px;
     border: 1px solid #CCC;
     border-radius: 4px;
@@ -1867,6 +1905,22 @@ img.wiki-image {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.minimap-toggle {
+    display: block;
+    padding: 5px 10px;
+    cursor: pointer;
+    color: #7092FF;
+    border-radius: 3px;
+}
+
+.minimap-toggle.active {
+    background: #E8EBFF;
+}
+
+.minimap-toggle:hover {
+    background-color: #ececec;
 }
 
 .hide-toggle {
@@ -2177,6 +2231,10 @@ img.wiki-image {
     width: 100%;
 }
 
+.map-in-map-svg {
+    position: absolute;
+}
+
 .map-in-map-bbox {
     fill: none;
     stroke: rgba(255, 255, 0, 0.75);
@@ -2282,6 +2340,7 @@ img.wiki-image {
     clear: both;
     height:90px;	/*THIS IS A TEMP FIX*/
     opacity:0.9;
+    pointer-events: all;
 }
 
 #scale-block {
@@ -2426,6 +2485,13 @@ img.wiki-image {
 .modal-section.buttons .action {
     display: inline-block;
     margin: 0 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.save-section .buttons .action {
+    display: inline-block;
+    margin: 0 20px 0 0;
     text-align: center;
     vertical-align: middle;
 }

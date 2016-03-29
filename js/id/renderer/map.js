@@ -419,8 +419,19 @@ iD.Map = function(context) {
         return redraw();
     };
 
-    map.zoomIn = function() { interpolateZoom(~~map.zoom() + 1); };
-    map.zoomOut = function() { interpolateZoom(~~map.zoom() - 1); };
+    function zoomIn(integer) {
+      interpolateZoom(~~map.zoom() + integer);
+    }
+
+    function zoomOut(integer) {
+      interpolateZoom(~~map.zoom() - integer);
+    }
+
+    map.zoomIn = function() { zoomIn(1); };
+    map.zoomInFurther = function() { zoomIn(4); };
+
+    map.zoomOut = function() { zoomOut(1); };
+    map.zoomOutFurther = function() { zoomOut(4); };
 
     map.center = function(loc) {
         if (!arguments.length) {
@@ -558,10 +569,15 @@ iD.Map = function(context) {
         }
     };
 
-    map.trimmedExtent = function() {
-        var headerY = 60, footerY = 30, pad = 10;
-        return new iD.geo.Extent(projection.invert([pad, dimensions[1] - footerY - pad]),
-                projection.invert([dimensions[0] - pad, headerY + pad]));
+    map.trimmedExtent = function(_) {
+        if (!arguments.length) {
+            var headerY = 60, footerY = 30, pad = 10;
+            return new iD.geo.Extent(projection.invert([pad, dimensions[1] - footerY - pad]),
+                    projection.invert([dimensions[0] - pad, headerY + pad]));
+        } else {
+            var extent = iD.geo.Extent(_);
+            map.centerZoom(extent.center(), map.trimmedExtentZoom(extent));
+        }
     };
 
     function calcZoom(extent, dim) {

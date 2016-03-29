@@ -45,7 +45,11 @@ iD.ui.Commit = function(context) {
             .attr('placeholder', t('commit.description_placeholder'))
             .attr('maxlength', 255)
             .property('value', context.storage('comment') || '')
-            .on('blur.save', function () {
+            .on('input.save', function() {
+                d3.selectAll('.save-section .save-button')
+                    .attr('disabled', (this.value.length ? null : true));
+            })
+            .on('blur.save', function() {
                 context.storage('comment', this.value);
             });
 
@@ -54,7 +58,7 @@ iD.ui.Commit = function(context) {
 
         // Warnings
         var warnings = body.selectAll('div.warning-section')
-            .data([iD.validate(changes, context.graph())])
+            .data([context.history().validate(changes)]) //iD v1.7.5
             .enter()
             .append('div')
             .attr('class', 'modal-section warning-section fillL2')
@@ -90,7 +94,7 @@ iD.ui.Commit = function(context) {
 
         // Save Section
         var saveSection = body.append('div')
-            .attr('class','modal-section fillL cf');
+            .attr('class','modal-section save-section fillL cf');
 
 /*
         var prose = saveSection.append('p')
@@ -119,9 +123,17 @@ iD.ui.Commit = function(context) {
         });
 */
 
-        // Confirm Button
-        var saveButton = saveSection.append('button')
-            .attr('class', 'action col6 button')
+
+        // Buttons
+        var buttonSection = saveSection.append('div')
+            .attr('class','buttons fillL cf');
+
+        var saveButton = buttonSection.append('button')
+            .attr('class', 'action col5 button save-button')
+            .attr('disabled', function() {
+                var n = d3.select('.commit-form textarea').node();
+                return (n && n.value.length) ? null : true;
+            })
             .on('click.save', function() {
                 event.save({
                     comment: ''
@@ -132,6 +144,17 @@ iD.ui.Commit = function(context) {
             .attr('class', 'label')
             .text(t('commit.save'));
 
+		//iD v1.7.5
+        var cancelButton = buttonSection.append('button')
+            .attr('class', 'action col5 button cancel-button')
+            .on('click.cancel', function() { event.cancel(); });
+
+        cancelButton.append('span')
+            .attr('class', 'label')
+            .text(t('commit.cancel'));
+
+
+        // Changes
         var changeSection = body.selectAll('div.commit-section')
             .data([0])
             .enter()

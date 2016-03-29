@@ -1,6 +1,6 @@
 {
   "name": "iD",
-  "version": "1.7.0",
+  "version": "1.7.5-idiot.intel.lawyers",
   "description": "a new editor for openstreetmap",
   "main": "iD.js",
   "directories": {
@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha-phantomjs test/index.html && make && mocha-phantomjs test/index_packaged.html"
+    "test": "eslint js/id && mocha-phantomjs test/index.html && make && mocha-phantomjs test/index_packaged.html"
   },
   "repository": {
     "type": "git",
@@ -18,14 +18,14 @@
     "editor",
     "openstreetmap"
   ],
-  "license": "WTFPL",
+  "license": "ISC",
   "devDependencies": {
     "d3": "3.5.5",
     "smash": "0.0",
-    "lodash-cli": "2.3.0",
+    "lodash-cli": "3.9.3",
     "uglify-js": "~2.4.16",
     "maki": "0.4.5",
-    "jshint": "2.3.0",
+    "eslint": "~1.2.1",
     "mocha": "~1.21.5",
     "mocha-phantomjs": "~3.5.3",
     "chai": "~1.9.2",
@@ -33,7 +33,7 @@
     "sinon-chai": "~2.3.1",
     "happen": "0.1.2",
     "glob": "~3.1.21",
-    "js-yaml": "~3.1.0",
+    "js-yaml": "~3.3.1",
     "request": "~2.16.2",
     "jsonschema": "~0.3.2",
     "delve": "0.2",

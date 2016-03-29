@@ -41,7 +41,7 @@ iD.modes.Browse = function(context) {
         });
 
         if (sidebar) {
-            context.ui().sidebar.hide(sidebar);
+            context.ui().sidebar.hide();
         }
     };
 

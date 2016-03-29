@@ -2,11 +2,11 @@
     "keys": ["access", "foot", "motor_vehicle", "bicycle", "horse"],
     "reference": {"key": "access"},
     "type": "access",
-    "label": "Access",
-    "placeholder": "Unknown",
+    "label": "Allowed Access",
+    "placeholder": "Not Specified",
     "strings": {
         "types": {
-            "access": "General",
+            "access": "All",
             "foot": "Foot",
             "motor_vehicle": "Motor Vehicles",
             "bicycle": "Bicycles",
@@ -36,6 +36,10 @@
             "destination": {
                 "title": "Destination",
                 "description": "Access permitted only to reach a destination"
+            },
+            "dismount": {
+                "title": "Dismount",
+                "description": "Access permitted but rider must dismount"
             }
         }
     }

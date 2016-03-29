@@ -216,7 +216,7 @@ en:
   commit:
     title: Save Changes
     description_placeholder: Brief description of your contributions
-    message_label: Commit message
+    message_label: Changeset comment
     upload_explanation: "The changes you upload will be visible on all maps that use OpenStreetMap data."
     upload_explanation_with_user: "The changes you upload as {user} will be visible on all maps that use OpenStreetMap data."
     save: Save
@@ -293,6 +293,9 @@ en:
     custom_prompt: "Enter a tile URL template. Valid tokens are {z}, {x}, {y} for Z/X/Y scheme and {u} for quadtile scheme."
     fix_misalignment: Fix alignment
     reset: reset
+    minimap:
+      description: Minimap
+      tooltip: Show a zoomed out map to help locate the area currently displayed.
     #Added for EGD-plugin
     dgbg: DigitalGlobe Imagery
     dgbg_button: Change imagery profile
@@ -380,7 +383,7 @@ en:
     error: Errors occurred while trying to save
     status_code: "Server returned status code {code}"
     unknown_error_details: "Please ensure you are connected to the internet."
-    uploading: Uploading changes to OpenStreetMap.
+    uploading: Uploading changes to Hootenanny.
     unsaved_changes: You have unsaved changes
     conflict:
       header: Resolve conflicting edits
@@ -446,6 +449,7 @@ en:
     in: Zoom In
     out: Zoom Out
   cannot_zoom: "Cannot zoom out further in current mode."
+  full_screen: Toggle Full Screen
   gpx:
     local_layer: "Local GPX file"
     drag_drop: "Drag and drop a .gpx file on the page, or click the button to the right to browse"
