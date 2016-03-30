@@ -130,9 +130,8 @@ iD.ui.Commit = function(context) {
 
         var saveButton = buttonSection.append('button')
             .attr('class', 'action col5 button save-button')
-            .attr('disabled', function() {
-                var n = d3.select('.commit-form textarea').node();
-                return (n && n.value.length) ? null : true;
+            .property('disabled', function() {
+                return summary == undefined? true : _.isEmpty(summary);
             })
             .on('click.save', function() {
                 event.save({

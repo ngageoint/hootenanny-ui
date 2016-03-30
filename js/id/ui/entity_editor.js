@@ -280,8 +280,10 @@ iD.ui.EntityEditor = function(context) {
                 t('operations.change_tags.annotation'));
             var activeConflict = context.hoot().control.conflicts.activeConflict(0);
             if(activeConflict){
+                var reviewItem = context.entity(activeConflict),
+                    reviewAgainstItem = context.entity(context.hoot().control.conflicts.activeConflict(1));
                  context.hoot().control.conflicts.map.featurehighlighter
-                 .highlightLayer(context.hoot().control.conflicts.activeEntity());
+                 .highlightLayer(reviewItem,reviewAgainstItem);
             }
         }
     }

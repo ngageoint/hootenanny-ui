@@ -135,7 +135,18 @@ iD.Connection = function(context) {
             return result;
         }*/
 
-        _.each(_.groupBy(_.uniq(ids), iD.Entity.id.type), function(v, k) {
+        var currMapId = null;
+        // get the map id. Do on first one since ids should be coming from same map
+        if(ids && ids.length > 0){
+            var firstId = ids[0];
+            var parts = firstId.split('_');
+            if(parts.length > 1){
+                currMapId = "" + parts[1];
+            }
+        }
+
+
+        _.each(_.groupBy(ids, iD.Entity.id.type), function(v, k) {
             var type = k + 's',
                 osmIDs = _.map(v, iD.Entity.id.toOSM);
 
