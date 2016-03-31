@@ -1,4 +1,9 @@
 iD.svg = {
+    RoundProjection: function(projection) {
+        return function(d) {
+            return iD.geo.roundCoords(projection(d));
+        };
+    },
     PointTransform: function(projection) {
         return function(entity) {
             // http://jsperf.com/short-array-join
@@ -80,6 +85,18 @@ iD.svg = {
             })));
 
             return segments;
+        };
+    },
+
+    MultipolygonMemberTags: function(graph) {
+        return function(entity) {
+            var tags = entity.tags;
+            graph.parentRelations(entity).forEach(function(relation) {
+                if (relation.isMultipolygon()) {
+                    tags = _.extend({}, relation.tags, tags);
+                }
+            });
+            return tags;
         };
     },
 

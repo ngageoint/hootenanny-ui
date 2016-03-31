@@ -44,11 +44,6 @@ iD.ui.EntityEditor = function(context) {
         var $enter = $header.enter().append('div')
             .attr('class', 'header fillL cf');
 
-		//Added in iD v1.9.2
-        $enter.append('button')
-            .attr('class', 'fl preset-reset preset-choose')
-            .append('span')
-            .html('&#9668;');
 
         $enter.append('button')
             .attr('class', 'fr preset-close')
@@ -175,6 +170,7 @@ iD.ui.EntityEditor = function(context) {
             var entity = context.hasEntity(id);
             if (!entity) return;
             entityEditor.preset(context.presets().match(entity, context.graph()));
+            entityEditor.modified(base !== graph);
             entityEditor(selection);
         }
 
@@ -324,6 +320,13 @@ iD.ui.EntityEditor = function(context) {
                 iD.actions.ChangeTags(id, tags),
                 t('operations.change_tags.annotation'));
         }
+    };
+
+    entityEditor.modified = function(_) {
+        if (!arguments.length) return modified;
+        modified = _;
+        d3.selectAll('button.preset-close use')
+            .attr('xlink:href', (modified ? '#icon-apply' : '#icon-close'));
     };
 
     entityEditor.removeTags = function(changed, id){

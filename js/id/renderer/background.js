@@ -2,8 +2,8 @@ iD.Background = function(context) {
     var dispatch = d3.dispatch('change','baseLayerChange'),
         baseLayer = iD.TileLayer()
             .projection(context.projection),
-        gpxLayer = iD.GpxLayer(context, dispatch)
-            .projection(context.projection),
+        /*gpxLayer = iD.GpxLayer(context, dispatch)
+            .projection(context.projection),*/
         //Added for EGD-plugin
         footprintLayer = iD.FootprintLayer(context, dispatch)
             .projection(context.projection),
@@ -13,7 +13,7 @@ iD.Background = function(context) {
         //Added for Hoot measurement tool
         measureLayer = iD.MeasureLayer(context, dispatch)
         	.projection(context.projection),
-        mapillaryLayer = iD.MapillaryLayer(context),
+        /*mapillaryLayer = iD.MapillaryLayer(context),*/
         overlayLayers = [];
 
     var backgroundSources;
@@ -57,10 +57,11 @@ iD.Background = function(context) {
             }
         });
 
-        var gpx = context.layers().layer('gpx');
+        // Removed for iD v1.9.2
+        /*var gpx = context.layers().layer('gpx');
         if (gpx && gpx.enabled() && gpx.hasGpx()) {
             imageryUsed.push('Local GPX');
-        }
+        }*/
 
         context.history().imageryUsed(imageryUsed);
     }
@@ -114,8 +115,9 @@ iD.Background = function(context) {
         	.attr('class','layer-layer measure-layer');
 
         measure.call(measureLayer);
-
-        var gpx = selection.selectAll('.layer-gpx')
+        
+        // Removed for iD v1.9.2
+        /*var gpx = selection.selectAll('.layer-gpx')
             .data([0]);
 
         gpx.enter().insert('div')
@@ -128,7 +130,7 @@ iD.Background = function(context) {
         mapillary.enter().insert('div')
             .attr('class', 'layer-layer layer-mapillary');
 
-        mapillary.call(mapillaryLayer);
+        mapillary.call(mapillaryLayer);*/
 
     }
 
@@ -197,14 +199,16 @@ iD.Background = function(context) {
 
     background.dimensions = function(_) {
         baseLayer.dimensions(_);
-        gpxLayer.dimensions(_);
+        // Removed for iD v1.9.2
+        /*gpxLayer.dimensions(_);*/
         //Added for EGD-plugin
         footprintLayer.dimensions(_);
         //Added for Hoot review merge tool
         arrowLayer.dimensions(_);
         //Added for Hoot measurement tool
         measureLayer.dimensions(_);
-        mapillaryLayer.dimensions(_);
+        // Removed for iD v1.9.2
+        /*mapillaryLayer.dimensions(_);*/
 
         overlayLayers.forEach(function(layer) {
             layer.dimensions(_);
@@ -226,19 +230,21 @@ iD.Background = function(context) {
         background.baseLayerSource(findSource('Bing'));
     };
 
-    background.hasGpxLayer = function() {
+    // Removed for iD v1.9.2
+    /*background.hasGpxLayer = function() {
         return !_.isEmpty(gpxLayer.geojson());
     };
 
     background.showsGpxLayer = function() {
         return background.hasGpxLayer() && gpxLayer.enable();
-    };
+    };*/
 
     function toDom(x) {
         return (new DOMParser()).parseFromString(x, 'text/xml');
     }
 
-    background.gpxLayerFiles = function(fileList) {
+    // Removed for iD v1.9.2
+    /*background.gpxLayerFiles = function(fileList) {
         var f = fileList[0],
             reader = new FileReader();
 
@@ -281,7 +287,7 @@ iD.Background = function(context) {
     background.toggleMapillaryLayer = function() {
         mapillaryLayer.enable(!mapillaryLayer.enable());
         dispatch.change();
-    };
+    };*/
 
     background.showsLayer = function(d) {
         return d === baseLayer.source() ||

@@ -12,6 +12,7 @@ window.iD = function () {
     context.enableSnap = true;
     // https://github.com/systemed/iD/issues/772
     // http://mathiasbynens.be/notes/localstorage-pattern#comment-9
+ 
     try { storage = localStorage; } catch (e) {}  // eslint-disable-line no-empty
     storage = storage || (function() {
         var s = {};
@@ -108,6 +109,11 @@ window.iD = function () {
     function entitiesLoaded(err, result) {
         if (!err) history.merge(result.data, result.extent);
     }
+
+    context.preauth = function(options) {
+        connection.switch(options);
+        return context;
+    };
 
     context.loadTiles = function(projection, dimensions, callback) {
         function done(err, result) {
@@ -227,6 +233,7 @@ window.iD = function () {
         return context.entity(id).geometry(history.graph());
     };
 
+
     /* Modes */
     context.enter = function(newMode) {
         if (mode) {
@@ -263,6 +270,7 @@ window.iD = function () {
         }
     };
 
+
     /* Behaviors */
     context.install = function(behavior) {
         context.surface().call(behavior);
@@ -271,6 +279,7 @@ window.iD = function () {
     context.uninstall = function(behavior) {
         context.surface().call(behavior.off);
     };
+
 
     /* Copy/Paste */
     var copyIDs = [], copyGraph, copyTags;
@@ -297,6 +306,7 @@ window.iD = function () {
     var background = iD.Background(context);
     context.background = function() { return background; };
 
+
     /* Features */
     var features = iD.Features(context);
     context.features = function() { return features; };
@@ -305,6 +315,7 @@ window.iD = function () {
             entity = graph.entity(id);
         return features.hasHiddenConnections(entity, graph);
     };
+
 
     /* Map */
     var map = iD.Map(context);
@@ -333,6 +344,7 @@ window.iD = function () {
         return context.surface().node().parentNode.getBoundingClientRect();
     };
 
+
     /* Presets */
     var presets = iD.presets();
 
@@ -343,11 +355,16 @@ window.iD = function () {
         return context;
     };
 
+
+    /* Imagery */
     context.imagery = function(_) {
         background.load(_);
         return context;
     };
 
+
+    /* Container */
+    var container;
     context.container = function(_) {
         if (!arguments.length) return container;
         container = _;
@@ -370,6 +387,7 @@ window.iD = function () {
         return context;
     };
 
+    /* Assets */
     var assetPath = '';
     context.assetPath = function(_) {
         if (!arguments.length) return assetPath;

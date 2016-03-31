@@ -16,6 +16,9 @@ iD.svg.Points = function(projection, context) {
                 return e.geometry(graph) === 'point';
             });
 
+       /* var graph = context.graph(),
+            points = _.filter(entities, function(e) { return e.geometry(graph) === 'point'; });*/
+
         points.sort(sortY);
 
         var groups = surface.selectAll('.layer-hit').selectAll('g.point')

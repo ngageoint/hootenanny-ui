@@ -732,7 +732,7 @@ iD.Map = function(context) {
         surface
         .call(farLine, graph, data, filter)
         .call(farArea, graph, data, filter)
-        .call(points, data, filter);
+        .call(drawPoints, graph, data, filter);
 
         var lastLoadedLayer = context.connection().lastLoadedLayer();
         if(lastLoadedLayer){

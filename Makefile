@@ -38,7 +38,8 @@ BUILDJS_TARGETS = \
 BUILDJS_SOURCES = \
 	$(filter-out $(BUILDJS_TARGETS), $(shell find data -type f -name '*.json')) \
 	data/feature-icons.json \
-	data/core.yaml
+	data/core.yaml \
+	data/presets.yaml
 
 $(BUILDJS_TARGETS): $(BUILDJS_SOURCES) build.js
 	node build.js

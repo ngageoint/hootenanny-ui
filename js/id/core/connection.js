@@ -125,16 +125,7 @@ iD.Connection = function(context) {
     };
 
     connection.loadMultiple = function(ids, callback, hootcallback, layerName) {
-		//added in iD v1.7.5
-        // TODO: upgrade lodash and just use _.chunk
-        /*function chunk(arr, chunkSize) {
-            var result = [];
-            for (var i = 0; i < arr.length; i += chunkSize) {
-                result.push(arr.slice(i, i + chunkSize));
-            }
-            return result;
-        }*/
-
+        // TODO: upgrade lodash and just use _.chunk -- iD v1.7.5
         var currMapId = null;
         // get the map id. Do on first one since ids should be coming from same map
         if(ids && ids.length > 0){

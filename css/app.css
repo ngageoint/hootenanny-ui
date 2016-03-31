@@ -1122,6 +1122,10 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     border-radius: 8px;
 }
 
+.inspector-preset > div.inspector-preset-expandable {
+    padding-left: 20px;
+}
+
 .entity-editor-pane .preset-list-item::after {
     content: "";
     position: absolute;
