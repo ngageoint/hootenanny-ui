@@ -1,5 +1,4 @@
 iD.ui.intro.line = function(context, reveal) {
-
     var event = d3.dispatch('done'),
         timeouts = [];
 
@@ -11,15 +10,21 @@ iD.ui.intro.line = function(context, reveal) {
         timeouts.push(window.setTimeout(f, t));
     }
 
-    step.enter = function() {
+    function eventCancel() {
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+    }
 
+    step.enter = function() {
         var centroid = [-85.62830, 41.95699];
         var midpoint = [-85.62975395449628, 41.95787501510204];
         var start = [-85.6297754121684, 41.95805253325314];
         var intersection = [-85.62974496187628, 41.95742515554585];
 
         context.map().centerZoom(start, 18);
-        reveal('button.add-line', t('intro.lines.add'), {tooltipClass: 'intro-lines-add'});
+        reveal('button.add-line',
+            t('intro.lines.add', { button: iD.ui.intro.icon('#icon-line', 'pre-text') }),
+            { tooltipClass: 'intro-lines-add' });
 
         context.on('enter.intro', addLine);
 
@@ -45,22 +50,25 @@ iD.ui.intro.line = function(context, reveal) {
 
             var padding = 300 * Math.pow(2, context.map().zoom() - 19);
             var pointBox = iD.ui.intro.pad(midpoint, padding, context);
-            reveal(pointBox, t('intro.lines.intersect'));
+            reveal(pointBox, t('intro.lines.intersect', {name: t('intro.graph.flower_st')}));
 
             context.map().on('move.intro', function() {
                 padding = 300 * Math.pow(2, context.map().zoom() - 19);
                 pointBox = iD.ui.intro.pad(midpoint, padding, context);
-                reveal(pointBox, t('intro.lines.intersect'), {duration: 0});
+                reveal(pointBox, t('intro.lines.intersect', {name: t('intro.graph.flower_st')}), {duration: 0});
             });
         }
 
         // ended line before creating intersection
         function retry(mode) {
             if (mode.id !== 'select') return;
-            var pointBox = iD.ui.intro.pad(intersection, 30, context);
-            reveal(pointBox, t('intro.lines.restart'));
+            var pointBox = iD.ui.intro.pad(intersection, 30, context),
+                ids = mode.selectedIDs();
+            reveal(pointBox, t('intro.lines.restart', {name: t('intro.graph.flower_st')}));
+            d3.select(window).on('mousedown.intro', eventCancel, true);
+
             timeout(function() {
-                context.replace(iD.actions.DeleteMultiple(mode.selectedIDs()));
+                context.replace(iD.actions.DeleteMultiple(ids));
                 step.exit();
                 step.enter();
             }, 3000);
@@ -124,13 +132,15 @@ iD.ui.intro.line = function(context, reveal) {
         }
 
         function roadDetails() {
-            reveal('.pane', t('intro.lines.describe'));
+            reveal('.pane',
+                t('intro.lines.describe', { button: iD.ui.intro.icon('#icon-apply', 'pre-text') }));
             context.on('exit.intro', event.done);
         }
 
     };
 
     step.exit = function() {
+        d3.select(window).on('mousedown.intro', null, true);
         d3.select('#curtain').style('pointer-events', 'none');
         timeouts.forEach(window.clearTimeout);
         context.on('enter.intro', null);

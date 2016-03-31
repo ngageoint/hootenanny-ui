@@ -1,5 +1,4 @@
 iD.ui.intro.point = function(context, reveal) {
-
     var event = d3.dispatch('done'),
         timeouts = [];
 
@@ -11,10 +10,16 @@ iD.ui.intro.point = function(context, reveal) {
         timeouts.push(window.setTimeout(f, t));
     }
 
-    step.enter = function() {
+    function eventCancel() {
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+    }
 
+    step.enter = function() {
         context.map().centerZoom([-85.63279, 41.94394], 19);
-        reveal('button.add-point', t('intro.points.add'), {tooltipClass: 'intro-points-add'});
+        reveal('button.add-point',
+            t('intro.points.add', { button: iD.ui.intro.icon('#icon-point', 'pre-text') }),
+            { tooltipClass: 'intro-points-add' });
 
         var corner = [-85.632481,41.944094];
 
@@ -31,7 +36,6 @@ iD.ui.intro.point = function(context, reveal) {
                 pointBox = iD.ui.intro.pad(corner, 150, context);
                 reveal(pointBox, t('intro.points.place'), {duration: 0});
             });
-
         }
 
         function enterSelect(mode) {
@@ -40,7 +44,8 @@ iD.ui.intro.point = function(context, reveal) {
             context.on('enter.intro', null);
 
             setTimeout(function() {
-                reveal('.preset-search-input', t('intro.points.search', {name: context.presets().item('amenity/cafe').name()}));
+                reveal('.preset-search-input',
+                    t('intro.points.search', {name: context.presets().item('amenity/cafe').name()}));
                 d3.select('.preset-search-input').on('keyup.intro', keySearch);
             }, 500);
         }
@@ -50,12 +55,9 @@ iD.ui.intro.point = function(context, reveal) {
             if (first.classed('preset-amenity-cafe')) {
                 reveal(first.select('.preset-list-button').node(), t('intro.points.choose'));
                 d3.selection.prototype.one.call(context.history(), 'change.intro', selectedPreset);
-
-                d3.select('.preset-search-input').on('keydown.intro', function() {
-                    // Prevent search from updating and changing the grid
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
-                }, true).on('keyup.intro', null);
+                d3.select('.preset-search-input')
+                    .on('keydown.intro', eventCancel, true)
+                    .on('keyup.intro', null);
             }
         }
 
@@ -70,7 +72,8 @@ iD.ui.intro.point = function(context, reveal) {
         function closeEditor() {
             d3.select('.preset-search-input').on('keydown.intro', null);
             context.history().on('change.intro', null);
-            reveal('.entity-editor-pane', t('intro.points.close'));
+            reveal('.entity-editor-pane',
+                t('intro.points.close', { button: iD.ui.intro.icon('#icon-apply', 'pre-text') }));
         }
 
         function selectPoint() {
@@ -93,7 +96,8 @@ iD.ui.intro.point = function(context, reveal) {
             context.on('enter.intro', null);
 
             setTimeout(function() {
-                reveal('.entity-editor-pane', t('intro.points.fixname'));
+                reveal('.entity-editor-pane',
+                    t('intro.points.fixname', { button: iD.ui.intro.icon('#icon-apply', 'pre-text') }));
                 context.on('exit.intro', deletePoint);
             }, 500);
         }
@@ -122,7 +126,8 @@ iD.ui.intro.point = function(context, reveal) {
             setTimeout(function() {
                 var node = d3.select('.radial-menu-item-delete').node();
                 var pointBox = iD.ui.intro.pad(node.getBoundingClientRect(), 50, context);
-                reveal(pointBox, t('intro.points.delete'));
+                reveal(pointBox,
+                    t('intro.points.delete', { button: iD.ui.intro.icon('#operation-delete', 'pre-text') }));
             }, 300);
         }
 
@@ -138,7 +143,9 @@ iD.ui.intro.point = function(context, reveal) {
         context.on('enter.intro', null);
         context.map().on('move.intro', null);
         context.history().on('change.intro', null);
-        d3.select('.preset-search-input').on('keyup.intro', null).on('keydown.intro', null);
+        d3.select('.preset-search-input')
+            .on('keyup.intro', null)
+            .on('keydown.intro', null);
     };
 
     return d3.rebind(step, event, 'on');

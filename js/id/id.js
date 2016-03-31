@@ -2,8 +2,8 @@ window.iD = function () {
     window.locale.en = iD.data.en;
     window.locale.current('en');
 
-
-    var context = {},
+    var dispatch = d3.dispatch('enter', 'exit'),
+        context = {},
         storage;
 
 	//eslint introduced in iD v1.7.5
@@ -182,8 +182,13 @@ window.iD = function () {
         if(resetHistory !== undefined && resetHistory !== null && resetHistory === false){
             // keep history
         } else {
-        history.reset();
-        }
+		    history.reset();
+			//_.each(... added in iD v1.9.2
+		    _.each(iD.services, function(service) {
+		        var reset = service().reset;
+		        if (reset) reset(context);
+		    });
+		}
         return context;
     };
 
@@ -387,7 +392,8 @@ window.iD = function () {
     return d3.rebind(context, dispatch, 'on');
 };
 
-iD.version = '1.7.5-idiot.intel.lawyers';
+
+iD.version = '1.9.2';
 
 (function() {
     var detected = {};
@@ -395,10 +401,17 @@ iD.version = '1.7.5-idiot.intel.lawyers';
     var ua = navigator.userAgent,
         m = null;
 
-    m = ua.match(/Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/i);   // IE11+
+    m = ua.match(/(edge)\/?\s*(\.?\d+(\.\d+)*)/i);   // Edge
     if (m !== null) {
-        detected.browser = 'msie';
-        detected.version = m[1];
+        detected.browser = m[1];
+        detected.version = m[2];
+    }
+    if (!detected.browser) {
+        m = ua.match(/Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/i);   // IE11
+        if (m !== null) {
+            detected.browser = 'msie';
+            detected.version = m[1];
+        }
     }
     if (!detected.browser) {
         m = ua.match(/(opr)\/?\s*(\.?\d+(\.\d+)*)/i);   // Opera 15+
@@ -425,9 +438,11 @@ iD.version = '1.7.5-idiot.intel.lawyers';
     detected.version = detected.version.split(/\W/).slice(0,2).join('.');
 
     if (detected.browser.toLowerCase() === 'msie') {
+        detected.ie = true;
         detected.browser = 'Internet Explorer';
-        detected.support = parseFloat(detected.version) > 9;
+        detected.support = parseFloat(detected.version) >= 11;
     } else {
+        detected.ie = false;
         detected.support = true;
     }
 

@@ -1,10 +1,10 @@
 {
     "geometry": [
-        "point",
         "area"
     ],
     "tags": {
         "building": "hut"
     },
+    "matchScore": 0.5,
     "name": "Hut"
 }

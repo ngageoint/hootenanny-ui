@@ -10,16 +10,15 @@ iD.svg.Points = function(projection, context) {
         return b.loc[1] - a.loc[1];
     }
 
-    return function drawPoints(surface, entities, filter) {
-        var graph = context.graph(),
-            wireframe = surface.classed('fill-wireframe'),
+    return function drawPoints(surface, graph, entities, filter) {
+        var wireframe = surface.classed('fill-wireframe'),
             points = wireframe ? [] : _.filter(entities, function(e) {
                 return e.geometry(graph) === 'point';
             });
 
         points.sort(sortY);
 
-        var groups = surface.select('.layer-hit').selectAll('g.point')
+        var groups = surface.selectAll('.layer-hit').selectAll('g.point')
             .filter(filter)
             .data(points, iD.Entity.key);
 
@@ -35,9 +34,10 @@ iD.svg.Points = function(projection, context) {
             .call(markerPath, 'stroke');
 
         group.append('use')
-            .attr('class', 'icon')
             .attr('transform', 'translate(-6, -20)')
-            .attr('clip-path', 'url(#clip-square-12)');
+            .attr('class', 'icon')
+            .attr('width', '12px')
+            .attr('height', '12px');
 
         groups.attr('transform', iD.svg.PointTransform(projection))
             .call(iD.svg.TagClasses());
@@ -48,8 +48,8 @@ iD.svg.Points = function(projection, context) {
         groups.select('.stroke');
         groups.select('.icon')
             .attr('xlink:href', function(entity) {
-                var preset = context.presets().match(entity, context.graph());
-                return preset.icon ? '#maki-' + preset.icon + '-12' : '';
+                var preset = context.presets().match(entity, graph);
+                return preset.icon ? '#' + preset.icon + '-12' : '';
             });
 
         groups.exit()

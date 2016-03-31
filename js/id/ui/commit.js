@@ -33,6 +33,7 @@ iD.ui.Commit = function(context) {
             .attr('class', 'body');
 
         // Comment Section
+		//Commented out for Hootenanny
 /*
         var commentSection = body.append('div')
             .attr('class', 'modal-section form-field commit-form');
@@ -52,6 +53,11 @@ iD.ui.Commit = function(context) {
             .on('blur.save', function() {
                 context.storage('comment', this.value);
             });
+
+        function enableDisableSaveButton() {
+            d3.selectAll('.save-section .save-button')
+                .attr('disabled', (this.value.length ? null : true));
+        }
 
         commentField.node().select();
 */
@@ -79,8 +85,8 @@ iD.ui.Commit = function(context) {
             .on('mouseout', mouseout)
             .on('click', warningClick);
 
-        warningLi.append('span')
-            .attr('class', 'alert icon icon-pre-text');
+        warningLi
+            .call(iD.svg.Icon('#icon-alert', 'pre-text'));
 
         warningLi.append('strong').text(function(d) {
             return d.message;
@@ -109,7 +115,7 @@ iD.ui.Commit = function(context) {
             if (user.image_url) {
                 userLink.append('img')
                     .attr('src', user.image_url)
-                    .attr('class', 'icon icon-pre-text user-icon');
+                    .attr('class', 'icon pre-text user-icon');
             }
 
             userLink.append('a')
@@ -128,6 +134,7 @@ iD.ui.Commit = function(context) {
         var buttonSection = saveSection.append('div')
             .attr('class','buttons fillL cf');
 
+		//Using summary to determine if button should be enabled
         var saveButton = buttonSection.append('button')
             .attr('class', 'action col5 button save-button')
             .property('disabled', function() {
@@ -173,10 +180,15 @@ iD.ui.Commit = function(context) {
             .on('mouseout', mouseout)
             .on('click', zoomToEntity);
 
-        li.append('span')
+		//changed for iD v1.9.2
+        li.each(function(d) {
+            d3.select(this)
+                .call(iD.svg.Icon('#icon-' + d.entity.geometry(d.graph), 'pre-text ' + d.changeType));
+        });
+        /*li.append('span')
             .attr('class', function(d) {
                 return d.entity.geometry(d.graph) + ' ' + d.changeType + ' icon icon-pre-text';
-            });
+            });*/
 
         li.append('span')
             .attr('class', 'change-type')

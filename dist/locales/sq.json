@@ -130,12 +130,8 @@
         },
         "merge": {
             "title": "Bashko",
-            "description": "Bashko këto vijë.",
             "key": "C",
-            "annotation": "U bashkuan {n} vijë.",
             "not_eligible": "Këto tipare nuk mund të bashkohen.",
-            "not_adjacent": "Këto vijë nuk mund të bashkohen sepse nuk janë të lidhur.",
-            "restriction": "Këto vijë nuk mund të bashkohen sepse të paktën njëra ështe anëtar i një lidhje \"{relation}\".",
             "incomplete_relation": "Këto tipare nuk mund të bashkohen sepse të paktën një nuk është shkarkuar plotësisht."
         },
         "move": {
@@ -207,7 +203,6 @@
         "tooltip": "Ribëj: {action}",
         "nothing": "Asgjë për të ribëj."
     },
-    "browser_notice": "Ky redaktor punon në Firefox, Chrome, Safari, Opera, dhe Internet Explorer 9+. Ju lutemi përmirësoni shfletuesin ose redaktoni hartën me Potlatch 2.",
     "translate": {
         "translate": "Përkthe",
         "localized_translation_label": "Emri shumëgjuhësh",
@@ -217,7 +212,6 @@
     "zoom_in_edit": "Zmadhoni për të redaktuar",
     "logout": "dil",
     "loading_auth": "Lidh me OpenStreetMap...",
-    "report_a_bug": "Raporto një bug",
     "feature_info": {
         "hidden_warning": "{count} tipare të fshehura",
         "hidden_details": "Këto tipare janë aktualisht të fshehura: {details}"
@@ -319,23 +313,6 @@
         }
     },
     "presets": {
-        "categories": {
-            "category-building": {
-                "name": "Ndërtesë"
-            },
-            "category-golf": {
-                "name": "Golf"
-            },
-            "category-road": {
-                "name": "Rrugë"
-            },
-            "category-water-area": {
-                "name": "Ujë"
-            },
-            "category-water-line": {
-                "name": "Ujë"
-            }
-        },
         "fields": {
             "access": {
                 "options": {
@@ -467,6 +444,9 @@
                     "wlan": "Wifi",
                     "yes": "Po"
                 }
+            },
+            "piste/difficulty": {
+                "label": "Vështersia"
             }
         },
         "presets": {

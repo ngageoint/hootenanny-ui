@@ -146,8 +146,7 @@ iD.ui.RawMembershipEditor = function(context) {
                 		return deleteMembership(d);
                 	}
                 })
-                .append('span')
-                .attr('class', 'icon delete');
+                .call(iD.svg.Icon('#operation-delete'));
 
             $items.exit()
                 .remove();
@@ -182,8 +181,7 @@ iD.ui.RawMembershipEditor = function(context) {
                     .attr('tabindex', -1)
                     .attr('class', 'remove button-input-action member-delete minor')
                     .on('click', deleteMembership)
-                    .append('span')
-                    .attr('class', 'icon delete');
+                    .call(iD.svg.Icon('#operation-delete'));
 
             } else {
                 $list.selectAll('.member-row-new')
@@ -193,10 +191,10 @@ iD.ui.RawMembershipEditor = function(context) {
             var $add = $wrap.selectAll('.add-relation')
                 .data([0]);
 
-            $add.enter().append('button')
+            $add.enter()
+                .append('button')
                 .attr('class', 'add-relation')
-                .append('span')
-                .attr('class', 'icon plus light');
+                .call(iD.svg.Icon('#icon-plus', 'light'));
 
             $wrap.selectAll('.add-relation')
                 .on('click', function() {

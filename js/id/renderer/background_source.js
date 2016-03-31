@@ -2,7 +2,8 @@ iD.BackgroundSource = function(data) {
     var source = _.clone(data),
         offset = [0, 0],
         name = source.name,
-        extent = source.extent;
+        extent = source.extent,
+        best = !!source.best;
 
     source.scaleExtent = data.scaleExtent || [0, 20];
     source.overzoom = data.overzoom !== false;
@@ -25,6 +26,10 @@ iD.BackgroundSource = function(data) {
     
     source.name = function() {
         return name;
+    };
+
+    source.best = function() {
+        return best;
     };
 
     source.imageryUsed = function() {

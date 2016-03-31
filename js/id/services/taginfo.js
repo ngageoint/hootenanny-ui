@@ -1,4 +1,4 @@
-iD.taginfo = function() {
+iD.services.taginfo = function() {
     var taginfo = {},
         endpoint = 'https://taginfo.openstreetmap.org/api/4/',
         tag_sorts = {
@@ -14,11 +14,6 @@ iD.taginfo = function() {
             line: 'ways'
         };
 
-    if (!iD.taginfo.cache) {
-        iD.taginfo.cache = {};
-    }
-
-    var cache = iD.taginfo.cache;
 
     function sets(parameters, n, o) {
         if (parameters.geometry && o[parameters.geometry]) {
@@ -58,9 +53,18 @@ iD.taginfo = function() {
         };
     }
 
+    // sort keys with ':' lower than keys without ':'
+    function sortKeys(a, b) {
+        return (a.key.indexOf(':') === -1 && b.key.indexOf(':') !== -1) ? -1
+            : (a.key.indexOf(':') !== -1 && b.key.indexOf(':') === -1) ? 1
+            : 0;
+    }
+
     var debounced = _.debounce(d3.json, 100, true);
 
     function request(url, debounce, callback) {
+        var cache = iD.services.taginfo.cache;
+
         if (cache[url]) {
             callback(null, cache[url]);
         } else if (debounce) {
@@ -86,7 +90,7 @@ iD.taginfo = function() {
                 page: 1
             }, parameters)), debounce, function(err, d) {
                 if (err) return callback(err);
-                callback(null, d.data.filter(popularKeys(parameters)).map(valKey));
+                callback(null, d.data.filter(popularKeys(parameters)).sort(sortKeys).map(valKey));
             });
     };
 
@@ -113,21 +117,10 @@ iD.taginfo = function() {
         if (parameters.value) path = 'tag/wiki_pages?';
         else if (parameters.rtype) path = 'relation/wiki_pages?';
 
-        var decoratedCallback;
-        if (parameters.value) {
-            decoratedCallback = function(err, data) {
-                // The third argument to callback is the softfail flag, to
-                // make the callback function not show a message to the end
-                // user when no docs are found but just return false.
-                var docsFound = callback(err, data, true);
-                if (!docsFound) {
-                    taginfo.docs(_.omit(parameters, 'value'), callback);
-                }
-            };
-        }
-
-        request(endpoint + path +
-            iD.util.qsString(parameters), debounce, decoratedCallback || callback);
+        request(endpoint + path + iD.util.qsString(parameters), debounce, function(err, d) {
+            if (err) return callback(err);
+            callback(null, d.data);
+        });
     };
 
     taginfo.endpoint = function(_) {
@@ -135,6 +128,16 @@ iD.taginfo = function() {
         endpoint = _;
         return taginfo;
     };
+
+    taginfo.reset = function() {
+        iD.services.taginfo.cache = {};
+        return taginfo;
+    };
+
+
+    if (!iD.services.taginfo.cache) {
+        taginfo.reset();
+    }
 
     return taginfo;
 };

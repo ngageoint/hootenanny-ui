@@ -42,10 +42,14 @@ iD.ui.RadialMenu = function(context, operations) {
 
         var button = menu.selectAll()
             .data(operations)
-            .enter().append('g')
+            .enter()
+            .append('g')
+			.attr('class', function(d) { return 'radial-menu-item radial-menu-item-' + d.id; }) //iD v1.9.2
+            .classed('disabled', function(d) { return d.disabled(); }) //iD v1.9.2
             .attr('transform', function(d, i) {
-                return 'translate(' + r * Math.sin(a0 + i * a) + ',' +
-                                      r * Math.cos(a0 + i * a) + ')';
+                return 'translate(' + iD.geo.roundCoords([
+                        r * Math.sin(a0 + i * a),
+                        r * Math.cos(a0 + i * a)]).join(',') + ')';
             });
 
         button.append('circle')
@@ -57,13 +61,14 @@ iD.ui.RadialMenu = function(context, operations) {
             .on('mouseover', mouseover)
             .on('mouseout', mouseout);
 
+		// Changes made for v1.9.2
         button.append('use')
-            .attr('transform', 'translate(-10, -10)')
-            .attr('clip-path', 'url(#clip-square-20)')
-            .attr('xlink:href', function(d) { if(d.id==='reverse'){d.id='rotate';} return '#icon-operation-' + (d.disabled() ? 'disabled-' : '') + d.id; });
-
-    /////////////////////////////////////////////////////////////////////
-
+            .attr('transform', 'translate(-10,-10)')
+			//.attr('clip-path', 'url(#clip-square-20)') 
+            .attr('width', '20')
+            .attr('height', '20')
+            .attr('xlink:href', function(d) { return '#operation-' + d.id; });
+			//.attr('xlink:href', function(d) { if(d.id==='reverse'){d.id='rotate';} return '#icon-operation-' + (d.disabled() ? 'disabled-' : '') + d.id; });
 
         tooltip = d3.select(document.body)
             .append('div')

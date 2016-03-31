@@ -3,7 +3,11 @@ iD.ui.EntityEditor = function(context) {
         state = 'select',
         id,
         preset,
-        reference;
+        reference,
+		/* Added for iD v1.9.2 */        
+		coalesceChanges = false,
+        modified = false,
+        base;
 
     var presetEditor = iD.ui.preset(context)
         .on('change', changeTags);
@@ -40,15 +44,19 @@ iD.ui.EntityEditor = function(context) {
         var $enter = $header.enter().append('div')
             .attr('class', 'header fillL cf');
 
+		//Added in iD v1.9.2
+        $enter.append('button')
+            .attr('class', 'fl preset-reset preset-choose')
+            .append('span')
+            .html('&#9668;');
+
         $enter.append('button')
             .attr('class', 'fr preset-close')
-            .append('span')
-            .attr('class', 'icon close');
+            .call(iD.svg.Icon(modified ? '#icon-apply' : '#icon-close'));
 
         $enter.append('h3');
 
         // Update
-
         $header.select('h3')
             .text(t('inspector.edit') + ': ' + id);
 
@@ -246,18 +254,19 @@ iD.ui.EntityEditor = function(context) {
             // The code below is not intended to validate websites and emails.
             // It is only intended to prevent obvious copy-paste errors. (#2323)
 
-            // clean website-like tags
-            if (k.indexOf('website') !== -1 || cleaned.indexOf('http') === 0) {
+            // clean website- and email-like tags
+            if (k.indexOf('website') !== -1 ||
+                k.indexOf('email') !== -1 ||
+                cleaned.indexOf('http') === 0) {
                 cleaned = cleaned
-                    .replace(/[\u200B-\u200F\uFEFF]/g, '')  // strip LRM and other zero width chars
-                    .replace(/[^\w\+\-\.\/\?\[\]\(\)~!@#$%&*',:;=]/g, encodeURIComponent);
+                    .replace(/[\u200B-\u200F\uFEFF]/g, '');  // strip LRM and other zero width chars
 
             // clean email-like tags
-            } else if (k.indexOf('email') !== -1) {
+            } /*else if (k.indexOf('email') !== -1) {
                 cleaned = cleaned
                     .replace(/[\u200B-\u200F\uFEFF]/g, '')  // strip LRM and other zero width chars
                     .replace(/[^\w\+\-\.\/\?\|~!@#$%^&*'`{};=]/g, '');  // note: ';' allowed as OSM delimiter
-            }
+            }*/
 
             return cleaned;
         }
@@ -336,7 +345,11 @@ iD.ui.EntityEditor = function(context) {
     entityEditor.entityID = function(_) {
         if (!arguments.length) return id;
         id = _;
-        entityEditor.preset(context.presets().match(context.entity(id), context.graph()));
+		//added in iD v1.9.2        
+		base = context.graph();
+        entityEditor.preset(context.presets().match(context.entity(id), base));
+        entityEditor.modified(false);
+        coalesceChanges = false;
         return entityEditor;
     };
 

@@ -146,7 +146,7 @@ iD.Connection = function(context) {
         }
 
 
-        _.each(_.groupBy(ids, iD.Entity.id.type), function(v, k) {
+        _.each(_.groupBy(_.uniq(ids), iD.Entity.id.type), function(v, k) {
             var type = k + 's',
                 osmIDs = _.map(v, iD.Entity.id.toOSM);
 
@@ -580,6 +580,23 @@ iD.Connection = function(context) {
         }
 
         oauth.xhr({ method: 'GET', path: '/api/0.6/user/details' }, done);
+    };
+
+    connection.userChangesets = function(callback) {
+        connection.userDetails(function(err, user) {
+            if (err) return callback(err);
+
+            function done(changesets) {
+                callback(undefined, Array.prototype.map.call(changesets.getElementsByTagName('changeset'),
+                    function (changeset) {
+                        return { tags: getTags(changeset) };
+                    }));
+            }
+
+            d3.xml(url + '/api/0.6/changesets?user=' + user.id).get()
+                .on('load', done)
+                .on('error', callback);
+        });
     };
 
     connection.status = function(callback) {

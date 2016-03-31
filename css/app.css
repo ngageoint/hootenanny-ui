@@ -58,14 +58,17 @@ body {
 
 .spinner {
     opacity: .5;
+    /*float: right;*/
 }
 
 .spinner img {
+	/* Hoot CSS Start */
     position: absolute;
-    height: 40px;
-    width: 40px;
     right: 10px;
     top: 10px;
+	/* Hoot CSS End */
+    height: 40px;
+    width: 40px;
     border-radius: 4px;
     margin-right: 10px;
     background: black;
@@ -223,6 +226,10 @@ table.tags, table.tags td, table.tags th {
     padding: 4px;
 }
 
+::-ms-clear {
+   display: none;
+}
+
 /* Grid
 ------------------------------------------------------- */
 
@@ -308,6 +315,8 @@ ul li { list-style: none;}
 
 .fl { float: left;}
 .fr { float: right;}
+.al { left: 0; }
+.ar { right: 0; }
 
 div.hide,
 form.hide,
@@ -498,17 +507,41 @@ button.save.has-count .count::before {
 /* Icons */
 
 .icon {
-  display:inline-block;
   vertical-align:top;
   width:20px;
   height:20px;
+  /* iD removed; found during merge of v1.9.2
+  display:inline-block;
   background:transparent url(img/sprite.svg) no-repeat 0 0;
   text-indent:-9999px;
-  overflow:hidden;
+  overflow:hidden;*/
   }
 
-.icon-pre-text {
+.icon.inline {
+    vertical-align: text-top;
+    width: 14px;
+    height: 14px;
+    margin: 0px 3px;
+}
+
+.icon.pre-text {
     margin-right: 3px;
+}
+
+.icon.light {
+    color: #fff;
+}
+
+.icon.created {
+    color: #00ca07;
+}
+
+.icon.modified {
+    color: #666;
+}
+
+.icon.deleted {
+    color: #ea0000;
 }
 
 .user-icon {
@@ -519,7 +552,9 @@ button.save.has-count .count::before {
     border-radius: 3px;
 }
 
+/* Removed icon definitions during iD merge v1.9.2 */
 /* Definitions for every icon */
+/*
 .icon.alert     { background-position:   0 0;}
 .icon.point,
 .icon.add-point  { background-position: -20px 0;}
@@ -553,8 +588,6 @@ button.save.has-count .count::before {
 .icon.vertex     { background-position: -580px 0;}
 .icon.data       { background-position: -600px 0;}
 
-.icon.apply.light      { background-position: -120px -20px;}
-.icon.up.light 			   { background-position: -140px -20px;}
 .icon.inspect.light    { background-position: -220px -20px;}
 .icon.plus.light       { background-position: -240px -20px;}
 .icon.zoom-in          { background-position: -240px -20px;}
@@ -571,7 +604,6 @@ button.save.has-count .count::before {
 .icon.back.blue        { background-position: -420px -20px;}
 .icon.forward.blue     { background-position: -440px -20px;}
 
-.icon.scissors         { background-position: -60px -140px;}
 .icon.full-screen              { background-position: -620px -20px;}
 .active .icon.full-screen      { background-position: -640px -20px;}
 
@@ -605,16 +637,16 @@ button[disabled] .icon.data       { background-position: -600px -40px;}
 .icon.point.modified  { background-position: -22px 0; }
 
 .icon.modified { opacity: .5; }
-
+*/
 /* Out link is special */
-
+/*
 .icon.out-link   { height: 14px; width: 14px; background-position: -500px 0;}
 a:hover .icon.out-link   { background-position: -500px -14px;}
 
 .icon.plus-dark    { background-position: -240px -40px;}
-
+*/
 /* Universal preset icons */
-
+/*
 .icon.source     { background-position:   0 -200px;}
 .icon.address    { background-position: -20px -200px;}
 .icon.telephone  { background-position: -40px -200px;}
@@ -623,7 +655,7 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 .icon.wikipedia  { background-position: -100px -200px;}
 .icon.note       { background-position: -120px -200px;}
 .icon.wheelchair { background-position: -140px -200px;}
-
+*/
 /* ToolBar / Persistent UI Elements
 ------------------------------------------------------- */
 
@@ -669,10 +701,23 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     height: 100%;
 }
 
-.preset-list-pane .header button {
+.entity-editor-pane .header button.preset-close,
+.preset-list-pane .header button.preset-choose {
     position: absolute;
     right: 0;
     top: 0;
+}
+
+.entity-editor-pane .header button.preset-choose {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.preset-choose {
+    font-size: 16px;
+    line-height: 1.25;
+    font-weight: bold;
 }
 
 .modal > button {
@@ -790,7 +835,7 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 }
 
 .entity-editor-pane .inspector-body {
-    top: 130px;
+    top: 130px;  /* 60px  */
 }
 
 .selection-list-pane .inspector-body {
@@ -898,6 +943,78 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     background: #ececec;
 }
 
+/* Preset icon colors */
+
+.preset-icon-fill-area {
+    cursor: inherit;
+    height: 39px;
+    width: 39px;
+    margin: auto;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
+.preset-icon-fill-area:after {
+    content: '';
+    left: -4px;
+    top: -4px;
+    height: 45px;
+    width: 45px;
+    position: absolute;
+    background:transparent url(img/sprite.svg) no-repeat 0 -80px;
+}
+
+.preset-icon-frame {
+    position: absolute;
+    top: 7px;
+    left: 7px;
+    height: 42px;
+    width: 42px;
+    margin: auto;
+}
+
+.preset-icon-frame .icon {
+    width: 46px;
+    height: 46px;
+}
+
+.preset-icon-60 {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    margin: auto;
+}
+
+.preset-icon-60 .icon {
+    width: 60px;
+    height: 60px;
+}
+
+.preset-icon-44 {
+    position: absolute;
+    top: 9px;
+    left: 8px;
+    margin: auto;
+}
+
+.preset-icon-44 .icon {
+    width: 44px;
+    height: 44px;
+}
+
+.preset-icon-32 {
+    position: absolute;
+    top: 14px;
+    left: 13px;   /* Maki icons off center? */
+    margin: auto;
+}
+
+.preset-icon-32 .icon {
+    width: 32px;
+    height: 32px;
+}
+
 .preset-icon {
     position: absolute;
     top: 17px;
@@ -941,6 +1058,10 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     right: 0;
     width: 10%;
     background: #fafafa;
+}
+
+.preset-list-item button.tag-reference-button:hover {
+    background: #f1f1f1;
 }
 
 .preset-list-item button.tag-reference-button .icon {
@@ -988,27 +1109,6 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     margin-top: -10px;
 }
 
-/* Preset icon colors */
-
-.preset-icon-fill-area {
-    cursor: inherit;
-    height: 39px;
-    width: 39px;
-    margin: auto;
-    position: absolute;
-    left: 10px;
-    top: 10px;
-}
-
-.preset-icon-fill-area:after {
-    content: '';
-    left: -4px;
-    top: -4px;
-    height: 45px;
-    width: 45px;
-    position: absolute;
-    background:transparent url(img/sprite.svg) no-repeat 0 -80px;
-}
 
 /* preset form basics */
 
@@ -1088,7 +1188,10 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     width: 10%;
     height: 100%;
     border-radius: 0;
-    background: #fafafa;
+    background: #f6f6f6;
+}
+.form-label button:hover {
+    background: #f1f1f1;
 }
 
 .form-label .modified-icon,
@@ -1870,6 +1973,10 @@ div.full-screen > button:hover {
     color: #7092FF;
 }
 
+.layer-list:empty {
+    display: none;
+}
+
 .layer-list > li:first-child {
     border-radius: 3px 3px 0 0;
 }
@@ -1892,6 +1999,18 @@ div.full-screen > button:hover {
 
 .layer-list li.active {
     background: #E8EBFF;
+}
+
+.layer-list li.best > div.best {
+    display: inline-block;
+    padding: 5px;
+    float: right;
+}
+
+/* make sure tooltip fits in map-control panel */
+/* if too wide, placement will be wrong the first time it displays */
+.layer-list li.best .tooltip-inner {
+    max-width: 160px;
 }
 
 .layer-list label {
@@ -2189,7 +2308,7 @@ div.full-screen > button:hover {
     user-select: none;
 }
 
-#supersurface, .layer-layer {
+#supersurface, .layer, .layer-layer {
     position: absolute;
     top: 0;
     left: 0;
@@ -2267,7 +2386,8 @@ div.full-screen > button:hover {
     border-bottom: 1px solid black;
 }
 
-.infobox .selection-heading {
+.infobox .selection-heading,
+.infobox .infobox-heading  {
     display: block;
     border-radius: 4px 0 0 0;
     padding: 5px 10px;
@@ -2347,12 +2467,13 @@ div.full-screen > button:hover {
     display: table-cell;
     vertical-align: bottom;
     width: 250px;
-    height: 30px;
+    max-height: 30px;
     float: left;
     clear: left;
 }
 
 #info-block {
+    max-height: 30px;
     float: right;
     clear: right;
 }
@@ -2518,6 +2639,7 @@ div.full-screen > button:hover {
 
 .modal-actions button:before,
 .save-success a.button:before,
+.save-success a.button.osm:before,
 .walkthrough a:before {
     display: block;
     content: '';
@@ -2526,7 +2648,7 @@ div.full-screen > button:hover {
     max-width: 100px;
     margin: auto;
     margin-bottom: 10px;
-    background:transparent url(img/sprite.svg) no-repeat 0 -220px;
+    background:transparent url(img/iD-sprite.svg) no-repeat -200px -460px;
 }
 
 .modal-actions :first-child {
@@ -2552,35 +2674,27 @@ div.full-screen > button:hover {
 ------------------------------------------------------- */
 
 .save-success p {
-    padding: 15px;
+    padding: 15px 15px 0 15px;
 }
-
+.save-success a.details {
+  padding-left: 15px;
+}
 .save-success .button {
     padding-top: 15px;
 }
 
-.save-success .button.social {
-    height: 80px;
+.save-success a.button.social {
+    height: auto;
 }
 
-.save-success .button.social:before {
-    height: 50px;
+.save-success .icon.social {
+    height: 80px;
+    width: 80px;
+    color: #7092FF;
 }
 
 .save-success .button.osm:before {
-    background-position: 0px -220px;
-}
-
-.save-success .button.twitter:before {
-    background-position: -100px -245px;
-}
-
-.save-success .button.facebook:before {
-    background-position: -200px -245px;
-}
-
-.save-success .button.google:before {
-    background-position: -300px -245px;
+    background-position: -200px -460px;
 }
 
 /* Splash Modal
@@ -2588,11 +2702,11 @@ div.full-screen > button:hover {
 
 .modal-actions .walkthrough:before,
 .walkthrough a:before {
-    background-position: -400px -220px;
+    background-position: -300px -460px;
 }
 
 .modal-actions .start:before {
-    background-position: -500px -220px;
+    background-position: -400px -460px;
 }
 
 /* Commit Modal
@@ -2962,29 +3076,37 @@ div.full-screen > button:hover {
 }
 
 .radial-menu-background {
+    fill: none;
     stroke: black;
     stroke-opacity: 0.5;
 }
 
-.radial-menu-item {
-    fill: white;
+.radial-menu-item circle {
+    fill: #eee;
 }
 
-.radial-menu-item:hover {
-    fill: #ececec;
+.radial-menu-item circle:active,
+.radial-menu-item circle:hover {
+    fill: #fff;
 }
 
-.radial-menu-item:active {
-    fill: #ececec;
-}
-
-.radial-menu-item.disabled {
+.radial-menu-item.disabled circle {
     cursor: auto;
     fill: rgba(255,255,255,.5);
 }
 
-.lasso-box {
-    fill-opacity:0.1;
+.radial-menu-item use {
+    fill: #222;
+    color: #79f;
+}
+
+.radial-menu-item.disabled use {
+    fill: rgba(32,32,32,.5);
+    color: rgba(40,40,40,.5);
+}
+
+.lasso-path {
+    fill-opacity:0.3;
     stroke: #fff;
     stroke-width: 1;
     stroke-opacity: 1;
@@ -3117,7 +3239,7 @@ div.full-screen > button:hover {
     content: "";
     height: 80px;
     width: 200px;
-    background:transparent url(img/sprite.svg) no-repeat 0 -320px;
+    background:transparent url(img/iD-sprite.svg) no-repeat 0 -320px;
 }
 
 .intro-areas-add .tooltip-inner::before {
@@ -3137,7 +3259,7 @@ div.full-screen > button:hover {
 .huge-modal-button .illustration {
     height: 100px;
     width: 100px;
-    background: rgba(0, 0, 0, 0) url(img/sprite.svg) no-repeat -400px -220px;
+    background: rgba(0, 0, 0, 0) url(img/iD-sprite.svg) no-repeat -300px -460px;
     margin: auto;
 }
 

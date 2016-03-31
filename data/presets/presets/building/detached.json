@@ -5,7 +5,6 @@
         "levels"
     ],
     "geometry": [
-        "point",
         "area"
     ],
     "tags": {
@@ -18,5 +17,6 @@
         "residence",
         "dwelling"
     ],
+    "matchScore": 0.5,
     "name": "Detached House"
 }

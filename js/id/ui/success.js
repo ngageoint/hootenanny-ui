@@ -12,8 +12,7 @@ iD.ui.Success = function(context) {
         header.append('button')
             .attr('class', 'fr')
             .on('click', function() { dispatch.cancel(); })
-            .append('span')
-            .attr('class', 'icon close');
+            .call(iD.svg.Icon('#icon-close'));
 
         header.append('h3')
             .text(t('success.just_edited'));
@@ -23,6 +22,15 @@ iD.ui.Success = function(context) {
 
         body.append('p')
             .html(t('success.help_html'));
+
+        body.append('a')
+            .attr('class', 'details')
+            .attr('target', '_blank')
+            .attr('tabindex', -1)
+            .call(iD.svg.Icon('#icon-out-link', 'inline'))
+            .attr('href', t('success.help_link_url'))
+            .append('span')
+            .text(t('success.help_link_text'));
 
         var changesetURL = context.connection().changesetURL(changeset.id);
 
@@ -40,13 +48,15 @@ iD.ui.Success = function(context) {
 
         body.selectAll('.button.social')
             .data(d3.entries(sharing))
-            .enter().append('a')
-            .attr('class', function(d) { return 'button social col4 ' + d.key; })
+            .enter()
+            .append('a')
+            .attr('class', 'button social col4')
             .attr('target', '_blank')
             .attr('href', function(d) { return d.value; })
             .call(bootstrap.tooltip()
                 .title(function(d) { return t('success.' + d.key); })
-                .placement('bottom'));
+                .placement('bottom'))
+            .each(function(d) { d3.select(this).call(iD.svg.Icon('#logo-' + d.key, 'social')); });
     }
 
     success.changeset = function(_) {

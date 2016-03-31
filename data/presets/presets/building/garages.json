@@ -4,11 +4,11 @@
         "capacity"
     ],
     "geometry": [
-        "point",
         "area"
     ],
     "tags": {
         "building": "garages"
     },
+    "matchScore": 0.5,
     "name": "Garages"
 }

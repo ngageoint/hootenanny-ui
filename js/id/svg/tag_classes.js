@@ -9,7 +9,8 @@ iD.svg.TagClasses = function() {
             'razed', 'demolished', 'obliterated'
         ],
         secondaries = [
-            'oneway', 'bridge', 'tunnel', 'embankment', 'cutting', 'barrier'
+            'oneway', 'bridge', 'tunnel', 'embankment', 'cutting', 'barrier',
+            'surface', 'tracktype', 'crossing'
         ],
         tagClassRe = /^tag-/,
         tags = function(entity) { return entity.tags; };
@@ -45,7 +46,7 @@ iD.svg.TagClasses = function() {
                 break;
             }
 
-            // add at most one ephemeral status tag, only if relates to primary tag..
+            // add at most one status tag, only if relates to primary tag..
             if (!status) {
                 for (i = 0; i < statuses.length; i++) {
                     k = statuses[i];
@@ -68,7 +69,8 @@ iD.svg.TagClasses = function() {
             }
 
             if (status) {
-                classes += ' tag-ephemeral';
+                classes += ' tag-status tag-status-' + status; //iD v1.9.2
+				classes += ' tag-ephemeral'; //legacy Hoot
             }
 
             // add any secondary (structure) tags
@@ -77,6 +79,22 @@ iD.svg.TagClasses = function() {
                 v = t[k];
                 if (!v || v === 'no') continue;
                 classes += ' tag-' + k + ' tag-' + k + '-' + v;
+            }
+
+			//added for iD v1.9.2
+            // For highways, look for surface tagging..
+            if (primary === 'highway') {
+                var paved = (t.highway !== 'track');
+                for (k in t) {
+                    v = t[k];
+                    if (k in iD.pavedTags) {
+                        paved = !!iD.pavedTags[k][v];
+                        break;
+                    }
+                }
+                if (!paved) {
+                    classes += ' tag-unpaved';
+                }
             }
 
             // For hoot enity id make sure id and origid exist first

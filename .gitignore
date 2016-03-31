@@ -1,10 +1,9 @@
 .DS_Store
+transifex.auth
 node_modules
-dist/iD.js
-dist/iD.min.js
-dist/iD.css
-dist/presets.js
-dist/imagery.js
+npm-debug.log
+dist/*.js
+dist/*.css
 transifex.auth
 data/buildInfo.json
 test/spec/hoot/npm-debug.log

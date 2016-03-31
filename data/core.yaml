@@ -110,15 +110,17 @@ en:
       annotation: Disconnected lines/areas.
       not_connected: There aren't enough lines/areas here to disconnect.
       connected_to_hidden: This can't be disconnected because it is connected to a hidden feature.
+      relation: This can't be disconnected because it connects members of a relation.
     merge:
       title: Merge
-      description: Merge these lines.
+      description: Merge these features.
       key: C
-      annotation: "Merged {n} lines."
+      annotation: "Merged {n} features."
       not_eligible: These features can't be merged.
-      not_adjacent: These lines can't be merged because they aren't connected.
-      restriction: These lines can't be merged because at least one is a member of a "{relation}" relation.
+      not_adjacent: These features can't be merged because they aren't connected.
+      restriction: These features can't be merged because at least one is a member of a "{relation}" relation.
       incomplete_relation: These features can't be merged because at least one hasn't been fully downloaded.
+      conflicting_tags: These features can't be merged because some of their tags have conflicting values.
     move:
       title: Move
       description: Move this to a different location.
@@ -196,7 +198,7 @@ en:
     select:
       description: Select the validation feature.
   tooltip_keyhint: "Shortcut:"
-  browser_notice: "This editor is supported in Firefox, Chrome, Safari, Opera, and Internet Explorer 9 and above. Please upgrade your browser or use Potlatch 2 to edit the map."
+  browser_notice: "This editor is supported in Firefox, Chrome, Safari, Opera, and Internet Explorer 11 and above. Please upgrade your browser or use Potlatch 2 to edit the map."
   translate:
     translate: Translate
     localized_translation_label: Multilingual name
@@ -205,7 +207,8 @@ en:
   zoom_in_edit: Zoom in to Edit
   logout: logout
   loading_auth: "Connecting to OpenStreetMap..."
-  report_a_bug: report a bug
+  report_a_bug: Report a bug
+  help_translate: Help translate
   feature_info:
     hidden_warning: "{count} hidden features"
     hidden_details: "These features are currently hidden: {details}"
@@ -226,6 +229,8 @@ en:
     modified: Modified
     deleted: Deleted
     created: Created
+    about_changeset_comments: About changeset comments
+    about_changeset_comments_link: //wiki.openstreetmap.org/wiki/Good_changeset_comments
   contributors:
     list: "Edits by {users}"
     truncated_list: "Edits by {users} and {count} others"
@@ -253,11 +258,13 @@ en:
     no_results_worldwide: No results found
   geolocate:
     title: Show My Location
+    locating: "Locating, please wait..."
   inspector:
     no_documentation_combination: There is no documentation available for this tag combination
     no_documentation_key: There is no documentation available for this key
     show_more: Show More
     view_on_osm: View on openstreetmap.org
+    all_fields: All fields
     all_tags: All tags
     all_members: All members
     all_relations: All relations
@@ -288,10 +295,12 @@ en:
     description: Background settings
     percent_brightness: "{opacity}% brightness"
     none: None
+    best_imagery: Best known imagery source for this location
     custom: Custom
     custom_button: Edit custom background
     custom_prompt: "Enter a tile URL template. Valid tokens are {z}, {x}, {y} for Z/X/Y scheme and {u} for quadtile scheme."
     fix_misalignment: Fix alignment
+    imagery_source_faq: Where does this imagery come from?
     reset: reset
     minimap:
       description: Minimap
@@ -328,11 +337,11 @@ en:
     points:
       description: Points
       tooltip: "Points of Interest"
-    major_roads:
-      description: Major Roads
+    traffic_roads:
+      description: Traffic Roads
       tooltip: "Highways, Streets, etc."
-    minor_roads:
-      description: Minor Roads
+    service_roads:
+      description: Service Roads
       tooltip: "Service Roads, Parking Aisles, Tracks, etc."
     paths:
       description: Paths
@@ -417,9 +426,9 @@ en:
     facebook: "Share on Facebook"
     twitter: "Share on Twitter"
     google: "Share on Google+"
-    help_html: |
-      Your changes should appear in the "Standard" layer in a few minutes. Other layers, and certain features, may take longer
-      (<a href='https://help.openstreetmap.org/questions/4705/why-havent-my-changes-appeared-on-the-map' target='_blank'>details</a>).
+    help_html: Your changes should appear in the "Standard" layer in a few minutes. Other layers, and certain features, may take longer.
+    help_link_text: Details
+    help_link_url: "https://wiki.openstreetmap.org/wiki/FAQ#I_have_just_made_some_changes_to_the_map._How_do_I_get_to_see_my_changes.3F"
   confirm:
     okay: "Okay"
     cancel: "Cancel"
@@ -455,9 +464,13 @@ en:
     drag_drop: "Drag and drop a .gpx file on the page, or click the button to the right to browse"
     zoom: "Zoom to GPX track"
     browse: "Browse for a .gpx file"
-  mapillary:
+  mapillary_images:
     tooltip: "Street-level photos from Mapillary"
     title: "Photo Overlay (Mapillary)"
+  mapillary_signs:
+    tooltip: "Traffic signs from Mapillary"
+    title: "Traffic Sign Overlay (Mapillary)"
+  mapillary:
     view_on_mapillary: "View this image on Mapillary"
   highlight-edited:
     tooltip: "Places a gold halo around edited but unsaved features"
@@ -907,46 +920,76 @@ en:
     thumbnail_tooltip: "Click to add image layer, double-click to open image metadata"
     popup_title: "Image Metadata"
   intro:
+    graph:
+      city_hall: Three Rivers City Hall
+      fire_department: Three Rivers Fire Department
+      memory_isle_park: Memory Isle Park
+      riverwalk_trail: Riverwalk Trail
+      w_michigan_ave: West Michigan Avenue
+      e_michigan_ave: East Michigan Avenue
+      spring_st: Spring Street
+      scidmore_park: Scidmore Park
+      petting_zoo: Scidmore Park Petting Zoo
+      n_andrews_st: North Andrews Street
+      s_andrews_st: South Andrews Street
+      n_constantine_st: North Constantine Street
+      s_constantine_st: South Constantine Street
+      rocky_river: Rocky River
+      railroad_dr: Railroad Drive
+      conrail_rr: Conrail Railroad
+      st_joseph_river: Saint Joseph River
+      n_main_st: North Main Street
+      s_main_st: South Main Street
+      water_st: Water Street
+      foster_st: Foster Street
+      portage_river: Portage River
+      flower_st: Flower Street
+      elm_st: Elm Street
+      walnut_st: Walnut Street
+      morris_ave: Morris Avenue
+      east_st: East Street
+      portage_ave: Portage Avenue
     navigation:
       title: "Navigation"
       drag: "The main map area shows OpenStreetMap data on top of a background. You can navigate by dragging and scrolling, just like any web map. **Drag the map!**"
       select: "Map features are represented three ways: using points, lines or areas. All features can be selected by clicking on them. **Click on the point to select it.**"
-      header: "The header shows us the feature type."
-      pane: "When a feature is selected, the feature editor is displayed. The header shows us the feature type and the main pane shows the feature's attributes, such as its name and address. **Close the feature editor with the close button in the top right.**"
+      pane: "When a feature is selected, the feature editor is displayed. The header shows us the feature type and the main pane shows the feature's attributes, such as its name and address. **Close the feature editor by pressing the {button} button in the top right.**"
+      search: "You can also search for features in the current view, or worldwide. **Search for '{name}'**"
+      choose: "**Choose {name} from the list to select it.**"
+      chosen: "Great! {name} is now selected. **Close the feature editor by pressing the {button} button.**"
     points:
       title: "Points"
-      add: "Points can be used to represent features such as shops, restaurants and monuments. They mark a specific location, and describe what's there. **Click the Point button to add a new point.**"
-      place: "Click to place the point on the map. The point we are adding is a Cafe. **Place the point at the corner of This Street and That Street**"
-      place: "The point can be placed by clicking on the map. **Place the point on top of the building.**"
+      add: "Points can be used to represent features such as shops, restaurants, and monuments. They mark a specific location, and describe what's there. **Click the {button} Point button to add a new point.**"
+      place: "The point can be placed by clicking on the map. **Click the map to place the new point on top of the building.**"
       search: "There are many different features that can be represented by points. The point you just added is a Cafe. **Search for '{name}'**"
       choose: "**Choose Cafe from the list.**"
       describe: "The point is now marked as a cafe. Using the feature editor, we can add more information about the feature. **Add a name**"
-      close: "The feature editor can be closed by clicking on the close button. **Close the feature editor**"
-      reselect: "Often points will already exist, but have mistakes or be incomplete. We can edit existing points. **Select the point you just created.**"
-      fixname: "**Change the name and close the feature editor.**"
-      reselect_delete: "All features on the map can be deleted. **Click on the point you created.**"
-      delete: "The menu around the point contains operations that can be performed on it, including delete. **Delete the point.**"
+      close: "The feature editor will remember all of your changes automatically.  When you change a feature, the close button will change to a checkmark. **Click the {button} button to close the feature editor**"
+      reselect: "Often points will already exist, but have mistakes or be incomplete. We can edit existing points. **Click to select the point you just created.**"
+      fixname: "**Change the name, then click the {button} button to close the feature editor.**"
+      reselect_delete: "All features on the map can be deleted. **Click to select the point you created.**"
+      delete: "The menu around the point contains operations that can be performed on it, including delete. **Click on the {button} button to delete the point.**"
     areas:
       title: "Areas"
-      add: "Areas are used to show the boundaries of features like lakes, buildings, and residential areas. They can be also be used for more detailed mapping of many features you might normally map as points. **Click the Area button to add a new area.**"
-      corner: "Areas are drawn by placing nodes that mark the boundary of the area. **Place the starting node on one of the corners of the playground.**"
+      add: "Areas are used to show the boundaries of features like lakes, buildings, and residential areas. They can be also be used for more detailed mapping of many features you might normally map as points. **Click the {button} Area button to add a new area.**"
+      corner: "Areas are drawn by placing nodes that mark the boundary of the area. **Click to place a starting node on one of the corners of the playground.**"
       place: "Draw the area by placing more nodes. Finish the area by clicking on the starting node. **Draw an area for the playground.**"
       search: "**Search for '{name}'.**"
       choose: "**Choose Playground from the list.**"
-      describe: "**Add a name, and close the feature editor**"
+      describe: "**Add a name, then click the {button} button to close the feature editor**"
     lines:
       title: "Lines"
-      add: "Lines are used to represent features such as roads, railroads and rivers. **Click the Line button to add a new line.**"
+      add: "Lines are used to represent features such as roads, railroads, and rivers. **Click the {button} Line button to add a new line.**"
       start: "**Start the line by clicking on the end of the road.**"
-      intersect: "Click to add more nodes to the line. You can drag the map while drawing if necessary. Roads, and many other types of lines, are part of a larger network. It is important for these lines to be connected properly in order for routing applications to work. **Click on Flower Street, to create an intersection connecting the two lines.**"
+      intersect: "Click to add more nodes to the line. You can drag the map while drawing if necessary. Roads, and many other types of lines, are part of a larger network. It is important for these lines to be connected properly in order for routing applications to work. **Click on {name} to create an intersection connecting the two lines.**"
       finish: "Lines can be finished by clicking on the last node again. **Finish drawing the road.**"
       road: "**Select Road from the list**"
       residential: "There are different types of roads, the most common of which is Residential. **Choose the Residential road type**"
-      describe: "**Name the road and close the feature editor.**"
-      restart: "The road needs to intersect Flower Street."
+      describe: "**Name the road, then click the {button} button to close the feature editor.**"
+      restart: "The road needs to intersect {name}."
       "wrong_preset": "You didn't select the Residential road type. **Click here to choose again**"
     startediting:
       title: "Start Editing"
-      help: "More documentation and this walkthrough are available here."
+      help: "You can replay this walkthrough or view more documentation by clicking the {button} Help button."
       save: "Don't forget to regularly save your changes!"
       start: "Start mapping!"

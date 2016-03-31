@@ -141,6 +141,7 @@ iD.behavior.Draw = function(context) {
     }
 
     draw.off = function(selection) {
+        context.ui().sidebar.hover.cancel();
         context.uninstall(hover);
         context.uninstall(edit);
 

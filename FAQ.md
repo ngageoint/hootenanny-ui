@@ -12,7 +12,7 @@ To report an issue with missing or cloudy imagery:
 * _For Mapbox Satellite layer:_ Use [this imagery request tool](https://www.mapbox.com/labs/request) to zoom to the location with the issue and draw a box around it.
 * _For Bing Satellite layer:_ Open the location in [Bing Maps](https://www.bing.com/maps) and click the "Report a problem" link on the sidebar.
 
-iD's list of available background imagery sources come from the [editor-imagery-index](https://github.com/osmlab/editor-imagery-index)
+iD's list of available background imagery sources come from the [editor-layer-index](https://github.com/osmlab/editor-layer-index)
 project.  If you know of a more recent imagery source that is licensed for this use,
 please open a request there with the link and license details.
 
@@ -21,7 +21,7 @@ please open a request there with the link and license details.
 Using canvas rather than SVG would require implementing a scenegraph, hit-testing,
 event dispatch, animation, and other features provided natively by SVG. All that is
 a significant amount of work, would have meant a longer time for the initial release
-of iD, and would likely increase the ongoing costs of maintenence and new features.
+of iD, and would likely increase the ongoing costs of maintenance and new features.
 
 On the other hand, SVG is already fast enough in many or most hardware/browser/OS/editing
 region combinations, and will only get faster as hardware improves and browser vendors

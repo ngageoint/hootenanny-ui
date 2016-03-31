@@ -1,10 +1,31 @@
 iD.ui.preset.combo =
 iD.ui.preset.typeCombo = function(field, context) {
-    var event = d3.dispatch('change'),
+    var dispatch = d3.dispatch('change'),
         optstrings = field.strings && field.strings.options,
         optarray = field.options,
+        snake_case = (field.snake_case || (field.snake_case === undefined)),
         strings = {},
         input;
+
+    function snake(s) {
+        return s.replace(/\s+/g, '_');
+    }
+
+    function unsnake(s) {
+        return s.replace(/_+/g, ' ');
+    }
+
+    function clean(s) {
+        return s.split(';')
+            .map(function(s) { return s.trim(); })
+            .join(';');
+    }
+
+    function optString() {
+        return _.find(_.keys(strings), function(k) {
+                return strings[k] === input.value();
+            });
+    }
 
     function combo(selection) {
         var combobox = d3.combobox();
@@ -33,7 +54,7 @@ iD.ui.preset.typeCombo = function(field, context) {
                     });                    
                 } else if (optarray) {
                     _.each(optarray, function(k) {
-                        strings[k] = k.replace(/_+/g, ' ');
+                        strings[k] = (snake_case ? unsnake(k) : k);
                     });
                     stringsLoaded();
                 } else if (context.taginfo()) {
@@ -45,7 +66,7 @@ iD.ui.preset.typeCombo = function(field, context) {
                             });
 
                             _.each(_.pluck(data, 'value'), function(k) {
-                                strings[k] = k.replace(/_+/g, ' ');
+                                strings[k] = (snake_case ? unsnake(k) : k);
                             });
                             stringsLoaded();
                         }
@@ -73,18 +94,18 @@ iD.ui.preset.typeCombo = function(field, context) {
     }
 
     function change() {
-        var optstring = _.find(_.keys(strings), function(k) { return strings[k] === input.value(); }),
-            value = optstring || (input.value()
-                .split(';')
-                .map(function(s) { return s.trim(); })
-                .join(';')
-                .replace(/\s+/g, '_'));
+        var value = optString() || clean(input.value());
 
-        if (field.type === 'typeCombo' && !value) value = 'yes';
+        if (snake_case) {
+            value = snake(value);
+        }
+        if (field.type === 'typeCombo' && !value) {
+            value = 'yes';
+        }
 
         var t = {};
         t[field.key] = value || undefined;
-        event.change(t);
+        dispatch.change(t);
     }
 
     function sortObject(o,callback) {
@@ -108,8 +129,15 @@ iD.ui.preset.typeCombo = function(field, context) {
 
     combo.tags = function(tags) {
         var key = tags[field.key],
+            optstring = optString(),
             value = strings[key] || key || '';
-        if (field.type === 'typeCombo' && value.toLowerCase() === 'yes') value = '';
+
+        if (field.type === 'typeCombo' && value.toLowerCase() === 'yes') {
+            value = '';
+        }
+        if (!optstring && snake_case) {
+            value = unsnake(value);
+        }
         input.value(value);
     };
 
@@ -117,5 +145,5 @@ iD.ui.preset.typeCombo = function(field, context) {
         input.node().focus();
     };
 
-    return d3.rebind(combo, event, 'on');
+    return d3.rebind(combo, dispatch, 'on');
 };

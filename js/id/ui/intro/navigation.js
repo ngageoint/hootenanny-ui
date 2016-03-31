@@ -1,5 +1,4 @@
 iD.ui.intro.navigation = function(context, reveal) {
-
     var event = d3.dispatch('done'),
         timeouts = [];
 
@@ -11,18 +10,12 @@ iD.ui.intro.navigation = function(context, reveal) {
         timeouts.push(window.setTimeout(f, t));
     }
 
-    /*
-     * Steps:
-     * Drag map
-     * Select poi
-     * Show editor header
-     * Show editor pane
-     * Select road
-     * Show header
-     */
+    function eventCancel() {
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+    }
 
     step.enter = function() {
-
         var rect = context.surfaceRect(),
             map = {
                 left: rect.left + 10,
@@ -64,18 +57,55 @@ iD.ui.intro.navigation = function(context, reveal) {
             context.on('enter.intro', null);
             context.map().on('move.intro', null);
             set(function() {
-                reveal('.entity-editor-pane', t('intro.navigation.pane'));
-                context.on('exit.intro', event.done);
+                reveal('.entity-editor-pane',
+                    t('intro.navigation.pane', { button: iD.ui.intro.icon('#icon-close', 'pre-text') }));
+                context.on('exit.intro', streetSearch);
             }, 700);
         }
 
+        function streetSearch() {
+            context.on('exit.intro', null);
+            reveal('.search-header input',
+                t('intro.navigation.search', { name: t('intro.graph.spring_st') }));
+            d3.select('.search-header input').on('keyup.intro', searchResult);
+        }
+
+        function searchResult() {
+            var first = d3.select('.feature-list-item:nth-child(0n+2)'),  // skip No Results item
+                firstName = first.select('.entity-name'),
+                name = t('intro.graph.spring_st');
+
+            if (!firstName.empty() && firstName.text() === name) {
+                reveal(first.node(), t('intro.navigation.choose', { name: name }));
+                context.on('exit.intro', selectedStreet);
+                d3.select('.search-header input')
+                    .on('keydown.intro', eventCancel, true)
+                    .on('keyup.intro', null);
+            }
+        }
+
+        function selectedStreet() {
+            var springSt = [-85.63585099140167, 41.942506848938926];
+            context.map().center(springSt);
+            context.on('exit.intro', event.done);
+            set(function() {
+                reveal('.entity-editor-pane',
+                    t('intro.navigation.chosen', {
+                        name: t('intro.graph.spring_st'),
+                        button: iD.ui.intro.icon('#icon-close', 'pre-text')
+                    }));
+            }, 400);
+        }
     };
 
     step.exit = function() {
+        timeouts.forEach(window.clearTimeout);
         context.map().on('move.intro', null);
         context.on('enter.intro', null);
         context.on('exit.intro', null);
-        timeouts.forEach(window.clearTimeout);
+        d3.select('.search-header input')
+            .on('keydown.intro', null)
+            .on('keyup.intro', null);
     };
 
     return d3.rebind(step, event, 'on');

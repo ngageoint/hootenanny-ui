@@ -50,15 +50,18 @@ iD.ui = function(context) {
             .attr('id', 'map')
             .call(map);
 
-        content.append('div')
-            .attr('class', 'map-in-map')
-            .style('display', 'none')
+		// Commented out in iD v1.9.2
+        content
+			//.append('div')
+            //.attr('class', 'map-in-map')
+            //.style('display', 'none')
             .call(iD.ui.MapInMap(context));
 
+		// Commented out in iD v1.9.2
         content.append('div')
-        	.attr('class','infobox fillD2')
-        	.style('display','none')
-        	.call(iD.ui.Info(context));
+            //.attr('class', 'infobox fillD2')
+            //.style('display', 'none')
+            .call(iD.ui.Info(context));
 
         bar.append('div')
             .attr('class', 'spacer col4');

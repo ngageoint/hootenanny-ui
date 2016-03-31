@@ -70,7 +70,7 @@
         "type": "combo",
         "label": "Access",
         "options": [
-            "public",
+            "yes",
             "permissive",
             "private",
             "customers"
@@ -243,7 +243,7 @@
     },
     "building": {
         "key": "building",
-        "type": "typeCombo",
+        "type": "combo",
         "label": "Building"
     },
     "building_area": {
@@ -406,7 +406,28 @@
     "description": {
         "key": "description",
         "type": "textarea",
-        "label": "Description"
+        "label": "Description",
+        "universal": true
+    },
+    "diaper": {
+        "key": "diaper",
+        "type": "combo",
+        "label": "Diaper Changing Available",
+        "options": [
+            "yes",
+            "no",
+            "room",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+        ]
+    },
+    "dock": {
+        "key": "dock",
+        "type": "combo",
+        "label": "Type"
     },
     "drive_through": {
         "key": "drive_through",
@@ -476,7 +497,8 @@
     "fixme": {
         "key": "fixme",
         "type": "textarea",
-        "label": "Fix Me"
+        "label": "Fix Me",
+        "universal": true
     },
     "fuel": {
         "key": "fuel",
@@ -576,6 +598,11 @@
         "type": "number",
         "label": "Handicap",
         "placeholder": "1-18"
+    },
+    "handrail": {
+        "key": "handrail",
+        "type": "check",
+        "label": "Handrail"
     },
     "highway": {
         "key": "highway",
@@ -753,6 +780,25 @@
         "type": "maxspeed",
         "label": "Speed Limit",
         "placeholder": "40, 50, 60..."
+    },
+    "maxstay": {
+        "key": "maxstay",
+        "type": "combo",
+        "label": "Max Stay",
+        "options": [
+            "15 min",
+            "30 min",
+            "45 min",
+            "1 hr",
+            "1.5 hr",
+            "2 hr",
+            "2.5 hr",
+            "3 hr",
+            "4 hr",
+            "1 day",
+            "2 day"
+        ],
+        "snake_case": false
     },
     "mtb/scale": {
         "key": "mtb:scale",
@@ -1142,6 +1188,11 @@
     "shop": {
         "key": "shop",
         "type": "typeCombo",
+        "label": "Type"
+    },
+    "site": {
+        "key": "site",
+        "type": "combo",
         "label": "Type"
     },
     "sloped_curb": {

@@ -16,6 +16,12 @@
     <script src="../node_modules/happen/src/happen.js"></script>
     <script src="lib/bind-shim.js"></script>
 
+    <script>
+    if (typeof initMochaPhantomJS === 'function') {
+        initMochaPhantomJS()
+    }
+    </script>
+
     <!-- include source files here... -->
     <script src='../js/lib/lodash.js'></script>
     <script src='../js/lib/d3.min.js'></script>
@@ -39,6 +45,9 @@
     <script src='../js/id/id.js'></script>
     <script src='../js/id/util.js'></script>
 
+    <script src='../js/id/services.js'></script>
+    <script src='../js/id/services/mapillary.js'></script>
+    <script src='../js/id/services/nominatim.js'></script>
     <script src='../js/id/services/countrycode.js'></script>
     <script src='../js/id/services/taginfo.js'></script>
     <script src='../js/id/services/wikipedia.js'></script>
@@ -62,11 +71,18 @@
 
     <script src="../js/id/svg.js"></script>
     <script src="../js/id/svg/areas.js"></script>
+    <script src="../js/id/svg/defs.js"></script>
+    <script src='../js/id/svg/gpx.js'></script>
+    <script src="../js/id/svg/icon.js"></script>
     <script src="../js/id/svg/labels.js"></script>
     <script src="../js/id/svg/lines.js"></script>
+    <script src='../js/id/svg/mapillary_images.js'></script>
+    <script src='../js/id/svg/mapillary_signs.js'></script>
     <script src="../js/id/svg/midpoints.js"></script>
+    <script src="../js/id/svg/osm.js"></script>
     <script src="../js/id/svg/points.js"></script>
     <script src="../js/id/svg/surface.js"></script>
+    <script src="../js/id/svg/layers.js"></script>
     <script src="../js/id/svg/tag_classes.js"></script>
     <script src="../js/id/svg/turns.js"></script>
     <script src="../js/id/svg/vertices.js"></script>
@@ -131,6 +147,7 @@
     <script src='../js/id/actions/circularize.js'></script>
     <script src='../js/id/actions/connect.js'></script>
     <script src='../js/id/actions/copy_entity.js'></script>
+    <script src='../js/id/actions/copy_entities.js'></script>
     <script src='../js/id/actions/delete_member.js'></script>
     <script src='../js/id/actions/delete_multiple.js'></script>
     <script src='../js/id/actions/delete_node.js'></script>
@@ -156,6 +173,7 @@
 
     <script src='../js/id/behavior.js'></script>
     <script src='../js/id/behavior/add_way.js'></script>
+    <script src='../js/id/behavior/breathe.js'></script>
     <script src='../js/id/behavior/copy.js'></script>
     <script src='../js/id/behavior/drag.js'></script>
     <script src='../js/id/behavior/draw.js'></script>
@@ -203,6 +221,7 @@
     <script src='../js/id/core/way.js'></script>
     <script src='../js/id/core/tree.js'></script>
     <script src='../js/id/core/oneway_tags.js'></script>
+    <script src='../js/id/core/tags.js'></script>
 
     <script src='../js/id/presets.js'></script>
     <script src='../js/id/presets/preset.js'></script>
@@ -316,6 +335,7 @@
     <script src='spec/actions/straighten.js'></script>
     <script src='spec/actions/connect.js'></script>
     <script src="spec/actions/copy_entity.js"></script>
+    <script src="spec/actions/copy_entities.js"></script>
     <script src='spec/actions/delete_member.js'></script>
     <script src="spec/actions/delete_multiple.js"></script>
     <script src="spec/actions/delete_node.js"></script>
@@ -336,6 +356,7 @@
     <script src="spec/actions/split.js"></script>
     <script src="spec/actions/unrestrict_turn.js"></script>
 
+    <script src="spec/geo.js"></script>
     <script src="spec/geo/extent.js"></script>
     <script src="spec/geo/intersection.js"></script>
     <script src="spec/geo/multipolygon.js"></script>
@@ -357,6 +378,7 @@
 
     <script src="spec/svg.js"></script>
     <script src="spec/svg/areas.js"></script>
+    <script src="spec/svg/icon.js"></script>
     <script src="spec/svg/lines.js"></script>
     <script src="spec/svg/midpoints.js"></script>
     <script src="spec/svg/points.js"></script>
@@ -374,6 +396,9 @@
     <script src="spec/ui/preset/localized.js"></script>
     <script src="spec/ui/preset/wikipedia.js"></script>
 
+    <script src="spec/services/mapillary.js"></script>
+    <script src="spec/services/nominatim.js"></script>
+    <script src="spec/services/taginfo.js"></script>
     <script src="spec/countrycode.js"></script>
     <script src="spec/geo.js"></script>
     <script src="spec/taginfo.js"></script>

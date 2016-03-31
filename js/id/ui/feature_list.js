@@ -30,8 +30,8 @@ iD.ui.FeatureList = function(context) {
             .on('keypress', keypress)
             .on('input', inputevent);
 
-        searchWrap.append('span')
-            .attr('class', 'icon search');
+        searchWrap
+            .call(iD.svg.Icon('#icon-search', 'pre-text'));
 
         var listWrap = selection.append('div')
             .attr('class', 'inspector-body');
@@ -39,8 +39,15 @@ iD.ui.FeatureList = function(context) {
         var list = listWrap.append('div')
             .attr('class', 'feature-list cf');
 
+        context
+            .on('exit.feature-list', clearSearch);
         context.map()
             .on('drawn.feature-list', mapDrawn);
+
+        function clearSearch() {
+            search.property('value', '');
+            drawList();
+        }
 
         function mapDrawn(e) {
             if (e.full) {
@@ -138,10 +145,8 @@ iD.ui.FeatureList = function(context) {
                 .data([0])
                 .enter().append('button')
                 .property('disabled', true)
-                .attr('class', 'no-results-item');
-
-            resultsIndicator.append('span')
-                .attr('class', 'icon alert');
+                .attr('class', 'no-results-item')
+                .call(iD.svg.Icon('#icon-alert', 'pre-text'));
 
             resultsIndicator.append('span')
                 .attr('class', 'entity-name');
@@ -173,17 +178,21 @@ iD.ui.FeatureList = function(context) {
             var items = list.selectAll('.feature-list-item')
                 .data(results, function(d) { return d.id; });
 
-            var enter = items.enter().insert('button', '.geocode-item')
+            var enter = items.enter()
+                .insert('button', '.geocode-item')
                 .attr('class', 'feature-list-item')
                 .on('mouseover', mouseover)
                 .on('mouseout', mouseout)
                 .on('click', click);
 
-            var label = enter.append('div')
+            var label = enter
+                .append('div')
                 .attr('class', 'label');
 
-            label.append('span')
-                .attr('class', function(d) { return d.geometry + ' icon icon-pre-text'; });
+            label.each(function(d) {
+                d3.select(this)
+                    .call(iD.svg.Icon('#icon-' + d.geometry, 'pre-text'));
+            });
 
             label.append('span')
                 .attr('class', 'entity-type')
@@ -221,7 +230,14 @@ iD.ui.FeatureList = function(context) {
                 context.map().centerZoom([d.location[1], d.location[0]], 20);
             }
             else if (d.entity) {
-                context.enter(iD.modes.Select(context, [d.entity.id]));
+                if (d.entity.type === 'node') {
+                    context.map().center(d.entity.loc);
+                } else if (d.entity.type === 'way') {
+                    var center = context.projection(context.map().center()),
+                        edge = iD.geo.chooseEdge(context.childNodes(d.entity), center, context.projection);
+                    context.map().center(edge.loc);
+                }
+                context.enter(iD.modes.Select(context, [d.entity.id]).suppressMenu(true));
             } else {
                 context.zoomToEntity(d.id);
             }
@@ -229,7 +245,7 @@ iD.ui.FeatureList = function(context) {
 
         function geocode() {
             var searchVal = encodeURIComponent(search.property('value'));
-            d3.json('http://nominatim.openstreetmap.org/search/' + searchVal + '?limit=10&format=json', function(err, resp) {
+            d3.json('https://nominatim.openstreetmap.org/search/' + searchVal + '?limit=10&format=json', function(err, resp) {
                 geocodeResults = resp || [];
                 drawList();
             });

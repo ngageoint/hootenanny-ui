@@ -1,15 +1,15 @@
 {
-    "icon": "building",
+    "icon": "warehouse",
     "fields": [
         "address",
         "levels"
     ],
     "geometry": [
-        "point",
         "area"
     ],
     "tags": {
         "building": "warehouse"
     },
+    "matchScore": 0.5,
     "name": "Warehouse"
 }

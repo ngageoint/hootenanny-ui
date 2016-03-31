@@ -131,12 +131,8 @@
         },
         "merge": {
             "title": "Združeno.",
-            "description": "Združi te črte.",
             "key": "C",
-            "annotation": "Združeno {n} črt.",
             "not_eligible": "Teh objektov ni mogoče združiti.",
-            "not_adjacent": "Teh črt ni mogoče združiti, ker se ne povezujejo.",
-            "restriction": "Teh črt ni mogoče združiti, ker je vsaj ena vključena v povezavo \\{relation}\\.",
             "incomplete_relation": "Teh objektov ni mogoče združiti, ker vsaj en ni bil v celoti naložen."
         },
         "move": {
@@ -207,7 +203,6 @@
         "nothing": "Nič za ponovitev."
     },
     "tooltip_keyhint": "Bližnjica:",
-    "browser_notice": "Urejevalnik podpirajo Firefox, Chrome, Safari, Opera, in Internet Explorer 9 oz. novejši. Prosimo, da za urejanje zemljevida nadgradite brskalnik ali uporabite Potlatch 2.",
     "translate": {
         "translate": "Prevedi",
         "localized_translation_label": "Večjezično ime",
@@ -217,7 +212,6 @@
     "zoom_in_edit": "Za urejanje približaj pogled",
     "logout": "odjava",
     "loading_auth": "Povezovanje z OpenStreetMap...",
-    "report_a_bug": "prijavi napako",
     "status": {
         "error": "Ne morem se povezati na API.",
         "offline": "API je offline. Prosimo, poskusite urejati kasneje.",
@@ -304,8 +298,7 @@
         "view_on_osm": "Ogled na OSM",
         "facebook": "Deli na Facebook-u",
         "twitter": "Deli na Twitter-ju",
-        "google": "Deli na Google+",
-        "help_html": "Your changes should appear in the \\Standard\\ layer in a few minutes. Other layers, and certain features, may take longer\n(<a href='https://help.openstreetmap.org/questions/4705/why-havent-my-changes-appeared-on-the-map' target='_blank'>details</a>).\n"
+        "google": "Deli na Google+"
     },
     "confirm": {
         "okay": "Potrdi"
@@ -360,83 +353,35 @@
         "navigation": {
             "title": "Usmerjanje",
             "drag": "Na glavnem zemljevidu so podatki OpenStreetMap prikazani na vrhu - nad ozadjem. Zemljevid lahko premikaš z vlečenjem ali pomikanjem - kot na ostalih spletnih zemljevidih. **Povleci zemljevid!**",
-            "select": "Topografski objekti so predstavljeni na tri načine: s točkami, s črtami ali z mnogokotniki. Vsak objekt je lahko izbran s klikom nanj. **Za izbiro točke kliknite nanjo.**",
-            "header": "Glava prikazuje vrsto topografskega objekta.",
-            "pane": "Ko je objekt izbran, se prikaže urejevalnik objektov. V glavi je prikazana vrsta objekta, v nadzorniku na levi pa njegove oznake, npr. ime in naslov. **Zapri urejevalnik objektov s klikom na gumb za zapiranje desno zgoraj.**"
+            "select": "Topografski objekti so predstavljeni na tri načine: s točkami, s črtami ali z mnogokotniki. Vsak objekt je lahko izbran s klikom nanj. **Za izbiro točke kliknite nanjo.**"
         },
         "points": {
             "title": "Točke",
-            "add": "Točke uporabljamo za predstavitev trgovin, restavracij, spomenikov. Označujejo točen položaj in opisujejo, kaj je tam. **Za dodajanje nove točke kliknite gumb Točka.**",
-            "place": "Točke lahko dodate s klikom na zemljevid. **Točko postavite na vrh stavbe.**",
             "search": "S točkami lahko predstavimo več različnih objekot. Točka, ki je bila ravnokar dodana, je bar. **Išči  '{name}'**",
             "choose": "**Na seznamu izberite Bar.**",
-            "describe": "Točka je sedaj označena kot bar. Z uporabo urejevalnika objektov lahko vsakemu dodamo več oznak. **Dodaj ime**",
-            "close": "Urejevalnik objektov zaprete s klikom na gumb za zapiranje. **Zapri urejevalnik objektov**",
-            "reselect": "Pogosto točke že obstajajo, toda imajo napačne ali pomanjkljive oznake. Urejamo lahko tudi obstoječe točke. **Izberite točko, ki ste jo ravnokar ustvarili.**",
-            "fixname": "**Spremenite ime točke in zaprite urejevalnik objektov.**",
-            "reselect_delete": "Vsi objekti na zemljevidu so lahko izbrisani.**Kliknite na točko, ki ste jo ustvarili.**",
-            "delete": "Meni okoli točke vsebuje dejanja, ki jih lahko izvedete - vključno z brisanjem. **Izbrišite točko.**"
+            "describe": "Točka je sedaj označena kot bar. Z uporabo urejevalnika objektov lahko vsakemu dodamo več oznak. **Dodaj ime**"
         },
         "areas": {
             "title": "Mnogokotniki",
-            "corner": "Mnogokotnike narišemo tako, da vozlišča postavimo na rob območja. **Postavite začetno vozlišče v enega od kotov igrišča.**",
             "place": "Mnogokotnike narišete s postavljanjem več vozlišč, zaključite jih s klikom na začetno vozlišče. **Narišite mnogokotnik za igrišče.**",
             "search": "**Išči '{name}'.**",
-            "choose": "**Na seznamu izberite Igrišče.**",
-            "describe": "**Vpiši ime in zapri urejevalnika objektov**"
+            "choose": "**Na seznamu izberite Igrišče.**"
         },
         "lines": {
             "title": "Črte",
-            "add": "Črte uporabljamo za predstavitev prvin, kot so ceste, železnice, vodotoki. **Kliknite na gumb Črta za risanje nove črte.**",
             "start": "**Črto začni risati s klikom na enega od koncev ceste.**",
-            "intersect": "S kliki črti dodaj več vozlišč. Če je potrebno, lahko zemljevid premikaš tudi med risanjem. Ceste in mnogi drugi črtni objekti so del večjih mrež objektov. Da bodo usmerjevalne aplikacije (routing applications) delovale pravilno, morajo biti črte pravilno povezane z ostalimi v mreži. **Kliknite na Flower Street za dodajanje presečišča, ki povezuje dve črti.**",
             "finish": "Risanje črte lahko zaključiš s ponovnim klikom na zadnje dodano vozlišče. **Zaključi risanje ceste.**",
             "road": "**Na seznamu izberite Cesta**",
             "residential": "Obstaja več tipov cest, najbolj pogosto uporabljen tip je Stanovanjska (ulica). **Izberite tip ceste Stanovanjska**",
-            "describe": "**Poimenuj cesto in zapri urejevalnik objektov.**",
-            "restart": "Cesta se mora križati s Flower Street.",
             "wrong_preset": "Niste izbrali tipa ceste Stanovanjska (ulica). **Kliknite tu za ponovitev izbiranja.**"
         },
         "startediting": {
             "title": "Začnite urejati",
-            "help": "Obsežnejša dokumentacija in ta uvodni sprehod sta na voljo tu.",
             "save": "Ne pozabite sproti shranjevati vnesene spremembe!",
             "start": "Začnite urejati!"
         }
     },
     "presets": {
-        "categories": {
-            "category-building": {
-                "name": "Zgradba"
-            },
-            "category-golf": {
-                "name": "Golf"
-            },
-            "category-landuse": {
-                "name": "Raba tal"
-            },
-            "category-path": {
-                "name": "Pot"
-            },
-            "category-rail": {
-                "name": "Železnica"
-            },
-            "category-restriction": {
-                "name": "Prepoved"
-            },
-            "category-road": {
-                "name": "Cesta"
-            },
-            "category-route": {
-                "name": "Proga"
-            },
-            "category-water-area": {
-                "name": "Voda"
-            },
-            "category-water-line": {
-                "name": "Vodotok"
-            }
-        },
         "fields": {
             "access": {
                 "options": {
@@ -1310,10 +1255,6 @@
                 "name": "Zobozdravnik",
                 "terms": "stomatolog,ortodont"
             },
-            "amenity/doctor": {
-                "name": "Zdravnik",
-                "terms": "doktor,ambulanta"
-            },
             "amenity/dojo": {
                 "name": "Dojo in šola borilnih veščin",
                 "terms": "borilne veščine,dojo,dojang"
@@ -1470,10 +1411,6 @@
                 "name": "Mestna hiša",
                 "terms": "magistrat,rotovž"
             },
-            "amenity/vending_machine": {
-                "name": "Prodajni avtomat",
-                "terms": "avtomat,kavomat,mlekomat"
-            },
             "amenity/veterinary": {
                 "name": "Veterinar",
                 "terms": "veterinarska klinika,klinika za pse,klinika za mačke"
@@ -1578,18 +1515,6 @@
                 "name": "Koča",
                 "terms": "kabina,brunarica"
             },
-            "building/cathedral": {
-                "name": "Katedrala",
-                "terms": "stolnica"
-            },
-            "building/chapel": {
-                "name": "Kapela",
-                "terms": "kapelica,znamenje"
-            },
-            "building/church": {
-                "name": "Cerkev",
-                "terms": "cerkvena stavba,božja hiša"
-            },
             "building/commercial": {
                 "name": "Poslovna stavba",
                 "terms": "pisarne"
@@ -1597,10 +1522,6 @@
             "building/construction": {
                 "name": "Stavba v izgradnji",
                 "terms": "stavba v gradnji"
-            },
-            "building/detached": {
-                "name": "Enodružinska hiša",
-                "terms": "samostojna hiša"
             },
             "building/dormitory": {
                 "name": "Študentski/dijaški dom",
@@ -2049,10 +1970,6 @@
                 "name": "Priključek na lokalno cesto",
                 "terms": "priključek na lokalno cesto,priključek na terciarno cesto"
             },
-            "highway/track": {
-                "name": "Kolovoz",
-                "terms": "kolesnice,brazda"
-            },
             "highway/traffic_signals": {
                 "name": "Semafor",
                 "terms": "signalna naprava"
@@ -2068,10 +1985,6 @@
             "highway/turning_circle": {
                 "name": "Obračališče",
                 "terms": "obračalni krog"
-            },
-            "highway/unclassified": {
-                "name": "Ostali tipi cest",
-                "terms": "drugi tipi cest"
             },
             "historic": {
                 "name": "Zgodovinska znamenitost",
@@ -2108,10 +2021,6 @@
             "historic/wayside_shrine": {
                 "name": "Kapelica",
                 "terms": "kapelica"
-            },
-            "landuse/allotments": {
-                "name": "Vrtički",
-                "terms": "vrtci,vrtovi"
             },
             "landuse/basin": {
                 "name": "Čistilni bazen",
@@ -2243,10 +2152,6 @@
             "leisure/slipway": {
                 "name": "Rampa",
                 "terms": "rampa za vodna plovila"
-            },
-            "leisure/sports_center": {
-                "name": "Športni center",
-                "terms": "športna dvorana,telovadnica,stadion"
             },
             "leisure/stadium": {
                 "name": "Stadion",

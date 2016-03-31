@@ -128,12 +128,8 @@
         },
         "merge": {
             "title": "Sameina",
-            "description": "Sameina þessar línur.",
             "key": "C",
-            "annotation": "Sameinaði {n} línur.",
-            "not_eligible": "Það er ekki hægt að samfella þessa hluti.",
-            "not_adjacent": "Ekki er hægt að samfella þessar línur því að þær tengjast ekki hvor annari.",
-            "restriction": "Ekki er hægt að sameina þessar línur því að önnur þeirra er hluti af \"{relation}\" venslunum."
+            "not_eligible": "Það er ekki hægt að samfella þessa hluti."
         },
         "move": {
             "title": "Færa",
@@ -195,7 +191,6 @@
         "nothing": "Ekkert til að endurtaka."
     },
     "tooltip_keyhint": "Flýtival:",
-    "browser_notice": "Þessi ritill er studdur af Firefox, Chrome, Safari, Opera og Internet Explorer 9 og betri. Vinsamlegast uppfærðu vafrann þinn eða notaðu Potlatch 2 til að breyta kortinu.",
     "translate": {
         "translate": "Þýða",
         "localized_translation_label": "Margtyngt nafn",
@@ -205,7 +200,6 @@
     "zoom_in_edit": "Þysja inn til að breyta",
     "logout": "útskrá",
     "loading_auth": "Tengist við OpenStreetMap...",
-    "report_a_bug": "tilkynna villu",
     "status": {
         "error": "Get ekki tengst við API.",
         "offline": "API er ekki tiltækur. Vinsamlegast reyndu að breyta aftur síðar.",
@@ -279,13 +273,6 @@
     "feature": {
         "points": {
             "tooltip": "Áhugaverðir staðir"
-        },
-        "major_roads": {
-            "description": "Aðalvegir",
-            "tooltip": "Þjóðvegir, götur, osfrv."
-        },
-        "minor_roads": {
-            "description": "Minni vegir"
         },
         "buildings": {
             "description": "Byggingar",
@@ -372,7 +359,6 @@
         "browse": "Finna .gpx skrá"
     },
     "mapillary": {
-        "title": "Ljósmyndaþekja (Mapillary)",
         "view_on_mapillary": "Skoða þessa mynd á Mapillary"
     },
     "help": {
@@ -385,82 +371,34 @@
         "navigation": {
             "title": "Leiðarvísun",
             "drag": "Kortið sýnir OpenStreetMap gögn ofan á bakgrunni. Þú getur flakkað um með því að draga\nog skruna, rétt eins og á öðrum vefkortum. **Dragðu kortið!**",
-            "select": "Hlutir á kortinu samanstanda af einhverju af þessu þrennu: punktar, línur eða svæði. Hægt er að velja hvaða hlut á kortinu með því að smella á hann. ** Smelltu á punktinn til að velja hann.**",
-            "header": "Titillinn sýnir tegund hlutarins.",
-            "pane": "Þegar hlutur er valinn birtist hliðarvalmynd. Efst má sjá tegund hlutar og þar fyrir neðan er hægt að sjá stillingar hans, til dæmis nafn og heimilisfang. **Lokaðu þessari valmynd með x-inu efst til hægri.**"
+            "select": "Hlutir á kortinu samanstanda af einhverju af þessu þrennu: punktar, línur eða svæði. Hægt er að velja hvaða hlut á kortinu með því að smella á hann. ** Smelltu á punktinn til að velja hann.**"
         },
         "points": {
             "title": "Punktar",
-            "add": "Punktar geta táknað hluti eins og verslanir, veitingahús og minnismerki. Þeir merkja ákveðinn stað og lýsa því hvað er þar. **Smelltu á 'Punktur' takkann til að bæta við nýjum punkti.**",
-            "place": "Hægt er að bæta punkti við með því að smella á kortið. **Settu punktinn ofan á bygginguna.**",
             "search": "Það eru margvíslegir hlutir sem punktar geta staðið fyrir. Punkturinn sem þú varst að bæta við er kaffihús. **Leitaðu að '{name}'**",
             "choose": "**Veldu kaffihús af listanum.**",
-            "describe": "Punkturinn er nú merktur sem kaffihús. Notaðu valmyndina, þá er hægt að bæta við fleiri upplýsingum. **Bættu nafni við**",
-            "close": "Hægt er að loka valmyndinni með því að ýta á x-ið efst til hægri. **Lokaðu valmyndinni**",
-            "reselect": "Punktar geta þegar verið til, en verið settir af misgáningi eða innihaldið rangar upplýsingar. Það er hægt að breyta punktum sem eru þegar til. **Veldu punktinn sem þú varst að búa til.**",
-            "fixname": "**Breyttu nafninu og lokaðu valmyndinni svo.**",
-            "reselect_delete": "Hægt er að eyða öllum hlutum á kortinu. **Smelltu á punktinn sem þú bjóst til.**",
-            "delete": "Valmyndin í kringum punktinn geymir þær aðgerðir sem hægt er að gera á honum, þar á meðal að eyða. **Eyddu punktinum.**"
+            "describe": "Punkturinn er nú merktur sem kaffihús. Notaðu valmyndina, þá er hægt að bæta við fleiri upplýsingum. **Bættu nafni við**"
         },
         "areas": {
             "title": "Svæði",
-            "corner": "Svæði eru dregin með því að setja niður hnúta sem tákna ytri mörk svæðisins. **Settu byrjunarhnútinn í eitt horn leiksvæðisins.**",
             "place": "Teiknaðu svæðið með því að setja fleiri hnúta á kortið. Kláraðu svæðið með því að smella í lokin á upphafshnútinn. **Teiknaðu svæði fyrir leikvöllinn.**",
             "search": "**Leita að '{name}'.**",
-            "choose": "**Veldu leikvöll af listanum.**",
-            "describe": "**Bættu nafni við og lokaðu valmyndinni**"
+            "choose": "**Veldu leikvöll af listanum.**"
         },
         "lines": {
             "title": "Línur",
-            "add": "Línur eru notaðar fyrir til dæmis vegi, lestarteina og ár. **Ýtið á línutakkann til að bæta við nýrri línu.**",
             "start": "**Byrjaðu línuna með því að smella á enda vegarins.**",
-            "intersect": "Smelltu til að bæta fleiri hnútum við línuna. Þú getur dregið kortið til á meðan ef þarf. Vegir, og margar aðrar línur, eru hluti af stærra neti. Það er mikilvægt að þessar línur tengist rétt saman svo að leiðarvísiforrit virki rétt. **Smelltu á Flower Street til að búa til vegamót með því að tengja línurnar saman.**",
             "finish": "Hægt er að klára línur með því að smella aftur á síðasta hnútinn. **Kláraðu að teikna veginn.**",
             "road": "**Veldu veg af listanum**",
-            "residential": "Það eru til ýmsar tegundir vega, sú algengasta er húsagata. **Veldu tegundina 'Húsagata'**",
-            "describe": "**Gefðu veginum nafn og lokaðu valmyndinni.**",
-            "restart": "Vegurinn þarf að eiga vegamót við Flower Street."
+            "residential": "Það eru til ýmsar tegundir vega, sú algengasta er húsagata. **Veldu tegundina 'Húsagata'**"
         },
         "startediting": {
             "title": "Byrja að breyta",
-            "help": "Nánari skjölun og þessi leiðarvísir eru tiltæk hér.",
             "save": "Ekki gleyma að vista reglulega breytingar sem þú gerir.",
             "start": "Kortameistaratíð þín er hafin!"
         }
     },
     "presets": {
-        "categories": {
-            "category-building": {
-                "name": "Bygging"
-            },
-            "category-golf": {
-                "name": "Golf"
-            },
-            "category-landuse": {
-                "name": "Landnotkun"
-            },
-            "category-path": {
-                "name": "Stígur"
-            },
-            "category-rail": {
-                "name": "Lestarteinar"
-            },
-            "category-restriction": {
-                "name": "Takmörkun"
-            },
-            "category-road": {
-                "name": "Vegur"
-            },
-            "category-route": {
-                "name": "Leið"
-            },
-            "category-water-area": {
-                "name": "Vatn"
-            },
-            "category-water-line": {
-                "name": "Vatn"
-            }
-        },
         "fields": {
             "access": {
                 "options": {
@@ -909,9 +847,6 @@
             "amenity/bicycle_rental": {
                 "name": "Hjólaleiga"
             },
-            "amenity/bicycle_repair_station": {
-                "name": "Hjólaviðgerðastöð"
-            },
             "amenity/cafe": {
                 "name": "Kaffihús",
                 "terms": "tehús"
@@ -1113,23 +1048,11 @@
                 "name": "Sumarhús",
                 "terms": "Sumarbústaður, kofi"
             },
-            "building/cathedral": {
-                "name": "Dómkirkja"
-            },
-            "building/chapel": {
-                "name": "Kapella"
-            },
-            "building/church": {
-                "name": "Kirkja"
-            },
             "building/commercial": {
                 "name": "Atvinnuhúsnæði"
             },
             "building/construction": {
                 "name": "Á byggingarstigi"
-            },
-            "building/detached": {
-                "name": "Raðhús"
             },
             "building/dormitory": {
                 "name": "Heimavist"
@@ -1337,9 +1260,6 @@
             "highway/tertiary_link": {
                 "name": "Safnbrautarrein"
             },
-            "highway/track": {
-                "name": "Slóð"
-            },
             "highway/traffic_signals": {
                 "name": "Umferðarskilti"
             },
@@ -1351,9 +1271,6 @@
             },
             "highway/turning_circle": {
                 "name": "Beygjuhringur"
-            },
-            "highway/unclassified": {
-                "name": "Óflokkuð gata"
             },
             "historic": {
                 "name": "Sögulegur staður"
@@ -1381,9 +1298,6 @@
             },
             "historic/wayside_shrine": {
                 "name": "Tilbeiðsluskríni"
-            },
-            "landuse/allotments": {
-                "name": "Ræktunargarðar"
             },
             "landuse/basin": {
                 "name": "Lægð"
@@ -1471,9 +1385,6 @@
             },
             "leisure/slipway": {
                 "name": "Dráttarbraut"
-            },
-            "leisure/sports_center": {
-                "name": "Íþróttamiðstöð / heilsurækt"
             },
             "leisure/stadium": {
                 "name": "Leikvangur"
