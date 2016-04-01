@@ -16,14 +16,14 @@ _.extend(iD.Way.prototype, {
         if (copies[this.id])
             return copies[this.id];
 
-        var copy = iD.Entity.prototype.copy.call(this, resolver, copies);
+        var copy = iD.Entity.prototype.copy.call(this, deep, resolver, copies);
 
         if (!deep || !resolver) {
             return copy;
         }
 
         var nodes = this.nodes.map(function(id) {
-            return resolver.entity(id).copy(resolver, copies).id;
+            return resolver.entity(id).copy(deep, resolver, copies).id;
         });
 
         copy = copy.update({nodes: nodes});

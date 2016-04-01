@@ -1,5 +1,5 @@
 iD.ui.Info = function(context) {
-    var key = iD.ui.cmd('⌘I'),
+    var key = iD.ui.cmd('I'),  // v1.9.2 changed to ⌘I
         imperial = (iD.detect().locale.toLowerCase() === 'en-us'),
         hidden = true;
 
