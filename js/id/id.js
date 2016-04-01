@@ -6,7 +6,7 @@ window.iD = function () {
         context = {},
         storage;
 
-	//eslint introduced in iD v1.7.5
+    //eslint introduced in iD v1.7.5
 
     context.imperial = context.imperial ? context.imperial : false;
     context.enableSnap = true;
@@ -183,28 +183,29 @@ window.iD = function () {
     };
 
     context.flush = function(resetHistory) {
+        context.debouncedSave.cancel();
         connection.flush();
         features.reset();
         if(resetHistory !== undefined && resetHistory !== null && resetHistory === false){
             // keep history
         } else {
-		    history.reset();
-			//_.each(... added in iD v1.9.2
-		    _.each(iD.services, function(service) {
-		        var reset = service().reset;
-		        if (reset) reset(context);
-		    });
-		}
+            history.reset();
+            //_.each(... added in iD v1.9.2
+            _.each(iD.services, function(service) {
+                var reset = service().reset;
+                if (reset) reset(context);
+            });
+        }
         return context;
     };
 
     // Debounce save, since it's a synchronous localStorage write,
     // and history changes can happen frequently (e.g. when dragging).
-    var debouncedSave = _.debounce(context.save, 350);
+    context.debouncedSave = _.debounce(context.save, 350);
     function withDebouncedSave(fn) {
         return function() {
             var result = fn.apply(history, arguments);
-            debouncedSave();
+            context.debouncedSave();
             return result;
         };
     }

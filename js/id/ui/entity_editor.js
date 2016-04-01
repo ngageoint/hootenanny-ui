@@ -170,7 +170,7 @@ iD.ui.EntityEditor = function(context) {
             var entity = context.hasEntity(id);
             if (!entity) return;
             entityEditor.preset(context.presets().match(entity, context.graph()));
-            entityEditor.modified(base !== graph);
+            entityEditor.modified(base !== context.graph());
             entityEditor(selection);
         }
 

@@ -104,6 +104,7 @@ iD.ui.TagReference = function(tag, context) {
 
         var enter = button.enter().append('button')
             .attr('tabindex', -1)
+            .classed('tag-reference-button',true)
             .call(iD.svg.Icon('#icon-inspect'));
 
         button.on('click', function () {

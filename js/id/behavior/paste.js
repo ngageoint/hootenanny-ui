@@ -35,7 +35,7 @@ iD.behavior.Paste = function(context) {
 
         if (!oldIDs.length) return;
 
-        var action = iD.actions.CopyEntities(oldIDs, oldGraph);
+        var action = iD.actions.CopyEntities(oldIDs, oldGraph, true);
         context.perform(action);
 
         var copies = action.copies();

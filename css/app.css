@@ -2667,11 +2667,11 @@ div.full-screen > button:hover {
 ------------------------------------------------------- */
 
 .modal-actions .restore:before {
-    background-position: -600px -220px;
+    background-position: -500px -460px;
 }
 
 .modal-actions .reset:before {
-    background-position: -700px -220px;
+    background-position: -600px -460px;
 }
 
 /* Success Modal

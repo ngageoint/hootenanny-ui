@@ -12,11 +12,15 @@ _.extend(iD.Way.prototype, {
     type: 'way',
     nodes: [],
 
-    copy: function(resolver, copies) {
+    copy: function(deep, resolver, copies) {
         if (copies[this.id])
             return copies[this.id];
 
         var copy = iD.Entity.prototype.copy.call(this, resolver, copies);
+
+        if (!deep || !resolver) {
+            return copy;
+        }
 
         var nodes = this.nodes.map(function(id) {
             return resolver.entity(id).copy(resolver, copies).id;

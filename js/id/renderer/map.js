@@ -199,7 +199,8 @@ iD.Map = function(context) {
             .call(drawLines, graph, data, filter)
             .call(drawAreas, graph, data, filter)
             .call(drawMidpoints, graph, data, filter, map.trimmedExtent())
-            .call(drawLabels, graph, data, filter, dimensions, !difference && !extent)
+            //TODO: determine why Hoot has disabled this behavior
+            //.call(drawLabels, graph, data, filter, dimensions, !difference && !extent)
             .call(drawPoints, graph, data, filter);
 
         //TODO: Document why this was added for Hoot
