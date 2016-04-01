@@ -202,10 +202,10 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 	        	.attr("y", c[1]+25)
 	        	.text(function(d){return displayArea(getArea())});
     	    
-    	    rect.attr("x", c[0]+10)
+    	    /*rect.attr("x", c[0]+10)
         		.attr("y", c[1]-(label.dimensions()[1]/2))
         		.attr("width",label.dimensions()[0]+5)
-		        .attr("height",label.dimensions()[1]+5);
+		        .attr("height",label.dimensions()[1]+5);*/
  	    }
     }
     
@@ -246,6 +246,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 			
 			label.attr("x", c[0]+rectMargin)
         		.attr("y", c[1]+rectMargin)
+                .classed('measure-label-text',true)
 		        .style("fill","white")
 		        .style("font-size","18px");	
 		    lengthLabel.attr("x", c[0]+10)
@@ -256,12 +257,12 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 	        	.text(function(d){return displayArea(getArea())});
 				
 			//rect = g.insert("rect",":first-child")
-		      rect.attr("x", c[0])
+		      /*rect.attr("x", c[0])
 		        .attr("y", c[1]-(label.dimensions()[1]/2))
 		        .attr("width",label.dimensions()[0]+5)
 		        .attr("height",label.dimensions()[1]+5)
 		        .style("fill","black")
-		        .style("fill-opacity","0.5");
+		        .style("fill-opacity","0.5");*/
 			
 			lastPoint=context.map().mouseCoordinates();
 		} 	
@@ -281,9 +282,9 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 		    .style("fill-opacity","0.3")
 			.attr("points","");
 
-		rect = g.append("rect")//insert("rect",":first-child")
+		/*rect = g.append("rect")//insert("rect",":first-child")
 	        .style("fill","black")
-	        .style("fill-opacity","0.5");
+	        .style("fill-opacity","0.5");*/
         
         label = g.append("text")
 	        .style("fill","white")
