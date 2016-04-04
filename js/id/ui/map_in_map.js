@@ -1,10 +1,10 @@
 iD.ui.MapInMap = function(context) {
     var key = '/';
-    var dispatch = d3.dispatch('zoomPan');
+    var dispatch = d3.dispatch('change','zoomPan');
 
     function map_in_map(selection) {
         var backgroundLayer = iD.TileLayer(),
-            dispatch = d3.dispatch('change'),
+            //dispatch = d3.dispatch('change','zoomPan'),
             //overlayLayer = iD.TileLayer(),
 			overlayLayers = {},
             projection = iD.geo.RawMercator(),
@@ -277,6 +277,9 @@ iD.ui.MapInMap = function(context) {
             return selection.style('display') === 'none';
         }
 
+        map_in_map.hidden = function() {
+            return hidden;
+        }
 
         function toggle() {
             if (d3.event) d3.event.preventDefault();
