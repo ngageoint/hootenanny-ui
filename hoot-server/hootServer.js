@@ -26,5 +26,12 @@ var hoot = function(options) {
             return '/hoot-services' + url.parse(req.url).path;
         }
     }));
+
+    app.use('/static', proxy(hootUrl, {
+        //limit: '1000mb',
+        forwardPath: function(req, res) {
+            return '/static' + url.parse(req.url).path;
+        }
+    }));
 };
 exports.hoot = hoot;
