@@ -252,10 +252,12 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             return 1*d.value.mapId === 1*mapid;
         });
 
-        var layerName = layerNames[0].key;
-        context.loadMissing([fid], function(err, ent){
-            _loadMissingHandler(err,ent,callback);
-        }, layerName);
+        if(!_.isEmpty(layerNames)){
+            var layerName = layerNames[0].key;
+            context.loadMissing([fid], function(err, ent){
+                _loadMissingHandler(err,ent,callback);
+            }, layerName);
+        }
     }
 
     var _parent = function() {
