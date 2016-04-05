@@ -292,6 +292,7 @@ fs.writeFileSync('data/data.js', 'iD.data = ' + JSON.stringify({
     wikipedia: r('wikipedia.json'),
     imperial: r('imperial.json'),
     featureIcons: r('feature-icons.json'),
+    operations: r('operations-sprite.json'),
     locales: r('locales.json'),
     en: read('dist/locales/en.json'),
     suggestions: r('name-suggestions.json'),
