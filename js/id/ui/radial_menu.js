@@ -64,11 +64,9 @@ iD.ui.RadialMenu = function(context, operations) {
 		// Changes made for v1.9.2
         button.append('use')
             .attr('transform', 'translate(-10,-10)')
-			//.attr('clip-path', 'url(#clip-square-20)') 
             .attr('width', '20')
             .attr('height', '20')
             .attr('xlink:href', function(d) { return '#operation-' + d.id; });
-			//.attr('xlink:href', function(d) { if(d.id==='reverse'){d.id='rotate';} return '#icon-operation-' + (d.disabled() ? 'disabled-' : '') + d.id; });
 
         tooltip = d3.select(document.body)
             .append('div')
@@ -81,9 +79,6 @@ iD.ui.RadialMenu = function(context, operations) {
         function mouseover(d, i) {
             var mergedLayer = context.hoot().model.layers.getMergedLayer();
             var text = iD.ui.tooltipHtml(d.tooltip(), d.keys[0]);
-            if(mergedLayer.length > 0){
-                //text = (i===4) ?  'Toggle Conflated Layer with Inputs' : iD.ui.tooltipHtml(d.tooltip(), d.keys[0]);
-            }
             var rect = context.surfaceRect(),
                 angle = a0 + i * a,
                 top = rect.top + (r + 25) * Math.cos(angle) + center[1] + 'px',
@@ -97,7 +92,6 @@ iD.ui.RadialMenu = function(context, operations) {
                 .style('bottom', null)
                 .style('right', null)
                 .style('display', 'block')
-                //.html(iD.ui.tooltipHtml(d.tooltip(), d.keys[0]));
                 .html(text);
 
             if (i === 0) {

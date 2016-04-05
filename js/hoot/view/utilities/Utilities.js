@@ -62,7 +62,7 @@ Hoot.view.utilities = function (context){
             		.attr('id','settingsSidebar');
                 
                 var settingsHeader = settingsSidebar.append('div')
-	            	.classed('keyline-bottom block strong center margin2 pad1y utilHootHead point',true)
+	            	.classed('block strong center margin2 pad1y utilHootHead point',true)
 	            	.style('height','60px')
 	            	.append('label').text('Settings').attr('id','settingsHeader');
             	

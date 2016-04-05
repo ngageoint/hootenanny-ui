@@ -85,7 +85,6 @@ Hoot.control.utilities.translation = function(context) {
         });
 
         function postTranslation(e) {
-            console.log(e);
             Hoot.model.REST('postTranslation', e, function (resp) {
                 if(resp.error){
                     context.hoot().view.utilities.errorlog.reportUIError(resp.error);
