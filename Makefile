@@ -5,11 +5,10 @@ all: \
 	dist/iD.css \
 	dist/iD.js \
 	dist/iD.min.js \
-	dist/presets.js \
-	dist/imagery.js \
 	dist/img/iD-sprite.svg \
-	dist/img/maki-sprite.svg
-
+	dist/img/maki-sprite.svg \
+	dist/presets.js \
+	dist/imagery.js
 
 MAKI_SOURCES = node_modules/maki/src/*.svg
 
@@ -38,8 +37,7 @@ BUILDJS_TARGETS = \
 BUILDJS_SOURCES = \
 	$(filter-out $(BUILDJS_TARGETS), $(shell find data -type f -name '*.json')) \
 	data/feature-icons.json \
-	data/core.yaml \
-	data/presets.yaml
+	data/core.yaml
 
 $(BUILDJS_TARGETS): $(BUILDJS_SOURCES) build.js
 	node build.js
@@ -67,6 +65,7 @@ dist/iD.js: \
 	js/lib/marked.js \
 	js/id/start.js \
 	js/id/id.js \
+	js/id/services.js \
 	js/id/services/*.js \
 	js/id/util.js \
 	js/id/util/*.js \
@@ -110,7 +109,8 @@ dist/iD.css: css/*.css
 	cat css/reset.css css/map.css css/app.css > $@
 
 node_modules/.install: package.json
-	npm install && touch node_modules/.install
+	npm install
+	touch node_modules/.install
 
 clean:
 	rm -f $(BUILDJS_TARGETS) data/feature-icons.json dist/iD*.js dist/iD.css dist/img/*.svg
@@ -126,12 +126,6 @@ suggestions:
 	npm install name-suggestion-index@git://github.com/osmlab/name-suggestion-index.git
 	cp node_modules/name-suggestion-index/name-suggestions.json data/name-suggestions.json
 
-
-SPRITE = inkscape --export-area-page
-
-dist/img/maki-sprite.png: ./node_modules/maki/www/images/maki-sprite.png
-	cp $< $@
-	node data/maki_sprite
 
 D3_FILES = \
 	node_modules/d3/src/start.js \

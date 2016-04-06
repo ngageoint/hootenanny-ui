@@ -261,6 +261,8 @@
     "operation-simplify":       { "viewBox": "400 380 20 20" },
     "operation-smooth":         { "viewBox": "420 380 20 20" },
     "operation-continue":       { "viewBox": "440 380 20 20" },
+    "operation-review":         { "viewBox": "460 380 20 20" },
+    "operation-toggle":         { "viewBox": "560 380 20 20" },
 
     "operation-delete-shape":         { "fill": "inherit" },
     "operation-circularize-shape":    { "fill": "inherit" },
@@ -284,6 +286,7 @@
     "operation-smooth-shape2":        { "fill": "currentColor" },
     "operation-continue-shape":       { "fill": "inherit" },
     "operation-continue-shape2":      { "fill": "currentColor" },
+      
 
     "logo-twitter":             { "viewBox": "200 400 60 60" },
     "logo-facebook":            { "viewBox": "260 400 60 60" },
