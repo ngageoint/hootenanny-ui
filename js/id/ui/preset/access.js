@@ -1,5 +1,5 @@
 iD.ui.preset.access = function(field) {
-    var event = d3.dispatch('change'),
+    var dispatch = d3.dispatch('change'),
         items;
 
     function access(selection) {
@@ -45,7 +45,7 @@ iD.ui.preset.access = function(field) {
     function change(d) {
         var tag = {};
         tag[d] = d3.select(this).value() || undefined;
-        event.change(tag);
+        dispatch.change(tag);
     }
 
     access.options = function(type) {
@@ -54,6 +54,10 @@ iD.ui.preset.access = function(field) {
         if (type !== 'access') {
             options.unshift('yes');
             options.push('designated');
+
+            if (type === 'bicycle') {
+                options.push('dismount');
+            }
         }
 
         return options.map(function(option) {
@@ -174,14 +178,12 @@ iD.ui.preset.access = function(field) {
                 return tags.access ? tags.access : field.placeholder();
             });
 
-        items.selectAll('#preset-input-access-access')
-            .attr('placeholder', 'yes');
+        // items.selectAll('#preset-input-access-access')
+        //     .attr('placeholder', 'yes');
 
-        _.forEach(placeholders[tags.highway], function(value, key) {
-            items.selectAll('#preset-input-access-' + key)
-                .attr('placeholder', function() {
-                    return (tags.access && (value === 'yes' || value === 'designated')) ? tags.access : value;
-                });
+        _.forEach(placeholders[tags.highway], function(v, k) {
+            items.selectAll('#preset-input-access-' + k)
+                .attr('placeholder', function() { return (tags.access || v); });
         });
     };
 
@@ -190,5 +192,5 @@ iD.ui.preset.access = function(field) {
             .node().focus();
     };
 
-    return d3.rebind(access, event, 'on');
+    return d3.rebind(access, dispatch, 'on');
 };

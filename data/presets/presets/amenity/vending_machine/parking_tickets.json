@@ -1,0 +1,17 @@
+{
+    "fields": [
+        "operator"
+    ],
+    "geometry": [
+        "point"
+    ],
+    "terms": [
+        "parking",
+        "ticket"
+    ],
+    "tags": {
+        "amenity": "vending_machine",
+        "vending": "parking_tickets"
+    },
+    "name": "Parking Ticket Vending Machine"
+}

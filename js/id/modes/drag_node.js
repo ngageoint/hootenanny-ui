@@ -100,7 +100,7 @@ iD.modes.DragNode = function(context) {
         if (nudge) startNudge(nudge);
         else stopNudge();
 
-        var loc = context.map().mouseCoordinates();
+        var loc = context.projection.invert(d3.event.point);
 
         var d = datum();
         if (d.type === 'node' && d.id !== entity.id) {
@@ -197,6 +197,7 @@ iD.modes.DragNode = function(context) {
     };
 
     mode.exit = function() {
+        context.ui().sidebar.hover.cancel();
         context.uninstall(hover);
         context.uninstall(edit);
 

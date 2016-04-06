@@ -3,7 +3,6 @@ var fs = require('fs'),
     glob = require('glob'),
     YAML = require('js-yaml'),
     _ = require('./js/lib/lodash'),
-    d3 = require('d3'),
     jsonschema = require('jsonschema'),
     fieldSchema = require('./data/presets/schema/field.json'),
     presetSchema = require('./data/presets/schema/preset.json'),
@@ -23,10 +22,6 @@ function r(f) {
 
 function rp(f) {
     return r('presets/' + f);
-}
-
-function stringify(o) {
-    return JSON.stringify(o, null, 4);
 }
 
 function validate(file, instance, schema) {
@@ -151,16 +146,50 @@ function generatePresets() {
     });
 
     presets = _.merge(presets, suggestionsToPresets(presets));
+    return presets;
 
-    var presetsYaml = _.cloneDeep(translations);
-    _.forEach(presetsYaml.presets, function(preset) {
-        preset.terms = "<translate with synonyms or related terms for '" + preset.name + "', separated by commas>"
+}
+
+function generateTranslate(fields, presets) {
+    var translate = _.cloneDeep(translations);
+
+    _.forEach(translate.fields, function(field, id) {
+        var f = fields[id];
+        if (f.keys) {
+            field['label#'] = _.each(f.keys).map(function(key) { return key + '=*'; }).join(', ');
+            if (!_.isEmpty(field.options)) {
+                _.each(field.options, function(v,k) {
+                    if (id === 'access') {
+                        field.options[k]['title#'] = field.options[k]['description#'] = 'access=' + k;
+                    } else {
+                        field.options[k + '#'] = k + '=yes';
+                    }
+                });
+            }
+        } else if (f.key) {
+            field['label#'] = f.key + '=*';
+            if (!_.isEmpty(field.options)) {
+                _.each(field.options, function(v,k) {
+                    field.options[k + '#'] = f.key + '=' + k;
+                });
+            }
+        }
+
+        if (f.placeholder) {
+            field['placeholder#'] = id + ' field placeholder';
+        }
     });
 
-    return {
-        presets: presets,
-        presetsYaml: presetsYaml
-    };
+    _.forEach(translate.presets, function(preset, id) {
+        var p = presets[id];
+        if (!_.isEmpty(p.tags))
+            preset['name#'] = _.pairs(p.tags).map(function(pair) { return pair[0] + '=' + pair[1]; }).join(', ');
+        if (p.terms && p.terms.length)
+            preset['terms#'] = 'terms: ' + p.terms.join();
+        preset.terms = "<translate with synonyms or related terms for '" + preset.name + "', separated by commas>";
+    });
+
+    return translate;
 }
 
 function validateCategoryPresets(categories, presets) {
@@ -177,8 +206,6 @@ function validateCategoryPresets(categories, presets) {
 }
 
 function validatePresetFields(presets, fields) {
-    var presets = rp('presets.json'),
-        fields = rp('fields.json');
     _.forEach(presets, function(preset) {
         if (preset.fields) {
             preset.fields.forEach(function(field) {
@@ -191,19 +218,30 @@ function validatePresetFields(presets, fields) {
     });
 }
 
+// comment keys end with '#' and should sort immediately before their related key.
+function sortKeys(a, b) {
+    return (a === b + '#') ? -1
+        : (b === a + '#') ? 1
+        : (a > b ? 1 : a < b ? -1 : 0);
+}
+
 var categories = generateCategories(),
     fields = generateFields(),
-    presets = generatePresets();
+    presets = generatePresets(),
+    translate = generateTranslate(fields, presets);
 
 // additional consistency checks
-validateCategoryPresets(categories, presets.presets);
-validatePresetFields(presets.presets, fields);
+validateCategoryPresets(categories, presets);
+validatePresetFields(presets, fields);
 
 // Save individual data files
-fs.writeFileSync('data/presets/categories.json', stringify(categories));
-fs.writeFileSync('data/presets/fields.json', stringify(fields));
-fs.writeFileSync('data/presets/presets.json', stringify(presets.presets));
-fs.writeFileSync('data/presets.yaml', YAML.dump({en: {presets: presets.presetsYaml}}));
+fs.writeFileSync('data/presets/categories.json', JSON.stringify(categories, null, 4));
+fs.writeFileSync('data/presets/fields.json', JSON.stringify(fields, null, 4));
+fs.writeFileSync('data/presets/presets.json', JSON.stringify(presets, null, 4));
+fs.writeFileSync('data/presets.yaml',
+    YAML.dump({en: {presets: translate}}, {sortKeys: sortKeys})
+        .replace(/\'.*#\':/g, '#')
+);
 
 // Write taginfo data
 var taginfo = {
@@ -222,7 +260,7 @@ var taginfo = {
     "tags": []
 };
 
-_.forEach(presets.presets, function(preset) {
+_.forEach(presets, function(preset) {
     if (preset.suggestion)
         return;
 
@@ -240,32 +278,31 @@ _.forEach(presets.presets, function(preset) {
     taginfo.tags.push(tag);
 });
 
-fs.writeFileSync('data/taginfo.json', stringify(taginfo));
+fs.writeFileSync('data/taginfo.json', JSON.stringify(taginfo, null, 4));
 
 // Push changes from data/core.yaml into en.json
 var core = YAML.load(fs.readFileSync('data/core.yaml', 'utf8'));
 var presets = {en: {presets: translations}};
 var en = _.merge(core, presets);
-fs.writeFileSync('dist/locales/en.json', stringify(en.en));
+fs.writeFileSync('dist/locales/en.json', JSON.stringify(en.en, null, 4));
 
-fs.writeFileSync('data/data.js', 'iD.data = ' + stringify({
+fs.writeFileSync('data/data.js', 'iD.data = ' + JSON.stringify({
     deprecated: r('deprecated.json'),
     discarded: r('discarded.json'),
     wikipedia: r('wikipedia.json'),
     imperial: r('imperial.json'),
     featureIcons: r('feature-icons.json'),
-    operations: r('operations-sprite.json'),
     locales: r('locales.json'),
     en: read('dist/locales/en.json'),
     suggestions: r('name-suggestions.json'),
     addressFormats: r('address-formats.json')
 }) + ';');
 
-fs.writeFileSync('dist/presets.js', 'iD.data.presets = ' + stringify({
+fs.writeFileSync('dist/presets.js', 'iD.data.presets = ' + JSON.stringify({
     presets: rp('presets.json'),
     defaults: rp('defaults.json'),
     categories: rp('categories.json'),
     fields: rp('fields.json')
 }) + ';');
 
-fs.writeFileSync('dist/imagery.js', 'iD.data.imagery = ' + stringify(r('imagery.json')) + ';');
+fs.writeFileSync('dist/imagery.js', 'iD.data.imagery = ' + JSON.stringify(r('imagery.json')) + ';');

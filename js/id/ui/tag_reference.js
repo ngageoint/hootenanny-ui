@@ -33,7 +33,7 @@ iD.ui.TagReference = function(tag, context) {
     function load() {
         button.classed('tag-reference-loading', true);
 
-        context.taginfo().docs(tag, function(err, docs) {
+        context.taginfo().docs(tag, function(err, docs, softfail) {
             if (!err && docs) {
                 docs = findLocal(docs.data);
             }
@@ -41,9 +41,11 @@ iD.ui.TagReference = function(tag, context) {
             body.html('');
 
             if (!docs || !docs.description) {
-                body.append('p').text(t('inspector.no_documentation_key'));
-                show();
-                return;
+                if (!softfail) {
+                    body.append('p').text(t('inspector.no_documentation_key'));
+                    show();
+                }
+                return false;
             }
 
             if (docs.image && docs.image.thumb_url_prefix) {
@@ -64,13 +66,12 @@ iD.ui.TagReference = function(tag, context) {
             var wikiLink = body
                 .append('a')
                 .attr('target', '_blank')
-                .attr('href', 'http://wiki.openstreetmap.org/wiki/' + docs.title);
-
-            wikiLink.append('span')
-                .attr('class','icon icon-pre-text out-link');
-
-            wikiLink.append('span')
+                .attr('href', 'https://wiki.openstreetmap.org/wiki/' + docs.title)
+                .call(iD.svg.Icon('#icon-out-link', 'inline'))
+                .append('span')
                 .text(t('inspector.reference'));
+
+            return true;
         });
     }
 
@@ -103,10 +104,8 @@ iD.ui.TagReference = function(tag, context) {
 
         var enter = button.enter().append('button')
             .attr('tabindex', -1)
-            .attr('class', 'tag-reference-button');
-
-        enter.append('span')
-            .attr('class', 'icon inspect');
+            .classed('tag-reference-button',true)
+            .call(iD.svg.Icon('#icon-inspect'));
 
         button.on('click', function () {
             d3.event.stopPropagation();

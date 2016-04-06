@@ -170,13 +170,13 @@ Hoot.control.conflate = function (sidebar) {
 
           //build the path array for lyrA
           var lyrApath = [];
-          lyrA = _.findWhere(hoot.model.layers.getAvailLayers(),{'name':lyrA});
+          lyrA = _.find(hoot.model.layers.getAvailLayers(),{'name':lyrA});
           if(lyrA){
               lyrApath.push(lyrA.folderId);
 
               var folderId = lyrA.folderId;
               while (folderId!=0){
-                  var fldr = _.findWhere(folderList,{'id':folderId});
+                  var fldr = _.find(folderList,{'id':folderId});
                   if(fldr){
                       lyrApath.push(fldr.parentId);
                       folderId = fldr.parentId;
@@ -186,7 +186,7 @@ Hoot.control.conflate = function (sidebar) {
 
           //if(lyrApath) is only 0, keep as root and move on
 
-          lyrB = _.findWhere(hoot.model.layers.getAvailLayers(),{'name':lyrB});
+          lyrB = _.find(hoot.model.layers.getAvailLayers(),{'name':lyrB});
           if(lyrB){
               var folderId = lyrB.folderId;
               if(lyrApath.indexOf(folderId)>-1){
@@ -194,7 +194,7 @@ Hoot.control.conflate = function (sidebar) {
                   return;
               } else {
                   while (folderId!=0){
-                      var fldr = _.findWhere(folderList,{'id':folderId});
+                      var fldr = _.find(folderList,{'id':folderId});
                       if(fldr){
                           if(lyrApath.indexOf(fldr.parentId)>-1){
                               commonId = fldr.parentId;
@@ -208,7 +208,7 @@ Hoot.control.conflate = function (sidebar) {
         });
 
         if(commonId!=0){
-          var match = _.findWhere(a.combobox.data,{id:commonId});
+          var match = _.find(a.combobox.data,{id:commonId});
           if(match){
               if(match){
                   d3.select(this).value(match.folderPath)

@@ -7,7 +7,7 @@
         <link rel='stylesheet' href='css/reset.css'>
         <link rel='stylesheet' href='css/map.css'>
         <link rel='stylesheet' href='css/app.css'>
-        <link rel='stylesheet' href='css/feature-icons.css'>
+        <!---<link rel='stylesheet' href='css/feature-icons.css'>  iD 1.9.2 -->
         <link rel='stylesheet' href='css/dgcarousel.css'>
         <link rel='stylesheet' href='css/base.css'>
         <link rel='stylesheet' href='css/style2.css'>
@@ -47,10 +47,13 @@
         <script src='js/id/util/session_mutex.js'></script>
         <script src='js/id/util/suggest_names.js'></script>
 
-        <script src='js/id/services/countrycode.js'></script>
+        <!--<script src='js/id/services/countrycode.js'></script>  iD 1.9.2 -->
+        <script src='js/id/services.js'></script>
         <script src='js/id/services/dgservices.js'></script>
         <script src='js/id/services/taginfo.js'></script>
         <script src='js/id/services/wikipedia.js'></script>
+        <script src='js/id/services/mapillary.js'></script>
+        <script src='js/id/services/nominatim.js'></script>
 
         <script src='data/data_dev.js'></script>
 
@@ -63,22 +66,28 @@
         <script src='js/id/renderer/background.js'></script>
         <script src='js/id/renderer/background_source.js'></script>
         <script src='js/id/renderer/features.js'></script>
-        <script src='js/id/renderer/gpx_layer.js'></script>
+        <!--<script src='js/id/renderer/gpx_layer.js'></script>  iD 1.9.2 -->
         <script src='js/id/renderer/tile_layer.js'></script>
         <script src='js/id/renderer/footprint_layer.js'></script>
         <script src='js/id/renderer/arrow_layer.js'></script>
         <script src='js/id/renderer/map.js'></script>
-        <script src='js/id/renderer/mapillary_layer.js'></script>
+        <!--<script src='js/id/renderer/mapillary_layer.js'></script>  iD 1.9.2 -->
         <script src='js/id/renderer/measure_layer.js'></script>
 
         <script src="js/id/svg.js"></script>
         <script src="js/id/svg/areas.js"></script>
         <script src="js/id/svg/defs.js"></script>
+        <script src='js/id/svg/gpx.js'></script>
+        <script src="js/id/svg/icon.js"></script>
         <script src="js/id/svg/labels.js"></script>
         <script src="js/id/svg/lines.js"></script>
+        <script src='js/id/svg/mapillary_images.js'></script>
+        <script src='js/id/svg/mapillary_signs.js'></script>
         <script src="js/id/svg/midpoints.js"></script>
+        <script src="js/id/svg/osm.js"></script>
         <script src="js/id/svg/points.js"></script>
-        <script src="js/id/svg/surface.js"></script>
+        <!--<script src="js/id/svg/surface.js"></script>  iD 1.9.2 -->
+        <script src="js/id/svg/layers.js"></script>
         <script src="js/id/svg/tag_classes.js"></script>
         <script src="js/id/svg/turns.js"></script>
         <script src="js/id/svg/vertices.js"></script>
@@ -109,6 +118,7 @@
         <script src='js/id/ui/flash.js'></script>
         <script src='js/id/ui/feature_info.js'></script>
         <script src='js/id/ui/save.js'></script>
+        <script src='js/id/ui/full_screen.js'></script>
         <script src='js/id/ui/tools.js'></script>
         <script src='js/id/ui/scale.js'></script>
         <script src='js/id/ui/splash.js'></script>
@@ -126,7 +136,7 @@
         <script src='js/id/ui/toggle.js'></script>
         <script src='js/id/ui/undo_redo.js'></script>
         <script src='js/id/ui/view_on_osm.js'></script>
-				<script src='js/id/ui/warning.js'></script>
+		<script src='js/id/ui/warning.js'></script>
         <script src='js/id/ui/zoom.js'></script>
         <script src='js/id/ui/raw_tag_editor.js'></script>
         <script src='js/id/ui/raw_member_editor.js'></script>
@@ -144,6 +154,7 @@
         <script src='js/id/ui/preset/address.js'></script>
         <script src='js/id/ui/preset/check.js'></script>
         <script src='js/id/ui/preset/combo.js'></script>
+        <script src='js/id/ui/preset/cycleway.js'></script>
         <script src='js/id/ui/preset/input.js'></script>
         <script src='js/id/ui/preset/localized.js'></script>
         <script src='js/id/ui/preset/maxspeed.js'></script>
@@ -171,7 +182,8 @@
         <script src='js/id/actions/change_tags.js'></script>
         <script src='js/id/actions/circularize.js'></script>
         <script src='js/id/actions/connect.js'></script>
-        <script src='js/id/actions/copy_entity.js'></script>
+        <!--<script src='js/id/actions/copy_entity.js'></script>  iD 1.9.2 -->
+        <script src='js/id/actions/copy_entities.js'></script>
         <script src='js/id/actions/delete_member.js'></script>
         <script src='js/id/actions/delete_multiple.js'></script>
         <script src='js/id/actions/delete_node.js'></script>
@@ -190,12 +202,14 @@
         <script src='js/id/actions/rotate_way.js'></script>
         <script src='js/id/actions/restrict_turn.js'></script>
         <script src='js/id/actions/reverse.js'></script>
+        <script src='js/id/actions/revert.js'></script>
         <script src='js/id/actions/straighten.js'></script>
         <script src='js/id/actions/split.js'></script>
         <script src='js/id/actions/unrestrict_turn.js'></script>
 
         <script src='js/id/behavior.js'></script>
         <script src='js/id/behavior/add_way.js'></script>
+        <script src='js/id/behavior/breathe.js'></script>
         <script src='js/id/behavior/copy.js'></script>
         <script src='js/id/behavior/drag.js'></script>
         <script src='js/id/behavior/draw.js'></script>
@@ -251,7 +265,8 @@
         <script src='js/id/core/relation.js'></script>
         <script src='js/id/core/way.js'></script>
         <script src='js/id/core/tree.js'></script>
-        <script src='js/id/core/oneway_tags.js'></script>
+        <!--<script src='js/id/core/oneway_tags.js'></script>  iD 1.9.2 -->
+        <script src='js/id/core/tags.js'></script>
 
         <script src='js/id/presets.js'></script>
         <script src='js/id/presets/preset.js'></script>
@@ -259,7 +274,12 @@
         <script src='js/id/presets/collection.js'></script>
         <script src='js/id/presets/field.js'></script>
 
-        <script src='js/id/validate.js'></script>
+        <!--<script src='js/id/validate.js'></script>  iD 1.9.2 -->
+        <script src='js/id/validations.js'></script>
+        <script src='js/id/validations/deprecated_tag.js'></script>
+        <script src='js/id/validations/many_deletions.js'></script>
+        <script src='js/id/validations/missing_tag.js'></script>
+        <script src='js/id/validations/tag_suggests_area.js'></script>
 
         <script src='js/lib/locale.js'></script>
         <script src='data/introGraph.js'></script>
@@ -371,7 +391,7 @@
                     }
                     id = iD().presets(iD.data.presets)
                     .imagery(iD.data.imagery)
-                    .taginfo(iD.taginfo())
+                    .taginfo(iD.services.taginfo())
                     .assetPath('dist/');
                     id.hoot().load(demo, function(){d3.select('#id-container').call(id.ui());});
             });

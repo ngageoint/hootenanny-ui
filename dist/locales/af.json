@@ -91,11 +91,8 @@
         },
         "merge": {
             "title": "Smelt saam",
-            "description": "Smelt die lyne saam.",
             "key": "C",
-            "annotation": "{n} lyne saamgesmelt.",
-            "not_eligible": "Hierdie items kan nie saamgesmelt word nie.",
-            "not_adjacent": "Hierdie lyne kan nie saamgesmelt word nie, want hulle is nie verbind nie."
+            "not_eligible": "Hierdie items kan nie saamgesmelt word nie."
         },
         "move": {
             "title": "Skuif",
@@ -147,10 +144,8 @@
     "redo": {
         "nothing": "Niks om weer te doen nie."
     },
-    "browser_notice": "Hierdie program is bruikbaar in Firefox, Chrome, Safair, Opera en Internet Explorer 9 en later weergawes. Gradeer asseblief jou webbrowser op of gebruik Potlatch 2 om die kaart te verander.",
     "logout": "voetsek",
     "loading_auth": "Maak kontak met OpenStreetMap...",
-    "report_a_bug": "Raporteer 'n probleem",
     "status": {
         "error": "Kan nie aan die API koppel nie.",
         "offline": "Die API is aflyn, probeer asseblief later weer.",
@@ -159,7 +154,6 @@
     "commit": {
         "title": "Bêre veranderinge",
         "description_placeholder": "Kortlikse beskrywing van jou bydraes",
-        "message_label": "Bêre boodskap",
         "save": "Bȇre",
         "cancel": "Kanseleer",
         "warnings": "Waarskuwings",
@@ -196,7 +190,6 @@
         "title": "Stoor",
         "help": "Stoor veranderinge na OpenStreetMap, en maak dit sigbaar vir ander gebruikers.",
         "no_changes": "Geen verandering om te stoor.",
-        "error": "'n Fout het ingekruip toe jy probeer stoor het",
         "uploading": "Laai verandering op na OpenStreetMap.",
         "unsaved_changes": "Jy het ongestoorde veranderinge"
     },
@@ -241,107 +234,65 @@
     "intro": {
         "navigation": {
             "drag": "Die hoofkaartarea toon OpenStreetMap data aan op 'n agtergrond. Jy kan navigeer deur te trek en te sleep net soos met enige ander web gebaseerde kaart. **Probeer dit nou!**",
-            "select": "Kaart eienskappe word verteenwoordig op drie maniere: punte, lyne en areas. All eienskappe kan uitgekies word deur daarop te klick. **Klick op 'n punt om dit uit te kies.**",
-            "header": "Die opskrif wys ons die eienskap tipe.",
-            "pane": "Die itemkieslys word vertoon sodra jy 'n item op die kaart kies. Die opskrif dui die itemtipe aan en die hoofpaneel dui die item se eienskappe aan soos 'n naam en adres. **Om die itemkieslys toe te maak druk die knoppie regs bo.**"
+            "select": "Kaart eienskappe word verteenwoordig op drie maniere: punte, lyne en areas. All eienskappe kan uitgekies word deur daarop te klick. **Klick op 'n punt om dit uit te kies.**"
         },
         "points": {
-            "add": "Punte kan gebruik word om winkels, restaurante, monemente en soortgelyke plekke aan te dui. Dit merk 'n spesifieke punt en beskryf wat daar gevind kan word. **Druk op die Punt knoppe om  'n nuwe punt by te voeg.**",
-            "place": "Die punt kan op die kaart geplaas word deur daarop te klick. **Sit die punt bo-op die gebou.**",
-            "describe": "Die punt is nou gemerk as 'n kafee. Gebruik die eienskapslys om meer inligting by te sit. **Sit 'n naam by**",
-            "close": "Die eienskapslys kan toegemaak word deur op die toemaak knoppie te klick. **Maak die eienskapslys toe**",
-            "reselect": "Baie kere gaan 'n punt klaar bestaan, maar met foute of onvolledig. Jy kan bestaande punte verander. **Kies die punt wat jy nou net gemaak het.**",
-            "fixname": "**Verander die naam en maak die eienskapslys toe.**",
-            "reselect_delete": "Alle eienskappe op die kaart kan verwyder word. **Klick op die punt wat jy nou net gemaak het. **",
-            "delete": "Wanneer jy op 'n punt druk verskyn verskillende opsies, soos verwyder die punt. **Verwyder die punt.**"
-        },
-        "areas": {
-            "describe": "**Sit 'n naam by en maak die eienskappe lys toe**"
+            "describe": "Die punt is nou gemerk as 'n kafee. Gebruik die eienskapslys om meer inligting by te sit. **Sit 'n naam by**"
         },
         "lines": {
             "start": "** Begin die lyn deur op die einde van die pad te klick.**",
-            "residential": "Daar is verskillende tipes paaie, die mees algemeenste is 'n residensieel pad. ** Kies die Residentieele Pad tipe**",
-            "describe": "**Gee die pad 'n naam en maak die eienskappe lys toe.**",
-            "restart": "Die pad moet Flower Straat Kruis."
+            "residential": "Daar is verskillende tipes paaie, die mees algemeenste is 'n residensieel pad. ** Kies die Residentieele Pad tipe**"
         },
         "startediting": {
-            "help": "Meer dokumentasie en hierdie deurloop is beskikbaar hier.",
             "save": "Moenie vergeet om gereeld verandering te bêre nie!",
             "start": "Begin die kaart teken!"
         }
     },
     "presets": {
-        "categories": {
-            "category-landuse": {
-                "name": "Landsgebruik"
-            },
-            "category-path": {
-                "name": "Paaidjie"
-            },
-            "category-rail": {
-                "name": "Spoor"
-            },
-            "category-road": {
-                "name": "Pad"
-            },
-            "category-route": {
-                "name": "Roete"
-            },
-            "category-water-area": {
-                "name": "Water"
-            },
-            "category-water-line": {
-                "name": "Water"
-            }
-        },
         "fields": {
             "access": {
-                "label": "Toegang",
-                "placeholder": "Onbekend",
-                "types": {
-                    "access": "Algemene",
-                    "foot": "Voet",
-                    "motor_vehicle": "Motorvoertuie",
-                    "bicycle": "Fietse",
-                    "horse": "Perde"
-                },
                 "options": {
-                    "yes": {
-                        "title": "Toegelaat"
+                    "designated": {
+                        "description": "Voorgeskrewe toegang",
+                        "title": "Toegewys"
+                    },
+                    "destination": {
+                        "description": "Beperkte toegang",
+                        "title": "Eindbestemming"
                     },
                     "no": {
-                        "title": "Toegang Verbode",
-                        "description": "Geen toegang vir algemene publiek"
+                        "description": "Geen toegang vir algemene publiek",
+                        "title": "Toegang Verbode"
                     },
                     "permissive": {
                         "description": "Voorwaardelike toegang"
                     },
                     "private": {
-                        "title": "Privaat",
-                        "description": "Toegang slegs soos gereël met eienaar"
+                        "description": "Toegang slegs soos gereël met eienaar",
+                        "title": "Privaat"
                     },
-                    "designated": {
-                        "title": "Toegewys",
-                        "description": "Voorgeskrewe toegang"
-                    },
-                    "destination": {
-                        "title": "Eindbestemming",
-                        "description": "Beperkte toegang"
+                    "yes": {
+                        "title": "Toegelaat"
                     }
+                },
+                "types": {
+                    "bicycle": "Fietse",
+                    "foot": "Voet",
+                    "horse": "Perde",
+                    "motor_vehicle": "Motorvoertuie"
                 }
             },
             "access_simple": {
-                "label": "Toegang",
                 "placeholder": "ja"
             },
             "address": {
                 "label": "Adres",
                 "placeholders": {
-                    "housename": "Huisnaam",
-                    "street": "Straat",
                     "city": "Tipe",
+                    "housename": "Huisnaam",
+                    "place": "Plek",
                     "postcode": "Poskode",
-                    "place": "Plek"
+                    "street": "Straat"
                 }
             },
             "admin_level": {
@@ -392,21 +343,21 @@
             "cardinal_direction": {
                 "label": "Rigting",
                 "options": {
-                    "N": "Noord",
                     "E": "Oos",
-                    "S": "Suid",
-                    "W": "Wes",
+                    "N": "Noord",
                     "NE": "Noordoos",
+                    "NW": "Noordwes",
+                    "S": "Suid",
                     "SE": "Suidoos",
                     "SW": "Suidwes",
-                    "NW": "Noordwes"
+                    "W": "Wes"
                 }
             },
             "clock_direction": {
                 "label": "Rigting",
                 "options": {
-                    "clockwise": "Kloksgewys",
-                    "anticlockwise": "Antikloksgewys"
+                    "anticlockwise": "Antikloksgewys",
+                    "clockwise": "Kloksgewys"
                 }
             },
             "collection_times": {
@@ -473,9 +424,9 @@
             "internet_access": {
                 "label": "Internet Toegang",
                 "options": {
-                    "wlan": "Wifi",
+                    "terminal": "Terminaal",
                     "wired": "Bedraad",
-                    "terminal": "Terminaal"
+                    "wlan": "Wifi"
                 }
             },
             "landuse": {
@@ -587,13 +538,13 @@
             },
             "structure": {
                 "label": "Struktuur",
-                "placeholder": "Onbekend",
                 "options": {
                     "bridge": "Brug",
-                    "tunnel": "Tonnel",
+                    "cutting": "Uitgrawing",
                     "embankment": "Dyk",
-                    "cutting": "Uitgrawing"
-                }
+                    "tunnel": "Tonnel"
+                },
+                "placeholder": "Onbekend"
             },
             "supervised": {
                 "label": "Onder toesig"
@@ -857,9 +808,6 @@
             "highway/bus_stop": {
                 "name": "Busstop"
             },
-            "highway/crossing": {
-                "name": "Oorgang"
-            },
             "highway/cycleway": {
                 "name": "Fietsrypad"
             },
@@ -877,9 +825,6 @@
             },
             "highway/path": {
                 "name": "Paadjie"
-            },
-            "highway/pedestrian": {
-                "name": "Voetganger"
             },
             "highway/primary": {
                 "name": "Primere Pad"
@@ -914,9 +859,6 @@
             "highway/tertiary": {
                 "name": "Tertiere Pad"
             },
-            "highway/track": {
-                "name": "Spoor"
-            },
             "highway/traffic_signals": {
                 "name": "Robot"
             },
@@ -925,9 +867,6 @@
             },
             "highway/turning_circle": {
                 "name": "Draai Sirkel"
-            },
-            "highway/unclassified": {
-                "name": "Ongeklassifiseerde Pad"
             },
             "historic": {
                 "name": "Historiese Plek"
@@ -952,12 +891,6 @@
             },
             "historic/wayside_cross": {
                 "name": "Padteken"
-            },
-            "landuse": {
-                "name": "Landsgebruik"
-            },
-            "landuse/allotments": {
-                "name": "Toegewysde lappie grond"
             },
             "landuse/basin": {
                 "name": "Laagte"
@@ -1239,9 +1172,6 @@
             },
             "railway/disused": {
                 "name": "Ongebruikte spoorweg"
-            },
-            "railway/level_crossing": {
-                "name": "Spooroorgang"
             },
             "railway/monorail": {
                 "name": "Enkelspoorbaan"

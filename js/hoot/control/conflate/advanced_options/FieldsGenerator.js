@@ -117,9 +117,9 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
         var target = d3.select('#' + data.property('id'));
         if(target.node().classList.contains('list')){
             //validate combobox entry
-            var curOpts = _.findWhere(target.data()[0].children,{'id':data.property('id')});
+            var curOpts = _.find(target.data()[0].children,{'id':data.property('id')});
             var curVal = target.node().value;
-            if(_.findWhere(curOpts.combobox,{'name':curVal})===undefined){
+            if(_.find(curOpts.combobox,{'name':curVal})===undefined){
                 target.value(curOpts.placeholder);
             }   
         } else {

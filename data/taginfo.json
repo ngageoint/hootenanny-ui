@@ -130,6 +130,10 @@
         },
         {
             "key": "amenity",
+            "value": "biergarten"
+        },
+        {
+            "key": "amenity",
             "value": "boat_rental"
         },
         {
@@ -155,6 +159,10 @@
         {
             "key": "amenity",
             "value": "car_wash"
+        },
+        {
+            "key": "amenity",
+            "value": "casino"
         },
         {
             "key": "amenity",
@@ -218,6 +226,10 @@
         },
         {
             "key": "amenity",
+            "value": "ferry_terminal"
+        },
+        {
+            "key": "amenity",
             "value": "fire_station"
         },
         {
@@ -242,6 +254,10 @@
         },
         {
             "key": "amenity",
+            "value": "hunting_stand"
+        },
+        {
+            "key": "amenity",
             "value": "kindergarten"
         },
         {
@@ -254,6 +270,10 @@
         },
         {
             "key": "amenity",
+            "value": "motorcycle_parking"
+        },
+        {
+            "key": "amenity",
             "value": "nightclub"
         },
         {
@@ -263,6 +283,10 @@
         {
             "key": "amenity",
             "value": "parking_entrance"
+        },
+        {
+            "key": "amenity",
+            "value": "parking_space"
         },
         {
             "key": "amenity",
@@ -326,6 +350,10 @@
         },
         {
             "key": "amenity",
+            "value": "sanitary_dump_station"
+        },
+        {
+            "key": "amenity",
             "value": "school"
         },
         {
@@ -381,6 +409,42 @@
             "value": "university"
         },
         {
+            "key": "vending",
+            "value": "cigarettes"
+        },
+        {
+            "key": "vending",
+            "value": "condoms"
+        },
+        {
+            "key": "vending",
+            "value": "drinks"
+        },
+        {
+            "key": "vending",
+            "value": "excrement_bags"
+        },
+        {
+            "key": "vending",
+            "value": "news_papers"
+        },
+        {
+            "key": "vending",
+            "value": "parcel_pickup;parcel_mail_in"
+        },
+        {
+            "key": "vending",
+            "value": "parking_tickets"
+        },
+        {
+            "key": "vending",
+            "value": "public_transport_tickets"
+        },
+        {
+            "key": "vending",
+            "value": "sweets"
+        },
+        {
             "key": "amenity",
             "value": "vending_machine"
         },
@@ -393,8 +457,19 @@
             "value": "waste_basket"
         },
         {
+            "key": "amenity",
+            "value": "waste_disposal"
+        },
+        {
+            "key": "amenity",
+            "value": "water_point"
+        },
+        {
             "key": "area",
             "value": "yes"
+        },
+        {
+            "key": "area:highway"
         },
         {
             "key": "barrier"
@@ -577,6 +652,10 @@
         {
             "key": "building",
             "value": "school"
+        },
+        {
+            "key": "building",
+            "value": "semidetached_house"
         },
         {
             "key": "building",
@@ -873,6 +952,10 @@
         },
         {
             "key": "highway",
+            "value": "corridor"
+        },
+        {
+            "key": "highway",
             "value": "crossing"
         },
         {
@@ -1131,6 +1214,10 @@
         },
         {
             "key": "landuse",
+            "value": "plant_nursery"
+        },
+        {
+            "key": "landuse",
             "value": "quarry"
         },
         {
@@ -1147,6 +1234,18 @@
         },
         {
             "key": "leisure"
+        },
+        {
+            "key": "leisure",
+            "value": "adult_gaming_centre"
+        },
+        {
+            "key": "leisure",
+            "value": "bird_hide"
+        },
+        {
+            "key": "leisure",
+            "value": "bowling_alley"
         },
         {
             "key": "leisure",
@@ -1206,6 +1305,14 @@
         },
         {
             "key": "sport",
+            "value": "rugby_league"
+        },
+        {
+            "key": "sport",
+            "value": "rugby_union"
+        },
+        {
+            "key": "sport",
             "value": "skateboard"
         },
         {
@@ -1237,6 +1344,10 @@
             "value": "sports_centre"
         },
         {
+            "key": "sport",
+            "value": "swimming"
+        },
+        {
             "key": "leisure",
             "value": "stadium"
         },
@@ -1249,11 +1360,23 @@
             "value": "track"
         },
         {
+            "key": "leisure",
+            "value": "water_park"
+        },
+        {
             "key": "man_made"
         },
         {
             "key": "man_made",
+            "value": "adit"
+        },
+        {
+            "key": "man_made",
             "value": "breakwater"
+        },
+        {
+            "key": "man_made",
+            "value": "chimney"
         },
         {
             "key": "man_made",
@@ -1269,11 +1392,27 @@
         },
         {
             "key": "man_made",
+            "value": "gasometer"
+        },
+        {
+            "key": "man_made",
+            "value": "groyne"
+        },
+        {
+            "key": "man_made",
             "value": "lighthouse"
+        },
+        {
+            "key": "man_made",
+            "value": "mast"
         },
         {
             "key": "tower:type",
             "value": "observation"
+        },
+        {
+            "key": "man_made",
+            "value": "petroleum_well"
         },
         {
             "key": "man_made",
@@ -1282,6 +1421,18 @@
         {
             "key": "man_made",
             "value": "pipeline"
+        },
+        {
+            "key": "man_made",
+            "value": "silo"
+        },
+        {
+            "key": "man_made",
+            "value": "storage_tank"
+        },
+        {
+            "key": "man_made",
+            "value": "surveillance"
         },
         {
             "key": "man_made",
@@ -1308,6 +1459,10 @@
             "value": "water_works"
         },
         {
+            "key": "man_made",
+            "value": "works"
+        },
+        {
             "key": "military",
             "value": "airfield"
         },
@@ -1321,7 +1476,27 @@
         },
         {
             "key": "military",
+            "value": "checkpoint"
+        },
+        {
+            "key": "military",
+            "value": "danger_area"
+        },
+        {
+            "key": "military",
+            "value": "naval_base"
+        },
+        {
+            "key": "military",
+            "value": "obstacle_course"
+        },
+        {
+            "key": "military",
             "value": "range"
+        },
+        {
+            "key": "military",
+            "value": "training_area"
         },
         {
             "key": "natural"
@@ -1368,6 +1543,10 @@
         },
         {
             "key": "natural",
+            "value": "saddle"
+        },
+        {
+            "key": "natural",
             "value": "scree"
         },
         {
@@ -1381,6 +1560,14 @@
         {
             "key": "natural",
             "value": "tree"
+        },
+        {
+            "key": "natural",
+            "value": "tree_row"
+        },
+        {
+            "key": "natural",
+            "value": "volcano"
         },
         {
             "key": "natural",
@@ -1498,6 +1685,10 @@
         {
             "key": "place",
             "value": "city"
+        },
+        {
+            "key": "place",
+            "value": "farm"
         },
         {
             "key": "place",
@@ -2002,6 +2193,10 @@
         },
         {
             "key": "shop",
+            "value": "storage_rental"
+        },
+        {
+            "key": "shop",
             "value": "supermarket"
         },
         {
@@ -2098,6 +2293,10 @@
         {
             "key": "tourism",
             "value": "chalet"
+        },
+        {
+            "key": "tourism",
+            "value": "gallery"
         },
         {
             "key": "tourism",
@@ -2252,7 +2451,15 @@
             "value": "route_master"
         },
         {
+            "key": "type",
+            "value": "site"
+        },
+        {
             "key": "waterway"
+        },
+        {
+            "key": "waterway",
+            "value": "boatyard"
         },
         {
             "key": "waterway",
@@ -2268,7 +2475,15 @@
         },
         {
             "key": "waterway",
+            "value": "dock"
+        },
+        {
+            "key": "waterway",
             "value": "drain"
+        },
+        {
+            "key": "waterway",
+            "value": "fuel"
         },
         {
             "key": "waterway",
@@ -2280,7 +2495,15 @@
         },
         {
             "key": "waterway",
+            "value": "sanitary_dump_station"
+        },
+        {
+            "key": "waterway",
             "value": "stream"
+        },
+        {
+            "key": "waterway",
+            "value": "water_point"
         },
         {
             "key": "waterway",

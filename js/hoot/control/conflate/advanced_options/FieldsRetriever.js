@@ -54,7 +54,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
       				
         				var retval = groupKeys.filter(function(n){return defaultKeys.indexOf(n.id) != -1;});
         				_.each(retval,function(replaceMember){
-        					var currentMember = _.findWhere(this.members,{id:replaceMember.id});
+        					var currentMember = _.find(this.members,{id:replaceMember.id});
         					if (currentMember){
         						//you found it.  now replace it! 
         						currentMember.defaultvalue = replaceMember.defaultvalue;
@@ -71,7 +71,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
         					defaultKeys = _.pluck(cp.members,'id');
         					retval = groupKeys.filter(function(n){return defaultKeys.indexOf(n.id) != -1;});
         					_.each(retval,function(replaceMember){
-        						var foundItem = _.findWhere(this.members,{id:replaceMember.id});
+        						var foundItem = _.find(this.members,{id:replaceMember.id});
         						foundItem.defaultvalue = replaceMember.defaultvalue;
         						foundItem.required = replaceMember.required;
 
@@ -86,7 +86,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
 								defaultKeys = _.pluck(sublist.members,'id');
 								retval = groupKeys.filter(function(n){return defaultKeys.indexOf(n.id) != -1;});
 								_.each(retval,function(replaceMember){
-	        						var foundItem = _.findWhere(this.members,{id:replaceMember.id});
+	        						var foundItem = _.find(this.members,{id:replaceMember.id});
 	        						foundItem.defaultvalue = replaceMember.defaultvalue;
 	        						foundItem.required = replaceMember.required;
 
@@ -136,7 +136,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
 					if(setVal===null){setVal=subfield.hoot_val;}
 					if(setVal===true){
 						//see if hoot_key is already in list
-						var hk = _.findWhere(fieldsJSON,{'key':field.hoot_key});
+						var hk = _.find(fieldsJSON,{'key':field.hoot_key});
 						if(hk){
 							hk.value += ";" + subfield.hoot_val;
 						} else {
@@ -171,7 +171,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
 							if(setVal===null){setVal=submember.hoot_val;}
 							if(setVal===true){
 								//see if hoot_key is already in list
-								var hk = _.findWhere(fieldsJSON,{'key':subfield.hoot_key});
+								var hk = _.find(fieldsJSON,{'key':subfield.hoot_key});
 								if(hk){
 									hk.value += ";" + submember.hoot_val;
 								} else {

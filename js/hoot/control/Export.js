@@ -100,7 +100,7 @@ Hoot.control.export = function (sidebar) {
             .value(function (field) {
             	if (field.inputtype=='text'){
             		if(field.transcombo){
-                    	var defTrans = _.findWhere(field.transcombo, {DESCRIPTION: field.placeholder});
+                    	var defTrans = _.find(field.transcombo, {DESCRIPTION: field.placeholder});
                     	if(defTrans == undefined){return field.transcombo[0].DESCRIPTION}
                     	else{return defTrans.DESCRIPTION;}
                     }
@@ -166,7 +166,7 @@ Hoot.control.export = function (sidebar) {
 	       		 hidden=true;
 	       	 }
 	       	 
-	       	 var selTrans = _.findWhere(transCombo,{"DESCRIPTION":transType});
+	       	 var selTrans = _.find(transCombo,{"DESCRIPTION":transType});
 	       	 if(selTrans){
 	       		 if(selTrans.NAME.substring(0,3)!='TDS'){
 	       			 hidden=true;

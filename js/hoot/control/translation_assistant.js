@@ -771,7 +771,7 @@ Hoot.control.TranslationAssistant = function () {
         }
 
         function enableTranslate() {
-            if (d3.selectAll('.conflate').empty()) {
+            if (d3.selectAll('.attribute-mapping').selectAll('.conflate').empty()) {
                 mapping
                 .append('a')
                 .classed('button dark animate strong block _icon big conflate pad2x pad1y js-toggle', true)

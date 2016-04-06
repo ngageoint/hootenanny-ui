@@ -5,11 +5,11 @@
         "levels"
     ],
     "geometry": [
-        "point",
         "area"
     ],
     "tags": {
         "building": "cabin"
     },
+    "matchScore": 0.5,
     "name": "Cabin"
 }

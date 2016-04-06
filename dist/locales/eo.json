@@ -41,6 +41,7 @@
             }
         },
         "continue": {
+            "key": "A",
             "title": "Daŭrigu",
             "description": "Daŭrigu tiun linion.",
             "not_eligible": "Neniu linio povas esti daŭrigita tien.",
@@ -65,6 +66,7 @@
                 "line": "Faru ĉi linio cirkuli.",
                 "area": "Faru ĉi areon cirkuli."
             },
+            "key": "O",
             "annotation": {
                 "line": "Farita cirkulero de linio.",
                 "area": "Farita cirkulero de areo."
@@ -75,9 +77,14 @@
             "description": {
                 "line": "Kvadrata la anguloj de ĉi tiu linio.",
                 "area": "Kvadrata la anguloj de ĉi tiu areo."
-            }
+            },
+            "key": "S"
+        },
+        "straighten": {
+            "key": "S"
         },
         "delete": {
+            "title": "Forigi",
             "annotation": {
                 "point": "Forigita punkton.",
                 "line": "Forigita linion."
@@ -85,6 +92,9 @@
         },
         "disconnect": {
             "title": "Malkonekti"
+        },
+        "move": {
+            "key": "M"
         },
         "rotate": {
             "title": "Rotacio",
@@ -94,12 +104,35 @@
             }
         },
         "reverse": {
-            "title": "dorsflanko"
+            "title": "dorsflanko",
+            "key": "V"
+        },
+        "split": {
+            "key": "X"
         }
     },
     "translate": {
         "translate": "Traduki",
         "localized_translation_label": "Multlingva nomon"
+    },
+    "commit": {
+        "changes": "{count} ŝanĝoj"
+    },
+    "inspector": {
+        "reference": "Vidi en la vikio de OpenStreetMap",
+        "check": {
+            "yes": "Jes",
+            "no": "Ne"
+        },
+        "way": "Vojo"
+    },
+    "feature": {
+        "others": {
+            "description": "Aliaj"
+        }
+    },
+    "help": {
+        "title": "Helpo"
     },
     "intro": {
         "navigation": {
@@ -110,8 +143,7 @@
         },
         "areas": {
             "title": "Areoj",
-            "choose": "**Rifo Korto de la listo.**",
-            "describe": "**Aldoni nomo, kaj fermi la redaktilon trajto **"
+            "choose": "**Rifo Korto de la listo.**"
         },
         "lines": {
             "title": "Linioj",
@@ -120,53 +152,60 @@
         },
         "startediting": {
             "title": "Komenco Redaktado",
-            "help": "Pli dokumentado kaj tiu walkthrough estas havebla ĉi tie.",
             "save": "Ne forgesu regule savu viajn ŝanĝojn!",
             "start": "Starti surĵeto!"
         }
     },
     "presets": {
-        "categories": {
-            "category-golf": {
-                "name": "Golfo"
-            },
-            "category-path": {
-                "name": "Vojo"
-            },
-            "category-water-area": {
-                "name": "Akvo"
-            },
-            "category-water-line": {
-                "name": "Akvo"
-            }
-        },
         "fields": {
             "access": {
-                "placeholder": "Nekonata",
-                "types": {
-                    "bicycle": "Bicikloj",
-                    "horse": "Ĉevaloj"
-                },
                 "options": {
-                    "yes": {
-                        "title": "Permesita"
+                    "designated": {
+                        "description": "Aliro rajtis laŭ signoj aŭ specifaj lokaj leĝoj",
+                        "title": "Nomita"
+                    },
+                    "destination": {
+                        "description": " Aliro rajtis nur al atingi cellokon ",
+                        "title": "Celloko"
+                    },
+                    "dismount": {
+                        "description": "Aliro rajtis sed rajdanto dev elseliĝ",
+                        "title": "Elseliĝ"
                     },
                     "no": {
+                        "description": "Aliro ne rajtita al la publiko",
                         "title": "Malpermesita"
+                    },
+                    "permissive": {
+                        "description": "Aliro rajtis ĝis tiam, kiam la posedanto revok la permeso"
+                    },
+                    "yes": {
+                        "title": "Permesita"
                     }
+                },
+                "types": {
+                    "bicycle": "Bicikloj",
+                    "foot": "Piedo",
+                    "horse": "Ĉevaloj",
+                    "motor_vehicle": "Aŭtomobiloj"
                 }
             },
             "access_simple": {
                 "placeholder": "jes"
             },
+            "access_toilets": {
+                "label": "Aliro"
+            },
             "address": {
                 "label": "Adreso",
                 "placeholders": {
-                    "housenumber": "123",
-                    "street": "Strato",
                     "city": "Urbo",
+                    "conscriptionnumber": "123",
+                    "country": "Lando",
+                    "district": "Distrikto",
+                    "housenumber": "123",
                     "province": "Provinco",
-                    "country": "Lando"
+                    "street": "Strato"
                 }
             },
             "aerialway/capacity": {
@@ -212,9 +251,9 @@
             },
             "internet_access": {
                 "options": {
-                    "yes": "Jes",
                     "no": "Ne",
-                    "wlan": "Wi-Fi"
+                    "wlan": "Wi-Fi",
+                    "yes": "Jes"
                 }
             },
             "lanes": {
@@ -242,14 +281,14 @@
             },
             "oneway": {
                 "options": {
-                    "yes": "Jes",
-                    "no": "Ne"
+                    "no": "Ne",
+                    "yes": "Jes"
                 }
             },
             "oneway_yes": {
                 "options": {
-                    "yes": "Jes",
-                    "no": "Ne"
+                    "no": "Ne",
+                    "yes": "Jes"
                 }
             },
             "opening_hours": {
@@ -275,12 +314,15 @@
                 "options": {
                     "bridge": "Ponto"
                 }
+            },
+            "trail_visibility": {
+                "placeholder": "Bonega, Bona, Malbona..."
+            },
+            "website": {
+                "placeholder": "http://example.com/"
             }
         },
         "presets": {
-            "building/church": {
-                "name": "Eklezio"
-            },
             "building/house": {
                 "name": "Domo"
             }

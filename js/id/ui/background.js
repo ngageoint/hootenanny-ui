@@ -17,8 +17,17 @@ iD.ui.Background = function(context) {
 
     function background(selection) {
 
+        function sortSources(a, b) {
+            return a.best() ? -1
+                : b.best() ? 1
+                : a.id === 'none' ? 1
+                : b.id === 'none' ? -1
+                : d3.ascending(a, b);
+        }
+
         function setOpacity(d) {
-            var bg = context.container().selectAll('.background-layer')
+			//iD 1.9.2 background-layer became layer-background            
+			var bg = context.container().selectAll('.layer-background')
                 .transition()
                 .style('opacity', d)
                 .attr('data-opacity', d);
@@ -118,7 +127,8 @@ iD.ui.Background = function(context) {
                 .filter(filter);
 
             var layerLinks = layerList.selectAll('li.layer')
-                .data(sources, function(d) { return d.name(); });
+                .data(sources, function(d) { return d.name(); })
+                .sort(sortSources); //added for iD v1.9.2
 
             var enter = layerLinks.enter()
                 //Modified for EGD-plugin
@@ -130,6 +140,16 @@ iD.ui.Background = function(context) {
                 .call(bootstrap.tooltip()
                     .title(function(d) { return d.description; })
                     .placement('top'));
+
+			//added for iD v1.9.2
+            enter.filter(function(d) { return d.best(); })
+                .append('div')
+                .attr('class', 'best')
+                .call(bootstrap.tooltip()
+                    .title(t('background.best_imagery'))
+                    .placement('left'))
+                .append('span')
+                .html('&#9733;');
 
             var label = enter.append('label');
 
@@ -226,6 +246,7 @@ iD.ui.Background = function(context) {
             button = selection.append('button')
                 .attr('tabindex', -1)
                 .on('click', toggle)
+                .call(iD.svg.Icon('#icon-layers', 'light'))
                 .call(tooltip),
             shown = false;
 
@@ -352,10 +373,9 @@ iD.ui.Background = function(context) {
                 .title(t('background.custom_button'))
                 .placement('left'))
             .on('click', editCustom)
-            .append('span')
-            .attr('class', 'icon geocode');
+            .call(iD.svg.Icon('#icon-search'));
 
-        label = custom.append('label');
+        var label = custom.append('label');
 
         label.append('input')
             .attr('type', 'radio')
@@ -373,6 +393,29 @@ iD.ui.Background = function(context) {
 
         var overlayList = content.append('ul')
             .attr('class', 'layer-list');
+
+        var controls = content.append('div')
+            .attr('class', 'controls-list');
+
+        var minimapLabel = controls
+            .append('label')
+            .call(bootstrap.tooltip()
+                .html(true)
+                .title(iD.ui.tooltipHtml(t('background.minimap.tooltip'), '/'))
+                .placement('top')
+            );
+
+        minimapLabel.classed('minimap-toggle', true)
+            .append('input')
+            .attr('type', 'checkbox')
+            .on('change', function() {
+                iD.ui.MapInMap.toggle();
+                d3.event.preventDefault();
+            });
+
+        minimapLabel.append('span')
+            .text(t('background.minimap.description'));
+
 
         //Added for EGD-plugin
 
@@ -461,12 +504,14 @@ iD.ui.Background = function(context) {
             .attr('class', function(d) { return d[0] + ' nudge'; })
             .on('mousedown', clickNudge);
 
-        var resetButton = nudgeContainer.append('button')
+        var resetButton = nudgeContainer
+            .append('button')
             .attr('class', 'reset disabled')
             .on('click', function () {
                 context.background().offset([0, 0]);
                 resetButton.classed('disabled', true);
-            });
+            })
+            .call(iD.svg.Icon('#icon-undo'));
 
         resetButton.append('div')
             .attr('class', 'icon undo');

@@ -78,10 +78,15 @@ iD.Entity.prototype = {
         return this;
     },
 
-    copy: function() {
-        // Returns an array so that we can support deep copying ways and relations.
-        // The first array element will contain this.copy, followed by any descendants.
-        return [iD.Entity(this, {id: undefined, user: undefined, version: undefined})];
+    // Updated function in v1.9.2
+    copy: function(deep, resolver, copies) {
+        if (copies[this.id])
+            return copies[this.id];
+
+        var copy = iD.Entity(this, {id: undefined, user: undefined, version: undefined});
+        copies[this.id] = copy;
+
+        return copy;
     },
 
     osmId: function() {
@@ -134,6 +139,9 @@ iD.Entity.prototype = {
                 key !== 'odbl' &&
                 key.indexOf('tiger:') !== 0;
         });
+
+		//iD v1.9.2
+		//return _.keys(this.tags).some(iD.interestingTag);
     },
 
     isHighwayIntersection: function() {

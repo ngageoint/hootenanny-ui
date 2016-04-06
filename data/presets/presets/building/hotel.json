@@ -6,11 +6,11 @@
         "smoking"
     ],
     "geometry": [
-        "point",
         "area"
     ],
     "tags": {
         "building": "hotel"
     },
+    "matchScore": 0.5,
     "name": "Hotel Building"
 }

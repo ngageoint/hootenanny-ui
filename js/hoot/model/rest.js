@@ -185,7 +185,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                     Hoot.model.REST('getMapSizes', _.pluck(resp.layers,'id').toString(),function (sizeInfo) {
                         if(sizeInfo) {
                             layerlist.layers = _.map(layerlist.layers, function(lyr){
-                                return _.extend(lyr, _.findWhere(sizeInfo.layers, { id: lyr.id} ));
+                                return _.extend(lyr, _.find(sizeInfo.layers, { id: lyr.id} ));
                             });
                         }
 
@@ -281,10 +281,10 @@ Hoot.model.REST = function (command, data, callback, option) {
         		hoot.model.layers.refresh(function(){
         			hoot.model.layers.setLayerLinks(function(){
         				var availLayers = hoot.model.layers.getAvailLayers();
-        				var input = _.findWhere(availLayers,{name:data.INPUT_NAME});
+        				var input = _.find(availLayers,{name:data.INPUT_NAME});
         				if(input!=undefined){
         					var outputFolderId = hoot.model.folders.getfolderIdByName(data.PATH_NAME) || 0;
-    						var output = _.findWhere(availLayers,{name:data.OUTPUT_NAME});
+    						var output = _.find(availLayers,{name:data.OUTPUT_NAME});
         					if(output!=undefined){
         	        			var link = {'folderId':outputFolderId,"mapid":output.id,"updateType":"update"};
         	                    hoot.model.folders.updateLink(link);

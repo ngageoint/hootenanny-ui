@@ -61,6 +61,7 @@ iD.ui.Sidebar = function(context) {
 
 
     sidebar.hover = function() {};
+    sidebar.hover.cancel = function() {};
     sidebar.select = function() {};
     sidebar.show = function() {};
     sidebar.hide = function() {};

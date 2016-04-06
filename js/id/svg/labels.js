@@ -131,7 +131,6 @@ iD.svg.Labels = function(projection, context) {
     }
 
     function drawPointLabels(group, entities, filter, classes, labels) {
-
         var texts = group.selectAll('text.' + classes)
             .filter(filter)
             .data(entities, iD.Entity.key);
@@ -161,19 +160,20 @@ iD.svg.Labels = function(projection, context) {
     }
 
     function drawAreaIcons(group, entities, filter, classes, labels) {
-
         var icons = group.selectAll('use')
             .filter(filter)
             .data(entities, iD.Entity.key);
 
         icons.enter()
             .append('use')
-            .attr('clip-path', 'url(#clip-square-18)')
-            .attr('class', 'icon');
+            .attr('class', 'icon areaicon')
+            .attr('width', '18px')
+            .attr('height', '18px');
 
         icons.attr('transform', get(labels, 'transform'))
             .attr('xlink:href', function(d) {
-                return '#maki-' + context.presets().match(d, context.graph()).icon + '-18';
+                var icon = context.presets().match(d, context.graph()).icon;
+                return '#' + icon + (icon === 'hairdresser' ? '-24': '-18');    // workaround: maki hairdresser-18 broken?
             });
 
 
@@ -182,7 +182,7 @@ iD.svg.Labels = function(projection, context) {
 
     function reverse(p) {
         var angle = Math.atan2(p[1][1] - p[0][1], p[1][0] - p[0][0]);
-        return !(p[0][0] < p[p.length - 1][0] && angle < Math.PI/2 && angle > - Math.PI/2);
+        return !(p[0][0] < p[p.length - 1][0] && angle < Math.PI/2 && angle > -Math.PI/2);
     }
 
     function lineString(nodes) {
@@ -247,9 +247,8 @@ iD.svg.Labels = function(projection, context) {
     var rtree = rbush(),
         rectangles = {};
 
-    function labels(surface, graph, entities, filter, dimensions, fullRedraw) {
-
-        var hidePoints = !surface.select('.node.point').node();
+    function drawLabels(surface, graph, entities, filter, dimensions, fullRedraw) {
+        var hidePoints = !surface.selectAll('.node.point').node();
 
         var labelable = [], i, k, entity;
         for (i = 0; i < label_stack.length; i++) labelable.push([]);
@@ -279,7 +278,7 @@ iD.svg.Labels = function(projection, context) {
             if (!icon && !iD.util.displayName(entity))
                 continue;
 
-            for (k = 0; k < label_stack.length; k ++) {
+            for (k = 0; k < label_stack.length; k++) {
                 if (geometry === label_stack[k][0] && entity.tags[label_stack[k][1]]) {
                     labelable[k].push(entity);
                     break;
@@ -302,7 +301,7 @@ iD.svg.Labels = function(projection, context) {
         // Try and find a valid label for labellable entities
         for (k = 0; k < labelable.length; k++) {
             var font_size = font_sizes[k];
-            for (i = 0; i < labelable[k].length; i ++) {
+            for (i = 0; i < labelable[k].length; i++) {
                 entity = labelable[k][i];
                 var name = iD.util.displayName(entity),
                     width = name && textWidth(name, font_size),
@@ -343,7 +342,7 @@ iD.svg.Labels = function(projection, context) {
                 length = iD.geo.pathLength(nodes);
             if (length < width + 20) return;
 
-            for (var i = 0; i < lineOffsets.length; i ++) {
+            for (var i = 0; i < lineOffsets.length; i++) {
                 var offset = lineOffsets[i],
                     middle = offset / 100 * length,
                     start = middle - width/2;
@@ -371,7 +370,7 @@ iD.svg.Labels = function(projection, context) {
                 entitywidth = projection(extent[1])[0] - projection(extent[0])[0],
                 rect;
 
-            if (!centroid || entitywidth < 20) return;
+            if (isNaN(centroid[0]) || entitywidth < 20) return;
 
             var iconX = centroid[0] - (iconSize/2),
                 iconY = centroid[1] - (iconSize/2),
@@ -408,8 +407,8 @@ iD.svg.Labels = function(projection, context) {
             return v;
         }
 
-        var label = surface.select('.layer-label'),
-            halo = surface.select('.layer-halo');
+        var label = surface.selectAll('.layer-label'),
+            halo = surface.selectAll('.layer-halo');
 
         // points
         drawPointLabels(label, labelled.point, filter, 'pointlabel', positions.point);
@@ -426,7 +425,7 @@ iD.svg.Labels = function(projection, context) {
         drawAreaIcons(label, labelled.area, filter, 'arealabel-icon', positions.area);
     }
 
-    labels.supersurface = function(supersurface) {
+    drawLabels.supersurface = function(supersurface) {
         supersurface
             .on('mousemove.hidelabels', hideOnMouseover)
             .on('mousedown.hidelabels', function () {
@@ -437,5 +436,5 @@ iD.svg.Labels = function(projection, context) {
             });
     };
 
-    return labels;
+    return drawLabels;
 };

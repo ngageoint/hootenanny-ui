@@ -53,7 +53,7 @@ iD.presets = function() {
     // and the subkeys form the blacklist.
     all.areaKeys = function() {
         var areaKeys = {},
-            ignore = ['highway', 'footway', 'railway', 'type'],
+            ignore = ['barrier', 'highway', 'footway', 'railway', 'type'],
             presets = _.reject(all.collection, 'suggestion');
 
         // whitelist
@@ -74,7 +74,9 @@ iD.presets = function() {
             if (ignore.indexOf(key) !== -1) return;
 
             var value = d.tags[key];
-            if (d.geometry.indexOf('area') === -1 && key in areaKeys && value !== '*') {
+            if (d.geometry.indexOf('area') === -1 &&
+                d.geometry.indexOf('line') !== -1 &&
+                key in areaKeys && value !== '*') {
                 areaKeys[key][value] = true;
             }
         });

@@ -4,7 +4,6 @@ iD.svg = {
             return iD.geo.roundCoords(projection(d));
         };
     },
-
     PointTransform: function(projection) {
         return function(entity) {
             // http://jsperf.com/short-array-join
@@ -13,25 +12,18 @@ iD.svg = {
         };
     },
 
-    Round: function () {
-        return d3.geo.transform({
-            point: function(x, y) { return this.stream.point(Math.floor(x), Math.floor(y)); }
-        });
-    },
-
     Path: function(projection, graph, polygon) {
         var cache = {},
-            round = iD.svg.Round().stream,
             clip = d3.geo.clipExtent().extent(projection.clipExtent()).stream,
             project = projection.stream,
             path = d3.geo.path()
-                .projection({stream: function(output) { return polygon ? project(round(output)) : project(clip(round(output))); }});
+                .projection({stream: function(output) { return polygon ? project(output) : project(clip(output)); }});
 
         return function(entity) {
             if (entity.id in cache) {
                 return cache[entity.id];
             } else {
-                return cache[entity.id] = path(entity.asGeoJSON(graph)); // jshint ignore:line
+                return cache[entity.id] = path(entity.asGeoJSON(graph));
             }
         };
     },
@@ -43,7 +35,7 @@ iD.svg = {
                 i = 0,
                 offset = dt,
                 segments = [],
-                viewport = iD.geo.Extent(projection.clipExtent()),
+                clip = d3.geo.clipExtent().extent(projection.clipExtent()).stream,
                 coordinates = graph.childNodes(entity).map(function(n) {
                     return n.loc;
                 });
@@ -53,7 +45,7 @@ iD.svg = {
             d3.geo.stream({
                 type: 'LineString',
                 coordinates: coordinates
-            }, projection.stream({
+            }, projection.stream(clip({
                 lineStart: function() {},
                 lineEnd: function() {
                     a = null;
@@ -62,10 +54,9 @@ iD.svg = {
                     b = [x, y];
 
                     if (a) {
-                        var extent = iD.geo.Extent(a).extend(b),
-                            span = iD.geo.euclideanDistance(a, b) - offset;
+                        var span = iD.geo.euclideanDistance(a, b) - offset;
 
-                        if (extent.intersects(viewport) && span >= 0) {
+                        if (span >= 0) {
                             var angle = Math.atan2(b[1] - a[1], b[0] - a[0]),
                                 dx = dt * Math.cos(angle),
                                 dy = dt * Math.sin(angle),
@@ -91,7 +82,7 @@ iD.svg = {
 
                     a = b;
                 }
-            }));
+            })));
 
             return segments;
         };
@@ -102,6 +93,19 @@ iD.svg = {
             var tags = entity.tags;
             graph.parentRelations(entity).forEach(function(relation) {
                 if (relation.isMultipolygon()) {
+                    tags = _.extend({}, relation.tags, tags);
+                }
+            });
+            return tags;
+        };
+    },
+
+    RelationMemberTags: function(graph) {
+        return function(entity) {
+            var tags = entity.tags;
+            graph.parentRelations(entity).forEach(function(relation) {
+                var type = relation.tags.type;
+                if (type === 'multipolygon' || type === 'boundary') {
                     tags = _.extend({}, relation.tags, tags);
                 }
             });

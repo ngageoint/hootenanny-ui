@@ -56,6 +56,21 @@ describe("iD.Tree", function() {
 
             expect(tree.intersects(iD.geo.Extent([0, 0], [2, 2]), graph)).to.eql([relation]);
         });
+
+        it("adjusts entities that are force-rebased", function() {
+            var graph = iD.Graph(),
+                tree = iD.Tree(graph),
+                node = iD.Node({id: 'n', loc: [1, 1]});
+
+            graph.rebase([node], [graph]);
+            tree.rebase([node]);
+
+            node = node.move([-1, -1]);
+            graph.rebase([node], [graph], true);
+            tree.rebase([node], true);
+
+            expect(tree.intersects(iD.geo.Extent([0, 0], [2, 2]), graph)).to.eql([]);
+        });
     });
 
     describe("#intersects", function() {
@@ -126,6 +141,21 @@ describe("iD.Tree", function() {
 
             graph = graph.replace(node).replace(relation);
             expect(tree.intersects(extent, graph)).to.eql([node, relation]);
+
+            graph = graph.replace(node.move([3, 3]));
+            expect(tree.intersects(extent, graph)).to.eql([]);
+        });
+
+        it("adjusts parent relations of parent ways when a member node is moved", function() {
+            var graph = iD.Graph(),
+                tree = iD.Tree(graph),
+                node = iD.Node({id: 'n', loc: [1, 1]}),
+                way = iD.Way({id: 'w', nodes: ['n']}),
+                relation = iD.Relation({members: [{type: 'multipolygon', id: 'w'}]}),
+                extent = iD.geo.Extent([0, 0], [2, 2]);
+
+            graph = graph.replace(node).replace(way).replace(relation);
+            expect(tree.intersects(extent, graph)).to.eql([node, way, relation]);
 
             graph = graph.replace(node.move([3, 3]));
             expect(tree.intersects(extent, graph)).to.eql([]);
