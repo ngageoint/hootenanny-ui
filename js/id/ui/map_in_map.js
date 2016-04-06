@@ -8,8 +8,6 @@ iD.ui.MapInMap = function(context) {
             //overlayLayer = iD.TileLayer(),
 			overlayLayers = {},
             projection = iD.geo.RawMercator(),
-            //gpxLayer = iD.GpxLayer(context, dispatch),
-            gpxLayer = iD.svg.Gpx(projection, context).showLabels(false),
             zoom = d3.behavior.zoom()
                 .scaleExtent([ztok(0.5), ztok(24)])
                 .on('zoom', zoomPan),
@@ -19,8 +17,6 @@ iD.ui.MapInMap = function(context) {
             zDiff = 6,    // by default, minimap renders at (main zoom - 6)
             tStart, tLast, tCurr, kLast, kCurr, tiles, svg, timeoutId,
             geojson = [];
-
-        //iD.ui.MapInMap.gpxLayer = gpxLayer;
 
         function ztok(z) { return 256 * Math.pow(2, z); }
         function ktoz(k) { return Math.log(k) / Math.LN2 - 8; }
@@ -163,7 +159,6 @@ iD.ui.MapInMap = function(context) {
             background
                 .call(backgroundLayer);
 
-
             // redraw overlay
             var overlaySources = context.background().overlayLayerSources(),
                 hasOverlay = false,
@@ -202,20 +197,6 @@ iD.ui.MapInMap = function(context) {
                 overlay
                     .call(overlayLayer);
             }
-
-            var gpx = tiles
-                .selectAll('.map-in-map-gpx')
-                .data(gpxLayer.enabled() ? [0] : []);
-
-            gpx.enter()
-                .append('svg')
-                .attr('class', 'map-in-map-gpx');
-
-            gpx.exit()
-                .remove();
-
-            gpx.call(gpxLayer);
-
 
             // redraw bounding box
             if (!panning) {
