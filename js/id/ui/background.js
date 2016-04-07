@@ -25,9 +25,8 @@ iD.ui.Background = function(context) {
                 : d3.ascending(a, b);
         }
 
-        function setOpacity(d) {
-			//iD 1.9.2 background-layer became layer-background            
-			var bg = context.container().selectAll('.layer-background')
+        function setOpacity(d) { 
+			var bg = context.container().selectAll('.background-layer')
                 .transition()
                 .style('opacity', d)
                 .attr('data-opacity', d);
