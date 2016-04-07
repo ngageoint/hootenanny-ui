@@ -283,6 +283,18 @@ iD.Map = function(context) {
         //Added for measure layer
         d3.select('.measure-layer').selectAll('g').remove();
 
+        //Added for goto feature bubbles
+        var gotoBubbles = d3.selectAll('.gotoreview');
+        if(!gotoBubbles.empty())        {
+            _.each(gotoBubbles[0],function(b){
+                var offsetDiff = d3.select(b).classed('_way') ? 0 : 50;
+                var loc = d3.select(b).attr('loc').split(/,/).map(parseFloat);
+                var c = context.projection(loc);
+                var transform = 'translate('.concat(c[0],',',c[1]-offsetDiff,')');
+                d3.select(b).attr('transform',transform);
+            });
+        }
+
         // If we are in the middle of a zoom/pan, we can't do differenced redraws.
         // It would result in artifacts where differenced entities are redrawn with
         // one transform and unchanged entities with another.

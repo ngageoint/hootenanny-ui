@@ -255,6 +255,8 @@ Hoot.model.layers = function (context)
         var mapid = model_layers.getLayers(name).mapId;
         delete layers[name];
 
+        context.background().updateReviewLayer({},"");
+
         context.connection().loadedDataRemove(mapid.toString());
         d3.select('.layerControl_' + mapid.toString()).remove();
         d3.select('.layer-list-hoot').classed('hidden', function() {

@@ -25,8 +25,9 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     * @param raitem - review item 2
     **/
     //@TODO: change params to array
-	_instance.highlightLayer = function (ritem, raitem) {
-   
+	_instance.highlightLayer = function (ritem, raitem, panTo) {
+        var panTo = (panTo != null || panTo != undefined) ? panTo : true;
+
         var feature = null;
         var againstFeature = null;
         
@@ -90,7 +91,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         var relId = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
         _parent().reviewIds.push(relId);
         _parent().info.metadata.updateMeta(null);
-        if(panToId) {
+        if(panToId && panTo) {
             _parent().map.featureNavigator.panToEntity(context.entity(panToId), true);
         }
    

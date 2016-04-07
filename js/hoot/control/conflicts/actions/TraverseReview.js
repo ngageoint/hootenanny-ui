@@ -223,6 +223,13 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     }
 
     /**
+    * @desc  sets current reviewable item
+    **/
+    _instance.setCurrentReviewable = function(_){
+        _currentReviewable = _;
+    }    
+
+    /**
     * @desc  initialization validation
     **/
     var _isInitialized = function()
