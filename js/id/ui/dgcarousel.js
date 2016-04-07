@@ -1,5 +1,5 @@
 iD.ui.dgCarousel = function(context) {
-    var key = 'c';
+    var key = '⌘I';
 
     function dgcarousel(selection) {
         var shown = false;
