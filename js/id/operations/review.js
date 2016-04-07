@@ -187,6 +187,8 @@ iD.operations.Review = function(selectedIDs, context) {
                                     if(resp.resultCount < 1){
                                       alert('The review item already has been resolved. Can not go to review item.');
                                     } else {
+                                        // Set as current reviewable item
+                                        _parent().actions.traversereview.setCurrentReviewable(resp);
                                         _parent().actions.idgraphsynch.getRelationFeature(resp.mapId, resp.relationId, 
                                         function(newReviewItem){
                                             _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
