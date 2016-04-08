@@ -2117,7 +2117,7 @@ div.full-screen > button:hover {
 .opacity-options {
     background: url(img/background-pattern-opacity.png) 0 0 repeat;
     height:20px;
-    width:82px;
+    /*width:82px;*/
     position: absolute;
     right: 50px;
     top: 20px;
