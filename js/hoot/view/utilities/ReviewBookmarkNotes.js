@@ -158,7 +158,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
             
 
             mainBarDiv.append('div')
-              .classed('fr icon search point', true)
+              .call(iD.svg.Icon('#icon-search'))
               .on('click', function () {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
