@@ -102,6 +102,7 @@ iD.ui.dgCarousel = function(context) {
         var button = selection.append('button')
             .attr('tabindex', -1)
             .on('click', toggle)
+            .call(iD.svg.Icon('#icon-carousel', 'light'))
             .call(tooltip);
 
         button.append('span')
