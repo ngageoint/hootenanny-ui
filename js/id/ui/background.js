@@ -131,7 +131,7 @@ iD.ui.Background = function(context) {
 
             var enter = layerLinks.enter()
                 //Modified for EGD-plugin
-                .insert('li', '.dg_layer')//insert li before element of class dg_layer
+                .insert('li', '.custom_layer')//insert li before element of class dg_layer
                 .attr('class', 'layer');
 
             // only set tooltips for layers with tooltips
@@ -280,6 +280,34 @@ iD.ui.Background = function(context) {
         var backgroundList = content.append('ul')
             .attr('class', 'layer-list');
 
+        var custom = backgroundList.append('li')
+            .attr('class', 'custom_layer')
+            .datum(iD.BackgroundSource.Custom());
+
+        custom.append('button')
+            .attr('class', 'layer-browse')
+            .call(bootstrap.tooltip()
+                .title(t('background.custom_button'))
+                .placement('left'))
+            .on('click', editCustom)
+            .call(iD.svg.Icon('#icon-search'));
+
+        var label = custom.append('label');
+
+        label.append('input')
+            .attr('type', 'radio')
+            .attr('name', 'layers')
+            .on('change', function () {
+                if (customTemplate) {
+                    setCustom(customTemplate);
+                } else {
+                    editCustom();
+                }
+            });
+
+        label.append('span')
+            .text(t('background.custom'));            
+
         //Added for EGD-plugin
 
         if (dgServices.enabled) {
@@ -360,34 +388,6 @@ iD.ui.Background = function(context) {
                 });
         }
         //END: Added for EGD-plugin
-
-        var custom = backgroundList.append('li')
-            .attr('class', 'custom_layer')
-            .datum(iD.BackgroundSource.Custom());
-
-        custom.append('button')
-            .attr('class', 'layer-browse')
-            .call(bootstrap.tooltip()
-                .title(t('background.custom_button'))
-                .placement('left'))
-            .on('click', editCustom)
-            .call(iD.svg.Icon('#icon-search'));
-
-        var label = custom.append('label');
-
-        label.append('input')
-            .attr('type', 'radio')
-            .attr('name', 'layers')
-            .on('change', function () {
-                if (customTemplate) {
-                    setCustom(customTemplate);
-                } else {
-                    editCustom();
-                }
-            });
-
-        label.append('span')
-            .text(t('background.custom'));
 
         var overlayList = content.append('ul')
             .attr('class', 'layer-list');
