@@ -299,8 +299,7 @@ iD.ui.Background = function(context) {
                     d3.event.preventDefault();
                     profiles.classed('hide', function() { return !profiles.classed('hide'); });
                 })
-                .append('span')
-                .attr('class', 'icon layers dark');
+                .call(iD.svg.Icon('#icon-layers'));
 
             var label = dgbackground.append('label');
 
@@ -435,8 +434,7 @@ iD.ui.Background = function(context) {
                     d3.event.preventDefault();
                     collections.classed('hide', function() { return !collections.classed('hide'); });
                 })
-                .append('span')
-                .attr('class', 'icon layers dark');
+                .call(iD.svg.Icon('#icon-layers'));
 
             label = dgcollection.append('label');
 
