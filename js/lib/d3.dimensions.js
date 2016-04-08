@@ -1,7 +1,7 @@
 d3.selection.prototype.dimensions = function (dimensions) {
     var refresh = (function(node) {
-        var cr = node.getBoundingClientRect();
-        prop = [cr.width, cr.height];
+        // Changed for Hootenanny
+        prop = [node.offsetWidth, node.offsetHeight];
         this.property('__dimensions__', prop);
         return prop;
     }).bind(this);
