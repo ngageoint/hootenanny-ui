@@ -102,7 +102,34 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                         _reviewGetNextHandler(null, forcedReviewableItem);
                         context.hoot().view.utilities.reviewbookmarknotes.setForcedReviewableItem(null);
                     } else {
-                        Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
+                        // First check to see if there are any siblings within the relation
+                         if(_currentReviewable){
+                            try{
+                                _parent().actions.idgraphsynch.getRelationFeature(_currentReviewable.mapId,_currentReviewable.relationId,function(resp){
+                                    var feature = context.hasEntity(resp.members[0].id);
+                                    var nextReviewInRelation = _.find(context.graph().parentRelations(feature),function(item){return item.tags['hoot:review:needs'] == 'yes'});
+                                    if(nextReviewInRelation == undefined){
+                                        // Try other member
+                                        feature = context.hasEntity(resp.members[1].id);
+                                        nextReviewInRelation = _.find(context.graph().parentRelations(feature),function(item){return item.tags['hoot:review:needs'] == 'yes'});
+                                    }
+
+                                    if(nextReviewInRelation == undefined){
+                                        Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
+                                    } else{
+                                        var nextReview = {
+                                            mapId:nextReviewInRelation.mapId,
+                                            resultCount:1,
+                                            sortOrder:parseInt(nextReviewInRelation.tags['hoot:review:sort_order']),
+                                            relationId: parseInt(nextReviewInRelation.origid.replace('r',''))
+                                        }
+                                        _reviewGetNextHandler(null, nextReview);
+                                    }
+                                });
+                            } catch (err) {
+                                Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
+                            }
+                        } else {Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);}
                     }
      
                 } catch (err) {
