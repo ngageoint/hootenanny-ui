@@ -392,29 +392,6 @@ iD.ui.Background = function(context) {
         var overlayList = content.append('ul')
             .attr('class', 'layer-list');
 
-        var controls = content.append('div')
-            .attr('class', 'controls-list');
-
-        var minimapLabel = controls
-            .append('label')
-            .call(bootstrap.tooltip()
-                .html(true)
-                .title(iD.ui.tooltipHtml(t('background.minimap.tooltip'), '/'))
-                .placement('top')
-            );
-
-        minimapLabel.classed('minimap-toggle', true)
-            .append('input')
-            .attr('type', 'checkbox')
-            .on('change', function() {
-                iD.ui.MapInMap.toggle();
-                d3.event.preventDefault();
-            });
-
-        minimapLabel.append('span')
-            .text(t('background.minimap.description'));
-
-
         //Added for EGD-plugin
 
         if (dgServices.enabled) {
@@ -472,7 +449,29 @@ iD.ui.Background = function(context) {
                     clickAddOrUpdateOverlay(iD.BackgroundSource(dgServices.collectionSource(activeService/*service*/, null/*connectId*/, 'Default_Profile'/*profile*/, d.value/*freshness*/)));
                 });
         }
-        //ENDAdded for EGD-plugin
+        //END Added for EGD-plugin
+
+        var controls = content.append('div')
+            .attr('class', 'controls-list');
+
+        var minimapLabel = controls
+            .append('label')
+            .call(bootstrap.tooltip()
+                .html(true)
+                .title(iD.ui.tooltipHtml(t('background.minimap.tooltip'), '/'))
+                .placement('top')
+            );
+
+        minimapLabel.classed('minimap-toggle', true)
+            .append('input')
+            .attr('type', 'checkbox')
+            .on('change', function() {
+                iD.ui.MapInMap.toggle();
+                d3.event.preventDefault();
+            });
+
+        minimapLabel.append('span')
+            .text(t('background.minimap.description'));
 
         // Disabling per customer request
         // Feature #5248
