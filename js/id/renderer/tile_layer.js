@@ -111,11 +111,12 @@ iD.TileLayer = function() {
         }
 
         function imageTransform(d) {
+            // To create border between tiles, remove Math.round
             var _ts = tileSize * Math.pow(2, z - d[2]);
             var scale = tileSizeAtZoom(d, z);
             return 'translate(' +
-                ((d[0] * _ts) - tileOrigin[0] + pixelOffset[0]) + 'px,' +
-                ((d[1] * _ts) - tileOrigin[1] + pixelOffset[1]) + 'px)' +
+                (Math.round((d[0] * _ts) - tileOrigin[0]) + pixelOffset[0]) + 'px,' +
+                (Math.round((d[1] * _ts) - tileOrigin[1]) + pixelOffset[1]) + 'px)' +
                 'scale(' + scale + ',' + scale + ')';
         }
 
