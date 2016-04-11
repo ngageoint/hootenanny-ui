@@ -94,11 +94,8 @@
         },
         "merge": {
             "title": "Sapludināt",
-            "description": "Sapludināt līnijas.",
             "key": "C",
-            "annotation": "{n} līnijas sapludinātas.",
-            "not_eligible": "Šos objektus nevar apvienot.",
-            "not_adjacent": "Šīs līnijas nevar apvienot, jo tās nav savienotas."
+            "not_eligible": "Šos objektus nevar apvienot."
         },
         "move": {
             "title": "Pārvietot",
@@ -149,7 +146,6 @@
         "tooltip": "Atgriezt: {action}",
         "nothing": "Nav nekā, ko atsaukt"
     },
-    "browser_notice": "Šis redaktors tiek atbalstīts ar Firefox, Chrome, Safari, Opera, un Internet Explorer 9 un jaunāku. Lūdzu, atjauniniet savu pārlūkprogrammu vai izmantojiet Potlatch 2 kartes rediģēšanai",
     "translate": {
         "translate": "Tulkot",
         "localized_translation_language": "Izvelties valodu"
@@ -157,14 +153,12 @@
     "zoom_in_edit": "Pietuvināt, lai labotu",
     "logout": "atslēgties",
     "loading_auth": "Savienojas ar OpenStreetMap...",
-    "report_a_bug": "ziņot par kļūdu",
     "status": {
         "error": "Nevarēja savienoties ar API."
     },
     "commit": {
         "title": "Saglabāt izmaiņas",
         "description_placeholder": "Īss apraksts par jūsu ieguldījumu",
-        "message_label": "Izmaiņu apraksts",
         "save": "Saglabāt",
         "cancel": "Atcelt",
         "warnings": "Brīdinājumi",
@@ -211,7 +205,6 @@
         "title": "Saglabāt",
         "help": "Saglabā izmaiņas, padarot tās redzamas citiem.",
         "no_changes": "Nav izmaiņu, ko saglabāt.",
-        "error": "Kļūda. Nevarēja saglabāt izmaiņas",
         "uploading": "Augšupielādē izmaiņas",
         "unsaved_changes": "Jums ir nesaglabātas izmaiņas"
     },
@@ -270,8 +263,7 @@
         },
         "lines": {
             "title": "Līnijas",
-            "start": "**Uzsāciet līniju, klikšķinot ceļa beigu punktā.**",
-            "restart": "Ceļam jākrusto Flower Street."
+            "start": "**Uzsāciet līniju, klikšķinot ceļa beigu punktā.**"
         },
         "startediting": {
             "save": "Neizmirstiet regulāri saglabāt izmaiņas!",
@@ -281,44 +273,42 @@
     "presets": {
         "fields": {
             "access": {
-                "label": "Piekļuve",
-                "types": {
-                    "access": "Vispārīgs",
-                    "foot": "Kājām",
-                    "motor_vehicle": "Automašīnas",
-                    "bicycle": "Velosipēdi",
-                    "horse": "Zirgi"
-                },
                 "options": {
-                    "yes": {
-                        "title": "Atļauts",
-                        "description": "Piekļuve atļauta ar likumu"
+                    "designated": {
+                        "description": "Piekļuve atļauta atbilstoši zīmēm vai speciāliem vietējiem likumiem",
+                        "title": "Nozīmēts"
+                    },
+                    "destination": {
+                        "title": "Galamērķis"
                     },
                     "no": {
-                        "title": "Aizliegts",
-                        "description": "Piekļuve nav atļauta bez speciālā atļaujām "
+                        "description": "Piekļuve nav atļauta bez speciālā atļaujām ",
+                        "title": "Aizliegts"
                     },
                     "permissive": {
                         "description": "Piekļuve atļauta līdz īpašnieks atsauc atļauju"
                     },
                     "private": {
-                        "title": "Privāts",
-                        "description": "Piekļuve atļauta tikai ar īpašnieka atļauju"
+                        "description": "Piekļuve atļauta tikai ar īpašnieka atļauju",
+                        "title": "Privāts"
                     },
-                    "designated": {
-                        "title": "Nozīmēts",
-                        "description": "Piekļuve atļauta atbilstoši zīmēm vai speciāliem vietējiem likumiem"
-                    },
-                    "destination": {
-                        "title": "Galamērķis"
+                    "yes": {
+                        "description": "Piekļuve atļauta ar likumu",
+                        "title": "Atļauts"
                     }
+                },
+                "types": {
+                    "bicycle": "Velosipēdi",
+                    "foot": "Kājām",
+                    "horse": "Zirgi",
+                    "motor_vehicle": "Automašīnas"
                 }
             },
             "address": {
                 "label": "Adrese",
                 "placeholders": {
-                    "street": "Iela",
-                    "city": "Pilsēta"
+                    "city": "Pilsēta",
+                    "street": "Iela"
                 }
             },
             "aeroway": {
@@ -387,9 +377,9 @@
             "internet_access": {
                 "label": "Interneta piekļuve",
                 "options": {
-                    "wlan": "Bezvadu internets",
+                    "terminal": "Termināls",
                     "wired": "Kabeļinternets",
-                    "terminal": "Termināls"
+                    "wlan": "Bezvadu internets"
                 }
             },
             "landuse": {
@@ -480,9 +470,9 @@
                 "label": "Objekts",
                 "options": {
                     "bridge": "Tilts",
-                    "tunnel": "Tunelis",
+                    "cutting": "Izgriezums",
                     "embankment": "Krastmala",
-                    "cutting": "Izgriezums"
+                    "tunnel": "Tunelis"
                 }
             },
             "surface": {
@@ -691,17 +681,11 @@
             "highway/steps": {
                 "name": "Kāpnes"
             },
-            "highway/track": {
-                "name": "Meža ceļš"
-            },
             "highway/traffic_signals": {
                 "name": "Luksofors"
             },
             "highway/turning_circle": {
                 "name": "Apgriešanās riņķis"
-            },
-            "highway/unclassified": {
-                "name": "Neklasificēts ceļš"
             },
             "historic": {
                 "name": "Vēsturiska vieta"
@@ -723,9 +707,6 @@
             },
             "historic/ruins": {
                 "name": "Pilsdrupas"
-            },
-            "landuse": {
-                "name": "Zemes pielietojums"
             },
             "landuse/basin": {
                 "name": "Baseins"

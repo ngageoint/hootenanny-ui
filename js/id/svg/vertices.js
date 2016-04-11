@@ -47,19 +47,10 @@ iD.svg.Vertices = function(projection, context) {
 
     function draw(selection, vertices, klass, graph, zoom) {
         var icons = {},
-            z;
+            z = (zoom < 17 ? 0 : zoom < 18 ? 1 : 2);
 
-        if (zoom < 17) {
-            z = 0;
-        } else if (zoom < 18) {
-            z = 1;
-        } else {
-            z = 2;
-        }
-
-        var groups = selection.data(vertices, function(entity) {
-            return iD.Entity.key(entity);
-        });
+        var groups = selection
+            .data(vertices, iD.Entity.key);
 
         function icon(entity) {
             if (entity.id in icons) return icons[entity.id];
@@ -69,7 +60,7 @@ iD.svg.Vertices = function(projection, context) {
             return icons[entity.id];
         }
 
-        function classCircle(klass) {
+        function setClass(klass) {
             return function(entity) {
                 this.setAttribute('class', 'node vertex ' + klass + ' ' + entity.id);
             };
@@ -109,22 +100,24 @@ iD.svg.Vertices = function(projection, context) {
             .attr('class', function(d) { return 'node vertex ' + klass + ' ' + d.id; });
 
         enter.append('circle')
-            .each(classCircle('shadow'));
+            .each(setClass('shadow'));
 
         enter.append('circle')
-            .each(classCircle('stroke'));
+            .each(setClass('stroke'));
 
         // Vertices with icons get a `use`.
         enter.filter(function(d) { return icon(d); })
             .append('use')
             .attr('transform', 'translate(-6, -6)')
-            .attr('clip-path', 'url(#clip-square-12)')
-            .attr('xlink:href', function(d) { return '#maki-' + icon(d) + '-12'; });
+            .attr('xlink:href', function(d) { return '#' + icon(d) + '-12'; })
+            .attr('width', '12px')
+            .attr('height', '12px')
+            .each(setClass('icon'));
 
         // Vertices with tags get a fill.
         enter.filter(function(d) { return d.hasInterestingTags(); })
             .append('circle')
-            .each(classCircle('fill'));
+            .each(setClass('fill'));
 
         groups
             .attr('transform', iD.svg.PointTransform(projection))
@@ -137,12 +130,19 @@ iD.svg.Vertices = function(projection, context) {
 
     function drawVertices(surface, graph, entities, filter, extent, zoom) {
         var selected = siblingAndChildVertices(context.selectedIDs(), graph, extent),
+            wireframe = surface.classed('fill-wireframe'),
             vertices = [];
 
         for (var i = 0; i < entities.length; i++) {
-            var entity = entities[i];
+            var entity = entities[i],
+                geometry = entity.geometry(graph);
 
-            if (entity.geometry(graph) !== 'vertex')
+            if (wireframe && geometry === 'point') {
+                vertices.push(entity);
+                continue;
+            }
+
+            if (geometry !== 'vertex')
                 continue;
 
             if (entity.id in selected ||
@@ -152,7 +152,7 @@ iD.svg.Vertices = function(projection, context) {
             }
         }
 
-        surface.select('.layer-hit').selectAll('g.vertex.vertex-persistent')
+        surface.selectAll('.layer-hit').selectAll('g.vertex.vertex-persistent')
             .filter(filter)
             .call(draw, vertices, 'vertex-persistent', graph, zoom);
 
@@ -162,15 +162,14 @@ iD.svg.Vertices = function(projection, context) {
     function drawHover(surface, graph, extent, zoom) {
         var hovered = hover ? siblingAndChildVertices([hover.id], graph, extent) : {};
 
-        surface.select('.layer-hit').selectAll('g.vertex.vertex-hover')
+        surface.selectAll('.layer-hit').selectAll('g.vertex.vertex-hover')
             .call(draw, d3.values(hovered), 'vertex-hover', graph, zoom);
     }
 
-    drawVertices.drawHover = function(surface, graph, _, extent, zoom) {
-        if (hover !== _) {
-            hover = _;
-            drawHover(surface, graph, extent, zoom);
-        }
+    drawVertices.drawHover = function(surface, graph, target, extent, zoom) {
+        if (target === hover) return;
+        hover = target;
+        drawHover(surface, graph, extent, zoom);
     };
 
     return drawVertices;

@@ -17,8 +17,16 @@ iD.ui.Background = function(context) {
 
     function background(selection) {
 
-        function setOpacity(d) {
-            var bg = context.container().selectAll('.background-layer')
+        function sortSources(a, b) {
+            return a.best() ? -1
+                : b.best() ? 1
+                : a.id === 'none' ? 1
+                : b.id === 'none' ? -1
+                : d3.ascending(a, b);
+        }
+
+        function setOpacity(d) { 
+			var bg = context.container().selectAll('.background-layer')
                 .transition()
                 .style('opacity', d)
                 .attr('data-opacity', d);
@@ -118,11 +126,12 @@ iD.ui.Background = function(context) {
                 .filter(filter);
 
             var layerLinks = layerList.selectAll('li.layer')
-                .data(sources, function(d) { return d.name(); });
+                .data(sources, function(d) { return d.name(); })
+                .sort(sortSources); //added for iD v1.9.2
 
             var enter = layerLinks.enter()
                 //Modified for EGD-plugin
-                .insert('li', '.dg_layer')//insert li before element of class dg_layer
+                .insert('li', '.custom_layer')//insert li before element of class dg_layer
                 .attr('class', 'layer');
 
             // only set tooltips for layers with tooltips
@@ -130,6 +139,16 @@ iD.ui.Background = function(context) {
                 .call(bootstrap.tooltip()
                     .title(function(d) { return d.description; })
                     .placement('top'));
+
+			//added for iD v1.9.2
+            enter.filter(function(d) { return d.best(); })
+                .append('div')
+                .attr('class', 'best')
+                .call(bootstrap.tooltip()
+                    .title(t('background.best_imagery'))
+                    .placement('left'))
+                .append('span')
+                .html('&#9733;');
 
             var label = enter.append('label');
 
@@ -226,6 +245,7 @@ iD.ui.Background = function(context) {
             button = selection.append('button')
                 .attr('tabindex', -1)
                 .on('click', toggle)
+                .call(iD.svg.Icon('#icon-layers', 'light'))
                 .call(tooltip),
             shown = false;
 
@@ -255,10 +275,38 @@ iD.ui.Background = function(context) {
                 .placement('left'))
             .append('div')
             .attr('class', 'opacity')
-            .style('opacity', String);
+            .style('opacity', function(d) { return 1.25 - d; });
 
         var backgroundList = content.append('ul')
             .attr('class', 'layer-list');
+
+        var custom = backgroundList.append('li')
+            .attr('class', 'custom_layer')
+            .datum(iD.BackgroundSource.Custom());
+
+        custom.append('button')
+            .attr('class', 'layer-browse')
+            .call(bootstrap.tooltip()
+                .title(t('background.custom_button'))
+                .placement('left'))
+            .on('click', editCustom)
+            .call(iD.svg.Icon('#icon-search'));
+
+        var label = custom.append('label');
+
+        label.append('input')
+            .attr('type', 'radio')
+            .attr('name', 'layers')
+            .on('change', function () {
+                if (customTemplate) {
+                    setCustom(customTemplate);
+                } else {
+                    editCustom();
+                }
+            });
+
+        label.append('span')
+            .text(t('background.custom'));            
 
         //Added for EGD-plugin
 
@@ -279,8 +327,7 @@ iD.ui.Background = function(context) {
                     d3.event.preventDefault();
                     profiles.classed('hide', function() { return !profiles.classed('hide'); });
                 })
-                .append('span')
-                .attr('class', 'icon layers dark');
+                .call(iD.svg.Icon('#icon-layers'));
 
             var label = dgbackground.append('label');
 
@@ -342,35 +389,6 @@ iD.ui.Background = function(context) {
         }
         //END: Added for EGD-plugin
 
-        var custom = backgroundList.append('li')
-            .attr('class', 'custom_layer')
-            .datum(iD.BackgroundSource.Custom());
-
-        custom.append('button')
-            .attr('class', 'layer-browse')
-            .call(bootstrap.tooltip()
-                .title(t('background.custom_button'))
-                .placement('left'))
-            .on('click', editCustom)
-            .append('span')
-            .attr('class', 'icon geocode');
-
-        label = custom.append('label');
-
-        label.append('input')
-            .attr('type', 'radio')
-            .attr('name', 'layers')
-            .on('change', function () {
-                if (customTemplate) {
-                    setCustom(customTemplate);
-                } else {
-                    editCustom();
-                }
-            });
-
-        label.append('span')
-            .text(t('background.custom'));
-
         var overlayList = content.append('ul')
             .attr('class', 'layer-list');
 
@@ -393,8 +411,7 @@ iD.ui.Background = function(context) {
                     d3.event.preventDefault();
                     collections.classed('hide', function() { return !collections.classed('hide'); });
                 })
-                .append('span')
-                .attr('class', 'icon layers dark');
+                .call(iD.svg.Icon('#icon-layers'));
 
             label = dgcollection.append('label');
 
@@ -432,7 +449,29 @@ iD.ui.Background = function(context) {
                     clickAddOrUpdateOverlay(iD.BackgroundSource(dgServices.collectionSource(activeService/*service*/, null/*connectId*/, 'Default_Profile'/*profile*/, d.value/*freshness*/)));
                 });
         }
-        //ENDAdded for EGD-plugin
+        //END Added for EGD-plugin
+
+        var controls = content.append('div')
+            .attr('class', 'controls-list');
+
+        var minimapLabel = controls
+            .append('label')
+            .call(bootstrap.tooltip()
+                .html(true)
+                .title(iD.ui.tooltipHtml(t('background.minimap.tooltip'), '/'))
+                .placement('top')
+            );
+
+        minimapLabel.classed('minimap-toggle', true)
+            .append('input')
+            .attr('type', 'checkbox')
+            .on('change', function() {
+                iD.ui.MapInMap.toggle();
+                d3.event.preventDefault();
+            });
+
+        minimapLabel.append('span')
+            .text(t('background.minimap.description'));
 
         // Disabling per customer request
         // Feature #5248
@@ -461,12 +500,14 @@ iD.ui.Background = function(context) {
             .attr('class', function(d) { return d[0] + ' nudge'; })
             .on('mousedown', clickNudge);
 
-        var resetButton = nudgeContainer.append('button')
+        var resetButton = nudgeContainer
+            .append('button')
             .attr('class', 'reset disabled')
             .on('click', function () {
                 context.background().offset([0, 0]);
                 resetButton.classed('disabled', true);
-            });
+            })
+            .call(iD.svg.Icon('#icon-undo'));
 
         resetButton.append('div')
             .attr('class', 'icon undo');

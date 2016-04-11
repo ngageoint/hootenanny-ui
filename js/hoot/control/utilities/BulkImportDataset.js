@@ -428,7 +428,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             });
 
             if(!isValid){
-                iD.ui.Alert("Missing shapefile dependency. Import requires shp, shx and dbf.",'warning' );
+                iD.ui.Alert("Missing shapefile dependency. Import requires shp, shx and dbf.",'warning',new Error().stack);
                 return false;
             }
         }
@@ -436,12 +436,12 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         var totalCnt = cntParam.shpCnt + cntParam.osmCnt + cntParam.zipCnt;
         if((cntParam.shpCnt > 0 && cntParam.shpCnt != totalCnt) || (cntParam.osmCnt > 0 && cntParam.osmCnt != totalCnt) 
             || (cntParam.zipCnt > 0 && cntParam.zipCnt != totalCnt)){
-            iD.ui.Alert("Please select only single type of files. (i.e. can not mix zip with osm)",'warning');
+            iD.ui.Alert("Please select only single type of files. (i.e. can not mix zip with osm)",'warning',new Error().stack);
             return false;
         }
 
         if(cntParam.osmCnt > 1) {
-            iD.ui.Alert("Multiple osm files can not be ingested. Please select one.",'warning');
+            iD.ui.Alert("Multiple osm files can not be ingested. Please select one.",'warning',new Error().stack);
             return false;
         }
 
@@ -466,7 +466,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         var selType = _getTypeName(d3.select(".reset.importImportType[row='" + selRowNum + "']").value());
 
         if(!selType){
-            iD.ui.Alert("Please select Import Type.",'warning');
+            iD.ui.Alert("Please select Import Type.",'warning',new Error().stack);
             return;
         }
 
@@ -493,7 +493,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                         var ext = folderName.substring(folderName.length - 4);
                         var fgdbName = folderName.substring(0, folderName.length - 4);
                         if(ext.toLowerCase() != '.gdb'){
-                            iD.ui.Alert("Please select valid FGDB.",'warning');
+                            iD.ui.Alert("Please select valid FGDB.",'warning',new Error().stack);
                             return;
                         } else {
                             var inputName = d3.select(".reset.LayerName[row='" + selRowNum + "']").value();
@@ -657,7 +657,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     **/
     var _addRow = function(tbl){
         if(_rowNum>10){
-            iD.ui.Alert("Please limit bulk import to 10 datasets or less.",'warning')
+            iD.ui.Alert("Please limit bulk import to 10 datasets or less.",'warning',new Error().stack)
             return;
         }
         

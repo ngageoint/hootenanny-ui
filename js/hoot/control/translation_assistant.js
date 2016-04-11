@@ -150,7 +150,7 @@ Hoot.control.TranslationAssistant = function () {
         err += '\n\nOr a zip file containing one or more shapefiles or a folder that is a file geodatabase.';
         err += '\n\nFolders can contain one or more shapefiles or be a file geodatabase.';
 
-        iD.ui.Alert(err,'error');
+        iD.ui.Alert(err,'error',new Error().stack);
         /*openfile.append('div')
         .text(err)
         .style('color', 'red')
@@ -771,7 +771,7 @@ Hoot.control.TranslationAssistant = function () {
         }
 
         function enableTranslate() {
-            if (d3.selectAll('.conflate').empty()) {
+            if (d3.selectAll('.attribute-mapping').selectAll('.conflate').empty()) {
                 mapping
                 .append('a')
                 .classed('button dark animate strong block _icon big conflate pad2x pad1y js-toggle', true)

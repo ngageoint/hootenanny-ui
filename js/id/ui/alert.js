@@ -1,4 +1,4 @@
-iD.ui.Alert = function(message,type) {
+iD.ui.Alert = function(message,type,stack) {
     var alerts = d3.select("#alerts");
     var alertDiv = alerts.append('div')
     	.classed('fillD alertDiv',true)
@@ -28,7 +28,7 @@ iD.ui.Alert = function(message,type) {
 
 	var d = new Date().toLocaleString();
 	try{
-		hoot.view.utilities.errorlog.reportUIError(d + ": " + message);
+		hoot.view.utilities.errorlog.reportUIError(d + ": " + message,stack);
 	} catch(e){
 		alert(message);
 	}

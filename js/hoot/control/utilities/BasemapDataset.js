@@ -132,7 +132,7 @@ Hoot.control.utilities.basemapdataset = function(context) {
                     if(found){
                         iD.ui.Alert('Base map with name "' + name + '" already exists. '
                                  + 'If no name is assigned please specify a name or'+
-                                 ' if already specified please use different name.','warning');
+                                 ' if already specified please use different name.','warning',new Error().stack);
                     } else {
                         d3.select(this).text('Publishing...');
                         d3.select(this).style('pointer-events','none');

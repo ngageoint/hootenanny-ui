@@ -10,7 +10,12 @@ iD.ui.Disclosure = function() {
 
         $link.enter().append('a')
             .attr('href', '#')
-            .attr('class', 'hide-toggle');
+            .attr('class', 'hide-toggle')
+            .style('margin-left',function(){
+                // CSS Hack to get expandable aligned
+                if(d3.select($link[0].parentNode).classed('inspector-preset')) {return '20px'}
+                else{return '0px'}
+            });
 
         $link.text(title)
             .on('click', toggle)

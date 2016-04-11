@@ -187,7 +187,7 @@ d3.combobox = function() {
 
             for (var i = 0; i < suggestions.length; i++) {
                 if (suggestions[i].value.toLowerCase().indexOf(v.toLowerCase()) === 0) {
-                    var completion = v + suggestions[i].value.substr(v.length);
+                    var completion = suggestions[i].value;
                     idx = i;
                     input.property('value', completion);
                     input.node().setSelectionRange(v.length, completion.length);
@@ -281,4 +281,24 @@ d3.combobox = function() {
     };
 
     return d3.rebind(combobox, event, 'on');
+};
+
+d3.combobox.off = function(input) {
+    data = null;
+    fetcher = null;
+
+    input
+        .on('focus.typeahead', null)
+        .on('blur.typeahead', null)
+        .on('keydown.typeahead', null)
+        .on('keyup.typeahead', null)
+        .on('input.typeahead', null)
+        .each(function() {
+            d3.select(this.parentNode).selectAll('.combobox-caret')
+                .filter(function(d) { return d === input.node(); })
+                .on('mousedown', null);
+        });
+
+    d3.select(document.body)
+        .on('scroll.combobox', null);
 };

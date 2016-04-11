@@ -14,14 +14,20 @@ iD.modes.Save = function(context) {
             return _.uniq(_.reduce(ids, function(result, id) {
                 var e = graph.entity(id);
                 if (e.type === 'way') {
-                    var cn = graph.childNodes(e);
-                    result.push.apply(result, _.pluck(_.filter(cn, 'version'), 'id'));
+                    try {
+                        var cn = graph.childNodes(e);
+                        result.push.apply(result, _.pluck(_.filter(cn, 'version'), 'id'));
+                    } catch(err) {
+                        /* eslint-disable no-console */
+                        if (typeof console !== 'undefined') console.error(err);
+                        /* eslint-enable no-console */
+                    }
                 }
                 return result;
             }, _.clone(ids)));
         }
 
-        var loading = iD.ui.Loading(context).message('Uploading changes to Hootenanny.').blocking(true),
+        var loading = iD.ui.Loading(context).message(t('save.uploading')).blocking(true),
             history = context.history(),
             origChanges = history.changes(iD.actions.DiscardTags(history.difference())),
             localGraph = context.graph(),
@@ -59,10 +65,27 @@ iD.modes.Save = function(context) {
                 showErrors();
 
             } else {
+                var loadMore = []; //iD v1.7.5
                 _.each(result.data, function(entity) {
                     remoteGraph.replace(entity);
                     toLoad = _.without(toLoad, entity.id);
+					//iD v1.7.5
+                    // Because loadMultiple doesn't download /full like loadEntity,
+                    // need to also load children that aren't already being checked..
+                    if (!entity.visible) return;
+                    if (entity.type === 'way') {
+                        loadMore.push.apply(loadMore,
+                            _.difference(entity.nodes, toCheck, toLoad, loadMore));
+                    } else if (entity.type === 'relation' && entity.isMultipolygon()) {
+                        loadMore.push.apply(loadMore,
+                            _.difference(_.pluck(entity.members, 'id'), toCheck, toLoad, loadMore));
+                    }
                 });
+				//iD v1.7.5
+                if (loadMore.length) {
+                    toLoad.push.apply(toLoad, loadMore);
+                    context.connection().loadMultiple(loadMore, loaded);
+                }
 
                 if (!toLoad.length) {
                     checkConflicts(hootCallback, result.force_remote);
@@ -148,8 +171,7 @@ iD.modes.Save = function(context) {
                 showConflicts();
             } else if (errors.length) {
                 showErrors();
-            } else {
-            	
+            } else {            	
             	context.connection().putChangeset(
                     history.changes(iD.actions.DiscardTags(history.difference())),
                     'Hoot Save',
@@ -213,6 +235,20 @@ iD.modes.Save = function(context) {
                     selection.remove();
                 })
                 .on('save', function() {
+					//iD v1.7.5                    
+					for (var i = 0; i < conflicts.length; i++) {
+                        if (conflicts[i].chosen === 1) {  // user chose "keep theirs"
+                            var entity = context.hasEntity(conflicts[i].id);
+                            if (entity && entity.type === 'way') {
+                                var children = _.uniq(entity.nodes);
+                                for (var j = 0; j < children.length; j++) {
+                                    history.replace(iD.actions.Revert(children[j]));
+                                }
+                            }
+                            history.replace(iD.actions.Revert(conflicts[i].id));
+                        }
+                    }
+
                     selection.remove();
                     save(e, true);
                 })
@@ -319,8 +355,12 @@ iD.modes.Save = function(context) {
             context.install(behavior);
         });
 
-        context.connection().authenticate(function() {
-            context.ui().sidebar.show(ui);
+        context.connection().authenticate(function(err) {
+            if (err) {
+                cancel();
+            } else {
+            	context.ui().sidebar.show(ui);
+            }
         });
     };
 

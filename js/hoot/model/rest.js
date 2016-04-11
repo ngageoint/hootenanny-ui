@@ -13,7 +13,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     function _alertError(error, errorText){
         console.error(error);
-        iD.ui.Alert(errorText,'error');
+        iD.ui.Alert(errorText,'error',new Error().stack);
         var localResp = {};
         localResp.status = "failed";
         localResp.error = error;
@@ -68,7 +68,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		'&inputType=' + data.inputType + '&modName=' + data.modifiedName)
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Modify name failed! For detailed log goto Manage->Log",'error');
+            	iD.ui.Alert("Modify name failed! For detailed log goto Manage->Log",'error',new Error().stack);
                 return error;
             }
             callback(data);
@@ -87,7 +87,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		'&folderId=' + data.folderId + '&updateType=' + data.updateType)
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Folder-Map link failed! For detailed log goto Manage->Log",'error');
+            	iD.ui.Alert("Folder-Map link failed! For detailed log goto Manage->Log",'error',new Error().stack);
                 return error;
             }
             callback(data);
@@ -122,7 +122,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         		'&parentId=' + data.parentId)
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Add folder failed! For detailed log goto Manage->Log",'error');
+            	iD.ui.Alert("Add folder failed! For detailed log goto Manage->Log",'error',new Error().stack);
                 return error;
             }
             callback(data);
@@ -185,7 +185,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                     Hoot.model.REST('getMapSizes', _.pluck(resp.layers,'id').toString(),function (sizeInfo) {
                         if(sizeInfo) {
                             layerlist.layers = _.map(layerlist.layers, function(lyr){
-                                return _.extend(lyr, _.findWhere(sizeInfo.layers, { id: lyr.id} ));
+                                return _.extend(lyr, _.find(sizeInfo.layers, { id: lyr.id} ));
                             });
                         }
 
@@ -281,10 +281,10 @@ Hoot.model.REST = function (command, data, callback, option) {
         		hoot.model.layers.refresh(function(){
         			hoot.model.layers.setLayerLinks(function(){
         				var availLayers = hoot.model.layers.getAvailLayers();
-        				var input = _.findWhere(availLayers,{name:data.INPUT_NAME});
+        				var input = _.find(availLayers,{name:data.INPUT_NAME});
         				if(input!=undefined){
         					var outputFolderId = hoot.model.folders.getfolderIdByName(data.PATH_NAME) || 0;
-    						var output = _.findWhere(availLayers,{name:data.OUTPUT_NAME});
+    						var output = _.find(availLayers,{name:data.OUTPUT_NAME});
         					if(output!=undefined){
         	        			var link = {'folderId':outputFolderId,"mapid":output.id,"updateType":"update"};
         	                    hoot.model.folders.updateLink(link);
@@ -412,7 +412,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                             }
                         }
                         if(showError){
-                        	iD.ui.Alert("Requested job failed! For detailed log goto Manage->Log",'error');
+                        	iD.ui.Alert("Requested job failed! For detailed log goto Manage->Log",'error',new Error().stack);
                         }
                     }
                     else
@@ -463,7 +463,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                 }
                 else
                 {
-                	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
+                	iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
                 }
             });
     }
@@ -471,7 +471,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     // This uses translation node js server using CORS
     rest.LTDS = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
-        	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
+        	iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
             return;
         }
         if (!data) {
@@ -549,7 +549,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     // This uses translation node js server using CORS
     rest.TDSToOSMByFCode = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
-        	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
+        	iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
             return;
         }
 
@@ -567,7 +567,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.TDSToOSM = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
-        	iD.ui.Alert('Can not find translation server info. Is it running?','warning');
+        	iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
             return;
         }
         if (!data) {
@@ -613,7 +613,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         d3.json('/hoot-services/job/export/execute')
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Export job failed! For detailed log goto Manage->Log",'error');
+            	iD.ui.Alert("Export job failed! For detailed log goto Manage->Log",'error',new Error().stack);
                 return error;
             }
             return data;
@@ -714,7 +714,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     	    if (error)
     	    {
     	      console.log(error);
-    	      iD.ui.Alert("Resolve all reviews failed.",'error');
+    	      iD.ui.Alert("Resolve all reviews failed.",'error',new Error().stack);
     	    }
     	    callback(error, response);
     	  });
@@ -732,7 +732,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         if (error)
         {
           console.log(error);
-          iD.ui.Alert("Review get refs failed.",'error');
+          iD.ui.Alert("Review get refs failed.",'error',new Error().stack);
         }
         callback(error, response);
       });
@@ -808,7 +808,7 @@ rest.ReviewGetGeoJson = function (mapId, extent, callback) {
             + '&maxlat=' + (extent[1][1]).toFixed(6)
             , function (error, resp) {
                 if (error) {
-                    iD.ui.Alert("Failed to get review geojson.",'error');
+                    iD.ui.Alert("Failed to get review geojson.",'error',new Error().stack);
                     return;
                 }
                 if (callback) {
@@ -1105,7 +1105,7 @@ Hoot.model.REST.WarningHandler = function(resp){
         } catch (e) {
             // must be string so try to see if it is warning
             if(detail.indexOf('WARNINGS:') === 0){
-               iD.ui.Alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log','warning');
+               iD.ui.Alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log','warning',new Error().stack);
                return;
             }
         }
@@ -1124,7 +1124,7 @@ Hoot.model.REST.WarningHandler = function(resp){
 
                 });
                 if(isWarning === true){
-                	iD.ui.Alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log','warning');
+                	iD.ui.Alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log','warning',new Error().stack);
                 }
             }
         }

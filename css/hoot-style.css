@@ -257,3 +257,14 @@ circle.arrow.tail{
     stroke: none;
     fill: #ff0000;
 }
+
+text.measure-label-text {
+    fill: white;
+    font-size: 18px;
+    paint-order: stroke;
+    stroke: #000000;
+    stroke-width: 1px;
+    stroke-linecap: butt;
+    stroke-linejoin: miter;
+    font-weight: 800;
+}

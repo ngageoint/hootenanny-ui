@@ -1,0 +1,24 @@
+{
+    "icon": "building",
+    "fields": [
+        "address",
+        "levels"
+    ],
+    "geometry": [
+        "area"
+    ],
+    "tags": {
+        "building": "semidetached_house"
+    },
+    "terms": [
+        "home",
+        "double",
+        "duplex",
+        "twin",
+        "family",
+        "residence",
+        "dwelling"
+    ],
+    "matchScore": 0.5,
+    "name": "Semi-Detached House"
+}

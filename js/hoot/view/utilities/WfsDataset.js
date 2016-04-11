@@ -55,7 +55,7 @@ Hoot.view.utilities.wfsdataset = function(context)
                     d3.json('/hoot-services/job/export/wfs/remove/' + wfsId,
                             function (error, data) {
                                 if(error){
-                                	iD.ui.Alert(error.responseText,'error');
+                                	iD.ui.Alert(error.responseText,'error',new Error().stack);
                                 } else {
                                   d3.select(wfsTrashBtn.parentNode).node().remove();
                                 }

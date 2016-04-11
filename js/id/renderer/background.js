@@ -2,8 +2,8 @@ iD.Background = function(context) {
     var dispatch = d3.dispatch('change','baseLayerChange'),
         baseLayer = iD.TileLayer()
             .projection(context.projection),
-        gpxLayer = iD.GpxLayer(context, dispatch)
-            .projection(context.projection),
+        /*gpxLayer = iD.GpxLayer(context, dispatch)
+            .projection(context.projection),*/
         //Added for EGD-plugin
         footprintLayer = iD.FootprintLayer(context, dispatch)
             .projection(context.projection),
@@ -13,7 +13,7 @@ iD.Background = function(context) {
         //Added for Hoot measurement tool
         measureLayer = iD.MeasureLayer(context, dispatch)
         	.projection(context.projection),
-        mapillaryLayer = iD.MapillaryLayer(context),
+        /*mapillaryLayer = iD.MapillaryLayer(context),*/
         overlayLayers = [];
 
     var backgroundSources;
@@ -57,9 +57,11 @@ iD.Background = function(context) {
             }
         });
 
-        if (background.showsGpxLayer()) {
+        // Removed for iD v1.9.2
+        /*var gpx = context.layers().layer('gpx');
+        if (gpx && gpx.enabled() && gpx.hasGpx()) {
             imageryUsed.push('Local GPX');
-        }
+        }*/
 
         context.history().imageryUsed(imageryUsed);
     }
@@ -124,8 +126,9 @@ iD.Background = function(context) {
         	.attr('class','layer-layer measure-layer');
 
         measure.call(measureLayer);
-
-        var gpx = selection.selectAll('.layer-gpx')
+        
+        // Removed for iD v1.9.2
+        /*var gpx = selection.selectAll('.layer-gpx')
             .data([0]);
 
         gpx.enter().insert('div')
@@ -138,7 +141,7 @@ iD.Background = function(context) {
         mapillary.enter().insert('div')
             .attr('class', 'layer-layer layer-mapillary');
 
-        mapillary.call(mapillaryLayer);
+        mapillary.call(mapillaryLayer);*/
 
     }
 
@@ -207,14 +210,16 @@ iD.Background = function(context) {
 
     background.dimensions = function(_) {
         baseLayer.dimensions(_);
-        gpxLayer.dimensions(_);
+        // Removed for iD v1.9.2
+        /*gpxLayer.dimensions(_);*/
         //Added for EGD-plugin
         footprintLayer.dimensions(_);
         //Added for Hoot review merge tool
         arrowLayer.dimensions(_);
         //Added for Hoot measurement tool
         measureLayer.dimensions(_);
-        mapillaryLayer.dimensions(_);
+        // Removed for iD v1.9.2
+        /*mapillaryLayer.dimensions(_);*/
 
         overlayLayers.forEach(function(layer) {
             layer.dimensions(_);
@@ -236,24 +241,27 @@ iD.Background = function(context) {
         background.baseLayerSource(findSource('Bing'));
     };
 
-    background.hasGpxLayer = function() {
+    // Removed for iD v1.9.2
+    /*background.hasGpxLayer = function() {
         return !_.isEmpty(gpxLayer.geojson());
     };
 
     background.showsGpxLayer = function() {
         return background.hasGpxLayer() && gpxLayer.enable();
-    };
+    };*/
 
     function toDom(x) {
         return (new DOMParser()).parseFromString(x, 'text/xml');
     }
 
-    background.gpxLayerFiles = function(fileList) {
+    // Removed for iD v1.9.2
+    /*background.gpxLayerFiles = function(fileList) {
         var f = fileList[0],
             reader = new FileReader();
 
         reader.onload = function(e) {
             gpxLayer.geojson(toGeoJSON.gpx(toDom(e.target.result)));
+            iD.ui.MapInMap.gpxLayer.geojson(toGeoJSON.gpx(toDom(e.target.result)));
             background.zoomToGpxLayer();
             dispatch.change();
         };
@@ -270,7 +278,7 @@ iD.Background = function(context) {
                     return _.union(coords, feature.geometry.type === 'Point' ? [c] : c);
                 }, []);
 
-            if (!iD.geo.polygonIntersectsPolygon(viewport, coords)) {
+            if (!iD.geo.polygonIntersectsPolygon(viewport, coords, true)) {
                 var extent = iD.geo.Extent(d3.geo.bounds(gpxLayer.geojson()));
                 map.centerZoom(extent.center(), map.trimmedExtentZoom(extent));
             }
@@ -279,6 +287,7 @@ iD.Background = function(context) {
 
     background.toggleGpxLayer = function() {
         gpxLayer.enable(!gpxLayer.enable());
+        iD.ui.MapInMap.gpxLayer.enable(!iD.ui.MapInMap.gpxLayer.enable());
         dispatch.change();
     };
 
@@ -289,7 +298,7 @@ iD.Background = function(context) {
     background.toggleMapillaryLayer = function() {
         mapillaryLayer.enable(!mapillaryLayer.enable());
         dispatch.change();
-    };
+    };*/
 
     background.showsLayer = function(d) {
         return d === baseLayer.source() ||
@@ -428,7 +437,24 @@ iD.Background = function(context) {
         dispatch.change();
         return background;
     };
+
     background.load = function(imagery) {
+		//Added in v1.9.2 iD merge        
+
+		function parseMap(qmap) {
+            if (!qmap) return false;
+            var args = qmap.split('/').map(Number);
+            if (args.length < 3 || args.some(isNaN)) return false;
+            return iD.geo.Extent([args[1], args[2]]);
+        }
+
+        var q = iD.util.stringQs(location.hash.substring(1)),
+            chosen = q.background || q.layer,
+            extent = parseMap(q.map),
+            best;
+
+		// End of addition from 1.9.2 merge
+		
         backgroundSources = imagery.map(function(source) {
             if (source.type === 'bing') {
                 return iD.BackgroundSource.Bing(source, dispatch);
@@ -439,13 +465,14 @@ iD.Background = function(context) {
 
         backgroundSources.unshift(iD.BackgroundSource.None());
 
-        var q = iD.util.stringQs(location.hash.substring(1)),
-            chosen = q.background || q.layer;
+        if (!chosen && extent) {
+            best = _.find(this.sources(extent), function(s) { return s.best(); });
+        }
 
         if (chosen && chosen.indexOf('custom:') === 0) {
             background.baseLayerSource(iD.BackgroundSource.Custom(chosen.replace(/^custom:/, '')));
         } else {
-            background.baseLayerSource(findSource(chosen) || getDefaultBaseMap() || backgroundSources[1]);
+			background.baseLayerSource(findSource(chosen) || getDefaultBaseMap() || backgroundSources[1]);
         }
 
         var locator = _.find(backgroundSources, function(d) {
@@ -465,8 +492,11 @@ iD.Background = function(context) {
         var gpx = q.gpx;
         if (gpx) {
             d3.text(gpx, function(err, gpxTxt) {
-                gpxLayer.geojson(toGeoJSON.gpx(toDom(gpxTxt)));
-                dispatch.change();
+                if (!err) {
+                    gpxLayer.geojson(toGeoJSON.gpx(toDom(gpxTxt)));
+                    iD.ui.MapInMap.gpxLayer.geojson(toGeoJSON.gpx(toDom(gpxTxt)));
+                    dispatch.change();
+                }
             });
         }
     };

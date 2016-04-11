@@ -5,11 +5,11 @@
         "levels"
     ],
     "geometry": [
-        "point",
         "area"
     ],
     "tags": {
         "building": "stable"
     },
+    "matchScore": 0.5,
     "name": "Stable"
 }

@@ -67,7 +67,7 @@ Hoot.model.export = function (context)
         }
 
         if (!selectedInput || !selectedOutType) {
-        	iD.ui.Alert('Please enter valid values.','warning');
+        	iD.ui.Alert('Please enter valid values.','warning',new Error().stack);
             return;
         }
         
@@ -93,7 +93,7 @@ Hoot.model.export = function (context)
             .post(JSON.stringify(param), function (error, data) {
                 if(error){
                 if(callback){callback(false);}
-                iD.ui.Alert('Data Download Fail','warning');
+                iD.ui.Alert('Data Download Fail','warning',new Error().stack);
                 return;}
 
 

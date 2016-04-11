@@ -20,6 +20,12 @@
         }
     },
     "operations": {
+        "add": {
+            "annotation": {
+                "point": "ஒரு புள்ளி சேர்க்கப்பட்டது.",
+                "vertex": "ஒரு வழியில் ஒரு முனை சேர்க்கப்பட்டது."
+            }
+        },
         "start": {
             "annotation": {
                 "line": "வரி தொடங்கியது",
@@ -28,6 +34,7 @@
         },
         "continue": {
             "key": "A",
+            "title": "ஒரு உறவு சேர்க்கப்பட்டது.",
             "annotation": {
                 "line": "வரி தொ ங்கியது"
             }
@@ -58,7 +65,6 @@
         },
         "merge": {
             "title": "இணை",
-            "description": "இந்த கோடுகளை இணை",
             "key": "C"
         },
         "move": {
@@ -78,16 +84,21 @@
             "key": "V"
         },
         "split": {
+            "title": "பிரி",
             "key": "X"
         }
     },
     "translate": {
-        "translate": "மொழிமாற்றம் செய்"
+        "translate": "மொழிமாற்றம் செய்",
+        "localized_translation_language": "மொழியை தேர்ந்தெடு",
+        "localized_translation_name": "பெயர்"
     },
     "logout": "விடுபதிகை",
     "commit": {
         "title": "மாற்றங்களைச் சேமி",
         "save": "சேமி",
+        "cancel": "ரத்து",
+        "changes": "{எண்ணிக்கை} மாற்றங்கள்",
         "deleted": "நீக்கப்பட்டது",
         "created": "உருவாக்கப்பட்டது"
     },
@@ -103,7 +114,8 @@
         "title": "சேமி"
     },
     "confirm": {
-        "okay": "சரி"
+        "okay": "சரி",
+        "cancel": "ரத்து"
     },
     "help": {
         "title": "உதவி"
@@ -114,37 +126,36 @@
         }
     },
     "presets": {
-        "categories": {
-            "category-path": {
-                "name": "வழி"
-            },
-            "category-rail": {
-                "name": "இரயில்"
-            },
-            "category-road": {
-                "name": "சாலை"
-            }
-        },
         "fields": {
             "access": {
-                "placeholder": "அறியப்படவில்லை",
-                "types": {
-                    "horse": "குதிரைகள்"
-                },
+                "label": "அனுமதிக்கப்பட்ட அணுகல்",
                 "options": {
-                    "yes": {
-                        "title": "அனுமதிக்கப்படுகிறது"
+                    "destination": {
+                        "title": "Destination"
+                    },
+                    "no": {
+                        "description": "பொதுமக்களுக்கு அணுகல் அனுமதி இல்லை",
+                        "title": "தடை செய்யப்பட்ட"
                     },
                     "private": {
                         "title": "தனியார்"
+                    },
+                    "yes": {
+                        "title": "அனுமதிக்கப்படுகிறது"
                     }
+                },
+                "types": {
+                    "horse": "குதிரைகள்"
                 }
+            },
+            "access_simple": {
+                "label": "அனுமதிக்கப்பட்ட அணுகல்"
             },
             "address": {
                 "label": "முகவரி",
                 "placeholders": {
-                    "street": "தெரு",
-                    "city": "மாநகரம்"
+                    "city": "மாநகரம்",
+                    "street": "தெரு"
                 }
             },
             "aerialway": {
@@ -503,9 +514,6 @@
             "highway/steps": {
                 "name": "படிகட்டுகள்"
             },
-            "highway/track": {
-                "name": "பாதை"
-            },
             "historic/castle": {
                 "name": "கோட்டை"
             },
@@ -685,6 +693,9 @@
             },
             "type/boundary": {
                 "name": "எல்லை"
+            },
+            "type/route": {
+                "name": "வழி"
             },
             "type/route/bus": {
                 "name": "பேருந்து தடம்"

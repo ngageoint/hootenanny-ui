@@ -106,7 +106,7 @@ Hoot.control.utilities.exportdataset = function(context) {
          
             
             if(status == 'failed'){
-            	iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','warning');
+            	iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','warning',new Error().stack);
                 _container.remove();
             } else {
                 var tblContainer = d3.select('#wfsdatasettable');
@@ -134,7 +134,7 @@ Hoot.control.utilities.exportdataset = function(context) {
     * @param field - fieldset metadata.
     **/
 	var _getTranslationComboPlaceHolder = function(field) {
-		var defTrans = _.findWhere(field.combobox.data, {DESCRIPTION: field.placeholder['default']});
+		var defTrans = _.find(field.combobox.data, {DESCRIPTION: field.placeholder['default']});
     	if(defTrans == undefined){
     		return field.combobox.data[0].DESCRIPTION
     	} else {
@@ -181,7 +181,7 @@ Hoot.control.utilities.exportdataset = function(context) {
 		 hidden=true;
 		}
 
-		var selTrans = _.findWhere(_transCombo,{"DESCRIPTION":transType});
+		var selTrans = _.find(_transCombo,{"DESCRIPTION":transType});
 		if(selTrans){
 		 if(selTrans.NAME.substring(0,3)!='TDS'){
 			 hidden=true;

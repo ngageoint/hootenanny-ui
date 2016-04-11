@@ -1,5 +1,5 @@
 iD.ui.dgCarousel = function(context) {
-    var key = 'c';
+    var key = '⌘I';
 
     function dgcarousel(selection) {
         var shown = false;
@@ -102,6 +102,7 @@ iD.ui.dgCarousel = function(context) {
         var button = selection.append('button')
             .attr('tabindex', -1)
             .on('click', toggle)
+            .call(iD.svg.Icon('#icon-carousel', 'light'))
             .call(tooltip);
 
         button.append('span')

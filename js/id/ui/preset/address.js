@@ -1,5 +1,5 @@
 iD.ui.preset.address = function(field, context) {
-    var event = d3.dispatch('init', 'change'),
+    var dispatch = d3.dispatch('init', 'change'),
         wrap,
         entity,
         isInitialized;
@@ -96,19 +96,20 @@ iD.ui.preset.address = function(field, context) {
 
     function address(selection) {
         isInitialized = false;
-        
-        selection.selectAll('.preset-input-wrap')
-            .remove();
+
+        wrap = selection.selectAll('.preset-input-wrap')
+            .data([0]);
+
+        // Enter
+
+        wrap.enter()
+            .append('div')
+            .attr('class', 'preset-input-wrap');
 
         var center = entity.extent(context.graph()).center(),
             addressFormat;
 
-        // Enter
-
-        wrap = selection.append('div')
-            .attr('class', 'preset-input-wrap');
-
-        iD.countryCode().search(center, function (err, countryCode) {
+        iD.services.nominatim().countryCode(center, function (err, countryCode) {
             addressFormat = _.find(iD.data.addressFormats, function (a) {
                 return a && a.countryCodes && _.contains(a.countryCodes, countryCode);
             }) || _.first(iD.data.addressFormats);
@@ -162,23 +163,28 @@ iD.ui.preset.address = function(field, context) {
                     }));
 
             wrap.selectAll('input')
-                .on('blur', change)
-                .on('change', change);
+                .on('blur', change())
+                .on('change', change());
 
-            event.init();
+            wrap.selectAll('input:not(.combobox-input)')
+                .on('input', change(true));
+
+            dispatch.init();
             isInitialized = true;
         });
     }
 
-    function change() {
-        var tags = {};
+    function change(onInput) {
+        return function() {
+            var tags = {};
 
-        wrap.selectAll('input')
-            .each(function (field) {
-                tags['addr:' + field.id] = this.value || undefined;
-            });
+            wrap.selectAll('input')
+                .each(function (field) {
+                    tags['addr:' + field.id] = this.value || undefined;
+                });
 
-        event.change(tags);
+            dispatch.change(tags, onInput);
+        };
     }
 
     function updateTags(tags) {
@@ -198,7 +204,7 @@ iD.ui.preset.address = function(field, context) {
         if (isInitialized) {
             updateTags(tags);
         } else {
-            event.on('init', function () {
+            dispatch.on('init', function () {
                 updateTags(tags);
             });
         }
@@ -209,5 +215,5 @@ iD.ui.preset.address = function(field, context) {
         if (node) node.focus();
     };
 
-    return d3.rebind(address, event, 'on');
+    return d3.rebind(address, dispatch, 'on');
 };

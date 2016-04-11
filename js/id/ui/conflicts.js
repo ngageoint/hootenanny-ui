@@ -11,8 +11,7 @@ iD.ui.Conflicts = function(context) {
             .append('button')
             .attr('class', 'fr')
             .on('click', function() { dispatch.cancel(); })
-            .append('span')
-            .attr('class', 'icon close');
+            .call(iD.svg.Icon('#icon-close'));
 
         header
             .append('h3')
@@ -65,7 +64,7 @@ iD.ui.Conflicts = function(context) {
     function showConflict(selection, index) {
         if (index < 0 || index >= list.length) return;
 
-        var parent = d3.select(selection.node().parentElement);
+        var parent = d3.select(selection.node().parentNode);
 
         // enable save button if this is the last conflict being reviewed..
         if (index === list.length - 1) {
@@ -173,7 +172,7 @@ iD.ui.Conflicts = function(context) {
             .attr('type', 'radio')
             .attr('name', function(d) { return d.id; })
             .on('change', function(d, i) {
-                var ul = this.parentElement.parentElement.parentElement;
+                var ul = this.parentNode.parentNode.parentNode;
                 ul.__data__.chosen = i;
                 choose(ul, d);
             });
@@ -184,7 +183,7 @@ iD.ui.Conflicts = function(context) {
 
         choices
             .each(function(d, i) {
-                var ul = this.parentElement;
+                var ul = this.parentNode;
                 if (ul.__data__.chosen === i) choose(ul, d);
             });
     }
@@ -198,17 +197,31 @@ iD.ui.Conflicts = function(context) {
             .selectAll('input')
             .property('checked', function(d) { return d === datum; });
 
+        var extent = iD.geo.Extent(),
+            entity;
+
+        entity = context.graph().hasEntity(datum.id);
+        if (entity) extent._extend(entity.extent(context.graph()));
+
         datum.action();
-        zoomToEntity(datum.id);
+
+        entity = context.graph().hasEntity(datum.id);
+        if (entity) extent._extend(entity.extent(context.graph()));
+
+        zoomToEntity(datum.id, extent);
     }
 
-    function zoomToEntity(id) {
+    function zoomToEntity(id, extent) {
         context.surface().selectAll('.hover')
             .classed('hover', false);
 
         var entity = context.graph().hasEntity(id);
         if (entity) {
-            context.map().zoomTo(entity);
+            if (extent) {
+                context.map().trimmedExtent(extent);
+            } else {
+                context.map().zoomTo(entity);
+            }
             context.surface().selectAll(
                 iD.util.entityOrMemberSelector([entity.id], context.graph()))
                 .classed('hover', true);

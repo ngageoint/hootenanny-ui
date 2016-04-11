@@ -73,7 +73,7 @@ Hoot.control.utilities.importdataset = function(context) {
         if(incomingFolder){
         	folderId = incomingFolder.id ? incomingFolder.id : 0;
         	if(folderId > 0){
-        		var match = _.findWhere(folderList,{id:folderId});
+        		var match = _.find(folderList,{id:folderId});
 				if(match){
 					if(match){folderPlaceholder = match.folderPath};
 				}
@@ -168,7 +168,7 @@ Hoot.control.utilities.importdataset = function(context) {
 
         if(_container.select('#importDatasetLayerName').value()=='' ||
          _container.select('#importDatasetLayerName').value()==_container.select('#importDatasetLayerName').attr('placeholder')){
-            iD.ui.Alert("Please enter an output layer name.",'warning');
+            iD.ui.Alert("Please enter an output layer name.",'warning',new Error().stack);
             return;
         }
         
@@ -182,26 +182,26 @@ Hoot.control.utilities.importdataset = function(context) {
             }))
         )
         {
-            iD.ui.Alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.",'warning');
+            iD.ui.Alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.",'warning',new Error().stack);
             return;
         }
         
         var resp = context.hoot().checkForUnallowedChar(_container.select('#importDatasetLayerName').value());
         if(resp != true){
-            iD.ui.Alert(resp,'warning');
+            iD.ui.Alert(resp,'warning',new Error().stack);
             return;
         }
         
         resp = context.hoot().checkForUnallowedChar(_container.select('#importDatasetNewFolderName').value());
         if(resp != true){
-            iD.ui.Alert(resp,'warning');
+            iD.ui.Alert(resp,'warning',new Error().stack);
             return;
         }
 
         var parId = hoot.model.folders.getfolderIdByName(_container.select('#importDatasetPathName').value()) || 0;
         resp = hoot.model.folders.duplicateFolderCheck({name:_container.select('#importDatasetNewFolderName').value(),parentId:parId});
         if(resp != true){
-            iD.ui.Alert(resp,'warning');
+            iD.ui.Alert(resp,'warning',new Error().stack);
             return;
         }
 
@@ -306,7 +306,7 @@ Hoot.control.utilities.importdataset = function(context) {
                     submitExp.select('span').text('Cancel');
                 } else if(status.info == 'failed'){
                     var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
-                    iD.ui.Alert(errorMessage,'error');
+                    iD.ui.Alert(errorMessage,'error',new Error().stack);
                     _container.remove();
                 }
 
@@ -688,7 +688,7 @@ Hoot.control.utilities.importdataset = function(context) {
         var selType = _getTypeName(_container.select('#importDatasetImportType').value());
 
         if(!selType){
-            iD.ui.Alert("Please select Import Type.",'warning');
+            iD.ui.Alert("Please select Import Type.",'warning',new Error().stack);
             return;
         }
 
@@ -715,7 +715,7 @@ Hoot.control.utilities.importdataset = function(context) {
                             var ext = folderName.substring(folderName.length - 4);
                             var fgdbName = folderName.substring(0, folderName.length - 4);
                             if(ext.toLowerCase() != '.gdb'){
-                                iD.ui.Alert("Please select valid FGDB.",'warning');
+                                iD.ui.Alert("Please select valid FGDB.",'warning',new Error().stack);
                                 return;
                             } else {
                                 var inputName = _container.select('#importDatasetLayerName').value();
@@ -785,7 +785,7 @@ Hoot.control.utilities.importdataset = function(context) {
             });
 
             if(!isValid){
-                iD.ui.Alert("Missing shapefile dependency. Import requires shp, shx and dbf.",'warning' );
+                iD.ui.Alert("Missing shapefile dependency. Import requires shp, shx and dbf.",'warning',new Error().stack );
                 return false;
             }
         }
@@ -793,12 +793,12 @@ Hoot.control.utilities.importdataset = function(context) {
         var totalCnt = cntParam.shpCnt + cntParam.osmCnt + cntParam.zipCnt;
         if((cntParam.shpCnt > 0 && cntParam.shpCnt != totalCnt) || (cntParam.osmCnt > 0 && cntParam.osmCnt != totalCnt) 
             || (cntParam.zipCnt > 0 && cntParam.zipCnt != totalCnt)){
-            iD.ui.Alert("Please select only single type of files. (i.e. can not mix zip with osm)",'warning');
+            iD.ui.Alert("Please select only single type of files. (i.e. can not mix zip with osm)",'warning',new Error().stack);
             return false;
         }
 
         if(cntParam.osmCnt > 1) {
-            iD.ui.Alert("Multiple osm files can not be ingested. Please select one.",'warning');
+            iD.ui.Alert("Multiple osm files can not be ingested. Please select one.",'warning',new Error().stack);
             return false;
         }
 

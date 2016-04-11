@@ -16,9 +16,9 @@ in the hash portion of the URL:
   [imagery list](https://github.com/openstreetmap/iD/blob/master/data/imagery.json),
   or a custom tile URL. A custom URL is specified in the format `custom:<url>`,
   where the URL can contain the standard tile URL placeholders `{x}`, `{y}` and
-  `{z}`, `{ty}` for flipped TMS-style Y coordinates, and `{switch:a,b,c}` for
+  `{z}`/`{zoom}`, `{ty}` for flipped TMS-style Y coordinates, and `{switch:a,b,c}` for
   DNS multiplexing. Example:
-  `background=custom:http://{switch:a,b,c}.tiles.mapbox.com/v3/examples.map-4l7djmvo/{z}/{x}/{y}.png`
+  `background=custom:http://{switch:a,b,c}.tiles.mapbox.com/v4/examples.map-4l7djmvo/{z}/{x}/{y}.png`
 * `comment` - Prefills the changeset comment box, for use when integrating iD with
   external task management or quality assurance tools. Example:
   `comment=CAR%20crisis%2C%20refugee%20areas%20in%20Cameroon%20%23hotosm-task-592`.
@@ -57,14 +57,18 @@ elements we use in order to implement a particular visual style.
 ### Geometric classes
 
 In addition to the OSM element vocabulary of nodes, ways, and relations, iD has
-established a related geometric vocabulary consisting of points, vertices, lines,
-and areas.
+established a related geometric vocabulary consisting of points, vertices, midpoints,
+lines, and areas.
 
 A **point** is a node that is not a member of any way. Elements representing points
 have a `.point` class. Since a point is always a node, they also have a `.node` class.
 
 A **vertex** is a node that is a member of one or more ways. Elements representing
 points have `.vertex` and `.node` classes.
+
+A **midpoint** is a virtual point drawn midway between two vertices along a way.
+Midpoints indicate the direction that the way, but can also be selected and dragged
+to create a new point along the way.  Midpoints are classed with a `.midpoint` class.
 
 A **line** is a way that is not an area. Elements representing lines have a `.line`
 class. Since a line is also a way, they also have a `.way` class.
@@ -73,12 +77,38 @@ An **area** is a way that is circular, has certain tags, or lacks certain other
 tags (see `iD.Way#isArea` for the exact definition). Elements representing areas
 have `.area` and `.way` classes.
 
+
 ### Tag classes
 
-Elements also receive classes according to certain of the key-value tags that are
+Elements also receive classes according to certain of the OSM key-value tags that are
 assigned to them.
 
-TODO: elaborate.
+Tag classes are prefixed with `tag-` (see [`iD.svg.TagClasses`](https://github.com/openstreetmap/iD/blob/master/js/id/svg/tag_classes.js) for details).
+
+#### Primary
+
+An element may be classed with at most one primary tag class based on its main OSM
+key -- "building", "highway", "railway", "waterway", etc.
+(e.g. `.tag-highway .tag-highway-residential`).
+
+#### Secondary
+
+An element may be classed with one or more secondary tag classes based on other
+interesting OSM keys -- "bridge", "tunnel", "barrier", "surface", etc.
+(e.g. `.tag-bridge .tag-bridge-yes`).
+
+#### Status
+
+An element may be classed with at most one status tag.  Status tagging in OSM can
+be either key or value based, but iD attempts to detect most common lifecycle tagging
+schemes -- "construction", "proposed", "abandoned", "disused", etc.
+(e.g. `.tag-status .tag-status-construction`).
+
+#### Unpaved Surfaces (highways only)
+
+Most vehicular highways in OSM are assumed to have a smooth paved surface. A highway
+element may receive the special tag class `.tag-unpaved` if it contains certain OSM tags
+indicating a bumpy surface.
 
 ### Special classes
 
@@ -91,7 +121,7 @@ Elements comprising the entity currently under the cursor shall have the `.hover
 of several elements, only one of which can be `:hover`ed.)
 
 Elements that are currently active (being clicked or dragged) shall have the `.active`
-class. (TODO)
+class.
 
 Elements that are currently selected shall have the `.selected` class.
 
@@ -107,7 +137,7 @@ iD can use external presets exclusively or along with the default OpenStreetMap 
 
 var iD = iD()
   .presets(customPresets)
-  .taginfo(iD.taginfo())
+  .taginfo(iD.services.taginfo())
   .imagery(iD.data.imagery);
 
 ```
@@ -122,12 +152,12 @@ Just like Presets, Imagery can be configured using the `iD().imagery` accessor.
 
 var iD = iD()
   .presets(customPresets)
-  .taginfo(iD.taginfo())
+  .taginfo(iD.services.taginfo())
   .imagery(customImagery);
 
 ```
 
-The Imagery object should follow the structure defined by [editor-imagery-index](https://github.com/osmlab/editor-imagery-index/blob/gh-pages/schema.json)
+The Imagery object should follow the structure defined by [editor-layer-index](https://github.com/osmlab/editor-layer-index/blob/gh-pages/schema.json)
 
 
 ### Taginfo
@@ -138,7 +168,7 @@ The Imagery object should follow the structure defined by [editor-imagery-index]
 
 var iD = iD()
   .presets(customPresets)
-  .taginfo(iD.taginfo().endpoint('url'))
+  .taginfo(iD.services.taginfo().endpoint('url'))
   .imagery(customImagery);
 
 ```

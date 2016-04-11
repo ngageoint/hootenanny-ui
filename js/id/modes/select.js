@@ -10,6 +10,7 @@ iD.modes.Select = function(context, selectedIDs) {
             iD.behavior.Copy(context),
             iD.behavior.Paste(context),
             iD.behavior.PasteTags(context),
+            iD.behavior.Breathe(context),
             iD.behavior.Hover(context),
             iD.behavior.Select(context),
             iD.behavior.Lasso(context),
@@ -28,6 +29,8 @@ iD.modes.Select = function(context, selectedIDs) {
     function singular() {
         if (selectedIDs.length === 1) {
             return context.entity(selectedIDs[0]);
+			//iD v1.9.2 change commented out below
+			//return context.hasEntity(selectedIDs[0]);
         }
     }
 
@@ -60,6 +63,14 @@ iD.modes.Select = function(context, selectedIDs) {
         closeMenu();
         if (!suppressMenu && radialMenu) {
             context.surface().call(radialMenu);
+        }
+    }
+
+    function toggleMenu() {
+        if (d3.select('.radial-menu').empty()) {
+            showMenu();
+        } else {
+            closeMenu();
         }
     }
 
@@ -149,9 +160,9 @@ iD.modes.Select = function(context, selectedIDs) {
 
         operations.unshift(iD.operations.Delete(selectedIDs, context));
 
-        keybinding.on('⎋', function() {
-            context.enter(iD.modes.Browse(context));
-        }, true);
+        keybinding
+            .on('⎋', function() { context.enter(iD.modes.Browse(context)); }, true)
+            .on('space', toggleMenu);
 
         operations.forEach(function(operation) {
             operation.keys.forEach(function(key) {

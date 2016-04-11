@@ -47,8 +47,6 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                     callback(f);
                 }
                     
-            } else {
-                iD.ui.Alert('There are no members in the review relation.','warning');
             }
         } else {
             _loadMissingFeatures(mapid, fid, callback);
@@ -163,7 +161,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
         }
         catch (err)
         {
-            iD.ui.Alert(err,'error');
+            iD.ui.Alert(err,'error',new Error().stack);
         }
         finally
         {
@@ -240,7 +238,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             }
             fnc(f);
         } else {
-            iD.ui.Alert('There are no members in the review relation.','warning');
+            iD.ui.Alert('There are no members in the review relation.','warning',new Error().stack);
         }
     }
 
@@ -254,10 +252,12 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             return 1*d.value.mapId === 1*mapid;
         });
 
-        var layerName = layerNames[0].key;
-        context.loadMissing([fid], function(err, ent){
-            _loadMissingHandler(err,ent,callback);
-        }, layerName);
+        if(!_.isEmpty(layerNames)){
+            var layerName = layerNames[0].key;
+            context.loadMissing([fid], function(err, ent){
+                _loadMissingHandler(err,ent,callback);
+            }, layerName);
+        }
     }
 
     var _parent = function() {

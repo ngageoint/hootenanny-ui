@@ -3,7 +3,11 @@ iD.ui.EntityEditor = function(context) {
         state = 'select',
         id,
         preset,
-        reference;
+        reference,
+		/* Added for iD v1.9.2 */        
+		coalesceChanges = false,
+        modified = false,
+        base;
 
     var presetEditor = iD.ui.preset(context)
         .on('change', changeTags);
@@ -40,15 +44,14 @@ iD.ui.EntityEditor = function(context) {
         var $enter = $header.enter().append('div')
             .attr('class', 'header fillL cf');
 
+
         $enter.append('button')
             .attr('class', 'fr preset-close')
-            .append('span')
-            .attr('class', 'icon close');
+            .call(iD.svg.Icon(modified ? '#icon-apply' : '#icon-close'));
 
         $enter.append('h3');
 
         // Update
-
         $header.select('h3')
             .text(t('inspector.edit') + ': ' + id);
 
@@ -167,6 +170,7 @@ iD.ui.EntityEditor = function(context) {
             var entity = context.hasEntity(id);
             if (!entity) return;
             entityEditor.preset(context.presets().match(entity, context.graph()));
+            entityEditor.modified(base !== context.graph());
             entityEditor(selection);
         }
 
@@ -228,14 +232,47 @@ iD.ui.EntityEditor = function(context) {
     }
 
     function clean(o) {
+
+        function cleanVal(k, v) {
+            function keepSpaces(k) {
+                var whitelist = ['opening_hours', 'service_times', 'collection_times',
+                    'operating_times', 'smoking_hours', 'happy_hours'];
+                return _.any(whitelist, function(s) { return k.indexOf(s) !== -1; });
+            }
+
+            var blacklist = ['description', 'note', 'fixme'];
+            if (_.any(blacklist, function(s) { return k.indexOf(s) !== -1; })) return v;
+
+            var cleaned = v.split(';')
+                .map(function(s) { return s.trim(); })
+                .join(keepSpaces(k) ? '; ' : ';');
+
+            // The code below is not intended to validate websites and emails.
+            // It is only intended to prevent obvious copy-paste errors. (#2323)
+
+            // clean website- and email-like tags
+            if (k.indexOf('website') !== -1 ||
+                k.indexOf('email') !== -1 ||
+                cleaned.indexOf('http') === 0) {
+                cleaned = cleaned
+                    .replace(/[\u200B-\u200F\uFEFF]/g, '');  // strip LRM and other zero width chars
+
+            // clean email-like tags
+            } /*else if (k.indexOf('email') !== -1) {
+                cleaned = cleaned
+                    .replace(/[\u200B-\u200F\uFEFF]/g, '')  // strip LRM and other zero width chars
+                    .replace(/[^\w\+\-\.\/\?\|~!@#$%^&*'`{};=]/g, '');  // note: ';' allowed as OSM delimiter
+            }*/
+
+            return cleaned;
+        }
+
         var out = {}, k, v;
-        /*jshint -W083 */
         for (k in o) {
             if (k && (v = o[k]) !== undefined) {
-                out[k] = v.split(';').map(function(s) { return s.trim(); }).join(';');
+                out[k] = cleanVal(k, v);
             }
         }
-        /*jshint +W083 */
         return out;
     }
 
@@ -248,8 +285,10 @@ iD.ui.EntityEditor = function(context) {
                 t('operations.change_tags.annotation'));
             var activeConflict = context.hoot().control.conflicts.activeConflict(0);
             if(activeConflict){
+                var reviewItem = context.entity(activeConflict),
+                    reviewAgainstItem = context.entity(context.hoot().control.conflicts.activeConflict(1));
                  context.hoot().control.conflicts.map.featurehighlighter
-                 .highlightLayer(context.hoot().control.conflicts.activeEntity());
+                 .highlightLayer(reviewItem,reviewAgainstItem);
             }
         }
     }
@@ -283,6 +322,13 @@ iD.ui.EntityEditor = function(context) {
         }
     };
 
+    entityEditor.modified = function(_) {
+        if (!arguments.length) return modified;
+        modified = _;
+        d3.selectAll('button.preset-close use')
+            .attr('xlink:href', (modified ? '#icon-apply' : '#icon-close'));
+    };
+
     entityEditor.removeTags = function(changed, id){
         var entity = context.entity(id),
         tags = clean(changed);
@@ -302,7 +348,11 @@ iD.ui.EntityEditor = function(context) {
     entityEditor.entityID = function(_) {
         if (!arguments.length) return id;
         id = _;
-        entityEditor.preset(context.presets().match(context.entity(id), context.graph()));
+		//added in iD v1.9.2        
+		base = context.graph();
+        entityEditor.preset(context.presets().match(context.entity(id), base));
+        entityEditor.modified(false);
+        coalesceChanges = false;
         return entityEditor;
     };
 

@@ -36,12 +36,13 @@ iD.modes.Browse = function(context) {
     };
 
     mode.exit = function() {
+        context.ui().sidebar.hover.cancel();
         behaviors.forEach(function(behavior) {
             context.uninstall(behavior);
         });
 
         if (sidebar) {
-            context.ui().sidebar.hide(sidebar);
+            context.ui().sidebar.hide();
         }
     };
 

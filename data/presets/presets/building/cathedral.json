@@ -5,11 +5,11 @@
         "levels"
     ],
     "geometry": [
-        "point",
         "area"
     ],
     "tags": {
         "building": "cathedral"
     },
-    "name": "Cathedral"
+    "matchScore": 0.5,
+    "name": "Cathedral Building"
 }

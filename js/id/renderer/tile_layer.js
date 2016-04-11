@@ -9,7 +9,7 @@ iD.TileLayer = function() {
         source = d3.functor('');
 
     function tileSizeAtZoom(d, z) {
-        return Math.ceil(tileSize * Math.pow(2, z - d[2])) / tileSize;
+        return (tileSize * Math.pow(2, z - d[2])) / tileSize;
     }
 
     function atZoom(t, distance) {
@@ -88,8 +88,8 @@ iD.TileLayer = function() {
         }
 
         var pixelOffset = [
-            Math.round(source.offset()[0] * Math.pow(2, z)),
-            Math.round(source.offset()[1] * Math.pow(2, z))
+            source.offset()[0] * Math.pow(2, z),
+            source.offset()[1] * Math.pow(2, z)
         ];
 
         function load(d) {
@@ -111,6 +111,7 @@ iD.TileLayer = function() {
         }
 
         function imageTransform(d) {
+            // To create border between tiles, remove Math.round
             var _ts = tileSize * Math.pow(2, z - d[2]);
             var scale = tileSizeAtZoom(d, z);
             return 'translate(' +

@@ -93,14 +93,12 @@ iD.Graph.prototype = {
     },
 
     childNodes: function(entity) {
-        if (this._childNodes[entity.id])
-            return this._childNodes[entity.id];
+        if (this._childNodes[entity.id]) return this._childNodes[entity.id];
+        if (!entity.nodes) return [];
 
         var nodes = [];
-        if (entity.nodes) {
-            for (var i = 0; i < entity.nodes.length; i++) {
-                nodes[i] = this.entity(entity.nodes[i]);
-            }
+        for (var i = 0; i < entity.nodes.length; i++) {
+            nodes[i] = this.entity(entity.nodes[i]);
         }
 
         if (iD.debug) Object.freeze(nodes);
@@ -260,6 +258,19 @@ iD.Graph.prototype = {
         return this.update(function() {
             this._updateCalculated(entity, undefined);
             this.entities[entity.id] = undefined;
+        });
+    },
+
+    revert: function(id) {
+        var baseEntity = this.base().entities[id],
+            headEntity = this.entities[id];
+
+        if (headEntity === baseEntity)
+            return this;
+
+        return this.update(function() {
+            this._updateCalculated(headEntity, baseEntity);
+            delete this.entities[id];
         });
     },
 

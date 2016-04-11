@@ -1,7 +1,6 @@
 iD.ui.preset.localized = function(field, context) {
-
-    var event = d3.dispatch('change'),
-        wikipedia = iD.wikipedia(),
+    var dispatch = d3.dispatch('change', 'input'),
+        wikipedia = iD.services.wikipedia(),
         input, localizedInputs, wikiTitles,
         entity;
 
@@ -23,22 +22,23 @@ iD.ui.preset.localized = function(field, context) {
         }
 
         input
-            .on('blur', change)
-            .on('change', change);
+            .on('input', change(true))
+            .on('blur', change())
+            .on('change', change());
 
         var translateButton = selection.selectAll('.localized-add')
             .data([0]);
 
-        translateButton.enter().append('button')
+        translateButton.enter()
+            .append('button')
             .attr('class', 'button-input-action localized-add minor')
+            .call(iD.svg.Icon('#icon-plus'))
             .call(bootstrap.tooltip()
                 .title(t('translate.translate'))
-                .placement('left'))
-            .append('span')
-            .attr('class', 'icon plus');
+                .placement('left'));
 
         translateButton
-            .on('click', addBlank);
+            .on('click', addNew);
 
         localizedInputs = selection.selectAll('.localized-wrap')
             .data([0]);
@@ -47,17 +47,25 @@ iD.ui.preset.localized = function(field, context) {
             .attr('class', 'localized-wrap');
     }
 
-    function addBlank() {
+    function addNew() {
         d3.event.preventDefault();
         var data = localizedInputs.selectAll('div.entry').data();
-        data.push({ lang: '', value: '' });
+        var defaultLang = iD.detect().locale.toLowerCase().split('-')[0];
+        var langExists = _.find(data, function(datum) { return datum.lang === defaultLang;});
+        var isLangEn = defaultLang.indexOf('en') > -1;
+        if (isLangEn || langExists) {
+          defaultLang = '';
+        }
+        data.push({ lang: defaultLang, value: '' });
         localizedInputs.call(render, data);
     }
 
-    function change() {
-        var t = {};
-        t[field.key] = d3.select(this).value() || undefined;
-        event.change(t);
+    function change(onInput) {
+        return function() {
+            var t = {};
+            t[field.key] = d3.select(this).value() || undefined;
+            dispatch.change(t, onInput);
+        };
     }
 
     function key(lang) { return field.key + ':' + lang; }
@@ -87,14 +95,14 @@ iD.ui.preset.localized = function(field, context) {
         }
 
         d.lang = lang;
-        event.change(t);
+        dispatch.change(t);
     }
 
     function changeValue(d) {
         if (!d.lang) return;
         var t = {};
         t[key(d.lang)] = d3.select(this).value() || undefined;
-        event.change(t);
+        dispatch.change(t);
     }
 
     function fetcher(value, cb) {
@@ -132,7 +140,7 @@ iD.ui.preset.localized = function(field, context) {
                         d3.event.preventDefault();
                         var t = {};
                         t[key(d.lang)] = undefined;
-                        event.change(t);
+                        dispatch.change(t);
                         d3.select(this.parentNode.parentNode)
                             .style('top','0')
                             .style('max-height','240px')
@@ -141,7 +149,7 @@ iD.ui.preset.localized = function(field, context) {
                             .style('max-height','0px')
                             .remove();
                     })
-                    .append('span').attr('class', 'icon delete');
+                    .call(iD.svg.Icon('#operation-delete'));
 
                 wrap.append('input')
                     .attr('class', 'localized-lang')
@@ -195,7 +203,6 @@ iD.ui.preset.localized = function(field, context) {
     }
 
     i.tags = function(tags) {
-
         // Fetch translations from wikipedia
         if (tags.wikipedia && !wikiTitles) {
             wikiTitles = {};
@@ -209,11 +216,11 @@ iD.ui.preset.localized = function(field, context) {
 
         input.value(tags[field.key] || '');
 
-        var postfixed = [];
-        for (var i in tags) {
-            var m = i.match(new RegExp(field.key + ':([a-zA-Z_-]+)$'));
-            if (m && m[1]) {
-                postfixed.push({ lang: m[1], value: tags[i]});
+        var postfixed = [], k, m;
+        for (k in tags) {
+            m = k.match(/^(.*):([a-zA-Z_-]+)$/);
+            if (m && m[1] === field.key && m[2]) {
+                postfixed.push({ lang: m[2], value: tags[k] });
             }
         }
 
@@ -228,5 +235,5 @@ iD.ui.preset.localized = function(field, context) {
         entity = _;
     };
 
-    return d3.rebind(i, event, 'on');
+    return d3.rebind(i, dispatch, 'on');
 };

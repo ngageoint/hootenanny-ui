@@ -99,7 +99,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
     
     function mousemove() {
     	var c = context.projection(context.map().mouseCoordinates());
- 	    if(nodeId>0){
+        if(nodeId>0){
  	    	
  	    	var c = context.projection(context.map().mouseCoordinates());
     	    line.attr("x2", c[0])
@@ -114,10 +114,10 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
 	        	.attr("y", c[1]+10)
 	        	.text(function(d) { return displayLength(currentDist) });
     	    
-    	    rect.attr("x", c[0])
+    	    /*rect.attr("x", c[0])
         		.attr("y", c[1]-(label.dimensions()[1]/2))
-        		.attr("width",label.dimensions()[0]+5)
-		        .attr("height",label.dimensions()[1]+5);
+        		.attr("width",label.dimensions()[0]+10)
+		        .attr("height",label.dimensions()[1]+10);*/
  	    }
     }
     
@@ -138,6 +138,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
 			
 			svg.selectAll('g').selectAll('text').remove();
 		    label = g.append("text")
+                .classed('measure-label-text',true)
 		        .attr("x", c[0]+10)
 		        .attr("y", c[1]+10)
 		        .style("fill","white")
@@ -152,14 +153,14 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
 		        .attr("x2", c[0])
 		        .attr("y2", c[1]);
 			
-			svg.selectAll('g').selectAll('rect').remove();
+			/*svg.selectAll('g').selectAll('rect').remove();
 			rect = g.insert("rect",":first-child")
 		        .attr("x", c[0])
 		        .attr("y", c[1]-(label.dimensions()[1]/2))
-		        .attr("width",label.dimensions()[0]+5)
-		        .attr("height",label.dimensions()[1]+5)
+		        .attr("width",label.dimensions()[0]+10)
+		        .attr("height",label.dimensions()[1]+10)
 		        .style("fill","black")
-		        .style("fill-opacity","0.5");
+		        .style("fill-opacity","0.5");*/
 		} 
 		
 		nodeId++;

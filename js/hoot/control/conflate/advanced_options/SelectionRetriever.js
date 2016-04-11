@@ -179,7 +179,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
     * @param results - results store
     **/
     var _getListMemberValue = function(selVal, submeta, results) {
-    	var selMember = _.findWhere(submeta.members,{'name':selVal});
+    	var selMember = _.find(submeta.members,{'name':selVal});
 		if (selMember){
 			if(selMember.members){
 				_.each(selMember.members,function(subMember){

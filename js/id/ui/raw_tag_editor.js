@@ -52,8 +52,10 @@ iD.ui.RawTagEditor = function(context) {
         var $newTag = $wrap.selectAll('.add-tag')
             .data([0]);
 
-        var $enter = $newTag.enter().append('button')
-            .attr('class', 'add-tag');
+        var $enter = $newTag.enter()
+            .append('button')
+            .attr('class', 'add-tag')
+            .call(iD.svg.Icon('#icon-plus', 'light'));
 
         $enter.append('span')
             .attr('class', 'icon plus light');
@@ -112,8 +114,7 @@ iD.ui.RawTagEditor = function(context) {
         $enter.append('button')
             .attr('tabindex', -1)
             .attr('class', 'remove minor')
-            .append('span')
-            .attr('class', 'icon delete');
+            .call(iD.svg.Icon('#operation-delete'));
 
         if (context.taginfo()) {
             $enter.each(bindTypeahead);
@@ -169,13 +170,14 @@ iD.ui.RawTagEditor = function(context) {
         $items.select('button.remove')
             .on('click', function(d){
             	if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item)==0;}))){
-            		return iD.ui.Alert("Cannot remove a protected tag!","warning");
+            		return iD.ui.Alert("Cannot remove a protected tag!","warning",new Error().stack);
             	} else {
             		return removeTag(d);
             	}
             });
 
         $items.exit()
+            .each(unbind) //iD v1.9.3
             .remove();
 
         function pushMore() {
@@ -280,6 +282,17 @@ iD.ui.RawTagEditor = function(context) {
                         context.taginfo().endpoint(origTagInfoEndPt);
                     });
                 }));
+        }
+
+		//iD v1.9.3
+        function unbind() {
+            var row = d3.select(this);
+
+            row.selectAll('input.key')
+                .call(d3.combobox.off);
+
+            row.selectAll('input.value')
+                .call(d3.combobox.off);
         }
 
         function keyChange(d) {

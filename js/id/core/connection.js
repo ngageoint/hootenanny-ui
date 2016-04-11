@@ -21,6 +21,7 @@ iD.Connection = function(context) {
         nodeStr = 'node',
         wayStr = 'way',
         relationStr = 'relation',
+        userDetails, //added in iD v1.7.5
       //TODO: Document why this was added for Hoot
         layerZoomArray = [],
         totalNodesCnt = 0 ,
@@ -77,7 +78,7 @@ iD.Connection = function(context) {
                 .header('Content-Type', 'text/plain')
                 .post(JSON.stringify(data), function (error, resp) {
                     if (error) {
-                    	iD.ui.Alert(error.responseText,'error');
+                    	iD.ui.Alert(error.responseText,'error',new Error().stack);
                         return ;
                     }
                     callback(resp);
@@ -90,7 +91,7 @@ iD.Connection = function(context) {
         request.get(function (error, resp) {
             if (error) {
                 window.console.log(error);
-                iD.ui.Alert(error.responseText,'error');
+                iD.ui.Alert(error.responseText,'error',new Error().stack);
                 context.hoot().reset();
                 return callback(null);
 
@@ -124,16 +125,7 @@ iD.Connection = function(context) {
     };
 
     connection.loadMultiple = function(ids, callback, hootcallback, layerName) {
-
-        // TODO: upgrade lodash and just use _.chunk
-        function chunk(arr, chunkSize) {
-            var result = [];
-            for (var i = 0; i < arr.length; i += chunkSize) {
-                result.push(arr.slice(i, i + chunkSize));
-            }
-            return result;
-        }
-
+        // TODO: upgrade lodash and just use _.chunk -- iD v1.7.5
         var currMapId = null;
         // get the map id. Do on first one since ids should be coming from same map
         if(ids && ids.length > 0){
@@ -145,11 +137,11 @@ iD.Connection = function(context) {
         }
 
 
-        _.each(_.groupBy(ids, iD.Entity.id.type), function(v, k) {
+        _.each(_.groupBy(_.uniq(ids), iD.Entity.id.type), function(v, k) {
             var type = k + 's',
                 osmIDs = _.map(v, iD.Entity.id.toOSM);
 
-            _.each(chunk(osmIDs, 150), function(arr) {
+            _.each(_.chunk(osmIDs, 150), function(arr) {
                 if(currMapId){
                     connection.loadFromURL(
                         url + '/api/0.6/' + type + '?mapId=' + currMapId + '&elementIds'  + '=' + arr.join(),
@@ -232,7 +224,7 @@ iD.Connection = function(context) {
             return new iD.Node({
                 id: iD.Entity.id.fromOSMPlus(nodeStr, attrs.id.value, mapId),
                 origid: iD.Entity.id.fromOSM(nodeStr, attrs.id.value),
-                loc: [parseFloat(attrs.lon.value), parseFloat(attrs.lat.value)],
+                loc: getLoc(attrs),
                 version: attrs.version.value,
                 user: attrs.user && attrs.user.value,
                 tags: getTags(obj, layerName),
@@ -298,6 +290,7 @@ iD.Connection = function(context) {
     };
 
     // Generate Changeset XML. Returns a string.
+	// Updated version from 0.3 to 0.6 in iD v1.7.5
     connection.changesetJXON = function(tags) {
         return {
             osm: {
@@ -305,7 +298,7 @@ iD.Connection = function(context) {
                     tag: _.map(tags, function(value, key) {
                         return { '@k': key, '@v': value };
                     }),
-                    '@version': 0.3,
+                    '@version': 0.6,
                     '@generator': 'iD'
                 }
             }
@@ -335,7 +328,7 @@ iD.Connection = function(context) {
 
         return {
             osmChange: {
-                '@version': 0.3,
+                '@version': 0.6,
                 '@generator': 'iD',
                 'create': nest(changes.created.map(rep), ['node', 'way', 'relation']),
                 'modify': nest(changes.modified.map(rep), ['node', 'way', 'relation']),
@@ -578,6 +571,23 @@ iD.Connection = function(context) {
         }
 
         oauth.xhr({ method: 'GET', path: '/api/0.6/user/details' }, done);
+    };
+
+    connection.userChangesets = function(callback) {
+        connection.userDetails(function(err, user) {
+            if (err) return callback(err);
+
+            function done(changesets) {
+                callback(undefined, Array.prototype.map.call(changesets.getElementsByTagName('changeset'),
+                    function (changeset) {
+                        return { tags: getTags(changeset) };
+                    }));
+            }
+
+            d3.xml(url + '/api/0.6/changesets?user=' + user.id).get()
+                .on('load', done)
+                .on('error', callback);
+        });
     };
 
     connection.status = function(callback) {
@@ -1074,6 +1084,7 @@ iD.Connection = function(context) {
     };
 
     connection.flush = function() {
+        userDetails = undefined;
         _.forEach(inflight, abortRequest);
         loadedTiles = {};
         inflight = {};
@@ -1089,12 +1100,14 @@ iD.Connection = function(context) {
     };
 
     connection.logout = function() {
+        userDetails = undefined;
         oauth.logout();
         event.auth();
         return connection;
     };
 
     connection.authenticate = function(callback) {
+        userDetails = undefined;
         function done(err, res) {
             event.auth();
             if (callback) callback(err, res);

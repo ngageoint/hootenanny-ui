@@ -170,13 +170,13 @@ Hoot.control.conflate = function (sidebar) {
 
           //build the path array for lyrA
           var lyrApath = [];
-          lyrA = _.findWhere(hoot.model.layers.getAvailLayers(),{'name':lyrA});
+          lyrA = _.find(hoot.model.layers.getAvailLayers(),{'name':lyrA});
           if(lyrA){
               lyrApath.push(lyrA.folderId);
 
               var folderId = lyrA.folderId;
               while (folderId!=0){
-                  var fldr = _.findWhere(folderList,{'id':folderId});
+                  var fldr = _.find(folderList,{'id':folderId});
                   if(fldr){
                       lyrApath.push(fldr.parentId);
                       folderId = fldr.parentId;
@@ -186,7 +186,7 @@ Hoot.control.conflate = function (sidebar) {
 
           //if(lyrApath) is only 0, keep as root and move on
 
-          lyrB = _.findWhere(hoot.model.layers.getAvailLayers(),{'name':lyrB});
+          lyrB = _.find(hoot.model.layers.getAvailLayers(),{'name':lyrB});
           if(lyrB){
               var folderId = lyrB.folderId;
               if(lyrApath.indexOf(folderId)>-1){
@@ -194,7 +194,7 @@ Hoot.control.conflate = function (sidebar) {
                   return;
               } else {
                   while (folderId!=0){
-                      var fldr = _.findWhere(folderList,{'id':folderId});
+                      var fldr = _.find(folderList,{'id':folderId});
                       if(fldr){
                           if(lyrApath.indexOf(fldr.parentId)>-1){
                               commonId = fldr.parentId;
@@ -208,7 +208,7 @@ Hoot.control.conflate = function (sidebar) {
         });
 
         if(commonId!=0){
-          var match = _.findWhere(a.combobox.data,{id:commonId});
+          var match = _.find(a.combobox.data,{id:commonId});
           if(match){
               if(match){
                   d3.select(this).value(match.folderPath)
@@ -364,7 +364,7 @@ Hoot.control.conflate = function (sidebar) {
 
       //check if layer with same name already exists...
         if(_container.selectAll('.saveAs').value()===''){
-            iD.ui.Alert("Please enter an output layer name.",'warning');
+            iD.ui.Alert("Please enter an output layer name.",'warning',new Error().stack);
             return false;
         }
 
@@ -376,26 +376,26 @@ Hoot.control.conflate = function (sidebar) {
         )))
         {
             iD.ui.Alert("A layer already exists with this name." +
-                " Please remove the current layer or select a new name for this layer.",'warning');
+                " Please remove the current layer or select a new name for this layer.",'warning',new Error().stack);
             return false;
         }
 
         var resp = hoot.checkForUnallowedChar(_container.selectAll('.saveAs').value());
         if(resp !== true){
-            iD.ui.Alert(resp,'warning');
+            iD.ui.Alert(resp,'warning',new Error().stack);
             return false;
         }
 
         resp = hoot.checkForUnallowedChar(_container.selectAll('.newfoldername').value());
         if(resp !== true){
-            iD.ui.Alert(resp,'warning');
+            iD.ui.Alert(resp,'warning',new Error().stack);
             return false;
         }
 
         var parId = hoot.model.folders.getfolderIdByName(_container.selectAll('.pathname').value()) || 0;
         resp = hoot.model.folders.duplicateFolderCheck({name:_container.selectAll('.newfoldername').value(),parentId:parId});
         if(resp != true){
-            iD.ui.Alert(resp,'warning');
+            iD.ui.Alert(resp,'warning',new Error().stack);
             return false;
         }
 

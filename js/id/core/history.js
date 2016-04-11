@@ -164,6 +164,13 @@ iD.History = function(context) {
             };
         },
 
+        validate: function(changes) {
+            return _(iD.validations)
+                .map(function(fn) { return fn()(changes, stack[index].graph); })
+                .flatten()
+                .value();
+        },
+
         hasChanges: function() {
             return this.difference().length() > 0;
         },
@@ -197,7 +204,7 @@ iD.History = function(context) {
         },
 
         toJSON: function() {
-            if (stack.length <= 1) return;
+            if (!this.hasChanges()) return;
 
             var allEntities = {},
                 baseEntities = {},
@@ -248,8 +255,9 @@ iD.History = function(context) {
             });
         },
 
-        fromJSON: function(json) {
-            var h = JSON.parse(json);
+        fromJSON: function(json, loadChildNodes) {
+            var h = JSON.parse(json),
+                loadComplete = true;
 
             iD.Entity.id.next = h.nextIDs;
             index = h.index;
@@ -262,14 +270,57 @@ iD.History = function(context) {
                 });
 
                 if (h.version === 3) {
-                    // this merges originals for changed entities into the base of
+                    // This merges originals for changed entities into the base of
                     // the stack even if the current stack doesn't have them (for
                     // example when iD has been restarted in a different region)
-                    var baseEntities = h.baseEntities.map(function(entity) {
-                        return iD.Entity(entity);
-                    });
+                    var baseEntities = h.baseEntities.map(function(d) { return iD.Entity(d); });
                     stack[0].graph.rebase(baseEntities, _.pluck(stack, 'graph'), true);
                     tree.rebase(baseEntities, true);
+
+                    // When we restore a modified way, we also need to fetch any missing
+                    // childnodes that would normally have been downloaded with it.. #2142
+                    if (loadChildNodes) {
+                        var missing =  _(baseEntities)
+                                .filter('type', 'way')
+                                .pluck('nodes')
+                                .flatten()
+                                .uniq()
+                                .reject(function(n) { return stack[0].graph.hasEntity(n); })
+                                .value();
+
+                        if (!_.isEmpty(missing)) {
+                            loadComplete = false;
+                            context.redrawEnable(false);
+
+                            var loading = iD.ui.Loading(context).blocking(true);
+                            context.container().call(loading);
+
+                            var childNodesLoaded = function(err, result) {
+                                if (!err) {
+                                    var visible = _.groupBy(result.data, 'visible');
+                                    if (!_.isEmpty(visible.true)) {
+                                        missing = _.difference(missing, _.pluck(visible.true, 'id'));
+                                        stack[0].graph.rebase(visible.true, _.pluck(stack, 'graph'), true);
+                                        tree.rebase(visible.true, true);
+                                    }
+
+                                    // fetch older versions of nodes that were deleted..
+                                    _.each(visible.false, function(entity) {
+                                        context.connection()
+                                            .loadEntityVersion(entity.id, +entity.version - 1, childNodesLoaded);
+                                    });
+                                }
+
+                                if (err || _.isEmpty(missing)) {
+                                    loading.close();
+                                    context.redrawEnable(true);
+                                    dispatch.change();
+                                }
+                            };
+
+                            context.connection().loadMultiple(missing, childNodesLoaded);
+                        }
+                    }
                 }
 
                 stack = h.stack.map(function(d) {
@@ -294,6 +345,7 @@ iD.History = function(context) {
                         imageryUsed: d.imageryUsed
                     };
                 });
+
             } else { // original version
                 stack = h.stack.map(function(d) {
                     var entities = {};
@@ -308,7 +360,9 @@ iD.History = function(context) {
                 });
             }
 
-            dispatch.change();
+            if (loadComplete) {
+                dispatch.change();
+            }
 
             return history;
         },
@@ -319,6 +373,7 @@ iD.History = function(context) {
         },
 
         clearSaved: function() {
+            context.debouncedSave.cancel();
             if (lock.locked()) context.storage(getKey('saved_history'), null);
             return history;
         },
@@ -342,7 +397,7 @@ iD.History = function(context) {
             if (!lock.locked()) return;
 
             var json = context.storage(getKey('saved_history'));
-            if (json) history.fromJSON(json);
+            if (json) history.fromJSON(json, true);
         },
 
         _getKey: getKey

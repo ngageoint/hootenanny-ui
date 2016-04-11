@@ -6,11 +6,11 @@
         "smoking"
     ],
     "geometry": [
-        "point",
         "area"
     ],
     "tags": {
         "building": "commercial"
     },
+    "matchScore": 0.5,
     "name": "Commercial Building"
 }

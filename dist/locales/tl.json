@@ -131,12 +131,8 @@
         },
         "merge": {
             "title": "Pagsamahin",
-            "description": "Pagdugtungin ang mga linyang ito.",
             "key": "C",
-            "annotation": "Dinugtung ang {n} linya.",
             "not_eligible": "Ang mga bagay na ito ay hindi maaaring pagsamahin.",
-            "not_adjacent": "Hindi mapagsama ang linyang ito dahil sila ay hindi konektado.",
-            "restriction": "Hindi maaaring ipagsama o i-merge dahil ang isa sa mga miyembro ng '{relation}\" ito ay hindi pa ganap na nai-download.",
             "incomplete_relation": "Hindi maaaring ipagsama o i-merge dahil ang isa sa mga ito ay hindi pa ganap na nai-download."
         },
         "move": {
@@ -205,7 +201,6 @@
         "nothing": "Walang ma-redo."
     },
     "tooltip_keyhint": "Shortcut:",
-    "browser_notice": "Ang editor na ito ay suportado sa Firefox, Chrome, Safari, Opera, at Internet Explorer 9 at sa mas mataas pang bersion. I-upgrade ang inyong browser o gamitin Potlatch 2 upang i-edit ng mapa.",
     "translate": {
         "translate": "I-salin",
         "localized_translation_label": "Multilingual name",
@@ -215,7 +210,6 @@
     "zoom_in_edit": "Mag-zoom-in para makapag-edit",
     "logout": "Mag-logout",
     "loading_auth": "Kumokonekta sa OpenStreetMap ...",
-    "report_a_bug": "I-ulat ang bug",
     "status": {
         "error": "Hindi maka-konekta sa API.",
         "offline": "Kasalukuyang offline ang API. Subukang mag-edit muli sa ibang pagkakataon.",
@@ -224,7 +218,6 @@
     "commit": {
         "title": "I-save ang mga binago.",
         "description_placeholder": "Maikling paglalarawan ng iyong mga ambag o edits",
-        "message_label": "Mag-commit mensahe",
         "upload_explanation": "Ang mga pagbabagong na-upload ay makikita sa lahat ng mapang gumagamit ng datos ng OpenStreetMap.",
         "upload_explanation_with_user": "Ang mga pagbabagong na-upload bilang {user} ay makikita sa lahat ng mapang gumagamit ng datos ng OpenStreetMap.",
         "save": "I-save",
@@ -267,6 +260,10 @@
         "incomplete": "<not downloaded>",
         "feature_list": "Mag-hanap ng \"feature\"",
         "edit": "I-edit ang \"feature\"",
+        "check": {
+            "yes": "Oo",
+            "no": "Hindi"
+        },
         "none": "Wala",
         "node": "Node",
         "way": "Way",
@@ -284,6 +281,11 @@
         "fix_misalignment": "Ayusin ang pagkakahanay ng \"imagery\"",
         "reset": "I-reset"
     },
+    "feature": {
+        "others": {
+            "description": "Iba pa"
+        }
+    },
     "restore": {
         "heading": "Mayroon kang hindi na-save ng mga pagbabago",
         "description": "Ibig mo bang ibalik ang mga hindi na-save na pagbabago mula sa isang nakaraang session sa pag-edit?",
@@ -294,7 +296,6 @@
         "title": "I-save",
         "help": "I-save ang mga pagbabago sa OpenStreetMap upang makita ng ibang gumagamit ng datos.",
         "no_changes": "Walang mga pagbabago upang i-save.",
-        "error": "May error habang sinusubukang i-save",
         "uploading": "Ina-upload ang mga pagbabago sa OpenStreetMap.",
         "unsaved_changes": "Mayroon kang hindi na-save ng mga pagbabago"
     },
@@ -304,8 +305,7 @@
         "view_on_osm": "Tingnan sa OSM",
         "facebook": "I-share sa Facebook",
         "twitter": "I-share sa Twitter",
-        "google": "I-share sa Google+",
-        "help_html": "Ang iyong nagawang mga pagbabago ay lilitaw sa \"Standard\" layer sa loob ng ilang minuto. Para sa iba pang mga layer at ang ilang mga tampok, maaaring mas matagal kaysa ilang minuto\n(<a href ='https://help.openstreetmap.org/questions/4705/why-havent-my-changes-appeared-on-the-map' target='_blank '>basahin ang detalye dito</ a>).\n"
+        "google": "I-share sa Google+"
     },
     "confirm": {
         "okay": "Okay"
@@ -349,54 +349,36 @@
         "browse": "Mag-browse ng .gpx file"
     },
     "help": {
-        "title": "Tulong",
-        "help": "# Help\n\nIto ay isang editor para sa [OpenStreetMap] (http://www.openstreetmap.org/), isang libre at maaaring i-edit na mapa ng mundo. Maaari mo itong gamitin upang idagdag at i-update ang iyong lugar, sa paggawa ng isang open-source at open-data na mapa ng mundo para magamit ng lahat.\n\nAng pag-edit na gagawin mo sa mapang ito ay makikita ng lahat ng gumagamit OpenStreetMap. Upang makapag-edit, kakailanganin mo ng [OpenStreetMap account] (https://www.openstreetmap.org/user/new). \n\nAng [iD editor] (http://ideditor.com/) ay isang collaborative proyekto,  ang [source code ay matatagpuan sa GitHub] (https://github.com/openstreetmap/iD).\n",
-        "editing_saving": "### Pag-edit & Saving\n\nEditor na ito ay dinisenyo upang gumana lalo na sa online, at ina-access mo ito sa pamamagitan ng isang website sa ngayon.\n\n### Pagpili ng Mga Tampok\n\nUpang pumili ng isang tampok ng mapa , tulad ng kalsada o punto ng interes , i-click \nsa ito sa mapa. Ito ay i-highlight ang mga napiling tampok , buksan ang isang panel na may \nmga detalye tungkol dito , at ipakita ang menu ng mga bagay na maaari mong gawin gamit ang tampok. \n\nUpang pumili ng maraming mga tampok , pindutin nang matagal ang 'Shift ' key. Pagkatapos ay i-click ang alinman sa \nsa ang tampok na gusto mong piliin , o i-drag sa mapa upang gumuhit ng parihaba . \nAy ito gumuhit ng isang kahon at piliin ang lahat ng mga punto sa loob nito.\n\n### Saving Pag-edit \n\nKapag gumawa ka ng mga pagbabago tulad ng pag-edit ng mga kalsada, gusali , at mga lugar, ang mga ito ay \nnaka-imbak sa isang lugar lamang hanggang sa i-save mo ang mga ito sa server. Huwag mag-alala kung gumawa ka \nisang pagkakamali - maaari mong i-undo ang mga pagbabago sa pamamagitan ng pag-click sa pindutan undo , at gawing muli ang \nmga pagbabago sa pamamagitan ng pag-click sa pindutan gawing muli.\n\nI-click ang 'I-save ' upang matapos sa isang pangkat ng mga pag-edit - halimbawa , kung nag- nakumpleto \nisang lugar ng bayan at nais na magsimula sa isang bagong lugar . Magkakaroon ka ng pagkakataong \nupang suriin kung ano ang iyong nagawa , at ang editor supplies nakakatulong na mga mungkahi\nat babala kung may isang bagay ay hindi tila karapatan tungkol sa mga pagbabago . \n\nKung mukhang maganda ang lahat ng bagay , maaari mong ipasok ang isang maikling komento na nagpapaliwanag ng mga pagbabago\nna ginawa mo , at i-click muli ang ' I-save' upang i-post ang mga pagbabago\nsa [ OpenStreetMap.org ] ( http://www.openstreetmap.org/ ), kung saan ang mga ito ay nakikita \nsa lahat ng iba pang mga gumagamit at magagamit para sa iba upang bumuo at pagbutihin sa.\n\nKung hindi mo maaaring tapusin ang iyong mga pag-edit sa isang sitting , maaari mong iwanan ang editor window at bumalik ( sa parehong browser at computer ) , at ang\neditor application ay mag-aalok upang ibalik ang iyong trabaho .\n\n"
+        "title": "Tulong"
     },
     "intro": {
         "navigation": {
             "title": "Navigation",
             "drag": "Ang pangunahing lugar ng mapa ay nagpapakita ng datos ng na makikita sa OpenStreetMap. Maaari kang mag-navigate sa pamamagitan ng pag-drag at pag-scroll, tulad ng anumang webmap. **I-drag ang mapa!**",
-            "select": "Mga tampok ng mapa ay kinakatawan ng tatlong paraan: gamit ang mga puntos, mga linya o area/poligon. Ang lahat ng mga tampok ay maaaring piliin sa pamamagitan ng pag-click sa mga ito. **Mag-click sa punto upang piliin ito.**",
-            "header": "Ang \"header\" ay nagpapakita kung anong uri ng \"feature\" ito.",
-            "pane": "Kapag ang isang tampok ay pinili, ang feature editor ay ipinapakita. Ang header ay nagpapakita kung anong uri ng tampok at ipinapakita sa pangunahing pane ang mga katangian ng tampok, tulad ng pangalan at address. **Isara ang feature editor gamit ang close button na malapit sa kanang tuktok. **"
+            "select": "Mga tampok ng mapa ay kinakatawan ng tatlong paraan: gamit ang mga puntos, mga linya o area/poligon. Ang lahat ng mga tampok ay maaaring piliin sa pamamagitan ng pag-click sa mga ito. **Mag-click sa punto upang piliin ito.**"
         },
         "points": {
             "title": "Mga Punto o tuldok",
-            "add": "Ang mga puntos ay maaaring gamitin upang kumatawan sa mga tampok tulad ng mga tindahan, kainan at mga monumento. Markahan ang mga ito sa tukoy na lokasyon, at ilarawan kung ano ito. **I-click ang pindutan ng Point upang magdagdag ng bagong punto.**",
-            "place": "Gumawa ng punto sa pamamagitan ng pag-click sa mapa. **Ilagay ang tuldok sa tuktok ng gusali.**",
             "search": "Maraming iba't ibang mga tampok ang pwedeng kumatawan bilang puntos. Ang puntong iyong nai-dagdag ay isang Cafe. **I-search ang '{name}'**",
             "choose": "**Pumili ng Cafe mula sa talaan.**",
-            "describe": "Ang punto o tuldok na ito ay minarkahan bilang \"cafe\".  Gamit ang \"feature editor\", maari tayong magdagdag ng iba pang impormasyon. **Magdagdag ng pangalan**",
-            "close": "Ang feature editor ay maaring isara sa pamamagitan ng pag-click ng \"Close\". **Isara the feature editor**",
-            "reselect": "Kadalasan, may mga puntos nang nalikha ng ibang mappers, ngunit may mga mali o hindi kumpleto. Maaaring i-edit ang mga puntos na ito. **Piliin ang punto na nilikha mo kanina.**",
-            "fixname": "**Baguhin o magdagdag ng pangalan ng kalsada at isara ang \"feature editor\"**",
-            "reselect_delete": "Ang lahat ng mga nasa mapa ay maaring burahin. **Mag-click sa punto na nilikha mo.**",
-            "delete": "Ang menu sa paligid ng punto ay naglalaman ng mga operasyon na maaaring isagawa dito, tulad ng pagbura. **Burahin ang punto. **"
+            "describe": "Ang punto o tuldok na ito ay minarkahan bilang \"cafe\".  Gamit ang \"feature editor\", maari tayong magdagdag ng iba pang impormasyon. **Magdagdag ng pangalan**"
         },
         "areas": {
             "title": "Mga area o poligon",
-            "corner": "Ang paglikha ng area o poligon ay sa pamamagitan ng paglalagay node sa paligid ng mga hangganan ng lugar. **Ilagay ang unang node sa isa sa mga sulok ng palaruan.**",
             "place": "Ipagpatuloy ang pag-guhit ng area o pligon sa pamamagitan ng paglalagay ng higit pang mga node. Tapusin ito sa pamamagitan ng pag-click sa umpisang node. ** Gumuhit ng area o pilgon ng palaruan.**",
             "search": "**Hanapin ang '{name}'.**",
-            "choose": "**Pliin ang \"Playground\" mula sa talaan.**",
-            "describe": "**Magdagdag ng pangalan at isara ang \"feature editor\"**"
+            "choose": "**Pliin ang \"Playground\" mula sa talaan.**"
         },
         "lines": {
             "title": "Mga linya",
-            "add": "Ang mga linya ay ginagamit para kumatawan sa mga \"feature\" na gaya ng mga kalsada, riles ng tren at ilog. **I-click ang button para sa \"Linya\" upang magdagdag ng bagong linya. **",
             "start": "**Simulan ang linya sa pamamagitan ng pag-click sa dulo ng kalsada.**",
-            "intersect": "I-click upang magdagdag ng higit pang mga tuldok sa linya. Maaari mong i-drag ang mapa habang gumuguhit kung kinakailangan. Ang mga kalsada, at iba pang mga uri ng linya, ay pwedeng bahagi ng isang mas malaking network. Mahalaga para sa mga linyang ito ay konektado, maayos ang pagkaka-sunod-sunod para sa routing upang gumana ng mga application. ** Mag-click sa Flower Street, upang lumikha ng isang panulukang naka-konekta sa dalawang linya. **",
             "finish": "Ang mga linya ay matatapos sa pamamagitan ng pag-click muli sa huling node. **Taposin ang pagguhit ng kalsada.**",
             "road": "**Piliin ang \"Road\" mula sa talaan**",
             "residential": "Mayroong iba't ibang mga uri ng mga kalsada, ang pinaka-karaniwang ay residential. **Piliin ang residential na uri ng kalsada**",
-            "describe": "**Magdagdag ng pangalan ng kalsada at isara ang \"feature editor\"**",
-            "restart": "Kailangang i-intersect ang kalsada sa Flower Street.",
             "wrong_preset": "Hindi ka pumili ang Residential na uri ng kalsada. **I-click dito upang piliin muli**"
         },
         "startediting": {
             "title": "Umpisahan ang pag-edit",
-            "help": "Higit pang mga documentation at ang walkthrough ang makukuha dito.",
             "save": "Huwag kalimutan na regular na i-save ang iyong mga binago!",
             "start": "Simulan ang pagma-mapa!"
         }
@@ -406,8 +388,8 @@
             "address": {
                 "label": "Address",
                 "placeholders": {
-                    "street": "Kalsada",
-                    "city": "Siyudad"
+                    "city": "Siyudad",
+                    "street": "Kalsada"
                 }
             },
             "aerialway": {

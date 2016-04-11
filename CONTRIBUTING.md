@@ -12,7 +12,7 @@ Please [search for your issue before filing it: many bugs and improvements have 
 
 To report a bug:
 
-* Write specifically what browser (type and version, like Firefox 22), OS, and browser extensions you have installed
+* Write specifically what browser (type and version, like "Firefox 43.0"), OS, and browser extensions you have installed
 * Write steps to replicate the error: when did it happen? What did you expect to happen? What happened instead?
 * Please keep bug reports professional and straightforward: trust us, we share your dismay at software breaking.
 * If you can, [enable web developer extensions](http://debugbrowser.com/) and report the
@@ -38,9 +38,9 @@ with stable releases. Issues that are marked fixed in the tracker may still be p
 ## Translating
 
 Translations are managed using the
-[Transifex](https://www.transifex.com/projects/p/id-editor/) platform. After
+[Transifex](https://www.transifex.com/ideditor/id-editor/) platform. After
 signing up, you can go to [iD's project
-page](https://www.transifex.com/projects/p/id-editor/), select a language and
+page](https://www.transifex.com/ideditor/id-editor/), select a language and
 click *Translate now* to start translating. Translations are divided into two
 sections, *core*, which contains text for the main interface of iD, and
 *presets*, which has the text for labeling feature presets.
@@ -56,15 +56,15 @@ search terms literally -- use a set of synonyms and related terms appropriate
 to the target language, separated by commas.
 
 [iD translation project on
-Transifex](https://www.transifex.com/projects/p/id-editor/)
+Transifex](https://www.transifex.com/ideditor/id-editor/)
 
 To get notifications when translation source files change, click **Watch
 project** button near the bottom of the project page. You can edit your
-[notification settings](https://www.transifex.com/settings/notices/) if you're
+[notification settings](https://www.transifex.com/user/settings/notices/) if you're
 getting too many notifications.
 
 Translations are licensed under
-[WTFPL](https://raw.github.com/openstreetmap/iD/master/LICENSE), the same license
+[ISC](https://raw.github.com/openstreetmap/iD/master/LICENSE), the same license
 as iD.
 
 **Why are there so many duplicate "Type" translations?** There are multiple
@@ -96,8 +96,8 @@ Use `make` to build the translations with the local changes.
 ## Contributing Documentation
 
 Documentation is maintained as a series of [Markdown](http://daringfireball.net/projects/markdown/)
-documents in [core.yaml](/data/core.yaml). The documentation 
-is in the `help` section (currently starting at line 258). The first line 
+documents in [core.yaml](/data/core.yaml). The documentation
+is in the `help` section (currently starting at line 258). The first line
 of each new section of documentation should be of the form
 
     # GPS
@@ -110,8 +110,8 @@ To add a new piece of documentation, simply add to [core.yaml](/data/core.yaml) 
 
 ## Adding or Refining Presets
 
-Presets save time for iD users by automatically showing them the tags they are 
-likely to add for a given feature. They are stored in `data/presets/presets`. If 
+Presets save time for iD users by automatically showing them the tags they are
+likely to add for a given feature. They are stored in `data/presets/presets`. If
 you're going to update the presets, [review the Presets README](/data/presets/README.md).
 
 ## Javascript
@@ -124,7 +124,7 @@ only one difference:
 No aligned `=`, no aligned arguments, spaces are either indents or the 1
 space between expressions. No hard tabs, ever.
 
-Javascript code should pass through [JSHint](http://www.jshint.com/) with no
+Javascript code should pass through [ESLint](http://eslint.org/) with no
 warnings.
 
 ## HTML
@@ -153,14 +153,15 @@ feel free to use newer features wisely.
 
 ## Tests
 
-Test your code and make sure it passes. Our testing harness requires [node.js](http://nodejs.org/)
-and a few modules:
+Test your code and make sure it passes.
 
-1. [Install node.js](http://nodejs.org/) version 0.10.0 or later - 'Install' will download a package for your OS
-2. Install [PhantomJS](http://phantomjs.org/) version 1.9.1 or later - This can be done via `npm install phantomjs` or homebrew
-3. Go to the directory where you have checked out `iD`
-4. Run `npm install`
-5. Run `npm test` to see whether your tests pass or fail.
+First ensure you have a `phantomjs` binary, version 2.0 or later, available on your `$PATH`. On a Mac,
+you can install this via homebrew with `brew install phantomjs`. Then:
+
+1. Go to the directory where you have checked out `iD`
+2. run `npm install`
+3. run `make`
+4. run `npm test` to see whether your tests pass or fail.
 
 ## Building / Installing
 
@@ -170,11 +171,22 @@ required for this.
 iD will be built to the `dist` directory. This directory is self-contained; you can copy it
 into the public directory of your webserver to deploy iD.
 
+## Live reloading
+
+You can use [live-server](https://www.npmjs.com/package/live-server) *(npm module)* to
+reload the browser automatically whenever there is a change in code.
+
+1. run `npm install -g live-server`
+2. run  `live-server .` or `live-server dist`
+ *(You will be automatically redirected to the local server page.)*
+
+*(Note: Sometimes auto reload might not display correctly and you might need to rebuild iD by running `make`.)*
+
 ## Licensing
 
-iD is under the [WTFPL](http://www.wtfpl.net/). Some of the libraries it uses
-are under different licenses. If you're contributing to iD, you're contributing
-WTFPL code.
+iD is available under the [ISC License](https://opensource.org/licenses/ISC).
+Some of the libraries it uses are under different licenses. If you're contributing
+to iD, you're contributing ISC Licensed code.
 
 ## Submitting Changes
 
@@ -191,7 +203,7 @@ them.
 
 So let's say you've changed `js/ui/confirm.js`.
 
-1. Run `jshint js/id` to make sure your code is clean
+1. Run `eslint js/id` to make sure your code is clean
 2. Run tests with `npm test`
 3. Commit your changes with an informative commit message
 4. [Submit a pull request](https://help.github.com/articles/using-pull-requests) to the `openstreetmap/iD` project.

@@ -5,7 +5,6 @@
         "levels"
     ],
     "geometry": [
-        "point",
         "area"
     ],
     "terms": [
@@ -14,5 +13,6 @@
     "tags": {
         "building": "university"
     },
+    "matchScore": 0.5,
     "name": "University Building"
 }
