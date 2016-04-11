@@ -103,17 +103,15 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                         context.hoot().view.utilities.reviewbookmarknotes.setForcedReviewableItem(null);
                     } else {
                         // First check to see if there are any siblings within the relation
-                         if(_currentReviewable){
-                            try{
-                                _parent().actions.idgraphsynch.getRelationFeature(_currentReviewable.mapId,_currentReviewable.relationId,function(resp){
-                                    var feature = context.hasEntity(resp.members[0].id);
-                                    var nextReviewInRelation = _.find(context.graph().parentRelations(feature),function(item){return item.tags['hoot:review:needs'] == 'yes'});
-                                    if(nextReviewInRelation == undefined){
-                                        // Try other member
-                                        feature = context.hasEntity(resp.members[1].id);
-                                        nextReviewInRelation = _.find(context.graph().parentRelations(feature),function(item){return item.tags['hoot:review:needs'] == 'yes'});
-                                    }
+                        var searchForSibling = false;
+                        if(_currentReviewable){if(_currentReviewable.entityId){searchForSibling=true;}}
 
+                        if(searchForSibling){
+                            var _entityId = _currentReviewable.entityId;
+                            _parent().actions.idgraphsynch.getRelationFeature(_currentReviewable.mapId,_currentReviewable.relationId,function(resp){
+                                var feature = context.hasEntity(_entityId);
+                                if(feature){
+                                    var nextReviewInRelation = _.find(context.graph().parentRelations(feature),function(item){return item.tags['hoot:review:needs'] == 'yes'});
                                     if(nextReviewInRelation == undefined){
                                         Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
                                     } else{
@@ -123,13 +121,16 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                                             sortOrder:parseInt(nextReviewInRelation.tags['hoot:review:sort_order']),
                                             relationId: parseInt(nextReviewInRelation.origid.replace('r',''))
                                         }
+                                        iD.operations.Review([_entityId],context)();
                                         _reviewGetNextHandler(null, nextReview);
                                     }
-                                });
-                            } catch (err) {
-                                Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
-                            }
-                        } else {Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);}
+                                } else {
+                                    Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
+                                }
+                            });
+                        } else {
+                            Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
+                        }
                     }
      
                 } catch (err) {
