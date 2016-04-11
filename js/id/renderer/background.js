@@ -66,6 +66,17 @@ iD.Background = function(context) {
         context.history().imageryUsed(imageryUsed);
     }
 
+    // Allows us to define "digitalglobe" as the defaultBaseMap
+    function getDefaultBaseMap() {
+      var dgre = /digitalglobe/i
+      if (dgre.test(iD.data.hootConfig.defaultBaseMap)) {
+          var dg = iD.dgservices();
+          return iD.BackgroundSource(dg.backgroundSource(undefined, undefined, undefined));
+      } else {
+          return findSource(iD.data.hootConfig.defaultBaseMap);
+      }
+    }
+
     //TODO: Document why this was modified for Hoot
     function background(selection) {
         var base = selection.selectAll('.background-layer')
@@ -461,7 +472,7 @@ iD.Background = function(context) {
         if (chosen && chosen.indexOf('custom:') === 0) {
             background.baseLayerSource(iD.BackgroundSource.Custom(chosen.replace(/^custom:/, '')));
         } else {
-            background.baseLayerSource(findSource(chosen) || findSource(iD.data.hootConfig.defaultBaseMap) || backgroundSources[1]);
+			background.baseLayerSource(findSource(chosen) || getDefaultBaseMap() || backgroundSources[1]);
         }
 
         var locator = _.find(backgroundSources, function(d) {
