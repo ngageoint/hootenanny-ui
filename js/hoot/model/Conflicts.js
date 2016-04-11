@@ -685,7 +685,7 @@ Hoot.model.conflicts = function(context)
             var tags = _.clone(hoot.loadedLayers()[mergeLayer.name].tags);
             for(var prop in tags) {
                 if(tags.hasOwnProperty(prop)) {
-                    if(tags[prop] === featureLayerName) {
+                    if(tags[prop] === featureLayerName && featureLayerName != null) {
                         sourceLayer = _.find(hoot.model.layers.getAvailLayers(),{'name':featureLayerName});
                         return sourceLayer.id;
                     }
