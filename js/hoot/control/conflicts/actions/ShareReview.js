@@ -68,14 +68,14 @@ Hoot.control.conflicts.actions.sharereview = function (context)
 
         var d_btn = [
 				        {
-				        	text: 'publish',
+				        	text: 'Save',
 				        	location: 'right',
 				        	onclick: _saveBookmark
 				        }
 			        ];
 
         var meta = {};
-        meta.title = 'Share Review';
+        meta.title = 'Bookmark Review';
         meta.form = d_form;
         meta.button = d_btn;
 

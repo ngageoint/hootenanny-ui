@@ -227,10 +227,10 @@ Hoot.control.conflicts = function (context, sidebar) {
         {
             id: 'sharereview',
             name: 'share_review',
-            text: 'Share Review',
+            text: 'Bookmark Review',
             color: 'fill-grey button round pad0y pad1x dark small strong',
             icon: '_icon plus',
-            cmd: iD.ui.cmd('s'),
+            cmd: iD.ui.cmd('Ctrl+b'),
             action: _instance.actions.sharereview.publish // Review table
         }];
 
@@ -247,6 +247,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         .on(da[2].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[2]); })
         .on(da[3].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[3]); })
         .on(da[4].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[4]); })
+        .on(da[5].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[5]); })
         ;
 
         d3.select(document)
