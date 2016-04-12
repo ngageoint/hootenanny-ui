@@ -5,8 +5,6 @@ iD.modes.MeasureAddLine = function(context) {
     };
 
     var svg = d3.select('.measure-layer').select('svg');
-    var id = 0;
-
 
     var behavior = iD.behavior.MeasureDrawLine(context,svg,'line')
         .on('finish',finish);

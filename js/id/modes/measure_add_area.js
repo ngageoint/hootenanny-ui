@@ -7,7 +7,6 @@ iD.modes.MeasureAddArea = function(context) {
     d3.select('.measure-layer').selectAll('g').remove();
 
     var svg = d3.select('.measure-layer').select('svg');
-    var id = 0;
 
     var behavior = iD.behavior.MeasureDrawArea(context,svg)
     .on('finish',finish);

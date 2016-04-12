@@ -1,6 +1,6 @@
 iD.Map = function(context) {
     var dimensions = [1, 1],
-        //TODO: Document why this was modified for Hoot
+        //Need to document why this was modified for Hoot
         dispatch = d3.dispatch('move', 'drawn', 'maxImportZoomChanged', 'drawVector', 'updateBackgroundList'),
         projection = context.projection,
         roundedProjection = iD.svg.RoundProjection(projection),
@@ -27,7 +27,7 @@ iD.Map = function(context) {
         surface,
         mouse,
         mousemove,
-        //TODO: Document why this was added for Hoot
+        //Need to document why this was added for Hoot
         editableZoom = 2,
         visibleZoom = 16,
         loadVectorOnTilesLoad = false;
@@ -43,7 +43,7 @@ iD.Map = function(context) {
             .on('change.map', redraw);
         context.features()
             .on('redraw.map', redraw);
-        //TODO: Document why this was added for Hoot
+        //Need to document why this was added for Hoot
         context.connection()
             .on('layer', redraw);
 
@@ -158,7 +158,7 @@ iD.Map = function(context) {
             features = context.features(),
             all = context.intersects(map.extent()),
             data, filter,
-            //TODO: Document why this was added for Hoot
+            //Need to document why this was added for Hoot
             hidden=context.connection().hiddenLayers();
 
         if (difference) {
@@ -180,7 +180,7 @@ iD.Map = function(context) {
                 filter = function(d) { return set.has(d.id); };
 
             } else {
-                //TODO: Document why this was added for Hoot
+                //Need to document why this was added for Hoot
                 all=_.filter(all, function(a) { return !_.contains(hidden, a.mapId); });
                 data = all;
                 filter = d3.functor(true);
@@ -199,11 +199,11 @@ iD.Map = function(context) {
             .call(drawLines, graph, data, filter)
             .call(drawAreas, graph, data, filter)
             .call(drawMidpoints, graph, data, filter, map.trimmedExtent())
-            //TODO: determine why Hoot has disabled this behavior
+            //Need to determine why Hoot has disabled this behavior
             //.call(drawLabels, graph, data, filter, dimensions, !difference && !extent)
             .call(drawPoints, graph, data, filter);
 
-        //TODO: Document why this was added for Hoot
+        //Need to document why this was added for Hoot
         var lastLoadedLayer = context.connection().lastLoadedLayer();
         if(lastLoadedLayer){
             var modifiedId = lastLoadedLayer.toString();
@@ -212,7 +212,7 @@ iD.Map = function(context) {
 
 
         dispatch.drawn({full: true});
-        //TODO: Document why this was added for Hoot
+        //Need to document why this was added for Hoot
         dispatch.drawVector();
     }
 
@@ -221,7 +221,7 @@ iD.Map = function(context) {
         // changed to .layer-osm in iD v1.9.2
         surface.selectAll('.layer-osm *').remove();
         dispatch.drawn({full: true});
-        //TODO: Document why this was added for Hoot
+        //Need to document why this was added for Hoot
         dispatch.drawVector();
     }
 
@@ -300,7 +300,7 @@ iD.Map = function(context) {
             supersurface.call(context.background());
         }
 
-        //TODO: Document why this was modified for Hoot
+        //Need to document why this was modified for Hoot
         // The reason for implementing loadVectorOnTilesLoad is following
         // 1. User swaps layer
         // 2. Tile loads but since tile loading takes long time before all entities loaded vector
@@ -331,7 +331,7 @@ iD.Map = function(context) {
                 }
             }
 
-            //TODO: determine why Hoot has disabled this behavior
+            //Need to determine why Hoot has disabled this behavior
             //drawVector(difference, extent);
         } else if (map.editable()) {
             context.connection().tileZoom(16);
@@ -348,7 +348,7 @@ iD.Map = function(context) {
 
 
         } else {
-            //TODO: Document why this was added for Hoot
+            //Need to document why this was added for Hoot
             if(map.zoom() >= visibleZoom){
                 context.connection().loadTiles(projection, dimensions);
             }
@@ -507,7 +507,7 @@ iD.Map = function(context) {
 
     map.zoom = function(z) {
         if (!arguments.length) {
-            //TODO: Document why this was modified for Hoot
+            //Need to document why this was modified for Hoot
             var zoomVal = Math.max(Math.log(projection.scale() * 2 * Math.PI) / Math.LN2 - 8, 0);
 
             if(document.getElementById('sidebar2')){
@@ -527,7 +527,7 @@ iD.Map = function(context) {
                     }
                     dispatch.maxImportZoomChanged();
                 }
-                else*/{
+                else{*/
                     var nodes = document.getElementById('sidebar2').getElementsByTagName('*');
                     for(var i = 0; i < nodes.length; i++)
                     {
@@ -535,12 +535,12 @@ iD.Map = function(context) {
                          nodes[i].style.opacity=1.0;
                     }
                     nodes = document.getElementById('sidebar2').getElementsByClassName('button');
-                    for(var i = 0; i < nodes.length; i++)
+                    for(i = 0; i < nodes.length; i++)
                     {
                         nodes[i].disabled = false;
                         nodes[i].style.opacity=1.0;
                     }
-                }
+                // }
             }
 
 
@@ -571,7 +571,7 @@ iD.Map = function(context) {
         zoomLimits = zoomLimits || [context.minEditableZoom(), 20];
         map.centerZoom(extent.center(), Math.min(Math.max(zoom, zoomLimits[0]), zoomLimits[1]));
     };
-    //TODO: Document why this was added for Hoot
+    //Need to document why this was added for Hoot
     map.getZoomLevel = function(minlon, minlat, maxlon, maxlat) {
         var lowerLeftExtent = iD.geo.Extent([minlon, minlat]);
         var upperRightExtent = iD.geo.Extent([maxlon, maxlat]);
@@ -580,7 +580,7 @@ iD.Map = function(context) {
         return map.extentZoom(extent);
     };
 
-    //TODO: Document why this was added for Hoot
+    //Need to document why this was added for Hoot
     map.zoomToExtent = function(minlon, minlat, maxlon, maxlat, zoomLimits) {
         var lowerLeftExtent = iD.geo.Extent([minlon, minlat]);
         var upperRightExtent = iD.geo.Extent([maxlon, maxlat]);
@@ -664,7 +664,7 @@ iD.Map = function(context) {
         return calcZoom(iD.geo.Extent(_), trimmed);
     };
 
-    //TODO: Document why this was modified for Hoot
+    //Need to document why this was modified for Hoot
     map.editable = function(_) {
         if(!_){
             return map.zoom() >= editableZoom;
@@ -682,7 +682,7 @@ iD.Map = function(context) {
         return map;
     };
 
-    //TODO: Document why this was added for Hoot
+    //Need to document why this was added for Hoot
     map.updateBackground = function(){
         dispatch.updateBackgroundList();
     };
@@ -690,7 +690,7 @@ iD.Map = function(context) {
     //Added in iD v1.9.2
     map.layers = drawLayers;
 
-    //TODO: Document why this was added for Hoot
+    //Need to document why this was added for Hoot
     map.drawVectorFar = function(difference, extent) {
         var graph = context.graph(),
             features = context.features(),

@@ -172,7 +172,7 @@ iD.presets = function() {
         all.collection.push(iD.presets.Category(id, rawCategory, all));
     };
 
-    all.addDefault = function(id, geom ) {
+    all.addDefault = function(id) {
         var getItem = _.bind(all.item, all);
         var newItem = getItem(id);
         defaults.push(newItem);

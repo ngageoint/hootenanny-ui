@@ -1,12 +1,9 @@
-var clickTime = null;
-iD.behavior.Clip = function(context,svg,type) {
+iD.behavior.Clip = function(context,svg) {
      var event = d3.dispatch('move', 'click','cancel', 'finish','dblclick'),
-     keybinding = d3.keybinding('cliparea'),
      closeTolerance = 4,
      tolerance = 12,
      nodeId=0,
-     rect,anchorPt,
-     lastPoint=null,firstPoint=null;
+     rect,anchorPt;
 
  function ret(element) {
      d3.event.preventDefault();
@@ -62,9 +59,6 @@ iD.behavior.Clip = function(context,svg,type) {
      var c = context.projection(context.map().mouseCoordinates());
 
         if(nodeId>0){
-            var x = parseFloat(rect.attr('x')),
-                y = parseFloat(rect.attr('y'));
-
             var width = Math.abs(c[0]-anchorPt[0]),
             height = Math.abs(c[1]-anchorPt[1]);
 

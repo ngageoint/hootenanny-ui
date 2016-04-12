@@ -5,7 +5,7 @@ iD.ui.EntityEditor = function(context) {
         preset,
         reference,
         /* Added for iD v1.9.2 */
-        coalesceChanges = false,
+        //coalesceChanges = false,
         modified = false,
         base;
 
@@ -16,9 +16,10 @@ iD.ui.EntityEditor = function(context) {
 
     var currentTranslation = 'OSM'; // default to OSM
     var currentMeta;
-    var allTranslatedFields = [];
-    var allTransTags;
-    var noShowDefs;
+    // eslint never used
+    // var allTranslatedFields = [];
+    // var allTransTags;
+    // var noShowDefs;
     var plg;
 
     function entityEditor(selection) {
@@ -26,7 +27,7 @@ iD.ui.EntityEditor = function(context) {
         plg = plugins.getEntityEditorPlugin(iD.data.hootConfig.pluginhost);
 
 
-        var ltds = context.hoot().view.ltdstags;
+        // var ltds = context.hoot().view.ltdstags;
         var appPane = d3.select('#app');
         if(appPane.classed('hidden') === true){
             appPane.classed('hidden', false);
@@ -63,8 +64,8 @@ iD.ui.EntityEditor = function(context) {
             .style('margin-left', '20px')
             .style('margin-right', '30px')
             .style('margin-top', '2px')
-            .html(function (field) {
-                return '<label class='form-label'>' + 'Filter By Type' + '</label>';
+            .html(function () {
+                return '<label class="form-label">' + 'Filter By Type' + '</label>';
             });
 
         currentTranslation = iD.util.getCurrentTranslation();
@@ -87,7 +88,7 @@ iD.ui.EntityEditor = function(context) {
 
         // When translation combo value change then we get the translation filter
         // and rerun entity Editor
-        comboIntput.on('change', function(param){
+        comboIntput.on('change', function(){
             var filterType = d3.select('#entity_editor_presettranstype').value();
             currentTranslation = filterType;
             iD.util.setCurrentTranslation(currentTranslation);
@@ -99,7 +100,7 @@ iD.ui.EntityEditor = function(context) {
             entityEditor(selection);
 
             if(!d3.select('#presettranstype').empty()){
-                if(d3.select('#presettranstype').value()!=filterType){
+                if(d3.select('#presettranstype').value() !== filterType){
                     iD.util.changeComboValue('#presettranstype',filterType);
                 }
             }
@@ -175,18 +176,19 @@ iD.ui.EntityEditor = function(context) {
         }
 
 
-        function populateBody(modPreset, defTags, defRawTags, transInfo, translatedFields, transTags){
+        function populateBody(modPreset, defTags, defRawTags, transInfo /*, translatedFields , transTags*/){
             if(!d3.select('#entity_editor_presettranstype').empty()){
                 currentTranslation = iD.util.getCurrentTranslation(); //d3.select('#entity_editor_presettranstype').value();
             }
 
-            if(translatedFields !== undefined){
-                allTranslatedFields = translatedFields;
-            }
+            // eslint never used
+            // if(translatedFields !== undefined){
+            //     allTranslatedFields = translatedFields;
+            // }
 
-            if(transTags !== undefined) {
-                allTransTags = transTags;
-            }
+            // if(transTags !== undefined) {
+            //     allTransTags = transTags;
+            // }
 
             $body.select('.inspector-preset')
                 .call(presetEditor
@@ -296,7 +298,7 @@ iD.ui.EntityEditor = function(context) {
         var entity = context.entity(id);
 
         // for all non OSM translation
-        if(currentTranslation != 'OSM') {
+        if(currentTranslation !== 'OSM') {
             plg.updateEntityEditor(entity, changed, rawTagEditor, currentTranslation,
             function(OSMEntities){
                            // store to internal
@@ -352,7 +354,7 @@ iD.ui.EntityEditor = function(context) {
         base = context.graph();
         entityEditor.preset(context.presets().match(context.entity(id), base));
         entityEditor.modified(false);
-        coalesceChanges = false;
+        //coalesceChanges = false;
         return entityEditor;
     };
 

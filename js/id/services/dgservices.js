@@ -20,7 +20,6 @@ iD.dgservices  = function() {
             + '&featureProfile={profile}&TRANSPARENT=true&SRS=EPSG:3857&SUPEROVERLAY=true'
             + '&FORMAT_OPTIONS=OPACITY:0.6;GENERALIZE:true&connectId={connectId}&FRESHNESS={freshness}'
             + '&BBOX={bbox}&WIDTH=256&HEIGHT=256',
-        imagemeta_template = '/myDigitalGlobe/viewportsettings';
         //service = 'EGD',
         defaultProfile = 'Global_Currency_Profile',
         defaultCollection = '24h';

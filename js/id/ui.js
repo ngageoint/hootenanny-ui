@@ -27,11 +27,11 @@ iD.ui = function(context) {
             .style({'position':'absolute','width':'10px','top':'0',
                 'bottom':'0','right':'-5px','background':'#999','opacity':'0.5','cursor':'col-resize'})
             .on('dblclick',function(){
-                x = 0.33*window.innerWidth;
+                var x = 0.33*window.innerWidth;
                 sidebar.style('width',x+'px');
                 sidebar.classed('col4',true);
                 sidebar.selectAll('tspan').each(context.hoot().control.utilities.folder.wrap);
-            })
+            });
 
         var app = sidebar.append('div')
             .attr('id', 'app')
@@ -130,7 +130,7 @@ iD.ui = function(context) {
     // Make sidebar expandable
         var dragResize = d3.behavior.drag().on('drag',function(){
             sidebar.classed('col4',false);
-            x = d3.mouse(this.parentNode)[0];
+            var x = d3.mouse(this.parentNode)[0];
             x = Math.max(Math.min(x, window.innerWidth), Math.min(400,0.333*window.innerWidth));
             sidebar.style('width',x+'px');
 
@@ -216,7 +216,7 @@ iD.ui = function(context) {
                     .selectAll('li')
                     .data(items).enter()
                     .append('li')
-                    .attr('class',function(item){return ' coordinate-option';})
+                    .attr('class',function(){return ' coordinate-option';})
                     .on('click' , function(item) {
                         context.coordinateDisplay = item;
                         d3.select('.coordinates-options-menu').remove();
@@ -249,7 +249,7 @@ iD.ui = function(context) {
             .call(iD.ui.Status(context));*/
  //END: Hoot may have wanted to disable this by commenting out
 
-        //TODO: Document why this was added for Hoot
+        //Need to document why this was added for Hoot
 
         var hootSidebar2 = app.append('div')
             .attr('id', 'sidebar2')
@@ -276,7 +276,7 @@ iD.ui = function(context) {
         d3.select(window).on('resize.editor', function() {
             mapDimensions = m.dimensions();
             map.dimensions(m.dimensions());
-            //TODO: Document why this was modified for Hoot
+            //Need to document why this was modified for Hoot
             var sdHeight = document.getElementById('app').clientHeight;
             hootSidebar2.style({
                 'max-height': sdHeight + 'px',
@@ -334,10 +334,10 @@ iD.ui = function(context) {
     function ui(container) {
         context.container(container);
         context.loadLocale(function() {
-            //TODO: Document why this was added for Hoot
+            //Need to document why this was added for Hoot
             context.hoot().loadUtilities(context);
             render(container);
-            //TODO: Document why this was added for Hoot
+            //Need to document why this was added for Hoot
             d3.select('.map-overlay').append('ul')
                 .attr('class', 'layer-list layer-list-hoot hidden')
                 .style('font-size','12px');
@@ -354,9 +354,9 @@ iD.ui = function(context) {
 iD.ui.tooltipHtml = function(text, key) {
     var s = '<span>' + text + '</span>';
     if (key) {
-        s += '<div class='keyhint-wrap'>' +
+        s += '<div class="keyhint-wrap">' +
             '<span> ' + (t('tooltip_keyhint')) + ' </span>' +
-            '<span class='keyhint'> ' + key + '</span></div>';
+            '<span class="keyhint"> ' + key + '</span></div>';
     }
     return s;
 };

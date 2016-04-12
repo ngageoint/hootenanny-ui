@@ -161,7 +161,7 @@ iD.ui.MapInMap = function(context) {
 
             // redraw overlay
             var overlaySources = context.background().overlayLayerSources(),
-                hasOverlay = false,
+                // hasOverlay = false,
                 activeOverlayLayers = [];
             for (var i = 0; i < overlaySources.length; i++) {
                 if (overlaySources[i].validZoom(zMini)) {
@@ -193,10 +193,10 @@ iD.ui.MapInMap = function(context) {
             overlays.exit()
                 .remove();
 
-            if (hasOverlay) {
-                overlay
-                    .call(overlayLayer);
-            }
+            // if (hasOverlay) {
+            //     overlay
+            //         .call(overlayLayer);
+            // }
 
             // redraw bounding box
             if (!panning) {
@@ -224,7 +224,7 @@ iD.ui.MapInMap = function(context) {
 
             // redraw geojson layers
             if (!panning) {
-                var getPath = d3.geo.path().projection(projection);
+                getPath = d3.geo.path().projection(projection);
 
                 var g = svg.selectAll('.map-in-map-geojson')
                     .data([0]);
@@ -233,7 +233,7 @@ iD.ui.MapInMap = function(context) {
                     .insert('g', '.map-in-map-bbox')
                     .attr('class', 'map-in-map-geojson');
 
-                var path = g.selectAll('.map-in-map-geojson')
+                path = g.selectAll('.map-in-map-geojson')
                     .data(geojson);
 
                 path.enter()
@@ -253,10 +253,10 @@ iD.ui.MapInMap = function(context) {
             timeoutId = setTimeout(function() { redraw(); dispatch.zoomPan(); }, 300);
         }
 
-
-        function hidden() {
-            return selection.style('display') === 'none';
-        }
+        //Unnecessary function?
+        // function hidden() {
+        //     return selection.style('display') === 'none';
+        // }
 
         map_in_map.hidden = function() {
             return hidden;

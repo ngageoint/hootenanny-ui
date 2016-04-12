@@ -9,7 +9,7 @@ iD.ArrowLayer = function() {
             h: 10,
             x: 5,
             y: 5,
-            t: '<circle cx='5' cy='5' r='5' class='arrow tail'/>',
+            t: '<circle cx="5" cy="5" r="5" class="arrow tail"/>',
             u: 'userSpaceOnUse'
         },
         {
@@ -19,7 +19,7 @@ iD.ArrowLayer = function() {
             x: 40,
             y: 11,
             o: 'auto',
-            t: '<path d='M 2,2 2,20 40,11 2,2' class='arrow head' />',
+            t: '<path d="M 2,2 2,20 40,11 2,2" class="arrow head" />',
             u: 'userSpaceOnUse'
         }];
 

@@ -8,7 +8,7 @@ iD.ui.Coordinates = function(context){
         var degrees = new Array(0,0);
         var minutes = new Array(0,0);
         var seconds = new Array(0,0);
-        var direction = new Array(' ',' ');
+        // var direction = new Array(' ',' ');
         var hundreths = new Array(0.0,0.0);
 
         var leadingZero = new Array('','');
@@ -36,7 +36,7 @@ iD.ui.Coordinates = function(context){
         hundreths[1] = parseInt((lng_leftover-seconds[1])*100);
         if(hundreths[1]<10){leadingZero[1]='0';}
 
-        return degrees[0]+'°' + minutes[0] + ''' + seconds[0] + '.' + leadingZero[0] + hundreths[0] + '' ' + LatCardinal + '  ' + degrees[1]+ '°' + minutes[1] + ''' + seconds[1] + '.' + leadingZero[1] + hundreths[1] + '' ' + LngCardinal;
+        return degrees[0]+'°' + minutes[0] + '\'' + seconds[0] + '.' + leadingZero[0] + hundreths[0] + '" ' + LatCardinal + '  ' + degrees[1]+ '°' + minutes[1] + '\'' + seconds[1] + '.' + leadingZero[1] + hundreths[1] + '" ' + LngCardinal;
     }
 
     function formatDD(coords){
@@ -58,20 +58,20 @@ iD.ui.Coordinates = function(context){
 
         var a=6378137.000;
         var b=6356752.314;
-        var f=(a-b)/a;
-        var e2=Math.sqrt((Math.pow(a,2)-Math.pow(b,2))/Math.pow(b,2));
+        // var f=(a-b)/a;
+        // var e2=Math.sqrt((Math.pow(a,2)-Math.pow(b,2))/Math.pow(b,2));
         var e=Math.sqrt((Math.pow(a,2)-Math.pow(b,2))/Math.pow(a,2));
 
         var zone;
         var lan0;
         if (lan1>0)
         {
-            var zone=30+Math.ceil(lan1/6);
+            zone=30+Math.ceil(lan1/6);
             lan0=Math.floor(lan1/6)*6+3;
         }
         else
         {
-            var zone=30-Math.floor(Math.abs(lan1)/6);
+            zone=30-Math.floor(Math.abs(lan1)/6);
             lan0=-Math.floor(Math.abs(lan1)/6)*6-3;
         }
 
@@ -93,7 +93,7 @@ iD.ui.Coordinates = function(context){
         var term2=Math.pow(lan,4)*Math.pow(Math.cos(fi),4)*(4*Math.pow(p,3)*(1-6*Math.pow(t,2))+Math.pow(p,2)*(1+24*Math.pow(t,2))-4*p*Math.pow(t,2))/24;
         var term3=Math.pow(lan,6)*Math.pow(Math.cos(fi),6)*(61-148*Math.pow(t,2)+16*Math.pow(t,4))/720;
 
-        var Kutm=k0*(term1+term2+term3);
+        // var Kutm=k0*(term1+term2+term3);
 
 
         //----------------------------------------------
@@ -130,7 +130,7 @@ iD.ui.Coordinates = function(context){
         Xutm = Math.round(Xutm);
         Yutm = Math.round(Yutm);
 
-        return Xutm.toString().concat(' ; ' + Yutm.toString() + ' '+zone.toString()+sn) ;
+        return Xutm.toString().concat(' ; ' + Yutm.toString() + ' '+zone.toString()+sn);
     }
 
 
@@ -154,4 +154,4 @@ iD.ui.Coordinates = function(context){
             update(selection,coords);
         });
     };
-} ;
+};

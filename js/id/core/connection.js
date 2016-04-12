@@ -1,4 +1,4 @@
-//TODO: Document why this was modified for Hoot
+//Need to document why this was modified for Hoot
 iD.Connection = function(context) {
 
     var event = d3.dispatch('authenticating', 'authenticated', 'auth', 'loading', 'load', 'loaded', 'layer'
@@ -22,14 +22,14 @@ iD.Connection = function(context) {
         wayStr = 'way',
         relationStr = 'relation',
         userDetails, //added in iD v1.7.5
-      //TODO: Document why this was added for Hoot
+      //Need to document why this was added for Hoot
         layerZoomArray = [],
         totalNodesCnt = 0 ,
         maxNodesCnt = 0,
         off;
 
-    //TODO: Document why this was added for Hoot
-    //FIXME: is this a dup of connection.authenticated?
+    //Need to document why this was added for Hoot
+    //To fix: is this a dup of connection.authenticated?
     oauth.authenticated = function () {
         return true;
     };
@@ -54,7 +54,7 @@ iD.Connection = function(context) {
         return url + '/user/' + username;
     };
 
-  //TODO: Document why this was modified for Hoot
+  //Need to document why this was modified for Hoot
     connection.loadFromURL = function(url, callback, mapId, layerName) {
         function done(dom) {
             var result = parse(dom, mapId, layerName);
@@ -71,7 +71,7 @@ iD.Connection = function(context) {
         return Hoot.model.REST(command, data, done);
     };
 
-  //TODO: Document why this was added for Hoot
+  //Need to document why this was added for Hoot
     connection.getTileNodesCountFromURL = function(url, data, callback) {
         if (iD.data.hootConfig)
             d3.json(url)
@@ -79,13 +79,13 @@ iD.Connection = function(context) {
                 .post(JSON.stringify(data), function (error, resp) {
                     if (error) {
                         iD.ui.Alert(error.responseText,'error',new Error().stack);
-                        return ;
+                        return;
                     }
                     callback(resp);
                 });
     };
 
-  //TODO: Document why this was added for Hoot
+  //Need to document why this was added for Hoot
     connection.getMbrFromUrl = function( mapId, callback) {
         var request = d3.json('/hoot-services/osm/api/0.6/map/mbr?mapId=' + mapId);
         request.get(function (error, resp) {
@@ -125,7 +125,7 @@ iD.Connection = function(context) {
     };
 
     connection.loadMultiple = function(ids, callback, hootcallback, layerName) {
-        // TODO: upgrade lodash and just use _.chunk -- iD v1.7.5
+        //Nee to upgrade lodash and just use _.chunk -- iD v1.7.5
         var currMapId = null;
         // get the map id. Do on first one since ids should be coming from same map
         if(ids && ids.length > 0){
@@ -176,7 +176,7 @@ iD.Connection = function(context) {
         return [parseFloat(lon), parseFloat(lat)];
     }
 
-  //TODO: Document why this was modified for Hoot
+  //Need to document why this was modified for Hoot
     function getNodes(obj, mapId) {
         var elems = obj.getElementsByTagName(ndStr),
             nodes = new Array(elems.length);
@@ -186,7 +186,7 @@ iD.Connection = function(context) {
         return nodes;
     }
 
-  //TODO: Document why this was modified for Hoot
+  //Need to document why this was modified for Hoot
     function getTags(obj, layerName) {
         var elems = obj.getElementsByTagName(tagStr),
             tags = {};
@@ -198,7 +198,7 @@ iD.Connection = function(context) {
         return tags;
     }
 
-  //TODO: Document why this was modified for Hoot
+  //Need to document why this was modified for Hoot
     function getMembers(obj, mapId) {
         var elems = obj.getElementsByTagName(memberStr),
             members = new Array(elems.length);
@@ -217,7 +217,7 @@ iD.Connection = function(context) {
         return (!attrs.visible || attrs.visible.value !== 'false');
     }
 
-  //TODO: Document why this was modified for Hoot
+  //Need to document why this was modified for Hoot
     var parsers = {
         node: function nodeData(obj, mapId, layerName) {
             var attrs = obj.attributes;
@@ -266,7 +266,7 @@ iD.Connection = function(context) {
         }
     };
 
-  //TODO: Document why this was modified for Hoot
+  //Need to document why this was modified for Hoot
     function parse(dom, mapId, layerName) {
         if (!dom || !dom.childNodes) return new Error('Bad request');
         var root = dom.childNodes[0],
@@ -355,7 +355,7 @@ iD.Connection = function(context) {
         return tags;
     };
 
-  //TODO: Document why this was added for Hoot
+  //Need to document why this was added for Hoot
     connection.putChangesetmapId = function(changes) {
         var mapid;
         var types = ['created', 'modified', 'deleted'];
@@ -374,7 +374,7 @@ iD.Connection = function(context) {
         return mapid;
     };
 
-  //TODO: Document why this was modified for Hoot
+  //Need to document why this was modified for Hoot
     connection.filterChangeset = function(changes) {
         var toChangemapids = {};
         var ways = _.filter(_.flatten(_.map(changes, function (a) {
@@ -433,7 +433,7 @@ iD.Connection = function(context) {
         return toChangemapids;
     };
 
-  //TODO: Document why this was modified for Hoot
+  //Need to document why this was modified for Hoot
     connection.putChangeset = function (changes, comment, imageryUsed, callback) {
         var changesArr = connection.filterChangeset(changes);
         if (!changesArr) {
@@ -496,7 +496,7 @@ iD.Connection = function(context) {
                     path: '/api/0.6/changeset/' + changeset_id + '/upload?mapId=' + changemapId,
                     options: { header: { 'Content-Type': 'text/xml' } },
                     content: JXON.stringify(connection.osmChangeJXON(changeset_id, changes))
-                }, function(err, xhr) {
+                }, function(err) {
                     if (err) return callback(err);
                     //hoot handler to manage merged descendents
                     //context.hoot().model.conflicts.updateDescendent(xhr, changemapId);
@@ -512,7 +512,7 @@ iD.Connection = function(context) {
         });
     };
 
-  //TODO: Document why this was added for Hoot
+  //Need to document why this was added for Hoot
     connection.createChangeset = function (mapId, comment, imageryUsed, callback) {
         oauth.xhr({
             method: 'PUT',
@@ -528,7 +528,7 @@ iD.Connection = function(context) {
         });
     };
 
-  //TODO: Document why this was added for Hoot
+  //Need to document why this was added for Hoot
     connection.closeChangeset = function (mapId, changesetId, callback) {
         oauth.xhr({
             method: 'PUT',
@@ -542,7 +542,6 @@ iD.Connection = function(context) {
             callback(err, changesetId);
         });
     };
-    var userDetails;
 
     connection.userDetails = function(callback) {
         if (userDetails) {
@@ -608,7 +607,7 @@ iD.Connection = function(context) {
         return connection;
     };
 
-  //TODO: Document why this was added for Hoot
+  //Need to document why this was added for Hoot
     var loadedData = {};
     connection.hideLayer = function (mapid) {
         if(loadedData[mapid]){
@@ -740,11 +739,11 @@ iD.Connection = function(context) {
         })
             .map(abortRequest);
 
-        var firstMapId = null;
+        //var firstMapId = null;
         var params = [];
         tiles.forEach(function(tile) {
             var mapId = tile.mapId || mapId;
-            firstMapId = mapId;
+            //firstMapId = mapId;
             var layerName = tile.layerName || layerName;
             var vis = connection.visLayer(mapId);
 
@@ -764,7 +763,7 @@ iD.Connection = function(context) {
         return params;
     };
 
-    var doFlush = false;
+    //var doFlush = false;
     var lastShowBBox = null;
   //END: Document why this was added for Hoot
 
@@ -779,12 +778,12 @@ iD.Connection = function(context) {
               s / 2 - projection.translate()[0],
               s / 2 - projection.translate()[1]];
 
-      //TODO: Document why this was added for Hoot
+      //Need to document why this was added for Hoot
         var visLayers = _.filter(loadedData, function (layer) {
             return layer.vis;
         });
 
-      //TODO: Document why this was added for Hoot
+      //Need to document why this was added for Hoot
         var mapidArr = _.map(loadedData, function (layer) {
             return layer.mapId;
         });
@@ -816,7 +815,7 @@ iD.Connection = function(context) {
         tiles = _.flatten(tiles);
 
 
-      //TODO: Document why this was modified for Hoot
+      //Need to document why this was modified for Hoot
         function bboxUrl(tile, mapId, layerName, layerExt, showbbox) {
             if (context.hoot().demo) { return '/data/'+layerName+'.xml'; }
             var ext = '';
@@ -855,11 +854,11 @@ iD.Connection = function(context) {
 
         // Generate the coordinates of each tiles as parameter so we can calculate total numbers of
         // Node counts, which in turn used for determining density raster vs osm display
-        var firstMapId = null;
+        //var firstMapId = null;
         var params = [];
         tiles.forEach(function(tile) {
             var mapId = tile.mapId || mapId;
-            firstMapId = mapId;
+            //firstMapId = mapId;
             var layerName = tile.layerName || layerName;
             var vis = connection.visLayer(mapId);
 
@@ -905,7 +904,7 @@ iD.Connection = function(context) {
 
         };
         // Get the node count from service
-        connection.getTileNodesCountFromURL(url + '/api/0.6/map/nodescount', params, function(resp){
+        connection.getTileNodesCountFromURL(url + '/api/0.6/map/nodescount', params, function(){
             if(context.hoot().control.conflicts &&
                     context.hoot().control.conflicts.isConflictReviewExist()
                     ){
@@ -919,7 +918,7 @@ iD.Connection = function(context) {
             function showOnTop(){
                 d3.select(this).moveToFront();
             }
-            totalNodesCnt = 1*resp.nodescount;
+            // totalNodesCnt = 1*resp.nodescount;
             maxNodesCnt = 1*iD.data.hootConfig.maxnodescount;
 
             var currShowBbox = totalNodesCnt > maxNodesCnt;
@@ -941,7 +940,7 @@ iD.Connection = function(context) {
 
             if(currShowBbox !== lastShowBBox){
 
-                doFlush = true;
+                //doFlush = true;
                 context.flush();
 
             }
@@ -976,6 +975,12 @@ iD.Connection = function(context) {
 
 
                 }
+
+            function getCurrentId(loadedData, lyr) {
+                _.find(loadedData, function(l) {
+                    return l.name === lyr;
+                });
+            }
 
             tiles.forEach(function (tile) {
                 var mapId = tile.mapId || mapId;
@@ -1020,14 +1025,14 @@ iD.Connection = function(context) {
                                 if(hootLyrs[0] !== undefined){
                                     for(var i=hootLyrs[0].length-1; i>-1; i--){
                                         var lyr = d3.select(hootLyrs[0][i]).text();
-                                        var curId = _.find(loadedData, function(l){return l.name === lyr;});
-                                        d3.selectAll('.tag-hoot-' + curId.mapId.toString()).each(function(){d3.select(this).moveToFront();});
+                                        var curId = getCurrentId(loadedData, lyr);
+                                        d3.selectAll('.tag-hoot-' + curId.mapId.toString()).each(showOnTop);
                                         event.loaded();
                                         event.layerAdded(lyr);
                                     }
                                 } else {
                                     var modifiedId = lastLoadedLayer.toString();
-                                    d3.selectAll('.tag-hoot-'+modifiedId).each(function(){d3.select(this).moveToFront();});
+                                    d3.selectAll('.tag-hoot-'+modifiedId).each(showOnTop);
                                     event.loaded();
                                     event.layerAdded(layerName);
                                 }
@@ -1038,11 +1043,9 @@ iD.Connection = function(context) {
                                         // When zoomed out during review load reviewable items and the dependent relations
                                         var currReviewable = context.hoot().control.conflicts.actions.traversereview.getCurrentReviewable();
                                         if(currReviewable) {
-                                            context.hoot().control.conflicts.actions.idgraphsynch.getRelationFeature
-                                                (currReviewable.mapId, currReviewable.relationId, function(newReviewItem){
-
+                                            context.hoot().control.conflicts.actions.idgraphsynch.getRelationFeature(currReviewable.mapId, currReviewable.relationId, function(){
                                                 context.hoot().model.conflicts.loadMissingFeatureDependencies(mapId,
-                                                    layerName, context.hoot().control.conflicts.reviewIds, function(error){
+                                                    layerName, context.hoot().control.conflicts.reviewIds, function(){
                                                     event.loaded();
                                                     event.layerAdded(layerName);
                                                 });

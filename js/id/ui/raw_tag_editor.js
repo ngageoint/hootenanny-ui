@@ -27,7 +27,7 @@ iD.ui.RawTagEditor = function(context) {
 
     function content($wrap,sortAZ) {
         var entries = d3.entries(tags);
-        if(sortAZ==undefined||null){
+        if(sortAZ === undefined||null){
             if(!d3.select('#sort-tags').empty()){sortAZ = d3.select('#sort-tags').property('checked');}
             else{sortAZ=false;}
         }
@@ -65,9 +65,9 @@ iD.ui.RawTagEditor = function(context) {
             .attr('id','sort-tags-div')
             .style('position','absolute').style('right','25px').style('margin','-25px 0')
             .html(function(){
-                var retval = '<label class='pad1x' style='opacity: 1;'>';
-                retval += '<input type='checkbox' class='reset' id='sort-tags' ';
-                retval += 'style='opacity: 1;'';
+                var retval = '<label class="pad1x" style="opacity: 1;">';
+                retval += '<input type="checkbox" class="reset" id="sort-tags" ';
+                retval += 'style="opacity: 1;"';
                 retval += '>Sort A-Z</label>';
                 return retval;
             });
@@ -78,7 +78,7 @@ iD.ui.RawTagEditor = function(context) {
 
        $sortAZ.on('change',function(){
             var sortAZ = d3.select('#sort-tags').property('checked');
-            if(sortAZ==true){
+            if(sortAZ === true){
                 content($wrap,true);
             } else {
                 content($wrap);
@@ -161,7 +161,7 @@ iD.ui.RawTagEditor = function(context) {
             .on('change', valueChange)
             .on('keydown.push-more', pushMore)
             .each(function(d){
-                if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item)==0;}))){
+                if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item) === 0;}))){
                     d3.select(this).attr('readonly',true);
                 }
             });
@@ -169,7 +169,7 @@ iD.ui.RawTagEditor = function(context) {
 
         $items.select('button.remove')
             .on('click', function(d){
-                if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item)==0;}))){
+                if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item) === 0;}))){
                     return iD.ui.Alert('Cannot remove a protected tag!','warning',new Error().stack);
                 } else {
                     return removeTag(d);
@@ -219,7 +219,7 @@ iD.ui.RawTagEditor = function(context) {
                     var origTagInfoEndPt = context.taginfo().endpoint();
                     // passing optional translation info
                     if(translation){
-                        // TODO: Refactor out the fCode
+                        // Refactor out the fCode
                         if(translation.fCode){
                             tagInfoOpts.fcode = translation.fCode;
                         } /*else {
@@ -240,17 +240,17 @@ iD.ui.RawTagEditor = function(context) {
 
                         if(!tagInfEndPts){
                             tagInfEndPts = {};
-                            tagInfEndPts['OSM'] = origTagInfoEndPt;
-                            tagInfEndPts['translation'] = transTagInfoUrl;
+                            tagInfEndPts.OSM = origTagInfoEndPt;
+                            tagInfEndPts.translation = transTagInfoUrl;
                         } else {
-                            transTagInfoUrl = tagInfEndPts['translation'];
+                            transTagInfoUrl = tagInfEndPts.translation;
                         }
                         tagInfoOpts.rawgeom = rawGeom;
                         context.taginfo().endpoint(transTagInfoUrl);
 
                     } else {
                         if(tagInfEndPts){
-                            var osmTagInfoUrl = tagInfEndPts['OSM'];
+                            var osmTagInfoUrl = tagInfEndPts.OSM;
                             context.taginfo().endpoint(osmTagInfoUrl);
                         }
 
@@ -338,10 +338,6 @@ iD.ui.RawTagEditor = function(context) {
                 content($wrap);
                 $list.selectAll('li:last-child input.key').node().focus();
             }, 0);
-        }
-
-        function sortTags() {
-            content($wrap);
         }
     }
 

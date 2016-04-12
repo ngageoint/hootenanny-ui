@@ -77,7 +77,6 @@ iD.ui.RadialMenu = function(context, operations) {
         }
 
         function mouseover(d, i) {
-            var mergedLayer = context.hoot().model.layers.getMergedLayer();
             var text = iD.ui.tooltipHtml(d.tooltip(), d.keys[0]);
             var rect = context.surfaceRect(),
                 angle = a0 + i * a,

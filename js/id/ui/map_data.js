@@ -415,8 +415,8 @@ iD.ui.MapData = function(context) {
             var selectTxt = 'path.way.stroke';
             var reviewTxt = 'path.shadow.activeReviewFeature, path.shadow.activeReviewFeature2';
 
-            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText === selectTxt){ sheets.deleteRule(cssIdx);return true;}});
-            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText === reviewTxt){ sheets.deleteRule(cssIdx);return true;}});
+            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText === selectTxt){ sheets.deleteRule(cssIdx); return true;}});
+            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText === reviewTxt){ sheets.deleteRule(cssIdx); return true;}});
 
             var reviewWidth = (parseInt(width)+10).toString();
 

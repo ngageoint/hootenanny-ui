@@ -63,7 +63,7 @@ iD.ui.TagReference = function(tag, context) {
                 .append('p')
                 .text(docs.description);
 
-            var wikiLink = body
+            body
                 .append('a')
                 .attr('target', '_blank')
                 .attr('href', 'https://wiki.openstreetmap.org/wiki/' + docs.title)
@@ -102,7 +102,7 @@ iD.ui.TagReference = function(tag, context) {
         button = selection.selectAll('.tag-reference-button')
             .data([0]);
 
-        var enter = button.enter().append('button')
+        button.enter().append('button')
             .attr('tabindex', -1)
             .classed('tag-reference-button',true)
             .call(iD.svg.Icon('#icon-inspect'));

@@ -20,7 +20,7 @@ iD.svg.Areas = function(projection) {
     function setPattern(d) {
         for (var i = 0; i < patternKeys.length; i++) {
             if (patterns.hasOwnProperty(d.tags[patternKeys[i]])) {
-                this.style.fill = this.style.stroke = 'url('#pattern-' + patterns[d.tags[patternKeys[i]]] + '')';
+                this.style.fill = this.style.stroke = 'url("#pattern-' + patterns[d.tags[patternKeys[i]]] + '")';
                 return;
             }
         }

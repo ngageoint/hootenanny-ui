@@ -91,12 +91,6 @@ iD.ui.Help = function(context) {
             }
         }
 
-        function clickWalkthrough() {
-            d3.select(document.body).call(iD.ui.intro(context));
-            setVisible(false);
-        }
-
-
         var pane = selection.append('div')
                 .attr('class', 'help-wrap map-overlay fillL col5 content hide'),
             tooltip = bootstrap.tooltip()

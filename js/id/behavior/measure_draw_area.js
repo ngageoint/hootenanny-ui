@@ -1,11 +1,10 @@
-var clickTime = null;
 iD.behavior.MeasureDrawArea = function(context,svg) {
     var event = d3.dispatch('move', 'click','cancel', 'finish','dblclick'),
-        keybinding = d3.keybinding('drawarea'),
         closeTolerance = 4,
         tolerance = 12,
         nodeId=0,
-        polygon,label,rect,lengthLabel,areaLabel,
+        polygon,label,//rect,
+        lengthLabel,areaLabel,
         points='',
         ptArr=[],rectArr=[],
         lastPoint=null,firstPoint=null,
@@ -16,9 +15,15 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 
     function ret(element) {
         // reset variables
-        nodeId=0;points='';ptArr=[];rectArr=[];
-        lastPoint=null;firstPoint=null;
-        totDist=0;segmentDist=0;lastSegmentDist=0;
+        nodeId=0;
+        points='';
+        ptArr=[];
+        rectArr=[];
+        lastPoint=null;
+        firstPoint=null;
+        totDist=0;
+        segmentDist=0;
+        lastSegmentDist=0;
         d3.event.preventDefault();
         element.on('dblclick',undefined);
         event.finish();
@@ -41,13 +46,10 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
         rectArr.push(context.map().mouseCoordinates());
         rectArr.push(firstPoint);
 
-        console.log(rectArr);
-
         var json = {type: 'Polygon',coordinates: [rectArr]};
         var area = d3.geo.area(json);
 
          if (area > 2 * Math.PI) {
-             console.log('t');
              json.coordinates[0] = json.coordinates[0].reverse();
              area = d3.geo.area(json);
          }
@@ -197,10 +199,10 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
                 .attr('y', c[1]+rectMargin);
             lengthLabel.attr('x', c[0]+10)
                 .attr('y', c[1])
-                .text(function(d) { return displayLength(currentDist);});
+                .text(function() { return displayLength(currentDist);});
             areaLabel.attr('x', c[0]+10)
                 .attr('y', c[1]+25)
-                .text(function(d){return displayArea(getArea());});
+                .text(function(){return displayArea(getArea());});
 
             /*rect.attr('x', c[0]+10)
                 .attr('y', c[1]-(label.dimensions()[1]/2))
@@ -219,7 +221,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
             for (var i = 0; i < 2; i++) {ptArr.push(context.map().mouseCoordinates());}
         } else if (nodeId>1){
             ptArr.splice(ptArr.length-1,1);
-            for (var i = 0; i < 2; i++) {ptArr.push(context.map().mouseCoordinates());}
+            for (i = 0; i < 2; i++) {ptArr.push(context.map().mouseCoordinates());}
         }
 
 
@@ -231,7 +233,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
             for (var i = 0; i < 2; i++) {ptArr.splice(1,0,context.map().mouseCoordinates());}
         }*/
 
-        var newpt=svg.append('g')
+        svg.append('g')
             .classed('node point',true)
             .attr('id','measure-vertex-'+nodeId)
             .attr('transform','translate('+c[0]+ ',' + c[1] + ')');
@@ -251,10 +253,10 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
                 .style('font-size','18px');
             lengthLabel.attr('x', c[0]+10)
                 .attr('y', c[1])
-                .text(function(d) { return displayLength(totDist+lastSegmentDist);});
+                .text(function() { return displayLength(totDist+lastSegmentDist);});
             areaLabel.attr('x', c[0]+10)
                 .attr('y', c[1]+25)
-                .text(function(d){return displayArea(getArea());});
+                .text(function(){return displayArea(getArea());});
 
             //rect = g.insert('rect',':first-child')
               /*rect.attr('x', c[0])

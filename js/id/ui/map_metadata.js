@@ -1,4 +1,4 @@
-iD.ui.MapMetadata = function(data, context) {
+iD.ui.MapMetadata = function(data) {
     var mapMetadata = {},
         button,
         body,
@@ -102,7 +102,7 @@ iD.ui.MapMetadata = function(data, context) {
 
         // params
         if (d.tags && d.tags.params) {
-            var params = JSON.parse(d.tags.params.replace(/\\'/g, '''));
+            var params = JSON.parse(d.tags.params.replace(/\\'/g, '\''));
             var pdata = {
                 'Reference Layer': d.tags.input1Name,
                 'Secondary Layer': d.tags.input2Name,
@@ -255,8 +255,7 @@ iD.ui.MapMetadata = function(data, context) {
         showing = true;
     }
 
-    function hide(selection) {
-
+    function hide() {
         body.transition()
             .duration(200)
             .style('max-height', '0px')
@@ -273,7 +272,7 @@ iD.ui.MapMetadata = function(data, context) {
         button = selection.selectAll('.map-metadata-button')
             .data([data]);
 
-        var enter = button.enter().append('button')
+        button.enter().append('button')
             .attr('tabindex', -1)
             .attr('class', 'map-metadata-button map-button keyline-left inline _icon info')
             .style('float', 'right')

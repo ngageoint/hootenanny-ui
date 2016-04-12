@@ -1,11 +1,9 @@
-var clickTime = null;
 iD.behavior.MeasureDrawLine = function(context,svg) {
     var event = d3.dispatch('move', 'click','cancel', 'finish','dblclick'),
-        keybinding = d3.keybinding('drawline'),
         closeTolerance = 4,
         tolerance = 12,
         nodeId=0,
-        line,label,rect,
+        line,label,//rect,
         lastPoint=null,
         totDist=0,
         segmentDist=0;
@@ -101,7 +99,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
         var c = context.projection(context.map().mouseCoordinates());
         if(nodeId>0){
 
-             var c = context.projection(context.map().mouseCoordinates());
+            c = context.projection(context.map().mouseCoordinates());
             line.attr('x2', c[0])
                 .attr('y2', c[1]);
 
@@ -112,7 +110,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
 
             label.attr('x', c[0]+10)
                 .attr('y', c[1]+10)
-                .text(function(d) { return displayLength(currentDist); });
+                .text(function() { return displayLength(currentDist); });
 
             /*rect.attr('x', c[0])
                 .attr('y', c[1]-(label.dimensions()[1]/2))
@@ -124,7 +122,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
     function click() {
         var c = context.projection(context.map().mouseCoordinates());
 
-        var newpt=svg.append('g')
+        svg.append('g')
             .classed('node point',true)
             .attr('id','measure-vertex-'+nodeId)
             .attr('transform','translate('+c[0]+ ',' + c[1] + ')');
@@ -143,7 +141,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
                 .attr('y', c[1]+10)
                 .style('fill','white')
                 .style('font-size','18px')
-                .text(function(d) { return displayLength(totDist);});
+                .text(function() { return displayLength(totDist);});
 
             line = g.append('line')
                 .classed('measure-line-'+nodeId,true)

@@ -106,7 +106,7 @@ iD.ui.PresetList = function(context) {
                         _.each(transSchema, function(elem){
 
                             var fCode = elem.fcode;
-                            curPreset = _.find(context.presets().collection,
+                            var curPreset = _.find(context.presets().collection,
                                 function(item){
                                     return item.id === filterType + '/' + fCode;
                                 });
@@ -167,8 +167,8 @@ iD.ui.PresetList = function(context) {
                         .style('margin-left', '20px')
                         .style('margin-right', '20px')
                         .style('margin-top', '10px')
-                        .html(function (field) {
-                            return '<label class='pad1x pad0y strong fill-white round-top keyline-all'>' + 'Filter By Type' + '</label>';
+                        .html(function () {
+                            return '<label class="pad1x pad0y strong fill-white round-top keyline-all">' + 'Filter By Type' + '</label>';
                         });
 
              var comboIntput = ftypeWrap.append('input')
@@ -176,7 +176,7 @@ iD.ui.PresetList = function(context) {
                         .attr('type', 'text')
                         .attr('value', iD.util.getCurrentTranslation());
 
-            // TODO: Link this with plg.getTranslations();
+            // Link this with plg.getTranslations();
             var comboData = ['OSM','TDSv61', 'TDSv40'];
             var combo = d3.combobox()
                     .data(_.map(comboData, function (n) {
@@ -189,7 +189,7 @@ iD.ui.PresetList = function(context) {
             comboIntput.style('width', '100%')
                 .call(combo);
 
-            comboIntput.on('change', function(param){
+            comboIntput.on('change', function(){
                 var container = d3.select('#preset-list-container');
                 container.selectAll('.preset-list-item').remove();
                 var presets = context.presets().defaults(geometry, 36);
@@ -203,7 +203,7 @@ iD.ui.PresetList = function(context) {
                 container.call(drawList, presets);
 
                 if(!d3.select('#entity_editor_presettranstype').empty()){
-                    if(d3.select('#entity_editor_presettranstype').value()!=filterType){
+                    if(d3.select('#entity_editor_presettranstype').value() !== filterType){
                         iD.util.changeComboValue('#entity_editor_presettranstype',filterType);
                     }
                 }
@@ -212,7 +212,7 @@ iD.ui.PresetList = function(context) {
                 search.trigger('input');
             });
 
-        var presets = context.presets().defaults(geometry, 36);
+        presets = context.presets().defaults(geometry, 36);
         // Get the current translation filter type
         var filterType = d3.select('#presettranstype').value();
         var filteredCollection = getFilteredPresets(filterType, presets.collection);
@@ -227,7 +227,6 @@ iD.ui.PresetList = function(context) {
 
     function getFilteredPresets(filterType, presets) {
         var filterRes = presets;
-        var filteredPresets = presets;
         // When OSM type get all that does not have hoot:transtype
         if(filterType === 'OSM') {
             filterRes = _.filter(presets, function(prs){
@@ -378,7 +377,7 @@ iD.ui.PresetList = function(context) {
                 // set tags
                 Hoot.model.REST('TDSToOSMByFCode', data, function (resp) {
                     if(resp){
-                        var cnt = resp.responseText
+                        var cnt = resp.responseText;
                         var osm = JSON.parse(cnt);
                         for(var key in osm.attrs){
                             preset.tags[key] = osm.attrs[key];

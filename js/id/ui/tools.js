@@ -1,15 +1,11 @@
 iD.ui.Tools = function(context) {
 
-    function saving() {
-        return context.mode().id === 'tools';
-    }
-
     function tools() {
          // If in review mode, do not include Clip tools
          var items = [];
          items.push({title:'Measurement Tools',icon:'add-line',group:'measure',items:[
                 {title:'Measure Length',tooltip:'Shortcut: 6',group:'measure',type:'line',icon:'add-line',mode:iD.modes.MeasureAddLine(context)},
-                {title:'Measure Area',tooltip:'Shortcut: 7',group:'measure',type:'area',icon:'add-area',mode:iD.modes.MeasureAddArea(context)},
+                {title:'Measure Area',tooltip:'Shortcut: 7',group:'measure',type:'area',icon:'add-area',mode:iD.modes.MeasureAddArea(context)}
             ]});
 
         if (!hoot.control.conflicts.isConflictReviewExist()) {
@@ -66,7 +62,7 @@ iD.ui.Tools = function(context) {
                 subTools.append('span').text(function(item) { return item.title; }).attr('title',(function(item){return item.tooltip||'';}));
             });
 
-            toolsItem.append('span').attr('class',function(item){return 'icon-pre-text';});
+            toolsItem.append('span').attr('class',function(){return 'icon-pre-text';});
             toolsItem.append('span').text(function(item) { return item.title; });
 
         d3.select('.tools-menu').style('display', 'none');
@@ -101,7 +97,5 @@ iD.ui.Tools = function(context) {
         button.append('span')
             .attr('class', 'label')
             .text(t('tools.title'));
-
-        var numChanges = 0;
     };
 };

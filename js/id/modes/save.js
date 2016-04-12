@@ -10,31 +10,31 @@ iD.modes.Save = function(context) {
     // hootCallback is for hootenany specific callback. This may need to be moved
     // in the future during upstream merge with iD code
     function save(e, tryAgain, hootCallback) {
-        function withChildNodes(ids, graph) {
-            return _.uniq(_.reduce(ids, function(result, id) {
-                var e = graph.entity(id);
-                if (e.type === 'way') {
-                    try {
-                        var cn = graph.childNodes(e);
-                        result.push.apply(result, _.pluck(_.filter(cn, 'version'), 'id'));
-                    } catch(err) {
-                        /* eslint-disable no-console */
-                        if (typeof console !== 'undefined') console.error(err);
-                        /* eslint-enable no-console */
-                    }
-                }
-                return result;
-            }, _.clone(ids)));
-        }
+        // function withChildNodes(ids, graph) {
+        //     return _.uniq(_.reduce(ids, function(result, id) {
+        //         var e = graph.entity(id);
+        //         if (e.type === 'way') {
+        //             try {
+        //                 var cn = graph.childNodes(e);
+        //                 result.push.apply(result, _.pluck(_.filter(cn, 'version'), 'id'));
+        //             } catch(err) {
+        //                 /* eslint-disable no-console */
+        //                 if (typeof console !== 'undefined') console.error(err);
+        //                 /* eslint-enable no-console */
+        //             }
+        //         }
+        //         return result;
+        //     }, _.clone(ids)));
+        // }
 
         var loading = iD.ui.Loading(context).message(t('save.uploading')).blocking(true),
             history = context.history(),
             origChanges = history.changes(iD.actions.DiscardTags(history.difference())),
-            localGraph = context.graph(),
-            remoteGraph = iD.Graph(history.base(), true),
-            modified = _.filter(history.difference().summary(), {changeType: 'modified'}),
-            toCheck = _.pluck(_.pluck(modified, 'entity'), 'id'),
-            toLoad = withChildNodes(toCheck, localGraph),
+            //localGraph = context.graph(),
+            //remoteGraph = iD.Graph(history.base(), true),
+            //modified = _.filter(history.difference().summary(), {changeType: 'modified'}),
+            //toCheck = _.pluck(_.pluck(modified, 'entity'), 'id'),
+            //toLoad = withChildNodes(toCheck, localGraph),
             conflicts = [],
             errors = [];
 
@@ -46,15 +46,15 @@ iD.modes.Save = function(context) {
        /* if (toCheck.length) {
             console.debug('call loadMultiple');
             context.connection().loadMultiple(toLoad, loaded, hootCallback);
-        } else*/ {
+        } else {*/
             finalize(hootCallback);
-        }
+        //}
 
 
         // hootCallback is for hootenany specific callback. This may need to be moved
         // in the future during upstream merge with iD code
         // Reload modified entities into an alternate graph and check for conflicts..
-        function loaded(err, result, hootCallback) {
+        /*function loaded(err, result, hootCallback) {
             if (errors.length) return;
 
             if (err) {
@@ -91,17 +91,17 @@ iD.modes.Save = function(context) {
                     checkConflicts(hootCallback, result.force_remote);
                 }
             }
-        }
+        }*/
 
 
         // hootCallback is for hootenany specific callback. This may need to be moved
         // in the future during upstream merge with iD code
-        function checkConflicts(hootCallback, doForceRemote) {
+        /*function checkConflicts(hootCallback, doForceRemote) {
             function choice(id, text, action) {
                 return { id: id, text: text, action: function() { history.replace(action); } };
             }
             function formatUser(d) {
-                return '<a href='' + context.connection().userURL(d) + '' target='_blank'>' + d + '</a>';
+                return '<a href="' + context.connection().userURL(d) + '" target="_blank">' + d + '</a>';
             }
             function entityName(entity) {
                 return iD.util.displayName(entity) || (iD.util.displayType(entity.id) + ' ' + entity.id);
@@ -161,7 +161,7 @@ iD.modes.Save = function(context) {
             });
 
             finalize(hootCallback);
-        }
+        }*/
 
         // hootCallback is for hootenany specific callback. This may need to be moved
         // in the future during upstream merge with iD code
@@ -176,7 +176,7 @@ iD.modes.Save = function(context) {
                     history.changes(iD.actions.DiscardTags(history.difference())),
                     'Hoot Save',
                     history.imageryUsed(),
-                    function(err, changeset_id) {
+                    function(err/*, changeset_id*/) {
                         if (err) {
                             var isReviewing = context.hoot().control.conflicts.isConflictReviewExist();
                             var errMsg = err.responseText;
@@ -328,17 +328,17 @@ iD.modes.Save = function(context) {
     }
 
 
-    function success(e, changeset_id) {
-        context.enter(iD.modes.Browse(context)
-            .sidebar(iD.ui.Success(context)
-                .changeset({
-                    id: changeset_id,
-                    comment: e.comment
-                })
-                .on('cancel', function(ui) {
-                    context.ui().sidebar.hide(ui);
-                })));
-    }
+    // function success(e, changeset_id) {
+    //     context.enter(iD.modes.Browse(context)
+    //         .sidebar(iD.ui.Success(context)
+    //             .changeset({
+    //                 id: changeset_id,
+    //                 comment: e.comment
+    //             })
+    //             .on('cancel', function(ui) {
+    //                 context.ui().sidebar.hide(ui);
+    //             })));
+    // }
 
     var mode = {
         id: 'save'

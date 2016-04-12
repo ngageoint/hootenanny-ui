@@ -26,7 +26,7 @@ iD.behavior.PasteTags = function(context) {
         );
     }
 
-    function doPasteTags(overwrite) {
+    function doPasteTags(/*overwrite*/) {
         d3.event.preventDefault();
 
         var copyTags = context.copyTags(),

@@ -23,8 +23,8 @@ iD.ui.Splash = function(context) {
             .append('p')
             .html(t('splash.text', {
                 version: iD.version,
-                id: '<a href='https://github.com/openstreetmap/iD'>iD Editor</a>',
-                hootenanny: '<a href='https://github.com/ngageoint/hootenanny'>Hootenanny</a>'
+                id: '<a href="https://github.com/openstreetmap/iD">iD Editor</a>',
+                hootenanny: '<a href="https://github.com/ngageoint/hootenanny">Hootenanny</a>'
             }));
 
         var buttons = introModal.append('div').attr('class', 'modal-actions cf');

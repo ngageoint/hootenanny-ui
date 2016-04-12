@@ -53,6 +53,7 @@
 
     "globals": {
         "d3": false,
+        "hoot": false,
         "Hoot": false,
         "iD": false,
         "_": false,
