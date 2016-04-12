@@ -66,7 +66,7 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
                         _parent().actions.traversereview.jumpTo('forward');
                 }
             } else {
-                iD.ui.Alert("Nothing to review.",'notice');
+                iD.ui.Alert('Nothing to review.','notice');
             }
         } catch (err) {
             _handleError(err, true);
@@ -112,7 +112,7 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
             {
                 try {
                      _parent().deactivate(true);
-                    d3.select('body').call(iD.ui.Processing(context,true,"Resolving all reviewable features..."));
+                    d3.select('body').call(iD.ui.Processing(context,true,'Resolving all reviewable features...'));
                     // removed event.acceptAll(data) and brought in to direct call below
                     context.hoot().mode('browse');
                     context.hoot().model.conflicts.acceptAll(data, function () {

@@ -69,7 +69,7 @@ Hoot.hoot = function (context) {
 
                 // we do this to make sure OSM is in list and not duplicate
                 // which can happen if it is included in the list from server
-                iD.data.hootConfig.translationCapabilites['OSM'] = {"isvailable":"true"};
+                iD.data.hootConfig.translationCapabilites['OSM'] = {'isvailable':'true'};
             });
 
         });
@@ -271,7 +271,7 @@ Hoot.hoot = function (context) {
     };
 
     hoot.checkForSpecialChar = function(str){
-        var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/);
+        var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\':<>\?|]/);
         if (pattern.test(str)) {
             return false;
         }
@@ -290,10 +290,10 @@ Hoot.hoot = function (context) {
 
    hoot.checkForUnallowedChar = function(str){
        if(!hoot.checkForSpecialChar(str)){
-           return "Please do not use special characters: " + str + ".";
+           return 'Please do not use special characters: ' + str + '.';
        }
        if(!hoot.checkForUnallowableWords(str)){
-           return "Please do not use any unallowable terms: " + str + ".";
+           return 'Please do not use any unallowable terms: ' + str + '.';
        }
        return true;
    };
@@ -343,7 +343,7 @@ Hoot.hoot = function (context) {
     {
       if (!condition)
       {
-        throw "Assertion failed";
+        throw 'Assertion failed';
       }
     }
 
@@ -374,7 +374,7 @@ Hoot.hoot = function (context) {
                  var parts = appVerStr.split(' ');
                  _.each(parts, function(part){
                      if(part.indexOf(browserInfo.name) == 0){
-                         var subParts = part.split("/");
+                         var subParts = part.split('/');
                          if(subParts.length > 1){
                             browserInfo.version = subParts[1];
                          }
@@ -388,7 +388,7 @@ Hoot.hoot = function (context) {
 
     var bInfo = hoot.getBrowserInfo();
     if(bInfo.name !== 'Chrome' && bInfo.name !== 'Chromium' && bInfo.name !== 'Firefox'){
-        alert("Hootenanny will not function normally under " + bInfo.name + " v. " + bInfo.version);
+        alert('Hootenanny will not function normally under ' + bInfo.name + ' v. ' + bInfo.version);
     }
 
     return hoot;

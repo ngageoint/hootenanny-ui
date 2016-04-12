@@ -1,10 +1,10 @@
 iD.ui.Alert = function(message,type,stack) {
-    var alerts = d3.select("#alerts");
+    var alerts = d3.select('#alerts');
     var alertDiv = alerts.append('div')
         .classed('fillD alertDiv',true)
         .on('click',function(){
             clearTimeout(uniqueTimeout);
-            d3.select(this).transition().duration(0).style("opacity",1);
+            d3.select(this).transition().duration(0).style('opacity',1);
         })
         ;
 
@@ -28,13 +28,13 @@ iD.ui.Alert = function(message,type,stack) {
 
     var d = new Date().toLocaleString();
     try{
-        hoot.view.utilities.errorlog.reportUIError(d + ": " + message,stack);
+        hoot.view.utilities.errorlog.reportUIError(d + ': ' + message,stack);
     } catch(e){
         alert(message);
     }
 
     function fadeOut(selection){
-        selection.style("opacity",1).transition().duration(fadeTime).style("opacity",0).remove();
+        selection.style('opacity',1).transition().duration(fadeTime).style('opacity',0).remove();
     }
 
     ////// ALERT TYPES //////

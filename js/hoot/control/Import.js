@@ -21,7 +21,7 @@ Hoot.control.import = function (context,selection) {
 
 
     ETL.render = function (colors, isPrimary) {
-        context.map().on("maxImportZoomChanged", function(){
+        context.map().on('maxImportZoomChanged', function(){
             var imp = d3.selectAll('.hootImport')[0];
             if(imp.length){
                 for(i=0; i<imp.length; i++){
@@ -52,7 +52,7 @@ Hoot.control.import = function (context,selection) {
             .enter();
         var _form = null;
         if(isPrimary){
-            _form = sidebar.insert('form',":first-child");
+            _form = sidebar.insert('form',':first-child');
         } else {
             _form = sidebar.append('form');
         }
@@ -186,7 +186,7 @@ Hoot.control.import = function (context,selection) {
                     } else {
                         name = self.selectAll('.usedLayersInput').value();
                         lyrid = hoot.model.layers.getmapIdByName(name);
-                        if(lyrid==null){throw new Error("Invalid layer selected");}
+                        if(lyrid==null){throw new Error('Invalid layer selected');}
                     }
                 } else {
                     var gNode = d3.select(self.select('.sel').node().parentNode);
@@ -228,9 +228,9 @@ Hoot.control.import = function (context,selection) {
 
                     self.append('div')
                     .classed('contain keyline-all round controller', true)
-                    .html('<div class="pad1 inline _loading"><span></span></div>' +
-                        '<span class="strong pad1x">Loading &#8230;</span>' +
-                        '<button class="keyline-left action round-right inline _icon trash"></button>')
+                    .html('<div class='pad1 inline _loading'><span></span></div>' +
+                        '<span class='strong pad1x'>Loading &#8230;</span>' +
+                        '<button class='keyline-left action round-right inline _icon trash'></button>')
                     .select('button')
                     .on('click', function () {
                         d3.event.stopPropagation();
@@ -334,9 +334,9 @@ Hoot.control.import = function (context,selection) {
 
                     self.append('div')
                     .classed('contain keyline-all round controller', true)
-                    .html('<div class="pad1 inline _loading"><span></span></div>' +
-                        '<span class="strong pad1x">Loading &#8230;</span>' +
-                        '<button class="keyline-left action round-right inline _icon trash"></button>')
+                    .html('<div class='pad1 inline _loading'><span></span></div>' +
+                        '<span class='strong pad1x'>Loading &#8230;</span>' +
+                        '<button class='keyline-left action round-right inline _icon trash'></button>')
                     .select('button')
                     .on('click', function () {
                         d3.event.stopPropagation();

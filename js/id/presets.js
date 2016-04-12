@@ -41,9 +41,9 @@ iD.presets = function() {
     };
 
     // Because of the open nature of tagging, iD will never have a complete
-    // list of tags used in OSM, so we want it to have logic like "assume
+    // list of tags used in OSM, so we want it to have logic like 'assume
     // that a closed way with an amenity tag is an area, unless the amenity
-    // is one of these specific types". This function computes a structure
+    // is one of these specific types'. This function computes a structure
     // that allows testing of such conditions, based on the presets designated
     // as as supporting (or not supporting) the area geometry.
     //
@@ -177,6 +177,6 @@ iD.presets = function() {
         var newItem = getItem(id);
         defaults.push(newItem);
     };
-    
+
     return all;
 };

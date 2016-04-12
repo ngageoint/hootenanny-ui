@@ -134,7 +134,7 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
                      var link = {};
                      link.folderId = a;
                      link.mapid = lyrId;
-                     link.updateType="update";
+                     link.updateType='update';
                      hoot.model.folders.updateLink(link);
                      link = {};
                  });

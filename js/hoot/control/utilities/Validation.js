@@ -49,7 +49,7 @@ Hoot.control.utilities.validation = function(context) {
 
                     Hoot.model.REST('createValidationMap', reqParam, function (resp) {
                         if(resp.status != 'complete') {
-                            iD.ui.Alert("Failed to create validation. See log for detail.",'warning',new Error().stack);
+                            iD.ui.Alert('Failed to create validation. See log for detail.','warning',new Error().stack);
                         } else {
                             // refresh both folder and layer list
                             context.hoot().model.layers.refresh(function(){

@@ -29,7 +29,7 @@ Hoot.control.view = function (container, context) {
         var _a = form.append('div');
 
         //add context menu
-        _a.on("contextmenu",function(d,i){
+        _a.on('contextmenu',function(d,i){
             items = [{title:'Zoom to Layer',click:'zoom2layer'},];
              // create the div element that will hold the context menu
             d3.selectAll('.context-menu').data([1])
@@ -52,7 +52,7 @@ Hoot.control.view = function (container, context) {
                     }
                     d3.select('.context-menu').remove();
                 })
-                /*.attr("class",function(item){return "_icon " + item.icon})*/
+                /*.attr('class',function(item){return '_icon ' + item.icon})*/
                 .text(function(item) { return item.title; });
             d3.select('.context-menu').style('display', 'none');
             // show the context menu
@@ -77,7 +77,7 @@ Hoot.control.view = function (container, context) {
             return 'viewicon-' + modifiedId;
         })
         .on('click', function(d){
-            var paletteDiv = d3.select("#palette-"+d.id);
+            var paletteDiv = d3.select('#palette-'+d.id);
             if(!paletteDiv.empty()){
                 if(paletteDiv.style('display')!='none'){
                     paletteDiv.style('display','none');
@@ -114,11 +114,11 @@ Hoot.control.view = function (container, context) {
 
                     var hasChange = context.history().hasChanges();
 
-                    var msg = "";
+                    var msg = '';
                     if(hasChange) {
-                        msg = "There is unsaved changes. "
+                        msg = 'There is unsaved changes. '
                     }
-                    var r = confirm(msg + "Are you sure you want to remove layer:" + a.name  + "?");
+                    var r = confirm(msg + 'Are you sure you want to remove layer:' + a.name  + '?');
                     if (r == false) {
                        return;
                     }
@@ -237,7 +237,7 @@ Hoot.control.view = function (container, context) {
         params.append('div')
             .classed('form-field fill-white small keyline-all round space-bottom1', true)
             .html(function () {
-                return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">Name</label>';
+                return '<label class='pad1x pad0y strong fill-light round-top keyline-bottom'>Name</label>';
             })
             .append('input')
             .attr('type', 'text')

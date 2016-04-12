@@ -72,8 +72,8 @@ Hoot.control.conflicts = function (context, sidebar) {
         _review.append('a')
             .classed('button dark animate strong block big pad2x pad1y js-toggle white', true)
             .style('text-align','left')
-            .html('<div class="margin2 inline _loadingSmall"><span></span></div>' +
-                '<span class="strong">Checking for reviewable features...&#8230;</span>');
+            .html('<div class='margin2 inline _loadingSmall'><span></span></div>' +
+                '<span class='strong'>Checking for reviewable features...&#8230;</span>');
 
         context.connection().on('reviewLayerAdded', function (layerName, force) {
 
@@ -177,7 +177,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         var meta = conflicts.append('span')
             .classed('_icon info dark pad0y space', true)
             .html(function () {
-                return '<strong class="review-note">Initialzing...</strong>';
+                return '<strong class='review-note'>Initialzing...</strong>';
             });
         _instance.info.metadata.setNoteContainer(meta);
         var da = [{

@@ -133,7 +133,7 @@ Hoot.control.validation = function(context, sidebar) {
         };
 
         validation.updateMeta = function(d) {
-            meta.html('<strong class="review-note">' + 'Note: ' + d.tags['hoot:review:note'] + '<br>'
+            meta.html('<strong class='review-note'>' + 'Note: ' + d.tags['hoot:review:note'] + '<br>'
                 + 'Validation items remaining: ' + d.unreviewedCount
                 //+ '  (Verified: ' + (+d.totalCount - +d.unreviewedCount) + ')';
                 + '</strong>');

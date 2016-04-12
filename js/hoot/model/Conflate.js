@@ -15,9 +15,9 @@ Hoot.model.conflate = function(context)
         option.queryInterval = iD.data.hootConfig.JobStatusQueryInterval;
         Hoot.model.REST(type, data, function (statusInfo) {
 
-            if(statusInfo.status && statusInfo.status == "requested"){
+            if(statusInfo.status && statusInfo.status == 'requested'){
                 var requestStatus = {};
-                requestStatus.status = "requested";
+                requestStatus.status = 'requested';
                 requestStatus.jobid = statusInfo.jobid;
                 callback(requestStatus);
 

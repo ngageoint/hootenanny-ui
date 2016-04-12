@@ -51,7 +51,7 @@ Hoot.view.utilities.reports = function(context) {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
 
-                    var r = confirm("Are you sure you want to delete selected report?");
+                    var r = confirm('Are you sure you want to delete selected report?');
                     if (r == true) {
 
                     } else {

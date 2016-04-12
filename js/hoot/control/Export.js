@@ -30,8 +30,8 @@ Hoot.control.export = function (sidebar) {
 
         if(transCombo.length == 1){
             var emptyObj = {};
-            emptyObj.NAME="";
-            emptyObj.DESCRIPTION="";
+            emptyObj.NAME='';
+            emptyObj.DESCRIPTION='';
             transCombo.push(emptyObj);
         }
 
@@ -88,11 +88,11 @@ Hoot.control.export = function (sidebar) {
             })
             .html(function (d) {
                 if(d.checkbox){
-                    var retval = '<label class="pad1x pad0y round-top ' + d.checkbox + '" style="opacity: 1;">';
-                       retval += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">'+d.label+'</label>';
+                    var retval = '<label class='pad1x pad0y round-top ' + d.checkbox + '' style='opacity: 1;'>';
+                       retval += '<input type='checkbox' class='reset checkbox' style='opacity: 1;'>'+d.label+'</label>';
                     return retval;
                 } else {
-                    return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + d.label; // + '</label><input type="text" class="reset ' + field.type + '" />';
+                    return '<label class='pad1x pad0y strong fill-light round-top keyline-bottom'>' + d.label; // + '</label><input type='text' class='reset ' + field.type + '' />';
                 }
             })
             .append('input')
@@ -166,7 +166,7 @@ Hoot.control.export = function (sidebar) {
                     hidden=true;
                 }
 
-                var selTrans = _.find(transCombo,{"DESCRIPTION":transType});
+                var selTrans = _.find(transCombo,{'DESCRIPTION':transType});
                 if(selTrans){
                     if(selTrans.NAME.substring(0,3)!='TDS'){
                         hidden=true;

@@ -132,7 +132,7 @@ iD.Connection = function(context) {
             var firstId = ids[0];
             var parts = firstId.split('_');
             if(parts.length > 1){
-                currMapId = "" + parts[1];
+                currMapId = '' + parts[1];
             }
         }
 

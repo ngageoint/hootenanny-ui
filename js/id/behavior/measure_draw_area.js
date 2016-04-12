@@ -6,7 +6,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
         tolerance = 12,
         nodeId=0,
         polygon,label,rect,lengthLabel,areaLabel,
-        points="",
+        points='',
         ptArr=[],rectArr=[],
         lastPoint=null,firstPoint=null,
         totDist=0,
@@ -16,7 +16,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 
     function ret(element) {
         // reset variables
-        nodeId=0;points="";ptArr=[];rectArr=[];
+        nodeId=0;points='';ptArr=[];rectArr=[];
         lastPoint=null;firstPoint=null;
         totDist=0;segmentDist=0;lastSegmentDist=0;
         d3.event.preventDefault();
@@ -98,7 +98,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 
         var retval = String(d1.toFixed(p1)) + ' ' + unit1 +
         (d2 ? ' (' + String(d2.toFixed(p2)) + ' ' + unit2 + ')' : '');
-        return retval.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return retval.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
     function displayLength(m){
@@ -181,7 +181,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
              ptArr.splice(ptArr.length-1,1);
              ptArr.push(context.map().mouseCoordinates());
 
-             polygon.attr("points",points.concat(" " + c.toString()));
+             polygon.attr('points',points.concat(' ' + c.toString()));
 
              var distance = d3.geo.distance(lastPoint,context.map().mouseCoordinates());
             distance = radiansToMeters(distance);
@@ -193,26 +193,26 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 
             var currentDist = segmentDist+totDist+lastSegmentDist;
 
-            label.attr("x", c[0]+rectMargin)
-                .attr("y", c[1]+rectMargin);
-            lengthLabel.attr("x", c[0]+10)
-                .attr("y", c[1])
+            label.attr('x', c[0]+rectMargin)
+                .attr('y', c[1]+rectMargin);
+            lengthLabel.attr('x', c[0]+10)
+                .attr('y', c[1])
                 .text(function(d) { return displayLength(currentDist)});
-            areaLabel.attr("x", c[0]+10)
-                .attr("y", c[1]+25)
+            areaLabel.attr('x', c[0]+10)
+                .attr('y', c[1]+25)
                 .text(function(d){return displayArea(getArea())});
 
-            /*rect.attr("x", c[0]+10)
-                .attr("y", c[1]-(label.dimensions()[1]/2))
-                .attr("width",label.dimensions()[0]+5)
-                .attr("height",label.dimensions()[1]+5);*/
+            /*rect.attr('x', c[0]+10)
+                .attr('y', c[1]-(label.dimensions()[1]/2))
+                .attr('width',label.dimensions()[0]+5)
+                .attr('height',label.dimensions()[1]+5);*/
          }
     }
 
     function click() {
         var c = context.projection(context.map().mouseCoordinates());
 
-        points = points + " " + c;
+        points = points + ' ' + c;
 
         if(nodeId==1){
             ptArr.splice(ptArr.length-1,1);
@@ -244,25 +244,25 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 
             lastPoint=context.map().mouseCoordinates();
 
-            label.attr("x", c[0]+rectMargin)
-                .attr("y", c[1]+rectMargin)
+            label.attr('x', c[0]+rectMargin)
+                .attr('y', c[1]+rectMargin)
                 .classed('measure-label-text',true)
-                .style("fill","white")
-                .style("font-size","18px");
-            lengthLabel.attr("x", c[0]+10)
-                .attr("y", c[1])
+                .style('fill','white')
+                .style('font-size','18px');
+            lengthLabel.attr('x', c[0]+10)
+                .attr('y', c[1])
                 .text(function(d) { return displayLength(totDist+lastSegmentDist)});
-            areaLabel.attr("x", c[0]+10)
-                .attr("y", c[1]+25)
+            areaLabel.attr('x', c[0]+10)
+                .attr('y', c[1]+25)
                 .text(function(d){return displayArea(getArea())});
 
-            //rect = g.insert("rect",":first-child")
-              /*rect.attr("x", c[0])
-                .attr("y", c[1]-(label.dimensions()[1]/2))
-                .attr("width",label.dimensions()[0]+5)
-                .attr("height",label.dimensions()[1]+5)
-                .style("fill","black")
-                .style("fill-opacity","0.5");*/
+            //rect = g.insert('rect',':first-child')
+              /*rect.attr('x', c[0])
+                .attr('y', c[1]-(label.dimensions()[1]/2))
+                .attr('width',label.dimensions()[0]+5)
+                .attr('height',label.dimensions()[1]+5)
+                .style('fill','black')
+                .style('fill-opacity','0.5');*/
 
             lastPoint=context.map().mouseCoordinates();
         }
@@ -273,25 +273,25 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     function drawarea(selection) {
         //create polygon, label
         var g = svg.append('g');
-        polygon = g.append("polygon")
-            .classed("measure-area",true)
-            .style("stroke","white")
-            .style("stroke-width","2px")
-            .style("stroke-linecap","round")
-            .style("fill","black")
-            .style("fill-opacity","0.3")
-            .attr("points","");
+        polygon = g.append('polygon')
+            .classed('measure-area',true)
+            .style('stroke','white')
+            .style('stroke-width','2px')
+            .style('stroke-linecap','round')
+            .style('fill','black')
+            .style('fill-opacity','0.3')
+            .attr('points','');
 
-        /*rect = g.append("rect")//insert("rect",":first-child")
-            .style("fill","black")
-            .style("fill-opacity","0.5");*/
+        /*rect = g.append('rect')//insert('rect',':first-child')
+            .style('fill','black')
+            .style('fill-opacity','0.5');*/
 
-        label = g.append("text")
-            .style("fill","white")
-            .style("font-size","18px");
+        label = g.append('text')
+            .style('fill','white')
+            .style('font-size','18px');
 
-        lengthLabel = label.append("tspan").text("");
-        areaLabel = label.append("tspan").text("");
+        lengthLabel = label.append('tspan').text('');
+        areaLabel = label.append('tspan').text('');
 
         selection
             .on('mousedown.drawarea', mousedown)

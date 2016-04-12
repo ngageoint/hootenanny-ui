@@ -108,7 +108,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
     var _getSelectedValue = function(f, d, fid) {
         var selVal = '';
         //selVal = (f) ?  f.select('#' + fid).value() : d;
-        selVal = (f) ? (f.select('#' + fid).value() == "" ? d: f.select('#' + fid).value()) : d;
+        selVal = (f) ? (f.select('#' + fid).value() == '' ? d: f.select('#' + fid).value()) : d;
         return selVal;
     }
 
@@ -129,12 +129,12 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                 res.name = submeta.hoot_key;
                 res.value = selVal;
                 results.push(res);
-            } else if(submeta.hoot_val && selVal == "true"){
+            } else if(submeta.hoot_val && selVal == 'true'){
                 //create w/parent hoot_key or add to if already exists IF TRUE
                 var idx = results.indexOf(_.find(results,function(obj){return obj.name == meta.hoot_key}));
                 if(idx > -1){
                     if(results[idx].value.indexOf(submeta.hoot_val)==-1)
-                    {results[idx].value +=  ";" + submeta.hoot_val ;}
+                    {results[idx].value +=  ';' + submeta.hoot_val ;}
                 } else {
                     res.name = meta.hoot_key;
                     res.value = submeta.hoot_val ;
@@ -187,7 +187,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
 
                     //see if subMember has value.  If not, take default value.
                     var f = d3.select('#' + subMember.id);
-                    var subMemberVal = (f.empty()) ? subMember.defaultvalue : (f.value() == "" ? subMember.defaultvalue : f.value());
+                    var subMemberVal = (f.empty()) ? subMember.defaultvalue : (f.value() == '' ? subMember.defaultvalue : f.value());
 
                     if(subMember.hoot_key && subMemberVal.length>0){
                         //see if hoot_key already exists.  If it does, add to value.  If not, create.
@@ -255,7 +255,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
         var idx = results.indexOf(_.find(results,function(obj){return obj.name == hootkey}));
         if(idx > -1){
             if(results[idx].value.indexOf(hootval)==-1)
-            {results[idx].value += ";" + hootval;}
+            {results[idx].value += ';' + hootval;}
         } else {
             res.name = hootkey;
             res.value = hootval;

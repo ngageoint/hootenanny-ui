@@ -120,10 +120,10 @@ Hoot.model.export = function (context)
             }
 
             if(result.status != 'failed'){
-                if(removeConflationRes == "true"){
+                if(removeConflationRes == 'true'){
                     d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + mapId)
                     .header('Content-Type', 'text/plain')
-                    .post("", function (error, data) {
+                    .post('', function (error, data) {
 
                     });
                 }

@@ -1,7 +1,7 @@
 iD.ui.PresetIcon = function() {
     var preset, geometry;
 
-    //in iD v1.9.2, "setup" was replaced with "render"
+    //in iD v1.9.2, 'setup' was replaced with 'render'
 
     function presetIcon(selection) {
         selection.each(render);

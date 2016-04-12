@@ -59,7 +59,7 @@ Hoot.view.utilities.translation = function(context) {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
 
-                    var r = confirm("Are you sure you want to delete selected translaton?");
+                    var r = confirm('Are you sure you want to delete selected translaton?');
                     if (r == true) {
 
                     } else {
@@ -72,7 +72,7 @@ Hoot.view.utilities.translation = function(context) {
 
 
                     var transTrashBtn = this;
-                    var btnIdName = n.NAME.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g,'_');
+                    var btnIdName = n.NAME.replace(/[&\/\\#,+()$~%.'':*?<>{}]/g,'_');
                     btnIdName = btnIdName.replace(/ /g, '_');
                     transTrashBtn.id = 'a' + btnIdName;
 
@@ -83,7 +83,7 @@ Hoot.view.utilities.translation = function(context) {
                             return;
                         }
                         var resp = JSON.parse(res);
-                        var idName = resp[0].NAME.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g,'_');
+                        var idName = resp[0].NAME.replace(/[&\/\\#,+()$~%.'':*?<>{}]/g,'_');
                         idName = idName.replace(/ /g, '_');
                         var curBtn = d3.select('#a' + idName)[0];
                         d3.select(curBtn[0].parentNode.parentNode)
@@ -99,7 +99,7 @@ Hoot.view.utilities.translation = function(context) {
                         d3.select(this).on('click', function (n) {
                             d3.event.stopPropagation();
                             d3.event.preventDefault();
-                            iD.ui.Alert("Can not delete default translation.",'warning',new Error().stack);
+                            iD.ui.Alert('Can not delete default translation.','warning',new Error().stack);
                         });
                     }
                     else {

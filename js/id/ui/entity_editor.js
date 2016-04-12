@@ -64,7 +64,7 @@ iD.ui.EntityEditor = function(context) {
             .style('margin-right', '30px')
             .style('margin-top', '2px')
             .html(function (field) {
-                return '<label class="form-label">' + 'Filter By Type' + '</label>';
+                return '<label class='form-label'>' + 'Filter By Type' + '</label>';
             });
 
         currentTranslation = iD.util.getCurrentTranslation();

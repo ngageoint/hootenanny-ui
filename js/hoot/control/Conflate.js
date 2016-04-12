@@ -47,7 +47,7 @@ Hoot.control.conflate = function (sidebar) {
 
     _instance.lastAdvSettingsText = 'Last Advanced Settings';
 
-    _instance.jobid = "";
+    _instance.jobid = '';
 
 
     /**
@@ -86,7 +86,7 @@ Hoot.control.conflate = function (sidebar) {
         _createGetValuesBtn(actions);
 
 
-        d3.select("#confAdvOptsLnk").on('click',_advanceOptionsLnkHandler);
+        d3.select('#confAdvOptsLnk').on('click',_advanceOptionsLnkHandler);
 
     };
 
@@ -107,7 +107,7 @@ Hoot.control.conflate = function (sidebar) {
         _confData = null;
         _newName = null;
         _instance.lastAdvSettingsText = 'Last Advanced Settings';
-        _instance.jobid = "";
+        _instance.jobid = '';
     };
 
 
@@ -364,7 +364,7 @@ Hoot.control.conflate = function (sidebar) {
 
       //check if layer with same name already exists...
         if(_container.selectAll('.saveAs').value()===''){
-            iD.ui.Alert("Please enter an output layer name.",'warning',new Error().stack);
+            iD.ui.Alert('Please enter an output layer name.','warning',new Error().stack);
             return false;
         }
 
@@ -375,8 +375,8 @@ Hoot.control.conflate = function (sidebar) {
             }
         )))
         {
-            iD.ui.Alert("A layer already exists with this name." +
-                " Please remove the current layer or select a new name for this layer.",'warning',new Error().stack);
+            iD.ui.Alert('A layer already exists with this name.' +
+                ' Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
             return false;
         }
 
@@ -432,7 +432,7 @@ Hoot.control.conflate = function (sidebar) {
             _instance.lastAdvFields = _.map(_instance.confAdvOptionsFields,_.clone);
             _instance.lastAdvValues = _.map(_instance.confAdvOptionsSelectedVal,_.clone);
             _instance.lastAdvDlg = [];
-            _.each(d3.select("#CustomConflationForm").selectAll('form').selectAll('input')[0],function(ai){
+            _.each(d3.select('#CustomConflationForm').selectAll('form').selectAll('input')[0],function(ai){
                 var selAI = d3.select('#'+ai.id);
                 _instance.lastAdvDlg.push({id:ai.id,type:ai.type, checked:ai.checked, value:ai.value, disabled:selAI.property('disabled'),hidden:d3.select(selAI.node().parentNode).style('display')});
             });
@@ -459,17 +459,17 @@ Hoot.control.conflate = function (sidebar) {
         self.append('div')
             .attr('id', 'hootconflatecontrol')
             .classed('contain keyline-all round controller', true)
-            .html('<div class="pad1 inline _loading"><span></span></div>' +
-                '<span class="strong pad1x">Conflating &#8230;</span>' +
-                '<button class="keyline-left action round-right inline _icon trash"></button>')
+            .html('<div class='pad1 inline _loading'><span></span></div>' +
+                '<span class='strong pad1x'>Conflating &#8230;</span>' +
+                '<button class='keyline-left action round-right inline _icon trash'></button>')
             .select('button')
             .on('click', function () {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
                 if (window.confirm('Are you sure you want to cancel conflation job?')) {
 
-                    d3.select('#hootconflatecontrol').html('<div class="pad1 inline _loading"><span></span></div>' +
-                            '<span class="strong pad1x">Cancelling &#8230;</span>') ;
+                    d3.select('#hootconflatecontrol').html('<div class='pad1 inline _loading'><span></span></div>' +
+                            '<span class='strong pad1x'>Cancelling &#8230;</span>') ;
 
                     var jobId = _instance.jobid;
                     var saveAsCntrl = d3.selectAll('.reset.saveAs');
@@ -588,7 +588,7 @@ Hoot.control.conflate = function (sidebar) {
             {
                 label: 'Collect Statistics?',
                 type: 'isCollectStats',
-                placeholder: "false",
+                placeholder: 'false',
                 combobox: ['true','false'],
                 onchange: function(d){
                     var selVal = d3.selectAll('.reset.isCollectStats').value();
@@ -598,7 +598,7 @@ Hoot.control.conflate = function (sidebar) {
             {
                 label: 'Generate Report?',
                 type: 'isGenerateReport',
-                placeholder: "false",
+                placeholder: 'false',
                 combobox: ['true','false'],
                 onchange: function(d){
                     var selVal = d3.selectAll('.reset.isGenerateReport').value();
@@ -673,7 +673,7 @@ Hoot.control.conflate = function (sidebar) {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
-                if(d3.select("#sidebar2").selectAll("input").property('disabled')){return;}
+                if(d3.select('#sidebar2').selectAll('input').property('disabled')){return;}
 
                 _toggleForm(this);
             });
@@ -725,12 +725,12 @@ Hoot.control.conflate = function (sidebar) {
             .html(function (field) {
                 if(field.type=='ConfType'){
                     var retval = '';
-                    retval += '<div style="opacity: 1;"><label class="pad1x pad0y strong fill-light round-top keyline-bottom" style="opacity: 1; max-width: 90%; display: inline-block; width: 90%;">';
+                    retval += '<div style='opacity: 1;'><label class='pad1x pad0y strong fill-light round-top keyline-bottom' style='opacity: 1; max-width: 90%; display: inline-block; width: 90%;'>';
                     retval += field.label;
-                    retval += '</label><a id="confAdvOptsLnk" class="button pad1x pad0y strong fill-light round-top keyline-bottom" href="#" style="opacity: 1; max-width: 10%; display: inline-block;">►</a></div>';
+                    retval += '</label><a id='confAdvOptsLnk' class='button pad1x pad0y strong fill-light round-top keyline-bottom' href='#' style='opacity: 1; max-width: 10%; display: inline-block;'>►</a></div>';
                     return retval;
                 } else {
-                    return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + field.label + '</label>';
+                    return '<label class='pad1x pad0y strong fill-light round-top keyline-bottom'>' + field.label + '</label>';
                 }
             })
             .append('input')

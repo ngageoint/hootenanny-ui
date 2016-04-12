@@ -101,7 +101,7 @@ iD.modes.Save = function(context) {
                 return { id: id, text: text, action: function() { history.replace(action); } };
             }
             function formatUser(d) {
-                return '<a href="' + context.connection().userURL(d) + '" target="_blank">' + d + '</a>';
+                return '<a href='' + context.connection().userURL(d) + '' target='_blank'>' + d + '</a>';
             }
             function entityName(entity) {
                 return iD.util.displayName(entity) || (iD.util.displayType(entity.id) + ' ' + entity.id);
@@ -180,12 +180,12 @@ iD.modes.Save = function(context) {
                         if (err) {
                             var isReviewing = context.hoot().control.conflicts.isConflictReviewExist();
                             var errMsg = err.responseText;
-                            errMsg += " (The feature may have been deleted by other " +
-                                "user and may require reloading of the layer.";
+                            errMsg += ' (The feature may have been deleted by other ' +
+                                'user and may require reloading of the layer.';
                             if(isReviewing === true){
-                                errMsg += " Will jump to next valid review item";
+                                errMsg += ' Will jump to next valid review item';
                             }
-                            errMsg += ")";
+                            errMsg += ')';
                             errors.push({
                                 msg: errMsg,
                                 details: [ t('save.status_code', { code: err.status }) ]
@@ -237,7 +237,7 @@ iD.modes.Save = function(context) {
                 .on('save', function() {
                     //iD v1.7.5
                     for (var i = 0; i < conflicts.length; i++) {
-                        if (conflicts[i].chosen === 1) {  // user chose "keep theirs"
+                        if (conflicts[i].chosen === 1) {  // user chose 'keep theirs'
                             var entity = context.hasEntity(conflicts[i].id);
                             if (entity && entity.type === 'way') {
                                 var children = _.uniq(entity.nodes);

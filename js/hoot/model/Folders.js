@@ -158,7 +158,7 @@ Hoot.model.folders = function (context)
         });
 
         if(!_.isEmpty(_.find(folderList,{name:folder.name.toLowerCase(),parentId:folder.parentId}))){
-            return "Please use a different name, as you are about to create a folder with a name identical to a folder at the same level.";
+            return 'Please use a different name, as you are about to create a folder with a name identical to a folder at the same level.';
         } else {return true;}
     }
 
@@ -201,7 +201,7 @@ Hoot.model.folders = function (context)
                 var i=0;
                 do{
                     i++;
-                    strPath = parentFolder.name+"/"+strPath;
+                    strPath = parentFolder.name+'/'+strPath;
                     parentFolder = _.find(hoot.model.folders.getAvailFolders(),{id:parentFolder.parentId});
                 } while (parentFolder || i==10)
                 f.folderPath = strPath;

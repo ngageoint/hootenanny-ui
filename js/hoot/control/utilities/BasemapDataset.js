@@ -111,11 +111,11 @@ Hoot.control.utilities.basemapdataset = function(context) {
                         var files = document.getElementById('basemapfileuploader').files;
                         if(files.length > 0){
                             var fName = files[0].name;
-                            var parts = fName.split(".");
+                            var parts = fName.split('.');
 
                             for(var p=0; p<parts.length-1; p++){
                                 if(name.length > 0){
-                                    name += ".";
+                                    name += '.';
                                 }
                                 name += parts[p];
                             }
@@ -130,7 +130,7 @@ Hoot.control.utilities.basemapdataset = function(context) {
                     });
 
                     if(found){
-                        iD.ui.Alert('Base map with name "' + name + '" already exists. '
+                        iD.ui.Alert('Base map with name '' + name + '' already exists. '
                                  + 'If no name is assigned please specify a name or'+
                                  ' if already specified please use different name.','warning',new Error().stack);
                     } else {

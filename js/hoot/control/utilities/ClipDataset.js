@@ -83,7 +83,7 @@ Hoot.control.utilities.clipdataset = function(context) {
 
         _table.append('tbody');
         _.each(hoot.model.layers.getLayers(),function(d){
-            var _tableBody = d3.select("#clipTable").select('tbody');
+            var _tableBody = d3.select('#clipTable').select('tbody');
             _tableBody.append('tr').attr('id','row-'+d.name)
                 .selectAll('td')
                 .data(function(row,i){
@@ -229,7 +229,7 @@ Hoot.control.utilities.clipdataset = function(context) {
         if(!d3.selectAll('.invalidName').empty()){return;}
 
         var clipType = d3.select('#clipType').attr('clipType');
-        var checkedRows = d3.select('#clipTable').selectAll('tr').selectAll("[type=checkbox]");
+        var checkedRows = d3.select('#clipTable').selectAll('tr').selectAll('[type=checkbox]');
             var selectedLayers = [];
             _.each(checkedRows,function(d){
                 if(!_.isEmpty(d)){
@@ -274,7 +274,7 @@ Hoot.control.utilities.clipdataset = function(context) {
 
         _.each(params,function(param){
             Hoot.model.REST('clipDataset', param, function (a,outputname) {
-                    if(a.status=='complete'){iD.ui.Alert("Success: " + outputname + " has been created!",'success');}
+                    if(a.status=='complete'){iD.ui.Alert('Success: ' + outputname + ' has been created!','success');}
                 });
         })
 

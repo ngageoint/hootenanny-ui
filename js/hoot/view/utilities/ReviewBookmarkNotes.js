@@ -92,15 +92,15 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     _instance.getNotes = function(container) {
       var reqParam = {};
       reqParam.bookmarkId = _bookmarkId;
-      Hoot.model.REST('getReviewBookmark', reqParam, function (resp) {   
-                
+      Hoot.model.REST('getReviewBookmark', reqParam, function (resp) {
+
         if(resp && resp.reviewBookmarks && resp.reviewBookmarks.length > 0) {
           _currentNotes= {};
           _currentBookmark = resp.reviewBookmarks[0];
           var noteList = _currentBookmark.detail.bookmarknotes;
           _createHeader(_currentBookmark.detail.bookmarkdetail.title, _currentBookmark.id);
 
-          _createContainerDiv();          
+          _createContainerDiv();
           _appendNotes(noteList);
           _appendNewEmptyNoteForm(noteList);
 
@@ -132,7 +132,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       var mainBarDiv = mainBar.append('div')
             .classed('big pad0y pad0x col12 fill-darken0 keyline-bottom', true);
 
-      
+
       mainBarDiv.append('div')
             .attr('id', 'bmkNoteHdLabel')
             .classed('fl', true)
@@ -147,15 +147,15 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       var reqParam = {};
       reqParam.mapId = currentReviewable.mapId;
       reqParam.sequence = currentReviewable.sortOrder;
-      Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {  
+      Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {
 
           if(resp.error){
               context.hoot().view.utilities.errorlog.reportUIError(d.error);
               return;
-          } 
+          }
 
           if(resp.resultCount > 0){
-            
+
 
             mainBarDiv.append('div')
               .classed('fr', true)
@@ -163,8 +163,8 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
               .on('click', function () {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
-                var r = confirm("If you continue Hootenanny will load selected review item and you will lose all unsaved changes. "+
-                  "Do you want to continue?");
+                var r = confirm('If you continue Hootenanny will load selected review item and you will lose all unsaved changes. '+
+                  'Do you want to continue?');
                  if (r == true) {
                   _jumpToReviewItem();
                 }
@@ -175,7 +175,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
             d3.select('#bmkNoteHdLabel').text(title + ' #' + bookmarkId + ' - ( **** RESOLVED **** )');
           }
 
-            
+
       });
 
 
@@ -187,12 +187,12 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
           context.hoot().getAllusers(function(r){
             _refresh();
           });
-          
+
         });
 
 
 
-          
+
     }
 
 
@@ -206,12 +206,12 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
         var reqParam = {};
         reqParam.mapId = _forcedReviewableItem.mapId;
         reqParam.sequence = _forcedReviewableItem.sortOrder;
-        Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {  
+        Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {
 
             if(resp.error){
                 context.hoot().view.utilities.errorlog.reportUIError(d.error);
                 return;
-            } 
+            }
 
             if(resp.resultCount < 1){
               alert('The review item already has been resolved. Can not go to review item.');
@@ -219,7 +219,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
               context.hoot().view.utilities.forceResetManageTab();
               context.hoot().reset();
 
-              
+
               var key = {
                   'name': context.hoot().model.layers.getNameBymapId(_currentBookmark.mapId),
                   'id':_currentBookmark.mapId,
@@ -227,13 +227,13 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
               };
               context.hoot().control.import.forceAddLayer(key, d3.select(d3.selectAll('.hootImport')
                 .node()), key.color, key.name);
-          
+
             }
             _removeSelf();
 
             // reset to list
             _resetToList();
-              
+
         });
     }
 
@@ -281,7 +281,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
         }
 
         meta.title = 'User ' + createdByEmail + ' commented at ' + dateToStr;
-        meta.form = d_form; 
+        meta.form = d_form;
         meta.rawData = nt;
         meta.modifyHandler = _modifyNoteHandler;
 
@@ -305,10 +305,10 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       var modified = _.find(notes, function(n){
         return n.id === noteMeta.id;
       });
-    
+
       if(modified) {
         var d = new Date();
-        var n = d.getTime(); 
+        var n = d.getTime();
         modified.note = noteMeta.note;
         modified.modifiedAt = n;
         modified.modifiedBy = _currentUser.id;
@@ -321,7 +321,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       reqParam['userId'] = _currentUser.id;
       reqParam['detail'] = _currentBookmark.detail;
 
-      Hoot.model.REST('saveReviewBookmark', reqParam, function (resp) {   
+      Hoot.model.REST('saveReviewBookmark', reqParam, function (resp) {
         _refresh();
       });
     }
@@ -364,10 +364,10 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
             reqParam['userId'] = _currentUser.id;
             reqParam['detail'] = _currentBookmark.detail;
 
-            Hoot.model.REST('saveReviewBookmark', reqParam, function (resp) {   
+            Hoot.model.REST('saveReviewBookmark', reqParam, function (resp) {
               _refresh();
             });
-            
+
           }
         }
       ];
@@ -375,7 +375,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
 
       var meta = {};
       meta.title = 'New';
-      meta.form = d_form; 
+      meta.form = d_form;
       meta.button = d_btn;
       meta.isNew = true;
 
@@ -409,6 +409,6 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       d3.selectAll('.utilHootHead').style('font-weight','normal');
       d3.select('#utilHootHeadDivutilReviewBookmarks').style('font-weight','bold');
     }
-  
+
     return d3.rebind(_instance, _events, 'on');
 }

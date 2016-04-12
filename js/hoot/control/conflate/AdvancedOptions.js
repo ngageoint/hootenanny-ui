@@ -75,11 +75,11 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
     **/
     _instance.advOpsFormEvent = function(frmVis){
         if(frmVis){
-            d3.select("#confAdvOptsLnk").text("◄");
+            d3.select('#confAdvOptsLnk').text('◄');
         } else {
-            d3.select("#confAdvOptsLnk").text("►");
+            d3.select('#confAdvOptsLnk').text('►');
         }
-        d3.select("#sidebar2").selectAll("input").property('disabled',frmVis);
+        d3.select('#sidebar2').selectAll('input').property('disabled',frmVis);
     };
 
 
@@ -207,7 +207,7 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
                      _.each(listField.node().children, function(c){
                         var opt = d3.select(c).node();
                         _.each(mlist, function(ml){
-                            if(ml.hoot_val === opt.value && ml.isDefault === "true"){
+                            if(ml.hoot_val === opt.value && ml.isDefault === 'true'){
                                 opt.selected = true;
                             }
                             if(ml.hoot_val === opt.value && ml.required){
@@ -239,7 +239,7 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
             if(d3.select('#CustomConflationForm').selectAll('.invalid-input')[0].length==0){
                 //Capture current values
                 parent.confLastSetVals = [];
-                _.each(d3.select("#CustomConflationForm").selectAll('form').selectAll('input')[0],function(ai){
+                _.each(d3.select('#CustomConflationForm').selectAll('form').selectAll('input')[0],function(ai){
                     var selAI = d3.select('#'+ai.id);
                     parent.confLastSetVals.push({id:ai.id,type:ai.type, checked:ai.checked, value:ai.value,
                         disabled:selAI.property('disabled'),hidden:d3.select(selAI.node().parentNode).style('display')});

@@ -135,7 +135,7 @@ Hoot.plugins.entityeditor = function() {
     this.createPreset = function( geom, ftype, trans, fcode) {
         // create new preset
         var newPreset = {};
-        //newPreset.icon = "highway-road";
+        //newPreset.icon = 'highway-road';
         newPreset.geometry = geom;
         newPreset.tags = {};
         newPreset['hoot:featuretype'] = ftype;
@@ -156,7 +156,7 @@ Hoot.plugins.entityeditor = function() {
     this.createPresetByName = function( geom, ftype, trans, name) {
         // create new preset
         var newPreset = {};
-        //newPreset.icon = "highway-road";
+        //newPreset.icon = 'highway-road';
         newPreset.geometry = geom;
         newPreset.tags = {};
         newPreset['hoot:featuretype'] = ftype;

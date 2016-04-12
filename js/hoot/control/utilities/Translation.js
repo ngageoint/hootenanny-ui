@@ -166,8 +166,8 @@ Hoot.control.utilities.translation = function(context) {
             });
 
             if(e.DEFAULT == true){
-                descVal.attr("disabled", true);
-                textArea.attr("disabled", true);
+                descVal.attr('disabled', true);
+                textArea.attr('disabled', true);
             }
 
             function postTranslation(e) {

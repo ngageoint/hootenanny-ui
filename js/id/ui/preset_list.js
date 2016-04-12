@@ -63,7 +63,7 @@ iD.ui.PresetList = function(context) {
 
         function createPresetFromTDS(schemaElem) {
             var newPreset = {};
-            //newPreset.icon = "highway-road";
+            //newPreset.icon = 'highway-road';
             newPreset.geometry = schemaElem.geom.toLowerCase();
             newPreset.tags = {};
             newPreset['hoot:featuretype'] = schemaElem.desc;
@@ -94,7 +94,7 @@ iD.ui.PresetList = function(context) {
                     var results = presets.search(value, geometry);
                     searchResHandler(value, results);
                 } else {
-                    d3.xhr(window.location.protocol + '//' + window.location.hostname + ":"  +
+                    d3.xhr(window.location.protocol + '//' + window.location.hostname + ':'  +
                         iD.data.hootConfig.translationServerPort +
                     '/schema?geometry='+ geometry + '&translation=' + filterType + '&searchstr=' +
                     value + '&maxlevdst=' + iD.data.hootConfig.presetMaxLevDistance +
@@ -168,7 +168,7 @@ iD.ui.PresetList = function(context) {
                         .style('margin-right', '20px')
                         .style('margin-top', '10px')
                         .html(function (field) {
-                            return '<label class="pad1x pad0y strong fill-white round-top keyline-all">' + 'Filter By Type' + '</label>';
+                            return '<label class='pad1x pad0y strong fill-white round-top keyline-all'>' + 'Filter By Type' + '</label>';
                         });
 
              var comboIntput = ftypeWrap.append('input')

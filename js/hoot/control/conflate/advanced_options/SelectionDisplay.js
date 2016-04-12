@@ -47,25 +47,25 @@ Hoot.control.conflate.advancedoptions.selectiondisplay = function () {
                 .classed('big pad1x keyline-bottom space-bottom2',true)
                 .style({'max-height': '800px','overflow-y': 'auto','width':'99%'})
                 .append('table').attr('id','advValTable').classed('custom-conflation-table',true);
-            var thead = d3.select("#advValTable").append('thead');
-            var tbody = d3.select("#advValTable").append('tbody');
+            var thead = d3.select('#advValTable').append('thead');
+            var tbody = d3.select('#advValTable').append('tbody');
 
             // create the table header
-            var thead = d3.select("thead").selectAll("th")
+            var thead = d3.select('thead').selectAll('th')
                 .data(d3.keys(d_json[0]).splice(0,3))
-                .enter().append("th").text(function(d){return d.toLowerCase();});
+                .enter().append('th').text(function(d){return d.toLowerCase();});
 
             // fill the table
             // create rows
-            var tr = d3.select("tbody").selectAll("tr")
-                .data(d_json).enter().append("tr")
+            var tr = d3.select('tbody').selectAll('tr')
+                .data(d_json).enter().append('tr')
                 .attr('id',function(d){return 'tr_' + d.id;});
 
             // cells
-            var td = tr.selectAll("td")
+            var td = tr.selectAll('td')
               .data(function(d){
                   return [d.key,d.value,d.group]})
-              .enter().append("td")
+              .enter().append('td')
               .text(function(d) {
                   return d})
               .style('word-break','break-all');

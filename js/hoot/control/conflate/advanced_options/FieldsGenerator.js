@@ -49,7 +49,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                                    if (d.isDefault=='true'){subfield.placeholder=d.name;}
                                 });
                             } else {
-                                subfield.combobox = [{"value":"true"}, {"value":"false"}];
+                                subfield.combobox = [{'value':'true'}, {'value':'false'}];
                             }
                         } else if(submeta.elem_type == 'list') {
                             if(submeta.members){
@@ -59,7 +59,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                         } else if(submeta.elem_type == 'double') {
                             subfield.maxvalue = submeta.maxvalue;
                             subfield.minvalue = submeta.minvalue;
-                            subfield.onchange = "Hoot.control.conflate.advancedoptions.fieldsgenerator().validate(d3.select(this));";
+                            subfield.onchange = 'Hoot.control.conflate.advancedoptions.fieldsgenerator().validate(d3.select(this));';
                         } else if (submeta.elem_type == 'checkbox') {
                             subfield.onchange = submeta.onchange;
                         } else if (submeta.elem_type == 'checkplus') {
@@ -112,7 +112,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
     **/
     _instance.validate = function(data){
         var invalidInput = false;
-        var invalidText = "";
+        var invalidText = '';
 
         var target = d3.select('#' + data.property('id'));
         if(target.node().classList.contains('list')){
@@ -126,7 +126,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
             //make sure it is double
             if(isNaN(data.value())){
                 invalidInput = true;
-                invalidText = "Input value must be a valid number!";
+                invalidText = 'Input value must be a valid number!';
             } else {
             //make sure it is w/in min and max
                 var val = parseFloat(target.value());
@@ -135,7 +135,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                         var min = parseFloat(data.property('min'));
                         if(val < min){
                             invalidInput=true;
-                            invalidText="Value must be greater than " + min.toString();
+                            invalidText='Value must be greater than ' + min.toString();
                         } else{
                             invalidInput=false;
                         }
@@ -146,7 +146,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                         var max = parseFloat(data.property('max'));
                         if(val>max){
                             invalidInput=true;
-                            invalidText="Value must be less than " + max.toString();
+                            invalidText='Value must be less than ' + max.toString();
                         } else {
                             invalidInput=false;
                         }

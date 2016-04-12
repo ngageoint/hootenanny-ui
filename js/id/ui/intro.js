@@ -184,6 +184,6 @@ iD.ui.intro.pad = function(box, padding, context) {
 };
 
 iD.ui.intro.icon = function(name, svgklass) {
-    return '<svg class="icon ' + (svgklass || '') + '">' +
-        '<use xlink:href="' + name + '"></use></svg>';
+    return '<svg class='icon ' + (svgklass || '') + ''>' +
+        '<use xlink:href='' + name + ''></use></svg>';
 };

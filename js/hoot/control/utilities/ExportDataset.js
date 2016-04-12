@@ -43,8 +43,8 @@ Hoot.control.utilities.exportdataset = function(context) {
 
         if(_transCombo.length == 1){
           var emptyObj = {};
-          emptyObj.NAME="";
-          emptyObj.DESCRIPTION="";
+          emptyObj.NAME='';
+          emptyObj.DESCRIPTION='';
           _transCombo.push(emptyObj);
         }
         var d_form = [{
@@ -181,7 +181,7 @@ Hoot.control.utilities.exportdataset = function(context) {
          hidden=true;
         }
 
-        var selTrans = _.find(_transCombo,{"DESCRIPTION":transType});
+        var selTrans = _.find(_transCombo,{'DESCRIPTION':transType});
         if(selTrans){
          if(selTrans.NAME.substring(0,3)!='TDS'){
              hidden=true;

@@ -49,7 +49,7 @@ Hoot.control.conflicts.actions.poimerge = function (context)
 
                 } else {
                     _parent().setProcessing(false);
-                    iD.ui.Alert("Nothing to merge.",'notice');
+                    iD.ui.Alert('Nothing to merge.','notice');
                     return;
                 }
             };

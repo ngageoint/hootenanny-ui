@@ -89,18 +89,18 @@ iD.behavior.Clip = function(context,svg,type) {
 
      if(nodeId==0){
          anchorPt = c;
-         rect.attr("x",c[0]).attr("y",c[1]);
+         rect.attr('x',c[0]).attr('y',c[1]);
          nodeId=1;
      }
      else{
          var bboxPt1 = context.projection.invert([parseFloat(rect.attr('x')),parseFloat(rect.attr('y'))]).toString();
          var bboxPt2 = context.projection.invert([parseFloat(rect.attr('x'))+parseFloat(rect.attr('width')),parseFloat(rect.attr('y'))+parseFloat(rect.attr('height'))]).toString();
 
-         ret(d3.select("#surface"));
+         ret(d3.select('#surface'));
          if(!_.isEmpty(hoot.model.layers.getLayers())){
             hoot.control.utilities.clipdataset.clipDatasetContainer('boundingBox',bboxPt1.concat(',',bboxPt2));
         } else {
-            iD.ui.Alert("Add data to map before clipping.","notice",new Error().stack);
+            iD.ui.Alert('Add data to map before clipping.','notice',new Error().stack);
         }
          nodeId=0;
      }
@@ -110,17 +110,17 @@ iD.behavior.Clip = function(context,svg,type) {
  function cliparea(selection) {
      //create rect
      var g = svg.append('g');
-     rect = g.append("rect")
-            .classed("measure-area",true)
-            .style("stroke","white")
-            .style("stroke-width","2px")
-            .style("stroke-linecap","round")
-            .style("fill","black")
-            .style("fill-opacity","0.3")
-            .attr("x",0)
-            .attr("y",0)
-            .attr("width","0")
-            .attr("height","0");
+     rect = g.append('rect')
+            .classed('measure-area',true)
+            .style('stroke','white')
+            .style('stroke-width','2px')
+            .style('stroke-linecap','round')
+            .style('fill','black')
+            .style('fill-opacity','0.3')
+            .attr('x',0)
+            .attr('y',0)
+            .attr('width','0')
+            .attr('height','0');
 
      selection
          .on('mousedown.cliparea', mousedown)

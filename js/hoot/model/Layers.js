@@ -271,7 +271,7 @@ Hoot.model.layers = function (context)
 
         d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + dataset.name)
         .header('Content-Type', 'text/plain')
-        .post("", function (error, data) {
+        .post('', function (error, data) {
 
             var exportJobId = data.jobId;
 

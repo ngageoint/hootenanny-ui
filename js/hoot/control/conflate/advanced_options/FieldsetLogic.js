@@ -130,7 +130,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
             }
         });
 
-        parent.selectAll("input:not([id*=enable])").property('disabled',enableInputs);
+        parent.selectAll('input:not([id*=enable])').property('disabled',enableInputs);
     }
 
 
@@ -142,14 +142,14 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
     var _populateMultiListFields = function(c, child) {
         child.append('label').classed('pad1x fill-light round-top', true).text(c.label).property('title',c.description);
 
-        var options = "";
+        var options = '';
         _.each(c.multilist, function(item){
-            options += '<option value="' + item.hoot_val + '">' + item.name + '</option>';
+            options += '<option value='' + item.hoot_val + ''>' + item.name + '</option>';
         })
         child.append('div')
             .classed('contain', true)
             .style('width', '100%')
-            .html('<select multiple style="width:100%;height:80px" id="' + 'ml' + c.type + '">' + options + '</select>');
+            .html('<select multiple style='width:100%;height:80px' id='' + 'ml' + c.type + ''>' + options + '</select>');
 
     }
 
@@ -157,15 +157,15 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
         child.append('div')
         .classed('contain', true)
         .html(function(){
-            var retval = '<label class="pad1x" style="opacity: 1;" title="' + c.description + '">';
-            retval += '<input type="checkbox" class="reset" id="' + c.id + '" ';
-            retval += 'style="opacity: 1;"';
-            if(c.placeholder){if(c.placeholder=="true"){retval += ' checked ';}}
+            var retval = '<label class='pad1x' style='opacity: 1;' title='' + c.description + ''>';
+            retval += '<input type='checkbox' class='reset' id='' + c.id + '' ';
+            retval += 'style='opacity: 1;'';
+            if(c.placeholder){if(c.placeholder=='true'){retval += ' checked ';}}
             retval += '>' + c.label+'</label>';
             return retval;
         });
 
-        var currentDiv = d3.select("#"+c.id);
+        var currentDiv = d3.select('#'+c.id);
         if(c.onchange){
             var fn = new Function(c.onchange);
             currentDiv.on('change',fn);
@@ -177,10 +177,10 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
                 if(subcheck.type=='checkbox'){
                     parentDiv.append('div').classed('contain',true)
                     .html(function(){
-                        var retval = '<label class="pad1x ' + c.id + '_child" style="opacity: 1;" title="' + c.description + '">';
-                        retval += '<input type="checkbox" class="reset" id="' + subcheck.id + '" ';
-                        retval += 'style="opacity: 1;"';
-                        if(subcheck.placeholder){if(subcheck.placeholder=="true"){retval += ' checked ';}}
+                        var retval = '<label class='pad1x ' + c.id + '_child' style='opacity: 1;' title='' + c.description + ''>';
+                        retval += '<input type='checkbox' class='reset' id='' + subcheck.id + '' ';
+                        retval += 'style='opacity: 1;'';
+                        if(subcheck.placeholder){if(subcheck.placeholder=='true'){retval += ' checked ';}}
                         retval += '>' + subcheck.label+'</label>';
                         return retval;
                     });
@@ -253,7 +253,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
                 .call(combo);
 
             //loop through each combobox member to see if it has children...
-            var parentDiv = d3.select(d3.select("#"+c.id).node().parentNode);
+            var parentDiv = d3.select(d3.select('#'+c.id).node().parentNode);
             _.each(c.combobox,function(subcombo){
                 if(subcombo.members){
                     _populatRoadEnginesGroup(c, parentDiv, subcombo);
@@ -288,10 +288,10 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
             if(subopt.type=='checkbox'){
                 newDiv.append('div').classed('contain',true)
                 .html(function(){
-                    var retval = '<label class="pad1x ' + c.id + '_' + subcombo.name + '_child" style="opacity: 1;" title="' + subopt.description + '">';
-                    retval += '<input type="checkbox" class="reset" id="' + subopt.id + '" ';
-                    retval += 'style="opacity: 1;"';
-                    if(subopt.placeholder){if(subopt.placeholder=="true"){retval += ' checked ';}}
+                    var retval = '<label class='pad1x ' + c.id + '_' + subcombo.name + '_child' style='opacity: 1;' title='' + subopt.description + ''>';
+                    retval += '<input type='checkbox' class='reset' id='' + subopt.id + '' ';
+                    retval += 'style='opacity: 1;'';
+                    if(subopt.placeholder){if(subopt.placeholder=='true'){retval += ' checked ';}}
                     retval += '>' + subopt.label+'</label>';
                     return retval;
                 });

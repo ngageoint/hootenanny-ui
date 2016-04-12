@@ -663,7 +663,7 @@ Hoot.control.TranslationAssistant = function () {
                         .classed('search-result pad1x pad1y keyline-left keyline-top', true);
 
                     searchtags
-                        .html( function(d) { return !d || d.key.replace(value, '<span class="match">' + value + '</span>'); })
+                        .html( function(d) { return !d || d.key.replace(value, '<span class='match'>' + value + '</span>'); })
                         .on('click', function(d) {
                             var lookup = d3.select(searchTag.node().parentNode);
                             selectTag(lookup, d);
@@ -807,8 +807,8 @@ Hoot.control.TranslationAssistant = function () {
                     var blob = new Blob([output], {type: 'text/plain;charset=utf-8'});
                     window.saveAs(blob, fileName + '-translation.js');
 
-                    if(window.confirm("Do you want to add this to internal translation list?")){
-                        var thisbody = d3.select("#utiltranslation").node()
+                    if(window.confirm('Do you want to add this to internal translation list?')){
+                        var thisbody = d3.select('#utiltranslation').node()
                         d3.select(jobsBG).node().appendChild(thisbody);
                         d3.selectAll('.utilHootHead')
                             .classed('fill-white', false)

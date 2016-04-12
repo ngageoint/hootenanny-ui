@@ -148,7 +148,7 @@ Hoot.view.ltdstags = function (context) {
                         //.style('margin-right', '20px')
                         .style('margin-top', '10px')
                         .html(function (field) {
-                            return '<label class="form-label">' + 'Filter By Type' + '</label>';
+                            return '<label class='form-label'>' + 'Filter By Type' + '</label>';
                         });
             var placeHolder = 'TDSv61';
             if(meta.currentTranslation) {
@@ -202,8 +202,8 @@ Hoot.view.ltdstags = function (context) {
 
                         var OSMTagsAr = [];
                         var emptyTag = {};
-                        emptyTag["key"] = "";
-                        emptyTag["value"] = "";
+                        emptyTag['key'] = '';
+                        emptyTag['value'] = '';
                         OSMTagsAr.push(emptyTag);
                         appendTags(OSMTagsAr, true);
                     }
@@ -314,7 +314,7 @@ Hoot.view.ltdstags = function (context) {
             if(isNew){
                 if(tagsData.length == 1){
                     if(tagsData[0].key.trim().length == 0 || tagsData[0].value.trim().length == 0){
-                        iD.ui.Alert("Please save last new attribute before adding new.",'warning',new Error().stack);
+                        iD.ui.Alert('Please save last new attribute before adding new.','warning',new Error().stack);
                         return;
                     }
                 }
@@ -381,15 +381,15 @@ Hoot.view.ltdstags = function (context) {
                 })
                 .on('change', function(orig_entity){
                     if(orig_entity.field){
-                        if(orig_entity.field.type == "enumeration"){
+                        if(orig_entity.field.type == 'enumeration'){
 
-                        } else if(orig_entity.field.type == "String") {
+                        } else if(orig_entity.field.type == 'String') {
 
                         } else {
                             // numeric
                             if (isNaN(this.value)) // this is the code I need to change
                             {
-                                iD.ui.Alert("Please enter a numeric value!",'warning',new Error().stack);
+                                iD.ui.Alert('Please enter a numeric value!','warning',new Error().stack);
                                 if(this.oldValue){
                                     this.value = this.oldValue;
                                 } else {
@@ -403,7 +403,7 @@ Hoot.view.ltdstags = function (context) {
                     if(orig_entity.key.trim().length == 0) {
                         iD.ui.Alert('Missing or invalid key.','warning',new Error().stack);
                         var curval = this.value;
-                        this.value = "";
+                        this.value = '';
                         return;
                     }
 
@@ -447,18 +447,18 @@ Hoot.view.ltdstags = function (context) {
                 .select(function (a) {
                     if(a.field){
 
-                        if(a.field.type == "enumeration"){
+                        if(a.field.type == 'enumeration'){
                             var combo = d3.combobox()
                             .data(_.map(a.field.enumerations, function (n) {
                                 return {
                                     value: n.name,
-                                    title: n.name + " (" + n.value + ")"
+                                    title: n.name + ' (' + n.value + ')'
                                 };
                             }));
                             d3.select(this)
                                 .style('width', '99%')
                                 .call(combo);
-                        } else if(a.field.type == "String") {
+                        } else if(a.field.type == 'String') {
 
                         } else {
                             // numeric

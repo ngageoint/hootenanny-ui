@@ -9,7 +9,7 @@ iD.MeasureLayer = function() {
             h: 10,
             x: 5,
             y: 5,
-            t: '<circle cx="5" cy="5" r="5" class="measure tail"/>',
+            t: '<circle cx='5' cy='5' r='5' class='measure tail'/>',
             u: 'userSpaceOnUse'
         }];
 
@@ -52,7 +52,7 @@ iD.MeasureLayer = function() {
             .projection(projection);
 
         paths
-            .attr('d', path);       
+            .attr('d', path);
     }
 
     render.projection = function(_) {

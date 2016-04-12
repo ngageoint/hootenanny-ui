@@ -58,7 +58,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                  btnPrevPageContainer.append('span')
                 .classed('strong center col12 ', true)
                 .classed('row1 keyline-all', true)
-                .text("Prev")
+                .text('Prev')
                 .on('click', function(){
 
                     var prevBtn = d3.select('#bmkPageBtn' + (_currentPage - 1));
@@ -76,7 +76,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                  btnNextPageContainer.append('span')
                 .classed('strong center col12 ', true)
                 .classed('row1 keyline-all', true)
-                .text("Next")
+                .text('Next')
                 .on('click', function(){
                     var nextBtn = d3.select('#bmkPageBtn' + (_currentPage + 1));
                     if(nextBtn && !nextBtn.empty()) {
@@ -530,7 +530,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         d3.event.preventDefault();
 
 
-        var r = confirm("Are you sure you want to delete selected bookmark?");
+        var r = confirm('Are you sure you want to delete selected bookmark?');
         if (r == true) {
 
             request = {};

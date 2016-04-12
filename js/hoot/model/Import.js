@@ -18,7 +18,7 @@ Hoot.model.import = function (context)
         var datasettable = d3.select('#datasettable');
         context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);
 
-        _.each(d3.select("#sidebar2").node().childNodes,function(f){
+        _.each(d3.select('#sidebar2').node().childNodes,function(f){
             if(f.classList.contains('hootImport')){
                 var _svg = d3.select(f).select('svg');
                 if(!_svg.empty()){
@@ -72,7 +72,7 @@ Hoot.model.import = function (context)
         var selType = container.select(typeElemId).value();
 
         var comboData = container.select(typeElemId).datum();
-        var typeName = "";
+        var typeName = '';
         for(i=0; i<comboData.combobox.data.length; i++){
             var o = comboData.combobox.data[i];
             if(o.title == selType){
@@ -186,7 +186,7 @@ Hoot.model.import = function (context)
                         // Removed truncation per #5565
                         /*var truncatelen = 70;
                         if(truncatedLastText.length > truncatelen){
-                            truncatedLastText = truncatedLastText.substring(0, truncatelen) + " ...";
+                            truncatedLastText = truncatedLastText.substring(0, truncatelen) + ' ...';
                         }*/
 
                         //imprtProgText.text(truncatedLastText);

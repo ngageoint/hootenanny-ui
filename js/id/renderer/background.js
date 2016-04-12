@@ -66,7 +66,7 @@ iD.Background = function(context) {
         context.history().imageryUsed(imageryUsed);
     }
 
-    // Allows us to define "digitalglobe" as the defaultBaseMap
+    // Allows us to define 'digitalglobe' as the defaultBaseMap
     function getDefaultBaseMap() {
       var dgre = /digitalglobe/i
       if (dgre.test(iD.data.hootConfig.defaultBaseMap)) {

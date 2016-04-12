@@ -20,7 +20,7 @@ Hoot.control.utilities.folder = function(context) {
         dsizeWidth = 0;
         if(svgContainer.id=='datasettable'){dsizeWidth = width*0.25;}
         else{
-            _.each(pN.getElementsByTagName("text"),function(t){
+            _.each(pN.getElementsByTagName('text'),function(t){
                 if(this.parentNode != t){dsizeWidth += t.getBoundingClientRect().width;}
             },this);
         }
@@ -38,14 +38,14 @@ Hoot.control.utilities.folder = function(context) {
             if(text.length>24){
                 text = text.substring(0,24)+'...';
                 self.text(text);
-                d3.select(pN).append("title").text(container.name);
+                d3.select(pN).append('title').text(container.name);
             }
         } else {
             while (textLength > (width*.95) && text.length > 0) {
                 text = text.slice(0, -1);
                 self.text(text + '...');
                 textLength = self.node().getComputedTextLength();
-                d3.select(pN).append("title").text(container.name);
+                d3.select(pN).append('title').text(container.name);
             }
         }
     }
@@ -55,7 +55,7 @@ Hoot.control.utilities.folder = function(context) {
 
         //var folders = context.hoot().model.layers.getAvailLayersWithFolders();
         var folders = context.hoot().model.folders.getAvailFoldersWithLayers();
-        folders= JSON.parse('{"name":"Datasets","id":"Datasets","children":' + JSON.stringify(folders) +'}');
+        folders= JSON.parse('{'name':'Datasets','id':'Datasets','children':' + JSON.stringify(folders) +'}');
 
         var margin = {top: 10, right: 20, bottom: 30, left: 0},
             width = '100%',
@@ -74,7 +74,7 @@ Hoot.control.utilities.folder = function(context) {
             .scaleExtent([1, 2])
             .x(x)
             .y(y)
-            .on("zoom", zoomed);
+            .on('zoom', zoomed);
 
         var i = 0,
             duration = 0,//400,
@@ -92,21 +92,21 @@ Hoot.control.utilities.folder = function(context) {
         if(!_svg.empty()){
             //_svg.remove();
             _svg.selectAll('g').remove();
-            svg = _svg.append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            svg = _svg.append('g')
+                .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
         } else {
-            svg = container.append("svg")
-                .attr("width", width)// + margin.left + margin.right)
-                .attr("height", height)// + margin.left + margin.right)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            svg = container.append('svg')
+                .attr('width', width)// + margin.left + margin.right)
+                .attr('height', height)// + margin.left + margin.right)
+                .append('g')
+                .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
         }
 
-        /*var svg = container.append("svg")
-            .attr("width", width)// + margin.left + margin.right)
-            .attr("height", height)// + margin.left + margin.right)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");*/
+        /*var svg = container.append('svg')
+            .attr('width', width)// + margin.left + margin.right)
+            .attr('height', height)// + margin.left + margin.right)
+            .append('g')
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');*/
             //.call(zoom);
 
         folders.x0=0;
@@ -120,7 +120,7 @@ Hoot.control.utilities.folder = function(context) {
             var tx = 0,
                 ty = Math.min(10, Math.max(-rectHt,rectHt-svgHt,  d3.event.translate[1]));
             zoom.translate([tx, ty]);
-            svg.attr("transform", "translate(" + [tx,ty] + ")scale(" + d3.event.scale + ")");
+            svg.attr('transform', 'translate(' + [tx,ty] + ')scale(' + d3.event.scale + ')');
         }
 
         function showPrepValidationPopup(selLayer) {
@@ -143,45 +143,45 @@ Hoot.control.utilities.folder = function(context) {
               var height = Math.max(150, nodes.length * barHeight + margin.top + margin.bottom);
 
               //replaced container with d3
-              container.select("svg").transition()
+              container.select('svg').transition()
                   .duration(duration)
-                  .attr("height", height + "px");
+                  .attr('height', height + 'px');
 
               container.select(self.frameElement).transition()
                   .duration(duration)
-                  .style("height", height + "px");
+                  .style('height', height + 'px');
 
-              // Compute the "layout".
+              // Compute the 'layout'.
               nodes.forEach(function(n, i) {
                 n.x = (i-1) * barHeight;    //This will remove the 'Datasets' title
               });
 
               // Update the nodes…
-              var node = svg.selectAll("g.node")
+              var node = svg.selectAll('g.node')
                   .data(nodes, function(d) {
                       if(d.type){return d.type.charAt(0) + d.id || d.id || (d.id = ++i);}
                       else{return d.id || (d.id = ++i);}
                   });
 
-              var nodeEnter = node.enter().append("g")
-                  .attr("class", "node")
-                  .attr("transform", function(d) { return "translate(" + 0 + "," + source.x0 + ")"; })
-                  .style("opacity", 1e-6);
+              var nodeEnter = node.enter().append('g')
+                  .attr('class', 'node')
+                  .attr('transform', function(d) { return 'translate(' + 0 + ',' + source.x0 + ')'; })
+                  .style('opacity', 1e-6);
 
               // Enter any new nodes at the parent's previous position.
-              nodeRect = nodeEnter.append("rect")
-                  .attr("y", -barHeight / 2)
-                  .attr("height", barHeight)
-                  .attr("width", function(d){return '100%';})
-                  .style("fill", fillColor)
-                  .attr("class", rectClass)
-                .on("click", click);
+              nodeRect = nodeEnter.append('rect')
+                  .attr('y', -barHeight / 2)
+                  .attr('height', barHeight)
+                  .attr('width', function(d){return '100%';})
+                  .style('fill', fillColor)
+                  .attr('class', rectClass)
+                .on('click', click);
 
-          nodeEnter.filter(function(d){return d.type=='dataset'}).append("text")
+          nodeEnter.filter(function(d){return d.type=='dataset'}).append('text')
               .classed('dsizeTxt',true)
-              .style("fill",fontColor)
-            .attr("dy",3.5)
-              .attr("dx",function(d){
+              .style('fill',fontColor)
+            .attr('dy',3.5)
+              .attr('dx',function(d){
                   return '98%';
               })
               .attr('text-anchor','end')
@@ -198,10 +198,10 @@ Hoot.control.utilities.folder = function(context) {
             });
 
               if(container.attr('id')=='datasettable'){
-                 nodeEnter.filter(function(d){return d.type=='dataset'}).append("text")
-                      .style("fill",fontColor)
-                      .attr("dy",3.5)
-                    .attr("dx",function(d){
+                 nodeEnter.filter(function(d){return d.type=='dataset'}).append('text')
+                      .style('fill',fontColor)
+                      .attr('dy',3.5)
+                    .attr('dx',function(d){
                         return '75%';
                     })
                     .attr('text-anchor','end')
@@ -210,11 +210,11 @@ Hoot.control.utilities.folder = function(context) {
                     });
               }
 
-              nodeEnter.append("text")
-                  .style("fill",fontColor)
+              nodeEnter.append('text')
+                  .style('fill',fontColor)
                   .classed('dnameTxt',true)
-                  .attr("dy", 3.5)
-                  .attr("dx", function(d){
+                  .attr('dy', 3.5)
+                  .attr('dx', function(d){
                     var dd = d.depth-1;
                       if(d.type){return  25.5+(11*dd);}
                       else{return 11*dd;}})    //5.5
@@ -229,37 +229,37 @@ Hoot.control.utilities.folder = function(context) {
                   .append('tspan').text(function(d){return d.name;}).each(context.hoot().control.utilities.folder.wrap);
                   // TODO: Need to account for datasets outside of folders...make dynamic
 
-            nodeEnter.filter(function(d){return d.depth>1}).append("line")
-                .attr("x1",function(d){return 2.5+(11*(d.depth-1));})
-                .attr("x2",function(d){return 9.5+(11*(d.depth-1));})
-                .attr("y1",0)
-                .attr("y2",0)
-                .style("stroke","#444444");
+            nodeEnter.filter(function(d){return d.depth>1}).append('line')
+                .attr('x1',function(d){return 2.5+(11*(d.depth-1));})
+                .attr('x2',function(d){return 9.5+(11*(d.depth-1));})
+                .attr('y1',0)
+                .attr('y2',0)
+                .style('stroke','#444444');
 
-            nodeEnter.filter(function(d){return d.depth>1}).append("line")
-                .attr("x1",function(d){return 2.5+(11*(d.depth-1));})
-                .attr("x2",function(d){return 2.5+(11*(d.depth-1));})
-                .attr("y1",-20)
-                .attr("y2",0)
-                .style("stroke","#444444");
+            nodeEnter.filter(function(d){return d.depth>1}).append('line')
+                .attr('x1',function(d){return 2.5+(11*(d.depth-1));})
+                .attr('x2',function(d){return 2.5+(11*(d.depth-1));})
+                .attr('y1',-20)
+                .attr('y2',0)
+                .style('stroke','#444444');
 
-          var nodeg = nodeEnter.append("g");
+          var nodeg = nodeEnter.append('g');
           nodeg.append('svg:foreignObject')
-              .attr("width", 20)
-              .attr("height", 20)
-              .attr("transform", function(d) {
+              .attr('width', 20)
+              .attr('height', 20)
+              .attr('transform', function(d) {
                   var dd = d.depth-1;
                   var dy=5.5+(11*dd);
-                  return "translate("+ dy +",-11)"; })
+                  return 'translate('+ dy +',-11)'; })
               .html(function(d){
                   if (d.type == 'folder'){
-                      if(d.state=="open"){return '<i class="_icon openfolder"></i>'}
-                      else{return '<i class="_icon folder"></i>'}
+                      if(d.state=='open'){return '<i class='_icon openfolder'></i>'}
+                      else{return '<i class='_icon folder'></i>'}
                   }
-                  if (d.type == 'dataset'){return '<i class="_icon data"></i>'}
+                  if (d.type == 'dataset'){return '<i class='_icon data'></i>'}
               })
               .on('click',click)
-              .on("contextmenu",function(d,i){
+              .on('contextmenu',function(d,i){
                      d3.select('.context-menu').style('display', 'none');
                     d3.event.preventDefault();
                     return;
@@ -268,48 +268,48 @@ Hoot.control.utilities.folder = function(context) {
           // Transition nodes to their new position.
           nodeEnter.transition()
               .duration(duration)
-              .attr("transform", function(d) { return "translate(" + 0 + "," + d.x + ")"; })
-              .style("opacity", 1);
+              .attr('transform', function(d) { return 'translate(' + 0 + ',' + d.x + ')'; })
+              .style('opacity', 1);
 
           node.transition()
               .duration(duration)
-              .attr("transform", function(d) { return "translate(" + 0 + "," + d.x + ")"; })
-              .style("opacity", 1)
-            .select("rect")
-              .style("fill", fillColor)
-              .attr("class", rectClass);
+              .attr('transform', function(d) { return 'translate(' + 0 + ',' + d.x + ')'; })
+              .style('opacity', 1)
+            .select('rect')
+              .style('fill', fillColor)
+              .attr('class', rectClass);
 
           // Transition exiting nodes to the parent's new position.
           node.exit().transition()
               .duration(duration)
-              .attr("transform", function(d) { return "translate(" + 0 + "," + source.x + ")"; })
-              .style("opacity", 1e-6)
+              .attr('transform', function(d) { return 'translate(' + 0 + ',' + source.x + ')'; })
+              .style('opacity', 1e-6)
               .remove();
 
           // Update the links…
-          var link = svg.selectAll("path.link")
+          var link = svg.selectAll('path.link')
               .data(tree.links(nodes), function(d) { return d.target.id; });
 
           // Enter any new links at the parent's previous position.
-          link.enter().insert("path", "g")
-              .attr("class", "link")
-              .attr("d", function(d) {
+          link.enter().insert('path', 'g')
+              .attr('class', 'link')
+              .attr('d', function(d) {
                 var o = {x: source.x0, y: source.y0};
                 return diagonal({source: o, target: o});
               })
             .transition()
               .duration(duration)
-              .attr("d", diagonal);
+              .attr('d', diagonal);
 
           // Transition links to their new position.
           link.transition()
               .duration(duration)
-              .attr("d", diagonal);
+              .attr('d', diagonal);
 
           // Transition exiting nodes to the parent's new position.
           link.exit().transition()
               .duration(duration)
-              .attr("d", function(d) {
+              .attr('d', function(d) {
                 var o = {x: source.x, y: source.y};
                 return diagonal({source: o, target: o});
               })
@@ -322,7 +322,7 @@ Hoot.control.utilities.folder = function(context) {
           });
 
           if(container.attr('id')=='datasettable'){
-              container.selectAll('rect').on("contextmenu",function(d,i){
+              container.selectAll('rect').on('contextmenu',function(d,i){
                   var items = [];
                   if(!d.type||(d.type=='dataset' && !d.selected)){
                       d3.select('.context-menu').style('display', 'none');
@@ -391,7 +391,7 @@ Hoot.control.utilities.folder = function(context) {
                             //Folders
                             case 'deleteFolder': context.hoot().view.utilities.dataset.deleteDataset(d,container); break;
                             case 'modifyFolder': context.hoot().view.utilities.dataset.modifyDataset(d); break;
-                            case 'addDataset': Hoot.model.REST("getTranslations",function(e){
+                            case 'addDataset': Hoot.model.REST('getTranslations',function(e){
                                                        if(d.error){context.hoot().view.utilities.errorlog.reportUIError(d.error);return;}
                                                        context.hoot().control.utilities.importdataset.importDataContainer(e,d)
                                                    }); break;
@@ -405,7 +405,7 @@ Hoot.control.utilities.folder = function(context) {
 
                             d3.select('.context-menu').remove();
                         })
-                        .attr("class",function(item){return "_icon " + item.icon})
+                        .attr('class',function(item){return '_icon ' + item.icon})
                         .text(function(item) { return item.title; });
                           d3.select('.context-menu').style('display', 'none');
                       // show the context menu
@@ -416,7 +416,7 @@ Hoot.control.utilities.folder = function(context) {
                   //} else {d3.select('.context-menu').style('display', 'none');}
                   d3.event.preventDefault();
               });
-          } else {container.selectAll('rect').on("contextmenu",function(d,i){d3.event.preventDefault();})}
+          } else {container.selectAll('rect').on('contextmenu',function(d,i){d3.event.preventDefault();})}
         }
 
         // Toggle children on click.
@@ -432,13 +432,13 @@ Hoot.control.utilities.folder = function(context) {
           } else if(d3.event.ctrlKey && container.attr('id')=='datasettable' && d.type=='dataset') {
               d.selected = !d.selected;
           }
-          if(d.type=='dataset'){d3.select(this).classed("selected",d.selected);}
+          if(d.type=='dataset'){d3.select(this).classed('selected',d.selected);}
           if(d.type=='folder'){selectedLayerIDs = context.hoot().model.layers.setSelectedLayers([]);}
 
-          var updateOpenFolders = container.attr('id')=='datasettable';//!d3.select("#datasettable").selectAll('.selected').empty();
+          var updateOpenFolders = container.attr('id')=='datasettable';//!d3.select('#datasettable').selectAll('.selected').empty();
 
           if(d.type=='folder'){
-              if (d.children || typeof(d.children)=="object") {
+              if (d.children || typeof(d.children)=='object') {
                   //folder closing
                   d._children = d.children;
                   d.children = null;
@@ -448,11 +448,11 @@ Hoot.control.utilities.folder = function(context) {
                   d3.select(this.parentNode).select('i').classed('folder',true).classed('openfolder',false);
               } else if(d.children==null && d._children==null){
                   //toggle an empty folder
-                  if (d.state=="open"){
-                      d.state="closed";
+                  if (d.state=='open'){
+                      d.state='closed';
                       d3.select(this.parentNode).select('i').classed('folder',true).classed('openfolder',false);
                   } else {
-                      d.state="open";
+                      d.state='open';
                       d3.select(this.parentNode).select('i').classed('folder',true).classed('openfolder',true);
                   }
               } else {
@@ -465,7 +465,7 @@ Hoot.control.utilities.folder = function(context) {
               }
           }
 
-          d3.select(this).classed("selected",false);
+          d3.select(this).classed('selected',false);
           update(d);
 
           context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
@@ -483,15 +483,15 @@ Hoot.control.utilities.folder = function(context) {
         }
 
         function fillColor(d) {
-            if(d.type=='folder'){return "#7092ff"}
-            else if(d.type=='dataset'){return "#efefef";}
-            else {return "#ffffff";}
+            if(d.type=='folder'){return '#7092ff'}
+            else if(d.type=='dataset'){return '#efefef';}
+            else {return '#ffffff';}
         }
 
         function fontColor(d){
-            if(d.type=='folder'){return "#ffffff";}
-            else if(d.type=='dataset'){return "#7092ff";}
-            else {return "#ffffff";}
+            if(d.type=='folder'){return '#ffffff';}
+            else if(d.type=='dataset'){return '#7092ff';}
+            else {return '#ffffff';}
         }
 
         function rectClass(d) {
@@ -506,7 +506,7 @@ Hoot.control.utilities.folder = function(context) {
                 }
             }
 
-            return d.selected ? "sel" : d._children ? "more" : "flat";
+            return d.selected ? 'sel' : d._children ? 'more' : 'flat';
         }
 
         function getWidth(d) {
@@ -565,7 +565,7 @@ Hoot.control.utilities.folder = function(context) {
 
                 function getTypeName(desc){
                     var comboData = _form.select('.reset.importImportType').datum();
-                    var typeName = "";
+                    var typeName = '';
                     for(i=0; i<comboData.combobox2.length; i++){
                         var o = comboData.combobox2[i];
                         if(o.title == desc){
@@ -632,7 +632,7 @@ Hoot.control.utilities.folder = function(context) {
 
                     //check if layer with same name already exists...
                     if(_form.select('.reset.NewFolderName').value()=='' || _form.select('.reset.NewFolderName').value()==_form.select('.reset.NewFolderName').attr('placeholder')){
-                        iD.ui.Alert("Please enter an output folder name.",'warning',new Error().stack);
+                        iD.ui.Alert('Please enter an output folder name.','warning',new Error().stack);
                         return;
                     }
 
@@ -714,7 +714,7 @@ Hoot.control.utilities.folder = function(context) {
                 .append('div')
                 .classed('form-field fill-white small keyline-all round space-bottom1', true)
                 .html(function (d) {
-                        return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + d.label; // + '</label><input type="text" class="reset ' + field.type + '" />';
+                        return '<label class='pad1x pad0y strong fill-light round-top keyline-bottom'>' + d.label; // + '</label><input type='text' class='reset ' + field.type + '' />';
                     });
             fieldset.append('div')
                 .classed('contain', true)

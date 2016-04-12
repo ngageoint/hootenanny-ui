@@ -29,13 +29,13 @@ Hoot.model.conflicts = function(context)
         var self = d3.select('.hootView');
         var origHtml = self.html();
 
-        self.html("");
+        self.html('');
 
         self.append('div')
         .classed('contain keyline-all round controller', true)
-        .html('<div class="pad1 inline _loading"><span></span></div>' +
-            '<span class="strong pad1x">Refreshing &#8230;</span>' +
-            '<button class="keyline-left action round-right inline _icon trash"></button>')
+        .html('<div class='pad1 inline _loading'><span></span></div>' +
+            '<span class='strong pad1x'>Refreshing &#8230;</span>' +
+            '<button class='keyline-left action round-right inline _icon trash'></button>')
         .select('button')
         .on('click', function () {
             d3.event.stopPropagation();
@@ -63,13 +63,13 @@ Hoot.model.conflicts = function(context)
                 _.each(hoot.loadedLayers, function(d) {
                     hoot.model.layers.removeLayer(d.name);
                     var modifiedId = d.mapId.toString();
-                    d3.select('[data-layer="' + modifiedId + '"]').remove();
+                    d3.select('[data-layer='' + modifiedId + '']').remove();
                     delete loadedLayers[d.name];
                 });
 
                 var mapID =  hoot.model.layers.getmapIdByName(self.select('span').text());
                 d3.selectAll(d3.select('#sidebar2').node().childNodes).remove();
-                d3.select('[data-layer="' + mapID + '"]').remove();
+                d3.select('[data-layer='' + mapID + '']').remove();
 
                 hoot.reset();
             });
@@ -101,7 +101,7 @@ Hoot.model.conflicts = function(context)
       for (var i = 0; i < reviewRefs.length; i++)
       {
         var reviewRef = reviewRefs[i];
-        if (idsToRemove.indexOf(""+reviewRef.id) == -1)
+        if (idsToRemove.indexOf(''+reviewRef.id) == -1)
         {
           modifiedReviewRefs.push(reviewRef);
         }
@@ -109,7 +109,7 @@ Hoot.model.conflicts = function(context)
       }*/
       var modifiedReviewRefs = new Array();
        _.each(reviewRefs, function(r){
-            if((idsToRemove.indexOf(""+r.id) == -1) || (r.reviewRelationId != relationId)){
+            if((idsToRemove.indexOf(''+r.id) == -1) || (r.reviewRelationId != relationId)){
                 modifiedReviewRefs.push(r);
             }
         });
@@ -182,7 +182,7 @@ Hoot.model.conflicts = function(context)
                                         }
                                     }
 
-                                    var fullRelId = "r" + reviewRef.reviewRelationId + "_" + mapid;
+                                    var fullRelId = 'r' + reviewRef.reviewRelationId + '_' + mapid;
                                     if(!context.hasEntity(fullRelId)){
                                         missingIds[fullRelId] = 'relation';
                                         loadedTypes['relation'] = true;
@@ -266,8 +266,8 @@ Hoot.model.conflicts = function(context)
     var createNewRelationNodeMeta = function(mergedNodeId, relationId, mergeIndx) {
         var m = new iD.Node();
         m.id = mergedNodeId;
-        m.type = "node";
-        m.role = "reviewee";
+        m.type = 'node';
+        m.role = 'reviewee';
         m.index = mergeIndx;
 
         var o = {};
@@ -331,7 +331,7 @@ Hoot.model.conflicts = function(context)
 
                 for (var i = 0; i < reviewRefs.length; i++)
                 {
-                    var fullRelId = "r" + reviewRefs[i].reviewRelationId.toString() + "_" + mapid;
+                    var fullRelId = 'r' + reviewRefs[i].reviewRelationId.toString() + '_' + mapid;
 
                     var reviewRelation = context.hasEntity(fullRelId);
 
@@ -522,7 +522,7 @@ Hoot.model.conflicts = function(context)
                                     for (var i = 0; i < reviewRefs.length; i++)
                                     {
                                         //iD feature ID: <OSM element type first char> + <OSM element ID> + '_' + <mapid>;
-                                        var fullRelId = "r" + reviewRefs[i].reviewRelationId.toString() + "_" + mapid;
+                                        var fullRelId = 'r' + reviewRefs[i].reviewRelationId.toString() + '_' + mapid;
                                         if(!context.hasEntity(fullRelId)){
                                             reviewRelationIdsMissing.push(fullRelId);
                                         }

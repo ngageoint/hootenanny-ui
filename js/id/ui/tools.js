@@ -55,18 +55,18 @@ iD.ui.Tools = function(context) {
                             if(!_.isEmpty(hoot.model.layers.getLayers())){
                                 hoot.control.utilities.clipdataset.clipDatasetContainer('visualExtent');
                             } else {
-                                iD.ui.Alert("Add data to map before clipping.","notice",new Error().stack);
+                                iD.ui.Alert('Add data to map before clipping.','notice',new Error().stack);
                             }
                         }
                         d3.select('.tools-menu').remove();
                         d3.select('.sub-menu').remove();
                       });
 
-                subTools.append('span').attr("class",function(item){return item.icon + " icon icon-pre-text"});
+                subTools.append('span').attr('class',function(item){return item.icon + ' icon icon-pre-text'});
                 subTools.append('span').text(function(item) { return item.title; }).attr('title',(function(item){return item.tooltip||'';}));
             });
 
-            toolsItem.append('span').attr("class",function(item){return "icon-pre-text"});
+            toolsItem.append('span').attr('class',function(item){return 'icon-pre-text'});
             toolsItem.append('span').text(function(item) { return item.title; });
 
         d3.select('.tools-menu').style('display', 'none');

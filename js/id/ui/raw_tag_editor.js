@@ -65,9 +65,9 @@ iD.ui.RawTagEditor = function(context) {
             .attr('id','sort-tags-div')
             .style('position','absolute').style('right','25px').style('margin','-25px 0')
             .html(function(){
-                var retval = '<label class="pad1x" style="opacity: 1;">';
-                retval += '<input type="checkbox" class="reset" id="sort-tags" ';
-                retval += 'style="opacity: 1;"';
+                var retval = '<label class='pad1x' style='opacity: 1;'>';
+                retval += '<input type='checkbox' class='reset' id='sort-tags' ';
+                retval += 'style='opacity: 1;'';
                 retval += '>Sort A-Z</label>';
                 return retval;
             });
@@ -170,7 +170,7 @@ iD.ui.RawTagEditor = function(context) {
         $items.select('button.remove')
             .on('click', function(d){
                 if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item)==0;}))){
-                    return iD.ui.Alert("Cannot remove a protected tag!","warning",new Error().stack);
+                    return iD.ui.Alert('Cannot remove a protected tag!','warning',new Error().stack);
                 } else {
                     return removeTag(d);
                 }
@@ -236,7 +236,7 @@ iD.ui.RawTagEditor = function(context) {
                             rawGeom = 'Area';
                         }
                         var transTagInfoUrl = window.location.protocol + '//' +
-                            window.location.hostname + ":" + iD.data.hootConfig.translationServerPort + '/taginfo/';
+                            window.location.hostname + ':' + iD.data.hootConfig.translationServerPort + '/taginfo/';
 
                         if(!tagInfEndPts){
                             tagInfEndPts = {};
@@ -275,7 +275,7 @@ iD.ui.RawTagEditor = function(context) {
                         tagInfoOpts.fcode = translation.fCode;
                         tagInfoOpts.translation = translation.transType;
                         context.taginfo().endpoint(window.location.protocol + '//' +
-                            window.location.hostname + ":" + iD.data.hootConfig.translationServerPort + '/taginfo/');
+                            window.location.hostname + ':' + iD.data.hootConfig.translationServerPort + '/taginfo/');
                     }
                     context.taginfo().values(tagInfoOpts, function(err, data) {
                         if (!err) callback(sort(value, data));

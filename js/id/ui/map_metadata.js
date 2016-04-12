@@ -102,11 +102,11 @@ iD.ui.MapMetadata = function(data, context) {
 
         // params
         if (d.tags && d.tags.params) {
-            var params = JSON.parse(d.tags.params.replace(/\\"/g, '"'));
+            var params = JSON.parse(d.tags.params.replace(/\\'/g, '''));
             var pdata = {
-                "Reference Layer": d.tags.input1Name,
-                "Secondary Layer": d.tags.input2Name,
-                "Conflation Type": params.CONFLATION_TYPE
+                'Reference Layer': d.tags.input1Name,
+                'Secondary Layer': d.tags.input2Name,
+                'Conflation Type': params.CONFLATION_TYPE
             };
             addExpandList(d3.entries(pdata), 'Parameters');
 

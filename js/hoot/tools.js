@@ -126,7 +126,7 @@ Hoot.tools = function (context, selection) {
         _.each(loadedLayers, function (d) {
             hoot.model.layers.removeLayer(d.name);
             var modifiedId = d.mapId.toString();
-            d3.select('[data-layer="' + modifiedId + '"]').remove();
+            d3.select('[data-layer='' + modifiedId + '']').remove();
             delete loadedLayers[d.name];
         });
 
@@ -172,18 +172,18 @@ Hoot.tools = function (context, selection) {
         data.COLLECT_STATS = a.select('.isCollectStats').value();
 
         var n = (new Date()).getTime();
-        data.TIME_STAMP = "" + n;
+        data.TIME_STAMP = '' + n;
         //data.AUTO_TUNNING = a.select('.autoTunning').value();
         data.REFERENCE_LAYER = refLayer;
         data.AUTO_TUNNING = 'false';
 
         if(advOpts){
-            var advOptionsStr = "";
+            var advOptionsStr = '';
             _.each(advOpts, function(opt){
                 if(advOptionsStr.length > 0){
-                    advOptionsStr += " ";
+                    advOptionsStr += ' ';
                 }
-                advOptionsStr += '-D "' + opt.name + '=' + opt.value + '"';
+                advOptionsStr += '-D '' + opt.name + '=' + opt.value + ''';
             })
             data.ADV_OPTIONS = advOptionsStr;
         }/* else {
@@ -335,9 +335,9 @@ Hoot.tools = function (context, selection) {
             if(totalSize > expThreshold)
             {
                 var thresholdInMb = Math.floor((1*expThreshold)/1000000);
-                var res = window.confirm("Export data size is greater than " + thresholdInMb
-                    +"MB and export may encounter problem." +
-                    " Do you wish to continue?");
+                var res = window.confirm('Export data size is greater than ' + thresholdInMb
+                    +'MB and export may encounter problem.' +
+                    ' Do you wish to continue?');
                 if(res === false) {
 
                     return;
@@ -368,12 +368,12 @@ Hoot.tools = function (context, selection) {
         _.each(loadedLayers, function(d) {
             hoot.model.layers.removeLayer(d.name);
             var modifiedId = d.mapId.toString();
-            d3.select('[data-layer="' + modifiedId + '"]').remove();
+            d3.select('[data-layer='' + modifiedId + '']').remove();
             delete loadedLayers[d.name];
         });
 
         d3.selectAll(d3.select('#sidebar2').node().childNodes).remove();
-        d3.select('[data-layer="' + activeConflateLayer.mapId.toString() + '"]').remove();
+        d3.select('[data-layer='' + activeConflateLayer.mapId.toString() + '']').remove();
 
         hoot.model.layers.addLayer({
             'name': activeConflateLayer.name,
@@ -403,7 +403,7 @@ Hoot.tools = function (context, selection) {
         var input2_id = context.hoot().model.layers.getmapIdByName(layers[1]);
         // and then check size
         //getMapSize
-        Hoot.model.REST('getMapSize', input1_id + "," + input2_id,function (sizeInfo) {
+        Hoot.model.REST('getMapSize', input1_id + ',' + input2_id,function (sizeInfo) {
 //
             if(sizeInfo.error){
                 context.hoot().reset();
@@ -415,8 +415,8 @@ Hoot.tools = function (context, selection) {
             if(totalSize > confThreshold)
             {
                 var thresholdInMb = Math.floor((1*confThreshold)/1000000);
-                if(!window.confirm("Conflation data size is greater than " + thresholdInMb +
-                    "MB and conflation may encounter problem. Do you wish to continue? (If you cancel layers will reset.)")) {
+                if(!window.confirm('Conflation data size is greater than ' + thresholdInMb +
+                    'MB and conflation may encounter problem. Do you wish to continue? (If you cancel layers will reset.)')) {
                     context.hoot().reset();
                     return;
                 }
@@ -440,13 +440,13 @@ Hoot.tools = function (context, selection) {
                 hoot.autotune('AutoTune', data1, function(res1){
                     var result1 = JSON.parse(res1.statusDetail);
 
-                    data.INPUT1_ESTIMATE = "" + result1.EstimatedSize;
+                    data.INPUT1_ESTIMATE = '' + result1.EstimatedSize;
                     var data2 = {};
                     data2.INPUT = data.INPUT2;
                     data2.INPUT_TYPE = 'db';
                     hoot.autotune('AutoTune', data2, function(res2){
                         var result2 = JSON.parse(res2.statusDetail);
-                        data.INPUT2_ESTIMATE = "" + result2.EstimatedSize;
+                        data.INPUT2_ESTIMATE = '' + result2.EstimatedSize;
                          hoot.model.conflate.conflate(conflationExecType, data, function (item) {
                              postConflation(item,a);
                          });
@@ -455,7 +455,7 @@ Hoot.tools = function (context, selection) {
             } else {
 
                 hoot.model.conflate.conflate(conflationExecType, data, function (item) {
-                    if(item.status && item.status == "requested"){
+                    if(item.status && item.status == 'requested'){
                         conflate.jobid = item.jobid;
                     } else {
                         postConflation(item,a);
@@ -491,12 +491,12 @@ Hoot.tools = function (context, selection) {
                         Hoot.model.REST('getMapTags', reqParam,function (tags) {
                             //console.log(tags);
                             if (tags.reviewtype === 'hgisvalidation') {
-                                var r = confirm("The layer has been prepared for validation. Do you want to go into validation mode?");
+                                var r = confirm('The layer has been prepared for validation. Do you want to go into validation mode?');
                                 if (r == true) {
                                     context.hoot().control.validation.begin(params);
                                 }
                             } else {
-                                var r = confirm("The layer contains unreviewed items. Do you want to go into review mode?");
+                                var r = confirm('The layer contains unreviewed items. Do you want to go into review mode?');
                                 if (r == true) {
                                     isReviewMode = true;
                                     loadingLayer = params;
@@ -521,7 +521,7 @@ Hoot.tools = function (context, selection) {
                                     loadedLayers[layerName].loadable = true;
                                     loadedLayers[layerName].merged = true;
                                     //change color to green
-                                    var selColor = "green";
+                                    var selColor = 'green';
                                     loadedLayers[layerName].color = selColor;
                                     context.hoot().replaceColor(loadedLayers[layerName].id,selColor);
                                     activeConflateLayer = loadingLayer;
@@ -570,13 +570,13 @@ Hoot.tools = function (context, selection) {
 
                                                     });
                                                 } else {
-                                                    iD.ui.Alert("Could not determine input layer 2. It will not be loaded.",'warning',new Error().stack);
+                                                    iD.ui.Alert('Could not determine input layer 2. It will not be loaded.','warning',new Error().stack);
                                                 }
 
 
                                             });
                                         } else {
-                                            iD.ui.Alert("Could not determine input layer 1. It will not be loaded.",'warning',new Error().stack);
+                                            iD.ui.Alert('Could not determine input layer 1. It will not be loaded.','warning',new Error().stack);
                                         }
                                     }
                                 } else {
@@ -630,7 +630,7 @@ Hoot.tools = function (context, selection) {
     });
     exportLayer.on('cancelSaveLayer', function () {
         if(exporting){
-            iD.ui.Alert("Can not cancel. Export in progress.",'warning',new Error().stack);
+            iD.ui.Alert('Can not cancel. Export in progress.','warning',new Error().stack);
             return;
         }
         exportLayer.deactivate();

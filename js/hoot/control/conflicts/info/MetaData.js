@@ -85,7 +85,7 @@ Hoot.control.conflicts.info.metadata = function (context)
         var rId = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
         var rf = context.hasEntity(rId);
 
-        var noteText = "";
+        var noteText = '';
         if(rf){
             var rfNote = rf.tags['hoot:review:note'];
             if(rfNote){
@@ -95,7 +95,7 @@ Hoot.control.conflicts.info.metadata = function (context)
         if(note){
             noteText = note;
         }
-        _noteContainer.html('<strong class="review-note">' + 'Review note: ' + noteText + '<br>' + 'Reviews remaining: ' +
+        _noteContainer.html('<strong class='review-note'>' + 'Review note: ' + noteText + '<br>' + 'Reviews remaining: ' +
             nUnreviewed +
             '  (Resolved: ' + nReviewed +
                 multiFeatureMsg + ')</strong>');

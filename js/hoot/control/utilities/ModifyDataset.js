@@ -112,11 +112,11 @@ Hoot.control.utilities.modifydataset = function(context) {
             }
             if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == outputname})))
             {
-                iD.ui.Alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.",'warning',new Error().stack);
+                iD.ui.Alert('A layer already exists with this name. Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
                 return;
             }
 
-            data.updateType="update";
+            data.updateType='update';
         }
 
         context.hoot().model.layers.updateLayerName(data, function(status){
@@ -144,7 +144,7 @@ Hoot.control.utilities.modifydataset = function(context) {
                         link.folderId = a;
                         link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == outputname}),'id')[0] || 0;
                         if(link.mapid==0){return;}
-                        link.updateType="update";
+                        link.updateType='update';
                         hoot.model.folders.updateLink(link);
                         link = {};
                         _container.remove();

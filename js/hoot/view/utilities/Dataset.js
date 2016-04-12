@@ -29,7 +29,7 @@ Hoot.view.utilities.dataset = function(context)
                     context.hoot().control.utilities.importdataset.importDataContainer(d);
                  });
             })
-            .on("contextmenu",function(d,i){
+            .on('contextmenu',function(d,i){
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
                 //Create context menu to offer bulk option
@@ -51,7 +51,7 @@ Hoot.view.utilities.dataset = function(context)
                          d3.select('.dataset-options-menu').remove();
                    });
 
-                 menuItem.append('span').attr("class",function(item){return item.icon + " icon icon-pre-text"});
+                 menuItem.append('span').attr('class',function(item){return item.icon + ' icon icon-pre-text'});
                  menuItem.append('span').text(function(item) { return item.title; });
 
                  d3.select('.dataset-options-menu').style('display', 'none');
@@ -106,15 +106,15 @@ Hoot.view.utilities.dataset = function(context)
         d3.event.preventDefault();
 
         var warningMsg = d.type =='folder'? 'folder and all data?' : 'dataset?';
-        if(!window.confirm("Are you sure you want to remove the selected " + warningMsg)){return;}
+        if(!window.confirm('Are you sure you want to remove the selected ' + warningMsg)){return;}
 
         var mapId = d.id;//d3.select(this.parentNode).datum().name;
 
         var parentNode;
         if(d.type=='dataset'){
-            parentNode = container.selectAll("text[lyr-id='" + d.id + "']").node().parentNode;
+            parentNode = container.selectAll('text[lyr-id='' + d.id + '']').node().parentNode;
         } else {
-            parentNode = container.selectAll("text[fldr-id='" + d.id + "']").node().parentNode;
+            parentNode = container.selectAll('text[fldr-id='' + d.id + '']').node().parentNode;
         }
         if(!parentNode){return;}
 
@@ -149,8 +149,8 @@ Hoot.view.utilities.dataset = function(context)
             try {
                 // If the folder is closed, you will not be able to change the rect color...
                 var selNode;
-                if(!container.selectAll("text[lyr-id='" + dataset.id + "']").empty()){
-                    selNode  = container.selectAll("text[lyr-id='" + dataset.id + "']").node().parentNode;
+                if(!container.selectAll('text[lyr-id='' + dataset.id + '']').empty()){
+                    selNode  = container.selectAll('text[lyr-id='' + dataset.id + '']').node().parentNode;
                     var selRect = d3.select(selNode).select('rect');
                     var currentFill = selRect.style('fill');
                     selRect.style('fill','rgb(255,0,0)');
@@ -206,9 +206,9 @@ Hoot.view.utilities.dataset = function(context)
             if(totalSize > expThreshold)
             {
                 var thresholdInMb = Math.floor((1*expThreshold)/1000000);
-                var res = window.confirm("Export data size is greater than " + thresholdInMb
-                    +"MB and export may encounter problem." +
-                    " Do you wish to continue?");
+                var res = window.confirm('Export data size is greater than ' + thresholdInMb
+                    +'MB and export may encounter problem.' +
+                    ' Do you wish to continue?');
                 if(res === false) {
 
                     return;
@@ -230,7 +230,7 @@ Hoot.view.utilities.dataset = function(context)
         else if(d.length==1){
             var dataset = _.find(context.hoot().model.layers.getAvailLayers(),{id:d[0]});
             if(dataset==undefined){
-                iD.ui.Alert("Could not locate dataset with id: " + d[0].toString() + ".",'error',new Error().stack);
+                iD.ui.Alert('Could not locate dataset with id: ' + d[0].toString() + '.','error',new Error().stack);
                 return;
             } else {
                 dataset.type='dataset';
@@ -240,7 +240,7 @@ Hoot.view.utilities.dataset = function(context)
             d3.event.stopPropagation();
             d3.event.preventDefault();
 
-            var warningMsg = "You are about to delete " + d.length + " datasets.  Do you want to proceed?"
+            var warningMsg = 'You are about to delete ' + d.length + ' datasets.  Do you want to proceed?'
             if(!window.confirm(warningMsg)){return;}
 
             // Populate datasets2remove
@@ -258,7 +258,7 @@ Hoot.view.utilities.dataset = function(context)
                 }
 
                 //select the rect using lyr-id
-                var selNode  = container.selectAll("text[lyr-id='" + dataset.id + "']").node().parentNode;
+                var selNode  = container.selectAll('text[lyr-id='' + dataset.id + '']').node().parentNode;
                 var selRect = d3.select(selNode).select('rect');
                 var currentFill = selRect.style('fill');
                 selRect.style('fill','rgb(255,0,0)');

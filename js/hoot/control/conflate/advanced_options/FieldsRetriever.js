@@ -46,7 +46,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                         var q = (f.hoot_key.indexOf('.creators')>-1)? f.id : f.hoot_key.replace(/\./g,'_');
                         //var q = f.hoot_key.replace(/\./g,'_');
                         var req = f.required || false;
-                        return {"id":q,"hoot_key":f.hoot_key,"defaultvalue":f.defaultvalue,"required":req};
+                        return {'id':q,'hoot_key':f.hoot_key,'defaultvalue':f.defaultvalue,'required':req};
                     });
 
                     _.each(defaultVals,function(confGroup){
@@ -66,7 +66,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
 
 
                         //look for checkpluses.  if member is in groupKeys, set default value and make sure checkplus is checked
-                        var checkpluses = confGroup.members.filter(function(f){return f.elem_type=="checkplus";});
+                        var checkpluses = confGroup.members.filter(function(f){return f.elem_type=='checkplus';});
                         _.each(checkpluses,function(cp){
                             defaultKeys = _.pluck(cp.members,'id');
                             retval = groupKeys.filter(function(n){return defaultKeys.indexOf(n.id) != -1;});
@@ -80,7 +80,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                         });
 
                         //look for lists with submembers
-                        var multilists = confGroup.members.filter(function(f){return f.elem_type=="list";});
+                        var multilists = confGroup.members.filter(function(f){return f.elem_type=='list';});
                         _.each(multilists,function(ml){
                             _.each(ml.members,function(sublist){
                                 defaultKeys = _.pluck(sublist.members,'id');
@@ -125,10 +125,10 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                 var setVal=null;
 
                 if(subfield.elem_type=='checkbox'||subfield.elem_type=='checkplus'){
-                    setVal = d3.select("#"+subfield.id).property('checked');
+                    setVal = d3.select('#'+subfield.id).property('checked');
                 } else {
-                    setVal = d3.select("#"+subfield.id).value();
-                    if(setVal===''){setVal=d3.select("#"+subfield.id).attr('placeholder');}
+                    setVal = d3.select('#'+subfield.id).value();
+                    if(setVal===''){setVal=d3.select('#'+subfield.id).attr('placeholder');}
                 }
 
                 if(subfield.hoot_val){
@@ -138,7 +138,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                         //see if hoot_key is already in list
                         var hk = _.find(fieldsJSON,{'key':field.hoot_key});
                         if(hk){
-                            hk.value += ";" + subfield.hoot_val;
+                            hk.value += ';' + subfield.hoot_val;
                         } else {
                             fieldsJSON.push({key:field.hoot_key,value:subfield.hoot_val,group:field.name,id:field.id});
                         }
@@ -160,10 +160,10 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                     _.each(arrSubfields,function(submember){
                         var setVal=null;
                         if(submember.elem_type=='checkbox'||submember.elem_type=='checkplus'){
-                            setVal = d3.select("#"+submember.id).property('checked');
+                            setVal = d3.select('#'+submember.id).property('checked');
                         } else if(submember.elem_type) {
-                            setVal = d3.select("#"+submember.id).value();
-                            if(setVal===''){setVal=d3.select("#"+submember.id).attr('placeholder');}
+                            setVal = d3.select('#'+submember.id).value();
+                            if(setVal===''){setVal=d3.select('#'+submember.id).attr('placeholder');}
                         }
 
                         if(submember.hoot_val){
@@ -173,7 +173,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                                 //see if hoot_key is already in list
                                 var hk = _.find(fieldsJSON,{'key':subfield.hoot_key});
                                 if(hk){
-                                    hk.value += ";" + submember.hoot_val;
+                                    hk.value += ';' + submember.hoot_val;
                                 } else {
                                     fieldsJSON.push({key:subfield.hoot_key,value:submember.hoot_val,group:field.name,id:subfield.id});
                                 }

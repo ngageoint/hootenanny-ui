@@ -45,7 +45,7 @@ Hoot.view.utilities.wfsdataset = function(context)
                   d3.event.stopPropagation();
                     d3.event.preventDefault();
                     var wfsId = d3.select(this.parentNode).datum().id;
-                    var r = confirm("Are you sure you want to delete :" + wfsId  + "?");
+                    var r = confirm('Are you sure you want to delete :' + wfsId  + '?');
                     if (r == false) {
                        return;
                     }

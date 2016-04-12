@@ -28,7 +28,7 @@ Hoot.view.utilities = function (context){
     utilities.forceResetManageTab = function () {
 
         var vis =  true;
-        var txt = "Manage";
+        var txt = 'Manage';
         d3.select('#manageTabBtn')
             .classed('fill-light', !vis)
             .classed('dark', vis)
@@ -118,7 +118,7 @@ Hoot.view.utilities = function (context){
                             callbackContext = window;
                         }
 
-                        var callbackPath = contentCallback.split(".");
+                        var callbackPath = contentCallback.split('.');
                         for(var i=0; i<callbackPath.length; i++){
                             callbackContext = callbackContext[callbackPath[i]];
                         }
@@ -153,7 +153,7 @@ Hoot.view.utilities = function (context){
                 d3.event.preventDefault();
                 var vis = d3.selectAll('#jobsBG')
                     .style('display') === 'none' ? false : true;
-                var txt = vis ? "Manage" : "Return to Map";
+                var txt = vis ? 'Manage' : 'Return to Map';
                 d3.select(this)
                     .classed('fill-light', !vis)
                     .classed('dark', vis)
@@ -199,7 +199,7 @@ Hoot.view.utilities = function (context){
 
          ////////////ALERTS///////////////////
          var alertsDiv = d3.select('body')
-             .insert('div',":first-child")
+             .insert('div',':first-child')
              .attr('id','alerts');
          /////////////////////////////////////////
 

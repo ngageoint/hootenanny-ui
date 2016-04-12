@@ -47,8 +47,8 @@ Hoot.control.utilities.importdataset = function(context) {
         _incomingFolder = incomingFolder;
         if(_trans.length == 1){
             var emptyObj = {};
-            emptyObj.NAME = "";
-            emptyObj.DESCRIPTION = "";
+            emptyObj.NAME = '';
+            emptyObj.DESCRIPTION = '';
             _trans.push(emptyObj);
         }
 
@@ -168,7 +168,7 @@ Hoot.control.utilities.importdataset = function(context) {
 
         if(_container.select('#importDatasetLayerName').value()=='' ||
          _container.select('#importDatasetLayerName').value()==_container.select('#importDatasetLayerName').attr('placeholder')){
-            iD.ui.Alert("Please enter an output layer name.",'warning',new Error().stack);
+            iD.ui.Alert('Please enter an output layer name.','warning',new Error().stack);
             return;
         }
 
@@ -182,7 +182,7 @@ Hoot.control.utilities.importdataset = function(context) {
             }))
         )
         {
-            iD.ui.Alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.",'warning',new Error().stack);
+            iD.ui.Alert('A layer already exists with this name. Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
             return;
         }
 
@@ -228,21 +228,21 @@ Hoot.control.utilities.importdataset = function(context) {
         progcont.classed('form-field', true);
         var prog = progcont.append('span').append('progress');
         prog.classed('form-field', true);
-        prog.value("0");
-        prog.attr("max", "100");
-        prog.attr("id", "importprogress");
+        prog.value('0');
+        prog.attr('max', '100');
+        prog.attr('id', 'importprogress');
 
-        var progdiv = progcont.append("div");
+        var progdiv = progcont.append('div');
         progdiv.attr('id','importprogdiv')
-            .style("max-height","24px")
-            .style("overflow","hidden");
+            .style('max-height','24px')
+            .style('overflow','hidden');
 
-        progdiv.append("text")
-            .attr("id", "importprogresstext")
-            .attr("dy", ".3em").text("Initializing ...");
+        progdiv.append('text')
+            .attr('id', 'importprogresstext')
+            .attr('dy', '.3em').text('Initializing ...');
 
-        var progShow = progcont.append("a");
-        progShow.attr("id","importprogressshow")
+        var progShow = progcont.append('a');
+        progShow.attr('id','importprogressshow')
             .classed('show-link',true)
             .attr('expanded',false)
             .text('Show More')
@@ -370,7 +370,7 @@ Hoot.control.utilities.importdataset = function(context) {
     **/
     var _getTypeName = function(desc){
         var comboData = _container.select('#importDatasetImportType').datum();
-        var typeName = "";
+        var typeName = '';
         for(i=0; i<comboData.combobox.data.length; i++){
             var o = comboData.combobox.data[i];
             if(o.title == desc){
@@ -512,7 +512,7 @@ Hoot.control.utilities.importdataset = function(context) {
         var isDir = false;
         if(typeName == 'DIR'){
             isDir = true;
-            if(_bInfo.name.substring(0,3) == "Chr"){
+            if(_bInfo.name.substring(0,3) == 'Chr'){
                 d3.select('#ingestfileuploader')
                 .property('multiple', false)
                 .attr('accept', null)
@@ -688,7 +688,7 @@ Hoot.control.utilities.importdataset = function(context) {
         var selType = _getTypeName(_container.select('#importDatasetImportType').value());
 
         if(!selType){
-            iD.ui.Alert("Please select Import Type.",'warning',new Error().stack);
+            iD.ui.Alert('Please select Import Type.','warning',new Error().stack);
             return;
         }
 
@@ -698,7 +698,7 @@ Hoot.control.utilities.importdataset = function(context) {
         cntParam.zipCnt = 0;
         var fileNames = [];
         var totalFileSize = 0;
-        var folderPath = "";
+        var folderPath = '';
         for (var l = 0; l < document.getElementById('ingestfileuploader').files.length; l++) {
             var curFile = document.getElementById('ingestfileuploader').files[l];
             totalFileSize += curFile.size;
@@ -708,14 +708,14 @@ Hoot.control.utilities.importdataset = function(context) {
             if(l == 0){
 
                 if(selType == 'DIR'){
-                    if(_bInfo.name.substring(0,3) == "Chr"){
-                        var parts = curFile.webkitRelativePath.split("/");
+                    if(_bInfo.name.substring(0,3) == 'Chr'){
+                        var parts = curFile.webkitRelativePath.split('/');
                         var folderName = parts[0];
                         if(folderName.length > 4){
                             var ext = folderName.substring(folderName.length - 4);
                             var fgdbName = folderName.substring(0, folderName.length - 4);
                             if(ext.toLowerCase() != '.gdb'){
-                                iD.ui.Alert("Please select valid FGDB.",'warning',new Error().stack);
+                                iD.ui.Alert('Please select valid FGDB.','warning',new Error().stack);
                                 return;
                             } else {
                                 var inputName = _container.select('#importDatasetLayerName').value();
@@ -785,7 +785,7 @@ Hoot.control.utilities.importdataset = function(context) {
             });
 
             if(!isValid){
-                iD.ui.Alert("Missing shapefile dependency. Import requires shp, shx and dbf.",'warning',new Error().stack );
+                iD.ui.Alert('Missing shapefile dependency. Import requires shp, shx and dbf.','warning',new Error().stack );
                 return false;
             }
         }
@@ -793,20 +793,20 @@ Hoot.control.utilities.importdataset = function(context) {
         var totalCnt = cntParam.shpCnt + cntParam.osmCnt + cntParam.zipCnt;
         if((cntParam.shpCnt > 0 && cntParam.shpCnt != totalCnt) || (cntParam.osmCnt > 0 && cntParam.osmCnt != totalCnt)
             || (cntParam.zipCnt > 0 && cntParam.zipCnt != totalCnt)){
-            iD.ui.Alert("Please select only single type of files. (i.e. can not mix zip with osm)",'warning',new Error().stack);
+            iD.ui.Alert('Please select only single type of files. (i.e. can not mix zip with osm)','warning',new Error().stack);
             return false;
         }
 
         if(cntParam.osmCnt > 1) {
-            iD.ui.Alert("Multiple osm files can not be ingested. Please select one.",'warning',new Error().stack);
+            iD.ui.Alert('Multiple osm files can not be ingested. Please select one.','warning',new Error().stack);
             return false;
         }
 
 
         if(totalFileSize > iD.data.hootConfig.ingest_size_threshold){
             var thresholdInMb = Math.floor((1*iD.data.hootConfig.ingest_size_threshold)/1000000);
-            if(!window.confirm("The total size of ingested files are greater than ingest threshold size of " +
-                thresholdInMb + "MB and it may have problem. Do you wish to continue?")){
+            if(!window.confirm('The total size of ingested files are greater than ingest threshold size of ' +
+                thresholdInMb + 'MB and it may have problem. Do you wish to continue?')){
                 return false;
             }
         }
@@ -826,29 +826,29 @@ Hoot.control.utilities.importdataset = function(context) {
 
          var importTypes = [];
         var fileTypes = {};
-        fileTypes.value = "FILE";
-        if(_bInfo.name.substring(0,3) == "Chr"){
-            fileTypes.title = "File (shp,zip)";
+        fileTypes.value = 'FILE';
+        if(_bInfo.name.substring(0,3) == 'Chr'){
+            fileTypes.title = 'File (shp,zip)';
         } else {
-            fileTypes.title = "File (shp,zip,gdb.zip)";
+            fileTypes.title = 'File (shp,zip,gdb.zip)';
         }
         importTypes.push(fileTypes);
 
         var osmTypes = {};
-        osmTypes.value = "OSM";
-        osmTypes.title = "File (osm)";
+        osmTypes.value = 'OSM';
+        osmTypes.title = 'File (osm)';
         importTypes.push(osmTypes);
 
         var geonameTypes = {};
-        geonameTypes.value = "GEONAMES";
-        geonameTypes.title = "File (geonames)";
+        geonameTypes.value = 'GEONAMES';
+        geonameTypes.title = 'File (geonames)';
         importTypes.push(geonameTypes);
 
         var dirType = {};
-        dirType.value = "DIR";
-        dirType.title = "Directory (FGDB)";
+        dirType.value = 'DIR';
+        dirType.title = 'Directory (FGDB)';
 
-        if(_bInfo.name.substring(0,3) == "Chr"){importTypes.push(dirType);}
+        if(_bInfo.name.substring(0,3) == 'Chr'){importTypes.push(dirType);}
 
 
         return importTypes;
@@ -866,7 +866,7 @@ Hoot.control.utilities.importdataset = function(context) {
                 var emptyObj = {};
                 emptyObj.NAME = 'NONE';
                 emptyObj.PATH = 'NONE';
-                emptyObj.DESCRIPTION = "No Translation";
+                emptyObj.DESCRIPTION = 'No Translation';
                 emptyObj.NONE = 'true';
                 importTranslationsOsm.push(emptyObj);
 

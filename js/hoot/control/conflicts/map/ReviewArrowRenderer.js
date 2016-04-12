@@ -69,8 +69,8 @@ Hoot.control.conflicts.map.reviewarrowrenderer = function (context)
         var coord = [ _againstFeature.loc, _feature.loc];
         if (mode === 'reverse') coord = coord.reverse();
         var gj = {
-            "type": "LineString",
-            "coordinates": coord
+            'type': 'LineString',
+            'coordinates': coord
         };
         if (mode === 'remove') gj = {};
         context.background().updateArrowLayer(gj);

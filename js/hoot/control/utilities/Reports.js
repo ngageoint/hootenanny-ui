@@ -14,7 +14,7 @@ Hoot.control.utilities.reports = function(context) {
         var d_form = [{
             label: 'Output Name',
             type: 'reportExportOutputName',
-            placeholder: dataset.name + ".pdf"
+            placeholder: dataset.name + '.pdf'
         }];
         var modalbg = d3.select('body')
             .append('div')

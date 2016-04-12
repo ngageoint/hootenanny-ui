@@ -43,8 +43,8 @@ Hoot.view.utilities.basemapdataset = function(context)
       var newRes = {};
       newRes.name = bm.name;
       newRes.type = 'tms';
-      newRes.projection = "mercator";
-      newRes.template = location.origin + "/static/BASEMAP/" + bm.name + "/{zoom}/{x}/{y}.png";
+      newRes.projection = 'mercator';
+      newRes.template = location.origin + '/static/BASEMAP/' + bm.name + '/{zoom}/{x}/{y}.png';
       newRes.default = true;
       newRes.nocache = true;
       newRes.extent = bm.extent;
@@ -82,7 +82,7 @@ Hoot.view.utilities.basemapdataset = function(context)
               d3.event.stopPropagation();
                 d3.event.preventDefault();
                 var bmId = d3.select(this.parentNode).datum().name;
-                var r = confirm("Are you sure you want to delete: " + bmId + "?");
+                var r = confirm('Are you sure you want to delete: ' + bmId + '?');
                     if (r == false) {
                        return;
                     }
@@ -92,7 +92,7 @@ Hoot.view.utilities.basemapdataset = function(context)
               d3.json('/hoot-services/ingest/basemap/delete?NAME=' + bmId,
                 function (error, data) {
                       if(error){
-                          iD.ui.Alert("Delete failed.",'error',new Error().stack);
+                          iD.ui.Alert('Delete failed.','error',new Error().stack);
                       } else {
                         var bm;
 
@@ -136,7 +136,7 @@ Hoot.view.utilities.basemapdataset = function(context)
 
                         d3.select(bmToggleBtn).classed('keyline-left fr _icon closedeye pad2 col1', false);
                         d3.select(bmToggleBtn).classed('keyline-left fr _icon openeye pad2 col1', true);
-                        bm.status="enabled";
+                        bm.status='enabled';
                         hoot_view_utilities_basemapdataset.addBasemapItem(bm);
                     });
                 } else if(d.status == 'enabled'){
@@ -151,7 +151,7 @@ Hoot.view.utilities.basemapdataset = function(context)
                         d3.select(bmToggleBtn).classed('keyline-left fr _icon openeye pad2 col1', false);
                         d3.select(bmToggleBtn).classed('keyline-left fr _icon closedeye pad2 col1', true);
 
-                        bm.status="disabled";
+                        bm.status='disabled';
 
                         context.background().removeBackgroundResource(bm.name);
                         context.map().updateBackground();

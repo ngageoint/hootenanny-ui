@@ -52,8 +52,8 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         _trans = trans;
         if(_trans.length == 1){
             var emptyObj = {};
-            emptyObj.NAME = "";
-            emptyObj.DESCRIPTION = "";
+            emptyObj.NAME = '';
+            emptyObj.DESCRIPTION = '';
             _trans.push(emptyObj);
         }
 
@@ -182,23 +182,23 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         progcont.classed('form-field', true);
         var prog = progcont.append('span').append('progress');
         prog.classed('form-field', true);
-        prog.value("0");
-        prog.attr("max", "100");
-        prog.attr("id", "importprogress");
+        prog.value('0');
+        prog.attr('max', '100');
+        prog.attr('id', 'importprogress');
 
-        var progdiv = progcont.append("div");
+        var progdiv = progcont.append('div');
         progdiv.attr('id','importprogdiv')
-                .style("max-height","24px")
-                .style("overflow","hidden");
+                .style('max-height','24px')
+                .style('overflow','hidden');
 
-        var logTxt = "Initializing...";
+        var logTxt = 'Initializing...';
 
-        progdiv.append("text")
-                .attr("id", "importprogresstext")
-                .attr("dy", ".3em").text(logTxt);
+        progdiv.append('text')
+                .attr('id', 'importprogresstext')
+                .attr('dy', '.3em').text(logTxt);
 
-        var progShow = progcont.append("a");
-        progShow.attr("id","importprogressshow")
+        var progShow = progcont.append('a');
+        progShow.attr('id','importprogressshow')
             .classed('show-link',true)
             .attr('expanded',false)
             .text('Show More')
@@ -210,7 +210,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
 
         //Loop through each row and treat as separate import function
         //var rowNum = d3.select(this.parentElement.parentElement).select('input').attr('row');
-        var rowArray = d3.select("#bulkImportTable").selectAll("tr[id^='row-']");
+        var rowArray = d3.select('#bulkImportTable').selectAll('tr[id^='row-']');
         _importRow(rowArray[0],0, _modalbg);
 
     }
@@ -221,7 +221,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     **/
     var _createTableBody = function(ingestDiv) {
         _table.append('tbody');
-        _addRow(d3.select("#bulkImportTable").select('tbody'));
+        _addRow(d3.select('#bulkImportTable').select('tbody'));
 
         _isCancel = false;
         _jobIds = null;
@@ -238,7 +238,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 .classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
                 .text('Add Row')
                 .on('click', function () {
-                    _addRow(d3.select("#bulkImportTable").select('tbody'));
+                    _addRow(d3.select('#bulkImportTable').select('tbody'));
                 });
     }
 
@@ -267,7 +267,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         hoot.model.folders.updateLink(link);
         link = {};
         d3.select('#importprogdiv').append('br');
-        d3.select('#importprogdiv').append('text').text(row.select('.reset.LayerName').value() + " has been successfully uploaded.");
+        d3.select('#importprogdiv').append('text').text(row.select('.reset.LayerName').value() + ' has been successfully uploaded.');
 
         _submitExp.select('span').text('Import');
         //go to next row in array if neccessary
@@ -332,14 +332,14 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         //check if layer with same name already exists...
         if(row.select('.reset.LayerName').value()=='' || row.select('.reset.LayerName').value()==row.select('.reset.LayerName').attr('placeholder')){
             d3.select('#importprogdiv').append('br');
-            d3.select('#importprogdiv').append('text').text("ERROR: Invalid output layer name...");
+            d3.select('#importprogdiv').append('text').text('ERROR: Invalid output layer name...');
             return false;
         }
 
         if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f == row.select('.reset.LayerName').value();})))
         {
             d3.select('#importprogdiv').append('br');
-            d3.select('#importprogdiv').append('text').text("A layer already exists with this name. Please remove the current layer or select a new name for this layer.");
+            d3.select('#importprogdiv').append('text').text('A layer already exists with this name. Please remove the current layer or select a new name for this layer.');
             return false;
         }
 
@@ -384,7 +384,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                     if(_isCancel == false){
                         _loadPostProcess(row,rowArray,rowNumber,modalbg);
                     }
-                } else if(status.info=="uploaded"){
+                } else if(status.info=='uploaded'){
                     _jobIds = status.jobids;
                     _mapIds = status.mapids;
                     _submitExp.select('span').text('Cancel');
@@ -428,7 +428,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             });
 
             if(!isValid){
-                iD.ui.Alert("Missing shapefile dependency. Import requires shp, shx and dbf.",'warning',new Error().stack);
+                iD.ui.Alert('Missing shapefile dependency. Import requires shp, shx and dbf.','warning',new Error().stack);
                 return false;
             }
         }
@@ -436,20 +436,20 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         var totalCnt = cntParam.shpCnt + cntParam.osmCnt + cntParam.zipCnt;
         if((cntParam.shpCnt > 0 && cntParam.shpCnt != totalCnt) || (cntParam.osmCnt > 0 && cntParam.osmCnt != totalCnt)
             || (cntParam.zipCnt > 0 && cntParam.zipCnt != totalCnt)){
-            iD.ui.Alert("Please select only single type of files. (i.e. can not mix zip with osm)",'warning',new Error().stack);
+            iD.ui.Alert('Please select only single type of files. (i.e. can not mix zip with osm)','warning',new Error().stack);
             return false;
         }
 
         if(cntParam.osmCnt > 1) {
-            iD.ui.Alert("Multiple osm files can not be ingested. Please select one.",'warning',new Error().stack);
+            iD.ui.Alert('Multiple osm files can not be ingested. Please select one.','warning',new Error().stack);
             return false;
         }
 
 
         if(totalFileSize > iD.data.hootConfig.ingest_size_threshold){
             var thresholdInMb = Math.floor((1*iD.data.hootConfig.ingest_size_threshold)/1000000);
-            if(!window.confirm("The total size of ingested files are greater than ingest threshold size of " +
-                thresholdInMb + "MB and it may have problem. Do you wish to continue?")){
+            if(!window.confirm('The total size of ingested files are greater than ingest threshold size of ' +
+                thresholdInMb + 'MB and it may have problem. Do you wish to continue?')){
                 return false;
             }
         }
@@ -463,10 +463,10 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     var _multipartHandler = function () {
         var filesList=[];
         var selRowNum = d3.select(this.parentElement.parentElement).select('input').attr('row');
-        var selType = _getTypeName(d3.select(".reset.importImportType[row='" + selRowNum + "']").value());
+        var selType = _getTypeName(d3.select('.reset.importImportType[row='' + selRowNum + '']').value());
 
         if(!selType){
-            iD.ui.Alert("Please select Import Type.",'warning',new Error().stack);
+            iD.ui.Alert('Please select Import Type.','warning',new Error().stack);
             return;
         }
 
@@ -476,7 +476,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         cntParam.zipCnt = 0;
         var fileNames = [];
         var totalFileSize = 0;
-        var folderPath = "";
+        var folderPath = '';
         for (var l = 0; l < document.getElementById('ingestfileuploader-'+selRowNum)
             .files.length; l++) {
             var curFile = document.getElementById('ingestfileuploader-'+selRowNum)
@@ -487,18 +487,18 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             fileNames.push(curFileName);
             if(l == 0){
                 if(selType == 'DIR'){
-                    var parts = curFile.webkitRelativePath.split("/");
+                    var parts = curFile.webkitRelativePath.split('/');
                     var folderName = parts[0];
                     if(folderName.length > 4){
                         var ext = folderName.substring(folderName.length - 4);
                         var fgdbName = folderName.substring(0, folderName.length - 4);
                         if(ext.toLowerCase() != '.gdb'){
-                            iD.ui.Alert("Please select valid FGDB.",'warning',new Error().stack);
+                            iD.ui.Alert('Please select valid FGDB.','warning',new Error().stack);
                             return;
                         } else {
-                            var inputName = d3.select(".reset.LayerName[row='" + selRowNum + "']").value();
+                            var inputName = d3.select('.reset.LayerName[row='' + selRowNum + '']').value();
                             if(!inputName){
-                                 d3.select(".reset.LayerName[row='" + selRowNum + "']").value(fgdbName);
+                                 d3.select('.reset.LayerName[row='' + selRowNum + '']').value(fgdbName);
                             }
                         }
                     }
@@ -521,10 +521,10 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             _retrieveFeatureClasses(selRowNum);
         }
 
-        d3.select(".reset.fileImport[row='" + selRowNum + "']").value(fileNames.join('; '));
+        d3.select('.reset.fileImport[row='' + selRowNum + '']').value(fileNames.join('; '));
         var first = fileNames[0];
         var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
-        d3.select(".reset.LayerName[row='" + selRowNum + "']").value(saveName);
+        d3.select('.reset.LayerName[row='' + selRowNum + '']').value(saveName);
     }
 
     /**
@@ -657,7 +657,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     **/
     var _addRow = function(tbl){
         if(_rowNum>10){
-            iD.ui.Alert("Please limit bulk import to 10 datasets or less.",'warning',new Error().stack)
+            iD.ui.Alert('Please limit bulk import to 10 datasets or less.','warning',new Error().stack)
             return;
         }
 
@@ -698,7 +698,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             }
 
             if (a.icon) {
-                if(a.type=="deleteRow"){
+                if(a.type=='deleteRow'){
                     var parentNode = d3.select(this.parentNode);
                     d3.select(this).remove();
                     parentNode.append('span')
@@ -744,7 +744,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     **/
     var _getTypeName = function (desc){
         var comboData = _form.select('.reset.importImportType').datum();
-        var typeName = "";
+        var typeName = '';
         for(i=0; i<comboData.combobox.data.length; i++){
             var o = comboData.combobox.data[i];
             if(o.title == desc){
@@ -762,7 +762,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     var _ingestTypeChangeHandler = function(){
         var selRowNum = d3.select(this.parentElement.parentElement).select('input').attr('row');
 
-        d3.select(".reset.Schema[row='" + selRowNum + "']").value('');
+        d3.select('.reset.Schema[row='' + selRowNum + '']').value('');
         var selectedType = d3.select(this).value();
         var typeName = _getTypeName(selectedType);
 
@@ -798,7 +798,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         }  else if(typeName == 'OSM') {
             translationsList = _importTranslationsOsm;
         }
-        var comboData = d3.select(".reset.Schema[row='" + selRowNum + "']").datum();
+        var comboData = d3.select('.reset.Schema[row='' + selRowNum + '']').datum();
         comboData.combobox = translationsList;
         var combo = d3.combobox()
             .data(_.map(translationsList, function (n) {
@@ -808,13 +808,13 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 };
             }));
 
-        d3.select(".reset.Schema[row='" + selRowNum + "']")
+        d3.select('.reset.Schema[row='' + selRowNum + '']')
              .style('width', '100%')
                 .call(combo);
         if(typeName == 'GEONAMES'){
-            d3.select(".reset.Schema[row='" + selRowNum + "']").value(_importTranslationsGeonames[0].DESCRIPTION);
+            d3.select('.reset.Schema[row='' + selRowNum + '']').value(_importTranslationsGeonames[0].DESCRIPTION);
         } else if(typeName == 'OSM'){
-            d3.select(".reset.Schema[row='" + selRowNum + "']").value(_importTranslationsOsm[0].DESCRIPTION);
+            d3.select('.reset.Schema[row='' + selRowNum + '']').value(_importTranslationsOsm[0].DESCRIPTION);
         }
 
         d3.select('#ingestfileuploaderspancontainer-'+selRowNum).classed('hidden', false);
@@ -854,11 +854,11 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     * @param selRowNum - Selected row number
     **/
     var _retrieveFeatureClasses = function(selRowNum) {
-        if(d3.select(".reset.bulkImportDatasetFGDBFeatureClasses[row='" + selRowNum + "']").empty()) {
+        if(d3.select('.reset.bulkImportDatasetFGDBFeatureClasses[row='' + selRowNum + '']').empty()) {
             return;
         }
         var spin =
-            d3.select(".reset.bulkImportDatasetFGDBFeatureClasses[row='" + selRowNum + "']")
+            d3.select('.reset.bulkImportDatasetFGDBFeatureClasses[row='' + selRowNum + '']')
             .classed('_icon _loading col1 f1',true)
             .style('height', '30px')
             .style('margin-top', '-8px');
@@ -922,11 +922,11 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             curRowNum = selRowNum;
         }
 
-        d3.select(".reset.bulkImportDatasetFGDBFeatureClasses[row='" + curRowNum + "']")
+        d3.select('.reset.bulkImportDatasetFGDBFeatureClasses[row='' + curRowNum + '']')
             .style('width', '100%')
             .call(comboPathName);
 
-        d3.select(".reset.bulkImportDatasetFGDBFeatureClasses[row='" + curRowNum + "']").attr('readonly',true);
+        d3.select('.reset.bulkImportDatasetFGDBFeatureClasses[row='' + curRowNum + '']').attr('readonly',true);
     }
 
 
