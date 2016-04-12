@@ -26,9 +26,9 @@ Hoot.control.utilities.validation = function(context) {
 
                 //Check output validation name for special characters
                 try{
-                    if(output !=''){
+                    if(output !==''){
                         var resp = context.hoot().checkForUnallowedChar(output);
-                        if(resp != true){
+                        if(resp !== true){
                             iD.ui.Alert(resp,'warning',new Error().stack);
                             return;
                         }
@@ -48,15 +48,15 @@ Hoot.control.utilities.validation = function(context) {
                     reqParam.outputMap = output;
 
                     Hoot.model.REST('createValidationMap', reqParam, function (resp) {
-                        if(resp.status != 'complete') {
+                        if(resp.status !== 'complete') {
                             iD.ui.Alert('Failed to create validation. See log for detail.','warning',new Error().stack);
                         } else {
                             // refresh both folder and layer list
                             context.hoot().model.layers.refresh(function(){
                                 context.hoot().model.folders.refreshLinks(function(){
                                     context.hoot().model.import.updateTrees();
-                                })
-                            })
+                                });
+                            });
                         }
                         formContainer.remove();
 
@@ -80,4 +80,4 @@ Hoot.control.utilities.validation = function(context) {
 
 
     return hoot_control_utilities_validation;
-}
+};

@@ -260,7 +260,7 @@ iD.ui.MapInMap = function(context) {
 
         map_in_map.hidden = function() {
             return hidden;
-        }
+        };
 
         function toggle() {
             if (d3.event) d3.event.preventDefault();

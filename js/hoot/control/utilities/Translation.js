@@ -203,4 +203,4 @@ Hoot.control.utilities.translation = function(context) {
 
 
     return hoot_control_utilities_translation;
-}
+};

@@ -58,9 +58,9 @@ Hoot.control.utilities.clipdataset = function(context) {
             .classed('big pad1y keyline-bottom space-bottom2', true)
             .append('h4')
             .text(function(){
-                if(_clipType=='visualExtent'){return 'Clip Data to Visual Extent'}
-                else if(_clipType=='boundingBox'){return 'Clip Data to Bounding Box'}
-                else{return 'Clip Data'}
+                if(_clipType==='visualExtent'){return 'Clip Data to Visual Extent';}
+                else if(_clipType==='boundingBox'){return 'Clip Data to Bounding Box';}
+                else{return 'Clip Data';}
             })
             .append('div')
             .classed('fr _icon x point', true)
@@ -78,8 +78,8 @@ Hoot.control.utilities.clipdataset = function(context) {
             .selectAll('th')
             .data(_columns).enter()
             .append('th')
-            .attr('class',function(d){return d.cl})
-            .text(function(d){return d.label});
+            .attr('class',function(d){return d.cl;})
+            .text(function(d){return d.label;});
 
         _table.append('tbody');
         _.each(hoot.model.layers.getLayers(),function(d){
@@ -98,9 +98,9 @@ Hoot.control.utilities.clipdataset = function(context) {
                 }).enter()
                 .append('td')
                 .append('div').classed('contain bulk-import',true).append('input')
-                .attr('class', function(d){return 'reset  bulk-import ' + d.type})
+                .attr('class', function(d){return 'reset  bulk-import ' + d.type;})
                 .attr('row',d.name)
-                .attr('placeholder',function(d){return d.placeholder})
+                .attr('placeholder',function(d){return d.placeholder;})
                 .select(function (a) {
                     if(a.checkbox){
                         var parentDiv = d3.select(this.parentElement);
@@ -108,12 +108,12 @@ Hoot.control.utilities.clipdataset = function(context) {
                         parentDiv.append('input').attr('type','checkbox').property('checked',true).attr('id','clip-'+d.name);//.attr('checked',true);
                     }
 
-                    if(a.type=='datasetName'){
+                    if(a.type==='datasetName'){
                         d3.select(this).attr('placeholder',function(){
-                            return d.name}).attr('readonly',true);
+                            return d.name;}).attr('readonly',true);
                     }
 
-                    if(a.type=='LayerName'){
+                    if(a.type==='LayerName'){
                         _createLayerNameField.call(this, d);
                     }
 
@@ -130,14 +130,14 @@ Hoot.control.utilities.clipdataset = function(context) {
             var submitExp = ingestDiv.append('div')
                 .classed('form-field col12 left ', true);
 
-            if(_clipType==undefined){_clipType='visualExtent';}
+            if(_clipType===undefined){_clipType='visualExtent';}
             var typeDiv = ingestDiv.append('div').attr('id','clipType').classed('hidden',true).attr('clipType',_clipType);
 
 
             submitExp.append('span')
                 .classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
                 .text('Clip')
-                .on('click',_clipClickHandler)
+                .on('click',_clipClickHandler);
 
 
         return _modalbg;
@@ -152,8 +152,8 @@ Hoot.control.utilities.clipdataset = function(context) {
         var uniquename = false;
         var name = d.name;
         var i = 1;
-        while (uniquename==false){
-            if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f === name}))){
+        while (uniquename===false){
+            if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f === name;}))){
                 name = d.name + i.toString();
                 i++;
             } else {
@@ -165,14 +165,14 @@ Hoot.control.utilities.clipdataset = function(context) {
         d3.select(this).on('change',function(){
             //ensure output name is valid
             var resp = context.hoot().checkForUnallowedChar(this.value);
-            if(resp != true){
+            if(resp !== true){
                 d3.select(this).classed('invalidName',true).attr('title',resp);
             } else {
                 d3.select(this).classed('invalidName',false).attr('title',null);
             }
         });
 
-    }
+    };
 
 
     /**
@@ -192,7 +192,7 @@ Hoot.control.utilities.clipdataset = function(context) {
         comboPathName.data().sort(function(a,b){
             var textA = a.value.toUpperCase();
             var textB=b.value.toUpperCase();
-            return(textA<textB)?-1 : (textA>textB)?1:0;
+            return (textA<textB)?-1 : (textA>textB)?1:0;
         });
 
         comboPathName.data().unshift({value:'root',title:0});
@@ -219,8 +219,8 @@ Hoot.control.utilities.clipdataset = function(context) {
 
                 return folderPath;
             }
-        })
-    }
+        });
+    };
 
     /**
     * @desc Click handler for clip request.
@@ -240,7 +240,7 @@ Hoot.control.utilities.clipdataset = function(context) {
         //Set up params for clipping
         var params = [];
         _.each(hoot.model.layers.getLayers(),function(d){
-            if(selectedLayers.indexOf(d.name)==-1){return;}
+            if(selectedLayers.indexOf(d.name)===-1){return;}
 
             var param = {};
             param.INPUT_NAME = d.name;
@@ -248,8 +248,8 @@ Hoot.control.utilities.clipdataset = function(context) {
             var uniquename = false;
             var name = d3.select('#row-' + d.name).select('div .LayerName').value() || d3.select('#row-' + d.name).select('div .LayerName').attr('placeholder');
             var i = 1;
-            while (uniquename==false){
-                if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f === name}))){
+            while (uniquename===false){
+                if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f === name;}))){
                     name = name + i.toString();
                     i++;
                 } else {
@@ -259,13 +259,13 @@ Hoot.control.utilities.clipdataset = function(context) {
             param.OUTPUT_NAME = name;
 
             var resp = context.hoot().checkForUnallowedChar(param.OUTPUT_NAME);
-            if(resp != true){
+            if(resp !== true){
                 iD.ui.Alert(resp,'warning',new Error().stack);
                 return;
             }
 
-            if(clipType=='visualExtent'){param.BBOX = id.map().extent().toString();}
-            else if(clipType=='boundingBox'){param.BBOX= _rect;}
+            if(clipType==='visualExtent'){param.BBOX = id.map().extent().toString();}
+            else if(clipType==='boundingBox'){param.BBOX= _rect;}
 
             param.PATH_NAME = d3.select('#row-' + d.name).select('div .PathName').value() || d3.select('#row-' + d.name).select('div .PathName').attr('placeholder') || 'root';
 
@@ -274,14 +274,14 @@ Hoot.control.utilities.clipdataset = function(context) {
 
         _.each(params,function(param){
             Hoot.model.REST('clipDataset', param, function (a,outputname) {
-                    if(a.status=='complete'){iD.ui.Alert('Success: ' + outputname + ' has been created!','success');}
+                    if(a.status==='complete'){iD.ui.Alert('Success: ' + outputname + ' has been created!','success');}
                 });
-        })
+        });
 
         _modalbg.remove();
-    }
+    };
 
 
     return d3.rebind(_instance, _events, 'on');
 
-}
+};

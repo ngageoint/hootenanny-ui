@@ -35,7 +35,7 @@ Hoot.view.utilities = function (context){
             .text(txt);
         d3.selectAll('#jobsBG')
             .classed('hidden', vis);
-    }
+    };
 
     utilities.activate = function () {
 

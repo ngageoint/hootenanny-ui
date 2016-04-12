@@ -61,4 +61,4 @@ Hoot.control.utilities.wfsdataset = function(context) {
 
 
     return hoot_control_utilities_wfsdataset;
-}
+};

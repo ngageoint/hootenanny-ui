@@ -28,7 +28,7 @@ Hoot.control.conflicts.map.featureNavigator = function (context)
         var map = context.map();
         var zoom = Math.min(20, (map.extentZoom(extent)));
         map.centerZoom(extent.center(), (zoom));
-    }
+    };
 
     /**
     * @desc Helper function to zoom to the bounding box of a entity
@@ -43,7 +43,7 @@ Hoot.control.conflicts.map.featureNavigator = function (context)
         var entityCenter = entityExtent.center();
 
         if(entityExtent === undefined){
-            iD.ui.Alert('Could not locate selected feature with id: ' + entity.id + '.','warning',new Error().stack)
+            iD.ui.Alert('Could not locate selected feature with id: ' + entity.id + '.','warning',new Error().stack);
             return;
         }
 
@@ -56,7 +56,7 @@ Hoot.control.conflicts.map.featureNavigator = function (context)
             var zoom = Math.min(18, map.zoom()-1);
             map.zoom(zoom);
         } else {
-            if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
+            if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id===entity.id;}))){
                 map.extent(entityExtent);
                 map.center(entityCenter);
                 var zoom = Math.min(18, map.zoom()-1);
@@ -65,11 +65,11 @@ Hoot.control.conflicts.map.featureNavigator = function (context)
                 _parent().setProcessing(false);
             }
         }
-    }
+    };
 
     var _parent = function() {
         return context.hoot().control.conflicts;
     };
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

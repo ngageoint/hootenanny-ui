@@ -129,7 +129,7 @@ Hoot.control.conflicts.info.reviewtable = function (context)
     **/
     var _panToEntity = function (id) {
         context.hoot().control.conflicts.map.featureNavigator.panToEntity(id);
-    }
+    };
 
     /**
     * @desc Toggler text
@@ -139,14 +139,14 @@ Hoot.control.conflicts.info.reviewtable = function (context)
         d3.select('a.toggletable')
             .text(d3.select('div.tag-table').classed('hide') ? 'Show Table' : 'Hide Table')
             .call(tooltip);
-    }
+    };
 
     /**
     * @desc tables column getter
     **/
     _instance.poiTableCols = function() {
         return _poiTableCols;
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

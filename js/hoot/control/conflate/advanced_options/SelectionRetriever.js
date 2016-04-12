@@ -30,7 +30,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                 //Check to see if the first child is Enabled flag.
                 //If so, use Enabled value to continue
                 var enabled = true;
-                if(meta.members[0].name=='Enabled'){
+                if(meta.members[0].name==='Enabled'){
                     advform? enabled = advform.select('#' + meta.members[0].id).property('checked') : enabled = (meta.members[0].defaultvalue === 'true');
                 }
 
@@ -40,19 +40,19 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                         var selVal = '';
                         var fieldId = submeta.id;
 
-                        if(submeta.name=='Enabled'){
+                        if(submeta.name==='Enabled'){
                             if(meta.dependencies)
                             {
                                 _getDependencyValues(meta, results);
                             }
                         }
 
-                        if(submeta.elem_type === 'checkbox' || submeta.elem_type=='checkplus') {
+                        if(submeta.elem_type === 'checkbox' || submeta.elem_type==='checkplus') {
                             if(fieldId){
                                 selVal = _getSelectedCheckValue(advform, submeta.defaultvalue, fieldId);
                                 _getCheckValue(selVal, meta, submeta, results);
 
-                                if(submeta.elem_type=='checkplus'){
+                                if(submeta.elem_type==='checkplus'){
                                     //Only take value if checkplus is true!
                                     var cplusEnabled = _getSelectedCheckValue(advform, submeta.defaultvalue === 'true', submeta.id);
 
@@ -61,7 +61,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                                     }
                                 }
                             }
-                        } else if (submeta.elem_type=='list') {
+                        } else if (submeta.elem_type==='list') {
                             //advform? selVal = advform.select('#' + fieldId).value(): selVal = submeta.defaultvalue;
                             selVal = _getSelectedValue(advform, submeta.defaultvalue, fieldId);
                             if(selVal.length === 0 && submeta.defaultvalue.length > 0){selVal = submeta.defaultvalue;}
@@ -85,7 +85,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
             }
         }
         return results;
-    }
+    };
 
     /**
     * @desc Helper function to get check status of a field by checked property
@@ -97,7 +97,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
         var selVal = '';
         selVal = (f) ?  f.select('#' + fid).property('checked').toString() : d;
         return selVal;
-    }
+    };
 
     /**
     * @desc Helper function to get check status of a field by value
@@ -110,7 +110,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
         //selVal = (f) ?  f.select('#' + fid).value() : d;
         selVal = (f) ? (f.select('#' + fid).value() === '' ? d: f.select('#' + fid).value()) : d;
         return selVal;
-    }
+    };
 
     /**
     * @desc Get values for check type elements
@@ -131,9 +131,9 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                 results.push(res);
             } else if(submeta.hoot_val && selVal === 'true'){
                 //create w/parent hoot_key or add to if already exists IF TRUE
-                var idx = results.indexOf(_.find(results,function(obj){return obj.name === meta.hoot_key}));
+                var idx = results.indexOf(_.find(results,function(obj){return obj.name === meta.hoot_key;}));
                 if(idx > -1){
-                    if(results[idx].value.indexOf(submeta.hoot_val)==-1)
+                    if(results[idx].value.indexOf(submeta.hoot_val)===-1)
                     {results[idx].value +=  ';' + submeta.hoot_val ;}
                 } else {
                     res.name = meta.hoot_key;
@@ -142,7 +142,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                 }
             }
         }
-    }
+    };
 
     /**
     * @desc Get values for check plus type elements
@@ -157,7 +157,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
             var selVal = '';
             if(c.id){
                 //isHidden = advform.select('#' + c.id).classed('hidden');
-                if(c.elem_type=='checkbox'){
+                if(c.elem_type==='checkbox'){
                     selVal = _getSelectedCheckValue(advform, c.defaultvalue, c.id);
                 } else {
                     selVal  = _getSelectedValue(advform, c.defaultvalue, c.id);
@@ -170,7 +170,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                 }
             }
         });
-    }
+    };
 
     /**
     * @desc Get values for list members elements
@@ -191,9 +191,9 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
 
                     if(subMember.hoot_key && subMemberVal.length>0){
                         //see if hoot_key already exists.  If it does, add to value.  If not, create.
-                        var idx = results.indexOf(_.find(results,function(obj){return obj.name === subMember.hoot_key}));
+                        var idx = results.indexOf(_.find(results,function(obj){return obj.name === subMember.hoot_key;}));
                         if(idx>-1){
-                            if(results[idx].value.indexOf(subMemberVal)==-1)
+                            if(results[idx].value.indexOf(subMemberVal)===-1)
                             {results[idx].value += ';'+subMemberVal;}
                         } else {
                             res.name = subMember.hoot_key;
@@ -204,7 +204,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                 });
             }
         }
-    }
+    };
 
     /**
     * @desc Get values for default type elements
@@ -218,21 +218,21 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
         // Add only there is default value or user selected value
         if(selVal.length > 0){// && !isHidden){
             if(submeta.hoot_key){
-                var idx = results.indexOf(_.find(results,function(obj){return obj.name === submeta.hoot_key}));
+                var idx = results.indexOf(_.find(results,function(obj){return obj.name === submeta.hoot_key;}));
                 if(idx > -1){
                     //check if value is already in list
-                    if(results[idx].value.indexOf(selVal)==-1)
+                    if(results[idx].value.indexOf(selVal)===-1)
                     {results[idx].value += ';'+selVal;}
                 } else {
                     res.name = submeta.hoot_key;
-                    res.value = selVal
+                    res.value = selVal;
                     results.push(res);
                 }
             } else if(submeta.hoot_val){
                 //create w/parent hoot_key or add to if already exists
-                var idx = results.indexOf(_.find(results,function(obj){return obj.name === meta.hoot_key}));
+                var idx = results.indexOf(_.find(results,function(obj){return obj.name === meta.hoot_key;}));
                 if(idx > -1){
-                    if(results[idx].value.indexOf(selVal)==-1)
+                    if(results[idx].value.indexOf(selVal)===-1)
                     {results[idx].value += ';'+submeta.hoot_val ;}
                 } else {
                     res.name = meta.hoot_key;
@@ -241,7 +241,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                 }
             }
         }
-    }
+    };
 
     /**
     * @desc Get values for dependency elements
@@ -252,16 +252,16 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
         var res = {};
         var hootkey = meta.dependencies[0].append.hoot_key;
         var hootval = meta.dependencies[0].append.hoot_val;
-        var idx = results.indexOf(_.find(results,function(obj){return obj.name === hootkey}));
+        var idx = results.indexOf(_.find(results,function(obj){return obj.name === hootkey;}));
         if(idx > -1){
-            if(results[idx].value.indexOf(hootval)==-1)
+            if(results[idx].value.indexOf(hootval)===-1)
             {results[idx].value += ';' + hootval;}
         } else {
             res.name = hootkey;
             res.value = hootval;
             results.push(res);
         }
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

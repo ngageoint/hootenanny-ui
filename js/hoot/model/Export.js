@@ -62,7 +62,7 @@ Hoot.model.export = function (context)
             }
         }
 
-        if(isDefTrans === false && transName != null && transName != '' ){
+        if(isDefTrans === false && transName != null && transName !== '' ){
             selectedTranslation = 'customscript/' + transName + '.js';
         }
 
@@ -119,7 +119,7 @@ Hoot.model.export = function (context)
                 exportCallback(result.status);
             }
 
-            if(result.status != 'failed'){
+            if(result.status !== 'failed'){
                 if(removeConflationRes === 'true'){
                     d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + mapId)
                     .header('Content-Type', 'text/plain')
@@ -156,7 +156,7 @@ Hoot.model.export = function (context)
 
 
         }
-    }
+    };
 
     var _initVariables = function()
     {
@@ -168,7 +168,7 @@ Hoot.model.export = function (context)
         selectedOutType = null;
         exportCallback = null;
         mapId = null;
-    }
+    };
 
     return model_export;
-}
+};

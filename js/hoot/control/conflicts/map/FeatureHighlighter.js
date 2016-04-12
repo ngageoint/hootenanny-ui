@@ -107,7 +107,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     _instance.resetHighlight = function(){
         d3.selectAll('.activeReviewFeature').classed('activeReviewFeature', false);
         d3.selectAll('.activeReviewFeature2').classed('activeReviewFeature2', false);
-    }
+    };
 
     /**
     * @desc Resets hightlights and move front
@@ -120,7 +120,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
             _moveFrontRecursive(activeConflictReviewItem, 'activeReviewFeature2');
             _moveFrontRecursive(activeConflict, 'activeReviewFeature');
         }
-    }
+    };
 
     /**
     * @desc Highlights 1 degree dependencies
@@ -169,7 +169,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
             }
         }
 
-    }
+    };
 
     /**
     * @desc Mouse event toggler
@@ -187,7 +187,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         }).on('mouseleave', function(d) {
             _highlightRelFeatures(d.id, ftype, offType, false, offFid);
         });
-    }
+    };
 
     /**
     * @desc Highlights each feature and flashes
@@ -214,7 +214,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
 
 
 
-    }
+    };
 
      /**
     * @desc Highlights each feature
@@ -236,14 +236,14 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                     var mid = mem.id;
 
                     var mFeature = context.hasEntity(mid);
-                    if(mFeature && mid != offFid) {
+                    if(mFeature && mid !== offFid) {
                         d3.selectAll('.' + mid).classed(offType, false);
                         d3.selectAll('.' + mid).classed(ftype, on);
                     }
 
                 });
             });
-    }
+    };
 
 
     /**
@@ -261,11 +261,11 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
             }
         }
 
-    }
+    };
 
     var _parent = function() {
         return context.hoot().control.conflicts;
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

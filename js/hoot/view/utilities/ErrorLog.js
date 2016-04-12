@@ -13,7 +13,7 @@ Hoot.view.utilities.errorlog = function(context){
     // constructor
     function errorlog(){
 
-    };
+    }
 
     errorlog.createContent = function(form){
       var loggingControls = form.append('div').classed('pad1y col12',true);
@@ -81,7 +81,7 @@ Hoot.view.utilities.errorlog = function(context){
     };
 
     errorlog.reportUIError = function(error,stack){
-        iD.data.hootConfig.currentError = stack != undefined ? error + '\n' + stack : JSON.stringify(error);
+        iD.data.hootConfig.currentError = stack !== undefined ? error + '\n' + stack : JSON.stringify(error);
         errorlog.updateUIlog();
     };
 
@@ -204,14 +204,14 @@ Hoot.view.utilities.errorlog = function(context){
                 });
       });
 
-    }
+    };
 
     errorlog.updateUIlog = function(){
         if(iD.data.hootConfig.currentError && !d3.select('#hootuilogtext').empty()){
             var uitext = iD.data.hootConfig.currentError + '\n\n' + d3.select('#hootuilogtext').text();
             d3.select('#hootuilogtext').text(uitext).value(uitext);
         }
-    }
+    };
 
     return d3.rebind(errorlog, dispatch, 'on');
-}
+};

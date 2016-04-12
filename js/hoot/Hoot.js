@@ -53,7 +53,7 @@ Hoot.hoot = function (context) {
                     if (callback) {
                         callback();
                     }
-                })
+                });
             });
             /*if (callback) {
                 callback();
@@ -114,7 +114,7 @@ Hoot.hoot = function (context) {
 
         });
 
-    }
+    };
 
     /**
     * @desc Returns availabe symbology palette
@@ -345,7 +345,7 @@ Hoot.hoot = function (context) {
       {
         throw 'Assertion failed';
       }
-    }
+    };
 
     hoot.containsObj = function(obj, arr)
     {
@@ -357,7 +357,7 @@ Hoot.hoot = function (context) {
         }
       }
       return false;
-    }
+    };
 
     /**
     * @desc Returns browser information.
@@ -379,7 +379,7 @@ Hoot.hoot = function (context) {
                             browserInfo.version = subParts[1];
                          }
                      }
-                 })
+                 });
         }
 
         return browserInfo;

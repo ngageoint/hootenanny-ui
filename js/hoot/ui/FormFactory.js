@@ -24,7 +24,7 @@ Hoot.ui.formfactory = function (context)
             formInstance = eval('context.hoot().ui.' + formTypeName);
         }
         return formInstance.createForm(containerId, formMetaData);
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

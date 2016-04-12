@@ -67,4 +67,4 @@ Hoot.control.conflate.symbology = function (parent, sidebar) {
 
     };
     return d3.rebind(_instance, _events, 'on');
-}
+};

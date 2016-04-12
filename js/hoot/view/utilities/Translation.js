@@ -48,7 +48,7 @@ Hoot.view.utilities.translation = function(context) {
                             return d.NAME + ': ' + d.DESCRIPTION;
                         }
                         return d.NAME + ': ' + d.DESCRIPTION;
-                    })
+                    });
 
 
 
@@ -95,7 +95,7 @@ Hoot.view.utilities.translation = function(context) {
                 .select(function (sel) {
                     if(sel.DEFAULT === true){
 
-                        d3.select(this).classed('keyline-left keyline-right fr _icon quiet trash pad2 col1', true)
+                        d3.select(this).classed('keyline-left keyline-right fr _icon quiet trash pad2 col1', true);
                         d3.select(this).on('click', function (n) {
                             d3.event.stopPropagation();
                             d3.event.preventDefault();
@@ -103,7 +103,7 @@ Hoot.view.utilities.translation = function(context) {
                         });
                     }
                     else {
-                        d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
+                        d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1', true);
                     }
 
                 });
@@ -124,4 +124,4 @@ Hoot.view.utilities.translation = function(context) {
 
 
     return hoot_view_utilities_translation;
-}
+};

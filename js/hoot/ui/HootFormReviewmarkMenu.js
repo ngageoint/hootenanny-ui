@@ -23,7 +23,7 @@ Hoot.ui.hootformreviewmarkmenu = function ()
         var container;
         try{
 
-            _currentContainerId = containerId
+            _currentContainerId = containerId;
             var formTitle = formMetaData['title'];
            
             if(!formTitle){
@@ -31,8 +31,8 @@ Hoot.ui.hootformreviewmarkmenu = function ()
             }
 
             container = _createContainer(containerId);
-            var formDiv = _createFormDiv(container, containerId)
-            var form =  _createForm(container, formDiv, formTitle)
+            var formDiv = _createFormDiv(container, containerId);
+            var form =  _createForm(container, formDiv, formTitle);
             var fieldset = _createFieldSet(form, formMetaData);
 
 
@@ -41,7 +41,7 @@ Hoot.ui.hootformreviewmarkmenu = function ()
         }
     
         return container;
-    }
+    };
 
    
     /**
@@ -58,7 +58,7 @@ Hoot.ui.hootformreviewmarkmenu = function ()
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
                 });
-    }
+    };
 
 
     /**
@@ -76,7 +76,7 @@ Hoot.ui.hootformreviewmarkmenu = function ()
                 .classed('contain col3 row8 hoot-menu fill-white keyline-all round modal', true)
                 .style('top', (top + height) + 'px')
                 .style('left', (left + width) + 'px');
-    }
+    };
 
     /**
     * @desc Create form shell
@@ -104,7 +104,7 @@ Hoot.ui.hootformreviewmarkmenu = function ()
                     container.remove();
                 });
         return form;
-    }
+    };
 
     /**
     * @desc Create form fields. Currently handles textarea, combo and text field
@@ -130,8 +130,8 @@ Hoot.ui.hootformreviewmarkmenu = function ()
             .on('click', function(d){
                 d.action(d);
             });       
-    }
+    };
 
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

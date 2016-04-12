@@ -183,7 +183,7 @@ iD.util.changeComboValue = function(elem,value) {
         d3.select(elem).trigger('change');
         return;
     }
-}
+};
 
 var currentTranslation = 'OSM';
 iD.util.setCurrentTranslation = function(trans){

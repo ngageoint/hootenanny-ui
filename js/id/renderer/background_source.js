@@ -22,7 +22,7 @@ iD.BackgroundSource = function(data) {
 
     source.extent = function() {
         return extent;
-    }
+    };
 
     source.name = function() {
         return name;

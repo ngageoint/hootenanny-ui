@@ -33,15 +33,15 @@ Hoot.control.utilities.filter = function(context) {
                     reqParam.output = output;
 
                     Hoot.model.REST('createFilteredMap', reqParam, function (resp) {
-                        if(resp.status != 'complete') {
+                        if(resp.status !== 'complete') {
                             iD.ui.Alert('Failed to create filtered layer. See log for detail.','warning',new Error().stack);
                         } else {
                             // refresh both folder and layer list
                             context.hoot().model.layers.refresh(function(){
                                 context.hoot().model.folders.refreshLinks(function(){
                                     context.hoot().model.import.updateTrees();
-                                })
-                            })
+                                });
+                            });
                         }
                         formContainer.remove();
 
@@ -65,4 +65,4 @@ Hoot.control.utilities.filter = function(context) {
 
 
     return hoot_control_utilities_filter;
-}
+};

@@ -10,6 +10,6 @@ iD.ui.plugins = function() {
             }
         }
         return current_plugin;
-    }
+    };
     return plugins;
-}
+};

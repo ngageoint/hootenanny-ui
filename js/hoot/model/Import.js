@@ -28,7 +28,7 @@ Hoot.model.import = function (context)
                 }
             }
         });
-    }
+    };
 
     import_layer.importData = function (container, schemaElemId, typeElemId,
         newfolderElemId, layerNameElemId, FgdbFeatureClassElemId, callback) {
@@ -65,7 +65,7 @@ Hoot.model.import = function (context)
             }
         }
 
-        if(isDefTrans === false && transName != null && transName != ''){
+        if(isDefTrans === false && transName != null && transName !== ''){
             transcriptName = 'customscript/' + transName + '.js';
         }
 
@@ -86,9 +86,9 @@ Hoot.model.import = function (context)
             // Check new folder name
             try{
                 var newfoldername = container.select(newfolderElemId).value();
-                if(newfoldername !=''){
+                if(newfoldername !==''){
                     var resp = context.hoot().checkForUnallowedChar(newfoldername);
-                    if(resp != true){
+                    if(resp !== true){
                         iD.ui.Alert(resp,'warning',new Error().stack);
                         return;
                     }
@@ -120,7 +120,7 @@ Hoot.model.import = function (context)
         var fileUploader;
         if(container.attr('id') === null){
             data.formData = import_layer.getFormData(document.getElementById('ingestfileuploader').files);
-        } else if(container.attr('id').substring(0,3)=='row'){
+        } else if(container.attr('id').substring(0,3)==='row'){
             data.formData = import_layer.getFormData(document.getElementById('ingestfileuploader'+container.attr('id').substring(3)).files);
         }
 
@@ -213,7 +213,7 @@ Hoot.model.import = function (context)
                 }
             );
         };
-    }
+    };
 
     var _uploadHandler = function (uploadJobStat)
     {
@@ -230,13 +230,13 @@ Hoot.model.import = function (context)
             }
             importCallback(status);
             }
-    }
+    };
 
     var _initVariables = function()
     {
         importCallback = null;
         jobIdsArr = null;
         mapIdsArr = null;
-    }
+    };
     return import_layer;
 };

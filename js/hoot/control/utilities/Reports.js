@@ -84,4 +84,4 @@ Hoot.control.utilities.reports = function(context) {
 
 
     return hoot_control_utilities_reports;
-}
+};

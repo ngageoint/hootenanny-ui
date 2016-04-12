@@ -48,7 +48,7 @@ Hoot.ui.hootformreviewnote = function (context)
         }
 
         return form;
-    }
+    };
 
 
     /**
@@ -61,7 +61,7 @@ Hoot.ui.hootformreviewnote = function (context)
                 .classed('pad1y col12', true);
         return bufferForDiv.append('div')
                 .classed('fill-white round keyline-all col12', true);
-    }
+    };
 
     /**
     * @desc Create form shell
@@ -141,7 +141,7 @@ Hoot.ui.hootformreviewnote = function (context)
 
 
         return form;
-    }
+    };
 
     /**
     * @desc Create user form when avatar icon is clicked
@@ -177,7 +177,7 @@ Hoot.ui.hootformreviewnote = function (context)
 
         _currentUserForm = context.hoot().ui.formfactory.create('body', meta);
 
-    }
+    };
 
     /**
     * @desc Saves get/saved user to be reused during current session. It also refreshes global users lit.
@@ -215,7 +215,7 @@ Hoot.ui.hootformreviewnote = function (context)
             });
         }
 
-    }
+    };
 
     /**
     * @desc Create textarea for note.
@@ -272,7 +272,7 @@ Hoot.ui.hootformreviewnote = function (context)
 
 
         return fieldset;
-    }
+    };
 
     /**
     * @desc Create form buttons
@@ -303,8 +303,8 @@ Hoot.ui.hootformreviewnote = function (context)
             });
         }
 
-    }
+    };
 
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

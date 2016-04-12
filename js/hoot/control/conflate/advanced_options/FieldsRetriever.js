@@ -52,7 +52,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                     _.each(defaultVals,function(confGroup){
                         var defaultKeys = _.pluck(confGroup.members,'id');
 
-                        var retval = groupKeys.filter(function(n){return defaultKeys.indexOf(n.id) != -1;});
+                        var retval = groupKeys.filter(function(n){return defaultKeys.indexOf(n.id) !== -1;});
                         _.each(retval,function(replaceMember){
                             var currentMember = _.find(this.members,{id:replaceMember.id});
                             if (currentMember){
@@ -66,10 +66,10 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
 
 
                         //look for checkpluses.  if member is in groupKeys, set default value and make sure checkplus is checked
-                        var checkpluses = confGroup.members.filter(function(f){return f.elem_type=='checkplus';});
+                        var checkpluses = confGroup.members.filter(function(f){return f.elem_type==='checkplus';});
                         _.each(checkpluses,function(cp){
                             defaultKeys = _.pluck(cp.members,'id');
-                            retval = groupKeys.filter(function(n){return defaultKeys.indexOf(n.id) != -1;});
+                            retval = groupKeys.filter(function(n){return defaultKeys.indexOf(n.id) !== -1;});
                             _.each(retval,function(replaceMember){
                                 var foundItem = _.find(this.members,{id:replaceMember.id});
                                 foundItem.defaultvalue = replaceMember.defaultvalue;
@@ -80,11 +80,11 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                         });
 
                         //look for lists with submembers
-                        var multilists = confGroup.members.filter(function(f){return f.elem_type=='list';});
+                        var multilists = confGroup.members.filter(function(f){return f.elem_type==='list';});
                         _.each(multilists,function(ml){
                             _.each(ml.members,function(sublist){
                                 defaultKeys = _.pluck(sublist.members,'id');
-                                retval = groupKeys.filter(function(n){return defaultKeys.indexOf(n.id) != -1;});
+                                retval = groupKeys.filter(function(n){return defaultKeys.indexOf(n.id) !== -1;});
                                 _.each(retval,function(replaceMember){
                                     var foundItem = _.find(this.members,{id:replaceMember.id});
                                     foundItem.defaultvalue = replaceMember.defaultvalue;
@@ -97,7 +97,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                     },overrideGroup);
 
                     //add new group with values that are not duplicated
-                    var newMembers = overrideGroup.members.filter(function(n){return _.pluck(groupKeys,'hoot_key').indexOf(n.hoot_key) != -1;});
+                    var newMembers = overrideGroup.members.filter(function(n){return _.pluck(groupKeys,'hoot_key').indexOf(n.hoot_key) !== -1;});
                     var newGroup = JSON.parse(JSON.stringify(overrideGroup));
                     newGroup.members = newMembers;
                     defaultVals.push(newGroup);
@@ -117,14 +117,14 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
         _.each(fieldsMetaData,function(field){
             // test to determine if enabled/disabled first
             var groupEnabled = true;
-            if (field.members[0].name=='Enabled' && field.members[0].elem_type=='checkbox'){
+            if (field.members[0].name==='Enabled' && field.members[0].elem_type==='checkbox'){
                 groupEnabled = d3.select('#'+field.members[0].id).property('checked');
             }
 
             _.each(field.members,function(subfield){
                 var setVal=null;
 
-                if(subfield.elem_type=='checkbox'||subfield.elem_type=='checkplus'){
+                if(subfield.elem_type==='checkbox'||subfield.elem_type==='checkplus'){
                     setVal = d3.select('#'+subfield.id).property('checked');
                 } else {
                     setVal = d3.select('#'+subfield.id).value();
@@ -159,7 +159,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                     });
                     _.each(arrSubfields,function(submember){
                         var setVal=null;
-                        if(submember.elem_type=='checkbox'||submember.elem_type=='checkplus'){
+                        if(submember.elem_type==='checkbox'||submember.elem_type==='checkplus'){
                             setVal = d3.select('#'+submember.id).property('checked');
                         } else if(submember.elem_type) {
                             setVal = d3.select('#'+submember.id).value();
@@ -197,6 +197,6 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
         });
 
         return fieldsJSON;
-    }
+    };
     return d3.rebind(_instance, _events, 'on');
-}
+};

@@ -22,7 +22,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     **/
     _instance.getUser = function() {
       return _currentUser;
-    }
+    };
 
     /**
     * @desc Setter for current user being used.
@@ -30,7 +30,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     **/
     _instance.setUser = function(usr) {
        _currentUser = usr;
-    }
+    };
 
     /**
     * @desc Getter for reviewable item to be used for loading reviewable item
@@ -41,7 +41,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     **/
     _instance.getForcedReviewableItem = function() {
         return _forcedReviewableItem;
-    }
+    };
 
     /**
     * @desc Setter for reviewable item to be used for loading reviewable item
@@ -52,21 +52,21 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     **/
     _instance.setForcedReviewableItem = function(itm) {
         _forcedReviewableItem = itm;
-    }
+    };
 
     /**
     * @desc Removes itself
     **/
     _instance.removeNotes = function() {
       _removeSelf();
-    }
+    };
 
     /**
     * @desc Resets view to the bookmarks list view.
     **/
     _instance.resetToList = function() {
       _resetToList();
-    }
+    };
 
     /**
     * @desc Creates container for note forms.
@@ -108,7 +108,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       });
 
 
-    }
+    };
 
     /**
     * @desc Sets current book mark id.
@@ -116,7 +116,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     **/
     _instance.setCurrentBookmarkId = function(bmkId) {
       _bookmarkId = bmkId;
-    }
+    };
 
 
     /**
@@ -193,7 +193,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
 
 
 
-    }
+    };
 
 
     /**
@@ -235,7 +235,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
             _resetToList();
 
         });
-    }
+    };
 
 
     /**
@@ -246,7 +246,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
           .append('div')
           .attr('id','reviewbookmarknotesdiv')
               .classed('col6 fill-white', true);
-    }
+    };
 
     /**
     * @desc appends existing notes.
@@ -293,7 +293,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
         _currentNotes[nt.id] = hootformreviewnote;
 
       }
-    }
+    };
 
     /**
     * @desc Handler for Modify button click.
@@ -324,7 +324,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       Hoot.model.REST('saveReviewBookmark', reqParam, function (resp) {
         _refresh();
       });
-    }
+    };
 
     /**
     * @desc Adds empty new note.
@@ -383,20 +383,20 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       var hootformreviewnote = Hoot.ui.hootformreviewnote(context);
       hootformreviewnote.createForm('reviewbookmarknotesdiv', meta);
       _currentNotes['new'] = hootformreviewnote;
-    }
+    };
 
     /**
     * @desc refresh notes form.
     **/
     var _refresh = function() {
       _instance.createContent(d3.select('#containerFormutilReviewBookmarkNotes'));
-    }
+    };
 
     var _removeSelf = function() {
       if(!d3.select('#reviewbookmarknotesbody').empty()){
         d3.select('#reviewbookmarknotesbody').remove();
       }
-    }
+    };
 
     var _resetToList = function() {
       // reset to list
@@ -408,7 +408,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
           .appendChild(thisbody);
       d3.selectAll('.utilHootHead').style('font-weight','normal');
       d3.select('#utilHootHeadDivutilReviewBookmarks').style('font-weight','bold');
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

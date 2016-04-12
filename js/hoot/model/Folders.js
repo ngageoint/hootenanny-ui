@@ -79,16 +79,16 @@ Hoot.model.folders = function (context)
         callbackData.folderName = data.folderName;
 
         Hoot.model.REST('addFolder',data,function(a){
-            if(a.success==true){
+            if(a.success===true){
                 callbackData.folderId = a.folderId;
                 model_folders.refresh(function(b){
                     if(callback){callback(callbackData.folderId);}
-                })
+                });
             } else {
                 if(callback){callback(data.parentId);}
             }
             });
-    }
+    };
 
     model_folders.updateLink = function(link,callback) {
         Hoot.model.REST('updateMapFolderLinks',link,function(a){
@@ -98,7 +98,7 @@ Hoot.model.folders = function (context)
                 if(callback){callback();}
             });
         });
-    }
+    };
 
     model_folders.refreshLinks = function(callback) {
         Hoot.model.REST('getAvailLinks', function (a) {
@@ -118,11 +118,11 @@ Hoot.model.folders = function (context)
                 if(callback){callback(availLinks);}
             }
         });
-    }
+    };
 
     model_folders.getAvailLinks = function() {
         return availLinks;
-    }
+    };
 
     model_folders.getAvailFolders = function () {
         return availFolders;
@@ -148,7 +148,7 @@ Hoot.model.folders = function (context)
             }
         }
         return openFolders;
-    }
+    };
 
     model_folders.duplicateFolderCheck = function(folder){
         // Make sure that a folder at same level does not exist with same name
@@ -160,7 +160,7 @@ Hoot.model.folders = function (context)
         if(!_.isEmpty(_.find(folderList,{name:folder.name.toLowerCase(),parentId:folder.parentId}))){
             return 'Please use a different name, as you are about to create a folder with a name identical to a folder at the same level.';
         } else {return true;}
-    }
+    };
 
     model_folders.unflattenFolders = function(array,parent,tree) {
         tree = typeof tree !== 'undefined' ? tree : [];
@@ -173,7 +173,7 @@ Hoot.model.folders = function (context)
             if( parent.id === 0 ){
                 tree = children;
             }else{
-                if(parent.state=='closed'){
+                if(parent.state==='closed'){
                     if(!parent['_children']){parent['_children']=[];}
                     _.each(children,function(child){parent['_children'].push(child);});
 
@@ -183,16 +183,16 @@ Hoot.model.folders = function (context)
 
                 }            }
             _.each( children, function( child ){
-                model_folders.unflattenFolders( array, child ) } );
+                model_folders.unflattenFolders( array, child ); } );
         }
 
-        if(parent['type']==undefined){parent['type']='folder'};
+        if(parent['type']===undefined){parent['type']='folder';}
         return tree;
     };
 
     model_folders.listFolders = function(array) {
         _.each(array,function(f){
-            if(f.parentId==0){
+            if(f.parentId===0){
                 f.folderPath = f.name;
             } else {
                 //use links to get parent folder as far back as possible
@@ -203,10 +203,10 @@ Hoot.model.folders = function (context)
                     i++;
                     strPath = parentFolder.name+'/'+strPath;
                     parentFolder = _.find(hoot.model.folders.getAvailFolders(),{id:parentFolder.parentId});
-                } while (parentFolder || i==10)
+                } while (parentFolder || i===10);
                 f.folderPath = strPath;
             }
-        })
+        });
     };
 
     model_folders.getAvailFoldersWithLayers = function(){
@@ -214,7 +214,7 @@ Hoot.model.folders = function (context)
 
         var layerList = _.each(_.map(context.hoot().model.layers.getAvailLayers(), _.clone) , function(element, index) {
             _.extend(element, {type:'dataset'});
-            var match = _.find(this,function(e){return e.mapId===element.id});
+            var match = _.find(this,function(e){return e.mapId===element.id;});
             if(match){_.extend(element,{folderId:match.folderId});}
             else{_.extend(element,{folderId:0});}
         },links);
@@ -223,11 +223,11 @@ Hoot.model.folders = function (context)
 
         _.each(folderList,function(fldr){
             if(openFolders.indexOf(fldr.id)>-1){
-                fldr.children = _.filter(layerList,function(lyr){return lyr.folderId==fldr.id});
+                fldr.children = _.filter(layerList,function(lyr){return lyr.folderId===fldr.id;});
                 fldr.state='open';
             } else {
-                fldr._children = _.filter(layerList,function(lyr){return lyr.folderId==fldr.id});
-                if(fldr._children.length==0){fldr._children=null;}
+                fldr._children = _.filter(layerList,function(lyr){return lyr.folderId===fldr.id;});
+                if(fldr._children.length===0){fldr._children=null;}
                 fldr.state='closed';
             }
             _.extend(fldr,{type:'folder'});
@@ -236,10 +236,10 @@ Hoot.model.folders = function (context)
         //unflatten
         //Updated to avoid root datasets being mistaken for folders
         folderList = model_folders.unflattenFolders(folderList);
-        folderList = _.union(folderList,_.each(_.filter(layerList,function(lyr){return lyr.folderId==0}),function(lyr){_.extend(lyr,{parentId:0})}));
+        folderList = _.union(folderList,_.each(_.filter(layerList,function(lyr){return lyr.folderId===0;}),function(lyr){_.extend(lyr,{parentId:0});}));
         //return model_folders.unflattenFolders(folderList);
         return folderList;
     };
 
     return model_folders;
-}
+};

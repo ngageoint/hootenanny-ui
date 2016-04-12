@@ -770,6 +770,6 @@ iD.Map = function(context) {
                 d3.selectAll('.' + d).classed('edited unsaved', true);
             });
         }
-    }
+    };
     return d3.rebind(map, dispatch, 'on');
 };

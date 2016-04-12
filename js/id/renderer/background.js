@@ -68,7 +68,7 @@ iD.Background = function(context) {
 
     // Allows us to define 'digitalglobe' as the defaultBaseMap
     function getDefaultBaseMap() {
-      var dgre = /digitalglobe/i
+      var dgre = /digitalglobe/i;
       if (dgre.test(iD.data.hootConfig.defaultBaseMap)) {
           var dg = iD.dgservices();
           return iD.BackgroundSource(dg.backgroundSource(undefined, undefined, undefined));
@@ -423,7 +423,7 @@ iD.Background = function(context) {
     background.updateMeasureLayer = function(d) {
         measureLayer.geojson(d);
         dispatch.change();
-    }
+    };
 
     background.nudge = function(d, zoom) {
         baseLayer.source().nudge(d, zoom);

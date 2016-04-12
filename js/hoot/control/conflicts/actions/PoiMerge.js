@@ -122,7 +122,7 @@ Hoot.control.conflicts.actions.poimerge = function (context)
             }
 
         }
-    }
+    };
 
     /**
     * @desc Helper function for error handling. Logs error cleans out screen lock and alerts user optionally
@@ -135,12 +135,12 @@ Hoot.control.conflicts.actions.poimerge = function (context)
         if(doAlertUser === true) {
             iD.ui.Alert(err,'error',new Error().stack);
         }
-    }
+    };
 
     var _parent = function() {
         return context.hoot().control.conflicts;
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
 
-}
+};

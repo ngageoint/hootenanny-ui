@@ -16,7 +16,7 @@ Hoot.view.utilities.reports = function(context) {
         hoot_view_utilities_reports.datasetcontainer = form.append('div')
             .classed('col12 fill-white small  row10 overflow keyline-all', true)
             .call(hoot_view_utilities_reports.populateReports);
-    }
+    };
     hoot_view_utilities_reports.populateReports = function(container) {
             if(!container){
                 container = hoot_view_utilities_reports.datasetcontainer;
@@ -40,7 +40,7 @@ Hoot.view.utilities.reports = function(context) {
                             return d.name + ': ' + d.description;
                         }
                         return d.name + ': ' + d.description;
-                    })
+                    });
 
 
 
@@ -83,7 +83,7 @@ Hoot.view.utilities.reports = function(context) {
 
                 })
                 .select(function (sel) {
-                    d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
+                    d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1', true);
 
                 });
 
@@ -103,4 +103,4 @@ Hoot.view.utilities.reports = function(context) {
 
 
     return hoot_view_utilities_reports;
-}
+};

@@ -57,4 +57,4 @@ Hoot.model.conflate = function(context)
 
 
     return model_conflate;
-}
+};

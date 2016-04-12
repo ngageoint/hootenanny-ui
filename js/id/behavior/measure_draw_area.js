@@ -197,10 +197,10 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
                 .attr('y', c[1]+rectMargin);
             lengthLabel.attr('x', c[0]+10)
                 .attr('y', c[1])
-                .text(function(d) { return displayLength(currentDist)});
+                .text(function(d) { return displayLength(currentDist);});
             areaLabel.attr('x', c[0]+10)
                 .attr('y', c[1]+25)
-                .text(function(d){return displayArea(getArea())});
+                .text(function(d){return displayArea(getArea());});
 
             /*rect.attr('x', c[0]+10)
                 .attr('y', c[1]-(label.dimensions()[1]/2))
@@ -251,10 +251,10 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
                 .style('font-size','18px');
             lengthLabel.attr('x', c[0]+10)
                 .attr('y', c[1])
-                .text(function(d) { return displayLength(totDist+lastSegmentDist)});
+                .text(function(d) { return displayLength(totDist+lastSegmentDist);});
             areaLabel.attr('x', c[0]+10)
                 .attr('y', c[1]+25)
-                .text(function(d){return displayArea(getArea())});
+                .text(function(d){return displayArea(getArea());});
 
             //rect = g.insert('rect',':first-child')
               /*rect.attr('x', c[0])

@@ -52,4 +52,4 @@ Hoot.model.basemapdataset = function(context)
 
 
     return model_basemapdataset;
-}
+};

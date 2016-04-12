@@ -1,6 +1,6 @@
 iD.ui.Processing = function(context,status,txt) {
     return function(selection) {
-        if(!txt){txt='Processing...'}
+        if(!txt){txt='Processing...';}
 
         if(status){
             var modalbg = selection.append('div')

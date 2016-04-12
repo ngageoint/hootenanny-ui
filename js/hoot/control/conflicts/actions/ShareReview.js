@@ -14,18 +14,18 @@ Hoot.control.conflicts.actions.sharereview = function (context)
     var _events = d3.dispatch();
     var _instance = {};
     var _currentForm;
-    var _userInfo = {'id':-1, 'displayName':'anonymous', 'email':''}
+    var _userInfo = {'id':-1, 'displayName':'anonymous', 'email':''};
 
     /**
     * @desc Public entry point for creating bookmark dialog
     **/
     _instance.publish = function(){
         _instance.createDialog();
-    }
+    };
 
     _instance.setUserInfo = function(usr){
         _userInfo = usr;
-    }
+    };
     /**
     * @desc Creat bookmark dialog
     **/
@@ -80,7 +80,7 @@ Hoot.control.conflicts.actions.sharereview = function (context)
         meta.button = d_btn;
 
         _currentForm = context.hoot().ui.formfactory.create('body', meta);
-    }
+    };
 
     /**
     * @desc Saves bookmark to backend
@@ -102,7 +102,7 @@ Hoot.control.conflicts.actions.sharereview = function (context)
             alert('Invalid inputs!');
         }
 
-    }
+    };
 
     /**
     * @desc Validates request parameters and if all valid saves.
@@ -128,7 +128,7 @@ Hoot.control.conflicts.actions.sharereview = function (context)
             if(!creatorEmail || creatorEmail.length === 0) {
                 var r = confirm('If you continue this bookmark will be published by as anonymous user. '+
                   'Do you want to continue?');
-                if (r != true) {
+                if (r !== true) {
                   return isValid;
                 }
                 _createReqParams(title, desc, note, reqParam);
@@ -164,7 +164,7 @@ Hoot.control.conflicts.actions.sharereview = function (context)
 
         }
         return isValid;
-    }
+    };
 
     /**
     * @desc Helper function to creat request parameter object.
@@ -197,7 +197,7 @@ Hoot.control.conflicts.actions.sharereview = function (context)
         reqParam['mapId'] = currentReviewable.mapId;
         reqParam['relationId'] = currentReviewable.relationId;
         reqParam['userId'] = _userInfo.id;
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

@@ -89,14 +89,14 @@ Hoot.model.layers = function (context)
 
         if(recentlyUsedLayers.length>5){recentlyUsedLayers.splice(0,1);}
         recentlyUsedLayers.push(lyr);
-    }
+    };
 
     model_layers.setLayerLinks = function(callback) {
         var links = context.hoot().model.folders.getAvailLinks();
 
         var layerList = _.each(_.map(model_layers.getAvailLayers(), _.clone) , function(element, index) {
             _.extend(element, {type:'dataset'});
-            var match = _.find(this,function(e){return e.mapId===element.id});
+            var match = _.find(this,function(e){return e.mapId===element.id;});
             if(match){_.extend(element,{folderId:match.folderId});}
             else{_.extend(element,{folderId:0});}
         },links);
@@ -106,7 +106,7 @@ Hoot.model.layers = function (context)
         if (callback){
             callback(availLayers);
         }
-    }
+    };
 
     model_layers.getLayers = function (opt) {
         if (opt) return layers[opt];
@@ -183,7 +183,7 @@ Hoot.model.layers = function (context)
                     .insertBefore(feature, prev);
 
                 var hootLyrs = d3.selectAll('.hootLayers');
-                if(hootLyrs[0][0] != undefined){
+                if(hootLyrs[0][0] !== undefined){
                     var lyr = model_layers.getmapIdByName(d3.select(hootLyrs[0][0]).text());
                     context.connection().lastLoadedLayer(lyr.toString());
                     context.flush();
@@ -224,7 +224,7 @@ Hoot.model.layers = function (context)
         model_layers.addLayer2Sidebar(key);
 
         if (callback) callback();
-    }
+    };
 
     model_layers.addLayer = function (key, callback) {
         // this isLayerLoading tracks on till key is added to layers object.
@@ -393,7 +393,7 @@ Hoot.model.layers = function (context)
    model_layers.isLayerLoading = function()
    {
         return isLayerLoading;
-   }
+   };
 
 
    model_layers.getMergedLayer = function () {
@@ -425,4 +425,4 @@ Hoot.model.layers = function (context)
 
 
     return model_layers;
-}
+};

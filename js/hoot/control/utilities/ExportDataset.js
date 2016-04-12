@@ -85,12 +85,12 @@ Hoot.control.utilities.exportdataset = function(context) {
                     ];
 
         var meta = {};
-        meta.title = (dataset.name || 'Export Dataset')
+        meta.title = (dataset.name || 'Export Dataset');
         meta.form = d_form;
         meta.button = d_btn;
 
         _container = context.hoot().ui.formfactory.create('body', meta);
-    }
+    };
 
     /**
     * @desc Export request click handler,
@@ -114,7 +114,7 @@ Hoot.control.utilities.exportdataset = function(context) {
                 _container.remove();
             }
         });
-    }
+    };
 
     /**
     * @desc Output name validation helper function.
@@ -122,12 +122,12 @@ Hoot.control.utilities.exportdataset = function(context) {
     var _validateOutputName = function() {
         //ensure output name is valid
         var resp = context.hoot().checkForUnallowedChar(this.value);
-        if(resp != true){
+        if(resp !== true){
             d3.select(this).classed('invalidName',true).attr('title',resp);
         } else {
             d3.select(this).classed('invalidName',false).attr('title',null);
         }
-    }
+    };
 
     /**
     * @desc Helper function to retrieve place holder text
@@ -136,11 +136,11 @@ Hoot.control.utilities.exportdataset = function(context) {
     var _getTranslationComboPlaceHolder = function(field) {
         var defTrans = _.find(field.combobox.data, {DESCRIPTION: field.placeholder['default']});
         if(defTrans === undefined){
-            return field.combobox.data[0].DESCRIPTION
+            return field.combobox.data[0].DESCRIPTION;
         } else {
             return defTrans.DESCRIPTION;
         }
-    }
+    };
 
     /**
     * @desc Populate available translations.
@@ -162,7 +162,7 @@ Hoot.control.utilities.exportdataset = function(context) {
             .on('change',function(){
                 _checkForTemplate();
             });
-    }
+    };
 
     /**
     * @desc Toggler for Append to ESRI FGDB Template checkbox.
@@ -174,16 +174,16 @@ Hoot.control.utilities.exportdataset = function(context) {
         var transType = d3.select('#fileExportTranslation').value();
 
         // Check if output type is File Geodatabase
-        if (exportType==''){exportType=d3.select('#fileExportFileType').attr('placeholder');}
-        if (transType==''){transType=d3.select('#fileExportTranslation').attr('placeholder');}
+        if (exportType===''){exportType=d3.select('#fileExportFileType').attr('placeholder');}
+        if (transType===''){transType=d3.select('#fileExportTranslation').attr('placeholder');}
 
-        if(exportType!='File Geodatabase'){
+        if(exportType!=='File Geodatabase'){
          hidden=true;
         }
 
         var selTrans = _.find(_transCombo,{'DESCRIPTION':transType});
         if(selTrans){
-         if(selTrans.NAME.substring(0,3)!='TDS'){
+         if(selTrans.NAME.substring(0,3)!=='TDS'){
              hidden=true;
          }
         } else {
@@ -194,10 +194,10 @@ Hoot.control.utilities.exportdataset = function(context) {
         if(hidden){
          d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
         }
-    }
+    };
 
 
 
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

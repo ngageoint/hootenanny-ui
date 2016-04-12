@@ -64,10 +64,10 @@ Hoot.control.conflate.advancedoptions.selectiondisplay = function () {
             // cells
             var td = tr.selectAll('td')
               .data(function(d){
-                  return [d.key,d.value,d.group]})
+                  return [d.key,d.value,d.group];})
               .enter().append('td')
               .text(function(d) {
-                  return d})
+                  return d;})
               .style('word-break','break-all');
 
             return d3.rebind(ingestDiv, advancedValuesEvents, 'on');
@@ -75,6 +75,6 @@ Hoot.control.conflate.advancedoptions.selectiondisplay = function () {
             console.log(err);
             return null;
         }
-    }
+    };
     return d3.rebind(_instance, _events, 'on');
-}
+};

@@ -62,7 +62,7 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
         meta.button = d_btn;
 
         _container = context.hoot().ui.formfactory.create('body', meta);
-    }
+    };
 
     /**
     * @desc Populates folders list.
@@ -80,7 +80,7 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
         comboPathName.data().sort(function(a,b){
               var textA = a.value.toUpperCase();
               var textB=b.value.toUpperCase();
-              return(textA<textB)?-1 : (textA>textB)?1:0;
+              return (textA<textB)?-1 : (textA>textB)?1:0;
           });
 
         comboPathName.data().unshift({value:'root',title:0});
@@ -90,7 +90,7 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
             .call(comboPathName);
 
         d3.select(this).attr('readonly',true);
-    }
+    };
 
 
     /**
@@ -100,20 +100,20 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
         //TODO: ADD WARNING MESSAGE, REQUIRE CONFIRMATION
 
         var pathname = _container.select('#bulkModifyPathname').value();
-        if(pathname==''){pathname=_container.select('#bulkModifyPathname').attr('placeholder');}
-        if(pathname=='root'){pathname='';}
+        if(pathname===''){pathname=_container.select('#bulkModifyPathname').attr('placeholder');}
+        if(pathname==='root'){pathname='';}
         var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
 
         //Add folder if necessary
         var newfoldername = _container.select('#bulkModifyNewfoldername').value();
             resp = context.hoot().checkForUnallowedChar(newfoldername);
-        if(resp != true){
+        if(resp !== true){
             iD.ui.Alert(resp,'warning',new Error().stack);
              return;
         }
 
         resp = hoot.model.folders.duplicateFolderCheck({name:newfoldername,parentId:pathId});
-        if(resp != true){
+        if(resp !== true){
             iD.ui.Alert(resp,'warning',new Error().stack);
             return;
         }
@@ -143,8 +143,8 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
 
              });
          });
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
 
-}
+};

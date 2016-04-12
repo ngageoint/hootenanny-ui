@@ -46,7 +46,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                             if(submeta.members){
                                 subfield.combobox = submeta.members;
                                 _.each(submeta.members,function(d){
-                                   if (d.isDefault=='true'){subfield.placeholder=d.name;}
+                                   if (d.isDefault==='true'){subfield.placeholder=d.name;}
                                 });
                             } else {
                                 subfield.combobox = [{'value':'true'}, {'value':'false'}];
@@ -160,4 +160,4 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
 
     return d3.rebind(_instance, _events, 'on');
 
-}
+};

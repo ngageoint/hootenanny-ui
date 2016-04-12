@@ -102,7 +102,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         if(!self.empty()) {
             self.remove();
         }
-    }
+    };
 
     /**
     * @desc Creates menu button.
@@ -139,7 +139,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         dd.append('span')
         .classed('_icon down quiet', true);
 
-    }
+    };
 
     /**
     * @desc Sorts list .
@@ -154,7 +154,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         _lastSortRequest['offset'] = 0;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
         _globalSortClickHandler();
-    }
+    };
 
     /**
     * @desc Sort menu popup.
@@ -187,7 +187,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         _createMenu(form, 'reviewBookmarksSortDiv', 'Sort', meta, menuContainer, function(divName, m){
             context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
         });
-    }
+    };
 
     /**
     * @desc Helper function for handling closing filter menu when user clicks outside of menu.
@@ -198,7 +198,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         if(!self.empty()) {
             self.remove();
         }
-    }
+    };
 
     /**
     * @desc Filter list .
@@ -211,7 +211,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         _lastSortRequest['filterbyval'] = d.id;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
         _globalFilterByCreatorClickHandler();
-    }
+    };
 
     /**
     * @desc Filter menu popup.
@@ -235,7 +235,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             m.data = d;
             context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
         });
-    }
+    };
 
 
 
@@ -250,7 +250,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         newobj.name = 'anonymous';
         newobj.id = -1;
         newobj.displayName = 'anonymous';
-        newobj.action = function(d){_filterData(d);}
+        newobj.action = function(d){_filterData(d);};
         data.push(newobj);
 
         for(var i=0; i<usersList.length; i++) {
@@ -260,12 +260,12 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             newobj.name = usr.email;
             newobj.id = usr.id;
             newobj.displayName = usr.displayName;
-            newobj.action = function(d){_filterData(d);}
+            newobj.action = function(d){_filterData(d);};
             data.push(newobj);
         }
 
         return data;
-    }
+    };
 
 
     /**
@@ -277,7 +277,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         if(!self.empty()) {
             self.remove();
         }
-    }
+    };
 
     /**
     * @desc Filter list .
@@ -290,7 +290,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         _lastSortRequest['filterbyval'] = d.id;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
         _globalFilterByMapIdClickHandler();
-    }
+    };
 
     /**
     * @desc Filter menu popup.
@@ -314,7 +314,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             m.data = d;
             context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
         });
-    }
+    };
 
 
 
@@ -329,13 +329,13 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             var newobj = {};
             newobj.name = lyr.name;
             newobj.id = lyr.id;
-            newobj.action = function(d){_filterByMapIdData(d);}
+            newobj.action = function(d){_filterByMapIdData(d);};
             data.push(newobj);
         }
 
         return data;
 
-    }
+    };
 
 
     /**
@@ -345,7 +345,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
         _currentPage = (1*d3.select(this).text());
         _populateCurrentPage();
-    }
+    };
 
     /**
     * @desc Populates selected page.
@@ -354,7 +354,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         var offset = (_currentPage-1) * _DEFAULT_PAGE_COUNT;
         _lastSortRequest['offset'] = offset;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
-    }
+    };
 
     /**
     * @desc Populates bookmarks list.
@@ -464,7 +464,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         var bkmDetail = d.detail['bookmarkdetail'];
 
         return bkmDetail.title + ': ' + bkmDetail.desc + ' - [' + lyrName + ':' + rfid + ']';
-    }
+    };
 
     /**
     * @desc Link click handler which should show notes page.
@@ -481,7 +481,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             .appendChild(thisbody);
         d3.selectAll('.utilHootHead').style('font-weight','normal');
         d3.select('#utilHootHeadDivutilReviewBookmarkNotes').style('font-weight','bold');
-    }
+    };
 
     /**
     * @desc Description text for bookmark item.
@@ -519,7 +519,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         }
 
         return subStr;
-    }
+    };
 
     /**
     * @desc Deletes bookmark.
@@ -547,6 +547,6 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         } else {
             return;
         }
-    }
+    };
     return _instance;
-}
+};

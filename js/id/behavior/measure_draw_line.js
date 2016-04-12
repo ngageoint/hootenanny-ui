@@ -112,7 +112,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
 
             label.attr('x', c[0]+10)
                 .attr('y', c[1]+10)
-                .text(function(d) { return displayLength(currentDist) });
+                .text(function(d) { return displayLength(currentDist); });
 
             /*rect.attr('x', c[0])
                 .attr('y', c[1]-(label.dimensions()[1]/2))
@@ -143,7 +143,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
                 .attr('y', c[1]+10)
                 .style('fill','white')
                 .style('font-size','18px')
-                .text(function(d) { return displayLength(totDist)});
+                .text(function(d) { return displayLength(totDist);});
 
             line = g.append('line')
                 .classed('measure-line-'+nodeId,true)

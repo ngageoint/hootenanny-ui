@@ -15,7 +15,7 @@ Hoot.view.utilities.wfsdataset = function(context)
         .attr('id','wfsdatasettable')
             .classed('col12 fill-white small strong row10 overflow keyline-all', true)
             .call(hoot_view_utilities_wfsdataset.populateWFSDatasets);
-    }
+    };
 
     hoot_view_utilities_wfsdataset.populateWFSDatasets = function(container) {
 
@@ -72,8 +72,8 @@ Hoot.view.utilities.wfsdataset = function(context)
                     context.hoot().control.utilities.wfsdataset.wfsDetailPopup(d);
                 });
             });
-    }
+    };
 
 
     return hoot_view_utilities_wfsdataset;
-}
+};

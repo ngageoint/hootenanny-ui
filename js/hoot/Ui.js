@@ -9,6 +9,6 @@ Hoot.ui = function (context){
         _instance.formfactory = Hoot.ui.formfactory(context);
         _instance.hootformbase = Hoot.ui.hootformbase();
         _instance.hootformreviewmarkmenu = Hoot.ui.hootformreviewmarkmenu();
-    }
+    };
     return _instance;
-}
+};

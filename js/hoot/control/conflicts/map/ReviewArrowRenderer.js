@@ -41,14 +41,14 @@ Hoot.control.conflicts.map.reviewarrowrenderer = function (context)
             this.blur();
             _loadArrow('remove');
         });
-    }
+    };
 
     /**
     * @desc Checks to see if arrow is shwon
     **/
     _instance.isOn = function() {
         return !d3.selectAll('.arrow.line').empty();
-    }
+    };
 
 
     /**
@@ -75,7 +75,7 @@ Hoot.control.conflicts.map.reviewarrowrenderer = function (context)
         if (mode === 'remove') gj = {};
         context.background().updateArrowLayer(gj);
 
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

@@ -222,4 +222,4 @@ Hoot.view.utilities.basemapdataset = function(context)
 
 
     return hoot_view_utilities_basemapdataset;
-}
+};

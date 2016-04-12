@@ -99,7 +99,7 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
         } else {
             _performAcceptAll(data);
         }
-    }
+    };
 
     /**
     * @desc Resolves all reviewables
@@ -131,7 +131,7 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
         } catch (err) {
             _handleError(err, true);
         }
-    }
+    };
 
 
     /**
@@ -153,9 +153,9 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
         if(doAlertUser === true) {
             iD.ui.Alert(err,'error',new Error().stack);
         }
-    }
+    };
     var _parent = function() {
         return context.hoot().control.conflicts;
-    }
+    };
     return d3.rebind(_instance, _events, 'on');
-}
+};

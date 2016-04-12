@@ -34,7 +34,7 @@ Hoot.control.utilities.importdataset = function(context) {
     **/
     _instance.importDataContainer = function (trans, incomingFolder) {
         _createContainer(trans, incomingFolder);
-    }
+    };
 
 
     /**
@@ -57,7 +57,7 @@ Hoot.control.utilities.importdataset = function(context) {
         _importTranslationsOsm = [];
 
         _bInfo = hoot.getBrowserInfo();
-        if(_.isEmpty(_bInfo)){_bInfo = {'name':'Unknown','version':'Unknown'};};
+        if(_.isEmpty(_bInfo)){_bInfo = {'name':'Unknown','version':'Unknown'};}
 
         _instance.getImportTranslations(_trans, _importTranslations,
                 _importTranslationsGeonames, _importTranslationsOsm);
@@ -75,7 +75,7 @@ Hoot.control.utilities.importdataset = function(context) {
             if(folderId > 0){
                 var match = _.find(folderList,{id:folderId});
                 if(match){
-                    if(match){folderPlaceholder = match.folderPath};
+                    if(match){folderPlaceholder = match.folderPath;}
                 }
             }
         }
@@ -143,7 +143,7 @@ Hoot.control.utilities.importdataset = function(context) {
         meta.button = d_btn;
 
         _container = context.hoot().ui.formfactory.create('body', meta);
-    }
+    };
 
     /**
     * @desc Validates user specified input.
@@ -151,12 +151,12 @@ Hoot.control.utilities.importdataset = function(context) {
     var _validateInput = function() {
         //ensure output name is valid
         var resp = context.hoot().checkForUnallowedChar(this.value);
-        if(resp != true){
+        if(resp !== true){
             d3.select(this).classed('invalidName',true).attr('title',resp);
         } else {
             d3.select(this).classed('invalidName',false).attr('title',null);
         }
-    }
+    };
 
     /**
     * @desc Ingest request click handler.
@@ -166,8 +166,8 @@ Hoot.control.utilities.importdataset = function(context) {
         //check if layer with same name already exists...
         if(!d3.selectAll('.invalidName').empty()){return;}
 
-        if(_container.select('#importDatasetLayerName').value()=='' ||
-         _container.select('#importDatasetLayerName').value()==_container.select('#importDatasetLayerName').attr('placeholder')){
+        if(_container.select('#importDatasetLayerName').value()==='' ||
+         _container.select('#importDatasetLayerName').value()===_container.select('#importDatasetLayerName').attr('placeholder')){
             iD.ui.Alert('Please enter an output layer name.','warning',new Error().stack);
             return;
         }
@@ -187,20 +187,20 @@ Hoot.control.utilities.importdataset = function(context) {
         }
 
         var resp = context.hoot().checkForUnallowedChar(_container.select('#importDatasetLayerName').value());
-        if(resp != true){
+        if(resp !== true){
             iD.ui.Alert(resp,'warning',new Error().stack);
             return;
         }
 
         resp = context.hoot().checkForUnallowedChar(_container.select('#importDatasetNewFolderName').value());
-        if(resp != true){
+        if(resp !== true){
             iD.ui.Alert(resp,'warning',new Error().stack);
             return;
         }
 
         var parId = hoot.model.folders.getfolderIdByName(_container.select('#importDatasetPathName').value()) || 0;
         resp = hoot.model.folders.duplicateFolderCheck({name:_container.select('#importDatasetNewFolderName').value(),parentId:parId});
-        if(resp != true){
+        if(resp !== true){
             iD.ui.Alert(resp,'warning',new Error().stack);
             return;
         }
@@ -214,7 +214,7 @@ Hoot.control.utilities.importdataset = function(context) {
             _cancelJob();
         }
 
-    }
+    };
 
     /**
     * @desc Ingest request executioner.
@@ -270,8 +270,8 @@ Hoot.control.utilities.importdataset = function(context) {
                         _container.remove();
 
                         var pathname = _container.select('#importDatasetPathName').value();
-                        if(pathname==''){pathname=_container.select('#importDatasetPathName').attr('placeholder');}
-                        if(pathname=='root'){pathname='';}
+                        if(pathname===''){pathname=_container.select('#importDatasetPathName').attr('placeholder');}
+                        if(pathname==='root'){pathname='';}
                         var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
 
                         //determine if a new folder is being added
@@ -292,11 +292,11 @@ Hoot.control.utilities.importdataset = function(context) {
                                     return f.name === _container.select('#importDatasetLayerName').value();
                                 }),'id')[0] || 0;
                             }
-                            if(link.mapid==0){return;}
+                            if(link.mapid===0){return;}
                             link.updateType='new';
                             hoot.model.folders.updateLink(link);
                             link = {};
-                        })
+                        });
 
                     }
 
@@ -312,7 +312,7 @@ Hoot.control.utilities.importdataset = function(context) {
 
             });
 
-    }
+    };
 
     /**
     * @desc Ingest request job cancel.
@@ -361,7 +361,7 @@ Hoot.control.utilities.importdataset = function(context) {
             }
 
         }
-    }
+    };
 
 
     /**
@@ -398,7 +398,7 @@ Hoot.control.utilities.importdataset = function(context) {
         comboPathName.data().sort(function(a,b){
             var textA = a.value.toUpperCase();
             var textB=b.value.toUpperCase();
-            return(textA<textB)?-1 : (textA>textB)?1:0;
+            return (textA<textB)?-1 : (textA>textB)?1:0;
         });
 
         comboPathName.data().unshift({value:'root',title:0});
@@ -408,7 +408,7 @@ Hoot.control.utilities.importdataset = function(context) {
             .call(comboPathName);
 
         d3.select(this).attr('readonly',true);
-    }
+    };
 
     /**
     * @desc Uploads filed GDB to get Ogr Info of the target from Service.
@@ -461,7 +461,7 @@ Hoot.control.utilities.importdataset = function(context) {
             });
         });
 
-    }
+    };
 
     /**
     * @desc Populate checkbox combobox with feature classes infor.
@@ -483,7 +483,7 @@ Hoot.control.utilities.importdataset = function(context) {
             .call(comboPathName);
 
         d3.select('#importDatasetFGDBFeatureClasses').attr('readonly',true);
-    }
+    };
 
     /**
     * @desc Populate available translations.
@@ -502,7 +502,7 @@ Hoot.control.utilities.importdataset = function(context) {
         d3.select(this)
             .style('width', '100%')
             .call(combo);
-    }
+    };
 
     /**
     * @desc Modify multipart control based on selected import type.
@@ -555,7 +555,7 @@ Hoot.control.utilities.importdataset = function(context) {
             }
         }
 
-    }
+    };
 
 
     /**
@@ -617,7 +617,7 @@ Hoot.control.utilities.importdataset = function(context) {
             d3.select('#ingestfileuploaderspancontainer').classed('hidden', false);
 
         });
-    }
+    };
 
     /**
     * @desc Collects selected multiparts data information for validation.
@@ -672,10 +672,10 @@ Hoot.control.utilities.importdataset = function(context) {
         }
 
         if(curFileName.toLowerCase().lastIndexOf('.zip') > -1){
-            cntParam.zipCnt++
+            cntParam.zipCnt++;
             fObj.isZIP = true;
         }
-    }
+    };
 
     /**
     * @desc Selected multiparts data processor.
@@ -714,7 +714,7 @@ Hoot.control.utilities.importdataset = function(context) {
                         if(folderName.length > 4){
                             var ext = folderName.substring(folderName.length - 4);
                             var fgdbName = folderName.substring(0, folderName.length - 4);
-                            if(ext.toLowerCase() != '.gdb'){
+                            if(ext.toLowerCase() !== '.gdb'){
                                 iD.ui.Alert('Please select valid FGDB.','warning',new Error().stack);
                                 return;
                             } else {
@@ -759,7 +759,7 @@ Hoot.control.utilities.importdataset = function(context) {
 
         d3.select('#importDatasetBtnContainer').classed('hidden', false);
 
-    }
+    };
 
     /**
     * @desc Helper function for valiating loaded data.
@@ -774,7 +774,7 @@ Hoot.control.utilities.importdataset = function(context) {
             _.each(filesList, function(f){
                 var grp = _.find(filesList, function(m){
                     return m.name === f.name;
-                })
+                });
                 if(grp.isSHP){
                     if(!grp.isSHX || !grp.isDBF){
                         isValid = false;
@@ -791,8 +791,8 @@ Hoot.control.utilities.importdataset = function(context) {
         }
 
         var totalCnt = cntParam.shpCnt + cntParam.osmCnt + cntParam.zipCnt;
-        if((cntParam.shpCnt > 0 && cntParam.shpCnt != totalCnt) || (cntParam.osmCnt > 0 && cntParam.osmCnt != totalCnt)
-            || (cntParam.zipCnt > 0 && cntParam.zipCnt != totalCnt)){
+        if((cntParam.shpCnt > 0 && cntParam.shpCnt !== totalCnt) || (cntParam.osmCnt > 0 && cntParam.osmCnt !== totalCnt)
+            || (cntParam.zipCnt > 0 && cntParam.zipCnt !== totalCnt)){
             iD.ui.Alert('Please select only single type of files. (i.e. can not mix zip with osm)','warning',new Error().stack);
             return false;
         }
@@ -812,7 +812,7 @@ Hoot.control.utilities.importdataset = function(context) {
         }
 
         return true;
-    }
+    };
 
 
     /**
@@ -821,7 +821,7 @@ Hoot.control.utilities.importdataset = function(context) {
     _instance.getImportTypes = function() {
         if(!_bInfo) {
             _bInfo = hoot.getBrowserInfo();
-            if(_.isEmpty(_bInfo)){_bInfo = {'name':'Unknown','version':'Unknown'};};
+            if(_.isEmpty(_bInfo)){_bInfo = {'name':'Unknown','version':'Unknown'};}
         }
 
          var importTypes = [];
@@ -852,7 +852,7 @@ Hoot.control.utilities.importdataset = function(context) {
 
 
         return importTypes;
-    }
+    };
 
     /**
     * @desc Helper function to return import types.
@@ -875,11 +875,11 @@ Hoot.control.utilities.importdataset = function(context) {
                 importTranslations.push(t);
             }
         });
-    }
+    };
 
 
 
 
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

@@ -14,7 +14,7 @@ Hoot.view.versioninfo = function(context){
     // constructor
     function versioninfo(){
 
-    };
+    }
 
     versioninfo.showPopup = function(){
         // block main app
@@ -46,7 +46,7 @@ Hoot.view.versioninfo = function(context){
         mainVerCont.classed('center pad1x', true);
         _mainVer = mainVerCont.append('div');
         _mainVer.classed('center row2  round keyline-all overflow', true);
-       ;
+       
 
 
         var detailVersionLbl = dlgDiv.append('div');
@@ -103,14 +103,14 @@ Hoot.view.versioninfo = function(context){
         var coreInfo = {};
                     coreInfo.name = 'core';
                     coreInfo.description = response.name + ' - Version: ' + response.version + ' - Built By: ' + response.builtBy;
-                    headerVersionInfo.push(coreInfo)
+                    headerVersionInfo.push(coreInfo);
                     Hoot.model.REST('servicesVersionInfo',
                             function(response) {
                                 versioninfo.servicesVersionInfo(
                                     response,headerVersionInfo,_f);
                             }
                     );
-    }
+    };
 
     versioninfo.servicesVersionInfo = function(response,headerVersionInfo,_f){
         var serviceDesc = response.name + ' - Version: ' + response.version + ' - Built By: ' + response.builtBy;
@@ -171,7 +171,7 @@ Hoot.view.versioninfo = function(context){
                 .call(versioninfo.populateDatasets, selData);
              });
         });
-    }
+    };
 
 
     versioninfo.populateDatasets = function(container, data) {
@@ -236,7 +236,7 @@ Hoot.view.versioninfo = function(context){
         } else {
 
         }
-    }
+    };
 
     versioninfo.downloadUserGuide = function() {
         var sUrl = '/hoot-services/info/document/export';
@@ -254,7 +254,7 @@ Hoot.view.versioninfo = function(context){
             link.dispatchEvent(e);
             return true;
         }
-    }
+    };
 
     return d3.rebind(versioninfo, dispatch, 'on');
-}
+};

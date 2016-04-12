@@ -14,7 +14,7 @@ Hoot.view.utilities.about = function(context){
     // constructor
     function about(){
 
-    };
+    }
 
     about.createContent = function(form){
       form.append('div')
@@ -91,4 +91,4 @@ Hoot.view.utilities.about = function(context){
     };
 
     return d3.rebind(about, dispatch, 'on');
-}
+};

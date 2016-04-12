@@ -40,7 +40,7 @@ Hoot.control.utilities.modifydataset = function(context) {
         if(folderId > 0){
             if( _.find(folderList,{id:folderId})){
                 var match = _.find(folderList,{id:folderId});
-                if(match){placeholder = match.folderPath};
+                if(match){placeholder = match.folderPath;}
             }
          }
 
@@ -80,7 +80,7 @@ Hoot.control.utilities.modifydataset = function(context) {
         meta.button = d_btn;
 
         _container = context.hoot().ui.formfactory.create('body', meta);
-    }
+    };
 
 
     /**
@@ -90,8 +90,8 @@ Hoot.control.utilities.modifydataset = function(context) {
         if(!d3.selectAll('.invalidName').empty()){return;}
 
         var pathname = _container.select('#modifyDatasetPathname').value();
-        if(pathname==''){pathname=_container.select('#modifyDatasetPathname').attr('placeholder');}
-        if(pathname=='root'){pathname='';}
+        if(pathname===''){pathname=_container.select('#modifyDatasetPathname').attr('placeholder');}
+        if(pathname==='root'){pathname='';}
         var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
 
         //make sure a change is being made to foldername
@@ -104,13 +104,13 @@ Hoot.control.utilities.modifydataset = function(context) {
         data.folderId = pathId;
 
         if(outputname === ''){outputname=_dataset.name;}
-        if(outputname.toLowerCase() != _dataset.name.toLowerCase()){
+        if(outputname.toLowerCase() !== _dataset.name.toLowerCase()){
             var resp = context.hoot().checkForUnallowedChar(outputname);
-            if(resp != true){
+            if(resp !== true){
                 iD.ui.Alert(resp,'warning',new Error().stack);
                 return;
             }
-            if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f === outputname})))
+            if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f === outputname;})))
             {
                 iD.ui.Alert('A layer already exists with this name. Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
                 return;
@@ -123,13 +123,13 @@ Hoot.control.utilities.modifydataset = function(context) {
                 //determine if a new folder is being added
                 var newfoldername = _container.select('#modifyDatasetNewFolderName').value();
                 resp = context.hoot().checkForUnallowedChar(newfoldername);
-                if(resp != true){
+                if(resp !== true){
                     iD.ui.Alert(resp,'warning',new Error().stack);
                     return;
                 }
 
                  resp = hoot.model.folders.duplicateFolderCheck({name:newfoldername,parentId:pathId});
-                if(resp != true){
+                if(resp !== true){
                     iD.ui.Alert(resp,'warning',new Error().stack);
                     return;
                 }
@@ -142,8 +142,8 @@ Hoot.control.utilities.modifydataset = function(context) {
                         //update map linking
                         var link = {};
                         link.folderId = a;
-                        link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name === outputname}),'id')[0] || 0;
-                        if(link.mapid==0){return;}
+                        link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name === outputname;}),'id')[0] || 0;
+                        if(link.mapid===0){return;}
                         link.updateType='update';
                         hoot.model.folders.updateLink(link);
                         link = {};
@@ -151,7 +151,7 @@ Hoot.control.utilities.modifydataset = function(context) {
                     });
                 });
         });
-    }
+    };
 
     /**
     * @desc Populates existing pathes into drop down list.
@@ -169,7 +169,7 @@ Hoot.control.utilities.modifydataset = function(context) {
         comboPathName.data().sort(function(a,b){
               var textA = a.value.toUpperCase();
               var textB=b.value.toUpperCase();
-              return(textA<textB)?-1 : (textA>textB)?1:0;
+              return (textA<textB)?-1 : (textA>textB)?1:0;
           });
 
         comboPathName.data().unshift({value:'root',title:0});
@@ -179,7 +179,7 @@ Hoot.control.utilities.modifydataset = function(context) {
             .call(comboPathName);
 
         d3.select(this).attr('readonly',true);
-    }
+    };
 
     /**
     * @desc Validates input fields.
@@ -187,15 +187,15 @@ Hoot.control.utilities.modifydataset = function(context) {
     var _validateInput = function() {
         //ensure output name is valid
         var resp = context.hoot().checkForUnallowedChar(this.value);
-        if(resp != true){
+        if(resp !== true){
             d3.select(this).classed('invalidName',true).attr('title',resp);
         } else {
             d3.select(this).classed('invalidName',false).attr('title',null);
         }
-    }
+    };
 
 
 
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

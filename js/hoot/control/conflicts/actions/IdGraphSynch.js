@@ -51,7 +51,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
         } else {
             _loadMissingFeatures(mapid, fid, callback);
         }
-    }
+    };
 
 
 
@@ -69,14 +69,14 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
               iD.actions.ChangeTags(reviewRelationEntity.id, newTags),
               t('operations.change_tags.annotation'));
 
-    }
+    };
 
     /**
     * @desc Checks for the numbers of relation members that already exist in entity graph
     * @param Relation id
     **/
     var _getLoadedRelationMembersCount = function(fid){
-        var nCnt = 0
+        var nCnt = 0;
         try
         {
             var f = context.hasEntity(fid);
@@ -95,7 +95,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
 
 
         return nCnt;
-    }
+    };
 
 
     /**
@@ -171,7 +171,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                 _validateMemberCnt(_currentFid, currentCallback);
             }
         }
-    }
+    };
 
     /**
     * @desc we do not care about way or node parent
@@ -212,7 +212,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                                     }
                                 }
                             });
-                        }
+                        };
                         cleanOutParentTree(pps);
 
                     }
@@ -222,7 +222,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             });
         }
 
-    }
+    };
 
     /**
     * @desc final handler afte loading relation memebrs validates and pan to loaded
@@ -240,7 +240,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
         } else {
             iD.ui.Alert('There are no members in the review relation.','warning',new Error().stack);
         }
-    }
+    };
 
     /**
     * @desc load any missing features from backend
@@ -258,10 +258,10 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                 _loadMissingHandler(err,ent,callback);
             }, layerName);
         }
-    }
+    };
 
     var _parent = function() {
         return context.hoot().control.conflicts;
-    }
+    };
     return d3.rebind(_instance, _events, 'on');
-}
+};

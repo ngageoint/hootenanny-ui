@@ -103,7 +103,7 @@ var saveAs = saveAs
                         var new_tab = view.open(object_url, '_blank');
                         if (new_tab === undefined && typeof safari !== 'undefined') {
                             //Apple do not allow window.open, see http://bit.ly/1kZffRI
-                            view.location.href = object_url
+                            view.location.href = object_url;
                         }
                     }
                     filesaver.readyState = filesaver.DONE;

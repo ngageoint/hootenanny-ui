@@ -27,7 +27,7 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
         _instance.selectiondisplay = Hoot.control.conflate.advancedoptions.selectiondisplay();
         _instance.selectionretriever = Hoot.control.conflate.advancedoptions.selectionretriever();
         _instance.fieldsetlogic = Hoot.control.conflate.advancedoptions.fieldsetlogic();
-    }
+    };
 
 
     /**
@@ -38,7 +38,7 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
             var advancedOptionsEvents = d3.dispatch('exitadvopts');
 
             if(parent.confAdvOptionsFields==null){
-                if(d3.selectAll('.reset.ConfType').value()==parent.lastAdvSettingsText){
+                if(d3.selectAll('.reset.ConfType').value()===parent.lastAdvSettingsText){
                     parent.confAdvOptionsFields = parent.lastAdvFields;
                 } else {
                     parent.confAdvOptionsFields = _instance.fieldsretriever.getDefaultFields();
@@ -92,7 +92,7 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
         parent.confAdvOptsDlg = null;
         parent.confAdvValsDlg = null;
         d3.select('#content').selectAll('div .custom-conflation').remove();
-        d3.select('#content').selectAll('div .fill-darken3').remove()
+        d3.select('#content').selectAll('div .fill-darken3').remove();
         _instance.advOpsFormEvent(false);
     };
 
@@ -123,9 +123,9 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
                             });
                         }
                     }
-                })
+                });
             }
-         })
+         });
 
         if(enableField){
             d3.select('#' + enableField + '_container').classed('hidden', false);
@@ -167,7 +167,7 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
             });
 
         return containerForm;
-    }
+    };
 
     /**
     * @desc Creates advanced options dialog fieldset
@@ -191,7 +191,7 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
 
 
         return fieldset;
-    }
+    };
 
     /**
     * @desc This will go through the multilist fields and select the field marked isDefault
@@ -211,18 +211,18 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
                                 opt.selected = true;
                             }
                             if(ml.hoot_val === opt.value && ml.required){
-                                if(ml.required=='true'){
+                                if(ml.required==='true'){
                                     opt.style.display='none';
                                 }
                             }
                         });
-                     })
+                     });
                      // Manually send out on change event
                      _onChangeMultiList(listField);
                 }
-            })
+            });
         });
-    }
+    };
 
     /**
     * @desc Create apply button
@@ -236,7 +236,7 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
         .classed('inline row1 fl col10 pad1y', true)
         .text('Apply')
         .on('click', function () {
-            if(d3.select('#CustomConflationForm').selectAll('.invalid-input')[0].length==0){
+            if(d3.select('#CustomConflationForm').selectAll('.invalid-input')[0].length===0){
                 //Capture current values
                 parent.confLastSetVals = [];
                 _.each(d3.select('#CustomConflationForm').selectAll('form').selectAll('input')[0],function(ai){
@@ -257,7 +257,7 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
                     'warning',new Error().stack);
             }
         });
-    }
+    };
 
     /**
     * @desc Create cancel button
@@ -277,7 +277,7 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
                 //replace current inputs with parent.confLastSetVals
                 _.each(parent.confLastSetVals,function(ai){
                     var selAI = d3.select('#'+ai.id);
-                    if(ai.type=='checkbox'){
+                    if(ai.type==='checkbox'){
                         selAI.property('checked',ai.checked);
                     } else {
                         selAI.value(ai.value);
@@ -296,7 +296,7 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
              }
             _instance.advOpsFormEvent(false);
         });
-    }
+    };
 
 
     /**
@@ -336,9 +336,9 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
                  }
              }
          });
-    }
+    };
 
 
     return d3.rebind(_instance, _events, 'on');
 
-}
+};

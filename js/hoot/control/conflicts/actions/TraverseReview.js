@@ -43,7 +43,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         _mapid = opts.mapid;
         _instance.disableButton(false);
         return true;
-    }
+    };
 
 
     /**
@@ -115,7 +115,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         }
 
 
-    }
+    };
 
 
     var _reviewGetNextHandler = function (error, response) {
@@ -155,7 +155,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
 
         }
 
-    }
+    };
 
     /**
     * @desc public interface for go to next
@@ -213,14 +213,14 @@ Hoot.control.conflicts.actions.traversereview = function (context)
             }
         }
 
-    }
+    };
 
     /**
     * @desc  controls visibility of next and previous button
     **/
     _instance.getCurrentReviewable = function(){
         return _currentReviewable;
-    }
+    };
 
     /**
     * @desc  initialization validation
@@ -228,7 +228,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     var _isInitialized = function()
     {
         return (_nextid && _previd && _mapid);
-    }
+    };
 
     /**
     * @desc  Exit review session
@@ -237,7 +237,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     var _exitReviewSession = function(removeFromSidebar) {
         _parent().deactivate(!removeFromSidebar);
         _parent().reviewNextStep();
-    }
+    };
 
     /**
     * @desc Helper function for error handling. Logs error cleans out screen lock and alerts user optionally
@@ -250,7 +250,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         if(doAlertUser === true) {
             iD.ui.Alert(err,'error',new Error().stack);
         }
-    }
+    };
     var _vischeck = function(){
         return _parent().vischeck();
     };
@@ -261,4 +261,4 @@ Hoot.control.conflicts.actions.traversereview = function (context)
 
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

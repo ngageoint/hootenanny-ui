@@ -102,7 +102,7 @@ Hoot.plugins.entityeditor = function() {
         me._selectedId = id;
 
          _.each(rawCurFields, function(f){
-             var val = rawTags[f.desc]
+             var val = rawTags[f.desc];
              if(val) {
                 if(!Hoot.plugins.entityeditor.noShowDefs[val]){
                     modTags[f.name] = val;
@@ -123,7 +123,7 @@ Hoot.plugins.entityeditor = function() {
          });
 
          return modTags;
-    }
+    };
 
     /**
     * @desc Create internal preset object
@@ -144,7 +144,7 @@ Hoot.plugins.entityeditor = function() {
         newPreset.name = ftype + ' (' + fcode + ')';
         return newPreset;
 
-    }
+    };
 
     /**
     * @desc Create internal preset object
@@ -165,7 +165,7 @@ Hoot.plugins.entityeditor = function() {
         newPreset.name = ftype + ' (' + name + ')';
         return newPreset;
 
-    }
+    };
 
     /**
     * @desc Create feature tag fields
@@ -205,7 +205,7 @@ Hoot.plugins.entityeditor = function() {
             newField.type = 'number';
         }
         return newField;
-    }
+    };
 
     this.mapTags = function(tags, fields) {
         return _.map(tags, function (d, e) {
@@ -225,7 +225,7 @@ Hoot.plugins.entityeditor = function() {
         });
     };
 
-}
+};
 
 
 
@@ -257,7 +257,7 @@ Hoot.plugins.entityeditor.prototype.getTranslations = function(){
     });
 
     return trans;
-}
+};
 
 
 
@@ -273,7 +273,7 @@ Hoot.plugins.entityeditor.prototype.requestTranslationToServer = function(reqTyp
             respHandler(resp);
         }
     });
-}
+};
 
 /**
 * @desc Translate entity tags to requested translation type
@@ -304,7 +304,7 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
 
             var rawCurFields = JSON.parse(resp.fields).columns;
 
-            curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs)
+            curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
 
             if(!curPreset){
 
@@ -357,7 +357,7 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
             // handle HGIS translation
             if(lyrName && fType) {
                 var rawCurFields = JSON.parse(resp.fields).columns;
-                curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs)
+                curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
 
                 var newPreset = me.createPresetByName(curGeom, fType, currentTranslation, lyrName);
 
@@ -414,9 +414,9 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
 
         // create entity editor body
         populateBodyCallback(curPreset, me.defaultTags, me.defaultRawTags, transInfo, me.allTranslatedFields, me.allTransTags);
-    })
+    });
 
-}
+};
 
 
 /**
@@ -497,7 +497,7 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
             englishTags[f.rawLabel] = me.allTransTags[k];
         }
 
-    })
+    });
 
     //var pRawTagEditor = rawTagEditor;
     // Translate the TDS tags to OSM so we can store it in iD internal
@@ -538,4 +538,4 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
         }
 
     });
-}
+};

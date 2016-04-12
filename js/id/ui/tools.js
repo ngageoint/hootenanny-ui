@@ -16,8 +16,8 @@ iD.ui.Tools = function(context) {
             items.push({title:'Clip Tools',icon:'scissors',group:'clip',items:[
                 {title:'Clip to Visual Extent',tooltip:'Shortcut: 9',group:'clip',type:'area',icon:'scissors',action:'clipVisualExtent'},
                 {title:'Clip to Bounding Box',tooltip:'Shortcut: 8',group:'clip',type:'area',icon:'scissors',mode:iD.modes.ClipBoundingBox(context)}
-            ]})
-        };
+            ]});
+        }
 
         d3.select('html').append('div').attr('class', 'tools-menu');
 
@@ -36,7 +36,7 @@ iD.ui.Tools = function(context) {
                 var subTools = d3.selectAll('.tools-menu.sub-menu')
                     .style('left', function(){
                         var menuWidth = d3.select('.tools-menu').node().offsetWidth+1;
-                        return menuWidth+d3.select('button.tools').property('offsetLeft')+'px'||'0px'})
+                        return menuWidth+d3.select('button.tools').property('offsetLeft')+'px'||'0px';})
                     .style('top', itemHeight)
                     .style('display', 'block')
                     .html('')
@@ -62,11 +62,11 @@ iD.ui.Tools = function(context) {
                         d3.select('.sub-menu').remove();
                       });
 
-                subTools.append('span').attr('class',function(item){return item.icon + ' icon icon-pre-text'});
+                subTools.append('span').attr('class',function(item){return item.icon + ' icon icon-pre-text';});
                 subTools.append('span').text(function(item) { return item.title; }).attr('title',(function(item){return item.tooltip||'';}));
             });
 
-            toolsItem.append('span').attr('class',function(item){return 'icon-pre-text'});
+            toolsItem.append('span').attr('class',function(item){return 'icon-pre-text';});
             toolsItem.append('span').text(function(item) { return item.title; });
 
         d3.select('.tools-menu').style('display', 'none');
@@ -74,7 +74,7 @@ iD.ui.Tools = function(context) {
 
         // show the context menu
         d3.select('.tools-menu')
-            .style('left', function(){return d3.select('button.tools').property('offsetLeft')+'px'||'0px'})
+            .style('left', function(){return d3.select('button.tools').property('offsetLeft')+'px'||'0px';})
             .style('top', '120px')
             .style('display', 'block');
 
