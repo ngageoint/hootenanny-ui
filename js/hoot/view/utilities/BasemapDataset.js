@@ -8,7 +8,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.view.utilities.basemapdataset = function(context)
 {
-	var hoot_view_utilities_basemapdataset = {};
+    var hoot_view_utilities_basemapdataset = {};
 
     hoot_view_utilities_basemapdataset.createContent = function(form){
         var mbFieldset = form.append('div')
@@ -85,14 +85,14 @@ Hoot.view.utilities.basemapdataset = function(context)
                 var r = confirm("Are you sure you want to delete: " + bmId + "?");
                     if (r == false) {
                        return;
-                    } 
-              
+                    }
+
 
               var bmTrashBtn = this;
               d3.json('/hoot-services/ingest/basemap/delete?NAME=' + bmId,
                 function (error, data) {
                       if(error){
-                    	  iD.ui.Alert("Delete failed.",'error',new Error().stack);
+                          iD.ui.Alert("Delete failed.",'error',new Error().stack);
                       } else {
                         var bm;
 
@@ -221,5 +221,5 @@ Hoot.view.utilities.basemapdataset = function(context)
 
 
 
-	return hoot_view_utilities_basemapdataset;
+    return hoot_view_utilities_basemapdataset;
 }

@@ -27,7 +27,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                 field.description = meta.description;
                 field.required = meta.required;
                 field.children = [];
-                
+
                 if(meta.elem_type == 'group'){
                     field.heading=meta.name;
                     //formFields.push(field);
@@ -35,7 +35,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                     //Now add the remaining fields within the group
                     _.each(meta.members,function(submeta){
                         var subfield = {};
-                        
+
                         subfield.id = submeta.id;
                         subfield.label = submeta.name;
                         subfield.type = submeta.elem_type;
@@ -44,41 +44,41 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
 
                         if(submeta.elem_type == 'bool'){
                             if(submeta.members){
-                            	subfield.combobox = submeta.members;
-                            	_.each(submeta.members,function(d){
-                            	   if (d.isDefault=='true'){subfield.placeholder=d.name;}
-                            	});
+                                subfield.combobox = submeta.members;
+                                _.each(submeta.members,function(d){
+                                   if (d.isDefault=='true'){subfield.placeholder=d.name;}
+                                });
                             } else {
-                            	subfield.combobox = [{"value":"true"}, {"value":"false"}];
+                                subfield.combobox = [{"value":"true"}, {"value":"false"}];
                             }
                         } else if(submeta.elem_type == 'list') {
                             if(submeta.members){
                                 subfield.combobox = submeta.members;
                                 subfield.onchange = submeta.onchange;
-                            } 
+                            }
                         } else if(submeta.elem_type == 'double') {
                             subfield.maxvalue = submeta.maxvalue;
                             subfield.minvalue = submeta.minvalue;
                             subfield.onchange = "Hoot.control.conflate.advancedoptions.fieldsgenerator().validate(d3.select(this));";
                         } else if (submeta.elem_type == 'checkbox') {
-                        	subfield.onchange = submeta.onchange;
+                            subfield.onchange = submeta.onchange;
                         } else if (submeta.elem_type == 'checkplus') {
-                        	if(submeta.members){
-                        		var subchecks = [];
-                        		_.each(submeta.members,function(sc){
-                        			var subcheck={};
-                        			subcheck.id = sc.id;
-                        			subcheck.label = sc.name;
-                        			subcheck.type = sc.elem_type;
-                        			subcheck.placeholder = sc.defaultvalue;
-                        			subcheck.description = sc.description;
-                        			subcheck.required = sc.required;
-                        			subchecks.push(subcheck);
-                        		});
-                        		
-                        		subfield.subchecks = subchecks;
-                        		subfield.onchange = submeta.onchange;
-                        	}
+                            if(submeta.members){
+                                var subchecks = [];
+                                _.each(submeta.members,function(sc){
+                                    var subcheck={};
+                                    subcheck.id = sc.id;
+                                    subcheck.label = sc.name;
+                                    subcheck.type = sc.elem_type;
+                                    subcheck.placeholder = sc.defaultvalue;
+                                    subcheck.description = sc.description;
+                                    subcheck.required = sc.required;
+                                    subchecks.push(subcheck);
+                                });
+
+                                subfield.subchecks = subchecks;
+                                subfield.onchange = submeta.onchange;
+                            }
                         }
 
                         if(submeta.dependency){
@@ -88,20 +88,20 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                         if(submeta.dependents){
                             subfield.dependents = submeta.dependents;
                         }
-                        
+
                         if(submeta.required){
-                        	subfield.required=submeta.required;
+                            subfield.required=submeta.required;
                         }
 
                         field.children.push(subfield);
                     });
                 }
-                
+
                 formFields.push(field);
-                
+
             });
         }
-        
+
         return formFields;
     };
 
@@ -121,7 +121,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
             var curVal = target.node().value;
             if(_.find(curOpts.combobox,{'name':curVal})===undefined){
                 target.value(curOpts.placeholder);
-            }   
+            }
         } else {
             //make sure it is double
             if(isNaN(data.value())){
@@ -139,7 +139,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                         } else{
                             invalidInput=false;
                         }
-                    } 
+                    }
                 }
                 if(data.property('max')){
                     if(!isNaN(data.property('max'))){
@@ -149,15 +149,15 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                             invalidText="Value must be less than " + max.toString();
                         } else {
                             invalidInput=false;
-                        }                   
+                        }
                     }
                 }
             }
             target.classed('invalid-input',invalidInput);
-            target.property('title',invalidText);   
+            target.property('title',invalidText);
         }
     };
-    
+
     return d3.rebind(_instance, _events, 'on');
 
 }

@@ -8,21 +8,21 @@
 
 Hoot.control.conflicts.map.reviewarrowrenderer = function (context)
 {
-	var _events = d3.dispatch();
-	var _instance = {};
-	// @TODO: get rid of f  + f against concept after getting concensus
-	var _feature;
-	var _againstFeature;
+    var _events = d3.dispatch();
+    var _instance = {};
+    // @TODO: get rid of f  + f against concept after getting concensus
+    var _feature;
+    var _againstFeature;
 
-	/**
-	* @desc activate show/hide event handler
-	* @param r - feature (soon to be deprecated)
-	* @param ra - feature against (soon to be deprecated)
-	**/
-	_instance.activate = function(r, ra) {
-		_feature = r;
-		_againstFeature = ra;
-		 //Add hover handler to show arrow
+    /**
+    * @desc activate show/hide event handler
+    * @param r - feature (soon to be deprecated)
+    * @param ra - feature against (soon to be deprecated)
+    **/
+    _instance.activate = function(r, ra) {
+        _feature = r;
+        _againstFeature = ra;
+         //Add hover handler to show arrow
         d3.select('a.merge').on('mouseenter', function() {
             this.focus();
             d3.select(this).on('keydown', function() {
@@ -41,41 +41,41 @@ Hoot.control.conflicts.map.reviewarrowrenderer = function (context)
             this.blur();
             _loadArrow('remove');
         });
-	}
+    }
 
-	/**
-	* @desc Checks to see if arrow is shwon
-	**/
-	_instance.isOn = function() {
-		return !d3.selectAll('.arrow.line').empty();
-	}
+    /**
+    * @desc Checks to see if arrow is shwon
+    **/
+    _instance.isOn = function() {
+        return !d3.selectAll('.arrow.line').empty();
+    }
 
 
-	/**
-	* @desc Display arrow
-	**/
-	var _loadArrow = function(mode) {
-	    //if (d3.event) d3.event.preventDefault();
-	    if(!context.graph()){
-	    	
-	        return;
-	    }
-	    if(!context.graph().entities[_feature.id] ||
-	     !context.graph().entities[_againstFeature.id]){
-			context.background().updateArrowLayer({});
-	
-			return;
-		}
-	    var coord = [ _againstFeature.loc, _feature.loc];
-	    if (mode === 'reverse') coord = coord.reverse();
-	    var gj = {
-	        "type": "LineString",
-	        "coordinates": coord
-	    };
-	    if (mode === 'remove') gj = {};
-	    context.background().updateArrowLayer(gj);
+    /**
+    * @desc Display arrow
+    **/
+    var _loadArrow = function(mode) {
+        //if (d3.event) d3.event.preventDefault();
+        if(!context.graph()){
+
+            return;
+        }
+        if(!context.graph().entities[_feature.id] ||
+         !context.graph().entities[_againstFeature.id]){
+            context.background().updateArrowLayer({});
+
+            return;
+        }
+        var coord = [ _againstFeature.loc, _feature.loc];
+        if (mode === 'reverse') coord = coord.reverse();
+        var gj = {
+            "type": "LineString",
+            "coordinates": coord
+        };
+        if (mode === 'remove') gj = {};
+        context.background().updateArrowLayer(gj);
 
     }
 
-	return d3.rebind(_instance, _events, 'on');
+    return d3.rebind(_instance, _events, 'on');
 }

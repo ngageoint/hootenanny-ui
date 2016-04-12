@@ -30,36 +30,36 @@ Hoot.control.view = function (container, context) {
 
         //add context menu
         _a.on("contextmenu",function(d,i){
-        	items = [{title:'Zoom to Layer',click:'zoom2layer'},];
-        	 // create the div element that will hold the context menu
+            items = [{title:'Zoom to Layer',click:'zoom2layer'},];
+             // create the div element that will hold the context menu
             d3.selectAll('.context-menu').data([1])
-            	.enter()
-            	.append('div')
-            	.attr('class', 'context-menu');
+                .enter()
+                .append('div')
+                .attr('class', 'context-menu');
             // close menu
             d3.select('body').on('click.context-menu', function() {d3.select('.context-menu').style('display', 'none');});
             // this gets executed when a contextmenu event occurs
             d3.selectAll('.context-menu')
-            	.html('')
-            	.append('ul')
-            	.selectAll('li')
-            	.data(items).enter()
-            	.append('li')
-            	.on('click' , function(item) {
-            		switch (item.click) {
-					case 'zoom2layer': context.zoomToExtent(d.extent.minlon, d.extent.minlat, d.extent.maxlon, d.extent.maxlat); break;
-					default: break;
-					}
-            		d3.select('.context-menu').remove();
-            	})
-            	/*.attr("class",function(item){return "_icon " + item.icon})*/
-            	.text(function(item) { return item.title; });
+                .html('')
+                .append('ul')
+                .selectAll('li')
+                .data(items).enter()
+                .append('li')
+                .on('click' , function(item) {
+                    switch (item.click) {
+                    case 'zoom2layer': context.zoomToExtent(d.extent.minlon, d.extent.minlat, d.extent.maxlon, d.extent.maxlat); break;
+                    default: break;
+                    }
+                    d3.select('.context-menu').remove();
+                })
+                /*.attr("class",function(item){return "_icon " + item.icon})*/
+                .text(function(item) { return item.title; });
             d3.select('.context-menu').style('display', 'none');
             // show the context menu
             d3.select('.context-menu')
-              	.style('left', (d3.event.pageX - 2) + 'px')
-              	.style('top', (d3.event.pageY - 2) + 'px')
-              	.style('display', 'block');
+                  .style('left', (d3.event.pageX - 2) + 'px')
+                  .style('top', (d3.event.pageY - 2) + 'px')
+                  .style('display', 'block');
             //} else {d3.select('.context-menu').style('display', 'none');}
             d3.event.preventDefault();
         });
@@ -77,14 +77,14 @@ Hoot.control.view = function (container, context) {
             return 'viewicon-' + modifiedId;
         })
         .on('click', function(d){
-        	var paletteDiv = d3.select("#palette-"+d.id);
-        	if(!paletteDiv.empty()){
-        		if(paletteDiv.style('display')!='none'){
-        			paletteDiv.style('display','none');
-            	}else{
-            		paletteDiv.style('display','block');
-            	}
-        	}
+            var paletteDiv = d3.select("#palette-"+d.id);
+            if(!paletteDiv.empty()){
+                if(paletteDiv.style('display')!='none'){
+                    paletteDiv.style('display','none');
+                }else{
+                    paletteDiv.style('display','block');
+                }
+            }
             //context.hoot().toggleColor(d.name);
         });
         var spn = _a.append('span')
@@ -153,7 +153,7 @@ Hoot.control.view = function (container, context) {
         var mapid = options.id || options.mapId || 0;
         paletteFieldset
             .attr('id','palette-'+mapid.toString())
-        	.classed('pad1 keyline-top', true)
+            .classed('pad1 keyline-top', true)
             .style('border-top', '1px solid rgba(0, 0, 0, 0.2)')
             .style('height', '60px')
             .style('display','none');

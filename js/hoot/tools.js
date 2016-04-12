@@ -570,13 +570,13 @@ Hoot.tools = function (context, selection) {
 
                                                     });
                                                 } else {
-                                                	iD.ui.Alert("Could not determine input layer 2. It will not be loaded.",'warning',new Error().stack);
+                                                    iD.ui.Alert("Could not determine input layer 2. It will not be loaded.",'warning',new Error().stack);
                                                 }
 
 
                                             });
                                         } else {
-                                        	iD.ui.Alert("Could not determine input layer 1. It will not be loaded.",'warning',new Error().stack);
+                                            iD.ui.Alert("Could not determine input layer 1. It will not be loaded.",'warning',new Error().stack);
                                         }
                                     }
                                 } else {
@@ -591,7 +591,7 @@ Hoot.tools = function (context, selection) {
                                         loadedLayers[layerName] = params;
                                         loadedLayers[layerName].loadable = true;
                                         loadingLayer = {};
-                                    } 
+                                    }
                                 }
                             }
                         });
@@ -608,7 +608,7 @@ Hoot.tools = function (context, selection) {
                         loadedLayers[layerName] = params;
                         loadedLayers[layerName].loadable = true;
                         loadingLayer = {};
-                    }                    
+                    }
                 }
             });
 
@@ -630,7 +630,7 @@ Hoot.tools = function (context, selection) {
     });
     exportLayer.on('cancelSaveLayer', function () {
         if(exporting){
-        	iD.ui.Alert("Can not cancel. Export in progress.",'warning',new Error().stack);
+            iD.ui.Alert("Can not cancel. Export in progress.",'warning',new Error().stack);
             return;
         }
         exportLayer.deactivate();
@@ -654,7 +654,7 @@ Hoot.tools = function (context, selection) {
         var spinner = cont.append('span').attr('class', 'spinner-hoot').call(iD.ui.Spinner(context));
         hoot.model.export.exportData(cont, data, function (status) {
             if(status == 'failed'){
-            	iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error',new Error().stack);
+                iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error',new Error().stack);
             }
 
             if(exportType && exportType === 'Web Feature Service (WFS)'){

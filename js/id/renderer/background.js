@@ -12,7 +12,7 @@ iD.Background = function(context) {
             .projection(context.projection),
         //Added for Hoot measurement tool
         measureLayer = iD.MeasureLayer(context, dispatch)
-        	.projection(context.projection),
+            .projection(context.projection),
         /*mapillaryLayer = iD.MapillaryLayer(context),*/
         overlayLayers = [];
 
@@ -123,10 +123,10 @@ iD.Background = function(context) {
         .data([0]);
 
         measure.enter().insert('div','.layer-data')
-        	.attr('class','layer-layer measure-layer');
+            .attr('class','layer-layer measure-layer');
 
         measure.call(measureLayer);
-        
+
         // Removed for iD v1.9.2
         /*var gpx = selection.selectAll('.layer-gpx')
             .data([0]);
@@ -421,8 +421,8 @@ iD.Background = function(context) {
 
   //Added for Hoot measurement tool
     background.updateMeasureLayer = function(d) {
-    	measureLayer.geojson(d);
-    	dispatch.change();
+        measureLayer.geojson(d);
+        dispatch.change();
     }
 
     background.nudge = function(d, zoom) {
@@ -439,9 +439,9 @@ iD.Background = function(context) {
     };
 
     background.load = function(imagery) {
-		//Added in v1.9.2 iD merge        
+        //Added in v1.9.2 iD merge
 
-		function parseMap(qmap) {
+        function parseMap(qmap) {
             if (!qmap) return false;
             var args = qmap.split('/').map(Number);
             if (args.length < 3 || args.some(isNaN)) return false;
@@ -453,8 +453,8 @@ iD.Background = function(context) {
             extent = parseMap(q.map),
             best;
 
-		// End of addition from 1.9.2 merge
-		
+        // End of addition from 1.9.2 merge
+
         backgroundSources = imagery.map(function(source) {
             if (source.type === 'bing') {
                 return iD.BackgroundSource.Bing(source, dispatch);
@@ -472,7 +472,7 @@ iD.Background = function(context) {
         if (chosen && chosen.indexOf('custom:') === 0) {
             background.baseLayerSource(iD.BackgroundSource.Custom(chosen.replace(/^custom:/, '')));
         } else {
-			background.baseLayerSource(findSource(chosen) || getDefaultBaseMap() || backgroundSources[1]);
+            background.baseLayerSource(findSource(chosen) || getDefaultBaseMap() || backgroundSources[1]);
         }
 
         var locator = _.find(backgroundSources, function(d) {

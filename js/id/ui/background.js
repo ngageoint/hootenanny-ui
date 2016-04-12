@@ -25,8 +25,8 @@ iD.ui.Background = function(context) {
                 : d3.ascending(a, b);
         }
 
-        function setOpacity(d) { 
-			var bg = context.container().selectAll('.background-layer')
+        function setOpacity(d) {
+            var bg = context.container().selectAll('.background-layer')
                 .transition()
                 .style('opacity', d)
                 .attr('data-opacity', d);
@@ -72,18 +72,18 @@ iD.ui.Background = function(context) {
                 .classed('active', active);
             //collections.classed('hide', true);
         }
-        
+
         function clickSetSource(d) {
             d3.event.preventDefault();
             context.background().baseLayerSource(d);
             selectLayer();
 
-            //Added to zoom to imported basemap            
+            //Added to zoom to imported basemap
             if(d.extent() && d.type=='tms'){
-            	//ask if user wants to zoom to basemap
-            	if(window.confirm('Do you want to zoom to base layer?')){
-            		context.zoomToExtent(d.extent().miny, d.extent().minx, d.extent().maxy, d.extent().maxx);	
-            	}
+                //ask if user wants to zoom to basemap
+                if(window.confirm('Do you want to zoom to base layer?')){
+                    context.zoomToExtent(d.extent().miny, d.extent().minx, d.extent().maxy, d.extent().maxx);
+                }
             }
         }
 
@@ -105,7 +105,7 @@ iD.ui.Background = function(context) {
             selectLayer();
             context.storage('background-custom-template', template);
         }
-        
+
         function clickSetOverlay(d) {
             d3.event.preventDefault();
             context.background().toggleOverlayLayer(d);
@@ -140,7 +140,7 @@ iD.ui.Background = function(context) {
                     .title(function(d) { return d.description; })
                     .placement('top'));
 
-			//added for iD v1.9.2
+            //added for iD v1.9.2
             enter.filter(function(d) { return d.best(); })
                 .append('div')
                 .attr('class', 'best')
@@ -306,7 +306,7 @@ iD.ui.Background = function(context) {
             });
 
         label.append('span')
-            .text(t('background.custom'));            
+            .text(t('background.custom'));
 
         //Added for EGD-plugin
 

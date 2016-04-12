@@ -50,14 +50,14 @@ iD.ui = function(context) {
             .attr('id', 'map')
             .call(map);
 
-		// Commented out in iD v1.9.2
+        // Commented out in iD v1.9.2
         content
-			//.append('div')
+            //.append('div')
             //.attr('class', 'map-in-map')
             //.style('display', 'none')
             .call(iD.ui.MapInMap(context));
 
-		// Commented out in iD v1.9.2
+        // Commented out in iD v1.9.2
         content.append('div')
             //.attr('class', 'infobox fillD2')
             //.style('display', 'none')
@@ -70,8 +70,8 @@ iD.ui = function(context) {
             .attr('class', 'limiter');
 
         limiter.append('div')
-	        .attr('class', 'button-wrap col1')
-	        .call(iD.ui.Tools(context));
+            .attr('class', 'button-wrap col1')
+            .call(iD.ui.Tools(context));
 
         limiter.append('div')
             .attr('class', 'button-wrap joined col3')
@@ -85,7 +85,7 @@ iD.ui = function(context) {
             .attr('class', 'button-wrap col1')
             .call(iD.ui.Save(context));
 
-		//iD v1.7.5
+        //iD v1.7.5
         bar.append('div')
             .attr('class', 'full-screen')
             .call(iD.ui.FullScreen(context));
@@ -95,8 +95,8 @@ iD.ui = function(context) {
             .call(iD.ui.Spinner(context));
 
         bar.append('div')
-        	.attr('class','warning')
-        	.call(iD.ui.Warning(context,false,''));
+            .attr('class','warning')
+            .call(iD.ui.Warning(context,false,''));
 
         var controls = bar.append('div')
             .attr('class', 'map-controls');
@@ -151,7 +151,7 @@ iD.ui = function(context) {
             .attr('id', 'footer')
             .attr('class', 'fillD');
 
-		//Comment out - do not include in Hoot
+        //Comment out - do not include in Hoot
         /*footer.append('div')
             .attr('class', 'api-status')
             .call(iD.ui.Status(context));*/
@@ -209,7 +209,7 @@ iD.ui = function(context) {
                 //Create context menu to offer bulk option
                 var items = ['DD','DMS','UTM'];
                 d3.select('html').append('div').classed('coordinates-options-menu',true);
-                        
+
                  var menuItem =  d3.selectAll('.coordinates-options-menu')
                     .html('')
                     .append('ul')
@@ -217,26 +217,26 @@ iD.ui = function(context) {
                     .data(items).enter()
                     .append('li')
                     .attr('class',function(item){return ' coordinate-option';})
-                    .on('click' , function(item) { 
+                    .on('click' , function(item) {
                         context.coordinateDisplay = item;
                         d3.select('.coordinates-options-menu').remove();
                    });
-                 
+
                  menuItem.append('span').text(function(item) { return item; });
-                        
+
                  d3.select('.coordinates-options-menu').style('display', 'none');
-                 
+
                  // show the context menu
                  d3.select('.coordinates-options-menu')
                     .style('right','0px')
                      .style('bottom','33px')
                      .style('display', 'block');
-    
+
                  //close menu
                  var firstOpen = true;
                  d3.select('html').on('click.coordinates-options-menu',function(){
                      if(firstOpen){
-                        firstOpen=false;     
+                        firstOpen=false;
                      } else {
                          d3.select('.coordinates-options-menu').style('display', 'none');
                      }

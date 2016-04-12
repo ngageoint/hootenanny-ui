@@ -17,9 +17,9 @@ Hoot.control.conflate.symbology = function (parent, sidebar) {
     * @param name - name of layer
     * @param color - new color of of the layer
     **/
-	_instance.changeSymbology = function (name, color) {
+    _instance.changeSymbology = function (name, color) {
         var confData = parent.getConflationData();
-        
+
         if(confData){
 
             var entity = _.find(confData, function(d){
@@ -31,7 +31,7 @@ Hoot.control.conflate.symbology = function (parent, sidebar) {
 
                 var modifiedId = entity.mapId.toString();
                 var headerSym = d3.select('#conflatethumbicon-' + modifiedId);
-                
+
                 if(headerSym && headerSym.size()>0){
 
                     var classStr = headerSym.attr('class');
@@ -39,7 +39,7 @@ Hoot.control.conflate.symbology = function (parent, sidebar) {
                     var colorAttrib = _.find(classList,function(cls){
                         return cls.indexOf('fill-') === 0;
                     });
-                    
+
 
                     if(color === 'osm') {
                         headerSym.classed('data', false);
@@ -59,12 +59,12 @@ Hoot.control.conflate.symbology = function (parent, sidebar) {
                             headerSym.classed('fill-' + color, true);
                         }
                     }
-                        
+
                 }
             }
-            
+
         }
-        
+
     };
     return d3.rebind(_instance, _events, 'on');
 }

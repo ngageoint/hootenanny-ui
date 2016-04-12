@@ -42,7 +42,7 @@ iD.modes.Save = function(context) {
         context.container().call(loading);
 
         // Disabling toCheck for hoot. iD conflict validation is causing race condition
-        // while retrieving the osm data and saving. 
+        // while retrieving the osm data and saving.
        /* if (toCheck.length) {
             console.debug('call loadMultiple');
             context.connection().loadMultiple(toLoad, loaded, hootCallback);
@@ -69,7 +69,7 @@ iD.modes.Save = function(context) {
                 _.each(result.data, function(entity) {
                     remoteGraph.replace(entity);
                     toLoad = _.without(toLoad, entity.id);
-					//iD v1.7.5
+                    //iD v1.7.5
                     // Because loadMultiple doesn't download /full like loadEntity,
                     // need to also load children that aren't already being checked..
                     if (!entity.visible) return;
@@ -81,7 +81,7 @@ iD.modes.Save = function(context) {
                             _.difference(_.pluck(entity.members, 'id'), toCheck, toLoad, loadMore));
                     }
                 });
-				//iD v1.7.5
+                //iD v1.7.5
                 if (loadMore.length) {
                     toLoad.push.apply(toLoad, loadMore);
                     context.connection().loadMultiple(loadMore, loaded);
@@ -138,7 +138,7 @@ iD.modes.Save = function(context) {
                 } else {
                     history.replace(merge);
                 }
-                
+
 
                 var conflicts = merge.conflicts();
                 if (!conflicts.length) return;  // merged safely
@@ -171,8 +171,8 @@ iD.modes.Save = function(context) {
                 showConflicts();
             } else if (errors.length) {
                 showErrors();
-            } else {            	
-            	context.connection().putChangeset(
+            } else {
+                context.connection().putChangeset(
                     history.changes(iD.actions.DiscardTags(history.difference())),
                     'Hoot Save',
                     history.imageryUsed(),
@@ -190,15 +190,15 @@ iD.modes.Save = function(context) {
                                 msg: errMsg,
                                 details: [ t('save.status_code', { code: err.status }) ]
                             });
-                            
+
                             if(isReviewing === true){
                                 showErrors(
                                     function(){
                                         context.hoot().control.conflicts.actions.traversereview.gotoNext();
                                     }
-                                    
+
                                 );
-                                
+
                             } else {
                                 showErrors();
                             }
@@ -235,8 +235,8 @@ iD.modes.Save = function(context) {
                     selection.remove();
                 })
                 .on('save', function() {
-					//iD v1.7.5                    
-					for (var i = 0; i < conflicts.length; i++) {
+                    //iD v1.7.5
+                    for (var i = 0; i < conflicts.length; i++) {
                         if (conflicts[i].chosen === 1) {  // user chose "keep theirs"
                             var entity = context.hasEntity(conflicts[i].id);
                             if (entity && entity.type === 'way') {
@@ -273,7 +273,7 @@ iD.modes.Save = function(context) {
             } else {
                 selection.okButton();
             }
-            
+
         }
 
 
@@ -359,7 +359,7 @@ iD.modes.Save = function(context) {
             if (err) {
                 cancel();
             } else {
-            	context.ui().sidebar.show(ui);
+                context.ui().sidebar.show(ui);
             }
         });
     };

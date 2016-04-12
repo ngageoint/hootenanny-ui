@@ -57,9 +57,9 @@ Hoot.model.conflicts = function(context)
 
             d3.select('button.action.trash').on('click',function(){
                 conflicts.deactivate();
-            	context.hoot().mode('browse');
+                context.hoot().mode('browse');
 
-            	d3.select('[data-layer=' + self.select('span').text() + ']').remove();
+                d3.select('[data-layer=' + self.select('span').text() + ']').remove();
                 _.each(hoot.loadedLayers, function(d) {
                     hoot.model.layers.removeLayer(d.name);
                     var modifiedId = d.mapId.toString();
@@ -280,7 +280,7 @@ Hoot.model.conflicts = function(context)
     {
       for (var i = 0; i < arr.length; i++)
       {
-    	var arrMember = arr[i];
+        var arrMember = arr[i];
         if (arrMember.obj.id == memberMeta.obj.id)
         {
           return true;
@@ -473,7 +473,7 @@ Hoot.model.conflicts = function(context)
                                     {
                                       console.log(error);
                                       iD.ui.Alert('failed to retrieve review refs.','warning',new Error().stack);
-                                      
+
                                       throw error;
                                     }
 
@@ -653,7 +653,7 @@ Hoot.model.conflicts = function(context)
       var hasChanges = context.history().hasChanges();
       context.hoot().assert(hasChanges);
       var changes =
-    	context.history().changes(
+        context.history().changes(
           iD.actions.DiscardTags(context.history().difference()));
       //console.log(changes);
       //console.log(JXON.stringify(context.connection().osmChangeJXON(1, changes)));

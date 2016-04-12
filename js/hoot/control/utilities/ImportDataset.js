@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Hoot.control.utilities.importdataset represents control for ingesting data sources like shapefile, osm, 
+// Hoot.control.utilities.importdataset represents control for ingesting data sources like shapefile, osm,
 // geoname  or FileGdb
 //
-// 
+//
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      17 Feb. 2016
@@ -10,12 +10,12 @@
 
 
 Hoot.control.utilities.importdataset = function(context) {
-	var _events = d3.dispatch();
-	var _instance = {};
+    var _events = d3.dispatch();
+    var _instance = {};
 
-	var _trans;
-	var _incomingFolder;
-	var _container;
+    var _trans;
+    var _incomingFolder;
+    var _container;
 
     var _importTranslations;
     var _importTranslationsGeonames;
@@ -37,15 +37,15 @@ Hoot.control.utilities.importdataset = function(context) {
     }
 
 
-	/**
+    /**
     * @desc Internal form creator.
     * @param trans - Translation meta data.
     * @param incomingFolder - User selected folder.
     **/
-	var _createContainer = function(trans,incomingFolder) {
-		_trans = trans;
-		_incomingFolder = incomingFolder;
-		if(_trans.length == 1){
+    var _createContainer = function(trans,incomingFolder) {
+        _trans = trans;
+        _incomingFolder = incomingFolder;
+        if(_trans.length == 1){
             var emptyObj = {};
             emptyObj.NAME = "";
             emptyObj.DESCRIPTION = "";
@@ -59,8 +59,8 @@ Hoot.control.utilities.importdataset = function(context) {
         _bInfo = hoot.getBrowserInfo();
         if(_.isEmpty(_bInfo)){_bInfo = {'name':'Unknown','version':'Unknown'};};
 
-        _instance.getImportTranslations(_trans, _importTranslations, 
-				_importTranslationsGeonames, _importTranslationsOsm);
+        _instance.getImportTranslations(_trans, _importTranslations,
+                _importTranslationsGeonames, _importTranslationsOsm);
 
         var importTypes = _instance.getImportTypes();
 
@@ -68,17 +68,17 @@ Hoot.control.utilities.importdataset = function(context) {
 
         hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
         var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
-        
+
         var folderPlaceholder = 'root';
         if(incomingFolder){
-        	folderId = incomingFolder.id ? incomingFolder.id : 0;
-        	if(folderId > 0){
-        		var match = _.find(folderList,{id:folderId});
-				if(match){
-					if(match){folderPlaceholder = match.folderPath};
-				}
-        	}
-        }            
+            folderId = incomingFolder.id ? incomingFolder.id : 0;
+            if(folderId > 0){
+                var match = _.find(folderList,{id:folderId});
+                if(match){
+                    if(match){folderPlaceholder = match.folderPath};
+                }
+            }
+        }
 
         var d_form = [{
             label: 'Import Type',
@@ -108,15 +108,15 @@ Hoot.control.utilities.importdataset = function(context) {
             id: 'importDatasetLayerName',
             onchange: _validateInput
         }, {
-        	label: 'Path',
-        	placeholder: folderPlaceholder,
-        	id: 'importDatasetPathName',
-        	combobox: {'data':folderList, 'command': _populateFolderList },
+            label: 'Path',
+            placeholder: folderPlaceholder,
+            id: 'importDatasetPathName',
+            combobox: {'data':folderList, 'command': _populateFolderList },
             inputtype: 'combobox'
         }, {
-        	label: 'Enter Name for New Folder (Leave blank otherwise)',
-        	placeholder:'',
-        	id:'importDatasetNewFolderName',
+            label: 'Enter Name for New Folder (Leave blank otherwise)',
+            placeholder:'',
+            id:'importDatasetNewFolderName',
             onchange: _validateInput
         }, {
             label: 'Translation Schema',
@@ -128,22 +128,22 @@ Hoot.control.utilities.importdataset = function(context) {
 
 
         var d_btn = [
-    			        {
-    			        	text: 'Import',
-    			        	location: 'right',
-    			        	id: 'importDatasetBtnContainer',
+                        {
+                            text: 'Import',
+                            location: 'right',
+                            id: 'importDatasetBtnContainer',
                             ishidden: true,
-    			        	onclick: _submitClickHandler
-    			        }
-    		        ];
+                            onclick: _submitClickHandler
+                        }
+                    ];
 
         var meta = {};
         meta.title = 'Add Data';
         meta.form = d_form;
         meta.button = d_btn;
 
-		_container = context.hoot().ui.formfactory.create('body', meta);
-	}
+        _container = context.hoot().ui.formfactory.create('body', meta);
+    }
 
     /**
     * @desc Validates user specified input.
@@ -171,7 +171,7 @@ Hoot.control.utilities.importdataset = function(context) {
             iD.ui.Alert("Please enter an output layer name.",'warning',new Error().stack);
             return;
         }
-        
+
         if(!_.isEmpty(_.filter(_.map(
             _.pluck(hoot.model.layers.getAvailLayers(),'name'),
                 function(l){
@@ -185,13 +185,13 @@ Hoot.control.utilities.importdataset = function(context) {
             iD.ui.Alert("A layer already exists with this name. Please remove the current layer or select a new name for this layer.",'warning',new Error().stack);
             return;
         }
-        
+
         var resp = context.hoot().checkForUnallowedChar(_container.select('#importDatasetLayerName').value());
         if(resp != true){
             iD.ui.Alert(resp,'warning',new Error().stack);
             return;
         }
-        
+
         resp = context.hoot().checkForUnallowedChar(_container.select('#importDatasetNewFolderName').value());
         if(resp != true){
             iD.ui.Alert(resp,'warning',new Error().stack);
@@ -206,7 +206,7 @@ Hoot.control.utilities.importdataset = function(context) {
         }
 
 
-                                                        
+
         var importText = submitExp.select('span').text();
         if(importText == 'Import') {
             _performImport(submitExp);
@@ -268,15 +268,15 @@ Hoot.control.utilities.importdataset = function(context) {
                 if(status.info == 'complete'){
                     if(_isCancel == false){
                         _container.remove();
-                    
+
                         var pathname = _container.select('#importDatasetPathName').value();
                         if(pathname==''){pathname=_container.select('#importDatasetPathName').attr('placeholder');}
                         if(pathname=='root'){pathname='';}
                         var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
-                        
+
                         //determine if a new folder is being added
                         var newfoldername = _container.select('#importDatasetNewFolderName').value();
-                        
+
                         var folderData = {};
                         folderData.folderName = newfoldername;
                         folderData.parentId = pathId;
@@ -297,7 +297,7 @@ Hoot.control.utilities.importdataset = function(context) {
                             hoot.model.folders.updateLink(link);
                             link = {};
                         })
-                    
+
                     }
 
                 } else if(status.info == 'uploaded'){
@@ -360,7 +360,7 @@ Hoot.control.utilities.importdataset = function(context) {
                 });
             }
 
-        }        
+        }
     }
 
 
@@ -400,14 +400,14 @@ Hoot.control.utilities.importdataset = function(context) {
             var textB=b.value.toUpperCase();
             return(textA<textB)?-1 : (textA>textB)?1:0;
         });
-        
+
         comboPathName.data().unshift({value:'root',title:0});
-        
+
         d3.select(this)
             .style('width', '100%')
             .call(comboPathName);
-        
-        d3.select(this).attr('readonly',true); 
+
+        d3.select(this).attr('readonly',true);
     }
 
     /**
@@ -448,7 +448,7 @@ Hoot.control.utilities.importdataset = function(context) {
                 if(spin) {
                     spin.remove();
                 }
-                
+
                 var list = [];
                 d3.values(json).forEach(function(v) {
                     list = list.concat(Object.keys(v));
@@ -477,12 +477,12 @@ Hoot.control.utilities.importdataset = function(context) {
                 };
             }));
 
-        
+
         d3.select('#importDatasetFGDBFeatureClasses')
             .style('width', '100%')
             .call(comboPathName);
-        
-        d3.select('#importDatasetFGDBFeatureClasses').attr('readonly',true); 
+
+        d3.select('#importDatasetFGDBFeatureClasses').attr('readonly',true);
     }
 
     /**
@@ -554,7 +554,7 @@ Hoot.control.utilities.importdataset = function(context) {
                     .node().parentNode).classed('hidden',true);
             }
         }
-        
+
     }
 
 
@@ -584,7 +584,7 @@ Hoot.control.utilities.importdataset = function(context) {
             var typeName = _getTypeName(selectedType);
 
             _setMultipartForType(typeName);
-            
+
 
             var translationsList = _importTranslations;
 
@@ -612,7 +612,7 @@ Hoot.control.utilities.importdataset = function(context) {
                 d3.select('#importDatasetSchema').value(_importTranslationsGeonames[0].DESCRIPTION);
             } else if(typeName == 'OSM'){
                 d3.select('#importDatasetSchema').value(_importTranslationsOsm[0].DESCRIPTION);
-            } 
+            }
 
             d3.select('#ingestfileuploaderspancontainer').classed('hidden', false);
 
@@ -633,7 +633,7 @@ Hoot.control.utilities.importdataset = function(context) {
             fName = curFileName.substring(0, curFileName.length - 8);
         }
 
-        
+
         var fObj = _.find(filesList, function(f){
             return f.name == fName;
         });
@@ -706,7 +706,7 @@ Hoot.control.utilities.importdataset = function(context) {
 
             fileNames.push(curFileName);
             if(l == 0){
-                
+
                 if(selType == 'DIR'){
                     if(_bInfo.name.substring(0,3) == "Chr"){
                         var parts = curFile.webkitRelativePath.split("/");
@@ -752,7 +752,7 @@ Hoot.control.utilities.importdataset = function(context) {
             _container.select('#importDatasetFileImport').value(fileNames.join('; '));
             var first = fileNames[0];
             var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
-            _container.select('#importDatasetLayerName').value(saveName);    
+            _container.select('#importDatasetLayerName').value(saveName);
         }
 
 
@@ -791,7 +791,7 @@ Hoot.control.utilities.importdataset = function(context) {
         }
 
         var totalCnt = cntParam.shpCnt + cntParam.osmCnt + cntParam.zipCnt;
-        if((cntParam.shpCnt > 0 && cntParam.shpCnt != totalCnt) || (cntParam.osmCnt > 0 && cntParam.osmCnt != totalCnt) 
+        if((cntParam.shpCnt > 0 && cntParam.shpCnt != totalCnt) || (cntParam.osmCnt > 0 && cntParam.osmCnt != totalCnt)
             || (cntParam.zipCnt > 0 && cntParam.zipCnt != totalCnt)){
             iD.ui.Alert("Please select only single type of files. (i.e. can not mix zip with osm)",'warning',new Error().stack);
             return false;
@@ -805,7 +805,7 @@ Hoot.control.utilities.importdataset = function(context) {
 
         if(totalFileSize > iD.data.hootConfig.ingest_size_threshold){
             var thresholdInMb = Math.floor((1*iD.data.hootConfig.ingest_size_threshold)/1000000);
-            if(!window.confirm("The total size of ingested files are greater than ingest threshold size of " + 
+            if(!window.confirm("The total size of ingested files are greater than ingest threshold size of " +
                 thresholdInMb + "MB and it may have problem. Do you wish to continue?")){
                 return false;
             }
@@ -818,13 +818,13 @@ Hoot.control.utilities.importdataset = function(context) {
     /**
     * @desc Helper function to return import types.
     **/
-	_instance.getImportTypes = function() {
+    _instance.getImportTypes = function() {
         if(!_bInfo) {
             _bInfo = hoot.getBrowserInfo();
             if(_.isEmpty(_bInfo)){_bInfo = {'name':'Unknown','version':'Unknown'};};
         }
-        
- 		var importTypes = [];
+
+         var importTypes = [];
         var fileTypes = {};
         fileTypes.value = "FILE";
         if(_bInfo.name.substring(0,3) == "Chr"){
@@ -847,39 +847,39 @@ Hoot.control.utilities.importdataset = function(context) {
         var dirType = {};
         dirType.value = "DIR";
         dirType.title = "Directory (FGDB)";
-                    
+
         if(_bInfo.name.substring(0,3) == "Chr"){importTypes.push(dirType);}
 
 
         return importTypes;
-	}
+    }
 
     /**
     * @desc Helper function to return import types.
     **/
-	_instance.getImportTranslations = function(trans, importTranslations,
+    _instance.getImportTranslations = function(trans, importTranslations,
         importTranslationsGeonames, importTranslationsOsm) {
-		_.each(trans, function(t){
-		    if(t.NAME === 'GEONAMES'){
-		        importTranslationsGeonames.push(t);
-		    } else if(t.NAME === 'OSM'){
-		        var emptyObj = {};
-		        emptyObj.NAME = 'NONE';
-		        emptyObj.PATH = 'NONE';
-		        emptyObj.DESCRIPTION = "No Translation";
-		        emptyObj.NONE = 'true';
-		        importTranslationsOsm.push(emptyObj);
+        _.each(trans, function(t){
+            if(t.NAME === 'GEONAMES'){
+                importTranslationsGeonames.push(t);
+            } else if(t.NAME === 'OSM'){
+                var emptyObj = {};
+                emptyObj.NAME = 'NONE';
+                emptyObj.PATH = 'NONE';
+                emptyObj.DESCRIPTION = "No Translation";
+                emptyObj.NONE = 'true';
+                importTranslationsOsm.push(emptyObj);
 
-		        importTranslationsOsm.push(t);
-		    } else {
-		        importTranslations.push(t);
-		    }
-		});
-	}
-
-
-	
+                importTranslationsOsm.push(t);
+            } else {
+                importTranslations.push(t);
+            }
+        });
+    }
 
 
-	return d3.rebind(_instance, _events, 'on');
+
+
+
+    return d3.rebind(_instance, _events, 'on');
 }

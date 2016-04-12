@@ -10,12 +10,12 @@ Hoot.view.utilities = function (context){
     var event = d3.dispatch('activate', 'uploadFile', 'tabToggled');
     var utilities = {};
     var _activeSettingsTabId;
- 
-	utilities.dataset = Hoot.view.utilities.dataset(context);
-	utilities.wfsdataset = Hoot.view.utilities.wfsdataset(context);
-	utilities.basemapdataset = Hoot.view.utilities.basemapdataset(context);
-	utilities.translation = Hoot.view.utilities.translation(context);
-	utilities.errorlog = Hoot.view.utilities.errorlog(context);
+
+    utilities.dataset = Hoot.view.utilities.dataset(context);
+    utilities.wfsdataset = Hoot.view.utilities.wfsdataset(context);
+    utilities.basemapdataset = Hoot.view.utilities.basemapdataset(context);
+    utilities.translation = Hoot.view.utilities.translation(context);
+    utilities.errorlog = Hoot.view.utilities.errorlog(context);
     utilities.reports = Hoot.view.utilities.reports(context);
     utilities.about = Hoot.view.utilities.about(context);
     utilities.reviewbookmarks = Hoot.view.utilities.reviewbookmarks(context);
@@ -26,7 +26,7 @@ Hoot.view.utilities = function (context){
 
 
     utilities.forceResetManageTab = function () {
-        
+
         var vis =  true;
         var txt = "Manage";
         d3.select('#manageTabBtn')
@@ -39,7 +39,7 @@ Hoot.view.utilities = function (context){
 
     utilities.activate = function () {
 
-        
+
 
         var _toggleOpts = function (d) {
             var bodyid = d3.select(d)
@@ -58,15 +58,15 @@ Hoot.view.utilities = function (context){
         {
             if(iD.data.hootManageTabs) {
                 var settingsSidebar = jobsBG.append('div')
-            		.classed('pad2 pin-bottom pin-top fill-light keyline-right',true)
-            		.attr('id','settingsSidebar');
-                
+                    .classed('pad2 pin-bottom pin-top fill-light keyline-right',true)
+                    .attr('id','settingsSidebar');
+
                 var settingsHeader = settingsSidebar.append('div')
-	            	.classed('block strong center margin2 pad1y utilHootHead point',true)
-	            	.style('height','60px')
-	            	.append('label').text('Settings').attr('id','settingsHeader');
-            	
-            	var defaultTab = null;
+                    .classed('block strong center margin2 pad1y utilHootHead point',true)
+                    .style('height','60px')
+                    .append('label').text('Settings').attr('id','settingsHeader');
+
+                var defaultTab = null;
                 _.each(iD.data.hootManageTabs, function(tabMeta){
                     var tabName = tabMeta.name;
                     var tabId = tabMeta.id;
@@ -81,31 +81,31 @@ Hoot.view.utilities = function (context){
                     if(tabMeta.pady !== undefined && tabMeta.pady === 'false'){
                         pady = '';
                     }
-                    
+
                     var tabBody = jobsBG.append('div')
                     .classed('pad2 round-top fill-light pin-left pin-top utilHoot', true)
                     .attr('id', tabId);
 
                     var bodyStyle = 'block strong center margin2 pad1y  utilHootHead';
-                    
-                    var tabHeader = settingsSidebar.append('div')
-	                    .classed(bodyStyle, true)
-	                    .attr('data', '#' + tabId)
-	                    .on('click', function () {
-	                        _toggleOpts(this);                            
-	                    });
 
-                    
+                    var tabHeader = settingsSidebar.append('div')
+                        .classed(bodyStyle, true)
+                        .attr('data', '#' + tabId)
+                        .on('click', function () {
+                            _toggleOpts(this);
+                        });
+
+
                     var tabLabel = tabHeader.append('label')
-                    	.text(tabName)
-                    	.classed('point',true)
-                    	.style('font-style','normal');
+                        .text(tabName)
+                        .classed('point',true)
+                        .style('font-style','normal');
 
                     if(isHidden) {
                         tabHeader.on('click', null);
                         tabLabel.classed('hidden', true);
                     }
-                    
+
                     var containerForm = tabBody.append('form')
                     .attr('id', 'containerForm' + tabId);
                     containerForm.classed('center round', true)
@@ -199,14 +199,14 @@ Hoot.view.utilities = function (context){
 
          ////////////ALERTS///////////////////
          var alertsDiv = d3.select('body')
-         	.insert('div',":first-child")
-         	.attr('id','alerts');
-         /////////////////////////////////////////         
-         
+             .insert('div',":first-child")
+             .attr('id','alerts');
+         /////////////////////////////////////////
+
         _createTabs(jobsBG);
     };
 
-    
+
 
     return d3.rebind(utilities, event, 'on');
 };

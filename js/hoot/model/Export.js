@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Hoot.model.export connects UI to Hoot REST end point for export request. 
+// Hoot.model.export connects UI to Hoot REST end point for export request.
 //
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
@@ -21,7 +21,7 @@ Hoot.model.export = function (context)
     model_export.exportData = function (container, data, callback) {
         _initVariables();
         exportCallback = callback;
-        outputname = container.select('#fileExportOutputName').value() || 
+        outputname = container.select('#fileExportOutputName').value() ||
                 container.select('#fileExportOutputName').attr('placeholder');
         selectedInput = data.name || outputname;
 
@@ -67,17 +67,17 @@ Hoot.model.export = function (context)
         }
 
         if (!selectedInput || !selectedOutType) {
-        	iD.ui.Alert('Please enter valid values.','warning',new Error().stack);
+            iD.ui.Alert('Please enter valid values.','warning',new Error().stack);
             return;
         }
-        
+
         // Check to see if we are appending to FGDB Template
         var appendTemplate= '';
         try{
-        	appendTemplate=container.select('.cboxAppendFGDBTemplate').select('input').property('checked');
+            appendTemplate=container.select('.cboxAppendFGDBTemplate').select('input').property('checked');
         } catch (e) {
-			appendTemplate=true;
-		}
+            appendTemplate=true;
+        }
         mapId = data.name;
 
         var param = {};
@@ -104,7 +104,7 @@ Hoot.model.export = function (context)
                 }, iD.data.hootConfig.JobStatusQueryInterval);
             });
     };
-    
+
     var _exportResultHandler = function(error, result)
     {
 
@@ -129,7 +129,7 @@ Hoot.model.export = function (context)
                 }
 
                 if(selectedOutType == 'wfs'){
-                    var capaUrl = location.origin + '/hoot-services/ogc/' + result.jobId + 
+                    var capaUrl = location.origin + '/hoot-services/ogc/' + result.jobId +
                         '?service=WFS&version=1.1.0&request=GetCapabilities';
                     //alert('WFS Resource URL:\n' + capaUrl);
                     var param = {};

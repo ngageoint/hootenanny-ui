@@ -7,7 +7,7 @@
 //      18 Dec. 2015
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.basemapdataset = function(context) {
-	var hoot_control_utilities_basemapdataset = {};
+    var hoot_control_utilities_basemapdataset = {};
 
     hoot_control_utilities_basemapdataset.newBasemapPopup = function(callback) {
         var saveName = null;
@@ -57,7 +57,7 @@ Hoot.control.utilities.basemapdataset = function(context) {
             .classed('contain', true)
             .append('input')
             .each(function(d){
-            	if(d.readonly){d3.select(this).attr('readonly',true);}
+                if(d.readonly){d3.select(this).attr('readonly',true);}
             })
             .attr('type', 'text')
             .attr('placeholder', function (field) {
@@ -151,5 +151,5 @@ Hoot.control.utilities.basemapdataset = function(context) {
 
 
 
-	return hoot_control_utilities_basemapdataset;
+    return hoot_control_utilities_basemapdataset;
 }

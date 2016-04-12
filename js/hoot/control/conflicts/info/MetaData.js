@@ -13,9 +13,9 @@
 
 Hoot.control.conflicts.info.metadata = function (context)
 {
-	var _events = d3.dispatch();
-	var _instance = {};
-	var _currentReviewableMeta = null;
+    var _events = d3.dispatch();
+    var _instance = {};
+    var _currentReviewableMeta = null;
     var _metaHead;
     var _noteContainer;
 
@@ -44,7 +44,7 @@ Hoot.control.conflicts.info.metadata = function (context)
     * @desc gets the statics information for the meta data
     * @return object containing statics information for the meta data
     **/
-	_instance.getCurrentReviewMeta = function() {
+    _instance.getCurrentReviewMeta = function() {
         return _currentReviewableMeta;
     }
 
@@ -102,5 +102,5 @@ Hoot.control.conflicts.info.metadata = function (context)
         context.hoot().control.conflicts.info.metadata.setInfo('There are ' + nUnreviewed + ' reviews');
     }
 
-	return d3.rebind(_instance, _events, 'on');
+    return d3.rebind(_instance, _events, 'on');
 }

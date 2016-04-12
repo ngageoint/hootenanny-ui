@@ -8,8 +8,8 @@
 
 Hoot.control.conflicts.map.featureNavigator = function (context)
 {
-	var _events = d3.dispatch();
-	var _instance = {};
+    var _events = d3.dispatch();
+    var _instance = {};
 
 
     /**
@@ -36,30 +36,30 @@ Hoot.control.conflicts.map.featureNavigator = function (context)
     * @param force - if true do not validate intersection
     **/
     _instance.panToEntity = function(entity, force) {
-    	//only pan if feature is not on screen
-    	var map = context.map();
-    	var entityExtent = entity.extent(context.graph())? entity.extent(context.graph()) : undefined;
-    	var mapExtent = map.extent();
-    	var entityCenter = entityExtent.center();
+        //only pan if feature is not on screen
+        var map = context.map();
+        var entityExtent = entity.extent(context.graph())? entity.extent(context.graph()) : undefined;
+        var mapExtent = map.extent();
+        var entityCenter = entityExtent.center();
 
-    	if(entityExtent == undefined){
-    		iD.ui.Alert("Could not locate selected feature with id: " + entity.id + ".",'warning',new Error().stack)
-    		return;
-    	}
+        if(entityExtent == undefined){
+            iD.ui.Alert("Could not locate selected feature with id: " + entity.id + ".",'warning',new Error().stack)
+            return;
+        }
 
         // we are locking screen until connection.js is done loading tiles
         _parent().setProcessing(false);
         _parent().setProcessing(true, 'Please wait while panning to review item.');
-    	if(force && force === true){
-    		map.extent(entityExtent);
-    		map.center(entityCenter);
+        if(force && force === true){
+            map.extent(entityExtent);
+            map.center(entityCenter);
             var zoom = Math.min(18, map.zoom()-1);
-    		map.zoom(zoom);
-    	} else {
+            map.zoom(zoom);
+        } else {
             if(_.isEmpty(_.filter(context.intersects(mapExtent),function(n){return n.id==entity.id;}))){
-        		map.extent(entityExtent);
-        		map.center(entityCenter);
-        		var zoom = Math.min(18, map.zoom()-1);
+                map.extent(entityExtent);
+                map.center(entityCenter);
+                var zoom = Math.min(18, map.zoom()-1);
                 map.zoom(zoom);
             } else {
                 _parent().setProcessing(false);
@@ -71,5 +71,5 @@ Hoot.control.conflicts.map.featureNavigator = function (context)
         return context.hoot().control.conflicts;
     };
 
-	return d3.rebind(_instance, _events, 'on');
+    return d3.rebind(_instance, _events, 'on');
 }

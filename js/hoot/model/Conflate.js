@@ -8,7 +8,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.model.conflate = function(context)
 {
-	var model_conflate = {};
+    var model_conflate = {};
 
     model_conflate.conflate = function (type, data, callback) {
         var option = {};
@@ -41,7 +41,7 @@ Hoot.model.conflate = function(context)
 
                         context.hoot().model.layers.setAvailLayers(a.layers);
                         var key = {
-                            'name': data.OUTPUT_NAME, 
+                            'name': data.OUTPUT_NAME,
                             'color': 'green'
                         };
                         if (callback) {
@@ -56,5 +56,5 @@ Hoot.model.conflate = function(context)
     };
 
 
-	return model_conflate;
+    return model_conflate;
 }

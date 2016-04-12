@@ -7,7 +7,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Hoot.view.utilities.reviewbookmarks = function(context) {
-	var _instance = {};
+    var _instance = {};
     var _lastSortRequest;
     var _DEFAULT_PAGE_COUNT = 50;
     var _currentPage = 1;
@@ -18,16 +18,16 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     **/
     _instance.createContent = function(form){
 
-        var hd = form.append('div')       
+        var hd = form.append('div')
                     .classed('col12 fill-white small keyline-bottom', true);
         var sortSpan = hd.append('span')
                     .classed('text-left big col12 fill-darken0', true);
         var aa = sortSpan.append('a');
-      
+
         _createSortMenu(form, aa);
         _createFilterByCreatorMenu(form, aa);
         _createFilterByMapIdMenu(form, aa);
-        
+
 
         _instance.datasetcontainer = form.append('div')
             .attr('id', 'reviewBookmarksContent')
@@ -54,7 +54,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                 .classed('form-field col1 pad1y pad1x ', true);
 
 
-                
+
                  btnPrevPageContainer.append('span')
                 .classed('strong center col12 ', true)
                 .classed('row1 keyline-all', true)
@@ -89,7 +89,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                 .attr('id', 'bmkPageNumBtnContainer')
                 .classed('form-field col10 pad1y pad1x overflow', true);
 
-   
+
 
 
     };
@@ -113,7 +113,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     * @param menuContainer - container div
     **/
     var _createMenu = function(form, menuDivName, displayText, meta, menuContainer, callback) {
-        
+
         var dd = menuContainer.append('div')
         .attr('id', menuDivName)
         .classed('fr quiet col1 center',true)
@@ -128,7 +128,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             } else {
                 callback(menuDivName, meta);
             }
-            
+
         });
 
 
@@ -182,8 +182,8 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         meta.title = 'Sort By';
         meta.data  = data;
 
-        document.body.removeEventListener('click', _globalSortClickHandler ); 
-        document.body.addEventListener('click', _globalSortClickHandler ); 
+        document.body.removeEventListener('click', _globalSortClickHandler );
+        document.body.addEventListener('click', _globalSortClickHandler );
         _createMenu(form, 'reviewBookmarksSortDiv', 'Sort', meta, menuContainer, function(divName, m){
             context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
         });
@@ -206,7 +206,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     **/
 
     var _filterData = function(d) {
-        
+
         _lastSortRequest['filterby'] = 'createdBy';
         _lastSortRequest['filterbyval'] = d.id;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
@@ -220,15 +220,15 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     **/
     var _createFilterByCreatorMenu = function(form, menuContainer) {
 
-        
+
         var data = _generateUsersData();
-        
+
         var meta = {};
         meta.title = 'Filter By Created By';
         meta.data  = data;
 
-        document.body.removeEventListener('click', _globalFilterByCreatorClickHandler ); 
-        document.body.addEventListener('click', _globalFilterByCreatorClickHandler ); 
+        document.body.removeEventListener('click', _globalFilterByCreatorClickHandler );
+        document.body.addEventListener('click', _globalFilterByCreatorClickHandler );
         // we have callback to data gets refreshed whenever we press button
         _createMenu(form, 'reviewBookmarksFilterByCreatorDiv', 'Creator', meta, menuContainer, function(divName, m){
             var d = _generateUsersData();
@@ -285,7 +285,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     **/
 
     var _filterByMapIdData = function(d) {
-        
+
         _lastSortRequest['filterby'] = 'mapId';
         _lastSortRequest['filterbyval'] = d.id;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
@@ -299,15 +299,15 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     **/
     var _createFilterByMapIdMenu = function(form, menuContainer) {
 
-        
+
         var data = _generateLayerData();
-        
+
         var meta = {};
         meta.title = 'Filter By Layers';
         meta.data  = data;
 
-        document.body.removeEventListener('click', _globalFilterByMapIdClickHandler ); 
-        document.body.addEventListener('click', _globalFilterByMapIdClickHandler ); 
+        document.body.removeEventListener('click', _globalFilterByMapIdClickHandler );
+        document.body.addEventListener('click', _globalFilterByMapIdClickHandler );
         // we have callback to data gets refreshed whenever we press button
         _createMenu(form, 'reviewBookmarksFilterByMapIdDiv', 'Layers', meta, menuContainer, function(divName, m){
             var d = _generateLayerData();
@@ -361,7 +361,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     * @param container - container
     * @param overrideReq - override request which may contain saved sort or filter values
     **/
-	_instance.populatePopulateBookmarks = function(container, overrideReq) {
+    _instance.populatePopulateBookmarks = function(container, overrideReq) {
             if(!container){
                 container = _instance.datasetcontainer;
             }
@@ -407,10 +407,10 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                             return;
                         }
 
-                       
+
                         var bookmarksArray = d.reviewBookmarks;
-                 
-            
+
+
                         container.selectAll('div').remove();
                         var tla = container.selectAll('div')
                             .data(bookmarksArray)
@@ -430,7 +430,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                             .classed('text-left big col12 quiet', true)
 
                             .text(_createSubText);
-                       
+
                         tla3.append('button')
                         //.classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
                         .style('height', '100%')
@@ -439,7 +439,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                             d3.select(this).classed('fr _icon trash', true);
                         });
 
-                       
+
                     });
 
                 });
@@ -447,13 +447,13 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
 
             });
-            
-            
-                
+
+
+
     };
 
-   
-    
+
+
     /**
     * @desc Shows the bookmark item main link text.
     * @param d - bookmark item data
@@ -474,7 +474,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         context.hoot().view.utilities.reviewbookmarknotes.setCurrentBookmarkId(d.id);
         context.hoot().view.utilities.reviewbookmarknotes.createContent(d3.select('#containerFormutilReviewBookmarkNotes'));
         var jobsBG = d3.select('#jobsBG');
-  
+
         var thisbody = d3.select('#utilReviewBookmarkNotes')
             .node();
         jobsBG.node()
@@ -528,25 +528,25 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     var _deleteBtnHandler = function(d) {
         d3.event.stopPropagation();
         d3.event.preventDefault();
-        
+
 
         var r = confirm("Are you sure you want to delete selected bookmark?");
         if (r == true) {
 
             request = {};
             request['bookmarkId'] = d.id;
-   
+
             Hoot.model.REST('deleteReviewBookmark', request, function (d) {
                 if(d.error){
                     context.hoot().view.utilities.errorlog.reportUIError(d.error);
                     return;
                 }
                 _instance.populatePopulateBookmarks(null, _lastSortRequest);
-               
+
             });
         } else {
             return;
         }
     }
-	return _instance;
+    return _instance;
 }

@@ -78,7 +78,7 @@ iD.Connection = function(context) {
                 .header('Content-Type', 'text/plain')
                 .post(JSON.stringify(data), function (error, resp) {
                     if (error) {
-                    	iD.ui.Alert(error.responseText,'error',new Error().stack);
+                        iD.ui.Alert(error.responseText,'error',new Error().stack);
                         return ;
                     }
                     callback(resp);
@@ -290,7 +290,7 @@ iD.Connection = function(context) {
     };
 
     // Generate Changeset XML. Returns a string.
-	// Updated version from 0.3 to 0.6 in iD v1.7.5
+    // Updated version from 0.3 to 0.6 in iD v1.7.5
     connection.changesetJXON = function(tags) {
         return {
             osm: {
@@ -395,7 +395,7 @@ iD.Connection = function(context) {
             defaultmapid = vis[0];
         }
         if (!go) {
-        	iD.ui.Alert('New way created with multiple layers visible. Turn off all layer but target layer.','notice');
+            iD.ui.Alert('New way created with multiple layers visible. Turn off all layer but target layer.','notice');
             return false;
         }
         var mapids = _.compact(_.unique(_.map(_.flatten(_.map(changes, function (a) {
@@ -925,18 +925,18 @@ iD.Connection = function(context) {
             var currShowBbox = totalNodesCnt > maxNodesCnt;
 
             if(Object.keys(inflight).length > 0) {
-        		d3.select('.warning').call(iD.ui.Warning(context,true,'Data is loading...'));
-        	} else if((!_.isEmpty(loadedData) && totalNodesCnt == 0)||(totalNodesCnt > 0 && context.intersects(context.map().extent()).length == 0)){
-            	// Inform user if features are loaded but not located in the map extent
-            	d3.select('.warning').call(iD.ui.Warning(context,true,'There is no data in the current map extent.  Try panning the map or zooming to a layer.'));
+                d3.select('.warning').call(iD.ui.Warning(context,true,'Data is loading...'));
+            } else if((!_.isEmpty(loadedData) && totalNodesCnt == 0)||(totalNodesCnt > 0 && context.intersects(context.map().extent()).length == 0)){
+                // Inform user if features are loaded but not located in the map extent
+                d3.select('.warning').call(iD.ui.Warning(context,true,'There is no data in the current map extent.  Try panning the map or zooming to a layer.'));
             } else if(currShowBbox){
                 // Inform user if features are hidden if user is zoomed out too far
-            	d3.select('.warning').call(iD.ui.Warning(context,true,'Zoom in to edit features!'));
+                d3.select('.warning').call(iD.ui.Warning(context,true,'Zoom in to edit features!'));
             } else if (_.isEmpty(context.features().filter(context.intersects(context.map().extent()),context.graph())) && context.intersects(context.map().extent()).length > 0){
-            	//context.features().filter(context.intersects(map.extent()),graph)
-            	d3.select('.warning').call(iD.ui.Warning(context,true,'Features are loaded, but are currently not visible.  Try zooming in for better results.'));
+                //context.features().filter(context.intersects(map.extent()),graph)
+                d3.select('.warning').call(iD.ui.Warning(context,true,'Features are loaded, but are currently not visible.  Try zooming in for better results.'));
             } else {
-            	d3.select('.warning').call(iD.ui.Warning(context,false,''));
+                d3.select('.warning').call(iD.ui.Warning(context,false,''));
             }
 
             if(currShowBbox !== lastShowBBox){

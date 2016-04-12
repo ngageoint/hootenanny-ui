@@ -15,8 +15,8 @@
 
 Hoot.control.conflicts.map.featurehighlighter = function (context)
 {
-	var _events = d3.dispatch();
-	var _instance = {};
+    var _events = d3.dispatch();
+    var _instance = {};
     var _flashingTimer;
 
     /**
@@ -25,11 +25,11 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     * @param raitem - review item 2
     **/
     //@TODO: change params to array
-	_instance.highlightLayer = function (ritem, raitem) {
-   
+    _instance.highlightLayer = function (ritem, raitem) {
+
         var feature = null;
         var againstFeature = null;
-        
+
         if(ritem){
             feature = context.hasEntity(ritem.id);
         }
@@ -43,10 +43,10 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
             d3.select('a.merge').classed('hide', false);
             //Override with current pair of review features
             _parent().actions.poimerge.enableMergeFeature(true, feature, againstFeature);
-            
+
             //Add hover handler to show arrow
             _parent().map.reviewarrowrenderer.activate(feature, againstFeature);
-            
+
         } else {
             //Hide merge button
             d3.select('a.merge').classed('hide', true);
@@ -59,7 +59,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         _parent().reviewIds = [];
         var poiTableCols= [];
         var panToId = null;
-    
+
         if (feature) {
             _parent().reviewIds.push(feature.id);
             panToId = feature.id;
@@ -68,8 +68,8 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 .classed('activeReviewFeature', false);
             d3.selectAll('.' + feature.id)
                 .classed('tag-hoot activeReviewFeature', true);
-                
-         
+
+
         }
         if (againstFeature) {
             poiTableCols.push(againstFeature);
@@ -93,13 +93,13 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         if(panToId) {
             _parent().map.featureNavigator.panToEntity(context.entity(panToId), true);
         }
-   
+
         _parent().loadReviewFeaturesMapInMap();
 
 
     };
 
-    
+
 
     /**
     * @desc Clear highlight
@@ -135,8 +135,8 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 var feature = context.hasEntity(fid);
                 if(feature){
                     if(feature.type == 'relation') {
-                        feature.members 
-                        .forEach(function(member) {                
+                        feature.members
+                        .forEach(function(member) {
                             _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2');
                         });
                     } else {
@@ -147,7 +147,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                         _toggleMouseEvent(poiTableCols[0].id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2', offFid);
                     }
                 }
-                                    
+
             }
 
             if(poiTableCols[1]) {
@@ -156,16 +156,16 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 var feature = context.hasEntity(fid);
                 if(feature) {
                     if(feature.type == 'relation') {
-                        feature.members 
-                        .forEach(function(member) {                
+                        feature.members
+                        .forEach(function(member) {
                             _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature');
                         });
                     } else {
                         _toggleMouseEvent(poiTableCols[1].id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature', poiTableCols[0].id);
                     }
                 }
-                    
-                    
+
+
             }
         }
 
@@ -188,7 +188,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
             _highlightRelFeatures(d.id, ftype, offType, false, offFid);
         });
     }
-    
+
     /**
     * @desc Highlights each feature and flashes
     * @param fid - feature id to highlight
@@ -209,11 +209,11 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 clearInterval(_flashingTimer);
                 _performHighlight(fid, ftype, offType, on, offFid) ;
             }
-            
+
         }
-    
-        
-            
+
+
+
     }
 
      /**
@@ -240,7 +240,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                         d3.selectAll('.' + mid).classed(offType, false);
                         d3.selectAll('.' + mid).classed(ftype, on);
                     }
-                        
+
                 });
             });
     }
@@ -260,12 +260,12 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                d3.selectAll('.' + fid).classed('tag-hoot ' + className, true).moveToFront();
             }
         }
-            
+
     }
 
     var _parent = function() {
         return context.hoot().control.conflicts;
     }
 
-	return d3.rebind(_instance, _events, 'on');
+    return d3.rebind(_instance, _events, 'on');
 }

@@ -27,16 +27,16 @@ iD.ui.RawTagEditor = function(context) {
 
     function content($wrap,sortAZ) {
         var entries = d3.entries(tags);
-    	if(sortAZ==undefined||null){
-    		if(!d3.select('#sort-tags').empty()){sortAZ = d3.select('#sort-tags').property('checked');}
-    		else{sortAZ=false;}
-    	}
+        if(sortAZ==undefined||null){
+            if(!d3.select('#sort-tags').empty()){sortAZ = d3.select('#sort-tags').property('checked');}
+            else{sortAZ=false;}
+        }
         if(sortAZ){
-    		entries.sort(function(a,b){var textA = a.key.toUpperCase();
-	    	    var textB = b.key.toUpperCase();
-	    	    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-	    	});
-    	}
+            entries.sort(function(a,b){var textA = a.key.toUpperCase();
+                var textB = b.key.toUpperCase();
+                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+            });
+        }
 
         if (!entries.length || showBlank) {
             showBlank = false;
@@ -61,28 +61,28 @@ iD.ui.RawTagEditor = function(context) {
             .attr('class', 'icon plus light');
 
        var $sortAZ = $newTag.enter().append('div')
-	    	.classed('contain', true)
-	    	.attr('id','sort-tags-div')
-	    	.style('position','absolute').style('right','25px').style('margin','-25px 0')
-	    	.html(function(){
-            	var retval = '<label class="pad1x" style="opacity: 1;">';
-            	retval += '<input type="checkbox" class="reset" id="sort-tags" ';
-            	retval += 'style="opacity: 1;"';
-            	retval += '>Sort A-Z</label>';
-            	return retval;
+            .classed('contain', true)
+            .attr('id','sort-tags-div')
+            .style('position','absolute').style('right','25px').style('margin','-25px 0')
+            .html(function(){
+                var retval = '<label class="pad1x" style="opacity: 1;">';
+                retval += '<input type="checkbox" class="reset" id="sort-tags" ';
+                retval += 'style="opacity: 1;"';
+                retval += '>Sort A-Z</label>';
+                return retval;
             });
 
       /* if(d3.select('#entity_editor_presettranstype').value()=='OSM'){
-    	   d3.select('#sort-tags-div').classed('hidden',false);
+           d3.select('#sort-tags-div').classed('hidden',false);
        } else {d3.select('#sort-tags-div').classed('hidden',true);}*/
 
        $sortAZ.on('change',function(){
-        	var sortAZ = d3.select('#sort-tags').property('checked');
-        	if(sortAZ==true){
-        		content($wrap,true);
-        	} else {
-        		content($wrap);
-        	}
+            var sortAZ = d3.select('#sort-tags').property('checked');
+            if(sortAZ==true){
+                content($wrap,true);
+            } else {
+                content($wrap);
+            }
         });
 
         $enter.on('click', addTag);
@@ -161,19 +161,19 @@ iD.ui.RawTagEditor = function(context) {
             .on('change', valueChange)
             .on('keydown.push-more', pushMore)
             .each(function(d){
-            	if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item)==0;}))){
-            		d3.select(this).attr('readonly',true);
-            	}
+                if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item)==0;}))){
+                    d3.select(this).attr('readonly',true);
+                }
             });
 
 
         $items.select('button.remove')
             .on('click', function(d){
-            	if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item)==0;}))){
-            		return iD.ui.Alert("Cannot remove a protected tag!","warning",new Error().stack);
-            	} else {
-            		return removeTag(d);
-            	}
+                if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item)==0;}))){
+                    return iD.ui.Alert("Cannot remove a protected tag!","warning",new Error().stack);
+                } else {
+                    return removeTag(d);
+                }
             });
 
         $items.exit()
@@ -284,7 +284,7 @@ iD.ui.RawTagEditor = function(context) {
                 }));
         }
 
-		//iD v1.9.3
+        //iD v1.9.3
         function unbind() {
             var row = d3.select(this);
 
@@ -341,7 +341,7 @@ iD.ui.RawTagEditor = function(context) {
         }
 
         function sortTags() {
-        	content($wrap);
+            content($wrap);
         }
     }
 

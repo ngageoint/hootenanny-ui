@@ -7,10 +7,10 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.model.layers = function (context)
 {
-	var model_layers = {};
-	var layers = {};
-	var availLayers = [];
-	var recentlyUsedLayers = [];
+    var model_layers = {};
+    var layers = {};
+    var availLayers = [];
+    var recentlyUsedLayers = [];
     var isLayerLoading = false;
     var selectedLayers = [];
 
@@ -18,7 +18,7 @@ Hoot.model.layers = function (context)
     model_layers.layers = layers;
     model_layers.getmapIdByName = function (name) {
         var ar = _.filter(model_layers.getAvailLayers(), function (a) {
-        	return a.name === name;
+            return a.name === name;
         });
         if(!ar.length){return null;}
         return ar[0].id;
@@ -42,7 +42,7 @@ Hoot.model.layers = function (context)
     };
 
 
-	model_layers.refresh = function (callback) {
+    model_layers.refresh = function (callback) {
         Hoot.model.REST('getAvailLayers', function (a) {
 
             if(a.status == 'failed'){
@@ -58,8 +58,8 @@ Hoot.model.layers = function (context)
 
             //get path names
             /*_.each(a.layers,function(lyr){
-            	if(lyr.name.indexOf('|')==-1){lyr.path='root'}
-            	else{lyr.path = lyr.name.slice(0,lyr.name.lastIndexOf('|'));}
+                if(lyr.name.indexOf('|')==-1){lyr.path='root'}
+                else{lyr.path = lyr.name.slice(0,lyr.name.lastIndexOf('|'));}
             });*/
 
             if (callback) {
@@ -69,43 +69,43 @@ Hoot.model.layers = function (context)
     };
 
     model_layers.getAvailLayers = function () {
-    	return availLayers;
+        return availLayers;
     };
 
     model_layers.setAvailLayers = function (d) {
-    	availLayers = d;
+        availLayers = d;
         return availLayers;
     };
-    
+
     model_layers.getRecentlyUsedLayers = function() {
-    	return recentlyUsedLayers;
+        return recentlyUsedLayers;
     };
-    
+
     model_layers.setRecentlyUsedLayers = function(lyr) {
-    	//remove old layers
-    	recentlyUsedLayers = _.intersection(_.map(hoot.model.layers.getAvailLayers(),'name'),recentlyUsedLayers);
-    	
-    	if(recentlyUsedLayers.indexOf(lyr)>-1){return;}		//Already in list
-    	
-    	if(recentlyUsedLayers.length>5){recentlyUsedLayers.splice(0,1);} 
-    	recentlyUsedLayers.push(lyr);
+        //remove old layers
+        recentlyUsedLayers = _.intersection(_.map(hoot.model.layers.getAvailLayers(),'name'),recentlyUsedLayers);
+
+        if(recentlyUsedLayers.indexOf(lyr)>-1){return;}        //Already in list
+
+        if(recentlyUsedLayers.length>5){recentlyUsedLayers.splice(0,1);}
+        recentlyUsedLayers.push(lyr);
     }
 
     model_layers.setLayerLinks = function(callback) {
-    	var links = context.hoot().model.folders.getAvailLinks();
+        var links = context.hoot().model.folders.getAvailLinks();
 
-    	var layerList = _.each(_.map(model_layers.getAvailLayers(), _.clone) , function(element, index) {
-    		_.extend(element, {type:'dataset'});
-    		var match = _.find(this,function(e){return e.mapId===element.id});
-    		if(match){_.extend(element,{folderId:match.folderId});}
-    		else{_.extend(element,{folderId:0});}
-    	},links);
+        var layerList = _.each(_.map(model_layers.getAvailLayers(), _.clone) , function(element, index) {
+            _.extend(element, {type:'dataset'});
+            var match = _.find(this,function(e){return e.mapId===element.id});
+            if(match){_.extend(element,{folderId:match.folderId});}
+            else{_.extend(element,{folderId:0});}
+        },links);
 
-    	availLayers = layerList;
+        availLayers = layerList;
 
-    	if (callback){
-    		callback(availLayers);
-    	}
+        if (callback){
+            callback(availLayers);
+        }
     }
 
     model_layers.getLayers = function (opt) {
@@ -184,7 +184,7 @@ Hoot.model.layers = function (context)
 
                 var hootLyrs = d3.selectAll('.hootLayers');
                 if(hootLyrs[0][0] != undefined){
-                	var lyr = model_layers.getmapIdByName(d3.select(hootLyrs[0][0]).text());
+                    var lyr = model_layers.getmapIdByName(d3.select(hootLyrs[0][0]).text());
                     context.connection().lastLoadedLayer(lyr.toString());
                     context.flush();
                 }
@@ -264,36 +264,36 @@ Hoot.model.layers = function (context)
     };
 
     model_layers.deleteLayer = function(dataset,callback){
-    	if(!dataset.name) {
-    		if(callback){callback(false);}
-    		return false;
-    	}
+        if(!dataset.name) {
+            if(callback){callback(false);}
+            return false;
+        }
 
-	    d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + dataset.name)
-    	.header('Content-Type', 'text/plain')
-    	.post("", function (error, data) {
+        d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + dataset.name)
+        .header('Content-Type', 'text/plain')
+        .post("", function (error, data) {
 
-    		var exportJobId = data.jobId;
+            var exportJobId = data.jobId;
 
-    		var statusUrl = '/hoot-services/job/status/' + exportJobId;
-    		var statusTimer = setInterval(function () {
-    			d3.json(statusUrl, function (error, result) {
-    				if (result.status !== 'running') {
-    					Hoot.model.REST.WarningHandler(result);
-    					clearInterval(statusTimer);
+            var statusUrl = '/hoot-services/job/status/' + exportJobId;
+            var statusTimer = setInterval(function () {
+                d3.json(statusUrl, function (error, result) {
+                    if (result.status !== 'running') {
+                        Hoot.model.REST.WarningHandler(result);
+                        clearInterval(statusTimer);
 
-    					//update link
-    					var link={};
-    					link.folderId = 0;
-    					link.updateType='delete';
-    				    link.mapid=hoot.model.layers.getmapIdByName(dataset.name)||0;
-    				    hoot.model.layers.refresh(function(){
-    				    	if(callback){callback(true);}
-    					});
-    				}
-    			});
-    		}, iD.data.hootConfig.JobStatusQueryInterval);
-    	});
+                        //update link
+                        var link={};
+                        link.folderId = 0;
+                        link.updateType='delete';
+                        link.mapid=hoot.model.layers.getmapIdByName(dataset.name)||0;
+                        hoot.model.layers.refresh(function(){
+                            if(callback){callback(true);}
+                        });
+                    }
+                });
+            }, iD.data.hootConfig.JobStatusQueryInterval);
+        });
     };
 
     model_layers.changeVisibility = function (name) {
@@ -405,22 +405,22 @@ Hoot.model.layers = function (context)
 
     model_layers.updateLayerName = function(data,callback){
 
-    	Hoot.model.REST('Modify',data,function(resp){
-    		//if(resp.success == true){
-    			if(callback){callback(resp.success);}
-    		//}
-    		//return resp.success;
-    	});
-    	//return true;
+        Hoot.model.REST('Modify',data,function(resp){
+            //if(resp.success == true){
+                if(callback){callback(resp.success);}
+            //}
+            //return resp.success;
+        });
+        //return true;
     };
 
     model_layers.getSelectedLayers = function() {
-    	return selectedLayers;
+        return selectedLayers;
     };
 
     model_layers.setSelectedLayers = function(d) {
-    	selectedLayers = d;
-    	return selectedLayers;
+        selectedLayers = d;
+        return selectedLayers;
     };
 
 

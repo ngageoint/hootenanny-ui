@@ -10,18 +10,18 @@ Hoot.control.import = function (context,selection) {
     var ETL = {};
 
     ETL.createTree = function(a){
-    	hoot.control.utilities.folder.createFolderTree(a);
+        hoot.control.utilities.folder.createFolderTree(a);
     }
 
     ETL.renderTree = function(a) {
         if(a.tree){
-    		ETL.createTree(d3.select(this));
-    	}
+            ETL.createTree(d3.select(this));
+        }
     }
 
 
     ETL.render = function (colors, isPrimary) {
-    	context.map().on("maxImportZoomChanged", function(){
+        context.map().on("maxImportZoomChanged", function(){
             var imp = d3.selectAll('.hootImport')[0];
             if(imp.length){
                 for(i=0; i<imp.length; i++){
@@ -43,7 +43,7 @@ Hoot.control.import = function (context,selection) {
                     return n.name;
                 }),
             tree: context.hoot().model.folders
-            		.getAvailFoldersWithLayers()
+                    .getAvailFoldersWithLayers()
         }];
 
         var sels = selection.selectAll('forms');
@@ -65,8 +65,8 @@ Hoot.control.import = function (context,selection) {
             .classed('button dark animate strong block _icon big plus pad2x pad1y js-toggle', true)
             .attr('href', '#')
             .text(function(){
-            	var pnode = d3.select(d3.select(this).node().parentNode);
-            	if(isPrimary || pnode.node().nextSibling){return 'Add Reference Dataset';}
+                var pnode = d3.select(d3.select(this).node().parentNode);
+                if(isPrimary || pnode.node().nextSibling){return 'Add Reference Dataset';}
                 else {return 'Add Secondary Dataset';}
                 })
             .on('click', function () {toggleForm(this);});
@@ -79,38 +79,38 @@ Hoot.control.import = function (context,selection) {
             .classed('overflow',true)
             .style({'height':'150px','margin':'0 0 15px','resize':'vertical'})
             .select(ETL.renderTree);
-        
+
         // Recently Used Layers
         var recentLayersDiv = fieldset.append('div')
-        	.classed('form-field fill-white small keyline-all round space-bottom1',true);
+            .classed('form-field fill-white small keyline-all round space-bottom1',true);
         recentLayersDiv.append('label')
-        	.classed('pad1x pad0y strong fill-light round-top keyline-bottom',true)
-        	.text('Recently Used Layers');
+            .classed('pad1x pad0y strong fill-light round-top keyline-bottom',true)
+            .text('Recently Used Layers');
         recentLayersDiv.append('div').classed('contain',true).append('input')
-        	.attr('type','text')
-        	.attr('placeholder','Recently Used Layers')
-        	.classed('reset usedLayersInput combobox-input',true)
-        	.attr('readonly',true)
-        	.select(function(){
-        		/*if(hoot.model.layers.getRecentlyUsedLayers().length==0){
-        			d3.select(this.parentNode.parentNode).attr('hidden',true);
-        			return;
-        		}*/
-        		var comboData = hoot.model.layers.getRecentlyUsedLayers();
-        		var combo = d3.combobox()
-	            	.data(_.map(comboData, function (n) {
-	            		return {
-	                         value: n,
-	                         title: n
-	                     };
-	                 }));
-	             d3.select(this)
-	                 .style('width', '100%')
-	                 .call(combo)
-	                 .on('change',function(){
-	                	 d3.select(this.parentNode.parentNode.parentNode).selectAll('svg').selectAll('rect').classed('sel',false);
-	                 });
-        	})	
+            .attr('type','text')
+            .attr('placeholder','Recently Used Layers')
+            .classed('reset usedLayersInput combobox-input',true)
+            .attr('readonly',true)
+            .select(function(){
+                /*if(hoot.model.layers.getRecentlyUsedLayers().length==0){
+                    d3.select(this.parentNode.parentNode).attr('hidden',true);
+                    return;
+                }*/
+                var comboData = hoot.model.layers.getRecentlyUsedLayers();
+                var combo = d3.combobox()
+                    .data(_.map(comboData, function (n) {
+                        return {
+                             value: n,
+                             title: n
+                         };
+                     }));
+                 d3.select(this)
+                     .style('width', '100%')
+                     .call(combo)
+                     .on('change',function(){
+                         d3.select(this.parentNode.parentNode.parentNode).selectAll('svg').selectAll('rect').classed('sel',false);
+                     });
+            })
 
         // Symbology control for selecting layer color
         fieldset
@@ -163,7 +163,7 @@ Hoot.control.import = function (context,selection) {
         // Add Layer click handler
         var submitLayer = function (a) {
             if(context.hoot().model.layers.isLayerLoading() === true){
-            	iD.ui.Alert('Please wait utill loading first layer is done!','notice');
+                iD.ui.Alert('Please wait utill loading first layer is done!','notice');
                 return;
             }
 
@@ -175,27 +175,27 @@ Hoot.control.import = function (context,selection) {
                 .attr('data-color');
 
             var name,
-            	lyrid;
+                lyrid;
             try{
                 // make sure something has been selected
                 if(self.select('.sel').empty()){
-                	//Check to see if one is selected in Recently Used
-                	if(self.selectAll('.usedLayersInput').value()==''){
-                    	iD.ui.Alert('Please select a dataset to add to the map!','warning',new Error().stack);
-                        return;            		
-                	} else {
-                		name = self.selectAll('.usedLayersInput').value();
-                    	lyrid = hoot.model.layers.getmapIdByName(name);
-                    	if(lyrid==null){throw new Error("Invalid layer selected");}
-                	}
+                    //Check to see if one is selected in Recently Used
+                    if(self.selectAll('.usedLayersInput').value()==''){
+                        iD.ui.Alert('Please select a dataset to add to the map!','warning',new Error().stack);
+                        return;
+                    } else {
+                        name = self.selectAll('.usedLayersInput').value();
+                        lyrid = hoot.model.layers.getmapIdByName(name);
+                        if(lyrid==null){throw new Error("Invalid layer selected");}
+                    }
                 } else {
-                	var gNode = d3.select(self.select('.sel').node().parentNode);
+                    var gNode = d3.select(self.select('.sel').node().parentNode);
                     if(!gNode.selectAll('title').empty()){name = gNode.select('title').text();}
                     else{name = gNode.select('.dnameTxt').text();}
-                	lyrid = gNode.select('.dnameTxt').attr('lyr-id');
+                    lyrid = gNode.select('.dnameTxt').attr('lyr-id');
                 }
             } catch(e) {
-            	iD.ui.Alert('There was an error adding this layer to the map!','warning',new Error().stack);
+                iD.ui.Alert('There was an error adding this layer to the map!','warning',new Error().stack);
                 return;
             }
             if(!name || !lyrid){iD.ui.Alert('Select Layer to Add','warning');return;}
@@ -210,12 +210,12 @@ Hoot.control.import = function (context,selection) {
                 hoot.model.layers.setRecentlyUsedLayers(key.name);
                 //update combo boxes
                 var comboData = hoot.model.layers.getRecentlyUsedLayers();
-        		var combo = d3.combobox().data(_.map(comboData, function (n) {return {value: n,title: n};}));
-        		d3.selectAll('.usedLayersInput').each(function(){
-        			d3.select(this).call(combo);
-        		});
-            	
-            	if(res == 'showprogress'){
+                var combo = d3.combobox().data(_.map(comboData, function (n) {return {value: n,title: n};}));
+                d3.selectAll('.usedLayersInput').each(function(){
+                    d3.select(this).call(combo);
+                });
+
+                if(res == 'showprogress'){
                     self
                     .attr('class', function () {
                         if(color == 'osm'){
@@ -320,7 +320,7 @@ Hoot.control.import = function (context,selection) {
                 d3.selectAll('.usedLayersInput').each(function(){
                     d3.select(this).call(combo);
                 });
-                
+
                 if(res == 'showprogress'){
                     self
                     .attr('class', function () {

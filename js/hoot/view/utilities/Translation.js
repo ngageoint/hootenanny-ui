@@ -6,7 +6,7 @@
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.view.utilities.translation = function(context) {
-	var hoot_view_utilities_translation = {};
+    var hoot_view_utilities_translation = {};
 
 
     hoot_view_utilities_translation.createContainer = function(form){
@@ -25,7 +25,7 @@ Hoot.view.utilities.translation = function(context) {
             .call(hoot_view_utilities_translation.populateTranslations);
     };
 
-	hoot_view_utilities_translation.populateTranslations = function(container) {
+    hoot_view_utilities_translation.populateTranslations = function(container) {
             if(!container){
                 container = hoot_view_utilities_translation.datasetcontainer;
             }
@@ -58,14 +58,14 @@ Hoot.view.utilities.translation = function(context) {
                 .on('click', function (n) {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
-                    
+
                     var r = confirm("Are you sure you want to delete selected translaton?");
                     if (r == true) {
 
                     } else {
                         return;
                     }
-                    
+
 
                     d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1',false);
                     d3.select(this).classed('keyline-left keyline-right pad1 row1  col1 fr',true).call(iD.ui.Spinner(context));
@@ -123,5 +123,5 @@ Hoot.view.utilities.translation = function(context) {
         };
 
 
-	return hoot_view_utilities_translation;
+    return hoot_view_utilities_translation;
 }

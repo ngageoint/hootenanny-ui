@@ -12,7 +12,7 @@ Hoot.hoot = function (context) {
         hoot = {},
         //layers = {},
         availLayers = [];
-    
+
     hoot.ui = Hoot.ui(context);
     hoot.model = Hoot.model(context);
     hoot.view = Hoot.view(context);
@@ -48,15 +48,15 @@ Hoot.hoot = function (context) {
             Hoot.demo(context);
         }
         hoot.model.folders.refresh(function () {
-        	hoot.model.layers.refresh(function(){
-        		hoot.model.folders.refreshLinks(function(){
-        			if (callback) {
-            			callback();
-            		}
-        		})        		
-        	});
-        	/*if (callback) {
-        		callback();
+            hoot.model.layers.refresh(function(){
+                hoot.model.folders.refreshLinks(function(){
+                    if (callback) {
+                        callback();
+                    }
+                })
+            });
+            /*if (callback) {
+                callback();
             }*/
         });
         Hoot.model.REST('GetTranslationServerStatus', function(){
@@ -73,10 +73,10 @@ Hoot.hoot = function (context) {
             });
 
         });
-        
+
         Hoot.model.REST('getConflationCustomOpts',function(){});
-       
- 
+
+
 
         Hoot.model.REST('getMapSizeThresholds', function (thresholds) {
             if(thresholds.error){
@@ -88,7 +88,7 @@ Hoot.hoot = function (context) {
         });
 
         hoot.getAllusers();
-        
+
     };
 
     /**
@@ -173,7 +173,7 @@ Hoot.hoot = function (context) {
         sheets.insertRule('path.fill.tag-hoot-' + modifiedId + ' { fill:' + lighter + '}', sheets.cssRules.length - 1);
         sheets.insertRule('g.point.tag-hoot-' + modifiedId + ' .stroke { fill:' + color + '}', sheets.cssRules.length - 1);
     };
- 
+
     /**
     * @desc Removes layer color
     * @param lyrid - target layer id
@@ -196,7 +196,7 @@ Hoot.hoot = function (context) {
                 }
             }
         }
-        
+
      };
 
 
@@ -233,8 +233,8 @@ Hoot.hoot = function (context) {
     **/
     hoot.toggleColor = function(name){
         //get layer id
-    	var lyrid = hoot.model.layers.getmapIdByName(name);
-    	//find style
+        var lyrid = hoot.model.layers.getmapIdByName(name);
+        //find style
         var rules = _findLayerStyleRules(lyrid);
         // if not exist then put by looking into layers
         if(rules.length == 0){
@@ -245,7 +245,7 @@ Hoot.hoot = function (context) {
         } else {// else remove which reveals osm symbology
             hoot.removeColor(lyrid);
         }
-        
+
     };
 
     // Appears to be dead code and after verification should be deprecated.
@@ -271,31 +271,31 @@ Hoot.hoot = function (context) {
     };
 
     hoot.checkForSpecialChar = function(str){
-        var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/); 
+        var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/);
         if (pattern.test(str)) {
             return false;
         }
         return true;
    };
-   
+
    /**
     * @desc Special character validation helper function
     * @param str - target string
     **/
    hoot.checkForUnallowableWords = function(str){
-	   var unallowable = ['root','dataset','datasets','folder'];
-	   if(unallowable.indexOf(str.toLowerCase())>=0){return false;}
-	   return true;
+       var unallowable = ['root','dataset','datasets','folder'];
+       if(unallowable.indexOf(str.toLowerCase())>=0){return false;}
+       return true;
    };
-   
+
    hoot.checkForUnallowedChar = function(str){
-	   if(!hoot.checkForSpecialChar(str)){
-		   return "Please do not use special characters: " + str + ".";
-	   }
-	   if(!hoot.checkForUnallowableWords(str)){
-		   return "Please do not use any unallowable terms: " + str + ".";
-	   }
-	   return true;
+       if(!hoot.checkForSpecialChar(str)){
+           return "Please do not use special characters: " + str + ".";
+       }
+       if(!hoot.checkForUnallowableWords(str)){
+           return "Please do not use any unallowable terms: " + str + ".";
+       }
+       return true;
    };
 
    hoot.isModeBtnEnabled = function()
@@ -316,7 +316,7 @@ Hoot.hoot = function (context) {
     * @param event - key stroke event
     **/
     document.onkeydown = function (event) {
-    	if (event.altKey && (event.which === 66)) {
+        if (event.altKey && (event.which === 66)) {
             id.hoot().model.layers.layerSwap();
         } else if (event.altKey && (event.which === 78)) {
             var curlayers = id.hoot().model.layers.getLayers();
@@ -338,22 +338,22 @@ Hoot.hoot = function (context) {
             });
         }
     };
-    
+
     hoot.assert = function(condition)
     {
       if (!condition)
       {
-    	throw "Assertion failed";  
+        throw "Assertion failed";
       }
     }
-    
+
     hoot.containsObj = function(obj, arr)
     {
       for (var i = 0; i < arr.length; i++)
       {
         if (arr[i] === obj)
         {
-          return true;	
+          return true;
         }
       }
       return false;
@@ -365,12 +365,12 @@ Hoot.hoot = function (context) {
     hoot.getBrowserInfo = function(){
         var browserInfo = {};
         var appVerStr = navigator.userAgent;
-        var appVer = appVerStr.match(/(chrome|chromium|opera|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []; 
+        var appVer = appVerStr.match(/(chrome|chromium|opera|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
         if(appVer.length > 2){
             browserInfo.name = appVer[1];
-            browserInfo.version = appVer[2];     
+            browserInfo.version = appVer[2];
                  // check detailed version
-                 
+
                  var parts = appVerStr.split(' ');
                  _.each(parts, function(part){
                      if(part.indexOf(browserInfo.name) == 0){
@@ -381,11 +381,11 @@ Hoot.hoot = function (context) {
                      }
                  })
         }
-        
+
         return browserInfo;
-        
+
     };
-    
+
     var bInfo = hoot.getBrowserInfo();
     if(bInfo.name !== 'Chrome' && bInfo.name !== 'Chromium' && bInfo.name !== 'Firefox'){
         alert("Hootenanny will not function normally under " + bInfo.name + " v. " + bInfo.version);

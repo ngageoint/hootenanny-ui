@@ -18,7 +18,7 @@
 //      c. ReviewResolution: Operations related to resolve and accept all
 //      d. TraversReview: Operations related to traversing reviewable items.
 // 2. info: Group of operations related to review information display
-//      a. MetaData: Statistics display for review like total reviewable,resolved counts and 
+//      a. MetaData: Statistics display for review like total reviewable,resolved counts and
 //          Notes related to current review item.
 //      b. ReviewTable: Filtered tags table for displaying differences of reviewable items
 // 3. map: Group of map display controls for hightlight, arrow and pan/zoom
@@ -56,7 +56,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     /**
      * @desc activate sidebar review related control
      * @param response - instance configuration data
-     * @return sidebar review form 
+     * @return sidebar review form
      **/
     _instance.activate = function (response) {
         // clear all globals
@@ -72,26 +72,26 @@ Hoot.control.conflicts = function (context, sidebar) {
         _review.append('a')
             .classed('button dark animate strong block big pad2x pad1y js-toggle white', true)
             .style('text-align','left')
-            .html('<div class="margin2 inline _loadingSmall"><span></span></div>' + 
+            .html('<div class="margin2 inline _loadingSmall"><span></span></div>' +
                 '<span class="strong">Checking for reviewable features...&#8230;</span>');
 
         context.connection().on('reviewLayerAdded', function (layerName, force) {
 
             var curReviewable = _instance.actions.traversereview.getCurrentReviewable();
-            
+
             if(curReviewable) {
                 // make sure to load any missing elements
-                _instance.actions.idgraphsynch.getRelationFeature(curReviewable.mapId, curReviewable.relationId, 
+                _instance.actions.idgraphsynch.getRelationFeature(curReviewable.mapId, curReviewable.relationId,
                 function(newReviewItem){
- 
-                    _cleanupProcessing(layerName, force);         
-                   
+
+                    _cleanupProcessing(layerName, force);
+
                 });
-                
+
             } else {
                 _cleanupProcessing(layerName, force);
             }
-  
+
 
         });
 
@@ -103,10 +103,10 @@ Hoot.control.conflicts = function (context, sidebar) {
         return _review;
     };
 
-    
+
 
     /**
-    * @desc This is the main call for review session where it renders all sub controls 
+    * @desc This is the main call for review session where it renders all sub controls
     * and then gets first review item.
     * @param data - object containing map id
     **/
@@ -283,7 +283,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 _btnEnabled = false;
                 d.action();
               } else {
-            	  iD.ui.Alert('Please wait.  Processing review.','notice');
+                  iD.ui.Alert('Please wait.  Processing review.','notice');
               }
 
             })
@@ -326,7 +326,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     **/
     _instance.reviewNextStep = function () {
 
-    	d3.select('body').call(iD.ui.Processing(context,false));
+        d3.select('body').call(iD.ui.Processing(context,false));
 
         _confData.isDeleteEnabled = true;
 
@@ -431,7 +431,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     /**
     * @desc Locks up the screen while processing
     * @param lock - lock switch
-    * @param message - message to show during lock 
+    * @param message - message to show during lock
     **/
     _instance.setProcessing = function(lock, message) {
         if(lock) {
@@ -469,11 +469,11 @@ Hoot.control.conflicts = function (context, sidebar) {
     **/
     var _resetAllVariables = function(){
         _confData = undefined;
-		_review = undefined;
-		_reviewOptions = undefined;
-		_btnEnabled = true;
-		_mapid = undefined
-		_too1Tip = undefined;
+        _review = undefined;
+        _reviewOptions = undefined;
+        _btnEnabled = true;
+        _mapid = undefined
+        _too1Tip = undefined;
         _timeout = undefined;
 
         _instance.actions.reset();
@@ -508,7 +508,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     var _cleanupProcessing = function(layerName, force) {
         if(force === true) {
             _instance.setProcessing(false);
-            
+
             _instance.map.featurehighlighter.hightligtDependents();
 
         } else {
@@ -516,7 +516,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             if(layerName === confLayerName) {
                 _instance.setProcessing(false);
             }
-        }        
+        }
     }
 
     return d3.rebind(_instance, _events, 'on');

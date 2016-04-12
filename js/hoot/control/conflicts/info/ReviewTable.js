@@ -8,20 +8,20 @@
 
 Hoot.control.conflicts.info.reviewtable = function (context)
 {
-	var _events = d3.dispatch();
-	var _instance = {};
-	var _poiTableCols= [];
+    var _events = d3.dispatch();
+    var _instance = {};
+    var _poiTableCols= [];
 
 
-    
+
     /**
     * @desc creates tag table for reviewable items
     * @param poiTableCols - table columns
     **/
     _instance.buildPoiTable = function (poiTableCols) {
-    	var elem = d3.select('#conflicts-container');
+        var elem = d3.select('#conflicts-container');
         _poiTableCols = poiTableCols;
-    	var feats = poiTableCols;
+        var feats = poiTableCols;
         function addEllipsis(val) {
             var max = 32;
             if (val && val.length > max) {
@@ -66,7 +66,7 @@ Hoot.control.conflicts.info.reviewtable = function (context)
 
 
 
-    
+
     /**
     * @desc show/hide toggler
     **/
@@ -148,5 +148,5 @@ Hoot.control.conflicts.info.reviewtable = function (context)
         return _poiTableCols;
     }
 
-	return d3.rebind(_instance, _events, 'on');
+    return d3.rebind(_instance, _events, 'on');
 }

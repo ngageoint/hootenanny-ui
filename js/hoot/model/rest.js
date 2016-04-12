@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Hoot.model.REST is static collection of various REST request made to Hoot service and Node JS server. 
+// Hoot.model.REST is static collection of various REST request made to Hoot service and Node JS server.
 //
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
@@ -50,7 +50,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                 if (json && json.response.indexOf('<html>') !== -1) {
                     error = 'error';
                 } else if (json==undefined && error.response) {
-                	json = {"errorMessage":error.response.replace('java.lang.Exception: ',''),"response":"","responseText":[]};
+                    json = {"errorMessage":error.response.replace('java.lang.Exception: ',''),"response":"","responseText":[]};
                 }
                 callback(json);
                 return json;
@@ -65,10 +65,10 @@ Hoot.model.REST = function (command, data, callback, option) {
         /*callback(true);
         return true;*/
         d3.json('/hoot-services/osm/api/0.6/map/modify?mapId=' + data.mapid +
-        		'&inputType=' + data.inputType + '&modName=' + data.modifiedName)
+                '&inputType=' + data.inputType + '&modName=' + data.modifiedName)
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Modify name failed! For detailed log goto Manage->Log",'error',new Error().stack);
+                iD.ui.Alert("Modify name failed! For detailed log goto Manage->Log",'error',new Error().stack);
                 return error;
             }
             callback(data);
@@ -77,17 +77,17 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.updateMapFolderLinks = function(data,callback){
-    	if (!(data.folderId >= 0) || !(data.mapid >= 0) || !data.updateType) {
+        if (!(data.folderId >= 0) || !(data.mapid >= 0) || !data.updateType) {
             callback(false);
             return false;
         }
         /*callback(true);
         return true;*/
         d3.json('/hoot-services/osm/api/0.6/map/linkMapFolder?mapId=' + data.mapid +
-        		'&folderId=' + data.folderId + '&updateType=' + data.updateType)
+                '&folderId=' + data.folderId + '&updateType=' + data.updateType)
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Folder-Map link failed! For detailed log goto Manage->Log",'error',new Error().stack);
+                iD.ui.Alert("Folder-Map link failed! For detailed log goto Manage->Log",'error',new Error().stack);
                 return error;
             }
             callback(data);
@@ -96,13 +96,13 @@ Hoot.model.REST = function (command, data, callback, option) {
     }
 
     rest.updateFolder = function(data,callback){
-    	if(!(data.parentId >= 0)||!(data.folderId >= 0)||data.parentId==data.folderId){
-    		callback(false);
+        if(!(data.parentId >= 0)||!(data.folderId >= 0)||data.parentId==data.folderId){
+            callback(false);
             return false;
-    	}
+        }
 
-    	d3.json('/hoot-services/osm/api/0.6/map/updateParentId?folderId=' + data.folderId +
-        		'&parentId=' + data.parentId)
+        d3.json('/hoot-services/osm/api/0.6/map/updateParentId?folderId=' + data.folderId +
+                '&parentId=' + data.parentId)
         .post(data, function (error, data) {
             if (error){
                 return error;
@@ -118,11 +118,11 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
 
-    	d3.json('/hoot-services/osm/api/0.6/map/addfolder?folderName=' + data.folderName +
-        		'&parentId=' + data.parentId)
+        d3.json('/hoot-services/osm/api/0.6/map/addfolder?folderName=' + data.folderName +
+                '&parentId=' + data.parentId)
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Add folder failed! For detailed log goto Manage->Log",'error',new Error().stack);
+                iD.ui.Alert("Add folder failed! For detailed log goto Manage->Log",'error',new Error().stack);
                 return error;
             }
             callback(data);
@@ -131,17 +131,17 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.deleteFolder = function (folderId,callback) {
-    	if(!(folderId >= 0)) {
-    		callback(false);
-    		return false;
-    	}
+        if(!(folderId >= 0)) {
+            callback(false);
+            return false;
+        }
 
-    	d3.json('/hoot-services/osm/api/0.6/map/deletefolder?folderId=' + folderId)
+        d3.json('/hoot-services/osm/api/0.6/map/deletefolder?folderId=' + folderId)
         .post(function (error, data) {
-        	if(error){
-        		callback(false);
-        	} else {callback(true);}
-        	return true;
+            if(error){
+                callback(false);
+            } else {callback(true);}
+            return true;
         });
     };
 
@@ -193,7 +193,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                         callback(layerlist);
                      });
                 } else {
-                	callback(resp);
+                    callback(resp);
                 }
             }
         });
@@ -260,11 +260,11 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getMapSizes = function (mapIds, callback){
-    	if(!mapIds){
+        if(!mapIds){
             callback(null);
             return;
         }
-    	var request = d3.json('/hoot-services/info/map/sizes?mapid=' + mapIds);
+        var request = d3.json('/hoot-services/info/map/sizes?mapid=' + mapIds);
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, "Get map sizes failed! For detailed log goto Manage->Log"));
@@ -272,46 +272,46 @@ Hoot.model.REST = function (command, data, callback, option) {
             callback(resp);
         });
     };
-    
+
     rest.clipDataset = function (data, callback) {
         if(!data.INPUT_NAME || !data.BBOX || !data.OUTPUT_NAME || !data.PATH_NAME){return false;}
-                  
+
         var postClip = function(a){
-        	if(a.status=='complete'){
-        		hoot.model.layers.refresh(function(){
-        			hoot.model.layers.setLayerLinks(function(){
-        				var availLayers = hoot.model.layers.getAvailLayers();
-        				var input = _.find(availLayers,{name:data.INPUT_NAME});
-        				if(input!=undefined){
-        					var outputFolderId = hoot.model.folders.getfolderIdByName(data.PATH_NAME) || 0;
-    						var output = _.find(availLayers,{name:data.OUTPUT_NAME});
-        					if(output!=undefined){
-        	        			var link = {'folderId':outputFolderId,"mapid":output.id,"updateType":"update"};
-        	                    hoot.model.folders.updateLink(link);
-        	                    callback(a,data.OUTPUT_NAME);
-        					}	
-        				}
-        			});
-        		});
-        	}
+            if(a.status=='complete'){
+                hoot.model.layers.refresh(function(){
+                    hoot.model.layers.setLayerLinks(function(){
+                        var availLayers = hoot.model.layers.getAvailLayers();
+                        var input = _.find(availLayers,{name:data.INPUT_NAME});
+                        if(input!=undefined){
+                            var outputFolderId = hoot.model.folders.getfolderIdByName(data.PATH_NAME) || 0;
+                            var output = _.find(availLayers,{name:data.OUTPUT_NAME});
+                            if(output!=undefined){
+                                var link = {'folderId':outputFolderId,"mapid":output.id,"updateType":"update"};
+                                hoot.model.folders.updateLink(link);
+                                callback(a,data.OUTPUT_NAME);
+                            }
+                        }
+                    });
+                });
+            }
         }
-        
+
         // Commented out section below placeholder for future alpha-shape clipping
         /*if(option == 'bbox'){*/
-        	//Clip to bounding box
-    	    d3.json('/hoot-services/job/clipdataset/execute')
-		        .header('Content-Type', 'text/plain')
-		        .post(JSON.stringify(data), function (error, resp) {
-		        	if (error) {
-		                return callback(_alertError(error, "Clip Dataset job failed! For detailed log goto Manage->Log"));
-		            }
-		            iD.ui.Alert("Clip " + data.INPUT_NAME +  " has been submitted.",'notice');
-		            rest.status(resp.jobid, postClip);
-	        });
+            //Clip to bounding box
+            d3.json('/hoot-services/job/clipdataset/execute')
+                .header('Content-Type', 'text/plain')
+                .post(JSON.stringify(data), function (error, resp) {
+                    if (error) {
+                        return callback(_alertError(error, "Clip Dataset job failed! For detailed log goto Manage->Log"));
+                    }
+                    iD.ui.Alert("Clip " + data.INPUT_NAME +  " has been submitted.",'notice');
+                    rest.status(resp.jobid, postClip);
+            });
         /*}
         else {
-        	console.log('under construction');
-        	return false;
+            console.log('under construction');
+            return false;
         }*/
     };
 
@@ -412,7 +412,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                             }
                         }
                         if(showError){
-                        	iD.ui.Alert("Requested job failed! For detailed log goto Manage->Log",'error',new Error().stack);
+                            iD.ui.Alert("Requested job failed! For detailed log goto Manage->Log",'error',new Error().stack);
                         }
                     }
                     else
@@ -463,7 +463,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                 }
                 else
                 {
-                	iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
+                    iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
                 }
             });
     }
@@ -471,7 +471,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     // This uses translation node js server using CORS
     rest.LTDS = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
-        	iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
+            iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
             return;
         }
         if (!data) {
@@ -549,7 +549,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     // This uses translation node js server using CORS
     rest.TDSToOSMByFCode = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
-        	iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
+            iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
             return;
         }
 
@@ -567,7 +567,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.TDSToOSM = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
-        	iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
+            iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
             return;
         }
         if (!data) {
@@ -613,7 +613,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         d3.json('/hoot-services/job/export/execute')
         .post(data, function (error, data) {
             if (error){
-            	iD.ui.Alert("Export job failed! For detailed log goto Manage->Log",'error',new Error().stack);
+                iD.ui.Alert("Export job failed! For detailed log goto Manage->Log",'error',new Error().stack);
                 return error;
             }
             return data;
@@ -699,7 +699,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             callback(resp);
         });
     };
-    
+
     rest.resolveAllReviews = function(mapId, callback)
     {
       var request = {};
@@ -710,20 +710,20 @@ Hoot.model.REST = function (command, data, callback, option) {
           'PUT',
           JSON.stringify(request),
           function(error, response)
-    	  {
-    	    if (error)
-    	    {
-    	      console.log(error);
-    	      iD.ui.Alert("Resolve all reviews failed.",'error',new Error().stack);
-    	    }
-    	    callback(error, response);
-    	  });
+          {
+            if (error)
+            {
+              console.log(error);
+              iD.ui.Alert("Resolve all reviews failed.",'error',new Error().stack);
+            }
+            callback(error, response);
+          });
     }
 
   rest.getReviewRefs = function(queryElements, callback)
   {
-	var request = {};
-	request.queryElements = queryElements;
+    var request = {};
+    request.queryElements = queryElements;
     d3.json('/hoot-services/job/review/refs')
       .header('Content-Type', 'application/json')
       .post(JSON.stringify(request),
@@ -743,7 +743,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     var mapId = data.mapId;
     var seq = data.sequence;
     var direction = data.direction;
-    
+
     d3.json('/hoot-services/job/review/next?mapid='+ mapId + '&offsetseqid=' + seq
         + '&direction=' + direction,
        function(error, response)
@@ -756,13 +756,13 @@ Hoot.model.REST = function (command, data, callback, option) {
             }
         );
   };
-  
+
 
   rest.reviewGetReviewItem = function(data, callback)
   {
     var mapId = data.mapId;
     var seq = data.sequence;
-    
+
     d3.json('/hoot-services/job/review/reviewable?mapid='+ mapId + '&offsetseqid=' + seq,
             function(error, resp)
             {
@@ -775,8 +775,8 @@ Hoot.model.REST = function (command, data, callback, option) {
   };
 
   rest.ReviewGetStatistics = function (mapId, callback) {
-            
-        d3.json('/hoot-services/job/review/statistics?mapId=' + mapId, function (error, resp) {             
+
+        d3.json('/hoot-services/job/review/statistics?mapId=' + mapId, function (error, resp) {
                 return callback(error,resp);
         });
     };
@@ -1003,7 +1003,7 @@ rest.downloadReport = function(data)
     }
 
     rest.getAllReviewBookmarks = function(data, callback) {
-        var url = '/hoot-services/job/review/bookmarks/getall?orderBy=' + data.orderBy + '&asc=' + data.asc + 
+        var url = '/hoot-services/job/review/bookmarks/getall?orderBy=' + data.orderBy + '&asc=' + data.asc +
             '&limit=' + data.limit + '&offset=' + data.offset;
         if(data.filterbyval && data.filterby) {
             url += '&filterby=' + data.filterby + '&filterbyval=' + data.filterbyval;
@@ -1124,7 +1124,7 @@ Hoot.model.REST.WarningHandler = function(resp){
 
                 });
                 if(isWarning === true){
-                	iD.ui.Alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log','warning',new Error().stack);
+                    iD.ui.Alert('SUCCESS: but the job has completed with warnings. For detailed log goto Manage->Log','warning',new Error().stack);
                 }
             }
         }

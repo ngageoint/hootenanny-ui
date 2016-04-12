@@ -8,7 +8,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.view.utilities.wfsdataset = function(context)
 {
-	var hoot_view_utilities_wfsdataset = {};
+    var hoot_view_utilities_wfsdataset = {};
 
     hoot_view_utilities_wfsdataset.createContent = function(container){
         var wfsFieldset = container.append('div')
@@ -48,14 +48,14 @@ Hoot.view.utilities.wfsdataset = function(context)
                     var r = confirm("Are you sure you want to delete :" + wfsId  + "?");
                     if (r == false) {
                        return;
-                    } 
-                    
+                    }
+
 
                     var wfsTrashBtn = this;
                     d3.json('/hoot-services/job/export/wfs/remove/' + wfsId,
                             function (error, data) {
                                 if(error){
-                                	iD.ui.Alert(error.responseText,'error',new Error().stack);
+                                    iD.ui.Alert(error.responseText,'error',new Error().stack);
                                 } else {
                                   d3.select(wfsTrashBtn.parentNode).node().remove();
                                 }
@@ -75,5 +75,5 @@ Hoot.view.utilities.wfsdataset = function(context)
     }
 
 
-	return hoot_view_utilities_wfsdataset;
+    return hoot_view_utilities_wfsdataset;
 }

@@ -6,7 +6,7 @@ iD.ui.MapInMap = function(context) {
         var backgroundLayer = iD.TileLayer(),
             //dispatch = d3.dispatch('change','zoomPan'),
             //overlayLayer = iD.TileLayer(),
-			overlayLayers = {},
+            overlayLayers = {},
             projection = iD.geo.RawMercator(),
             zoom = d3.behavior.zoom()
                 .scaleExtent([ztok(0.5), ztok(24)])
@@ -63,7 +63,7 @@ iD.ui.MapInMap = function(context) {
             e.stopPropagation();
         }
 
-		//iD 1.9.2 introduced wrap over selection
+        //iD 1.9.2 introduced wrap over selection
 
 
         function endMouse() {
@@ -162,7 +162,7 @@ iD.ui.MapInMap = function(context) {
             // redraw overlay
             var overlaySources = context.background().overlayLayerSources(),
                 hasOverlay = false,
-				activeOverlayLayers = [];
+                activeOverlayLayers = [];
             for (var i = 0; i < overlaySources.length; i++) {
                 if (overlaySources[i].validZoom(zMini)) {
                     if (!overlayLayers[i]) overlayLayers[i] = iD.TileLayer();
@@ -298,7 +298,7 @@ iD.ui.MapInMap = function(context) {
         var wrap = selection.selectAll('.map-in-map')
             .data([0]);
 
- 		wrap.enter()
+         wrap.enter()
             .append('div')
             .attr('class', 'map-in-map')
             .style('display', (hidden ? 'none' : 'block'))

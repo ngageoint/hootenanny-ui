@@ -33,7 +33,7 @@ iD.ui.Commit = function(context) {
             .attr('class', 'body');
 
         // Comment Section
-		//Commented out for Hootenanny
+        //Commented out for Hootenanny
 /*
         var commentSection = body.append('div')
             .attr('class', 'modal-section form-field commit-form');
@@ -134,7 +134,7 @@ iD.ui.Commit = function(context) {
         var buttonSection = saveSection.append('div')
             .attr('class','buttons fillL cf');
 
-		//Using summary to determine if button should be enabled
+        //Using summary to determine if button should be enabled
         var saveButton = buttonSection.append('button')
             .attr('class', 'action col5 button save-button')
             .property('disabled', function() {
@@ -150,7 +150,7 @@ iD.ui.Commit = function(context) {
             .attr('class', 'label')
             .text(t('commit.save'));
 
-		//iD v1.7.5
+        //iD v1.7.5
         var cancelButton = buttonSection.append('button')
             .attr('class', 'action col5 button cancel-button')
             .on('click.cancel', function() { event.cancel(); });
@@ -180,7 +180,7 @@ iD.ui.Commit = function(context) {
             .on('mouseout', mouseout)
             .on('click', zoomToEntity);
 
-		//changed for iD v1.9.2
+        //changed for iD v1.9.2
         li.each(function(d) {
             d3.select(this)
                 .call(iD.svg.Icon('#icon-' + d.entity.geometry(d.graph), 'pre-text ' + d.changeType));

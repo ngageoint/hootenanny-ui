@@ -1,7 +1,7 @@
 iD.ui.PresetIcon = function() {
     var preset, geometry;
 
-	//in iD v1.9.2, "setup" was replaced with "render"
+    //in iD v1.9.2, "setup" was replaced with "render"
 
     function presetIcon(selection) {
         selection.each(render);
@@ -34,12 +34,12 @@ iD.ui.PresetIcon = function() {
 
         $fill.attr('class', function() {
             // Changed for iD v1.9.2
-			/*var s = 'preset-icon-fill preset-icon-fill-' + geom;
+            /*var s = 'preset-icon-fill preset-icon-fill-' + geom;
             for (var i in p.tags) {
                 s += ' tag-' + i + ' tag-' + i + '-' + p.tags[i];
             }
             return s;*/
-			return 'preset-icon-fill preset-icon-fill-' + geom + tag_classes(p);
+            return 'preset-icon-fill preset-icon-fill-' + geom + tag_classes(p);
         });
 
         var $frame = selection.selectAll('.preset-icon-frame')
@@ -56,8 +56,8 @@ iD.ui.PresetIcon = function() {
 
         var $icon = selection.selectAll('.preset-icon')
             .data([0]);
-	
-		$icon.enter()
+
+        $icon.enter()
             .append('div')
             .attr('class', 'preset-icon')
             .call(iD.svg.Icon(''));
@@ -74,8 +74,8 @@ iD.ui.PresetIcon = function() {
             .attr('href', '#' + icon + (maki ? ( icon === 'parking' ? '-18' : '-24') : ''));
     }
 
-		// Changed for iD v1.9.2        
-		/*$icon.enter().append('div');
+        // Changed for iD v1.9.2
+        /*$icon.enter().append('div');
 
         $icon.attr('class', function() {
             var icon = p.icon || (geom === 'line' ? 'other-line' : 'marker-stroked'),

@@ -10,32 +10,32 @@ Hoot.view.utilities.about = function(context){
 
     // events
     var dispatch = d3.dispatch('close');
-    
+
     // constructor
     function about(){
-        
+
     };
 
     about.createContent = function(form){
       form.append('div')
-      	.classed('col12',true)
-      	.append('label')
-      	.classed('logHeader', true)
-    	.style('display','block')
-    	.attr('id','aboutLabel')
-    	.text('About Hootenanny');
-      
+          .classed('col12',true)
+          .append('label')
+          .classed('logHeader', true)
+        .style('display','block')
+        .attr('id','aboutLabel')
+        .text('About Hootenanny');
+
       var mainContainer = form.append('div').classed('col12 pad1y fill-light',true);
       mainContainer.append('label')
-      	.classed('aboutHeader',true)
-      	.style('display','block')
-      	.attr('id','maindetaillbl')
-      	.text('Main Versions:');
-      
+          .classed('aboutHeader',true)
+          .style('display','block')
+          .attr('id','maindetaillbl')
+          .text('Main Versions:');
+
       var mainVerCont = mainContainer.append('div').classed('center col12', true).style('display','inline-block');
       _mainVer = mainVerCont.append('div');
-      _mainVer.classed('center round keyline-all overflow', true);      
-      
+      _mainVer.classed('center round keyline-all overflow', true);
+
       var detailContainer = form.append('div').classed('col12 pad1y fill-light',true);
       var detailVersionLbl = detailContainer.append('div');
       detailVersionLbl.append('label')
@@ -43,19 +43,19 @@ Hoot.view.utilities.about = function(context){
           .style('display','block')
           .attr('id', 'versiondetaillbl')
           .text('Detail: ** Please select a row from Main Versions table. **');
-      
+
       var headerVersionInfo = [];
       // Show version info
-      Hoot.model.REST('coreVersionInfo', 
+      Hoot.model.REST('coreVersionInfo',
               function(response) {
                   hoot.view.versioninfo.coreVersionInfo(response,headerVersionInfo,_form);
               }
-              
+
       );
-      
-      
-      
-      
+
+
+
+
       formCont = detailContainer.append('div');
       formCont.classed('center col12', true).style('display','inline-block');
       _form = formCont.append('div');

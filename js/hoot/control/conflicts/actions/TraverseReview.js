@@ -14,9 +14,9 @@
 
 Hoot.control.conflicts.actions.traversereview = function (context)
 {
-	var _events = d3.dispatch();
-    
-	var _instance = {};
+    var _events = d3.dispatch();
+
+    var _instance = {};
     var _currentReviewable;
     var _mapid;
     var _nextid;
@@ -32,10 +32,10 @@ Hoot.control.conflicts.actions.traversereview = function (context)
             iD.ui.Alert('Traverse control not initialized. Invalid id!', 'Error',new Error().stack);
             return false;
         }
-        
-        if(!opts.mapid){   
-            iD.ui.Alert('Traverse control not initialized. Invalid mapid!', 'Error',new Error().stack);  
-            _instance.disableButton(true);       
+
+        if(!opts.mapid){
+            iD.ui.Alert('Traverse control not initialized. Invalid mapid!', 'Error',new Error().stack);
+            _instance.disableButton(true);
             return false;
         }
         _nextid = opts.nextid;
@@ -61,12 +61,12 @@ Hoot.control.conflicts.actions.traversereview = function (context)
             }
 
             // if we have unsaved changes then exit.
-            // We do this to prevent the miss-match of changeset between backend and 
+            // We do this to prevent the miss-match of changeset between backend and
             // iD entity graph
             var hasChange = context.history().hasChanges();
             if(hasChange === true) {
                 _parent().setProcessing(false);
-                iD.ui.Alert('Please resolve or undo the current feature ' + 
+                iD.ui.Alert('Please resolve or undo the current feature ' +
                     'changes before proceeding to the next review.', 'warning',new Error().stack);
                 return;
             }
@@ -104,7 +104,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                     } else {
                         Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
                     }
-     
+
                 } catch (err) {
                     _handleError(err, true);
                 }
@@ -113,7 +113,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         } catch (err) {
             _handleError(err, true);
         }
-    
+
 
     }
 
@@ -127,15 +127,15 @@ Hoot.control.conflicts.actions.traversereview = function (context)
 
             if((1*response.resultCount) > 0){
                 _currentReviewable = response;
-                _parent().actions.idgraphsynch.getRelationFeature(response.mapId, response.relationId, 
+                _parent().actions.idgraphsynch.getRelationFeature(response.mapId, response.relationId,
                     function(newReviewItem){
-                        _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
+                        _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0],
                             newReviewItem.members[1]);
-                       
+
                     });
 
             } else {
-                iD.ui.Alert('There are no more available features to review. ' + 
+                iD.ui.Alert('There are no more available features to review. ' +
                     'Exiting the review session.',
                     'info',new Error().stack);
                 _exitReviewSession(false);
@@ -212,7 +212,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                 }
             }
         }
-        
+
     }
 
     /**
@@ -229,7 +229,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     {
         return (_nextid && _previd && _mapid);
     }
-    
+
     /**
     * @desc  Exit review session
     * @param msg - optional message for user
@@ -260,5 +260,5 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     };
 
 
-	return d3.rebind(_instance, _events, 'on');
+    return d3.rebind(_instance, _events, 'on');
 }

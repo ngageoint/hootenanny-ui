@@ -9,8 +9,8 @@
 
 Hoot.control.conflicts.actions.idgraphsynch = function (context)
 {
-	var _events = d3.dispatch();
-	var _instance = {};
+    var _events = d3.dispatch();
+    var _instance = {};
 
     var _relTreeIdx = {};
     var _currentFid = null;
@@ -23,8 +23,8 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
     * @param relationid - the relation id to load if missing
     * @param callback - callback function to invoke when done
     **/
-	_instance.getRelationFeature  = function(mapid, relationid, callback){
-        
+    _instance.getRelationFeature  = function(mapid, relationid, callback){
+
         _relTreeIdx = {};
         var fid = 'r' + relationid + '_' + mapid;
         var f = context.hasEntity(fid);
@@ -46,14 +46,14 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                     }
                     callback(f);
                 }
-                    
+
             }
         } else {
             _loadMissingFeatures(mapid, fid, callback);
         }
     }
 
-    
+
 
     /**
     * @desc Updates hoot:review:needs tag when resolved
@@ -92,14 +92,14 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
         {
             console.log(error);
         }
-      
+
 
         return nCnt;
     }
 
 
     /**
-    * @desc Load missing handler where it recursively load missing members 
+    * @desc Load missing handler where it recursively load missing members
     * if the member is another relation
     * @param err - error object
     * @param entities - loaded entities list
@@ -174,7 +174,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
     }
 
     /**
-	* @desc we do not care about way or node parent
+    * @desc we do not care about way or node parent
     * since all reviews are in relations
     * @param fid target relation id
     **/
@@ -263,5 +263,5 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
     var _parent = function() {
         return context.hoot().control.conflicts;
     }
-	return d3.rebind(_instance, _events, 'on');
+    return d3.rebind(_instance, _events, 'on');
 }
