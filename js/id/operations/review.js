@@ -14,6 +14,7 @@ iD.operations.Review = function(selectedIDs, context) {
             return;
         } 
 
+        context.hoot().control.conflicts.actions.traversereview.setCurrentReviewableEntityId(entityId);
         _performHighlight(context.graph());
         _selectReview(context.graph());
     };
@@ -188,7 +189,7 @@ iD.operations.Review = function(selectedIDs, context) {
                                       alert('The review item already has been resolved. Can not go to review item.');
                                     } else {
                                         // Set as current reviewable item
-                                        resp.entityId = entityId;
+                                        _parent().actions.traversereview.setCurrentReviewableEntityId(entityId);
                                         _parent().actions.traversereview.setCurrentReviewable(resp);
                                         _parent().actions.idgraphsynch.getRelationFeature(resp.mapId, resp.relationId, 
                                         function(newReviewItem){
