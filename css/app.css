@@ -1015,13 +1015,6 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     height: 32px;
 }
 
-.preset-icon {
-    position: absolute;
-    top: 17px;
-    left: 17px;
-    margin: auto;
-}
-
 .preset-icon-line,
 .preset-icon-relation {
     top: 0;
