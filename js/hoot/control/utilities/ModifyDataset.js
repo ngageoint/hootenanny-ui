@@ -103,14 +103,14 @@ Hoot.control.utilities.modifydataset = function(context) {
         data.modifiedName = outputname;
         data.folderId = pathId;
 
-        if(outputname == ''){outputname=_dataset.name;}
+        if(outputname === ''){outputname=_dataset.name;}
         if(outputname.toLowerCase() != _dataset.name.toLowerCase()){
             var resp = context.hoot().checkForUnallowedChar(outputname);
             if(resp != true){
                 iD.ui.Alert(resp,'warning',new Error().stack);
                 return;
             }
-            if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == outputname})))
+            if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f === outputname})))
             {
                 iD.ui.Alert('A layer already exists with this name. Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
                 return;
@@ -142,7 +142,7 @@ Hoot.control.utilities.modifydataset = function(context) {
                         //update map linking
                         var link = {};
                         link.folderId = a;
-                        link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == outputname}),'id')[0] || 0;
+                        link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name === outputname}),'id')[0] || 0;
                         if(link.mapid==0){return;}
                         link.updateType='update';
                         hoot.model.folders.updateLink(link);

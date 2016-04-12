@@ -31,7 +31,7 @@ Hoot.model.folders = function (context)
     model_folders.refresh = function (callback) {
         Hoot.model.REST('getAvailFolders', function (a) {
 
-            if(a.status == 'failed'){
+            if(a.status === 'failed'){
                 if(a.error){
                     context.hoot().view.utilities.errorlog.reportUIError(a.error);
                 }
@@ -103,7 +103,7 @@ Hoot.model.folders = function (context)
     model_folders.refreshLinks = function(callback) {
         Hoot.model.REST('getAvailLinks', function (a) {
 
-            if(a.status == 'failed'){
+            if(a.status === 'failed'){
                 if(a.error){
                     context.hoot().view.utilities.errorlog.reportUIError(a.error);
                 }
@@ -167,10 +167,10 @@ Hoot.model.folders = function (context)
         parent = typeof parent !== 'undefined' ? parent : { id: 0 };
 
         var children = _.filter( array, function(child){
-            return child.parentId == parent.id; });
+            return child.parentId === parent.id; });
 
         if( !_.isEmpty( children )  ){
-            if( parent.id == 0 ){
+            if( parent.id === 0 ){
                 tree = children;
             }else{
                 if(parent.state=='closed'){

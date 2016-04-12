@@ -926,7 +926,7 @@ iD.Connection = function(context) {
 
             if(Object.keys(inflight).length > 0) {
                 d3.select('.warning').call(iD.ui.Warning(context,true,'Data is loading...'));
-            } else if((!_.isEmpty(loadedData) && totalNodesCnt == 0)||(totalNodesCnt > 0 && context.intersects(context.map().extent()).length == 0)){
+            } else if((!_.isEmpty(loadedData) && totalNodesCnt === 0)||(totalNodesCnt > 0 && context.intersects(context.map().extent()).length === 0)){
                 // Inform user if features are loaded but not located in the map extent
                 d3.select('.warning').call(iD.ui.Warning(context,true,'There is no data in the current map extent.  Try panning the map or zooming to a layer.'));
             } else if(currShowBbox){
@@ -950,7 +950,7 @@ iD.Connection = function(context) {
 
             if(context.hoot().control.conflicts &&
                     context.hoot().control.conflicts.isConflictReviewExist() &&
-                    tiles.length == 0){
+                    tiles.length === 0){
                 event.reviewLayerAdded(null, true);
             }
 
@@ -1020,7 +1020,7 @@ iD.Connection = function(context) {
                                 if(hootLyrs[0] !== undefined){
                                     for(var i=hootLyrs[0].length-1; i>-1; i--){
                                         var lyr = d3.select(hootLyrs[0][i]).text();
-                                        var curId = _.find(loadedData, function(l){return l.name == lyr;});
+                                        var curId = _.find(loadedData, function(l){return l.name === lyr;});
                                         d3.selectAll('.tag-hoot-' + curId.mapId.toString()).each(function(){d3.select(this).moveToFront();});
                                         event.loaded();
                                         event.layerAdded(lyr);

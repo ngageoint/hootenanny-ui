@@ -25,7 +25,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         localResp.status = 'failed';
         localResp.error = error;
         var r = confirm(errorText);
-        if (r == true) {
+        if (r === true) {
             localResp.reset = true;
         }
         return localResp;
@@ -297,7 +297,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         }
 
         // Commented out section below placeholder for future alpha-shape clipping
-        /*if(option == 'bbox'){*/
+        /*if(option === 'bbox'){*/
             //Clip to bounding box
             d3.json('/hoot-services/job/clipdataset/execute')
                 .header('Content-Type', 'text/plain')
@@ -403,7 +403,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                 }
 
                 if (resp.status !== 'running') {
-                    if(resp.status == 'failed'){
+                    if(resp.status === 'failed'){
                         var showError = true;
                         if(resp.statusDetail){
                             var detail = resp.statusDetail;
@@ -505,7 +505,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                         var key = tag.attributes['k'].value;
                         var val = tag.attributes['v'].value;
                         attribs[key] = val;
-                        if(key == osmToTdsAttribFilter.filterkey){
+                        if(key === osmToTdsAttribFilter.filterkey){
                             idVal = val;
                         }
                     });
@@ -515,7 +515,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                         var key = tag.attributes['k'].value;
                         var val = tag.attributes['v'].value;
                         attribs[key] = val;
-                        if(key == 'Feature Code'){
+                        if(key === 'Feature Code'){
                             var parts = val.split(':');
                             idVal = parts[0].trim();
                         }

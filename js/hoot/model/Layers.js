@@ -32,7 +32,7 @@ Hoot.model.layers = function (context)
         return obj ? obj.name : null;*/
         var currAvailLayers = model_layers.getAvailLayers();
         var found = _.find(currAvailLayers, function(l){
-            return (id == l.id);
+            return (id === l.id);
         });
 
         if(found){
@@ -45,7 +45,7 @@ Hoot.model.layers = function (context)
     model_layers.refresh = function (callback) {
         Hoot.model.REST('getAvailLayers', function (a) {
 
-            if(a.status == 'failed'){
+            if(a.status === 'failed'){
                 if(a.error){
                     context.hoot().view.utilities.errorlog.reportUIError(a.error);
                 }
@@ -231,7 +231,7 @@ Hoot.model.layers = function (context)
         isLayerLoading = true;
         var cMapId = key.id || model_layers.getmapIdByName(key.name) || 155;
         context.connection().getMbrFromUrl(cMapId, function(resp){
-            if(resp == null){
+            if(resp === null){
 
             } else {
                 if(callback){
@@ -258,7 +258,7 @@ Hoot.model.layers = function (context)
         context.connection().loadedDataRemove(mapid.toString());
         d3.select('.layerControl_' + mapid.toString()).remove();
         d3.select('.layer-list-hoot').classed('hidden', function() {
-            return d3.select(this).selectAll('li').size() == 0;
+            return d3.select(this).selectAll('li').size() === 0;
         });
         context.flush();
     };
@@ -406,7 +406,7 @@ Hoot.model.layers = function (context)
     model_layers.updateLayerName = function(data,callback){
 
         Hoot.model.REST('Modify',data,function(resp){
-            //if(resp.success == true){
+            //if(resp.success === true){
                 if(callback){callback(resp.success);}
             //}
             //return resp.success;

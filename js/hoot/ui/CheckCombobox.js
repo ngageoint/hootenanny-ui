@@ -237,7 +237,7 @@ Hoot.ui.checkcombobox = function() {
 
             options
                 .attr('title', function(d) { return d.title; })
-                .classed('selected', function(d, i) { return i == idx; })
+                .classed('selected', function(d, i) { return i === idx; })
                 .on('mouseover', select)
                 .on('click', accept)
                 .order();

@@ -45,7 +45,7 @@ Hoot.control.utilities.importdataset = function(context) {
     var _createContainer = function(trans,incomingFolder) {
         _trans = trans;
         _incomingFolder = incomingFolder;
-        if(_trans.length == 1){
+        if(_trans.length === 1){
             var emptyObj = {};
             emptyObj.NAME = '';
             emptyObj.DESCRIPTION = '';
@@ -178,7 +178,7 @@ Hoot.control.utilities.importdataset = function(context) {
                     return l.substring(l.lastIndexOf('|')+1);
                 }),
             function(f){
-                return f == _container.select('#importDatasetLayerName').value();
+                return f === _container.select('#importDatasetLayerName').value();
             }))
         )
         {
@@ -208,9 +208,9 @@ Hoot.control.utilities.importdataset = function(context) {
 
 
         var importText = submitExp.select('span').text();
-        if(importText == 'Import') {
+        if(importText === 'Import') {
             _performImport(submitExp);
-        } else if(importText == 'Cancel'){
+        } else if(importText === 'Cancel'){
             _cancelJob();
         }
 
@@ -265,8 +265,8 @@ Hoot.control.utilities.importdataset = function(context) {
                 '#importDatasetLayerName',
                 '#importDatasetFGDBFeatureClasses',
                 function(status){
-                if(status.info == 'complete'){
-                    if(_isCancel == false){
+                if(status.info === 'complete'){
+                    if(_isCancel === false){
                         _container.remove();
 
                         var pathname = _container.select('#importDatasetPathName').value();
@@ -289,7 +289,7 @@ Hoot.control.utilities.importdataset = function(context) {
                             {
                                 link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),
                                 function(f){
-                                    return f.name == _container.select('#importDatasetLayerName').value();
+                                    return f.name === _container.select('#importDatasetLayerName').value();
                                 }),'id')[0] || 0;
                             }
                             if(link.mapid==0){return;}
@@ -300,11 +300,11 @@ Hoot.control.utilities.importdataset = function(context) {
 
                     }
 
-                } else if(status.info == 'uploaded'){
+                } else if(status.info === 'uploaded'){
                     _jobIds = status.jobids;
                     _mapIds = status.mapids;
                     submitExp.select('span').text('Cancel');
-                } else if(status.info == 'failed'){
+                } else if(status.info === 'failed'){
                     var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
                     iD.ui.Alert(errorMessage,'error',new Error().stack);
                     _container.remove();
@@ -373,7 +373,7 @@ Hoot.control.utilities.importdataset = function(context) {
         var typeName = '';
         for(i=0; i<comboData.combobox.data.length; i++){
             var o = comboData.combobox.data[i];
-            if(o.title == desc){
+            if(o.title === desc){
                 typeName = o.value;
                 break;
             }
@@ -510,9 +510,9 @@ Hoot.control.utilities.importdataset = function(context) {
     **/
     var _setMultipartForType = function(typeName) {
         var isDir = false;
-        if(typeName == 'DIR'){
+        if(typeName === 'DIR'){
             isDir = true;
-            if(_bInfo.name.substring(0,3) == 'Chr'){
+            if(_bInfo.name.substring(0,3) === 'Chr'){
                 d3.select('#ingestfileuploader')
                 .property('multiple', false)
                 .attr('accept', null)
@@ -525,13 +525,13 @@ Hoot.control.utilities.importdataset = function(context) {
                 .attr('webkitdirectory', null)
                 .attr('directory', null);
             }
-        } else if(typeName == 'GEONAMES') {
+        } else if(typeName === 'GEONAMES') {
             d3.select('#ingestfileuploader')
             .property('multiple', 'false')
             .attr('accept', '.geonames')
             .attr('webkitdirectory', null)
             .attr('directory', null);
-        } else if(typeName == 'OSM') {
+        } else if(typeName === 'OSM') {
             d3.select('#ingestfileuploader')
             .property('multiple', 'false')
             .attr('accept', '.osm')
@@ -588,9 +588,9 @@ Hoot.control.utilities.importdataset = function(context) {
 
             var translationsList = _importTranslations;
 
-            if(typeName == 'GEONAMES'){
+            if(typeName === 'GEONAMES'){
                 translationsList = _importTranslationsGeonames;
-            } else if(typeName == 'OSM') {
+            } else if(typeName === 'OSM') {
                 translationsList = _importTranslationsOsm;
             }
 
@@ -608,9 +608,9 @@ Hoot.control.utilities.importdataset = function(context) {
             d3.select('#importDatasetSchema')
                  .style('width', '100%')
                     .call(combo);
-            if(typeName == 'GEONAMES'){
+            if(typeName === 'GEONAMES'){
                 d3.select('#importDatasetSchema').value(_importTranslationsGeonames[0].DESCRIPTION);
-            } else if(typeName == 'OSM'){
+            } else if(typeName === 'OSM'){
                 d3.select('#importDatasetSchema').value(_importTranslationsOsm[0].DESCRIPTION);
             }
 
@@ -635,10 +635,10 @@ Hoot.control.utilities.importdataset = function(context) {
 
 
         var fObj = _.find(filesList, function(f){
-            return f.name == fName;
+            return f.name === fName;
         });
 
-        if(fObj == null){
+        if(fObj === null){
             fObj = {};
             fObj.name = fName;
             fObj.isSHP = false;
@@ -705,10 +705,10 @@ Hoot.control.utilities.importdataset = function(context) {
             var curFileName = curFile.name;
 
             fileNames.push(curFileName);
-            if(l == 0){
+            if(l === 0){
 
-                if(selType == 'DIR'){
-                    if(_bInfo.name.substring(0,3) == 'Chr'){
+                if(selType === 'DIR'){
+                    if(_bInfo.name.substring(0,3) === 'Chr'){
                         var parts = curFile.webkitRelativePath.split('/');
                         var folderName = parts[0];
                         if(folderName.length > 4){
@@ -732,7 +732,7 @@ Hoot.control.utilities.importdataset = function(context) {
 
 
 
-            if(selType == 'FILE'){
+            if(selType === 'FILE'){
                 _setFileMetaData(curFileName, cntParam, filesList);
             }
         }
@@ -744,7 +744,7 @@ Hoot.control.utilities.importdataset = function(context) {
         }
 
 
-        if(selType == 'DIR'){
+        if(selType === 'DIR'){
                 _container.select('#importDatasetFileImport').value(folderName);
                 _container.select('#importDatasetLayerName').value(fgdbName);
                 _retrieveFeatureClasses();
@@ -769,11 +769,11 @@ Hoot.control.utilities.importdataset = function(context) {
     * @param totalFileSize - total physical size of selected files.
     **/
     var _validateLoaded = function(selType, filesList, cntParam, totalFileSize) {
-        if(selType == 'FILE'){
+        if(selType === 'FILE'){
             var isValid = true;
             _.each(filesList, function(f){
                 var grp = _.find(filesList, function(m){
-                    return m.name == f.name;
+                    return m.name === f.name;
                 })
                 if(grp.isSHP){
                     if(!grp.isSHX || !grp.isDBF){
@@ -827,7 +827,7 @@ Hoot.control.utilities.importdataset = function(context) {
          var importTypes = [];
         var fileTypes = {};
         fileTypes.value = 'FILE';
-        if(_bInfo.name.substring(0,3) == 'Chr'){
+        if(_bInfo.name.substring(0,3) === 'Chr'){
             fileTypes.title = 'File (shp,zip)';
         } else {
             fileTypes.title = 'File (shp,zip,gdb.zip)';
@@ -848,7 +848,7 @@ Hoot.control.utilities.importdataset = function(context) {
         dirType.value = 'DIR';
         dirType.title = 'Directory (FGDB)';
 
-        if(_bInfo.name.substring(0,3) == 'Chr'){importTypes.push(dirType);}
+        if(_bInfo.name.substring(0,3) === 'Chr'){importTypes.push(dirType);}
 
 
         return importTypes;

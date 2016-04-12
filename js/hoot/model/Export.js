@@ -42,7 +42,7 @@ Hoot.model.export = function (context)
         var oTrans = null;
         for(i=0; i<comboData.combobox.data.length; i++){
             var o = comboData.combobox.data[i];
-            if(o.DESCRIPTION == transType){
+            if(o.DESCRIPTION === transType){
                 transName = o.NAME;
                 oTrans = o;
                 break;
@@ -55,14 +55,14 @@ Hoot.model.export = function (context)
      // Checks to see if it is default translation and if so use the path specified
 
         var isDefTrans = false;
-        if(oTrans && oTrans.DEFAULT == true) {
+        if(oTrans && oTrans.DEFAULT === true) {
             if(oTrans.PATH && oTrans.PATH.length > 0){
                 selectedTranslation = oTrans.PATH;
                 isDefTrans = true;
             }
         }
 
-        if(isDefTrans == false && transName != null && transName != '' ){
+        if(isDefTrans === false && transName != null && transName != '' ){
             selectedTranslation = 'customscript/' + transName + '.js';
         }
 
@@ -120,7 +120,7 @@ Hoot.model.export = function (context)
             }
 
             if(result.status != 'failed'){
-                if(removeConflationRes == 'true'){
+                if(removeConflationRes === 'true'){
                     d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + mapId)
                     .header('Content-Type', 'text/plain')
                     .post('', function (error, data) {
@@ -128,7 +128,7 @@ Hoot.model.export = function (context)
                     });
                 }
 
-                if(selectedOutType == 'wfs'){
+                if(selectedOutType === 'wfs'){
                     var capaUrl = location.origin + '/hoot-services/ogc/' + result.jobId +
                         '?service=WFS&version=1.1.0&request=GetCapabilities';
                     //alert('WFS Resource URL:\n' + capaUrl);

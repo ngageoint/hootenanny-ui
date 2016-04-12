@@ -83,7 +83,7 @@ Hoot.view.utilities.basemapdataset = function(context)
                 d3.event.preventDefault();
                 var bmId = d3.select(this.parentNode).datum().name;
                 var r = confirm('Are you sure you want to delete: ' + bmId + '?');
-                    if (r == false) {
+                    if (r === false) {
                        return;
                     }
 
@@ -98,7 +98,7 @@ Hoot.view.utilities.basemapdataset = function(context)
 
                             for (var i = 0; i < context.hoot().view.utilities.basemaplist.length; i++) {
                                 bm = context.hoot().view.utilities.basemaplist[i];
-                                if (bm.name == data.name) {
+                                if (bm.name === data.name) {
                                   context.hoot().view.utilities.basemaplist.splice(i, 1);
                                     break;
                                 }
@@ -122,12 +122,12 @@ Hoot.view.utilities.basemapdataset = function(context)
                 data.name = d.name;
 
                 var bm = _.find(context.hoot().view.utilities.basemaplist, function(o){
-                    return (o.name == d.name);
+                    return (o.name === d.name);
                 });
                 var bmToggleBtn = this;
-                if(d.status == 'disabled'){
+                if(d.status === 'disabled'){
                     Hoot.model.REST('enableBaseMap', data, function(resp){
-                        if(resp.status == 'failed'){
+                        if(resp.status === 'failed'){
                             if(resp.error){
                                 context.hoot().view.utilities.errorlog.reportUIError(resp.error);
                                 return;
@@ -139,10 +139,10 @@ Hoot.view.utilities.basemapdataset = function(context)
                         bm.status='enabled';
                         hoot_view_utilities_basemapdataset.addBasemapItem(bm);
                     });
-                } else if(d.status == 'enabled'){
+                } else if(d.status === 'enabled'){
                     //
                     Hoot.model.REST('disableBaseMap', data, function(resp){
-                        if(resp.status == 'failed'){
+                        if(resp.status === 'failed'){
                             if(resp.error){
                                 context.hoot().view.utilities.errorlog.reportUIError(resp.error);
                                 return;
@@ -162,7 +162,7 @@ Hoot.view.utilities.basemapdataset = function(context)
             })
             .select(function (sel) {
                 if(sel.jobid){
-                    if(sel.status == 'processing'){
+                    if(sel.status === 'processing'){
                         var currentRow = d3.select(this);
                         d3.select(this).classed('keyline-left fr _icon openeye pad2 col1', false);
                         d3.select(this).classed('keyline-left keyline-right pad1 row1  col1 fr',true).call(iD.ui.Spinner(context));
@@ -178,7 +178,7 @@ Hoot.view.utilities.basemapdataset = function(context)
 
                                     // default to disabled
                                     var curBm = _.find(context.hoot().view.utilities.basemaplist, function(o){
-                                        return (o.name == sel.name);
+                                        return (o.name === sel.name);
                                     });
                                     if(curBm){
                                         curBm.status = 'disabled';
@@ -192,13 +192,13 @@ Hoot.view.utilities.basemapdataset = function(context)
                         var bmUploadJobStatusTimer = setInterval(function () {
                             status();
                         }, iD.data.hootConfig.JobStatusQueryInterval);
-                    } else if(sel.status == 'failed') {
+                    } else if(sel.status === 'failed') {
                         d3.select(this).classed('keyline-left fr _icon openeye pad2 col1', false);
                         d3.select(this).classed('keyline-left fr _icon x pad2 col1', true);
-                    } else if(sel.status == 'disabled') {
+                    } else if(sel.status === 'disabled') {
                         d3.select(this).classed('keyline-left fr _icon openeye pad2 col1', false);
                         d3.select(this).classed('keyline-left fr _icon closedeye pad2 col1', true);
-                    } else if(sel.status == 'enabled') {
+                    } else if(sel.status === 'enabled') {
                         hoot_view_utilities_basemapdataset.addBasemapItem(sel);
                     }
 

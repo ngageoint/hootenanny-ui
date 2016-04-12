@@ -138,7 +138,7 @@ iD.ui.Commit = function(context) {
         var saveButton = buttonSection.append('button')
             .attr('class', 'action col5 button save-button')
             .property('disabled', function() {
-                return summary == undefined? true : _.isEmpty(summary);
+                return summary === undefined? true : _.isEmpty(summary);
             })
             .on('click.save', function() {
                 event.save({

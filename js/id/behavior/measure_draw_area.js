@@ -214,7 +214,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 
         points = points + ' ' + c;
 
-        if(nodeId==1){
+        if(nodeId === 1){
             ptArr.splice(ptArr.length-1,1);
             for (var i = 0; i < 2; i++) {ptArr.push(context.map().mouseCoordinates());}
         } else if (nodeId>1){
@@ -240,7 +240,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
         segmentDist = 0;
 
         if(nodeId>=0){
-            if(nodeId==0){firstPoint=context.map().mouseCoordinates();}
+            if(nodeId === 0){firstPoint=context.map().mouseCoordinates();}
 
             lastPoint=context.map().mouseCoordinates();
 

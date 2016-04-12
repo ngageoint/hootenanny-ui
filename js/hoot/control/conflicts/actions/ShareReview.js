@@ -119,13 +119,13 @@ Hoot.control.conflicts.actions.sharereview = function (context)
             var desc = d3.select('#reviewBookmarkDescription').value();
             var note = d3.select('#reviewBookmarkNote').value();
 
-            if(!title || title.length == 0 || !desc || desc.length == 0 || !note || note.length == 0) {
+            if(!title || title.length === 0 || !desc || desc.length === 0 || !note || note.length === 0) {
                 throw 'Invalid values.';
             }
 
 
             var creatorEmail = d3.select('#reviewBookmarkCreatorEmail').value();
-            if(!creatorEmail || creatorEmail.length == 0) {
+            if(!creatorEmail || creatorEmail.length === 0) {
                 var r = confirm('If you continue this bookmark will be published by as anonymous user. '+
                   'Do you want to continue?');
                 if (r != true) {

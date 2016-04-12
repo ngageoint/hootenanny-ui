@@ -126,7 +126,7 @@ Hoot.control.utilities.basemapdataset = function(context) {
                     }
 
                     var found = _.find(context.hoot().view.utilities.basemaplist, function(o){
-                        return (o.name == name);
+                        return (o.name === name);
                     });
 
                     if(found){

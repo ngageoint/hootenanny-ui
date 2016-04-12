@@ -31,7 +31,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                 //If so, use Enabled value to continue
                 var enabled = true;
                 if(meta.members[0].name=='Enabled'){
-                    advform? enabled = advform.select('#' + meta.members[0].id).property('checked') : enabled = (meta.members[0].defaultvalue == 'true');
+                    advform? enabled = advform.select('#' + meta.members[0].id).property('checked') : enabled = (meta.members[0].defaultvalue === 'true');
                 }
 
                 if (enabled===true){
@@ -47,16 +47,16 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                             }
                         }
 
-                        if(submeta.elem_type == 'checkbox' || submeta.elem_type=='checkplus') {
+                        if(submeta.elem_type === 'checkbox' || submeta.elem_type=='checkplus') {
                             if(fieldId){
                                 selVal = _getSelectedCheckValue(advform, submeta.defaultvalue, fieldId);
                                 _getCheckValue(selVal, meta, submeta, results);
 
                                 if(submeta.elem_type=='checkplus'){
                                     //Only take value if checkplus is true!
-                                    var cplusEnabled = _getSelectedCheckValue(advform, submeta.defaultvalue == 'true', submeta.id);
+                                    var cplusEnabled = _getSelectedCheckValue(advform, submeta.defaultvalue === 'true', submeta.id);
 
-                                    if (cplusEnabled == true){
+                                    if (cplusEnabled === true){
                                         _getCheckPlusValues(advform, submeta, results);
                                     }
                                 }
@@ -108,7 +108,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
     var _getSelectedValue = function(f, d, fid) {
         var selVal = '';
         //selVal = (f) ?  f.select('#' + fid).value() : d;
-        selVal = (f) ? (f.select('#' + fid).value() == '' ? d: f.select('#' + fid).value()) : d;
+        selVal = (f) ? (f.select('#' + fid).value() === '' ? d: f.select('#' + fid).value()) : d;
         return selVal;
     }
 
@@ -129,9 +129,9 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                 res.name = submeta.hoot_key;
                 res.value = selVal;
                 results.push(res);
-            } else if(submeta.hoot_val && selVal == 'true'){
+            } else if(submeta.hoot_val && selVal === 'true'){
                 //create w/parent hoot_key or add to if already exists IF TRUE
-                var idx = results.indexOf(_.find(results,function(obj){return obj.name == meta.hoot_key}));
+                var idx = results.indexOf(_.find(results,function(obj){return obj.name === meta.hoot_key}));
                 if(idx > -1){
                     if(results[idx].value.indexOf(submeta.hoot_val)==-1)
                     {results[idx].value +=  ';' + submeta.hoot_val ;}
@@ -187,11 +187,11 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
 
                     //see if subMember has value.  If not, take default value.
                     var f = d3.select('#' + subMember.id);
-                    var subMemberVal = (f.empty()) ? subMember.defaultvalue : (f.value() == '' ? subMember.defaultvalue : f.value());
+                    var subMemberVal = (f.empty()) ? subMember.defaultvalue : (f.value() === '' ? subMember.defaultvalue : f.value());
 
                     if(subMember.hoot_key && subMemberVal.length>0){
                         //see if hoot_key already exists.  If it does, add to value.  If not, create.
-                        var idx = results.indexOf(_.find(results,function(obj){return obj.name == subMember.hoot_key}));
+                        var idx = results.indexOf(_.find(results,function(obj){return obj.name === subMember.hoot_key}));
                         if(idx>-1){
                             if(results[idx].value.indexOf(subMemberVal)==-1)
                             {results[idx].value += ';'+subMemberVal;}
@@ -218,7 +218,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
         // Add only there is default value or user selected value
         if(selVal.length > 0){// && !isHidden){
             if(submeta.hoot_key){
-                var idx = results.indexOf(_.find(results,function(obj){return obj.name == submeta.hoot_key}));
+                var idx = results.indexOf(_.find(results,function(obj){return obj.name === submeta.hoot_key}));
                 if(idx > -1){
                     //check if value is already in list
                     if(results[idx].value.indexOf(selVal)==-1)
@@ -230,7 +230,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                 }
             } else if(submeta.hoot_val){
                 //create w/parent hoot_key or add to if already exists
-                var idx = results.indexOf(_.find(results,function(obj){return obj.name == meta.hoot_key}));
+                var idx = results.indexOf(_.find(results,function(obj){return obj.name === meta.hoot_key}));
                 if(idx > -1){
                     if(results[idx].value.indexOf(selVal)==-1)
                     {results[idx].value += ';'+submeta.hoot_val ;}
@@ -252,7 +252,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
         var res = {};
         var hootkey = meta.dependencies[0].append.hoot_key;
         var hootval = meta.dependencies[0].append.hoot_val;
-        var idx = results.indexOf(_.find(results,function(obj){return obj.name == hootkey}));
+        var idx = results.indexOf(_.find(results,function(obj){return obj.name === hootkey}));
         if(idx > -1){
             if(results[idx].value.indexOf(hootval)==-1)
             {results[idx].value += ';' + hootval;}

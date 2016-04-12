@@ -215,10 +215,10 @@ Hoot.control.import = function (context,selection) {
                     d3.select(this).call(combo);
                 });
 
-                if(res == 'showprogress'){
+                if(res === 'showprogress'){
                     self
                     .attr('class', function () {
-                        if(color == 'osm'){
+                        if(color === 'osm'){
                             return 'round space-bottom1 loadingLayer _osm'
                         }
                         return 'round space-bottom1 loadingLayer ' + color;
@@ -321,10 +321,10 @@ Hoot.control.import = function (context,selection) {
                     d3.select(this).call(combo);
                 });
 
-                if(res == 'showprogress'){
+                if(res === 'showprogress'){
                     self
                     .attr('class', function () {
-                        if(color == 'osm'){
+                        if(color === 'osm'){
                             return 'round space-bottom1 loadingLayer _osm'
                         }
                         return 'round space-bottom1 loadingLayer ' + color;

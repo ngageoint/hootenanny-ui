@@ -120,12 +120,12 @@ Hoot.ui.hootformbase = function ()
                     .text(a.label);
 
 
-                    if(a.inputtype == 'textarea') {
+                    if(a.inputtype === 'textarea') {
                         _createTextArea(a, field);
-                    } else if(a.inputtype == 'combobox') {
+                    } else if(a.inputtype === 'combobox') {
                         _createCombobox(a, field);
 
-                    } else if(a.inputtype == 'checkbox'){
+                    } else if(a.inputtype === 'checkbox'){
                         var chkHtml = '<label class='pad1x pad0y round-top ' + a.checkbox + '' style='opacity: 1;'>';
                         chkHtml += '<input type='checkbox' class='reset checkbox' style='opacity: 1;'>'+a.label+'</label>';
                         field.html(chkHtml);
@@ -279,7 +279,7 @@ Hoot.ui.hootformbase = function ()
             inputField.on('click',a.onclick);
         }
 
-        if(a.inputtype == 'multipart') {
+        if(a.inputtype === 'multipart') {
             var mpDiv = fieldDiv
                 .classed('contain', true);
 

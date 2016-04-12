@@ -91,7 +91,7 @@ Hoot.control.utilities.clipdataset = function(context) {
                     return _columns.map(function(c) {
                         var cell = {};
                         d3.keys(c).forEach(function(k) {
-                            cell[k] = typeof c[k] == 'function' ? c[k](row,i) : c[k];
+                            cell[k] = typeof c[k] === 'function' ? c[k](row,i) : c[k];
                         });
                         return cell;
                     });
@@ -153,7 +153,7 @@ Hoot.control.utilities.clipdataset = function(context) {
         var name = d.name;
         var i = 1;
         while (uniquename==false){
-            if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
+            if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f === name}))){
                 name = d.name + i.toString();
                 i++;
             } else {
@@ -249,7 +249,7 @@ Hoot.control.utilities.clipdataset = function(context) {
             var name = d3.select('#row-' + d.name).select('div .LayerName').value() || d3.select('#row-' + d.name).select('div .LayerName').attr('placeholder');
             var i = 1;
             while (uniquename==false){
-                if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f == name}))){
+                if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f === name}))){
                     name = name + i.toString();
                     i++;
                 } else {

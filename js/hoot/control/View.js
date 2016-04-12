@@ -66,7 +66,7 @@ Hoot.control.view = function (container, context) {
 
 
         _a.append('div').attr('class', function (d) {
-            if(d.color == 'osm'){
+            if(d.color === 'osm'){
                 return 'pad1 inline thumbnail dark big _icon _osm ';
             }
             var icons = (d.merged) ? 'conflate' : 'data';
@@ -119,11 +119,11 @@ Hoot.control.view = function (container, context) {
                         msg = 'There is unsaved changes. '
                     }
                     var r = confirm(msg + 'Are you sure you want to remove layer:' + a.name  + '?');
-                    if (r == false) {
+                    if (r === false) {
                        return;
                     }
                     var isPrimary = false;
-                    if(a.name == primaryLayerName){
+                    if(a.name === primaryLayerName){
                         isPrimary = true;
                     }
 

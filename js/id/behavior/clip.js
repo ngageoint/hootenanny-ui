@@ -87,7 +87,7 @@ iD.behavior.Clip = function(context,svg,type) {
  function click() {
      var c = context.projection(context.map().mouseCoordinates());
 
-     if(nodeId==0){
+     if(nodeId === 0){
          anchorPt = c;
          rect.attr('x',c[0]).attr('y',c[1]);
          nodeId=1;

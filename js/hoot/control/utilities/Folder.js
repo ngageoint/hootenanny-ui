@@ -34,7 +34,7 @@ Hoot.control.utilities.folder = function(context) {
         self.text(container.name);
         var textLength = self.node().getComputedTextLength();
 
-        if(textLength == 0 && svgContainer.id!='datasettable'){
+        if(textLength === 0 && svgContainer.id!='datasettable'){
             if(text.length>24){
                 text = text.substring(0,24)+'...';
                 self.text(text);
@@ -252,11 +252,11 @@ Hoot.control.utilities.folder = function(context) {
                   var dy=5.5+(11*dd);
                   return 'translate('+ dy +',-11)'; })
               .html(function(d){
-                  if (d.type == 'folder'){
+                  if (d.type === 'folder'){
                       if(d.state=='open'){return '<i class='_icon openfolder'></i>'}
                       else{return '<i class='_icon folder'></i>'}
                   }
-                  if (d.type == 'dataset'){return '<i class='_icon data'></i>'}
+                  if (d.type === 'dataset'){return '<i class='_icon data'></i>'}
               })
               .on('click',click)
               .on('contextmenu',function(d,i){
@@ -499,7 +499,7 @@ Hoot.control.utilities.folder = function(context) {
             if(d.type=='dataset' && container.attr('id')=='datasettable'){
                 var lyrid = d.id;
                 if(d.selected){
-                    if(selectedLayerIDs.indexOf(lyrid) == -1){selectedLayerIDs.push(lyrid);}
+                    if(selectedLayerIDs.indexOf(lyrid) === -1){selectedLayerIDs.push(lyrid);}
                 } else {
                     var idx = selectedLayerIDs.indexOf(lyrid);
                     if(idx > -1){selectedLayerIDs.splice(idx,1);}
@@ -568,7 +568,7 @@ Hoot.control.utilities.folder = function(context) {
                     var typeName = '';
                     for(i=0; i<comboData.combobox2.length; i++){
                         var o = comboData.combobox2[i];
-                        if(o.title == desc){
+                        if(o.title === desc){
                             typeName = o.value;
                             break;
                         }

@@ -151,7 +151,7 @@ Hoot.tools = function (context, selection) {
 
         var refLayer = '1';
         var oRefLayer = a.select('.referenceLayer').datum();
-        if(oRefLayer.id == data.INPUT2){
+        if(oRefLayer.id === data.INPUT2){
             refLayer = '2';
         }
 
@@ -233,7 +233,7 @@ Hoot.tools = function (context, selection) {
             link.folderId = folderId || 0;
             link.mapid = 0;
             if(a.select('.saveAs').value()){
-                link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == a.select('.saveAs').value()}),'id')[0] || 0;
+                link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name === a.select('.saveAs').value()}),'id')[0] || 0;
             }
             if(link.mapid==0){return;}
             link.updateType='new';
@@ -433,7 +433,7 @@ Hoot.tools = function (context, selection) {
             //var conflationExecType = (type === 'Horizontal') ? 'CookieCutterConflate' : 'Conflate';
             //Bug #6397
             var conflationExecType = 'Conflate';
-            if(data.AUTO_TUNNING == 'true'){
+            if(data.AUTO_TUNNING === 'true'){
                 var data1 = {};
                 data1.INPUT = data.INPUT1;
                 data1.INPUT_TYPE = 'db';
@@ -455,7 +455,7 @@ Hoot.tools = function (context, selection) {
             } else {
 
                 hoot.model.conflate.conflate(conflationExecType, data, function (item) {
-                    if(item.status && item.status == 'requested'){
+                    if(item.status && item.status === 'requested'){
                         conflate.jobid = item.jobid;
                     } else {
                         postConflation(item,a);
@@ -492,12 +492,12 @@ Hoot.tools = function (context, selection) {
                             //console.log(tags);
                             if (tags.reviewtype === 'hgisvalidation') {
                                 var r = confirm('The layer has been prepared for validation. Do you want to go into validation mode?');
-                                if (r == true) {
+                                if (r === true) {
                                     context.hoot().control.validation.begin(params);
                                 }
                             } else {
                                 var r = confirm('The layer contains unreviewed items. Do you want to go into review mode?');
-                                if (r == true) {
+                                if (r === true) {
                                     isReviewMode = true;
                                     loadingLayer = params;
                                     loadingLayer.tags = tags;
@@ -653,7 +653,7 @@ Hoot.tools = function (context, selection) {
         exporting = true;
         var spinner = cont.append('span').attr('class', 'spinner-hoot').call(iD.ui.Spinner(context));
         hoot.model.export.exportData(cont, data, function (status) {
-            if(status == 'failed'){
+            if(status === 'failed'){
                 iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error',new Error().stack);
             }
 

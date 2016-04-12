@@ -101,7 +101,7 @@ Hoot.model.conflicts = function(context)
       for (var i = 0; i < reviewRefs.length; i++)
       {
         var reviewRef = reviewRefs[i];
-        if (idsToRemove.indexOf(''+reviewRef.id) == -1)
+        if (idsToRemove.indexOf(''+reviewRef.id) === -1)
         {
           modifiedReviewRefs.push(reviewRef);
         }
@@ -109,7 +109,7 @@ Hoot.model.conflicts = function(context)
       }*/
       var modifiedReviewRefs = new Array();
        _.each(reviewRefs, function(r){
-            if((idsToRemove.indexOf(''+r.id) == -1) || (r.reviewRelationId != relationId)){
+            if((idsToRemove.indexOf(''+r.id) === -1) || (r.reviewRelationId != relationId)){
                 modifiedReviewRefs.push(r);
             }
         });
@@ -152,7 +152,7 @@ Hoot.model.conflicts = function(context)
                         }
 
                         context.hoot().assert(
-                          response.reviewRefsResponses.length == queryElements.length);
+                          response.reviewRefsResponses.length === queryElements.length);
 
                         var loadedTypes = {};
 
@@ -191,7 +191,7 @@ Hoot.model.conflicts = function(context)
                             });
                         });
 
-                        if(Object.keys(missingIds).length == 0){
+                        if(Object.keys(missingIds).length === 0){
                             if(callback){
                                 callback();
                             }
@@ -209,19 +209,19 @@ Hoot.model.conflicts = function(context)
                                 }
                                 _.each(entities.data, function(d){
                                     delete missingIds[d.id];
-                                    if(d.id.charAt(0) == 'n'){
+                                    if(d.id.charAt(0) === 'n'){
                                         if(loadedTypes['node']){
                                             delete loadedTypes['node'];
                                         }
                                     }
 
-                                    if(d.id.charAt(0) == 'w'){
+                                    if(d.id.charAt(0) === 'w'){
                                         if(loadedTypes['way']){
                                             delete loadedTypes['way'];
                                         }
                                     }
 
-                                    if(d.id.charAt(0) == 'r'){
+                                    if(d.id.charAt(0) === 'r'){
                                         if(loadedTypes['relation']){
                                             delete loadedTypes['relation'];
                                         }
@@ -281,7 +281,7 @@ Hoot.model.conflicts = function(context)
       for (var i = 0; i < arr.length; i++)
       {
         var arrMember = arr[i];
-        if (arrMember.obj.id == memberMeta.obj.id)
+        if (arrMember.obj.id === memberMeta.obj.id)
         {
           return true;
         }
@@ -307,18 +307,18 @@ Hoot.model.conflicts = function(context)
                     var rf = context.hasEntity('r' + rfid.reviewRelationId + '_' + mapid);
                     var isMatch = false;
                     var mergedRel = context.hasEntity('r' +reviewMergeRelationId+ '_' + mapid);
-                    if(rf.members.length == mergedRel.members.length){
+                    if(rf.members.length === mergedRel.members.length){
                         var foundCnt = 0;
                         _.each(rf.members, function(rm){
                             var found = _.find(mergedRel.members, function(mem){
-                                return mem.id == rm.id;
+                                return mem.id === rm.id;
                             });
                             if(found){
                                 foundCnt++;
                             }
                         });
                         // same as target relation
-                        if(foundCnt == rf.members.length){
+                        if(foundCnt === rf.members.length){
 
                             rf.tags['hoot:review:needs'] = 'no';
                             context.perform(
@@ -345,8 +345,8 @@ Hoot.model.conflicts = function(context)
                         if(refRelationMember) {
 
                             var exists = _.find(review_mergedElements, function(rm){
-                                return (rm['id'] == reviewRelation.id &&
-                                    rm['obj'].id == mergedNode.id)
+                                return (rm['id'] === reviewRelation.id &&
+                                    rm['obj'].id === mergedNode.id)
 
                             });
                             if(!exists) {
@@ -478,7 +478,7 @@ Hoot.model.conflicts = function(context)
                                     }
 
                                     context.hoot().assert(
-                                      response.reviewRefsResponses.length == queryElements.length);
+                                      response.reviewRefsResponses.length === queryElements.length);
 
                                     //newly merged entity
                                     var mergedNode = entities[0];
@@ -563,7 +563,7 @@ Hoot.model.conflicts = function(context)
                                                     // chunk of 150. see connection.loadMultiple
                                                     // Each chunk load calls callback and we need to have way to find if all has been
                                                     // loaded..
-                                                    if (nUnloaded == 0 && isMergeProcessed == false)
+                                                    if (nUnloaded === 0 && isMergeProcessed === false)
                                                     {
                                                         isMergeProcessed = true;
                                                         processMerge(reviewRefs, mapid, queryElement1,
@@ -657,12 +657,12 @@ Hoot.model.conflicts = function(context)
           iD.actions.DiscardTags(context.history().difference()));
       //console.log(changes);
       //console.log(JXON.stringify(context.connection().osmChangeJXON(1, changes)));
-      context.hoot().assert(changes.created.length == 1);
+      context.hoot().assert(changes.created.length === 1);
       //The modified length will vary depending on the number of review references returned by
       //the features deleted as a result of the merge, but will always at least contain the resolved
       //review of the two features deleted as a result of the merge.
       context.hoot().assert(changes.modified.length >= 1);
-      context.hoot().assert(changes.deleted.length == 2);
+      context.hoot().assert(changes.deleted.length === 2);
     }*/
 
     var logDiff = function()

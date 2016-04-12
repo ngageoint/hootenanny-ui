@@ -134,7 +134,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 var fid = poiTableCols[0].id;
                 var feature = context.hasEntity(fid);
                 if(feature){
-                    if(feature.type == 'relation') {
+                    if(feature.type === 'relation') {
                         feature.members
                         .forEach(function(member) {
                             _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2');
@@ -155,7 +155,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 var fid = poiTableCols[1].id;
                 var feature = context.hasEntity(fid);
                 if(feature) {
-                    if(feature.type == 'relation') {
+                    if(feature.type === 'relation') {
                         feature.members
                         .forEach(function(member) {
                             _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature');
@@ -226,7 +226,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     **/
     var _performHighlight = function(fid, ftype, offType, on, offFid) {
                 //make sure there is actually an entity
-        if(context.hasEntity(fid) == undefined || context.hasEntity(offFid) == undefined){return;}
+        if(context.hasEntity(fid) === undefined || context.hasEntity(offFid) === undefined){return;}
 
         var feature = context.graph().entity(fid);
 

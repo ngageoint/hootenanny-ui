@@ -14,11 +14,11 @@ iD.ui.Alert = function(message,type,stack) {
     var fadeTime = 5000;
     var uniqueTimeout = setTimeout(function(){fadeOut(alertDiv);}, displayTime);
 
-    if(type==undefined){type='notice';}
+    if(type === undefined){type = 'notice';}
 
-    if(type=='warning'||type=='error'){alertDiv.classed('red',true);}
-    if(type=='notice'){alertDiv.classed('blue',true);}
-    if(type=='success'){alertDiv.classed('green',true);}
+    if(type === 'warning'||type === 'error'){alertDiv.classed('red',true);}
+    if(type === 'notice'){alertDiv.classed('blue',true);}
+    if(type === 'success'){alertDiv.classed('green',true);}
 
     alertDiv.append('div')
         .classed('fr _icon x dark point', true)

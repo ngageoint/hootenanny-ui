@@ -44,7 +44,7 @@ Hoot.view.utilities.translation = function(context) {
                     .classed('text-left big col12 fill-white small hoverDiv2', true)
                     .append('a')
                     .text(function (d) {
-                        if(d.DEFAULT == true){
+                        if(d.DEFAULT === true){
                             return d.NAME + ': ' + d.DESCRIPTION;
                         }
                         return d.NAME + ': ' + d.DESCRIPTION;
@@ -60,7 +60,7 @@ Hoot.view.utilities.translation = function(context) {
                     d3.event.preventDefault();
 
                     var r = confirm('Are you sure you want to delete selected translaton?');
-                    if (r == true) {
+                    if (r === true) {
 
                     } else {
                         return;
@@ -93,7 +93,7 @@ Hoot.view.utilities.translation = function(context) {
 
                 })
                 .select(function (sel) {
-                    if(sel.DEFAULT == true){
+                    if(sel.DEFAULT === true){
 
                         d3.select(this).classed('keyline-left keyline-right fr _icon quiet trash pad2 col1', true)
                         d3.select(this).on('click', function (n) {

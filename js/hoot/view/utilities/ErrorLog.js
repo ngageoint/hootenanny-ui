@@ -139,7 +139,7 @@ Hoot.view.utilities.errorlog = function(context){
                 }
                 uiInfo =
                     buildInfoName + ' - Version: ' + buildInfoVersion + ' - Built By: ' + buildInfoBuiltBy;
-                if (iD.data.buildInfo == null)
+                if (iD.data.buildInfo === null)
                 {
                     uiInfo +=
                         '\nUnable to find the iD buildInfo.json file.  Hootenanny iD version information will be unavailable.';

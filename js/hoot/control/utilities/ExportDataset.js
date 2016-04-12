@@ -36,12 +36,12 @@ Hoot.control.utilities.exportdataset = function(context) {
         _transCombo = [];
         // filters for exportable translations
         _.each(translations, function(tr){
-          if(tr.CANEXPORT && tr.CANEXPORT == true){
+          if(tr.CANEXPORT && tr.CANEXPORT === true){
               _transCombo.push(tr);
           }
         });
 
-        if(_transCombo.length == 1){
+        if(_transCombo.length === 1){
           var emptyObj = {};
           emptyObj.NAME='';
           emptyObj.DESCRIPTION='';
@@ -105,7 +105,7 @@ Hoot.control.utilities.exportdataset = function(context) {
         context.hoot().model.export.exportData(_container, _dataset, function(status){
 
 
-            if(status == 'failed'){
+            if(status === 'failed'){
                 iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','warning',new Error().stack);
                 _container.remove();
             } else {
@@ -135,7 +135,7 @@ Hoot.control.utilities.exportdataset = function(context) {
     **/
     var _getTranslationComboPlaceHolder = function(field) {
         var defTrans = _.find(field.combobox.data, {DESCRIPTION: field.placeholder['default']});
-        if(defTrans == undefined){
+        if(defTrans === undefined){
             return field.combobox.data[0].DESCRIPTION
         } else {
             return defTrans.DESCRIPTION;

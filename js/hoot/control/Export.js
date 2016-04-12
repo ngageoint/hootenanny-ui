@@ -22,13 +22,13 @@ Hoot.control.export = function (sidebar) {
         var transCombo = [];
         // filters for exportable translations
         _.each(translations, function(tr){
-            if(tr.CANEXPORT && tr.CANEXPORT == true){
+            if(tr.CANEXPORT && tr.CANEXPORT === true){
                 transCombo.push(tr);
             }
         });
 
 
-        if(transCombo.length == 1){
+        if(transCombo.length === 1){
             var emptyObj = {};
             emptyObj.NAME='';
             emptyObj.DESCRIPTION='';
@@ -101,7 +101,7 @@ Hoot.control.export = function (sidebar) {
                 if (field.inputtype=='text'){
                     if(field.transcombo){
                         var defTrans = _.find(field.transcombo, {DESCRIPTION: field.placeholder});
-                        if(defTrans == undefined){return field.transcombo[0].DESCRIPTION}
+                        if(defTrans === undefined){return field.transcombo[0].DESCRIPTION}
                         else{return defTrans.DESCRIPTION;}
                     }
                     else{return field.placeholder;}

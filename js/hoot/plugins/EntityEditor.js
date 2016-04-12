@@ -90,7 +90,7 @@ Hoot.plugins.entityeditor = function() {
 
 
 
-        /*if(me._selectedId == null || me._selectedId !== id){
+        /*if(me._selectedId === null || me._selectedId !== id){
             me.defaultTags = {};
             me.defaultRawTags = {};
             me._selectedId = id;
@@ -176,11 +176,11 @@ Hoot.plugins.entityeditor = function() {
         newField.key = fieldInfo.name;
         newField.label = fieldInfo.desc;
         newField.placeholder = fieldInfo.defValue;
-        if(fieldInfo.type == 'String') {
+        if(fieldInfo.type === 'String') {
             newField.type = 'text';//rawCurField.type do some manipulation from raw to preset field
-        } else if(fieldInfo.type == 'enumeration') {
+        } else if(fieldInfo.type === 'enumeration') {
            var found =  _.find(fieldInfo.enumerations, function(e){
-                return (e.value == '1000' && e.name == 'False');
+                return (e.value === '1000' && e.name === 'False');
             });
 
             // it is boolean selector
@@ -216,7 +216,7 @@ Hoot.plugins.entityeditor = function() {
 
             if(fields){
                 var col = _.find(fields, function(item){
-                    return item.desc == e;
+                    return item.desc === e;
                 });
                 obj.field = col;
             }
@@ -300,7 +300,7 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
         if(rawFCode) {
             var fCode = rawFCode.split(':')[0].trim();
             var fType = rawFCode.split(':')[1].trim();
-            curPreset = _.find(context.presets().collection, function(item){return item.id == currentTranslation + '/' + fCode;});
+            curPreset = _.find(context.presets().collection, function(item){return item.id === currentTranslation + '/' + fCode;});
 
             var rawCurFields = JSON.parse(resp.fields).columns;
 
@@ -335,7 +335,7 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
                     };
 
                     // custom override for indeterminate and checked value for check box
-                    if(fieldObj.type == 'check') {
+                    if(fieldObj.type === 'check') {
                         fieldObj.customBoxProp = {};
                         fieldObj.customBoxProp['indeterminate'] = 'No Information';
                         fieldObj.customBoxProp['checked'] = 'True';
@@ -386,7 +386,7 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
                     };
 
                     // custom override for indeterminate and checked value for check box
-                    if(fieldObj.type == 'check') {
+                    if(fieldObj.type === 'check') {
                         fieldObj.customBoxProp = {};
                         fieldObj.customBoxProp['indeterminate'] = 'No Information';
                         fieldObj.customBoxProp['checked'] = 'True';
@@ -452,7 +452,7 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
 
     // no chnage made. This can happen when raw_tag_editor calls change event from
     // field blur.
-    if(changeVal !== undefined && rawTags[changeKey] == changeVal)
+    if(changeVal !== undefined && rawTags[changeKey] === changeVal)
     {
         return;
     }
@@ -460,10 +460,10 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
     // If changeVal is undefined then we are deleting it.
     if(changeVal === undefined){
        var foundF = _.find(me.allTranslatedFields, function(f){
-            return f.key == changeKey;
+            return f.key === changeKey;
         });
 
-       if(foundF && foundF.type == 'number') {
+       if(foundF && foundF.type === 'number') {
                changeVal = '-999999.0';
        } else {
                changeVal = 'No Information';
@@ -514,7 +514,7 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
 
             for(var key in me.allTransTags) {
                 var val = me.allTransTags[key];
-                if(!OSMEntities[key] && key == changeKey) {
+                if(!OSMEntities[key] && key === changeKey) {
                     for(var tk in currentTags){
                         if(!OSMEntities[tk]){
                             OSMEntities[tk] = undefined;

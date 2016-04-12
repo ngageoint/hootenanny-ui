@@ -28,7 +28,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                 field.required = meta.required;
                 field.children = [];
 
-                if(meta.elem_type == 'group'){
+                if(meta.elem_type === 'group'){
                     field.heading=meta.name;
                     //formFields.push(field);
 
@@ -42,7 +42,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                         subfield.placeholder = submeta.defaultvalue;
                         subfield.description = submeta.description;
 
-                        if(submeta.elem_type == 'bool'){
+                        if(submeta.elem_type === 'bool'){
                             if(submeta.members){
                                 subfield.combobox = submeta.members;
                                 _.each(submeta.members,function(d){
@@ -51,18 +51,18 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                             } else {
                                 subfield.combobox = [{'value':'true'}, {'value':'false'}];
                             }
-                        } else if(submeta.elem_type == 'list') {
+                        } else if(submeta.elem_type === 'list') {
                             if(submeta.members){
                                 subfield.combobox = submeta.members;
                                 subfield.onchange = submeta.onchange;
                             }
-                        } else if(submeta.elem_type == 'double') {
+                        } else if(submeta.elem_type === 'double') {
                             subfield.maxvalue = submeta.maxvalue;
                             subfield.minvalue = submeta.minvalue;
                             subfield.onchange = 'Hoot.control.conflate.advancedoptions.fieldsgenerator().validate(d3.select(this));';
-                        } else if (submeta.elem_type == 'checkbox') {
+                        } else if (submeta.elem_type === 'checkbox') {
                             subfield.onchange = submeta.onchange;
-                        } else if (submeta.elem_type == 'checkplus') {
+                        } else if (submeta.elem_type === 'checkplus') {
                             if(submeta.members){
                                 var subchecks = [];
                                 _.each(submeta.members,function(sc){

@@ -90,7 +90,7 @@ iD.ui.PresetList = function(context) {
 
                 var filterType = d3.select('#presettranstype').value();
 
-                if(filterType == 'OSM') {
+                if(filterType === 'OSM') {
                     var results = presets.search(value, geometry);
                     searchResHandler(value, results);
                 } else {
@@ -108,7 +108,7 @@ iD.ui.PresetList = function(context) {
                             var fCode = elem.fcode;
                             curPreset = _.find(context.presets().collection,
                                 function(item){
-                                    return item.id == filterType + '/' + fCode;
+                                    return item.id === filterType + '/' + fCode;
                                 });
 
                             if(!curPreset){

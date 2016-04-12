@@ -50,7 +50,7 @@ iD.ui.Tools = function(context) {
                         if(item.items){return;}
                         if(item.mode){
                             context.enter(item.mode);
-                        } else if (item.action=='clipVisualExtent'){
+                        } else if (item.action === 'clipVisualExtent'){
                             //Call clip map
                             if(!_.isEmpty(hoot.model.layers.getLayers())){
                                 hoot.control.utilities.clipdataset.clipDatasetContainer('visualExtent');

@@ -531,7 +531,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
 
         var r = confirm('Are you sure you want to delete selected bookmark?');
-        if (r == true) {
+        if (r === true) {
 
             request = {};
             request['bookmarkId'] = d.id;

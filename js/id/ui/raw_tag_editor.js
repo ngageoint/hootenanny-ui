@@ -228,11 +228,11 @@ iD.ui.RawTagEditor = function(context) {
 
                         tagInfoOpts.translation = translation.transType;
                         var rawGeom = context.geometry(id);
-                        if(rawGeom == 'point'){
+                        if(rawGeom === 'point'){
                             rawGeom = 'Point';
-                        } else if(rawGeom == 'line'){
+                        } else if(rawGeom === 'line'){
                             rawGeom = 'Line';
-                        } else if(rawGeom == 'area'){
+                        } else if(rawGeom === 'area'){
                             rawGeom = 'Area';
                         }
                         var transTagInfoUrl = window.location.protocol + '//' +

@@ -109,10 +109,10 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
                 var sel = d3.select(c).value();
 
                 _.each(iD.data.hootConfAdvOps, function(mt){
-                    if(('ml' + mt.name) == selField.node().id){
+                    if(('ml' + mt.name) === selField.node().id){
                         if(mt.dependents){
                             _.each(mt.dependents, function(dep){
-                                if(sel == dep.value){
+                                if(sel === dep.value){
                                     enableField = dep.name;
                                    // d3.select('#' + dep.name + '_container').classed('hidden', false);
                                    // d3.select('.reset.' + dep.name).classed('hidden', false);

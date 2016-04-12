@@ -237,7 +237,7 @@ Hoot.hoot = function (context) {
         //find style
         var rules = _findLayerStyleRules(lyrid);
         // if not exist then put by looking into layers
-        if(rules.length == 0){
+        if(rules.length === 0){
             var lyr = hoot.model.layers.layers[name];
             if(lyr){
                 hoot.changeColor(lyrid, lyr.color);
@@ -373,7 +373,7 @@ Hoot.hoot = function (context) {
 
                  var parts = appVerStr.split(' ');
                  _.each(parts, function(part){
-                     if(part.indexOf(browserInfo.name) == 0){
+                     if(part.indexOf(browserInfo.name) === 0){
                          var subParts = part.split('/');
                          if(subParts.length > 1){
                             browserInfo.version = subParts[1];

@@ -36,7 +36,7 @@ Hoot.view.utilities.reports = function(context) {
                     .classed('text-left big col12 fill-white small hoverDiv2', true)
                     .append('a')
                     .text(function (d) {
-                        if(d.DEFAULT == true){
+                        if(d.DEFAULT === true){
                             return d.name + ': ' + d.description;
                         }
                         return d.name + ': ' + d.description;
@@ -52,7 +52,7 @@ Hoot.view.utilities.reports = function(context) {
                     d3.event.preventDefault();
 
                     var r = confirm('Are you sure you want to delete selected report?');
-                    if (r == true) {
+                    if (r === true) {
 
                     } else {
                         return;

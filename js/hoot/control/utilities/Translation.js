@@ -165,7 +165,7 @@ Hoot.control.utilities.translation = function(context) {
                 savetransEdit.classed('hidden', false);
             });
 
-            if(e.DEFAULT == true){
+            if(e.DEFAULT === true){
                 descVal.attr('disabled', true);
                 textArea.attr('disabled', true);
             }
@@ -187,7 +187,7 @@ Hoot.control.utilities.translation = function(context) {
     };
 
     hoot_control_utilities_translation.translationPopup = function(e) {
-        if(e.DEFAULT == true){
+        if(e.DEFAULT === true){
             Hoot.model.REST('getDefaultTranslation', e.PATH, function (d) {
                 hoot_control_utilities_translation.renderTranslationDlg(e, d);
 

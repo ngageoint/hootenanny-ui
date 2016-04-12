@@ -11,7 +11,7 @@ iD.ui.preset.defaultcheck = function(field) {
             var indeterminateText = 'undefined';
             if(field.customBoxProp && field.customBoxProp['indeterminate']) {
                 indeterminateText = field.customBoxProp['indeterminate'];
-            } 
+            }
             values.push(k === indeterminateText ? undefined : k);
             texts.push(field.t('options.' + k, { 'default': options[k] }));
         }
@@ -49,7 +49,7 @@ iD.ui.preset.defaultcheck = function(field) {
             .attr('type', 'checkbox')
             .attr('id', 'preset-input-' + field.id);
 
-       
+
         enter.append('span')
             .text(texts[0])
             .attr('class', 'value');
@@ -57,15 +57,15 @@ iD.ui.preset.defaultcheck = function(field) {
         box = label.select('input')
             .on('click', function() {
                 if(field.customBoxProp && field.customBoxProp['indeterminate']){
-                    if(value == field.customBoxProp['indeterminate']) {
+                    if(value === field.customBoxProp['indeterminate']) {
                         value = undefined;
                     }
                 }
                 var t = {};
                 var iVal = (values.indexOf(value) + 1) % values.length;
                 t[field.key] = values[iVal];
-                
-                
+
+
                 event.change(t);
                 d3.event.stopPropagation();
             });
@@ -84,20 +84,20 @@ iD.ui.preset.defaultcheck = function(field) {
         box.property('indeterminate', field.type === 'check' && !value);
         var textval = texts[values.indexOf(value)];
         if(field.customBoxProp && field.customBoxProp['indeterminate']) {
-            box.property('indeterminate', field.type === 'check' && (value == field.customBoxProp['indeterminate'] || !value));
+            box.property('indeterminate', field.type === 'check' && (value === field.customBoxProp['indeterminate'] || !value));
             if(!textval){
                 textval = field.customBoxProp['indeterminate'];
             }
         }
-        
+
         box.property('checked', value === 'yes');
         text.text(textval);
         label.classed('set', !!value);
         if(field.customBoxProp && field.customBoxProp['checked']) {
-            box.property('checked', value == field.customBoxProp['checked']);
-            label.classed('set', value == field.customBoxProp['checked']);
+            box.property('checked', value === field.customBoxProp['checked']);
+            label.classed('set', value === field.customBoxProp['checked']);
         }
-        
+
     };
 
     check.focus = function() {

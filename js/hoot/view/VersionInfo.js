@@ -138,7 +138,7 @@ Hoot.view.versioninfo = function(context){
           buildInfoBuiltBy = 'unknown';
         }
         var uiDesc =  buildInfoName + ' - Version: ' + buildInfoVersion + ' - Built By: ' + buildInfoBuiltBy;
-        if (iD.data.buildInfo == null)
+        if (iD.data.buildInfo === null)
         {
             uiDesc =  'Unable to find the iD buildInfo.json file.  Hootenanny iD version information will be unavailable.';
         }
@@ -177,7 +177,7 @@ Hoot.view.versioninfo = function(context){
     versioninfo.populateDatasets = function(container, data) {
 
         d3.select('#versiondetaillbl').html('<strong>Detail:('+ data.description + ')</strong> ');
-        if(data.name == 'core'){
+        if(data.name === 'core'){
 
             Hoot.model.REST('coreVersionDetail',
                     function(response) {
@@ -198,7 +198,7 @@ Hoot.view.versioninfo = function(context){
                         });
                     }
                 );
-        } else if(data.name == 'service'){
+        } else if(data.name === 'service'){
             Hoot.model.REST('servicesVersionDetail',
                     function(response) {
                         var d = response.properties;

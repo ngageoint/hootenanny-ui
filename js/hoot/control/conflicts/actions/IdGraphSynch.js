@@ -122,7 +122,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
 
                 // first check to see if anyone is relation
                 var relFound = _.find(entities.data, function(e){
-                    return e.type == 'relation';
+                    return e.type === 'relation';
                 });
 
                 // if there is one or more relation then recurse
@@ -130,7 +130,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                     _.each(entities.data, function(f){
                         // if feature type is relation recurse to load
                         // if not do nothing since it has been loaded properly
-                        if(f.type == 'relation'){
+                        if(f.type === 'relation'){
                             _relTreeIdx[f.id] = f.members.length;
                             _.each(f.members, function(m){
                                 if(!context.hasEntity(m.id) || m.type === 'relation') {
@@ -166,7 +166,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
         finally
         {
 
-            if(Object.keys(_relTreeIdx).length == 0){
+            if(Object.keys(_relTreeIdx).length === 0){
                 // Done so do final clean ups
                 _validateMemberCnt(_currentFid, currentCallback);
             }

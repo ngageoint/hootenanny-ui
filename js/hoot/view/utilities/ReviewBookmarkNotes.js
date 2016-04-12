@@ -165,7 +165,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
                 d3.event.preventDefault();
                 var r = confirm('If you continue Hootenanny will load selected review item and you will lose all unsaved changes. '+
                   'Do you want to continue?');
-                 if (r == true) {
+                 if (r === true) {
                   _jumpToReviewItem();
                 }
               });
@@ -348,7 +348,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
             var reqParam = {};
             var newNote = d3.select('#bmkNoteTextNew').value();
 
-            if(!newNote || newNote.length == 0) {
+            if(!newNote || newNote.length === 0) {
               alert('Please enter a note.');
               return;
             }

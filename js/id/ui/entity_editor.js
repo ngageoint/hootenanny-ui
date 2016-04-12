@@ -28,7 +28,7 @@ iD.ui.EntityEditor = function(context) {
 
         var ltds = context.hoot().view.ltdstags;
         var appPane = d3.select('#app');
-        if(appPane.classed('hidden') == true){
+        if(appPane.classed('hidden') === true){
             appPane.classed('hidden', false);
         }
 
@@ -222,7 +222,7 @@ iD.ui.EntityEditor = function(context) {
                 .on('change.entity-editor', historyChanged);
         }
 
-        if(currentTranslation == 'OSM') {
+        if(currentTranslation === 'OSM') {
             populateBody(preset, tags, tags);
         } else {
             plg.translateEntity(context, entity, currentTranslation, tags,

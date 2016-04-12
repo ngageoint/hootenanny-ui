@@ -54,7 +54,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
                          if(!d3.select(uniqueItem).empty()){
                              // get current value and change
                              var subVal =  d3.select(uniqueItem).value();
-                             if(subVal == ''){subVal = d3.select(uniqueItem).property('checked');}
+                             if(subVal === ''){subVal = d3.select(uniqueItem).property('checked');}
                              d3.selectAll('#tr_' + uniqueItem.substr(1)).selectAll('td:nth-child(2)').text(subVal);
                          }
                      });
@@ -101,7 +101,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
         var parent = d3.select('#'+s.id+'_group');
         var enableInputs = false;
         if(s.children[0].label=='Enabled'){
-            enableInputs = !(s.children[0].placeholder == 'true');
+            enableInputs = !(s.children[0].placeholder === 'true');
         }
 
         //now loop through children

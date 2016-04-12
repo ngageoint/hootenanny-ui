@@ -50,7 +50,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     **/
     var _createContainer = function(trans) {
         _trans = trans;
-        if(_trans.length == 1){
+        if(_trans.length === 1){
             var emptyObj = {};
             emptyObj.NAME = '';
             emptyObj.DESCRIPTION = '';
@@ -261,7 +261,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         link.mapid=0;
         link.mapid=0;
         if(row.select('.reset.LayerName').value())
-        {link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == row.select('.reset.LayerName').value()}),'id')[0] || 0;}
+        {link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name === row.select('.reset.LayerName').value()}),'id')[0] || 0;}
         if(link.mapid==0){return;}
         link.updateType='new';
         hoot.model.folders.updateLink(link);
@@ -336,7 +336,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             return false;
         }
 
-        if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f == row.select('.reset.LayerName').value();})))
+        if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f === row.select('.reset.LayerName').value();})))
         {
             d3.select('#importprogdiv').append('br');
             d3.select('#importprogdiv').append('text').text('A layer already exists with this name. Please remove the current layer or select a new name for this layer.');
@@ -372,7 +372,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         }
 
         var importText = _submitExp.select('span').text();
-        if(importText == 'Import'){
+        if(importText === 'Import'){
             context.hoot().model.import.importData(row,
                 '.reset.Schema',
                 '.reset.importImportType',
@@ -381,14 +381,14 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 '.reset.bulkImportDatasetFGDBFeatureClasses',
                 function(status){
                 if(status.info=='complete'){
-                    if(_isCancel == false){
+                    if(_isCancel === false){
                         _loadPostProcess(row,rowArray,rowNumber,modalbg);
                     }
                 } else if(status.info=='uploaded'){
                     _jobIds = status.jobids;
                     _mapIds = status.mapids;
                     _submitExp.select('span').text('Cancel');
-                } else if(status.info == 'failed'){
+                } else if(status.info === 'failed'){
                     var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
                     d3.select('#importprogdiv').append('br');
                     d3.select('#importprogdiv').append('text').text(errorMessage);
@@ -398,7 +398,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                     _importRow(rowArray,rowNumber,modalbg);
                 }
             });
-        } else if (importText == 'Cancel') {
+        } else if (importText === 'Cancel') {
             _cancelJob(rowArray,rowNumber,modalbg);
         }
     }
@@ -412,11 +412,11 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     * @param totalFileSize - total physical size of selected files.
     **/
     var _validateLoaded = function(selType, filesList, cntParam, totalFileSize) {
-        if(selType == 'FILE'){
+        if(selType === 'FILE'){
             var isValid = true;
             _.each(filesList, function(f){
                 var grp = _.find(filesList, function(m){
-                    return m.name == f.name;
+                    return m.name === f.name;
                 })
                 if(grp.isSHP){
                     if(!grp.isSHX || !grp.isDBF){
@@ -485,8 +485,8 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             var curFileName = curFile.name;
 
             fileNames.push(curFileName);
-            if(l == 0){
-                if(selType == 'DIR'){
+            if(l === 0){
+                if(selType === 'DIR'){
                     var parts = curFile.webkitRelativePath.split('/');
                     var folderName = parts[0];
                     if(folderName.length > 4){
@@ -505,7 +505,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 }
             }
 
-            if(selType == 'FILE'){
+            if(selType === 'FILE'){
 
                _setFileMetaData(curFileName, filesList, cntParam);
             }
@@ -517,7 +517,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             return;
         }
 
-        if(selType == 'DIR'){
+        if(selType === 'DIR'){
             _retrieveFeatureClasses(selRowNum);
         }
 
@@ -543,10 +543,10 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
 
 
         var fObj = _.find(filesList, function(f){
-            return f.name == fName;
+            return f.name === fName;
         });
 
-        if(fObj == null){
+        if(fObj === null){
             fObj = {};
             fObj.name = fName;
             fObj.isSHP = false;
@@ -668,7 +668,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             return _columns.map(function(c) {
                 var cell = {};
                 d3.keys(c).forEach(function(k) {
-                    cell[k] = typeof c[k] == 'function' ? c[k](row,i) : c[k];
+                    cell[k] = typeof c[k] === 'function' ? c[k](row,i) : c[k];
                 });
                 return cell;
             });
@@ -747,7 +747,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         var typeName = '';
         for(i=0; i<comboData.combobox.data.length; i++){
             var o = comboData.combobox.data[i];
-            if(o.title == desc){
+            if(o.title === desc){
                 typeName = o.value;
                 break;
             }
@@ -766,19 +766,19 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         var selectedType = d3.select(this).value();
         var typeName = _getTypeName(selectedType);
 
-        if(typeName == 'DIR'){
+        if(typeName === 'DIR'){
             d3.select('#ingestfileuploader-'+selRowNum)
             .attr('multiple', 'false')
             .attr('accept', null)
             .attr('webkitdirectory', '')
             .attr('directory', '');
-        } else if(typeName == 'GEONAMES') {
+        } else if(typeName === 'GEONAMES') {
             d3.select('#ingestfileuploader-'+selRowNum)
             .attr('multiple', 'false')
             .attr('accept', '.geonames')
             .attr('webkitdirectory', null)
             .attr('directory', null);
-        } else if(typeName == 'OSM') {
+        } else if(typeName === 'OSM') {
             d3.select('#ingestfileuploader-'+selRowNum)
             .attr('multiple', 'false')
             .attr('accept', '.osm')
@@ -793,9 +793,9 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         }
 
         var translationsList = _importTranslations;
-        if(typeName == 'GEONAMES'){
+        if(typeName === 'GEONAMES'){
             translationsList = _importTranslationsGeonames;
-        }  else if(typeName == 'OSM') {
+        }  else if(typeName === 'OSM') {
             translationsList = _importTranslationsOsm;
         }
         var comboData = d3.select('.reset.Schema[row='' + selRowNum + '']').datum();
@@ -811,9 +811,9 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         d3.select('.reset.Schema[row='' + selRowNum + '']')
              .style('width', '100%')
                 .call(combo);
-        if(typeName == 'GEONAMES'){
+        if(typeName === 'GEONAMES'){
             d3.select('.reset.Schema[row='' + selRowNum + '']').value(_importTranslationsGeonames[0].DESCRIPTION);
-        } else if(typeName == 'OSM'){
+        } else if(typeName === 'OSM'){
             d3.select('.reset.Schema[row='' + selRowNum + '']').value(_importTranslationsOsm[0].DESCRIPTION);
         }
 

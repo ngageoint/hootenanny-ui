@@ -42,7 +42,7 @@ Hoot.control.conflicts.map.featureNavigator = function (context)
         var mapExtent = map.extent();
         var entityCenter = entityExtent.center();
 
-        if(entityExtent == undefined){
+        if(entityExtent === undefined){
             iD.ui.Alert('Could not locate selected feature with id: ' + entity.id + '.','warning',new Error().stack)
             return;
         }

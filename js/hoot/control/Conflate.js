@@ -371,7 +371,7 @@ Hoot.control.conflate = function (sidebar) {
         if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){
                 return l.substring(l.lastIndexOf('|')+1);
             }),function(f){
-                return f == _container.selectAll('.saveAs').value();
+                return f === _container.selectAll('.saveAs').value();
             }
         )))
         {
@@ -821,7 +821,7 @@ Hoot.control.conflate = function (sidebar) {
                 _instance.confAdvOptionsFields = _instance.lastAdvFields;
                 _instance.confAdvOptionsSelectedVal = _instance.lastAdvValues;
             } else {
-                if(_instance.confAdvOptionsSelectedVal == null){
+                if(_instance.confAdvOptionsSelectedVal === null){
                     _instance.confAdvOptionsFields = _instance.advancedoptions.fieldsretriever.getDefaultFields();
                     _instance.confAdvOptionsSelectedVal = _instance.advancedoptions.selectionretriever.getSelectedValues(null,_instance.confAdvOptionsFields);
                 }

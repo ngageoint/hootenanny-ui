@@ -47,7 +47,7 @@ Hoot.model.import = function (context)
         var oTrans = null;
         for(i=0; i<comboData.combobox.length; i++){
             var o = comboData.combobox[i];
-            if(o.DESCRIPTION == transType){
+            if(o.DESCRIPTION === transType){
                 transName = o.NAME;
                 oTrans = o;
                 break;
@@ -58,14 +58,14 @@ Hoot.model.import = function (context)
         // Checks to see if it is default translation and if so use the path specified
         var transcriptName = iD.data.hootConfig.defaultScript;
         var isDefTrans = false;
-        if(oTrans && oTrans.DEFAULT == true) {
+        if(oTrans && oTrans.DEFAULT === true) {
             if(oTrans.PATH && oTrans.PATH.length > 0){
                 transcriptName = oTrans.PATH;
                 isDefTrans = true;
             }
         }
 
-        if(isDefTrans == false && transName != null && transName != ''){
+        if(isDefTrans === false && transName != null && transName != ''){
             transcriptName = 'customscript/' + transName + '.js';
         }
 
@@ -75,7 +75,7 @@ Hoot.model.import = function (context)
         var typeName = '';
         for(i=0; i<comboData.combobox.data.length; i++){
             var o = comboData.combobox.data[i];
-            if(o.title == selType){
+            if(o.title === selType){
                 typeName = o.value;
                 break;
             }
@@ -118,7 +118,7 @@ Hoot.model.import = function (context)
         }
 
         var fileUploader;
-        if(container.attr('id') == null){
+        if(container.attr('id') === null){
             data.formData = import_layer.getFormData(document.getElementById('ingestfileuploader').files);
         } else if(container.attr('id').substring(0,3)=='row'){
             data.formData = import_layer.getFormData(document.getElementById('ingestfileuploader'+container.attr('id').substring(3)).files);
