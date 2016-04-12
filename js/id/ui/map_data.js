@@ -413,15 +413,21 @@ iD.ui.MapData = function(context) {
         function setLineWidth(setWidth,width){
             var sheets = document.styleSheets[document.styleSheets.length - 1];
             var selectTxt = 'path.way.stroke';
+            var casingTxt = 'path.way.line.casing';
             var reviewTxt = 'path.shadow.activeReviewFeature, path.shadow.activeReviewFeature2';
+            var shadowTxt = 'path.way.shadow';
 
             _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText == selectTxt){ sheets.deleteRule(cssIdx);return true;};});
             _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText == reviewTxt){ sheets.deleteRule(cssIdx);return true;};});
+            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText == casingTxt){ sheets.deleteRule(cssIdx);return true;};});
+            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText == shadowTxt){ sheets.deleteRule(cssIdx);return true;};});
 
             var reviewWidth = (parseInt(width)+10).toString();
 
             if(setWidth){sheets.insertRule(selectTxt + ' {stroke-width:' + width + ' !important}',sheets.cssRules.length-1);}
-            if(setWidth){sheets.insertRule(reviewTxt + ' {stroke-width:' + reviewWidth + ' !important}',sheets.cssRules.length-1);}
+            if(setWidth){sheets.insertRule(casingTxt + ' {stroke-width:' + (parseInt(width)-1) + ' !important}',sheets.cssRules.length-1);}
+            if(setWidth){sheets.insertRule(shadowTxt + ' {stroke-width:' + (parseInt(width)+2) + ' !important}',sheets.cssRules.length-1);}
+            if(setWidth){sheets.insertRule(reviewTxt + ' {stroke-width:' + reviewWidth + ' !important}',sheets.cssRules.length-1);}            
         }
 
         // feature filters
