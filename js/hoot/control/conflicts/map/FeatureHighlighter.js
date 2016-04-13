@@ -25,8 +25,9 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     * @param raitem - review item 2
     **/
     //@TODO: change params to array
-	_instance.highlightLayer = function (ritem, raitem) {
-   
+	_instance.highlightLayer = function (ritem, raitem, panTo) {
+        var panTo = (panTo != null || panTo != undefined) ? panTo : true;
+
         var feature = null;
         var againstFeature = null;
         
@@ -90,7 +91,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         var relId = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
         _parent().reviewIds.push(relId);
         _parent().info.metadata.updateMeta(null);
-        if(panToId) {
+        if(panToId && panTo) {
             _parent().map.featureNavigator.panToEntity(context.entity(panToId), true);
         }
    
@@ -183,39 +184,12 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         d3.selectAll('.' + fid).on('mouseleave', null);
         d3.selectAll('.' + fid)
         .on('mouseenter', function(d) {
-            _highlightRelFeatures(d.id, ftype, offType, true, offFid);
+            _performHighlight(d.id,ftype,offType,true,offFid);
         }).on('mouseleave', function(d) {
-            _highlightRelFeatures(d.id, ftype, offType, false, offFid);
+            _performHighlight(d.id,ftype,offType,false,offFid);
         });
     }
     
-    /**
-    * @desc Highlights each feature and flashes
-    * @param fid - feature id to highlight
-    * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
-    * @param offType - highlight color class to remove [activeReviewFeature | activeReviewFeature2]
-    * @param on -  show or hide
-    * @param offFid - member fid that should not be highlighted
-    **/
-    var _highlightRelFeatures = function(fid, ftype, offType, on, offFid) {
-        if(on === true) {
-            var curToggle = on;
-            _flashingTimer = window.setInterval(function(){
-                curToggle = !curToggle;
-                _performHighlight(fid, ftype, offType, curToggle, offFid) ;
-            }, 500);
-        } else {
-            if(_flashingTimer) {
-                clearInterval(_flashingTimer);
-                _performHighlight(fid, ftype, offType, on, offFid) ;
-            }
-            
-        }
-    
-        
-            
-    }
-
      /**
     * @desc Highlights each feature
     * @param fid - feature id to highlight

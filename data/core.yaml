@@ -475,6 +475,9 @@ en:
   highlight-edited:
     tooltip: "Places a gold halo around edited but unsaved features"
     title: "Highlight edited features"
+  enable-snap:
+    tooltip: "Enables line snap when creating features"
+    title: "Enable line snap"    
   help:
     title: "Help"
     help: |
@@ -693,7 +696,7 @@ en:
       The cursor will then change into crosshairs indicating that you are able to measure a feature by drawing a line. To continue a drawing,
       left click to add nodes as needed. To complete the measurement double-click. To measure an area/perimeter of a feature, select the
       Measure Area option and click on the screen to add nodes and double click to complete the measurement. The measurement values
-      will appear with the perimeter value listed above the area.
+      will appear with the perimeter value listed above the area.  To clear the measurement vectors, click the Tools Menu button.
 
 
       ### Clip Tools

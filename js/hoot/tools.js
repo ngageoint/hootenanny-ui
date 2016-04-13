@@ -150,8 +150,8 @@ Hoot.tools = function (context, selection) {
 
 
         var refLayer = '1';
-        var oRefLayer = a.select('.referenceLayer').datum();
-        if(oRefLayer.id == data.INPUT2){
+        var oRefLayerId = hoot.model.layers.getmapIdByName(a.select('.referenceLayer').value());
+        if(oRefLayerId == data.INPUT2){
             refLayer = '2';
         }
 

@@ -18,6 +18,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     
 	var _instance = {};
     var _currentReviewable;
+    var _currentReviewableEntityId;
     var _mapid;
     var _nextid;
     var _previd;
@@ -102,7 +103,31 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                         _reviewGetNextHandler(null, forcedReviewableItem);
                         context.hoot().view.utilities.reviewbookmarknotes.setForcedReviewableItem(null);
                     } else {
-                        Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
+                        // First check to see if there are any siblings within the relation
+                        if(_currentReviewable && _currentReviewableEntityId){
+                            _parent().actions.idgraphsynch.getRelationFeature(_currentReviewable.mapId,_currentReviewable.relationId,function(resp){
+                                var feature = context.hasEntity(_currentReviewableEntityId);
+                                if(feature){
+                                    var nextReviewInRelation = _.find(context.graph().parentRelations(feature),function(item){return item.tags['hoot:review:needs'] == 'yes'});
+                                    if(nextReviewInRelation == undefined){
+                                        Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
+                                    } else{
+                                        var nextReview = {
+                                            mapId:nextReviewInRelation.mapId,
+                                            resultCount:1,
+                                            sortOrder:parseInt(nextReviewInRelation.tags['hoot:review:sort_order']),
+                                            relationId: parseInt(nextReviewInRelation.origid.replace('r',''))
+                                        }
+                                        iD.operations.Review([_currentReviewableEntityId],context)();
+                                        _reviewGetNextHandler(null, nextReview);
+                                    }
+                                } else {
+                                    Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
+                                }
+                            });
+                        } else {
+                            Hoot.model.REST('reviewGetNext', reviewData, _reviewGetNextHandler);
+                        }
                     }
      
                 } catch (err) {
@@ -170,6 +195,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     * @desc  Go forward with layer visibility validation
     **/
     _instance.traverseForward = function () {
+        _instance.setCurrentReviewableEntityId(undefined);
         var vicheck = _vischeck();
         if(!vicheck){
             return;
@@ -181,6 +207,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     * @desc  Go backward with layer visibility validation
     **/
     _instance.traverseBackward = function () {
+        _instance.setCurrentReviewableEntityId(undefined);
         var vicheck = _vischeck();
         if(!vicheck){
             return;
@@ -221,6 +248,27 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     _instance.getCurrentReviewable = function(){
         return _currentReviewable;
     }
+
+    /**
+    * @desc  sets current reviewable item
+    **/
+    _instance.setCurrentReviewable = function(_){
+        _currentReviewable = _;
+    } 
+
+    /**
+    * @desc  gets the current review entity id
+    **/
+    _instance.getCurrentReviewableEntityId = function(){
+        return _currentReviewableEntityId;
+    }
+
+    /**
+    * @desc  sets the current review entity id
+    **/
+    _instance.setCurrentReviewableEntityId = function(_){
+        _currentReviewableEntityId = _;
+    }         
 
     /**
     * @desc  initialization validation

@@ -103,7 +103,9 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
  	    	
  	    	var c = context.projection(context.map().mouseCoordinates());
     	    line.attr("x2", c[0])
-    	        .attr("y2", c[1]);
+    	        .attr("y2", c[1])
+                .attr('loc2',context.map().mouseCoordinates());
+            
     	    
     	    var distance = d3.geo.distance(lastPoint,context.map().mouseCoordinates());
     	    distance = radiansToMeters(distance);
@@ -112,12 +114,8 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
     	    
     	    label.attr("x", c[0]+10)
 	        	.attr("y", c[1]+10)
+                .attr("loc", context.map().mouseCoordinates())
 	        	.text(function(d) { return displayLength(currentDist) });
-    	    
-    	    /*rect.attr("x", c[0])
-        		.attr("y", c[1]-(label.dimensions()[1]/2))
-        		.attr("width",label.dimensions()[0]+10)
-		        .attr("height",label.dimensions()[1]+10);*/
  	    }
     }
     
@@ -141,6 +139,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
                 .classed('measure-label-text',true)
 		        .attr("x", c[0]+10)
 		        .attr("y", c[1]+10)
+                .attr("loc", context.map().mouseCoordinates())
 		        .style("fill","white")
 		        .style("font-size","18px")
 		        .text(function(d) { return displayLength(totDist)});
@@ -151,16 +150,9 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
 	    		.attr("x1", c[0])
 		        .attr("y1", c[1])
 		        .attr("x2", c[0])
-		        .attr("y2", c[1]);
-			
-			/*svg.selectAll('g').selectAll('rect').remove();
-			rect = g.insert("rect",":first-child")
-		        .attr("x", c[0])
-		        .attr("y", c[1]-(label.dimensions()[1]/2))
-		        .attr("width",label.dimensions()[0]+10)
-		        .attr("height",label.dimensions()[1]+10)
-		        .style("fill","black")
-		        .style("fill-opacity","0.5");*/
+		        .attr("y2", c[1])
+                .attr('loc1',context.map().mouseCoordinates())
+                .attr('loc2',context.map().mouseCoordinates());
 		} 
 		
 		nodeId++;
