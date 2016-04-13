@@ -227,6 +227,8 @@ Hoot.model.layers = function (context)
     }
 
     model_layers.addLayer = function (key, callback) {
+        context.background().updateMeasureLayer({},"");
+
         // this isLayerLoading tracks on till key is added to layers object.
         isLayerLoading = true;
         var cMapId = key.id || model_layers.getmapIdByName(key.name) || 155;
@@ -256,6 +258,7 @@ Hoot.model.layers = function (context)
         delete layers[name];
 
         context.background().updateReviewLayer({},"");
+        context.background().updateMeasureLayer({},"");
 
         context.connection().loadedDataRemove(mapid.toString());
         d3.select('.layerControl_' + mapid.toString()).remove();

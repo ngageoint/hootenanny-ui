@@ -6,7 +6,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
         tolerance = 12,
         nodeId=0,
         polygon,label,rect,lengthLabel,areaLabel,
-        points="",
+        points="",loc="",
         ptArr=[],rectArr=[],
         lastPoint=null,firstPoint=null,
         totDist=0,
@@ -16,7 +16,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     
     function ret(element) {
         // reset variables
-        nodeId=0;points="";ptArr=[];rectArr=[];
+        nodeId=0;points="";loc="";ptArr=[];rectArr=[];
         lastPoint=null;firstPoint=null;
         totDist=0;segmentDist=0;lastSegmentDist=0;    	
     	d3.event.preventDefault();
@@ -40,14 +40,11 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     	rectArr = rectArr.concat(ptArr);
     	rectArr.push(context.map().mouseCoordinates());
     	rectArr.push(firstPoint);
-    	
-    	console.log(rectArr);
-    	
+        
     	var json = {type: 'Polygon',coordinates: [rectArr]};
     	var area = d3.geo.area(json);
     	
     	 if (area > 2 * Math.PI) {
-    		 console.log('t');
     		 json.coordinates[0] = json.coordinates[0].reverse();
              area = d3.geo.area(json);
          }
@@ -103,30 +100,30 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     
     function displayLength(m){
         var imperial = context.imperial;
-    	
-    	var d = m * (imperial ? 3.28084 : 1),
-	        p, unit;
-	
-	    if (imperial) {
-	        if (d >= 5280) {
-	            d /= 5280;
-	            unit = 'mi';
-	        } else {
-	            unit = 'ft';
-	        }
-	    } else {
-	        if (d >= 1000) {
-	            d /= 1000;
-	            unit = 'km';
-	        } else {
-	            unit = 'm';
-	        }
-	    }
-	
-	    // drop unnecessary precision
-	    p = d > 1000 ? 0 : d > 100 ? 1 : 2;
-	
-	    return String(d.toFixed(p)) + ' ' + unit;
+        
+        var d = m * (imperial ? 3.28084 : 1),
+            p, unit;
+    
+        if (imperial) {
+            if (d >= 5280) {
+                d /= 5280;
+                unit = 'mi';
+            } else {
+                unit = 'ft';
+            }
+        } else {
+            if (d >= 1000) {
+                d /= 1000;
+                unit = 'km';
+            } else {
+                unit = 'm';
+            }
+        }
+    
+        // drop unnecessary precision
+        p = d > 1000 ? 0 : d > 100 ? 1 : 2;
+    
+        return String(d.toFixed(p)) + ' ' + unit;
     }
     
     
@@ -194,26 +191,23 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     	    var currentDist = segmentDist+totDist+lastSegmentDist;
     	    
     	    label.attr("x", c[0]+rectMargin)
-	        	.attr("y", c[1]+rectMargin);
+	        	.attr("y", c[1]+rectMargin)
+                .attr("loc", context.map().mouseCoordinates());
     	    lengthLabel.attr("x", c[0]+10)
 	        	.attr("y", c[1])
 	        	.text(function(d) { return displayLength(currentDist)});
 			areaLabel.attr("x", c[0]+10)
 	        	.attr("y", c[1]+25)
 	        	.text(function(d){return displayArea(getArea())});
-    	    
-    	    /*rect.attr("x", c[0]+10)
-        		.attr("y", c[1]-(label.dimensions()[1]/2))
-        		.attr("width",label.dimensions()[0]+5)
-		        .attr("height",label.dimensions()[1]+5);*/
- 	    }
+         }
     }
     
     function click() {
     	var c = context.projection(context.map().mouseCoordinates());
     	
     	points = points + " " + c;
-    	
+        loc = loc + " " + context.map().mouseCoordinates();
+        
     	if(nodeId==1){
     		ptArr.splice(ptArr.length-1,1);
     		for (var i = 0; i < 2; i++) {ptArr.push(context.map().mouseCoordinates());}
@@ -221,15 +215,6 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     		ptArr.splice(ptArr.length-1,1);
     		for (var i = 0; i < 2; i++) {ptArr.push(context.map().mouseCoordinates());}
     	}
-
-    	
-    	/*if(nodeId==0){
-    		for (var i = 0; i < 3; i++) {ptArr.push(context.map().mouseCoordinates());}
-    	}
-    	else{
-    		ptArr.splice(1,1);
-    		for (var i = 0; i < 2; i++) {ptArr.splice(1,0,context.map().mouseCoordinates());}
-    	}*/
     	    	
     	var newpt=svg.append('g')
 			.classed('node point',true)
@@ -246,6 +231,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 			
 			label.attr("x", c[0]+rectMargin)
         		.attr("y", c[1]+rectMargin)
+                .attr("loc", context.map().mouseCoordinates())
                 .classed('measure-label-text',true)
 		        .style("fill","white")
 		        .style("font-size","18px");	
@@ -255,15 +241,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 			areaLabel.attr("x", c[0]+10)
 	        	.attr("y", c[1]+25)
 	        	.text(function(d){return displayArea(getArea())});
-				
-			//rect = g.insert("rect",":first-child")
-		      /*rect.attr("x", c[0])
-		        .attr("y", c[1]-(label.dimensions()[1]/2))
-		        .attr("width",label.dimensions()[0]+5)
-		        .attr("height",label.dimensions()[1]+5)
-		        .style("fill","black")
-		        .style("fill-opacity","0.5");*/
-			
+            
 			lastPoint=context.map().mouseCoordinates();
 		} 	
 		nodeId++;
@@ -282,9 +260,6 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 		    .style("fill-opacity","0.3")
 			.attr("points","");
 
-		/*rect = g.append("rect")//insert("rect",":first-child")
-	        .style("fill","black")
-	        .style("fill-opacity","0.5");*/
         
         label = g.append("text")
 	        .style("fill","white")

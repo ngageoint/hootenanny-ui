@@ -10,6 +10,7 @@ iD.ui.Tools = function(context) {
          items.push({title:'Measurement Tools',icon:'add-line',group:'measure',items:[          
                 {title:'Measure Length',tooltip:'Shortcut: 6',group:'measure',type:'line',icon:'add-line',mode:iD.modes.MeasureAddLine(context)},
                 {title:'Measure Area',tooltip:'Shortcut: 7',group:'measure',type:'area',icon:'add-area',mode:iD.modes.MeasureAddArea(context)},
+                {title:'Measure Help',tooltip:'',group:'measure',type:'help',icon:'help',action:'measureHelp'},
             ]});
 
         if (!hoot.control.conflicts.isConflictReviewExist()) {
@@ -57,7 +58,9 @@ iD.ui.Tools = function(context) {
                     		} else {
                     			iD.ui.Alert("Add data to map before clipping.","notice",new Error().stack);
                     		}
-                    	}
+                    	} else if (item.action=='measureHelp'){
+                            iD.ui.Alert("Click anywhere on the map to start measuring.  Double-click to end measurement. Clicking on the Tools menu will clear the vectors from the screen.","notice");
+                        }
                     	d3.select('.tools-menu').remove();
                     	d3.select('.sub-menu').remove();
                       });

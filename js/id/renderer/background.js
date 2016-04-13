@@ -442,6 +442,7 @@ iD.Background = function(context) {
 
   //Added for Hoot measurement tool
     background.updateMeasureLayer = function(d) {
+        d3.select('.measure-layer').selectAll('g').remove();
     	measureLayer.geojson(d);
     	dispatch.change();
     }
