@@ -27,6 +27,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         _createSortMenu(form, aa);
         _createFilterByCreatorMenu(form, aa);
         _createFilterByMapIdMenu(form, aa);
+        _createClearFilterButton(form, aa);
         
 
         _instance.datasetcontainer = form.append('div')
@@ -290,6 +291,28 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         _lastSortRequest['filterbyval'] = d.id;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
         _globalFilterByMapIdClickHandler();
+    }
+
+    var _createClearFilterButton = function(form, menuContainer) {
+        var dd = menuContainer.append('div')
+            .attr('id', 'btnClearFilters')
+            .classed('fl quiet col1 center',true)
+
+            .on('click', function(d, e, f){
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+                _lastSortRequest = {};
+                _lastSortRequest['orderBy'] = 'createdAt';
+                _lastSortRequest['asc'] = 'false';
+                _lastSortRequest['limit'] = _DEFAULT_PAGE_COUNT;
+                _lastSortRequest['offset'] = 0;
+                _instance.populatePopulateBookmarks(null, _lastSortRequest);
+            });
+
+
+        dd.append('span')
+            .classed('quiet',true)
+            .text('Clear Filters');
     }
 
     /**
