@@ -233,10 +233,6 @@ iD.Map = function(context) {
     }
 
     function zoomPan() {
-    	//Added for measure layer
-        //if(context.mode().id=='measure-add-line' || context.mode().id=='measure-add-area' || context.mode().id=='clip-bounding-box'){return;}
-        //else{d3.select('.measure-layer').selectAll('g').remove();}
-
     	if (Math.log(d3.event.scale) / Math.LN2 - 8 < minzoom + 1) {
             surface.interrupt();
             iD.ui.flash(context.container())
@@ -310,8 +306,8 @@ iD.Map = function(context) {
             });
         }
 
-        var measureRect = d3.select('.measure-layer').select('rect');
-        if(!measureRect.empty()){
+        var measureLabel = d3.select('.measure-layer').select('text');
+        if(!measureLabel.empty()){
             var labelmargin = !measureLines.empty() ? 10 : 30;
             var rectmargin = !measureLines.empty() ? 0 : 10;
 
@@ -331,9 +327,9 @@ iD.Map = function(context) {
                 }
             }
 
-            var loc = d3.select(measureRect[0][0]).attr('loc').split(/,/).map(parseFloat);
+            var loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
             var c = context.projection(loc);
-            d3.select(measureRect[0][0]).attr("x", c[0]+rectmargin).attr('y',c[1]-(measureLabel.dimensions()[1]/2));
+            d3.select(measureLabel[0][0]).attr("x", c[0]+rectmargin).attr('y',c[1]-(measureLabel.dimensions()[1]/2));
         }
 
         //Added for goto feature bubbles
