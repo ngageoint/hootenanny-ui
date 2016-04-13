@@ -23,6 +23,7 @@ iD.modes.MeasureAddArea = function(context) {
     };
 
     mode.exit = function() {
+        d3.select('button.tools').text("Clear");
     	context.map().dblclickEnable(true);
     	context.uninstall(behavior);
     };

@@ -19,8 +19,13 @@ iD.ui.Tools = function(context) {
                 {title:'Clip to Bounding Box',tooltip:'Shortcut: 8',group:'clip',type:'area',icon:'clip',mode:iD.modes.ClipBoundingBox(context)}
             ]})
         };
-        
+
         d3.select('html').append('div').attr('class', 'tools-menu');
+
+        if(d3.select('button.tools').text() == "Clear"){
+            d3.select('button.tools').text("Tools");
+            return;
+        }
                
         var toolsItem =  d3.selectAll('.tools-menu')
             .html('')
