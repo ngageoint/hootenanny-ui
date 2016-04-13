@@ -253,7 +253,8 @@ Hoot.control.import = function (context,selection) {
                                 + iD.data.hootConfig.nodeMapnikServerPort
                                 + '/?z={zoom}&x={x}&y={y}&color='
                                 + encodeURIComponent(context.hoot().palette(d.color))
-                                + '&name=' + d.name,
+                                + '&name=' + d.name
+                                + '&mapid=' + d.id,
                             scaleExtent: [0,18],
                             overlay: true,
                             projection: 'mercator',
