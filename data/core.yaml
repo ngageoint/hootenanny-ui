@@ -475,6 +475,9 @@ en:
   highlight-edited:
     tooltip: "Places a gold halo around edited but unsaved features"
     title: "Highlight edited features"
+  enable-snap:
+    tooltip: "Enables line snap when creating features"
+    title: "Enable line snap"    
   help:
     title: "Help"
     help: |

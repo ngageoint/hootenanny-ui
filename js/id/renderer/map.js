@@ -832,5 +832,9 @@ iD.Map = function(context) {
             });
         }
     }
+
+    map.updateSnapFeatures = function() {
+        context.enableSnap = d3.select('div.enable-snap input').node().checked;
+    }    
     return d3.rebind(map, dispatch, 'on');
 };
