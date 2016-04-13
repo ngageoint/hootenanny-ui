@@ -666,7 +666,7 @@ en:
       #### Image Carousel
       The image carousel displays all of the available images by timestamp and sensor that are in the DigitalGlobe GBM/EGD service if
       the service has been enabled. Users can select a particular DigitalGlobe image from the listed sensors/dates displayed in the carousel
-      by clicking on the *Image Carousel* button or typing the *c* shortcut key.
+      by clicking on the *Image Carousel* button or typing the *⌘I* shortcut key.
 
       ### Map Data
 
@@ -727,23 +727,25 @@ en:
       7  | Measure Area
       8  | Clip to Bounding Box
       9  | Clip to Visual Extent
-      Ctrl + z  | Undo
-      Ctrl + y  | Redo
-      Ctrl + s  | Save
+      Ctrl + b | Bookmark current review
       Ctrl + c  | Copies feature geometry/tags
+      Ctrl + s  | Save
       Ctrl + v  | Pastes selected feature geometry/tags
-      Ctrl + Backspace  | Deletes object permanently
-      Ctrl + Shift + v | Pastes selected tags using the overwrite option
       Ctrl + Alt + v | Pastes selected tags using the append option
+      Ctrl + Shift + v | Pastes selected tags using the overwrite option
+      Ctrl + y  | Redo
+      Ctrl + z  | Undo
+      Ctrl + Backspace  | Deletes object permanently
       Shift + Left mouse click  | Selects multiple features geometry/tags within layer
       Alt + b  | Switches b/w layers during post-conflation conflict review
+      Alt + i  | Open Image Carousel
       Alt + n  | Toggles layer visibility on/off
       +  | Zoom in 1 level
       -  | Zoom out 1 level
       /  | Toggles display of overview map and map-in-map results during Conflict Review
+      ↓,↑,←,→  | Pan map in direction
       a  | Continue drawing a line at the selected node
       b  | Display background layer switcher
-      c  | Open Image Carousel
       d  | Disconnect lines/areas from selected node
       f  | Displays Map data settings
       h  | Display in-editor help/documentation
@@ -754,8 +756,7 @@ en:
       p  | Steps back to previous review during Conflict Review
       r  | Rotate object around center / Resolved during Conflict Review
       s  | Straighten a line or square corner of area
-      x  | Split line into two at selected node
-      ↓,↑,←,→  | Pan map in direction
+      x  | Split line into two at selected node      
       v  | Make line go in opposite direction
       w  | Toggles wireframe vector display on/off
       Enter/Esc  | Stops drawing feature
