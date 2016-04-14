@@ -267,39 +267,8 @@ Hoot.control.utilities.importdataset = function(context) {
                 function(status){
                 if(status.info == 'complete'){
                     if(_isCancel == false){
-                        _container.remove();
-                    
-                        var pathname = _container.select('#importDatasetPathName').value();
-                        if(pathname==''){pathname=_container.select('#importDatasetPathName').attr('placeholder');}
-                        if(pathname=='root'){pathname='';}
-                        var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
-                        
-                        //determine if a new folder is being added
-                        var newfoldername = _container.select('#importDatasetNewFolderName').value();
-                        
-                        var folderData = {};
-                        folderData.folderName = newfoldername;
-                        folderData.parentId = pathId;
-                        hoot.model.folders.addFolder(folderData,function(a){
-                            //update map linking
-                            var link = {};
-                            link.folderId = a;
-                            link.mapid=0;
-                            if(_container.select('#importDatasetLayerName').value())
-                            {
-                                link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),
-                                function(f){
-                                    return f.name == _container.select('#importDatasetLayerName').value();
-                                }),'id')[0] || 0;
-                            }
-                            if(link.mapid==0){return;}
-                            link.updateType='new';
-                            hoot.model.folders.updateLink(link);
-                            link = {};
-                        })
-                    
+                        _linkToFolder(_container);
                     }
-
                 } else if(status.info == 'uploaded'){
                     _jobIds = status.jobids;
                     _mapIds = status.mapids;
@@ -307,11 +276,44 @@ Hoot.control.utilities.importdataset = function(context) {
                 } else if(status.info == 'failed'){
                     var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
                     iD.ui.Alert(errorMessage,'error',new Error().stack);
-                    _container.remove();
+                    _linkToFolder(_container);
                 }
 
             });
 
+    }
+
+    var _linkToFolder = function(_container){
+        var pathname = _container.select('#importDatasetPathName').value();
+        if(pathname==''){pathname=_container.select('#importDatasetPathName').attr('placeholder');}
+        if(pathname=='root'){pathname='';}
+        var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+        
+        //determine if a new folder is being added
+        var newfoldername = _container.select('#importDatasetNewFolderName').value();
+        
+        var folderData = {};
+        folderData.folderName = newfoldername;
+        folderData.parentId = pathId;
+        hoot.model.folders.addFolder(folderData,function(a){
+            //update map linking
+            var link = {};
+            link.folderId = a;
+            link.mapid=0;
+            if(_container.select('#importDatasetLayerName').value())
+            {
+                link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),
+                function(f){
+                    return f.name == _container.select('#importDatasetLayerName').value();
+                }),'id')[0] || 0;
+            }
+            if(link.mapid==0){return;}
+            link.updateType='new';
+            hoot.model.folders.updateLink(link);
+            link = {};
+        });
+
+        _container.remove();
     }
 
     /**

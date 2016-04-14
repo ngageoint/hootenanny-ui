@@ -392,10 +392,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                     var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
                     d3.select('#importprogdiv').append('br');
                     d3.select('#importprogdiv').append('text').text(errorMessage);
-                   
-                    //go to next row in array if neccessary
-                    rowNumber++;
-                    _importRow(rowArray,rowNumber,modalbg);
+                    _loadPostProcess(row,rowArray,rowNumber,modalbg);
                 }
             });
         } else if (importText == 'Cancel') {
