@@ -65,7 +65,7 @@ iD.History = function(context) {
         replace: function() {
             var previous = stack[index].graph;
 
-            // assert(index == stack.length - 1)
+            // assert(index === stack.length - 1)
             stack[index] = perform(arguments);
 
             return change(previous);

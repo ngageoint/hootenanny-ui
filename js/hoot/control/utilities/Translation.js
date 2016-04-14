@@ -6,14 +6,14 @@
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.translation = function(context) {
-	var hoot_control_utilities_translation = {};
+    var hoot_control_utilities_translation = {};
 
 
     hoot_control_utilities_translation.newTranslationPopup = function (transText) {
         var exportData,transTemplateText;
-        
+
         if(transText){transTemplateText=transText;}
-        
+
         var modalbg = d3.select('body')
             .append('div')
             .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
@@ -165,9 +165,9 @@ Hoot.control.utilities.translation = function(context) {
                 savetransEdit.classed('hidden', false);
             });
 
-            if(e.DEFAULT == true){
-                descVal.attr("disabled", true);
-                textArea.attr("disabled", true);
+            if(e.DEFAULT === true){
+                descVal.attr('disabled', true);
+                textArea.attr('disabled', true);
             }
 
             function postTranslation(e) {
@@ -187,7 +187,7 @@ Hoot.control.utilities.translation = function(context) {
     };
 
     hoot_control_utilities_translation.translationPopup = function(e) {
-        if(e.DEFAULT == true){
+        if(e.DEFAULT === true){
             Hoot.model.REST('getDefaultTranslation', e.PATH, function (d) {
                 hoot_control_utilities_translation.renderTranslationDlg(e, d);
 
@@ -202,5 +202,5 @@ Hoot.control.utilities.translation = function(context) {
     };
 
 
-	return hoot_control_utilities_translation;
-}
+    return hoot_control_utilities_translation;
+};

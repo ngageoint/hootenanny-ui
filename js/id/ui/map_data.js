@@ -391,8 +391,8 @@ iD.ui.MapData = function(context) {
             .attr('min',1).attr('max',25).attr('value',7)
             .on('change',function(){
                 var lineWidth = d3.select('#path-width').value();
-                if(lineWidth > -1 && lineWidth < 26) {lineWidth=lineWidth}
-                else { lineWidth = lineWidth < 0 ? 0 : 25 }
+                if(lineWidth > -1 && lineWidth < 26) {lineWidth=lineWidth;}
+                else { lineWidth = lineWidth < 0 ? 0 : 25; }
                 d3.select('#path-width').value(lineWidth);
                 setLineWidth(true,lineWidth);
             });
@@ -404,8 +404,8 @@ iD.ui.MapData = function(context) {
             .on('change',function(){
                 d3.select('#' + this.name.replace('_default','')).property('disabled',this.checked);
                 var lineWidth = d3.select('#path-width').value();
-                if(lineWidth > -1 && lineWidth < 26) {lineWidth=lineWidth}
-                else { lineWidth = lineWidth < 0 ? 0 : 25 }
+                if(lineWidth > -1 && lineWidth < 26) {lineWidth=lineWidth;}
+                else { lineWidth = lineWidth < 0 ? 0 : 25; }
                 d3.select('#path-width').value(lineWidth);
                 setLineWidth(!this.checked,lineWidth);
             });
@@ -415,8 +415,8 @@ iD.ui.MapData = function(context) {
             var selectTxt = 'path.way.stroke';
             var reviewTxt = 'path.shadow.activeReviewFeature, path.shadow.activeReviewFeature2';
 
-            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText == selectTxt){ sheets.deleteRule(cssIdx);return true;};});
-            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText == reviewTxt){ sheets.deleteRule(cssIdx);return true;};});
+            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText === selectTxt){ sheets.deleteRule(cssIdx); return true;}});
+            _.find(sheets.cssRules, function(cssItem, cssIdx){if(cssItem.selectorText === reviewTxt){ sheets.deleteRule(cssIdx); return true;}});
 
             var reviewWidth = (parseInt(width)+10).toString();
 

@@ -7,7 +7,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.model.basemapdataset = function(context)
 {
-	var model_basemapdataset = {};
+    var model_basemapdataset = {};
 
 
    model_basemapdataset.publishBasemap = function (container,callback) {
@@ -51,5 +51,5 @@ Hoot.model.basemapdataset = function(context)
 
 
 
-	return model_basemapdataset;
-}
+    return model_basemapdataset;
+};

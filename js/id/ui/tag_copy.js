@@ -18,11 +18,11 @@ iD.ui.TagCopy = function(tag, context) {
         button.on('click', function () {
             d3.event.stopPropagation();
             d3.event.preventDefault();
-            var span = button.select('span')
+            var span = button.select('span');
             span.classed('light', !span.classed('light'));
 
             //Build the tag list and copy to buffer
-            var seltags = d3.selectAll('li.tag-row').filter(function(d) {
+            var seltags = d3.selectAll('li.tag-row').filter(function() {
                 return d3.select(this).selectAll('span.icon.apply:not(.light)').size() === 1;
             }).data().reduce(function(m, d) {
                 m[d.key] = d.value;

@@ -1,4 +1,3 @@
-var clickTime = null;
 iD.behavior.Draw = function(context) {
     var event = d3.dispatch('move', 'click', 'clickWay',
             'clickNode', 'undo', 'cancel', 'finish'),
@@ -74,31 +73,31 @@ iD.behavior.Draw = function(context) {
             }
 
         } else if (d.type === 'node') {
-            
+
             var isNodeDblClick = false;
-            
+
             if(clickTime){
                 isNodeDblClick = ((+new Date() - clickTime) < 500);
-            } 
-        
+            }
+
             // use user setting for snapping to point which is the default behavior
             if(context.enableSnap){
                 isNodeDblClick = context.enableSnap;
             }
-            
+
             if(isNodeDblClick === true){
                 event.clickNode(d);
-                
+
             } else {
                 event.click(context.map().mouseCoordinates());
             }
-            
+
 
         } else {
             event.click(context.map().mouseCoordinates());
         }
-        
-        clickTime = +new Date();
+
+        var clickTime = +new Date();
     }
 
     function backspace() {

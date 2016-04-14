@@ -8,7 +8,7 @@
 //          - Refactored _createFieldSet
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Hoot.ui.hootformbase = function () 
+Hoot.ui.hootformbase = function ()
 {
     var _events = d3.dispatch();
     var _instance = {};
@@ -37,17 +37,17 @@ Hoot.ui.hootformbase = function ()
             var formDiv = _createFormDiv(container)
             var form =  _createForm(container, formDiv, formTitle)
             var fieldset = _createFieldSet(form, formMeta);
-            _createButtons(btnMeta, formDiv); 
+            _createButtons(btnMeta, formDiv);
 
 
         } catch (error) {
             console.error(error);
         }
-    
+
         return container;
     }
 
-  
+
     /**
     * @desc Create dark back ground mask
     * @param containerId - id of container div
@@ -76,7 +76,7 @@ Hoot.ui.hootformbase = function ()
     * @param formTitle - dialog title
     * @return returns created form.
     **/
-    var _createForm = function(container, formDiv, formTitle) { 
+    var _createForm = function(container, formDiv, formTitle) {
 
         var form = formDiv.append('form');
         form.classed('round space-bottom1 importableLayer', true)
@@ -106,35 +106,35 @@ Hoot.ui.hootformbase = function ()
 
         fieldset.enter()
                 .append('div')
-                
+
                 .select(function(a){
-                
+
 
                     var field = d3.select(this);
 
                     // add header and label
                     field
-                    .classed('form-field fill-white small keyline-all round space-bottom1', true)                   
+                    .classed('form-field fill-white small keyline-all round space-bottom1', true)
                     .append('label')
                     .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
                     .text(a.label);
 
 
-                    if(a.inputtype == 'textarea') {
+                    if(a.inputtype === 'textarea') {
                         _createTextArea(a, field);
-                    } else if(a.inputtype == 'combobox') {
+                    } else if(a.inputtype === 'combobox') {
                         _createCombobox(a, field);
 
-                    } else if(a.inputtype == 'checkbox'){
-                        var chkHtml = '<label class="pad1x pad0y round-top ' + a.checkbox + '" style="opacity: 1;">';
-                        chkHtml += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">'+a.label+'</label>';
+                    } else if(a.inputtype === 'checkbox'){
+                        var chkHtml = '<label class='pad1x pad0y round-top ' + a.checkbox + '' style='opacity: 1;'>';
+                        chkHtml += '<input type='checkbox' class='reset checkbox' style='opacity: 1;'>'+a.label+'</label>';
                         field.html(chkHtml);
                         field.classed('keyline-all',false);
                     }  else {
                         _createDefaultTextField(a, field);
                     }
 
-                    
+
 
                 });
 
@@ -191,7 +191,7 @@ Hoot.ui.hootformbase = function ()
         var fieldDiv = field
         .classed('contain', true);
 
-        var inputField = 
+        var inputField =
         fieldDiv
         .append('input')
         .attr('type', 'text')
@@ -213,7 +213,7 @@ Hoot.ui.hootformbase = function ()
         .attr('class', function (field) {
             return field.className;
         });
-      
+
         if(a.id) {
             inputField.attr('id', a.id);
         }
@@ -223,8 +223,8 @@ Hoot.ui.hootformbase = function ()
                 a.combobox.command.call(inputField.node(), a);
             }  else {
                 _createDefaultCombo.call(inputField.node(), a);
-            }     
-        } 
+            }
+        }
 
         if (a.hidden === true) {
             field.classed('hidden', true);
@@ -279,7 +279,7 @@ Hoot.ui.hootformbase = function ()
             inputField.on('click',a.onclick);
         }
 
-        if(a.inputtype == 'multipart') {
+        if(a.inputtype === 'multipart') {
             var mpDiv = fieldDiv
                 .classed('contain', true);
 
@@ -288,7 +288,7 @@ Hoot.ui.hootformbase = function ()
                 .classed('point keyline-left _icon folder pin-right pad0x pad0y hidden', true)
                 .attr('id', a.multipartid + 'spancontainer');
 
-            var mpInput = wrapper    
+            var mpInput = wrapper
                 .append('input')
                 .attr('id', a.multipartid)
                 .attr('type', 'file')
@@ -340,7 +340,7 @@ Hoot.ui.hootformbase = function ()
                     btnContainer.classed('hidden', true);
                 }
 
-            });       
+            });
     }
 
     /**

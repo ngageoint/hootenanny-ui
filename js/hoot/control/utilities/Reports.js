@@ -6,7 +6,7 @@
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.reports = function(context) {
-	var hoot_control_utilities_reports = {};
+    var hoot_control_utilities_reports = {};
 
     hoot_control_utilities_reports.reportPopup = function (dataset) {
 
@@ -14,7 +14,7 @@ Hoot.control.utilities.reports = function(context) {
         var d_form = [{
             label: 'Output Name',
             type: 'reportExportOutputName',
-            placeholder: dataset.name + ".pdf"
+            placeholder: dataset.name + '.pdf'
         }];
         var modalbg = d3.select('body')
             .append('div')
@@ -83,5 +83,5 @@ Hoot.control.utilities.reports = function(context) {
 
 
 
-	return hoot_control_utilities_reports;
-}
+    return hoot_control_utilities_reports;
+};

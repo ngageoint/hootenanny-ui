@@ -3,7 +3,7 @@ iD.ui.Modes = function(context) {
         iD.modes.AddPoint(context),
         iD.modes.AddLine(context),
         iD.modes.AddArea(context)];
-    
+
     var toolModes = [
         iD.modes.MeasureAddLine(context),
         iD.modes.MeasureAddArea(context),
@@ -47,13 +47,13 @@ iD.ui.Modes = function(context) {
 
         context
             .on('update.modes', update);
-            
+
         update();
 
         /*buttons.append('span')
             .attr('class', function(mode) { return mode.id + ' icon icon-pre-text'; });*/
 
-		//iD v1.9.2
+        //iD v1.9.2
         buttons.each(function(d) {
             d3.select(this)
                 .call(iD.svg.Icon('#icon-' + d.button, 'pre-text'));
@@ -75,7 +75,7 @@ iD.ui.Modes = function(context) {
         });
 
         var keybinding = d3.keybinding('mode-buttons');
-        
+
         modes.forEach(function(m) {
             keybinding.on(m.key, function() { if (editable()) {
                 if(m.button === 'line' || m.button === 'area'){
@@ -83,16 +83,16 @@ iD.ui.Modes = function(context) {
                     context.enableSnap = r;
                 }
                 context.enter(m);
-            	} 
+                }
             });
         });
-        
+
         toolModes.forEach(function(m){
-        	keybinding.on(m.key, function() {context.enter(m);});
+            keybinding.on(m.key, function() {context.enter(m);});
         });
-        
+
         keybinding.on('9',function(){hoot.control.utilities.clipdataset.clipDatasetContainer('visualExtent');});
-        
+
         d3.select(document)
             .call(keybinding);
 

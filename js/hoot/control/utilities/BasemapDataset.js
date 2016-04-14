@@ -7,7 +7,7 @@
 //      18 Dec. 2015
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.basemapdataset = function(context) {
-	var hoot_control_utilities_basemapdataset = {};
+    var hoot_control_utilities_basemapdataset = {};
 
     hoot_control_utilities_basemapdataset.newBasemapPopup = function(callback) {
         var saveName = null;
@@ -57,7 +57,7 @@ Hoot.control.utilities.basemapdataset = function(context) {
             .classed('contain', true)
             .append('input')
             .each(function(d){
-            	if(d.readonly){d3.select(this).attr('readonly',true);}
+                if(d.readonly){d3.select(this).attr('readonly',true);}
             })
             .attr('type', 'text')
             .attr('placeholder', function (field) {
@@ -111,11 +111,11 @@ Hoot.control.utilities.basemapdataset = function(context) {
                         var files = document.getElementById('basemapfileuploader').files;
                         if(files.length > 0){
                             var fName = files[0].name;
-                            var parts = fName.split(".");
+                            var parts = fName.split('.');
 
                             for(var p=0; p<parts.length-1; p++){
                                 if(name.length > 0){
-                                    name += ".";
+                                    name += '.';
                                 }
                                 name += parts[p];
                             }
@@ -126,11 +126,11 @@ Hoot.control.utilities.basemapdataset = function(context) {
                     }
 
                     var found = _.find(context.hoot().view.utilities.basemaplist, function(o){
-                        return (o.name == name);
+                        return (o.name === name);
                     });
 
                     if(found){
-                        iD.ui.Alert('Base map with name "' + name + '" already exists. '
+                        iD.ui.Alert('Base map with name '' + name + '' already exists. '
                                  + 'If no name is assigned please specify a name or'+
                                  ' if already specified please use different name.','warning',new Error().stack);
                     } else {
@@ -151,5 +151,5 @@ Hoot.control.utilities.basemapdataset = function(context) {
 
 
 
-	return hoot_control_utilities_basemapdataset;
+    return hoot_control_utilities_basemapdataset;
 }

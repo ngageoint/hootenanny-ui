@@ -7,18 +7,18 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.plugins = {};
 Hoot.plugins.entityeditor = function() {
-	this.allTranslatedFields = null;
-	this.allTransTags = null;
-	this.defaultTags = null;
+    this.allTranslatedFields = null;
+    this.allTransTags = null;
+    this.defaultTags = null;
     this.defaultRawTags = null;
-	this._selectedId = null;
+    this._selectedId = null;
 
     /**
     * @desc Using the first character in entity id figure out feature type
     * @param entity - Feature entity
     * @return [Point | Area | Line]
     **/
-	this.getGeomType = function(entity) {
+    this.getGeomType = function(entity) {
         var obj = {
             'n': 'node',
             'w': 'way',
@@ -44,19 +44,19 @@ Hoot.plugins.entityeditor = function() {
     * @param callback
     **/
     this.getLTDSTags =function (entity, transType, meta, callback) {
-      
-	    var geom = this.getGeomType(entity);
-	    var filterType = transType;
 
-	    var osmXml = '<osm version=\'0.6\' upload=\'true\' generator=\'JOSM\'>' + JXON.stringify(entity.asJXON()) + '</osm>';
-	    var data = {};
+        var geom = this.getGeomType(entity);
+        var filterType = transType;
 
-	    data.osmXml = osmXml;
-	    data.translation = filterType;
-	    data.geom = geom;
+        var osmXml = '<osm version=\'0.6\' upload=\'true\' generator=\'JOSM\'>' + JXON.stringify(entity.asJXON()) + '</osm>';
+        var data = {};
+
+        data.osmXml = osmXml;
+        data.translation = filterType;
+        data.geom = geom;
         data.filterMeta = meta;
-	    this.requestTranslationToServer('LTDS', data, callback);
-	};
+        this.requestTranslationToServer('LTDS', data, callback);
+    };
 
 
     /**
@@ -65,45 +65,45 @@ Hoot.plugins.entityeditor = function() {
     * @param transType - Translation type i.e. TDSv40
     * @param callback
     **/
-	this.getOSMTags =function(entity, transType, callback) {
+    this.getOSMTags =function(entity, transType, callback) {
 
-	    var filterType = transType;
-	    var osmXml = '<osm version=\'0.6\' upload=\'true\' generator=\'JOSM\'>' + JXON.stringify(entity.asJXON()) + '</osm>';
-	    var data = {};
+        var filterType = transType;
+        var osmXml = '<osm version=\'0.6\' upload=\'true\' generator=\'JOSM\'>' + JXON.stringify(entity.asJXON()) + '</osm>';
+        var data = {};
 
-	    data.translation = filterType;
-	    data.osmXml = osmXml;
-	    this.requestTranslationToServer('TDSToOSM', data, callback);
-	};
+        data.translation = filterType;
+        data.osmXml = osmXml;
+        this.requestTranslationToServer('TDSToOSM', data, callback);
+    };
 
 
 
-	// When coming from rest end point, tags keys are descriptions.
-	// Since iD preset uses name instead of description modify the keys
-	// with name. (Which should be unique)
-	// rawCurFields contains field description and we need it to get
-	// each fields description and name which are used to modify the tag keys.
-	this.modifyRawTagKeysDescToName = function(id, rawCurFields, rawTags){
-		var me = this;
-	    var modTags = {};
-	    me.allTransTags = {};
-	    
-	    
+    // When coming from rest end point, tags keys are descriptions.
+    // Since iD preset uses name instead of description modify the keys
+    // with name. (Which should be unique)
+    // rawCurFields contains field description and we need it to get
+    // each fields description and name which are used to modify the tag keys.
+    this.modifyRawTagKeysDescToName = function(id, rawCurFields, rawTags){
+        var me = this;
+        var modTags = {};
+        me.allTransTags = {};
 
-	    /*if(me._selectedId == null || me._selectedId !== id){
-	    	me.defaultTags = {};
+
+
+        /*if(me._selectedId === null || me._selectedId !== id){
+            me.defaultTags = {};
             me.defaultRawTags = {};
-	    	me._selectedId = id;
-	    	
-	    }*/
+            me._selectedId = id;
+
+        }*/
 
         me.defaultTags = {};
         me.defaultRawTags = {};
         me._selectedId = id;
 
-	     _.each(rawCurFields, function(f){
-	         var val = rawTags[f.desc]
-	         if(val) {
+         _.each(rawCurFields, function(f){
+             var val = rawTags[f.desc];
+             if(val) {
                 if(!Hoot.plugins.entityeditor.noShowDefs[val]){
                     modTags[f.name] = val;
                     me.defaultTags[f.name] = val;
@@ -117,46 +117,46 @@ Hoot.plugins.entityeditor = function() {
                         me.defaultRawTags[f.name] = val;
                     }
                 }
-	             
-	         }
-	        me.allTransTags[f.name] = val;
-	     });
 
-	     return modTags;
-	}
+             }
+            me.allTransTags[f.name] = val;
+         });
+
+         return modTags;
+    };
 
     /**
     * @desc Create internal preset object
     * @param geom - Feature geom type
     * @param ftype - Feature type
     * @param trans - Translation type i.e. TDSv40
-    * @param fcode 
+    * @param fcode
     **/
-	this.createPreset = function( geom, ftype, trans, fcode) {
-		// create new preset
-	    var newPreset = {};
-	    //newPreset.icon = "highway-road";
-	    newPreset.geometry = geom;
-	    newPreset.tags = {};
-	    newPreset['hoot:featuretype'] = ftype;
-	    newPreset['hoot:transtype'] = trans;
-	    newPreset['hoot:fcode'] = fcode;
-	    newPreset.name = ftype + ' (' + fcode + ')';
-	    return newPreset;
+    this.createPreset = function( geom, ftype, trans, fcode) {
+        // create new preset
+        var newPreset = {};
+        //newPreset.icon = 'highway-road';
+        newPreset.geometry = geom;
+        newPreset.tags = {};
+        newPreset['hoot:featuretype'] = ftype;
+        newPreset['hoot:transtype'] = trans;
+        newPreset['hoot:fcode'] = fcode;
+        newPreset.name = ftype + ' (' + fcode + ')';
+        return newPreset;
 
-	}
+    };
 
     /**
     * @desc Create internal preset object
     * @param geom - Feature geom type
     * @param ftype - Feature type
     * @param trans - Translation type i.e. TDSv40
-    * @param name - Feature name 
+    * @param name - Feature name
     **/
     this.createPresetByName = function( geom, ftype, trans, name) {
         // create new preset
         var newPreset = {};
-        //newPreset.icon = "highway-road";
+        //newPreset.icon = 'highway-road';
         newPreset.geometry = geom;
         newPreset.tags = {};
         newPreset['hoot:featuretype'] = ftype;
@@ -165,67 +165,67 @@ Hoot.plugins.entityeditor = function() {
         newPreset.name = ftype + ' (' + name + ')';
         return newPreset;
 
-    }
+    };
 
     /**
     * @desc Create feature tag fields
     * @param fieldInfo - Fields meta data
     **/
-	this.createField = function(fieldInfo) {
-		var newField = {};
-	    newField.key = fieldInfo.name;
-	    newField.label = fieldInfo.desc;
-	    newField.placeholder = fieldInfo.defValue;
-	    if(fieldInfo.type == 'String') {                        
-	        newField.type = 'text';//rawCurField.type do some manipulation from raw to preset field                        
-	    } else if(fieldInfo.type == 'enumeration') {
-	       var found =  _.find(fieldInfo.enumerations, function(e){
-	            return (e.value == '1000' && e.name == 'False');
-	        });
+    this.createField = function(fieldInfo) {
+        var newField = {};
+        newField.key = fieldInfo.name;
+        newField.label = fieldInfo.desc;
+        newField.placeholder = fieldInfo.defValue;
+        if(fieldInfo.type === 'String') {
+            newField.type = 'text';//rawCurField.type do some manipulation from raw to preset field
+        } else if(fieldInfo.type === 'enumeration') {
+           var found =  _.find(fieldInfo.enumerations, function(e){
+                return (e.value === '1000' && e.name === 'False');
+            });
 
-	        // it is boolean selector 
-	        if(found){
-	            newField.type = 'check';
-	            newField.strings = {};
-	            newField.strings.options = {};
-	         
-	            // for checkbox order of key is important so order No Information, True, False
-	            newField.strings.options['No Information'] = 'No Information';
-	            newField.strings.options['True'] = 'True';
-	            newField.strings.options['False'] = 'False';
-	        } else {
-	            newField.type = 'combo';
-	            newField.strings = {};
-	            newField.strings.options = {};
-	            _.each(fieldInfo.enumerations, function(e){
-	                newField.strings.options[e.name] = e.name;
-	            });
-	        }
-	    } else {
-	        newField.type = 'number';
-	    }
-	    return newField;
-	}
+            // it is boolean selector
+            if(found){
+                newField.type = 'check';
+                newField.strings = {};
+                newField.strings.options = {};
 
-	this.mapTags = function(tags, fields) {
-	    return _.map(tags, function (d, e) {
-	        
-	        var obj = {};
-	        obj.key = e;
-	        obj.value = d;
-	        
-	        if(fields){
-	            var col = _.find(fields, function(item){
-	                return item.desc == e;
-	            });
-	            obj.field = col;
-	        }
-	        
-	        return obj;
-	    });
-	};
+                // for checkbox order of key is important so order No Information, True, False
+                newField.strings.options['No Information'] = 'No Information';
+                newField.strings.options['True'] = 'True';
+                newField.strings.options['False'] = 'False';
+            } else {
+                newField.type = 'combo';
+                newField.strings = {};
+                newField.strings.options = {};
+                _.each(fieldInfo.enumerations, function(e){
+                    newField.strings.options[e.name] = e.name;
+                });
+            }
+        } else {
+            newField.type = 'number';
+        }
+        return newField;
+    };
 
-}
+    this.mapTags = function(tags, fields) {
+        return _.map(tags, function (d, e) {
+
+            var obj = {};
+            obj.key = e;
+            obj.value = d;
+
+            if(fields){
+                var col = _.find(fields, function(item){
+                    return item.desc === e;
+                });
+                obj.field = col;
+            }
+
+            return obj;
+        });
+    };
+
+};
 
 
 
@@ -233,15 +233,15 @@ Hoot.plugins.entityeditor = function() {
 * @desc Map of tag values which should be hidden
 **/
 Hoot.plugins.entityeditor.noShowDefs = {'-999999.0':'-999999.0', 'No Information':'No Information',
-				'noInformation':'noInformation', '-999999':'-999999',
-				'Closed Interval': 'Closed Interval'};
+                'noInformation':'noInformation', '-999999':'-999999',
+                'Closed Interval': 'Closed Interval'};
 
 Hoot.plugins.entityeditor.prototype = Object.create(iD.ui.plugins.IEntityEditor);
 
 /*
 [{'name':'OSM'},
-                {'name':'TDSv61'}, 
-                {'name':'TDSv40'}, 
+                {'name':'TDSv61'},
+                {'name':'TDSv40'},
                 {'name':'HGISv20',
                  'meta':{'filtertagname':'name', 'filterkey':'HGIS_Layer'}}];*/
 Hoot.plugins.entityeditor.prototype.getTranslations = function(){
@@ -256,24 +256,24 @@ Hoot.plugins.entityeditor.prototype.getTranslations = function(){
         trans.push(pair);
     });
 
-	return trans;
-}
+    return trans;
+};
 
 
 
 
 // Dependent on hoot function call. Override if needed in other platform
 Hoot.plugins.entityeditor.prototype.requestTranslationToServer = function(reqType, data, respHandler) {
-	Hoot.model.REST(reqType, data, function (resp) {
+    Hoot.model.REST(reqType, data, function (resp) {
         if(resp.error){
-        	iD.ui.Alert('Failed to retrieve translation: ' + resp.error,'error',new Error().stack);
+            iD.ui.Alert('Failed to retrieve translation: ' + resp.error,'error',new Error().stack);
             return;
         }
         if (respHandler) {
             respHandler(resp);
         }
     });
-}
+};
 
 /**
 * @desc Translate entity tags to requested translation type
@@ -285,9 +285,9 @@ Hoot.plugins.entityeditor.prototype.requestTranslationToServer = function(reqTyp
 * @param meta - new meta
 * @param populateBodyCallback - callback
 **/
-Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, currentTranslation, 
-		tags, preset, meta, populateBodyCallback){
-	var me = this;
+Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, currentTranslation,
+        tags, preset, meta, populateBodyCallback){
+    var me = this;
     this.getLTDSTags(entity, currentTranslation, meta, function(resp){
         // Search fields and presets and if does not exist then add
         var transInfo = {};
@@ -300,22 +300,22 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
         if(rawFCode) {
             var fCode = rawFCode.split(':')[0].trim();
             var fType = rawFCode.split(':')[1].trim();
-            curPreset = _.find(context.presets().collection, function(item){return item.id == currentTranslation + '/' + fCode;});
+            curPreset = _.find(context.presets().collection, function(item){return item.id === currentTranslation + '/' + fCode;});
 
             var rawCurFields = JSON.parse(resp.fields).columns;
 
-            curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs)       
+            curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
 
             if(!curPreset){
 
-            	// create preset from fcode of entity
-				var newPreset = me.createPreset(curGeom, fType, currentTranslation, fCode);
-				curPreset = context.presets().addPreset(currentTranslation + '/' + fCode, newPreset);
+                // create preset from fcode of entity
+                var newPreset = me.createPreset(curGeom, fType, currentTranslation, fCode);
+                curPreset = context.presets().addPreset(currentTranslation + '/' + fCode, newPreset);
 
                 curPreset.fields = [];
                 me.allTranslatedFields = [];
                 _.each(rawCurFields, function(f){
-                	// create field using field data from service
+                    // create field using field data from service
                     var newField = me.createField(f);
 
                     // add to global list of preset fields
@@ -335,18 +335,18 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
                     };
 
                     // custom override for indeterminate and checked value for check box
-                    if(fieldObj.type == 'check') {
+                    if(fieldObj.type === 'check') {
                         fieldObj.customBoxProp = {};
                         fieldObj.customBoxProp['indeterminate'] = 'No Information';
-                        fieldObj.customBoxProp['checked'] = 'True';                            
+                        fieldObj.customBoxProp['checked'] = 'True';
                     }
 
                     // for now we initially hide fields but iD will show populated fields
-                   	fieldObj.show = 'false';
+                       fieldObj.show = 'false';
                     curPreset.fields.push(fieldObj);
                     me.allTranslatedFields.push(fieldObj);
 
-                });                    
+                });
             }
             transInfo.transType = currentTranslation;
             transInfo.fCode = fCode;
@@ -357,8 +357,8 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
             // handle HGIS translation
             if(lyrName && fType) {
                 var rawCurFields = JSON.parse(resp.fields).columns;
-                curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs)   
-                
+                curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
+
                 var newPreset = me.createPresetByName(curGeom, fType, currentTranslation, lyrName);
 
                 curPreset = context.presets().addPreset(currentTranslation + '/' + fCode, newPreset);
@@ -386,10 +386,10 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
                     };
 
                     // custom override for indeterminate and checked value for check box
-                    if(fieldObj.type == 'check') {
+                    if(fieldObj.type === 'check') {
                         fieldObj.customBoxProp = {};
                         fieldObj.customBoxProp['indeterminate'] = 'No Information';
-                        fieldObj.customBoxProp['checked'] = 'True';                            
+                        fieldObj.customBoxProp['checked'] = 'True';
                     }
 
                     // for now we initially hide fields but iD will show populated fields
@@ -397,9 +397,9 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
                     curPreset.fields.push(fieldObj);
                     me.allTranslatedFields.push(fieldObj);
 
-                });    
+                });
                 transInfo.transType = currentTranslation;
-                transInfo.name = name; 
+                transInfo.name = name;
             } else {
                 // Don't know what to do so empty it out
                 me.defaultTags = {};
@@ -409,29 +409,29 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
                 me.allTransTags = {};
             }
 
-                   
+
         }
 
         // create entity editor body
-        populateBodyCallback(curPreset, me.defaultTags, me.defaultRawTags, transInfo, me.allTranslatedFields, me.allTransTags);    
-    })
+        populateBodyCallback(curPreset, me.defaultTags, me.defaultRawTags, transInfo, me.allTranslatedFields, me.allTransTags);
+    });
 
-}
+};
 
 
 /**
 * @desc Update entity editor tag when selected preset changes
 * @param entity - Target entity
-* @param changed - new tag 
+* @param changed - new tag
 * @param rawTagEditor - Raw tag editor object
 * @param currentTranslation - Translation to use for update
 * @param callback - callback
 **/
 Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, changed, rawTagEditor,
-	currentTranslation, callback) {
+    currentTranslation, callback) {
 
     var currentTags = entity.tags;
-	var me = this;
+    var me = this;
     var changeKey = _.keys(changed)[0];
     var changeVal = _.values(changed)[0];
 
@@ -444,15 +444,15 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
 
 
 
-    // current values of entity editor through raw tag editor        
+    // current values of entity editor through raw tag editor
     var currId = rawTagEditor.preset().id;
 
     var rawTags = rawTagEditor.tags();
-    
+
 
     // no chnage made. This can happen when raw_tag_editor calls change event from
     // field blur.
-    if(changeVal !== undefined && rawTags[changeKey] == changeVal)
+    if(changeVal !== undefined && rawTags[changeKey] === changeVal)
     {
         return;
     }
@@ -460,13 +460,13 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
     // If changeVal is undefined then we are deleting it.
     if(changeVal === undefined){
        var foundF = _.find(me.allTranslatedFields, function(f){
-			return f.key == changeKey;	        
-	    });
+            return f.key === changeKey;
+        });
 
-       if(foundF && foundF.type == 'number') {
-       		changeVal = '-999999.0';
+       if(foundF && foundF.type === 'number') {
+               changeVal = '-999999.0';
        } else {
-       		changeVal = 'No Information';
+               changeVal = 'No Information';
        }
        me.defaultTags[changeKey] = changeVal;
        me.defaultRawTags[changeKey] = changeVal;
@@ -478,8 +478,8 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
 
     // Get the clone of entity
     var tmpEntity = entity.copy(true)[0];
-    
-    
+
+
     // Go through each tags and create new tags list of key as English tag
     // and apply modified value. If there is no modified value then apply
     // the default value.
@@ -496,8 +496,8 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
             // Set default value
             englishTags[f.rawLabel] = me.allTransTags[k];
         }
-        
-    })
+
+    });
 
     //var pRawTagEditor = rawTagEditor;
     // Translate the TDS tags to OSM so we can store it in iD internal
@@ -513,29 +513,29 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
             // for each of default tags (The ones that will come from default.json in the future)
 
             for(var key in me.allTransTags) {
-            	var val = me.allTransTags[key];
-            	if(!OSMEntities[key] && key == changeKey) {
+                var val = me.allTransTags[key];
+                if(!OSMEntities[key] && key === changeKey) {
                     for(var tk in currentTags){
                         if(!OSMEntities[tk]){
                             OSMEntities[tk] = undefined;
                         }
                     }
                     if(isDelete === true){
-                
-                        delete me.defaultRawTags[key]; 
+
+                        delete me.defaultRawTags[key];
                     } else {
                         me.defaultRawTags[key] = changeVal;
                     }
-            		//
-            		me.defaultTags[key] = changeVal;
-                    
-            	}
+                    //
+                    me.defaultTags[key] = changeVal;
+
+                }
             }
             if(callback){
-            	callback(OSMEntities);
+                callback(OSMEntities);
             }
-        
+
         }
 
-    });        	
-}
+    });
+};

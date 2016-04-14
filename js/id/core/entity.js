@@ -140,8 +140,8 @@ iD.Entity.prototype = {
                 key.indexOf('tiger:') !== 0;
         });
 
-		//iD v1.9.2
-		//return _.keys(this.tags).some(iD.interestingTag);
+        //iD v1.9.2
+        //return _.keys(this.tags).some(iD.interestingTag);
     },
 
     isHighwayIntersection: function() {

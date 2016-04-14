@@ -34,14 +34,13 @@ Hoot.view.ltdstags = function (context) {
             if (!ent) {
                 return;
             }
-            var newArray = [];
             var OSMTagsAr = mapTags(ent.tags);
 
             appendTags(OSMTagsAr);
         }
-        context.history().on('undone', refreshTags)
-        context.history().on('redone', refreshTags)
-        context.history().on('change', refreshTags)
+        context.history().on('undone', refreshTags);
+        context.history().on('redone', refreshTags);
+        context.history().on('change', refreshTags);
 
         meta.currentId = id;
         meta.deactivate();
@@ -147,7 +146,7 @@ Hoot.view.ltdstags = function (context) {
                         //.style('margin-left', '20px')
                         //.style('margin-right', '20px')
                         .style('margin-top', '10px')
-                        .html(function (field) {
+                        .html(function () {
                             return '<label class="form-label">' + 'Filter By Type' + '</label>';
                         });
             var placeHolder = 'TDSv61';
@@ -176,7 +175,7 @@ Hoot.view.ltdstags = function (context) {
                     comboIntput.style('width', '100%')
                         .call(combo);
 
-            comboIntput.on('change', function(param){
+            comboIntput.on('change', function(){
                 meta.currentTranslation = d3.select('#ltdstranstype').value();
 
                 meta.activate(id);
@@ -184,11 +183,11 @@ Hoot.view.ltdstags = function (context) {
 
             var head_cont = ltds.append('div')
             .classed('form-label pad1x', true);
-            var head_label = head_cont.append('label')
+            head_cont.append('label')
                 .classed('fl', true)
                 .text('Attributes');
 
-            if(meta.currentTranslation == 'OSM') {
+            if(meta.currentTranslation === 'OSM') {
                 head_cont.append('a')
                 .attr('href', '#')
                 .text('')
@@ -202,8 +201,8 @@ Hoot.view.ltdstags = function (context) {
 
                         var OSMTagsAr = [];
                         var emptyTag = {};
-                        emptyTag["key"] = "";
-                        emptyTag["value"] = "";
+                        emptyTag.key = '';
+                        emptyTag.value = '';
                         OSMTagsAr.push(emptyTag);
                         appendTags(OSMTagsAr, true);
                     }
@@ -236,7 +235,7 @@ Hoot.view.ltdstags = function (context) {
 
                 if(fields){
                     var col = _.find(fields, function(item){
-                        return item.desc == e;
+                        return item.desc === e;
                     });
                     obj.field = col;
                 }
@@ -305,16 +304,16 @@ Hoot.view.ltdstags = function (context) {
             ret.tableName = '';
             ret.attrs = attrib;
             callback(ret);
-        }
+        };
 
 
         var appendTags = function (tags, isNew) {
             if(!ltdsTags || !tags){return;}
 
             if(isNew){
-                if(tagsData.length == 1){
-                    if(tagsData[0].key.trim().length == 0 || tagsData[0].value.trim().length == 0){
-                    	iD.ui.Alert("Please save last new attribute before adding new.",'warning',new Error().stack);
+                if(tagsData.length === 1){
+                    if(tagsData[0].key.trim().length === 0 || tagsData[0].value.trim().length === 0){
+                        iD.ui.Alert('Please save last new attribute before adding new.','warning',new Error().stack);
                         return;
                     }
                 }
@@ -350,7 +349,7 @@ Hoot.view.ltdstags = function (context) {
                 .value(function (d) {
                     return d.key;
                 })
-                .on('change', function(curr_entity){
+                .on('change', function(){
                     tagsData[0].key =  this.value;
                 });
             } else {
@@ -381,15 +380,15 @@ Hoot.view.ltdstags = function (context) {
                 })
                 .on('change', function(orig_entity){
                     if(orig_entity.field){
-                        if(orig_entity.field.type == "enumeration"){
+                        if(orig_entity.field.type === 'enumeration'){
 
-                        } else if(orig_entity.field.type == "String") {
+                        } else if(orig_entity.field.type === 'String') {
 
                         } else {
                             // numeric
                             if (isNaN(this.value)) // this is the code I need to change
                             {
-                            	iD.ui.Alert("Please enter a numeric value!",'warning',new Error().stack);
+                                iD.ui.Alert('Please enter a numeric value!','warning',new Error().stack);
                                 if(this.oldValue){
                                     this.value = this.oldValue;
                                 } else {
@@ -400,10 +399,10 @@ Hoot.view.ltdstags = function (context) {
                         }
                     }
 
-                    if(orig_entity.key.trim().length == 0) {
-                    	iD.ui.Alert('Missing or invalid key.','warning',new Error().stack);
+                    if(orig_entity.key.trim().length === 0) {
+                        iD.ui.Alert('Missing or invalid key.','warning',new Error().stack);
                         var curval = this.value;
-                        this.value = "";
+                        this.value = '';
                         return;
                     }
 
@@ -414,7 +413,7 @@ Hoot.view.ltdstags = function (context) {
 
                     var new_entity = {};
                     _.forEach(tagsData, function(item){
-                        if(item.key == orig_entity.key){
+                        if(item.key === orig_entity.key){
                             item.value = curItem.value;
                         }
                         new_entity[item.key] = item.value;
@@ -422,7 +421,7 @@ Hoot.view.ltdstags = function (context) {
 
                     new_entity[orig_entity.key] = this.value;
 
-                    if(meta.currentTranslation == 'OSM') {
+                    if(meta.currentTranslation === 'OSM') {
                         context.entityEditor().changeTags(new_entity, id);
                     } else {
                         //getOSMTags
@@ -447,18 +446,18 @@ Hoot.view.ltdstags = function (context) {
                 .select(function (a) {
                     if(a.field){
 
-                        if(a.field.type == "enumeration"){
+                        if(a.field.type === 'enumeration'){
                             var combo = d3.combobox()
                             .data(_.map(a.field.enumerations, function (n) {
                                 return {
                                     value: n.name,
-                                    title: n.name + " (" + n.value + ")"
+                                    title: n.name + ' (' + n.value + ')'
                                 };
                             }));
                             d3.select(this)
                                 .style('width', '99%')
                                 .call(combo);
-                        } else if(a.field.type == "String") {
+                        } else if(a.field.type === 'String') {
 
                         } else {
                             // numeric
@@ -469,7 +468,7 @@ Hoot.view.ltdstags = function (context) {
                 });
 
 
-                if(meta.currentTranslation == 'OSM') {
+                if(meta.currentTranslation === 'OSM') {
                     var btnCnt = li.append('div')
                     .classed('keyline-left col1', true);
 
@@ -521,7 +520,7 @@ Hoot.view.ltdstags = function (context) {
             appendTags(tagsAr);
             return;
         }
-        if(meta.currentTranslation && meta.currentTranslation == 'OSM') {
+        if(meta.currentTranslation && meta.currentTranslation === 'OSM') {
             getRawOSMTags(ent, function (d) {
                 if (d.attrs) {
                     var schema = null;

@@ -44,7 +44,7 @@ iD.ui.RadialMenu = function(context, operations) {
             .data(operations)
             .enter()
             .append('g')
-			.attr('class', function(d) { return 'radial-menu-item radial-menu-item-' + d.id; }) //iD v1.9.2
+            .attr('class', function(d) { return 'radial-menu-item radial-menu-item-' + d.id; }) //iD v1.9.2
             .classed('disabled', function(d) { return d.disabled(); }) //iD v1.9.2
             .attr('transform', function(d, i) {
                 return 'translate(' + iD.geo.roundCoords([
@@ -61,7 +61,7 @@ iD.ui.RadialMenu = function(context, operations) {
             .on('mouseover', mouseover)
             .on('mouseout', mouseout);
 
-		// Changes made for v1.9.2
+        // Changes made for v1.9.2
         button.append('use')
             .attr('transform', 'translate(-10,-10)')
             .attr('width', '20')
@@ -77,7 +77,6 @@ iD.ui.RadialMenu = function(context, operations) {
         }
 
         function mouseover(d, i) {
-            var mergedLayer = context.hoot().model.layers.getMergedLayer();
             var text = iD.ui.tooltipHtml(d.tooltip(), d.keys[0]);
             var rect = context.surfaceRect(),
                 angle = a0 + i * a,

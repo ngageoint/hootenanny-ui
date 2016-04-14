@@ -6,9 +6,9 @@
 // Modifications:
 //      02 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.ui.formfactory = function (context) 
+Hoot.ui.formfactory = function (context)
 {
-	var _events = d3.dispatch();
+    var _events = d3.dispatch();
     var _instance = {};
 
     /**
@@ -19,12 +19,12 @@ Hoot.ui.formfactory = function (context)
     * @return returns created form.
     **/
     _instance.create = function(containerId, formMetaData, formTypeName) {
-    	var formInstance = eval('context.hoot().ui.hootformbase');
-    	if(formTypeName) {
-    		formInstance = eval('context.hoot().ui.' + formTypeName);
-    	}
-    	return formInstance.createForm(containerId, formMetaData);
-    }
+        var formInstance = eval('context.hoot().ui.hootformbase');
+        if(formTypeName) {
+            formInstance = eval('context.hoot().ui.' + formTypeName);
+        }
+        return formInstance.createForm(containerId, formMetaData);
+    };
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

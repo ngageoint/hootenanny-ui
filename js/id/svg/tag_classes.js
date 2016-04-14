@@ -70,7 +70,7 @@ iD.svg.TagClasses = function() {
 
             if (status) {
                 classes += ' tag-status tag-status-' + status; //iD v1.9.2
-				classes += ' tag-ephemeral'; //legacy Hoot
+                classes += ' tag-ephemeral'; //legacy Hoot
             }
 
             // add any secondary (structure) tags
@@ -81,7 +81,7 @@ iD.svg.TagClasses = function() {
                 classes += ' tag-' + k + ' tag-' + k + '-' + v;
             }
 
-			//added for iD v1.9.2
+            //added for iD v1.9.2
             // For highways, look for surface tagging..
             if (primary === 'highway') {
                 var paved = (t.highway !== 'track');
@@ -99,13 +99,13 @@ iD.svg.TagClasses = function() {
 
             // For hoot enity id make sure id and origid exist first
             if(entity.id && entity.origid){
-                var lyrid = entity.id.replace(entity.origid+"_","");
+                var lyrid = entity.id.replace(entity.origid+'_','');
 
                 // For merged datasets, assign color class of source layer
                 var lyr = hoot.model.conflicts.getFeatureLayer(entity);
-				if (lyr && lyr.name) {
-                	classes += ' tag-hoot tag-hoot-' + lyr.name;
-				}
+                if (lyr && lyr.name) {
+                    classes += ' tag-hoot tag-hoot-' + lyr.name;
+                }
                 if (lyr && lyr.merged) {
                     var id;
                     switch(parseInt(t['hoot:status'])) {

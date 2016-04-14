@@ -9,8 +9,8 @@
 
 Hoot.control.conflicts.actions.idgraphsynch = function (context)
 {
-	var _events = d3.dispatch();
-	var _instance = {};
+    var _events = d3.dispatch();
+    var _instance = {};
 
     var _relTreeIdx = {};
     var _currentFid = null;
@@ -23,8 +23,8 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
     * @param relationid - the relation id to load if missing
     * @param callback - callback function to invoke when done
     **/
-	_instance.getRelationFeature  = function(mapid, relationid, callback){
-        
+    _instance.getRelationFeature  = function(mapid, relationid, callback){
+
         _relTreeIdx = {};
         var fid = 'r' + relationid + '_' + mapid;
         var f = context.hasEntity(fid);
@@ -46,14 +46,14 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                     }
                     callback(f);
                 }
-                    
+
             }
         } else {
             _loadMissingFeatures(mapid, fid, callback);
         }
-    }
+    };
 
-    
+
 
     /**
     * @desc Updates hoot:review:needs tag when resolved
@@ -69,14 +69,14 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
               iD.actions.ChangeTags(reviewRelationEntity.id, newTags),
               t('operations.change_tags.annotation'));
 
-    }
+    };
 
     /**
     * @desc Checks for the numbers of relation members that already exist in entity graph
     * @param Relation id
     **/
     var _getLoadedRelationMembersCount = function(fid){
-        var nCnt = 0
+        var nCnt = 0;
         try
         {
             var f = context.hasEntity(fid);
@@ -92,14 +92,14 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
         {
             console.log(error);
         }
-      
+
 
         return nCnt;
-    }
+    };
 
 
     /**
-    * @desc Load missing handler where it recursively load missing members 
+    * @desc Load missing handler where it recursively load missing members
     * if the member is another relation
     * @param err - error object
     * @param entities - loaded entities list
@@ -122,7 +122,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
 
                 // first check to see if anyone is relation
                 var relFound = _.find(entities.data, function(e){
-                    return e.type == 'relation';
+                    return e.type === 'relation';
                 });
 
                 // if there is one or more relation then recurse
@@ -130,7 +130,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                     _.each(entities.data, function(f){
                         // if feature type is relation recurse to load
                         // if not do nothing since it has been loaded properly
-                        if(f.type == 'relation'){
+                        if(f.type === 'relation'){
                             _relTreeIdx[f.id] = f.members.length;
                             _.each(f.members, function(m){
                                 if(!context.hasEntity(m.id) || m.type === 'relation') {
@@ -166,15 +166,15 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
         finally
         {
 
-            if(Object.keys(_relTreeIdx).length == 0){
+            if(Object.keys(_relTreeIdx).length === 0){
                 // Done so do final clean ups
                 _validateMemberCnt(_currentFid, currentCallback);
             }
         }
-    }
+    };
 
     /**
-	* @desc we do not care about way or node parent
+    * @desc we do not care about way or node parent
     * since all reviews are in relations
     * @param fid target relation id
     **/
@@ -212,7 +212,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                                     }
                                 }
                             });
-                        }
+                        };
                         cleanOutParentTree(pps);
 
                     }
@@ -222,7 +222,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             });
         }
 
-    }
+    };
 
     /**
     * @desc final handler afte loading relation memebrs validates and pan to loaded
@@ -240,7 +240,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
         } else {
             iD.ui.Alert('There are no members in the review relation.','warning',new Error().stack);
         }
-    }
+    };
 
     /**
     * @desc load any missing features from backend
@@ -258,10 +258,10 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                 _loadMissingHandler(err,ent,callback);
             }, layerName);
         }
-    }
+    };
 
     var _parent = function() {
         return context.hoot().control.conflicts;
-    }
-	return d3.rebind(_instance, _events, 'on');
-}
+    };
+    return d3.rebind(_instance, _events, 'on');
+};

@@ -51,7 +51,7 @@ iD.ui.preset.typeCombo = function(field, context) {
                             strings[k] = field.t('options.' + k, { 'default': v });
                         });
                         stringsLoaded();
-                    });                    
+                    });
                 } else if (optarray) {
                     _.each(optarray, function(k) {
                         strings[k] = (snake_case ? unsnake(k) : k);
@@ -109,7 +109,7 @@ iD.ui.preset.typeCombo = function(field, context) {
     }
 
     function sortObject(o,callback) {
-        data = [];
+        var data = [];
         for (var value in o){
             data.push([value, o[value]]);
             data.sort(function(a,b){var textA = a[1];
@@ -117,7 +117,7 @@ iD.ui.preset.typeCombo = function(field, context) {
                 return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
             });
         }
-    
+
 
         var sorted = {};
         _.each(data,function(d){
