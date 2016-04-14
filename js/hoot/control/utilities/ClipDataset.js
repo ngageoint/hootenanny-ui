@@ -268,7 +268,7 @@ Hoot.control.utilities.clipdataset = function(context) {
 			if(clipType=='visualExtent'){param.BBOX = id.map().extent().toString();}
 			else if(clipType=='boundingBox'){param.BBOX= _rect;}
 			
-            param.PATH_NAME = d3.select('#row-' + d.id).select('div .LayerName').value() || d3.select('#row-' + d.id).select('div .PathName').attr('placeholder') || 'root';
+            param.PATH_NAME = d3.select('#row-' + d.id).select('div .PathName').value() || d3.select('#row-' + d.id).select('div .PathName').attr('placeholder') || 'root';
 
 			params.push(param); 
 		});
