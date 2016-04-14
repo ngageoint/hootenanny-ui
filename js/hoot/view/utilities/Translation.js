@@ -11,7 +11,7 @@ Hoot.view.utilities.translation = function(context) {
 
     hoot_view_utilities_translation.createContainer = function(form){
 
-        var fieldset = form.append('div')
+        form.append('div')
             .classed('pad1y col12', true)
             .append('a')
             .attr('href', '#')
@@ -60,11 +60,7 @@ Hoot.view.utilities.translation = function(context) {
                     d3.event.preventDefault();
 
                     var r = confirm('Are you sure you want to delete selected translaton?');
-                    if (r === true) {
-
-                    } else {
-                        return;
-                    }
+                    if (!r) { return; }
 
 
                     d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1',false);
@@ -96,7 +92,7 @@ Hoot.view.utilities.translation = function(context) {
                     if(sel.DEFAULT === true){
 
                         d3.select(this).classed('keyline-left keyline-right fr _icon quiet trash pad2 col1', true);
-                        d3.select(this).on('click', function (n) {
+                        d3.select(this).on('click', function () {
                             d3.event.stopPropagation();
                             d3.event.preventDefault();
                             iD.ui.Alert('Can not delete default translation.','warning',new Error().stack);

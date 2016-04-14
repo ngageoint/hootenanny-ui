@@ -54,14 +54,14 @@ Hoot.view.utilities = function (context){
             event.tabToggled(bodyid);
         };
 
-        _createTabs = function(jobsBG)
+        var _createTabs = function(jobsBG)
         {
             if(iD.data.hootManageTabs) {
                 var settingsSidebar = jobsBG.append('div')
                     .classed('pad2 pin-bottom pin-top fill-light keyline-right',true)
                     .attr('id','settingsSidebar');
 
-                var settingsHeader = settingsSidebar.append('div')
+                settingsSidebar.append('div')
                     .classed('block strong center margin2 pad1y utilHootHead point',true)
                     .style('height','60px')
                     .append('label').text('Settings').attr('id','settingsHeader');
@@ -70,17 +70,10 @@ Hoot.view.utilities = function (context){
                 _.each(iD.data.hootManageTabs, function(tabMeta){
                     var tabName = tabMeta.name;
                     var tabId = tabMeta.id;
-                    var tabOrder = tabMeta.order;
-                    var pady = 'pad1y';
                     var contentCallback = tabMeta.callback;
-                    var contentId = tabMeta.contentbodyid;
                     var callbackCntxMeta = tabMeta.callbackcontext;
                     var isDefault = tabMeta.default;
                     var isHidden = tabMeta.hidden;
-
-                    if(tabMeta.pady !== undefined && tabMeta.pady === 'false'){
-                        pady = '';
-                    }
 
                     var tabBody = jobsBG.append('div')
                     .classed('pad2 round-top fill-light pin-left pin-top utilHoot', true)
@@ -152,7 +145,7 @@ Hoot.view.utilities = function (context){
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
                 var vis = d3.selectAll('#jobsBG')
-                    .style('display') === 'none' ? false : true;
+                    .style('display') === 'none';
                 var txt = vis ? 'Manage' : 'Return to Map';
                 d3.select(this)
                     .classed('fill-light', !vis)
@@ -198,7 +191,7 @@ Hoot.view.utilities = function (context){
         /////////////////////////////////////////
 
          ////////////ALERTS///////////////////
-         var alertsDiv = d3.select('body')
+         d3.select('body')
              .insert('div',':first-child')
              .attr('id','alerts');
          /////////////////////////////////////////

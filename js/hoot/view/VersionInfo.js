@@ -6,7 +6,7 @@
 // Modifications:
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.view.versioninfo = function(context){
+Hoot.view.versioninfo = function(){
 
     // events
     var dispatch = d3.dispatch('close');
@@ -15,6 +15,8 @@ Hoot.view.versioninfo = function(context){
     function versioninfo(){
 
     }
+
+    var _mainVer;
 
     versioninfo.showPopup = function(){
         // block main app
@@ -42,11 +44,11 @@ Hoot.view.versioninfo = function(context){
         mainVersionLbl.append('label')
             .html('<strong>Main Versions:</strong> ');
 
-        mainVerCont = dlgDiv.append('div');
+        var mainVerCont = dlgDiv.append('div');
         mainVerCont.classed('center pad1x', true);
         _mainVer = mainVerCont.append('div');
         _mainVer.classed('center row2  round keyline-all overflow', true);
-       
+
 
 
         var detailVersionLbl = dlgDiv.append('div');
@@ -65,12 +67,12 @@ Hoot.view.versioninfo = function(context){
 
 
 
-        formCont = dlgDiv.append('div');
+        var formCont = dlgDiv.append('div');
         formCont.classed('center pad1x', true);
-        _form = formCont.append('div');
+        var _form = formCont.append('div');
         _form.classed('center row10  round keyline-all', true);
 
-        var btnDoc = formCont.append('div')
+        formCont.append('div')
             .classed('pad1y pad2x', true)
             .append('a')
             .attr('href', '#')
@@ -127,9 +129,9 @@ Hoot.view.versioninfo = function(context){
 
         if (iD.data.buildInfo != null)
         {
-          buildInfoName = iD.data.buildInfo.name;
-          buildInfoVersion = iD.data.buildInfo.version;
-          buildInfoBuiltBy = iD.data.buildInfo.user;
+          var buildInfoName = iD.data.buildInfo.name;
+          var buildInfoVersion = iD.data.buildInfo.version;
+          var buildInfoBuiltBy = iD.data.buildInfo.user;
         }
         else
         {
@@ -148,7 +150,6 @@ Hoot.view.versioninfo = function(context){
         uiInfo.description = uiDesc;
         headerVersionInfo.push(uiInfo);
 
-
         var la = _mainVer.selectAll('span')
         .data(headerVersionInfo)
         .enter();
@@ -156,13 +157,13 @@ Hoot.view.versioninfo = function(context){
         var la2 = la.append('div')
         .classed('col12 fill-white small keyline-bottom', true);
 
-        var la3 = la2.append('span')
+        la2.append('span')
         .classed('text-left big col12 fill-white small hoverDiv2', true)
         .text(function (item) {
             return item.description;
         });
 
-        la2.select(function (a){
+        la2.select(function (){
             d3.select(this).on('click', function (selData) {
                 d3.select('#versioninfodatasettable').remove();
                 _f.append('div')
@@ -190,7 +191,7 @@ Hoot.view.versioninfo = function(context){
                         var la2 = la.append('div')
                         .classed('col12 fill-white small keyline-bottom', true);
 
-                        var la3 = la2.append('span')
+                        la2.append('span')
                         .classed('text-left big col12 fill-white small hoverDiv2', true)
 
                         .text(function (item) {
@@ -210,7 +211,7 @@ Hoot.view.versioninfo = function(context){
                         var las2 = las.append('div')
                         .classed('col12 fill-white small keyline-bottom', true);
 
-                        var las3 = las2.append('span')
+                        las2.append('span')
                         .classed('text-left big col12 fill-white small hoverDiv2', true)
 
                         .text(function (item) {
@@ -225,7 +226,7 @@ Hoot.view.versioninfo = function(context){
                         var lar2 = lar.append('div')
                         .classed('col12 fill-white small keyline-bottom', true);
 
-                        var lar3 = lar2.append('span')
+                        lar2.append('span')
                         .classed('text-left big col12 fill-white small hoverDiv2', true)
 
                         .text(function (item) {
@@ -233,8 +234,6 @@ Hoot.view.versioninfo = function(context){
                         });
                     }
                 );
-        } else {
-
         }
     };
 

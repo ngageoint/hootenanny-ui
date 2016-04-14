@@ -85,7 +85,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                     }
                 });
 
-        var btnNumsContainer = btnContainer.append('div')
+        btnContainer.append('div')
                 .attr('id', 'bmkPageNumBtnContainer')
                 .classed('form-field col10 pad1y pad1x overflow', true);
 
@@ -97,7 +97,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     /**
     * @desc Helper function for handling closing sort menu when user clicks outside of menu.
     **/
-   var _globalSortClickHandler = function(a){
+   var _globalSortClickHandler = function(){
         var self = d3.select('#reviewMenuForm' + 'reviewBookmarksSortDiv');
         if(!self.empty()) {
             self.remove();
@@ -119,7 +119,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         .classed('fr quiet col1 center',true)
 
 
-        .on('click', function(d, e, f){
+        .on('click', function(){
             d3.event.stopPropagation();
             d3.event.preventDefault();
             var self = d3.select('#reviewMenuForm' + menuDivName);
@@ -148,10 +148,10 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     **/
     var _sortData = function(field, order) {
 
-        _lastSortRequest['orderBy'] = field;
-        _lastSortRequest['asc'] = order;
-        _lastSortRequest['limit'] = _DEFAULT_PAGE_COUNT;
-        _lastSortRequest['offset'] = 0;
+        _lastSortRequest.orderBy = field;
+        _lastSortRequest.asc = order;
+        _lastSortRequest.limit = _DEFAULT_PAGE_COUNT;
+        _lastSortRequest.offset = 0;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
         _globalSortClickHandler();
     };
@@ -176,7 +176,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             {'name': 'Map ID (asc)', 'action':function(){ _sortData('mapId', 'true');}},
             {'name': 'Map ID (dsc)', 'action':function(){ _sortData('mapId', 'false');}},
             {'name': 'Relation ID (asc)', 'action':function(){ _sortData('relationId', 'true');}},
-            {'name': 'Relation ID (dsc)', 'action':function(){ _sortData('relationId', 'false');}},
+            {'name': 'Relation ID (dsc)', 'action':function(){ _sortData('relationId', 'false');}}
         ];
         var meta = {};
         meta.title = 'Sort By';
@@ -193,7 +193,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     * @desc Helper function for handling closing filter menu when user clicks outside of menu.
     * @TODO: Filter and sort should be refactored into one..
     **/
-    var _globalFilterByCreatorClickHandler = function(a){
+    var _globalFilterByCreatorClickHandler = function(){
         var self = d3.select('#reviewMenuForm' + 'reviewBookmarksFilterByCreatorDiv');
         if(!self.empty()) {
             self.remove();
@@ -207,8 +207,8 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
     var _filterData = function(d) {
 
-        _lastSortRequest['filterby'] = 'createdBy';
-        _lastSortRequest['filterbyval'] = d.id;
+        _lastSortRequest.filterby = 'createdBy';
+        _lastSortRequest.filterbyval = d.id;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
         _globalFilterByCreatorClickHandler();
     };
@@ -256,11 +256,11 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         for(var i=0; i<usersList.length; i++) {
             var usr = usersList[i];
 
-            var newobj = {};
+            newobj = {};
             newobj.name = usr.email;
             newobj.id = usr.id;
             newobj.displayName = usr.displayName;
-            newobj.action = function(d){_filterData(d);};
+            newobj.action = _filterData;
             data.push(newobj);
         }
 
@@ -272,7 +272,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     * @desc Helper function for handling closing filter menu when user clicks outside of menu.
     * @TODO: Filter and sort should be refactored into one..
     **/
-    var _globalFilterByMapIdClickHandler = function(a){
+    var _globalFilterByMapIdClickHandler = function(){
         var self = d3.select('#reviewMenuForm' + 'reviewBookmarksFilterByMapIdDiv');
         if(!self.empty()) {
             self.remove();
@@ -286,8 +286,8 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
     var _filterByMapIdData = function(d) {
 
-        _lastSortRequest['filterby'] = 'mapId';
-        _lastSortRequest['filterbyval'] = d.id;
+        _lastSortRequest.filterby = 'mapId';
+        _lastSortRequest.filterbyval = d.id;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
         _globalFilterByMapIdClickHandler();
     };
@@ -329,7 +329,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             var newobj = {};
             newobj.name = lyr.name;
             newobj.id = lyr.id;
-            newobj.action = function(d){_filterByMapIdData(d);};
+            newobj.action = _filterByMapIdData;
             data.push(newobj);
         }
 
@@ -352,7 +352,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     **/
     var _populateCurrentPage = function() {
         var offset = (_currentPage-1) * _DEFAULT_PAGE_COUNT;
-        _lastSortRequest['offset'] = offset;
+        _lastSortRequest.offset = offset;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
     };
 
@@ -366,20 +366,20 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                 container = _instance.datasetcontainer;
             }
 
-            context.hoot().getAllusers(function(r){
+            context.hoot().getAllusers(function(){
 
                 _lastSortRequest = {};
-                _lastSortRequest['orderBy'] = 'createdAt';
-                _lastSortRequest['asc'] = 'false';
-                _lastSortRequest['limit'] = _DEFAULT_PAGE_COUNT;
-                _lastSortRequest['offset'] = 0;
+                _lastSortRequest.orderBy = 'createdAt';
+                _lastSortRequest.asc = 'false';
+                _lastSortRequest.limit = _DEFAULT_PAGE_COUNT;
+                _lastSortRequest.offset = 0;
                 if(overrideReq) {
                     _lastSortRequest = overrideReq;
                 }
 
                 Hoot.model.REST('getReviewBookmarkStat', null, function (resp) {
                     if(resp.error){
-                        context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                        context.hoot().view.utilities.errorlog.reportUIError(resp.error);
                         return;
                     }
 
@@ -435,7 +435,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                         //.classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
                         .style('height', '100%')
                         .on('click', _deleteBtnHandler)
-                        .select(function (sel) {
+                        .select(function () {
                             d3.select(this).classed('fr _icon trash', true);
                         });
 
@@ -461,7 +461,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     var _renderLinkText = function(d) {
         var lyrName = context.hoot().model.layers.getNameBymapId(d.mapId);
         var rfid = 'r'+d.relationId + '_' + d.mapId;
-        var bkmDetail = d.detail['bookmarkdetail'];
+        var bkmDetail = d.detail.bookmarkdetail;
 
         return bkmDetail.title + ': ' + bkmDetail.desc + ' - [' + lyrName + ':' + rfid + ']';
     };
@@ -488,17 +488,14 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     * @param d - bookmark item data
     **/
     var _createSubText = function (d) {
-        var createdAt = d['createdAt'];
-        var createdBy = d['createdBy'];
-        var bookmarkId = d['id'];
-        var lastModifiedAt = d['lastModifiedAt'];
-        var lastModifiedBy = d['lastModifiedBy'];
-        var bookmarkMapId = d['mapId'];
-        var bookmarkRelId = d['relationId'];
+        var createdAt = d.createdAt;
+        var createdBy = d.createdBy;
+        var bookmarkId = d.id;
+        var lastModifiedAt = d.lastModifiedAt;
+        var lastModifiedBy = d.lastModifiedBy;
 
         var date = new Date(createdAt);
         var dateToStr = date.toLocaleString();
-        //var cleanDate = dateToStr[2] + ' ' + dateToStr[1] ;
         var createdByEmail = 'anonymous';
         if(createdBy && (1*createdBy) > -1) {
             createdByEmail = iD.data.hootConfig.users[1*createdBy].email;
@@ -533,8 +530,8 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         var r = confirm('Are you sure you want to delete selected bookmark?');
         if (r === true) {
 
-            request = {};
-            request['bookmarkId'] = d.id;
+            var request = {};
+            request.bookmarkId = d.id;
 
             Hoot.model.REST('deleteReviewBookmark', request, function (d) {
                 if(d.error){

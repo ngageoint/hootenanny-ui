@@ -5,7 +5,7 @@
 // Modifications:
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.view.utilities.errorlog = function(context){
+Hoot.view.utilities.errorlog = function(){
 
     // events
     var dispatch = d3.dispatch('close');
@@ -38,7 +38,7 @@ Hoot.view.utilities.errorlog = function(context){
       });
 
 
-      errTextFieldset = form.append('div')
+      form.append('div')
       .attr('id','errorlogbody')
           .classed('col12 fill-white small strong', true)
           .call(errorlog.showLog);
@@ -127,9 +127,9 @@ Hoot.view.utilities.errorlog = function(context){
 
                 if (iD.data.buildInfo != null)
                 {
-                  buildInfoName = iD.data.buildInfo.name;
-                  buildInfoVersion = iD.data.buildInfo.version;
-                  buildInfoBuiltBy = iD.data.buildInfo.user;
+                  var buildInfoName = iD.data.buildInfo.name;
+                  var buildInfoVersion = iD.data.buildInfo.version;
+                  var buildInfoBuiltBy = iD.data.buildInfo.user;
                 }
                 else
                 {

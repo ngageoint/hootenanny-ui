@@ -11,7 +11,7 @@ Hoot.view.utilities.wfsdataset = function(context)
     var hoot_view_utilities_wfsdataset = {};
 
     hoot_view_utilities_wfsdataset.createContent = function(container){
-        var wfsFieldset = container.append('div')
+        container.append('div')
         .attr('id','wfsdatasettable')
             .classed('col12 fill-white small strong row10 overflow keyline-all', true)
             .call(hoot_view_utilities_wfsdataset.populateWFSDatasets);
@@ -26,7 +26,6 @@ Hoot.view.utilities.wfsdataset = function(context)
                     context.hoot().view.utilities.errorlog.reportUIError(d.error);
                 }
 
-                var enabled = true;
                 var la = container.selectAll('span')
                     .data(d)
                     .enter();
@@ -53,7 +52,7 @@ Hoot.view.utilities.wfsdataset = function(context)
 
                     var wfsTrashBtn = this;
                     d3.json('/hoot-services/job/export/wfs/remove/' + wfsId,
-                            function (error, data) {
+                            function (error) {
                                 if(error){
                                     iD.ui.Alert(error.responseText,'error',new Error().stack);
                                 } else {

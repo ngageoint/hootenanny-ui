@@ -11,14 +11,14 @@ Hoot.view.utilities.basemapdataset = function(context)
     var hoot_view_utilities_basemapdataset = {};
 
     hoot_view_utilities_basemapdataset.createContent = function(form){
-        var mbFieldset = form.append('div')
+        form.append('div')
         .classed('pad1y col12', true)
         .append('a')
         .attr('href', '#')
         .text('New Basemap')
         .classed('dark fl button loud pad2x big _icon plus', true)
         .on('click', function () {
-            var bm = context.hoot().control.utilities.basemapdataset.newBasemapPopup(function(jobs){
+            context.hoot().control.utilities.basemapdataset.newBasemapPopup(function(){
                 // We need this timer due to
                 // 1 . basemap popup issues request and returns right away
                 // 2. Service take time to start the process and create control file
@@ -32,7 +32,7 @@ Hoot.view.utilities.basemapdataset = function(context)
 
         });
 
-        baseMapsFieldset = form.append('div')
+        form.append('div')
         .attr('id','basemapsdatasettable')
             .classed('col12 fill-white small strong row10 overflow keyline-all', true)
             .call(hoot_view_utilities_basemapdataset.populateBaseMapsDatasets);
@@ -63,7 +63,6 @@ Hoot.view.utilities.basemapdataset = function(context)
           }
       }
 
-      var enabled = true;
         var la = container.selectAll('span')
             .data(d)
             .enter();

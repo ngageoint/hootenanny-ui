@@ -6,7 +6,7 @@
 // Modifications:
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.view.utilities.about = function(context){
+Hoot.view.utilities.about = function(){
 
     // events
     var dispatch = d3.dispatch('close');
@@ -33,7 +33,7 @@ Hoot.view.utilities.about = function(context){
           .text('Main Versions:');
 
       var mainVerCont = mainContainer.append('div').classed('center col12', true).style('display','inline-block');
-      _mainVer = mainVerCont.append('div');
+      var _mainVer = mainVerCont.append('div');
       _mainVer.classed('center round keyline-all overflow', true);
 
       var detailContainer = form.append('div').classed('col12 pad1y fill-light',true);
@@ -56,12 +56,12 @@ Hoot.view.utilities.about = function(context){
 
 
 
-      formCont = detailContainer.append('div');
+      var formCont = detailContainer.append('div');
       formCont.classed('center col12', true).style('display','inline-block');
-      _form = formCont.append('div');
+      var _form = formCont.append('div');
       _form.classed('center row10  round keyline-all fill-white', true);
 
-      var btnDoc = formCont.append('div')
+      formCont.append('div')
           .classed('pad1y', true)
           .append('a')
           .attr('href', '#')

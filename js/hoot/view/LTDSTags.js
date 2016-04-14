@@ -34,14 +34,13 @@ Hoot.view.ltdstags = function (context) {
             if (!ent) {
                 return;
             }
-            var newArray = [];
             var OSMTagsAr = mapTags(ent.tags);
 
             appendTags(OSMTagsAr);
         }
-        context.history().on('undone', refreshTags)
-        context.history().on('redone', refreshTags)
-        context.history().on('change', refreshTags)
+        context.history().on('undone', refreshTags);
+        context.history().on('redone', refreshTags);
+        context.history().on('change', refreshTags);
 
         meta.currentId = id;
         meta.deactivate();
@@ -147,8 +146,8 @@ Hoot.view.ltdstags = function (context) {
                         //.style('margin-left', '20px')
                         //.style('margin-right', '20px')
                         .style('margin-top', '10px')
-                        .html(function (field) {
-                            return '<label class='form-label'>' + 'Filter By Type' + '</label>';
+                        .html(function () {
+                            return '<label class="form-label">' + 'Filter By Type' + '</label>';
                         });
             var placeHolder = 'TDSv61';
             if(meta.currentTranslation) {
@@ -176,7 +175,7 @@ Hoot.view.ltdstags = function (context) {
                     comboIntput.style('width', '100%')
                         .call(combo);
 
-            comboIntput.on('change', function(param){
+            comboIntput.on('change', function(){
                 meta.currentTranslation = d3.select('#ltdstranstype').value();
 
                 meta.activate(id);
@@ -184,7 +183,7 @@ Hoot.view.ltdstags = function (context) {
 
             var head_cont = ltds.append('div')
             .classed('form-label pad1x', true);
-            var head_label = head_cont.append('label')
+            head_cont.append('label')
                 .classed('fl', true)
                 .text('Attributes');
 
@@ -202,8 +201,8 @@ Hoot.view.ltdstags = function (context) {
 
                         var OSMTagsAr = [];
                         var emptyTag = {};
-                        emptyTag['key'] = '';
-                        emptyTag['value'] = '';
+                        emptyTag.key = '';
+                        emptyTag.value = '';
                         OSMTagsAr.push(emptyTag);
                         appendTags(OSMTagsAr, true);
                     }
@@ -305,7 +304,7 @@ Hoot.view.ltdstags = function (context) {
             ret.tableName = '';
             ret.attrs = attrib;
             callback(ret);
-        }
+        };
 
 
         var appendTags = function (tags, isNew) {
@@ -350,7 +349,7 @@ Hoot.view.ltdstags = function (context) {
                 .value(function (d) {
                     return d.key;
                 })
-                .on('change', function(curr_entity){
+                .on('change', function(){
                     tagsData[0].key =  this.value;
                 });
             } else {

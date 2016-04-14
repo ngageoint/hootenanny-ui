@@ -52,11 +52,7 @@ Hoot.view.utilities.reports = function(context) {
                     d3.event.preventDefault();
 
                     var r = confirm('Are you sure you want to delete selected report?');
-                    if (r === true) {
-
-                    } else {
-                        return;
-                    }
+                    if (!r) { return; }
 
 
                     d3.select(this).classed('keyline-left fr _icon trash pad2 col1',false);
@@ -69,7 +65,7 @@ Hoot.view.utilities.reports = function(context) {
 
                     Hoot.model.REST('deleteReport', n.id, function (resp) {
                         if(resp.error){
-                            context.hoot().view.utilities.errorlog.reportUIError(res.error);
+                            context.hoot().view.utilities.errorlog.reportUIError(resp.error);
                             hoot_view_utilities_reports.populateReports();
                             return;
                         }
@@ -82,7 +78,7 @@ Hoot.view.utilities.reports = function(context) {
                     });
 
                 })
-                .select(function (sel) {
+                .select(function () {
                     d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1', true);
 
                 });

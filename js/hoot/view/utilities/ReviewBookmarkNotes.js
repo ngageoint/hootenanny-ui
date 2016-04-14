@@ -89,7 +89,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     * @desc Retrieves notes for selected book mark.
     * @param container - container form.
     **/
-    _instance.getNotes = function(container) {
+    _instance.getNotes = function() {
       var reqParam = {};
       reqParam.bookmarkId = _bookmarkId;
       Hoot.model.REST('getReviewBookmark', reqParam, function (resp) {
@@ -150,7 +150,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {
 
           if(resp.error){
-              context.hoot().view.utilities.errorlog.reportUIError(d.error);
+              context.hoot().view.utilities.errorlog.reportUIError(resp.error);
               return;
           }
 
@@ -184,7 +184,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
         .on('click', function () {
           d3.event.stopPropagation();
           d3.event.preventDefault();
-          context.hoot().getAllusers(function(r){
+          context.hoot().getAllusers(function(){
             _refresh();
           });
 
@@ -209,7 +209,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
         Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {
 
             if(resp.error){
-                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                context.hoot().view.utilities.errorlog.reportUIError(resp.error);
                 return;
             }
 
@@ -315,22 +315,21 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       }
 
       var reqParam = {};
-      reqParam['bookmarkId'] = _currentBookmark.id;
-      reqParam['mapId'] = _currentBookmark.mapId;
-      reqParam['relationId'] = _currentBookmark.relationId;
-      reqParam['userId'] = _currentUser.id;
-      reqParam['detail'] = _currentBookmark.detail;
+      reqParam.bookmarkId = _currentBookmark.id;
+      reqParam.mapId = _currentBookmark.mapId;
+      reqParam.relationId = _currentBookmark.relationId;
+      reqParam.userId = _currentUser.id;
+      reqParam.detail = _currentBookmark.detail;
 
-      Hoot.model.REST('saveReviewBookmark', reqParam, function (resp) {
+      Hoot.model.REST('saveReviewBookmark', reqParam, function () {
         _refresh();
       });
     };
 
     /**
     * @desc Adds empty new note.
-    * @param noteList - list of notes to add.
     **/
-    var _appendNewEmptyNoteForm = function(noteList) {
+    var _appendNewEmptyNoteForm = function() {
       var d_form = [
       {
         label: 'Note',
@@ -354,17 +353,17 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
             }
 
             var bmNote = {};
-            bmNote['userId'] = _currentUser.id;
-            bmNote['note'] = newNote;
+            bmNote.userId = _currentUser.id;
+            bmNote.note = newNote;
             _currentBookmark.detail.bookmarknotes.push(bmNote);
 
-            reqParam['bookmarkId'] = _currentBookmark.id;
-            reqParam['mapId'] = _currentBookmark.mapId;
-            reqParam['relationId'] = _currentBookmark.relationId;
-            reqParam['userId'] = _currentUser.id;
-            reqParam['detail'] = _currentBookmark.detail;
+            reqParam.bookmarkId = _currentBookmark.id;
+            reqParam.mapId = _currentBookmark.mapId;
+            reqParam.relationId = _currentBookmark.relationId;
+            reqParam.userId = _currentUser.id;
+            reqParam.detail = _currentBookmark.detail;
 
-            Hoot.model.REST('saveReviewBookmark', reqParam, function (resp) {
+            Hoot.model.REST('saveReviewBookmark', reqParam, function () {
               _refresh();
             });
 
@@ -382,7 +381,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       //context.hoot().ui.hootformreviewnote.createForm('reviewbookmarknotesdiv', meta);
       var hootformreviewnote = Hoot.ui.hootformreviewnote(context);
       hootformreviewnote.createForm('reviewbookmarknotesdiv', meta);
-      _currentNotes['new'] = hootformreviewnote;
+      _currentNotes.new = hootformreviewnote;
     };
 
     /**
