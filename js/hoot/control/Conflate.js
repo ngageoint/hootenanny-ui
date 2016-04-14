@@ -149,7 +149,7 @@ Hoot.control.conflate = function (sidebar) {
         comboPathName.data().sort(function(a,b){
             var textA = a.value.toUpperCase();
             var textB=b.value.toUpperCase();
-            return(textA<textB)?-1 : (textA>textB)?1:0;
+            return (textA<textB)?-1 : (textA>textB)?1:0;
         });
 
         comboPathName.data().unshift({value:'root',title:0});
