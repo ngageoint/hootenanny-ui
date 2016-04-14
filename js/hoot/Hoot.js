@@ -4,14 +4,15 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      03 Feb. 2016
+//      14 Apr. 2016: Updates made for eslint -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 window.Hoot = {};
-var k;
+//var k;
 Hoot.hoot = function (context) {
     var mode,
-        hoot = {},
+        hoot = {};
         //layers = {},
-        availLayers = [];
+        //availLayers = [];
     
     hoot.ui = Hoot.ui(context);
     hoot.model = Hoot.model(context);
@@ -48,15 +49,15 @@ Hoot.hoot = function (context) {
             Hoot.demo(context);
         }
         hoot.model.folders.refresh(function () {
-        	hoot.model.layers.refresh(function(){
-        		hoot.model.folders.refreshLinks(function(){
-        			if (callback) {
-            			callback();
-            		}
-        		})        		
-        	});
-        	/*if (callback) {
-        		callback();
+            hoot.model.layers.refresh(function(){
+                hoot.model.folders.refreshLinks(function(){
+                    if (callback) {
+                        callback();
+                    }
+                });
+            });
+            /*if (callback) {
+                callback();
             }*/
         });
         Hoot.model.REST('GetTranslationServerStatus', function(){
@@ -69,7 +70,7 @@ Hoot.hoot = function (context) {
 
                 // we do this to make sure OSM is in list and not duplicate
                 // which can happen if it is included in the list from server
-                iD.data.hootConfig.translationCapabilites['OSM'] = {"isvailable":"true"};
+                iD.data.hootConfig.translationCapabilites.OSM = {'isvailable':'true'};
             });
 
         });
@@ -114,7 +115,7 @@ Hoot.hoot = function (context) {
 
         });
 
-    }
+    };
 
     /**
     * @desc Returns availabe symbology palette
@@ -210,7 +211,7 @@ Hoot.hoot = function (context) {
         hoot.changeColor(name, color);
     };
 
-    _findLayerStyleRules = function(lyrid) {
+    var _findLayerStyleRules = function(lyrid) {
 
         var modifiedId = lyrid.toString();
         var sheets = document.styleSheets[document.styleSheets.length - 1];
@@ -233,11 +234,11 @@ Hoot.hoot = function (context) {
     **/
     hoot.toggleColor = function(name){
         //get layer id
-    	var lyrid = hoot.model.layers.getmapIdByName(name);
-    	//find style
+        var lyrid = hoot.model.layers.getmapIdByName(name);
+        //find style
         var rules = _findLayerStyleRules(lyrid);
         // if not exist then put by looking into layers
-        if(rules.length == 0){
+        if(rules.length === 0){
             var lyr = hoot.model.layers.layers[name];
             if(lyr){
                 hoot.changeColor(lyrid, lyr.color);
@@ -271,7 +272,7 @@ Hoot.hoot = function (context) {
     };
 
     hoot.checkForSpecialChar = function(str){
-        var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/); 
+        var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/);  //"
         if (pattern.test(str)) {
             return false;
         }
@@ -282,20 +283,20 @@ Hoot.hoot = function (context) {
     * @desc Special character validation helper function
     * @param str - target string
     **/
-   hoot.checkForUnallowableWords = function(str){
-	   var unallowable = ['root','dataset','datasets','folder'];
-	   if(unallowable.indexOf(str.toLowerCase())>=0){return false;}
-	   return true;
+    hoot.checkForUnallowableWords = function(str){
+        var unallowable = ['root','dataset','datasets','folder'];
+        if(unallowable.indexOf(str.toLowerCase())>=0){return false;}
+        return true;
    };
    
    hoot.checkForUnallowedChar = function(str){
-	   if(!hoot.checkForSpecialChar(str)){
-		   return "Please do not use special characters: " + str + ".";
-	   }
-	   if(!hoot.checkForUnallowableWords(str)){
-		   return "Please do not use any unallowable terms: " + str + ".";
-	   }
-	   return true;
+    if(!hoot.checkForSpecialChar(str)){
+        return 'Please do not use special characters: ' + str + '.';
+    }
+       if(!hoot.checkForUnallowableWords(str)){
+        return 'Please do not use any unallowable terms: ' + str + '.';
+    }
+    return true;
    };
 
    hoot.isModeBtnEnabled = function()
@@ -316,7 +317,7 @@ Hoot.hoot = function (context) {
     * @param event - key stroke event
     **/
     document.onkeydown = function (event) {
-    	if (event.altKey && (event.which === 66)) {
+        if (event.altKey && (event.which === 66)) {
             id.hoot().model.layers.layerSwap();
         } else if (event.altKey && (event.which === 78)) {
             var curlayers = id.hoot().model.layers.getLayers();
@@ -341,11 +342,10 @@ Hoot.hoot = function (context) {
     
     hoot.assert = function(condition)
     {
-      if (!condition)
-      {
-    	throw "Assertion failed";  
-      }
-    }
+        if (!condition){
+            throw 'Assertion failed';
+        }
+    };
     
     hoot.containsObj = function(obj, arr)
     {
@@ -357,7 +357,7 @@ Hoot.hoot = function (context) {
         }
       }
       return false;
-    }
+    };
 
     /**
     * @desc Returns browser information.
@@ -373,13 +373,13 @@ Hoot.hoot = function (context) {
                  
                  var parts = appVerStr.split(' ');
                  _.each(parts, function(part){
-                     if(part.indexOf(browserInfo.name) == 0){
-                         var subParts = part.split("/");
+                     if(part.indexOf(browserInfo.name) === 0){
+                         var subParts = part.split('/');
                          if(subParts.length > 1){
                             browserInfo.version = subParts[1];
                          }
                      }
-                 })
+                 });
         }
         
         return browserInfo;
@@ -388,7 +388,7 @@ Hoot.hoot = function (context) {
     
     var bInfo = hoot.getBrowserInfo();
     if(bInfo.name !== 'Chrome' && bInfo.name !== 'Chromium' && bInfo.name !== 'Firefox'){
-        alert("Hootenanny will not function normally under " + bInfo.name + " v. " + bInfo.version);
+        alert('Hootenanny will not function normally under ' + bInfo.name + ' v. ' + bInfo.version);
     }
 
     return hoot;

@@ -6,6 +6,7 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      03 Feb. 2016
+//      14 Apr. 2016 eslint changes -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.validation = function(context, sidebar) {
     var event = d3.dispatch('featureLoaded');
@@ -55,7 +56,7 @@ Hoot.control.validation = function(context, sidebar) {
 
         var keybinding = d3.keybinding('validation');
         buttons.forEach(function(d) {
-            keybinding.on(d.cmd, function() { d3.event.preventDefault(); d.action(); })
+            keybinding.on(d.cmd, function() { d3.event.preventDefault(); d.action(); });
         });
 
         d3.select(document)
@@ -85,7 +86,7 @@ Hoot.control.validation = function(context, sidebar) {
             .attr('class', function (d) {
                 return 'fr inline button dark ' + d.color + ' pad0y pad2x keyline-all ' + d.icon + ' ' + d.id;
             })
-            .on('click', function (d) { //TODO: Can maybe use _debounce here, instead of enabled attr
+            .on('click', function (d) { //NOTE: Can maybe use _debounce here, instead of enabled attr
                 var b = d3.select(this);
                 if (b.attr('enabled')) {
                     d.action();
@@ -171,7 +172,7 @@ Hoot.control.validation = function(context, sidebar) {
             });
 
             //Disable iD edit tool keybinding
-            //TODO: Not sure how to re-enable yet (F5 anyone?)
+            //NOTE: Not sure how to re-enable yet (F5 anyone?)
             d3.keybinding('mode-buttons').off();
 
             var keybinding = d3.keybinding('choices');
@@ -423,4 +424,4 @@ Hoot.control.validation = function(context, sidebar) {
     };
 
     return d3.rebind(validation, event, 'on');
-}
+};

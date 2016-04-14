@@ -13,7 +13,7 @@ Hoot.tools = function (context, selection) {
         activeConflateLayer = {},
         ETL = context.hoot().control.import,
         view = context.hoot().control.view,
-        conflate = context.hoot().control.conflate;
+        conflate = context.hoot().control.conflate,
         conflicts = context.hoot().control.conflicts,
         exportLayer = context.hoot().control.export,
         hoot = context.hoot(),
@@ -151,7 +151,7 @@ Hoot.tools = function (context, selection) {
 
         var refLayer = '1';
         var oRefLayer = a.select('.referenceLayer').datum();
-        if(oRefLayer.id == data.INPUT2){
+        if(oRefLayer.id === data.INPUT2){
             refLayer = '2';
         }
 
@@ -172,19 +172,19 @@ Hoot.tools = function (context, selection) {
         data.COLLECT_STATS = a.select('.isCollectStats').value();
 
         var n = (new Date()).getTime();
-        data.TIME_STAMP = "" + n;
+        data.TIME_STAMP = '' + n;
         //data.AUTO_TUNNING = a.select('.autoTunning').value();
         data.REFERENCE_LAYER = refLayer;
         data.AUTO_TUNNING = 'false';
 
         if(advOpts){
-            var advOptionsStr = "";
+            var advOptionsStr = '';
             _.each(advOpts, function(opt){
                 if(advOptionsStr.length > 0){
-                    advOptionsStr += " ";
+                    advOptionsStr += ' ';
                 }
                 advOptionsStr += '-D "' + opt.name + '=' + opt.value + '"';
-            })
+            });
             data.ADV_OPTIONS = advOptionsStr;
         }/* else {
             // Do the default onew
@@ -219,8 +219,8 @@ Hoot.tools = function (context, selection) {
 
         //Add a folder and update links
         var pathname = a.select('.pathname').value();
-        if(pathname==''){pathname=a.select('.reset.PathName').attr('placeholder');}
-        if(pathname=='root'){pathname='';}
+        if(pathname===''){pathname=a.select('.reset.PathName').attr('placeholder');}
+        if(pathname==='root'){pathname='';}
         var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
 
         var newfoldername = a.select('.newfoldername').value();
@@ -233,9 +233,9 @@ Hoot.tools = function (context, selection) {
             link.folderId = folderId || 0;
             link.mapid = 0;
             if(a.select('.saveAs').value()){
-                link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == a.select('.saveAs').value()}),'id')[0] || 0;
+                link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name === a.select('.saveAs').value();}),'id')[0] || 0;
             }
-            if(link.mapid==0){return;}
+            if(link.mapid===0){return;}
             link.updateType='new';
             hoot.model.folders.updateLink(link);
             link = {};
@@ -335,9 +335,9 @@ Hoot.tools = function (context, selection) {
             if(totalSize > expThreshold)
             {
                 var thresholdInMb = Math.floor((1*expThreshold)/1000000);
-                var res = window.confirm("Export data size is greater than " + thresholdInMb
-                    +"MB and export may encounter problem." +
-                    " Do you wish to continue?");
+                var res = window.confirm('Export data size is greater than ' + thresholdInMb
+                    +'MB and export may encounter problem.' +
+                    ' Do you wish to continue?');
                 if(res === false) {
 
                     return;
@@ -403,7 +403,7 @@ Hoot.tools = function (context, selection) {
         var input2_id = context.hoot().model.layers.getmapIdByName(layers[1]);
         // and then check size
         //getMapSize
-        Hoot.model.REST('getMapSize', input1_id + "," + input2_id,function (sizeInfo) {
+        Hoot.model.REST('getMapSize', input1_id + ',' + input2_id,function (sizeInfo) {
 //
             if(sizeInfo.error){
                 context.hoot().reset();
@@ -415,8 +415,8 @@ Hoot.tools = function (context, selection) {
             if(totalSize > confThreshold)
             {
                 var thresholdInMb = Math.floor((1*confThreshold)/1000000);
-                if(!window.confirm("Conflation data size is greater than " + thresholdInMb +
-                    "MB and conflation may encounter problem. Do you wish to continue? (If you cancel layers will reset.)")) {
+                if(!window.confirm('Conflation data size is greater than ' + thresholdInMb +
+                    'MB and conflation may encounter problem. Do you wish to continue? (If you cancel layers will reset.)')) {
                     context.hoot().reset();
                     return;
                 }
@@ -429,24 +429,24 @@ Hoot.tools = function (context, selection) {
               };
 
             var data = preConflation(a, layerName, advOptions);
-            var type = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
+            //var type = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
             //var conflationExecType = (type === 'Horizontal') ? 'CookieCutterConflate' : 'Conflate';
             //Bug #6397
             var conflationExecType = 'Conflate';
-            if(data.AUTO_TUNNING == 'true'){
+            if(data.AUTO_TUNNING === 'true'){
                 var data1 = {};
                 data1.INPUT = data.INPUT1;
                 data1.INPUT_TYPE = 'db';
                 hoot.autotune('AutoTune', data1, function(res1){
                     var result1 = JSON.parse(res1.statusDetail);
 
-                    data.INPUT1_ESTIMATE = "" + result1.EstimatedSize;
+                    data.INPUT1_ESTIMATE = '' + result1.EstimatedSize;
                     var data2 = {};
                     data2.INPUT = data.INPUT2;
                     data2.INPUT_TYPE = 'db';
                     hoot.autotune('AutoTune', data2, function(res2){
                         var result2 = JSON.parse(res2.statusDetail);
-                        data.INPUT2_ESTIMATE = "" + result2.EstimatedSize;
+                        data.INPUT2_ESTIMATE = '' + result2.EstimatedSize;
                          hoot.model.conflate.conflate(conflationExecType, data, function (item) {
                              postConflation(item,a);
                          });
@@ -455,7 +455,7 @@ Hoot.tools = function (context, selection) {
             } else {
 
                 hoot.model.conflate.conflate(conflationExecType, data, function (item) {
-                    if(item.status && item.status == "requested"){
+                    if(item.status && item.status === 'requested'){
                         conflate.jobid = item.jobid;
                     } else {
                         postConflation(item,a);
@@ -486,23 +486,23 @@ Hoot.tools = function (context, selection) {
 
                 if(stat.unreviewedCount > 0) {
                     var reqParam = {};
-                    reqParam.mapId = params.mapId
+                    reqParam.mapId = params.mapId;
                     if(reqParam.mapId) {
                         Hoot.model.REST('getMapTags', reqParam,function (tags) {
                             //console.log(tags);
                             if (tags.reviewtype === 'hgisvalidation') {
-                                var r = confirm("The layer has been prepared for validation. Do you want to go into validation mode?");
-                                if (r == true) {
+                                var r = confirm('The layer has been prepared for validation. Do you want to go into validation mode?');
+                                if (r === true) {
                                     context.hoot().control.validation.begin(params);
                                 }
                             } else {
-                                var r = confirm("The layer contains unreviewed items. Do you want to go into review mode?");
-                                if (r == true) {
+                                var r = confirm('The layer contains unreviewed items. Do you want to go into review mode?');
+                                if (r === true) {
                                     isReviewMode = true;
                                     loadingLayer = params;
                                     loadingLayer.tags = tags;
-                                    loadingLayer['merged'] = true;
-                                    loadingLayer['layers'] = [];
+                                    loadingLayer.merged = true;
+                                    loadingLayer.layers = [];
                                     d3.selectAll('.loadingLayer').remove();
                                     d3.selectAll('.hootImport').remove();
                                     d3.selectAll('.hootView').remove();
@@ -521,7 +521,7 @@ Hoot.tools = function (context, selection) {
                                     loadedLayers[layerName].loadable = true;
                                     loadedLayers[layerName].merged = true;
                                     //change color to green
-                                    var selColor = "green";
+                                    var selColor = 'green';
                                     loadedLayers[layerName].color = selColor;
                                     context.hoot().replaceColor(loadedLayers[layerName].id,selColor);
                                     activeConflateLayer = loadingLayer;
@@ -570,18 +570,18 @@ Hoot.tools = function (context, selection) {
 
                                                     });
                                                 } else {
-                                                	iD.ui.Alert("Could not determine input layer 2. It will not be loaded.",'warning',new Error().stack);
+                                                    iD.ui.Alert('Could not determine input layer 2. It will not be loaded.','warning',new Error().stack);
                                                 }
 
 
                                             });
                                         } else {
-                                        	iD.ui.Alert("Could not determine input layer 1. It will not be loaded.",'warning',new Error().stack);
+                                            iD.ui.Alert('Could not determine input layer 1. It will not be loaded.','warning',new Error().stack);
                                         }
                                     }
                                 } else {
                                     var doRenderView = true;
-                                    if(params['hideinsidebar'] !== undefined && params['hideinsidebar'] === 'true'){
+                                    if(params.hideinsidebar !== undefined && params.hideinsidebar === 'true'){
                                         doRenderView = false;
                                     }
 
@@ -598,7 +598,7 @@ Hoot.tools = function (context, selection) {
                     }
                 } else {
                     var doRenderView = true;
-                    if(params['hideinsidebar'] !== undefined && params['hideinsidebar'] === 'true'){
+                    if(params.hideinsidebar !== undefined && params.hideinsidebar === 'true'){
                         doRenderView = false;
                     }
 
@@ -630,7 +630,7 @@ Hoot.tools = function (context, selection) {
     });
     exportLayer.on('cancelSaveLayer', function () {
         if(exporting){
-        	iD.ui.Alert("Can not cancel. Export in progress.",'warning',new Error().stack);
+            iD.ui.Alert('Can not cancel. Export in progress.','warning',new Error().stack);
             return;
         }
         exportLayer.deactivate();
@@ -653,8 +653,8 @@ Hoot.tools = function (context, selection) {
         exporting = true;
         var spinner = cont.append('span').attr('class', 'spinner-hoot').call(iD.ui.Spinner(context));
         hoot.model.export.exportData(cont, data, function (status) {
-            if(status == 'failed'){
-            	iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error',new Error().stack);
+            if(status === 'failed'){
+                iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error',new Error().stack);
             }
 
             if(exportType && exportType === 'Web Feature Service (WFS)'){

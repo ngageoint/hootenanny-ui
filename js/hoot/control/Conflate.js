@@ -29,7 +29,7 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      7 Jan. 2016
-//
+//      14 Apr. 2016 eslint changes -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Hoot.control.conflate = function (sidebar) {
@@ -47,7 +47,7 @@ Hoot.control.conflate = function (sidebar) {
 
     _instance.lastAdvSettingsText = 'Last Advanced Settings';
 
-    _instance.jobid = "";
+    _instance.jobid = '';
 
 
     /**
@@ -86,7 +86,7 @@ Hoot.control.conflate = function (sidebar) {
         _createGetValuesBtn(actions);
 
 
-        d3.select("#confAdvOptsLnk").on('click',_advanceOptionsLnkHandler);
+        d3.select('#confAdvOptsLnk').on('click',_advanceOptionsLnkHandler);
 
     };
 
@@ -95,7 +95,7 @@ Hoot.control.conflate = function (sidebar) {
     **/
     _instance.getConflationData = function() {
         return _confData;
-    }
+    };
 
 
     /**
@@ -107,7 +107,7 @@ Hoot.control.conflate = function (sidebar) {
         _confData = null;
         _newName = null;
         _instance.lastAdvSettingsText = 'Last Advanced Settings';
-        _instance.jobid = "";
+        _instance.jobid = '';
     };
 
 
@@ -130,7 +130,7 @@ Hoot.control.conflate = function (sidebar) {
         if(a.onchange){
             comboCnt.on('change', a.onchange);
         }
-    }
+    };
 
 
     /**
@@ -175,7 +175,7 @@ Hoot.control.conflate = function (sidebar) {
               lyrApath.push(lyrA.folderId);
 
               var folderId = lyrA.folderId;
-              while (folderId!=0){
+              while (folderId!==0){
                   var fldr = _.find(folderList,{'id':folderId});
                   if(fldr){
                       lyrApath.push(fldr.parentId);
@@ -193,7 +193,7 @@ Hoot.control.conflate = function (sidebar) {
                   commonId = folderId;
                   return;
               } else {
-                  while (folderId!=0){
+                  while (folderId!==0){
                       var fldr = _.find(folderList,{'id':folderId});
                       if(fldr){
                           if(lyrApath.indexOf(fldr.parentId)>-1){
@@ -207,20 +207,20 @@ Hoot.control.conflate = function (sidebar) {
           }
         });
 
-        if(commonId!=0){
+        if(commonId!==0){
           var match = _.find(a.combobox.data,{id:commonId});
           if(match){
               if(match){
-                  d3.select(this).value(match.folderPath)
-                  d3.select(this).attr('placeholder',match.folderPath)
-              };
+                  d3.select(this).value(match.folderPath);
+                  d3.select(this).attr('placeholder',match.folderPath);
+              }
           }
         }
 
         d3.select(this)
         .style('width', '100%')
         .call(comboPathName);
-    }
+    };
 
     /**
     * @desc Creates a specialized combobox for conflation reference list
@@ -248,7 +248,7 @@ Hoot.control.conflate = function (sidebar) {
         }
 
 
-    }
+    };
 
     /**
     * @desc Creates conflation field item
@@ -264,11 +264,11 @@ Hoot.control.conflate = function (sidebar) {
             {d3.select(this.parentNode).style('display','none');}
         }
 
-        if(a.type=='newfoldername' || a.type=='saveAs'){
+        if(a.type==='newfoldername' || a.type==='saveAs'){
             d3.select(this).on('change',function(){
                 //ensure output name is valid
                 var resp = hoot.checkForUnallowedChar(this.value);
-                if(resp != true){
+                if(resp !== true){
                     d3.select(this).classed('invalidName',true).attr('title',resp);
                 } else {
                     d3.select(this).classed('invalidName',false).attr('title',null);
@@ -284,7 +284,7 @@ Hoot.control.conflate = function (sidebar) {
             }
         }
 
-    }
+    };
 
     /**
     * @desc Clears adavnced options dlg related data and removes the dialog
@@ -298,7 +298,7 @@ Hoot.control.conflate = function (sidebar) {
         }
         _instance.confAdvOptsDlg = null;
         _instance.advancedoptions.advOpsFormEvent(false);
-    }
+    };
 
     /**
     * @desc Provides advanced optons toggle
@@ -309,7 +309,7 @@ Hoot.control.conflate = function (sidebar) {
 
         function displayHandler(ai){
             var selAI = d3.select('#'+ai.id);
-            if(ai.type=='checkbox'){
+            if(ai.type==='checkbox'){
                 selAI.property('checked',ai.checked);
             } else {
                 selAI.value(ai.value);
@@ -324,7 +324,7 @@ Hoot.control.conflate = function (sidebar) {
             _instance.advancedoptions.advOpsFormEvent(true);
             _instance.confAdvOptsDlg = _instance.advancedoptions.activate();
 
-            if(d3.selectAll('.reset.ConfType').value()==_instance.lastAdvSettingsText && _instance.lastAdvDlg){
+            if(d3.selectAll('.reset.ConfType').value()===_instance.lastAdvSettingsText && _instance.lastAdvDlg){
                 _.each(_instance.lastAdvDlg, displayHandler);
             } else {
                 //replace current inputs with Last advanced options if required...
@@ -352,7 +352,7 @@ Hoot.control.conflate = function (sidebar) {
                 }
             }
         }
-    }
+    };
 
     /**
     * @desc Validate conflation field values before submitting job
@@ -364,19 +364,19 @@ Hoot.control.conflate = function (sidebar) {
 
       //check if layer with same name already exists...
         if(_container.selectAll('.saveAs').value()===''){
-            iD.ui.Alert("Please enter an output layer name.",'warning',new Error().stack);
+            iD.ui.Alert('Please enter an output layer name.','warning',new Error().stack);
             return false;
         }
 
         if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){
                 return l.substring(l.lastIndexOf('|')+1);
             }),function(f){
-                return f == _container.selectAll('.saveAs').value();
+                return f === _container.selectAll('.saveAs').value();
             }
         )))
         {
-            iD.ui.Alert("A layer already exists with this name." +
-                " Please remove the current layer or select a new name for this layer.",'warning',new Error().stack);
+            iD.ui.Alert('A layer already exists with this name.' +
+                ' Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
             return false;
         }
 
@@ -394,13 +394,13 @@ Hoot.control.conflate = function (sidebar) {
 
         var parId = hoot.model.folders.getfolderIdByName(_container.selectAll('.pathname').value()) || 0;
         resp = hoot.model.folders.duplicateFolderCheck({name:_container.selectAll('.newfoldername').value(),parentId:parId});
-        if(resp != true){
+        if(resp !== true){
             iD.ui.Alert(resp,'warning',new Error().stack);
             return false;
         }
 
         return true;
-    }
+    };
 
     /**
     * @desc Handler for conflate button click event
@@ -417,7 +417,7 @@ Hoot.control.conflate = function (sidebar) {
         var thisConfType = d3.selectAll('.reset.ConfType');
         var selVal = thisConfType.value();
 
-        if(selVal==_instance.lastAdvSettingsText){
+        if(selVal===_instance.lastAdvSettingsText){
             _instance.confAdvOptionsFields = _instance.lastAdvFields;
             _instance.confAdvOptionsSelectedVal = _instance.lastAdvValues;
         }
@@ -428,11 +428,11 @@ Hoot.control.conflate = function (sidebar) {
             _instance.confAdvOptionsSelectedVal = _instance.advancedoptions.selectionretriever.getSelectedValues(null,_instance.confAdvOptionsFields);
         }
 
-        if(d3.selectAll('.reset.ConfType').value()=='Advanced Conflation'){
+        if(d3.selectAll('.reset.ConfType').value()==='Advanced Conflation'){
             _instance.lastAdvFields = _.map(_instance.confAdvOptionsFields,_.clone);
             _instance.lastAdvValues = _.map(_instance.confAdvOptionsSelectedVal,_.clone);
             _instance.lastAdvDlg = [];
-            _.each(d3.select("#CustomConflationForm").selectAll('form').selectAll('input')[0],function(ai){
+            _.each(d3.select('#CustomConflationForm').selectAll('form').selectAll('input')[0],function(ai){
                 var selAI = d3.select('#'+ai.id);
                 _instance.lastAdvDlg.push({id:ai.id,type:ai.type, checked:ai.checked, value:ai.value, disabled:selAI.property('disabled'),hidden:d3.select(selAI.node().parentNode).style('display')});
             });
@@ -440,7 +440,7 @@ Hoot.control.conflate = function (sidebar) {
 
         _submitLayer(_container);
         _event.merge(_container, _newName, _instance.confAdvOptionsSelectedVal);
-    }
+    };
 
 
     /**
@@ -469,7 +469,7 @@ Hoot.control.conflate = function (sidebar) {
                 if (window.confirm('Are you sure you want to cancel conflation job?')) {
 
                     d3.select('#hootconflatecontrol').html('<div class="pad1 inline _loading"><span></span></div>' +
-                            '<span class="strong pad1x">Cancelling &#8230;</span>') ;
+                            '<span class="strong pad1x">Cancelling &#8230;</span>');
 
                     var jobId = _instance.jobid;
                     var saveAsCntrl = d3.selectAll('.reset.saveAs');
@@ -527,7 +527,7 @@ Hoot.control.conflate = function (sidebar) {
             d3.select(context)
                 .classed('active', true);
         }
-    }
+    };
 
 
     /**
@@ -588,7 +588,7 @@ Hoot.control.conflate = function (sidebar) {
             {
                 label: 'Collect Statistics?',
                 type: 'isCollectStats',
-                placeholder: "false",
+                placeholder: 'false',
                 combobox: ['true','false'],
                 onchange: function(d){
                     var selVal = d3.selectAll('.reset.isCollectStats').value();
@@ -598,7 +598,7 @@ Hoot.control.conflate = function (sidebar) {
             {
                 label: 'Generate Report?',
                 type: 'isGenerateReport',
-                placeholder: "false",
+                placeholder: 'false',
                 combobox: ['true','false'],
                 onchange: function(d){
                     var selVal = d3.selectAll('.reset.isGenerateReport').value();
@@ -608,7 +608,7 @@ Hoot.control.conflate = function (sidebar) {
             }
         ];
 
-    }
+    };
 
     /**
     * @desc Help function for new name generation
@@ -636,7 +636,7 @@ Hoot.control.conflate = function (sidebar) {
         return {
             found: 0
         };
-    }
+    };
 
     /**
     * @desc Generates unique output name
@@ -673,11 +673,11 @@ Hoot.control.conflate = function (sidebar) {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
-                if(d3.select("#sidebar2").selectAll("input").property('disabled')){return;}
+                if(d3.select('#sidebar2').selectAll('input').property('disabled')){return;}
 
                 _toggleForm(this);
             });
-    }
+    };
 
     /**
     * @desc Creates conflate sources thumbnnails which matches source layers symbology
@@ -723,7 +723,7 @@ Hoot.control.conflate = function (sidebar) {
             })
             .classed('form-field fill-white small keyline-all round space-bottom1', true)
             .html(function (field) {
-                if(field.type=='ConfType'){
+                if(field.type==='ConfType'){
                     var retval = '';
                     retval += '<div style="opacity: 1;"><label class="pad1x pad0y strong fill-light round-top keyline-bottom" style="opacity: 1; max-width: 90%; display: inline-block; width: 90%;">';
                     retval += field.label;
@@ -742,7 +742,7 @@ Hoot.control.conflate = function (sidebar) {
                 return 'reset ' + field.type;
             })
             .select(_populateFields);
-    }
+    };
 
     /**
     * @desc Creates buttons container
@@ -754,7 +754,7 @@ Hoot.control.conflate = function (sidebar) {
             .classed('form-field pill col12', true);
 
         return actions;
-    }
+    };
 
     /**
     * @desc Creates cancel button
@@ -778,7 +778,7 @@ Hoot.control.conflate = function (sidebar) {
                 }
 
             });
-    }
+    };
 
     /**
     * @desc Creates conflate button
@@ -793,7 +793,7 @@ Hoot.control.conflate = function (sidebar) {
             .classed('fill-dark button round pad0y pad2x dark small strong margin0', true)
             .attr('border-radius','4px')
             .on('click', _conflateBtnClickHandler);
-    }
+    };
 
     /**
     * @desc Creates Get Values button which is hidden initially.(For debugging)
@@ -801,7 +801,7 @@ Hoot.control.conflate = function (sidebar) {
     **/
     var _createGetValuesBtn = function(actions) {
 
-         //TODO: Remove once change has been approved.  This button is for testing only.
+        //NOTE: Remove once change has been approved.  This button is for testing only.
         actions
         .append('input')
         .attr('type', 'submit')
@@ -817,7 +817,7 @@ Hoot.control.conflate = function (sidebar) {
             d3.event.stopPropagation();
             d3.event.preventDefault();
 
-            if(d3.selectAll('.reset.ConfType').value()==_instance.lastAdvSettingsText){
+            if(d3.selectAll('.reset.ConfType').value()===_instance.lastAdvSettingsText){
                 _instance.confAdvOptionsFields = _instance.lastAdvFields;
                 _instance.confAdvOptionsSelectedVal = _instance.lastAdvValues;
             } else {
@@ -830,7 +830,7 @@ Hoot.control.conflate = function (sidebar) {
         });
 
 
-    }
+    };
 
 
     return d3.rebind(_instance, _event, 'on');

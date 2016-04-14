@@ -4,6 +4,7 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      03 Feb. 2016
+//      14 Apr. 2016 eslint changes -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.TranslationAssistant = function () {
     var ta = {};
@@ -585,13 +586,13 @@ Hoot.control.TranslationAssistant = function () {
                             break;
                         // up arrow
                         case 38:
-                        	scroll('up',this);
-                        	d3.event.preventDefault();
+                            scroll('up',this);
+                            d3.event.preventDefault();
                             break;
                         // down arrow
                         case 40:
-                        	scroll('down',this);
-                        	d3.event.preventDefault();
+                            scroll('down',this);
+                            d3.event.preventDefault();
                             break;
                     }
                     d3.event.stopPropagation();
@@ -611,28 +612,28 @@ Hoot.control.TranslationAssistant = function () {
                 }
 
                 function scroll(dir,that){
-                	var overflowList = d3.select(that).node().nextSibling;
-                	var results = d3.select(overflowList).selectAll('div');
+                    var overflowList = d3.select(that).node().nextSibling;
+                    var results = d3.select(overflowList).selectAll('div');
 
-                	if(!_.isEmpty(results[0])){
-                		var overflowTags = [];
-                    	for (var i = 0; i < results[0].length; i += 1) {
-                    		overflowTags.push(results[0][i].innerHTML);
-                    		}
+                    if(!_.isEmpty(results[0])){
+                        var overflowTags = [];
+                        for (var i = 0; i < results[0].length; i += 1) {
+                            overflowTags.push(results[0][i].innerHTML);
+                        }
 
-                    	//get index of current
-                    	var curIdx = overflowTags.indexOf(searchTag.property('value'));
+                        //get index of current
+                        var curIdx = overflowTags.indexOf(searchTag.property('value'));
 
-                    	if(dir==='up'){curIdx -= 1;}
-                    	else if(dir==='down'){curIdx += 1;}
+                        if(dir==='up'){curIdx -= 1;}
+                        else if(dir==='down'){curIdx += 1;}
 
-                    	curIdx < 0? 0 : curIdx;
-                    	curIdx > overflowTags.length-1? overflowTags.length-1 : curIdx;
+                        curIdx < 0? 0 : curIdx;
+                        curIdx > overflowTags.length-1? overflowTags.length-1 : curIdx;
 
-                    	//scroll to curIdx
-                    	overflowList.scrollTop = results[0][curIdx].offsetTop - overflowList.offsetTop;
-                    	searchTag.property('value',overflowTags[curIdx]);
-                	}
+                        //scroll to curIdx
+                        overflowList.scrollTop = results[0][curIdx].offsetTop - overflowList.offsetTop;
+                        searchTag.property('value',overflowTags[curIdx]);
+                    }
                 }
 
                 function change() {
@@ -797,7 +798,7 @@ Hoot.control.TranslationAssistant = function () {
                     if ( schema === 'TDSv61' ) {
                         var isValid = ta.validateMapping(jsonMapping);
                         if (!isValid.state) {
-                        	iD.ui.Alert('A mapping for Feature Code is required for ' + isValid.layers.join(', '),'warning');
+                            iD.ui.Alert('A mapping for Feature Code is required for ' + isValid.layers.join(', '),'warning');
                             return;
                         }
                         output = output.replace('var schema;', 'var schema = \'' + schema + '\';');
@@ -807,18 +808,18 @@ Hoot.control.TranslationAssistant = function () {
                     var blob = new Blob([output], {type: 'text/plain;charset=utf-8'});
                     window.saveAs(blob, fileName + '-translation.js');
 
-                    if(window.confirm("Do you want to add this to internal translation list?")){
-                    	var thisbody = d3.select("#utiltranslation").node()
-                    	d3.select(jobsBG).node().appendChild(thisbody);
-	                    d3.selectAll('.utilHootHead')
-	                        .classed('fill-white', false)
-	                        .classed('keyline-bottom', true);
-	                    d3.select(thisbody.children[0])
-	                        .classed('fill-white', true)
-	                        .classed('keyline-bottom', false);
+                    if(window.confirm('Do you want to add this to internal translation list?')){
+                        var thisbody = d3.select('#utiltranslation').node();
+                        d3.select(jobsBG).node().appendChild(thisbody);
+                        d3.selectAll('.utilHootHead')
+                            .classed('fill-white', false)
+                            .classed('keyline-bottom', true);
+                        d3.select(thisbody.children[0])
+                            .classed('fill-white', true)
+                            .classed('keyline-bottom', false);
 
-	                    //open the ingestDiv and copy values into paste box
-	                    hoot.control.utilities.translation.newTranslationPopup(output);
+                        //open the ingestDiv and copy values into paste box
+                        hoot.control.utilities.translation.newTranslationPopup(output);
                     }
 
                 });
