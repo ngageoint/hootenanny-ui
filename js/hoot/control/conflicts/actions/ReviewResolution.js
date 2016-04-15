@@ -81,8 +81,6 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
     * @param data - resolved items
     **/
     _instance.acceptAll = function(data) {
-        var doProceed = true;
-
         var hasChanges = context.history().hasChanges();
         if (hasChanges) {
             _parent().setProcessing(false);
@@ -105,11 +103,13 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
     * @desc Resolves all reviewables
     * @param data - resolved items
     **/
-    _performAcceptAll = function(data) {
+    var _performAcceptAll = function(data) {
         try{
             _parent().setProcessing(true, 'Please wait while resolving all review items.');
-            Hoot.model.REST('resolveAllReviews', data.mapId, function (error, response)
+            Hoot.model.REST('resolveAllReviews', data.mapId, function (error)
             {
+                if(error){_handleError(error,true);}
+
                 try {
                      _parent().deactivate(true);
                     d3.select('body').call(iD.ui.Processing(context,true,'Resolving all reviewable features...'));
@@ -148,7 +148,6 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
     * @param doAlertUser - switch to show user alert
     **/
     var _handleError = function(err, doAlertUser) {
-        console.error(err);
         _parent().setProcessing(false);
         if(doAlertUser === true) {
             iD.ui.Alert(err,'error',new Error().stack);

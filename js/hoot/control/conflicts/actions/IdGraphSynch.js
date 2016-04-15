@@ -34,7 +34,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             // for merged automerge should have loaded relation and members to ui
             // at this point so it will not try to reload..
 
-            var nMemCnt = _getLoadedRelationMembersCount(fid) ;
+            var nMemCnt = _getLoadedRelationMembersCount(fid);
 
             if(nMemCnt > 0){
                 // loaded members count not matching the entity members count
@@ -90,7 +90,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
         }
         catch(error)
         {
-            console.log(error);
+            iD.ui.Alert(error,'error',new Error().stack);
         }
 
 
@@ -108,12 +108,12 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
         try
         {
             if(err){
-                throw 'Failed to load missing features.';
+                throw new Error('Failed to load missing features.');
             }
 
             // Make sure we do not go into infinite loop
             if(Object.keys(_relTreeIdx).length > 500){
-                throw 'Review relation tree size is too big.  Maybe went into an infinite loop?';
+                throw new Error('Review relation tree size is too big.  Maybe went into an infinite loop?');
             }
 
             if (entities.data.length) {
@@ -156,12 +156,12 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
 
 
             } else {
-                throw 'Failed to load missing features.';
+                throw new Error('Failed to load missing features.');
             }
         }
-        catch (err)
+        catch (er)
         {
-            iD.ui.Alert(err,'error',new Error().stack);
+            iD.ui.Alert(er,'error',new Error().stack);
         }
         finally
         {
@@ -230,7 +230,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
     * @param fnc - callback
     **/
     var _validateMemberCnt = function(fid, fnc) {
-        var nMemCnt = _getLoadedRelationMembersCount(fid) ;
+        var nMemCnt = _getLoadedRelationMembersCount(fid);
         var f = context.hasEntity(fid);
         if(nMemCnt > 0){
             if(nMemCnt === 1){

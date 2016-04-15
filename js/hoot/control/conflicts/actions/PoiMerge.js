@@ -130,7 +130,6 @@ Hoot.control.conflicts.actions.poimerge = function (context)
     * @param doAlertUser - switch to show user alert
     **/
     var _handleError = function(err, doAlertUser) {
-        console.error(err);
         _parent().setProcessing(false);
         if(doAlertUser === true) {
             iD.ui.Alert(err,'error',new Error().stack);

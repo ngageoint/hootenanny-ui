@@ -152,8 +152,8 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
 
             if(poiTableCols[1]) {
 
-                var fid = poiTableCols[1].id;
-                var feature = context.hasEntity(fid);
+                fid = poiTableCols[1].id;
+                feature = context.hasEntity(fid);
                 if(feature) {
                     if(feature.type === 'relation') {
                         feature.members
@@ -202,12 +202,12 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
             var curToggle = on;
             _flashingTimer = window.setInterval(function(){
                 curToggle = !curToggle;
-                _performHighlight(fid, ftype, offType, curToggle, offFid) ;
+                _performHighlight(fid, ftype, offType, curToggle, offFid);
             }, 500);
         } else {
             if(_flashingTimer) {
                 clearInterval(_flashingTimer);
-                _performHighlight(fid, ftype, offType, on, offFid) ;
+                _performHighlight(fid, ftype, offType, on, offFid);
             }
 
         }

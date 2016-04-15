@@ -14,7 +14,6 @@ Hoot.control.utilities.importdataset = function(context) {
     var _instance = {};
 
     var _trans;
-    var _incomingFolder;
     var _container;
 
     var _importTranslations;
@@ -71,7 +70,7 @@ Hoot.control.utilities.importdataset = function(context) {
 
         var folderPlaceholder = 'root';
         if(incomingFolder){
-            folderId = incomingFolder.id ? incomingFolder.id : 0;
+            var folderId = incomingFolder.id ? incomingFolder.id : 0;
             if(folderId > 0){
                 var match = _.find(folderList,{id:folderId});
                 if(match){
@@ -327,7 +326,7 @@ Hoot.control.utilities.importdataset = function(context) {
                 var data = {};
                 data.jobid = curJobId;
                 data.mapid = curMapId;
-                Hoot.model.REST('cancel', data, function (a) {
+                Hoot.model.REST('cancel', data, function () {
                     iD.ui.Alert('Job ID: ' + curJobId + ' has been cancelled. ','notice');
 
 
@@ -345,7 +344,7 @@ Hoot.control.utilities.importdataset = function(context) {
                          for (var j = 0; j < controls.length; j++) {
                              cntrl = controls[j];
                              // for each of subitems
-                             for(k=0; k<cntrl.length; k++){
+                             for(var k=0; k<cntrl.length; k++){
                                  d3.select(cntrl[k]).style('width', '100%')
                                  .call(combo);
                              }
@@ -371,7 +370,7 @@ Hoot.control.utilities.importdataset = function(context) {
     var _getTypeName = function(desc){
         var comboData = _container.select('#importDatasetImportType').datum();
         var typeName = '';
-        for(i=0; i<comboData.combobox.data.length; i++){
+        for(var i=0; i<comboData.combobox.data.length; i++){
             var o = comboData.combobox.data[i];
             if(o.title === desc){
                 typeName = o.value;
@@ -455,7 +454,7 @@ Hoot.control.utilities.importdataset = function(context) {
                 });
 
                 var field = {};
-                field['combobox'] = {data:list};
+                field.combobox = {data:list};
 
                 _populateFeatureClasses(field);
             });
@@ -576,7 +575,7 @@ Hoot.control.utilities.importdataset = function(context) {
         .style('width', '100%')
         .attr('readonly',true)
         .call(comboImportType)
-        .on('change', function(a1,a2,a3){
+        .on('change', function(a1,a2){
             d3.select('importDatasetFileImport').value('');
             d3.select('#importDatasetLayerName').value('');
             d3.select('#importDatasetSchema').value('');

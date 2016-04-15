@@ -154,10 +154,10 @@ Hoot.control.conflate = function (sidebar) {
 
         comboPathName.data().unshift({value:'root',title:0});
 
-        commonId = 0;
+        var commonId = 0;
 
         //get common path between lyrA and lyrB using folderID
-        hoot.model.layers.setLayerLinks(function(a){
+        hoot.model.layers.setLayerLinks(function(){
           var sels = d3.select('#sidebar2').selectAll('form')[0];
           var lyrA, lyrB;
           if(sels && sels.length > 1){
@@ -188,7 +188,7 @@ Hoot.control.conflate = function (sidebar) {
 
           lyrB = _.find(hoot.model.layers.getAvailLayers(),{'name':lyrB});
           if(lyrB){
-              var folderId = lyrB.folderId;
+              folderId = lyrB.folderId;
               if(lyrApath.indexOf(folderId)>-1){
                   commonId = folderId;
                   return;

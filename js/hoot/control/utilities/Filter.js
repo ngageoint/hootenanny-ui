@@ -8,7 +8,7 @@
 Hoot.control.utilities.filter = function(context) {
     var hoot_control_utilities_filter = {};
 
-    hoot_control_utilities_filter.filterPopup = function(srcName, callback) {
+    hoot_control_utilities_filter.filterPopup = function(srcName) {
 
         var source = srcName;
         var d_form = [{

@@ -8,7 +8,7 @@
 Hoot.control.utilities.validation = function(context) {
     var hoot_control_utilities_validation = {};
 
-    hoot_control_utilities_validation.validationPopup = function(srcName, callback) {
+    hoot_control_utilities_validation.validationPopup = function(srcName) {
 
         var source = srcName;
         var d_form = [{
@@ -34,7 +34,7 @@ Hoot.control.utilities.validation = function(context) {
                         }
                     }
                 } catch (e) {
-                    // TODO: handle exception
+                    // NOTE: handle exception
                 }
 
              // spinner

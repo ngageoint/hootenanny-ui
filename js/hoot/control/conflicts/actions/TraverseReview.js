@@ -56,8 +56,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
             _parent().setProcessing(true, 'Please wait while stepping to next review item.');
             // First check to see if we have all needed params
             if(!_isInitialized()){
-                throw 'Traverse control not initialized. Please contact administrator!';
-                return;
+                throw new Error('Traverse control not initialized. Please contact administrator!');
             }
 
             // if we have unsaved changes then exit.
@@ -75,7 +74,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
             Hoot.model.REST('ReviewGetStatistics', _mapid, function (error, response) {
                 try {
                     if(error){
-                        throw 'Failed to get review statistics.';
+                        throw new Error('Failed to get review statistics.');
                     }
 
                     // Store the review statics in metadata so we can show it when we
@@ -121,7 +120,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     var _reviewGetNextHandler = function (error, response) {
         try {
             if(error){
-                throw 'Failed to retrieve next set of reviewable features from service!';
+                throw new Error('Failed to retrieve next set of reviewable features from service!');
             }
 
 
@@ -142,7 +141,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
             }
         }
         catch (ex) {
-            console.error(ex);
+            iD.ui.Alert(ex,'error',new Error().stack);
             var r = confirm('Failed to retrieve the next features for review!' +
                 '  Do you want to continue?');
             if(r === false){
@@ -245,7 +244,6 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     * @param doAlertUser - switch to show user alert
     **/
     var _handleError = function(err, doAlertUser) {
-        console.error(err);
         _parent().setProcessing(false);
         if(doAlertUser === true) {
             iD.ui.Alert(err,'error',new Error().stack);

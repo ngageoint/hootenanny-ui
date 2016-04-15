@@ -59,7 +59,7 @@ Hoot.control.utilities.exportdataset = function(context) {
             combobox: {'data': [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
                         {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}], 'command': _populateTranslations},
             placeholder: 'File Geodatabase',
-            inputtype:'combobox',
+            inputtype:'combobox'
         }, {
             label: 'Append to ESRI FGDB Template?',
             id: 'appendFGDBTemplate',

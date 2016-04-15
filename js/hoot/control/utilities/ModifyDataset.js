@@ -119,7 +119,7 @@ Hoot.control.utilities.modifydataset = function(context) {
             data.updateType='update';
         }
 
-        context.hoot().model.layers.updateLayerName(data, function(status){
+        context.hoot().model.layers.updateLayerName(data, function(){
                 //determine if a new folder is being added
                 var newfoldername = _container.select('#modifyDatasetNewFolderName').value();
                 resp = context.hoot().checkForUnallowedChar(newfoldername);

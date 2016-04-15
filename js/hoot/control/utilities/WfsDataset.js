@@ -5,7 +5,7 @@
 // Modifications:
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.control.utilities.wfsdataset = function(context) {
+Hoot.control.utilities.wfsdataset = function() {
     var hoot_control_utilities_wfsdataset = {};
 
     hoot_control_utilities_wfsdataset.wfsDetailPopup = function (e) {

@@ -55,7 +55,7 @@ Hoot.control.utilities.folder = function(context) {
 
         //var folders = context.hoot().model.layers.getAvailLayersWithFolders();
         var folders = context.hoot().model.folders.getAvailFoldersWithLayers();
-        folders= JSON.parse('{'name':'Datasets','id':'Datasets','children':' + JSON.stringify(folders) +'}');
+        folders= JSON.parse('{' + 'name':'Datasets','id':'Datasets','children': JSON.stringify(folders) +'}');
 
         var margin = {top: 10, right: 20, bottom: 30, left: 0},
             width = '100%',

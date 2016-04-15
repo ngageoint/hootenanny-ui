@@ -43,7 +43,7 @@ Hoot.control.utilities.clipdataset = function(context) {
            {label:'Path', placeholder: 'root', type: 'PathName', combobox3:folderList }
         ];
 
-        var _row = [{'datasetName':'','checkbox':'','LayerName':'','PathName':''}];
+        //var _row = [{'datasetName':'','checkbox':'','LayerName':'','PathName':''}];
 
         _modalbg = d3.select('body')
             .append('div')
@@ -131,7 +131,7 @@ Hoot.control.utilities.clipdataset = function(context) {
                 .classed('form-field col12 left ', true);
 
             if(_clipType===undefined){_clipType='visualExtent';}
-            var typeDiv = ingestDiv.append('div').attr('id','clipType').classed('hidden',true).attr('clipType',_clipType);
+            ingestDiv.append('div').attr('id','clipType').classed('hidden',true).attr('clipType',_clipType);
 
 
             submitExp.append('span')
@@ -264,7 +264,7 @@ Hoot.control.utilities.clipdataset = function(context) {
                 return;
             }
 
-            if(clipType==='visualExtent'){param.BBOX = id.map().extent().toString();}
+            if(clipType==='visualExtent'){param.BBOX = iD.map().extent().toString();}
             else if(clipType==='boundingBox'){param.BBOX= _rect;}
 
             param.PATH_NAME = d3.select('#row-' + d.name).select('div .PathName').value() || d3.select('#row-' + d.name).select('div .PathName').attr('placeholder') || 'root';

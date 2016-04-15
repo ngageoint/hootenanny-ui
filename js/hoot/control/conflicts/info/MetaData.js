@@ -30,7 +30,7 @@ Hoot.control.conflicts.info.metadata = function (context)
             .classed('_icon info reviewCount', true);
         // Initial text change this if needed
         _metaHead.text('There are 0 reviews:');
-    }
+    };
 
     /**
     * @desc sets the meta data header text
@@ -38,7 +38,7 @@ Hoot.control.conflicts.info.metadata = function (context)
     **/
     _instance.setInfo = function(text){
         _metaHead.text(text);
-    }
+    };
 
     /**
     * @desc gets the statics information for the meta data
@@ -46,7 +46,7 @@ Hoot.control.conflicts.info.metadata = function (context)
     **/
     _instance.getCurrentReviewMeta = function() {
         return _currentReviewableMeta;
-    }
+    };
 
     /**
     * @desc sets the statics information for the meta data
@@ -54,7 +54,7 @@ Hoot.control.conflicts.info.metadata = function (context)
     **/
     _instance.setCurrentReviewMeta = function(itm) {
         _currentReviewableMeta = itm;
-    }
+    };
 
 
     /**
@@ -63,7 +63,7 @@ Hoot.control.conflicts.info.metadata = function (context)
     **/
     _instance.setNoteContainer = function(cont) {
         _noteContainer = cont;
-    }
+    };
     /**
     * @desc This is where the note and othere reviewable statistics are set for user
     * @param note - note text that overrides what is in  hoot:review:note tag
@@ -95,12 +95,12 @@ Hoot.control.conflicts.info.metadata = function (context)
         if(note){
             noteText = note;
         }
-        _noteContainer.html('<strong class='review-note'>' + 'Review note: ' + noteText + '<br>' + 'Reviews remaining: ' +
+        _noteContainer.html('<strong class="review-note">' + 'Review note: ' + noteText + '<br>' + 'Reviews remaining: ' +
             nUnreviewed +
             '  (Resolved: ' + nReviewed +
                 multiFeatureMsg + ')</strong>');
         context.hoot().control.conflicts.info.metadata.setInfo('There are ' + nUnreviewed + ' reviews');
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

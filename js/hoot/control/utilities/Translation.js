@@ -10,7 +10,7 @@ Hoot.control.utilities.translation = function(context) {
 
 
     hoot_control_utilities_translation.newTranslationPopup = function (transText) {
-        var exportData,transTemplateText;
+        var transTemplateText;
 
         if(transText){transTemplateText=transText;}
 
@@ -171,7 +171,6 @@ Hoot.control.utilities.translation = function(context) {
             }
 
             function postTranslation(e) {
-                console.log(e);
                 Hoot.model.REST('postTranslation', e, function (resp) {
                     if(resp.error){
                         context.hoot().view.utilities.errorlog.reportUIError(resp.error);
