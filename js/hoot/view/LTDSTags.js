@@ -380,11 +380,7 @@ Hoot.view.ltdstags = function (context) {
                 })
                 .on('change', function(orig_entity){
                     if(orig_entity.field){
-                        if(orig_entity.field.type === 'enumeration'){
-
-                        } else if(orig_entity.field.type === 'String') {
-
-                        } else {
+                        if(orig_entity.field.type !== 'enumeration' && orig_entity.field.type !== 'String'){
                             // numeric
                             if (isNaN(this.value)) // this is the code I need to change
                             {
@@ -394,14 +390,13 @@ Hoot.view.ltdstags = function (context) {
                                 } else {
                                     this.value = orig_entity.value;
                                 }
-                                return ;
+                                return;
                             }
                         }
                     }
 
                     if(orig_entity.key.trim().length === 0) {
                         iD.ui.Alert('Missing or invalid key.','warning',new Error().stack);
-                        var curval = this.value;
                         this.value = '';
                         return;
                     }
@@ -426,7 +421,6 @@ Hoot.view.ltdstags = function (context) {
                     } else {
                         //getOSMTags
                         var ent2 = context.hasEntity(id);
-                        var orig_tags = ent2.tags;
                         ent2.tags = new_entity;
                         getOSMTags(ent2, function (d) {
                             ent2.tags = {};
@@ -457,10 +451,6 @@ Hoot.view.ltdstags = function (context) {
                             d3.select(this)
                                 .style('width', '99%')
                                 .call(combo);
-                        } else if(a.field.type === 'String') {
-
-                        } else {
-                            // numeric
                         }
 
                     }
@@ -523,15 +513,9 @@ Hoot.view.ltdstags = function (context) {
         if(meta.currentTranslation && meta.currentTranslation === 'OSM') {
             getRawOSMTags(ent, function (d) {
                 if (d.attrs) {
-                    var schema = null;
-                    if(d.fields){
-                        schema = JSON.parse(d.fields);
-                    }
                     var OSMTagsAr = mapTags(d.attrs, null);
                     appendTags(OSMTagsAr);
                 }
-                var tagsAr = mapTags(ent.tags);
-                //appendTags(tagsAr);
             });
         } else {
             getLTDSTags(ent, function (d) {
@@ -543,8 +527,6 @@ Hoot.view.ltdstags = function (context) {
                     var LTDSTagsAr = mapTags(d.attrs, schema.columns);
                     appendTags(LTDSTagsAr);
                 }
-                var tagsAr = mapTags(ent.tags);
-                //appendTags(tagsAr);
             });
         }
 

@@ -23,14 +23,14 @@ Hoot.ui.hootformreviewnote = function (context)
     **/
     _instance.createForm = function(containerId, formMetaData) {
         var form;
-        try{
+        // try{
             _rawData = formMetaData.rawData;
-            var btnMeta = formMetaData['button'];
-            var formMeta = formMetaData['form'];
-            var formTitle = formMetaData['title'];
+            var btnMeta = formMetaData.button;
+            var formMeta = formMetaData.form;
+            var formTitle = formMetaData.title;
 
             if(!formMeta) {
-                throw 'Failed to create UI. Invalid form meta data.';
+                throw new Error('Failed to create UI. Invalid form meta data.');
             }
 
             if(!formTitle){
@@ -39,13 +39,13 @@ Hoot.ui.hootformreviewnote = function (context)
 
             var container = d3.select('#' + containerId);
             var formDiv = _createFormDiv(container);
-            form =  _createForm(container, formDiv, formTitle, formMetaData.modifyHandler, formMetaData.isNew);
-            var fieldset = _createFieldSet(form, formMeta);
+            form = _createForm(container, formDiv, formTitle, formMetaData.modifyHandler, formMetaData.isNew);
+            _createFieldSet(form, formMeta);
             _createButtons(btnMeta, formDiv);
 
-        } catch (error) {
-            console.error(error);
-        }
+        // } catch (error) {
+        //     console.error(error);
+        // }
 
         return form;
     };
@@ -73,7 +73,6 @@ Hoot.ui.hootformreviewnote = function (context)
     * @return returns created form.
     **/
     var _createForm = function(container, formDiv, formTitle, modifyHandler, isNew) {
-        var myInstance = _instance;
         var form = formDiv.append('form');
         var hdBar = form.classed('round importableLayer', true)
                 .append('div')
@@ -99,7 +98,7 @@ Hoot.ui.hootformreviewnote = function (context)
                         .append('div')
                         .attr('id', 'bmkNoteFormUser' + _rawData.id)
                         .classed('fr icon avatar point', true)
-                        .on('click', _bmkUserClickHanlder) ;
+                        .on('click', _bmkUserClickHanlder);
 
                     formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', null);
 
@@ -136,7 +135,7 @@ Hoot.ui.hootformreviewnote = function (context)
             .append('div')
             .attr('id', 'bmkNoteFormUser' + 'NEW')
             .classed('fr icon avatar', true)
-            .on('click', _bmkUserClickHanlder) ;
+            .on('click', _bmkUserClickHanlder);
         }
 
 
@@ -185,7 +184,7 @@ Hoot.ui.hootformreviewnote = function (context)
     var _storeUser = function() {
 
         var creatorEmail = d3.select('#rbmkNoteCreatorEmail').value();
-        if(!rbmkNoteCreatorEmail || rbmkNoteCreatorEmail.length === 0){
+        if(!creatorEmail || creatorEmail.length === 0){
             alert('Creator Email field is empty and it will not be set.');
             if(_currentUserForm) {
                 _currentUserForm.remove();
