@@ -12,11 +12,11 @@ Hoot.model.conflicts = function(context)
     var review_mergedElements = null;
     model_conflicts.getReviewMergedElements = function() {
         return review_mergedElements;
-    }
+    };
 
     model_conflicts.setReviewMergedElements = function(val) {
         review_mergedElements = val;
-    }
+    };
 
     model_conflicts.beginReview = function (layer, callback) {
         var mapid = layer.mapId;
@@ -33,9 +33,9 @@ Hoot.model.conflicts = function(context)
 
         self.append('div')
         .classed('contain keyline-all round controller', true)
-        .html('<div class='pad1 inline _loading'><span></span></div>' +
-            '<span class='strong pad1x'>Refreshing &#8230;</span>' +
-            '<button class='keyline-left action round-right inline _icon trash'></button>')
+        .html('<div class="pad1 inline _loading"><span></span></div>' +
+            '<span class="strong pad1x">Refreshing &#8230;</span>' +
+            '<button class="keyline-left action round-right inline _icon trash"></button>')
         .select('button')
         .on('click', function () {
             d3.event.stopPropagation();
@@ -63,13 +63,13 @@ Hoot.model.conflicts = function(context)
                 _.each(hoot.loadedLayers, function(d) {
                     hoot.model.layers.removeLayer(d.name);
                     var modifiedId = d.mapId.toString();
-                    d3.select('[data-layer='' + modifiedId + '']').remove();
+                    d3.select('[data-layer="' + modifiedId + '"]').remove();
                     delete loadedLayers[d.name];
                 });
 
                 var mapID =  hoot.model.layers.getmapIdByName(self.select('span').text());
                 d3.selectAll(d3.select('#sidebar2').node().childNodes).remove();
-                d3.select('[data-layer='' + mapID + '']').remove();
+                d3.select('[data-layer="' + mapID + '"]').remove();
 
                 hoot.reset();
             });
@@ -109,12 +109,12 @@ Hoot.model.conflicts = function(context)
       }*/
       var modifiedReviewRefs = new Array();
        _.each(reviewRefs, function(r){
-            if((idsToRemove.indexOf(''+r.id) === -1) || (r.reviewRelationId != relationId)){
+            if((idsToRemove.indexOf(''+r.id) === -1) || (r.reviewRelationId !== relationId)){
                 modifiedReviewRefs.push(r);
             }
         });
        return modifiedReviewRefs;
-    }
+    };
 
 
     // This function loads missing and the dependencies
@@ -126,7 +126,7 @@ Hoot.model.conflicts = function(context)
 
             _.each(featureIds, function(id){
                 var f = context.hasEntity(id);
-                if(f && f.type != 'relation'){
+                if(f && f.type !== 'relation'){
                     var queryElement = {};
                     queryElement.mapId = mapid;
                     queryElement.id = f.origid.substring(1);
@@ -274,7 +274,7 @@ Hoot.model.conflicts = function(context)
         o['id'] =  relationId ;
         o['obj'] = m;
         return o;
-    }
+    };
 
     var containsRelationMemberMeta = function(memberMeta, arr)
     {
@@ -287,7 +287,7 @@ Hoot.model.conflicts = function(context)
         }
       }
       return false;
-    }
+    };
 
     // This function is to store the reference relation items so we can process
     // when we resolve and save.  We also deletes the merged features.  So what is happening is
@@ -326,7 +326,7 @@ Hoot.model.conflicts = function(context)
                               t('operations.change_tags.annotation'));
                         }
                     }
-                })
+                });
 
 
                 for (var i = 0; i < reviewRefs.length; i++)
@@ -346,7 +346,7 @@ Hoot.model.conflicts = function(context)
 
                             var exists = _.find(review_mergedElements, function(rm){
                                 return (rm['id'] === reviewRelation.id &&
-                                    rm['obj'].id === mergedNode.id)
+                                    rm['obj'].id === mergedNode.id);
 
                             });
                             if(!exists) {
@@ -418,7 +418,7 @@ Hoot.model.conflicts = function(context)
         {
             //context.hoot().control.conflicts.setProcessing(false);
         }
-    }// processMerge
+    };// processMerge
 
     /*
      * The code in this method is making the assumption that only nodes are merged here, which
@@ -549,7 +549,7 @@ Hoot.model.conflicts = function(context)
                                                         if(idx){
                                                             reviewRelationIdsMissing.splice(idx, 1);
                                                         }
-                                                    })
+                                                    });
 
                                                     var nUnloaded = 0;
                                                     _.each(reviewRelationIdsMissing, function(missing){
@@ -557,7 +557,7 @@ Hoot.model.conflicts = function(context)
                                                         if(!exist){
                                                             nUnloaded++;
                                                         }
-                                                    })
+                                                    });
                                                     // this for preventing stack overflow when there are large numbers of one to many
                                                     // When there is more than 150 missing, then we go into chunck where we load
                                                     // chunk of 150. see connection.loadMultiple
@@ -673,7 +673,7 @@ Hoot.model.conflicts = function(context)
         console.log(
           context.history().changes(iD.actions.DiscardTags(context.history().difference())));
       }
-    }
+    };
 
     model_conflicts.getSourceLayerId = function(feature) {
         var mergeLayer = hoot.loadedLayers()[feature.layerName];
@@ -718,4 +718,4 @@ Hoot.model.conflicts = function(context)
     };
 
   return model_conflicts;
-}
+};

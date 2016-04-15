@@ -7,7 +7,7 @@
 // Modifications:
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.tools = function (context, selection) {
+Hoot.tools = function (context) {
     var loadingLayer = {},
         loadedLayers = {},
         activeConflateLayer = {},
@@ -422,11 +422,11 @@ Hoot.tools = function (context, selection) {
                 }
             }
 
-            var _confType = {
-                'Reference':'Reference',
-                'Average':'Average',
-                'Cookie Cutter & Horizontal':'Horizontal'
-              };
+            // var _confType = {
+            //     'Reference':'Reference',
+            //     'Average':'Average',
+            //     'Cookie Cutter & Horizontal':'Horizontal'
+            //   };
 
             var data = preConflation(a, layerName, advOptions);
             //var type = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
@@ -482,7 +482,6 @@ Hoot.tools = function (context, selection) {
         if(!merged && params.mapId)
         {
             Hoot.model.REST('ReviewGetStatistics', params.mapId,function (error, stat) {
-                var isReviewMode = false;
 
                 if(stat.unreviewedCount > 0) {
                     var reqParam = {};
@@ -496,9 +495,8 @@ Hoot.tools = function (context, selection) {
                                     context.hoot().control.validation.begin(params);
                                 }
                             } else {
-                                var r = confirm('The layer contains unreviewed items. Do you want to go into review mode?');
+                                r = confirm('The layer contains unreviewed items. Do you want to go into review mode?');
                                 if (r === true) {
-                                    isReviewMode = true;
                                     loadingLayer = params;
                                     loadingLayer.tags = tags;
                                     loadingLayer.merged = true;
@@ -548,7 +546,7 @@ Hoot.tools = function (context, selection) {
                                                 'color': 'violet',
                                                 'hideinsidebar':'true'
                                             };
-                                            context.hoot().model.layers.addLayer(key, function(d){
+                                            context.hoot().model.layers.addLayer(key, function(){
                                                 context.hoot().model.layers.setLayerInvisibleById(input1);
 
                                                 if(input2 && input2Name) {
@@ -591,7 +589,7 @@ Hoot.tools = function (context, selection) {
                                         loadedLayers[layerName] = params;
                                         loadedLayers[layerName].loadable = true;
                                         loadingLayer = {};
-                                    } 
+                                    }
                                 }
                             }
                         });
@@ -608,7 +606,7 @@ Hoot.tools = function (context, selection) {
                         loadedLayers[layerName] = params;
                         loadedLayers[layerName].loadable = true;
                         loadingLayer = {};
-                    }                    
+                    }
                 }
             });
 

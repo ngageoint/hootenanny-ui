@@ -13,10 +13,10 @@ Hoot.model.export = function (context)
     var outputname;
     var selectedInput;
     var selExportTypeDesc;
-    var removeConflationRes;
+    //var removeConflationRes;
     var selectedOutType;
     var exportCallback;
-    var mapId;
+    //var mapId;
 
     model_export.exportData = function (container, data, callback) {
         _initVariables();
@@ -40,7 +40,7 @@ Hoot.model.export = function (context)
         var comboData = container.select('#fileExportTranslation').datum();
         var transName = null;
         var oTrans = null;
-        for(i=0; i<comboData.combobox.data.length; i++){
+        for(var i=0; i<comboData.combobox.data.length; i++){
             var o = comboData.combobox.data[i];
             if(o.DESCRIPTION === transType){
                 transName = o.NAME;
@@ -78,7 +78,7 @@ Hoot.model.export = function (context)
         } catch (e) {
             appendTemplate=true;
         }
-        mapId = data.name;
+        //mapId = data.name;
 
         var param = {};
         param.translation = selectedTranslation;
@@ -120,17 +120,18 @@ Hoot.model.export = function (context)
             }
 
             if(result.status !== 'failed'){
-                if(removeConflationRes === 'true'){
-                    d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + mapId)
-                    .header('Content-Type', 'text/plain')
-                    .post('', function (error, data) {
+                //Huh?
+                // if(removeConflationRes === 'true'){
+                //     d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + mapId)
+                //     .header('Content-Type', 'text/plain')
+                //     .post('', function (error, data) {
 
-                    });
-                }
+                //     });
+                // }
 
                 if(selectedOutType === 'wfs'){
-                    var capaUrl = location.origin + '/hoot-services/ogc/' + result.jobId +
-                        '?service=WFS&version=1.1.0&request=GetCapabilities';
+                    // var capaUrl = location.origin + '/hoot-services/ogc/' + result.jobId +
+                    //     '?service=WFS&version=1.1.0&request=GetCapabilities';
                     //alert('WFS Resource URL:\n' + capaUrl);
                     var param = {};
                     param.id = result.jobId;
@@ -164,10 +165,10 @@ Hoot.model.export = function (context)
         outputname = null;
         selectedInput = null;
         selExportTypeDesc = null;
-        removeConflationRes = null;
+        //removeConflationRes = null;
         selectedOutType = null;
         exportCallback = null;
-        mapId = null;
+        //mapId = null;
     };
 
     return model_export;

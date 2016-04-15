@@ -42,10 +42,6 @@ Hoot.model.folders = function (context)
             }
             availFolders = a.folders;
 
-            _.each(a.folders,function(fldr){
-                //console.log(fldr.name);
-            });
-
             if (callback) {
                 callback(availFolders);
             }
@@ -62,7 +58,7 @@ Hoot.model.folders = function (context)
 
         Hoot.model.REST('deleteFolder',folderId,function(a){
             if(a){
-                model_folders.refresh(function(b){
+                model_folders.refresh(function(){
                     if(callback){callback(true);}
                 });
             }
@@ -75,13 +71,13 @@ Hoot.model.folders = function (context)
             return false;
         }
 
-        callbackData = {};
+        var callbackData = {};
         callbackData.folderName = data.folderName;
 
         Hoot.model.REST('addFolder',data,function(a){
             if(a.success===true){
                 callbackData.folderId = a.folderId;
-                model_folders.refresh(function(b){
+                model_folders.refresh(function(){
                     if(callback){callback(callbackData.folderId);}
                 });
             } else {
@@ -91,7 +87,7 @@ Hoot.model.folders = function (context)
     };
 
     model_folders.updateLink = function(link,callback) {
-        Hoot.model.REST('updateMapFolderLinks',link,function(a){
+        Hoot.model.REST('updateMapFolderLinks',link,function(){
             context.hoot().model.folders.refreshLinks(function(){
                 context.hoot().model.import.updateTrees();
 
@@ -101,7 +97,7 @@ Hoot.model.folders = function (context)
     };
 
     model_folders.refreshLinks = function(callback) {
-        Hoot.model.REST('getAvailLinks', function (a) {
+        Hoot.model.REST('getAvailLinks', function(a) {
 
             if(a.status === 'failed'){
                 if(a.error){
@@ -174,19 +170,19 @@ Hoot.model.folders = function (context)
                 tree = children;
             }else{
                 if(parent.state==='closed'){
-                    if(!parent['_children']){parent['_children']=[];}
-                    _.each(children,function(child){parent['_children'].push(child);});
+                    if(!parent._children){parent._children=[];}
+                    _.each(children,function(child){parent._children.push(child);});
 
                 } else {
-                    if(!parent['children']){parent['children']=[];}
-                    _.each(children,function(child){parent['children'].push(child);});
+                    if(!parent.children){parent.children=[];}
+                    _.each(children,function(child){parent.children.push(child);});
 
                 }            }
             _.each( children, function( child ){
                 model_folders.unflattenFolders( array, child ); } );
         }
 
-        if(parent['type']===undefined){parent['type']='folder';}
+        if(parent.type===undefined){parent.type='folder';}
         return tree;
     };
 
@@ -212,7 +208,7 @@ Hoot.model.folders = function (context)
     model_folders.getAvailFoldersWithLayers = function(){
         var links = model_folders.getAvailLinks();
 
-        var layerList = _.each(_.map(context.hoot().model.layers.getAvailLayers(), _.clone) , function(element, index) {
+        var layerList = _.each(_.map(context.hoot().model.layers.getAvailLayers(), _.clone) , function(element) {
             _.extend(element, {type:'dataset'});
             var match = _.find(this,function(e){return e.mapId===element.id;});
             if(match){_.extend(element,{folderId:match.folderId});}

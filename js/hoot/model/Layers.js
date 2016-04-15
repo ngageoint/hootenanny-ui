@@ -94,7 +94,7 @@ Hoot.model.layers = function (context)
     model_layers.setLayerLinks = function(callback) {
         var links = context.hoot().model.folders.getAvailLinks();
 
-        var layerList = _.each(_.map(model_layers.getAvailLayers(), _.clone) , function(element, index) {
+        var layerList = _.each(_.map(model_layers.getAvailLayers(), _.clone) , function(element) {
             _.extend(element, {type:'dataset'});
             var match = _.find(this,function(e){return e.mapId===element.id;});
             if(match){_.extend(element,{folderId:match.folderId});}
@@ -215,9 +215,6 @@ Hoot.model.layers = function (context)
         var color = key.color;
         context.hoot()
             .changeColor(mapId, color);
-        var projection = context.projection;
-        var dimensions = d3.select('#map')
-            .dimensions();
         layers[name] = key;
         context.connection().loadData(key);
 
@@ -231,15 +228,12 @@ Hoot.model.layers = function (context)
         isLayerLoading = true;
         var cMapId = key.id || model_layers.getmapIdByName(key.name) || 155;
         context.connection().getMbrFromUrl(cMapId, function(resp){
-            if(resp === null){
-
-            } else {
+            if(resp !== null){
                 if(callback){
                     callback('showprogress');
                 }
 
                 // zoom and render
-                var zoomLevel = context.map().getZoomLevel(resp.minlon, resp.minlat, resp.maxlon, resp.maxlat);
                 context.zoomToExtent(resp.minlon, resp.minlat, resp.maxlon, resp.maxlat);
 
                 model_layers.addLayerAndCenter(key, callback, resp);

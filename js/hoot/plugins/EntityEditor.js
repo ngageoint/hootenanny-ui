@@ -191,8 +191,8 @@ Hoot.plugins.entityeditor = function() {
 
                 // for checkbox order of key is important so order No Information, True, False
                 newField.strings.options['No Information'] = 'No Information';
-                newField.strings.options['True'] = 'True';
-                newField.strings.options['False'] = 'False';
+                newField.strings.options.True = 'True';
+                newField.strings.options.False = 'False';
             } else {
                 newField.type = 'combo';
                 newField.strings = {};
@@ -247,11 +247,11 @@ Hoot.plugins.entityeditor.prototype = Object.create(iD.ui.plugins.IEntityEditor)
 Hoot.plugins.entityeditor.prototype.getTranslations = function(){
 
     var trans = [];
-    var retArr = _.forEach(iD.data.hootConfig.translationCapabilites, function(v,k){
+    _.forEach(iD.data.hootConfig.translationCapabilites, function(v,k){
         var pair = {};
-        pair['name'] = k;
+        pair.name = k;
         if(v.meta){
-            pair['meta'] = v.meta;
+            pair.meta = v.meta;
         }
         trans.push(pair);
     });
@@ -295,7 +295,7 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
 
         // sometimes we do not get feature code. Like where core could not find translation..
         var rawFCode = resp.attrs['Feature Code'];
-        var curTags = tags;
+        //var curTags = tags;
         var curPreset = preset;
         if(rawFCode) {
             var fCode = rawFCode.split(':')[0].trim();
@@ -304,7 +304,7 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
 
             var rawCurFields = JSON.parse(resp.fields).columns;
 
-            curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
+            //curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
 
             if(!curPreset){
 
@@ -337,8 +337,8 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
                     // custom override for indeterminate and checked value for check box
                     if(fieldObj.type === 'check') {
                         fieldObj.customBoxProp = {};
-                        fieldObj.customBoxProp['indeterminate'] = 'No Information';
-                        fieldObj.customBoxProp['checked'] = 'True';
+                        fieldObj.customBoxProp.indeterminate = 'No Information';
+                        fieldObj.customBoxProp.checked = 'True';
                     }
 
                     // for now we initially hide fields but iD will show populated fields
@@ -351,15 +351,15 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
             transInfo.transType = currentTranslation;
             transInfo.fCode = fCode;
         } else {
-            var lyrName = resp.attrs['HGIS_Layer'];
-            var fType = resp.attrs['TYPE1'];
+            var lyrName = resp.attrs.HGIS_Layer;
+            fType = resp.attrs.TYPE1;
 
             // handle HGIS translation
             if(lyrName && fType) {
-                var rawCurFields = JSON.parse(resp.fields).columns;
-                curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
+                rawCurFields = JSON.parse(resp.fields).columns;
+                //curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
 
-                var newPreset = me.createPresetByName(curGeom, fType, currentTranslation, lyrName);
+                newPreset = me.createPresetByName(curGeom, fType, currentTranslation, lyrName);
 
                 curPreset = context.presets().addPreset(currentTranslation + '/' + fCode, newPreset);
 
@@ -388,8 +388,8 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
                     // custom override for indeterminate and checked value for check box
                     if(fieldObj.type === 'check') {
                         fieldObj.customBoxProp = {};
-                        fieldObj.customBoxProp['indeterminate'] = 'No Information';
-                        fieldObj.customBoxProp['checked'] = 'True';
+                        fieldObj.customBoxProp.indeterminate = 'No Information';
+                        fieldObj.customBoxProp.checked = 'True';
                     }
 
                     // for now we initially hide fields but iD will show populated fields
@@ -443,9 +443,6 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
     }
 
 
-
-    // current values of entity editor through raw tag editor
-    var currId = rawTagEditor.preset().id;
 
     var rawTags = rawTagEditor.tags();
 
@@ -513,7 +510,6 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
             // for each of default tags (The ones that will come from default.json in the future)
 
             for(var key in me.allTransTags) {
-                var val = me.allTransTags[key];
                 if(!OSMEntities[key] && key === changeKey) {
                     for(var tk in currentTags){
                         if(!OSMEntities[tk]){

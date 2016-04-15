@@ -35,9 +35,6 @@ Hoot.model.import = function (context)
         _initVariables();
         importCallback = callback;
 
-        var imprtProg = d3.select('#importprogress');
-       var imprtProgText = d3.select('#importprogresstext');
-
         jobIdsArr = [];
         mapIdsArr = [];
         var transType = container.select(schemaElemId).value();
@@ -45,7 +42,7 @@ Hoot.model.import = function (context)
         var comboData = container.select(schemaElemId).datum();
         var transName = transType;
         var oTrans = null;
-        for(i=0; i<comboData.combobox.length; i++){
+        for(var i=0; i<comboData.combobox.length; i++){
             var o = comboData.combobox[i];
             if(o.DESCRIPTION === transType){
                 transName = o.NAME;
@@ -71,10 +68,10 @@ Hoot.model.import = function (context)
 
         var selType = container.select(typeElemId).value();
 
-        var comboData = container.select(typeElemId).datum();
+        comboData = container.select(typeElemId).datum();
         var typeName = '';
         for(i=0; i<comboData.combobox.data.length; i++){
-            var o = comboData.combobox.data[i];
+            o = comboData.combobox.data[i];
             if(o.title === selType){
                 typeName = o.value;
                 break;
@@ -84,7 +81,7 @@ Hoot.model.import = function (context)
 
         if(newfolderElemId) {
             // Check new folder name
-            try{
+            //try{
                 var newfoldername = container.select(newfolderElemId).value();
                 if(newfoldername !==''){
                     var resp = context.hoot().checkForUnallowedChar(newfoldername);
@@ -93,9 +90,9 @@ Hoot.model.import = function (context)
                         return;
                     }
                 }
-            } catch (e) {
-                // TODO: handle exception
-            }
+            // } catch (e) {
+            //     // TODO: handle exception
+            // }
         }
 
         var fgdbFCList;
@@ -117,7 +114,6 @@ Hoot.model.import = function (context)
             data.FGDB_FC = fgdbFCList;
         }
 
-        var fileUploader;
         if(container.attr('id') === null){
             data.formData = import_layer.getFormData(document.getElementById('ingestfileuploader').files);
         } else if(container.attr('id').substring(0,3)==='row'){
@@ -139,9 +135,10 @@ Hoot.model.import = function (context)
     };
 
     var _importResultHandler = function (resp) {
+        var status;
         if (!resp || resp.responseText.length === 0 || resp.response==='[]') {
             if(importCallback){
-                var status = {};
+                status = {};
                 status.info = 'failed';
                 status.error=resp.errorMessage || '';
                 importCallback(status);
@@ -150,7 +147,6 @@ Hoot.model.import = function (context)
         }
 
         var imprtProg = d3.select('#importprogress');
-        var imprtProgText = d3.select('#importprogresstext');
 
         var jobStatus = resp.responseText;
         var jobStatusArr = JSON.parse(jobStatus);
@@ -161,7 +157,7 @@ Hoot.model.import = function (context)
         }
 
         if(importCallback){
-            var status = {};
+            status = {};
             status.info = 'uploaded';
             status.jobids = jobIdsArr;
             status.mapids = mapIdsArr;
@@ -189,7 +185,6 @@ Hoot.model.import = function (context)
                             truncatedLastText = truncatedLastText.substring(0, truncatelen) + ' ...';
                         }*/
 
-                        //imprtProgText.text(truncatedLastText);
                         d3.select('#importprogdiv').append('br');
                         d3.select('#importprogdiv').append('text').text(truncatedLastText);
                     }
@@ -197,14 +192,14 @@ Hoot.model.import = function (context)
                     imprtProg.value(a.percentcomplete);
             });
         };
-        var status = function () {
+        var getstatus = function () {
             for (var j = 0; j < jobIdsArr.length; j++) {
                 var curJobId = jobIdsArr[j];
                 stat(curJobId);
             }
         };
         var uploadJobStatusTimer = setInterval(function () {
-            status();
+            getstatus();
         }, iD.data.hootConfig.JobStatusQueryInterval);
         var uploadJobStatusStopTimer = function (uploadJobStat) {
             context.hoot().model.layers.refresh(
