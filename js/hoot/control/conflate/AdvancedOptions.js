@@ -4,11 +4,12 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      7 Jan. 2016
+//      15 Apr. 2016 eslint updates -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
+Hoot.control.conflate.advancedoptions = function (parent) {
 
     var _events = d3.dispatch();
     var _instance = {};
@@ -61,7 +62,7 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
 
              return d3.rebind(_modalBackground, advancedOptionsEvents, 'on');
         } catch(err){
-            console.log(err);
+            hoot.view.utilities.errorlog.reportUIError(err,null);
             return null;
         }
     };

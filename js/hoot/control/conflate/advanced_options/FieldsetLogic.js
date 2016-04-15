@@ -168,7 +168,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
         
         var currentDiv = d3.select('#'+c.id);
         if(c.onchange){
-            var fn = new Function(c.onchange);
+            var fn = function(c){return c.onchange;};
             currentDiv.on('change',fn);
         } 
         
@@ -226,10 +226,12 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
             });
 
         if(c.minvalue){
-            c.minvalue.length>0? d3.select('#'+c.id).attr('min',c.minvalue):d3.select('#'+c.id).attr('min','na');
+            if(c.minvalue.length>0){d3.select('#'+c.id).attr('min',c.minvalue);}
+            else {d3.select('#'+c.id).attr('min','na');}
         }
         if(c.maxvalue){
-            c.maxvalue.length>0? d3.select('#'+c.id).attr('max',c.maxvalue):d3.select('#'+c.id).attr('max','na');
+            if(c.maxvalue.length>0){d3.select('#'+c.id).attr('max',c.maxvalue);}
+            else{d3.select('#'+c.id).attr('max','na');}
         }
     };
 
@@ -238,7 +240,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
     * @param c - target element
     * @param child - child elements
     **/
-    var _populateChildren = function (c) {
+    var _populateChildren = function (c, child) {
         if (c.combobox) {
             d3.select('#'+c.id).attr('readonly',true);
             var combo = d3.combobox()
@@ -263,7 +265,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
         }
 
         if(c.onchange){
-            var fn = new Function(c.onchange);
+            var fn = function(c){return c.onchange;};
             d3.select(this).on('change',fn);
         }  
 

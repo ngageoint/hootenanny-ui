@@ -24,21 +24,22 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
         if(fieldsMetaData){
             for( var i=0; i<fieldsMetaData.length; i++){
                 var meta = fieldsMetaData[i];
-                var res = {};
-                var fieldName = meta.name;
                 var selVal = '';
                 
                 //Check to see if the first child is Enabled flag.
                 //If so, use Enabled value to continue
                 var enabled = true;
                 if(meta.members[0].name==='Enabled'){
-                    advform? enabled = advform.select('#' + meta.members[0].id).property('checked') : enabled = (meta.members[0].defaultvalue === 'true');
+                    if(advform){
+                        enabled = advform.select('#' + meta.members[0].id).property('checked');
+                    } else {
+                        enabled = (meta.members[0].defaultvalue === 'true');
+                    }
                 } 
 
                 if (enabled===true){                
                     _.each(meta.members,function(submeta){
-                        var res = {};
-                        var selVal = '';
+                        selVal = '';
                         var fieldId = submeta.id;
 
                         if(submeta.name==='Enabled'){
@@ -231,7 +232,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                 }
             } else if(submeta.hoot_val){
                 //create w/parent hoot_key or add to if already exists
-                var idx = results.indexOf(_.find(results,function(obj){return obj.name === meta.hoot_key;}));
+                idx = results.indexOf(_.find(results,function(obj){return obj.name === meta.hoot_key;}));
                 if(idx > -1){
                     if(results[idx].value.indexOf(selVal)===-1)
                     {results[idx].value += ';'+submeta.hoot_val;}

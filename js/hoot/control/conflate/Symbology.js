@@ -4,10 +4,11 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      7 Jan. 2016
+//      15 Apr. 2016 eslint updates -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Hoot.control.conflate.symbology = function (parent, sidebar) {
+Hoot.control.conflate.symbology = function (parent) {
 
     var _events = d3.dispatch();
     var _instance = {};
@@ -27,7 +28,7 @@ Hoot.control.conflate.symbology = function (parent, sidebar) {
             });
 
             if(entity) {
-                var color = entity.color;
+                color = entity.color;
 
                 var modifiedId = entity.mapId.toString();
                 var headerSym = d3.select('#conflatethumbicon-' + modifiedId);
