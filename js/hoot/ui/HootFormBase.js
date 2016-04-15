@@ -21,31 +21,31 @@ Hoot.ui.hootformbase = function ()
     **/
     _instance.createForm = function(containerId, formMetaData) {
         var container;
-        try{
+        // try{
 
-            var btnMeta = formMetaData['button'];
-            var formMeta = formMetaData['form'];
-            var formTitle = formMetaData['title'];
+            var btnMeta = formMetaData.button;
+            var formMeta = formMetaData.form;
+            var formTitle = formMetaData.title;
             if(!btnMeta || !formMeta) {
-                throw 'Failed to create UI. Invalid form meta data.';
+                throw new Error('Failed to create UI. Invalid form meta data.');
             }
 
             if(!formTitle){
                 formTitle = 'Hootenanny Form';
             }
             container = _createContainer(containerId);
-            var formDiv = _createFormDiv(container)
-            var form =  _createForm(container, formDiv, formTitle)
-            var fieldset = _createFieldSet(form, formMeta);
+            var formDiv = _createFormDiv(container);
+            var form = _createForm(container, formDiv, formTitle);
+            _createFieldSet(form, formMeta);
             _createButtons(btnMeta, formDiv);
 
 
-        } catch (error) {
-            console.error(error);
-        }
+        // } catch (error) {
+        //     console.error(error);
+        // }
 
         return container;
-    }
+    };
 
 
     /**
@@ -57,7 +57,7 @@ Hoot.ui.hootformbase = function ()
         return d3.select(containerId)
                 .append('div')
                 .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
-    }
+    };
 
     /**
     * @desc Create form container div
@@ -67,7 +67,7 @@ Hoot.ui.hootformbase = function ()
     var _createFormDiv = function(container) {
         return container.append('div')
                 .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
-    }
+    };
 
     /**
     * @desc Create form shell
@@ -90,7 +90,7 @@ Hoot.ui.hootformbase = function ()
                     container.remove();
                 });
         return form;
-    }
+    };
 
     /**
     * @desc Create form fields. Currently handles textarea, combo and text field
@@ -126,8 +126,8 @@ Hoot.ui.hootformbase = function ()
                         _createCombobox(a, field);
 
                     } else if(a.inputtype === 'checkbox'){
-                        var chkHtml = '<label class='pad1x pad0y round-top ' + a.checkbox + '' style='opacity: 1;'>';
-                        chkHtml += '<input type='checkbox' class='reset checkbox' style='opacity: 1;'>'+a.label+'</label>';
+                        var chkHtml = '<label class="pad1x pad0y round-top ' + a.checkbox + '" style="opacity: 1;">';
+                        chkHtml += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">'+a.label+'</label>';
                         field.html(chkHtml);
                         field.classed('keyline-all',false);
                     }  else {
@@ -140,7 +140,7 @@ Hoot.ui.hootformbase = function ()
 
 
         return fieldset;
-    }
+    };
 
     /**
     * @desc Create text area form field.
@@ -159,11 +159,11 @@ Hoot.ui.hootformbase = function ()
         .attr('placeholder', function (field) {
             if(_.isObject(field.placeholder) === true){
                 var oPlaceHolder = field.placeholder;
-                if(oPlaceHolder['default'] && oPlaceHolder.command){
+                if(oPlaceHolder.default && oPlaceHolder.command){
                     return oPlaceHolder.command(field);
                 } else {
-                    if(oPlaceHolder['default'] ) {
-                        return oPlaceHolder['default'] ;
+                    if(oPlaceHolder.default ) {
+                        return oPlaceHolder.default;
                     } else {
                         return '';
                     }
@@ -180,7 +180,7 @@ Hoot.ui.hootformbase = function ()
         if(a.id) {
             inputField.attr('id', a.id);
         }
-    }
+    };
 
     /**
     * @desc Create combobox form field.
@@ -198,11 +198,11 @@ Hoot.ui.hootformbase = function ()
         .attr('placeholder', function (field) {
             if(_.isObject(field.placeholder) === true){
                 var oPlaceHolder = field.placeholder;
-                if(oPlaceHolder['default'] && oPlaceHolder.command){
+                if(oPlaceHolder.default && oPlaceHolder.command){
                     return oPlaceHolder.command(field);
                 } else {
-                    if(oPlaceHolder['default'] ) {
-                        return oPlaceHolder['default'] ;
+                    if(oPlaceHolder.default ) {
+                        return oPlaceHolder.default;
                     } else {
                         return '';
                     }
@@ -230,7 +230,7 @@ Hoot.ui.hootformbase = function ()
             field.classed('hidden', true);
         }
 
-    }
+    };
 
     /**
     * @desc Create text form field.
@@ -248,11 +248,11 @@ Hoot.ui.hootformbase = function ()
         .attr('placeholder', function (field) {
             if(_.isObject(field.placeholder) === true){
                 var oPlaceHolder = field.placeholder;
-                if(oPlaceHolder['default'] && oPlaceHolder.command){
+                if(oPlaceHolder.default && oPlaceHolder.command){
                     return oPlaceHolder.command(field);
                 } else {
-                    if(oPlaceHolder['default'] ) {
-                        return oPlaceHolder['default'] ;
+                    if(oPlaceHolder.default ) {
+                        return oPlaceHolder.default;
                     } else {
                         return '';
                     }
@@ -304,7 +304,7 @@ Hoot.ui.hootformbase = function ()
                 mpInput.on('change', a.onchange);
             }
         }
-    }
+    };
 
     /**
     * @desc Create form buttons
@@ -341,7 +341,7 @@ Hoot.ui.hootformbase = function ()
                 }
 
             });
-    }
+    };
 
     /**
     * @desc Create default combo.
@@ -362,7 +362,7 @@ Hoot.ui.hootformbase = function ()
         if(a.onchange){
             comboCnt.on('change', a.onchange);
         }
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

@@ -19,7 +19,7 @@ Hoot.ui.formfactory = function (context)
     * @return returns created form.
     **/
     _instance.create = function(containerId, formMetaData, formTypeName) {
-        var formInstance = eval('context.hoot().ui.hootformbase');
+        var formInstance = context.hoot().ui.hootformbase;
         if(formTypeName) {
             formInstance = eval('context.hoot().ui.' + formTypeName);
         }

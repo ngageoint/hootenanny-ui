@@ -221,8 +221,8 @@ Hoot.ui.checkcombobox = function() {
             options.enter().append('a')
                 .attr('class', 'combobox-option')
                 .html(function(d){
-                    var chkHtml = '<label class='pad1x pad0y round-top ' style='opacity: 1;'>';
-                    chkHtml += '<input type='checkbox' class='reset checkbox' style='opacity: 1;'>' + d.value + '</label>';
+                    var chkHtml = '<label class="pad1x pad0y round-top" style="opacity: 1;">';
+                    chkHtml += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">' + d.value + '</label>';
                     return chkHtml;
                 });
                 /*.text(function(d) { return d.value; });*/
@@ -283,7 +283,7 @@ Hoot.ui.checkcombobox = function() {
             } else {
                 delete selectionMap[d.value];
             }
-            inputList = Object.keys(selectionMap).join();
+            var inputList = Object.keys(selectionMap).join();
             input
                 .property('value', inputList)
                 .trigger('change');
