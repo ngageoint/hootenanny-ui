@@ -6,6 +6,7 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      17 Feb. 2016
+//      15 Apr. 2016 eslint updates -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -43,7 +44,6 @@ Hoot.control.utilities.importdataset = function(context) {
     **/
     var _createContainer = function(trans,incomingFolder) {
         _trans = trans;
-        _incomingFolder = incomingFolder;
         if(_trans.length === 1){
             var emptyObj = {};
             emptyObj.NAME = '';
@@ -56,7 +56,11 @@ Hoot.control.utilities.importdataset = function(context) {
         _importTranslationsOsm = [];
 
         _bInfo = hoot.getBrowserInfo();
-        if(_.isEmpty(_bInfo)){_bInfo = {'name':'Unknown','version':'Unknown'};}
+        if(_.isEmpty(_bInfo)){
+            _bInfo = {};
+            _bInfo.name = 'Unknown';
+            _bInfo.version = 'Unknown';
+        }
 
         _instance.getImportTranslations(_trans, _importTranslations,
                 _importTranslationsGeonames, _importTranslationsOsm);
@@ -575,7 +579,7 @@ Hoot.control.utilities.importdataset = function(context) {
         .style('width', '100%')
         .attr('readonly',true)
         .call(comboImportType)
-        .on('change', function(a1,a2){
+        .on('change', function(){
             d3.select('importDatasetFileImport').value('');
             d3.select('#importDatasetLayerName').value('');
             d3.select('#importDatasetSchema').value('');
@@ -697,7 +701,6 @@ Hoot.control.utilities.importdataset = function(context) {
         cntParam.zipCnt = 0;
         var fileNames = [];
         var totalFileSize = 0;
-        var folderPath = '';
         for (var l = 0; l < document.getElementById('ingestfileuploader').files.length; l++) {
             var curFile = document.getElementById('ingestfileuploader').files[l];
             totalFileSize += curFile.size;

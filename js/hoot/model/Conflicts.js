@@ -19,7 +19,6 @@ Hoot.model.conflicts = function(context)
     };
 
     model_conflicts.beginReview = function (layer, callback) {
-        var mapid = layer.mapId;
         callback(layer);
     };
 
@@ -52,7 +51,7 @@ Hoot.model.conflicts = function(context)
             color: lyrInfo.color
         };
 
-        context.hoot().model.layers.addLayer(key, function(res){
+        context.hoot().model.layers.addLayer(key, function(){
             self.html(origHtml);
 
             d3.select('button.action.trash').on('click',function(){
@@ -166,26 +165,26 @@ Hoot.model.conflicts = function(context)
                                         fullId = 'n' + reviewRef.id + '_'+ mapid;
                                         if(!context.hasEntity(fullId)){
                                             missingIds[fullId] = 'node';
-                                            loadedTypes['node'] = true;
+                                            loadedTypes.node = true;
                                         }
                                     } else if(reviewRef.type === 'way'){
                                         fullId = 'w' + reviewRef.id + '_'+ mapid;
                                         if(!context.hasEntity(fullId)){
                                             missingIds[fullId] = 'way';
-                                            loadedTypes['way'] = true;
+                                            loadedTypes.way = true;
                                         }
                                     } else if(reviewRef.type === 'relation'){
                                         fullId = 'r' + reviewRef.id + '_'+ mapid;
                                         if(!context.hasEntity(fullId)){
                                             missingIds[fullId] = 'relation';
-                                            loadedTypes['relation'] = true;
+                                            loadedTypes.relation = true;
                                         }
                                     }
 
                                     var fullRelId = 'r' + reviewRef.reviewRelationId + '_' + mapid;
                                     if(!context.hasEntity(fullRelId)){
                                         missingIds[fullRelId] = 'relation';
-                                        loadedTypes['relation'] = true;
+                                        loadedTypes.relation = true;
                                     }
                                 }
                             });
@@ -210,20 +209,20 @@ Hoot.model.conflicts = function(context)
                                 _.each(entities.data, function(d){
                                     delete missingIds[d.id];
                                     if(d.id.charAt(0) === 'n'){
-                                        if(loadedTypes['node']){
-                                            delete loadedTypes['node'];
+                                        if(loadedTypes.node){
+                                            delete loadedTypes.node;
                                         }
                                     }
 
                                     if(d.id.charAt(0) === 'w'){
-                                        if(loadedTypes['way']){
-                                            delete loadedTypes['way'];
+                                        if(loadedTypes.way){
+                                            delete loadedTypes.way;
                                         }
                                     }
 
                                     if(d.id.charAt(0) === 'r'){
-                                        if(loadedTypes['relation']){
-                                            delete loadedTypes['relation'];
+                                        if(loadedTypes.relation){
+                                            delete loadedTypes.relation;
                                         }
                                     }
                                 });
@@ -246,7 +245,7 @@ Hoot.model.conflicts = function(context)
                         }
                     }
                     finally
-                    {
+                    {//
                     }
                 } );// getreviewRef
         }
@@ -259,7 +258,7 @@ Hoot.model.conflicts = function(context)
             }
         }
         finally
-        {
+        {//
         }
     };
 
@@ -271,8 +270,8 @@ Hoot.model.conflicts = function(context)
         m.index = mergeIndx;
 
         var o = {};
-        o['id'] =  relationId ;
-        o['obj'] = m;
+        o.id =  relationId ;
+        o.obj = m;
         return o;
     };
 
@@ -345,8 +344,8 @@ Hoot.model.conflicts = function(context)
                         if(refRelationMember) {
 
                             var exists = _.find(review_mergedElements, function(rm){
-                                return (rm['id'] === reviewRelation.id &&
-                                    rm['obj'].id === mergedNode.id);
+                                return (rm.id === reviewRelation.id &&
+                                    rm.obj.id === mergedNode.id);
 
                             });
                             if(!exists) {
@@ -360,7 +359,7 @@ Hoot.model.conflicts = function(context)
                             }
 
                         } else {
-
+//
                         }
 
 
@@ -433,7 +432,7 @@ Hoot.model.conflicts = function(context)
             var layerName = feature.layerName;
 
             if (!feature && !featureAgainst) {
-                throw 'Merge error, one feature is missing';
+                Throw('Merge error, one feature is missing');
             } else {
                 function doMerge()
                 {

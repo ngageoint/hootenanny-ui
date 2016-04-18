@@ -810,7 +810,7 @@ Hoot.control.TranslationAssistant = function () {
 
                     if(window.confirm('Do you want to add this to internal translation list?')){
                         var thisbody = d3.select('#utiltranslation').node();
-                        d3.select(jobsBG).node().appendChild(thisbody);
+                        d3.select('#jobsBG').node().appendChild(thisbody);
                         d3.selectAll('.utilHootHead')
                             .classed('fill-white', false)
                             .classed('keyline-bottom', true);

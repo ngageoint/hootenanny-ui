@@ -7,7 +7,7 @@
 //      03 Feb. 2016
 //      14 Apr. 2016 eslint changes -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.control.export = function (sidebar) {
+Hoot.control.export = function (context, sidebar) {
     //var exportResources = ['LTDS 4.0', 'MGCP'];
     var event = d3.dispatch('saveLayer', 'cancelSaveLayer');
     var exp = {};

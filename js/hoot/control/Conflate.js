@@ -194,7 +194,7 @@ Hoot.control.conflate = function (sidebar) {
                   return;
               } else {
                   while (folderId!==0){
-                      var fldr = _.find(folderList,{'id':folderId});
+                      fldr = _.find(folderList,{'id':folderId});
                       if(fldr){
                           if(lyrApath.indexOf(fldr.parentId)>-1){
                               commonId = fldr.parentId;
@@ -478,7 +478,7 @@ Hoot.control.conflate = function (sidebar) {
                     var data = {};
                     data.jobid = jobId;
                     data.mapid = mapId;
-                    Hoot.model.REST('cancel', data, function (a) {
+                    Hoot.model.REST('cancel', data, function () {
                         iD.ui.Alert('Job ID: ' + jobId + ' has been cancelled. ','notice');
 
                     });
@@ -571,7 +571,7 @@ Hoot.control.conflate = function (sidebar) {
                 placeholder: 'Reference',
                 combobox: {'data':['Reference', 'Average', 'Cookie Cutter & Horizontal'],
                             'command': _populateReferenceCombo},
-                onchange: function(d){
+                onchange: function(){
                     //reset form
                     _instance.confAdvOptionsFields = null;
                     _removeAdvancedOptionsDlg();
@@ -590,8 +590,9 @@ Hoot.control.conflate = function (sidebar) {
                 type: 'isCollectStats',
                 placeholder: 'false',
                 combobox: ['true','false'],
-                onchange: function(d){
+                onchange: function(){
                     var selVal = d3.selectAll('.reset.isCollectStats').value();
+                    return selVal;
                 },
                 readonly:'readonly'
             },
@@ -600,8 +601,9 @@ Hoot.control.conflate = function (sidebar) {
                 type: 'isGenerateReport',
                 placeholder: 'false',
                 combobox: ['true','false'],
-                onchange: function(d){
+                onchange: function(){
                     var selVal = d3.selectAll('.reset.isGenerateReport').value();
+                    return selVal;
                 },
                 readonly:'readonly',
                 testmode:true
@@ -826,7 +828,8 @@ Hoot.control.conflate = function (sidebar) {
                     _instance.confAdvOptionsSelectedVal = _instance.advancedoptions.selectionretriever.getSelectedValues(null,_instance.confAdvOptionsFields);
                 }
             }
-            console.log(JSON.stringify(_instance.confAdvOptionsSelectedVal));
+
+            Console.log(JSON.stringify(_instance.confAdvOptionsSelectedVal));
         });
 
 

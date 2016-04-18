@@ -5,6 +5,7 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      17 Feb. 2016
+//      15 Apr. 2016 eslint updates -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Hoot.control.utilities.exportdataset = function(context) {
@@ -101,7 +102,7 @@ Hoot.control.utilities.exportdataset = function(context) {
         }
 
         var submitExp = d3.select('#exportDatasetBtnContainer');
-        var spin = submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true);
+        submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true);
         context.hoot().model.export.exportData(_container, _dataset, function(status){
 
 
@@ -134,7 +135,7 @@ Hoot.control.utilities.exportdataset = function(context) {
     * @param field - fieldset metadata.
     **/
     var _getTranslationComboPlaceHolder = function(field) {
-        var defTrans = _.find(field.combobox.data, {DESCRIPTION: field.placeholder['default']});
+        var defTrans = _.find(field.combobox.data, {DESCRIPTION: field.placeholder.default});
         if(defTrans === undefined){
             return field.combobox.data[0].DESCRIPTION;
         } else {

@@ -89,7 +89,7 @@ Hoot.control = function (context){
                     .classed('form-field col12 center ', true);
 
 
-                var btn = submitExp.append('span')
+                submitExp.append('span')
                     .classed('round strong big loud dark center col10 margin1 point', true)
                     .classed('inline row1 fl col10 pad1y', true)
                     .text(btnMetaData.label)

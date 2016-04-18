@@ -46,7 +46,6 @@ Hoot.control.import = function (context,selection) {
             tree: context.hoot().model.folders.getAvailFoldersWithLayers()
         }];
 
-        var sels = selection.selectAll('forms');
         var sidebar = selection.selectAll('forms')
             .data(colors)
             .enter();
@@ -174,8 +173,7 @@ Hoot.control.import = function (context,selection) {
             var color = self.select('.palette .active')
                 .attr('data-color');
 
-            var name,
-                lyrid;
+            var lyrid;
             try{
                 // make sure something has been selected
                 if(self.select('.sel').empty()){
@@ -284,7 +282,8 @@ Hoot.control.import = function (context,selection) {
             });////////////////////////
 
         };
-        var resetForm = function (self) {
+        
+        function resetForm(self) {
             self.select('.controller')
                 .remove();
             self

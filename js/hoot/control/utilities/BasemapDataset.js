@@ -5,12 +5,12 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      18 Dec. 2015
+//      15 Apr. 2016 eslint updates -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.basemapdataset = function(context) {
     var hoot_control_utilities_basemapdataset = {};
 
     hoot_control_utilities_basemapdataset.newBasemapPopup = function(callback) {
-        var saveName = null;
         var d_form = [{
             label: 'Basemap Raster File',
             type: 'basemapfileImport',
@@ -91,9 +91,6 @@ Hoot.control.utilities.basemapdataset = function(context) {
                                 fileNames.push(curFileName);
                             }
                             _form.select('.reset.basemapfileImport').value(fileNames.join('; '));
-                            var first = fileNames[0];
-                            saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
-
                         });
                 }
 
@@ -130,13 +127,13 @@ Hoot.control.utilities.basemapdataset = function(context) {
                     });
 
                     if(found){
-                        iD.ui.Alert('Base map with name '' + name + '' already exists. '
+                        iD.ui.Alert('Base map with name "' + name + '" already exists. '
                                  + 'If no name is assigned please specify a name or'+
                                  ' if already specified please use different name.','warning',new Error().stack);
                     } else {
                         d3.select(this).text('Publishing...');
                         d3.select(this).style('pointer-events','none');
-                        var spin = submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true).attr('id', 'basemapimportspin');
+                        submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true).attr('id', 'basemapimportspin');
                         context.hoot().model.basemapdataset.publishBasemap(_form,function(d){
                             callback(d);
                             modalbg.remove();
@@ -152,4 +149,4 @@ Hoot.control.utilities.basemapdataset = function(context) {
 
 
     return hoot_control_utilities_basemapdataset;
-}
+};

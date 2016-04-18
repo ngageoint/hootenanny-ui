@@ -318,23 +318,23 @@ Hoot.hoot = function (context) {
     **/
     document.onkeydown = function (event) {
         if (event.altKey && (event.which === 66)) {
-            id.hoot().model.layers.layerSwap();
+            context.hoot().model.layers.layerSwap();
         } else if (event.altKey && (event.which === 78)) {
-            var curlayers = id.hoot().model.layers.getLayers();
+            var curlayers = context.hoot().model.layers.getLayers();
             var vis = _.filter(curlayers, function (d) {
                 return d.vis;
             }).length;
             if (vis === 0) {
                 _.each(curlayers, function (d) {
                     if (d.loadable) {
-                        id.hoot().model.layers.changeVisibility(d.name);
+                        context.hoot().model.layers.changeVisibility(d.name);
                     }
                 });
                 return;
             }
             _.each(curlayers, function (d) {
                 if (d.vis) {
-                    id.hoot().model.layers.changeVisibility(d.name);
+                    context.hoot().model.layers.changeVisibility(d.name);
                 }
             });
         }
@@ -343,7 +343,7 @@ Hoot.hoot = function (context) {
     hoot.assert = function(condition)
     {
         if (!condition){
-            throw 'Assertion failed';
+            throw new Error('Assertion failed');
         }
     };
     

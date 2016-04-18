@@ -5,6 +5,7 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      17 Feb. 2016
+//      15 Apr. 2016 eslint updates -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.bulkmodifydataset = function(context) {
     var _events = d3.dispatch();
@@ -30,7 +31,6 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
         _datasets = datasets;
         hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
         var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
-        var folderId = 0;
         var placeholder = 'root';
 
         var d_form = [{
@@ -97,7 +97,7 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
     * @desc Move request click handler.
     **/
     var _submitClickHandler = function() {
-        //TODO: ADD WARNING MESSAGE, REQUIRE CONFIRMATION
+        //NOTE: ADD WARNING MESSAGE, REQUIRE CONFIRMATION
 
         var pathname = _container.select('#bulkModifyPathname').value();
         if(pathname===''){pathname=_container.select('#bulkModifyPathname').attr('placeholder');}
@@ -106,7 +106,7 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
 
         //Add folder if necessary
         var newfoldername = _container.select('#bulkModifyNewfoldername').value();
-            resp = context.hoot().checkForUnallowedChar(newfoldername);
+        var resp = context.hoot().checkForUnallowedChar(newfoldername);
         if(resp !== true){
             iD.ui.Alert(resp,'warning',new Error().stack);
              return;
