@@ -109,7 +109,7 @@ Hoot.control.validation = function(context) {
 
 
         //Remove UI elements when layer is removed
-        context.hoot().control.view.on('layerRemove.validation', function (layerName) {
+        context.hoot().control.view.on('layerRemove.validation', function () {
             context.hoot().control.view.on('layerRemove.validation', null);
             validation.end();
         });
@@ -258,7 +258,7 @@ Hoot.control.validation = function(context) {
                     relation = context.hasEntity(rid);
                     if (relation) {
                         //console.log('already have relation');
-                        loadFeature();
+                        validation.loadFeature();
                     } else {
                         //console.log('must wait for relation to load');
                         context.loadEntity(rid, function(err, ent) {
@@ -269,16 +269,16 @@ Hoot.control.validation = function(context) {
                             feature = context.hasEntity(mid);
                             if (!feature) {
                                 //console.log('must wait for feature to load');
-                                context.loadEntity(mid, function(err) {
-                                    loadFeature();
+                                context.loadEntity(mid, function() {
+                                    validation.loadFeature();
                                 }, mapid, layerName);
                             } else {
-                                loadFeature();
+                                validation.loadFeature();
                             }
                         }, mapid, layerName);
                     }
 
-                    function loadFeature() {
+                    validation.loadFeature = function() {
                         relation = context.hasEntity(rid);
 
                         //Position the map
@@ -310,7 +310,7 @@ Hoot.control.validation = function(context) {
                         validation.presentChoices();
 
                         event.featureLoaded();
-                    }
+                    };
 
                     //Update selectItem to work with the current feature
                     validation.selectItem = function() {

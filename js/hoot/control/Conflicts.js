@@ -39,7 +39,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     var _reviewOptions;
     var _btnEnabled = true;
     var _mapid;
-    var _too1Tip;
+    var _toolTip;
     var _timeout;
 
 
@@ -83,7 +83,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             if(curReviewable) {
                 // make sure to load any missing elements
                 _instance.actions.idgraphsynch.getRelationFeature(curReviewable.mapId, curReviewable.relationId, 
-                function(newReviewItem){
+                function(){
  
                     _cleanupProcessing(layerName, force);         
                    
@@ -119,7 +119,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         function toggleForm(self) {
             var cont = self.select('fieldset');
-            var text = (cont.classed('hidden')) ? false : true;
+            var text = !(cont.classed('hidden'));
             cont.classed('hidden', text);
         }
 
@@ -298,7 +298,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         _instance.actions.traversereview.jumpTo('forward');
 
         //Register listener for review layer cleanup
-        context.hoot().control.view.on('layerRemove.conflicts', function (layerName, isPrimary) {
+        context.hoot().control.view.on('layerRemove.conflicts', function () {
             _instance.deactivate();
 
         });
@@ -451,7 +451,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     /**
     * @desc make sure that screen does not get locked up forever
     **/
-    _screenLockFree = function(delay){
+    var _screenLockFree = function(delay){
         if(_timeout){
             clearTimeout(_timeout);
         }
@@ -474,7 +474,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 		_reviewOptions = undefined;
 		_btnEnabled = true;
 		_mapid = undefined;
-		_too1Tip = undefined;
+		_toolTip = undefined;
         _timeout = undefined;
 
         _instance.actions.reset();

@@ -24,7 +24,6 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
         if(fieldsMetaData){
             for( var i=0; i<fieldsMetaData.length; i++){
                 var meta = fieldsMetaData[i];
-                var selVal = '';
                 
                 //Check to see if the first child is Enabled flag.
                 //If so, use Enabled value to continue
@@ -37,17 +36,16 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                     }
                 } 
 
-                if (enabled===true){                
-                    _.each(meta.members,function(submeta){
-                        selVal = '';
-                        var fieldId = submeta.id;
+                if (enabled===true){
+                    if(meta.dependencies)
+                    {
+                        _getDependencyValues(meta, results);
+                    }
 
-                        if(submeta.name==='Enabled'){
-                            if(meta.dependencies)
-                            {
-                                _getDependencyValues(meta, results);
-                            }
-                        }
+                    for (var j=0; j<meta.members.length; j++){
+                        var submeta = meta.members[j];
+                        var selVal = '';
+                        var fieldId = submeta.id;
 
                         if(submeta.elem_type === 'checkbox' || submeta.elem_type==='checkplus') {
                             if(fieldId){                        
@@ -80,10 +78,9 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                                     _getDefaultValues(selVal, meta, submeta, results);
                                 }
                             }     
-                        }
-
-                });
-            }
+                        }                        
+                    }
+                }
             }
         }
         return results;
@@ -251,17 +248,21 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
     * @param results - results store
     **/
     var _getDependencyValues = function(meta, results) {
-        var res = {};
-        var hootkey = meta.dependencies[0].append.hoot_key;
-        var hootval = meta.dependencies[0].append.hoot_val;
-        var idx = results.indexOf(_.find(results,function(obj){return obj.name === hootkey;}));
-        if(idx > -1){
-            if(results[idx].value.indexOf(hootval)===-1)
-            {results[idx].value += ';' + hootval;}
-        } else {
-            res.name = hootkey;
-            res.value = hootval;
-            results.push(res);
+        var enabled = !(_.isEmpty(_.find(meta.members,{'name':'Enabled'})));
+
+        if(enabled){
+            var res = {};
+            var hootkey = meta.dependencies[0].append.hoot_key;
+            var hootval = meta.dependencies[0].append.hoot_val;
+            var idx = results.indexOf(_.find(results,function(obj){return obj.name === hootkey;}));
+            if(idx > -1){
+                if(results[idx].value.indexOf(hootval)===-1)
+                    {results[idx].value += ';' + hootval;}
+            } else {
+                res.name = hootkey;
+                res.value = hootval;
+                results.push(res);
+            }
         }
     };
 
