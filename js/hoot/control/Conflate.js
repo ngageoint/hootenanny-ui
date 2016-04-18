@@ -829,7 +829,7 @@ Hoot.control.conflate = function (sidebar) {
                 }
             }
 
-            Console.log(JSON.stringify(_instance.confAdvOptionsSelectedVal));
+            iD.ui.Alert(JSON.stringify(_instance.confAdvOptionsSelectedVal),'notice',null);
         });
 
 

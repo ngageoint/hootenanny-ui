@@ -296,7 +296,7 @@ Hoot.control.import = function (context,selection) {
                         toggleForm(this);
                     }
                 });
-        };
+        }
 
         function toggleForm(selection) {
             d3.event.stopPropagation();

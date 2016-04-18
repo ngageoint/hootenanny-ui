@@ -210,8 +210,7 @@ Hoot.control.export = function (context, sidebar) {
             });
 
         function toggleForm(context) {
-            var text = (d3.select(context)
-                .classed('active')) ? false : true;
+            var text = !(d3.select(context).classed('active'));
             d3.select(context)
                 .classed('active', text);
         }

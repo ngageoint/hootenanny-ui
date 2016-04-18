@@ -8,7 +8,7 @@
 //      03 Feb. 2016
 //      14 Apr. 2016 eslint changes -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.control.validation = function(context, sidebar) {
+Hoot.control.validation = function(context) {
     var event = d3.dispatch('featureLoaded');
     var validation = {};
     var feature, relation, member;
@@ -109,7 +109,7 @@ Hoot.control.validation = function(context, sidebar) {
 
 
         //Remove UI elements when layer is removed
-        context.hoot().control.view.on('layerRemove.validation', function (layerName, isPrimary) {
+        context.hoot().control.view.on('layerRemove.validation', function (layerName) {
             context.hoot().control.view.on('layerRemove.validation', null);
             validation.end();
         });
@@ -134,7 +134,7 @@ Hoot.control.validation = function(context, sidebar) {
         };
 
         validation.updateMeta = function(d) {
-            meta.html('<strong class='review-note'>' + 'Note: ' + d.tags['hoot:review:note'] + '<br>'
+            meta.html('<strong class="review-note">' + 'Note: ' + d.tags['hoot:review:note'] + '<br>'
                 + 'Validation items remaining: ' + d.unreviewedCount
                 //+ '  (Verified: ' + (+d.totalCount - +d.unreviewedCount) + ')';
                 + '</strong>');
@@ -159,7 +159,7 @@ Hoot.control.validation = function(context, sidebar) {
                     return JSON.parse(c.value.replace(/\\/g,''));
                 });
 
-            choiceButtons = choices.map(function(b, i) {
+            var choiceButtons = choices.map(function(b, i) {
                 var n = i + 1;
                 return {
                     id: 'choice' + n,
@@ -269,7 +269,7 @@ Hoot.control.validation = function(context, sidebar) {
                             feature = context.hasEntity(mid);
                             if (!feature) {
                                 //console.log('must wait for feature to load');
-                                context.loadEntity(mid, function(err, ent) {
+                                context.loadEntity(mid, function(err) {
                                     loadFeature();
                                 }, mapid, layerName);
                             } else {
@@ -397,7 +397,7 @@ Hoot.control.validation = function(context, sidebar) {
         //console.log(newTags);
 
         //Remove token tags that have not be substituted
-        newTags = _.omit(newTags, function(v, k) {
+        newTags = _.omit(newTags, function(v) {
             return v.match(/\${.*}/g);
         });
         //console.log(newTags);
