@@ -273,7 +273,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
                 child.classed('hidden', true);
                 var controlField = d3.select('#ml' + c.dependency.fieldname);
                 controlField.on('change', function(){
-                    _onChangeMultiList(d3.select(this));
+                    hoot.control.conflate.advancedoptions.onChangeMultiList(d3.select(this));
                 });
             }
     };

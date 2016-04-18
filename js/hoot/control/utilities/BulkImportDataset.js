@@ -287,36 +287,42 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 var data = {};
                 data.jobid = curJobId;
                 data.mapid = curMapId;
-                Hoot.model.REST('cancel', data, function () {
-                    iD.ui.Alert('Job ID: ' + curJobId + ' has been cancelled. ','notice');
-                    d3.select('#importprogdiv').append('br');
-                    d3.select('#importprogdiv').append('text').text('Job ID: ' + curJobId + ' has been cancelled. ');
-                    context.hoot().model.layers.refresh(function () {
-                        var combo = d3.combobox().data(_.map(context.hoot().model.layers.getAvailLayers(), function (n) {
-                             return {
-                                 value: n.name,
-                                 title: n.name
-                             };
-                         }));
-                         var controls = d3.selectAll('.reset.fileImport');
-                         var cntrl;
+                data.rowArray = rowArray;
+                data.rowNumber = rowNumber;
+                data.modalbg = modalbg;
 
-                         for (var j = 0; j < controls.length; j++) {
-                             cntrl = controls[j];
-                             // for each of subitems
-                             for(var k=0; k<cntrl.length; k++){
-                                 d3.select(cntrl[k]).style('width', '100%')
-                                 .call(combo);
-                             }
-                         }
-
-                        //go to next row in array if neccessary
-                        rowNumber++;
-                        _importRow(rowArray,rowNumber,modalbg);
-                     });
-                });
+                Hoot.model.REST('cancel', data, _cancelJobCallback(data));
             }
         }
+    };
+
+    var _cancelJobCallback = function(data){
+        iD.ui.Alert('Job ID: ' + data.curJobId + ' has been cancelled. ','notice');
+        d3.select('#importprogdiv').append('br');
+        d3.select('#importprogdiv').append('text').text('Job ID: ' + data.curJobId + ' has been cancelled. ');
+        context.hoot().model.layers.refresh(function () {
+            var combo = d3.combobox().data(_.map(context.hoot().model.layers.getAvailLayers(), function (n) {
+                 return {
+                     value: n.name,
+                     title: n.name
+                 };
+             }));
+             var controls = d3.selectAll('.reset.fileImport');
+             var cntrl;
+
+             for (var j = 0; j < controls.length; j++) {
+                 cntrl = controls[j];
+                 // for each of subitems
+                 for(var k=0; k<cntrl.length; k++){
+                     d3.select(cntrl[k]).style('width', '100%')
+                     .call(combo);
+                 }
+             }
+
+            //go to next row in array if neccessary
+            data.rowNumber++;
+            _importRow(data.rowArray,data.rowNumber,data.modalbg);
+         });
     };
 
 

@@ -124,13 +124,13 @@ Hoot.control.utilities.folder = function(context) {
 
         function showPrepValidationPopup(selLayer) {
             var dataset = _.find(context.hoot().model.layers.getAvailLayers(),{id:selLayer[0]});
-            context.hoot().control.utilities.validation.validationPopup(dataset.name, function(jobs){
+            context.hoot().control.utilities.validation.validationPopup(dataset.name, function(){
             });
         }
 
         function showFilterPopup(selLayer) {
             var dataset = _.find(context.hoot().model.layers.getAvailLayers(),{id:selLayer[0]});
-            context.hoot().control.utilities.filter.filterPopup(dataset.name, function(jobs){
+            context.hoot().control.utilities.filter.filterPopup(dataset.name, function(){
             });
         }
 
@@ -557,21 +557,6 @@ Hoot.control.utilities.folder = function(context) {
                 return 'reset ' + field.type;
             })
             .select(function (a) {
-
-                function getTypeName(desc){
-                    var comboData = _form.select('.reset.importImportType').datum();
-                    var typeName = '';
-                    for(var i=0; i<comboData.combobox2.length; i++){
-                        var o = comboData.combobox2[i];
-                        if(o.title === desc){
-                            typeName = o.value;
-                            break;
-                        }
-
-                    }
-                    return typeName;
-                }
-
                 if (a.combobox3) {
                     var comboPathName = d3.combobox()
                         .data(_.map(a.combobox3, function (n) {

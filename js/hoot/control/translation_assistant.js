@@ -627,8 +627,8 @@ Hoot.control.TranslationAssistant = function () {
                         if(dir==='up'){curIdx -= 1;}
                         else if(dir==='down'){curIdx += 1;}
 
-                        curIdx < 0? 0 : curIdx;
-                        curIdx > overflowTags.length-1? overflowTags.length-1 : curIdx;
+                        curIdx = curIdx < 0 ? 0 : curIdx;
+                        curIdx = curIdx > overflowTags.length-1 ? overflowTags.length-1 : curIdx;
 
                         //scroll to curIdx
                         overflowList.scrollTop = results[0][curIdx].offsetTop - overflowList.offsetTop;

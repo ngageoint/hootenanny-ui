@@ -281,34 +281,7 @@ Hoot.control.import = function (context,selection) {
                 });
             });////////////////////////
 
-        };
-        
-        function resetForm(self) {
-            self.select('.controller')
-                .remove();
-            self
-                .insert('a', 'fieldset')
-                .attr('href', '#')
-                .text('Add dataset')
-                .classed('button dark animate strong block js-toggle _icon big plus pad2x pad1y', true)
-                .on('click', function () {
-                    if(context.map().zoom() >= iD.data.hootConfig.hootMaxImportZoom){
-                        toggleForm(this);
-                    }
-                });
-        }
-
-        function toggleForm(selection) {
-            d3.event.stopPropagation();
-            d3.event.preventDefault();
-            var text = !(d3.select(selection).classed('active'));
-            d3.select(selection).classed('active', text);
-        }
-
-
-        function hideForm(selection) {
-           d3.select(selection).classed('active', false);
-        }
+        };       
     };
 
 
@@ -387,6 +360,32 @@ Hoot.control.import = function (context,selection) {
             });
         });////////////////////////
 
+    };
+
+    var resetForm = function(self) {
+        self.select('.controller')
+            .remove();
+        self
+            .insert('a', 'fieldset')
+            .attr('href', '#')
+            .text('Add dataset')
+            .classed('button dark animate strong block js-toggle _icon big plus pad2x pad1y', true)
+            .on('click', function () {
+                if(context.map().zoom() >= iD.data.hootConfig.hootMaxImportZoom){
+                    toggleForm(this);
+                }
+            });
+    };
+
+    var toggleForm = function(selection) {
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+        var text = !(d3.select(selection).classed('active'));
+        d3.select(selection).classed('active', text);
+    };
+
+    var hideForm = function(selection) {
+       d3.select(selection).classed('active', false);
     };
 
     return d3.rebind(ETL, event, 'on');

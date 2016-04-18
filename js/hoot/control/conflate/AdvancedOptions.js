@@ -102,7 +102,7 @@ Hoot.control.conflate.advancedoptions = function (parent) {
     * @desc Handler for multilist item click event
     * @param selField - Selected field
     **/
-    var _onChangeMultiList = function(selField){
+    _instance.onChangeMultiList = function(selField){
         var enableField = null;
          _.each(selField.node().children, function(c){
             var isSel = d3.select(c).node().selected;
@@ -219,7 +219,7 @@ Hoot.control.conflate.advancedoptions = function (parent) {
                         });
                      });
                      // Manually send out on change event
-                     _onChangeMultiList(listField);
+                     _instance.onChangeMultiList(listField);
                 }
             });
         });

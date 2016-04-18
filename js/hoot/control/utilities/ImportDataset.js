@@ -330,40 +330,38 @@ Hoot.control.utilities.importdataset = function(context) {
                 var data = {};
                 data.jobid = curJobId;
                 data.mapid = curMapId;
-                Hoot.model.REST('cancel', data, function () {
-                    iD.ui.Alert('Job ID: ' + curJobId + ' has been cancelled. ','notice');
-
-
-
-                    context.hoot().model.layers.refresh(function () {
-                        var combo = d3.combobox().data(_.map(context.hoot().model.layers.getAvailLayers(), function (n) {
-                             return {
-                                 value: n.name,
-                                 title: n.name
-                             };
-                         }));
-                         var controls = d3.selectAll('#importDatasetFileImport');
-                         var cntrl;
-
-                         for (var j = 0; j < controls.length; j++) {
-                             cntrl = controls[j];
-                             // for each of subitems
-                             for(var k=0; k<cntrl.length; k++){
-                                 d3.select(cntrl[k]).style('width', '100%')
-                                 .call(combo);
-                             }
-
-                         }
-
-                         //var datasettable = d3.select('#datasettable');
-                         //context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);
-                         _container.remove();
-                     });
-
-                });
+                Hoot.model.REST('cancel', data, _cancelJobCallback(curJobId));
             }
 
         }
+    };
+
+    var _cancelJobCallback = function(curJobId){
+        iD.ui.Alert('Job ID: ' + curJobId + ' has been cancelled. ','notice');
+
+        context.hoot().model.layers.refresh(function () {
+            var combo = d3.combobox().data(_.map(context.hoot().model.layers.getAvailLayers(), function (n) {
+                return {
+                    value: n.name,
+                    title: n.name
+                };
+            }));
+            var controls = d3.selectAll('#importDatasetFileImport');
+            var cntrl;
+
+            for (var j = 0; j < controls.length; j++) {
+                cntrl = controls[j];
+                // for each of subitems
+                for(var k=0; k<cntrl.length; k++){
+                    d3.select(cntrl[k]).style('width', '100%')
+                    .call(combo);
+                }
+            }
+
+            //var datasettable = d3.select('#datasettable');
+            //context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);
+            _container.remove();
+        });
     };
 
 

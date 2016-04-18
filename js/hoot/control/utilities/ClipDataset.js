@@ -150,17 +150,17 @@ Hoot.control.utilities.clipdataset = function(context) {
     **/
     var _createLayerNameField = function(d) {
         var uniquename = false;
-        var name = d.name;
+        var lyrName = d.name;
         var i = 1;
         while (uniquename===false){
-            if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f === name;}))){
-                name = d.name + i.toString();
+            if(!_.isEmpty(_.find(hoot.model.layers.getAvailLayers(),{'name':lyrName}))){
+                lyrName = d.name + i.toString();
                 i++;
             } else {
                 uniquename = true;
             }
         }
-        d3.select(this).value(function(){return name;});
+        d3.select(this).value(function(){return lyrName;});
 
         d3.select(this).on('change',function(){
             //ensure output name is valid
@@ -173,7 +173,6 @@ Hoot.control.utilities.clipdataset = function(context) {
         });
 
     };
-
 
     /**
     * @desc Create folder list combo.
@@ -246,17 +245,17 @@ Hoot.control.utilities.clipdataset = function(context) {
             param.INPUT_NAME = d.name;
 
             var uniquename = false;
-            var name = d3.select('#row-' + d.name).select('div .LayerName').value() || d3.select('#row-' + d.name).select('div .LayerName').attr('placeholder');
+            var lyrName = d3.select('#row-' + d.name).select('div .LayerName').value() || d3.select('#row-' + d.name).select('div .LayerName').attr('placeholder');
             var i = 1;
             while (uniquename===false){
-                if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f === name;}))){
-                    name = name + i.toString();
+                if(!_.isEmpty(_.find(hoot.model.layers.getAvailLayers(),{'name':lyrName}))){
+                    lyrName = lyrName + i.toString();
                     i++;
                 } else {
                     uniquename = true;
                 }
             }
-            param.OUTPUT_NAME = name;
+            param.OUTPUT_NAME = lyrName;
 
             var resp = context.hoot().checkForUnallowedChar(param.OUTPUT_NAME);
             if(resp !== true){
