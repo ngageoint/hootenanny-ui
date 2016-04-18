@@ -144,10 +144,8 @@ Hoot.model.conflicts = function(context)
                     {
                         if (error)
                         {
-                          console.log(error);
                           iD.ui.Alert('failed to retrieve review refs.','warning',new Error().stack);
-                          //context.hoot().control.conflicts.setProcessing(false);
-                          throw error;
+                          throw new Error(error);
                         }
 
                         context.hoot().assert(
@@ -239,7 +237,6 @@ Hoot.model.conflicts = function(context)
                     catch (getReviewRefsErr)
                     {
                         iD.ui.Alert(getReviewRefsErr,'error',new Error().stack);
-                        console.error(getReviewRefsErr);
                         if(callback){
                             callback(getReviewRefsErr);
                         }
@@ -252,7 +249,6 @@ Hoot.model.conflicts = function(context)
         catch(mergeErr)
         {
             iD.ui.Alert(mergeErr,'error',new Error().stack);
-            console.error(mergeErr);
             if(callback){
                 callback(mergeErr);
             }
@@ -270,7 +266,7 @@ Hoot.model.conflicts = function(context)
         m.index = mergeIndx;
 
         var o = {};
-        o.id =  relationId ;
+        o.id =  relationId;
         o.obj = m;
         return o;
     };
@@ -411,7 +407,7 @@ Hoot.model.conflicts = function(context)
         }
         catch (err)
         {
-            console.error(err);
+            iD.ui.Alert(err,'warning',new Error().stack);
         }
         finally
         {
@@ -432,7 +428,7 @@ Hoot.model.conflicts = function(context)
             var layerName = feature.layerName;
 
             if (!feature && !featureAgainst) {
-                Throw('Merge error, one feature is missing');
+                throw new Error('Merge error, one feature is missing');
             } else {
                 function doMerge()
                 {
@@ -470,10 +466,8 @@ Hoot.model.conflicts = function(context)
                                 {
                                     if (error)
                                     {
-                                      console.log(error);
                                       iD.ui.Alert('failed to retrieve review refs.','warning',new Error().stack);
-
-                                      throw error;
+                                      throw new Error(error);
                                     }
 
                                     context.hoot().assert(
@@ -536,7 +530,7 @@ Hoot.model.conflicts = function(context)
                                                 try
                                                 {
                                                     if(err){
-                                                        throw err;
+                                                        throw new Error(err);
                                                     }
 
 
@@ -573,7 +567,6 @@ Hoot.model.conflicts = function(context)
                                                 {
                                                     context.hoot().control.conflicts.setProcessing(false);
                                                     iD.ui.Alert(loadMissingErr,'error',new Error().stack);
-                                                    console.error(loadMissingErr);
                                                 }
                                                 finally
                                                 {
@@ -594,7 +587,6 @@ Hoot.model.conflicts = function(context)
                                 {
                                     context.hoot().control.conflicts.setProcessing(false);
                                     iD.ui.Alert(getReviewRefsErr,'error',new Error().stack);
-                                    console.error(getReviewRefsErr);
                                 }
                                 finally
                                 {
@@ -609,7 +601,6 @@ Hoot.model.conflicts = function(context)
                     {
                         context.hoot().control.conflicts.setProcessing(false);
                         iD.ui.Alert(mergeErr,'error',new Error().stack);
-                        console.error(mergeErr);
                     }
                     finally
                     {
@@ -633,7 +624,6 @@ Hoot.model.conflicts = function(context)
         {
             context.hoot().control.conflicts.setProcessing(false);
             iD.ui.Alert(err,'error',new Error().stack);
-            console.error(err);
         }
         finally
         {
@@ -669,8 +659,8 @@ Hoot.model.conflicts = function(context)
       var hasChanges = context.history().hasChanges();
       if (hasChanges)
       {
-        console.log(
-          context.history().changes(iD.actions.DiscardTags(context.history().difference())));
+        var message = context.history().changes(iD.actions.DiscardTags(context.history().difference()));
+        hoot.view.utilities.errorlog.reportUIError(message,new Error().stack);
       }
     };
 
