@@ -150,30 +150,31 @@ Hoot.view.versioninfo = function(){
         uiInfo.description = uiDesc;
         headerVersionInfo.push(uiInfo);
 
-        var la = _mainVer.selectAll('span')
-        .data(headerVersionInfo)
-        .enter();
+        if(_mainVer){
+            var la = _mainVer.selectAll('span')
+            .data(headerVersionInfo)
+            .enter();
 
-        var la2 = la.append('div')
-        .classed('col12 fill-white small keyline-bottom', true);
+            var la2 = la.append('div')
+            .classed('col12 fill-white small keyline-bottom', true);
 
-        la2.append('span')
-        .classed('text-left big col12 fill-white small hoverDiv2', true)
-        .text(function (item) {
-            return item.description;
-        });
+            la2.append('span')
+            .classed('text-left big col12 fill-white small hoverDiv2', true)
+            .text(function (item) {
+                return item.description;
+            });
 
-        la2.select(function (){
-            d3.select(this).on('click', function (selData) {
-                d3.select('#versioninfodatasettable').remove();
-                _f.append('div')
-                .attr('id','versioninfodatasettable')
-                .classed('col12 fill-white small row10 overflow', true)
-                .call(versioninfo.populateDatasets, selData);
-             });
-        });
+            la2.select(function (){
+                d3.select(this).on('click', function (selData) {
+                    d3.select('#versioninfodatasettable').remove();
+                    _f.append('div')
+                    .attr('id','versioninfodatasettable')
+                    .classed('col12 fill-white small row10 overflow', true)
+                    .call(versioninfo.populateDatasets, selData);
+                 });
+            });
+        }
     };
-
 
     versioninfo.populateDatasets = function(container, data) {
 

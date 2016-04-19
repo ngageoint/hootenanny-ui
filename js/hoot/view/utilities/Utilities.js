@@ -144,8 +144,7 @@ Hoot.view.utilities = function (context){
             .on('click', function () {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
-                var vis = d3.selectAll('#jobsBG')
-                    .style('display') === 'none';
+                var vis = !d3.selectAll('#jobsBG').classed('hidden');
                 var txt = vis ? 'Manage' : 'Return to Map';
                 d3.select(this)
                     .classed('fill-light', !vis)
