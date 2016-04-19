@@ -51,6 +51,7 @@ Hoot.model.folders = function (context)
     model_folders.deleteFolder = function(folderId,callback){
         if(!(folderId >= 0)) {
             callback(false);
+            iD.ui.Alert('Unable to delete folder.','error',new Error().stack);
             return false;
         }
 

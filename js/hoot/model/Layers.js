@@ -257,7 +257,7 @@ Hoot.model.layers = function (context)
         context.flush();
     };
 
-    model_layers.deleteLayer = function(dataset){//,callback){
+    model_layers.deleteLayer = function(dataset,callback){
         if(!dataset.name) {
             //if(callback){callback(false);}
             return false;
