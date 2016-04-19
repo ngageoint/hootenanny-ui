@@ -87,9 +87,9 @@ Hoot.view.utilities.dataset = function(context)
             .classed('dark fl button loud pad2x big _icon refresh', true)
             .style('margin-right','5px')
             .on('click', function () {
-                hoot.model.folders.refresh(function () {
-                    hoot.model.layers.refresh(function(){
-                        hoot.model.folders.refreshLinks(function(){
+                context.hoot().model.folders.refresh(function () {
+                    context.hoot().model.layers.refresh(function(){
+                        context.hoot().model.folders.refreshLinks(function(){
                             context.hoot().model.import.updateTrees();
                         });           
                     });
@@ -165,11 +165,11 @@ Hoot.view.utilities.dataset = function(context)
                     }
                     
                     if(i>=datasets2remove.length-1){
-                        hoot.model.layers.refresh(_refreshLinks(_updateTrees()));
+                        context.hoot().model.layers.refresh(_refreshLinks(_updateTrees()));
                         
                         //remove folder
                         if(d.type==='folder'){
-                            context.hoot().model.folders.deleteFolder(d.id,hoot.model.folders.refresh(_updateTrees()));
+                            context.hoot().model.folders.deleteFolder(d.id,context.hoot().model.folders.refresh(_updateTrees()));
                         }
                     }
                 //});
@@ -181,12 +181,12 @@ Hoot.view.utilities.dataset = function(context)
         if(datasets2remove.length===0){
             context.hoot().model.folders.deleteFolder(d.id,function(resp){
                 if(resp===false){iD.ui.Alert('Unable to delete folder.','error',new Error().stack);}
-                hoot.model.folders.refresh(function () {context.hoot().model.import.updateTrees();});   
+                context.hoot().model.folders.refresh(function () {context.hoot().model.import.updateTrees();});   
             });
         }
     };
 
-    var _refreshLinks = function(callback){hoot.model.folders.refreshLinks(callback);};
+    var _refreshLinks = function(callback){context.hoot().model.folders.refreshLinks(callback);};
     var _updateTrees = function(callback){context.hoot().model.import.updateTrees(callback);};
     
     hoot_view_utilities_dataset.exportDataset = function(d) {
@@ -270,7 +270,7 @@ Hoot.view.utilities.dataset = function(context)
                     }
                     
                     if(i>=datasets2remove.length-1){
-                        hoot.model.layers.refresh(_refreshLinks(_updateTrees()));
+                        context.hoot().model.layers.refresh(_refreshLinks(_updateTrees()));
                     }
                 //});
             }//,container);    

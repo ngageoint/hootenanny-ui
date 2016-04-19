@@ -32,7 +32,7 @@
 //      14 Apr. 2016 eslint changes -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Hoot.control.conflate = function (sidebar) {
+Hoot.control.conflate = function (context, sidebar) {
     var _event = d3.dispatch('merge');
     var _container;
     var _confData;
@@ -67,7 +67,7 @@ Hoot.control.conflate = function (sidebar) {
 
         _newName = _getSaveAsOutputName(data);
 
-        hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
+        context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
 
 
         var formMeta = _getFormMeta();
@@ -157,7 +157,7 @@ Hoot.control.conflate = function (sidebar) {
         var commonId = 0;
 
         //get common path between lyrA and lyrB using folderID
-        hoot.model.layers.setLayerLinks(function(){
+        context.hoot().model.layers.setLayerLinks(function(){
           var sels = d3.select('#sidebar2').selectAll('form')[0];
           var lyrA, lyrB;
           if(sels && sels.length > 1){
@@ -165,12 +165,12 @@ Hoot.control.conflate = function (sidebar) {
               lyrB = d3.select(sels[1]).datum().name;
             }
 
-          hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
-          var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+          context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
+          var folderList = _.map(context.hoot().model.folders.getAvailFolders(),_.clone);
 
           //build the path array for lyrA
           var lyrApath = [];
-          lyrA = _.find(hoot.model.layers.getAvailLayers(),{'name':lyrA});
+          lyrA = _.find(context.hoot().model.layers.getAvailLayers(),{'name':lyrA});
           if(lyrA){
               lyrApath.push(lyrA.folderId);
 
@@ -186,7 +186,7 @@ Hoot.control.conflate = function (sidebar) {
 
           //if(lyrApath) is only 0, keep as root and move on
 
-          lyrB = _.find(hoot.model.layers.getAvailLayers(),{'name':lyrB});
+          lyrB = _.find(context.hoot().model.layers.getAvailLayers(),{'name':lyrB});
           if(lyrB){
               folderId = lyrB.folderId;
               if(lyrApath.indexOf(folderId)>-1){
@@ -267,7 +267,7 @@ Hoot.control.conflate = function (sidebar) {
         if(a.type==='newfoldername' || a.type==='saveAs'){
             d3.select(this).on('change',function(){
                 //ensure output name is valid
-                var resp = hoot.checkForUnallowedChar(this.value);
+                var resp = context.hoot().checkForUnallowedChar(this.value);
                 if(resp !== true){
                     d3.select(this).classed('invalidName',true).attr('title',resp);
                 } else {
@@ -368,7 +368,7 @@ Hoot.control.conflate = function (sidebar) {
             return false;
         }
 
-        if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){
+        if(!_.isEmpty(_.filter(_.map(_.pluck(context.hoot().model.layers.getAvailLayers(),'name'),function(l){
                 return l.substring(l.lastIndexOf('|')+1);
             }),function(f){
                 return f === _container.selectAll('.saveAs').value();
@@ -380,20 +380,20 @@ Hoot.control.conflate = function (sidebar) {
             return false;
         }
 
-        var resp = hoot.checkForUnallowedChar(_container.selectAll('.saveAs').value());
+        var resp = context.hoot().checkForUnallowedChar(_container.selectAll('.saveAs').value());
         if(resp !== true){
             iD.ui.Alert(resp,'warning',new Error().stack);
             return false;
         }
 
-        resp = hoot.checkForUnallowedChar(_container.selectAll('.newfoldername').value());
+        resp = context.hoot().checkForUnallowedChar(_container.selectAll('.newfoldername').value());
         if(resp !== true){
             iD.ui.Alert(resp,'warning',new Error().stack);
             return false;
         }
 
-        var parId = hoot.model.folders.getfolderIdByName(_container.selectAll('.pathname').value()) || 0;
-        resp = hoot.model.folders.duplicateFolderCheck({name:_container.selectAll('.newfoldername').value(),parentId:parId});
+        var parId = context.hoot().model.folders.getfolderIdByName(_container.selectAll('.pathname').value()) || 0;
+        resp = context.hoot().model.folders.duplicateFolderCheck({name:_container.selectAll('.newfoldername').value(),parentId:parId});
         if(resp !== true){
             iD.ui.Alert(resp,'warning',new Error().stack);
             return false;
@@ -538,7 +538,7 @@ Hoot.control.conflate = function (sidebar) {
         var primaryLayerName = '';
         var secondaryLayerName = '';
 
-        var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+        var folderList = _.map(context.hoot().model.folders.getAvailFolders(),_.clone);
 
         var sels = d3.select('#sidebar2').selectAll('form')[0];
         if(sels && sels.length > 1){

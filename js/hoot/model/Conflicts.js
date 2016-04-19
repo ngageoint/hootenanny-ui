@@ -59,18 +59,18 @@ Hoot.model.conflicts = function(context)
                 context.hoot().mode('browse');
 
                 d3.select('[data-layer=' + self.select('span').text() + ']').remove();
-                _.each(hoot.loadedLayers, function(d) {
-                    hoot.model.layers.removeLayer(d.name);
+                _.each(context.hoot().loadedLayers, function(d) {
+                    context.hoot().model.layers.removeLayer(d.name);
                     var modifiedId = d.mapId.toString();
                     d3.select('[data-layer="' + modifiedId + '"]').remove();
-                    delete hoot.loadedLayers[d.name];
+                    delete context.hoot().loadedLayers[d.name];
                 });
 
-                var mapID =  hoot.model.layers.getmapIdByName(self.select('span').text());
+                var mapID =  context.hoot().model.layers.getmapIdByName(self.select('span').text());
                 d3.selectAll(d3.select('#sidebar2').node().childNodes).remove();
                 d3.select('[data-layer="' + mapID + '"]').remove();
 
-                hoot.reset();
+                context.hoot().reset();
             });
         });
 
@@ -670,22 +670,22 @@ Hoot.model.conflicts = function(context)
       if (hasChanges)
       {
         var message = context.history().changes(iD.actions.DiscardTags(context.history().difference()));
-        hoot.view.utilities.errorlog.reportUIError(message,new Error().stack);
+        context.hoot().view.utilities.errorlog.reportUIError(message,new Error().stack);
       }
     };*/
 
     model_conflicts.getSourceLayerId = function(feature) {
-        var mergeLayer = hoot.loadedLayers()[feature.layerName];
+        var mergeLayer = context.hoot().loadedLayers()[feature.layerName];
         var sourceLayers = mergeLayer.layers;
         var featureLayerName = sourceLayers[parseInt(feature.tags['hoot:status']) - 1];
-        var sourceLayer = hoot.loadedLayers()[featureLayerName];
+        var sourceLayer = context.hoot().loadedLayers()[featureLayerName];
         if(!sourceLayer){
             // try using tags of mergeLayer, which is loaded
-            var tags = _.clone(hoot.loadedLayers()[mergeLayer.name].tags);
+            var tags = _.clone(context.hoot().loadedLayers()[mergeLayer.name].tags);
             for(var prop in tags) {
                 if(tags.hasOwnProperty(prop)) {
                     if(tags[prop] === featureLayerName) {
-                        sourceLayer = _.find(hoot.model.layers.getAvailLayers(),{'name':featureLayerName});
+                        sourceLayer = _.find(context.hoot().model.layers.getAvailLayers(),{'name':featureLayerName});
                         return sourceLayer.id;
                     }
                 }
@@ -695,7 +695,7 @@ Hoot.model.conflicts = function(context)
     };
 
     model_conflicts.getFeatureLayer = function(feature) {
-        return hoot.loadedLayers()[feature.layerName];
+        return context.hoot().loadedLayers()[feature.layerName];
     };
 
     model_conflicts.mergeDisplayBounds = function(a, b) {

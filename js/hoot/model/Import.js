@@ -24,7 +24,7 @@ Hoot.model.import = function (context)
                 if(!_svg.empty()){
                     var container = _svg.node().parentNode;
                     _svg.remove();
-                    hoot.control.utilities.folder.createFolderTree(d3.select(container));
+                    context.hoot().control.utilities.folder.createFolderTree(d3.select(container));
                 }
             }
         });

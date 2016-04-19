@@ -9,7 +9,7 @@
 
 
 
-Hoot.control.conflate.advancedoptions = function (parent) {
+Hoot.control.conflate.advancedoptions = function (context, parent) {
 
     var _events = d3.dispatch();
     var _instance = {};
@@ -62,7 +62,7 @@ Hoot.control.conflate.advancedoptions = function (parent) {
 
              return d3.rebind(_modalBackground, advancedOptionsEvents, 'on');
         } catch(err){
-            hoot.view.utilities.errorlog.reportUIError(err,null);
+            context.hoot().view.utilities.errorlog.reportUIError(err,null);
             return null;
         }
     };

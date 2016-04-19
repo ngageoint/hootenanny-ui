@@ -29,8 +29,8 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
     **/
     var _createContainer = function(datasets) {
         _datasets = datasets;
-        hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
-        var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+        context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
+        var folderList = _.map(context.hoot().model.folders.getAvailFolders(),_.clone);
         var placeholder = 'root';
 
         var d_form = [{
@@ -102,7 +102,7 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
         var pathname = _container.select('#bulkModifyPathname').value();
         if(pathname===''){pathname=_container.select('#bulkModifyPathname').attr('placeholder');}
         if(pathname==='root'){pathname='';}
-        var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+        var pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;
 
         //Add folder if necessary
         var newfoldername = _container.select('#bulkModifyNewfoldername').value();
@@ -112,7 +112,7 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
              return;
         }
 
-        resp = hoot.model.folders.duplicateFolderCheck({name:newfoldername,parentId:pathId});
+        resp = context.hoot().model.folders.duplicateFolderCheck({name:newfoldername,parentId:pathId});
         if(resp !== true){
             iD.ui.Alert(resp,'warning',new Error().stack);
             return;
@@ -121,21 +121,21 @@ Hoot.control.utilities.bulkmodifydataset = function(context) {
         var folderData = {};
          folderData.folderName = newfoldername;
          folderData.parentId = pathId;
-         hoot.model.folders.addFolder(folderData,function(a){
+         context.hoot().model.folders.addFolder(folderData,function(a){
              //refresh when done
              context.hoot().model.layers.refresh(function(){
 
                  //Now that our folder has been created, loop through datasets and update the link
                  _.each(_datasets,function(dataset){
                      var lyrId = parseInt(dataset),
-                     outputname = hoot.model.layers.getNameBymapId(lyrId);
+                     outputname = context.hoot().model.layers.getNameBymapId(lyrId);
                      if(outputname==null){return;}
 
                      var link = {};
                      link.folderId = a;
                      link.mapid = lyrId;
                      link.updateType='update';
-                     hoot.model.folders.updateLink(link);
+                     context.hoot().model.folders.updateLink(link);
                      link = {};
                  });
 

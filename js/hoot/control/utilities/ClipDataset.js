@@ -28,13 +28,13 @@ Hoot.control.utilities.clipdataset = function(context) {
         //exit if already open
         if(!d3.select('#clipDatasetContainer').empty()){return;}
 
-        if(_.isEmpty(hoot.model.layers.getLayers())){
+        if(_.isEmpty(context.hoot().model.layers.getLayers())){
             iD.ui.Alert('Please add at least one dataset to the map to clip.','notice');
             return;
         }
 
-        hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
-        var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+        context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
+        var folderList = _.map(context.hoot().model.folders.getAvailFolders(),_.clone);
 
         var _columns = [
            {label:'Dataset',type:'datasetName'},
@@ -82,7 +82,7 @@ Hoot.control.utilities.clipdataset = function(context) {
             .text(function(d){return d.label;});
 
         _table.append('tbody');
-        _.each(hoot.model.layers.getLayers(),function(d){
+        _.each(context.hoot().model.layers.getLayers(),function(d){
             var _tableBody = d3.select('#clipTable').select('tbody');
             _tableBody.append('tr').attr('id','row-'+d.name)
                 .selectAll('td')
@@ -153,7 +153,7 @@ Hoot.control.utilities.clipdataset = function(context) {
         var lyrName = d.name;
         var i = 1;
         while (uniquename===false){
-            if(!_.isEmpty(_.find(hoot.model.layers.getAvailLayers(),{'name':lyrName}))){
+            if(!_.isEmpty(_.find(context.hoot().model.layers.getAvailLayers(),{'name':lyrName}))){
                 lyrName = d.name + i.toString();
                 i++;
             } else {
@@ -201,14 +201,14 @@ Hoot.control.utilities.clipdataset = function(context) {
             .call(comboPathName);
 
         d3.select(this).attr('placeholder',function(){
-            if(_.isEmpty(_.find(hoot.model.layers.getAvailLayers(),{'name':d.name}))){
+            if(_.isEmpty(_.find(context.hoot().model.layers.getAvailLayers(),{'name':d.name}))){
                 return 'root';
             } else {
                 var folderPath = 'root';
                 try{
-                    hoot.model.layers.setLayerLinks(function(){
-                        var fID = _.find(hoot.model.layers.getAvailLayers(),{'name':d.name}).folderId || 0;
-                        var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+                    context.hoot().model.layers.setLayerLinks(function(){
+                        var fID = _.find(context.hoot().model.layers.getAvailLayers(),{'name':d.name}).folderId || 0;
+                        var folderList = _.map(context.hoot().model.folders.getAvailFolders(),_.clone);
                         folderPath =  _.find(folderList,{id:fID}).folderPath || 'root';
                     });
 
@@ -238,7 +238,7 @@ Hoot.control.utilities.clipdataset = function(context) {
 
         //Set up params for clipping
         var params = [];
-        _.each(hoot.model.layers.getLayers(),function(d){
+        _.each(context.hoot().model.layers.getLayers(),function(d){
             if(selectedLayers.indexOf(d.name)===-1){return;}
 
             var param = {};
@@ -248,7 +248,7 @@ Hoot.control.utilities.clipdataset = function(context) {
             var lyrName = d3.select('#row-' + d.name).select('div .LayerName').value() || d3.select('#row-' + d.name).select('div .LayerName').attr('placeholder');
             var i = 1;
             while (uniquename===false){
-                if(!_.isEmpty(_.find(hoot.model.layers.getAvailLayers(),{'name':lyrName}))){
+                if(!_.isEmpty(_.find(context.hoot().model.layers.getAvailLayers(),{'name':lyrName}))){
                     lyrName = lyrName + i.toString();
                     i++;
                 } else {
@@ -272,7 +272,7 @@ Hoot.control.utilities.clipdataset = function(context) {
         });
 
         _.each(params,function(param){
-            Hoot.model.REST('clipDataset', param, function (a,outputname) {
+            Hoot.model.REST('clipDataset', context, param, function (a,outputname) {
                     if(a.status==='complete'){iD.ui.Alert('Success: ' + outputname + ' has been created!','success');}
                 });
         });

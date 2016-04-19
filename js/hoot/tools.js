@@ -57,7 +57,7 @@ Hoot.tools = function (context) {
             // If user tries to add second layer before first layer is done loading we end up with
             // third Add data button. So we check to see if we are already loading.
             // Also search on hoot.isLayerLoading.
-            var loadedLayers = hoot.model.layers.getLayers();
+            var loadedLayers = context.hoot().model.layers.getLayers();
             var loadedLayersLen = Object.keys(loadedLayers).length;
 
             if (layerDivLength === 2 || loadedLayersLen > 1) {
@@ -99,7 +99,7 @@ Hoot.tools = function (context) {
                 conflicts.deactivate(true);
                 context.hoot().mode('browse');
                 _.each(confLayers, function (d) {
-                    hoot.model.layers.removeLayer(d);
+                    context.hoot().model.layers.removeLayer(d);
                     d3.select('.layer_' + d).remove();
                     delete loadedLayers[d];
                 });
@@ -124,7 +124,7 @@ Hoot.tools = function (context) {
     **/
     function resetAllLayers() {
         _.each(loadedLayers, function (d) {
-            hoot.model.layers.removeLayer(d.name);
+            context.hoot().model.layers.removeLayer(d.name);
             var modifiedId = d.mapId.toString();
             d3.select('[data-layer="' + modifiedId + '"]').remove();
             delete loadedLayers[d.name];
@@ -215,34 +215,34 @@ Hoot.tools = function (context) {
             a.loadable = false;
         });
         //d3.select('.loadingLayer').remove();
-        hoot.model.layers.addLayer(item);
+        context.hoot().model.layers.addLayer(item);
 
         //Add a folder and update links
         var pathname = a.select('.pathname').value();
         if(pathname===''){pathname=a.select('.reset.PathName').attr('placeholder');}
         if(pathname==='root'){pathname='';}
-        var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+        var pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;
 
         var newfoldername = a.select('.newfoldername').value();
         var folderData = {};
         folderData.folderName = newfoldername;
         folderData.parentId = pathId;
-        hoot.model.folders.addFolder(folderData,function(folderId){
+        context.hoot().model.folders.addFolder(folderData,function(folderId){
             //update map linking
             var link = {};
             link.folderId = folderId || 0;
             link.mapid = 0;
             if(a.select('.saveAs').value()){
-                link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name === a.select('.saveAs').value();}),'id')[0] || 0;
+                link.mapid =_.pluck(_.filter(context.hoot().model.layers.getAvailLayers(),function(f){return f.name === a.select('.saveAs').value();}),'id')[0] || 0;
             }
             if(link.mapid===0){return;}
             link.updateType='new';
-            hoot.model.folders.updateLink(link);
+            context.hoot().model.folders.updateLink(link);
             link = {};
         });
 
         /*var datasettable = d3.select('#datasettable');
-        hoot.view.utilities.dataset.populateDatasetsSVG(datasettable);*/
+        context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);*/
     }
 
     /**
@@ -285,8 +285,8 @@ Hoot.tools = function (context) {
             view.render(loadingLayer);
             loadingLayer = {};
             conflicts.activate(loadedLayers[layerName]);
-            hoot.mode('edit');
-            hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
+            context.hoot().mode('edit');
+            context.hoot().model.conflicts.beginReview(activeConflateLayer, function (d) {
                 conflicts.startReview(d);
             });
             conflationCheck(layerName, true);
@@ -301,25 +301,25 @@ Hoot.tools = function (context) {
 
     ETL.on('addLayer', function (options) {
 
-        if (hoot.model.layers.getLayers()[options.name]) {
+        if (context.hoot().model.layers.getLayers()[options.name]) {
             return false;
         }
         if (!options.name || !options.color) {
             return false;
         }
         loadingLayer = options;
-        hoot.model.layers.addLayer(options);
+        context.hoot().model.layers.addLayer(options);
     });
     view.on('layerRemove', function (layerName, isPrimary) {
-        hoot.model.layers.removeLayer(layerName);
+        context.hoot().model.layers.removeLayer(layerName);
         conflationCheck(layerName, false, isPrimary);
     });
     view.on('layerColor', function (layerName, newColor, layerId) {
-        hoot.changeColor(layerId, newColor);
+        context.hoot().changeColor(layerId, newColor);
         loadedLayers[layerName].color = newColor;
     });
     view.on('layerVis', function (layerName) {
-        hoot.model.layers.changeVisibility(layerName);
+        context.hoot().model.layers.changeVisibility(layerName);
     });
 
     conflicts.on('exportData', function () {
@@ -366,7 +366,7 @@ Hoot.tools = function (context) {
         activeConflateLayer = {};    */
 
         _.each(loadedLayers, function(d) {
-            hoot.model.layers.removeLayer(d.name);
+            context.hoot().model.layers.removeLayer(d.name);
             var modifiedId = d.mapId.toString();
             d3.select('[data-layer="' + modifiedId + '"]').remove();
             delete loadedLayers[d.name];
@@ -375,7 +375,7 @@ Hoot.tools = function (context) {
         d3.selectAll(d3.select('#sidebar2').node().childNodes).remove();
         d3.select('[data-layer="' + activeConflateLayer.mapId.toString() + '"]').remove();
 
-        hoot.model.layers.addLayer({
+        context.hoot().model.layers.addLayer({
             'name': activeConflateLayer.name,
             'color': 'orange',
             'id': activeConflateLayer.mapId.toString()
@@ -385,7 +385,7 @@ Hoot.tools = function (context) {
     });
 
     /*conflicts.on('removeFeature', function (d, mapid) {
-        hoot.model.conflicts.RemoveFeature(d, mapid);
+        context.hoot().model.conflicts.RemoveFeature(d, mapid);
     });*/
 
 
@@ -437,24 +437,24 @@ Hoot.tools = function (context) {
                 var data1 = {};
                 data1.INPUT = data.INPUT1;
                 data1.INPUT_TYPE = 'db';
-                hoot.autotune('AutoTune', data1, function(res1){
+                context.hoot().autotune('AutoTune', data1, function(res1){
                     var result1 = JSON.parse(res1.statusDetail);
 
                     data.INPUT1_ESTIMATE = '' + result1.EstimatedSize;
                     var data2 = {};
                     data2.INPUT = data.INPUT2;
                     data2.INPUT_TYPE = 'db';
-                    hoot.autotune('AutoTune', data2, function(res2){
+                    context.hoot().autotune('AutoTune', data2, function(res2){
                         var result2 = JSON.parse(res2.statusDetail);
                         data.INPUT2_ESTIMATE = '' + result2.EstimatedSize;
-                         hoot.model.conflate.conflate(conflationExecType, data, function (item) {
+                         context.hoot().model.conflate.conflate(conflationExecType, data, function (item) {
                              postConflation(item,a);
                          });
                     });
                 });
             } else {
 
-                hoot.model.conflate.conflate(conflationExecType, data, function (item) {
+                context.hoot().model.conflate.conflate(conflationExecType, data, function (item) {
                     if(item.status && item.status === 'requested'){
                         conflate.jobid = item.jobid;
                     } else {
@@ -475,7 +475,7 @@ Hoot.tools = function (context) {
     * @param layerName - new merged layer
     **/
     context.connection().on('layerAdded', function (layerName) {
-        var params = hoot.model.layers.getLayers(layerName);
+        var params = context.hoot().model.layers.getLayers(layerName);
         if (loadedLayers[layerName]) return;
 
         var merged = loadingLayer.merged || null;
@@ -527,7 +527,7 @@ Hoot.tools = function (context) {
                                     view.render(loadingLayer);
                                     loadingLayer = {};
                                     conflicts.activate(loadedLayers[layerName]);
-                                    hoot.mode('edit');
+                                    context.hoot().mode('edit');
 
                                     if(tags) {
                                         var input1 = tags.input1;
@@ -560,7 +560,7 @@ Hoot.tools = function (context) {
                                                         context.hoot().model.layers.setLayerInvisibleById(input2);
 
                                                         if(d === undefined){
-                                                            hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
+                                                            context.hoot().model.conflicts.beginReview(activeConflateLayer, function (d) {
                                                                 conflicts.startReview(d);
                                                             });
                                                         }
@@ -650,7 +650,7 @@ Hoot.tools = function (context) {
         var exportType = cont.select('.reset.fileExportFileType.combobox-input').value();
         exporting = true;
         var spinner = cont.append('span').attr('class', 'spinner-hoot').call(iD.ui.Spinner(context));
-        hoot.model.export.exportData(cont, data, function (status) {
+        context.hoot().model.export.exportData(cont, data, function (status) {
             if(status === 'failed'){
                 iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error',new Error().stack);
             }

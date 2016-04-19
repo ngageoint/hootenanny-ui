@@ -248,7 +248,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
     * @param fid - the feature id
     **/
     var _loadMissingFeatures = function(mapid, fid, callback) {
-        var layerNames = d3.entries(hoot.loadedLayers()).filter(function(d) {
+        var layerNames = d3.entries(context.hoot().loadedLayers()).filter(function(d) {
             return 1*d.value.mapId === 1*mapid;
         });
 

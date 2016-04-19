@@ -261,21 +261,21 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
-    rest.clipDataset = function (data, callback) {
+    rest.clipDataset = function (context, data, callback) {
         if(!data.INPUT_NAME || !data.BBOX || !data.OUTPUT_NAME || !data.PATH_NAME){return false;}
 
         var postClip = function(a){
             if(a.status==='complete'){
-                hoot.model.layers.refresh(function(){
-                    hoot.model.layers.setLayerLinks(function(){
-                        var availLayers = hoot.model.layers.getAvailLayers();
+                context.hoot().model.layers.refresh(function(){
+                    context.hoot().model.layers.setLayerLinks(function(){
+                        var availLayers = context.hoot().model.layers.getAvailLayers();
                         var input = _.find(availLayers,{name:data.INPUT_NAME});
                         if(input!==undefined){
-                            var outputFolderId = hoot.model.folders.getfolderIdByName(data.PATH_NAME) || 0;
+                            var outputFolderId = context.hoot().model.folders.getfolderIdByName(data.PATH_NAME) || 0;
                             var output = _.find(availLayers,{name:data.OUTPUT_NAME});
                             if(output!==undefined){
                                 var link = {'folderId':outputFolderId,'mapid':output.id,'updateType':'update'};
-                                hoot.model.folders.updateLink(link);
+                                context.hoot().model.folders.updateLink(link);
                                 callback(a,data.OUTPUT_NAME);
                             }
                         }

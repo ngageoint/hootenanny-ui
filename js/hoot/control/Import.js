@@ -11,7 +11,7 @@ Hoot.control.import = function (context,selection) {
     var ETL = {};
 
     ETL.createTree = function(a){
-        hoot.control.utilities.folder.createFolderTree(a);
+        context.hoot().control.utilities.folder.createFolderTree(a);
     };
 
     ETL.renderTree = function(a) {
@@ -91,11 +91,11 @@ Hoot.control.import = function (context,selection) {
             .classed('reset usedLayersInput combobox-input',true)
             .attr('readonly',true)
             .select(function(){
-                /*if(hoot.model.layers.getRecentlyUsedLayers().length==0){
+                /*if(context.hoot().model.layers.getRecentlyUsedLayers().length==0){
                     d3.select(this.parentNode.parentNode).attr('hidden',true);
                     return;
                 }*/
-                var comboData = hoot.model.layers.getRecentlyUsedLayers();
+                var comboData = context.hoot().model.layers.getRecentlyUsedLayers();
                 var combo = d3.combobox()
                     .data(_.map(comboData, function (n) {
                         return {
@@ -183,7 +183,7 @@ Hoot.control.import = function (context,selection) {
                         return;
                     } else {
                         lyrname = self.selectAll('.usedLayersInput').value();
-                        lyrid = hoot.model.layers.getmapIdByName(lyrname);
+                        lyrid = context.hoot().model.layers.getmapIdByName(lyrname);
                         if(lyrid==null){throw new Error('Invalid layer selected');}
                     }
                 } else {
@@ -211,9 +211,9 @@ Hoot.control.import = function (context,selection) {
             };
 
             context.hoot().model.layers.addLayer(key, function(res){
-                hoot.model.layers.setRecentlyUsedLayers(key.name);
+                context.hoot().model.layers.setRecentlyUsedLayers(key.name);
                 //update combo boxes
-                var comboData = hoot.model.layers.getRecentlyUsedLayers();
+                var comboData = context.hoot().model.layers.getRecentlyUsedLayers();
                 var combo = d3.combobox().data(_.map(comboData, function (n) {return {value: n,title: n};}));
                 d3.selectAll('.usedLayersInput').each(function(){
                     d3.select(this).call(combo);
@@ -288,9 +288,9 @@ Hoot.control.import = function (context,selection) {
 
     ETL.forceAddLayer = function(key, self, color) {
         context.hoot().model.layers.addLayer(key, function(res){
-            hoot.model.layers.setRecentlyUsedLayers(key.name);
+            context.hoot().model.layers.setRecentlyUsedLayers(key.name);
             //update combo boxes
-            var comboData = hoot.model.layers.getRecentlyUsedLayers();
+            var comboData = context.hoot().model.layers.getRecentlyUsedLayers();
             var combo = d3.combobox().data(_.map(comboData, function (n) {return {value: n,title: n};}));
             d3.selectAll('.usedLayersInput').each(function(){
                 d3.select(this).call(combo);

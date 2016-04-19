@@ -32,8 +32,8 @@ Hoot.control.utilities.modifydataset = function(context) {
         _dataset = dataset;
 
 
-        hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
-        var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+        context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
+        var folderList = _.map(context.hoot().model.folders.getAvailFolders(),_.clone);
         var folderId = dataset.folderId || 0;
 
         var placeholder = 'root';
@@ -92,7 +92,7 @@ Hoot.control.utilities.modifydataset = function(context) {
         var pathname = _container.select('#modifyDatasetPathname').value();
         if(pathname===''){pathname=_container.select('#modifyDatasetPathname').attr('placeholder');}
         if(pathname==='root'){pathname='';}
-        var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+        var pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;
 
         //make sure a change is being made to foldername
         var outputname =_container.select('#modifyDatasetFileOutputName').value();
@@ -110,7 +110,7 @@ Hoot.control.utilities.modifydataset = function(context) {
                 iD.ui.Alert(resp,'warning',new Error().stack);
                 return;
             }
-            if(!_.isEmpty(_.filter(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(f){return f === outputname;})))
+            if(!_.isEmpty(_.filter(_.pluck(context.hoot().model.layers.getAvailLayers(),'name'),function(f){return f === outputname;})))
             {
                 iD.ui.Alert('A layer already exists with this name. Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
                 return;
@@ -128,7 +128,7 @@ Hoot.control.utilities.modifydataset = function(context) {
                     return;
                 }
 
-                 resp = hoot.model.folders.duplicateFolderCheck({name:newfoldername,parentId:pathId});
+                 resp = context.hoot().model.folders.duplicateFolderCheck({name:newfoldername,parentId:pathId});
                 if(resp !== true){
                     iD.ui.Alert(resp,'warning',new Error().stack);
                     return;
@@ -137,15 +137,15 @@ Hoot.control.utilities.modifydataset = function(context) {
                 var folderData = {};
                 folderData.folderName = newfoldername;
                 folderData.parentId = pathId;
-                hoot.model.folders.addFolder(folderData,function(a){
+                context.hoot().model.folders.addFolder(folderData,function(a){
                     context.hoot().model.layers.refresh(function(){
                         //update map linking
                         var link = {};
                         link.folderId = a;
-                        link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name === outputname;}),'id')[0] || 0;
+                        link.mapid =_.pluck(_.filter(context.hoot().model.layers.getAvailLayers(),function(f){return f.name === outputname;}),'id')[0] || 0;
                         if(link.mapid===0){return;}
                         link.updateType='update';
-                        hoot.model.folders.updateLink(link);
+                        context.hoot().model.folders.updateLink(link);
                         link = {};
                         _container.remove();
                     });

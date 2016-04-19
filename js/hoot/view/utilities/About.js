@@ -6,7 +6,7 @@
 // Modifications:
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.view.utilities.about = function(){
+Hoot.view.utilities.about = function(context){
 
     // events
     var dispatch = d3.dispatch('close');
@@ -48,7 +48,7 @@ Hoot.view.utilities.about = function(){
       // Show version info
       Hoot.model.REST('coreVersionInfo',
               function(response) {
-                  hoot.view.versioninfo.coreVersionInfo(response,headerVersionInfo,_form);
+                  context.hoot().view.versioninfo.coreVersionInfo(response,headerVersionInfo,_form);
               }
 
       );
@@ -67,7 +67,7 @@ Hoot.view.utilities.about = function(){
           .attr('href', '#')
           .text('Download User Guide')
           .classed('dark fl button loud pad2x big _icon plus', true)
-          .on('click', function () {hoot.view.versioninfo.downloadUserGuide();});
+          .on('click', function () {context.hoot().view.versioninfo.downloadUserGuide();});
 
           formCont.append('div')
             .classed('col2',true)

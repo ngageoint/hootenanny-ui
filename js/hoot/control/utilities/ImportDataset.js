@@ -55,7 +55,7 @@ Hoot.control.utilities.importdataset = function(context) {
         _importTranslationsGeonames = [];
         _importTranslationsOsm = [];
 
-        _bInfo = hoot.getBrowserInfo();
+        _bInfo = context.hoot().getBrowserInfo();
         if(_.isEmpty(_bInfo)){
             _bInfo = {};
             _bInfo.name = 'Unknown';
@@ -69,8 +69,8 @@ Hoot.control.utilities.importdataset = function(context) {
 
 
 
-        hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
-        var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+        context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
+        var folderList = _.map(context.hoot().model.folders.getAvailFolders(),_.clone);
 
         var folderPlaceholder = 'root';
         if(incomingFolder){
@@ -176,7 +176,7 @@ Hoot.control.utilities.importdataset = function(context) {
         }
 
         if(!_.isEmpty(_.filter(_.map(
-            _.pluck(hoot.model.layers.getAvailLayers(),'name'),
+            _.pluck(context.hoot().model.layers.getAvailLayers(),'name'),
                 function(l){
                     return l.substring(l.lastIndexOf('|')+1);
                 }),
@@ -201,8 +201,8 @@ Hoot.control.utilities.importdataset = function(context) {
             return;
         }
 
-        var parId = hoot.model.folders.getfolderIdByName(_container.select('#importDatasetPathName').value()) || 0;
-        resp = hoot.model.folders.duplicateFolderCheck({name:_container.select('#importDatasetNewFolderName').value(),parentId:parId});
+        var parId = context.hoot().model.folders.getfolderIdByName(_container.select('#importDatasetPathName').value()) || 0;
+        resp = context.hoot().model.folders.duplicateFolderCheck({name:_container.select('#importDatasetNewFolderName').value(),parentId:parId});
         if(resp !== true){
             iD.ui.Alert(resp,'warning',new Error().stack);
             return;
@@ -275,7 +275,7 @@ Hoot.control.utilities.importdataset = function(context) {
                         var pathname = _container.select('#importDatasetPathName').value();
                         if(pathname===''){pathname=_container.select('#importDatasetPathName').attr('placeholder');}
                         if(pathname==='root'){pathname='';}
-                        var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+                        var pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;
 
                         //determine if a new folder is being added
                         var newfoldername = _container.select('#importDatasetNewFolderName').value();
@@ -283,21 +283,21 @@ Hoot.control.utilities.importdataset = function(context) {
                         var folderData = {};
                         folderData.folderName = newfoldername;
                         folderData.parentId = pathId;
-                        hoot.model.folders.addFolder(folderData,function(a){
+                        context.hoot().model.folders.addFolder(folderData,function(a){
                             //update map linking
                             var link = {};
                             link.folderId = a;
                             link.mapid=0;
                             if(_container.select('#importDatasetLayerName').value())
                             {
-                                link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),
+                                link.mapid =_.pluck(_.filter(context.hoot().model.layers.getAvailLayers(),
                                 function(f){
                                     return f.name === _container.select('#importDatasetLayerName').value();
                                 }),'id')[0] || 0;
                             }
                             if(link.mapid===0){return;}
                             link.updateType='new';
-                            hoot.model.folders.updateLink(link);
+                            context.hoot().model.folders.updateLink(link);
                             link = {};
                         });
 
@@ -820,7 +820,7 @@ Hoot.control.utilities.importdataset = function(context) {
     **/
     _instance.getImportTypes = function() {
         if(!_bInfo) {
-            _bInfo = hoot.getBrowserInfo();
+            _bInfo = context.hoot().getBrowserInfo();
             if(_.isEmpty(_bInfo)){_bInfo = {'name':'Unknown','version':'Unknown'};}
         }
 

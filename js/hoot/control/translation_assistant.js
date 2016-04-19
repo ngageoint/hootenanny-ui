@@ -6,7 +6,7 @@
 //      03 Feb. 2016
 //      14 Apr. 2016 eslint changes -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.control.TranslationAssistant = function () {
+Hoot.control.TranslationAssistant = function (context) {
     var ta = {};
     var tags = {};
 
@@ -819,7 +819,7 @@ Hoot.control.TranslationAssistant = function () {
                             .classed('keyline-bottom', false);
 
                         //open the ingestDiv and copy values into paste box
-                        hoot.control.utilities.translation.newTranslationPopup(output);
+                        context.hoot().control.utilities.translation.newTranslationPopup(output);
                     }
 
                 });

@@ -330,20 +330,20 @@ Hoot.control.utilities.folder = function(context) {
                   }
                   else if(d.type.toLowerCase()==='dataset'){
                       //http://jsfiddle.net/1mo3vmja/2/
-                      if(hoot.model.layers.getSelectedLayers().length===1){
+                      if(context.hoot().model.layers.getSelectedLayers().length===1){
                           items = [
                                        {title:'Export',icon:'export',click:'exportDataset'},
-                                       {title:'Delete (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
-                                       {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'},
+                                       {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
+                                       {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'},
                                        {title:'Rename ' + d.name,icon:'info',click:'renameDataset'},
                                        {title:'Prepare for Validation',icon:'sprocket',click:'prepValidation'},
                                        {title:'Filter non-HGIS POIs',icon:'sprocket',click:'filter'}
                                    ];
                       }
-                      else if(hoot.model.layers.getSelectedLayers().length>1){
+                      else if(context.hoot().model.layers.getSelectedLayers().length>1){
                           items = [
-                                   {title:'Delete (' + hoot.model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
-                                   {title:'Move (' + hoot.model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'}
+                                   {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
+                                   {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'}
                                ];
                       } else {
                           d3.select('.context-menu').style('display', 'none');
@@ -381,11 +381,11 @@ Hoot.control.utilities.folder = function(context) {
                             switch (item.click) {
                             //Datasets
                             case 'exportDataset': context.hoot().view.utilities.dataset.exportDataset(d,container); break;
-                            case 'deleteDataset': context.hoot().view.utilities.dataset.deleteDatasets(hoot.model.layers.getSelectedLayers(),container); break;
-                            case 'moveDataset': context.hoot().view.utilities.dataset.moveDatasets(hoot.model.layers.getSelectedLayers()); break;
+                            case 'deleteDataset': context.hoot().view.utilities.dataset.deleteDatasets(context.hoot().model.layers.getSelectedLayers(),container); break;
+                            case 'moveDataset': context.hoot().view.utilities.dataset.moveDatasets(context.hoot().model.layers.getSelectedLayers()); break;
                             case 'renameDataset': context.hoot().view.utilities.dataset.modifyDataset(d); break;
-                            case 'prepValidation': showPrepValidationPopup(hoot.model.layers.getSelectedLayers()); break;
-                            case 'filter': showFilterPopup(hoot.model.layers.getSelectedLayers()); break;
+                            case 'prepValidation': showPrepValidationPopup(context.hoot().model.layers.getSelectedLayers()); break;
+                            case 'filter': showFilterPopup(context.hoot().model.layers.getSelectedLayers()); break;
 
                             //Folders
                             case 'deleteFolder': context.hoot().view.utilities.dataset.deleteDataset(d,container); break;
@@ -511,7 +511,7 @@ Hoot.control.utilities.folder = function(context) {
     };
 
     hoot_control_utilities_folder.importFolderContainer = function (data) {
-        hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
+        context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
 
         var d_form = [{
             label: 'Folder Name',
@@ -596,7 +596,7 @@ Hoot.control.utilities.folder = function(context) {
 
             var folderId = 0;
             if(data){
-                if(_.map(hoot.model.folders.getAvailFolders(),function(n){return n.id;}).indexOf(data.id)>=0){
+                if(_.map(context.hoot().model.folders.getAvailFolders(),function(n){return n.id;}).indexOf(data.id)>=0){
                     folderId=data.id;
                 }
             }
@@ -622,7 +622,7 @@ Hoot.control.utilities.folder = function(context) {
                         return;
                     }
 
-                    resp = hoot.model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
+                    resp = context.hoot().model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
                     if(resp !== true){
                         iD.ui.Alert(resp,'warning',new Error().stack);
                         return;
@@ -633,9 +633,9 @@ Hoot.control.utilities.folder = function(context) {
                     data.folderName = _form.select('.reset.NewFolderName').value();
 
                     Hoot.model.REST('addFolder',data,function(){
-                        hoot.model.folders.refresh(function () {
-                            hoot.model.folders.refreshLinks(function(){
-                                hoot.model.layers.RefreshLayers();
+                        context.hoot().model.folders.refresh(function () {
+                            context.hoot().model.folders.refreshLinks(function(){
+                                context.hoot().model.layers.RefreshLayers();
                                 modalbg.remove();
                             });
                         });
@@ -645,8 +645,8 @@ Hoot.control.utilities.folder = function(context) {
     };
 
      hoot_control_utilities_folder.modifyNameContainer = function(folder) {
-            hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
-            var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+            context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
+            var folderList = _.map(context.hoot().model.folders.getAvailFolders(),_.clone);
             var folderId = folder.parentId || 0;
 
             var placeholder = 'root';
@@ -751,7 +751,7 @@ Hoot.control.utilities.folder = function(context) {
                     var pathname = _form.select('.pathname').value();
                     if(pathname===''){pathname=_form.select('.pathname').attr('placeholder');}
                     if(pathname==='root'){pathname='';}
-                    var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+                    var pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;
 
                     var outputname =_form.select('.fileOutputName').value();
                     if(outputname===''){outputname=_form.select('.fileOutputName').attr('placeholder');}
@@ -761,7 +761,7 @@ Hoot.control.utilities.folder = function(context) {
                          return;
                      }
 
-                    resp = hoot.model.folders.duplicateFolderCheck({name:outputname,parentId:pathId});
+                    resp = context.hoot().model.folders.duplicateFolderCheck({name:outputname,parentId:pathId});
                     if(resp !== true){
                         iD.ui.Alert(resp,'warning',new Error().stack);
                         return;
@@ -780,7 +780,7 @@ Hoot.control.utilities.folder = function(context) {
                         folderData.folderId=data.mapid;
 
                         Hoot.model.REST('updateFolder',folderData,function(){
-                            hoot.model.folders.refresh(function(){
+                            context.hoot().model.folders.refresh(function(){
                                 context.hoot().model.import.updateTrees();
                             });
                             modalbg.remove();

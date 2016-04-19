@@ -7,7 +7,7 @@
 //      14 Apr. 2016 eslint changes -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
+Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
     var _events = d3.dispatch();
     var _instance = {};
 
@@ -273,7 +273,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function () {
                 child.classed('hidden', true);
                 var controlField = d3.select('#ml' + c.dependency.fieldname);
                 controlField.on('change', function(){
-                    hoot.control.conflate.advancedoptions.onChangeMultiList(d3.select(this));
+                    context.hoot().control.conflate.advancedoptions.onChangeMultiList(d3.select(this));
                 });
             }
     };

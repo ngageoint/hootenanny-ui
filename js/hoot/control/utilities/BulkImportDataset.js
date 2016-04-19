@@ -65,8 +65,8 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         var importTypes = context.hoot().control.utilities.importdataset.getImportTypes();
 
 
-        hoot.model.folders.listFolders(hoot.model.folders.getAvailFolders());
-        var folderList = _.map(hoot.model.folders.getAvailFolders(),_.clone);
+        context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
+        var folderList = _.map(context.hoot().model.folders.getAvailFolders(),_.clone);
 
         _rowNum = 0;
 
@@ -249,7 +249,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         var pathname = row.select('.reset.PathName').value();
         if(pathname===''){pathname=row.select('.reset.PathName').attr('placeholder');}
         if(pathname==='root'){pathname='';}
-        var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+        var pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;
 
         //update map linking
         var link = {};
@@ -257,10 +257,10 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         link.mapid=0;
         link.mapid=0;
         if(row.select('.reset.LayerName').value())
-        {link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name === row.select('.reset.LayerName').value();}),'id')[0] || 0;}
+        {link.mapid =_.pluck(_.filter(context.hoot().model.layers.getAvailLayers(),function(f){return f.name === row.select('.reset.LayerName').value();}),'id')[0] || 0;}
         if(link.mapid===0){return;}
         link.updateType='new';
-        hoot.model.folders.updateLink(link);
+        context.hoot().model.folders.updateLink(link);
         link = {};
         d3.select('#importprogdiv').append('br');
         d3.select('#importprogdiv').append('text').text(row.select('.reset.LayerName').value() + ' has been successfully uploaded.');
@@ -338,7 +338,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             return false;
         }
 
-        if(!_.isEmpty(_.filter(_.map(_.pluck(hoot.model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f === row.select('.reset.LayerName').value();})))
+        if(!_.isEmpty(_.filter(_.map(_.pluck(context.hoot().model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f === row.select('.reset.LayerName').value();})))
         {
             d3.select('#importprogdiv').append('br');
             d3.select('#importprogdiv').append('text').text('A layer already exists with this name. Please remove the current layer or select a new name for this layer.');

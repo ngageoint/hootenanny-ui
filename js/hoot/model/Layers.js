@@ -83,7 +83,7 @@ Hoot.model.layers = function (context)
 
     model_layers.setRecentlyUsedLayers = function(lyr) {
         //remove old layers
-        recentlyUsedLayers = _.intersection(_.map(hoot.model.layers.getAvailLayers(),'name'),recentlyUsedLayers);
+        recentlyUsedLayers = _.intersection(_.map(context.hoot().model.layers.getAvailLayers(),'name'),recentlyUsedLayers);
 
         if(recentlyUsedLayers.indexOf(lyr)>-1){return;}        //Already in list
 
@@ -280,8 +280,8 @@ Hoot.model.layers = function (context)
                         var link={};
                         link.folderId = 0;
                         link.updateType='delete';
-                        link.mapid=hoot.model.layers.getmapIdByName(dataset.name)||0;
-                        hoot.model.layers.refresh(function(){
+                        link.mapid=context.hoot().model.layers.getmapIdByName(dataset.name)||0;
+                        context.hoot().model.layers.refresh(function(){
                             if(callback){callback(true);}
                         });
                     }
