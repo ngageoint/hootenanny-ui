@@ -44,22 +44,18 @@ Hoot.view.utilities.about = function(context){
           .attr('id', 'versiondetaillbl')
           .text('Detail: ** Please select a row from Main Versions table. **');
 
+      var formCont = detailContainer.append('div');
+      formCont.classed('center col12', true).style('display','inline-block');
+      var _form = formCont.append('div');
+      _form.classed('center row10  round keyline-all fill-white aboutSection', true);
+
       var headerVersionInfo = [];
       // Show version info
       Hoot.model.REST('coreVersionInfo',
               function(response) {
-                  context.hoot().view.versioninfo.coreVersionInfo(response,headerVersionInfo,_form);
+                  context.hoot().view.versioninfo.coreVersionInfo(response,headerVersionInfo,_form,_mainVer);
               }
-
       );
-
-
-
-
-      var formCont = detailContainer.append('div');
-      formCont.classed('center col12', true).style('display','inline-block');
-      var _form = formCont.append('div');
-      _form.classed('center row10  round keyline-all fill-white', true);
 
       formCont.append('div')
           .classed('pad1y', true)

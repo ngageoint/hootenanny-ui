@@ -60,7 +60,7 @@ Hoot.view.versioninfo = function(){
         // Show version info
         Hoot.model.REST('coreVersionInfo',
                 function(response) {
-                    versioninfo.coreVersionInfo(response,headerVersionInfo,_form);
+                    versioninfo.coreVersionInfo(response,headerVersionInfo,_form,_mainVer);
                 }
         );
 
@@ -101,20 +101,17 @@ Hoot.view.versioninfo = function(){
 
     };
 
-    versioninfo.coreVersionInfo = function(response,headerVersionInfo,_f){
+    versioninfo.coreVersionInfo = function(response,headerVersionInfo,_f,_mainVer){
         var coreInfo = {};
-                    coreInfo.name = 'core';
-                    coreInfo.description = response.name + ' - Version: ' + response.version + ' - Built By: ' + response.builtBy;
-                    headerVersionInfo.push(coreInfo);
-                    Hoot.model.REST('servicesVersionInfo',
-                            function(response) {
-                                versioninfo.servicesVersionInfo(
-                                    response,headerVersionInfo,_f);
-                            }
-                    );
+        coreInfo.name = 'core';
+        coreInfo.description = response.name + ' - Version: ' + response.version + ' - Built By: ' + response.builtBy;
+        headerVersionInfo.push(coreInfo);
+        Hoot.model.REST('servicesVersionInfo', function(response) {
+            versioninfo.servicesVersionInfo(response,headerVersionInfo,_f,_mainVer);
+        });
     };
 
-    versioninfo.servicesVersionInfo = function(response,headerVersionInfo,_f){
+    versioninfo.servicesVersionInfo = function(response,headerVersionInfo,_f,_mainVer){
         var serviceDesc = response.name + ' - Version: ' + response.version + ' - Built By: ' + response.builtBy;
         if (response.name.indexOf('unknown') > -1)
         {
