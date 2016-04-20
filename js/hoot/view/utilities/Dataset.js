@@ -159,20 +159,15 @@ Hoot.view.utilities.dataset = function(context)
                                 
                 d3.select('.context-menu').style('display', 'none');
                 
-                var resp = context.hoot().model.layers.deleteLayer(dataset);//,function(resp){
-                    if(resp===true){
-                        if(selNode){selNode.remove();}
-                    }
-                    
-                    if(i>=datasets2remove.length-1){
-                        context.hoot().model.layers.refresh(_refreshLinks(_updateTrees()));
-                        
-                        //remove folder
-                        if(d.type==='folder'){
-                            context.hoot().model.folders.deleteFolder(d.id,context.hoot().model.folders.refresh(_updateTrees()));
-                        }
-                    }
-                //});
+                var data = {};
+                data.dataset = dataset;
+                data.selNode = selNode;
+                data.datasets2remove = datasets2remove;
+                data.id = d.id;
+                data.i = i;
+                data.type = d.type;
+
+                context.hoot().model.layers.deleteLayer(data, _deleteLayerCallback);
             } catch (e) {
                 iD.ui.Alert('Unable to delete dataset ' + dataset.name + '. ' + e,'error',new Error().stack);
             } 
@@ -186,6 +181,25 @@ Hoot.view.utilities.dataset = function(context)
         }
     };
 
+    var _deleteLayerCallback = function(resp,data){
+        if(resp===true){
+            if(data.selNode){data.selNode.remove();}
+
+            if(data.i>=data.datasets2remove.length-1){
+                context.hoot().model.layers.refresh(_refreshLinks(_updateTrees()));
+
+                //remove folder
+                if(data.type==='folder'){
+                    context.hoot().model.folders.deleteFolder(data.id,function(resp){
+                        if(resp===false){iD.ui.Alert('Unable to delete folder.','error',new Error().stack);}
+                        context.hoot().model.folders.refresh(function () {context.hoot().model.import.updateTrees();});   
+                    });
+                }
+            }  
+        }
+    };
+
+    var _refreshFolders = function(callback){context.hoot().model.folders.refresh(callback);};
     var _refreshLinks = function(callback){context.hoot().model.folders.refreshLinks(callback);};
     var _updateTrees = function(callback){context.hoot().model.import.updateTrees(callback);};
     

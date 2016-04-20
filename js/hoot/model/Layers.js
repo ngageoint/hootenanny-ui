@@ -257,13 +257,12 @@ Hoot.model.layers = function (context)
         context.flush();
     };
 
-    model_layers.deleteLayer = function(dataset,callback){
-        if(!dataset.name) {
-            //if(callback){callback(false);}
-            return false;
+    model_layers.deleteLayer = function(params,callback){
+        if(!params.dataset.name) {
+            if(callback){callback(false,params);}
         }
 
-        d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + dataset.name)
+        d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + params.dataset.name)
         .header('Content-Type', 'text/plain')
         .post('', function (error, data) {
 
@@ -280,15 +279,13 @@ Hoot.model.layers = function (context)
                         var link={};
                         link.folderId = 0;
                         link.updateType='delete';
-                        link.mapid=context.hoot().model.layers.getmapIdByName(dataset.name)||0;
+                        link.mapid=context.hoot().model.layers.getmapIdByName(params.dataset.name)||0;
                         context.hoot().model.layers.refresh(function(){
-                            if(callback){callback(true);}
+                            if(callback){callback(true,params);}
                         });
                     }
                 });
             }, iD.data.hootConfig.JobStatusQueryInterval);
-
-            return true;
         });
     };
 
