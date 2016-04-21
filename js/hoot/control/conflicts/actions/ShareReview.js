@@ -53,7 +53,7 @@ Hoot.control.conflicts.actions.sharereview = function (context)
                 inputtype:'text'
             },
             {
-                label: 'Note',
+                label: 'Note (Optional)',
                 id: 'reviewBookmarkNote',
                 placeholder:'',
                 inputtype:'textarea'
@@ -68,14 +68,14 @@ Hoot.control.conflicts.actions.sharereview = function (context)
 
         var d_btn = [
                         {
-                            text: 'publish',
+                            text: 'Save',
                             location: 'right',
                             onclick: _saveBookmark
                         }
                     ];
 
         var meta = {};
-        meta.title = 'Share Review';
+        meta.title = 'Bookmark Review';
         meta.form = d_form;
         meta.button = d_btn;
 
@@ -119,9 +119,9 @@ Hoot.control.conflicts.actions.sharereview = function (context)
             var desc = d3.select('#reviewBookmarkDescription').value();
             var note = d3.select('#reviewBookmarkNote').value();
 
-            if(!title || title.length === 0 || !desc || desc.length === 0 || !note || note.length === 0) {
-                throw new Error('Invalid values.');
-            }
+			if(!title || title.length === 0 || !desc || desc.length === 0 || !note || note.length === 0) {
+				throw new Error('Invalid values.');
+			}
 
 
             var creatorEmail = d3.select('#reviewBookmarkCreatorEmail').value();

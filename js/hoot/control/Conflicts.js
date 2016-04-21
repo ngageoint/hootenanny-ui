@@ -79,8 +79,9 @@ Hoot.control.conflicts = function (context, sidebar) {
         context.connection().on('reviewLayerAdded', function (layerName, force) {
 
             var curReviewable = _instance.actions.traversereview.getCurrentReviewable();
-            
-            if(curReviewable) {
+            var mergedLayer = context.hoot().model.layers.getMergedLayer();
+
+            if(curReviewable && mergedLayer.length>0){
                 // make sure to load any missing elements
                 _instance.actions.idgraphsynch.getRelationFeature(curReviewable.mapId, curReviewable.relationId, 
                 function(){
@@ -228,10 +229,10 @@ Hoot.control.conflicts = function (context, sidebar) {
         {
             id: 'sharereview',
             name: 'share_review',
-            text: 'Share Review',
+            text: 'Bookmark Review',
             color: 'fill-grey button round pad0y pad1x dark small strong',
             icon: '_icon plus',
-            cmd: iD.ui.cmd('s'),
+            cmd: iD.ui.cmd('Ctrl+b'),
             action: _instance.actions.sharereview.publish // Review table
         }];
 
@@ -248,6 +249,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         .on(da[2].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[2]); })
         .on(da[3].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[3]); })
         .on(da[4].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[4]); })
+        .on(da[5].cmd, function() { d3.event.preventDefault(); _callHotkeyAction(da[5]); })
         ;
 
         d3.select(document)
@@ -283,6 +285,7 @@ Hoot.control.conflicts = function (context, sidebar) {
               if(_btnEnabled){
                 _btnEnabled = false;
                 d.action();
+                context.background().updateReviewLayer({});
               } else {
                 iD.ui.Alert('Please wait.  Processing review.','notice');
               }

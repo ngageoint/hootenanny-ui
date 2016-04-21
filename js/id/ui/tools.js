@@ -1,22 +1,32 @@
 iD.ui.Tools = function(context) {
 
+    /*function saving() {
+        return context.mode().id === 'tools';
+    }*/
+    
     function tools() {
          // If in review mode, do not include Clip tools
          var items = [];
-         items.push({title:'Measurement Tools',icon:'add-line',group:'measure',items:[
-                {title:'Measure Length',tooltip:'Shortcut: 6',group:'measure',type:'line',icon:'add-line',mode:iD.modes.MeasureAddLine(context)},
-                {title:'Measure Area',tooltip:'Shortcut: 7',group:'measure',type:'area',icon:'add-area',mode:iD.modes.MeasureAddArea(context)}
+         items.push({title:'Measurement Tools',icon:'line',group:'measure',items:[          
+                {title:'Measure Length',tooltip:'Shortcut: 6',group:'measure',type:'line',icon:'line',mode:iD.modes.MeasureAddLine(context)},
+                {title:'Measure Area',tooltip:'Shortcut: 7',group:'measure',type:'area',icon:'area',mode:iD.modes.MeasureAddArea(context)},
+                {title:'Measure Help',tooltip:'',group:'measure',type:'help',icon:'help',action:'measureHelp'}
             ]});
 
-        if (!context.hoot().control.conflicts.isConflictReviewExist()) {
-            items.push({title:'Clip Tools',icon:'scissors',group:'clip',items:[
-                {title:'Clip to Visual Extent',tooltip:'Shortcut: 9',group:'clip',type:'area',icon:'scissors',action:'clipVisualExtent'},
-                {title:'Clip to Bounding Box',tooltip:'Shortcut: 8',group:'clip',type:'area',icon:'scissors',mode:iD.modes.ClipBoundingBox(context)}
+        if (!hoot.control.conflicts.isConflictReviewExist()) {
+            items.push({title:'Clip Tools',icon:'clip',group:'clip',items:[
+                {title:'Clip to Visual Extent',tooltip:'Shortcut: 9',group:'clip',type:'area',icon:'clip',action:'clipVisualExtent'},
+                {title:'Clip to Bounding Box',tooltip:'Shortcut: 8',group:'clip',type:'area',icon:'clip',mode:iD.modes.ClipBoundingBox(context)}
             ]});
         }
 
         d3.select('html').append('div').attr('class', 'tools-menu');
 
+        if(d3.select('button.tools').text() === 'Clear'){
+            d3.select('button.tools').text('Tools');
+            return;
+        }
+               
         var toolsItem =  d3.selectAll('.tools-menu')
             .html('')
             .append('ul')
@@ -53,21 +63,24 @@ iD.ui.Tools = function(context) {
                             } else {
                                 iD.ui.Alert('Add data to map before clipping.','notice',new Error().stack);
                             }
+                        } else if (item.action==='measureHelp'){
+                            iD.ui.Alert('Click anywhere on the map to start measuring.  Double-click to end measurement. Clicking on the Tools menu will clear the vectors from the screen.','notice');
                         }
                         d3.select('.tools-menu').remove();
                         d3.select('.sub-menu').remove();
-                      });
+                      })
+                    .each(function(item){
+                        d3.select(this).call(iD.svg.Icon('#icon-' + item.icon, 'pre-text'));
+                    });
 
-                subTools.append('span').attr('class',function(item){return item.icon + ' icon icon-pre-text';});
                 subTools.append('span').text(function(item) { return item.title; }).attr('title',(function(item){return item.tooltip||'';}));
             });
-
-            toolsItem.append('span').attr('class',function(){return 'icon-pre-text';});
+        
             toolsItem.append('span').text(function(item) { return item.title; });
-
+            
         d3.select('.tools-menu').style('display', 'none');
         d3.select('.sub-menu').style('display', 'none');
-
+        
         // show the context menu
         d3.select('.tools-menu')
             .style('left', function(){return d3.select('button.tools').property('offsetLeft')+'px'||'0px';})

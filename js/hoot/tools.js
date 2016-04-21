@@ -150,8 +150,8 @@ Hoot.tools = function (context) {
 
 
         var refLayer = '1';
-        var oRefLayer = a.select('.referenceLayer').datum();
-        if(oRefLayer.id === data.INPUT2){
+        var oRefLayerId = hoot.model.layers.getmapIdByName(a.select('.referenceLayer').value());
+        if(oRefLayerId === data.INPUT2){
             refLayer = '2';
         }
 
@@ -482,7 +482,6 @@ Hoot.tools = function (context) {
         if(!merged && params.mapId)
         {
             Hoot.model.REST('ReviewGetStatistics', params.mapId,function (error, stat) {
-
                 if(stat.unreviewedCount > 0) {
                     var reqParam = {};
                     reqParam.mapId = params.mapId;

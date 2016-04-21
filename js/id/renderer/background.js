@@ -7,6 +7,9 @@ iD.Background = function(context) {
         //Added for EGD-plugin
         footprintLayer = iD.FootprintLayer(context, dispatch)
             .projection(context.projection),
+        //Added for Hoot review all relations tool
+        reviewLayer = iD.ReviewLayer(context, dispatch)
+            .projection(context.projection),
         //Added for Hoot review merge tool
         arrowLayer = iD.ArrowLayer(context, dispatch)
             .projection(context.projection),
@@ -108,6 +111,15 @@ iD.Background = function(context) {
             .attr('class', 'layer-layer footprint-layer');
 
         footprint.call(footprintLayer);
+
+        //Added for Hoot review-relation-goto tool
+        var review = selection.selectAll('.review-layer')
+        .data([0]);
+
+        review.enter().insert('div', '.layer-data')
+            .attr('class', 'layer-layer review-layer');
+
+        review.call(reviewLayer);
 
         //Added for Hoot review merge tool
         var arrow = selection.selectAll('.arrow-layer')
@@ -214,6 +226,8 @@ iD.Background = function(context) {
         /*gpxLayer.dimensions(_);*/
         //Added for EGD-plugin
         footprintLayer.dimensions(_);
+        //Added for Hoot review relation tool
+        reviewLayer.dimensions(_);
         //Added for Hoot review merge tool
         arrowLayer.dimensions(_);
         //Added for Hoot measurement tool
@@ -413,6 +427,13 @@ iD.Background = function(context) {
         dispatch.change();
     };
 
+    //Added for Hoot review relation tool
+    background.updateReviewLayer = function(d,e) {
+        d3.selectAll('.gotoreview').remove();
+        reviewLayer.geojson(d,e);
+        dispatch.change();
+    }; 
+
     //Added for Hoot review merge tool
     background.updateArrowLayer = function(d) {
         arrowLayer.geojson(d);
@@ -421,6 +442,7 @@ iD.Background = function(context) {
 
   //Added for Hoot measurement tool
     background.updateMeasureLayer = function(d) {
+		d3.select('.measure-layer').selectAll('g').remove();
         measureLayer.geojson(d);
         dispatch.change();
     };

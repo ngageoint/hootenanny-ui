@@ -22,6 +22,7 @@ iD.modes.MeasureAddLine = function(context) {
     };
 
     mode.exit = function() {
+		d3.select('button.tools').text('Clear');	
         context.uninstall(behavior);
     };
 

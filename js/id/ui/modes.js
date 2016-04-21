@@ -24,10 +24,6 @@ iD.ui.Modes = function(context) {
                if (mode.id === context.mode().id) {
                    context.enter(iD.modes.Browse(context));
                } else {
-                   if(mode.button === 'line' || mode.button === 'area'){
-                       var r = window.confirm('Enable line snap?\nPress OK to enable else Cancel.');
-                       context.enableSnap = r;
-                   }
                    context.enter(mode);
                }
            })
