@@ -14,7 +14,6 @@ Hoot.model.layers = function (context)
     var isLayerLoading = false;
     var selectedLayers = [];
 
-
     model_layers.layers = layers;
     model_layers.getmapIdByName = function (name) {
         var ar = _.filter(model_layers.getAvailLayers(), function (a) {
@@ -415,7 +414,6 @@ Hoot.model.layers = function (context)
         selectedLayers = d;
         return selectedLayers;
     };
-
 
     return model_layers;
 };
