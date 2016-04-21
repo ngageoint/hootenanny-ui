@@ -29,7 +29,7 @@ iD.ui.Alert = function(message,type,stack) {
     var d = new Date().toLocaleString();
     try{
         if(type === 'warning'||type === 'error'){
-            hoot.view.utilities.errorlog.reportUIError(d + ': ' + message,stack);
+            context.hoot().view.utilities.errorlog.reportUIError(d + ': ' + message,stack);
         }
     } catch(e){
         alert(message);

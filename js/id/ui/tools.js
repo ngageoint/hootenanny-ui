@@ -8,7 +8,7 @@ iD.ui.Tools = function(context) {
                 {title:'Measure Area',tooltip:'Shortcut: 7',group:'measure',type:'area',icon:'add-area',mode:iD.modes.MeasureAddArea(context)}
             ]});
 
-        if (!hoot.control.conflicts.isConflictReviewExist()) {
+        if (!context.hoot().control.conflicts.isConflictReviewExist()) {
             items.push({title:'Clip Tools',icon:'scissors',group:'clip',items:[
                 {title:'Clip to Visual Extent',tooltip:'Shortcut: 9',group:'clip',type:'area',icon:'scissors',action:'clipVisualExtent'},
                 {title:'Clip to Bounding Box',tooltip:'Shortcut: 8',group:'clip',type:'area',icon:'scissors',mode:iD.modes.ClipBoundingBox(context)}
@@ -48,8 +48,8 @@ iD.ui.Tools = function(context) {
                             context.enter(item.mode);
                         } else if (item.action === 'clipVisualExtent'){
                             //Call clip map
-                            if(!_.isEmpty(hoot.model.layers.getLayers())){
-                                hoot.control.utilities.clipdataset.clipDatasetContainer('visualExtent');
+                            if(!_.isEmpty(context.hoot().model.layers.getLayers())){
+                                context.hoot().control.utilities.clipdataset.clipDatasetContainer('visualExtent');
                             } else {
                                 iD.ui.Alert('Add data to map before clipping.','notice',new Error().stack);
                             }
