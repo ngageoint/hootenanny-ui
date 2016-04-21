@@ -32,7 +32,7 @@
 //      14 Apr. 2016 eslint changes -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Hoot.control.conflate = function (context, sidebar) {
+Hoot.control.conflate = function (sidebar,context) {
     var _event = d3.dispatch('merge');
     var _container;
     var _confData;

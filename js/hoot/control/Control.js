@@ -20,7 +20,7 @@ Hoot.control = function (context){
         d3.select('.sidebar-component').style('background-color', '#fff');
         //d3.selectAll('.save').style('display','none');
 
-        hoot_control.conflate = Hoot.control.conflate(sidebar);
+        hoot_control.conflate = Hoot.control.conflate(sidebar, context);
         hoot_control.import = Hoot.control.import(context, sidebar);
         hoot_control.export = Hoot.control.export( sidebar);
         hoot_control.view = Hoot.control.view(sidebar, context);

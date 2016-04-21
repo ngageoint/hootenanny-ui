@@ -727,13 +727,13 @@ iD.Map = function(context) {
         d3.selectAll('.vertex').remove();
         //d3.selectAll('.shadow').remove();
 
-        var farLine = iD.svg.FarLine(projection);
-        var farArea = iD.svg.FarArea(projection);
+        var farLine = iD.svg.FarLine(projection, context);
+        var farArea = iD.svg.FarArea(projection, context);
 
         surface
-        .call(farLine, graph, data, filter)
-        .call(farArea, graph, data, filter)
-        .call(drawPoints, graph, data, filter);
+        .call(farLine, graph, data, filter, context)
+        .call(farArea, graph, data, filter, context)
+        .call(drawPoints, graph, data, filter, context);
 
         var lastLoadedLayer = context.connection().lastLoadedLayer();
         if(lastLoadedLayer){

@@ -1,4 +1,4 @@
-iD.svg.FarLine = function(projection) {
+iD.svg.FarLine = function(projection, context) {
 
     var highway_stack = {
         motorway: 0,
@@ -81,12 +81,12 @@ iD.svg.FarLine = function(projection) {
         lines.enter()
             .append('path')
             .attr('class', function(d) { return 'way line ' + this.parentNode.__data__ + ' ' + d.id; })
-            .call(iD.svg.TagClasses());
+            .call(iD.svg.TagClasses(context));
 
         lines
             .sort(waystack)
             .attr('d', getPath)
-            .call(iD.svg.TagClasses().tags(iD.svg.MultipolygonMemberTags(graph)));
+            .call(iD.svg.TagClasses(context).tags(iD.svg.MultipolygonMemberTags(graph)));
 
         lines.exit()
             .remove();
@@ -154,7 +154,7 @@ iD.svg.FarArea = function(projection) {
         this.style.fill = this.style.stroke = '';
     }
 
-    return function drawAreas(surface, graph, entities, filter) {
+    return function drawAreas(surface, graph, entities, filter, context) {
         var path = iD.svg.Path(projection, graph, true),
             areas = {},
             multipolygon;
@@ -251,7 +251,7 @@ iD.svg.FarArea = function(projection) {
                     setPattern.apply(this, arguments);
                 }
             })
-            .call(iD.svg.TagClasses());
+            .call(iD.svg.TagClasses(context));
 
         paths
             .attr('d', path);

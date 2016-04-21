@@ -977,9 +977,7 @@ iD.Connection = function(context) {
                 }
 
             function getCurrentId(loadedData, lyr) {
-                _.find(loadedData, function(l) {
-                    return l.name === lyr;
-                });
+                return _.find(loadedData, {'name':lyr});
             }
 
             tiles.forEach(function (tile) {

@@ -1,4 +1,4 @@
-iD.svg.Areas = function(projection) {
+iD.svg.Areas = function(projection, context) {
     // Patterns only work in Firefox when set directly on element.
     // (This is not a bug: https://bugzilla.mozilla.org/show_bug.cgi?id=750632)
     var patterns = {
@@ -124,7 +124,7 @@ iD.svg.Areas = function(projection) {
                     setPattern.apply(this, arguments);
                 }
             })
-            .call(iD.svg.TagClasses());
+            .call(iD.svg.TagClasses(context));
 
         paths
             .attr('d', path);
