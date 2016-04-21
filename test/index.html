@@ -50,6 +50,7 @@
     <script src='../js/id/services/nominatim.js'></script>
     <script src='../js/id/services/taginfo.js'></script>
     <script src='../js/id/services/wikipedia.js'></script>
+    <script src='../js/id/services/dgservices.js'></script>
 
     <script src='../data/data_dev.js'></script>
 
@@ -65,6 +66,8 @@
     <script src='../js/id/renderer/map.js'></script>
     <script src='../js/id/renderer/tile_layer.js'></script>
     <script src='../js/id/renderer/footprint_layer.js'></script>
+    <script src='../js/id/renderer/arrow_layer.js'></script>
+    <script src='../js/id/renderer/measure_layer.js'></script>
 
     <script src="../js/id/svg.js"></script>
     <script src="../js/id/svg/areas.js"></script>
@@ -131,6 +134,8 @@
     <script src='../js/id/ui/preset/combo.js'></script>
     <script src='../js/id/ui/preset/localized.js'></script>
     <script src='../js/id/ui/preset/wikipedia.js'></script>
+
+    <script src='../js/id/ui/plugins/Plugins.js'></script>
 
     <script src='../js/id/actions.js'></script>
     <script src='../js/id/actions/add_entity.js'></script>
@@ -240,6 +245,7 @@
         <script src='../data/introGraph.js'></script>
         <script src='../js/hoot/Hoot.js'></script>
         <script src='../js/hoot/tools.js'></script>
+        <script src='../js/hoot/Ui.js'></script>
 
 
         <script src='../js/hoot/lib/FileSaver.js'></script>
@@ -258,6 +264,7 @@
         <script src='../js/hoot/model/Conflate.js'></script>
         <script src='../js/hoot/model/BasemapDataset.js'></script>
         <script src='../js/hoot/model/rest.js'></script>
+        <script src='../js/hoot/model/Folders.js'></script>
 
         <script src='../js/hoot/view/View.js'></script>
         <script src='../js/hoot/view/LTDSTags.js'></script>
@@ -269,7 +276,14 @@
         <script src='../js/hoot/view/utilities/Translation.js'></script>
         <script src='../js/hoot/view/utilities/ErrorLog.js'></script>
         <script src='../js/hoot/view/utilities/Reports.js'></script>
+        <script src='../js/hoot/view/utilities/About.js'></script>
+        <script src='../js/hoot/view/utilities/ReviewBookmarks.js'></script>
+        <script src='../js/hoot/view/utilities/ReviewBookmarkNotes.js'></script>
 
+        <script src='../js/hoot/ui/FormFactory.js'></script>
+        <script src='../js/hoot/ui/HootFormBase.js'></script>
+        <script src='../js/hoot/ui/HootFormReviewmarkMenu.js'></script>
+        <script src='../js/hoot/ui/HootFormReviewNote.js'></script>
 
         <script src='../js/hoot/control/Control.js'></script>
         <script src='../js/hoot/control/Conflate.js'></script>
@@ -283,6 +297,15 @@
         <script src='../js/hoot/control/utilities/BasemapDataset.js'></script>
         <script src='../js/hoot/control/utilities/WfsDataset.js'></script>
         <script src='../js/hoot/control/utilities/Reports.js'></script>
+        <script src='../js/hoot/control/utilities/Folder.js'></script>
+        <script src='../js/hoot/control/utilities/Validation.js'></script>
+        <script src='../js/hoot/control/utilities/Filter.js'></script>
+        <script src='../js/hoot/control/utilities/ExportDataset.js'></script>
+        <script src='../js/hoot/control/utilities/BulkModifyDataset.js'></script>
+        <script src='../js/hoot/control/utilities/ModifyDataset.js'></script>
+        <script src='../js/hoot/control/utilities/ImportDataset.js'></script>
+        <script src='../js/hoot/control/utilities/BulkImportDataset.js'></script>
+        <script src='../js/hoot/control/utilities/ClipDataset.js'></script>
 
  <!--   <script src='../data/introGraph.js'></script>
     <script src='../js/hoot/Hoot.js'></script>
@@ -348,7 +371,7 @@
     <script src="spec/actions/split.js"></script>
     <script src="spec/actions/unrestrict_turn.js"></script>
 
-    <script src="spec/geo.js"></script>
+    <!--script src="spec/geo.js"></script>
     <script src="spec/geo/extent.js"></script>
     <script src="spec/geo/intersection.js"></script>
     <script src="spec/geo/multipolygon.js"></script>
@@ -407,13 +430,13 @@
     <script src="spec/presets/preset.js"></script>
     <script src="spec/presets/collection.js"></script>
     <script src="spec/presets/category.js"></script>
-    <script src="spec/id.js"></script>
+    <script src="spec/id.js"></script-->
 
-    <script src="spec/hoot/model/Export.js"></script>
+    <!--script src="spec/hoot/model/Export.js"></script>
     <script src="spec/hoot/model/Import.js"></script>
     <script src="spec/hoot/model/Layers.js"></script>
     <script src="spec/hoot/controller/translation_assistant.js"></script>
-    <script src="spec/hoot/controller/import.js"></script>
+    <script src="spec/hoot/controller/import.js"></script-->
 
     <script>
 
