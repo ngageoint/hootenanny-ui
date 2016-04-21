@@ -976,7 +976,7 @@ iD.Connection = function(context) {
 
                 }
 
-            function getCurrentId(loadedData, lyr) {
+            var getCurrentId = function(loadedData, lyr) {
                 _.find(loadedData, function(l) {
                     return l.name === lyr;
                 });
