@@ -1,8 +1,9 @@
 describe('iD.Connection', function () {
     var c;
+    var context = {};
 
     beforeEach(function () {
-        c = new iD.Connection();
+        c = new iD.Connection(false);
     });
 
     it('is instantiated', function () {
@@ -12,24 +13,24 @@ describe('iD.Connection', function () {
     it('allows insecure connections', function () {
         expect(c.changesetURL(2)).to.match(/^http:/);
 
-        c = new iD.Connection(false);
+        c = new iD.Connection(false, false);
         expect(c.changesetURL(2)).to.match(/^http:/);
     });
 
     it('allows secure connections', function () {
-        c = new iD.Connection(true);
+        c = new iD.Connection(false, true);
         expect(c.changesetURL(2)).to.match(/^https:/);
     });
 
     describe('#changesetUrl', function() {
         it('provides a changeset url', function() {
-            expect(c.changesetURL(2)).to.eql('/hoot-services/osm/changeset/2');
+            expect(c.changesetURL(2)).to.eql('http://www.openstreetmap.org/changeset/2');
         });
     });
 
     describe('#userURL', function() {
         it('provides a user url', function() {
-            expect(c.userURL('bob')).to.eql('/hoot-services/osm/user/bob');
+            expect(c.userURL('bob')).to.eql('http://www.openstreetmap.org/user/bob');
         });
     });
 
@@ -112,7 +113,7 @@ describe('iD.Connection', function () {
                 done();
             });
 
-            server.respondWith("GET", "/hoot-services/osm/api/0.6/node/1",
+            server.respondWith("GET", "http://www.openstreetmap.org/api/0.6/node/1",
                 [200, { "Content-Type": "text/xml" }, nodeXML]);
             server.respond();
         });
@@ -126,7 +127,7 @@ describe('iD.Connection', function () {
                 done();
             });
 
-            server.respondWith("GET", "/hoot-services/osm/api/0.6/way/1/full",
+            server.respondWith("GET", "http://www.openstreetmap.org/api/0.6/way/1/full",
                 [200, { "Content-Type": "text/xml" }, wayXML]);
             server.respond();
         });
@@ -138,7 +139,7 @@ describe('iD.Connection', function () {
                 done();
             });
 
-            server.respondWith("GET", "/hoot-services/osm/api/0.6/node/1",
+            server.respondWith("GET", "http://www.openstreetmap.org/api/0.6/node/1",
                 [200, { "Content-Type": "text/xml" }, nodeXML]);
             server.respond();
         });

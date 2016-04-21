@@ -1,15 +1,19 @@
 //Need to document why this was modified for Hoot
-iD.Connection = function(context) {
+iD.Connection = function(context, useHttps) {
+    if (typeof useHttps !== 'boolean') {
+      useHttps = window.location.protocol === 'https:';
+    }
 
     var event = d3.dispatch('authenticating', 'authenticated', 'auth', 'loading', 'load', 'loaded', 'layer'
         , 'layerAdding', 'layerAdded','tileAdded', 'reviewLayerAdded'),
-        url = (context && iD.data.hootConfig) ? iD.data.hootConfig.url : 'http://www.openstreetmap.org',
+        protocol = useHttps ? 'https:' : 'http:',
+        url = (context && iD.data.hootConfig) ? iD.data.hootConfig.url : protocol + '//www.openstreetmap.org',
         connection = {},
         inflight = {},
         loadedTiles = {},
         tileZoom = 2, //Why did Hoot change this from 16?  Maybe add to hootConfig instead of hardcode?
         oauth = osmAuth({
-            url: (context && iD.data.hootConfig) ? iD.data.hootConfig.url : 'http://www.openstreetmap.org',
+            url: (context && iD.data.hootConfig) ? iD.data.hootConfig.url : protocol + '//www.openstreetmap.org',
             oauth_consumer_key: '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
             oauth_secret: 'aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL',
             loading: authenticating,
@@ -87,7 +91,7 @@ iD.Connection = function(context) {
 
   //Need to document why this was added for Hoot
     connection.getMbrFromUrl = function( mapId, callback) {
-        var request = d3.json('/hoot-services/osm/api/0.6/map/mbr?mapId=' + mapId);
+        var request = d3.json(url + '/api/0.6/map/mbr?mapId=' + mapId);
         request.get(function (error, resp) {
             if (error) {
                 window.console.log(error);

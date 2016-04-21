@@ -70,7 +70,7 @@ iD.svg.TagClasses = function() {
 
             if (status) {
                 classes += ' tag-status tag-status-' + status; //iD v1.9.2
-                classes += ' tag-ephemeral'; //legacy Hoot
+                //classes += ' tag-ephemeral'; //legacy Hoot
             }
 
             // add any secondary (structure) tags

@@ -401,6 +401,11 @@ window.iD = function () {
         return context;
     };
 
+    context.asset = function(_) {
+        var filename = assetPath + _;
+        return assetMap[filename] || filename;
+    };
+
     context.imagePath = function(_) {
         var asset = 'img/' + _;
         return assetMap[asset] || assetPath + asset;
