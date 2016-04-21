@@ -15,7 +15,7 @@ Hoot.model.folders = function (context)
 
     model_folders.folders = folders;
     model_folders.getfolderIdByName = function (name) {
-        context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
+        model_folders.listFolders(model_folders.getAvailFolders());
         var ar = _.filter(model_folders.getAvailFolders(), function (a) {
             return a.folderPath === name;
         });
@@ -55,7 +55,7 @@ Hoot.model.folders = function (context)
             return false;
         }
 
-        context.hoot().model.folders.setOpenFolders(folderId,false);
+        model_folders.setOpenFolders(folderId,false);
 
         Hoot.model.REST('deleteFolder',folderId,function(a){
             if(a){
@@ -89,7 +89,7 @@ Hoot.model.folders = function (context)
 
     model_folders.updateLink = function(link,callback) {
         Hoot.model.REST('updateMapFolderLinks',link,function(){
-            context.hoot().model.folders.refreshLinks(function(){
+            model_folders.refreshLinks(function(){
                 context.hoot().model.import.updateTrees();
 
                 if(callback){callback();}
@@ -150,7 +150,7 @@ Hoot.model.folders = function (context)
     model_folders.duplicateFolderCheck = function(folder){
         // Make sure that a folder at same level does not exist with same name
         // Check regardless of upper/lower case
-        var folderList = _.each(_.map(context.hoot().model.folders.getAvailFolders(),_.clone),function(e){
+        var folderList = _.each(_.map(model_folders.getAvailFolders(),_.clone),function(e){
             e.name = e.name.toLowerCase();
         });
 
@@ -194,12 +194,12 @@ Hoot.model.folders = function (context)
             } else {
                 //use links to get parent folder as far back as possible
                 var strPath = f.name;
-                var parentFolder = _.find(context.hoot().model.folders.getAvailFolders(),{id:f.parentId});
+                var parentFolder = _.find(model_folders.getAvailFolders(),{id:f.parentId});
                 var i=0;
                 do{
                     i++;
                     strPath = parentFolder.name+'/'+strPath;
-                    parentFolder = _.find(context.hoot().model.folders.getAvailFolders(),{id:parentFolder.parentId});
+                    parentFolder = _.find(model_folders.getAvailFolders(),{id:parentFolder.parentId});
                 } while (parentFolder || i===10);
                 f.folderPath = strPath;
             }
