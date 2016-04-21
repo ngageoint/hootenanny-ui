@@ -1,9 +1,9 @@
-iD.actions.CopyEntities = function(ids, fromGraph, deep) {
+iD.actions.CopyEntities = function(ids, fromGraph) {
     var copies = {};
 
     var action = function(graph) {
         ids.forEach(function(id) {
-            fromGraph.entity(id).copy(deep, fromGraph, copies);
+            fromGraph.entity(id).copy(fromGraph, copies);
         });
 
         for (var id in copies) {
