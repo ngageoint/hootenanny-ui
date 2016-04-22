@@ -9,21 +9,18 @@ iD.ui.TagCopy = function(tag, context) {
 
         var enter = button.enter().append('button')
             .attr('tabindex', -1)
-            .attr('class', 'tag-reference-button');
-
-        enter.append('span');
-        button.selectAll('span')
-            .attr('class', 'icon apply light');
+            .attr('class', 'tag-reference-button')
+            .call(iD.svg.Icon('#icon-apply', 'light checked'));
 
         button.on('click', function () {
             d3.event.stopPropagation();
             d3.event.preventDefault();
-            var span = button.select('span')
-            span.classed('light', !span.classed('light'));
+            var icn = button.select('svg')
+            icn.classed('light', !icn.classed('light'));
 
             //Build the tag list and copy to buffer
             var seltags = d3.selectAll('li.tag-row').filter(function(d) {
-                return d3.select(this).selectAll('span.icon.apply:not(.light)').size() === 1;
+                return d3.select(this).selectAll('svg.icon.checked:not(.light)').size() === 1;
             }).data().reduce(function(m, d) {
                 m[d.key] = d.value;
                 return m;
