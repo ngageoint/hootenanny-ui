@@ -14,6 +14,7 @@ Hoot.model.layers = function (context)
     var isLayerLoading = false;
     var selectedLayers = [];
 
+
     model_layers.layers = layers;
     model_layers.getmapIdByName = function (name) {
         var ar = _.filter(model_layers.getAvailLayers(), function (a) {
@@ -212,8 +213,7 @@ Hoot.model.layers = function (context)
         }
 
         var color = key.color;
-        context.hoot()
-            .changeColor(mapId, color);
+        context.hoot().changeColor(mapId, color);
         layers[name] = key;
         context.connection().loadData(key);
 
@@ -223,6 +223,8 @@ Hoot.model.layers = function (context)
     };
 
     model_layers.addLayer = function (key, callback) {
+        context.background().updateMeasureLayer({},'');
+
         // this isLayerLoading tracks on till key is added to layers object.
         isLayerLoading = true;
         var cMapId = key.id || model_layers.getmapIdByName(key.name) || 155;
@@ -247,6 +249,9 @@ Hoot.model.layers = function (context)
         //var mapid = model_layers.getLayers()[name].mapId;
         var mapid = model_layers.getLayers(name).mapId;
         delete layers[name];
+
+        context.background().updateReviewLayer({},'');
+        context.background().updateMeasureLayer({},'');
 
         context.connection().loadedDataRemove(mapid.toString());
         d3.select('.layerControl_' + mapid.toString()).remove();
@@ -287,6 +292,7 @@ Hoot.model.layers = function (context)
             }, iD.data.hootConfig.JobStatusQueryInterval);
         });
     };
+
 
     model_layers.changeVisibility = function (name) {
         var layer = model_layers
@@ -414,6 +420,7 @@ Hoot.model.layers = function (context)
         selectedLayers = d;
         return selectedLayers;
     };
+
 
     return model_layers;
 };
