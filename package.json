@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "phantomjs node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/index.html dot"
+    "test": "eslint js/id && eslint js/hoot && phantomjs node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/index.html dot"
   },
   "repository": {
     "type": "git",
