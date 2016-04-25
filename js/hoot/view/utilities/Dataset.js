@@ -262,31 +262,39 @@ Hoot.view.utilities.dataset = function(context)
             var datasets2remove = [];
             _.each(selectedLayers,function(f){if(_.find(availLayers,{id:f})){datasets2remove.push(_.find(availLayers,{id:f}));}});
 
-            for(var i=0; i<=datasets2remove.length-1; i++){
-                dataset = datasets2remove[i];
-                var exists = context.hoot().model.layers.getLayers()[dataset.name];
-                if(exists){
-                    iD.ui.Alert('Can not remove the layer in use: ' + dataset.name,'warning',new Error().stack);
-                    return;
-                }
+        for(var i=0; i<=datasets2remove.length-1; i++){
+            dataset = datasets2remove[i];
+            var exists = context.hoot().model.layers.getLayers()[dataset.name];
+            if(exists){
+                iD.ui.Alert('Can not remove the layer in use: ' + dataset.name,'warning',new Error().stack);
+                return;
+            }
 
-                //select the rect using lyr-id
-                var selNode  = container.selectAll('text[lyr-id="' + dataset.id + '"]').node().parentNode;
-                var selRect = d3.select(selNode).select('rect');
-                selRect.style('fill','rgb(255,0,0)');
-                selRect.classed('sel',false);
+            //select the rect using lyr-id
+            try {
+                // If the folder is closed, you will not be able to change the rect color...
+                var selNode;
+                if(!container.selectAll('text[lyr-id="' + dataset.id + '"]').empty()){
+                    selNode  = container.selectAll('text[lyr-id="' + dataset.id + '"]').node().parentNode;
+                    var selRect = d3.select(selNode).select('rect');
+                    selRect.style('fill','rgb(255,0,0)');
+                    selRect.classed('sel',false);
+                }
 
                 d3.select('.context-menu').style('display', 'none');
 
-                var resp = context.hoot().model.layers.deleteLayer(dataset);//,function(resp){
-                    if(resp===true){
-                        selNode.remove();
-                    }
+                var data = {};
+                data.dataset = dataset;
+                data.selNode = selNode;
+                data.datasets2remove = datasets2remove;
+                data.id = d.id;
+                data.i = i;
+                data.type = d.type;
 
-                    if(i>=datasets2remove.length-1){
-                        context.hoot().model.layers.refresh(_refreshLinks(_updateTrees()));
-                    }
-                //});
+                context.hoot().model.layers.deleteLayer(data, _deleteLayerCallback);
+            } catch (e) {
+                iD.ui.Alert('Unable to delete dataset ' + dataset.name + '. ' + e,'error',new Error().stack);
+            }
             }//,container);
         }
     };
