@@ -22,11 +22,11 @@ Hoot.control = function (context){
 
         hoot_control.conflate = Hoot.control.conflate(sidebar, context);
         hoot_control.import = Hoot.control.import(context, sidebar);
-        hoot_control.export = Hoot.control.export( sidebar);
+        hoot_control.export = Hoot.control.export(context, sidebar);
         hoot_control.view = Hoot.control.view(sidebar, context);
         hoot_control.conflicts = Hoot.control.conflicts(context, sidebar);
         hoot_control.validation = Hoot.control.validation(context, sidebar);
-        
+
         // tools will go away till then
         Hoot.tools(context, sidebar);
 	};
