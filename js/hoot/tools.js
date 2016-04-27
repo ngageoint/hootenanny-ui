@@ -541,7 +541,7 @@ Hoot.tools = function (context, selection) {
                                         var curLayer = loadedLayers[layerName];
                                         curLayer.layers = [input1Name, input2Name];
 
-                                        if(input1 && input1Name) {
+                                        if((input1 && input1Name) && (input2 && input2Name)){
                                             var key = {
                                                 'name': input1Name,
                                                 'id':input1,
@@ -569,14 +569,42 @@ Hoot.tools = function (context, selection) {
 
 
                                                     });
-                                                } else {
-                                                	iD.ui.Alert("Could not determine input layer 2. It will not be loaded.",'warning',new Error().stack);
                                                 }
-
-
                                             });
                                         } else {
-                                        	iD.ui.Alert("Could not determine input layer 1. It will not be loaded.",'warning',new Error().stack);
+                                            var key = {};
+                                            if(input1 && input1Name) {
+                                                key = {
+                                                    'name': input1Name,
+                                                    'id':input1,
+                                                    'color': 'violet',
+                                                    'hideinsidebar':'true'
+                                                };
+                                                iD.ui.Alert("Could not determine input layer 2. It will not be loaded.",'warning',new Error().stack);
+                                            } else if(input2 && input2Name) {
+                                                key = {
+                                                    'name': input2Name,
+                                                    'id':input2,
+                                                    'color': 'orange',
+                                                    'hideinsidebar':'true'
+                                                };
+                                                iD.ui.Alert("Could not determine input layer 1. It will not be loaded.",'warning',new Error().stack);
+                                            }
+
+                                            if(key.id){
+                                                context.hoot().model.layers.addLayer(key, function(d){
+                                                    context.hoot().model.layers.setLayerInvisibleById(key.input);
+                                                    if(d === undefined){
+                                                        hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
+                                                            conflicts.startReview(d);
+                                                        });
+                                                    }
+                                                });
+                                            } else {
+                                                hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
+                                                    conflicts.startReview(d);
+                                                });
+                                            }
                                         }
                                     }
                                 } else {
