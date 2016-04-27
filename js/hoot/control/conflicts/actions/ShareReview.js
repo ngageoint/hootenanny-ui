@@ -119,10 +119,9 @@ Hoot.control.conflicts.actions.sharereview = function (context)
             var desc = d3.select('#reviewBookmarkDescription').value();
             var note = d3.select('#reviewBookmarkNote').value();
 
-			if(!title || title.length === 0 || !desc || desc.length === 0 || !note || note.length === 0) {
-				throw new Error('Invalid values.');
-			}
-
+            if(!title || title.length === 0 || !desc || desc.length === 0 || (!note && note!=='')) {
+                throw new Error('Invalid values have been entered.  Please ensure that there is a title and description.');
+            }
 
             var creatorEmail = d3.select('#reviewBookmarkCreatorEmail').value();
             if(!creatorEmail || creatorEmail.length === 0) {
