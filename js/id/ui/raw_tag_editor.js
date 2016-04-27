@@ -43,7 +43,9 @@ iD.ui.RawTagEditor = function(context) {
             entries.push({key: '', value: ''});
         }
 
-        $wrap.append('button')
+        var $selectAll = $wrap.selectAll('.select-all-button').data([0]);
+
+        var $selectAllBtn = $selectAll.enter().append('button')
             .attr('tabindex', -1)
             .classed('select-all-button',true)
             .on('click',function(){
