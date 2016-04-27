@@ -338,17 +338,9 @@ Hoot.model.conflicts = function(context)
                         var refRelationMember = reviewRelation.memberById(featureToDelete.id);
                         if(refRelationMember) {
 
-                            /*var exists = _.find(review_mergedElements, function(rm){
-                                return (rm.id === reviewRelation.id &&
-                                    rm.obj.id === mergedNode.id);
-
-                            });*/
-
                             var exists = _.find(review_mergedElements, {id:reviewRelation.id});
-                            if(exists.obj){
+                            if(exists && exists.obj){
                                 exists = exists.obj.id === mergedNode.id;
-                            } else {
-                                exists = undefined;
                             }
 
                             if(!exists) {
