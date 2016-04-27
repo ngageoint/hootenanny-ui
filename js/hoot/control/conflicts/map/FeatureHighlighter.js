@@ -25,7 +25,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     **/
     //@TODO: change params to array
 	_instance.highlightLayer = function (ritem, raitem, panTo) {
-        panTo = (panTo !== null || panTo !== undefined) ? panTo : true;
+        panTo = (panTo) ? panTo : true;
 
         var feature = null;
         var againstFeature = null;
