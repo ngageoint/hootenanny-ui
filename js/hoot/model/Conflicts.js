@@ -681,11 +681,11 @@ Hoot.model.conflicts = function(context)
         var sourceLayer = context.hoot().loadedLayers()[featureLayerName];
         if(!sourceLayer){
             // try using tags of mergeLayer, which is loaded
-            var tags = _.clone(context.hoot().model.layers().getLayers()[mergeLayer.name].tags);
+            var tags = _.clone(context.hoot().model.layers.getLayers()[mergeLayer.name].tags);
             for(var prop in tags) {
                 if(tags.hasOwnProperty(prop)) {
                     if(tags[prop] === featureLayerName && featureLayerName != null) {
-                        sourceLayer = _.find(context.hoot().model.layers().getAvailLayers(),{'name':featureLayerName});
+                        sourceLayer = _.find(context.hoot().model.layers.getAvailLayers(),{'name':featureLayerName});
                         return sourceLayer.id;
                     }
                 }
