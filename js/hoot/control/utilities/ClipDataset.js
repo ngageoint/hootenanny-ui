@@ -84,7 +84,7 @@ Hoot.control.utilities.clipdataset = function(context) {
         _table.append('tbody');
         _.each(context.hoot().model.layers.getLayers(),function(d){
             var _tableBody = d3.select('#clipTable').select('tbody');
-            var rowId = hoot.model.layers.getmapIdByName(d.name);
+            var rowId = context.hoot().model.layers.getmapIdByName(d.name);
             _tableBody.append('tr').attr('id','row-'+rowId)
                 .selectAll('td')
                 .data(function(row,i){

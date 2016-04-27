@@ -3,17 +3,17 @@ iD.ui.Tools = function(context) {
     /*function saving() {
         return context.mode().id === 'tools';
     }*/
-    
+
     function tools() {
          // If in review mode, do not include Clip tools
          var items = [];
-         items.push({title:'Measurement Tools',icon:'line',group:'measure',items:[          
+         items.push({title:'Measurement Tools',icon:'line',group:'measure',items:[
                 {title:'Measure Length',tooltip:'Shortcut: 6',group:'measure',type:'line',icon:'line',mode:iD.modes.MeasureAddLine(context)},
                 {title:'Measure Area',tooltip:'Shortcut: 7',group:'measure',type:'area',icon:'area',mode:iD.modes.MeasureAddArea(context)},
                 {title:'Measure Help',tooltip:'',group:'measure',type:'help',icon:'help',action:'measureHelp'}
             ]});
 
-        if (!hoot.control.conflicts.isConflictReviewExist()) {
+        if (!context.hoot().control.conflicts.isConflictReviewExist()) {
             items.push({title:'Clip Tools',icon:'clip',group:'clip',items:[
                 {title:'Clip to Visual Extent',tooltip:'Shortcut: 9',group:'clip',type:'area',icon:'clip',action:'clipVisualExtent'},
                 {title:'Clip to Bounding Box',tooltip:'Shortcut: 8',group:'clip',type:'area',icon:'clip',mode:iD.modes.ClipBoundingBox(context)}
@@ -26,7 +26,7 @@ iD.ui.Tools = function(context) {
             d3.select('button.tools').text('Tools');
             return;
         }
-               
+
         var toolsItem =  d3.selectAll('.tools-menu')
             .html('')
             .append('ul')
@@ -75,12 +75,12 @@ iD.ui.Tools = function(context) {
 
                 subTools.append('span').text(function(item) { return item.title; }).attr('title',(function(item){return item.tooltip||'';}));
             });
-        
+
             toolsItem.append('span').text(function(item) { return item.title; });
-            
+
         d3.select('.tools-menu').style('display', 'none');
         d3.select('.sub-menu').style('display', 'none');
-        
+
         // show the context menu
         d3.select('.tools-menu')
             .style('left', function(){return d3.select('button.tools').property('offsetLeft')+'px'||'0px';})
