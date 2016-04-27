@@ -177,6 +177,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
             ptArr.push(context.map().mouseCoordinates());
             
             polygon.attr('points',points.concat(' ' + c.toString()));
+            polygon.attr('loc',loc.concat(' ' + context.map().mouseCoordinates().toString()));
 
             var distance = d3.geo.distance(lastPoint,context.map().mouseCoordinates());
             distance = radiansToMeters(distance);
@@ -217,7 +218,8 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
         svg.append('g')
             .classed('node point',true)
             .attr('id','measure-vertex-'+nodeId)
-            .attr('transform','translate('+c[0]+ ',' + c[1] + ')');
+            .attr('transform','translate('+c[0]+ ',' + c[1] + ')')
+            .attr('loc',context.map().mouseCoordinates);
 
         totDist = totDist + segmentDist;
         segmentDist = 0;
@@ -256,7 +258,8 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
             .style('stroke-linecap','round')
             .style('fill','black')
             .style('fill-opacity','0.3')
-            .attr('points','');
+            .attr('points','')
+            .attr('loc','');
 
         
         label = g.append('text')
