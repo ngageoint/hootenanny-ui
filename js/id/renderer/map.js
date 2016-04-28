@@ -233,7 +233,7 @@ iD.Map = function(context) {
     }
 
     function zoomPan() {
-    	if (Math.log(d3.event.scale) / Math.LN2 - 8 < minzoom + 1) {
+        if (Math.log(d3.event.scale) / Math.LN2 - 8 < minzoom + 1) {
             surface.interrupt();
             iD.ui.flash(context.container())
                 .select('.content')
@@ -312,7 +312,7 @@ iD.Map = function(context) {
             var labelmargin = !measureLines.empty() ? 10 : 30;
             var rectmargin = !measureLines.empty() ? 0 : 10;
 
-            var measureLabel = d3.select('.measure-layer').select('text');
+            measureLabel = d3.select('.measure-layer').select('text');
             if(!measureLabel.empty()){
                 var loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
                 var c = context.projection(loc);
