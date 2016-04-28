@@ -7,7 +7,7 @@
 // Modifications:
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.tools = function (context, selection) {
+Hoot.tools = function (context) {
     var loadingLayer = {},
         loadedLayers = {},
         activeConflateLayer = {},
@@ -482,7 +482,6 @@ Hoot.tools = function (context, selection) {
         if(!merged && params.mapId)
         {
             Hoot.model.REST('ReviewGetStatistics', params.mapId,function (error, stat) {
-
                 if(stat.unreviewedCount > 0) {
                     var reqParam = {};
                     reqParam.mapId = params.mapId;
@@ -570,7 +569,7 @@ Hoot.tools = function (context, selection) {
                                                 }
                                             });
                                                 } else {
-                                            var key = {};
+                                            key = {};
                                             if(input1 && input1Name) {
                                                 key = {
                                                     'name': input1Name,
@@ -578,7 +577,7 @@ Hoot.tools = function (context, selection) {
                                                     'color': 'violet',
                                                     'hideinsidebar':'true'
                                                 };
-                                                iD.ui.Alert("Could not determine input layer 2. It will not be loaded.",'warning',new Error().stack);
+                                                iD.ui.Alert('Could not determine input layer 2. It will not be loaded.','warning',new Error().stack);
                                             } else if(input2 && input2Name) {
                                                 key = {
                                                     'name': input2Name,
@@ -586,7 +585,7 @@ Hoot.tools = function (context, selection) {
                                                     'color': 'orange',
                                                     'hideinsidebar':'true'
                                                 };
-                                                iD.ui.Alert("Could not determine input layer 1. It will not be loaded.",'warning',new Error().stack);
+                                                iD.ui.Alert('Could not determine input layer 1. It will not be loaded.','warning',new Error().stack);
                                                 }
 
 
@@ -618,7 +617,7 @@ Hoot.tools = function (context, selection) {
                                         loadedLayers[layerName] = params;
                                         loadedLayers[layerName].loadable = true;
                                         loadingLayer = {};
-                                    } 
+                                    }
                                 }
                             }
                         });
@@ -635,7 +634,7 @@ Hoot.tools = function (context, selection) {
                         loadedLayers[layerName] = params;
                         loadedLayers[layerName].loadable = true;
                         loadingLayer = {};
-                    }                    
+                    }
                 }
             });
 
@@ -681,7 +680,7 @@ Hoot.tools = function (context, selection) {
         var spinner = cont.append('span').attr('class', 'spinner-hoot').call(iD.ui.Spinner(context));
         context.hoot().model.export.exportData(cont, data, function (status) {
             if(status === 'failed'){
-            	iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error',new Error().stack);
+                iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error',new Error().stack);
             }
 
             if(exportType && exportType === 'Web Feature Service (WFS)'){
