@@ -143,6 +143,7 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
 
             element.on('dblclick',function(){
                 ret(element);
+                polygon.classed('complete',true);
             });
             
             element.on('mousemove.drawarea', null);
