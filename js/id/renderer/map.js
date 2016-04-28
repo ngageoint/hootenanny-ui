@@ -233,10 +233,6 @@ iD.Map = function(context) {
     }
 
     function zoomPan() {
-        //Added for measure layer
-        if(context.mode().id === 'measure-add-line' || context.mode().id === 'measure-add-area' || context.mode().id === 'clip-bounding-box'){return;}
-        else{d3.select('.measure-layer').selectAll('g').remove();}
-
         if (Math.log(d3.event.scale) / Math.LN2 - 8 < minzoom + 1) {
             surface.interrupt();
             iD.ui.flash(context.container())
@@ -301,12 +297,13 @@ iD.Map = function(context) {
                 var measArea = d3.select(a);
                 var newpts = '';
                 var pts = measArea.attr('loc').trim().split(/ /);
-                _.each(pts,function(pt){
-                    var newpt = pt.split(/,/).map(parseFloat);
+                for(var p = 0; p < pts.length - 1; p++){
+                    var newpt = pts[p].split(/,/).map(parseFloat);
                     var c = context.projection(newpt);
-                    newpts += c.toString() + ' ';
-                });
-                measArea.attr('points',newpts);
+                    newpts = newpts + ' ' + c.toString();
+                }
+                measureArea.attr('points',newpts);
+                measureArea.classed('updated',true);
             });
         }
 
@@ -315,6 +312,7 @@ iD.Map = function(context) {
             var labelmargin = !measureLines.empty() ? 10 : 30;
             var rectmargin = !measureLines.empty() ? 0 : 10;
 
+            measureLabel = d3.select('.measure-layer').select('text');
             if(!measureLabel.empty()){
                 var loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
                 var c = context.projection(loc);
