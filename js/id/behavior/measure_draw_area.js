@@ -21,6 +21,8 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
         element.on('dblclick',undefined);
         event.finish();
     }
+
+
     
     function radiansToMeters(r) {
         // using WGS84 authalic radius (6371007.1809 m)
@@ -168,14 +170,19 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
         });
     }
 
-
     function mousemove() {
+        if(polygon.classed('updated')){
+            points = polygon.attr('points');
+            polygon.classed('updated',false);
+        }
+
         var c = context.projection(context.map().mouseCoordinates());
         if(nodeId>0){
             //ptArr[1]=context.map().mouseCoordinates();
             ptArr.splice(ptArr.length-1,1);
             ptArr.push(context.map().mouseCoordinates());
             
+
             polygon.attr('points',points.concat(' ' + c.toString()));
             polygon.attr('loc',loc.concat(' ' + context.map().mouseCoordinates().toString()));
 
@@ -202,6 +209,13 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
     }
     
     function click() {
+        if(d3.event.which !== 1){return false;}
+
+        if(polygon.classed('updated')){
+            points = polygon.attr('points');
+            polygon.classed('updated',false);
+        }
+
         var c = context.projection(context.map().mouseCoordinates());
         
         points = points + ' ' + c;
@@ -246,7 +260,6 @@ iD.behavior.MeasureDrawArea = function(context,svg) {
         }   
         nodeId++;
     }
-
   
     function drawarea(selection) {
         //create polygon, label

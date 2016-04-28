@@ -297,12 +297,13 @@ iD.Map = function(context) {
                 var measArea = d3.select(a);
                 var newpts = '';
                 var pts = measArea.attr('loc').trim().split(/ /);
-                _.each(pts,function(pt){
-                    var newpt = pt.split(/,/).map(parseFloat);
+                for(var p = 0; p < pts.length - 1; p++){
+                    var newpt = pts[p].split(/,/).map(parseFloat);
                     var c = context.projection(newpt);
                     newpts = newpts + ' ' + c.toString();
-                });
+                }
                 measureArea.attr('points',newpts);
+                measureArea.classed('updated',true);
             });
         }
 
