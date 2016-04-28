@@ -43,6 +43,36 @@ iD.ui.RawTagEditor = function(context) {
             entries.push({key: '', value: ''});
         }
 
+        var $selectAll = $wrap.selectAll('.select-all-button').data([0]);
+
+        var $selectAllBtn = $selectAll.enter().append('button')
+            .attr('tabindex', -1)
+            .classed('select-all-button',true)
+            .on('click',function(){
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+
+                var buttons = d3.selectAll('.tag-row .tag-reference-button svg');
+
+                // Determine if we are selecting all or unselecting all
+                if(buttons[0].length === d3.selectAll('.tag-row .tag-reference-button svg.light')[0].length){
+                    buttons.classed('light',false);
+                } else {
+                    buttons.classed('light',true);
+                }
+
+                var seltags = d3.selectAll('li.tag-row').filter(function() {
+                    return d3.select(this).selectAll('svg.icon.checked:not(.light)').size() === 1;
+                }).data().reduce(function(m, d) {
+                    m[d.key] = d.value;
+                    return m;
+                }, {});
+
+                context.copyTags(seltags);
+            })
+            .call(iD.svg.Icon('#icon-apply'));
+
+
         var $list = $wrap.selectAll('.tag-list')
             .data([0]);
 
