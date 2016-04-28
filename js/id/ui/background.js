@@ -1,11 +1,11 @@
 iD.ui.Background = function(context) {
     var key = 'B',
         opacities = [1, 0.75, 0.5, 0.25],
-        directions = [
-            ['left', [1, 0]],
-            ['top', [0, -1]],
-            ['right', [-1, 0]],
-            ['bottom', [0, 1]]],
+        // directions = [
+        //     ['left', [1, 0]],
+        //     ['top', [0, -1]],
+        //     ['right', [-1, 0]],
+        //     ['bottom', [0, 1]]],
         opacityDefault = (context.storage('background-opacity') !== null) ?
             (+context.storage('background-opacity')) : 0.5,
         customTemplate = '',
@@ -25,8 +25,8 @@ iD.ui.Background = function(context) {
                 : d3.ascending(a, b);
         }
 
-        function setOpacity(d) { 
-			var bg = context.container().selectAll('.background-layer')
+        function setOpacity(d) {
+            var bg = context.container().selectAll('.background-layer')
                 .transition()
                 .style('opacity', d)
                 .attr('data-opacity', d);
@@ -72,18 +72,18 @@ iD.ui.Background = function(context) {
                 .classed('active', active);
             //collections.classed('hide', true);
         }
-        
+
         function clickSetSource(d) {
             d3.event.preventDefault();
             context.background().baseLayerSource(d);
             selectLayer();
 
-            //Added to zoom to imported basemap            
-            if(d.extent() && d.type=='tms'){
-            	//ask if user wants to zoom to basemap
-            	if(window.confirm('Do you want to zoom to base layer?')){
-            		context.zoomToExtent(d.extent().miny, d.extent().minx, d.extent().maxy, d.extent().maxx);	
-            	}
+            //Added to zoom to imported basemap
+            if(d.extent() && d.type === 'tms'){
+                //ask if user wants to zoom to basemap
+                if(window.confirm('Do you want to zoom to base layer?')){
+                    context.zoomToExtent(d.extent().miny, d.extent().minx, d.extent().maxy, d.extent().maxx);
+                }
             }
         }
 
@@ -105,7 +105,7 @@ iD.ui.Background = function(context) {
             selectLayer();
             context.storage('background-custom-template', template);
         }
-        
+
         function clickSetOverlay(d) {
             d3.event.preventDefault();
             context.background().toggleOverlayLayer(d);
@@ -140,7 +140,7 @@ iD.ui.Background = function(context) {
                     .title(function(d) { return d.description; })
                     .placement('top'));
 
-			//added for iD v1.9.2
+            //added for iD v1.9.2
             enter.filter(function(d) { return d.best(); })
                 .append('div')
                 .attr('class', 'best')
@@ -178,26 +178,26 @@ iD.ui.Background = function(context) {
             }
         }
 
-        function clickNudge(d) {
+        // function clickNudge(d) {
 
-            var timeout = window.setTimeout(function() {
-                    interval = window.setInterval(nudge, 100);
-                }, 500),
-                interval;
+        //     var timeout = window.setTimeout(function() {
+        //             interval = window.setInterval(nudge, 100);
+        //         }, 500),
+        //         interval;
 
-            d3.select(this).on('mouseup', function() {
-                window.clearInterval(interval);
-                window.clearTimeout(timeout);
-                nudge();
-            });
+        //     d3.select(this).on('mouseup', function() {
+        //         window.clearInterval(interval);
+        //         window.clearTimeout(timeout);
+        //         nudge();
+        //     });
 
-            function nudge() {
-                var offset = context.background()
-                    .nudge(d[1], context.map().zoom())
-                    .offset();
-                resetButton.classed('disabled', offset[0] === 0 && offset[1] === 0);
-            }
-        }
+        //     function nudge() {
+        //         var offset = context.background()
+        //             .nudge(d[1], context.map().zoom())
+        //             .offset();
+        //         resetButton.classed('disabled', offset[0] === 0 && offset[1] === 0);
+        //     }
+        // }
 
         function hide() { setVisible(false); }
 
@@ -306,7 +306,7 @@ iD.ui.Background = function(context) {
             });
 
         label.append('span')
-            .text(t('background.custom'));            
+            .text(t('background.custom'));
 
         //Added for EGD-plugin
 
@@ -329,7 +329,7 @@ iD.ui.Background = function(context) {
                 })
                 .call(iD.svg.Icon('#icon-layers'));
 
-            var label = dgbackground.append('label');
+            label = dgbackground.append('label');
 
             label.append('input')
                 .attr('type', 'radio')
@@ -356,7 +356,7 @@ iD.ui.Background = function(context) {
                 .attr('id', 'dgServiceSwitch')
                 .on('change', function() {
                     //profiles.classed('hide', function() { return !profiles.classed('hide'); });
-                    //TODO update visible db layers when service changes
+                    //Need to update visible db layers when service changes
                 });
             var serviceLabel = serviceSwitch.append('label')
                 .attr('for', 'dgServiceSwitch')
@@ -518,13 +518,13 @@ iD.ui.Background = function(context) {
         context.background()
             .on('change.background-update', update);
 
-        //TODO: Document why this was modified for Hoot
+        //Need to document why this was modified for Hoot
         context.map()
         .on('drawVector',function(){
             update();
         });
 
-        //TODO: Document why this was modified for Hoot
+        //Need to document why this was modified for Hoot
         context.map()
         .on('updateBackgroundList',function(){
             update();

@@ -78,8 +78,7 @@ iD.Entity.prototype = {
         return this;
     },
 
-    // Updated function in v1.9.2
-    copy: function(deep, resolver, copies) {
+    copy: function(resolver, copies) {
         if (copies[this.id])
             return copies[this.id];
 
@@ -140,8 +139,8 @@ iD.Entity.prototype = {
                 key.indexOf('tiger:') !== 0;
         });
 
-		//iD v1.9.2
-		//return _.keys(this.tags).some(iD.interestingTag);
+        //iD v1.9.2
+        //return _.keys(this.tags).some(iD.interestingTag);
     },
 
     isHighwayIntersection: function() {

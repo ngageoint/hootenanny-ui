@@ -8,20 +8,20 @@
 
 Hoot.control.conflicts.info.reviewtable = function (context)
 {
-	var _events = d3.dispatch();
-	var _instance = {};
-	var _poiTableCols= [];
+    var _events = d3.dispatch();
+    var _instance = {};
+    var _poiTableCols= [];
 
 
-    
+
     /**
     * @desc creates tag table for reviewable items
     * @param poiTableCols - table columns
     **/
     _instance.buildPoiTable = function (poiTableCols) {
-    	var elem = d3.select('#conflicts-container');
+        var elem = d3.select('#conflicts-container');
         _poiTableCols = poiTableCols;
-    	var feats = poiTableCols;
+        var feats = poiTableCols;
         function addEllipsis(val) {
             var max = 32;
             if (val && val.length > max) {
@@ -42,23 +42,23 @@ Hoot.control.conflicts.info.reviewtable = function (context)
             var r = ftable.append('tr').classed('', true);
             r.append('td').classed('fillD', true).text(d.key);
             r.append('td').classed('f1', true).text(addEllipsis(d.value[0]))
-            .on('click', function(d){
+            .on('click', function(){
                 var sel = iD.modes.Select(context, [feats[0].id]);
                 _panToEntity(context.entity(feats[0].id));
                 sel.suppressMenu(true);
                 context.enter(sel);
             })
-            .on('mouseenter',function(d){d3.selectAll('.activeReviewFeature').classed('extra-highlight',true);})
-            .on('mouseleave',function(d){d3.selectAll('.activeReviewFeature').classed('extra-highlight',false);});
+            .on('mouseenter',function(){d3.selectAll('.activeReviewFeature').classed('extra-highlight',true);})
+            .on('mouseleave',function(){d3.selectAll('.activeReviewFeature').classed('extra-highlight',false);});
             r.append('td').classed('f2', true).text(addEllipsis(d.value[1]))
-            .on('click', function(d){
+            .on('click', function(){
                 var sel = iD.modes.Select(context, [feats[1].id]);
                 _panToEntity(context.entity(feats[1].id));
                 sel.suppressMenu(true);
                 context.enter(sel);
             })
-            .on('mouseenter',function(d){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',true);})
-            .on('mouseleave',function(d){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',false);});
+            .on('mouseenter',function(){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',true);})
+            .on('mouseleave',function(){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',false);});
 
         });
         _checkToggleText();
@@ -66,7 +66,7 @@ Hoot.control.conflicts.info.reviewtable = function (context)
 
 
 
-    
+
     /**
     * @desc show/hide toggler
     **/
@@ -129,7 +129,7 @@ Hoot.control.conflicts.info.reviewtable = function (context)
     **/
     var _panToEntity = function (id) {
         context.hoot().control.conflicts.map.featureNavigator.panToEntity(id);
-    }
+    };
 
     /**
     * @desc Toggler text
@@ -139,14 +139,14 @@ Hoot.control.conflicts.info.reviewtable = function (context)
         d3.select('a.toggletable')
             .text(d3.select('div.tag-table').classed('hide') ? 'Show Table' : 'Hide Table')
             .call(tooltip);
-    }
+    };
 
     /**
     * @desc tables column getter
     **/
     _instance.poiTableCols = function() {
         return _poiTableCols;
-    }
+    };
 
-	return d3.rebind(_instance, _events, 'on');
-}
+    return d3.rebind(_instance, _events, 'on');
+};

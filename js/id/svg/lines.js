@@ -1,4 +1,4 @@
-iD.svg.Lines = function(projection) {
+iD.svg.Lines = function(projection, context) {
 
     var highway_stack = {
         motorway: 0,
@@ -81,12 +81,12 @@ iD.svg.Lines = function(projection) {
         lines.enter()
             .append('path')
             .attr('class', function(d) { return 'way line ' + this.parentNode.__data__ + ' ' + d.id; })
-            .call(iD.svg.TagClasses());
+            .call(iD.svg.TagClasses(context));
 
         lines
             .sort(waystack)
             .attr('d', getPath)
-            .call(iD.svg.TagClasses().tags(iD.svg.RelationMemberTags(graph)));
+            .call(iD.svg.TagClasses(context).tags(iD.svg.RelationMemberTags(graph)));
 
         lines.exit()
             .remove();

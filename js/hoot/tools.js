@@ -13,7 +13,7 @@ Hoot.tools = function (context, selection) {
         activeConflateLayer = {},
         ETL = context.hoot().control.import,
         view = context.hoot().control.view,
-        conflate = context.hoot().control.conflate;
+        conflate = context.hoot().control.conflate,
         conflicts = context.hoot().control.conflicts,
         exportLayer = context.hoot().control.export,
         hoot = context.hoot(),
@@ -57,7 +57,7 @@ Hoot.tools = function (context, selection) {
             // If user tries to add second layer before first layer is done loading we end up with
             // third Add data button. So we check to see if we are already loading.
             // Also search on hoot.isLayerLoading.
-            var loadedLayers = hoot.model.layers.getLayers();
+            var loadedLayers = context.hoot().model.layers.getLayers();
             var loadedLayersLen = Object.keys(loadedLayers).length;
 
             if (layerDivLength === 2 || loadedLayersLen > 1) {
@@ -99,7 +99,7 @@ Hoot.tools = function (context, selection) {
                 conflicts.deactivate(true);
                 context.hoot().mode('browse');
                 _.each(confLayers, function (d) {
-                    hoot.model.layers.removeLayer(d);
+                    context.hoot().model.layers.removeLayer(d);
                     d3.select('.layer_' + d).remove();
                     delete loadedLayers[d];
                 });
@@ -124,7 +124,7 @@ Hoot.tools = function (context, selection) {
     **/
     function resetAllLayers() {
         _.each(loadedLayers, function (d) {
-            hoot.model.layers.removeLayer(d.name);
+            context.hoot().model.layers.removeLayer(d.name);
             var modifiedId = d.mapId.toString();
             d3.select('[data-layer="' + modifiedId + '"]').remove();
             delete loadedLayers[d.name];
@@ -151,7 +151,7 @@ Hoot.tools = function (context, selection) {
 
         var refLayer = '1';
         var oRefLayerId = hoot.model.layers.getmapIdByName(a.select('.referenceLayer').value());
-        if(oRefLayerId == data.INPUT2){
+        if(oRefLayerId === data.INPUT2){
             refLayer = '2';
         }
 
@@ -172,19 +172,19 @@ Hoot.tools = function (context, selection) {
         data.COLLECT_STATS = a.select('.isCollectStats').value();
 
         var n = (new Date()).getTime();
-        data.TIME_STAMP = "" + n;
+        data.TIME_STAMP = '' + n;
         //data.AUTO_TUNNING = a.select('.autoTunning').value();
         data.REFERENCE_LAYER = refLayer;
         data.AUTO_TUNNING = 'false';
 
         if(advOpts){
-            var advOptionsStr = "";
+            var advOptionsStr = '';
             _.each(advOpts, function(opt){
                 if(advOptionsStr.length > 0){
-                    advOptionsStr += " ";
+                    advOptionsStr += ' ';
                 }
                 advOptionsStr += '-D "' + opt.name + '=' + opt.value + '"';
-            })
+            });
             data.ADV_OPTIONS = advOptionsStr;
         }/* else {
             // Do the default onew
@@ -215,34 +215,34 @@ Hoot.tools = function (context, selection) {
             a.loadable = false;
         });
         //d3.select('.loadingLayer').remove();
-        hoot.model.layers.addLayer(item);
+        context.hoot().model.layers.addLayer(item);
 
         //Add a folder and update links
         var pathname = a.select('.pathname').value();
-        if(pathname==''){pathname=a.select('.reset.PathName').attr('placeholder');}
-        if(pathname=='root'){pathname='';}
-        var pathId = hoot.model.folders.getfolderIdByName(pathname) || 0;
+        if(pathname===''){pathname=a.select('.reset.PathName').attr('placeholder');}
+        if(pathname==='root'){pathname='';}
+        var pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;
 
         var newfoldername = a.select('.newfoldername').value();
         var folderData = {};
         folderData.folderName = newfoldername;
         folderData.parentId = pathId;
-        hoot.model.folders.addFolder(folderData,function(folderId){
+        context.hoot().model.folders.addFolder(folderData,function(folderId){
             //update map linking
             var link = {};
             link.folderId = folderId || 0;
             link.mapid = 0;
             if(a.select('.saveAs').value()){
-                link.mapid =_.pluck(_.filter(hoot.model.layers.getAvailLayers(),function(f){return f.name == a.select('.saveAs').value()}),'id')[0] || 0;
+                link.mapid =_.pluck(_.filter(context.hoot().model.layers.getAvailLayers(),function(f){return f.name === a.select('.saveAs').value();}),'id')[0] || 0;
             }
-            if(link.mapid==0){return;}
+            if(link.mapid===0){return;}
             link.updateType='new';
-            hoot.model.folders.updateLink(link);
+            context.hoot().model.folders.updateLink(link);
             link = {};
         });
 
         /*var datasettable = d3.select('#datasettable');
-        hoot.view.utilities.dataset.populateDatasetsSVG(datasettable);*/
+        context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);*/
     }
 
     /**
@@ -285,8 +285,8 @@ Hoot.tools = function (context, selection) {
             view.render(loadingLayer);
             loadingLayer = {};
             conflicts.activate(loadedLayers[layerName]);
-            hoot.mode('edit');
-            hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
+            context.hoot().mode('edit');
+            context.hoot().model.conflicts.beginReview(activeConflateLayer, function (d) {
                 conflicts.startReview(d);
             });
             conflationCheck(layerName, true);
@@ -301,25 +301,25 @@ Hoot.tools = function (context, selection) {
 
     ETL.on('addLayer', function (options) {
 
-        if (hoot.model.layers.getLayers()[options.name]) {
+        if (context.hoot().model.layers.getLayers()[options.name]) {
             return false;
         }
         if (!options.name || !options.color) {
             return false;
         }
         loadingLayer = options;
-        hoot.model.layers.addLayer(options);
+        context.hoot().model.layers.addLayer(options);
     });
     view.on('layerRemove', function (layerName, isPrimary) {
-        hoot.model.layers.removeLayer(layerName);
+        context.hoot().model.layers.removeLayer(layerName);
         conflationCheck(layerName, false, isPrimary);
     });
     view.on('layerColor', function (layerName, newColor, layerId) {
-        hoot.changeColor(layerId, newColor);
+        context.hoot().changeColor(layerId, newColor);
         loadedLayers[layerName].color = newColor;
     });
     view.on('layerVis', function (layerName) {
-        hoot.model.layers.changeVisibility(layerName);
+        context.hoot().model.layers.changeVisibility(layerName);
     });
 
     conflicts.on('exportData', function () {
@@ -335,9 +335,9 @@ Hoot.tools = function (context, selection) {
             if(totalSize > expThreshold)
             {
                 var thresholdInMb = Math.floor((1*expThreshold)/1000000);
-                var res = window.confirm("Export data size is greater than " + thresholdInMb
-                    +"MB and export may encounter problem." +
-                    " Do you wish to continue?");
+                var res = window.confirm('Export data size is greater than ' + thresholdInMb
+                    +'MB and export may encounter problem.' +
+                    ' Do you wish to continue?');
                 if(res === false) {
 
                     return;
@@ -366,7 +366,7 @@ Hoot.tools = function (context, selection) {
         activeConflateLayer = {};    */
 
         _.each(loadedLayers, function(d) {
-            hoot.model.layers.removeLayer(d.name);
+            context.hoot().model.layers.removeLayer(d.name);
             var modifiedId = d.mapId.toString();
             d3.select('[data-layer="' + modifiedId + '"]').remove();
             delete loadedLayers[d.name];
@@ -375,7 +375,7 @@ Hoot.tools = function (context, selection) {
         d3.selectAll(d3.select('#sidebar2').node().childNodes).remove();
         d3.select('[data-layer="' + activeConflateLayer.mapId.toString() + '"]').remove();
 
-        hoot.model.layers.addLayer({
+        context.hoot().model.layers.addLayer({
             'name': activeConflateLayer.name,
             'color': 'orange',
             'id': activeConflateLayer.mapId.toString()
@@ -385,7 +385,7 @@ Hoot.tools = function (context, selection) {
     });
 
     /*conflicts.on('removeFeature', function (d, mapid) {
-        hoot.model.conflicts.RemoveFeature(d, mapid);
+        context.hoot().model.conflicts.RemoveFeature(d, mapid);
     });*/
 
 
@@ -403,7 +403,7 @@ Hoot.tools = function (context, selection) {
         var input2_id = context.hoot().model.layers.getmapIdByName(layers[1]);
         // and then check size
         //getMapSize
-        Hoot.model.REST('getMapSize', input1_id + "," + input2_id,function (sizeInfo) {
+        Hoot.model.REST('getMapSize', input1_id + ',' + input2_id,function (sizeInfo) {
 //
             if(sizeInfo.error){
                 context.hoot().reset();
@@ -415,47 +415,47 @@ Hoot.tools = function (context, selection) {
             if(totalSize > confThreshold)
             {
                 var thresholdInMb = Math.floor((1*confThreshold)/1000000);
-                if(!window.confirm("Conflation data size is greater than " + thresholdInMb +
-                    "MB and conflation may encounter problem. Do you wish to continue? (If you cancel layers will reset.)")) {
+                if(!window.confirm('Conflation data size is greater than ' + thresholdInMb +
+                    'MB and conflation may encounter problem. Do you wish to continue? (If you cancel layers will reset.)')) {
                     context.hoot().reset();
                     return;
                 }
             }
 
-            var _confType = {
-                'Reference':'Reference',
-                'Average':'Average',
-                'Cookie Cutter & Horizontal':'Horizontal'
-              };
+            // var _confType = {
+            //     'Reference':'Reference',
+            //     'Average':'Average',
+            //     'Cookie Cutter & Horizontal':'Horizontal'
+            //   };
 
             var data = preConflation(a, layerName, advOptions);
-            var type = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
+            //var type = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
             //var conflationExecType = (type === 'Horizontal') ? 'CookieCutterConflate' : 'Conflate';
             //Bug #6397
             var conflationExecType = 'Conflate';
-            if(data.AUTO_TUNNING == 'true'){
+            if(data.AUTO_TUNNING === 'true'){
                 var data1 = {};
                 data1.INPUT = data.INPUT1;
                 data1.INPUT_TYPE = 'db';
-                hoot.autotune('AutoTune', data1, function(res1){
+                context.hoot().autotune('AutoTune', data1, function(res1){
                     var result1 = JSON.parse(res1.statusDetail);
 
-                    data.INPUT1_ESTIMATE = "" + result1.EstimatedSize;
+                    data.INPUT1_ESTIMATE = '' + result1.EstimatedSize;
                     var data2 = {};
                     data2.INPUT = data.INPUT2;
                     data2.INPUT_TYPE = 'db';
-                    hoot.autotune('AutoTune', data2, function(res2){
+                    context.hoot().autotune('AutoTune', data2, function(res2){
                         var result2 = JSON.parse(res2.statusDetail);
-                        data.INPUT2_ESTIMATE = "" + result2.EstimatedSize;
-                         hoot.model.conflate.conflate(conflationExecType, data, function (item) {
+                        data.INPUT2_ESTIMATE = '' + result2.EstimatedSize;
+                         context.hoot().model.conflate.conflate(conflationExecType, data, function (item) {
                              postConflation(item,a);
                          });
                     });
                 });
             } else {
 
-                hoot.model.conflate.conflate(conflationExecType, data, function (item) {
-                    if(item.status && item.status == "requested"){
+                context.hoot().model.conflate.conflate(conflationExecType, data, function (item) {
+                    if(item.status && item.status === 'requested'){
                         conflate.jobid = item.jobid;
                     } else {
                         postConflation(item,a);
@@ -475,34 +475,32 @@ Hoot.tools = function (context, selection) {
     * @param layerName - new merged layer
     **/
     context.connection().on('layerAdded', function (layerName) {
-        var params = hoot.model.layers.getLayers(layerName);
+        var params = context.hoot().model.layers.getLayers(layerName);
         if (loadedLayers[layerName]) return;
 
         var merged = loadingLayer.merged || null;
         if(!merged && params.mapId)
         {
             Hoot.model.REST('ReviewGetStatistics', params.mapId,function (error, stat) {
-                var isReviewMode = false;
 
                 if(stat.unreviewedCount > 0) {
                     var reqParam = {};
-                    reqParam.mapId = params.mapId
+                    reqParam.mapId = params.mapId;
                     if(reqParam.mapId) {
                         Hoot.model.REST('getMapTags', reqParam,function (tags) {
                             //console.log(tags);
                             if (tags.reviewtype === 'hgisvalidation') {
-                                var r = confirm("The layer has been prepared for validation. Do you want to go into validation mode?");
-                                if (r == true) {
+                                var r = confirm('The layer has been prepared for validation. Do you want to go into validation mode?');
+                                if (r === true) {
                                     context.hoot().control.validation.begin(params);
                                 }
                             } else {
-                                var r = confirm("The layer contains unreviewed items. Do you want to go into review mode?");
-                                if (r == true) {
-                                    isReviewMode = true;
+                                r = confirm('The layer contains unreviewed items. Do you want to go into review mode?');
+                                if (r === true) {
                                     loadingLayer = params;
                                     loadingLayer.tags = tags;
-                                    loadingLayer['merged'] = true;
-                                    loadingLayer['layers'] = [];
+                                    loadingLayer.merged = true;
+                                    loadingLayer.layers = [];
                                     d3.selectAll('.loadingLayer').remove();
                                     d3.selectAll('.hootImport').remove();
                                     d3.selectAll('.hootView').remove();
@@ -521,7 +519,7 @@ Hoot.tools = function (context, selection) {
                                     loadedLayers[layerName].loadable = true;
                                     loadedLayers[layerName].merged = true;
                                     //change color to green
-                                    var selColor = "green";
+                                    var selColor = 'green';
                                     loadedLayers[layerName].color = selColor;
                                     context.hoot().replaceColor(loadedLayers[layerName].id,selColor);
                                     activeConflateLayer = loadingLayer;
@@ -529,7 +527,7 @@ Hoot.tools = function (context, selection) {
                                     view.render(loadingLayer);
                                     loadingLayer = {};
                                     conflicts.activate(loadedLayers[layerName]);
-                                    hoot.mode('edit');
+                                    context.hoot().mode('edit');
 
                                     if(tags) {
                                         var input1 = tags.input1;
@@ -548,7 +546,7 @@ Hoot.tools = function (context, selection) {
                                                 'color': 'violet',
                                                 'hideinsidebar':'true'
                                             };
-                                            context.hoot().model.layers.addLayer(key, function(d){
+                                            context.hoot().model.layers.addLayer(key, function(){
                                                 context.hoot().model.layers.setLayerInvisibleById(input1);
 
                                                 if(input2 && input2Name) {
@@ -562,7 +560,7 @@ Hoot.tools = function (context, selection) {
                                                         context.hoot().model.layers.setLayerInvisibleById(input2);
 
                                                         if(d === undefined){
-                                                            hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
+                                                            context.hoot().model.conflicts.beginReview(activeConflateLayer, function (d) {
                                                                 conflicts.startReview(d);
                                                             });
                                                         }
@@ -571,7 +569,7 @@ Hoot.tools = function (context, selection) {
                                                     });
                                                 }
                                             });
-                                        } else {
+                                                } else {
                                             var key = {};
                                             if(input1 && input1Name) {
                                                 key = {
@@ -589,7 +587,8 @@ Hoot.tools = function (context, selection) {
                                                     'hideinsidebar':'true'
                                                 };
                                                 iD.ui.Alert("Could not determine input layer 1. It will not be loaded.",'warning',new Error().stack);
-                                            }
+                                                }
+
 
                                             if(key.id){
                                                 context.hoot().model.layers.addLayer(key, function(d){
@@ -599,8 +598,8 @@ Hoot.tools = function (context, selection) {
                                                             conflicts.startReview(d);
                                                         });
                                                     }
-                                                });
-                                            } else {
+                                            });
+                                        } else {
                                                 hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
                                                     conflicts.startReview(d);
                                                 });
@@ -609,7 +608,7 @@ Hoot.tools = function (context, selection) {
                                     }
                                 } else {
                                     var doRenderView = true;
-                                    if(params['hideinsidebar'] !== undefined && params['hideinsidebar'] === 'true'){
+                                    if(params.hideinsidebar !== undefined && params.hideinsidebar === 'true'){
                                         doRenderView = false;
                                     }
 
@@ -626,7 +625,7 @@ Hoot.tools = function (context, selection) {
                     }
                 } else {
                     var doRenderView = true;
-                    if(params['hideinsidebar'] !== undefined && params['hideinsidebar'] === 'true'){
+                    if(params.hideinsidebar !== undefined && params.hideinsidebar === 'true'){
                         doRenderView = false;
                     }
 
@@ -658,7 +657,7 @@ Hoot.tools = function (context, selection) {
     });
     exportLayer.on('cancelSaveLayer', function () {
         if(exporting){
-        	iD.ui.Alert("Can not cancel. Export in progress.",'warning',new Error().stack);
+            iD.ui.Alert('Can not cancel. Export in progress.','warning',new Error().stack);
             return;
         }
         exportLayer.deactivate();
@@ -680,8 +679,8 @@ Hoot.tools = function (context, selection) {
         var exportType = cont.select('.reset.fileExportFileType.combobox-input').value();
         exporting = true;
         var spinner = cont.append('span').attr('class', 'spinner-hoot').call(iD.ui.Spinner(context));
-        hoot.model.export.exportData(cont, data, function (status) {
-            if(status == 'failed'){
+        context.hoot().model.export.exportData(cont, data, function (status) {
+            if(status === 'failed'){
             	iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error',new Error().stack);
             }
 

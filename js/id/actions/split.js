@@ -21,7 +21,7 @@ iD.actions.Split = function(nodeId, newWayIds) {
     // The following looks for a node that is both far away from
     // the initial node in terms of way segment length and nearby
     // in terms of beeline-distance. This assures that areas get
-    // split on the most "natural" points (independent of the number
+    // split on the most 'natural' points (independent of the number
     // of nodes).
     // For example: bone-shaped areas get split across their waist
     // line, circles across the diameter.

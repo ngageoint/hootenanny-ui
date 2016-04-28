@@ -10,31 +10,31 @@ iD.modes.Save = function(context) {
     // hootCallback is for hootenany specific callback. This may need to be moved
     // in the future during upstream merge with iD code
     function save(e, tryAgain, hootCallback) {
-        function withChildNodes(ids, graph) {
-            return _.uniq(_.reduce(ids, function(result, id) {
-                var e = graph.entity(id);
-                if (e.type === 'way') {
-                    try {
-                        var cn = graph.childNodes(e);
-                        result.push.apply(result, _.pluck(_.filter(cn, 'version'), 'id'));
-                    } catch(err) {
-                        /* eslint-disable no-console */
-                        if (typeof console !== 'undefined') console.error(err);
-                        /* eslint-enable no-console */
-                    }
-                }
-                return result;
-            }, _.clone(ids)));
-        }
+        // function withChildNodes(ids, graph) {
+        //     return _.uniq(_.reduce(ids, function(result, id) {
+        //         var e = graph.entity(id);
+        //         if (e.type === 'way') {
+        //             try {
+        //                 var cn = graph.childNodes(e);
+        //                 result.push.apply(result, _.pluck(_.filter(cn, 'version'), 'id'));
+        //             } catch(err) {
+        //                 /* eslint-disable no-console */
+        //                 if (typeof console !== 'undefined') console.error(err);
+        //                 /* eslint-enable no-console */
+        //             }
+        //         }
+        //         return result;
+        //     }, _.clone(ids)));
+        // }
 
         var loading = iD.ui.Loading(context).message(t('save.uploading')).blocking(true),
             history = context.history(),
             origChanges = history.changes(iD.actions.DiscardTags(history.difference())),
-            localGraph = context.graph(),
-            remoteGraph = iD.Graph(history.base(), true),
-            modified = _.filter(history.difference().summary(), {changeType: 'modified'}),
-            toCheck = _.pluck(_.pluck(modified, 'entity'), 'id'),
-            toLoad = withChildNodes(toCheck, localGraph),
+            //localGraph = context.graph(),
+            //remoteGraph = iD.Graph(history.base(), true),
+            //modified = _.filter(history.difference().summary(), {changeType: 'modified'}),
+            //toCheck = _.pluck(_.pluck(modified, 'entity'), 'id'),
+            //toLoad = withChildNodes(toCheck, localGraph),
             conflicts = [],
             errors = [];
 
@@ -42,19 +42,19 @@ iD.modes.Save = function(context) {
         context.container().call(loading);
 
         // Disabling toCheck for hoot. iD conflict validation is causing race condition
-        // while retrieving the osm data and saving. 
+        // while retrieving the osm data and saving.
        /* if (toCheck.length) {
             console.debug('call loadMultiple');
             context.connection().loadMultiple(toLoad, loaded, hootCallback);
-        } else*/ {
+        } else {*/
             finalize(hootCallback);
-        }
+        //}
 
 
         // hootCallback is for hootenany specific callback. This may need to be moved
         // in the future during upstream merge with iD code
         // Reload modified entities into an alternate graph and check for conflicts..
-        function loaded(err, result, hootCallback) {
+        /*function loaded(err, result, hootCallback) {
             if (errors.length) return;
 
             if (err) {
@@ -69,7 +69,7 @@ iD.modes.Save = function(context) {
                 _.each(result.data, function(entity) {
                     remoteGraph.replace(entity);
                     toLoad = _.without(toLoad, entity.id);
-					//iD v1.7.5
+                    //iD v1.7.5
                     // Because loadMultiple doesn't download /full like loadEntity,
                     // need to also load children that aren't already being checked..
                     if (!entity.visible) return;
@@ -81,7 +81,7 @@ iD.modes.Save = function(context) {
                             _.difference(_.pluck(entity.members, 'id'), toCheck, toLoad, loadMore));
                     }
                 });
-				//iD v1.7.5
+                //iD v1.7.5
                 if (loadMore.length) {
                     toLoad.push.apply(toLoad, loadMore);
                     context.connection().loadMultiple(loadMore, loaded);
@@ -91,12 +91,12 @@ iD.modes.Save = function(context) {
                     checkConflicts(hootCallback, result.force_remote);
                 }
             }
-        }
+        }*/
 
 
         // hootCallback is for hootenany specific callback. This may need to be moved
         // in the future during upstream merge with iD code
-        function checkConflicts(hootCallback, doForceRemote) {
+        /*function checkConflicts(hootCallback, doForceRemote) {
             function choice(id, text, action) {
                 return { id: id, text: text, action: function() { history.replace(action); } };
             }
@@ -138,7 +138,7 @@ iD.modes.Save = function(context) {
                 } else {
                     history.replace(merge);
                 }
-                
+
 
                 var conflicts = merge.conflicts();
                 if (!conflicts.length) return;  // merged safely
@@ -161,7 +161,7 @@ iD.modes.Save = function(context) {
             });
 
             finalize(hootCallback);
-        }
+        }*/
 
         // hootCallback is for hootenany specific callback. This may need to be moved
         // in the future during upstream merge with iD code
@@ -171,34 +171,34 @@ iD.modes.Save = function(context) {
                 showConflicts();
             } else if (errors.length) {
                 showErrors();
-            } else {            	
-            	context.connection().putChangeset(
+            } else {
+                context.connection().putChangeset(
                     history.changes(iD.actions.DiscardTags(history.difference())),
                     'Hoot Save',
                     history.imageryUsed(),
-                    function(err, changeset_id) {
+                    function(err/*, changeset_id*/) {
                         if (err) {
                             var isReviewing = context.hoot().control.conflicts.isConflictReviewExist();
                             var errMsg = err.responseText;
-                            errMsg += " (The feature may have been deleted by other " +
-                                "user and may require reloading of the layer.";
+                            errMsg += ' (The feature may have been deleted by other ' +
+                                'user and may require reloading of the layer.';
                             if(isReviewing === true){
-                                errMsg += " Will jump to next valid review item";
+                                errMsg += ' Will jump to next valid review item';
                             }
-                            errMsg += ")";
+                            errMsg += ')';
                             errors.push({
                                 msg: errMsg,
                                 details: [ t('save.status_code', { code: err.status }) ]
                             });
-                            
+
                             if(isReviewing === true){
                                 showErrors(
                                     function(){
                                         context.hoot().control.conflicts.actions.traversereview.gotoNext();
                                     }
-                                    
+
                                 );
-                                
+
                             } else {
                                 showErrors();
                             }
@@ -235,9 +235,9 @@ iD.modes.Save = function(context) {
                     selection.remove();
                 })
                 .on('save', function() {
-					//iD v1.7.5                    
-					for (var i = 0; i < conflicts.length; i++) {
-                        if (conflicts[i].chosen === 1) {  // user chose "keep theirs"
+                    //iD v1.7.5
+                    for (var i = 0; i < conflicts.length; i++) {
+                        if (conflicts[i].chosen === 1) {  // user chose 'keep theirs'
                             var entity = context.hasEntity(conflicts[i].id);
                             if (entity && entity.type === 'way') {
                                 var children = _.uniq(entity.nodes);
@@ -273,7 +273,7 @@ iD.modes.Save = function(context) {
             } else {
                 selection.okButton();
             }
-            
+
         }
 
 
@@ -328,17 +328,17 @@ iD.modes.Save = function(context) {
     }
 
 
-    function success(e, changeset_id) {
-        context.enter(iD.modes.Browse(context)
-            .sidebar(iD.ui.Success(context)
-                .changeset({
-                    id: changeset_id,
-                    comment: e.comment
-                })
-                .on('cancel', function(ui) {
-                    context.ui().sidebar.hide(ui);
-                })));
-    }
+    // function success(e, changeset_id) {
+    //     context.enter(iD.modes.Browse(context)
+    //         .sidebar(iD.ui.Success(context)
+    //             .changeset({
+    //                 id: changeset_id,
+    //                 comment: e.comment
+    //             })
+    //             .on('cancel', function(ui) {
+    //                 context.ui().sidebar.hide(ui);
+    //             })));
+    // }
 
     var mode = {
         id: 'save'
@@ -359,7 +359,7 @@ iD.modes.Save = function(context) {
             if (err) {
                 cancel();
             } else {
-            	context.ui().sidebar.show(ui);
+                context.ui().sidebar.show(ui);
             }
         });
     };

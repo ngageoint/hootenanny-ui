@@ -4,66 +4,67 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      7 Jan. 2016
+//      15 Apr. 2016 eslint updates -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
+Hoot.control.conflate.advancedoptions = function (context, parent) {
 
-	var _events = d3.dispatch();
-	var _instance = {};
-	var _modalBackground;
+    var _events = d3.dispatch();
+    var _instance = {};
+    var _modalBackground;
 
 
-	_instance.fieldsgenerator = Hoot.control.conflate.advancedoptions.fieldsgenerator();
-	_instance.fieldsretriever = Hoot.control.conflate.advancedoptions.fieldsretriever();
-	_instance.selectiondisplay = Hoot.control.conflate.advancedoptions.selectiondisplay();
-	_instance.selectionretriever = Hoot.control.conflate.advancedoptions.selectionretriever();
-	_instance.fieldsetlogic = Hoot.control.conflate.advancedoptions.fieldsetlogic();
+    _instance.fieldsgenerator = Hoot.control.conflate.advancedoptions.fieldsgenerator();
+    _instance.fieldsretriever = Hoot.control.conflate.advancedoptions.fieldsretriever();
+    _instance.selectiondisplay = Hoot.control.conflate.advancedoptions.selectiondisplay();
+    _instance.selectionretriever = Hoot.control.conflate.advancedoptions.selectionretriever();
+    _instance.fieldsetlogic = Hoot.control.conflate.advancedoptions.fieldsetlogic();
 
-	_instance.reset = function(){
-		_instance.fieldsgenerator = Hoot.control.conflate.advancedoptions.fieldsgenerator();
-		_instance.fieldsretriever = Hoot.control.conflate.advancedoptions.fieldsretriever();
-		_instance.selectiondisplay = Hoot.control.conflate.advancedoptions.selectiondisplay();
-		_instance.selectionretriever = Hoot.control.conflate.advancedoptions.selectionretriever();
-		_instance.fieldsetlogic = Hoot.control.conflate.advancedoptions.fieldsetlogic();
-	}
+    _instance.reset = function(){
+        _instance.fieldsgenerator = Hoot.control.conflate.advancedoptions.fieldsgenerator();
+        _instance.fieldsretriever = Hoot.control.conflate.advancedoptions.fieldsretriever();
+        _instance.selectiondisplay = Hoot.control.conflate.advancedoptions.selectiondisplay();
+        _instance.selectionretriever = Hoot.control.conflate.advancedoptions.selectionretriever();
+        _instance.fieldsetlogic = Hoot.control.conflate.advancedoptions.fieldsetlogic();
+    };
 
 
     /**
     * @desc Creates advanced options dialog
     **/
-    _instance.activate = function () { 
+    _instance.activate = function () {
         try{
-	    	var advancedOptionsEvents = d3.dispatch('exitadvopts');
-	        
-	    	if(parent.confAdvOptionsFields==null){
-	        	if(d3.selectAll('.reset.ConfType').value()==parent.lastAdvSettingsText){
-	        		parent.confAdvOptionsFields = parent.lastAdvFields;
-	        	} else {
-	        		parent.confAdvOptionsFields = _instance.fieldsretriever.getDefaultFields();
-	        	}
-	        }
-	        
-    	    var fieldsMeta = _instance.fieldsgenerator.generateFields(parent.confAdvOptionsFields);
-    	   
-			var containerForm = _createContainerForm(advancedOptionsEvents);
-	
-	        var fieldset = _createFieldSets(containerForm, fieldsMeta);
-	            	
-	        _markDefaultFields(fieldset);
+            var advancedOptionsEvents = d3.dispatch('exitadvopts');
 
-	        _createApplyBtn(containerForm);
-	
-	        _createCancelBtn(containerForm);
-	        
-         	_createViewValuesLnkBtn(containerForm);
-	        
-	         return d3.rebind(_modalBackground, advancedOptionsEvents, 'on');
-	    } catch(err){
-	    	console.log(err);
-	    	return null;
-	    }
+            if(parent.confAdvOptionsFields==null){
+                if(d3.selectAll('.reset.ConfType').value()===parent.lastAdvSettingsText){
+                    parent.confAdvOptionsFields = parent.lastAdvFields;
+                } else {
+                    parent.confAdvOptionsFields = _instance.fieldsretriever.getDefaultFields();
+                }
+            }
+
+            var fieldsMeta = _instance.fieldsgenerator.generateFields(parent.confAdvOptionsFields);
+
+            var containerForm = _createContainerForm(advancedOptionsEvents);
+
+            var fieldset = _createFieldSets(containerForm, fieldsMeta);
+
+            _markDefaultFields(fieldset);
+
+            _createApplyBtn(containerForm);
+
+            _createCancelBtn(containerForm);
+
+             _createViewValuesLnkBtn(containerForm);
+
+             return d3.rebind(_modalBackground, advancedOptionsEvents, 'on');
+        } catch(err){
+            context.hoot().view.utilities.errorlog.reportUIError(err,null);
+            return null;
+        }
     };
 
 
@@ -74,45 +75,45 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
     * @param frmVis - visibility switch
     **/
     _instance.advOpsFormEvent = function(frmVis){
-    	if(frmVis){
-    		d3.select("#confAdvOptsLnk").text("◄");            
-    	} else {
-    		d3.select("#confAdvOptsLnk").text("►");
-    	}
-    	d3.select("#sidebar2").selectAll("input").property('disabled',frmVis);
+        if(frmVis){
+            d3.select('#confAdvOptsLnk').text('◄');
+        } else {
+            d3.select('#confAdvOptsLnk').text('►');
+        }
+        d3.select('#sidebar2').selectAll('input').property('disabled',frmVis);
     };
-    
+
 
     /**
     * @desc Logic for opening/closing advanced options form
     * @param frmVis - visibility switch
     **/
     _instance.onCustomConflationFormError = function(){
-    	iD.ui.Alert('An error occurred while trying to open a custom conflation window. If this problem persists, default values will be used for conflation based on selected type.','error');
-    	parent.confAdvOptsDlg = null;
-    	parent.confAdvValsDlg = null;
-    	d3.select('#content').selectAll('div .custom-conflation').remove();
-    	d3.select('#content').selectAll('div .fill-darken3').remove()
-    	_instance.advOpsFormEvent(false);
+        iD.ui.Alert('An error occurred while trying to open a custom conflation window. If this problem persists, default values will be used for conflation based on selected type.','error');
+        parent.confAdvOptsDlg = null;
+        parent.confAdvValsDlg = null;
+        d3.select('#content').selectAll('div .custom-conflation').remove();
+        d3.select('#content').selectAll('div .fill-darken3').remove();
+        _instance.advOpsFormEvent(false);
     };
-    
+
 
     /**
     * @desc Handler for multilist item click event
     * @param selField - Selected field
     **/
-    var _onChangeMultiList = function(selField){
+    _instance.onChangeMultiList = function(selField){
         var enableField = null;
          _.each(selField.node().children, function(c){
             var isSel = d3.select(c).node().selected;
-            if(isSel === true){                                               
+            if(isSel === true){
                 var sel = d3.select(c).value();
 
                 _.each(iD.data.hootConfAdvOps, function(mt){
-                    if(('ml' + mt.name) == selField.node().id){
+                    if(('ml' + mt.name) === selField.node().id){
                         if(mt.dependents){
                             _.each(mt.dependents, function(dep){
-                                if(sel == dep.value){
+                                if(sel === dep.value){
                                     enableField = dep.name;
                                    // d3.select('#' + dep.name + '_container').classed('hidden', false);
                                    // d3.select('.reset.' + dep.name).classed('hidden', false);
@@ -123,9 +124,9 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
                             });
                         }
                     }
-                })
+                });
             }
-         })
+         });
 
         if(enableField){
             d3.select('#' + enableField + '_container').classed('hidden', false);
@@ -139,14 +140,14 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
     * @desc Creates advanced options dialog container
     * @param advancedOptionsEvents - Events object
     **/
-	var _createContainerForm = function(advancedOptionsEvents) {
-		_modalBackground = d3.select('#content') //body
+    var _createContainerForm = function(advancedOptionsEvents) {
+        _modalBackground = d3.select('#content') //body
             .append('div')
             .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true)
             .style('z-index','1');
         var containerDiv = _modalBackground.append('div')
-        	.attr('id','CustomConflationForm')
-            .classed('fillL map-overlay col4 custom-conflation',true); //'contain col4 pad1 fill-white round modal'       
+            .attr('id','CustomConflationForm')
+            .classed('fillL map-overlay col4 custom-conflation',true); //'contain col4 pad1 fill-white round modal'
         var containerForm = containerDiv.append('form');
         containerForm.classed('round space-bottom1', true)
             .append('div')
@@ -163,25 +164,25 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
                 if (window.confirm('Exit will remove any previously selected advanced options. Are you sure you want to exit?')){
                     advancedOptionsEvents.exitadvopts();
                 }
-                
+
             });
 
         return containerForm;
-	}
+    };
 
     /**
     * @desc Creates advanced options dialog fieldset
     * @param containerForm - Container element
     * @param fieldsMeta - fieldset meta data
     **/
-	var _createFieldSets = function(containerForm, fieldsMeta) {
-		var fieldsContainer = containerForm.append('div')
-	        .classed('keyline-all round space-bottom1', true)
-	        .style({'max-height': '800px','overflow-y': 'auto','width':'99%'});
-	        
+    var _createFieldSets = function(containerForm, fieldsMeta) {
+        var fieldsContainer = containerForm.append('div')
+            .classed('keyline-all round space-bottom1', true)
+            .style({'max-height': '800px','overflow-y': 'auto','width':'99%'});
+
         var fieldset = fieldsContainer.append('fieldset')
-            //Added for testing purposes 
-        	.on('change', _instance.fieldsetlogic.toggleFields)
+            //Added for testing purposes
+            .on('change', _instance.fieldsetlogic.toggleFields)
             .selectAll('.form-field')
             .data(fieldsMeta);
         fieldset.enter()
@@ -191,80 +192,80 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
 
 
         return fieldset;
-	}
+    };
 
     /**
     * @desc This will go through the multilist fields and select the field marked isDefault
     * @param fieldset - fieldset
     **/
-	var _markDefaultFields = function(fieldset) {
-		// 
+    var _markDefaultFields = function(fieldset) {
+        //
         fieldset.select(function(s1){
             _.each(s1.children,function(ss){
-				if(ss.multilist){
-					var mlist = ss.multilist;
-					var listField = d3.select('#ml' + ss.type);
-					 _.each(listField.node().children, function(c){
-						var opt = d3.select(c).node();
-						_.each(mlist, function(ml){
-							if(ml.hoot_val === opt.value && ml.isDefault === "true"){
-								opt.selected = true;
-							}
-							if(ml.hoot_val === opt.value && ml.required){
-								if(ml.required=='true'){
-									opt.style.display='none';
-								}
-							}
-						});
-					 })
-					 // Manually send out on change event
-					 _onChangeMultiList(listField);
-				}
-            })
+                if(ss.multilist){
+                    var mlist = ss.multilist;
+                    var listField = d3.select('#ml' + ss.type);
+                     _.each(listField.node().children, function(c){
+                        var opt = d3.select(c).node();
+                        _.each(mlist, function(ml){
+                            if(ml.hoot_val === opt.value && ml.isDefault === 'true'){
+                                opt.selected = true;
+                            }
+                            if(ml.hoot_val === opt.value && ml.required){
+                                if(ml.required==='true'){
+                                    opt.style.display='none';
+                                }
+                            }
+                        });
+                     });
+                     // Manually send out on change event
+                     _instance.onChangeMultiList(listField);
+                }
+            });
         });
-	}
+    };
 
     /**
     * @desc Create apply button
     * @param containerForm - container
     **/
-	var _createApplyBtn = function(containerForm) {
-		var submitExp = containerForm.append('div')
+    var _createApplyBtn = function(containerForm) {
+        var submitExp = containerForm.append('div')
         .classed('form-field col12 left ', true);
          submitExp.append('span')
         .classed('round strong big loud dark center col10 margin1 point', true)
         .classed('inline row1 fl col10 pad1y', true)
         .text('Apply')
         .on('click', function () {
-            if(d3.select('#CustomConflationForm').selectAll('.invalid-input')[0].length==0){        	
-            	//Capture current values
-            	parent.confLastSetVals = [];
-            	_.each(d3.select("#CustomConflationForm").selectAll('form').selectAll('input')[0],function(ai){
-            		var selAI = d3.select('#'+ai.id);
-            		parent.confLastSetVals.push({id:ai.id,type:ai.type, checked:ai.checked, value:ai.value, 
-            			disabled:selAI.property('disabled'),hidden:d3.select(selAI.node().parentNode).style('display')});
-            	});	    
+            if(d3.select('#CustomConflationForm').selectAll('.invalid-input')[0].length===0){
+                //Capture current values
+                parent.confLastSetVals = [];
+                _.each(d3.select('#CustomConflationForm').selectAll('form').selectAll('input')[0],function(ai){
+                    var selAI = d3.select('#'+ai.id);
+                    parent.confLastSetVals.push({id:ai.id,type:ai.type, checked:ai.checked, value:ai.value,
+                        disabled:selAI.property('disabled'),hidden:d3.select(selAI.node().parentNode).style('display')});
+                });
 
-            	parent.confAdvOptionsSelectedVal = _instance.selectionretriever.getSelectedValues(containerForm, 
-            		parent.confAdvOptionsFields);
-	            //modalbg.remove();
-	            _modalBackground.classed('hidden', true);
-	            _instance.advOpsFormEvent(false);
-	            d3.select('.ConfType').value('Advanced Conflation');
+                parent.confAdvOptionsSelectedVal = _instance.selectionretriever.getSelectedValues(containerForm,
+                    parent.confAdvOptionsFields);
+                //modalbg.remove();
+                _modalBackground.classed('hidden', true);
+                _instance.advOpsFormEvent(false);
+                d3.select('.ConfType').value('Advanced Conflation');
             } else{
-            	//notify that some values are invalid and leave window open
-            	iD.ui.Alert('Some values in the form are invalid and must be adjusted before completing custom conflation.',
-            		'warning',new Error().stack);
-            }            	
+                //notify that some values are invalid and leave window open
+                iD.ui.Alert('Some values in the form are invalid and must be adjusted before completing custom conflation.',
+                    'warning',new Error().stack);
+            }
         });
-	}
+    };
 
     /**
     * @desc Create cancel button
     * @param containerForm - container
     **/
-	var _createCancelBtn = function(containerForm) {
-		 //Cancel button
+    var _createCancelBtn = function(containerForm) {
+         //Cancel button
         var cancelExp = containerForm.append('div')
         .classed('form-field col12 left ', true);
         cancelExp.append('span')
@@ -272,73 +273,73 @@ Hoot.control.conflate.advancedoptions = function (parent, sidebar) {
         .classed('inline row1 fl col10 pad1y', true)
         .text('Cancel')
         .on('click', function () {
-        	//Reset to most recent values
-        	if (parent.confLastSetVals != null){
-        		//replace current inputs with parent.confLastSetVals
-        		_.each(parent.confLastSetVals,function(ai){
-        			var selAI = d3.select('#'+ai.id);
-        			if(ai.type=='checkbox'){
-        				selAI.property('checked',ai.checked);
-        			} else {
-        				selAI.value(ai.value);
-        			}
-        			
-        			selAI.property('disabled',ai.disabled);
-        			if(ai.hidden.length>0){d3.select(selAI.node().parentNode).style('display',ai.hidden);}
-        		});
-        		
-        		_modalBackground.classed('hidden', true);
-        	} else {
-        		parent.confLastSetVals = null;
-        		parent.confAdvOptionsSelectedVal = null;
+            //Reset to most recent values
+            if (parent.confLastSetVals != null){
+                //replace current inputs with parent.confLastSetVals
+                _.each(parent.confLastSetVals,function(ai){
+                    var selAI = d3.select('#'+ai.id);
+                    if(ai.type==='checkbox'){
+                        selAI.property('checked',ai.checked);
+                    } else {
+                        selAI.value(ai.value);
+                    }
+
+                    selAI.property('disabled',ai.disabled);
+                    if(ai.hidden.length>0){d3.select(selAI.node().parentNode).style('display',ai.hidden);}
+                });
+
+                _modalBackground.classed('hidden', true);
+            } else {
+                parent.confLastSetVals = null;
+                parent.confAdvOptionsSelectedVal = null;
                 if(parent.confAdvOptsDlg){parent.confAdvOptsDlg.remove();}
                 parent.confAdvOptsDlg = null;
              }
-        	_instance.advOpsFormEvent(false);
-        });	         
-	}
+            _instance.advOpsFormEvent(false);
+        });
+    };
 
 
     /**
     * @desc Create view values button
     * @param containerForm - container
     **/
-	var _createViewValuesLnkBtn = function(containerForm) {
-		 //view values - testing only
+    var _createViewValuesLnkBtn = function(containerForm) {
+         //view values - testing only
          var valuesExp = containerForm.append('div')
         .classed('form-field col12 left',true);
          valuesExp.append('span')
          .classed('round strong center col10 margin1 point', true)
          .classed('inline row1 fl col10 pad1y', true)
          .style('display',function(){
-        	if(d3.select('#enable_test_mode').property('checked')){
-        		return 'inline-block';
-        	} else {
-        		return 'none';
-        	}
+            if(d3.select('#enable_test_mode').property('checked')){
+                return 'inline-block';
+            } else {
+                return 'none';
+            }
          })
          .text('View Values')
          .attr('id','confViewValuesSpan')
          .on('click', function () {
-        	 d3.event.stopPropagation();
-        	 d3.event.preventDefault();
-        	 
-        	 if(d3.select('#CustomConflationValues')[0][0]==null){
-        		 parent.confAdvValsDlg = _instance.selectiondisplay.advancedValuesDlg(parent.confAdvOptsDlg, 
-        		 	parent.confAdvOptionsFields, _instance.fieldsretriever.gatherFieldValues(parent.confAdvOptionsFields));
+             d3.event.stopPropagation();
+             d3.event.preventDefault();
+
+             if(d3.select('#CustomConflationValues')[0][0]==null){
+                 parent.confAdvValsDlg = _instance.selectiondisplay.advancedValuesDlg(parent.confAdvOptsDlg,
+                     parent.confAdvOptionsFields, _instance.fieldsretriever.gatherFieldValues(parent.confAdvOptionsFields));
                  if(!parent.confAdvValsDlg){_instance.onCustomConflationFormError();}
                  else{
-                	//exitadvvals
+                    //exitadvvals
                      parent.confAdvValsDlg.on('exitadvvals', function(){
                          if(parent.confAdvValsDlg){parent.confAdvValsDlg.remove();}
                          parent.confAdvValsDlg = null;
-                     }); 
+                     });
                  }
-        	 }
+             }
          });
-	}
+    };
 
 
     return d3.rebind(_instance, _events, 'on');
 
-}
+};

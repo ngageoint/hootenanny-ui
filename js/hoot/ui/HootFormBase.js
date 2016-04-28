@@ -8,7 +8,7 @@
 //          - Refactored _createFieldSet
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Hoot.ui.hootformbase = function () 
+Hoot.ui.hootformbase = function ()
 {
     var _events = d3.dispatch();
     var _instance = {};
@@ -21,33 +21,33 @@ Hoot.ui.hootformbase = function ()
     **/
     _instance.createForm = function(containerId, formMetaData) {
         var container;
-        try{
+        // try{
 
-            var btnMeta = formMetaData['button'];
-            var formMeta = formMetaData['form'];
-            var formTitle = formMetaData['title'];
+            var btnMeta = formMetaData.button;
+            var formMeta = formMetaData.form;
+            var formTitle = formMetaData.title;
             if(!btnMeta || !formMeta) {
-                throw 'Failed to create UI. Invalid form meta data.';
+                throw new Error('Failed to create UI. Invalid form meta data.');
             }
 
             if(!formTitle){
                 formTitle = 'Hootenanny Form';
             }
             container = _createContainer(containerId);
-            var formDiv = _createFormDiv(container)
-            var form =  _createForm(container, formDiv, formTitle)
-            var fieldset = _createFieldSet(form, formMeta);
-            _createButtons(btnMeta, formDiv); 
+            var formDiv = _createFormDiv(container);
+            var form = _createForm(container, formDiv, formTitle);
+            _createFieldSet(form, formMeta);
+            _createButtons(btnMeta, formDiv);
 
 
-        } catch (error) {
-            console.error(error);
-        }
-    
+        // } catch (error) {
+        //     console.error(error);
+        // }
+
         return container;
-    }
+    };
 
-  
+
     /**
     * @desc Create dark back ground mask
     * @param containerId - id of container div
@@ -57,7 +57,7 @@ Hoot.ui.hootformbase = function ()
         return d3.select(containerId)
                 .append('div')
                 .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
-    }
+    };
 
     /**
     * @desc Create form container div
@@ -67,7 +67,7 @@ Hoot.ui.hootformbase = function ()
     var _createFormDiv = function(container) {
         return container.append('div')
                 .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
-    }
+    };
 
     /**
     * @desc Create form shell
@@ -76,7 +76,7 @@ Hoot.ui.hootformbase = function ()
     * @param formTitle - dialog title
     * @return returns created form.
     **/
-    var _createForm = function(container, formDiv, formTitle) { 
+    var _createForm = function(container, formDiv, formTitle) {
 
         var form = formDiv.append('form');
         form.classed('round space-bottom1 importableLayer', true)
@@ -90,7 +90,7 @@ Hoot.ui.hootformbase = function ()
                     container.remove();
                 });
         return form;
-    }
+    };
 
     /**
     * @desc Create form fields. Currently handles textarea, combo and text field
@@ -106,26 +106,26 @@ Hoot.ui.hootformbase = function ()
 
         fieldset.enter()
                 .append('div')
-                
+
                 .select(function(a){
-                
+
 
                     var field = d3.select(this);
 
                     // add header and label
                     field
-                    .classed('form-field fill-white small keyline-all round space-bottom1', true)                   
+                    .classed('form-field fill-white small keyline-all round space-bottom1', true)
                     .append('label')
                     .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
                     .text(a.label);
 
 
-                    if(a.inputtype == 'textarea') {
+                    if(a.inputtype === 'textarea') {
                         _createTextArea(a, field);
-                    } else if(a.inputtype == 'combobox') {
+                    } else if(a.inputtype === 'combobox') {
                         _createCombobox(a, field);
 
-                    } else if(a.inputtype == 'checkbox'){
+                    } else if(a.inputtype === 'checkbox'){
                         var chkHtml = '<label class="pad1x pad0y round-top ' + a.checkbox + '" style="opacity: 1;">';
                         chkHtml += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">'+a.label+'</label>';
                         field.html(chkHtml);
@@ -134,13 +134,13 @@ Hoot.ui.hootformbase = function ()
                         _createDefaultTextField(a, field);
                     }
 
-                    
+
 
                 });
 
 
         return fieldset;
-    }
+    };
 
     /**
     * @desc Create text area form field.
@@ -159,11 +159,11 @@ Hoot.ui.hootformbase = function ()
         .attr('placeholder', function (field) {
             if(_.isObject(field.placeholder) === true){
                 var oPlaceHolder = field.placeholder;
-                if(oPlaceHolder['default'] && oPlaceHolder.command){
+                if(oPlaceHolder.default && oPlaceHolder.command){
                     return oPlaceHolder.command(field);
                 } else {
-                    if(oPlaceHolder['default'] ) {
-                        return oPlaceHolder['default'] ;
+                    if(oPlaceHolder.default ) {
+                        return oPlaceHolder.default;
                     } else {
                         return '';
                     }
@@ -180,7 +180,7 @@ Hoot.ui.hootformbase = function ()
         if(a.id) {
             inputField.attr('id', a.id);
         }
-    }
+    };
 
     /**
     * @desc Create combobox form field.
@@ -191,18 +191,18 @@ Hoot.ui.hootformbase = function ()
         var fieldDiv = field
         .classed('contain', true);
 
-        var inputField = 
+        var inputField =
         fieldDiv
         .append('input')
         .attr('type', 'text')
         .attr('placeholder', function (field) {
             if(_.isObject(field.placeholder) === true){
                 var oPlaceHolder = field.placeholder;
-                if(oPlaceHolder['default'] && oPlaceHolder.command){
+                if(oPlaceHolder.default && oPlaceHolder.command){
                     return oPlaceHolder.command(field);
                 } else {
-                    if(oPlaceHolder['default'] ) {
-                        return oPlaceHolder['default'] ;
+                    if(oPlaceHolder.default ) {
+                        return oPlaceHolder.default;
                     } else {
                         return '';
                     }
@@ -213,7 +213,7 @@ Hoot.ui.hootformbase = function ()
         .attr('class', function (field) {
             return field.className;
         });
-      
+
         if(a.id) {
             inputField.attr('id', a.id);
         }
@@ -223,14 +223,14 @@ Hoot.ui.hootformbase = function ()
                 a.combobox.command.call(inputField.node(), a);
             }  else {
                 _createDefaultCombo.call(inputField.node(), a);
-            }     
-        } 
+            }
+        }
 
         if (a.hidden === true) {
             field.classed('hidden', true);
         }
 
-    }
+    };
 
     /**
     * @desc Create text form field.
@@ -248,11 +248,11 @@ Hoot.ui.hootformbase = function ()
         .attr('placeholder', function (field) {
             if(_.isObject(field.placeholder) === true){
                 var oPlaceHolder = field.placeholder;
-                if(oPlaceHolder['default'] && oPlaceHolder.command){
+                if(oPlaceHolder.default && oPlaceHolder.command){
                     return oPlaceHolder.command(field);
                 } else {
-                    if(oPlaceHolder['default'] ) {
-                        return oPlaceHolder['default'] ;
+                    if(oPlaceHolder.default ) {
+                        return oPlaceHolder.default;
                     } else {
                         return '';
                     }
@@ -279,7 +279,7 @@ Hoot.ui.hootformbase = function ()
             inputField.on('click',a.onclick);
         }
 
-        if(a.inputtype == 'multipart') {
+        if(a.inputtype === 'multipart') {
             var mpDiv = fieldDiv
                 .classed('contain', true);
 
@@ -288,7 +288,7 @@ Hoot.ui.hootformbase = function ()
                 .classed('point keyline-left _icon folder pin-right pad0x pad0y hidden', true)
                 .attr('id', a.multipartid + 'spancontainer');
 
-            var mpInput = wrapper    
+            var mpInput = wrapper
                 .append('input')
                 .attr('id', a.multipartid)
                 .attr('type', 'file')
@@ -304,7 +304,7 @@ Hoot.ui.hootformbase = function ()
                 mpInput.on('change', a.onchange);
             }
         }
-    }
+    };
 
     /**
     * @desc Create form buttons
@@ -340,8 +340,8 @@ Hoot.ui.hootformbase = function ()
                     btnContainer.classed('hidden', true);
                 }
 
-            });       
-    }
+            });
+    };
 
     /**
     * @desc Create default combo.
@@ -362,7 +362,7 @@ Hoot.ui.hootformbase = function ()
         if(a.onchange){
             comboCnt.on('change', a.onchange);
         }
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

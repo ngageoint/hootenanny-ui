@@ -5,9 +5,9 @@
 // Modifications:
 //      18 Dec. 2015
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.model.basemapdataset = function(context)
+Hoot.model.basemapdataset = function()
 {
-	var model_basemapdataset = {};
+    var model_basemapdataset = {};
 
 
    model_basemapdataset.publishBasemap = function (container,callback) {
@@ -22,10 +22,7 @@ Hoot.model.basemapdataset = function(context)
                 return formData;
          }
 
-
-       var jobIdsArr = [];
-
-
+         
        var data = {};
        data.INPUT_NAME = container.select('.reset.BasemapName').value();
        data.formData = getFormData(document.getElementById('basemapfileuploader').files);
@@ -51,5 +48,5 @@ Hoot.model.basemapdataset = function(context)
 
 
 
-	return model_basemapdataset;
-}
+    return model_basemapdataset;
+};

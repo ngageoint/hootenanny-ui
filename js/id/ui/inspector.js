@@ -41,14 +41,14 @@ iD.ui.Inspector = function(context) {
         if (showEditor) {
             $wrap.style('right', '0%');
             $editorPane.call(entityEditor);
-            if(appPane.classed('hidden') == true){
+            if(appPane.classed('hidden') === true){
                 appPane.classed('hidden', false);
             }
-        
+
         } else {
             $wrap.style('right', '-100%');
             $presetPane.call(presetList);
-            if(appPane.classed('hidden') == false){
+            if(appPane.classed('hidden') === false){
                 appPane.classed('hidden', true);
             }
         }

@@ -15,7 +15,7 @@ iD.Background = function(context) {
             .projection(context.projection),
         //Added for Hoot measurement tool
         measureLayer = iD.MeasureLayer(context, dispatch)
-        	.projection(context.projection),
+            .projection(context.projection),
         /*mapillaryLayer = iD.MapillaryLayer(context),*/
         overlayLayers = [];
 
@@ -69,9 +69,9 @@ iD.Background = function(context) {
         context.history().imageryUsed(imageryUsed);
     }
 
-    // Allows us to define "digitalglobe" as the defaultBaseMap
+    // Allows us to define 'digitalglobe' as the defaultBaseMap
     function getDefaultBaseMap() {
-      var dgre = /digitalglobe/i
+      var dgre = /digitalglobe/i;
       if (dgre.test(iD.data.hootConfig.defaultBaseMap)) {
           var dg = iD.dgservices();
           return iD.BackgroundSource(dg.backgroundSource(undefined, undefined, undefined));
@@ -80,7 +80,7 @@ iD.Background = function(context) {
       }
     }
 
-    //TODO: Document why this was modified for Hoot
+    //Need to document why this was modified for Hoot
     function background(selection) {
         var base = selection.selectAll('.background-layer')
             .data([0]);
@@ -135,10 +135,10 @@ iD.Background = function(context) {
         .data([0]);
 
         measure.enter().insert('div','.layer-data')
-        	.attr('class','layer-layer measure-layer');
+            .attr('class','layer-layer measure-layer');
 
         measure.call(measureLayer);
-        
+
         // Removed for iD v1.9.2
         /*var gpx = selection.selectAll('.layer-gpx')
             .data([0]);
@@ -157,15 +157,15 @@ iD.Background = function(context) {
 
     }
 
-    //TODO: Document why this was added for Hoot
-    //FIXME: Possibly consolidate with addSource below
+    //Need to document why this was added for Hoot
+    //To fix, Possibly consolidate with addSource below
     background.addNewBackgroundResource = function (newRes) {
         var newSource = iD.BackgroundSource(newRes);
         backgroundSources.push(newSource);
     };
 
-    //TODO: Document why this was added for Hoot
-    //FIXME: Possibly consolidate with removeSource below
+    //Need to document why this was added for Hoot
+    //To fix, Possibly consolidate with removeSource below
     background.removeBackgroundResource = function(name){
         var src;
 
@@ -186,8 +186,8 @@ iD.Background = function(context) {
         });
     };
 
-    //TODO: Document why this was added for Hoot
-    //FIXME: Possibly consolidate with addNewBackgroundResource above
+    //Need to document why this was added for Hoot
+    //To fix, Possibly consolidate with addNewBackgroundResource above
     background.addSource = function(d) {
         var source = iD.BackgroundSource(d);
         backgroundSources.push(source);
@@ -206,8 +206,8 @@ iD.Background = function(context) {
         }
     };
 
-    //TODO: Document why this was added for Hoot
-    //FIXME: Possibly consolidate with removeBackgroundResource above
+    //Need to document why this was added for Hoot
+    //To fix, Possibly consolidate with removeBackgroundResource above
     background.removeSource = function(d) {
         var source = findSource(d.id);
         for (var i = backgroundSources.length-1; i >= 0; i--) {
@@ -264,9 +264,9 @@ iD.Background = function(context) {
         return background.hasGpxLayer() && gpxLayer.enable();
     };*/
 
-    function toDom(x) {
-        return (new DOMParser()).parseFromString(x, 'text/xml');
-    }
+    // function toDom(x) {
+    //     return (new DOMParser()).parseFromString(x, 'text/xml');
+    // }
 
     // Removed for iD v1.9.2
     /*background.gpxLayerFiles = function(fileList) {
@@ -329,8 +329,8 @@ iD.Background = function(context) {
         return overlayLayers.map(function (l) { return l.source(); });
     };
 
-    //TODO: Document why this was added for Hoot
-    //FIXME: Possibly consolidate with modified toggleOverlayLayer below
+    //Need to document why this was added for Hoot
+    //To fix, Possibly consolidate with modified toggleOverlayLayer below
     background.showOverlayLayer = function(d){
         var layer;
 
@@ -351,8 +351,8 @@ iD.Background = function(context) {
         updateImagery();
     };
 
-    //TODO: Document why this was added for Hoot
-    //FIXME: Possibly consolidate with modified toggleOverlayLayer below
+    //Need to document why this was added for Hoot
+    //To fix, Possibly consolidate with modified toggleOverlayLayer below
     background.hideOverlayLayer = function(d) {
         var layer;
 
@@ -368,13 +368,13 @@ iD.Background = function(context) {
 
     };
 
-    //FIXME: Possibly consolidate with modified showOverlayLayer/hideOverlayLayer above
+    //To fix, Possibly consolidate with modified showOverlayLayer/hideOverlayLayer above
     background.toggleOverlayLayer = function(d) {
         var layer;
 
         for (var i = 0; i < overlayLayers.length; i++) {
             layer = overlayLayers[i];
-            //TODO: Document why this was modified for Hoot
+            //Need to document why this was modified for Hoot
             if (layer.source().name() === d.name()) {
                 overlayLayers.splice(i, 1);
                 dispatch.change();
@@ -400,7 +400,7 @@ iD.Background = function(context) {
         updateImagery();
     };
 
-    //TODO: Document why this was added for Hoot
+    //Need to document why this was added for Hoot
     background.addOrUpdateOverlayLayer = function(d) {
         var layer;
 
@@ -442,10 +442,10 @@ iD.Background = function(context) {
 
   //Added for Hoot measurement tool
     background.updateMeasureLayer = function(d) {
-        d3.select('.measure-layer').selectAll('g').remove();
-    	measureLayer.geojson(d);
-    	dispatch.change();
-    }
+		d3.select('.measure-layer').selectAll('g').remove();
+        measureLayer.geojson(d);
+        dispatch.change();
+    };
 
     background.nudge = function(d, zoom) {
         baseLayer.source().nudge(d, zoom);
@@ -461,22 +461,25 @@ iD.Background = function(context) {
     };
 
     background.load = function(imagery) {
-		//Added in v1.9.2 iD merge        
+        //Added in v1.9.2 iD merge
 
-		function parseMap(qmap) {
-            if (!qmap) return false;
-            var args = qmap.split('/').map(Number);
-            if (args.length < 3 || args.some(isNaN)) return false;
-            return iD.geo.Extent([args[1], args[2]]);
-        }
+        //eslint never used
+        // function parseMap(qmap) {
+        //     if (!qmap) return false;
+        //     var args = qmap.split('/').map(Number);
+        //     if (args.length < 3 || args.some(isNaN)) return false;
+        //     return iD.geo.Extent([args[1], args[2]]);
+        // }
 
         var q = iD.util.stringQs(location.hash.substring(1)),
-            chosen = q.background || q.layer,
-            extent = parseMap(q.map),
-            best;
+            chosen = q.background || q.layer//,
+            //eslint never used
+            //extent = parseMap(q.map),
+            //best
+            ;
 
-		// End of addition from 1.9.2 merge
-		
+        // End of addition from 1.9.2 merge
+
         backgroundSources = imagery.map(function(source) {
             if (source.type === 'bing') {
                 return iD.BackgroundSource.Bing(source, dispatch);
@@ -487,14 +490,14 @@ iD.Background = function(context) {
 
         backgroundSources.unshift(iD.BackgroundSource.None());
 
-        if (!chosen && extent) {
-            best = _.find(this.sources(extent), function(s) { return s.best(); });
-        }
+        // if (!chosen && extent) {
+        //     best = _.find(this.sources(extent), function(s) { return s.best(); });
+        // }
 
         if (chosen && chosen.indexOf('custom:') === 0) {
             background.baseLayerSource(iD.BackgroundSource.Custom(chosen.replace(/^custom:/, '')));
         } else {
-			background.baseLayerSource(findSource(chosen) || getDefaultBaseMap() || backgroundSources[1]);
+            background.baseLayerSource(findSource(chosen) || getDefaultBaseMap() || backgroundSources[1]);
         }
 
         var locator = _.find(backgroundSources, function(d) {
@@ -511,16 +514,16 @@ iD.Background = function(context) {
             if (overlay) background.toggleOverlayLayer(overlay);
         });
 
-        var gpx = q.gpx;
-        if (gpx) {
-            d3.text(gpx, function(err, gpxTxt) {
-                if (!err) {
-                    gpxLayer.geojson(toGeoJSON.gpx(toDom(gpxTxt)));
-                    iD.ui.MapInMap.gpxLayer.geojson(toGeoJSON.gpx(toDom(gpxTxt)));
-                    dispatch.change();
-                }
-            });
-        }
+        // var gpx = q.gpx;
+        // if (gpx) {
+        //     d3.text(gpx, function(err, gpxTxt) {
+        //         if (!err) {
+        //             gpxLayer.geojson(toGeoJSON.gpx(toDom(gpxTxt)));
+        //             iD.ui.MapInMap.gpxLayer.geojson(toGeoJSON.gpx(toDom(gpxTxt)));
+        //             dispatch.change();
+        //         }
+        //     });
+        // }
     };
 
     return d3.rebind(background, dispatch, 'on');

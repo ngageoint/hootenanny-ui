@@ -20,18 +20,18 @@ Hoot.control = function (context){
         d3.select('.sidebar-component').style('background-color', '#fff');
         //d3.selectAll('.save').style('display','none');
 
-        hoot_control.conflate = Hoot.control.conflate(sidebar);
+        hoot_control.conflate = Hoot.control.conflate(sidebar, context);
         hoot_control.import = Hoot.control.import(context, sidebar);
-        hoot_control.export = Hoot.control.export( sidebar);
+        hoot_control.export = Hoot.control.export(context, sidebar);
         hoot_control.view = Hoot.control.view(sidebar, context);
         hoot_control.conflicts = Hoot.control.conflicts(context, sidebar);
         hoot_control.validation = Hoot.control.validation(context, sidebar);
-        
+
         // tools will go away till then
         Hoot.tools(context, sidebar);
-	}
+	};
 
-        // TODO: Update this to be more generic..
+        // NOTE: Update this to be more generic..
         hoot_control.createModalDialog = function(context, dlgMetadata, formMetaData, btnMetaData) {
                 var modalbg = d3.select('body')
                     .append('div')
@@ -72,11 +72,11 @@ Hoot.control = function (context){
                         return 'reset ' + field.type;
                     })
                     .select(function (a) {
-                        if(a.label=='Output Name'){
+                        if(a.label==='Output Name'){
                             d3.select(this).on('change',function(){
                                 //ensure output name is valid
                                 var resp = context.hoot().checkForUnallowedChar(this.value);
-                                if(resp != true){
+                                if(resp !== true){
                                     d3.select(this).classed('invalidName',true).attr('title',resp);
                                 } else {
                                     d3.select(this).classed('invalidName',false).attr('title',null);
@@ -89,7 +89,7 @@ Hoot.control = function (context){
                     .classed('form-field col12 center ', true);
 
 
-                var btn = submitExp.append('span')
+                submitExp.append('span')
                     .classed('round strong big loud dark center col10 margin1 point', true)
                     .classed('inline row1 fl col10 pad1y', true)
                     .text(btnMetaData.label)
@@ -102,6 +102,6 @@ Hoot.control = function (context){
 
                 return modalbg;
 
-        }
+        };
 	return hoot_control;
 };

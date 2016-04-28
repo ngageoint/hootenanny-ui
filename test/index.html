@@ -48,9 +48,9 @@
     <script src='../js/id/services.js'></script>
     <script src='../js/id/services/mapillary.js'></script>
     <script src='../js/id/services/nominatim.js'></script>
-    <script src='../js/id/services/countrycode.js'></script>
     <script src='../js/id/services/taginfo.js'></script>
     <script src='../js/id/services/wikipedia.js'></script>
+    <script src='../js/id/services/dgservices.js'></script>
 
     <script src='../data/data_dev.js'></script>
 
@@ -64,10 +64,11 @@
     <script src='../js/id/renderer/background_source.js'></script>
     <script src='../js/id/renderer/features.js'></script>
     <script src='../js/id/renderer/map.js'></script>
-    <script src='../js/id/renderer/gpx_layer.js'></script>
     <script src='../js/id/renderer/tile_layer.js'></script>
-    <script src='../js/id/renderer/mapillary_layer.js'></script>
     <script src='../js/id/renderer/footprint_layer.js'></script>
+    <script src='../js/id/renderer/arrow_layer.js'></script>
+    <script src='../js/id/renderer/measure_layer.js'></script>
+    <script src='../js/id/renderer/review_layer.js'></script>
 
     <script src="../js/id/svg.js"></script>
     <script src="../js/id/svg/areas.js"></script>
@@ -81,7 +82,6 @@
     <script src="../js/id/svg/midpoints.js"></script>
     <script src="../js/id/svg/osm.js"></script>
     <script src="../js/id/svg/points.js"></script>
-    <script src="../js/id/svg/surface.js"></script>
     <script src="../js/id/svg/layers.js"></script>
     <script src="../js/id/svg/tag_classes.js"></script>
     <script src="../js/id/svg/turns.js"></script>
@@ -127,6 +127,8 @@
     <script src='../js/id/ui/entity_editor.js'></script>
     <script src='../js/id/ui/disclosure.js'></script>
     <script src='../js/id/ui/sidebar.js'></script>
+    <script src='../js/id/ui/alert.js'></script>
+    <script src='../js/id/ui/tag_copy.js'></script>
 
     <script src='../js/id/ui/preset/access.js'></script>
     <script src='../js/id/ui/preset/address.js'></script>
@@ -135,6 +137,8 @@
     <script src='../js/id/ui/preset/combo.js'></script>
     <script src='../js/id/ui/preset/localized.js'></script>
     <script src='../js/id/ui/preset/wikipedia.js'></script>
+
+    <script src='../js/id/ui/plugins/Plugins.js'></script>
 
     <script src='../js/id/actions.js'></script>
     <script src='../js/id/actions/add_entity.js'></script>
@@ -146,7 +150,6 @@
     <script src='../js/id/actions/change_tags.js'></script>
     <script src='../js/id/actions/circularize.js'></script>
     <script src='../js/id/actions/connect.js'></script>
-    <script src='../js/id/actions/copy_entity.js'></script>
     <script src='../js/id/actions/copy_entities.js'></script>
     <script src='../js/id/actions/delete_member.js'></script>
     <script src='../js/id/actions/delete_multiple.js'></script>
@@ -183,6 +186,7 @@
     <script src='../js/id/behavior/hover.js'></script>
     <script src='../js/id/behavior/lasso.js'></script>
     <script src='../js/id/behavior/paste.js'></script>
+    <script src='../js/id/behavior/paste_tags.js'></script>
     <script src='../js/id/behavior/select.js'></script>
     <script src='../js/id/behavior/tail.js'></script>
 
@@ -220,7 +224,6 @@
     <script src='../js/id/core/relation.js'></script>
     <script src='../js/id/core/way.js'></script>
     <script src='../js/id/core/tree.js'></script>
-    <script src='../js/id/core/oneway_tags.js'></script>
     <script src='../js/id/core/tags.js'></script>
 
     <script src='../js/id/presets.js'></script>
@@ -246,6 +249,7 @@
         <script src='../data/introGraph.js'></script>
         <script src='../js/hoot/Hoot.js'></script>
         <script src='../js/hoot/tools.js'></script>
+        <script src='../js/hoot/Ui.js'></script>
 
 
         <script src='../js/hoot/lib/FileSaver.js'></script>
@@ -264,6 +268,7 @@
         <script src='../js/hoot/model/Conflate.js'></script>
         <script src='../js/hoot/model/BasemapDataset.js'></script>
         <script src='../js/hoot/model/rest.js'></script>
+        <script src='../js/hoot/model/Folders.js'></script>
 
         <script src='../js/hoot/view/View.js'></script>
         <script src='../js/hoot/view/LTDSTags.js'></script>
@@ -275,7 +280,14 @@
         <script src='../js/hoot/view/utilities/Translation.js'></script>
         <script src='../js/hoot/view/utilities/ErrorLog.js'></script>
         <script src='../js/hoot/view/utilities/Reports.js'></script>
-        
+        <script src='../js/hoot/view/utilities/About.js'></script>
+        <script src='../js/hoot/view/utilities/ReviewBookmarks.js'></script>
+        <script src='../js/hoot/view/utilities/ReviewBookmarkNotes.js'></script>
+
+        <script src='../js/hoot/ui/FormFactory.js'></script>
+        <script src='../js/hoot/ui/HootFormBase.js'></script>
+        <script src='../js/hoot/ui/HootFormReviewmarkMenu.js'></script>
+        <script src='../js/hoot/ui/HootFormReviewNote.js'></script>
 
         <script src='../js/hoot/control/Control.js'></script>
         <script src='../js/hoot/control/Conflate.js'></script>
@@ -287,9 +299,17 @@
         <script src='../js/hoot/control/utilities/Utilities.js'></script>
         <script src='../js/hoot/control/utilities/Translation.js'></script>
         <script src='../js/hoot/control/utilities/BasemapDataset.js'></script>
-        <script src='../js/hoot/control/utilities/Dataset.js'></script>
         <script src='../js/hoot/control/utilities/WfsDataset.js'></script>
         <script src='../js/hoot/control/utilities/Reports.js'></script>
+        <script src='../js/hoot/control/utilities/Folder.js'></script>
+        <script src='../js/hoot/control/utilities/Validation.js'></script>
+        <script src='../js/hoot/control/utilities/Filter.js'></script>
+        <script src='../js/hoot/control/utilities/ExportDataset.js'></script>
+        <script src='../js/hoot/control/utilities/BulkModifyDataset.js'></script>
+        <script src='../js/hoot/control/utilities/ModifyDataset.js'></script>
+        <script src='../js/hoot/control/utilities/ImportDataset.js'></script>
+        <script src='../js/hoot/control/utilities/BulkImportDataset.js'></script>
+        <script src='../js/hoot/control/utilities/ClipDataset.js'></script>
 
  <!--   <script src='../data/introGraph.js'></script>
     <script src='../js/hoot/Hoot.js'></script>
@@ -334,7 +354,6 @@
     <script src='spec/actions/orthogonalize.js'></script>
     <script src='spec/actions/straighten.js'></script>
     <script src='spec/actions/connect.js'></script>
-    <script src="spec/actions/copy_entity.js"></script>
     <script src="spec/actions/copy_entities.js"></script>
     <script src='spec/actions/delete_member.js'></script>
     <script src="spec/actions/delete_multiple.js"></script>
@@ -361,7 +380,7 @@
     <script src="spec/geo/intersection.js"></script>
     <script src="spec/geo/multipolygon.js"></script>
 
-    <script src="spec/core/connection.js"></script>
+    <!--script src="spec/core/connection.js"></script-->
     <script src="spec/core/graph.js"></script>
     <script src="spec/core/entity.js"></script>
     <script src="spec/core/node.js"></script>
@@ -374,7 +393,7 @@
     <script src="spec/renderer/tile_layer.js"></script>
     <script src="spec/renderer/background_source.js"></script>
     <script src="spec/renderer/features.js"></script>
-    <script src="spec/renderer/map.js"></script>
+    <!--script src="spec/renderer/map.js"></script-->
 
     <script src="spec/svg.js"></script>
     <script src="spec/svg/areas.js"></script>
@@ -399,9 +418,6 @@
     <script src="spec/services/mapillary.js"></script>
     <script src="spec/services/nominatim.js"></script>
     <script src="spec/services/taginfo.js"></script>
-    <script src="spec/countrycode.js"></script>
-    <script src="spec/geo.js"></script>
-    <script src="spec/taginfo.js"></script>
 
     <script src="spec/util.js"></script>
     <script src='spec/util/session_mutex.js'></script>
@@ -412,19 +428,19 @@
     <script src="spec/behavior/select.js"></script>
     <script src="spec/behavior/lasso.js"></script>
 
-    <script src="spec/modes/add_point.js"></script>
+    <!--script src="spec/modes/add_point.js"></script-->
 
-    <script src="spec/presets.js"></script>
+    <!--script src="spec/presets.js"></script>
     <script src="spec/presets/preset.js"></script>
     <script src="spec/presets/collection.js"></script>
     <script src="spec/presets/category.js"></script>
-    <script src="spec/id.js"></script>
+    <script src="spec/id.js"></script-->
 
-    <script src="spec/hoot/model/Export.js"></script>
+    <!--script src="spec/hoot/model/Export.js"></script>
     <script src="spec/hoot/model/Import.js"></script>
     <script src="spec/hoot/model/Layers.js"></script>
     <script src="spec/hoot/controller/translation_assistant.js"></script>
-    <script src="spec/hoot/controller/import.js"></script>
+    <script src="spec/hoot/controller/import.js"></script-->
 
     <script>
 

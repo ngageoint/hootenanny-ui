@@ -29,6 +29,7 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      18 Dec. 2015
+//      14 Apr. 2016 eslint changes -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.conflicts = function (context, sidebar) {
     var _events = d3.dispatch('exportData', 'addData');
@@ -38,7 +39,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     var _reviewOptions;
     var _btnEnabled = true;
     var _mapid;
-    var _too1Tip;
+    var _toolTip;
     var _timeout;
 
 
@@ -83,7 +84,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             if(curReviewable && mergedLayer.length>0){
                 // make sure to load any missing elements
                 _instance.actions.idgraphsynch.getRelationFeature(curReviewable.mapId, curReviewable.relationId, 
-                function(newReviewItem){
+                function(){
  
                     _cleanupProcessing(layerName, force);         
                    
@@ -119,7 +120,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         function toggleForm(self) {
             var cont = self.select('fieldset');
-            var text = (cont.classed('hidden')) ? false : true;
+            var text = !(cont.classed('hidden'));
             cont.classed('hidden', text);
         }
 
@@ -286,7 +287,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 d.action();
                 context.background().updateReviewLayer({});
               } else {
-            	  iD.ui.Alert('Please wait.  Processing review.','notice');
+                iD.ui.Alert('Please wait.  Processing review.','notice');
               }
 
             })
@@ -300,7 +301,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         _instance.actions.traversereview.jumpTo('forward');
 
         //Register listener for review layer cleanup
-        context.hoot().control.view.on('layerRemove.conflicts', function (layerName, isPrimary) {
+        context.hoot().control.view.on('layerRemove.conflicts', function () {
             _instance.deactivate();
 
         });
@@ -316,20 +317,20 @@ Hoot.control.conflicts = function (context, sidebar) {
                 context.MapInMap.loadGeoJson(gj.features.map(function(d) {
                     var currentReviewable = _instance.actions.traversereview.getCurrentReviewable();
                     if (d.properties.relationid === currentReviewable.relationId) {
-                        d.properties.class = 'locked'
+                        d.properties.class = 'locked';
                     }
                     return d;
                 }) || []);
                 });
             }
-    }
+    };
 
     /**
     * @desc This function is to exit from review session and do all clean ups
     **/
     _instance.reviewNextStep = function () {
 
-    	d3.select('body').call(iD.ui.Processing(context,false));
+        d3.select('body').call(iD.ui.Processing(context,false));
 
         _confData.isDeleteEnabled = true;
 
@@ -403,7 +404,7 @@ Hoot.control.conflicts = function (context, sidebar) {
     **/
     _instance.getMapId = function() {
         return _mapid;
-    }
+    };
 
     /**
     * @desc
@@ -453,19 +454,19 @@ Hoot.control.conflicts = function (context, sidebar) {
     /**
     * @desc make sure that screen does not get locked up forever
     **/
-    _screenLockFree = function(delay){
+    var _screenLockFree = function(delay){
         if(_timeout){
             clearTimeout(_timeout);
         }
         _timeout = setTimeout(function(){
             _timeout = null;
         d3.select('body').call(iD.ui.Processing(context,false));
-        },delay)
-    }
+        },delay);
+    };
 
     _instance.getToolTip = function() {
         return _toolTip;
-        }
+    };
     /**
     * @desc This cleans up all class variable. If not clean then it will get resued
     * when we load conflict UI..
@@ -475,15 +476,15 @@ Hoot.control.conflicts = function (context, sidebar) {
 		_review = undefined;
 		_reviewOptions = undefined;
 		_btnEnabled = true;
-		_mapid = undefined
-		_too1Tip = undefined;
+		_mapid = undefined;
+		_toolTip = undefined;
         _timeout = undefined;
 
         _instance.actions.reset();
         _instance.info.reset();
         _instance.map.reset();
         _instance.reviewIds = null;
-    }
+    };
 
     /**
     * @desc Hotkey callback wrapper function with lock validation
@@ -494,7 +495,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             return;
         }
         da.action();
-    }
+    };
 
     /**
     * @desc This clears all icon high lights
@@ -520,7 +521,7 @@ Hoot.control.conflicts = function (context, sidebar) {
                 _instance.setProcessing(false);
             }
         }        
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
 };

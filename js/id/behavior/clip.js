@@ -1,19 +1,16 @@
-var clickTime = null;
-iD.behavior.Clip = function(context,svg,type) {
-	 var event = d3.dispatch('move', 'click','cancel', 'finish','dblclick'),
-     keybinding = d3.keybinding('cliparea'),
+iD.behavior.Clip = function(context,svg) {
+     var event = d3.dispatch('move', 'click','cancel', 'finish','dblclick'),
      closeTolerance = 4,
      tolerance = 12,
      nodeId=0,
-     rect,anchorPt,
-     lastPoint=null,firstPoint=null;
-	 
+     rect,anchorPt;
+
  function ret(element) {
      d3.event.preventDefault();
      element.on('dblclick',undefined);
      event.finish();
  }
- 
+
  function mousedown() {
 
      function point() {
@@ -29,9 +26,9 @@ iD.behavior.Clip = function(context,svg,type) {
          pos = point();
 
          element.on('dblclick',function(){
-         	ret(element);
+             ret(element);
          });
-         
+
          element.on('mousemove.cliparea', null);
 
      d3.select(window).on('mouseup.cliparea', function() {
@@ -59,69 +56,66 @@ iD.behavior.Clip = function(context,svg,type) {
 
 
  function mousemove() {
- 	var c = context.projection(context.map().mouseCoordinates());
- 	 	
-	    if(nodeId>0){
-	    	var x = parseFloat(rect.attr('x')),
-	    		y = parseFloat(rect.attr('y'));
-	    	
-	    	var width = Math.abs(c[0]-anchorPt[0]), 
-	    	height = Math.abs(c[1]-anchorPt[1]);
-	    	
-	    	if(c[0]<anchorPt[0]){
-	    		rect.attr('x',c[0]);
-	    	} else {
-	    		rect.attr('x',anchorPt[0]);
-	    	}
-	    	
-	    	if(c[1]<anchorPt[1]){
-	    		rect.attr('y',c[1]);
-	    	} else {
-	    		rect.attr('y',anchorPt[1]);
-	    	}
-	    	
-	    	rect.attr('width',width).attr('height',height);
-	    }
+     var c = context.projection(context.map().mouseCoordinates());
+
+        if(nodeId>0){
+            var width = Math.abs(c[0]-anchorPt[0]),
+            height = Math.abs(c[1]-anchorPt[1]);
+
+            if(c[0]<anchorPt[0]){
+                rect.attr('x',c[0]);
+            } else {
+                rect.attr('x',anchorPt[0]);
+            }
+
+            if(c[1]<anchorPt[1]){
+                rect.attr('y',c[1]);
+            } else {
+                rect.attr('y',anchorPt[1]);
+            }
+
+            rect.attr('width',width).attr('height',height);
+        }
  }
- 
+
  function click() {
- 	var c = context.projection(context.map().mouseCoordinates());
- 	 	
- 	if(nodeId==0){
- 		anchorPt = c;
- 		rect.attr("x",c[0]).attr("y",c[1]);
- 		nodeId=1;
- 	}
- 	else{
- 		var bboxPt1 = context.projection.invert([parseFloat(rect.attr('x')),parseFloat(rect.attr('y'))]).toString();
- 		var bboxPt2 = context.projection.invert([parseFloat(rect.attr('x'))+parseFloat(rect.attr('width')),parseFloat(rect.attr('y'))+parseFloat(rect.attr('height'))]).toString();
-    				
- 		ret(d3.select("#surface"));
- 		if(!_.isEmpty(hoot.model.layers.getLayers())){
-			hoot.control.utilities.clipdataset.clipDatasetContainer('boundingBox',bboxPt1.concat(',',bboxPt2));                    			
-		} else {
-			iD.ui.Alert("Add data to map before clipping.","notice",new Error().stack);
-		}
- 		nodeId=0;
- 	}
+     var c = context.projection(context.map().mouseCoordinates());
+
+     if(nodeId === 0){
+         anchorPt = c;
+         rect.attr('x',c[0]).attr('y',c[1]);
+         nodeId=1;
+     }
+     else{
+         var bboxPt1 = context.projection.invert([parseFloat(rect.attr('x')),parseFloat(rect.attr('y'))]).toString();
+         var bboxPt2 = context.projection.invert([parseFloat(rect.attr('x'))+parseFloat(rect.attr('width')),parseFloat(rect.attr('y'))+parseFloat(rect.attr('height'))]).toString();
+
+         ret(d3.select('#surface'));
+         if(!_.isEmpty(context.hoot().model.layers.getLayers())){
+            context.hoot().control.utilities.clipdataset.clipDatasetContainer('boundingBox',bboxPt1.concat(',',bboxPt2));
+        } else {
+            iD.ui.Alert('Add data to map before clipping.','notice',new Error().stack);
+        }
+         nodeId=0;
+     }
  }
 
 
  function cliparea(selection) {
      //create rect
      var g = svg.append('g');
-     rect = g.append("rect")
-			.classed("measure-area",true)
-			.style("stroke","white")
-			.style("stroke-width","2px")
-			.style("stroke-linecap","round")
-			.style("fill","black")
-		    .style("fill-opacity","0.3")
-		    .attr("x",0)
-		    .attr("y",0)
-		    .attr("width","0")
-		    .attr("height","0");
-         
+     rect = g.append('rect')
+            .classed('measure-area',true)
+            .style('stroke','white')
+            .style('stroke-width','2px')
+            .style('stroke-linecap','round')
+            .style('fill','black')
+            .style('fill-opacity','0.3')
+            .attr('x',0)
+            .attr('y',0)
+            .attr('width','0')
+            .attr('height','0');
+
      selection
          .on('mousedown.cliparea', mousedown)
          .on('mousemove.cliparea', mousemove);
@@ -129,8 +123,8 @@ iD.behavior.Clip = function(context,svg,type) {
      return cliparea;
  }
 
- cliparea.off = function(selection) {	 
-	 selection
+ cliparea.off = function(selection) {
+     selection
          .on('mousedown.cliparea', null)
          .on('mousemove.cliparea', null);
 

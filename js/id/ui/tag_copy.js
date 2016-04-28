@@ -7,7 +7,7 @@ iD.ui.TagCopy = function(tag, context) {
         button = selection.selectAll('.tag-reference-button')
             .data([0]);
 
-        var enter = button.enter().append('button')
+        button.enter().append('button')
             .attr('tabindex', -1)
             .attr('class', 'tag-reference-button')
             .call(iD.svg.Icon('#icon-apply', 'light checked'));
@@ -15,11 +15,11 @@ iD.ui.TagCopy = function(tag, context) {
         button.on('click', function () {
             d3.event.stopPropagation();
             d3.event.preventDefault();
-            var icn = button.select('svg')
+            var icn = button.select('svg');
             icn.classed('light', !icn.classed('light'));
 
             //Build the tag list and copy to buffer
-            var seltags = d3.selectAll('li.tag-row').filter(function(d) {
+            var seltags = d3.selectAll('li.tag-row').filter(function() {
                 return d3.select(this).selectAll('svg.icon.checked:not(.light)').size() === 1;
             }).data().reduce(function(m, d) {
                 m[d.key] = d.value;

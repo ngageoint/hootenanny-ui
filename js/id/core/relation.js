@@ -20,7 +20,7 @@ _.extend(iD.Relation.prototype, {
     type: 'relation',
     members: [],
 
-    copy: function(deep, resolver, copies) {
+    copy: function(resolver, copies) {
         if (copies[this.id])
             return copies[this.id];
 
