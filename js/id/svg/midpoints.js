@@ -91,7 +91,7 @@ iD.svg.Midpoints = function(projection, context) {
                     angle = Math.round(iD.geo.angle(a, b, projection) * (180 / Math.PI));
                 return translate(d) + ' rotate(' + angle + ')';
             })
-            .call(iD.svg.TagClasses().tags(
+            .call(iD.svg.TagClasses(context).tags(
                 function(d) { return d.parents[0].tags; }
             ));
 

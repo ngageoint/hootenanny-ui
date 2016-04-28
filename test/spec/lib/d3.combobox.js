@@ -89,10 +89,10 @@ describe("d3.combobox", function() {
         expect(body.selectAll('.combobox-option')[0][1].text).to.equal('baz');
     });
 
-    it("shows no menu on focus if it would contain only one item", function() {
+    it("shows one menu on focus if it would contain only one item", function() {
         input.property('value', 'f').call(combobox.data(data));
         input.node().focus();
-        expect(body.selectAll('.combobox-option').size()).to.equal(0);
+        expect(body.selectAll('.combobox-option').size()).to.equal(1);//Hoot changed combobox minItems from 2 to 1
     });
 
     it("shows menu on focus if it would contain at least minItems items", function() {

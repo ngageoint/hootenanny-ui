@@ -7,6 +7,7 @@ describe('iD.Map', function() {
         map = context.map();
         d3.select(document.createElement('div'))
             .call(map);
+        context.enter(iD.modes.Browse(context));
     });
 
     describe('#zoom', function() {

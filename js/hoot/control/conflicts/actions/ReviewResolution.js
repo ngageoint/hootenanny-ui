@@ -8,11 +8,11 @@
 
 Hoot.control.conflicts.actions.reviewresolution = function (context)
 {
-	var _events = d3.dispatch();
-	var _instance = {};
+    var _events = d3.dispatch();
+    var _instance = {};
 
     /**
-   	* @desc This function resolves a reviewable item
+       * @desc This function resolves a reviewable item
     **/
     _instance.retainFeature = function () {
         try {
@@ -52,21 +52,21 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
                 var hasChanges = context.history().hasChanges();
                 if (hasChanges) {
                     _parent().setProcessing(false);
-                	iD.modes.Save(context).save(context, function () {
+                    iD.modes.Save(context).save(context, function () {
                         try {
                             _parent().actions.traversereview.jumpTo('forward');
 
                         } catch (err) {
                             _handleError(err, true);
                         }
-                        
+
 
                     });
                 } else {
-                    	_parent().actions.traversereview.jumpTo('forward');
+                        _parent().actions.traversereview.jumpTo('forward');
                 }
             } else {
-            	iD.ui.Alert("Nothing to review.",'notice');
+                iD.ui.Alert('Nothing to review.','notice');
             }
         } catch (err) {
             _handleError(err, true);
@@ -81,8 +81,6 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
     * @param data - resolved items
     **/
     _instance.acceptAll = function(data) {
-        var doProceed = true;
-
         var hasChanges = context.history().hasChanges();
         if (hasChanges) {
             _parent().setProcessing(false);
@@ -93,26 +91,28 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
                 } catch (err) {
                     _handleError(err, true);
                 }
-                
+
 
             });
         } else {
             _performAcceptAll(data);
-        }   
-    }
+        }
+    };
 
     /**
     * @desc Resolves all reviewables
     * @param data - resolved items
     **/
-    _performAcceptAll = function(data) {
+    var _performAcceptAll = function(data) {
         try{
             _parent().setProcessing(true, 'Please wait while resolving all review items.');
-            Hoot.model.REST('resolveAllReviews', data.mapId, function (error, response)
+            Hoot.model.REST('resolveAllReviews', data.mapId, function (error)
             {
+                if(error){_handleError(error,true);}
+
                 try {
                      _parent().deactivate(true);
-                    d3.select('body').call(iD.ui.Processing(context,true,"Resolving all reviewable features..."));
+                    d3.select('body').call(iD.ui.Processing(context,true,'Resolving all reviewable features...'));
                     // removed event.acceptAll(data) and brought in to direct call below
                     context.hoot().mode('browse');
                     context.hoot().model.conflicts.acceptAll(data, function () {
@@ -121,17 +121,17 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
                         } catch (err) {
                             _handleError(err, true);
                         }
-                        
+
                     });
                 } catch (err) {
                     _handleError(err, true);
                 }
-                   
+
             });
         } catch (err) {
             _handleError(err, true);
         }
-    }
+    };
 
 
     /**
@@ -148,14 +148,13 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
     * @param doAlertUser - switch to show user alert
     **/
     var _handleError = function(err, doAlertUser) {
-        console.error(err);
         _parent().setProcessing(false);
         if(doAlertUser === true) {
             iD.ui.Alert(err,'error',new Error().stack);
         }
-    }
+    };
     var _parent = function() {
         return context.hoot().control.conflicts;
-    }
-	return d3.rebind(_instance, _events, 'on');
-}
+    };
+    return d3.rebind(_instance, _events, 'on');
+};

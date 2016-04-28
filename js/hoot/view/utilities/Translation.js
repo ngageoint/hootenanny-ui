@@ -6,12 +6,12 @@
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.view.utilities.translation = function(context) {
-	var hoot_view_utilities_translation = {};
+    var hoot_view_utilities_translation = {};
 
 
     hoot_view_utilities_translation.createContainer = function(form){
 
-        var fieldset = form.append('div')
+        form.append('div')
             .classed('pad1y col12', true)
             .append('a')
             .attr('href', '#')
@@ -25,7 +25,7 @@ Hoot.view.utilities.translation = function(context) {
             .call(hoot_view_utilities_translation.populateTranslations);
     };
 
-	hoot_view_utilities_translation.populateTranslations = function(container) {
+    hoot_view_utilities_translation.populateTranslations = function(container) {
             if(!container){
                 container = hoot_view_utilities_translation.datasetcontainer;
             }
@@ -44,11 +44,11 @@ Hoot.view.utilities.translation = function(context) {
                     .classed('text-left big col12 fill-white small hoverDiv2', true)
                     .append('a')
                     .text(function (d) {
-                        if(d.DEFAULT == true){
+                        if(d.DEFAULT === true){
                             return d.NAME + ': ' + d.DESCRIPTION;
                         }
                         return d.NAME + ': ' + d.DESCRIPTION;
-                    })
+                    });
 
 
 
@@ -58,21 +58,17 @@ Hoot.view.utilities.translation = function(context) {
                 .on('click', function (n) {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
-                    
-                    var r = confirm("Are you sure you want to delete selected translaton?");
-                    if (r == true) {
 
-                    } else {
-                        return;
-                    }
-                    
+                    var r = confirm('Are you sure you want to delete selected translaton?');
+                    if (!r) { return; }
+
 
                     d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1',false);
                     d3.select(this).classed('keyline-left keyline-right pad1 row1  col1 fr',true).call(iD.ui.Spinner(context));
 
 
                     var transTrashBtn = this;
-                    var btnIdName = n.NAME.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g,'_');
+                    var btnIdName = n.NAME.replace(/[&\/\\#,+()$~%.'':*?<>{}]/g,'_');
                     btnIdName = btnIdName.replace(/ /g, '_');
                     transTrashBtn.id = 'a' + btnIdName;
 
@@ -83,7 +79,7 @@ Hoot.view.utilities.translation = function(context) {
                             return;
                         }
                         var resp = JSON.parse(res);
-                        var idName = resp[0].NAME.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g,'_');
+                        var idName = resp[0].NAME.replace(/[&\/\\#,+()$~%.'':*?<>{}]/g,'_');
                         idName = idName.replace(/ /g, '_');
                         var curBtn = d3.select('#a' + idName)[0];
                         d3.select(curBtn[0].parentNode.parentNode)
@@ -93,17 +89,17 @@ Hoot.view.utilities.translation = function(context) {
 
                 })
                 .select(function (sel) {
-                    if(sel.DEFAULT == true){
+                    if(sel.DEFAULT === true){
 
-                        d3.select(this).classed('keyline-left keyline-right fr _icon quiet trash pad2 col1', true)
-                        d3.select(this).on('click', function (n) {
+                        d3.select(this).classed('keyline-left keyline-right fr _icon quiet trash pad2 col1', true);
+                        d3.select(this).on('click', function () {
                             d3.event.stopPropagation();
                             d3.event.preventDefault();
-                            iD.ui.Alert("Can not delete default translation.",'warning',new Error().stack);
+                            iD.ui.Alert('Can not delete default translation.','warning',new Error().stack);
                         });
                     }
                     else {
-                        d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
+                        d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1', true);
                     }
 
                 });
@@ -123,5 +119,5 @@ Hoot.view.utilities.translation = function(context) {
         };
 
 
-	return hoot_view_utilities_translation;
-}
+    return hoot_view_utilities_translation;
+};

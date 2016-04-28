@@ -4,9 +4,10 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      03 Feb. 2016
+//      15 Apr. 2016 eslint updates -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.control.utilities.reports = function(context) {
-	var hoot_control_utilities_reports = {};
+Hoot.control.utilities.reports = function() {
+    var hoot_control_utilities_reports = {};
 
     hoot_control_utilities_reports.reportPopup = function (dataset) {
 
@@ -14,7 +15,7 @@ Hoot.control.utilities.reports = function(context) {
         var d_form = [{
             label: 'Output Name',
             type: 'reportExportOutputName',
-            placeholder: dataset.name + ".pdf"
+            placeholder: dataset.name + '.pdf'
         }];
         var modalbg = d3.select('body')
             .append('div')
@@ -53,8 +54,7 @@ Hoot.control.utilities.reports = function(context) {
             })
             .attr('class', function (field) {
                 return 'reset ' + field.type;
-            })
-            .select(function (a) { });
+            });
 
         var submitExp = formContainerDiv.append('div')
         .classed('form-field col12 center ', true);
@@ -83,5 +83,5 @@ Hoot.control.utilities.reports = function(context) {
 
 
 
-	return hoot_control_utilities_reports;
-}
+    return hoot_control_utilities_reports;
+};

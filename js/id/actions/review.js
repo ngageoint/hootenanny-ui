@@ -6,8 +6,7 @@ iD.actions.Review = function(ids) {
         return graph;
     };
 
-    action.disabled = function(graph) {
-
+    action.disabled = function() {
         return 'not_review';
     };
 
@@ -22,12 +21,12 @@ iD.actions.Review = function(ids) {
 
                     var mFeature = graph.entity(mid);
                     if(mFeature) {
-                   
+                        //
                     }
                         
                 });
             });
-    }
+    };
 
     return action;
 };

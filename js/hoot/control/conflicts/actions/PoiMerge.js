@@ -10,14 +10,14 @@
 
 Hoot.control.conflicts.actions.poimerge = function (context)
 {
-	var _events = d3.dispatch();
-	var _instance = {};
-	var _mergeFeatures;
+    var _events = d3.dispatch();
+    var _instance = {};
+    var _mergeFeatures;
     // @TODO: get rid of f  + f against concept after getting concensus
-    var _feature; 
+    var _feature;
     var _againstFeature;
 
-    
+
     /**
     * @desc enable/disable merge feature operation by toggling the function handler
     * @param doEnable - switch
@@ -28,11 +28,11 @@ Hoot.control.conflicts.actions.poimerge = function (context)
         _feature = r;
         _againstFeature = ra;
 
-        
 
-    	if(doEnable === true){
-    		_mergeFeatures = function() {
-		    	if(context.graph().entities[_feature.id] && context.graph().entities[_againstFeature.id]){
+
+        if(doEnable === true){
+            _mergeFeatures = function() {
+                if(context.graph().entities[_feature.id] && context.graph().entities[_againstFeature.id]){
                     try {
                         _instance.disableMergeButton(true);
                         var currentReviewable = _parent().actions.traversereview.getCurrentReviewable();
@@ -46,16 +46,16 @@ Hoot.control.conflicts.actions.poimerge = function (context)
                         _handleError(err, true);
                     }
 
-    		    		
-		    	} else {
+
+                } else {
                     _parent().setProcessing(false);
-		    		iD.ui.Alert("Nothing to merge.",'notice');
-		        	return;
-		    	}
-		    };
-    	} else {
-    		 _mergeFeatures = function() {};
-    	}
+                    iD.ui.Alert('Nothing to merge.','notice');
+                    return;
+                }
+            };
+        } else {
+             _mergeFeatures = function() {};
+        }
     };
 
     /**
@@ -72,7 +72,7 @@ Hoot.control.conflicts.actions.poimerge = function (context)
         } catch (err) {
             _handleError(err, true);
         }
-        
+
     };
 
     /**
@@ -123,7 +123,7 @@ Hoot.control.conflicts.actions.poimerge = function (context)
             }
 
         }
-    }
+    };
 
     /**
     * @desc Helper function for error handling. Logs error cleans out screen lock and alerts user optionally
@@ -131,17 +131,16 @@ Hoot.control.conflicts.actions.poimerge = function (context)
     * @param doAlertUser - switch to show user alert
     **/
     var _handleError = function(err, doAlertUser) {
-        console.error(err);
         _parent().setProcessing(false);
         if(doAlertUser === true) {
             iD.ui.Alert(err,'error',new Error().stack);
         }
-    }
+    };
 
     var _parent = function() {
         return context.hoot().control.conflicts;
-    }
+    };
 
     return d3.rebind(_instance, _events, 'on');
 
-}
+};

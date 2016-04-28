@@ -9,15 +9,15 @@
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.view.utilities.reports = function(context) {
-	var hoot_view_utilities_reports = {};
+    var hoot_view_utilities_reports = {};
 
     hoot_view_utilities_reports.createContent = function(form){
 
         hoot_view_utilities_reports.datasetcontainer = form.append('div')
             .classed('col12 fill-white small  row10 overflow keyline-all', true)
             .call(hoot_view_utilities_reports.populateReports);
-    }
-	hoot_view_utilities_reports.populateReports = function(container) {
+    };
+    hoot_view_utilities_reports.populateReports = function(container) {
             if(!container){
                 container = hoot_view_utilities_reports.datasetcontainer;
             }
@@ -36,11 +36,11 @@ Hoot.view.utilities.reports = function(context) {
                     .classed('text-left big col12 fill-white small hoverDiv2', true)
                     .append('a')
                     .text(function (d) {
-                        if(d.DEFAULT == true){
+                        if(d.DEFAULT === true){
                             return d.name + ': ' + d.description;
                         }
                         return d.name + ': ' + d.description;
-                    })
+                    });
 
 
 
@@ -50,31 +50,27 @@ Hoot.view.utilities.reports = function(context) {
                 .on('click', function (n) {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
-                    
-                    var r = confirm("Are you sure you want to delete selected report?");
-                    if (r == true) {
 
-                    } else {
-                        return;
-                    }
-                    
+                    var r = confirm('Are you sure you want to delete selected report?');
+                    if (!r) { return; }
+
 
                     d3.select(this).classed('keyline-left fr _icon trash pad2 col1',false);
                     d3.select(this).classed('keyline-left keyline-right pad1 row1  col1 fr',true).call(iD.ui.Spinner(context));
 
 
                     var transTrashBtn = this;
-                    
+
                     transTrashBtn.id = 'a' + n.id;
 
                     Hoot.model.REST('deleteReport', n.id, function (resp) {
                         if(resp.error){
-                            context.hoot().view.utilities.errorlog.reportUIError(res.error);
+                            context.hoot().view.utilities.errorlog.reportUIError(resp.error);
                             hoot_view_utilities_reports.populateReports();
                             return;
                         }
-                   
-             
+
+
                         var curBtn = d3.select('#a' + resp.id)[0];
                         d3.select(curBtn[0].parentNode.parentNode)
                         .remove();
@@ -82,8 +78,8 @@ Hoot.view.utilities.reports = function(context) {
                     });
 
                 })
-                .select(function (sel) {
-                    d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
+                .select(function () {
+                    d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1', true);
 
                 });
 
@@ -102,5 +98,5 @@ Hoot.view.utilities.reports = function(context) {
         };
 
 
-	return hoot_view_utilities_reports;
-}
+    return hoot_view_utilities_reports;
+};

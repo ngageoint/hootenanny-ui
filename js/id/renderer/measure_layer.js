@@ -52,7 +52,7 @@ iD.MeasureLayer = function() {
             .projection(projection);
 
         paths
-            .attr('d', path);       
+            .attr('d', path);
     }
 
     render.projection = function(_) {

@@ -7,6 +7,8 @@ describe('iD.Features', function() {
         context = iD();
         context.map().zoom(16);
         features = iD.Features(context);
+        // Need this to set editable which ends up controlling what is in _hidden
+        context.hoot().model.layers.layers['dummy']={};
     });
 
     describe('#keys', function() {
@@ -217,8 +219,6 @@ describe('iD.Features', function() {
 
 
         it("matches points", function () {
-            // Need this to set editable which ends up controlling what is in _hidden
-            context.hoot().model.layers.layers['dummy']={};
             features.disable('points');
             features.gatherStats(all, graph, dimensions);
 
@@ -272,8 +272,6 @@ describe('iD.Features', function() {
 
 
         it("matches paths", function () {
-            // Need this to set editable which ends up controlling what is in _hidden
-            context.hoot().model.layers.layers['dummy']={};
             features.disable('paths');
             features.gatherStats(all, graph, dimensions);
 
@@ -291,8 +289,6 @@ describe('iD.Features', function() {
 
 
         it("matches buildings", function () {
-            // Need this to set editable which ends up controlling what is in _hidden
-            context.hoot().model.layers.layers['dummy']={};
             features.disable('buildings');
             features.gatherStats(all, graph, dimensions);
 
@@ -310,8 +306,6 @@ describe('iD.Features', function() {
 
 
         it("matches landuse", function () {
-            // Need this to set editable which ends up controlling what is in _hidden
-            context.hoot().model.layers.layers['dummy']={};
             features.disable('landuse');
             features.gatherStats(all, graph, dimensions);
 
@@ -331,8 +325,6 @@ describe('iD.Features', function() {
 
 
         it("matches boundaries", function () {
-            // Need this to set editable which ends up controlling what is in _hidden
-            context.hoot().model.layers.layers['dummy']={};
             features.disable('boundaries');
             features.gatherStats(all, graph, dimensions);
 
@@ -349,8 +341,6 @@ describe('iD.Features', function() {
 
 
         it("matches water", function () {
-            // Need this to set editable which ends up controlling what is in _hidden
-            context.hoot().model.layers.layers['dummy']={};
             features.disable('water');
             features.gatherStats(all, graph, dimensions);
 
@@ -368,8 +358,6 @@ describe('iD.Features', function() {
 
 
         it("matches rail", function () {
-            // Need this to set editable which ends up controlling what is in _hidden
-            context.hoot().model.layers.layers['dummy']={};
             features.disable('rail');
             features.gatherStats(all, graph, dimensions);
 
@@ -388,8 +376,6 @@ describe('iD.Features', function() {
 
 
         it("matches power", function () {
-            // Need this to set editable which ends up controlling what is in _hidden
-            context.hoot().model.layers.layers['dummy']={};
             features.disable('power');
             features.gatherStats(all, graph, dimensions);
 
@@ -406,8 +392,6 @@ describe('iD.Features', function() {
 
 
         it("matches past/future", function () {
-            // Need this to set editable which ends up controlling what is in _hidden
-            context.hoot().model.layers.layers['dummy']={};
             features.disable('past_future');
             features.gatherStats(all, graph, dimensions);
 
@@ -425,8 +409,6 @@ describe('iD.Features', function() {
 
 
         it("matches others", function () {
-            // Need this to set editable which ends up controlling what is in _hidden
-            context.hoot().model.layers.layers['dummy']={};
             features.disable('others');
             features.gatherStats(all, graph, dimensions);
 
@@ -505,8 +487,6 @@ describe('iD.Features', function() {
         });
 
         it('auto-hides features', function() {
-            // Need this to set editable which ends up controlling what is in _hidden
-            context.hoot().model.layers.layers['dummy']={};
 
             var graph = iD.Graph([]),
                 maxPoints = 200,
@@ -538,9 +518,7 @@ describe('iD.Features', function() {
         });
 
         it('doubles auto-hide threshold when doubling viewport size', function() {
-            // Need this to set editable which ends up controlling what is in _hidden
-            context.hoot().model.layers.layers['dummy']={};
-            
+
             var graph = iD.Graph([]),
                 maxPoints = 400,
                 dimensions = [2000, 1000],

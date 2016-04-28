@@ -1,15 +1,15 @@
 /**
- * 
+ *
  */
 var xhr;
 describe('iD.Hoot.Model.Import', function(){
     var imprt;
     var sandbox;
-    
+
     before(function () {
         sandbox = sinon.sandbox.create();
         xhr = sinon.useFakeXMLHttpRequest();
-        
+
         xhr.onCreate = function (req) { requests.push(req); };
         var testContext = {};
         testContext.config = {};
@@ -22,7 +22,7 @@ describe('iD.Hoot.Model.Import', function(){
         var stub = sandbox.stub(imprt, "getFormData");
         stub.returns("test_body_123");
     });
-    
+
     after(function() {
         xhr.restore();
         sandbox.restore();
@@ -78,28 +78,28 @@ describe('iD.Hoot.Model.Import', function(){
                         return comboData;
                     };
                     return mockMethods;
-                    
+
                 } else if(field == '.reset.LayerName') {
                     var mockMethods = {};
                     mockMethods.value = function(){
                         return 'test_layer_name';
                     };
                     return mockMethods;
-                    
+
                 }
-                
+
             };
-            
+
             // run import
             imprt.importData(mockContainer, sinon.spy());
-            
+
             expect(requests.length).to.eql(1);
             var reqStr = requests[0].requestBody;
             var reqUrl = requests[0].url;
 
             expect(reqStr).to.eql("test_body_123");
             expect(reqUrl).to.eql("/hoot-services/ingest/ingest/upload?TRANSLATION=TDSv61.js&INPUT_TYPE=FILE&INPUT_NAME=test_layer_name");
-            
+
           });
     });
 
@@ -109,7 +109,7 @@ describe('iD.Hoot.Model.Import', function(){
             var b = [];
             b.push('Test1');
             a.combobox = b;
-            var combo = imprt.createCombo(a);
+            var combo = imprt.createTree(a);
             expect(combo.minItems()).to.eql(1);
           });
     });

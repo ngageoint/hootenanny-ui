@@ -63,18 +63,18 @@ iD.ui.PresetList = function(context) {
 
         function createPresetFromTDS(schemaElem) {
             var newPreset = {};
-            //newPreset.icon = "highway-road";
+            //newPreset.icon = 'highway-road';
             newPreset.geometry = schemaElem.geom.toLowerCase();
             newPreset.tags = {};
             newPreset['hoot:featuretype'] = schemaElem.desc;
             newPreset['hoot:transtype'] = filterType;
             newPreset['hoot:fcode'] = schemaElem.fcode;
             newPreset.name = schemaElem.desc + ' (' + schemaElem.fcode + ')';
-            return iD.presets.Preset(filterType + '/' + schemaElem.fcode, 
+            return iD.presets.Preset(filterType + '/' + schemaElem.fcode,
                 newPreset, {});
         }
         function searchResHandler (value, results) {
-            
+
             message.text(t('inspector.results', {
                 n: results.collection.length,
                 search: value
@@ -90,11 +90,11 @@ iD.ui.PresetList = function(context) {
 
                 var filterType = d3.select('#presettranstype').value();
 
-                if(filterType == 'OSM') {
+                if(filterType === 'OSM') {
                     var results = presets.search(value, geometry);
                     searchResHandler(value, results);
                 } else {
-                    d3.xhr(window.location.protocol + '//' + window.location.hostname + ":"  + 
+                    d3.xhr(window.location.protocol + '//' + window.location.hostname + ':'  +
                         iD.data.hootConfig.translationServerPort +
                     '/schema?geometry='+ geometry + '&translation=' + filterType + '&searchstr=' +
                     value + '&maxlevdst=' + iD.data.hootConfig.presetMaxLevDistance +
@@ -106,20 +106,20 @@ iD.ui.PresetList = function(context) {
                         _.each(transSchema, function(elem){
 
                             var fCode = elem.fcode;
-                            curPreset = _.find(context.presets().collection, 
+                            var curPreset = _.find(context.presets().collection,
                                 function(item){
-                                    return item.id == filterType + '/' + fCode;
+                                    return item.id === filterType + '/' + fCode;
                                 });
-                            
+
                             if(!curPreset){
-                                
+
                                 var newPreset = createPresetFromTDS(elem);
-                                newCollection.push(newPreset);                               
+                                newCollection.push(newPreset);
                             }
-                            
+
                         });
 
-                    
+
                         var res = iD.presets.Collection(_.unique(
                             newCollection
                         ));
@@ -129,8 +129,8 @@ iD.ui.PresetList = function(context) {
 
                     });
                 }
-                
-                
+
+
             } else {
                 list.call(drawList, context.presets().defaults(geometry, 36));
                 message.text(t('inspector.choose'));
@@ -160,14 +160,14 @@ iD.ui.PresetList = function(context) {
             var listWrap = selection.append('div')
                 .attr('class', 'inspector-body fill-white');
 
-           
+
 
             var ftypeWrap = listWrap.append('div')
                         .classed('fill-white small round', true)
                         .style('margin-left', '20px')
                         .style('margin-right', '20px')
                         .style('margin-top', '10px')
-                        .html(function (field) {
+                        .html(function () {
                             return '<label class="pad1x pad0y strong fill-white round-top keyline-all">' + 'Filter By Type' + '</label>';
                         });
 
@@ -176,7 +176,7 @@ iD.ui.PresetList = function(context) {
                         .attr('type', 'text')
                         .attr('value', iD.util.getCurrentTranslation());
 
-            // TODO: Link this with plg.getTranslations();
+            // Link this with plg.getTranslations();
             var comboData = ['OSM','TDSv61', 'TDSv40'];
             var combo = d3.combobox()
                     .data(_.map(comboData, function (n) {
@@ -185,11 +185,11 @@ iD.ui.PresetList = function(context) {
                             title: n
                         };
                     }));
-    
+
             comboIntput.style('width', '100%')
                 .call(combo);
 
-            comboIntput.on('change', function(param){
+            comboIntput.on('change', function(){
                 var container = d3.select('#preset-list-container');
                 container.selectAll('.preset-list-item').remove();
                 var presets = context.presets().defaults(geometry, 36);
@@ -203,16 +203,16 @@ iD.ui.PresetList = function(context) {
                 container.call(drawList, presets);
 
                 if(!d3.select('#entity_editor_presettranstype').empty()){
-                    if(d3.select('#entity_editor_presettranstype').value()!=filterType){
+                    if(d3.select('#entity_editor_presettranstype').value() !== filterType){
                         iD.util.changeComboValue('#entity_editor_presettranstype',filterType);
                     }
-                }   
+                }
 
                 // Trigger search on input value
-                search.trigger('input');  
+                search.trigger('input');
             });
 
-        var presets = context.presets().defaults(geometry, 36);
+        presets = context.presets().defaults(geometry, 36);
         // Get the current translation filter type
         var filterType = d3.select('#presettranstype').value();
         var filteredCollection = getFilteredPresets(filterType, presets.collection);
@@ -227,7 +227,6 @@ iD.ui.PresetList = function(context) {
 
     function getFilteredPresets(filterType, presets) {
         var filterRes = presets;
-        var filteredPresets = presets;
         // When OSM type get all that does not have hoot:transtype
         if(filterType === 'OSM') {
             filterRes = _.filter(presets, function(prs){
@@ -247,10 +246,10 @@ iD.ui.PresetList = function(context) {
         return filterRes;
     }
 
-    
+
     function drawList(list, presets) {
         var collection = presets.collection.map(function(preset) {
-            return preset.members ? CategoryItem(preset) : PresetItem(preset);          
+            return preset.members ? CategoryItem(preset) : PresetItem(preset);
         });
 
         var items = list.selectAll('.preset-list-item')
@@ -286,8 +285,8 @@ iD.ui.PresetList = function(context) {
                     .geometry(context.geometry(id))
                     .preset(preset))
                 .on('click', function() {
-					//iD v1.9.2                
-					var isExpanded = d3.select(this).classed('expanded');
+                    //iD v1.9.2
+                    var isExpanded = d3.select(this).classed('expanded');
                     var triangle = isExpanded ? '▶ ' :  '▼ ';
                     d3.select(this).classed('expanded', !isExpanded);
                     d3.select(this).selectAll('.label').text(triangle + preset.name());
@@ -360,7 +359,7 @@ iD.ui.PresetList = function(context) {
             context.presets().choose(preset);
 
             var filterType = d3.select('#presettranstype').value();
-            
+
 
             if(filterType === 'OSM') {
 
@@ -378,7 +377,7 @@ iD.ui.PresetList = function(context) {
                 // set tags
                 Hoot.model.REST('TDSToOSMByFCode', data, function (resp) {
                     if(resp){
-                        var cnt = resp.responseText
+                        var cnt = resp.responseText;
                         var osm = JSON.parse(cnt);
                         for(var key in osm.attrs){
                             preset.tags[key] = osm.attrs[key];
@@ -393,10 +392,10 @@ iD.ui.PresetList = function(context) {
                     } else {
                         // error
                     }
-                    
+
                 });
             }
-  
+
         };
 
         item.help = function() {

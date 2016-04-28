@@ -9,7 +9,7 @@ iD.ReviewLayer = function() {
         svg = selection.selectAll('svg')
             .data([render]);
 
-        var defs = svg.enter()
+        svg.enter()
             .append('svg')
             .append('defs');
 
@@ -50,7 +50,7 @@ iD.ReviewLayer = function() {
     render.geojson = function(_) {
         if (!arguments.length) return gj;
         gj = _;
-        entityId = arguments[1] ? arguments[1] + '_edge' : "";
+        entityId = arguments[1] ? arguments[1] + '_edge' : '';
         return render;
     };
 

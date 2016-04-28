@@ -20,7 +20,6 @@ iD.dgservices  = function() {
             + '&featureProfile={profile}&TRANSPARENT=true&SRS=EPSG:3857&SUPEROVERLAY=true'
             + '&FORMAT_OPTIONS=OPACITY:0.6;GENERALIZE:true&connectId={connectId}&FRESHNESS={freshness}'
             + '&BBOX={bbox}&WIDTH=256&HEIGHT=256',
-        imagemeta_template = '/myDigitalGlobe/viewportsettings';
         //service = 'EGD',
         defaultProfile = 'Global_Currency_Profile',
         defaultCollection = '24h';
@@ -115,9 +114,9 @@ iD.dgservices  = function() {
     dg.imagemeta.sources = {};
     dg.imagemeta.add = function(source, features) {
         /*
-        ${BASEMAP_IMAGE_SOURCE} - Source of imagery. E.g. "digitalglobe", "bing"
-        ${BASEMAP_IMAGE_SENSOR} - Name of the source sensor. E.g. "WV02"
-        ${BASEMAP_IMAGE_DATETIME} - Date time the source was acquired. E.g. "2012-03-28 11:22:29"
+        ${BASEMAP_IMAGE_SOURCE} - Source of imagery. E.g. 'digitalglobe', 'bing'
+        ${BASEMAP_IMAGE_SENSOR} - Name of the source sensor. E.g. 'WV02'
+        ${BASEMAP_IMAGE_DATETIME} - Date time the source was acquired. E.g. '2012-03-28 11:22:29'
         ${BASEMAP_IMAGE_ID} - Unique identifier for the image. E.g. 32905903099a73faec6d7de72b9a2bdb
         */
         dg.imagemeta.sources[source] = {

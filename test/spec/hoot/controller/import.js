@@ -1,14 +1,14 @@
 /**
- * 
+ *
  */
 var xhr;
 describe('iD.Hoot.control.import', function(){
     var imprt;
- 
-    
+
+
     before(function () {
 
-        
+
         var testContext = {};
         testContext.config = {};
         testContext.config.JobStatusQueryInterval = 10000;
@@ -19,7 +19,7 @@ describe('iD.Hoot.control.import', function(){
         imprt = Hoot.control.import(testContext, null);
 
     });
-    
+
     after(function() {
 
     })
@@ -30,7 +30,7 @@ describe('iD.Hoot.control.import', function(){
             var b = [];
             b.push('Test1');
             a.combobox = b;
-            var combo = imprt.createCombo(a);
+            var combo = imprt.createTree(a);
             expect(combo.minItems()).to.eql(1);
           });
     });

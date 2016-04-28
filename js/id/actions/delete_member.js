@@ -1,5 +1,5 @@
 iD.actions.DeleteMember = function(relationId, memberIndex) {
-	    // Hootenanny review validation
+        // Hootenanny review validation
     function isHootReview(entity) {
         if(entity.tags['hoot:review:needs']) {
             return true;
@@ -14,9 +14,9 @@ iD.actions.DeleteMember = function(relationId, memberIndex) {
         graph = graph.replace(relation);
 
         if (relation.isDegenerate()){
-        	if(isHootReview(relation) === false){
-        		graph = iD.actions.DeleteRelation(relation.id)(graph);
-        	}           
+            if(isHootReview(relation) === false){
+                graph = iD.actions.DeleteRelation(relation.id)(graph);
+            }
         }
 
         return graph;

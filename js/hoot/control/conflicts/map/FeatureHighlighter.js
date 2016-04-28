@@ -15,9 +15,8 @@
 
 Hoot.control.conflicts.map.featurehighlighter = function (context)
 {
-	var _events = d3.dispatch();
-	var _instance = {};
-    var _flashingTimer;
+    var _events = d3.dispatch();
+    var _instance = {};
 
     /**
     * @desc highlights the reviewable items on map and performs associated operation
@@ -26,11 +25,11 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     **/
     //@TODO: change params to array
 	_instance.highlightLayer = function (ritem, raitem, panTo) {
-        var panTo = (panTo != null || panTo != undefined) ? panTo : true;
+        panTo = (panTo) ? panTo : true;
 
         var feature = null;
         var againstFeature = null;
-        
+
         if(ritem){
             feature = context.hasEntity(ritem.id);
         }
@@ -44,10 +43,10 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
             d3.select('a.merge').classed('hide', false);
             //Override with current pair of review features
             _parent().actions.poimerge.enableMergeFeature(true, feature, againstFeature);
-            
+
             //Add hover handler to show arrow
             _parent().map.reviewarrowrenderer.activate(feature, againstFeature);
-            
+
         } else {
             //Hide merge button
             d3.select('a.merge').classed('hide', true);
@@ -60,7 +59,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         _parent().reviewIds = [];
         var poiTableCols= [];
         var panToId = null;
-    
+
         if (feature) {
             _parent().reviewIds.push(feature.id);
             panToId = feature.id;
@@ -69,8 +68,8 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 .classed('activeReviewFeature', false);
             d3.selectAll('.' + feature.id)
                 .classed('tag-hoot activeReviewFeature', true);
-                
-         
+
+
         }
         if (againstFeature) {
             poiTableCols.push(againstFeature);
@@ -94,13 +93,13 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         if(panToId && panTo) {
             _parent().map.featureNavigator.panToEntity(context.entity(panToId), true);
         }
-   
+
         _parent().loadReviewFeaturesMapInMap();
 
 
     };
 
-    
+
 
     /**
     * @desc Clear highlight
@@ -108,7 +107,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     _instance.resetHighlight = function(){
         d3.selectAll('.activeReviewFeature').classed('activeReviewFeature', false);
         d3.selectAll('.activeReviewFeature2').classed('activeReviewFeature2', false);
-    }
+    };
 
     /**
     * @desc Resets hightlights and move front
@@ -121,7 +120,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
             _moveFrontRecursive(activeConflictReviewItem, 'activeReviewFeature2');
             _moveFrontRecursive(activeConflict, 'activeReviewFeature');
         }
-    }
+    };
 
     /**
     * @desc Highlights 1 degree dependencies
@@ -135,9 +134,9 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 var fid = poiTableCols[0].id;
                 var feature = context.hasEntity(fid);
                 if(feature){
-                    if(feature.type == 'relation') {
-                        feature.members 
-                        .forEach(function(member) {                
+                    if(feature.type === 'relation') {
+                        feature.members
+                        .forEach(function(member) {
                             _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2');
                         });
                     } else {
@@ -148,29 +147,29 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                         _toggleMouseEvent(poiTableCols[0].id, 'tag-hoot activeReviewFeature', 'activeReviewFeature2', offFid);
                     }
                 }
-                                    
+
             }
 
             if(poiTableCols[1]) {
 
-                var fid = poiTableCols[1].id;
-                var feature = context.hasEntity(fid);
+                fid = poiTableCols[1].id;
+                feature = context.hasEntity(fid);
                 if(feature) {
-                    if(feature.type == 'relation') {
-                        feature.members 
-                        .forEach(function(member) {                
+                    if(feature.type === 'relation') {
+                        feature.members
+                        .forEach(function(member) {
                             _toggleMouseEvent(member.id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature');
                         });
                     } else {
                         _toggleMouseEvent(poiTableCols[1].id, 'tag-hoot activeReviewFeature2', 'activeReviewFeature', poiTableCols[0].id);
                     }
                 }
-                    
-                    
+
+
             }
         }
 
-    }
+    };
 
     /**
     * @desc Mouse event toggler
@@ -188,9 +187,9 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         }).on('mouseleave', function(d) {
             _performHighlight(d.id,ftype,offType,false,offFid);
         });
-    }
-    
-     /**
+    };
+
+    /**
     * @desc Highlights each feature
     * @param fid - feature id to highlight
     * @param ftyp - highlight color class [activeReviewFeature | activeReviewFeature2]
@@ -200,7 +199,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
     **/
     var _performHighlight = function(fid, ftype, offType, on, offFid) {
                 //make sure there is actually an entity
-        if(context.hasEntity(fid) == undefined || context.hasEntity(offFid) == undefined){return;}
+        if(context.hasEntity(fid) === undefined || context.hasEntity(offFid) === undefined){return;}
 
         var feature = context.graph().entity(fid);
 
@@ -210,14 +209,14 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                     var mid = mem.id;
 
                     var mFeature = context.hasEntity(mid);
-                    if(mFeature && mid != offFid) {
+                    if(mFeature && mid !== offFid) {
                         d3.selectAll('.' + mid).classed(offType, false);
                         d3.selectAll('.' + mid).classed(ftype, on);
                     }
-                        
+
                 });
             });
-    }
+    };
 
 
     /**
@@ -234,12 +233,12 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                d3.selectAll('.' + fid).classed('tag-hoot ' + className, true).moveToFront();
             }
         }
-            
-    }
+
+    };
 
     var _parent = function() {
         return context.hoot().control.conflicts;
-    }
+    };
 
-	return d3.rebind(_instance, _events, 'on');
-}
+    return d3.rebind(_instance, _events, 'on');
+};
