@@ -639,7 +639,7 @@ Hoot.control.utilities.importdataset = function(context) {
             return f.name === fName;
         });
 
-        if(fObj === null){
+        if(!fObj){
             fObj = {};
             fObj.name = fName;
             fObj.isSHP = false;

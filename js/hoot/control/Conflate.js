@@ -331,7 +331,7 @@ Hoot.control.conflate = function (sidebar,context) {
                 _.each(_instance.confLastSetVals, displayHandler);
             }
 
-            if(_instance.confAdvOptsDlg===null){
+            if(!_instance.confAdvOptsDlg){
                 _instance.advancedoptions.onCustomConflationFormError();
             } else {
                 //exitadvopts
@@ -422,7 +422,7 @@ Hoot.control.conflate = function (sidebar,context) {
             _instance.confAdvOptionsSelectedVal = _instance.lastAdvValues;
         }
 
-        if(_instance.confAdvOptionsSelectedVal === null){
+        if(!_instance.confAdvOptionsSelectedVal){
             //set _instance.confAdvOptionsSelectedVal equal to defaults for default values
             _instance.confAdvOptionsFields = _instance.advancedoptions.fieldsretriever.getDefaultFields();
             _instance.confAdvOptionsSelectedVal = _instance.advancedoptions.selectionretriever.getSelectedValues(null,_instance.confAdvOptionsFields);

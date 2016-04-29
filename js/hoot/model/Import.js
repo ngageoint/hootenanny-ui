@@ -114,7 +114,7 @@ Hoot.model.import = function (context)
             data.FGDB_FC = fgdbFCList;
         }
 
-        if(container.attr('id') === null){
+        if(!container.attr('id')){
             data.formData = import_layer.getFormData(document.getElementById('ingestfileuploader').files);
         } else if(container.attr('id').substring(0,3)==='row'){
             data.formData = import_layer.getFormData(document.getElementById('ingestfileuploader'+container.attr('id').substring(3)).files);

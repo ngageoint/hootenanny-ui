@@ -137,7 +137,7 @@ Hoot.view.versioninfo = function(){
           buildInfoBuiltBy = 'unknown';
         }
         var uiDesc =  buildInfoName + ' - Version: ' + buildInfoVersion + ' - Built By: ' + buildInfoBuiltBy;
-        if (iD.data.buildInfo === null)
+        if (!iD.data.buildInfo)
         {
             uiDesc =  'Unable to find the iD buildInfo.json file.  Hootenanny iD version information will be unavailable.';
         }

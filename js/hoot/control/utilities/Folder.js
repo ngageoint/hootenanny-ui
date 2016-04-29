@@ -54,7 +54,7 @@ Hoot.control.utilities.folder = function(context) {
 
         //var folders = context.hoot().model.layers.getAvailLayersWithFolders();
         var folders = context.hoot().model.folders.getAvailFoldersWithLayers();
-        folders= JSON.parse('{"name":"Datasets","id":"Datasets","children":' + JSON.stringify(folders) +'}');  
+        folders= JSON.parse('{"name":"Datasets","id":"Datasets","children":' + JSON.stringify(folders) +'}');
 
         var margin = {top: 10, right: 20, bottom: 30, left: 0},
             width = '100%',
@@ -425,7 +425,7 @@ Hoot.control.utilities.folder = function(context) {
 
           var selected = d.selected;
 
-          if(!d3.event.ctrlKey || container.attr('id')===null){
+          if(!d3.event.ctrlKey || !container.attr('id')){
               _.each(nodes,function(n){n.selected=false;});
               if(d.type==='dataset'){d.selected=!selected;}
           } else if(d3.event.ctrlKey && container.attr('id')==='datasettable' && d.type==='dataset') {
@@ -445,7 +445,7 @@ Hoot.control.utilities.folder = function(context) {
                   if(updateOpenFolders){context.hoot().model.folders.setOpenFolders(d.id,false);}
                   d.state='closed';
                   d3.select(this.parentNode).select('i').classed('folder',true).classed('openfolder',false);
-              } else if(d.children===null && d._children===null){
+              } else if(!d.children && !d._children){
                   //toggle an empty folder
                   if (d.state==='open'){
                       d.state='closed';

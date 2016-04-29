@@ -118,7 +118,7 @@ Hoot.control.conflicts.info.reviewtable = function (context)
             /uuid/];
         return d3.entries(tags).filter(function (d) { //remove blacklist tags
             return tagBlacklist.every(function (r) {
-                return d.key.match(r) === null;
+                return !d.key.match(r);
             });
         });
     };

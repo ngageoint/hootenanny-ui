@@ -23,14 +23,14 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
             var g = JSON.parse(JSON.stringify(group));
             defaultVals.push(g);
         });
-        
+
         var thisConfType = d3.selectAll('.reset.ConfType');
         var _confType = {
                 'Reference':'reference',
                 'Average':'average',
                 'Cookie Cutter & Horizontal':'horizontal'
             };
-        
+
         //load in specific values for custom conflation
         var overrideOps;
         switch (_confType[thisConfType.value()]) {
@@ -49,23 +49,23 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                         var req = f.required || false;
                         return {'id':q,'hoot_key':f.hoot_key,'defaultvalue':f.defaultvalue,'required':req};
                     });
-                    
+
                     _.each(defaultVals,function(confGroup){
                         var defaultKeys = _.pluck(confGroup.members,'id');
-                    
+
                         var retval = groupKeys.filter(function(n){return defaultKeys.indexOf(n.id) !== -1;});
                         _.each(retval,function(replaceMember){
                             var currentMember = _.find(this.members,{id:replaceMember.id});
                             if (currentMember){
-                                //you found it.  now replace it! 
+                                //you found it.  now replace it!
                                 currentMember.defaultvalue = replaceMember.defaultvalue;
-                                
+
                                 //remove replace member
                                 groupKeys.splice(groupKeys.indexOf(replaceMember),1);
-                            }                       
+                            }
                         },confGroup);
-                        
-                        
+
+
                         //look for checkpluses.  if member is in groupKeys, set default value and make sure checkplus is checked
                         var checkpluses = confGroup.members.filter(function(f){return f.elem_type==='checkplus';});
                         _.each(checkpluses,function(cp){
@@ -96,7 +96,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                             });
                         });
                     },overrideGroup);
-                    
+
                     //add new group with values that are not duplicated
                     var newMembers = overrideGroup.members.filter(function(n){return _.pluck(groupKeys,'hoot_key').indexOf(n.hoot_key) !== -1;});
                     var newGroup = JSON.parse(JSON.stringify(overrideGroup));
@@ -105,7 +105,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                 });
             } else { defaultVals = iD.data.hootConfAdvOps; }
         } else { defaultVals = iD.data.hootConfAdvOps; }
-        
+
         return defaultVals;
     };
 
@@ -124,7 +124,7 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
 
             _.each(field.members,function(subfield){
                 var setVal=null;
-                
+
                 if(subfield.elem_type==='checkbox'||subfield.elem_type==='checkplus'){
                     setVal = d3.select('#'+subfield.id).property('checked');
                 } else {
@@ -134,8 +134,8 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
 
                 if(subfield.hoot_val){
                     // add to list if true
-                    if(setVal===null){setVal=subfield.hoot_val;}
-                    if(setVal===true){
+                    if(!setVal){setVal=subfield.hoot_val;}
+                    if(setVal){
                         //see if hoot_key is already in list
                         var hk = _.find(fieldsJSON,{'key':field.hoot_key});
                         if(hk){
@@ -143,12 +143,12 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                         } else {
                             fieldsJSON.push({key:field.hoot_key,value:subfield.hoot_val,group:field.name,id:field.id});
                         }
-                    }                   
+                    }
                 } else if(subfield.hoot_key) {
-                    if(setVal===null){setVal=subfield.defaultvalue;}
+                    if(!setVal){setVal=subfield.defaultvalue;}
                     fieldsJSON.push({key:subfield.hoot_key,value:setVal,group:field.name,id:subfield.id});
                 } else {
-                    if(setVal===null){setVal=subfield.defaultvalue;}
+                    if(!setVal){setVal=subfield.defaultvalue;}
                     fieldsJSON.push({key:subfield.id,value:setVal,group:field.name,id:subfield.id});
                 }
 
@@ -169,8 +169,8 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
 
                         if(submember.hoot_val){
                             // add to list if true
-                            if(setVal===null){setVal=submember.hoot_val;}
-                            if(setVal===true){
+                            if(!setVal){setVal=submember.hoot_val;}
+                            if(setVal){
                                 //see if hoot_key is already in list
                                 var hk = _.find(fieldsJSON,{'key':subfield.hoot_key});
                                 if(hk){
@@ -178,23 +178,23 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
                                 } else {
                                     fieldsJSON.push({key:subfield.hoot_key,value:submember.hoot_val,group:field.name,id:subfield.id});
                                 }
-                            }                   
+                            }
                         } else if(submember.hoot_key) {
-                            if(setVal===null){setVal=submember.defaultvalue;}
+                            if(!setVal){setVal=submember.defaultvalue;}
                             fieldsJSON.push({key:submember.id,value:setVal,group:field.name,id:submember.id});
                         } else if(submember.defaultvalue) {
-                            if(setVal===null){setVal=submember.defaultvalue;}
+                            if(!setVal){setVal=submember.defaultvalue;}
                             fieldsJSON.push({key:submember.id,value:setVal,group:field.name,id:submember.id});
                         }
                     });
                 }
             });
-            
+
             //change all in group to disabled if necessary
-            if(groupEnabled===false){
+            if(!groupEnabled){
                 _.each(_.filter(fieldsJSON,{group:field.name}),function(p){p.value='Disabled';});
             }
-            
+
         });
 
         return fieldsJSON;
