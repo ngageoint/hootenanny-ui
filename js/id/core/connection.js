@@ -111,10 +111,21 @@ iD.Connection = function(context, useHttps) {
             osmID = iD.Entity.id.toOSM(id);
 
         connection.loadFromURL(
-            url + '/api/0.6/' + type + '/' + osmID + (type !== 'node' ? '/full' : '') + (mapId !== null ? '?mapId=' + mapId : ''),
+            url + '/api/0.6/' + type + '/' + osmID + (type !== 'node' ? '/full' : '') + (mapId ? '?mapId=' + mapId : ''),
             function(err, entities) {
                 if (callback) callback(err, {data: entities});
             }, mapId, layerName);
+    };
+
+    connection.loadEntityVersion = function(id, version, callback, mapId) {
+        var type = iD.Entity.id.type(id),
+            osmID = iD.Entity.id.toOSM(id);
+
+        connection.loadFromURL(
+            url + '/api/0.6/' + type + '/' + osmID + '/' + version,
+            function(err, entities) {
+                if (callback) callback(err, {data: entities});
+            }, mapId);
     };
 
     connection.loadMissing = function(ids, callback, layerName) {

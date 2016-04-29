@@ -825,7 +825,8 @@ iD.Map = function(context) {
     map.updateEditedHighlights = function() {
         //Clear any 'edited' class from features
         d3.selectAll('.edited').classed('edited unsaved', false);
-        if (d3.select('div.highlight-edited input').node().checked) {
+        var highlightCheck = d3.select('div.highlight-edited input');
+        if (highlightCheck.size() > 0 && highlightCheck.node().checked) {
             //Add 'edited' class to edited but unsaved features
             context.history().difference().summary().map(function(d) {
                 return d.entity.id;

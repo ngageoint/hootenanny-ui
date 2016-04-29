@@ -407,8 +407,7 @@ window.iD = function () {
     };
 
     context.imagePath = function(_) {
-        var asset = 'img/' + _;
-        return assetMap[asset] || assetPath + asset;
+        return context.asset('img/' + _);
     };
 
     return d3.rebind(context, dispatch, 'on');

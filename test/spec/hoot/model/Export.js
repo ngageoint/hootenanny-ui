@@ -34,13 +34,7 @@ describe('iD.Hoot.Model.Export', function(){
             requests = [];
             var mockContainer = {};
             mockContainer.select = function(field){
-                if(field == '.reset.fileExportRemoveConflationResult'){
-                    var vals = [];
-                    var val = [];
-                    val[0] = null;
-                    vals[0] = val;
-                    return vals;
-                } else if(field == '.reset.fileExportOutputName') {
+                if(field == '.reset.fileExportOutputName') {
                     var mockMethods = {};
                     mockMethods.value = function(){
                         return "out_name_123";
@@ -69,13 +63,21 @@ describe('iD.Hoot.Model.Export', function(){
                     };
 
                     mockMethods.datum = function(){
-                        var datumval = {};
-                        datumval.transcombo = [];
-                        return datumval;
+                        var comboData = {};
+
+                        var vals = [];
+                        var val = {};
+                        val.CANEXPORT = true;
+                        val.DEFAULT = true;
+                        val.DESCRIPTION = "Multinational Geospatial Co-production Program (MGCP) TRD3&4";
+                        val.NAME = "MGCP";
+                        val.PATH = "translations/MGCP_TRD4.js";
+                        vals.push(val);
+                        comboData.combobox = vals;
+                        return comboData;
                     }
+
                     return mockMethods;
-                    
-                }
                 
             };
             
@@ -90,7 +92,6 @@ describe('iD.Hoot.Model.Export', function(){
             expect(oReq.inputtype).to.eql("db");
             expect(oReq.input).to.eql("test_input_name");
             expect(oReq.outputtype).to.eql("gdb");
-            //expect(oReq.removereview).to.eql("false"); /*remove review has been removed from UI. this can be removed from test.*/
             expect(oReq.outputname).to.eql("out_name_123");
             expect(requests[0].url).to.eql("/hoot-services/job/export/execute");
             done();

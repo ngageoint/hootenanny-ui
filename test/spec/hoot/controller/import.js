@@ -24,7 +24,8 @@ describe('iD.Hoot.control.import', function(){
 
     })
 
-    describe("#createCombo", function(){
+    // Removed below as this code has been deprecated. Leaving as a reminder to update for new folder structure.
+    /*describe("#createCombo", function(){
         it("it sets minimum items to 1.", function() {
             var a = {};
             var b = [];
@@ -33,5 +34,5 @@ describe('iD.Hoot.control.import', function(){
             var combo = imprt.createTree(a);
             expect(combo.minItems()).to.eql(1);
           });
-    });
+    });*/
 });
