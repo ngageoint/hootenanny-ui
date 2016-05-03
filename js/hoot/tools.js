@@ -99,9 +99,11 @@ Hoot.tools = function (context) {
                 conflicts.deactivate(true);
                 context.hoot().mode('browse');
                 _.each(confLayers, function (d) {
-                    context.hoot().model.layers.removeLayer(d);
-                    d3.select('.layer_' + d).remove();
-                    delete loadedLayers[d];
+                    if(d){
+                        context.hoot().model.layers.removeLayer(d);
+                        d3.select('.layer_' + d).remove();
+                        delete loadedLayers[d];
+                    }
                 });
             }
             delete loadedLayers[layerName];
