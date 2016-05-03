@@ -8,3 +8,6 @@ transifex.auth
 data/buildInfo.json
 test/spec/hoot/npm-debug.log
 test/spec/npm-debug.log
+test/istanbul_index.html
+coverage/*
+istanbul/*

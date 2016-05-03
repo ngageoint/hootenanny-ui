@@ -20,10 +20,10 @@ iD.ui.confirm = function(selection) {
             .append('button')
             .attr('class', 'action col4')
             .on('click.confirm', function() {
+                modal.remove();
                 if(callback){
                     callback();
                 }
-                modal.remove();
             })
             .text(t('confirm.okay'));
 
