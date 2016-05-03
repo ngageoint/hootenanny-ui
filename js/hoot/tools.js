@@ -591,7 +591,7 @@ Hoot.tools = function (context) {
 
                                             if(key.id){
                                                 context.hoot().model.layers.addLayer(key, function(d){
-                                                    context.hoot().model.layers.setLayerInvisibleById(key.input);
+                                                    context.hoot().model.layers.setLayerInvisibleById(key.id);
                                                     if(d === undefined){
                                                         hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
                                                             conflicts.startReview(d);
