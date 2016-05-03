@@ -90,7 +90,7 @@ Hoot.plugins.entityeditor = function() {
 
 
 
-        /*if(me._selectedId === null || me._selectedId !== id){
+        /*if(!me._selectedId || me._selectedId !== id){
             me.defaultTags = {};
             me.defaultRawTags = {};
             me._selectedId = id;
