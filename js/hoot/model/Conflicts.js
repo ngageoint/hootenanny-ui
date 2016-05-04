@@ -685,6 +685,12 @@ Hoot.model.conflicts = function(context)
                 }
             }
         }
+
+        // If sourceLayer is still undefined, see if it is a layer that is no longer loaded
+        if(!sourceLayer){
+            return mergeLayer.unloaded[parseInt(feature.tags['hoot:status']) - 1];
+        }
+
         return (sourceLayer) ? sourceLayer.mapId : null;
     };
 

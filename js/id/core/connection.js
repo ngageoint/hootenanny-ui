@@ -1028,7 +1028,8 @@ iD.Connection = function(context, useHttps) {
                                     for(var i=hootLyrs[0].length-1; i>-1; i--){
                                         var lyr = d3.select(hootLyrs[0][i]).text();
                                         var curId = getCurrentId(loadedData, lyr);
-                                        d3.selectAll('.tag-hoot-' + curId.mapId.toString()).each(showOnTop);
+                                        if(curId)
+                                        {d3.selectAll('.tag-hoot-' + curId.mapId.toString()).each(showOnTop);}
                                         event.loaded();
                                         event.layerAdded(lyr);
                                     }

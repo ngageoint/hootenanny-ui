@@ -478,6 +478,8 @@ Hoot.tools = function (context) {
     **/
     context.connection().on('layerAdded', function (layerName) {
         var params = context.hoot().model.layers.getLayers(layerName);
+        if(!params){return;}
+
         if (loadedLayers[layerName]) return;
 
         var merged = loadingLayer.merged || null;
@@ -538,8 +540,15 @@ Hoot.tools = function (context) {
                                         var input1Name = tags.input1Name;
                                         var input2Name = tags.input2Name;
 
+                                        var input1unloaded = input1Name ? null : input1;
+                                        var input2unloaded = input2Name ? null : input2;
+
                                         var curLayer = loadedLayers[layerName];
                                         curLayer.layers = [input1Name, input2Name];
+                                        curLayer.unloaded = [input1unloaded, input2unloaded];
+
+                                        if(input1unloaded){context.hoot().changeColor(input1unloaded, 'violet');}
+                                        if(input2unloaded){context.hoot().changeColor(input2unloaded, 'orange');}
 
                                         if((input1 && input1Name) && (input2 && input2Name)){
                                             var key = {
@@ -566,12 +575,10 @@ Hoot.tools = function (context) {
                                                                 conflicts.startReview(d);
                                                             });
                                                         }
-
-
                                                     });
                                                 }
                                             });
-                                                } else {
+                                        } else {
                                             key = {};
                                             if(input1 && input1Name) {
                                                 key = {
@@ -589,8 +596,9 @@ Hoot.tools = function (context) {
                                                     'hideinsidebar':'true'
                                                 };
                                                 iD.ui.Alert('Could not determine input layer 1. It will not be loaded.','warning',new Error().stack);
-                                                }
-
+                                            } else {
+                                                iD.ui.Alert('Could not determine input layers 1 or 2. Neither will not be loaded.','warning',new Error().stack);
+                                            }
 
                                             if(key.id){
                                                 context.hoot().model.layers.addLayer(key, function(d){
@@ -600,8 +608,8 @@ Hoot.tools = function (context) {
                                                             conflicts.startReview(d);
                                                         });
                                                     }
-                                            });
-                                        } else {
+                                                });
+                                            } else {
                                                 context.hoot().model.conflicts.beginReview(activeConflateLayer, function (d) {
                                                     conflicts.startReview(d);
                                                 });
