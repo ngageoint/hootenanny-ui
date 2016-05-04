@@ -523,6 +523,7 @@ Hoot.tools = function (context) {
                                     var selColor = 'green';
                                     loadedLayers[layerName].color = selColor;
                                     context.hoot().replaceColor(loadedLayers[layerName].id,selColor);
+                                    context.hoot().model.layers.changeLayerCntrlBtnColor(loadedLayers[layerName].id, selColor);
                                     activeConflateLayer = loadingLayer;
                                     loadedLayers[layerName] = _.extend(loadedLayers[layerName], loadingLayer);
                                     view.render(loadingLayer);
@@ -595,13 +596,13 @@ Hoot.tools = function (context) {
                                                 context.hoot().model.layers.addLayer(key, function(d){
                                                     context.hoot().model.layers.setLayerInvisibleById(key.id);
                                                     if(d === undefined){
-                                                        hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
+                                                        context.hoot().model.conflicts.beginReview(activeConflateLayer, function (d) {
                                                             conflicts.startReview(d);
                                                         });
                                                     }
                                             });
                                         } else {
-                                                hoot.model.conflicts.beginReview(activeConflateLayer, function (d) {
+                                                context.hoot().model.conflicts.beginReview(activeConflateLayer, function (d) {
                                                     conflicts.startReview(d);
                                                 });
                                             }
