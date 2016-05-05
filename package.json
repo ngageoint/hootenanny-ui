@@ -45,7 +45,8 @@
     "xmlbuilder": "~4.2.0",
     "mocha-phantomjs-istanbul": "0.0.2",
     "istanbul": "~0.4.3",
-    "replace": "~0.3.0"
+    "replace": "~0.3.0",
+    "phantomjs": "~2.1.7"
   },
   "engines": {
     "node": ">=0.10.0"
