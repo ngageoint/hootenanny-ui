@@ -673,16 +673,24 @@ Hoot.model.conflicts = function(context)
         var sourceLayer = context.hoot().loadedLayers()[featureLayerName];
         if(!sourceLayer){
             // try using tags of mergeLayer, which is loaded
-            var tags = _.clone(context.hoot().model.layers.getLayers()[mergeLayer.name].tags);
-            for(var prop in tags) {
-                if(tags.hasOwnProperty(prop)) {
-                    if(tags[prop] === featureLayerName && featureLayerName != null) {
-                        sourceLayer = _.find(context.hoot().model.layers.getAvailLayers(),{'name':featureLayerName});
-                        return sourceLayer.id;
+            if(context.hoot().model.layers.getLayers()[mergeLayer.name]){
+                var tags = _.clone(context.hoot().model.layers.getLayers()[mergeLayer.name].tags);
+                for(var prop in tags) {
+                    if(tags.hasOwnProperty(prop)) {
+                        if(tags[prop] === featureLayerName && featureLayerName != null) {
+                            sourceLayer = _.find(context.hoot().model.layers.getAvailLayers(),{'name':featureLayerName});
+                            return sourceLayer.id;
+                        }
                     }
                 }
             }
         }
+
+        // If sourceLayer is still undefined, see if it is a layer that is no longer loaded
+        if(!sourceLayer){
+            return mergeLayer.unloaded[parseInt(feature.tags['hoot:status']) - 1];
+        }
+
         return (sourceLayer) ? sourceLayer.mapId : null;
     };
 
