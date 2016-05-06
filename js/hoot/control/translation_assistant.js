@@ -631,7 +631,8 @@ Hoot.control.TranslationAssistant = function (context) {
                         curIdx = curIdx > overflowTags.length-1 ? overflowTags.length-1 : curIdx;
 
                         //scroll to curIdx
-                        overflowList.scrollTop = results[0][curIdx].offsetTop - overflowList.offsetTop;
+                        //Removed offsetTop per #374 //overflowList.scrollTop = results[0][curIdx].offsetTop - overflowList.offsetTop;
+                        overflowList.scrollTop = Math.ceil(results[0][curIdx].getBoundingClientRect().top) - Math.ceil(overflowList.getBoundingClientRect().top);
                         searchTag.property('value',overflowTags[curIdx]);
                     }
                 }
