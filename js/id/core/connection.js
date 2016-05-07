@@ -919,7 +919,7 @@ iD.Connection = function(context, useHttps) {
 
         };
         // Get the node count from service
-        connection.getTileNodesCountFromURL(url + '/api/0.6/map/nodescount', params, function(){
+        connection.getTileNodesCountFromURL(url + '/api/0.6/map/nodescount', params, function(resp){
             if(context.hoot().control.conflicts &&
                     context.hoot().control.conflicts.isConflictReviewExist()
                     ){
@@ -933,7 +933,7 @@ iD.Connection = function(context, useHttps) {
             function showOnTop(){
                 d3.select(this).moveToFront();
             }
-            // totalNodesCnt = 1*resp.nodescount;
+            totalNodesCnt = 1*resp.nodescount;
             maxNodesCnt = 1*iD.data.hootConfig.maxnodescount;
 
             var currShowBbox = totalNodesCnt > maxNodesCnt;
