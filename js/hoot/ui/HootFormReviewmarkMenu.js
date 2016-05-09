@@ -80,8 +80,8 @@ Hoot.ui.hootformreviewmarkmenu = function ()
 
         var left = Math.ceil(containerRect.left),
             top = Math.ceil(containerRect.top - parentRect.top),
-            height = Math.ceil(containerRect.height),
-            width = Math.ceil(containerRect.width);
+            height = Math.ceil(containerRect.height);
+            //width = Math.ceil(containerRect.width);
         return container.append('div')
                 .classed('contain col3 row8 hoot-menu fill-white keyline-all round modal', true)
                 .style('top', (top + height) + 'px')
