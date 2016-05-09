@@ -36,13 +36,15 @@ iD.ui.Tools = function(context) {
             .attr('class',function(item){return item.icon + ' tools-' + item.group;})
             .on('mouseenter',function(item){
                 if(!item.items){return;}
-                var itemHeight = d3.select('.tools-'+item.group).node().offsetTop+116+'px';
+                //Removed offsetTop per #374 Math.ceil(results[0][curIdx].getBoundingClientRect().top)
+                var itemHeight = Math.ceil(d3.select('.tools-'+item.group).node().getBoundingClientRect().top)+'px';
                 d3.select('.tools-menu.sub-menu').remove();
                 d3.select('html').append('div').attr('class','tools-menu sub-menu');
                 var subTools = d3.selectAll('.tools-menu.sub-menu')
                     .style('left', function(){
-                        var menuWidth = d3.select('.tools-menu').node().offsetWidth+1;
-                        return menuWidth+d3.select('button.tools').property('offsetLeft')+'px'||'0px';})
+                        var menuWidth = Math.ceil(d3.select('.tools-menu').node().getBoundingClientRect().width)+1;
+                        var offLeft = Math.ceil(d3.select('button.tools').node().getBoundingClientRect().left);
+                        return menuWidth+offLeft+'px'||'0px';})
                     .style('top', itemHeight)
                     .style('display', 'block')
                     .html('')
@@ -83,7 +85,7 @@ iD.ui.Tools = function(context) {
 
         // show the context menu
         d3.select('.tools-menu')
-            .style('left', function(){return d3.select('button.tools').property('offsetLeft')+'px'||'0px';})
+            .style('left', function(){return Math.ceil(d3.select('button.tools').node().getBoundingClientRect().left)+'px'||'0px';})
             .style('top', '120px')
             .style('display', 'block');
 

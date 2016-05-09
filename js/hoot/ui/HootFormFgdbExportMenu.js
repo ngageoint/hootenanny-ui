@@ -66,10 +66,10 @@ Hoot.ui.hootformfgdbexportmenu = function ()
     * @return returns created div.
     **/
     var _createFormDiv = function(container, containerId) {
-        var left = d3.select('#' + containerId).node().offsetLeft;
-        var top = d3.select('#' + containerId).node().offsetTop;
-        var height = d3.select('#' + containerId).node().offsetHeight;
-        var width = d3.select('#' + containerId).node().offsetWidth;
+        var left = d3.select('#' + containerId).node().getBoundingClientRect().left;
+        var top = d3.select('#' + containerId).node().getBoundingClientRect().top;
+        var height = d3.select('#' + containerId).node().getBoundingClientRect().height;
+        var width = d3.select('#' + containerId).node().getBoundingClientRect().width;
         return container.append('div')
                 .classed('contain col3 row8 hoot-menu fill-white keyline-all round modal', true)
                 .style('top', (top + height) + 'px')
