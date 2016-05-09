@@ -66,10 +66,13 @@ Hoot.ui.hootformreviewmarkmenu = function ()
     * @return returns created div.
     **/
     var _createFormDiv = function(container, containerId) {
-        var left = d3.select('#' + containerId).node().offsetLeft;
-        var top = d3.select('#' + containerId).node().offsetTop;
-        var height = d3.select('#' + containerId).node().offsetHeight;
-        var width = d3.select('#' + containerId).node().offsetWidth;
+        var containerRect = d3.select('#' + containerId).node().getBoundingClientRect();
+        var parentRect = d3.select('#utilReviewBookmarks').node().getBoundingClientRect();
+
+        var left = Math.ceil(containerRect.left - parentRect.left),
+            top = Math.ceil(containerRect.top - parentRect.top),
+            height = Math.ceil(containerRect.height),
+            width = Math.ceil(containerRect.width);
         return container.append('div')
                 .classed('contain col3 row8 hoot-menu fill-white keyline-all round modal', true)
                 .style('top', (top + height) + 'px')
