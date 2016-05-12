@@ -48,9 +48,14 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                 }
 
             } 
-        } /*else {
+        } else {
+            // Check to see if the relation has been deleted.  If so, do not continue...
+            if((_.find(context.history().changes().deleted,{id:fid}))){
+                context.hoot().control.conflicts.setProcessing(false);
+                return;
+            }
             _loadMissingFeatures(mapid, fid, callback);
-        }*/
+        }
     };
 
 
