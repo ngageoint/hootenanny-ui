@@ -188,6 +188,12 @@ Hoot.model.conflicts = function(context)
                             });
                         });
 
+                        _.each(Object.keys(missingIds),function(q){
+                            if(_.find(context.history().changes().deleted,{id: q})){
+                                delete missingIds[q];
+                            }
+                        });
+
                         if(Object.keys(missingIds).length === 0){
                             if(callback){
                                 callback();
