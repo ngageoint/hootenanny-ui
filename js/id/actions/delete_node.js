@@ -46,12 +46,12 @@ iD.actions.DeleteNode = function(nodeId) {
                     /* --- OLD CODE (commit c4d4b5be) --- */
                     // If we are in hoot review mode then do not delete relation
                     // This can happen only during hootenanny POI automerge
-                    /*if(isHootReview(parent) === false){*/
-                   graph = iD.actions.DeleteRelation(parent.id)(graph);
-                   /* } else {
+                    if(isHootReview(parent) === false){
+                       graph = iD.actions.DeleteRelation(parent.id)(graph);
+                    } else {
                         graph = updateHootReviewTags(parent, graph);
 
-                    }*/
+                    }
                 } else {
                     if(!node.hootMeta || (node.hootMeta && !node.hootMeta.isReviewDel)){
                         graph = updateHootReviewTags(parent, graph);

@@ -35,23 +35,20 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
                 var fid = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
                 var reviewableRelEntity = context.hasEntity(fid);
 
-                if(reviewableRelEntity){
-                    for(var i=0; i<reviewableRelEntity.members.length; i++) {
-                        var itemKlass = reviewableRelEntity.members[i].id;
-                        var classid = 'activeReviewFeature';
-                        if(i > 0) {
-                            classid += '' + (i + 1);
-                        }
-                        d3.selectAll('.' + itemKlass)
-                            .classed(classid, false);
+                for(var i=0; i<reviewableRelEntity.members.length; i++) {
+                    var itemKlass = reviewableRelEntity.members[i].id;
+                    var classid = 'activeReviewFeature';
+                    if(i > 0) {
+                        classid += '' + (i + 1);
                     }
-                    d3.select('div.tag-table').remove();
-    
-    
-                    _parent().actions.idgraphsynch.updateReviewTagsForResolve(reviewableRelEntity);
-                } else {
-                    d3.select('div.tag-table').remove();
+                    d3.selectAll('.' + itemKlass)
+                        .classed(classid, false);
                 }
+                d3.select('div.tag-table').remove();
+
+
+                _parent().actions.idgraphsynch.updateReviewTagsForResolve(reviewableRelEntity);
+
                 var hasChanges = context.history().hasChanges();
                 if (hasChanges) {
                     _parent().setProcessing(false);
