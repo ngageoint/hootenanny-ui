@@ -13,7 +13,7 @@ Hoot.hoot = function (context) {
         hoot = {};
         //layers = {},
         //availLayers = [];
-    
+
     hoot.ui = Hoot.ui(context);
     hoot.model = Hoot.model(context);
     hoot.view = Hoot.view(context);
@@ -74,10 +74,10 @@ Hoot.hoot = function (context) {
             });
 
         });
-        
+
         Hoot.model.REST('getConflationCustomOpts',function(){});
-       
- 
+
+
 
         Hoot.model.REST('getMapSizeThresholds', function (thresholds) {
             if(thresholds.error){
@@ -89,7 +89,7 @@ Hoot.hoot = function (context) {
         });
 
         hoot.getAllusers();
-        
+
     };
 
     /**
@@ -174,7 +174,7 @@ Hoot.hoot = function (context) {
         sheets.insertRule('path.fill.tag-hoot-' + modifiedId + ' { fill:' + lighter + '}', sheets.cssRules.length - 1);
         sheets.insertRule('g.point.tag-hoot-' + modifiedId + ' .stroke { fill:' + color + '}', sheets.cssRules.length - 1);
     };
- 
+
     /**
     * @desc Removes layer color
     * @param lyrid - target layer id
@@ -197,7 +197,7 @@ Hoot.hoot = function (context) {
                 }
             }
         }
-        
+
      };
 
 
@@ -246,7 +246,7 @@ Hoot.hoot = function (context) {
         } else {// else remove which reveals osm symbology
             hoot.removeColor(lyrid);
         }
-        
+
     };
 
     // Appears to be dead code and after verification should be deprecated.
@@ -268,7 +268,7 @@ Hoot.hoot = function (context) {
         }*/
 
         hoot.view.utilities.activate();
-        Hoot.control.TranslationAssistant();
+        Hoot.control.TranslationAssistant(context);
     };
 
     hoot.checkForSpecialChar = function(str){
@@ -278,7 +278,7 @@ Hoot.hoot = function (context) {
         }
         return true;
    };
-   
+
    /**
     * @desc Special character validation helper function
     * @param str - target string
@@ -288,7 +288,7 @@ Hoot.hoot = function (context) {
         if(unallowable.indexOf(str.toLowerCase())>=0){return false;}
         return true;
    };
-   
+
    hoot.checkForUnallowedChar = function(str){
     if(!hoot.checkForSpecialChar(str)){
         return 'Please do not use special characters: ' + str + '.';
@@ -339,21 +339,21 @@ Hoot.hoot = function (context) {
             });
         }
     };
-    
+
     hoot.assert = function(condition)
     {
         if (!condition){
             throw new Error('Assertion failed');
         }
     };
-    
+
     hoot.containsObj = function(obj, arr)
     {
       for (var i = 0; i < arr.length; i++)
       {
         if (arr[i] === obj)
         {
-          return true;	
+          return true;
         }
       }
       return false;
@@ -365,12 +365,12 @@ Hoot.hoot = function (context) {
     hoot.getBrowserInfo = function(){
         var browserInfo = {};
         var appVerStr = navigator.userAgent;
-        var appVer = appVerStr.match(/(chrome|chromium|opera|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []; 
+        var appVer = appVerStr.match(/(chrome|chromium|opera|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
         if(appVer.length > 2){
             browserInfo.name = appVer[1];
-            browserInfo.version = appVer[2];     
+            browserInfo.version = appVer[2];
                  // check detailed version
-                 
+
                  var parts = appVerStr.split(' ');
                  _.each(parts, function(part){
                      if(part.indexOf(browserInfo.name) === 0){
@@ -381,11 +381,11 @@ Hoot.hoot = function (context) {
                      }
                  });
         }
-        
+
         return browserInfo;
-        
+
     };
-    
+
     var bInfo = hoot.getBrowserInfo();
     if(bInfo.name !== 'Chrome' && bInfo.name !== 'Chromium' && bInfo.name !== 'Firefox'){
         alert('Hootenanny will not function normally under ' + bInfo.name + ' v. ' + bInfo.version);
