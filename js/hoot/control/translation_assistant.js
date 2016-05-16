@@ -80,6 +80,7 @@ Hoot.control.TranslationAssistant = function (context) {
         })
         .append('input')
         .attr('type', 'file')
+        .attr('name', 'taFiles')
         .attr('multiple', 'true')
         .attr('accept', '.shp, .shx, .dbf, .zip')
         .classed('hidden', true)
@@ -96,6 +97,7 @@ Hoot.control.TranslationAssistant = function (context) {
         })
         .append('input')
         .attr('type', 'file')
+        .attr('name', 'taFolder')
         .attr('multiple', 'false')
         .attr('webkitdirectory', '')
         .attr('directory', '')
@@ -341,6 +343,9 @@ Hoot.control.TranslationAssistant = function (context) {
                 .attr('type', 'text')
                 .attr('id', 'preset-input-layer')
                 .on('change', function() {
+                    changeLayers(d3.select(this).property('value'));
+                })
+                .on('blur', function() {
                     changeLayers(d3.select(this).property('value'));
                 });
 
@@ -647,7 +652,18 @@ Hoot.control.TranslationAssistant = function (context) {
                         results = tags[schemaOption]
                         .filter( function(val) {
                             return val.key && (val.key.toLowerCase().indexOf(value.toLowerCase()) > -1);
+                        })
+                        .sort(function (a, b) {
+                            if (a.key > b.key) {
+                                return 1;
+                            }
+                            if (a.key < b.key) {
+                                return -1;
+                            }
+                            // a must be equal to b
+                            return 0;
                         });
+
                     } else {
                         results = [];
                     }
