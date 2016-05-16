@@ -47,8 +47,14 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                     callback(f);
                 }
 
-            }
+            } 
         } else {
+            // Check to see if the relation has been deleted.  If so, do not continue...
+            if((_.find(context.history().changes().deleted,{id:fid}))){
+                iD.ui.Alert('There are no members in the review relation.','notice',null);
+                context.hoot().control.conflicts.setProcessing(false);
+                return;
+            }
             _loadMissingFeatures(mapid, fid, callback);
         }
     };
@@ -149,7 +155,11 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
                 } else { // if there no relations then reduce child count
 
                     _.each(entities.data, function(f){
-                        _updateParentRelations(f.id);
+                        if(context.hasEntity(f.id)){
+                            _updateParentRelations(f.id);
+                        } else {
+                            throw new Error('Failed to load missing features (' + f.id + ').');
+                        }
                     });//_.each(entities.data, function(f){
                 }
 
@@ -168,7 +178,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
 
             if(Object.keys(_relTreeIdx).length === 0){
                 // Done so do final clean ups
-                _validateMemberCnt(_currentFid, currentCallback);
+                if(context.hasEntity(_currentFid)){_validateMemberCnt(_currentFid, currentCallback);}
             }
         }
     };
