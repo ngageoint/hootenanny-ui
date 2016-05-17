@@ -621,10 +621,9 @@ Hoot.control.TranslationAssistant = function (context) {
                     var results = d3.select(overflowList).selectAll('div');
 
                     if(!_.isEmpty(results[0])){
-                        var overflowTags = [];
-                        for (var i = 0; i < results[0].length; i += 1) {
-                            overflowTags.push(results[0][i].innerHTML);
-                        }
+                        var overflowTags = results.data().map(function(d) {
+                            return d.key;
+                        });
 
                         //get index of current
                         var curIdx = overflowTags.indexOf(searchTag.property('value'));
