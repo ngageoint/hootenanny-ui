@@ -51,7 +51,6 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
         } else {
             // Check to see if the relation has been deleted.  If so, do not continue...
             if((_.find(context.history().changes().deleted,{id:fid}))){
-                _validateMemberCnt(fid,null);
                 context.hoot().control.conflicts.setProcessing(false);
                 return;
             }
