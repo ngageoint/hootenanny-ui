@@ -43,19 +43,23 @@ Hoot.control.conflicts.info.reviewtable = function (context)
             r.append('td').classed('fillD', true).text(d.key);
             r.append('td').classed('f1', true).text(addEllipsis(d.value[0]))
             .on('click', function(){
-                var sel = iD.modes.Select(context, [feats[0].id]);
-                _panToEntity(context.entity(feats[0].id));
-                sel.suppressMenu(true);
-                context.enter(sel);
+                if(context.hasEntity(feats[0].id)){
+                    var sel = iD.modes.Select(context, [feats[0].id]);
+                    _panToEntity(context.entity(feats[0].id));
+                    sel.suppressMenu(true);
+                    context.enter(sel);
+                }
             })
             .on('mouseenter',function(){d3.selectAll('.activeReviewFeature').classed('extra-highlight',true);})
             .on('mouseleave',function(){d3.selectAll('.activeReviewFeature').classed('extra-highlight',false);});
             r.append('td').classed('f2', true).text(addEllipsis(d.value[1]))
             .on('click', function(){
-                var sel = iD.modes.Select(context, [feats[1].id]);
-                _panToEntity(context.entity(feats[1].id));
-                sel.suppressMenu(true);
-                context.enter(sel);
+                if(context.hasEntity(feats[1].id)){
+                    var sel = iD.modes.Select(context, [feats[1].id]);
+                    _panToEntity(context.entity(feats[1].id));
+                    sel.suppressMenu(true);
+                    context.enter(sel);
+                }
             })
             .on('mouseenter',function(){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',true);})
             .on('mouseleave',function(){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',false);});
