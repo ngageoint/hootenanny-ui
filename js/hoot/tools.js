@@ -126,7 +126,10 @@ Hoot.tools = function (context) {
     **/
     function resetAllLayers() {
         _.each(loadedLayers, function (d) {
-            context.hoot().model.layers.removeLayer(d.name);
+            if(context.hoot().model.layers.getLayers()[d.name]){
+                context.hoot().model.layers.removeLayer(d.name);    
+            }
+            
             var modifiedId = d.mapId.toString();
             d3.select('[data-layer="' + modifiedId + '"]').remove();
             delete loadedLayers[d.name];
