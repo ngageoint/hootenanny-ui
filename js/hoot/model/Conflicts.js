@@ -506,17 +506,9 @@ Hoot.model.conflicts = function(context)
                           featureToUpdate = featureAgainst;
                           featureToDelete = feature;
                         }
-
-                        //back up the tags for the new merged feature before setting it
-                        //equal to the update feature
-                        var tagsTemp = mergedNode.tags;
-                        mergedNode = featureToUpdate;
-                        mergedNode.tags = tagsTemp;
-                        //This new feature was auto-merged from source 1 and 2 features,
-                        //so should get a conflated status.
                         mergedNode.tags['hoot:status'] = 3;
                         context.perform(
-                          iD.actions.ChangeTags(mergedNode.id, mergedNode.tags),
+                          iD.actions.ChangeTags(featureToUpdate.id, mergedNode.tags),
                           t('operations.change_tags.annotation'));
 
 
@@ -583,7 +575,7 @@ Hoot.model.conflicts = function(context)
                                         {
                                             isMergeProcessed = true;
                                             processMerge(reviewRefs, mapid, queryElement1,
-                                                queryElement2, featureToDelete, mergedNode, reviewMergeRelationId);
+                                                queryElement2, featureToDelete, featureToUpdate, reviewMergeRelationId);
                                         }
                                     }
                                     catch(loadMissingErr)
@@ -603,7 +595,7 @@ Hoot.model.conflicts = function(context)
                             // We have all feature loaded so don't do loadMissing
                             isMergeProcessed = true;
                             processMerge(reviewRefs, mapid, queryElement1, queryElement2,
-                                featureToDelete, mergedNode, reviewMergeRelationId);
+                                featureToDelete, featureToUpdate, reviewMergeRelationId);
                         }
                     }
                     catch (getReviewRefsErr)
