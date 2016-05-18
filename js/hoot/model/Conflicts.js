@@ -575,7 +575,7 @@ Hoot.model.conflicts = function(context)
                                         {
                                             isMergeProcessed = true;
                                             processMerge(reviewRefs, mapid, queryElement1,
-                                                queryElement2, featureToDelete, mergedNode, reviewMergeRelationId);
+                                                queryElement2, featureToDelete, featureToUpdate, reviewMergeRelationId);
                                         }
                                     }
                                     catch(loadMissingErr)
@@ -595,7 +595,7 @@ Hoot.model.conflicts = function(context)
                             // We have all feature loaded so don't do loadMissing
                             isMergeProcessed = true;
                             processMerge(reviewRefs, mapid, queryElement1, queryElement2,
-                                featureToDelete, mergedNode, reviewMergeRelationId);
+                                featureToDelete, featureToUpdate, reviewMergeRelationId);
                         }
                     }
                     catch (getReviewRefsErr)
