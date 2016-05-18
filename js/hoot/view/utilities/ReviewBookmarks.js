@@ -518,32 +518,40 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         return subStr;
     };
 
-    /**
+     /**
     * @desc Deletes bookmark.
     * @param d - bookmark item data
     **/
     var _deleteBtnHandler = function(d) {
         d3.event.stopPropagation();
         d3.event.preventDefault();
-
+        
 
         var r = confirm('Are you sure you want to delete selected bookmark?');
-        if (r === true) {
-
-            var request = {};
-            request.bookmarkId = d.id;
-
-            Hoot.model.REST('deleteReviewBookmark', request, function (d) {
-                if(d.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(d.error);
-                    return;
-                }
-                _instance.populatePopulateBookmarks(null, _lastSortRequest);
-
-            });
+        if (r === true) { 
+            _instance.deleteBookmark(d);
         } else {
             return;
         }
     };
+
+    /**
+    * @desc Calls delete handler
+    * @param d - bookmark item data
+    **/
+    _instance.deleteBookmark = function(d) {
+        var request = {};
+        request.bookmarkId = d.id;
+
+        Hoot.model.REST('deleteReviewBookmark', request, function (d) {
+            if(d.error){
+                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                return;
+            }
+            _instance.populatePopulateBookmarks(null, _lastSortRequest);           
+        });
+    };
+
+
     return _instance;
 };
