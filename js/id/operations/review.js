@@ -72,12 +72,12 @@ iD.operations.Review = function(selectedIDs, context) {
             afterLength,
             beforeDistance,
             afterDistance;
-            if ((beforeLength === bestLength - precision) >= 0 && (beforeDistance === distance2(before === pathNode.getPointAtLength(beforeLength),centerPt)) < bestDistance) {
-                best = before; bestLength = beforeLength; bestDistance = beforeDistance;
-            } else if ((afterLength === bestLength + precision) <= pathLength && (afterDistance === distance2(after === pathNode.getPointAtLength(afterLength),centerPt)) < bestDistance) {
-                best = after; bestLength = afterLength; bestDistance = afterDistance;
+            if ((beforeLength = bestLength - precision) >= 0 && (beforeDistance = distance2(before = pathNode.getPointAtLength(beforeLength),centerPt)) < bestDistance) {
+              best = before; bestLength = beforeLength; bestDistance = beforeDistance;
+            } else if ((afterLength = bestLength + precision) <= pathLength && (afterDistance = distance2(after = pathNode.getPointAtLength(afterLength),centerPt)) < bestDistance) {
+              best = after; bestLength = afterLength; bestDistance = afterDistance;
             } else {
-                precision /= 2;
+              precision /= 2;
             }
         }
 
