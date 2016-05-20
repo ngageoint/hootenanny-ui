@@ -271,6 +271,24 @@ Hoot.hoot = function (context) {
         Hoot.control.TranslationAssistant(context);
     };
 
+    /**
+    * @desc Check for valid coordinate pair
+    * @param Coordinate pair [x,y]
+    **/
+    hoot.checkForValidCoordinates = function(coord){
+        try{
+            if(coord.length !==2) {return false;}
+            if(isNaN(coord[0])) {return false;}
+            if(isNaN(coord[1])) {return false;}
+
+            if(coord[0] > 180.0 || coord[0] < -180.0) {return false;}
+            if(coord[1] > 90.0 || coord[1] < -90.0) {return false;}
+
+            return true;
+        } catch (err) { return false; }
+    }
+
+
     hoot.checkForSpecialChar = function(str){
         var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/);  //"
         if (pattern.test(str)) {
