@@ -287,14 +287,14 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
                     selAI.property('disabled',ai.disabled);
                     if(ai.hidden.length>0){d3.select(selAI.node().parentNode).style('display',ai.hidden);}
                 });
-
-                _modalBackground.classed('hidden', true);
             } else {
                 parent.confLastSetVals = null;
                 parent.confAdvOptionsSelectedVal = null;
                 if(parent.confAdvOptsDlg){parent.confAdvOptsDlg.remove();}
                 parent.confAdvOptsDlg = null;
              }
+
+            _modalBackground.classed('hidden', true);
             _instance.advOpsFormEvent(false);
         });
     };
