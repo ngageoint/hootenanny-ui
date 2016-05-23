@@ -286,7 +286,7 @@ Hoot.hoot = function (context) {
 
             return true;
         } catch (err) { return false; }
-    }
+    };
 
 
     hoot.checkForSpecialChar = function(str){
