@@ -62,7 +62,12 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
 
         if (feature) {
             _parent().reviewIds.push(feature.id);
-            panToId = feature.id;
+            
+            // Before assiging panToId, check extent coordinates of feature
+            if(context.hoot().checkForValidCoordinates(feature.extent(context.graph())[0]) && context.hoot().checkForValidCoordinates(feature.extent(context.graph())[1])){
+                panToId = feature.id;    
+            }
+            
             poiTableCols.push(feature);
             d3.selectAll('.activeReviewFeature')
                 .classed('activeReviewFeature', false);
@@ -74,9 +79,12 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         if (againstFeature) {
             poiTableCols.push(againstFeature);
             _parent().reviewIds.push(againstFeature.id);
-            if(!panToId){
-                panToId = againstFeature.id;
+            
+            // Before assiging panToId, check extent coordinates of againstFeature
+            if(!panToId && context.hoot().checkForValidCoordinates(againstFeature.extent(context.graph())[0]) && context.hoot().checkForValidCoordinates(againstFeature.extent(context.graph())[1])){
+                panToId = againstFeature.id;    
             }
+
             d3.selectAll('.activeReviewFeature2')
                 .classed('activeReviewFeature2', false);
             d3.selectAll('.' + againstFeature.id)
