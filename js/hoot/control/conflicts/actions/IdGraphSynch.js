@@ -247,7 +247,7 @@ Hoot.control.conflicts.actions.idgraphsynch = function (context)
             }
             fnc(f);
         } else {
-            iD.ui.Alert('There are no members in the review relation.','warning',new Error().stack);
+            iD.ui.Alert('Hootenanny is checking for missing features in this review relation.  It is possible that there are no members in this review relation.','notice');
         }
     };
 
