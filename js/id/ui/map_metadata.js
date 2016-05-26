@@ -72,7 +72,10 @@ iD.ui.MapMetadata = function(data) {
             var table = container.selectAll('table')
                 .data(d3.entries(data))
                 .enter().append('table')
-                .attr('class', 'map-metadata layer-list');
+                .attr('class', function(d) {
+                    return d.key;
+                })
+                .classed('map-metadata layer-list', true);
 
             var rows = table.selectAll('tr')
                 .data(function(d) {
