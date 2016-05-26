@@ -104,7 +104,7 @@ iD.operations.Review = function(selectedIDs, context) {
             if (mem.type === 'relation') {
                 mFeature.members.forEach(function(m) {
                     collectReviewLines(m);
-                })
+                });
             } else {
 
                 if(mFeature && (entityId !== mid)) {
@@ -166,7 +166,7 @@ iD.operations.Review = function(selectedIDs, context) {
             if (mem.type === 'relation') {
                 mFeature.members.forEach(function(m) {
                     return collectReviewPoints(m);
-                })
+                });
             } else {
 
                 if(mFeature && (entityId !== mid)) {
@@ -177,7 +177,7 @@ iD.operations.Review = function(selectedIDs, context) {
                 }
             }
         }
-        var points = []
+        var points = [];
         graph.parentRelations(feature)
             .forEach(function(parent) {
                 if(parent.tags['hoot:review:needs']!=='no'){
