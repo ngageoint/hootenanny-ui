@@ -177,7 +177,7 @@ iD.operations.Review = function(selectedIDs, context) {
                 }
             }
         }
-        var points = [];
+        var points;
         graph.parentRelations(feature)
             .forEach(function(parent) {
                 if(parent.tags['hoot:review:needs']!=='no'){
@@ -185,8 +185,9 @@ iD.operations.Review = function(selectedIDs, context) {
                         var mid = mem.id;
                         var currentReview = this;
                         var mFeature = context.hasEntity(mid);
-                        collectReviewPoints(mem);
                         var circleOffset = feature.type === 'node' ? 50 : 0;
+                        points = [];
+                        collectReviewPoints(mem);
                         points.forEach(function(mFeatureLoc) {
                         if(mFeature && mFeatureLoc && (entityId !== mid)) {
                             //take this coord, convert to SVG, add to map
@@ -231,12 +232,10 @@ iD.operations.Review = function(selectedIDs, context) {
                                     }
                                 });
                             });
-                        }
-                        });
-                        if (mFeature) {
                             currentAlpha += 1;
                             if(currentAlpha > 122){currentAlpha = 97; doubleLetter = true;}
                         }
+                        });
                     },parent);
                 }
             });
