@@ -151,6 +151,8 @@ iD.operations.Review = function(selectedIDs, context) {
                         var mid = mem.id;
 
                         var mFeature = context.hasEntity(mid);
+                        if(!mFeature){return;}
+
                         var mFeatureLoc = _getLocation(mFeature);
 
                         var circleOffset = feature.type === 'node' ? 50 : 0;
