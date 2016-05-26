@@ -848,18 +848,7 @@ rest.servicesVersionInfo = function(callback)
         return callback(resp);
     });
 };
-
-rest.servicesVersionDetail = function(callback)
-{
-    d3.json('/hoot-services/info/about/servicesVersionDetail', function(error, resp)
-    {
-        if (error) {
-            return callback(_alertError(error, 'Get service version detail failed! For detailed log goto Manage->Log'));
-        }
-        return callback(resp);
-    });
-};
-
+    
 rest.coreVersionInfo = function(callback)
 {
     d3.json('/hoot-services/info/about/coreVersionInfo', function(error, resp)
