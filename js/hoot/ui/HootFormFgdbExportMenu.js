@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Hoot.ui.hootformfgdbexportmenu is for creating menu items for book marks list. 
+// Hoot.ui.hootformfgdbexportmenu is for creating menu items for book marks list.
 //
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
@@ -7,11 +7,10 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Hoot.ui.hootformfgdbexportmenu = function () 
+Hoot.ui.hootformfgdbexportmenu = function ()
 {
     var _events = d3.dispatch();
     var _instance = {};
-    var _currentContainerId;
 
     /**
     * @desc Create basic hoot form
@@ -21,36 +20,35 @@ Hoot.ui.hootformfgdbexportmenu = function ()
     **/
     _instance.createForm = function(containerId, formMetaData) {
         var container;
-        try{
+        // try{
 
-            _currentContainerId = containerId
-            var formTitle = formMetaData['title'];
-           
+            var formTitle = formMetaData.title;
+
             if(!formTitle){
                 formTitle = 'Hootenanny Form';
             }
 
             container = _createContainer(containerId);
-            var formDiv = _createFormDiv(container, containerId)
-            var form =  _createForm(container, formDiv, formTitle)
-            var fieldset = _createFieldSet(form, formMetaData);
+            var formDiv = _createFormDiv(container, containerId);
+            var form =  _createForm(container, formDiv, formTitle);
+            _createFieldSet(form, formMetaData);
 
 
-        } catch (error) {
-            console.error(error);
-        }
-    
+        // } catch (error) {
+        //     console.error(error);
+        // }
+
         return container;
-    }
+    };
 
-   
+
     /**
     * @desc Create dark back ground mask
     * @param containerId - id of container div
     * @return returns created div.
     **/
     var _createContainer = function(containerId) {
-        
+
         return d3.select('#' + containerId)
                 .append('div')
                 .attr('id', 'reviewMenuForm' + containerId)
@@ -58,7 +56,7 @@ Hoot.ui.hootformfgdbexportmenu = function ()
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
                 });
-    }
+    };
 
 
     /**
@@ -68,15 +66,15 @@ Hoot.ui.hootformfgdbexportmenu = function ()
     * @return returns created div.
     **/
     var _createFormDiv = function(container, containerId) {
-        var left = d3.select('#' + containerId).node().offsetLeft;
-        var top = d3.select('#' + containerId).node().offsetTop;
-        var height = d3.select('#' + containerId).node().offsetHeight;
-        var width = d3.select('#' + containerId).node().offsetWidth;
+        var left = d3.select('#' + containerId).node().getBoundingClientRect().left;
+        var top = d3.select('#' + containerId).node().getBoundingClientRect().top;
+        var height = d3.select('#' + containerId).node().getBoundingClientRect().height;
+        var width = d3.select('#' + containerId).node().getBoundingClientRect().width;
         return container.append('div')
                 .classed('contain col3 row8 hoot-menu fill-white keyline-all round modal', true)
                 .style('top', (top + height) + 'px')
                 .style('left', (left + width) + 'px');
-    }
+    };
 
     /**
     * @desc Create form shell
@@ -85,13 +83,12 @@ Hoot.ui.hootformfgdbexportmenu = function ()
     * @param formTitle - dialog title
     * @return returns created form.
     **/
-    var _createForm = function(container, formDiv, formTitle) { 
+    var _createForm = function(container, formDiv, formTitle) {
 
         var form = formDiv.append('form');
         form.classed('round space-bottom1 importableLayer', true);
 
-        var formDiv = form
-                .append('div')
+        form.append('div')
                 .classed('big pad1y keyline-bottom space-bottom2', true)
                 .append('h4')
                 .text(formTitle)
@@ -100,11 +97,10 @@ Hoot.ui.hootformfgdbexportmenu = function ()
                 .on('click', function () {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
-                    //d3.select('#reviewMenuForm' + _currentContainerId).remove();
                     container.remove();
                 });
         return form;
-    }
+    };
 
     /**
     * @desc Create form fields. Currently handles textarea, combo and text field
@@ -113,7 +109,7 @@ Hoot.ui.hootformfgdbexportmenu = function ()
     * @return returns created fields.
     **/
     var _createFieldSet = function(form, formMeta) {
-    
+
         var container = form.append('div')
         .classed('row6 overflow', true);
         var tla = container.selectAll('div')
@@ -124,23 +120,20 @@ Hoot.ui.hootformfgdbexportmenu = function ()
         var tla3 = tla2.append('span')
             .classed('text-left big col12 strong', true)
             .append('a')
-            .text(function(d){ 
+            .text(function(d){
                 return d.name;
             })
             .on('click', function(d){
                 d.action(d);
-            });  
+            });
 
         tla3
         .append('input')
-        .attr('type', 'checkbox')
-        .on('click', function(d) {
-            var isChecked = d3.select(this).node().checked;
-        });
+        .attr('type', 'checkbox');
 
 
-    }
+    };
 
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

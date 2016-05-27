@@ -5,12 +5,12 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      18 Dec. 2015
+//      15 Apr. 2016 eslint updates -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.basemapdataset = function(context) {
-	var hoot_control_utilities_basemapdataset = {};
+    var hoot_control_utilities_basemapdataset = {};
 
     hoot_control_utilities_basemapdataset.newBasemapPopup = function(callback) {
-        var saveName = null;
         var d_form = [{
             label: 'Basemap Raster File',
             type: 'basemapfileImport',
@@ -57,7 +57,7 @@ Hoot.control.utilities.basemapdataset = function(context) {
             .classed('contain', true)
             .append('input')
             .each(function(d){
-            	if(d.readonly){d3.select(this).attr('readonly',true);}
+                if(d.readonly){d3.select(this).attr('readonly',true);}
             })
             .attr('type', 'text')
             .attr('placeholder', function (field) {
@@ -91,9 +91,6 @@ Hoot.control.utilities.basemapdataset = function(context) {
                                 fileNames.push(curFileName);
                             }
                             _form.select('.reset.basemapfileImport').value(fileNames.join('; '));
-                            var first = fileNames[0];
-                            saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
-
                         });
                 }
 
@@ -111,11 +108,11 @@ Hoot.control.utilities.basemapdataset = function(context) {
                         var files = document.getElementById('basemapfileuploader').files;
                         if(files.length > 0){
                             var fName = files[0].name;
-                            var parts = fName.split(".");
+                            var parts = fName.split('.');
 
                             for(var p=0; p<parts.length-1; p++){
                                 if(name.length > 0){
-                                    name += ".";
+                                    name += '.';
                                 }
                                 name += parts[p];
                             }
@@ -126,7 +123,7 @@ Hoot.control.utilities.basemapdataset = function(context) {
                     }
 
                     var found = _.find(context.hoot().view.utilities.basemaplist, function(o){
-                        return (o.name == name);
+                        return (o.name === name);
                     });
 
                     if(found){
@@ -136,7 +133,7 @@ Hoot.control.utilities.basemapdataset = function(context) {
                     } else {
                         d3.select(this).text('Publishing...');
                         d3.select(this).style('pointer-events','none');
-                        var spin = submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true).attr('id', 'basemapimportspin');
+                        submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true).attr('id', 'basemapimportspin');
                         context.hoot().model.basemapdataset.publishBasemap(_form,function(d){
                             callback(d);
                             modalbg.remove();
@@ -151,5 +148,5 @@ Hoot.control.utilities.basemapdataset = function(context) {
 
 
 
-	return hoot_control_utilities_basemapdataset;
-}
+    return hoot_control_utilities_basemapdataset;
+};

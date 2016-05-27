@@ -4,8 +4,9 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      03 Feb. 2016
+//      14 Apr. 2016 eslint changes -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.control.TranslationAssistant = function () {
+Hoot.control.TranslationAssistant = function (context) {
     var ta = {};
     var tags = {};
 
@@ -79,6 +80,7 @@ Hoot.control.TranslationAssistant = function () {
         })
         .append('input')
         .attr('type', 'file')
+        .attr('name', 'taFiles')
         .attr('multiple', 'true')
         .attr('accept', '.shp, .shx, .dbf, .zip')
         .classed('hidden', true)
@@ -95,6 +97,7 @@ Hoot.control.TranslationAssistant = function () {
         })
         .append('input')
         .attr('type', 'file')
+        .attr('name', 'taFolder')
         .attr('multiple', 'false')
         .attr('webkitdirectory', '')
         .attr('directory', '')
@@ -341,6 +344,9 @@ Hoot.control.TranslationAssistant = function () {
                 .attr('id', 'preset-input-layer')
                 .on('change', function() {
                     changeLayers(d3.select(this).property('value'));
+                })
+                .on('blur', function() {
+                    changeLayers(d3.select(this).property('value'));
                 });
 
                 layersList.property('value', layer).each(function(d) {
@@ -585,13 +591,13 @@ Hoot.control.TranslationAssistant = function () {
                             break;
                         // up arrow
                         case 38:
-                        	scroll('up',this);
-                        	d3.event.preventDefault();
+                            scroll('up',this);
+                            d3.event.preventDefault();
                             break;
                         // down arrow
                         case 40:
-                        	scroll('down',this);
-                        	d3.event.preventDefault();
+                            scroll('down',this);
+                            d3.event.preventDefault();
                             break;
                     }
                     d3.event.stopPropagation();
@@ -611,28 +617,28 @@ Hoot.control.TranslationAssistant = function () {
                 }
 
                 function scroll(dir,that){
-                	var overflowList = d3.select(that).node().nextSibling;
-                	var results = d3.select(overflowList).selectAll('div');
+                    var overflowList = d3.select(that).node().nextSibling;
+                    var results = d3.select(overflowList).selectAll('div');
 
-                	if(!_.isEmpty(results[0])){
-                		var overflowTags = [];
-                    	for (var i = 0; i < results[0].length; i += 1) {
-                    		overflowTags.push(results[0][i].innerHTML);
-                    		}
+                    if(!_.isEmpty(results[0])){
+                        var overflowTags = results.data().map(function(d) {
+                            return d.key;
+                        });
 
-                    	//get index of current
-                    	var curIdx = overflowTags.indexOf(searchTag.property('value'));
+                        //get index of current
+                        var curIdx = overflowTags.indexOf(searchTag.property('value'));
 
-                    	if(dir==='up'){curIdx -= 1;}
-                    	else if(dir==='down'){curIdx += 1;}
+                        if(dir==='up'){curIdx -= 1;}
+                        else if(dir==='down'){curIdx += 1;}
 
-                    	curIdx < 0? 0 : curIdx;
-                    	curIdx > overflowTags.length-1? overflowTags.length-1 : curIdx;
+                        curIdx = curIdx < 0 ? 0 : curIdx;
+                        curIdx = curIdx > overflowTags.length-1 ? overflowTags.length-1 : curIdx;
 
-                    	//scroll to curIdx
-                    	overflowList.scrollTop = results[0][curIdx].offsetTop - overflowList.offsetTop;
-                    	searchTag.property('value',overflowTags[curIdx]);
-                	}
+                        //scroll to curIdx
+                        //Removed offsetTop per #374 //overflowList.scrollTop = results[0][curIdx].offsetTop - overflowList.offsetTop;
+                        overflowList.scrollTop = Math.ceil(results[0][curIdx].getBoundingClientRect().top) - Math.ceil(overflowList.getBoundingClientRect().top);
+                        searchTag.property('value',overflowTags[curIdx]);
+                    }
                 }
 
                 function change() {
@@ -645,7 +651,18 @@ Hoot.control.TranslationAssistant = function () {
                         results = tags[schemaOption]
                         .filter( function(val) {
                             return val.key && (val.key.toLowerCase().indexOf(value.toLowerCase()) > -1);
+                        })
+                        .sort(function (a, b) {
+                            if (a.key > b.key) {
+                                return 1;
+                            }
+                            if (a.key < b.key) {
+                                return -1;
+                            }
+                            // a must be equal to b
+                            return 0;
                         });
+
                     } else {
                         results = [];
                     }
@@ -797,7 +814,7 @@ Hoot.control.TranslationAssistant = function () {
                     if ( schema === 'TDSv61' ) {
                         var isValid = ta.validateMapping(jsonMapping);
                         if (!isValid.state) {
-                        	iD.ui.Alert('A mapping for Feature Code is required for ' + isValid.layers.join(', '),'warning');
+                            iD.ui.Alert('A mapping for Feature Code is required for ' + isValid.layers.join(', '),'warning');
                             return;
                         }
                         output = output.replace('var schema;', 'var schema = \'' + schema + '\';');
@@ -807,18 +824,18 @@ Hoot.control.TranslationAssistant = function () {
                     var blob = new Blob([output], {type: 'text/plain;charset=utf-8'});
                     window.saveAs(blob, fileName + '-translation.js');
 
-                    if(window.confirm("Do you want to add this to internal translation list?")){
-                    	var thisbody = d3.select("#utiltranslation").node()
-                    	d3.select(jobsBG).node().appendChild(thisbody);
-	                    d3.selectAll('.utilHootHead')
-	                        .classed('fill-white', false)
-	                        .classed('keyline-bottom', true);
-	                    d3.select(thisbody.children[0])
-	                        .classed('fill-white', true)
-	                        .classed('keyline-bottom', false);
+                    if(window.confirm('Do you want to add this to internal translation list?')){
+                        var thisbody = d3.select('#utiltranslation').node();
+                        d3.select('#jobsBG').node().appendChild(thisbody);
+                        d3.selectAll('.utilHootHead')
+                            .classed('fill-white', false)
+                            .classed('keyline-bottom', true);
+                        d3.select(thisbody.children[0])
+                            .classed('fill-white', true)
+                            .classed('keyline-bottom', false);
 
-	                    //open the ingestDiv and copy values into paste box
-	                    hoot.control.utilities.translation.newTranslationPopup(output);
+                        //open the ingestDiv and copy values into paste box
+                        context.hoot().control.utilities.translation.newTranslationPopup(output);
                     }
 
                 });

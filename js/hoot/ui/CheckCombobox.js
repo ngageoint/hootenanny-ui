@@ -217,11 +217,11 @@ Hoot.ui.checkcombobox = function() {
                 .selectAll('a.combobox-option')
                 .data(suggestions, function(d) { return d.value; });
 
-            
+
             options.enter().append('a')
                 .attr('class', 'combobox-option')
                 .html(function(d){
-                    var chkHtml = '<label class="pad1x pad0y round-top " style="opacity: 1;">';
+                    var chkHtml = '<label class="pad1x pad0y round-top" style="opacity: 1;">';
                     chkHtml += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">' + d.value + '</label>';
                     return chkHtml;
                 });
@@ -232,12 +232,12 @@ Hoot.ui.checkcombobox = function() {
                 if(selectionMap[d.value] !== undefined){
                     d3.select(this).select('input').property('checked', true);
                 }
-                
+
             });
 
             options
                 .attr('title', function(d) { return d.title; })
-                .classed('selected', function(d, i) { return i == idx; })
+                .classed('selected', function(d, i) { return i === idx; })
                 .on('mouseover', select)
                 .on('click', accept)
                 .order();
@@ -246,7 +246,7 @@ Hoot.ui.checkcombobox = function() {
                 .remove();
 
             var rect = input.node().getBoundingClientRect();
-            
+
             //If the height of the menu is going to go off the screen, have it go towards the top of the screen instead
             var dropDownHeight = (d3.select('.combobox-option').node().getBoundingClientRect().height * suggestions.length) + rect.height;
             if((window.innerHeight-rect.top)<dropDownHeight){
@@ -254,13 +254,13 @@ Hoot.ui.checkcombobox = function() {
                     'left': rect.left + 'px',
                     'width': rect.width + 'px',
                     'bottom': window.innerHeight-rect.top + 'px'
-                });            	
+                });
             } else {
                 container.style({
                     'left': rect.left + 'px',
                     'width': rect.width + 'px',
                     'top': rect.height + rect.top + 'px'
-                });            	
+                });
             }
         }
 
@@ -283,7 +283,7 @@ Hoot.ui.checkcombobox = function() {
             } else {
                 delete selectionMap[d.value];
             }
-            inputList = Object.keys(selectionMap).join();
+            var inputList = Object.keys(selectionMap).join();
             input
                 .property('value', inputList)
                 .trigger('change');

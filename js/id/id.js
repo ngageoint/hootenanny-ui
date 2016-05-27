@@ -2,8 +2,7 @@ window.iD = function () {
     window.locale.en = iD.data.en;
     window.locale.current('en');
 
-    var dispatch = d3.dispatch('enter', 'exit'),
-        context = {},
+    var context = {},
         storage;
 
     //eslint introduced in iD v1.7.5
@@ -12,7 +11,7 @@ window.iD = function () {
     context.enableSnap = true;
     // https://github.com/systemed/iD/issues/772
     // http://mathiasbynens.be/notes/localstorage-pattern#comment-9
- 
+
     try { storage = localStorage; } catch (e) {}  // eslint-disable-line no-empty
     storage = storage || (function() {
         var s = {};
@@ -365,7 +364,6 @@ window.iD = function () {
 
 
     /* Container */
-    var container;
     context.container = function(_) {
         if (!arguments.length) return container;
         container = _;
@@ -403,9 +401,13 @@ window.iD = function () {
         return context;
     };
 
+    context.asset = function(_) {
+        var filename = assetPath + _;
+        return assetMap[filename] || filename;
+    };
+
     context.imagePath = function(_) {
-        var asset = 'img/' + _;
-        return assetMap[asset] || assetPath + asset;
+        return context.asset('img/' + _);
     };
 
     return d3.rebind(context, dispatch, 'on');

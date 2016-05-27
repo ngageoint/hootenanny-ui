@@ -1,6 +1,6 @@
 iD.Map = function(context) {
     var dimensions = [1, 1],
-        //TODO: Document why this was modified for Hoot
+        //Need to document why this was modified for Hoot
         dispatch = d3.dispatch('move', 'drawn', 'maxImportZoomChanged', 'drawVector', 'updateBackgroundList'),
         projection = context.projection,
         roundedProjection = iD.svg.RoundProjection(projection),
@@ -14,12 +14,12 @@ iD.Map = function(context) {
         transformStart,
         transformed = false,
         minzoom = 0,
-		//draw prefix added in iD v1.9.2
+        //draw prefix added in iD v1.9.2
         drawLayers = iD.svg.Layers(projection, context),
         drawPoints = iD.svg.Points(roundedProjection, context),
         drawVertices = iD.svg.Vertices(roundedProjection, context),
-        drawLines = iD.svg.Lines(projection),
-        drawAreas = iD.svg.Areas(projection),
+        drawLines = iD.svg.Lines(projection, context),
+        drawAreas = iD.svg.Areas(projection, context),
         drawMidpoints = iD.svg.Midpoints(roundedProjection, context),
         drawLabels = iD.svg.Labels(projection, context),
         supersurface,
@@ -27,7 +27,7 @@ iD.Map = function(context) {
         surface,
         mouse,
         mousemove,
-        //TODO: Document why this was added for Hoot
+        //Need to document why this was added for Hoot
         editableZoom = 2,
         visibleZoom = 16,
         loadVectorOnTilesLoad = false;
@@ -43,12 +43,12 @@ iD.Map = function(context) {
             .on('change.map', redraw);
         context.features()
             .on('redraw.map', redraw);
-        //TODO: Document why this was added for Hoot
+        //Need to document why this was added for Hoot
         context.connection()
             .on('layer', redraw);
 
-		//added in iD v1.9.2        
-		drawLayers
+        //added in iD v1.9.2
+        drawLayers
             .on('change.map', function() {
                 context.background().updateImagery();
                 redraw();
@@ -60,18 +60,18 @@ iD.Map = function(context) {
 
         supersurface = selection.append('div')
             .attr('id', 'supersurface')
-			//added in iD v1.9.2
+            //added in iD v1.9.2
             .call(iD.util.setTransform, 0, 0);
 
         // Need a wrapper div because Opera can't cope with an absolutely positioned
         // SVG element: http://bl.ocks.org/jfirebaugh/6fbfbd922552bf776c16
         //iD v1.9.2 wrapper replaced dataLayer var
-		//For Hoot, kept layer-layer class as opposed to layer
-		wrapper = supersurface
+        //For Hoot, kept layer-layer class as opposed to layer
+        wrapper = supersurface
             .append('div')
             .attr('class', 'layer-layer layer-data');
 
-		//changed in iD v1.9.2
+        //changed in iD v1.9.2
         //map.surface = surface = dataLayer.append('svg')
 
        map.surface = surface = wrapper
@@ -88,8 +88,8 @@ iD.Map = function(context) {
             .on('mouseup.zoom', function() {
                 if (resetTransform()) redraw();
             })
-			//changed in iD v1.9.2            
-			//.attr('id', 'surface')
+            //changed in iD v1.9.2
+            //.attr('id', 'surface')
             //.call(iD.svg.Surface(context));
             .on('mousemove.map', function() {
                 mousemove = d3.event;
@@ -111,7 +111,7 @@ iD.Map = function(context) {
 
         supersurface.call(context.background());
 
-		//changed in iD v1.9.2 
+        //changed in iD v1.9.2
         /*surface.on('mousemove.map', function() {
             mousemove = d3.event;
         });
@@ -158,7 +158,7 @@ iD.Map = function(context) {
             features = context.features(),
             all = context.intersects(map.extent()),
             data, filter,
-            //TODO: Document why this was added for Hoot
+            //Need to document why this was added for Hoot
             hidden=context.connection().hiddenLayers();
 
         if (difference) {
@@ -180,7 +180,7 @@ iD.Map = function(context) {
                 filter = function(d) { return set.has(d.id); };
 
             } else {
-                //TODO: Document why this was added for Hoot
+                //Need to document why this was added for Hoot
                 all=_.filter(all, function(a) { return !_.contains(hidden, a.mapId); });
                 data = all;
                 filter = d3.functor(true);
@@ -199,11 +199,11 @@ iD.Map = function(context) {
             .call(drawLines, graph, data, filter)
             .call(drawAreas, graph, data, filter)
             .call(drawMidpoints, graph, data, filter, map.trimmedExtent())
-            //TODO: determine why Hoot has disabled this behavior
+            //Need to determine why Hoot has disabled this behavior
             //.call(drawLabels, graph, data, filter, dimensions, !difference && !extent)
             .call(drawPoints, graph, data, filter);
 
-        //TODO: Document why this was added for Hoot
+        //Need to document why this was added for Hoot
         var lastLoadedLayer = context.connection().lastLoadedLayer();
         if(lastLoadedLayer){
             var modifiedId = lastLoadedLayer.toString();
@@ -212,16 +212,16 @@ iD.Map = function(context) {
 
 
         dispatch.drawn({full: true});
-        //TODO: Document why this was added for Hoot
+        //Need to document why this was added for Hoot
         dispatch.drawVector();
     }
 
     function editOff() {
         context.features().resetStats();
-		// changed to .layer-osm in iD v1.9.2
+        // changed to .layer-osm in iD v1.9.2
         surface.selectAll('.layer-osm *').remove();
         dispatch.drawn({full: true});
-        //TODO: Document why this was added for Hoot
+        //Need to document why this was added for Hoot
         dispatch.drawVector();
     }
 
@@ -233,7 +233,7 @@ iD.Map = function(context) {
     }
 
     function zoomPan() {
-    	if (Math.log(d3.event.scale) / Math.LN2 - 8 < minzoom + 1) {
+        if (Math.log(d3.event.scale) / Math.LN2 - 8 < minzoom + 1) {
             surface.interrupt();
             iD.ui.flash(context.container())
                 .select('.content')
@@ -262,7 +262,7 @@ iD.Map = function(context) {
     function resetTransform() {
         if (!transformed) return false;
 
-		//Added in iD v1.9.2
+        //Added in iD v1.9.2
         surface.selectAll('.radial-menu').interrupt().remove();
         iD.util.setTransform(supersurface, 0, 0);
         transformed = false;
@@ -270,7 +270,7 @@ iD.Map = function(context) {
     }
 
     function redraw(difference, extent, waitOnLoad) {
-    	loadVectorOnTilesLoad = waitOnLoad;
+        loadVectorOnTilesLoad = waitOnLoad;
 
         if (!surface) return;
 
@@ -278,7 +278,7 @@ iD.Map = function(context) {
 
         //Added for measure layer
         //Update measurement lines
-        var measureLines = d3.selectAll("[class*=measure-line-]");
+        var measureLines = d3.selectAll('[class*=measure-line-]');
         if(!measureLines.empty()){
             _.each(measureLines[0],function(b){
                 var line = d3.select(b);
@@ -295,14 +295,16 @@ iD.Map = function(context) {
         if(!measureArea.empty()){
             _.each(measureArea[0],function(a){
                 var measArea = d3.select(a);
-                var newpts = "";
+                var newpts = '';
                 var pts = measArea.attr('loc').trim().split(/ /);
-                _.each(pts,function(pt){
-                    var newpt = pt.split(/,/).map(parseFloat);
+                var ptsLength = measureArea.classed('measure-complete') ? pts.length : pts.length - 1;
+                for(var p = 0; p < ptsLength; p++){
+                    var newpt = pts[p].split(/,/).map(parseFloat);
                     var c = context.projection(newpt);
-                    newpts += c.toString() + " ";
-                })
-                measArea.attr('points',newpts);
+                    newpts = newpts + ' ' + c.toString();
+                }
+                measureArea.attr('points',newpts);
+                measureArea.classed('updated',true);
             });
         }
 
@@ -311,7 +313,7 @@ iD.Map = function(context) {
             var labelmargin = !measureLines.empty() ? 10 : 30;
             var rectmargin = !measureLines.empty() ? 0 : 10;
 
-            var measureLabel = d3.select('.measure-layer').select('text');
+            measureLabel = d3.select('.measure-layer').select('text');
             if(!measureLabel.empty()){
                 var loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
                 var c = context.projection(loc);
@@ -327,9 +329,9 @@ iD.Map = function(context) {
                 }
             }
 
-            var loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
-            var c = context.projection(loc);
-            d3.select(measureLabel[0][0]).attr("x", c[0]+rectmargin).attr('y',c[1]-(measureLabel.dimensions()[1]/2));
+            loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
+            c = context.projection(loc);
+            d3.select(measureLabel[0][0]).attr('x', c[0]+rectmargin).attr('y',c[1]-(measureLabel.dimensions()[1]/2));
         }
 
         //Added for goto feature bubbles
@@ -361,7 +363,7 @@ iD.Map = function(context) {
             supersurface.call(context.background());
         }
 
-        //TODO: Document why this was modified for Hoot
+        //Need to document why this was modified for Hoot
         // The reason for implementing loadVectorOnTilesLoad is following
         // 1. User swaps layer
         // 2. Tile loads but since tile loading takes long time before all entities loaded vector
@@ -392,7 +394,7 @@ iD.Map = function(context) {
                 }
             }
 
-            //TODO: determine why Hoot has disabled this behavior
+            //Need to determine why Hoot has disabled this behavior
             //drawVector(difference, extent);
         } else if (map.editable()) {
             context.connection().tileZoom(16);
@@ -409,14 +411,14 @@ iD.Map = function(context) {
 
 
         } else {
-            //TODO: Document why this was added for Hoot
+            //Need to document why this was added for Hoot
             if(map.zoom() >= visibleZoom){
                 context.connection().loadTiles(projection, dimensions);
             }
             editOff();
         }
 
-		// added in iD v1.9.2
+        // added in iD v1.9.2
         wrapper
             .call(drawLayers);
 
@@ -461,7 +463,7 @@ iD.Map = function(context) {
         return map;
     };
 
-	//added in iD v1.9.2
+    //added in iD v1.9.2
     map.redrawEnable = function(_) {
         if (!arguments.length) return redrawEnabled;
         redrawEnabled = _;
@@ -518,7 +520,7 @@ iD.Map = function(context) {
 
     map.pan = function(d) {
         if(!d3.select('#jobsBG').classed('hidden')){return;}
-    	var t = projection.translate();
+        var t = projection.translate();
         t[0] += d[0];
         t[1] += d[1];
         projection.translate(t);
@@ -531,7 +533,7 @@ iD.Map = function(context) {
         if (!arguments.length) return dimensions;
         var center = map.center();
         dimensions = _;
-		//drawLayers replaced surface in iD v1.9.2
+        //drawLayers replaced surface in iD v1.9.2
         drawLayers.dimensions(dimensions);
         context.background().dimensions(dimensions);
         projection.clipExtent([[0, 0], dimensions]);
@@ -567,8 +569,8 @@ iD.Map = function(context) {
     };
 
     map.zoom = function(z) {
-    	if (!arguments.length) {
-            //TODO: Document why this was modified for Hoot
+        if (!arguments.length) {
+            //Need to document why this was modified for Hoot
             var zoomVal = Math.max(Math.log(projection.scale() * 2 * Math.PI) / Math.LN2 - 8, 0);
 
             if(document.getElementById('sidebar2')){
@@ -588,7 +590,7 @@ iD.Map = function(context) {
                     }
                     dispatch.maxImportZoomChanged();
                 }
-                else*/{
+                else{*/
                     var nodes = document.getElementById('sidebar2').getElementsByTagName('*');
                     for(var i = 0; i < nodes.length; i++)
                     {
@@ -596,12 +598,12 @@ iD.Map = function(context) {
                          nodes[i].style.opacity=1.0;
                     }
                     nodes = document.getElementById('sidebar2').getElementsByClassName('button');
-                    for(var i = 0; i < nodes.length; i++)
+                    for(i = 0; i < nodes.length; i++)
                     {
                         nodes[i].disabled = false;
                         nodes[i].style.opacity=1.0;
                     }
-                }
+                // }
             }
 
 
@@ -632,7 +634,7 @@ iD.Map = function(context) {
         zoomLimits = zoomLimits || [context.minEditableZoom(), 20];
         map.centerZoom(extent.center(), Math.min(Math.max(zoom, zoomLimits[0]), zoomLimits[1]));
     };
-    //TODO: Document why this was added for Hoot
+    //Need to document why this was added for Hoot
     map.getZoomLevel = function(minlon, minlat, maxlon, maxlat) {
         var lowerLeftExtent = iD.geo.Extent([minlon, minlat]);
         var upperRightExtent = iD.geo.Extent([maxlon, maxlat]);
@@ -641,7 +643,7 @@ iD.Map = function(context) {
         return map.extentZoom(extent);
     };
 
-    //TODO: Document why this was added for Hoot
+    //Need to document why this was added for Hoot
     map.zoomToExtent = function(minlon, minlat, maxlon, maxlat, zoomLimits) {
         var lowerLeftExtent = iD.geo.Extent([minlon, minlat]);
         var upperRightExtent = iD.geo.Extent([maxlon, maxlat]);
@@ -725,7 +727,7 @@ iD.Map = function(context) {
         return calcZoom(iD.geo.Extent(_), trimmed);
     };
 
-    //TODO: Document why this was modified for Hoot
+    //Need to document why this was modified for Hoot
     map.editable = function(_) {
         if(!_){
             return map.zoom() >= editableZoom;
@@ -743,15 +745,15 @@ iD.Map = function(context) {
         return map;
     };
 
-    //TODO: Document why this was added for Hoot
+    //Need to document why this was added for Hoot
     map.updateBackground = function(){
         dispatch.updateBackgroundList();
     };
 
-	//Added in iD v1.9.2
+    //Added in iD v1.9.2
     map.layers = drawLayers;
 
-    //TODO: Document why this was added for Hoot
+    //Need to document why this was added for Hoot
     map.drawVectorFar = function(difference, extent) {
         var graph = context.graph(),
             features = context.features(),
@@ -788,13 +790,13 @@ iD.Map = function(context) {
         d3.selectAll('.vertex').remove();
         //d3.selectAll('.shadow').remove();
 
-        var farLine = iD.svg.FarLine(projection);
-        var farArea = iD.svg.FarArea(projection);
+        var farLine = iD.svg.FarLine(projection, context);
+        var farArea = iD.svg.FarArea(projection, context);
 
         surface
-        .call(farLine, graph, data, filter)
-        .call(farArea, graph, data, filter)
-        .call(drawPoints, graph, data, filter);
+        .call(farLine, graph, data, filter, context)
+        .call(farArea, graph, data, filter, context)
+        .call(drawPoints, graph, data, filter, context);
 
         var lastLoadedLayer = context.connection().lastLoadedLayer();
         if(lastLoadedLayer){
@@ -823,7 +825,8 @@ iD.Map = function(context) {
     map.updateEditedHighlights = function() {
         //Clear any 'edited' class from features
         d3.selectAll('.edited').classed('edited unsaved', false);
-        if (d3.select('div.highlight-edited input').node().checked) {
+        var highlightCheck = d3.select('div.highlight-edited input');
+        if (highlightCheck.size() > 0 && highlightCheck.node().checked) {
             //Add 'edited' class to edited but unsaved features
             context.history().difference().summary().map(function(d) {
                 return d.entity.id;
@@ -831,10 +834,10 @@ iD.Map = function(context) {
                 d3.selectAll('.' + d).classed('edited unsaved', true);
             });
         }
-    }
+    };
 
     map.updateSnapFeatures = function() {
         context.enableSnap = d3.select('div.enable-snap input').node().checked;
-    }    
+    };
     return d3.rebind(map, dispatch, 'on');
 };

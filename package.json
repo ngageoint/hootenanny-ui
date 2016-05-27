@@ -8,7 +8,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "eslint js/id && phantomjs node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/index.html dot && make && phantomjs node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/index_packaged.html dot"
+    "test": "eslint js/id && eslint js/hoot && phantomjs node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/index.html dot",
+    "cover": "mkdir -p istanbul && cp test/index.html test/istanbul_index.html && replace --silent 'js/hoot' 'istanbul/hoot' test/istanbul_index.html && replace --silent 'js/id' 'istanbul/id' test/istanbul_index.html && istanbul instrument --output istanbul/hoot js/hoot && istanbul instrument --output istanbul/id js/id && phantomjs node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/istanbul_index.html dot '{\"hooks\": \"mocha-phantomjs-istanbul\", \"coverageFile\": \"mocha-coverage/coverage.json\"}' && istanbul report --root mocha-coverage --dir mocha-coverage lcov",
+    "combine": "istanbul report --root . --dir combined-coverage lcov"
   },
   "repository": {
     "type": "git",
@@ -41,7 +43,11 @@
     "svg-sprite": "1.2.19",
     "uglify-js": "~2.4.16",
     "xml2js": "~0.4.13",
-    "xmlbuilder": "~4.2.0"
+    "xmlbuilder": "~4.2.0",
+    "mocha-phantomjs-istanbul": "0.0.2",
+    "istanbul": "~0.4.3",
+    "replace": "~0.3.0",
+    "phantomjs-prebuilt": "~2.1.7"
   },
   "engines": {
     "node": ">=0.10.0"

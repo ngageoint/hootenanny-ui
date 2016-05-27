@@ -189,8 +189,8 @@ iD.Features = function(context) {
 
     features.hidden = function(k) {
         if (!arguments.length) {
-            return _.filter(_keys, function(k) { 
-                return _features[k].hidden(); 
+            return _.filter(_keys, function(k) {
+                return _features[k].hidden();
             });
         }
         return _features[k] && _features[k].hidden();
@@ -298,7 +298,7 @@ iD.Features = function(context) {
 
                     // Multipolygon members:
                     // If an entity...
-                    //   1. is a way that hasn't matched other "interesting" feature rules,
+                    //   1. is a way that hasn't matched other 'interesting' feature rules,
                     //   2. and it belongs to a single parent multipolygon relation
                     // ...then match whatever feature rules the parent multipolygon has matched.
                     // see #2548, #2887

@@ -7,7 +7,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Hoot.ui.hootformreviewnote = function (context) 
+Hoot.ui.hootformreviewnote = function (context)
 {
     var _events = d3.dispatch();
     var _instance = {};
@@ -23,14 +23,14 @@ Hoot.ui.hootformreviewnote = function (context)
     **/
     _instance.createForm = function(containerId, formMetaData) {
         var form;
-        try{
+        // try{
             _rawData = formMetaData.rawData;
-            var btnMeta = formMetaData['button'];
-            var formMeta = formMetaData['form'];
-            var formTitle = formMetaData['title'];
+            var btnMeta = formMetaData.button;
+            var formMeta = formMetaData.form;
+            var formTitle = formMetaData.title;
 
             if(!formMeta) {
-                throw 'Failed to create UI. Invalid form meta data.';
+                throw new Error('Failed to create UI. Invalid form meta data.');
             }
 
             if(!formTitle){
@@ -39,16 +39,16 @@ Hoot.ui.hootformreviewnote = function (context)
 
             var container = d3.select('#' + containerId);
             var formDiv = _createFormDiv(container);
-            form =  _createForm(container, formDiv, formTitle, formMetaData.modifyHandler, formMetaData.isNew);
-            var fieldset = _createFieldSet(form, formMeta);
-            _createButtons(btnMeta, formDiv); 
+            form = _createForm(container, formDiv, formTitle, formMetaData.modifyHandler, formMetaData.isNew);
+            _createFieldSet(form, formMeta);
+            _createButtons(btnMeta, formDiv);
 
-        } catch (error) {
-            console.error(error);
-        }
-    
+        // } catch (error) {
+        //     console.error(error);
+        // }
+
         return form;
-    }
+    };
 
 
     /**
@@ -61,7 +61,7 @@ Hoot.ui.hootformreviewnote = function (context)
                 .classed('pad1y col12', true);
         return bufferForDiv.append('div')
                 .classed('fill-white round keyline-all col12', true);
-    }
+    };
 
     /**
     * @desc Create form shell
@@ -72,8 +72,7 @@ Hoot.ui.hootformreviewnote = function (context)
     * @param isNew - [true | false] true if the form is empty new note form
     * @return returns created form.
     **/
-    var _createForm = function(container, formDiv, formTitle, modifyHandler, isNew) { 
-        var myInstance = _instance;
+    var _createForm = function(container, formDiv, formTitle, modifyHandler, isNew) {
         var form = formDiv.append('form');
         var hdBar = form.classed('round importableLayer', true)
                 .append('div')
@@ -95,11 +94,11 @@ Hoot.ui.hootformreviewnote = function (context)
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
 
-                    d3.select('#bmkNoteFormHdLabel' + _rawData.id) 
-                        .append('div')     
+                    d3.select('#bmkNoteFormHdLabel' + _rawData.id)
+                        .append('div')
                         .attr('id', 'bmkNoteFormUser' + _rawData.id)
                         .classed('fr icon avatar point', true)
-                        .on('click', _bmkUserClickHanlder) ;         
+                        .on('click', _bmkUserClickHanlder);
 
                     formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', null);
 
@@ -110,7 +109,7 @@ Hoot.ui.hootformreviewnote = function (context)
                           onclick: function(){
                             var newNote = formDiv.select('#bmkNoteText' + _rawData.id).value();
                             _rawData.note = newNote;
-                            modifyHandler(_rawData);   
+                            modifyHandler(_rawData);
                           }
                         },
                         {
@@ -118,11 +117,11 @@ Hoot.ui.hootformreviewnote = function (context)
                           location: 'right',
                           onclick: function(){
                             d3.event.stopPropagation();
-                            d3.event.preventDefault();   
-                            formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', 'readonly'); 
-                            d3.select('#reviewBookmarkNotesBtnContainer').remove();  
-                            d3.select('#bmkNoteFormUser' + _rawData.id).remove();  
-                              
+                            d3.event.preventDefault();
+                            formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', 'readonly');
+                            d3.select('#reviewBookmarkNotesBtnContainer').remove();
+                            d3.select('#bmkNoteFormUser' + _rawData.id).remove();
+
                           }
                         }
                     ];
@@ -132,16 +131,16 @@ Hoot.ui.hootformreviewnote = function (context)
                     _createButtons(d_btn, formDiv);
                 });
         } else {
-            d3.select('#bmkNoteFormHdLabel' + 'NEW') 
-            .append('div')     
+            d3.select('#bmkNoteFormHdLabel' + 'NEW')
+            .append('div')
             .attr('id', 'bmkNoteFormUser' + 'NEW')
             .classed('fr icon avatar', true)
-            .on('click', _bmkUserClickHanlder) ; 
+            .on('click', _bmkUserClickHanlder);
         }
 
-            
+
         return form;
-    }
+    };
 
     /**
     * @desc Create user form when avatar icon is clicked
@@ -177,7 +176,7 @@ Hoot.ui.hootformreviewnote = function (context)
 
         _currentUserForm = context.hoot().ui.formfactory.create('body', meta);
 
-    }
+    };
 
     /**
     * @desc Saves get/saved user to be reused during current session. It also refreshes global users lit.
@@ -185,7 +184,7 @@ Hoot.ui.hootformreviewnote = function (context)
     var _storeUser = function() {
 
         var creatorEmail = d3.select('#rbmkNoteCreatorEmail').value();
-        if(!rbmkNoteCreatorEmail || rbmkNoteCreatorEmail.length === 0){
+        if(!creatorEmail || creatorEmail.length === 0){
             alert('Creator Email field is empty and it will not be set.');
             if(_currentUserForm) {
                 _currentUserForm.remove();
@@ -195,8 +194,8 @@ Hoot.ui.hootformreviewnote = function (context)
         {
             var req = {};
             req.email=creatorEmail;
-            Hoot.model.REST('getSaveUser', req, function (resp) {   
-            
+            Hoot.model.REST('getSaveUser', req, function (resp) {
+
                 if(resp.error){
                     context.hoot().view.utilities.errorlog.reportUIError(resp.error);
                     return;
@@ -211,14 +210,14 @@ Hoot.ui.hootformreviewnote = function (context)
                 if(_currentUserForm) {
                     _currentUserForm.remove();
                 }
-              
+
             });
         }
-                        
-    }
+
+    };
 
     /**
-    * @desc Create textarea for note. 
+    * @desc Create textarea for note.
     * @param form - container form.
     * @param formMeta - fields meta data
     * @return returns created fields.
@@ -231,9 +230,9 @@ Hoot.ui.hootformreviewnote = function (context)
 
         fieldset.enter()
                 .append('div')
-                
+
                 .select(function(a){
-                
+
 
                     var field = d3.select(this);
 
@@ -243,7 +242,7 @@ Hoot.ui.hootformreviewnote = function (context)
                     .style('height','120px');
 
 
-                    if(a.inputtype == 'textarea') {
+                    if(a.inputtype === 'textarea') {
 
                         var fieldDiv = field
                         .append('div')
@@ -266,13 +265,13 @@ Hoot.ui.hootformreviewnote = function (context)
                             inputField.attr('id', a.id);
                         }
                     }
-                    
+
 
                 });
 
 
         return fieldset;
-    }
+    };
 
     /**
     * @desc Create form buttons
@@ -287,12 +286,12 @@ Hoot.ui.hootformreviewnote = function (context)
                 .classed('form-field col12 pad1y pad1x ', true);
             _.each(btnMeta, function(m){
 
-                    
+
                 var onClick = function(){};
                 if(m.onclick){
                     onClick = m.onclick;
                 }
-                
+
                  btnContainer.append('span')
                 .classed('round strong big loud dark center col2 margin1 point', true)
                 .classed('inline row1 fr pad1y', true)
@@ -300,11 +299,11 @@ Hoot.ui.hootformreviewnote = function (context)
                 .on('click', onClick);
 
 
-            });       
+            });
         }
-        
-    }
+
+    };
 
 
     return d3.rebind(_instance, _events, 'on');
-}
+};

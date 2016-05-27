@@ -1,16 +1,15 @@
 iD.operations.Review = function(selectedIDs, context) {
-    var entityId = selectedIDs[0],
-        entity = context.entity(entityId),
+    var entityId = selectedIDs[0];
+    /*var entity = context.entity(entityId);/
         extent = entity.extent(context.graph()),
         geometry = context.geometry(entityId),
-        action = iD.actions.Review(entityId, context.projection);
+        action = iD.actions.Review(entityId, context.projection);*/
 
     var operation = function() {
-        var annotation = 'Show review relations for this feature';
         // If selected node is current review item AND relations are already visualized, turn off
         if(!d3.select('.review-layer').selectAll('.' + entityId + '_edge').empty()){
-            d3.selectAll("[class*=edge]").classed( entityId + '_edge',false);
-            context.background().updateReviewLayer({},"");
+            d3.selectAll('[class*=edge]').classed( entityId + '_edge',false);
+            context.background().updateReviewLayer({},'');
             return;
         } 
 
@@ -24,7 +23,7 @@ iD.operations.Review = function(selectedIDs, context) {
         //return only if there is a need for review
         var feature = context.hasEntity(entityId);
         var graph = context.graph();
-        return !_.isEmpty(_.find(graph.parentRelations(feature),function(item){return item.tags['hoot:review:needs'] == 'yes'}));
+        return !_.isEmpty(_.find(graph.parentRelations(feature),function(item){return item.tags['hoot:review:needs'] === 'yes';}));
     };
 
     operation.disabled = function() {
@@ -37,13 +36,12 @@ iD.operations.Review = function(selectedIDs, context) {
     };
 
     var _getLocation = function(feature){
-        var eId = feature.id;
-        if(feature.type=='node'){
+        if(feature.type==='node'){
             return feature.loc;
-        } else if (feature.type=='way'){
+        } else if (feature.type==='way'){
             return _getClosestPoint(feature);            
         }
-    }
+    };
 
     var _getClosestPoint = function(feature) {
         var path = d3.select('path.'+feature.id);
@@ -59,7 +57,9 @@ iD.operations.Review = function(selectedIDs, context) {
         // linear scan for coarse approximation
         for (var scan, scanLength = 0, scanDistance; scanLength <= pathLength; scanLength += precision) {
             if ((scanDistance = distance2(scan = pathNode.getPointAtLength(scanLength),centerPt)) < bestDistance) {
-                best = scan, bestLength = scanLength, bestDistance = scanDistance;
+                best = scan;
+                bestLength = scanLength;
+                bestDistance = scanDistance;
             }
         }
 
@@ -73,24 +73,24 @@ iD.operations.Review = function(selectedIDs, context) {
             beforeDistance,
             afterDistance;
             if ((beforeLength = bestLength - precision) >= 0 && (beforeDistance = distance2(before = pathNode.getPointAtLength(beforeLength),centerPt)) < bestDistance) {
-                best = before, bestLength = beforeLength, bestDistance = beforeDistance;
+              best = before; bestLength = beforeLength; bestDistance = beforeDistance;
             } else if ((afterLength = bestLength + precision) <= pathLength && (afterDistance = distance2(after = pathNode.getPointAtLength(afterLength),centerPt)) < bestDistance) {
-                best = after, bestLength = afterLength, bestDistance = afterDistance;
+              best = after; bestLength = afterLength; bestDistance = afterDistance;
             } else {
-                precision /= 2;
+              precision /= 2;
             }
         }
 
         best = [best.x, best.y];
         best.distance = Math.sqrt(bestDistance);
         return context.projection.invert(best);
-    }
+    };
 
     var distance2 = function(p,point){
         var dx = p.x - point[0],
         dy = p.y - point[1];
         return dx * dx + dy * dy;
-    }
+    };
 
     var _performHighlight = function(graph) {
         var feature = context.hasEntity(entityId);
@@ -99,13 +99,13 @@ iD.operations.Review = function(selectedIDs, context) {
         var multiLines = [];
         graph.parentRelations(feature)
             .forEach(function(parent) {
-                if(parent.tags['hoot:review:needs']!='no'){
+                if(parent.tags['hoot:review:needs']!=='no'){
                     _.each(parent.members, function(mem){
                         var mid = mem.id;
 
                         var mFeature = context.hasEntity(mid);
-                        if(mFeature && (entityId != mid)) {
-                            mFeatureLoc = _getLocation(mFeature);
+                        if(mFeature && (entityId !== mid)) {
+                            var mFeatureLoc = _getLocation(mFeature);
                             var coord = [ featureLoc,mFeatureLoc];
                             multiLines.push(coord);
                         }                        
@@ -114,7 +114,7 @@ iD.operations.Review = function(selectedIDs, context) {
             });
 
         _loadReview('', multiLines);
-    }
+    };
 
     var _loadReview = function(mode, multiLines) {
         //if (d3.event) d3.event.preventDefault();
@@ -124,13 +124,13 @@ iD.operations.Review = function(selectedIDs, context) {
         }
         
         var gj = {
-            "type": "MultiLineString",
-            "coordinates": multiLines
+            'type': 'MultiLineString',
+            'coordinates': multiLines
         };
         if (mode === 'remove') gj = {};
         context.background().updateReviewLayer(gj, entityId);
 
-    }
+    };
 
     var _selectReview = function(graph) {
         d3.selectAll('.gotoreview').remove();
@@ -139,24 +139,25 @@ iD.operations.Review = function(selectedIDs, context) {
         var svg = d3.select('.layer-label');
 
         var currentAlpha = 97,
-        endingAlpha = 122,
         doubleLetter = false;
 
         var feature = context.hasEntity(entityId);
-        var featureLoc = _getLocation(feature);
+        //var featureLoc = _getLocation(feature);
 
         graph.parentRelations(feature)
             .forEach(function(parent) {
-                if(parent.tags['hoot:review:needs']!='no'){
+                if(parent.tags['hoot:review:needs']!=='no'){
                     _.each(parent.members, function(mem){
                         var mid = mem.id;
 
                         var mFeature = context.hasEntity(mid);
-                        mFeatureLoc = _getLocation(mFeature);
+                        if(!mFeature){return;}
 
-                        var circleOffset = feature.type == 'node' ? 50 : 0;
+                        var mFeatureLoc = _getLocation(mFeature);
 
-                        if(mFeature && (entityId != mid)) {
+                        var circleOffset = feature.type === 'node' ? 50 : 0;
+
+                        if(mFeature && (entityId !== mid)) {
                             //take this coord, convert to SVG, add to map
                             var c = context.projection(mFeatureLoc);
                             var transform = 'translate('.concat(c[0],',',c[1]-circleOffset,')');
@@ -181,7 +182,7 @@ iD.operations.Review = function(selectedIDs, context) {
                             g.on('click',function(){
                                 Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {  
                                     if(resp.error){
-                                        context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                                        context.hoot().view.utilities.errorlog.reportUIError(resp.error);
                                         return;
                                     } 
 
@@ -206,7 +207,7 @@ iD.operations.Review = function(selectedIDs, context) {
                     },parent);
                 }
             });
-    }
+    };
 
     operation.id = 'review';
     operation.keys = ['Shift+R'];

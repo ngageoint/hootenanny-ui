@@ -6,8 +6,9 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      03 Feb. 2016
+//      14 Apr. 2016 eslint changes -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.control.validation = function(context, sidebar) {
+Hoot.control.validation = function(context) {
     var event = d3.dispatch('featureLoaded');
     var validation = {};
     var feature, relation, member;
@@ -55,7 +56,7 @@ Hoot.control.validation = function(context, sidebar) {
 
         var keybinding = d3.keybinding('validation');
         buttons.forEach(function(d) {
-            keybinding.on(d.cmd, function() { d3.event.preventDefault(); d.action(); })
+            keybinding.on(d.cmd, function() { d3.event.preventDefault(); d.action(); });
         });
 
         d3.select(document)
@@ -85,7 +86,7 @@ Hoot.control.validation = function(context, sidebar) {
             .attr('class', function (d) {
                 return 'fr inline button dark ' + d.color + ' pad0y pad2x keyline-all ' + d.icon + ' ' + d.id;
             })
-            .on('click', function (d) { //TODO: Can maybe use _debounce here, instead of enabled attr
+            .on('click', function (d) { //NOTE: Can maybe use _debounce here, instead of enabled attr
                 var b = d3.select(this);
                 if (b.attr('enabled')) {
                     d.action();
@@ -108,7 +109,7 @@ Hoot.control.validation = function(context, sidebar) {
 
 
         //Remove UI elements when layer is removed
-        context.hoot().control.view.on('layerRemove.validation', function (layerName, isPrimary) {
+        context.hoot().control.view.on('layerRemove.validation', function () {
             context.hoot().control.view.on('layerRemove.validation', null);
             validation.end();
         });
@@ -158,7 +159,7 @@ Hoot.control.validation = function(context, sidebar) {
                     return JSON.parse(c.value.replace(/\\/g,''));
                 });
 
-            choiceButtons = choices.map(function(b, i) {
+            var choiceButtons = choices.map(function(b, i) {
                 var n = i + 1;
                 return {
                     id: 'choice' + n,
@@ -171,7 +172,7 @@ Hoot.control.validation = function(context, sidebar) {
             });
 
             //Disable iD edit tool keybinding
-            //TODO: Not sure how to re-enable yet (F5 anyone?)
+            //NOTE: Not sure how to re-enable yet (F5 anyone?)
             d3.keybinding('mode-buttons').off();
 
             var keybinding = d3.keybinding('choices');
@@ -257,7 +258,7 @@ Hoot.control.validation = function(context, sidebar) {
                     relation = context.hasEntity(rid);
                     if (relation) {
                         //console.log('already have relation');
-                        loadFeature();
+                        validation.loadFeature();
                     } else {
                         //console.log('must wait for relation to load');
                         context.loadEntity(rid, function(err, ent) {
@@ -268,16 +269,16 @@ Hoot.control.validation = function(context, sidebar) {
                             feature = context.hasEntity(mid);
                             if (!feature) {
                                 //console.log('must wait for feature to load');
-                                context.loadEntity(mid, function(err, ent) {
-                                    loadFeature();
+                                context.loadEntity(mid, function() {
+                                    validation.loadFeature();
                                 }, mapid, layerName);
                             } else {
-                                loadFeature();
+                                validation.loadFeature();
                             }
                         }, mapid, layerName);
                     }
 
-                    function loadFeature() {
+                    validation.loadFeature = function() {
                         relation = context.hasEntity(rid);
 
                         //Position the map
@@ -309,7 +310,7 @@ Hoot.control.validation = function(context, sidebar) {
                         validation.presentChoices();
 
                         event.featureLoaded();
-                    }
+                    };
 
                     //Update selectItem to work with the current feature
                     validation.selectItem = function() {
@@ -396,7 +397,7 @@ Hoot.control.validation = function(context, sidebar) {
         //console.log(newTags);
 
         //Remove token tags that have not be substituted
-        newTags = _.omit(newTags, function(v, k) {
+        newTags = _.omit(newTags, function(v) {
             return v.match(/\${.*}/g);
         });
         //console.log(newTags);
@@ -423,4 +424,4 @@ Hoot.control.validation = function(context, sidebar) {
     };
 
     return d3.rebind(validation, event, 'on');
-}
+};

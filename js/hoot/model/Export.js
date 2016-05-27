@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Hoot.model.export connects UI to Hoot REST end point for export request. 
+// Hoot.model.export connects UI to Hoot REST end point for export request.
 //
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
@@ -13,15 +13,15 @@ Hoot.model.export = function (context)
     var outputname;
     var selectedInput;
     var selExportTypeDesc;
-    var removeConflationRes;
+    //var removeConflationRes;
     var selectedOutType;
     var exportCallback;
-    var mapId;
+    //var mapId;
 
     model_export.exportData = function (container, data, callback) {
         _initVariables();
         exportCallback = callback;
-        outputname = container.select('#fileExportOutputName').value() || 
+        outputname = container.select('#fileExportOutputName').value() ||
                 container.select('#fileExportOutputName').attr('placeholder');
         selectedInput = data.name || outputname;
 
@@ -40,9 +40,9 @@ Hoot.model.export = function (context)
         var comboData = container.select('#fileExportTranslation').datum();
         var transName = null;
         var oTrans = null;
-        for(i=0; i<comboData.combobox.data.length; i++){
+        for(var i=0; i<comboData.combobox.data.length; i++){
             var o = comboData.combobox.data[i];
-            if(o.DESCRIPTION == transType){
+            if(o.DESCRIPTION === transType){
                 transName = o.NAME;
                 oTrans = o;
                 break;
@@ -55,30 +55,30 @@ Hoot.model.export = function (context)
      // Checks to see if it is default translation and if so use the path specified
 
         var isDefTrans = false;
-        if(oTrans && oTrans.DEFAULT == true) {
+        if(oTrans && oTrans.DEFAULT === true) {
             if(oTrans.PATH && oTrans.PATH.length > 0){
                 selectedTranslation = oTrans.PATH;
                 isDefTrans = true;
             }
         }
 
-        if(isDefTrans == false && transName != null && transName != '' ){
+        if(isDefTrans === false && transName != null && transName !== '' ){
             selectedTranslation = 'customscript/' + transName + '.js';
         }
 
         if (!selectedInput || !selectedOutType) {
-        	iD.ui.Alert('Please enter valid values.','warning',new Error().stack);
+            iD.ui.Alert('Please enter valid values.','warning',new Error().stack);
             return;
         }
-        
+
         // Check to see if we are appending to FGDB Template
         var appendTemplate= '';
         try{
-        	appendTemplate=container.select('.cboxAppendFGDBTemplate').select('input').property('checked');
+            appendTemplate=container.select('.cboxAppendFGDBTemplate').select('input').property('checked');
         } catch (e) {
-			appendTemplate=true;
-		}
-        mapId = data.name;
+            appendTemplate=true;
+        }
+        //mapId = data.name;
 
         var param = {};
         param.translation = selectedTranslation;
@@ -104,7 +104,7 @@ Hoot.model.export = function (context)
                 }, iD.data.hootConfig.JobStatusQueryInterval);
             });
     };
-    
+
     var _exportResultHandler = function(error, result)
     {
 
@@ -119,18 +119,19 @@ Hoot.model.export = function (context)
                 exportCallback(result.status);
             }
 
-            if(result.status != 'failed'){
-                if(removeConflationRes == "true"){
-                    d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + mapId)
-                    .header('Content-Type', 'text/plain')
-                    .post("", function (error, data) {
+            if(result.status !== 'failed'){
+                //Huh?
+                // if(removeConflationRes === 'true'){
+                //     d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + mapId)
+                //     .header('Content-Type', 'text/plain')
+                //     .post('', function (error, data) {
 
-                    });
-                }
+                //     });
+                // }
 
-                if(selectedOutType == 'wfs'){
-                    var capaUrl = location.origin + '/hoot-services/ogc/' + result.jobId + 
-                        '?service=WFS&version=1.1.0&request=GetCapabilities';
+                if(selectedOutType === 'wfs'){
+                    // var capaUrl = location.origin + '/hoot-services/ogc/' + result.jobId +
+                    //     '?service=WFS&version=1.1.0&request=GetCapabilities';
                     //alert('WFS Resource URL:\n' + capaUrl);
                     var param = {};
                     param.id = result.jobId;
@@ -156,7 +157,7 @@ Hoot.model.export = function (context)
 
 
         }
-    }
+    };
 
     var _initVariables = function()
     {
@@ -164,11 +165,11 @@ Hoot.model.export = function (context)
         outputname = null;
         selectedInput = null;
         selExportTypeDesc = null;
-        removeConflationRes = null;
+        //removeConflationRes = null;
         selectedOutType = null;
         exportCallback = null;
-        mapId = null;
-    }
+        //mapId = null;
+    };
 
     return model_export;
-}
+};

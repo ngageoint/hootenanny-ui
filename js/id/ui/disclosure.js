@@ -13,8 +13,8 @@ iD.ui.Disclosure = function() {
             .attr('class', 'hide-toggle')
             .style('margin-left',function(){
                 // CSS Hack to get expandable aligned
-                if(d3.select($link[0].parentNode).classed('inspector-preset')) {return '20px'}
-                else{return '0px'}
+                if(d3.select($link[0].parentNode).classed('inspector-preset')) {return '20px';}
+                else{return '0px';}
             });
 
         $link.text(title)

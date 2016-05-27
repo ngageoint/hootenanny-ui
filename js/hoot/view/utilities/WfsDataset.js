@@ -8,14 +8,14 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.view.utilities.wfsdataset = function(context)
 {
-	var hoot_view_utilities_wfsdataset = {};
+    var hoot_view_utilities_wfsdataset = {};
 
     hoot_view_utilities_wfsdataset.createContent = function(container){
-        var wfsFieldset = container.append('div')
+        container.append('div')
         .attr('id','wfsdatasettable')
             .classed('col12 fill-white small strong row10 overflow keyline-all', true)
             .call(hoot_view_utilities_wfsdataset.populateWFSDatasets);
-    }
+    };
 
     hoot_view_utilities_wfsdataset.populateWFSDatasets = function(container) {
 
@@ -26,7 +26,6 @@ Hoot.view.utilities.wfsdataset = function(context)
                     context.hoot().view.utilities.errorlog.reportUIError(d.error);
                 }
 
-                var enabled = true;
                 var la = container.selectAll('span')
                     .data(d)
                     .enter();
@@ -45,17 +44,17 @@ Hoot.view.utilities.wfsdataset = function(context)
                   d3.event.stopPropagation();
                     d3.event.preventDefault();
                     var wfsId = d3.select(this.parentNode).datum().id;
-                    var r = confirm("Are you sure you want to delete :" + wfsId  + "?");
-                    if (r == false) {
+                    var r = confirm('Are you sure you want to delete :' + wfsId  + '?');
+                    if (r === false) {
                        return;
-                    } 
-                    
+                    }
+
 
                     var wfsTrashBtn = this;
                     d3.json('/hoot-services/job/export/wfs/remove/' + wfsId,
-                            function (error, data) {
+                            function (error) {
                                 if(error){
-                                	iD.ui.Alert(error.responseText,'error',new Error().stack);
+                                    iD.ui.Alert(error.responseText,'error',new Error().stack);
                                 } else {
                                   d3.select(wfsTrashBtn.parentNode).node().remove();
                                 }
@@ -72,8 +71,8 @@ Hoot.view.utilities.wfsdataset = function(context)
                     context.hoot().control.utilities.wfsdataset.wfsDetailPopup(d);
                 });
             });
-    }
+    };
 
 
-	return hoot_view_utilities_wfsdataset;
-}
+    return hoot_view_utilities_wfsdataset;
+};

@@ -76,7 +76,7 @@ iD.ui.Scale = function(context) {
         g.append('text').attr('id', 'scaletext')
             .style({'pointer-events':'all','cursor':'default'})
             .on('click',function(){
-                imperial = imperial == false ? (iD.detect().locale.toLowerCase() === 'en-us') : false;
+                imperial = imperial === false ? (iD.detect().locale.toLowerCase() === 'en-us') : false;
                 context.imperial = imperial;
                 update(selection);
             });

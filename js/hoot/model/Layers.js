@@ -7,10 +7,10 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.model.layers = function (context)
 {
-	var model_layers = {};
-	var layers = {};
-	var availLayers = [];
-	var recentlyUsedLayers = [];
+    var model_layers = {};
+    var layers = {};
+    var availLayers = [];
+    var recentlyUsedLayers = [];
     var isLayerLoading = false;
     var selectedLayers = [];
 
@@ -18,7 +18,7 @@ Hoot.model.layers = function (context)
     model_layers.layers = layers;
     model_layers.getmapIdByName = function (name) {
         var ar = _.filter(model_layers.getAvailLayers(), function (a) {
-        	return a.name === name;
+            return a.name === name;
         });
         if(!ar.length){return null;}
         return ar[0].id;
@@ -32,7 +32,7 @@ Hoot.model.layers = function (context)
         return obj ? obj.name : null;*/
         var currAvailLayers = model_layers.getAvailLayers();
         var found = _.find(currAvailLayers, function(l){
-            return (id == l.id);
+            return (id === l.id);
         });
 
         if(found){
@@ -42,10 +42,10 @@ Hoot.model.layers = function (context)
     };
 
 
-	model_layers.refresh = function (callback) {
+    model_layers.refresh = function (callback) {
         Hoot.model.REST('getAvailLayers', function (a) {
 
-            if(a.status == 'failed'){
+            if(a.status === 'failed'){
                 if(a.error){
                     context.hoot().view.utilities.errorlog.reportUIError(a.error);
                 }
@@ -58,8 +58,8 @@ Hoot.model.layers = function (context)
 
             //get path names
             /*_.each(a.layers,function(lyr){
-            	if(lyr.name.indexOf('|')==-1){lyr.path='root'}
-            	else{lyr.path = lyr.name.slice(0,lyr.name.lastIndexOf('|'));}
+                if(lyr.name.indexOf('|')==-1){lyr.path='root'}
+                else{lyr.path = lyr.name.slice(0,lyr.name.lastIndexOf('|'));}
             });*/
 
             if (callback) {
@@ -69,44 +69,44 @@ Hoot.model.layers = function (context)
     };
 
     model_layers.getAvailLayers = function () {
-    	return availLayers;
+        return availLayers;
     };
 
     model_layers.setAvailLayers = function (d) {
-    	availLayers = d;
+        availLayers = d;
         return availLayers;
     };
-    
+
     model_layers.getRecentlyUsedLayers = function() {
-    	return recentlyUsedLayers;
+        return recentlyUsedLayers;
     };
-    
+
     model_layers.setRecentlyUsedLayers = function(lyr) {
-    	//remove old layers
-    	recentlyUsedLayers = _.intersection(_.map(hoot.model.layers.getAvailLayers(),'name'),recentlyUsedLayers);
-    	
-    	if(recentlyUsedLayers.indexOf(lyr)>-1){return;}		//Already in list
-    	
-    	if(recentlyUsedLayers.length>5){recentlyUsedLayers.splice(0,1);} 
-    	recentlyUsedLayers.push(lyr);
-    }
+        //remove old layers
+        recentlyUsedLayers = _.intersection(_.map(context.hoot().model.layers.getAvailLayers(),'name'),recentlyUsedLayers);
+
+        if(recentlyUsedLayers.indexOf(lyr)>-1){return;}        //Already in list
+
+        if(recentlyUsedLayers.length>5){recentlyUsedLayers.splice(0,1);}
+        recentlyUsedLayers.push(lyr);
+    };
 
     model_layers.setLayerLinks = function(callback) {
-    	var links = context.hoot().model.folders.getAvailLinks();
+        var links = context.hoot().model.folders.getAvailLinks();
 
-    	var layerList = _.each(_.map(model_layers.getAvailLayers(), _.clone) , function(element, index) {
-    		_.extend(element, {type:'dataset'});
-    		var match = _.find(this,function(e){return e.mapId===element.id});
-    		if(match){_.extend(element,{folderId:match.folderId});}
-    		else{_.extend(element,{folderId:0});}
-    	},links);
+        var layerList = _.each(_.map(model_layers.getAvailLayers(), _.clone) , function(element) {
+            _.extend(element, {type:'dataset'});
+            var match = _.find(this,function(e){return e.mapId===element.id;});
+            if(match){_.extend(element,{folderId:match.folderId});}
+            else{_.extend(element,{folderId:0});}
+        },links);
 
-    	availLayers = layerList;
+        availLayers = layerList;
 
-    	if (callback){
-    		callback(availLayers);
-    	}
-    }
+        if (callback){
+            callback(availLayers);
+        }
+    };
 
     model_layers.getLayers = function (opt) {
         if (opt) return layers[opt];
@@ -183,8 +183,8 @@ Hoot.model.layers = function (context)
                     .insertBefore(feature, prev);
 
                 var hootLyrs = d3.selectAll('.hootLayers');
-                if(hootLyrs[0][0] != undefined){
-                	var lyr = model_layers.getmapIdByName(d3.select(hootLyrs[0][0]).text());
+                if(hootLyrs[0][0] !== undefined){
+                    var lyr = model_layers.getmapIdByName(d3.select(hootLyrs[0][0]).text());
                     context.connection().lastLoadedLayer(lyr.toString());
                     context.flush();
                 }
@@ -213,35 +213,28 @@ Hoot.model.layers = function (context)
         }
 
         var color = key.color;
-        context.hoot()
-            .changeColor(mapId, color);
-        var projection = context.projection;
-        var dimensions = d3.select('#map')
-            .dimensions();
+        context.hoot().changeColor(mapId, color);
         layers[name] = key;
         context.connection().loadData(key);
 
         model_layers.addLayer2Sidebar(key);
 
         if (callback) callback();
-    }
+    };
 
     model_layers.addLayer = function (key, callback) {
-        context.background().updateMeasureLayer({},"");
+        context.background().updateMeasureLayer({},'');
 
         // this isLayerLoading tracks on till key is added to layers object.
         isLayerLoading = true;
         var cMapId = key.id || model_layers.getmapIdByName(key.name) || 155;
         context.connection().getMbrFromUrl(cMapId, function(resp){
-            if(resp == null){
-
-            } else {
+            if(resp !== null){
                 if(callback){
                     callback('showprogress');
                 }
 
                 // zoom and render
-                var zoomLevel = context.map().getZoomLevel(resp.minlon, resp.minlat, resp.maxlon, resp.maxlat);
                 context.zoomToExtent(resp.minlon, resp.minlat, resp.maxlon, resp.maxlat);
 
                 model_layers.addLayerAndCenter(key, callback, resp);
@@ -257,29 +250,28 @@ Hoot.model.layers = function (context)
         var mapid = model_layers.getLayers(name).mapId;
         delete layers[name];
 
-        context.background().updateReviewLayer({},"");
-        context.background().updateMeasureLayer({},"");
+        context.background().updateReviewLayer({},'');
+        context.background().updateMeasureLayer({},'');
 
         context.connection().loadedDataRemove(mapid.toString());
         d3.select('.layerControl_' + mapid.toString()).remove();
         d3.select('.layer-list-hoot').classed('hidden', function() {
-            return d3.select(this).selectAll('li').size() == 0;
+            return d3.select(this).selectAll('li').size() === 0;
         });
         context.flush();
     };
 
-    model_layers.deleteLayer = function(dataset,callback){
-    	if(!dataset.name) {
-    		if(callback){callback(false);}
-    		return false;
-    	}
+    model_layers.deleteLayer = function(params,callback){
+        if(!params.dataset.name) {
+            if(callback){callback(false,params);}
+        }
 
         // Make sure that there are no current bookmarks affiliated with layer
-        _request = {};
-        _request['orderBy'] = 'createdAt';
-        _request['asc'] = 'false';
-        _request['limit'] = 50;
-        _request['offset'] = 0;
+        var _request = {};
+        _request.orderBy = 'createdAt';
+        _request.asc = 'false';
+        _request.limit = 50;
+        _request.offset = 0;
         Hoot.model.REST('getAllReviewBookmarks', _request, function (d) {
             if(d.error){
                 context.hoot().view.utilities.errorlog.reportUIError(d.error);
@@ -287,11 +279,11 @@ Hoot.model.layers = function (context)
             }
 
             // First check to see if any review bookmarks match this dataset
-            var matchingBookmarks = _.filter(d.reviewBookmarks,function(r){return r.mapId==dataset.id;});
+            var matchingBookmarks = _.filter(d.reviewBookmarks,function(r){return r.mapId===params.dataset.id;});
 
             if(matchingBookmarks.length > 0)
             {
-                 if (window.confirm("There are " + matchingBookmarks.length + " bookmarks attached to this layer that will be deleted as well.  Are you sure you want to continue?")) {
+                 if (window.confirm('There are ' + matchingBookmarks.length + ' bookmarks attached to this layer that will be deleted as well.  Are you sure you want to continue?')) {
                     //Delete bookmarks
                     _.each(matchingBookmarks,function(mb){
                         context.hoot().view.utilities.reviewbookmarks.deleteBookmark(mb);    
@@ -302,9 +294,9 @@ Hoot.model.layers = function (context)
 
             }
 
-            d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + dataset.name)
+            d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + params.dataset.name)
                 .header('Content-Type', 'text/plain')
-                .post("", function (error, data) {
+                .post('', function (error, data) {
 
                     var exportJobId = data.jobId;
 
@@ -319,16 +311,17 @@ Hoot.model.layers = function (context)
                                 var link={};
                                 link.folderId = 0;
                                 link.updateType='delete';
-                                link.mapid=hoot.model.layers.getmapIdByName(dataset.name)||0;
-                                hoot.model.layers.refresh(function(){
-                                    if(callback){callback(true);}
+                                link.mapid=context.hoot().model.layers.getmapIdByName(params.dataset.name)||0;
+                                context.hoot().model.layers.refresh(function(){
+                                    if(callback){callback(true,params);}
                                 });
                             }
                         });
                     }, iD.data.hootConfig.JobStatusQueryInterval);
                 });
-        },dataset);
+            }, params.dataset);
     };
+
 
     model_layers.changeVisibility = function (name) {
         var layer = model_layers
@@ -427,7 +420,7 @@ Hoot.model.layers = function (context)
    model_layers.isLayerLoading = function()
    {
         return isLayerLoading;
-   }
+   };
 
 
    model_layers.getMergedLayer = function () {
@@ -439,24 +432,24 @@ Hoot.model.layers = function (context)
 
     model_layers.updateLayerName = function(data,callback){
 
-    	Hoot.model.REST('Modify',data,function(resp){
-    		//if(resp.success == true){
-    			if(callback){callback(resp.success);}
-    		//}
-    		//return resp.success;
-    	});
-    	//return true;
+        Hoot.model.REST('Modify',data,function(resp){
+            //if(resp.success === true){
+                if(callback){callback(resp.success);}
+            //}
+            //return resp.success;
+        });
+        //return true;
     };
 
     model_layers.getSelectedLayers = function() {
-    	return selectedLayers;
+        return selectedLayers;
     };
 
     model_layers.setSelectedLayers = function(d) {
-    	selectedLayers = d;
-    	return selectedLayers;
+        selectedLayers = d;
+        return selectedLayers;
     };
 
 
     return model_layers;
-}
+};

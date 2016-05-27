@@ -1,4 +1,4 @@
-iD.ui.MapMetadata = function(data, context) {
+iD.ui.MapMetadata = function(data) {
     var mapMetadata = {},
         button,
         body,
@@ -104,9 +104,9 @@ iD.ui.MapMetadata = function(data, context) {
         if (d.tags && d.tags.params) {
             var params = JSON.parse(d.tags.params.replace(/\\"/g, '"'));
             var pdata = {
-                "Reference Layer": d.tags.input1Name,
-                "Secondary Layer": d.tags.input2Name,
-                "Conflation Type": params.CONFLATION_TYPE
+                'Reference Layer': d.tags.input1Name,
+                'Secondary Layer': d.tags.input2Name,
+                'Conflation Type': params.CONFLATION_TYPE
             };
             addExpandList(d3.entries(pdata), 'Parameters');
 
@@ -157,23 +157,26 @@ iD.ui.MapMetadata = function(data, context) {
             var layerfeatures = {count: {
                 1: 'pois',
                 2: 'roads',
-                3: 'buildings'
+                3: 'buildings',
+                4: 'waterways'
             }};
             layerfeatures[d.tags.input1Name] = {
                 pois: stats['POI Count'][0],
                 roads: stats['Highway Count'][0],
-                buildings: stats['Building Count'][0]//,
-                //waterways: stats['Waterway Count'][0]
+                buildings: stats['Building Count'][0],
+                waterways: stats['Waterway Count'][0]
             };
             layerfeatures[d.tags.input2Name] = {
                 pois: stats['POI Count'][1],
                 roads: stats['Highway Count'][1],
-                buildings: stats['Building Count'][1]
+                buildings: stats['Building Count'][1],
+                waterways: stats['Waterway Count'][1]
             };
             layerfeatures[d.name] = {
                 pois: stats['POI Count'][2],
                 roads: stats['Highway Count'][2],
-                buildings: stats['Building Count'][2]
+                buildings: stats['Building Count'][2],
+                waterways: stats['Waterway Count'][2]
             };
             var featurecounts = {
                 count: {
@@ -195,11 +198,11 @@ iD.ui.MapMetadata = function(data, context) {
                     unmatched: stats['Unmatched Buildings'][2],
                     merged: stats['Conflated Buildings'][2],
                     review: stats['Buildings Marked for Review'][2]
-                // },
-                // waterways: {
-                //     unmatched: ,
-                //     merged: ,
-                //     review:
+                },
+                waterways: {
+                    unmatched: stats['Unmatched Waterways'][2],
+                    merged: stats['Conflated Waterways'][2],
+                    review: stats['Waterways Marked for Review'][2]
                 }
             };
             var featurepercents = {
@@ -222,11 +225,11 @@ iD.ui.MapMetadata = function(data, context) {
                     unmatched: formatPercent(stats['Percentage of Unmatched Buildings'][2]),
                     merged: formatPercent(stats['Percentage of Buildings Conflated'][2]),
                     review: formatPercent(stats['Percentage of Buildings Marked for Review'][2])
-                // },
-                // waterways: {
-                //     unmatched: ,
-                //     merged: ,
-                //     review:
+                },
+                waterways: {
+                    unmatched: formatPercent(stats['Percentage of Unmatched Waterways'][2]),
+                    merged: formatPercent(stats['Percentage of Waterways Conflated'][2]),
+                    review: formatPercent(stats['Percentage of Waterways Marked for Review'][2])
                 }
             };
 
@@ -255,8 +258,7 @@ iD.ui.MapMetadata = function(data, context) {
         showing = true;
     }
 
-    function hide(selection) {
-
+    function hide() {
         body.transition()
             .duration(200)
             .style('max-height', '0px')
@@ -273,7 +275,7 @@ iD.ui.MapMetadata = function(data, context) {
         button = selection.selectAll('.map-metadata-button')
             .data([data]);
 
-        var enter = button.enter().append('button')
+        button.enter().append('button')
             .attr('tabindex', -1)
             .attr('class', 'map-metadata-button map-button keyline-left inline _icon info')
             .style('float', 'right')

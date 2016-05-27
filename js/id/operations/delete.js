@@ -48,21 +48,21 @@ iD.operations.Delete = function(selectedIDs, context) {
                 var sel = context.hasEntity(selId);
                 var mapId = sel.mapId;
                 var layerName = sel.layerName;
-               
-                if(sel.hootMeta && sel.hootMeta['isReviewDel'] === true ){
+
+                if(sel.hootMeta && sel.hootMeta.isReviewDel === true ){
                     context.perform(
                         action,
-                        annotation); 
+                        annotation);
                 } else {
-                    context.hoot().model.conflicts.loadMissingFeatureDependencies(mapId, 
-                        layerName, selectedIDs, function(error){
+                    context.hoot().model.conflicts.loadMissingFeatureDependencies(mapId,
+                        layerName, selectedIDs, function(){
                         context.perform(
                             action,
-                            annotation);        
-                    }); 
+                            annotation);
+                    });
                 }
-                    
-            } 
+
+            }
         } else {
             context.perform(
                     action,
