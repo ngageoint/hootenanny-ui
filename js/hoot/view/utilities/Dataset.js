@@ -84,6 +84,7 @@ Hoot.view.utilities.dataset = function(context)
         fieldDiv.append('a')
             .attr('href', '#')
             .text('')
+            .attr('id','btnDatasetRefresh')
             .classed('dark fl button loud pad2x big _icon refresh', true)
             .style('margin-right','5px')
             .on('click', function () {
