@@ -443,6 +443,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                         var tla3 = tla2.append('span')
                             .classed('text-left big col12 strong', true)
                             .append('a')
+                            .classed('bookmarkLink',true)
                             .text(_renderLinkText)
                             .on('click', _linkClickHandler);
 

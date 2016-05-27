@@ -160,6 +160,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
             mainBarDiv.append('div')
               .classed('fr', true)
               .call(iD.svg.Icon('#icon-search'))
+              .classed('loadReview',true)
               .on('click', function () {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
