@@ -232,6 +232,7 @@ iD.operations.Review = function(selectedIDs, context) {
                                     }
                                 });
                             });
+
                             currentAlpha += 1;
                             if(currentAlpha > 122){currentAlpha = 97; doubleLetter = true;}
                         }
