@@ -212,6 +212,13 @@ iD.operations.Review = function(selectedIDs, context) {
                             var _parent = function() {return context.hoot().control.conflicts;};
 
                             g.on('click',function(){
+                                var hasChange = context.history().hasChanges();
+                                if(hasChange === true) {
+                                    iD.ui.Alert('Please resolve or undo the current feature ' +
+                                        'changes before proceeding to the next review.', 'warning',new Error().stack);
+                                    return;
+                                }
+
                                 Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {
                                     if(resp.error){
                                         context.hoot().view.utilities.errorlog.reportUIError(resp.error);
@@ -232,6 +239,7 @@ iD.operations.Review = function(selectedIDs, context) {
                                     }
                                 });
                             });
+
                             currentAlpha += 1;
                             if(currentAlpha > 122){currentAlpha = 97; doubleLetter = true;}
                         }
