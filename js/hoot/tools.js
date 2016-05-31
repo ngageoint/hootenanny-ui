@@ -153,6 +153,14 @@ Hoot.tools = function (context) {
         data.INPUT1 = view.getLayer(0).id;
         data.INPUT2 = view.getLayer(1).id;
 
+        if (view.getLayer(0).id == -1)
+        {
+          data.INPUT1_TYPE = "OSM_API_DB";
+        }
+        else if (view.getLayer(1).id == -1)
+        {
+          data.INPUT2_TYPE = "OSM_API_DB";
+        }
 
         var refLayer = '1';
         var oRefLayerId = hoot.model.layers.getmapIdByName(a.select('.referenceLayer').value());
