@@ -323,7 +323,8 @@ Hoot.control.utilities.folder = function(context) {
           if(container.attr('id')==='datasettable'){
               container.selectAll('rect').on('contextmenu',function(d){
                   var items = [];
-                  if(!d.type||(d.type==='dataset' && !d.selected)){
+                  //none of the dataset operations apply to the MapEdit data
+                  if(!d.type||(d.type==='dataset' && !d.selected) || d.name == 'MapEdit'){
                       d3.select('.context-menu').style('display', 'none');
                       d3.event.preventDefault();
                       return;
