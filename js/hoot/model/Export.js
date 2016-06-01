@@ -4,6 +4,7 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      03 Feb. 2016
+//      31 May  2016 MapEdit export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.model.export = function (context)
 {
@@ -31,7 +32,8 @@ Hoot.model.export = function (context)
             'File Geodatabase': 'gdb',
             'Shapefile': 'shp',
             'Web Feature Service (WFS)':'wfs',
-            'Open Street Map (OSM)':'osm'
+            'Open Street Map (OSM)':'osm',
+            'MapEdit':'osm_api_db'
         };
         selectedOutType = _expType[selExportTypeDesc] || selExportTypeDesc;
 

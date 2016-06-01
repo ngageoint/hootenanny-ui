@@ -6,6 +6,7 @@
 // Modifications:
 //      17 Feb. 2016
 //      15 Apr. 2016 eslint updates -- Sisskind
+//      31 May  2016 MapEdit export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Hoot.control.utilities.exportdataset = function(context) {
@@ -41,13 +42,22 @@ Hoot.control.utilities.exportdataset = function(context) {
               _transCombo.push(tr);
           }
         });
-
+        
+        var exportFormatList = 
+          [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
+           {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}];
+        if (_dataset.canExportToMapEdit === true)
+        {
+        	exportFormatList.push({'DESCRIPTION': 'MapEdit'});
+        }
+       
         if(_transCombo.length === 1){
           var emptyObj = {};
           emptyObj.NAME='';
           emptyObj.DESCRIPTION='';
           _transCombo.push(emptyObj);
         }
+        
         var d_form = [{
             label: 'Translation',
             id: 'fileExportTranslation',
@@ -57,8 +67,7 @@ Hoot.control.utilities.exportdataset = function(context) {
         }, {
             label: 'Export Format',
             id: 'fileExportFileType',
-            combobox: {'data': [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
-                        {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}], 'command': _populateTranslations},
+            combobox: {'data': exportFormatList, 'command': _populateTranslations},
             placeholder: 'File Geodatabase',
             inputtype:'combobox'
         }, {
