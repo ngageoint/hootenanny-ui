@@ -20,37 +20,41 @@ Hoot.control.export = function (context, sidebar) {
     exp.activate = function (layer, translations) {
         var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema';
        
-        
-        var transCombo = [];
-        // filters for exportable translations
-        _.each(translations, function(tr){
-            if(tr.CANEXPORT && tr.CANEXPORT === true){
-                transCombo.push(tr);
-            }
-        });
-
-
-        if(transCombo.length === 1){
-            var emptyObj = {};
-            emptyObj.NAME='';
-            emptyObj.DESCRIPTION='';
-            transCombo.push(emptyObj);
-        }
-        
-        var exportFormatList = 
-          [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
-           {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}];
         //The layer here does not have the "canExportToMapEdit" property at this point like it 
         //does in ExportDataset, so we need to get the map tags for the layer to determine whether 
         //it can be exported out to MapEdit.
         Hoot.model.REST('getMapTags', {mapId: layer.name}, function (tags) {
             //console.log(tags);
+        	layer.canExportToMapEdit = false;
         	//This timestamp tag is what the server uses to determine if a layer can be exported to
         	//MapEdit.
         	if (tags.osm_api_db_export_time)
+            {
+        		layer.canExportToMapEdit = true;
+        	}
+        	
+            var transCombo = [];
+        	// filters for exportable translations
+            _.each(translations, function(tr){
+                if(tr.CANEXPORT && tr.CANEXPORT === true){
+                    transCombo.push(tr);
+                }
+            });
+            if(transCombo.length === 1){
+                var emptyObj = {};
+                emptyObj.NAME='';
+                emptyObj.DESCRIPTION='';
+                transCombo.push(emptyObj);
+            }
+        
+            var exportFormatList = 
+              [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
+               {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}];
+        	if (layer.canExportToMapEdit === true)
         	{
         		exportFormatList.push({'DESCRIPTION': 'MapEdit'});
         	}
+        	
         	var d_save = [{
                 label: 'Translation',
                 type: 'fileExportTranslation',
@@ -231,4 +235,3 @@ Hoot.control.export = function (context, sidebar) {
     };
     return d3.rebind(exp, event, 'on');
 };
-s

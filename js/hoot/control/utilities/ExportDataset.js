@@ -35,13 +35,21 @@ Hoot.control.utilities.exportdataset = function(context) {
     var _createDialog = function(dataset, translations) {
         _dataset = dataset;
         var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema'
+        
         _transCombo = [];
-        // filters for exportable translations
+        
+    	// filters for exportable translations
         _.each(translations, function(tr){
           if(tr.CANEXPORT && tr.CANEXPORT === true){
               _transCombo.push(tr);
           }
         });
+        if(_transCombo.length === 1){
+        	var emptyObj = {};
+            emptyObj.NAME='';
+            emptyObj.DESCRIPTION='';
+            _transCombo.push(emptyObj);
+          }
         
         var exportFormatList = 
           [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
@@ -49,13 +57,6 @@ Hoot.control.utilities.exportdataset = function(context) {
         if (_dataset.canExportToMapEdit === true)
         {
         	exportFormatList.push({'DESCRIPTION': 'MapEdit'});
-        }
-       
-        if(_transCombo.length === 1){
-          var emptyObj = {};
-          emptyObj.NAME='';
-          emptyObj.DESCRIPTION='';
-          _transCombo.push(emptyObj);
         }
         
         var d_form = [{

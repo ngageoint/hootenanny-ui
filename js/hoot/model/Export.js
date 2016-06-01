@@ -20,7 +20,8 @@ Hoot.model.export = function (context)
     //var mapId;
 
     model_export.exportData = function (container, data, callback) {
-        _initVariables();
+        console.log(data);
+    	_initVariables();
         exportCallback = callback;
         outputname = container.select('#fileExportOutputName').value() ||
                 container.select('#fileExportOutputName').attr('placeholder');
@@ -84,6 +85,11 @@ Hoot.model.export = function (context)
 
         var param = {};
         param.translation = selectedTranslation;
+        //MapEdit override - Datasets are written to MapEdit as OSM, so translation is ignored here.
+        if (selectedOutType == 'osm_api_db')
+        {
+        	param.translation = '';
+        }
         param.inputtype = 'db';
         param.input = selectedInput;
         param.outputtype = selectedOutType;
