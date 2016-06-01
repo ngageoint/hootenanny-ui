@@ -92,10 +92,64 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
 
         }
 
-        _parent().info.reviewtable.buildPoiTable(poiTableCols);
-
         var currentReviewable = _parent().actions.traversereview.getCurrentReviewable();
         var relId = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
+        var relation = context.entity(relId);
+
+        _parent().info.reviewtable.buildPoiTable(poiTableCols, currentReviewable);
+
+        if (relation && relation.members && relation.members.length > 2) {
+            var that = this;
+            // extract the index of the relation members in the poiTable
+            var array_regex = /.(\d+)_.*/;
+            var item1 = parseInt(array_regex.exec(ritem.id)[1])-1;
+            var item2 = parseInt(array_regex.exec(raitem.id)[1])-1;
+            // retrieve array index of previous member
+            var calculatePrevious = function(actionIdx, staticIdx) {
+                var prev = actionIdx-1;
+                if (prev < 0) {
+                    prev = relation.members.length-1;
+                }
+                if (prev == staticIdx) {
+                    prev = prev-1;
+                    if (prev < 0) {
+                        prev = relation.members.length-1;
+                    }
+                }
+                return prev;
+            };
+            // retrieve array index of next member
+            var calculateNext = function(actionIdx, staticIdx) {
+                var next = actionIdx+1;
+                if (next > relation.members.length-1) {
+                    next = 0;
+                }
+                if (next == staticIdx) {
+                    next = next+1;
+                    if (next > relation.members.length-1) {
+                        next = 0;
+                    }
+                }
+                return next;
+            };
+
+            d3.select('td.f1 div.prev').on('click', function(){
+                that.highlightLayer(relation.members[calculatePrevious(item1,item2)], raitem);
+            });
+
+            d3.select('td.f1 div.next').on('click', function(){
+                that.highlightLayer(relation.members[calculateNext(item1,item2)], raitem);
+            });
+
+            d3.select('td.f2 div.prev').on('click', function(){
+                that.highlightLayer(ritem, relation.members[calculatePrevious(item2,item1)]);
+            });
+
+            d3.select('td.f2 div.next').on('click', function(){
+                that.highlightLayer(ritem, relation.members[calculateNext(item2,item1)]);
+            });
+        }
+
         _parent().reviewIds.push(relId);
         _parent().info.metadata.updateMeta(null);
         if(panToId && panTo) {
