@@ -168,6 +168,16 @@ Hoot.tools = function (context) {
             refLayer = '2';
         }
 
+        //This is also caught server side, but let's go ahead and catch it here too.  Would be
+        //better to simply not allow the "MapEdit" layer as an option for the secondary layer...but
+        //seems much harder to implement.
+        if ((data.INPUT1_TYPE === 'OSM_API_DB' && refLayer === '2') ||
+        	(data.INPUT2_TYPE === 'OSM_API_DB' && refLayer === '1'))
+        {
+        	iD.ui.Alert('MapEdit not allowed as secondary layer input.','error',new Error().stack);
+        	context.hoot().reset();
+        	return;
+        }
 
         var _confType = {
             'Reference':'Reference',
