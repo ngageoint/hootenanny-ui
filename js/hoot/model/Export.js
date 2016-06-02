@@ -1,238 +1,191 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Hoot.control.export is export control which provides export when all resolution has been resolved.
-//  This control seats in sidebar.
+// Hoot.model.export connects UI to Hoot REST end point for export request.
 //
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      03 Feb. 2016
-//      14 Apr. 2016 eslint changes -- Sisskind
 //      31 May  2016 MapEdit export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.control.export = function (context, sidebar) {
-    //var exportResources = ['LTDS 4.0', 'MGCP'];
-    var event = d3.dispatch('saveLayer', 'cancelSaveLayer');
-    var exp = {};
-    var save;
-    var transCombo;
-    exp.deactivate = function () {
-        save.remove();
-    };
+Hoot.model.export = function (context)
+{
 
-    exp.activate = function (layer, translations) {
-        var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema';
-       
-        //The layer here does not have the "canExportToMapEdit" property at this point like it 
-        //does in ExportDataset, so we need to get the map tags for the layer to determine whether 
-        //it can be exported out to MapEdit.
-        Hoot.model.REST('getMapTags', {mapId: layer.name}, function (tags) {
-            //console.log(tags);
-        	layer.canExportToMapEdit = false;
-        	//This timestamp tag is what the server uses to determine if a layer can be exported to
-        	//MapEdit.
-        	if (tags.osm_api_db_export_time)
-            {
-        		layer.canExportToMapEdit = true;
-        	}
-        	
-            transCombo = [];
-        	// filters for exportable translations
-            _.each(translations, function(tr){
-                if(tr.CANEXPORT && tr.CANEXPORT === true){
-                    transCombo.push(tr);
-                }
-            });
-            if(transCombo.length === 1){
-                var emptyObj = {};
-                emptyObj.NAME='';
-                emptyObj.DESCRIPTION='';
-                transCombo.push(emptyObj);
-            }
-        
-            var exportFormatList = 
-              [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
-               {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}];
-        	if (layer.canExportToMapEdit === true)
-        	{
-        		exportFormatList.push({'DESCRIPTION': 'MapEdit'});
-        	}
-        	
-        	var d_save = [{
-                label: 'Translation',
-                type: 'fileExportTranslation',
-                id: 'fileExportTranslation',
-                combobox: {'data':transCombo },//exportResources,
-                placeholder: placeHolder,//'LTDS 4.0'
-                inputtype:'text'
-            }, {
-                label: 'Export Format',
-                type: 'fileExportFileType',
-                id: 'fileExportFileType',
-                combobox: {'data': exportFormatList},
-                placeholder: 'File Geodatabase',
-                inputtype:'text'
-            }, {
-                label: 'Append to ESRI FGDB Template?',
-                type: 'appendFGDBTemplate',
-                inputtype:'checkbox',
-                checkbox:'cboxAppendFGDBTemplate'
-            }, {
-                label: 'Output Name',
-                type: 'fileExportOutputName',
-                id: 'fileExportOutputName',
-                placeholder: layer.name || 'Output Name',
-                inputtype:'text'
-            }];
-            save = sidebar
-                .append('form')
-                .classed('round space-bottom1', true);
-            save
-                .append('a')
-                .classed('button dark animate strong block _icon big plus pad2x pad1y js-toggle active', true)
-                .attr('href', '#')
-                .text('Save')
-                .on('click', function () {
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
-                    toggleForm(this);
-                });
-            save
-                .append('fieldset')
-                .classed('pad1 keyline-left keyline-right keyline-bottom round-bottom', true)
-                .selectAll('.form-field')
-                .data(d_save)
-                .enter()
-                .append('div')
-                .classed('form-field fill-white small keyline-all round space-bottom1', true)
-                .each(function(d){
-                    if(d.checkbox){d3.select(this).classed('keyline-all',false);}
-                })
-                .html(function (d) {
-                    if(d.checkbox){
-                        var retval = '<label class="pad1x pad0y round-top ' + d.checkbox + '" style="opacity: 1;">';
-                        retval += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">'+d.label+'</label>';
-                        return retval;
-                    } else {
-                        return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + d.label; // + '</label><input type="text" class="reset ' + field.type + '" />';
-                    }
-                })
-                .append('input')
-                .attr('type',function(field){if (field.inputtype==='text') return field.inputtype;})
-                .value(function (field) {
-                    if (field.inputtype==='text'){
-                        if(field.transcombo){
-                            var defTrans = _.find(field.transcombo, {DESCRIPTION: field.placeholder});
-                            if(defTrans === undefined){return field.transcombo[0].DESCRIPTION;}
-                                else{return defTrans.DESCRIPTION;}
-                        }
-                        else{return field.placeholder;}
-                    } //return field.placeholder;
-                })
-                .attr('class', function (field) {
-                    return 'reset ' + field.type;
-                })
-                .select(function (a) {
-                    if (a.checkbox){
-                        d3.selectAll('input.reset.appendFGDBTemplate').remove();
-                        d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
-                    }
-                    if (a.combobox) {
-                        var combo = d3.combobox()
-                        .data(_.map(a.combobox.data, function (n) {
-                            return {
-                                value: n.DESCRIPTION,
-                                title: n.DESCRIPTION
-                            };
-                        }));
-                        d3.select(this)
-                        .style('width', '100%')
-                        .call(combo);
-                        
-                        d3.select(this)
-                        .on('change',function(){
-                            checkForTemplate();
-                        });
-                    }
+    var model_export = {};
+    var statusTimer;
+    var outputname;
+    var selectedInput;
+    var selExportTypeDesc;
+    //var removeConflationRes;
+    var selectedOutType;
+    var exportCallback;
+    //var mapId;
 
-                    if(a.label==='Output Name'){
-                        d3.select(this).on('change',function(){
-                            //ensure output name is valid
-                            var resp = context.hoot().checkForUnallowedChar(this.value);
-                            if(resp !== true){
-                                d3.select(this).classed('invalidName',true).attr('title',resp);
-                            } else {
-                                d3.select(this).classed('invalidName',false).attr('title',null);
-                            }
-                        });
-                    }
+    model_export.exportData = function (container, data, callback) {
+    	_initVariables();
+        exportCallback = callback;
+        outputname = container.select('#fileExportOutputName').value() ||
+                container.select('#fileExportOutputName').attr('placeholder');
+        selectedInput = data.name || outputname;
 
-                    if(a.id) {
-                        d3.select(this).attr('id', a.id);
-                    }
-        });     
-            
-        var actions = save
-            .select('fieldset')
-            .append('div')
-            .classed('form-field pill col12', true);
-        actions
-            .append('input')
-            .attr('type', 'submit')
-            .attr('value', 'Exit')
-            .classed('fill-darken0 button round pad0y pad2x small strong', true)
-            .attr('border-radius', '4px')
-            .on('click', function () {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-                event.cancelSaveLayer();
-            });
-        actions
-            .append('input')
-            .attr('type', 'submit')
-            .attr('value', 'Export')
-            .classed('fill-dark button round pad0y pad2x dark small strong margin0', true)
-            .attr('border-radius', '4px')
-            .on('click', function () {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-                event.saveLayer(save, layer);
-            });
-         });
-        
-        function checkForTemplate(){
-            var hidden=false;
+        selExportTypeDesc = container.select('#fileExportFileType')
+            .value() || container.select('#fileExportFileType').attr('placeholder');
+        var _expType = {
+            'File Geodatabase': 'gdb',
+            'Shapefile': 'shp',
+            'Web Feature Service (WFS)':'wfs',
+            'Open Street Map (OSM)':'osm',
+            'MapEdit':'osm_api_db'
+        };
+        selectedOutType = _expType[selExportTypeDesc] || selExportTypeDesc;
 
-            var exportType = d3.select('.fileExportFileType').value();
-            var transType = d3.select('.fileExportTranslation').value();
+        var transType = container.select('#fileExportTranslation').value();
 
-            // Check if output type is File Geodatabase
-            if (exportType===''){exportType=d3.select('.fileExportFileType').attr('placeholder');}
-            if (transType===''){transType=d3.select('.fileExportTranslation').attr('placeholder');}
-
-            if(exportType!=='File Geodatabase'){
-                hidden=true;
+        var comboData = container.select('#fileExportTranslation').datum();
+        var transName = null;
+        var oTrans = null;
+        for(var i=0; i<comboData.combobox.data.length; i++){
+            var o = comboData.combobox.data[i];
+            if(o.DESCRIPTION === transType){
+                transName = o.NAME;
+                oTrans = o;
+                break;
             }
 
-            var selTrans = _.find(transCombo,{'DESCRIPTION':transType});
-            if(selTrans){
-                if(selTrans.NAME.substring(0,3)!=='TDS'){
-                    hidden=true;
-                }
-            } else {
-                hidden=true;
-            }
+        }
 
-            d3.select('.cboxAppendFGDBTemplate').classed('hidden',hidden);
-            if(hidden){
-                d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
+        var selectedTranslation = 'translations/' + iD.data.hootConfig.defaultScript;
+
+     // Checks to see if it is default translation and if so use the path specified
+
+        var isDefTrans = false;
+        if(oTrans && oTrans.DEFAULT === true) {
+            if(oTrans.PATH && oTrans.PATH.length > 0){
+                selectedTranslation = oTrans.PATH;
+                isDefTrans = true;
             }
         }
 
-        function toggleForm(context) {
-            var text = !(d3.select(context).classed('active'));
-            d3.select(context)
-                .classed('active', text);
+        if(isDefTrans === false && transName != null && transName !== '' ){
+            selectedTranslation = 'customscript/' + transName + '.js';
         }
-        return save;
+
+        if (!selectedInput || !selectedOutType) {
+            iD.ui.Alert('Please enter valid values.','error',new Error().stack);
+            return;
+        }
+
+        // Check to see if we are appending to FGDB Template
+        var appendTemplate= '';
+        try{
+            appendTemplate=container.select('.cboxAppendFGDBTemplate').select('input').property('checked');
+        } catch (e) {
+            appendTemplate=true;
+        }
+        //mapId = data.name;
+
+        var param = {};
+        param.translation = selectedTranslation;
+        //MapEdit override - Datasets are written to MapEdit as OSM, so translation is ignored here.
+        if (selectedOutType == 'osm_api_db')
+        {
+        	param.translation = 'NONE';
+        }
+        param.inputtype = 'db';
+        param.input = selectedInput;
+        param.outputtype = selectedOutType;
+        param.outputname = outputname;
+        param.USER_EMAIL = iD.data.hootConfig.userEmail;
+        param.append = appendTemplate.toString();
+        d3.json('/hoot-services/job/export/execute')
+            .header('Content-Type', 'text/plain')
+            .post(JSON.stringify(param), function (error, data) {
+                if(error){
+                if(callback){callback(false);}
+                iD.ui.Alert('Data Download Fail','warning',new Error().stack);
+                return;}
+
+
+                var exportJobId = data.jobid;
+                var statusUrl = '/hoot-services/job/status/' + exportJobId;
+                statusTimer = setInterval(function () {
+                    d3.json(statusUrl, _exportResultHandler);
+                }, iD.data.hootConfig.JobStatusQueryInterval);
+            });
     };
-    return d3.rebind(exp, event, 'on');
+
+    var _exportResultHandler = function(error, result)
+    {
+
+        if (result.status !== 'running') {
+            Hoot.model.REST.WarningHandler(result);
+            clearInterval(statusTimer);
+            var outNameParam = '';
+            if (outputname !== null) {
+                outNameParam = 'outputname=' + outputname;
+            }
+            if (exportCallback) {
+                exportCallback(result.status);
+            }
+
+            if(result.status !== 'failed'){
+                //Huh?
+                // if(removeConflationRes === 'true'){
+                //     d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + mapId)
+                //     .header('Content-Type', 'text/plain')
+                //     .post('', function (error, data) {
+
+                //     });
+                // }
+
+                if(selectedOutType === 'wfs'){
+                    // var capaUrl = location.origin + '/hoot-services/ogc/' + result.jobId +
+                    //     '?service=WFS&version=1.1.0&request=GetCapabilities';
+                    //alert('WFS Resource URL:\n' + capaUrl);
+                    var param = {};
+                    param.id = result.jobId;
+                    context.hoot().control.utilities.wfsdataset.wfsDetailPopup(param);
+                } 
+                /*else if (selectedOutType === 'osm_api_db')
+                {
+                	console.log(result);
+                	var param = {};
+                    param.id = result.jobId;
+                    context.hoot().control.utilities.mapeditexportsummary.mapEditExportPopup(param);
+                }*/
+                //MapEdit export writes directly to an osm api database and involves no file export.
+                else if (selectedOutType != 'osm_api_db') {
+                    var sUrl = '/hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true';
+                    var link = document.createElement('a');
+                    link.href = sUrl;
+                    if (link.download !== undefined) {
+                        //Set HTML5 download attribute. This will prevent file from opening if supported.
+                        var fileName = sUrl.substring(sUrl.lastIndexOf('/') + 1, sUrl.length);
+                        link.download = fileName;
+                    }
+                    //Dispatching click event.
+                    if (document.createEvent) {
+                        var e = document.createEvent('MouseEvents');
+                        e.initEvent('click', true, true);
+                        link.dispatchEvent(e);
+                        return true;
+                    }
+                }
+            }
+
+
+        }
+    };
+
+    var _initVariables = function()
+    {
+        statusTimer = null;
+        outputname = null;
+        selectedInput = null;
+        selExportTypeDesc = null;
+        //removeConflationRes = null;
+        selectedOutType = null;
+        exportCallback = null;
+        //mapId = null;
+    };
+
+    return model_export;
 };
