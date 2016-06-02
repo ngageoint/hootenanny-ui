@@ -144,15 +144,16 @@ Hoot.model.export = function (context)
                     param.id = result.jobId;
                     context.hoot().control.utilities.wfsdataset.wfsDetailPopup(param);
                 } 
-                /*else if (selectedOutType === 'osm_api_db')
+                else if (selectedOutType === 'osm_api_db')
                 {
-                	console.log(result);
-                	var param = {};
-                    param.id = result.jobId;
-                    context.hoot().control.utilities.mapeditexportsummary.mapEditExportPopup(param);
-                }*/
-                //MapEdit export writes directly to an osm api database and involves no file export.
-                else if (selectedOutType != 'osm_api_db') {
+                	//MapEdit export writes directly to an osm api database and involves no file 
+                	//download for export.
+                	var summaryStartIndex = result.statusDetail.indexOf('Changeset(s)');
+                	var summary = result.statusDetail.substring(summaryStartIndex);
+                	//console.log(summary);
+                	iD.ui.Alert('Sucessful Export to MapEdit\n\n' + summary,'notice');
+                }
+                else {
                     var sUrl = '/hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true';
                     var link = document.createElement('a');
                     link.href = sUrl;
