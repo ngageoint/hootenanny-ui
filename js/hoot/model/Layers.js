@@ -278,47 +278,50 @@ Hoot.model.layers = function (context)
                 return;
             }
 
+            var deleteDataset = true;
+
             // First check to see if any review bookmarks match this dataset
             var matchingBookmarks = _.filter(d.reviewBookmarks,function(r){return r.mapId===params.dataset.id;});
 
             if(matchingBookmarks.length > 0)
             {
-                 if (window.confirm('There are ' + matchingBookmarks.length + ' bookmarks attached to this layer that will be deleted as well.  Are you sure you want to continue?')) {
-                    //Delete bookmarks
-                    _.each(matchingBookmarks,function(mb){
-                        context.hoot().view.utilities.reviewbookmarks.deleteBookmark(mb);    
-                    });
-                } else {
-                    return false;
+                 if (!window.confirm('There are ' + matchingBookmarks.length + ' bookmarks attached to ' + params.dataset.name + ' that will be deleted as well.  Are you sure you want to continue?')) {
+                    deleteDataset = false;
                 }               
 
             }
 
-            d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + params.dataset.name)
-                .header('Content-Type', 'text/plain')
-                .post('', function (error, data) {
-
-                    var exportJobId = data.jobId;
-
-                    var statusUrl = '/hoot-services/job/status/' + exportJobId;
-                    var statusTimer = setInterval(function () {
-                        d3.json(statusUrl, function (error, result) {
-                            if (result.status !== 'running') {
-                                Hoot.model.REST.WarningHandler(result);
-                                clearInterval(statusTimer);
-
-                                //update link
-                                var link={};
-                                link.folderId = 0;
-                                link.updateType='delete';
-                                link.mapid=context.hoot().model.layers.getmapIdByName(params.dataset.name)||0;
-                                context.hoot().model.layers.refresh(function(){
-                                    if(callback){callback(true,params);}
-                                });
-                            }
-                        });
-                    }, iD.data.hootConfig.JobStatusQueryInterval);
-                });
+            if(deleteDataset){  
+                d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + params.dataset.name)
+                    .header('Content-Type', 'text/plain')
+                    .post('', function (error, data) {
+    
+                        var exportJobId = data.jobId;
+    
+                        var statusUrl = '/hoot-services/job/status/' + exportJobId;
+                        var statusTimer = setInterval(function () {
+                            d3.json(statusUrl, function (error, result) {
+                                if (result.status !== 'running') {
+                                    Hoot.model.REST.WarningHandler(result);
+                                    clearInterval(statusTimer);
+    
+                                    //update link
+                                    var link={};
+                                    link.folderId = 0;
+                                    link.updateType='delete';
+                                    link.mapid=context.hoot().model.layers.getmapIdByName(params.dataset.name)||0;
+                                    context.hoot().model.layers.refresh(function(){
+                                        if(callback){callback(true,params);}
+                                    });
+                                }
+                            });
+                        }, iD.data.hootConfig.JobStatusQueryInterval);
+                    });
+                } else {
+                    context.hoot().model.layers.refresh(function(){
+                        if(callback){callback(true,params);}
+                    });
+                }
             }, params.dataset);
     };
 
