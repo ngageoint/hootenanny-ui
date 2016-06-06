@@ -4,7 +4,7 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      03 Feb. 2016
-//      31 May  2016 MapEdit export type -- bwitham
+//      31 May  2016 OSM API Database export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.model.export = function (context)
 {
@@ -33,7 +33,7 @@ Hoot.model.export = function (context)
             'Shapefile': 'shp',
             'Web Feature Service (WFS)':'wfs',
             'Open Street Map (OSM)':'osm',
-            'MapEdit':'osm_api_db'
+            'OSM API Database':'osm_api_db'
         };
         selectedOutType = _expType[selExportTypeDesc] || selExportTypeDesc;
 
@@ -84,7 +84,8 @@ Hoot.model.export = function (context)
 
         var param = {};
         param.translation = selectedTranslation;
-        //MapEdit override - Datasets are written to MapEdit as OSM, so translation is ignored here.
+        //OSM API db override - Datasets are written to an OSM API database as OSM, so translation 
+        //is ignored here.
         if (selectedOutType == 'osm_api_db')
         {
         	param.translation = 'NONE';
@@ -146,12 +147,12 @@ Hoot.model.export = function (context)
                 } 
                 else if (selectedOutType === 'osm_api_db')
                 {
-                	//MapEdit export writes directly to an osm api database and involves no file 
+                	//OSM API db export writes directly to an osm api database and involves no file 
                 	//download for export.
                 	var summaryStartIndex = result.statusDetail.indexOf('Changeset(s)');
                 	var summary = result.statusDetail.substring(summaryStartIndex);
                 	//console.log(summary);
-                	iD.ui.Alert('Sucessful Export to MapEdit\n\n' + summary,'notice');
+                	iD.ui.Alert('Sucessful Export to an OSM API Database\n\n' + summary,'notice');
                 }
                 else {
                     var sUrl = '/hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true';

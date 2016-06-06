@@ -5,6 +5,7 @@
 // Modifications:
 //      03 Feb. 2016
 //      14 Apr. 2016 eslint changes -- Sisskind
+//      31 May  2016 OSM API Database export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.import = function (context,selection) {
     var event = d3.dispatch('addLayer', 'finished');
@@ -245,7 +246,7 @@ Hoot.control.import = function (context,selection) {
                         }
 
                     });
-                    //The MapEdit layer with id = -1 doesn't actually exist in hoot, so can't be 
+                    //The OSM API db layer with id = -1 doesn't actually exist in hoot, so can't be 
                     //viewed.
                     if (key.id != -1)
                     {

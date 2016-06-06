@@ -6,13 +6,14 @@
 // Modifications:
 //      03 Feb. 2016
 //      14 Apr. 2016 eslint changes -- Sisskind
-//      31 May  2016 MapEdit export type -- bwitham
+//      31 May  2016 OSM API Database export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.export = function (context, sidebar) {
     //var exportResources = ['LTDS 4.0', 'MGCP'];
     var event = d3.dispatch('saveLayer', 'cancelSaveLayer');
     var exp = {};
     var save;
+    var transCombo;
     exp.deactivate = function () {
         save.remove();
     };
@@ -20,20 +21,20 @@ Hoot.control.export = function (context, sidebar) {
     exp.activate = function (layer, translations) {
         var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema';
        
-        //The layer here does not have the "canExportToMapEdit" property at this point like it 
+        //The layer here does not have the "canExportToOsmApiDb" property at this point like it 
         //does in ExportDataset, so we need to get the map tags for the layer to determine whether 
-        //it can be exported out to MapEdit.
+        //it can be exported out to an OSM API database.
         Hoot.model.REST('getMapTags', {mapId: layer.name}, function (tags) {
             //console.log(tags);
-        	layer.canExportToMapEdit = false;
+        	layer.canExportToOsmApiDb = false;
         	//This timestamp tag is what the server uses to determine if a layer can be exported to
-        	//MapEdit.
+        	//an OSM API db.
         	if (tags.osm_api_db_export_time)
             {
-        		layer.canExportToMapEdit = true;
+        		layer.canExportToOsmApiDb = true;
         	}
         	
-            var transCombo = [];
+            transCombo = [];
         	// filters for exportable translations
             _.each(translations, function(tr){
                 if(tr.CANEXPORT && tr.CANEXPORT === true){
@@ -50,9 +51,9 @@ Hoot.control.export = function (context, sidebar) {
             var exportFormatList = 
               [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
                {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}];
-        	if (layer.canExportToMapEdit === true)
+        	if (layer.canExportToOsmApiDb === true)
         	{
-        		exportFormatList.push({'DESCRIPTION': 'MapEdit'});
+        		exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
         	}
         	
         	var d_save = [{

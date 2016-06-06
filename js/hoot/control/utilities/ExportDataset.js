@@ -6,7 +6,7 @@
 // Modifications:
 //      17 Feb. 2016
 //      15 Apr. 2016 eslint updates -- Sisskind
-//      31 May  2016 MapEdit export type -- bwitham
+//      31 May  2016 OSM API Database export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Hoot.control.utilities.exportdataset = function(context) {
@@ -54,9 +54,9 @@ Hoot.control.utilities.exportdataset = function(context) {
         var exportFormatList = 
           [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
            {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}];
-        if (_dataset.canExportToMapEdit === true)
+        if (_dataset.canExportToOsmApiDb === true)
         {
-        	exportFormatList.push({'DESCRIPTION': 'MapEdit'});
+        	exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
         }
         
         var d_form = [{
