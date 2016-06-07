@@ -42,7 +42,7 @@ Hoot.control.conflate = function (sidebar,context) {
     var _instance = {};
 
 
-    _instance.advancedoptions = Hoot.control.conflate.advancedoptions(_instance, sidebar);
+    _instance.advancedoptions = Hoot.control.conflate.advancedoptions(context,_instance);//, sidebar);
     _instance.symbology = Hoot.control.conflate.symbology(_instance, sidebar);
 
     _instance.lastAdvSettingsText = 'Last Advanced Settings';
