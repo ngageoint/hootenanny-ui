@@ -515,10 +515,6 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             return;
         }
 
-        if(selType === 'DIR'){
-            _retrieveFeatureClasses(selRowNum);
-        }
-
         d3.select('.reset.fileImport[row="' + selRowNum + '"]').value(fileNames.join('; '));
         var first = fileNames[0];
         var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
@@ -843,87 +839,6 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
 
         _submitExp = null;
     };
-
-    /**
-    * @desc Uploads filed GDB to get Ogr Info of the target from Service.
-    * @param selRowNum - Selected row number
-    **/
-    var _retrieveFeatureClasses = function(selRowNum) {
-        if(d3.select('.reset.bulkImportDatasetFGDBFeatureClasses[row="' + selRowNum + '"]').empty()) {
-            return;
-        }
-        var spin =
-            d3.select('.reset.bulkImportDatasetFGDBFeatureClasses[row="' + selRowNum + '"]')
-            .classed('_icon _loading col1 f1',true)
-            .style('height', '30px')
-            .style('margin-top', '-8px');
-
-        var filesList = document.getElementById('ingestfileuploader-' + selRowNum).files;
-        var formData = new FormData();
-        for(var i=0; i<filesList.length; i++) {
-            var f = filesList[i];
-            formData.append(i, f);
-        }
-
-        //reset the file input value so on change will fire
-        //if the same files/folder is selected twice in a row, #5624
-        this.value = null;
-
-        var data = {};
-        data.formData = formData;
-        data.type = 'DIR';
-
-        Hoot.model.REST('uploadFGDBForStats', data, function (resp, jobId) {
-            var jobData = {};
-            jobData.jobId = jobId;
-
-            Hoot.model.REST('getFGDBStat', jobData, function (json) {
-                if(spin) {
-                    spin.classed('_icon _loading col1 f1',false);
-                }
-
-                var list = [];
-                d3.values(json).forEach(function(v) {
-                    list = list.concat(Object.keys(v));
-                });
-
-                var field = {};
-                field.combobox = {data:list};
-
-                _populateFeatureClasses(field, selRowNum);
-            });
-        });
-
-    };
-
-
-    /**
-    * @desc Populate checkbox combobox with feature classes infor.
-    * @param a - Field meta data.
-    * @param selRowNum - Selected row number
-    **/
-    var _populateFeatureClasses = function (a, selRowNum) {
-
-        var comboPathName = Hoot.ui.checkcombobox()
-            .data(_.map(a.combobox.data, function (n) {
-                return {
-                    value: n,
-                    title: n
-                };
-            }));
-
-        var curRowNum = 0;
-        if(selRowNum){
-            curRowNum = selRowNum;
-        }
-
-        d3.select('.reset.bulkImportDatasetFGDBFeatureClasses[row="' + curRowNum + '"]')
-            .style('width', '100%')
-            .call(comboPathName);
-
-        d3.select('.reset.bulkImportDatasetFGDBFeatureClasses[row="' + curRowNum + '"]').attr('readonly',true);
-    };
-
 
     return d3.rebind(_instance, _events, 'on');
 };
