@@ -646,13 +646,12 @@ Hoot.control.conflate = function (sidebar,context) {
     **/
     var _getSaveAsOutputName = function(data) {
     	var newName;
-        if (data[0].name.indexOf('OSM_API_Database') > -1)
+        if (data[0].name.indexOf('OSM_API_DB') > -1)
         {
-          console.log('test1');
           //this change is mostly here b/c I couldn't get the "fill input" ruby step definition
           //to consistently work when pressing the second conflate button...if that can be resolved, 
           //this check could go away
-          newName = data[0].name + "_" + data[1].name;
+          newName = data[0].name.replace("OSM_API_DB_", "") + "_" + data[1].name;
         }
         else
         {
