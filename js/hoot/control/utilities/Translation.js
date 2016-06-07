@@ -34,16 +34,19 @@ Hoot.control.utilities.translation = function(context) {
         name.append('label')
             .html('<strong>Name:</strong> ');
         var nameVal = name.append('input')
-            .attr('type', 'text');
+            .attr('type', 'text')
+            .classed('translationName',true);
         var desc = ingestDiv.append('div');
         desc.append('label')
             .html('<strong>Description:</strong> ');
         var descVal = desc.append('input')
-            .attr('type', 'text');
+            .attr('type', 'text')
+            .classed('translationDescription',true);
         ingestDiv.append('span')
             .text('Paste New Translation in Box');
         var transTemplate = ingestDiv.append('textarea')
             .classed('row5', true)
+            .classed('translationText',true)
             .text(transTemplateText);
 
         var savetransNew = ingestDiv.append('div')
@@ -51,7 +54,7 @@ Hoot.control.utilities.translation = function(context) {
         savetransNew.append('input')
             .attr('type', 'submit')
             .attr('value', 'Save Edits')
-            .classed('round strong big pad1y loud dark center pad2x', true)
+            .classed('round strong big pad1y loud dark center pad2x translationSave', true)
             .on('click', function () {
                 var data = {};
                 data.NAME = nameVal.value();
@@ -132,7 +135,8 @@ Hoot.control.utilities.translation = function(context) {
             desc.append('label')
                 .html('<strong>Description:</strong> ');
             var descVal = desc.append('input')
-                .attr('type', 'text');
+                .attr('type', 'text')
+                .classed('translationDescription',true);
             descVal.value(e.DESCRIPTION);
 
 
@@ -145,6 +149,7 @@ Hoot.control.utilities.translation = function(context) {
                 .text('Click in Box to Edit Translation');
             var textArea = ingestDiv.append('textarea')
                 .classed('row7', true)
+                .classed('translationText',true)
                 .text(d);
             var savetransEdit = ingestDiv.append('div')
                 .classed('hidden form-field col12 center', true);
