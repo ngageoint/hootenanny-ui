@@ -848,7 +848,7 @@ rest.servicesVersionInfo = function(callback)
         return callback(resp);
     });
 };
-    
+
 rest.coreVersionInfo = function(callback)
 {
     d3.json('/hoot-services/info/about/coreVersionInfo', function(error, resp)
@@ -1040,29 +1040,6 @@ rest.downloadReport = function(data)
         });
     };
 
-    rest.uploadFGDBForStats = function(data, callback) {
-        var formData = data.formData;
-
-        d3.json('/hoot-services/ogr/info/upload?INPUT_TYPE=' + data.type)
-            .post(formData, function(error, json) {
-                if (error || json.status === 'failed') {
-                    return callback(_alertError(error, 'Failed to load FGDB feature classes.'));
-                }
-                rest.status(json.jobId, callback);
-            });
-    };
-
-
-
-
-    rest.getFGDBStat = function(data, callback) {
-        d3.json('/hoot-services/ogr/info/' + data.jobId, function(error, resp) {
-            if (error) {
-                return callback(_alertError(error, 'Failed to get FGDB feature classes stat! For detailed log goto Manage->Log'));
-            }
-            callback(resp);
-        });
-    };
 
         rest['' + command + ''](data, callback, option);
     };
