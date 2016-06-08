@@ -152,7 +152,8 @@ Hoot.model.export = function (context)
                 	var summaryStartIndex = result.statusDetail.indexOf('Changeset(s)');
                 	var summary = result.statusDetail.substring(summaryStartIndex);
                 	//console.log(summary);
-                	//having difficulty accessing the iD alert text in tests
+                	//having difficulty accessing the iD alerts in cucumber tests, so using a regular
+                	//alert instead
                 	//iD.ui.Alert('Successful export to an OSM API database:\n\n' + summary,'notice');
                     alert('Successful export to an OSM API database:\n\n' + summary);
                 }
@@ -176,8 +177,16 @@ Hoot.model.export = function (context)
             }
             else if (selectedOutType === 'osm_api_db')
             {
-            	//having difficulty accessing the iD alert text in tests
-            	alert(result.status);
+            	//if (result.statusDetail.indexOf("conflicts") > -1)
+            	
+            	//{
+            		// This is at odds with how exception message are handled in the rest of the app,
+            		// but I want to explicitly show the export failure as being an OSM API database
+            		// conflict here vs. having a user sift through an error log to find that error
+            		// message.
+            		//alert('The changeset will not be written because conflicts exist in the target OSM API database.');
+            	//}
+            	alert(result.statusDetail);
             }
 
         }
