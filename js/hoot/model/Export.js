@@ -152,7 +152,9 @@ Hoot.model.export = function (context)
                 	var summaryStartIndex = result.statusDetail.indexOf('Changeset(s)');
                 	var summary = result.statusDetail.substring(summaryStartIndex);
                 	//console.log(summary);
-                	iD.ui.Alert('Sucessful Export to an OSM API Database\n\n' + summary,'notice');
+                	//having difficulty accessing the iD alert text in tests
+                	//iD.ui.Alert('Successful export to an OSM API database:\n\n' + summary,'notice');
+                    alert('Successful export to an OSM API database:\n\n' + summary);
                 }
                 else {
                     var sUrl = '/hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true';
@@ -172,7 +174,11 @@ Hoot.model.export = function (context)
                     }
                 }
             }
-
+            else if (selectedOutType === 'osm_api_db')
+            {
+            	//having difficulty accessing the iD alert text in tests
+            	alert(result.status);
+            }
 
         }
     };

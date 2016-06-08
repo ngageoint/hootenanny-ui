@@ -175,7 +175,9 @@ Hoot.tools = function (context) {
         if ((data.INPUT1_TYPE === 'OSM_API_DB' && refLayer === '2') ||
         	(data.INPUT2_TYPE === 'OSM_API_DB' && refLayer === '1'))
         {
-        	iD.ui.Alert('OSM API database not allowed as secondary layer input.','error',new Error().stack);
+        	//having difficulty accessing the iD alert text in tests
+        	//iD.ui.Alert('OSM API database not allowed as secondary layer input.','error',new Error().stack);
+        	alert('OSM API database not allowed as secondary layer input.');
         	context.hoot().reset();
         	return;
         }
