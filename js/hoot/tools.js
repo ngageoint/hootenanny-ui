@@ -175,10 +175,10 @@ Hoot.tools = function (context) {
         if ((data.INPUT1_TYPE === 'OSM_API_DB' && refLayer === '2') ||
         	(data.INPUT2_TYPE === 'OSM_API_DB' && refLayer === '1'))
         {
+        	//This reset has to occur here or successively run tests will fail.
+        	context.hoot().reset();
         	//having difficulty accessing the iD alerts in cucumber tests, so using a regular
         	//alert instead
-        	//iD.ui.Alert('OSM API database not allowed as secondary layer input.','error',new Error().stack);
-        	context.hoot().reset();
         	alert('OSM API database not allowed as secondary layer input.');
         	return;
         }
