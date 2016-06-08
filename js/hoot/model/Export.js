@@ -178,6 +178,11 @@ Hoot.model.export = function (context)
             }
             else if (selectedOutType === 'osm_api_db')
             {
+        		// This is at odds with how exception message are handled in the rest of the app,
+        		// but I want to explicitly show the export failure as being an OSM API database
+        		// conflict here vs. having a user sift through an error log to find that error
+        		// message.
+            	//alert('The changeset will not be written because conflicts exist in the target OSM API database.');
             	context.hoot().reset();
             	alert(result.statusDetail);
             }
