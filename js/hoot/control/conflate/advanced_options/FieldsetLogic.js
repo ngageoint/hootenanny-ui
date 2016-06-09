@@ -140,51 +140,52 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
     **/
     _instance.fieldChangeEvent = function(field) {
         switch(field){
-            case "hoot_enable_building_options":
-            case "hoot_enable_poi_options":
-            case "hoot_enable_road_options":
-            case "hoot_enable_rubber_sheeting_options":
-            case "hoot_enable_cleaning_options":
+            case 'hoot_enable_building_options':
+            case 'hoot_enable_poi_options':
+            case 'hoot_enable_road_options':
+            case 'hoot_enable_rubber_sheeting_options':
+            case 'hoot_enable_cleaning_options':
                 var e = d3.select('#' + field).property('checked');
-                var group = field.replace("enable_","") + "_group";
-                d3.select("#" + group).selectAll('input').property('disabled',!e);
-                d3.select(field).property('disabled',false);
+                var group = field.replace('enable_','') + '_group';
+                d3.select('#' + group).selectAll('input').property('disabled',!e);
+                d3.select('#' + field).property('disabled',false);
                 break;
 
-            case "hoot_checkall_cleaning_options":
-                var checked=d3.select('#'+this.id).property('checked');
+            case 'hoot_checkall_cleaning_options':
+                var checked=d3.select('#'+field).property('checked');
                 d3.select('#hoot_cleaning_options_group').selectAll('#checkbox_container').selectAll('input:not([id*=enable])').property('checked',checked);
                 d3.select('#hoot_cleaning_options_group').selectAll('#checkplus_container').selectAll('input').property('checked',checked);
                 break;
-            case "duplicate_way_remover":
+            case 'duplicate_way_remover':
                 if(d3.select('#duplicate_way_remover').property('checked')){d3.selectAll('.duplicate_way_remover_child').style('display','inline-block');}
-                else{ d3.selectAll('.duplicate_way_remover_child').style('display','none');};
+                else{ d3.selectAll('.duplicate_way_remover_child').style('display','none');}
                 break;
-            case "small_way_merger":
+            case 'small_way_merger':
                 if(d3.select('#small_way_merger').property('checked')){d3.selectAll('.small_way_merger_child').style('display','inline-block');}
                 else{d3.selectAll('.small_way_merger_child').style('display','none');}
                 break;
-            case "hoot_road_opt_engine":
+            case 'hoot_road_opt_engine':
                 d3.selectAll('.hoot_road_opt_engine_group').style('display','none');
-                var selval='.' + d3.selectAll('#hoot_road_opt_engine').value() + '_engine_group';d3.selectAll(selval).style('display','inline-block');
-                d3.select('#conflate_enable_old_roads').value(d3.selectAll('#hoot_road_opt_engine').value()=='Greedy');
+                var selval='.' + d3.selectAll('#hoot_road_opt_engine').value() + '_engine_group';
+                d3.selectAll(selval).style('display','inline-block');
+                d3.select('#conflate_enable_old_roads').value(d3.selectAll('#hoot_road_opt_engine').value()==='Greedy');
                 break;
-            case "hoot_enable_waterway_options":
-                var e = d3.select('#hoot_enable_waterway_options').property('checked');
-                d3.select('#hoot_waterway_options_group').selectAll('input').property('disabled',!e);
+            case 'hoot_enable_waterway_options':
+                var q = d3.select('#hoot_enable_waterway_options').property('checked');
+                d3.select('#hoot_waterway_options_group').selectAll('input').property('disabled',!q);
                 d3.select('#hoot_enable_waterway_options').property('disabled',false);
-                if(e==true){
+                if(q===true && !d3.select('#waterway_auto_calc_search_radius').empty()){
                     var f=d3.select('#waterway_auto_calc_search_radius').property('checked');
                     d3.select('#search_radius_waterway').property('disabled',f);
                     d3.select('#waterway_rubber_sheet_minimum_ties').property('disabled',!f);
                     d3.select('#waterway_rubber_sheet_ref').property('disabled',!f);
                 }
                 break;
-            case "waterway_auto_calc_search_radius":
-                var e = d3.select('#waterway_auto_calc_search_radius').property('checked');
-                d3.select('#search_radius_waterway').property('disabled',e);
-                d3.select('#waterway_rubber_sheet_minimum_ties').property('disabled',!e);
-                d3.select('#waterway_rubber_sheet_ref').property('disabled',!e);
+            case 'waterway_auto_calc_search_radius':
+                var p = d3.select('#waterway_auto_calc_search_radius').property('checked');
+                d3.select('#search_radius_waterway').property('disabled',p);
+                d3.select('#waterway_rubber_sheet_minimum_ties').property('disabled',!p);
+                d3.select('#waterway_rubber_sheet_ref').property('disabled',!p);
                 break;
             default:
                 return false;
@@ -224,10 +225,11 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
         });
         
         var currentDiv = d3.select('#'+c.id);
+        currentDiv.on('change',function(){_instance.fieldChangeEvent(c.id);});
         if(c.onchange){
-            var fn = _instance.fieldChangeEvent(c);
-            currentDiv.on('change',fn);
-        } 
+            currentDiv.on('change',function(){_instance.fieldChangeEvent(c.id);});
+        }
+        
         
         if(c.type==='checkplus'){
             var parentDiv = d3.select(currentDiv.node().parentNode.parentNode);
@@ -322,8 +324,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
         }
 
         if(c.onchange){
-            var fn = new Function(c.onchange);
-            d3.select(this).on('change',fn);
+            d3.select(this).on('change',function(){_instance.fieldChangeEvent(c.id);});
         }  
 
         if(c.dependency){
