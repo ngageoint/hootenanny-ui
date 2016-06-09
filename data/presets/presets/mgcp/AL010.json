@@ -1,0 +1,12 @@
+{
+    "icon": "town-hall",
+    "geometry": [
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Facility",
+    "hoot:transtype":"MGCP",
+    "hoot:fcode": "AL010",
+    "name": "AL010 (Facility)"
+}

@@ -1,0 +1,13 @@
+{
+    "icon": "highway-footway",
+    "geometry": [
+        "point",
+        "line"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Ford",
+    "hoot:transtype":"MGCP",
+    "hoot:fcode": "BH070",
+    "name": "Ford (BH070)"
+}
