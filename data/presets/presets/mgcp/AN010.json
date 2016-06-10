@@ -1,0 +1,12 @@
+{
+   	"icon": "railway-rail",
+    "geometry": [
+        "line"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Railway",
+    "hoot:transtype":"MGCP",
+    "hoot:fcode": "AN010",
+    "name": "Railway (AN010)"
+}

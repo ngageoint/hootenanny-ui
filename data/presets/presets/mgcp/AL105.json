@@ -1,5 +1,5 @@
 {
-   "icon": "commercial",
+   	"icon": "commercial",
     "geometry": [
         "point",
         "area"
@@ -7,7 +7,7 @@
     "tags": {
     },
     "hoot:featuretype":"Settlement",
-    "hoot:transtype":"TDSv40",
-    "hoot:fcode": "AL015",
-    "name": "Settlement (AL015)"
+    "hoot:transtype":"MGCP",
+    "hoot:fcode": "AL105",
+    "name": "Settlement (AL105)"
 }

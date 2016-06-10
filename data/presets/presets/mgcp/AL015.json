@@ -1,0 +1,13 @@
+{
+    "icon": "building",
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Building",
+    "hoot:transtype":"MGCP",
+    "hoot:fcode": "AL015",
+    "name": "Building (AL015)"
+}

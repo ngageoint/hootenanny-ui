@@ -177,7 +177,7 @@ iD.ui.PresetList = function(context) {
                         .attr('value', iD.util.getCurrentTranslation());
 
             // Link this with plg.getTranslations();
-            var comboData = ['OSM','TDSv61', 'TDSv40'];
+            var comboData = ['OSM','TDSv61', 'TDSv40', 'MGCP'];
             var combo = d3.combobox()
                     .data(_.map(comboData, function (n) {
                         return {
