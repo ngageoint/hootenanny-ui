@@ -154,7 +154,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                 _parent().actions.idgraphsynch.getRelationFeature(response.mapId, response.relationId,
                     function(newReviewItem){
                         _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0],
-                            newReviewItem.members[1]);
+                            newReviewItem.members[1], true);
 
                     });
 
@@ -253,7 +253,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     **/
     _instance.setCurrentReviewable = function(_){
         _currentReviewable = _;
-    }; 
+    };
 
     /**
     * @desc  gets the current review entity id
@@ -267,7 +267,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     **/
     _instance.setCurrentReviewableEntityId = function(_){
         _currentReviewableEntityId = _;
-    };         
+    };
 
     /**
     * @desc  initialization validation
