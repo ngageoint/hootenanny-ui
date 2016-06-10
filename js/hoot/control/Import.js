@@ -250,7 +250,7 @@ Hoot.control.import = function (context,selection) {
                     //viewed.
                     if (key.id != -1)
                     {
-                    	context.background().addSource(getNodeMapnikSource(key));
+                        context.background().addSource(getNodeMapnikSource(key));
                     }
                     
                 }

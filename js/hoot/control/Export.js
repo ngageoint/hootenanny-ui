@@ -26,16 +26,16 @@ Hoot.control.export = function (context, sidebar) {
         //it can be exported out to an OSM API database.
         Hoot.model.REST('getMapTags', {mapId: layer.name}, function (tags) {
             //console.log(tags);
-        	layer.canExportToOsmApiDb = false;
-        	//This timestamp tag is what the server uses to determine if a layer can be exported to
-        	//an OSM API db.
-        	if (tags.osm_api_db_export_time)
+            layer.canExportToOsmApiDb = false;
+            //This timestamp tag is what the server uses to determine if a layer can be exported to
+            //an OSM API db.
+            if (tags.osm_api_db_export_time)
             {
-        		layer.canExportToOsmApiDb = true;
-        	}
-        	
+                layer.canExportToOsmApiDb = true;
+            }
+                    	
             transCombo = [];
-        	// filters for exportable translations
+            // filters for exportable translations
             _.each(translations, function(tr){
                 if(tr.CANEXPORT && tr.CANEXPORT === true){
                     transCombo.push(tr);
@@ -51,12 +51,12 @@ Hoot.control.export = function (context, sidebar) {
             var exportFormatList = 
               [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
                {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}];
-        	if (layer.canExportToOsmApiDb === true)
-        	{
-        		exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
-        	}
-        	
-        	var d_save = [{
+            if (layer.canExportToOsmApiDb === true)
+            {
+                exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
+            }
+                    	
+            var d_save = [{
                 label: 'Translation',
                 type: 'fileExportTranslation',
                 id: 'fileExportTranslation',

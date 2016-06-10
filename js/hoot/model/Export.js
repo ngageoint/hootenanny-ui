@@ -20,7 +20,7 @@ Hoot.model.export = function (context)
     //var mapId;
 
     model_export.exportData = function (container, data, callback) {
-    	_initVariables();
+        _initVariables();
         exportCallback = callback;
         outputname = container.select('#fileExportOutputName').value() ||
                 container.select('#fileExportOutputName').attr('placeholder');
@@ -88,7 +88,7 @@ Hoot.model.export = function (context)
         //is ignored here.
         if (selectedOutType == 'osm_api_db')
         {
-        	param.translation = 'NONE';
+            param.translation = 'NONE';
         }
         param.inputtype = 'db';
         param.input = selectedInput;
@@ -147,15 +147,15 @@ Hoot.model.export = function (context)
                 } 
                 else if (selectedOutType === 'osm_api_db')
                 {
-                	//OSM API db export writes directly to an osm api database and involves no file 
-                	//download for export.
-                	var summaryStartIndex = result.statusDetail.indexOf('Changeset(s)');
-                	var summary = result.statusDetail.substring(summaryStartIndex);
-                	//This reset has to occur here or successively run tests will fail.
-                	context.hoot().reset();
-                	//having difficulty accessing the iD alerts in cucumber tests, so using a regular
-                	//alert instead
-                	alert('Successful export to an OSM API database:\n\n' + summary);
+                    //OSM API db export writes directly to an osm api database and involves no file 
+                    //download for export.
+                    var summaryStartIndex = result.statusDetail.indexOf('Changeset(s)');
+                    var summary = result.statusDetail.substring(summaryStartIndex);
+                    //This reset has to occur here or successively run tests will fail.
+                    context.hoot().reset();
+                    //having difficulty accessing the iD alerts in cucumber tests, so using a regular
+                    //alert instead
+                    alert('Successful export to an OSM API database:\n\n' + summary);
                 }
                 else {
                     var sUrl = '/hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true';
@@ -177,18 +177,18 @@ Hoot.model.export = function (context)
             }
             else if (selectedOutType === 'osm_api_db')
             {
-            	//This reset has to occur here or successively run tests will fail.
-            	context.hoot().reset();
-            	
-            	//having difficulty accessing the iD alerts in cucumber tests, so using a regular
-            	//alert instead
-            	
-            	// This is at odds with how exception messages are handled in the rest of the app,
-        		// however, I want to explicitly show the export failure as being due to an OSM API 
-            	// database conflict here instead of requiring a user to sift through an error log 
-            	// to find that error message.  Unfortunately, the callback will show the iD alert
-            	// to check the logs after this message is shown.
-            	alert(result.statusDetail);
+                //This reset has to occur here or successively run tests will fail.
+                context.hoot().reset();
+                
+                //having difficulty accessing the iD alerts in cucumber tests, so using a regular
+                //alert instead
+                
+                // This is at odds with how exception messages are handled in the rest of the app,
+                // however, I want to explicitly show the export failure as being due to an OSM API 
+                // database conflict here instead of requiring a user to sift through an error log 
+                // to find that error message.  Unfortunately, the callback will show the iD alert
+                // to check the logs after this message is shown.
+                alert(result.statusDetail);
             }
 
         }

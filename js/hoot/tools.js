@@ -156,11 +156,11 @@ Hoot.tools = function (context) {
 
         if (view.getLayer(0).id == -1)
         {
-          data.INPUT1_TYPE = "OSM_API_DB";
+          data.INPUT1_TYPE = 'OSM_API_DB';
         }
         else if (view.getLayer(1).id == -1)
         {
-          data.INPUT2_TYPE = "OSM_API_DB";
+          data.INPUT2_TYPE = 'OSM_API_DB';
         }
 
         var refLayer = '1';
@@ -173,14 +173,14 @@ Hoot.tools = function (context) {
         //better to simply not allow the OSM API Database layer as an option for the secondary 
         //layer...but was much harder to implement.
         if ((data.INPUT1_TYPE === 'OSM_API_DB' && refLayer === '2') ||
-        	(data.INPUT2_TYPE === 'OSM_API_DB' && refLayer === '1'))
+            (data.INPUT2_TYPE === 'OSM_API_DB' && refLayer === '1'))
         {
-        	//This reset has to occur here or successively run tests will fail.
-        	context.hoot().reset();
-        	//having difficulty accessing the iD alerts in cucumber tests, so using a regular
-        	//alert instead
-        	alert('OSM API database not allowed as secondary layer input.');
-        	return;
+            //This reset has to occur here or successively run tests will fail.
+            context.hoot().reset();
+            //having difficulty accessing the iD alerts in cucumber tests, so using a regular
+            //alert instead
+            alert('OSM API database not allowed as secondary layer input.');
+            return;
         }
 
         var _confType = {

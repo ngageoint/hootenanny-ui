@@ -38,14 +38,14 @@ Hoot.control.utilities.exportdataset = function(context) {
         
         _transCombo = [];
         
-    	// filters for exportable translations
+        // filters for exportable translations
         _.each(translations, function(tr){
           if(tr.CANEXPORT && tr.CANEXPORT === true){
               _transCombo.push(tr);
           }
         });
         if(_transCombo.length === 1){
-        	var emptyObj = {};
+            var emptyObj = {};
             emptyObj.NAME='';
             emptyObj.DESCRIPTION='';
             _transCombo.push(emptyObj);
@@ -56,7 +56,7 @@ Hoot.control.utilities.exportdataset = function(context) {
            {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}];
         if (_dataset.canExportToOsmApiDb === true)
         {
-        	exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
+            exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
         }
         
         var d_form = [{
