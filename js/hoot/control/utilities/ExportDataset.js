@@ -19,29 +19,22 @@ Hoot.control.utilities.exportdataset = function(context) {
 
 
     /**
-	 * @desc Entry point where it creates form.
-	 * @param dataset -
-	 *            Target dataset meta data.
-	 * @param translations -
-	 *            Translations meta data.
-	 */
+    * @desc Entry point where it creates form.
+    * @param dataset - Target dataset meta data.
+    * @param translations - Translations meta data.
+    **/
     _instance.exportDataContainer = function(dataset, translations) {
         _createDialog(dataset, translations);
     };
 
     /**
-	 * @desc Internal form creation.
-	 * @param dataset -
-	 *            Target dataset meta data.
-	 * @param translations -
-	 *            Translations meta data.
-	 */
+    * @desc Internal form creation.
+    * @param dataset - Target dataset meta data.
+    * @param translations - Translations meta data.
+    **/
     var _createDialog = function(dataset, translations) {
         _dataset = dataset;
-        var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';// 'Select
-																	// Data
-																	// Translation
-																	// Schema'
+        var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema'
         
         _transCombo = [];
         
@@ -69,9 +62,8 @@ Hoot.control.utilities.exportdataset = function(context) {
         var d_form = [{
             label: 'Translation',
             id: 'fileExportTranslation',
-            combobox: {'data':_transCombo, 'command': _populateTranslations },// transCombo,//exportResources,
-            placeholder: { 'default': placeHolder, 'command': _getTranslationComboPlaceHolder} ,// 'LTDS
-																								// 4.0'
+            combobox: {'data':_transCombo, 'command': _populateTranslations },//transCombo,//exportResources,
+            placeholder: { 'default': placeHolder, 'command': _getTranslationComboPlaceHolder} ,//'LTDS 4.0'
             inputtype:'combobox'
         }, {
             label: 'Export Format',
@@ -112,8 +104,8 @@ Hoot.control.utilities.exportdataset = function(context) {
     };
 
     /**
-	 * @desc Export request click handler,
-	 */
+    * @desc Export request click handler,
+    **/
     var _submitClickHandler = function() {
         if(!d3.selectAll('.invalidName').empty()){
             return;
@@ -136,10 +128,10 @@ Hoot.control.utilities.exportdataset = function(context) {
     };
 
     /**
-	 * @desc Output name validation helper function.
-	 */
+    * @desc Output name validation helper function.
+    **/
     var _validateOutputName = function() {
-        // ensure output name is valid
+        //ensure output name is valid
         var resp = context.hoot().checkForUnallowedChar(this.value);
         if(resp !== true){
             d3.select(this).classed('invalidName',true).attr('title',resp);
@@ -149,10 +141,9 @@ Hoot.control.utilities.exportdataset = function(context) {
     };
 
     /**
-	 * @desc Helper function to retrieve place holder text
-	 * @param field -
-	 *            fieldset metadata.
-	 */
+    * @desc Helper function to retrieve place holder text
+    * @param field - fieldset metadata.
+    **/
     var _getTranslationComboPlaceHolder = function(field) {
         var defTrans = _.find(field.combobox.data, {DESCRIPTION: field.placeholder.default});
         if(defTrans === undefined){
@@ -163,10 +154,9 @@ Hoot.control.utilities.exportdataset = function(context) {
     };
 
     /**
-	 * @desc Populate available translations.
-	 * @param a -
-	 *            Translations list combo meta data.
-	 */
+    * @desc Populate available translations.
+    * @param a - Translations list combo meta data.
+    **/
     var _populateTranslations = function(a) {
         var combo = d3.combobox()
             .data(_.map(a.combobox.data, function (n) {
@@ -186,8 +176,8 @@ Hoot.control.utilities.exportdataset = function(context) {
     };
 
     /**
-	 * @desc Toggler for Append to ESRI FGDB Template checkbox.
-	 */
+    * @desc Toggler for Append to ESRI FGDB Template checkbox.
+    **/
     var _checkForTemplate = function(){
         var hidden=false;
 
