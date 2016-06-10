@@ -125,11 +125,11 @@ Hoot.model.REST = function (command, data, callback, option) {
         }
 
         d3.json('/hoot-services/osm/api/0.6/map/deletefolder?folderId=' + folderId)
-        .post(function (error) {
+        .post(function (error, json) {
             if(error){
                 callback(false);
             } else {callback(true);}
-            return true;
+            return json;
         });
     };
 
