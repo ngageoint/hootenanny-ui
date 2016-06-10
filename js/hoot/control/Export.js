@@ -33,7 +33,7 @@ Hoot.control.export = function (context, sidebar) {
             {
                 layer.canExportToOsmApiDb = true;
             }
-                    	
+                                        	
             transCombo = [];
             // filters for exportable translations
             _.each(translations, function(tr){
@@ -55,7 +55,7 @@ Hoot.control.export = function (context, sidebar) {
             {
                 exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
             }
-                    	
+                                        	
             var d_save = [{
                 label: 'Translation',
                 type: 'fileExportTranslation',
