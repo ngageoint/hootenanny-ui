@@ -304,7 +304,7 @@ Hoot.control.import = function(context, selection) {
 													});
 									//The OSM API db layer with id = -1 doesn't actually exist in hoot, so can't be 
 									//viewed.
-									if (key.id != -1) {
+									if (key.id !== -1) {
 										context.background().addSource(
 												getNodeMapnikSource(key));
 									}
