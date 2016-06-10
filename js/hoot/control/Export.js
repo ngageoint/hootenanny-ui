@@ -32,8 +32,7 @@ Hoot.control.export = function (context, sidebar) {
             if (tags.osm_api_db_export_time)
             {
                 layer.canExportToOsmApiDb = true;
-            }
-                                        	
+            }                               	
             transCombo = [];
             // filters for exportable translations
             _.each(translations, function(tr){
@@ -54,8 +53,7 @@ Hoot.control.export = function (context, sidebar) {
             if (layer.canExportToOsmApiDb === true)
             {
                 exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
-            }
-                                        	
+            }                                        	
             var d_save = [{
                 label: 'Translation',
                 type: 'fileExportTranslation',
