@@ -326,7 +326,7 @@ Hoot.control.utilities.folder = function(context) {
                   var items = [];
                   //none of the dataset operations apply to the OSM API db data
                   if(!d.type||(d.type==='dataset' && !d.selected) || 
-                      d.name.indexOf('OSM_API_DB') > -1){
+                	  d.name.indexOf('OSM_API_DB') > -1){
                       d3.select('.context-menu').style('display', 'none');
                       d3.event.preventDefault();
                       return;

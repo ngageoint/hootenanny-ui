@@ -646,7 +646,7 @@ Hoot.control.conflate = function (sidebar,context) {
     * @param data - parameter that contains source names
     **/
     var _getSaveAsOutputName = function(data) {
-        var newName;
+    	var newName;
         if (data[0].name.indexOf('OSM_API_DB') > -1)
         {
           //this change is mostly here b/c I couldn't get the "fill input" ruby step definition
@@ -656,7 +656,7 @@ Hoot.control.conflate = function (sidebar,context) {
         }
         else
         {
-            newName = _subCompare(data, 4);
+        	newName = _subCompare(data, 4);
             if (!newName.found) {
                 newName = 'Merged_' + Math.random().toString(16).substring(7);
             }
