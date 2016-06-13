@@ -110,7 +110,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 if (prev < 0) {
                     prev = relation.members.length-1;
                 }
-                if (prev == staticIdx) {
+                if (prev === staticIdx) {
                     prev = prev-1;
                     if (prev < 0) {
                         prev = relation.members.length-1;
@@ -124,7 +124,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 if (next > relation.members.length-1) {
                     next = 0;
                 }
-                if (next == staticIdx) {
+                if (next === staticIdx) {
                     next = next+1;
                     if (next > relation.members.length-1) {
                         next = 0;
