@@ -5,6 +5,7 @@
 // Modifications:
 //      03 Feb. 2016
 //      15 Apr. 2016 eslint updates -- Sisskind
+//      31 May  2016 OSM API Database export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.folder = function(context) {
     var selectedLayerIDs = [];
@@ -323,7 +324,9 @@ Hoot.control.utilities.folder = function(context) {
           if(container.attr('id')==='datasettable'){
               container.selectAll('rect').on('contextmenu',function(d){
                   var items = [];
-                  if(!d.type||(d.type==='dataset' && !d.selected)){
+                  //none of the dataset operations apply to the OSM API db data
+                  if(!d.type||(d.type==='dataset' && !d.selected) || 
+                      d.name.indexOf('OSM_API_DB') > -1){
                       d3.select('.context-menu').style('display', 'none');
                       d3.event.preventDefault();
                       return;

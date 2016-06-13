@@ -6,6 +6,7 @@
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:
 //      03 Feb. 2016
+//      31 May  2016 OSM API Database export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.tools = function (context) {
     var loadingLayer = {},
@@ -153,6 +154,14 @@ Hoot.tools = function (context) {
         data.INPUT1 = view.getLayer(0).id;
         data.INPUT2 = view.getLayer(1).id;
 
+        if (view.getLayer(0).id === '-1')
+        {
+          data.INPUT1_TYPE = 'OSM_API_DB';
+        }
+        else if (view.getLayer(1).id === '-1')
+        {
+          data.INPUT2_TYPE = 'OSM_API_DB';
+        }
 
         var refLayer = '1';
         var oRefLayerId = hoot.model.layers.getmapIdByName(a.select('.referenceLayer').value());
@@ -160,6 +169,19 @@ Hoot.tools = function (context) {
             refLayer = '2';
         }
 
+        //This is also caught server side, but let's go ahead and catch it here too.  Would be
+        //better to simply not allow the OSM API Database layer as an option for the secondary 
+        //layer...but was much harder to implement.
+        if ((data.INPUT1_TYPE === 'OSM_API_DB' && refLayer === '2') ||
+            (data.INPUT2_TYPE === 'OSM_API_DB' && refLayer === '1'))
+        {
+            //This reset has to occur here or successively run tests will fail.
+            context.hoot().reset();
+            //having difficulty accessing the iD alerts in cucumber tests, so using a regular
+            //alert instead
+            alert('OSM API database not allowed as secondary layer input.');
+            return;
+        }
 
         var _confType = {
             'Reference':'Reference',
