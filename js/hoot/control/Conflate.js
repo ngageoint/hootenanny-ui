@@ -645,12 +645,23 @@ Hoot.control.conflate = function (sidebar,context) {
     * @param data - parameter that contains source names
     **/
     var _getSaveAsOutputName = function(data) {
-        var newName = _subCompare(data, 4);
-        if (!newName.found) {
-            newName = 'Merged_' + Math.random().toString(16).substring(7);
+        var newName;
+        if (data[0].name.indexOf('OSM_API_DB') > -1)
+        {
+          //this change is mostly here b/c I couldn't get the "fill input" ruby step definition
+          //to consistently work when pressing the second conflate button...if that can be resolved, 
+          //this check could go away
+          newName = data[0].name.replace('OSM_API_DB_', '') + '_' + data[1].name;
         }
-        else {
-            newName = 'Merged_' + newName.substring + '_' + Math.random().toString(16).substring(7);
+        else
+        {
+            newName = _subCompare(data, 4);
+            if (!newName.found) {
+                newName = 'Merged_' + Math.random().toString(16).substring(7);
+            }
+            else {
+                newName = 'Merged_' + newName.substring + '_' + Math.random().toString(16).substring(7);
+            }
         }
 
         return newName;
