@@ -53,8 +53,12 @@ Hoot.control.utilities.folder = function(context) {
     hoot_control_utilities_folder.createFolderTree = function(container) {
         // http://bl.ocks.org/mbostock/1093025 - Collapsible Indented Tree
 
-        //var folders = context.hoot().model.layers.getAvailLayersWithFolders();
         var folders = context.hoot().model.folders.getAvailFoldersWithLayers();
+        //Updated to hide OSM API Database entry in dataset table - 15 June 2016
+        if(container.attr('id')==='datasettable'){
+            folders = _.without(folders, _.find(folders, {id:-1}));
+        }
+        
         folders= JSON.parse('{"name":"Datasets","id":"Datasets","children":' + JSON.stringify(folders) +'}');
 
         var margin = {top: 10, right: 20, bottom: 30, left: 0},
