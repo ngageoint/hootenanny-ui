@@ -273,6 +273,26 @@ Hoot.tools = function (context) {
     }
 
     /**
+    * @desc This is much like the two functions below, so may need to be consolidated.
+    * @param params - merged layer meta data needed for getMapTags request
+    * @param layerName - new merged layer
+    **/
+    function handleLayer(layerName,params) {
+        var doRenderView = true;
+        if(params.hideinsidebar !== undefined && params.hideinsidebar === 'true'){
+            doRenderView = false;
+        }
+
+        if(doRenderView === true){
+            renderInputLayer(layerName,params);
+        } else {
+            loadedLayers[layerName] = params;
+            loadedLayers[layerName].loadable = true;
+            loadingLayer = {};
+        }
+    }
+
+    /**
     * @desc Retrieves input layers for conflated layer. Input layers are stored in hstore column of Maps table.
     * @param params - merged layer meta data needed for getMapTags request
     * @param layerName - new merged layer
@@ -518,7 +538,7 @@ Hoot.tools = function (context) {
                             if (tags.reviewtype === 'hgisvalidation') {
                                 var r = confirm('The layer has been prepared for validation. Do you want to go into validation mode?');
                                 if (r === true) {
-                                    foobar();
+                                    handleLayer(layerName,params);
                                     context.hoot().control.validation.begin(params);
                                 }
                             } else {
@@ -641,30 +661,15 @@ Hoot.tools = function (context) {
                                         }
                                     }
                                 } else {
-                                    foobar();
+                                    handleLayer(layerName,params);
                                 }
                             }
                         });
                     }
                 } else {
-                    foobar();
+                    handleLayer(layerName,params);
                 }
             });
-
-            function foobar() {
-                var doRenderView = true;
-                if(params.hideinsidebar !== undefined && params.hideinsidebar === 'true'){
-                    doRenderView = false;
-                }
-
-                if(doRenderView === true){
-                    renderInputLayer(layerName,params);
-                } else {
-                    loadedLayers[layerName] = params;
-                    loadedLayers[layerName].loadable = true;
-                    loadingLayer = {};
-                }
-            }
 
         } else {
             /*renderMergedLayer(layerName);
