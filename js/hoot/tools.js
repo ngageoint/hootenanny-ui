@@ -128,9 +128,9 @@ Hoot.tools = function (context) {
     function resetAllLayers() {
         _.each(loadedLayers, function (d) {
             if(context.hoot().model.layers.getLayers()[d.name]){
-                context.hoot().model.layers.removeLayer(d.name);    
+                context.hoot().model.layers.removeLayer(d.name);
             }
-            
+
             var modifiedId = d.mapId.toString();
             d3.select('[data-layer="' + modifiedId + '"]').remove();
             delete loadedLayers[d.name];
@@ -170,7 +170,7 @@ Hoot.tools = function (context) {
         }
 
         //This is also caught server side, but let's go ahead and catch it here too.  Would be
-        //better to simply not allow the OSM API Database layer as an option for the secondary 
+        //better to simply not allow the OSM API Database layer as an option for the secondary
         //layer...but was much harder to implement.
         if ((data.INPUT1_TYPE === 'OSM_API_DB' && refLayer === '2') ||
             (data.INPUT2_TYPE === 'OSM_API_DB' && refLayer === '1'))
@@ -280,8 +280,6 @@ Hoot.tools = function (context) {
     function renderInputLayer(layerName,params) {
         //Get tags for loaded layer
         Hoot.model.REST('getMapTags', {mapId: params.mapId}, function (tags) {
-            //console.log(tags);
-            loadedLayers[layerName] = tags;
             loadedLayers[layerName] = params;
             loadedLayers[layerName].loadable = true;
             loadedLayers[layerName].tags = tags;
@@ -520,6 +518,7 @@ Hoot.tools = function (context) {
                             if (tags.reviewtype === 'hgisvalidation') {
                                 var r = confirm('The layer has been prepared for validation. Do you want to go into validation mode?');
                                 if (r === true) {
+                                    foobar();
                                     context.hoot().control.validation.begin(params);
                                 }
                             } else {
@@ -642,39 +641,30 @@ Hoot.tools = function (context) {
                                         }
                                     }
                                 } else {
-                                    var doRenderView = true;
-                                    if(params.hideinsidebar !== undefined && params.hideinsidebar === 'true'){
-                                        doRenderView = false;
-                                    }
-
-                                    if(doRenderView === true){
-                                        renderInputLayer(layerName,params);
-                                    } else {
-                                        loadedLayers[layerName] = params;
-                                        loadedLayers[layerName].loadable = true;
-                                        loadingLayer = {};
-                                    }
+                                    foobar();
                                 }
                             }
                         });
                     }
                 } else {
-                    var doRenderView = true;
-                    if(params.hideinsidebar !== undefined && params.hideinsidebar === 'true'){
-                        doRenderView = false;
-                    }
-
-                    if(doRenderView === true){
-                        renderInputLayer(layerName,params);
-                    } else {
-                        loadedLayers[layerName] = params;
-                        loadedLayers[layerName].loadable = true;
-                        loadingLayer = {};
-                    }
+                    foobar();
                 }
             });
 
+            function foobar() {
+                var doRenderView = true;
+                if(params.hideinsidebar !== undefined && params.hideinsidebar === 'true'){
+                    doRenderView = false;
+                }
 
+                if(doRenderView === true){
+                    renderInputLayer(layerName,params);
+                } else {
+                    loadedLayers[layerName] = params;
+                    loadedLayers[layerName].loadable = true;
+                    loadingLayer = {};
+                }
+            }
 
         } else {
             /*renderMergedLayer(layerName);

@@ -245,6 +245,38 @@ Hoot.control.validation = function(context) {
                 sequence: -999
             };
 
+            function loadFeature() {
+                //Position the map
+                var extent = relation.extent(context.graph());
+                //console.log(extent);
+                context.map().centerZoom(extent.center(), 19);
+
+                //Get the relation member
+                member = relation.memberByRole('reviewee');
+                var fid = member.id;
+                //Get the full feature
+                feature = context.hasEntity(fid);
+
+                //Select the feature
+                context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
+                //Have to call Select twice because the feature might not be drawn yet
+                var ev = 'drawVector.validation';
+                context.map().on(ev, function() {
+                    //console.log(ev);
+                    context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
+                    //Unregister the handler
+                    context.map().on(ev, null);
+                });
+
+                //Update metadata for validation workflow
+                _.extend(metadata, {tags: relation.tags});
+                validation.updateMeta(metadata);
+
+                validation.presentChoices();
+
+                event.featureLoaded();
+            }
+
             Hoot.model.REST('reviewGetNext', data, function (error, response) {
                 //console.log(response);
                 if (response.resultCount === 0) {
@@ -254,11 +286,10 @@ Hoot.control.validation = function(context) {
 
                     //See if the validation relation has already been loaded in the map view
                     var rid = 'r' + response.relationId + '_' + mapid;
-                    var fid, extent;
                     relation = context.hasEntity(rid);
                     if (relation) {
                         //console.log('already have relation');
-                        validation.loadFeature();
+                        loadFeature();
                     } else {
                         //console.log('must wait for relation to load');
                         context.loadEntity(rid, function(err, ent) {
@@ -270,53 +301,13 @@ Hoot.control.validation = function(context) {
                             if (!feature) {
                                 //console.log('must wait for feature to load');
                                 context.loadEntity(mid, function() {
-                                    validation.loadFeature();
+                                    loadFeature();
                                 }, mapid, layerName);
                             } else {
-                                validation.loadFeature();
+                                loadFeature();
                             }
                         }, mapid, layerName);
                     }
-
-                    validation.loadFeature = function() {
-                        relation = context.hasEntity(rid);
-
-                        //Position the map
-                        extent = relation.extent(context.graph());
-                        //console.log(extent);
-                        context.map().centerZoom(extent.center(), 19);
-
-                        //Get the relation member
-                        member = relation.memberByRole('reviewee');
-                        fid = member.id;
-                        //Get the full feature
-                        feature = context.hasEntity(fid);
-
-                        //Select the feature
-                        context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
-                        //Have to call Select twice because the feature might not be drawn yet
-                        var ev = 'drawVector.validation';
-                        context.map().on(ev, function() {
-                            //console.log(ev);
-                            context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
-                            //Unregister the handler
-                            context.map().on(ev, null);
-                        });
-
-                        //Update metadata for validation workflow
-                        _.extend(metadata, {tags: relation.tags});
-                        validation.updateMeta(metadata);
-
-                        validation.presentChoices();
-
-                        event.featureLoaded();
-                    };
-
-                    //Update selectItem to work with the current feature
-                    validation.selectItem = function() {
-                        context.map().centerZoom(extent.center(), 19);
-                        context.enter(iD.modes.Select(context, [fid]).suppressMenu(true));
-                    };
 
                     if (!context.MapInMap.hidden()) {
                         //Populate the map-in-map with review items location and status
@@ -330,6 +321,13 @@ Hoot.control.validation = function(context) {
                 }
             });
         });
+    };
+
+    //Update selectItem to work with the current feature
+    validation.selectItem = function() {
+        var extent = relation.extent(context.graph());
+        context.map().centerZoom(extent.center(), 19);
+        context.enter(iD.modes.Select(context, [feature.id]).suppressMenu(true));
     };
 
     validation.verify = function(choice) {
