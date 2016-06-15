@@ -134,6 +134,69 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
         parent.selectAll('input:not([id*=enable])').property('disabled',enableInputs);
     };
 
+    /**
+    * @desc Runs change event based on input field
+    * @param field - css field
+    **/
+    _instance.fieldChangeEvent = function(field) {
+        var fid = '#' + field.id;
+        switch(field.id){
+            case 'hoot_enable_building_options':
+            case 'hoot_enable_poi_options':
+            case 'hoot_enable_road_options':
+            case 'hoot_enable_rubber_sheeting_options':
+            case 'hoot_enable_cleaning_options':
+                var e = d3.select(fid).property('checked');
+                var group = fid.replace('enable_','') + '_group';
+                d3.select(group).selectAll('input').property('disabled',!e);
+                d3.select(fid).property('disabled',false);
+                break;
+            case 'hoot_checkall_cleaning_options':
+                var checked=d3.select(fid).property('checked');
+                d3.select('#hoot_cleaning_options_group').selectAll('#checkbox_container').selectAll('input:not([id*=enable])').property('checked',checked);
+                d3.select('#hoot_cleaning_options_group').selectAll('#checkplus_container').selectAll('input').property('checked',checked);
+                break;
+            case 'duplicate_way_remover':
+                if(d3.select('#duplicate_way_remover').property('checked')){d3.selectAll('.duplicate_way_remover_child').style('display','inline-block');}
+                else{ d3.selectAll('.duplicate_way_remover_child').style('display','none');}
+                break;
+            case 'small_way_merger':
+                if(d3.select('#small_way_merger').property('checked')){d3.selectAll('.small_way_merger_child').style('display','inline-block');}
+                else{d3.selectAll('.small_way_merger_child').style('display','none');}
+                break;
+            case 'hoot_road_opt_engine':
+                d3.selectAll('.hoot_road_opt_engine_group').style('display','none');
+                var selval='.' + d3.selectAll('#hoot_road_opt_engine').value() + '_engine_group';
+                d3.selectAll(selval).style('display','inline-block');
+                d3.select('#conflate_enable_old_roads').value(d3.selectAll('#hoot_road_opt_engine').value()==='Greedy');
+                break;
+            case 'hoot_enable_waterway_options':
+                var q = d3.select('#hoot_enable_waterway_options').property('checked');
+                d3.select('#hoot_waterway_options_group').selectAll('input').property('disabled',!q);
+                d3.select('#hoot_enable_waterway_options').property('disabled',false);
+                if(q===true && !d3.select('#waterway_auto_calc_search_radius').empty()){
+                    var f=d3.select('#waterway_auto_calc_search_radius').property('checked');
+                    d3.select('#search_radius_waterway').property('disabled',f);
+                    d3.select('#waterway_rubber_sheet_minimum_ties').property('disabled',!f);
+                    d3.select('#waterway_rubber_sheet_ref').property('disabled',!f);
+                }
+                break;
+            case 'waterway_auto_calc_search_radius':
+                var p = d3.select('#waterway_auto_calc_search_radius').property('checked');
+                d3.select('#search_radius_waterway').property('disabled',p);
+                d3.select('#waterway_rubber_sheet_minimum_ties').property('disabled',!p);
+                d3.select('#waterway_rubber_sheet_ref').property('disabled',!p);
+                break;
+            default:
+                if(field.type==='double' || field.type==='int') {
+                    Hoot.control.conflate.advancedoptions.fieldsgenerator().validate(d3.select(field));
+                }
+
+
+                return false;
+        }
+    };    
+
 
     /**
     * @desc Populates multilist fields with rules
@@ -168,9 +231,9 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
         
         var currentDiv = d3.select('#'+c.id);
         if(c.onchange){
-            var fn = function(c){return c.onchange;};
-            currentDiv.on('change',fn);
-        } 
+            currentDiv.on('change',function(){_instance.fieldChangeEvent(c);});
+        }
+        
         
         if(c.type==='checkplus'){
             var parentDiv = d3.select(currentDiv.node().parentNode.parentNode);
@@ -187,16 +250,53 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
                     });
                 } else {
                     var newDiv = parentDiv.append('div').classed('contain ' + c.id + '_child',true);
-                    if(subcheck.required){
-                        if(subcheck.required==='true'){
-                            newDiv.classed('hidden',true);   
-                        }
-                    }
-                    newDiv.append('label').classed('pad1x', true).style('display','inline-block').text(subcheck.label).property('title',subcheck.description);
-                    newDiv.append('div').classed('contain',true).style('display','inline-block').append('input').attr('type','text').attr('placeholder',subcheck.placeholder).attr('class','reset ' + subcheck.type).attr('id',subcheck.id);
+                    _populateChildDiv(parentDiv, newDiv, subcheck);
                 }
             });
         }
+    };
+
+    /**
+    * @desc Populates child div
+    * @param parent - target element
+    * @param child - child elements
+    * @oaram meta - metadata
+    **/
+    var _populateChildDiv = function(parent, child, meta){
+        if(meta.required){
+            if(meta.required==='true'){
+                child.classed('hidden',true);   
+            }
+        }
+
+        child.append('label')
+            .classed('pad1x', true)
+            .style('display','inline-block')
+            .text(meta.label)
+            .property('title',meta.description);
+
+        child.append('div')
+            .classed('contain',true)
+            .style('display','inline-block')
+            .append('input')
+            .attr('type','text')
+            .attr('placeholder',meta.placeholder)
+            .attr('class','reset ' + meta.type)
+            .attr('id',meta.id);
+
+        if(meta.minvalue){
+            if(meta.minvalue.length>0){d3.select('#' + meta.id).attr('min',meta.minvalue);}
+            else {d3.select('#' + meta.id).attr('min','na');}
+        }
+
+        if(meta.maxvalue){
+            if(meta.maxvalue.length>0){d3.select('#' + meta.id).attr('max',meta.maxvalue);}
+            else {d3.select('#' + meta.id).attr('max','na');}
+        }
+
+        if(meta.onchange){
+            d3.select('#' + meta.id).on('change',function(){_instance.fieldChangeEvent(meta);});
+        } 
     };
 
     /**
@@ -265,8 +365,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
         }
 
         if(c.onchange){
-            var fn = function(c){return c.onchange;};
-            d3.select(this).on('change',fn);
+            d3.select(this).on('change',function(){_instance.fieldChangeEvent(c);});
         }  
 
         if(c.dependency){
@@ -285,7 +384,8 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
     * @param child - child elements
     **/
     var _populatRoadEnginesGroup = function(c, parentDiv, subcombo) {
-        var newDiv = parentDiv.append('div').classed('contain hoot_road_opt_engine_group ' + subcombo.name + '_engine_group',true);
+        var newDiv = parentDiv.append('div').classed('contain ' + c.id + '_group ',true);
+        if(c.id === 'hoot_road_opt_engine'){newDiv.classed(subcombo.name + '_engine_group',true);}
         if(subcombo.name!==c.placeholder){newDiv.style('display','none');}
         _.each(subcombo.members,function(subopt){
             if(subopt.type==='checkbox'){
@@ -301,6 +401,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
             } else {
                 var subDiv = newDiv.append('div').classed('contain ' + c.id + '_' + subcombo.name + '_child',true);
                 if(subopt.required){if(subopt.required==='true'){subDiv.classed('hidden',true);}}
+                subopt.type = subopt.elem_type;
                 subDiv.append('label')
                     .classed('pad1x', true)
                     .style('display','inline-block')
@@ -314,6 +415,20 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
                     .attr('placeholder',subopt.defaultvalue)
                     .attr('class','reset ' + subopt.type)
                     .attr('id',subopt.id);
+
+                if(subopt.minvalue){
+                    if(subopt.minvalue.length>0){d3.select('#' + subopt.id).attr('min',subopt.minvalue);}
+                    else {d3.select('#' + subopt.id).attr('min','na');}
+                }
+
+                if(subopt.maxvalue){
+                    if(subopt.maxvalue.length>0){d3.select('#' + subopt.id).attr('max',subopt.maxvalue);}
+                    else {d3.select('#' + subopt.id).attr('max','na');}
+                }
+
+                if(subopt.type==='double' || subopt.type==='int'){
+                    d3.select('#' + subopt.id).on('change',function(){_instance.fieldChangeEvent(subopt);});
+                }
             }                                                                                           
         });
     };
