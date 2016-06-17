@@ -103,19 +103,26 @@ iD.ui.MapMetadata = function(data) {
                 });
         }
 
+        var download = '';
         // params
         if (d.tags && d.tags.params) {
             var params = JSON.parse(d.tags.params.replace(/\\"/g, '"'));
-            var pdata = {
+            var pdata = d3.entries({
                 'Reference Layer': d.tags.input1Name,
                 'Secondary Layer': d.tags.input2Name,
-                'Conflation Type': params.CONFLATION_TYPE
-            };
-            addExpandList(d3.entries(pdata), 'Parameters');
+                'Conflation Type': params.CONFLATION_TYPE,
+                'Conflated Layer': d.name
+            });
+            addExpandList(pdata, 'Parameters');
 
+            //Build the download text
+            download += 'Parameters:\n';
+            pdata.forEach(function(p) {
+                download += p.key + '\t' + p.value + '\n';
+            });
 
             // options
-            addExpandList(d3.entries(params.ADV_OPTIONS).sort(function(a, b) {
+            var optdata = d3.entries(params.ADV_OPTIONS).sort(function(a, b) {
                 if (a.key < b.key) {
                   return -1;
                 }
@@ -124,7 +131,14 @@ iD.ui.MapMetadata = function(data) {
                 }
                 // a must be equal to b
                 return 0;
-            }), 'Options');
+            });
+            addExpandList(optdata, 'Options');
+
+            //Build the download text
+            download += '\nOptions:\n';
+            optdata.forEach(function(o) {
+                download += o.key + '\t' + o.value + '\n';
+            });
         }
 
         // stats
@@ -244,8 +258,48 @@ iD.ui.MapMetadata = function(data) {
             }, 'Statistics');
 
             addExpandList(d3.entries(stats), 'Statistics (Raw)');
+
+            //Build the download text
+            download += '\nStatistics:\n';
+            download += '\nLayer Counts:\n';
+            d3.select('table.layercounts').selectAll('tr').each(function() {
+                download += d3.select(this).selectAll('td').data().join('\t');
+                download += '\n';
+            });
+            download += '\nLayer Features:\n';
+            d3.select('table.layerfeatures').selectAll('tr').each(function() {
+                download += d3.select(this).selectAll('td').data().join('\t');
+                download += '\n';
+            });
+            download += '\nFeatures Counts:\n';
+            d3.select('table.featurecounts').selectAll('tr').each(function() {
+                download += d3.select(this).selectAll('td').data().join('\t');
+                download += '\n';
+            });
+            download += '\nFeature Percents:\n';
+            d3.select('table.featurepercents').selectAll('tr').each(function() {
+                download += d3.select(this).selectAll('td').data().join('\t');
+                download += '\n';
+            });
+            download += '\nStatistics (Raw):\n';
+            download += d.tags.stats;
+            addDownloadLink(d, download);
         }
         show();
+    }
+
+    function addDownloadLink(d, download) {
+        body.append('a')
+            .text('Download')
+            .attr('href', '#')
+            .classed('hide-toggle', true)
+            .classed('expanded', false)
+            .on('click', function() {
+                var fileName = d.name.replace(/\s/g, '_');
+                var blob = new Blob([download], {type: 'text/tab-separated-values;charset=utf-8'});
+                window.saveAs(blob, fileName + '-stats.tsv');
+                d3.event.preventDefault();
+            });
     }
 
     function show() {
