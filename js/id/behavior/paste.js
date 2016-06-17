@@ -3,17 +3,18 @@ iD.behavior.Paste = function(context) {
 
     function omitTag(v, k) {
         return (
-            k === 'phone' ||
-            k === 'fax' ||
-            k === 'email' ||
-            k === 'website' ||
-            k === 'url' ||
-            k === 'note' ||
-            k === 'description' ||
-            k.indexOf('name') !== -1 ||
-            k.indexOf('wiki') === 0 ||
-            k.indexOf('addr:') === 0 ||
-            k.indexOf('contact:') === 0
+            // k === 'phone' ||
+            // k === 'fax' ||
+            // k === 'email' ||
+            // k === 'website' ||
+            // k === 'url' ||
+            // k === 'note' ||
+            // k === 'description' ||
+            // k.indexOf('name') !== -1 ||
+            // k.indexOf('wiki') === 0 ||
+            // k.indexOf('addr:') === 0 ||
+            // k.indexOf('contact:') === 0
+            false
         );
     }
 
