@@ -428,7 +428,7 @@ Hoot.control.conflate = function (sidebar,context) {
             _instance.confAdvOptionsSelectedVal = _instance.advancedoptions.selectionretriever.getSelectedValues(null,_instance.confAdvOptionsFields);
         }
 
-        if(d3.selectAll('.reset.ConfType').value()==='Advanced Conflation'){
+        if(d3.selectAll('.reset.ConfType').value().startsWith('Custom')){
             _instance.lastAdvFields = _.map(_instance.confAdvOptionsFields,_.clone);
             _instance.lastAdvValues = _.map(_instance.confAdvOptionsSelectedVal,_.clone);
             _instance.lastAdvDlg = [];
