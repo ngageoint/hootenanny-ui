@@ -131,7 +131,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
             }
         });
 
-        parent.selectAll('input:not([id*=enable])').property('disabled',enableInputs);
+        parent.selectAll('input:enabled:not([id*=enable])').property('disabled',enableInputs);
     };
 
     /**
@@ -332,6 +332,10 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
         if(c.maxvalue){
             if(c.maxvalue.length>0){d3.select('#'+c.id).attr('max',c.maxvalue);}
             else{d3.select('#'+c.id).attr('max','na');}
+        }
+        if(c.disabled)
+        {
+            d3.select('#'+c.id).property('disabled',c.disabled);
         }
     };
 
