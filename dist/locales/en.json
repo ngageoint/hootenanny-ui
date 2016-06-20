@@ -477,7 +477,7 @@
     },
     "save": {
         "title": "Save",
-        "help": "Save changes to OpenStreetMap, making them visible to other users.",
+        "help": "Save changes making them visible to other users.",
         "no_changes": "No changes to save.",
         "error": "Errors occurred while trying to save",
         "status_code": "Server returned status code {code}",
@@ -3084,6 +3084,66 @@
                 "name": "Works",
                 "terms": "car assembly plant,aluminium processing plant,brewery,furniture manufacture factory,oil refinery,plastic recycling"
             },
+            "mgcp/AL010": {
+                "name": "AL010 (Facility)",
+                "terms": ""
+            },
+            "mgcp/AL015": {
+                "name": "Building (AL015)",
+                "terms": ""
+            },
+            "mgcp/AL020": {
+                "name": "Built-up Area (AL020)",
+                "terms": ""
+            },
+            "mgcp/AL099": {
+                "name": "Hut (AL099)",
+                "terms": ""
+            },
+            "mgcp/AL105": {
+                "name": "Settlement (AL105)",
+                "terms": ""
+            },
+            "mgcp/AN010": {
+                "name": "Railway (AN010)",
+                "terms": ""
+            },
+            "mgcp/AP010": {
+                "name": "Cart Track (AP010)",
+                "terms": ""
+            },
+            "mgcp/AP030": {
+                "name": "Road (AP030)",
+                "terms": ""
+            },
+            "mgcp/AP050": {
+                "name": "Trail (AP050)",
+                "terms": ""
+            },
+            "mgcp/AQ040": {
+                "name": "Bridge (AQ040)",
+                "terms": ""
+            },
+            "mgcp/AQ065": {
+                "name": "Culvert (AQ065)",
+                "terms": ""
+            },
+            "mgcp/BH030": {
+                "name": "Ditch (BH030)",
+                "terms": ""
+            },
+            "mgcp/BH070": {
+                "name": "Ford (BH070)",
+                "terms": ""
+            },
+            "mgcp/BH140": {
+                "name": "River (BH140)",
+                "terms": ""
+            },
+            "mgcp/GB005": {
+                "name": "Land Aerodrome (GB005)",
+                "terms": ""
+            },
             "military/airfield": {
                 "name": "Airfield",
                 "terms": ""
@@ -3912,16 +3972,16 @@
                 "name": "Building (AL013)",
                 "terms": ""
             },
-            "tdsv40/AL015": {
-                "name": "Settlement (AL015)",
-                "terms": ""
-            },
             "tdsv40/AL020": {
                 "name": "Built-up Area (AL020)",
                 "terms": ""
             },
             "tdsv40/AL099": {
                 "name": "Hut (AL099)",
+                "terms": ""
+            },
+            "tdsv40/AL105": {
+                "name": "Settlement (AL105)",
                 "terms": ""
             },
             "tdsv40/AN010": {
@@ -3972,16 +4032,16 @@
                 "name": "Building (AL013)",
                 "terms": ""
             },
-            "tdsv61/AL015": {
-                "name": "Settlement (AL015)",
-                "terms": ""
-            },
             "tdsv61/AL020": {
                 "name": "Built-up Area (AL020)",
                 "terms": ""
             },
             "tdsv61/AL099": {
                 "name": "Hut (AL099)",
+                "terms": ""
+            },
+            "tdsv61/AL105": {
+                "name": "Settlement (AL105)",
                 "terms": ""
             },
             "tdsv61/AN010": {

@@ -6315,6 +6315,178 @@
         },
         "name": "Works"
     },
+    "mgcp/AL010": {
+        "icon": "town-hall",
+        "geometry": [
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Facility",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "AL010",
+        "name": "AL010 (Facility)"
+    },
+    "mgcp/AL015": {
+        "icon": "building",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Building",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "AL015",
+        "name": "Building (AL015)"
+    },
+    "mgcp/AL020": {
+        "icon": "shop",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Built-up Area",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "AL020",
+        "name": "Built-up Area (AL020)"
+    },
+    "mgcp/AL099": {
+        "icon": "lodging",
+        "geometry": [
+            "point"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Hut",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "AL099",
+        "name": "Hut (AL099)"
+    },
+    "mgcp/AL105": {
+        "icon": "commercial",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Settlement",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "AL105",
+        "name": "Settlement (AL105)"
+    },
+    "mgcp/AN010": {
+        "icon": "railway-rail",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Railway",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "AN010",
+        "name": "Railway (AN010)"
+    },
+    "mgcp/AP010": {
+        "icon": "highway-track",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Cart Track",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "AP010",
+        "name": "Cart Track (AP010)"
+    },
+    "mgcp/AP030": {
+        "icon": "highway-road",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Road",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "AP030",
+        "name": "Road (AP030)"
+    },
+    "mgcp/AP050": {
+        "icon": "highway-path",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Trail",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "AP050",
+        "name": "Trail (AP050)"
+    },
+    "mgcp/AQ040": {
+        "icon": "highway-unclassified",
+        "geometry": [
+            "line",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Bridge",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "AQ040",
+        "name": "Bridge (AQ040)"
+    },
+    "mgcp/AQ065": {
+        "icon": "waterway-stream",
+        "geometry": [
+            "point"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Culvert",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "AQ065",
+        "name": "Culvert (AQ065)"
+    },
+    "mgcp/BH030": {
+        "icon": "waterway-ditch",
+        "geometry": [
+            "line",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Ditch",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "BH030",
+        "name": "Ditch (BH030)"
+    },
+    "mgcp/BH070": {
+        "icon": "highway-footway",
+        "geometry": [
+            "point",
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Ford",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "BH070",
+        "name": "Ford (BH070)"
+    },
+    "mgcp/BH140": {
+        "icon": "waterway-river",
+        "geometry": [
+            "line",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "River",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "BH140",
+        "name": "River (BH140)"
+    },
+    "mgcp/GB005": {
+        "icon": "airport",
+        "geometry": [
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Land Aerodrome",
+        "hoot:transtype": "MGCP",
+        "hoot:fcode": "GB005",
+        "name": "Land Aerodrome (GB005)"
+    },
     "military/airfield": {
         "icon": "airfield",
         "geometry": [
@@ -9855,18 +10027,6 @@
         "hoot:fcode": "AL013",
         "name": "Building (AL013)"
     },
-    "tdsv40/AL015": {
-        "icon": "commercial",
-        "geometry": [
-            "point",
-            "area"
-        ],
-        "tags": {},
-        "hoot:featuretype": "Settlement",
-        "hoot:transtype": "TDSv40",
-        "hoot:fcode": "AL015",
-        "name": "Settlement (AL015)"
-    },
     "tdsv40/AL020": {
         "icon": "shop",
         "geometry": [
@@ -9889,6 +10049,18 @@
         "hoot:transtype": "TDSv40",
         "hoot:fcode": "AL099",
         "name": "Hut (AL099)"
+    },
+    "tdsv40/AL105": {
+        "icon": "commercial",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Settlement",
+        "hoot:transtype": "TDSv40",
+        "hoot:fcode": "AL105",
+        "name": "Settlement (AL105)"
     },
     "tdsv40/AN010": {
         "icon": "railway-rail",
@@ -10029,18 +10201,6 @@
         "hoot:fcode": "AL013",
         "name": "Building (AL013)"
     },
-    "tdsv61/AL015": {
-        "icon": "commercial",
-        "geometry": [
-            "point",
-            "area"
-        ],
-        "tags": {},
-        "hoot:featuretype": "Settlement",
-        "hoot:transtype": "TDSv61",
-        "hoot:fcode": "AL015",
-        "name": "Settlement (AL015)"
-    },
     "tdsv61/AL020": {
         "icon": "shop",
         "geometry": [
@@ -10064,6 +10224,18 @@
         "hoot:transtype": "TDSv61",
         "hoot:fcode": "AL099",
         "name": "Hut (AL099)"
+    },
+    "tdsv61/AL105": {
+        "icon": "commercial",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Settlement",
+        "hoot:transtype": "TDSv61",
+        "hoot:fcode": "AL105",
+        "name": "Settlement (AL105)"
     },
     "tdsv61/AN010": {
         "icon": "railway-rail",
