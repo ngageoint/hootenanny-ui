@@ -3293,6 +3293,11 @@ div.full-screen > button:hover {
     font-weight:bold	!important;
 }
 
+.custom-conflation input:disabled::-webkit-input-placeholder { background:#eee;}
+.custom-conflation input:disabled:-moz-placeholder { background:#eee;} /* Firefox 18- */
+.custom-conflation input:disabled::-moz-placeholder { background:#eee;} /* Firefox 19+ */
+.custom-conflation input:disabled:-ms-input-placeholder { background:#eee;} /* oldIE ;) */
+
 table.custom-conflation-table, table.custom-conflation-table td, table.custom-conflation-table th {
   border: 1px solid #CCC;
 }
@@ -3307,6 +3312,8 @@ table.custom-conflation-table th {
   text-transform:capitalize;
   text-align:center;
 }
+
+
 
 #confAdvOptsLnk {
   color: #CCC;
@@ -3410,7 +3417,10 @@ rect.more {fill: #3182bd;}*/
     margin-left:10px;
 }
 
+
+
 input:focus::-webkit-input-placeholder { color:transparent; }
 input:focus:-moz-placeholder { color:transparent; } /* Firefox 18- */
 input:focus::-moz-placeholder { color:transparent; } /* Firefox 19+ */
 input:focus:-ms-input-placeholder { color:transparent; } /* oldIE ;) */
+

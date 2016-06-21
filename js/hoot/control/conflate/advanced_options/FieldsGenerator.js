@@ -61,6 +61,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                             subfield.maxvalue = submeta.maxvalue;
                             subfield.minvalue = submeta.minvalue;
                             subfield.onchange = 'true'; //'Hoot.control.conflate.advancedoptions.fieldsgenerator().validate(d3.select(this));';
+                            if(submeta.disabled){if(submeta.disabled==='true'){subfield.disabled = true;}}
                         } else if (submeta.elem_type === 'checkbox') {
                             if(submeta.onchange){subfield.onchange = submeta.onchange;}
                         } else if (submeta.elem_type === 'checkplus') {
@@ -78,6 +79,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                                         subcheck.minvalue = sc.minvalue;
                                         subcheck.maxvalue = sc.maxvalue;
                                         subcheck.onchange='true';
+                                        if(sc.disabled){if(sc.disabled==='true'){subcheck.disabled = 'true';}}
                                     } 
                                     subchecks.push(subcheck);
                                 });
