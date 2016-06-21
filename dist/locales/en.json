@@ -256,6 +256,9 @@
     },
     "tooltip_keyhint": "Shortcut:",
     "browser_notice": "This editor is supported in Firefox, Chrome, Safari, Opera, and Internet Explorer 11 and above. Please upgrade your browser or use Potlatch 2 to edit the map.",
+    "browser_close": {
+        "review_session": "You are currently in a review session.  Are you sure you want to exit Hootenanny?"
+    },
     "translate": {
         "translate": "Translate",
         "localized_translation_label": "Multilingual name",
@@ -470,7 +473,7 @@
         }
     },
     "restore": {
-        "heading": "You have unsaved changes",
+        "heading": "You have unsaved changes!",
         "description": "Do you wish to restore unsaved changes from a previous editing session?",
         "restore": "Restore",
         "reset": "Reset"
@@ -483,7 +486,7 @@
         "status_code": "Server returned status code {code}",
         "unknown_error_details": "Please ensure you are connected to the internet.",
         "uploading": "Uploading changes to Hootenanny.",
-        "unsaved_changes": "You have unsaved changes",
+        "unsaved_changes": "You have unsaved changes!",
         "conflict": {
             "header": "Resolve conflicting edits",
             "count": "Conflict {num} of {total}",
@@ -3084,6 +3087,66 @@
                 "name": "Works",
                 "terms": "car assembly plant,aluminium processing plant,brewery,furniture manufacture factory,oil refinery,plastic recycling"
             },
+            "mgcp/AL010": {
+                "name": "AL010 (Facility)",
+                "terms": ""
+            },
+            "mgcp/AL015": {
+                "name": "Building (AL015)",
+                "terms": ""
+            },
+            "mgcp/AL020": {
+                "name": "Built-up Area (AL020)",
+                "terms": ""
+            },
+            "mgcp/AL099": {
+                "name": "Hut (AL099)",
+                "terms": ""
+            },
+            "mgcp/AL105": {
+                "name": "Settlement (AL105)",
+                "terms": ""
+            },
+            "mgcp/AN010": {
+                "name": "Railway (AN010)",
+                "terms": ""
+            },
+            "mgcp/AP010": {
+                "name": "Cart Track (AP010)",
+                "terms": ""
+            },
+            "mgcp/AP030": {
+                "name": "Road (AP030)",
+                "terms": ""
+            },
+            "mgcp/AP050": {
+                "name": "Trail (AP050)",
+                "terms": ""
+            },
+            "mgcp/AQ040": {
+                "name": "Bridge (AQ040)",
+                "terms": ""
+            },
+            "mgcp/AQ065": {
+                "name": "Culvert (AQ065)",
+                "terms": ""
+            },
+            "mgcp/BH030": {
+                "name": "Ditch (BH030)",
+                "terms": ""
+            },
+            "mgcp/BH070": {
+                "name": "Ford (BH070)",
+                "terms": ""
+            },
+            "mgcp/BH140": {
+                "name": "River (BH140)",
+                "terms": ""
+            },
+            "mgcp/GB005": {
+                "name": "Land Aerodrome (GB005)",
+                "terms": ""
+            },
             "military/airfield": {
                 "name": "Airfield",
                 "terms": ""
@@ -3912,16 +3975,16 @@
                 "name": "Building (AL013)",
                 "terms": ""
             },
-            "tdsv40/AL015": {
-                "name": "Settlement (AL015)",
-                "terms": ""
-            },
             "tdsv40/AL020": {
                 "name": "Built-up Area (AL020)",
                 "terms": ""
             },
             "tdsv40/AL099": {
                 "name": "Hut (AL099)",
+                "terms": ""
+            },
+            "tdsv40/AL105": {
+                "name": "Settlement (AL105)",
                 "terms": ""
             },
             "tdsv40/AN010": {
@@ -3972,16 +4035,16 @@
                 "name": "Building (AL013)",
                 "terms": ""
             },
-            "tdsv61/AL015": {
-                "name": "Settlement (AL015)",
-                "terms": ""
-            },
             "tdsv61/AL020": {
                 "name": "Built-up Area (AL020)",
                 "terms": ""
             },
             "tdsv61/AL099": {
                 "name": "Hut (AL099)",
+                "terms": ""
+            },
+            "tdsv61/AL105": {
+                "name": "Settlement (AL105)",
                 "terms": ""
             },
             "tdsv61/AN010": {

@@ -199,6 +199,8 @@ en:
       description: Select the validation feature.
   tooltip_keyhint: "Shortcut:"
   browser_notice: "This editor is supported in Firefox, Chrome, Safari, Opera, and Internet Explorer 11 and above. Please upgrade your browser or use Potlatch 2 to edit the map."
+  browser_close:
+    review_session: "You are currently in a review session.  Are you sure you want to exit Hootenanny?"
   translate:
     translate: Translate
     localized_translation_label: Multilingual name
@@ -381,7 +383,7 @@ en:
       description: Full Fill
       tooltip: "Areas are drawn fully filled."
   restore:
-    heading: You have unsaved changes
+    heading: You have unsaved changes!
     description: "Do you wish to restore unsaved changes from a previous editing session?"
     restore: Restore
     reset: Reset
@@ -393,7 +395,7 @@ en:
     status_code: "Server returned status code {code}"
     unknown_error_details: "Please ensure you are connected to the internet."
     uploading: Uploading changes to Hootenanny.
-    unsaved_changes: You have unsaved changes
+    unsaved_changes: You have unsaved changes!
     conflict:
       header: Resolve conflicting edits
       count: 'Conflict {num} of {total}'
