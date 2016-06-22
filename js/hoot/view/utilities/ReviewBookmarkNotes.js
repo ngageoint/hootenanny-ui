@@ -140,7 +140,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
             .text(title + ' #' + bookmarkId);
 
 
-
+      var iconBarDiv = mainBarDiv.append('div').classed('fr',true);
 
       var currentReviewable = _currentBookmark.detail.bookmarkreviewitem;
 
@@ -149,39 +149,46 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       reqParam.sequence = currentReviewable.sortOrder;
       Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {
 
-          if(resp.error){
-              context.hoot().view.utilities.errorlog.reportUIError(resp.error);
-              return;
-          }
+        if(resp.error){
+          context.hoot().view.utilities.errorlog.reportUIError(resp.error);
+          return;
+        }
 
-          if(resp.resultCount > 0){
-
-
-            mainBarDiv.append('div')
-              .classed('fr', true)
-              .call(iD.svg.Icon('#icon-search'))
-              .classed('loadReview',true)
-              .on('click', function () {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-                var r = confirm('If you continue Hootenanny will load selected review item and you will lose all unsaved changes. '+
-                  'Do you want to continue?');
-                 if (r === true) {
-                  _jumpToReviewItem();
-                }
-              });
-
-
-          } else {
-            d3.select('#bmkNoteHdLabel').text(title + ' #' + bookmarkId + ' - ( **** RESOLVED **** )');
-          }
-
-
+        if(resp.resultCount > 0){
+          iconBarDiv.append('div')
+          .classed('fr', true)
+          .attr('title','Load Bookmark')
+          .call(iD.svg.Icon('#icon-search'))
+          .classed('loadReview',true)
+          .on('click', function () {
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
+            var r = confirm('If you continue Hootenanny will load selected review item and you will lose all unsaved changes. '+
+              'Do you want to continue?');
+            if (r === true) {
+              _jumpToReviewItem();
+            }
+          });
+        } else {
+          d3.select('#bmkNoteHdLabel').text(title + ' #' + bookmarkId + ' - ( **** RESOLVED **** )');
+        }
       });
 
 
-      mainBarDiv.append('div')
+        iconBarDiv.append('div')
+        .classed('fl', true)
+        .style('transform','rotate(270deg')
+        .attr('title','Return to Bookmarks')
+        .call(iD.svg.Icon('#icon-save'))
+        .on('click', function () {
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+          context.hoot().view.utilities.reviewbookmarknotes.resetToList();
+        }); 
+
+      iconBarDiv.append('div')
         .classed('fr _icon reload point', true)
+        .attr('title','Refresh Bookmark')
         .on('click', function () {
           d3.event.stopPropagation();
           d3.event.preventDefault();
@@ -190,10 +197,6 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
           });
 
         });
-
-
-
-
     };
 
 
