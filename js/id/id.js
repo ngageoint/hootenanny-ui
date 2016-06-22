@@ -177,7 +177,7 @@ window.iD = function () {
 
     context.save = function() {
         if (inIntro || (mode && mode.id === 'save')) return;
-        if(context.hoot().control.conflicts.isConflictReviewExist()) return t('browser_close.review_session');
+        if(hoot.checkReviewMode()) return t('browser_close.review_session');
         history.save();
         if (history.hasChanges()) return t('save.unsaved_changes');
     };

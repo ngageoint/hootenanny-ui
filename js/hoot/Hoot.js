@@ -272,6 +272,13 @@ Hoot.hoot = function (context) {
     };
 
     /**
+    * @desc checks to see if in review mode
+    **/
+    hoot.checkReviewMode = function() {
+        return !(d3.select('#conflicts-container').empty());
+    };
+
+    /**
     * @desc Check for valid coordinate pair
     * @param Coordinate pair [x,y]
     **/
