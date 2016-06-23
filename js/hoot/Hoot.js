@@ -337,6 +337,15 @@ Hoot.hoot = function (context) {
         });
     };
 
+    d3.selection.prototype.moveToBack = function() {
+        return this.each(function() {
+            var firstChild = this.parentNode.firstChild;
+            if (firstChild) {
+                this.parentNode.insertBefore(this, firstChild);
+            }
+        });
+    };
+
     /**
     * @desc Hotkey for swapping layers
     * @param event - key stroke event
