@@ -11,6 +11,8 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     var _lastSortRequest;
     var _DEFAULT_PAGE_COUNT = 50;
     var _currentPage = 1;
+    var _styles = 'fill-white small keyline-all round';
+    var _lblStyle = 'strong fill-light round-top';
 
     /**
     * @desc Creates container for bookmarks list.
@@ -19,20 +21,24 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     _instance.createContent = function(form){
 
         var hd = form.append('div')
-                    .classed('col12 fill-white small keyline-bottom', true);
+                    .classed('fr col10 fill-white small keyline-bottom', true);
         var sortSpan = hd.append('span')
                     .classed('text-left big col12 fill-darken0', true);
         var aa = sortSpan.append('a');
 
-        _createSortMenu(form, aa);
-        _createFilterByCreatorMenu(form, aa);
-        _createFilterByMapIdMenu(form, aa);
-        _createClearFilterButton(form, aa);
+        var filterBar = _instance.datasetcontainer = form.append('div')
+            .attr('id','reviewBookmarksFilters')
+            .classed('fl col4 fill-white small overflow keyline-all row16',true)
+            .append('fieldset');
 
+        _createClearFilterButton(form, filterBar);
+        _createSortMenu(form, filterBar);
+        _createFilterByCreatorMenu(form, filterBar);
+        _createFilterByMapIdMenu(form, filterBar);
 
         _instance.datasetcontainer = form.append('div')
             .attr('id', 'reviewBookmarksContent')
-            .classed('col12 fill-white small  row16 overflow keyline-all', true)
+            .classed('fr col8 fill-white small  row16 overflow keyline-all', true)
             .call(_instance.populatePopulateBookmarks);
 
             context.hoot().view.utilities.on('tabToggled', function(d){
@@ -115,31 +121,35 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     **/
     var _createMenu = function(form, menuDivName, displayText, meta, menuContainer, callback) {
 
-        var dd = menuContainer.append('div')
-        .attr('id', menuDivName)
-        .classed('fr quiet col1 center',true)
+        var groupDiv = menuContainer.append('div')
+            .classed(_styles,true)
+            .attr('id', 'group_container');
+        groupDiv.append('label')
+            .attr('id',menuDivName+'_label')
+            .classed(_lblStyle, true)
+            .text(meta.title)
+            .on('click', function () {
+                var grp = d3.select(this).node().nextSibling;
+                if(grp.classList.length===0){
+                    d3.select(grp).classed('custom-collapse',true);
+                } else {
+                    d3.select(grp).classed('custom-collapse',false);
+                }
+            });
 
+        groupDiv.append('div').attr('id',menuDivName+'_group').classed('custom-collapse',true);
+        var parent = d3.select('#'+menuDivName+'_group');
 
-        .on('click', function(){
-            d3.event.stopPropagation();
-            d3.event.preventDefault();
-            var self = d3.select('#reviewMenuForm' + menuDivName);
-            if(!self.empty()) {
-                self.remove();
-            } else {
-                callback(menuDivName, meta);
-            }
-
+        //now loop through children
+        _.each(meta.data, function(c){
+            var lbl = parent.append('label')
+                .style('text-align','left');
+            lbl.append('input').attr('type','checkbox').property('checked', false)
+                .on('change', function () {
+                    c.action(c);
+                });
+            lbl.append('span').text(c.name);
         });
-
-
-        dd.append('span')
-        .classed('quiet',true)
-        .text(displayText);
-
-        dd.append('span')
-        .classed('_icon down quiet', true);
-
     };
 
     /**
@@ -296,7 +306,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     var _createClearFilterButton = function(form, menuContainer) {
         var dd = menuContainer.append('div')
             .attr('id', 'btnClearFilters')
-            .classed('fl quiet col1 center',true)
+            .classed(_styles,true)
 
             .on('click', function(){
                 d3.event.stopPropagation();
@@ -310,9 +320,9 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             });
 
 
-        dd.append('span')
-            .classed('quiet',true)
-            .text('Clear Filters');
+        dd.append('label')
+            .classed(_lblStyle,true)
+            .text('Clear');
     };
 
     /**
