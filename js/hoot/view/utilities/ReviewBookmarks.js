@@ -31,19 +31,22 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             .classed('fl col4 fill-white small overflow keyline-all row16',true)
             .append('fieldset');
 
-        _createClearFilterButton(form, filterBar);
+        _createResetFilterButton(form, filterBar);
         _createSortMenu(form, filterBar);
         _createFilterByCreatorMenu(form, filterBar);
         _createFilterByMapIdMenu(form, filterBar);
 
+        var _initialSortRequest = {orderBy: "createdAt", asc: "true", limit: _DEFAULT_PAGE_COUNT, offset: 0};
+
         _instance.datasetcontainer = form.append('div')
             .attr('id', 'reviewBookmarksContent')
-            .classed('fr col8 fill-white small  row16 overflow keyline-all', true)
-            .call(_instance.populatePopulateBookmarks);
+            .classed('fr col8 fill-white small  row16 overflow keyline-all', true);
+            //.call(_instance.populatePopulateBookmarks);
+        _instance.populatePopulateBookmarks(null,_initialSortRequest);
 
             context.hoot().view.utilities.on('tabToggled', function(d){
                 if(d === '#utilReviewBookmarks') {
-                    _instance.populatePopulateBookmarks(null, null);
+                    _instance.populatePopulateBookmarks(null, _lastSortRequest);
                 }
             });
 
@@ -101,15 +104,6 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
     };
 
-    /**
-    * @desc Helper function for handling closing sort menu when user clicks outside of menu.
-    **/
-   var _globalSortClickHandler = function(){
-        var self = d3.select('#reviewMenuForm' + 'reviewBookmarksSortDiv');
-        if(!self.empty()) {
-            self.remove();
-        }
-    };
 
     /**
     * @desc Creates menu button.
@@ -144,12 +138,20 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         _.each(meta.data, function(c){
             var lbl = parent.append('label')
                 .style('text-align','left');
-            lbl.append('input').attr('type','checkbox').property('checked', false)
+            
+            var filterInput = lbl.append('input')
+                .attr('type',this.type)
+                .property('checked', true)
                 .on('change', function () {
                     c.action(c);
                 });
+            if(this.type==='radio'){filterInput.attr('name','sortByFilter').classed('sortByFilter',true);}
             lbl.append('span').text(c.name);
-        });
+        },meta);
+
+        if(meta.type==='radio'){
+            d3.select('.sortByFilter').property('checked',true);
+        }
     };
 
     /**
@@ -164,7 +166,6 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         _lastSortRequest.limit = _DEFAULT_PAGE_COUNT;
         _lastSortRequest.offset = 0;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
-        _globalSortClickHandler();
     };
 
     /**
@@ -192,23 +193,11 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         var meta = {};
         meta.title = 'Sort By';
         meta.data  = data;
+        meta.type = 'radio';
 
-        document.body.removeEventListener('click', _globalSortClickHandler );
-        document.body.addEventListener('click', _globalSortClickHandler );
         _createMenu(form, 'reviewBookmarksSortDiv', 'Sort', meta, menuContainer, function(divName, m){
-            context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
+            _sortData('createdAt','true');
         });
-    };
-
-    /**
-    * @desc Helper function for handling closing filter menu when user clicks outside of menu.
-    * @TODO: Filter and sort should be refactored into one..
-    **/
-    var _globalFilterByCreatorClickHandler = function(){
-        var self = d3.select('#reviewMenuForm' + 'reviewBookmarksFilterByCreatorDiv');
-        if(!self.empty()) {
-            self.remove();
-        }
     };
 
     /**
@@ -221,7 +210,6 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         _lastSortRequest.filterby = 'createdBy';
         _lastSortRequest.filterbyval = d.id;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
-        _globalFilterByCreatorClickHandler();
     };
 
     /**
@@ -237,14 +225,12 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         var meta = {};
         meta.title = 'Filter By Created By';
         meta.data  = data;
+        meta.type = 'checkbox';
 
-        document.body.removeEventListener('click', _globalFilterByCreatorClickHandler );
-        document.body.addEventListener('click', _globalFilterByCreatorClickHandler );
         // we have callback to data gets refreshed whenever we press button
         _createMenu(form, 'reviewBookmarksFilterByCreatorDiv', 'Creator', meta, menuContainer, function(divName, m){
             var d = _generateUsersData();
             m.data = d;
-            context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
         });
     };
 
@@ -278,18 +264,6 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         return data;
     };
 
-
-    /**
-    * @desc Helper function for handling closing filter menu when user clicks outside of menu.
-    * @TODO: Filter and sort should be refactored into one..
-    **/
-    var _globalFilterByMapIdClickHandler = function(){
-        var self = d3.select('#reviewMenuForm' + 'reviewBookmarksFilterByMapIdDiv');
-        if(!self.empty()) {
-            self.remove();
-        }
-    };
-
     /**
     * @desc Filter list .
     * @param d - filter data
@@ -300,12 +274,11 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         _lastSortRequest.filterby = 'mapId';
         _lastSortRequest.filterbyval = d.id;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
-        _globalFilterByMapIdClickHandler();
     };
 
-    var _createClearFilterButton = function(form, menuContainer) {
+    var _createResetFilterButton = function(form, menuContainer) {
         var dd = menuContainer.append('div')
-            .attr('id', 'btnClearFilters')
+            .attr('id', 'btnResetFilters')
             .classed(_styles,true)
 
             .on('click', function(){
@@ -313,16 +286,18 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                 d3.event.preventDefault();
                 _lastSortRequest = {};
                 _lastSortRequest.orderBy = 'createdAt';
-                _lastSortRequest.asc = 'false';
+                _lastSortRequest.asc = 'true';
                 _lastSortRequest.limit = _DEFAULT_PAGE_COUNT;
                 _lastSortRequest.offset = 0;
                 _instance.populatePopulateBookmarks(null, _lastSortRequest);
+                d3.select('#reviewBookmarksFilters').selectAll('input').property('checked',true);
+                d3.select('.sortByFilter').property('checked',true);
             });
 
 
         dd.append('label')
             .classed(_lblStyle,true)
-            .text('Clear');
+            .text('Reset');
     };
 
     /**
@@ -338,14 +313,12 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         var meta = {};
         meta.title = 'Filter By Layers';
         meta.data  = data;
+        meta.type = 'checkbox';
 
-        document.body.removeEventListener('click', _globalFilterByMapIdClickHandler );
-        document.body.addEventListener('click', _globalFilterByMapIdClickHandler );
         // we have callback to data gets refreshed whenever we press button
         _createMenu(form, 'reviewBookmarksFilterByMapIdDiv', 'Layers', meta, menuContainer, function(divName, m){
             var d = _generateLayerData();
             m.data = d;
-            context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
         });
     };
 
