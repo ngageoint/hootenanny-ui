@@ -976,10 +976,14 @@ rest.downloadReport = function(data)
     rest.getAllReviewBookmarks = function(data, callback) {
         var url = '/hoot-services/job/review/bookmarks/getall?orderBy=' + data.orderBy + '&asc=' + data.asc +
             '&limit=' + data.limit + '&offset=' + data.offset;
-        if(data.filterbyval && data.filterby) {
-            url += '&filterby=' + data.filterby + '&filterbyval=' + data.filterbyval;
+        if(data.createFilterVal){
+            url += '&createFilterVal=' + data.createFilterVal;
         }
-         d3.json(url, function (error, resp) {
+        if(data.layerFilterVal){
+            url += '&layerFilterVal=' + data.layerFilterVal;
+        }
+
+        d3.json(url, function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get all bookmarks failed! For detailed log goto Manage->Log'));
             }
@@ -990,7 +994,7 @@ rest.downloadReport = function(data)
     rest.getReviewBookmark = function(data, callback) {
          d3.json('/hoot-services/job/review/bookmarks/get?bookmarkId=' + data.bookmarkId, function (error, resp) {
             if (error) {
-                return callback(_alertError(error, 'Get bookmarkt failed! For detailed log goto Manage->Log'));
+                return callback(_alertError(error, 'Get bookmark failed! For detailed log goto Manage->Log'));
             }
             callback(resp);
         });
@@ -999,7 +1003,7 @@ rest.downloadReport = function(data)
     rest.getReviewBookmarkStat = function(data, callback) {
          d3.json('/hoot-services/job/review/bookmarks/stat', function (error, resp) {
             if (error) {
-                return callback(_alertError(error, 'Get bookmarkt failed! For detailed log goto Manage->Log'));
+                return callback(_alertError(error, 'Get bookmark failed! For detailed log goto Manage->Log'));
             }
             callback(resp);
         });
