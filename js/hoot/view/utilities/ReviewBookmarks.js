@@ -141,6 +141,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             
             var filterInput = lbl.append('input')
                 .attr('type',this.type)
+                .attr('filter_id',c.id)
                 .property('checked', true)
                 .on('change', function () {
                     c.action(c);
@@ -206,9 +207,44 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     **/
 
     var _filterData = function(d) {
+        var createFilterVal = "";
+        var layerFilterVal = "";
 
-        _lastSortRequest.filterby = 'createdBy';
-        _lastSortRequest.filterbyval = d.id;
+        // what if all unchecked....pass through something so not null
+
+        // If nothing is unchecked, keep as null
+        var creatorGroup = d3.select('#reviewBookmarksFilterByCreatorDiv_group');
+        var layerGroup = d3.select('#reviewBookmarksFilterByMapIdDiv_group');
+
+        // Otherwise, get list of ids for each checked for each filter and pass through as string
+        if(creatorGroup.selectAll('input:checked')[0].length === 0) {
+            _lastSortRequest.createFilterVal = -1;
+        } else if(creatorGroup.selectAll('input:not(:checked)')[0].length > 0) {
+            _.each(creatorGroup.selectAll('input:checked')[0],function(c){
+                var filterId = d3.select(c).attr('filter_id');
+                if(filterId && !isNaN(parseInt(filterId))){
+                    createFilterVal += parseInt(filterId) + ',';
+                }
+            });
+            _lastSortRequest.createFilterVal = createFilterVal.slice(0,-1);
+        } else {
+            _lastSortRequest.createFilterVal = null;
+        }
+
+        if(layerGroup.selectAll('input:checked')[0].length === 0) {
+            _lastSortRequest.layerFilterVal = -1;
+        } else if(layerGroup.selectAll('input:not(:checked)')[0].length > 0) {
+            _.each(layerGroup.selectAll('input:checked')[0],function(c){
+                var filterId = d3.select(c).attr('filter_id');
+                if(filterId && !isNaN(parseInt(filterId))){
+                    layerFilterVal += parseInt(filterId) + ',';
+                }
+            });
+            _lastSortRequest.layerFilterVal = layerFilterVal.slice(0,-1);
+        } else {
+            _lastSortRequest.layerFilterVal = null;
+        }
+
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
     };
 
@@ -262,18 +298,6 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         }
 
         return data;
-    };
-
-    /**
-    * @desc Filter list .
-    * @param d - filter data
-    **/
-
-    var _filterByMapIdData = function(d) {
-
-        _lastSortRequest.filterby = 'mapId';
-        _lastSortRequest.filterbyval = d.id;
-        _instance.populatePopulateBookmarks(null, _lastSortRequest);
     };
 
     var _createResetFilterButton = function(form, menuContainer) {
@@ -335,7 +359,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             var newobj = {};
             newobj.name = lyr.name;
             newobj.id = lyr.id;
-            newobj.action = _filterByMapIdData;
+            newobj.action = _filterData;
             data.push(newobj);
         }
 
