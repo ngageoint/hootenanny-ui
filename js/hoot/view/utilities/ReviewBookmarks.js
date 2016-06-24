@@ -155,35 +155,6 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         }
     };
 
-    /**
-    * @desc Updates menu options
-    * @param parent - div containing inputs
-    * @param validArray - array of ids that should be represented
-    * @param meta - meta data for menu dialog
-    **/
-    var _updateMenu = function(parent, validArray, data) {
-
-        // Need to get checked status before adding/removing
-
-        parent.selectAll('label').remove();
-
-        var usedIds = _.filter(data,function(d){return validArray.indexOf(d.id) >= 0;});
-
-        //now loop through children
-        _.each(usedIds, function(c){
-            var lbl = parent.append('label')
-                .style('text-align','left');
-            
-            var filterInput = lbl.append('input')
-                .attr('type','checkbox')
-                .attr('filter_id',c.id)
-                .on('change', function () {
-                    c.action(c);
-                });
-            if(this.type==='radio'){filterInput.attr('name','sortByFilter').classed('sortByFilter',true);}
-            lbl.append('span').text(c.name);
-        });
-    };    
 
     /**
     * @desc Sorts list .
@@ -239,42 +210,39 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     var _filterData = function(d) {
         var createFilterVal = "";
         var layerFilterVal = "";
-
-        // what if all unchecked....pass through something so not null
-
         // If nothing is unchecked, keep as null
         var creatorGroup = d3.select('#reviewBookmarksFilterByCreatorDiv_group');
         var layerGroup = d3.select('#reviewBookmarksFilterByMapIdDiv_group');
 
         // Otherwise, get list of ids for each checked for each filter and pass through as string
-        if(creatorGroup.selectAll('input:checked')[0].length === 0) {
+        if(creatorGroup.selectAll('input:checked')[0].length === 0 && layerGroup.selectAll('input:checked')[0].length === 0) {
             _lastSortRequest.createFilterVal = -999;
-        } else if(creatorGroup.selectAll('input:not(:checked)')[0].length > 0) {
-            _.each(creatorGroup.selectAll('input:checked')[0],function(c){
-                var filterId = d3.select(c).attr('filter_id');
-                if(filterId && !isNaN(parseInt(filterId))){
-                    createFilterVal += parseInt(filterId) + ',';
-                }
-            });
-            _lastSortRequest.createFilterVal = createFilterVal.slice(0,-1);
-        } else {
-            _lastSortRequest.createFilterVal = null;
-        }
-
-        if(layerGroup.selectAll('input:checked')[0].length === 0) {
             _lastSortRequest.layerFilterVal = -999;
-        } else if(layerGroup.selectAll('input:not(:checked)')[0].length > 0) {
-            _.each(layerGroup.selectAll('input:checked')[0],function(c){
-                var filterId = d3.select(c).attr('filter_id');
-                if(filterId && !isNaN(parseInt(filterId))){
-                    layerFilterVal += parseInt(filterId) + ',';
-                }
-            });
-            _lastSortRequest.layerFilterVal = layerFilterVal.slice(0,-1);
         } else {
-            _lastSortRequest.layerFilterVal = null;
-        }
+            if(creatorGroup.selectAll('input:not(:checked)')[0].length > 0) {
+                _.each(creatorGroup.selectAll('input:checked')[0],function(c){
+                    var filterId = d3.select(c).attr('filter_id');
+                    if(filterId && !isNaN(parseInt(filterId))){
+                        createFilterVal += parseInt(filterId) + ',';
+                    }
+                });
+                _lastSortRequest.createFilterVal = createFilterVal.slice(0,-1);
+            } else {
+                _lastSortRequest.createFilterVal = null;
+            }
 
+            if(layerGroup.selectAll('input:not(:checked)')[0].length > 0) {
+                _.each(layerGroup.selectAll('input:checked')[0],function(c){
+                    var filterId = d3.select(c).attr('filter_id');
+                    if(filterId && !isNaN(parseInt(filterId))){
+                        layerFilterVal += parseInt(filterId) + ',';
+                    }
+                });
+                _lastSortRequest.layerFilterVal = layerFilterVal.slice(0,-1);
+            } else {
+                _lastSortRequest.layerFilterVal = null;
+            }
+        }
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
     };
 
@@ -497,20 +465,6 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                         .select(function () {
                             d3.select(this).classed('fr _icon trash', true);
                         });
-
-
-                        // Clean up available options in sidebar
-                        var userContainer = d3.select('#reviewBookmarksFilterByCreatorDiv_group');
-                        var layerContainer = d3.select('#reviewBookmarksFilterByMapIdDiv_group');
-
-                        var validCreators = _.uniq(_.pluck(d.reviewBookmarks,'createdBy'));
-                        var validLayers = _.uniq(_.pluck(d.reviewBookmarks,'mapId'));
-
-                        var userData = _generateUsersData();
-                        var layerData = _generateLayerData();
-
-                        _updateMenu(userContainer,validCreators,userData);
-                        _updateMenu(layerContainer,validLayers,layerData);
                     });
 
                 });
