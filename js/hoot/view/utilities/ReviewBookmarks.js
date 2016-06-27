@@ -19,7 +19,9 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     * @param form - parent form.
     **/
     _instance.createContent = function(form){
-       
+        var hd = form.append('div')
+                    .classed('fr col10 fill-white small keyline-bottom', true);
+        
         var filterBar = _instance.datasetcontainer = form.append('div')
             .attr('id','reviewBookmarksFilters')
             .classed('fl col4 fill-white small overflow keyline-all row16',true)
@@ -314,10 +316,9 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     };
 
     var _createResetFilterButton = function(form, menuContainer) {
-        var dd = menuContainer.append('div')
-            .attr('id', 'btnResetFilters')
-            .classed(_styles,true)
-
+        var dd = menuContainer.append('span')
+            .text('Reset')
+            .classed('round strong big loud dark center col10 margin1 point inline row1 fl pad1y', true)
             .on('click', function(){
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
@@ -330,11 +331,6 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                 d3.select('#reviewBookmarksFilters').selectAll('input').property('checked',true);
                 d3.select('.sortByFilter').property('checked',true);
             });
-
-
-        dd.append('label')
-            .classed(_lblStyle,true)
-            .text('Reset');
     };
 
     /**
