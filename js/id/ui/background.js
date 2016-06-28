@@ -73,6 +73,7 @@ iD.ui.Background = function(context) {
             //collections.classed('hide', true);
         }
 
+        //Added for toggling the overlay labels on and off when the layer changes
         function checkLocatorOverlay(checkbox, d){
             var overlays = context.background()
                 .sources(context.map().extent())

@@ -27,7 +27,8 @@ iD.Background = function(context) {
         });
     }
 
-    //Added to remove the Locator Overlay layer on layers that have their own labels
+    //Added to remove the Locator Overlay layer on layers that have their own labels on 
+    //the initial launch of the map
     function checkLocatorNeed(locatorNeed){
         if (locatorNeed == "MAPNIK" || locatorNeed == "USGS Topographic Maps"){
             return false;
