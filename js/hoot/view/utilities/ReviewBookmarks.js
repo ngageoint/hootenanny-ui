@@ -19,12 +19,11 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     * @param form - parent form.
     **/
     _instance.createContent = function(form){
-        var hd = form.append('div')
-                    .classed('fr col10 fill-white small keyline-bottom', true);
+        form.append('div').classed('fr col10 fill-white small keyline-bottom', true);
         
         var filterBar = _instance.datasetcontainer = form.append('div')
             .attr('id','reviewBookmarksFilters')
-            .classed('fl col4 fill-white small overflow keyline-all row16',true)
+            .classed('fl col4 fill-white small overflow keyline-all row16',true);
 
         _createResetFilterButton(form, filterBar);
 
@@ -317,7 +316,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     };
 
     var _createResetFilterButton = function(form, menuContainer) {
-        var dd = menuContainer.append('span')
+        menuContainer.append('span')
             .text('Reset')
             .classed('strong big loud dark center col12 point inline row1 pad1y', true)
             .on('click', function(){
