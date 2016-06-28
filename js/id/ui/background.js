@@ -79,8 +79,8 @@ iD.ui.Background = function(context) {
                 .sources(context.map().extent())
                 .filter(function(d) { return d.overlay;});
 
-            var layerUsed = d.imageryUsed()
-            if (layerUsed == "MAPNIK" || layerUsed == "USGS Topographic Maps"){
+            var layerUsed = d.imageryUsed();
+            if (layerUsed === 'MAPNIK' || layerUsed === 'USGS Topographic Maps'){
                 if (checkbox.classed('active')){
                     context.background().hideOverlayLayer(overlays[0]);
                 } else {
@@ -96,7 +96,7 @@ iD.ui.Background = function(context) {
         function clickSetSource(d) {
             d3.event.preventDefault();
             context.background().baseLayerSource(d);
-            checkLocatorOverlay(d3.select("#locator_overlay"), d)
+            checkLocatorOverlay(d3.select('#locator_overlay'), d);
             selectLayer();
 
             //Added to zoom to imported basemap
