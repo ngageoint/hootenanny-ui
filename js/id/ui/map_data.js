@@ -486,6 +486,7 @@ iD.ui.MapData = function(context) {
                 .placement('top'));
         hSnapLabel.append('input')
             .attr('type', 'checkbox')
+            .property('checked',false)
             .on('click', function() {
                 context.map().updateSnapFeatures();
             });

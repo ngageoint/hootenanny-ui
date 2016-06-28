@@ -8,7 +8,7 @@ window.iD = function () {
     //eslint introduced in iD v1.7.5
 
     context.imperial = context.imperial ? context.imperial : false;
-    context.enableSnap = true;
+    context.enableSnap = false; //#520 default to false
     // https://github.com/systemed/iD/issues/772
     // http://mathiasbynens.be/notes/localstorage-pattern#comment-9
 
