@@ -126,6 +126,9 @@ iD.ui.Background = function(context) {
                 .filter(filter);
 
             var layerLinks = layerList.selectAll('li.layer')
+                .attr('id', function(d){
+                    return d.imageryUsed().replace(/ /g, '_').toLowerCase();
+                })
                 .data(sources, function(d) { return d.name(); })
                 .sort(sortSources); //added for iD v1.9.2
 
