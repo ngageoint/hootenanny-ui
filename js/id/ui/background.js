@@ -73,9 +73,30 @@ iD.ui.Background = function(context) {
             //collections.classed('hide', true);
         }
 
+        //Added for toggling the overlay labels on and off when the layer changes
+        function checkLocatorOverlay(checkbox, d){
+            var overlays = context.background()
+                .sources(context.map().extent())
+                .filter(function(d) { return d.overlay;});
+
+            var layerUsed = d.imageryUsed();
+            if (layerUsed === 'MAPNIK' || layerUsed === 'USGS Topographic Maps'){
+                if (checkbox.classed('active')){
+                    context.background().hideOverlayLayer(overlays[0]);
+                } else {
+                    return;
+                }
+            } else {
+                if (!checkbox.classed('active')){
+                    context.background().showOverlayLayer(overlays[0]);
+                }
+            }
+        }
+
         function clickSetSource(d) {
             d3.event.preventDefault();
             context.background().baseLayerSource(d);
+            checkLocatorOverlay(d3.select('#locator_overlay'), d);
             selectLayer();
 
             //Added to zoom to imported basemap
@@ -126,6 +147,9 @@ iD.ui.Background = function(context) {
                 .filter(filter);
 
             var layerLinks = layerList.selectAll('li.layer')
+                .attr('id', function(d){
+                    return d.imageryUsed().replace(/ /g, '_').toLowerCase();
+                })
                 .data(sources, function(d) { return d.name(); })
                 .sort(sortSources); //added for iD v1.9.2
 
