@@ -27,6 +27,15 @@ iD.Background = function(context) {
         });
     }
 
+    //Added to remove the Locator Overlay layer on layers that have their own labels
+    function checkLocatorNeed(locatorNeed){
+        if (locatorNeed == "MAPNIK" || locatorNeed == "USGS Topographic Maps"){
+            return false;
+        } else{
+            return true;
+        }
+    }
+
     function updateImagery() {
         var b = background.baseLayerSource(),
             o = overlayLayers.map(function (d) { return d.source().id; }).join(','),
@@ -504,14 +513,14 @@ iD.Background = function(context) {
             return d.overlay && d.default;
         });
 
-        if (locator) {
+        if (checkLocatorNeed(background.baseLayerSource().imageryUsed())) {
             background.toggleOverlayLayer(locator);
         }
 
         var overlays = (q.overlays || '').split(',');
         overlays.forEach(function(overlay) {
             overlay = findSource(overlay);
-            if (overlay) background.toggleOverlayLayer(overlay);
+            // if (overlay) background.toggleOverlayLayer(overlay);
         });
 
         // var gpx = q.gpx;
