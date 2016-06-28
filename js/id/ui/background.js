@@ -73,9 +73,29 @@ iD.ui.Background = function(context) {
             //collections.classed('hide', true);
         }
 
+        function checkLocatorOverlay(checkbox, d){
+            var overlays = context.background()
+                .sources(context.map().extent())
+                .filter(function(d) { return d.overlay;});
+
+            var layerUsed = d.imageryUsed()
+            if (layerUsed == "MAPNIK" || layerUsed == "USGS Topographic Maps"){
+                if (checkbox.classed('active')){
+                    context.background().hideOverlayLayer(overlays[0]);
+                } else {
+                    return;
+                }
+            } else {
+                if (!checkbox.classed('active')){
+                    context.background().showOverlayLayer(overlays[0]);
+                }
+            }
+        }
+
         function clickSetSource(d) {
             d3.event.preventDefault();
             context.background().baseLayerSource(d);
+            checkLocatorOverlay(d3.select("#locator_overlay"), d)
             selectLayer();
 
             //Added to zoom to imported basemap
