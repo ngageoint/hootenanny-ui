@@ -337,7 +337,7 @@ Hoot.control.utilities.folder = function(context) {
                   } else if(d.type.toLowerCase()==='dataset'){
                       items = [
                          {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
-                         {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'},
+                         {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'}
                       ];
 
                       var layerLength = context.hoot().model.layers.getSelectedLayers().length;
@@ -348,7 +348,7 @@ Hoot.control.utilities.folder = function(context) {
                             items.push(
                               {title:'Add as Reference Dataset',icon:'export',click:'addReferenceDataset'},
                               {title:'Add as Secondary Dataset',icon:'export',click:'addSecondaryDataset'}
-                            )
+                            );
                           } else {
                             // Determine if reference or secondary is already loaded
                             var sels = d3.select('#sidebar2').selectAll('form')[0];
@@ -404,7 +404,7 @@ Hoot.control.utilities.folder = function(context) {
                           };
 
                             var node;
-                            if(d3.selectAll('.hootImport')[0].length==2){
+                            if(d3.selectAll('.hootImport')[0].length===2){
                               if(item.click==='addReferenceDataset'){node = d3.select(d3.select(d3.selectAll('.hootImport')[0][0]).node());}
                               if(item.click==='addSecondaryDataset'){node = d3.select(d3.select(d3.selectAll('.hootImport')[0][1]).node());}
                             } else {
@@ -413,8 +413,8 @@ Hoot.control.utilities.folder = function(context) {
 
                             switch (item.click) {
                             //Datasets
-                            case 'addReferenceDataset': key.color='violet';context.hoot().control.import.forceAddLayer(key,node,key.color); break;
-                            case 'addSecondaryDataset': key.color='orange';context.hoot().control.import.forceAddLayer(key,node,key.color); break;
+                            case 'addReferenceDataset': key.color='violet'; context.hoot().control.import.forceAddLayer(key,node,key.color); break;
+                            case 'addSecondaryDataset': key.color='orange'; context.hoot().control.import.forceAddLayer(key,node,key.color); break;
                             case 'exportDataset': context.hoot().view.utilities.dataset.exportDataset(d,container); break;
                             case 'deleteDataset': context.hoot().view.utilities.dataset.deleteDatasets(context.hoot().model.layers.getSelectedLayers(),container); break;
                             case 'moveDataset': context.hoot().view.utilities.dataset.moveDatasets(context.hoot().model.layers.getSelectedLayers()); break;
