@@ -169,33 +169,14 @@ Hoot.view.utilities = function (context){
 
         ////////////VERSION///////////////////
 
-        header.append('div')
-        .append('a')
-        .attr('href', '#version')
-        .classed('inline pad2 _icon dark strong ', true)
-        .html('Hootenanny<span class=\'logo\'> | </span>NGA Research')
-        .on('click', function () {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-                var vis = !d3.selectAll('#jobsBG').classed('hidden');
-                var txt = vis ? 'Manage' : 'Return to Map';
-                if (vis){
-                    d3.select('#manageTabBtn')
-                        .classed('fill-light', !vis)
-                        .classed('dark', vis)
-                        .text(txt);
-                    d3.selectAll('#jobsBG')
-                        .classed('hidden', vis);
-                }
+        var labelContainer = header.append('div')
 
-                if(_activeSettingsTabId && _activeSettingsTabId === '#utilReviewBookmarks' && txt === 'Manage') {
-                    context.hoot().view.utilities.reviewbookmarknotes.resetToList();
-                }
-            });
-         /*.on('click', function ()
-         {
+        labelContainer.append('div')
+        .attr('href', '#version')
+        .classed('inline dark strong hoot_label cursor margin2y', true)
+        .html('Hootenanny<span class=\'divider\'> | </span>NGA Research')
+
              context.hoot().view.versioninfo.showPopup();
-         });*/
 
         var versionBG = d3.select('body')
          .append('div')
