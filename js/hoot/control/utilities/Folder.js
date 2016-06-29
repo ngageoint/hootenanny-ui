@@ -334,25 +334,38 @@ Hoot.control.utilities.folder = function(context) {
                       d3.select('.context-menu').style('display', 'none');
                       d3.event.preventDefault();
                       return;
-                  }
-                  else if(d.type.toLowerCase()==='dataset'){
-                      //http://jsfiddle.net/1mo3vmja/2/
-                      if(context.hoot().model.layers.getSelectedLayers().length===1){
-                          items = [
+                  } else if(d.type.toLowerCase()==='dataset'){
+                      items = [
+                         {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
+                         {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'},
+                      ];
+
+                      var layerLength = context.hoot().model.layers.getSelectedLayers().length;
+
+                      if(layerLength===1){
+                          // if no reference/secondary layer has been loaded, provide the option
+                          if(_.isEmpty(context.hoot().model.layers.getLayers())){
+                            items.push(
+                              {title:'Add as Reference Dataset',icon:'export',click:'addReferenceDataset'},
+                              {title:'Add as Secondary Dataset',icon:'export',click:'addSecondaryDataset'}
+                            )
+                          } else {
+                            // Determine if reference or secondary is already loaded
+                            var sels = d3.select('#sidebar2').selectAll('form')[0];
+                            if(d3.select(sels[0]).datum().name!==undefined){
+                              items.push({title:'Add as Secondary Dataset',icon:'export',click:'addSecondaryDataset'});
+                            } else if(d3.select(sels[1]).datum().name!==undefined){
+                              items.push({title:'Add as Reference Dataset',icon:'export',click:'addReferenceDataset'});
+                            }
+                          }
+
+                          items.push(
                                        {title:'Export',icon:'export',click:'exportDataset'},
-                                       {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
-                                       {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'},
                                        {title:'Rename ' + d.name,icon:'info',click:'renameDataset'},
                                        {title:'Prepare for Validation',icon:'sprocket',click:'prepValidation'},
                                        {title:'Filter non-HGIS POIs',icon:'sprocket',click:'filter'}
-                                   ];
-                      }
-                      else if(context.hoot().model.layers.getSelectedLayers().length>1){
-                          items = [
-                                   {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
-                                   {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'}
-                               ];
-                      } else {
+                                   );
+                      } else if(layerLength <= 0) {
                           d3.select('.context-menu').style('display', 'none');
                           d3.event.preventDefault();
                           return;
@@ -385,8 +398,23 @@ Hoot.control.utilities.folder = function(context) {
                         .data(items).enter()
                         .append('li')
                         .on('click' , function(item) {
+                          var key = {
+                            'name': d.name,
+                            'id':d.id
+                          };
+
+                            var node;
+                            if(d3.selectAll('.hootImport')[0].length==2){
+                              if(item.click==='addReferenceDataset'){node = d3.select(d3.select(d3.selectAll('.hootImport')[0][0]).node());}
+                              if(item.click==='addSecondaryDataset'){node = d3.select(d3.select(d3.selectAll('.hootImport')[0][1]).node());}
+                            } else {
+                              node = d3.select(d3.selectAll('.hootImport').node());
+                            }
+
                             switch (item.click) {
                             //Datasets
+                            case 'addReferenceDataset': key.color='violet';context.hoot().control.import.forceAddLayer(key,node,key.color); break;
+                            case 'addSecondaryDataset': key.color='orange';context.hoot().control.import.forceAddLayer(key,node,key.color); break;
                             case 'exportDataset': context.hoot().view.utilities.dataset.exportDataset(d,container); break;
                             case 'deleteDataset': context.hoot().view.utilities.dataset.deleteDatasets(context.hoot().model.layers.getSelectedLayers(),container); break;
                             case 'moveDataset': context.hoot().view.utilities.dataset.moveDatasets(context.hoot().model.layers.getSelectedLayers()); break;
