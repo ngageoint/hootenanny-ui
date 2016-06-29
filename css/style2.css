@@ -461,3 +461,33 @@ table.map-metadata {
     color: #a0a0a0;
     font-size: 13px;
 }
+
+/*About Icon*/
+.about_icon{
+  width: 25px;
+  float: left;
+  padding-right: 5px;
+  padding-top: 23px; /*Puts I in the visual center of label*/
+}
+
+/*Hootenanny label*/
+.hoot_label{
+  height: 20px;
+  line-height:20px;
+  color: white;
+}
+
+/*Divider in label*/
+.divider{
+  color: #999;
+  margin: 0 5px;
+}
+
+/*Add cursor*/
+.cursor{
+  cursor: url(img/cursor-pointer.png) 6 1, pointer;
+}
+
+.margin2y{
+  margin: 20px 0;
+}
