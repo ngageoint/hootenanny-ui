@@ -176,6 +176,9 @@ Hoot.view.utilities = function (context){
         .classed('inline dark strong hoot_label cursor margin2y', true)
         .html('Hootenanny<span class=\'divider\'> | </span>NGA Research')
 
+        labelContainer.append('img')
+        .attr('src', 'img/about_white.svg')
+        .classed('about_icon cursor', true)
              context.hoot().view.versioninfo.showPopup();
 
         var versionBG = d3.select('body')
