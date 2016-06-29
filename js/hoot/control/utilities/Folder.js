@@ -334,25 +334,35 @@ Hoot.control.utilities.folder = function(context) {
                       d3.select('.context-menu').style('display', 'none');
                       d3.event.preventDefault();
                       return;
-                  }
-                  else if(d.type.toLowerCase()==='dataset'){
-                      //http://jsfiddle.net/1mo3vmja/2/
-                      if(context.hoot().model.layers.getSelectedLayers().length===1){
-                          items = [
+                  } else if(d.type.toLowerCase()==='dataset'){
+                      items = [
+                         {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
+                         {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'},
+                      ];
+
+                      var layerLength = context.hoot().model.layers.getSelectedLayers().length;
+
+                      if(layerLength===1){
+                          // if no reference/secondary layer has been loaded, provide the option
+                          var loadedLayerLength = context.hoot().model.layers.getLayers().length;
+                          if(loadedLayerLength === 0){
+                            items.push(
+                              {title:'Add as Reference Dataset',icon:'export',click:'exportDataset'},
+                              {title:'Add as Secondary Dataset',icon:'export',click:'exportDataset'}
+                            )
+                          } else if (loadedLayerLength === 1) {
+                            // Determine if reference or secondary is already loaded
+                            var sels = d3.select('#sidebar2').selectAll('form')[0];
+
+                          }
+
+                          items.push(
                                        {title:'Export',icon:'export',click:'exportDataset'},
-                                       {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
-                                       {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'},
                                        {title:'Rename ' + d.name,icon:'info',click:'renameDataset'},
                                        {title:'Prepare for Validation',icon:'sprocket',click:'prepValidation'},
                                        {title:'Filter non-HGIS POIs',icon:'sprocket',click:'filter'}
-                                   ];
-                      }
-                      else if(context.hoot().model.layers.getSelectedLayers().length>1){
-                          items = [
-                                   {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
-                                   {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'}
-                               ];
-                      } else {
+                                   );
+                      } else if(layerLength <= 0) {
                           d3.select('.context-menu').style('display', 'none');
                           d3.event.preventDefault();
                           return;
