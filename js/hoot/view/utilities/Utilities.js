@@ -169,7 +169,7 @@ Hoot.view.utilities = function (context){
 
         ////////////VERSION///////////////////
 
-        var labelContainer = header.append('div')
+        var labelContainer = header.append('div');
 
         labelContainer.append('div')
         .attr('href', '#version')
