@@ -146,7 +146,12 @@ iD.ui.Background = function(context) {
                 .sources(context.map().extent())
                 .filter(filter);
 
+            d3.selectAll('.assignID')
+                .selectAll('li.layer')
+                .attr('id', function(d){
                     return d.imageryUsed().replace(/ /g, '_').toLowerCase();
+                })
+
             var layerLinks = layerList.selectAll('li.layer')
                 .data(sources, function(d) { return d.name(); })
                 .sort(sortSources); //added for iD v1.9.2
