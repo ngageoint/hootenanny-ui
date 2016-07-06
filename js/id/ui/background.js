@@ -150,7 +150,7 @@ iD.ui.Background = function(context) {
                 .selectAll('li.layer')
                 .attr('id', function(d){
                     return d.imageryUsed().replace(/ /g, '_').toLowerCase();
-                })
+                });
 
             var layerLinks = layerList.selectAll('li.layer')
                 .data(sources, function(d) { return d.name(); })
