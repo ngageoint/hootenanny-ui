@@ -149,7 +149,9 @@ iD.ui.Background = function(context) {
             d3.selectAll('.assignID')
                 .selectAll('li.layer')
                 .attr('id', function(d){
-                    return d.imageryUsed().replace(/ /g, '_').toLowerCase();
+                    if (typeof d.imageryUsed() === 'string'){
+                        return d.imageryUsed().replace(/ /g, '_').toLowerCase();
+                    }
                 });
 
             var layerLinks = layerList.selectAll('li.layer')
