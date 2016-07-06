@@ -305,7 +305,7 @@ iD.ui.Background = function(context) {
             .style('opacity', function(d) { return 1.25 - d; });
 
         var backgroundList = content.append('ul')
-            .attr('class', 'layer-list');
+            .attr('class', 'layer-list assignID');
 
         var custom = backgroundList.append('li')
             .attr('class', 'custom_layer')
@@ -417,7 +417,7 @@ iD.ui.Background = function(context) {
         //END: Added for EGD-plugin
 
         var overlayList = content.append('ul')
-            .attr('class', 'layer-list');
+            .attr('class', 'layer-list assignID');
 
         //Added for EGD-plugin
 
