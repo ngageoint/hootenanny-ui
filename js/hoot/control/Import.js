@@ -295,6 +295,11 @@ Hoot.control.import = function (context,selection) {
 
 
     ETL.forceAddLayer = function(key, self, color) {
+        if(context.hoot().model.layers.getLayers()[key.name]){
+            iD.ui.Alert('A layer with this name has already been added to the map!','warning',new Error().stack);
+            return;
+        }
+
         context.hoot().model.layers.addLayer(key, function(res){
             context.hoot().model.layers.setRecentlyUsedLayers(key.name);
             //update combo boxes
