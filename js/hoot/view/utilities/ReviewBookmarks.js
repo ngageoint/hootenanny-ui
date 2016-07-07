@@ -203,12 +203,12 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             {'name': 'Modified At (dsc)', 'action':function(){_sortData('lastModifiedAt', 'false');}},
             {'name': 'Modified By (asc)', 'action':function(){_sortData('lastModifiedBy', 'true');}},
             {'name': 'Modified By (dsc)', 'action':function(){_sortData('lastModifiedBy', 'false');}},
-            {'name': 'Review ID (asc)', 'action':function(){ _sortData('id', 'true');}},
-            {'name': 'Review ID (dsc)', 'action':function(){ _sortData('id', 'false');}},
+            /*{'name': 'Review ID (asc)', 'action':function(){ _sortData('id', 'true');}},
+            {'name': 'Review ID (dsc)', 'action':function(){ _sortData('id', 'false');}},*/
             {'name': 'Map ID (asc)', 'action':function(){ _sortData('mapId', 'true');}},
-            {'name': 'Map ID (dsc)', 'action':function(){ _sortData('mapId', 'false');}},
+            {'name': 'Map ID (dsc)', 'action':function(){ _sortData('mapId', 'false');}}/*,
             {'name': 'Relation ID (asc)', 'action':function(){ _sortData('relationId', 'true');}},
-            {'name': 'Relation ID (dsc)', 'action':function(){ _sortData('relationId', 'false');}}
+            {'name': 'Relation ID (dsc)', 'action':function(){ _sortData('relationId', 'false');}}*/
         ];
         var meta = {};
         meta.title = 'Sort By';
