@@ -147,7 +147,7 @@ iD.ui.Background = function(context) {
                 .filter(filter);
 
             var layerLinks = layerList.selectAll('li.layer')
-/*                .attr('id', function(d){
+                /*.attr('id', function(d){
                     return d.imageryUsed().replace(/ /g, '_').toLowerCase();
                 })*/
                 .data(sources, function(d) { return d.name(); })
