@@ -194,9 +194,12 @@ Hoot.view.utilities.dataset = function(context)
 
                 //remove folder
                 if(data.type==='folder'){
-                    context.hoot().model.folders.deleteFolder(data.id,function(resp){
-                        if(resp===false){iD.ui.Alert('Unable to delete folder.','error',new Error().stack);}
-                        context.hoot().model.folders.refresh(function () {context.hoot().model.import.updateTrees();});
+                    var folderArray = context.hoot().model.folders.getChildrenFolders(data.id);
+                    _.each(_.uniq(folderArray),function(f){
+                        context.hoot().model.folders.deleteFolder(f,function(resp){
+                            if(resp===false){iD.ui.Alert('Unable to delete folder.','error',new Error().stack);}
+                            context.hoot().model.folders.refresh(function () {context.hoot().model.import.updateTrees();});
+                        });
                     });
                 }
             }
