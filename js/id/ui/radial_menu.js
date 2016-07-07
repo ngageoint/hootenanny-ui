@@ -20,9 +20,11 @@ iD.ui.RadialMenu = function(context, operations) {
         var sidebarWidth = d3.select('#sidebar').node().getBoundingClientRect().width
         var differenceWidth = sidebarWidth - 400;
 
+        var x = center[0] - differenceWidth;
+        var y = center[1];
         menu = selection.append('g')
             .attr('class', 'radial-menu')
-            .attr('transform', 'translate(' + center + ')')
+            .attr('transform', 'translate(' + x + ',' + y + ')')
             .attr('opacity', 0);
 
         menu.transition()
