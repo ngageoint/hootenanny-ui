@@ -400,7 +400,7 @@ Hoot.control.utilities.folder = function(context) {
                         .on('click' , function(item) {
                           var key = {
                             'name': d.name,
-                            'id':d.id
+                            'id':d.id.toString()
                           };
 
                             var node;
