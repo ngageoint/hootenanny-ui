@@ -146,10 +146,15 @@ iD.ui.Background = function(context) {
                 .sources(context.map().extent())
                 .filter(filter);
 
+            d3.selectAll('.assignID')
+                .selectAll('li.layer')
+                .attr('id', function(d){
+                    if (typeof d.imageryUsed() === 'string'){
+                        return d.imageryUsed().replace(/ /g, '_').toLowerCase();
+                    }
+                });
+
             var layerLinks = layerList.selectAll('li.layer')
-                /*.attr('id', function(d){
-                    return d.imageryUsed().replace(/ /g, '_').toLowerCase();
-                })*/
                 .data(sources, function(d) { return d.name(); })
                 .sort(sortSources); //added for iD v1.9.2
 
@@ -302,7 +307,7 @@ iD.ui.Background = function(context) {
             .style('opacity', function(d) { return 1.25 - d; });
 
         var backgroundList = content.append('ul')
-            .attr('class', 'layer-list');
+            .attr('class', 'layer-list assignID');
 
         var custom = backgroundList.append('li')
             .attr('class', 'custom_layer')
@@ -414,7 +419,7 @@ iD.ui.Background = function(context) {
         //END: Added for EGD-plugin
 
         var overlayList = content.append('ul')
-            .attr('class', 'layer-list');
+            .attr('class', 'layer-list assignID');
 
         //Added for EGD-plugin
 
