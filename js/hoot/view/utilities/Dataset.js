@@ -127,10 +127,11 @@ Hoot.view.utilities.dataset = function(context)
 
         var datasets2remove = [];
         if(d.type==='folder'){
-            var folderId = d.id;
             context.hoot().model.layers.setLayerLinks();
+            var folderArray = context.hoot().model.folders.getChildrenFolders(d.id);
+
             datasets2remove = _.filter(context.hoot().model.layers.getAvailLayers(),function(lyr){
-                return lyr.folderId===folderId;
+                return folderArray.indexOf(lyr.folderId) >= 0; //return lyr.folderId===folderId;
             });
         } else {
             var availLayers = context.hoot().model.layers.getAvailLayers();
@@ -175,9 +176,11 @@ Hoot.view.utilities.dataset = function(context)
         }//,container);
 
         if(datasets2remove.length===0){
-            context.hoot().model.folders.deleteFolder(d.id,function(resp){
-                if(resp===false){iD.ui.Alert('Unable to delete folder.','error',new Error().stack);}
-                context.hoot().model.folders.refresh(function () {context.hoot().model.import.updateTrees();});
+            _.each(_.uniq(folderArray),function(f){
+                context.hoot().model.folders.deleteFolder(f,function(resp){
+                    if(resp===false){iD.ui.Alert('Unable to delete folder.','error',new Error().stack);}
+                    context.hoot().model.folders.refresh(function () {context.hoot().model.import.updateTrees();});
+                });
             });
         }
     };
@@ -191,9 +194,12 @@ Hoot.view.utilities.dataset = function(context)
 
                 //remove folder
                 if(data.type==='folder'){
-                    context.hoot().model.folders.deleteFolder(data.id,function(resp){
-                        if(resp===false){iD.ui.Alert('Unable to delete folder.','error',new Error().stack);}
-                        context.hoot().model.folders.refresh(function () {context.hoot().model.import.updateTrees();});
+                    var folderArray = context.hoot().model.folders.getChildrenFolders(data.id);
+                    _.each(_.uniq(folderArray),function(f){
+                        context.hoot().model.folders.deleteFolder(f,function(resp){
+                            if(resp===false){iD.ui.Alert('Unable to delete folder.','error',new Error().stack);}
+                            context.hoot().model.folders.refresh(function () {context.hoot().model.import.updateTrees();});
+                        });
                     });
                 }
             }
