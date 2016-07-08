@@ -86,7 +86,8 @@ Hoot.model.export = function (context)
         param.translation = selectedTranslation;
         //OSM API db override - Datasets are written to an OSM API database as OSM, so translation 
         //is ignored here.
-        if (selectedOutType === 'osm_api_db')
+        //Do the same if selected translation is "None"
+        if (selectedOutType === 'osm_api_db' || oTrans.NAME === 'None')
         {
             param.translation = 'NONE';
         }

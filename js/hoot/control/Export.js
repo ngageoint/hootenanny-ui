@@ -147,6 +147,7 @@ Hoot.control.export = function (context, sidebar) {
                         
                         d3.select(this)
                         .on('change',function(){
+                            checkForOSM();
                             checkForTemplate();
                         });
                     }
@@ -195,16 +196,40 @@ Hoot.control.export = function (context, sidebar) {
                 event.saveLayer(save, layer);
             });
          });
+
+        function checkForOSM(){
+            var container = d3.select('#sidebar2');
+            var exportType = container.select('#fileExportFileType').value();
+            var transCombobox = container.select('#fileExportTranslation').data()[0].combobox;
+            var transData = transCombobox.data;
+
+            if(exportType !== 'Open Street Map (OSM)'){ 
+                // Remove 'No Translation' from Translation options            
+                transData = _.without(transCombobox.data,_.find(transCombobox.data,{'NAME':'None'}));
+            } else {
+                transData.push({'DESCRIPTION':'No Translation','NAME':'None'});
+            }
+
+            var combo = d3.combobox()
+            .data(_.map(transData, function (n) {
+                return {
+                    value: n.DESCRIPTION,
+                    title: n.DESCRIPTION
+                };
+            }));
+            container.select('#fileExportTranslation').style('width','100%').call(combo);            
+        }
         
         function checkForTemplate(){
             var hidden=false;
 
-            var exportType = d3.select('.fileExportFileType').value();
-            var transType = d3.select('.fileExportTranslation').value();
+            var container = d3.select('#sidebar2');
+            var exportType = container.select('.fileExportFileType').value();
+            var transType = container.select('.fileExportTranslation').value();
 
             // Check if output type is File Geodatabase
-            if (exportType===''){exportType=d3.select('.fileExportFileType').attr('placeholder');}
-            if (transType===''){transType=d3.select('.fileExportTranslation').attr('placeholder');}
+            if (exportType===''){exportType=container.select('.fileExportFileType').attr('placeholder');}
+            if (transType===''){transType=container.select('.fileExportTranslation').attr('placeholder');}
 
             if(exportType!=='File Geodatabase'){
                 hidden=true;
@@ -219,9 +244,9 @@ Hoot.control.export = function (context, sidebar) {
                 hidden=true;
             }
 
-            d3.select('.cboxAppendFGDBTemplate').classed('hidden',hidden);
+            container.select('.cboxAppendFGDBTemplate').classed('hidden',hidden);
             if(hidden){
-                d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
+                container.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
             }
         }
 
