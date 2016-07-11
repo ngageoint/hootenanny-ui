@@ -195,6 +195,10 @@ iD.ui.Background = function(context) {
             overlayList.call(drawList, 'checkbox', clickSetOverlay, function(d) { return d.overlay; });
 
             var layerIds = _.pluck(context.hoot().model.layers.getLayers(), 'id');
+            if (layerIds.length > 0){
+                var overlayParent = overlayList.node()
+                var overlayLayers = overlayList.selectAll('li.layer')
+            }
             selectLayer();
 
             var source = context.background().baseLayerSource();
