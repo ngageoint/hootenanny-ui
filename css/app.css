@@ -1970,6 +1970,10 @@ div.full-screen > button:hover {
     padding-bottom: 10px;
 }
 
+.layer-browse{
+    width: 10%;
+}
+
 .layer-list, .controls-list {
     margin-bottom: 10px;
     border-top: 1px;
@@ -2185,7 +2189,7 @@ div.full-screen > button:hover {
 .background-control .layer-list button {
     float: right;
     height: 100%;
-    width: 10%;
+    /*width: 10%;*/
     border-left: 1px solid #CCC;
     border-radius: 0;
 }
