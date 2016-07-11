@@ -519,7 +519,6 @@ Hoot.control.utilities.folder = function(context) {
 
     hoot_control_utilities_folder.importFolderContainer = function (data) {
         context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
-
         var d_form = [{
             label: 'Folder Name',
             placeholder:'',
@@ -597,6 +596,43 @@ Hoot.control.utilities.folder = function(context) {
                         } else {
                             d3.select(this).classed('invalidName',false).attr('title',null);
                         }
+                    });
+                    d3.select(this).on('keypress', function () {
+                      var key = d3.event.keyCode;
+                      if (key === 13){
+                        if(!d3.selectAll('.invalidName').empty()){return;}
+
+                        //check if layer with same name already exists...
+                        if(_form.select('.reset.NewFolderName').value()==='' || _form.select('.reset.NewFolderName').value()===_form.select('.reset.NewFolderName').attr('placeholder')){
+                            iD.ui.Alert('Please enter an output folder name.','warning',new Error().stack);
+                            return;
+                        }
+
+                        var resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
+                        if(resp !== true){
+                            iD.ui.Alert(resp,'warning',new Error().stack);
+                            return;
+                        }
+
+                        resp = context.hoot().model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
+                        if(resp !== true){
+                            iD.ui.Alert(resp,'warning',new Error().stack);
+                            return;
+                        }
+
+                        var data={};
+                        data.parentId=folderId;
+                        data.folderName = _form.select('.reset.NewFolderName').value();
+
+                        Hoot.model.REST('addFolder',data,function(){
+                            context.hoot().model.folders.refresh(function () {
+                                context.hoot().model.folders.refreshLinks(function(){
+                                    context.hoot().model.layers.RefreshLayers();
+                                    modalbg.remove();
+                                });
+                            });
+                        });
+                      }
                     });
                 }
             });
@@ -798,5 +834,7 @@ Hoot.control.utilities.folder = function(context) {
             return modalbg;
         };
 
+
     return hoot_control_utilities_folder;
 };
+
