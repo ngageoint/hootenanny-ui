@@ -454,7 +454,7 @@ Hoot.control.utilities.importdataset = function(context) {
         } else if(typeName === 'OSM') {
             d3.select('#ingestfileuploader')
             .property('multiple', 'false')
-            .attr('accept', '.osm')
+            .attr('accept', '.osm,.osm.zip')
             .attr('webkitdirectory', null)
             .attr('directory', null);
         } else {
@@ -742,19 +742,15 @@ Hoot.control.utilities.importdataset = function(context) {
             if(_.isEmpty(_bInfo)){_bInfo = {'name':'Unknown','version':'Unknown'};}
         }
 
-         var importTypes = [];
+        var importTypes = [];
         var fileTypes = {};
         fileTypes.value = 'FILE';
-        if(_bInfo.name.substring(0,3) === 'Chr'){
-            fileTypes.title = 'File (shp,zip)';
-        } else {
-            fileTypes.title = 'File (shp,zip,gdb.zip)';
-        }
+        fileTypes.title = 'File (shp,zip,gdb.zip)';
         importTypes.push(fileTypes);
 
         var osmTypes = {};
         osmTypes.value = 'OSM';
-        osmTypes.title = 'File (osm)';
+        osmTypes.title = 'File (osm,osm.zip)';
         importTypes.push(osmTypes);
 
         var geonameTypes = {};
