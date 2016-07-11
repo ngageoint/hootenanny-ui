@@ -106,10 +106,12 @@ iD.ui.MapMetadata = function(data) {
         var download = '';
         // params
         if (d.tags && d.tags.params) {
+            var RefLayerName = d.tags.input1Name || 'Reference Layer Missing';
+            var SecLayerName = d.tags.input2Name || 'Secondary Layer Missing';
             var params = JSON.parse(d.tags.params.replace(/\\"/g, '"'));
             var pdata = d3.entries({
-                'Reference Layer': d.tags.input1Name,
-                'Secondary Layer': d.tags.input2Name,
+                'Reference Layer': RefLayerName,
+                'Secondary Layer': SecLayerName,
                 'Conflation Type': params.CONFLATION_TYPE,
                 'Conflated Layer': d.name
             });
@@ -156,12 +158,12 @@ iD.ui.MapMetadata = function(data) {
                 2: 'ways',
                 3: 'relations'
             }};
-            layercounts[d.tags.input1Name] = {
+            layercounts[RefLayerName] = {
                 nodes: stats['Node Count'][0],
                 ways: stats['Way Count'][0],
                 relations: stats['Relation Count'][0]
             };
-            layercounts[d.tags.input2Name] = {
+            layercounts[SecLayerName] = {
                 nodes: stats['Node Count'][1],
                 ways: stats['Way Count'][1],
                 relations: stats['Relation Count'][1]
@@ -174,26 +176,22 @@ iD.ui.MapMetadata = function(data) {
             var layerfeatures = {count: {
                 1: 'pois',
                 2: 'roads',
-                3: 'buildings',
-                4: 'waterways'
+                3: 'buildings'
             }};
-            layerfeatures[d.tags.input1Name] = {
+            layerfeatures[RefLayerName] = {
                 pois: stats['POI Count'][0],
                 roads: stats['Highway Count'][0],
-                buildings: stats['Building Count'][0],
-                waterways: stats['Waterway Count'][0]
+                buildings: stats['Building Count'][0]
             };
-            layerfeatures[d.tags.input2Name] = {
+            layerfeatures[SecLayerName] = {
                 pois: stats['POI Count'][1],
                 roads: stats['Highway Count'][1],
-                buildings: stats['Building Count'][1],
-                waterways: stats['Waterway Count'][1]
+                buildings: stats['Building Count'][1]
             };
             layerfeatures[d.name] = {
                 pois: stats['POI Count'][2],
                 roads: stats['Highway Count'][2],
-                buildings: stats['Building Count'][2],
-                waterways: stats['Waterway Count'][2]
+                buildings: stats['Building Count'][2]
             };
             var featurecounts = {
                 count: {
@@ -215,11 +213,6 @@ iD.ui.MapMetadata = function(data) {
                     unmatched: stats['Unmatched Buildings'][2],
                     merged: stats['Conflated Buildings'][2],
                     review: stats['Buildings Marked for Review'][2]
-                },
-                waterways: {
-                    unmatched: stats['Unmatched Waterways'][2],
-                    merged: stats['Conflated Waterways'][2],
-                    review: stats['Waterways Marked for Review'][2]
                 }
             };
             var featurepercents = {
@@ -242,13 +235,26 @@ iD.ui.MapMetadata = function(data) {
                     unmatched: formatPercent(stats['Percentage of Unmatched Buildings'][2]),
                     merged: formatPercent(stats['Percentage of Buildings Conflated'][2]),
                     review: formatPercent(stats['Percentage of Buildings Marked for Review'][2])
-                },
-                waterways: {
+                }
+            };
+
+            //Add waterways stats if present
+            if (stats['Waterway Count']) {
+                layerfeatures.count['4'] = 'waterways';
+                layerfeatures[RefLayerName].waterways = stats['Waterway Count'][0];
+                layerfeatures[SecLayerName].waterways = stats['Waterway Count'][1];
+                layerfeatures[d.name].waterways = stats['Waterway Count'][2];
+                featurecounts.waterways = {
+                    unmatched: stats['Unmatched Waterways'][2],
+                    merged: stats['Conflated Waterways'][2],
+                    review: stats['Waterways Marked for Review'][2]
+                };
+                featurepercents.waterways = {
                     unmatched: formatPercent(stats['Percentage of Unmatched Waterways'][2]),
                     merged: formatPercent(stats['Percentage of Waterways Conflated'][2]),
                     review: formatPercent(stats['Percentage of Waterways Marked for Review'][2])
-                }
-            };
+                };
+            }
 
             addExpandTables({
                 layercounts: layercounts,
