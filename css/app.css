@@ -2036,6 +2036,11 @@ div.full-screen > button:hover {
     text-overflow: ellipsis;
 }
 
+.layer-list-hidden{
+    display: none;
+    border: none;
+}
+
 .minimap-toggle {
     display: block;
     padding: 5px 10px;
