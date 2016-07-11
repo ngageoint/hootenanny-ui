@@ -346,16 +346,16 @@ Hoot.control.utilities.folder = function(context) {
                           // if no reference/secondary layer has been loaded, provide the option
                           if(_.isEmpty(context.hoot().model.layers.getLayers())){
                             items.push(
-                              {title:'Add as Reference Dataset',icon:'export',click:'addReferenceDataset'},
-                              {title:'Add as Secondary Dataset',icon:'export',click:'addSecondaryDataset'}
+                              {title:'Add as Reference Dataset',icon:'plus',click:'addReferenceDataset'},
+                              {title:'Add as Secondary Dataset',icon:'plus',click:'addSecondaryDataset'}
                             );
                           } else {
                             // Determine if reference or secondary is already loaded
                             var sels = d3.select('#sidebar2').selectAll('form')[0];
                             if(d3.select(sels[0]).datum().name!==undefined){
-                              items.push({title:'Add as Secondary Dataset',icon:'export',click:'addSecondaryDataset'});
+                              items.push({title:'Add as Secondary Dataset',icon:'plus',click:'addSecondaryDataset'});
                             } else if(d3.select(sels[1]).datum().name!==undefined){
-                              items.push({title:'Add as Reference Dataset',icon:'export',click:'addReferenceDataset'});
+                              items.push({title:'Add as Reference Dataset',icon:'plus',click:'addReferenceDataset'});
                             }
                           }
 
