@@ -200,7 +200,7 @@ Hoot.control.utilities.exportdataset = function(context) {
             };
         }));
         container.select('#fileExportTranslation').style('width','100%').call(combo);            
-    }
+    };
 
     /**
     * @desc Toggler for Append to ESRI FGDB Template checkbox.
