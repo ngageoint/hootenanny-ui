@@ -545,6 +545,8 @@ Hoot.control.utilities.folder = function(context) {
         }
     };
 
+
+
     hoot_control_utilities_folder.importFolderContainer = function (data) {
         context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
 
@@ -626,8 +628,51 @@ Hoot.control.utilities.folder = function(context) {
                             d3.select(this).classed('invalidName',false).attr('title',null);
                         }
                     });
+                    d3.select(this).on('keypress', function () {
+                      var key = d3.event.keyCode;
+                      if (key === 13){
+
+                        _submit();
+                    }
+                    });
                 }
             });
+
+            function _submit() {
+              if(!d3.selectAll('.invalidName').empty()){return;}
+
+              //check if layer with same name already exists...
+              if(_form.select('.reset.NewFolderName').value()==='' || _form.select('.reset.NewFolderName').value()===_form.select('.reset.NewFolderName').attr('placeholder')){
+                iD.ui.Alert('Please enter an output folder name.','warning',new Error().stack);
+                return;
+              }
+
+              var resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
+              if(resp !== true){
+                iD.ui.Alert(resp,'warning',new Error().stack);
+                return;
+              }
+
+              resp = context.hoot().model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
+              if(resp !== true){
+                iD.ui.Alert(resp,'warning',new Error().stack);
+                return;
+              }
+
+              var data={};
+                data.parentId=folderId;
+                data.folderName = _form.select('.reset.NewFolderName').value();
+
+              Hoot.model.REST('addFolder',data,function(){
+                  context.hoot().model.folders.refresh(function () {
+                      context.hoot().model.folders.refreshLinks(function(){
+                          context.hoot().model.layers.RefreshLayers();
+                          modalbg.remove();
+                      });
+                  });
+              });
+            }
+
 
             var folderId = 0;
             if(data){
@@ -643,38 +688,40 @@ Hoot.control.utilities.folder = function(context) {
             .classed('inline row1 fl col10 pad1y', true)
                 .text('Add Folder')
                 .on('click', function () {
-                    if(!d3.selectAll('.invalidName').empty()){return;}
 
-                    //check if layer with same name already exists...
-                    if(_form.select('.reset.NewFolderName').value()==='' || _form.select('.reset.NewFolderName').value()===_form.select('.reset.NewFolderName').attr('placeholder')){
-                        iD.ui.Alert('Please enter an output folder name.','warning',new Error().stack);
-                        return;
-                    }
+                  _submit();
+                    // if(!d3.selectAll('.invalidName').empty()){return;}
 
-                    var resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
-                    if(resp !== true){
-                        iD.ui.Alert(resp,'warning',new Error().stack);
-                        return;
-                    }
+                    // //check if layer with same name already exists...
+                    // if(_form.select('.reset.NewFolderName').value()==='' || _form.select('.reset.NewFolderName').value()===_form.select('.reset.NewFolderName').attr('placeholder')){
+                    //     iD.ui.Alert('Please enter an output folder name.','warning',new Error().stack);
+                    //     return;
+                    // }
 
-                    resp = context.hoot().model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
-                    if(resp !== true){
-                        iD.ui.Alert(resp,'warning',new Error().stack);
-                        return;
-                    }
+                    // var resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
+                    // if(resp !== true){
+                    //     iD.ui.Alert(resp,'warning',new Error().stack);
+                    //     return;
+                    // }
 
-                    var data={};
-                    data.parentId=folderId;
-                    data.folderName = _form.select('.reset.NewFolderName').value();
+                    // resp = context.hoot().model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
+                    // if(resp !== true){
+                    //     iD.ui.Alert(resp,'warning',new Error().stack);
+                    //     return;
+                    // }
 
-                    Hoot.model.REST('addFolder',data,function(){
-                        context.hoot().model.folders.refresh(function () {
-                            context.hoot().model.folders.refreshLinks(function(){
-                                context.hoot().model.layers.RefreshLayers();
-                                modalbg.remove();
-                            });
-                        });
-                    });
+                    // var data={};
+                    // data.parentId=folderId;
+                    // data.folderName = _form.select('.reset.NewFolderName').value();
+
+                    // Hoot.model.REST('addFolder',data,function(){
+                    //     context.hoot().model.folders.refresh(function () {
+                    //         context.hoot().model.folders.refreshLinks(function(){
+                    //             context.hoot().model.layers.RefreshLayers();
+                    //             modalbg.remove();
+                    //         });
+                    //     });
+                    // });
                 });
         return modalbg;
     };
