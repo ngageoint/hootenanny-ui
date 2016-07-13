@@ -14,7 +14,86 @@ Hoot.control.utilities.clipdataset = function(context) {
     var _rect;
     var _clipType;
     var _modalbg;
+    var _modalcoord;
 
+    /**
+    * @desc Form for gathering LL and UR coordinates for bounding box
+    * @return container div
+    **/
+    _instance.getBBoxCoordinates = function() {
+        //exit if already open
+        if(!d3.select('#getCoordinatesContainer').empty()){return;}
+
+        if(_.isEmpty(context.hoot().model.layers.getLayers())){
+            iD.ui.Alert('Please add at least one dataset to the map to clip.','notice');
+            return;
+        }
+
+        _modalcoord = d3.select('body')
+            .append('div')
+            .attr('id','getCoordinatesContainer')
+            .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+        var ingestDiv = _modalcoord.append('div')
+            .classed('contain col6 pad1 hoot-menu fill-white round modal', true)
+            .style({'display':'block','margin-left':'auto','margin-right':'auto','left':'0%'});
+        var _form = ingestDiv.append('form');
+        _form.classed('round space-bottom1 importableLayer', true)
+            .append('div')
+            .classed('big pad1y keyline-bottom space-bottom2', true)
+            .append('h4')
+            .text('Enter Coordinates for Clip Bounding Box')
+            .append('div')
+            .classed('fr _icon x point', true)
+            .on('click', function() {
+                _modalcoord.remove();
+            });
+
+        var _table = _form.append('table').attr('id','coordinateTable');
+
+        var bbox = context.map().extent().toString().split(',');
+        var _visualExtent = [{'id':'llx','label':'Lower Left X','coord':bbox[0]},
+                            {'id':'lly','label':'Lower Left Y','coord':bbox[1]},
+                            {'id':'urx','label':'Upper Right X','coord':bbox[2]},
+                            {'id':'ury','label':'Upper Right Y','coord':bbox[3]}];
+
+        var _tableBody = d3.select('#coordinateTable').append('tbody');
+        _.each(_visualExtent,function(ve){
+            var _tr = _tableBody.append('tr');
+            _tr.append('td').append('div').classed('contain bulk-import',true).append('label').text(ve.label);
+            _tr.append('td').append('div').classed('contain bulk-import',true).append('input').attr('type','text').attr('id','clipCoord_' + ve.id)
+                .classed('reset  bulk-import',true)
+                .value(ve.coord)
+                .on('click',function(){
+                    if(d3.select(this).value()===''){d3.select(this).value(d3.select(this).attr('placeholder'));}
+                });
+        });
+
+        var submitExp = ingestDiv.append('div')
+            .classed('form-field left ', true);
+
+        submitExp.append('span')
+            .classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
+            .text('Next')
+            .on('click',function(){
+                //Verify coordinates
+                var llx = d3.select('#clipCoord_llx').value();
+                var lly = d3.select('#clipCoord_lly').value();
+                var urx = d3.select('#clipCoord_urx').value();
+                var ury = d3.select('#clipCoord_ury').value();
+                var strRect = llx + ',' + lly + ',' + urx + ',' + ury;
+                
+                var cc = _.map(strRect.split(','),function(d){return parseFloat(d);})
+                if(!context.hoot().checkForValidCoordinates([cc[0],cc[1]]) || !context.hoot().checkForValidCoordinates([cc[2],cc[3]])){
+                    iD.ui.Alert('Please check that valid coordinates have been entered.','notice');
+                    return;
+                } else {
+                    _instance.clipDatasetContainer('clipCoordinates',strRect);
+                    _modalcoord.remove();
+                }
+            });
+
+        return _modalcoord; 
+    }
 
     /**
     * @desc Entry point where it creates form.
@@ -60,6 +139,7 @@ Hoot.control.utilities.clipdataset = function(context) {
             .text(function(){
                 if(_clipType==='visualExtent'){return 'Clip Data to Visual Extent';}
                 else if(_clipType==='boundingBox'){return 'Clip Data to Bounding Box';}
+                else if(_clipType==='setCoordinates'){return 'Clip Data to Custom Coordinates';}
                 else{return 'Clip Data';}
             })
             .append('div')
@@ -265,7 +345,7 @@ Hoot.control.utilities.clipdataset = function(context) {
             }
 
             if(clipType==='visualExtent'){param.BBOX = context.map().extent().toString();}
-            else if(clipType==='boundingBox'){param.BBOX= _rect;}
+            else{param.BBOX= _rect;}
 
             param.PATH_NAME = d3.select('#row-' + d.id).select('div .PathName').value() || d3.select('#row-' + d.id).select('div .PathName').attr('placeholder') || 'root';
 

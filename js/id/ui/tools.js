@@ -16,7 +16,8 @@ iD.ui.Tools = function(context) {
         if (!context.hoot().control.conflicts.isConflictReviewExist()) {
             items.push({title:'Clip Tools',icon:'clip',group:'clip',items:[
                 {title:'Clip to Visual Extent',tooltip:'Shortcut: 9',group:'clip',type:'area',icon:'clip',action:'clipVisualExtent'},
-                {title:'Clip to Bounding Box',tooltip:'Shortcut: 8',group:'clip',type:'area',icon:'clip',mode:iD.modes.ClipBoundingBox(context)}
+                {title:'Clip to Bounding Box',tooltip:'Shortcut: 8',group:'clip',type:'area',icon:'clip',mode:iD.modes.ClipBoundingBox(context)},
+                {title:'Clip to Coordinates',tooltip:'Shortcut: TBD',group:'clip',type:'area',icon:'clip',action:'clipCoordinates'}
             ]});
         }
 
@@ -62,6 +63,13 @@ iD.ui.Tools = function(context) {
                             //Call clip map
                             if(!_.isEmpty(context.hoot().model.layers.getLayers())){
                                 context.hoot().control.utilities.clipdataset.clipDatasetContainer('visualExtent');
+                            } else {
+                                iD.ui.Alert('Add data to map before clipping.','notice',new Error().stack);
+                            }
+                        } else if (item.action === 'clipCoordinates'){
+                            //Call clip map
+                            if(!_.isEmpty(context.hoot().model.layers.getLayers())){
+                                context.hoot().control.utilities.clipdataset.getBBoxCoordinates();
                             } else {
                                 iD.ui.Alert('Add data to map before clipping.','notice',new Error().stack);
                             }
