@@ -125,11 +125,11 @@ Hoot.model.REST = function (command, data, callback, option) {
         }
 
         d3.json('/hoot-services/osm/api/0.6/map/deletefolder?folderId=' + folderId)
-        .post(function (error) {
+        .post(function (error, json) {
             if(error){
                 callback(false);
             } else {callback(true);}
-            return true;
+            return json;
         });
     };
 
@@ -849,17 +849,6 @@ rest.servicesVersionInfo = function(callback)
     });
 };
 
-rest.servicesVersionDetail = function(callback)
-{
-    d3.json('/hoot-services/info/about/servicesVersionDetail', function(error, resp)
-    {
-        if (error) {
-            return callback(_alertError(error, 'Get service version detail failed! For detailed log goto Manage->Log'));
-        }
-        return callback(resp);
-    });
-};
-
 rest.coreVersionInfo = function(callback)
 {
     d3.json('/hoot-services/info/about/coreVersionInfo', function(error, resp)
@@ -987,10 +976,14 @@ rest.downloadReport = function(data)
     rest.getAllReviewBookmarks = function(data, callback) {
         var url = '/hoot-services/job/review/bookmarks/getall?orderBy=' + data.orderBy + '&asc=' + data.asc +
             '&limit=' + data.limit + '&offset=' + data.offset;
-        if(data.filterbyval && data.filterby) {
-            url += '&filterby=' + data.filterby + '&filterbyval=' + data.filterbyval;
+        if(data.createFilterVal){
+            url += '&createFilterVal=' + data.createFilterVal;
         }
-         d3.json(url, function (error, resp) {
+        if(data.layerFilterVal){
+            url += '&layerFilterVal=' + data.layerFilterVal;
+        }
+
+        d3.json(url, function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get all bookmarks failed! For detailed log goto Manage->Log'));
             }
@@ -1001,7 +994,7 @@ rest.downloadReport = function(data)
     rest.getReviewBookmark = function(data, callback) {
          d3.json('/hoot-services/job/review/bookmarks/get?bookmarkId=' + data.bookmarkId, function (error, resp) {
             if (error) {
-                return callback(_alertError(error, 'Get bookmarkt failed! For detailed log goto Manage->Log'));
+                return callback(_alertError(error, 'Get bookmark failed! For detailed log goto Manage->Log'));
             }
             callback(resp);
         });
@@ -1010,7 +1003,7 @@ rest.downloadReport = function(data)
     rest.getReviewBookmarkStat = function(data, callback) {
          d3.json('/hoot-services/job/review/bookmarks/stat', function (error, resp) {
             if (error) {
-                return callback(_alertError(error, 'Get bookmarkt failed! For detailed log goto Manage->Log'));
+                return callback(_alertError(error, 'Get bookmark failed! For detailed log goto Manage->Log'));
             }
             callback(resp);
         });
@@ -1051,29 +1044,6 @@ rest.downloadReport = function(data)
         });
     };
 
-    rest.uploadFGDBForStats = function(data, callback) {
-        var formData = data.formData;
-
-        d3.json('/hoot-services/ogr/info/upload?INPUT_TYPE=' + data.type)
-            .post(formData, function(error, json) {
-                if (error || json.status === 'failed') {
-                    return callback(_alertError(error, 'Failed to load FGDB feature classes.'));
-                }
-                rest.status(json.jobId, callback);
-            });
-    };
-
-
-
-
-    rest.getFGDBStat = function(data, callback) {
-        d3.json('/hoot-services/ogr/info/' + data.jobId, function(error, resp) {
-            if (error) {
-                return callback(_alertError(error, 'Failed to get FGDB feature classes stat! For detailed log goto Manage->Log'));
-            }
-            callback(resp);
-        });
-    };
 
         rest['' + command + ''](data, callback, option);
     };

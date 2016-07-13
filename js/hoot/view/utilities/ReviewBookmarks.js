@@ -11,33 +11,38 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     var _lastSortRequest;
     var _DEFAULT_PAGE_COUNT = 50;
     var _currentPage = 1;
+    var _styles = 'fill-white small keyline-all round';
+    var _lblStyle = 'strong fill-light round-top';
 
     /**
     * @desc Creates container for bookmarks list.
     * @param form - parent form.
     **/
     _instance.createContent = function(form){
+        form.append('div').classed('fr col10 fill-white small keyline-bottom', true);
+        
+        var filterBar = _instance.datasetcontainer = form.append('div')
+            .attr('id','reviewBookmarksFilters')
+            .classed('fl col4 fill-white small overflow keyline-all row16',true);
 
-        var hd = form.append('div')
-                    .classed('col12 fill-white small keyline-bottom', true);
-        var sortSpan = hd.append('span')
-                    .classed('text-left big col12 fill-darken0', true);
-        var aa = sortSpan.append('a');
+        _createResetFilterButton(form, filterBar);
 
-        _createSortMenu(form, aa);
-        _createFilterByCreatorMenu(form, aa);
-        _createFilterByMapIdMenu(form, aa);
-        _createClearFilterButton(form, aa);
+        var filterFieldset = filterBar.append('fieldset');
+        _createSortMenu(form, filterFieldset);
+        _createFilterByCreatorMenu(form, filterFieldset);
+        _createFilterByMapIdMenu(form, filterFieldset);
 
+        var _initialSortRequest = {orderBy: 'createdAt', asc: 'true', limit: _DEFAULT_PAGE_COUNT, offset: 0};
 
         _instance.datasetcontainer = form.append('div')
             .attr('id', 'reviewBookmarksContent')
-            .classed('col12 fill-white small  row16 overflow keyline-all', true)
-            .call(_instance.populatePopulateBookmarks);
+            .classed('fr col8 fill-white small  row16 overflow keyline-all', true);
+            //.call(_instance.populatePopulateBookmarks);
+        _instance.populatePopulateBookmarks(null,_initialSortRequest);
 
             context.hoot().view.utilities.on('tabToggled', function(d){
                 if(d === '#utilReviewBookmarks') {
-                    _instance.populatePopulateBookmarks(null, null);
+                    _instance.populatePopulateBookmarks(null, _lastSortRequest);
                 }
             });
 
@@ -91,19 +96,9 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                 .classed('form-field col10 pad1y pad1x overflow', true);
 
 
-
-
+        _instance.cleanUpMenus();
     };
 
-    /**
-    * @desc Helper function for handling closing sort menu when user clicks outside of menu.
-    **/
-   var _globalSortClickHandler = function(){
-        var self = d3.select('#reviewMenuForm' + 'reviewBookmarksSortDiv');
-        if(!self.empty()) {
-            self.remove();
-        }
-    };
 
     /**
     * @desc Creates menu button.
@@ -113,34 +108,71 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     * @param meta - meta data for menu dialog
     * @param menuContainer - container div
     **/
-    var _createMenu = function(form, menuDivName, displayText, meta, menuContainer, callback) {
+    var _createMenu = function(form, menuDivName, displayText, meta, menuContainer) {
 
-        var dd = menuContainer.append('div')
-        .attr('id', menuDivName)
-        .classed('fr quiet col1 center',true)
+        var groupDiv = menuContainer.append('div')
+            .classed(_styles,true)
+            .attr('id', 'group_container');
+        groupDiv.append('label')
+            .attr('id',menuDivName+'_label')
+            .classed(_lblStyle, true)
+            .text(meta.title)
+            .on('click', function () {
+                var grp = d3.select(this).node().nextSibling;
+                if(grp.classList.length===0){
+                    d3.select(grp).classed('custom-collapse',true);
+                } else {
+                    d3.select(grp).classed('custom-collapse',false);
+                }
+            });
 
+        groupDiv.append('div').attr('id',menuDivName+'_group').classed('custom-collapse',true);
+        var parent = d3.select('#'+menuDivName+'_group');
 
-        .on('click', function(){
-            d3.event.stopPropagation();
-            d3.event.preventDefault();
-            var self = d3.select('#reviewMenuForm' + menuDivName);
-            if(!self.empty()) {
-                self.remove();
-            } else {
-                callback(menuDivName, meta);
-            }
+        //now loop through children
+        _.each(meta.data, function(c){
+            var lbl = parent.append('label')
+                .style('text-align','left');
+            
+            var filterInput = lbl.append('input')
+                .attr('type',this.type)
+                .attr('filter_id',c.id)
+                .property('checked', true)
+                .on('change', function () {
+                    c.action(c);
+                });
+            if(this.type==='radio'){filterInput.attr('name','sortByFilter').classed('sortByFilter',true);}
+            lbl.append('span').text(c.name);
+        },meta);
 
+        if(meta.type==='radio'){
+            d3.select('.sortByFilter').property('checked',true);
+        }
+    };
+
+    _instance.addFilter = function(container,filter){
+        // If id is not present, add it
+        var usedIds = [];
+        var inputs = container.selectAll('input')[0];
+        _.each(inputs,function(i){
+            var filterId = parseInt(d3.select(i).attr('filter_id'));
+            usedIds.push(filterId);
         });
 
+        usedIds = _.uniq(usedIds);
+        if(usedIds.indexOf(filter.id) >= 0) {return;}
 
-        dd.append('span')
-        .classed('quiet',true)
-        .text(displayText);
-
-        dd.append('span')
-        .classed('_icon down quiet', true);
-
+        var lbl = container.append('label').style('text-align','left');
+        lbl.append('input')
+            .attr('type','checkbox')
+            .attr('filter_id',filter.id)
+            .property('checked', true)
+            .on('change', function () {
+                _filterData(filter);
+            });
+        lbl.append('span').text(filter.name);
     };
+
 
     /**
     * @desc Sorts list .
@@ -154,7 +186,6 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         _lastSortRequest.limit = _DEFAULT_PAGE_COUNT;
         _lastSortRequest.offset = 0;
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
-        _globalSortClickHandler();
     };
 
     /**
@@ -172,33 +203,21 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             {'name': 'Modified At (dsc)', 'action':function(){_sortData('lastModifiedAt', 'false');}},
             {'name': 'Modified By (asc)', 'action':function(){_sortData('lastModifiedBy', 'true');}},
             {'name': 'Modified By (dsc)', 'action':function(){_sortData('lastModifiedBy', 'false');}},
-            {'name': 'Review ID (asc)', 'action':function(){ _sortData('id', 'true');}},
-            {'name': 'Review ID (dsc)', 'action':function(){ _sortData('id', 'false');}},
+            /*{'name': 'Review ID (asc)', 'action':function(){ _sortData('id', 'true');}},
+            {'name': 'Review ID (dsc)', 'action':function(){ _sortData('id', 'false');}},*/
             {'name': 'Map ID (asc)', 'action':function(){ _sortData('mapId', 'true');}},
-            {'name': 'Map ID (dsc)', 'action':function(){ _sortData('mapId', 'false');}},
+            {'name': 'Map ID (dsc)', 'action':function(){ _sortData('mapId', 'false');}}/*,
             {'name': 'Relation ID (asc)', 'action':function(){ _sortData('relationId', 'true');}},
-            {'name': 'Relation ID (dsc)', 'action':function(){ _sortData('relationId', 'false');}}
+            {'name': 'Relation ID (dsc)', 'action':function(){ _sortData('relationId', 'false');}}*/
         ];
         var meta = {};
         meta.title = 'Sort By';
         meta.data  = data;
+        meta.type = 'radio';
 
-        document.body.removeEventListener('click', _globalSortClickHandler );
-        document.body.addEventListener('click', _globalSortClickHandler );
-        _createMenu(form, 'reviewBookmarksSortDiv', 'Sort', meta, menuContainer, function(divName, m){
-            context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
+        _createMenu(form, 'reviewBookmarksSortDiv', 'Sort', meta, menuContainer, function(){
+            _sortData('createdAt','true');
         });
-    };
-
-    /**
-    * @desc Helper function for handling closing filter menu when user clicks outside of menu.
-    * @TODO: Filter and sort should be refactored into one..
-    **/
-    var _globalFilterByCreatorClickHandler = function(){
-        var self = d3.select('#reviewMenuForm' + 'reviewBookmarksFilterByCreatorDiv');
-        if(!self.empty()) {
-            self.remove();
-        }
     };
 
     /**
@@ -206,12 +225,44 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     * @param d - filter data
     **/
 
-    var _filterData = function(d) {
+    var _filterData = function() {
+        var createFilterVal = '';
+        var layerFilterVal = '';
+        // If nothing is unchecked, keep as null
+        var creatorGroup = d3.select('#reviewBookmarksFilterByCreatorDiv_group');
+        var layerGroup = d3.select('#reviewBookmarksFilterByMapIdDiv_group');
 
-        _lastSortRequest.filterby = 'createdBy';
-        _lastSortRequest.filterbyval = d.id;
+        // Otherwise, get list of ids for each checked for each filter and pass through as string
+        if(creatorGroup.selectAll('input:checked')[0].length === 0) {_lastSortRequest.createFilterVal = -999;}
+        else {
+            if(creatorGroup.selectAll('input:not(:checked)')[0].length > 0) {
+                _.each(creatorGroup.selectAll('input:checked')[0],function(c){
+                    var filterId = d3.select(c).attr('filter_id');
+                    if(filterId && !isNaN(parseInt(filterId))){
+                        createFilterVal += parseInt(filterId) + ',';
+                    }
+                });
+                _lastSortRequest.createFilterVal = createFilterVal.slice(0,-1);
+            } else {
+                _lastSortRequest.createFilterVal = null;
+            }            
+        }
+
+        if(layerGroup.selectAll('input:checked')[0].length === 0) {_lastSortRequest.layerFilterVal = -999;}
+        else {
+            if(layerGroup.selectAll('input:not(:checked)')[0].length > 0) {
+                _.each(layerGroup.selectAll('input:checked')[0],function(c){
+                    var filterId = d3.select(c).attr('filter_id');
+                    if(filterId && !isNaN(parseInt(filterId))){
+                        layerFilterVal += parseInt(filterId) + ',';
+                    }
+                });
+                _lastSortRequest.layerFilterVal = layerFilterVal.slice(0,-1);
+            } else {
+                _lastSortRequest.layerFilterVal = null;
+            }
+        }
         _instance.populatePopulateBookmarks(null, _lastSortRequest);
-        _globalFilterByCreatorClickHandler();
     };
 
     /**
@@ -225,20 +276,16 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         var data = _generateUsersData();
 
         var meta = {};
-        meta.title = 'Filter By Created By';
+        meta.title = 'Filter By Creator';
         meta.data  = data;
+        meta.type = 'checkbox';
 
-        document.body.removeEventListener('click', _globalFilterByCreatorClickHandler );
-        document.body.addEventListener('click', _globalFilterByCreatorClickHandler );
         // we have callback to data gets refreshed whenever we press button
         _createMenu(form, 'reviewBookmarksFilterByCreatorDiv', 'Creator', meta, menuContainer, function(divName, m){
             var d = _generateUsersData();
             m.data = d;
-            context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
         });
     };
-
-
 
     /**
     * @desc Help function to generate users meta data
@@ -268,51 +315,22 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         return data;
     };
 
-
-    /**
-    * @desc Helper function for handling closing filter menu when user clicks outside of menu.
-    * @TODO: Filter and sort should be refactored into one..
-    **/
-    var _globalFilterByMapIdClickHandler = function(){
-        var self = d3.select('#reviewMenuForm' + 'reviewBookmarksFilterByMapIdDiv');
-        if(!self.empty()) {
-            self.remove();
-        }
-    };
-
-    /**
-    * @desc Filter list .
-    * @param d - filter data
-    **/
-
-    var _filterByMapIdData = function(d) {
-
-        _lastSortRequest.filterby = 'mapId';
-        _lastSortRequest.filterbyval = d.id;
-        _instance.populatePopulateBookmarks(null, _lastSortRequest);
-        _globalFilterByMapIdClickHandler();
-    };
-
-    var _createClearFilterButton = function(form, menuContainer) {
-        var dd = menuContainer.append('div')
-            .attr('id', 'btnClearFilters')
-            .classed('fl quiet col1 center',true)
-
+    var _createResetFilterButton = function(form, menuContainer) {
+        menuContainer.append('span')
+            .text('Reset')
+            .classed('strong big loud dark center col12 point inline row1 pad1y', true)
             .on('click', function(){
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
                 _lastSortRequest = {};
                 _lastSortRequest.orderBy = 'createdAt';
-                _lastSortRequest.asc = 'false';
+                _lastSortRequest.asc = 'true';
                 _lastSortRequest.limit = _DEFAULT_PAGE_COUNT;
                 _lastSortRequest.offset = 0;
                 _instance.populatePopulateBookmarks(null, _lastSortRequest);
+                d3.select('#reviewBookmarksFilters').selectAll('input').property('checked',true);
+                d3.select('.sortByFilter').property('checked',true);
             });
-
-
-        dd.append('span')
-            .classed('quiet',true)
-            .text('Clear Filters');
     };
 
     /**
@@ -328,14 +346,12 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         var meta = {};
         meta.title = 'Filter By Layers';
         meta.data  = data;
+        meta.type = 'checkbox';
 
-        document.body.removeEventListener('click', _globalFilterByMapIdClickHandler );
-        document.body.addEventListener('click', _globalFilterByMapIdClickHandler );
         // we have callback to data gets refreshed whenever we press button
         _createMenu(form, 'reviewBookmarksFilterByMapIdDiv', 'Layers', meta, menuContainer, function(divName, m){
             var d = _generateLayerData();
             m.data = d;
-            context.hoot().ui.hootformreviewmarkmenu.createForm(divName, m);
         });
     };
 
@@ -352,12 +368,56 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             var newobj = {};
             newobj.name = lyr.name;
             newobj.id = lyr.id;
-            newobj.action = _filterByMapIdData;
+            newobj.action = _filterData;
             data.push(newobj);
         }
 
         return data;
 
+    };
+
+    /**
+    * @desc Cleans up menus to remove non-used creators, layers
+    * @desc Can be called when bookmarks are created and/or deleted
+    **/
+
+    _instance.cleanUpMenus = function() {
+        var _cleanUpRequest = {};
+        _cleanUpRequest.orderBy = 'createdAt';
+        _cleanUpRequest.asc = 'false';
+        _cleanUpRequest.limit = _DEFAULT_PAGE_COUNT;
+        _cleanUpRequest.offset = 0;
+
+        Hoot.model.REST('getAllReviewBookmarks', _cleanUpRequest, function (d) {
+            if(d.error){
+                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                return;
+            }
+            
+            var bookmarksArray = d.reviewBookmarks;
+
+            // Clean up user list
+            var userArray = _.uniq(_.pluck(bookmarksArray,'createdBy'));
+            // if there is an item in creator group with id not in array, remove it
+            var creatorInputs = d3.select('#reviewBookmarksFilterByCreatorDiv_group').selectAll('input')[0];
+            _.each(creatorInputs,function(i){
+                var filterId = parseInt(d3.select(i).attr('filter_id'));
+                if(userArray.indexOf(filterId) < 0) {
+                    i.parentNode.remove();
+                }
+            });
+
+            // Clean up layer list
+            var mapArray = _.uniq(_.pluck(bookmarksArray,'mapId'));
+            // if there is an item in map group with id not in array, remove it
+            var mapInputs = d3.select('#reviewBookmarksFilterByMapIdDiv_group').selectAll('input')[0];
+            _.each(mapInputs,function(i){
+                var filterId = parseInt(d3.select(i).attr('filter_id'));
+                if(mapArray.indexOf(filterId) < 0) {
+                    i.parentNode.remove();
+                }
+            });
+        });
     };
 
 
@@ -443,6 +503,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                         var tla3 = tla2.append('span')
                             .classed('text-left big col12 strong', true)
                             .append('a')
+                            .classed('bookmarkLink',true)
                             .text(_renderLinkText)
                             .on('click', _linkClickHandler);
 
@@ -462,7 +523,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                             d3.select(this).classed('fr _icon trash', true);
                         });
 
-
+                        _instance.cleanUpMenus();        
                     });
 
                 });
@@ -571,7 +632,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                 context.hoot().view.utilities.errorlog.reportUIError(d.error);
                 return;
             }
-            _instance.populatePopulateBookmarks(null, _lastSortRequest);           
+            _instance.populatePopulateBookmarks(null, _lastSortRequest);   
         });
     };
 

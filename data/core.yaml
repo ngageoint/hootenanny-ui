@@ -78,7 +78,7 @@ en:
     toggle:
       title: Toggle
       description: Toggle Conflated Layer with Inputs
-      key: T
+      key: Shift+T
       annotation: Toggle layers
     delete:
       title: Delete
@@ -199,6 +199,8 @@ en:
       description: Select the validation feature.
   tooltip_keyhint: "Shortcut:"
   browser_notice: "This editor is supported in Firefox, Chrome, Safari, Opera, and Internet Explorer 11 and above. Please upgrade your browser or use Potlatch 2 to edit the map."
+  browser_close:
+    review_session: "You are currently in a review session.  Are you sure you want to exit Hootenanny?"
   translate:
     translate: Translate
     localized_translation_label: Multilingual name
@@ -381,19 +383,19 @@ en:
       description: Full Fill
       tooltip: "Areas are drawn fully filled."
   restore:
-    heading: You have unsaved changes
+    heading: You have unsaved changes!
     description: "Do you wish to restore unsaved changes from a previous editing session?"
     restore: Restore
     reset: Reset
   save:
     title: Save
-    help: "Save changes to OpenStreetMap, making them visible to other users."
+    help: "Save changes making them visible to other users."
     no_changes: No changes to save.
     error: Errors occurred while trying to save
     status_code: "Server returned status code {code}"
     unknown_error_details: "Please ensure you are connected to the internet."
     uploading: Uploading changes to Hootenanny.
-    unsaved_changes: You have unsaved changes
+    unsaved_changes: You have unsaved changes!
     conflict:
       header: Resolve conflicting edits
       count: 'Conflict {num} of {total}'
@@ -737,7 +739,8 @@ en:
       Ctrl + z  | Undo
       Ctrl + Backspace  | Deletes object permanently
       Shift + Left mouse click  | Selects multiple features geometry/tags within layer
-      Alt + b  | Switches b/w layers during post-conflation conflict review
+      Shift + r  | Switches b/w layers during post-conflation conflict review
+      Shift + t  | Switches b/w layers during post-conflation conflict review
       Alt + i  | Open Image Carousel
       Alt + n  | Toggles layer visibility on/off
       +  | Zoom in 1 level

@@ -12,6 +12,7 @@ Hoot.model.folders = function (context)
     var availFolders = [];
     var availLinks = [];
     var openFolders = [];
+    var childArray = [];
 
     model_folders.folders = folders;
     model_folders.getfolderIdByName = function (name) {
@@ -236,6 +237,23 @@ Hoot.model.folders = function (context)
         folderList = _.union(folderList,_.each(_.filter(layerList,function(lyr){return lyr.folderId===0;}),function(lyr){_.extend(lyr,{parentId:0});}));
         //return model_folders.unflattenFolders(folderList);
         return folderList;
+    };
+
+    model_folders.getChildrenFolders = function(folderId){
+        var folderName = model_folders.getNameBymapId(folderId);
+        childArray = [];
+        childArray.push(folderId);
+        model_folders.returnChildren(folderName);
+        return childArray;
+    };
+
+    model_folders.returnChildren = function(folderPath){
+        model_folders.listFolders(model_folders.getAvailFolders());
+        var cArr = _.filter(model_folders.getAvailFolders(),function(n){return n.folderPath.startsWith(folderPath + '/');});
+        _.each(cArr,function(c){
+            childArray.push(c.id);
+            model_folders.returnChildren(c.folderPath);
+        });
     };
 
     return model_folders;

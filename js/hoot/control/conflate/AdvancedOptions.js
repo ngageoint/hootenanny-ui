@@ -5,6 +5,7 @@
 // Modifications:
 //      7 Jan. 2016
 //      15 Apr. 2016 eslint updates -- Sisskind
+//      17 June 2016 replaced Advanced Conflation with Custom (ref type)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -251,7 +252,8 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
                 //modalbg.remove();
                 _modalBackground.classed('hidden', true);
                 _instance.advOpsFormEvent(false);
-                d3.select('.ConfType').value('Advanced Conflation');
+                var refType = d3.select('.ConfType').value().replace('Custom ','');
+                d3.select('.ConfType').value('Custom ' + refType);
             } else{
                 //notify that some values are invalid and leave window open
                 iD.ui.Alert('Some values in the form are invalid and must be adjusted before completing custom conflation.',
@@ -287,14 +289,14 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
                     selAI.property('disabled',ai.disabled);
                     if(ai.hidden.length>0){d3.select(selAI.node().parentNode).style('display',ai.hidden);}
                 });
-
-                _modalBackground.classed('hidden', true);
             } else {
                 parent.confLastSetVals = null;
                 parent.confAdvOptionsSelectedVal = null;
                 if(parent.confAdvOptsDlg){parent.confAdvOptsDlg.remove();}
                 parent.confAdvOptsDlg = null;
              }
+
+            _modalBackground.classed('hidden', true);
             _instance.advOpsFormEvent(false);
         });
     };

@@ -36,24 +36,14 @@ Hoot.view.utilities.about = function(context){
       var _mainVer = mainVerCont.append('div');
       _mainVer.classed('center round keyline-all overflow', true);
 
-      var detailContainer = form.append('div').classed('col12 pad1y fill-light',true);
-      var detailVersionLbl = detailContainer.append('div');
-      detailVersionLbl.append('label')
-          .classed('aboutHeader',true)
-          .style('display','block')
-          .attr('id', 'versiondetaillbl')
-          .text('Detail: ** Please select a row from Main Versions table. **');
-
-      var formCont = detailContainer.append('div');
+      var formCont = mainContainer.append('div');
       formCont.classed('center col12', true).style('display','inline-block');
-      var _form = formCont.append('div');
-      _form.classed('center row10  round keyline-all fill-white aboutSection', true);
 
       var headerVersionInfo = [];
       // Show version info
       Hoot.model.REST('coreVersionInfo',
               function(response) {
-                  context.hoot().view.versioninfo.coreVersionInfo(response,headerVersionInfo,_form,_mainVer);
+                  context.hoot().view.versioninfo.coreVersionInfo(response,headerVersionInfo,_mainVer);
               }
       );
 

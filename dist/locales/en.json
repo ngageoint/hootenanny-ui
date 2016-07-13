@@ -101,7 +101,7 @@
         "toggle": {
             "title": "Toggle",
             "description": "Toggle Conflated Layer with Inputs",
-            "key": "T",
+            "key": "Shift+T",
             "annotation": "Toggle layers"
         },
         "delete": {
@@ -256,6 +256,9 @@
     },
     "tooltip_keyhint": "Shortcut:",
     "browser_notice": "This editor is supported in Firefox, Chrome, Safari, Opera, and Internet Explorer 11 and above. Please upgrade your browser or use Potlatch 2 to edit the map.",
+    "browser_close": {
+        "review_session": "You are currently in a review session.  Are you sure you want to exit Hootenanny?"
+    },
     "translate": {
         "translate": "Translate",
         "localized_translation_label": "Multilingual name",
@@ -470,20 +473,20 @@
         }
     },
     "restore": {
-        "heading": "You have unsaved changes",
+        "heading": "You have unsaved changes!",
         "description": "Do you wish to restore unsaved changes from a previous editing session?",
         "restore": "Restore",
         "reset": "Reset"
     },
     "save": {
         "title": "Save",
-        "help": "Save changes to OpenStreetMap, making them visible to other users.",
+        "help": "Save changes making them visible to other users.",
         "no_changes": "No changes to save.",
         "error": "Errors occurred while trying to save",
         "status_code": "Server returned status code {code}",
         "unknown_error_details": "Please ensure you are connected to the internet.",
         "uploading": "Uploading changes to Hootenanny.",
-        "unsaved_changes": "You have unsaved changes",
+        "unsaved_changes": "You have unsaved changes!",
         "conflict": {
             "header": "Resolve conflicting edits",
             "count": "Conflict {num} of {total}",
@@ -592,7 +595,7 @@
         "adding_features": "# Adding New Features\n\nIt is also possible to create new features for a given layer, but any new feature\nadded must be done with at least one layer present. Any new features added without an\nassociated layer cannot be saved.\n\n### Adding a point feature\n\nTo add a new point, click on the *Point* button appearing in the Map Viewer or use the 1 shortcut key.\nPoints can be used to represent features such as shops, restaurants, parks and monuments, etc.\nThey mark a specific location and describe the feature based on the OSM/TDS tag relationship.\nOnce a new point is added to the map, a panel will appear on the map prompting you to select an\nappropriate feature type (park, cafe, etc) and any associated tags. Note that even though OSM\nvalues are presented, the data is stored on the database using the TDS tag equivalent.\nThe next time it is edited within Hootenanny it will display the values using the english translated LTDS schema.\n\n### Adding a linear feature\n\nTo add a new linear feature, click on the *Line* button or use the 2 shortcut key and begin digitizing on the map.\nA pop-up message will appear if you would like to snap to an existing linear feature. Click on a single location\nto begin the linear feature and then continue clicking until feature has been completed. Double-click to complete\nthe process and edit any attribution as needed. Repeat process for a new *Area* feature. Click *Save* to save all\nedits or step back/forward using the undo/redo buttons as needed.\n",
         "copying": "# Copying Features/Tags\n\nIn certain circumstances it may be useful to utilize copy/paste functionality when editing layers and addressing\nconflict reviews within Hootenanny. For example, if users need to create multiple copies of a selected feature\n(or set of features) within the same map layer or they would like to copy attributes from a feature\n(or multiple selected features) in the reference layer to similar feature in the secondary layer when reviewing\nconflicts, they could use the following currently supported work flows.\n\nIt is currently _not_ possible to copy/paste a feature from the Reference Dataset to the Secondary Dataset (or vice-versa)\nmanually and if attempted the application will enter a idle state requiring refresh.\n\n### Copying Features/Tags Within a Single Layer\n\nTo copy a feature(s) within a single layer, select the feature or set of features that you wish to copy using the\nleft-mouse button or by clicking on the red/blue conflict review table field. Note that you can select multiple\nfeatures by pressing the shift key as you select each feature. When multiple features are selected they will appear\nlisted on the left under the Selected items. Type *Ctrl + c* to copy the selected feature(s) and then *Ctrl + v* to\ndisplay the copied feature(s) on the map. Once the copied feature(s) appear on the map they can be placed in the desired location.\n\nTo copy tags within a single layer from one feature to another (or multiple selected features), select the feature\nto copy and type *Ctrl + c*, then select the target feature(s) to paste and use *Shift + Ctrl + v*. This will replace\nall of the selected feature tags (except name and those listed in the note below) with the copied source tags.\n\n### Copying Tags Between Two Layers\n\nWhen reviewing  conflicts or editing features it is often useful to be able to copy tags from a selected feature and either\nappend or overwrite the tags of another feature that can be within the same layer or in a different layer.  For example, when\nconflating two layers a selected set of features are flagged for the user to review and determine whether any further action is\nrequired. Users may decide that they need to copy a targeted set of tags from one feature to another.  The following workflow\ndescribes how that can be done.\n\n1. Select a feature and check the boxes next to each tag in the All Tags list that you wish to copy to the other feature.\n2. Select a different feature in the target layer and expand the All Tags list to display the existing tags.\n3. To append the copied tags, select the OSM POI (pink highlighted marker) and hit `Ctrl + Alt + v`.  Note that this action\nwill produce a semicolon delimited list for any existing value e.g. name, source along with any new tags added from the source POI.\nTo commit changes click the Save button or to undo click the undo button.\n4. To overwrite the copied tags in the target feature, select the OSM POI feature and `Ctrl + Shift + v`. Note that this action\nwill overwrite any existing tag values.\n",
         "tools": "# Tools\n\n## Hootenanny Map Tools\nMap navigation options appear in the upper right portion of the map viewer. To view a maptip and/or\nshortcut, hover the cursor over each button and information concerning the functionality of a particular feature will appear.\n\n### Map Navigation\n\nClicking on either **+** or **-** buttons will zoom the user one level higher/lower in the map. Alternatively users can use the middle scroll\nwheel of their mouse to zoom up or down levels. To open the map to your current location, click on the arrow button noting that\nsome browser security settings do not allow users to share their location information.\n\n### Background Settings\n\nClicking on the *Background Settings* button opens up a panel displaying different background layer display\noptions. To set the brightness for the background layer, click on the palette next to Background for 100%, 75%, 50%, or 25%\nbrightness. Users can select from a range of publicly available basemaps such as Bing aerial imagery, MapQuest Open Aerial,\nMapbox Satellite, OpenStreetMap, or create a custom basemap URL using the following URL template shown below. Any user\nuploaded Basemap images will appear in this panel. For those users with access to DigitalGlobe EV Web Hosting Service (EVWHS),\nthe GBM/EGD imagery service can be selected using different imagery profiles e.g. Most Recent, Most Aesthetic Color, Least Cloud\nCover. To get register for an account please visit: https://evwhs.digitalglobe.com/myDigitalGlobeAdmin/RegistrationRequest.html\n\n#### Image Carousel\nThe image carousel displays all of the available images by timestamp and sensor that are in the DigitalGlobe GBM/EGD service if\nthe service has been enabled. Users can select a particular DigitalGlobe image from the listed sensors/dates displayed in the carousel\nby clicking on the *Image Carousel* button or typing the *⌘I* shortcut key.\n\n### Map Data\n\nThe Map data settings allow users to add map overlay information such as a photo overlay from Mapillary or a local GPX file,\nmodify the display settings for vector data, and filter existing Map Features. Mapillary is a crowd source platform that allows users\nto upload street level photos (not commonly used for conflation but part of the core OSM iD interface) when available. Users can\nalso drag and drop a local GPX (GPS generated dataset) or use the file browser to add.\n\nFill Areas allows users to select from three different options for displaying relevant vector data. The first option is *No Fill or\nWireframe* which makes it easier to display background imagery. *Partial Fill* displays fill areas around their\ninner edges only. *Full Fill* displays features with complete fill turned. Users can adjust the *Line Width* by unchecking the use\n default value and setting the width value accordingly. Finally, users can filter Map Features of interest by simply\nchecking or unchecking the boxes next to the common map features such as Points, Major Roads, Buildings, etc. To access the\nsettings click on the *Map Data*.\n\n# Tools\n\nThe Tools button provides users with a quick set of customized tools for measuring length/area and cropping layers to smaller\nsubsets using either the visual extent or user defined bounding box. To access both options click on the Tools button and select\neither Measurement or Clip Tools.\n\n### Measurement Tools\n\nThere are two measurement tools currently provided; Measure linear distance or length of an object and measure the area of an\nobject. To measure the length of an object on the map, click on the Tools button and select Measurement Tools | Measure Length.\n\nThe cursor will then change into crosshairs indicating that you are able to measure a feature by drawing a line. To continue a drawing,\nleft click to add nodes as needed. To complete the measurement double-click. To measure an area/perimeter of a feature, select the\nMeasure Area option and click on the screen to add nodes and double click to complete the measurement. The measurement values\nwill appear with the perimeter value listed above the area.  To clear the measurement vectors, click the Tools Menu button.\n\n\n### Clip Tools\n\nThe clip tools provide a simple mechanism for cropping map layers using either the current visual extent of the map or a user defined\nbounding box. An example use case might be if the user ingests a country level dataset into Hootenanny but is only interested in\nconflating a region or city within that data. Rather than conflate the entire country dataset, the user would clip the area using the\nClip Tools to reduce it to a specific AOI and then run the conflation against that clipped dataset. Two options are provided; clip to\nvisual extent and clip to bounding box. When clip to visual extent is selected the current visible map is used as the clip AOI. If the\npreference is to define a bounding box on the map, the user can select clip to bounding box and then single left-click on any location\ndragging the displayed box to the desired size and direction. Keep in mind the first point clicked on the map is either the top or\nbottom corner depending on where the box is positioned.\n\nOnce a bounding box (or visual extent) has been selected, a dialog box will pop up with options to specify an output name and path\nof the clipped dataset. After the job has successfully completed it will appear in the list of available datasets.\n",
-        "shortcuts": "# Shortcuts\n\nShortcut | Action\n------------- | -------------\n1  | Create new Point feature\n2  | Create new Line feature\n3  | Create new Area feature\n6  | Measure Length\n7  | Measure Area\n8  | Clip to Bounding Box\n9  | Clip to Visual Extent\nCtrl + b | Bookmark current review\nCtrl + c  | Copies feature geometry/tags\nCtrl + s  | Save\nCtrl + v  | Pastes selected feature geometry/tags\nCtrl + Alt + v | Pastes selected tags using the append option\nCtrl + Shift + v | Pastes selected tags using the overwrite option\nCtrl + y  | Redo\nCtrl + z  | Undo\nCtrl + Backspace  | Deletes object permanently\nShift + Left mouse click  | Selects multiple features geometry/tags within layer\nAlt + b  | Switches b/w layers during post-conflation conflict review\nAlt + i  | Open Image Carousel\nAlt + n  | Toggles layer visibility on/off\n+  | Zoom in 1 level\n-  | Zoom out 1 level\n/  | Toggles display of overview map and map-in-map results during Conflict Review\n↓,↑,←,→  | Pan map in direction\na  | Continue drawing a line at the selected node\nb  | Display background layer switcher\nd  | Disconnect lines/areas from selected node\nf  | Displays Map data settings\nh  | Display in-editor help/documentation\ni  | Display feature info such as length and centroid coords\nm  | Move selected feature / Merge during POI Review\nn  | Advances to next review during Conflict Review\no  | Make feature a circle (must be poly or closed loop line)\np  | Steps back to previous review during Conflict Review\nr  | Rotate object around center / Resolved during Conflict Review\ns  | Straighten a line or square corner of area\nx  | Split line into two at selected node      \nv  | Make line go in opposite direction\nw  | Toggles wireframe vector display on/off\nEnter/Esc  | Stops drawing feature\nF11  | Sets browser to full screen\n",
+        "shortcuts": "# Shortcuts\n\nShortcut | Action\n------------- | -------------\n1  | Create new Point feature\n2  | Create new Line feature\n3  | Create new Area feature\n6  | Measure Length\n7  | Measure Area\n8  | Clip to Bounding Box\n9  | Clip to Visual Extent\nCtrl + b | Bookmark current review\nCtrl + c  | Copies feature geometry/tags\nCtrl + s  | Save\nCtrl + v  | Pastes selected feature geometry/tags\nCtrl + Alt + v | Pastes selected tags using the append option\nCtrl + Shift + v | Pastes selected tags using the overwrite option\nCtrl + y  | Redo\nCtrl + z  | Undo\nCtrl + Backspace  | Deletes object permanently\nShift + Left mouse click  | Selects multiple features geometry/tags within layer\nShift + r  | Switches b/w layers during post-conflation conflict review\nShift + t  | Switches b/w layers during post-conflation conflict review\nAlt + i  | Open Image Carousel\nAlt + n  | Toggles layer visibility on/off\n+  | Zoom in 1 level\n-  | Zoom out 1 level\n/  | Toggles display of overview map and map-in-map results during Conflict Review\n↓,↑,←,→  | Pan map in direction\na  | Continue drawing a line at the selected node\nb  | Display background layer switcher\nd  | Disconnect lines/areas from selected node\nf  | Displays Map data settings\nh  | Display in-editor help/documentation\ni  | Display feature info such as length and centroid coords\nm  | Move selected feature / Merge during POI Review\nn  | Advances to next review during Conflict Review\no  | Make feature a circle (must be poly or closed loop line)\np  | Steps back to previous review during Conflict Review\nr  | Rotate object around center / Resolved during Conflict Review\ns  | Straighten a line or square corner of area\nx  | Split line into two at selected node      \nv  | Make line go in opposite direction\nw  | Toggles wireframe vector display on/off\nEnter/Esc  | Stops drawing feature\nF11  | Sets browser to full screen\n",
         "options": "# Conflation options\n\n### Save As\n\nThe name of the conflated data output that you would like to save. By default, a file name Merged_* is populated in this field but\nthis can be overwritten manually by entering a specific layer name.\n\n### Path\n\nThe existing folder path where you want to save the conflated output. To create a new folder to save the output enter that in the New\nFolder Name field.\n\n### New Folder Name\n\nThe name of a new folder if you wish to create one to save the output. Note that it will be created at the level specified in the Path.\nLeave blank if no new folder is required.\n\n### Type\nThere are four types of conflation that are exposed in the UI: Reference, Average, Cookie Cutter & Horizontal and Advanced.  For more information\non these conflation types, please consult the Hootenanny User Guides.\n\n### Attribute Reference Layer\nDuring conflation, the attributes of reference data are used to update any secondary data. By default, the reference layer contains\nboth the reference geometry and attribution. In many cases, however, reference geometry and attribution exists across multiple\nlayers hence the need for conflation. To support this use case, select either the reference or secondary layer as the attribute reference\nlayer.\n\n### Collect Stats\nHootenanny provides users with the ability to generate statistics and display information pertaining to each conflation and associated input\nlayers. If false, Hootenanny will display only the conflation parameters i.e. the Reference/Secondary layer names and Conflation Type, and\nOptions, i.e. what args were included in the conflation job, for the merged layer after the conflation job has completed. If true, Hootenanny\nwill generate statistics such as the counts for all nodes, ways and relations in each of the input and output layers (similarly for counts of\n  pois, roads, and buildings), counts of unmatched, merged, and review features as well as percentages for each.  These formatted statistics are\ndisplayed in the *Statistics* section of the layer info.  In addition, users can also view the raw statistics that Hootenanny collects when\nthis option has been enabled.  These values appear as comma separated lists (e.g. Total Conflatable Features = 374,227,0) pertaining to the\nReference Layer, Secondary Layer, and Merged Output Layer next to each statistic parameter.\n",
         "review": "# Reviewing Conflicts\n\nWhen conflating data it is inevitable that conflicts may arise due to the lack of a clear solution as a result of ambiguous relationships\nbetween matched features. When this occurs, reviewable items are flagged and presented to the user in the UI through an iterative\nreview process where the user must decide a particular action (e.g. accept as resolved, modify or delete, or merge) before merging the\nfinal conflated output.\n\nDuring review, a single feature is compared with another (based on convergence of geometry and attribution) to determine whether\na merge or alternative action is required. Note that feature merging is only available for POI to POI conflation. Otherwise the user\ncan modify Features flagged for review will appear highlighted on the map in either red or blue corresponding to the Reference and\nSecondary input data. Clicking in any of the highlighted fields in the review table will select the feature in question and display\nits attribute in the left tag panel (see Figure 28). Users can toggle the review items table by clicking on the Hide/Show Table button\nlocated in the conflict review bar at the bottom. In order to complete the review process, all reviews must be resolved either by\nstepping through each individually or by clicking the Complete Review button to resolve remaining reviews and either export the\ndata to the desired output format or add another layer for conflation.\n\n### Review Text\nFor more information on messages during reviews, please consult the Hootenanny User Interface Guide.\n\n### Map-in-Map\n\nIn Hootenanny, the concept of Map-in-Map is used here to describe an inset or overview map that contains additional spatial\ninformation relating to the conflation i.e where reviews occur within the AOI. When a conflation job completes and reviews are\ngenerated, users can display an overview map showing colored points representing the location (or centroid of the location) where\nunresolved, merged, and currently reviewed features occur for the corresponding AOI. To view this map, press the / key when\nreviewing features and the smaller overview map should display a set of points representing the review layer.\n\nDepending on the density of data flagged for review, the features are represented in the following manner: yellow dots corresponding\nto the location of unresolved reviews; a single red dot indicating the currently reviewed feature in the user’s session; and green dots\nrepresenting any resolved or merged features. This visual aid becomes useful particularly when multiple users are editing the same\nlayer simultaneously since it provides a map of the spatial distribution of reviews in real or near-real time.\n\n### Multi-user Conflict Reviewing\n\nHootenanny supports the notion of multi-user layer editing in the context of conflation reviews by adding business logic to the\napplication that minimizes the likelihood that different users loading the same layer will be presented with the exact same review.\nBear in mind that datasets containing fewer reviews (<50) will have a higher likelihood of two different users encountering the same\nconflict at the same time but given that most reviews require on average 15-20 seconds to resolve, the possible of simultaneous\nediting is relatively low. The ideal scenario for multi-user conflict reviewing is when a conflation job generates a large number\nof reviews in excess of several hundred or thousand where this work can be parsed out among users accessing the same layer to\nminimize down time when conflating data.\n\n### Sharing Reviews\nTo assist with the multi-user conflict reviewing, there is a new mechanism to allow users to better collaborate on reviews. When a\nuser encounters a review that requires additional feedback prior to resolving, they can click the Share Review button.  This will pop-up\na dialog box allowing them to enter some details about the review which others can then open separately as a bookmark from the Review\nBookmarks in Manage.  A second user can then open the review bookmark, add additional comments and view that review to take any additional\naction required.\n",
         "manage": "# Manage Hootenanny\n\nThe Manage capabilities within Hootenanny provide a set of administrative tools and data management options for users. This will\nprovide a brief overview of the Manage Page for Hootenanny.  For more information, please consult the Hootenanny User Interface Guide.\n\n### Translation Assistant\n\nThe Translation Assistant was developed to facilitate the translation of \"shoebox\" (one-off or custom) datasets into Hootenanny’s\ninternal format of OSM xml. Users must map attribute names and values from the source dataset to a common schema so that\nconflation operations can occur. The available target schemas in the current release include OSM and TDSv61. The choice of target\nschema is dependent on the users fluency with said schema and how conversant they will be in defining an accurate mapping, as\nwell as technical factors noted below. All translations end up in the internal OSM schema when stored in the database and used\nduring conflation operations.\n\n### Translations\n\nThe Translation settings page contains all of the predefined translations (MGCP, OSM, TDSv40, TDSv61) in addition to any custom\ntranslations that have been generated from the translation assistant. To add a new translation, click on the Add New Translation\nbutton. Populate the Name and Description fields in this form and copy/paste your Translation Assistant generated Javascript. Note\nthat the translation assistant adds the translation file to the list of available translations as part of the custom translation workflow so\nusers are not required to use the add new translation option and manually paste in their generated translation file. The pre-defined\ntranslations are displayed as read-only and cannot be edited by users however any custom translation will be editable by clicking on\nthe folder icon and editing any Javascript as needed.\n\n### Datasets\n\nThe Datasets settings page provides users with options for managing data that they wish to use in Hootenanny including importing\nfrom source (shapefile, osm, geonames, FGDB), organizing data into a folder structure, renaming/deleting/moving data that has\nbeen already ingested, and exporting data from Hootenanny into pre-defined output formats and translation schemas.\n\n### WFS Exports\n\nThe WFS Export tab lists all of the available WFS Services that have been generated from previous conflation jobs. Click on the up\narrow icon to display the WFS Resource URL. Copy/Paste the URL into a third party application that supports WFS. Note that the\nURL provided is the full GetCapabilities document describing the service.\n\n### Manage Basemaps\n\nHootenanny provides users with the capability to generate their own custom basemap service using a georeferenced image. Currently\nHootenanny only supports GeoTIFF or png file types. To generate a new basemap that can be displayed in Hootenanny, click on the\nBasemap tab and the New Basemap button. Use the file browser to upload your local georeferenced image (GeoTIFF or png only).\n\n### Log\n\nThe Log tab provides both the Application and UI log for users to troubleshoot any issues that may occur during a user session.\nThere are two panels that are provided here; The Error log which provides core and service logging detail (i.e. tomcat catalina.out)\nand the UI log which provides errors generated from the iD web client. The full log can be exported by clicking on the export\nfull log button. Note that any UI issues will also appear on the map map in the upper right corner in red highlight when they are\ntriggered. This messages are maintained in the UI log until the browser session is reloaded.\n\n### Reports\n\nThe Reports tab contains all of the generated reports for conflation jobs where Generate Report = True has been specified. To\ndownload a report, click on the arrow and save the file to your local desktop.\n\n### Review Bookmarks\nThe Review Bookmarks tab stores all of the shared reviews saved by various Hootenanny users.  Each bookmark can be edited to add any additional notes or comments. To\nview the bookmarked review in the map, click on the magnifying glass in the opened bookmark in the top right corner.  Once a review has been resolved the bookmark will\nremain with the status, RESOLVED, and the user will no longer be able to display the review.\n\n### About Hootenanny\nThis tab provides all of the version information for Hootenanny Core, Web Services and iD Editor versions and provides a link to download the Hootenanny User Interface Guide.\n"
@@ -3084,6 +3087,66 @@
                 "name": "Works",
                 "terms": "car assembly plant,aluminium processing plant,brewery,furniture manufacture factory,oil refinery,plastic recycling"
             },
+            "mgcp/AL010": {
+                "name": "AL010 (Facility)",
+                "terms": ""
+            },
+            "mgcp/AL015": {
+                "name": "Building (AL015)",
+                "terms": ""
+            },
+            "mgcp/AL020": {
+                "name": "Built-up Area (AL020)",
+                "terms": ""
+            },
+            "mgcp/AL099": {
+                "name": "Hut (AL099)",
+                "terms": ""
+            },
+            "mgcp/AL105": {
+                "name": "Settlement (AL105)",
+                "terms": ""
+            },
+            "mgcp/AN010": {
+                "name": "Railway (AN010)",
+                "terms": ""
+            },
+            "mgcp/AP010": {
+                "name": "Cart Track (AP010)",
+                "terms": ""
+            },
+            "mgcp/AP030": {
+                "name": "Road (AP030)",
+                "terms": ""
+            },
+            "mgcp/AP050": {
+                "name": "Trail (AP050)",
+                "terms": ""
+            },
+            "mgcp/AQ040": {
+                "name": "Bridge (AQ040)",
+                "terms": ""
+            },
+            "mgcp/AQ065": {
+                "name": "Culvert (AQ065)",
+                "terms": ""
+            },
+            "mgcp/BH030": {
+                "name": "Ditch (BH030)",
+                "terms": ""
+            },
+            "mgcp/BH070": {
+                "name": "Ford (BH070)",
+                "terms": ""
+            },
+            "mgcp/BH140": {
+                "name": "River (BH140)",
+                "terms": ""
+            },
+            "mgcp/GB005": {
+                "name": "Land Aerodrome (GB005)",
+                "terms": ""
+            },
             "military/airfield": {
                 "name": "Airfield",
                 "terms": ""
@@ -3912,16 +3975,16 @@
                 "name": "Building (AL013)",
                 "terms": ""
             },
-            "tdsv40/AL015": {
-                "name": "Settlement (AL015)",
-                "terms": ""
-            },
             "tdsv40/AL020": {
                 "name": "Built-up Area (AL020)",
                 "terms": ""
             },
             "tdsv40/AL099": {
                 "name": "Hut (AL099)",
+                "terms": ""
+            },
+            "tdsv40/AL105": {
+                "name": "Settlement (AL105)",
                 "terms": ""
             },
             "tdsv40/AN010": {
@@ -3972,16 +4035,16 @@
                 "name": "Building (AL013)",
                 "terms": ""
             },
-            "tdsv61/AL015": {
-                "name": "Settlement (AL015)",
-                "terms": ""
-            },
             "tdsv61/AL020": {
                 "name": "Built-up Area (AL020)",
                 "terms": ""
             },
             "tdsv61/AL099": {
                 "name": "Hut (AL099)",
+                "terms": ""
+            },
+            "tdsv61/AL105": {
+                "name": "Settlement (AL105)",
                 "terms": ""
             },
             "tdsv61/AN010": {

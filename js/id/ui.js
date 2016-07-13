@@ -20,7 +20,7 @@ iD.ui = function(context) {
         //Create a ref to sidebar, so Hoot can override???
         var sidebar = container.append('div')
             .attr('id', 'sidebar')
-            .classed('col4',true)
+            // .classed('col4',true) //Commented out so sidebar starts at 400px;
             .call(ui.sidebar);
 
         var resizer = sidebar.append('div')
@@ -63,8 +63,8 @@ iD.ui = function(context) {
             //.style('display', 'none')
             .call(iD.ui.Info(context));
 
-        bar.append('div')
-            .attr('class', 'spacer col4');
+        /*bar.append('div')
+            .attr('class', 'spacer col4');*/
 
         var limiter = bar.append('div')
             .attr('class', 'limiter');

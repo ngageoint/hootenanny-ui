@@ -295,7 +295,6 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
 
         // sometimes we do not get feature code. Like where core could not find translation..
         var rawFCode = resp.attrs['Feature Code'];
-        //var curTags = tags;
         var curPreset = preset;
         if(rawFCode) {
             var fCode = rawFCode.split(':')[0].trim();
@@ -304,7 +303,7 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
 
             var rawCurFields = JSON.parse(resp.fields).columns;
 
-            //curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
+            me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
 
             if(!curPreset){
 
@@ -357,7 +356,7 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
             // handle HGIS translation
             if(lyrName && fType) {
                 rawCurFields = JSON.parse(resp.fields).columns;
-                //curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
+                me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
 
                 newPreset = me.createPresetByName(curGeom, fType, currentTranslation, lyrName);
 

@@ -433,11 +433,11 @@ span.logo{
     font-size: 13px;
 }
 .tag-row .map-metadata.key {
-    width: 70%;
+    width: 40%;
     font-weight: bold;
 }
 .tag-row .map-metadata.value {
-    width: 30%;
+    width: 60%;
 }
 .tar {
     text-align: right;

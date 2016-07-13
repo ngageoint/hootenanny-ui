@@ -73,9 +73,30 @@ iD.ui.Background = function(context) {
             //collections.classed('hide', true);
         }
 
+        //Added for toggling the overlay labels on and off when the layer changes
+        function checkLocatorOverlay(checkbox, d){
+            var overlays = context.background()
+                .sources(context.map().extent())
+                .filter(function(d) { return d.overlay;});
+
+            var layerUsed = d.imageryUsed();
+            if (layerUsed === 'MAPNIK' || layerUsed === 'USGS Topographic Maps'){
+                if (checkbox.classed('active')){
+                    context.background().hideOverlayLayer(overlays[0]);
+                } else {
+                    return;
+                }
+            } else {
+                if (!checkbox.classed('active')){
+                    context.background().showOverlayLayer(overlays[0]);
+                }
+            }
+        }
+
         function clickSetSource(d) {
             d3.event.preventDefault();
             context.background().baseLayerSource(d);
+            checkLocatorOverlay(d3.select('#locator_overlay'), d);
             selectLayer();
 
             //Added to zoom to imported basemap
@@ -124,6 +145,14 @@ iD.ui.Background = function(context) {
             var sources = context.background()
                 .sources(context.map().extent())
                 .filter(filter);
+
+            d3.selectAll('.assignID')
+                .selectAll('li.layer')
+                .attr('id', function(d){
+                    if (typeof d.imageryUsed() === 'string'){
+                        return d.imageryUsed().replace(/ /g, '_').toLowerCase();
+                    }
+                });
 
             var layerLinks = layerList.selectAll('li.layer')
                 .data(sources, function(d) { return d.name(); })
@@ -278,7 +307,7 @@ iD.ui.Background = function(context) {
             .style('opacity', function(d) { return 1.25 - d; });
 
         var backgroundList = content.append('ul')
-            .attr('class', 'layer-list');
+            .attr('class', 'layer-list assignID');
 
         var custom = backgroundList.append('li')
             .attr('class', 'custom_layer')
@@ -390,7 +419,7 @@ iD.ui.Background = function(context) {
         //END: Added for EGD-plugin
 
         var overlayList = content.append('ul')
-            .attr('class', 'layer-list');
+            .attr('class', 'layer-list assignID');
 
         //Added for EGD-plugin
 
