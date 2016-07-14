@@ -78,8 +78,6 @@ iD.behavior.Draw = function(context) {
         } else {
             event.click(context.map().mouseCoordinates());
         }
-
-        var clickTime = +new Date();
     }
 
     function backspace() {
