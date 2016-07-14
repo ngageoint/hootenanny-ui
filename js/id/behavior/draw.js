@@ -73,31 +73,11 @@ iD.behavior.Draw = function(context) {
             }
 
         } else if (d.type === 'node') {
-
-            var isNodeDblClick = false;
-
-            if(clickTime){
-                isNodeDblClick = ((+new Date() - clickTime) < 500);
-            }
-
-            // use user setting for snapping to point which is the default behavior
-            if(context.enableSnap){
-                isNodeDblClick = context.enableSnap;
-            }
-
-            if(isNodeDblClick === true){
-                event.clickNode(d);
-
-            } else {
-                event.click(context.map().mouseCoordinates());
-            }
-
+            event.clickNode(d);
 
         } else {
             event.click(context.map().mouseCoordinates());
         }
-
-        var clickTime = +new Date();
     }
 
     function backspace() {
