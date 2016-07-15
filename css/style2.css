@@ -407,6 +407,34 @@ span.logo{
 	display: inline-block; */
 }
 
+/*** CLIP TOOL ***/
+.clipMenu {
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  left:0%;
+}
+
+.exportbox { 
+  border: 1px solid #ccc; 
+  background: #eee;
+  border-radius: 3px;
+  text-align: center;
+}
+.export_bound {
+  margin: 5px;
+}
+
+.exportbox input {
+  width:120px; 
+  text-align: center; 
+  margin-bottom: 5px;
+}
+.exportbox #maxlat {margin-top: -1px;}
+.exportbox #minlon {float: left; margin-left: -1px;}
+.exportbox #maxlon {float: right; margin-right: -1px;}
+.exportbox #minlat {margin-bottom: -1px;}
+
 
 .clipInfo {font-weight:bold;}
 .invalidName {border:1px solid red !important;}

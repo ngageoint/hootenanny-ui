@@ -92,7 +92,8 @@ iD.behavior.Clip = function(context,svg) {
 
          ret(d3.select('#surface'));
          if(!_.isEmpty(context.hoot().model.layers.getLayers())){
-            context.hoot().control.utilities.clipdataset.clipDatasetContainer('boundingBox',bboxPt1.concat(',',bboxPt2));
+           // context.hoot().control.utilities.clipdataset.clipDatasetContainer('boundingBox',bboxPt1.concat(',',bboxPt2));
+            context.hoot().control.utilities.clipdataset.populateCoordinates(bboxPt1.concat(',',bboxPt2));
         } else {
             iD.ui.Alert('Add data to map before clipping.','notice',new Error().stack);
         }

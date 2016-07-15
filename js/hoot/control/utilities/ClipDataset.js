@@ -34,8 +34,7 @@ Hoot.control.utilities.clipdataset = function(context) {
             .attr('id','getCoordinatesContainer')
             .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
         var ingestDiv = _modalcoord.append('div')
-            .classed('contain col6 pad1 hoot-menu fill-white round modal', true)
-            .style({'display':'block','margin-left':'auto','margin-right':'auto','left':'0%'});
+            .classed('contain col4 pad1 hoot-menu fill-white round modal clipMenu', true);
         var _form = ingestDiv.append('form');
         _form.classed('round space-bottom1 importableLayer', true)
             .append('div')
@@ -48,25 +47,33 @@ Hoot.control.utilities.clipdataset = function(context) {
                 _modalcoord.remove();
             });
 
-        var _table = _form.append('table').attr('id','coordinateTable');
+        // Add N, S, E, W divs
+        var minlon = context.map().extent()[0][0].toFixed(6);
+        var minlat = context.map().extent()[0][1].toFixed(6);
+        var maxlon = context.map().extent()[1][0].toFixed(6);
+        var maxlat = context.map().extent()[1][1].toFixed(6);
 
-        var bbox = context.map().extent().toString().split(',');
-        var _visualExtent = [{'id':'llx','label':'Lower Left X','coord':bbox[0]},
-                            {'id':'lly','label':'Lower Left Y','coord':bbox[1]},
-                            {'id':'urx','label':'Upper Right X','coord':bbox[2]},
-                            {'id':'ury','label':'Upper Right Y','coord':bbox[3]}];
+        var _coordsDiv = _form.append('div').append('div').classed('exportbox',true);
+        _coordsDiv.append('input').attr('type','text').attr('id','maxlat')
+            .attr('size',10).classed('export_bound',true).value(maxlat);
+        _coordsDiv.append('br');
+        _coordsDiv.append('input').attr('type','text')
+            .attr('id','minlon').attr('size',10).classed('export_bound',true).value(minlon);
+        _coordsDiv.append('input').attr('type','text').attr('id','maxlon')
+            .attr('size',10).classed('export_bound',true).value(maxlon);
+        _coordsDiv.append('br');
+        _coordsDiv.append('br');
+        _coordsDiv.append('input').attr('type','text').attr('id','minlat')
+            .attr('size',10).classed('export_bound',true).value(minlat);
 
-        var _tableBody = d3.select('#coordinateTable').append('tbody');
-        _.each(_visualExtent,function(ve){
-            var _tr = _tableBody.append('tr');
-            _tr.append('td').append('div').classed('contain bulk-import',true).append('label').text(ve.label);
-            _tr.append('td').append('div').classed('contain bulk-import',true).append('input').attr('type','text').attr('id','clipCoord_' + ve.id)
-                .classed('reset  bulk-import',true)
-                .value(ve.coord)
-                .on('click',function(){
-                    if(d3.select(this).value()===''){d3.select(this).value(d3.select(this).attr('placeholder'));}
-                });
-        });
+        _form.append('a').attr('id','clip2bbox').attr('href','#')
+            .text('Clip to Bounding Box')
+            .on('click',function(){
+                d3.select('#getCoordinatesContainer').classed('hidden',true);
+                context.enter(iD.modes.ClipBoundingBox(context));
+            });
+
+
 
         var submitExp = ingestDiv.append('div')
             .classed('form-field left ', true);
@@ -81,7 +88,7 @@ Hoot.control.utilities.clipdataset = function(context) {
                 var urx = d3.select('#clipCoord_urx').value();
                 var ury = d3.select('#clipCoord_ury').value();
                 var strRect = llx + ',' + lly + ',' + urx + ',' + ury;
-                
+
                 var cc = _.map(strRect.split(','),function(d){return parseFloat(d);})
                 if(!context.hoot().checkForValidCoordinates([cc[0],cc[1]]) || !context.hoot().checkForValidCoordinates([cc[2],cc[3]])){
                     iD.ui.Alert('Please check that valid coordinates have been entered.','notice');
@@ -129,8 +136,7 @@ Hoot.control.utilities.clipdataset = function(context) {
             .attr('id','clipDatasetContainer')
             .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
         var ingestDiv = _modalbg.append('div')
-            .classed('contain col10 pad1 hoot-menu fill-white round modal', true)
-            .style({'display':'block','margin-left':'auto','margin-right':'auto','left':'0%'});
+            .classed('contain col10 pad1 hoot-menu fill-white round modal clipMenu', true);
         var _form = ingestDiv.append('form');
         _form.classed('round space-bottom1 importableLayer', true)
             .append('div')
@@ -224,6 +230,15 @@ Hoot.control.utilities.clipdataset = function(context) {
         return _modalbg;
     };
 
+    /**
+    * @desc Form for gathering LL and UR coordinates for bounding box
+    * @return container div
+    **/
+    _instance.populateCoordinates = function(bbox) {
+        // populate coordinates with bbox
+        window.alert(bbox);
+        d3.select('#getCoordinatesContainer').classed('hidden',false);
+    };
 
     /**
     * @desc Creates input field for layer name.
