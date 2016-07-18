@@ -83,14 +83,11 @@ Hoot.control.utilities.clipdataset = function(context) {
             .text('Next')
             .on('click',function(){
                 //Verify coordinates
-                var llx = d3.select('#clipCoord_llx').value();
-                var lly = d3.select('#clipCoord_lly').value();
-                var urx = d3.select('#clipCoord_urx').value();
-                var ury = d3.select('#clipCoord_ury').value();
-                var strRect = llx + ',' + lly + ',' + urx + ',' + ury;
+                var maxCoords = [parseFloat(d3.select('#maxlon').value()), parseFloat(d3.select('#maxlat').value())];
+                var minCoords = [parseFloat(d3.select('#minlon').value()), parseFloat(d3.select('#minlat').value())];
+                var strRect = d3.select('#minlon').value() + ',' + d3.select('#minlat').value() + ',' + d3.select('#maxlon').value() + ',' + d3.select('#maxlat').value();
 
-                var cc = _.map(strRect.split(','),function(d){return parseFloat(d);})
-                if(!context.hoot().checkForValidCoordinates([cc[0],cc[1]]) || !context.hoot().checkForValidCoordinates([cc[2],cc[3]])){
+                if(!context.hoot().checkForValidCoordinates(maxCoords) || !context.hoot().checkForValidCoordinates(minCoords)){
                     iD.ui.Alert('Please check that valid coordinates have been entered.','notice');
                     return;
                 } else {
