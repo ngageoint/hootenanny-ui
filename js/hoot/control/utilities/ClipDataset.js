@@ -66,11 +66,17 @@ Hoot.control.utilities.clipdataset = function(context) {
         _coordsDiv.append('input').attr('type','text').attr('id','minlat')
             .attr('size',10).classed('export_bound',true).value(minlat);
 
-        _form.append('a').attr('id','clip2bbox').attr('href','#')
+        _form.append('a').attr('id','clip2bbox').attr('href','#').style('display','block').classed('pad1y',true)
             .text('Clip to Bounding Box')
             .on('click',function(){
+                iD.ui.Alert('Click anywhere on the map to start drawing.  Click again to complete the bounding box.','notice');
                 d3.select('#getCoordinatesContainer').classed('hidden',true);
                 context.enter(iD.modes.ClipBoundingBox(context));
+            });
+        _form.append('a').attr('id','clip2ve').attr('href','#').style('display','block')
+            .text('Use Visual Extent')
+            .on('click',function(){
+                context.hoot().control.utilities.clipdataset.populateCoordinates(context.map().extent()[1],context.map().extent()[0]);
             });
 
 
@@ -231,9 +237,19 @@ Hoot.control.utilities.clipdataset = function(context) {
     * @desc Form for gathering LL and UR coordinates for bounding box
     * @return container div
     **/
-    _instance.populateCoordinates = function(bbox) {
+    _instance.populateCoordinates = function(maxCoords,minCoords) {
         // populate coordinates with bbox
-        window.alert(bbox);
+        var maxlon = maxCoords[0].toFixed(6);
+        var maxlat = maxCoords[1].toFixed(6);        
+        var minlon = minCoords[0].toFixed(6);
+        var minlat = minCoords[1].toFixed(6);
+
+        d3.select('#maxlon').value(maxlon);
+        d3.select('#maxlat').value(maxlat);
+        d3.select('#minlon').value(minlon);
+        d3.select('#minlat').value(minlat);
+
+
         d3.select('#getCoordinatesContainer').classed('hidden',false);
     };
 
