@@ -219,15 +219,21 @@ Hoot.control.utilities.importdataset = function(context) {
     **/
     var _performImport = function(submitExp) {
         submitExp.select('span').text('Uploading ...');
-        //var spin = submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true).attr('id', 'importspin');
+        submitExp
+            .insert('div',':first-child')
+            .classed('_icon _loading row1 col1 fr',true)
+            .attr('id', 'importspin');
 
         var progcont = submitExp.append('div');
         progcont.classed('form-field', true);
+
+        /*      
         var prog = progcont.append('span').append('progress');
         prog.classed('form-field', true);
         prog.value('0');
         prog.attr('max', '100');
         prog.attr('id', 'importprogress');
+        */
 
         var progdiv = progcont.append('div');
         progdiv.attr('id','importprogdiv')
@@ -238,7 +244,8 @@ Hoot.control.utilities.importdataset = function(context) {
             .attr('id', 'importprogresstext')
             .attr('dy', '.3em').text('Initializing ...');
 
-        var progShow = progcont.append('a');
+       /*
+       var progShow = progcont.append('a');
         progShow.attr('id','importprogressshow')
             .classed('show-link',true)
             .attr('expanded',false)
@@ -254,6 +261,7 @@ Hoot.control.utilities.importdataset = function(context) {
                     d3.select(this).text('Show More');
                 }
             });
+        */
 
             context.hoot().model.import.importData(_container,
                 '#importDatasetSchema',
@@ -675,7 +683,8 @@ Hoot.control.utilities.importdataset = function(context) {
 
 
 
-        d3.select('#importDatasetBtnContainer').classed('hidden', false);
+        d3.select('#importDatasetBtnContainer')
+            .classed('hidden', false);
 
     };
 
