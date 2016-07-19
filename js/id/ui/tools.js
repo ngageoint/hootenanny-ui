@@ -60,6 +60,8 @@ iD.ui.Tools = function(context) {
                         } else if (item.action === 'clipData'){
                             //Call clip map
                             if(!_.isEmpty(context.hoot().model.layers.getLayers())){
+                                //If form is already open, close it!
+                                d3.select('#getCoordinatesContainer').remove();
                                 context.hoot().control.utilities.clipdataset.getBBoxCoordinates();
                             } else {
                                 iD.ui.Alert('Add data to map before clipping.','notice',new Error().stack);
