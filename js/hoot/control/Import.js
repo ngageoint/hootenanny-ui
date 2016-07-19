@@ -68,7 +68,7 @@ Hoot.control.import = function (context,selection) {
                 var pnode = d3.select(d3.select(this).node().parentNode);
                 if(isPrimary || pnode.node().nextSibling){return 'Add Reference Dataset';}
                 else {return 'Add Secondary Dataset';}
-                })
+            })
             .on('click', function () {toggleForm(this);});
         var fieldset = _form.append('fieldset');
         fieldset.classed('pad1 keyline-left keyline-right keyline-bottom round-bottom hidden', true)
