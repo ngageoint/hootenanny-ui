@@ -72,11 +72,20 @@ Hoot.control.import = function (context,selection) {
             .on('click', function () {toggleForm(this);});
         var fieldset = _form.append('fieldset');
         fieldset.classed('pad1 keyline-left keyline-right keyline-bottom round-bottom hidden', true)
+            .attr('id', function(){
+                var pnode = d3.select(d3.select(this).node().parentNode);
+                if(isPrimary || pnode.node().nextSibling){return 'refDataset';}
+                else {return 'secondaryDataset';}
+            })
             .selectAll('.form-field')
             .data(d_form)
             .enter()
             .append('div')
-            .classed('overflow',true)
+            .attr('class', function(){
+                var pnode = d3.select(d3.select(this).node().parentNode);
+                if(pnode.attr('id') === 'refDataset'){return 'overflow svgLayerList refDataset';}
+                else {return 'overflow svgLayerList secondaryDataset';}
+            })
             .style({'height':'150px','margin':'0 0 15px','resize':'vertical'})
             .select(ETL.renderTree);
         
