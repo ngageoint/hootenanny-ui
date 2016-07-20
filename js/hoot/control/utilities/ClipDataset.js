@@ -103,7 +103,7 @@ Hoot.control.utilities.clipdataset = function(context) {
             });
 
         return _modalcoord; 
-    }
+    };
 
     /**
     * @desc Entry point where it creates form.
