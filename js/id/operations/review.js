@@ -192,23 +192,20 @@ iD.operations.Review = function(selectedIDs, context) {
                         if(mFeature && mFeatureLoc && (entityId !== mid)) {
                             //take this coord, convert to SVG, add to map
                             var c = context.projection(mFeatureLoc);
-                            var transform = 'translate('.concat(c[0],',',c[1]-circleOffset,')');
-                            function dragstarted(d) {
-                                d3.event.sourceEvent.stopPropagation();
-                            }
-                            function dragged(d) {
-                                var m = context.projection(context.map().mouseCoordinates());
-                                var transform = 'translate('.concat(m[0],',',m[1],')');
-                                d3.select(this).attr('transform', transform);
-                            }
-                            function dragended(d) {
-                                d3.select(this).attr('loc',context.map().mouseCoordinates()).attr('state','dragged');
-                            }
+                            var transform = 'translate('.concat(c[0],',',c[1]-circleOffset,')');                            
                             var drag = d3.behavior.drag()
                                 .origin(function(d) {return d; })
-                                .on("dragstart", dragstarted)
-                                .on("drag", dragged)
-                                .on("dragend", dragended);
+                                .on('dragstart', function() {
+                                    d3.event.sourceEvent.stopPropagation();
+                                })
+                                .on('drag', function() {
+                                    var m = context.projection(context.map().mouseCoordinates());
+                                    var transform = 'translate('.concat(m[0],',',m[1],')');
+                                    d3.select(this).attr('transform', transform);
+                                })
+                                .on('dragend', function() {
+                                    d3.select(this).attr('loc',context.map().mouseCoordinates()).attr('state','dragged');
+                                });
                             var g = svg.append('g').attr('transform',transform).attr('loc',mFeatureLoc).classed('gotoreview _' + mFeature.type,true).call(drag);
                             g.append('circle').attr('r','15')
                                 .attr('stroke','white').attr('stroke-width','2')
