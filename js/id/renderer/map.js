@@ -35,10 +35,7 @@ iD.Map = function(context) {
 
     function map(selection) {
         context.history()
-            .on('change.map', function() {
-                redraw();
-                map.updateEditedHighlights();
-            });
+            .on('change.map', redraw);
         context.background()
             .on('change.map', redraw);
         context.features()
@@ -276,6 +273,7 @@ iD.Map = function(context) {
 
         clearTimeout(timeoutId);
 
+        map.updateEditedHighlights();
         //Added for measure layer
         //Update measurement lines
         var measureLines = d3.selectAll('[class*=measure-line-]');
@@ -431,7 +429,7 @@ iD.Map = function(context) {
         // added in iD v1.9.2
         wrapper
             .call(drawLayers);
-
+        map.updateEditedHighlights();
         transformStart = [
             projection.scale() * 2 * Math.PI,
             projection.translate().slice()];
