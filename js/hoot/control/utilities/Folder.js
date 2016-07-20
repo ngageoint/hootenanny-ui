@@ -349,7 +349,7 @@ Hoot.control.utilities.folder = function(context) {
                               {title:'Add as Reference Dataset',icon:'plus',click:'addReferenceDataset'},
                               {title:'Add as Secondary Dataset',icon:'plus',click:'addSecondaryDataset'}
                             );
-                          } else {
+                          } else if(Object.keys(context.hoot().model.layers.getLayers()).length < 2) {
                             // Determine if reference or secondary is already loaded
                             var sels = d3.select('#sidebar2').selectAll('form')[0];
                             if(d3.select(sels[0]).datum().name!==undefined){
