@@ -199,6 +199,17 @@ iD.ui.Background = function(context) {
             backgroundList.call(drawList, 'radio', clickSetSource, function(d) { return !d.overlay; });
             overlayList.call(drawList, 'checkbox', clickSetOverlay, function(d) { return d.overlay; });
 
+            var layerIds = _.pluck(context.hoot().model.layers.getLayers(), 'id');
+            if (layerIds.length > 0){
+                // var overlayParent = overlayList.node()
+                var overlayLayers = overlayList.selectAll('li.layer');
+                for (var i=0; i<overlayLayers[0].length; i++){
+                    if (parseInt(overlayLayers[0][i].id)){
+                        var item = d3.select(overlayLayers[0][i]);
+                        item.classed('layer-list-hidden', true);
+                    }
+                }
+            }
             selectLayer();
 
             var source = context.background().baseLayerSource();

@@ -1970,10 +1970,22 @@ div.full-screen > button:hover {
     padding-bottom: 10px;
 }
 
+.layer-browse{
+    width: 10%;
+}
+
 .layer-list, .controls-list {
     margin-bottom: 10px;
-    border: 1px solid #CCC;
+    border-top: 1px;
+    border-right: 1px;
+    border-left: 1px;
+    border-style: solid;
+    border-color: #CCC;
     border-radius: 4px;
+}
+
+.controls-list{
+    border-bottom: 1px solid #ccc;
 }
 
 .layer-list li {
@@ -1993,13 +2005,15 @@ div.full-screen > button:hover {
 
 .layer-list > li:last-child {
     border-radius: 0 0 3px 3px;
+    border-bottom: 1px solid #ccc;
 }
 
 .layer-list > li:only-child {
     border-radius: 3px;
+    border-bottom: 1px solid #ccc;
 }
 
-.layer-list li:not(:last-child) {
+.layer-list > li:not(:last-child) {
     border-bottom: 1px solid #ccc;
 }
 
@@ -2034,6 +2048,11 @@ div.full-screen > button:hover {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.layer-list-hidden{
+    display: none;
+    border: none;
 }
 
 .minimap-toggle {
@@ -2170,7 +2189,7 @@ div.full-screen > button:hover {
 .background-control .layer-list button {
     float: right;
     height: 100%;
-    width: 10%;
+    /*width: 10%;*/
     border-left: 1px solid #CCC;
     border-radius: 0;
 }
