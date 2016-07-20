@@ -706,13 +706,12 @@ en:
       The clip tools provide a simple mechanism for cropping map layers using either the current visual extent of the map or a user defined
       bounding box. An example use case might be if the user ingests a country level dataset into Hootenanny but is only interested in
       conflating a region or city within that data. Rather than conflate the entire country dataset, the user would clip the area using the
-      Clip Tools to reduce it to a specific AOI and then run the conflation against that clipped dataset. Two options are provided; clip to
-      visual extent and clip to bounding box. When clip to visual extent is selected the current visible map is used as the clip AOI. If the
-      preference is to define a bounding box on the map, the user can select clip to bounding box and then single left-click on any location
-      dragging the displayed box to the desired size and direction. Keep in mind the first point clicked on the map is either the top or
-      bottom corner depending on where the box is positioned.
+      Clip Tools to reduce it to a specific AOI and then run the conflation against that clipped dataset. The clip tool provides the option to 
+      clip to visual extent, custom coordinates, or to a user-generated bounding box. If the preference is to define a bounding box on the map, 
+      the user can select clip to bounding box and then single left-click on any location dragging the displayed box to the desired size and direction. 
+      Keep in mind the first point clicked on the map is either the top or bottom corner depending on where the box is positioned.
 
-      Once a bounding box (or visual extent) has been selected, a dialog box will pop up with options to specify an output name and path
+      Once the coordinates are determined, a dialog box will pop up with options to specify an output name and path
       of the clipped dataset. After the job has successfully completed it will appear in the list of available datasets.
 
 
@@ -727,8 +726,7 @@ en:
       3  | Create new Area feature
       6  | Measure Length
       7  | Measure Area
-      8  | Clip to Bounding Box
-      9  | Clip to Visual Extent
+      8  | Clip Dataset(s)
       Ctrl + b | Bookmark current review
       Ctrl + c  | Copies feature geometry/tags
       Ctrl + s  | Save

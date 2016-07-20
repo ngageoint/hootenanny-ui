@@ -15,8 +15,7 @@ iD.ui.Tools = function(context) {
 
         if (!context.hoot().control.conflicts.isConflictReviewExist()) {
             items.push({title:'Clip Tools',icon:'clip',group:'clip',items:[
-                {title:'Clip to Visual Extent',tooltip:'Shortcut: 9',group:'clip',type:'area',icon:'clip',action:'clipVisualExtent'},
-                {title:'Clip to Bounding Box',tooltip:'Shortcut: 8',group:'clip',type:'area',icon:'clip',mode:iD.modes.ClipBoundingBox(context)}
+                {title:'Clip Dataset',tooltip:'Shortcut: 8',group:'clip',type:'area',icon:'clip',action:'clipData'}
             ]});
         }
 
@@ -58,10 +57,12 @@ iD.ui.Tools = function(context) {
                         if(item.items){return;}
                         if(item.mode){
                             context.enter(item.mode);
-                        } else if (item.action === 'clipVisualExtent'){
+                        } else if (item.action === 'clipData'){
                             //Call clip map
                             if(!_.isEmpty(context.hoot().model.layers.getLayers())){
-                                context.hoot().control.utilities.clipdataset.clipDatasetContainer('visualExtent');
+                                //If form is already open, close it!
+                                d3.select('#getCoordinatesContainer').remove();
+                                context.hoot().control.utilities.clipdataset.getBBoxCoordinates();
                             } else {
                                 iD.ui.Alert('Add data to map before clipping.','notice',new Error().stack);
                             }

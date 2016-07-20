@@ -87,12 +87,12 @@ iD.behavior.Clip = function(context,svg) {
          nodeId=1;
      }
      else{
-         var bboxPt1 = context.projection.invert([parseFloat(rect.attr('x')),parseFloat(rect.attr('y'))]).toString();
-         var bboxPt2 = context.projection.invert([parseFloat(rect.attr('x'))+parseFloat(rect.attr('width')),parseFloat(rect.attr('y'))+parseFloat(rect.attr('height'))]).toString();
+         var maxCoords = context.projection.invert([parseFloat(rect.attr('x')),parseFloat(rect.attr('y'))]);
+         var minCoords = context.projection.invert([parseFloat(rect.attr('x'))+parseFloat(rect.attr('width')),parseFloat(rect.attr('y'))+parseFloat(rect.attr('height'))]);
 
          ret(d3.select('#surface'));
          if(!_.isEmpty(context.hoot().model.layers.getLayers())){
-            context.hoot().control.utilities.clipdataset.clipDatasetContainer('boundingBox',bboxPt1.concat(',',bboxPt2));
+            context.hoot().control.utilities.clipdataset.populateCoordinates(maxCoords,minCoords);
         } else {
             iD.ui.Alert('Add data to map before clipping.','notice',new Error().stack);
         }

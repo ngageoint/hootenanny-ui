@@ -296,6 +296,7 @@ iD.Map = function(context) {
             _.each(measureArea[0],function(a){
                 var measArea = d3.select(a);
                 var newpts = '';
+                if(_.isEmpty(measArea.attr('loc'))){return;}
                 var pts = measArea.attr('loc').trim().split(/ /);
                 var ptsLength = measureArea.classed('measure-complete') ? pts.length : pts.length - 1;
                 for(var p = 0; p < ptsLength; p++){
