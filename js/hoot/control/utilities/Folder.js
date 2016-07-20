@@ -144,6 +144,10 @@ Hoot.control.utilities.folder = function(context) {
             // Compute the flattened node list. TODO use d3.layout.hierarchy.
               var nodes = tree.nodes(root);
 
+              if(container.classed('secondaryDataset')){
+                nodes = _.without(nodes, _.find(nodes, {id:-1}));
+              }
+
               var height = Math.max(150, nodes.length * barHeight + margin.top + margin.bottom);
 
               //replaced container with d3
