@@ -193,12 +193,28 @@ iD.operations.Review = function(selectedIDs, context) {
                             //take this coord, convert to SVG, add to map
                             var c = context.projection(mFeatureLoc);
                             var transform = 'translate('.concat(c[0],',',c[1]-circleOffset,')');
-                            var g = svg.append('g').attr('transform',transform).attr('loc',mFeatureLoc).classed('gotoreview _' + mFeature.type,true);
-                            g.append('circle').attr('r','20')
-                                .attr('stroke','white').attr('stroke-width','3')
+                            function dragstarted(d) {
+                                d3.event.sourceEvent.stopPropagation();
+                            }
+                            function dragged(d) {
+                                var m = context.projection(context.map().mouseCoordinates());
+                                var transform = 'translate('.concat(m[0],',',m[1],')');
+                                d3.select(this).attr('transform', transform);
+                            }
+                            function dragended(d) {
+                                d3.select(this).attr('loc',context.map().mouseCoordinates()).attr('state','dragged');
+                            }
+                            var drag = d3.behavior.drag()
+                                .origin(function(d) {return d; })
+                                .on("dragstart", dragstarted)
+                                .on("drag", dragged)
+                                .on("dragend", dragended);
+                            var g = svg.append('g').attr('transform',transform).attr('loc',mFeatureLoc).classed('gotoreview _' + mFeature.type,true).call(drag);
+                            g.append('circle').attr('r','15')
+                                .attr('stroke','white').attr('stroke-width','2')
                                 .attr('fill','green').attr('fill-opacity','0.5');
-                            g.append('text').attr('dx','-6').attr('dy','6')
-                                .style('fill','white').style('font-size','16px').attr('font-weight','bold')
+                            g.append('text').attr('dx','-5').attr('dy','5')
+                                .style('fill','white').style('font-size','14px').attr('font-weight','bold')
                                 .text(function(){
                                     if(!doubleLetter){return String.fromCharCode(currentAlpha).toUpperCase();}
                                     else{return String.fromCharCode(currentAlpha).toUpperCase().concat(String.fromCharCode(currentAlpha).toUpperCase());}
