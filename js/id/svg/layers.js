@@ -30,6 +30,7 @@ iD.svg.Layers = function(projection, context) {
 
         groups.exit()
             .remove();
+        context.map().updateEditedHighlights();
     }
 
     drawLayers.all = function() {
