@@ -419,7 +419,7 @@ iD.Map = function(context) {
         // added in iD v1.9.2
         wrapper
             .call(drawLayers);
-
+        map.updateEditedHighlights()
         transformStart = [
             projection.scale() * 2 * Math.PI,
             projection.translate().slice()];
