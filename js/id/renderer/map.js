@@ -299,7 +299,7 @@ iD.Map = function(context) {
                 var ptsLength = measureArea.classed('measure-complete') ? pts.length : pts.length - 1;
                 for(var p = 0; p < ptsLength; p++){
                     var newpt = pts[p].split(/,/).map(parseFloat);
-                    var c = context.projection(newpt);
+                    var c = _.map(context.projection(loc),function(cc){return parseInt(cc);});
                     newpts = newpts + ' ' + c.toString();
                 }
                 measureArea.attr('points',newpts);
@@ -316,6 +316,7 @@ iD.Map = function(context) {
             if(!measureLabel.empty()){
                 var loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
                 var c = context.projection(loc);
+                
                 d3.select(measureLabel[0][0]).attr('x',c[0]+labelmargin).attr('y',c[1]+labelmargin);
 
                 var tspans = measureLabel.selectAll('tspan');
@@ -328,9 +329,9 @@ iD.Map = function(context) {
                 }
             }
 
-            loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
+            /*loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
             c = context.projection(loc);
-            d3.select(measureLabel[0][0]).attr('x', c[0]+rectmargin).attr('y',c[1]-(measureLabel.dimensions()[1]/2));
+            d3.select(measureLabel[0][0]).attr('x', c[0]+rectmargin).attr('y',c[1]-(measureLabel.dimensions()[1]/2));*/
         }
 
         //Added for goto feature bubbles
