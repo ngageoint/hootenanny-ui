@@ -299,7 +299,8 @@ iD.Map = function(context) {
                 var ptsLength = measureArea.classed('measure-complete') ? pts.length : pts.length - 1;
                 for(var p = 0; p < ptsLength; p++){
                     var newpt = pts[p].split(/,/).map(parseFloat);
-                    var c = _.map(context.projection(loc),function(cc){return parseInt(cc);});
+                    var c = context.projection(newpt);
+                    //var c = _.map(context.projection(loc),function(cc){return parseInt(cc);});
                     newpts = newpts + ' ' + c.toString();
                 }
                 measureArea.attr('points',newpts);
@@ -310,7 +311,6 @@ iD.Map = function(context) {
         var measureLabel = d3.select('.measure-layer').select('text');
         if(!measureLabel.empty()){
             var labelmargin = !measureLines.empty() ? 10 : 30;
-            var rectmargin = !measureLines.empty() ? 0 : 10;
 
             measureLabel = d3.select('.measure-layer').select('text');
             if(!measureLabel.empty()){
