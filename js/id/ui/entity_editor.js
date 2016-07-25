@@ -301,7 +301,7 @@ iD.ui.EntityEditor = function(context) {
 
         // for all non OSM translation
         if(currentTranslation !== 'OSM') {
-            plg.updateEntityEditor(entity, changed, rawTagEditor, currentTranslation,
+            plg.updateEntityEditor(context.graph(), entity, changed, rawTagEditor, currentTranslation,
             function(OSMEntities){
                            // store to internal
                 //entity.tags = {};
