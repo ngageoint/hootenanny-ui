@@ -46,7 +46,7 @@ window.iD = function () {
     };
 
     var history = iD.History(context),
-        dispatch = d3.dispatch('enter', 'exit', 'update'),
+        dispatch = d3.dispatch('enter', 'exit', 'update', 'copy'),
         mode,
         container,
         ui = iD.ui(context),
@@ -296,6 +296,7 @@ window.iD = function () {
         if (!arguments.length) return copyTags;
         copyIDs = null;
         copyTags = _;
+        console.log(_);
         copyGraph = history.graph();
         return context;
     };
