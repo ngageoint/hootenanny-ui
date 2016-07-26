@@ -3089,7 +3089,7 @@ div.full-screen > button:hover {
 }
 /* Move over tooltips that are near the edge of screen */
 .add-point .tooltip {
-    left: 33.3333% !important;
+    left: 33.3333%;
 }
 
 .curtain-tooltip.intro-points-add .tooltip-arrow,
