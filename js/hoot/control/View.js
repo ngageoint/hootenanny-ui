@@ -106,7 +106,7 @@ Hoot.control.view = function (container, context) {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
 
-                    if (context.mode().id === 'draw-line' || context.mode().id === 'draw-area'){
+                    if (context.mode().id === 'add-point' || context.mode().id === 'draw-line' || context.mode().id === 'draw-area'){
                         alert('Sorry, this is not allowed while editing. Please finish drawing your line or area, then delete the layer');
                         return;
                     }
