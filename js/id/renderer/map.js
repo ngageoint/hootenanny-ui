@@ -310,7 +310,7 @@ iD.Map = function(context) {
         var measureLabel = d3.select('.measure-layer').select('text');
         if(!measureLabel.empty()){
             var labelmargin = !measureLines.empty() ? 10 : 30;
-            var rectmargin = !measureLines.empty() ? 0 : 10;
+            /*var rectmargin = !measureLines.empty() ? 0 : 10;*/
 
             measureLabel = d3.select('.measure-layer').select('text');
             if(!measureLabel.empty()){
@@ -328,9 +328,9 @@ iD.Map = function(context) {
                 }
             }
 
-            loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
+            /*loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
             c = context.projection(loc);
-            d3.select(measureLabel[0][0]).attr('x', c[0]+rectmargin).attr('y',c[1]-(measureLabel.dimensions()[1]/2));
+            d3.select(measureLabel[0][0]).attr('x', c[0]+rectmargin).attr('y',c[1]-(measureLabel.dimensions()[1]/2));*/
         }
 
         //Added for goto feature bubbles
