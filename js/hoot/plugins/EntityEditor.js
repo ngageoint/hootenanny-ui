@@ -426,7 +426,7 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
 * @param currentTranslation - Translation to use for update
 * @param callback - callback
 **/
-Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, changed, rawTagEditor,
+Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(resolver, entity, changed, rawTagEditor,
     currentTranslation, callback) {
 
     var currentTags = entity.tags;
@@ -473,7 +473,7 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
     rawTags[changeKey] = changeVal;
 
     // Get the clone of entity
-    var tmpEntity = entity.copy(true)[0];
+    var tmpEntity = entity.copy(resolver, []);
 
 
     // Go through each tags and create new tags list of key as English tag
