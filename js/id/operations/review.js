@@ -199,7 +199,7 @@ iD.operations.Review = function(selectedIDs, context) {
                                     d3.event.sourceEvent.stopPropagation();
                                 })
                                 .on('drag', function() {
-                                    var m = context.projection(context.map().mouseCoordinates());
+                                    var m = context.projection(context.map().mouseCoordinates());                                    
                                     var transform = 'translate('.concat(m[0],',',m[1],')');
                                     d3.select(this).attr('transform', transform);
                                 })
@@ -210,8 +210,8 @@ iD.operations.Review = function(selectedIDs, context) {
                             g.append('circle').attr('r','15')
                                 .attr('stroke','white').attr('stroke-width','2')
                                 .attr('fill','green').attr('fill-opacity','0.5');
-                            g.append('text').attr('dx','-5').attr('dy','5')
-                                .style('fill','white').style('font-size','14px').attr('font-weight','bold')
+                            g.append('text').attr('dy','5')
+                                .style('fill','white').style('font-size','14px').style('text-anchor', 'middle').attr('font-weight','bold')
                                 .text(function(){
                                     if(!doubleLetter){return String.fromCharCode(currentAlpha).toUpperCase();}
                                     else{return String.fromCharCode(currentAlpha).toUpperCase().concat(String.fromCharCode(currentAlpha).toUpperCase());}
