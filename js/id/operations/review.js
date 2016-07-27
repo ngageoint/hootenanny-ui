@@ -199,7 +199,7 @@ iD.operations.Review = function(selectedIDs, context) {
                                     d3.event.sourceEvent.stopPropagation();
                                 })
                                 .on('drag', function() {
-                                    var m = context.projection(context.map().mouseCoordinates());                                    
+                                    var m = context.projection(context.map().mouseCoordinates());
                                     var transform = 'translate('.concat(m[0],',',m[1],')');
                                     d3.select(this).attr('transform', transform);
                                 })
