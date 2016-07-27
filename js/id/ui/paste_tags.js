@@ -2,12 +2,12 @@ iD.ui.PasteTags = function(context) {
     var commands = [{
         id: 'overwrite',
         cmd: iD.ui.cmd('⌘⇧V'),
-        action: function() { console.log('overwrite'); },
+        action: function() { window.console.log('overwrite'); },
         annotation: function() { return 'Overwrite Tags'; }
     }, {
         id: 'append',
         cmd: iD.ui.cmd('⌘⌥V'),
-        action: function() { console.log('append'); },
+        action: function() { window.console.log('append'); },
         annotation: function() { return 'Append Tags'; }
     }];
 

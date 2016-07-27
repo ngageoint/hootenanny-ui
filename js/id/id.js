@@ -296,7 +296,7 @@ window.iD = function () {
         if (!arguments.length) return copyTags;
         copyIDs = null;
         copyTags = _;
-        console.log(_);
+        window.console.log(_);
         copyGraph = history.graph();
         return context;
     };
