@@ -956,7 +956,7 @@ iD.Connection = function(context, useHttps) {
             if(currShowBbox !== lastShowBBox){
 
                 //doFlush = true;
-                context.flush();
+                context.flush(!context.history().hasChanges());
 
             }
 
