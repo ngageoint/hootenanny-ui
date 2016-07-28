@@ -178,11 +178,9 @@ en:
     tooltip: "Redo: {action}"
     nothing: Nothing to redo.
   append:
-    annotation: "Append Tags"
-    tooltip: "Append copied tags when pasting"
+    tooltip: Paste tags, append to existing
   overwrite:
-    annotation: "Overwrite Tags"
-    tooltip: "Overwrite copied tags when pasting"
+    tooltip: Paste tags, overwrite existing
   review:
     merge:
       description: Merge review features. Hold Ctrl to reverse.

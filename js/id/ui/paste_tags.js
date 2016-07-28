@@ -1,18 +1,20 @@
 iD.ui.PasteTags = function(context) {
     var commands = [{
         id: 'overwrite',
+        icon: 'minus',
         cmd: iD.ui.cmd('⌘⇧V'),
         action: function() { window.console.log('overwrite'); },
         annotation: function() { return 'Overwrite Tags'; }
     }, {
         id: 'append',
+        icon: 'plus',
         cmd: iD.ui.cmd('⌘⌥V'),
         action: function() { window.console.log('append'); },
         annotation: function() { return 'Append Tags'; }
     }];
 
     function hasCopy() {
-        return context.copyIDs() || context.copyTags();
+        return context.copyIDs().length || Object.keys(context.copyTags()).length;
     }
 
     return function(selection) {
@@ -20,9 +22,7 @@ iD.ui.PasteTags = function(context) {
             .placement('bottom')
             .html(true)
             .title(function (d) {
-                return iD.ui.tooltipHtml(d.annotation() ?
-                    t(d.id + '.tooltip', {action: d.annotation()}) :
-                    t(d.id + '.nothing'), d.cmd);
+                return iD.ui.tooltipHtml(t(d.id + '.tooltip'));
             });
 
         var buttons = selection.selectAll('button')
@@ -34,7 +34,7 @@ iD.ui.PasteTags = function(context) {
 
         buttons.each(function(d) {
             d3.select(this)
-                .call(iD.svg.Icon('#icon-' + d.id));
+                .call(iD.svg.Icon('#icon-' + d.icon));
         });
 
         var keybinding = d3.keybinding('undo')
@@ -45,19 +45,16 @@ iD.ui.PasteTags = function(context) {
             .call(keybinding);
 
         context
-            .on('copy.paste_tags', update);
+            .on('enter.paste_tags', update);
 
-        function update() {
-            // if(!context.history().hasChanges()){
-            //     if(context.hoot().control.conflicts){
-            //         context.hoot().control.conflicts.actions.poimerge.updateMergeButton();
-            //     }
-
-            // }
+        function update(mode) {
+            //Disable paste tags if there are no features or tags copied
+            //or if there is no feature(s) selected
+            var disabled = !hasCopy() || !( (mode.id === 'select') && mode.selectedIDs().length );
 
             buttons
-                .property('disabled', hasCopy())
-                .classed('disabled', function(d) { return !d.annotation(); })
+                .property('disabled', disabled)
+                .classed('disabled', disabled)
                 .each(function() {
                     var selection = d3.select(this);
                     if (selection.property('tooltipVisible')) {

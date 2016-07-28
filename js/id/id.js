@@ -46,7 +46,7 @@ window.iD = function () {
     };
 
     var history = iD.History(context),
-        dispatch = d3.dispatch('enter', 'exit', 'update', 'copy'),
+        dispatch = d3.dispatch('enter', 'exit', 'update'),
         mode,
         container,
         ui = iD.ui(context),
@@ -283,20 +283,19 @@ window.iD = function () {
 
 
     /* Copy/Paste */
-    var copyIDs = [], copyGraph, copyTags;
+    var copyIDs = [], copyGraph, copyTags = [];
     context.copyGraph = function() { return copyGraph; };
     context.copyIDs = function(_) {
         if (!arguments.length) return copyIDs;
         copyIDs = _;
-        copyTags = null;
+        copyTags = {};
         copyGraph = history.graph();
         return context;
     };
     context.copyTags = function(_) {
         if (!arguments.length) return copyTags;
-        copyIDs = null;
+        copyIDs = [];
         copyTags = _;
-        window.console.log(_);
         copyGraph = history.graph();
         return context;
     };
