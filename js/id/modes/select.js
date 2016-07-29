@@ -9,7 +9,6 @@ iD.modes.Select = function(context, selectedIDs) {
         behaviors = [
             iD.behavior.Copy(context),
             iD.behavior.Paste(context),
-            //iD.behavior.PasteTags(context),
             //iD.behavior.Breathe(context), Removed from 1.9.2 for flashing features
             iD.behavior.Hover(context),
             iD.behavior.Select(context),
