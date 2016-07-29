@@ -95,9 +95,9 @@ Hoot.ui.hootformreviewnote = function (context)
                     d3.event.preventDefault();
 
                     d3.select('#bmkNoteFormHdLabel' + _rawData.id)
-                        .append('div')
+                        .append('div').classed('fr',true)
                         .attr('id', 'bmkNoteFormUser' + _rawData.id)
-                        .classed('fr icon avatar point', true)
+                        .call(iD.svg.Icon('#icon-avatar'))
                         .on('click', _bmkUserClickHanlder);
 
                     formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', null);
@@ -132,9 +132,9 @@ Hoot.ui.hootformreviewnote = function (context)
                 });
         } else {
             d3.select('#bmkNoteFormHdLabel' + 'NEW')
-            .append('div')
+            .append('div').classed('fr',true)
             .attr('id', 'bmkNoteFormUser' + 'NEW')
-            .classed('fr icon avatar', true)
+            .call(iD.svg.Icon('#icon-avatar'))
             .on('click', _bmkUserClickHanlder);
         }
 
