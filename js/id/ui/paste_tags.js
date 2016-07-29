@@ -75,7 +75,7 @@ iD.ui.PasteTags = function(context) {
             .placement('bottom')
             .html(true)
             .title(function (d) {
-                return iD.ui.tooltipHtml(t(d.id + '.tooltip'));
+                return iD.ui.tooltipHtml(t(d.id + '.tooltip'), d.cmd);
             });
 
         var buttons = selection.selectAll('button')
