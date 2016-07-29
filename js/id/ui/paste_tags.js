@@ -1,13 +1,13 @@
 iD.ui.PasteTags = function(context) {
     var commands = [{
         id: 'overwrite',
-        icon: 'minus',
+        icon: 'paste-tags-overwrite',
         cmd: iD.ui.cmd('⌘⇧V'),
         action: function() { doPasteTags(true); },
         annotation: function() { return 'Overwrite Tags'; }
     }, {
         id: 'append',
-        icon: 'plus',
+        icon: 'paste-tags-append',
         cmd: iD.ui.cmd('⌘⌥V'),
         action: function() { doPasteTags(false); },
         annotation: function() { return 'Append Tags'; }
