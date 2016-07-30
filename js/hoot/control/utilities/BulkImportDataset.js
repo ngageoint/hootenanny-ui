@@ -174,24 +174,28 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
 
         if(!d3.selectAll('.invalidName').empty()){return;}
 
+        //Places spinner 
         var progcont = _submitExp.append('div');
-        progcont.classed('form-field', true);
-        var prog = progcont.append('span').append('progress');
+        progcont.insert('div',':first-child')
+                .classed('_icon _loading row1 col1 fl',true)
+                .attr('id', 'importspin');
+
+/*      var prog = progcont.append('span').append('progress');
         prog.classed('form-field', true);
         prog.value('0');
         prog.attr('max', '100');
-        prog.attr('id', 'importprogress');
+        prog.attr('id', 'importprogress');*/
 
         var progdiv = progcont.append('div');
         progdiv.attr('id','importprogdiv')
                 .style('max-height','24px')
                 .style('overflow','hidden');
 
-        var logTxt = 'Initializing...';
-
         progdiv.append('text')
                 .attr('id', 'importprogresstext')
                 .attr('dy', '.3em').text(logTxt);
+
+        var logTxt = 'Initializing...';
 
         var progShow = progcont.append('a');
         progShow.attr('id','importprogressshow')
