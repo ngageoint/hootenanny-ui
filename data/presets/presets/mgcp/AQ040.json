@@ -1,0 +1,13 @@
+{
+    "icon": "highway-unclassified",
+    "geometry": [
+        "line",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Bridge",
+    "hoot:transtype":"MGCP",
+    "hoot:fcode": "AQ040",
+    "name": "Bridge (AQ040)"
+}

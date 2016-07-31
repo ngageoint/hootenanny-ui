@@ -78,7 +78,7 @@ en:
     toggle:
       title: Toggle
       description: Toggle Conflated Layer with Inputs
-      key: T
+      key: Shift+T
       annotation: Toggle layers
     delete:
       title: Delete
@@ -199,6 +199,8 @@ en:
       description: Select the validation feature.
   tooltip_keyhint: "Shortcut:"
   browser_notice: "This editor is supported in Firefox, Chrome, Safari, Opera, and Internet Explorer 11 and above. Please upgrade your browser or use Potlatch 2 to edit the map."
+  browser_close:
+    review_session: "You are currently in a review session.  Are you sure you want to exit Hootenanny?"
   translate:
     translate: Translate
     localized_translation_label: Multilingual name
@@ -381,19 +383,19 @@ en:
       description: Full Fill
       tooltip: "Areas are drawn fully filled."
   restore:
-    heading: You have unsaved changes
+    heading: You have unsaved changes!
     description: "Do you wish to restore unsaved changes from a previous editing session?"
     restore: Restore
     reset: Reset
   save:
     title: Save
-    help: "Save changes to OpenStreetMap, making them visible to other users."
+    help: "Save changes making them visible to other users."
     no_changes: No changes to save.
     error: Errors occurred while trying to save
     status_code: "Server returned status code {code}"
     unknown_error_details: "Please ensure you are connected to the internet."
     uploading: Uploading changes to Hootenanny.
-    unsaved_changes: You have unsaved changes
+    unsaved_changes: You have unsaved changes!
     conflict:
       header: Resolve conflicting edits
       count: 'Conflict {num} of {total}'
@@ -704,13 +706,12 @@ en:
       The clip tools provide a simple mechanism for cropping map layers using either the current visual extent of the map or a user defined
       bounding box. An example use case might be if the user ingests a country level dataset into Hootenanny but is only interested in
       conflating a region or city within that data. Rather than conflate the entire country dataset, the user would clip the area using the
-      Clip Tools to reduce it to a specific AOI and then run the conflation against that clipped dataset. Two options are provided; clip to
-      visual extent and clip to bounding box. When clip to visual extent is selected the current visible map is used as the clip AOI. If the
-      preference is to define a bounding box on the map, the user can select clip to bounding box and then single left-click on any location
-      dragging the displayed box to the desired size and direction. Keep in mind the first point clicked on the map is either the top or
-      bottom corner depending on where the box is positioned.
+      Clip Tools to reduce it to a specific AOI and then run the conflation against that clipped dataset. The clip tool provides the option to 
+      clip to visual extent, custom coordinates, or to a user-generated bounding box. If the preference is to define a bounding box on the map, 
+      the user can select clip to bounding box and then single left-click on any location dragging the displayed box to the desired size and direction. 
+      Keep in mind the first point clicked on the map is either the top or bottom corner depending on where the box is positioned.
 
-      Once a bounding box (or visual extent) has been selected, a dialog box will pop up with options to specify an output name and path
+      Once the coordinates are determined, a dialog box will pop up with options to specify an output name and path
       of the clipped dataset. After the job has successfully completed it will appear in the list of available datasets.
 
 
@@ -725,8 +726,7 @@ en:
       3  | Create new Area feature
       6  | Measure Length
       7  | Measure Area
-      8  | Clip to Bounding Box
-      9  | Clip to Visual Extent
+      8  | Clip Dataset(s)
       Ctrl + b | Bookmark current review
       Ctrl + c  | Copies feature geometry/tags
       Ctrl + s  | Save
@@ -737,7 +737,8 @@ en:
       Ctrl + z  | Undo
       Ctrl + Backspace  | Deletes object permanently
       Shift + Left mouse click  | Selects multiple features geometry/tags within layer
-      Alt + b  | Switches b/w layers during post-conflation conflict review
+      Shift + r  | Switches b/w layers during post-conflation conflict review
+      Shift + t  | Switches b/w layers during post-conflation conflict review
       Alt + i  | Open Image Carousel
       Alt + n  | Toggles layer visibility on/off
       +  | Zoom in 1 level

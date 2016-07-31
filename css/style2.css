@@ -407,6 +407,34 @@ span.logo{
 	display: inline-block; */
 }
 
+/*** CLIP TOOL ***/
+.clipMenu {
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  left:0%;
+}
+
+.exportbox { 
+  border: 1px solid #ccc; 
+  background: #eee;
+  border-radius: 3px;
+  text-align: center;
+}
+.export_bound {
+  margin: 5px;
+}
+
+.exportbox input {
+  width:120px; 
+  text-align: center; 
+  margin-bottom: 5px;
+}
+.exportbox #maxlat {margin-top: -1px;}
+.exportbox #minlon {float: left; margin-left: -1px;}
+.exportbox #maxlon {float: right; margin-right: -1px;}
+.exportbox #minlat {margin-bottom: -1px;}
+
 
 .clipInfo {font-weight:bold;}
 .invalidName {border:1px solid red !important;}
@@ -433,11 +461,11 @@ span.logo{
     font-size: 13px;
 }
 .tag-row .map-metadata.key {
-    width: 70%;
+    width: 40%;
     font-weight: bold;
 }
 .tag-row .map-metadata.value {
-    width: 30%;
+    width: 60%;
 }
 .tar {
     text-align: right;
@@ -460,4 +488,34 @@ table.map-metadata {
     overflow: hidden;
     color: #a0a0a0;
     font-size: 13px;
+}
+
+/*About Icon*/
+.about_icon{
+  width: 25px;
+  float: left;
+  padding-right: 5px;
+  padding-top: 23px; /*Puts I in the visual center of label*/
+}
+
+/*Hootenanny label*/
+.hoot_label{
+  height: 20px;
+  line-height:20px;
+  color: white;
+}
+
+/*Divider in label*/
+.divider{
+  color: #999;
+  margin: 0 5px;
+}
+
+/*Add cursor*/
+.cursor{
+  cursor: url(img/cursor-pointer.png) 6 1, pointer;
+}
+
+.margin2y{
+  margin: 20px 0;
 }

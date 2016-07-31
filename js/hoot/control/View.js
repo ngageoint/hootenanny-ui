@@ -106,6 +106,11 @@ Hoot.control.view = function (container, context) {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
 
+                    if (context.mode().id === 'add-point' || context.mode().id === 'draw-line' || context.mode().id === 'draw-area'){
+                        iD.ui.Alert('Sorry, this is not allowed while editing. Please finish drawing your line or area, then delete the layer', 'error', new Error().stack);
+                        return;
+                    }
+
                     var primaryLayerName = '';
                     var sels = d3.select(form.node().parentNode).selectAll('form')[0];
                     if(sels && sels.length > 0){

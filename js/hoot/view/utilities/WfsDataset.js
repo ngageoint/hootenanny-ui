@@ -52,13 +52,13 @@ Hoot.view.utilities.wfsdataset = function(context)
 
                     var wfsTrashBtn = this;
                     d3.json('/hoot-services/job/export/wfs/remove/' + wfsId,
-                            function (error) {
+                            function (error, json) {
                                 if(error){
                                     iD.ui.Alert(error.responseText,'error',new Error().stack);
                                 } else {
                                   d3.select(wfsTrashBtn.parentNode).node().remove();
                                 }
-
+                                return json;
                             }
                     );
                 });

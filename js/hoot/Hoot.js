@@ -271,6 +271,31 @@ Hoot.hoot = function (context) {
         Hoot.control.TranslationAssistant(context);
     };
 
+    /**
+    * @desc checks to see if in review mode
+    **/
+    hoot.checkReviewMode = function() {
+        return !(d3.select('#conflicts-container').empty());
+    };
+
+    /**
+    * @desc Check for valid coordinate pair
+    * @param Coordinate pair [x,y]
+    **/
+    hoot.checkForValidCoordinates = function(coord){
+        try{
+            if(coord.length !==2) {return false;}
+            if(isNaN(coord[0])) {return false;}
+            if(isNaN(coord[1])) {return false;}
+
+            if(coord[0] > 180.0 || coord[0] < -180.0) {return false;}
+            if(coord[1] > 90.0 || coord[1] < -90.0) {return false;}
+
+            return true;
+        } catch (err) { return false; }
+    };
+
+
     hoot.checkForSpecialChar = function(str){
         var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/);  //"
         if (pattern.test(str)) {
@@ -309,6 +334,15 @@ Hoot.hoot = function (context) {
     d3.selection.prototype.moveToFront = function () {
         return this.each(function () {
             this.parentNode.appendChild(this);
+        });
+    };
+
+    d3.selection.prototype.moveToBack = function() {
+        return this.each(function() {
+            var firstChild = this.parentNode.firstChild;
+            if (firstChild) {
+                this.parentNode.insertBefore(this, firstChild);
+            }
         });
     };
 

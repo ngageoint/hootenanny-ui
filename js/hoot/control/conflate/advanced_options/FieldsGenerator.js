@@ -55,14 +55,15 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                         } else if(submeta.elem_type === 'list') {
                             if(submeta.members){
                                 subfield.combobox = submeta.members;
-                                subfield.onchange = submeta.onchange;
+                                if(submeta.onchange){subfield.onchange = submeta.onchange;}
                             } 
-                        } else if(submeta.elem_type === 'double') {
+                        } else if(submeta.elem_type === 'double' || submeta.elem_type === 'int') {
                             subfield.maxvalue = submeta.maxvalue;
                             subfield.minvalue = submeta.minvalue;
-                            subfield.onchange = 'Hoot.control.conflate.advancedoptions.fieldsgenerator().validate(d3.select(this));';
+                            subfield.onchange = 'true'; //'Hoot.control.conflate.advancedoptions.fieldsgenerator().validate(d3.select(this));';
+                            if(submeta.disabled){if(submeta.disabled==='true'){subfield.disabled = true;}}
                         } else if (submeta.elem_type === 'checkbox') {
-                            subfield.onchange = submeta.onchange;
+                            if(submeta.onchange){subfield.onchange = submeta.onchange;}
                         } else if (submeta.elem_type === 'checkplus') {
                             if(submeta.members){
                                 var subchecks = [];
@@ -74,11 +75,17 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                                     subcheck.placeholder = sc.defaultvalue;
                                     subcheck.description = sc.description;
                                     subcheck.required = sc.required;
+                                    if(sc.elem_type === 'double' || sc.elem_type === 'int') {
+                                        subcheck.minvalue = sc.minvalue;
+                                        subcheck.maxvalue = sc.maxvalue;
+                                        subcheck.onchange='true';
+                                        if(sc.disabled){if(sc.disabled==='true'){subcheck.disabled = 'true';}}
+                                    } 
                                     subchecks.push(subcheck);
                                 });
                                 
                                 subfield.subchecks = subchecks;
-                                subfield.onchange = submeta.onchange;
+                                if(submeta.onchange){subfield.onchange = submeta.onchange;}
                             }
                         }
 
@@ -125,15 +132,15 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
             }   
         } else {
             //make sure it is double
-            if(isNaN(data.value())){
+            if(isNaN(target.value())){
                 invalidInput = true;
                 invalidText = 'Input value must be a valid number!';
             } else {
             //make sure it is w/in min and max
                 var val = parseFloat(target.value());
-                if(data.property('min')){
-                    if(!isNaN(data.property('min'))){
-                        var min = parseFloat(data.property('min'));
+                if(target.property('min')){
+                    if(!isNaN(target.property('min'))){
+                        var min = parseFloat(target.property('min'));
                         if(val < min){
                             invalidInput=true;
                             invalidText='Value must be greater than ' + min.toString();
@@ -142,9 +149,9 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                         }
                     } 
                 }
-                if(data.property('max')){
-                    if(!isNaN(data.property('max'))){
-                        var max = parseFloat(data.property('max'));
+                if(target.property('max')){
+                    if(!isNaN(target.property('max'))){
+                        var max = parseFloat(target.property('max'));
                         if(val>max){
                             invalidInput=true;
                             invalidText='Value must be less than ' + max.toString();

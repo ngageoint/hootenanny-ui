@@ -98,14 +98,8 @@ Hoot.control.utilities.importdataset = function(context) {
             inputtype:'multipart',
             onchange: _multipartHandler,
             multipartid: 'ingestfileuploader'
-        }, /*{ //Disabling FGDB Feature class untill we figure out how to cache ogr info
-            label: 'FGDB Feature Classes',
-            placeholder: '',
-            id: 'importDatasetFGDBFeatureClasses',
-            combobox: {'data':[], 'command': _populateFeatureClasses },
-            inputtype: 'combobox',
-            hidden: true
-        },*/ {
+        },
+        {
             label: 'Layer Name',
             placeholder: 'Save As',
             id: 'importDatasetLayerName',
@@ -225,15 +219,21 @@ Hoot.control.utilities.importdataset = function(context) {
     **/
     var _performImport = function(submitExp) {
         submitExp.select('span').text('Uploading ...');
-        //var spin = submitExp.insert('div',':first-child').classed('_icon _loading row1 col1 fr',true).attr('id', 'importspin');
+        submitExp
+            .insert('div',':first-child')
+            .classed('_icon _loading row1 col1 fr',true)
+            .attr('id', 'importspin');
 
         var progcont = submitExp.append('div');
         progcont.classed('form-field', true);
+
+        /*      
         var prog = progcont.append('span').append('progress');
         prog.classed('form-field', true);
         prog.value('0');
         prog.attr('max', '100');
         prog.attr('id', 'importprogress');
+        */
 
         var progdiv = progcont.append('div');
         progdiv.attr('id','importprogdiv')
@@ -244,7 +244,8 @@ Hoot.control.utilities.importdataset = function(context) {
             .attr('id', 'importprogresstext')
             .attr('dy', '.3em').text('Initializing ...');
 
-        var progShow = progcont.append('a');
+       /*
+       var progShow = progcont.append('a');
         progShow.attr('id','importprogressshow')
             .classed('show-link',true)
             .attr('expanded',false)
@@ -260,6 +261,7 @@ Hoot.control.utilities.importdataset = function(context) {
                     d3.select(this).text('Show More');
                 }
             });
+        */
 
             context.hoot().model.import.importData(_container,
                 '#importDatasetSchema',
@@ -412,81 +414,6 @@ Hoot.control.utilities.importdataset = function(context) {
     };
 
     /**
-    * @desc Uploads filed GDB to get Ogr Info of the target from Service.
-    **/
-    var _retrieveFeatureClasses = function() {
-        if(d3.select('#importDatasetFGDBFeatureClasses').empty()) {
-            return;
-        }
-        //getFGDBStats
-        //Hoot.model.REST('cancel', data, function (a) {
-        var spin = d3.select(d3.select('#importDatasetFGDBFeatureClasses')
-                .node().parentNode).select('label').insert('div',':first-child')
-            .classed('_icon _loading col1 fr',true)
-            .style('height', '30px')
-            .style('margin-top', '-8px');
-
-        var filesList = document.getElementById('ingestfileuploader').files;
-        var formData = new FormData();
-        for(var i=0; i<filesList.length; i++) {
-            var f = filesList[i];
-            formData.append(i, f);
-        }
-
-        //reset the file input value so on change will fire
-        //if the same files/folder is selected twice in a row, #5624
-        this.value = null;
-
-        var data = {};
-        data.formData = formData;
-        data.type = 'DIR';
-
-        Hoot.model.REST('uploadFGDBForStats', data, function (resp, jobId) {
-            var jobData = {};
-            jobData.jobId = jobId;
-
-            Hoot.model.REST('getFGDBStat', jobData, function (json) {
-                if(spin) {
-                    spin.remove();
-                }
-
-                var list = [];
-                d3.values(json).forEach(function(v) {
-                    list = list.concat(Object.keys(v));
-                });
-
-                var field = {};
-                field.combobox = {data:list};
-
-                _populateFeatureClasses(field);
-            });
-        });
-
-    };
-
-    /**
-    * @desc Populate checkbox combobox with feature classes infor.
-    * @param a - Field meta data.
-    **/
-    var _populateFeatureClasses = function (a) {
-
-        var comboPathName = Hoot.ui.checkcombobox()
-            .data(_.map(a.combobox.data, function (n) {
-                return {
-                    value: n,
-                    title: n
-                };
-            }));
-
-
-        d3.select('#importDatasetFGDBFeatureClasses')
-            .style('width', '100%')
-            .call(comboPathName);
-
-        d3.select('#importDatasetFGDBFeatureClasses').attr('readonly',true);
-    };
-
-    /**
     * @desc Populate available translations.
     * @param a - Translations list combo meta data.
     **/
@@ -535,7 +462,7 @@ Hoot.control.utilities.importdataset = function(context) {
         } else if(typeName === 'OSM') {
             d3.select('#ingestfileuploader')
             .property('multiple', 'false')
-            .attr('accept', '.osm')
+            .attr('accept', '.osm,.osm.zip')
             .attr('webkitdirectory', null)
             .attr('directory', null);
         } else {
@@ -747,7 +674,6 @@ Hoot.control.utilities.importdataset = function(context) {
         if(selType === 'DIR'){
                 _container.select('#importDatasetFileImport').value(folderName);
                 _container.select('#importDatasetLayerName').value(fgdbName);
-                _retrieveFeatureClasses();
         } else {
             _container.select('#importDatasetFileImport').value(fileNames.join('; '));
             var first = fileNames[0];
@@ -757,7 +683,8 @@ Hoot.control.utilities.importdataset = function(context) {
 
 
 
-        d3.select('#importDatasetBtnContainer').classed('hidden', false);
+        d3.select('#importDatasetBtnContainer')
+            .classed('hidden', false);
 
     };
 
@@ -824,19 +751,15 @@ Hoot.control.utilities.importdataset = function(context) {
             if(_.isEmpty(_bInfo)){_bInfo = {'name':'Unknown','version':'Unknown'};}
         }
 
-         var importTypes = [];
+        var importTypes = [];
         var fileTypes = {};
         fileTypes.value = 'FILE';
-        if(_bInfo.name.substring(0,3) === 'Chr'){
-            fileTypes.title = 'File (shp,zip)';
-        } else {
-            fileTypes.title = 'File (shp,zip,gdb.zip)';
-        }
+        fileTypes.title = 'File (shp,zip,gdb.zip)';
         importTypes.push(fileTypes);
 
         var osmTypes = {};
         osmTypes.value = 'OSM';
-        osmTypes.title = 'File (osm)';
+        osmTypes.title = 'File (osm,osm.zip)';
         importTypes.push(osmTypes);
 
         var geonameTypes = {};

@@ -4,7 +4,7 @@ iD.ui.EntityEditor = function(context) {
         id,
         preset,
         reference,
-		/* Added for iD v1.9.2 */        
+		/* Added for iD v1.9.2 */
         //coalesceChanges = false,
         modified = false,
         base;
@@ -13,7 +13,7 @@ iD.ui.EntityEditor = function(context) {
         .on('change', changeTags);
     var rawTagEditor = iD.ui.RawTagEditor(context)
         .on('change', changeTags);
-    
+
     var currentTranslation = 'OSM'; // default to OSM
     var currentMeta;
     // eslint never used
@@ -103,7 +103,7 @@ iD.ui.EntityEditor = function(context) {
                 if(d3.select('#presettranstype').value() !== filterType){
                     iD.util.changeComboValue('#presettranstype',filterType);
                 }
-            } 
+            }
         });
 
 
@@ -178,18 +178,18 @@ iD.ui.EntityEditor = function(context) {
 
         function populateBody(modPreset, defTags, defRawTags, transInfo /*, translatedFields , transTags*/){
             if(!d3.select('#entity_editor_presettranstype').empty()){
-                currentTranslation = iD.util.getCurrentTranslation(); //d3.select('#entity_editor_presettranstype').value();             
+                currentTranslation = iD.util.getCurrentTranslation(); //d3.select('#entity_editor_presettranstype').value();
             }
 
             // eslint never used
             // if(translatedFields !== undefined){
             //     allTranslatedFields = translatedFields;
             // }
-            
+
             // if(transTags !== undefined) {
             //     allTransTags = transTags;
             // }
-            
+
             $body.select('.inspector-preset')
                 .call(presetEditor
                     .preset(modPreset)
@@ -221,14 +221,14 @@ iD.ui.EntityEditor = function(context) {
 
 
             context.history()
-                .on('change.entity-editor', historyChanged);                        
+                .on('change.entity-editor', historyChanged);
         }
 
         if(currentTranslation === 'OSM') {
             populateBody(preset, tags, tags);
         } else {
-            plg.translateEntity(context, entity, currentTranslation, tags, 
-                preset, currentMeta, populateBody);            
+            plg.translateEntity(context, entity, currentTranslation, tags,
+                preset, currentMeta, populateBody);
         }
 
     }
@@ -289,30 +289,32 @@ iD.ui.EntityEditor = function(context) {
             if(activeConflict){
                 var reviewItem = context.entity(activeConflict),
                     reviewAgainstItem = context.entity(context.hoot().control.conflicts.activeConflict(1));
-                 context.hoot().control.conflicts.map.featurehighlighter
-                 .highlightLayer(reviewItem,reviewAgainstItem,false);
+                if (entity.id === reviewItem.id || entity.id === reviewAgainstItem.id) {
+                    context.hoot().control.conflicts.map.featurehighlighter
+                        .highlightLayer(reviewItem,reviewAgainstItem,false);
+                }
             }
         }
     }
     function changeTags(changed) {
         var entity = context.entity(id);
- 
+
         // for all non OSM translation
         if(currentTranslation !== 'OSM') {
-            plg.updateEntityEditor(entity, changed, rawTagEditor, currentTranslation,
+            plg.updateEntityEditor(context.graph(), entity, changed, rawTagEditor, currentTranslation,
             function(OSMEntities){
                            // store to internal
                 //entity.tags = {};
                 changeTagsHandler(OSMEntities);
-             
-            }); 
+
+            });
 
 
         } else {
             changeTagsHandler(changed);
         }
 
-        
+
     }
     entityEditor.changeTags = function(changed, id){
         var entity = context.entity(id),
@@ -350,7 +352,7 @@ iD.ui.EntityEditor = function(context) {
     entityEditor.entityID = function(_) {
         if (!arguments.length) return id;
         id = _;
-		//added in iD v1.9.2        
+		//added in iD v1.9.2
 		base = context.graph();
         entityEditor.preset(context.presets().match(context.entity(id), base));
         entityEditor.modified(false);

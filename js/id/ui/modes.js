@@ -6,8 +6,7 @@ iD.ui.Modes = function(context) {
 
     var toolModes = [
         iD.modes.MeasureAddLine(context),
-        iD.modes.MeasureAddArea(context),
-        iD.modes.ClipBoundingBox(context)];
+        iD.modes.MeasureAddArea(context)];
 
     function editable() {
         return context.editable() && context.mode().id !== 'save';
@@ -74,10 +73,10 @@ iD.ui.Modes = function(context) {
 
         modes.forEach(function(m) {
             keybinding.on(m.key, function() { if (editable()) {
-                if(m.button === 'line' || m.button === 'area'){
+                /*if(m.button === 'line' || m.button === 'area'){
                     var r = window.confirm('Enable line snap?\nPress OK to enable else Cancel.');
                     context.enableSnap = r;
-                }
+                }*/
                 context.enter(m);
                 }
             });
@@ -87,7 +86,7 @@ iD.ui.Modes = function(context) {
             keybinding.on(m.key, function() {context.enter(m);});
         });
 
-        keybinding.on('9',function(){context.hoot().control.utilities.clipdataset.clipDatasetContainer('visualExtent');});
+        keybinding.on('8',function(){context.hoot().control.utilities.clipdataset.getBBoxCoordinates();});
 
         d3.select(document)
             .call(keybinding);

@@ -11,7 +11,7 @@ iD.operations.Review = function(selectedIDs, context) {
             d3.selectAll('[class*=edge]').classed( entityId + '_edge',false);
             context.background().updateReviewLayer({},'');
             return;
-        } 
+        }
 
         context.hoot().control.conflicts.actions.traversereview.setCurrentReviewableEntityId(entityId);
         _performHighlight(context.graph());
@@ -27,7 +27,7 @@ iD.operations.Review = function(selectedIDs, context) {
     };
 
     operation.disabled = function() {
-        
+
         return false;
     };
 
@@ -39,13 +39,14 @@ iD.operations.Review = function(selectedIDs, context) {
         if(feature.type==='node'){
             return feature.loc;
         } else if (feature.type==='way'){
-            return _getClosestPoint(feature);            
+            return _getClosestPoint(feature);
         }
     };
 
     var _getClosestPoint = function(feature) {
         var path = d3.select('path.'+feature.id);
         var pathNode = path.node();
+        if (!pathNode) return null; //some features are loaded, but not drawn in visible extent (maybe?)
         var centerPt = context.projection(context.entity(feature.id).extent(context.graph()).center());
 
         var pathLength = pathNode.getTotalLength(),
@@ -96,19 +97,33 @@ iD.operations.Review = function(selectedIDs, context) {
         var feature = context.hasEntity(entityId);
         var featureLoc = _getLocation(feature);
 
+        function collectReviewLines(mem) {
+            var mid = mem.id;
+            var mFeature = context.hasEntity(mid);
+
+            if (mem.type === 'relation') {
+                mFeature.members.forEach(function(m) {
+                    collectReviewLines(m);
+                });
+            } else {
+
+                if(mFeature && (entityId !== mid)) {
+                    var mFeatureLoc = _getLocation(mFeature);
+                    if (mFeatureLoc) {
+                        var coord = [ featureLoc,mFeatureLoc];
+                        multiLines.push(coord);
+                    }
+                }
+            }
+            return;
+        }
+
         var multiLines = [];
         graph.parentRelations(feature)
             .forEach(function(parent) {
                 if(parent.tags['hoot:review:needs']!=='no'){
                     _.each(parent.members, function(mem){
-                        var mid = mem.id;
-
-                        var mFeature = context.hasEntity(mid);
-                        if(mFeature && (entityId !== mid)) {
-                            var mFeatureLoc = _getLocation(mFeature);
-                            var coord = [ featureLoc,mFeatureLoc];
-                            multiLines.push(coord);
-                        }                        
+                        collectReviewLines(mem);
                     });
                 }
             });
@@ -119,10 +134,10 @@ iD.operations.Review = function(selectedIDs, context) {
     var _loadReview = function(mode, multiLines) {
         //if (d3.event) d3.event.preventDefault();
         if(!context.graph()){
-            
+
             return;
         }
-        
+
         var gj = {
             'type': 'MultiLineString',
             'coordinates': multiLines
@@ -144,47 +159,84 @@ iD.operations.Review = function(selectedIDs, context) {
         var feature = context.hasEntity(entityId);
         //var featureLoc = _getLocation(feature);
 
+        function collectReviewPoints(mem) {
+            var mid = mem.id;
+            var mFeature = context.hasEntity(mid);
+
+            if (mem.type === 'relation') {
+                mFeature.members.forEach(function(m) {
+                    return collectReviewPoints(m);
+                });
+            } else {
+
+                if(mFeature && (entityId !== mid)) {
+                    var mFeatureLoc = _getLocation(mFeature);
+                    if (mFeatureLoc) {
+                        points.push(mFeatureLoc);
+                    }
+                }
+            }
+        }
+        var points;
         graph.parentRelations(feature)
             .forEach(function(parent) {
                 if(parent.tags['hoot:review:needs']!=='no'){
                     _.each(parent.members, function(mem){
                         var mid = mem.id;
-
+                        var currentReview = this;
                         var mFeature = context.hasEntity(mid);
-                        if(!mFeature){return;}
-
-                        var mFeatureLoc = _getLocation(mFeature);
-
                         var circleOffset = feature.type === 'node' ? 50 : 0;
-
-                        if(mFeature && (entityId !== mid)) {
+                        points = [];
+                        collectReviewPoints(mem);
+                        points.forEach(function(mFeatureLoc) {
+                        if(mFeature && mFeatureLoc && (entityId !== mid)) {
                             //take this coord, convert to SVG, add to map
                             var c = context.projection(mFeatureLoc);
-                            var transform = 'translate('.concat(c[0],',',c[1]-circleOffset,')');
-                            var g = svg.append('g').attr('transform',transform).attr('loc',mFeatureLoc).classed('gotoreview _' + mFeature.type,true);
-                            g.append('circle').attr('r','20')
-                                .attr('stroke','white').attr('stroke-width','3')
+                            var transform = 'translate('.concat(c[0],',',c[1]-circleOffset,')');                            
+                            var drag = d3.behavior.drag()
+                                .origin(function(d) {return d; })
+                                .on('dragstart', function() {
+                                    d3.event.sourceEvent.stopPropagation();
+                                })
+                                .on('drag', function() {
+                                    var m = context.projection(context.map().mouseCoordinates());
+                                    var transform = 'translate('.concat(m[0],',',m[1],')');
+                                    d3.select(this).attr('transform', transform);
+                                })
+                                .on('dragend', function() {
+                                    d3.select(this).attr('loc',context.map().mouseCoordinates()).attr('state','dragged');
+                                });
+                            var g = svg.append('g').attr('transform',transform).attr('loc',mFeatureLoc).classed('gotoreview _' + mFeature.type,true).call(drag);
+                            g.append('circle').attr('r','15')
+                                .attr('stroke','white').attr('stroke-width','2')
                                 .attr('fill','green').attr('fill-opacity','0.5');
-                            g.append('text').attr('dx','-6').attr('dy','6')
-                                .style('fill','white').style('font-size','16px').attr('font-weight','bold')
+                            g.append('text').attr('dy','5')
+                                .style('fill','white').style('font-size','14px').style('text-anchor', 'middle').attr('font-weight','bold')
                                 .text(function(){
                                     if(!doubleLetter){return String.fromCharCode(currentAlpha).toUpperCase();}
                                     else{return String.fromCharCode(currentAlpha).toUpperCase().concat(String.fromCharCode(currentAlpha).toUpperCase());}
                                 });
-                            
+
                             var reqParam = {
-                                'mapId':this.mapId,
-                                'sequence':this.tags['hoot:review:sort_order']
+                                'mapId':currentReview.mapId,
+                                'sequence':currentReview.tags['hoot:review:sort_order']
                             };
 
                             var _parent = function() {return context.hoot().control.conflicts;};
 
                             g.on('click',function(){
-                                Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {  
+                                var hasChange = context.history().hasChanges();
+                                if(hasChange === true) {
+                                    iD.ui.Alert('Please resolve or undo the current feature ' +
+                                        'changes before proceeding to the next review.', 'warning',new Error().stack);
+                                    return;
+                                }
+
+                                Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {
                                     if(resp.error){
                                         context.hoot().view.utilities.errorlog.reportUIError(resp.error);
                                         return;
-                                    } 
+                                    }
 
                                     if(resp.resultCount < 1){
                                       alert('The review item already has been resolved. Can not go to review item.');
@@ -192,18 +244,19 @@ iD.operations.Review = function(selectedIDs, context) {
                                         // Set as current reviewable item
                                         _parent().actions.traversereview.setCurrentReviewableEntityId(entityId);
                                         _parent().actions.traversereview.setCurrentReviewable(resp);
-                                        _parent().actions.idgraphsynch.getRelationFeature(resp.mapId, resp.relationId, 
+                                        _parent().actions.idgraphsynch.getRelationFeature(resp.mapId, resp.relationId,
                                         function(newReviewItem){
-                                            _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0], 
+                                            _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0],
                                                 newReviewItem.members[1],false);
-                                        });                              
+                                        });
                                     }
                                 });
                             });
 
                             currentAlpha += 1;
-                            if(currentAlpha > 122){currentAlpha = 97; doubleLetter = true;}                      
-                        }  
+                            if(currentAlpha > 122){currentAlpha = 97; doubleLetter = true;}
+                        }
+                        });
                     },parent);
                 }
             });

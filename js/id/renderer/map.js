@@ -35,10 +35,7 @@ iD.Map = function(context) {
 
     function map(selection) {
         context.history()
-            .on('change.map', function() {
-                redraw();
-                map.updateEditedHighlights();
-            });
+            .on('change.map', redraw);
         context.background()
             .on('change.map', redraw);
         context.features()
@@ -276,6 +273,7 @@ iD.Map = function(context) {
 
         clearTimeout(timeoutId);
 
+        map.updateEditedHighlights();
         //Added for measure layer
         //Update measurement lines
         var measureLines = d3.selectAll('[class*=measure-line-]');
@@ -296,6 +294,7 @@ iD.Map = function(context) {
             _.each(measureArea[0],function(a){
                 var measArea = d3.select(a);
                 var newpts = '';
+                if(_.isEmpty(measArea.attr('loc'))){return;}
                 var pts = measArea.attr('loc').trim().split(/ /);
                 var ptsLength = measureArea.classed('measure-complete') ? pts.length : pts.length - 1;
                 for(var p = 0; p < ptsLength; p++){
@@ -311,7 +310,7 @@ iD.Map = function(context) {
         var measureLabel = d3.select('.measure-layer').select('text');
         if(!measureLabel.empty()){
             var labelmargin = !measureLines.empty() ? 10 : 30;
-            var rectmargin = !measureLines.empty() ? 0 : 10;
+            /*var rectmargin = !measureLines.empty() ? 0 : 10;*/
 
             measureLabel = d3.select('.measure-layer').select('text');
             if(!measureLabel.empty()){
@@ -329,19 +328,28 @@ iD.Map = function(context) {
                 }
             }
 
-            loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
+            /*loc = d3.select(measureLabel[0][0]).attr('loc').split(/,/).map(parseFloat);
             c = context.projection(loc);
-            d3.select(measureLabel[0][0]).attr('x', c[0]+rectmargin).attr('y',c[1]-(measureLabel.dimensions()[1]/2));
+            d3.select(measureLabel[0][0]).attr('x', c[0]+rectmargin).attr('y',c[1]-(measureLabel.dimensions()[1]/2));*/
         }
 
         //Added for goto feature bubbles
         var gotoBubbles = d3.selectAll('.gotoreview');
+        var draggableBubbles = d3.selectAll('[state=dragged]');
         if(!gotoBubbles.empty())        {
             _.each(gotoBubbles[0],function(b){
                 var offsetDiff = d3.select(b).classed('_way') ? 0 : 50;
                 var loc = d3.select(b).attr('loc').split(/,/).map(parseFloat);
                 var c = context.projection(loc);
                 var transform = 'translate('.concat(c[0],',',c[1]-offsetDiff,')');
+                d3.select(b).attr('transform',transform);
+            });
+        }
+        if(!draggableBubbles.empty())        {
+            _.each(draggableBubbles[0],function(b){                
+                var loc = d3.select(b).attr('loc').split(/,/).map(parseFloat);
+                var c = context.projection(loc);
+                var transform = 'translate('.concat(c[0],',',c[1],')');
                 d3.select(b).attr('transform',transform);
             });
         }
@@ -421,7 +429,7 @@ iD.Map = function(context) {
         // added in iD v1.9.2
         wrapper
             .call(drawLayers);
-
+        map.updateEditedHighlights();
         transformStart = [
             projection.scale() * 2 * Math.PI,
             projection.translate().slice()];

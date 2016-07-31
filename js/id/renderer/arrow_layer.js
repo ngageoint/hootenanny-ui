@@ -45,6 +45,11 @@ iD.ArrowLayer = function() {
 
         svg.style('display', enable ? 'block' : 'none');
 
+        if (d3.map(gj).size() > 0) {
+            d3.select('.arrow-layer').moveToFront();
+        } else {
+            d3.select('.arrow-layer').moveToBack();
+        }
 
         var paths = svg
             .selectAll('path.arrow.line')

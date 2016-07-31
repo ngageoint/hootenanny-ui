@@ -94,6 +94,14 @@ Hoot.control.conflicts.actions.sharereview = function (context)
                 if(_currentForm) {
                     _currentForm.remove();
                 }
+
+                var creatorGroup = d3.select('#reviewBookmarksFilterByCreatorDiv_group');
+                var layerGroup = d3.select('#reviewBookmarksFilterByMapIdDiv_group');
+                
+                context.hoot().view.utilities.reviewbookmarks.addFilter(creatorGroup,{id:_userInfo.id, name:_userInfo.displayName});
+                var mapid = context.hoot().control.conflicts.actions.traversereview.getCurrentReviewable().mapId;
+                var mapname = context.hoot().model.layers.getNameBymapId(mapid);
+                context.hoot().view.utilities.reviewbookmarks.addFilter(layerGroup,{id:mapid, name:mapname});
             });
         });
 

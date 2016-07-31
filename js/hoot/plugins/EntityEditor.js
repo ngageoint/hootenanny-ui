@@ -295,7 +295,6 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
 
         // sometimes we do not get feature code. Like where core could not find translation..
         var rawFCode = resp.attrs['Feature Code'];
-        //var curTags = tags;
         var curPreset = preset;
         if(rawFCode) {
             var fCode = rawFCode.split(':')[0].trim();
@@ -304,7 +303,7 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
 
             var rawCurFields = JSON.parse(resp.fields).columns;
 
-            //curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
+            me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
 
             if(!curPreset){
 
@@ -357,7 +356,7 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
             // handle HGIS translation
             if(lyrName && fType) {
                 rawCurFields = JSON.parse(resp.fields).columns;
-                //curTags = me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
+                me.modifyRawTagKeysDescToName(entity.id, rawCurFields, resp.attrs);
 
                 newPreset = me.createPresetByName(curGeom, fType, currentTranslation, lyrName);
 
@@ -427,7 +426,7 @@ Hoot.plugins.entityeditor.prototype.translateEntity = function(context, entity, 
 * @param currentTranslation - Translation to use for update
 * @param callback - callback
 **/
-Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, changed, rawTagEditor,
+Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(resolver, entity, changed, rawTagEditor,
     currentTranslation, callback) {
 
     var currentTags = entity.tags;
@@ -474,7 +473,7 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(entity, change
     rawTags[changeKey] = changeVal;
 
     // Get the clone of entity
-    var tmpEntity = entity.copy(true)[0];
+    var tmpEntity = entity.copy(resolver, []);
 
 
     // Go through each tags and create new tags list of key as English tag

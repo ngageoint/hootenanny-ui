@@ -2707,6 +2707,51 @@ en:
         name: Works
         # 'terms: car assembly plant,aluminium processing plant,brewery,furniture manufacture factory,oil refinery,plastic recycling'
         terms: "<translate with synonyms or related terms for 'Works', separated by commas>"
+      mgcp/AL010:
+        name: AL010 (Facility)
+        terms: "<translate with synonyms or related terms for 'AL010 (Facility)', separated by commas>"
+      mgcp/AL015:
+        name: Building (AL015)
+        terms: "<translate with synonyms or related terms for 'Building (AL015)', separated by commas>"
+      mgcp/AL020:
+        name: Built-up Area (AL020)
+        terms: "<translate with synonyms or related terms for 'Built-up Area (AL020)', separated by commas>"
+      mgcp/AL099:
+        name: Hut (AL099)
+        terms: "<translate with synonyms or related terms for 'Hut (AL099)', separated by commas>"
+      mgcp/AL105:
+        name: Settlement (AL105)
+        terms: "<translate with synonyms or related terms for 'Settlement (AL105)', separated by commas>"
+      mgcp/AN010:
+        name: Railway (AN010)
+        terms: "<translate with synonyms or related terms for 'Railway (AN010)', separated by commas>"
+      mgcp/AP010:
+        name: Cart Track (AP010)
+        terms: "<translate with synonyms or related terms for 'Cart Track (AP010)', separated by commas>"
+      mgcp/AP030:
+        name: Road (AP030)
+        terms: "<translate with synonyms or related terms for 'Road (AP030)', separated by commas>"
+      mgcp/AP050:
+        name: Trail (AP050)
+        terms: "<translate with synonyms or related terms for 'Trail (AP050)', separated by commas>"
+      mgcp/AQ040:
+        name: Bridge (AQ040)
+        terms: "<translate with synonyms or related terms for 'Bridge (AQ040)', separated by commas>"
+      mgcp/AQ065:
+        name: Culvert (AQ065)
+        terms: "<translate with synonyms or related terms for 'Culvert (AQ065)', separated by commas>"
+      mgcp/BH030:
+        name: Ditch (BH030)
+        terms: "<translate with synonyms or related terms for 'Ditch (BH030)', separated by commas>"
+      mgcp/BH070:
+        name: Ford (BH070)
+        terms: "<translate with synonyms or related terms for 'Ford (BH070)', separated by commas>"
+      mgcp/BH140:
+        name: River (BH140)
+        terms: "<translate with synonyms or related terms for 'River (BH140)', separated by commas>"
+      mgcp/GB005:
+        name: Land Aerodrome (GB005)
+        terms: "<translate with synonyms or related terms for 'Land Aerodrome (GB005)', separated by commas>"
       military/airfield:
         # military=airfield
         name: Airfield
@@ -3593,15 +3638,15 @@ en:
       tdsv40/AL013:
         name: Building (AL013)
         terms: "<translate with synonyms or related terms for 'Building (AL013)', separated by commas>"
-      tdsv40/AL015:
-        name: Settlement (AL015)
-        terms: "<translate with synonyms or related terms for 'Settlement (AL015)', separated by commas>"
       tdsv40/AL020:
         name: Built-up Area (AL020)
         terms: "<translate with synonyms or related terms for 'Built-up Area (AL020)', separated by commas>"
       tdsv40/AL099:
         name: Hut (AL099)
         terms: "<translate with synonyms or related terms for 'Hut (AL099)', separated by commas>"
+      tdsv40/AL105:
+        name: Settlement (AL105)
+        terms: "<translate with synonyms or related terms for 'Settlement (AL105)', separated by commas>"
       tdsv40/AN010:
         name: Railway (AN010)
         terms: "<translate with synonyms or related terms for 'Railway (AN010)', separated by commas>"
@@ -3638,15 +3683,15 @@ en:
       tdsv61/AL013:
         name: Building (AL013)
         terms: "<translate with synonyms or related terms for 'Building (AL013)', separated by commas>"
-      tdsv61/AL015:
-        name: Settlement (AL015)
-        terms: "<translate with synonyms or related terms for 'Settlement (AL015)', separated by commas>"
       tdsv61/AL020:
         name: Built-up Area (AL020)
         terms: "<translate with synonyms or related terms for 'Built-up Area (AL020)', separated by commas>"
       tdsv61/AL099:
         name: Hut (AL099)
         terms: "<translate with synonyms or related terms for 'Hut (AL099)', separated by commas>"
+      tdsv61/AL105:
+        name: Settlement (AL105)
+        terms: "<translate with synonyms or related terms for 'Settlement (AL105)', separated by commas>"
       tdsv61/AN010:
         name: Railway (AN010)
         terms: "<translate with synonyms or related terms for 'Railway (AN010)', separated by commas>"
