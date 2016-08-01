@@ -94,12 +94,11 @@ Hoot.ui.hootformreviewnote = function (context)
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
 
-
                     formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', null);
 
                     var d_btn = [
                         {
-                          text: 'Modify',
+                          text: 'Save',
                           location: 'right',
                           onclick: function(){
                             var newNote = formDiv.select('#bmkNoteText' + _rawData.id).value();
