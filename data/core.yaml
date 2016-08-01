@@ -177,6 +177,10 @@ en:
   redo:
     tooltip: "Redo: {action}"
     nothing: Nothing to redo.
+  append:
+    tooltip: Paste tags, append to existing
+  overwrite:
+    tooltip: Paste tags, overwrite existing
   review:
     merge:
       description: Merge review features. Hold Ctrl to reverse.
@@ -479,7 +483,7 @@ en:
     title: "Highlight edited features"
   enable-snap:
     tooltip: "Enables line snap when creating features"
-    title: "Enable line snap"    
+    title: "Enable line snap"
   help:
     title: "Help"
     help: |
@@ -706,9 +710,9 @@ en:
       The clip tools provide a simple mechanism for cropping map layers using either the current visual extent of the map or a user defined
       bounding box. An example use case might be if the user ingests a country level dataset into Hootenanny but is only interested in
       conflating a region or city within that data. Rather than conflate the entire country dataset, the user would clip the area using the
-      Clip Tools to reduce it to a specific AOI and then run the conflation against that clipped dataset. The clip tool provides the option to 
-      clip to visual extent, custom coordinates, or to a user-generated bounding box. If the preference is to define a bounding box on the map, 
-      the user can select clip to bounding box and then single left-click on any location dragging the displayed box to the desired size and direction. 
+      Clip Tools to reduce it to a specific AOI and then run the conflation against that clipped dataset. The clip tool provides the option to
+      clip to visual extent, custom coordinates, or to a user-generated bounding box. If the preference is to define a bounding box on the map,
+      the user can select clip to bounding box and then single left-click on any location dragging the displayed box to the desired size and direction.
       Keep in mind the first point clicked on the map is either the top or bottom corner depending on where the box is positioned.
 
       Once the coordinates are determined, a dialog box will pop up with options to specify an output name and path
@@ -757,7 +761,7 @@ en:
       p  | Steps back to previous review during Conflict Review
       r  | Rotate object around center / Resolved during Conflict Review
       s  | Straighten a line or square corner of area
-      x  | Split line into two at selected node      
+      x  | Split line into two at selected node
       v  | Make line go in opposite direction
       w  | Toggles wireframe vector display on/off
       Enter/Esc  | Stops drawing feature
