@@ -2906,6 +2906,7 @@ div.full-screen > button:hover {
     color:#333;
     text-align: left;
     font-size: 12px;
+    width: 400px;
 }
 
 .tooltip.in {
@@ -2937,7 +2938,7 @@ div.full-screen > button:hover {
 .tooltip-inner {
     display: inline-block;
     border-radius: 3px;
-    max-width: 200px;
+    max-width: 400px;
     min-width: 80px;
     padding: 10px;
     font-weight: normal;
