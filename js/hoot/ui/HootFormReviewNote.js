@@ -94,11 +94,6 @@ Hoot.ui.hootformreviewnote = function (context)
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
 
-                    d3.select('#bmkNoteFormHdLabel' + _rawData.id)
-                        .append('div')
-                        .attr('id', 'bmkNoteFormUser' + _rawData.id)
-                        .classed('fr icon avatar point', true)
-                        .on('click', _bmkUserClickHanlder);
 
                     formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', null);
 
@@ -121,14 +116,27 @@ Hoot.ui.hootformreviewnote = function (context)
                             formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', 'readonly');
                             d3.select('#reviewBookmarkNotesBtnContainer').remove();
                             d3.select('#bmkNoteFormUser' + _rawData.id).remove();
-
+                            d3.select(this).classed('buttonsAdded', false)
+                            d3.select('div.buttonsAdded').classed('buttonsAdded', false);
                           }
                         }
                     ];
 
+                    if (!d3.select(this).classed('buttonsAdded')){
+                        d3.select('#bmkNoteFormHdLabel' + _rawData.id)
+                            .append('div')
+                            .attr('id', 'bmkNoteFormUser' + _rawData.id)
+                            .classed('fr icon avatar point', true)
+                            .on('click', _bmkUserClickHanlder);
 
+                        _createButtons(d_btn, formDiv);
 
-                    _createButtons(d_btn, formDiv);
+                        d3.select(this).classed('buttonsAdded', true);
+
+                    } else {
+                        return;
+                    }
+
                 });
         } else {
             d3.select('#bmkNoteFormHdLabel' + 'NEW')
