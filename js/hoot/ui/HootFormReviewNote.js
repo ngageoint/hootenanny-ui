@@ -88,8 +88,8 @@ Hoot.ui.hootformreviewnote = function (context)
 
         if(!isNew) {
             hdLabel
-                .append('div')
-                .classed('fr _icon plus point', true)
+                .append('div').classed('fr', true)
+                .call(iD.svg.Icon('#icon-plus'))
                 .on('click', function () {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
@@ -125,7 +125,8 @@ Hoot.ui.hootformreviewnote = function (context)
                         d3.select('#bmkNoteFormHdLabel' + _rawData.id)
                             .append('div')
                             .attr('id', 'bmkNoteFormUser' + _rawData.id)
-                            .classed('fr icon avatar point', true)
+                            .classed('fr', true)
+                            .call(iD.svg.Icon('#icon-avatar'))
                             .on('click', _bmkUserClickHanlder);
 
                         _createButtons(d_btn, formDiv);
@@ -141,7 +142,8 @@ Hoot.ui.hootformreviewnote = function (context)
             d3.select('#bmkNoteFormHdLabel' + 'NEW')
             .append('div')
             .attr('id', 'bmkNoteFormUser' + 'NEW')
-            .classed('fr icon avatar', true)
+            .classed('fr', true)
+            .call(iD.svg.Icon('#icon-avatar'))
             .on('click', _bmkUserClickHanlder);
         }
 
