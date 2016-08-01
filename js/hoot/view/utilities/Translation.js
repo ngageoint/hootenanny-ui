@@ -41,16 +41,27 @@ Hoot.view.utilities.translation = function(context) {
                 var tla2 = tla.append('div')
                     .classed('col12 fill-white small keyline-bottom', true);
                 var tla3 = tla2.append('span')
-                    .classed('text-left big col12 fill-white small hoverDiv2', true)
+                    .classed('text-left big col12 fill-white small hoverDiv2 pad1x', true)
                     .append('a')
+                    .style('position', 'relative')
+                    .style('top', '20px')
                     .text(function (d) {
                         if(d.DEFAULT === true){
-                            return d.NAME + ': ' + d.DESCRIPTION;
+                            return d.NAME;      
                         }
-                        return d.NAME + ': ' + d.DESCRIPTION;
+                        return d.NAME; 
+                    });
+                var tooltip = bootstrap.tooltip()
+                    .placement('right')
+                    .html('true')
+                    .title(function (d) {
+                        if(d.DEFAULT === true){
+                            return d.DESCRIPTION;      
+                        }
+                        return d.DESCRIPTION; 
                     });
 
-
+                    d3.selectAll('a').call(tooltip);
 
                 tla3.append('button')
                 //.classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
@@ -91,7 +102,7 @@ Hoot.view.utilities.translation = function(context) {
                 .select(function (sel) {
                     if(sel.DEFAULT === true){
 
-                        d3.select(this).classed('keyline-left keyline-right fr _icon quiet trash pad2 col1', true);
+                        d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1', true);
                         d3.select(this).on('click', function () {
                             d3.event.stopPropagation();
                             d3.event.preventDefault();
