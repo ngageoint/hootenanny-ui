@@ -88,23 +88,17 @@ Hoot.ui.hootformreviewnote = function (context)
 
         if(!isNew) {
             hdLabel
-                .append('div')
-                .classed('fr _icon plus point', true)
+                .append('div').classed('fr', true)
+                .call(iD.svg.Icon('#icon-plus'))
                 .on('click', function () {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
-
-                    d3.select('#bmkNoteFormHdLabel' + _rawData.id)
-                        .append('div')
-                        .attr('id', 'bmkNoteFormUser' + _rawData.id)
-                        .classed('fr icon avatar point', true)
-                        .on('click', _bmkUserClickHanlder);
 
                     formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', null);
 
                     var d_btn = [
                         {
-                          text: 'Modify',
+                          text: 'Save',
                           location: 'right',
                           onclick: function(){
                             var newNote = formDiv.select('#bmkNoteText' + _rawData.id).value();
@@ -121,20 +115,35 @@ Hoot.ui.hootformreviewnote = function (context)
                             formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', 'readonly');
                             d3.select('#reviewBookmarkNotesBtnContainer').remove();
                             d3.select('#bmkNoteFormUser' + _rawData.id).remove();
-
+                            d3.select(this).classed('buttonsAdded', false);
+                            d3.select('div.buttonsAdded').classed('buttonsAdded', false);
                           }
                         }
                     ];
 
+                    if (!d3.select(this).classed('buttonsAdded')){
+                        d3.select('#bmkNoteFormHdLabel' + _rawData.id)
+                            .append('div')
+                            .attr('id', 'bmkNoteFormUser' + _rawData.id)
+                            .classed('fr', true)
+                            .call(iD.svg.Icon('#icon-avatar'))
+                            .on('click', _bmkUserClickHanlder);
 
+                        _createButtons(d_btn, formDiv);
 
-                    _createButtons(d_btn, formDiv);
+                        d3.select(this).classed('buttonsAdded', true);
+
+                    } else {
+                        return;
+                    }
+
                 });
         } else {
             d3.select('#bmkNoteFormHdLabel' + 'NEW')
             .append('div')
             .attr('id', 'bmkNoteFormUser' + 'NEW')
-            .classed('fr icon avatar', true)
+            .classed('fr', true)
+            .call(iD.svg.Icon('#icon-avatar'))
             .on('click', _bmkUserClickHanlder);
         }
 
