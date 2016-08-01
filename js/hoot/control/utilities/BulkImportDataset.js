@@ -190,12 +190,12 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         progdiv.attr('id','importprogdiv')
                 .style('max-height','24px')
                 .style('overflow','hidden');
-
+                
+        var logTxt = 'Initializing...';
+        
         progdiv.append('text')
                 .attr('id', 'importprogresstext')
                 .attr('dy', '.3em').text(logTxt);
-
-        var logTxt = 'Initializing...';
 
         var progShow = progcont.append('a');
         progShow.attr('id','importprogressshow')
