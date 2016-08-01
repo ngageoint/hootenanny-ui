@@ -115,7 +115,7 @@ Hoot.ui.hootformreviewnote = function (context)
                             formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', 'readonly');
                             d3.select('#reviewBookmarkNotesBtnContainer').remove();
                             d3.select('#bmkNoteFormUser' + _rawData.id).remove();
-                            d3.select(this).classed('buttonsAdded', false)
+                            d3.select(this).classed('buttonsAdded', false);
                             d3.select('div.buttonsAdded').classed('buttonsAdded', false);
                           }
                         }
