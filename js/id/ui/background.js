@@ -73,9 +73,30 @@ iD.ui.Background = function(context) {
             //collections.classed('hide', true);
         }
 
+        //Added for toggling the overlay labels on and off when the layer changes
+        function checkLocatorOverlay(checkbox, d){
+            var overlays = context.background()
+                .sources(context.map().extent())
+                .filter(function(d) { return d.overlay;});
+
+            var layerUsed = d.imageryUsed();
+            if (layerUsed === 'MAPNIK' || layerUsed === 'USGS Topographic Maps'){
+                if (checkbox.classed('active')){
+                    context.background().hideOverlayLayer(overlays[0]);
+                } else {
+                    return;
+                }
+            } else {
+                if (!checkbox.classed('active')){
+                    context.background().showOverlayLayer(overlays[0]);
+                }
+            }
+        }
+
         function clickSetSource(d) {
             d3.event.preventDefault();
             context.background().baseLayerSource(d);
+            checkLocatorOverlay(d3.select('#locator_overlay'), d);
             selectLayer();
 
             //Added to zoom to imported basemap
@@ -125,6 +146,14 @@ iD.ui.Background = function(context) {
                 .sources(context.map().extent())
                 .filter(filter);
 
+            d3.selectAll('.assignID')
+                .selectAll('li.layer')
+                .attr('id', function(d){
+                    if (typeof d.imageryUsed() === 'string'){
+                        return d.imageryUsed().replace(/ /g, '_').toLowerCase();
+                    }
+                });
+
             var layerLinks = layerList.selectAll('li.layer')
                 .data(sources, function(d) { return d.name(); })
                 .sort(sortSources); //added for iD v1.9.2
@@ -170,6 +199,17 @@ iD.ui.Background = function(context) {
             backgroundList.call(drawList, 'radio', clickSetSource, function(d) { return !d.overlay; });
             overlayList.call(drawList, 'checkbox', clickSetOverlay, function(d) { return d.overlay; });
 
+            var layerIds = _.pluck(context.hoot().model.layers.getLayers(), 'id');
+            if (layerIds.length > 0){
+                // var overlayParent = overlayList.node()
+                var overlayLayers = overlayList.selectAll('li.layer');
+                for (var i=0; i<overlayLayers[0].length; i++){
+                    if (parseInt(overlayLayers[0][i].id)){
+                        var item = d3.select(overlayLayers[0][i]);
+                        item.classed('layer-list-hidden', true);
+                    }
+                }
+            }
             selectLayer();
 
             var source = context.background().baseLayerSource();
@@ -278,7 +318,7 @@ iD.ui.Background = function(context) {
             .style('opacity', function(d) { return 1.25 - d; });
 
         var backgroundList = content.append('ul')
-            .attr('class', 'layer-list');
+            .attr('class', 'layer-list assignID');
 
         var custom = backgroundList.append('li')
             .attr('class', 'custom_layer')
@@ -390,7 +430,7 @@ iD.ui.Background = function(context) {
         //END: Added for EGD-plugin
 
         var overlayList = content.append('ul')
-            .attr('class', 'layer-list');
+            .attr('class', 'layer-list assignID');
 
         //Added for EGD-plugin
 

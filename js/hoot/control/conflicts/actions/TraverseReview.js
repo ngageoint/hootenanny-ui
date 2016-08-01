@@ -153,8 +153,11 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                 _currentReviewable = response;
                 _parent().actions.idgraphsynch.getRelationFeature(response.mapId, response.relationId,
                     function(newReviewItem){
+                        if (newReviewItem && newReviewItem.members && newReviewItem.members.length > 2) {
+                          confirm('This review contains more than two members. Use the navigation arrows in the table to cycle through the review members.');
+                        }
                         _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0],
-                            newReviewItem.members[1]);
+                            newReviewItem.members[1], true);
 
                     });
 
@@ -253,7 +256,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     **/
     _instance.setCurrentReviewable = function(_){
         _currentReviewable = _;
-    }; 
+    };
 
     /**
     * @desc  gets the current review entity id
@@ -267,7 +270,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
     **/
     _instance.setCurrentReviewableEntityId = function(_){
         _currentReviewableEntityId = _;
-    };         
+    };
 
     /**
     * @desc  initialization validation

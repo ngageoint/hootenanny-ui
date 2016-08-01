@@ -5,6 +5,7 @@
 // Modifications:
 //      03 Feb. 2016
 //      15 Apr. 2016 eslint updates -- Sisskind
+//      31 May  2016 OSM API Database export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.folder = function(context) {
     var selectedLayerIDs = [];
@@ -52,8 +53,12 @@ Hoot.control.utilities.folder = function(context) {
     hoot_control_utilities_folder.createFolderTree = function(container) {
         // http://bl.ocks.org/mbostock/1093025 - Collapsible Indented Tree
 
-        //var folders = context.hoot().model.layers.getAvailLayersWithFolders();
         var folders = context.hoot().model.folders.getAvailFoldersWithLayers();
+        //Updated to hide OSM API Database entry in dataset table - 15 June 2016
+        if(container.attr('id')==='datasettable'){
+            folders = _.without(folders, _.find(folders, {id:-1}));
+        }
+        
         folders= JSON.parse('{"name":"Datasets","id":"Datasets","children":' + JSON.stringify(folders) +'}');
 
         var margin = {top: 10, right: 20, bottom: 30, left: 0},
@@ -138,6 +143,10 @@ Hoot.control.utilities.folder = function(context) {
 
             // Compute the flattened node list. TODO use d3.layout.hierarchy.
               var nodes = tree.nodes(root);
+
+              if(container.classed('secondaryDataset')){
+                nodes = _.without(nodes, _.find(nodes, {id:-1}));
+              }
 
               var height = Math.max(150, nodes.length * barHeight + margin.top + margin.bottom);
 
@@ -323,29 +332,44 @@ Hoot.control.utilities.folder = function(context) {
           if(container.attr('id')==='datasettable'){
               container.selectAll('rect').on('contextmenu',function(d){
                   var items = [];
-                  if(!d.type||(d.type==='dataset' && !d.selected)){
+                  //none of the dataset operations apply to the OSM API db data
+                  if(!d.type||(d.type==='dataset' && !d.selected) || 
+                      d.name.indexOf('OSM_API_DB') > -1){
                       d3.select('.context-menu').style('display', 'none');
                       d3.event.preventDefault();
                       return;
-                  }
-                  else if(d.type.toLowerCase()==='dataset'){
-                      //http://jsfiddle.net/1mo3vmja/2/
-                      if(context.hoot().model.layers.getSelectedLayers().length===1){
-                          items = [
+                  } else if(d.type.toLowerCase()==='dataset'){
+                      items = [
+                         {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
+                         {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'}
+                      ];
+
+                      var layerLength = context.hoot().model.layers.getSelectedLayers().length;
+
+                      if(layerLength===1){
+                          // if no reference/secondary layer has been loaded, provide the option
+                          if(_.isEmpty(context.hoot().model.layers.getLayers())){
+                            items.push(
+                              {title:'Add as Reference Dataset',icon:'plus',click:'addReferenceDataset'},
+                              {title:'Add as Secondary Dataset',icon:'plus',click:'addSecondaryDataset'}
+                            );
+                          } else if(Object.keys(context.hoot().model.layers.getLayers()).length < 2) {
+                            // Determine if reference or secondary is already loaded
+                            var sels = d3.select('#sidebar2').selectAll('form')[0];
+                            if(d3.select(sels[0]).datum().name!==undefined){
+                              items.push({title:'Add as Secondary Dataset',icon:'plus',click:'addSecondaryDataset'});
+                            } else if(d3.select(sels[1]).datum().name!==undefined){
+                              items.push({title:'Add as Reference Dataset',icon:'plus',click:'addReferenceDataset'});
+                            }
+                          }
+
+                          items.push(
                                        {title:'Export',icon:'export',click:'exportDataset'},
-                                       {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
-                                       {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'},
                                        {title:'Rename ' + d.name,icon:'info',click:'renameDataset'},
                                        {title:'Prepare for Validation',icon:'sprocket',click:'prepValidation'},
                                        {title:'Filter non-HGIS POIs',icon:'sprocket',click:'filter'}
-                                   ];
-                      }
-                      else if(context.hoot().model.layers.getSelectedLayers().length>1){
-                          items = [
-                                   {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
-                                   {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'}
-                               ];
-                      } else {
+                                   );
+                      } else if(layerLength <= 0) {
                           d3.select('.context-menu').style('display', 'none');
                           d3.event.preventDefault();
                           return;
@@ -378,8 +402,23 @@ Hoot.control.utilities.folder = function(context) {
                         .data(items).enter()
                         .append('li')
                         .on('click' , function(item) {
+                          var key = {
+                            'name': d.name,
+                            'id':d.id.toString()
+                          };
+
+                            var node;
+                            if(d3.selectAll('.hootImport')[0].length===2){
+                              if(item.click==='addReferenceDataset'){node = d3.select(d3.select(d3.selectAll('.hootImport')[0][0]).node());}
+                              if(item.click==='addSecondaryDataset'){node = d3.select(d3.select(d3.selectAll('.hootImport')[0][1]).node());}
+                            } else {
+                              node = d3.select(d3.selectAll('.hootImport').node());
+                            }
+
                             switch (item.click) {
                             //Datasets
+                            case 'addReferenceDataset': key.color='violet'; context.hoot().control.import.forceAddLayer(key,node,key.color); break;
+                            case 'addSecondaryDataset': key.color='orange'; context.hoot().control.import.forceAddLayer(key,node,key.color); break;
                             case 'exportDataset': context.hoot().view.utilities.dataset.exportDataset(d,container); break;
                             case 'deleteDataset': context.hoot().view.utilities.dataset.deleteDatasets(context.hoot().model.layers.getSelectedLayers(),container); break;
                             case 'moveDataset': context.hoot().view.utilities.dataset.moveDatasets(context.hoot().model.layers.getSelectedLayers()); break;
@@ -510,6 +549,8 @@ Hoot.control.utilities.folder = function(context) {
         }
     };
 
+
+
     hoot_control_utilities_folder.importFolderContainer = function (data) {
         context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
 
@@ -591,8 +632,51 @@ Hoot.control.utilities.folder = function(context) {
                             d3.select(this).classed('invalidName',false).attr('title',null);
                         }
                     });
+                    d3.select(this).on('keypress', function () {
+                      var key = d3.event.keyCode;
+                      if (key === 13){
+
+                        _submit();
+                    }
+                    });
                 }
             });
+
+            function _submit() {
+              if(!d3.selectAll('.invalidName').empty()){return;}
+
+              //check if layer with same name already exists...
+              if(_form.select('.reset.NewFolderName').value()==='' || _form.select('.reset.NewFolderName').value()===_form.select('.reset.NewFolderName').attr('placeholder')){
+                iD.ui.Alert('Please enter an output folder name.','warning',new Error().stack);
+                return;
+              }
+
+              var resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
+              if(resp !== true){
+                iD.ui.Alert(resp,'warning',new Error().stack);
+                return;
+              }
+
+              resp = context.hoot().model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
+              if(resp !== true){
+                iD.ui.Alert(resp,'warning',new Error().stack);
+                return;
+              }
+
+              var data={};
+                data.parentId=folderId;
+                data.folderName = _form.select('.reset.NewFolderName').value();
+
+              Hoot.model.REST('addFolder',data,function(){
+                  context.hoot().model.folders.refresh(function () {
+                      context.hoot().model.folders.refreshLinks(function(){
+                          context.hoot().model.layers.RefreshLayers();
+                          modalbg.remove();
+                      });
+                  });
+              });
+            }
+
 
             var folderId = 0;
             if(data){
@@ -608,38 +692,40 @@ Hoot.control.utilities.folder = function(context) {
             .classed('inline row1 fl col10 pad1y', true)
                 .text('Add Folder')
                 .on('click', function () {
-                    if(!d3.selectAll('.invalidName').empty()){return;}
 
-                    //check if layer with same name already exists...
-                    if(_form.select('.reset.NewFolderName').value()==='' || _form.select('.reset.NewFolderName').value()===_form.select('.reset.NewFolderName').attr('placeholder')){
-                        iD.ui.Alert('Please enter an output folder name.','warning',new Error().stack);
-                        return;
-                    }
+                  _submit();
+                    // if(!d3.selectAll('.invalidName').empty()){return;}
 
-                    var resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
-                    if(resp !== true){
-                        iD.ui.Alert(resp,'warning',new Error().stack);
-                        return;
-                    }
+                    // //check if layer with same name already exists...
+                    // if(_form.select('.reset.NewFolderName').value()==='' || _form.select('.reset.NewFolderName').value()===_form.select('.reset.NewFolderName').attr('placeholder')){
+                    //     iD.ui.Alert('Please enter an output folder name.','warning',new Error().stack);
+                    //     return;
+                    // }
 
-                    resp = context.hoot().model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
-                    if(resp !== true){
-                        iD.ui.Alert(resp,'warning',new Error().stack);
-                        return;
-                    }
+                    // var resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
+                    // if(resp !== true){
+                    //     iD.ui.Alert(resp,'warning',new Error().stack);
+                    //     return;
+                    // }
 
-                    var data={};
-                    data.parentId=folderId;
-                    data.folderName = _form.select('.reset.NewFolderName').value();
+                    // resp = context.hoot().model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
+                    // if(resp !== true){
+                    //     iD.ui.Alert(resp,'warning',new Error().stack);
+                    //     return;
+                    // }
 
-                    Hoot.model.REST('addFolder',data,function(){
-                        context.hoot().model.folders.refresh(function () {
-                            context.hoot().model.folders.refreshLinks(function(){
-                                context.hoot().model.layers.RefreshLayers();
-                                modalbg.remove();
-                            });
-                        });
-                    });
+                    // var data={};
+                    // data.parentId=folderId;
+                    // data.folderName = _form.select('.reset.NewFolderName').value();
+
+                    // Hoot.model.REST('addFolder',data,function(){
+                    //     context.hoot().model.folders.refresh(function () {
+                    //         context.hoot().model.folders.refreshLinks(function(){
+                    //             context.hoot().model.layers.RefreshLayers();
+                    //             modalbg.remove();
+                    //         });
+                    //     });
+                    // });
                 });
         return modalbg;
     };

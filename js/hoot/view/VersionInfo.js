@@ -50,27 +50,17 @@ Hoot.view.versioninfo = function(){
         _mainVer.classed('center row2  round keyline-all overflow', true);
 
 
-
-        var detailVersionLbl = dlgDiv.append('div');
-        detailVersionLbl.append('label')
-            .attr('id', 'versiondetaillbl')
-            .html('<strong>Detail: ** Please select a row from Main Versions table. ** </strong> ');
-
         var headerVersionInfo = [];
         // Show version info
         Hoot.model.REST('coreVersionInfo',
                 function(response) {
-                    versioninfo.coreVersionInfo(response,headerVersionInfo,_form,_mainVer);
+                    versioninfo.coreVersionInfo(response,headerVersionInfo,_mainVer);
                 }
         );
 
 
-
-
         var formCont = dlgDiv.append('div');
         formCont.classed('center pad1x', true);
-        var _form = formCont.append('div');
-        _form.classed('center row10  round keyline-all', true);
 
         formCont.append('div')
             .classed('pad1y pad2x', true)
@@ -101,17 +91,17 @@ Hoot.view.versioninfo = function(){
 
     };
 
-    versioninfo.coreVersionInfo = function(response,headerVersionInfo,_f,_mainVer){
+    versioninfo.coreVersionInfo = function(response,headerVersionInfo,_mainVer){
         var coreInfo = {};
         coreInfo.name = 'core';
         coreInfo.description = response.name + ' - Version: ' + response.version + ' - Built By: ' + response.builtBy;
         headerVersionInfo.push(coreInfo);
         Hoot.model.REST('servicesVersionInfo', function(response) {
-            versioninfo.servicesVersionInfo(response,headerVersionInfo,_f,_mainVer);
+            versioninfo.servicesVersionInfo(response,headerVersionInfo,_mainVer);
         });
     };
 
-    versioninfo.servicesVersionInfo = function(response,headerVersionInfo,_f,_mainVer){
+    versioninfo.servicesVersionInfo = function(response,headerVersionInfo,_mainVer){
         var serviceDesc = response.name + ' - Version: ' + response.version + ' - Built By: ' + response.builtBy;
         if (response.name.indexOf('unknown') > -1)
         {
@@ -160,80 +150,9 @@ Hoot.view.versioninfo = function(){
             .text(function (item) {
                 return item.description;
             });
-
-            la2.select(function (){
-                d3.select(this).on('click', function (selData) {
-                    d3.select('#versioninfodatasettable').remove();
-                    _f.append('div')
-                    .attr('id','versioninfodatasettable')
-                    .classed('col12 fill-white small row10 overflow', true)
-                    .call(versioninfo.populateDatasets, selData);
-                 });
-            });
         }
     };
 
-    versioninfo.populateDatasets = function(container, data) {
-
-        d3.select('#versiondetaillbl').html('<strong>Detail:('+ data.description + ')</strong> ');
-        if(data.name === 'core'){
-
-            Hoot.model.REST('coreVersionDetail',
-                    function(response) {
-                        var d = response.environmentInfo;
-
-                        var la = container.selectAll('span')
-                        .data(d)
-                        .enter();
-
-                        var la2 = la.append('div')
-                        .classed('col12 fill-white small keyline-bottom', true);
-
-                        la2.append('span')
-                        .classed('text-left big col12 fill-white small hoverDiv2', true)
-
-                        .text(function (item) {
-                            return item;
-                        });
-                    }
-                );
-        } else if(data.name === 'service'){
-            Hoot.model.REST('servicesVersionDetail',
-                    function(response) {
-                        var d = response.properties;
-
-                        var las = container.selectAll('span')
-                        .data(d)
-                        .enter();
-
-                        var las2 = las.append('div')
-                        .classed('col12 fill-white small keyline-bottom', true);
-
-                        las2.append('span')
-                        .classed('text-left big col12 fill-white small hoverDiv2', true)
-
-                        .text(function (item) {
-                            return 'PROPERTY - ' + item.name + ' : ' + item.value;
-                        });
-
-                        var d2 = response.resources;
-                        var lar = container.selectAll('span')
-                        .data(d2)
-                        .enter();
-
-                        var lar2 = lar.append('div')
-                        .classed('col12 fill-white small keyline-bottom', true);
-
-                        lar2.append('span')
-                        .classed('text-left big col12 fill-white small hoverDiv2', true)
-
-                        .text(function (item) {
-                            return 'RESOURCE - ' + item.type + ' : ' + item.url;
-                        });
-                    }
-                );
-        }
-    };
 
     versioninfo.downloadUserGuide = function() {
         var sUrl = '/hoot-services/info/document/export';

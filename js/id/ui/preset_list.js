@@ -132,7 +132,7 @@ iD.ui.PresetList = function(context) {
 
 
             } else {
-                list.call(drawList, context.presets().defaults(geometry, 36));
+                list.call(drawList, presets);
                 message.text(t('inspector.choose'));
             }
         }
@@ -177,7 +177,7 @@ iD.ui.PresetList = function(context) {
                         .attr('value', iD.util.getCurrentTranslation());
 
             // Link this with plg.getTranslations();
-            var comboData = ['OSM','TDSv61', 'TDSv40'];
+            var comboData = ['OSM','TDSv61', 'TDSv40', 'MGCP'];
             var combo = d3.combobox()
                     .data(_.map(comboData, function (n) {
                         return {
@@ -192,7 +192,7 @@ iD.ui.PresetList = function(context) {
             comboIntput.on('change', function(){
                 var container = d3.select('#preset-list-container');
                 container.selectAll('.preset-list-item').remove();
-                var presets = context.presets().defaults(geometry, 36);
+                presets = context.presets().defaults(geometry, 36);
                 // Get the current translation filter type
                 var filterType = d3.select('#presettranstype').value();
                 var filteredCollection = getFilteredPresets(filterType, presets.collection);

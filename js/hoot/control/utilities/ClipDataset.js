@@ -14,7 +14,96 @@ Hoot.control.utilities.clipdataset = function(context) {
     var _rect;
     var _clipType;
     var _modalbg;
+    var _modalcoord;
 
+    /**
+    * @desc Form for gathering LL and UR coordinates for bounding box
+    * @return container div
+    **/
+    _instance.getBBoxCoordinates = function() {
+        //exit if already open
+        if(!d3.select('#getCoordinatesContainer').empty()){return;}
+
+        if(_.isEmpty(context.hoot().model.layers.getLayers())){
+            iD.ui.Alert('Please add at least one dataset to the map to clip.','notice');
+            return;
+        }
+
+        _modalcoord = d3.select('body')
+            .append('div')
+            .attr('id','getCoordinatesContainer')
+            .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+        var ingestDiv = _modalcoord.append('div')
+            .classed('contain col4 pad1 hoot-menu fill-white round modal clipMenu', true);
+        var _form = ingestDiv.append('form');
+        _form.classed('round space-bottom1 importableLayer', true)
+            .append('div')
+            .classed('big pad1y keyline-bottom space-bottom2', true)
+            .append('h4')
+            .text('Enter Coordinates for Clip Bounding Box')
+            .append('div')
+            .classed('fr _icon x point', true)
+            .on('click', function() {
+                _modalcoord.remove();
+            });
+
+        // Add N, S, E, W divs
+        var minlon = context.map().extent()[0][0].toFixed(6);
+        var minlat = context.map().extent()[0][1].toFixed(6);
+        var maxlon = context.map().extent()[1][0].toFixed(6);
+        var maxlat = context.map().extent()[1][1].toFixed(6);
+
+        var _coordsDiv = _form.append('div').append('div').classed('exportbox',true);
+        _coordsDiv.append('input').attr('type','text').attr('id','maxlat')
+            .attr('size',10).classed('export_bound',true).value(maxlat);
+        _coordsDiv.append('br');
+        _coordsDiv.append('input').attr('type','text')
+            .attr('id','minlon').attr('size',10).classed('export_bound',true).value(minlon);
+        _coordsDiv.append('input').attr('type','text').attr('id','maxlon')
+            .attr('size',10).classed('export_bound',true).value(maxlon);
+        _coordsDiv.append('br');
+        _coordsDiv.append('br');
+        _coordsDiv.append('input').attr('type','text').attr('id','minlat')
+            .attr('size',10).classed('export_bound',true).value(minlat);
+
+        _form.append('a').attr('id','clip2bbox').attr('href','#').style('display','block').classed('pad1y',true)
+            .text('Clip to Bounding Box')
+            .on('click',function(){
+                iD.ui.Alert('Click anywhere on the map to start drawing.  Click again to complete the bounding box.','notice');
+                d3.select('#getCoordinatesContainer').classed('hidden',true);
+                context.enter(iD.modes.ClipBoundingBox(context));
+            });
+        _form.append('a').attr('id','clip2ve').attr('href','#').style('display','block')
+            .text('Use Visual Extent')
+            .on('click',function(){
+                context.hoot().control.utilities.clipdataset.populateCoordinates(context.map().extent()[1],context.map().extent()[0]);
+            });
+
+
+
+        var submitExp = ingestDiv.append('div')
+            .classed('form-field left ', true);
+
+        submitExp.append('span')
+            .classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
+            .text('Next')
+            .on('click',function(){
+                //Verify coordinates
+                var maxCoords = [parseFloat(d3.select('#maxlon').value()), parseFloat(d3.select('#maxlat').value())];
+                var minCoords = [parseFloat(d3.select('#minlon').value()), parseFloat(d3.select('#minlat').value())];
+                var strRect = d3.select('#minlon').value() + ',' + d3.select('#minlat').value() + ',' + d3.select('#maxlon').value() + ',' + d3.select('#maxlat').value();
+
+                if(!context.hoot().checkForValidCoordinates(maxCoords) || !context.hoot().checkForValidCoordinates(minCoords)){
+                    iD.ui.Alert('Please check that valid coordinates have been entered.','notice');
+                    return;
+                } else {
+                    _instance.clipDatasetContainer('clipCoordinates',strRect);
+                    _modalcoord.remove();
+                }
+            });
+
+        return _modalcoord; 
+    };
 
     /**
     * @desc Entry point where it creates form.
@@ -50,8 +139,7 @@ Hoot.control.utilities.clipdataset = function(context) {
             .attr('id','clipDatasetContainer')
             .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
         var ingestDiv = _modalbg.append('div')
-            .classed('contain col10 pad1 hoot-menu fill-white round modal', true)
-            .style({'display':'block','margin-left':'auto','margin-right':'auto','left':'0%'});
+            .classed('contain col10 pad1 hoot-menu fill-white round modal clipMenu', true);
         var _form = ingestDiv.append('form');
         _form.classed('round space-bottom1 importableLayer', true)
             .append('div')
@@ -60,6 +148,7 @@ Hoot.control.utilities.clipdataset = function(context) {
             .text(function(){
                 if(_clipType==='visualExtent'){return 'Clip Data to Visual Extent';}
                 else if(_clipType==='boundingBox'){return 'Clip Data to Bounding Box';}
+                else if(_clipType==='setCoordinates'){return 'Clip Data to Custom Coordinates';}
                 else{return 'Clip Data';}
             })
             .append('div')
@@ -144,6 +233,25 @@ Hoot.control.utilities.clipdataset = function(context) {
         return _modalbg;
     };
 
+    /**
+    * @desc Form for gathering LL and UR coordinates for bounding box
+    * @return container div
+    **/
+    _instance.populateCoordinates = function(maxCoords,minCoords) {
+        // populate coordinates with bbox
+        var maxlon = maxCoords[0].toFixed(6);
+        var maxlat = maxCoords[1].toFixed(6);        
+        var minlon = minCoords[0].toFixed(6);
+        var minlat = minCoords[1].toFixed(6);
+
+        d3.select('#maxlon').value(maxlon);
+        d3.select('#maxlat').value(maxlat);
+        d3.select('#minlon').value(minlon);
+        d3.select('#minlat').value(minlat);
+
+
+        d3.select('#getCoordinatesContainer').classed('hidden',false);
+    };
 
     /**
     * @desc Creates input field for layer name.
@@ -265,7 +373,7 @@ Hoot.control.utilities.clipdataset = function(context) {
             }
 
             if(clipType==='visualExtent'){param.BBOX = context.map().extent().toString();}
-            else if(clipType==='boundingBox'){param.BBOX= _rect;}
+            else{param.BBOX= _rect;}
 
             param.PATH_NAME = d3.select('#row-' + d.id).select('div .PathName').value() || d3.select('#row-' + d.id).select('div .PathName').attr('placeholder') || 'root';
 

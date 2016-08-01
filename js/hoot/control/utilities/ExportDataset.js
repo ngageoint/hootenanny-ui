@@ -6,6 +6,7 @@
 // Modifications:
 //      17 Feb. 2016
 //      15 Apr. 2016 eslint updates -- Sisskind
+//      31 May  2016 OSM API Database export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Hoot.control.utilities.exportdataset = function(context) {
@@ -34,20 +35,30 @@ Hoot.control.utilities.exportdataset = function(context) {
     var _createDialog = function(dataset, translations) {
         _dataset = dataset;
         var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema'
+        
         _transCombo = [];
+        
         // filters for exportable translations
         _.each(translations, function(tr){
           if(tr.CANEXPORT && tr.CANEXPORT === true){
               _transCombo.push(tr);
           }
         });
-
         if(_transCombo.length === 1){
-          var emptyObj = {};
-          emptyObj.NAME='';
-          emptyObj.DESCRIPTION='';
-          _transCombo.push(emptyObj);
+            var emptyObj = {};
+            emptyObj.NAME='';
+            emptyObj.DESCRIPTION='';
+            _transCombo.push(emptyObj);
+          }
+        
+        var exportFormatList = 
+          [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
+           {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}];
+        if (_dataset.canExportToOsmApiDb === true)
+        {
+            exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
         }
+        
         var d_form = [{
             label: 'Translation',
             id: 'fileExportTranslation',
@@ -57,8 +68,7 @@ Hoot.control.utilities.exportdataset = function(context) {
         }, {
             label: 'Export Format',
             id: 'fileExportFileType',
-            combobox: {'data': [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
-                        {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}], 'command': _populateTranslations},
+            combobox: {'data': exportFormatList, 'command': _populateTranslations},
             placeholder: 'File Geodatabase',
             inputtype:'combobox'
         }, {

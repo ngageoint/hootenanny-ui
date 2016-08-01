@@ -273,3 +273,18 @@ text.measure-label-text {
     stroke-linejoin: miter;
     font-weight: 800;
 }
+
+div.navigation-wrapper {
+  width: 100%;
+  padding: 5px 5px;
+  overflow:hidden;
+}
+
+div.prev{
+  float: left;
+  text-decoration: underline;
+}
+div.next{
+  float: right;
+  text-decoration: underline;
+}

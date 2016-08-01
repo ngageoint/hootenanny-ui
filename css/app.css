@@ -54,6 +54,7 @@ body {
 .limiter {
     position: relative;
     max-width: 1200px;
+    margin-left:10px;
 }
 
 .spinner {
@@ -510,6 +511,7 @@ button.save.has-count .count::before {
   vertical-align:top;
   width:20px;
   height:20px;
+  cursor: pointer;
   /* iD removed; found during merge of v1.9.2
   display:inline-block;
   background:transparent url(img/sprite.svg) no-repeat 0 0;
@@ -662,12 +664,13 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 #bar {
     position: fixed;
     padding: 10px 0;
-    left:0;
-    top:0;
-    right:0;
+    /*left:0;*/
+    /*top:0;*/
+    /*right:0;*/
     height:60px;
     z-index: 1;
     min-width: 768px;
+    width:100%;
 }
 
 /* Header for modals / panes
@@ -755,6 +758,8 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     overflow: hidden;
     z-index: 10;
     background: #f6f6f6;
+    min-width: 400px;
+    max-width: 50%;
 }
 
 .sidebar-component {
@@ -1965,10 +1970,22 @@ div.full-screen > button:hover {
     padding-bottom: 10px;
 }
 
+.layer-browse{
+    width: 10%;
+}
+
 .layer-list, .controls-list {
     margin-bottom: 10px;
-    border: 1px solid #CCC;
+    border-top: 1px;
+    border-right: 1px;
+    border-left: 1px;
+    border-style: solid;
+    border-color: #CCC;
     border-radius: 4px;
+}
+
+.controls-list{
+    border-bottom: 1px solid #ccc;
 }
 
 .layer-list li {
@@ -1988,13 +2005,15 @@ div.full-screen > button:hover {
 
 .layer-list > li:last-child {
     border-radius: 0 0 3px 3px;
+    border-bottom: 1px solid #ccc;
 }
 
 .layer-list > li:only-child {
     border-radius: 3px;
+    border-bottom: 1px solid #ccc;
 }
 
-.layer-list li:not(:last-child) {
+.layer-list > li:not(:last-child) {
     border-bottom: 1px solid #ccc;
 }
 
@@ -2029,6 +2048,11 @@ div.full-screen > button:hover {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.layer-list-hidden{
+    display: none;
+    border: none;
 }
 
 .minimap-toggle {
@@ -2165,7 +2189,7 @@ div.full-screen > button:hover {
 .background-control .layer-list button {
     float: right;
     height: 100%;
-    width: 10%;
+    /*width: 10%;*/
     border-left: 1px solid #CCC;
     border-radius: 0;
 }
@@ -3065,7 +3089,7 @@ div.full-screen > button:hover {
 }
 /* Move over tooltips that are near the edge of screen */
 .add-point .tooltip {
-    left: 33.3333% !important;
+    left: 33.3333%;
 }
 
 .curtain-tooltip.intro-points-add .tooltip-arrow,
@@ -3293,6 +3317,11 @@ div.full-screen > button:hover {
     font-weight:bold	!important;
 }
 
+.custom-conflation input:disabled::-webkit-input-placeholder { background:#eee;}
+.custom-conflation input:disabled:-moz-placeholder { background:#eee;} /* Firefox 18- */
+.custom-conflation input:disabled::-moz-placeholder { background:#eee;} /* Firefox 19+ */
+.custom-conflation input:disabled:-ms-input-placeholder { background:#eee;} /* oldIE ;) */
+
 table.custom-conflation-table, table.custom-conflation-table td, table.custom-conflation-table th {
   border: 1px solid #CCC;
 }
@@ -3307,6 +3336,8 @@ table.custom-conflation-table th {
   text-transform:capitalize;
   text-align:center;
 }
+
+
 
 #confAdvOptsLnk {
   color: #CCC;
@@ -3410,7 +3441,10 @@ rect.more {fill: #3182bd;}*/
     margin-left:10px;
 }
 
+
+
 input:focus::-webkit-input-placeholder { color:transparent; }
 input:focus:-moz-placeholder { color:transparent; } /* Firefox 18- */
 input:focus::-moz-placeholder { color:transparent; } /* Firefox 19+ */
 input:focus:-ms-input-placeholder { color:transparent; } /* oldIE ;) */
+

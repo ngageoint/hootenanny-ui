@@ -13,3 +13,6 @@ istanbul
 mocha-coverage
 cucumber-coverage
 combined-coverage
+# vim swap files
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]

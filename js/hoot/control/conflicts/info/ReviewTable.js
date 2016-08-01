@@ -18,7 +18,7 @@ Hoot.control.conflicts.info.reviewtable = function (context)
     * @desc creates tag table for reviewable items
     * @param poiTableCols - table columns
     **/
-    _instance.buildPoiTable = function (poiTableCols) {
+    _instance.buildPoiTable = function (poiTableCols, currentReviewable) {
         var elem = d3.select('#conflicts-container');
         _poiTableCols = poiTableCols;
         var feats = poiTableCols;
@@ -38,6 +38,24 @@ Hoot.control.conflicts.info.reviewtable = function (context)
         var f1 = _filterTags(feats[0] ? feats[0].tags : {});
         var f2 = _filterTags(feats[1] ? feats[1].tags : {});
         var fmerged = _mergeTags([f1, f2]);
+
+        var relId = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
+        var relation = context.entity(relId);
+        // check to see if we have more than two items in a single review
+        if (relation && relation.members && relation.members.length > 2) {
+            var r = ftable.append('tr').classed('multiple-controls', true);
+            r.append('td').classed('fillD', true).text('review items');
+
+            var navigation_html = '<div class="navigation-wrapper"><div class="prev">&lt;&lt;</div><div class="next">&gt;&gt;</div></div>';
+            r.append('td').classed('f1', true).html(navigation_html)
+            .on('mouseenter',function(){d3.selectAll('.activeReviewFeature').classed('extra-highlight',true);})
+            .on('mouseleave',function(){d3.selectAll('.activeReviewFeature').classed('extra-highlight',false);});
+
+            r.append('td').classed('f2', true).html(navigation_html)
+            .on('mouseenter',function(){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',true);})
+            .on('mouseleave',function(){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',false);});
+        }
+
         fmerged.forEach(function (d) {
             var r = ftable.append('tr').classed('', true);
             r.append('td').classed('fillD', true).text(d.key);

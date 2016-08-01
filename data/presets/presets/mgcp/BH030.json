@@ -1,0 +1,13 @@
+{
+    "icon": "waterway-ditch",
+    "geometry": [
+        "line",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Ditch",
+    "hoot:transtype":"MGCP",
+    "hoot:fcode": "BH030",
+    "name": "Ditch (BH030)"
+}

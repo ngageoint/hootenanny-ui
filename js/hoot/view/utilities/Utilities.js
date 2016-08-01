@@ -169,15 +169,22 @@ Hoot.view.utilities = function (context){
 
         ////////////VERSION///////////////////
 
-        header.append('div')
-        .append('a')
+        var labelContainer = header.append('div');
+
+        labelContainer.append('div')
         .attr('href', '#version')
-        .classed('inline pad2 _icon dark strong ', true)
-        .html('Hootenanny<span class=\'logo\'> | </span>InnoVision')
-         .on('click', function ()
-         {
+        .classed('inline dark strong hoot_label cursor pad2', true)
+        .html('Hootenanny<span class=\'divider\'> | </span>NGA Research')
+        .on('click', function (){
              context.hoot().view.versioninfo.showPopup();
-         });
+        });
+
+        // labelContainer.append('img')
+        // .attr('src', 'img/about_white.svg')
+        // .classed('about_icon cursor', true)
+        // .on('click', function (){
+        //      context.hoot().view.versioninfo.showPopup();
+        // });
 
         var versionBG = d3.select('body')
          .append('div')

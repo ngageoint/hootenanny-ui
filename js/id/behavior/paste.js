@@ -1,22 +1,6 @@
 iD.behavior.Paste = function(context) {
     var keybinding = d3.keybinding('paste');
 
-    function omitTag(v, k) {
-        return (
-            k === 'phone' ||
-            k === 'fax' ||
-            k === 'email' ||
-            k === 'website' ||
-            k === 'url' ||
-            k === 'note' ||
-            k === 'description' ||
-            k.indexOf('name') !== -1 ||
-            k.indexOf('wiki') === 0 ||
-            k.indexOf('addr:') === 0 ||
-            k.indexOf('contact:') === 0
-        );
-    }
-
     function doPaste() {
         d3.event.preventDefault();
         if (context.inIntro()) return;
@@ -45,7 +29,7 @@ iD.behavior.Paste = function(context) {
 
             extent._extend(oldEntity.extent(oldGraph));
             newIDs.push(newEntity.id);
-            context.perform(iD.actions.ChangeTags(newEntity.id, _.omit(newEntity.tags, omitTag)));
+            context.perform(iD.actions.ChangeTags(newEntity.id, newEntity.tags));
         }
 
         // Put pasted objects where mouse pointer is..
