@@ -225,6 +225,7 @@ iD.operations.Review = function(selectedIDs, context) {
                             var _parent = function() {return context.hoot().control.conflicts;};
 
                             g.on('click',function(){
+                                if (d3.event.defaultPrevented) return;
                                 var hasChange = context.history().hasChanges();
                                 if(hasChange === true) {
                                     iD.ui.Alert('Please resolve or undo the current feature ' +
