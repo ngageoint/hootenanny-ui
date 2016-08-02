@@ -41,8 +41,10 @@ Hoot.view.utilities.translation = function(context) {
                 var tla2 = tla.append('div')
                     .classed('col12 fill-white small keyline-bottom', true);
                 var tla3 = tla2.append('span')
+                    /*.attr('.transl')*/
                     .classed('text-left big col12 fill-white small hoverDiv2 pad1x', true)
                     .append('a')
+                    .classed('transl', true)
                     .style('position', 'relative')
                     .style('top', '20px')
                     .text(function (d) {
@@ -61,7 +63,7 @@ Hoot.view.utilities.translation = function(context) {
                         return d.DESCRIPTION; 
                     });
 
-                    d3.selectAll('a').call(tooltip);
+                    d3.selectAll('a.transl').call(tooltip);
 
                 tla3.append('button')
                 //.classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
