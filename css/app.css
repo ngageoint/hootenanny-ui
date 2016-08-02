@@ -2938,6 +2938,7 @@ div.full-screen > button:hover {
 .tooltip-inner {
     display: inline-block;
     border-radius: 3px;
+    max-width: 200px;
     min-width: 80px;
     padding: 10px;
     font-weight: normal;
