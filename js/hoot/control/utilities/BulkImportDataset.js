@@ -176,7 +176,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
 
         //Places spinner 
         var progcont = _submitExp.append('div');
-        progcont.insert('div',':first-child')
+        progcont.insert('div')
                 .classed('_icon _loading row1 col1 fl',true)
                 .attr('id', 'importspin');
 
