@@ -2279,7 +2279,7 @@ div.full-screen > button:hover {
     border-radius: 4px 4px 0 0;
 }
 
-.help-wrap .toc li:nth-last-child(2) a {
+.help-wrap .toc li:last-child a {
     border-bottom: 1px solid #CCC;
     border-radius: 0 0 4px 4px
 }
