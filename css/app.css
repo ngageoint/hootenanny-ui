@@ -2934,6 +2934,7 @@ div.full-screen > button:hover {
     text-align: right;
 }
 
+
 .tooltip-inner {
     display: inline-block;
     border-radius: 3px;
@@ -3044,7 +3045,14 @@ div.full-screen > button:hover {
     font-weight: bold;
 }
 
+
 /* Exceptions for tooltip layouts */
+
+/* make tooltips for translations descriptions wider */
+
+.transl .tooltip {
+    width: 500px;
+}
 
 /* make tooltips in panels dark */
 .map-overlay .tooltip.top .tooltip-arrow,
