@@ -277,14 +277,20 @@ Hoot.tools = function (context) {
     * @param params - merged layer meta data needed for getMapTags request
     * @param layerName - new merged layer
     **/
-    function handleLayer(layerName,params) {
+    function handleLayer(layerName,params,tags) {
         var doRenderView = true;
         if(params.hideinsidebar !== undefined && params.hideinsidebar === 'true'){
             doRenderView = false;
         }
 
         if(doRenderView === true){
-            renderInputLayer(layerName,params);
+            if(tags){
+                renderInputLayer(layerName,params,tags);
+            } else {
+                Hoot.model.REST('getMapTags', {mapId: params.mapId}, function (tags) {
+                    renderInputLayer(layerName,params,tags);
+                });
+            }
         } else {
             loadedLayers[layerName] = params;
             loadedLayers[layerName].loadable = true;
@@ -297,9 +303,9 @@ Hoot.tools = function (context) {
     * @param params - merged layer meta data needed for getMapTags request
     * @param layerName - new merged layer
     **/
-    function renderInputLayer(layerName,params) {
+    function renderInputLayer(layerName,params,tags) {
         //Get tags for loaded layer
-        Hoot.model.REST('getMapTags', {mapId: params.mapId}, function (tags) {
+        //Hoot.model.REST('getMapTags', {mapId: params.mapId}, function (tags) {
             loadedLayers[layerName] = params;
             loadedLayers[layerName].loadable = true;
             loadedLayers[layerName].tags = tags;
@@ -308,7 +314,7 @@ Hoot.tools = function (context) {
             loadingLayer = {};
             d3.select('.loadingLayer').remove();
             conflationCheck(layerName, true);
-        });
+        //});
     }
 
     /**
@@ -537,8 +543,8 @@ Hoot.tools = function (context) {
                             //console.log(tags);
                             if (tags.reviewtype === 'hgisvalidation') {
                                 var r = confirm('The layer has been prepared for validation. Do you want to go into validation mode?');
+                                handleLayer(layerName,params,tags);
                                 if (r === true) {
-                                    handleLayer(layerName,params);
                                     context.hoot().control.validation.begin(params);
                                 }
                             } else {
@@ -665,7 +671,7 @@ Hoot.tools = function (context) {
                                         }
                                     }
                                 } else {
-                                    handleLayer(layerName,params);
+                                    handleLayer(layerName,params,tags);
                                 }
                             }
                         });
