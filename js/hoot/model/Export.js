@@ -58,6 +58,9 @@ Hoot.model.export = function (context)
 
         var isDefTrans = false;
         if(oTrans && oTrans.DEFAULT === true) {
+            if(oTrans.EXPORTPATH){
+                oTrans.PATH = oTrans.EXPORTPATH;
+            }
             if(oTrans.PATH && oTrans.PATH.length > 0){
                 selectedTranslation = oTrans.PATH;
                 isDefTrans = true;
