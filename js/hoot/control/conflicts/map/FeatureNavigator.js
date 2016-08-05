@@ -26,7 +26,7 @@ Hoot.control.conflicts.map.featureNavigator = function (context)
         }
         var extent = boundsToExtent();
         var map = context.map();
-        var zoom = Math.min(20, (map.extentZoom(extent)));
+        var zoom = Math.min(20, (map.extentZoom(extent)-1));
         map.centerZoom(extent.center(), (zoom));
     };
 
