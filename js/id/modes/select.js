@@ -184,7 +184,7 @@ iD.modes.Select = function(context, selectedIDs) {
             .on('redone.select', update);
 
         context.map()
-            .on('move.select', function(){closeMenu();})
+            .on('move.select', function(){closeMenu(); radialMenu=undefined;})
             .on('drawn.select', selectElements);
 
         selectElements();
