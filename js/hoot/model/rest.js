@@ -476,12 +476,12 @@ Hoot.model.REST = function (command, data, callback, option) {
                 if (error) {
                     //Feature not in spec
                     //Unable to translate
-                    var ret = {};
-                    ret.tableName = '';
-                    ret.attrs = {};
-                    ret.fields = '{}';
-                    callback(ret);
-                    _alertError(error, 'Feature out of spec, unable to translate')
+                    var r = {};
+                    r.tableName = '';
+                    r.attrs = {};
+                    r.fields = '{}';
+                    callback(r);
+                    _alertError(error, 'Feature out of spec, unable to translate');
                     return;
                 }
                 var res = JSON.parse(json.responseText);
