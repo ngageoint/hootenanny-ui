@@ -27,7 +27,7 @@ iD.Background = function(context) {
         });
     }
 
-    //Added to remove the Locator Overlay layer on layers that have their own labels on 
+    //Added to remove the Locator Overlay layer on layers that have their own labels on
     //the initial launch of the map
     function checkLocatorNeed(locatorNeed){
         if (locatorNeed === 'MAPNIK' || locatorNeed === 'USGS Topographic Maps'){
@@ -442,7 +442,7 @@ iD.Background = function(context) {
         d3.selectAll('.gotoreview').remove();
         reviewLayer.geojson(d,e);
         dispatch.change();
-    }; 
+    };
 
     //Added for Hoot review merge tool
     background.updateArrowLayer = function(d) {
@@ -514,7 +514,7 @@ iD.Background = function(context) {
             return d.overlay && d.default;
         });
 
-        if (checkLocatorNeed(background.baseLayerSource().imageryUsed())) {
+        if (locator && checkLocatorNeed(background.baseLayerSource().imageryUsed())) {
             background.toggleOverlayLayer(locator);
         }
 
