@@ -730,7 +730,7 @@ iD.Map = function(context) {
     };
 
     map.trimmedExtentZoom = function(_) {
-        var trimY = 120, trimX = 40,
+        var trimY = 400, trimX = 40,
             trimmed = [dimensions[0] - trimX, dimensions[1] - trimY];
         return calcZoom(iD.geo.Extent(_), trimmed);
     };
