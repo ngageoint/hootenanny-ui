@@ -151,7 +151,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         _parent().reviewIds.push(relId);
         _parent().info.metadata.updateMeta(null);
         if(panToId && panTo) {
-            var bounds = feature.extent(context.graph())[0][0]+ ',' +feature.extent(context.graph())[1][1]+ ',' +againstFeature.extent(context.graph())[1][0]+ ',' +againstFeature.extent(context.graph())[0][1];
+            var bounds = feature.extent(context.graph())[0][0] + ',' + feature.extent(context.graph())[1][1] + ',' + againstFeature.extent(context.graph())[1][0] + ',' + againstFeature.extent(context.graph())[0][1];
             _parent().map.featureNavigator.panToBounds(bounds);
         }
 
