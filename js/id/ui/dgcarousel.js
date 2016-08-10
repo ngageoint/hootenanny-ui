@@ -152,8 +152,16 @@ iD.ui.dgCarousel = function(context) {
                             //window.console.log(data.totalFeatures);
                             //display available images in carousel
 
+                            //remove image thumbnails already selected
+                            var activeData = ul.selectAll('li.active').data();
+                            var availableData = data.features.filter(function(d) {
+                                return !(activeData.some(function(s) {
+                                    return d.id === s.id;
+                                }));
+                            });
+
                             var images = ul.selectAll('li:not(.active)')
-                                .data(data.features)
+                                .data(availableData)
                                 .classed('carousel-zoom-warn', false)
                                 .html(function(d) {
                                     return formatImageMetadata(d);
