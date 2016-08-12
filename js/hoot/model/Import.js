@@ -56,6 +56,9 @@ Hoot.model.import = function (context)
         var transcriptName = iD.data.hootConfig.defaultScript;
         var isDefTrans = false;
         if(oTrans && oTrans.DEFAULT === true) {
+            if(oTrans.IMPORTPATH){
+                oTrans.PATH = oTrans.IMPORTPATH;
+            }
             if(oTrans.PATH && oTrans.PATH.length > 0){
                 transcriptName = oTrans.PATH;
                 isDefTrans = true;

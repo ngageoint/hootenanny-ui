@@ -473,6 +473,17 @@ Hoot.model.REST = function (command, data, callback, option) {
         d3.xhr(window.location.protocol + '//' + window.location.hostname + ':' + iD.data.hootConfig.translationServerPort + '/osmtotds')
             .header('Content-Type', 'text/plain')
             .post(JSON.stringify(reqData), function (error, json) {
+                if (error) {
+                    //Feature not in spec
+                    //Unable to translate
+                    var r = {};
+                    r.tableName = '';
+                    r.attrs = {};
+                    r.fields = '{}';
+                    callback(r);
+                    _alertError(error, 'Feature out of spec, unable to translate');
+                    return;
+                }
                 var res = JSON.parse(json.responseText);
                 var tdsXml = res.output;
                 var parser = new DOMParser();
