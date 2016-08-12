@@ -94,12 +94,6 @@ Hoot.ui.hootformreviewnote = function (context)
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
 
-                    d3.select('#bmkNoteFormHdLabel' + _rawData.id)
-                        .append('div').classed('fr',true)
-                        .attr('id', 'bmkNoteFormUser' + _rawData.id)
-                        .call(iD.svg.Icon('#icon-avatar'))
-                        .on('click', _bmkUserClickHanlder);
-
                     formDiv.select('#bmkNoteText' + _rawData.id).attr('readonly', null);
 
                     var d_btn = [
