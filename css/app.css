@@ -2866,6 +2866,9 @@ div.full-screen > button:hover {
     height: 30px;
 }
 
+.conflicts-container{
+    margin-right: 400px;
+}
 /* Notices
 ------------------------------------------------------- */
 

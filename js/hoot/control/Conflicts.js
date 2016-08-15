@@ -172,7 +172,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         var conflicts = d3.select('#content')
             .append('div')
             .attr('id', 'conflicts-container')
-            .classed('pin-bottom review-block unclickable', true)
+            .classed('pin-bottom review-block unclickable conflicts-container', true)
             .append('div')
             .classed('conflicts col12 fillD pad1 space clickable', true);
 
