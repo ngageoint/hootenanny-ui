@@ -174,6 +174,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             .attr('id', 'conflicts-container')
             .classed('pin-bottom review-block unclickable conflicts-container', true)
             .append('div')
+            .attr('id', 'list-of-conflicts')
             .classed('conflicts col12 fillD pad1 space clickable', true);
 
         var meta = conflicts.append('span')
@@ -237,6 +238,7 @@ Hoot.control.conflicts = function (context, sidebar) {
         }];
 
         var opts = conflicts.append('span')
+            .attr('id', 'conflict-review-buttons')
             .classed('fr space', true);
         var optcont = opts.selectAll('a')
             .data(da)
