@@ -137,7 +137,12 @@ iD.ui = function(context) {
             var x = d3.mouse(this.parentNode)[0];
             x = Math.max(Math.min(x, window.innerWidth), Math.min(400,0.333*window.innerWidth));
             sidebar.style('width',x+'px');
-            bar.style('margin-left', d3.select('#sidebar').node().getBoundingClientRect().width+'px');
+
+            //adjust margins to keep everything in place when the sidebar is expanded
+            var sidebarWidth = d3.select('#sidebar').node().getBoundingClientRect().width
+            bar.style('margin-left', sidebarWidth+'px');
+            about.style('margin-left', sidebarWidth+'px');
+            d3.select('#info-block').attr('style', 'margin-right:'+ (sidebarWidth-400)+'px;');
 
             //update text
             sidebar.selectAll('tspan').each(context.hoot().control.utilities.folder.wrap);
@@ -145,7 +150,7 @@ iD.ui = function(context) {
         resizer.call(dragResize);
 
  //START: Hoot may have wanted to disable this by commenting out
-       var about = content.append('div')
+       var about = sidebar.append('div')
             .attr('id', 'about');
 
         /*about.append('div')

@@ -2445,11 +2445,12 @@ div.full-screen > button:hover {
 ------------------------------------------------------- */
 
 #about {
-    width: 100%;
-    position: absolute;
-    right:0;
+    width: calc(100% - 400px);
+    position: fixed;
     bottom:0;
     border-radius: 0;
+    height:30px;
+    margin-left:400px;
 }
 
 #attrib {
