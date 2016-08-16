@@ -139,7 +139,7 @@ iD.ui = function(context) {
             sidebar.style('width',x+'px');
 
             //adjust margins to keep everything in place when the sidebar is expanded
-            var sidebarWidth = d3.select('#sidebar').node().getBoundingClientRect().width
+            var sidebarWidth = d3.select('#sidebar').node().getBoundingClientRect().width;
             bar.style('margin-left', sidebarWidth+'px');
             about.style('margin-left', sidebarWidth+'px');
             d3.select('#info-block').attr('style', 'margin-right:'+ (sidebarWidth-400)+'px;');
