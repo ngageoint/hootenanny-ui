@@ -146,7 +146,7 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
             .append('div')
             .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true)
             .style('z-index','1');
-        var containerDiv = _modalBackground.append('div')
+        var containerDiv = d3.select('#sidebar').append('div')
             .attr('id','CustomConflationForm')
             .classed('fillL map-overlay col4 custom-conflation',true); //'contain col4 pad1 fill-white round modal'
         var containerForm = containerDiv.append('form');
@@ -178,8 +178,7 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
     **/
     var _createFieldSets = function(containerForm, fieldsMeta) {
         var fieldsContainer = containerForm.append('div')
-            .classed('keyline-all round space-bottom1', true)
-            .style({'max-height': '800px','overflow-y': 'auto','width':'99%'});
+            .classed('keyline-all round space-bottom1 fields-container', true);
 
         var fieldset = fieldsContainer.append('fieldset')
             //Added for testing purposes
