@@ -489,6 +489,23 @@ Hoot.model.REST = function (command, data, callback, option) {
                 var parser = new DOMParser();
                 var xmlDoc = parser.parseFromString(tdsXml,'text/xml');
                 var tagslist = xmlDoc.getElementsByTagName('tag');
+
+                //Check for F_CODE = Not found
+                if (_.some(tagslist, function(tag) {
+                    return tag.attributes.k.value === 'Feature Code' &&
+                        tag.attributes.v.value === 'Not found';
+                })) {
+                    //Feature not in spec
+                    //Unable to translate
+                    var r = {};
+                    r.tableName = '';
+                    r.attrs = {};
+                    r.fields = '{}';
+                    callback(r);
+                    _alertError(error, 'Feature out of spec, unable to translate');
+                    return;
+                }
+
                 var attribs = {};
                 //var fcode = null;
                 var idVal = null;
