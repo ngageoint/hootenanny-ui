@@ -295,7 +295,7 @@ Hoot.control.conflate = function (sidebar,context) {
 
         if(_instance.confAdvOptsDlg){
             _instance.confAdvOptsDlg.remove();
-            d3.select("#CustomConflationForm").remove();
+            d3.select('#CustomConflationForm').remove();
         }
         _instance.confAdvOptsDlg = null;
         _instance.advancedoptions.advOpsFormEvent(false);
