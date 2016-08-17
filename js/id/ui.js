@@ -145,6 +145,7 @@ iD.ui = function(context) {
             d3.select('#info-block').attr('style', 'margin-right:'+ (sidebarWidth-400)+'px;');
             d3.select('#list-of-conflicts').attr('style', 'margin-left:'+ (sidebarWidth-400) +'px;');
             d3.select('#conflict-review-buttons').attr('style', 'margin-right:'+ (sidebarWidth-400) +'px;');
+            d3.select('#CustomConflationForm').attr('style', 'margin-left:'+ sidebarWidth +'px;');
 
             //update text
             sidebar.selectAll('tspan').each(context.hoot().control.utilities.folder.wrap);
