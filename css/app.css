@@ -3309,12 +3309,20 @@ div.full-screen > button:hover {
 }
 
 .custom-conflation {
-    position: relative;
+    position: fixed;
     float: left;
     height: 100%;
     overflow: auto;
     z-index: 2;
     background: #f6f6f6;
+    margin-left:400px;
+}
+
+.fields-container{
+    max-height: 800px;
+    overflow-y: auto;
+    width:90%;
+    margin: 0 auto 10px;
 }
 
 .custom-collapse {
