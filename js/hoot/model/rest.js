@@ -497,11 +497,11 @@ Hoot.model.REST = function (command, data, callback, option) {
                 })) {
                     //Feature not in spec
                     //Unable to translate
-                    var r = {};
-                    r.tableName = '';
-                    r.attrs = {};
-                    r.fields = '{}';
-                    callback(r);
+                    var f = {};
+                    f.tableName = '';
+                    f.attrs = {};
+                    f.fields = '{}';
+                    callback(f);
                     _alertError(error, 'Feature out of spec, unable to translate');
                     return;
                 }
