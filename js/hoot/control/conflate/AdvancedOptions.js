@@ -148,7 +148,10 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
             .style('z-index','1');
         var containerDiv = d3.select('#sidebar').append('div')
             .attr('id','CustomConflationForm')
-            .classed('fillL map-overlay col4 custom-conflation',true); //'contain col4 pad1 fill-white round modal'
+            .classed('fillL map-overlay col4 custom-conflation',true)
+            .style('margin-left', function(){
+                return d3.select('#sidebar').node().getBoundingClientRect().width + 'px';
+            }); //'contain col4 pad1 fill-white round modal'
         var containerForm = containerDiv.append('form');
         containerForm.classed('round space-bottom1', true)
             .append('div')
