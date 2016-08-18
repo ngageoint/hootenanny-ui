@@ -2708,8 +2708,8 @@ en:
         # 'terms: car assembly plant,aluminium processing plant,brewery,furniture manufacture factory,oil refinery,plastic recycling'
         terms: "<translate with synonyms or related terms for 'Works', separated by commas>"
       mgcp/AL010:
-        name: AL010 (Facility)
-        terms: "<translate with synonyms or related terms for 'AL010 (Facility)', separated by commas>"
+        name: Facility (AL010)
+        terms: "<translate with synonyms or related terms for 'Facility (AL010)', separated by commas>"
       mgcp/AL015:
         name: Building (AL015)
         terms: "<translate with synonyms or related terms for 'Building (AL015)', separated by commas>"
@@ -3633,8 +3633,8 @@ en:
         name: Wine Shop
         terms: "<translate with synonyms or related terms for 'Wine Shop', separated by commas>"
       tdsv40/AL010:
-        name: AL010 (Facility)
-        terms: "<translate with synonyms or related terms for 'AL010 (Facility)', separated by commas>"
+        name: Facility (AL010)
+        terms: "<translate with synonyms or related terms for 'Facility (AL010)', separated by commas>"
       tdsv40/AL013:
         name: Building (AL013)
         terms: "<translate with synonyms or related terms for 'Building (AL013)', separated by commas>"
@@ -3678,8 +3678,8 @@ en:
         name: Land Aerodrome (GB005)
         terms: "<translate with synonyms or related terms for 'Land Aerodrome (GB005)', separated by commas>"
       tdsv61/AL010:
-        name: AL010 (Facility)
-        terms: "<translate with synonyms or related terms for 'AL010 (Facility)', separated by commas>"
+        name: Facility (AL010)
+        terms: "<translate with synonyms or related terms for 'Facility (AL010)', separated by commas>"
       tdsv61/AL013:
         name: Building (AL013)
         terms: "<translate with synonyms or related terms for 'Building (AL013)', separated by commas>"
