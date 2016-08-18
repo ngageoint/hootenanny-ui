@@ -296,6 +296,7 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
                 parent.confAdvOptionsSelectedVal = null;
                 if(parent.confAdvOptsDlg){parent.confAdvOptsDlg.remove();}
                 parent.confAdvOptsDlg = null;
+                d3.select('#CustomConflationForm').remove();
              }
 
             _modalBackground.classed('hidden', true);
