@@ -256,6 +256,7 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
                 _instance.advOpsFormEvent(false);
                 var refType = d3.select('.ConfType').value().replace('Custom ','');
                 d3.select('.ConfType').value('Custom ' + refType);
+                d3.select('#CustomConflationForm').remove();
             } else{
                 //notify that some values are invalid and leave window open
                 iD.ui.Alert('Some values in the form are invalid and must be adjusted before completing custom conflation.',
