@@ -331,8 +331,8 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.poiMerge = function (data, callback) {
-        d3.json(window.location.protocol + '//' + window.location.hostname + ':'  +
-               iD.data.hootConfig.p2pServerPort +
+        d3.json(window.location.protocol + '//' + window.location.hostname +
+               Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.p2pServerPort) +
                '/p2pmerge')
            .post(data, function (error, resp) {
                if (error) {
@@ -470,7 +470,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
         var osmToTdsAttribFilter = data.filterMeta;
 
-        d3.xhr(window.location.protocol + '//' + window.location.hostname + ':' + iD.data.hootConfig.translationServerPort + '/osmtotds')
+        d3.xhr(window.location.protocol + '//' + window.location.hostname + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) + '/osmtotds')
             .header('Content-Type', 'text/plain')
             .post(JSON.stringify(reqData), function (error, json) {
                 if (error) {
@@ -536,8 +536,8 @@ Hoot.model.REST = function (command, data, callback, option) {
 
                 // This is where we get the fields list based on fcode
                 if(idVal){
-                    d3.xhr(window.location.protocol + '//' + window.location.hostname + ':'  +
-                        iD.data.hootConfig.translationServerPort + '/osmtotds?idval='+idVal +
+                    d3.xhr(window.location.protocol + '//' + window.location.hostname +
+                        Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) + '/osmtotds?idval='+idVal +
                          '&geom=' + data.geom + '&translation=' + data.translation + '&idelem=' + idelem)
                         .get(function(error, resp){
                             var ret = {};
@@ -568,7 +568,8 @@ Hoot.model.REST = function (command, data, callback, option) {
         if(data){
             var fcode = data.fcode;
             var translation = data.translation;
-            d3.xhr(window.location.protocol + '//' + window.location.hostname + ':'  + iD.data.hootConfig.translationServerPort +
+            d3.xhr(window.location.protocol + '//' + window.location.hostname +
+                Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) +
                 '/tdstoosm?fcode='+ fcode + '&translation=' + translation)
                 .get(function(error, resp){
                     callback(resp);
@@ -592,7 +593,8 @@ Hoot.model.REST = function (command, data, callback, option) {
         reqData.uid = data.id;
         reqData.input = data.osmXml;
 
-        d3.xhr(window.location.protocol + '//' + window.location.hostname + ':'  + iD.data.hootConfig.translationServerPort +'/tdstoosm')
+        d3.xhr(window.location.protocol + '//' + window.location.hostname +
+            Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) +'/tdstoosm')
             .header('Content-Type', 'text/plain')
             .post(JSON.stringify(reqData), function (error, json) {
                 var res = JSON.parse(json.responseText);
@@ -982,8 +984,8 @@ rest.downloadReport = function(data)
     };
 
     rest.getTransaltionCapabilities = function(data, callback) {
-        d3.xhr(window.location.protocol + '//' + window.location.hostname + ':'  +
-            iD.data.hootConfig.translationServerPort + '/capabilities')
+        d3.xhr(window.location.protocol + '//' + window.location.hostname +
+            Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) + '/capabilities')
             .get(function(error, resp){
                 callback(error, resp);
             });
@@ -1075,6 +1077,14 @@ rest.downloadReport = function(data)
 
         rest['' + command + ''](data, callback, option);
     };
+
+Hoot.model.REST.formatNodeJsPortOrPath = function(p) {
+    if (isNaN(p)) {
+        return '/' + p;
+    } else {
+        return ':' + p;
+    }
+};
 
 Hoot.model.REST.WarningHandler = function(resp){
     if(resp.statusDetail){
