@@ -115,6 +115,13 @@ node_modules/.install: package.json
 clean:
 	rm -f $(BUILDJS_TARGETS) data/feature-icons.json dist/iD*.js dist/iD.css dist/img/*.svg
 
+clean-coverage:
+	rm -f test/istanbul_index.html
+	rm -rf istanbul
+	rm -rf mocha-coverage
+	rm -rf cucumber-coverage
+	rm -rf combined-coverage
+
 translations:
 	node data/update_locales
 

@@ -152,9 +152,20 @@ iD.ui.dgCarousel = function(context) {
                             //window.console.log(data.totalFeatures);
                             //display available images in carousel
 
+                            //remove image thumbnails already selected
+                            var activeData = ul.selectAll('li.active').data();
+                            var availableData = data.features.filter(function(d) {
+                                return !(activeData.some(function(s) {
+                                    return d.id === s.id;
+                                }));
+                            });
+
                             var images = ul.selectAll('li:not(.active)')
-                                .data(data.features)
-                                .classed('carousel-zoom-warn', false)
+                                .data(availableData);
+
+                            images.enter().append('li');
+
+                            images.classed('carousel-zoom-warn', false)
                                 .html(function(d) {
                                     return formatImageMetadata(d);
                                 })
@@ -177,33 +188,6 @@ iD.ui.dgCarousel = function(context) {
                                 .on('mouseleave', function(d) {
                                     loadFootprint(d);
                                 });
-
-
-                            images.enter().append('li')
-                                .html(function(d) {
-                                    return formatImageMetadata(d);
-                                })
-//An issue with overflow hidden is keeping this from being useful
-//                                .call(bootstrap.tooltip()
-//                                    .title(t('dgcarousel.thumbnail_tooltip'))
-//                                    .placement('top')
-//                                )
-                                .on('click', function(d) {
-                                    var active = !d3.select(this).classed('active');
-                                    d3.select(this).classed('active', active);
-                                    loadImage(d, active);
-                                })
-                                .on('dblclick', function(d) {
-                                    loadMetadataPopup(d);
-                                })
-                                .on('mouseenter', function(d) {
-                                    loadFootprint(d);
-                                })
-                                .on('mouseleave', function(d) {
-                                    loadFootprint(d);
-                                });
-
-
 
                             images.exit().remove();
 
@@ -213,14 +197,11 @@ iD.ui.dgCarousel = function(context) {
 
             } else {
                 var images = ul.selectAll('li:not(.active)')
-                .classed('carousel-zoom-warn', true)
-                .data([{message: t('dgcarousel.zoom_warning')}])
-                .html(function(d) {
-                    return formatZoomWarning(d);
-                });
+                .data([{message: t('dgcarousel.zoom_warning')}]);
 
-                images.enter().append('li')
-                .attr('class', 'carousel-zoom-warn')
+                images.enter().append('li');
+
+                images.classed('carousel-zoom-warn', true)
                 .html(function(d) {
                     return formatZoomWarning(d);
                 });
@@ -315,12 +296,12 @@ iD.ui.dgCarousel = function(context) {
             metarows.exit().remove();
 
             var metacells = metarows.selectAll('td')
-                .data(function(d) { return d3.values(d); })
-                .text(function(d) { return d; });
+                .data(function(d) { return d3.values(d); });
 
             metacells.enter()
-                .append('td')
-                .attr('class', 'carousel-metadata-table')
+                .append('td');
+
+            metacells.attr('class', 'carousel-metadata-table')
                 .text(function(d) { return d; });
 
             metacells.exit().remove();
