@@ -85,7 +85,7 @@ Hoot.tools(context,selection);
         d3.select('#list-of-conflicts').attr('style', 'margin-left:'+ (sidebarWidth-400) +'px;');
         d3.select('#conflict-review-buttons').attr('style', 'margin-right:'+ (sidebarWidth-400) +'px;');
         d3.select('#CustomConflationForm').attr('style', 'margin-left:'+ sidebarWidth +'px;');
-    }
+    };
 
     return sidebar;
 };
