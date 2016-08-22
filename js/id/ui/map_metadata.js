@@ -1,4 +1,4 @@
-iD.ui.MapMetadata = function(data) {
+iD.ui.MapMetadata = function(data, context) {
     var mapMetadata = {},
         button,
         body,
