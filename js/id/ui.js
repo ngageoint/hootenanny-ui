@@ -137,16 +137,7 @@ iD.ui = function(context) {
             var x = d3.mouse(this.parentNode)[0];
             x = Math.max(Math.min(x, window.innerWidth), Math.min(400,0.333*window.innerWidth));
             sidebar.style('width',x+'px');
-
-            //adjust margins to keep everything in place when the sidebar is expanded
-            var sidebarWidth = d3.select('#sidebar').node().getBoundingClientRect().width;
-            bar.style('margin-left', sidebarWidth+'px');
-            about.style('margin-left', sidebarWidth+'px');
-            d3.select('#info-block').attr('style', 'margin-right:'+ (sidebarWidth-400)+'px;');
-            d3.select('#list-of-conflicts').attr('style', 'margin-left:'+ (sidebarWidth-400) +'px;');
-            d3.select('#conflict-review-buttons').attr('style', 'margin-right:'+ (sidebarWidth-400) +'px;');
-            d3.select('#CustomConflationForm').attr('style', 'margin-left:'+ sidebarWidth +'px;');
-
+            context.ui().sidebar.adjustMargins();
             //update text
             sidebar.selectAll('tspan').each(context.hoot().control.utilities.folder.wrap);
         });
