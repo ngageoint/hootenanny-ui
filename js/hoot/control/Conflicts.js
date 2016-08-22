@@ -310,6 +310,7 @@ Hoot.control.conflicts = function (context, sidebar) {
 
         context.MapInMap.on('zoomPan.conflicts', _instance.loadReviewFeaturesMapInMap);
         context.map().on('drawn.conflicts', _.debounce(_instance.loadReviewFeaturesMapInMap, 300));
+        context.ui().sidebar.adjustMargins();
     };
 
     _instance.loadReviewFeaturesMapInMap = function() {
