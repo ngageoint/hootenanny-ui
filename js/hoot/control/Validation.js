@@ -21,12 +21,13 @@ Hoot.control.validation = function(context) {
         var container = d3.select('#content')
             .append('div')
             .attr('id', 'validation-container')
-            .classed('pin-bottom review-block unclickable', true)
+            .classed('pin-bottom review-block unclickable validation-container', true)
             .append('div')
             .classed('validation col12 fillD pad1 space clickable', true)
             ;
 
         var meta = container.append('span')
+            .attr('id', 'validation-meta')
             .classed('_icon info dark pad0y space', true);
 
 

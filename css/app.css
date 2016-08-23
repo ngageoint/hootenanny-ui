@@ -2869,6 +2869,17 @@ div.full-screen > button:hover {
 .conflicts-container{
     margin-right: 400px;
 }
+/* Validation
+------------------------------------------------------- */
+
+.validation-container{
+    margin-right:400px;
+}
+
+.validation-meta{
+    display: inline-block;
+}
+
 /* Notices
 ------------------------------------------------------- */
 
