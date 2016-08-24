@@ -162,13 +162,10 @@ Hoot.model.export = function (context)
                     alert('Successful export to an OSM API database:\n\n' + summary);
                 }
                 else {
-                    var sUrl;
+                    var sUrl = '/hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true';
                     if (selectedOutType === 'osm.pbf') {
                         // specify the file ext since the default is zip and there is no need to zip a pbf file
-                        sUrl = '/hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true&ext=osm.pbf';
-                    }
-                    else {
-                        sUrl = '/hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true';
+                        sUrl = sUrl + '&ext=osm.pbf';
                     }
                     var link = document.createElement('a');
                     link.href = sUrl;
