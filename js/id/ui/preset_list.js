@@ -94,8 +94,8 @@ iD.ui.PresetList = function(context) {
                     var results = presets.search(value, geometry);
                     searchResHandler(value, results);
                 } else {
-                    d3.xhr(window.location.protocol + '//' + window.location.hostname + ':'  +
-                        iD.data.hootConfig.translationServerPort +
+                    d3.xhr(window.location.protocol + '//' + window.location.hostname +
+                        Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) +
                     '/schema?geometry='+ geometry + '&translation=' + filterType + '&searchstr=' +
                     value + '&maxlevdst=' + iD.data.hootConfig.presetMaxLevDistance +
                     '&limit=' + iD.data.hootConfig.presetMaxDisplayNum )

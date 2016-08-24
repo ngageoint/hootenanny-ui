@@ -3094,7 +3094,7 @@
                 "terms": "car assembly plant,aluminium processing plant,brewery,furniture manufacture factory,oil refinery,plastic recycling"
             },
             "mgcp/AL010": {
-                "name": "AL010 (Facility)",
+                "name": "Facility (AL010)",
                 "terms": ""
             },
             "mgcp/AL015": {
@@ -3974,7 +3974,7 @@
                 "terms": ""
             },
             "tdsv40/AL010": {
-                "name": "AL010 (Facility)",
+                "name": "Facility (AL010)",
                 "terms": ""
             },
             "tdsv40/AL013": {
@@ -4034,7 +4034,7 @@
                 "terms": ""
             },
             "tdsv61/AL010": {
-                "name": "AL010 (Facility)",
+                "name": "Facility (AL010)",
                 "terms": ""
             },
             "tdsv61/AL013": {

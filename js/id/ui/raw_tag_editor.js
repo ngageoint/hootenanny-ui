@@ -266,7 +266,9 @@ iD.ui.RawTagEditor = function(context) {
                             rawGeom = 'Area';
                         }
                         var transTagInfoUrl = window.location.protocol + '//' +
-                            window.location.hostname + ':' + iD.data.hootConfig.translationServerPort + '/taginfo/';
+                            window.location.hostname +
+                            Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) +
+                            '/taginfo/';
 
                         if(!tagInfEndPts){
                             tagInfEndPts = {};
@@ -305,7 +307,9 @@ iD.ui.RawTagEditor = function(context) {
                         tagInfoOpts.fcode = translation.fCode;
                         tagInfoOpts.translation = translation.transType;
                         context.taginfo().endpoint(window.location.protocol + '//' +
-                            window.location.hostname + ':' + iD.data.hootConfig.translationServerPort + '/taginfo/');
+                            window.location.hostname +
+                            Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) +
+                            '/taginfo/');
                     }
                     context.taginfo().values(tagInfoOpts, function(err, data) {
                         if (!err) callback(sort(value, data));

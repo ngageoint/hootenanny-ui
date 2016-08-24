@@ -6324,7 +6324,7 @@
         "hoot:featuretype": "Facility",
         "hoot:transtype": "MGCP",
         "hoot:fcode": "AL010",
-        "name": "AL010 (Facility)"
+        "name": "Facility (AL010)"
     },
     "mgcp/AL015": {
         "icon": "building",
@@ -10013,7 +10013,7 @@
         "hoot:featuretype": "Facility",
         "hoot:transtype": "TDSv40",
         "hoot:fcode": "AL010",
-        "name": "AL010 (Facility)"
+        "name": "Facility (AL010)"
     },
     "tdsv40/AL013": {
         "icon": "building",
@@ -10187,7 +10187,7 @@
         "hoot:featuretype": "Facility",
         "hoot:transtype": "TDSv61",
         "hoot:fcode": "AL010",
-        "name": "AL010 (Facility)"
+        "name": "Facility (AL010)"
     },
     "tdsv61/AL013": {
         "icon": "building",
