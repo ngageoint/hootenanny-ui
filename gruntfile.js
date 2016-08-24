@@ -40,7 +40,6 @@ module.exports = function(grunt) {
                     'hoot/js/ui/radial_menu.js',
                     'hoot/js/modes/save.js',
                     'hoot/js/actions/reverse.js',
-                    'hoot/js/demo.js',
                     ],
                 dest: 'dist/<%= pkg.name %>.js'
             }

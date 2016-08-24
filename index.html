@@ -296,7 +296,6 @@
 
         <script src="js/id/svg/far.js"></script>
 
-        <script src='js/hoot/demo.js'></script>
 
         <script src='js/hoot/model/Model.js'></script>
         <script src='js/hoot/model/Export.js'></script>
@@ -381,8 +380,6 @@
     <body>
         <div id='id-container'></div>
         <script>
-
-            var demo = (window.location.search=='?demo') ? true : false;
             iD.data.load(function() {
                     if(iD.data.buildInfo && iD.data.buildInfo.version){
                         iD.version = iD.data.buildInfo.version + "(Hootenanny)";
@@ -393,7 +390,7 @@
                     .imagery(iD.data.imagery)
                     .taginfo(iD.services.taginfo())
                     .assetPath('dist/');
-                    id.hoot().load(demo, function(){d3.select('#id-container').call(id.ui());});
+                    id.hoot().load(function(){d3.select('#id-container').call(id.ui());});
             });
         </script>
     </body>
