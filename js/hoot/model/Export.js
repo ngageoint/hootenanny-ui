@@ -33,6 +33,7 @@ Hoot.model.export = function (context)
             'Shapefile': 'shp',
             'Web Feature Service (WFS)':'wfs',
             'Open Street Map (OSM)':'osm',
+            'Open Street Map (PBF)':'osm.pbf',
             'OSM API Database':'osm_api_db'
         };
         selectedOutType = _expType[selExportTypeDesc] || selExportTypeDesc;
@@ -161,7 +162,14 @@ Hoot.model.export = function (context)
                     alert('Successful export to an OSM API database:\n\n' + summary);
                 }
                 else {
-                    var sUrl = '/hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true';
+                    var sUrl;
+                    if (selectedOutType === 'osm.pbf') {
+                        // specify the file ext since the default is zip and there is no need to zip a pbf file
+                        sUrl = '/hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true&ext=osm.pbf';
+                    }
+                    else {
+                        sUrl = '/hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true';
+                    }
                     var link = document.createElement('a');
                     link.href = sUrl;
                     if (link.download !== undefined) {
