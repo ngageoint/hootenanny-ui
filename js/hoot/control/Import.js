@@ -88,7 +88,7 @@ Hoot.control.import = function (context,selection) {
             })
             .style({'height':'150px','margin':'0 0 15px','resize':'vertical'})
             .select(ETL.renderTree);
-        
+
         // Recently Used Layers
         var recentLayersDiv = fieldset.append('div')
             .classed('form-field fill-white small keyline-all round space-bottom1',true);
@@ -254,13 +254,13 @@ Hoot.control.import = function (context,selection) {
                         }
 
                     });
-                    //The OSM API db layer with id = -1 doesn't actually exist in hoot, so can't be 
+                    //The OSM API db layer with id = -1 doesn't actually exist in hoot, so can't be
                     //viewed.
                     if (key.id !== '-1')
                     {
                         context.background().addSource(getNodeMapnikSource(key));
                     }
-                    
+
                 }
                 function getNodeMapnikSource(d) {
                     var source = {
@@ -268,8 +268,8 @@ Hoot.control.import = function (context,selection) {
                             id: d.id,
                             type: 'tms',
                             description: d.name,
-                            template: window.location.protocol + '//' + window.location.hostname + ':'
-                                + iD.data.hootConfig.nodeMapnikServerPort
+                            template: window.location.protocol + '//' + window.location.hostname
+                                + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.nodeMapnikServerPort)
                                 + '/?z={zoom}&x={x}&y={y}&color='
                                 + encodeURIComponent(context.hoot().palette(d.color))
                                 + '&name=' + d.name
@@ -297,7 +297,7 @@ Hoot.control.import = function (context,selection) {
                 });
             });////////////////////////
 
-        };       
+        };
     };
 
 
@@ -352,8 +352,8 @@ Hoot.control.import = function (context,selection) {
                         id: d.id,
                         type: 'tms',
                         description: d.name,
-                        template: window.location.protocol + '//' + window.location.hostname + ':'
-                            + iD.data.hootConfig.nodeMapnikServerPort
+                        template: window.location.protocol + '//' + window.location.hostname
+                            + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.nodeMapnikServerPort)
                             + '/?z={zoom}&x={x}&y={y}&color='
                             + encodeURIComponent(context.hoot().palette(d.color))
                             + '&name=' + d.name
