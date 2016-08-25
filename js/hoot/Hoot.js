@@ -60,15 +60,10 @@ Hoot.hoot = function (context) {
     /**
     * @desc This function is invoke from iD.data.load in index.html during
     *       application initialization and performs Hootenanny specific initialization
-    * @param demo - demo switch which turns on Hootenanny demo mode. (demo should be deprecated)
     * @param callback
     **/
-    hoot.load = function (demo, callback) {
+    hoot.load = function (callback) {
 
-        if (demo) {
-            hoot.demo = true;
-            Hoot.demo(context);
-        }
         hoot.model.folders.refresh(function () {
             hoot.model.layers.refresh(function(){
                 hoot.model.folders.refreshLinks(function(){
