@@ -47,7 +47,7 @@ iD.ui = function(context) {
 
         content.append('div')
             .attr('id', 'sidebarFiller')
-            .classed('sidebarFiller', true)
+            .classed('sidebarFiller', true);
 
         var m = content.append('div')
             .attr('id', 'map')
