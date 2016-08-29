@@ -16,7 +16,6 @@ iD.ui = function(context) {
             .attr('id', 'defs')
             .call(iD.svg.Defs(context));
 
-
         //Create a ref to sidebar, so Hoot can override???
         var sidebar = container.append('div')
             .attr('id', 'sidebar')
@@ -45,6 +44,10 @@ iD.ui = function(context) {
 
         var content = container.append('div')
             .attr('id', 'content');
+
+        content.append('div')
+            .attr('id', 'sidebarFiller')
+            .classed('sidebarFiller', true)
 
         var m = content.append('div')
             .attr('id', 'map')

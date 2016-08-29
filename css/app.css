@@ -39,7 +39,7 @@ body {
     height: 100%;
     width: 100%;
     z-index: -10;
-    margin-left:400px;
+    /*margin-left:400px;*/
 }
 
 #defs {
@@ -772,6 +772,13 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     left: 0;
     bottom: 0;
     right: 0;
+}
+
+.sidebarFiller{
+    position:relative;
+    width:400px;
+    height:100%;
+    float: left;
 }
 
 .inspector-wrap {
@@ -2867,13 +2874,13 @@ div.full-screen > button:hover {
 }
 
 .conflicts-container{
-    margin-right: 400px;
+    margin-left: 400px;
 }
 /* Validation
 ------------------------------------------------------- */
 
 .validation-container{
-    margin-right:400px;
+    margin-left:400px;
 }
 
 .validation-meta{
