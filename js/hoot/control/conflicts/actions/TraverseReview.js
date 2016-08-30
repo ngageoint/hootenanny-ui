@@ -202,6 +202,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         if(!vicheck){
             return;
         }
+        context.ui().sidebar.hide();        
         _instance.jumpTo('forward');
     };
 
@@ -214,6 +215,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         if(!vicheck){
             return;
         }
+        context.ui().sidebar.hide();
         _instance.jumpTo('backward');
     };
 

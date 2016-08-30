@@ -832,7 +832,6 @@ iD.Connection = function(context, useHttps) {
 
       //Need to document why this was modified for Hoot
         function bboxUrl(tile, mapId, layerName, layerExt, showbbox) {
-            if (context.hoot().demo) { return '/data/'+layerName+'.xml'; }
             var ext = '';
             if(showbbox){
                 iD.data.hootConfig.hootMaxImportZoom = context.map().zoom();

@@ -11,25 +11,6 @@ Hoot.control.conflicts.map.featureNavigator = function (context)
     var _events = d3.dispatch();
     var _instance = {};
 
-
-    /**
-    * @desc Helper function to zoom to specified bound
-    * @param bounds - bbox
-    **/
-    _instance.panToBounds = function(bounds) {
-        function boundsToExtent() {
-            var boundsParts = bounds.split(',');
-            var lowerLeftExtent = iD.geo.Extent([boundsParts[0], boundsParts[1]]);
-            var upperRightExtent = iD.geo.Extent([boundsParts[2], boundsParts[3]]);
-            var extent = lowerLeftExtent.extend(upperRightExtent);
-            return extent;
-        }
-        var extent = boundsToExtent();
-        var map = context.map();
-        var zoom = Math.min(20, (map.extentZoom(extent)));
-        map.centerZoom(extent.center(), (zoom));
-    };
-
     /**
     * @desc Helper function to zoom to the bounding box of a entity
     * @param entity - entity to zoom to

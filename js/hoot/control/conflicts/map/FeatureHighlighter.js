@@ -151,7 +151,8 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         _parent().reviewIds.push(relId);
         _parent().info.metadata.updateMeta(null);
         if(panToId && panTo) {
-            _parent().map.featureNavigator.panToEntity(context.entity(panToId), true);
+            var extent = feature.extent(context.graph()).extend(againstFeature.extent(context.graph()));
+            context.map().centerZoom(extent.center(), context.map().trimmedExtentZoom(extent)-0.5);
         }
 
         _parent().loadReviewFeaturesMapInMap();
