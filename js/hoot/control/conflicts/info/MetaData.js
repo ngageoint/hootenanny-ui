@@ -95,7 +95,7 @@ Hoot.control.conflicts.info.metadata = function (context)
         if(note){
             noteText = note;
         }
-        _noteContainer.html('<strong class="review-note">' + 'Review note: ' + noteText + '<br>' + 'Reviews remaining: ' +
+        _noteContainer.html('<strong class="review-note">' + 'Review note: ' + noteText + '</strong><br><strong class="reviews-remaining">' + 'Reviews remaining: ' +
             nUnreviewed +
             '  (Resolved: ' + nReviewed +
                 multiFeatureMsg + ')</strong>');

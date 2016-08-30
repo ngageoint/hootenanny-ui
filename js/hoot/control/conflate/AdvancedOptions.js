@@ -15,6 +15,7 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
     var _events = d3.dispatch();
     var _instance = {};
     var _modalBackground;
+    var containerDiv;
 
 
     _instance.fieldsgenerator = Hoot.control.conflate.advancedoptions.fieldsgenerator();
@@ -61,7 +62,7 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
 
              _createViewValuesLnkBtn(containerForm);
 
-             return d3.rebind(_modalBackground, advancedOptionsEvents, 'on');
+             return d3.rebind(containerDiv, advancedOptionsEvents, 'on');
         } catch(err){
             context.hoot().view.utilities.errorlog.reportUIError(err,null);
             return null;
@@ -144,11 +145,15 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
     var _createContainerForm = function(advancedOptionsEvents) {
         _modalBackground = d3.select('#content') //body
             .append('div')
+            .attr('id', 'modalBackground')
             .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true)
             .style('z-index','1');
-        var containerDiv = _modalBackground.append('div')
+        containerDiv = d3.select('#sidebar').append('div')
             .attr('id','CustomConflationForm')
-            .classed('fillL map-overlay col4 custom-conflation',true); //'contain col4 pad1 fill-white round modal'
+            .classed('fillL map-overlay col4 custom-conflation',true)
+            .style('margin-left', function(){
+                return d3.select('#sidebar').node().getBoundingClientRect().width + 'px';
+            }); //'contain col4 pad1 fill-white round modal'
         var containerForm = containerDiv.append('form');
         containerForm.classed('round space-bottom1', true)
             .append('div')
@@ -178,8 +183,7 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
     **/
     var _createFieldSets = function(containerForm, fieldsMeta) {
         var fieldsContainer = containerForm.append('div')
-            .classed('keyline-all round space-bottom1', true)
-            .style({'max-height': '800px','overflow-y': 'auto','width':'99%'});
+            .classed('keyline-all round space-bottom1 fields-container', true);
 
         var fieldset = fieldsContainer.append('fieldset')
             //Added for testing purposes
@@ -250,10 +254,11 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
                 parent.confAdvOptionsSelectedVal = _instance.selectionretriever.getSelectedValues(containerForm,
                     parent.confAdvOptionsFields);
                 //modalbg.remove();
-                _modalBackground.classed('hidden', true);
+                containerDiv.classed('hidden', true);
                 _instance.advOpsFormEvent(false);
                 var refType = d3.select('.ConfType').value().replace('Custom ','');
                 d3.select('.ConfType').value('Custom ' + refType);
+                d3.select('#modalBackground').remove();
             } else{
                 //notify that some values are invalid and leave window open
                 iD.ui.Alert('Some values in the form are invalid and must be adjusted before completing custom conflation.',
@@ -294,9 +299,10 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
                 parent.confAdvOptionsSelectedVal = null;
                 if(parent.confAdvOptsDlg){parent.confAdvOptsDlg.remove();}
                 parent.confAdvOptsDlg = null;
+                d3.select('#modalBackground').remove();
              }
 
-            _modalBackground.classed('hidden', true);
+            containerDiv.classed('hidden', true);
             _instance.advOpsFormEvent(false);
         });
     };

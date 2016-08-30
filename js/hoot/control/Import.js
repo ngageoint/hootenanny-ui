@@ -125,7 +125,6 @@ Hoot.control.import = function (context,selection) {
         fieldset
             .append('div')
             .classed('keyline-all form-field palette clearfix round', true)
-            .style('width', 'auto')
             .selectAll('a')
             .data(palette)
             .enter()
