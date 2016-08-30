@@ -462,7 +462,7 @@ Hoot.control.utilities.importdataset = function(context) {
         } else if(typeName === 'OSM') {
             d3.select('#ingestfileuploader')
             .property('multiple', 'false')
-            .attr('accept', '.osm,.osm.zip')
+            .attr('accept', '.osm,.osm.zip,.pbf')
             .attr('webkitdirectory', null)
             .attr('directory', null);
         } else {
@@ -759,7 +759,7 @@ Hoot.control.utilities.importdataset = function(context) {
 
         var osmTypes = {};
         osmTypes.value = 'OSM';
-        osmTypes.title = 'File (osm,osm.zip)';
+        osmTypes.title = 'File (osm,osm.zip,pbf)';
         importTypes.push(osmTypes);
 
         var geonameTypes = {};

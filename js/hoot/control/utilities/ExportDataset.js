@@ -53,7 +53,8 @@ Hoot.control.utilities.exportdataset = function(context) {
         
         var exportFormatList = 
           [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
-           {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'}];
+           {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'},
+           {'DESCRIPTION': 'Open Street Map (PBF)'}];
         if (_dataset.canExportToOsmApiDb === true)
         {
             exportFormatList.push({'DESCRIPTION': 'OSM API Database'});

@@ -466,7 +466,7 @@ Hoot.model.conflicts = function(context)
             var features = [JXON.stringify(feature.asJXON()), JXON.stringify(featureAgainst.asJXON())];
             var reverse = d3.event.ctrlKey;
             if (reverse) features = features.reverse();
-            var osmXml = '<osm version=\'0.6\' upload=\'true\' generator=\'JOSM\'>' +
+            var osmXml = '<osm version=\'0.6\' upload=\'true\' generator=\'hootenanny\'>' +
                 features.join('') + '</osm>';
 
             context.connection().loadFromHootRest('poiMerge', osmXml, function(error, entities) {
