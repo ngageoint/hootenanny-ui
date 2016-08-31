@@ -578,14 +578,12 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
 
-        d3.xhr(window.location.protocol + '//' + window.location.hostname
+        d3.xml(window.location.protocol + '//' + window.location.hostname
             + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort)
             +'/tdstoosm?translation=' + data.translation)
             .header('Content-Type', 'text/xml')
             .post(data.osmXml, function (error, resp) {
-                var parser = new DOMParser();
-                var xmlDoc = parser.parseFromString(resp.responseText,'text/xml');
-                var tagslist = xmlDoc.getElementsByTagName('tag');
+                var tagslist = resp.getElementsByTagName('tag');
                 var attribs = {};
 
                 _.each(tagslist, function(tag){
