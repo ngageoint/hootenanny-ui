@@ -34,9 +34,12 @@ body {
 }
 
 #content {
-    position: relative;
+    position: absolute;
     overflow: hidden;
     height: 100%;
+    width: 100%;
+    z-index: -10;
+    /*margin-left:400px;*/
 }
 
 #defs {
@@ -671,6 +674,7 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     z-index: 1;
     min-width: 768px;
     width:100%;
+    margin-left:400px;
 }
 
 /* Header for modals / panes
@@ -768,6 +772,13 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     left: 0;
     bottom: 0;
     right: 0;
+}
+
+.sidebarFiller{
+    position:relative;
+    width:400px;
+    height:100%;
+    float: left;
 }
 
 .inspector-wrap {
@@ -2441,11 +2452,12 @@ div.full-screen > button:hover {
 ------------------------------------------------------- */
 
 #about {
-    width: 100%;
-    position: absolute;
-    right:0;
+    width: calc(100% - 400px);
+    position: fixed;
     bottom:0;
     border-radius: 0;
+    height:30px;
+    margin-left:400px;
 }
 
 #attrib {
@@ -2859,6 +2871,20 @@ div.full-screen > button:hover {
 
 .conflict-nav-button {
     height: 30px;
+}
+
+.conflicts-container{
+    margin-left: 400px;
+}
+/* Validation
+------------------------------------------------------- */
+
+.validation-container{
+    margin-left:400px;
+}
+
+.validation-meta{
+    display: inline-block;
 }
 
 /* Notices
@@ -3301,12 +3327,20 @@ div.full-screen > button:hover {
 }
 
 .custom-conflation {
-    position: relative;
+    position: fixed;
     float: left;
     height: 100%;
     overflow: auto;
     z-index: 2;
     background: #f6f6f6;
+    margin-left:400px;
+}
+
+.fields-container{
+    max-height: 800px;
+    overflow-y: auto;
+    width:90%;
+    margin: 0 auto 10px;
 }
 
 .custom-collapse {

@@ -295,6 +295,7 @@ Hoot.control.conflate = function (sidebar,context) {
 
         if(_instance.confAdvOptsDlg){
             _instance.confAdvOptsDlg.remove();
+            d3.select('#modalBackground').remove();
         }
         _instance.confAdvOptsDlg = null;
         _instance.advancedoptions.advOpsFormEvent(false);
@@ -649,7 +650,7 @@ Hoot.control.conflate = function (sidebar,context) {
         if (data[0].name.indexOf('OSM_API_DB') > -1)
         {
           //this change is mostly here b/c I couldn't get the "fill input" ruby step definition
-          //to consistently work when pressing the second conflate button...if that can be resolved, 
+          //to consistently work when pressing the second conflate button...if that can be resolved,
           //this check could go away
           newName = data[0].name.replace('OSM_API_DB_', '') + '_' + data[1].name;
         }

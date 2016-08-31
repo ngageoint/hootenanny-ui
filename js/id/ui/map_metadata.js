@@ -1,4 +1,4 @@
-iD.ui.MapMetadata = function(data) {
+iD.ui.MapMetadata = function(data, context) {
     var mapMetadata = {},
         button,
         body,
@@ -17,6 +17,7 @@ iD.ui.MapMetadata = function(data) {
                     var exp = d3.select(this).classed('expanded');
                     container.style('display', exp ? 'none' : 'block');
                     d3.select(this).classed('expanded', !exp);
+                    context.ui().sidebar.adjustMargins();
                     d3.event.preventDefault();
                 });
 
@@ -63,6 +64,7 @@ iD.ui.MapMetadata = function(data) {
                     var exp = d3.select(this).classed('expanded');
                     container.style('display', exp ? 'none' : 'block');
                     d3.select(this).classed('expanded', !exp);
+                    context.ui().sidebar.adjustMargins();
                     d3.event.preventDefault();
                 });
             var container = body.append('div')

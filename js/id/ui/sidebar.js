@@ -72,13 +72,21 @@ iD.ui.Sidebar = function(context) {
         d3.select('.feature-list-pane').style('display', 'none');
         d3.select('.sidebar-component').style('background-color', '#fff');
         //d3.selectAll('.save').style('display','none');
-
-
-
-
 Hoot.tools(context,selection);
 
 
     };
+    sidebar.adjustMargins = function(){
+        //adjust margins to keep everything in place when the sidebar is expanded
+        var sidebarWidth = d3.select('#sidebar').node().getBoundingClientRect().width;
+        d3.select('#bar').style('margin-left', sidebarWidth+'px');
+        d3.select('#about').style('margin-left', sidebarWidth+'px');
+        d3.select('#info-block').attr('style', 'margin-right:'+ (sidebarWidth-400)+'px;');
+        d3.select('#list-of-conflicts').attr('style', 'margin-left:'+ (sidebarWidth-400) +'px;');
+        d3.select('#conflict-review-buttons').attr('style', 'margin-right:'+ (sidebarWidth-400) +'px;');
+        d3.select('#CustomConflationForm').attr('style', 'margin-left:'+ sidebarWidth +'px;');
+        d3.select('#validation-meta').attr('style', 'margin-left:'+ (sidebarWidth-400) +'px;');
+    };
+
     return sidebar;
 };

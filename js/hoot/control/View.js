@@ -137,7 +137,7 @@ Hoot.control.view = function (container, context) {
                     event.layerRemove(a.name, isPrimary, a.mapId);
                     // this removes the tags field
                     d3.select('.hootTags').remove();
-
+                    context.ui().sidebar.adjustMargins();
                     context.updateMode();
 
                 });
@@ -268,6 +268,7 @@ Hoot.control.view = function (container, context) {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
             });
+        context.ui().sidebar.adjustMargins();
     };
 
     View.getLayer = function (iLayer){

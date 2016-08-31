@@ -17,10 +17,10 @@ iD.ui.RadialMenu = function(context, operations) {
             radialMenu.close();
         }
 
-        var sidebarWidth = d3.select('#sidebar').node().getBoundingClientRect().width;
-        var differenceWidth = sidebarWidth - 400;
+        // var sidebarWidth = d3.select('#sidebar').node().getBoundingClientRect().width;
+        // var differenceWidth = sidebarWidth - 400;
 
-        var x = center[0] - differenceWidth;
+        var x = center[0];
         var y = center[1];
         menu = selection.append('g')
             .attr('class', 'radial-menu')

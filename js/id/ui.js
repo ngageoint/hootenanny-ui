@@ -16,7 +16,6 @@ iD.ui = function(context) {
             .attr('id', 'defs')
             .call(iD.svg.Defs(context));
 
-
         //Create a ref to sidebar, so Hoot can override???
         var sidebar = container.append('div')
             .attr('id', 'sidebar')
@@ -38,13 +37,17 @@ iD.ui = function(context) {
             .classed('col12', true)
             .style('postion', 'absolute');
 
-        var content = container.append('div')
-            .attr('id', 'content');
-
-        var bar = content.append('div')
+        var bar = sidebar.append('div')
             .attr('id', 'bar')
             .attr('class', 'fillD');
         bar.style('top', '60px');
+
+        var content = container.append('div')
+            .attr('id', 'content');
+
+        content.append('div')
+            .attr('id', 'sidebarFiller')
+            .classed('sidebarFiller', true);
 
         var m = content.append('div')
             .attr('id', 'map')
@@ -137,14 +140,14 @@ iD.ui = function(context) {
             var x = d3.mouse(this.parentNode)[0];
             x = Math.max(Math.min(x, window.innerWidth), Math.min(400,0.333*window.innerWidth));
             sidebar.style('width',x+'px');
-
+            context.ui().sidebar.adjustMargins();
             //update text
             sidebar.selectAll('tspan').each(context.hoot().control.utilities.folder.wrap);
         });
         resizer.call(dragResize);
 
  //START: Hoot may have wanted to disable this by commenting out
-       var about = content.append('div')
+       var about = sidebar.append('div')
             .attr('id', 'about');
 
         /*about.append('div')
