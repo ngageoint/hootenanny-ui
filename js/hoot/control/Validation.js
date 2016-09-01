@@ -28,7 +28,7 @@ Hoot.control.validation = function(context) {
 
         var meta = container.append('span')
             .attr('id', 'validation-meta')
-            .classed('_icon info dark pad0y space', true);
+            .classed('_icon info dark pad0y space validation-meta', true);
 
 
         var buttons = [
