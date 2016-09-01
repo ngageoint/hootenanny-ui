@@ -26,10 +26,11 @@ iD.ui = function(context) {
             .style({'position':'absolute','width':'10px','top':'0',
                 'bottom':'0','right':'-5px','background':'#999','opacity':'0.5','cursor':'col-resize'})
             .on('dblclick',function(){
-                var x = 0.33*window.innerWidth;
+                var x = 400;
                 sidebar.style('width',x+'px');
                 sidebar.classed('col4',true);
                 sidebar.selectAll('tspan').each(context.hoot().control.utilities.folder.wrap);
+                context.ui().sidebar.adjustMargins()
             });
 
         var app = sidebar.append('div')
