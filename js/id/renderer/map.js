@@ -189,7 +189,7 @@ iD.Map = function(context) {
             data = features.filter(data, graph);
 
         d3.selectAll('.vertex').remove();
-        //d3.selectAll('.shadow').remove();
+        d3.selectAll('.shadow').remove();
 
         surface
             .call(drawVertices, graph, data, filter, map.extent(), map.zoom())
@@ -796,7 +796,7 @@ iD.Map = function(context) {
         data = features.filter(data, graph);
 
         d3.selectAll('.vertex').remove();
-        //d3.selectAll('.shadow').remove();
+        d3.selectAll('.shadow').remove();
 
         var farLine = iD.svg.FarLine(projection, context);
         var farArea = iD.svg.FarArea(projection, context);
