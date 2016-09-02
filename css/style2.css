@@ -455,7 +455,7 @@ span.logo{
   height:60px;
 }
 .tag-row .map-metadata {
-    float: left;
+    /*float: left;*/
     height: 30px;
     overflow: hidden;
     padding: 4px 6px;
@@ -478,9 +478,6 @@ tr.tag-row td {
 }
 tr.tag-row td.key {
     font-weight: bold;
-}
-tr.tag-row:last-child td {
-    border-bottom: none;
 }
 
 table.map-metadata {

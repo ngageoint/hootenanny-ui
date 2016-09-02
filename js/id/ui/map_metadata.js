@@ -25,14 +25,14 @@ iD.ui.MapMetadata = function(data, context) {
                 .attr('class', '')
                 .style('display', 'none');
 
-            var list = container.append('ul')
-                .attr('class', 'layer-list');
+            var table = container.append('table')
+                .attr('class', 'layer-list map-metadata');
 
-            var li = list.selectAll('li')
+            var tr = table.selectAll('tr')
                 .data(data)
-                .enter().append('li')
+                .enter().append('tr')
                 .classed('tag-row', true);
-            li.append('div')
+            tr.append('td')
                 .classed('map-metadata key keyline-right', true)
                 .attr('title', function(d) {
                     return d.key;
@@ -40,11 +40,12 @@ iD.ui.MapMetadata = function(data, context) {
                 .html(function(d) {
                     return d.key;
                 });
-            li.append('div')
+            tr.append('td')
                 .classed('map-metadata value', true)
                 .attr('title', function(d) {
                     return d.value;
                 })
+                .append('p')
                 .html(function(d) {
                     return d.value;
                 });
