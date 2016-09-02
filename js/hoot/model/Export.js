@@ -31,7 +31,7 @@ Hoot.model.export = function (context)
         var _expType = {
             'File Geodatabase': 'gdb',
             'Shapefile': 'shp',
-            'Web Feature Service (WFS)':'wfs',
+            /*'Web Feature Service (WFS)':'wfs',*/
             'Open Street Map (OSM)':'osm',
             'Open Street Map (PBF)':'osm.pbf',
             'OSM API Database':'osm_api_db'
