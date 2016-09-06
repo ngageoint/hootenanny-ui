@@ -285,7 +285,8 @@ Hoot.ui.hootformbase = function ()
 
             var wrapper = mpDiv
                 .append('span')
-                .classed('point keyline-left _icon folder pin-right pad0x pad0y hidden', true)
+                .classed('point keyline-left pin-right pad0x pad0y hidden', true)
+                .call(iD.svg.Icon('#icon-folder'))
                 .attr('id', a.multipartid + 'spancontainer');
 
             var mpInput = wrapper
@@ -297,7 +298,8 @@ Hoot.ui.hootformbase = function ()
                 .classed('point pin-top', true)
                 .style({
                     'text-indent': '-9999px',
-                    'width': '31px'
+                    'width': '31px',
+                    'height': '31px'
                 });
 
             if(a.onchange) {

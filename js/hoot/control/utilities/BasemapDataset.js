@@ -70,7 +70,8 @@ Hoot.control.utilities.basemapdataset = function(context) {
                 if (a.icon) {
                     d3.select(this.parentNode)
                         .append('span')
-                        .classed('point keyline-left _icon folder pin-right pad0x pad0y', true)
+                        .classed('point keyline-left pin-right pad0x pad0y', true)
+                        .call(iD.svg.Icon('#icon-folder'))
                         .append('input')
                         .attr('id', 'basemapfileuploader')
                         .attr('type', 'file')
@@ -78,7 +79,8 @@ Hoot.control.utilities.basemapdataset = function(context) {
                         .classed('point pin-top', true)
                         .style({
                             'text-indent': '-9999px',
-                            'width': '31px'
+                            'width': '31px',
+                            'height': '31px'
                         })
                         .on('change', function () {
                             var fileNames = [];
