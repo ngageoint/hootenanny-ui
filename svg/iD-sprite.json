@@ -29,6 +29,7 @@
     "icon-clip":                { "viewBox": "560 0 20 20" },
     "icon-paste-tags-overwrite":{ "viewBox": "580 0 20 20" },
     "icon-paste-tags-append":   { "viewBox": "600 0 20 20" },
+    "icon-folder":              { "viewBox": "620 0 20 20" },
 
     "icon-alert-shape":               { "fill": "currentColor" },
     "icon-point-shape":               { "fill": "currentColor" },
@@ -61,6 +62,7 @@
     "icon-clip-shape":                { "fill": "currentColor" },
     "icon-paste-tags-overwrite-shape":{ "fill": "currentColor" },
     "icon-paste-tags-append-shape":   { "fill": "currentColor" },
+    "icon-folder-shape":              { "fill": "currentColor" },
 
     "highway-motorway":         { "viewBox": "0 20 60 60" },
     "highway-trunk":            { "viewBox": "60 20 60 60" },

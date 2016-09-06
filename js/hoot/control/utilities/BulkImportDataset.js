@@ -709,7 +709,8 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 } else {
                     d3.select(this.parentNode)
                         .append('span')
-                        .classed('point _icon folder pin-right pad0x hidden', true)
+                        .classed('point pin-right pad0x hidden', true)
+                        .call(iD.svg.Icon('#icon-folder'))
                         .attr('id', 'ingestfileuploaderspancontainer-'+ _rowNum)
                         .append('input')
                         .attr('id', 'ingestfileuploader-'+ _rowNum)
@@ -719,7 +720,8 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                         .classed('point pin-top', true)
                         .style({
                             'text-indent': '-9999px',
-                            'width': '31px'
+                            'width': '31px',
+                            'height': '31px'
                         })
                         .on('change', _multipartHandler);
                 }
