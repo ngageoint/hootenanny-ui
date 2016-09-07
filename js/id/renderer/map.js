@@ -548,8 +548,7 @@ iD.Map = function(context) {
         function refresh() {
             dimensions[0] = window.innerWidth; //400 subtracted for sidebar
             dimensions[1] = window.innerHeight;
-            console.log('refresh');
-        };
+        }
         drawLayers.dimensions(dimensions);
         context.background().dimensions(dimensions);
         projection.clipExtent([[0, 0], dimensions]);
