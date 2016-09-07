@@ -23,37 +23,30 @@
     "callback":"view.utilities.translation.createContainer"
   },
   {
-    "name":"WFS Exports",
-    "id":"utilWFS",
-    "order":"5",
-    "contentbodyid":"wfsdatasettable",
-    "callback":"view.utilities.wfsdataset.createContent"
-  },
-  {
     "name":"Basemaps",
     "id":"utilBaseMaps",
-    "order":"6",
+    "order":"5",
     "contentbodyid":"basemapsdatasettable",
     "callback":"view.utilities.basemapdataset.createContent"
   },
   {
     "name":"Log",
     "id":"utilErrorLog",
-    "order":"7",
+    "order":"6",
     "contentbodyid":"errorlogbody",
     "callback":"view.utilities.errorlog.createContent"
   },
   {
     "name":"Reports",
     "id":"utilReports",
-    "order":"8",
+    "order":"7",
     "contentbodyid":"reportsContent",
     "callback":"view.utilities.reports.createContent"
   },
   {
     "name":"Review Bookmarks",
     "id":"utilReviewBookmarks",
-    "order":"9",
+    "order":"8",
     "contentbodyid":"reviewBookmarksContent",
     "callback":"view.utilities.reviewbookmarks.createContent"
   },
@@ -61,14 +54,14 @@
     "name":"Review Bookmark Notes",
     "hidden":true,
     "id":"utilReviewBookmarkNotes",
-    "order":"10",
+    "order":"9",
     "contentbodyid":"reviewbookmarknotesbody",
     "callback":"view.utilities.reviewbookmarknotes.createContent"
   },
   {
     "name":"About",
     "id":"utilAbout",
-    "order":"11",
+    "order":"10",
     "contentbodyid":"aboutContent",
     "callback":"view.utilities.about.createContent"
   }
