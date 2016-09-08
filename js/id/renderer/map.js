@@ -190,6 +190,8 @@ iD.Map = function(context) {
 
         d3.selectAll('.vertex').remove();
         //d3.selectAll('.shadow').remove();
+        var linesContainer = d3.select('.layer-lines');
+        linesContainer.selectAll('path.shadow:not(.activeReviewFeature):not(.activeReviewFeature2):not(.unsaved)').remove();
 
         surface
             .call(drawVertices, graph, data, filter, map.extent(), map.zoom())
@@ -541,7 +543,12 @@ iD.Map = function(context) {
         if (!arguments.length) return dimensions;
         var center = map.center();
         dimensions = _;
-        //drawLayers replaced surface in iD v1.9.2
+        // drawLayers replaced surface in iD v1.9.2
+        window.addEventListener('resize', refresh);
+        function refresh() {
+            dimensions[0] = window.innerWidth; //400 subtracted for sidebar
+            dimensions[1] = window.innerHeight;
+        }
         drawLayers.dimensions(dimensions);
         context.background().dimensions(dimensions);
         projection.clipExtent([[0, 0], dimensions]);
@@ -797,6 +804,8 @@ iD.Map = function(context) {
 
         d3.selectAll('.vertex').remove();
         //d3.selectAll('.shadow').remove();
+        var linesContainer = d3.select('.layer-lines');
+        linesContainer.selectAll('path.shadow:not(.activeReviewFeature):not(.activeReviewFeature2):not(.unsaved)').remove();
 
         var farLine = iD.svg.FarLine(projection, context);
         var farArea = iD.svg.FarArea(projection, context);

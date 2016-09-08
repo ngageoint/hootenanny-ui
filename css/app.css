@@ -1693,6 +1693,7 @@ div.combobox {
     width: 100%;
     position: relative;
     clear: both;
+    word-wrap: break-word;
 }
 
 .tag-row input {
