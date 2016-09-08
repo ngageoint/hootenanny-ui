@@ -3434,6 +3434,15 @@ rect.more {fill: #3182bd;}*/
 	color:#fff;
 }
 
+/*layer for context menu on right click*/
+.context-menu-click-layer{
+    display: inline-block;
+    padding: 10px;
+    position: absolute;
+    width: 80%;
+    height: 60px;
+}
+
 /* Settings Tab */
 .settings-section {
     -webkit-padding-start: 18px;
