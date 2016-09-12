@@ -283,7 +283,7 @@ window.iD = function () {
 
 
     /* Copy/Paste */
-    var copyIDs = [], copyGraph, copyTags = [];
+    var copyIDs = [], copyGraph, copyTags = {};
     context.copyGraph = function() { return copyGraph; };
     context.copyIDs = function(_) {
         if (!arguments.length) return copyIDs;
