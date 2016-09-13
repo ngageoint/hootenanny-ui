@@ -240,7 +240,7 @@ iD.ui.preset = function(context) {
                 if (field.key === shown[i].key){
                     var hiddenField = shown.splice(i, 1);
                     hiddenField[0].show = false;
-                    notShown.push(hiddenField[0])
+                    notShown.push(hiddenField[0]);
                 }
             }
             content(selection);
