@@ -528,6 +528,11 @@ iD.Map = function(context) {
         return true;
     }
 
+    map.getRandomCenter = function(){
+        var locations = d3.values(iD.data.hootConfig.hootRandomCenter);
+        return d3.shuffle(locations)[0];
+    };
+
     map.pan = function(d) {
         if(!d3.select('#jobsBG').classed('hidden')){return;}
         var t = projection.translate();

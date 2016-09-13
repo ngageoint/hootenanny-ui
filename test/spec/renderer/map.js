@@ -116,6 +116,16 @@ describe('iD.Map', function() {
         });
     });
 
+    describe('#getRandomCenter', function() {
+        it('gets center from data config file', function() {
+            var locations = d3.values(iD.data.hootConfig.hootRandomCenter);
+            var random = map.getRandomCenter()
+            expect(locations.some(function(d){
+                return d[0] === random[0] && d[1] === random[1];
+            })).to.be.true;
+        });
+    });
+
     describe('#extent', function() {
         it('gets and sets extent', function() {
             map.dimensions([100, 100])

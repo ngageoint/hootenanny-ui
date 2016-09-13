@@ -18,24 +18,6 @@ Hoot.hoot = function (context) {
     hoot.model = Hoot.model(context);
     hoot.view = Hoot.view(context);
     hoot.control = Hoot.control(context);
-    hoot.zoom = iD.data.hootConfig.hootMapInitialZoom;
-    //Generate random starting location
-    var random = Math.floor((Math.random() * 7) + 1); //gives number between 1 and 7
-    if (random === 1){
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter1;
-    } else if (random === 2) {
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter2;
-    } else if (random === 3) {
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter3;
-    } else if (random === 4) {
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter4;
-    } else if (random === 5) {
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter5;
-    } else if (random === 6) {
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter6;
-    } else if (random === 7) {
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter7;
-    }
 
     //hoot.center = iD.data.hootConfig.hootMapInitialCenter;
     //hoot.utilities = Hoot.Utilities(context);
