@@ -76,20 +76,18 @@ Hoot.hoot = function (context) {
                 callback();
             }*/
         });
-        Hoot.model.REST('GetTranslationServerStatus', function(){
-            Hoot.model.REST('getTransaltionCapabilities', function (error, resp) {
+        Hoot.model.REST('getTranslationCapabilities', function (error, resp) {
                 if(error){
-                    alert('Failed to retrieve translation capabilities: ' + error);
+                iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
                     return;
                 }
                 iD.data.hootConfig.translationCapabilites = JSON.parse(resp.responseText);
 
                 // we do this to make sure OSM is in list and not duplicate
                 // which can happen if it is included in the list from server
-                iD.data.hootConfig.translationCapabilites.OSM = {'isavailable':'true'};
+            iD.data.hootConfig.translationCapabilites.OSM = {'isavailable':'true'};
             });
 
-        });
 
         Hoot.model.REST('getConflationCustomOpts',function(){});
 
