@@ -331,17 +331,14 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.poiMerge = function (data, callback) {
-        d3.json(window.location.protocol + '//' + window.location.hostname +
+        d3.xml(window.location.protocol + '//' + window.location.hostname +
                Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.p2pServerPort) +
                '/p2pmerge')
            .post(data, function (error, resp) {
                if (error) {
                    _alertError(error, 'Poi merge failed.');
                }
-               var oParser = new DOMParser();
-               var oDOM = oParser.parseFromString(resp.output, 'text/xml');
-
-               callback(oDOM);
+               callback(resp);
            });
     };
 
@@ -442,17 +439,13 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
 
-        var reqData = {};
-        reqData.command = 'translate';
-        reqData.translation = data.translation;
-        reqData.uid = data.id;
-        reqData.input = data.osmXml;
-
         var osmToTdsAttribFilter = data.filterMeta;
 
-        d3.xhr(window.location.protocol + '//' + window.location.hostname + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) + '/osmtotds')
+        d3.xhr(window.location.protocol + '//' + window.location.hostname
+            + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort)
+            + '/osmtotds?translation=' + data.translation)
             .header('Content-Type', 'text/plain')
-            .post(JSON.stringify(reqData), function (error, json) {
+            .post(data.osmXml, function (error, resp) {
                 if (error) {
                     //Feature not in spec
                     //Unable to translate
@@ -464,10 +457,8 @@ Hoot.model.REST = function (command, data, callback, option) {
                     _alertError(error, 'Feature out of spec, unable to translate');
                     return;
                 }
-                var res = JSON.parse(json.responseText);
-                var tdsXml = res.output;
                 var parser = new DOMParser();
-                var xmlDoc = parser.parseFromString(tdsXml,'text/xml');
+                var xmlDoc = parser.parseFromString(resp.responseText,'text/xml');
                 var tagslist = xmlDoc.getElementsByTagName('tag');
 
                 //Check for F_CODE = Not found
@@ -567,21 +558,12 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
 
-        var reqData = {};
-        reqData.command = 'translate';
-        reqData.translation = data.translation;
-        reqData.uid = data.id;
-        reqData.input = data.osmXml;
-
-        d3.xhr(window.location.protocol + '//' + window.location.hostname +
-            Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) +'/tdstoosm')
-            .header('Content-Type', 'text/plain')
-            .post(JSON.stringify(reqData), function (error, json) {
-                var res = JSON.parse(json.responseText);
-                var tdsXml = res.output;
-                var parser = new DOMParser();
-                var xmlDoc = parser.parseFromString(tdsXml,'text/xml');
-                var tagslist = xmlDoc.getElementsByTagName('tag');
+        d3.xml(window.location.protocol + '//' + window.location.hostname
+            + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort)
+            +'/tdstoosm?translation=' + data.translation)
+            .header('Content-Type', 'text/xml')
+            .post(data.osmXml, function (error, resp) {
+                var tagslist = resp.getElementsByTagName('tag');
                 var attribs = {};
 
                 _.each(tagslist, function(tag){
