@@ -56,7 +56,7 @@ iD.ui.PasteTags = function(context) {
         //console.log(selectedIDs);
         for (eid in selectedIDs) {
             selectEntity = oldGraph.entity(selectedIDs[eid]);
-            if (copyTags) { //use copied tags
+            if (Object.keys(copyTags).length > 0) { //use copied tags
                 selectEntity = selectEntity.mergeTags(_.omit(copyTags, omitTag), d3.event.shiftKey || overwrite);
             } else { //use copied features
                 for (i = 0; i < oldIDs.length; i++) {
