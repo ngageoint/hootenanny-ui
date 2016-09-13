@@ -432,26 +432,6 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
-
-
-    rest.GetTranslationServerStatus = function(data, callback) {
-        d3.json('/hoot-services/ogr/translationserver/status' , function (error, resp) {
-                if (error) {
-                    return error;
-                }
-
-                if(resp.port && resp.isRunning === true)
-                {
-                    iD.data.hootConfig.translationServerPort = resp.port;
-                    callback();
-                }
-                else
-                {
-                    iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
-                }
-            });
-    };
-
     // This uses translation node js server using CORS
     rest.LTDS = function (data, callback) {
         if(!iD.data.hootConfig.translationServerPort){
@@ -983,7 +963,7 @@ rest.downloadReport = function(data)
             });
     };
 
-    rest.getTransaltionCapabilities = function(data, callback) {
+    rest.getTranslationCapabilities = function(data, callback) {
         d3.xhr(window.location.protocol + '//' + window.location.hostname +
             Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) + '/capabilities')
             .get(function(error, resp){
