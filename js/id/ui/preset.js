@@ -236,6 +236,14 @@ iD.ui.preset = function(context) {
         function remove(field) {
             d3.event.stopPropagation();
             d3.event.preventDefault();
+            for (var i = 0; i < shown.length; i++){
+                if (field.key === shown[i].key){
+                    var hiddenField = shown.splice(i, 1);
+                    hiddenField[0].show = false;
+                    notShown.push(hiddenField[0]);
+                }
+            }
+            content(selection);
             event.change(field.remove());
         }
     }
