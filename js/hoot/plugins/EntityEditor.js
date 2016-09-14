@@ -48,7 +48,7 @@ Hoot.plugins.entityeditor = function() {
         var geom = this.getGeomType(entity);
         var filterType = transType;
 
-        var osmXml = '<osm version=\'0.6\' upload=\'true\' generator=\'hootenanny\'>' + JXON.stringify(entity.asJXON()) + '</osm>';
+        var osmXml = '<osm version="0.6" upload="true" generator="hootenanny">' + JXON.stringify(entity.asJXON()) + '</osm>';
         var data = {};
 
         data.osmXml = osmXml;
@@ -68,7 +68,7 @@ Hoot.plugins.entityeditor = function() {
     this.getOSMTags =function(entity, transType, callback) {
 
         var filterType = transType;
-        var osmXml = '<osm version=\'0.6\' upload=\'true\' generator=\'hootenanny\'>' + JXON.stringify(entity.asJXON()) + '</osm>';
+        var osmXml = '<osm version="0.6" upload="true" generator="hootenanny">' + JXON.stringify(entity.asJXON()) + '</osm>';
         var data = {};
 
         data.translation = filterType;
@@ -488,9 +488,10 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(resolver, enti
         var v = rawTags[k];
         if(v !== undefined && v !== null) {
             englishTags[f.rawLabel] = v;
-        } else {
-            // Set default value
-            englishTags[f.rawLabel] = me.allTransTags[k];
+        // Don't add tags with default value
+        // } else {
+        //     // Set default value
+        //     englishTags[f.rawLabel] = me.allTransTags[k];
         }
 
     });
