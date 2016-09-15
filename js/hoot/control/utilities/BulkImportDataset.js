@@ -775,7 +775,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         } else if(typeName === 'GEONAMES') {
             d3.select('#ingestfileuploader-'+selRowNum)
             .attr('multiple', 'false')
-            .attr('accept', '.geonames')
+            .attr('accept', '.geonames,.txt')
             .attr('webkitdirectory', null)
             .attr('directory', null);
         } else if(typeName === 'OSM') {
