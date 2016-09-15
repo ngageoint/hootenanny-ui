@@ -6,7 +6,7 @@
 // Modifications:
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.view.utilities.wfsdataset = function(context)
+/*Hoot.view.utilities.wfsdataset = function(context)
 {
     var hoot_view_utilities_wfsdataset = {};
 
@@ -74,5 +74,5 @@ Hoot.view.utilities.wfsdataset = function(context)
     };
 
 
-    return hoot_view_utilities_wfsdataset;
+    return hoot_view_utilities_wfsdataset;*/
 };
