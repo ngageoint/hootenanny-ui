@@ -74,5 +74,5 @@
     };
 
 
-    return hoot_view_utilities_wfsdataset;*/
-};
+    return hoot_view_utilities_wfsdataset;
+};*/
