@@ -62,6 +62,7 @@ iD.ui.PresetList = function(context) {
         }
 
         function createPresetFromTDS(schemaElem) {
+            var filterType = d3.select('#presettranstype').value();
             var newPreset = {};
             //newPreset.icon = 'highway-road';
             newPreset.geometry = schemaElem.geom.toLowerCase();
