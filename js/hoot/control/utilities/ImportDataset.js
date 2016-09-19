@@ -456,7 +456,7 @@ Hoot.control.utilities.importdataset = function(context) {
         } else if(typeName === 'GEONAMES') {
             d3.select('#ingestfileuploader')
             .property('multiple', 'false')
-            .attr('accept', '.geonames')
+            .attr('accept', '.geonames,.txt')
             .attr('webkitdirectory', null)
             .attr('directory', null);
         } else if(typeName === 'OSM') {
@@ -767,7 +767,7 @@ Hoot.control.utilities.importdataset = function(context) {
 
         var geonameTypes = {};
         geonameTypes.value = 'GEONAMES';
-        geonameTypes.title = 'File (geonames)';
+        geonameTypes.title = 'File (geonames,txt)';
         importTypes.push(geonameTypes);
 
         var dirType = {};
