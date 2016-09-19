@@ -300,6 +300,7 @@ iD.ui.MapInMap = function(context) {
 
          wrap.enter()
             .append('div')
+            .attr('id', 'map-in-map')
             .attr('class', 'map-in-map')
             .style('display', (hidden ? 'none' : 'block'))
             .on('mousedown.map-in-map', startMouse)
