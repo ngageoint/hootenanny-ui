@@ -8,7 +8,7 @@ iD.ui.Save = function(context) {
 
     function save() {
         d3.event.preventDefault();
-        if (!context.inIntro() && !saving() && history.hasChanges()) {
+        if (!saving() && history.hasChanges()) {
             context.enter(iD.modes.Save(context));
         }
     }
