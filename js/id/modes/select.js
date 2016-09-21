@@ -31,12 +31,9 @@ iD.modes.Select = function(context, selectedIDs) {
         }
     }
 
-    function closeMenu(undefineMenu) {
+    function closeMenu() {
         if (radialMenu) {
             context.surface().call(radialMenu.close);
-        }
-        if (undefineMenu && undefineMenu === true){
-            radialMenu = undefined;
         }
     }
 
@@ -187,7 +184,7 @@ iD.modes.Select = function(context, selectedIDs) {
             .on('redone.select', update);
 
         context.map()
-            .on('move.select', function(){closeMenu(true);})
+            .on('move.select', closeMenu)
             .on('drawn.select', selectElements);
 
         selectElements();
@@ -223,8 +220,8 @@ iD.modes.Select = function(context, selectedIDs) {
         });
 
         keybinding.off();
-        closeMenu(true);
-        //radialMenu = undefined;
+        closeMenu();
+        radialMenu = undefined;
 
         context.history()
             .on('undone.select', null)
