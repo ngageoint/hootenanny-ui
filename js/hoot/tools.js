@@ -724,10 +724,10 @@ Hoot.tools = function (context) {
                 iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error',new Error().stack);
             }
 
-            if(exportType && exportType === 'Web Feature Service (WFS)'){
+            /*if(exportType && exportType === 'Web Feature Service (WFS)'){
                 var tblContainer = d3.select('#wfsdatasettable');
                 context.hoot().view.utilities.wfsdataset.populateWFSDatasets(tblContainer);
-            }
+            }*/
 
             spinner.remove();
             exportLayer.deactivate();
