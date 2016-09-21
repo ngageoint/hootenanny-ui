@@ -152,7 +152,7 @@ Hoot.view.utilities = function (context){
                     .text(txt);
                 d3.selectAll('#jobsBG')
                     .classed('hidden', vis);
-                d3.select('.context-menu').remove();
+                d3.selectAll('.context-menu, .tools-menu, .dataset-options-menu').remove();
 
                 if(_activeSettingsTabId && _activeSettingsTabId === '#utilReviewBookmarks' && txt === 'Manage') {
                     context.hoot().view.utilities.reviewbookmarknotes.resetToList();
