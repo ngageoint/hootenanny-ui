@@ -551,8 +551,10 @@ Hoot.tools = function (context) {
                                 r = confirm('The layer contains unreviewed items. Do you want to go into review mode?');
                                 if (r === true) {
                                     // Show map view
-                                    /*d3.selectAll('#jobsBG').classed('hidden',true);
-                                    d3.select('#manageTabBtn').text('Manage').classed('fill-light',false).classed('dark',true);*/
+                                    if(d3.selectAll('#jobsBG').classed('hidden')===false){
+                                        d3.selectAll('#jobsBG').classed('hidden',true);
+                                        d3.select('#manageTabBtn').text('Manage').classed('fill-light',false).classed('dark',true);        
+                                    }
 
                                     loadingLayer = params;
                                     loadingLayer.tags = tags;

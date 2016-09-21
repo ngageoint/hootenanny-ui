@@ -775,7 +775,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         } else if(typeName === 'GEONAMES') {
             d3.select('#ingestfileuploader-'+selRowNum)
             .attr('multiple', 'false')
-            .attr('accept', '.geonames')
+            .attr('accept', '.geonames,.txt')
             .attr('webkitdirectory', null)
             .attr('directory', null);
         } else if(typeName === 'OSM') {
@@ -792,12 +792,15 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .attr('directory', null);
         }
 
-        var translationsList = _importTranslations;
+        /* Updated to allow for OSM translation for all input types - issue 710 */
+        var translationsList = _importTranslations.concat(_importTranslationsOsm);
+
+        //var translationsList = _importTranslations;
         if(typeName === 'GEONAMES'){
             translationsList = _importTranslationsGeonames;
-        }  else if(typeName === 'OSM') {
+        }  /*else if(typeName === 'OSM') {
             translationsList = _importTranslationsOsm;
-        }
+        }*/
         var comboData = d3.select('.reset.Schema[row="' + selRowNum + '"]').datum();
         comboData.combobox = translationsList;
         var combo = d3.combobox()
