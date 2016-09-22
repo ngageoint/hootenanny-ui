@@ -86,7 +86,6 @@ dist/iD.js: \
 	js/id/ui.js \
 	js/id/ui/*.js \
 	js/id/ui/preset/*.js \
-	js/id/ui/intro/*.js \
 	js/id/presets.js \
 	js/id/presets/*.js \
 	js/id/validations.js \

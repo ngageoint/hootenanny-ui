@@ -167,16 +167,8 @@ window.iD = function () {
     context.changes = history.changes;
     context.intersects = history.intersects;
 
-    var inIntro = false;
-
-    context.inIntro = function(_) {
-        if (!arguments.length) return inIntro;
-        inIntro = _;
-        return context;
-    };
-
     context.save = function() {
-        if (inIntro || (mode && mode.id === 'save')) return;
+        if (mode && mode.id === 'save') return;
         if(hoot.checkReviewMode()) return t('browser_close.review_session');
         history.save();
         if (history.hasChanges()) return t('save.unsaved_changes');

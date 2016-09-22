@@ -12,7 +12,7 @@ Hoot.view.utilities = function (context){
     var _activeSettingsTabId;
 
     utilities.dataset = Hoot.view.utilities.dataset(context);
-    utilities.wfsdataset = Hoot.view.utilities.wfsdataset(context);
+    /*utilities.wfsdataset = Hoot.view.utilities.wfsdataset(context);*/
     utilities.basemapdataset = Hoot.view.utilities.basemapdataset(context);
     utilities.translation = Hoot.view.utilities.translation(context);
     utilities.errorlog = Hoot.view.utilities.errorlog(context);
