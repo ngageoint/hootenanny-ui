@@ -376,6 +376,7 @@ Hoot.view.utilities.dataset = function(context)
 
     hoot_view_utilities_dataset.createConflationTaskProject = function(d) {
         //console.log(d);
+        //TODO: use convex hull shape instead of minimum bounding rectangle
         context.connection().getMbrFromUrl(d.id, function(mbr) {
             //console.log(mbr);
             var project = {
@@ -387,7 +388,6 @@ Hoot.view.utilities.dataset = function(context)
                     changeset_comment: 'Hootenanny conflation of ' + d.name + ' data.',
                     license: null,
                     description: 'Step through Hootenanny conflation reviews for the task area.',
-                    author: 'bhatchl',
                     per_task_instructions: '',
                     priority: 2,
                     short_description: 'Review Hootenanny conflation of ' + d.name + ' data into' + iD.data.hootConfig.taskingManagerTarget + '.',
@@ -397,12 +397,12 @@ Hoot.view.utilities.dataset = function(context)
             //console.log(project);
             var projectUrl = iD.data.hootConfig.taskingManagerUrl + '/project';
             d3.json(projectUrl)
+                .on("beforesend", function (request) {request.withCredentials = true;})
                 .post(JSON.stringify(project), function(error, json) {
                     if (error) {
                         iD.ui.Alert('Error creating Conflation Task Project.','warning', new Error().stack);
                         return;
                     }
-                    console.log(json);
                     window.open(projectUrl + '/' + json.id, '_blank');
                 });
         });
