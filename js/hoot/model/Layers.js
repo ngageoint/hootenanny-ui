@@ -5,13 +5,15 @@
 // Modifications:
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.model.layers = function (context) {
+Hoot.model.layers = function (context)
+{
     var model_layers = {};
     var layers = {};
     var availLayers = [];
     var recentlyUsedLayers = [];
     var isLayerLoading = false;
     var selectedLayers = [];
+
 
     model_layers.layers = layers;
     model_layers.getmapIdByName = function (name) {
@@ -38,6 +40,7 @@ Hoot.model.layers = function (context) {
         }
         return null;
     };
+
 
     model_layers.refresh = function (callback) {
         Hoot.model.REST('getAvailLayers', function (a) {
@@ -109,7 +112,6 @@ Hoot.model.layers = function (context) {
         if (opt) return layers[opt];
         return layers;
     };
-
     model_layers.layerSwap = function () {
         var merged = _.filter(layers, function (d) {
             return d.merged;
@@ -160,6 +162,7 @@ Hoot.model.layers = function (context) {
         }
     };
 
+
     model_layers.addLayer2Sidebar = function (options) {
         var layerName = options.name;
         var modifiedId = options.mapId.toString();
@@ -196,6 +199,8 @@ Hoot.model.layers = function (context) {
             });
         lbl.append('span').text(layerName);
     };
+
+
 
     model_layers.addLayerAndCenter = function (key, callback, extent) {
         var name = key.name;
@@ -237,6 +242,7 @@ Hoot.model.layers = function (context) {
 
             isLayerLoading = false;
         });
+
     };
 
     model_layers.removeLayer = function (name) {
@@ -281,7 +287,8 @@ Hoot.model.layers = function (context) {
             {
                  if (!window.confirm('There are ' + matchingBookmarks.length + ' bookmarks attached to ' + params.dataset.name + ' that will be deleted as well.  Are you sure you want to continue?')) {
                     deleteDataset = false;
-                }
+                }               
+
             }
 
             if(deleteDataset){  
@@ -315,6 +322,7 @@ Hoot.model.layers = function (context) {
             }, params.dataset);
     };
 
+
     model_layers.changeVisibility = function (name) {
         var layer = model_layers
             .getLayers(name);
@@ -343,6 +351,7 @@ Hoot.model.layers = function (context) {
         }
     };
 
+
     model_layers.setLayerVisible = function(name) {
         var layer = model_layers
         .getLayers(name);
@@ -361,6 +370,7 @@ Hoot.model.layers = function (context) {
                 .property('checked', true);
         }
     };
+
 
     model_layers.setLayerInvisible = function(name) {
         var layer = model_layers
@@ -383,6 +393,7 @@ Hoot.model.layers = function (context) {
     };
 
     model_layers.setLayerInvisibleById = function(mapid) {
+
         if (!mapid) {
             return;
         }
@@ -397,24 +408,30 @@ Hoot.model.layers = function (context) {
                 .select('input')
                 .property('checked', false);
         }
+
     };
 
-    model_layers.RefreshLayers = function () {
+    model_layers.RefreshLayers = function ()
+    {
         model_layers.refresh(context.hoot().model.import.updateTrees);
     };
 
-    model_layers.isLayerLoading = function() {
-        return isLayerLoading;
-    };
 
-    model_layers.getMergedLayer = function () {
+   model_layers.isLayerLoading = function()
+   {
+        return isLayerLoading;
+   };
+
+
+   model_layers.getMergedLayer = function () {
         var merged = _.filter(layers, function (d) {
             return d.merged;
         });
         return merged;
     };
 
-    model_layers.updateLayerName = function(data,callback) {
+    model_layers.updateLayerName = function(data,callback){
+
         Hoot.model.REST('Modify',data,function(resp){
             //if(resp.success === true){
                 if(callback){callback(resp.success);}
@@ -432,6 +449,7 @@ Hoot.model.layers = function (context) {
         selectedLayers = d;
         return selectedLayers;
     };
+
 
     return model_layers;
 };
