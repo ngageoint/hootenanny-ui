@@ -70,11 +70,10 @@ iD.Background = function(context) {
             }
         });
 
-        // Removed for iD v1.9.2
-        /*var gpx = context.layers().layer('gpx');
+        var gpx = context.layers().layer('gpx');
         if (gpx && gpx.enabled() && gpx.hasGpx()) {
             imageryUsed.push('Local GPX');
-        }*/
+        }
 
         context.history().imageryUsed(imageryUsed);
     }
@@ -524,6 +523,10 @@ iD.Background = function(context) {
             // if (overlay) background.toggleOverlayLayer(overlay);
         });
 
+        if (q.gpx) {
+            var gpx = context.layers().layer('gpx');
+            if (gpx) { gpx.url(q.gpx); }
+        }
         // var gpx = q.gpx;
         // if (gpx) {
         //     d3.text(gpx, function(err, gpxTxt) {
