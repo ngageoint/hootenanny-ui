@@ -385,13 +385,14 @@ Hoot.view.utilities.dataset = function(context)
                 properties: {
                     name: 'Conflation Task Project - ' + d.name,
                     status: 2,
-                    changeset_comment: 'Hootenanny conflation of ' + d.name + ' data.',
+                    changeset_comment: '#hootenanny-conflation-of-' + d.name.replace(/\s+/g, '-'),
                     license: null,
                     description: 'Step through Hootenanny conflation reviews for the task area.',
                     per_task_instructions: '',
                     priority: 2,
                     short_description: 'Review Hootenanny conflation of ' + d.name + ' data into' + iD.data.hootConfig.taskingManagerTarget + '.',
-                    instructions: 'Hootenanny will conflate the ' + d.name + ' data for the task area and present you with reviews for possible feature matches it is unsure of.  The features can be manually edited, merged, deleted, or left alone and then the review is resolved.  The conflated data changeset will then be written back to ' + iD.data.hootConfig.taskingManagerTarget + '.'
+                    instructions: 'Hootenanny will conflate the ' + d.name + ' data for the task area and present you with reviews for possible feature matches it is unsure of.  The features can be manually edited, merged, deleted, or left alone and then the review is resolved.  The conflated data changeset will then be written back to ' + iD.data.hootConfig.taskingManagerTarget + '.',
+                    entities_to_map: 'review conflation of roads, buildings, waterways, pois'
                 }
             };
             //console.log(project);
