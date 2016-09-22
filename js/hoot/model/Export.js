@@ -141,7 +141,7 @@ Hoot.model.export = function (context)
                 //     });
                 // }
 
-                if(selectedOutType === 'wfs'){
+/*                if(selectedOutType === 'wfs'){
                     // var capaUrl = location.origin + '/hoot-services/ogc/' + result.jobId +
                     //     '?service=WFS&version=1.1.0&request=GetCapabilities';
                     //alert('WFS Resource URL:\n' + capaUrl);
@@ -149,7 +149,8 @@ Hoot.model.export = function (context)
                     param.id = result.jobId;
                     context.hoot().control.utilities.wfsdataset.wfsDetailPopup(param);
                 } 
-                else if (selectedOutType === 'osm_api_db')
+                else */
+                if (selectedOutType === 'osm_api_db')
                 {
                     //OSM API db export writes directly to an osm api database and involves no file 
                     //download for export.

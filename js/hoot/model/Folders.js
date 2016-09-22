@@ -131,11 +131,6 @@ Hoot.model.folders = function (context)
         return availFolders;
     };
 
-    model_folders.getFolders = function (opt) {
-        if (opt) return folders[opt];
-        return folders;
-    };
-
     model_folders.setOpenFolders = function(folderId,add) {
         if(add){
             openFolders.push(folderId);
