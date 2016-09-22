@@ -340,5 +340,73 @@ Hoot.view.utilities.dataset = function(context)
         context.hoot().control.utilities.folder.createFolderTree(container);
     };
 
+    //Takes a bbox in the form of an array [minx, miny, maxx, maxy]
+    //and returns geojson Multipolygon geometry
+    function bbox2multipolygon(bbox) {
+        return {
+                    type: 'MultiPolygon',
+                    coordinates:[
+                                  [
+                                    [
+                                      [
+                                        bbox[0],
+                                        bbox[3]
+                                      ],
+                                      [
+                                        bbox[2],
+                                        bbox[3]
+                                      ],
+                                      [
+                                        bbox[2],
+                                        bbox[1]
+                                      ],
+                                      [
+                                        bbox[0],
+                                        bbox[1]
+                                      ],
+                                      [
+                                        bbox[0],
+                                        bbox[3]
+                                      ]
+                                    ]
+                                  ]
+                                ]
+                };
+    }
+
+    hoot_view_utilities_dataset.createConflationTaskProject = function(d) {
+        //console.log(d);
+        context.connection().getMbrFromUrl(d.id, function(mbr) {
+            //console.log(mbr);
+            var project = {
+                geometry: bbox2multipolygon([mbr.minlon, mbr.minlat, mbr.maxlon, mbr.maxlat]),
+                type: 'Feature',
+                properties: {
+                    name: 'Conflation Task Project - ' + d.name,
+                    status: 2,
+                    changeset_comment: 'Hootenanny conflation of ' + d.name + ' data.',
+                    license: null,
+                    description: 'Step through Hootenanny conflation reviews for the task area.',
+                    author: 'bhatchl',
+                    per_task_instructions: '',
+                    priority: 2,
+                    short_description: 'Review Hootenanny conflation of ' + d.name + ' data into' + iD.data.hootConfig.taskingManagerTarget + '.',
+                    instructions: 'Hootenanny will conflate the ' + d.name + ' data for the task area and present you with reviews for possible feature matches it is unsure of.  The features can be manually edited, merged, deleted, or left alone and then the review is resolved.  The conflated data changeset will then be written back to ' + iD.data.hootConfig.taskingManagerTarget + '.'
+                }
+            };
+            //console.log(project);
+            var projectUrl = iD.data.hootConfig.taskingManagerUrl + '/project';
+            d3.json(projectUrl)
+                .post(JSON.stringify(project), function(error, json) {
+                    if (error) {
+                        iD.ui.Alert('Error creating Conflation Task Project.','warning', new Error().stack);
+                        return;
+                    }
+                    console.log(json);
+                    window.open(projectUrl + '/' + json.id, '_blank');
+                });
+        });
+    };
+
     return hoot_view_utilities_dataset;
 };
