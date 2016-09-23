@@ -367,9 +367,11 @@ Hoot.control.utilities.folder = function(context) {
                                        {title:'Export',icon:'export',click:'exportDataset'},
                                        {title:'Rename ' + d.name,icon:'info',click:'renameDataset'},
                                        {title:'Prepare for Validation',icon:'sprocket',click:'prepValidation'},
-                                       {title:'Filter non-HGIS POIs',icon:'sprocket',click:'filter'},
-                                       {title:'Create Conflation Task Project',icon:'sprocket',click:'taskManager'}
+                                       {title:'Filter non-HGIS POIs',icon:'sprocket',click:'filter'}
                                    );
+                          if (iD.data.hootConfig.taskingManagerUrl) {
+                            items.push({title:'Create Conflation Task Project',icon:'sprocket',click:'taskManager'});
+                          }
                       } else if(layerLength <= 0) {
                           d3.select('.context-menu').style('display', 'none');
                           d3.event.preventDefault();
