@@ -86,6 +86,34 @@ Hoot.hoot = function (context) {
 
         hoot.getAllusers();
 
+        /**
+        * @desc Hotkey for swapping layers
+        * @param event - key stroke event
+        **/
+        document.onkeydown = function (event) {
+            if (event.altKey && (event.which === 66)) {
+                context.hoot().model.layers.layerSwap();
+            } else if (event.altKey && (event.which === 78)) {
+                var curlayers = context.hoot().model.layers.getLayers();
+                var vis = _.filter(curlayers, function (d) {
+                    return d.vis;
+                }).length;
+                if (vis === 0) {
+                    _.each(curlayers, function (d) {
+                        if (d.loadable) {
+                            context.hoot().model.layers.changeVisibility(d.name);
+                        }
+                    });
+                    return;
+                }
+                _.each(curlayers, function (d) {
+                    if (d.vis) {
+                        context.hoot().model.layers.changeVisibility(d.name);
+                    }
+                });
+            }
+        };
+
     };
 
     /**
@@ -340,34 +368,6 @@ Hoot.hoot = function (context) {
                 this.parentNode.insertBefore(this, firstChild);
             }
         });
-    };
-
-    /**
-    * @desc Hotkey for swapping layers
-    * @param event - key stroke event
-    **/
-    document.onkeydown = function (event) {
-        if (event.altKey && (event.which === 66)) {
-            context.hoot().model.layers.layerSwap();
-        } else if (event.altKey && (event.which === 78)) {
-            var curlayers = context.hoot().model.layers.getLayers();
-            var vis = _.filter(curlayers, function (d) {
-                return d.vis;
-            }).length;
-            if (vis === 0) {
-                _.each(curlayers, function (d) {
-                    if (d.loadable) {
-                        context.hoot().model.layers.changeVisibility(d.name);
-                    }
-                });
-                return;
-            }
-            _.each(curlayers, function (d) {
-                if (d.vis) {
-                    context.hoot().model.layers.changeVisibility(d.name);
-                }
-            });
-        }
     };
 
     hoot.assert = function(condition)
