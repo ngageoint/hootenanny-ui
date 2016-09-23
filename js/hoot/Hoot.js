@@ -101,14 +101,16 @@ Hoot.hoot = function (context) {
                 if (vis === 0) {
                     _.each(curlayers, function (d) {
                         if (d.loadable) {
-                            context.hoot().model.layers.changeVisibility(d.name);
+                        var modifiedId = d.id || d.mapId;
+                        context.hoot().model.layers.changeVisibility(modifiedId.toString());
                         }
                     });
                     return;
                 }
                 _.each(curlayers, function (d) {
                     if (d.vis) {
-                        context.hoot().model.layers.changeVisibility(d.name);
+                        var modifiedId = d.id || d.mapId;
+                        context.hoot().model.layers.changeVisibility(modifiedId.toString());
                     }
                 });
             }
