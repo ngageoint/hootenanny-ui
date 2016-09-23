@@ -195,7 +195,7 @@ Hoot.model.layers = function (context)
         var lbl = layerLinks.append('label');
         lbl.append('input').attr('type','checkbox').property('checked', true)
             .on('change', function () {
-                model_layers.changeVisibility(layerName);
+                model_layers.changeVisibility(modifiedId);
             });
         lbl.append('span').text(layerName);
     };
@@ -326,9 +326,8 @@ Hoot.model.layers = function (context)
     };
 
 
-    model_layers.changeVisibility = function (name) {
-        var layer = model_layers
-            .getLayers(name);
+    model_layers.changeVisibility = function (strId) {
+        var layer = _.find(context.hoot().model.layers.getLayers(),{id:strId});
         if (!layer) {
             return;
         }

@@ -627,8 +627,7 @@ iD.Connection = function(context, useHttps) {
     connection.hideLayer = function (mapid) {
         if(loadedData[mapid]){
             loadedData[mapid].vis = false;
-            var name = loadedData[mapid].name;
-            d3.selectAll('.tag-hoot-' + name).remove();
+            d3.select('#map').selectAll('[class*=_' + mapid +']').remove();
             _.each(loadedTiles, function (a, b) {
                 if (b.match(',' + mapid.toString() + '$')) {
                     delete loadedTiles[b];
