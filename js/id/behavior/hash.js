@@ -70,6 +70,8 @@ iD.behavior.Hash = function(context) {
             if (q.comment) context.storage('comment', q.comment);
             hashchange();
             if (q.map) hash.hadHash = true;
+            if (q.reference) hash.reference = q.reference;
+            if (q.secondary) hash.secondary = q.secondary;
         }
     }
 

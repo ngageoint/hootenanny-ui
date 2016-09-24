@@ -527,6 +527,7 @@ iD.Background = function(context) {
             var gpx = context.layers().layer('gpx');
             if (gpx) { gpx.url(q.gpx); }
         }
+        //This was probably done for map-in-map to show reviews
         // var gpx = q.gpx;
         // if (gpx) {
         //     d3.text(gpx, function(err, gpxTxt) {

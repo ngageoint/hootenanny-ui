@@ -11,6 +11,86 @@ Hoot.control.import = function (context,selection) {
     var event = d3.dispatch('addLayer', 'finished');
     var ETL = {};
 
+    ETL.addLayer = function(self, key) {
+        context.hoot().model.layers.addLayer(key, function(res){
+            context.hoot().model.layers.setRecentlyUsedLayers(key.name);
+            //update combo boxes
+            var comboData = context.hoot().model.layers.getRecentlyUsedLayers();
+            var combo = d3.combobox().data(_.map(comboData, function (n) {return {value: n,title: n};}));
+            d3.selectAll('.usedLayersInput').each(function(){
+                d3.select(this).call(combo);
+            });
+
+            if(res === 'showprogress'){
+                self
+                .attr('class', function () {
+                    if(key.color === 'osm'){
+                        return 'round space-bottom1 loadingLayer _osm';
+                    }
+                    return 'round space-bottom1 loadingLayer ' + key.color;
+                })
+                .select('a')
+                .remove();
+
+                self.append('div')
+                .classed('contain keyline-all round controller', true)
+                .html('<div class="pad1 inline _loading"><span></span></div>' +
+                    '<span class="strong pad1x">Loading &#8230;</span>' +
+                    '<button class="keyline-left action round-right inline _icon trash"></button>')
+                .select('button')
+                .on('click', function () {
+                    d3.event.stopPropagation();
+                    d3.event.preventDefault();
+                    if (window.confirm('Are you sure you want to delete?')) {
+                        resetForm(self);
+                        return;
+                    }
+
+                });
+                //The OSM API db layer with id = -1 doesn't actually exist in hoot, so can't be
+                //viewed.
+                if (key.id !== '-1')
+                {
+                    context.background().addSource(getNodeMapnikSource(key));
+                }
+
+            }
+            function getNodeMapnikSource(d) {
+                var source = {
+                        name: d.name,
+                        id: d.id,
+                        type: 'tms',
+                        description: d.name,
+                        template: window.location.protocol + '//' + window.location.hostname
+                            + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.nodeMapnikServerPort)
+                            + '/?z={zoom}&x={x}&y={y}&color='
+                            + encodeURIComponent(context.hoot().palette(d.color))
+                            + '&name=' + d.name
+                            + '&mapid=' + d.id,
+                        scaleExtent: [0,18],
+                        overlay: true,
+                        projection: 'mercator',
+                        subtype: 'density_raster'
+                    };
+                return source;
+            }
+            context.hoot().control.view.on('layerColor.background', function(lyrname, color, mapid) {
+                var updateSource = getNodeMapnikSource({
+                    name: lyrname,
+                    color: color,
+                    id: mapid
+                });
+                context.background().updateSource(updateSource);
+            });
+            context.hoot().control.view.on('layerRemove.background', function (layerName, isPrimary, mapId) {
+                context.background().removeSource(getNodeMapnikSource({
+                    name: layerName,
+                    id: mapId
+                }));
+            });
+        });
+    };
+
     ETL.createTree = function(a){
         context.hoot().control.utilities.folder.createFolderTree(a);
     };
@@ -219,84 +299,7 @@ Hoot.control.import = function (context,selection) {
                 color: color
             };
 
-            context.hoot().model.layers.addLayer(key, function(res){
-                context.hoot().model.layers.setRecentlyUsedLayers(key.name);
-                //update combo boxes
-                var comboData = context.hoot().model.layers.getRecentlyUsedLayers();
-                var combo = d3.combobox().data(_.map(comboData, function (n) {return {value: n,title: n};}));
-                d3.selectAll('.usedLayersInput').each(function(){
-                    d3.select(this).call(combo);
-                });
-
-                if(res === 'showprogress'){
-                    self
-                    .attr('class', function () {
-                        if(color === 'osm'){
-                            return 'round space-bottom1 loadingLayer _osm';
-                        }
-                        return 'round space-bottom1 loadingLayer ' + color;
-                    })
-                    .select('a')
-                    .remove();
-
-                    self.append('div')
-                    .classed('contain keyline-all round controller', true)
-                    .html('<div class="pad1 inline _loading"><span></span></div>' +
-                        '<span class="strong pad1x">Loading &#8230;</span>' +
-                        '<button class="keyline-left action round-right inline _icon trash"></button>')
-                    .select('button')
-                    .on('click', function () {
-                        d3.event.stopPropagation();
-                        d3.event.preventDefault();
-                        if (window.confirm('Are you sure you want to delete?')) {
-                            resetForm(self);
-                            return;
-                        }
-
-                    });
-                    //The OSM API db layer with id = -1 doesn't actually exist in hoot, so can't be
-                    //viewed.
-                    if (key.id !== '-1')
-                    {
-                        context.background().addSource(getNodeMapnikSource(key));
-                    }
-
-                }
-                function getNodeMapnikSource(d) {
-                    var source = {
-                            name: d.name,
-                            id: d.id,
-                            type: 'tms',
-                            description: d.name,
-                            template: window.location.protocol + '//' + window.location.hostname
-                                + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.nodeMapnikServerPort)
-                                + '/?z={zoom}&x={x}&y={y}&color='
-                                + encodeURIComponent(context.hoot().palette(d.color))
-                                + '&name=' + d.name
-                                + '&mapid=' + d.id,
-                            scaleExtent: [0,18],
-                            overlay: true,
-                            projection: 'mercator',
-                            subtype: 'density_raster'
-                        };
-                    return source;
-                }
-                context.hoot().control.view.on('layerColor.background', function(lyrname, color, mapid) {
-                    var updateSource = getNodeMapnikSource({
-                        name: lyrname,
-                        color: color,
-                        id: mapid
-                    });
-                    context.background().updateSource(updateSource);
-                });
-                context.hoot().control.view.on('layerRemove.background', function (layerName, isPrimary, mapId) {
-                    context.background().removeSource(getNodeMapnikSource({
-                        name: layerName,
-                        id: mapId
-                    }));
-                });
-            });////////////////////////
-
+            ETL.addLayer(self, key);
         };
     };
 
@@ -309,80 +312,7 @@ Hoot.control.import = function (context,selection) {
         }
 
         try{
-            context.hoot().model.layers.addLayer(key, function(res){
-                context.hoot().model.layers.setRecentlyUsedLayers(key.name);
-                //update combo boxes
-                var comboData = context.hoot().model.layers.getRecentlyUsedLayers();
-                var combo = d3.combobox().data(_.map(comboData, function (n) {return {value: n,title: n};}));
-                d3.selectAll('.usedLayersInput').each(function(){
-                    d3.select(this).call(combo);
-                });
-
-                if(res === 'showprogress'){
-                    self.attr('class', function () {
-                        if(color === 'osm'){
-                            return 'round space-bottom1 loadingLayer _osm';
-                        }
-                        return 'round space-bottom1 loadingLayer ' + color;
-                    })
-                    .select('a')
-                    .remove();
-
-                    self.append('div')
-                    .classed('contain keyline-all round controller', true)
-                    .html('<div class="pad1 inline _loading"><span></span></div>' +
-                        '<span class="strong pad1x">Loading &#8230;</span>' +
-                        '<button class="keyline-left action round-right inline _icon trash"></button>')
-                    .select('button')
-                    .on('click', function () {
-                        d3.event.stopPropagation();
-                        d3.event.preventDefault();
-                        if (window.confirm('Are you sure you want to delete?')) {
-                            resetForm(self);
-                            return;
-                        }
-                    });
-
-                    context.background().addSource(getNodeMapnikSource(key));
-                }
-
-                function getNodeMapnikSource(d) {
-                    var source = {
-                        name: d.name,
-                        id: d.id,
-                        type: 'tms',
-                        description: d.name,
-                        template: window.location.protocol + '//' + window.location.hostname
-                            + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.nodeMapnikServerPort)
-                            + '/?z={zoom}&x={x}&y={y}&color='
-                            + encodeURIComponent(context.hoot().palette(d.color))
-                            + '&name=' + d.name
-                            + '&mapid=' + d.id,
-                        scaleExtent: [0,18],
-                        overlay: true,
-                        projection: 'mercator',
-                        subtype: 'density_raster'
-                    };
-                    return source;
-                }
-
-                context.hoot().control.view.on('layerColor.background', function(lyrname, color, mapid) {
-                    var updateSource = getNodeMapnikSource({
-                        name: lyrname,
-                        color: color,
-                        id: mapid
-                    });
-                    context.background().updateSource(updateSource);
-                });
-
-                context.hoot().control.view.on('layerRemove.background', function (layerName, isPrimary, mapId) {
-                    context.background().removeSource(getNodeMapnikSource({
-                        name: layerName,
-                        id: mapId
-                    }));
-                });
-            });////////////////////////
-
+            ETL.addLayer(self, key);
             iD.ui.Alert('Successfully added this layer to the map!','success',new Error().stack);
 
         } catch(e) {
