@@ -65,7 +65,6 @@ Hoot.control.import = function (context,selection) {
                             + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.nodeMapnikServerPort)
                             + '/?z={zoom}&x={x}&y={y}&color='
                             + encodeURIComponent(context.hoot().palette(d.color))
-                            + '&name=' + d.name
                             + '&mapid=' + d.id,
                         scaleExtent: [0,18],
                         overlay: true,
