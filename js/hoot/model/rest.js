@@ -341,19 +341,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                callback(resp);
            });
     };
-
-    rest.AutoTune = function (data, callback) {
-
-       d3.json('/hoot-services/job/tunning/execute')
-           .header('Content-Type', 'text/plain')
-           .post(JSON.stringify(data), function (error, resp) {
-               if (error) {
-                   return error;
-               }
-               rest.statusWithResponse(resp.jobId, callback);
-           });
-   };
-
+    
    rest.statusWithResponse = function(jobStatus, callback) {
         var status = function() {
             d3.json('/hoot-services/job/status/' + jobStatus, function (error, resp) {
