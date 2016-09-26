@@ -253,12 +253,33 @@ iD.ui.MapData = function(context) {
         }
 
 
+        function updateSelectAll(selection, active) {
+            var items = selection.selectAll('li')
+                .filter(function() {
+                    // filter out list item 'Select All' itself
+                    return !d3.select(this).classed('select-all');
+                });
+
+            // keeps a record of all list items checked
+            var allFeaturesSelected = true;
+
+            items.classed('active', function(e) {
+                allFeaturesSelected = allFeaturesSelected && active(e);
+                return active(e);
+                });
+
+            selection.selectAll('li.select-all')
+                .classed('active', allFeaturesSelected)
+                .selectAll('input')
+                .property('checked', allFeaturesSelected);
+        }
+
         function update() {
             dataLayerContainer.call(drawMapillaryItems);
             dataLayerContainer.call(drawGpxItem);
 
             fillList.call(drawList, fills, 'radio', 'area_fill', setFill, showsFill);
-
+            featureList.call(updateSelectAll, showsFeature);
             featureList.call(drawList, features, 'checkbox', 'feature', clickFeature, showsFeature);
         }
 
@@ -279,6 +300,22 @@ iD.ui.MapData = function(context) {
             }
             setFill((fillSelected === 'wireframe' ? fillDefault : 'wireframe'));
             context.map().pan([0,0]);  // trigger a redraw
+        }
+
+        function toggleSelectAll(selection, toggle) {
+            selection.selectAll('li')
+                .filter(function() {
+                    return !d3.select(this).classed('select-all');
+                })
+                .classed('active', toggle)
+                .selectAll('input')
+                .property('checked', function(e) {
+                    if (d3.select(this).node().checked !== toggle) {
+                        context.features().toggle(e);
+                    }
+                });
+
+            update();
         }
 
         function setVisible(show) {
@@ -452,6 +489,20 @@ iD.ui.MapData = function(context) {
         var featureList = featureContainer.append('ul')
             .attr('class', 'layer-list layer-feature-list');
 
+        var selectAll = featureList.append('li')
+            .attr('class', 'layer select-all')
+            .append('label');
+
+        selectAll.append('input')
+            .attr('class', 'layer-feature-select-all')
+            .attr('type', 'checkbox')
+            .attr('name', 'select-all')
+            .on('click', function() {
+              var isChecked = d3.select(this).node().checked;
+              featureList.call(toggleSelectAll, isChecked);
+            });
+
+        selectAll.append('span').text(t('map_data.select_all'));
 
         context.features()
             .on('change.map_data-update', update);
