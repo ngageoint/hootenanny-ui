@@ -420,8 +420,8 @@ Hoot.control.utilities.folder = function(context) {
 
                             switch (item.click) {
                             //Datasets
-                            case 'addReferenceDataset': key.color='violet'; context.hoot().control.import.forceAddLayer(key,node,key.color); break;
-                            case 'addSecondaryDataset': key.color='orange'; context.hoot().control.import.forceAddLayer(key,node,key.color); break;
+                            case 'addReferenceDataset': key.color='violet'; context.hoot().control.import.forceAddLayer(key,node); break;
+                            case 'addSecondaryDataset': key.color='orange'; context.hoot().control.import.forceAddLayer(key,node); break;
                             case 'exportDataset': context.hoot().view.utilities.dataset.exportDataset(d,container); break;
                             case 'deleteDataset': context.hoot().view.utilities.dataset.deleteDatasets(context.hoot().model.layers.getSelectedLayers(),container); break;
                             case 'moveDataset': context.hoot().view.utilities.dataset.moveDatasets(context.hoot().model.layers.getSelectedLayers()); break;

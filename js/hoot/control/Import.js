@@ -304,7 +304,7 @@ Hoot.control.import = function (context,selection) {
 
 
 
-    ETL.forceAddLayer = function(key, self, color) {
+    ETL.forceAddLayer = function(key, self) {
         if(context.hoot().model.layers.getLayers()[key.name]){
             iD.ui.Alert('A layer with this name has already been added to the map!','warning',new Error().stack);
             return;

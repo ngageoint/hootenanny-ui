@@ -376,7 +376,7 @@ Hoot.view.utilities.dataset = function(context)
 
     hoot_view_utilities_dataset.createConflationTaskProject = function(d) {
         //console.log(d);
-        //TODO: use convex hull shape instead of minimum bounding rectangle
+        //TO DO: use convex hull shape instead of minimum bounding rectangle
         context.connection().getMbrFromUrl(d.id, function(mbr) {
             //console.log(mbr);
             var project = {
@@ -399,7 +399,7 @@ Hoot.view.utilities.dataset = function(context)
             //console.log(project);
             var projectUrl = iD.data.hootConfig.taskingManagerUrl + '/project';
             d3.json(projectUrl)
-                .on("beforesend", function (request) {request.withCredentials = true;})
+                .on('beforesend', function (request) {request.withCredentials = true;})
                 .post(JSON.stringify(project), function(error, json) {
                     if (error) {
                         iD.ui.Alert('Error creating Conflation Task Project.','warning', new Error().stack);
