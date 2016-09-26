@@ -392,14 +392,14 @@ Hoot.control.utilities.folder = function(context) {
 
                       // create the div element that will hold the context menu
                       d3.selectAll('.context-menu').data([1])
-                          .enter()
+                        .enter()
                         .append('div')
                         .attr('class', 'context-menu');
                       // close menu
                       d3.select('body').on('click.context-menu', function() {d3.select('.context-menu').style('display', 'none');});
                       // this gets executed when a contextmenu event occurs
                       d3.selectAll('.context-menu')
-                          .html('')
+                        .html('')
                         .append('ul')
                         .selectAll('li')
                         .data(items).enter()
@@ -446,6 +446,8 @@ Hoot.control.utilities.folder = function(context) {
                             context.hoot().model.layers.setSelectedLayers(selectedLayerIDs);
 
                             d3.select('.context-menu').remove();
+
+                              
                         })
                         .attr('class',function(item){return '_icon ' + item.icon;})
                         .text(function(item) { return item.title; });
@@ -457,6 +459,8 @@ Hoot.control.utilities.folder = function(context) {
                         .style('display', 'block');
                   //} else {d3.select('.context-menu').style('display', 'none');}
                   d3.event.preventDefault();
+
+
               });
           } else {container.selectAll('rect').on('contextmenu',function(){d3.event.preventDefault();});}
         }
