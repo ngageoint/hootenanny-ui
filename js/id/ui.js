@@ -23,6 +23,7 @@ iD.ui = function(context) {
             .call(ui.sidebar);
 
         var resizer = sidebar.append('div')
+            .attr('id', 'resizer')
             .style({'position':'absolute','width':'10px','top':'0',
                 'bottom':'0','right':'-5px','background':'#999','opacity':'0.5','cursor':'col-resize'})
             .on('dblclick',function(){
