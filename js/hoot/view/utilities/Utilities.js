@@ -12,7 +12,7 @@ Hoot.view.utilities = function (context){
     var _activeSettingsTabId;
 
     utilities.dataset = Hoot.view.utilities.dataset(context);
-    utilities.wfsdataset = Hoot.view.utilities.wfsdataset(context);
+    /*utilities.wfsdataset = Hoot.view.utilities.wfsdataset(context);*/
     utilities.basemapdataset = Hoot.view.utilities.basemapdataset(context);
     utilities.translation = Hoot.view.utilities.translation(context);
     utilities.errorlog = Hoot.view.utilities.errorlog(context);
@@ -152,6 +152,7 @@ Hoot.view.utilities = function (context){
                     .text(txt);
                 d3.selectAll('#jobsBG')
                     .classed('hidden', vis);
+                d3.selectAll('.context-menu, .tools-menu, .dataset-options-menu').remove();
 
                 if(_activeSettingsTabId && _activeSettingsTabId === '#utilReviewBookmarks' && txt === 'Manage') {
                     context.hoot().view.utilities.reviewbookmarknotes.resetToList();

@@ -200,9 +200,7 @@ Hoot.tools = function (context) {
 
         var n = (new Date()).getTime();
         data.TIME_STAMP = '' + n;
-        //data.AUTO_TUNNING = a.select('.autoTunning').value();
         data.REFERENCE_LAYER = refLayer;
-        data.AUTO_TUNNING = 'false';
 
         if(advOpts){
             var advOptionsStr = '';
@@ -483,41 +481,16 @@ Hoot.tools = function (context) {
             //var type = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
             //var conflationExecType = (type === 'Horizontal') ? 'CookieCutterConflate' : 'Conflate';
             //Bug #6397
+
             var conflationExecType = 'Conflate';
-            if(data.AUTO_TUNNING === 'true'){
-                var data1 = {};
-                data1.INPUT = data.INPUT1;
-                data1.INPUT_TYPE = 'db';
-                context.hoot().autotune('AutoTune', data1, function(res1){
-                    var result1 = JSON.parse(res1.statusDetail);
-
-                    data.INPUT1_ESTIMATE = '' + result1.EstimatedSize;
-                    var data2 = {};
-                    data2.INPUT = data.INPUT2;
-                    data2.INPUT_TYPE = 'db';
-                    context.hoot().autotune('AutoTune', data2, function(res2){
-                        var result2 = JSON.parse(res2.statusDetail);
-                        data.INPUT2_ESTIMATE = '' + result2.EstimatedSize;
-                         context.hoot().model.conflate.conflate(conflationExecType, data, function (item) {
-                             postConflation(item,a);
-                         });
-                    });
-                });
-            } else {
-
-                context.hoot().model.conflate.conflate(conflationExecType, data, function (item) {
-                    if(item.status && item.status === 'requested'){
-                        conflate.jobid = item.jobid;
-                    } else {
-                        postConflation(item,a);
-                    }
-
-                });
-            }
+            context.hoot().model.conflate.conflate(conflationExecType, data, function (item) {
+                if(item.status && item.status === 'requested'){
+                    conflate.jobid = item.jobid;
+                } else {
+                    postConflation(item,a);
+                }
+            });
         });
-
-
-
     });
 
     /**
@@ -551,8 +524,10 @@ Hoot.tools = function (context) {
                                 r = confirm('The layer contains unreviewed items. Do you want to go into review mode?');
                                 if (r === true) {
                                     // Show map view
-                                    /*d3.selectAll('#jobsBG').classed('hidden',true);
-                                    d3.select('#manageTabBtn').text('Manage').classed('fill-light',false).classed('dark',true);*/
+                                    if(d3.selectAll('#jobsBG').classed('hidden')===false){
+                                        d3.selectAll('#jobsBG').classed('hidden',true);
+                                        d3.select('#manageTabBtn').text('Manage').classed('fill-light',false).classed('dark',true);        
+                                    }
 
                                     loadingLayer = params;
                                     loadingLayer.tags = tags;
@@ -724,10 +699,10 @@ Hoot.tools = function (context) {
                 iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error',new Error().stack);
             }
 
-            if(exportType && exportType === 'Web Feature Service (WFS)'){
+            /*if(exportType && exportType === 'Web Feature Service (WFS)'){
                 var tblContainer = d3.select('#wfsdatasettable');
                 context.hoot().view.utilities.wfsdataset.populateWFSDatasets(tblContainer);
-            }
+            }*/
 
             spinner.remove();
             exportLayer.deactivate();

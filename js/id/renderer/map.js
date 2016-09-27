@@ -237,7 +237,7 @@ iD.Map = function(context) {
             iD.ui.flash(context.container())
                 .select('.content')
                 .text(t('cannot_zoom'));
-            setZoom(context.minEditableZoom(), true);
+            setZoom(context.minEditableZoom() + 1, true);
             queueRedraw();
             dispatch.move(map);
             return;
@@ -632,7 +632,7 @@ iD.Map = function(context) {
         }
 
         if (z < minzoom) {
-            surface.interrupt();
+            // surface.interrupt();
             iD.ui.flash(context.container())
                 .select('.content')
                 .text(t('cannot_zoom'));
