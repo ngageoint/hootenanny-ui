@@ -272,6 +272,39 @@ iD.ui = function(context) {
             'overflow': 'auto'
         });
 
+        function hashLayer (form, lyrid, color) {
+            var lyr = context.hoot().model.layers.getAvailLayers().filter(function(d) {
+                return d.id === parseInt(lyrid);
+            });
+            if (lyr.length === 0) {
+                iD.ui.Alert('No dataset found with map id ' + lyrid, 'warning', new Error().stack);
+                return;
+            }
+            context.hoot().control.import.addLayer(
+                form,
+                {
+                    name: lyr[0].name,
+                    id: lyr[0].id,
+                    color: color
+                }
+            );
+        }
+
+        if (hash.reference) {
+            hashLayer(
+                d3.select(d3.select('#refDataset').node().parentNode),
+                hash.reference,
+                'violet'
+            );
+        }
+        if (hash.secondary) {
+            hashLayer(
+                d3.select(d3.select('#secondaryDataset').node().parentNode),
+                hash.secondary,
+                'orange'
+            );
+        }
+
         window.onbeforeunload = function() {
             return context.save();
         };

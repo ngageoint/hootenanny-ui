@@ -184,7 +184,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
           d3.event.stopPropagation();
           d3.event.preventDefault();
           context.hoot().view.utilities.reviewbookmarknotes.resetToList();
-        }); 
+        });
 
       iconBarDiv.append('div')
         .classed('fr _icon reload point', true)
@@ -230,7 +230,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
                   color: 'violet'
               };
               context.hoot().control.import.forceAddLayer(key, d3.select(d3.selectAll('.hootImport')
-                .node()), key.color, key.name);
+                .node()));
 
             }
             _removeSelf();

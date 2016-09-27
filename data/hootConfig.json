@@ -22,5 +22,7 @@
     "userEmail":"test@test.com",
     "translationCapabilites":{},
     "translationServerPort": 8094,
-    "nodeMapnikServerPort": 8000
+    "nodeMapnikServerPort": 8000,
+    "taskingManagerUrl": "http://localhost:6543",
+    "taskingManagerTarget": "OpenStreetMap"
 }

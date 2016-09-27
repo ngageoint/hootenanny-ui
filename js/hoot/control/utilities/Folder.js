@@ -58,7 +58,7 @@ Hoot.control.utilities.folder = function(context) {
         if(container.attr('id')==='datasettable'){
             folders = _.without(folders, _.find(folders, {id:-1}));
         }
-        
+
         folders= JSON.parse('{"name":"Datasets","id":"Datasets","children":' + JSON.stringify(folders) +'}');
 
         var margin = {top: 10, right: 20, bottom: 30, left: 0},
@@ -333,7 +333,7 @@ Hoot.control.utilities.folder = function(context) {
               container.selectAll('rect').on('contextmenu',function(d){
                   var items = [];
                   //none of the dataset operations apply to the OSM API db data
-                  if(!d.type||(d.type==='dataset' && !d.selected) || 
+                  if(!d.type||(d.type==='dataset' && !d.selected) ||
                       d.name.indexOf('OSM_API_DB') > -1){
                       d3.select('.context-menu').style('display', 'none');
                       d3.event.preventDefault();
@@ -369,6 +369,9 @@ Hoot.control.utilities.folder = function(context) {
                                        {title:'Prepare for Validation',icon:'sprocket',click:'prepValidation'},
                                        {title:'Filter non-HGIS POIs',icon:'sprocket',click:'filter'}
                                    );
+                          if (iD.data.hootConfig.taskingManagerUrl) {
+                            items.push({title:'Create Conflation Task Project',icon:'sprocket',click:'taskManager'});
+                          }
                       } else if(layerLength <= 0) {
                           d3.select('.context-menu').style('display', 'none');
                           d3.event.preventDefault();
@@ -417,14 +420,15 @@ Hoot.control.utilities.folder = function(context) {
 
                             switch (item.click) {
                             //Datasets
-                            case 'addReferenceDataset': key.color='violet'; context.hoot().control.import.forceAddLayer(key,node,key.color); break;
-                            case 'addSecondaryDataset': key.color='orange'; context.hoot().control.import.forceAddLayer(key,node,key.color); break;
+                            case 'addReferenceDataset': key.color='violet'; context.hoot().control.import.forceAddLayer(key,node); break;
+                            case 'addSecondaryDataset': key.color='orange'; context.hoot().control.import.forceAddLayer(key,node); break;
                             case 'exportDataset': context.hoot().view.utilities.dataset.exportDataset(d,container); break;
                             case 'deleteDataset': context.hoot().view.utilities.dataset.deleteDatasets(context.hoot().model.layers.getSelectedLayers(),container); break;
                             case 'moveDataset': context.hoot().view.utilities.dataset.moveDatasets(context.hoot().model.layers.getSelectedLayers()); break;
                             case 'renameDataset': context.hoot().view.utilities.dataset.modifyDataset(d); break;
                             case 'prepValidation': showPrepValidationPopup(context.hoot().model.layers.getSelectedLayers()); break;
                             case 'filter': showFilterPopup(context.hoot().model.layers.getSelectedLayers()); break;
+                            case 'taskManager': context.hoot().view.utilities.dataset.createConflationTaskProject(d); break;
 
                             //Folders
                             case 'deleteFolder': context.hoot().view.utilities.dataset.deleteDataset(d,container); break;
