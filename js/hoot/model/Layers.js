@@ -295,10 +295,7 @@ Hoot.model.layers = function (context)
                 d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + params.dataset.name)
                     .header('Content-Type', 'text/plain')
                     .post('', function (error, data) {
-    
-                        var exportJobId = data.jobId;
-    
-                        var statusUrl = '/hoot-services/job/status/' + exportJobId;
+                        var statusUrl = '/hoot-services/job/status/' + data.jobid;
                         var statusTimer = setInterval(function () {
                             d3.json(statusUrl, function (error, result) {
                                 if (result.status !== 'running') {

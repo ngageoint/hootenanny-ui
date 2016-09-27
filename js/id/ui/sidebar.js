@@ -86,6 +86,15 @@ Hoot.tools(context,selection);
         d3.select('#conflict-review-buttons').attr('style', 'margin-right:'+ (sidebarWidth-400) +'px;');
         d3.select('#CustomConflationForm').attr('style', 'margin-left:'+ sidebarWidth +'px;');
         d3.select('#validation-meta').attr('style', 'margin-left:'+ (sidebarWidth-400) +'px;');
+        d3.select('#map-in-map').attr('style', function(){
+            if(this.style.display === 'none'){
+                return 'display: none; opacity: 0; margin-left:'+ (sidebarWidth-400) +'px;';
+            }
+
+            if (this.style.display === 'block'){
+                return 'display: block; opacity: 1; margin-left:'+ (sidebarWidth-400) +'px;';
+            }
+        });
     };
 
     return sidebar;
