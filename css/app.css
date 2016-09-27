@@ -2363,7 +2363,8 @@ div.full-screen > button:hover {
 .map-in-map {
     position: absolute;
     overflow: hidden;
-    top: 60px;
+    top: 70px;
+    left: 410px;
     width: 200px;
     height: 150px;
     z-index: 5;
