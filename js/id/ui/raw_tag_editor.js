@@ -186,7 +186,7 @@ iD.ui.RawTagEditor = function(context) {
             .on('change', keyChange);
 
         $items.select('input.value')
-            .attr('value', function(d) { return d.value; })
+            .value(function (d) { return d.value; })
             .on('blur', valueChange)
             .on('change', valueChange)
             .on('keydown.push-more', pushMore)
