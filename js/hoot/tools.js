@@ -151,14 +151,14 @@ Hoot.tools = function (context) {
     function preConflation(a, layerName, advOpts) {
         // refactored code to use map id instead of map name
         var data = {};
-        data.INPUT1 = view.getLayer(0).id;
-        data.INPUT2 = view.getLayer(1).id;
+        data.INPUT1 = view.getLayer(0).id.toString();
+        data.INPUT2 = view.getLayer(1).id.toString();
 
-        if (view.getLayer(0).id === '-1')
+        if (data.INPUT1 === '-1')
         {
           data.INPUT1_TYPE = 'OSM_API_DB';
         }
-        else if (view.getLayer(1).id === '-1')
+        else if (data.INPUT2 === '-1')
         {
           data.INPUT2_TYPE = 'OSM_API_DB';
         }
@@ -215,6 +215,14 @@ Hoot.tools = function (context) {
             // Do the default onew
             data.ADV_OPTIONS = '-D conflate.match.threshold=0.6 -D conflate.miss.threshold=0.6';
         }*/
+
+        //If a Tasking Manager grid is present, provide this bbox to the conflate job
+        var gj = context.layers().layer('gpx').geojson();
+        if (gj) {
+            //get the task grid feature extent
+            var extent = iD.geo.Extent(d3.geo.bounds(gj));
+            data.TASK_BBOX = extent.toParam();
+        }
 
         d3.selectAll('.hootView').remove();
         return data;
@@ -526,7 +534,7 @@ Hoot.tools = function (context) {
                                     // Show map view
                                     if(d3.selectAll('#jobsBG').classed('hidden')===false){
                                         d3.selectAll('#jobsBG').classed('hidden',true);
-                                        d3.select('#manageTabBtn').text('Manage').classed('fill-light',false).classed('dark',true);        
+                                        d3.select('#manageTabBtn').text('Manage').classed('fill-light',false).classed('dark',true);
                                     }
 
                                     loadingLayer = params;
