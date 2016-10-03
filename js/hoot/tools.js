@@ -375,8 +375,8 @@ Hoot.tools = function (context) {
         context.hoot().changeColor(layerId, newColor);
         loadedLayers[layerName].color = newColor;
     });
-    view.on('layerVis', function (layerName) {
-        context.hoot().model.layers.changeVisibility(layerName);
+    view.on('layerVis', function (layerId) {
+        context.hoot().model.layers.changeVisibility(layerId);
     });
 
     conflicts.on('exportData', function () {
