@@ -217,10 +217,10 @@ Hoot.tools = function (context) {
         }*/
 
         //If a Tasking Manager grid is present, provide this bbox to the conflate job
-        var gj = context.layers().layer('gpx').geojson();
-        if (gj) {
+        var gj = context.layers().layer('gpx');
+        if (gj.hasGpx()) {
             //get the task grid feature extent
-            var extent = iD.geo.Extent(d3.geo.bounds(gj));
+            var extent = iD.geo.Extent(d3.geo.bounds(gj.geojson()));
             data.TASK_BBOX = extent.toParam();
         }
 
