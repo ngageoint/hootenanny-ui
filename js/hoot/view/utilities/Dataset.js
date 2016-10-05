@@ -12,90 +12,54 @@ Hoot.view.utilities.dataset = function(context)
     var hoot_view_utilities_dataset = {};
 
     hoot_view_utilities_dataset.createContent = function(form){
+        var items = [];
+        items.push(
+            {title: 'Add Single Dataset', icon: 'layers', class: 'import-add-dataset'},
+            {title: 'Add Multiple Datasets', icon: 'layers', class: 'import-bulk-dataset'},
+            {title: 'Add Folder',icon: 'folder', class: 'import-add-folder'},
+            {title: 'Refresh', icon: 'refresh', class: 'import-refresh-layers'}
+        );
 
-        var fieldDiv = form.append('div').classed('pad1y col12', true);
+        var fieldDiv = form.append('div').classed('pad1y button-wrap joined col7', true);
+        var buttons = fieldDiv.selectAll('button.import-button').data(items);
 
-        fieldDiv.append('a')
-            .attr('href', '#')
-            .text('Add Dataset')
-            .classed('dark fl button loud pad2x big _icon plus', true)
-            .style('margin-right','5px')
-            .on('click', function () {
-                //importData.classed('hidden', false);
-                 Hoot.model.REST('getTranslations', function (d) {
-                     if(d.error){
-                         context.hoot().view.utilities.errorlog.reportUIError(d.error);
-                         return;
-                     }
-                    context.hoot().control.utilities.importdataset.importDataContainer(d);
-                 });
-            })
-            .on('contextmenu',function(){
+        buttons.enter().append('button')
+            .attr('tabindex',-1)
+            .attr('class', function(d){return d.class + ' import-button col3 loud dark'})
+            .on('click.import-button', function(d){
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
-                //Create context menu to offer bulk option
-                var items = [{title:'Bulk Import',icon:'plus',action:'bulkImport'}];
-                d3.select('html').append('div').attr('class', 'dataset-options-menu');
 
-                 var menuItem =  d3.selectAll('.dataset-options-menu')
-                    .html('')
-                    .append('ul')
-                    .selectAll('li')
-                    .data(items).enter()
-                    .append('li')
-                    .attr('class',function(item){return item.icon + ' dataset-option';})
-                    .on('click' , function(item) {
-                        switch (item.action) {
-                        case 'bulkImport': hoot_view_utilities_dataset.importDatasets(); break;
-                        default: break;
+                if(d.class === 'import-add-dataset'){
+                    Hoot.model.REST('getTranslations', function (d) {
+                        if(d.error){
+                            context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                            return;
                         }
-                        d3.select('.dataset-options-menu').remove();
-                   });
-
-                 menuItem.append('span').attr('class',function(item){return item.icon + ' icon icon-pre-text';});
-                 menuItem.append('span').text(function(item) { return item.title; });
-
-                 d3.select('.dataset-options-menu').style('display', 'none');
-
-                 // show the context menu
-                 d3.select('.dataset-options-menu')
-                    .style('left', function(){return d3.event.clientX +'px'||'0px';})
-                     .style('top', function(){return d3.event.clientY +'px'||'0px';})
-                     .style('display', 'block');
-
-                 //close menu
-                 var firstOpen = true;
-                 d3.select('html').on('click.dataset-options-menu',function(){
-                     if(firstOpen){
-                        firstOpen=false;
-                     } else {
-                         d3.select('.dataset-options-menu').style('display', 'none');
-                     }
+                        context.hoot().control.utilities.importdataset.importDataContainer(d);
                  });
-            });
-        fieldDiv.append('a')
-            .attr('href', '#')
-            .text('Add Folder')
-            .classed('dark fl button loud pad2x big _icon plus', true)
-            .style('margin-right','5px')
-            .on('click', function () {
-                context.hoot().control.utilities.folder.importFolderContainer(0);
-            });
-        fieldDiv.append('a')
-            .attr('href', '#')
-            .text('')
-            .attr('id','btnDatasetRefresh')
-            .classed('dark fl button loud pad2x big _icon refresh', true)
-            .style('margin-right','5px')
-            .on('click', function () {
-                context.hoot().model.folders.refresh(function () {
-                    context.hoot().model.layers.refresh(function(){
-                        context.hoot().model.folders.refreshLinks(function(){
-                            context.hoot().model.import.updateTrees();
+                } else if (d.class === 'import-bulk-dataset') {
+                    hoot_view_utilities_dataset.importDatasets();
+                } else if (d.class === 'import-add-folder') {
+                    context.hoot().control.utilities.folder.importFolderContainer(0);
+                } else if (d.class === 'import-refresh-layers') {
+                    context.hoot().model.folders.refresh(function () {
+                        context.hoot().model.layers.refresh(function(){
+                            context.hoot().model.folders.refreshLinks(function(){
+                                context.hoot().model.import.updateTrees();
+                            });
                         });
                     });
-                });
+                }
             });
+
+        buttons.each(function(d){
+            d3.select(this).call(iD.svg.Icon('#icon-' + d.icon, 'pre-text'));
+        });
+
+        buttons.append('span')
+            .attr('class', 'label')
+            .text(function(d) { return d.title; });
 
         form.append('div')
         .attr('id','datasettable')
