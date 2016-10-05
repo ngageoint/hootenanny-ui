@@ -358,14 +358,16 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             return false;
         }
 
-        if(!_.isEmpty(_.filter(_.map(_.pluck(context.hoot().model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f === row.select('.reset.LayerName').value();})))
+        var newLayerName = row.select('.reset.LayerName').value() + d3.select('#customSuffix').value();
+
+        if(!_.isEmpty(_.filter(_.map(_.pluck(context.hoot().model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f === newLayerName;})))
         {
             d3.select('#importprogdiv').append('br');
             d3.select('#importprogdiv').append('text').text('A layer already exists with this name. Please remove the current layer or select a new name for this layer.');
             return false;
         }
 
-        var resp = context.hoot().checkForUnallowedChar(row.select('.reset.LayerName').value());
+        var resp = context.hoot().checkForUnallowedChar(newLayerName);
         if(resp !== true){
             d3.select('#importprogdiv').append('br');
             d3.select('#importprogdiv').append('text').text(resp);
@@ -395,11 +397,13 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
 
         var importText = _submitExp.select('span').text();
         if(importText === 'Import'){
+
+            var newLayerName = row.select('.reset.LayerName').value() + d3.select('#customSuffix').value();
             context.hoot().model.import.importData(row,
                 '.reset.Schema',
                 '.reset.importImportType',
                 null,
-                '.reset.LayerName',
+                newLayerName,
                 '.reset.bulkImportDatasetFGDBFeatureClasses',
                 function(status){
                 if(status.info==='complete'){
