@@ -110,15 +110,15 @@ Hoot.model.import = function (context)
             data.NONE_TRANSLATION = false;
         }
 
-        // Determine if the layerNameElemId is the layer name or class
-        if(layerNameElemId.charAt(0) === '.') {
+        data.INPUT_TYPE = typeName;
+        data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';
+        
+        if(layerNameElemId.charAt(0) === '.'){
             data.INPUT_NAME = container.select(layerNameElemId).value();
         } else {
             data.INPUT_NAME = layerNameElemId;
         }
 
-        data.INPUT_TYPE = typeName;
-        data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';        
         if(fgdbFCList && fgdbFCList.length > 0) {
             data.FGDB_FC = fgdbFCList;
         }

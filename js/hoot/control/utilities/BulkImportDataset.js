@@ -276,14 +276,17 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         link.folderId = pathId;
         link.mapid=0;
         link.mapid=0;
-        if(row.select('.reset.LayerName').value())
-        {link.mapid =_.pluck(_.filter(context.hoot().model.layers.getAvailLayers(),function(f){return f.name === row.select('.reset.LayerName').value();}),'id')[0] || 0;}
+
+        var newLayerName = row.select('.reset.LayerName').value() + d3.select('#customSuffix').value();
+
+        if(newLayerName)
+        {link.mapid =_.pluck(_.filter(context.hoot().model.layers.getAvailLayers(),function(f){return f.name === newLayerName;}),'id')[0] || 0;}
         if(link.mapid===0){return;}
         link.updateType='new';
         context.hoot().model.folders.updateLink(link);
         link = {};
         d3.select('#importprogdiv').append('br');
-        d3.select('#importprogdiv').append('text').text(row.select('.reset.LayerName').value() + ' has been successfully uploaded.');
+        d3.select('#importprogdiv').append('text').text(newLayerName + ' has been successfully uploaded.');
 
         _submitExp.select('span').text('Import');
         //go to next row in array if neccessary
@@ -398,7 +401,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         var importText = _submitExp.select('span').text();
         if(importText === 'Import'){
 
-            var newLayerName = row.select('.reset.LayerName').value() + d3.select('#customSuffix').value();
+            var newLayerName = row.select('.reset.LayerName').value().concat(d3.select('#customSuffix').value());
             context.hoot().model.import.importData(row,
                 '.reset.Schema',
                 '.reset.importImportType',
