@@ -234,12 +234,28 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .text('Import')
             .on('click', _importClickHandler);
 
-            _submitExp.append('span')
-                .classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
-                .text('Add Row')
-                .on('click', function () {
-                    _addRow(d3.select('#bulkImportTable').select('tbody'));
-                });
+        _submitExp.append('span')
+            .classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
+            .text('Add Row')
+            .on('click', function () {
+                _addRow(d3.select('#bulkImportTable').select('tbody'));
+            });
+
+        var suffixDiv = _submitExp.append('div')
+            .classed('form-field fill-white small',true);
+
+        suffixDiv.append('label')
+            .attr('for','customSuffix')
+            .style({'display':'inline-block','font-weight':'bold'})
+            .text('Suffix for all layer names: ');
+
+        suffixDiv.append('div')
+            .style('display','inline-block')
+            .classed('pad1x',true)
+            .append('input')
+            .attr('type','text')
+            .style('display','inline-block')
+            .attr({'name':'customSuffix','id':'customSuffix','title':'To not use a suffix, leave blank.'});
     };
 
     /**
