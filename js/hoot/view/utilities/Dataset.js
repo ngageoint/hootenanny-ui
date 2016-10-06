@@ -50,6 +50,8 @@ Hoot.view.utilities.dataset = function(context)
                             });
                         });
                     });
+
+                    this.blur();
                 }
             });
 
