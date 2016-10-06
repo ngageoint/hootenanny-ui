@@ -14,8 +14,8 @@ Hoot.view.utilities.dataset = function(context)
     hoot_view_utilities_dataset.createContent = function(form){
         var items = [];
         items.push(
-            {title: 'Add Single Dataset', icon: 'layers', class: 'import-add-dataset'},
-            {title: 'Add Multiple Datasets', icon: 'layers', class: 'import-bulk-dataset'},
+            {title: 'Import Single Dataset', icon: 'layers', class: 'import-add-dataset'},
+            {title: 'Import Multiple Datasets', icon: 'layers', class: 'import-bulk-dataset'},
             {title: 'Add Folder',icon: 'folder', class: 'import-add-folder'},
             {title: 'Refresh', icon: 'refresh', class: 'import-refresh-layers'}
         );
