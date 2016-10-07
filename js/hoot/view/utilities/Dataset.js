@@ -25,7 +25,7 @@ Hoot.view.utilities.dataset = function(context)
 
         buttons.enter().append('button')
             .attr('tabindex',-1)
-            .attr('class', function(d){return d.class + ' import-button col3 loud dark'})
+            .attr('class', function(d){return d.class + ' import-button col3 loud dark';})
             .on('click.import-button', function(d){
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
