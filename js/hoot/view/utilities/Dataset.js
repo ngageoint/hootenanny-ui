@@ -17,7 +17,7 @@ Hoot.view.utilities.dataset = function(context)
             {title: 'Import Single Dataset', icon: 'layers', class: 'import-add-dataset'},
             {title: 'Import Multiple Datasets', icon: 'layers', class: 'import-bulk-dataset'},
             {title: 'Add Folder',icon: 'folder', class: 'import-add-folder'},
-            {title: 'Refresh', icon: 'refresh', class: 'import-refresh-layers'}
+            {title: 'Refresh Datasets', icon: 'refresh', class: 'import-refresh-layers'}
         );
 
         var fieldDiv = form.append('div').classed('pad1y button-wrap joined col7', true);
