@@ -699,7 +699,7 @@ Hoot.tools = function (context) {
     * @param data - exported layer meta data
     **/
     exportLayer.on('saveLayer', function (cont, data) {
-        var exportType = cont.select('.reset.fileExportFileType.combobox-input').value();
+        //var exportType = cont.select('.reset.fileExportFileType.combobox-input').value();
         exporting = true;
         var spinner = cont.append('span').attr('class', 'spinner-hoot').call(iD.ui.Spinner(context));
         context.hoot().model.export.exportData(cont, data, function (status) {

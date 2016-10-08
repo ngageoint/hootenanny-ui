@@ -234,12 +234,28 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .text('Import')
             .on('click', _importClickHandler);
 
-            _submitExp.append('span')
-                .classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
-                .text('Add Row')
-                .on('click', function () {
-                    _addRow(d3.select('#bulkImportTable').select('tbody'));
-                });
+        _submitExp.append('span')
+            .classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
+            .text('Add Row')
+            .on('click', function () {
+                _addRow(d3.select('#bulkImportTable').select('tbody'));
+            });
+
+        var suffixDiv = _submitExp.append('div')
+            .classed('form-field fill-white small',true);
+
+        suffixDiv.append('label')
+            .attr('for','customSuffix')
+            .style({'display':'inline-block','font-weight':'bold'})
+            .text('Suffix for all layer names: ');
+
+        suffixDiv.append('div')
+            .style('display','inline-block')
+            .classed('pad1x',true)
+            .append('input')
+            .attr('type','text')
+            .style('display','inline-block')
+            .attr({'name':'customSuffix','id':'customSuffix','title':'To not use a suffix, leave blank.'});
     };
 
     /**
@@ -260,14 +276,17 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         link.folderId = pathId;
         link.mapid=0;
         link.mapid=0;
-        if(row.select('.reset.LayerName').value())
-        {link.mapid =_.pluck(_.filter(context.hoot().model.layers.getAvailLayers(),function(f){return f.name === row.select('.reset.LayerName').value();}),'id')[0] || 0;}
+
+        var newLayerName = row.select('.reset.LayerName').value() + d3.select('#customSuffix').value();
+
+        if(newLayerName)
+        {link.mapid =_.pluck(_.filter(context.hoot().model.layers.getAvailLayers(),function(f){return f.name === newLayerName;}),'id')[0] || 0;}
         if(link.mapid===0){return;}
         link.updateType='new';
         context.hoot().model.folders.updateLink(link);
         link = {};
         d3.select('#importprogdiv').append('br');
-        d3.select('#importprogdiv').append('text').text(row.select('.reset.LayerName').value() + ' has been successfully uploaded.');
+        d3.select('#importprogdiv').append('text').text(newLayerName + ' has been successfully uploaded.');
 
         _submitExp.select('span').text('Import');
         //go to next row in array if neccessary
@@ -342,14 +361,16 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             return false;
         }
 
-        if(!_.isEmpty(_.filter(_.map(_.pluck(context.hoot().model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f === row.select('.reset.LayerName').value();})))
+        var newLayerName = row.select('.reset.LayerName').value() + d3.select('#customSuffix').value();
+
+        if(!_.isEmpty(_.filter(_.map(_.pluck(context.hoot().model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f === newLayerName;})))
         {
             d3.select('#importprogdiv').append('br');
             d3.select('#importprogdiv').append('text').text('A layer already exists with this name. Please remove the current layer or select a new name for this layer.');
             return false;
         }
 
-        var resp = context.hoot().checkForUnallowedChar(row.select('.reset.LayerName').value());
+        var resp = context.hoot().checkForUnallowedChar(newLayerName);
         if(resp !== true){
             d3.select('#importprogdiv').append('br');
             d3.select('#importprogdiv').append('text').text(resp);
@@ -379,11 +400,13 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
 
         var importText = _submitExp.select('span').text();
         if(importText === 'Import'){
+
+            var newLayerName = row.select('.reset.LayerName').value().concat(d3.select('#customSuffix').value());
             context.hoot().model.import.importData(row,
                 '.reset.Schema',
                 '.reset.importImportType',
                 null,
-                '.reset.LayerName',
+                newLayerName,
                 '.reset.bulkImportDatasetFGDBFeatureClasses',
                 function(status){
                 if(status.info==='complete'){

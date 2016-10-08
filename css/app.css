@@ -429,6 +429,10 @@ button.minor:hover {
     padding-right: 0;
 }
 
+.joined .import-button {
+    border-right: 1px solid #f8f8f8;
+}
+
 .joined button {
     border-radius:0;
     border-right: 1px solid rgba(0,0,0,.5);
