@@ -92,7 +92,8 @@ Hoot.control.utilities.importdirectory = function(context) {
             readonly:'readonly',
             inputtype:'multipart',
             onchange: _multipartHandler,
-            multipartid: 'ingestdirectoryuploader'
+            multipartid: 'ingestdirectoryuploader',
+            multiparthidden: false
         },
         {
             label: 'Dataset Import Type',

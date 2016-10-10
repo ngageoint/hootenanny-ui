@@ -285,7 +285,11 @@ Hoot.ui.hootformbase = function ()
 
             var wrapper = mpDiv
                 .append('span')
-                .classed('point keyline-left pin-right pad0x pad0y hidden', true)
+                .classed('point keyline-left pin-right pad0x pad0y', true)
+                .classed('hidden',function(a){
+                    if(a.multiparthidden === undefined){return true;}
+                    else{return a.multiparthidden;}
+                })
                 .call(iD.svg.Icon('#icon-folder'))
                 .attr('id', a.multipartid + 'spancontainer');
 
