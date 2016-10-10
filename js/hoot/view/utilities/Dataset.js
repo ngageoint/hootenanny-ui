@@ -16,16 +16,17 @@ Hoot.view.utilities.dataset = function(context)
         items.push(
             {title: 'Import Single Dataset', icon: 'layers', class: 'import-add-dataset'},
             {title: 'Import Multiple Datasets', icon: 'layers', class: 'import-bulk-dataset'},
+            {title: 'Import Directory', icon: 'folder', class: 'import-directory'},
             {title: 'Add Folder',icon: 'folder', class: 'import-add-folder'},
             {title: 'Refresh Datasets', icon: 'refresh', class: 'import-refresh-layers'}
         );
 
-        var fieldDiv = form.append('div').classed('pad1y button-wrap joined col7', true);
+        var fieldDiv = form.append('div').classed('pad1y button-wrap joined col12', true);
         var buttons = fieldDiv.selectAll('button.import-button').data(items);
 
         buttons.enter().append('button')
             .attr('tabindex',-1)
-            .attr('class', function(d){return d.class + ' import-button col3 loud dark';})
+            .attr('class', function(d){return d.class + ' import-button col2 loud dark';})
             .on('click.import-button', function(d){
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
@@ -40,6 +41,8 @@ Hoot.view.utilities.dataset = function(context)
                  });
                 } else if (d.class === 'import-bulk-dataset') {
                     hoot_view_utilities_dataset.importDatasets();
+                } else if (d.class === 'import-directory') {
+                    hoot_view_utilities_dataset.importDirectory();
                 } else if (d.class === 'import-add-folder') {
                     context.hoot().control.utilities.folder.importFolderContainer(0);
                 } else if (d.class === 'import-refresh-layers') {
@@ -279,6 +282,16 @@ Hoot.view.utilities.dataset = function(context)
                 return;
             }
            context.hoot().control.utilities.bulkimportdataset.bulkImportDataContainer(d);
+        });
+    };
+
+    hoot_view_utilities_dataset.importDirectory = function() {
+        Hoot.model.REST('getTranslations', function (d) {
+            if(d.error){
+                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                return;
+            }
+           context.hoot().control.utilities.importdirectory.importDirectoryContainer(d);
         });
     };
 
