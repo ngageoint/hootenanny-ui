@@ -93,7 +93,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             inputtype:'multipart',
             onchange: _multipartHandler,
             multipartid: 'ingestdirectoryuploader',
-            multiparthidden: false
+            directory: true
         },
         {
             label: 'Dataset Import Type',
@@ -600,14 +600,6 @@ Hoot.control.utilities.importdirectory = function(context) {
 
         var filesList=[];
 
-        // for chrome only for webkit
-        var selType = _getTypeName(_container.select('#importDirectoryImportType').value());
-
-        if(!selType){
-            iD.ui.Alert('Please select Import Type.','warning',new Error().stack);
-            return;
-        }
-
         var cntParam = {};
         cntParam.osmCnt = 0;
         cntParam.shpCnt = 0;
@@ -622,7 +614,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             fileNames.push(curFileName);
             if(l === 0){
 
-                if(selType === 'DIR'){
+/*                if(selType === 'DIR'){
                     if(_bInfo.name.substring(0,3) === 'Chr'){
                         var parts = curFile.webkitRelativePath.split('/');
                         var folderName = parts[0];
@@ -642,24 +634,24 @@ Hoot.control.utilities.importdirectory = function(context) {
                         }
                     }
 
-                }
+                }*/
             }
 
 
 
-            if(selType === 'FILE'){
+            /*if(selType === 'FILE'){
                 _setFileMetaData(curFileName, cntParam, filesList);
-            }
+            }*/
         }
 
-        var isValid = _validateLoaded(selType, filesList, cntParam, totalFileSize);
+       /* var isValid = _validateLoaded(selType, filesList, cntParam, totalFileSize);
 
         if(!isValid) {
             return;
-        }
+        }*/
 
 
-        if(selType === 'DIR'){
+        /*if(selType === 'DIR'){
                 _container.select('#importDirectoryFileImport').value(folderName);
                 _container.select('#importDirectoryLayerName').value(fgdbName);
         } else {
@@ -667,12 +659,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             var first = fileNames[0];
             var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
             _container.select('#importDirectoryLayerName').value(saveName);
-        }
-
-
-
-        d3.select('#importDirectoryBtnContainer')
-            .classed('hidden', false);
+        }*/
 
     };
 

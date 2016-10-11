@@ -287,8 +287,8 @@ Hoot.ui.hootformbase = function ()
                 .append('span')
                 .classed('point keyline-left pin-right pad0x pad0y', true)
                 .classed('hidden',function(a){
-                    if(a.multiparthidden === undefined){return true;}
-                    else{return a.multiparthidden;}
+                    if(a.directory === undefined){return true;}
+                    else{return !a.directory;}
                 })
                 .call(iD.svg.Icon('#icon-folder'))
                 .attr('id', a.multipartid + 'spancontainer');
@@ -305,6 +305,16 @@ Hoot.ui.hootformbase = function ()
                     'width': '31px',
                     'height': '31px'
                 });
+
+            if(a.directory!==undefined){
+                if(a.directory){
+                    d3.select('#ingestdirectoryuploader')
+                        .property('multiple', false)
+                        .attr('accept', null)
+                        .attr('webkitdirectory', '')
+                        .attr('directory', '');
+                }
+            }
 
             if(a.onchange) {
                 mpInput.on('change', a.onchange);
