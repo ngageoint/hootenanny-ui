@@ -83,11 +83,16 @@ Hoot.control.utilities.importdirectory = function(context) {
             }
         }
 
-        var d_form = [
-        {
+        var d_form = [{
+            label: 'Import Type',
+            placeholder: 'Select Import Type',
+            id: 'importDirectoryImportType',
+            combobox: {'data':importTypes, 'command': _populateImportTypes },
+            inputtype: 'combobox'
+        }, {
             label: 'Import Directory',
-            id: 'importDirectoryFileImport',
-            placeholder: 'Select File',
+            id: 'importDirectoryFolderImport',
+            placeholder: 'Select Directory',
             icon: 'folder',
             readonly:'readonly',
             inputtype:'multipart',
@@ -96,18 +101,11 @@ Hoot.control.utilities.importdirectory = function(context) {
             directory: true
         },
         {
-            label: 'Dataset Import Type',
-            placeholder: 'Select Import Type',
-            id: 'importDirectoryImportType',
-            combobox: {'data':importTypes, 'command': _populateImportTypes },
-            inputtype: 'combobox'
-        }, 
-        {
-            label: 'Translation Schema',
-            placeholder: 'Select Data Translation Schema',
-            id: 'importDirectorySchema',
-            combobox: {'data':_importTranslations, 'command': _populateTranslations },
-            inputtype: 'combobox'
+            label: 'Import Files List',
+            id: 'importDirectoryFilesList',
+            placeholder:'',
+            inputtype:'listbox',
+            readonly:true
         },
         {
             label: 'Path',
@@ -120,6 +118,12 @@ Hoot.control.utilities.importdirectory = function(context) {
             placeholder:'',
             id:'importDirectoryNewFolderName',
             onchange: _validateInput
+        }, {
+            label: 'Translation Schema',
+            placeholder: 'Select Data Translation Schema',
+            id: 'importDirectorySchema',
+            combobox: {'data':_importTranslations, 'command': _populateTranslations },
+            inputtype: 'combobox'
         }];
 
 
@@ -128,7 +132,7 @@ Hoot.control.utilities.importdirectory = function(context) {
                             text: 'Import',
                             location: 'right',
                             id: 'importDirectoryBtnContainer',
-                            ishidden: false,
+                            ishidden: true,
                             onclick: _submitClickHandler
                         }
                     ];
@@ -155,38 +159,39 @@ Hoot.control.utilities.importdirectory = function(context) {
     };
 
     /**
+    * @desc Validate list of files
+    **/    
+    var _validateFileList = function(filesList){
+         _.each(filesList, function(fileName){
+            if(!_.isEmpty(_.filter(_.map(
+                _.pluck(context.hoot().model.layers.getAvailLayers(),'name'),
+                    function(l){
+                        return l.substring(l.lastIndexOf('|')+1);
+                    }),
+                function(f){
+                    return f === fileName;
+                }))
+            )
+            {
+                iD.ui.Alert('A layer already exists with the name ' + fileName + '. Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
+                return;
+            }
+
+            var resp = context.hoot().checkForUnallowedChar(fileName);
+            if(resp !== true){
+                iD.ui.Alert(resp,'warning',new Error().stack);
+                return;
+            }
+         });
+    }
+
+    /**
     * @desc Ingest request click handler.
     **/
     var _submitClickHandler = function () {
         var submitExp = d3.select('#importDirectoryBtnContainer');
         //check if layer with same name already exists...
         if(!d3.selectAll('.invalidName').empty()){return;}
-
-        if(_container.select('#importDirectoryLayerName').value()==='' ||
-         _container.select('#importDirectoryLayerName').value()===_container.select('#importDirectoryLayerName').attr('placeholder')){
-            iD.ui.Alert('Please enter an output layer name.','warning',new Error().stack);
-            return;
-        }
-
-        if(!_.isEmpty(_.filter(_.map(
-            _.pluck(context.hoot().model.layers.getAvailLayers(),'name'),
-                function(l){
-                    return l.substring(l.lastIndexOf('|')+1);
-                }),
-            function(f){
-                return f === _container.select('#importDirectoryLayerName').value();
-            }))
-        )
-        {
-            iD.ui.Alert('A layer already exists with this name. Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
-            return;
-        }
-
-        var resp = context.hoot().checkForUnallowedChar(_container.select('#importDirectoryLayerName').value());
-        if(resp !== true){
-            iD.ui.Alert(resp,'warning',new Error().stack);
-            return;
-        }
 
         resp = context.hoot().checkForUnallowedChar(_container.select('#importDirectoryNewFolderName').value());
         if(resp !== true){
@@ -266,8 +271,6 @@ Hoot.control.utilities.importdirectory = function(context) {
                 '#importDirectorySchema',
                 '#importDirectoryImportType',
                 '#importDirectoryNewFolderName',
-                '#importDirectoryLayerName',
-                '#importDirectoryFGDBFeatureClasses',
                 function(status){
                 if(status.info === 'complete'){
                     if(_isCancel === false){
@@ -347,7 +350,7 @@ Hoot.control.utilities.importdirectory = function(context) {
                     title: n.name
                 };
             }));
-            var controls = d3.selectAll('#importDirectoryFileImport');
+            var controls = d3.selectAll('#importDirectoryFolderImport');
             var cntrl;
 
             for (var j = 0; j < controls.length; j++) {
@@ -359,8 +362,8 @@ Hoot.control.utilities.importdirectory = function(context) {
                 }
             }
 
-            //var datasettable = d3.select('#datasettable');
-            //context.hoot().view.utilities.dataset.populateDatasetsSVG(datasettable);
+            //var directorytable = d3.select('#directorytable');
+            //context.hoot().view.utilities.directory.populateDirectorysSVG(directorytable);
             _container.remove();
         });
     };
@@ -432,49 +435,6 @@ Hoot.control.utilities.importdirectory = function(context) {
     };
 
     /**
-    * @desc Modify multipart control based on selected import type.
-    * @param typeName - Import type name.
-    **/
-    var _setMultipartForType = function(typeName) {
-        var isDir = false;
-        if(typeName === 'DIR'){
-            isDir = true;
-            if(_bInfo.name.substring(0,3) === 'Chr'){
-                d3.select('#ingestdirectoryuploader')
-                .property('multiple', false)
-                .attr('accept', null)
-                .attr('webkitdirectory', '')
-                .attr('directory', '');
-            } else {
-                d3.select('#ingestdirectoryuploader')
-                .property('multiple', false)
-                .attr('accept', '.zip')
-                .attr('webkitdirectory', null)
-                .attr('directory', null);
-            }
-        } else if(typeName === 'GEONAMES') {
-            d3.select('#ingestdirectoryuploader')
-            .property('multiple', 'false')
-            .attr('accept', '.geonames,.txt')
-            .attr('webkitdirectory', null)
-            .attr('directory', null);
-        } else if(typeName === 'OSM') {
-            d3.select('#ingestdirectoryuploader')
-            .property('multiple', 'false')
-            .attr('accept', '.osm,.osm.zip,.pbf')
-            .attr('webkitdirectory', null)
-            .attr('directory', null);
-        } else {
-            d3.select('#ingestdirectoryuploader')
-            .property('multiple', 'true')
-            .attr('accept', null)
-            .attr('webkitdirectory', null)
-            .attr('directory', null);
-        }
-    };
-
-
-    /**
     * @desc Populated import types drop down.
     * @param a - Import types list combo meta data.
     **/
@@ -493,14 +453,10 @@ Hoot.control.utilities.importdirectory = function(context) {
         .attr('readonly',true)
         .call(comboImportType)
         .on('change', function(){
-            d3.select('importDirectoryFileImport').value('');
-            d3.select('#importDirectoryLayerName').value('');
+            d3.select('importDirectoryFolderImport').value('');
             d3.select('#importDirectorySchema').value('');
             var selectedType = _container.select('#importDirectoryImportType').value();
             var typeName = _getTypeName(selectedType);
-
-            _setMultipartForType(typeName);
-
 
             /* Updated to allow for OSM translation for all input types - issue 710 */
             var translationsList = _importTranslations.concat(_importTranslationsOsm);
@@ -532,6 +488,9 @@ Hoot.control.utilities.importdirectory = function(context) {
             } else if(typeName === 'OSM'){
                 d3.select('#importDirectorySchema').value(_importTranslationsOsm[0].DESCRIPTION);
             }
+
+            d3.select('#ingestdirectoryuploaderspancontainer').classed('hidden', false);
+
         });
     };
 
@@ -598,7 +557,17 @@ Hoot.control.utilities.importdirectory = function(context) {
     **/
     var _multipartHandler = function() {
 
+        _container.select('#importDirectoryFilesList').selectAll('option').remove();
+
         var filesList=[];
+
+        // for chrome only for webkit
+        var selType = _getTypeName(_container.select('#importDirectoryImportType').value());
+
+        if(!selType){
+            iD.ui.Alert('Please select Import Type.','warning',new Error().stack);
+            return;
+        }
 
         var cntParam = {};
         cntParam.osmCnt = 0;
@@ -611,55 +580,50 @@ Hoot.control.utilities.importdirectory = function(context) {
             totalFileSize += curFile.size;
             var curFileName = curFile.name;
 
+            // Only accept layers that meet filter requirement
+            
+
+
             fileNames.push(curFileName);
+
+            // Add file name to form
+            _container.select('#importDirectoryFilesList').append('option').attr('value',curFileName).text(curFileName);
+
             if(l === 0){
-
-/*                if(selType === 'DIR'){
-                    if(_bInfo.name.substring(0,3) === 'Chr'){
-                        var parts = curFile.webkitRelativePath.split('/');
-                        var folderName = parts[0];
-                        if(folderName.length > 4){
-                            var ext = folderName.substring(folderName.length - 4);
-                            var fgdbName = folderName.substring(0, folderName.length - 4);
-                            if(ext.toLowerCase() !== '.gdb'){
-                                iD.ui.Alert('Please select valid FGDB.','warning',new Error().stack);
-                                return;
-                            } else {
-                                var inputName = _container.select('#importDirectoryLayerName').value();
-                                if(!inputName){
-                                    _container.select('#importDirectoryLayerName').value(fgdbName);
-                                }
+                if(_bInfo.name.substring(0,3) === 'Chr'){
+                    var parts = curFile.webkitRelativePath.split('/');
+                    var folderName = parts[0];
+                    if(folderName.length > 4){
+                        // Do not allow FGDB
+                        var ext = folderName.substring(folderName.length - 4);
+                        var fgdbName = folderName.substring(0, folderName.length - 4);
+                        if(ext.toLowerCase() === '.gdb'){
+                            iD.ui.Alert('Multiple FGDB import is currently not supported.','warning',new Error().stack);
+                            return;
+                        } else {
+                            var inputName = _container.select('#importDirectoryFolderImport').value();
+                            if(!inputName){
+                                _container.select('#importDirectoryFolderImport').value(folderName);
+                                _container.select('#importDirectoryNewFolderName').value(folderName);                                
                             }
-
                         }
                     }
-
-                }*/
+                }
             }
 
-
-
-            /*if(selType === 'FILE'){
+            if(selType === 'FILE'){
                 _setFileMetaData(curFileName, cntParam, filesList);
-            }*/
+            }
         }
 
-       /* var isValid = _validateLoaded(selType, filesList, cntParam, totalFileSize);
+        var isValid = _validateLoaded(selType, filesList, cntParam, totalFileSize);
 
         if(!isValid) {
             return;
-        }*/
+        }
 
-
-        /*if(selType === 'DIR'){
-                _container.select('#importDirectoryFileImport').value(folderName);
-                _container.select('#importDirectoryLayerName').value(fgdbName);
-        } else {
-            _container.select('#importDirectoryFileImport').value(fileNames.join('; '));
-            var first = fileNames[0];
-            var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
-            _container.select('#importDirectoryLayerName').value(saveName);
-        }*/
+        d3.select('#importDirectoryBtnContainer')
+            .classed('hidden', false);
 
     };
 
@@ -741,13 +705,6 @@ Hoot.control.utilities.importdirectory = function(context) {
         geonameTypes.value = 'GEONAMES';
         geonameTypes.title = 'File (geonames,txt)';
         importTypes.push(geonameTypes);
-
-        var dirType = {};
-        dirType.value = 'DIR';
-        dirType.title = 'Directory (FGDB)';
-
-        if(_bInfo.name.substring(0,3) === 'Chr'){importTypes.push(dirType);}
-
 
         return importTypes;
     };

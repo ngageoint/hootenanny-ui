@@ -124,7 +124,8 @@ Hoot.ui.hootformbase = function ()
                         _createTextArea(a, field);
                     } else if(a.inputtype === 'combobox') {
                         _createCombobox(a, field);
-
+                    } else if(a.inputtype === 'listbox') {
+                        _createListbox(a, field);
                     } else if(a.inputtype === 'checkbox'){
                         var chkHtml = '<label class="pad1x pad0y round-top ' + a.checkbox + '" style="opacity: 1;">';
                         chkHtml += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">'+a.label+'</label>';
@@ -233,6 +234,30 @@ Hoot.ui.hootformbase = function ()
     };
 
     /**
+    * @desc Create listbox form field.
+    * @param a - field meta data.
+    * @param field - fields container div
+    **/
+    var _createListbox = function(a, field) {
+        var fieldDiv = field
+        .classed('contain', true);
+
+        var inputField =
+        fieldDiv
+        .append('select')
+        .style('height','90px')
+        .attr('size', '5')
+        .attr('disabled',true)
+        .attr('class', function (field) {
+            return field.className;
+        });
+
+        if(a.id) {
+            inputField.attr('id', a.id);
+        }
+    };
+
+    /**
     * @desc Create text form field.
     * @param a - field meta data.
     * @param field - fields container div
@@ -286,10 +311,7 @@ Hoot.ui.hootformbase = function ()
             var wrapper = mpDiv
                 .append('span')
                 .classed('point keyline-left pin-right pad0x pad0y', true)
-                .classed('hidden',function(a){
-                    if(a.directory === undefined){return true;}
-                    else{return !a.directory;}
-                })
+                .classed('hidden', true)
                 .call(iD.svg.Icon('#icon-folder'))
                 .attr('id', a.multipartid + 'spancontainer');
 
