@@ -18,7 +18,7 @@ Hoot.control.utilities.importdirectory = function(context) {
     var _container;
 
     var _importTranslations;
-    var _importTranslationsGeonames;
+    /*var _importTranslationsGeonames;*/
     var _importTranslationsOsm;
 
     var _isCancel = false;
@@ -162,27 +162,29 @@ Hoot.control.utilities.importdirectory = function(context) {
     * @desc Validate list of files
     **/    
     var _validateFileList = function(filesList){
-         _.each(filesList, function(fileName){
+         _.each(filesList, function(f){
             if(!_.isEmpty(_.filter(_.map(
                 _.pluck(context.hoot().model.layers.getAvailLayers(),'name'),
                     function(l){
                         return l.substring(l.lastIndexOf('|')+1);
                     }),
-                function(f){
-                    return f === fileName;
+                function(p){
+                    return p === f.name;
                 }))
             )
             {
-                iD.ui.Alert('A layer already exists with the name ' + fileName + '. Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
-                return;
+                iD.ui.Alert('A layer already exists with the name ' + f.name + '. Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
+                return false;
             }
 
-            var resp = context.hoot().checkForUnallowedChar(fileName);
+            var resp = context.hoot().checkForUnallowedChar(f.name);
             if(resp !== true){
                 iD.ui.Alert(resp,'warning',new Error().stack);
-                return;
+                return false;;
             }
          });
+
+         return true;
     }
 
     /**
@@ -267,58 +269,79 @@ Hoot.control.utilities.importdirectory = function(context) {
             });
         */
 
-            context.hoot().model.import.importDirectory(_container,
-                '#importDirectorySchema',
-                '#importDirectoryImportType',
-                '#importDirectoryNewFolderName',
-                function(status){
-                if(status.info === 'complete'){
-                    if(_isCancel === false){
-                        _container.remove();
+        // Loop through file list and submit import from here for each one
+        var fileNames = _.map(d3.select('#importDirectoryFilesList').selectAll('option')[0],function(opt){return opt.value;});
+        var x = 0;
+        _importLoop(fileNames,_container,submitExp,x);
+    };
 
-                        var pathname = _container.select('#importDirectoryPathName').value();
-                        if(pathname===''){pathname=_container.select('#importDirectoryPathName').attr('placeholder');}
-                        if(pathname==='root'){pathname='';}
-                        var pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;
-
-                        //determine if a new folder is being added
-                        var newfoldername = _container.select('#importDirectoryNewFolderName').value();
-
-                        var folderData = {};
-                        folderData.folderName = newfoldername;
-                        folderData.parentId = pathId;
-                        context.hoot().model.folders.addFolder(folderData,function(a){
-                            //update map linking
-                            var link = {};
-                            link.folderId = a;
-                            link.mapid=0;
-                            if(_container.select('#importDirectoryLayerName').value())
-                            {
-                                link.mapid =_.pluck(_.filter(context.hoot().model.layers.getAvailLayers(),
-                                function(f){
-                                    return f.name === _container.select('#importDirectoryLayerName').value();
-                                }),'id')[0] || 0;
-                            }
-                            if(link.mapid===0){return;}
-                            link.updateType='new';
-                            context.hoot().model.folders.updateLink(link);
-                            link = {};
-                        });
-
-                    }
-
-                } else if(status.info === 'uploaded'){
-                    _jobIds = status.jobids;
-                    _mapIds = status.mapids;
-                    submitExp.select('span').text('Cancel');
-                } else if(status.info === 'failed'){
-                    var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
-                    iD.ui.Alert(errorMessage,'error',new Error().stack);
-                    _container.remove();
-                }
-
+    var _importLoop = function(fileNames, _container, submitExp,x){
+        var importFiles = _.filter(document.getElementById('ingestdirectoryuploader').files, function(file){
+                var fName = file.name.substring(0, file.name.length - 4);
+                if(file.name.toLowerCase().indexOf('.shp.xml') > -1){fName = file.name.substring(0, curFileName.length - 8);} 
+                return fName === fileNames[x];
             });
 
+        _importDirectoryJob(_container, fileNames[x], importFiles, submitExp, function(){
+            x++;
+            if(x < fileNames.length){_importLoop(fileNames, _container, submitExp,x);}
+            else{_container.remove();}
+        });
+    };
+
+    var _importDirectoryJob = function(_container, newLayerName, importFiles, submitExp, callback){
+        context.hoot().model.import.importDirectory(_container,
+            '#importDirectorySchema',
+            '#importDirectoryImportType',
+            newLayerName, importFiles,
+            '#importDirectoryNewFolderName',
+            function(status){
+            if(status.info === 'complete'){
+                if(_isCancel === false){
+                    var pathname = _container.select('#importDirectoryPathName').value();
+                    if(pathname===''){pathname=_container.select('#importDirectoryPathName').attr('placeholder');}
+                    if(pathname==='root'){pathname='';}
+                    var pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;
+
+                    //determine if a new folder is being added
+                    var newfoldername = _container.select('#importDirectoryNewFolderName').value();
+
+                    // Check to see if this folder exists!
+
+                    var folderData = {};
+                    folderData.folderName = newfoldername;
+                    folderData.parentId = pathId;
+                    context.hoot().model.folders.addFolder(folderData,function(a){
+                        //update map linking
+                        var link = {};
+                        link.folderId = a;
+                        link.mapid=0;
+                        if(newLayerName)
+                        {
+                            link.mapid =_.pluck(_.filter(context.hoot().model.layers.getAvailLayers(),
+                            function(f){
+                                return f.name === newLayerName;
+                            }),'id')[0] || 0;
+                        }
+                        if(link.mapid===0){return;}
+                        link.updateType='new';
+                        context.hoot().model.folders.updateLink(link);
+                        link = {};
+                    });
+
+                }
+                if(callback){callback();}
+            } else if(status.info === 'uploaded'){
+                _jobIds = status.jobids;
+                _mapIds = status.mapids;
+                submitExp.select('span').text('Cancel');
+            } else if(status.info === 'failed'){
+                var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
+                iD.ui.Alert(errorMessage,'error',new Error().stack);
+                _container.remove();
+            }
+
+        });
     };
 
     /**
@@ -453,8 +476,10 @@ Hoot.control.utilities.importdirectory = function(context) {
         .attr('readonly',true)
         .call(comboImportType)
         .on('change', function(){
-            d3.select('importDirectoryFolderImport').value('');
+            d3.select('#importDirectoryFolderImport').value('');
+            d3.select('#importDirectoryNewFolderName').value('');
             d3.select('#importDirectorySchema').value('');
+            _container.select('#importDirectoryFilesList').selectAll('option').remove();
             var selectedType = _container.select('#importDirectoryImportType').value();
             var typeName = _getTypeName(selectedType);
 
@@ -463,9 +488,9 @@ Hoot.control.utilities.importdirectory = function(context) {
 
             //var translationsList = _importTranslations;
 
-            if(typeName === 'GEONAMES'){
+            /*if(typeName === 'GEONAMES'){
                 translationsList = _importTranslationsGeonames;
-            } /*else if(typeName === 'OSM') {
+            } *//*else if(typeName === 'OSM') {
                 translationsList = _importTranslationsOsm;
             }*/
 
@@ -483,9 +508,10 @@ Hoot.control.utilities.importdirectory = function(context) {
             d3.select('#importDirectorySchema')
                  .style('width', '100%')
                     .call(combo);
-            if(typeName === 'GEONAMES'){
+            /*if(typeName === 'GEONAMES'){
                 d3.select('#importDirectorySchema').value(_importTranslationsGeonames[0].DESCRIPTION);
-            } else if(typeName === 'OSM'){
+            } else */
+            if(typeName === 'OSM'){
                 d3.select('#importDirectorySchema').value(_importTranslationsOsm[0].DESCRIPTION);
             }
 
@@ -500,7 +526,7 @@ Hoot.control.utilities.importdirectory = function(context) {
     * @param cntParam - Selected file type count transfer object.
     * @param  filesList - Selected files list.
     **/
-    var _setFileMetaData = function(curFileName, cntParam, filesList)
+    var _setFileMetaData = function(curFileName, curFileSize, cntParam, filesList)
     {
         var fName = curFileName.substring(0, curFileName.length - 4);
         // I guess only way to deal with shp.xml extension
@@ -516,12 +542,13 @@ Hoot.control.utilities.importdirectory = function(context) {
         if(!fObj){
             fObj = {};
             fObj.name = fName;
+            fObj.size += curFileSize;
             fObj.isSHP = false;
             fObj.isSHX = false;
             fObj.isDBF = false;
             fObj.isPRJ = false;
             fObj.isOSM = false;
-            fObj.isZIP = false;
+            /*fObj.isZIP = false;*/
             filesList.push(fObj);
         }
         if(curFileName.toLowerCase().lastIndexOf('.shp') > -1){
@@ -541,15 +568,15 @@ Hoot.control.utilities.importdirectory = function(context) {
             fObj.isPRJ = true;
         }
 
-        if(curFileName.toLowerCase().lastIndexOf('.osm') > -1){
+        if(curFileName.toLowerCase().lastIndexOf('.osm') > -1 || curFileName.toLowerCase().lastIndexOf('.pbf') > -1){
             cntParam.osmCnt++;
             fObj.isOSM = true;
         }
 
-        if(curFileName.toLowerCase().lastIndexOf('.zip') > -1){
+        /*if(curFileName.toLowerCase().lastIndexOf('.zip') > -1){
             cntParam.zipCnt++;
             fObj.isZIP = true;
-        }
+        }*/
     };
 
     /**
@@ -572,7 +599,7 @@ Hoot.control.utilities.importdirectory = function(context) {
         var cntParam = {};
         cntParam.osmCnt = 0;
         cntParam.shpCnt = 0;
-        cntParam.zipCnt = 0;
+        /*cntParam.zipCnt = 0;*/
         var fileNames = [];
         var totalFileSize = 0;
         for (var l = 0; l < document.getElementById('ingestdirectoryuploader').files.length; l++) {
@@ -581,13 +608,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             var curFileName = curFile.name;
 
             // Only accept layers that meet filter requirement
-            
-
-
             fileNames.push(curFileName);
-
-            // Add file name to form
-            _container.select('#importDirectoryFilesList').append('option').attr('value',curFileName).text(curFileName);
 
             if(l === 0){
                 if(_bInfo.name.substring(0,3) === 'Chr'){
@@ -604,16 +625,14 @@ Hoot.control.utilities.importdirectory = function(context) {
                             var inputName = _container.select('#importDirectoryFolderImport').value();
                             if(!inputName){
                                 _container.select('#importDirectoryFolderImport').value(folderName);
-                                _container.select('#importDirectoryNewFolderName').value(folderName);                                
+                                _container.select('#importDirectoryNewFolderName').value(folderName);  
                             }
                         }
                     }
                 }
             }
 
-            if(selType === 'FILE'){
-                _setFileMetaData(curFileName, cntParam, filesList);
-            }
+            _setFileMetaData(curFileName, curFile.size, cntParam, filesList);
         }
 
         var isValid = _validateLoaded(selType, filesList, cntParam, totalFileSize);
@@ -635,47 +654,61 @@ Hoot.control.utilities.importdirectory = function(context) {
     * @param totalFileSize - total physical size of selected files.
     **/
     var _validateLoaded = function(selType, filesList, cntParam, totalFileSize) {
-        if(selType === 'FILE'){
+        //Filter based on selType, then add or remove from filesList
+        if(selType === 'FILE'){            
             var isValid = true;
             _.each(filesList, function(f){
                 var grp = _.find(filesList, function(m){
                     return m.name === f.name;
                 });
                 if(grp.isSHP){
-                    if(!grp.isSHX || !grp.isDBF){
-                        isValid = false;
-                    }
-                }
-
-
+                    if(!grp.isSHX || !grp.isDBF){isValid = false;}
+                } else {isValid = false;}
             });
 
             if(!isValid){
-                iD.ui.Alert('Missing shapefile dependency. Import requires shp, shx and dbf.','warning',new Error().stack );
+                iD.ui.Alert('Missing shapefile dependency for ' + f.name + '. Import requires shp, shx and dbf.','warning',new Error().stack );
                 return false;
             }
-        }
 
-        var totalCnt = cntParam.shpCnt + cntParam.osmCnt + cntParam.zipCnt;
-        if((cntParam.shpCnt > 0 && cntParam.shpCnt !== totalCnt) || (cntParam.osmCnt > 0 && cntParam.osmCnt !== totalCnt)
-            || (cntParam.zipCnt > 0 && cntParam.zipCnt !== totalCnt)){
-            iD.ui.Alert('Please select only single type of files. (i.e. can not mix zip with osm)','warning',new Error().stack);
-            return false;
-        }
+            filesList = _.filter(filesList,{'isSHP':true,'isDBF':true,'isSHX':true});
+        } else if(selType === 'OSM'){
+            filesList = _.filter(filesList,{'isOSM':true});
+        } /*else if(selType === 'GEONAMES'){
+            //TBD
+        }*/
 
-        if(cntParam.osmCnt > 1) {
-            iD.ui.Alert('Multiple osm files can not be ingested. Please select one.','warning',new Error().stack);
-            return false;
-        }
-
-
-        if(totalFileSize > iD.data.hootConfig.ingest_size_threshold){
+/*        if(totalFileSize > iD.data.hootConfig.ingest_size_threshold){
             var thresholdInMb = Math.floor((1*iD.data.hootConfig.ingest_size_threshold)/1000000);
             if(!window.confirm('The total size of ingested files are greater than ingest threshold size of ' +
                 thresholdInMb + 'MB and it may have problem. Do you wish to continue?')){
                 return false;
             }
+        }*/
+
+        if (!_validateFileList(filesList)){return false;}
+
+        _.each(filesList, function(f){
+            // Add file name to form
+            _container.select('#importDirectoryFilesList')
+                .append('option')
+                .attr('value',f.name)
+                .text(f.name);
+
+            if(f.size > iD.data.hootConfig.ingest_size_threshold){
+            var thresholdInMb = Math.floor((1*iD.data.hootConfig.ingest_size_threshold)/1000000);
+            if(!window.confirm('The total size of ' + f.name + ' are greater than ingest threshold size of ' +
+                thresholdInMb + 'MB and it may have problem. Do you wish to continue?')){
+                
+                // Clear everything
+                d3.select('#importDirectoryFolderImport').value('');
+                d3.select('#importDirectoryNewFolderName').value('');
+                d3.select('#importDirectorySchema').value('');
+                _container.select('#importDirectoryFilesList').selectAll('option').remove();
+                return false;
+            }
         }
+        });
 
         return true;
     };
@@ -693,18 +726,18 @@ Hoot.control.utilities.importdirectory = function(context) {
         var importTypes = [];
         var fileTypes = {};
         fileTypes.value = 'FILE';
-        fileTypes.title = 'File (shp,zip,gdb.zip)';
+        fileTypes.title = 'Shapefile'; //'File (shp,zip,gdb.zip)';
         importTypes.push(fileTypes);
 
         var osmTypes = {};
         osmTypes.value = 'OSM';
-        osmTypes.title = 'File (osm,osm.zip,pbf)';
+        osmTypes.title = 'OSM or PBF';  //osm.zip,
         importTypes.push(osmTypes);
 
-        var geonameTypes = {};
+        /*var geonameTypes = {};
         geonameTypes.value = 'GEONAMES';
         geonameTypes.title = 'File (geonames,txt)';
-        importTypes.push(geonameTypes);
+        importTypes.push(geonameTypes);*/
 
         return importTypes;
     };
