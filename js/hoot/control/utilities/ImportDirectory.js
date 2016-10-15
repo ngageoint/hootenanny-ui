@@ -299,10 +299,48 @@ Hoot.control.utilities.importdirectory = function(context) {
         _importLoop(fileNames,_container,submitExp,x);
     };
 
+    /**
+    * @desc Highlights progress in list box of files to input
+    * @input optName is the text in list box
+    * @input progressPercent is the percent complete as an integer
+    **/
+
+    var _highlightOption = function(optName,status) {
+        if(status==='success'){
+            d3.select('#importDirectoryFilesList').select("option[value='" + optName + "']")
+                .style('background-color','rgba(51,204,51,1')
+                .style('font-weight','bold');
+        } else if(status==='progress'){
+            d3.select('#importDirectoryFilesList').select("option[value='" + optName + "']")
+                .style('background-color','rgba(255,255,102,1')
+                .style('font-weight','bold');
+        } else if (status==='error'){
+            d3.select('#importDirectoryFilesList').select("option[value='" + optName + "']")
+                .style('background-color','rgba(255,51,0,1')
+                .style('font-weight','bold');
+        } else {
+            d3.select('#importDirectoryFilesList').select("option[value='" + optName + "']")
+                .style('background-color','rgba(0,0,0,1')
+                .style('font-weight','normal');
+        } 
+
+        // now make sure we scroll to it
+        var itemIdx = _.map(d3.select('#importDirectoryFilesList').selectAll('option')[0],function(opt){return opt.value;}).indexOf(optName);
+        try{
+            var itemHeight = d3.select('#importDirectoryFilesList').select("option[value='" + optName + "']").property('clientHeight');
+            var scrollHeight = (itemIdx*itemHeight)+itemHeight;
+            var listboxHeight = d3.select('#importDirectoryFilesList').property('clientHeight') + d3.select('#importDirectoryFilesList').property('scrollTop');
+            if(scrollHeight > listboxHeight){
+                d3.select('#importDirectoryFilesList').property('scrollTop',scrollHeight-itemHeight);
+            }
+        } catch (err) {  }
+    };
+
     var _importLoop = function(fileNames, _container, submitExp,x){
+        _highlightOption(fileNames[x],'progress');
         var importFiles = _.filter(document.getElementById('ingestdirectoryuploader').files, function(file){
                 var fName = file.name.substring(0, file.name.length - 4);
-                if(file.name.toLowerCase().indexOf('.shp.xml') > -1){fName = file.name.substring(0, curFileName.length - 8);} 
+                if(file.name.toLowerCase().indexOf('.shp.xml') > -1){fName = file.name.substring(0, file.name.length - 8);} 
                 return fName === fileNames[x];
             });
 
@@ -335,8 +373,8 @@ Hoot.control.utilities.importdirectory = function(context) {
                     //determine if a new folder is being added
                     var pathId = context.hoot().model.folders.getfolderIdByName(pathname + '/' + newfoldername) || 0;
                     if(pathId===0){pathId = context.hoot().model.folders.getfolderIdByName(pathname) || context.hoot().model.folders.getfolderIdByName(newfoldername) || 0;}
-                    else{newfoldername='';} //we do not want to create a new folder
                     if(pathId===0){if(pathname==='root'){pathname='';}}                    
+                    else{newfoldername='';} //we do not want to create a new folder
 
                     var folderData = {};
                     folderData.folderName = newfoldername;
@@ -360,6 +398,12 @@ Hoot.control.utilities.importdirectory = function(context) {
                     });
 
                 }
+
+                var originName = _.clone(newLayerName);
+                if(originName.endsWith(d3.select('#importDirectoryCustomSuffix').value())){
+                    originName.substring(0,originName.length-d3.select('#importDirectoryCustomSuffix').value().length);
+                }
+                _highlightOption(originName,'success');
                 if(callback){callback();}
             } else if(status.info === 'uploaded'){
                 _jobIds = status.jobids;
@@ -368,7 +412,12 @@ Hoot.control.utilities.importdirectory = function(context) {
             } else if(status.info === 'failed'){
                 var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
                 iD.ui.Alert(errorMessage,'error',new Error().stack);
-                _container.remove();
+                var originName = _.clone(newLayerName);
+                if(originName.endsWith(d3.select('#importDirectoryCustomSuffix').value())){
+                    originName.substring(0,originName.length-d3.select('#importDirectoryCustomSuffix').value().length);
+                }
+                _highlightOption(originName,'error');
+                //_container.remove();
             }
 
         });
@@ -656,6 +705,9 @@ Hoot.control.utilities.importdirectory = function(context) {
                             if(!inputName){
                                 _container.select('#importDirectoryFolderImport').value(folderName);
                                 _container.select('#importDirectoryNewFolderName').value(folderName);  
+                            } else {
+                                _container.select('#importDirectoryFolderImport').value('');
+                                _container.select('#importDirectoryNewFolderName').value('');  
                             }
                         }
                     }
