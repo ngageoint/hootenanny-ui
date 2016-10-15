@@ -440,6 +440,7 @@ span.logo{
 
 .clipInfo {font-weight:bold;}
 .invalidName {border:1px solid red !important;}
+.validName {border:1px solid green !important;}
 
 /*** SETTINGS ***/
 #settingsSidebar{width:220px;}

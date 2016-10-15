@@ -124,6 +124,11 @@ Hoot.control.utilities.importdirectory = function(context) {
             id: 'importDirectorySchema',
             combobox: {'data':_importTranslations, 'command': _populateTranslations },
             inputtype: 'combobox'
+        },{
+            label: 'Custom Suffix',
+            placeholder: '',
+            id: 'importDirectoryCustomSuffix',
+            onchange: _validateSuffix
         }];
 
 
@@ -159,32 +164,53 @@ Hoot.control.utilities.importdirectory = function(context) {
     };
 
     /**
+    * @desc Valdiate list of files with custom suffix
+    **/
+    var _validateSuffix = function(){
+        var filesList = _.map(d3.select('#importDirectoryFilesList').selectAll('option')[0],function(opt){return opt.value;});
+        _validateFileList(filesList);
+    }
+
+    /**
     * @desc Validate list of files
     **/    
     var _validateFileList = function(filesList){
+         var validList = true;
+
          _.each(filesList, function(f){
+            var strValidate = f.name;
+            if(_container.select('#importDirectoryCustomSuffix').value()!==''){
+                strValidate += _container.select('#importDirectoryCustomSuffix').value();
+            }
+
             if(!_.isEmpty(_.filter(_.map(
                 _.pluck(context.hoot().model.layers.getAvailLayers(),'name'),
                     function(l){
                         return l.substring(l.lastIndexOf('|')+1);
                     }),
                 function(p){
-                    return p === f.name;
+                    return p === strValidate;
                 }))
             )
             {
-                iD.ui.Alert('A layer already exists with the name ' + f.name + '. Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
-                return false;
+                iD.ui.Alert('A layer already exists with the name ' + strValidate + '. Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
+                d3.select('#importDirectoryFilesList').classed('invalidName',true);
+                validList = false;
             }
 
-            var resp = context.hoot().checkForUnallowedChar(f.name);
+            var resp = context.hoot().checkForUnallowedChar(strValidate);
             if(resp !== true){
                 iD.ui.Alert(resp,'warning',new Error().stack);
-                return false;;
+                d3.select('#importDirectoryFilesList').classed('invalidName',true);
+                validList = false;;
             }
          });
 
-         return true;
+         if(validList){
+            d3.select('#importDirectoryFilesList').classed('invalidName',!validList).classed('validName',validList);   
+         }
+         
+         return validList;
     }
 
     /**
@@ -282,7 +308,12 @@ Hoot.control.utilities.importdirectory = function(context) {
                 return fName === fileNames[x];
             });
 
-        _importDirectoryJob(_container, fileNames[x], importFiles, submitExp, function(){
+        var newLayerName = fileNames[x];
+        if(_container.select('#importDirectoryCustomSuffix').value()!==''){
+            newLayerName += _container.select('#importDirectoryCustomSuffix').value();
+        }
+
+        _importDirectoryJob(_container, newLayerName, importFiles, submitExp, function(){
             x++;
             if(x < fileNames.length){_importLoop(fileNames, _container, submitExp,x);}
             else{_container.remove();}
@@ -687,7 +718,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             }
         }*/
 
-        if (!_validateFileList(filesList)){return false;}
+        _validateFileList(filesList); //if (!_validateFileList(filesList)){return false;}
 
         _.each(filesList, function(f){
             // Add file name to form
