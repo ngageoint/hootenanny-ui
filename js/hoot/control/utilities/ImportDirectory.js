@@ -206,9 +206,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             }
          });
 
-         if(validList){
-            d3.select('#importDirectoryFilesList').classed('invalidName',!validList).classed('validName',validList);   
-         }
+         d3.select('#importDirectoryFilesList').classed('invalidName',!validList).classed('validName',validList);   
          
          return validList;
     }
@@ -336,7 +334,7 @@ Hoot.control.utilities.importdirectory = function(context) {
                     
                     //determine if a new folder is being added
                     var pathId = context.hoot().model.folders.getfolderIdByName(pathname + '/' + newfoldername) || 0;
-                    if(pathId===0){pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;}
+                    if(pathId===0){pathId = context.hoot().model.folders.getfolderIdByName(pathname) || context.hoot().model.folders.getfolderIdByName(newfoldername) || 0;}
                     else{newfoldername='';} //we do not want to create a new folder
                     if(pathId===0){if(pathname==='root'){pathname='';}}                    
 
