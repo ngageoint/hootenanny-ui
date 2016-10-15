@@ -298,15 +298,16 @@ Hoot.control.utilities.importdirectory = function(context) {
             function(status){
             if(status.info === 'complete'){
                 if(_isCancel === false){
-                    var pathname = _container.select('#importDirectoryPathName').value();
-                    if(pathname===''){pathname=_container.select('#importDirectoryPathName').attr('placeholder');}
-                    if(pathname==='root'){pathname='';}
-                    var pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;
-
-                    //determine if a new folder is being added
                     var newfoldername = _container.select('#importDirectoryNewFolderName').value();
 
-                    // Check to see if this folder exists!
+                    var pathname = _container.select('#importDirectoryPathName').value();
+                    if(pathname===''){pathname=_container.select('#importDirectoryPathName').attr('placeholder');}
+                    
+                    //determine if a new folder is being added
+                    var pathId = context.hoot().model.folders.getfolderIdByName(pathname + '/' + newfoldername) || 0;
+                    if(pathId===0){pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;}
+                    else{newfoldername='';} //we do not want to create a new folder
+                    if(pathId===0){if(pathname==='root'){pathname='';}}                    
 
                     var folderData = {};
                     folderData.folderName = newfoldername;
