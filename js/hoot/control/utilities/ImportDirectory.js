@@ -128,7 +128,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             label: 'Custom Suffix',
             placeholder: '',
             id: 'importDirectoryCustomSuffix',
-            onchange: _validateSuffix
+            onchange: _validateInput
         }];
 
 
@@ -137,6 +137,7 @@ Hoot.control.utilities.importdirectory = function(context) {
                             text: 'Import',
                             location: 'right',
                             id: 'importDirectoryBtnContainer',
+                            buttonId: 'importDirectoryBtn',
                             ishidden: true,
                             onclick: _submitClickHandler
                         }
@@ -151,6 +152,25 @@ Hoot.control.utilities.importdirectory = function(context) {
     };
 
     /**
+    * @desc changes button to close
+    **/
+    var _closeContainer = function() {
+        d3.select('#importDirectoryBtn')
+            .text('Close')
+            .on('click',function(){
+                _container.remove();
+            });
+    };
+
+    /**
+    * @desc gets file list from options in import directory file list
+    **/
+    var _getFilesList = function(){
+        var filesList = _.map(d3.select('#importDirectoryFilesList').selectAll('option')[0],function(opt){return opt.value;});
+        return(filesList);
+    }
+
+    /**
     * @desc Validates user specified input.
     **/
     var _validateInput = function() {
@@ -161,15 +181,11 @@ Hoot.control.utilities.importdirectory = function(context) {
         } else {
             d3.select(this).classed('invalidName',false).attr('title',null);
         }
-    };
 
-    /**
-    * @desc Valdiate list of files with custom suffix
-    **/
-    var _validateSuffix = function(){
-        var filesList = _.map(d3.select('#importDirectoryFilesList').selectAll('option')[0],function(opt){return opt.value;});
-        _validateFileList(filesList);
-    }
+        if(this.id){if(this.id==='importDirectoryCustomSuffix'){
+            _validateFileList(_getFilesList());
+        }}
+    };
 
     /**
     * @desc Validate list of files
@@ -178,7 +194,18 @@ Hoot.control.utilities.importdirectory = function(context) {
          var validList = true;
 
          _.each(filesList, function(f){
-            var strValidate = f.name;
+            var strValidate = f;
+            var validName = true;
+
+            var selectedOpt = d3.select('#importDirectoryFilesList').select("option[value='" + strValidate + "']");
+
+            // Check for unallowed character without suffix (checking that separately)
+            var resp = context.hoot().checkForUnallowedChar(strValidate);
+            if(resp !== true){
+                selectedOpt.attr('title',resp);
+                validName = false;
+            }
+
             if(_container.select('#importDirectoryCustomSuffix').value()!==''){
                 strValidate += _container.select('#importDirectoryCustomSuffix').value();
             }
@@ -193,22 +220,15 @@ Hoot.control.utilities.importdirectory = function(context) {
                 }))
             )
             {
-                iD.ui.Alert('A layer already exists with the name ' + strValidate + '. Please remove the current layer or select a new name for this layer.','warning',new Error().stack);
-                d3.select('#importDirectoryFilesList').classed('invalidName',true);
-                validList = false;
+                selectedOpt.attr('title','A layer already exists with the name ' + strValidate + '.');
+                validName = false;
             }
 
-            var resp = context.hoot().checkForUnallowedChar(strValidate);
-            if(resp !== true){
-                iD.ui.Alert(resp,'warning',new Error().stack);
-                d3.select('#importDirectoryFilesList').classed('invalidName',true);
-                validList = false;;
-            }
+            selectedOpt.classed('invalidName',!validName);  
+            if(validName){selectedOpt.attr('title',null);}
          });
 
-         d3.select('#importDirectoryFilesList').classed('invalidName',!validList).classed('validName',validList);   
-         
-         return validList;
+         return true; //validList;
     }
 
     /**
@@ -216,31 +236,40 @@ Hoot.control.utilities.importdirectory = function(context) {
     **/
     var _submitClickHandler = function () {
         var submitExp = d3.select('#importDirectoryBtnContainer');
-        //check if layer with same name already exists...
-        if(!d3.selectAll('.invalidName').empty()){return;}
 
-        resp = context.hoot().checkForUnallowedChar(_container.select('#importDirectoryNewFolderName').value());
-        if(resp !== true){
-            iD.ui.Alert(resp,'warning',new Error().stack);
-            return;
-        }
-
-        var parId = context.hoot().model.folders.getfolderIdByName(_container.select('#importDirectoryPathName').value()) || 0;
-        resp = context.hoot().model.folders.duplicateFolderCheck({name:_container.select('#importDirectoryNewFolderName').value(),parentId:parId});
-        if(resp !== true){
-            iD.ui.Alert(resp,'warning',new Error().stack);
-            return;
-        }
-
-
-
+        // If already in progress, check to cancel
         var importText = submitExp.select('span').text();
-        if(importText === 'Import') {
-            _performImport(submitExp);
-        } else if(importText === 'Cancel'){
+        if(importText === 'Cancel'){
             _cancelJob();
-        }
+        } else if(importText === 'Import') {
+            // For sanity check, double check file list
+            _validateFileList(_getFilesList());
 
+            //check if layer with same name already exists...
+            if(!d3.selectAll('.invalidName').empty()){return;}
+
+            resp = context.hoot().checkForUnallowedChar(_container.select('#importDirectoryNewFolderName').value());
+            if(resp !== true){
+                _container.select('#importDirectoryNewFolderName').classed('invalidName',true);
+                iD.ui.Alert(resp,'warning',new Error().stack);
+                return;
+            } else {
+                _container.select('#importDirectoryNewFolderName').classed('invalidName',false);
+            }
+
+            var parId = context.hoot().model.folders.getfolderIdByName(_container.select('#importDirectoryPathName').value()) || 0;
+            resp = context.hoot().model.folders.duplicateFolderCheck({name:_container.select('#importDirectoryNewFolderName').value(),parentId:parId});
+            if(resp !== true){
+                _container.select('#importDirectoryNewFolderName').classed('invalidName',true);
+                iD.ui.Alert(resp,'warning',new Error().stack);
+                return;
+            } else {
+                _container.select('#importDirectoryNewFolderName').classed('invalidName',false);
+            }
+
+            d3.select('#importDirectoryBtn').text('Cancel');
+            _performImport(submitExp);
+        }
     };
 
     /**
@@ -248,55 +277,31 @@ Hoot.control.utilities.importdirectory = function(context) {
     * @param submitExp - Submit control container.
     **/
     var _performImport = function(submitExp) {
-        submitExp.select('span').text('Uploading ...');
-        submitExp
+        var fileNames = _getFilesList();
+        var fileNo = 0;
+
+        /*submitExp
             .insert('div',':first-child')
             .classed('_icon _loading row1 col1 fr',true)
-            .attr('id', 'importspin');
+            .attr('id', 'importspin');*/
 
         var progcont = submitExp.append('div');
         progcont.classed('form-field', true);
-
-        /*      
+              
         var prog = progcont.append('span').append('progress');
         prog.classed('form-field', true);
-        prog.value('0');
-        prog.attr('max', '100');
-        prog.attr('id', 'importprogress');
-        */
+        prog.value(fileNo.toString());
+        prog.attr('max', fileNames.length.toString());
+        prog.attr('id', 'dirImportProgress');
+        
 
         var progdiv = progcont.append('div');
-        progdiv.attr('id','importprogdiv')
+        progdiv.attr('id','importprogresstext')
             .style('max-height','24px')
             .style('overflow','hidden');
 
-        progdiv.append('text')
-            .attr('id', 'importprogresstext')
-            .attr('dy', '.3em').text('Initializing ...');
-
-       /*
-       var progShow = progcont.append('a');
-        progShow.attr('id','importprogressshow')
-            .classed('show-link',true)
-            .attr('expanded',false)
-            .text('Show More')
-            .on('click',function(){
-                var expanded = !JSON.parse(d3.select(this).attr('expanded'));
-                d3.select(this).attr('expanded',expanded);
-                if(expanded){
-                    d3.select('#importprogdiv').style('max-height',undefined).style({'min-height':'48px','max-height':'300px','overflow-y':'auto'});
-                    d3.select(this).text('Show Less');
-                } else {
-                    d3.select('#importprogdiv').style('min-height',undefined).style({'min-height':'48px','max-height':'48px','overflow-y':'auto'});
-                    d3.select(this).text('Show More');
-                }
-            });
-        */
-
         // Loop through file list and submit import from here for each one
-        var fileNames = _.map(d3.select('#importDirectoryFilesList').selectAll('option')[0],function(opt){return opt.value;});
-        var x = 0;
-        _importLoop(fileNames,_container,submitExp,x);
+        _importLoop(fileNames,_container,submitExp,fileNo);
     };
 
     /**
@@ -325,7 +330,8 @@ Hoot.control.utilities.importdirectory = function(context) {
         } 
 
         // now make sure we scroll to it
-        var itemIdx = _.map(d3.select('#importDirectoryFilesList').selectAll('option')[0],function(opt){return opt.value;}).indexOf(optName);
+        
+        var itemIdx = _getFilesList().indexOf(optName);
         try{
             var itemHeight = d3.select('#importDirectoryFilesList').select("option[value='" + optName + "']").property('clientHeight');
             var scrollHeight = (itemIdx*itemHeight)+itemHeight;
@@ -336,23 +342,33 @@ Hoot.control.utilities.importdirectory = function(context) {
         } catch (err) {  }
     };
 
-    var _importLoop = function(fileNames, _container, submitExp,x){
-        _highlightOption(fileNames[x],'progress');
+    var _importLoop = function(fileNames, _container, submitExp,fileNo){
+        // If in process of cancelling or closing, return!
+        var btnText = d3.select('#importDirectoryBtn').text();
+        if(btnText==='Cancelling Jobs' || btnText === 'Close'){
+            return;
+        }
+
+        _highlightOption(fileNames[fileNo],'progress');
+
+        d3.select('#dirImportProgress').attr('value',fileNo.toString());
+        d3.select('#importprogresstext').text('Importing ' + fileNames[fileNo]);
+
         var importFiles = _.filter(document.getElementById('ingestdirectoryuploader').files, function(file){
                 var fName = file.name.substring(0, file.name.length - 4);
                 if(file.name.toLowerCase().indexOf('.shp.xml') > -1){fName = file.name.substring(0, file.name.length - 8);} 
-                return fName === fileNames[x];
+                return fName === fileNames[fileNo];
             });
 
-        var newLayerName = fileNames[x];
+        var newLayerName = fileNames[fileNo];
         if(_container.select('#importDirectoryCustomSuffix').value()!==''){
             newLayerName += _container.select('#importDirectoryCustomSuffix').value();
         }
 
         _importDirectoryJob(_container, newLayerName, importFiles, submitExp, function(){
-            x++;
-            if(x < fileNames.length){_importLoop(fileNames, _container, submitExp,x);}
-            else{_container.remove();}
+            fileNo++;
+            if(fileNo < fileNames.length){_importLoop(fileNames, _container, submitExp,fileNo);}
+            else{_closeContainer();}
         });
     };
 
@@ -417,7 +433,6 @@ Hoot.control.utilities.importdirectory = function(context) {
                     originName.substring(0,originName.length-d3.select('#importDirectoryCustomSuffix').value().length);
                 }
                 _highlightOption(originName,'error');
-                //_container.remove();
             }
 
         });
@@ -428,6 +443,7 @@ Hoot.control.utilities.importdirectory = function(context) {
     **/
     var _cancelJob = function() {
         _isCancel = true;
+        d3.select('#importDirectoryBtn').text('Cancelling Jobs');
         if(_jobIds && _mapIds){
             for(var i=0; i<_jobIds.length; i++){
                 var curJobId = _jobIds[i];
@@ -466,7 +482,7 @@ Hoot.control.utilities.importdirectory = function(context) {
 
             //var directorytable = d3.select('#directorytable');
             //context.hoot().view.utilities.directory.populateDirectorysSVG(directorytable);
-            _container.remove();
+            _closeContainer();
         });
     };
 
@@ -746,12 +762,14 @@ Hoot.control.utilities.importdirectory = function(context) {
                 if(grp.isSHP){
                     if(!grp.isSHX || !grp.isDBF){isValid = false;}
                 } else {isValid = false;}
-            });
 
-            if(!isValid){
-                iD.ui.Alert('Missing shapefile dependency for ' + f.name + '. Import requires shp, shx and dbf.','warning',new Error().stack );
-                return false;
-            }
+                if(!isValid){
+                    d3.select('#importDirectoryFilesList').select("option[value='" + f.name + "']")
+                        .classed('invalidName',true)
+                        .attr('title','Missing shapefile dependency for ' + f.name + '. Import requires shp, shx and dbf.');
+                    return false;
+                }
+            });
 
             filesList = _.filter(filesList,{'isSHP':true,'isDBF':true,'isSHX':true});
         } else if(selType === 'OSM'){
@@ -846,10 +864,6 @@ Hoot.control.utilities.importdirectory = function(context) {
             }
         });
     };
-
-
-
-
 
     return d3.rebind(_instance, _events, 'on');
 };

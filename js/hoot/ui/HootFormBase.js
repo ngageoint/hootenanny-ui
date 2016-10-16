@@ -374,6 +374,10 @@ Hoot.ui.hootformbase = function ()
                     btnContainer.attr('id', m.id);
                 }
 
+                if(m.buttonId){
+                    btnContainer.select('span').attr('id',m.buttonId);
+                }
+
                 if(m.ishidden === true) {
                     btnContainer.classed('hidden', true);
                 }
