@@ -43,6 +43,8 @@ Hoot.control.utilities.importdirectory = function(context) {
     * @param incomingFolder - User selected folder.
     **/
     var _createContainer = function(trans,incomingFolder) {
+        _isCancel = false;
+
         _trans = trans;
         if(_trans.length === 1){
             var emptyObj = {};
@@ -52,7 +54,7 @@ Hoot.control.utilities.importdirectory = function(context) {
         }
 
         _importTranslations = [];
-        _importTranslationsGeonames = [];
+        /*_importTranslationsGeonames = [];*/
         _importTranslationsOsm = [];
 
         _bInfo = context.hoot().getBrowserInfo();
@@ -62,8 +64,8 @@ Hoot.control.utilities.importdirectory = function(context) {
             _bInfo.version = 'Unknown';
         }
 
-        _instance.getImportTranslations(_trans, _importTranslations,
-                _importTranslationsGeonames, _importTranslationsOsm);
+        _instance.getImportTranslations(_trans, _importTranslations, _importTranslationsOsm);
+                /*_importTranslationsGeonames, */
 
         var importTypes = _instance.getImportTypes();
 
@@ -167,8 +169,8 @@ Hoot.control.utilities.importdirectory = function(context) {
     **/
     var _getFilesList = function(){
         var filesList = _.map(d3.select('#importDirectoryFilesList').selectAll('option')[0],function(opt){return opt.value;});
-        return(filesList);
-    }
+        return filesList;
+    };
 
     /**
     * @desc Validates user specified input.
@@ -194,13 +196,11 @@ Hoot.control.utilities.importdirectory = function(context) {
     * @desc Validate list of files
     **/    
     var _validateFileList = function(filesList){
-         var validList = true;
-
          _.each(filesList, function(f){
             var strValidate = f.name || f;
             var validName = true;
 
-            var selectedOpt = d3.select('#importDirectoryFilesList').select("option[value='" + strValidate + "']");
+            var selectedOpt = d3.select('#importDirectoryFilesList').select('option[value="' + strValidate + '"]');
 
             // Check for unallowed character without suffix (checking that separately)
             var resp = context.hoot().checkForUnallowedChar(strValidate);
@@ -231,8 +231,8 @@ Hoot.control.utilities.importdirectory = function(context) {
             if(validName){selectedOpt.attr('title',null);}
          });
 
-         return true; //validList;
-    }
+         return true; 
+    };
 
     /**
     * @desc Ingest request click handler.
@@ -251,7 +251,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             //check if layer with same name already exists...
             if(!d3.selectAll('.invalidName').empty()){return;}
 
-            resp = context.hoot().checkForUnallowedChar(_container.select('#importDirectoryNewFolderName').value());
+            var resp = context.hoot().checkForUnallowedChar(_container.select('#importDirectoryNewFolderName').value());
             if(resp !== true){
                 _container.select('#importDirectoryNewFolderName').classed('invalidName',true);
                 iD.ui.Alert(resp,'warning',new Error().stack);
@@ -298,10 +298,11 @@ Hoot.control.utilities.importdirectory = function(context) {
         prog.attr('id', 'dirImportProgress');
         
 
-        var progdiv = progcont.append('div');
-        progdiv.attr('id','importprogresstext')
+        progcont.append('div')        
             .style('max-height','24px')
-            .style('overflow','hidden');
+            .style('overflow','hidden')
+            .append('text')
+            .attr('id','importprogresstext');
 
         // Loop through file list and submit import from here for each one
         _importLoop(fileNames,_container,submitExp,fileNo);
@@ -314,21 +315,19 @@ Hoot.control.utilities.importdirectory = function(context) {
     **/
 
     var _highlightOption = function(optName,status) {
+        var selectedOpt = d3.select('#importDirectoryFilesList').select('option[value="' + optName + '"]');
+
         if(status==='success'){
-            d3.select('#importDirectoryFilesList').select("option[value='" + optName + "']")
-                .style('background-color','rgba(51,204,51,1')
+            selectedOpt.style('background-color','rgba(51,204,51,1')
                 .style('font-weight','bold');
         } else if(status==='progress'){
-            d3.select('#importDirectoryFilesList').select("option[value='" + optName + "']")
-                .style('background-color','rgba(255,255,102,1')
+            selectedOpt.style('background-color','rgba(255,255,102,1')
                 .style('font-weight','bold');
         } else if (status==='error'){
-            d3.select('#importDirectoryFilesList').select("option[value='" + optName + "']")
-                .style('background-color','rgba(255,51,0,1')
+            selectedOpt.style('background-color','rgba(255,51,0,1')
                 .style('font-weight','bold');
         } else {
-            d3.select('#importDirectoryFilesList').select("option[value='" + optName + "']")
-                .style('background-color','rgba(0,0,0,1')
+            selectedOpt.style('background-color','rgba(0,0,0,1')
                 .style('font-weight','normal');
         } 
 
@@ -336,13 +335,13 @@ Hoot.control.utilities.importdirectory = function(context) {
         
         var itemIdx = _getFilesList().indexOf(optName);
         try{
-            var itemHeight = d3.select('#importDirectoryFilesList').select("option[value='" + optName + "']").property('clientHeight');
+            var itemHeight = d3.select('#importDirectoryFilesList').select('option[value="' + optName + '"]').property('clientHeight');
             var scrollHeight = (itemIdx*itemHeight)+itemHeight;
             var listboxHeight = d3.select('#importDirectoryFilesList').property('clientHeight') + d3.select('#importDirectoryFilesList').property('scrollTop');
             if(scrollHeight > listboxHeight){
                 d3.select('#importDirectoryFilesList').property('scrollTop',scrollHeight-itemHeight);
             }
-        } catch (err) {  }
+        } catch (err) { return false;  }
     };
 
     var _importLoop = function(fileNames, _container, submitExp,fileNo){
@@ -354,8 +353,13 @@ Hoot.control.utilities.importdirectory = function(context) {
 
         _highlightOption(fileNames[fileNo],'progress');
 
+        var newLayerName = fileNames[fileNo];
+        if(_container.select('#importDirectoryCustomSuffix').value()!==''){
+            newLayerName += _container.select('#importDirectoryCustomSuffix').value();
+        }
+
         d3.select('#dirImportProgress').attr('value',fileNo.toString());
-        d3.select('#importprogresstext').text('Importing ' + fileNames[fileNo]);
+        d3.select('#importprogresstext').text('Importing ' + newLayerName);
 
         var importFiles = _.filter(document.getElementById('ingestdirectoryuploader').files, function(file){
                 var fName = file.name.substring(0, file.name.length - 4);
@@ -363,15 +367,15 @@ Hoot.control.utilities.importdirectory = function(context) {
                 return fName === fileNames[fileNo];
             });
 
-        var newLayerName = fileNames[fileNo];
-        if(_container.select('#importDirectoryCustomSuffix').value()!==''){
-            newLayerName += _container.select('#importDirectoryCustomSuffix').value();
-        }
-
         _importDirectoryJob(_container, newLayerName, importFiles, submitExp, function(){
             fileNo++;
             if(fileNo < fileNames.length){_importLoop(fileNames, _container, submitExp,fileNo);}
-            else{_closeContainer();}
+            else{
+                //max out progress
+                var maxProg = d3.select('#dirImportProgress').attr('max');
+                d3.select('#dirImportProgress').attr('value',maxProg);
+                _closeContainer();
+            }
         });
     };
 
@@ -420,7 +424,7 @@ Hoot.control.utilities.importdirectory = function(context) {
 
                 var originName = _.clone(newLayerName);
                 if(originName.endsWith(d3.select('#importDirectoryCustomSuffix').value())){
-                    originName.substring(0,originName.length-d3.select('#importDirectoryCustomSuffix').value().length);
+                    originName = originName.substring(0,originName.length-d3.select('#importDirectoryCustomSuffix').value().length);
                 }
                 _highlightOption(originName,'success');
                 if(callback){callback();}
@@ -431,9 +435,9 @@ Hoot.control.utilities.importdirectory = function(context) {
             } else if(status.info === 'failed'){
                 var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
                 iD.ui.Alert(errorMessage,'error',new Error().stack);
-                var originName = _.clone(newLayerName);
+                originName = _.clone(newLayerName);
                 if(originName.endsWith(d3.select('#importDirectoryCustomSuffix').value())){
-                    originName.substring(0,originName.length-d3.select('#importDirectoryCustomSuffix').value().length);
+                    originName = originName.substring(0,originName.length-d3.select('#importDirectoryCustomSuffix').value().length);
                 }
                 _highlightOption(originName,'error');
             }
@@ -721,7 +725,6 @@ Hoot.control.utilities.importdirectory = function(context) {
                     if(folderName.length > 4){
                         // Do not allow FGDB
                         var ext = folderName.substring(folderName.length - 4);
-                        var fgdbName = folderName.substring(0, folderName.length - 4);
                         if(ext.toLowerCase() === '.gdb'){
                             iD.ui.Alert('Multiple FGDB import is currently not supported.','warning',new Error().stack);
                             return;
@@ -761,7 +764,7 @@ Hoot.control.utilities.importdirectory = function(context) {
     * @param cntParam - Selected file type count transfer object.
     * @param totalFileSize - total physical size of selected files.
     **/
-    var _validateLoaded = function(selType, filesList, cntParam, totalFileSize) {
+    var _validateLoaded = function(selType, filesList) {
         //Filter based on selType, then add or remove from filesList
         if(selType === 'FILE'){            
             var isValid = true;
@@ -774,7 +777,7 @@ Hoot.control.utilities.importdirectory = function(context) {
                 } else {isValid = false;}
 
                 if(!isValid){
-                    d3.select('#importDirectoryFilesList').select("option[value='" + f.name + "']")
+                    d3.select('#importDirectoryFilesList').select('option[value="' + f.name + '"]')
                         .classed('invalidName',true)
                         .attr('title','Missing shapefile dependency for ' + f.name + '. Import requires shp, shx and dbf.');
                     return false;
@@ -861,11 +864,10 @@ Hoot.control.utilities.importdirectory = function(context) {
     /**
     * @desc Helper function to return import types.
     **/
-    _instance.getImportTranslations = function(trans, importTranslations,
-        importTranslationsGeonames, importTranslationsOsm) {
+    _instance.getImportTranslations = function(trans, importTranslations, importTranslationsOsm) {
         _.each(trans, function(t){
             if(t.NAME === 'GEONAMES'){
-                importTranslationsGeonames.push(t);
+                //importTranslationsGeonames.push(t);
             } else if(t.NAME === 'OSM'){
                 var emptyObj = {};
                 emptyObj.NAME = 'NONE';
