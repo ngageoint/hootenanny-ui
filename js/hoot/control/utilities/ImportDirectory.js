@@ -178,7 +178,7 @@ Hoot.control.utilities.importdirectory = function(context) {
         if(this.id){ selectedInput = d3.select('#' + this.id); }
 
         //ensure output name is valid
-        var resp = context.hoot().checkForUnallowedChar(this.value);
+        var resp = context.hoot().checkForUnallowedChar(selectedInput.value());
         if(resp !== true){
             selectedInput.classed('invalidName',true).attr('title',resp);
         } else {
@@ -574,9 +574,15 @@ Hoot.control.utilities.importdirectory = function(context) {
         .attr('readonly',true)
         .call(comboImportType)
         .on('change', function(){
-            d3.select('#importDirectoryFolderImport').value('');
-            d3.select('#importDirectoryNewFolderName').value('');
-            d3.select('#importDirectorySchema').value('');
+            // reset inputs
+            var inputs = ['importDirectoryFolderImport','importDirectoryNewFolderName','importDirectorySchema'];
+            _.each(inputs,function(i){
+                d3.select('#' + i).value('')
+                    .classed('invalidName',false)
+                    .classed('validName',false)
+                    .attr('title',null);
+            });
+
             _container.select('#importDirectoryFilesList').selectAll('option').remove();
             var selectedType = _container.select('#importDirectoryImportType').value();
             var typeName = _getTypeName(selectedType);
@@ -789,6 +795,12 @@ Hoot.control.utilities.importdirectory = function(context) {
                 return false;
             }
         }*/
+
+        if(filesList.length===0){
+            iD.ui.Alert('There are no files matching the selected import type in this directory.','warning',new Error().stack);
+            return false;
+        }
+
 
         _.each(filesList, function(f){
             // Add file name to form
