@@ -374,6 +374,7 @@ Hoot.control.utilities.importdirectory = function(context) {
                 //max out progress
                 var maxProg = d3.select('#dirImportProgress').attr('max');
                 d3.select('#dirImportProgress').attr('value',maxProg);
+                d3.select('#importprogresstext').text('Import Complete!');
                 _closeContainer();
             }
         });
