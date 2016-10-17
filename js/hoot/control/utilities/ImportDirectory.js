@@ -317,18 +317,20 @@ Hoot.control.utilities.importdirectory = function(context) {
     var _highlightOption = function(optName,status) {
         var selectedOpt = d3.select('#importDirectoryFilesList').select('option[value="' + optName + '"]');
 
+
+
         if(status==='success'){
-            selectedOpt.style('background-color','rgba(51,204,51,1')
-                .style('font-weight','bold');
+            selectedOpt.classed('importSuccess',true)
+                .classed('importProgress',false);
         } else if(status==='progress'){
-            selectedOpt.style('background-color','rgba(255,255,102,1')
-                .style('font-weight','bold');
+            selectedOpt.classed('importProgress',true);
         } else if (status==='error'){
-            selectedOpt.style('background-color','rgba(255,51,0,1')
-                .style('font-weight','bold');
+            selectedOpt.classed('importError',true)
+                .classed('importProgress',false);
         } else {
-            selectedOpt.style('background-color','rgba(0,0,0,1')
-                .style('font-weight','normal');
+            selectedOpt.classed('importSuccess',false)
+                .classed('importProgress',false)
+                .classed('importError',false);
         } 
 
         // now make sure we scroll to it
