@@ -174,12 +174,15 @@ Hoot.control.utilities.importdirectory = function(context) {
     * @desc Validates user specified input.
     **/
     var _validateInput = function() {
+        var selectedInput = this;
+        if(this.id){ selectedInput = d3.select('#' + this.id); }
+
         //ensure output name is valid
         var resp = context.hoot().checkForUnallowedChar(this.value);
         if(resp !== true){
-            d3.select(this).classed('invalidName',true).attr('title',resp);
+            selectedInput.classed('invalidName',true).attr('title',resp);
         } else {
-            d3.select(this).classed('invalidName',false).attr('title',null);
+            selectedInput.classed('invalidName',false).attr('title',null);
         }
 
         if(this.id){if(this.id==='importDirectoryCustomSuffix'){
@@ -194,7 +197,7 @@ Hoot.control.utilities.importdirectory = function(context) {
          var validList = true;
 
          _.each(filesList, function(f){
-            var strValidate = f;
+            var strValidate = f.name || f;
             var validName = true;
 
             var selectedOpt = d3.select('#importDirectoryFilesList').select("option[value='" + strValidate + "']");
@@ -721,6 +724,7 @@ Hoot.control.utilities.importdirectory = function(context) {
                             if(!inputName){
                                 _container.select('#importDirectoryFolderImport').value(folderName);
                                 _container.select('#importDirectoryNewFolderName').value(folderName);  
+                                d3.select('#importDirectoryNewFolderName').call(_validateInput);
                             } else {
                                 _container.select('#importDirectoryFolderImport').value('');
                                 _container.select('#importDirectoryNewFolderName').value('');  
@@ -786,8 +790,6 @@ Hoot.control.utilities.importdirectory = function(context) {
             }
         }*/
 
-        _validateFileList(filesList); //if (!_validateFileList(filesList)){return false;}
-
         _.each(filesList, function(f){
             // Add file name to form
             _container.select('#importDirectoryFilesList')
@@ -809,6 +811,8 @@ Hoot.control.utilities.importdirectory = function(context) {
             }
         }
         });
+
+        _validateFileList(filesList);
 
         return true;
     };
