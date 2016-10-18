@@ -148,6 +148,7 @@ Hoot.control.utilities.importdirectory = function(context) {
 
         var meta = {};
         meta.title = 'Import Directory';
+        meta.subtitle = 'Select multiple files from one directory to import.';
         meta.form = d_form;
         meta.button = d_btn;
 

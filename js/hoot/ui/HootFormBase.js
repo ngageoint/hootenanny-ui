@@ -26,6 +26,7 @@ Hoot.ui.hootformbase = function ()
             var btnMeta = formMetaData.button;
             var formMeta = formMetaData.form;
             var formTitle = formMetaData.title;
+            var formSubtitle = formMetaData.subtitle;
             if(!btnMeta || !formMeta) {
                 throw new Error('Failed to create UI. Invalid form meta data.');
             }
@@ -33,9 +34,14 @@ Hoot.ui.hootformbase = function ()
             if(!formTitle){
                 formTitle = 'Hootenanny Form';
             }
+
+            if(!formSubtitle){
+                formSubtitle = '';
+            }
+
             container = _createContainer(containerId);
             var formDiv = _createFormDiv(container);
-            var form = _createForm(container, formDiv, formTitle);
+            var form = _createForm(container, formDiv, formTitle, formSubtitle);
             _createFieldSet(form, formMeta);
             _createButtons(btnMeta, formDiv);
 
@@ -76,19 +82,22 @@ Hoot.ui.hootformbase = function ()
     * @param formTitle - dialog title
     * @return returns created form.
     **/
-    var _createForm = function(container, formDiv, formTitle) {
+    var _createForm = function(container, formDiv, formTitle, formSubtitle) {
 
         var form = formDiv.append('form');
-        form.classed('round space-bottom1 importableLayer', true)
-                .append('div')
-                .classed('big pad1y keyline-bottom space-bottom2', true)
-                .append('h4')
-                .text(formTitle)
-                .append('div')
-                .classed('fr _icon x point', true)
-                .on('click', function () {
-                    container.remove();
-                });
+        var headerDiv = form.classed('round space-bottom1 importableLayer', true)
+            .append('div')
+            .classed('big pad1y keyline-bottom space-bottom2', true);
+        headerDiv.append('h4')
+            .text(formTitle)
+            .append('div')
+            .classed('fr _icon x point', true)
+            .on('click', function () {
+                container.remove();
+            });
+        if(formSubtitle.length>0){
+            headerDiv.append('text').text(formSubtitle);
+        }
         return form;
     };
 
