@@ -330,12 +330,21 @@ Hoot.ui.hootformbase = function ()
 
             if(a.directory!==undefined){
                 if(a.directory){
-                    d3.select('#ingestdirectoryuploader')
-                        .property('multiple', false)
-                        .attr('accept', null)
-                        .attr('webkitdirectory', '')
-                        .attr('directory', '');
-                }
+                	//If Firefox, change to multiple, not directory
+                	if(a.browser){
+                		if(a.browser.name.substring(0,3) === 'Chr') {
+	                    d3.select('#ingestdirectoryuploader')
+	                        .property('multiple', false)
+	                        .attr('accept', null)
+	                        .attr('webkitdirectory', '')
+	                        .attr('directory', '');
+                    } else if (a.browser.name === 'Firefox') {
+	                    d3.select('#ingestdirectoryuploader')
+	                        .property('multiple', true)
+	                        .attr('accept', '.shp,.shx,.dbf,.prj,.osm,.pbf');
+                    }
+                  }
+              	}
             }
 
             if(a.onchange) {

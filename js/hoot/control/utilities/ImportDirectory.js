@@ -100,7 +100,8 @@ Hoot.control.utilities.importdirectory = function(context) {
             inputtype:'multipart',
             onchange: _multipartHandler,
             multipartid: 'ingestdirectoryuploader',
-            directory: true
+            directory: true,
+            browser: _bInfo
         },
         {
             label: 'Import Files List',
