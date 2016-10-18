@@ -249,13 +249,53 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .style({'display':'inline-block','font-weight':'bold'})
             .text('Suffix for all layer names: ');
 
+        var suffixTitle = 'To not use a suffix, leave blank.';
         suffixDiv.append('div')
             .style('display','inline-block')
             .classed('pad1x',true)
             .append('input')
             .attr('type','text')
             .style('display','inline-block')
-            .attr({'name':'customSuffix','id':'customSuffix','title':'To not use a suffix, leave blank.'});
+            .attr({'name':'customSuffix','id':'customSuffix','title':suffixTitle})
+            .on('change',function(){
+            	// Check suffix for unallowed characters
+            	var resp = context.hoot().checkForUnallowedChar(this.value);
+			        if(resp !== true){
+			        	d3.select(this).attr('title',resp)
+			        		.classed('invalidName',true);
+			        	return false;
+			        } else {
+			        	d3.select(this).attr('title',suffixTitle)
+			        		.classed('invalidName',false);			        	
+			        }
+
+			    // Loop through rows to determine if layer with same name already exists
+            	var rowArray = d3.select('#bulkImportTable').selectAll('tr[id^="row-"]');
+        			_.each(rowArray[0], function(row){
+        				var r = d3.select(row); 
+                        _validateInput(r);
+        				/*var lyrName = r.select('.reset.LayerName').value() + d3.select('#customSuffix').value();
+
+        				if(!_.isEmpty(_.filter(_.map(
+			                _.pluck(context.hoot().model.layers.getAvailLayers(),'name'),
+			                    function(l){
+			                        return l.substring(l.lastIndexOf('|')+1);
+			                    }),
+			                function(p){
+			                    return p === lyrName;
+			                }))
+			            )
+			            {
+			                r.select('.reset.LayerName')
+			                	.attr('title','A layer already exists with the name ' + lyrName + '.')
+			                	.classed('invalidName',true);		                
+			            } else {
+			            	r.select('.reset.LayerName')
+			                	.attr('title',null)
+			                	.classed('invalidName',false);		                
+			            }*/
+        			});
+            });
     };
 
     /**
