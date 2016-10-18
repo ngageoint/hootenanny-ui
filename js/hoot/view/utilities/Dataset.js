@@ -14,8 +14,7 @@ Hoot.view.utilities.dataset = function(context)
     hoot_view_utilities_dataset.createContent = function(form){
         var items = [];
         items.push(
-            {title: 'Import Single Dataset', icon: 'layers', class: 'import-add-dataset'},
-            {title: 'Import Multiple Datasets', icon: 'layers', class: 'import-bulk-dataset'},
+            {title: 'Import Single Dataset', icon: 'layers', class: 'import-add-dataset', contextmenu: 'bulkimport'},
             {title: 'Import Directory', icon: 'folder', class: 'import-directory'},
             {title: 'Add Folder',icon: 'folder', class: 'import-add-folder'},
             {title: 'Refresh Datasets', icon: 'refresh', class: 'import-refresh-layers'}
@@ -56,6 +55,14 @@ Hoot.view.utilities.dataset = function(context)
 
                     this.blur();
                 }
+            })
+            .on('contextmenu',function(d){
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+
+                if(d.contextmenu){
+                    _createContextMenu(d.contextmenu);
+                }
             });
 
         buttons.each(function(d){
@@ -70,6 +77,49 @@ Hoot.view.utilities.dataset = function(context)
         .attr('id','datasettable')
             .classed('col12 fill-white small strong row10 overflow keyline-all', true)
             .call(hoot_view_utilities_dataset.populateDatasetsSVG);
+    };
+
+    var _createContextMenu = function(type) {
+        if(type==='bulkimport'){
+                            var items = [{title:'Bulk Import',icon:'plus',action:'bulkImport'}];
+                d3.select('html').append('div').attr('class', 'dataset-options-menu');
+
+                 var menuItem =  d3.selectAll('.dataset-options-menu')
+                    .html('')
+                    .append('ul')
+                    .selectAll('li')
+                    .data(items).enter()
+                    .append('li')
+                    .attr('class',function(item){return item.icon + ' dataset-option';})
+                    .on('click' , function(item) {
+                        switch (item.action) {
+                        case 'bulkImport': hoot_view_utilities_dataset.importDatasets(); break;
+                        default: break;
+                        }
+                        d3.select('.dataset-options-menu').remove();
+                   });
+
+                 menuItem.append('span').attr('class',function(item){return item.icon + ' icon icon-pre-text';});
+                 menuItem.append('span').text(function(item) { return item.title; });
+
+                 d3.select('.dataset-options-menu').style('display', 'none');
+
+                 // show the context menu
+                 d3.select('.dataset-options-menu')
+                    .style('left', function(){return d3.event.clientX +'px'||'0px';})
+                     .style('top', function(){return d3.event.clientY +'px'||'0px';})
+                     .style('display', 'block');
+
+                 //close menu
+                 var firstOpen = true;
+                 d3.select('html').on('click.dataset-options-menu',function(){
+                     if(firstOpen){
+                        firstOpen=false;
+                     } else {
+                         d3.select('.dataset-options-menu').style('display', 'none');
+                     }
+                 });
+        }
     };
 
     hoot_view_utilities_dataset.deleteDataset = function(d,container){
