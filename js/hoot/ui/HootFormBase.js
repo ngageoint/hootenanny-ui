@@ -26,6 +26,7 @@ Hoot.ui.hootformbase = function ()
             var btnMeta = formMetaData.button;
             var formMeta = formMetaData.form;
             var formTitle = formMetaData.title;
+            var formSubtitle = formMetaData.subtitle;
             if(!btnMeta || !formMeta) {
                 throw new Error('Failed to create UI. Invalid form meta data.');
             }
@@ -33,9 +34,14 @@ Hoot.ui.hootformbase = function ()
             if(!formTitle){
                 formTitle = 'Hootenanny Form';
             }
+
+            if(!formSubtitle){
+                formSubtitle = '';
+            }
+
             container = _createContainer(containerId);
             var formDiv = _createFormDiv(container);
-            var form = _createForm(container, formDiv, formTitle);
+            var form = _createForm(container, formDiv, formTitle, formSubtitle);
             _createFieldSet(form, formMeta);
             _createButtons(btnMeta, formDiv);
 
@@ -76,19 +82,22 @@ Hoot.ui.hootformbase = function ()
     * @param formTitle - dialog title
     * @return returns created form.
     **/
-    var _createForm = function(container, formDiv, formTitle) {
+    var _createForm = function(container, formDiv, formTitle, formSubtitle) {
 
         var form = formDiv.append('form');
-        form.classed('round space-bottom1 importableLayer', true)
-                .append('div')
-                .classed('big pad1y keyline-bottom space-bottom2', true)
-                .append('h4')
-                .text(formTitle)
-                .append('div')
-                .classed('fr _icon x point', true)
-                .on('click', function () {
-                    container.remove();
-                });
+        var headerDiv = form.classed('round space-bottom1 importableLayer', true)
+            .append('div')
+            .classed('big pad1y keyline-bottom space-bottom2', true);
+        headerDiv.append('h4')
+            .text(formTitle)
+            .append('div')
+            .classed('fr _icon x point', true)
+            .on('click', function () {
+                container.remove();
+            });
+        if(formSubtitle.length>0){
+            headerDiv.append('text').text(formSubtitle);
+        }
         return form;
     };
 
@@ -124,7 +133,8 @@ Hoot.ui.hootformbase = function ()
                         _createTextArea(a, field);
                     } else if(a.inputtype === 'combobox') {
                         _createCombobox(a, field);
-
+                    } else if(a.inputtype === 'listbox') {
+                        _createListbox(a, field);
                     } else if(a.inputtype === 'checkbox'){
                         var chkHtml = '<label class="pad1x pad0y round-top ' + a.checkbox + '" style="opacity: 1;">';
                         chkHtml += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">'+a.label+'</label>';
@@ -233,6 +243,30 @@ Hoot.ui.hootformbase = function ()
     };
 
     /**
+    * @desc Create listbox form field.
+    * @param a - field meta data.
+    * @param field - fields container div
+    **/
+    var _createListbox = function(a, field) {
+        var fieldDiv = field
+        .classed('contain', true);
+
+        var inputField =
+        fieldDiv
+        .append('select')
+        .style('height','90px')
+        .attr('size', '5')
+        .attr('disabled',true)
+        .attr('class', function (field) {
+            return field.className;
+        });
+
+        if(a.id) {
+            inputField.attr('id', a.id);
+        }
+    };
+
+    /**
     * @desc Create text form field.
     * @param a - field meta data.
     * @param field - fields container div
@@ -285,7 +319,8 @@ Hoot.ui.hootformbase = function ()
 
             var wrapper = mpDiv
                 .append('span')
-                .classed('point keyline-left pin-right pad0x pad0y hidden', true)
+                .classed('point keyline-left pin-right pad0x pad0y', true)
+                .classed('hidden', true)
                 .call(iD.svg.Icon('#icon-folder'))
                 .attr('id', a.multipartid + 'spancontainer');
 
@@ -301,6 +336,25 @@ Hoot.ui.hootformbase = function ()
                     'width': '31px',
                     'height': '31px'
                 });
+
+            if(a.directory!==undefined){
+                if(a.directory){
+                //If Firefox, change to multiple, not directory
+                if(a.browser){
+                  if(a.browser.name.substring(0,3) === 'Chr') {
+                    d3.select('#ingestdirectoryuploader')
+                        .property('multiple', true)
+                        .attr('accept', null)
+                        .attr('webkitdirectory', '')
+                        .attr('directory', '');
+                    } else if (a.browser.name === 'Firefox') {
+                        d3.select('#ingestdirectoryuploader')
+                            .property('multiple', true)
+                            .attr('accept', '.shp,.shx,.dbf,.prj,.osm,.pbf');
+                        }
+                    }
+                }
+            }
 
             if(a.onchange) {
                 mpInput.on('change', a.onchange);
@@ -336,6 +390,10 @@ Hoot.ui.hootformbase = function ()
 
                 if(m.id) {
                     btnContainer.attr('id', m.id);
+                }
+
+                if(m.buttonId){
+                    btnContainer.select('span').attr('id',m.buttonId);
                 }
 
                 if(m.ishidden === true) {

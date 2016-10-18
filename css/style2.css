@@ -440,6 +440,7 @@ span.logo{
 
 .clipInfo {font-weight:bold;}
 .invalidName {border:1px solid red !important;}
+.validName {border:1px solid green !important;}
 
 /*** SETTINGS ***/
 #settingsSidebar{width:220px;}
@@ -517,4 +518,20 @@ table.map-metadata {
 
 .margin2y{
   margin: 20px 0;
+}
+
+/* Import Directory CSS */
+option.importSuccess {
+	background-color: rgba(51,204,51,1);
+	font-weight: bold;
+}
+
+option.importProgress {
+	background-color: rgba(255,255,102,1);
+	font-weight: bold;
+}
+
+option.importError {
+	background-color: rgba(255.51.0,1);
+	font-weight: bold;
 }
