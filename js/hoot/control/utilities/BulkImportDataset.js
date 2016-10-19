@@ -274,26 +274,6 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         			_.each(rowArray[0], function(row){
         				var r = d3.select(row); 
                         _validateInput(r);
-        				/*var lyrName = r.select('.reset.LayerName').value() + d3.select('#customSuffix').value();
-
-        				if(!_.isEmpty(_.filter(_.map(
-			                _.pluck(context.hoot().model.layers.getAvailLayers(),'name'),
-			                    function(l){
-			                        return l.substring(l.lastIndexOf('|')+1);
-			                    }),
-			                function(p){
-			                    return p === lyrName;
-			                }))
-			            )
-			            {
-			                r.select('.reset.LayerName')
-			                	.attr('title','A layer already exists with the name ' + lyrName + '.')
-			                	.classed('invalidName',true);		                
-			            } else {
-			            	r.select('.reset.LayerName')
-			                	.attr('title',null)
-			                	.classed('invalidName',false);		                
-			            }*/
         			});
             });
     };
@@ -387,7 +367,6 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             _importRow(data.rowArray,data.rowNumber,data.modalbg);
          });
     };
-
 
     /**
     * @desc Validate input fields.
@@ -586,6 +565,8 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         var first = fileNames[0];
         var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
         d3.select('.reset.LayerName[row="' + selRowNum + '"]').value(saveName);
+        //validate layername
+        _validateInput(d3.select('tr[id="row-' + selRowNum + '"]'));
     };
 
     /**
