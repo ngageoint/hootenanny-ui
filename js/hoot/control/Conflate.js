@@ -410,10 +410,16 @@ Hoot.control.conflate = function (sidebar,context) {
         d3.event.stopPropagation();
         d3.event.preventDefault();
 
+        // check for unsaved edits
+        if (!_.isEmpty(id.changes().modified) || !_.isEmpty(id.changes().deleted) || !_.isEmpty(id.changes().created)) {
+            iD.ui.Alert('Please save edits before conflating.','warning',new Error().stack);
+            return false;
+        }
+
+
         if(!_isFieldsValuesValid()) {
             return;
         }
-
 
         var thisConfType = d3.selectAll('.reset.ConfType');
         var selVal = thisConfType.value();
