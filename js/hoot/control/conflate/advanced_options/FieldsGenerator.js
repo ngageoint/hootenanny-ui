@@ -75,7 +75,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                                     subcheck.placeholder = sc.defaultvalue;
                                     subcheck.description = sc.description;
                                     subcheck.required = sc.required;
-                                    if(_.includes(['long','int','double'],submeta.elem_type)) {
+                                    if(_.includes(['long','int','double'],sc.elem_type)) {
                                         subcheck.minvalue = sc.minvalue;
                                         subcheck.maxvalue = sc.maxvalue;
                                         subcheck.onchange='true';
