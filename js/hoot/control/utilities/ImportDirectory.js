@@ -94,14 +94,12 @@ Hoot.control.utilities.importdirectory = function(context) {
         }, {
             label: 'Import Directory',
             id: 'importDirectoryFolderImport',
-            placeholder: 'Select Directory',
+            placeholder: 'Select Files',
             icon: 'folder',
             readonly:'readonly',
             inputtype:'multipart',
             onchange: _multipartHandler,
-            multipartid: 'ingestdirectoryuploader',
-            directory: true,
-            browser: _bInfo
+            multipartid: 'ingestdirectoryuploader'
         },
         {
             label: 'Import Files List',
@@ -565,6 +563,49 @@ Hoot.control.utilities.importdirectory = function(context) {
     };
 
     /**
+    * @desc Modify multipart control based on selected import type.
+    * @param typeName - Import type name.
+    **/
+    var _setMultipartForType = function(typeName) {
+        var isDir = false;
+/*        if(typeName === 'DIR'){
+            isDir = true;
+            if(_bInfo.name.substring(0,3) === 'Chr'){
+                d3.select('#ingestdirectoryuploader')
+                .property('multiple', true)
+                .attr('accept', null)
+                .attr('webkitdirectory', '')
+                .attr('directory', '');
+            } else {
+                d3.select('#ingestdirectoryuploader')
+                .property('multiple', false)
+                .attr('accept', '.zip')
+                .attr('webkitdirectory', null)
+                .attr('directory', null);
+            }
+        } else if(typeName === 'GEONAMES') {
+            d3.select('#ingestfileuploader')
+            .property('multiple', 'false')
+            .attr('accept', '.geonames,.txt')
+            .attr('webkitdirectory', null)
+            .attr('directory', null);
+        } else */
+        if(typeName === 'OSM') {
+            d3.select('#ingestdirectoryuploader')
+            .property('multiple', 'true')
+            .attr('accept', '.osm,.pbf') //.osm.zip,
+            .attr('webkitdirectory', null)
+            .attr('directory', null);
+        } else if(typeName === 'FILE'){
+            d3.select('#ingestdirectoryuploader')
+            .property('multiple', 'true')
+            .attr('accept', '.shp, .shx, .dbf')
+            .attr('webkitdirectory', null)
+            .attr('directory', null);
+        }
+    };    
+
+    /**
     * @desc Populated import types drop down.
     * @param a - Import types list combo meta data.
     **/
@@ -595,6 +636,8 @@ Hoot.control.utilities.importdirectory = function(context) {
             _container.select('#importDirectoryFilesList').selectAll('option').remove();
             var selectedType = _container.select('#importDirectoryImportType').value();
             var typeName = _getTypeName(selectedType);
+
+            _setMultipartForType(typeName);
 
             /* Updated to allow for OSM translation for all input types - issue 710 */
             var translationsList = _importTranslations.concat(_importTranslationsOsm);
