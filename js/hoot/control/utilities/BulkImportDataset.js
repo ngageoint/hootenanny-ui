@@ -260,21 +260,13 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .on('change',function(){
             	// Check suffix for unallowed characters
             	var resp = context.hoot().checkForUnallowedChar(this.value);
-			        if(resp !== true){
-			        	d3.select(this).attr('title',resp)
-			        		.classed('invalidName',true);
-			        	return false;
-			        } else {
-			        	d3.select(this).attr('title',suffixTitle)
-			        		.classed('invalidName',false);			        	
-			        }
+		        if(resp !== true){
+		        	d3.select(this).attr('title',resp).classed('invalidName',true);
+		        } else {
+		        	d3.select(this).attr('title',suffixTitle).classed('invalidName',false);			        	
+		        }
 
-			    // Loop through rows to determine if layer with same name already exists
-            	var rowArray = d3.select('#bulkImportTable').selectAll('tr[id^="row-"]');
-        			_.each(rowArray[0], function(row){
-        				var r = d3.select(row); 
-                        _validateInput(r);
-        			});
+                _validateInputs();
             });
     };
 
@@ -372,6 +364,14 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     * @desc Validate input fields.
     * @param row - ingested row.
     **/
+    var _validateInputs = function(){
+        var rowArray = d3.select('#bulkImportTable').selectAll('tr[id^="row-"]');
+        _.each(rowArray[0], function(row){
+            var r = d3.select(row); 
+            _validateInput(r);
+        });
+    }
+
     var _validateInput = function(row) {
         //check if layer with same name already exists...
         if(row.select('.reset.LayerName').value()==='' || row.select('.reset.LayerName').value()===row.select('.reset.LayerName').attr('placeholder')){
@@ -384,18 +384,33 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
 
         if(!_.isEmpty(_.filter(_.map(_.pluck(context.hoot().model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f === newLayerName;})))
         {
-            d3.select('#importprogdiv').append('br');
-            d3.select('#importprogdiv').append('text').text('A layer already exists with this name. Please remove the current layer or select a new name for this layer.');
+            row.select('.reset.LayerName')
+                .classed('invalidName',true)
+                .attr('title','A layer already exists with this name. Please remove the current layer or select a new name for this layer.');
             return false;
         }
 
-        var resp = context.hoot().checkForUnallowedChar(newLayerName);
+        // Check for duplicates within the table
+        var inputLayerNames = _.map(d3.selectAll('.reset.LayerName')[0],function(f){return f.value});
+        if(inputLayerNames.filter(function(val){return val===row.select('.reset.LayerName').value();}).length > 1){
+            row.select('.reset.LayerName')
+                .classed('invalidName',true)
+                .attr('title','This layer name is already being used in the bulk import process.');
+            return false;            
+        }
+
+        //Check against layer name without custom suffix since that is already being checked
+        var resp = context.hoot().checkForUnallowedChar(row.select('.reset.LayerName').value());
         if(resp !== true){
-            d3.select('#importprogdiv').append('br');
-            d3.select('#importprogdiv').append('text').text(resp);
+            row.select('.reset.LayerName')
+                .classed('invalidName',true)
+                .attr('title',resp);
             return false;
         }
 
+        row.select('.reset.LayerName')
+            .classed('invalidName',false)
+            .attr('title',null);
         return true;
     };
 
@@ -566,7 +581,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
         d3.select('.reset.LayerName[row="' + selRowNum + '"]').value(saveName);
         //validate layername
-        _validateInput(d3.select('tr[id="row-' + selRowNum + '"]'));
+        _validateInputs();
     };
 
     /**
@@ -723,13 +738,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         .select(function (a) {
             if(a.type==='LayerName'){
                 d3.select(this).on('change',function(){
-                    //ensure output name is valid
-                    var resp = context.hoot().checkForUnallowedChar(this.value);
-                    if(resp !== true){
-                        d3.select(this).classed('invalidName',true).attr('title',resp);
-                    } else {
-                        d3.select(this).classed('invalidName',false).attr('title',null);
-                    }
+                    _validateInputs();
                 });
             }
 
