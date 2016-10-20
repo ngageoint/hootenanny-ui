@@ -390,23 +390,32 @@ span.logo{
 	margin-left:10px;
 	float:right;
 	right:45px;
-  	top:130px;
+  top:130px;
 }
 
 .alertDiv {
-	width: 250px;
-	padding:3px 0px 3px 5px;
-	background:rgba(150,150,150,.5);
+	width: 290px;
+	padding:5px 0px 5px 5px;
+	border-radius: 8px;
+  border-style: solid;
+  border-width: 1px;
+  background:rgba(150,150,150,.5);
+  margin-bottom: 4px;
 }
 
-.alertDiv.red 		{	background:rgba(255,0,0,.5);	}
-.alertDiv.yellow 	{	background:rgba(255,255,0,.5);	}
-.alertDiv.green 	{	background:rgba(0,255,0,.5);	}
-.alertDiv.blue 		{ background:rgba(50,50,255,.5);	}}
+.alertDiv.red 		{	background:rgba(255,0,0,.5); border-color: #a00000;}
+.alertDiv.yellow 	{	background:rgba(206,216,15,.5);	border-color: #aaa800;}
+.alertDiv.green 	{	background:rgba(8,170,0,.5); border-color: #045b00;	}
+.alertDiv.blue 		{ background:rgba(0,101,255,.5); border-color: #0254d1;	}}
 
 .alertDiv h1, h2, h3, h4, h5 {
 	/* margin-left: 10px;
 	display: inline-block; */
+}
+
+.alertDiv p {
+  color: #ffffff;
+  opacity: 0.8;
 }
 
 /*** CLIP TOOL ***/
