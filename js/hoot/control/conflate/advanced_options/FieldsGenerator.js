@@ -57,7 +57,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                                 subfield.combobox = submeta.members;
                                 if(submeta.onchange){subfield.onchange = submeta.onchange;}
                             } 
-                        } else if(submeta.elem_type === 'double' || submeta.elem_type === 'int') {
+                        } else if(_.includes(['long','int','double'],submeta.elem_type)) {
                             subfield.maxvalue = submeta.maxvalue;
                             subfield.minvalue = submeta.minvalue;
                             subfield.onchange = 'true'; //'Hoot.control.conflate.advancedoptions.fieldsgenerator().validate(d3.select(this));';
@@ -75,7 +75,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                                     subcheck.placeholder = sc.defaultvalue;
                                     subcheck.description = sc.description;
                                     subcheck.required = sc.required;
-                                    if(sc.elem_type === 'double' || sc.elem_type === 'int') {
+                                    if(_.includes(['long','int','double'],submeta.elem_type)) {
                                         subcheck.minvalue = sc.minvalue;
                                         subcheck.maxvalue = sc.maxvalue;
                                         subcheck.onchange='true';
