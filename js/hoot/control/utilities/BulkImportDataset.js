@@ -30,9 +30,6 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
 
     var _submitExp;
 
-
-
-
     /**
     * @desc Entry point where it creates form.
     * @param trans - Translations list.
@@ -165,57 +162,6 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     };
 
     /**
-    * @desc Click handler for import request.
-    **/
-    var _importClickHandler = function() {
-        //remove any existing progress info
-        d3.select('#importprogress').remove();
-        d3.select('#importprogdiv').remove();
-
-        if(!d3.selectAll('.invalidName').empty()){return;}
-
-        //Places spinner 
-        var progcont = _submitExp.append('div');
-        progcont.insert('div')
-                .classed('_icon _loading row1 col1 fl',true)
-                .attr('id', 'importspin');
-
-/*      var prog = progcont.append('span').append('progress');
-        prog.classed('form-field', true);
-        prog.value('0');
-        prog.attr('max', '100');
-        prog.attr('id', 'importprogress');*/
-
-        var progdiv = progcont.append('div');
-        progdiv.attr('id','importprogdiv')
-                .style('max-height','24px')
-                .style('overflow','hidden');
-                
-        var logTxt = 'Initializing...';
-        
-        progdiv.append('text')
-                .attr('id', 'importprogresstext')
-                .attr('dy', '.3em').text(logTxt);
-
-        var progShow = progcont.append('a');
-        progShow.attr('id','importprogressshow')
-            .classed('show-link',true)
-            .attr('expanded',false)
-            .text('Show More')
-            .on('click',_showProgressDetail);
-
-        //Create a log output
-        d3.select('#importprogdiv').append('text').text('Starting bulk import process...');
-
-
-        //Loop through each row and treat as separate import function
-        //var rowNum = d3.select(this.parentElement.parentElement).select('input').attr('row');
-        var rowArray = d3.select('#bulkImportTable').selectAll('tr[id^="row-"]');
-        _importRow(rowArray[0],0, _modalbg);
-
-    };
-
-    /**
     * @desc Creates bulk import table body.
     * @param ingestDiv - ingest form div.
     **/
@@ -270,6 +216,130 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             });
     };
 
+
+    /**
+    * @desc Click handler for import request.
+    **/
+    var _importClickHandler = function() {
+        // If in progress, check to cancel
+        var importText = _submitExp.select('span').text();
+        if(importText === 'Cancel') {
+            _cancelJob(rowArray,rowNumber,modalbg);        
+        } else if(importText === 'Import') {
+            // For a sanity check, double check all inputs
+            _validateInputs();
+            if(!d3.selectAll('.invalidName').empty()){return;}
+
+            _submitExp.select('span').text('Cancel');
+            d3.select('#bulkImportTable').selectAll('input').attr('readonly',true);
+            d3.select('#bulkImportTable').selectAll('span').on('click', null);
+
+            //Places spinner 
+            var progcont = _submitExp.append('div');
+            progcont.insert('div')
+                    .classed('_icon _loading row1 col1 fl',true)
+                    .attr('id', 'importspin');
+
+            var progdiv = progcont.append('div');
+            progdiv.attr('id','importprogdiv')
+                    .style('max-height','24px')
+                    .style('overflow','hidden');
+                    
+            var logTxt = 'Initializing...';
+            
+            progdiv.append('text')
+                    .attr('id', 'importprogresstext')
+                    .attr('dy', '.3em').text(logTxt);
+
+            var progShow = progcont.append('a');
+            progShow.attr('id','importprogressshow')
+                .classed('show-link',true)
+                .attr('expanded',false)
+                .text('Show More')
+                .on('click',_showProgressDetail);
+
+            //Create a log output
+            d3.select('#importprogdiv').append('text').text('Starting bulk import process...');
+
+
+            _performBulkImport();
+        }
+    };
+        
+    /**
+    * @desc changes button to close
+    **/
+    var _closeContainer = function() {
+        d3.select('#importDirectoryBtn')
+            .text('Close')
+            .on('click',function(){
+                 _modalbg.remove();
+            });
+    };
+        
+    /**
+    * @desc Performs bulk import for all rows 
+    **/
+    var _performBulkImport = function(){
+        //Loop through each row and treat as separate import function
+        var rowArray = d3.select('#bulkImportTable').selectAll('tr[id^="row-"]')[0];
+        var rowNo = 0;
+        _importRow(rowArray,rowNo, _modalbg);
+    };
+
+   /**
+    * @desc A row import request handler.
+    * @param rowArray - Array of rows.
+    * @param rowNumber - current row index.
+    * @param modalbg - Form container div.
+    **/
+    var _importRow = function(rowArray, rowNumber, modalbg){
+        var importText = _submitExp.select('span').text();
+        if(importText ==='Cancelling Jobs' || importText === 'Close') { return; }
+
+        var row = d3.select(rowArray[rowNumber]);
+        if(row.empty()){
+            rowNumber++;
+            if(rowNumber < rowArray.length){_importRow(rowArray, rowNumber, modalbg);}
+            else{
+                _submitExp.select('span').text('Import Complete!');
+                _closeContainer();
+            }
+        }
+
+        
+        var newLayerName = row.select('.reset.LayerName').value().concat(d3.select('#customSuffix').value());
+        _importDatasetJob(row, '.reset.Schema', '.reset.importImportType', null, newLayerName, '.reset.bulkImportDatasetFGDBFeatureClasses', function(){
+            rowNumber++;
+            if(rowNumber < rowArray.length){_importRow(rowArray, rowNumber, modalbg);}
+            else{
+                _submitExp.select('span').text('Import Complete!');
+                _closeContainer();
+            }
+        });
+    };
+
+
+    var _importDatasetJob = function(row, schemaElem, importTypeElem, layerName, fgdbElem){
+        context.hoot().model.import.importData(row, schemaElem,importTypeElem,null,layerName,fgdbElem,
+            function(status){
+            if(status.info==='complete'){
+                if(_isCancel === false){
+                    _loadPostProcess(row,rowArray,rowNumber,modalbg);
+                }
+            } else if(status.info==='uploaded'){
+                _jobIds = status.jobids;
+                _mapIds = status.mapids;
+            } else if(status.info === 'failed'){
+                var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
+                d3.select('#importprogdiv').append('br');
+                d3.select('#importprogdiv').append('text').text(errorMessage);
+                _loadPostProcess(row,rowArray,rowNumber,modalbg);
+            }
+        });
+    };
+
+
     /**
     * @desc Post processor for a row ingesting.
     * @param row - ingested row.
@@ -300,20 +370,15 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         d3.select('#importprogdiv').append('br');
         d3.select('#importprogdiv').append('text').text(newLayerName + ' has been successfully uploaded.');
 
-        _submitExp.select('span').text('Import');
-        //go to next row in array if neccessary
-        rowNumber++;
-        _importRow(rowArray,rowNumber,modalbg);
+        return true;
     };
 
     /**
     * @desc Cancels bulk import request.
-    * @param rowArray - Array of rows.
-    * @param rowNumber - current row index.
-    * @param modalbg - Form container div.
     **/
-    var _cancelJob = function(rowArray, rowNumber, modalbg) {
+    var _cancelJob = function() {
         _isCancel = true;
+        d3.select('#importDirectoryBtn').text('Cancelling Jobs');
         if(_jobIds && _mapIds){
             for(var i=0; i<_jobIds.length; i++){
                 var curJobId = _jobIds[i];
@@ -322,12 +387,9 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 var data = {};
                 data.jobid = curJobId;
                 data.mapid = curMapId;
-                data.rowArray = rowArray;
-                data.rowNumber = rowNumber;
-                data.modalbg = modalbg;
-
-                Hoot.model.REST('cancel', data, _cancelJobCallback(data));
+                Hoot.model.REST('cancel', data, _cancelJobCallback(curJobId));
             }
+
         }
     };
 
@@ -414,58 +476,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         return true;
     };
 
-    /**
-    * @desc A row import request handler.
-    * @param rowArray - Array of rows.
-    * @param rowNumber - current row index.
-    * @param modalbg - Form container div.
-    **/
-    var _importRow = function(rowArray, rowNumber, modalbg){
-        var row = d3.select(rowArray[rowNumber]);
-        if(row.empty()){
-            modalbg.remove();
-            return;
-        }
-
-        var isValid = _validateInput(row);
-        if(!isValid) {
-            return;
-        }
-
-        var importText = _submitExp.select('span').text();
-        if(importText === 'Import'){
-            _submitExp.select('span').text('Cancel');
-            d3.select('#bulkImportTable').selectAll('input').attr('readonly',true);
-            d3.select('#bulkImportTable').selectAll('span').on('click', null)
-
-            var newLayerName = row.select('.reset.LayerName').value().concat(d3.select('#customSuffix').value());
-            context.hoot().model.import.importData(row,
-                '.reset.Schema',
-                '.reset.importImportType',
-                null,
-                newLayerName,
-                '.reset.bulkImportDatasetFGDBFeatureClasses',
-                function(status){
-                if(status.info==='complete'){
-                    if(_isCancel === false){
-                        _loadPostProcess(row,rowArray,rowNumber,modalbg);
-                    }
-                } else if(status.info==='uploaded'){
-                    _jobIds = status.jobids;
-                    _mapIds = status.mapids;
-                } else if(status.info === 'failed'){
-                    var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
-                    d3.select('#importprogdiv').append('br');
-                    d3.select('#importprogdiv').append('text').text(errorMessage);
-                    _loadPostProcess(row,rowArray,rowNumber,modalbg);
-                }
-            });
-        } else if (importText === 'Cancel') {
-            _cancelJob(rowArray,rowNumber,modalbg);
-        }
-    };
-
-
+ 
     /**
     * @desc Helper function for valiating loaded data.
     * @param selType - Selected import type.
