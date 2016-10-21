@@ -413,10 +413,12 @@ span.logo{
 	display: inline-block; */
 }
 
-.alertDiv p {
+
+/*.alertDiv h3 {
   color: #ffffff;
   opacity: 0.8;
-}
+  font-weight: normal;
+}*/
 
 /*** CLIP TOOL ***/
 .clipMenu {
