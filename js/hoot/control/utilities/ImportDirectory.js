@@ -567,8 +567,8 @@ Hoot.control.utilities.importdirectory = function(context) {
     * @param typeName - Import type name.
     **/
     var _setMultipartForType = function(typeName) {
-        var isDir = false;
-/*        if(typeName === 'DIR'){
+        /*var isDir = false;
+        if(typeName === 'DIR'){
             isDir = true;
             if(_bInfo.name.substring(0,3) === 'Chr'){
                 d3.select('#ingestdirectoryuploader')

@@ -149,7 +149,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     var _updateImportText = function(inputText){
         d3.select('#importprogdiv').append('br');
         d3.select('#importprogdiv').append('text').text(inputText);
-    }
+    };
 
     /**
     * @desc Toggler for progress detail messages.
@@ -211,13 +211,13 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .style('display','inline-block')
             .attr({'name':'customSuffix','id':'customSuffix','title':suffixTitle})
             .on('change',function(){
-            	// Check suffix for unallowed characters
-            	var resp = context.hoot().checkForUnallowedChar(this.value);
-		        if(resp !== true){
-		        	d3.select(this).attr('title',resp).classed('invalidName',true);
-		        } else {
-		        	d3.select(this).attr('title',suffixTitle).classed('invalidName',false);			        	
-		        }
+                // Check suffix for unallowed characters
+                var resp = context.hoot().checkForUnallowedChar(this.value);
+                if(resp !== true){
+                    d3.select(this).attr('title',resp).classed('invalidName',true);
+                } else {
+                    d3.select(this).attr('title',suffixTitle).classed('invalidName',false);                     
+                }
 
                 _validateInputs();
             });
@@ -295,7 +295,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             return false;
         }
 
-    }
+    };
 
     /**
     * @desc Performs bulk import for all rows 
@@ -448,7 +448,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             var r = d3.select(row); 
             _validateInput(r);
         });
-    }
+    };
 
     var _validateInput = function(row) {
         //check if layer with same name already exists...
@@ -468,7 +468,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         }
 
         // Check for duplicates within the table
-        var inputLayerNames = _.map(d3.selectAll('.reset.LayerName')[0],function(f){return f.value});
+        var inputLayerNames = _.map(d3.selectAll('.reset.LayerName')[0],function(f){return f.value;});
         if(inputLayerNames.filter(function(val){return val===row.select('.reset.LayerName').value();}).length > 1){
             row.select('.reset.LayerName')
                 .classed('invalidName',true)
