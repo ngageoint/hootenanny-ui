@@ -9,7 +9,6 @@ Hoot.control = function (context){
 	var hoot_control = {};
 
 	hoot_control.utilities = Hoot.control.utilities(context);
-	//hoot_control.conflate = new Hoot.control.conflate(context);
 
 	// Override the iD sidebar with hoot sidebar
 	hoot_control.loadSidebarControls = function(context, sidebar){
@@ -20,10 +19,10 @@ Hoot.control = function (context){
         d3.select('.sidebar-component').style('background-color', '#fff');
         //d3.selectAll('.save').style('display','none');
 
-        hoot_control.conflate = Hoot.control.conflate(sidebar, context);
+        hoot_control.conflate = Hoot.control.conflate(context, sidebar);
         hoot_control.import = Hoot.control.import(context, sidebar);
         hoot_control.export = Hoot.control.export(context, sidebar);
-        hoot_control.view = Hoot.control.view(sidebar, context);
+        hoot_control.view = Hoot.control.view(context, sidebar);
         hoot_control.conflicts = Hoot.control.conflicts(context, sidebar);
         hoot_control.validation = Hoot.control.validation(context, sidebar);
 
