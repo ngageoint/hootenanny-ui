@@ -146,6 +146,11 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     };
 
 
+    var _updateImportText = function(inputText){
+        d3.select('#importprogdiv').append('br');
+        d3.select('#importprogdiv').append('text').text(inputText);
+    }
+
     /**
     * @desc Toggler for progress detail messages.
     **/
@@ -181,7 +186,9 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .on('click', _importClickHandler);
 
         _submitExp.append('span')
-            .classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
+            .classed('round strong big loud dark center col2 point fr', true)
+            .style('margin-left','5px')
+            .attr('id','btnAddRow')
             .text('Add Row')
             .on('click', function () {
                 _addRow(d3.select('#bulkImportTable').select('tbody'));
@@ -224,15 +231,17 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         // If in progress, check to cancel
         var importText = _submitExp.select('span').text();
         if(importText === 'Cancel') {
-            _cancelJob(rowArray,rowNumber,modalbg);        
+            _cancelJob();        
         } else if(importText === 'Import') {
             // For a sanity check, double check all inputs
             _validateInputs();
             if(!d3.selectAll('.invalidName').empty()){return;}
 
             _submitExp.select('span').text('Cancel');
+            d3.select('#customSuffix').selectAll('input').attr('readonly',true);
             d3.select('#bulkImportTable').selectAll('input').attr('readonly',true);
             d3.select('#bulkImportTable').selectAll('span').on('click', null);
+            d3.select('#btnAddRow').remove();
 
             //Places spinner 
             var progcont = _submitExp.append('div');
@@ -259,8 +268,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 .on('click',_showProgressDetail);
 
             //Create a log output
-            d3.select('#importprogdiv').append('text').text('Starting bulk import process...');
-
+            _updateImportText('Starting bulk import process...');
 
             _performBulkImport();
         }
@@ -270,13 +278,24 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     * @desc changes button to close
     **/
     var _closeContainer = function() {
-        d3.select('#importDirectoryBtn')
+        _submitExp.select('span')
             .text('Close')
             .on('click',function(){
                  _modalbg.remove();
             });
     };
-        
+
+    var _emptyRowCheck = function(row, rowNumber){
+        if (row.select('.reset.LayerName').value()==='' ||
+            row.select('.reset.importImportType').value()==='' ||
+            document.getElementById('ingestfileuploader-' + rowNumber).files.length===0) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
     /**
     * @desc Performs bulk import for all rows 
     **/
@@ -298,43 +317,45 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         if(importText ==='Cancelling Jobs' || importText === 'Close') { return; }
 
         var row = d3.select(rowArray[rowNumber]);
-        if(row.empty()){
+        if(_emptyRowCheck(row,rowNumber)){
             rowNumber++;
             if(rowNumber < rowArray.length){_importRow(rowArray, rowNumber, modalbg);}
             else{
-                _submitExp.select('span').text('Import Complete!');
+                _submitExp.select('span').text('Close');
+                d3.select('#importspin').remove()
                 _closeContainer();
             }
+        } else {
+            var newLayerName = row.select('.reset.LayerName').value().concat(d3.select('#customSuffix').value());
+            _importDatasetJob(row, '.reset.Schema', '.reset.importImportType', newLayerName, '.reset.bulkImportDatasetFGDBFeatureClasses', function(){
+                rowNumber++;
+                if(rowNumber < rowArray.length){_importRow(rowArray, rowNumber, modalbg);}
+                else{
+                    _submitExp.select('span').text('Import Complete!');
+                    _closeContainer();
+                }
+            });
         }
-
-        
-        var newLayerName = row.select('.reset.LayerName').value().concat(d3.select('#customSuffix').value());
-        _importDatasetJob(row, '.reset.Schema', '.reset.importImportType', null, newLayerName, '.reset.bulkImportDatasetFGDBFeatureClasses', function(){
-            rowNumber++;
-            if(rowNumber < rowArray.length){_importRow(rowArray, rowNumber, modalbg);}
-            else{
-                _submitExp.select('span').text('Import Complete!');
-                _closeContainer();
-            }
-        });
     };
 
 
-    var _importDatasetJob = function(row, schemaElem, importTypeElem, layerName, fgdbElem){
+    var _importDatasetJob = function(row, schemaElem, importTypeElem, layerName, fgdbElem, callback){
+        _updateImportText('Importing ' + layerName);
         context.hoot().model.import.importData(row, schemaElem,importTypeElem,null,layerName,fgdbElem,
             function(status){
             if(status.info==='complete'){
                 if(_isCancel === false){
-                    _loadPostProcess(row,rowArray,rowNumber,modalbg);
+                    _loadPostProcess(row);
+                    if(callback){callback();}
                 }
             } else if(status.info==='uploaded'){
                 _jobIds = status.jobids;
                 _mapIds = status.mapids;
             } else if(status.info === 'failed'){
                 var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
-                d3.select('#importprogdiv').append('br');
-                d3.select('#importprogdiv').append('text').text(errorMessage);
-                _loadPostProcess(row,rowArray,rowNumber,modalbg);
+                _updateImportText(errorMessage);
+                _loadPostProcess(row);
+                if(callback){callback();}
             }
         });
     };
@@ -343,11 +364,10 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     /**
     * @desc Post processor for a row ingesting.
     * @param row - ingested row.
-    * @param rowArray - Array of rows.
     * @param rowNumber - current row index.
     * @param modalbg - Form container div.
     **/
-    var _loadPostProcess = function(row, rowArray, rowNumber, modalbg) {
+    var _loadPostProcess = function(row) {
         var pathname = row.select('.reset.PathName').value();
         if(pathname===''){pathname=row.select('.reset.PathName').attr('placeholder');}
         if(pathname==='root'){pathname='';}
@@ -367,8 +387,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         link.updateType='new';
         context.hoot().model.folders.updateLink(link);
         link = {};
-        d3.select('#importprogdiv').append('br');
-        d3.select('#importprogdiv').append('text').text(newLayerName + ' has been successfully uploaded.');
+        _updateImportText(newLayerName + ' has been successfully uploaded.');
 
         return true;
     };
@@ -378,7 +397,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     **/
     var _cancelJob = function() {
         _isCancel = true;
-        d3.select('#importDirectoryBtn').text('Cancelling Jobs');
+        _submitExp.select('span').text('Cancelling Jobs');
         if(_jobIds && _mapIds){
             for(var i=0; i<_jobIds.length; i++){
                 var curJobId = _jobIds[i];
@@ -395,8 +414,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
 
     var _cancelJobCallback = function(data){
         iD.ui.Alert('Job ID: ' + data.curJobId + ' has been cancelled. ','notice');
-        d3.select('#importprogdiv').append('br');
-        d3.select('#importprogdiv').append('text').text('Job ID: ' + data.curJobId + ' has been cancelled. ');
+        _updateImportText('Job ID: ' + data.curJobId + ' has been cancelled. ');
         context.hoot().model.layers.refresh(function () {
             var combo = d3.combobox().data(_.map(context.hoot().model.layers.getAvailLayers(), function (n) {
                  return {
@@ -437,8 +455,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     var _validateInput = function(row) {
         //check if layer with same name already exists...
         if(row.select('.reset.LayerName').value()==='' || row.select('.reset.LayerName').value()===row.select('.reset.LayerName').attr('placeholder')){
-            d3.select('#importprogdiv').append('br');
-            d3.select('#importprogdiv').append('text').text('ERROR: Invalid output layer name...');
+            _updateImportText('ERROR: Invalid output layer name...');
             return false;
         }
 
