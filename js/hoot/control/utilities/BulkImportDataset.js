@@ -278,6 +278,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     * @desc changes button to close
     **/
     var _closeContainer = function() {
+        d3.select('#importspin').remove();
         _submitExp.select('span')
             .text('Close')
             .on('click',function(){
@@ -322,7 +323,6 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             if(rowNumber < rowArray.length){_importRow(rowArray, rowNumber, modalbg);}
             else{
                 _submitExp.select('span').text('Close');
-                d3.select('#importspin').remove()
                 _closeContainer();
             }
         } else {
@@ -434,9 +434,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                  }
              }
 
-            //go to next row in array if neccessary
-            data.rowNumber++;
-            _importRow(data.rowArray,data.rowNumber,data.modalbg);
+             _closeContainer();
          });
     };
 
