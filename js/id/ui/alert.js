@@ -1,7 +1,7 @@
 iD.ui.Alert = function(message,type,stack) {
     var alerts = d3.select('#alerts');
     var alertDiv = alerts.append('div')
-        .classed('alertDiv',true)
+        .classed('fillD alertDiv',true)
         .on('click',function(){
             clearTimeout(uniqueTimeout);
             d3.select(this).transition().duration(0).style('opacity',1);
