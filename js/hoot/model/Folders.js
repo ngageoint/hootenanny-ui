@@ -131,11 +131,6 @@ Hoot.model.folders = function (context)
         return availFolders;
     };
 
-    model_folders.getFolders = function (opt) {
-        if (opt) return folders[opt];
-        return folders;
-    };
-
     model_folders.setOpenFolders = function(folderId,add) {
         if(add){
             openFolders.push(folderId);
@@ -240,19 +235,18 @@ Hoot.model.folders = function (context)
     };
 
     model_folders.getChildrenFolders = function(folderId){
-        var folderName = model_folders.getNameBymapId(folderId);
         childArray = [];
         childArray.push(folderId);
-        model_folders.returnChildren(folderName);
+        model_folders.returnChildren(folderId);
         return childArray;
     };
 
-    model_folders.returnChildren = function(folderPath){
+    model_folders.returnChildren = function(folderId){
         model_folders.listFolders(model_folders.getAvailFolders());
-        var cArr = _.filter(model_folders.getAvailFolders(),function(n){return n.folderPath.startsWith(folderPath + '/');});
+        var cArr = _.filter(model_folders.getAvailFolders(),function(n){return n.parentId === folderId;});
         _.each(cArr,function(c){
             childArray.push(c.id);
-            model_folders.returnChildren(c.folderPath);
+            model_folders.returnChildren(c.folderId);
         });
     };
 

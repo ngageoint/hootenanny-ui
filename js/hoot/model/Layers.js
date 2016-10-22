@@ -195,7 +195,7 @@ Hoot.model.layers = function (context)
         var lbl = layerLinks.append('label');
         lbl.append('input').attr('type','checkbox').property('checked', true)
             .on('change', function () {
-                model_layers.changeVisibility(layerName);
+                model_layers.changeVisibility(modifiedId);
             });
         lbl.append('span').text(layerName);
     };
@@ -295,10 +295,7 @@ Hoot.model.layers = function (context)
                 d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + params.dataset.name)
                     .header('Content-Type', 'text/plain')
                     .post('', function (error, data) {
-    
-                        var exportJobId = data.jobId;
-    
-                        var statusUrl = '/hoot-services/job/status/' + exportJobId;
+                        var statusUrl = '/hoot-services/job/status/' + data.jobid;
                         var statusTimer = setInterval(function () {
                             d3.json(statusUrl, function (error, result) {
                                 if (result.status !== 'running') {
@@ -326,9 +323,8 @@ Hoot.model.layers = function (context)
     };
 
 
-    model_layers.changeVisibility = function (name) {
-        var layer = model_layers
-            .getLayers(name);
+    model_layers.changeVisibility = function (strId) {
+        var layer = _.find(context.hoot().model.layers.getLayers(),{id:strId});
         if (!layer) {
             return;
         }

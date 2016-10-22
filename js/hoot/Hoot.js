@@ -18,24 +18,6 @@ Hoot.hoot = function (context) {
     hoot.model = Hoot.model(context);
     hoot.view = Hoot.view(context);
     hoot.control = Hoot.control(context);
-    hoot.zoom = iD.data.hootConfig.hootMapInitialZoom;
-    //Generate random starting location
-    var random = Math.floor((Math.random() * 7) + 1); //gives number between 1 and 7
-    if (random === 1){
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter1;
-    } else if (random === 2) {
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter2;
-    } else if (random === 3) {
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter3;
-    } else if (random === 4) {
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter4;
-    } else if (random === 5) {
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter5;
-    } else if (random === 6) {
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter6;
-    } else if (random === 7) {
-        hoot.center = iD.data.hootConfig.hootMapInitialCenter7;
-    }
 
     //hoot.center = iD.data.hootConfig.hootMapInitialCenter;
     //hoot.utilities = Hoot.Utilities(context);
@@ -76,20 +58,18 @@ Hoot.hoot = function (context) {
                 callback();
             }*/
         });
-        Hoot.model.REST('GetTranslationServerStatus', function(){
-            Hoot.model.REST('getTransaltionCapabilities', function (error, resp) {
+        Hoot.model.REST('getTranslationCapabilities', function (error, resp) {
                 if(error){
-                    alert('Failed to retrieve translation capabilities: ' + error);
+                iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
                     return;
                 }
                 iD.data.hootConfig.translationCapabilites = JSON.parse(resp.responseText);
 
                 // we do this to make sure OSM is in list and not duplicate
                 // which can happen if it is included in the list from server
-                iD.data.hootConfig.translationCapabilites.OSM = {'isvailable':'true'};
+            iD.data.hootConfig.translationCapabilites.OSM = {'isavailable':'true'};
             });
 
-        });
 
         Hoot.model.REST('getConflationCustomOpts',function(){});
 
@@ -105,6 +85,36 @@ Hoot.hoot = function (context) {
         });
 
         hoot.getAllusers();
+
+        /**
+        * @desc Hotkey for swapping layers
+        * @param event - key stroke event
+        **/
+        document.onkeydown = function (event) {
+            if (event.altKey && (event.which === 66)) {
+                context.hoot().model.layers.layerSwap();
+            } else if (event.altKey && (event.which === 78)) {
+                var curlayers = context.hoot().model.layers.getLayers();
+                var vis = _.filter(curlayers, function (d) {
+                    return d.vis;
+                }).length;
+                if (vis === 0) {
+                    _.each(curlayers, function (d) {
+                        if (d.loadable) {
+                        var modifiedId = d.id || d.mapId;
+                        context.hoot().model.layers.changeVisibility(modifiedId.toString());
+                        }
+                    });
+                    return;
+                }
+                _.each(curlayers, function (d) {
+                    if (d.vis) {
+                        var modifiedId = d.id || d.mapId;
+                        context.hoot().model.layers.changeVisibility(modifiedId.toString());
+                    }
+                });
+            }
+        };
 
     };
 
@@ -360,34 +370,6 @@ Hoot.hoot = function (context) {
                 this.parentNode.insertBefore(this, firstChild);
             }
         });
-    };
-
-    /**
-    * @desc Hotkey for swapping layers
-    * @param event - key stroke event
-    **/
-    document.onkeydown = function (event) {
-        if (event.altKey && (event.which === 66)) {
-            context.hoot().model.layers.layerSwap();
-        } else if (event.altKey && (event.which === 78)) {
-            var curlayers = context.hoot().model.layers.getLayers();
-            var vis = _.filter(curlayers, function (d) {
-                return d.vis;
-            }).length;
-            if (vis === 0) {
-                _.each(curlayers, function (d) {
-                    if (d.loadable) {
-                        context.hoot().model.layers.changeVisibility(d.name);
-                    }
-                });
-                return;
-            }
-            _.each(curlayers, function (d) {
-                if (d.vis) {
-                    context.hoot().model.layers.changeVisibility(d.name);
-                }
-            });
-        }
     };
 
     hoot.assert = function(condition)

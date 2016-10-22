@@ -40,7 +40,6 @@ iD.behavior.Hash = function(context) {
     };
 
     function update() {
-        if (context.inIntro()) return;
         var s1 = formatter(context.map());
         if (s0 !== s1) location.replace(s0 = s1); // don't recenter the map!
     }
@@ -70,6 +69,8 @@ iD.behavior.Hash = function(context) {
             if (q.comment) context.storage('comment', q.comment);
             hashchange();
             if (q.map) hash.hadHash = true;
+            if (q.reference) hash.reference = q.reference;
+            if (q.secondary) hash.secondary = q.secondary;
         }
     }
 

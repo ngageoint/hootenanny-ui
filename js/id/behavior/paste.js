@@ -3,7 +3,6 @@ iD.behavior.Paste = function(context) {
 
     function doPaste() {
         d3.event.preventDefault();
-        if (context.inIntro()) return;
 
         var baseGraph = context.graph(),
             mouse = context.mouse(),

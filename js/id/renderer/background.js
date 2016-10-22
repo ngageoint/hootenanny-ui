@@ -70,11 +70,10 @@ iD.Background = function(context) {
             }
         });
 
-        // Removed for iD v1.9.2
-        /*var gpx = context.layers().layer('gpx');
+        var gpx = context.layers().layer('gpx');
         if (gpx && gpx.enabled() && gpx.hasGpx()) {
             imageryUsed.push('Local GPX');
-        }*/
+        }
 
         context.history().imageryUsed(imageryUsed);
     }
@@ -86,7 +85,7 @@ iD.Background = function(context) {
           var dg = iD.dgservices();
           return iD.BackgroundSource(dg.backgroundSource(undefined, undefined, undefined));
       } else {
-          return findSource(iD.data.hootConfig.defaultBaseMap);
+          return findSource(iD.data.hootConfig.defaultBaseMap) || findSource('none');
       }
     }
 
@@ -524,6 +523,11 @@ iD.Background = function(context) {
             // if (overlay) background.toggleOverlayLayer(overlay);
         });
 
+        if (q.gpx) {
+            var gpx = context.layers().layer('gpx');
+            if (gpx) { gpx.url(q.gpx); }
+        }
+        //This was probably done for map-in-map to show reviews
         // var gpx = q.gpx;
         // if (gpx) {
         //     d3.text(gpx, function(err, gpxTxt) {

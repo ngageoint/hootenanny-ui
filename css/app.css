@@ -429,6 +429,10 @@ button.minor:hover {
     padding-right: 0;
 }
 
+.joined .import-button {
+    border-right: 1px solid #f8f8f8;
+}
+
 .joined button {
     border-radius:0;
     border-right: 1px solid rgba(0,0,0,.5);
@@ -2363,7 +2367,8 @@ div.full-screen > button:hover {
 .map-in-map {
     position: absolute;
     overflow: hidden;
-    top: 60px;
+    top: 70px;
+    left: 410px;
     width: 200px;
     height: 150px;
     z-index: 5;
@@ -3433,6 +3438,15 @@ rect.more {fill: #3182bd;}*/
 .button.dataset-option, .button.coordinate-option {
 	margin-right:5px;
 	color:#fff;
+}
+
+/*layer for context menu on right click*/
+.context-menu-click-layer{
+    display: inline-block;
+    padding: 10px;
+    position: absolute;
+    width: 80%;
+    height: 60px;
 }
 
 /* Settings Tab */

@@ -53,7 +53,8 @@ Hoot.control.utilities.exportdataset = function(context) {
         
         var exportFormatList = 
           [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
-           {'DESCRIPTION': 'Web Feature Service (WFS)'}, {'DESCRIPTION': 'Open Street Map (OSM)'},
+           //{'DESCRIPTION': 'Web Feature Service (WFS)'}, 
+           {'DESCRIPTION': 'Open Street Map (OSM)'},
            {'DESCRIPTION': 'Open Street Map (PBF)'}];
         if (_dataset.canExportToOsmApiDb === true)
         {
@@ -121,8 +122,8 @@ Hoot.control.utilities.exportdataset = function(context) {
                 iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','warning',new Error().stack);
                 _container.remove();
             } else {
-                var tblContainer = d3.select('#wfsdatasettable');
-                context.hoot().view.utilities.wfsdataset.populateWFSDatasets(tblContainer);
+                /*var tblContainer = d3.select('#wfsdatasettable');
+                context.hoot().view.utilities.wfsdataset.populateWFSDatasets(tblContainer);*/
                 _container.remove();
             }
         });

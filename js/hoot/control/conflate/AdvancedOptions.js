@@ -14,7 +14,6 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
 
     var _events = d3.dispatch();
     var _instance = {};
-    var _modalBackground;
     var containerDiv;
 
 
@@ -143,7 +142,7 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
     * @param advancedOptionsEvents - Events object
     **/
     var _createContainerForm = function(advancedOptionsEvents) {
-        _modalBackground = d3.select('#content') //body
+        d3.select('#content') //body
             .append('div')
             .attr('id', 'modalBackground')
             .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true)

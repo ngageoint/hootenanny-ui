@@ -237,7 +237,7 @@ iD.Map = function(context) {
             iD.ui.flash(context.container())
                 .select('.content')
                 .text(t('cannot_zoom'));
-            setZoom(context.minEditableZoom(), true);
+            setZoom(context.minEditableZoom() + 1, true);
             queueRedraw();
             dispatch.move(map);
             return;
@@ -528,6 +528,11 @@ iD.Map = function(context) {
         return true;
     }
 
+    map.getRandomCenter = function(){
+        var locations = d3.values(iD.data.hootConfig.hootRandomCenter);
+        return d3.shuffle(locations)[0];
+    };
+
     map.pan = function(d) {
         if(!d3.select('#jobsBG').classed('hidden')){return;}
         var t = projection.translate();
@@ -543,7 +548,12 @@ iD.Map = function(context) {
         if (!arguments.length) return dimensions;
         var center = map.center();
         dimensions = _;
-        //drawLayers replaced surface in iD v1.9.2
+        // drawLayers replaced surface in iD v1.9.2
+        window.addEventListener('resize', refresh);
+        function refresh() {
+            dimensions[0] = window.innerWidth; //400 subtracted for sidebar
+            dimensions[1] = window.innerHeight;
+        }
         drawLayers.dimensions(dimensions);
         context.background().dimensions(dimensions);
         projection.clipExtent([[0, 0], dimensions]);
@@ -622,7 +632,7 @@ iD.Map = function(context) {
         }
 
         if (z < minzoom) {
-            surface.interrupt();
+            // surface.interrupt();
             iD.ui.flash(context.container())
                 .select('.content')
                 .text(t('cannot_zoom'));

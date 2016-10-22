@@ -33,9 +33,9 @@ describe('iD.Map', function() {
         });
 
         it('respects minzoom', function() {
-            map.minzoom(16);
-            map.zoom(15);
-            expect(map.zoom()).to.equal(16);
+            map.minzoom(8);
+            map.zoom(7);
+            expect(map.zoom()).to.equal(8);
         });
     });
 
@@ -113,6 +113,16 @@ describe('iD.Map', function() {
             expect(map.center()[0]).to.be.closeTo(20, 0.5);
             expect(map.center()[1]).to.be.closeTo(25, 0.5);
             expect(map.zoom()).to.be.equal(4);
+        });
+    });
+
+    describe('#getRandomCenter', function() {
+        it('gets center from data config file', function() {
+            var locations = d3.values(iD.data.hootConfig.hootRandomCenter);
+            var random = map.getRandomCenter()
+            expect(locations.some(function(d){
+                return d[0] === random[0] && d[1] === random[1];
+            })).to.be.true;
         });
     });
 

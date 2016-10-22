@@ -112,7 +112,13 @@ Hoot.model.import = function (context)
 
         data.INPUT_TYPE = typeName;
         data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';
-        data.INPUT_NAME = container.select(layerNameElemId).value();
+        
+        if(layerNameElemId.charAt(0) === '.' || layerNameElemId.charAt(0) === '#'){
+            data.INPUT_NAME = container.select(layerNameElemId).value();
+        } else {
+            data.INPUT_NAME = layerNameElemId;
+        }
+
         if(fgdbFCList && fgdbFCList.length > 0) {
             data.FGDB_FC = fgdbFCList;
         }
