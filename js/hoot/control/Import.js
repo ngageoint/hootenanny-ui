@@ -148,7 +148,10 @@ Hoot.control.import = function (context,selection) {
                 if(isPrimary || pnode.node().nextSibling){return 'Add Reference Dataset';}
                 else {return 'Add Secondary Dataset';}
             })
-            .on('click', function () {toggleForm(this);});
+            .on('click', function () {
+                toggleForm(this);
+                context.ui().sidebar.adjustMargins();
+            });
         var fieldset = _form.append('fieldset');
         fieldset.classed('pad1 keyline-left keyline-right keyline-bottom round-bottom hidden', true)
             .attr('id', function(){
