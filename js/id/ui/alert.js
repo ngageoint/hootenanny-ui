@@ -24,7 +24,7 @@ iD.ui.Alert = function(message,type,stack) {
         .classed('fr _icon x dark point', true)
         .on('click',function() {this.parentNode.remove();});
 
-    alertDiv.append('h3').text(message);
+    alertDiv.append('p').text(message);
 
     var d = new Date().toLocaleString();
     try{
