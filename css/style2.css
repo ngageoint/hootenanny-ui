@@ -298,7 +298,7 @@ input.round        { border-radius:4px; }
 .modal:target ~ .mask { display:block; }
 
 .status { font-weight:normal; }
-.active + .hidden { display:inline-flex; width: 100%;}
+.active + .hidden { display:block; width: 100%;}
 
 /* Importing Interactions */
 .controller {
