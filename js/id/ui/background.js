@@ -75,20 +75,22 @@ iD.ui.Background = function(context) {
 
         //Added for toggling the overlay labels on and off when the layer changes
         function checkLocatorOverlay(checkbox, d){
-            var overlays = context.background()
-                .sources(context.map().extent())
-                .filter(function(d) { return d.overlay;});
+            if (!checkbox.empty()) { //If Locator Overlay is not present, no need to alter visibility
+                var overlays = context.background()
+                    .sources(context.map().extent())
+                    .filter(function(d) { return d.overlay;});
 
-            var layerUsed = d.imageryUsed();
-            if (layerUsed === 'MAPNIK' || layerUsed === 'USGS Topographic Maps'){
-                if (checkbox.classed('active')){
-                    context.background().hideOverlayLayer(overlays[0]);
+                var layerUsed = d.imageryUsed();
+                if (layerUsed === 'MAPNIK' || layerUsed === 'USGS Topographic Maps'){
+                    if (checkbox.classed('active')){
+                        context.background().hideOverlayLayer(overlays[0]);
+                    } else {
+                        return;
+                    }
                 } else {
-                    return;
-                }
-            } else {
-                if (!checkbox.classed('active')){
-                    context.background().showOverlayLayer(overlays[0]);
+                    if (!checkbox.classed('active')){
+                        context.background().showOverlayLayer(overlays[0]);
+                    }
                 }
             }
         }

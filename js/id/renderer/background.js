@@ -85,7 +85,7 @@ iD.Background = function(context) {
           var dg = iD.dgservices();
           return iD.BackgroundSource(dg.backgroundSource(undefined, undefined, undefined));
       } else {
-          return findSource(iD.data.hootConfig.defaultBaseMap);
+          return findSource(iD.data.hootConfig.defaultBaseMap) || findSource('none');
       }
     }
 

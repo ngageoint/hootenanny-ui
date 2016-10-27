@@ -487,7 +487,7 @@ Hoot.plugins.entityeditor.prototype.updateEntityEditor = function(resolver, enti
         var k = f.key;
         var v = rawTags[k];
         if(v !== undefined && v !== null) {
-            englishTags[f.rawLabel] = v;
+            englishTags[f.rawLabel] = v.replace(/_+/g, ' '); //Need to "unsnake" this value
         // Don't add tags with default value
         // } else {
         //     // Set default value

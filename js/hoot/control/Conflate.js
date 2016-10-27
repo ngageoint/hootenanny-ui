@@ -32,7 +32,7 @@
 //      14 Apr. 2016 eslint changes -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Hoot.control.conflate = function (sidebar,context) {
+Hoot.control.conflate = function (context,sidebar) {
     var _event = d3.dispatch('merge');
     var _container;
     var _confData;
@@ -406,14 +406,20 @@ Hoot.control.conflate = function (sidebar,context) {
     /**
     * @desc Handler for conflate button click event
     **/
-    var _conflateBtnClickHandler = function () {
+    var _conflateBtnClickHandler = function(){/*}
+    var _conflateBtnClickHandler = function () {*/
         d3.event.stopPropagation();
         d3.event.preventDefault();
+
+        // check for unsaved edits
+        if (!_.isEmpty(window.id.changes().modified) || !_.isEmpty(window.id.changes().deleted) || !_.isEmpty(window.id.changes().created)) {
+            iD.ui.Alert('Please save edits before conflating.','warning',new Error().stack);
+            return false;
+        }
 
         if(!_isFieldsValuesValid()) {
             return;
         }
-
 
         var thisConfType = d3.selectAll('.reset.ConfType');
         var selVal = thisConfType.value();
@@ -515,17 +521,17 @@ Hoot.control.conflate = function (sidebar,context) {
 
     /**
     * @desc Toggles conflation form when conflation header button is pressed
-    * @param context - container which is conflation header button
+    * @param container - container which is conflation header button
     **/
-    var _toggleForm = function(context) {
-        if (/active/g.test(context.className)) {
+    var _toggleForm = function(container) {
+        if (/active/g.test(container.className)) {
             sidebar.selectAll('.js-toggle')
                 .classed('active', false);
         }
         else {
             sidebar.selectAll('.js-toggle')
                 .classed('active', false);
-            d3.select(context)
+            d3.select(container)
                 .classed('active', true);
         }
     };
