@@ -5,7 +5,7 @@
 // Modifications:
 //      03 Feb. 2016
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.control.view = function (container, context) {
+Hoot.control.view = function (context, container) {
     var event = d3.dispatch('layerRemove', 'layerVis', 'layerColor');
     var View = {};
     View.render = function (options) {
