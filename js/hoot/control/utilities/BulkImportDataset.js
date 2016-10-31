@@ -119,7 +119,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .append('div')
             .classed('big pad1y keyline-bottom space-bottom2', true)
             .append('h4')
-            .text('Bulk Add Data')
+            .text('Bulk Import Datasets')
             .append('div')
             .classed('fr _icon x point', true)
             .on('click', function () {
