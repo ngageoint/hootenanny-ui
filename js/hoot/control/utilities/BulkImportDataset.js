@@ -30,9 +30,6 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
 
     var _submitExp;
 
-
-
-
     /**
     * @desc Entry point where it creates form.
     * @param trans - Translations list.
@@ -149,6 +146,11 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     };
 
 
+    var _updateImportText = function(inputText){
+        d3.select('#importprogdiv').append('br');
+        d3.select('#importprogdiv').append('text').text(inputText);
+    };
+
     /**
     * @desc Toggler for progress detail messages.
     **/
@@ -162,57 +164,6 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             d3.select('#importprogdiv').style('min-height',undefined).style({'min-height':'48px','max-height':'48px','overflow-y':'auto'});
             d3.select(this).text('Show More');
         }
-    };
-
-    /**
-    * @desc Click handler for import request.
-    **/
-    var _importClickHandler = function() {
-        //remove any existing progress info
-        d3.select('#importprogress').remove();
-        d3.select('#importprogdiv').remove();
-
-        if(!d3.selectAll('.invalidName').empty()){return;}
-
-        //Places spinner 
-        var progcont = _submitExp.append('div');
-        progcont.insert('div')
-                .classed('_icon _loading row1 col1 fl',true)
-                .attr('id', 'importspin');
-
-/*      var prog = progcont.append('span').append('progress');
-        prog.classed('form-field', true);
-        prog.value('0');
-        prog.attr('max', '100');
-        prog.attr('id', 'importprogress');*/
-
-        var progdiv = progcont.append('div');
-        progdiv.attr('id','importprogdiv')
-                .style('max-height','24px')
-                .style('overflow','hidden');
-                
-        var logTxt = 'Initializing...';
-        
-        progdiv.append('text')
-                .attr('id', 'importprogresstext')
-                .attr('dy', '.3em').text(logTxt);
-
-        var progShow = progcont.append('a');
-        progShow.attr('id','importprogressshow')
-            .classed('show-link',true)
-            .attr('expanded',false)
-            .text('Show More')
-            .on('click',_showProgressDetail);
-
-        //Create a log output
-        d3.select('#importprogdiv').append('text').text('Starting bulk import process...');
-
-
-        //Loop through each row and treat as separate import function
-        //var rowNum = d3.select(this.parentElement.parentElement).select('input').attr('row');
-        var rowArray = d3.select('#bulkImportTable').selectAll('tr[id^="row-"]');
-        _importRow(rowArray[0],0, _modalbg);
-
     };
 
     /**
@@ -235,7 +186,9 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .on('click', _importClickHandler);
 
         _submitExp.append('span')
-            .classed('round strong big loud dark center col2 point fr', true).style('margin-left','5px')
+            .classed('round strong big loud dark center col2 point fr', true)
+            .style('margin-left','5px')
+            .attr('id','btnAddRow')
             .text('Add Row')
             .on('click', function () {
                 _addRow(d3.select('#bulkImportTable').select('tbody'));
@@ -249,23 +202,172 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .style({'display':'inline-block','font-weight':'bold'})
             .text('Suffix for all layer names: ');
 
+        var suffixTitle = 'To not use a suffix, leave blank.';
         suffixDiv.append('div')
             .style('display','inline-block')
             .classed('pad1x',true)
             .append('input')
             .attr('type','text')
             .style('display','inline-block')
-            .attr({'name':'customSuffix','id':'customSuffix','title':'To not use a suffix, leave blank.'});
+            .attr({'name':'customSuffix','id':'customSuffix','title':suffixTitle})
+            .on('change',function(){
+                // Check suffix for unallowed characters
+                var resp = context.hoot().checkForUnallowedChar(this.value);
+                if(resp !== true){
+                    d3.select(this).attr('title',resp).classed('invalidName',true);
+                } else {
+                    d3.select(this).attr('title',suffixTitle).classed('invalidName',false);                     
+                }
+
+                _validateInputs();
+            });
+    };
+
+
+    /**
+    * @desc Click handler for import request.
+    **/
+    var _importClickHandler = function() {
+        // If in progress, check to cancel
+        var importText = _submitExp.select('span').text();
+        if(importText === 'Cancel') {
+            _cancelJob();        
+        } else if(importText === 'Import') {
+            // For a sanity check, double check all inputs
+            _validateInputs();
+            if(!d3.selectAll('.invalidName').empty()){return;}
+
+            _submitExp.select('span').text('Cancel');
+            d3.select('#customSuffix').selectAll('input').attr('readonly',true);
+            d3.select('#bulkImportTable').selectAll('input').attr('readonly',true);
+            d3.select('#bulkImportTable').selectAll('span').on('click', null);
+            d3.select('#btnAddRow').remove();
+
+            //Places spinner 
+            var progcont = _submitExp.append('div');
+            progcont.insert('div')
+                    .classed('_icon _loading row1 col1 fl',true)
+                    .attr('id', 'importspin');
+
+            var progdiv = progcont.append('div');
+            progdiv.attr('id','importprogdiv')
+                    .style('max-height','24px')
+                    .style('overflow','hidden');
+                    
+            var logTxt = 'Initializing...';
+            
+            progdiv.append('text')
+                    .attr('id', 'importprogresstext')
+                    .attr('dy', '.3em').text(logTxt);
+
+            var progShow = progcont.append('a');
+            progShow.attr('id','importprogressshow')
+                .classed('show-link',true)
+                .attr('expanded',false)
+                .text('Show More')
+                .on('click',_showProgressDetail);
+
+            //Create a log output
+            _updateImportText('Starting bulk import process...');
+
+            _performBulkImport();
+        }
+    };
+        
+    /**
+    * @desc changes button to close
+    **/
+    var _closeContainer = function() {
+        d3.select('#importspin').remove();
+        _submitExp.select('span')
+            .text('Close')
+            .on('click',function(){
+                 _modalbg.remove();
+            });
+    };
+
+    var _emptyRowCheck = function(row, rowNumber){
+        if (row.select('.reset.LayerName').value()==='' ||
+            row.select('.reset.importImportType').value()==='' ||
+            document.getElementById('ingestfileuploader-' + rowNumber).files.length===0) {
+            return true;
+        } else {
+            return false;
+        }
+
     };
 
     /**
-    * @desc Post processor for a row ingesting.
-    * @param row - ingested row.
+    * @desc Performs bulk import for all rows 
+    **/
+    var _performBulkImport = function(){
+        //Loop through each row and treat as separate import function
+        var rowArray = d3.select('#bulkImportTable').selectAll('tr[id^="row-"]')[0];
+        var rowNo = 0;
+        _importRow(rowArray,rowNo, _modalbg);
+    };
+
+   /**
+    * @desc A row import request handler.
     * @param rowArray - Array of rows.
     * @param rowNumber - current row index.
     * @param modalbg - Form container div.
     **/
-    var _loadPostProcess = function(row, rowArray, rowNumber, modalbg) {
+    var _importRow = function(rowArray, rowNumber, modalbg){
+        var importText = _submitExp.select('span').text();
+        if(importText ==='Cancelling Jobs' || importText === 'Close') { return; }
+
+        var row = d3.select(rowArray[rowNumber]);
+        if(_emptyRowCheck(row,rowNumber)){
+            rowNumber++;
+            if(rowNumber < rowArray.length){_importRow(rowArray, rowNumber, modalbg);}
+            else{
+                _submitExp.select('span').text('Close');
+                _closeContainer();
+            }
+        } else {
+            var newLayerName = row.select('.reset.LayerName').value().concat(d3.select('#customSuffix').value());
+            _importDatasetJob(row, '.reset.Schema', '.reset.importImportType', newLayerName, '.reset.bulkImportDatasetFGDBFeatureClasses', function(){
+                rowNumber++;
+                if(rowNumber < rowArray.length){_importRow(rowArray, rowNumber, modalbg);}
+                else{
+                    _submitExp.select('span').text('Import Complete!');
+                    _closeContainer();
+                }
+            });
+        }
+    };
+
+
+    var _importDatasetJob = function(row, schemaElem, importTypeElem, layerName, fgdbElem, callback){
+        _updateImportText('Importing ' + layerName);
+        context.hoot().model.import.importData(row, schemaElem,importTypeElem,null,layerName,fgdbElem,
+            function(status){
+            if(status.info==='complete'){
+                if(_isCancel === false){
+                    _loadPostProcess(row);
+                    if(callback){callback();}
+                }
+            } else if(status.info==='uploaded'){
+                _jobIds = status.jobids;
+                _mapIds = status.mapids;
+            } else if(status.info === 'failed'){
+                var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
+                _updateImportText(errorMessage);
+                _loadPostProcess(row);
+                if(callback){callback();}
+            }
+        });
+    };
+
+
+    /**
+    * @desc Post processor for a row ingesting.
+    * @param row - ingested row.
+    * @param rowNumber - current row index.
+    * @param modalbg - Form container div.
+    **/
+    var _loadPostProcess = function(row) {
         var pathname = row.select('.reset.PathName').value();
         if(pathname===''){pathname=row.select('.reset.PathName').attr('placeholder');}
         if(pathname==='root'){pathname='';}
@@ -285,23 +387,17 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         link.updateType='new';
         context.hoot().model.folders.updateLink(link);
         link = {};
-        d3.select('#importprogdiv').append('br');
-        d3.select('#importprogdiv').append('text').text(newLayerName + ' has been successfully uploaded.');
+        _updateImportText(newLayerName + ' has been successfully uploaded.');
 
-        _submitExp.select('span').text('Import');
-        //go to next row in array if neccessary
-        rowNumber++;
-        _importRow(rowArray,rowNumber,modalbg);
+        return true;
     };
 
     /**
     * @desc Cancels bulk import request.
-    * @param rowArray - Array of rows.
-    * @param rowNumber - current row index.
-    * @param modalbg - Form container div.
     **/
-    var _cancelJob = function(rowArray, rowNumber, modalbg) {
+    var _cancelJob = function() {
         _isCancel = true;
+        _submitExp.select('span').text('Cancelling Jobs');
         if(_jobIds && _mapIds){
             for(var i=0; i<_jobIds.length; i++){
                 var curJobId = _jobIds[i];
@@ -310,19 +406,15 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 var data = {};
                 data.jobid = curJobId;
                 data.mapid = curMapId;
-                data.rowArray = rowArray;
-                data.rowNumber = rowNumber;
-                data.modalbg = modalbg;
-
-                Hoot.model.REST('cancel', data, _cancelJobCallback(data));
+                Hoot.model.REST('cancel', data, _cancelJobCallback(curJobId));
             }
+
         }
     };
 
     var _cancelJobCallback = function(data){
         iD.ui.Alert('Job ID: ' + data.curJobId + ' has been cancelled. ','notice');
-        d3.select('#importprogdiv').append('br');
-        d3.select('#importprogdiv').append('text').text('Job ID: ' + data.curJobId + ' has been cancelled. ');
+        _updateImportText('Job ID: ' + data.curJobId + ' has been cancelled. ');
         context.hoot().model.layers.refresh(function () {
             var combo = d3.combobox().data(_.map(context.hoot().model.layers.getAvailLayers(), function (n) {
                  return {
@@ -342,22 +434,26 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                  }
              }
 
-            //go to next row in array if neccessary
-            data.rowNumber++;
-            _importRow(data.rowArray,data.rowNumber,data.modalbg);
+             _closeContainer();
          });
     };
-
 
     /**
     * @desc Validate input fields.
     * @param row - ingested row.
     **/
+    var _validateInputs = function(){
+        var rowArray = d3.select('#bulkImportTable').selectAll('tr[id^="row-"]');
+        _.each(rowArray[0], function(row){
+            var r = d3.select(row); 
+            _validateInput(r);
+        });
+    };
+
     var _validateInput = function(row) {
         //check if layer with same name already exists...
         if(row.select('.reset.LayerName').value()==='' || row.select('.reset.LayerName').value()===row.select('.reset.LayerName').attr('placeholder')){
-            d3.select('#importprogdiv').append('br');
-            d3.select('#importprogdiv').append('text').text('ERROR: Invalid output layer name...');
+            _updateImportText('ERROR: Invalid output layer name...');
             return false;
         }
 
@@ -365,71 +461,37 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
 
         if(!_.isEmpty(_.filter(_.map(_.pluck(context.hoot().model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f === newLayerName;})))
         {
-            d3.select('#importprogdiv').append('br');
-            d3.select('#importprogdiv').append('text').text('A layer already exists with this name. Please remove the current layer or select a new name for this layer.');
+            row.select('.reset.LayerName')
+                .classed('invalidName',true)
+                .attr('title','A layer already exists with this name. Please remove the current layer or select a new name for this layer.');
             return false;
         }
 
-        var resp = context.hoot().checkForUnallowedChar(newLayerName);
+        // Check for duplicates within the table
+        var inputLayerNames = _.map(d3.selectAll('.reset.LayerName')[0],function(f){return f.value;});
+        if(inputLayerNames.filter(function(val){return val===row.select('.reset.LayerName').value();}).length > 1){
+            row.select('.reset.LayerName')
+                .classed('invalidName',true)
+                .attr('title','This layer name is already being used in the bulk import process.');
+            return false;            
+        }
+
+        //Check against layer name without custom suffix since that is already being checked
+        var resp = context.hoot().checkForUnallowedChar(row.select('.reset.LayerName').value());
         if(resp !== true){
-            d3.select('#importprogdiv').append('br');
-            d3.select('#importprogdiv').append('text').text(resp);
+            row.select('.reset.LayerName')
+                .classed('invalidName',true)
+                .attr('title',resp);
             return false;
         }
 
+        row.select('.reset.LayerName')
+            .classed('invalidName',false)
+            .attr('title',null);
         return true;
     };
 
-    /**
-    * @desc A row import request handler.
-    * @param rowArray - Array of rows.
-    * @param rowNumber - current row index.
-    * @param modalbg - Form container div.
-    **/
-    var _importRow = function(rowArray, rowNumber, modalbg){
-        var row = d3.select(rowArray[rowNumber]);
-        if(row.empty()){
-            modalbg.remove();
-            return;
-        }
-
-        var isValid = _validateInput(row);
-        if(!isValid) {
-            return;
-        }
-
-        var importText = _submitExp.select('span').text();
-        if(importText === 'Import'){
-
-            var newLayerName = row.select('.reset.LayerName').value().concat(d3.select('#customSuffix').value());
-            context.hoot().model.import.importData(row,
-                '.reset.Schema',
-                '.reset.importImportType',
-                null,
-                newLayerName,
-                '.reset.bulkImportDatasetFGDBFeatureClasses',
-                function(status){
-                if(status.info==='complete'){
-                    if(_isCancel === false){
-                        _loadPostProcess(row,rowArray,rowNumber,modalbg);
-                    }
-                } else if(status.info==='uploaded'){
-                    _jobIds = status.jobids;
-                    _mapIds = status.mapids;
-                    _submitExp.select('span').text('Cancel');
-                } else if(status.info === 'failed'){
-                    var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
-                    d3.select('#importprogdiv').append('br');
-                    d3.select('#importprogdiv').append('text').text(errorMessage);
-                    _loadPostProcess(row,rowArray,rowNumber,modalbg);
-                }
-            });
-        } else if (importText === 'Cancel') {
-            _cancelJob(rowArray,rowNumber,modalbg);
-        }
-    };
-
-
+ 
     /**
     * @desc Helper function for valiating loaded data.
     * @param selType - Selected import type.
@@ -438,6 +500,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     * @param totalFileSize - total physical size of selected files.
     **/
     var _validateLoaded = function(selType, filesList, cntParam, totalFileSize) {
+        var resp = true;
         if(selType === 'FILE'){
             var isValid = true;
             _.each(filesList, function(f){
@@ -448,27 +511,30 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                     if(!grp.isSHX || !grp.isDBF){
                         isValid = false;
                     }
-                }
+                } else {isValid = false;}
 
 
             });
 
             if(!isValid){
-                iD.ui.Alert('Missing shapefile dependency. Import requires shp, shx and dbf.','warning',new Error().stack);
-                return false;
+                resp = 'Missing shapefile dependency. Import requires shp, shx and dbf.';
+                iD.ui.Alert(resp,'warning',new Error().stack);
+                return resp;
             }
         }
 
         var totalCnt = cntParam.shpCnt + cntParam.osmCnt + cntParam.zipCnt;
         if((cntParam.shpCnt > 0 && cntParam.shpCnt !== totalCnt) || (cntParam.osmCnt > 0 && cntParam.osmCnt !== totalCnt)
             || (cntParam.zipCnt > 0 && cntParam.zipCnt !== totalCnt)){
-            iD.ui.Alert('Please select only single type of files. (i.e. can not mix zip with osm)','warning',new Error().stack);
-            return false;
+            resp = 'Please select only single type of files. (i.e. can not mix zip with osm)';
+            iD.ui.Alert(resp,'warning',new Error().stack);
+            return resp;
         }
 
         if(cntParam.osmCnt > 1) {
-            iD.ui.Alert('Multiple osm files can not be ingested. Please select one.','warning',new Error().stack);
-            return false;
+            resp = 'Multiple osm files can not be ingested. Please select one.';
+            iD.ui.Alert(resp,'warning',new Error().stack);
+            return resp;
         }
 
 
@@ -480,7 +546,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             }
         }
 
-        return true;
+        return resp;
     };
 
     /**
@@ -537,15 +603,16 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         }
 
         var isValid = _validateLoaded(selType, filesList, cntParam, totalFileSize);
-
-        if(!isValid) {
-            return;
-        }
+        if(isValid !== true){ d3.select('.reset.bulk-import.fileImport[row="' + selRowNum + '"]').attr('title',isValid).classed('invalidName',true); }
+        else { d3.select('.reset.bulk-import.fileImport[row="' + selRowNum + '"]').attr('title',null).classed('invalidName',false); }
+        
 
         d3.select('.reset.fileImport[row="' + selRowNum + '"]').value(fileNames.join('; '));
         var first = fileNames[0];
         var saveName = first.indexOf('.') ? first.substring(0, first.indexOf('.')) : first;
         d3.select('.reset.LayerName[row="' + selRowNum + '"]').value(saveName);
+        //validate layername
+        _validateInputs();
     };
 
     /**
@@ -702,13 +769,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         .select(function (a) {
             if(a.type==='LayerName'){
                 d3.select(this).on('change',function(){
-                    //ensure output name is valid
-                    var resp = context.hoot().checkForUnallowedChar(this.value);
-                    if(resp !== true){
-                        d3.select(this).classed('invalidName',true).attr('title',resp);
-                    } else {
-                        d3.select(this).classed('invalidName',false).attr('title',null);
-                    }
+                    _validateInputs();
                 });
             }
 
