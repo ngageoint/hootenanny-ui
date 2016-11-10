@@ -2,10 +2,10 @@ iD.dgservices  = function() {
     var dg = {},
         gbm_proxy = '/hoot-services/gbm',
         egd_proxy = '/hoot-services/egd',
-        gbm_host = 'https://services.digitalglobe.com',
+        gbm_host = 'https://{switch:a,b,c,d,e}-services.digitalglobe.com',
         egd_host = 'https://evwhs.digitalglobe.com',
         gbm_connectId = 'REPLACE_ME',
-        egd_connectId = 'REPLACE_ME',
+        egd_connectId = 'prompt',
         wmts_template = '/earthservice/wmtsaccess?CONNECTID={connectId}&request=GetTile&version=1.0.0'
             + '&layer=DigitalGlobe:ImageryTileService&featureProfile={profile}&style=default&format=image/png'
             + '&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:{zoom}&TileRow={y}&TileCol={x}',
@@ -24,7 +24,23 @@ iD.dgservices  = function() {
         defaultProfile = 'Global_Currency_Profile',
         defaultCollection = '24h';
 
-    dg.enabled = false;
+    function isUUID(str) {
+        if (str === null){
+            return false;
+        } else{
+            var match = str.search(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+            return match !== -1;
+        }
+    }
+
+    dg.enabled = isUUID(gbm_connectId) || isUUID(egd_connectId) || egd_connectId === 'prompt';
+
+    dg.egd = {};
+    dg.egd.connectId = function(_) {
+        if (!arguments.length) return egd_connectId;
+        egd_connectId = _;
+        return dg;
+    };
 
     dg.profiles = [
        {value: 'Global_Currency_Profile', text: t('background.dgbg_profiles.Global_Currency_Profile')},
