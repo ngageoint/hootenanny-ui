@@ -188,7 +188,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
                 d3.select('#waterway_rubber_sheet_ref').property('disabled',!p);
                 break;
             default:
-                if(field.type==='double' || field.type==='int') {
+                if(_.includes(['long','int','double'],field.type)) {
                     Hoot.control.conflate.advancedoptions.fieldsgenerator().validate(d3.select(field));
                 }
 
@@ -430,7 +430,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
                     else {d3.select('#' + subopt.id).attr('max','na');}
                 }
 
-                if(subopt.type==='double' || subopt.type==='int'){
+                if(_.includes(['long','int','double'],subopt.type)){
                     d3.select('#' + subopt.id).on('change',function(){_instance.fieldChangeEvent(subopt);});
                 }
             }                                                                                           
