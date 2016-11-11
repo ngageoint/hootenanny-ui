@@ -249,7 +249,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       d3.select('#reviewbookmarknotesbody')
           .append('div')
           .attr('id','reviewbookmarknotesdiv')
-              .classed('col6 fill-white', true);
+              .classed('col12 fill-white', true);
     };
 
     /**
@@ -353,6 +353,11 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
 
             if(!newNote || newNote.length === 0) {
               alert('Please enter a note.');
+              return;
+            }
+
+            if(_currentUser.id===-1 || _currentUser.displayName==='anonymous'){
+              iD.ui.Alert('Anonymous comments are not allowed.  Please click on user icon and provide name or email address.','warning',null);
               return;
             }
 
