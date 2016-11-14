@@ -144,7 +144,7 @@ Hoot.ui.hootformreviewnote = function (context)
             .append('div').classed('fr',true)
             .attr('id', 'bmkNoteFormUser' + 'NEW')
             .call(iD.svg.Icon('#icon-avatar'))
-            .attr('title','Anonymous User')
+            .attr('title',_parent.getUser().displayName || 'Anonymous User')
             .on('click', _bmkUserClickHanlder);
         }
 
