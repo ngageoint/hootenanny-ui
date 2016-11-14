@@ -212,7 +212,7 @@ Hoot.ui.hootformreviewnote = function (context)
                 }
                 if(resp.user) {
                     _parent.setUser(resp.user);
-                    d3.selectAll("[id^=bmkNoteFormUser]").attr('title',resp.user.displayName);
+                    d3.selectAll('[id^=bmkNoteFormUser]').attr('title',resp.user.displayName);
                     // sets user back to share dialog. (We need to refactor this)
                     context.hoot().control.conflicts.actions.sharereview.setUserInfo(resp.user);
                 }
