@@ -5,7 +5,7 @@ iD.dgservices  = function() {
         gbm_host = 'https://{switch:a,b,c,d,e}-services.digitalglobe.com',
         egd_host = 'https://evwhs.digitalglobe.com',
         gbm_connectId = 'REPLACE_ME',
-        egd_connectId = 'prompt',
+        egd_connectId = 'REPLACE_ME',
         wmts_template = '/earthservice/wmtsaccess?CONNECTID={connectId}&request=GetTile&version=1.0.0'
             + '&layer=DigitalGlobe:ImageryTileService&featureProfile={profile}&style=default&format=image/png'
             + '&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:{zoom}&TileRow={y}&TileCol={x}',
