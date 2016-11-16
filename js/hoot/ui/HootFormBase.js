@@ -228,6 +228,10 @@ Hoot.ui.hootformbase = function ()
             inputField.attr('id', a.id);
         }
 
+        if(a.onchange){
+            inputField.on('change',a.onchange);
+        }
+
         if (a.combobox){
             if(a.combobox.data && a.combobox.command) {
                 a.combobox.command.call(inputField.node(), a);
