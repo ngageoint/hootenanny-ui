@@ -420,7 +420,7 @@ iD.Background = function(context) {
             }
         }
 
-        layer = iD.TileLayer(context)
+        layer = iD.TileLayer()
             .source(d)
             .projection(context.projection)
             .dimensions(baseLayer.dimensions());
