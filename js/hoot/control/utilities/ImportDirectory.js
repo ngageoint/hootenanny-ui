@@ -126,7 +126,13 @@ Hoot.control.utilities.importdirectory = function(context) {
             combobox: {'data':_importTranslations, 'command': _populateTranslations },
             inputtype: 'combobox',
             onchange: _checkForMGCP
-        },{
+        }, {
+            label: 'Append MGCP Descriptions',
+            type: 'appendMGCPDescription',
+            inputtype: 'checkbox',
+            checkbox: 'cboxAppendMGCP',
+            hidden:true
+        }, {
             label: 'Custom Suffix',
             placeholder: '',
             id: 'importDirectoryCustomSuffix',
@@ -152,6 +158,10 @@ Hoot.control.utilities.importdirectory = function(context) {
         meta.button = d_btn;
 
         _container = context.hoot().ui.formfactory.create('body', meta);
+        d3.select('.cboxAppendMGCP')
+            .classed('hidden',true)
+            .select('input').property('checked',false)
+            .on('change',function(){_getMGCPList();});
     };
 
     /**
@@ -176,15 +186,27 @@ Hoot.control.utilities.importdirectory = function(context) {
     var _checkForMGCP = function(){
         var mgcpCheck = d3.select('#importDirectorySchema').value().indexOf('MGCP') > -1 ? true : false;
         if(mgcpCheck){
-            d3.xhr(window.location.protocol + '//' + window.location.hostname +
-                    Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort)
-                +'/schema?translation=MGCP&limit=10000')
-                .get(function(error, resp){
-                    var mgcpList = JSON.parse(resp.response);
-                    appendMGCPDescription(mgcpList);
-                });
+            d3.select('.cboxAppendMGCP').classed('hidden',false).select('input').property('checked',false);
+        } else {
+            d3.select('.cboxAppendMGCP').classed('hidden',true).select('input').property('checked',false);
+            _getMGCPList();
         }
     }
+
+    var _getMGCPList = function(){
+        d3.xhr(window.location.protocol + '//' + window.location.hostname +
+            Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort)
+        +'/schema?translation=MGCP&limit=10000')
+        .get(function(error, resp){
+            var mgcpList = JSON.parse(resp.response);
+            if(d3.select('.cboxAppendMGCP').select('input').property('checked')===true){
+                appendMGCPDescription(mgcpList);
+            } else {
+                removeMGCPDescription(mgcpList);
+            }
+        });
+    } 
+    
 
     /**
     * @desc Validates user specified input.
@@ -911,6 +933,18 @@ Hoot.control.utilities.importdirectory = function(context) {
             }
         },mgcpList);
     };
+
+    var removeMGCPDescription = function(mgcpList) {
+        var filesList = _getFilesList();
+        _.each(filesList, function(f){
+            var mgcpMatch = _.find(this,{name:f.split('_')[0]}) || _.find(this,{fcode:f.split('_')[0]});
+            if(mgcpMatch){
+                var selOpt = d3.select('#importDirectoryFilesList').select('option[value="' + f + '"]');
+                selOpt.value(mgcpMatch.name).text(mgcpMatch.name);
+            }
+        },mgcpList);
+    };
+
 
 
     /**
