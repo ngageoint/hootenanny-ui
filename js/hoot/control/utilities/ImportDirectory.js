@@ -124,7 +124,8 @@ Hoot.control.utilities.importdirectory = function(context) {
             placeholder: 'Select Data Translation Schema',
             id: 'importDirectorySchema',
             combobox: {'data':_importTranslations, 'command': _populateTranslations },
-            inputtype: 'combobox'
+            inputtype: 'combobox',
+            onchange: _checkForMGCP
         },{
             label: 'Custom Suffix',
             placeholder: '',
@@ -171,6 +172,19 @@ Hoot.control.utilities.importdirectory = function(context) {
         var filesList = _.map(d3.select('#importDirectoryFilesList').selectAll('option')[0],function(opt){return opt.value;});
         return filesList;
     };
+
+    var _checkForMGCP = function(){
+        var mgcpCheck = d3.select('#importDirectorySchema').value().indexOf('MGCP') > -1 ? true : false;
+        if(mgcpCheck){
+            d3.xhr(window.location.protocol + '//' + window.location.hostname +
+                    Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort)
+                +'/schema?translation=MGCP&limit=10000')
+                .get(function(error, resp){
+                    var mgcpList = JSON.parse(resp.response);
+                    appendMGCPDescription(mgcpList);
+                });
+        }
+    }
 
     /**
     * @desc Validates user specified input.
@@ -878,6 +892,24 @@ Hoot.control.utilities.importdirectory = function(context) {
         _validateFileList(filesList);
 
         return true;
+    };
+
+    /**
+    * @desc Function to append MGCP Description based on FCODE
+    * @desc Assumes that layer name is a valid MGCP FCODE
+    * @oaram mgcpList - JSON of MGCP FCODEs and Descriptions
+    * @param filesList - Selected files list.
+    **/
+    var appendMGCPDescription = function(mgcpList) {
+        var filesList = _getFilesList();
+        _.each(filesList, function(f){
+            var mgcpMatch = _.find(this,{name:f}) || _.find(this,{fcode:f});
+            if(mgcpMatch){
+                var mgcpName = f + "_" + mgcpMatch.desc.replace(" ","_");
+                var selOpt = d3.select('#importDirectoryFilesList').select('option[value="' + f + '"]');
+                selOpt.value(mgcpName).text(mgcpName);
+            }
+        },mgcpList);
     };
 
 
