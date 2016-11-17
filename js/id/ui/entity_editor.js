@@ -37,7 +37,7 @@ iD.ui.EntityEditor = function(context) {
 
         // Update
         $header.select('h3')
-            .text(t('inspector.edit'));
+            .text(t('inspector.edit') + ': ' + id);
 
         $header.select('.preset-close')
             .on('click', function() {
@@ -212,8 +212,15 @@ iD.ui.EntityEditor = function(context) {
             tags = clean(tags);
         }
         if (!_.isEqual(entity.tags, tags)) {
-            //This updates the review tag table
             var activeConflict = context.hoot().control.conflicts.activeConflict(0);
+            if (coalesceChanges) {
+                context.overwrite(iD.actions.ChangeTags(id, tags), annotation);
+            } else {
+                context.perform(iD.actions.ChangeTags(id, tags), annotation);
+                coalesceChanges = !!onInput;
+            }
+
+            //This updates the review tag table
             if (activeConflict) {
                 var reviewItem = context.entity(activeConflict),
                     reviewAgainstItem = context.entity(context.hoot().control.conflicts.activeConflict(1));
@@ -221,13 +228,6 @@ iD.ui.EntityEditor = function(context) {
                     context.hoot().control.conflicts.map.featurehighlighter
                         .highlightLayer(reviewItem,reviewAgainstItem, false);
                 }
-            }
-
-            if (coalesceChanges) {
-                context.overwrite(iD.actions.ChangeTags(id, tags), annotation);
-            } else {
-                context.perform(iD.actions.ChangeTags(id, tags), annotation);
-                coalesceChanges = !!onInput;
             }
         }
     }
