@@ -341,8 +341,8 @@ Hoot.model.REST = function (command, data, callback, option) {
                callback(resp);
            });
     };
-    
-   rest.statusWithResponse = function(jobStatus, callback) {
+
+    rest.statusWithResponse = function(jobStatus, callback) {
         var status = function() {
             d3.json('/hoot-services/job/status/' + jobStatus, function (error, resp) {
                 if (error) {
@@ -415,158 +415,6 @@ Hoot.model.REST = function (command, data, callback, option) {
             }
             rest.status(resp.jobid, callback);
         });
-    };
-
-    // This uses translation node js server using CORS
-    rest.LTDS = function (data, callback) {
-        if(!iD.data.hootConfig.translationServerPort){
-            iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
-            return;
-        }
-        if (!data) {
-            return false;
-        }
-
-        var osmToTdsAttribFilter = data.filterMeta;
-
-        d3.xhr(window.location.protocol + '//' + window.location.hostname
-            + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort)
-            + '/osmtotds?translation=' + data.translation)
-            .header('Content-Type', 'text/plain')
-            .post(data.osmXml, function (error, resp) {
-                if (error) {
-                    //Feature not in spec
-                    //Unable to translate
-                    var r = {};
-                    r.tableName = '';
-                    r.attrs = {};
-                    r.fields = '{}';
-                    callback(r);
-                    _alertError(error, 'Feature out of spec, unable to translate');
-                    return;
-                }
-                var parser = new DOMParser();
-                var xmlDoc = parser.parseFromString(resp.responseText,'text/xml');
-                var tagslist = xmlDoc.getElementsByTagName('tag');
-
-                //Check for F_CODE = Not found
-                if (_.some(tagslist, function(tag) {
-                    return tag.attributes.k.value === 'Feature Code' &&
-                        tag.attributes.v.value === 'Not found';
-                })) {
-                    //Feature not in spec
-                    //Unable to translate
-                    var f = {};
-                    f.tableName = '';
-                    f.attrs = {};
-                    f.fields = '{}';
-                    callback(f);
-                    _alertError(error, 'Feature out of spec, unable to translate');
-                    return;
-                }
-
-                var attribs = {};
-                //var fcode = null;
-                var idVal = null;
-                var idelem = null;
-
-                if(osmToTdsAttribFilter){
-                    idelem = osmToTdsAttribFilter.filtertagname;
-                    _.each(tagslist, function(tag){
-                        var key = tag.attributes.k.value;
-                        var val = tag.attributes.v.value;
-                        attribs[key] = val;
-                        if(key === osmToTdsAttribFilter.filterkey){
-                            idVal = val;
-                        }
-                    });
-                } else {
-                    idelem = 'fcode';
-                    _.each(tagslist, function(tag){
-                        var key = tag.attributes.k.value;
-                        var val = tag.attributes.v.value;
-                        attribs[key] = val;
-                        if(key === 'Feature Code'){
-                            var parts = val.split(':');
-                            idVal = parts[0].trim();
-                        }
-                    });
-                }
-
-                // This is where we get the fields list based on fcode
-                if(idVal){
-                    d3.xhr(window.location.protocol + '//' + window.location.hostname +
-                        Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) + '/osmtotds?idval='+idVal +
-                         '&geom=' + data.geom + '&translation=' + data.translation + '&idelem=' + idelem)
-                        .get(function(error, resp){
-                            var ret = {};
-                            ret.tableName = '';
-                            ret.attrs = attribs;
-                            ret.fields = resp.responseText;
-                            callback(ret);
-
-                        });
-                } else {
-                    // create empty fields
-                    var ret = {};
-                    ret.tableName = '';
-                    ret.attrs = attribs;
-                    ret.fields = '{}';
-                    callback(ret);
-                }
-            });
-    };
-
-    // This uses translation node js server using CORS
-    rest.TDSToOSMByFCode = function (data, callback) {
-        if(!iD.data.hootConfig.translationServerPort){
-            iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
-            return;
-        }
-
-        if(data){
-            var fcode = data.fcode;
-            var translation = data.translation;
-            d3.xhr(window.location.protocol + '//' + window.location.hostname +
-                Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) +
-                '/tdstoosm?fcode='+ fcode + '&translation=' + translation)
-                .get(function(error, resp){
-                    callback(resp);
-
-                });
-        }
-    };
-
-    rest.TDSToOSM = function (data, callback) {
-        if(!iD.data.hootConfig.translationServerPort){
-            iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
-            return;
-        }
-        if (!data) {
-            return false;
-        }
-
-        d3.xml(window.location.protocol + '//' + window.location.hostname
-            + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort)
-            +'/tdstoosm?translation=' + data.translation)
-            .header('Content-Type', 'text/xml')
-            .post(data.osmXml, function (error, resp) {
-                var tagslist = resp.getElementsByTagName('tag');
-                var attribs = {};
-
-                _.each(tagslist, function(tag){
-                    var key = tag.attributes.k.value;
-                    var val = tag.attributes.v.value;
-                    attribs[key] = val;
-
-                });
-
-                var ret = {};
-                    ret.tableName = '';
-                    ret.attrs = attribs;
-                    callback(ret);
-
-            });
     };
 
     rest.Export = function (data) {
@@ -683,86 +531,86 @@ Hoot.model.REST = function (command, data, callback, option) {
           });
     };
 
-  rest.getReviewRefs = function(queryElements, callback)
-  {
-    var request = {};
-    request.queryElements = queryElements;
-    d3.json('/hoot-services/job/review/refs')
-      .header('Content-Type', 'application/json')
-      .post(JSON.stringify(request),
-      function(error, response)
-      {
-        if (error)
-        {
-          iD.ui.Alert('Review get refs failed.','error',new Error().stack);
-        }
-        callback(error, response);
-      });
-  };
-
-  rest.reviewGetNext = function(data, callback)
-  {
-    var mapId = data.mapId;
-    var seq = data.sequence;
-    var direction = data.direction;
-
-    d3.json('/hoot-services/job/review/next?mapid='+ mapId + '&offsetseqid=' + seq
-        + '&direction=' + direction,
-       function(error, response)
+    rest.getReviewRefs = function(queryElements, callback)
+    {
+        var request = {};
+        request.queryElements = queryElements;
+        d3.json('/hoot-services/job/review/refs')
+          .header('Content-Type', 'application/json')
+          .post(JSON.stringify(request),
+          function(error, response)
+          {
+            if (error)
             {
-                if (error)
+              iD.ui.Alert('Review get refs failed.','error',new Error().stack);
+            }
+            callback(error, response);
+          });
+    };
+
+    rest.reviewGetNext = function(data, callback)
+    {
+        var mapId = data.mapId;
+        var seq = data.sequence;
+        var direction = data.direction;
+
+        d3.json('/hoot-services/job/review/next?mapid='+ mapId + '&offsetseqid=' + seq
+            + '&direction=' + direction,
+           function(error, response)
                 {
-                    alert('Get next review failed.');
+                    if (error)
+                    {
+                        alert('Get next review failed.');
+                    }
+                    callback(error, response);
                 }
-                callback(error, response);
-            }
-        );
-  };
+            );
+    };
 
 
-  rest.reviewGetReviewItem = function(data, callback)
-  {
-    var mapId = data.mapId;
-    var seq = data.sequence;
+    rest.reviewGetReviewItem = function(data, callback)
+    {
+        var mapId = data.mapId;
+        var seq = data.sequence;
 
-    d3.json('/hoot-services/job/review/reviewable?mapid='+ mapId + '&offsetseqid=' + seq,
-            function(error, resp)
-            {
-               if (error) {
-                    return callback(_alertError(error, 'Requested job failed! For detailed log goto Manage->Log'));
+        d3.json('/hoot-services/job/review/reviewable?mapid='+ mapId + '&offsetseqid=' + seq,
+                function(error, resp)
+                {
+                   if (error) {
+                        return callback(_alertError(error, 'Requested job failed! For detailed log goto Manage->Log'));
+                    }
+                    callback(resp);
                 }
-                callback(resp);
-            }
-        );
-  };
+            );
+     };
 
-  rest.ReviewGetStatistics = function (mapId, callback) {
+    rest.ReviewGetStatistics = function (mapId, callback) {
 
         d3.json('/hoot-services/job/review/statistics?mapId=' + mapId, function (error, resp) {
                 return callback(error,resp);
         });
     };
 
-  rest.getTranslations = function(callback) {
-    d3.json('/hoot-services/ingest/customscript/getlist', function (error, resp) {
-        if (error) {
-            return callback(_alertError(error, 'Get Translations failed! For detailed log goto Manage->Log'));
-        }
-        if(callback){callback(resp);}
-    });
-};
+    rest.getTranslations = function(callback) {
+        d3.json('/hoot-services/ingest/customscript/getlist', function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, 'Get Translations failed! For detailed log goto Manage->Log'));
+            }
+            if(callback){callback(resp);}
+        });
+    };
 
-rest.getExportResources = function(name,callback) {
-    d3.text('/hoot-services/job/export/resources', function (error, resp) {
-        if (error) {
-            return callback(_alertError(error, 'Get Exports failed! For detailed log goto Manage->Log'));
-        }
-        if(callback){callback(resp);}
-    });
-};
+    rest.getExportResources = function(name,callback) {
+        d3.text('/hoot-services/job/export/resources', function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, 'Get Exports failed! For detailed log goto Manage->Log'));
+            }
+            if(callback){callback(resp);}
+        });
+    };
 
 
-rest.ReviewGetGeoJson = function (mapId, extent, callback) {
+    rest.ReviewGetGeoJson = function (mapId, extent, callback) {
         d3.json('/hoot-services/job/review/allreviewables?mapid=' + mapId
             + '&minlon=' + (extent[0][0]).toFixed(6)
             + '&minlat=' + (extent[0][1]).toFixed(6)
@@ -779,133 +627,133 @@ rest.ReviewGetGeoJson = function (mapId, extent, callback) {
         });
     };
 
-rest.getTranslation = function(name,callback) {
-    d3.text('/hoot-services/ingest/customscript/getscript?SCRIPT_NAME='+ name, function (error, resp) {
-        if (error) {
-            return callback(_alertError(error, 'Get Translation failed! For detailed log goto Manage->Log'));
-        }
-        if(callback){callback(resp);}
-    });
-};
-
-rest.getDefaultTranslation = function(path,callback) {
-    d3.text('/hoot-services/ingest/customscript/getdefaultscript?SCRIPT_PATH='+ path, function (error, resp) {
-        if (error) {
-            return callback(_alertError(error, 'Get Translation failed! For detailed log goto Manage->Log'));
-        }
-        if(callback){callback(resp);}
-    });
-};
-
-rest.deleteTranslation = function(name,callback) {
-    d3.text('/hoot-services/ingest/customscript/deletescript?SCRIPT_NAME='+name, function (error, resp) {
-        if (error) {
-            return callback(_alertError(error, 'Get Translation failed! For detailed log goto Manage->Log'));
-        }
-        if(callback){callback(resp);}
-    });
-};
-
-rest.postTranslation = function(data,callback) {
-d3.json('/hoot-services/ingest/customscript/save?SCRIPT_NAME='+data.NAME+'&SCRIPT_DESCRIPTION='+data.DESCRIPTION)
-            .header('Content-Type', 'text/plain')
-            .post(data.data, function (error, resp) {
-                if (error) {
-                    return callback(_alertError(error, 'Post Translation failed! For detailed log goto Manage->Log'));
-                }
-                if(callback){callback(resp);}
-                return resp;
-            });
-};
-
-rest.servicesVersionInfo = function(callback)
-{
-    d3.json('/hoot-services/info/about/servicesVersionInfo', function(error, resp)
-    {
-        if (error) {
-            return callback(_alertError(error, 'Get service version info failed! For detailed log goto Manage->Log'));
-        }
-        return callback(resp);
-    });
-};
-
-rest.coreVersionInfo = function(callback)
-{
-    d3.json('/hoot-services/info/about/coreVersionInfo', function(error, resp)
-    {
-        if (error) {
-            return callback(_alertError(error, 'Get core version info failed! For detailed log goto Manage->Log'));
-        }
-        return callback(resp);
-    });
-};
-
-rest.coreVersionDetail = function(callback)
-{
-    d3.json('/hoot-services/info/about/coreVersionDetail', function(error, resp)
-    {
-        if (error) {
-            return callback(_alertError(error, 'Get core version detail failed! For detailed log goto Manage->Log'));
-        }
-        return callback(resp);
-    });
-};
-
-rest.jobStatusLegacy = function (data, callback) {
-        d3.json('/hoot-services/job/status/' + data, function (error, resp) {
+    rest.getTranslation = function(name,callback) {
+        d3.text('/hoot-services/ingest/customscript/getscript?SCRIPT_NAME='+ name, function (error, resp) {
             if (error) {
-                return error;
+                return callback(_alertError(error, 'Get Translation failed! For detailed log goto Manage->Log'));
+            }
+            if(callback){callback(resp);}
+        });
+    };
+
+    rest.getDefaultTranslation = function(path,callback) {
+        d3.text('/hoot-services/ingest/customscript/getdefaultscript?SCRIPT_PATH='+ path, function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, 'Get Translation failed! For detailed log goto Manage->Log'));
+            }
+            if(callback){callback(resp);}
+        });
+    };
+
+    rest.deleteTranslation = function(name,callback) {
+        d3.text('/hoot-services/ingest/customscript/deletescript?SCRIPT_NAME='+name, function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, 'Get Translation failed! For detailed log goto Manage->Log'));
+            }
+            if(callback){callback(resp);}
+        });
+    };
+
+    rest.postTranslation = function(data,callback) {
+        d3.json('/hoot-services/ingest/customscript/save?SCRIPT_NAME='+data.NAME+'&SCRIPT_DESCRIPTION='+data.DESCRIPTION)
+                    .header('Content-Type', 'text/plain')
+                    .post(data.data, function (error, resp) {
+                        if (error) {
+                            return callback(_alertError(error, 'Post Translation failed! For detailed log goto Manage->Log'));
+                        }
+                        if(callback){callback(resp);}
+                        return resp;
+                    });
+    };
+
+    rest.servicesVersionInfo = function(callback)
+    {
+        d3.json('/hoot-services/info/about/servicesVersionInfo', function(error, resp)
+        {
+            if (error) {
+                return callback(_alertError(error, 'Get service version info failed! For detailed log goto Manage->Log'));
+            }
+            return callback(resp);
+        });
+    };
+
+    rest.coreVersionInfo = function(callback)
+    {
+        d3.json('/hoot-services/info/about/coreVersionInfo', function(error, resp)
+        {
+            if (error) {
+                return callback(_alertError(error, 'Get core version info failed! For detailed log goto Manage->Log'));
+            }
+            return callback(resp);
+        });
+    };
+
+    rest.coreVersionDetail = function(callback)
+    {
+        d3.json('/hoot-services/info/about/coreVersionDetail', function(error, resp)
+        {
+            if (error) {
+                return callback(_alertError(error, 'Get core version detail failed! For detailed log goto Manage->Log'));
+            }
+            return callback(resp);
+        });
+    };
+
+    rest.jobStatusLegacy = function (data, callback) {
+            d3.json('/hoot-services/job/status/' + data, function (error, resp) {
+                if (error) {
+                    return error;
+                }
+                callback(resp);
+            });
+    };
+
+    rest.getDebugLog = function (data, callback) {
+        d3.json('/hoot-services/info/logging/debuglog', function (error, resp) {
+            if (error) {
+                return callback(_alertError(error, 'Get debug log failed! For detailed log goto Manage->Log'));
             }
             callback(resp);
         });
-};
+    };
 
-rest.getDebugLog = function (data, callback) {
-    d3.json('/hoot-services/info/logging/debuglog', function (error, resp) {
-        if (error) {
-            return callback(_alertError(error, 'Get debug log failed! For detailed log goto Manage->Log'));
+    rest.exportLog = function()
+    {
+        var sUrl = '/hoot-services/info/logging/export';
+        var link = document.createElement('a');
+        link.href = sUrl;
+        if (link.download !== undefined) {
+            //Set HTML5 download attribute. This will prevent file from opening if supported.
+            var fileName = sUrl.substring(sUrl.lastIndexOf('/') + 1, sUrl.length);
+            link.download = fileName;
         }
-        callback(resp);
-    });
-};
+        //Dispatching click event.
+        if (document.createEvent) {
+            var e = document.createEvent('MouseEvents');
+            e.initEvent('click', true, true);
+            link.dispatchEvent(e);
+            return true;
+        }
+    };
 
-rest.exportLog = function()
-{
-    var sUrl = '/hoot-services/info/logging/export';
-    var link = document.createElement('a');
-    link.href = sUrl;
-    if (link.download !== undefined) {
-        //Set HTML5 download attribute. This will prevent file from opening if supported.
-        var fileName = sUrl.substring(sUrl.lastIndexOf('/') + 1, sUrl.length);
-        link.download = fileName;
-    }
-    //Dispatching click event.
-    if (document.createEvent) {
-        var e = document.createEvent('MouseEvents');
-        e.initEvent('click', true, true);
-        link.dispatchEvent(e);
-        return true;
-    }
-};
-
-rest.downloadReport = function(data)
-{
-    var sUrl = '/hoot-services/info/reports/get?id=' + data.id + '&reportname=' + data.outputname;
-    var link = document.createElement('a');
-    link.href = sUrl;
-    if (link.download !== undefined) {
-        //Set HTML5 download attribute. This will prevent file from opening if supported.
-        var fileName = sUrl.substring(sUrl.lastIndexOf('/') + 1, sUrl.length);
-        link.download = fileName;
-    }
-    //Dispatching click event.
-    if (document.createEvent) {
-        var e = document.createEvent('MouseEvents');
-        e.initEvent('click', true, true);
-        link.dispatchEvent(e);
-        return true;
-    }
-};
+    rest.downloadReport = function(data)
+    {
+        var sUrl = '/hoot-services/info/reports/get?id=' + data.id + '&reportname=' + data.outputname;
+        var link = document.createElement('a');
+        link.href = sUrl;
+        if (link.download !== undefined) {
+            //Set HTML5 download attribute. This will prevent file from opening if supported.
+            var fileName = sUrl.substring(sUrl.lastIndexOf('/') + 1, sUrl.length);
+            link.download = fileName;
+        }
+        //Dispatching click event.
+        if (document.createEvent) {
+            var e = document.createEvent('MouseEvents');
+            e.initEvent('click', true, true);
+            link.dispatchEvent(e);
+            return true;
+        }
+    };
 
     rest.createValidationMap = function (data, callback) {
 
@@ -930,14 +778,6 @@ rest.downloadReport = function(data)
                     return callback(_alertError(error, 'Requested job failed! For detailed log goto Manage->Log'));
                 }
                 rest.status(resp.jobId, callback);
-            });
-    };
-
-    rest.getTranslationCapabilities = function(data, callback) {
-        d3.xhr(window.location.protocol + '//' + window.location.hostname +
-            Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) + '/capabilities')
-            .get(function(error, resp){
-                callback(error, resp);
             });
     };
 
@@ -1025,8 +865,8 @@ rest.downloadReport = function(data)
     };
 
 
-        rest['' + command + ''](data, callback, option);
-    };
+    rest['' + command + ''](data, callback, option);
+};
 
 Hoot.model.REST.formatNodeJsPortOrPath = function(p) {
     if (isNaN(p)) {

@@ -1,0 +1,12 @@
+{
+    "icon": "railway-rail",
+    "geometry": [
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"RailwayYard",
+    "hoot:tagschema":"TDSv61",
+    "hoot:fcode": "AN050",
+    "name": "Railway Yard (AN060)"
+}

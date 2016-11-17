@@ -1,0 +1,12 @@
+{
+    "icon": "airport",
+    "geometry": [
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Aircraft Revetment",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "GB050",
+    "name": "Aircraft Revetment (GB050)"
+}

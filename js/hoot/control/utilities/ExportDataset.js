@@ -35,9 +35,9 @@ Hoot.control.utilities.exportdataset = function(context) {
     var _createDialog = function(dataset, translations) {
         _dataset = dataset;
         var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema'
-        
+
         _transCombo = [];
-        
+
         // filters for exportable translations
         _.each(translations, function(tr){
           if(tr.CANEXPORT && tr.CANEXPORT === true){
@@ -50,22 +50,22 @@ Hoot.control.utilities.exportdataset = function(context) {
             emptyObj.DESCRIPTION='';
             _transCombo.push(emptyObj);
           }
-        
-        var exportFormatList = 
+
+        var exportFormatList =
           [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
-           //{'DESCRIPTION': 'Web Feature Service (WFS)'}, 
+           //{'DESCRIPTION': 'Web Feature Service (WFS)'},
            {'DESCRIPTION': 'Open Street Map (OSM)'},
            {'DESCRIPTION': 'Open Street Map (PBF)'}];
         if (_dataset.canExportToOsmApiDb === true)
         {
             exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
         }
-        
+
         var d_form = [{
             label: 'Translation',
             id: 'fileExportTranslation',
             combobox: {'data':_transCombo, 'command': _populateTranslations },//transCombo,//exportResources,
-            placeholder: { 'default': placeHolder, 'command': _getTranslationComboPlaceHolder} ,//'LTDS 4.0'
+            placeholder: { 'default': placeHolder, 'command': _getTranslationComboPlaceHolder},
             inputtype:'combobox'
         }, {
             label: 'Export Format',

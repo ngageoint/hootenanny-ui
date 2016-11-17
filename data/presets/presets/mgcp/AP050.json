@@ -1,12 +1,11 @@
 {
-    "icon": "highway-path",
-    "geometry": [
-        "line"
-    ],
-    "tags": {
-    },
-    "hoot:featuretype":"Trail",
-    "hoot:transtype":"MGCP",
-    "hoot:fcode": "AP050",
-    "name": "Trail (AP050)"
+  "icon": "highway-path",
+  "geometry": [
+    "line"
+  ],
+  "tags": {},
+  "hoot:featuretype": "Trail",
+  "hoot:tagschema": "MGCP",
+  "hoot:fcode": "AP050",
+  "name": "Trail (AP050)"
 }

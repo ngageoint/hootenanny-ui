@@ -9,7 +9,6 @@
 //      31 May  2016 OSM API Database export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.export = function (context, sidebar) {
-    //var exportResources = ['LTDS 4.0', 'MGCP'];
     var event = d3.dispatch('saveLayer', 'cancelSaveLayer');
     var exp = {};
     var save;
@@ -20,9 +19,9 @@ Hoot.control.export = function (context, sidebar) {
 
     exp.activate = function (layer, translations) {
         var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema';
-       
-        //The layer here does not have the "canExportToOsmApiDb" property at this point like it 
-        //does in ExportDataset, so we need to get the map tags for the layer to determine whether 
+
+        //The layer here does not have the "canExportToOsmApiDb" property at this point like it
+        //does in ExportDataset, so we need to get the map tags for the layer to determine whether
         //it can be exported out to an OSM API database.
         Hoot.model.REST('getMapTags', {mapId: layer.name}, function (tags) {
             //console.log(tags);
@@ -32,7 +31,7 @@ Hoot.control.export = function (context, sidebar) {
             if (tags.osm_api_db_export_time)
             {
                 layer.canExportToOsmApiDb = true;
-            }                               	
+            }
             transCombo = [];
             // filters for exportable translations
             _.each(translations, function(tr){
@@ -46,22 +45,22 @@ Hoot.control.export = function (context, sidebar) {
                 emptyObj.DESCRIPTION='';
                 transCombo.push(emptyObj);
             }
-        
-            var exportFormatList = 
+
+            var exportFormatList =
               [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
-               //{'DESCRIPTION': 'Web Feature Service (WFS)'}, 
+               //{'DESCRIPTION': 'Web Feature Service (WFS)'},
                {'DESCRIPTION': 'Open Street Map (OSM)'},
                {'DESCRIPTION': 'Open Street Map (PBF)'}];
             if (layer.canExportToOsmApiDb === true)
             {
                 exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
-            }                                        	
+            }
             var d_save = [{
                 label: 'Translation',
                 type: 'fileExportTranslation',
                 id: 'fileExportTranslation',
                 combobox: {'data':transCombo },//exportResources,
-                placeholder: placeHolder,//'LTDS 4.0'
+                placeholder: placeHolder,
                 inputtype:'text'
             }, {
                 label: 'Export Format',
@@ -146,7 +145,7 @@ Hoot.control.export = function (context, sidebar) {
                         d3.select(this)
                         .style('width', '100%')
                         .call(combo);
-                        
+
                         d3.select(this)
                         .on('change',function(){
                             checkForTemplate();
@@ -168,8 +167,8 @@ Hoot.control.export = function (context, sidebar) {
                     if(a.id) {
                         d3.select(this).attr('id', a.id);
                     }
-        });     
-            
+        });
+
         var actions = save
             .select('fieldset')
             .append('div')
@@ -197,7 +196,7 @@ Hoot.control.export = function (context, sidebar) {
                 event.saveLayer(save, layer);
             });
          });
-        
+
         function checkForTemplate(){
             var hidden=false;
 

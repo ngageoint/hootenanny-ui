@@ -1,0 +1,12 @@
+{
+    "icon": "airport",
+    "geometry": [
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Runway",
+    "hoot:tagschema":"TDSv61",
+    "hoot:fcode": "GB055",
+    "name": "Runway (GB055)"
+}

@@ -92,7 +92,8 @@ dist/iD.js: \
 	js/id/validations/*.js \
 	js/id/end.js \
 	js/lib/locale.js \
-	data/introGraph.js
+	data/introGraph.js \
+	js/id/ui/schema_switcher.js
 
 .INTERMEDIATE dist/iD.js: data/data.js
 

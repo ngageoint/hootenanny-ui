@@ -1,0 +1,12 @@
+{
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Military Installation",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "SU001",
+    "name": "Military Installation (SU001)"
+}

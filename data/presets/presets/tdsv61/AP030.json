@@ -6,7 +6,7 @@
     "tags": {
     },
     "hoot:featuretype":"Road",
-    "hoot:transtype":"TDSv61",
+    "hoot:tagschema":"TDSv61",
     "hoot:fcode": "AP030",
     "name": "Road (AP030)"
 }

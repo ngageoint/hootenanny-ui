@@ -1,12 +1,11 @@
 {
-    "icon": "waterway-stream",
-    "geometry": [
-        "point"
-    ],
-    "tags": {
-    },
-    "hoot:featuretype":"Culvert",
-    "hoot:transtype":"MGCP",
-    "hoot:fcode": "AQ065",
-    "name": "Culvert (AQ065)"
+  "icon": "waterway-stream",
+  "geometry": [
+    "point"
+  ],
+  "tags": {},
+  "hoot:featuretype": "Culvert",
+  "hoot:tagschema": "MGCP",
+  "hoot:fcode": "AQ065",
+  "name": "Culvert (AQ065)"
 }
