@@ -19,7 +19,7 @@ iD.ui.preset = function(context) {
         field.show = show;
 
         field.shown = function() {
-            return (field.id === 'name' && context.translationserver().activeTranslation === 'OSM') || field.show || _.some(field.keys, function(key) { return !!tags[key]; });
+            return (field.id === 'name' && context.translationserver().activeTranslation() === 'OSM') || field.show || _.some(field.keys, function(key) { return !!tags[key]; });
         };
 
         field.modified = function() {
