@@ -1,6 +1,6 @@
 iD.Background = function(context) {
     var dispatch = d3.dispatch('change','baseLayerChange'),
-        baseLayer = iD.TileLayer()
+        baseLayer = iD.TileLayer(context)
             .projection(context.projection),
         /*gpxLayer = iD.GpxLayer(context, dispatch)
             .projection(context.projection),*/
@@ -350,7 +350,7 @@ iD.Background = function(context) {
             }
         }
 
-        layer = iD.TileLayer()
+        layer = iD.TileLayer(context)
             .source(d)
             .projection(context.projection)
             .dimensions(baseLayer.dimensions());
@@ -399,7 +399,7 @@ iD.Background = function(context) {
             }
         }
 
-        layer = iD.TileLayer()
+        layer = iD.TileLayer(context)
             .source(d)
             .projection(context.projection)
             .dimensions(baseLayer.dimensions());

@@ -67,7 +67,13 @@ Hoot.control.utilities.exportdataset = function(context) {
             combobox: {'data':_transCombo, 'command': _populateTranslations },//transCombo,//exportResources,
             placeholder: { 'default': placeHolder, 'command': _getTranslationComboPlaceHolder} ,//'LTDS 4.0'
             inputtype:'combobox'
-        }, {
+        },  {
+            label: 'Export Status as Text',
+            type: 'exportTextStatus',
+            inputtype:'checkbox',
+            checkbox:'cboxExportTextStatus',
+            hidden: true
+        },  {
             label: 'Export Format',
             id: 'fileExportFileType',
             combobox: {'data': exportFormatList, 'command': _populateTranslations},
@@ -173,15 +179,16 @@ Hoot.control.utilities.exportdataset = function(context) {
 
         d3.select(this)
             .on('change',function(){
-                _checkForTemplate();
+                _checkForOptions();
             });
     };
 
     /**
     * @desc Toggler for Append to ESRI FGDB Template checkbox.
     **/
-    var _checkForTemplate = function(){
-        var hidden=false;
+    var _checkForOptions = function(){
+        var hideFGDB=false;
+        var hideExport=false;
 
         var exportType = d3.select('#fileExportFileType').value();
         var transType = d3.select('#fileExportTranslation').value();
@@ -191,21 +198,30 @@ Hoot.control.utilities.exportdataset = function(context) {
         if (transType===''){transType=d3.select('#fileExportTranslation').attr('placeholder');}
 
         if(exportType!=='File Geodatabase'){
-         hidden=true;
+         hideFGDB=true;
         }
 
         var selTrans = _.find(_transCombo,{'DESCRIPTION':transType});
         if(selTrans){
          if(selTrans.NAME.substring(0,3)!=='TDS'){
-             hidden=true;
+             hideFGDB=true;
          }
+         if(selTrans.NAME.substring(0,3)!=='OSM'){ 
+            hideExport=true;
+        }
         } else {
-         hidden=true;
+         hideFGDB=true;
+         hideExport=true;
         }
 
-        d3.select('.cboxAppendFGDBTemplate').classed('hidden',hidden);
-        if(hidden){
+        d3.select('.cboxAppendFGDBTemplate').classed('hidden',hideFGDB);
+        if(hideFGDB){
          d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
+        }
+
+        d3.select('.cboxExportTextStatus').classed('hidden',hideExport);
+        if(hideExport){
+            d3.select('.cboxExportTextStatus').select('input').property('checked',false);
         }
     };
 
