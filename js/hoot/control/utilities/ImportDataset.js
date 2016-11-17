@@ -135,7 +135,7 @@ Hoot.control.utilities.importdataset = function(context) {
                     ];
 
         var meta = {};
-        meta.title = 'Add Data';
+        meta.title = 'Import Dataset';
         meta.form = d_form;
         meta.button = d_btn;
 

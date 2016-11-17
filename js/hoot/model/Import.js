@@ -30,6 +30,92 @@ Hoot.model.import = function (context)
         });
     };
 
+    import_layer.importDirectory = function (container, schemaElemId, typeElemId, newLayerName,
+        ingestFiles, newfolderElemId, callback) {
+        _initVariables();
+        importCallback = callback;
+
+        jobIdsArr = [];
+        mapIdsArr = [];
+        var transType = container.select(schemaElemId).value();
+
+        var comboData = container.select(schemaElemId).datum();
+        var transName = transType;
+        var oTrans = null;
+        for(var i=0; i<comboData.combobox.length; i++){
+            var o = comboData.combobox[i];
+            if(o.DESCRIPTION === transType){
+                transName = o.NAME;
+                oTrans = o;
+                break;
+            }
+
+        }
+
+        // Checks to see if it is default translation and if so use the path specified
+        var transcriptName = iD.data.hootConfig.defaultScript;
+        var isDefTrans = false;
+        if(oTrans && oTrans.DEFAULT === true) {
+            if(oTrans.IMPORTPATH){
+                oTrans.PATH = oTrans.IMPORTPATH;
+            }
+            if(oTrans.PATH && oTrans.PATH.length > 0){
+                transcriptName = oTrans.PATH;
+                isDefTrans = true;
+            }
+        }
+
+        if(isDefTrans === false && transName != null && transName !== ''){
+            transcriptName = 'customscript/' + transName + '.js';
+        }
+
+        var selType = container.select(typeElemId).value();
+
+        comboData = container.select(typeElemId).datum();
+        var typeName = '';
+        for(i=0; i<comboData.combobox.data.length; i++){
+            o = comboData.combobox.data[i];
+            if(o.title === selType){
+                typeName = o.value;
+                break;
+            }
+
+        }
+
+        if(newfolderElemId) {
+            // Check new folder name
+            //try{
+                var newfoldername = container.select(newfolderElemId).value();
+                if(newfoldername !==''){
+                    var resp = context.hoot().checkForUnallowedChar(newfoldername);
+                    if(resp !== true){
+                        iD.ui.Alert(resp,'warning',new Error().stack);
+                        return;
+                    }
+                }
+            // } catch (e) {
+            //     // TODO: handle exception
+            // }
+        }
+
+        var data = {};
+        if(oTrans && oTrans.NONE === 'true'){
+            data.NONE_TRANSLATION = true;
+        } else {
+            data.NONE_TRANSLATION = false;
+        }
+
+        data.INPUT_TYPE = typeName;
+        data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';
+        data.INPUT_NAME = newLayerName;
+
+        if(!container.attr('id')){
+            data.formData = import_layer.getFormData(ingestFiles);
+        }
+
+        Hoot.model.REST('Upload', data, _importResultHandler);
+    };
+
     import_layer.importData = function (container, schemaElemId, typeElemId,
         newfolderElemId, layerNameElemId, FgdbFeatureClassElemId, callback) {
         _initVariables();
