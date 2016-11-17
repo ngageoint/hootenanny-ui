@@ -928,10 +928,13 @@ Hoot.control.utilities.importdirectory = function(context) {
             var mgcpMatch = _.find(this,{name:f}) || _.find(this,{fcode:f});
             if(mgcpMatch){
                 var mgcpName = f + "_" + mgcpMatch.desc.replace(" ","_");
+                // Remove any special characters
+                mgcpName = context.hoot().removeSpecialChar(mgcpName);
                 var selOpt = d3.select('#importDirectoryFilesList').select('option[value="' + f + '"]');
                 selOpt.value(mgcpName).text(mgcpName);
             }
         },mgcpList);
+        _validateFileList(_getFilesList());
     };
 
     var removeMGCPDescription = function(mgcpList) {
@@ -943,6 +946,7 @@ Hoot.control.utilities.importdirectory = function(context) {
                 selOpt.value(mgcpMatch.name).text(mgcpMatch.name);
             }
         },mgcpList);
+        _validateFileList(_getFilesList());
     };
 
 
