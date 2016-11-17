@@ -194,7 +194,7 @@ Hoot.control.utilities.importdirectory = function(context) {
     };
 
     var _getTranslation = function(){
-        var selectedTrans = d3.select('#importDirectorySchema').datum().combobox.filter(function(d){return d.DESCRIPTION == d3.select('#importDirectorySchema').value()});
+        var selectedTrans = d3.select('#importDirectorySchema').datum().combobox.filter(function(d){return d.DESCRIPTION === d3.select('#importDirectorySchema').value();});
         var retval;
         try{
             retval = selectedTrans[0].NAME;
@@ -203,7 +203,7 @@ Hoot.control.utilities.importdirectory = function(context) {
         }
 
         return retval;
-    }
+    };
 
     var _getDescriptionList = function(translation){
         if(!translation){translation = _getTranslation();}
@@ -216,7 +216,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             if(d3.select('.cboxAppendFCode').select('input').property('checked')===true){
                 appendFCodeDescription(fcodeList);
             } else {
-                appendFCodeDescription(fcodeList);
+                removeFCodeDescription(fcodeList);
             }
         });
     };
