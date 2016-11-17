@@ -212,6 +212,17 @@ iD.ui.EntityEditor = function(context) {
             tags = clean(tags);
         }
         if (!_.isEqual(entity.tags, tags)) {
+            //This updates the review tag table
+            var activeConflict = context.hoot().control.conflicts.activeConflict(0);
+            if (activeConflict) {
+                var reviewItem = context.entity(activeConflict),
+                    reviewAgainstItem = context.entity(context.hoot().control.conflicts.activeConflict(1));
+                if (entity.id === reviewItem.id || entity.id === reviewAgainstItem.id) {
+                    context.hoot().control.conflicts.map.featurehighlighter
+                        .highlightLayer(reviewItem,reviewAgainstItem, false);
+                }
+            }
+
             if (coalesceChanges) {
                 context.overwrite(iD.actions.ChangeTags(id, tags), annotation);
             } else {
