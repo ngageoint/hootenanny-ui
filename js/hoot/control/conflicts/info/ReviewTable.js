@@ -56,31 +56,44 @@ Hoot.control.conflicts.info.reviewtable = function (context)
             .on('mouseleave',function(){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',false);});
         }
 
-        fmerged.forEach(function (d) {
+fmerged.forEach(function (d) {
             var r = ftable.append('tr').classed('', true);
             r.append('td').classed('fillD', true).text(d.key);
-            r.append('td').classed('f1', true).text(addEllipsis(d.value[0]))
-            .on('click', function(){
-                if(context.hasEntity(feats[0].id)){
-                    var sel = iD.modes.Select(context, [feats[0].id]);
-                    _panToEntity(context.entity(feats[0].id));
-                    sel.suppressMenu(true);
-                    context.enter(sel);
-                }
-            })
-            .on('mouseenter',function(){d3.selectAll('.activeReviewFeature').classed('extra-highlight',true);})
-            .on('mouseleave',function(){d3.selectAll('.activeReviewFeature').classed('extra-highlight',false);});
-            r.append('td').classed('f2', true).text(addEllipsis(d.value[1]))
-            .on('click', function(){
-                if(context.hasEntity(feats[1].id)){
-                    var sel = iD.modes.Select(context, [feats[1].id]);
-                    _panToEntity(context.entity(feats[1].id));
-                    sel.suppressMenu(true);
-                    context.enter(sel);
-                }
-            })
-            .on('mouseenter',function(){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',true);})
-            .on('mouseleave',function(){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',false);});
+            if (d.value[0] === null) {
+                r.append('td').classed('f1', true).text("N/A")
+                .on('mouseenter',function(){d3.selectAll('.activeReviewFeature').classed('extra-highlight',true);})
+                .on('mouseleave',function(){d3.selectAll('.activeReviewFeature').classed('extra-highlight',false);});
+            } else {
+                r.append('td').classed('f1', true).text(addEllipsis(d.value[0]))
+                .on('click', function(){
+                    if(context.hasEntity(feats[0].id)){
+                        var sel = iD.modes.Select(context, [feats[0].id]);
+                        _panToEntity(context.entity(feats[0].id));
+                        sel.suppressMenu(true);
+                        context.enter(sel);
+                    }
+                })
+                .on('mouseenter',function(){d3.selectAll('.activeReviewFeature').classed('extra-highlight',true);})
+                .on('mouseleave',function(){d3.selectAll('.activeReviewFeature').classed('extra-highlight',false);});
+            }
+            
+            if (d.value[1] === null) {
+                r.append('td').classed('f2', true).text("N/A")
+                .on('mouseenter',function(){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',true);})
+                .on('mouseleave',function(){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',false);});
+            } else {
+                r.append('td').classed('f2', true).text(addEllipsis(d.value[1]))
+                .on('click', function(){
+                    if(context.hasEntity(feats[1].id)){
+                        var sel = iD.modes.Select(context, [feats[1].id]);
+                        _panToEntity(context.entity(feats[1].id));
+                        sel.suppressMenu(true);
+                        context.enter(sel);
+                    }
+                })
+                .on('mouseenter',function(){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',true);})
+                .on('mouseleave',function(){d3.selectAll('.activeReviewFeature2').classed('extra-highlight',false);});
+            }
 
         });
         _checkToggleText();
