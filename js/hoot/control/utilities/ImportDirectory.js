@@ -125,12 +125,12 @@ Hoot.control.utilities.importdirectory = function(context) {
             id: 'importDirectorySchema',
             combobox: {'data':_importTranslations, 'command': _populateTranslations },
             inputtype: 'combobox',
-            onchange: _checkForMGCP
+            onchange: _checkForDescription
         }, {
-            label: 'Append MGCP Descriptions',
-            type: 'appendMGCPDescription',
+            label: 'Append FCODE Descriptions',
+            type: 'appendFCodeDescription',
             inputtype: 'checkbox',
-            checkbox: 'cboxAppendMGCP',
+            checkbox: 'cboxAppendFCode',
             hidden:true
         }, {
             label: 'Custom Suffix',
@@ -158,10 +158,10 @@ Hoot.control.utilities.importdirectory = function(context) {
         meta.button = d_btn;
 
         _container = context.hoot().ui.formfactory.create('body', meta);
-        d3.select('.cboxAppendMGCP')
+        d3.select('.cboxAppendFCode')
             .classed('hidden',true)
             .select('input').property('checked',false)
-            .on('change',function(){_getMGCPList();});
+            .on('change',function(){_getDescriptionList();});
     };
 
     /**
@@ -183,29 +183,43 @@ Hoot.control.utilities.importdirectory = function(context) {
         return filesList;
     };
 
-    var _checkForMGCP = function(){
-        var mgcpCheck = d3.select('#importDirectorySchema').value().indexOf('MGCP') > -1 ? true : false;
-        if(mgcpCheck){
-            d3.select('.cboxAppendMGCP').classed('hidden',false).select('input').property('checked',false);
-        } else {
-            d3.select('.cboxAppendMGCP').classed('hidden',true).select('input').property('checked',false);
-            _getMGCPList();
+    var _checkForDescription = function(){
+        var mgcpCheck = d3.select('#importDirectorySchema').value().indexOf('MGCP');
+        var tdsCheck = d3.select('#importDirectorySchema').value().indexOf('TDS');
+        if(mgcpCheck > -1 || tdsCheck > -1) { d3.select('.cboxAppendFCode').classed('hidden',false).select('input').property('checked',false); }
+        else {
+            d3.select('.cboxAppendFCode').classed('hidden',true).select('input').property('checked',false);
+            _getDescriptionList('MGCP');
         }
+    };
+
+    var _getTranslation = function(){
+        var selectedTrans = d3.select('#importDirectorySchema').datum().combobox.filter(function(d){return d.DESCRIPTION == d3.select('#importDirectorySchema').value()});
+        var retval;
+        try{
+            retval = selectedTrans[0].NAME;
+        } catch (err) {
+            retval = 'MGCP';
+        }
+
+        return retval;
     }
 
-    var _getMGCPList = function(){
+    var _getDescriptionList = function(translation){
+        if(!translation){translation = _getTranslation();}
+
         d3.xhr(window.location.protocol + '//' + window.location.hostname +
             Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort)
-        +'/schema?translation=MGCP&limit=10000')
+        +'/schema?translation='+translation+'&limit=10000')
         .get(function(error, resp){
-            var mgcpList = JSON.parse(resp.response);
-            if(d3.select('.cboxAppendMGCP').select('input').property('checked')===true){
-                appendMGCPDescription(mgcpList);
+            var fcodeList = JSON.parse(resp.response);
+            if(d3.select('.cboxAppendFCode').select('input').property('checked')===true){
+                appendFCodeDescription(fcodeList);
             } else {
-                removeMGCPDescription(mgcpList);
+                appendFCodeDescription(fcodeList);
             }
         });
-    } 
+    };
     
 
     /**
@@ -354,9 +368,9 @@ Hoot.control.utilities.importdirectory = function(context) {
         var selectedOpt = d3.select('#importDirectoryFilesList').select('option[value="' + optName + '"]');
 
         if(_.isEmpty(selectedOpt[0][0])){
-            selectedOpt = d3.select('#importDirectoryFilesList').selectAll('option')[0].filter(function(d,i){return d.text === optName;});
+            selectedOpt = d3.select('#importDirectoryFilesList').selectAll('option')[0].filter(function(d){return d.text === optName;});
             selectedOpt = d3.select(selectedOpt[0]);
-        };
+        }
 
         if(!selectedOpt){return;}
 
@@ -922,35 +936,35 @@ Hoot.control.utilities.importdirectory = function(context) {
     };
 
     /**
-    * @desc Function to append MGCP Description based on FCODE
-    * @desc Assumes that layer name is a valid MGCP FCODE
-    * @oaram mgcpList - JSON of MGCP FCODEs and Descriptions
+    * @desc Function to append FCode Description based on FCODE
+    * @desc Assumes that layer name is a valid FCODE
+    * @oaram fcodeList - JSON of FCODEs and Descriptions
     * @param filesList - Selected files list.
     **/
-    var appendMGCPDescription = function(mgcpList) {
+    var appendFCodeDescription = function(fcodeList) {
         var filesList = _getFilesList();
         _.each(filesList, function(f){
-            var mgcpMatch = _.find(this,{name:f.value}) || _.find(this,{fcode:f.value});
-            if(mgcpMatch){
-                var mgcpName = f.value + "_" + mgcpMatch.desc.replace(" ","_");
+            var fcodeMatch = _.find(this,{name:f.value}) || _.find(this,{fcode:f.value});
+            if(fcodeMatch){
+                var fcodeName = f.value + '_' + fcodeMatch.desc.replace(' ','_');
                 // Remove any special characters
-                mgcpName = context.hoot().removeSpecialChar(mgcpName);
+                fcodeName = context.hoot().removeSpecialChar(fcodeName);
                 var selOpt = d3.select('#importDirectoryFilesList').select('option[value="' + f.value + '"]');
-                selOpt.text(mgcpName);
+                selOpt.text(fcodeName);
             }
-        },mgcpList);
+        },fcodeList);
         _validateFileList(_getFilesList());
     };
 
-    var removeMGCPDescription = function(mgcpList) {
+    var removeFCodeDescription = function(fcodeList) {
         var filesList = _getFilesList();
         _.each(filesList, function(f){
-            var mgcpMatch = _.find(this,{name:f.text.split('_')[0]}) || _.find(this,{fcode:f.text.split('_')[0]});
-            if(mgcpMatch){
+            var fcodeMatch = _.find(this,{name:f.text.split('_')[0]}) || _.find(this,{fcode:f.text.split('_')[0]});
+            if(fcodeMatch){
                 var selOpt = d3.select('#importDirectoryFilesList').select('option[value="' + f.value + '"]');
-                selOpt.text(mgcpMatch.name);
+                selOpt.text(fcodeMatch.name);
             }
-        },mgcpList);
+        },fcodeList);
         _validateFileList(_getFilesList());
     };
 

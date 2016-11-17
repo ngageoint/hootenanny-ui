@@ -325,7 +325,7 @@ Hoot.hoot = function (context) {
         var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/); 
         var retval = str.replace(pattern,'');
         return retval;
-    }
+    };
 
 
     hoot.checkForSpecialChar = function(str){
