@@ -179,7 +179,7 @@ Hoot.control.utilities.importdirectory = function(context) {
     * @desc gets file list from options in import directory file list
     **/
     var _getFilesList = function(){
-        var filesList = _.map(d3.select('#importDirectoryFilesList').selectAll('option')[0],function(opt){return opt.value;});
+        var filesList = _.map(d3.select('#importDirectoryFilesList').selectAll('option')[0],function(opt){return {value:opt.value,text:opt.text};});
         return filesList;
     };
 
@@ -233,10 +233,10 @@ Hoot.control.utilities.importdirectory = function(context) {
     **/    
     var _validateFileList = function(filesList){
          _.each(filesList, function(f){
-            var strValidate = f.name || f;
+            var strValidate = f.text || f.name || f;
             var validName = true;
 
-            var selectedOpt = d3.select('#importDirectoryFilesList').select('option[value="' + strValidate + '"]');
+            var selectedOpt = d3.select('#importDirectoryFilesList').select('option[value="' + f.value + '"]');
 
             // Check for unallowed character without suffix (checking that separately)
             var resp = context.hoot().checkForUnallowedChar(strValidate);
@@ -353,7 +353,12 @@ Hoot.control.utilities.importdirectory = function(context) {
     var _highlightOption = function(optName,status) {
         var selectedOpt = d3.select('#importDirectoryFilesList').select('option[value="' + optName + '"]');
 
+        if(_.isEmpty(selectedOpt[0][0])){
+            selectedOpt = d3.select('#importDirectoryFilesList').selectAll('option')[0].filter(function(d,i){return d.text === optName;});
+            selectedOpt = d3.select(selectedOpt[0]);
+        };
 
+        if(!selectedOpt){return;}
 
         if(status==='success'){
             selectedOpt.classed('importSuccess',true)
@@ -389,9 +394,9 @@ Hoot.control.utilities.importdirectory = function(context) {
             return;
         }
 
-        _highlightOption(fileNames[fileNo],'progress');
+        _highlightOption(fileNames[fileNo].value,'progress');
 
-        var newLayerName = fileNames[fileNo];
+        var newLayerName = fileNames[fileNo].text;
         if(_container.select('#importDirectoryCustomSuffix').value()!==''){
             newLayerName += _container.select('#importDirectoryCustomSuffix').value();
         }
@@ -402,7 +407,7 @@ Hoot.control.utilities.importdirectory = function(context) {
         var importFiles = _.filter(document.getElementById('ingestdirectoryuploader').files, function(file){
                 var fName = file.name.substring(0, file.name.length - 4);
                 if(file.name.toLowerCase().indexOf('.shp.xml') > -1){fName = file.name.substring(0, file.name.length - 8);} 
-                return fName === fileNames[fileNo];
+                return fName === fileNames[fileNo].value;
             });
 
         _importDirectoryJob(_container, newLayerName, importFiles, submitExp, function(){
@@ -925,13 +930,13 @@ Hoot.control.utilities.importdirectory = function(context) {
     var appendMGCPDescription = function(mgcpList) {
         var filesList = _getFilesList();
         _.each(filesList, function(f){
-            var mgcpMatch = _.find(this,{name:f}) || _.find(this,{fcode:f});
+            var mgcpMatch = _.find(this,{name:f.value}) || _.find(this,{fcode:f.value});
             if(mgcpMatch){
-                var mgcpName = f + "_" + mgcpMatch.desc.replace(" ","_");
+                var mgcpName = f.value + "_" + mgcpMatch.desc.replace(" ","_");
                 // Remove any special characters
                 mgcpName = context.hoot().removeSpecialChar(mgcpName);
-                var selOpt = d3.select('#importDirectoryFilesList').select('option[value="' + f + '"]');
-                selOpt.value(mgcpName).text(mgcpName);
+                var selOpt = d3.select('#importDirectoryFilesList').select('option[value="' + f.value + '"]');
+                selOpt.text(mgcpName);
             }
         },mgcpList);
         _validateFileList(_getFilesList());
@@ -940,10 +945,10 @@ Hoot.control.utilities.importdirectory = function(context) {
     var removeMGCPDescription = function(mgcpList) {
         var filesList = _getFilesList();
         _.each(filesList, function(f){
-            var mgcpMatch = _.find(this,{name:f.split('_')[0]}) || _.find(this,{fcode:f.split('_')[0]});
+            var mgcpMatch = _.find(this,{name:f.text.split('_')[0]}) || _.find(this,{fcode:f.text.split('_')[0]});
             if(mgcpMatch){
-                var selOpt = d3.select('#importDirectoryFilesList').select('option[value="' + f + '"]');
-                selOpt.value(mgcpMatch.name).text(mgcpMatch.name);
+                var selOpt = d3.select('#importDirectoryFilesList').select('option[value="' + f.value + '"]');
+                selOpt.text(mgcpMatch.name);
             }
         },mgcpList);
         _validateFileList(_getFilesList());
