@@ -106,7 +106,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             id: 'importDirectoryFilesList',
             placeholder:'',
             inputtype:'listbox',
-            readonly:true
+            readonly:null
         },
         {
             label: 'Path',
@@ -214,7 +214,7 @@ Hoot.control.utilities.importdirectory = function(context) {
                 removeFCodeDescription();
                 return;
             }
-            
+
             var fcodeList = JSON.parse(resp.response);
             if(d3.select('.cboxAppendFCode').select('input').property('checked')===true){
                 appendFCodeDescription(fcodeList);
@@ -251,9 +251,10 @@ Hoot.control.utilities.importdirectory = function(context) {
     var _validateFileList = function(filesList){
          _.each(filesList, function(f){
             var strValidate = f.text || f.name || f;
+            var optValue = f.value || f.name || f;
             var validName = true;
 
-            var selectedOpt = d3.select('#importDirectoryFilesList').select('option[value="' + f.value + '"]');
+            var selectedOpt = d3.select('#importDirectoryFilesList').select('option[value="' + optValue + '"]');
 
             // Check for unallowed character without suffix (checking that separately)
             var resp = context.hoot().checkForUnallowedChar(strValidate);
@@ -916,7 +917,14 @@ Hoot.control.utilities.importdirectory = function(context) {
             _container.select('#importDirectoryFilesList')
                 .append('option')
                 .attr('value',f.name)
-                .text(f.name);
+                .text(f.name)
+                .on('dblclick',function(f){
+                    var newLayerName = window.prompt('Enter new name for dataset ' + this.text + ':', this.text);
+                    if (newLayerName) {
+                        this.text = newLayerName;
+                        _validateFileList(_getFilesList());
+                    }
+                });
 
             if(f.size > iD.data.hootConfig.ingest_size_threshold){
             var thresholdInMb = Math.floor((1*iD.data.hootConfig.ingest_size_threshold)/1000000);
