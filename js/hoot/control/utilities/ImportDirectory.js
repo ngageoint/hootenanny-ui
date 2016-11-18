@@ -210,11 +210,16 @@ Hoot.control.utilities.importdirectory = function(context) {
             Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort)
         +'/schema?translation='+translation+'&limit=10000')
         .get(function(error, resp){
+            if(error){
+                removeFCodeDescription();
+                return;
+            }
+            
             var fcodeList = JSON.parse(resp.response);
             if(d3.select('.cboxAppendFCode').select('input').property('checked')===true){
                 appendFCodeDescription(fcodeList);
             } else {
-                removeFCodeDescription(fcodeList);
+                removeFCodeDescription();
             }
         });
     };
@@ -954,13 +959,13 @@ Hoot.control.utilities.importdirectory = function(context) {
         _validateFileList(_getFilesList());
     };
 
-    var removeFCodeDescription = function(fcodeList) {
+    var removeFCodeDescription = function() {
         // Replace text of each option with value (original value)
         var opts = d3.select('#importDirectoryFilesList').selectAll('option')[0];
         _.each(opts,function(opt){
             d3.select(opt).text(opt.value);
         });
-        
+
         _validateFileList(_getFilesList());
     };
 
