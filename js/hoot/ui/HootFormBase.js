@@ -255,12 +255,14 @@ Hoot.ui.hootformbase = function ()
         var fieldDiv = field
         .classed('contain', true);
 
+        var disable = typeof(a.readonly) !== 'undefined' ? a.readonly : true;
+
         var inputField =
         fieldDiv
         .append('select')
         .style('height','90px')
         .attr('size', '5')
-        .attr('disabled',true)
+        .attr('disabled',disable)
         .attr('class', function (field) {
             return field.className;
         });
