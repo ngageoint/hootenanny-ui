@@ -106,7 +106,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             id: 'importDirectoryFilesList',
             placeholder:'',
             inputtype:'listbox',
-            readonly:null
+            readonly:true //null
         },
         {
             label: 'Path',
@@ -917,14 +917,14 @@ Hoot.control.utilities.importdirectory = function(context) {
             _container.select('#importDirectoryFilesList')
                 .append('option')
                 .attr('value',f.name)
-                .text(f.name)
+                .text(f.name)/*
                 .on('dblclick',function(f){
                     var newLayerName = window.prompt('Enter new name for dataset ' + this.text + ':', this.text);
                     if (newLayerName) {
                         this.text = newLayerName;
                         _validateFileList(_getFilesList());
                     }
-                });
+                })*/;
 
             if(f.size > iD.data.hootConfig.ingest_size_threshold){
             var thresholdInMb = Math.floor((1*iD.data.hootConfig.ingest_size_threshold)/1000000);
