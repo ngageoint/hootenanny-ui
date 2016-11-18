@@ -19,9 +19,9 @@ Hoot.control.export = function (context, sidebar) {
 
     exp.activate = function (layer, translations) {
         var placeHolder = 'NSG Topographic Data Store (TDS) v6.1';//'Select Data Translation Schema';
-
-        //The layer here does not have the "canExportToOsmApiDb" property at this point like it
-        //does in ExportDataset, so we need to get the map tags for the layer to determine whether
+       
+        //The layer here does not have the "canExportToOsmApiDb" property at this point like it 
+        //does in ExportDataset, so we need to get the map tags for the layer to determine whether 
         //it can be exported out to an OSM API database.
         Hoot.model.REST('getMapTags', {mapId: layer.name}, function (tags) {
             //console.log(tags);
@@ -31,7 +31,7 @@ Hoot.control.export = function (context, sidebar) {
             if (tags.osm_api_db_export_time)
             {
                 layer.canExportToOsmApiDb = true;
-            }
+            }                               	
             transCombo = [];
             // filters for exportable translations
             _.each(translations, function(tr){
@@ -45,16 +45,16 @@ Hoot.control.export = function (context, sidebar) {
                 emptyObj.DESCRIPTION='';
                 transCombo.push(emptyObj);
             }
-
-            var exportFormatList =
+        
+            var exportFormatList = 
               [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
-               //{'DESCRIPTION': 'Web Feature Service (WFS)'},
+               //{'DESCRIPTION': 'Web Feature Service (WFS)'}, 
                {'DESCRIPTION': 'Open Street Map (OSM)'},
                {'DESCRIPTION': 'Open Street Map (PBF)'}];
             if (layer.canExportToOsmApiDb === true)
             {
                 exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
-            }
+            }                                        	
             var d_save = [{
                 label: 'Translation',
                 type: 'fileExportTranslation',
@@ -62,6 +62,11 @@ Hoot.control.export = function (context, sidebar) {
                 combobox: {'data':transCombo },//exportResources,
                 placeholder: placeHolder,
                 inputtype:'text'
+            }, {
+                label: 'Export Status as Text',
+                type: 'exportTextStatus',
+                inputtype:'checkbox',
+                checkbox:'cboxExportTextStatus'
             }, {
                 label: 'Export Format',
                 type: 'fileExportFileType',
@@ -131,6 +136,8 @@ Hoot.control.export = function (context, sidebar) {
                 })
                 .select(function (a) {
                     if (a.checkbox){
+                        d3.selectAll('input.rest.exportTextStatus').remove();
+                        d3.select('.cboxExportTextStatus').classed('hidden',true).select('input').property('checked',false);
                         d3.selectAll('input.reset.appendFGDBTemplate').remove();
                         d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
                     }
@@ -145,10 +152,10 @@ Hoot.control.export = function (context, sidebar) {
                         d3.select(this)
                         .style('width', '100%')
                         .call(combo);
-
+                        
                         d3.select(this)
                         .on('change',function(){
-                            checkForTemplate();
+                            checkForOptions();
                         });
                     }
 
@@ -167,8 +174,8 @@ Hoot.control.export = function (context, sidebar) {
                     if(a.id) {
                         d3.select(this).attr('id', a.id);
                     }
-        });
-
+        });     
+            
         var actions = save
             .select('fieldset')
             .append('div')
@@ -196,9 +203,10 @@ Hoot.control.export = function (context, sidebar) {
                 event.saveLayer(save, layer);
             });
          });
-
-        function checkForTemplate(){
-            var hidden=false;
+        
+        function checkForOptions(){
+            var hideFGDB=false;
+            var hideExport=false;
 
             var exportType = d3.select('.fileExportFileType').value();
             var transType = d3.select('.fileExportTranslation').value();
@@ -208,21 +216,31 @@ Hoot.control.export = function (context, sidebar) {
             if (transType===''){transType=d3.select('.fileExportTranslation').attr('placeholder');}
 
             if(exportType!=='File Geodatabase'){
-                hidden=true;
+                hideFGDB=true;
             }
 
             var selTrans = _.find(transCombo,{'DESCRIPTION':transType});
             if(selTrans){
                 if(selTrans.NAME.substring(0,3)!=='TDS'){
-                    hidden=true;
+                    hideFGDB=true;
+                } 
+
+                if(selTrans.NAME.substring(0,3)!=='OSM'){ 
+                    hideExport=true;
                 }
             } else {
-                hidden=true;
+                hideFGDB=true;
+                hideExport=true;
             }
 
-            d3.select('.cboxAppendFGDBTemplate').classed('hidden',hidden);
-            if(hidden){
+            d3.select('.cboxAppendFGDBTemplate').classed('hidden',hideFGDB);
+            if(hideFGDB){
                 d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
+            }
+
+            d3.select('.cboxExportTextStatus').classed('hidden',hideExport);
+            if(hideExport){
+                d3.select('.cboxExportTextStatus').select('input').property('checked',false);
             }
         }
 

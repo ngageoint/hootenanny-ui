@@ -140,6 +140,10 @@ Hoot.ui.hootformbase = function ()
                         chkHtml += '<input type="checkbox" class="reset checkbox" style="opacity: 1;">'+a.label+'</label>';
                         field.html(chkHtml);
                         field.classed('keyline-all',false);
+
+                        if(a.hidden){
+                            field.select('label').classed('hidden',a.hidden);
+                        }
                     }  else {
                         _createDefaultTextField(a, field);
                     }

@@ -84,7 +84,14 @@ Hoot.model.export = function (context)
         } catch (e) {
             appendTemplate=true;
         }
-        //mapId = data.name;
+        
+        // Check to see if we are export status as text
+        var exportTextStatus= '';
+        try{
+            exportTextStatus=container.select('.cboxExportTextStatus').select('input').property('checked');
+        } catch (e) {
+            exportTextStatus=true;
+        }
 
         var param = {};
         param.translation = selectedTranslation;
@@ -100,6 +107,7 @@ Hoot.model.export = function (context)
         param.outputname = outputname;
         param.USER_EMAIL = iD.data.hootConfig.userEmail;
         param.append = appendTemplate.toString();
+        param.textstatus = exportTextStatus.toString();
         d3.json('/hoot-services/job/export/execute')
             .header('Content-Type', 'text/plain')
             .post(JSON.stringify(param), function (error, data) {
