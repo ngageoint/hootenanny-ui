@@ -186,11 +186,9 @@ Hoot.control.utilities.importdirectory = function(context) {
     var _checkForDescription = function(){
         var mgcpCheck = d3.select('#importDirectorySchema').value().indexOf('MGCP');
         var tdsCheck = d3.select('#importDirectorySchema').value().indexOf('TDS');
-        if(mgcpCheck > -1 || tdsCheck > -1) { d3.select('.cboxAppendFCode').classed('hidden',false).select('input').property('checked',false); }
-        else {
-            d3.select('.cboxAppendFCode').classed('hidden',true).select('input').property('checked',false);
-            _getDescriptionList('MGCP');
-        }
+        var cboxBool = mgcpCheck > -1 || tdsCheck > -1;
+        d3.select('.cboxAppendFCode').classed('hidden',!cboxBool).select('input').property('checked',false);
+        _getDescriptionList('MGCP');
     };
 
     var _getTranslation = function(){
@@ -957,14 +955,12 @@ Hoot.control.utilities.importdirectory = function(context) {
     };
 
     var removeFCodeDescription = function(fcodeList) {
-        var filesList = _getFilesList();
-        _.each(filesList, function(f){
-            var fcodeMatch = _.find(this,{name:f.text.split('_')[0]}) || _.find(this,{fcode:f.text.split('_')[0]});
-            if(fcodeMatch){
-                var selOpt = d3.select('#importDirectoryFilesList').select('option[value="' + f.value + '"]');
-                selOpt.text(fcodeMatch.name);
-            }
-        },fcodeList);
+        // Replace text of each option with value (original value)
+        var opts = d3.select('#importDirectoryFilesList').selectAll('option')[0];
+        _.each(opts,function(opt){
+            d3.select(opt).text(opt.value);
+        });
+        
         _validateFileList(_getFilesList());
     };
 
