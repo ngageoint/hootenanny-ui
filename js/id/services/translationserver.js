@@ -174,7 +174,7 @@ iD.translationserver = function(context) {
                 //If there is an error tag or no fcode, show the alert, change schema back to OSM
                 if (tags.error || (!tags.FCODE && !tags.F_CODE)) {
                     translationserver.activeTranslation(previousTranslation);
-                    alert(tags.error || 'Feature out of spec, unable to translate');
+                    iD.ui.Alert(tags.error || 'Feature out of spec, unable to translate', 'warning', new Error().stack);
                     return;
                 }
 
