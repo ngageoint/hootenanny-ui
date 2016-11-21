@@ -255,7 +255,7 @@ Hoot.ui.hootformbase = function ()
         var fieldDiv = field
         .classed('contain', true);
 
-        var disable = typeof(a.readonly) !== 'undefined' ? a.readonly : true;
+        var disable = typeof (a.readonly) !== 'undefined' ? a.readonly : true;
 
         var inputField =
         fieldDiv
