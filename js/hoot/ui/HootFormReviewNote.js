@@ -89,7 +89,7 @@ Hoot.ui.hootformreviewnote = function (context)
         if(!isNew) {
             hdLabel
                 .append('div').classed('fr', true)
-                .call(iD.svg.Icon('#icon-plus'))
+                .call(iD.svg.Icon('#icon-edit'))
                 .on('click', function () {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
@@ -127,6 +127,7 @@ Hoot.ui.hootformreviewnote = function (context)
                             .attr('id', 'bmkNoteFormUser' + _rawData.id)
                             .classed('fr', true)
                             .call(iD.svg.Icon('#icon-avatar'))
+                            .attr('title',_parent.getUser().displayName || 'Anonymous User')
                             .on('click', _bmkUserClickHanlder);
 
                         _createButtons(d_btn, formDiv);
@@ -143,6 +144,7 @@ Hoot.ui.hootformreviewnote = function (context)
             .append('div').classed('fr',true)
             .attr('id', 'bmkNoteFormUser' + 'NEW')
             .call(iD.svg.Icon('#icon-avatar'))
+            .attr('title',_parent.getUser().displayName || 'Anonymous User')
             .on('click', _bmkUserClickHanlder);
         }
 
@@ -210,6 +212,7 @@ Hoot.ui.hootformreviewnote = function (context)
                 }
                 if(resp.user) {
                     _parent.setUser(resp.user);
+                    d3.selectAll('[id^=bmkNoteFormUser]').attr('title',resp.user.displayName);
                     // sets user back to share dialog. (We need to refactor this)
                     context.hoot().control.conflicts.actions.sharereview.setUserInfo(resp.user);
                 }
@@ -246,8 +249,7 @@ Hoot.ui.hootformreviewnote = function (context)
 
                     // add header and label
                     field
-                    .classed('form-field fill-white small space-bottom1', true)
-                    .style('height','120px');
+                    .classed('form-field fill-white small space-bottom1', true);
 
 
                     if(a.inputtype === 'textarea') {
@@ -263,7 +265,7 @@ Hoot.ui.hootformreviewnote = function (context)
                         })
                         .classed('col12 overflow', true)
                         .style('display','block')
-                        .style('height','120px')
+                        .style('resize','vertical')
                         .text(a.inputText);
 
                         if(a.readonly === true){

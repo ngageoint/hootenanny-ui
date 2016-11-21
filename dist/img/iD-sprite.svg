@@ -9,7 +9,7 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1625" inkscape:window-height="1026" id="namedview16475" showgrid="true" inkscape:zoom="8.6401389" inkscape:cx="632.17828" inkscape:cy="535.67277" inkscape:window-x="55" inkscape:window-y="24" inkscape:window-maximized="1" inkscape:current-layer="icons">
+  <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1625" inkscape:window-height="1026" id="namedview16475" showgrid="true" inkscape:zoom="8.640139" inkscape:cx="657.83304" inkscape:cy="536.09165" inkscape:window-x="1735" inkscape:window-y="24" inkscape:window-maximized="1" inkscape:current-layer="icons">
     <inkscape:grid type="xygrid" id="grid16479"/>
   </sodipodi:namedview>
   <defs id="defs15464">
@@ -1121,6 +1121,12 @@
     </symbol>
     <symbol id="icon-left-arrow" viewBox="680 0 20 20">
       <path inkscape:connector-curvature="0" d="m 684.04052,10.927121 c 0,-0.829 0.672,-1.5009999 1.5,-1.4999999 l 7,0 c 0.828,-0.001 1.5,0.6709999 1.5,1.4999999 0,0.828 -0.672,1.499 -1.5,1.5 l -7,0 c -0.828,-10e-4 -1.5,-0.672 -1.5,-1.5 z m 1.5,5.02 -5,-5.026 5,-4.9739999 z" id="icon-left-arrow-shape" fill="currentColor"/>
+    </symbol>
+    <symbol id="icon-edit" viewBox="700 0 20 20">
+      <path inkscape:connector-curvature="0" id="icon-edit-shape" d="m 702.35622,13.924148 12.12671,-12.126392 3.48571,3.4856979 -12.1264,12.1267151 -4.19787,0.711851 z" style="fill:none;stroke:#000000;stroke-width:0.97202945" fill="currentColor"/>
+      <path style="fill:none;stroke:#000000;stroke-width:0.81002456" inkscape:connector-curvature="0" id="path3771" d="m 702.37258,13.777047 3.58388,3.583873"/>
+      <path style="fill:none;stroke:#000000;stroke-width:0.81002456" inkscape:connector-curvature="0" id="path3777" d="M 716.01019,3.7508872 704.12907,15.631679"/>
+      <path style="fill:none;stroke:#000000;stroke-width:0.81002456" inkscape:connector-curvature="0" id="path3763" d="m 701.84292,16.675314 1.32763,1.281331"/>
     </symbol>
   </g>
   <g id="operations">
