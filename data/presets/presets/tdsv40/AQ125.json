@@ -1,0 +1,12 @@
+{
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"TransportationStation",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "AQ125",
+    "name": "Transportation Station (AQ125)"
+}

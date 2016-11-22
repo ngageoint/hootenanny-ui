@@ -70,15 +70,15 @@
             "default": 1.0
         },
         "hoot:featuretype": {
-            "description": "The TDS English feature type",
+            "description": "The feature type",
             "type": "string"
         },
-        "hoot:transtype": {
-            "description": "The TDS schema version",
+        "hoot:tagschema": {
+            "description": "The translated tag schema",
             "type": "string"
         },
         "hoot:fcode": {
-            "description": "The TDS feature code",
+            "description": "The feature code",
             "type": "string"
         }
     },

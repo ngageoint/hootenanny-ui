@@ -11,6 +11,10 @@ iD.presets.Category = function(id, category, all) {
         return category.geometry.indexOf(geometry) >= 0;
     };
 
+    category.matchSchema = function(schema) {
+        return category['hoot:tagschema'] === schema || (schema === 'OSM' && category['hoot:tagschema'] === undefined);
+    };
+
     category.matchScore = function() { return -1; };
 
     category.name = function() {

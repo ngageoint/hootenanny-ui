@@ -388,8 +388,6 @@ iD.ui = function(context) {
 
     ui.sidebar = iD.ui.Sidebar(context);
 
-    ui.plugins = iD.ui.plugins();
-
     return ui;
 };
 

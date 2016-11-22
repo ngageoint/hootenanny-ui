@@ -1,12 +1,13 @@
 {
     "icon": "airport",
     "geometry": [
+        "point",
         "area"
     ],
     "tags": {
     },
     "hoot:featuretype":"Land Aerodrome",
-    "hoot:transtype":"TDSv40",
+    "hoot:tagschema":"TDSv40",
     "hoot:fcode": "GB005",
     "name": "Land Aerodrome (GB005)"
 }

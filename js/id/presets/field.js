@@ -12,7 +12,8 @@ iD.presets.Field = function(id, field) {
     };
 
     field.label = function() {
-        return field.t('label', {'default': id});
+        //if a field has an overrideLabel, don't try to translate it
+        return field.overrideLabel || field.t('label', {'default': id});
     };
 
     var placeholder = field.placeholder;

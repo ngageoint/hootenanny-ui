@@ -2,7 +2,9 @@ iD.presets.Preset = function(id, preset, fields) {
     preset = _.clone(preset);
 
     preset.id = id;
-    preset.fields = (preset.fields || []).map(getFields);
+    preset.fields = (preset.fields || []).map(getFields).filter(function(d) {
+        return d !== undefined;
+    });
     preset.geometry = (preset.geometry || []);
 
     function getFields(f) {
@@ -11,6 +13,10 @@ iD.presets.Preset = function(id, preset, fields) {
 
     preset.matchGeometry = function(geometry) {
         return preset.geometry.indexOf(geometry) >= 0;
+    };
+
+    preset.matchSchema = function(schema) {
+        return preset['hoot:tagschema'] === schema || (schema === 'OSM' && preset['hoot:tagschema'] === undefined);
     };
 
     var matchScore = preset.matchScore || 1;

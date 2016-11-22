@@ -19,6 +19,12 @@ iD.presets.Collection = function(collection) {
             }));
         },
 
+        matchSchema: function(schema) {
+            return iD.presets.Collection(collection.filter(function(d) {
+                return d.matchSchema(schema);
+            }));
+        },
+
         search: function(value, geometry) {
             if (!value) return this;
 

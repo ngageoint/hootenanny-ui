@@ -6,7 +6,7 @@
     "tags": {
     },
     "hoot:featuretype":"Cart Track",
-    "hoot:transtype":"TDSv40",
+    "hoot:tagschema":"TDSv40",
     "hoot:fcode": "AP010",
     "name": "Cart Track (AP010)"
 }

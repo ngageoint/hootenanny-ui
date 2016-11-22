@@ -9,7 +9,6 @@
 //      31 May  2016 OSM API Database export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.export = function (context, sidebar) {
-    //var exportResources = ['LTDS 4.0', 'MGCP'];
     var event = d3.dispatch('saveLayer', 'cancelSaveLayer');
     var exp = {};
     var save;
@@ -61,9 +60,9 @@ Hoot.control.export = function (context, sidebar) {
                 type: 'fileExportTranslation',
                 id: 'fileExportTranslation',
                 combobox: {'data':transCombo },//exportResources,
-                placeholder: placeHolder,//'LTDS 4.0'
+                placeholder: placeHolder,
                 inputtype:'text'
-            },  {
+            }, {
                 label: 'Export Status as Text',
                 type: 'exportTextStatus',
                 inputtype:'checkbox',
@@ -139,7 +138,6 @@ Hoot.control.export = function (context, sidebar) {
                     if (a.checkbox){
                         d3.selectAll('input.rest.exportTextStatus').remove();
                         d3.select('.cboxExportTextStatus').classed('hidden',true).select('input').property('checked',false);
-
                         d3.selectAll('input.reset.appendFGDBTemplate').remove();
                         d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
                     }
@@ -230,7 +228,6 @@ Hoot.control.export = function (context, sidebar) {
                 if(selTrans.NAME.substring(0,3)!=='OSM'){ 
                     hideExport=true;
                 }
-
             } else {
                 hideFGDB=true;
                 hideExport=true;

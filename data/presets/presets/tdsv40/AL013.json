@@ -7,7 +7,7 @@
     "tags": {
     },
     "hoot:featuretype":"Building",
-    "hoot:transtype":"TDSv40",
+    "hoot:tagschema":"TDSv40",
     "hoot:fcode": "AL013",
     "name": "Building (AL013)"
 }
