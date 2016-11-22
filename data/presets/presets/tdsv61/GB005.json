@@ -7,7 +7,7 @@
     "tags": {
     },
     "hoot:featuretype":"Land Aerodrome",
-    "hoot:transtype":"TDSv61",
+    "hoot:tagschema":"TDSv61",
     "hoot:fcode": "GB005",
     "name": "Land Aerodrome (GB005)"
 }

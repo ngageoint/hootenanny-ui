@@ -1,13 +1,12 @@
 {
-    "icon": "waterway-river",
-    "geometry": [
-        "line",
-        "area"
-    ],
-    "tags": {
-    },
-    "hoot:featuretype":"River",
-    "hoot:transtype":"MGCP",
-    "hoot:fcode": "BH140",
-    "name": "River (BH140)"
+  "icon": "waterway-river",
+  "geometry": [
+    "line",
+    "area"
+  ],
+  "tags": {},
+  "hoot:featuretype": "River",
+  "hoot:tagschema": "MGCP",
+  "hoot:fcode": "BH140",
+  "name": "River (BH140)"
 }

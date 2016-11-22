@@ -3632,6 +3632,9 @@ en:
         # shop=wine
         name: Wine Shop
         terms: "<translate with synonyms or related terms for 'Wine Shop', separated by commas>"
+      tdsv40/AH070:
+        name: Checkpoint (AH070)
+        terms: "<translate with synonyms or related terms for 'Checkpoint (AH070)', separated by commas>"
       tdsv40/AL010:
         name: Facility (AL010)
         terms: "<translate with synonyms or related terms for 'Facility (AL010)', separated by commas>"
@@ -3641,30 +3644,63 @@ en:
       tdsv40/AL020:
         name: Built-up Area (AL020)
         terms: "<translate with synonyms or related terms for 'Built-up Area (AL020)', separated by commas>"
+      tdsv40/AL030:
+        name: Cemetery (AL030)
+        terms: "<translate with synonyms or related terms for 'Cemetery (AL030)', separated by commas>"
       tdsv40/AL099:
         name: Hut (AL099)
         terms: "<translate with synonyms or related terms for 'Hut (AL099)', separated by commas>"
       tdsv40/AL105:
         name: Settlement (AL105)
         terms: "<translate with synonyms or related terms for 'Settlement (AL105)', separated by commas>"
+      tdsv40/AL351:
+        name: Space Facility (AL351)
+        terms: "<translate with synonyms or related terms for 'Space Facility (AL351)', separated by commas>"
       tdsv40/AN010:
         name: Railway (AN010)
         terms: "<translate with synonyms or related terms for 'Railway (AN010)', separated by commas>"
+      tdsv40/AN050:
+        name: Railway Sidetrack (AN050)
+        terms: "<translate with synonyms or related terms for 'Railway Sidetrack (AN050)', separated by commas>"
+      tdsv40/AN060:
+        name: Railway Yard (AN060)
+        terms: "<translate with synonyms or related terms for 'Railway Yard (AN060)', separated by commas>"
       tdsv40/AP010:
         name: Cart Track (AP010)
         terms: "<translate with synonyms or related terms for 'Cart Track (AP010)', separated by commas>"
       tdsv40/AP030:
         name: Road (AP030)
         terms: "<translate with synonyms or related terms for 'Road (AP030)', separated by commas>"
+      tdsv40/AP041:
+        name: Vehicle Barrier (AP041)
+        terms: "<translate with synonyms or related terms for 'Vehicle Barrier (AP041)', separated by commas>"
       tdsv40/AP050:
         name: Trail (AP050)
         terms: "<translate with synonyms or related terms for 'Trail (AP050)', separated by commas>"
       tdsv40/AQ040:
         name: Bridge (AQ040)
         terms: "<translate with synonyms or related terms for 'Bridge (AQ040)', separated by commas>"
+      tdsv40/AQ060:
+        name: Control Tower (AQ060)
+        terms: "<translate with synonyms or related terms for 'Control Tower (AQ060)', separated by commas>"
+      tdsv40/AQ063:
+        name: Causeway Structure (AQ063)
+        terms: "<translate with synonyms or related terms for 'Causeway Structure (AQ063)', separated by commas>"
       tdsv40/AQ065:
         name: Culvert (AQ065)
         terms: "<translate with synonyms or related terms for 'Culvert (AQ065)', separated by commas>"
+      tdsv40/AQ070:
+        name: Ferry Crossing (AQ070)
+        terms: "<translate with synonyms or related terms for 'Ferry Crossing (AQ070)', separated by commas>"
+      tdsv40/AQ080:
+        name: Ferry Station (AQ080)
+        terms: "<translate with synonyms or related terms for 'Ferry Station (AQ080)', separated by commas>"
+      tdsv40/AQ125:
+        name: Transportation Station (AQ125)
+        terms: "<translate with synonyms or related terms for 'Transportation Station (AQ125)', separated by commas>"
+      tdsv40/AQ130:
+        name: Tunnel (AQ130)
+        terms: "<translate with synonyms or related terms for 'Tunnel (AQ130)', separated by commas>"
       tdsv40/BH030:
         name: Ditch (BH030)
         terms: "<translate with synonyms or related terms for 'Ditch (BH030)', separated by commas>"
@@ -3677,6 +3713,27 @@ en:
       tdsv40/GB005:
         name: Land Aerodrome (GB005)
         terms: "<translate with synonyms or related terms for 'Land Aerodrome (GB005)', separated by commas>"
+      tdsv40/GB035:
+        name: Heliport (GB035)
+        terms: "<translate with synonyms or related terms for 'Heliport (GB035)', separated by commas>"
+      tdsv40/GB050:
+        name: Aircraft Revetment (GB050)
+        terms: "<translate with synonyms or related terms for 'Aircraft Revetment (GB050)', separated by commas>"
+      tdsv40/GB055:
+        name: Runway (GB055)
+        terms: "<translate with synonyms or related terms for 'Runway (GB055)', separated by commas>"
+      tdsv40/GB065:
+        name: Water Aerodrome (GB065)
+        terms: "<translate with synonyms or related terms for 'Water Aerodrome (GB065)', separated by commas>"
+      tdsv40/GB075:
+        name: Taxiway (GB075)
+        terms: "<translate with synonyms or related terms for 'Taxiway (GB075)', separated by commas>"
+      tdsv40/SU001:
+        name: Military Installation (SU001)
+        terms: "<translate with synonyms or related terms for 'Military Installation (SU001)', separated by commas>"
+      tdsv61/AH070:
+        name: Checkpoint (AH070)
+        terms: "<translate with synonyms or related terms for 'Checkpoint (AH070)', separated by commas>"
       tdsv61/AL010:
         name: Facility (AL010)
         terms: "<translate with synonyms or related terms for 'Facility (AL010)', separated by commas>"
@@ -3686,30 +3743,63 @@ en:
       tdsv61/AL020:
         name: Built-up Area (AL020)
         terms: "<translate with synonyms or related terms for 'Built-up Area (AL020)', separated by commas>"
+      tdsv61/AL030:
+        name: Cemetery (AL030)
+        terms: "<translate with synonyms or related terms for 'Cemetery (AL030)', separated by commas>"
       tdsv61/AL099:
         name: Hut (AL099)
         terms: "<translate with synonyms or related terms for 'Hut (AL099)', separated by commas>"
       tdsv61/AL105:
         name: Settlement (AL105)
         terms: "<translate with synonyms or related terms for 'Settlement (AL105)', separated by commas>"
+      tdsv61/AL351:
+        name: Space Facility (AL351)
+        terms: "<translate with synonyms or related terms for 'Space Facility (AL351)', separated by commas>"
       tdsv61/AN010:
         name: Railway (AN010)
         terms: "<translate with synonyms or related terms for 'Railway (AN010)', separated by commas>"
+      tdsv61/AN050:
+        name: Railway Sidetrack (AN050)
+        terms: "<translate with synonyms or related terms for 'Railway Sidetrack (AN050)', separated by commas>"
+      tdsv61/AN060:
+        name: Railway Yard (AN060)
+        terms: "<translate with synonyms or related terms for 'Railway Yard (AN060)', separated by commas>"
       tdsv61/AP010:
         name: Cart Track (AP010)
         terms: "<translate with synonyms or related terms for 'Cart Track (AP010)', separated by commas>"
       tdsv61/AP030:
         name: Road (AP030)
         terms: "<translate with synonyms or related terms for 'Road (AP030)', separated by commas>"
+      tdsv61/AP041:
+        name: Vehicle Barrier (AP041)
+        terms: "<translate with synonyms or related terms for 'Vehicle Barrier (AP041)', separated by commas>"
       tdsv61/AP050:
         name: Trail (AP050)
         terms: "<translate with synonyms or related terms for 'Trail (AP050)', separated by commas>"
       tdsv61/AQ040:
         name: Bridge (AQ040)
         terms: "<translate with synonyms or related terms for 'Bridge (AQ040)', separated by commas>"
+      tdsv61/AQ060:
+        name: Control Tower (AQ060)
+        terms: "<translate with synonyms or related terms for 'Control Tower (AQ060)', separated by commas>"
+      tdsv61/AQ063:
+        name: Causeway Structure (AQ063)
+        terms: "<translate with synonyms or related terms for 'Causeway Structure (AQ063)', separated by commas>"
       tdsv61/AQ065:
         name: Culvert (AQ065)
         terms: "<translate with synonyms or related terms for 'Culvert (AQ065)', separated by commas>"
+      tdsv61/AQ070:
+        name: Ferry Crossing (AQ070)
+        terms: "<translate with synonyms or related terms for 'Ferry Crossing (AQ070)', separated by commas>"
+      tdsv61/AQ080:
+        name: Ferry Station (AQ080)
+        terms: "<translate with synonyms or related terms for 'Ferry Station (AQ080)', separated by commas>"
+      tdsv61/AQ125:
+        name: Transportation Station (AQ125)
+        terms: "<translate with synonyms or related terms for 'Transportation Station (AQ125)', separated by commas>"
+      tdsv61/AQ130:
+        name: Tunnel (AQ130)
+        terms: "<translate with synonyms or related terms for 'Tunnel (AQ130)', separated by commas>"
       tdsv61/BH030:
         name: Ditch (BH030)
         terms: "<translate with synonyms or related terms for 'Ditch (BH030)', separated by commas>"
@@ -3722,6 +3812,24 @@ en:
       tdsv61/GB005:
         name: Land Aerodrome (GB005)
         terms: "<translate with synonyms or related terms for 'Land Aerodrome (GB005)', separated by commas>"
+      tdsv61/GB035:
+        name: Heliport (GB035)
+        terms: "<translate with synonyms or related terms for 'Heliport (GB035)', separated by commas>"
+      tdsv61/GB050:
+        name: Aircraft Revetment (GB050)
+        terms: "<translate with synonyms or related terms for 'Aircraft Revetment (GB050)', separated by commas>"
+      tdsv61/GB055:
+        name: Runway (GB055)
+        terms: "<translate with synonyms or related terms for 'Runway (GB055)', separated by commas>"
+      tdsv61/GB065:
+        name: Water Aerodrome (GB065)
+        terms: "<translate with synonyms or related terms for 'Water Aerodrome (GB065)', separated by commas>"
+      tdsv61/GB075:
+        name: Taxiway (GB075)
+        terms: "<translate with synonyms or related terms for 'Taxiway (GB075)', separated by commas>"
+      tdsv61/SU001:
+        name: Military Installation (SU001)
+        terms: "<translate with synonyms or related terms for 'Military Installation (SU001)', separated by commas>"
       tourism:
         # 'tourism=*'
         name: Tourism

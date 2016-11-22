@@ -6,7 +6,7 @@
     "tags": {
     },
     "hoot:featuretype":"Railway",
-    "hoot:transtype":"TDSv61",
+    "hoot:tagschema":"TDSv61",
     "hoot:fcode": "AN010",
     "name": "Railway (AN010)"
 }

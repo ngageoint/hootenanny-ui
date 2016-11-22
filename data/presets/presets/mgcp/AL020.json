@@ -1,13 +1,12 @@
 {
-    "icon": "shop",
-    "geometry": [
-        "point",
-        "area"
-    ],
-    "tags": {
-    },
-    "hoot:featuretype":"Built-up Area",
-    "hoot:transtype":"MGCP",
-    "hoot:fcode": "AL020",
-    "name": "Built-up Area (AL020)"
+  "icon": "shop",
+  "geometry": [
+    "point",
+    "area"
+  ],
+  "tags": {},
+  "hoot:featuretype": "Built-up Area",
+  "hoot:tagschema": "MGCP",
+  "hoot:fcode": "AL020",
+  "name": "Built-up Area (AL020)"
 }

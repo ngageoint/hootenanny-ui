@@ -1,0 +1,13 @@
+{
+    "icon": "airport",
+    "geometry": [
+        "area",
+        "point"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"WaterAerodrome",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "GB065",
+    "name": "Water Aerodrome (GB065)"
+}

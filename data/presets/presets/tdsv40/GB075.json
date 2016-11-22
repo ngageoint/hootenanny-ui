@@ -1,0 +1,12 @@
+{
+    "geometry": [
+        "area",
+        "line"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Taxiway",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "GB075",
+    "name": "Taxiway (GB075)"
+}

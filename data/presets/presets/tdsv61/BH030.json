@@ -7,7 +7,7 @@
     "tags": {
     },
     "hoot:featuretype":"Ditch",
-    "hoot:transtype":"TDSv61",
+    "hoot:tagschema":"TDSv61",
     "hoot:fcode": "BH030",
     "name": "Ditch (BH030)"
 }

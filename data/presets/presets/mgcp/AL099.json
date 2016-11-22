@@ -1,12 +1,11 @@
 {
-    "icon": "lodging",
-    "geometry": [
-        "point"
-    ],
-    "tags": {
-    },
-    "hoot:featuretype":"Hut",
-    "hoot:transtype":"MGCP",
-    "hoot:fcode": "AL099",
-    "name": "Hut (AL099)"
+  "icon": "lodging",
+  "geometry": [
+    "point"
+  ],
+  "tags": {},
+  "hoot:featuretype": "Hut",
+  "hoot:tagschema": "MGCP",
+  "hoot:fcode": "AL099",
+  "name": "Hut (AL099)"
 }

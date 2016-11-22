@@ -1,12 +1,11 @@
 {
-    "icon": "highway-road",
-    "geometry": [
-        "line"
-    ],
-    "tags": {
-    },
-    "hoot:featuretype":"Road",
-    "hoot:transtype":"MGCP",
-    "hoot:fcode": "AP030",
-    "name": "Road (AP030)"
+  "icon": "highway-road",
+  "geometry": [
+    "line"
+  ],
+  "tags": {},
+  "hoot:featuretype": "Road",
+  "hoot:tagschema": "MGCP",
+  "hoot:fcode": "AP030",
+  "name": "Road (AP030)"
 }

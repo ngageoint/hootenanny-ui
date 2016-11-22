@@ -1,12 +1,19 @@
 iD.ui.PresetList = function(context) {
-    var event = d3.dispatch('choose'),
+    var dispatch = d3.dispatch('choose'),
         id,
         currentPreset,
         autofocus = false;
 
     function presetList(selection) {
-        var geometry = context.geometry(id),
-            presets = context.presets().matchGeometry(geometry);
+        var entity = context.entity(id),
+            geometry = context.geometry(id);
+
+        // Treat entities on addr:interpolation lines as points, not vertices (#3241)
+        if (geometry === 'vertex' && entity.isOnAddressLine(context.graph())) {
+            geometry = 'point';
+        }
+
+        var presets = context.presets().matchGeometry(geometry);
 
         selection.html('');
 
@@ -19,9 +26,8 @@ iD.ui.PresetList = function(context) {
         if (context.entity(id).isUsed(context.graph())) {
             messagewrap.append('button')
                 .attr('class', 'preset-choose')
-                .on('click', function() { event.choose(currentPreset); })
+                .on('click', function() { dispatch.choose(currentPreset); })
                 .append('span')
-                //.attr('class', 'icon forward');
                 .html('&#9658;');
         } else {
             messagewrap.append('button')
@@ -30,8 +36,6 @@ iD.ui.PresetList = function(context) {
                     context.enter(iD.modes.Browse(context));
                 })
                 .call(iD.svg.Icon('#icon-close'));
-                /*.append('span')
-                .attr('class', 'icon close');*/
         }
 
         function keydown() {
@@ -61,192 +65,81 @@ iD.ui.PresetList = function(context) {
             }
         }
 
-        function createPresetFromTDS(schemaElem) {
-            var filterType = d3.select('#presettranstype').value();
-            var newPreset = {};
-            //newPreset.icon = 'highway-road';
-            newPreset.geometry = schemaElem.geom.toLowerCase();
-            newPreset.tags = {};
-            newPreset['hoot:featuretype'] = schemaElem.desc;
-            newPreset['hoot:transtype'] = filterType;
-            newPreset['hoot:fcode'] = schemaElem.fcode;
-            newPreset.name = schemaElem.desc + ' (' + schemaElem.fcode + ')';
-            return iD.presets.Preset(filterType + '/' + schemaElem.fcode,
-                newPreset, {});
-        }
-        function searchResHandler (value, results) {
-
-            message.text(t('inspector.results', {
-                n: results.collection.length,
-                search: value
-            }));
-            list.call(drawList, results);
-        }
-
         function inputevent() {
             var value = search.property('value');
             list.classed('filtered', value.length);
+
             if (value.length) {
-                presets = context.presets().matchGeometry(geometry);
-
-                var filterType = d3.select('#presettranstype').value();
-
-                if(filterType === 'OSM') {
-                    var results = presets.search(value, geometry);
-                    searchResHandler(value, results);
+                var tagSchema = context.translationserver().activeTranslation();
+                var results = presets.search(value, geometry).matchSchema(context.translationserver().activeTranslation());
+                if(tagSchema === context.translationserver().defaultTranslation()) {
+                    searchHandler(value, results);
                 } else {
-                    d3.xhr(window.location.protocol + '//' + window.location.hostname +
-                        Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) +
-                    '/schema?geometry='+ geometry + '&translation=' + filterType + '&searchstr=' +
-                    value + '&maxlevdst=' + iD.data.hootConfig.presetMaxLevDistance +
-                    '&limit=' + iD.data.hootConfig.presetMaxDisplayNum )
-                    .get(function(error, resp){
-                       if(!error){
-                        var transSchema = JSON.parse(resp.responseText);
-                        var newCollection = [];
-                        _.each(transSchema, function(elem){
-
-                            var fCode = elem.fcode;
-                            var curPreset = _.find(context.presets().collection,
-                                function(item){
-                                    return item.id === filterType + '/' + fCode;
-                                });
-
-                            if(!curPreset){
-
-                                var newPreset = createPresetFromTDS(elem);
-                                newCollection.push(newPreset);
-                            }
-
+                //Add translation server search for translated tag schemas
+                    context.translationserver().searchTranslatedSchema(value, geometry, function(data){
+                        var translatedPresets = data.map(function(d) {
+                            return iD.presets.Preset(tagSchema + '/' + d.fcode,
+                                {
+                                    geometry: geometry,
+                                    tags: {},
+                                    'hoot:featuretype': d.desc,
+                                    'hoot:tagschema': tagSchema,
+                                    'hoot:fcode': d.fcode,
+                                    name: d.desc + ' (' + d.fcode + ')'
+                                }, {});
                         });
-
-
-                        var res = iD.presets.Collection(_.unique(
-                            newCollection
-                        ));
-                        searchResHandler(value, res);
-
-                       }
-
+                        searchHandler(value, iD.presets.Collection(results.collection.concat(translatedPresets)));
                     });
                 }
-
-
             } else {
-                list.call(drawList, presets);
+                list.call(drawList, context.presets().defaults(geometry, 72).matchSchema(context.translationserver().activeTranslation()));
                 message.text(t('inspector.choose'));
+            }
+
+            function searchHandler(value, results) {
+                message.text(t('inspector.results', {
+                    n: results.collection.length,
+                    search: value
+                }));
+                list.call(drawList, results);
             }
         }
 
-            var searchWrap = selection.append('div')
-                .attr('class', 'search-header');
+        var searchWrap = selection.append('div')
+            .attr('class', 'search-header');
 
-            var search = searchWrap.append('input')
-                .attr('class', 'preset-search-input')
-                .attr('placeholder', t('inspector.search'))
-                .attr('type', 'search')
-                .on('keydown', keydown)
-                .on('keypress', keypress)
-                .on('input', inputevent);
+        var search = searchWrap.append('input')
+            .attr('class', 'preset-search-input')
+            .attr('placeholder', t('inspector.search'))
+            .attr('type', 'search')
+            .on('keydown', keydown)
+            .on('keypress', keypress)
+            .on('input', inputevent);
 
         searchWrap
             .call(iD.svg.Icon('#icon-search', 'pre-text'));
 
-            if (autofocus) {
-                search.node().focus();
-            }
-
-
-
-            var listWrap = selection.append('div')
-                .attr('class', 'inspector-body fill-white');
-
-
-
-            var ftypeWrap = listWrap.append('div')
-                        .classed('fill-white small round', true)
-                        .style('margin-left', '20px')
-                        .style('margin-right', '20px')
-                        .style('margin-top', '10px')
-                        .html(function () {
-                            return '<label class="pad1x pad0y strong fill-white round-top keyline-all">' + 'Filter By Type' + '</label>';
-                        });
-
-             var comboIntput = ftypeWrap.append('input')
-                        .attr('id', 'presettranstype')
-                        .attr('type', 'text')
-                        .attr('value', iD.util.getCurrentTranslation());
-
-            // Link this with plg.getTranslations();
-            var comboData = ['OSM','TDSv61', 'TDSv40', 'MGCP'];
-            var combo = d3.combobox()
-                    .data(_.map(comboData, function (n) {
-                        return {
-                            value: n,
-                            title: n
-                        };
-                    }));
-
-            comboIntput.style('width', '100%')
-                .call(combo);
-
-            comboIntput.on('change', function(){
-                var container = d3.select('#preset-list-container');
-                container.selectAll('.preset-list-item').remove();
-                presets = context.presets().defaults(geometry, 36);
-                // Get the current translation filter type
-                var filterType = d3.select('#presettranstype').value();
-                var filteredCollection = getFilteredPresets(filterType, presets.collection);
-                iD.util.setCurrentTranslation(filterType);
-                // Replace with filtered
-                presets.collection = filteredCollection;
-
-                container.call(drawList, presets);
-
-                if(!d3.select('#entity_editor_presettranstype').empty()){
-                    if(d3.select('#entity_editor_presettranstype').value() !== filterType){
-                        iD.util.changeComboValue('#entity_editor_presettranstype',filterType);
-                    }
-                }
-
-                // Trigger search on input value
-                search.trigger('input');
-            });
-
-        presets = context.presets().defaults(geometry, 36);
-        // Get the current translation filter type
-        var filterType = d3.select('#presettranstype').value();
-        var filteredCollection = getFilteredPresets(filterType, presets.collection);
-        // Replace with filtered
-        presets.collection = filteredCollection;
-
-        var list = listWrap.append('div')
-            .attr('id', 'preset-list-container')
-            .attr('class', 'preset-list fillL cf')
-            .call(drawList, presets);
-    }
-
-    function getFilteredPresets(filterType, presets) {
-        var filterRes = presets;
-        // When OSM type get all that does not have hoot:transtype
-        if(filterType === 'OSM') {
-            filterRes = _.filter(presets, function(prs){
-                if(prs === undefined){
-                    return false;
-                }
-                return (!prs['hoot:transtype']);
-            });
-        } else {
-            // If not OSM type then get ones with hoot:transtype and further filter
-
-            filterRes = _.filter(presets, function(prs){
-                return (prs['hoot:transtype'] && prs['hoot:transtype'] === filterType);
-            });
+        if (autofocus) {
+            search.node().focus();
         }
 
-        return filterRes;
-    }
+        var listWrap = selection.append('div')
+            .attr('class', 'inspector-body');
 
+        var schemaSwitcher = iD.ui.SchemaSwitcher(context);
+        listWrap.append('div').classed('fillL', true)
+            .append('div').call(schemaSwitcher, function() {
+                list.selectAll('.preset-list-item').remove();
+                list.call(drawList, context.presets().defaults(geometry, 72).matchSchema(context.translationserver().activeTranslation()));
+
+                // Trigger search on input value
+                //search.trigger('input');
+            });
+
+        var list = listWrap.append('div')
+            .attr('class', 'preset-list fillL cf')
+            .call(drawList, context.presets().defaults(geometry, 72).matchSchema(context.translationserver().activeTranslation()));
+    }
 
     function drawList(list, presets) {
         var collection = presets.collection.map(function(preset) {
@@ -281,12 +174,11 @@ iD.ui.PresetList = function(context) {
 
             wrap.append('button')
                 .attr('class', 'preset-list-button')
-                .classed('expanded', false) //iD v1.9.2
+                .classed('expanded', false)
                 .call(iD.ui.PresetIcon()
                     .geometry(context.geometry(id))
                     .preset(preset))
                 .on('click', function() {
-                    //iD v1.9.2
                     var isExpanded = d3.select(this).classed('expanded');
                     var triangle = isExpanded ? '▶ ' :  '▼ ';
                     d3.select(this).classed('expanded', !isExpanded);
@@ -296,7 +188,7 @@ iD.ui.PresetList = function(context) {
                 .append('div')
                 .attr('class', 'label')
                 .text(function() {
-                  return '▶ ' + preset.name(); //iD v1.9.2
+                  return '▶ ' + preset.name();
                 });
 
             box = selection.append('div')
@@ -312,7 +204,7 @@ iD.ui.PresetList = function(context) {
         }
 
         item.choose = function() {
-            if (!box || !sublist) return; //iD v1.9.2
+            if (!box || !sublist) return;
 
             if (shown) {
                 shown = false;
@@ -359,44 +251,22 @@ iD.ui.PresetList = function(context) {
         item.choose = function() {
             context.presets().choose(preset);
 
-            var filterType = d3.select('#presettranstype').value();
-
-
-            if(filterType === 'OSM') {
-
+            var tagSchema = context.translationserver().activeTranslation();
+            if (tagSchema === 'OSM') {
                 context.perform(
                     iD.actions.ChangePreset(id, currentPreset, preset),
                     t('operations.change_tags.annotation'));
 
-                event.choose(preset);
-
+                dispatch.choose(preset);
             } else {
-                var data = {};
-                data.fcode = preset['hoot:fcode'];
-                // Get directly from object . Value from combo could be description
-                data.translation = preset['hoot:transtype'];
-                // set tags
-                Hoot.model.REST('TDSToOSMByFCode', data, function (resp) {
-                    if(resp){
-                        var cnt = resp.responseText;
-                        var osm = JSON.parse(cnt);
-                        for(var key in osm.attrs){
-                            preset.tags[key] = osm.attrs[key];
-                        }
+                context.translationserver().addTagsForFcode(preset, function(preset) {
+                    context.perform(
+                        iD.actions.ChangePreset(id, currentPreset, preset),
+                        t('operations.change_tags.annotation'));
 
-                        context.perform(
-                            iD.actions.ChangePreset(id, currentPreset, preset),
-                            t('operations.change_tags.annotation'));
-
-                        event.choose(preset);
-
-                    } else {
-                        // error
-                    }
-
+                    dispatch.choose(preset);
                 });
             }
-
         };
 
         item.help = function() {
@@ -429,5 +299,5 @@ iD.ui.PresetList = function(context) {
         return presetList;
     };
 
-    return d3.rebind(presetList, event, 'on');
+    return d3.rebind(presetList, dispatch, 'on');
 };

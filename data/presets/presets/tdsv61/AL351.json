@@ -1,0 +1,13 @@
+{
+  	"icon": "rocket",
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"SpaceFacility",
+    "hoot:tagschema":"TDSv61",
+    "hoot:fcode": "AL351",
+    "name": "Space Facility (AL351)"
+}
