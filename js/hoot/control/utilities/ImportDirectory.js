@@ -208,7 +208,7 @@ Hoot.control.utilities.importdirectory = function(context) {
 
         d3.xhr(window.location.protocol + '//' + window.location.hostname +
             Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort)
-        +'/schema?translation='+translation+'&limit=10000')
+        +'/schema?translation='+translation)
         .get(function(error, resp){
             if(error){
                 removeFCodeDescription();
