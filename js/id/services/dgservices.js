@@ -77,7 +77,10 @@ iD.dgservices  = function() {
             host = (proxy) ? gbm_proxy : gbm_host;
             connectid = connectId || gbm_connectId;
         } else if (service === 'EGD') {
-            host = (proxy) ? egd_proxy : egd_host;
+            //Always proxy EVWHS requests.  Until CORS is implemented on
+            //their WFS, all requests must use same protocol://host:port
+            //so that the basic auth headers work for everything
+            host = (proxy) ? egd_proxy : egd_proxy;
             connectid = connectId || egd_connectId;
         }
         return (host + template)
@@ -97,6 +100,13 @@ iD.dgservices  = function() {
     };
 
     dg.wfs = {};
+    // Returns a random integer between min (included) and max (excluded)
+    // Using Math.round() will give you a non-uniform distribution!
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
     function getWfsFeature(service, connectId, profile, extent, size, callback, addlParam) {
         var url = getUrl(service, connectId, profile, wfs_template, true/*proxy*/);
         if (addlParam) {
@@ -104,7 +114,11 @@ iD.dgservices  = function() {
                 return d.key + '=' + d.value;
             }).join('&');
         }
-        url = url.replace('{width}', size[0])
+        url = url.replace(/\{switch:([^}]+)\}/, function(s, r) {
+                var subdomains = r.split(',');
+                return subdomains[getRandomInt(0, subdomains.length)];
+            })
+            .replace('{width}', size[0])
             .replace('{height}', size[1])
             .replace('{bbox}', extent.toParam());
 
