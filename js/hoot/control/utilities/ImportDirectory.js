@@ -180,7 +180,7 @@ Hoot.control.utilities.importdirectory = function(context) {
     **/
     var _getFilesList = function(){
         var filesList = [];
-        _.map(d3.selectAll('option.fileImportOpt').filter(function(){filesList.push({value:this.value,text:this.text})}))
+        _.map(d3.selectAll('option.fileImportOpt').filter(function(){filesList.push({value:this.value,text:this.text});}));
         return filesList;
     };
 
@@ -965,7 +965,7 @@ Hoot.control.utilities.importdirectory = function(context) {
 
     var removeFCodeDescription = function() {
         d3.selectAll('option.fileImportOpt')
-            .filter(function(d){
+            .filter(function(){
                 d3.select(this).text(this.value);
             });
 
