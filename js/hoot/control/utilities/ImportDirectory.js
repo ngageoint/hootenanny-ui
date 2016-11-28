@@ -106,7 +106,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             id: 'importDirectoryFilesList',
             placeholder:'',
             inputtype:'listbox',
-            readonly:true
+            readonly:true //null
         },
         {
             label: 'Path',
@@ -124,8 +124,15 @@ Hoot.control.utilities.importdirectory = function(context) {
             placeholder: 'Select Data Translation Schema',
             id: 'importDirectorySchema',
             combobox: {'data':_importTranslations, 'command': _populateTranslations },
-            inputtype: 'combobox'
-        },{
+            inputtype: 'combobox',
+            onchange: _checkForDescription
+        }, {
+            label: 'Append FCODE Descriptions',
+            type: 'appendFCodeDescription',
+            inputtype: 'checkbox',
+            checkbox: 'cboxAppendFCode',
+            hidden:true
+        }, {
             label: 'Custom Suffix',
             placeholder: '',
             id: 'importDirectoryCustomSuffix',
@@ -151,6 +158,10 @@ Hoot.control.utilities.importdirectory = function(context) {
         meta.button = d_btn;
 
         _container = context.hoot().ui.formfactory.create('body', meta);
+        d3.select('.cboxAppendFCode')
+            .classed('hidden',true)
+            .select('input').property('checked',false)
+            .on('change',function(){_getDescriptionList();});
     };
 
     /**
@@ -168,9 +179,47 @@ Hoot.control.utilities.importdirectory = function(context) {
     * @desc gets file list from options in import directory file list
     **/
     var _getFilesList = function(){
-        var filesList = _.map(d3.select('#importDirectoryFilesList').selectAll('option')[0],function(opt){return opt.value;});
+        var filesList = [];
+        _.map(d3.selectAll('option.fileImportOpt').filter(function(){filesList.push({value:this.value,text:this.text});}));
         return filesList;
     };
+
+    var _checkForDescription = function(){
+        var mgcpCheck = d3.select('#importDirectorySchema').value().indexOf('MGCP');
+        var tdsCheck = d3.select('#importDirectorySchema').value().indexOf('TDS');
+        var cboxBool = mgcpCheck > -1 || tdsCheck > -1;
+        d3.select('.cboxAppendFCode').classed('hidden',!cboxBool).select('input').property('checked',false);
+        _getDescriptionList();
+    };
+
+    var _getDescriptionList = function(){
+        var translation = '';
+
+        var selectedTrans = d3.select('#importDirectorySchema').datum().combobox.filter(function(d){return d.DESCRIPTION === d3.select('#importDirectorySchema').value();});
+        try{translation = selectedTrans[0].NAME;}
+        catch(err) {
+            iD.ui.Alert('Unable to retrieve translations from server','warning',new Error().stack);
+            return;
+        }
+
+        d3.xhr(window.location.protocol + '//' + window.location.hostname +
+            Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort)
+        +'/schema?translation='+translation)
+        .get(function(error, resp){
+            if(error){
+                removeFCodeDescription();
+                return;
+            }
+
+            var fcodeList = JSON.parse(resp.response);
+            if(d3.select('.cboxAppendFCode').select('input').property('checked')===true){
+                appendFCodeDescription(fcodeList);
+            } else {
+                removeFCodeDescription();
+            }
+        });
+    };
+    
 
     /**
     * @desc Validates user specified input.
@@ -197,10 +246,11 @@ Hoot.control.utilities.importdirectory = function(context) {
     **/    
     var _validateFileList = function(filesList){
          _.each(filesList, function(f){
-            var strValidate = f.name || f;
+            var strValidate = f.text || f.name || f;
+            var optValue = f.value || f.name || f;
             var validName = true;
 
-            var selectedOpt = d3.select('#importDirectoryFilesList').select('option[value="' + strValidate + '"]');
+            var selectedOpt = d3.select('#importDirectoryFilesList').select('option[value="' + optValue + '"]');
 
             // Check for unallowed character without suffix (checking that separately)
             var resp = context.hoot().checkForUnallowedChar(strValidate);
@@ -317,7 +367,12 @@ Hoot.control.utilities.importdirectory = function(context) {
     var _highlightOption = function(optName,status) {
         var selectedOpt = d3.select('#importDirectoryFilesList').select('option[value="' + optName + '"]');
 
+        if(selectedOpt.empty()){
+            selectedOpt = d3.select('#importDirectoryFilesList').selectAll('option')[0].filter(function(d){return d.text === optName;});
+            selectedOpt = d3.select(selectedOpt[0]);
+        }
 
+        if(!selectedOpt){return;}
 
         if(status==='success'){
             selectedOpt.classed('importSuccess',true)
@@ -353,9 +408,9 @@ Hoot.control.utilities.importdirectory = function(context) {
             return;
         }
 
-        _highlightOption(fileNames[fileNo],'progress');
+        _highlightOption(fileNames[fileNo].value,'progress');
 
-        var newLayerName = fileNames[fileNo];
+        var newLayerName = fileNames[fileNo].text;
         if(_container.select('#importDirectoryCustomSuffix').value()!==''){
             newLayerName += _container.select('#importDirectoryCustomSuffix').value();
         }
@@ -366,7 +421,7 @@ Hoot.control.utilities.importdirectory = function(context) {
         var importFiles = _.filter(document.getElementById('ingestdirectoryuploader').files, function(file){
                 var fName = file.name.substring(0, file.name.length - 4);
                 if(file.name.toLowerCase().indexOf('.shp.xml') > -1){fName = file.name.substring(0, file.name.length - 8);} 
-                return fName === fileNames[fileNo];
+                return fName === fileNames[fileNo].value;
             });
 
         _importDirectoryJob(_container, newLayerName, importFiles, submitExp, function(){
@@ -857,8 +912,16 @@ Hoot.control.utilities.importdirectory = function(context) {
             // Add file name to form
             _container.select('#importDirectoryFilesList')
                 .append('option')
+                .classed('fileImportOpt',true)
                 .attr('value',f.name)
-                .text(f.name);
+                .text(f.name)/*
+                .on('dblclick',function(f){
+                    var newLayerName = window.prompt('Enter new name for dataset ' + this.text + ':', this.text);
+                    if (newLayerName) {
+                        this.text = newLayerName;
+                        _validateFileList(_getFilesList());
+                    }
+                })*/;
 
             if(f.size > iD.data.hootConfig.ingest_size_threshold){
             var thresholdInMb = Math.floor((1*iD.data.hootConfig.ingest_size_threshold)/1000000);
@@ -879,6 +942,36 @@ Hoot.control.utilities.importdirectory = function(context) {
 
         return true;
     };
+
+    /**
+    * @desc Function to append FCode Description based on FCODE
+    * @desc Assumes that layer name is a valid FCODE
+    * @oaram fcodeList - JSON of FCODEs and Descriptions
+    * @param filesList - Selected files list.
+    **/
+    var appendFCodeDescription = function(fcodeList) {
+        d3.selectAll('option.fileImportOpt')
+            .filter(function(){
+                var fcodeMatch = _.find(fcodeList,{name:this.value}) || _.find(fcodeList,{fcode:this.value});
+                if(fcodeMatch){
+                    var fcodeName = this.value + '_' + fcodeMatch.desc.replace(' ','_');
+                    // Remove any special characters
+                    fcodeName = context.hoot().removeSpecialChar(fcodeName);
+                    d3.select(this).text(fcodeName);
+                }
+            });
+        _validateFileList(_getFilesList());
+    };
+
+    var removeFCodeDescription = function() {
+        d3.selectAll('option.fileImportOpt')
+            .filter(function(){
+                d3.select(this).text(this.value);
+            });
+
+        _validateFileList(_getFilesList());
+    };
+
 
 
     /**
