@@ -179,7 +179,8 @@ Hoot.control.utilities.importdirectory = function(context) {
     * @desc gets file list from options in import directory file list
     **/
     var _getFilesList = function(){
-        var filesList = _.map(d3.select('#importDirectoryFilesList').selectAll('option')[0],function(opt){return {value:opt.value,text:opt.text};});
+        var filesList = [];
+        _.map(d3.selectAll('option.fileImportOpt').filter(function(){filesList.push({value:this.value,text:this.text})}))
         return filesList;
     };
 
@@ -188,23 +189,18 @@ Hoot.control.utilities.importdirectory = function(context) {
         var tdsCheck = d3.select('#importDirectorySchema').value().indexOf('TDS');
         var cboxBool = mgcpCheck > -1 || tdsCheck > -1;
         d3.select('.cboxAppendFCode').classed('hidden',!cboxBool).select('input').property('checked',false);
-        _getDescriptionList('MGCP');
+        _getDescriptionList();
     };
 
-    var _getTranslation = function(){
+    var _getDescriptionList = function(){
+        var translation = '';
+
         var selectedTrans = d3.select('#importDirectorySchema').datum().combobox.filter(function(d){return d.DESCRIPTION === d3.select('#importDirectorySchema').value();});
-        var retval;
-        try{
-            retval = selectedTrans[0].NAME;
-        } catch (err) {
-            retval = 'MGCP';
+        try{translation = selectedTrans[0].NAME;}
+        catch(err) {
+            iD.ui.Alert('Unable to retrieve translations from server','warning',new Error().stack);
+            return;
         }
-
-        return retval;
-    };
-
-    var _getDescriptionList = function(translation){
-        if(!translation){translation = _getTranslation();}
 
         d3.xhr(window.location.protocol + '//' + window.location.hostname +
             Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort)
@@ -371,7 +367,7 @@ Hoot.control.utilities.importdirectory = function(context) {
     var _highlightOption = function(optName,status) {
         var selectedOpt = d3.select('#importDirectoryFilesList').select('option[value="' + optName + '"]');
 
-        if(_.isEmpty(selectedOpt[0][0])){
+        if(selectedOpt.empty()){
             selectedOpt = d3.select('#importDirectoryFilesList').selectAll('option')[0].filter(function(d){return d.text === optName;});
             selectedOpt = d3.select(selectedOpt[0]);
         }
@@ -916,6 +912,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             // Add file name to form
             _container.select('#importDirectoryFilesList')
                 .append('option')
+                .classed('fileImportOpt',true)
                 .attr('value',f.name)
                 .text(f.name)/*
                 .on('dblclick',function(f){
@@ -953,26 +950,24 @@ Hoot.control.utilities.importdirectory = function(context) {
     * @param filesList - Selected files list.
     **/
     var appendFCodeDescription = function(fcodeList) {
-        var filesList = _getFilesList();
-        _.each(filesList, function(f){
-            var fcodeMatch = _.find(this,{name:f.value}) || _.find(this,{fcode:f.value});
-            if(fcodeMatch){
-                var fcodeName = f.value + '_' + fcodeMatch.desc.replace(' ','_');
-                // Remove any special characters
-                fcodeName = context.hoot().removeSpecialChar(fcodeName);
-                var selOpt = d3.select('#importDirectoryFilesList').select('option[value="' + f.value + '"]');
-                selOpt.text(fcodeName);
-            }
-        },fcodeList);
+        d3.selectAll('option.fileImportOpt')
+            .filter(function(){
+                var fcodeMatch = _.find(fcodeList,{name:this.value}) || _.find(fcodeList,{fcode:this.value});
+                if(fcodeMatch){
+                    var fcodeName = this.value + '_' + fcodeMatch.desc.replace(' ','_');
+                    // Remove any special characters
+                    fcodeName = context.hoot().removeSpecialChar(fcodeName);
+                    d3.select(this).text(fcodeName);
+                }
+            });
         _validateFileList(_getFilesList());
     };
 
     var removeFCodeDescription = function() {
-        // Replace text of each option with value (original value)
-        var opts = d3.select('#importDirectoryFilesList').selectAll('option')[0];
-        _.each(opts,function(opt){
-            d3.select(opt).text(opt.value);
-        });
+        d3.selectAll('option.fileImportOpt')
+            .filter(function(d){
+                d3.select(this).text(this.value);
+            });
 
         _validateFileList(_getFilesList());
     };
