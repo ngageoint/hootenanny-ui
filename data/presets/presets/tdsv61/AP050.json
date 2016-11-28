@@ -6,7 +6,7 @@
     "tags": {
     },
     "hoot:featuretype":"Trail",
-    "hoot:transtype":"TDSv61",
+    "hoot:tagschema":"TDSv61",
     "hoot:fcode": "AP050",
     "name": "Trail (AP050)"
 }

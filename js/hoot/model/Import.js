@@ -106,7 +106,7 @@ Hoot.model.import = function (context)
         }
 
         data.INPUT_TYPE = typeName;
-        data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';
+        data.TRANSLATION = transcriptName;
         data.INPUT_NAME = newLayerName;
 
         if(!container.attr('id')){
@@ -197,8 +197,8 @@ Hoot.model.import = function (context)
         }
 
         data.INPUT_TYPE = typeName;
-        data.TRANSLATION = transcriptName;//(transType === 'LTDS 4.0' || !transType) ? 'NFDD.js' : transType + '.js';
-        
+        data.TRANSLATION = transcriptName;
+
         if(layerNameElemId.charAt(0) === '.' || layerNameElemId.charAt(0) === '#'){
             data.INPUT_NAME = container.select(layerNameElemId).value();
         } else {

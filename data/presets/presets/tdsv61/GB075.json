@@ -1,0 +1,13 @@
+{
+    "icon": "airport",
+    "geometry": [
+        "area",
+        "line"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Taxiway",
+    "hoot:tagschema":"TDSv61",
+    "hoot:fcode": "GB075",
+    "name": "Taxiway (GB075)"
+}

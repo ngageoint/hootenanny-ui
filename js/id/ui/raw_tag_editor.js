@@ -4,9 +4,7 @@ iD.ui.RawTagEditor = function(context) {
         state,
         preset,
         tags,
-        id,
-        translation,
-        tagInfEndPts;
+        id;
 
     function rawTagEditor(selection) {
         var count = Object.keys(tags).filter(function(d) { return d; }).length;
@@ -25,8 +23,9 @@ iD.ui.RawTagEditor = function(context) {
         }
     }
 
-    function content($wrap,sortAZ) {
+    function content($wrap, sortAZ) {
         var entries = d3.entries(tags);
+
         if(sortAZ === undefined||null){
             if(!d3.select('#sort-tags').empty()){sortAZ = d3.select('#sort-tags').property('checked');}
             else{sortAZ=false;}
@@ -72,7 +71,6 @@ iD.ui.RawTagEditor = function(context) {
             })
             .call(iD.svg.Icon('#icon-apply'));
 
-
         var $list = $wrap.selectAll('.tag-list')
             .data([0]);
 
@@ -101,10 +99,6 @@ iD.ui.RawTagEditor = function(context) {
                 retval += '>Sort A-Z</label>';
                 return retval;
             });
-
-      /* if(d3.select('#entity_editor_presettranstype').value()=='OSM'){
-           d3.select('#sort-tags-div').classed('hidden',false);
-       } else {d3.select('#sort-tags-div').classed('hidden',true);}*/
 
        $sortAZ.on('change',function(){
             var sortAZ = d3.select('#sort-tags').property('checked');
@@ -152,25 +146,25 @@ iD.ui.RawTagEditor = function(context) {
 
         // Update
 
-        //removed to allow for A-Z sorting
-        //if(!translation) {
-            $items.order();
-        //}
-        $items.on('click', function() {
+        $items.order();
 
-        });
+        /* Overridden for tag copy
+        $items.each(function(tag) {
+            var isRelation = (context.entity(id).type === 'relation'),
+                reference;
+            if (isRelation && tag.key === 'type')
+                reference = iD.ui.TagReference({rtype: tag.value}, context);
+            else
+                reference = iD.ui.TagReference({key: tag.key, value: tag.value}, context);
 
-        // $items.each(function(tag) {
-        //     var reference = iD.ui.TagReference({key: tag.key}, context);
+            if (state === 'hover') {
+                reference.showing(false);
+            }
 
-        //     if (state === 'hover') {
-        //         reference.showing(false);
-        //     }
-
-        //     d3.select(this)
-        //         .call(reference.button)
-        //         .call(reference.body);
-        // });
+            d3.select(this)
+                .call(reference.button)
+                .call(reference.body);
+        });*/
 
         $items.each(function(tag) {
             var copier = iD.ui.TagCopy({key: tag.key}, context);
@@ -181,11 +175,13 @@ iD.ui.RawTagEditor = function(context) {
         });
 
         $items.select('input.key')
+            .attr('title', function(d) { return d.key; })
             .value(function(d) { return d.key; })
             .on('blur', keyChange)
             .on('change', keyChange);
 
         $items.select('input.value')
+            .attr('title', function(d) { return d.value; })
             .value(function(d) { return d.value; })
             .on('blur', valueChange)
             .on('change', valueChange)
@@ -195,7 +191,6 @@ iD.ui.RawTagEditor = function(context) {
                     d3.select(this).attr('readonly',true);
                 }
             });
-
 
         $items.select('button.remove')
             .on('click', function(d){
@@ -207,7 +202,7 @@ iD.ui.RawTagEditor = function(context) {
             });
 
         $items.exit()
-            .each(unbind) //iD v1.9.3
+            .each(unbind)
             .remove();
 
         function pushMore() {
@@ -241,84 +236,38 @@ iD.ui.RawTagEditor = function(context) {
 
             key.call(d3.combobox()
                 .fetcher(function(value, callback) {
-                    var tagInfoOpts = {
-                        debounce: true,
-                        geometry: context.geometry(id),
-                        query: value
-                    };
-                    var origTagInfoEndPt = context.taginfo().endpoint();
-                    // passing optional translation info
-                    if(translation){
-                        // Refactor out the fCode
-                        if(translation.fCode){
-                            tagInfoOpts.fcode = translation.fCode;
-                        } /*else {
-                            tagInfoOpts.lyrname = translation.name;
-                        }*/
-
-                        tagInfoOpts.translation = translation.transType;
-                        var rawGeom = context.geometry(id);
-                        if(rawGeom === 'point'){
-                            rawGeom = 'Point';
-                        } else if(rawGeom === 'line'){
-                            rawGeom = 'Line';
-                        } else if(rawGeom === 'area'){
-                            rawGeom = 'Area';
-                        }
-                        var transTagInfoUrl = window.location.protocol + '//' +
-                            window.location.hostname +
-                            Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) +
-                            '/taginfo/';
-
-                        if(!tagInfEndPts){
-                            tagInfEndPts = {};
-                            tagInfEndPts.OSM = origTagInfoEndPt;
-                            tagInfEndPts.translation = transTagInfoUrl;
-                        } else {
-                            transTagInfoUrl = tagInfEndPts.translation;
-                        }
-                        tagInfoOpts.rawgeom = rawGeom;
-                        context.taginfo().endpoint(transTagInfoUrl);
-
+                    if (context.translationserver().activeTranslation() === 'OSM') {
+                        context.taginfo().keys({
+                            debounce: true,
+                            geometry: context.geometry(id),
+                            query: value
+                        }, function(err, data) {
+                            if (!err) callback(sort(value, data));
+                        });
                     } else {
-                        if(tagInfEndPts){
-                            var osmTagInfoUrl = tagInfEndPts.OSM;
-                            context.taginfo().endpoint(osmTagInfoUrl);
-                        }
-
+                        var data = context.translationserver().filterSchemaKeys(value);
+                        callback(sort(value, data));
                     }
-
-                    context.taginfo().keys(tagInfoOpts, function(err, data) {
-                        if (!err) callback(sort(value, data));
-                    });
                 }));
 
             value.call(d3.combobox()
                 .fetcher(function(value, callback) {
-                    var tagInfoOpts = {
-                        debounce: true,
-                        key: key.value(),
-                        geometry: context.geometry(id),
-                        query: value
-                    };
-                    var origTagInfoEndPt = context.taginfo().endpoint();
-                    // passing optional translation info
-                    if(translation){
-                        tagInfoOpts.fcode = translation.fCode;
-                        tagInfoOpts.translation = translation.transType;
-                        context.taginfo().endpoint(window.location.protocol + '//' +
-                            window.location.hostname +
-                            Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) +
-                            '/taginfo/');
+                    if (context.translationserver().activeTranslation() === 'OSM') {
+                        context.taginfo().values({
+                            debounce: true,
+                            key: key.value(),
+                            geometry: context.geometry(id),
+                            query: value
+                        }, function(err, data) {
+                            if (!err) callback(sort(value, data));
+                        });
+                    } else {
+                        var data = context.translationserver().filterSchemaValues(key.value());
+                        callback(sort(value, data));
                     }
-                    context.taginfo().values(tagInfoOpts, function(err, data) {
-                        if (!err) callback(sort(value, data));
-                        context.taginfo().endpoint(origTagInfoEndPt);
-                    });
                 }));
         }
 
-        //iD v1.9.3
         function unbind() {
             var row = d3.select(this);
 
@@ -348,7 +297,6 @@ iD.ui.RawTagEditor = function(context) {
             this.value = kNew;
             event.change(tag);
         }
-
 
         function valueChange(d) {
             var tag = {};
@@ -396,12 +344,6 @@ iD.ui.RawTagEditor = function(context) {
     rawTagEditor.entityID = function(_) {
         if (!arguments.length) return id;
         id = _;
-        return rawTagEditor;
-    };
-
-    rawTagEditor.entityTranslation = function(_) {
-        if (!arguments.length) return translation;
-        translation = _;
         return rawTagEditor;
     };
 

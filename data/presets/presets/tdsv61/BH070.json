@@ -8,7 +8,7 @@
     "tags": {
     },
     "hoot:featuretype":"Ford",
-    "hoot:transtype":"TDSv61",
+    "hoot:tagschema":"TDSv61",
     "hoot:fcode": "BH070",
     "name": "Ford (BH070)"
 }

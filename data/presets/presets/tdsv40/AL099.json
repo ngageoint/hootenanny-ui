@@ -6,7 +6,7 @@
     "tags": {
     },
     "hoot:featuretype":"Hut",
-    "hoot:transtype":"TDSv40",
+    "hoot:tagschema":"TDSv40",
     "hoot:fcode": "AL099",
     "name": "Hut (AL099)"
 }
