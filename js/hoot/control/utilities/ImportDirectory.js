@@ -324,7 +324,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             }
 
             d3.select('#importDirectoryBtn').text('Cancel');
-            d3.select('#ingestdirectoryuploaderspancontainer').remove();
+            d3.select('#ingestdirectoryuploaderspancontainer').attr('hidden',true);
             _performImport(submitExp);
         }
     };
@@ -451,16 +451,24 @@ Hoot.control.utilities.importdirectory = function(context) {
             if(status.info === 'complete'){
                 if(_isCancel === false){
                     var newfoldername = _container.select('#importDirectoryNewFolderName').value();
+                    var pathname = _container.select('#importDirectoryPathName').value() || 'root';
+                    var folderPath = '';
 
-                    var pathname = _container.select('#importDirectoryPathName').value();
-                    if(pathname===''){pathname=_container.select('#importDirectoryPathName').attr('placeholder');}
-                    
-                    //determine if a new folder is being added
-                    var pathId = context.hoot().model.folders.getfolderIdByName(pathname + '/' + newfoldername) || 0;
+                    if(newfoldername!==''){
+                        if(pathname==='root'){ folderPath = newfoldername; }
+                        else { folderPath = pathname + '/' + newfoldername; }
+                    } else {
+                        folderPath = pathname;
+                    }
 
-                    if(pathId===0){pathId = context.hoot().model.folders.getfolderIdByName(pathname) || context.hoot().model.folders.getfolderIdByName(newfoldername) || 0;}
-                    if(pathId===0){if(pathname==='root'){pathname='';}}                    
-                    else{newfoldername='';} //we do not want to create a new folder
+                    var pathId = context.hoot().model.folders.getfolderIdByName(folderPath)  || 0;
+                    if(pathId > 0){
+                        newfoldername='';
+                    } else {
+                        if(newfoldername!==''){
+                            pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;
+                        }
+                    }
 
                     var folderData = {};
                     folderData.folderName = newfoldername;
