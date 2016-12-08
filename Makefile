@@ -138,16 +138,25 @@ D3_FILES = \
 	node_modules/d3/src/start.js \
 	node_modules/d3/src/arrays/index.js \
 	node_modules/d3/src/behavior/behavior.js \
+	node_modules/d3/src/behavior/drag.js \
 	node_modules/d3/src/behavior/zoom.js \
 	node_modules/d3/src/core/index.js \
+	node_modules/d3/src/dsv/index.js \
 	node_modules/d3/src/event/index.js \
+	node_modules/d3/src/geo/distance.js \
 	node_modules/d3/src/geo/length.js \
 	node_modules/d3/src/geo/mercator.js \
 	node_modules/d3/src/geo/path.js \
 	node_modules/d3/src/geo/stream.js \
 	node_modules/d3/src/geom/polygon.js \
 	node_modules/d3/src/geom/hull.js \
+	node_modules/d3/src/layout/layout.js \
+	node_modules/d3/src/layout/tree.js \
+	node_modules/d3/src/scale/scale.js \
+	node_modules/d3/src/scale/linear.js \
 	node_modules/d3/src/selection/index.js \
+	node_modules/d3/src/svg/svg.js \
+	node_modules/d3/src/svg/diagonal.js \
 	node_modules/d3/src/transition/index.js \
 	node_modules/d3/src/xhr/index.js \
 	node_modules/d3/src/end.js
