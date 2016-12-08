@@ -84,7 +84,7 @@ Hoot.model.export = function (context)
         } catch (e) {
             appendTemplate=true;
         }
-        
+
         // Check to see if we are export status as text
         var exportTextStatus= '';
         try{
@@ -95,11 +95,23 @@ Hoot.model.export = function (context)
 
         var param = {};
         param.translation = selectedTranslation;
-        //OSM API db override - Datasets are written to an OSM API database as OSM, so translation 
+        //OSM API db override - Datasets are written to an OSM API database as OSM, so translation
         //is ignored here.
         if (selectedOutType === 'osm_api_db')
         {
             param.translation = 'NONE';
+
+            //If a Tasking Manager grid is present, provide this bbox to the conflate job
+            //We will need to write the task grid to the map dataset metadata, so that
+            //the "export" back to osm api db can occur in a later session without the
+            //gpx layer
+            var gj = context.layers().layer('gpx');
+            if (gj.hasGpx()) {
+                //get the task grid feature extent
+                var extent = iD.geo.Extent(d3.geo.bounds(gj.geojson()));
+                param.TASK_BBOX = extent.toParam();
+            }
+
         }
         param.inputtype = 'db';
         param.input = selectedInput;
@@ -156,11 +168,11 @@ Hoot.model.export = function (context)
                     var param = {};
                     param.id = result.jobId;
                     context.hoot().control.utilities.wfsdataset.wfsDetailPopup(param);
-                } 
+                }
                 else */
                 if (selectedOutType === 'osm_api_db')
                 {
-                    //OSM API db export writes directly to an osm api database and involves no file 
+                    //OSM API db export writes directly to an osm api database and involves no file
                     //download for export.
                     var summaryStartIndex = result.statusDetail.indexOf('Changeset(s)');
                     var summary = result.statusDetail.substring(summaryStartIndex);
@@ -196,13 +208,13 @@ Hoot.model.export = function (context)
             {
                 //This reset has to occur here or successively run tests will fail.
                 context.hoot().reset();
-                
+
                 //having difficulty accessing the iD alerts in cucumber tests, so using a regular
                 //alert instead
-                
+
                 // This is at odds with how exception messages are handled in the rest of the app,
-                // however, I want to explicitly show the export failure as being due to an OSM API 
-                // database conflict here instead of requiring a user to sift through an error log 
+                // however, I want to explicitly show the export failure as being due to an OSM API
+                // database conflict here instead of requiring a user to sift through an error log
                 // to find that error message.  Unfortunately, the callback will show the iD alert
                 // to check the logs after this message is shown.
                 alert(result.statusDetail);
