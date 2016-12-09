@@ -7,7 +7,7 @@
     "tags": {
     },
     "hoot:featuretype":"River",
-    "hoot:transtype":"TDSv61",
+    "hoot:tagschema":"TDSv61",
     "hoot:fcode": "BH140",
     "name": "River (BH140)"
 }

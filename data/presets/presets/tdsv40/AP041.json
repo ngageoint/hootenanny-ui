@@ -1,0 +1,12 @@
+{
+    "geometry": [
+        "point",
+        "line"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"VehicleBarrier",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "AP041",
+    "name": "Vehicle Barrier (AP041)"
+}

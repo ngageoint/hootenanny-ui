@@ -1,0 +1,13 @@
+{
+    "icon": "airport",
+    "geometry": [
+        "area",
+        "point"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Heliport",
+    "hoot:tagschema":"TDSv61",
+    "hoot:fcode": "GB035",
+    "name": "Heliport (GB035)"
+}

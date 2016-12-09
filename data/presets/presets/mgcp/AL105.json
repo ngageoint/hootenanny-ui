@@ -1,13 +1,12 @@
 {
-   	"icon": "commercial",
-    "geometry": [
-        "point",
-        "area"
-    ],
-    "tags": {
-    },
-    "hoot:featuretype":"Settlement",
-    "hoot:transtype":"MGCP",
-    "hoot:fcode": "AL105",
-    "name": "Settlement (AL105)"
+  "icon": "commercial",
+  "geometry": [
+    "point",
+    "area"
+  ],
+  "tags": {},
+  "hoot:featuretype": "Settlement",
+  "hoot:tagschema": "MGCP",
+  "hoot:fcode": "AL105",
+  "name": "Settlement (AL105)"
 }

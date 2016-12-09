@@ -1,12 +1,11 @@
 {
-    "icon": "airport",
-    "geometry": [
-        "area"
-    ],
-    "tags": {
-    },
-    "hoot:featuretype":"Land Aerodrome",
-    "hoot:transtype":"MGCP",
-    "hoot:fcode": "GB005",
-    "name": "Land Aerodrome (GB005)"
+  "icon": "airport",
+  "geometry": [
+    "area"
+  ],
+  "tags": {},
+  "hoot:featuretype": "Land Aerodrome",
+  "hoot:tagschema": "MGCP",
+  "hoot:fcode": "GB005",
+  "name": "Land Aerodrome (GB005)"
 }

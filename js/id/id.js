@@ -52,6 +52,7 @@ window.iD = function () {
         ui = iD.ui(context),
         hoot = Hoot.hoot(context),
         dgservices = iD.dgservices(),
+        translationserver = iD.translationserver(context),
         connection = iD.Connection(context),
         locale = iD.detect().locale,
         localePath;
@@ -103,6 +104,7 @@ window.iD = function () {
     context.hoot = function() { return hoot; };
     context.entityEditor = function() {return entityEditor;};
     context.dgservices = function(){ return dgservices; };
+    context.translationserver = function(){ return translationserver; };
 
     /* Connection */
     function entitiesLoaded(err, result) {

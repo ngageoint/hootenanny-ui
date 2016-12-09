@@ -19,12 +19,12 @@ iD.ui.preset = function(context) {
         field.show = show;
 
         field.shown = function() {
-            return field.id === 'name' || field.show || _.any(field.keys, function(key) { return !!tags[key]; });
+            return (field.id === 'name' && context.translationserver().activeTranslation() === 'OSM') || field.show || _.some(field.keys, function(key) { return !!tags[key]; });
         };
 
         field.modified = function() {
             var original = context.graph().base().entities[entity.id];
-            return _.any(field.keys, function(key) {
+            return _.some(field.keys, function(key) {
                 return original ? tags[key] !== original.tags[key] : tags[key];
             });
         };
@@ -39,7 +39,7 @@ iD.ui.preset = function(context) {
         };
 
         field.present = function() {
-            return _.any(field.keys, function(key) {
+            return _.some(field.keys, function(key) {
                 return tags[key];
             });
         };
@@ -80,11 +80,8 @@ iD.ui.preset = function(context) {
 
             preset.fields.forEach(function(field) {
                 if (field.matchGeometry(geometry)) {
-                    var doShow = true;
-                    if(field.show && field.show === 'false'){
-                        doShow = false;
-                    }
-                    fields.push(UIField(field, entity, doShow));
+                    //if a field has a show propery, use it
+                    fields.push(UIField(field, entity, (field.show === undefined) ? true : field.show));
                 }
             });
 
@@ -129,6 +126,7 @@ iD.ui.preset = function(context) {
 
         wrap.append('button')
             .attr('class', 'remove-icon')
+            .attr('tabindex', -1)
             .call(iD.svg.Icon('#operation-delete'));
 
         wrap.append('button')
@@ -152,7 +150,6 @@ iD.ui.preset = function(context) {
             .classed('present', function(field) {
                 return field.present();
             })
-
             .each(function(field) {
                 var reference = iD.ui.TagReference(field.reference || {key: field.key}, context);
 
@@ -164,7 +161,8 @@ iD.ui.preset = function(context) {
                     .call(field.input)
                     .selectAll('input')
                     .on('keydown', function() {
-                        if (d3.event.keyCode === 13) {  // enter
+                        // if user presses enter, and combobox is not active, accept edits..
+                        if (d3.event.keyCode === 13 && d3.select('.combobox').empty()) {
                             context.enter(iD.modes.Browse(context));
                         }
                     })
@@ -175,10 +173,16 @@ iD.ui.preset = function(context) {
                 field.input.tags(tags);
             });
 
-
         $fields.exit()
             .remove();
 
+        //If the active schema translation is not OSM
+        //filter out non-schema fields
+        if (context.translationserver().activeTranslation() !== 'OSM') {
+            notShown = notShown.filter(function(f) {
+                return f.id.startsWith(context.translationserver().activeTranslation());
+            });
+        }
         notShown = notShown.map(function(field) {
             return {
                 title: field.label(),
@@ -236,14 +240,6 @@ iD.ui.preset = function(context) {
         function remove(field) {
             d3.event.stopPropagation();
             d3.event.preventDefault();
-            for (var i = 0; i < shown.length; i++){
-                if (field.key === shown[i].key){
-                    var hiddenField = shown.splice(i, 1);
-                    hiddenField[0].show = false;
-                    notShown.push(hiddenField[0]);
-                }
-            }
-            content(selection);
             event.change(field.remove());
         }
     }

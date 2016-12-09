@@ -9,7 +9,7 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1625" inkscape:window-height="1026" id="namedview16475" showgrid="true" inkscape:zoom="17.280278" inkscape:cx="630.46806" inkscape:cy="555.65804" inkscape:window-x="3415" inkscape:window-y="24" inkscape:window-maximized="1" inkscape:current-layer="icons">
+  <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1625" inkscape:window-height="1026" id="namedview16475" showgrid="true" inkscape:zoom="8.640139" inkscape:cx="677.04569" inkscape:cy="531.46209" inkscape:window-x="3415" inkscape:window-y="24" inkscape:window-maximized="1" inkscape:current-layer="icons">
     <inkscape:grid type="xygrid" id="grid16479"/>
   </sodipodi:namedview>
   <defs id="defs15464">
@@ -1115,6 +1115,12 @@
         <path inkscape:connector-curvature="0" d="m 655.33204,7.2525855 c -1.12212,-2.5794601 -3.63164,-4.2361952 -6.46009,-4.2361952 -2.89249,0 -5.53618,1.8126781 -6.57761,4.5098593 l 2.19233,0.8466805 c 0.69411,-1.7989034 2.4567,-3.0069861 4.38528,-3.0069861 1.86103,0 3.50758,1.0800419 4.26985,2.7606479 l -1.59961,0.6390086 4.09023,2.3596945 1.19626,-4.4702631 -1.49664,0.5975536 z" id="icon-refresh-shape-upper"/>
         <path inkscape:connector-curvature="0" d="m 648.87195,14.764028 c -1.84417,0 -3.5261,-1.11233 -4.27801,-2.782217 l 1.57689,-0.609557 -4.04749,-2.3083197 -1.23899,4.3513917 1.50938,-0.583382 c 1.10068,2.569584 3.66978,4.281503 6.47822,4.281503 2.90321,0 5.47408,-1.742167 6.54912,-4.437622 l -2.18206,-0.870375 c -0.71725,1.797131 -2.43095,2.958578 -4.36706,2.958578 z" id="icon-refresh-shape-lower"/>
       </g>
+    </symbol>
+    <symbol id="icon-edit" viewBox="660 0 20 20">
+      <path inkscape:connector-curvature="0" id="icon-edit-shape" d="m 662.31056,13.924148 12.12671,-12.126392 3.48571,3.4856979 -12.1264,12.1267151 -4.19787,0.711851 z" style="fill:none;stroke:#000000;stroke-width:0.97202945" fill="currentColor"/>
+      <path style="fill:none;stroke:#000000;stroke-width:0.81002456" inkscape:connector-curvature="0" id="path3771" d="m 662.32692,13.777047 3.58388,3.583873"/>
+      <path style="fill:none;stroke:#000000;stroke-width:0.81002456" inkscape:connector-curvature="0" id="path3777" d="M 675.96453,3.7508872 664.08341,15.631679"/>
+      <path style="fill:none;stroke:#000000;stroke-width:0.81002456" inkscape:connector-curvature="0" id="path3763" d="m 661.79726,16.675314 1.32763,1.281331"/>
     </symbol>
   </g>
   <g id="operations">

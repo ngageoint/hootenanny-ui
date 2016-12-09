@@ -2,7 +2,7 @@ iD.dgservices  = function() {
     var dg = {},
         gbm_proxy = '/hoot-services/gbm',
         egd_proxy = '/hoot-services/egd',
-        gbm_host = 'https://services.digitalglobe.com',
+        gbm_host = 'https://{switch:a,b,c,d,e}-services.digitalglobe.com',
         egd_host = 'https://evwhs.digitalglobe.com',
         gbm_connectId = 'REPLACE_ME',
         egd_connectId = 'REPLACE_ME',
@@ -24,7 +24,23 @@ iD.dgservices  = function() {
         defaultProfile = 'Global_Currency_Profile',
         defaultCollection = '24h';
 
-    dg.enabled = false;
+    function isUUID(str) {
+        if (str === null){
+            return false;
+        } else{
+            var match = str.search(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+            return match !== -1;
+        }
+    }
+
+    dg.enabled = isUUID(gbm_connectId) || isUUID(egd_connectId) || egd_connectId === 'prompt';
+
+    dg.egd = {};
+    dg.egd.connectId = function(_) {
+        if (!arguments.length) return egd_connectId;
+        egd_connectId = _;
+        return dg;
+    };
 
     dg.profiles = [
        {value: 'Global_Currency_Profile', text: t('background.dgbg_profiles.Global_Currency_Profile')},
@@ -61,7 +77,10 @@ iD.dgservices  = function() {
             host = (proxy) ? gbm_proxy : gbm_host;
             connectid = connectId || gbm_connectId;
         } else if (service === 'EGD') {
-            host = (proxy) ? egd_proxy : egd_host;
+            //Always proxy EVWHS requests.  Until CORS is implemented on
+            //their WFS, all requests must use same protocol://host:port
+            //so that the basic auth headers work for everything
+            host = (proxy) ? egd_proxy : egd_proxy;
             connectid = connectId || egd_connectId;
         }
         return (host + template)
@@ -81,6 +100,13 @@ iD.dgservices  = function() {
     };
 
     dg.wfs = {};
+    // Returns a random integer between min (included) and max (excluded)
+    // Using Math.round() will give you a non-uniform distribution!
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
     function getWfsFeature(service, connectId, profile, extent, size, callback, addlParam) {
         var url = getUrl(service, connectId, profile, wfs_template, true/*proxy*/);
         if (addlParam) {
@@ -88,7 +114,11 @@ iD.dgservices  = function() {
                 return d.key + '=' + d.value;
             }).join('&');
         }
-        url = url.replace('{width}', size[0])
+        url = url.replace(/\{switch:([^}]+)\}/, function(s, r) {
+                var subdomains = r.split(',');
+                return subdomains[getRandomInt(0, subdomains.length)];
+            })
+            .replace('{width}', size[0])
             .replace('{height}', size[1])
             .replace('{bbox}', extent.toParam());
 

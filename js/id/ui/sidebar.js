@@ -3,7 +3,6 @@ iD.ui.Sidebar = function(context) {
         current;
 
     function sidebar(selection) {
-        //var ltds = context.hoot().view.ltdstags;
         var featureListWrap = selection.append('div').attr('class', 'feature-list-pane').call(iD.ui.FeatureList(context));
         //selection.call(iD.ui.Notice(context));
         var inspectorWrap = selection.append('div').attr('class', 'inspector-hidden inspector-wrap fr');
@@ -34,14 +33,12 @@ iD.ui.Sidebar = function(context) {
                 if (inspector.entityID() !== id || inspector.state() !== 'select') {
                     inspector.state('select').entityID(id).newFeature(newFeature);
                     inspectorWrap.call(inspector);
-                    //ltds.activate(id);
                 }
             }
             else if (!current) {
                 featureListWrap.classed('inspector-hidden', false);
                 inspectorWrap.classed('inspector-hidden', true);
                 inspector.state('hide');
-                //ltds.deactivate();
             }
         };
         sidebar.show = function(component) {

@@ -9,7 +9,6 @@
 //      31 May  2016 OSM API Database export type -- bwitham
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.export = function (context, sidebar) {
-    //var exportResources = ['LTDS 4.0', 'MGCP'];
     var event = d3.dispatch('saveLayer', 'cancelSaveLayer');
     var exp = {};
     var save;
@@ -61,8 +60,13 @@ Hoot.control.export = function (context, sidebar) {
                 type: 'fileExportTranslation',
                 id: 'fileExportTranslation',
                 combobox: {'data':transCombo },//exportResources,
-                placeholder: placeHolder,//'LTDS 4.0'
+                placeholder: placeHolder,
                 inputtype:'text'
+            }, {
+                label: 'Export Status as Text',
+                type: 'exportTextStatus',
+                inputtype:'checkbox',
+                checkbox:'cboxExportTextStatus'
             }, {
                 label: 'Export Format',
                 type: 'fileExportFileType',
@@ -132,6 +136,8 @@ Hoot.control.export = function (context, sidebar) {
                 })
                 .select(function (a) {
                     if (a.checkbox){
+                        d3.selectAll('input.rest.exportTextStatus').remove();
+                        d3.select('.cboxExportTextStatus').classed('hidden',true).select('input').property('checked',false);
                         d3.selectAll('input.reset.appendFGDBTemplate').remove();
                         d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
                     }
@@ -149,7 +155,7 @@ Hoot.control.export = function (context, sidebar) {
                         
                         d3.select(this)
                         .on('change',function(){
-                            checkForTemplate();
+                            checkForOptions();
                         });
                     }
 
@@ -198,8 +204,9 @@ Hoot.control.export = function (context, sidebar) {
             });
          });
         
-        function checkForTemplate(){
-            var hidden=false;
+        function checkForOptions(){
+            var hideFGDB=false;
+            var hideExport=false;
 
             var exportType = d3.select('.fileExportFileType').value();
             var transType = d3.select('.fileExportTranslation').value();
@@ -209,21 +216,31 @@ Hoot.control.export = function (context, sidebar) {
             if (transType===''){transType=d3.select('.fileExportTranslation').attr('placeholder');}
 
             if(exportType!=='File Geodatabase'){
-                hidden=true;
+                hideFGDB=true;
             }
 
             var selTrans = _.find(transCombo,{'DESCRIPTION':transType});
             if(selTrans){
                 if(selTrans.NAME.substring(0,3)!=='TDS'){
-                    hidden=true;
+                    hideFGDB=true;
+                } 
+
+                if(selTrans.NAME.substring(0,3)!=='OSM'){ 
+                    hideExport=true;
                 }
             } else {
-                hidden=true;
+                hideFGDB=true;
+                hideExport=true;
             }
 
-            d3.select('.cboxAppendFGDBTemplate').classed('hidden',hidden);
-            if(hidden){
+            d3.select('.cboxAppendFGDBTemplate').classed('hidden',hideFGDB);
+            if(hideFGDB){
                 d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
+            }
+
+            d3.select('.cboxExportTextStatus').classed('hidden',hideExport);
+            if(hideExport){
+                d3.select('.cboxExportTextStatus').select('input').property('checked',false);
             }
         }
 

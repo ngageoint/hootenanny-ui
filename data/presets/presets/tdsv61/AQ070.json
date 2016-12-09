@@ -1,0 +1,11 @@
+{
+    "geometry": [
+        "line"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"FerryCrossing",
+    "hoot:tagschema":"TDSv61",
+    "hoot:fcode": "AQ070",
+    "name": "Ferry Crossing (AQ070)"
+}

@@ -31,14 +31,6 @@ Hoot.hoot = function (context) {
 
     };
 
-
-
-
-  /*
-    hoot.LTDSTags = function () {
-        return Hoot.LTDSTags(context);
-    };*/
-
     /**
     * @desc This function is invoke from iD.data.load in index.html during
     *       application initialization and performs Hootenanny specific initialization
@@ -58,18 +50,6 @@ Hoot.hoot = function (context) {
                 callback();
             }*/
         });
-        Hoot.model.REST('getTranslationCapabilities', function (error, resp) {
-                if(error){
-                iD.ui.Alert('Can not find translation server info. Is it running?','warning',new Error().stack);
-                    return;
-                }
-                iD.data.hootConfig.translationCapabilites = JSON.parse(resp.responseText);
-
-                // we do this to make sure OSM is in list and not duplicate
-                // which can happen if it is included in the list from server
-            iD.data.hootConfig.translationCapabilites.OSM = {'isavailable':'true'};
-            });
-
 
         Hoot.model.REST('getConflationCustomOpts',function(){});
 
@@ -319,6 +299,12 @@ Hoot.hoot = function (context) {
 
             return true;
         } catch (err) { return false; }
+    };
+
+    hoot.removeSpecialChar = function(str){
+        var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/); 
+        var retval = str.replace(pattern,'');
+        return retval;
     };
 
 

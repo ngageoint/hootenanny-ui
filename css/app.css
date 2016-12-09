@@ -696,7 +696,7 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    padding: 20px;
+    padding: 20px 20px 20px 40px;;
 }
 
 .header button,
@@ -855,7 +855,7 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 }
 
 .entity-editor-pane .inspector-body {
-    top: 130px;  /* 60px  */
+    top: 60px;
 }
 
 .selection-list-pane .inspector-body {
@@ -1308,7 +1308,8 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 
 /* Unstyle button fields */
 .inspector-hover .toggle-list label.active,
-.inspector-hover .entity-editor-pane a.hide-toggle {
+.inspector-hover .entity-editor-pane a.hide-toggle,
+.inspector-hover .entity-editor-pane .tag-schema label {
     opacity: 1;
     background-color: transparent;
     color: #666;
@@ -1349,6 +1350,14 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 
 .more-fields label { padding: 5px 10px 5px 0; }
 .more-fields input { width: 50%;}
+
+/* schema-switcher */
+.tag-schema {
+    padding: 20px 20px 0 20px;
+    font-weight: bold;
+}
+.tag-schema label { padding: 5px 10px 5px 0; }
+.tag-schema input { width: 50%;}
 
 /* preset form access */
 
@@ -1713,6 +1722,10 @@ div.combobox {
     width: 40%;
     float: left;
     height: 30px;
+    -webkit-transition: width 200ms;
+       -moz-transition: width 200ms;
+         -o-transition: width 200ms;
+            transition: width 200ms;
 }
 
 .tag-row input.key {
@@ -3400,7 +3413,7 @@ rect.more {fill: #3182bd;}*/
 	background-color:#7092ff;
 }
 
-.context-menu, .tools-menu, 
+.context-menu, .tools-menu,
 .dataset-options-menu, .coordinates-options-menu {
   position: absolute;
   display: none;
@@ -3413,7 +3426,7 @@ rect.more {fill: #3182bd;}*/
   z-index:1200;
 }
 
-.context-menu ul, .tools-menu ul, 
+.context-menu ul, .tools-menu ul,
 .dataset-options-menu ul, coordinates-option-menu ul {
   list-style-type: none;
   margin: 4px 0px;
@@ -3421,7 +3434,7 @@ rect.more {fill: #3182bd;}*/
   cursor: default;
 }
 
-.context-menu ul li, .tools-menu ul li, 
+.context-menu ul li, .tools-menu ul li,
 .dataset-options-menu ul li {
   padding: 4px 16px;
 }
@@ -3429,7 +3442,7 @@ rect.more {fill: #3182bd;}*/
 .coordinates-options-menu {min-width:50px;}
 .coordinates-options-menu ul li { padding: 4px; }
 
-.context-menu ul li:hover, .tools-menu ul li:hover, 
+.context-menu ul li:hover, .tools-menu ul li:hover,
 .dataset-options-menu ul li:hover, .coordinates-options-menu ul li:hover {
   background-color: #4677f8;
   color: #fefefe;

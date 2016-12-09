@@ -1,0 +1,13 @@
+{
+  	"icon": "cemetery",
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Cemetery",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "AL030",
+    "name": "Cemetery (AL030)"
+}

@@ -6322,7 +6322,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Facility",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "AL010",
         "name": "Facility (AL010)"
     },
@@ -6334,7 +6334,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Building",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "AL015",
         "name": "Building (AL015)"
     },
@@ -6346,7 +6346,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Built-up Area",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "AL020",
         "name": "Built-up Area (AL020)"
     },
@@ -6357,7 +6357,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Hut",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "AL099",
         "name": "Hut (AL099)"
     },
@@ -6369,7 +6369,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Settlement",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "AL105",
         "name": "Settlement (AL105)"
     },
@@ -6380,7 +6380,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Railway",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "AN010",
         "name": "Railway (AN010)"
     },
@@ -6391,7 +6391,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Cart Track",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "AP010",
         "name": "Cart Track (AP010)"
     },
@@ -6402,7 +6402,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Road",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "AP030",
         "name": "Road (AP030)"
     },
@@ -6413,7 +6413,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Trail",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "AP050",
         "name": "Trail (AP050)"
     },
@@ -6425,7 +6425,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Bridge",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "AQ040",
         "name": "Bridge (AQ040)"
     },
@@ -6436,7 +6436,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Culvert",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "AQ065",
         "name": "Culvert (AQ065)"
     },
@@ -6448,7 +6448,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Ditch",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "BH030",
         "name": "Ditch (BH030)"
     },
@@ -6460,7 +6460,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Ford",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "BH070",
         "name": "Ford (BH070)"
     },
@@ -6472,7 +6472,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "River",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "BH140",
         "name": "River (BH140)"
     },
@@ -6483,7 +6483,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Land Aerodrome",
-        "hoot:transtype": "MGCP",
+        "hoot:tagschema": "MGCP",
         "hoot:fcode": "GB005",
         "name": "Land Aerodrome (GB005)"
     },
@@ -10003,6 +10003,17 @@
         },
         "name": "Wine Shop"
     },
+    "tdsv40/AH070": {
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Checkpoint",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "AH070",
+        "name": "Checkpoint (AH070)"
+    },
     "tdsv40/AL010": {
         "icon": "town-hall",
         "geometry": [
@@ -10011,7 +10022,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Facility",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "AL010",
         "name": "Facility (AL010)"
     },
@@ -10023,7 +10034,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Building",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "AL013",
         "name": "Building (AL013)"
     },
@@ -10035,9 +10046,21 @@
         ],
         "tags": {},
         "hoot:featuretype": "Built-up Area",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "AL020",
         "name": "Built-up Area (AL020)"
+    },
+    "tdsv40/AL030": {
+        "icon": "cemetery",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Cemetery",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "AL030",
+        "name": "Cemetery (AL030)"
     },
     "tdsv40/AL099": {
         "icon": "lodging",
@@ -10046,7 +10069,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Hut",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "AL099",
         "name": "Hut (AL099)"
     },
@@ -10058,9 +10081,21 @@
         ],
         "tags": {},
         "hoot:featuretype": "Settlement",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "AL105",
         "name": "Settlement (AL105)"
+    },
+    "tdsv40/AL351": {
+        "icon": "rocket",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "SpaceFacility",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "AL351",
+        "name": "Space Facility (AL351)"
     },
     "tdsv40/AN010": {
         "icon": "railway-rail",
@@ -10069,9 +10104,31 @@
         ],
         "tags": {},
         "hoot:featuretype": "Railway",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "AN010",
         "name": "Railway (AN010)"
+    },
+    "tdsv40/AN050": {
+        "icon": "railway-rail",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "RailwaySidetrack",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "AN050",
+        "name": "Railway Sidetrack (AN050)"
+    },
+    "tdsv40/AN060": {
+        "icon": "railway-rail",
+        "geometry": [
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "RailwayYard",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "AN050",
+        "name": "Railway Yard (AN060)"
     },
     "tdsv40/AP010": {
         "icon": "highway-track",
@@ -10080,7 +10137,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Cart Track",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "AP010",
         "name": "Cart Track (AP010)"
     },
@@ -10091,9 +10148,20 @@
         ],
         "tags": {},
         "hoot:featuretype": "Road",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "AP030",
         "name": "Road (AP030)"
+    },
+    "tdsv40/AP041": {
+        "geometry": [
+            "point",
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "VehicleBarrier",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "AP041",
+        "name": "Vehicle Barrier (AP041)"
     },
     "tdsv40/AP050": {
         "icon": "highway-path",
@@ -10102,7 +10170,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Trail",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "AP050",
         "name": "Trail (AP050)"
     },
@@ -10114,9 +10182,31 @@
         ],
         "tags": {},
         "hoot:featuretype": "Bridge",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "AQ040",
         "name": "Bridge (AQ040)"
+    },
+    "tdsv40/AQ060": {
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "ControlTower",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "AQ060",
+        "name": "Control Tower (AQ060)"
+    },
+    "tdsv40/AQ063": {
+        "geometry": [
+            "area",
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "CausewayStructure",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "AQ063",
+        "name": "Causeway Structure (AQ063)"
     },
     "tdsv40/AQ065": {
         "icon": "waterway-stream",
@@ -10126,9 +10216,52 @@
         ],
         "tags": {},
         "hoot:featuretype": "Culvert",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "AQ065",
         "name": "Culvert (AQ065)"
+    },
+    "tdsv40/AQ070": {
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "FerryCrossing",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "AQ070",
+        "name": "Ferry Crossing (AQ070)"
+    },
+    "tdsv40/AQ080": {
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "FerryStation",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "AQ080",
+        "name": "Ferry Station (AQ080)"
+    },
+    "tdsv40/AQ125": {
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "TransportationStation",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "AQ125",
+        "name": "Transportation Station (AQ125)"
+    },
+    "tdsv40/AQ130": {
+        "geometry": [
+            "line",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Tunnel",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "AQ130",
+        "name": "Tunnel (AQ130)"
     },
     "tdsv40/BH030": {
         "icon": "waterway-ditch",
@@ -10138,7 +10271,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Ditch",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "BH030",
         "name": "Ditch (BH030)"
     },
@@ -10150,7 +10283,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Ford",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "BH070",
         "name": "Ford (BH070)"
     },
@@ -10162,20 +10295,99 @@
         ],
         "tags": {},
         "hoot:featuretype": "River",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "BH140",
         "name": "River (BH140)"
     },
     "tdsv40/GB005": {
         "icon": "airport",
         "geometry": [
+            "point",
             "area"
         ],
         "tags": {},
         "hoot:featuretype": "Land Aerodrome",
-        "hoot:transtype": "TDSv40",
+        "hoot:tagschema": "TDSv40",
         "hoot:fcode": "GB005",
         "name": "Land Aerodrome (GB005)"
+    },
+    "tdsv40/GB035": {
+        "icon": "airport",
+        "geometry": [
+            "area",
+            "point"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Heliport",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "GB035",
+        "name": "Heliport (GB035)"
+    },
+    "tdsv40/GB050": {
+        "icon": "airport",
+        "geometry": [
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Aircraft Revetment",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "GB050",
+        "name": "Aircraft Revetment (GB050)"
+    },
+    "tdsv40/GB055": {
+        "geometry": [
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Runway",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "GB055",
+        "name": "Runway (GB055)"
+    },
+    "tdsv40/GB065": {
+        "icon": "airport",
+        "geometry": [
+            "area",
+            "point"
+        ],
+        "tags": {},
+        "hoot:featuretype": "WaterAerodrome",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "GB065",
+        "name": "Water Aerodrome (GB065)"
+    },
+    "tdsv40/GB075": {
+        "geometry": [
+            "area",
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Taxiway",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "GB075",
+        "name": "Taxiway (GB075)"
+    },
+    "tdsv40/SU001": {
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Military Installation",
+        "hoot:tagschema": "TDSv40",
+        "hoot:fcode": "SU001",
+        "name": "Military Installation (SU001)"
+    },
+    "tdsv61/AH070": {
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Checkpoint",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "AH070",
+        "name": "Checkpoint (AH070)"
     },
     "tdsv61/AL010": {
         "icon": "town-hall",
@@ -10185,7 +10397,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Facility",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "AL010",
         "name": "Facility (AL010)"
     },
@@ -10197,7 +10409,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Building",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "AL013",
         "name": "Building (AL013)"
     },
@@ -10209,9 +10421,21 @@
         ],
         "tags": {},
         "hoot:featuretype": "Built-up Area",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "AL020",
         "name": "Built-up Area (AL020)"
+    },
+    "tdsv61/AL030": {
+        "icon": "cemetery",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Cemetery",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "AL030",
+        "name": "Cemetery (AL030)"
     },
     "tdsv61/AL099": {
         "icon": "lodging",
@@ -10221,7 +10445,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Hut",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "AL099",
         "name": "Hut (AL099)"
     },
@@ -10233,9 +10457,21 @@
         ],
         "tags": {},
         "hoot:featuretype": "Settlement",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "AL105",
         "name": "Settlement (AL105)"
+    },
+    "tdsv61/AL351": {
+        "icon": "rocket",
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "SpaceFacility",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "AL351",
+        "name": "Space Facility (AL351)"
     },
     "tdsv61/AN010": {
         "icon": "railway-rail",
@@ -10244,9 +10480,31 @@
         ],
         "tags": {},
         "hoot:featuretype": "Railway",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "AN010",
         "name": "Railway (AN010)"
+    },
+    "tdsv61/AN050": {
+        "icon": "railway-rail",
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "RailwaySidetrack",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "AN050",
+        "name": "Railway Sidetrack (AN050)"
+    },
+    "tdsv61/AN060": {
+        "icon": "railway-rail",
+        "geometry": [
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "RailwayYard",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "AN050",
+        "name": "Railway Yard (AN060)"
     },
     "tdsv61/AP010": {
         "icon": "highway-track",
@@ -10255,7 +10513,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Cart Track",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "AP010",
         "name": "Cart Track (AP010)"
     },
@@ -10266,9 +10524,20 @@
         ],
         "tags": {},
         "hoot:featuretype": "Road",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "AP030",
         "name": "Road (AP030)"
+    },
+    "tdsv61/AP041": {
+        "geometry": [
+            "point",
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "VehicleBarrier",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "AP041",
+        "name": "Vehicle Barrier (AP041)"
     },
     "tdsv61/AP050": {
         "icon": "highway-path",
@@ -10277,7 +10546,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Trail",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "AP050",
         "name": "Trail (AP050)"
     },
@@ -10290,9 +10559,31 @@
         ],
         "tags": {},
         "hoot:featuretype": "Bridge",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "AQ040",
         "name": "Bridge (AQ040)"
+    },
+    "tdsv61/AQ060": {
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "ControlTower",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "AQ060",
+        "name": "Control Tower (AQ060)"
+    },
+    "tdsv61/AQ063": {
+        "geometry": [
+            "area",
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "CausewayStructure",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "AQ063",
+        "name": "Causeway Structure (AQ063)"
     },
     "tdsv61/AQ065": {
         "icon": "waterway-stream",
@@ -10302,9 +10593,52 @@
         ],
         "tags": {},
         "hoot:featuretype": "Culvert",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "AQ065",
         "name": "Culvert (AQ065)"
+    },
+    "tdsv61/AQ070": {
+        "geometry": [
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "FerryCrossing",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "AQ070",
+        "name": "Ferry Crossing (AQ070)"
+    },
+    "tdsv61/AQ080": {
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "FerryStation",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "AQ080",
+        "name": "Ferry Station (AQ080)"
+    },
+    "tdsv61/AQ125": {
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "TransportationStation",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "AQ125",
+        "name": "Transportation Station (AQ125)"
+    },
+    "tdsv61/AQ130": {
+        "geometry": [
+            "line",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Tunnel",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "AQ130",
+        "name": "Tunnel (AQ130)"
     },
     "tdsv61/BH030": {
         "icon": "waterway-ditch",
@@ -10314,7 +10648,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Ditch",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "BH030",
         "name": "Ditch (BH030)"
     },
@@ -10327,7 +10661,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "Ford",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "BH070",
         "name": "Ford (BH070)"
     },
@@ -10339,7 +10673,7 @@
         ],
         "tags": {},
         "hoot:featuretype": "River",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "BH140",
         "name": "River (BH140)"
     },
@@ -10351,9 +10685,78 @@
         ],
         "tags": {},
         "hoot:featuretype": "Land Aerodrome",
-        "hoot:transtype": "TDSv61",
+        "hoot:tagschema": "TDSv61",
         "hoot:fcode": "GB005",
         "name": "Land Aerodrome (GB005)"
+    },
+    "tdsv61/GB035": {
+        "icon": "airport",
+        "geometry": [
+            "area",
+            "point"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Heliport",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "GB035",
+        "name": "Heliport (GB035)"
+    },
+    "tdsv61/GB050": {
+        "icon": "airport",
+        "geometry": [
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Aircraft Revetment",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "GB050",
+        "name": "Aircraft Revetment (GB050)"
+    },
+    "tdsv61/GB055": {
+        "icon": "airport",
+        "geometry": [
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Runway",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "GB055",
+        "name": "Runway (GB055)"
+    },
+    "tdsv61/GB065": {
+        "icon": "airport",
+        "geometry": [
+            "area",
+            "point"
+        ],
+        "tags": {},
+        "hoot:featuretype": "WaterAerodrome",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "GB065",
+        "name": "Water Aerodrome (GB065)"
+    },
+    "tdsv61/GB075": {
+        "icon": "airport",
+        "geometry": [
+            "area",
+            "line"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Taxiway",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "GB075",
+        "name": "Taxiway (GB075)"
+    },
+    "tdsv61/SU001": {
+        "geometry": [
+            "point",
+            "area"
+        ],
+        "tags": {},
+        "hoot:featuretype": "Military Installation",
+        "hoot:tagschema": "TDSv61",
+        "hoot:fcode": "SU001",
+        "name": "Military Installation (SU001)"
     },
     "tourism": {
         "fields": [
