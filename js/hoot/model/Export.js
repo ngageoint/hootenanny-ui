@@ -111,6 +111,11 @@ Hoot.model.export = function (context)
                 var extent = iD.geo.Extent(d3.geo.bounds(gj.geojson()));
                 param.TASK_BBOX = extent.toParam();
             }
+            var hash = iD.behavior.Hash(context);
+            hash();
+            if (hash.userid) {
+                param.USER_ID = hash.userid;
+            }
 
         }
         param.inputtype = 'db';

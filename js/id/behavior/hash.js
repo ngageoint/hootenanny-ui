@@ -71,6 +71,8 @@ iD.behavior.Hash = function(context) {
             if (q.map) hash.hadHash = true;
             if (q.reference) hash.reference = q.reference;
             if (q.secondary) hash.secondary = q.secondary;
+            if (q.reference) hash.username = q.username;
+            if (q.secondary) hash.userid = q.userid;
         }
     }
 
