@@ -291,7 +291,37 @@ window.iD = function () {
         copyIDs = [];
         copyTags = _;
         copyGraph = history.graph();
+
+        translateCopyTags(copyTags);
+
         return context;
+    };
+
+    //Callback
+    var changeTagsCallback = function(tcTags) {
+        Object.keys(tcTags).forEach(function(key) {
+            if (tcTags[key] === undefined) {
+                delete tcTags[key]
+            }
+        });
+
+        copyTags = tcTags;
+    };
+
+    //Translation
+
+    var translateCopyTags = function(tcTags) {
+        var translatedTags = {};
+        var entity = context.entity(context.selectedIDs()[0]);
+        if (context.translationserver().activeTranslation() !== 'OSM' && !_.isEmpty(tcTags)) {
+            context.translationserver().translateToOsm(tcTags, entity, false, function(resp){
+                translatedTags = changeTagsCallback(resp);
+            });
+        } else {
+            translatedTags = changeTagsCallback(tcTags);
+        }
+
+
     };
 
     /* Projection */
