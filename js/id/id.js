@@ -289,33 +289,40 @@ window.iD = function () {
     context.copyTags = function(_) {
         if (!arguments.length) return copyTags;
         copyIDs = [];
-        copyTags = translateCopyTags(_);
-        // copyTags = _;
+        copyTags = _;
         copyGraph = history.graph();
+
+        translateCopyTags(copyTags);
+
         return context;
     };
 
     //Callback
-    function changeTagsCallback(tcTags) {
+    var changeTagsCallback = function(tcTags) {
         Object.keys(tcTags).forEach(function(key) {
             if (tcTags[key] === undefined) {
                 delete tcTags[key]
             }
         });
-    }
+
+        copyTags = tcTags;
+    };
 
     //Translation
 
-    function translateCopyTags(id, tcTags) {
-        var entity = context.entity(id);
-        //Do we need to translate tags?
-        if (context.translationserver().activeTranslation() !== 'OSM' && !_.isEmpty(entity.tags)) {
-            context.translationserver().translateToOsm(tcTags, entity, false, changeTagsCallback);
+    var translateCopyTags = function(tcTags) {
+        var translatedTags = {};
+        var entity = context.entity(context.selectedIDs()[0]);
+        if (context.translationserver().activeTranslation() !== 'OSM' && !_.isEmpty(tcTags)) {
+            context.translationserver().translateToOsm(tcTags, entity, false, function(resp){
+                translatedTags = changeTagsCallback(resp);
+            });
         } else {
-            changeTagsCallback(tcTags);
+            translatedTags = changeTagsCallback(tcTags);
         }
 
-    }
+
+    };
 
     /* Projection */
     context.projection = iD.geo.RawMercator();
