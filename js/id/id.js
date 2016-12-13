@@ -289,10 +289,33 @@ window.iD = function () {
     context.copyTags = function(_) {
         if (!arguments.length) return copyTags;
         copyIDs = [];
-        copyTags = _;
+        copyTags = translateCopyTags(_);
+        // copyTags = _;
         copyGraph = history.graph();
         return context;
     };
+
+    //Callback
+    function changeTagsCallback(tcTags) {
+        Object.keys(tcTags).forEach(function(key) {
+            if (tcTags[key] === undefined) {
+                delete tcTags[key]
+            }
+        });
+    }
+
+    //Translation
+
+    function translateCopyTags(id, tcTags) {
+        var entity = context.entity(id);
+        //Do we need to translate tags?
+        if (context.translationserver().activeTranslation() !== 'OSM' && !_.isEmpty(entity.tags)) {
+            context.translationserver().translateToOsm(tcTags, entity, false, changeTagsCallback);
+        } else {
+            changeTagsCallback(tcTags);
+        }
+
+    }
 
     /* Projection */
     context.projection = iD.geo.RawMercator();
