@@ -291,15 +291,16 @@ window.iD = function () {
         copyIDs = [];
         copyTags = _;
         copyGraph = history.graph();
+         translateCopyTags(copyTags);
         return context;
     };
 
     // Translation Callback
-    
+
     var changeTagsCallback = function(tcTags) {
         Object.keys(tcTags).forEach(function(key) {
             if (tcTags[key] === undefined) {
-                delete tcTags[key]
+                delete tcTags[key];
             }
         });
 
