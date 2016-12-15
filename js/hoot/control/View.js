@@ -123,7 +123,7 @@ Hoot.control.view = function (context, container) {
 
                     var msg = '';
                     if(hasChange) {
-                        msg = 'There is unsaved changes. ';
+                        msg = 'There are unsaved changes. ';
                     }
                     var r = confirm(msg + 'Are you sure you want to remove layer:' + a.name  + '?');
                     if (r === false) {

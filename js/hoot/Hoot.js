@@ -301,6 +301,12 @@ Hoot.hoot = function (context) {
         } catch (err) { return false; }
     };
 
+    hoot.removeSpecialChar = function(str){
+        var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/); 
+        var retval = str.replace(pattern,'');
+        return retval;
+    };
+
 
     hoot.checkForSpecialChar = function(str){
         var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/);  //"
