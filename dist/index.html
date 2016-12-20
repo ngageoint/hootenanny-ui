@@ -43,9 +43,9 @@
                   .presets(iD.data.presets)
                   .imagery(iD.data.imagery)
                   .taginfo(iD.services.taginfo());
-
-                d3.select('#id-container')
-                    .call(id.ui());
+                id.hoot().load(function() {
+                    d3.select('#id-container').call(id.ui());
+                });
             }
         </script>
     </body>
