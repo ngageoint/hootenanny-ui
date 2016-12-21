@@ -15,7 +15,7 @@
         "tajmahal" : [78.04153,27.17415]
     },
     "maxnodescount" : 10000,
-    "p2pServerPort": 8096,
+    "elementMergeServerPort": 8096,
     "pluginhost":"hoot",
     "presetMaxLevDistance" : 20,
     "presetMaxDisplayNum" : 12,

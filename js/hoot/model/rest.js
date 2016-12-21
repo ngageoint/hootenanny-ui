@@ -332,8 +332,8 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.poiMerge = function (data, callback) {
         d3.xml(window.location.protocol + '//' + window.location.hostname +
-               Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.p2pServerPort) +
-               '/p2pmerge')
+               Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.elementMergeServerPort) +
+               '/elementmerge')
            .post(data, function (error, resp) {
                if (error) {
                    _alertError(error, 'Poi merge failed.');
