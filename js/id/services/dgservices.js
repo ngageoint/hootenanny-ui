@@ -3,7 +3,7 @@ iD.dgservices  = function() {
         gbm_proxy = '/hoot-services/gbm',
         egd_proxy = '/hoot-services/egd',
         gbm_host = 'https://{switch:a,b,c,d,e}-services.digitalglobe.com',
-        egd_host = 'https://evwhs.digitalglobe.com',
+        //egd_host = 'https://evwhs.digitalglobe.com',
         gbm_connectId = 'REPLACE_ME',
         egd_connectId = 'REPLACE_ME',
         wmts_template = '/earthservice/wmtsaccess?CONNECTID={connectId}&request=GetTile&version=1.0.0'
