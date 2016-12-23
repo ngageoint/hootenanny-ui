@@ -159,6 +159,10 @@ Hoot.hoot = function (context) {
         var obj = _.find(palette, function (a) {
             return a.name === co || a.hex === co;
         });
+        if(obj===undefined){
+            obj = {name: 'orange',hex: '#ff7f2a'};
+            co = 'orange';
+        }
         return (obj.name === co) ? obj.hex : obj.name;
     };
 
@@ -302,14 +306,14 @@ Hoot.hoot = function (context) {
     };
 
     hoot.removeSpecialChar = function(str){
-        var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/); 
+        var pattern = new RegExp(/[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g); 
         var retval = str.replace(pattern,'');
         return retval;
     };
 
 
     hoot.checkForSpecialChar = function(str){
-        var pattern = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?|]/);  //"
+        var pattern = new RegExp(/[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g);  //"
         if (pattern.test(str)) {
             return false;
         }
