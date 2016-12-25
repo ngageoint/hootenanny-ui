@@ -417,21 +417,6 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
-    rest.Export = function (data) {
-        if (!data.translation || !data.inputtype || !data.input || !data.outputtype) {
-            return false;
-        }
-        data.USER_EMAIL = iD.data.hootConfig.userEmail;
-        d3.json('/hoot-services/job/export/execute')
-        .post(data, function (error, data) {
-            if (error){
-                iD.ui.Alert('Export job failed! For detailed log goto Manage->Log','error',new Error().stack);
-                return error;
-            }
-            return data;
-        });
-    };
-
     rest.getConflationCustomOpts = function(confType,callback){
         // Doing the stacked load to prevent race condition in loading data
         var request = d3.json('/hoot-services/info/advancedopts/getoptions?conftype=custom');
