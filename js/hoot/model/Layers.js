@@ -235,7 +235,11 @@ Hoot.model.layers = function (context)
                 }
 
                 // zoom and render
-                context.zoomToExtent(resp.minlon, resp.minlat, resp.maxlon, resp.maxlat);
+                // if a gpx task grid isn't present
+                var hash = iD.behavior.Hash(context);
+                hash();
+                if (!hash.gpx)
+                    context.zoomToExtent(resp.minlon, resp.minlat, resp.maxlon, resp.maxlat);
 
                 model_layers.addLayerAndCenter(key, callback, resp);
             }
@@ -287,11 +291,11 @@ Hoot.model.layers = function (context)
             {
                  if (!window.confirm('There are ' + matchingBookmarks.length + ' bookmarks attached to ' + params.dataset.name + ' that will be deleted as well.  Are you sure you want to continue?')) {
                     deleteDataset = false;
-                }               
+                }
 
             }
 
-            if(deleteDataset){  
+            if(deleteDataset){
                 d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + params.dataset.name)
                     .header('Content-Type', 'text/plain')
                     .post('', function (error, data) {
@@ -301,7 +305,7 @@ Hoot.model.layers = function (context)
                                 if (result.status !== 'running') {
                                     Hoot.model.REST.WarningHandler(result);
                                     clearInterval(statusTimer);
-    
+
                                     //update link
                                     var link={};
                                     link.folderId = 0;

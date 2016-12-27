@@ -659,6 +659,14 @@ Hoot.control.conflate = function (context,sidebar) {
           //to consistently work when pressing the second conflate button...if that can be resolved,
           //this check could go away
           newName = data[0].name.replace('OSM_API_DB_', '') + '_' + data[1].name;
+          //append the task id if driven from tasking manager
+          var hash = iD.behavior.Hash(context);
+          hash();
+          if (hash.gpx) {
+            var matches = hash.gpx.match(/\/task\/(\d+)/);
+            if (matches)
+              newName += '_task' + matches[1];
+          }
         }
         else
         {

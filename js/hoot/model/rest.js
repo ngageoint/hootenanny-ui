@@ -332,8 +332,8 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.poiMerge = function (data, callback) {
         d3.xml(window.location.protocol + '//' + window.location.hostname +
-               Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.p2pServerPort) +
-               '/p2pmerge')
+               Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.elementMergeServerPort) +
+               '/elementmerge')
            .post(data, function (error, resp) {
                if (error) {
                    _alertError(error, 'Poi merge failed.');
@@ -414,21 +414,6 @@ Hoot.model.REST = function (command, data, callback, option) {
                 return error;
             }
             rest.status(resp.jobid, callback);
-        });
-    };
-
-    rest.Export = function (data) {
-        if (!data.translation || !data.inputtype || !data.input || !data.outputtype) {
-            return false;
-        }
-        data.USER_EMAIL = iD.data.hootConfig.userEmail;
-        d3.json('/hoot-services/job/export/execute')
-        .post(data, function (error, data) {
-            if (error){
-                iD.ui.Alert('Export job failed! For detailed log goto Manage->Log','error',new Error().stack);
-                return error;
-            }
-            return data;
         });
     };
 
