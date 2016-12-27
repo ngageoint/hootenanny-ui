@@ -397,21 +397,19 @@ iD.Connection = function(context, useHttps) {
         })), function (c) {
             return c.type !== 'node';
         });
-        var newWays = _.filter(ways, function (a) {
-            return a.isNew();
-        });
+
         var vis = connection.visLayers();
         var go = true;
         var defaultmapid;
-        if (newWays.length && vis.length !== 1) {
+
+        if (vis.length === 1){
+            defaultmapid = vis[0];
+        } else {
             go = false;
         }
-        if (vis.length === 1) {
-            defaultmapid = vis[0];
-        }
+                
         if (!go) {
-            iD.ui.Alert('New way created with multiple layers visible. Turn off all layer but target layer.','notice');
-            return false;
+            return -999999;
         }
         var mapids = _.compact(_.unique(_.map(_.flatten(_.map(changes, function (a) {
             return a;
@@ -453,6 +451,10 @@ iD.Connection = function(context, useHttps) {
         var changesArr = connection.filterChangeset(changes);
         if (!changesArr) {
             callback(true);
+            return;
+        }
+        if (changesArr === -999999) {
+            callback({overwriteErrMsg:true,responseText:'New feature updated with multiple layers visible. Turn off all layer but target layer.'});
             return;
         }
         _.each(changesArr, function(a, b) {
