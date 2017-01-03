@@ -318,8 +318,6 @@ window.iD = function () {
         } else {
             changeTagsCallback(tcTags);
         }
-
-
     };
 
     /* Projection */
