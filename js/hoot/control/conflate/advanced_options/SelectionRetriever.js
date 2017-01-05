@@ -56,7 +56,7 @@ Hoot.control.conflate.advancedoptions.selectionretriever = function () {
                                     //Only take value if checkplus is true!
                                     var cplusEnabled = _getSelectedCheckValue(advform, submeta.defaultvalue === 'true', submeta.id);
                                     
-                                    if (cplusEnabled === true || cplusEnabled === "true"){
+                                    if (cplusEnabled === true || cplusEnabled === 'true'){
                                         _getCheckPlusValues(advform, submeta, results);
                                     }
                                 }
