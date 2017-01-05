@@ -95,14 +95,19 @@ Hoot.control.conflicts.actions.poimerge = function (context)
             var isPoiReview = true;
             if(rel){
                 isReview = rel.tags['hoot:review:needs'];
-                if(rel.members.length > 1){
-                    for(var i=0; i<rel.members.length; i++){
-                        var mem = rel.members[i];
-                        if(mem.type !== 'node'){
-                            isPoiReview = false;
-                            break;
-                        }
 
+                //Both POI-to-POI and POI-to-Polygon review features
+                //are poi reviews that can be merged.
+                if (rel.tags['hoot:review:type'] !== 'POI to Polygon') {
+                    if(rel.members.length > 1){
+                        for(var i=0; i<rel.members.length; i++){
+                            var mem = rel.members[i];
+                            if(mem.type !== 'node'){
+                                isPoiReview = false;
+                                break;
+                            }
+
+                        }
                     }
                 }
             }

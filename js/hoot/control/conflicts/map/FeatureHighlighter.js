@@ -35,8 +35,14 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         if(raitem){
             againstFeature = context.hasEntity(raitem.id);
         }
-        //Merge currently only works on nodes
-        if ((feature && againstFeature) && (feature.id.charAt(0) === 'n' && againstFeature.id.charAt(0) === 'n')) {
+
+        var currentReviewable = _parent().actions.traversereview.getCurrentReviewable();
+        var relId = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
+        var relation = context.entity(relId);
+
+        //Both POI-to-POI and POI-to-Polygon review features
+        //are poi reviews that can be merged.
+        if ((relation.tags['hoot:review:type'] === 'POI to Polygon') || ((feature && againstFeature) && (feature.id.charAt(0) === 'n' && againstFeature.id.charAt(0) === 'n'))) {
             //Show merge button
             d3.select('a.merge').classed('hide', false);
             //Override with current pair of review features
@@ -89,10 +95,6 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
                 .classed('tag-hoot activeReviewFeature2', true);
 
         }
-
-        var currentReviewable = _parent().actions.traversereview.getCurrentReviewable();
-        var relId = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
-        var relation = context.entity(relId);
 
         _parent().info.reviewtable.buildPoiTable(poiTableCols, currentReviewable);
 
