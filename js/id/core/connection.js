@@ -402,12 +402,12 @@ iD.Connection = function(context, useHttps) {
         var go = true;
         var defaultmapid;
 
-        if (vis.length === 1){
+        if (vis.length === 1 || changes.created.length === 0){
             defaultmapid = vis[0];
         } else {
             go = false;
         }
-                
+
         if (!go) {
             return -999999;
         }
