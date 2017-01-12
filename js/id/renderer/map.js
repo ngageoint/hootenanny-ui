@@ -177,16 +177,14 @@ iD.Map = function(context) {
                 filter = function(d) { return set.has(d.id); };
 
             } else {
-                //Need to document why this was added for Hoot
+                //Seems to filter out the hidden source layer features
                 all=_.filter(all, function(a) { return !_.contains(hidden, a.mapId); });
                 data = all;
                 filter = d3.functor(true);
             }
         }
 
-        //Disable autoHidden feature filtering when in review mode
-        if (!(context.hoot().control.conflicts && context.hoot().control.conflicts.reviewIds))
-            data = features.filter(data, graph);
+        data = features.filter(data, graph);
 
         d3.selectAll('.vertex').remove();
         //d3.selectAll('.shadow').remove();
@@ -348,7 +346,7 @@ iD.Map = function(context) {
             });
         }
         if(!draggableBubbles.empty())        {
-            _.each(draggableBubbles[0],function(b){                
+            _.each(draggableBubbles[0],function(b){
                 var loc = d3.select(b).attr('loc').split(/,/).map(parseFloat);
                 var c = context.projection(loc);
                 var transform = 'translate('.concat(c[0],',',c[1],')');
