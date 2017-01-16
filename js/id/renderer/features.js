@@ -66,7 +66,7 @@ iD.Features = function(context) {
             defaultMax: (max || Infinity),
             enable: function() { this.enabled = true; this.currentMax = this.defaultMax; },
             disable: function() { this.enabled = false; this.currentMax = 0; },
-            hidden: function() { return !context.editable() || this.count > this.currentMax * _cullFactor; },
+            hidden: function() { return !context.editable() || this.count > this.currentMax * _cullFactor;},
             autoHidden: function() { return this.hidden() && this.currentMax > 0; }
         };
     }
@@ -413,6 +413,13 @@ iD.Features = function(context) {
             var entity = d[i];
             if (!features.isHidden(entity, resolver, entity.geometry(resolver))) {
                 result.push(entity);
+            } else {
+                if (context.hoot().control.conflicts && context.hoot().control.conflicts.reviewIds) {
+                    if (_.contains(context.hoot().control.conflicts.reviewIds, entity.id)) {
+                        //review id features aren't in data so add them
+                        result.push(entity);
+                    }
+                }
             }
         }
         return result;
