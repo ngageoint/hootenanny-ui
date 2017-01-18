@@ -174,11 +174,25 @@ Hoot.view.utilities = function (context){
 
         labelContainer.append('div')
         .attr('href', '#version')
-        .classed('inline dark strong hoot_label cursor pad2', true)
+        .append('img')
+        .classed('col1 cursor', true)
+        .attr('src', 'img/hoot_logo_icon.png')
+        .attr('height', '60px');
+        labelContainer.append('div')
+        .classed('inline dark strong hoot_label cursor col2', true)
         .html('Hootenanny')
         .on('click', function (){
              context.hoot().view.versioninfo.showPopup();
         });
+
+
+        // labelContainer.append('div')
+        // .attr('href', '#version')
+        // .classed('inline dark strong hoot_label cursor pad2', true)
+        // .html('Hootenanny')
+        // .on('click', function (){
+        //      context.hoot().view.versioninfo.showPopup();
+        // });
 
         // labelContainer.append('img')
         // .attr('src', 'img/about_white.svg')
