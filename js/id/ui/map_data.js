@@ -525,25 +525,6 @@ iD.ui.MapData = function(context) {
         hEditedLabel.append('span')
             .text(t('highlight-edited.title'));
 
-        var hSnapContainer = content.append('div')
-            .attr('class', 'enable-snap')
-            .style('display', 'none');
-        var hSnapItem = hSnapContainer.append('ul')
-            .attr('class', 'layer-list')
-            .append('li');
-        var hSnapLabel = hSnapItem.append('label')
-            .call(bootstrap.tooltip()
-                .title(t('enable-snap.tooltip'))
-                .placement('top'));
-        hSnapLabel.append('input')
-            .attr('type', 'checkbox')
-            .property('checked',false)
-            .on('click', function() {
-                context.map().updateSnapFeatures();
-            });
-        hSnapLabel.append('span')
-            .text(t('enable-snap.title'));                     
-
         setFill(fillDefault);
 
         var keybinding = d3.keybinding('features')

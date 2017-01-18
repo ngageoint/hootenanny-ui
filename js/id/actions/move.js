@@ -174,31 +174,31 @@ iD.actions.Move = function(moveIds, tryDelta, projection, cache) {
             loc;
 
         // snap vertex to nearest edge (or some point between them)..
-        if (!isEP1 && !isEP2) {
-            var epsilon = 1e-4, maxIter = 10;
-            for (var i = 0; i < maxIter; i++) {
-                loc = iD.geo.interp(edge1.loc, edge2.loc, 0.5);
-                edge1 = iD.geo.chooseEdge(nodes1, projection(loc), projection);
-                edge2 = iD.geo.chooseEdge(nodes2, projection(loc), projection);
-                if (Math.abs(edge1.distance - edge2.distance) < epsilon) break;
-            }
-        } else if (!isEP1) {
-            loc = edge1.loc;
-        } else {
-            loc = edge2.loc;
-        }
+        // if (!isEP1 && !isEP2) {
+        //     var epsilon = 1e-4, maxIter = 10;
+        //     for (var i = 0; i < maxIter; i++) {
+        //         loc = iD.geo.interp(edge1.loc, edge2.loc, 0.5);
+        //         edge1 = iD.geo.chooseEdge(nodes1, projection(loc), projection);
+        //         edge2 = iD.geo.chooseEdge(nodes2, projection(loc), projection);
+        //         if (Math.abs(edge1.distance - edge2.distance) < epsilon) break;
+        //     }
+        // } else if (!isEP1) {
+        //     loc = edge1.loc;
+        // } else {
+        //     loc = edge2.loc;
+        // }
 
-        graph = graph.replace(vertex.move(loc));
+        // graph = graph.replace(vertex.move(loc));
 
-        // if zorro happened, reorder nodes..
-        if (!isEP1 && edge1.index !== way1.nodes.indexOf(vertex.id)) {
-            way1 = way1.removeNode(vertex.id).addNode(vertex.id, edge1.index);
-            graph = graph.replace(way1);
-        }
-        if (!isEP2 && edge2.index !== way2.nodes.indexOf(vertex.id)) {
-            way2 = way2.removeNode(vertex.id).addNode(vertex.id, edge2.index);
-            graph = graph.replace(way2);
-        }
+        // // if zorro happened, reorder nodes..
+        // if (!isEP1 && edge1.index !== way1.nodes.indexOf(vertex.id)) {
+        //     way1 = way1.removeNode(vertex.id).addNode(vertex.id, edge1.index);
+        //     graph = graph.replace(way1);
+        // }
+        // if (!isEP2 && edge2.index !== way2.nodes.indexOf(vertex.id)) {
+        //     way2 = way2.removeNode(vertex.id).addNode(vertex.id, edge2.index);
+        //     graph = graph.replace(way2);
+        // }
 
         return graph;
     }

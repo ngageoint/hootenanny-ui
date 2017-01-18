@@ -106,11 +106,8 @@ iD.modes.DragNode = function(context) {
         if (d.type === 'node' && d.id !== entity.id) {
             loc = d.loc;
         } else if (d.type === 'way' && !d3.select(d3.event.sourceEvent.target).classed('fill')) {
-            if(context.enableSnap){
                 loc = iD.geo.chooseEdge(context.childNodes(d), context.mouse(), context.projection).loc;
-            } else {
-                loc = context.map().mouseCoordinates();
-            }
+
         }
 
         context.replace(
@@ -124,16 +121,10 @@ iD.modes.DragNode = function(context) {
         var d = datum();
 
         if (d.type === 'way') {
-            if(context.enableSnap){
-                var choice = iD.geo.chooseEdge(context.childNodes(d), context.mouse(), context.projection);
-                context.replace(
-                    iD.actions.AddMidpoint({ loc: choice.loc, edge: [d.nodes[choice.index - 1], d.nodes[choice.index]] }, entity),
-                    connectAnnotation(d));
-            } else {
-                context.replace(
-                        iD.actions.Noop(),
-                        moveAnnotation(entity));
-            }
+            var choice = iD.geo.chooseEdge(context.childNodes(d), context.mouse(), context.projection);
+            context.replace(
+                iD.actions.AddMidpoint({ loc: choice.loc, edge: [d.nodes[choice.index - 1], d.nodes[choice.index]] }, entity),
+                connectAnnotation(d));
 
 
         } else if (d.type === 'node' && d.id !== entity.id) {

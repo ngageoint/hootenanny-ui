@@ -744,6 +744,7 @@ en:
       Shift + Left mouse click  | Selects multiple features geometry/tags within layer
       Shift + r  | Switches b/w layers during post-conflation conflict review
       Shift + t  | Switches b/w layers during post-conflation conflict review
+      Alt (hold) | Disables snapping when drawing a line
       Alt + i  | Open Image Carousel
       Alt + n  | Toggles layer visibility on/off
       +  | Zoom in 1 level
