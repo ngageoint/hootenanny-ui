@@ -204,10 +204,11 @@ Hoot.model.layers = function (context)
 
     model_layers.addLayerAndCenter = function (key, callback, extent) {
         var name = key.name;
-        var mapId = key.id || model_layers.getmapIdByName(name) || 155;
+        var mapId = key.id || model_layers.getmapIdByName(name).toString() || 155;
         if (layers[name]){return false;}
 
         key.mapId = mapId;
+        key.id = mapId;
         if(extent){
             key.extent = extent;
         }

@@ -108,7 +108,8 @@ iD.svg.TagClasses = function(context) {
                 }
                 if (lyr && lyr.merged) {
                     var id;
-                    switch(parseInt(t['hoot:status'])) {
+                    var sourceid = parseInt(t['hoot:status']);
+                    switch(sourceid) {
                     case 1:
                     case 2:
                         id = context.hoot().model.conflicts.getSourceLayerId(entity);
@@ -119,7 +120,7 @@ iD.svg.TagClasses = function(context) {
                         id = lyr.mapId;
                         break;
                     }
-                    classes += ' tag-hoot-' + id;
+                    classes += ' tag-hoot-' + (id || sourceid);
                 } else {
                     classes += ' tag-hoot-'+lyrid.toString();
                 }

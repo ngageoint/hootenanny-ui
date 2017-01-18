@@ -228,6 +228,10 @@ div.tag-table {
     table-layout: auto;
     margin-bottom: 0px;
     width: auto;
+    background: transparent;
+}
+tr {
+    border-bottom: 1px solid #FFF;
 }
 td.key {
     background: rgba(255, 255, 255, 0.5);

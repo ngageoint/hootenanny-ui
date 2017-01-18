@@ -180,12 +180,16 @@ iD.modes.Save = function(context) {
                         if (err) {
                             var isReviewing = context.hoot().control.conflicts.isConflictReviewExist();
                             var errMsg = err.responseText;
-                            errMsg += ' (The feature may have been deleted by other ' +
-                                'user and may require reloading of the layer.';
-                            if(isReviewing === true){
-                                errMsg += ' Will jump to next valid review item';
+                            
+                            if(!err.overwriteErrMsg){
+                                errMsg += ' (The feature may have been deleted by other ' +
+                                    'user and may require reloading of the layer.';
+                                if(isReviewing === true){
+                                    errMsg += ' Will jump to next valid review item';
+                                }
+                                errMsg += ')';
                             }
-                            errMsg += ')';
+                            
                             errors.push({
                                 msg: errMsg,
                                 details: [ t('save.status_code', { code: err.status }) ]

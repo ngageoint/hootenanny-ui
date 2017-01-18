@@ -309,17 +309,14 @@ window.iD = function () {
     //Translation
 
     var translateCopyTags = function(tcTags) {
-        var translatedTags = {};
         var entity = context.entity(context.selectedIDs()[0]);
         if (context.translationserver().activeTranslation() !== 'OSM' && !_.isEmpty(tcTags)) {
             context.translationserver().translateToOsm(tcTags, entity, false, function(resp){
-                translatedTags = changeTagsCallback(resp);
+                changeTagsCallback(resp);
             });
         } else {
-            translatedTags = changeTagsCallback(tcTags);
+            changeTagsCallback(tcTags);
         }
-
-
     };
 
     /* Projection */

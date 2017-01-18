@@ -66,7 +66,9 @@ Hoot.control.conflicts.map.reviewarrowrenderer = function (context)
 
             return;
         }
-        var coord = [ _againstFeature.loc, _feature.loc];
+        var pt1 = d3.geo.centroid(_againstFeature.asGeoJSON(context.graph()));
+        var pt2 = d3.geo.centroid(_feature.asGeoJSON(context.graph()));
+        var coord = [pt1, pt2];
         if (mode === 'reverse') coord = coord.reverse();
         var gj = {
             'type': 'LineString',

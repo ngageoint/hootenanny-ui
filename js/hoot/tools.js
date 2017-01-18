@@ -584,8 +584,8 @@ Hoot.tools = function (context) {
                                         curLayer.layers = [input1Name, input2Name];
                                         curLayer.unloaded = [input1unloaded, input2unloaded];
 
-                                        if(input1unloaded){context.hoot().changeColor(input1unloaded, 'violet');}
-                                        if(input2unloaded){context.hoot().changeColor(input2unloaded, 'orange');}
+                                        context.hoot().changeColor(input1unloaded || 1, 'violet');
+                                        context.hoot().changeColor(input2unloaded || 2, 'orange');
 
                                         if((input1 && input1Name) && (input2 && input2Name)){
                                             var key = {

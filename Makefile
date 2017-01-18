@@ -93,7 +93,57 @@ dist/iD.js: \
 	js/id/end.js \
 	js/lib/locale.js \
 	data/introGraph.js \
-	js/id/ui/schema_switcher.js
+	js/id/ui/schema_switcher.js \
+	js/hoot/Hoot.js \
+	js/hoot/tools.js \
+	js/hoot/Ui.js \
+	js/hoot/lib/FileSaver.js \
+	js/hoot/model/Model.js \
+	js/hoot/model/Export.js \
+	js/hoot/model/Import.js \
+	js/hoot/model/Layers.js \
+	js/hoot/model/Conflicts.js \
+	js/hoot/model/Conflate.js \
+	js/hoot/model/BasemapDataset.js \
+	js/hoot/model/rest.js \
+	js/hoot/model/Folders.js \
+	js/hoot/view/View.js \
+	js/hoot/view/VersionInfo.js \
+	js/hoot/view/utilities/Utilities.js \
+	js/hoot/view/utilities/Dataset.js \
+	js/hoot/view/utilities/WfsDataset.js \
+	js/hoot/view/utilities/BasemapDataset.js \
+	js/hoot/view/utilities/Translation.js \
+	js/hoot/view/utilities/ErrorLog.js \
+	js/hoot/view/utilities/Reports.js \
+	js/hoot/view/utilities/About.js \
+	js/hoot/view/utilities/ReviewBookmarks.js \
+	js/hoot/view/utilities/ReviewBookmarkNotes.js \
+	js/hoot/ui/FormFactory.js \
+	js/hoot/ui/HootFormBase.js \
+	js/hoot/ui/HootFormReviewNote.js \
+	js/hoot/control/Control.js \
+	js/hoot/control/Conflate.js \
+	js/hoot/control/Import.js \
+	js/hoot/control/Export.js \
+	js/hoot/control/View.js \
+	js/hoot/control/Conflicts.js \
+	js/hoot/control/translation_assistant.js \
+	js/hoot/control/utilities/Utilities.js \
+	js/hoot/control/utilities/Translation.js \
+	js/hoot/control/utilities/BasemapDataset.js \
+	js/hoot/control/utilities/WfsDataset.js \
+	js/hoot/control/utilities/Reports.js \
+	js/hoot/control/utilities/Folder.js \
+	js/hoot/control/utilities/Validation.js \
+	js/hoot/control/utilities/Filter.js \
+	js/hoot/control/utilities/ExportDataset.js \
+	js/hoot/control/utilities/BulkModifyDataset.js \
+	js/hoot/control/utilities/ModifyDataset.js \
+	js/hoot/control/utilities/ImportDataset.js \
+	js/hoot/control/utilities/BulkImportDataset.js \
+	js/hoot/control/utilities/ImportDirectory.js \
+	js/hoot/control/utilities/ClipDataset.js
 
 .INTERMEDIATE dist/iD.js: data/data.js
 
