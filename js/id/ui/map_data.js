@@ -477,7 +477,6 @@ iD.ui.MapData = function(context) {
                 var exp = d3.select(this).classed('expanded');
                 featureContainer.style('display', exp ? 'none' : 'block');
                 hEditedContainer.style('display', exp ? 'none' : 'block');
-                hSnapContainer.style('display', exp ? 'none' : 'block');
                 d3.select(this).classed('expanded', !exp);
                 d3.event.preventDefault();
             });
