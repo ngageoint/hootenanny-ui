@@ -514,6 +514,10 @@ table.map-metadata {
   height: 20px;
   line-height:20px;
   color: white;
+  padding-top: 20px;
+  padding-left: 5px;
+  font-size: 20px;
+  letter-spacing: -1px;
 }
 
 /*Divider in label*/
