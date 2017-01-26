@@ -161,6 +161,17 @@ input.round        { border-radius:4px; }
  }
 
 
+.hoot-logo {
+    background: url(img/logo/hoot_logo_update.png);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: contain;
+    vertical-align: middle;
+    height: 60px;
+    margin-left: 10px;
+}
+
+
 
 .rcon.sprocket:after, ._icon.sprocket:before                   { background-position:0 0; }
 .rcon.big.sprocket:after, ._icon.big.sprocket:before           { background-position:0 -20px; }

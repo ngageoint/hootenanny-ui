@@ -173,10 +173,9 @@ Hoot.view.utilities = function (context){
         var labelContainer = header.append('div');
 
         labelContainer.append('div')
-        .classed('point', true)
+        .classed('point hoot-logo', true)
         .attr('href', '#version')
         .append('img')
-        .attr('src', context.asset('dist/img/logo/hoot_logo_update.png'))
         .attr('height', '60px')
         .on('click', function (){
              context.hoot().view.versioninfo.showPopup();
