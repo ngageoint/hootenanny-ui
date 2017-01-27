@@ -174,7 +174,7 @@ Hoot.view.utilities = function (context){
 
         labelContainer.append('div')
         .attr('href', '#version')
-        .classed('point hoot-logo', true)
+        .classed('point hoot_label', true)
         .attr('height', '60px')
         .on('click', function (){
              context.hoot().view.versioninfo.showPopup();
