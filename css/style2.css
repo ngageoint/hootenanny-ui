@@ -161,7 +161,7 @@ input.round        { border-radius:4px; }
  }
 
 
-.hoot-logo {
+.hoot_label {
     background: url(img/logo/hoot_logo_update.png);
     background-repeat: no-repeat;
     background-position: 0 0;
@@ -521,7 +521,8 @@ table.map-metadata {
 }
 
 /*Hootenanny label*/
-.hoot_label{
+/* got rid of this when we added the new logo
+/*.hoot_label{
   height: 20px;
   line-height:20px;
   color: white;
@@ -529,7 +530,7 @@ table.map-metadata {
   padding-left: 5px;
   font-size: 20px;
   letter-spacing: -1px;
-}
+}*/
 
 /*Divider in label*/
 .divider{
