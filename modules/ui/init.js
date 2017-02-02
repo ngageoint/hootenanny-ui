@@ -14,7 +14,6 @@ import { uiBackground } from './background';
 import { uiContributors } from './contributors';
 import { uiFeatureInfo } from './feature_info';
 import { uiFullScreen } from './full_screen';
-import { uiGeolocate } from './geolocate';
 import { uiHelp } from './help';
 import { uiInfo } from './info';
 import { uiLoading } from './loading';
@@ -122,11 +121,6 @@ export function uiInit(context) {
             .append('div')
             .attr('class', 'map-control zoombuttons')
             .call(uiZoom(context));
-
-        controls
-            .append('div')
-            .attr('class', 'map-control geolocate-control')
-            .call(uiGeolocate(context));
 
         controls
             .append('div')

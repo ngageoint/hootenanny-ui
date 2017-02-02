@@ -3942,25 +3942,6 @@ div.full-screen > button:hover {
 }
 
 
-/* Geolocator */
-
-.geolocate-control {
-    margin-bottom: 10px;
-}
-
-.geolocate-control button {
-    border-radius: 0 0 0 4px;
-}
-
-.map-overlay.content {
-    position: fixed;
-    top:60px;
-    bottom: 30px;
-    padding: 20px 50px 20px 20px;
-    right: 0;
-    overflow: auto;
-}
-
 /* Help */
 
 .help-control button {
@@ -5353,8 +5334,7 @@ img.tile-removing {
   border-radius: 0 4px 0 0;
 }
 
-[dir='rtl'] .help-control button,
-[dir='rtl'] .geolocate-control button {
+[dir='rtl'] .help-control button {
   border-radius: 0 0 4px 0;
 }
 

@@ -14,7 +14,6 @@ export { uiFeatureInfo } from './feature_info';
 export { uiFeatureList } from './feature_list';
 export { uiFlash } from './flash';
 export { uiFullScreen } from './full_screen';
-export { uiGeolocate } from './geolocate';
 export { uiHelp } from './help';
 export { uiInfo } from './info';
 export { uiInspector } from './inspector';

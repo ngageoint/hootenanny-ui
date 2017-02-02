@@ -224,22 +224,6 @@ export function uiMapData(context) {
                 })
                 .call(svgIcon('#icon-search'));
 
-            enter
-                .append('button')
-                .attr('class', 'list-item-gpx-browse')
-                .call(tooltip()
-                    .title(t('gpx.browse'))
-                    .placement((textDirection === 'rtl') ? 'right' : 'left'))
-                .on('click', function() {
-                    d3.select(document.createElement('input'))
-                        .attr('type', 'file')
-                        .on('change', function() {
-                            gpx.files(d3.event.target.files);
-                        })
-                        .node().click();
-                })
-                .call(svgIcon('#icon-geolocate'));
-
             var labelGpx = enter
                 .append('label')
                 .call(tooltip().title(t('gpx.drag_drop')).placement('top'));
