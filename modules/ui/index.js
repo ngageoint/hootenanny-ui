@@ -8,6 +8,7 @@ export { uiCommit } from './commit';
 export { uiConfirm } from './confirm';
 export { uiConflicts } from './conflicts';
 export { uiContributors } from './contributors';
+export { uiCoordinates } from './coordinates';
 export { uiDisclosure } from './disclosure';
 export { uiEntityEditor } from './entity_editor';
 export { uiFeatureInfo } from './feature_info';
