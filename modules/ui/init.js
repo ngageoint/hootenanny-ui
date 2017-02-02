@@ -172,46 +172,6 @@ export function uiInit(context) {
             aboutList.call(uiAccount(context));
         }
 
-        aboutList
-            .append('li')
-            .append('a')
-            .attr('target', '_blank')
-            .attr('tabindex', -1)
-            .attr('href', 'https://github.com/openstreetmap/iD')
-            .text(context.version);
-
-        var issueLinks = aboutList
-            .append('li');
-
-        issueLinks
-            .append('a')
-            .attr('target', '_blank')
-            .attr('tabindex', -1)
-            .attr('href', 'https://github.com/openstreetmap/iD/issues')
-            .call(svgIcon('#icon-bug', 'light'))
-            .call(tooltip().title(t('report_a_bug')).placement('top'));
-
-        issueLinks
-            .append('a')
-            .attr('target', '_blank')
-            .attr('tabindex', -1)
-            .attr('href', 'https://github.com/openstreetmap/iD/blob/master/CONTRIBUTING.md#translating')
-            .call(svgIcon('#icon-translate', 'light'))
-            .call(tooltip().title(t('help_translate')).placement('top'));
-
-        aboutList
-            .append('li')
-            .attr('class', 'feature-warning')
-            .attr('tabindex', -1)
-            .call(uiFeatureInfo(context));
-
-        aboutList
-            .append('li')
-            .attr('class', 'user-list')
-            .attr('tabindex', -1)
-            .call(uiContributors(context));
-
-
         window.onbeforeunload = function() {
             return context.save();
         };

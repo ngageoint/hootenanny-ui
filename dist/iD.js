@@ -64543,46 +64543,6 @@ function uiInit(context) {
             aboutList.call(uiAccount(context));
         }
 
-        aboutList
-            .append('li')
-            .append('a')
-            .attr('target', '_blank')
-            .attr('tabindex', -1)
-            .attr('href', 'https://github.com/openstreetmap/iD')
-            .text(context.version);
-
-        var issueLinks = aboutList
-            .append('li');
-
-        issueLinks
-            .append('a')
-            .attr('target', '_blank')
-            .attr('tabindex', -1)
-            .attr('href', 'https://github.com/openstreetmap/iD/issues')
-            .call(svgIcon('#icon-bug', 'light'))
-            .call(tooltip().title(t('report_a_bug')).placement('top'));
-
-        issueLinks
-            .append('a')
-            .attr('target', '_blank')
-            .attr('tabindex', -1)
-            .attr('href', 'https://github.com/openstreetmap/iD/blob/master/CONTRIBUTING.md#translating')
-            .call(svgIcon('#icon-translate', 'light'))
-            .call(tooltip().title(t('help_translate')).placement('top'));
-
-        aboutList
-            .append('li')
-            .attr('class', 'feature-warning')
-            .attr('tabindex', -1)
-            .call(uiFeatureInfo(context));
-
-        aboutList
-            .append('li')
-            .attr('class', 'user-list')
-            .attr('tabindex', -1)
-            .call(uiContributors(context));
-
-
         window.onbeforeunload = function() {
             return context.save();
         };
@@ -65584,51 +65544,6 @@ function uiSelectionList(context, selectedIDs) {
     }
 
     return selectionList;
-}
-
-function uiSourceSwitch(context) {
-    var keys$$1;
-
-
-    function click() {
-        event.preventDefault();
-
-        if (context.history().hasChanges() &&
-            !window.confirm(t('source_switch.lose_changes'))) return;
-
-        var live = select(this)
-            .classed('live');
-
-        context.connection()
-            .switch(live ? keys$$1[1] : keys$$1[0]);
-
-        context.enter(modeBrowse$$1(context));
-        context.flush();
-
-        select(this)
-            .text(live ? t('source_switch.dev') : t('source_switch.live'))
-            .classed('live', !live);
-    }
-
-    var sourceSwitch = function(selection$$1) {
-        selection$$1
-            .append('a')
-            .attr('href', '#')
-            .text(t('source_switch.live'))
-            .classed('live', true)
-            .attr('tabindex', -1)
-            .on('click', click);
-    };
-
-
-    sourceSwitch.keys = function(_) {
-        if (!arguments.length) return keys$$1;
-        keys$$1 = _;
-        return sourceSwitch;
-    };
-
-
-    return sourceSwitch;
 }
 
 function uiSuccess(context) {
@@ -70228,7 +70143,6 @@ var iD = Object.freeze({
 	uiScale: uiScale,
 	uiSelectionList: uiSelectionList,
 	uiSidebar: uiSidebar,
-	uiSourceSwitch: uiSourceSwitch,
 	uiSpinner: uiSpinner,
 	uiSplash: uiSplash,
 	uiStatus: uiStatus,

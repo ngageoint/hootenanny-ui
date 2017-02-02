@@ -37,7 +37,6 @@ export { uiSave } from './save';
 export { uiScale } from './scale';
 export { uiSelectionList } from './selection_list';
 export { uiSidebar } from './sidebar';
-export { uiSourceSwitch } from './source_switch';
 export { uiSpinner } from './spinner';
 export { uiSplash } from './splash';
 export { uiStatus } from './status';
