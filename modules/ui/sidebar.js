@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { uiFeatureList } from './feature_list';
 import { uiInspector } from './inspector';
 import { uiNotice } from './notice';
+import { uiLayerMenu } from './layer_menu';
 
 
 export function uiSidebar(context) {
@@ -17,6 +18,9 @@ export function uiSidebar(context) {
 
         selection
             .call(uiNotice(context));
+
+        selection
+            .call(uiLayerMenu(context));
 
         var inspectorWrap = selection
             .append('div')
