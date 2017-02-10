@@ -64,14 +64,9 @@ iD.behavior.Draw = function(context) {
     function click() {
         var d = datum();
         if (d.type === 'way') {
-            if(context.enableSnap){
                 var choice = iD.geo.chooseEdge(context.childNodes(d), context.mouse(), context.projection),
                 edge = [d.nodes[choice.index - 1], d.nodes[choice.index]];
                 event.clickWay(choice.loc, edge);
-            } else {
-                event.click(context.map().mouseCoordinates());
-            }
-
         } else if (d.type === 'node') {
             event.clickNode(d);
 

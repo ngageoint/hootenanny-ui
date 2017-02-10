@@ -73,10 +73,6 @@ iD.ui.Modes = function(context) {
 
         modes.forEach(function(m) {
             keybinding.on(m.key, function() { if (editable()) {
-                /*if(m.button === 'line' || m.button === 'area'){
-                    var r = window.confirm('Enable line snap?\nPress OK to enable else Cancel.');
-                    context.enableSnap = r;
-                }*/
                 context.enter(m);
                 }
             });
