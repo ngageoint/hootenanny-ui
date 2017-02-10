@@ -7,6 +7,7 @@ import { utilDetect } from '../util/detect';
 import { geoExtent } from '../geo/index';
 import { svgIcon } from '../svg/index';
 import { utilQsString } from '../util/index';
+import { services } from '../services/index';
 
 var dispatch = d3.dispatch('loadedImages', 'loadedSigns'),
     layers = {};
@@ -29,9 +30,6 @@ function getAvailLayers(callback){
     });
 }
 
-function loadData(key){
-    
-}
 
 export default {
 
@@ -43,7 +41,7 @@ export default {
     reset: function() {
         userDetails = undefined;
         rateLimitError = undefined;
-        _.forEach(inflight, abortRequest);
+        /*_.forEach(inflight, abortRequest);*/
         loadedTiles = {};
         inflight = {};
         return this;
@@ -64,6 +62,6 @@ export default {
         if (lyr === ''){return;}
 
         var key = layers.layers.filter(function(d){return d.name===lyr}).pop();
-        loadData(key);        
+        services.osm.loadData(key);
     }
 };

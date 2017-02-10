@@ -16,6 +16,7 @@ var dispatch = d3.dispatch('authLoading', 'authDone', 'change', 'loading', 'load
     blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'],
     inflight = {},
     loadedTiles = {},
+    loadedData = {}, // added for Hootenanny
     tileZoom = 16,
     oauth = osmAuth({
         url: urlroot,
@@ -473,7 +474,6 @@ export default {
         return this;
     },
 
-
     loadTiles: function(projection, dimensions, callback) {
         if (off) return;
 
@@ -485,6 +485,17 @@ export default {
                 s / 2 - projection.translate()[0],
                 s / 2 - projection.translate()[1]
             ];
+
+        // Load from visible layers only
+        var visLayers = _.filter(loadedData, function (layer) {
+            return layer.vis;
+        });
+
+        // Get map ids of visible layers
+        var mapidArr = _.map(loadedData, function (layer) {
+            return layer.mapId;
+        });
+
 
         var tiles = d3geoTile()
             .scaleExtent([tileZoom, tileZoom])
@@ -502,6 +513,31 @@ export default {
                         projection.invert([x + ts, y]))
                 };
             });
+
+        /*var tiles = _.map(visLayers, function (layer) {
+            var _tiles = d3.geo.tile()
+                .scaleExtent([tileZoom, tileZoom])
+                .scale(s)
+                .size(dimensions)
+                .translate(projection.translate())()
+                .map(function (tile) {
+                    var x = tile[0] * ts - origin[0],
+                        y = tile[1] * ts - origin[1];
+
+                    return {
+                        id: tile.toString() + ',' + layer.mapId,
+                        extent: iD.geo.Extent(
+                            projection.invert([x, y + ts]),
+                            projection.invert([x + ts, y])),
+                            mapId: layer.mapId,
+                            layerName: layer.name
+                    };
+                });
+            return _tiles;
+        });*/
+
+        // transform multiple arrays into single so we can process
+        tiles = _.flatten(tiles);
 
         _.filter(inflight, function(v, i) {
             var wanted = _.find(tiles, function(tile) {
@@ -521,7 +557,7 @@ export default {
             }
 
             inflight[id] = that.loadFromAPI(
-                '/api/0.6/map?bbox=' + tile.extent.toParam(),
+                '/api/0.6/map?mapId=698&bbox=' + tile.extent.toParam(),
                 function(err, parsed) {
                     delete inflight[id];
                     if (!err) {
@@ -584,5 +620,16 @@ export default {
             if (callback) callback(err, res);
         }
         return oauth.authenticate(done);
+    },
+
+    /* Added for Hootenanny */
+    loadData: function(options) {
+        var mapid = options.id;
+        loadedData[mapid] = options;
+        loadedData[mapid].vis = true;
+    },
+
+    loadedData: function(){
+        return loadedData;
     }
 };
