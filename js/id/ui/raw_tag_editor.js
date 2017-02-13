@@ -189,7 +189,7 @@ iD.ui.RawTagEditor = function(context) {
             .each(function(d){
                 if(!_.isEmpty(_.filter(protectedKeys,function(item){return d.key.indexOf(item) === 0;}))){
                     d3.select(this).attr('readonly',true);
-                    d3.select(this.parentNode).select('.combobox-caret').remove()
+                    d3.select(this.parentNode).select('.combobox-caret').remove();
                     d3.select(this).call(d3.combobox.off);
                 }
             });
