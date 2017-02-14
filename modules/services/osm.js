@@ -496,26 +496,8 @@ export default {
             return layer.mapId;
         });
 
-
-        var tiles = d3geoTile()
-            .scaleExtent([tileZoom, tileZoom])
-            .scale(s)
-            .size(dimensions)
-            .translate(projection.translate())()
-            .map(function(tile) {
-                var x = tile[0] * ts - origin[0],
-                    y = tile[1] * ts - origin[1];
-
-                return {
-                    id: tile.toString(),
-                    extent: geoExtent(
-                        projection.invert([x, y + ts]),
-                        projection.invert([x + ts, y]))
-                };
-            });
-
-        /*var tiles = _.map(visLayers, function (layer) {
-            var _tiles = d3.geo.tile()
+        var tiles = _.map(visLayers, function (layer) {
+            var _tiles = d3geoTile()
                 .scaleExtent([tileZoom, tileZoom])
                 .scale(s)
                 .size(dimensions)
@@ -525,16 +507,16 @@ export default {
                         y = tile[1] * ts - origin[1];
 
                     return {
-                        id: tile.toString() + ',' + layer.mapId,
-                        extent: iD.geo.Extent(
+                        id: tile.toString() + ',' + layer.id,
+                        extent: geoExtent(
                             projection.invert([x, y + ts]),
                             projection.invert([x + ts, y])),
-                            mapId: layer.mapId,
+                            mapId: layer.id,
                             layerName: layer.name
                     };
                 });
             return _tiles;
-        });*/
+        });
 
         // transform multiple arrays into single so we can process
         tiles = _.flatten(tiles);
@@ -557,7 +539,9 @@ export default {
             }
 
             inflight[id] = that.loadFromAPI(
-                '/api/0.6/map?mapId=698&bbox=' + tile.extent.toParam(),
+                that.bboxUrl(tile, tile.mapId, tile.layerName, 
+                    null, /*curLayer.extent*/
+                    false), /*totalNodesCnt > iD.data.hootConfig.maxnodescount*/
                 function(err, parsed) {
                     delete inflight[id];
                     if (!err) {
@@ -574,6 +558,34 @@ export default {
                 }
             );
         });
+    },
+
+    bboxUrl: function(tile, mapId, layerName, layerExt, showbbox){
+        if(!tile){
+            return '/api/0.6/bbox=' + tile.extent.toParam();
+        }
+
+        var ext = '';
+        if(showbbox){
+            //iD.data.hootConfig.hootMaxImportZoom = context.map().zoom();
+            if (layerExt) {
+                var layerZoomObj = _.find(layerZoomArray, function(a){
+                    return mapId === a.mapId;
+                });
+                if(layerZoomObj){
+                    layerZoomObj.zoomLevel = context.map().zoom();
+                } else {
+                    layerZoomObj = {};
+                    layerZoomObj.mapId = mapId;
+                    layerZoomObj.zoomLevel = context.map().zoom();
+                    layerZoomArray.push(layerZoomObj);
+                }
+                ext = '&extent=' + layerExt.maxlon + ',' + layerExt.maxlat +
+                ',' + layerExt.minlon + ',' + layerExt.minlat + '&autoextent=manual';
+            }
+        }
+
+        return '/api/0.6/map?mapId=' + mapId + '&bbox=' + tile.extent.toParam() + ext;
     },
 
 
