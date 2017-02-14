@@ -618,7 +618,7 @@ Hoot.control.conflate = function (context,sidebar) {
         ];
 
     };
-
+    
     /**
     * @desc Help function for new name generation
     * @param words -
@@ -755,7 +755,7 @@ Hoot.control.conflate = function (context,sidebar) {
                     var retval = '';
                     retval += '<div style="opacity: 1;"><label class="pad1x pad0y strong fill-light round-top keyline-bottom" style="opacity: 1; max-width: 90%; display: inline-block; width: 90%;">';
                     retval += field.label;
-                    retval += '</label><a id="confAdvOptsLnk" class="button pad1x pad0y strong fill-light round-top keyline-bottom" href="#" style="opacity: 1; max-width: 10%; display: inline-block;">►</a></div>';
+                    retval += '</label><span class="pad1x pad0y dark quiet fr fill-light round-top keyline-bottom" style="opacity: 1; display: inline-block; position: absolute; right: 60px;">Advanced Options</span><a id="confAdvOptsLnk" class="button pad1x pad0y strong fill-light round-top keyline-bottom" href="#" style="opacity: 1; max-width: 10%; display: inline-block; position: absolute;">►</a></div>';
                     return retval;
                 } else {
                     return '<label class="pad1x pad0y strong fill-light round-top keyline-bottom">' + field.label + '</label>';
