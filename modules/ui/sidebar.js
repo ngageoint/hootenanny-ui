@@ -16,16 +16,12 @@ export function uiSidebar(context) {
             .attr('class', 'feature-list-pane')
             .call(uiFeatureList(context));
 
-        selection
-            .call(uiNotice(context));
-
-        selection
-            .call(uiLayerMenu(context));
-
         var inspectorWrap = selection
             .append('div')
             .attr('class', 'inspector-hidden inspector-wrap fr');
 
+        selection
+            .call(uiLayerMenu(context));
 
         function hover(id) {
             if (!current && context.hasEntity(id)) {

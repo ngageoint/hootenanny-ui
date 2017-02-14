@@ -775,3 +775,6 @@ en:
       help: "You can replay this walkthrough or view more documentation by clicking the {button} Help button."
       save: "Don't forget to regularly save your changes!"
       start: "Start mapping!"
+  source_switch:
+      live: "OSM"
+      dev: "Hoot"

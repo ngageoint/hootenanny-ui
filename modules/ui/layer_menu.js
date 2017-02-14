@@ -33,7 +33,7 @@ export function uiLayerMenu(context) {
         var div = selection
             .append('div')
             .attr('id','add-dataset-pane')
-            .attr('class','notice');
+            .attr('class','add-dataset-pane');
 
         var _sidebarDiv = div.append('div')
             .classed('col12 pad2 sidebar',true)
