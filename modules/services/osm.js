@@ -7,6 +7,7 @@ import { geoExtent } from '../geo/index';
 import { osmEntity, osmNode, osmRelation, osmWay } from '../osm/index';
 import { utilDetect } from '../util/detect';
 import { utilRebind } from '../util/rebind';
+import { services } from '../services/index';
 
 
 var dispatch = d3.dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded'),
@@ -16,7 +17,6 @@ var dispatch = d3.dispatch('authLoading', 'authDone', 'change', 'loading', 'load
     blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'],
     inflight = {},
     loadedTiles = {},
-    loadedData = {}, // added for Hootenanny
     tileZoom = 16,
     oauth = osmAuth({
         url: urlroot,
@@ -152,6 +152,9 @@ function parse(xml) {
     return entities;
 }
 
+function getUrlRoot(path) {
+    return (path.indexOf('mapId') > -1) ? services.hoot.urlroot() : urlroot;
+}
 
 export default {
 
@@ -226,7 +229,7 @@ export default {
         if (this.authenticated()) {
             return oauth.xhr({ method: 'GET', path: path }, done);
         } else {
-            var url = urlroot + path;
+            var url = getUrlRoot(path) + path;
             return d3.xml(url).get(done);
         }
     },
@@ -487,13 +490,8 @@ export default {
             ];
 
         // Load from visible layers only
-        var visLayers = _.filter(loadedData, function (layer) {
+        var visLayers = _.filter(services.hoot.loadedData(), function (layer) {
             return layer.vis;
-        });
-
-        // Get map ids of visible layers
-        var mapidArr = _.map(loadedData, function (layer) {
-            return layer.mapId;
         });
 
         var tiles = _.map(visLayers, function (layer) {
@@ -509,10 +507,10 @@ export default {
                     return {
                         id: tile.toString() + ',' + layer.id,
                         extent: geoExtent(
-                            projection.invert([x, y + ts]),
-                            projection.invert([x + ts, y])),
-                            mapId: layer.id,
-                            layerName: layer.name
+                                    projection.invert([x, y + ts]),
+                                    projection.invert([x + ts, y])),
+                                mapId: layer.id,
+                                layerName: layer.name // even need?
                     };
                 });
             return _tiles;
@@ -539,7 +537,7 @@ export default {
             }
 
             inflight[id] = that.loadFromAPI(
-                that.bboxUrl(tile, tile.mapId, tile.layerName, 
+                that.bboxUrl(tile,
                     null, /*curLayer.extent*/
                     false), /*totalNodesCnt > iD.data.hootConfig.maxnodescount*/
                 function(err, parsed) {
@@ -560,9 +558,9 @@ export default {
         });
     },
 
-    bboxUrl: function(tile, mapId, layerName, layerExt, showbbox){
+    bboxUrl: function(tile, layerExt, showbbox){
         if(!tile){
-            return '/api/0.6/bbox=' + tile.extent.toParam();
+            return '/api/0.6/bbox=' + tile.extent.toParam(); //is this url valid?
         }
 
         var ext = '';
@@ -570,13 +568,13 @@ export default {
             //iD.data.hootConfig.hootMaxImportZoom = context.map().zoom();
             if (layerExt) {
                 var layerZoomObj = _.find(layerZoomArray, function(a){
-                    return mapId === a.mapId;
+                    return tile.mapId === a.mapId;
                 });
                 if(layerZoomObj){
                     layerZoomObj.zoomLevel = context.map().zoom();
                 } else {
                     layerZoomObj = {};
-                    layerZoomObj.mapId = mapId;
+                    layerZoomObj.mapId = tile.mapId;
                     layerZoomObj.zoomLevel = context.map().zoom();
                     layerZoomArray.push(layerZoomObj);
                 }
@@ -585,7 +583,7 @@ export default {
             }
         }
 
-        return '/api/0.6/map?mapId=' + mapId + '&bbox=' + tile.extent.toParam() + ext;
+        return '/api/0.6/map?bbox=' + tile.extent.toParam() + ((tile.mapId > -1) ? '&mapId=' + tile.mapId : '') + ext;
     },
 
 
@@ -632,16 +630,5 @@ export default {
             if (callback) callback(err, res);
         }
         return oauth.authenticate(done);
-    },
-
-    /* Added for Hootenanny */
-    loadData: function(options) {
-        var mapid = options.id;
-        loadedData[mapid] = options;
-        loadedData[mapid].vis = true;
-    },
-
-    loadedData: function(){
-        return loadedData;
     }
 };

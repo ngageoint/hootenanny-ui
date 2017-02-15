@@ -1,24 +1,22 @@
 import * as d3 from 'd3';
 import _ from 'lodash';
-import rbush from 'rbush';
+/*import rbush from 'rbush';
 import { utilRebind } from '../util/rebind';
 import { d3geoTile } from '../lib/d3.geo.tile';
 import { utilDetect } from '../util/detect';
 import { geoExtent } from '../geo/index';
 import { svgIcon } from '../svg/index';
 import { utilQsString } from '../util/index';
+*/
 import { services } from '../services/index';
 
-var dispatch = d3.dispatch('loadedImages', 'loadedSigns'),
+var //dispatch = d3.dispatch('loadedImages', 'loadedSigns'),
+    loadedData = {}, // added for Hootenanny
     layers = {};
 
-function test(){
-    console.log('test');
-}
 
-function getAvailLayers(callback){
-    var request = d3.json('/hoot-services/osm/api/0.6/map/layers');
-    request.get(function (error, resp) {
+function getAvailLayers(callback) {
+    d3.json('/hoot-services/osm/api/0.6/map/layers', function (error, resp) {
         if (error) {
             alert('Get available layers failed!');
             console.log(error);
@@ -30,21 +28,17 @@ function getAvailLayers(callback){
     });
 }
 
+function loadData(options) {
+    var mapid = options.id;
+    loadedData[mapid] = options;
+    loadedData[mapid].vis = true;
+}
+
 
 export default {
 
     init: function() {
-        utilRebind(this, dispatch, 'on');
-    },
-
-
-    reset: function() {
-        userDetails = undefined;
-        rateLimitError = undefined;
-        /*_.forEach(inflight, abortRequest);*/
-        loadedTiles = {};
-        inflight = {};
-        return this;
+        // utilRebind(this, dispatch, 'on');
     },
 
     getLayers: function(){
@@ -62,6 +56,14 @@ export default {
         if (lyr === ''){return;}
 
         var key = layers.layers.filter(function(d){return d.name===lyr}).pop();
-        services.osm.loadData(key);
+        loadData(key);
+    },
+
+    loadedData: function(){
+        return loadedData;
+    },
+
+    urlroot: function() {
+        return '/hoot-services/osm';
     }
 };
