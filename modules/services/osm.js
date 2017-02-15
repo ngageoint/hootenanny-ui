@@ -54,11 +54,11 @@ function getLoc(attrs) {
 }
 
 
-function getNodes(obj) {
+function getNodes(obj, mapId) {
     var elems = obj.getElementsByTagName('nd'),
         nodes = new Array(elems.length);
     for (var i = 0, l = elems.length; i < l; i++) {
-        nodes[i] = 'n' + elems[i].attributes.ref.value;
+        nodes[i] = 'n' + elems[i].attributes.ref.value + '_' + mapId;
     }
     return nodes;
 }
@@ -75,13 +75,13 @@ function getTags(obj) {
 }
 
 
-function getMembers(obj) {
+function getMembers(obj, mapId) {
     var elems = obj.getElementsByTagName('member'),
         members = new Array(elems.length);
     for (var i = 0, l = elems.length; i < l; i++) {
         var attrs = elems[i].attributes;
         members[i] = {
-            id: attrs.type.value[0] + attrs.ref.value,
+            id: attrs.type.value[0] + attrs.ref.value + '_' + mapId,
             type: attrs.type.value,
             role: attrs.role.value
         };
@@ -96,10 +96,11 @@ function getVisible(attrs) {
 
 
 var parsers = {
-    node: function nodeData(obj) {
+    node: function nodeData(obj, mapId) {
         var attrs = obj.attributes;
         return new osmNode({
-            id: osmEntity.id.fromOSM('node', attrs.id.value),
+            id: osmEntity.id.fromOSM('node', attrs.id.value + '_' + mapId),
+            osmid: osmEntity.id.fromOSM('node', attrs.id.value),
             loc: getLoc(attrs),
             version: attrs.version.value,
             user: attrs.user && attrs.user.value,
@@ -108,26 +109,28 @@ var parsers = {
         });
     },
 
-    way: function wayData(obj) {
+    way: function wayData(obj, mapId) {
         var attrs = obj.attributes;
         return new osmWay({
-            id: osmEntity.id.fromOSM('way', attrs.id.value),
+            id: osmEntity.id.fromOSM('way', attrs.id.value + '_' + mapId),
+            osmid: osmEntity.id.fromOSM('way', attrs.id.value),
             version: attrs.version.value,
             user: attrs.user && attrs.user.value,
             tags: getTags(obj),
-            nodes: getNodes(obj),
+            nodes: getNodes(obj, mapId),
             visible: getVisible(attrs)
         });
     },
 
-    relation: function relationData(obj) {
+    relation: function relationData(obj, mapId) {
         var attrs = obj.attributes;
         return new osmRelation({
-            id: osmEntity.id.fromOSM('relation', attrs.id.value),
+            id: osmEntity.id.fromOSM('relation', attrs.id.value + '_' + mapId),
+            osmid: osmEntity.id.fromOSM('relation', attrs.id.value),
             version: attrs.version.value,
             user: attrs.user && attrs.user.value,
             tags: getTags(obj),
-            members: getMembers(obj),
+            members: getMembers(obj, mapId),
             visible: getVisible(attrs)
         });
     }
@@ -140,12 +143,13 @@ function parse(xml) {
     var root = xml.childNodes[0],
         children = root.childNodes,
         entities = [];
+    var mapId = root.attributes.mapid.value;
 
     for (var i = 0, l = children.length; i < l; i++) {
         var child = children[i],
             parser = parsers[child.nodeName];
         if (parser) {
-            entities.push(parser(child));
+            entities.push(parser(child, mapId));
         }
     }
 
