@@ -30,12 +30,12 @@ export function uiLayerMenu(context) {
             //tree: context.hoot().model.folders.getAvailFoldersWithLayers()
         }];
 
-        var div = selection
+        /*var div = selection
             .append('div')
             .attr('id','add-dataset-pane')
-            .attr('class','add-dataset-pane');
+            .attr('class','add-dataset-pane');*/
 
-        var _sidebarDiv = div.append('div')
+        var _sidebarDiv = selection.append('div')
             .classed('col12 pad2 sidebar',true)
             .style('overflow','auto');
 
@@ -101,10 +101,6 @@ export function uiLayerMenu(context) {
             parentNode.select('fieldset').classed('hidden',!hideElem);            
         }
 
-        function disableTooHigh() {
-            div.style('display', context.editable() ? 'none' : 'block');
-        }
-
         function populateLayerCombo(data){
             console.log(data);
             _fieldDiv.selectAll('.combobox-input')
@@ -119,13 +115,11 @@ export function uiLayerMenu(context) {
                 })                
         }
 
+        function disableTooHigh() {
+            div.style('display', context.editable() ? 'none' : 'block');
+        }
 
         /*=== Populate layer drop down ===*/
         services.hoot.availLayers(populateLayerCombo);
-
-        context.map()
-            .on('move.notice', _.debounce(disableTooHigh, 500));
-
-        disableTooHigh();
     };
 }

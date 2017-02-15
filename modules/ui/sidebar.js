@@ -20,7 +20,10 @@ export function uiSidebar(context) {
             .append('div')
             .attr('class', 'inspector-hidden inspector-wrap fr');
 
-        selection
+        var layerMenuWrap = selection
+            .append('div')
+            .attr('class', 'add-dataset-pane')
+            .attr('id','add-dataset-pane')
             .call(uiLayerMenu(context));
 
         function hover(id) {
@@ -57,6 +60,9 @@ export function uiSidebar(context) {
 
         sidebar.select = function(id, newFeature) {
             if (!current && id) {
+                layerMenuWrap
+                    .style('display', 'none');
+
                 featureListWrap
                     .classed('inspector-hidden', true);
 
@@ -75,12 +81,15 @@ export function uiSidebar(context) {
                 }
 
             } else if (!current) {
+                layerMenuWrap
+                    .style('display', 'block');
+
                 featureListWrap
                     .classed('inspector-hidden', false);
                 inspectorWrap
                     .classed('inspector-hidden', true);
                 inspector
-                    .state('hide');
+                    .state('hide');                
             }
         };
 
