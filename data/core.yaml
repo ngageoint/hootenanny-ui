@@ -392,14 +392,9 @@ en:
     okay: "Okay"
     cancel: "Cancel"
   splash:
-    welcome: Welcome to the iD OpenStreetMap editor
-    text: "iD is a friendly but powerful tool for contributing to the world's best free world map. This is version {version}. For more information see {website} and report bugs at {github}."
-    walkthrough: "Start the Walkthrough"
-    start: "Edit Now"
-  source_switch:
-    live: live
-    lose_changes: "You have unsaved changes. Switching the map server will discard them. Are you sure you want to switch servers?"
-    dev: dev
+    welcome: "Welcome to Hootenanny"
+    text: "Hootenanny is an open-source semi-automated conflation engine.  This is version {version}. For more information or to report bugs, see {hootenanny}.  For more information on the UI component, visit {id}."
+    start: "Get Started"
   tag_reference:
     description: Description
     on_wiki: "{tag} on wiki.osm.org"
@@ -780,3 +775,6 @@ en:
       help: "You can replay this walkthrough or view more documentation by clicking the {button} Help button."
       save: "Don't forget to regularly save your changes!"
       start: "Start mapping!"
+  source_switch:
+      live: "OSM"
+      dev: "Hoot"

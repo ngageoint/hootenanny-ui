@@ -1804,6 +1804,10 @@ div.full-screen > button:hover {
 
 /* Zoomer */
 
+.zoombuttons {
+    padding-bottom: 10px;
+}
+
 .zoombuttons button.zoom-in {
     border-radius: 4px 0 0 0;
 }
@@ -2902,7 +2906,7 @@ img.tile-removing {
 /* Notices
 ------------------------------------------------------- */
 
-.notice {
+.notice, .add-dataset-pane {
     position: absolute;
     top: 0;
     bottom: 0;

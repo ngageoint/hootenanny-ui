@@ -5,11 +5,14 @@ import serviceTaginfo from './taginfo';
 import serviceWikidata from './wikidata';
 import serviceWikipedia from './wikipedia';
 
+import serviceHoot from './hoot';
+
 export var services = {
     mapillary: serviceMapillary,
     nominatim: serviceNominatim,
     osm: serviceOsm,
     taginfo: serviceTaginfo,
     wikidata: serviceWikidata,
-    wikipedia: serviceWikipedia
+    wikipedia: serviceWikipedia,
+    hoot: serviceHoot
 };

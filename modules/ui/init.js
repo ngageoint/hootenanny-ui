@@ -12,6 +12,7 @@ import { uiAccount } from './account';
 import { uiAttribution } from './attribution';
 import { uiBackground } from './background';
 import { uiContributors } from './contributors';
+import { uiCoordinates } from './coordinates';
 import { uiFeatureInfo } from './feature_info';
 import { uiFullScreen } from './full_screen';
 import { uiGeolocate } from './geolocate';
@@ -174,42 +175,49 @@ export function uiInit(context) {
             .append('ul')
             .attr('id', 'about-list');
 
-        if (!context.embed()) {
-            aboutList.call(uiAccount(context));
-        }
+        aboutList.append('li')
+            .attr('class','coordinates')
+            .attr('tabindex',-1)
+            .on('contextmenu',function(){
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+                //Create context menu to offer bulk option
+                var items = ['DD','DMS','UTM'];
+                d3.select('html').append('div').classed('coordinates-options-menu',true);
 
-        aboutList
-            .append('li')
-            .append('a')
-            .attr('target', '_blank')
-            .attr('tabindex', -1)
-            .attr('href', 'https://github.com/openstreetmap/iD')
-            .text(context.version);
+                 var menuItem =  d3.selectAll('.coordinates-options-menu')
+                    .html('')
+                    .append('ul')
+                    .selectAll('li')
+                    .data(items).enter()
+                    .append('li')
+                    .attr('class',function(){return ' coordinate-option';})
+                    .on('click' , function(item) {
+                        context.coordinateDisplay = item;
+                        d3.select('.coordinates-options-menu').remove();
+                   });
 
-        var issueLinks = aboutList
-            .append('li');
+                 menuItem.append('span').text(function(item) { return item; });
 
-        issueLinks
-            .append('a')
-            .attr('target', '_blank')
-            .attr('tabindex', -1)
-            .attr('href', 'https://github.com/openstreetmap/iD/issues')
-            .call(svgIcon('#icon-bug', 'light'))
-            .call(tooltip().title(t('report_a_bug')).placement('top'));
+                 d3.select('.coordinates-options-menu').style('display', 'none');
 
-        issueLinks
-            .append('a')
-            .attr('target', '_blank')
-            .attr('tabindex', -1)
-            .attr('href', 'https://github.com/openstreetmap/iD/blob/master/CONTRIBUTING.md#translating')
-            .call(svgIcon('#icon-translate', 'light'))
-            .call(tooltip().title(t('help_translate')).placement('top'));
+                 // show the context menu
+                 d3.select('.coordinates-options-menu')
+                    .style('right','0px')
+                     .style('bottom','33px')
+                     .style('display', 'block');
 
-        aboutList
-            .append('li')
-            .attr('class', 'feature-warning')
-            .attr('tabindex', -1)
-            .call(uiFeatureInfo(context));
+                 //close menu
+                 var firstOpen = true;
+                 d3.select('html').on('click.coordinates-options-menu',function(){
+                     if(firstOpen){
+                        firstOpen=false;
+                     } else {
+                         d3.select('.coordinates-options-menu').style('display', 'none');
+                     }
+                 });
+             })
+            .call(uiCoordinates(context));
 
         aboutList
             .append('li')
@@ -217,6 +225,9 @@ export function uiInit(context) {
             .attr('tabindex', -1)
             .call(uiContributors(context));
 
+        if (!context.embed()) {
+            aboutList.call(uiAccount(context));
+        }
 
         window.onbeforeunload = function() {
             return context.save();

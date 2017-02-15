@@ -7,6 +7,7 @@ import { geoExtent } from '../geo/index';
 import { osmEntity, osmNode, osmRelation, osmWay } from '../osm/index';
 import { utilDetect } from '../util/detect';
 import { utilRebind } from '../util/rebind';
+import { services } from '../services/index';
 
 
 var dispatch = d3.dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded'),
@@ -151,6 +152,9 @@ function parse(xml) {
     return entities;
 }
 
+function getUrlRoot(path) {
+    return (path.indexOf('mapId') > -1) ? services.hoot.urlroot() : urlroot;
+}
 
 export default {
 
@@ -225,7 +229,7 @@ export default {
         if (this.authenticated()) {
             return oauth.xhr({ method: 'GET', path: path }, done);
         } else {
-            var url = urlroot + path;
+            var url = getUrlRoot(path) + path;
             return d3.xml(url).get(done);
         }
     },
@@ -473,7 +477,6 @@ export default {
         return this;
     },
 
-
     loadTiles: function(projection, dimensions, callback) {
         if (off) return;
 
@@ -486,22 +489,35 @@ export default {
                 s / 2 - projection.translate()[1]
             ];
 
-        var tiles = d3geoTile()
-            .scaleExtent([tileZoom, tileZoom])
-            .scale(s)
-            .size(dimensions)
-            .translate(projection.translate())()
-            .map(function(tile) {
-                var x = tile[0] * ts - origin[0],
-                    y = tile[1] * ts - origin[1];
+        // Load from visible layers only
+        var visLayers = _.filter(services.hoot.loadedData(), function (layer) {
+            return layer.vis;
+        });
 
-                return {
-                    id: tile.toString(),
-                    extent: geoExtent(
-                        projection.invert([x, y + ts]),
-                        projection.invert([x + ts, y]))
-                };
-            });
+        var tiles = _.map(visLayers, function (layer) {
+            var _tiles = d3geoTile()
+                .scaleExtent([tileZoom, tileZoom])
+                .scale(s)
+                .size(dimensions)
+                .translate(projection.translate())()
+                .map(function (tile) {
+                    var x = tile[0] * ts - origin[0],
+                        y = tile[1] * ts - origin[1];
+
+                    return {
+                        id: tile.toString() + ',' + layer.id,
+                        extent: geoExtent(
+                                    projection.invert([x, y + ts]),
+                                    projection.invert([x + ts, y])),
+                                mapId: layer.id,
+                                layerName: layer.name // even need?
+                    };
+                });
+            return _tiles;
+        });
+
+        // transform multiple arrays into single so we can process
+        tiles = _.flatten(tiles);
 
         _.filter(inflight, function(v, i) {
             var wanted = _.find(tiles, function(tile) {
@@ -521,7 +537,9 @@ export default {
             }
 
             inflight[id] = that.loadFromAPI(
-                '/api/0.6/map?bbox=' + tile.extent.toParam(),
+                that.bboxUrl(tile,
+                    null, /*curLayer.extent*/
+                    false), /*totalNodesCnt > iD.data.hootConfig.maxnodescount*/
                 function(err, parsed) {
                     delete inflight[id];
                     if (!err) {
@@ -538,6 +556,34 @@ export default {
                 }
             );
         });
+    },
+
+    bboxUrl: function(tile, layerExt, showbbox){
+        if(!tile){
+            return '/api/0.6/bbox=' + tile.extent.toParam(); //is this url valid?
+        }
+
+        var ext = '';
+        if(showbbox){
+            //iD.data.hootConfig.hootMaxImportZoom = context.map().zoom();
+            if (layerExt) {
+                var layerZoomObj = _.find(layerZoomArray, function(a){
+                    return tile.mapId === a.mapId;
+                });
+                if(layerZoomObj){
+                    layerZoomObj.zoomLevel = context.map().zoom();
+                } else {
+                    layerZoomObj = {};
+                    layerZoomObj.mapId = tile.mapId;
+                    layerZoomObj.zoomLevel = context.map().zoom();
+                    layerZoomArray.push(layerZoomObj);
+                }
+                ext = '&extent=' + layerExt.maxlon + ',' + layerExt.maxlat +
+                ',' + layerExt.minlon + ',' + layerExt.minlat + '&autoextent=manual';
+            }
+        }
+
+        return '/api/0.6/map?bbox=' + tile.extent.toParam() + ((tile.mapId > -1) ? '&mapId=' + tile.mapId : '') + ext;
     },
 
 
