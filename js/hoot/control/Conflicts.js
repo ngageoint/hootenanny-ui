@@ -188,15 +188,16 @@ Hoot.control.conflicts = function (context, sidebar) {
             name: _confData.layers[1],
             text: 'Resolved',
             color: 'loud',
-            icon: '_icon check',
+            icon: '#icon-apply',
             cmd: iD.ui.cmd('r'),
             action: _instance.actions.reviewresolution.retainFeature // resolve
         },
         {
             id: 'next',
             name: 'review_foward',
-            text: 'Next',
+            // text: 'Next',
             color: 'fill-grey button round pad0y pad1x dark small strong',
+            icon: '#icon-right-arrow',
             input: 'test',
             cmd: iD.ui.cmd('n'),
             action: _instance.actions.traversereview.traverseForward // next
@@ -204,8 +205,9 @@ Hoot.control.conflicts = function (context, sidebar) {
         {
             id: 'previous',
             name: 'review_backward',
-            text: 'Previous',
+            // text: 'Previous',
             color: 'fill-grey button round pad0y pad1x dark small strong',
+            icon: '#icon-left-arrow',
             cmd: iD.ui.cmd('p'),
             action: _instance.actions.traversereview.traverseBackward // previous
         },
@@ -214,7 +216,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             name: 'auto_merge',
             text: 'Merge',
             color: 'loud',
-            icon: '_icon plus',
+            icon: '#icon-plus',
             cmd: iD.ui.cmd('m'),
             action: _instance.actions.poimerge.autoMerge // Poi Merge
         },
@@ -232,7 +234,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             name: 'share_review',
             text: 'Bookmark Review',
             color: 'fill-grey button round pad0y pad1x dark small strong',
-            icon: '_icon plus',
+            icon: '#icon-plus',
             cmd: iD.ui.cmd('Ctrl+b'),
             action: _instance.actions.sharereview.publish // Review table
         }];
@@ -241,8 +243,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             .attr('id', 'conflict-review-buttons')
             .classed('fr space', true);
         var optcont = opts.selectAll('a')
-            .data(da)
-            .enter();
+            .data(da);
 
         // hotkey bindings
         var keybinding = d3.keybinding('conflicts')
@@ -264,17 +265,20 @@ Hoot.control.conflicts = function (context, sidebar) {
             return iD.ui.tooltipHtml(t('review.' + d.id + '.description'), d.cmd);
         });
 
-        optcont.append('a')
-            .attr('href', '#')
-            .text(function (d) {
-                return d.text;
-            })
+        optcont.enter()
+            .append('a');
+
+        optcont.each(function(d){
+            d3.select(this).call(iD.svg.Icon(d.icon));
+        });
+
+        optcont.attr('href', '#')
             .style('background-color', function (d) {
                 return d.color;
             })
             .style('color', '#fff')
             .attr('class', function (d) {
-                return 'fr inline button dark ' + d.color + ' pad0y pad2x keyline-all ' + d.icon + ' ' + d.id;
+                return 'fr inline button dark ' + d.color + ' pad0y pad2x keyline-all ' + d.id;
             })
             .on('click', function (d) {
               // We need this delay for iD to have time to add way for adjusting
@@ -293,7 +297,11 @@ Hoot.control.conflicts = function (context, sidebar) {
               }
 
             })
-            .call(_toolTip);
+            .call(_toolTip)
+            .append('span')
+            .text(function (d) {
+                return d.text;
+            });
 
         // set intance variable for review traverse
         _instance.actions.traversereview.initialize({'nextid': 'next'
