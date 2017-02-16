@@ -143,6 +143,9 @@ function parse(xml) {
     var root = xml.childNodes[0],
         children = root.childNodes,
         entities = [];
+    //Map ID is included in hoot osm xml response
+    //append it to entity ids to avoid id collisions
+    //between datasets
     var mapId = root.attributes.mapid.value;
 
     for (var i = 0, l = children.length; i < l; i++) {
