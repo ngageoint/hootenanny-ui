@@ -43,7 +43,7 @@ export function uiLayerMenu(context) {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
                 var cbox = d3.select(this).select('.combobox-input');
-                services.hoot.submitLayer(cbox.node().value, d.isPrimary, renderLayer);
+                services.hoot.loadLayer(cbox.node().value, d.isPrimary, renderLayer);
             });
 
         _form.append('a')
@@ -93,32 +93,37 @@ export function uiLayerMenu(context) {
             d3.select(elem).style('display','none');
         }
 
-
         function toggleForm(elem){
             var parentNode = d3.select(elem.parentNode);
             var hideElem = parentNode.select('fieldset').classed('hidden');
-            parentNode.select('fieldset').classed('hidden',!hideElem);            
+            parentNode.select('fieldset').classed('hidden',!hideElem);
         }
 
         function populateLayerCombo(data){
-            console.log(data);
-            _fieldDiv.selectAll('.combobox-input')
-                .each(function(f){
-                    d3.select(this).call(d3combobox()
-                    .data(_.map(data.layers, function (n) {
+            var layerCombobox = d3combobox()
+                .data(data.layers.map(function (n) {
                             return {
                                 value: n.name,
                                 title: n.id
                             };
-                        })))   
-                })                
+                    })
+                );
+            _fieldDiv.selectAll('.combobox-input')
+                .each(function(f){
+                    d3.select(this).call(layerCombobox)
+                   // .on('blur', addLayer)
+                   // .on('change', addLayer)
+                })
         }
 
+        // function addLayer() {
+        //     console.log(d3.select(this).datum());
+        // }
         function disableTooHigh() {
             div.style('display', context.editable() ? 'none' : 'block');
         }
 
         /*=== Populate layer drop down ===*/
-        services.hoot.availLayers(populateLayerCombo);
+        services.hoot.availableLayers(populateLayerCombo);
     };
 }

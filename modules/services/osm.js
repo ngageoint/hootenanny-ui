@@ -497,8 +497,8 @@ export default {
             ];
 
         // Load from visible layers only
-        var visLayers = _.filter(services.hoot.loadedData(), function (layer) {
-            return layer.vis;
+        var visLayers = _.filter(d3.values(services.hoot.loadedLayers()), function (layer) {
+            return layer.visible;
         });
 
         var tiles = _.map(visLayers, function (layer) {
