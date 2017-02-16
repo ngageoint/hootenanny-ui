@@ -89,8 +89,9 @@ export function uiLayerMenu(context) {
 
 
         /* === Functions === */
-        function renderLayer(elem){
-            d3.select(elem).style('display','none');
+        function renderLayer(extent) {
+            context.extent(extent);
+            //d3.select(elem).style('display','none');
         }
 
         function toggleForm(elem){
