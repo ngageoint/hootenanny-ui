@@ -28,10 +28,11 @@ function getAvailLayers(callback) {
     });
 }
 
-function loadData(options) {
+function loadData(options,isPrimary,callback) {
     var mapid = options.id;
     loadedData[mapid] = options;
     loadedData[mapid].vis = true;
+    if(callback){callback(isPrimary);}
 }
 
 
@@ -56,7 +57,7 @@ export default {
         if (lyr === ''){return;}
 
         var key = layers.layers.filter(function(d){return d.name===lyr}).pop();
-        loadData(key);
+        loadData(key,isPrimary,callback);
     },
 
     loadedData: function(){

@@ -30,11 +30,6 @@ export function uiLayerMenu(context) {
             //tree: context.hoot().model.folders.getAvailFoldersWithLayers()
         }];
 
-        /*var div = selection
-            .append('div')
-            .attr('id','add-dataset-pane')
-            .attr('class','add-dataset-pane');*/
-
         var _sidebarDiv = selection.append('div')
             .classed('col12 pad2 sidebar',true)
             .style('overflow','auto');
@@ -48,7 +43,7 @@ export function uiLayerMenu(context) {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
                 var cbox = d3.select(this).select('.combobox-input');
-                services.hoot.submitLayer(cbox.node().value, d.isPrimary);
+                services.hoot.submitLayer(cbox.node().value, d.isPrimary, renderLayer);
             });
 
         _form.append('a')
@@ -94,6 +89,10 @@ export function uiLayerMenu(context) {
 
 
         /* === Functions === */
+        function renderLayer(elem){
+            d3.select(elem).style('display','none');
+        }
+
 
         function toggleForm(elem){
             var parentNode = d3.select(elem.parentNode);
