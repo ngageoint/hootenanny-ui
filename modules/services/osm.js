@@ -69,7 +69,7 @@ function getTags(obj) {
         tags = {};
     for (var i = 0, l = elems.length; i < l; i++) {
         var attrs = elems[i].attributes;
-        tags[attrs.k.value] = attrs.v.value;
+        tags[attrs.k.value] = decodeURIComponent(attrs.v.value);
     }
     return tags;
 }
