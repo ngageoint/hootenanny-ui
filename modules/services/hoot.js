@@ -5,6 +5,27 @@ import { services } from '../services/index';
 var availableLayers = {},
     loadedLayers = {};
 
+function getNodeMapnikSource(d) {
+    var source = {
+            name: d.name,
+            id: d.id,
+            type: 'tms',
+            description: d.name,
+            template: window.location.protocol + '//' + window.location.hostname
+                //+ Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.nodeMapnikServerPort)
+                + ':8000'
+                + '/?z={zoom}&x={x}&y={-y}&color='
+                + encodeURIComponent(services.hoot.palette(d.color))
+                + '&mapid=' + d.id,
+            scaleExtent: [0,18],
+            overlay: true,
+            projection: 'mercator',
+            subtype: 'node_mapnik'
+        };
+    return source;
+}
+
+
 export default {
 
     init: function() {
@@ -49,17 +70,18 @@ export default {
                         loadedLayers[mapid] = {
                             name: name,
                             id: mapid,
+                            color: color,
                             visible: true
                         };
                         if (tags) {
 
                         }
+                        //Add css rule to render features
                         services.hoot.changeLayerColor(mapid, color);
-                        //{"minlon":-104.919758616214,"firstlon":-104.901787686059,"maxlat":39.5944194033785,"nodescount":117,"minlat":38.8467218120797,"firstlat":38.854331920123,"maxlon":-104.714569365207}
+                        //Zoom map to layer extent & Add node-mapnik tile layer
                         var min = [mbr.minlon, mbr.minlat],
                             max = [mbr.maxlon, mbr.maxlat];
-                        //rendererMap.extent(min, max);
-                        if (callback) callback([min, max]);
+                        if (callback) callback([min, max], getNodeMapnikSource(loadedLayers[mapid]));
                     }
                 });
             }

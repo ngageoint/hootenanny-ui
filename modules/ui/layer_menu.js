@@ -89,8 +89,9 @@ export function uiLayerMenu(context) {
 
 
         /* === Functions === */
-        function renderLayer(extent) {
+        function renderLayer(extent, mapnik_source) {
             context.extent(extent);
+            context.background().addSource(mapnik_source);
             //d3.select(elem).style('display','none');
         }
 

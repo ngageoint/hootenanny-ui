@@ -108,6 +108,12 @@ export function rendererBackground(context) {
     };
 
 
+    background.addSource = function(d) {
+        var source = rendererBackgroundSource(d);
+        backgroundSources.push(source);
+        background.toggleOverlayLayer(source);
+    };
+
     background.sources = function(extent) {
         return backgroundSources.filter(function(source) {
             return source.intersects(extent);
