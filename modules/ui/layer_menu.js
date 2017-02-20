@@ -47,7 +47,7 @@ export function uiLayerMenu(context) {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
                     if(d3.select(this).classed('hootImport')){showLayerModal(d);}
-                    if(d3.select(this).classed('hootView')){removeLayer(this);}
+                    if(d3.select(this).classed('hootView')){removeLayer(d);}
                 });
 
             _form.append('div')
@@ -100,6 +100,7 @@ export function uiLayerMenu(context) {
 
                     // Replace plus with delete
                     d3.select('#' + d.id).select('use').attr('href','#operation-delete');
+                    console.log(cbox.node().title);
                     modalbg.remove();
                     services.hoot.loadLayer(cbox.node().value, d.isPrimary, renderLayer);
                 });
@@ -150,13 +151,21 @@ export function uiLayerMenu(context) {
 
         function removeLayer(d) {
             var lyrName = d3.select('#' + d.id + '_name').text();
-            services.hoot.removeLayer(lyrName, d, function(d){
-                d3.select('#' + d.id)
-                    .classed('hootImport',true)
-                    .classed('hootView',false);
-                d3.select('#' + d.id).select('use').attr('href','#icon-plus');
-                d3.select('#' + d.id + '_name').text(d.text);
+            services.hoot.removeLayer(lyrName, function(mapnik_source){
+                context.background().removeSource(mapnik_source, function(lyrId){
+                    services.osm.loadedDataRemove(lyrId,function(d){
+                        resetSidebar(d);
+                    });
+                });
             });
+        }
+
+        function resetSidebar(d){
+            d3.select('#' + d.id)
+                .classed('hootImport',true)
+                .classed('hootView',false);
+            d3.select('#' + d.id).select('use').attr('href','#icon-plus');
+            d3.select('#' + d.id + '_name').text(d.text);
         }
 
         function populateLayerCombo(data){

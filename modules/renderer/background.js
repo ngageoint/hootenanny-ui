@@ -114,6 +114,13 @@ export function rendererBackground(context) {
         background.toggleOverlayLayer(source);
     };
 
+    background.removeSource = function(d,callback) {
+        var source = rendererBackgroundSource(d);
+        _.remove(backgroundSources, {id:source.id});
+        
+        if(callback){callback(source.id);}
+    }
+
     background.sources = function(extent) {
         return backgroundSources.filter(function(source) {
             return source.intersects(extent);

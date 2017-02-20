@@ -88,11 +88,12 @@ export default {
         });
     },
 
-    removeLayer: function(name, d, callback) {
+    removeLayer: function(name, callback) {
         var lyrId = availableLayers[name];
-        delete loadedLayers[lyrId];
-
-        services.osm.loadedDataRemove(lyrId,callback(d));
+        if(callback){
+            callback(getNodeMapnikSource(loadedLayers[lyrId]));
+            delete loadedLayers[lyrId];
+        }        
     },
 
     loadedLayers: function() {

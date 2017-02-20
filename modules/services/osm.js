@@ -599,6 +599,8 @@ export default {
                 delete loadedTiles[b];
             }
         });
+
+        if(callback){callback(mapid);}
     },
 
 
