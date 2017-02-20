@@ -540,13 +540,12 @@ button.save.has-count .count::before {
 #bar {
     position: fixed;
     padding: 10px 0;
-    left:0;
-    top:0;
-    right:0;
     height:60px;
-    z-index: 9;
+    z-index: 1;
     min-width: 768px;
+    width:100%;
 }
+
 
 /* Header for modals / panes
 ------------------------------------------------------- */
@@ -633,6 +632,8 @@ button.save.has-count .count::before {
     overflow: hidden;
     z-index: 10;
     background: #f6f6f6;
+    min-width: 400px;
+    max-width: 50%;
 }
 
 .sidebar-component {
@@ -2912,7 +2913,6 @@ img.tile-removing {
     bottom: 0;
     left: 0;
     right: 0;
-    text-align: center;
     background: #fff;
 }
 

@@ -552,14 +552,66 @@ option.importError {
 
 /* Added for Hootenanny */
 
-.block { display: block; }
-.pad2y { padding: 20px 0; }
-.pad1y { padding: 10px 0; }
-.pad2x { padding: 0 20px; }
-.pad2 { padding: 20px; }
-.pad1 { padding: 10px; }
-.hidden { display:none; }
+/* Additional Utility Classes
+------------------------------------------------------- */
+.fr                           { float:right; }
+.fl                           { float:left; }
+.dot                          { border-radius:50%; }
+.quiet                        { color:#7f7f7f; color: rgba(0,0,0,.5); }
+.dark .quiet                  { color: #7f7f7f; color: rgba(255,255,255,.5);}
+.center                       { text-align:center; }
+.contain                      { position:relative; }
+.clip                         { overflow:hidden; }
+.hidden                       { display:none; }
+.text-left                    { text-align:left; }
+.text-right                   { text-align:right; }
+.space > *                    { margin-right:5px; }
 .space-bottom0                { margin-bottom:5px; }
 .space-bottom1                { margin-bottom:10px; }
 .space-bottom2, .space-bottom { margin-bottom:20px; }
 .space-bottom4                { margin-bottom:40px; }
+.hide-tablet, .hide-mobile    { display:block; }
+.show-tablet, .show-mobile    { display:none; }
+.show-mobile                  { display:none; }
+img.inline, .inline           { display:inline-block; }
+.block                        { display:block; }
+.overflow                     { overflow:auto; }
+.pad2y { padding: 20px 0; }
+.pad1y { padding: 10px 0; }
+.pad2x { padding: 0 20px; }
+.pad1x {padding-left: 10px; padding-right: 10px;}
+.pad2 { padding: 20px; }
+.pad1 { padding: 10px; }
+
+
+
+/* Keylines
+------------------------------------------------------- */
+.keyline-all    { border:1px solid rgba(0,0,0,0.20); }
+.keyline-top    { border-top:1px solid rgba(0,0,0,0.20); }
+.keyline-right  { border-right:1px solid rgba(0,0,0,0.20); }
+.keyline-bottom { border-bottom:1px solid rgba(0,0,0,0.20); }
+.keyline-left   { border-left:1px solid rgba(0,0,0,0.20); }
+
+/* Layer for context menu on right click
+------------------------------------------------------- */
+.context-menu-click-layer{
+    display: inline-block;
+    padding: 10px;
+    position: absolute;
+    width: 80%;
+    height: 60px;
+}
+
+/* Fixed containers
+------------------------------------------------------- */
+.pin-top,
+.pin-right,
+.pin-bottom,
+.pin-left {
+  position:absolute;
+  }
+  .pin-bottom { right:0; bottom:0; left:0; }
+  .pin-top    { top:0; right:0; left:0; }
+  .pin-left   { top:0; bottom:0; left:0; }
+  .pin-right  { top:0; right:0; bottom:0; }
