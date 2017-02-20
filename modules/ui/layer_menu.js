@@ -15,8 +15,8 @@ export function uiLayerMenu(context) {
         var _form = null;
 
         var data = [
-            {isPrimary:true, id:'refDatset',text:'Add Reference Dataset'},
-            {isPrimary:false, id:'secondaryDataset', text: 'Add Secondary Dataset'}
+            {isPrimary:true, id:'refDatset',text:'Add Reference Dataset', color: 'orange'},
+            {isPrimary:false, id:'secondaryDataset', text: 'Add Secondary Dataset', color: 'violet'}
         ];
 
         var d_form = [{
@@ -34,71 +34,129 @@ export function uiLayerMenu(context) {
             .classed('col12 pad2 sidebar',true)
             .style('overflow','auto');
 
-        var _form = _sidebarDiv.selectAll('div')
-            .data(data)
-            .enter()
-            .append('form')
-            .classed('hootImport round space-bottom1 importableLayer fill-white strong', true)
-            .on('submit',function(d){
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-                var cbox = d3.select(this).select('.combobox-input');
-                services.hoot.loadLayer(cbox.node().value, d.isPrimary, renderLayer);
-            });
+        function renderHootImport(container, data){
+            var _form = container.selectAll('div')
+                .data(data)
+                .enter()
+                .append('form')
+                .attr('class',function(d){return 'fill-white hootImport round keyline-all contain controller space-bottom1 ' + d.color;})
+                .attr('id',function(d){
+                    return d.id;
+                })
+                .on('submit',function(d){
+                    d3.event.stopPropagation();
+                    d3.event.preventDefault();
+                    if(d3.select(this).classed('hootImport')){showLayerModal(d);}
+                    if(d3.select(this).classed('hootView')){removeLayer(this);}
+                });
 
-        _form.append('a')
-            .classed('button dark animate strong block _icon big plus pad2x pad1y js-toggle active', true)
-            .attr('href', '#')
-            .text(function(d){
-                return d.text;
-            })
-            .on('click', function () {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-                toggleForm(this);
-            });
+            _form.append('div')
+                .attr('class','pad1 inline thumbnail dark big _icon _data')
+                .attr('id','viewicon-1')
+                .on('click',function(d){
+                    console.log('palette');
+                });
 
-        var _fieldset = _form.append('fieldset')
-            .classed('hidden pad1 keyline-left keyline-right keyline-bottom round-bottom', true)
-            .attr('id', function(d){
-                return d.id;
-            });
+            _form.append('div').classed('context-menu-click-layer',true);
 
-        var _fieldDiv = _fieldset.append('div')
-            .classed('form-field fill-white small keyline-all round space-bottom1', true);
+            _form.append('span')
+                .attr('class', 'strong pad1x')
+                .attr('id', function(d){
+                    return d.id + '_name';
+                })
+                .text(function (d) {
+                    return d.text;
+                })
+                .style('color','black')
+                .style('display', 'inline-block')
+                .style('max-width', '70%')
+                .style('overflow', 'hidden')
+                .style('vertical-align', 'middle');
 
-        _fieldDiv.append('label')
-            .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true);
-
-        _fieldDiv.append('div').classed('contain',true).append('input')
-            .attr('type','text')
-            .attr('placeholder','Layers')
-            .attr('id',function(d){
-                return 'sel' + d.id;
-            })
-            .classed('reset combobox-input',true)
-            .attr('readonly',true);
-
-        _fieldDiv.append('div')
-            .classed('form-field col12', true)
-            .append('input')
-            .attr('type', 'submit')
-            .attr('value', 'Add Layer')
-            .classed('fill-dark pad0y pad2x dark small strong round', true)
-            .attr('border-radius','4px');
-
+           _form.append('button')
+                .attr('tabindex', -1)                
+                .attr('class','keyline-left map-button round-right inline fr contain')
+                .call(svgIcon('#icon-plus'));
+        }
+            
 
         /* === Functions === */
+        function showLayerModal(d){
+            var modalbg = d3.select('body')
+                .append('div')
+                .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+            var modalDiv = modalbg.append('div')
+                .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
+            
+            var _form = modalDiv.append('form')
+                .on('submit',function(){
+                    d3.event.stopPropagation();
+                    d3.event.preventDefault();
+                    var cbox = d3.select(this).select('.combobox-input');
+                    d3.select('#' + d.id)
+                        .classed('hootImport',false)
+                        .classed('hootView',true);
+                    d3.select('#' + d.id + '_name').text(cbox.node().value);
+
+                    // Replace plus with delete
+                    d3.select('#' + d.id).select('use').attr('href','#operation-delete');
+                    modalbg.remove();
+                    services.hoot.loadLayer(cbox.node().value, d.isPrimary, renderLayer);
+                });
+
+            var _header = _form.append('div')
+                .classed('keyline-bottom', true);
+            _header.append('h4')
+                .style('display','inline-block')
+                .text(d.text);
+            _header.append('div')
+                .attr('class','fr')
+                .style('display','inline-block')
+                .call(svgIcon('#icon-close'))
+                .on('click', function () {
+                    modalbg.remove();
+                });
+
+            var _fieldset = _form.append('fieldset')
+                .classed('pad1 round-bottom', true);
+                /*.attr('id', d.id);*/
+
+            var _fieldDiv = _fieldset.append('div')
+                .classed('form-field fill-white small round space-bottom1', true);
+
+            _fieldDiv.append('div').classed('contain pad1y',true).append('input')
+                .attr('type','text')
+                .attr('placeholder','Layers')
+                .attr('id','sel' + d.id)
+                .classed('reset combobox-input',true)
+                .attr('readonly',true);
+
+            _fieldDiv.append('div')
+                .classed('form-field col12', true)
+                .append('input')
+                .attr('type', 'submit')
+                .attr('value', 'Select Layer')
+                .classed('fill-dark pad0y pad2x dark small strong round', true)
+                .attr('border-radius','4px');
+
+            services.hoot.availableLayers(populateLayerCombo);
+        }
+
         function renderLayer(extent, mapnik_source) {
             context.extent(extent);
             context.background().addSource(mapnik_source);
             //d3.select(elem).style('display','none');
         }
 
-        function toggleForm(elem){
-            var parentNode = d3.select(elem.parentNode);
-            var hideElem = parentNode.select('fieldset').classed('hidden');
-            parentNode.select('fieldset').classed('hidden',!hideElem);
+        function removeLayer(d) {
+            var lyrName = d3.select('#' + d.id + '_name').text();
+            services.hoot.removeLayer(lyrName, d, function(d){
+                d3.select('#' + d.id)
+                    .classed('hootImport',true)
+                    .classed('hootView',false);
+                d3.select('#' + d.id).select('use').attr('href','#icon-plus');
+                d3.select('#' + d.id + '_name').text(d.text);
+            });
         }
 
         function populateLayerCombo(data){
@@ -110,7 +168,7 @@ export function uiLayerMenu(context) {
                             };
                     })
                 );
-            _fieldDiv.selectAll('.combobox-input')
+            d3.select('.modal').selectAll('.combobox-input')
                 .each(function(f){
                     d3.select(this).call(layerCombobox)
                    // .on('blur', addLayer)
@@ -118,14 +176,11 @@ export function uiLayerMenu(context) {
                 })
         }
 
-        // function addLayer() {
-        //     console.log(d3.select(this).datum());
-        // }
         function disableTooHigh() {
             div.style('display', context.editable() ? 'none' : 'block');
         }
 
         /*=== Populate layer drop down ===*/
-        services.hoot.availableLayers(populateLayerCombo);
+        renderHootImport(_sidebarDiv, data);        
     };
 }

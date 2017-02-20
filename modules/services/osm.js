@@ -593,6 +593,14 @@ export default {
         return '/api/0.6/map?bbox=' + tile.extent.toParam() + ((tile.mapId > -1) ? '&mapId=' + tile.mapId : '') + ext;
     },
 
+    loadedDataRemove: function(mapid, callback){
+        _.each(loadedTiles, function (a, b) {
+            if (b.match(',' + mapid + '$')) {
+                delete loadedTiles[b];
+            }
+        });
+    },
+
 
     switch: function(options) {
         urlroot = options.urlroot;

@@ -88,6 +88,13 @@ export default {
         });
     },
 
+    removeLayer: function(name, d, callback) {
+        var lyrId = availableLayers[name];
+        delete loadedLayers[lyrId];
+
+        services.osm.loadedDataRemove(lyrId,callback(d));
+    },
+
     loadedLayers: function() {
         return loadedLayers;
     },

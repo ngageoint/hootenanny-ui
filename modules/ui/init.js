@@ -85,7 +85,8 @@ export function uiInit(context) {
 
         bar
             .append('div')
-            .attr('class', 'spacer col4');
+            .attr('class', 'spacer col0')
+            .style('width','10px');
 
         var limiter = bar.append('div')
             .attr('class', 'limiter');
