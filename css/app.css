@@ -541,7 +541,7 @@ button.save.has-count .count::before {
     position: fixed;
     padding: 10px 0;
     height:60px;
-    z-index: 1;
+    z-index: 100;
     min-width: 768px;
     width:100%;
 }
@@ -633,7 +633,7 @@ button.save.has-count .count::before {
     z-index: 10;
     background: #f6f6f6;
     min-width: 400px;
-    max-width: 50%;
+    /*max-width: 50%;*/
 }
 
 .sidebar-component {
@@ -2909,7 +2909,7 @@ img.tile-removing {
 
 .notice, .add-dataset-pane {
     position: absolute;
-    top: 0;
+    top: 60px;
     bottom: 0;
     left: 0;
     right: 0;
