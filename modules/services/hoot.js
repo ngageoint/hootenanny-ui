@@ -32,6 +32,10 @@ export default {
 
     },
 
+    getAvailableLayers: function() {
+        return availableLayers;
+    },
+
     availableLayers: function(callback) {
         d3.json(this.urlroot() + '/api/0.6/map/layers', function (error, resp) {
             if (error) {

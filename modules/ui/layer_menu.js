@@ -93,14 +93,16 @@ export function uiLayerMenu(context) {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
                     var cbox = d3.select(this).select('.combobox-input');
+                    var lyrId = services.hoot.getAvailableLayers()[cbox.node().value];
+
                     d3.select('#' + d.id)
                         .classed('hootImport',false)
-                        .classed('hootView',true);
+                        .classed('hootView',true)
+                        .attr('data-layer',lyrId);
                     d3.select('#' + d.id + '_name').text(cbox.node().value);
 
                     // Replace plus with delete
                     d3.select('#' + d.id).select('use').attr('href','#operation-delete');
-                    console.log(cbox.node().title);
                     modalbg.remove();
                     services.hoot.loadLayer(cbox.node().value, d.isPrimary, renderLayer);
                 });
@@ -161,11 +163,15 @@ export function uiLayerMenu(context) {
         }
 
         function resetSidebar(d){
-            d3.select('#' + d.id)
-                .classed('hootImport',true)
-                .classed('hootView',false);
-            d3.select('#' + d.id).select('use').attr('href','#icon-plus');
-            d3.select('#' + d.id + '_name').text(d.text);
+            var container = d3.select('form[data-layer = "' + d + '"]');
+
+           container.classed('hootImport',true)
+                .classed('hootView',false)
+                .attr('data-layer',null);
+            container.select('use').attr('href','#icon-plus');
+            container.select('span').text(function(){
+                return container.attr('id') === 'refDatset' ? 'Add Reference Dataset' : 'Add Secondary Dataset';
+            });
         }
 
         function populateLayerCombo(data){
