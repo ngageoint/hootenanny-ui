@@ -17,10 +17,9 @@ function getNodeMapnikSource(d) {
                 + '/?z={zoom}&x={x}&y={-y}&color='
                 + encodeURIComponent(services.hoot.palette(d.color))
                 + '&mapid=' + d.id,
-            scaleExtent: [0,18],
-            overlay: true,
-            projection: 'mercator',
-            subtype: 'node_mapnik'
+            scaleExtent: [0,16],
+            overzoom: false,
+            overlay: true
         };
     return source;
 }
@@ -97,7 +96,7 @@ export default {
         if(callback){
             callback(getNodeMapnikSource(loadedLayers[lyrId]));
             delete loadedLayers[lyrId];
-        }        
+        }
     },
 
     loadedLayers: function() {
