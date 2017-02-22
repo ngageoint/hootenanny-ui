@@ -171,8 +171,6 @@ input.round        { border-radius:4px; }
     margin-left: 10px;
 }
 
-
-
 .rcon.sprocket:after, ._icon.sprocket:before                   { background-position:0 0; }
 .rcon.big.sprocket:after, ._icon.big.sprocket:before           { background-position:0 -20px; }
 .rcon.dark.sprocket:after, ._icon.dark.sprocket:before         { background-position:0 -60px; }
