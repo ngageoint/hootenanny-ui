@@ -11,6 +11,17 @@ export function uiSidebar(context) {
 
 
     function sidebar(selection) {
+        var labelContainer = selection
+            .append('div')
+            .classed('fill-dark',true);
+
+        labelContainer.append('div')
+            .attr('href', '#version')
+            .classed('point hoot_label', true)
+            .on('click', function (){
+                 //context.hoot().view.versioninfo.showPopup();
+            });
+
         var featureListWrap = selection
             .append('div')
             .attr('class', 'feature-list-pane')
