@@ -7,9 +7,7 @@ function actionAddEntity(way) {
 
 var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
-function commonjsRequire () {
-	throw new Error('Dynamic requires are not currently supported by rollup-plugin-commonjs');
-}
+
 
 
 
@@ -17090,7 +17088,9 @@ function osmIsInterestingTag(key) {
         key !== 'created_by' &&
         key !== 'source' &&
         key !== 'odbl' &&
-        key.indexOf('tiger:') !== 0;
+        key.indexOf('tiger:') !== 0 &&
+        key !== 'error:circular' &&
+        key !== 'hoot:status';
 
 }
 
@@ -39826,26 +39826,25 @@ function svgDefs(context) {
     };
 }
 
-var sax = createCommonjsModule(function (module, exports) {
 //[4]   	NameStartChar	   ::=   	":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
 //[4a]   	NameChar	   ::=   	NameStartChar | "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
 //[5]   	Name	   ::=   	NameStartChar (NameChar)*
 var nameStartChar = /[A-Z_a-z\xC0-\xD6\xD8-\xF6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]/;//\u10000-\uEFFFF
-var nameChar = new RegExp("[\\-\\.0-9"+nameStartChar.source.slice(1,-1)+"\u00B7\u0300-\u036F\\ux203F-\u2040]");
+var nameChar = new RegExp("[\\-\\.0-9"+nameStartChar.source.slice(1,-1)+"\\u00B7\\u0300-\\u036F\\u203F-\\u2040]");
 var tagNamePattern = new RegExp('^'+nameStartChar.source+nameChar.source+'*(?:\:'+nameStartChar.source+nameChar.source+'*)?$');
 //var tagNamePattern = /^[a-zA-Z_][\w\-\.]*(?:\:[a-zA-Z_][\w\-\.]*)?$/
 //var handlers = 'resolveEntity,getExternalSubset,characters,endDocument,endElement,endPrefixMapping,ignorableWhitespace,processingInstruction,setDocumentLocator,skippedEntity,startDocument,startElement,startPrefixMapping,notationDecl,unparsedEntityDecl,error,fatalError,warning,attributeDecl,elementDecl,externalEntityDecl,internalEntityDecl,comment,endCDATA,endDTD,endEntity,startCDATA,startDTD,startEntity'.split(',')
 
-//S_TAG,	S_ATTR,	S_EQ,	S_V
-//S_ATTR_S,	S_E,	S_S,	S_C
+//S_TAG,	S_ATTR,	S_EQ,	S_ATTR_NOQUOT_VALUE
+//S_ATTR_SPACE,	S_ATTR_END,	S_TAG_SPACE, S_TAG_CLOSE
 var S_TAG = 0;//tag name offerring
 var S_ATTR = 1;//attr name offerring 
-var S_ATTR_S=2;//attr name end and space offer
+var S_ATTR_SPACE=2;//attr name end and space offer
 var S_EQ = 3;//=space?
-var S_V = 4;//attr value(no quot value only)
-var S_E = 5;//attr value end and no space(quot end)
-var S_S = 6;//(attr value end || tag end ) && (space offer)
-var S_C = 7;//closed el<el />
+var S_ATTR_NOQUOT_VALUE = 4;//attr value(no quot value only)
+var S_ATTR_END = 5;//attr value end and no space(quot end)
+var S_TAG_SPACE = 6;//(attr value end || tag end ) && (space offer)
+var S_TAG_CLOSE = 7;//closed el<el />
 
 function XMLReader(){
 	
@@ -39862,7 +39861,7 @@ XMLReader.prototype = {
 	}
 };
 function parse(source,defaultNSMapCopy,entityMap,domBuilder,errorHandler){
-  function fixedFromCharCode(code) {
+	function fixedFromCharCode(code) {
 		// String.prototype.fromCharCode does not supports
 		// > 2 bytes unicode chars directly
 		if (code > 0xffff) {
@@ -39887,95 +39886,126 @@ function parse(source,defaultNSMapCopy,entityMap,domBuilder,errorHandler){
 		}
 	}
 	function appendText(end){//has some bugs
-		var xt = source.substring(start,end).replace(/&#?\w+;/g,entityReplacer);
-		locator&&position(start);
-		domBuilder.characters(xt,0,end-start);
-		start = end;
+		if(end>start){
+			var xt = source.substring(start,end).replace(/&#?\w+;/g,entityReplacer);
+			locator&&position(start);
+			domBuilder.characters(xt,0,end-start);
+			start = end;
+		}
 	}
-	function position(start,m){
-		while(start>=endPos && (m = linePattern.exec(source))){
-			startPos = m.index;
-			endPos = startPos + m[0].length;
+	function position(p,m){
+		while(p>=lineEnd && (m = linePattern.exec(source))){
+			lineStart = m.index;
+			lineEnd = lineStart + m[0].length;
 			locator.lineNumber++;
 			//console.log('line++:',locator,startPos,endPos)
 		}
-		locator.columnNumber = start-startPos+1;
+		locator.columnNumber = p-lineStart+1;
 	}
-	var startPos = 0;
-	var endPos = 0;
-	var linePattern = /.+(?:\r\n?|\n)|.*$/g;
+	var lineStart = 0;
+	var lineEnd = 0;
+	var linePattern = /.*(?:\r\n?|\n)|.*$/g;
 	var locator = domBuilder.locator;
 	
 	var parseStack = [{currentNSMap:defaultNSMapCopy}];
 	var closeMap = {};
 	var start = 0;
 	while(true){
-		var i = source.indexOf('<',start);
-		if(i<0){
-			if(!source.substr(start).match(/^\s*$/)){
-				var doc = domBuilder.document;
-    			var text = doc.createTextNode(source.substr(start));
-    			doc.appendChild(text);
-    			domBuilder.currentElement = text;
-			}
-			return;
-		}
-		if(i>start){
-			appendText(i);
-		}
-		switch(source.charAt(i+1)){
-		case '/':
-			var end = source.indexOf('>',i+3);
-			var tagName = source.substring(i+2,end);
-			var config = parseStack.pop();
-			var localNSMap = config.localNSMap;
-			
-	        if(config.tagName != tagName){
-	            errorHandler.fatalError("end tag name: "+tagName+' is not match the current start tagName:'+config.tagName );
-	        }
-			domBuilder.endElement(config.uri,config.localName,tagName);
-			if(localNSMap){
-				for(var prefix in localNSMap){
-					domBuilder.endPrefixMapping(prefix) ;
+		try{
+			var tagStart = source.indexOf('<',start);
+			if(tagStart<0){
+				if(!source.substr(start).match(/^\s*$/)){
+					var doc = domBuilder.doc;
+	    			var text = doc.createTextNode(source.substr(start));
+	    			doc.appendChild(text);
+	    			domBuilder.currentElement = text;
 				}
+				return;
 			}
-			end++;
-			break;
-			// end elment
-		case '?':// <?...?>
-			locator&&position(i);
-			end = parseInstruction(source,i,domBuilder);
-			break;
-		case '!':// <!doctype,<![CDATA,<!--
-			locator&&position(i);
-			end = parseDCC(source,i,domBuilder,errorHandler);
-			break;
-		default:
-			try{
-				locator&&position(i);
-				
-				var el = new ElementAttributes();
-				
-				//elStartEnd
-				var end = parseElementStartPart(source,i,el,entityReplacer,errorHandler);
-				var len = el.length;
-				//position fixed
-				if(len && locator){
-					var backup = copyLocator(locator,{});
-					for(var i = 0;i<len;i++){
-						var a = el[i];
-						position(a.offset);
-						a.offset = copyLocator(locator,{});
+			if(tagStart>start){
+				appendText(tagStart);
+			}
+			switch(source.charAt(tagStart+1)){
+			case '/':
+				var end = source.indexOf('>',tagStart+3);
+				var tagName = source.substring(tagStart+2,end);
+				var config = parseStack.pop();
+				if(end<0){
+					
+	        		tagName = source.substring(tagStart+2).replace(/[\s<].*/,'');
+	        		//console.error('#@@@@@@'+tagName)
+	        		errorHandler.error("end tag name: "+tagName+' is not complete:'+config.tagName);
+	        		end = tagStart+1+tagName.length;
+	        	}else if(tagName.match(/\s</)){
+	        		tagName = tagName.replace(/[\s<].*/,'');
+	        		errorHandler.error("end tag name: "+tagName+' maybe not complete');
+	        		end = tagStart+1+tagName.length;
+				}
+				//console.error(parseStack.length,parseStack)
+				//console.error(config);
+				var localNSMap = config.localNSMap;
+				var endMatch = config.tagName == tagName;
+				var endIgnoreCaseMach = endMatch || config.tagName&&config.tagName.toLowerCase() == tagName.toLowerCase();
+		        if(endIgnoreCaseMach){
+		        	domBuilder.endElement(config.uri,config.localName,tagName);
+					if(localNSMap){
+						for(var prefix in localNSMap){
+							domBuilder.endPrefixMapping(prefix) ;
+						}
 					}
-					copyLocator(backup,locator);
-				}
+					if(!endMatch){
+		            	errorHandler.fatalError("end tag name: "+tagName+' is not match the current start tagName:'+config.tagName );
+					}
+		        }else{
+		        	parseStack.push(config);
+		        }
+				
+				end++;
+				break;
+				// end elment
+			case '?':// <?...?>
+				locator&&position(tagStart);
+				end = parseInstruction(source,tagStart,domBuilder);
+				break;
+			case '!':// <!doctype,<![CDATA,<!--
+				locator&&position(tagStart);
+				end = parseDCC(source,tagStart,domBuilder,errorHandler);
+				break;
+			default:
+				locator&&position(tagStart);
+				var el = new ElementAttributes();
+				var currentNSMap = parseStack[parseStack.length-1].currentNSMap;
+				//elStartEnd
+				var end = parseElementStartPart(source,tagStart,el,currentNSMap,entityReplacer,errorHandler);
+				var len = el.length;
+				
+				
 				if(!el.closed && fixSelfClosed(source,end,el.tagName,closeMap)){
 					el.closed = true;
 					if(!entityMap.nbsp){
 						errorHandler.warning('unclosed xml attribute');
 					}
 				}
-				appendElement(el,domBuilder,parseStack);
+				if(locator && len){
+					var locator2 = copyLocator(locator,{});
+					//try{//attribute position fixed
+					for(var i = 0;i<len;i++){
+						var a = el[i];
+						position(a.offset);
+						a.locator = copyLocator(locator,{});
+					}
+					//}catch(e){console.error('@@@@@'+e)}
+					domBuilder.locator = locator2;
+					if(appendElement(el,domBuilder,currentNSMap)){
+						parseStack.push(el);
+					}
+					domBuilder.locator = locator;
+				}else{
+					if(appendElement(el,domBuilder,currentNSMap)){
+						parseStack.push(el);
+					}
+				}
+				
 				
 				
 				if(el.uri === 'http://www.w3.org/1999/xhtml' && !el.closed){
@@ -39983,17 +40013,18 @@ function parse(source,defaultNSMapCopy,entityMap,domBuilder,errorHandler){
 				}else{
 					end++;
 				}
-			}catch(e){
-				errorHandler.error('element parse error: '+e);
-				end = -1;
 			}
-
+		}catch(e){
+			errorHandler.error('element parse error: '+e);
+			//errorHandler.error('element parse error: '+e);
+			end = -1;
+			//throw e;
 		}
-		if(end<0){
-			//TODO: 这里有可能sax回退，有位置错误风险
-			appendText(i+1);
-		}else{
+		if(end>start){
 			start = end;
+		}else{
+			//TODO: 这里有可能sax回退，有位置错误风险
+			appendText(Math.max(tagStart,start)+1);
 		}
 	}
 }
@@ -40001,14 +40032,13 @@ function copyLocator(f,t){
 	t.lineNumber = f.lineNumber;
 	t.columnNumber = f.columnNumber;
 	return t;
-	
 }
 
 /**
  * @see #appendElement(source,elStartEnd,el,selfClosed,entityReplacer,domBuilder,parseStack);
  * @return end of the elementStartPart(end of elementEndPart for selfClosed el)
  */
-function parseElementStartPart(source,start,el,entityReplacer,errorHandler){
+function parseElementStartPart(source,start,el,currentNSMap,entityReplacer,errorHandler){
 	var attrName;
 	var value;
 	var p = ++start;
@@ -40020,7 +40050,7 @@ function parseElementStartPart(source,start,el,entityReplacer,errorHandler){
 			if(s === S_ATTR){//attrName
 				attrName = source.slice(start,p);
 				s = S_EQ;
-			}else if(s === S_ATTR_S){
+			}else if(s === S_ATTR_SPACE){
 				s = S_EQ;
 			}else{
 				//fatalError: equal must after attrName or space after attrName
@@ -40029,25 +40059,30 @@ function parseElementStartPart(source,start,el,entityReplacer,errorHandler){
 			break;
 		case '\'':
 		case '"':
-			if(s === S_EQ){//equal
+			if(s === S_EQ || s === S_ATTR //|| s == S_ATTR_SPACE
+				){//equal
+				if(s === S_ATTR){
+					errorHandler.warning('attribute value must after "="');
+					attrName = source.slice(start,p);
+				}
 				start = p+1;
 				p = source.indexOf(c,start);
 				if(p>0){
 					value = source.slice(start,p).replace(/&#?\w+;/g,entityReplacer);
 					el.add(attrName,value,start-1);
-					s = S_E;
+					s = S_ATTR_END;
 				}else{
 					//fatalError: no end quot match
 					throw new Error('attribute value no end \''+c+'\' match');
 				}
-			}else if(s == S_V){
+			}else if(s == S_ATTR_NOQUOT_VALUE){
 				value = source.slice(start,p).replace(/&#?\w+;/g,entityReplacer);
 				//console.log(attrName,value,start,p)
 				el.add(attrName,value,start);
 				//console.dir(el)
 				errorHandler.warning('attribute "'+attrName+'" missed start quot('+c+')!!');
 				start = p+1;
-				s = S_E;
+				s = S_ATTR_END;
 			}else{
 				//fatalError: no equal before
 				throw new Error('attribute value must after "="');
@@ -40057,14 +40092,14 @@ function parseElementStartPart(source,start,el,entityReplacer,errorHandler){
 			switch(s){
 			case S_TAG:
 				el.setTagName(source.slice(start,p));
-			case S_E:
-			case S_S:
-			case S_C:
-				s = S_C;
+			case S_ATTR_END:
+			case S_TAG_SPACE:
+			case S_TAG_CLOSE:
+				s =S_TAG_CLOSE;
 				el.closed = true;
-			case S_V:
+			case S_ATTR_NOQUOT_VALUE:
 			case S_ATTR:
-			case S_ATTR_S:
+			case S_ATTR_SPACE:
 				break;
 			//case S_EQ:
 			default:
@@ -40074,30 +40109,36 @@ function parseElementStartPart(source,start,el,entityReplacer,errorHandler){
 		case ''://end document
 			//throw new Error('unexpected end of input')
 			errorHandler.error('unexpected end of input');
+			if(s == S_TAG){
+				el.setTagName(source.slice(start,p));
+			}
+			return p;
 		case '>':
 			switch(s){
 			case S_TAG:
 				el.setTagName(source.slice(start,p));
-			case S_E:
-			case S_S:
-			case S_C:
+			case S_ATTR_END:
+			case S_TAG_SPACE:
+			case S_TAG_CLOSE:
 				break;//normal
-			case S_V://Compatible state
+			case S_ATTR_NOQUOT_VALUE://Compatible state
 			case S_ATTR:
 				value = source.slice(start,p);
 				if(value.slice(-1) === '/'){
 					el.closed  = true;
 					value = value.slice(0,-1);
 				}
-			case S_ATTR_S:
-				if(s === S_ATTR_S){
+			case S_ATTR_SPACE:
+				if(s === S_ATTR_SPACE){
 					value = attrName;
 				}
-				if(s == S_V){
+				if(s == S_ATTR_NOQUOT_VALUE){
 					errorHandler.warning('attribute "'+value+'" missed quot(")!!');
 					el.add(attrName,value.replace(/&#?\w+;/g,entityReplacer),start);
 				}else{
-					errorHandler.warning('attribute "'+value+'" missed value!! "'+value+'" instead!!');
+					if(currentNSMap[''] !== 'http://www.w3.org/1999/xhtml' || !value.match(/^(?:disabled|checked|selected)$/i)){
+						errorHandler.warning('attribute "'+value+'" missed value!! "'+value+'" instead!!');
+					}
 					el.add(value,value,start);
 				}
 				break;
@@ -40114,64 +40155,68 @@ function parseElementStartPart(source,start,el,entityReplacer,errorHandler){
 				switch(s){
 				case S_TAG:
 					el.setTagName(source.slice(start,p));//tagName
-					s = S_S;
+					s = S_TAG_SPACE;
 					break;
 				case S_ATTR:
 					attrName = source.slice(start,p);
-					s = S_ATTR_S;
+					s = S_ATTR_SPACE;
 					break;
-				case S_V:
+				case S_ATTR_NOQUOT_VALUE:
 					var value = source.slice(start,p).replace(/&#?\w+;/g,entityReplacer);
 					errorHandler.warning('attribute "'+value+'" missed quot(")!!');
 					el.add(attrName,value,start);
-				case S_E:
-					s = S_S;
+				case S_ATTR_END:
+					s = S_TAG_SPACE;
 					break;
-				//case S_S:
+				//case S_TAG_SPACE:
 				//case S_EQ:
-				//case S_ATTR_S:
+				//case S_ATTR_SPACE:
 				//	void();break;
-				//case S_C:
+				//case S_TAG_CLOSE:
 					//ignore warning
 				}
 			}else{//not space
-//S_TAG,	S_ATTR,	S_EQ,	S_V
-//S_ATTR_S,	S_E,	S_S,	S_C
+//S_TAG,	S_ATTR,	S_EQ,	S_ATTR_NOQUOT_VALUE
+//S_ATTR_SPACE,	S_ATTR_END,	S_TAG_SPACE, S_TAG_CLOSE
 				switch(s){
 				//case S_TAG:void();break;
 				//case S_ATTR:void();break;
-				//case S_V:void();break;
-				case S_ATTR_S:
-					errorHandler.warning('attribute "'+attrName+'" missed value!! "'+attrName+'" instead!!');
+				//case S_ATTR_NOQUOT_VALUE:void();break;
+				case S_ATTR_SPACE:
+					var tagName =  el.tagName;
+					if(currentNSMap[''] !== 'http://www.w3.org/1999/xhtml' || !attrName.match(/^(?:disabled|checked|selected)$/i)){
+						errorHandler.warning('attribute "'+attrName+'" missed value!! "'+attrName+'" instead2!!');
+					}
 					el.add(attrName,attrName,start);
 					start = p;
 					s = S_ATTR;
 					break;
-				case S_E:
+				case S_ATTR_END:
 					errorHandler.warning('attribute space is required"'+attrName+'"!!');
-				case S_S:
+				case S_TAG_SPACE:
 					s = S_ATTR;
 					start = p;
 					break;
 				case S_EQ:
-					s = S_V;
+					s = S_ATTR_NOQUOT_VALUE;
 					start = p;
 					break;
-				case S_C:
+				case S_TAG_CLOSE:
 					throw new Error("elements closed character '/' and '>' must be connected to");
 				}
 			}
-		}
+		}//end outer switch
+		//console.log('p++',p)
 		p++;
 	}
 }
 /**
- * @return end of the elementStartPart(end of elementEndPart for selfClosed el)
+ * @return true if has new namespace define
  */
-function appendElement(el,domBuilder,parseStack){
+function appendElement(el,domBuilder,currentNSMap){
 	var tagName = el.tagName;
 	var localNSMap = null;
-	var currentNSMap = parseStack[parseStack.length-1].currentNSMap;
+	//var currentNSMap = parseStack[parseStack.length-1].currentNSMap;
 	var i = el.length;
 	while(i--){
 		var a = el[i];
@@ -40210,7 +40255,7 @@ function appendElement(el,domBuilder,parseStack){
 			if(prefix === 'xml'){
 				a.uri = 'http://www.w3.org/XML/1998/namespace';
 			}if(prefix !== 'xmlns'){
-				a.uri = currentNSMap[prefix];
+				a.uri = currentNSMap[prefix || ''];
 				
 				//{console.log('###'+a.qName,domBuilder.locator.systemId+'',currentNSMap,a.uri)}
 			}
@@ -40239,7 +40284,8 @@ function appendElement(el,domBuilder,parseStack){
 	}else{
 		el.currentNSMap = currentNSMap;
 		el.localNSMap = localNSMap;
-		parseStack.push(el);
+		//parseStack.push(el);
+		return true;
 	}
 }
 function parseHtmlSpecialContent(source,elStartEnd,tagName,entityReplacer,domBuilder){
@@ -40269,7 +40315,11 @@ function fixSelfClosed(source,elStartEnd,tagName,closeMap){
 	var pos = closeMap[tagName];
 	if(pos == null){
 		//console.log(tagName)
-		pos = closeMap[tagName] = source.lastIndexOf('</'+tagName+'>');
+		pos =  source.lastIndexOf('</'+tagName+'>');
+		if(pos<elStartEnd){//忘记闭合
+			pos = source.lastIndexOf('</'+tagName);
+		}
+		closeMap[tagName] =pos;
 	}
 	return pos<elStartEnd;
 	//} 
@@ -40360,7 +40410,7 @@ ElementAttributes.prototype = {
 	},
 	length:0,
 	getLocalName:function(i){return this[i].localName},
-	getOffset:function(i){return this[i].offset},
+	getLocator:function(i){return this[i].locator},
 	getQName:function(i){return this[i].qName},
 	getURI:function(i){return this[i].uri},
 	getValue:function(i){return this[i].value}
@@ -40407,12 +40457,12 @@ function split(source,start){
 	}
 }
 
-if(typeof commonjsRequire == 'function'){
-	exports.XMLReader = XMLReader;
-}
-});
+var XMLReader_1 = XMLReader;
 
-var dom = createCommonjsModule(function (module, exports) {
+var sax = {
+	XMLReader: XMLReader_1
+};
+
 /*
  * DOM Level 2
  * Object DOMException
@@ -40420,7 +40470,7 @@ var dom = createCommonjsModule(function (module, exports) {
  * @see http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html
  */
 
-function copy(src,dest){
+function copy$1(src,dest){
 	for(var p in src){
 		dest[p] = src[p];
 	}
@@ -40439,7 +40489,7 @@ function _extends(Class,Super){
 		function t(){}
 		t.prototype = Super.prototype;
 		t = new t();
-		copy(pt,t);
+		copy$1(pt,t);
 		Class.prototype = pt = t;
 	}
 	if(pt.constructor != Class){
@@ -40500,7 +40550,7 @@ function DOMException(code, message) {
 	return error;
 }
 DOMException.prototype = Error.prototype;
-copy(ExceptionCode,DOMException);
+copy$1(ExceptionCode,DOMException);
 /**
  * @see http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/core.html#ID-536297177
  * The NodeList interface provides the abstraction of an ordered collection of nodes, without defining or constraining how this collection is implemented. NodeList objects in the DOM are live.
@@ -40524,6 +40574,12 @@ NodeList.prototype = {
 	 */
 	item: function(index) {
 		return this[index] || null;
+	},
+	toString:function(isHTML,nodeFilter){
+		for(var buf = [], i = 0;i<this.length;i++){
+			serializeToString(this[i],buf,isHTML,nodeFilter);
+		}
+		return buf.join('');
 	}
 };
 function LiveNodeList(node,refresh){
@@ -40537,7 +40593,7 @@ function _updateLiveList(list){
 		var ls = list._refresh(list._node);
 		//console.log(ls.length)
 		__set__(list,'length',ls.length);
-		copy(ls,list);
+		copy$1(ls,list);
 		list._inc = inc;
 	}
 }
@@ -40579,6 +40635,7 @@ function _addNamedNode(el,list,newAttr,oldAttr){
 	}
 }
 function _removeNamedNode(el,list,attr){
+	//console.log('remove attr:'+attr)
 	var i = _findNodeIndex(list,attr);
 	if(i>=0){
 		var lastIndex = list.length-1;
@@ -40594,7 +40651,7 @@ function _removeNamedNode(el,list,attr){
 			}
 		}
 	}else{
-		throw DOMException(NOT_FOUND_ERR,new Error())
+		throw DOMException(NOT_FOUND_ERR,new Error(el.tagName+'@'+attr))
 	}
 }
 NamedNodeMap.prototype = {
@@ -40604,9 +40661,11 @@ NamedNodeMap.prototype = {
 //		if(key.indexOf(':')>0 || key == 'xmlns'){
 //			return null;
 //		}
+		//console.log()
 		var i = this.length;
 		while(i--){
 			var attr = this[i];
+			//console.log(attr.nodeName,key)
 			if(attr.nodeName == key){
 				return attr;
 			}
@@ -40661,7 +40720,7 @@ NamedNodeMap.prototype = {
 /**
  * @see http://www.w3.org/TR/REC-DOM-Level-1/level-one-core.html#ID-102161490
  */
-function DOMImplementation(/* Object */ features) {
+function DOMImplementation$1(/* Object */ features) {
 	this._features = {};
 	if (features) {
 		for (var feature in features) {
@@ -40670,7 +40729,7 @@ function DOMImplementation(/* Object */ features) {
 	}
 }
 
-DOMImplementation.prototype = {
+DOMImplementation$1.prototype = {
 	hasFeature: function(/* string */ feature, /* string */ version) {
 		var versions = this._features[feature.toLowerCase()];
 		if (versions && (!version || version in versions)) {
@@ -40682,12 +40741,12 @@ DOMImplementation.prototype = {
 	// Introduced in DOM Level 2:
 	createDocument:function(namespaceURI,  qualifiedName, doctype){// raises:INVALID_CHARACTER_ERR,NAMESPACE_ERR,WRONG_DOCUMENT_ERR
 		var doc = new Document();
+		doc.implementation = this;
+		doc.childNodes = new NodeList();
 		doc.doctype = doctype;
 		if(doctype){
 			doc.appendChild(doctype);
 		}
-		doc.implementation = this;
-		doc.childNodes = new NodeList();
 		if(qualifiedName){
 			var root = doc.createElementNS(namespaceURI,qualifiedName);
 			doc.appendChild(root);
@@ -40716,10 +40775,10 @@ DOMImplementation.prototype = {
  * @see http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/core.html#ID-1950641247
  */
 
-function Node() {
+function Node$3() {
 }
 
-Node.prototype = {
+Node$3.prototype = {
 	firstChild : null,
 	lastChild : null,
 	previousSibling : null,
@@ -40788,7 +40847,7 @@ Node.prototype = {
     				}
     			}
     		}
-    		el = el.nodeType == 2?el.ownerDocument : el.parentNode;
+    		el = el.nodeType == ATTRIBUTE_NODE?el.ownerDocument : el.parentNode;
     	}
     	return null;
     },
@@ -40803,7 +40862,7 @@ Node.prototype = {
     				return map[prefix] ;
     			}
     		}
-    		el = el.nodeType == 2?el.ownerDocument : el.parentNode;
+    		el = el.nodeType == ATTRIBUTE_NODE?el.ownerDocument : el.parentNode;
     	}
     	return null;
     },
@@ -40824,8 +40883,8 @@ function _xmlEncoder(c){
 }
 
 
-copy(NodeType,Node);
-copy(NodeType,Node.prototype);
+copy$1(NodeType,Node$3);
+copy$1(NodeType,Node$3.prototype);
 
 /**
  * @param callback return true for continue,false for break
@@ -40988,7 +41047,7 @@ Document.prototype = {
 			}
 			return newChild;
 		}
-		if(this.documentElement == null && newChild.nodeType == 1){
+		if(this.documentElement == null && newChild.nodeType == ELEMENT_NODE){
 			this.documentElement = newChild;
 		}
 		
@@ -41008,7 +41067,7 @@ Document.prototype = {
 	getElementById :	function(id){
 		var rtv = null;
 		_visitNode(this.documentElement,function(node){
-			if(node.nodeType == 1){
+			if(node.nodeType == ELEMENT_NODE){
 				if(node.getAttribute('id') == id){
 					rtv = node;
 					return true;
@@ -41114,7 +41173,7 @@ Document.prototype = {
 		return node;
 	}
 };
-_extends(Document,Node);
+_extends(Document,Node$3);
 
 
 function Element() {
@@ -41157,6 +41216,7 @@ Element.prototype = {
 		return this.attributes.setNamedItemNS(newAttr);
 	},
 	removeAttributeNode : function(oldAttr){
+		//console.log(this == oldAttr.ownerElement)
 		return this.attributes.removeNamedItem(oldAttr.nodeName);
 	},
 	//get real attribute name,and remove it by removeAttributeNode
@@ -41174,7 +41234,7 @@ Element.prototype = {
 	},
 	setAttributeNS : function(namespaceURI, qualifiedName, value){
 		var attr = this.ownerDocument.createAttributeNS(namespaceURI, qualifiedName);
-		attr.value = attr.nodeValue = value;
+		attr.value = attr.nodeValue = "" + value;
 		this.setAttributeNode(attr);
 	},
 	getAttributeNodeNS : function(namespaceURI, localName){
@@ -41196,11 +41256,12 @@ Element.prototype = {
 		return new LiveNodeList(this,function(base){
 			var ls = [];
 			_visitNode(base,function(node){
-				if(node !== base && node.nodeType === ELEMENT_NODE && node.namespaceURI === namespaceURI && (localName === '*' || node.localName == localName)){
+				if(node !== base && node.nodeType === ELEMENT_NODE && (namespaceURI === '*' || node.namespaceURI === namespaceURI) && (localName === '*' || node.localName == localName)){
 					ls.push(node);
 				}
 			});
 			return ls;
+			
 		});
 	}
 };
@@ -41208,11 +41269,11 @@ Document.prototype.getElementsByTagName = Element.prototype.getElementsByTagName
 Document.prototype.getElementsByTagNameNS = Element.prototype.getElementsByTagNameNS;
 
 
-_extends(Element,Node);
+_extends(Element,Node$3);
 function Attr() {
 }
 Attr.prototype.nodeType = ATTRIBUTE_NODE;
-_extends(Attr,Node);
+_extends(Attr,Node$3);
 
 
 function CharacterData() {
@@ -41232,10 +41293,7 @@ CharacterData.prototype = {
 	
 	},
 	appendChild:function(newChild){
-		//if(!(newChild instanceof CharacterData)){
-			throw new Error(ExceptionMessage[3])
-		//}
-		return Node.prototype.appendChild.apply(this,arguments)
+		throw new Error(ExceptionMessage[HIERARCHY_REQUEST_ERR])
 	},
 	deleteData: function(offset, count) {
 		this.replaceData(offset,count,"");
@@ -41248,7 +41306,7 @@ CharacterData.prototype = {
 		this.length = text.length;
 	}
 };
-_extends(CharacterData,Node);
+_extends(CharacterData,Node$3);
 function Text() {
 }
 Text.prototype = {
@@ -41288,65 +41346,161 @@ _extends(CDATASection,CharacterData);
 function DocumentType() {
 }
 DocumentType.prototype.nodeType = DOCUMENT_TYPE_NODE;
-_extends(DocumentType,Node);
+_extends(DocumentType,Node$3);
 
 function Notation() {
 }
 Notation.prototype.nodeType = NOTATION_NODE;
-_extends(Notation,Node);
+_extends(Notation,Node$3);
 
 function Entity() {
 }
 Entity.prototype.nodeType = ENTITY_NODE;
-_extends(Entity,Node);
+_extends(Entity,Node$3);
 
 function EntityReference() {
 }
 EntityReference.prototype.nodeType = ENTITY_REFERENCE_NODE;
-_extends(EntityReference,Node);
+_extends(EntityReference,Node$3);
 
 function DocumentFragment() {
 }
 DocumentFragment.prototype.nodeName =	"#document-fragment";
 DocumentFragment.prototype.nodeType =	DOCUMENT_FRAGMENT_NODE;
-_extends(DocumentFragment,Node);
+_extends(DocumentFragment,Node$3);
 
 
 function ProcessingInstruction() {
 }
 ProcessingInstruction.prototype.nodeType = PROCESSING_INSTRUCTION_NODE;
-_extends(ProcessingInstruction,Node);
-function XMLSerializer(){}
-XMLSerializer.prototype.serializeToString = function(node){
+_extends(ProcessingInstruction,Node$3);
+function XMLSerializer$2(){}
+XMLSerializer$2.prototype.serializeToString = function(node,isHtml,nodeFilter){
+	return nodeSerializeToString.call(node,isHtml,nodeFilter);
+};
+Node$3.prototype.toString = nodeSerializeToString;
+function nodeSerializeToString(isHtml,nodeFilter){
 	var buf = [];
-	serializeToString(node,buf);
+	var refNode = this.nodeType == 9?this.documentElement:this;
+	var prefix = refNode.prefix;
+	var uri = refNode.namespaceURI;
+	
+	if(uri && prefix == null){
+		//console.log(prefix)
+		var prefix = refNode.lookupPrefix(uri);
+		if(prefix == null){
+			//isHTML = true;
+			var visibleNamespaces=[
+			{namespace:uri,prefix:null}
+			//{namespace:uri,prefix:''}
+			];
+		}
+	}
+	serializeToString(this,buf,isHtml,nodeFilter,visibleNamespaces);
+	//console.log('###',this.nodeType,uri,prefix,buf.join(''))
 	return buf.join('');
-};
-Node.prototype.toString =function(){
-	return XMLSerializer.prototype.serializeToString(this);
-};
-function serializeToString(node,buf){
+}
+function needNamespaceDefine(node,isHTML, visibleNamespaces) {
+	var prefix = node.prefix||'';
+	var uri = node.namespaceURI;
+	if (!prefix && !uri){
+		return false;
+	}
+	if (prefix === "xml" && uri === "http://www.w3.org/XML/1998/namespace" 
+		|| uri == 'http://www.w3.org/2000/xmlns/'){
+		return false;
+	}
+	
+	var i = visibleNamespaces.length; 
+	//console.log('@@@@',node.tagName,prefix,uri,visibleNamespaces)
+	while (i--) {
+		var ns = visibleNamespaces[i];
+		// get namespace prefix
+		//console.log(node.nodeType,node.tagName,ns.prefix,prefix)
+		if (ns.prefix == prefix){
+			return ns.namespace != uri;
+		}
+	}
+	//console.log(isHTML,uri,prefix=='')
+	//if(isHTML && prefix ==null && uri == 'http://www.w3.org/1999/xhtml'){
+	//	return false;
+	//}
+	//node.flag = '11111'
+	//console.error(3,true,node.flag,node.prefix,node.namespaceURI)
+	return true;
+}
+function serializeToString(node,buf,isHTML,nodeFilter,visibleNamespaces){
+	if(nodeFilter){
+		node = nodeFilter(node);
+		if(node){
+			if(typeof node == 'string'){
+				buf.push(node);
+				return;
+			}
+		}else{
+			return;
+		}
+		//buf.sort.apply(attrs, attributeSorter);
+	}
 	switch(node.nodeType){
 	case ELEMENT_NODE:
+		if (!visibleNamespaces) visibleNamespaces = [];
+		var startVisibleNamespaces = visibleNamespaces.length;
 		var attrs = node.attributes;
 		var len = attrs.length;
 		var child = node.firstChild;
 		var nodeName = node.tagName;
-		var isHTML = htmlns === node.namespaceURI;
+		
+		isHTML =  (htmlns === node.namespaceURI) ||isHTML; 
 		buf.push('<',nodeName);
+		
+		
+		
 		for(var i=0;i<len;i++){
-			serializeToString(attrs.item(i),buf,isHTML);
+			// add namespaces for attributes
+			var attr = attrs.item(i);
+			if (attr.prefix == 'xmlns') {
+				visibleNamespaces.push({ prefix: attr.localName, namespace: attr.value });
+			}else if(attr.nodeName == 'xmlns'){
+				visibleNamespaces.push({ prefix: '', namespace: attr.value });
+			}
 		}
+		for(var i=0;i<len;i++){
+			var attr = attrs.item(i);
+			if (needNamespaceDefine(attr,isHTML, visibleNamespaces)) {
+				var prefix = attr.prefix||'';
+				var uri = attr.namespaceURI;
+				var ns = prefix ? ' xmlns:' + prefix : " xmlns";
+				buf.push(ns, '="' , uri , '"');
+				visibleNamespaces.push({ prefix: prefix, namespace:uri });
+			}
+			serializeToString(attr,buf,isHTML,nodeFilter,visibleNamespaces);
+		}
+		// add namespace for current node		
+		if (needNamespaceDefine(node,isHTML, visibleNamespaces)) {
+			var prefix = node.prefix||'';
+			var uri = node.namespaceURI;
+			var ns = prefix ? ' xmlns:' + prefix : " xmlns";
+			buf.push(ns, '="' , uri , '"');
+			visibleNamespaces.push({ prefix: prefix, namespace:uri });
+		}
+		
 		if(child || isHTML && !/^(?:meta|link|img|br|hr|input)$/i.test(nodeName)){
 			buf.push('>');
 			//if is cdata child node
 			if(isHTML && /^script$/i.test(nodeName)){
-				if(child){
-					buf.push(child.data);
-				}
-			}else{
 				while(child){
-					serializeToString(child,buf);
+					if(child.data){
+						buf.push(child.data);
+					}else{
+						serializeToString(child,buf,isHTML,nodeFilter,visibleNamespaces);
+					}
+					child = child.nextSibling;
+				}
+			}else
+			{
+				while(child){
+					serializeToString(child,buf,isHTML,nodeFilter,visibleNamespaces);
 					child = child.nextSibling;
 				}
 			}
@@ -41354,12 +41508,14 @@ function serializeToString(node,buf){
 		}else{
 			buf.push('/>');
 		}
+		// remove added visible namespaces
+		//visibleNamespaces.length = startVisibleNamespaces;
 		return;
 	case DOCUMENT_NODE:
 	case DOCUMENT_FRAGMENT_NODE:
 		var child = node.firstChild;
 		while(child){
-			serializeToString(child,buf);
+			serializeToString(child,buf,isHTML,nodeFilter,visibleNamespaces);
 			child = child.nextSibling;
 		}
 		return;
@@ -41498,14 +41654,14 @@ try{
 				return this.$$length;
 			}
 		});
-		Object.defineProperty(Node.prototype,'textContent',{
+		Object.defineProperty(Node$3.prototype,'textContent',{
 			get:function(){
 				return getTextContent(this);
 			},
 			set:function(data){
 				switch(this.nodeType){
-				case 1:
-				case 11:
+				case ELEMENT_NODE:
+				case DOCUMENT_FRAGMENT_NODE:
 					while(this.firstChild){
 						this.removeChild(this.firstChild);
 					}
@@ -41516,7 +41672,7 @@ try{
 				default:
 					//TODO:
 					this.data = data;
-					this.value = value;
+					this.value = data;
 					this.nodeValue = data;
 				}
 			}
@@ -41524,8 +41680,8 @@ try{
 		
 		function getTextContent(node){
 			switch(node.nodeType){
-			case 1:
-			case 11:
+			case ELEMENT_NODE:
+			case DOCUMENT_FRAGMENT_NODE:
 				var buf = [];
 				node = node.firstChild;
 				while(node){
@@ -41547,18 +41703,22 @@ try{
 }catch(e){//ie8
 }
 
-if(typeof commonjsRequire == 'function'){
-	exports.DOMImplementation = DOMImplementation;
-	exports.XMLSerializer = XMLSerializer;
-}
-});
+//if(typeof require == 'function'){
+	var DOMImplementation_1 = DOMImplementation$1;
+	var XMLSerializer_1 = XMLSerializer$2;
+//}
+
+var dom = {
+	DOMImplementation: DOMImplementation_1,
+	XMLSerializer: XMLSerializer_1
+};
 
 var domParser = createCommonjsModule(function (module, exports) {
 function DOMParser(options){
 	this.options = options ||{locator:{}};
 	
 }
-DOMParser.prototype.parseFromString = function(source,mimeType){	
+DOMParser.prototype.parseFromString = function(source,mimeType){
 	var options = this.options;
 	var sax$$1 =  new XMLReader();
 	var domBuilder = options.domBuilder || new DOMHandler();//contentHandler and LexicalHandler
@@ -41577,12 +41737,13 @@ DOMParser.prototype.parseFromString = function(source,mimeType){
 		entityMap.copy = '\xa9';
 		defaultNSMap['']= 'http://www.w3.org/1999/xhtml';
 	}
+	defaultNSMap.xml = defaultNSMap.xml || 'http://www.w3.org/XML/1998/namespace';
 	if(source){
 		sax$$1.parse(source,defaultNSMap,entityMap);
 	}else{
-		sax$$1.errorHandler.error("invalid document source");
+		sax$$1.errorHandler.error("invalid doc source");
 	}
-	return domBuilder.document;
+	return domBuilder.doc;
 };
 function buildErrorHandler(errorImpl,domBuilder,locator){
 	if(!errorImpl){
@@ -41596,27 +41757,20 @@ function buildErrorHandler(errorImpl,domBuilder,locator){
 	locator = locator||{};
 	function build(key){
 		var fn = errorImpl[key];
-		if(!fn){
-			if(isCallback){
-				fn = errorImpl.length == 2?function(msg){errorImpl(key,msg);}:errorImpl;
-			}else{
-				var i=arguments.length;
-				while(--i){
-					if(fn = errorImpl[arguments[i]]){
-						break;
-					}
-				}
-			}
+		if(!fn && isCallback){
+			fn = errorImpl.length == 2?function(msg){errorImpl(key,msg);}:errorImpl;
 		}
 		errorHandler[key] = fn && function(msg){
-			fn(msg+_locator(locator));
+			fn('[xmldom '+key+']\t'+msg+_locator(locator));
 		}||function(){};
 	}
-	build('warning','warn');
-	build('error','warn','warning');
-	build('fatalError','warn','warning','error');
+	build('warning');
+	build('error');
+	build('fatalError');
 	return errorHandler;
 }
+
+//console.log('#\n\n\n\n\n\n\n####')
 /**
  * +ContentHandler+ErrorHandler
  * +LexicalHandler+EntityResolver2
@@ -41639,13 +41793,13 @@ function position(locator,node){
  */ 
 DOMHandler.prototype = {
 	startDocument : function() {
-    	this.document = new DOMImplementation().createDocument(null, null, null);
+    	this.doc = new DOMImplementation().createDocument(null, null, null);
     	if (this.locator) {
-        	this.document.documentURI = this.locator.systemId;
+        	this.doc.documentURI = this.locator.systemId;
     	}
 	},
 	startElement:function(namespaceURI, localName, qName, attrs) {
-		var doc = this.document;
+		var doc = this.doc;
 	    var el = doc.createElementNS(namespaceURI, qName||localName);
 	    var len = attrs.length;
 	    appendElement(this, el);
@@ -41657,24 +41811,22 @@ DOMHandler.prototype = {
 	        var value = attrs.getValue(i);
 	        var qName = attrs.getQName(i);
 			var attr = doc.createAttributeNS(namespaceURI, qName);
-			if( attr.getOffset){
-				position(attr.getOffset(1),attr);
-			}
+			this.locator &&position(attrs.getLocator(i),attr);
 			attr.value = attr.nodeValue = value;
 			el.setAttributeNode(attr);
 	    }
 	},
 	endElement:function(namespaceURI, localName, qName) {
 		var current = this.currentElement;
-	    var tagName = current.tagName;
-	    this.currentElement = current.parentNode;
+		var tagName = current.tagName;
+		this.currentElement = current.parentNode;
 	},
 	startPrefixMapping:function(prefix, uri) {
 	},
 	endPrefixMapping:function(prefix) {
 	},
 	processingInstruction:function(target, data) {
-	    var ins = this.document.createProcessingInstruction(target, data);
+	    var ins = this.doc.createProcessingInstruction(target, data);
 	    this.locator && position(this.locator,ins);
 	    appendElement(this, ins);
 	},
@@ -41683,13 +41835,17 @@ DOMHandler.prototype = {
 	characters:function(chars, start, length) {
 		chars = _toString.apply(this,arguments);
 		//console.log(chars)
-		if(this.currentElement && chars){
+		if(chars){
 			if (this.cdata) {
-				var charNode = this.document.createCDATASection(chars);
-				this.currentElement.appendChild(charNode);
+				var charNode = this.doc.createCDATASection(chars);
 			} else {
-				var charNode = this.document.createTextNode(chars);
+				var charNode = this.doc.createTextNode(chars);
+			}
+			if(this.currentElement){
 				this.currentElement.appendChild(charNode);
+			}else if(/^\s*$/.test(chars)){
+				this.doc.appendChild(charNode);
+				//process xml
 			}
 			this.locator && position(this.locator,charNode);
 		}
@@ -41697,7 +41853,7 @@ DOMHandler.prototype = {
 	skippedEntity:function(name) {
 	},
 	endDocument:function() {
-		this.document.normalize();
+		this.doc.normalize();
 	},
 	setDocumentLocator:function (locator) {
 	    if(this.locator = locator){// && !('lineNumber' in locator)){
@@ -41707,7 +41863,7 @@ DOMHandler.prototype = {
 	//LexicalHandler
 	comment:function(chars, start, length) {
 		chars = _toString.apply(this,arguments);
-	    var comm = this.document.createComment(chars);
+	    var comm = this.doc.createComment(chars);
 	    this.locator && position(this.locator,comm);
 	    appendElement(this, comm);
 	},
@@ -41721,7 +41877,7 @@ DOMHandler.prototype = {
 	},
 	
 	startDTD:function(name, publicId, systemId) {
-		var impl = this.document.implementation;
+		var impl = this.doc.implementation;
 	    if (impl && impl.createDocumentType) {
 	        var dt = impl.createDocumentType(name, publicId, systemId);
 	        this.locator && position(this.locator,dt);
@@ -41733,13 +41889,13 @@ DOMHandler.prototype = {
 	 * @link http://www.saxproject.org/apidoc/org/xml/sax/ErrorHandler.html
 	 */
 	warning:function(error) {
-		console.warn(error,_locator(this.locator));
+		console.warn('[xmldom warning]\t'+error,_locator(this.locator));
 	},
 	error:function(error) {
-		console.error(error,_locator(this.locator));
+		console.error('[xmldom error]\t'+error,_locator(this.locator));
 	},
 	fatalError:function(error) {
-		console.error(error,_locator(this.locator));
+		console.error('[xmldom fatalError]\t'+error,_locator(this.locator));
 	    throw error;
 	}
 };
@@ -41797,18 +41953,18 @@ function _toString(chars,start,length){
 /* Private static helpers treated below as private instance methods, so don't need to add these to the public API; we might use a Relator to also get rid of non-standard public properties */
 function appendElement (hander,node) {
     if (!hander.currentElement) {
-        hander.document.appendChild(node);
+        hander.doc.appendChild(node);
     } else {
         hander.currentElement.appendChild(node);
     }
 }//appendChild and setAttributeNS are preformance key
 
-if(typeof commonjsRequire == 'function'){
+//if(typeof require == 'function'){
 	var XMLReader = sax.XMLReader;
 	var DOMImplementation = exports.DOMImplementation = dom.DOMImplementation;
 	exports.XMLSerializer = dom.XMLSerializer ;
 	exports.DOMParser = DOMParser;
-}
+//}
 });
 
 var togeojson = createCommonjsModule(function (module, exports) {
@@ -46174,9 +46330,8 @@ var useHttps = window.location.protocol === 'https:';
 var protocol = useHttps ? 'https:' : 'http:';
 var urlroot = protocol + '//www.openstreetmap.org';
 var blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'];
-var inflight$1 = {};
-var loadedTiles$1 = {};
-var loadedData = {};
+var inflight = {};
+var loadedTiles = {};
 var tileZoom$1 = 16;
 var oauth = index$11({
         url: urlroot,
@@ -46185,8 +46340,8 @@ var oauth = index$11({
         loading: authLoading,
         done: authDone
     });
-var rateLimitError$1;
-var userDetails$1;
+var rateLimitError;
+var userDetails;
 var off;
 
 
@@ -46214,11 +46369,11 @@ function getLoc(attrs) {
 }
 
 
-function getNodes(obj) {
+function getNodes(obj, mapId) {
     var elems = obj.getElementsByTagName('nd'),
         nodes = new Array(elems.length);
     for (var i = 0, l = elems.length; i < l; i++) {
-        nodes[i] = 'n' + elems[i].attributes.ref.value;
+        nodes[i] = 'n' + elems[i].attributes.ref.value + '_' + mapId;
     }
     return nodes;
 }
@@ -46229,19 +46384,19 @@ function getTags(obj) {
         tags = {};
     for (var i = 0, l = elems.length; i < l; i++) {
         var attrs = elems[i].attributes;
-        tags[attrs.k.value] = attrs.v.value;
+        tags[attrs.k.value] = decodeURIComponent(attrs.v.value);
     }
     return tags;
 }
 
 
-function getMembers(obj) {
+function getMembers(obj, mapId) {
     var elems = obj.getElementsByTagName('member'),
         members = new Array(elems.length);
     for (var i = 0, l = elems.length; i < l; i++) {
         var attrs = elems[i].attributes;
         members[i] = {
-            id: attrs.type.value[0] + attrs.ref.value,
+            id: attrs.type.value[0] + attrs.ref.value + '_' + mapId,
             type: attrs.type.value,
             role: attrs.role.value
         };
@@ -46256,10 +46411,11 @@ function getVisible(attrs) {
 
 
 var parsers = {
-    node: function nodeData(obj) {
+    node: function nodeData(obj, mapId) {
         var attrs = obj.attributes;
         return new osmNode({
-            id: osmEntity$$1.id.fromOSM('node', attrs.id.value),
+            id: osmEntity$$1.id.fromOSM('node', attrs.id.value + '_' + mapId),
+            osmid: osmEntity$$1.id.fromOSM('node', attrs.id.value),
             loc: getLoc(attrs),
             version: attrs.version.value,
             user: attrs.user && attrs.user.value,
@@ -46268,50 +46424,59 @@ var parsers = {
         });
     },
 
-    way: function wayData(obj) {
+    way: function wayData(obj, mapId) {
         var attrs = obj.attributes;
         return new osmWay({
-            id: osmEntity$$1.id.fromOSM('way', attrs.id.value),
+            id: osmEntity$$1.id.fromOSM('way', attrs.id.value + '_' + mapId),
+            osmid: osmEntity$$1.id.fromOSM('way', attrs.id.value),
             version: attrs.version.value,
             user: attrs.user && attrs.user.value,
             tags: getTags(obj),
-            nodes: getNodes(obj),
+            nodes: getNodes(obj, mapId),
             visible: getVisible(attrs)
         });
     },
 
-    relation: function relationData(obj) {
+    relation: function relationData(obj, mapId) {
         var attrs = obj.attributes;
         return new osmRelation({
-            id: osmEntity$$1.id.fromOSM('relation', attrs.id.value),
+            id: osmEntity$$1.id.fromOSM('relation', attrs.id.value + '_' + mapId),
+            osmid: osmEntity$$1.id.fromOSM('relation', attrs.id.value),
             version: attrs.version.value,
             user: attrs.user && attrs.user.value,
             tags: getTags(obj),
-            members: getMembers(obj),
+            members: getMembers(obj, mapId),
             visible: getVisible(attrs)
         });
     }
 };
 
 
-function parse(xml$$1) {
+function parse$1(xml$$1) {
     if (!xml$$1 || !xml$$1.childNodes) return;
 
     var root = xml$$1.childNodes[0],
         children = root.childNodes,
         entities = [];
+    //Map ID is included in hoot osm xml response
+    //append it to entity ids to avoid id collisions
+    //between datasets
+    var mapId = root.attributes.mapid.value;
 
     for (var i = 0, l = children.length; i < l; i++) {
         var child = children[i],
             parser = parsers[child.nodeName];
         if (parser) {
-            entities.push(parser(child));
+            entities.push(parser(child, mapId));
         }
     }
 
     return entities;
 }
 
+function getUrlRoot(path$$1) {
+    return (path$$1.indexOf('mapId') > -1) ? services.hoot.urlroot() : urlroot;
+}
 
 var serviceOsm = {
 
@@ -46321,11 +46486,11 @@ var serviceOsm = {
 
 
     reset: function() {
-        userDetails$1 = undefined;
-        rateLimitError$1 = undefined;
-        lodash.forEach(inflight$1, abortRequest$1);
-        loadedTiles$1 = {};
-        inflight$1 = {};
+        userDetails = undefined;
+        rateLimitError = undefined;
+        lodash.forEach(inflight, abortRequest$1);
+        loadedTiles = {};
+        inflight = {};
         return this;
     },
 
@@ -46371,14 +46536,14 @@ var serviceOsm = {
             } else {
                 // 509 Bandwidth Limit Exceeded, 429 Too Many Requests
                 // Set the rateLimitError flag and trigger a warning..
-                if (!isAuthenticated && !rateLimitError$1 && err &&
+                if (!isAuthenticated && !rateLimitError && err &&
                         (err.status === 509 || err.status === 429)) {
-                    rateLimitError$1 = err;
+                    rateLimitError = err;
                     dispatch$3.call('change');
                 }
 
                 if (callback) {
-                    callback(err, parse(xml$$1));
+                    callback(err, parse$1(xml$$1));
                 }
             }
         }
@@ -46386,7 +46551,7 @@ var serviceOsm = {
         if (this.authenticated()) {
             return oauth.xhr({ method: 'GET', path: path$$1 }, done);
         } else {
-            var url = urlroot + path$$1;
+            var url = getUrlRoot(path$$1) + path$$1;
             return xml(url).get(done);
         }
     },
@@ -46538,8 +46703,8 @@ var serviceOsm = {
 
 
     userDetails: function(callback) {
-        if (userDetails$1) {
-            callback(undefined, userDetails$1);
+        if (userDetails) {
+            callback(undefined, userDetails);
             return;
         }
 
@@ -46554,13 +46719,13 @@ var serviceOsm = {
                 image_url = img[0].getAttribute('href');
             }
 
-            userDetails$1 = {
+            userDetails = {
                 display_name: u.attributes.display_name.value,
                 image_url: image_url,
                 id: u.attributes.id.value
             };
 
-            callback(undefined, userDetails$1);
+            callback(undefined, userDetails);
         }
 
         oauth.xhr({ method: 'GET', path: '/api/0.6/user/details' }, done);
@@ -46607,8 +46772,8 @@ var serviceOsm = {
             }
 
 
-            if (rateLimitError$1) {
-                callback(rateLimitError$1, 'rateLimited');
+            if (rateLimitError) {
+                callback(rateLimitError, 'rateLimited');
             } else {
                 var apiStatus = xml$$1.getElementsByTagName('status'),
                     val = apiStatus[0].getAttribute('api');
@@ -46647,13 +46812,8 @@ var serviceOsm = {
             ];
 
         // Load from visible layers only
-        var visLayers = lodash.filter(loadedData, function (layer) {
-            return layer.vis;
-        });
-
-        // Get map ids of visible layers
-        var mapidArr = lodash.map(loadedData, function (layer) {
-            return layer.mapId;
+        var visLayers = lodash.filter(values(services.hoot.loadedLayers()), function (layer) {
+            return layer.visible;
         });
 
         var tiles = lodash.map(visLayers, function (layer) {
@@ -46669,10 +46829,10 @@ var serviceOsm = {
                     return {
                         id: tile.toString() + ',' + layer.id,
                         extent: geoExtent$$1(
-                            projection.invert([x, y + ts]),
-                            projection.invert([x + ts, y])),
-                            mapId: layer.id,
-                            layerName: layer.name
+                                    projection.invert([x, y + ts]),
+                                    projection.invert([x + ts, y])),
+                                mapId: layer.id,
+                                layerName: layer.name // even need?
                     };
                 });
             return _tiles;
@@ -46681,38 +46841,38 @@ var serviceOsm = {
         // transform multiple arrays into single so we can process
         tiles = lodash.flatten(tiles);
 
-        lodash.filter(inflight$1, function(v, i) {
+        lodash.filter(inflight, function(v, i) {
             var wanted = lodash.find(tiles, function(tile) {
                 return i === tile.id;
             });
-            if (!wanted) delete inflight$1[i];
+            if (!wanted) delete inflight[i];
             return !wanted;
         }).map(abortRequest$1);
 
         tiles.forEach(function(tile) {
             var id = tile.id;
 
-            if (loadedTiles$1[id] || inflight$1[id]) return;
+            if (loadedTiles[id] || inflight[id]) return;
 
-            if (lodash.isEmpty(inflight$1)) {
+            if (lodash.isEmpty(inflight)) {
                 dispatch$3.call('loading');
             }
 
-            inflight$1[id] = that.loadFromAPI(
-                that.bboxUrl(tile, tile.mapId, tile.layerName, 
+            inflight[id] = that.loadFromAPI(
+                that.bboxUrl(tile,
                     null, /*curLayer.extent*/
                     false), /*totalNodesCnt > iD.data.hootConfig.maxnodescount*/
                 function(err, parsed) {
-                    delete inflight$1[id];
+                    delete inflight[id];
                     if (!err) {
-                        loadedTiles$1[id] = true;
+                        loadedTiles[id] = true;
                     }
 
                     if (callback) {
                         callback(err, lodash.extend({ data: parsed }, tile));
                     }
 
-                    if (lodash.isEmpty(inflight$1)) {
+                    if (lodash.isEmpty(inflight)) {
                         dispatch$3.call('loaded');
                     }
                 }
@@ -46720,9 +46880,9 @@ var serviceOsm = {
         });
     },
 
-    bboxUrl: function(tile, mapId, layerName, layerExt, showbbox){
+    bboxUrl: function(tile, layerExt, showbbox){
         if(!tile){
-            return '/api/0.6/bbox=' + tile.extent.toParam();
+            return '/api/0.6/bbox=' + tile.extent.toParam(); //is this url valid?
         }
 
         var ext = '';
@@ -46730,13 +46890,13 @@ var serviceOsm = {
             //iD.data.hootConfig.hootMaxImportZoom = context.map().zoom();
             if (layerExt) {
                 var layerZoomObj = lodash.find(layerZoomArray, function(a){
-                    return mapId === a.mapId;
+                    return tile.mapId === a.mapId;
                 });
                 if(layerZoomObj){
                     layerZoomObj.zoomLevel = context.map().zoom();
                 } else {
                     layerZoomObj = {};
-                    layerZoomObj.mapId = mapId;
+                    layerZoomObj.mapId = tile.mapId;
                     layerZoomObj.zoomLevel = context.map().zoom();
                     layerZoomArray.push(layerZoomObj);
                 }
@@ -46745,7 +46905,17 @@ var serviceOsm = {
             }
         }
 
-        return '/api/0.6/map?mapId=' + mapId + '&bbox=' + tile.extent.toParam() + ext;
+        return '/api/0.6/map?bbox=' + tile.extent.toParam() + ((tile.mapId > -1) ? '&mapId=' + tile.mapId : '') + ext;
+    },
+
+    loadedDataRemove: function(mapid, callback){
+        lodash.each(loadedTiles, function (a, b) {
+            if (b.match(',' + mapid + '$')) {
+                delete loadedTiles[b];
+            }
+        });
+
+        if(callback){callback(mapid);}
     },
 
 
@@ -46770,14 +46940,14 @@ var serviceOsm = {
 
 
     loadedTiles: function(_) {
-        if (!arguments.length) return loadedTiles$1;
-        loadedTiles$1 = _;
+        if (!arguments.length) return loadedTiles;
+        loadedTiles = _;
         return this;
     },
 
 
     logout: function() {
-        userDetails$1 = undefined;
+        userDetails = undefined;
         oauth.logout();
         dispatch$3.call('change');
         return this;
@@ -46785,24 +46955,13 @@ var serviceOsm = {
 
 
     authenticate: function(callback) {
-        userDetails$1 = undefined;
+        userDetails = undefined;
         function done(err, res) {
-            rateLimitError$1 = undefined;
+            rateLimitError = undefined;
             dispatch$3.call('change');
             if (callback) callback(err, res);
         }
         return oauth.authenticate(done);
-    },
-
-    /* Added for Hootenanny */
-    loadData: function(options) {
-        var mapid = options.id;
-        loadedData[mapid] = options;
-        loadedData[mapid].vis = true;
-    },
-
-    loadedData: function(){
-        return loadedData;
     }
 };
 
@@ -47248,56 +47407,156 @@ var serviceWikipedia = {
 
 };
 
-var dispatch$4 = dispatch('loadedImages', 'loadedSigns');
-var layers = {};
+var availableLayers = {};
+var loadedLayers = {};
 
-function getAvailLayers(callback){
-    var request$$1 = json('/hoot-services/osm/api/0.6/map/layers');
-    request$$1.get(function (error, resp) {
-        if (error) {
-            alert('Get available layers failed!');
-            console.log(error);
-            callback(null);
-        } else {
-            layers = resp;
-            callback(resp);
-        }
-    });
+function getNodeMapnikSource(d) {
+    var source = {
+            name: d.name,
+            id: d.id,
+            type: 'tms',
+            description: d.name,
+            template: window.location.protocol + '//' + window.location.hostname
+                //+ Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.nodeMapnikServerPort)
+                + ':8000'
+                + '/?z={zoom}&x={x}&y={-y}&color='
+                + encodeURIComponent(services.hoot.palette(d.color))
+                + '&mapid=' + d.id,
+            scaleExtent: [0,16],
+            overzoom: false,
+            overlay: true
+        };
+    return source;
 }
 
 
 var serviceHoot = {
 
     init: function() {
-        utilRebind(this, dispatch$4, 'on');
+
     },
 
+    // getAvailableLayers: function() {
+    //     return availableLayers;
+    // },
 
-    reset: function() {
-        userDetails = undefined;
-        rateLimitError = undefined;
-        /*_.forEach(inflight, abortRequest);*/
-        loadedTiles = {};
-        inflight = {};
-        return this;
+    availableLayers: function(callback) {
+        json(this.urlroot() + '/api/0.6/map/layers', function (error, resp) {
+            if (error) {
+                alert('Get available layers failed!');
+                console.log(error);
+                    //callback(null); Do we even need to callback?
+            } else {
+                callback(resp.layers);
+                    availableLayers = resp.layers.reduce(function(lyrs, lyr) {
+                        lyrs[lyr.id] = lyr.name;
+                        return lyrs;
+                    }, {});
+            }
+        });
     },
 
-    getLayers: function(){
-        return layers;
-    },
-
-    availLayers: function(callback){
-        var availLayers = getAvailLayers(callback);
-    },
-
-    submitLayer: function(lyr, isPrimary, callback){
+    loadLayer: function(mapid, isPrimary, callback) {
         //TODO: need to check if another layer is loading
 
-        var color$$1 = isPrimary? 'orange' : 'purple';
-        if (lyr === ''){return;}
+        var color$$1 = isPrimary ? 'orange' : 'purple';
 
-        var key = layers.layers.filter(function(d){return d.name===lyr}).pop();
-        services.osm.loadData(key);
+        var mapid = availableLayers[mapid];
+        json(services.hoot.urlroot() + '/api/0.6/map/tags?mapid=' + mapid, function (error, tags) {
+            if (error) {
+                alert('Get map tags failed!');
+                console.log(error);
+                //callback(null);
+            } else {
+                console.log(tags);
+                json(services.hoot.urlroot() + '/api/0.6/map/mbr?mapId=' + mapid, function (error, mbr) {
+                    if (error) {
+                        alert('Get map extent failed!');
+                        console.log(error);
+                        //callback(null);
+                    } else {
+                        loadedLayers[mapid] = {
+                            name: name,
+                            id: mapid,
+                            color: color$$1,
+                            visible: true
+                        };
+                        if (tags) {
+
+                        }
+                        //Add css rule to render features
+                        services.hoot.changeLayerColor(mapid, color$$1);
+                        //Zoom map to layer extent & Add node-mapnik tile layer
+                        var min$$1 = [mbr.minlon, mbr.minlat],
+                            max$$1 = [mbr.maxlon, mbr.maxlat];
+                        if (callback) callback([min$$1, max$$1], getNodeMapnikSource(loadedLayers[mapid]));
+                    }
+                });
+            }
+        });
+    },
+
+    removeLayer: function(mapid, callback) {
+        var lyr = loadedLayers[mapid];
+        if(callback){
+            callback(getNodeMapnikSource(lyr));
+        }
+        delete loadedLayers[mapid];
+    },
+
+    loadedLayers: function() {
+        return loadedLayers;
+    },
+
+    palette: function(co) {
+        var palette = [{
+                name: 'gold',
+                hex: '#ffcc00'
+        }, {
+                name: 'orange',
+                hex: '#ff7f2a'
+        }, {
+                name: 'violet',
+                hex: '#ff5599'
+        }, {
+                name: 'purple',
+                hex: '#e580ff'
+        }, {
+                name: 'blue',
+                hex: '#5fbcd3'
+        }, {
+                name: 'teal',
+                hex: '#5fd3bc'
+        }, {
+                name: 'green',
+                hex: '#A7C973'
+        }, {
+                name: 'osm',
+                hex: ''
+        }];
+        if (!co) return palette;
+        var obj = lodash.find(palette, function(a) {
+            return a.name === co || a.hex === co;
+        });
+        if (obj===undefined) {
+            obj = palette[1];
+            co = obj.name;
+        }
+        return (obj.name === co) ? obj.hex : obj.name;
+    },
+
+    changeLayerColor: function(mapid, color$$1) {
+        var sheets = document.styleSheets[document.styleSheets.length - 1];
+        color$$1 = this.palette(color$$1);
+        var lighter = rgb(color$$1).brighter();
+        sheets.insertRule('path.stroke.tag-hoot-' + mapid + ' { stroke:' + color$$1 + '}', sheets.cssRules.length - 1);
+        sheets.insertRule('path.shadow.tag-hoot-' + mapid + ' { stroke:' + lighter + '}', sheets.cssRules.length - 1);
+        sheets.insertRule('path.fill.tag-hoot-' + mapid + ' { fill:' + lighter + '}', sheets.cssRules.length - 1);
+        sheets.insertRule('g.point.tag-hoot-' + mapid + ' .stroke { fill:' + color$$1 + '}', sheets.cssRules.length - 1);
+    },
+
+    urlroot: function() {
+        return '/hoot-services/osm';
     }
 };
 
@@ -48251,6 +48510,33 @@ function svgTagClasses() {
                 }
                 if (!paved) {
                     classes += ' tag-unpaved';
+                }
+            }
+
+            // Set a marker class on hoot entities
+            // used for assigning layer color
+            if (entity.id && entity.osmid) {
+                var mapid = entity.id.replace(entity.osmid + '_', '');
+
+                // For merged datasets, assign color class of source layer
+                var lyr = services.hoot.loadedLayers()[mapid];
+                if (lyr && lyr.merged) {
+                    var id;
+                    var sourceid = parseInt(t['hoot:status']);
+                    switch(sourceid) {
+                    case 1:
+                    case 2:
+                        id = lyr.tags;
+                        break;
+                    case 0:
+                    case 3:
+                    default:
+                        id = mapid;
+                        break;
+                    }
+                    classes += ' tag-hoot-' + (id || sourceid);
+                } else {
+                    classes += ' tag-hoot-' + mapid;
                 }
             }
 
@@ -52979,6 +53265,19 @@ function rendererBackground(context) {
         context.history().imageryUsed(imageryUsed);
     };
 
+
+    background.addSource = function(d) {
+        var source = rendererBackgroundSource(d);
+        backgroundSources.push(source);
+        background.toggleOverlayLayer(source);
+    };
+
+    background.removeSource = function(d,callback) {
+        var source = rendererBackgroundSource(d);
+        lodash.remove(backgroundSources, {id:source.id});
+        
+        if(callback){callback(source.id);}
+    };
 
     background.sources = function(extent$$1) {
         return backgroundSources.filter(function(source) {
@@ -64205,121 +64504,103 @@ function uiNotice(context) {
 function uiLayerMenu(context) {
 
     return function(selection$$1) {
-        var _form = null;
 
         var data = [
-            {isPrimary:true, id:'refDatset',text:'Add Reference Dataset'},
-            {isPrimary:false, id:'secondaryDataset', text: 'Add Secondary Dataset'}
+            {id: 'reference', text: 'Add Reference Dataset', color: 'violet'},
+            {id: 'secondary', text: 'Add Secondary Dataset', color: 'orange'}
         ];
+        //t('geocoder.no_results_worldwide')
 
-        var d_form = [{
-            label: 'Layers',
-            type: 'fileImport',
-            placeholder: 'Select Layer From Database',
-            /*combobox: _.map(context.hoot().model.layers
-                .getAvailLayers(), function (n) {
-                    return n.name;
-                }),*/
-            //tree: context.hoot().model.folders.getAvailFoldersWithLayers()
-        }];
 
-        var div = selection$$1
-            .append('div')
-            .attr('id','add-dataset-pane')
-            .attr('class','add-dataset-pane');
+        var layerMenu = selection$$1.append('div')
+            .classed('col12 pad2',true)
+            .call(renderLayerMenu, this);
 
-        var _sidebarDiv = div.append('div')
-            .classed('col12 pad2 sidebar',true)
-            .style('overflow','auto');
+        function renderLayerMenu(container) {
+            services.hoot.availableLayers(function(layers) {
+                data.forEach(function(lyr) {
 
-        var _form = _sidebarDiv.selectAll('div')
-            .data(data)
-            .enter()
-            .append('form')
-            .classed('hootImport round space-bottom1 importableLayer fill-white strong', true)
-            .on('submit',function(d){
-                event.stopPropagation();
-                event.preventDefault();
-                var cbox = select(this).select('.combobox-input');
-                services.hoot.submitLayer(cbox.node().value, d.isPrimary);
+
+                var menus = container
+                    // .selectAll('div')
+                    // .data(data)
+                    // .enter()
+                    .append('div');
+                // menus.exit().remove();
+                // menus.merge(menus);
+                menus.attr('class', function(d) { return lyr.color; })
+                    .classed('fill-white round keyline-all contain space-bottom1', true)
+                    .attr('id',function(d){
+                        return lyr.id;
+                    });
+
+                menus.append('div')
+                    .attr('class','pad1 inline thumbnail dark big _icon data')
+                    .on('click', function(d) {
+                        console.log(lyr);
+                    });
+
+                var layerCombobox = d3combobox()
+                    .data(layers.map(function (n) {
+                                return {
+                                    value: n.name,
+                                    mapid: n.id,
+                                    source: lyr.id
+                                };
+                        })
+                    )
+                    .on('accept.combobox', loadLayer);
+
+                menus.append('input')
+                    .attr('type', 'text')
+                    .attr('placeholder', function (d) {
+                        return lyr.text;
+                    })
+                    .attr('id', function (d) {
+                        return 'input-'+ lyr.id;
+                    })
+                    .classed('combobox-input', true)
+                    .call(layerCombobox)
+                    //.on('change', loadLayer)
+                    ;
+
+                });
             });
-
-        _form.append('a')
-            .classed('button dark animate strong block _icon big plus pad2x pad1y js-toggle active', true)
-            .attr('href', '#')
-            .text(function(d){
-                return d.text;
-            })
-            .on('click', function () {
-                event.stopPropagation();
-                event.preventDefault();
-                toggleForm(this);
-            });
-
-        var _fieldset = _form.append('fieldset')
-            .classed('hidden pad1 keyline-left keyline-right keyline-bottom round-bottom', true)
-            .attr('id', function(d){
-                return d.id;
-            });
-
-        var _fieldDiv = _fieldset.append('div')
-            .classed('form-field fill-white small keyline-all round space-bottom1', true);
-
-        _fieldDiv.append('label')
-            .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true);
-
-        _fieldDiv.append('div').classed('contain',true).append('input')
-            .attr('type','text')
-            .attr('placeholder','Layers')
-            .attr('id',function(d){
-                return 'sel' + d.id;
-            })
-            .classed('reset combobox-input',true)
-            .attr('readonly',true);
-
-        _fieldDiv.append('div')
-            .classed('form-field col12', true)
-            .append('input')
-            .attr('type', 'submit')
-            .attr('value', 'Add Layer')
-            .classed('fill-dark pad0y pad2x dark small strong round', true)
-            .attr('border-radius','4px');
-
-
-        /* === Functions === */
-
-        function toggleForm(elem){
-            var parentNode = select(elem.parentNode);
-            var hideElem = parentNode.select('fieldset').classed('hidden');
-            parentNode.select('fieldset').classed('hidden',!hideElem);            
         }
 
-        function disableTooHigh() {
-            div.style('display', context.editable() ? 'none' : 'block');
+        function renderLayer(extent$$1, mapnik_source) {
+            context.extent(extent$$1);
+            context.background().addSource(mapnik_source);
+            //d3.select(elem).style('display','none');
         }
 
-        function populateLayerCombo(data){
-            console.log(data);
-            _fieldDiv.selectAll('.combobox-input')
-                .each(function(f){
-                    select(this).call(d3combobox()
-                    .data(lodash.map(data.layers, function (n) {
-                            return {
-                                value: n.name,
-                                title: n.id
-                            };
-                        })));   
-                });                
+        // function removeLayer(d, mapid) {
+        //     services.hoot.removeLayer(mapid, function(mapnik_source) {
+        //         //context.background().toggleOverlayLayer(mapnik_source);
+        //         context.background().removeSource(mapnik_source);
+        //         services.osm.loadedDataRemove(mapid);
+        //         resetSidebar(d);
+        //     });
+        // }
+
+        // function resetSidebar(d){
+        //     var container = d3.select('form[data-layer = "' + d + '"]');
+
+        //    container.classed('hootImport',true)
+        //         .classed('hootView',false)
+        //         .attr('data-layer',null);
+        //     container.select('use').attr('href','#icon-plus');
+        //     container.select('span').text(function(){
+        //         return container.attr('id') === 'refDatset' ? 'Add Reference Dataset' : 'Add Secondary Dataset';
+        //     });
+        // }
+
+
+        function loadLayer(d) {
+            console.log(d);
+            services.hoot.loadLayer(d.mapid, (d.source === 'reference'), renderLayer);
         }
 
-
-        /*=== Populate layer drop down ===*/
-        services.hoot.availLayers(populateLayerCombo);
-
-        context.map()
-            .on('move.notice', lodash.debounce(disableTooHigh, 500));
-
-        disableTooHigh();
     };
 }
 
@@ -64329,6 +64610,15 @@ function uiSidebar(context) {
 
 
     function sidebar(selection) {
+        var logoContainer = selection
+            .append('div')
+            .classed('fill-dark', true)
+            .append('div')
+            .classed('hoot-logo', true)
+            .on('click', function (){
+                 //context.hoot().view.versioninfo.showPopup();
+            });
+
         var featureListWrap = selection
             .append('div')
             .attr('class', 'feature-list-pane')
@@ -64338,7 +64628,9 @@ function uiSidebar(context) {
             .append('div')
             .attr('class', 'inspector-hidden inspector-wrap fr');
 
-        selection
+        var layerMenuWrap = selection
+            .append('div')
+            .attr('class', 'add-dataset-pane')
             .call(uiLayerMenu(context));
 
         function hover(id) {
@@ -64375,6 +64667,9 @@ function uiSidebar(context) {
 
         sidebar.select = function(id, newFeature) {
             if (!current && id) {
+                layerMenuWrap
+                    .style('display', 'none');
+
                 featureListWrap
                     .classed('inspector-hidden', true);
 
@@ -64393,6 +64688,9 @@ function uiSidebar(context) {
                 }
 
             } else if (!current) {
+                layerMenuWrap
+                    .style('display', 'block');
+
                 featureListWrap
                     .classed('inspector-hidden', false);
                 inspectorWrap
@@ -64761,7 +65059,8 @@ function uiInit(context) {
 
         bar
             .append('div')
-            .attr('class', 'spacer col4');
+            .attr('class', 'spacer col0')
+            .style('width','10px');
 
         var limiter = bar.append('div')
             .attr('class', 'limiter');

@@ -436,8 +436,8 @@ span.logo{
   left:0%;
 }
 
-.exportbox { 
-  border: 1px solid #ccc; 
+.exportbox {
+  border: 1px solid #ccc;
   background: #eee;
   border-radius: 3px;
   text-align: center;
@@ -447,8 +447,8 @@ span.logo{
 }
 
 .exportbox input {
-  width:120px; 
-  text-align: center; 
+  width:120px;
+  text-align: center;
   margin-bottom: 5px;
 }
 .exportbox #maxlat {margin-top: -1px;}

@@ -6,143 +6,73 @@ import { svgIcon } from '../svg/index';
 import { rendererBackgroundSource } from '../renderer/background_source';
 import { services } from '../services/index';
 
-
-import { behaviorHash } from '../behavior/index';
-
 export function uiLayerMenu(context) {
 
     return function(selection) {
-        var _form = null;
 
         var data = [
-            {isPrimary:true, id:'refDatset',text:'Add Reference Dataset', color: 'orange'},
-            {isPrimary:false, id:'secondaryDataset', text: 'Add Secondary Dataset', color: 'violet'}
+            {id: 'reference', text: 'Add Reference Dataset', color: 'violet'},
+            {id: 'secondary', text: 'Add Secondary Dataset', color: 'orange'}
         ];
+        //t('geocoder.no_results_worldwide')
 
-        var d_form = [{
-            label: 'Layers',
-            type: 'fileImport',
-            placeholder: 'Select Layer From Database',
-            /*combobox: _.map(context.hoot().model.layers
-                .getAvailLayers(), function (n) {
-                    return n.name;
-                }),*/
-            //tree: context.hoot().model.folders.getAvailFoldersWithLayers()
-        }];
 
-        var _sidebarDiv = selection.append('div')
-            .classed('col12 pad2 sidebar',true)
-            .style('overflow','auto');
+        var layerMenu = selection.append('div')
+            .classed('col12 pad2',true)
+            .call(renderLayerMenu, this)
+            ;
 
-        function renderHootImport(container, data){
-            var _form = container.selectAll('div')
-                .data(data)
-                .enter()
-                .append('form')
-                .attr('class',function(d){return 'fill-white hootImport round keyline-all contain controller space-bottom1 ' + d.color;})
-                .attr('id',function(d){
-                    return d.id;
-                })
-                .on('submit',function(d){
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
-                    if(d3.select(this).classed('hootImport')){showLayerModal(d);}
-                    if(d3.select(this).classed('hootView')){removeLayer(d);}
+        function renderLayerMenu(container) {
+            services.hoot.availableLayers(function(layers) {
+                data.forEach(function(lyr) {
+
+
+                var menus = container
+                    // .selectAll('div')
+                    // .data(data)
+                    // .enter()
+                    .append('div');
+                // menus.exit().remove();
+                // menus.merge(menus);
+                menus.attr('class', function(d) { return lyr.color; })
+                    .classed('fill-white round keyline-all contain space-bottom1', true)
+                    .attr('id',function(d){
+                        return lyr.id;
+                    });
+
+                menus.append('div')
+                    .attr('class','pad1 inline thumbnail dark big _icon data')
+                    .on('click', function(d) {
+                        console.log(lyr);
+                    });
+
+                var layerCombobox = d3combobox()
+                    .data(layers.map(function (n) {
+                                return {
+                                    value: n.name,
+                                    mapid: n.id,
+                                    source: lyr.id
+                                };
+                        })
+                    )
+                    .on('accept.combobox', loadLayer)
+                    ;
+
+                menus.append('input')
+                    .attr('type', 'text')
+                    .attr('placeholder', function (d) {
+                        return lyr.text;
+                    })
+                    .attr('id', function (d) {
+                        return 'input-'+ lyr.id;
+                    })
+                    .classed('combobox-input', true)
+                    .call(layerCombobox)
+                    //.on('change', loadLayer)
+                    ;
+
                 });
-
-            _form.append('div')
-                .attr('class','pad1 inline thumbnail dark big _icon _data')
-                .attr('id','viewicon-1')
-                .on('click',function(d){
-                    console.log('palette');
-                });
-
-            _form.append('div').classed('context-menu-click-layer',true);
-
-            _form.append('span')
-                .attr('class', 'strong pad1x')
-                .attr('id', function(d){
-                    return d.id + '_name';
-                })
-                .text(function (d) {
-                    return d.text;
-                })
-                .style('color','black')
-                .style('display', 'inline-block')
-                .style('max-width', '70%')
-                .style('overflow', 'hidden')
-                .style('vertical-align', 'middle');
-
-           _form.append('button')
-                .attr('tabindex', -1)                
-                .attr('class','keyline-left map-button round-right inline fr contain')
-                .call(svgIcon('#icon-plus'));
-        }
-            
-
-        /* === Functions === */
-        function showLayerModal(d){
-            var modalbg = d3.select('body')
-                .append('div')
-                .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
-            var modalDiv = modalbg.append('div')
-                .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
-            
-            var _form = modalDiv.append('form')
-                .on('submit',function(){
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
-                    var cbox = d3.select(this).select('.combobox-input');
-                    var lyrId = services.hoot.getAvailableLayers()[cbox.node().value];
-
-                    d3.select('#' + d.id)
-                        .classed('hootImport',false)
-                        .classed('hootView',true)
-                        .attr('data-layer',lyrId);
-                    d3.select('#' + d.id + '_name').text(cbox.node().value);
-
-                    // Replace plus with delete
-                    d3.select('#' + d.id).select('use').attr('href','#operation-delete');
-                    modalbg.remove();
-                    services.hoot.loadLayer(cbox.node().value, d.isPrimary, renderLayer);
-                });
-
-            var _header = _form.append('div')
-                .classed('keyline-bottom', true);
-            _header.append('h4')
-                .style('display','inline-block')
-                .text(d.text);
-            _header.append('div')
-                .attr('class','fr')
-                .style('display','inline-block')
-                .call(svgIcon('#icon-close'))
-                .on('click', function () {
-                    modalbg.remove();
-                });
-
-            var _fieldset = _form.append('fieldset')
-                .classed('pad1 round-bottom', true);
-                /*.attr('id', d.id);*/
-
-            var _fieldDiv = _fieldset.append('div')
-                .classed('form-field fill-white small round space-bottom1', true);
-
-            _fieldDiv.append('div').classed('contain pad1y',true).append('input')
-                .attr('type','text')
-                .attr('placeholder','Layers')
-                .attr('id','sel' + d.id)
-                .classed('reset combobox-input',true)
-                .attr('readonly',true);
-
-            _fieldDiv.append('div')
-                .classed('form-field col12', true)
-                .append('input')
-                .attr('type', 'submit')
-                .attr('value', 'Select Layer')
-                .classed('fill-dark pad0y pad2x dark small strong round', true)
-                .attr('border-radius','4px');
-
-            services.hoot.availableLayers(populateLayerCombo);
+            });
         }
 
         function renderLayer(extent, mapnik_source) {
@@ -151,51 +81,32 @@ export function uiLayerMenu(context) {
             //d3.select(elem).style('display','none');
         }
 
-        function removeLayer(d) {
-            var lyrName = d3.select('#' + d.id + '_name').text();
-            services.hoot.removeLayer(lyrName, function(mapnik_source){
-                context.background().removeSource(mapnik_source, function(lyrId){
-                    services.osm.loadedDataRemove(lyrId,function(d){
-                        resetSidebar(d);
-                    });
-                });
-            });
+        // function removeLayer(d, mapid) {
+        //     services.hoot.removeLayer(mapid, function(mapnik_source) {
+        //         //context.background().toggleOverlayLayer(mapnik_source);
+        //         context.background().removeSource(mapnik_source);
+        //         services.osm.loadedDataRemove(mapid);
+        //         resetSidebar(d);
+        //     });
+        // }
+
+        // function resetSidebar(d){
+        //     var container = d3.select('form[data-layer = "' + d + '"]');
+
+        //    container.classed('hootImport',true)
+        //         .classed('hootView',false)
+        //         .attr('data-layer',null);
+        //     container.select('use').attr('href','#icon-plus');
+        //     container.select('span').text(function(){
+        //         return container.attr('id') === 'refDatset' ? 'Add Reference Dataset' : 'Add Secondary Dataset';
+        //     });
+        // }
+
+
+        function loadLayer(d) {
+            console.log(d);
+            services.hoot.loadLayer(d.mapid, (d.source === 'reference'), renderLayer);
         }
 
-        function resetSidebar(d){
-            var container = d3.select('form[data-layer = "' + d + '"]');
-
-           container.classed('hootImport',true)
-                .classed('hootView',false)
-                .attr('data-layer',null);
-            container.select('use').attr('href','#icon-plus');
-            container.select('span').text(function(){
-                return container.attr('id') === 'refDatset' ? 'Add Reference Dataset' : 'Add Secondary Dataset';
-            });
-        }
-
-        function populateLayerCombo(data){
-            var layerCombobox = d3combobox()
-                .data(data.layers.map(function (n) {
-                            return {
-                                value: n.name,
-                                title: n.id
-                            };
-                    })
-                );
-            d3.select('.modal').selectAll('.combobox-input')
-                .each(function(f){
-                    d3.select(this).call(layerCombobox)
-                   // .on('blur', addLayer)
-                   // .on('change', addLayer)
-                })
-        }
-
-        function disableTooHigh() {
-            div.style('display', context.editable() ? 'none' : 'block');
-        }
-
-        /*=== Populate layer drop down ===*/
-        renderHootImport(_sidebarDiv, data);        
     };
 }

@@ -31,9 +31,9 @@ export default {
 
     },
 
-    getAvailableLayers: function() {
-        return availableLayers;
-    },
+    // getAvailableLayers: function() {
+    //     return availableLayers;
+    // },
 
     availableLayers: function(callback) {
         d3.json(this.urlroot() + '/api/0.6/map/layers', function (error, resp) {
@@ -42,21 +42,21 @@ export default {
                 console.log(error);
                     //callback(null); Do we even need to callback?
             } else {
-                callback(resp);
+                callback(resp.layers);
                     availableLayers = resp.layers.reduce(function(lyrs, lyr) {
-                        lyrs[lyr.name] = lyr.id;
+                        lyrs[lyr.id] = lyr.name;
                         return lyrs;
                     }, {});
             }
         });
     },
 
-    loadLayer: function(name, isPrimary, callback) {
+    loadLayer: function(mapid, isPrimary, callback) {
         //TODO: need to check if another layer is loading
 
         var color = isPrimary ? 'orange' : 'purple';
 
-        var mapid = availableLayers[name];
+        var mapid = availableLayers[mapid];
         d3.json(services.hoot.urlroot() + '/api/0.6/map/tags?mapid=' + mapid, function (error, tags) {
             if (error) {
                 alert('Get map tags failed!');
@@ -91,12 +91,12 @@ export default {
         });
     },
 
-    removeLayer: function(name, callback) {
-        var lyrId = availableLayers[name];
+    removeLayer: function(mapid, callback) {
+        var lyr = loadedLayers[mapid];
         if(callback){
-            callback(getNodeMapnikSource(loadedLayers[lyrId]));
-            delete loadedLayers[lyrId];
+            callback(getNodeMapnikSource(lyr));
         }
+        delete loadedLayers[mapid];
     },
 
     loadedLayers: function() {

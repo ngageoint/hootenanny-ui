@@ -11,13 +11,11 @@ export function uiSidebar(context) {
 
 
     function sidebar(selection) {
-        var labelContainer = selection
+        var logoContainer = selection
             .append('div')
-            .classed('fill-dark',true);
-
-        labelContainer.append('div')
-            .attr('href', '#version')
-            .classed('point hoot_label', true)
+            .classed('fill-dark', true)
+            .append('div')
+            .classed('hoot-logo', true)
             .on('click', function (){
                  //context.hoot().view.versioninfo.showPopup();
             });
@@ -34,7 +32,6 @@ export function uiSidebar(context) {
         var layerMenuWrap = selection
             .append('div')
             .attr('class', 'add-dataset-pane')
-            .attr('id','add-dataset-pane')
             .call(uiLayerMenu(context));
 
         function hover(id) {
@@ -100,7 +97,7 @@ export function uiSidebar(context) {
                 inspectorWrap
                     .classed('inspector-hidden', true);
                 inspector
-                    .state('hide');                
+                    .state('hide');
             }
         };
 
