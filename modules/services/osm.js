@@ -593,14 +593,13 @@ export default {
         return '/api/0.6/map?bbox=' + tile.extent.toParam() + ((tile.mapId > -1) ? '&mapId=' + tile.mapId : '') + ext;
     },
 
-    loadedDataRemove: function(mapid, callback){
+    loadedDataRemove: function(mapid) {
         _.each(loadedTiles, function (a, b) {
             if (b.match(',' + mapid + '$')) {
                 delete loadedTiles[b];
             }
         });
-
-        if(callback){callback(mapid);}
+        dispatch.call('change');
     },
 
 

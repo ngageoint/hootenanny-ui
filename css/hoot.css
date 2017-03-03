@@ -122,6 +122,11 @@ img.inline, .inline           { display:inline-block; }
 .rcon.dark.data:after, ._icon.dark.data:before                 { background-position:-40px -60px; }
 .rcon.dark.big.data:after, ._icon.dark.big.data:before         { background-position:-40px -80px; }
 
+.rcon.trash:after, ._icon.trash:before                         { background-position:-200px 0; }
+.rcon.big.trash:after, ._icon.big.trash:before                 { background-position:-200px -20px; }
+.rcon.dark.trash:after, ._icon.dark.trash:before               { background-position:-200px -60px; }
+.rcon.dark.big.trash:after, ._icon.dark.big.trash:before       { background-position:-200px -80px; }
+
 .gold .thumbnail, .gold ._loading      { background-color:#ffcc00; }
 .orange .thumbnail, .orange ._loading  { background-color:#ff7f2a; }
 .violet .thumbnail, .violet ._loading  { background-color:#ff5599; }
@@ -146,3 +151,8 @@ img.inline, .inline           { display:inline-block; }
 .fill-darken1 { background-color:rgba(0,0,0,0.25); z-index:1000; }
 .fill-darken2 { background-color:rgba(0,0,0,0.50); z-index:1000; }
 .fill-darken3 { background-color:rgba(0,0,0,0.75); z-index:1000; }
+
+.map-button {
+  width:39px;
+  height:60px;
+}

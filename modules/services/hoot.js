@@ -52,18 +52,17 @@ export default {
     },
 
     loadLayer: function(mapid, isPrimary, callback) {
-        //TODO: need to check if another layer is loading
 
-        var color = isPrimary ? 'orange' : 'purple';
+        var color = isPrimary ? 'violet' : 'orange';
 
-        var mapid = availableLayers[mapid];
+        var name = availableLayers[mapid];
         d3.json(services.hoot.urlroot() + '/api/0.6/map/tags?mapid=' + mapid, function (error, tags) {
             if (error) {
                 alert('Get map tags failed!');
                 console.log(error);
                 //callback(null);
             } else {
-                console.log(tags);
+                //console.log(tags);
                 d3.json(services.hoot.urlroot() + '/api/0.6/map/mbr?mapId=' + mapid, function (error, mbr) {
                     if (error) {
                         alert('Get map extent failed!');
@@ -93,10 +92,10 @@ export default {
 
     removeLayer: function(mapid, callback) {
         var lyr = loadedLayers[mapid];
-        if(callback){
+        delete loadedLayers[mapid];
+        if (callback) {
             callback(getNodeMapnikSource(lyr));
         }
-        delete loadedLayers[mapid];
     },
 
     loadedLayers: function() {
@@ -133,7 +132,7 @@ export default {
         var obj = _.find(palette, function(a) {
             return a.name === co || a.hex === co;
         });
-        if (obj===undefined) {
+        if (obj === undefined) {
             obj = palette[1];
             co = obj.name;
         }

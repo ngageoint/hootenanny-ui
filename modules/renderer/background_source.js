@@ -9,6 +9,7 @@ export function rendererBackgroundSource(data) {
     var source = _.clone(data),
         offset = [0, 0],
         name = source.name,
+        id = source.id,
         best = !!source.best;
 
     source.scaleExtent = data.scaleExtent || [0, 20];
@@ -31,6 +32,11 @@ export function rendererBackgroundSource(data) {
 
     source.name = function() {
         return name;
+    };
+
+
+    source.mapid = function() {
+        return id;
     };
 
 
