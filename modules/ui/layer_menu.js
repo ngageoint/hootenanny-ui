@@ -16,7 +16,6 @@ export function uiLayerMenu(context) {
         ];
         //t('geocoder.no_results_worldwide')
 
-
         var layerMenu = selection.append('div')
             .classed('col12 pad2',true)
             .call(renderLayerMenu, this)
@@ -24,8 +23,60 @@ export function uiLayerMenu(context) {
 
         function renderLayerMenu(container) {
             services.hoot.availableLayers(function(layers) {
-                data.forEach(function(lyr) {
+                var layerCombobox = d3combobox()
+                    .data(layers.map(function (n) {
+                                return {
+                                    value: n.name,
+                                    mapid: n.id//,
+                                    //source: lyr.id
+                                };
+                        })
+                    )
+                    .on('accept.combobox', loadLayer)
+                    ;
 
+
+                function loadLayer(d) {
+                    services.hoot.loadLayer(d.mapid, (d.source === 'reference'), renderLayer);
+                    var lyrdiv = d3.select('#' + d.source);
+                    var lyr = lyrdiv.datum();
+                    lyrdiv.select('input').call(d3combobox.off);
+                    lyrdiv.append('button')
+                        .attr('class', 'inline fr contain map-button keyline-left round-right _icon trash')
+                        .on('click', function() {
+                            removeLayer(d.mapid);
+                            this.remove();
+                            lyrdiv.select('input')
+                                .property('value', '')
+                                .call(d3combobox()
+                                .data(layers.map(function (n) {
+                                        return {
+                                            value: n.name,
+                                            mapid: n.id,
+                                            source: d.source
+                                        };
+                                    })
+                                )
+                                .on('accept.combobox', loadLayer)
+                            );
+                        });
+                }
+
+                function renderLayer(extent, mapnik_source) {
+                    context.extent(extent);
+                    context.background().addSource(mapnik_source);
+                }
+
+                function removeLayer(mapid) {
+                    services.hoot.removeLayer(mapid, function(mapnik_source) {
+                        //context.background().toggleOverlayLayer(mapnik_source);
+                        context.background().removeSource(mapnik_source);
+                        services.osm.loadedDataRemove(mapid);
+                        context.flush();
+                    });
+                }
+
+                data.forEach(function(lyr) {
 
                     var menus = container
                         // .selectAll('div')
@@ -49,17 +100,6 @@ export function uiLayerMenu(context) {
                     var layersection = menus.append('div')
                         .style('display', 'inline-block');
 
-                    var layerCombobox = d3combobox()
-                        .data(layers.map(function (n) {
-                                    return {
-                                        value: n.name,
-                                        mapid: n.id,
-                                        source: lyr.id
-                                    };
-                            })
-                        )
-                        .on('accept.combobox', loadLayer)
-                        ;
 
                     layersection.append('input')
                         .attr('type', 'text')
@@ -70,41 +110,28 @@ export function uiLayerMenu(context) {
                             return 'input-'+ lyr.id;
                         })
                         .classed('combobox-input inline', true)
-                        .call(layerCombobox)
+                        .call(d3combobox()
+                    .data(layers.map(function (n) {
+                                return {
+                                    value: n.name,
+                                    mapid: n.id,
+                                    source: lyr.id
+                                };
+                        })
+                    )
+                    .on('accept.combobox', loadLayer)
+                    )
                         //.on('change', loadLayer)
                         ;
 
 
                 });
             });
+
+
+
         }
 
-        function loadLayer(d) {
-            services.hoot.loadLayer(d.mapid, (d.source === 'reference'), renderLayer);
-            var lyrdiv = d3.select('#' + d.source);
-            var lyr = lyrdiv.datum();
-            lyrdiv.select('input').call(d3combobox.off);
-            lyrdiv.append('button')
-                .attr('class', 'inline fr contain map-button keyline-left round-right _icon trash')
-                .on('click', function() {
-                    removeLayer(d.mapid);
-                    this.remove();
-                });
-        }
-
-        function renderLayer(extent, mapnik_source) {
-            context.extent(extent);
-            context.background().addSource(mapnik_source);
-        }
-
-        function removeLayer(mapid) {
-            services.hoot.removeLayer(mapid, function(mapnik_source) {
-                //context.background().toggleOverlayLayer(mapnik_source);
-                context.background().removeSource(mapnik_source);
-                services.osm.loadedDataRemove(mapid);
-                context.flush();
-            });
-        }
 
      };
 }
