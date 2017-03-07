@@ -40,7 +40,9 @@ export function uiLayerMenu(context) {
                     services.hoot.loadLayer(d.mapid, (d.source === 'reference'), renderLayer);
                     var lyrdiv = d3.select('#' + d.source);
                     var lyr = lyrdiv.datum();
-                    lyrdiv.select('input').call(d3combobox.off);
+                    lyrdiv.select('input')
+                        .call(d3combobox.off)
+                        .attr('readonly', true);
                     lyrdiv.append('button')
                         .attr('class', 'inline fr contain map-button keyline-left round-right _icon trash')
                         .on('click', function() {
@@ -48,6 +50,7 @@ export function uiLayerMenu(context) {
                             this.remove();
                             lyrdiv.select('input')
                                 .property('value', '')
+                                .attr('readonly', null)
                                 .call(d3combobox()
                                 .data(layers.map(function (n) {
                                         return {
@@ -98,7 +101,9 @@ export function uiLayerMenu(context) {
                         });
 
                     var layersection = menus.append('div')
-                        .style('display', 'inline-block');
+                        .style('display', 'inline-block')
+                        .style('width', '70%')
+                        .style('padding-left', '2%');
 
 
                     layersection.append('input')
@@ -111,16 +116,16 @@ export function uiLayerMenu(context) {
                         })
                         .classed('combobox-input inline', true)
                         .call(d3combobox()
-                    .data(layers.map(function (n) {
-                                return {
-                                    value: n.name,
-                                    mapid: n.id,
-                                    source: lyr.id
-                                };
-                        })
-                    )
-                    .on('accept.combobox', loadLayer)
-                    )
+                        .data(layers.map(function (n) {
+                                    return {
+                                        value: n.name,
+                                        mapid: n.id,
+                                        source: lyr.id
+                                    };
+                            })
+                        )
+                        .on('accept.combobox', loadLayer)
+                        )
                         //.on('change', loadLayer)
                         ;
 

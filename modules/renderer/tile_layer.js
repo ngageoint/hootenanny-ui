@@ -1,8 +1,9 @@
 import * as d3 from 'd3';
 import { d3geoTile } from '../lib/d3.geo.tile';
+import { geoSphericalMercator } from '../geo/spherical_mercator';
 import { utilPrefixCSSProperty } from '../util/index';
 import { rendererBackgroundSource } from './background_source.js';
-
+import { geoPolygonContainsPolygon } from '../geo/index';
 
 export function rendererTileLayer(context) {
     var tileSize = 256,
@@ -13,6 +14,7 @@ export function rendererTileLayer(context) {
         z,
         transformProp = utilPrefixCSSProperty('Transform'),
         source = rendererBackgroundSource.None();
+    var sphericalMercator = geoSphericalMercator();
 
 
     // blacklist overlay tiles around Null Island..
@@ -85,14 +87,12 @@ export function rendererTileLayer(context) {
         render(selection);
     }
 
-
     // Derive the tiles onscreen, remove those offscreen and position them.
     // Important that this part not depend on `projection` because it's
     // rentered when tiles load/error (see #644).
     function render(selection) {
         var requests = [];
         var showDebug = context.getDebug('tile') && !source.overlay;
-
         if (source.validZoom(z)) {
             tile().forEach(function(d) {
                 addSource(d);
@@ -108,6 +108,13 @@ export function rendererTileLayer(context) {
                 if (!!source.overlay && nearNullIsland(r[0], r[1], r[2])) {
                     return false;
                 }
+                if (source.polygon) {
+                    var tileExtent = sphericalMercator.xyz_to_envelope(r[0], r[1], r[2], false);
+                    if (!source.intersects(tileExtent) && geoPolygonContainsPolygon(source.polygon, tileExtent.polygon())) {
+                        return false;
+                    }
+                }
+
                 // don't re-request tiles which have failed in the past
                 return cache[r[3]] !== false;
             });

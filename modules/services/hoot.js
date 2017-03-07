@@ -18,6 +18,7 @@ function getNodeMapnikSource(d) {
                 + encodeURIComponent(services.hoot.palette(d.color))
                 + '&mapid=' + d.id,
             scaleExtent: [0,16],
+            polygon: d.polygon,
             overzoom: false,
             overlay: true
         };
@@ -69,14 +70,16 @@ export default {
                         console.log(error);
                         //callback(null);
                     } else {
+//{"minlon":-77.05030495606161,"firstlon":-77.0492105,"maxlat":38.9272,"nodescount":157,"minlat":38.9137226,"firstlat":38.9266803,"maxlon":-77.0301}
                         loadedLayers[mapid] = {
                             name: name,
                             id: mapid,
+                            polygon: [[[mbr.minlon, mbr.minlat], [mbr.minlon, mbr.maxlat], [mbr.maxlon, mbr.maxlat],
+                                        [mbr.maxlon, mbr.minlat], [mbr.minlon, mbr.minlat]]],
                             color: color,
                             visible: true
                         };
                         if (tags) {
-
                         }
                         //Add css rule to render features
                         services.hoot.changeLayerColor(mapid, color);
