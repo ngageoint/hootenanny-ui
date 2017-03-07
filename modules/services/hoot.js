@@ -127,9 +127,9 @@ export default {
         }, {
                 name: 'green',
                 hex: '#A7C973'
-        }, {
-                name: 'osm',
-                hex: ''
+        // }, {
+        //         name: 'osm',
+        //         hex: ''
         }];
         if (!co) return palette;
         var obj = _.find(palette, function(a) {

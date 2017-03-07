@@ -129,6 +129,32 @@ export function uiLayerMenu(context) {
                         //.on('change', loadLayer)
                         ;
 
+                        menus.append('div')
+                            .classed('pad1 keyline-top header hidden', true)
+                            .append('div')
+                            .classed('keyline-all palette inline round space-bottom1', true)
+                            .selectAll('a')
+                            .data(services.hoot.palette())
+                            .enter().append('a')
+                            .attr('class', function (p) {
+                                var active = (lyr.color === p.name) ? ' active _icon check' : '';
+
+                                // var osm = '';
+                                // if(p.name === 'osm'){
+                                //     osm = ' _osm';
+                                // }
+                                return 'block fl keyline-right'
+                                + active
+                                //+ osm
+                                ;
+                            })
+                            //.attr('href', '#')
+                            .attr('data-color', function (p) {
+                                return p.name;
+                            })
+                            .style('background', function (p) {
+                                return p.hex;
+                            })
 
                 });
             });
