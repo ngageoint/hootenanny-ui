@@ -162,7 +162,7 @@ iD.ui.Background = function(context) {
 
             var enter = layerLinks.enter()
                 //Modified for EGD-plugin
-                .insert('li', '.custom_layer')//insert li before element of class dg_layer
+                .insert('li', '.dg_layer')//insert li before element of class dg_layer
                 .attr('class', 'layer');
 
             // only set tooltips for layers with tooltips
