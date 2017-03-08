@@ -18,23 +18,10 @@ export function uiLayerMenu(context) {
 
         var layerMenu = selection.append('div')
             .classed('col12 pad2',true)
-            .call(renderLayerMenu, this)
-            ;
+            .call(renderLayerMenu);
 
         function renderLayerMenu(container) {
             services.hoot.availableLayers(function(layers) {
-                var layerCombobox = d3combobox()
-                    .data(layers.map(function (n) {
-                                return {
-                                    value: n.name,
-                                    mapid: n.id//,
-                                    //source: lyr.id
-                                };
-                        })
-                    )
-                    .on('accept.combobox', loadLayer)
-                    ;
-
 
                 function loadLayer(d) {
                     services.hoot.loadLayer(d.mapid, (d.source === 'reference'), renderLayer);
@@ -52,16 +39,15 @@ export function uiLayerMenu(context) {
                                 .property('value', '')
                                 .attr('readonly', null)
                                 .call(d3combobox()
-                                .data(layers.map(function (n) {
+                                    .data(layers.map(function (n) {
                                         return {
                                             value: n.name,
                                             mapid: n.id,
                                             source: d.source
                                         };
-                                    })
-                                )
-                                .on('accept.combobox', loadLayer)
-                            );
+                                    }))
+                                    .on('accept.combobox', loadLayer)
+                                );
                         });
                 }
 
@@ -81,13 +67,9 @@ export function uiLayerMenu(context) {
 
                 data.forEach(function(lyr) {
 
+                    //Layer menu elements
                     var menus = container
-                        // .selectAll('div')
-                        // .data(data)
-                        // .enter()
                         .append('div');
-                    // menus.exit().remove();
-                    // menus.merge(menus);
                     menus.attr('class', function(d) { return lyr.color; })
                         .classed('fill-white round keyline-all contain space-bottom1', true)
                         .attr('id',function(d){
@@ -97,7 +79,8 @@ export function uiLayerMenu(context) {
                     menus.append('div')
                         .attr('class','pad1 inline thumbnail dark big _icon data')
                         .on('click', function(d) {
-                            console.log(lyr);
+                            d3.select('#palette-' + lyr.id)
+                                .classed('hidden', function() { return !d3.select(this).classed('hidden'); });
                         });
 
                     var layersection = menus.append('div')
@@ -116,53 +99,56 @@ export function uiLayerMenu(context) {
                         })
                         .classed('combobox-input inline', true)
                         .call(d3combobox()
-                        .data(layers.map(function (n) {
-                                    return {
-                                        value: n.name,
-                                        mapid: n.id,
-                                        source: lyr.id
-                                    };
-                            })
-                        )
-                        .on('accept.combobox', loadLayer)
-                        )
-                        //.on('change', loadLayer)
-                        ;
+                            .data(layers.map(function (n) {
+                                return {
+                                    value: n.name,
+                                    mapid: n.id,
+                                    source: lyr.id
+                                };
+                            }))
+                            .on('accept.combobox', loadLayer)
+                        );
 
-                        menus.append('div')
-                            .classed('pad1 keyline-top header hidden', true)
-                            .append('div')
-                            .classed('keyline-all palette inline round space-bottom1', true)
-                            .selectAll('a')
-                            .data(services.hoot.palette())
-                            .enter().append('a')
+                    function buildPalette(container, lyr) {
+                        // console.log(container);
+                        // console.log(color);
+                        var swatches = container.selectAll('a')
+                            .data(services.hoot.palette());
+                        swatches.exit().remove();
+                        swatches.enter().append('a')
+                            .merge(swatches)
                             .attr('class', function (p) {
                                 var active = (lyr.color === p.name) ? ' active _icon check' : '';
-
-                                // var osm = '';
-                                // if(p.name === 'osm'){
-                                //     osm = ' _osm';
-                                // }
-                                return 'block fl keyline-right'
-                                + active
-                                //+ osm
-                                ;
-                            })
-                            //.attr('href', '#')
-                            .attr('data-color', function (p) {
-                                return p.name;
+                                return 'block fl keyline-right' + active;
                             })
                             .style('background', function (p) {
                                 return p.hex;
                             })
+                            .on('click', function(p) {
+                                var oldColor = lyr.color
+                                var newColor = p.name;
+                                lyr.color = p.name;
+                                //highlight the new selected color swatch
+                                buildPalette(container, lyr);
+                                //update the layer icon color
+                                d3.select('#' + lyr.id)
+                                    .classed(oldColor, false)
+                                    .classed(newColor, true);
 
+                            });
+
+                    }
+                    //Palette elements
+                    menus.append('div')
+                        .classed('pad1 keyline-top header hidden', true)
+                        .attr('id', function() { return 'palette-' + lyr.id; })
+                        .append('div')
+                        .classed('keyline-all palette inline round space-bottom1', true)
+                        .call(buildPalette, lyr);
                 });
             });
 
-
-
         }
-
 
      };
 }
