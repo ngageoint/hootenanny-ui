@@ -105,7 +105,7 @@ iD.ui.Background = function(context) {
             if(d.extent() && d.type === 'tms'){
                 //ask if user wants to zoom to basemap
                 if(window.confirm('Do you want to zoom to base layer?')){
-                    context.zoomToExtent(d.extent().miny, d.extent().minx, d.extent().maxy, d.extent().maxx);
+                    context.zoomToExtent(d.extent().minx, d.extent().miny, d.extent().maxx, d.extent().maxy);
                 }
             }
         }

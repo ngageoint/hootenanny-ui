@@ -652,22 +652,11 @@ iD.Map = function(context) {
         zoomLimits = zoomLimits || [context.minEditableZoom(), 20];
         map.centerZoom(extent.center(), Math.min(Math.max(zoom, zoomLimits[0]), zoomLimits[1]));
     };
-    //Need to document why this was added for Hoot
-    map.getZoomLevel = function(minlon, minlat, maxlon, maxlat) {
-        var lowerLeftExtent = iD.geo.Extent([minlon, minlat]);
-        var upperRightExtent = iD.geo.Extent([maxlon, maxlat]);
-        var extent = lowerLeftExtent.extend(upperRightExtent);
-
-        return map.extentZoom(extent);
-    };
 
     //Need to document why this was added for Hoot
     map.zoomToExtent = function(minlon, minlat, maxlon, maxlat, zoomLimits) {
-        var lowerLeftExtent = iD.geo.Extent([minlon, minlat]);
-        var upperRightExtent = iD.geo.Extent([maxlon, maxlat]);
-        var extent = lowerLeftExtent.extend(upperRightExtent);
-
-        var curZoom = map.getZoomLevel(minlon, minlat, maxlon, maxlat, zoomLimits);
+        var extent = iD.geo.Extent([minlon, minlat], [maxlon, maxlat]);
+        var curZoom = map.extentZoom(extent);
         zoomLimits = zoomLimits || [6, 20];
         map.centerZoom(extent.center(), Math.min(Math.max(curZoom, zoomLimits[0]), zoomLimits[1]));
     };
