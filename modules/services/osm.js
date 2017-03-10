@@ -497,6 +497,7 @@ export default {
             ];
 
         // Load from visible layers only
+        // Hoot loadedLayers is what controls the vector data sources that are loaded
         var visLayers = _.filter(d3.values(services.hoot.loadedLayers()), function (layer) {
             return layer.visible;
         });

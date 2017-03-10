@@ -2,8 +2,8 @@ import * as d3 from 'd3';
 import _ from 'lodash';
 import { services } from '../services/index';
 
-var availableLayers = {},
-    loadedLayers = {};
+var availableLayers = {}, //A map of key=mapid, value=name
+    loadedLayers = {}; //A map of key=mapid, value=layer object
 
 function getNodeMapnikSource(d) {
     var source = {
@@ -31,10 +31,6 @@ export default {
     init: function() {
 
     },
-
-    // getAvailableLayers: function() {
-    //     return availableLayers;
-    // },
 
     availableLayers: function(callback) {
         d3.json(this.urlroot() + '/api/0.6/map/layers', function (error, resp) {
@@ -70,22 +66,29 @@ export default {
                         console.log(error);
                         //callback(null);
                     } else {
-//{"minlon":-77.05030495606161,"firstlon":-77.0492105,"maxlat":38.9272,"nodescount":157,"minlat":38.9137226,"firstlat":38.9266803,"maxlon":-77.0301}
+                        //mbr response sample
+                        //{"minlon":-77.05030495606161,"firstlon":-77.0492105,"maxlat":38.9272,"nodescount":157,"minlat":38.9137226,"firstlat":38.9266803,"maxlon":-77.0301}
+
+                        //Store info on the loaded layer
                         loadedLayers[mapid] = {
                             name: name,
                             id: mapid,
                             polygon: [[[mbr.minlon, mbr.minlat], [mbr.minlon, mbr.maxlat], [mbr.maxlon, mbr.maxlat],
                                         [mbr.maxlon, mbr.minlat], [mbr.minlon, mbr.minlat]]],
                             color: color,
+                            source: isPrimary ? 'reference' : 'secondary',
+                            tags: tags,
                             visible: true
                         };
-                        if (tags) {
-                        }
-                        //Add css rule to render features
-                        services.hoot.changeLayerColor(mapid, color);
+
+                        //Add css rule to render features by layer mapid
+                        services.hoot.setLayerColor(mapid, color);
+
                         //Zoom map to layer extent & Add node-mapnik tile layer
                         var min = [mbr.minlon, mbr.minlat],
                             max = [mbr.maxlon, mbr.maxlat];
+
+                        //Issue callback passing extent and node-mapnik background source
                         if (callback) callback([min, max], getNodeMapnikSource(loadedLayers[mapid]));
                     }
                 });
@@ -93,9 +96,17 @@ export default {
         });
     },
 
-    removeLayer: function(mapid, callback) {
+    removeLayer: function(mapid) {
         var lyr = loadedLayers[mapid];
         delete loadedLayers[mapid];
+    },
+
+    changeLayerColor: function(lyrmenu, callback) {
+        var mapid = d3.values(loadedLayers).find(function(d) {
+            return d.source = lyrmenu.id;
+        }).id;
+        loadedLayers[mapid].color = lyrmenu.color;
+        services.hoot.setLayerColor(mapid, lyrmenu.color);
         if (callback) {
             callback(getNodeMapnikSource(lyr));
         }
@@ -142,8 +153,17 @@ export default {
         return (obj.name === co) ? obj.hex : obj.name;
     },
 
-    changeLayerColor: function(mapid, color) {
+    setLayerColor: function(mapid, color) {
         var sheets = document.styleSheets[document.styleSheets.length - 1];
+
+        //Delete existing rules for mapid
+        for (var i = 0; i < sheets.cssRules.length; i++) {
+            var rule = sheets.cssRules[i];
+            if (rule.cssText.includes('tag-hoot-' + mapid))
+                sheets.deleteRule(i);
+        }
+
+        //Insert new color rules for mapid
         color = this.palette(color);
         var lighter = d3.rgb(color).brighter();
         sheets.insertRule('path.stroke.tag-hoot-' + mapid + ' { stroke:' + color + '}', sheets.cssRules.length - 1);

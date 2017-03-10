@@ -114,14 +114,17 @@ export function rendererBackground(context) {
         background.toggleOverlayLayer(source);
     };
 
-    background.removeSource = function(d) {
-        var source = rendererBackgroundSource(d);
+    background.updateSource = function(d) {
+        var source = findSource(d.id);
+        source = rendererBackgroundSource(d);
+        background.toggleOverlayLayer(source);
+    };
+
+    background.removeSource = function(id) {
+        var source = findSource(id);
         _.remove(backgroundSources, {id: source.id});
-        _.remove(overlayLayers, function(l) {
-            return l.source().id === source.id;
-        });
-        dispatch.call('change');
-        background.updateImagery();
+        if (background.showsLayer({id: id})) background.toggleOverlayLayer(source);
+
     }
 
     background.sources = function(extent) {
