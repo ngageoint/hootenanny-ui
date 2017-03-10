@@ -24,11 +24,11 @@ export function uiLayerMenu(context) {
             services.hoot.availableLayers(function(layers) {
 
                 function loadLayer(d) {
-                    //Adds the vector and node-mapnik layers to the map
-                    services.hoot.loadLayer(d.mapid, (d.source === 'reference'), renderLayer);
-                    //Set the layer combobox to disabled/readonly
                     var lyrdiv = d3.select('#' + d.source);
-                    var lyrmenu = lyrdiv.datum();
+                    var color = lyrdiv.attr('data-color');
+                    //Adds the vector and node-mapnik layers to the map
+                    services.hoot.loadLayer(d.mapid, d.source, color, renderLayer);
+                    //Set the layer combobox to disabled/readonly
                     lyrdiv.select('input')
                         .call(d3combobox.off)
                         .attr('readonly', true);
@@ -74,7 +74,6 @@ export function uiLayerMenu(context) {
                 function changeLayerColor(lyrmenu) {
                     services.hoot.changeLayerColor(lyrmenu, function(mapnik_source) {
                         context.background().updateSource(mapnik_source);
-                        context.flush();
                     });
                 }
 
@@ -88,7 +87,8 @@ export function uiLayerMenu(context) {
                         .classed('fill-white round keyline-all contain space-bottom1', true)
                         .attr('id',function(d){
                             return lyrmenu.id;
-                        });
+                        })
+                        .attr('data-color', function(d) { return lyrmenu.color; });
 
                     menus.append('div')
                         .attr('class','pad1 inline thumbnail dark big _icon data')
@@ -148,7 +148,8 @@ export function uiLayerMenu(context) {
                                 //update the layer icon color
                                 d3.select('#' + lyrmenu.id)
                                     .classed(oldColor, false)
-                                    .classed(newColor, true);
+                                    .classed(newColor, true)
+                                    .attr('data-color', newColor);
                                 //update the node-mapnik layer &
                                 //update the vector data color classes
                                 changeLayerColor(lyrmenu);

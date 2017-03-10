@@ -48,9 +48,7 @@ export default {
         });
     },
 
-    loadLayer: function(mapid, isPrimary, callback) {
-
-        var color = isPrimary ? 'violet' : 'orange';
+    loadLayer: function(mapid, source, color, callback) {
 
         var name = availableLayers[mapid];
         d3.json(services.hoot.urlroot() + '/api/0.6/map/tags?mapid=' + mapid, function (error, tags) {
@@ -76,7 +74,7 @@ export default {
                             polygon: [[[mbr.minlon, mbr.minlat], [mbr.minlon, mbr.maxlat], [mbr.maxlon, mbr.maxlat],
                                         [mbr.maxlon, mbr.minlat], [mbr.minlon, mbr.minlat]]],
                             color: color,
-                            source: isPrimary ? 'reference' : 'secondary',
+                            source: source,
                             tags: tags,
                             visible: true
                         };
@@ -102,13 +100,16 @@ export default {
     },
 
     changeLayerColor: function(lyrmenu, callback) {
-        var mapid = d3.values(loadedLayers).find(function(d) {
+        var lyr = d3.values(loadedLayers).find(function(d) {
             return d.source = lyrmenu.id;
-        }).id;
-        loadedLayers[mapid].color = lyrmenu.color;
-        services.hoot.setLayerColor(mapid, lyrmenu.color);
-        if (callback) {
-            callback(getNodeMapnikSource(loadedLayers[mapid]));
+        });
+        if (lyr) {
+            var mapid = lyr.id;
+            loadedLayers[mapid].color = lyrmenu.color;
+            services.hoot.setLayerColor(mapid, lyrmenu.color);
+            if (callback) {
+                callback(getNodeMapnikSource(loadedLayers[mapid]));
+            }
         }
     },
 
