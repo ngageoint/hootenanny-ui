@@ -2907,7 +2907,7 @@ img.tile-removing {
 /* Notices
 ------------------------------------------------------- */
 
-.notice, .add-dataset-pane {
+.notice {
     position: absolute;
     top: 60px;
     bottom: 0;

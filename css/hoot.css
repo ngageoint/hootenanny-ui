@@ -174,3 +174,12 @@ img.inline, .inline           { display:inline-block; }
   width:39px;
   height:60px;
 }
+
+.add-dataset-pane {
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #f6f6f6;
+}
