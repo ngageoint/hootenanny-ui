@@ -108,7 +108,7 @@ export default {
         loadedLayers[mapid].color = lyrmenu.color;
         services.hoot.setLayerColor(mapid, lyrmenu.color);
         if (callback) {
-            callback(getNodeMapnikSource(lyr));
+            callback(getNodeMapnikSource(loadedLayers[mapid]));
         }
     },
 

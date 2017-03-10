@@ -115,9 +115,8 @@ export function rendererBackground(context) {
     };
 
     background.updateSource = function(d) {
-        var source = findSource(d.id);
-        source = rendererBackgroundSource(d);
-        background.toggleOverlayLayer(source);
+        this.removeSource(d.id);
+        this.addSource(d);
     };
 
     background.removeSource = function(id) {

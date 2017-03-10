@@ -73,10 +73,8 @@ export function uiLayerMenu(context) {
 
                 function changeLayerColor(lyrmenu) {
                     services.hoot.changeLayerColor(lyrmenu, function(mapnik_source) {
-                        //context.background().toggleOverlayLayer(mapnik_source);
                         context.background().updateSource(mapnik_source);
-                        //services.osm.loadedDataRemove(mapid);
-                        //context.flush();
+                        context.flush();
                     });
                 }
 
