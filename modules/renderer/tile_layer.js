@@ -110,7 +110,7 @@ export function rendererTileLayer(context) {
                 }
                 if (source.polygon) {
                     var tileExtent = sphericalMercator.xyz_to_envelope(r[0], r[1], r[2], false);
-                    if (!source.intersects(tileExtent) && geoPolygonContainsPolygon(source.polygon, tileExtent.polygon())) {
+                    if (!source.intersects(tileExtent)) {
                         return false;
                     }
                 }

@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import _ from 'lodash';
 import { t } from '../util/locale';
-import { geoExtent, geoPolygonIntersectsPolygon } from '../geo/index';
+import { geoExtent, geoPolygonIntersectsPolygon, geoPolygonContainsPolygon } from '../geo/index';
 import { jsonpRequest } from '../util/jsonp_request';
 
 
@@ -85,7 +85,9 @@ export function rendererBackgroundSource(data) {
     source.intersects = function(extent) {
         extent = extent.polygon();
         return !data.polygon || data.polygon.some(function(polygon) {
-            return geoPolygonIntersectsPolygon(polygon, extent, true);
+            return geoPolygonIntersectsPolygon(polygon, extent, true)
+                || geoPolygonContainsPolygon(extent, polygon)
+                || geoPolygonContainsPolygon(polygon, extent); //full containment also counts as intersection
         });
     };
 
