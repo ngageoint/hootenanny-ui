@@ -33,7 +33,7 @@ export function uiLayerMenu(context) {
                         .call(d3combobox.off)
                         .attr('readonly', true);
                     //Add the layer remove button
-                    lyrdiv.append('button')
+                    lyrdiv.insert('button', '.menu-layers')
                         .attr('class', 'inline fr contain map-button keyline-left round-right _icon trash')
                         .on('click', function() {
                             //Remove the layer
@@ -98,9 +98,7 @@ export function uiLayerMenu(context) {
                         });
 
                     var layersection = menus.append('div')
-                        .style('display', 'inline-block')
-                        .style('width', '70%')
-                        .style('padding-left', '2%');
+                        .classed('inline menu-layers', true);
 
                     //Initialize the layer combobox
                     layersection.append('input')
