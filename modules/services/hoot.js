@@ -101,7 +101,7 @@ export default {
 
     changeLayerColor: function(lyrmenu, callback) {
         var lyr = d3.values(loadedLayers).find(function(d) {
-            return d.source = lyrmenu.id;
+            return d.source === lyrmenu.id;
         });
         if (lyr) {
             var mapid = lyr.id;
