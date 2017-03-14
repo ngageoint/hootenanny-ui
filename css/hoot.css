@@ -188,3 +188,8 @@ img.inline, .inline           { display:inline-block; }
   width: 70%;
   padding-left: 2%;
 }
+
+.layer-hoot {
+    fill-opacity: 0;
+    pointer-events: none;
+}
