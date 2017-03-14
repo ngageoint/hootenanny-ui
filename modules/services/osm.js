@@ -545,9 +545,7 @@ export default {
             }
 
             inflight[id] = that.loadFromAPI(
-                that.bboxUrl(tile,
-                    null, /*curLayer.extent*/
-                    false), /*totalNodesCnt > iD.data.hootConfig.maxnodescount*/
+                '/api/0.6/map?bbox=' + tile.extent.toParam() + ((tile.mapId > -1) ? '&mapId=' + tile.mapId : ''),
                 function(err, parsed) {
                     delete inflight[id];
                     if (!err) {
@@ -564,34 +562,6 @@ export default {
                 }
             );
         });
-    },
-
-    bboxUrl: function(tile, layerExt, showbbox){
-        if(!tile){
-            return '/api/0.6/bbox=' + tile.extent.toParam(); //is this url valid?
-        }
-
-        var ext = '';
-        if(showbbox){
-            //iD.data.hootConfig.hootMaxImportZoom = context.map().zoom();
-            if (layerExt) {
-                var layerZoomObj = _.find(layerZoomArray, function(a){
-                    return tile.mapId === a.mapId;
-                });
-                if(layerZoomObj){
-                    layerZoomObj.zoomLevel = context.map().zoom();
-                } else {
-                    layerZoomObj = {};
-                    layerZoomObj.mapId = tile.mapId;
-                    layerZoomObj.zoomLevel = context.map().zoom();
-                    layerZoomArray.push(layerZoomObj);
-                }
-                ext = '&extent=' + layerExt.maxlon + ',' + layerExt.maxlat +
-                ',' + layerExt.minlon + ',' + layerExt.minlat + '&autoextent=manual';
-            }
-        }
-
-        return '/api/0.6/map?bbox=' + tile.extent.toParam() + ((tile.mapId > -1) ? '&mapId=' + tile.mapId : '') + ext;
     },
 
     loadedDataRemove: function(mapid) {

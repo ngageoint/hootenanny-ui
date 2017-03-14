@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import _ from 'lodash';
 import { services } from '../services/index';
+import { geoExtent } from '../geo/index';
 
 var availableLayers = {}, //A map of key=mapid, value=name
     loadedLayers = {}; //A map of key=mapid, value=layer object
@@ -67,12 +68,17 @@ export default {
                         //mbr response sample
                         //{"minlon":-77.05030495606161,"firstlon":-77.0492105,"maxlat":38.9272,"nodescount":157,"minlat":38.9137226,"firstlat":38.9266803,"maxlon":-77.0301}
 
+                        //Zoom map to layer extent & Add node-mapnik tile layer
+                        var min = [mbr.minlon, mbr.minlat],
+                            max = [mbr.maxlon, mbr.maxlat];
+
+                        var layerExtent = new geoExtent(min, max);
+
                         //Store info on the loaded layer
                         loadedLayers[mapid] = {
                             name: name,
                             id: mapid,
-                            polygon: [[[mbr.minlon, mbr.minlat], [mbr.minlon, mbr.maxlat], [mbr.maxlon, mbr.maxlat],
-                                        [mbr.maxlon, mbr.minlat], [mbr.minlon, mbr.minlat]]],
+                            polygon: [layerExtent.polygon()],
                             color: color,
                             source: source,
                             tags: tags,
@@ -82,12 +88,8 @@ export default {
                         //Add css rule to render features by layer mapid
                         services.hoot.setLayerColor(mapid, color);
 
-                        //Zoom map to layer extent & Add node-mapnik tile layer
-                        var min = [mbr.minlon, mbr.minlat],
-                            max = [mbr.maxlon, mbr.maxlat];
-
                         //Issue callback passing extent and node-mapnik background source
-                        if (callback) callback([min, max], getNodeMapnikSource(loadedLayers[mapid]));
+                        if (callback) callback(layerExtent, getNodeMapnikSource(loadedLayers[mapid]));
                     }
                 });
             }

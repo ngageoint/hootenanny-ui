@@ -57,17 +57,50 @@ export function uiLayerMenu(context) {
                         });
                 }
 
-                //Zoom to the layer extent and add the node-mapnik overlay
+
                 function renderLayer(extent, mapnik_source) {
+                    //Zoom to the layer extent
                     context.extent(extent);
+                    //Add the node-mapnik overlay
                     context.background().addSource(mapnik_source);
+
+                    //Load layer extent into hoot overlay
+                    var hootOverlay = context.layers().layer('hoot');
+                    if (hootOverlay) {
+                        hootOverlay.geojson(hootOverlay.geojson().concat([{
+                            type: 'FeatureCollection',
+                            features: [{
+                                type: 'Feature',
+                                geometry: {
+                                    type: 'LineString',
+                                    coordinates: extent.polygon(),
+                                }
+                            }],
+                            properties: {
+                                name: mapnik_source.name,
+                                mapid: mapnik_source.id
+                            }
+                        }]));
+                    }
+
                 }
 
                 //Remove the vector and node-mapnik layers
                 function removeLayer(mapid) {
+                    //Remove internal tracking data
                     services.hoot.removeLayer(mapid);
+                    //Remove osm vector data
                     services.osm.loadedDataRemove(mapid);
+                    //Remove node-mapnik layer
                     context.background().removeSource(mapid);
+                    //Remove hoot bbox layer
+                    var hootOverlay = context.layers().layer('hoot');
+                    if (hootOverlay) {
+                        hootOverlay.geojson(hootOverlay.geojson().filter(function(d) {
+                            return d.properties.mapid !== mapid;
+                        }));
+                    }
+
                     context.flush();
                 }
 
