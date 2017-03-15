@@ -25,6 +25,9 @@ describe('iD.serviceOsm', function () {
         spy = sinon.spy();
     });
 
+    function hootId(id) {
+        return id + '_-1';
+    }
 
     it('is instantiated', function () {
         expect(connection).to.be.ok;
@@ -249,7 +252,7 @@ describe('iD.serviceOsm', function () {
         it('loads a node', function(done) {
             var id = 'n1';
             connection.loadEntity(id, function(err, result) {
-                var entity = _.find(result.data, function(e) { return e.id === id; });
+                var entity = _.find(result.data, function(e) { return e.id === hootId(id); });
                 expect(entity).to.be.an.instanceOf(iD.Node);
                 done();
             });
@@ -262,7 +265,7 @@ describe('iD.serviceOsm', function () {
         it('loads a way', function(done) {
             var id = 'w1';
             connection.loadEntity(id, function(err, result) {
-                var entity = _.find(result.data, function(e) { return e.id === id; });
+                var entity = _.find(result.data, function(e) { return e.id === hootId(id); });
                 expect(entity).to.be.an.instanceOf(iD.Way);
                 done();
             });
@@ -293,7 +296,7 @@ describe('iD.serviceOsm', function () {
         it('loads a node', function(done) {
             var id = 'n1';
             connection.loadEntityVersion(id, 1, function(err, result) {
-                var entity = _.find(result.data, function(e) { return e.id === id; });
+                var entity = _.find(result.data, function(e) { return e.id === hootId(id); });
                 expect(entity).to.be.an.instanceOf(iD.Node);
                 done();
             });
@@ -306,7 +309,7 @@ describe('iD.serviceOsm', function () {
         it('loads a way', function(done) {
             var id = 'w1';
             connection.loadEntityVersion(id, 1, function(err, result) {
-                var entity = _.find(result.data, function(e) { return e.id === id; });
+                var entity = _.find(result.data, function(e) { return e.id === hootId(id); });
                 expect(entity).to.be.an.instanceOf(iD.Way);
                 done();
             });

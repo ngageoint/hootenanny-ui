@@ -146,7 +146,7 @@ function parse(xml) {
     //Map ID is included in hoot osm xml response
     //append it to entity ids to avoid id collisions
     //between datasets
-    var mapId = root.attributes.mapid.value;
+    var mapId = (root.attributes.mapid) ? root.attributes.mapid.value : -1;
 
     for (var i = 0, l = children.length; i < l; i++) {
         var child = children[i],
