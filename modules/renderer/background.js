@@ -123,8 +123,7 @@ export function rendererBackground(context) {
         var source = findSource(id);
         _.remove(backgroundSources, {id: source.id});
         if (background.showsLayer({id: id})) background.toggleOverlayLayer(source);
-
-    }
+    };
 
     background.sources = function(extent) {
         return backgroundSources.filter(function(source) {

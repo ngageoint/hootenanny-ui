@@ -5,7 +5,6 @@ var rollup = require('rollup');
 var nodeResolve = require('rollup-plugin-node-resolve');
 var commonjs = require('rollup-plugin-commonjs');
 var json = require('rollup-plugin-json');
-var http = require('http');
 var gaze = require('gaze');
 var ecstatic = require('ecstatic');
 var express = require('express'),
@@ -27,35 +26,34 @@ if (process.argv[2] === 'develop') {
 
     app.use(
         ecstatic({ root: __dirname, cache: 0 })
-    ).listen(8080);
+    ).listen(port);
 
 
+    var port = 8080;
     var hootHost = 'localhost';
     var hootPort = 8888;
     var hootUrl = 'http://' + hootHost + ':' + hootPort;
 
     app.get('/hootenanny-id', function(req, res) {
         res.writeHead(301,
-          {Location: 'http://localhost:' + options.port}
+          { Location: 'http://localhost:8080' }
         );
         res.end();
     });
 
     app.use('/hoot-services', proxy(hootUrl, {
-        limit: '1000mb',
-        forwardPath: function(req, res) {
+        forwardPath: function(req) {
             return '/hoot-services' + url.parse(req.url).path;
         }
     }));
 
     app.use('/static', proxy(hootUrl, {
-        //limit: '1000mb',
-        forwardPath: function(req, res) {
+        forwardPath: function(req) {
             return '/static' + url.parse(req.url).path;
         }
     }));
 
-    console.log('Listening on :8080');
+    console.log('Listening on ' + port);
 
 } else {
     build();

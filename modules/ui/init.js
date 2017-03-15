@@ -211,7 +211,7 @@ export function uiInit(context) {
                  //close menu
                  var firstOpen = true;
                  d3.select('html').on('click.coordinates-options-menu',function(){
-                     if(firstOpen){
+                     if (firstOpen) {
                         firstOpen=false;
                      } else {
                          d3.select('.coordinates-options-menu').style('display', 'none');

@@ -21,25 +21,25 @@ export function uiCoordinates(context) {
         var LatCardinal = ((lat>0)?'N':'S');
         var LngCardinal = ((lng>0)?'E':'W');
 
-        degrees[0]=Math.abs(parseInt(lat));
-        degrees[1]=Math.abs(parseInt(lng));
+        degrees[0]=Math.abs(parseInt(lat, 10));
+        degrees[1]=Math.abs(parseInt(lng, 10));
 
         var lat_leftover = (Math.abs(lat)-degrees[0])*60;
         var lng_leftover = (Math.abs(lng)-degrees[1])*60;
 
-        minutes[0] = parseInt(lat_leftover);
-        minutes[1] = parseInt(lng_leftover);
+        minutes[0] = parseInt(lat_leftover, 10);
+        minutes[1] = parseInt(lng_leftover, 10);
 
         lat_leftover = (lat_leftover-minutes[0])*60;
         lng_leftover = (lng_leftover-minutes[1])*60;
 
-        seconds[0] = parseInt(lat_leftover);
-        hundreths[0] = parseInt((lat_leftover-seconds[0])*100);
-        if(hundreths[0]<10){leadingZero[0]='0';}
+        seconds[0] = parseInt(lat_leftover, 10);
+        hundreths[0] = parseInt((lat_leftover-seconds[0])*100, 10);
+        if (hundreths[0]<10) {leadingZero[0]='0';}
 
-        seconds[1] = parseInt(lng_leftover);
-        hundreths[1] = parseInt((lng_leftover-seconds[1])*100);
-        if(hundreths[1]<10){leadingZero[1]='0';}
+        seconds[1] = parseInt(lng_leftover, 10);
+        hundreths[1] = parseInt((lng_leftover-seconds[1])*100, 10);
+        if (hundreths[1]<10) {leadingZero[1]='0';}
 
         return degrees[0]+'°' + minutes[0] + '\'' + seconds[0] + '.' + leadingZero[0] + hundreths[0] + '" ' + LatCardinal + '  ' + degrees[1]+ '°' + minutes[1] + '\'' + seconds[1] + '.' + leadingZero[1] + hundreths[1] + '" ' + LngCardinal;
     }
@@ -140,7 +140,7 @@ export function uiCoordinates(context) {
 
 
     function update(selection,coords) {
-        if(!context.coordinateDisplay){context.coordinateDisplay='DMS';}
+        if (!context.coordinateDisplay) {context.coordinateDisplay='DMS';}
         switch (context.coordinateDisplay) {
             case 'DMS': selection.text(DDtoDMS(coords)); break;
             case 'DD': selection.text(formatDD(coords)); break;

@@ -171,7 +171,7 @@ export function uiLayerMenu(context) {
                                 return p.hex;
                             })
                             .on('click', function(p) {
-                                var oldColor = lyrmenu.color
+                                var oldColor = lyrmenu.color;
                                 var newColor = p.name;
                                 lyrmenu.color = p.name;
                                 //highlight the new selected color swatch

@@ -3,7 +3,6 @@ import { d3geoTile } from '../lib/d3.geo.tile';
 import { geoSphericalMercator } from '../geo/spherical_mercator';
 import { utilPrefixCSSProperty } from '../util/index';
 import { rendererBackgroundSource } from './background_source.js';
-import { geoPolygonContainsPolygon } from '../geo/index';
 
 export function rendererTileLayer(context) {
     var tileSize = 256,

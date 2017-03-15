@@ -37,7 +37,6 @@ export default {
         d3.json(this.urlroot() + '/api/0.6/map/layers', function (error, resp) {
             if (error) {
                 alert('Get available layers failed!');
-                console.log(error);
                     //callback(null); Do we even need to callback?
             } else {
                 callback(resp.layers);
@@ -55,14 +54,12 @@ export default {
         d3.json(services.hoot.urlroot() + '/api/0.6/map/tags?mapid=' + mapid, function (error, tags) {
             if (error) {
                 alert('Get map tags failed!');
-                console.log(error);
                 //callback(null);
             } else {
                 //console.log(tags);
                 d3.json(services.hoot.urlroot() + '/api/0.6/map/mbr?mapId=' + mapid, function (error, mbr) {
                     if (error) {
                         alert('Get map extent failed!');
-                        console.log(error);
                         //callback(null);
                     } else {
                         //mbr response sample
@@ -97,7 +94,6 @@ export default {
     },
 
     removeLayer: function(mapid) {
-        var lyr = loadedLayers[mapid];
         delete loadedLayers[mapid];
     },
 
