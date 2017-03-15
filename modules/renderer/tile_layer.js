@@ -4,6 +4,7 @@ import { geoSphericalMercator } from '../geo/spherical_mercator';
 import { utilPrefixCSSProperty } from '../util/index';
 import { rendererBackgroundSource } from './background_source.js';
 
+
 export function rendererTileLayer(context) {
     var tileSize = 256,
         tile = d3geoTile(),
@@ -86,12 +87,14 @@ export function rendererTileLayer(context) {
         render(selection);
     }
 
+
     // Derive the tiles onscreen, remove those offscreen and position them.
     // Important that this part not depend on `projection` because it's
     // rentered when tiles load/error (see #644).
     function render(selection) {
         var requests = [];
         var showDebug = context.getDebug('tile') && !source.overlay;
+
         if (source.validZoom(z)) {
             tile().forEach(function(d) {
                 addSource(d);
@@ -109,6 +112,7 @@ export function rendererTileLayer(context) {
                 }
                 if (source.polygon) {
                     var tileExtent = sphericalMercator.xyz_to_envelope(r[0], r[1], r[2], false);
+                    //Don't load tiles outside the background source polygon
                     if (!source.intersects(tileExtent)) {
                         return false;
                     }

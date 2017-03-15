@@ -145,7 +145,7 @@ function parse(xml) {
         entities = [];
     //Map ID is included in hoot osm xml response
     //append it to entity ids to avoid id collisions
-    //between datasets
+    //between datasets, OSM API datasets get mapid = -1
     var mapId = (root.attributes.mapid) ? root.attributes.mapid.value : -1;
 
     for (var i = 0, l = children.length; i < l; i++) {
@@ -484,6 +484,7 @@ export default {
         return this;
     },
 
+
     loadTiles: function(projection, dimensions, callback) {
         if (off) return;
 
@@ -524,7 +525,7 @@ export default {
             return _tiles;
         });
 
-        // transform multiple arrays into single so we can process
+        // flatten visible layer tile arrays to make http requests
         tiles = _.flatten(tiles);
 
         _.filter(inflight, function(v, i) {
