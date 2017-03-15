@@ -24,15 +24,14 @@ if (process.argv[2] === 'develop') {
         });
     });
 
-    app.use(
-        ecstatic({ root: __dirname, cache: 0 })
-    ).listen(port);
-
-
     var port = 8080;
     var hootHost = 'localhost';
     var hootPort = 8888;
     var hootUrl = 'http://' + hootHost + ':' + hootPort;
+
+    app.use(
+        ecstatic({ root: __dirname, cache: 0 })
+    ).listen(port);
 
     app.get('/hootenanny-id', function(req, res) {
         res.writeHead(301,
