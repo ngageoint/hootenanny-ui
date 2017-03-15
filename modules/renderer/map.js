@@ -251,7 +251,7 @@ export function rendererMap(context) {
             .call(drawLines, graph, data, filter)
             .call(drawAreas, graph, data, filter)
             .call(drawMidpoints, graph, data, filter, map.trimmedExtent())
-            .call(drawLabels, graph, data, filter, dimensions, !difference && !extent)
+            //.call(drawLabels, graph, data, filter, dimensions, !difference && !extent)
             .call(drawPoints, graph, data, filter);
 
         dispatch.call('drawn', this, {full: true});
