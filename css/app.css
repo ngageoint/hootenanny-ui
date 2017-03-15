@@ -633,7 +633,6 @@ button.save.has-count .count::before {
     overflow: hidden;
     z-index: 10;
     background: #f6f6f6;
-    min-width: 400px;
 }
 
 .sidebar-component {
