@@ -193,3 +193,7 @@ img.inline, .inline           { display:inline-block; }
     fill-opacity: 0;
     pointer-events: none;
 }
+
+.coordinates {
+  cursor: pointer;
+}

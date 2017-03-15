@@ -5,6 +5,9 @@ import { svgIcon } from '../svg/index';
 
 export function uiCoordinates(context) {
     var projection = context.projection;
+    var formats = ['DMS', 'DD', 'UTM'];
+    var format = formats[0];
+    var coords;
 
     function leadingZeros(num) {
         return ('0' + num.toString()).slice(-2);
@@ -50,10 +53,10 @@ export function uiCoordinates(context) {
         var lat = coords[1];
         var lng = coords[0];
 
-        var latDD = Math.abs(lat).toFixed(4);
-        var lngDD = Math.abs(lng).toFixed(4);
+        var latDD = lat.toFixed(4);
+        var lngDD = lng.toFixed(4);
 
-        return latDD + ',' + lngDD;
+        return latDD + ', ' + lngDD;
     }
 
     function DDtoUTM(coords){
@@ -136,13 +139,12 @@ export function uiCoordinates(context) {
         Xutm = Math.round(Xutm);
         Yutm = Math.round(Yutm);
 
-        return Xutm.toString().concat(' ; ' + Yutm.toString() + ' '+zone.toString()+sn);
+        return zone.toString() + sn + ' ' + Xutm.toString() + 'm E ' + Yutm.toString() + 'm N';
     }
 
 
-    function update(selection,coords) {
-        if (!context.coordinateDisplay) {context.coordinateDisplay='DMS';}
-        switch (context.coordinateDisplay) {
+    function update(selection) {
+        switch (format) {
             case 'DMS': selection.text(DDtoDMS(coords)); break;
             case 'DD': selection.text(formatDD(coords)); break;
             case 'UTM': selection.text(DDtoUTM(coords)); break;
@@ -152,13 +154,19 @@ export function uiCoordinates(context) {
 
 
     return function(selection){
-        var center = projection.invert(context.map().center());
-        update(selection,center);
-        //selection.text();
+        coords = projection.invert(context.map().center());
+        update(selection);
 
-        context.map().surface.on('mousemove',function() {
-            var coords = projection.invert(context.map().mouse());
-            update(selection,coords);
+        selection.on('click', function() {
+            var previous = format;
+            format = formats.shift();
+            formats.push(previous);
+            update(selection)
+        });
+
+        context.map().surface.on('mousemove', function() {
+            coords = projection.invert(context.map().mouse());
+            update(selection);
         });
     };
 }

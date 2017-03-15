@@ -540,10 +540,12 @@ button.save.has-count .count::before {
 #bar {
     position: fixed;
     padding: 10px 0;
-    height:60px;
-    z-index: 100;
+    left:0;
+    top:0;
+    right:0;height:60px;
+    z-index: 9;
     min-width: 768px;
-    width:100%;
+    /*width:100%;*/
 }
 
 
@@ -1804,10 +1806,6 @@ div.full-screen > button:hover {
 }
 
 /* Zoomer */
-
-.zoombuttons {
-/*    padding-bottom: 10px;
-*/}
 
 .zoombuttons button.zoom-in {
     border-radius: 4px 0 0 0;
