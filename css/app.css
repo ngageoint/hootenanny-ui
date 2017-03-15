@@ -542,12 +542,11 @@ button.save.has-count .count::before {
     padding: 10px 0;
     left:0;
     top:0;
-    right:0;height:60px;
+    right:0;
+    height:60px;
     z-index: 9;
     min-width: 768px;
-    /*width:100%;*/
 }
-
 
 /* Header for modals / panes
 ------------------------------------------------------- */
@@ -635,7 +634,6 @@ button.save.has-count .count::before {
     z-index: 10;
     background: #f6f6f6;
     min-width: 400px;
-    /*max-width: 50%;*/
 }
 
 .sidebar-component {
