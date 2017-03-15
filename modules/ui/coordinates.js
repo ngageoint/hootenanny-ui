@@ -6,6 +6,10 @@ import { svgIcon } from '../svg/index';
 export function uiCoordinates(context) {
     var projection = context.projection;
 
+    function leadingZeros(num) {
+        return ('0' + num.toString()).slice(-2);
+    }
+
     function DDtoDMS(coords){
         var lat = coords[1];
         var lng = coords[0];
@@ -15,8 +19,6 @@ export function uiCoordinates(context) {
         var seconds = new Array(0,0);
         // var direction = new Array(' ',' ');
         var hundreths = new Array(0.0,0.0);
-
-        var leadingZero = new Array('','');
 
         var LatCardinal = ((lat>0)?'N':'S');
         var LngCardinal = ((lng>0)?'E':'W');
@@ -35,13 +37,12 @@ export function uiCoordinates(context) {
 
         seconds[0] = parseInt(lat_leftover, 10);
         hundreths[0] = parseInt((lat_leftover-seconds[0])*100, 10);
-        if (hundreths[0]<10) {leadingZero[0]='0';}
 
         seconds[1] = parseInt(lng_leftover, 10);
         hundreths[1] = parseInt((lng_leftover-seconds[1])*100, 10);
-        if (hundreths[1]<10) {leadingZero[1]='0';}
 
-        return degrees[0]+'°' + minutes[0] + '\'' + seconds[0] + '.' + leadingZero[0] + hundreths[0] + '" ' + LatCardinal + '  ' + degrees[1]+ '°' + minutes[1] + '\'' + seconds[1] + '.' + leadingZero[1] + hundreths[1] + '" ' + LngCardinal;
+        return degrees[0] + '°' + leadingZeros(minutes[0]) + '\'' + leadingZeros(seconds[0]) + '.' + leadingZeros(hundreths[0]) + '" ' + LatCardinal + '  '
+            + degrees[1] + '°' + leadingZeros(minutes[1]) + '\'' + leadingZeros(seconds[1]) + '.' + leadingZeros(hundreths[1]) + '" ' + LngCardinal;
     }
 
     function formatDD(coords){
