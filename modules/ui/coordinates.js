@@ -6,8 +6,14 @@ import { svgIcon } from '../svg/index';
 export function uiCoordinates(context) {
     var projection = context.projection;
     var formats = ['DMS', 'DD', 'UTM'];
-    var format = formats[0];
+    var format = cycleFormats();
     var coords;
+
+    function cycleFormats() {
+        format = formats.shift();
+        formats.push(format);
+        return format;
+    }
 
     function leadingZeros(num) {
         return ('0' + num.toString()).slice(-2);
@@ -158,10 +164,8 @@ export function uiCoordinates(context) {
         update(selection);
 
         selection.on('click', function() {
-            var previous = format;
-            format = formats.shift();
-            formats.push(previous);
-            update(selection)
+            cycleFormats();
+            update(selection);
         });
 
         context.map().surface.on('mousemove', function() {
