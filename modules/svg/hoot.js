@@ -84,7 +84,6 @@ export function svgHoot(projection, context, dispatch) {
 
     drawHoot.geojson = function(gj) {
         if (!arguments.length) return svgHoot.geojson;
-        console.log(gj);
         svgHoot.geojson = gj;
         dispatch.call('change');
         return this;
