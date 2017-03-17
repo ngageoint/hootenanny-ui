@@ -35,8 +35,12 @@ osmEntity.id.fromOSM = function(type, id) {
 };
 
 
+//This method is called when formatting iD entities to OSM xml
 osmEntity.id.toOSM = function(id) {
-    return id.slice(1);
+    //Strip off the _mapid added by Hoot
+    var arr = id.match(/[^_]*/i);
+    //Then strip off the element type indicator
+    return arr[0].slice(1);
 };
 
 

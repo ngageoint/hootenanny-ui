@@ -100,7 +100,6 @@ var parsers = {
         var attrs = obj.attributes;
         return new osmNode({
             id: osmEntity.id.fromOSM('node', attrs.id.value + '_' + mapId),
-            osmid: osmEntity.id.fromOSM('node', attrs.id.value),
             loc: getLoc(attrs),
             version: attrs.version.value,
             user: attrs.user && attrs.user.value,
@@ -113,7 +112,6 @@ var parsers = {
         var attrs = obj.attributes;
         return new osmWay({
             id: osmEntity.id.fromOSM('way', attrs.id.value + '_' + mapId),
-            osmid: osmEntity.id.fromOSM('way', attrs.id.value),
             version: attrs.version.value,
             user: attrs.user && attrs.user.value,
             tags: getTags(obj),
@@ -126,7 +124,6 @@ var parsers = {
         var attrs = obj.attributes;
         return new osmRelation({
             id: osmEntity.id.fromOSM('relation', attrs.id.value + '_' + mapId),
-            osmid: osmEntity.id.fromOSM('relation', attrs.id.value),
             version: attrs.version.value,
             user: attrs.user && attrs.user.value,
             tags: getTags(obj),
@@ -300,7 +297,7 @@ export default {
                         return { '@k': key, '@v': value };
                     }),
                     '@version': 0.6,
-                    '@generator': 'iD'
+                    '@generator': 'Hootenanny'
                 }
             }
         };
@@ -357,33 +354,83 @@ export default {
     },
 
 
+    //Splits changes and creates a change object per mapid
+    splitChanges: function(changes) {
+        var splitChangeMap = {};
+        d3.map(changes).each(function(value, key) {
+            value.forEach(function(e) {
+                var mapid = e.id.split('_')[1];
+                if (!splitChangeMap[mapid]) {
+                    //Initialize changes object
+                    splitChangeMap[mapid] = d3.keys(changes).reduce(function(prev, curr) {
+                        prev[curr] = [];
+                        return prev;
+                    }, {});
+                }
+                //Push change change object type array
+                splitChangeMap[mapid][key].push(e);
+            });
+        });
+
+        return splitChangeMap;
+    },
+
+
     putChangeset: function(changes, version, comment, imageryUsed, callback) {
         var that = this;
-        oauth.xhr({
-                method: 'PUT',
-                path: '/api/0.6/changeset/create',
-                options: { header: { 'Content-Type': 'text/xml' } },
-                content: JXON.stringify(that.changesetJXON(that.changesetTags(version, comment, imageryUsed)))
-            }, function(err, changeset_id) {
-                if (err) return callback(err);
+        var changesByMapId = this.splitChanges(changes);
+        //Make a separate set of changeset calls for each layer
+        d3.map(changesByMapId).each(function(changes, mapid) {
+            if (mapid > -1) {
+                //Call the Hoot API service
+                //If Hoot implements OAuth the d3.request should
+                //be replaced with oauth.xhr
+                d3.request(services.hoot.urlroot + '/api/0.6/changeset/create?mapId=' + mapid)
+                    .header('Content-Type', 'text/xml')
+                    .put(JXON.stringify(that.changesetJXON(that.changesetTags(version, comment, imageryUsed))), function(err, changeset_id) {
+                        if (err) return callback(err);
+                        d3.request(services.hoot.urlroot + '/api/0.6/changeset/' + changeset_id + '/upload?mapId=' + mapid)
+                            .header('Content-Type', 'text/xml')
+                            .post(JXON.stringify(that.osmChangeJXON(changeset_id, changes)), function(err) {
+                                if (err) return callback(err);
+                                // POST was successful, safe to call the callback.
+                                // Still attempt to close changeset, but ignore response because #2667
+                                // Add delay to allow for postgres replication #1646 #2678
+                                window.setTimeout(function() { callback(null, changeset_id); }, 2500);
+                                d3.request(services.hoot.urlroot + '/api/0.6/changeset/' + changeset_id + '/close?mapId=' + mapid)
+                                    .header('Content-Type', 'text/xml')
+                                    .put(function() { return true; });
+                        });
+                    });
+            } else {
+                //Call the OSM API service
                 oauth.xhr({
-                    method: 'POST',
-                    path: '/api/0.6/changeset/' + changeset_id + '/upload',
-                    options: { header: { 'Content-Type': 'text/xml' } },
-                    content: JXON.stringify(that.osmChangeJXON(changeset_id, changes))
-                }, function(err) {
-                    if (err) return callback(err);
-                    // POST was successful, safe to call the callback.
-                    // Still attempt to close changeset, but ignore response because #2667
-                    // Add delay to allow for postgres replication #1646 #2678
-                    window.setTimeout(function() { callback(null, changeset_id); }, 2500);
-                    oauth.xhr({
                         method: 'PUT',
-                        path: '/api/0.6/changeset/' + changeset_id + '/close',
-                        options: { header: { 'Content-Type': 'text/xml' } }
-                    }, function() { return true; });
-                });
-            });
+                        path: '/api/0.6/changeset/create',
+                        options: { header: { 'Content-Type': 'text/xml' } },
+                        content: JXON.stringify(that.changesetJXON(that.changesetTags(version, comment, imageryUsed)))
+                    }, function(err, changeset_id) {
+                        if (err) return callback(err);
+                        oauth.xhr({
+                            method: 'POST',
+                            path: '/api/0.6/changeset/' + changeset_id + '/upload',
+                            options: { header: { 'Content-Type': 'text/xml' } },
+                            content: JXON.stringify(that.osmChangeJXON(changeset_id, changes))
+                        }, function(err) {
+                            if (err) return callback(err);
+                            // POST was successful, safe to call the callback.
+                            // Still attempt to close changeset, but ignore response because #2667
+                            // Add delay to allow for postgres replication #1646 #2678
+                            window.setTimeout(function() { callback(null, changeset_id); }, 2500);
+                            oauth.xhr({
+                                method: 'PUT',
+                                path: '/api/0.6/changeset/' + changeset_id + '/close',
+                                options: { header: { 'Content-Type': 'text/xml' } }
+                            }, function() { return true; });
+                        });
+                    });
+            }
+        });
     },
 
 
