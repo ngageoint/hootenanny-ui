@@ -209,7 +209,8 @@ export function modeSave(context) {
                                 showErrors();
                             } else {
                                 history.clearSaved();
-                                success(e, changeset_id);
+                                //Hoot won't display the success message
+                                //success(e, changeset_id);
                                 // Add delay to allow for postgres replication #1646 #2678
                                 window.setTimeout(function() {
                                     loading.close();
@@ -222,6 +223,7 @@ export function modeSave(context) {
                     context.flush();
                     cancel();
                 }
+                context.enter(modeBrowse(context));
             }
         }
 

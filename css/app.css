@@ -637,7 +637,7 @@ button.save.has-count .count::before {
 
 .sidebar-component {
     position: absolute;
-    top: 0;
+    top: 60px;
     left: 0;
     bottom: 0;
     right: 0;

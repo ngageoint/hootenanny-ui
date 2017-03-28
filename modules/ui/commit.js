@@ -34,7 +34,7 @@ export function uiCommit(context) {
 
         var commentSection = body
             .append('div')
-            .attr('class', 'modal-section form-field commit-form');
+            .attr('class', 'modal-section form-field commit-form fillL2');
 
         commentSection
             .append('label')
