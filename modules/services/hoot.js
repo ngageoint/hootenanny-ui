@@ -119,6 +119,10 @@ export default {
         return d3.map(loadedLayers).size() > 0;
     },
 
+    hasOsmLayer: function() {
+        return loadedLayers[-1];
+    },
+
     palette: function(co) {
         var palette = [{
                 name: 'gold',
