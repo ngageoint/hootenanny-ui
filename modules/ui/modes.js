@@ -11,7 +11,7 @@ import {
 import { svgIcon } from '../svg/index';
 import { tooltip } from '../util/tooltip';
 import { uiTooltipHtml } from './tooltipHtml';
-
+import { services } from '../services/index';
 
 export function uiModes(context) {
     var modes = [
@@ -22,7 +22,7 @@ export function uiModes(context) {
 
 
     function editable() {
-        return context.editable() && context.mode().id !== 'save';
+        return context.editable() && context.mode().id !== 'save' && services.hoot.hasLayers();
     }
 
 
@@ -51,6 +51,9 @@ export function uiModes(context) {
 
         context.map()
             .on('move.modes', _.debounce(update, 500));
+
+        context.background()
+            .on('change.modes', update);
 
         context
             .on('enter.modes', update);

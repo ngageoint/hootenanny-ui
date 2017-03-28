@@ -115,6 +115,10 @@ export default {
         return loadedLayers;
     },
 
+    hasLayers: function() {
+        return d3.map(loadedLayers).size() > 0;
+    },
+
     palette: function(co) {
         var palette = [{
                 name: 'gold',
