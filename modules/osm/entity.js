@@ -43,6 +43,11 @@ osmEntity.id.toOSM = function(id) {
     return arr[0].slice(1);
 };
 
+//This method is called when map id of an entity is needed
+osmEntity.id.toHootMapId = function(id) {
+    return id.split('_')[1];
+};
+
 
 osmEntity.id.type = function(id) {
     return { 'n': 'node', 'w': 'way', 'r': 'relation' }[id[0]];

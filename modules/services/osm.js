@@ -359,7 +359,7 @@ export default {
         var splitChangeMap = {};
         d3.map(changes).each(function(value, key) {
             value.forEach(function(e) {
-                var mapid = e.id.split('_')[1];
+                var mapid = osmEntity.id.toHootMapId(e.id);
                 if (!splitChangeMap[mapid]) {
                     //Initialize changes object
                     splitChangeMap[mapid] = d3.keys(changes).reduce(function(prev, curr) {
@@ -381,7 +381,7 @@ export default {
         var changesByMapId = this.splitChanges(changes);
         //Make a separate set of changeset calls for each layer
         d3.map(changesByMapId).each(function(changes, mapid) {
-            if (mapid > -1) {
+            if (parseInt(mapid, 10) > -1) {
                 //Call the Hoot API service
                 //If Hoot implements OAuth the d3.request should
                 //be replaced with oauth.xhr
