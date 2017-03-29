@@ -223,7 +223,8 @@ export function modeSave(context) {
                     context.flush();
                     cancel();
                 }
-                context.enter(modeBrowse(context));
+                //Remove the save dialog since we are not showing success message
+                cancel();
             }
         }
 

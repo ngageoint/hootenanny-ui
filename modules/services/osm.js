@@ -373,6 +373,13 @@ export default {
         d3.map(changes).each(function(value, key) {
             value.forEach(function(e) {
                 var mapid = osmEntity.id.toHootMapId(e.id);
+
+                //Newly created features won't have a mapid
+                //so assume the reference layer, then if
+                //not set, the secondary layer
+                if (!mapid) mapid = services.hoot.layerBySource('reference')
+                                    || services.hoot.layerBySource('secondary');
+
                 if (!splitChangeMap[mapid]) {
                     //Initialize changes object
                     splitChangeMap[mapid] = d3.keys(changes).reduce(function(prev, curr) {

@@ -26,7 +26,6 @@ function getNodeMapnikSource(d) {
     return source;
 }
 
-
 export default {
 
     init: function() {
@@ -113,6 +112,12 @@ export default {
 
     loadedLayers: function() {
         return loadedLayers;
+    },
+
+    layerBySource: function(s) {
+        return d3.values(loadedLayers).find(function(d) {
+            return d.source === s;
+        }).id;
     },
 
     hasLayers: function() {
