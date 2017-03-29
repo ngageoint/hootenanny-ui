@@ -101,29 +101,31 @@ export function svgTagClasses() {
                 }
             }
 
-            // Set a marker class on hoot entities
-            // used for assigning layer color
-            var mapid = osmEntity.id.toHootMapId(entity.id);
+            if (entity.id) {
+                // Set a marker class on hoot entities
+                // used for assigning layer color
+                var mapid = osmEntity.id.toHootMapId(entity.id);
 
-            // For merged datasets, assign color class of source layer
-            var lyr = services.hoot.loadedLayers()[mapid];
-            if (lyr && lyr.merged) {
-                var id;
-                var sourceid = parseInt(t['hoot:status'], 10);
-                switch (sourceid) {
-                case 1:
-                case 2:
-                    id = lyr.tags;
-                    break;
-                case 0:
-                case 3:
-                default:
-                    id = mapid;
-                    break;
+                // For merged datasets, assign color class of source layer
+                var lyr = services.hoot.loadedLayers()[mapid];
+                if (lyr && lyr.merged) {
+                    var id;
+                    var sourceid = parseInt(t['hoot:status'], 10);
+                    switch (sourceid) {
+                    case 1:
+                    case 2:
+                        id = lyr.tags;
+                        break;
+                    case 0:
+                    case 3:
+                    default:
+                        id = mapid;
+                        break;
+                    }
+                    classes += ' tag-hoot-' + (id || sourceid);
+                } else {
+                    classes += ' tag-hoot-' + mapid;
                 }
-                classes += ' tag-hoot-' + (id || sourceid);
-            } else {
-                classes += ' tag-hoot-' + mapid;
             }
 
             classes = classes.trim();
