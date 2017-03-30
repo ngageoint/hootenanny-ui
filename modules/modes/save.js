@@ -211,11 +211,13 @@ export function modeSave(context) {
                                 history.clearSaved();
                                 //Hoot won't display the success message
                                 //success(e, changeset_id);
+                                //Remove the save dialog since we are not showing success message
+                                cancel();
                                 // Add delay to allow for postgres replication #1646 #2678
                                 window.setTimeout(function() {
                                     loading.close();
                                     context.flush();
-                                }, 2500);
+                                }, 25);
                             }
                         });
                 } else {        // changes were insignificant or reverted by user
@@ -223,8 +225,6 @@ export function modeSave(context) {
                     context.flush();
                     cancel();
                 }
-                //Remove the save dialog since we are not showing success message
-                cancel();
             }
         }
 

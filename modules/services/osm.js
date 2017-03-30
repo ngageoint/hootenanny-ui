@@ -13,16 +13,15 @@ import { services } from '../services/index';
 var dispatch = d3.dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded'),
     useHttps = window.location.protocol === 'https:',
     protocol = useHttps ? 'https:' : 'http:',
-    // urlroot = protocol + '//www.openstreetmap.org',
-    urlroot = protocol + '//fo.ob.ar',
+    urlroot = protocol + '//localhost:3000',
     blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'],
     inflight = {},
     loadedTiles = {},
     tileZoom = 16,
     oauth = osmAuth({
         url: urlroot,
-        oauth_consumer_key: '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
-        oauth_secret: 'aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL',
+        oauth_consumer_key: '7VFoWFC53zIqBY9fLqjaufkumDxFRrjGP2BGayKL',
+        oauth_secret: 'hf0kTNizGA5Nr1Q4irwY4lOFI14JRCYbUwXUGD2S',
         loading: authLoading,
         done: authDone
     }),
@@ -417,7 +416,7 @@ export default {
                                 // POST was successful, safe to call the callback.
                                 // Still attempt to close changeset, but ignore response because #2667
                                 // Add delay to allow for postgres replication #1646 #2678
-                                window.setTimeout(function() { callback(null, changeset_id); }, 2500);
+                                window.setTimeout(function() { callback(null, changeset_id); }, 25);
                                 d3.request(services.hoot.urlroot() + '/api/0.6/changeset/' + changeset_id + '/close?mapId=' + mapid)
                                     .header('Content-Type', 'text/xml')
                                     .send('PUT', function() { return true; });
