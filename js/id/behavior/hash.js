@@ -71,7 +71,7 @@ iD.behavior.Hash = function(context) {
             if (q.map) hash.hadHash = true;
             if (q.reference) hash.reference = q.reference;
             if (q.secondary) hash.secondary = q.secondary;
-            if (q.secondary) hash.userid = q.userid;
+            if (q.userid) hash.userid = q.userid;
             if (q.gpx) hash.gpx = q.gpx;
         }
     }
