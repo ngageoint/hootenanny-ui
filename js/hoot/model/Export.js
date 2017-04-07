@@ -126,7 +126,7 @@ Hoot.model.export = function (context)
         param.append = appendTemplate.toString();
         param.textstatus = exportTextStatus.toString();
         d3.json('/hoot-services/job/export/execute')
-            .header('Content-Type', 'text/plain')
+            .header('Content-Type', 'application/json')
             .post(JSON.stringify(param), function (error, data) {
                 if(error){
                 if(callback){callback(false);}
