@@ -114,7 +114,7 @@ export function svgTagClasses() {
                     switch (sourceid) {
                     case 1:
                     case 2:
-                        id = lyr.tags;
+                        id = lyr.tags['input' + sourceid];
                         break;
                     case 0:
                     case 3:

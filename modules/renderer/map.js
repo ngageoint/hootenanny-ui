@@ -406,6 +406,9 @@ export function rendererMap(context) {
         return map;
     };
 
+    //Added so we can redraw the map without changing extent
+    //after a layer is added.
+    map.immediateRedraw = immediateRedraw;
 
     function setTransform(t2, duration, force) {
         var t = projection.transform();

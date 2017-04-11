@@ -59,30 +59,38 @@ export function uiLayerMenu(context) {
 
 
                 function renderLayer(extent, mapnik_source) {
-                    //Zoom to the layer extent
-                    context.extent(extent);
-                    //Add the node-mapnik overlay
-                    context.background().addSource(mapnik_source);
+                    //Zoom to the layer extent if not global
+                    if (extent.toParam() !== '-180,-90,180,90') {
+                        if (!context.extent().intersects(extent)) {
+                            context.extent(extent);
+                        } else {
+                            context.redraw();
+                        }
 
-                    //Load layer extent into hoot overlay
-                    var hootOverlay = context.layers().layer('hoot');
-                    if (hootOverlay) {
-                        hootOverlay.geojson(hootOverlay.geojson().concat([{
-                            type: 'FeatureCollection',
-                            features: [{
-                                type: 'Feature',
-                                geometry: {
-                                    type: 'LineString',
-                                    coordinates: extent.polygon(),
+                        //Add the node-mapnik overlay
+                        context.background().addSource(mapnik_source);
+
+                        //Load layer extent into hoot overlay
+                        var hootOverlay = context.layers().layer('hoot');
+                        if (hootOverlay) {
+                            hootOverlay.geojson(hootOverlay.geojson().concat([{
+                                type: 'FeatureCollection',
+                                features: [{
+                                    type: 'Feature',
+                                    geometry: {
+                                        type: 'LineString',
+                                        coordinates: extent.polygon(),
+                                    }
+                                }],
+                                properties: {
+                                    name: mapnik_source.name,
+                                    mapid: mapnik_source.id
                                 }
-                            }],
-                            properties: {
-                                name: mapnik_source.name,
-                                mapid: mapnik_source.id
-                            }
-                        }]));
+                            }]));
+                        }
+                    } else {
+                        context.redraw();
                     }
-
                 }
 
                 //Remove the vector and node-mapnik layers

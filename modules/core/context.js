@@ -394,6 +394,7 @@ export function coreContext() {
     context.zoomInFurther = map.zoomInFurther;
     context.zoomOutFurther = map.zoomOutFurther;
     context.redrawEnable = map.redrawEnable;
+    context.redraw = map.immediateRedraw;
 
     _.each(services, function(service) {
         if (service && typeof service.init === 'function') {
