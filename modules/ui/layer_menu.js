@@ -6,6 +6,7 @@ import { svgIcon } from '../svg/index';
 import { rendererBackgroundSource } from '../renderer/background_source';
 import { uiMapMetadata } from '../ui/map_metadata';
 import { services } from '../services/index';
+import { utilQsString, utilStringQs } from '../util/index';
 
 export function uiLayerMenu(context) {
 
@@ -21,14 +22,21 @@ export function uiLayerMenu(context) {
             .classed('col12 pad2', true)
             .call(renderLayerMenu);
 
+        var q = utilStringQs(window.location.hash.substring(1));
+
         function renderLayerMenu(container) {
             services.hoot.availableLayers(function(layers) {
 
                 function loadLayer(d) {
+                    //Update the window hash with layer info
+                    q[d.source] = d.mapid;
+                    window.location.replace('#' + utilQsString(q, true));
+
                     var lyrdiv = d3.select('#' + d.source);
                     var color = lyrdiv.attr('data-color');
                     //Set the layer combobox to disabled/readonly
                     lyrdiv.select('input')
+                        .property('value', d.value)
                         .call(d3combobox.off)
                         .attr('readonly', true);
                     //Add the layer remove button
@@ -36,6 +44,10 @@ export function uiLayerMenu(context) {
                         .attr('class', 'inline fr contain map-button keyline-left round-right')
                         .call(svgIcon('#operation-delete'))
                         .on('click', function() {
+                            //Update the window hash with layer info
+                            delete q[d.source];
+                            window.location.replace('#' + utilQsString(q, true));
+
                             //Remove the layer
                             removeLayer(d.mapid);
                             //Reset the layer menu ui element
@@ -218,6 +230,23 @@ export function uiLayerMenu(context) {
                         .classed('keyline-all palette inline round space-bottom1', true)
                         .call(buildPalette, lyrmenu);
                 });
+
+                //Restore layers from hash
+                if (q.reference) {
+                    loadLayer({
+                        value: services.hoot.layerName(q.reference),
+                        mapid: q.reference,
+                        source: 'reference'
+                    });
+                }
+                if (q.secondary) {
+                    loadLayer({
+                        value: services.hoot.layerName(q.secondary),
+                        mapid: q.secondary,
+                        source: 'secondary'
+                    });
+                }
+
             });
 
         }

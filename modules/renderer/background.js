@@ -49,7 +49,7 @@ export function rendererBackground(context) {
     background.updateImagery = function() {
         var b = background.baseLayerSource(),
             o = overlayLayers
-                .filter(function (d) { return !d.source().isLocatorOverlay(); })
+                .filter(function (d) { return !d.source().isLocatorOverlay() && !d.source().hootlayer; })
                 .map(function (d) { return d.source().id; })
                 .join(','),
             meters = geoOffsetToMeters(b.offset()),

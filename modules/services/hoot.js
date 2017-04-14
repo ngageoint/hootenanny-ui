@@ -21,7 +21,8 @@ function getNodeMapnikSource(d) {
             scaleExtent: [0,16],
             polygon: d.polygon,
             overzoom: false,
-            overlay: true
+            overlay: true,
+            hootlayer: true
         };
     return source;
 }
@@ -38,11 +39,11 @@ export default {
                 alert('Get available layers failed!');
                     //callback(null); Do we even need to callback?
             } else {
+                availableLayers = resp.layers.reduce(function(lyrs, lyr) {
+                    lyrs[lyr.id] = lyr.name;
+                    return lyrs;
+                }, {});
                 callback(resp.layers);
-                    availableLayers = resp.layers.reduce(function(lyrs, lyr) {
-                        lyrs[lyr.id] = lyr.name;
-                        return lyrs;
-                    }, {});
             }
         });
     },
@@ -53,22 +54,64 @@ export default {
         });
     },
 
-    deriveChangeset: function(mapid, callback) {
+    deriveChangeset: function(mapid, extent, callback) {
+// {
+//     "input": "678",
+//     "inputtype": "db",
+//     "outputtype": "osc",
+//     "outputname": "changeset",
+//     "USER_ID": "1",
+//     "TASK_BBOX": "34.040297648723,31.174810720402537,34.06423943771007,31.186143336347865",
+//     "translation": "NONE"
+// }
         var json = {
-            input: mapid,
+            input: mapid.toString(),
             inputtype: 'db',
-            outputtype: 'osc'
+            outputtype: 'osc',
+            outputname: 'changeset',
+            USER_ID: '1',
+            TASK_BBOX: extent.toParam(),
+            translation: 'NONE'
         };
+
+        var userid = services.osm.userDetails(function(dets) {
+            console.log(dets);
+        });
 
         d3.json('/hoot-services/job/export/execute')
             .post(JSON.stringify(json), function (error, resp) {
                 if (error) {
                     alert('Derive changeset failed!');
-                    //callback(null);
                 } else {
-                    console.log(resp);
+                    services.hoot.pollJob(resp.jobid, function() {
+                        d3.xml('/hoot-services/job/export/xml/' + resp.jobid + '?outputname=changeset&ext=osc', function(data) {
+                            console.log(data);
+                            //callback(null);
+                        });
+                    });
                 }
             });
+    },
+
+    pollJob: function(jobid, callback) {
+        function jobStatus () {
+            d3.json('/hoot-services/job/status/' + jobid, function (error, resp) {
+                if (error) {
+                    clearInterval(job);
+                    alert('Job status failed!');
+                }
+                if (resp.status === 'complete') {
+                    clearInterval(job);
+                    callback(resp);
+                }
+                if (resp.status === 'failed') {
+                    clearInterval(job);
+                    alert('Job ' + jobid + ' failed!');
+                }
+            });
+        }
+
+        var job = setInterval(jobStatus, 2000);
     },
 
     loadLayer: function(mapid, source, color, callback) {
@@ -120,6 +163,11 @@ export default {
                                 // 3 = merged (active color or pink)
                                 services.hoot.setLayerColor(tags.input1 || 1, 'purple');
                                 services.hoot.setLayerColor(tags.input2 || 2, 'gold');
+
+                                //If an input layer is osm api db, call derive changeset
+                                if (tags.input1 === '-1' || tags.input2 === '-1') {
+                                    services.hoot.deriveChangeset(mapid, layerExtent);
+                                }
                             }
 
                             //Store info on the loaded layer
@@ -181,6 +229,10 @@ export default {
 
     hasOsmLayer: function() {
         return loadedLayers[-1];
+    },
+
+    layerName: function(mapid) {
+        return availableLayers[mapid];
     },
 
     palette: function(co) {
