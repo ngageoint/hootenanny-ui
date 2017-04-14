@@ -24,9 +24,9 @@ if (process.argv[2] === 'develop') {
         });
     });
 
-    var port = 8080;
+    var port = 8088;
     var hootHost = 'localhost';
-    var hootPort = 8888;
+    var hootPort = 8080;
     var hootUrl = 'http://' + hootHost + ':' + hootPort;
 
     app.use(
