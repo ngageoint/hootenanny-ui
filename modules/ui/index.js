@@ -25,6 +25,7 @@ export { uiLayerMenu } from './layer_menu';
 export { uiLoading } from './loading';
 export { uiMapData } from './map_data';
 export { uiMapInMap } from './map_in_map';
+export { uiMapMetadata } from './map_metadata';
 export { uiModal } from './modal';
 export { uiModes } from './modes';
 export { uiNotice } from './notice';

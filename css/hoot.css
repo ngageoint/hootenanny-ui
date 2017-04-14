@@ -176,12 +176,9 @@ img.inline, .inline           { display:inline-block; }
 }
 
 .add-dataset-pane {
-  position: absolute;
-  top: 60px;
-  bottom: 0;
-  left: 0;
-  right: 0;
   background: #f6f6f6;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .menu-layers {
@@ -196,4 +193,40 @@ img.inline, .inline           { display:inline-block; }
 
 .coordinates {
   cursor: pointer;
+}
+
+.map-metadata li {
+  height: auto;
+}
+
+.tag-row .map-metadata {
+    color: #a0a0a0;
+    font-size: 13px;
+    word-break: break-word;
+}
+.tag-row .map-metadata.key {
+    font-weight: bold;
+    padding: 4px 6px 0px 6px;
+}
+.tag-row .map-metadata.value {
+    padding: 0px 6px 4px 18px;
+}
+.tar {
+    text-align: right;
+}
+tr.tag-row td {
+    padding: 4px 6px;
+    overflow: hidden;
+}
+tr.tag-row td.key {
+    font-weight: bold;
+}
+
+table.map-metadata {
+    border-collapse:separate;
+    border: 1px solid #cfcfcf;
+    border-radius: 4px;
+    overflow: hidden;
+    color: #a0a0a0;
+    font-size: 13px;
 }

@@ -4,6 +4,7 @@ import { d3combobox } from '../lib/d3.combobox.js';
 import { t } from '../util/locale';
 import { svgIcon } from '../svg/index';
 import { rendererBackgroundSource } from '../renderer/background_source';
+import { uiMapMetadata } from '../ui/map_metadata';
 import { services } from '../services/index';
 
 export function uiLayerMenu(context) {
@@ -17,7 +18,7 @@ export function uiLayerMenu(context) {
         //t('geocoder.no_results_worldwide')
 
         var layerMenu = selection.append('div')
-            .classed('col12 pad2',true)
+            .classed('col12 pad2', true)
             .call(renderLayerMenu);
 
         function renderLayerMenu(container) {
@@ -26,20 +27,24 @@ export function uiLayerMenu(context) {
                 function loadLayer(d) {
                     var lyrdiv = d3.select('#' + d.source);
                     var color = lyrdiv.attr('data-color');
-                    //Adds the vector and node-mapnik layers to the map
-                    services.hoot.loadLayer(d.mapid, d.source, color, renderLayer);
                     //Set the layer combobox to disabled/readonly
                     lyrdiv.select('input')
                         .call(d3combobox.off)
                         .attr('readonly', true);
                     //Add the layer remove button
                     lyrdiv.insert('button', '.menu-layers')
-                        .attr('class', 'inline fr contain map-button keyline-left round-right _icon trash')
+                        .attr('class', 'inline fr contain map-button keyline-left round-right')
+                        .call(svgIcon('#operation-delete'))
                         .on('click', function() {
                             //Remove the layer
                             removeLayer(d.mapid);
                             //Reset the layer menu ui element
                             this.remove();
+                            //This should be a remove method on map_metadata
+                            lyrdiv.select('button.map-metadata-button').remove();
+                            lyrdiv.selectAll('.map-metadata-body').remove();
+
+                            lyrdiv.select('div.menu-layers').attr('style', null);
                             //Reinitialize the layer combobox
                             lyrdiv.select('input')
                                 .property('value', '')
@@ -55,62 +60,72 @@ export function uiLayerMenu(context) {
                                     .on('accept.combobox', loadLayer)
                                 );
                         });
-                }
+                    //Adds the vector and node-mapnik layers to the map
+                    services.hoot.loadLayer(d.mapid, d.source, color, renderLayer);
 
+                    function renderLayer(extent, mapnik_source) {
+                        var lyrinfo = services.hoot.loadedLayers()[d.mapid];
+                        //Add map metadata (params, stats) display control
+                        if (lyrinfo.tags && (lyrinfo.tags.params || lyrinfo.tags.stats)) {
+                            lyrdiv.select('div.menu-layers').style('max-width', '60%');
+                            var mapMetadata = uiMapMetadata(lyrinfo, context);
+                            lyrdiv.call(mapMetadata.button).call(mapMetadata.body);
+                        }
 
-                function renderLayer(extent, mapnik_source) {
-                    //Zoom to the layer extent if not global
-                    if (extent.toParam() !== '-180,-90,180,90') {
-                        if (!context.extent().intersects(extent)) {
-                            context.extent(extent);
+                        //Zoom to the layer extent if not global
+                        if (extent.toParam() !== '-180,-90,180,90') {
+                            if (!context.extent().intersects(extent)) {
+                                context.extent(extent);
+                            } else {
+                                context.redraw();
+                            }
+
+                            //Add the node-mapnik overlay
+                            context.background().addSource(mapnik_source);
+
+                            //Load layer extent into hoot overlay
+                            var hootOverlay = context.layers().layer('hoot');
+                            if (hootOverlay) {
+                                hootOverlay.geojson(hootOverlay.geojson().concat([{
+                                    type: 'FeatureCollection',
+                                    features: [{
+                                        type: 'Feature',
+                                        geometry: {
+                                            type: 'LineString',
+                                            coordinates: extent.polygon(),
+                                        }
+                                    }],
+                                    properties: {
+                                        name: mapnik_source.name,
+                                        mapid: mapnik_source.id
+                                    }
+                                }]));
+                            }
                         } else {
                             context.redraw();
                         }
+                    }
 
-                        //Add the node-mapnik overlay
-                        context.background().addSource(mapnik_source);
-
-                        //Load layer extent into hoot overlay
+                    //Remove the vector and node-mapnik layers
+                    function removeLayer(mapid) {
+                        //Remove internal tracking data
+                        services.hoot.removeLayer(mapid);
+                        //Remove osm vector data
+                        services.osm.loadedDataRemove(mapid);
+                        //Remove node-mapnik layer
+                        context.background().removeSource(mapid);
+                        //Remove hoot bbox layer
                         var hootOverlay = context.layers().layer('hoot');
                         if (hootOverlay) {
-                            hootOverlay.geojson(hootOverlay.geojson().concat([{
-                                type: 'FeatureCollection',
-                                features: [{
-                                    type: 'Feature',
-                                    geometry: {
-                                        type: 'LineString',
-                                        coordinates: extent.polygon(),
-                                    }
-                                }],
-                                properties: {
-                                    name: mapnik_source.name,
-                                    mapid: mapnik_source.id
-                                }
-                            }]));
+                            hootOverlay.geojson(hootOverlay.geojson().filter(function(d) {
+                                return d.properties.mapid !== mapid;
+                            }));
                         }
-                    } else {
-                        context.redraw();
+
+                        context.flush();
                     }
                 }
 
-                //Remove the vector and node-mapnik layers
-                function removeLayer(mapid) {
-                    //Remove internal tracking data
-                    services.hoot.removeLayer(mapid);
-                    //Remove osm vector data
-                    services.osm.loadedDataRemove(mapid);
-                    //Remove node-mapnik layer
-                    context.background().removeSource(mapid);
-                    //Remove hoot bbox layer
-                    var hootOverlay = context.layers().layer('hoot');
-                    if (hootOverlay) {
-                        hootOverlay.geojson(hootOverlay.geojson().filter(function(d) {
-                            return d.properties.mapid !== mapid;
-                        }));
-                    }
-
-                    context.flush();
-                }
 
                 function changeLayerColor(lyrmenu) {
                     services.hoot.changeLayerColor(lyrmenu, function(mapnik_source) {
