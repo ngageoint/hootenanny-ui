@@ -1,7 +1,7 @@
 iD.ui.Alert = function(message,type,stack) {
     var alerts = d3.select('#alerts');
     var alertDiv = alerts.append('div')
-        .classed('fillD alertDiv',true)
+        .classed('fillD alertDiv overflow',true)
         .on('click',function(){
             clearTimeout(uniqueTimeout);
             d3.select(this).transition().duration(0).style('opacity',1);
@@ -24,7 +24,7 @@ iD.ui.Alert = function(message,type,stack) {
         .classed('fr _icon x dark point', true)
         .on('click',function() {this.parentNode.remove();});
 
-    alertDiv.append('p').text(message);
+    alertDiv.append('p').html(message);
 
     var d = new Date().toLocaleString();
     try{

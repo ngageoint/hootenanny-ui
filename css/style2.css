@@ -405,7 +405,10 @@ span.logo{
 }
 
 .alertDiv {
+  float:left;
+  overflow-y:auto;
 	width: 290px;
+  max-height: 290px;
 	padding:5px 0px 5px 5px;
 	border-radius: 8px;
   border-style: solid;
