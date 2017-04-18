@@ -398,7 +398,6 @@ Hoot.model.REST = function (command, data, callback, option) {
                 if (resp.status === 'complete') {
                     var prettyString = function(obj) {
                         var finalString = '';
-                        console.log(obj);
                         for (var atr in obj) {
                             // if (atr === 'commandDetail') {
                             //     var arr = obj[atr];
@@ -411,7 +410,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                             finalString += '<br>' + atr + ' : ' + obj[atr];
                         }
                         return finalString;
-                    }
+                    };
                     iD.ui.Alert('Requested job complete. Details:' + prettyString(resp),'success',new Error().stack);
                 }
             });
