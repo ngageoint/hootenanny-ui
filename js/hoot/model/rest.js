@@ -399,14 +399,6 @@ Hoot.model.REST = function (command, data, callback, option) {
                     var prettyString = function(obj) {
                         var finalString = '';
                         for (var atr in obj) {
-                            // if (atr === 'commandDetail') {
-                            //     var arr = obj[atr];
-                            //     var commandList;
-                            //     for (var det = 0; det < arr.length; det++) {
-                            //         commandList += arr[det];
-                            //     }
-                            //     return obj[atr] = commandList;
-                            // }
                             finalString += '<br>' + atr + ' : ' + obj[atr];
                         }
                         return finalString;
