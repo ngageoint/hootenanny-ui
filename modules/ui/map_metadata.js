@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import { svgIcon } from '../svg/index';
+import { services } from '../services/index';
 
 export function uiMapMetadata(data, context) {
     var mapMetadata = {},
@@ -111,6 +112,11 @@ export function uiMapMetadata(data, context) {
         var download = '';
         // params
         if (d.tags && d.tags.params) {
+            if (d.tags.input1 && d.tags.input2) {
+                addToggleLink(d.id);
+            }
+
+
             var RefLayerName = d.tags.input1Name || 'Reference Layer Missing';
             var SecLayerName = d.tags.input2Name || 'Secondary Layer Missing';
             var params = JSON.parse(d.tags.params.replace(/\\"/g, '"'));
@@ -313,6 +319,19 @@ export function uiMapMetadata(data, context) {
                 var fileName = d.name.replace(/\s/g, '_');
                 var blob = new Blob([download], {type: 'text/tab-separated-values;charset=utf-8'});
                 window.saveAs(blob, fileName + '-stats.tsv');
+                d3.event.preventDefault();
+            });
+    }
+
+    function addToggleLink(mapid) {
+        body.append('a')
+            .text('Toggle Source Layers')
+            .attr('href', '#')
+            .classed('hide-toggle', true)
+            .classed('expanded', false)
+            .on('click', function() {
+                services.hoot.toggleMergedLayer(mapid);
+                context.flush();  //must do this to remove cached features
                 d3.event.preventDefault();
             });
     }

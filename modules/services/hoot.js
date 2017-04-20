@@ -153,16 +153,34 @@ export default {
                             //metadata indicating the two input sources or if it has reviews
                             //This calculation will miss a layer that has been exported (and loses
                             //its map metadata tags) and never had reviews.
-                            var isMerged = (tags.input1 && tags.input2) || stats.totalCount > 0;
+                            var isMerged = Boolean(tags.input1 && tags.input2) || stats.totalCount > 0;
 
                             //Determine if layer is merged and set colors if so
                             if (isMerged) {
+                                //Add source layers to loadedLayers
+                                if (tags.input1 && tags.input2) {
+                                    loadedLayers[tags.input1] = {
+                                        name: tags.input1Name,
+                                        id: tags.input1,
+                                        color: 'purple',
+                                        visible: false,
+                                        merged: false
+                                    };
+                                    loadedLayers[tags.input2] = {
+                                        name: tags.input2Name,
+                                        id: tags.input2,
+                                        color: 'gold',
+                                        visible: false,
+                                        merged: false
+                                    };
+                                }
+
                                 //Add css rule to render features by hoot:status
                                 // 1 = reference source (purple)
                                 // 2 = secondary source (gold)
                                 // 3 = merged (active color or pink)
-                                services.hoot.setLayerColor(tags.input1 || 1, 'purple');
-                                services.hoot.setLayerColor(tags.input2 || 2, 'gold');
+                                services.hoot.setLayerColor(tags.input1 || 1, loadedLayers[tags.input1].color);
+                                services.hoot.setLayerColor(tags.input2 || 2, loadedLayers[tags.input2].color);
 
                                 //If an input layer is osm api db, call derive changeset
                                 if (tags.input1 === '-1' || tags.input2 === '-1') {
@@ -196,7 +214,36 @@ export default {
     },
 
     removeLayer: function(mapid) {
+        //If merged, delete source layers
+        if (loadedLayers[mapid].merged) {
+            delete loadedLayers[loadedLayers[mapid].input1];
+            delete loadedLayers[loadedLayers[mapid].input2];
+        }
         delete loadedLayers[mapid];
+
+    },
+
+    toggleMergedLayer: function(mapid) {
+        //If merged, swap visibility of merged and input source layers
+        if (loadedLayers[mapid].merged) {
+            var input1 = loadedLayers[mapid].tags.input1;
+            var input2 = loadedLayers[mapid].tags.input2;
+            var viz = loadedLayers[mapid].visible;
+
+            loadedLayers[mapid].visible = !viz;
+            loadedLayers[input1].visible = viz;
+            loadedLayers[input2].visible = viz;
+
+            if (viz) {
+                services.osm.loadedDataRemove(mapid);
+                console.log('removing ' + mapid);
+            } else {
+                services.osm.loadedDataRemove(input1);
+                services.osm.loadedDataRemove(input2);
+                console.log('removing ' + input1 + ' & ' + input2);
+            }
+        }
+
     },
 
     changeLayerColor: function(lyrmenu, callback) {
