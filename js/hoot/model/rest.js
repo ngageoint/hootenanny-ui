@@ -288,7 +288,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         /*if(option === 'bbox'){*/
             //Clip to bounding box
             d3.json('/hoot-services/job/clipdataset/execute')
-                .header('Content-Type', 'text/plain')
+                .header('Content-Type', 'application/json')
                 .post(JSON.stringify(data), function (error, resp) {
                     if (error) {
                         return callback(_alertError(error, 'Clip Dataset job failed! For detailed log goto Manage->Log'));
@@ -315,7 +315,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
         data.USER_EMAIL = iD.data.hootConfig.userEmail;
         d3.json('/hoot-services/job/conflation/execute')
-            .header('Content-Type', 'text/plain')
+            .header('Content-Type', 'application/json')
             .post(JSON.stringify(data), function (error, resp) {
                 if(callback){
                     var param = {};
@@ -408,7 +408,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.cancel = function(data, callback) {
         d3.json('/hoot-services/job/cancel')
-        .header('Content-Type', 'text/plain')
+        .header('Content-Type', 'application/json')
         .post(JSON.stringify(data), function (error, resp) {
             if (error) {
                 return error;
