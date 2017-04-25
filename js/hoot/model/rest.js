@@ -368,6 +368,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     rest.status = function(jobStatus, callback) {
         var status = function() {
             d3.json('/hoot-services/job/status/' + jobStatus, function (error, resp) {
+                // console.log(resp);
                 if (error) {
                     JobStatusStopTimer();
                     return error;
@@ -392,6 +393,17 @@ Hoot.model.REST = function (command, data, callback, option) {
                     }
 
                     JobStatusStopTimer(resp);
+                }
+
+                if (resp.status === 'complete') {
+                    var prettyString = function(obj) {
+                        var finalString = '';
+                        for (var atr in obj) {
+                            finalString += '<br>' + atr + ' : ' + obj[atr];
+                        }
+                        return finalString;
+                    };
+                    iD.ui.Alert('Requested job complete. Details:' + prettyString(resp),'success',new Error().stack);
                 }
             });
         };
