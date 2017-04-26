@@ -243,7 +243,8 @@ iD.ui.EntityEditor = function(context) {
                 //some changeTags events fire even when tag hasn't changed
                 if (d3.entries(changed).every(function(c) {
                     return d3.entries(translatedTags).some(function(d) {
-                        return c.key === d.key && c.value === d.value;
+                         //tag hasn't changed or has empty key or value
+                         return (c.key === d.key && c.value === d.value) || c.value === '' || c.key === '';
                     });
                 })) {
                     return; //return if no real change
