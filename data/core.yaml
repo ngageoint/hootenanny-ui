@@ -347,9 +347,13 @@ en:
     description: "Do you wish to restore unsaved changes from a previous editing session?"
     restore: Restore
     reset: Reset
+  save_to_osm:
+    title: Push to MapEdit
+    help: Push conflation result back to MapEdit.
+    no_changes: No changes to push back to MapEdit.
   save:
     title: Save
-    help: "Save changes to OpenStreetMap, making them visible to other users."
+    help: "Save changes to Hootenanny, making them visible to other users."
     no_changes: No changes to save.
     error: Errors occurred while trying to save
     status_code: "Server returned status code {code}"

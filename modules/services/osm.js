@@ -395,6 +395,43 @@ export default {
     },
 
 
+    parseChangeset: function(xml) {
+        if (!xml || !xml.childNodes) return;
+
+        var mapId = -1,
+            root = xml.childNodes[0],
+            changeNodes = root.childNodes,
+            changes = {
+                created: [],
+                deleted: [],
+                modified: []
+            },
+            changeKeys = {
+                create: 'created',
+                delete: 'deleted',
+                modify: 'modified'
+            };
+
+        for (var j = 0, k = changeNodes.length; j < k; j++) {
+            var change = changeNodes[j],
+                children = change.childNodes
+                type = change.nodeName;
+
+            for (var i = 0, l = children.length; i < l; i++) {
+                var child = children[i],
+                    parser = parsers[child.nodeName];
+               if (parser) {
+                    //Temp hack to normalize entity ids
+                    child.setAttribute("id", Math.abs(parseInt(child.getAttribute("id"), 10)));
+                    changes[changeKeys[type]].push(parser(child, mapId));
+                }
+            }
+        }
+
+        return changes;
+    },
+
+
     putChangeset: function(changes, version, comment, imageryUsed, callback) {
         var that = this;
         var changesByMapId = this.splitChanges(changes);

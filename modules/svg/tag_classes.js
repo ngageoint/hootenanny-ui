@@ -110,7 +110,7 @@ export function svgTagClasses() {
                 var lyr = services.hoot.loadedLayers()[mapid];
                 if (lyr && lyr.merged) {
                     var id;
-                    var sourceid = parseInt(t['hoot:status'], 10);
+                    var sourceid = services.hoot.decodeHootStatus(t['hoot:status']);
                     switch (sourceid) {
                     case 1:
                     case 2:

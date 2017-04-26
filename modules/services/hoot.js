@@ -2,10 +2,12 @@ import * as d3 from 'd3';
 import _ from 'lodash';
 import { services } from '../services/index';
 import { geoExtent } from '../geo/index';
+import { osmEntity } from '../osm/entity';
 
-var availableLayers = {}, //A map of key=mapid, value=name
-    loadedLayers = {}; //A map of key=mapid, value=layer object
-
+var context,
+    availableLayers = {}, //A map of key=mapid, value=name
+    loadedLayers = {}, //A map of key=mapid, value=layer object
+    changes = {}; //A changes object set by deriveChangeset
 function getNodeMapnikSource(d) {
     var source = {
             name: d.name,
@@ -29,8 +31,20 @@ function getNodeMapnikSource(d) {
 
 export default {
 
-    init: function() {
+    init: function(c) {
+        context = c;
+    },
 
+    changes: function() {
+        return changes;
+    },
+
+    changesLength: function() {
+        return _.size(changes) === 0 ? 0 : changes.created.length + changes.deleted.length + changes.modified.length;
+    },
+
+    hasChanges: function() {
+        return _.size(changes) > 0;
     },
 
     availableLayers: function(callback) {
@@ -54,7 +68,32 @@ export default {
         });
     },
 
-    deriveChangeset: function(mapid, extent, callback) {
+    changesToHistory: function(changes) {
+        if (!this.hasChanges()) return;
+
+        var s = [{}, {
+            modified: changes.created.concat(changes.modified).map(function(d) {
+                return d.id + 'v0';
+            }),
+            deleted: changes.deleted.map(function(d) {
+                return d.id;
+            }),
+            imageryUsed: ["None"],
+            annotation: "Hootenanny conflated."
+        }];
+
+        return JSON.stringify({
+            version: 3,
+            entities: changes.created.concat(changes.modified),
+            baseEntities: changes.deleted,
+            stack: s,
+            nextIDs: osmEntity.id.next,
+            index: 1
+        });
+
+    },
+
+    deriveChangeset: function(mapid, callback) {
 // {
 //     "input": "678",
 //     "inputtype": "db",
@@ -68,29 +107,47 @@ export default {
             input: mapid.toString(),
             inputtype: 'db',
             outputtype: 'osc',
-            outputname: 'changeset',
             USER_ID: '1',
-            TASK_BBOX: extent.toParam(),
-            translation: 'NONE'
+            //TASK_BBOX: extent.toParam(),
+            translation: 'NONE',
+            textstatus: 'false',
+            append: 'false'
         };
 
-        var userid = services.osm.userDetails(function(dets) {
-            console.log(dets);
+        var userid = services.osm.userDetails(function(error, dets) {
+            if (error) {
+                //console.error(error);
+            } else {
+                console.log(dets);
+            }
         });
 
         d3.json('/hoot-services/job/export/execute')
+            .header("Content-Type", "application/json")
             .post(JSON.stringify(json), function (error, resp) {
                 if (error) {
                     alert('Derive changeset failed!');
                 } else {
                     services.hoot.pollJob(resp.jobid, function() {
-                        d3.xml('/hoot-services/job/export/xml/' + resp.jobid + '?outputname=changeset&ext=osc', function(data) {
-                            console.log(data);
-                            //callback(null);
+                        d3.xml('/hoot-services/job/export/xml/' + resp.jobid + '?ext=osc', function(data) {
+                            //console.log(data);
+                            changes = services.osm.parseChangeset(data);
+                            //console.log(JSON.stringify(changes));
+                            var conflateHistory = services.hoot.changesToHistory(changes);
+                            //console.log(conflateHistory);
+                            //Remove this delay and coordinate callbacks if necessary
+                            if (conflateHistory) {
+                                //window.setTimeout(function() {
+                                    context.history().fromJSON(conflateHistory, false);
+                                //}, 5000);
+                            }
                         });
                     });
                 }
             });
+
+        callback();
+
     },
 
     pollJob: function(jobid, callback) {
@@ -125,7 +182,7 @@ export default {
                 console.log(tags);
                 d3.json(services.hoot.urlroot() + '/api/0.6/map/mbr?mapId=' + mapid, function (error, mbr) {
                     if (error) {
-                        //The map may is empty, so assume a global extent
+                        //The map is empty, so assume a global extent
                         mbr = {
                             "minlon":-180,
                             "minlat":-90,
@@ -182,10 +239,6 @@ export default {
                                 services.hoot.setLayerColor(tags.input1 || 1, loadedLayers[tags.input1].color);
                                 services.hoot.setLayerColor(tags.input2 || 2, loadedLayers[tags.input2].color);
 
-                                //If an input layer is osm api db, call derive changeset
-                                if (tags.input1 === '-1' || tags.input2 === '-1') {
-                                    services.hoot.deriveChangeset(mapid, layerExtent);
-                                }
                             }
 
                             //Store info on the loaded layer
@@ -242,6 +295,19 @@ export default {
                 services.osm.loadedDataRemove(input2);
                 console.log('removing ' + input1 + ' & ' + input2);
             }
+            context.flush();  //must do this to remove cached features
+
+            //If an input layer is osm api db, call derive changeset
+            //and we're toggling to the osm api layer
+            if ((input1 === '-1' || input2 === '-1') && viz) {
+                context.connection().on('loaded.hootchangeset', function() {
+                    console.log('loaded.hootchangeset');
+                    services.hoot.deriveChangeset(mapid, function() {
+                        context.connection().on('loaded.hootchangeset', null);
+                    });
+                });
+            }
+
         }
 
     },
@@ -258,6 +324,20 @@ export default {
                 callback(getNodeMapnikSource(loadedLayers[mapid]));
             }
         }
+    },
+
+    decodeHootStatus: function(status) {
+        if (status === 'Input1') {
+            return 1;
+        }
+        if (status === 'Input2') {
+            return 2;
+        }
+        if (status === 'Conflated') {
+            return 3;
+        }
+
+        return parseInt(status);
     },
 
     loadedLayers: function() {

@@ -24,6 +24,7 @@ import { uiMapInMap } from './map_in_map';
 import { uiModes } from './modes';
 import { uiRestore } from './restore';
 import { uiSave } from './save';
+// import { uiSaveToOsm } from './save_to_osm';
 import { uiScale } from './scale';
 import { uiSidebar } from './sidebar';
 import { uiSpinner } from './spinner';
@@ -104,6 +105,11 @@ export function uiInit(context) {
             .append('div')
             .attr('class', 'button-wrap col1')
             .call(uiSave(context));
+
+        // limiter
+        //     .append('span')
+        //     .attr('class', 'button-wrap col2')
+        //     .call(uiSaveToOsm(context));
 
         bar
             .append('div')

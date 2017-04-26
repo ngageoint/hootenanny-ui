@@ -331,7 +331,6 @@ export function uiMapMetadata(data, context) {
             .classed('expanded', false)
             .on('click', function() {
                 services.hoot.toggleMergedLayer(mapid);
-                context.flush();  //must do this to remove cached features
                 d3.event.preventDefault();
             });
     }

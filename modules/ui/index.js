@@ -38,6 +38,7 @@ export { uiRawMembershipEditor } from './raw_membership_editor';
 export { uiRawTagEditor } from './raw_tag_editor';
 export { uiRestore } from './restore';
 export { uiSave } from './save';
+// export { uiSaveToOsm } from './save_to_osm';
 export { uiScale } from './scale';
 export { uiSelectionList } from './selection_list';
 export { uiSidebar } from './sidebar';

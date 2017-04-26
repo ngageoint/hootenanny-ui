@@ -230,3 +230,11 @@ table.map-metadata {
     color: #a0a0a0;
     font-size: 13px;
 }
+
+span.save-to-osm {
+    padding-left: 60px;
+}
+
+button.save.has-count .count.save-to-osm {
+    margin-left: 11.6666%;
+}
