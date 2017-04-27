@@ -1,7 +1,5 @@
 iD.ui.Alert = function(message,type,stack) {
     var modal = document.getElementById('myModal');
-    // var btn = document.getElementById("myBtn");
-    // var span = document.getElementsByClassName("close")[0];
     var alerts = d3.select('#alerts');
     var alertDiv = alerts.append('div')
         .classed('fillD alertDiv overflow',true)
@@ -25,18 +23,18 @@ iD.ui.Alert = function(message,type,stack) {
     function modalWindow() {
         var modalbg = d3.select('body').append('div')
             .attr('id','detailDiv')
-            .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+            .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true)
+            .on('click', function() {
+                if (d3.event.target === d3.select('#detailDiv').node()) {
+                    d3.select('#detailDiv').remove();
+                }
+            });
         var detailModal = modalbg.append('div')
             .classed('contain col8 pad1 hoot-menu fill-white round detailModal', true);
         detailModal.append('h1')
-            .attr('id','processingDivLabel')
+            .attr('id','detailDivLabel')
             .style({'text-align': 'center'})
             .text('Hoot Core Command Details');
-    }
-    window.onclick = function(event) {
-        if (event.target == d3.select('#detailDiv').node()) {
-            d3.select('#detailDiv').remove();
-        }
     }
 
     alertDiv.append('div')
