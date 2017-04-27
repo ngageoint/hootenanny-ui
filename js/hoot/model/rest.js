@@ -366,6 +366,13 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.status = function(jobStatus, callback) {
+        var prettyString = function(obj) {
+            var finalString = '';
+            for (var atr in obj) {
+                finalString += '<br>' + atr + ' : ' + obj[atr];
+            }
+            return finalString;
+        };
         var status = function() {
             d3.json('/hoot-services/job/status/' + jobStatus, function (error, resp) {
                 if (error) {
@@ -383,7 +390,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                             }
                         }
                         if(showError){
-                            iD.ui.Alert('Requested job failed! For detailed log goto Manage->Log','error',new Error().stack);
+                            iD.ui.Alert('Requested job failed! Details:' + prettyString(resp),'error',new Error().stack);
                         }
                     }
                     else
@@ -395,13 +402,6 @@ Hoot.model.REST = function (command, data, callback, option) {
                 }
 
                 if (resp.status === 'complete') {
-                    var prettyString = function(obj) {
-                        var finalString = '';
-                        for (var atr in obj) {
-                            finalString += '<br>' + atr + ' : ' + obj[atr];
-                        }
-                        return finalString;
-                    };
                     iD.ui.Alert('Requested job complete. Details:' + prettyString(resp),'success',new Error().stack);
                 }
             });
