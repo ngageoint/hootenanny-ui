@@ -297,19 +297,25 @@ iD.ui.RawTagEditor = function(context) {
             tag[kNew] = d.value;
             d.key = kNew; // Maintain DOM identity through the subsequent update.
             this.value = kNew;
-            event.change(tag);
+            if(d3.event.type === 'change'){
+                event.change(tag);
+            }
         }
 
         function valueChange(d) {
             var tag = {};
             tag[d.key] = this.value;
-            event.change(tag);
+            if(d3.event.type === 'change'){
+                event.change(tag);
+            }
         }
 
         function removeTag(d) {
             var tag = {};
             tag[d.key] = undefined;
-            event.change(tag);
+            if(d3.event.type === 'change'){
+                event.change(tag);
+            }
             d3.select(this.parentNode).remove();
         }
 

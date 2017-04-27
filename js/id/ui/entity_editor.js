@@ -13,6 +13,10 @@ iD.ui.EntityEditor = function(context) {
     var rawTagEditor = iD.ui.RawTagEditor(context)
         .on('change', changeTags);
 
+    var debouncedTranslate = _.debounce(function(entity, updateTags){
+            context.translationserver().translateEntity(entity, updateTags);
+        }, 1000);
+
     function entityEditor(selection) {
         var entity = context.entity(id),
             tags = _.clone(entity.tags);
@@ -106,7 +110,7 @@ iD.ui.EntityEditor = function(context) {
 
         //Do we need to translate tags?
         if (context.translationserver().activeTranslation() !== 'OSM' && !_.isEmpty(entity.tags)) {
-            context.translationserver().translateEntity(entity, updateTags);
+            debouncedTranslate(entity, updateTags)
         } else {
             updateTags(preset, tags);
         }
@@ -248,6 +252,13 @@ iD.ui.EntityEditor = function(context) {
                     });
                 })) {
                     return; //return if no real change
+                }
+
+                //if the key is changed, but the change tag doesn't exist
+                if (d3.entries(changed).every(function(c) {
+                    return !translatedTags[c.key] && (c.value === undefined || c.value === '');
+                })) {
+                    return;
                 }
 
                 //deleted tags are represented as undefined
