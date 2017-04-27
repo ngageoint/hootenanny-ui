@@ -15,7 +15,7 @@ iD.ui.EntityEditor = function(context) {
 
     var debouncedTranslate = _.debounce(function(entity, updateTags){
             context.translationserver().translateEntity(entity, updateTags);
-        }, 1000);
+        }, 500);
 
     function entityEditor(selection) {
         var entity = context.entity(id),
