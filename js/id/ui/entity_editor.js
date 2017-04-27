@@ -110,7 +110,7 @@ iD.ui.EntityEditor = function(context) {
 
         //Do we need to translate tags?
         if (context.translationserver().activeTranslation() !== 'OSM' && !_.isEmpty(entity.tags)) {
-            debouncedTranslate(entity, updateTags)
+            debouncedTranslate(entity, updateTags);
         } else {
             updateTags(preset, tags);
         }
