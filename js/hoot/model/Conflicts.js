@@ -643,7 +643,7 @@ Hoot.model.conflicts = function(context)
         }
 
         return parseInt(status);
-    }
+    };
 
     // This validation may be wrong if user performs delete/create/modify outside of review process..
     // For exmaple user deletes a node and presses merge..Disablling
