@@ -108,7 +108,7 @@ iD.svg.TagClasses = function(context) {
                 }
                 if (lyr && lyr.merged) {
                     var id;
-                    var sourceid = parseInt(t['hoot:status']);
+                    var sourceid = context.hoot().model.conflicts.decodeHootStatus(t['hoot:status']);
                     switch(sourceid) {
                     case 1:
                     case 2:

@@ -631,7 +631,19 @@ Hoot.model.conflicts = function(context)
         }
     };
 
+    model_conflicts.decodeHootStatus = function(status) {
+        if (status === 'Input1') {
+            return 1;
+        }
+        if (status === 'Input2') {
+            return 2;
+        }
+        if (status === 'Conflated') {
+            return 3;
+        }
 
+        return parseInt(status);
+    };
 
     // This validation may be wrong if user performs delete/create/modify outside of review process..
     // For exmaple user deletes a node and presses merge..Disablling
@@ -667,7 +679,7 @@ Hoot.model.conflicts = function(context)
     model_conflicts.getSourceLayerId = function(feature) {
         var mergeLayer = context.hoot().loadedLayers()[feature.layerName];
         var sourceLayers = mergeLayer.layers;
-        var featureLayerName = sourceLayers[parseInt(feature.tags['hoot:status']) - 1];
+        var featureLayerName = sourceLayers[this.decodeHootStatus(feature.tags['hoot:status']) - 1];
         var sourceLayer = context.hoot().loadedLayers()[featureLayerName];
         if(!sourceLayer){
             // try using tags of mergeLayer, which is loaded
@@ -686,7 +698,7 @@ Hoot.model.conflicts = function(context)
 
         // If sourceLayer is still undefined, see if it is a layer that is no longer loaded
         if(!sourceLayer){
-            return mergeLayer.unloaded[parseInt(feature.tags['hoot:status']) - 1];
+            return mergeLayer.unloaded[this.decodeHootStatus(feature.tags['hoot:status']) - 1];
         }
 
         return (sourceLayer) ? sourceLayer.mapId : null;
