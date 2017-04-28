@@ -13,6 +13,10 @@ iD.ui.EntityEditor = function(context) {
     var rawTagEditor = iD.ui.RawTagEditor(context)
         .on('change', changeTags);
 
+    var debouncedTranslate = _.debounce(function(entity, updateTags){
+            context.translationserver().translateEntity(entity, updateTags);
+        }, 500);
+
     function entityEditor(selection) {
         var entity = context.entity(id),
             tags = _.clone(entity.tags);
@@ -56,7 +60,7 @@ iD.ui.EntityEditor = function(context) {
              //Do we need to translate tags?
             if (context.translationserver().activeTranslation() !== 'OSM') {
                 entity = context.entity(context.selectedIDs()[0]);
-                context.translationserver().translateEntity(entity, updateTags);
+                debouncedTranslate(entity, updateTags);
             } else {
                 entity = context.entity(context.selectedIDs()[0]);
                 updateTags(context.presets().match(entity, context.graph()), entity.tags);
@@ -106,7 +110,7 @@ iD.ui.EntityEditor = function(context) {
 
         //Do we need to translate tags?
         if (context.translationserver().activeTranslation() !== 'OSM' && !_.isEmpty(entity.tags)) {
-            context.translationserver().translateEntity(entity, updateTags);
+            debouncedTranslate(entity, updateTags);
         } else {
             updateTags(preset, tags);
         }
@@ -243,10 +247,18 @@ iD.ui.EntityEditor = function(context) {
                 //some changeTags events fire even when tag hasn't changed
                 if (d3.entries(changed).every(function(c) {
                     return d3.entries(translatedTags).some(function(d) {
-                        return c.key === d.key && c.value === d.value;
+                         //tag hasn't changed or has empty key or value
+                         return (c.key === d.key && c.value === d.value);
                     });
                 })) {
                     return; //return if no real change
+                }
+
+                //if the key is changed, but the change tag doesn't exist
+                if (d3.entries(changed).every(function(c) {
+                    return !translatedTags[c.key] && (c.value === undefined || c.value === '');
+                })) {
+                    return; //return if empty change
                 }
 
                 //deleted tags are represented as undefined
