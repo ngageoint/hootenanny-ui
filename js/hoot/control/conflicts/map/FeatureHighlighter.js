@@ -101,9 +101,13 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         if (relation && relation.members && relation.members.length > 2) {
             var that = this;
             // extract the index of the relation members in the poiTable
-            var array_regex = /.(\d+)_.*/;
-            var item1 = parseInt(array_regex.exec(ritem.id)[1])-1;
-            var item2 = parseInt(array_regex.exec(raitem.id)[1])-1;
+            var item1 = relation.members.findIndex(function(d) {
+                return d.id === ritem.id;
+            });
+            var item2 = relation.members.findIndex(function(d) {
+                return d.id === raitem.id;
+            });
+
             // retrieve array index of previous member
             var calculatePrevious = function(actionIdx, staticIdx) {
                 var prev = actionIdx-1;
@@ -153,8 +157,12 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         _parent().reviewIds.push(relId);
         _parent().info.metadata.updateMeta(null);
         if(panToId && panTo) {
-            var extent = feature.extent(context.graph()).extend(againstFeature.extent(context.graph()));
-            context.map().centerZoom(extent.center(), context.map().trimmedExtentZoom(extent)-0.5);
+            if (feature) {
+                var extent = feature.extent(context.graph())
+                if (againstFeature)
+                    extent = extent.extend(againstFeature.extent(context.graph()));
+                context.map().centerZoom(extent.center(), context.map().trimmedExtentZoom(extent)-0.5);
+            }
         }
 
         _parent().loadReviewFeaturesMapInMap();
