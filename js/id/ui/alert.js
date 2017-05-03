@@ -1,5 +1,4 @@
 iD.ui.Alert = function(message,type,stack) {
-    var modal = document.getElementById('myModal');
     var alerts = d3.select('#alerts');
     var alertDiv = alerts.append('div')
         .classed('fillD alertDiv overflow',true)
@@ -43,7 +42,7 @@ iD.ui.Alert = function(message,type,stack) {
         var finalString = '';
         for (var atr in obj) {
             if (atr === 'commandDetail') {
-                obj['commandDetail'] =  JSON.stringify(obj['commandDetail'], null, '<br>');
+                obj.commandDetail =  JSON.stringify(obj.commandDetail, null, '<br>');
             }
             finalString += '<br>' + atr + ' : ' + obj[atr];
         }
@@ -54,7 +53,7 @@ iD.ui.Alert = function(message,type,stack) {
         var lessDetail = _.clone(obj);
         for (var param in lessDetail) {
             if (param === 'commandDetail') {
-                delete lessDetail['commandDetail'];
+                delete lessDetail.commandDetail;
             }
         }
         return lessDetail;
