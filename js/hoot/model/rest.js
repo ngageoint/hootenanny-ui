@@ -368,7 +368,6 @@ Hoot.model.REST = function (command, data, callback, option) {
     rest.status = function(jobStatus, callback) {
         var status = function() {
             d3.json('/hoot-services/job/status/' + jobStatus, function (error, resp) {
-                // console.log(resp);
                 if (error) {
                     JobStatusStopTimer();
                     return error;
