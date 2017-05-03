@@ -366,15 +366,8 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.status = function(jobStatus, callback) {
-        var prettyString = function(obj) {
-            var finalString = '';
-            for (var atr in obj) {
-                finalString += '<br>' + atr + ' : ' + obj[atr];
-            }
-            return finalString;
-        };
         var status = function() {
-            d3.json('/hoot-services/job/status/' + jobStatus, function (error, resp) {
+            d3.json('/hoot-services/job/status/' + jobStatus + '?includeCommandDetail=true', function (error, resp) {
                 if (error) {
                     JobStatusStopTimer();
                     return error;
@@ -390,7 +383,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                             }
                         }
                         if(showError){
-                            iD.ui.Alert('Requested job failed! Details:' + prettyString(resp),'error',new Error().stack);
+                            iD.ui.Alert(resp,'error',new Error().stack);
                         }
                     }
                     else
@@ -402,7 +395,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                 }
 
                 if (resp.status === 'complete') {
-                    iD.ui.Alert('Requested job complete. Details:' + prettyString(resp),'success',new Error().stack);
+                    iD.ui.Alert(resp,'success',new Error().stack);
                 }
             });
         };

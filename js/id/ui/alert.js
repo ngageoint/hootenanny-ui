@@ -32,6 +32,8 @@ iD.ui.Alert = function(message,type,stack) {
             .attr('id','processingDivLabel')
             .style({'text-align': 'center'})
             .text('Hoot Core Command Details');
+        detailModal.append('p')
+            .html(prettyString(message));
     }
     window.onclick = function(event) {
         if (event.target == d3.select('#detailDiv').node()) {
@@ -39,13 +41,43 @@ iD.ui.Alert = function(message,type,stack) {
         }
     }
 
+    var prettyString = function(obj) {
+        var finalString = '';
+        for (var atr in obj) {
+            if (atr === 'commandDetail') {
+                obj['commandDetail'] =  JSON.stringify(obj['commandDetail'], null, '<br>');
+            }
+            finalString += '<br>' + atr + ' : ' + obj[atr];
+        }
+        return '<br>' + finalString;
+    };
+
+    var removeDetail = function(obj) {
+        var lessDetail = _.clone(obj);
+        for (var param in lessDetail) {
+            if (param === 'commandDetail') {
+                delete lessDetail['commandDetail'];
+            }
+        }
+        return lessDetail;
+    };
+
     alertDiv.append('div')
         .classed('fr _icon x dark point', true)
         .on('click',function() {this.parentNode.remove();});
 
-    alertDiv.append('p').html(message);
-
-    alertDiv.append('a').on('click', modalWindow).attr('class', 'detailLink').text('More details');
+    if (typeof message === 'object') {
+        var shortMessage = removeDetail(message);
+        if (type === 'error') {
+            alertDiv.append('p').html('Requested job failed! Details:' + prettyString(shortMessage));
+            alertDiv.append('a').on('click', modalWindow).attr('class', 'detailLink').text('More details');
+        } else if (type === 'success') {
+            alertDiv.append('p').html('Requested job complete. Details:' + prettyString(shortMessage));
+            alertDiv.append('a').on('click', modalWindow).attr('class', 'detailLink').text('More details');
+        }
+    } else {
+        alertDiv.append('p').text(message);
+    }
 
     var d = new Date().toLocaleString();
     try{
