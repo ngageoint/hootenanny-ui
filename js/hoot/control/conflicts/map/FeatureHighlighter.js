@@ -158,7 +158,7 @@ Hoot.control.conflicts.map.featurehighlighter = function (context)
         _parent().info.metadata.updateMeta(null);
         if(panToId && panTo) {
             if (feature) {
-                var extent = feature.extent(context.graph())
+                var extent = feature.extent(context.graph());
                 if (againstFeature)
                     extent = extent.extend(againstFeature.extent(context.graph()));
                 context.map().centerZoom(extent.center(), context.map().trimmedExtentZoom(extent)-0.5);
