@@ -20,22 +20,26 @@ iD.ui.Alert = function(message,type,stack) {
     if(type === 'success'){alertDiv.classed('green',true);}
 
     function modalWindow() {
+        d3.select('#detailDiv').remove();
         var modalbg = d3.select('body').append('div')
             .attr('id','detailDiv')
             .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true)
-            .on('click', function() {
+            .on('click',function() {
                 if (d3.event.target === d3.select('#detailDiv').node()) {
                     d3.select('#detailDiv').remove();
                 }
             });
         var detailModal = modalbg.append('div')
             .classed('contain col8 pad1 hoot-menu fill-white round detailModal', true);
+        detailModal.append('div')
+            .classed('fr _icon x point', true)
+            .on('click',function() {this.parentNode.parentNode.remove();});
         detailModal.append('h1')
             .attr('id','detailDivLabel')
             .style({'text-align': 'center'})
             .text('Hoot Core Command Details');
         detailModal.append('p')
-            .html(prettyString(message));
+            .html(fullDetail);
     }
 
     var prettyString = function(obj) {
@@ -48,6 +52,8 @@ iD.ui.Alert = function(message,type,stack) {
         }
         return '<br>' + finalString;
     };
+
+    var fullDetail = prettyString(message);
 
     var removeDetail = function(obj) {
         var lessDetail = _.clone(obj);
