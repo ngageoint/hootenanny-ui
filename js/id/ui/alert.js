@@ -44,10 +44,8 @@ iD.ui.Alert = function(message,type,stack) {
 
     var prettyString = function(obj) {
         var finalString = '';
+        obj.commandDetail =  JSON.stringify(obj.commandDetail, null, '<br>');
         for (var atr in obj) {
-            if (atr === 'commandDetail') {
-                obj.commandDetail =  JSON.stringify(obj.commandDetail, null, '<br>');
-            }
             finalString += '<br>' + atr + ' : ' + obj[atr];
         }
         return '<br>' + finalString;
@@ -57,11 +55,7 @@ iD.ui.Alert = function(message,type,stack) {
 
     var removeDetail = function(obj) {
         var lessDetail = _.clone(obj);
-        for (var param in lessDetail) {
-            if (param === 'commandDetail') {
-                delete lessDetail.commandDetail;
-            }
-        }
+        delete lessDetail.commandDetail;
         return lessDetail;
     };
 
