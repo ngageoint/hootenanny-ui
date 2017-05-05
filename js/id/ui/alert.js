@@ -44,8 +44,10 @@ iD.ui.Alert = function(message,type,stack) {
 
     var prettyString = function(obj) {
         var finalString = '';
-        obj.commandDetail =  JSON.stringify(obj.commandDetail, null, '<br>');
         for (var atr in obj) {
+            if (atr === 'commandDetail') {
+                obj.commandDetail =  JSON.stringify(obj.commandDetail, null, '<br>');
+            }
             finalString += '<br>' + atr + ' : ' + obj[atr];
         }
         return '<br>' + finalString;
