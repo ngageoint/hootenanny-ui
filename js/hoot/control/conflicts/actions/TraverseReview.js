@@ -154,7 +154,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
                 _parent().actions.idgraphsynch.getRelationFeature(response.mapId, response.relationId,
                     function(newReviewItem){
                         if (newReviewItem && newReviewItem.members && newReviewItem.members.length > 2) {
-                          confirm('This review contains more than two members. Use the navigation arrows in the table to cycle through the review members.');
+                            iD.ui.Alert('This review contains more than two members. Use the navigation arrows in the table to cycle through the review members.','notice');
                         }
                         _parent().map.featurehighlighter.highlightLayer(newReviewItem.members[0],
                             newReviewItem.members[1], true);
@@ -202,7 +202,7 @@ Hoot.control.conflicts.actions.traversereview = function (context)
         if(!vicheck){
             return;
         }
-        context.ui().sidebar.hide();        
+        context.ui().sidebar.hide();
         _instance.jumpTo('forward');
     };
 
