@@ -1,11 +1,8 @@
 iD.dgservices  = function() {
     var dg = {},
-        gbm_proxy = '/hoot-services/gbm',
-        egd_proxy = '/hoot-services/egd',
-        gbm_host = 'https://{switch:a,b,c,d,e}-services.digitalglobe.com',
-        //egd_host = 'https://evwhs.digitalglobe.com',
-        gbm_connectId = 'REPLACE_ME',
-        egd_connectId = 'REPLACE_ME',
+        evwhs_proxy = '/hoot-services/evwhs',
+        evwhs_host = 'https://{switch:a,b,c,d,e}-evwhs.digitalglobe.com',evwhs_connectId = 'REPLACE_ME',
+        evwhs_connectId = 'REPLACE_ME',
         wmts_template = '/earthservice/wmtsaccess?CONNECTID={connectId}&request=GetTile&version=1.0.0'
             + '&layer=DigitalGlobe:ImageryTileService&featureProfile={profile}&style=default&format=image/png'
             + '&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:{zoom}&TileRow={y}&TileCol={x}',
@@ -20,7 +17,6 @@ iD.dgservices  = function() {
             + '&featureProfile={profile}&TRANSPARENT=true&SRS=EPSG:3857&SUPEROVERLAY=true'
             + '&FORMAT_OPTIONS=OPACITY:0.6;GENERALIZE:true&connectId={connectId}&FRESHNESS={freshness}'
             + '&BBOX={bbox}&WIDTH=256&HEIGHT=256',
-        //service = 'EGD',
         defaultProfile = 'Global_Currency_Profile',
         defaultCollection = '24h';
 
@@ -33,12 +29,12 @@ iD.dgservices  = function() {
         }
     }
 
-    dg.enabled = isUUID(gbm_connectId) || isUUID(egd_connectId) || egd_connectId === 'prompt';
+    dg.enabled = isUUID(evwhs_connectId);
 
-    dg.egd = {};
-    dg.egd.connectId = function(_) {
-        if (!arguments.length) return egd_connectId;
-        egd_connectId = _;
+    dg.evwhs = {};
+    dg.evwhs.connectId = function(_) {
+        if (!arguments.length) return evwhs_connectId;
+        evwhs_connectId = _;
         return dg;
     };
 
@@ -70,32 +66,27 @@ iD.dgservices  = function() {
 
     dg.defaultCollection = defaultCollection;
 
-    function getUrl(service, connectId, profile, template, proxy) {
+    function getUrl(connectId, profile, template, proxy) {
         var host,
             connectid;
-        if (!service || service === 'GBM') {
-            host = (proxy) ? gbm_proxy : gbm_host;
-            connectid = connectId || gbm_connectId;
-        } else if (service === 'EGD') {
-            //Always proxy EVWHS requests.  Until CORS is implemented on
-            //their WFS, all requests must use same protocol://host:port
-            //so that the basic auth headers work for everything
-            host = (proxy) ? egd_proxy : egd_proxy;
-            connectid = connectId || egd_connectId;
-        }
+            //Always use the proxy until EVWHS implements CORS
+            //Basic auth cookie must be good for all requests,
+            //so can't use domain switching
+            host = evwhs_proxy;//(proxy) ? evwhs_proxy : evwhs_host;
+            connectid = connectId || evwhs_connectId;
         return (host + template)
             .replace('{connectId}', connectid)
             .replace('{profile}', profile || defaultProfile);
     }
 
     dg.wmts = {};
-    dg.wmts.getTile = function(service, connectId, profile) {
-        return getUrl(service, connectId, profile, wmts_template);
+    dg.wmts.getTile = function(connectId, profile) {
+        return getUrl(connectId, profile, wmts_template);
     };
 
     dg.wms = {};
-    dg.wms.getMap = function(service, connectId, profile, featureId) {
-        return getUrl(service, connectId, profile, wms_template)
+    dg.wms.getMap = function(connectId, profile, featureId) {
+        return getUrl(connectId, profile, wms_template)
             .replace('{featureId}', featureId);
     };
 
@@ -107,8 +98,8 @@ iD.dgservices  = function() {
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min)) + min;
     }
-    function getWfsFeature(service, connectId, profile, extent, size, callback, addlParam) {
-        var url = getUrl(service, connectId, profile, wfs_template, true/*proxy*/);
+    function getWfsFeature(connectId, profile, extent, size, callback, addlParam) {
+        var url = getUrl(connectId, profile, wfs_template, true/*proxy*/);
         if (addlParam) {
             url += '&' + d3.entries(addlParam).map(function(d) {
                 return d.key + '=' + d.value;
@@ -124,18 +115,18 @@ iD.dgservices  = function() {
 
         d3.json(url, callback);
     }
-    dg.wfs.getFeature = function(service, connectId, profile, extent, size, callback) {
-        getWfsFeature(service, connectId, profile, extent, size, callback);
+    dg.wfs.getFeature = function(connectId, profile, extent, size, callback) {
+        getWfsFeature(connectId, profile, extent, size, callback);
     };
-    dg.wfs.getFeatureInRaster = function(service, connectId, profile, extent, size, callback) {
-        getWfsFeature(service, connectId, profile, extent, size, callback, {
+    dg.wfs.getFeatureInRaster = function(connectId, profile, extent, size, callback) {
+        getWfsFeature(connectId, profile, extent, size, callback, {
             showTheRasterReturned: 'TRUE'
         });
     };
 
     dg.collection = {};
-    dg.collection.getMap = function(service, connectId, profile, freshness) {
-        return getUrl(service, connectId, profile, collection_template)
+    dg.collection.getMap = function(connectId, profile, freshness) {
+        return getUrl(connectId, profile, collection_template)
             .replace('{freshness}', freshness || defaultCollection);
 
     };
@@ -160,21 +151,17 @@ iD.dgservices  = function() {
         delete dg.imagemeta.sources[source];
     };
 
-    dg.terms = function(service) {
-        if (!service || service === 'GBM') {
-            return 'https://origin-services.digitalglobe.com/myDigitalGlobe';
-        } else if (service === 'EGD') {
-            return 'https://evwhs.digitalglobe.com/myDigitalGlobe';
-        }
+    dg.terms = function() {
+        return 'https://evwhs.digitalglobe.com/myDigitalGlobe';
     };
 
-    dg.backgroundSource = function(service, connectId, profile) {
-        var template = this.wmts.getTile(service, connectId, profile);
-        var terms = this.terms(service);
+    dg.backgroundSource = function(connectId, profile) {
+        var template = this.wmts.getTile(connectId, profile);
+        var terms = this.terms();
         var source = {
                 'name': function() { return 'DigitalGlobe Imagery'; },
                 'type': 'wmts',
-                'description': 'Satellite imagery from ' + (service || 'GBM'),
+                'description': 'Satellite imagery from EV-WHS',
                 'template': template,
                 'scaleExtent': [
                     0,
@@ -206,19 +193,19 @@ iD.dgservices  = function() {
                 ],
                 'terms_url': terms,
                 'terms_text': '© DigitalGlobe',
-                'id': 'DigitalGlobe ' + (service || 'GBM') + ' - ' + (dg.getProfile(profile) || dg.getProfile(defaultProfile)),
+                'id': 'DigitalGlobe EV-WHS - ' + (dg.getProfile(profile) || dg.getProfile(defaultProfile)),
                 'overlay': false
             };
         return source;
     };
 
-    dg.collectionSource = function(service, connectId, profile, freshness) {
-        var template = this.collection.getMap(service, connectId, profile, freshness);
-        var terms = this.terms(service);
+    dg.collectionSource = function(connectId, profile, freshness) {
+        var template = this.collection.getMap(connectId, profile, freshness);
+        var terms = this.terms();
         var source = {
                 'name': function() { return 'DigitalGlobe Imagery Collection'; },
                 'type': 'wms',
-                'description': 'Satellite imagery collection from ' + service || 'GBM',
+                'description': 'Satellite imagery collection from EV-WHS',
                 'template': template,
                 'scaleExtent': [
                     0,
@@ -250,9 +237,6 @@ iD.dgservices  = function() {
                 ],
                 'terms_url': terms,
                 'terms_text': '© DigitalGlobe',
-                // 'id': 'DigitalGlobe Collection Footprint - ' + dg.collections.filter(function(d) {
-                //     return d.value === profile || defaultCollection;
-                // })[0].text,
                 'id': 'dgCollection',
                 'overlay': true
             };

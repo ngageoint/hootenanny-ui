@@ -132,20 +132,19 @@ iD.ui.dgCarousel = function(context) {
                 if (extent && size) {
                     //get features from wfs
                     var dg = context.dgservices();
-                    var activeService = (d3.select('#dgServiceSwitch').property('checked')) ? 'EGD' : 'GBM';
                     var activeProfile = d3.select('#dgProfiles').selectAll('li.active').attr('value');
-                    dg.wfs.getFeatureInRaster(activeService, null/*connectId*/, activeProfile/*profile*/, extent, size, function(error, data) {
+                    dg.wfs.getFeatureInRaster(null/*connectId*/, activeProfile/*profile*/, extent, size, function(error, data) {
                         if (error) {
                             window.console.warn(error);
                         } else {
                             //Update dgservices variables tracking visible image metadata
                             //The first feature in the response is the top (visible) image
                             //in the stacking profile.  Record this metadata.
-                            dg.imagemeta.add('DigitalGlobe ' + activeService + ' - ' + dg.getProfile(activeProfile),
+                            dg.imagemeta.add('DigitalGlobe EV-WHS - ' + dg.getProfile(activeProfile),
                                 data.features);
                         }
                     });
-                    dg.wfs.getFeature(activeService, null/*connectId*/, activeProfile/*profile*/, extent, size, function(error, data) {
+                    dg.wfs.getFeature(null/*connectId*/, activeProfile/*profile*/, extent, size, function(error, data) {
                         if (error) {
                             window.console.warn(error);
                         } else {
@@ -230,10 +229,9 @@ iD.ui.dgCarousel = function(context) {
 
         function loadImage(d, active) {
             var dg = context.dgservices();
-            var activeService = (d3.select('#dgServiceSwitch').property('checked')) ? 'EGD' : 'GBM';
             var activeProfile = d3.select('#dgProfiles').selectAll('li.active').attr('value');
-            var template = dg.wms.getMap(activeService, null/*connectId*/, activeProfile/*profile*/, d.properties.featureId);
-            var terms = dg.terms(dg.service);
+            var template = dg.wms.getMap(null/*connectId*/, activeProfile/*profile*/, d.properties.featureId);
+            var terms = dg.terms();
             var source = {
                     'name': d.properties.formattedDate + ', ' + d.properties.source,
                     'type': 'wms',
@@ -269,7 +267,7 @@ iD.ui.dgCarousel = function(context) {
                     ],
                     'terms_url': terms,
                     'terms_text': d.properties.copyright,
-                    'id': 'DigitalGlobe ' + activeService + ' - ' + d.properties.featureId,
+                    'id': 'DigitalGlobe EV-WHS - ' + d.properties.featureId,
                     'overlay': true
                 };
 

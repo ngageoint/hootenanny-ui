@@ -388,35 +388,24 @@ iD.ui.Background = function(context) {
             .attr('id', 'dgProfiles')
             .attr('class', 'dgprofile hide'); //fillL map-overlay col3 content
 
-            //from http://proto.io/freebies/onoff/
-            var serviceSwitch = profiles.append('div')
-                .attr('class', 'onoffswitch');
-            serviceSwitch.append('input')
-                .attr('type', 'checkbox')
-                .attr('name', 'onoffswitch')
-                .attr('class', 'onoffswitch-checkbox')
-                .attr('id', 'dgServiceSwitch')
-                .on('change', function() {
-                    //profiles.classed('hide', function() { return !profiles.classed('hide'); });
-                    //Need to update visible db layers when service changes
+            profiles
+                .append('div')
+                .attr('class', 'imagery-faq')
+                .append('a')
+                .attr('target', '_blank')
+                .attr('tabindex', -1)
+                .call(iD.svg.Icon('#icon-out-link', 'inline'))
+                .append('span')
+                .text('Use my EV-WHS Connect ID')
+                .on('click', function() {
+                    var cid = window.prompt('Enter your EV-WHS Connect ID', dgServices.evwhs.connectId());
+                    if (cid) dgServices.evwhs.connectId(cid);
 
-                    // The first time the user switches to EGD
-                    // if the connect id is set to prompt
-                    // ask the user for their connect id
-                    if (d3.select(this).property('checked')) {
-                        if (dgServices.egd.connectId() === 'prompt') {
-                            var cid = window.prompt('Enter your EV WHS Connect ID');
-                            dgServices.egd.connectId(cid);
-                        }
-                    }
+                    //Need to update current background when service changes
+                    var activeProfile = d3.select('.dgprofile.active').datum().value;
+                    var bsource = dgServices.backgroundSource(null/*connectId*/, activeProfile/*profile*/);
+                    clickSetSource(iD.BackgroundSource(bsource));
                 });
-            var serviceLabel = serviceSwitch.append('label')
-                .attr('for', 'dgServiceSwitch')
-                .attr('class', 'onoffswitch-label');
-            serviceLabel.append('div')
-                .attr('class', 'onoffswitch-inner');
-            serviceLabel.append('div')
-                .attr('class', 'onoffswitch-switch');
 
             var profileList = profiles.append('ul')
                 .attr('class', 'layer-list');
@@ -432,8 +421,7 @@ iD.ui.Background = function(context) {
                 .on('click', function(d) {
                     d3.event.preventDefault();
                     selectProfile(d.value);
-                    var activeService = (serviceSwitch.selectAll('input').property('checked')) ? 'EGD' : 'GBM';
-                    var bsource = dgServices.backgroundSource(activeService/*service*/, null/*connectId*/, d.value/*profile*/);
+                    var bsource = dgServices.backgroundSource(null/*connectId*/, d.value/*profile*/);
                     clickSetSource(iD.BackgroundSource(bsource));
                     //Update radio button datum for dgbackground
                     dgbackground.selectAll('input').datum(bsource);
@@ -472,8 +460,7 @@ iD.ui.Background = function(context) {
                 .attr('name', 'layers')
                 .on('change', function() {
                     d3.event.preventDefault();
-                    var activeService = (serviceSwitch.selectAll('input').property('checked')) ? 'EGD' : 'GBM';
-                    clickSetOverlay(iD.BackgroundSource(dgServices.collectionSource(activeService)));
+                    clickSetOverlay(iD.BackgroundSource(dgServices.collectionSource()));
                 });
 
             label.append('span')
@@ -496,9 +483,7 @@ iD.ui.Background = function(context) {
                 .on('click', function(d) {
                     d3.event.preventDefault();
                     selectCollection(d.value);
-                    var activeService = (serviceSwitch.selectAll('input').property('checked')) ? 'EGD' : 'GBM';
-                    //var activeProfile = profiles.selectAll('li.active').attr('value');
-                    clickAddOrUpdateOverlay(iD.BackgroundSource(dgServices.collectionSource(activeService/*service*/, null/*connectId*/, 'Default_Profile'/*profile*/, d.value/*freshness*/)));
+                    clickAddOrUpdateOverlay(iD.BackgroundSource(dgServices.collectionSource(null/*connectId*/, 'Default_Profile'/*profile*/, d.value/*freshness*/)));
                 });
         }
         //END Added for EGD-plugin

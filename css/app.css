@@ -1986,6 +1986,10 @@ div.full-screen > button:hover {
     position: relative;
 }
 
+.imagery-faq {
+    margin-bottom: 10px;
+}
+
 .nudge-container {
     border: 1px solid #CCC;
 }
