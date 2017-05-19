@@ -1,7 +1,7 @@
 iD.dgservices  = function() {
     var dg = {},
         evwhs_proxy = '/hoot-services/evwhs',
-        evwhs_host = 'https://{switch:a,b,c,d,e}-evwhs.digitalglobe.com',evwhs_connectId = 'REPLACE_ME',
+        evwhs_host = 'https://{switch:a,b,c,d,e}-evwhs.digitalglobe.com',
         evwhs_connectId = 'REPLACE_ME',
         wmts_template = '/earthservice/wmtsaccess?CONNECTID={connectId}&request=GetTile&version=1.0.0'
             + '&layer=DigitalGlobe:ImageryTileService&featureProfile={profile}&style=default&format=image/png'
