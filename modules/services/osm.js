@@ -422,7 +422,7 @@ export default {
                     parser = parsers[child.nodeName];
                if (parser) {
                     //Temp hack to normalize entity ids
-                    child.setAttribute("id", Math.abs(parseInt(child.getAttribute("id"), 10)));
+                    child.setAttribute("id", child.getAttribute("id"));
                     changes[changeKeys[type]].push(parser(child, mapId));
                 }
             }
