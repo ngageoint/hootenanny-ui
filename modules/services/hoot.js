@@ -93,7 +93,7 @@ export default {
 
     },
 
-    deriveChangeset: function(mapid, callback) {
+    deriveChangeset: function(mapid, extent, callback) {
 // {
 //     "input": "678",
 //     "inputtype": "db",
@@ -108,7 +108,7 @@ export default {
             inputtype: 'db',
             outputtype: 'osc',
             USER_ID: '1',
-            //TASK_BBOX: extent.toParam(),
+            TASK_BBOX: extent.toParam(),
             translation: 'NONE',
             textstatus: 'false',
             append: 'false'
@@ -230,8 +230,30 @@ export default {
                                         visible: false,
                                         merged: false
                                     };
-                                }
 
+                                    //Get extent for source layers
+                                    [tags.input1, tags.input2].forEach(function(sourceid) {
+                                        d3.json(services.hoot.urlroot() + '/api/0.6/map/mbr?mapId=' + sourceid, function (error, mbr) {
+                                            if (error) {
+                                                //The map is empty, so assume a global extent
+                                                mbr = {
+                                                    "minlon":-180,
+                                                    "minlat":-90,
+                                                    "maxlon":180,
+                                                    "maxlat":90,
+                                                    "nodescount":0
+                                                };
+                                            } else {
+                                                var min = [mbr.minlon, mbr.minlat],
+                                                    max = [mbr.maxlon, mbr.maxlat];
+
+                                                var layerExtent = new geoExtent(min, max);
+                                                loadedLayers[sourceid].extent = layerExtent;
+                                            }
+                                        });
+                                    });
+
+                                }
                                 //Add css rule to render features by hoot:status
                                 // 1 = reference source (purple)
                                 // 2 = secondary source (gold)
@@ -302,7 +324,9 @@ export default {
             if ((input1 === '-1' || input2 === '-1') && viz) {
                 context.connection().on('loaded.hootchangeset', function() {
                     console.log('loaded.hootchangeset');
-                    services.hoot.deriveChangeset(mapid, function() {
+                    var sourceid = (input1 === '-1') ? input2 : input1;
+                    var extent = loadedLayers[sourceid].extent;
+                    services.hoot.deriveChangeset(mapid, extent, function() {
                         context.connection().on('loaded.hootchangeset', null);
                     });
                 });
