@@ -26,6 +26,7 @@ import {
 import { modeBrowse } from './index';
 import { coreGraph } from '../core/index';
 import { JXON } from '../util/jxon';
+import { osmEntity } from '../osm/index';
 
 
 export function modeSave(context) {
@@ -68,7 +69,7 @@ export function modeSave(context) {
             remoteGraph = coreGraph(history.base(), true),
             modified = _.filter(history.difference().summary(), {changeType: 'modified'}),
             toCheck = _.map(_.map(modified, 'entity'), 'id'),
-            toLoad = withChildNodes(toCheck, localGraph),
+            toLoad = withChildNodes(toCheck, localGraph).filter(removeNegativeIds),
             conflicts = [],
             errors = [];
 
@@ -81,6 +82,9 @@ export function modeSave(context) {
             finalize();
         }
 
+        function removeNegativeIds(ref) {
+            return parseInt(osmEntity.id.toOSM(ref), 10) > -1;
+        }
 
         // Reload modified entities into an alternate graph and check for conflicts..
         function loaded(err, result) {
