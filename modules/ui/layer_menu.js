@@ -120,21 +120,7 @@ export function uiLayerMenu(context) {
 
                     //Remove the vector and node-mapnik layers
                     function removeLayer(mapid) {
-                        //Remove internal tracking data
                         services.hoot.removeLayer(mapid);
-                        //Remove osm vector data
-                        services.osm.loadedDataRemove(mapid);
-                        //Remove node-mapnik layer
-                        context.background().removeSource(mapid);
-                        //Remove hoot bbox layer
-                        var hootOverlay = context.layers().layer('hoot');
-                        if (hootOverlay) {
-                            hootOverlay.geojson(hootOverlay.geojson().filter(function(d) {
-                                return d.properties.mapid !== mapid;
-                            }));
-                        }
-
-                        context.flush();
                     }
                 }
 

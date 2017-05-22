@@ -289,12 +289,27 @@ export default {
     },
 
     removeLayer: function(mapid) {
+        var ids = [mapid];
         //If merged, delete source layers
         if (loadedLayers[mapid].merged) {
-            delete loadedLayers[loadedLayers[mapid].input1];
-            delete loadedLayers[loadedLayers[mapid].input2];
+            ids.push(loadedLayers[mapid].tags.input1);
+            ids.push(loadedLayers[mapid].tags.input2);
         }
-        delete loadedLayers[mapid];
+        //Remove internal tracking data
+        ids.forEach(function(mapid) { delete loadedLayers[mapid]; });
+        //Remove osm vector data
+        ids.forEach(services.osm.loadedDataRemove);
+        //Remove node-mapnik layer
+        context.background().removeSource(mapid);
+        //Remove hoot bbox layer
+        var hootOverlay = context.layers().layer('hoot');
+        if (hootOverlay) {
+            hootOverlay.geojson(hootOverlay.geojson().filter(function(d) {
+                return d.properties.mapid !== mapid;
+            }));
+        }
+
+        context.flush();
 
     },
 
