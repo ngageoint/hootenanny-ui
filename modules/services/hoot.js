@@ -109,6 +109,7 @@ export default {
             outputtype: 'osc',
             USER_ID: '1',
             TASK_BBOX: extent.toParam(),
+            buffer: '0.0',
             translation: 'NONE',
             textstatus: 'false',
             append: 'false'
@@ -116,7 +117,7 @@ export default {
 
         var userid = services.osm.userDetails(function(error, dets) {
             if (error) {
-                //console.error(error);
+                console.error(error);
             } else {
                 console.log(dets);
             }
@@ -339,8 +340,18 @@ export default {
             if ((input1 === '-1' || input2 === '-1') && viz) {
                 context.connection().on('loaded.hootchangeset', function() {
                     console.log('loaded.hootchangeset');
-                    var sourceid = (input1 === '-1') ? input2 : input1;
-                    var extent = loadedLayers[sourceid].extent;
+                    //Use gpx task grid or secondary layer
+                    var extent;
+                    //If a Tasking Manager grid is present, provide this bbox to the derive changeset job
+                    var gj = context.layers().layer('gpx');
+                    if (gj.hasGpx()) {
+                        //get the task grid feature extent
+                        extent = geoExtent(d3.geoBounds(gj.geojson()));
+                        console.log(extent.toParam());
+                    } else {
+                        var sourceid = (input1 === '-1') ? input2 : input1;
+                        extent = loadedLayers[sourceid].extent;
+                    }
                     services.hoot.deriveChangeset(mapid, extent, function() {
                         context.connection().on('loaded.hootchangeset', null);
                     });

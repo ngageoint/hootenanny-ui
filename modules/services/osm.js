@@ -13,7 +13,7 @@ import { services } from '../services/index';
 var dispatch = d3.dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded'),
     useHttps = window.location.protocol === 'https:',
     protocol = useHttps ? 'https:' : 'http:',
-    urlroot = protocol + '//localhost:3000',
+    urlroot = protocol + '//nome-in-a-box:3000',
     blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'],
     inflight = {},
     loadedTiles = {},
