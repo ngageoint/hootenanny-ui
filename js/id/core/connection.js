@@ -209,7 +209,6 @@ iD.Connection = function(context, useHttps) {
             var attrs = elems[i].attributes;
             tags[attrs.k.value] = decodeURIComponent(attrs.v.value);
         }
-        tags.hoot = layerName;
         return tags;
     }
 
