@@ -421,7 +421,6 @@ Hoot.view.utilities.dataset = function(context)
                 .header('Content-Type', 'application/json')
                 .post(JSON.stringify(param), function (error, data) {
                     if (error) {
-                        if (callback) callback(false);
                         iD.ui.Alert('Calculate Task Grids Failed', 'warning', new Error().stack);
                         return;
                     }
