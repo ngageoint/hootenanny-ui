@@ -408,33 +408,75 @@ Hoot.view.utilities.dataset = function(context)
         //TO DO: use convex hull shape instead of minimum bounding rectangle
         context.connection().getMbrFromUrl(d.id, function(mbr) {
             //console.log(mbr);
-            var project = {
-                geometry: bbox2multipolygon([mbr.minlon, mbr.minlat, mbr.maxlon, mbr.maxlat]),
-                type: 'Feature',
-                properties: {
-                    name: 'Conflation Task Project - ' + d.name,
-                    status: 2,
-                    changeset_comment: '#hootenanny-conflation-of-' + d.name.replace(/\s+/g, '-'),
-                    license: null,
-                    description: 'Step through Hootenanny conflation reviews for the task area.',
-                    per_task_instructions: '',
-                    priority: 2,
-                    short_description: 'Review Hootenanny conflation of ' + d.name + ' data into' + iD.data.hootConfig.taskingManagerTarget + '.',
-                    instructions: 'Hootenanny will conflate the ' + d.name + ' data for the task area and present you with reviews for possible feature matches it is unsure of.  The features can be manually edited, merged, deleted, or left alone and then the review is resolved.  The conflated data changeset will then be written back to ' + iD.data.hootConfig.taskingManagerTarget + '.',
-                    entities_to_map: 'review conflation of roads, buildings, waterways, pois',
-                    hoot_map_id: d.id
-                }
+
+            //get task geojson
+            var param = {
+                input: d.id,
+                inputtype: 'db',
+                outputtype: 'tiles.geojson',
+                MAX_NODE_COUNT_PER_TILE: 5000,
+                PIXEL_SIZE: 0.001
             };
-            //console.log(project);
-            var projectUrl = iD.data.hootConfig.taskingManagerUrl + '/project';
-            d3.json(projectUrl)
-                .on('beforesend', function (request) {request.withCredentials = true;})
-                .post(JSON.stringify(project), function(error, json) {
+            d3.json('/hoot-services/job/export/execute')
+                .header('Content-Type', 'application/json')
+                .post(JSON.stringify(param), function (error, data) {
                     if (error) {
-                        iD.ui.Alert('Error creating Conflation Task Project.','warning', new Error().stack);
+                        iD.ui.Alert('Calculate Task Grids Failed', 'warning', new Error().stack);
                         return;
                     }
-                    window.open(projectUrl + '/' + json.id, '_blank');
+
+                    //Show a wait cursor
+                    d3.selectAll('a, div').classed('wait', true);
+
+                    var exportJobId = data.jobid;
+                    var statusUrl = '/hoot-services/job/status/' + exportJobId;
+                    var statusTimer = setInterval(function () {
+                        d3.json(statusUrl, function(error, result)
+                            {
+
+                                if (result.status !== 'running') {
+                                    clearInterval(statusTimer);
+                                    //Remove the wait cursor
+                                    d3.selectAll('a, div').classed('wait', false);
+                                    if (result.status === 'failed') {
+                                        Hoot.model.REST.WarningHandler(result.statusDetail);
+                                    } else {
+                                        var resultUrl = '/hoot-services/job/export/geojson/' + exportJobId + '?ext=tiles.geojson';
+                                        d3.json(resultUrl, function(error, json) {
+                                            var project = {
+                                                geometry: bbox2multipolygon([mbr.minlon, mbr.minlat, mbr.maxlon, mbr.maxlat]),
+                                                type: 'Feature',
+                                                properties: {
+                                                    name: 'Conflation Task Project - ' + d.name,
+                                                    status: 2,
+                                                    changeset_comment: '#hootenanny-conflation-of-' + d.name.replace(/\s+/g, '-'),
+                                                    license: null,
+                                                    description: 'Step through Hootenanny conflation reviews for the task area.',
+                                                    per_task_instructions: '',
+                                                    priority: 2,
+                                                    short_description: 'Review Hootenanny conflation of ' + d.name + ' data into' + iD.data.hootConfig.taskingManagerTarget + '.',
+                                                    instructions: 'Hootenanny will conflate the ' + d.name + ' data for the task area and present you with reviews for possible feature matches it is unsure of.  The features can be manually edited, merged, deleted, or left alone and then the review is resolved.  The conflated data changeset will then be written back to ' + iD.data.hootConfig.taskingManagerTarget + '.',
+                                                    entities_to_map: 'review conflation of roads, buildings, waterways, pois',
+                                                    hoot_map_id: d.id,
+                                                    tasks: json
+                                                }
+                                            };
+
+                                            var projectUrl = iD.data.hootConfig.taskingManagerUrl + '/project';
+                                            d3.json(projectUrl)
+                                                .on('beforesend', function (request) {request.withCredentials = true;})
+                                                .post(JSON.stringify(project), function(error, json) {
+                                                    if (error) {
+                                                        iD.ui.Alert('Error creating Conflation Task Project.','warning', new Error().stack);
+                                                        return;
+                                                    }
+                                                    window.open(projectUrl + '/' + json.id, '_blank');
+                                                });
+                                        });
+                                    }
+                                }
+                            });
+                    }, iD.data.hootConfig.JobStatusQueryInterval);
                 });
         });
     };
