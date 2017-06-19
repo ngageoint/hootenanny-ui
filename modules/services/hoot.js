@@ -232,39 +232,38 @@ export default {
                                         merged: false
                                     };
 
+                                    //Get extent for source layers
+                                    [tags.input1, tags.input2].forEach(function(sourceid) {
+                                        d3.json(services.hoot.urlroot() + '/api/0.6/map/mbr?mapId=' + sourceid, function (error, mbr) {
+                                            if (error) {
+                                                //The map is empty, so assume a global extent
+                                                mbr = {
+                                                    "minlon":-180,
+                                                    "minlat":-90,
+                                                    "maxlon":180,
+                                                    "maxlat":90,
+                                                    "nodescount":0
+                                                };
+                                            } else {
+                                                var min = [mbr.minlon, mbr.minlat],
+                                                    max = [mbr.maxlon, mbr.maxlat];
+
+                                                var layerExtent = new geoExtent(min, max);
+                                                loadedLayers[sourceid].extent = layerExtent;
+                                            }
+                                        });
+                                    });
+
                                     //If TASK_BBOX is present in tags, use that for extent
 
                                     var params = JSON.parse(tags.params.replace(/\\"/g, '"'));
                                     if (params.TASK_BBOX) {
-                                        var bbox = params.TASK_BBOX.split(',');
+                                        var bbox = params.TASK_BBOX.split(',').map(Number);
                                         layerExtent = new geoExtent([bbox[0], bbox[1]], [bbox[2], bbox[3]]);
                                         var sourceid = (tags.input1 === '-1') ? tags.input2 : tags.input1;
                                         loadedLayers[sourceid].extent = layerExtent;
-                                    } else {
-
-                                        //Get extent for source layers
-                                        [tags.input1, tags.input2].forEach(function(sourceid) {
-                                            d3.json(services.hoot.urlroot() + '/api/0.6/map/mbr?mapId=' + sourceid, function (error, mbr) {
-                                                if (error) {
-                                                    //The map is empty, so assume a global extent
-                                                    mbr = {
-                                                        "minlon":-180,
-                                                        "minlat":-90,
-                                                        "maxlon":180,
-                                                        "maxlat":90,
-                                                        "nodescount":0
-                                                    };
-                                                } else {
-                                                    var min = [mbr.minlon, mbr.minlat],
-                                                        max = [mbr.maxlon, mbr.maxlat];
-
-                                                    var layerExtent = new geoExtent(min, max);
-                                                    loadedLayers[sourceid].extent = layerExtent;
-                                                }
-                                            });
-                                        });
-
                                     }
+
                                 }
                                 //Add css rule to render features by hoot:status
                                 // 1 = reference source (purple)

@@ -86,7 +86,9 @@ export function uiLayerMenu(context) {
 
                         //Zoom to the layer extent if not global
                         if (extent.toParam() !== '-180,-90,180,90') {
-                            if (!context.extent().intersects(extent)) {
+                            if (!context.extent().intersects(extent) //map extent doesn't intersect dataset -or-
+                                || (context.map().center()[0] === 0 && context.map().center()[1] === 0) //center is null island
+                                ) {
                                 context.extent(extent);
                             } else {
                                 context.redraw();
