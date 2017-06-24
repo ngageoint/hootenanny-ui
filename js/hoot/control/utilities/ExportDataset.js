@@ -62,7 +62,7 @@ Hoot.control.utilities.exportdataset = function(context) {
         }
 
         var d_form = [{
-            label: 'Translation',
+            label: 'Translation Schema for Output File',
             id: 'fileExportTranslation',
             combobox: {'data':_transCombo, 'command': _populateTranslations },//transCombo,//exportResources,
             placeholder: { 'default': placeHolder, 'command': _getTranslationComboPlaceHolder},
