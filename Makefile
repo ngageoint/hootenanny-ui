@@ -124,10 +124,20 @@ dist/iD.js: \
 	js/hoot/ui/HootFormReviewNote.js \
 	js/hoot/control/Control.js \
 	js/hoot/control/Conflate.js \
+	js/hoot/control/conflate/Symbology.js \
+	js/hoot/control/conflate/AdvancedOptions.js \
+	js/hoot/control/conflate/advanced_options/*.js \
 	js/hoot/control/Import.js \
 	js/hoot/control/Export.js \
+	js/hoot/control/Validation.js \
 	js/hoot/control/View.js \
 	js/hoot/control/Conflicts.js \
+	js/hoot/control/conflicts/Actions.js \
+	js/hoot/control/conflicts/Info.js \
+	js/hoot/control/conflicts/Map.js \
+	js/hoot/control/conflicts/actions/*.js \
+	js/hoot/control/conflicts/info/*.js \
+	js/hoot/control/conflicts/map/*.js \
 	js/hoot/control/translation_assistant.js \
 	js/hoot/control/utilities/Utilities.js \
 	js/hoot/control/utilities/Translation.js \
@@ -156,7 +166,7 @@ dist/iD.min.js: dist/iD.js Makefile
 	node_modules/.bin/uglifyjs $< -c -m -o $@
 
 dist/iD.css: css/*.css
-	cat css/reset.css css/map.css css/app.css > $@
+	cat css/base.css css/reset.css css/map.css css/app.css css/dgcarousel.css css/style2.css css/hoot-style.css css/translation_assistant.css > $@
 
 node_modules/.install: package.json
 	npm install
