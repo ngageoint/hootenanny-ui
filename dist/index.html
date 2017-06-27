@@ -24,15 +24,15 @@
                 document.getElementById('id-container').innerHTML = 'Sorry, your browser is not currently supported. Please use Potlatch 2 to edit the map.';
                 document.getElementById('id-container').className = 'unsupported';
             } else {
-                var id = iD()
-                  .presets(iD.data.presets)
-                  .imagery(iD.data.imagery)
-                  .taginfo(iD.services.taginfo());
                 if(iD.data.buildInfo && iD.data.buildInfo.version){
                     iD.version = iD.data.buildInfo.version + "(Hootenanny)";
                 } else {
                     iD.version = "Unknown(Hootenanny)";
                 }
+                var id = iD()
+                  .presets(iD.data.presets)
+                  .imagery(iD.data.imagery)
+                  .taginfo(iD.services.taginfo());
                 id.hoot().load(function() {
                     d3.select('#id-container').call(id.ui());
                 });
