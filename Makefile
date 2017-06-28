@@ -167,7 +167,7 @@ dist/iD.css: css/*.css
 	cat css/base.css css/reset.css css/map.css css/app.css css/dgcarousel.css css/style2.css css/hoot-style.css css/translation_assistant.css > $@
 
 node_modules/.install: package.json
-	npm install
+	npm install --quiet
 	touch node_modules/.install
 
 clean:
@@ -184,11 +184,11 @@ translations:
 	node data/update_locales
 
 imagery:
-	npm install editor-layer-index@git://github.com/osmlab/editor-layer-index.git#gh-pages
+	npm install --quiet editor-layer-index@git://github.com/osmlab/editor-layer-index.git#gh-pages
 	node data/update_imagery
 
 suggestions:
-	npm install name-suggestion-index@git://github.com/osmlab/name-suggestion-index.git
+	npm install --quiet name-suggestion-index@git://github.com/osmlab/name-suggestion-index.git
 	cp node_modules/name-suggestion-index/name-suggestions.json data/name-suggestions.json
 
 
