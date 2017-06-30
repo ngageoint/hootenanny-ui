@@ -123,6 +123,7 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
         var invalidText = '';
 
         var target = d3.select('#' + data.property('id'));
+
         if(target.node().classList.contains('list')){
             //validate combobox entry
             var curOpts = _.find(target.data()[0].children,{'id':data.property('id')});
@@ -161,6 +162,20 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                     }
                 }
             }
+
+            // Add specific validation for POI Polygon Advanced Options
+            if(data.property('id') === 'poipolygon_review_distance_threshold'){
+                // Value must be larger than poipolygon_match_distance_threshold
+                var val = parseFloat(target.value());
+                var comp = d3.select('#poipolygon_match_distance_threshold').value();
+                if(val <= comp){
+                    invalidInput = true;
+                    invalidText = 'POI Polygon Review Distance Threshold must be greater than the POI Polygon Match Distance Threshold.';
+                }
+            }
+
+            
+
             target.classed('invalid-input',invalidInput);
             target.property('title',invalidText);   
         }
