@@ -161,16 +161,24 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                         }                   
                     }
                 }
-            }
 
-            // Add specific validation for POI Polygon Advanced Options
-            if(data.property('id') === 'poipolygon_review_distance_threshold'){
-                // Value must be larger than poipolygon_match_distance_threshold
-                var val = parseFloat(target.value());
-                var comp = d3.select('#poipolygon_match_distance_threshold').value();
-                if(val <= comp){
-                    invalidInput = true;
-                    invalidText = 'POI Polygon Review Distance Threshold must be greater than the POI Polygon Match Distance Threshold.';
+                // Add specific validation for POI Polygon Advanced Options
+                if(data.property('id') === 'poipolygon_review_distance_threshold' || data.property('id') === 'poipolygon_match_distance_threshold'){
+                    // Value must be larger than poipolygon_match_distance_threshold
+                    var review_elem = d3.select('#poipolygon_review_distance_threshold');
+                    var review_val = parseFloat(review_elem.value() || review_elem.attr('placeholder'));
+                    var match_elem = d3.select('#poipolygon_match_distance_threshold');
+                    var match_val = parseFloat(match_elem.value() || match_elem.attr('placeholder'));
+                    
+                    if(isNaN(review_val) || isNaN(match_val)){return;}
+
+                    if(review_val <= match_val){
+                        review_elem.classed('invalid-input',true);
+                        review_elem.property('title','POI Polygon Review Distance Threshold must be greater than the POI Polygon Match Distance Threshold.');
+                    } else {
+                        review_elem.classed('invalid-input',false);
+                        review_elem.property('title','');
+                    }
                 }
             }
 
