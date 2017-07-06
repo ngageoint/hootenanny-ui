@@ -10,6 +10,8 @@ all: \
 	dist/presets.js \
 	dist/imagery.js
 
+.NOTPARALLEL:
+
 MAKI_SOURCES = node_modules/maki/src/*.svg
 
 $(MAKI_SOURCES): node_modules/.install
