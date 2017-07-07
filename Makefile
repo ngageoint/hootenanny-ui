@@ -163,13 +163,21 @@ dist/iD.js: node_modules/.install Makefile
 
 dist/iD.min.js: dist/iD.js Makefile
 	@rm -f $@
+ifneq (,$(findstring s,$(MAKEFLAGS)))
+	node_modules/.bin/uglifyjs $< -c -m -o $@ > /dev/null 2>&1
+else
 	node_modules/.bin/uglifyjs $< -c -m -o $@
+endif
 
 dist/iD.css: css/*.css
 	cat css/base.css css/reset.css css/map.css css/app.css css/dgcarousel.css css/style2.css css/hoot-style.css css/translation_assistant.css > $@
 
 node_modules/.install: package.json
+ifneq (,$(findstring s,$(MAKEFLAGS)))
+	npm install --quiet > /dev/null 2>&1
+else
 	npm install --quiet
+endif
 	touch node_modules/.install
 
 clean:
@@ -186,11 +194,19 @@ translations:
 	node data/update_locales
 
 imagery:
+ifneq (,$(findstring s,$(MAKEFLAGS)))
+	npm install --quiet editor-layer-index@git://github.com/osmlab/editor-layer-index.git#gh-pages > /dev/null 2>&1
+else
 	npm install --quiet editor-layer-index@git://github.com/osmlab/editor-layer-index.git#gh-pages
+endif
 	node data/update_imagery
 
 suggestions:
+ifneq (,$(findstring s,$(MAKEFLAGS)))
+	npm install --quiet name-suggestion-index@git://github.com/osmlab/name-suggestion-index.git > /dev/null 2>&1
+else
 	npm install --quiet name-suggestion-index@git://github.com/osmlab/name-suggestion-index.git
+endif
 	cp node_modules/name-suggestion-index/name-suggestions.json data/name-suggestions.json
 
 
