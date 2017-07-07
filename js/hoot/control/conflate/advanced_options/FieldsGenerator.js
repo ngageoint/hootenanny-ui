@@ -182,15 +182,6 @@ Hoot.control.conflate.advancedoptions.fieldsgenerator = function () {
                 }
             }
 
-            if(data.property('id') === 'poipolygon_review_if_matched_types'){
-                var val = target.value();
-                var reqStart = 'poi.polygon.review.if.matched.types=';
-                if(!val.startsWith(reqStart)){
-                    invalidInput = true;
-                    invalidText = 'POI Polygon Review must start with "poi.polygon.review.if.matched.types="';
-                }
-            }
-
             target.classed('invalid-input',invalidInput);
             target.property('title',invalidText);   
         }
