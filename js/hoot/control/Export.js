@@ -56,7 +56,7 @@ Hoot.control.export = function (context, sidebar) {
                 exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
             }                                        	
             var d_save = [{
-                label: 'Translation',
+                label: 'Translation Schema for Output File',
                 type: 'fileExportTranslation',
                 id: 'fileExportTranslation',
                 combobox: {'data':transCombo },//exportResources,

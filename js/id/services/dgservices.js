@@ -2,7 +2,8 @@ iD.dgservices  = function() {
     var dg = {},
         evwhs_proxy = '/hoot-services/evwhs',
         evwhs_host = 'https://{switch:a,b,c,d,e}-evwhs.digitalglobe.com',
-        evwhs_connectId = 'REPLACE_ME',
+        evwhs_connectId,
+        default_connectId = evwhs_connectId = 'REPLACE_ME',
         wmts_template = '/earthservice/wmtsaccess?CONNECTID={connectId}&request=GetTile&version=1.0.0'
             + '&layer=DigitalGlobe:ImageryTileService&featureProfile={profile}&style=default&format=image/png'
             + '&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:{zoom}&TileRow={y}&TileCol={x}',
@@ -69,11 +70,12 @@ iD.dgservices  = function() {
     function getUrl(connectId, profile, template, proxy) {
         var host,
             connectid;
-            //Always use the proxy until EVWHS implements CORS
+            connectid = connectId || evwhs_connectId;
+            //Always use the proxy if we need to authenticate
+            //e.g. A user enters their own EVWHS connect id
             //Basic auth cookie must be good for all requests,
             //so can't use domain switching
-            host = evwhs_proxy;//(proxy) ? evwhs_proxy : evwhs_host;
-            connectid = connectId || evwhs_connectId;
+            host = (proxy || (connectid !== default_connectId)) ? evwhs_proxy : evwhs_host;
         return (host + template)
             .replace('{connectId}', connectid)
             .replace('{profile}', profile || defaultProfile);

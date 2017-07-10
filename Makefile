@@ -10,6 +10,8 @@ all: \
 	dist/presets.js \
 	dist/imagery.js
 
+.NOTPARALLEL:
+
 MAKI_SOURCES = node_modules/maki/src/*.svg
 
 $(MAKI_SOURCES): node_modules/.install
@@ -96,22 +98,20 @@ dist/iD.js: \
 	js/id/ui/schema_switcher.js \
 	js/hoot/Hoot.js \
 	js/hoot/tools.js \
-	js/hoot/Ui.js \
 	js/hoot/lib/FileSaver.js \
 	js/hoot/model/Model.js \
 	js/hoot/model/Export.js \
+	js/hoot/model/Folders.js \
 	js/hoot/model/Import.js \
 	js/hoot/model/Layers.js \
 	js/hoot/model/Conflicts.js \
 	js/hoot/model/Conflate.js \
 	js/hoot/model/BasemapDataset.js \
 	js/hoot/model/rest.js \
-	js/hoot/model/Folders.js \
 	js/hoot/view/View.js \
 	js/hoot/view/VersionInfo.js \
 	js/hoot/view/utilities/Utilities.js \
 	js/hoot/view/utilities/Dataset.js \
-	js/hoot/view/utilities/WfsDataset.js \
 	js/hoot/view/utilities/BasemapDataset.js \
 	js/hoot/view/utilities/Translation.js \
 	js/hoot/view/utilities/ErrorLog.js \
@@ -119,20 +119,20 @@ dist/iD.js: \
 	js/hoot/view/utilities/About.js \
 	js/hoot/view/utilities/ReviewBookmarks.js \
 	js/hoot/view/utilities/ReviewBookmarkNotes.js \
-	js/hoot/ui/FormFactory.js \
-	js/hoot/ui/HootFormBase.js \
-	js/hoot/ui/HootFormReviewNote.js \
 	js/hoot/control/Control.js \
 	js/hoot/control/Conflate.js \
+	js/hoot/control/conflate/Symbology.js \
+	js/hoot/control/conflate/AdvancedOptions.js \
+	js/hoot/control/conflate/advanced_options/*.js \
 	js/hoot/control/Import.js \
 	js/hoot/control/Export.js \
+	js/hoot/control/Validation.js \
 	js/hoot/control/View.js \
 	js/hoot/control/Conflicts.js \
 	js/hoot/control/translation_assistant.js \
 	js/hoot/control/utilities/Utilities.js \
 	js/hoot/control/utilities/Translation.js \
 	js/hoot/control/utilities/BasemapDataset.js \
-	js/hoot/control/utilities/WfsDataset.js \
 	js/hoot/control/utilities/Reports.js \
 	js/hoot/control/utilities/Folder.js \
 	js/hoot/control/utilities/Validation.js \
@@ -143,7 +143,17 @@ dist/iD.js: \
 	js/hoot/control/utilities/ImportDataset.js \
 	js/hoot/control/utilities/BulkImportDataset.js \
 	js/hoot/control/utilities/ImportDirectory.js \
-	js/hoot/control/utilities/ClipDataset.js
+	js/hoot/control/utilities/ClipDataset.js \
+	js/hoot/control/conflicts/Actions.js \
+	js/hoot/control/conflicts/Info.js \
+	js/hoot/control/conflicts/Map.js \
+	js/hoot/control/conflicts/actions/*.js \
+	js/hoot/control/conflicts/info/*.js \
+	js/hoot/control/conflicts/map/*.js \
+	js/hoot/Ui.js \
+	js/hoot/ui/FormFactory.js \
+	js/hoot/ui/HootFormBase.js \
+	js/hoot/ui/HootFormReviewNote.js
 
 .INTERMEDIATE dist/iD.js: data/data.js
 
@@ -153,17 +163,25 @@ dist/iD.js: node_modules/.install Makefile
 
 dist/iD.min.js: dist/iD.js Makefile
 	@rm -f $@
+ifneq (,$(findstring s,$(MAKEFLAGS)))
+	node_modules/.bin/uglifyjs $< -c -m -o $@ > /dev/null 2>&1
+else
 	node_modules/.bin/uglifyjs $< -c -m -o $@
+endif
 
 dist/iD.css: css/*.css
-	cat css/reset.css css/map.css css/app.css > $@
+	cat css/base.css css/reset.css css/map.css css/app.css css/dgcarousel.css css/style2.css css/hoot-style.css css/translation_assistant.css > $@
 
 node_modules/.install: package.json
-	npm install
+ifneq (,$(findstring s,$(MAKEFLAGS)))
+	npm install --quiet > /dev/null 2>&1
+else
+	npm install --quiet
+endif
 	touch node_modules/.install
 
 clean:
-	rm -f $(BUILDJS_TARGETS) data/feature-icons.json dist/iD*.js dist/iD.css dist/img/*.svg
+	rm -f $(BUILDJS_TARGETS) data/feature-icons.json dist/iD*.js dist/iD.css
 
 clean-coverage:
 	rm -f test/istanbul_index.html
@@ -176,11 +194,19 @@ translations:
 	node data/update_locales
 
 imagery:
-	npm install editor-layer-index@git://github.com/osmlab/editor-layer-index.git#gh-pages
+ifneq (,$(findstring s,$(MAKEFLAGS)))
+	npm install --quiet editor-layer-index@git://github.com/osmlab/editor-layer-index.git#gh-pages > /dev/null 2>&1
+else
+	npm install --quiet editor-layer-index@git://github.com/osmlab/editor-layer-index.git#gh-pages
+endif
 	node data/update_imagery
 
 suggestions:
-	npm install name-suggestion-index@git://github.com/osmlab/name-suggestion-index.git
+ifneq (,$(findstring s,$(MAKEFLAGS)))
+	npm install --quiet name-suggestion-index@git://github.com/osmlab/name-suggestion-index.git > /dev/null 2>&1
+else
+	npm install --quiet name-suggestion-index@git://github.com/osmlab/name-suggestion-index.git
+endif
 	cp node_modules/name-suggestion-index/name-suggestions.json data/name-suggestions.json
 
 

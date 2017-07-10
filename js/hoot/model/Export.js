@@ -69,7 +69,7 @@ Hoot.model.export = function (context)
         }
 
         if(isDefTrans === false && transName != null && transName !== '' ){
-            selectedTranslation = 'customscript/' + transName + '.js';
+            selectedTranslation = transName + '.js';
         }
 
         if (!selectedInput || !selectedOutType) {

@@ -1,7 +1,7 @@
 {
     "JobStatusQueryInterval": 3000,
     "url": "/hoot-services/osm",
-    "defaultScript":"TDSv61.js",
+    "defaultScript":"translations/TDSv61.js",
     "defaultBaseMap":"Bing",
     "hootMaxImportZoom" : 16,
     "hootMapInitialZoom": 16.2,
