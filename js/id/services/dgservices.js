@@ -101,7 +101,7 @@ iD.dgservices  = function() {
         return Math.floor(Math.random() * (max - min)) + min;
     }
     function getWfsFeature(connectId, profile, extent, size, callback, addlParam) {
-        var url = getUrl(connectId, profile, wfs_template, true/*proxy*/);
+        var url = getUrl(connectId, profile, wfs_template, false/*proxy*/);
         if (addlParam) {
             url += '&' + d3.entries(addlParam).map(function(d) {
                 return d.key + '=' + d.value;
