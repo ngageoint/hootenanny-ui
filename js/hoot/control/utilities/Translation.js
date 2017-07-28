@@ -75,16 +75,23 @@ Hoot.control.utilities.translation = function(context) {
             }
 
         }
-        transTemplate.on('keyup', function () {
-            validateFields();
+
+        transTemplate.on('keyup.change', function () { validateFields(); });
+
+        nameVal.on('keyup', function () { validateFields(); });
+
+        descVal.on('keyup', function () { validateFields(); });
+
+        transTemplate.on('paste',function(){
+            setTimeout(function(){validateFields();}, 0);
         });
 
-        nameVal.on('keyup', function () {
-            validateFields();
+        nameVal.on('paste',function(){
+            setTimeout(function(){validateFields();}, 0);
         });
 
-        descVal.on('keyup', function () {
-            validateFields();
+        descVal.on('paste',function(){
+            setTimeout(function(){validateFields();}, 0);
         });
 
         function postTranslation(e) {
