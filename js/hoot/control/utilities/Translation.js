@@ -35,6 +35,7 @@ Hoot.control.utilities.translation = function(context) {
             .html('<strong>Name:</strong> ');
         var nameVal = name.append('input')
             .attr('type', 'text')
+            .attr('id','translationName')
             .classed('translationName',true);
         var desc = ingestDiv.append('div');
         desc.append('label')
@@ -43,11 +44,35 @@ Hoot.control.utilities.translation = function(context) {
             .attr('type', 'text')
             .classed('translationDescription',true);
         ingestDiv.append('span')
-            .text('Paste New Translation in Box');
+            .text('Paste New Translation in Box (or drag .js file into text area)');
         var transTemplate = ingestDiv.append('textarea')
             .classed('row5', true)
             .classed('translationText',true)
-            .text(transTemplateText);
+            .attr('id','transDropzone', true)
+            .text(transTemplateText)
+            .on('drop', function(){
+                handleFileDrop();
+            });
+
+        var handleFileDrop = function(evt){
+            event.stopPropagation();
+            event.preventDefault();
+
+            var files = event.dataTransfer.files; // FileList object.
+            var file = files[0];
+            if(file.type !== 'text/javascript'){
+                iD.ui.Alert('Only javascript (.js) files can be copied here).','notice','');
+                return;
+            } else {
+                document.getElementById('translationName').value = file.name.replace('.js','');
+            }
+
+            var reader = new FileReader();  
+            reader.onload = function(event) {            
+                 document.getElementById('transDropzone').value = event.target.result;
+            }        
+            reader.readAsText(files[0],"UTF-8");
+          }
 
         var savetransNew = ingestDiv.append('div')
             .classed('hidden form-field col12 center', true);
