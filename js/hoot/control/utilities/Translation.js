@@ -28,7 +28,7 @@ Hoot.control.utilities.translation = function(context) {
             .append('div')
             .classed('fr _icon x point', true)
             .on('click', function () {
-                modalbg.classed('hidden', true);
+                modalbg.remove();
             });
         var name = ingestDiv.append('div');
         name.append('label')
