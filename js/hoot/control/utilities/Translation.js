@@ -70,9 +70,9 @@ Hoot.control.utilities.translation = function(context) {
             var reader = new FileReader();  
             reader.onload = function(event) {            
                  document.getElementById('transDropzone').value = event.target.result;
-            }        
-            reader.readAsText(files[0],"UTF-8");
-          }
+            };   
+            reader.readAsText(files[0],'UTF-8');
+          };
 
         var savetransNew = ingestDiv.append('div')
             .classed('hidden form-field col12 center', true);
