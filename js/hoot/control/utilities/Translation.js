@@ -215,12 +215,12 @@ Hoot.control.utilities.translation = function(context) {
                 hoot_control_utilities_translation.prepareTranslation(transText, e.NAME);
             });
         }
-    }
+    };
 
     hoot_control_utilities_translation.prepareTranslation = function(translationText, fileName) {
         var transBlob = new Blob([translationText], {type:'text/javascript'});
-        saveAs(transBlob, fileName + '.js');
-    }
+        window.saveAs(transBlob, fileName + '.js');
+    };
 
 
     return hoot_control_utilities_translation;
