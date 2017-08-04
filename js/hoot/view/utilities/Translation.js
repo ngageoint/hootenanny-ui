@@ -52,6 +52,9 @@ Hoot.view.utilities.translation = function(context) {
                             return d.NAME;      
                         }
                         return d.NAME; 
+                    })
+                    .on('click',function(d){
+                        context.hoot().control.utilities.translation.translationPopup(d);
                     });
                 var tooltip = bootstrap.tooltip()
                     .placement('right')
@@ -118,13 +121,16 @@ Hoot.view.utilities.translation = function(context) {
                 });
 
                 tla3.append('button')
-                .classed('keyline-left fr _icon folder pad2 col1', true)
+                .classed('keyline-left fr _icon export pad2 col1', true)
                 .style('height', '100%')
                 .on('click', function (d) {
+                    // Export translation to new .js file
                     d3.event.stopPropagation();
-                    d3.event.preventDefault();
-                    context.hoot().control.utilities.translation.translationPopup(d);
+                    d3.event.preventDefault();  
+                    context.hoot().control.utilities.translation.exportTranslation(d);
                 });
+
+
 
 
 
