@@ -237,6 +237,23 @@ Hoot.control.utilities.translation = function(context) {
 
     };
 
+    hoot_control_utilities_translation.exportTranslation = function(e) {
+        if(e.DEFAULT === true){
+            Hoot.model.REST('getDefaultTranslation', e.PATH, function (transText) {
+                hoot_control_utilities_translation.prepareTranslation(transText, e.NAME);
+            });
+        } else {
+            Hoot.model.REST('getTranslation', e.NAME, function (transText) {
+                hoot_control_utilities_translation.prepareTranslation(transText, e.NAME);
+            });
+        }
+    };
+
+    hoot_control_utilities_translation.prepareTranslation = function(translationText, fileName) {
+        var transBlob = new Blob([translationText], {type:'text/javascript'});
+        window.saveAs(transBlob, fileName + '.js');
+    };
+
 
     return hoot_control_utilities_translation;
 };
