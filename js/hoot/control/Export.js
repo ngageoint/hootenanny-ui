@@ -63,7 +63,7 @@ Hoot.control.export = function (context, sidebar) {
                 placeholder: placeHolder,
                 inputtype:'text'
             }, {
-                label: 'Export Status as Text',
+                label: 'Include Hoot Status Field',
                 type: 'exportTextStatus',
                 inputtype:'checkbox',
                 checkbox:'cboxExportTextStatus'

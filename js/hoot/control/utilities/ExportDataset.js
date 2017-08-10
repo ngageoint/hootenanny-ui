@@ -68,7 +68,7 @@ Hoot.control.utilities.exportdataset = function(context) {
             placeholder: { 'default': placeHolder, 'command': _getTranslationComboPlaceHolder},
             inputtype:'combobox'
         },  {
-            label: 'Export Status as Text',
+            label: 'Include Hoot Status Field',
             type: 'exportTextStatus',
             inputtype:'checkbox',
             checkbox:'cboxExportTextStatus',
