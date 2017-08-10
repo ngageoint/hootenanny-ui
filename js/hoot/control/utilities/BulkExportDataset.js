@@ -49,7 +49,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
             _trans.push(emptyObj);
         }
 
-        _exportTranslations = trans;
+        _exportTranslations = trans.filter(function(d) {return d.CANEXPORT===true;});
 
         _exportFormatList = 
             [   {'DESCRIPTION': 'File Geodatabase'}, 
@@ -243,7 +243,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
 
     var _emptyRowCheck = function(row, rowNumber){
         if (row.select('.reset.LayerName').value()==='' ||
-            row.select('.reset.exportExportType').value()==='' ||
+            row.select('.reset.Schema').value()==='' ||
             document.getElementById('ingestfileuploader-' + rowNumber).files.length===0) {
             return true;
         } else {
@@ -296,7 +296,8 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
 
     var _exportDatasetJob = function(row, schemaElem, exportTypeElem, layerName, fgdbElem, callback){
         _updateExportText('Exporting ' + layerName);
-        context.hoot().model.export.exportData(row, schemaElem,exportTypeElem,null,layerName,fgdbElem,
+        console.log(row,schemaElem,exportTypeElem,layerName,fgdbElem);
+        /*context.hoot().model.export.exportData(row, schemaElem,exportTypeElem,null,layerName,fgdbElem,
             function(status){
             if(status.info==='complete'){
                 if(_isCancel === false){
@@ -312,7 +313,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
                 _loadPostProcess(row);
                 if(callback){callback();}
             }
-        });
+        });*/
     };
 
 
