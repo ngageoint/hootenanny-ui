@@ -142,6 +142,7 @@ dist/iD.js: \
 	js/hoot/control/utilities/ModifyDataset.js \
 	js/hoot/control/utilities/ImportDataset.js \
 	js/hoot/control/utilities/BulkImportDataset.js \
+	js/hoot/control/utilities/BulkExportDataset.js \	
 	js/hoot/control/utilities/ImportDirectory.js \
 	js/hoot/control/utilities/ClipDataset.js \
 	js/hoot/control/conflicts/Actions.js \

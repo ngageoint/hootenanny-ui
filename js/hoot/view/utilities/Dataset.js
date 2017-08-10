@@ -264,6 +264,40 @@ Hoot.view.utilities.dataset = function(context)
         });
     };
 
+    hoot_view_utilities_dataset.bulkexportDataset = function(d) {
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+
+        // Loop through the datasets and flag any that may be over the size limit
+        var expThreshold = 1*iD.data.hootConfig.export_size_threshold;
+
+        var _exportList = [];
+        _.each(d,function(lyrid){
+            var _lyrInfo = {};
+            _lyrInfo.id = lyrid;
+            
+            Hoot.model.REST('getMapSize', d,function (sizeInfo) {
+                if(sizeInfo.error){ _lyrInfo.size = -1; }
+
+                _lyrInfo.size = 1*sizeInfo.size_byte;
+                if(_lyrInfo.size > expThreshold) { _lyrInfo.oversized = true; }
+
+                _lyrInfo.name = context.hoot().model.layers.getNameBymapId(lyrid);
+
+                _exportList.push(_lyrInfo);
+            });
+        });
+        
+        Hoot.model.REST('getTranslations', function (trans) {
+            if(trans.error){
+                context.hoot().view.utilities.errorlog.reportUIError(trans.error);
+                return;
+            }
+            context.hoot().control.utilities.bulkexportdataset.bulkExportDataContainer(_exportList, trans);
+        });
+
+    };    
+
     hoot_view_utilities_dataset.deleteDatasets = function(d,container) {
         if(d.length===0){return;}
         else if(d.length===1){
