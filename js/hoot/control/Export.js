@@ -215,6 +215,8 @@ Hoot.control.export = function (context, sidebar) {
             if (exportType===''){exportType=d3.select('.fileExportFileType').attr('placeholder');}
             if (transType===''){transType=d3.select('.fileExportTranslation').attr('placeholder');}
 
+            if (transType==='OpenStreetMap.org (OSM)'){d3.select('#fileExportFileType').value('Open Street Map (OSM)');}
+
             if(exportType!=='File Geodatabase'){
                 hideFGDB=true;
             }
