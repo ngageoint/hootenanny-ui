@@ -244,7 +244,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
     var _emptyRowCheck = function(row, rowNumber){
         if (row.select('.reset.LayerName').value()==='' ||
             row.select('.reset.Schema').value()==='' ||
-            document.getElementById('ingestfileuploader-' + rowNumber).files.length===0) {
+            row.select('.reset.fileExportType').value()==='') {
             return true;
         } else {
             return false;
@@ -282,7 +282,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
             }
         } else {
             var newLayerName = row.select('.reset.LayerName').value();
-            _exportDatasetJob(row, '.reset.Schema', '.reset.exportExportType', newLayerName, '.reset.bulkExportDatasetFGDBFeatureClasses', function(){
+            _exportDatasetJob(row, newLayerName, function(){
                 rowNumber++;
                 if(rowNumber < rowArray.length){_exportRow(rowArray, rowNumber, modalbg);}
                 else{
@@ -294,26 +294,48 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
     };
 
 
-    var _exportDatasetJob = function(row, schemaElem, exportTypeElem, layerName, fgdbElem, callback){
+    var _exportDatasetJob = function(row, layerName, callback){
         _updateExportText('Exporting ' + layerName);
-        console.log(row,schemaElem,exportTypeElem,layerName,fgdbElem);
-        /*context.hoot().model.export.exportData(row, schemaElem,exportTypeElem,null,layerName,fgdbElem,
-            function(status){
-            if(status.info==='complete'){
-                if(_isCancel === false){
-                    _loadPostProcess(row);
-                    if(callback){callback();}
-                }
-            } else if(status.info==='uploaded'){
-                _jobIds = status.jobids;
-                _mapIds = status.mapids;
-            } else if(status.info === 'failed'){
-                var errorMessage = status.error || 'Export has failed or partially failed. For detail please see Manage->Log.';
-                _updateExportText(errorMessage);
-                _loadPostProcess(row);
-                if(callback){callback();}
+
+        var transType, transName, oTrans;
+
+        transType = row.select('.Schema').value();
+        var comboData = row.select('.Schema').datum();
+
+        for(var i=0; i<comboData.combobox.data.length; i++){
+            var o = comboData.combobox.data[i];
+            if(o.DESCRIPTION === transType){
+                transName = o.NAME;
+                oTrans = o;
+                break;
             }
-        });*/
+        }
+
+        var _fakeContainer = {
+            'outputname': layerName,
+            'exporttype': row.select('.fileExportType').value(),
+            'trans': transType,
+            'transName': transName,
+            'oTrans': oTrans,
+            'appendTemplate': false,
+            'exportTextStatus': row.select('.exportTextStatus').property('checked')
+        };
+
+        var _dataset = { 
+            'name': row.select('.fileExport').value(), 
+            'id': row.select('.fileExport').attr('lyr-id')
+        }
+
+        context.hoot().model.export.exportData(_fakeContainer, _dataset, function(status){
+
+
+            if(status === 'failed'){
+                iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','warning',new Error().stack);
+                console.log('fail');
+            } else {
+                console.log('success');
+            }
+        });
     };
 
 
@@ -692,7 +714,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
                 .attr('placeholder',function(d){return d.placeholder;})
                 .select(function (a) {
                     if(a.type=='fileExport'){
-                        d3.select(this).value(lyr.name);
+                        d3.select(this).value(lyr.name).attr('lyr-id',lyr.id);
                     }
 
                     if(a.type==='LayerName'){

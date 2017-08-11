@@ -13,6 +13,7 @@ Hoot.model.export = function (context)
     var statusTimer;
     var outputname;
     var selectedInput;
+    var transType;
     var selExportTypeDesc;
     //var removeConflationRes;
     var selectedOutType;
@@ -22,12 +23,19 @@ Hoot.model.export = function (context)
     model_export.exportData = function (container, data, callback) {
         _initVariables();
         exportCallback = callback;
-        outputname = container.select('#fileExportOutputName').value() ||
-                container.select('#fileExportOutputName').attr('placeholder');
+        if (container.outputname) { outputname = container.outputname; }
+        else {
+            outputname = container.select('#fileExportOutputName').value() ||
+                        container.select('#fileExportOutputName').attr('placeholder');
+        }
         selectedInput = data.name || outputname;
 
-        selExportTypeDesc = container.select('#fileExportFileType')
+        if (container.exporttype) { selExportTypeDesc = container.exporttype; }
+        else {
+            selExportTypeDesc = container.select('#fileExportFileType')
             .value() || container.select('#fileExportFileType').attr('placeholder');
+        }
+
         var _expType = {
             'File Geodatabase': 'gdb',
             'Shapefile': 'shp',
@@ -38,19 +46,26 @@ Hoot.model.export = function (context)
         };
         selectedOutType = _expType[selExportTypeDesc] || selExportTypeDesc;
 
-        var transType = container.select('#fileExportTranslation').value();
-
-        var comboData = container.select('#fileExportTranslation').datum();
+        var transType = null;
         var transName = null;
         var oTrans = null;
-        for(var i=0; i<comboData.combobox.data.length; i++){
-            var o = comboData.combobox.data[i];
-            if(o.DESCRIPTION === transType){
-                transName = o.NAME;
-                oTrans = o;
-                break;
-            }
 
+        if (container.trans) { 
+            transName = container.transName;
+            oTrans = container.oTrans;
+        } else {
+            transType = container.select('#fileExportTranslation').value();
+
+            var comboData = container.select('#fileExportTranslation').datum();
+
+            for(var i=0; i<comboData.combobox.data.length; i++){
+                var o = comboData.combobox.data[i];
+                if(o.DESCRIPTION === transType){
+                    transName = o.NAME;
+                    oTrans = o;
+                    break;
+                }
+            }
         }
 
         var selectedTranslation = 'translations/' + iD.data.hootConfig.defaultScript;
@@ -79,18 +94,24 @@ Hoot.model.export = function (context)
 
         // Check to see if we are appending to FGDB Template
         var appendTemplate= '';
-        try{
-            appendTemplate=container.select('.cboxAppendFGDBTemplate').select('input').property('checked');
-        } catch (e) {
-            appendTemplate=true;
+        if (container.appendTemplate) { appendTemplate = containerappendTemplate; }
+        else {
+            try{
+                appendTemplate=container.select('.cboxAppendFGDBTemplate').select('input').property('checked');
+            } catch (e) {
+                appendTemplate=true;
+            }
         }
 
         // Check to see if we are export status as text
         var exportTextStatus= '';
-        try{
-            exportTextStatus=container.select('.cboxExportTextStatus').select('input').property('checked');
-        } catch (e) {
-            exportTextStatus=true;
+        if (container.exportTextStatus) { exportTextStatus = containerexportTextStatus; }
+        else {
+            try{
+                exportTextStatus=container.select('.cboxExportTextStatus').select('input').property('checked');
+            } catch (e) {
+                exportTextStatus=true;
+            }
         }
 
         var param = {};

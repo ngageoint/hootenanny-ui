@@ -341,13 +341,14 @@ Hoot.control.utilities.folder = function(context) {
                   } else if(d.type.toLowerCase()==='dataset'){
                       items = [
                          {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
-                         {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'},
-                         {title: 'Export Selected Datasets', icon:'export', click:'bulkexportDataset'}
+                         {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'}
                       ];
 
                       var layerLength = context.hoot().model.layers.getSelectedLayers().length;
 
-                      if(layerLength===1){
+                      if(layerLength > 1){
+                          items.push({title: 'Export Selected Datasets', icon:'export', click:'bulkexportDataset'});
+                      } else if(layerLength===1){
                           // if no reference/secondary layer has been loaded, provide the option
                           if(_.isEmpty(context.hoot().model.layers.getLayers())){
                             items.push(

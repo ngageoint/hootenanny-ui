@@ -275,17 +275,15 @@ Hoot.view.utilities.dataset = function(context)
         _.each(d,function(lyrid){
             var _lyrInfo = {};
             _lyrInfo.id = lyrid;
+            _lyrInfo.name = context.hoot().model.layers.getNameBymapId(lyrid);
+            _exportList.push(_lyrInfo);
             
-            Hoot.model.REST('getMapSize', d,function (sizeInfo) {
+            /*Hoot.model.REST('getMapSize', d,function (sizeInfo) {
                 if(sizeInfo.error){ _lyrInfo.size = -1; }
 
                 _lyrInfo.size = 1*sizeInfo.size_byte;
                 if(_lyrInfo.size > expThreshold) { _lyrInfo.oversized = true; }
-
-                _lyrInfo.name = context.hoot().model.layers.getNameBymapId(lyrid);
-
-                _exportList.push(_lyrInfo);
-            });
+            });*/
         });
         
         Hoot.model.REST('getTranslations', function (trans) {
