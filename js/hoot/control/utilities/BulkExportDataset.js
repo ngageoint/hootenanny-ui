@@ -327,48 +327,19 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
         }
 
         context.hoot().model.export.exportData(_fakeContainer, _dataset, function(status){
-
-
             if(status === 'failed'){
                 iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','warning',new Error().stack);
                 console.log('fail');
+                _updateExportText('FAILURE: ' + layerName + ' was not successfully exported.');
+                if(callback){callback();}
             } else {
                 console.log('success');
+                _updateExportText(layerName + ' has been successfully exported.');
+                if(callback){callback();}
             }
         });
     };
 
-
-    /**
-    * @desc Post processor for a row ingesting.
-    * @param row - ingested row.
-    * @param rowNumber - current row index.
-    * @param modalbg - Form container div.
-    **/
-    var _loadPostProcess = function(row) {
-        var pathname = row.select('.reset.PathName').value();
-        if(pathname===''){pathname=row.select('.reset.PathName').attr('placeholder');}
-        if(pathname==='root'){pathname='';}
-        var pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;
-
-        //update map linking
-        var link = {};
-        link.folderId = pathId;
-        link.mapid=0;
-        link.mapid=0;
-
-        var newLayerName = row.select('.reset.LayerName').value();
-
-        if(newLayerName)
-        {link.mapid =_.pluck(_.filter(context.hoot().model.layers.getAvailLayers(),function(f){return f.name === newLayerName;}),'id')[0] || 0;}
-        if(link.mapid===0){return;}
-        link.updateType='new';
-        context.hoot().model.folders.updateLink(link);
-        link = {};
-        _updateExportText(newLayerName + ' has been successfully uploaded.');
-
-        return true;
-    };
 
     /**
     * @desc Cancels bulk export request.
