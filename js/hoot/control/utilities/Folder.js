@@ -346,7 +346,7 @@ Hoot.control.utilities.folder = function(context) {
 
                       var layerLength = context.hoot().model.layers.getSelectedLayers().length;
 
-                      if(layerLength > 1){
+                      if(layerLength > 1 && layerLength <= 10){
                           items.push({title: 'Export Selected Datasets', icon:'export', click:'bulkexportDataset'});
                       } else if(layerLength===1){
                           // if no reference/secondary layer has been loaded, provide the option
