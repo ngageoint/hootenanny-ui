@@ -408,23 +408,6 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
 
         var newLayerName = row.select('.reset.LayerName').value();
 
-        if(!_.isEmpty(_.filter(_.map(_.pluck(context.hoot().model.layers.getAvailLayers(),'name'),function(l){return l.substring(l.lastIndexOf('|')+1);}),function(f){return f === newLayerName;})))
-        {
-            row.select('.reset.LayerName')
-                .classed('invalidName',true)
-                .attr('title','A layer already exists with this name. Please remove the current layer or select a new name for this layer.');
-            return false;
-        }
-
-        // Check for duplicates within the table
-        var inputLayerNames = _.map(d3.selectAll('.reset.LayerName')[0],function(f){return f.value;});
-        if(inputLayerNames.filter(function(val){return val===row.select('.reset.LayerName').value();}).length > 1){
-            row.select('.reset.LayerName')
-                .classed('invalidName',true)
-                .attr('title','This layer name is already being used in the bulk export process.');
-            return false;            
-        }
-
         var resp = context.hoot().checkForUnallowedChar(row.select('.reset.LayerName').value());
         if(resp !== true){
             row.select('.reset.LayerName')
@@ -689,6 +672,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
                     }
 
                     if(a.type==='LayerName'){
+                        d3.select(this).value(lyr.name);
                         d3.select(this).on('change',function(){
                             _validateInputs();
                         });
