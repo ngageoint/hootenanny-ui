@@ -49,8 +49,8 @@ Hoot.control.export = function (context, sidebar) {
             var exportFormatList = 
               [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
                //{'DESCRIPTION': 'Web Feature Service (WFS)'}, 
-               {'DESCRIPTION': 'Open Street Map (OSM)'},
-               {'DESCRIPTION': 'Open Street Map (PBF)'}];
+               {'DESCRIPTION': 'OpenStreetMap (OSM)'},
+               {'DESCRIPTION': 'OpenStreetMap (PBF)'}];
             if (layer.canExportToOsmApiDb === true)
             {
                 exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
@@ -214,6 +214,8 @@ Hoot.control.export = function (context, sidebar) {
             // Check if output type is File Geodatabase
             if (exportType===''){exportType=d3.select('.fileExportFileType').attr('placeholder');}
             if (transType===''){transType=d3.select('.fileExportTranslation').attr('placeholder');}
+
+            if (transType==='OpenStreetMap.org (OSM)'){d3.select('#fileExportFileType').value('OpenStreetMap (OSM)');}
 
             if(exportType!=='File Geodatabase'){
                 hideFGDB=true;
