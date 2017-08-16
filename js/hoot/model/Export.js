@@ -94,7 +94,7 @@ Hoot.model.export = function (context)
 
         // Check to see if we are appending to FGDB Template
         var appendTemplate= '';
-        if (container.appendTemplate) { appendTemplate = containerappendTemplate; }
+        if (container.appendTemplate) { appendTemplate = container.appendTemplate; }
         else {
             try{
                 appendTemplate=container.select('.cboxAppendFGDBTemplate').select('input').property('checked');
@@ -105,7 +105,7 @@ Hoot.model.export = function (context)
 
         // Check to see if we are export status as text
         var exportTextStatus= '';
-        if (container.exportTextStatus) { exportTextStatus = containerexportTextStatus; }
+        if (container.exportTextStatus) { exportTextStatus = container.exportTextStatus; }
         else {
             try{
                 exportTextStatus=container.select('.cboxExportTextStatus').select('input').property('checked');

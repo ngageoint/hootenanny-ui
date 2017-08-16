@@ -265,9 +265,10 @@ Hoot.view.utilities.dataset = function(context)
     };
 
     hoot_view_utilities_dataset.preparebulkexportDataset = function(d) {
-        var datasetIds = _.pluck(d,'id');
+        var datasets = d.children || d._children;
+        var datasetIds = _.pluck(datasets,'id');
         hoot_view_utilities_dataset.bulkexportDataset(datasetIds);
-    }
+    };
 
     hoot_view_utilities_dataset.bulkexportDataset = function(d) {
         d3.event.stopPropagation();

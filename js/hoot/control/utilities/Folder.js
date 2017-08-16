@@ -442,7 +442,7 @@ Hoot.control.utilities.folder = function(context) {
                                                 context.hoot().control.utilities.importdataset.importDataContainer(e,d);
                                               }); break;
                             case 'addFolder': context.hoot().control.utilities.folder.importFolderContainer(d); break;
-                            case 'exportFolder': context.hoot().view.utilities.dataset.preparebulkexportDataset(_.find(context.hoot().model.folders.getAvailFoldersWithLayers(),function(f){return f.id===d.id;})._children); break;
+                            case 'exportFolder': context.hoot().view.utilities.dataset.preparebulkexportDataset(_.find(context.hoot().model.folders.getAvailFoldersWithLayers(),function(f){return f.id===d.id;})); break;
                             default:
                                 break;
                             }

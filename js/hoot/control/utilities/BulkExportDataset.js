@@ -13,6 +13,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
     var _trans;
 
     var _exportTranslations;
+    var _exportFormatList;
 
     var _isCancel = false;
 
@@ -300,16 +301,14 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
         var _dataset = { 
             'name': row.select('.fileExport').value(), 
             'id': row.select('.fileExport').attr('lyr-id')
-        }
+        };
 
         context.hoot().model.export.exportData(_fakeContainer, _dataset, function(status){
             if(status === 'failed'){
                 iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','warning',new Error().stack);
-                console.log('fail');
                 _updateExportText('FAILURE: ' + layerName + ' was not successfully exported.');
                 if(callback){callback();}
             } else {
-                console.log('success');
                 _updateExportText(layerName + ' has been successfully exported.');
                 if(callback){callback();}
             }
@@ -359,7 +358,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
             }));
 
         d3.select(this).style('width','100%').call(combo);
-    }
+    };
    
     /**
     * @desc Adds new row of ingest input fields.
@@ -390,7 +389,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
                 .attr('row',_rowNum)
                 .attr('placeholder',function(d){return d.placeholder;})
                 .select(function (a) {
-                    if(a.type=='fileExport'){
+                    if(a.type==='fileExport'){
                         d3.select(this).value(lyr.name).attr('lyr-id',lyr.id);
                     }
 
@@ -470,8 +469,6 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
         _exportTranslations = null;
 
         _isCancel = false;
-        _jobIds = null;
-        _mapIds = null;
 
         _rowNum = 0;
         _columns = null;
