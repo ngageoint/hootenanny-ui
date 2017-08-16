@@ -695,18 +695,12 @@ Hoot.tools = function (context) {
     });
 
 
-    bulkexportdataset.on('cancelSaveLayer', function () {
+    bulkexport.on('cancelSaveLayer', function () {
         if(exporting){
             iD.ui.Alert('Can not cancel. Export in progress.','warning',new Error().stack);
             return;
         }
-        exportLayer.deactivate();
         resetAllLayers();
-       /* d3.select('[data-layer=' + activeConflateLayer.name + ']').remove();
-        hoot.addLayer({
-            'name': activeConflateLayer.name,
-            'color': 'orange'
-        });*/
         activeConflateLayer = {};
     });
     

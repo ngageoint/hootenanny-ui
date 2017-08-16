@@ -7,7 +7,7 @@
 //      10 August 2017
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.bulkexportdataset = function(context) {
-    var _events = d3.dispatch('saveLayer', 'cancelSaveLayer');
+    var _events = d3.dispatch('cancelSaveLayer');
     var _instance = {};
 
     var _trans;
@@ -323,6 +323,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
     var _cancelJob = function() {
         _isCancel = true;
         _submitExp.select('span').text('Cancelling Jobs');
+        _updateExportText('Cancelling remaining jobs...');
         _events.cancelSaveLayer();
         _closeContainer();
     };
