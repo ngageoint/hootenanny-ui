@@ -250,5 +250,18 @@ Hoot.model.folders = function (context)
         });
     };
 
+    model_folders.returnDatasetsInFolder = function(folderId){
+        var links = model_folders.getAvailLinks();
+
+        var layerList = _.each(_.map(context.hoot().model.layers.getAvailLayers(), _.clone) , function(element) {
+            _.extend(element, {type:'dataset'});
+            var match = _.find(this,function(e){return e.mapId===element.id;});
+            if(match){_.extend(element,{folderId:match.folderId});}
+            else{_.extend(element,{folderId:0});}
+        },links);
+
+        return _.filter(layerList,function(lyr){return lyr.folderId===folderId;});
+    };
+
     return model_folders;
 };

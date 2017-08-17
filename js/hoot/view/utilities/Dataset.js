@@ -265,7 +265,7 @@ Hoot.view.utilities.dataset = function(context)
     };
 
     hoot_view_utilities_dataset.preparebulkexportDataset = function(d) {
-        var datasets = d.children || d._children;
+        var datasets = context.hoot().model.folders.returnDatasetsInFolder(d.id);
         var datasetIds = _.pluck(datasets,'id');
         hoot_view_utilities_dataset.bulkexportDataset(datasetIds);
     };
