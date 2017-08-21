@@ -40,8 +40,8 @@ Hoot.model.export = function (context)
             'File Geodatabase': 'gdb',
             'Shapefile': 'shp',
             /*'Web Feature Service (WFS)':'wfs',*/
-            'Open Street Map (OSM)':'osm',
-            'Open Street Map (PBF)':'osm.pbf',
+            'OpenStreetMap (OSM)':'osm',
+            'OpenStreetMap (PBF)':'osm.pbf',
             'OSM API Database':'osm_api_db'
         };
         selectedOutType = _expType[selExportTypeDesc] || selExportTypeDesc;
