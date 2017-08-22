@@ -17,6 +17,7 @@ Hoot.tools = function (context) {
         conflate = context.hoot().control.conflate,
         conflicts = context.hoot().control.conflicts,
         exportLayer = context.hoot().control.export,
+        bulkexport = context.hoot().control.utilities.bulkexportdataset,
         hoot = context.hoot(),
         colors = ['violet', 'orange'],
         exporting = false;
@@ -693,6 +694,16 @@ Hoot.tools = function (context) {
         activeConflateLayer = {};
     });
 
+
+    bulkexport.on('cancelSaveLayer', function () {
+        if(exporting){
+            iD.ui.Alert('Can not cancel. Export in progress.','warning',new Error().stack);
+            return;
+        }
+        resetAllLayers();
+        activeConflateLayer = {};
+    });
+    
     /**
     * @desc Export newly merged layer event handler which gets fired from sidebar export control.
     * @param cont - export control container

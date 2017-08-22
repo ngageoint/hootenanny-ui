@@ -346,7 +346,9 @@ Hoot.control.utilities.folder = function(context) {
 
                       var layerLength = context.hoot().model.layers.getSelectedLayers().length;
 
-                      if(layerLength===1){
+                      if(layerLength > 1 && layerLength <= 10){
+                          items.push({title: 'Export Selected Datasets', icon:'export', click:'bulkexportDataset'});
+                      } else if(layerLength===1){
                           // if no reference/secondary layer has been loaded, provide the option
                           if(_.isEmpty(context.hoot().model.layers.getLayers())){
                             items.push(
@@ -382,7 +384,8 @@ Hoot.control.utilities.folder = function(context) {
                                {title:'Delete',icon:'trash',click:'deleteFolder'},
                                {title:'Rename/Move ' + d.name,icon:'info',click:'modifyFolder'},
                                {title:'Add Dataset',icon:'data',click:'addDataset'},
-                               {title:'Add Folder',icon:'folder',click:'addFolder'}
+                               {title:'Add Folder',icon:'folder',click:'addFolder'},
+                               {title:'Export Data in Folder',icon:'export',click:'exportFolder'}
                            ];
                       } else {
                           d3.select('.context-menu').style('display', 'none');
@@ -428,7 +431,8 @@ Hoot.control.utilities.folder = function(context) {
                             case 'renameDataset': context.hoot().view.utilities.dataset.modifyDataset(d); break;
                             case 'prepValidation': showPrepValidationPopup(context.hoot().model.layers.getSelectedLayers()); break;
                             case 'filter': showFilterPopup(context.hoot().model.layers.getSelectedLayers()); break;
-                            case 'taskManager': context.hoot().view.utilities.dataset.createConflationTaskProject(d); break;
+                            case 'taskManager': context.hoot().view.utilities.dataset.createConflationTaskProject(d); break;                            
+                            case 'bulkexportDataset': context.hoot().view.utilities.dataset.bulkexportDataset(context.hoot().model.layers.getSelectedLayers()); break;
 
                             //Folders
                             case 'deleteFolder': context.hoot().view.utilities.dataset.deleteDataset(d,container); break;
@@ -438,6 +442,7 @@ Hoot.control.utilities.folder = function(context) {
                                                 context.hoot().control.utilities.importdataset.importDataContainer(e,d);
                                               }); break;
                             case 'addFolder': context.hoot().control.utilities.folder.importFolderContainer(d); break;
+                            case 'exportFolder': context.hoot().view.utilities.dataset.preparebulkexportDataset(_.find(context.hoot().model.folders.getAvailFolders(),function(f){return f.id===d.id;})); break;
                             default:
                                 break;
                             }
