@@ -251,6 +251,8 @@ iD.ui = function(context) {
                      }
                  });
              })
+            .call(bootstrap.tooltip().title('Right click to select coordinate system.').placement('top'))
+            .append('span')
             .call(iD.ui.Coordinates(context));
 
         /*footer.append('div')
