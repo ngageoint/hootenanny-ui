@@ -34,6 +34,25 @@ Hoot.view.utilities.translation = function(context) {
                     context.hoot().view.utilities.errorlog.reportUIError(d.error);
                     return;
                 }
+                
+                // Split DEFAULT and not to organize DEFAULT on top and alpha for both
+                try {
+                    var dTrans = _.groupBy(d,'DEFAULT');
+                    dTrans.true.sort(function(x,y){return d3.ascending(x.NAME.toLowerCase(),y.NAME.toLowerCase())});
+
+                    if(dTrans.false && dTrans.undefined){ dTrans.undefined.concat(dTrans.false); }
+                    else if(dTrans.false && !dTrans.undefined){ dTrans.undefined = dTrans.false; }
+
+                    if(dTrans.undefined){
+                        dTrans.undefined.sort(function(x,y){return d3.ascending(x.NAME.toLowerCase(),y.NAME.toLowerCase())});
+                    }
+
+                    d = dTrans.true.concat(dTrans.undefined);
+                } catch (eTrans) {
+                    d.sort(function(x,y){ return (x.DEFAULT === true) ? 0 : x.DEFAULT ? -1 : 1; });
+                }
+
+
                 container.selectAll('div').remove();
                 var tla = container.selectAll('div')
                     .data(d)
@@ -41,19 +60,21 @@ Hoot.view.utilities.translation = function(context) {
                 var tla2 = tla.append('div')
                     .classed('col12 fill-white small keyline-bottom', true);
                 var tla3 = tla2.append('span')
-                    /*.attr('.transl')*/
-                    .classed('text-left big col12 fill-white small hoverDiv2 pad1x', true)
-                    .append('a')
-                    .classed('transl', true)
+                    .classed('text-left big col12 fill-white small hoverDiv2', true);
+
+                var tla3A = tla3.append('a')
+                    .classed('transl pad1x', true)
                     .style('position', 'relative')
                     .style('top', '20px')
                     .text(function (d) {
                         if(d.DEFAULT === true){
-                            return d.NAME;      
+                            return d.NAME + '*';
                         }
                         return d.NAME; 
                     })
                     .on('click',function(d){
+                        d3.event.stopPropagation();
+                        d3.event.preventDefault();
                         context.hoot().control.utilities.translation.translationPopup(d);
                     });
                 var tooltip = bootstrap.tooltip()
@@ -61,7 +82,7 @@ Hoot.view.utilities.translation = function(context) {
                     .html('true')
                     .title(function (d) {
                         if(d.DEFAULT === true){
-                            return d.DESCRIPTION;      
+                            return d.DESCRIPTION + ' (Hootenanny Default Translation)';
                         }
                         return d.DESCRIPTION; 
                     });
@@ -69,7 +90,6 @@ Hoot.view.utilities.translation = function(context) {
                     d3.selectAll('a.transl').call(tooltip);
 
                 tla3.append('button')
-                //.classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
                 .style('height', '100%')
                 .on('click', function (n) {
                     d3.event.stopPropagation();
@@ -79,8 +99,8 @@ Hoot.view.utilities.translation = function(context) {
                     if (!r) { return; }
 
 
-                    d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1',false);
-                    d3.select(this).classed('keyline-left keyline-right pad1 row1  col1 fr',true).call(iD.ui.Spinner(context));
+                    d3.select(this).classed('keyline-left fr _icon trash pad2 col1',false);
+                    d3.select(this).classed('keyline-left fr pad1 row1 col1',true).call(iD.ui.Spinner(context));
 
 
                     var transTrashBtn = this;
@@ -107,7 +127,7 @@ Hoot.view.utilities.translation = function(context) {
                 .select(function (sel) {
                     if(sel.DEFAULT === true){
 
-                        d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1', true);
+                        d3.select(this).classed('keyline-left fr _icon x pad2 col1', true);
                         d3.select(this).on('click', function () {
                             d3.event.stopPropagation();
                             d3.event.preventDefault();
@@ -115,7 +135,7 @@ Hoot.view.utilities.translation = function(context) {
                         });
                     }
                     else {
-                        d3.select(this).classed('keyline-left keyline-right fr _icon trash pad2 col1', true);
+                        d3.select(this).classed('keyline-left fr _icon trash pad2 col1', true);
                     }
 
                 });
