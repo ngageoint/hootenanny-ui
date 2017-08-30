@@ -269,7 +269,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 .on('click',_showProgressDetail);
 
             //Create a log output
-            _updateImportText('Starting bulk import process...');
+            _updateImportText('Starting import process...');
 
             _performBulkImport();
         }
@@ -473,7 +473,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         if(inputLayerNames.filter(function(val){return val===row.select('.reset.LayerName').value();}).length > 1){
             row.select('.reset.LayerName')
                 .classed('invalidName',true)
-                .attr('title','This layer name is already being used in the bulk import process.');
+                .attr('title','This layer name is already being used in the multiple dataset import process.');
             return false;            
         }
 
@@ -746,7 +746,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     **/
     var _addRow = function(tbl){
         if(_rowNum>10){
-            iD.ui.Alert('Please limit bulk import to 10 datasets or less.','warning',new Error().stack);
+            iD.ui.Alert('Please limit multiple dataset import to 10 datasets or less.','warning',new Error().stack);
             return;
         }
 
