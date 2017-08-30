@@ -116,7 +116,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .append('div')
             .classed('big pad1y keyline-bottom space-bottom2', true)
             .append('h4')
-            .text('Bulk Import Datasets')
+            .text('Import Multiple Datasets')
             .append('div')
             .classed('fr _icon x point', true)
             .on('click', function () {
@@ -142,6 +142,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .data(_columns).enter()
             .append('th')
             .attr('class',function(d){return d.cl;})
+            .classed('pad0y strong fill-light round-top keyline-bottom', true)
             .text(function(d){return d.label;});
     };
 
@@ -762,7 +763,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             });
         }).enter()
         .append('td')
-        .append('div').classed('contain bulk-import',true).append('input')
+        .append('div').classed('contain bulk-import form-field fill-white small round space-bottom1 contain',true).append('input')
         .attr('class', function(d){return 'reset  bulk-import ' + d.type;})
         .attr('row',_rowNum)
         .attr('placeholder',function(d){return d.placeholder;})
