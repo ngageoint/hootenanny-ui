@@ -589,13 +589,13 @@ Hoot.model.REST = function (command, data, callback, option) {
             // Split DEFAULT and not to organize DEFAULT on top and alpha for both
             try {
                 var dTrans = _.groupBy(resp,'DEFAULT');
-                dTrans.true.sort(function(x,y){return d3.ascending(x.NAME.toLowerCase(),y.NAME.toLowerCase())});
+                dTrans.true.sort(function(x,y){return d3.ascending(x.NAME.toLowerCase(),y.NAME.toLowerCase());});
 
                 if(dTrans.false && dTrans.undefined){ dTrans.undefined.concat(dTrans.false); }
                 else if(dTrans.false && !dTrans.undefined){ dTrans.undefined = dTrans.false; }
 
                 if(dTrans.undefined){
-                    dTrans.undefined.sort(function(x,y){return d3.ascending(x.NAME.toLowerCase(),y.NAME.toLowerCase())});
+                    dTrans.undefined.sort(function(x,y){return d3.ascending(x.NAME.toLowerCase(),y.NAME.toLowerCase());});
                 }
 
                 resp = dTrans.true.concat(dTrans.undefined);
