@@ -54,21 +54,21 @@ Hoot.control.utilities.exportdataset = function(context) {
         var exportFormatList =
           [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
            //{'DESCRIPTION': 'Web Feature Service (WFS)'},
-           {'DESCRIPTION': 'Open Street Map (OSM)'},
-           {'DESCRIPTION': 'Open Street Map (PBF)'}];
+           {'DESCRIPTION': 'OpenStreetMap (OSM)'},
+           {'DESCRIPTION': 'OpenStreetMap (PBF)'}];
         if (_dataset.canExportToOsmApiDb === true)
         {
             exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
         }
 
         var d_form = [{
-            label: 'Translation',
+            label: 'Translation Schema for Output File',
             id: 'fileExportTranslation',
             combobox: {'data':_transCombo, 'command': _populateTranslations },//transCombo,//exportResources,
             placeholder: { 'default': placeHolder, 'command': _getTranslationComboPlaceHolder},
             inputtype:'combobox'
         },  {
-            label: 'Export Status as Text',
+            label: 'Include Hoot Status Field',
             type: 'exportTextStatus',
             inputtype:'checkbox',
             checkbox:'cboxExportTextStatus',
@@ -196,6 +196,8 @@ Hoot.control.utilities.exportdataset = function(context) {
         // Check if output type is File Geodatabase
         if (exportType===''){exportType=d3.select('#fileExportFileType').attr('placeholder');}
         if (transType===''){transType=d3.select('#fileExportTranslation').attr('placeholder');}
+
+        if (transType==='OpenStreetMap.org (OSM)'){d3.select('#fileExportFileType').value('OpenStreetMap (OSM)');}
 
         if(exportType!=='File Geodatabase'){
          hideFGDB=true;

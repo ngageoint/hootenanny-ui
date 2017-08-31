@@ -130,9 +130,32 @@ iD.ui.Coordinates = function(context){
         Xutm = Math.round(Xutm);
         Yutm = Math.round(Yutm);
 
-        return Xutm.toString().concat(' ; ' + Yutm.toString() + ' '+zone.toString()+sn);
+        return zone.toString()+sn + ' ' + Xutm.toString() + 'm E ' + Yutm.toString() + 'm N';
     }
 
+    function UTMtoMGRS(coords, DDtoUTM){
+        var lat = coords[1];
+        var lng = coords[0];
+        var UTM = DDtoUTM(coords).split(' ');
+        var zone = Number((UTM[0]).slice(0, -1));
+        var utmEasting = Number((UTM[1]).slice(0, -1));
+        var utmNorthing = Number((UTM[3]).slice(0, -1));
+        var latBands = 'CDEFGHJKLMNPQRSTUVWXX';
+        var e100kLetters = [ 'ABCDEFGH', 'JKLMNPQR', 'STUVWXYZ' ];
+        var n100kLetters = ['ABCDEFGHJKLMNPQRSTUV', 'FGHJKLMNPQRSTUVABCDE'];
+        var band = latBands.charAt(Math.floor(lat/8+10));
+        var col = Math.floor(utmEasting / 100e3);
+        var e100k = e100kLetters[(zone-1)%3].charAt(col-1);
+        var row = Math.floor(utmNorthing / 100e3) % 20;
+        var n100k = n100kLetters[(zone-1)%2].charAt(row);
+        var easting = utmEasting % 100e3;
+        var northing = utmNorthing % 100e3;
+
+        easting = Number(easting.toFixed(6));
+        northing = Number(northing.toFixed(6));
+
+        return String(zone + band + ' ' + e100k + n100k + ' ' + easting + ' ' + northing);
+    }
 
     function update(selection,coords) {
         if(!context.coordinateDisplay){context.coordinateDisplay='DMS';}
@@ -140,6 +163,7 @@ iD.ui.Coordinates = function(context){
             case 'DMS': selection.text(DDtoDMS(coords)); break;
             case 'DD': selection.text(formatDD(coords)); break;
             case 'UTM': selection.text(DDtoUTM(coords)); break;
+            case 'MGRS': selection.text(UTMtoMGRS(coords, DDtoUTM)); break;
             default: break;
         }
     }

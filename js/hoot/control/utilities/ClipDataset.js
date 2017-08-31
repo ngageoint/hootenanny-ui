@@ -66,20 +66,36 @@ Hoot.control.utilities.clipdataset = function(context) {
         _coordsDiv.append('input').attr('type','text').attr('id','minlat')
             .attr('size',10).classed('export_bound',true).value(minlat);
 
-        _form.append('a').attr('id','clip2bbox').attr('href','#').style('display','block').classed('pad1y',true)
+        var _clipOptions = _form.append('div')
+            .classed('button-wrap joined col12 pad1y', true);
+
+        _clipOptions.append('button')
+            .classed('col6', true).style('border','1px solid #ccc')
+            .append('div')
+            .append('span')
+            .classed('label',true)
+            .attr('id','clip2bbox')
             .text('Clip to Bounding Box')
             .on('click',function(){
+                d3.event.preventDefault();
+                d3.event.stopPropagation();
                 iD.ui.Alert('Click anywhere on the map to start drawing.  Click again to complete the bounding box.','notice');
                 d3.select('#getCoordinatesContainer').classed('hidden',true);
                 context.enter(iD.modes.ClipBoundingBox(context));
             });
-        _form.append('a').attr('id','clip2ve').attr('href','#').style('display','block')
+
+        _clipOptions.append('button')
+            .classed('col6', true).style('border','1px solid #ccc')
+            .append('div')
+            .append('span')
+            .classed('label',true)            
+            .attr('id','clip2ve')
             .text('Use Visual Extent')
             .on('click',function(){
+                d3.event.preventDefault();
+                d3.event.stopPropagation();
                 context.hoot().control.utilities.clipdataset.populateCoordinates(context.map().extent()[1],context.map().extent()[0]);
             });
-
-
 
         var submitExp = ingestDiv.append('div')
             .classed('form-field left ', true);

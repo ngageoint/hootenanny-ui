@@ -66,7 +66,7 @@ Hoot.model.import = function (context)
         }
 
         if(isDefTrans === false && transName != null && transName !== ''){
-            transcriptName = 'customscript/' + transName + '.js';
+            transcriptName = transName + '.js';
         }
 
         var selType = container.select(typeElemId).value();
@@ -152,7 +152,7 @@ Hoot.model.import = function (context)
         }
 
         if(isDefTrans === false && transName != null && transName !== ''){
-            transcriptName = 'customscript/' + transName + '.js';
+            transcriptName = transName + '.js';
         }
 
         var selType = container.select(typeElemId).value();

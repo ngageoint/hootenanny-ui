@@ -216,7 +216,7 @@ iD.ui = function(context) {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
                 //Create context menu to offer bulk option
-                var items = ['DD','DMS','UTM'];
+                var items = ['DD','DMS','UTM', 'MGRS'];
                 d3.select('html').append('div').classed('coordinates-options-menu',true);
 
                  var menuItem =  d3.selectAll('.coordinates-options-menu')
@@ -251,6 +251,8 @@ iD.ui = function(context) {
                      }
                  });
              })
+            .call(bootstrap.tooltip().title('Right click to select coordinate system.').placement('top'))
+            .append('span')
             .call(iD.ui.Coordinates(context));
 
         /*footer.append('div')

@@ -120,7 +120,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             id:'importDirectoryNewFolderName',
             onchange: _validateInput
         }, {
-            label: 'Translation Schema',
+            label: 'Translation Schema of Import File',
             placeholder: 'Select Data Translation Schema',
             id: 'importDirectorySchema',
             combobox: {'data':_importTranslations, 'command': _populateTranslations },

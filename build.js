@@ -20,6 +20,17 @@ function r(f) {
     return read(__dirname + '/data/' + f);
 }
 
+function tryr(f) {
+    var data;
+    try {
+        data = read(__dirname + '/data/' + f);
+    } catch(ex) {
+        //Ignore missing file
+        console.warn('WARN: Missing file ' + f);
+    }
+    return data
+}
+
 function rp(f) {
     return r('presets/' + f);
 }
@@ -296,7 +307,9 @@ fs.writeFileSync('data/data.js', 'iD.data = ' + JSON.stringify({
     en: read('dist/locales/en.json'),
     suggestions: r('name-suggestions.json'),
     addressFormats: r('address-formats.json'),
-    hootConfig: r('hootConfig.json')
+    buildInfo: tryr('buildInfo.json'),
+    hootConfig: r('hootConfig.json'),
+    hootManageTabs: r('hootManageTabs.json')
 }) + ';');
 
 fs.writeFileSync('dist/presets.js', 'iD.data.presets = ' + JSON.stringify({

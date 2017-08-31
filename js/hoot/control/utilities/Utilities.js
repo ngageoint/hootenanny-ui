@@ -13,6 +13,7 @@ Hoot.control.utilities = function (context){
     hoot_control_utilities.modifydataset = Hoot.control.utilities.modifydataset(context);
     hoot_control_utilities.importdataset = Hoot.control.utilities.importdataset(context);
     hoot_control_utilities.bulkimportdataset = Hoot.control.utilities.bulkimportdataset(context);
+    hoot_control_utilities.bulkexportdataset = Hoot.control.utilities.bulkexportdataset(context);    
     hoot_control_utilities.importdirectory = Hoot.control.utilities.importdirectory(context);
     hoot_control_utilities.clipdataset = Hoot.control.utilities.clipdataset(context);
 

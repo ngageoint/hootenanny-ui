@@ -74,7 +74,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
            //{label: 'FGDB Feature Classes', placeholder: '', type: 'bulkImportDatasetFGDBFeatureClasses',readonly:'readonly'},
            {label:'Layer Name', placeholder: 'Save As',  type: 'LayerName'},
            {label:'Path', placeholder: 'root', type: 'PathName', combobox:{data:folderList, command:_folderListComboHandler }},
-           {label:'Translation', placeholder: 'Select Translation Schema', type: 'Schema', combobox: {data:_importTranslations, command:_translationComboHandler}},
+           {label:'Import Translation Schema', placeholder: 'Select Translation Schema', type: 'Schema', combobox: {data:_importTranslations, command:_translationComboHandler}},
            {label:'', placeholder:'',type:'deleteRow',icon:'trash'}
         ];
 

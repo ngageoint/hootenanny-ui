@@ -585,6 +585,24 @@ Hoot.model.REST = function (command, data, callback, option) {
             if (error) {
                 return callback(_alertError(error, 'Get Translations failed! For detailed log goto Manage->Log'));
             }
+
+            // Split DEFAULT and not to organize DEFAULT on top and alpha for both
+            try {
+                var dTrans = _.groupBy(resp,'DEFAULT');
+                dTrans.true.sort(function(x,y){return d3.ascending(x.NAME.toLowerCase(),y.NAME.toLowerCase());});
+
+                if(dTrans.false && dTrans.undefined){ dTrans.undefined.concat(dTrans.false); }
+                else if(dTrans.false && !dTrans.undefined){ dTrans.undefined = dTrans.false; }
+
+                if(dTrans.undefined){
+                    dTrans.undefined.sort(function(x,y){return d3.ascending(x.NAME.toLowerCase(),y.NAME.toLowerCase());});
+                }
+
+                resp = dTrans.true.concat(dTrans.undefined);
+            } catch (eTrans) {
+                resp.sort(function(x,y){ return (x.DEFAULT === true) ? 0 : x.DEFAULT ? -1 : 1; });
+            }
+
             if(callback){callback(resp);}
         });
     };
