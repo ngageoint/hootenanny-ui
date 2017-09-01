@@ -596,9 +596,12 @@ Hoot.model.REST = function (command, data, callback, option) {
 
                 if(dTrans.undefined){
                     dTrans.undefined.sort(function(x,y){return d3.ascending(x.NAME.toLowerCase(),y.NAME.toLowerCase());});
+                    resp = dTrans.true.concat(dTrans.undefined);
+                } else {
+                    resp = dTrans.true;
                 }
 
-                resp = dTrans.true.concat(dTrans.undefined);
+
             } catch (eTrans) {
                 resp.sort(function(x,y){ return (x.DEFAULT === true) ? 0 : x.DEFAULT ? -1 : 1; });
             }
