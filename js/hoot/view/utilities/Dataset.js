@@ -81,7 +81,7 @@ Hoot.view.utilities.dataset = function(context)
 
     var _createContextMenu = function(type) {
         if(type==='bulkimport'){
-                            var items = [{title:'Bulk Import',icon:'plus',action:'bulkImport'}];
+                            var items = [{title:'Import Multiple Datasets',icon:'plus',action:'bulkImport'}];
                 d3.select('html').append('div').attr('class', 'dataset-options-menu');
 
                  var menuItem =  d3.selectAll('.dataset-options-menu')

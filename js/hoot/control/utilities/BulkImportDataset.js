@@ -116,7 +116,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .append('div')
             .classed('big pad1y keyline-bottom space-bottom2', true)
             .append('h4')
-            .text('Bulk Import Datasets')
+            .text('Import Multiple Datasets')
             .append('div')
             .classed('fr _icon x point', true)
             .on('click', function () {
@@ -142,6 +142,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             .data(_columns).enter()
             .append('th')
             .attr('class',function(d){return d.cl;})
+            .classed('pad0y strong fill-light round-top keyline-bottom', true)
             .text(function(d){return d.label;});
     };
 
@@ -268,7 +269,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 .on('click',_showProgressDetail);
 
             //Create a log output
-            _updateImportText('Starting bulk import process...');
+            _updateImportText('Starting import process...');
 
             _performBulkImport();
         }
@@ -472,7 +473,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         if(inputLayerNames.filter(function(val){return val===row.select('.reset.LayerName').value();}).length > 1){
             row.select('.reset.LayerName')
                 .classed('invalidName',true)
-                .attr('title','This layer name is already being used in the bulk import process.');
+                .attr('title','This layer name is already being used in the multiple dataset import process.');
             return false;            
         }
 
@@ -745,7 +746,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     **/
     var _addRow = function(tbl){
         if(_rowNum>10){
-            iD.ui.Alert('Please limit bulk import to 10 datasets or less.','warning',new Error().stack);
+            iD.ui.Alert('Please limit multiple dataset import to 10 datasets or less.','warning',new Error().stack);
             return;
         }
 
@@ -762,7 +763,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             });
         }).enter()
         .append('td')
-        .append('div').classed('contain bulk-import',true).append('input')
+        .append('div').classed('contain bulk-import form-field fill-white small round space-bottom1 contain',true).append('input')
         .attr('class', function(d){return 'reset  bulk-import ' + d.type;})
         .attr('row',_rowNum)
         .attr('placeholder',function(d){return d.placeholder;})
