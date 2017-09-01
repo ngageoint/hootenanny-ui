@@ -49,8 +49,10 @@ Hoot.view.utilities.translation = function(context) {
                     .style('position', 'relative')
                     .style('top', '20px')
                     .text(function (d) {
-                        if(d.DEFAULT === true){
-                            return d.NAME + '*';
+                        if(d.DEFAULT){
+                            if(d.DEFAULT === true){
+                                return d.NAME + '*';
+                            }
                         }
                         return d.NAME; 
                     })
