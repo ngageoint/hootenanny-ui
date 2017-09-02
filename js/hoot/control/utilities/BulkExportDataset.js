@@ -105,7 +105,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
             .append('div')
             .classed('big pad1y keyline-bottom space-bottom2', true)
             .append('h4')
-            .text('Bulk Export Datasets')
+            .text('Export Multiple Datasets')
             .append('div')
             .classed('fr _icon x point', true)
             .on('click', function () {
@@ -131,6 +131,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
             .data(_columns).enter()
             .append('th')
             .attr('class',function(d){return d.cl;})
+            .classed('pad0y strong fill-light round-top keyline-bottom', true)
             .text(function(d){return d.label;});
     };
 
@@ -217,7 +218,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
                 .on('click',_showProgressDetail);
 
             //Create a log output
-            _updateExportText('Starting bulk export process...');
+            _updateExportText('Starting export process...');
 
             _performBulkExport();
         }
@@ -370,7 +371,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
         }
 
         _.each(exportList,function(lyr){
-            tbl.append('tr').attr('id','row-' + _rowNum)
+            tbl.append('tr').attr('id','row-' + _rowNum).style('border-bottom','1px lightgray solid')
                 .selectAll('td')
                 .data(function(row, i) {
                     // evaluate column objects against the current row
@@ -384,7 +385,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
                 })
                 .enter()
                 .append('td')
-                .append('div').classed('contain bulk-export',true).append('input')
+                .append('div').classed('contain bulk-export form-field fill-white small round space-bottom1',true).append('input')
                 .attr('class', function(d){return 'reset  bulk-export ' + d.type;})
                 .attr('row',_rowNum)
                 .attr('placeholder',function(d){return d.placeholder;})

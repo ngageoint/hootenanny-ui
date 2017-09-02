@@ -750,7 +750,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             return;
         }
 
-        tbl.append('tr').attr('id','row-' + _rowNum)
+        tbl.append('tr').attr('id','row-' + _rowNum).style('border-bottom','1px lightgray solid')
         .selectAll('td')
         .data(function(row, i) {
             // evaluate column objects against the current row
@@ -763,7 +763,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             });
         }).enter()
         .append('td')
-        .append('div').classed('contain bulk-import form-field fill-white small round space-bottom1 contain',true).append('input')
+        .append('div').classed('contain bulk-import form-field fill-white small round space-bottom1',true).append('input')
         .attr('class', function(d){return 'reset  bulk-import ' + d.type;})
         .attr('row',_rowNum)
         .attr('placeholder',function(d){return d.placeholder;})
