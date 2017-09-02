@@ -585,7 +585,8 @@ Hoot.model.REST = function (command, data, callback, option) {
             if (error) {
                 return callback(_alertError(error, 'Get Translations failed! For detailed log goto Manage->Log'));
             }
-            if(callback){callback(resp);}
+
+            if (callback) { callback(resp.sort(Hoot.hoot().sortTranslations)); }
         });
     };
 
