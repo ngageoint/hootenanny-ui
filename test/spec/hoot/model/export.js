@@ -78,6 +78,7 @@ describe('iD.Hoot.Model.Export', function(){
                     }
 
                     return mockMethods;
+                }
                 
             };
             

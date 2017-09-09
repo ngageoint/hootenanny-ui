@@ -413,5 +413,19 @@ Hoot.hoot = function (context) {
         alert('Hootenanny will not function normally under ' + bInfo.name + ' v. ' + bInfo.version);
     }
 
+
+    hoot.sortTranslations = function(a, b) {
+        // Set undefined to false
+        if (!a.DEFAULT) a.DEFAULT = false;
+        if (!b.DEFAULT) b.DEFAULT = false;
+        // We check DEFAULT property, putting true first
+        if (a.DEFAULT !== b.DEFAULT) {
+            return (a.DEFAULT) ? -1 : 1;
+        } else {
+            // We only get here if the DEFAULT prop is equal
+            return d3.ascending(a.NAME.toLowerCase(), b.NAME.toLowerCase());
+        }
+    };
+
     return hoot;
 };
