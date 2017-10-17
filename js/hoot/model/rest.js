@@ -313,6 +313,8 @@ Hoot.model.REST = function (command, data, callback, option) {
             rest.jobStatusInterval = option.queryInterval;
         }
 
+        data.CONFLATION_COMMAND = data.CONFLATION_COMMAND || 'conflate';
+
         data.USER_EMAIL = iD.data.hootConfig.userEmail;
         d3.json('/hoot-services/job/conflation/execute')
             .header('Content-Type', 'application/json')
