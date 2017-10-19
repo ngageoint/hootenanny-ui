@@ -446,10 +446,10 @@ Hoot.control.conflate = function (context,sidebar) {
         }
 
         // Check for differential conflation AND enabled...
-        _conflationCommand = 'conflate';
+        var _conflationCommand = 'conflate';
         try {
-            _roadEngine = _.find(_instance.confLastSetVals, {id: "hoot_road_opt_engine"}).value;
-            _roadEnabled = _.find(_instance.confLastSetVals, {id: "hoot_enable_road_options"}).checked;
+            var _roadEngine = _.find(_instance.confLastSetVals, {id: 'hoot_road_opt_engine'}).value;
+            var _roadEnabled = _.find(_instance.confLastSetVals, {id: 'hoot_enable_road_options'}).checked;
             if(_roadEngine === 'Differential' && _roadEnabled === true) {
                 _conflationCommand = 'diff-conflate';
             }
