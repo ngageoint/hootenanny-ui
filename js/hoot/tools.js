@@ -149,7 +149,7 @@ Hoot.tools = function (context) {
     * @param layerName - layer name
     * @param advOpts - Advanced options list
     **/
-    function preConflation(a, layerName, advOpts) {
+    function preConflation(a, layerName, advOpts, conflationCommand) {
         // refactored code to use map id instead of map name
         var data = {};
         data.INPUT1 = view.getLayer(0).id.toString();
@@ -198,6 +198,8 @@ Hoot.tools = function (context) {
         //Disable till swap approval
         data.GENERATE_REPORT = a.select('.isGenerateReport').value();
         data.COLLECT_STATS = a.select('.isCollectStats').value();
+
+        data.CONFLATION_COMMAND = conflationCommand;
 
         var n = (new Date()).getTime();
         data.TIME_STAMP = '' + n;
@@ -453,7 +455,7 @@ Hoot.tools = function (context) {
     * @param layerName - new merged layer
     * @param advOptions - selected advanced options.
     **/
-    conflate.on('merge', function (a, layerName, advOptions) {
+    conflate.on('merge', function (a, layerName, advOptions, conflationCommand) {
 
         var layers = inputLayers();
         // get map id
@@ -486,7 +488,7 @@ Hoot.tools = function (context) {
             //     'Cookie Cutter & Horizontal':'Horizontal'
             //   };
 
-            var data = preConflation(a, layerName, advOptions);
+            var data = preConflation(a, layerName, advOptions, conflationCommand);
             //var type = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
             //var conflationExecType = (type === 'Horizontal') ? 'CookieCutterConflate' : 'Conflate';
             //Bug #6397
