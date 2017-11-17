@@ -91,6 +91,12 @@ Hoot.control.utilities.exportdataset = function(context) {
             inputtype:'text',
             text: dataset.name || 'Output Name',
             onchange: _validateOutputName
+        }, {
+            label: 'Set tag overrides?',
+            id: 'exportTagOverrides',
+            inputtype: 'link',
+            link: 'linkTagOverrides',
+            onclick: _overrideTagsHandler
         }];
 
 
@@ -109,6 +115,10 @@ Hoot.control.utilities.exportdataset = function(context) {
         meta.button = d_btn;
 
         _container = context.hoot().ui.formfactory.create('body', meta);
+    };
+
+    var _overrideTagsHandler = function() {
+        window.alert('Under construction');
     };
 
     /**
