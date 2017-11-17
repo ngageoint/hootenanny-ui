@@ -7,6 +7,7 @@
 // Modifications:
 //      03 Feb. 2016
 //      31 May  2016 OSM API Database export type -- bwitham
+//      17 Nov  2017 Removed export and consolidated into ExportDataset
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.tools = function (context) {
     var loadingLayer = {},
@@ -16,7 +17,6 @@ Hoot.tools = function (context) {
         view = context.hoot().control.view,
         conflate = context.hoot().control.conflate,
         conflicts = context.hoot().control.conflicts,
-        exportLayer = context.hoot().control.export,
         bulkexport = context.hoot().control.utilities.bulkexportdataset,
         hoot = context.hoot(),
         colors = ['violet', 'orange'],
@@ -382,37 +382,6 @@ Hoot.tools = function (context) {
         context.hoot().model.layers.changeVisibility(layerId);
     });
 
-    conflicts.on('exportData', function () {
-        var mapid = activeConflateLayer.mapId;
-        Hoot.model.REST('getMapSize', mapid,function (sizeInfo) {
-//
-            if(sizeInfo.error){
-                return;
-            }
-            var expThreshold = 1*iD.data.hootConfig.export_size_threshold;
-            var totalSize = 1*sizeInfo.size_byte;
-
-            if(totalSize > expThreshold)
-            {
-                var thresholdInMb = Math.floor((1*expThreshold)/1000000);
-                var res = window.confirm('Export data size is greater than ' + thresholdInMb
-                    +'MB and export may encounter problem.' +
-                    ' Do you wish to continue?');
-                if(res === false) {
-
-                    return;
-                }
-            }
-
-            conflicts.deactivate();
-            context.hoot().mode('browse');
-            Hoot.model.REST('getTranslations', function (trans) {
-                exportLayer.activate(activeConflateLayer, trans);
-            });
-        });
-
-
-    });
     conflicts.on('addData', function () {
         conflicts.deactivate();
         context.hoot().mode('browse');
@@ -681,21 +650,6 @@ Hoot.tools = function (context) {
             }
         }
     });
-    exportLayer.on('cancelSaveLayer', function () {
-        if(exporting){
-            iD.ui.Alert('Can not cancel. Export in progress.','warning',new Error().stack);
-            return;
-        }
-        exportLayer.deactivate();
-        resetAllLayers();
-       /* d3.select('[data-layer=' + activeConflateLayer.name + ']').remove();
-        hoot.addLayer({
-            'name': activeConflateLayer.name,
-            'color': 'orange'
-        });*/
-        activeConflateLayer = {};
-    });
-
 
     bulkexport.on('cancelSaveLayer', function () {
         if(exporting){
@@ -706,29 +660,5 @@ Hoot.tools = function (context) {
         activeConflateLayer = {};
     });
     
-    /**
-    * @desc Export newly merged layer event handler which gets fired from sidebar export control.
-    * @param cont - export control container
-    * @param data - exported layer meta data
-    **/
-    exportLayer.on('saveLayer', function (cont, data) {
-        //var exportType = cont.select('.reset.fileExportFileType.combobox-input').value();
-        exporting = true;
-        var spinner = cont.append('span').attr('class', 'spinner-hoot').call(iD.ui.Spinner(context));
-        context.hoot().model.export.exportData(cont, data, function (status) {
-            if(status === 'failed'){
-                iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','error',new Error().stack);
-            }
-
-            /*if(exportType && exportType === 'Web Feature Service (WFS)'){
-                var tblContainer = d3.select('#wfsdatasettable');
-                context.hoot().view.utilities.wfsdataset.populateWFSDatasets(tblContainer);
-            }*/
-
-            spinner.remove();
-            exportLayer.deactivate();
-            resetAllLayers();
-        });
-    });
     conflationCheck();
 };
