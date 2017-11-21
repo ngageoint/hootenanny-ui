@@ -68,7 +68,7 @@ Hoot.model.export = function (context)
             }
         }
 
-        var selectedTranslation = 'translations/' + iD.data.hootConfig.defaultScript;
+        var selectedTranslation = iD.data.hootConfig.defaultScript;
 
      // Checks to see if it is default translation and if so use the path specified
 
