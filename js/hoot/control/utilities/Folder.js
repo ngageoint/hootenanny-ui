@@ -171,6 +171,8 @@ Hoot.control.utilities.folder = function(context) {
                       else{return d.id || (d.id = ++i);}
                   });
 
+              console.log(nodes);
+
               var nodeEnter = node.enter().append('g')
                   .attr('class', 'node')
                   .attr('transform', function() { return 'translate(' + 0 + ',' + source.x0 + ')'; })
@@ -183,12 +185,12 @@ Hoot.control.utilities.folder = function(context) {
                   .attr('width', function(){return '100%';})
                   .style('fill', fillColor)
                   .attr('class', rectClass)
-                .on('click', click);
+                  .on('click', click);
 
           nodeEnter.filter(function(d){return d.type==='dataset';}).append('text')
               .classed('dsizeTxt',true)
               .style('fill',fontColor)
-            .attr('dy',3.5)
+              .attr('dy',3.5)
               .attr('dx',function(){
                   return '98%';
               })
@@ -204,19 +206,26 @@ Hoot.control.utilities.folder = function(context) {
                   } while(Math.abs(_size) >= 1000 && u < units.length - 1);
                   return _size.toFixed(1)+' '+units[u];
             });
-
+              // add date added  & last accessed date for each dataset
               if(container.attr('id')==='datasettable'){
                  nodeEnter.filter(function(d){return d.type==='dataset';}).append('text')
                       .style('fill',fontColor)
                       .attr('dy',3.5)
-                    .attr('dx',function(){
-                        return '75%';
-                    })
-                    .attr('text-anchor','end')
-                    .text(function(d) {
-                        return d.date;
-                    });
-              }
+                      .attr('dx',function(){ return '80%';})
+                      .attr('text-anchor','end')
+                      .text(function(d) {
+                          return d.date;
+                      });
+                  nodeEnter.filter(function(d) { return d.type ==='dataset';})
+                      .append('text')
+                      .style('fill', fontColor)
+                      .attr('dy', 3.5)
+                      .attr('dx', function() { return '50%'})
+                      .attr('text.anchor', 'end')
+                      .text(function(d) {
+                          return d.lastAccessed;
+                      });
+              };
 
               nodeEnter.append('text')
                   .style('fill',fontColor)
