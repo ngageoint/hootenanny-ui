@@ -146,6 +146,8 @@ Hoot.model.export = function (context)
         param.USER_EMAIL = iD.data.hootConfig.userEmail;
         param.append = appendTemplate.toString();
         param.textstatus = exportTextStatus.toString();
+        param.tagoverrides = context.hoot().control.utilities.exportdataset.getOverrideList();
+
         d3.json('/hoot-services/job/export/execute')
             .header('Content-Type', 'application/json')
             .post(JSON.stringify(param), function (error, data) {

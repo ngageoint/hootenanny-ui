@@ -24,8 +24,7 @@ Hoot.control.utilities.exportdataset = function(context) {
     }
 
     _instance.setOverrideList = function(tagList){
-        _overrideList = tagList;
-        console.log(tagList);
+        _overrideList = tagList;        
     };
 
     /**
@@ -123,6 +122,8 @@ Hoot.control.utilities.exportdataset = function(context) {
         meta.title = (dataset.name || 'Export Dataset');
         meta.form = d_form;
         meta.button = d_btn;
+
+        _instance.setOverrideList([]);
 
         _container = context.hoot().ui.formfactory.create('body', meta);
     };
