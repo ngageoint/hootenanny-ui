@@ -17,6 +17,16 @@ Hoot.control.utilities.exportdataset = function(context) {
     var _dataset;
     var _transCombo;
 
+    var _overrideList = {};
+
+    _instance.getOverrideList = function(){
+        return _overrideList;
+    }
+
+    _instance.setOverrideList = function(tagList){
+        _overrideList = tagList;
+        console.log(tagList);
+    };
 
     /**
     * @desc Entry point where it creates form.
@@ -118,7 +128,7 @@ Hoot.control.utilities.exportdataset = function(context) {
     };
 
     var _overrideTagsHandler = function() {
-        window.alert('Under construction');
+        context.hoot().control.utilities.settagoverrides.setTagOverridesContainer();
     };
 
     /**
