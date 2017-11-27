@@ -18,7 +18,14 @@ Hoot.control.utilities.settagoverrides = function(context) {
     * @param trans - Translations list.
     **/
     _instance.setTagOverridesContainer = function() {
-        var tagList = {'attribution':'','security:resource_owner':'','security:dissemination:control:*':'','source:non_spatial_source:type':'','source':'copyright','source':''};
+        var tagList = [
+            {'key':'attribution','value':''},
+            {'key':'security:resource_owner','value':''},
+            {'key':'security:dissemination:control:*','value':''},
+            {'key':'source:non_spatial_source:type','value':''},
+            {'key':'source:copyright','value':''},
+            {'key':'source','value':''}
+        ];
         _reset();
         _createContainer(tagList);
     };
@@ -32,7 +39,7 @@ Hoot.control.utilities.settagoverrides = function(context) {
 
         _columns = [
             {label:'Tag', placeholder: 'Tag', type: 'tagName'},
-            {label:'Value', placeholder: 'Value', type: 'tagValue'},
+            {label:'Value', placeholder: 'Leave Blank to Remove Tag on Export', type: 'tagValue'},
             {label:'', placeholder:'',type:'deleteRow',icon:'trash'}
         ];
 
@@ -114,7 +121,10 @@ Hoot.control.utilities.settagoverrides = function(context) {
         
         // Add row for each dataset
         var _rowContainer = d3.select('#tagOverrideTable').select('tbody');
-        _addRow(_rowContainer, tagList);
+        
+        _.each(tagList,function(tag){
+            _addRow(_rowContainer, tag);
+        });
 
         _isCancel = false;
         _submitExp = ingestDiv.append('div')
@@ -142,6 +152,7 @@ Hoot.control.utilities.settagoverrides = function(context) {
     var _submitClickHandler = function() {
         // If in progress, check to cancel
         _submitTags();
+        _modalbg.remove();
     };
         
     /**
@@ -158,17 +169,22 @@ Hoot.control.utilities.settagoverrides = function(context) {
     var _submitTags = function(){
         //Loop through each row and treat as separate function
         var rowArray = d3.select('#tagOverrideTable').selectAll('tr[id^="row-"]')[0];
-        var rowNo = 0;
-        //_exportRow(rowArray,rowNo, _modalbg);
-        console.log(rowArray,rowNo);
-        context.hoot().control.utilities.exportdataset.setOverrideList({'a':'a'});
+
+        _tagList = [];
+
+        _.each(rowArray,function(r){
+            var _key = d3.select(r).select('.tagName').value();
+            var _value = d3.select(r).select('.tagValue').value();
+           _tagList.push({'key':_key,'value':_value});
+        });
+        context.hoot().control.utilities.exportdataset.setOverrideList(_tagList);
     };
 
     /**
     * @desc Adds new row of ingest input fields.
     * @param tbl - table div.
     **/
-    var _addRow = function(tbl){
+    var _addRow = function(tbl, tag){
         if(_rowNum>10){
             iD.ui.Alert('Please limit multiple dataset import to 10 datasets or less.','warning',new Error().stack);
             return;
@@ -192,11 +208,16 @@ Hoot.control.utilities.settagoverrides = function(context) {
         .attr('row',_rowNum)
         .attr('placeholder',function(d){return d.placeholder;})
         .select(function (a) {
-            if(a.type==='LayerName'){
-                d3.select(this).on('change',function(){
-                    _validateInputs();
-                });
+            if(tag !== undefined){
+                if (a.type === 'tagName') {
+                    d3.select(this).attr('value', tag.key);
+                }
+
+                if (a.type === 'tagValue') {
+                    d3.select(this).attr('value', tag.value);
+                }
             }
+            
 
             if (a.readonly){
                 d3.select(this).attr('readonly',true);
@@ -213,24 +234,6 @@ Hoot.control.utilities.settagoverrides = function(context) {
                             var rowid = this.id.replace('delete','');
                             d3.select('#'+rowid).remove();
                         });
-                } else {
-                    d3.select(this.parentNode)
-                        .append('span')
-                        .classed('point pin-right pad0x hidden', true)
-                        .call(iD.svg.Icon('#icon-folder'))
-                        .attr('id', 'ingestfileuploaderspancontainer-'+ _rowNum)
-                        .append('input')
-                        .attr('id', 'ingestfileuploader-'+ _rowNum)
-                        .attr('type', 'file')
-                        .attr('multiple', 'true')
-                        .attr('accept', '.shp,.shx,.dbf,.prj,.osm,.zip')
-                        .classed('point pin-top', true)
-                        .style({
-                            'text-indent': '-9999px',
-                            'width': '31px',
-                            'height': '31px'
-                        })
-                        .on('change', _multipartHandler);
                 }
             }
 
