@@ -171,8 +171,6 @@ Hoot.control.utilities.folder = function(context) {
                       else{return d.id || (d.id = ++i);}
                   });
 
-              console.log(nodes);
-
               var nodeEnter = node.enter().append('g')
                   .attr('class', 'node')
                   .attr('transform', function() { return 'translate(' + 0 + ',' + source.x0 + ')'; })
@@ -223,7 +221,13 @@ Hoot.control.utilities.folder = function(context) {
                       .attr('dx', function() { return '50%'})
                       .attr('text.anchor', 'end')
                       .text(function(d) {
-                          return d.lastAccessed;
+                          console.log(d.date);
+                          var lastAccessed = d.lastAccessed;
+                          var timeAgo = lastAccessed.replace(/[-:]/g, "");
+                          console.log(timeAgo);
+                          timeAgo = moment(timeAgo).fromNow();
+                          console.log(timeAgo);
+                          return timeAgo;
                       });
               };
 

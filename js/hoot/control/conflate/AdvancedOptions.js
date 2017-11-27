@@ -244,6 +244,8 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
             if(d3.select('#CustomConflationForm').selectAll('.invalid-input')[0].length===0){
                 //Capture current values
                 parent.confLastSetVals = [];
+                console.log(parent);
+                console.log(parent.confLastSetVals);
                 _.each(d3.select('#CustomConflationForm').selectAll('form').selectAll('input')[0],function(ai){
                     var selAI = d3.select('#'+ai.id);
                     parent.confLastSetVals.push({id:ai.id,type:ai.type, checked:ai.checked, value:ai.value,
