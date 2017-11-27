@@ -221,12 +221,9 @@ Hoot.control.utilities.folder = function(context) {
                       .attr('dx', function() { return '50%'})
                       .attr('text.anchor', 'end')
                       .text(function(d) {
-                          console.log(d.date);
-                          var lastAccessed = d.lastAccessed;
-                          var timeAgo = lastAccessed.replace(/[-:]/g, "");
-                          console.log(timeAgo);
+                          var lastAccessed = d.lastAccessed,
+                              timeAgo = lastAccessed.replace(/[-:]/g, "");
                           timeAgo = moment(timeAgo).fromNow();
-                          console.log(timeAgo);
                           return timeAgo;
                       });
               };
