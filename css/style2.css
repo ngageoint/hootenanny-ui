@@ -571,3 +571,15 @@ option.importError {
 	background-color: rgba(255.51.0,1);
 	font-weight: bold;
 }
+
+#datasettableHeader {
+  padding: 3px 20px;
+  background-color: #444;
+  color: white;
+  width: 100%;
+  height: 25px;
+}
+
+.expired {
+  background-color: #ff0000 !important;
+}
