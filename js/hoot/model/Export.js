@@ -114,6 +114,18 @@ Hoot.model.export = function (context)
             }
         }
 
+        var tagList = context.hoot().control.utilities.exportdataset.getOverrideList();
+        var tagoverrides = '';
+        if(tagList.length > 0){
+            tagoverrides = '{';
+            _.each(tagList, function(tag){
+                tagoverrides += '\\"' + tag.key + '\\":\\"' + tag.value + '\\",';
+            });
+            tagoverrides = tagoverrides.slice(0,-1) + '}';
+            console.log(tagoverrides);
+        }
+
+
         var param = {};
         param.translation = selectedTranslation;
         //OSM API db override - Datasets are written to an OSM API database as OSM, so translation
@@ -139,6 +151,7 @@ Hoot.model.export = function (context)
             }
 
         }
+
         param.inputtype = 'db';
         param.input = selectedInput;
         param.outputtype = selectedOutType;
@@ -146,7 +159,7 @@ Hoot.model.export = function (context)
         param.USER_EMAIL = iD.data.hootConfig.userEmail;
         param.append = appendTemplate.toString();
         param.textstatus = exportTextStatus.toString();
-        param.tagoverrides = context.hoot().control.utilities.exportdataset.getOverrideList();
+        param.tagoverrides = tagoverrides;
 
         d3.json('/hoot-services/job/export/execute')
             .header('Content-Type', 'application/json')
