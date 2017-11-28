@@ -139,6 +139,16 @@ Hoot.control.utilities.folder = function(context) {
             });
         }
 
+        function updateLastAccessed(dateActive, node) {
+          // change this so it's 2 months, then we delete when it's 3
+           if (dateActive === '6 days ago') {
+            d3.select(node.parentNode).classed('expired', true);
+            d3.select(node).append('img')
+                .attr('src', '../../../img/warning.png')
+                .style('opacity', 1.0)
+           }
+        }
+
         function update(source) {
 
             // Compute the flattened node list. TODO use d3.layout.hierarchy.
@@ -224,6 +234,7 @@ Hoot.control.utilities.folder = function(context) {
                           var lastAccessed = d.lastAccessed,
                               timeAgo = lastAccessed.replace(/[-:]/g, "");
                           timeAgo = moment(timeAgo).fromNow();
+                          updateLastAccessed(timeAgo, this);
                           return timeAgo;
                       });
               };
