@@ -141,11 +141,34 @@ Hoot.control.utilities.folder = function(context) {
 
         function updateLastAccessed(dateActive, node) {
           // change this so it's 2 months, then we delete when it's 3
-           if (dateActive === '6 days ago') {
-            d3.select(node.parentNode).classed('expired', true);
-            d3.select(node).append('img')
-                .attr('src', '../../../img/warning.png')
-                .style('opacity', 1.0)
+           if (dateActive === '8 days ago') {
+            var row = d3.select(node.parentNode);
+            row.classed('expiring', true)
+                .append('g').append('svg:foreignObject')
+                .attr('class', 'expiring')
+                .attr('transform', function(d) {
+                    var dd = d.depth-1;
+                    var dy=772+(11*dd);
+                    return 'translate('+ dy +',-9)'; 
+                });
+            // need to determine method to add tooltip
+            // var tooltip = d3.select(document.body)
+            // .append('div')
+            // .attr('class', 'tooltip-inner radial-menu-tooltip');
+
+            // d3.selectAll(node).append("div")
+            //     .style("width", "100px")
+            //     .text('This dataset is about to expire. Please use it soon or else it will be deleted')
+            //     .on("mouseover", function(d){ return tooltip.style('hidden')})
+            //       .on("mousemove", function(){return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
+            //       .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+            // .append('svg:title').text('This dataset is about to expire. Please use it soon or else it will be deleted');
+            // d3.select(node)
+            //   .call(bootstrap.tooltip()
+            //       .placement('left')
+            //       .html(true)
+            //       .title('This dataset is about to expire. Please use it soon or else it will be deleted')
+            //   );
            }
         }
 

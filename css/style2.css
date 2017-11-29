@@ -580,6 +580,9 @@ option.importError {
   height: 25px;
 }
 
-.expired {
-  background-color: #ff0000 !important;
+foreignObject.expiring {
+  background: transparent url(img/timer.png) no-repeat 0 0;
+  height: 18px;
+  width: 18px;
+  background-size: 100%;
 }
