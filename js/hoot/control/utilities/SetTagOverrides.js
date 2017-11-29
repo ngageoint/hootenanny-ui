@@ -21,7 +21,10 @@ Hoot.control.utilities.settagoverrides = function(context) {
         var tagList = [
             {'key':'attribution','value':''},
             {'key':'security:resource_owner','value':''},
-            {'key':'security:dissemination:control:*','value':''},
+            {'key':'security:classification','value':''},
+            {'key':'security:dissemination:control:ic','value':''},
+            {'key':'security:dissemination:control:non_ic','value':''},
+            {'key':'security:releasability','value':''},
             {'key':'source:non_spatial_source:type','value':''},
             {'key':'source:copyright','value':''},
             {'key':'source','value':''}
