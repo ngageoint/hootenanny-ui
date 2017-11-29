@@ -315,7 +315,6 @@ dist/iD.js: \
 	js/hoot/control/conflate/advanced_options/SelectionDisplay.js \
 	js/hoot/control/conflate/advanced_options/SelectionRetriever.js \
 	js/hoot/control/Import.js \
-	js/hoot/control/Export.js \
 	js/hoot/control/Validation.js \
 	js/hoot/control/View.js \
 	js/hoot/control/Conflicts.js \
@@ -333,6 +332,7 @@ dist/iD.js: \
 	js/hoot/control/utilities/ImportDataset.js \
 	js/hoot/control/utilities/BulkImportDataset.js \
 	js/hoot/control/utilities/BulkExportDataset.js \
+	js/hoot/control/utilities/SetTagOverrides.js \
 	js/hoot/control/utilities/ImportDirectory.js \
 	js/hoot/control/utilities/ClipDataset.js \
 	js/hoot/control/conflicts/Actions.js \

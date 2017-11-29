@@ -384,11 +384,11 @@ span.logo{
 	font-weight: bold;
 	font-style: italic;
 }
- div.bulk-import, div.bulk-export {
+ div.bulk-import, div.bulk-export, div.tag-override {
  	padding-right: 10px;
  }
 
- input.bulk-import, input.bulk-export {
+ input.bulk-import, input.bulk-export, input.tag-override {
  	padding-right: 10px;
  	width:100%;
  	border: 1px lightgray;

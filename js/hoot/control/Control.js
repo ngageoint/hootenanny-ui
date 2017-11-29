@@ -21,7 +21,6 @@ Hoot.control = function (context){
 
         hoot_control.conflate = Hoot.control.conflate(context, sidebar);
         hoot_control.import = Hoot.control.import(context, sidebar);
-        hoot_control.export = Hoot.control.export(context, sidebar);
         hoot_control.view = Hoot.control.view(context, sidebar);
         hoot_control.conflicts = Hoot.control.conflicts(context, sidebar);
         hoot_control.validation = Hoot.control.validation(context, sidebar);
