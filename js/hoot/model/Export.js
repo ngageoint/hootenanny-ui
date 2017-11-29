@@ -114,17 +114,9 @@ Hoot.model.export = function (context)
             }
         }
 
-        var tagList = context.hoot().control.utilities.exportdataset.getOverrideList();
         var tagoverrides = '';
-        if(tagList.length > 0){
-            tagoverrides = '{';
-            _.each(tagList, function(tag){
-                tagoverrides += '\\"' + tag.key + '\\":\\"' + tag.value + '\\",';
-            });
-            tagoverrides = tagoverrides.slice(0,-1) + '}';
-            console.log(tagoverrides);
-        }
-
+        tagoverrides = JSON.stringify(context.hoot().control.utilities.exportdataset.getOverrideList());
+        console.log('### Override: ' + tagoverrides);
 
         var param = {};
         param.translation = selectedTranslation;

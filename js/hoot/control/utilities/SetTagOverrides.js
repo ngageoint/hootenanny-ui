@@ -173,13 +173,14 @@ Hoot.control.utilities.settagoverrides = function(context) {
         //Loop through each row and treat as separate function
         var rowArray = d3.select('#tagOverrideTable').selectAll('tr[id^="row-"]')[0];
 
-        _tagList = [];
+        _tagList = {};
 
         _.each(rowArray,function(r){
             var _key = d3.select(r).select('.tagName').value();
             var _value = d3.select(r).select('.tagValue').value();
-           _tagList.push({'key':_key,'value':_value});
+           _tagList[_key] = _value;
         });
+
         context.hoot().control.utilities.exportdataset.setOverrideList(_tagList);
     };
 
