@@ -101,7 +101,7 @@ Hoot.control.utilities.exportdataset = function(context) {
             text: dataset.name || 'Output Name',
             onchange: _validateOutputName
         }, {
-            label: 'Set tag overrides?',
+            label: 'Set tag overrides',
             id: 'exportTagOverrides',
             inputtype: 'link',
             link: 'linkTagOverrides',

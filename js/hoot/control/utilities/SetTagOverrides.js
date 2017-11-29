@@ -1,8 +1,6 @@
 Hoot.control.utilities.settagoverrides = function(context) {
-    var _events = d3.dispatch('cancelSaveLayer');
+    var _events = d3.dispatch();
     var _instance = {};
-
-    var _isCancel = false;
 
     var _rowNum = 0;
     var _columns;
@@ -13,12 +11,7 @@ Hoot.control.utilities.settagoverrides = function(context) {
 
     var _submitExp;
 
-    /**
-    * @desc Entry point where it creates form.
-    * @param trans - Translations list.
-    **/
-    _instance.setTagOverridesContainer = function() {
-        var tagList = [
+    var _defaultList = [
             {'key':'attribution','value':''},
             {'key':'security:resource_owner','value':''},
             {'key':'security:classification','value':''},
@@ -29,6 +22,13 @@ Hoot.control.utilities.settagoverrides = function(context) {
             {'key':'source:copyright','value':''},
             {'key':'source','value':''}
         ];
+
+    /**
+    * @desc Entry point where it creates form.
+    * @param trans - Translations list.
+    **/
+    _instance.setTagOverridesContainer = function() {
+        var tagList = _defaultList;
         _reset();
         _createContainer(tagList);
     };
@@ -41,7 +41,7 @@ Hoot.control.utilities.settagoverrides = function(context) {
         _rowNum = 0;
 
         _columns = [
-            {label:'Tag', placeholder: 'Tag', type: 'tagName'},
+            {label:'Tag', placeholder: 'Tag', type: 'tagName',combobox: {data: tagList, command:_tagListComboHandler}},
             {label:'Value', placeholder: 'Leave Blank to Remove Tag on Export', type: 'tagValue'},
             {label:'', placeholder:'',type:'deleteRow',icon:'trash'}
         ];
@@ -50,7 +50,7 @@ Hoot.control.utilities.settagoverrides = function(context) {
         var ingestDiv = _createFormFrame(_modalbg);
         _form = _createForm(ingestDiv);
         _createTableHeader();
-        _createTableBody(ingestDiv, tagList);
+        _createTableBody(ingestDiv);
     };
 
 
@@ -119,17 +119,24 @@ Hoot.control.utilities.settagoverrides = function(context) {
     * @desc Creates table body.
     * @param ingestDiv - ingest form div.
     **/
-    var _createTableBody = function(ingestDiv, tagList) {
+    var _createTableBody = function(ingestDiv) {
         _table.append('tbody');
         
         // Add row for each dataset
         var _rowContainer = d3.select('#tagOverrideTable').select('tbody');
         
-        _.each(tagList,function(tag){
-            _addRow(_rowContainer, tag);
-        });
+        // If there are existing tags, add rows
+        var _previousTags = context.hoot().control.utilities.exportdataset.getOverrideList();
 
-        _isCancel = false;
+        if(!_.isEmpty(_previousTags)){
+           _.each(_previousTags, function(value, key){
+               var _tag = {'key':key,'value':value};
+               _addRow(_rowContainer,_tag);
+            });
+        } else {
+            _addRow(_rowContainer);
+        }
+        
         _submitExp = ingestDiv.append('div')
             .classed('form-field col12 left ', true);
 
@@ -153,20 +160,29 @@ Hoot.control.utilities.settagoverrides = function(context) {
     * @desc Click handler for request.
     **/
     var _submitClickHandler = function() {
-        // If in progress, check to cancel
-        _submitTags();
-        _modalbg.remove();
+        var dups = _checkTags();
+        if(dups.length === 0){
+            _submitTags();
+            _modalbg.remove();
+        } else {
+            iD.ui.Alert('Please remove duplicate tags: ' + JSON.stringify(dups).replace(/[\[\]"']+/g,'')  + '. ','error',new Error().stack);
+        }
     };
         
-    /**
-    * @desc changes button to close
-    **/
-    var _closeContainer = function() {
-        _submitExp.select('span')
-            .text('Close')
-            .on('click',function(){
-                 _modalbg.remove();
-            });
+    var _checkTags = function(){
+        //check for duplicate tags
+
+        var rowArray = d3.select('#tagOverrideTable').selectAll('tr[id^="row-"]')[0];
+
+        _tags = [];
+
+        _.each(rowArray,function(r){
+            var _key = d3.select(r).select('.tagName').value();
+            _tags.push(_key);
+        });
+
+        const duplicates = _.filter(_tags, (value, index, iteratee) => _.includes(iteratee, value, index + 1));
+        return duplicates;
     };
 
     var _submitTags = function(){
@@ -175,10 +191,13 @@ Hoot.control.utilities.settagoverrides = function(context) {
 
         _tagList = {};
 
+        //Remove blank rows
         _.each(rowArray,function(r){
             var _key = d3.select(r).select('.tagName').value();
             var _value = d3.select(r).select('.tagValue').value();
-           _tagList[_key] = _value;
+            if(_key !== ''){
+                _tagList[_key] = _value;
+            }            
         });
 
         context.hoot().control.utilities.exportdataset.setOverrideList(_tagList);
@@ -221,7 +240,6 @@ Hoot.control.utilities.settagoverrides = function(context) {
                     d3.select(this).attr('value', tag.value);
                 }
             }
-            
 
             if (a.readonly){
                 d3.select(this).attr('readonly',true);
@@ -252,14 +270,35 @@ Hoot.control.utilities.settagoverrides = function(context) {
         _rowNum++;
     };
 
+    var _tagListComboHandler = function(a) {
+        var comboTagList = d3.combobox()
+            .data(_.map(a.combobox.data, function (n) {
+                return {
+                    value: n.key,
+                    title: n.key
+                };
+            }));
+
+
+        d3.select(this)
+            .style('width', '100%')
+            .call(comboTagList);
+    };
+
+    var _tagListChangeHandler = function(){
+        var selRowNum = d3.select(this.parentElement.parentElement).select('input').attr('row');
+
+        d3.select('.reset.Schema[row="' + selRowNum + '"]').value('');
+        var selectedTag = d3.select(this).value();
+        console.log(selectedTag);
+    };
+
+
+
     /**
     * @desc Reset global variables.
     **/
     var _reset = function() {
-        _trans = null;
-
-        _isCancel = false;
-
         _rowNum = 0;
         _columns = null;
 
