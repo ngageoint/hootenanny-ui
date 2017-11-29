@@ -116,7 +116,6 @@ Hoot.model.export = function (context)
 
         var tagoverrides = '';
         tagoverrides = JSON.stringify(context.hoot().control.utilities.exportdataset.getOverrideList());
-        console.log('### Override: ' + tagoverrides);
 
         var param = {};
         param.translation = selectedTranslation;

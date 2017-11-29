@@ -174,14 +174,14 @@ Hoot.control.utilities.settagoverrides = function(context) {
 
         var rowArray = d3.select('#tagOverrideTable').selectAll('tr[id^="row-"]')[0];
 
-        _tags = [];
+        var _tags = [];
 
         _.each(rowArray,function(r){
             var _key = d3.select(r).select('.tagName').value();
             _tags.push(_key);
         });
 
-        const duplicates = _.filter(_tags, (value, index, iteratee) => _.includes(iteratee, value, index + 1));
+        var duplicates = _.filter(_tags, function(value, index, iteratee) {return _.includes(iteratee, value, index + 1);});
         return duplicates;
     };
 
@@ -189,7 +189,7 @@ Hoot.control.utilities.settagoverrides = function(context) {
         //Loop through each row and treat as separate function
         var rowArray = d3.select('#tagOverrideTable').selectAll('tr[id^="row-"]')[0];
 
-        _tagList = {};
+        var _tagList = {};
 
         //Remove blank rows
         _.each(rowArray,function(r){
@@ -290,7 +290,6 @@ Hoot.control.utilities.settagoverrides = function(context) {
 
         d3.select('.reset.Schema[row="' + selRowNum + '"]').value('');
         var selectedTag = d3.select(this).value();
-        console.log(selectedTag);
     };
 
 

@@ -21,7 +21,7 @@ Hoot.control.utilities.exportdataset = function(context) {
 
     _instance.getOverrideList = function(){
         return _overrideList;
-    }
+    };
 
     _instance.setOverrideList = function(tagList){
         _overrideList = tagList;        
