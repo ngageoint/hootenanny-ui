@@ -16,6 +16,7 @@ Hoot.control.utilities = function (context){
     hoot_control_utilities.bulkexportdataset = Hoot.control.utilities.bulkexportdataset(context);    
     hoot_control_utilities.importdirectory = Hoot.control.utilities.importdirectory(context);
     hoot_control_utilities.clipdataset = Hoot.control.utilities.clipdataset(context);
+    hoot_control_utilities.settagoverrides = Hoot.control.utilities.settagoverrides(context);
 
     return hoot_control_utilities;
 };

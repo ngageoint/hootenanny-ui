@@ -349,7 +349,7 @@ Hoot.control.conflicts = function (context, sidebar) {
             .on('click', function () {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
-                    _events.exportData();
+                    context.hoot().view.utilities.dataset.exportDataset(_confData,null);
             });
         _reviewOptions.append('input')
             .attr('type', 'submit')
