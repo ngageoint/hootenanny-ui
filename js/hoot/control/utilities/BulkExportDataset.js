@@ -51,10 +51,10 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
         _exportTranslations = trans.filter(function(d) {return d.CANEXPORT===true;});
 
         _exportFormatList = 
-            [   {'DESCRIPTION': 'File Geodatabase'}, 
-                {'DESCRIPTION': 'Shapefile'},
-                {'DESCRIPTION': 'Open Street Map (OSM)'},
-                {'DESCRIPTION': 'Open Street Map (PBF)'}
+            [   {'DESCRIPTION': 'File Geodatabase', 'VALUE': 'gdb'}, 
+                {'DESCRIPTION': 'Shapefile', 'VALUE': 'shp'},
+                {'DESCRIPTION': 'OpenStreetMap (OSM)', 'VALUE': 'osm'},
+                {'DESCRIPTION': 'OpenStreetMap (PBF)', 'VALUE': 'osm.pbf'}
             ];
 
         _rowNum = 0;
@@ -63,7 +63,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
             {label:'Dataset', placeholder: 'Dataset', type: 'fileExport', readonly:'readonly'},
             {label:'Export Translation Schema', readonly:'readonly', placeholder: 'OpenStreetMap.org (OSM)', type: 'Schema', combobox: {data:_exportTranslations, command:_translationComboHandler}},
             {label:'Export Hoot Status (OSM Only)', type: 'exportTextStatus', checkbox: true},
-            {label:'Export Format', placeholder:'Open Street Map (OSM)',type:'fileExportType',combobox: {data:_exportFormatList, command:_formatComboHandler}},
+            {label:'Export Format', placeholder:'OpenStreetMap (OSM)',readonly:'readonly',type:'fileExportType',combobox: {data:_exportFormatList, command:_formatComboHandler}},
             {label:'', placeholder:'',type:'deleteRow',icon:'trash'}
         ];
 
@@ -354,7 +354,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
             .data(_.map(a.combobox.data,function(n){
                 return {
                     value: n.DESCRIPTION,
-                    title: n.DESCRIPTION
+                    title: n.VALUE
                 };
             }));
 
