@@ -21,7 +21,7 @@ pipeline {
             steps {
                 // Checkout hootenanny
                 git url: 'https://github.com/ngageoint/hootenanny', branch: 'develop'
-                sh "git sumbodule init; git submodule update; cd hoot-ui; git checkout ${env.BRANCH_NAME}"
+                sh "git submodule init; git submodule update; cd hoot-ui; git checkout ${env.BRANCH_NAME}"
             }
         }
         stage("Vagrant Up") {
