@@ -41,7 +41,7 @@ pipeline {
                 expression { return params.npm }
             }
             steps {
-                sh "vagrant ssh ${params.Box} -c 'cd hoot; npm cache clear; rm -rf node_modules; npm dedupe; make && npm test'"
+                sh "vagrant ssh ${params.Box} -c 'cd hoot/hoot-ui; npm cache clear; rm -rf node_modules; npm dedupe; make && npm test'"
             }
         }
         stage("Cucumber") {
