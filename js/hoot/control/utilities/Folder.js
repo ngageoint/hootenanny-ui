@@ -10,7 +10,6 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.folder = function(context) {
     var selectedLayerIDs = [];
-    var moment;
     var hoot_control_utilities_folder = {};
 
     hoot_control_utilities_folder.wrap = function(container) {
@@ -150,7 +149,10 @@ Hoot.control.utilities.folder = function(context) {
                     var dy=772+(11*dd);
                     return 'translate('+ dy +',-9)'; 
                 });
-            var tooltip = d3.select('#datasettable').append('div').attr('class', 'tooltip-old-dataset').text('This dataset has not been used in a while.');
+            var tooltip = d3.select('#datasettable')
+                .append('div')
+                .attr('class', 'tooltip-old-dataset')
+                .text('This dataset has not been used in a while.');
             d3.selectAll('g.node.expiring')
                 .on('mousemove', function(){
                     tooltip
