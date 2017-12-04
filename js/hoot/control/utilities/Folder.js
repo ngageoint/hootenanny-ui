@@ -375,7 +375,6 @@ Hoot.control.utilities.folder = function(context) {
                       d3.event.preventDefault();
                       return;
                   } else if(d.type.toLowerCase()==='dataset'){
-                    console.log(context.hoot().model.layers.getSelectedLayers());
                       items = [
                          {title:'Delete (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'trash',click:'deleteDataset'},
                          {title:'Move (' + context.hoot().model.layers.getSelectedLayers().length +')',icon:'info',click:'moveDataset'}
