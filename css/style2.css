@@ -586,3 +586,21 @@ foreignObject.expiring {
   width: 18px;
   background-size: 100%;
 }
+
+.tooltip-old-dataset {
+    pointer-events:none;
+    opacity:0;
+    transition: opacity 0.3s;
+}
+
+div.tooltip-old-dataset {
+    color: white;
+    font-size: 10;
+    font-weight: normal;
+    background: #0000008a;
+    position: absolute;
+    max-width: 240px;
+    text-align:center;
+    padding: 5px;
+    border-radius:4px 4px 4px 4px;
+}

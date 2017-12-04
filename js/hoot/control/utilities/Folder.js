@@ -149,36 +149,17 @@ Hoot.control.utilities.folder = function(context) {
                     var dy=772+(11*dd);
                     return 'translate('+ dy +',-9)'; 
                 });
-            // need to determine method to add tooltip
-            console.log(this);
-            // var tooltip = d3.select(document.body)
-            // .append('div')
-            // .attr('class', 'tooltip-inner radial-menu-tooltip');
-
-            // d3.selectAll(node).append("div")
-            //     .style("width", "100px")
-            //     .text('This dataset is about to expire. Please use it soon or else it will be deleted')
-            //     .on("mouseover", function(d){ return tooltip.style('hidden')})
-            //       .on("mousemove", function(){return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
-            //       .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
-            // .append('svg:title').text('This dataset is about to expire. Please use it soon or else it will be deleted');
-            // d3.select(node)
-            //   .call(bootstrap.tooltip()
-            //       .placement('left')
-            //       .html(true)
-            //       .title('This dataset is about to expire. Please use it soon or else it will be deleted')
-            //   );
-        };
-
-        function deleteOldDatasets(oldData, selNode) {
-                var data = {};
-                data.dataset = oldData;
-                data.selNode = selNode.parentNode;
-                data.datasets2remove = oldData;
-                data.id = oldData.id;
-                data.i = 0;
-                data.type = oldData.type;
-                context.hoot().model.layers.deleteLayer(data, context.hoot().view.utilities.dataset._deleteLayerCallback);
+            var tooltip = d3.select('#datasettable').append('div').attr('class', 'tooltip-old-dataset').text("This dataset hasn't been used in a while.");
+            d3.selectAll('g.node.expiring')
+                .on('mousemove', function(){
+                    tooltip
+                        .style("left", Math.max(0, d3.event.pageX - 200) + 'px')
+                        .style("top", (d3.event.pageY - 50) + 'px')
+                        .style('opacity', '0.9')
+                })
+                .on("mouseout", function () {
+                    return tooltip.style('opacity', 0);
+                });
         }
 
         function update(source) {
@@ -267,13 +248,8 @@ Hoot.control.utilities.folder = function(context) {
                                 timeAgo = lastAccessed.replace(/[-:]/g, "");
                             dateActive = moment(timeAgo).fromNow();
                             // show warning if dataset hasn't been accessed in 2 months
-                            // if (dateActive === '2 months ago') {
-                            if (dateActive === '13 days ago') {
-                                updateLastAccessed(this);
-                            // delete dataset if it hasn't been accessed in 3 months
-                            } else if (dateActive === '3 months ago') {
-                                deleteOldDatasets(d, this);
-                            }
+                            var oldData = dateActive.split(' ')[1] === 'months' && dateActive.split(' ')[0] >= 2;
+                            if (oldData) {updateLastAccessed(this)};
                           return dateActive;
                       });
               };
