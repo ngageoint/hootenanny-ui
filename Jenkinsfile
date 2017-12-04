@@ -11,10 +11,28 @@ pipeline {
             steps {
                 // Attempt to destroy exiting VM but don't stop job if not there
                 sh "vagrant destroy -f ${params.Box} || true"
+                cleanWs()
+
+                // Configure environment
+                sh 'export WORDS_HOME=/fouo/ubuntu'
             }
-        }   
+        }
+        stage('Clone Repos') {
+            steps {
+                // Checkout hootenanny
+                git url: 'https://github.com/ngageoint/hootenanny', branch: 'develop'
+                sh "cd hoot-ui; git checkout ${env.BRANCH_NAME}"
+            }
+        }
         stage("Vagrant Up") {
             steps {
+                sh '''
+                    cp LocalConfig.pri.orig LocalConfig.pri
+                    echo "QMAKE_CXXFLAGS += -Werror" >> LocalConfig.pri
+                    sed -i s/"QMAKE_CXX=g++"/"#QMAKE_CXX=g++"/g LocalConfig.pri
+                    sed -i s/"#QMAKE_CXX=ccache g++"/"QMAKE_CXX=ccache g++"/g LocalConfig.pri
+                '''
+
                 sh "vagrant up ${params.Box} --provider aws"
             }       
         }
@@ -23,13 +41,7 @@ pipeline {
                 expression { return params.npm }
             }
             steps {
-                //sh "vagrant ssh ${params.Box} -c 'cd hoot; npm cache clear; rm -rf node_modules; npm dedupe; make && npm test'"
-                sh '''
-                    npm cache clear
-                    rm -rf node_modules
-                    npm dedupe
-                    make && npm test
-                '''
+                sh "vagrant ssh ${params.Box} -c 'cd hoot; npm cache clear; rm -rf node_modules; npm dedupe; make && npm test'"
             }
         }
         stage("Cucumber") {
@@ -37,7 +49,7 @@ pipeline {
                 expression { return params.cucumber }
             }
             steps {
-                echo 'Cucumber tests'
+                sh "vagrant ssh ${params.Box} -c 'cd hoot; source ./SetupEnv.sh; scripts/jenkins/TestPullRequest_ui.sh'"
             }
         }
     }
