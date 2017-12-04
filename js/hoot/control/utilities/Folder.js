@@ -6,10 +6,11 @@
 //      03 Feb. 2016
 //      15 Apr. 2016 eslint updates -- Sisskind
 //      31 May  2016 OSM API Database export type -- bwitham
+//      4  Dec  2017 Add table headers and warnings for old datasets   
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.folder = function(context) {
     var selectedLayerIDs = [];
-
+    var moment;
     var hoot_control_utilities_folder = {};
 
     hoot_control_utilities_folder.wrap = function(container) {
@@ -149,15 +150,15 @@ Hoot.control.utilities.folder = function(context) {
                     var dy=772+(11*dd);
                     return 'translate('+ dy +',-9)'; 
                 });
-            var tooltip = d3.select('#datasettable').append('div').attr('class', 'tooltip-old-dataset').text("This dataset hasn't been used in a while.");
+            var tooltip = d3.select('#datasettable').append('div').attr('class', 'tooltip-old-dataset').text('This dataset has not been used in a while.');
             d3.selectAll('g.node.expiring')
                 .on('mousemove', function(){
                     tooltip
-                        .style("left", Math.max(0, d3.event.pageX - 200) + 'px')
-                        .style("top", (d3.event.pageY - 50) + 'px')
-                        .style('opacity', '0.9')
+                        .style('left', Math.max(0, d3.event.pageX - 200) + 'px')
+                        .style('top', (d3.event.pageY - 50) + 'px')
+                        .style('opacity', '0.9');
                 })
-                .on("mouseout", function () {
+                .on('mouseout', function () {
                     return tooltip.style('opacity', 0);
                 });
         }
@@ -241,18 +242,18 @@ Hoot.control.utilities.folder = function(context) {
                       .append('text')
                       .style('fill', fontColor)
                       .attr('dy', 3.5)
-                      .attr('dx', function() { return '50%'})
+                      .attr('dx', function() { return '50%'; })
                       .attr('text.anchor', 'end')
                       .text(function(d) {
                             var lastAccessed = d.lastAccessed,
-                                timeAgo = lastAccessed.replace(/[-:]/g, "");
-                            dateActive = moment(timeAgo).fromNow();
+                                timeAgo = lastAccessed.replace(/[-:]/g, '');
+                            var dateActive = moment(timeAgo).fromNow();
                             // show warning if dataset hasn't been accessed in 2 months
                             var oldData = dateActive.split(' ')[1] === 'months' && dateActive.split(' ')[0] >= 2;
-                            if (oldData) {updateLastAccessed(this)};
+                            if (oldData) {updateLastAccessed(this); }
                           return dateActive;
                       });
-              };
+              }
 
               nodeEnter.append('text')
                   .style('fill',fontColor)

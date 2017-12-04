@@ -77,13 +77,13 @@ Hoot.view.utilities.dataset = function(context)
         .attr('id','datasettable')
             .classed('col12 fill-white small strong row10 overflow keyline-all', true);
 
-        var datasetColHeaders = [{title: "Dataset", class: '14%'}, {title: 'Last Accessed', class: '7%'}, {title: 'Import Date', class: '6%'}, {title: 'Size', class: '1%'}];
+        var datasetColHeaders = [{title: 'Dataset', class: '14%'}, {title: 'Last Accessed', class: '7%'}, {title: 'Import Date', class: '6%'}, {title: 'Size', class: '1%'}];
         table.insert('div').attr('id', 'datasettableHeader')
             .append('span').selectAll('th')
             .data(datasetColHeaders)
             .enter().append('th')
-            .attr('style', function(d){ return "width:" + d.class})
-            .text(function(d) { return d.title });
+            .attr('style', function(d){ return 'width:' + d.class;})
+            .text(function(d) { return d.title; });
 
         table.call(hoot_view_utilities_dataset.populateDatasetsSVG);
     };
@@ -132,8 +132,8 @@ Hoot.view.utilities.dataset = function(context)
     };
 
     hoot_view_utilities_dataset.deleteDataset = function(d,container){
-        d3.event.stopPropagation();
-        d3.event.preventDefault();
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
 
         var warningMsg = d.type ==='folder'? 'folder and all data?' : 'dataset?';
         if(!window.confirm('Are you sure you want to remove the selected ' + warningMsg)){return;}
