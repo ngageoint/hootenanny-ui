@@ -145,7 +145,7 @@ Hoot.control.utilities.folder = function(context) {
                 .append('g').append('svg:foreignObject')
                 .attr('class', 'expiring')
                 .attr('y', '-9px')
-                .attr('x', function(d){ return '48%'}; );
+                .attr('x', function(d){ return '48%';} );
 
             d3.selectAll('g.node.expiring')
                 .on('mousemove', function(){
