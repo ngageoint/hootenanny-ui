@@ -144,6 +144,18 @@ Hoot.ui.hootformbase = function ()
                         if(a.hidden){
                             field.select('label').classed('hidden',a.hidden);
                         }
+                    } else if(a.inputtype === 'link'){
+                        var linkHtml = '<a class="pad1x pad0y round-top ' + a.link + '" style="opacity: 1;">' + a.label + '</a>';
+                        field.html(linkHtml);
+                        field.classed('keyline-all',false);
+
+                        if(a.onclick) {
+                            field.on('click',a.onclick);
+                        }
+
+                        if(a.hidden){
+                            field.select('label').classed('hidden',a.hidden);
+                        }
                     }  else {
                         _createDefaultTextField(a, field);
                     }

@@ -68,7 +68,7 @@ Hoot.model.export = function (context)
             }
         }
 
-        var selectedTranslation = 'translations/' + iD.data.hootConfig.defaultScript;
+        var selectedTranslation = iD.data.hootConfig.defaultScript;
 
      // Checks to see if it is default translation and if so use the path specified
 
@@ -114,6 +114,9 @@ Hoot.model.export = function (context)
             }
         }
 
+        var tagoverrides = '';
+        tagoverrides = JSON.stringify(context.hoot().control.utilities.exportdataset.getOverrideList());
+
         var param = {};
         param.translation = selectedTranslation;
         //OSM API db override - Datasets are written to an OSM API database as OSM, so translation
@@ -139,6 +142,7 @@ Hoot.model.export = function (context)
             }
 
         }
+
         param.inputtype = 'db';
         param.input = selectedInput;
         param.outputtype = selectedOutType;
@@ -146,6 +150,8 @@ Hoot.model.export = function (context)
         param.USER_EMAIL = iD.data.hootConfig.userEmail;
         param.append = appendTemplate.toString();
         param.textstatus = exportTextStatus.toString();
+        param.tagoverrides = tagoverrides;
+
         d3.json('/hoot-services/job/export/execute')
             .header('Content-Type', 'application/json')
             .post(JSON.stringify(param), function (error, data) {

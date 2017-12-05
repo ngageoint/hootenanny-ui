@@ -17,6 +17,15 @@ Hoot.control.utilities.exportdataset = function(context) {
     var _dataset;
     var _transCombo;
 
+    var _overrideList = {};
+
+    _instance.getOverrideList = function(){
+        return _overrideList;
+    };
+
+    _instance.setOverrideList = function(tagList){
+        _overrideList = tagList;        
+    };
 
     /**
     * @desc Entry point where it creates form.
@@ -91,6 +100,12 @@ Hoot.control.utilities.exportdataset = function(context) {
             inputtype:'text',
             text: dataset.name || 'Output Name',
             onchange: _validateOutputName
+        }, {
+            label: 'Set tag overrides',
+            id: 'exportTagOverrides',
+            inputtype: 'link',
+            link: 'linkTagOverrides',
+            onclick: _overrideTagsHandler
         }];
 
 
@@ -108,7 +123,13 @@ Hoot.control.utilities.exportdataset = function(context) {
         meta.form = d_form;
         meta.button = d_btn;
 
+        _instance.setOverrideList([]);
+
         _container = context.hoot().ui.formfactory.create('body', meta);
+    };
+
+    var _overrideTagsHandler = function() {
+        context.hoot().control.utilities.settagoverrides.setTagOverridesContainer();
     };
 
     /**
