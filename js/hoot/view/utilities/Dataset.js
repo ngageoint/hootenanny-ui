@@ -79,7 +79,7 @@ Hoot.view.utilities.dataset = function(context)
 
         var datasetColHeaders = [{title: 'Dataset', class: '14%'}, {title: 'Last Accessed', class: '7%'}, {title: 'Import Date', class: '6%'}, {title: 'Size', class: '1%'}];
         table.insert('div').attr('id', 'datasettableHeader')
-            .append('span').selectAll('th')
+            .selectAll('th')
             .data(datasetColHeaders)
             .enter().append('th')
             .attr('style', function(d){ return 'width:' + d.class;})
