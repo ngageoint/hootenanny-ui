@@ -144,15 +144,9 @@ Hoot.control.utilities.folder = function(context) {
             row.classed('expiring', true)
                 .append('g').append('svg:foreignObject')
                 .attr('class', 'expiring')
-                .attr('transform', function(d) {
-                    var dd = d.depth-1;
-                    var dy=772+(11*dd);
-                    return 'translate('+ dy +',-9)'; 
-                });
-            var tooltip = d3.select('#datasettable')
-                .append('div')
-                .attr('class', 'tooltip-old-dataset')
-                .text('This dataset has not been used in a while.');
+                .attr('y', '-9px')
+                .attr('x', function(d){ return '48%'});
+
             d3.selectAll('g.node.expiring')
                 .on('mousemove', function(){
                     tooltip
@@ -161,8 +155,13 @@ Hoot.control.utilities.folder = function(context) {
                         .style('opacity', '0.9');
                 })
                 .on('mouseout', function () {
-                    return tooltip.style('opacity', 0);
+                    tooltip.style('opacity', 0);
                 });
+
+            var tooltip = d3.selectAll('#datasettable')
+                .append('div')
+                .attr('class', 'tooltip-old-dataset')
+                .text('This dataset has not been used in a while.');
         }
 
         function update(source) {
@@ -251,7 +250,7 @@ Hoot.control.utilities.folder = function(context) {
                                 timeAgo = lastAccessed.replace(/[-:]/g, '');
                             var dateActive = moment(timeAgo).fromNow();
                             // show warning if dataset hasn't been accessed in 2 months
-                            var oldData = dateActive.split(' ')[1] === 'months' && dateActive.split(' ')[0] >= 2;
+                            var oldData = moment().diff(moment(timeAgo), 'days') > 60;
                             if (oldData) {updateLastAccessed(this); }
                           return dateActive;
                       });
