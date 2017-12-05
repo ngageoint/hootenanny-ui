@@ -52,8 +52,5 @@
   "engines": {
     "node": ">=0.10.0"
   },
-  "engineStrict": true,
-  "dependencies": {
-    "moment": "^2.19.2"
-  }
+  "engineStrict": true
 }

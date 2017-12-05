@@ -139,15 +139,16 @@ Hoot.control.utilities.folder = function(context) {
             });
         }
 
+        var tooltip = d3.selectAll('#datasettable')
+            .selectAll('div.tooltip-old-dataset')
+            .data([0]).enter()
+            .append('div')
+            .attr('class', 'tooltip-old-dataset')
+            .text('This dataset has not been used in a while.');
+
         function updateLastAccessed(node) {
             var row = d3.select(node.parentNode);
             row.classed('expiring', true)
-                .append('g').append('svg:foreignObject')
-                .attr('class', 'expiring')
-                .attr('y', '-9px')
-                .attr('x', function(d){ return '48%';} );
-
-            d3.selectAll('g.node.expiring')
                 .on('mousemove', function(){
                     tooltip
                         .style('left', Math.max(0, d3.event.pageX - 200) + 'px')
@@ -156,12 +157,12 @@ Hoot.control.utilities.folder = function(context) {
                 })
                 .on('mouseout', function () {
                     tooltip.style('opacity', 0);
-                });
+                })
+                .append('g').append('svg:foreignObject')
+                .attr('class', 'expiring')
+                .attr('y', '-9px')
+                .attr('x', function(d){ return '48%';} );
 
-            var tooltip = d3.selectAll('#datasettable')
-                .append('div')
-                .attr('class', 'tooltip-old-dataset')
-                .text('This dataset has not been used in a while.');
         }
 
         function update(source) {
