@@ -40,7 +40,7 @@ Hoot.model.import = function (context)
         var transType = container.select(schemaElemId).value();
 
         var comboData = container.select(schemaElemId).datum();
-        var transName = transType.replace('*','')
+        var transName = transType.replace('*','');
         var oTrans = null;
         for(var i=0; i<comboData.combobox.length; i++){
             var o = comboData.combobox[i];
