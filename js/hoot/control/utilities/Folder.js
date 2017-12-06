@@ -6,10 +6,10 @@
 //      03 Feb. 2016
 //      15 Apr. 2016 eslint updates -- Sisskind
 //      31 May  2016 OSM API Database export type -- bwitham
+//      4  Dec  2017 Add table headers and warnings for old datasets   
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.folder = function(context) {
     var selectedLayerIDs = [];
-
     var hoot_control_utilities_folder = {};
 
     hoot_control_utilities_folder.wrap = function(container) {
@@ -139,6 +139,32 @@ Hoot.control.utilities.folder = function(context) {
             });
         }
 
+        var tooltip = d3.selectAll('#datasettable')
+            .selectAll('div.tooltip-old-dataset')
+            .data([0]).enter()
+            .append('div')
+            .attr('class', 'tooltip-old-dataset')
+            .text('This dataset has not been used in a while.');
+
+        function updateLastAccessed(node) {
+            var row = d3.select(node.parentNode);
+            row.classed('expiring', true)
+                .on('mousemove', function(){
+                    tooltip
+                        .style('left', Math.max(0, d3.event.pageX - 200) + 'px')
+                        .style('top', (d3.event.pageY - 50) + 'px')
+                        .style('opacity', '0.9');
+                })
+                .on('mouseout', function () {
+                    tooltip.style('opacity', 0);
+                })
+                .append('g').append('svg:foreignObject')
+                .attr('class', 'expiring')
+                .attr('y', '-9px')
+                .attr('x', function(d){ return '48%';} );
+
+        }
+
         function update(source) {
 
             // Compute the flattened node list. TODO use d3.layout.hierarchy.
@@ -183,12 +209,12 @@ Hoot.control.utilities.folder = function(context) {
                   .attr('width', function(){return '100%';})
                   .style('fill', fillColor)
                   .attr('class', rectClass)
-                .on('click', click);
+                  .on('click', click);
 
           nodeEnter.filter(function(d){return d.type==='dataset';}).append('text')
               .classed('dsizeTxt',true)
               .style('fill',fontColor)
-            .attr('dy',3.5)
+              .attr('dy',3.5)
               .attr('dx',function(){
                   return '98%';
               })
@@ -204,18 +230,31 @@ Hoot.control.utilities.folder = function(context) {
                   } while(Math.abs(_size) >= 1000 && u < units.length - 1);
                   return _size.toFixed(1)+' '+units[u];
             });
-
+              // add date added  & last accessed date for each dataset
               if(container.attr('id')==='datasettable'){
                  nodeEnter.filter(function(d){return d.type==='dataset';}).append('text')
                       .style('fill',fontColor)
                       .attr('dy',3.5)
-                    .attr('dx',function(){
-                        return '75%';
-                    })
-                    .attr('text-anchor','end')
-                    .text(function(d) {
-                        return d.date;
-                    });
+                      .attr('dx',function(){ return '80%';})
+                      .attr('text-anchor','end')
+                      .text(function(d) {
+                          return d.date;
+                      });
+                  nodeEnter.filter(function(d) { return d.type ==='dataset';})
+                      .append('text')
+                      .style('fill', fontColor)
+                      .attr('dy', 3.5)
+                      .attr('dx', function() { return '50%'; })
+                      .attr('text.anchor', 'end')
+                      .text(function(d) {
+                            var lastAccessed = d.lastAccessed,
+                                timeAgo = lastAccessed.replace(/[-:]/g, '');
+                            var dateActive = moment(timeAgo).fromNow();
+                            // show warning if dataset hasn't been accessed in 2 months
+                            var oldData = moment().diff(moment(timeAgo), 'days') > 60;
+                            if (oldData) {updateLastAccessed(this); }
+                          return dateActive;
+                      });
               }
 
               nodeEnter.append('text')
