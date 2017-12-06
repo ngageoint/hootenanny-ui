@@ -707,10 +707,7 @@ Hoot.control.utilities.importdirectory = function(context) {
 
             _setMultipartForType(typeName);
 
-            /* Updated to allow for OSM translation for all input types - issue 710 */
-            var translationsList = _importTranslations.concat(_importTranslationsOsm);
-
-            //var translationsList = _importTranslations;
+            var translationsList = _importTranslations;
 
             /*if(typeName === 'GEONAMES'){
                 translationsList = _importTranslationsGeonames;
@@ -1031,6 +1028,7 @@ Hoot.control.utilities.importdirectory = function(context) {
                 importTranslationsOsm.push(emptyObj);
 
                 importTranslationsOsm.push(t);
+                importTranslations.push(t);
             } else {
                 importTranslations.push(t);
             }

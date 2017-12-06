@@ -513,18 +513,11 @@ Hoot.control.utilities.importdataset = function(context) {
 
             _setMultipartForType(typeName);
 
-
-            /* Updated to allow for OSM translation for all input types - issue 710 */
-            var translationsList = _importTranslations.concat(_importTranslationsOsm);
-
-            //var translationsList = _importTranslations;
+            var translationsList = _importTranslations;
 
             if(typeName === 'GEONAMES'){
                 translationsList = _importTranslationsGeonames;
-            } /*else if(typeName === 'OSM') {
-                translationsList = _importTranslationsOsm;
-            }*/
-
+            }
 
             var comboData = d3.select('#importDatasetSchema').datum();
             comboData.combobox = translationsList;
@@ -797,6 +790,7 @@ Hoot.control.utilities.importdataset = function(context) {
                 importTranslationsOsm.push(emptyObj);
 
                 importTranslationsOsm.push(t);
+                importTranslations.push(t);
             } else {
                 importTranslations.push(t);
             }

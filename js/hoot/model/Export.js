@@ -51,7 +51,7 @@ Hoot.model.export = function (context)
         var oTrans = null;
 
         if (container.trans) { 
-            transName = container.transName;
+            transName = container.transName.replace('*','');
             oTrans = container.oTrans;
         } else {
             transType = container.select('#fileExportTranslation').value();
@@ -60,7 +60,7 @@ Hoot.model.export = function (context)
 
             for(var i=0; i<comboData.combobox.data.length; i++){
                 var o = comboData.combobox.data[i];
-                if(o.DESCRIPTION === transType){
+                if(o.DESCRIPTION === transType.replace('*','')){
                     transName = o.NAME;
                     oTrans = o;
                     break;
