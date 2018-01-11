@@ -1,5 +1,7 @@
 import { select as d3_select } from 'd3-selection';
 import { osmPavedTags } from '../osm/tags';
+import { osmEntity } from '../osm/index';
+import { services } from '../services/index';
 
 
 export function svgTagClasses() {
@@ -96,6 +98,33 @@ export function svgTagClasses() {
                 }
                 if (!paved) {
                     classes += ' tag-unpaved';
+                }
+            }
+
+            if (entity.id) {
+                // Set a marker class on hoot entities
+                // used for assigning layer color
+                var mapid = osmEntity.id.toHootMapId(entity.id);
+
+                // For merged datasets, assign color class of source layer
+                var lyr = services.hoot.loadedLayers()[mapid];
+                if (lyr && lyr.merged) {
+                    var id;
+                    var sourceid = services.hoot.decodeHootStatus(t['hoot:status']);
+                    switch (sourceid) {
+                    case 1:
+                    case 2:
+                        id = lyr.tags['input' + sourceid];
+                        break;
+                    case 0:
+                    case 3:
+                    default:
+                        id = mapid;
+                        break;
+                    }
+                    classes += ' tag-hoot-' + (id || sourceid);
+                } else {
+                    classes += ' tag-hoot-' + mapid;
                 }
             }
 

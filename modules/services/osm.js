@@ -21,12 +21,14 @@ import {
     osmRelation,
     osmWay
 } from '../osm';
+import { services } from '../services/index';
 
 import { utilRebind, utilIdleWorker } from '../util';
 
-
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded'),
-    urlroot = 'https://www.openstreetmap.org',
+    useHttps = window.location.protocol === 'https:',
+    protocol = useHttps ? 'https:' : 'http:',
+    urlroot = protocol + '//nome-in-a-box:3000',
     blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'],
     inflight = {},
     loadedTiles = {},
@@ -35,8 +37,8 @@ var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'load
     tileZoom = 16,
     oauth = osmAuth({
         url: urlroot,
-        oauth_consumer_key: '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
-        oauth_secret: 'aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL',
+        oauth_consumer_key: '7VFoWFC53zIqBY9fLqjaufkumDxFRrjGP2BGayKL',
+        oauth_secret: 'hf0kTNizGA5Nr1Q4irwY4lOFI14JRCYbUwXUGD2S',
         loading: authLoading,
         done: authDone
     }),
@@ -70,11 +72,11 @@ function getLoc(attrs) {
 }
 
 
-function getNodes(obj) {
+function getNodes(obj, mapId) {
     var elems = obj.getElementsByTagName('nd'),
         nodes = new Array(elems.length);
     for (var i = 0, l = elems.length; i < l; i++) {
-        nodes[i] = 'n' + elems[i].attributes.ref.value;
+        nodes[i] = 'n' + elems[i].attributes.ref.value + '_' + mapId;
     }
     return nodes;
 }
@@ -85,20 +87,20 @@ function getTags(obj) {
         tags = {};
     for (var i = 0, l = elems.length; i < l; i++) {
         var attrs = elems[i].attributes;
-        tags[attrs.k.value] = attrs.v.value;
+        tags[attrs.k.value] = decodeURIComponent(attrs.v.value);
     }
 
     return tags;
 }
 
 
-function getMembers(obj) {
+function getMembers(obj, mapId) {
     var elems = obj.getElementsByTagName('member'),
         members = new Array(elems.length);
     for (var i = 0, l = elems.length; i < l; i++) {
         var attrs = elems[i].attributes;
         members[i] = {
-            id: attrs.type.value[0] + attrs.ref.value,
+            id: attrs.type.value[0] + attrs.ref.value + '_' + mapId,
             type: attrs.type.value,
             role: attrs.role.value
         };
@@ -113,10 +115,10 @@ function getVisible(attrs) {
 
 
 var parsers = {
-    node: function nodeData(obj, uid) {
+    node: function nodeData(obj, uid, mapId) {
         var attrs = obj.attributes;
         return new osmNode({
-            id:uid,
+            id:osmEntity.id.fromOSM('node', attrs.id.value + '_' + mapId),
             visible: getVisible(attrs),
             version: attrs.version.value,
             changeset: attrs.changeset && attrs.changeset.value,
@@ -128,25 +130,24 @@ var parsers = {
         });
     },
 
-    way: function wayData(obj, uid) {
+    way: function wayData(obj, mapId) {
         var attrs = obj.attributes;
         return new osmWay({
-            id: uid,
-            visible: getVisible(attrs),
+            id: osmEntity.id.fromOSM('way', attrs.id.value + '_' + mapId),
             version: attrs.version.value,
             changeset: attrs.changeset && attrs.changeset.value,
             timestamp: attrs.timestamp && attrs.timestamp.value,
             user: attrs.user && attrs.user.value,
             uid: attrs.uid && attrs.uid.value,
             tags: getTags(obj),
-            nodes: getNodes(obj),
+            nodes: getNodes(obj, mapId),
         });
     },
 
-    relation: function relationData(obj, uid) {
+    relation: function relationData(obj, mapId) {
         var attrs = obj.attributes;
         return new osmRelation({
-            id: uid,
+            id: osmEntity.id.fromOSM('relation', attrs.id.value + '_' + mapId),
             visible: getVisible(attrs),
             version: attrs.version.value,
             changeset: attrs.changeset && attrs.changeset.value,
@@ -154,7 +155,7 @@ var parsers = {
             user: attrs.user && attrs.user.value,
             uid: attrs.uid && attrs.uid.value,
             tags: getTags(obj),
-            members: getMembers(obj)
+            members: getMembers(obj, mapId)
         });
     }
 };
@@ -166,21 +167,33 @@ function parse(xml, callback, options) {
 
     var root = xml.childNodes[0],
         children = root.childNodes;
+    //Map ID is included in hoot osm xml response
+    //append it to entity ids to avoid id collisions
+    //between datasets, OSM API datasets get mapid = -1
+    var mapId = (root.attributes.mapid) ? root.attributes.mapid.value : -1;
 
     function parseChild(child) {
         var parser = parsers[child.nodeName];
         if (parser) {
+            //Add mapId to uid??
             var uid = osmEntity.id.fromOSM(child.nodeName, child.attributes.id.value);
             if (options.cache && entityCache[uid]) {
                 return null;
             }
-            return parser(child, uid);
+            return parser(child, uid, mapId);
         }
     }
 
     utilIdleWorker(children, parseChild, callback);
 }
 
+function getUrlRoot(path) {
+    return (path.indexOf('mapId') > -1) ? services.hoot.urlroot() : urlroot;
+}
+
+function isUrlHoot(path) {
+    return path.indexOf('mapId') > -1;
+}
 
 export default {
 
@@ -247,7 +260,8 @@ export default {
                 return;
             }
 
-            var isAuthenticated = that.authenticated();
+            //We don't authenticate against Hoot services
+            var isAuthenticated = isUrlHoot(path) || that.authenticated();
 
             // 400 Bad Request, 401 Unauthorized, 403 Forbidden
             // Logout and retry the request..
@@ -280,10 +294,11 @@ export default {
             }
         }
 
-        if (this.authenticated()) {
+        //We don't authenticate against Hoot services
+        if (!isUrlHoot(path) && this.authenticated()) {
             return oauth.xhr({ method: 'GET', path: path }, done);
         } else {
-            var url = urlroot + path;
+            var url = getUrlRoot(path) + path;
             return d3_xml(url).get(done);
         }
     },
@@ -321,22 +336,26 @@ export default {
 
     loadMultiple: function(ids, callback) {
         var that = this;
-
-        _forEach(_groupBy(_uniq(ids), osmEntity.id.type), function(v, k) {
-            var type = k + 's',
-                osmIDs = _map(v, osmEntity.id.toOSM),
-                options = { cache: false };
-
-            _forEach(_chunk(osmIDs, 150), function(arr) {
-                that.loadFromAPI(
-                    '/api/0.6/' + type + '?' + type + '=' + arr.join(),
-                    function(err, entities) {
-                        if (callback) callback(err, { data: entities });
-                    },
-                    options
-                );
+        //Split feature ids up by maps, then by type
+        var mapFeatures = _groupBy(_uniq(ids), osmEntity.id.toHootMapId);
+        _forEach(mapFeatures, function(f, m) {
+            _forEach(_groupBy(f, osmEntity.id.type), function(v, k) {
+                var type = k + 's',
+                    osmIDs = _map(v, osmEntity.id.toOSM),
+                    options = { cache: false };
+              _forEach(_chunk(osmIDs, 150), function(arr) {
+                    //Hoot service calls need mapId and use elementIds instead of feature type
+                    that.loadFromAPI(
+                        '/api/0.6/' + type + '?' + ((m > -1) ? 'elementIds' : type) + '=' + arr.join()
+                        + ((m > -1) ? '&mapId=' + m : ''),
+                        function(err, entities) {
+                            if (callback) callback(err, { data: entities });
+                        }
+                    );
+                });
             });
-        });
+
+          });
     },
 
 
@@ -381,23 +400,128 @@ export default {
         function uploadedChangeset(err) {
             if (err) return callback(err);
 
-            // Upload was successful, safe to call the callback.
-            // Add delay to allow for postgres replication #1646 #2678
-            window.setTimeout(function() {
-                callback(null, changeset);
-            }, 2500);
+    //Splits changes and creates a change object per mapid
+    splitChanges: function(changes) {
+        var splitChangeMap = {};
+        d3_map(changes).each(function(value, key) {
+            value.forEach(function(e) {
+                var mapid = osmEntity.id.toHootMapId(e.id);
 
-            // At this point, we don't really care if the connection was switched..
-            // Only try to close the changeset if we're still talking to the same server.
-            if (that.getConnectionId() === cid) {
-                // Still attempt to close changeset, but ignore response because #2667
-                oauth.xhr({
-                    method: 'PUT',
-                    path: '/api/0.6/changeset/' + changeset.id + '/close',
-                    options: { header: { 'Content-Type': 'text/xml' } }
-                }, function() { return true; });
+                //Newly created features won't have a mapid
+                //so assume the reference layer, then if
+                //not set, the secondary layer
+                if (!mapid) mapid = services.hoot.layerBySource('reference')
+                                    || services.hoot.layerBySource('secondary');
+
+                if (!splitChangeMap[mapid]) {
+                    //Initialize changes object
+                    splitChangeMap[mapid] = d3_keys(changes).reduce(function(prev, curr) {
+                        prev[curr] = [];
+                        return prev;
+                    }, {});
+                }
+                //Push change change object type array
+                splitChangeMap[mapid][key].push(e);
+            });
+        });
+
+        return splitChangeMap;
+    },
+
+
+    parseChangeset: function(xml) {
+        if (!xml || !xml.childNodes) return;
+
+        var mapId = -1,
+            root = xml.childNodes[0],
+            changeNodes = root.childNodes,
+            changes = {
+                created: [],
+                deleted: [],
+                modified: []
+            },
+            changeKeys = {
+                create: 'created',
+                delete: 'deleted',
+                modify: 'modified'
+            };
+
+        for (var j = 0, k = changeNodes.length; j < k; j++) {
+            var change = changeNodes[j],
+                children = change.childNodes
+                type = change.nodeName;
+
+            for (var i = 0, l = children.length; i < l; i++) {
+                var child = children[i],
+                    parser = parsers[child.nodeName];
+               if (parser) {
+                    //Temp hack to normalize entity ids
+                    child.setAttribute("id", child.getAttribute("id"));
+                    changes[changeKeys[type]].push(parser(child, mapId));
+                }
             }
         }
+
+        return changes;
+    },
+
+
+    putChangesetHoot: function(changes, version, comment, imageryUsed, callback) {
+        var that = this;
+        var changesByMapId = this.splitChanges(changes);
+        //Make a separate set of changeset calls for each layer
+        d3_map(changesByMapId).each(function(changes, mapid) {
+            if (parseInt(mapid, 10) > -1) {
+                //Call the Hoot API service
+                //If Hoot implements OAuth the d3_request should
+                //be replaced with oauth.xhr
+                d3_request(services.hoot.urlroot() + '/api/0.6/changeset/create?mapId=' + mapid)
+                    .header('Content-Type', 'text/xml')
+                    .send('PUT', JXON.stringify(that.changesetJXON(that.changesetTags(version, comment, imageryUsed))), function(err, resp) {
+                        if (err) return callback(err);
+                        var changeset_id = resp.responseText;
+                        d3_request(services.hoot.urlroot() + '/api/0.6/changeset/' + changeset_id + '/upload?mapId=' + mapid)
+                            .header('Content-Type', 'text/xml')
+                            .send('POST', JXON.stringify(that.osmChangeJXON(changeset_id, changes)), function(err, resp) {
+                                if (err) return callback(err);
+                                // POST was successful, safe to call the callback.
+                                // Still attempt to close changeset, but ignore response because #2667
+                                // Add delay to allow for postgres replication #1646 #2678
+                                window.setTimeout(function() { callback(null, changeset_id); }, 25);
+                                d3_request(services.hoot.urlroot() + '/api/0.6/changeset/' + changeset_id + '/close?mapId=' + mapid)
+                                    .header('Content-Type', 'text/xml')
+                                    .send('PUT', function() { return true; });
+                        });
+                    });
+            } else {
+                //Call the OSM API service
+                oauth.xhr({
+                        method: 'PUT',
+                        path: '/api/0.6/changeset/create',
+                        options: { header: { 'Content-Type': 'text/xml' } },
+                        content: JXON.stringify(that.changesetJXON(that.changesetTags(version, comment, imageryUsed)))
+                    }, function(err, changeset_id) {
+                        if (err) return callback(err);
+                        oauth.xhr({
+                            method: 'POST',
+                            path: '/api/0.6/changeset/' + changeset_id + '/upload',
+                            options: { header: { 'Content-Type': 'text/xml' } },
+                            content: JXON.stringify(that.osmChangeJXON(changeset_id, changes))
+                        }, function(err) {
+                            if (err) return callback(err);
+                            // POST was successful, safe to call the callback.
+                            // Still attempt to close changeset, but ignore response because #2667
+                            // Add delay to allow for postgres replication #1646 #2678
+                            window.setTimeout(function() { callback(null, changeset_id); }, 2500);
+                            oauth.xhr({
+                                method: 'PUT',
+                                path: '/api/0.6/changeset/' + changeset_id + '/close',
+                                options: { header: { 'Content-Type': 'text/xml' } }
+                            }, function() { return true; });
+                        });
+                    });
+            }
+        });
     },
 
 
@@ -553,22 +677,36 @@ export default {
                 s / 2 - projection.translate()[1]
             ];
 
-        var tiles = d3_geoTile()
-            .scaleExtent([tileZoom, tileZoom])
-            .scale(s)
-            .size(dimensions)
-            .translate(projection.translate())()
-            .map(function(tile) {
-                var x = tile[0] * ts - origin[0],
-                    y = tile[1] * ts - origin[1];
+        // Load from visible layers only
+        // Hoot loadedLayers is what controls the vector data sources that are loaded
+        var visLayers = _.filter(d3.values(services.hoot.loadedLayers()), function (layer) {
+            return layer.visible;
+        });
 
-                return {
-                    id: tile.toString(),
-                    extent: geoExtent(
-                        projection.invert([x, y + ts]),
-                        projection.invert([x + ts, y]))
-                };
-            });
+        var tiles = _.map(visLayers, function (layer) {
+            var _tiles = d3geoTile()
+                .scaleExtent([tileZoom, tileZoom])
+                .scale(s)
+                .size(dimensions)
+                .translate(projection.translate())()
+                .map(function (tile) {
+                    var x = tile[0] * ts - origin[0],
+                        y = tile[1] * ts - origin[1];
+
+                    return {
+                        id: tile.toString() + ',' + layer.id,
+                        extent: geoExtent(
+                                    projection.invert([x, y + ts]),
+                                    projection.invert([x + ts, y])),
+                                mapId: layer.id,
+                                layerName: layer.name // even need?
+                    };
+                });
+            return _tiles;
+        });
+
+        // flatten visible layer tile arrays to make http requests
+        tiles = _.flatten(tiles);
 
         _filter(inflight, function(v, i) {
             var wanted = _find(tiles, function(tile) {
@@ -588,7 +726,7 @@ export default {
             }
 
             inflight[id] = that.loadFromAPI(
-                '/api/0.6/map?bbox=' + tile.extent.toParam(),
+                '/api/0.6/map?bbox=' + tile.extent.toParam() + ((tile.mapId > -1) ? '&mapId=' + tile.mapId : ''),
                 function(err, parsed) {
                     delete inflight[id];
                     if (!err) {
@@ -605,6 +743,15 @@ export default {
                 }
             );
         });
+    },
+
+    loadedDataRemove: function(mapid) {
+        _each(loadedTiles, function (a, b) {
+            if (b.match(',' + mapid + '$')) {
+                delete loadedTiles[b];
+            }
+        });
+        dispatch.call('change');
     },
 
 
@@ -667,6 +814,6 @@ export default {
             that.userChangesets(function() {});  // eagerly load user details/changesets
         }
 
-        return oauth.authenticate(done);
+        return (services.hoot.hasOsmLayer()) ? oauth.authenticate(done) : done();
     }
 };

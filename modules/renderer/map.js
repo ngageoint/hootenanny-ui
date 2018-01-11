@@ -301,7 +301,7 @@ export function rendererMap(context) {
             .call(drawLines, graph, data, filter)
             .call(drawAreas, graph, data, filter)
             .call(drawMidpoints, graph, data, filter, map.trimmedExtent())
-            .call(drawLabels, graph, data, filter, dimensions, !difference && !extent)
+            //.call(drawLabels, graph, data, filter, dimensions, !difference && !extent)
             .call(drawPoints, graph, data, filter);
 
         dispatch.call('drawn', this, {full: true});
@@ -491,6 +491,9 @@ export function rendererMap(context) {
         return map;
     };
 
+    //Added so we can redraw the map without changing extent
+    //after a layer is added.
+    map.immediateRedraw = immediateRedraw;
 
     function setTransform(t2, duration, force) {
         var t = projection.transform();

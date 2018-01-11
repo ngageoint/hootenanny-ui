@@ -79,11 +79,13 @@
             },
             "delete": {
                 "title": "ลบ",
+                "description": "ลบวัตถุอย่างถาวร",
                 "annotation": {
                     "point": "ลบจุด",
                     "line": "ลบเส้น",
                     "area": "ลบพื้นที่",
-                    "relation": "ลบความสัมพันธ์"
+                    "relation": "ลบความสัมพันธ์",
+                    "multiple": "ลบ {n} วัตถุ"
                 }
             },
             "add_member": {
@@ -100,61 +102,12 @@
             },
             "move": {
                 "title": "ขยับ"
-            },
-            "rotate": {
-                "title": "หมุน"
             }
         },
-        "translate": {
-            "translate": "แปลภาษา",
-            "localized_translation_language": "เลือกภาษา",
-            "localized_translation_name": "ชื่อ"
-        },
-        "loading_auth": "กำลังเชื่อมต่อ OpenStreetMap...",
-        "report_a_bug": "รายงานข้อผิดพลาด",
-        "help_translate": "ร่วมช่วยแปลภาษา",
-        "commit": {
-            "cancel": "ยกเลิก"
-        },
-        "geolocate": {
-            "title": "แสดงตำแหน่งของฉัน"
-        },
-        "inspector": {
-            "search": "ค้นหา",
-            "check": {
-                "yes": "ใช่",
-                "no": "ไม่"
-            },
-            "add": "เพิ่ม"
-        },
-        "feature": {
-            "paths": {
-                "tooltip": "ทางเดิน, ทางเท้า, ทางจักรยาน, ฯลฯ"
-            },
-            "buildings": {
-                "description": "สิ่งก่อสร้าง"
-            }
-        },
-        "help": {
-            "title": "ช่วยเหลือ"
+        "infobox": {
+            "area": "พื้นที่"
         },
         "intro": {
-            "graph": {
-                "block_number": "<value for addr:block_number>",
-                "county": "<value for addr:county>",
-                "district": "<value for addr:district>",
-                "hamlet": "<value for addr:hamlet>",
-                "neighbourhood": "<value for addr:neighbourhood>",
-                "province": "<value for addr:province>",
-                "quarter": "<value for addr:quarter>",
-                "state": "<value for addr:state>",
-                "subdistrict": "<value for addr:subdistrict>",
-                "suburb": "<value for addr:suburb>",
-                "countrycode": "th"
-            },
-            "areas": {
-                "title": "พื้นที่"
-            },
             "startediting": {
                 "title": "เริ่มแก้ไข",
                 "start": "เริ่มการทำแผนที่"
@@ -241,6 +194,9 @@
                 "access_simple": {
                     "label": "อนุญาตการเข้าถึง"
                 },
+                "access_toilets": {
+                    "label": "การเข้าถึง"
+                },
                 "address": {
                     "label": "ที่อยู่",
                     "placeholders": {
@@ -286,9 +242,6 @@
                 "atm": {
                     "label": "เครื่องรับจ่ายเงินอัตโนมัติ"
                 },
-                "beauty": {
-                    "label": "ประเภทร้านค้า"
-                },
                 "blood_components": {
                     "label": "องค์ประกอบของเลือด",
                     "options": {
@@ -329,11 +282,11 @@
                 "contact/webcam": {
                     "placeholder": "http://example.com/"
                 },
+                "content": {
+                    "label": "เนื้อหา"
+                },
                 "currency_multi": {
                     "label": "ชนิดเงินตรา"
-                },
-                "cycleway": {
-                    "label": "เลนจักรยาน"
                 },
                 "emergency": {
                     "label": "ฉุกเฉิน"
@@ -349,6 +302,9 @@
                 },
                 "generator/source": {
                     "label": "แหล่งที่มา"
+                },
+                "golf_hole": {
+                    "placeholder": "หมายเลขหลุม (1-18)"
                 },
                 "internet_access": {
                     "label": "การเข้าใช้อินเทอร์เน็ต",
@@ -373,21 +329,6 @@
                 },
                 "point": {
                     "name": "จุด"
-                },
-                "waterway/drain": {
-                    "name": "ลำราง/ทางระบายน้ำ"
-                },
-                "waterway/river": {
-                    "name": "แม่น้ำ"
-                },
-                "waterway/riverbank": {
-                    "name": "ตลิ่งแม่น้ำ"
-                },
-                "waterway/waterfall": {
-                    "name": "น้ำตก"
-                },
-                "waterway/weir": {
-                    "name": "ประตูน้ำ/ฝาย"
                 }
             }
         }

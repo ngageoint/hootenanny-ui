@@ -6,6 +6,8 @@ import serviceTaginfo from './taginfo';
 import serviceWikidata from './wikidata';
 import serviceWikipedia from './wikipedia';
 
+import serviceHoot from './hoot';
+
 export var services = {
     geocoder: serviceNominatim,
     mapillary: serviceMapillary,
@@ -13,7 +15,8 @@ export var services = {
     osm: serviceOsm,
     taginfo: serviceTaginfo,
     wikidata: serviceWikidata,
-    wikipedia: serviceWikipedia
+    wikipedia: serviceWikipedia,
+    hoot: serviceHoot
 };
 
 export {

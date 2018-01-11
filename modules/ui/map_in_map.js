@@ -13,7 +13,7 @@ import {
 import { d3keybinding as d3_keybinding } from '../lib/d3.keybinding.js';
 
 import { t } from '../util/locale';
-import { svgDebug, svgGpx } from '../svg';
+import { svgDebug, svgGpx, svgHoot } from '../svg';
 import { geoRawMercator } from '../geo';
 import { rendererTileLayer } from '../renderer';
 import { utilSetTransform } from '../util';
@@ -35,6 +35,7 @@ export function uiMapInMap(context) {
             overlayLayers = {},
             projection = geoRawMercator(),
             gpxLayer = svgGpx(projection, context).showLabels(false),
+            hootLayer = svgHoot(projection, context).showLabels(false),
             debugLayer = svgDebug(projection, context),
             zoom = d3_zoom()
                 .scaleExtent([ztok(0.5), ztok(24)])
@@ -244,6 +245,7 @@ export function uiMapInMap(context) {
                 .attr('class', 'map-in-map-data')
                 .merge(dataLayers)
                 .call(gpxLayer)
+                .call(hootLayer)
                 .call(debugLayer);
 
 

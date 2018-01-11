@@ -5,6 +5,8 @@ import { d3geoTile as d3_geoTile } from '../lib/d3.geo.tile';
 import { geoEuclideanDistance } from '../geo';
 import { utilPrefixCSSProperty } from '../util';
 
+import { geoSphericalMercator } from '../geo/spherical_mercator';
+import { rendererBackgroundSource } from './background_source.js';
 
 export function rendererTileLayer(context) {
     var tileSize = 256,
@@ -15,6 +17,7 @@ export function rendererTileLayer(context) {
         z,
         transformProp = utilPrefixCSSProperty('Transform'),
         source;
+    var sphericalMercator = geoSphericalMercator();
 
 
     // blacklist overlay tiles around Null Island..
@@ -129,6 +132,14 @@ export function rendererTileLayer(context) {
                 if (!!source.overlay && nearNullIsland(r[0], r[1], r[2])) {
                     return false;
                 }
+                if (source.polygon) {
+                    var tileExtent = sphericalMercator.xyz_to_envelope(r[0], r[1], r[2], false);
+                    //Don't load tiles outside the background source polygon
+                    if (!source.intersects(tileExtent)) {
+                        return false;
+                    }
+                }
+
                 // don't re-request tiles which have failed in the past
                 return cache[r[3]] !== false;
             });

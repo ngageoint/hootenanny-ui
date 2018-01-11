@@ -47,7 +47,7 @@ export function rendererBackground(context) {
 
         var b = background.baseLayerSource(),
             o = overlayLayers
-                .filter(function (d) { return !d.source().isLocatorOverlay() && !d.source().isHidden(); })
+                .filter(function (d) { return !d.source().isLocatorOverlay() && !d.source().isHidden() && !d.source().hootlayer; })
                 .map(function (d) { return d.source().id; })
                 .join(','),
             meters = geoOffsetToMeters(b.offset()),
@@ -115,6 +115,25 @@ export function rendererBackground(context) {
         context.history().imageryUsed(imageryUsed);
     };
 
+
+    background.addSource = function(d) {
+        var source = rendererBackgroundSource(d);
+        backgroundSources.push(source);
+        background.toggleOverlayLayer(source);
+    };
+
+    background.updateSource = function(d) {
+        this.removeSource(d.id);
+        this.addSource(d);
+    };
+
+    background.removeSource = function(id) {
+        var source = findSource(id);
+        if (source) {
+            _.remove(backgroundSources, {id: source.id});
+            if (background.showsLayer({id: id})) background.toggleOverlayLayer(source);
+        }
+    };
 
     background.sources = function(extent) {
         return backgroundSources.filter(function(source) {

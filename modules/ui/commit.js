@@ -43,6 +43,9 @@ export function uiCommit(context) {
     var commitChanges = uiCommitChanges(context);
     var commitWarnings = uiCommitWarnings(context);
 
+        //var commentSection = body
+        //    .append('div')
+        //    .attr('class', 'modal-section form-field commit-form fillL2');
 
     function commit(selection) {
         _selection = selection;

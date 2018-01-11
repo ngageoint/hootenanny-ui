@@ -3,7 +3,9 @@ export function osmIsInterestingTag(key) {
         key !== 'created_by' &&
         key !== 'source' &&
         key !== 'odbl' &&
-        key.indexOf('tiger:') !== 0;
+        key.indexOf('tiger:') !== 0 &&
+        key !== 'error:circular' &&
+        key !== 'hoot:status'; //These last two added for Hoot, https://github.com/ngageoint/hootenanny/issues/1459
 
 }
 

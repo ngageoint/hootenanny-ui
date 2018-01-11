@@ -1,9 +1,12 @@
 /* eslint-disable no-console */
 
-var http = require('http');
 var gaze = require('gaze');
 var ecstatic = require('ecstatic');
 var colors = require('colors/safe');
+var express = require('express'),
+    app = express(),
+    url = require('url'),
+    proxy = require('express-http-proxy');
 
 var isDevelopment = process.argv[2] === 'develop';
 
@@ -53,9 +56,35 @@ if (isDevelopment) {
         });
     });
 
-    http.createServer(
-        ecstatic({ root: __dirname, cache: 0 })
-    ).listen(8080);
+    var port = 8088;
+    var hootHost = 'localhost';
+    var hootPort = 8080;
+    var hootUrl = 'http://' + hootHost + ':' + hootPort;
 
-    console.log(colors.yellow('Listening on :8080'));
+    app.use(
+        ecstatic({ root: __dirname, cache: 0 })
+    ).listen(port);
+
+    app.get('/hootenanny-id', function(req, res) {
+        res.writeHead(301,
+          { Location: 'http://localhost:8080' }
+        );
+        res.end();
+    });
+
+    app.use('/hoot-services', proxy(hootUrl, {
+        forwardPath: function(req) {
+            return '/hoot-services' + url.parse(req.url).path;
+        }
+    }));
+
+    app.use('/static', proxy(hootUrl, {
+        forwardPath: function(req) {
+            return '/static' + url.parse(req.url).path;
+        }
+    }));
+
+    console.log(colors.yellow('Listening on ' + port));
+
+
 }

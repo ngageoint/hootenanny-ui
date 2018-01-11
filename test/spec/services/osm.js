@@ -38,6 +38,9 @@ describe('iD.serviceOsm', function () {
         server.restore();
     });
 
+    function hootId(id) {
+        return id + '_-1';
+    }
 
     it('is instantiated', function () {
         expect(connection).to.be.ok;
@@ -313,7 +316,7 @@ describe('iD.serviceOsm', function () {
         it('loads a node', function(done) {
             var id = 'n1';
             connection.loadEntity(id, function(err, result) {
-                var entity = result.data.find(function(e) { return e.id === id; });
+                var entity = result.data.find(function(e) { return e.id === hootId(id); });
                 expect(entity).to.be.an.instanceOf(iD.Node);
                 done();
             });
@@ -326,7 +329,7 @@ describe('iD.serviceOsm', function () {
         it('loads a way', function(done) {
             var id = 'w1';
             connection.loadEntity(id, function(err, result) {
-                var entity = result.data.find(function(e) { return e.id === id; });
+                var entity = result.data.find(function(e) { return e.id === hootId(id); });
                 expect(entity).to.be.an.instanceOf(iD.Way);
                 done();
             });
@@ -374,7 +377,7 @@ describe('iD.serviceOsm', function () {
         it('loads a node', function(done) {
             var id = 'n1';
             connection.loadEntityVersion(id, 1, function(err, result) {
-                var entity = result.data.find(function(e) { return e.id === id; });
+                var entity = result.data.find(function(e) { return e.id === hootId(id); });
                 expect(entity).to.be.an.instanceOf(iD.Node);
                 done();
             });
@@ -387,7 +390,7 @@ describe('iD.serviceOsm', function () {
         it('loads a way', function(done) {
             var id = 'w1';
             connection.loadEntityVersion(id, 1, function(err, result) {
-                var entity = result.data.find(function(e) { return e.id === id; });
+                var entity = result.data.find(function(e) { return e.id === hootId(id); });
                 expect(entity).to.be.an.instanceOf(iD.Way);
                 done();
             });
@@ -590,6 +593,15 @@ describe('iD.serviceOsm', function () {
             });
         });
 
+    });
+
+    describe('#splitChanges', function() {
+        it('splits changes by mapid', function() {
+
+            var changes = JSON.parse('{"modified":[{"id":"n10121_8534","origid":"n10121","loc":[-104.7931740193162,38.90199843075447],"version":"1","user":"test@test.com","tags":{"hoot":"AllDataTypesA"},"layerName":"AllDataTypesA","mapId":"8534","hootMeta":{},"visible":true,"v":6},{"id":"n10122_8534","origid":"n10122","loc":[-104.8191002770885,38.91378831164465],"version":"1","user":"test@test.com","tags":{"hoot":"AllDataTypesA"},"layerName":"AllDataTypesA","mapId":"8534","hootMeta":{},"visible":true,"v":3},{"id":"w10016_8534","origid":"w10016","version":"2","user":"test@test.com","tags":{"hoot":"AllDataTypesA","name":"Old Boulder Railway","railway":"rail","tunnel":"yes","gauge":"1000"},"nodes":["n10119_8534","n10124_8534","n10120_8534","n10121_8534","n10122_8534","n10123_8534"],"layerName":"AllDataTypesA","mapId":"8534","visible":true,"v":2},{"id":"n10125_8534","origid":"n10125","loc":[-104.91439764200237,38.896540364210054],"version":"2","user":"test@test.com","tags":{"hoot":"AllDataTypesA","leisure":"park","name":"test"},"layerName":"AllDataTypesA","mapId":"8534","hootMeta":{},"visible":true,"v":4},{"id":"n16_8535","origid":"n16","loc":[-104.880704022089,38.90658908492971],"version":"2","user":"test@test.com","tags":{"error:circular":"50","hoot":"AllDataTypesB","hoot:status":"1","leisure":"park","name":"Garden of the Gods","poi":"yes"},"layerName":"AllDataTypesB","mapId":"8535","hootMeta":{},"visible":true,"v":3},{"id":"n15_8535","origid":"n15","loc":[-104.70583782392906,38.888700888551305],"version":"1","user":"test@test.com","tags":{"amenity":"cafe","error:circular":"1000","hoot:status":"1","name":"Starbucks","note":"2-c","poi":"yes","hoot":"AllDataTypesB"},"layerName":"AllDataTypesB","mapId":"8535","hootMeta":{},"visible":true,"v":3}],"created":[],"deleted":[{"id":"n72_8534","origid":"n72","loc":[-104.878690508945,38.8618557942463],"version":"1","user":"test@test.com","tags":{"error:circular":"1000","hoot:status":"1","leisure":"park","name":"Garden of the Gods","poi":"yes","hoot":"AllDataTypesA"},"layerName":"AllDataTypesA","mapId":"8534","hootMeta":{},"visible":true},{"id":"n8_8535","origid":"n8","loc":[-104.912548838381,38.8578321389392],"version":"1","user":"test@test.com","tags":{"error:circular":"1000","hoot:status":"1","name":"Manitou Springs","place":"city","poi":"yes","hoot":"AllDataTypesB"},"layerName":"AllDataTypesB","mapId":"8535","hootMeta":{},"visible":true}]}');
+            var splitChanges = '{"8534":{"modified":[{"id":"n10121_8534","origid":"n10121","loc":[-104.7931740193162,38.90199843075447],"version":"1","user":"test@test.com","tags":{"hoot":"AllDataTypesA"},"layerName":"AllDataTypesA","mapId":"8534","hootMeta":{},"visible":true,"v":6},{"id":"n10122_8534","origid":"n10122","loc":[-104.8191002770885,38.91378831164465],"version":"1","user":"test@test.com","tags":{"hoot":"AllDataTypesA"},"layerName":"AllDataTypesA","mapId":"8534","hootMeta":{},"visible":true,"v":3},{"id":"w10016_8534","origid":"w10016","version":"2","user":"test@test.com","tags":{"hoot":"AllDataTypesA","name":"Old Boulder Railway","railway":"rail","tunnel":"yes","gauge":"1000"},"nodes":["n10119_8534","n10124_8534","n10120_8534","n10121_8534","n10122_8534","n10123_8534"],"layerName":"AllDataTypesA","mapId":"8534","visible":true,"v":2},{"id":"n10125_8534","origid":"n10125","loc":[-104.91439764200237,38.896540364210054],"version":"2","user":"test@test.com","tags":{"hoot":"AllDataTypesA","leisure":"park","name":"test"},"layerName":"AllDataTypesA","mapId":"8534","hootMeta":{},"visible":true,"v":4}],"created":[],"deleted":[{"id":"n72_8534","origid":"n72","loc":[-104.878690508945,38.8618557942463],"version":"1","user":"test@test.com","tags":{"error:circular":"1000","hoot:status":"1","leisure":"park","name":"Garden of the Gods","poi":"yes","hoot":"AllDataTypesA"},"layerName":"AllDataTypesA","mapId":"8534","hootMeta":{},"visible":true}]},"8535":{"modified":[{"id":"n16_8535","origid":"n16","loc":[-104.880704022089,38.90658908492971],"version":"2","user":"test@test.com","tags":{"error:circular":"50","hoot":"AllDataTypesB","hoot:status":"1","leisure":"park","name":"Garden of the Gods","poi":"yes"},"layerName":"AllDataTypesB","mapId":"8535","hootMeta":{},"visible":true,"v":3},{"id":"n15_8535","origid":"n15","loc":[-104.70583782392906,38.888700888551305],"version":"1","user":"test@test.com","tags":{"amenity":"cafe","error:circular":"1000","hoot:status":"1","name":"Starbucks","note":"2-c","poi":"yes","hoot":"AllDataTypesB"},"layerName":"AllDataTypesB","mapId":"8535","hootMeta":{},"visible":true,"v":3}],"created":[],"deleted":[{"id":"n8_8535","origid":"n8","loc":[-104.912548838381,38.8578321389392],"version":"1","user":"test@test.com","tags":{"error:circular":"1000","hoot:status":"1","name":"Manitou Springs","place":"city","poi":"yes","hoot":"AllDataTypesB"},"layerName":"AllDataTypesB","mapId":"8535","hootMeta":{},"visible":true}]}}';
+            expect(JSON.stringify(connection.splitChanges(changes))).to.eql(splitChanges);
+        });
     });
 
 });

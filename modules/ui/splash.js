@@ -38,7 +38,7 @@ export function uiSplash(context) {
         var buttonWrap = introModal
             .append('div')
             .attr('class', 'modal-actions cf');
-
+/*
         var walkthrough = buttonWrap
             .append('button')
             .attr('class', 'walkthrough col6')
@@ -56,7 +56,7 @@ export function uiSplash(context) {
         walkthrough
             .append('div')
             .text(t('splash.walkthrough'));
-
+*/
         var startEditing = buttonWrap
             .append('button')
             .attr('class', 'start-editing col6')

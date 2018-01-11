@@ -170,7 +170,7 @@ export function uiHelp(context) {
             .append('a')
             .html(function(d) { return d.title; })
             .on('click', clickHelp);
-
+/*
         var shortcuts = toc
             .append('li')
             .attr('class', 'shortcuts')
@@ -201,7 +201,7 @@ export function uiHelp(context) {
         walkthrough
             .append('div')
             .text(t('splash.walkthrough'));
-
+*/
 
         var content = pane.append('div')
             .attr('class', 'left-content');

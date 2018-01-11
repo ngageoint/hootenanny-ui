@@ -1,6 +1,7 @@
 import _throttle from 'lodash-es/throttle';
 import { uiFeatureList } from './feature_list';
 import { uiInspector } from './inspector';
+import { uiLayerMenu } from './layer_menu';
 
 
 export function uiSidebar(context) {
@@ -9,6 +10,15 @@ export function uiSidebar(context) {
 
 
     function sidebar(selection) {
+        var logoContainer = selection
+            .append('div')
+            .classed('fill-dark', true)
+            .append('div')
+            .classed('hoot-logo', true)
+            .on('click', function (){
+                 //context.hoot().view.versioninfo.showPopup();
+            });
+
         var featureListWrap = selection
             .append('div')
             .attr('class', 'feature-list-pane')
@@ -19,6 +29,10 @@ export function uiSidebar(context) {
             .append('div')
             .attr('class', 'inspector-hidden inspector-wrap fr');
 
+        var layerMenuWrap = selection
+            .append('div')
+            .attr('class', 'add-dataset-pane sidebar-component')
+            .call(uiLayerMenu(context));
 
         function hover(id) {
             if (!current && context.hasEntity(id)) {
@@ -54,6 +68,9 @@ export function uiSidebar(context) {
 
         sidebar.select = function(id, newFeature) {
             if (!current && id) {
+                layerMenuWrap
+                    .style('display', 'none');
+
                 featureListWrap
                     .classed('inspector-hidden', true);
 
@@ -72,6 +89,9 @@ export function uiSidebar(context) {
                 }
 
             } else if (!current) {
+                layerMenuWrap
+                    .style('display', 'block');
+
                 featureListWrap
                     .classed('inspector-hidden', false);
                 inspectorWrap

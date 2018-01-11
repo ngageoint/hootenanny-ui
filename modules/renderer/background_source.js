@@ -4,7 +4,7 @@ import _some from 'lodash-es/some';
 import { geoArea as d3_geoArea } from 'd3-geo';
 
 import { t } from '../util/locale';
-import { geoExtent, geoPolygonIntersectsPolygon } from '../geo';
+import { geoExtent, geoPolygonIntersectsPolygon, geoPolygonContainsPolygon } from '../geo';
 import { jsonpRequest } from '../util/jsonp_request';
 
 
@@ -31,6 +31,7 @@ export function rendererBackgroundSource(data) {
     var source = _clone(data),
         offset = [0, 0],
         name = source.name,
+        id = source.id,
         description = source.description,
         best = !!source.best,
         template = source.template;
@@ -62,6 +63,11 @@ export function rendererBackgroundSource(data) {
     source.description = function() {
         var id_safe = source.id.replace('.', '<TX_DOT>');
         return t('imagery.' + id_safe + '.description', { default: description });
+    };
+
+
+    source.mapid = function() {
+        return id;
     };
 
 
@@ -117,7 +123,9 @@ export function rendererBackgroundSource(data) {
     source.intersects = function(extent) {
         extent = extent.polygon();
         return !data.polygon || data.polygon.some(function(polygon) {
-            return geoPolygonIntersectsPolygon(polygon, extent, true);
+            return geoPolygonIntersectsPolygon(polygon, extent, true)
+                || geoPolygonContainsPolygon(extent, polygon)
+                || geoPolygonContainsPolygon(polygon, extent); //full containment also counts as intersection
         });
     };
 

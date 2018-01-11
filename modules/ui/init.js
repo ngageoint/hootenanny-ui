@@ -18,6 +18,7 @@ import { uiAccount } from './account';
 import { uiAttribution } from './attribution';
 import { uiBackground } from './background';
 import { uiContributors } from './contributors';
+import { uiCoordinates } from './coordinates';
 import { uiFeatureInfo } from './feature_info';
 import { uiFullScreen } from './full_screen';
 import { uiGeolocate } from './geolocate';
@@ -31,6 +32,7 @@ import { uiModes } from './modes';
 import { uiNotice } from './notice';
 import { uiRestore } from './restore';
 import { uiSave } from './save';
+// import { uiSaveToOsm } from './save_to_osm';
 import { uiScale } from './scale';
 import { uiShortcuts } from './shortcuts';
 import { uiSidebar } from './sidebar';
@@ -113,6 +115,11 @@ export function uiInit(context) {
             .append('div')
             .attr('class', 'button-wrap col1')
             .call(uiSave(context));
+
+        // limiter
+        //     .append('span')
+        //     .attr('class', 'button-wrap col2')
+        //     .call(uiSaveToOsm(context));
 
         bar
             .append('div')
@@ -197,10 +204,10 @@ export function uiInit(context) {
             .append('ul')
             .attr('id', 'about-list');
 
-        if (!context.embed()) {
-            aboutList
-                .call(uiAccount(context));
-        }
+        //if (!context.embed()) {
+        //    aboutList
+        //        .call(uiAccount(context));
+        //}
 
         aboutList
             .append('li')
@@ -209,7 +216,7 @@ export function uiInit(context) {
 
         var issueLinks = aboutList
             .append('li');
-
+/*
         issueLinks
             .append('a')
             .attr('target', '_blank')
@@ -225,12 +232,17 @@ export function uiInit(context) {
             .attr('href', 'https://github.com/openstreetmap/iD/blob/master/CONTRIBUTING.md#translating')
             .call(svgIcon('#icon-translate', 'light'))
             .call(tooltip().title(t('help_translate')).placement('top'));
-
+*/
         aboutList
             .append('li')
             .attr('class', 'feature-warning')
             .attr('tabindex', -1)
             .call(uiFeatureInfo(context));
+
+        aboutList.append('li')
+            .attr('class', 'coordinates')
+            .attr('tabindex', -1)
+            .call(uiCoordinates(context));
 
         aboutList
             .append('li')
@@ -238,6 +250,9 @@ export function uiInit(context) {
             .attr('tabindex', -1)
             .call(uiContributors(context));
 
+        if (!context.embed()) {
+            aboutList.call(uiAccount(context));
+        }
 
         var photoviewer = content
             .append('div')

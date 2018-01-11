@@ -43,6 +43,7 @@ import {
     utilDisplayType
 } from '../util';
 
+import { osmEntity } from '../osm/index';
 
 
 export function modeSave(context) {
@@ -76,7 +77,7 @@ export function modeSave(context) {
             remoteGraph = coreGraph(history.base(), true),
             modified = _filter(history.difference().summary(), {changeType: 'modified'}),
             toCheck = _map(_map(modified, 'entity'), 'id'),
-            toLoad = withChildNodes(toCheck, localGraph),
+            toLoad = withChildNodes(toCheck, localGraph).filter(removeNegativeIds),
             conflicts = [],
             errors = [];
 
@@ -112,6 +113,9 @@ export function modeSave(context) {
             }, _clone(ids)));
         }
 
+        function removeNegativeIds(ref) {
+            return parseInt(osmEntity.id.toOSM(ref), 10) > -1;
+        }
 
         // Reload modified entities into an alternate graph and check for conflicts..
         function loaded(err, result) {
@@ -246,13 +250,15 @@ export function modeSave(context) {
                 showErrors();
             } else {
                 history.clearSaved();
-                success(changeset);
+                //Hoot won't display the success message
+                //success(changeset);
+                //Remove the save dialog since we are not showing success message
+                cancel();
                 // Add delay to allow for postgres replication #1646 #2678
                 window.setTimeout(function() {
-                    d3_select('.inspector-wrap *').remove();
                     loading.close();
                     context.flush();
-                }, 2500);
+                }, 25);
             }
         }
 
