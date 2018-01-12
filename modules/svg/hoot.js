@@ -1,5 +1,5 @@
-import * as d3 from 'd3';
-import _ from 'lodash';
+import { geoPath as d3_geoPath } from 'd3-geo';
+import _isEmpty from 'lodash-es/isEmpty';
 import { geoExtent, geoPolygonIntersectsPolygon } from '../geo/index';
 import { utilDetect } from '../util/detect';
 import toGeoJSON from 'togeojson';
@@ -47,13 +47,13 @@ export function svgHoot(projection, context, dispatch) {
             .append('path')
             .merge(paths)
             .attr('class', function(d) {
-                if (!(_.isEmpty(d))) {
+                if (!(_isEmpty(d))) {
                     return 'way line stroke tag-hoot-' + d.properties.mapid;
                 }
             });
 
 
-        var path = d3.geoPath(projection);
+        var path = d3_geoPath(projection);
 
         paths
             .attr('d', path);
@@ -78,7 +78,7 @@ export function svgHoot(projection, context, dispatch) {
 
     drawHoot.hasHoot = function() {
         var geojson = svgHoot.geojson;
-        return (!(_.isEmpty(geojson)));
+        return (!(_isEmpty(geojson)));
     };
 
 

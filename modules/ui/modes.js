@@ -56,7 +56,7 @@ export function uiModes(context) {
             );
 /*
         context.map()
-            .on('move.modes', _.debounce(update, 500));
+            .on('move.modes', _debounce(update, 500));
 
         context.background()
             .on('change.modes', update);

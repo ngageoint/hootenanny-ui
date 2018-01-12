@@ -1,5 +1,10 @@
-import * as d3 from 'd3';
-import _ from 'lodash';
+import _find from 'lodash-es/find';
+import _map from 'lodash-es/map';
+import _size from 'lodash-es/size';
+import _values from 'lodash-es/values';
+import { rbg as d3_rgb } from 'd3-color';
+import { json as d3_json } from 'd3-request';
+import { xml as d3_xml } from 'd3-request';
 import { services } from '../services/index';
 import { geoExtent } from '../geo/index';
 import { osmEntity } from '../osm/entity';
@@ -40,15 +45,15 @@ export default {
     },
 
     changesLength: function() {
-        return _.size(changes) === 0 ? 0 : changes.created.length + changes.deleted.length + changes.modified.length;
+        return _size(changes) === 0 ? 0 : changes.created.length + changes.deleted.length + changes.modified.length;
     },
 
     hasChanges: function() {
-        return _.size(changes) > 0;
+        return _size(changes) > 0;
     },
 
     availableLayers: function(callback) {
-        d3.json(this.urlroot() + '/api/0.6/map/layers', function (error, resp) {
+        d3_json(this.urlroot() + '/api/0.6/map/layers', function (error, resp) {
             if (error) {
                 alert('Get available layers failed!');
                     //callback(null); Do we even need to callback?
@@ -63,7 +68,7 @@ export default {
     },
 
     reviewStatistics: function(mapid, callback) {
-        d3.json('/hoot-services/job/review/statistics?mapId=' + mapid, function (error, resp) {
+        d3_json('/hoot-services/job/review/statistics?mapId=' + mapid, function (error, resp) {
             return callback(error, resp);
         });
     },
@@ -123,14 +128,14 @@ export default {
             }
         });
 
-        d3.json('/hoot-services/job/export/execute')
+        d3_json('/hoot-services/job/export/execute')
             .header("Content-Type", "application/json")
             .post(JSON.stringify(json), function (error, resp) {
                 if (error) {
                     alert('Derive changeset failed!');
                 } else {
                     services.hoot.pollJob(resp.jobid, function() {
-                        d3.xml('/hoot-services/job/export/xml/' + resp.jobid + '?ext=osc', function(data) {
+                        d3_xml('/hoot-services/job/export/xml/' + resp.jobid + '?ext=osc', function(data) {
                             //console.log(data);
                             changes = services.osm.parseChangeset(data);
                             //console.log(JSON.stringify(changes));
@@ -153,7 +158,7 @@ export default {
 
     pollJob: function(jobid, callback) {
         function jobStatus () {
-            d3.json('/hoot-services/job/status/' + jobid, function (error, resp) {
+            d3_json('/hoot-services/job/status/' + jobid, function (error, resp) {
                 if (error) {
                     clearInterval(job);
                     alert('Job status failed!');
@@ -175,13 +180,13 @@ export default {
     loadLayer: function(mapid, source, color, callback) {
 
         var name = availableLayers[mapid];
-        d3.json(services.hoot.urlroot() + '/api/0.6/map/tags?mapid=' + mapid, function (error, tags) {
+        d3_json(services.hoot.urlroot() + '/api/0.6/map/tags?mapid=' + mapid, function (error, tags) {
             if (error) {
                 alert('Get map tags failed!');
                 //callback(null);
             } else {
                 console.log(tags);
-                d3.json(services.hoot.urlroot() + '/api/0.6/map/mbr?mapId=' + mapid, function (error, mbr) {
+                d3_json(services.hoot.urlroot() + '/api/0.6/map/mbr?mapId=' + mapid, function (error, mbr) {
                     if (error) {
                         //The map is empty, so assume a global extent
                         mbr = {
@@ -234,7 +239,7 @@ export default {
 
                                     //Get extent for source layers
                                     [tags.input1, tags.input2].forEach(function(sourceid) {
-                                        d3.json(services.hoot.urlroot() + '/api/0.6/map/mbr?mapId=' + sourceid, function (error, mbr) {
+                                        d3_json(services.hoot.urlroot() + '/api/0.6/map/mbr?mapId=' + sourceid, function (error, mbr) {
                                             if (error) {
                                                 //The map is empty, so assume a global extent
                                                 mbr = {
@@ -373,7 +378,7 @@ export default {
     },
 
     changeLayerColor: function(lyrmenu, callback) {
-        var lyr = d3.values(loadedLayers).find(function(d) {
+        var lyr = _values(loadedLayers).find(function(d) {
             return d.source === lyrmenu.id;
         });
         if (lyr) {
@@ -405,13 +410,13 @@ export default {
     },
 
     layerBySource: function(s) {
-        return d3.values(loadedLayers).find(function(d) {
+        return _values(loadedLayers).find(function(d) {
             return d.source === s;
         }).id;
     },
 
     hasLayers: function() {
-        return d3.map(loadedLayers).size() > 0;
+        return _map(loadedLayers).size() > 0;
     },
 
     hasOsmLayer: function() {
@@ -449,7 +454,7 @@ export default {
         //         hex: ''
         }];
         if (!co) return palette;
-        var obj = _.find(palette, function(a) {
+        var obj = _find(palette, function(a) {
             return a.name === co || a.hex === co;
         });
         if (obj === undefined) {
@@ -471,7 +476,7 @@ export default {
 
         //Insert new color rules for mapid
         color = this.palette(color);
-        var lighter = d3.rgb(color).brighter();
+        var lighter = d3_rgb(color).brighter();
         sheets.insertRule('path.stroke.tag-hoot-' + mapid + ' { stroke:' + color + '}', sheets.cssRules.length - 1);
         sheets.insertRule('path.shadow.tag-hoot-' + mapid + ' { stroke:' + lighter + '}', sheets.cssRules.length - 1);
         sheets.insertRule('path.fill.tag-hoot-' + mapid + ' { fill:' + lighter + '}', sheets.cssRules.length - 1);

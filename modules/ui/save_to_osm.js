@@ -1,4 +1,5 @@
-import * as d3 from 'd3';
+import { interpolateRgb as d3_interpolateRgb } from 'd3-interpolate';
+import { event as d3_event } from 'd3-selection';
 import { d3keybinding } from '../lib/d3.keybinding.js';
 import { t } from '../util/locale';
 import { modeSave } from '../modes/index';
@@ -19,7 +20,7 @@ export function uiSaveToOsm(context) {
 
 
     function save() {
-        d3.event.preventDefault();
+        d3_event.preventDefault();
         var changes = services.hoot.changes();
         console.log(changes);
         // if (!context.inIntro() && !saving() && services.hoot.hasChanges()) {
@@ -34,10 +35,10 @@ export function uiSaveToOsm(context) {
             return null;
         } else if (numChanges <= 50) {
             step = numChanges / 50;
-            return d3.interpolateRgb('#fff', '#ff8')(step);  // white -> yellow
+            return d3_interpolateRgb('#fff', '#ff8')(step);  // white -> yellow
         } else {
             step = Math.min((numChanges - 50) / 50, 1.0);
-            return d3.interpolateRgb('#ff8', '#f88')(step);  // yellow -> red
+            return d3_interpolateRgb('#ff8', '#f88')(step);  // yellow -> red
         }
     }
 

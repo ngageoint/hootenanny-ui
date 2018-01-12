@@ -1,4 +1,9 @@
-import * as d3 from 'd3';
+import {
+    event as d3_event,
+    select as d3_select
+} from 'd3-selection';
+import d3_tsvParseRows from 'd3-dsv/tsvParseRows';
+import _entries from 'lodash-es/entries';
 import { svgIcon } from '../svg/index';
 import { services } from '../services/index';
 
@@ -18,11 +23,11 @@ export function uiMapMetadata(data, context) {
                 .classed('hide-toggle', true)
                 .classed('expanded', false)
                 .on('click', function() {
-                    var exp = d3.select(this).classed('expanded');
+                    var exp = d3_select(this).classed('expanded');
                     container.style('display', exp ? 'none' : 'block');
-                    d3.select(this).classed('expanded', !exp);
+                    d3_select(this).classed('expanded', !exp);
                     //context.ui().sidebar.adjustMargins();
-                    d3.event.preventDefault();
+                    d3_event.preventDefault();
                 });
 
             var container = body.append('div')
@@ -65,18 +70,18 @@ export function uiMapMetadata(data, context) {
                 .classed('hide-toggle', true)
                 .classed('expanded', false)
                 .on('click', function() {
-                    var exp = d3.select(this).classed('expanded');
+                    var exp = d3_select(this).classed('expanded');
                     container.style('display', exp ? 'none' : 'block');
-                    d3.select(this).classed('expanded', !exp);
+                    d3_select(this).classed('expanded', !exp);
                     //context.ui().sidebar.adjustMargins();
-                    d3.event.preventDefault();
+                    d3_event.preventDefault();
                 });
             var container = body.append('div')
                 .attr('class', '')
                 .style('display', 'none');
 
             var table = container.selectAll('table')
-                .data(d3.entries(data))
+                .data(_entries(data))
                 .enter().append('table')
                 .attr('class', function(d) {
                     return d.key;
@@ -85,14 +90,14 @@ export function uiMapMetadata(data, context) {
 
             var rows = table.selectAll('tr')
                 .data(function(d) {
-                    return d3.entries(d.value);
+                    return _entries(d.value);
                 })
                 .enter().append('tr')
                 .classed('tag-row', true);
 
             rows.selectAll('td')
                 .data(function(d) {
-                    var dv = d3.entries(d.value);
+                    var dv = _entries(d.value);
                     return [d.key].concat(dv.map(function(v) {
                         return v.value;
                     }));
@@ -120,7 +125,7 @@ export function uiMapMetadata(data, context) {
             var RefLayerName = d.tags.input1Name || 'Reference Layer Missing';
             var SecLayerName = d.tags.input2Name || 'Secondary Layer Missing';
             var params = JSON.parse(d.tags.params.replace(/\\"/g, '"'));
-            var pdata = d3.entries({
+            var pdata = _entries({
                 'Reference Layer': RefLayerName,
                 'Secondary Layer': SecLayerName,
                 'Conflation Type': params.CONFLATION_TYPE,
@@ -135,7 +140,7 @@ export function uiMapMetadata(data, context) {
             });
 
             // options
-            var optdata = d3.entries(params.ADV_OPTIONS).sort(function(a, b) {
+            var optdata = _entries(params.ADV_OPTIONS).sort(function(a, b) {
                 if (a.key < b.key) {
                   return -1;
                 }
@@ -160,7 +165,7 @@ export function uiMapMetadata(data, context) {
             var SecLayerName = 'secondary';
             var ConfLayerName = 'conflated';
 
-            var stats = d3.tsvParseRows(d.tags.stats, function(d) {
+            var stats = d3_tsvParseRows(d.tags.stats, function(d) {
                 var obj = {};
                 obj[d.shift()] = d;
                 return obj;
@@ -278,28 +283,28 @@ export function uiMapMetadata(data, context) {
                 featurepercents: featurepercents
             }, 'Statistics');
 
-            addExpandList(d3.entries(stats), 'Statistics (Raw)');
+            addExpandList(_entries(stats), 'Statistics (Raw)');
 
             //Build the download text
             download += '\nStatistics:\n';
             download += '\nLayer Counts:\n';
-            d3.select('table.layercounts').selectAll('tr').each(function() {
-                download += d3.select(this).selectAll('td').data().join('\t');
+            d3_select('table.layercounts').selectAll('tr').each(function() {
+                download += d3_select(this).selectAll('td').data().join('\t');
                 download += '\n';
             });
             download += '\nLayer Features:\n';
-            d3.select('table.layerfeatures').selectAll('tr').each(function() {
-                download += d3.select(this).selectAll('td').data().join('\t');
+            d3_select('table.layerfeatures').selectAll('tr').each(function() {
+                download += d3_select(this).selectAll('td').data().join('\t');
                 download += '\n';
             });
             download += '\nFeatures Counts:\n';
-            d3.select('table.featurecounts').selectAll('tr').each(function() {
-                download += d3.select(this).selectAll('td').data().join('\t');
+            d3_select('table.featurecounts').selectAll('tr').each(function() {
+                download += d3_select(this).selectAll('td').data().join('\t');
                 download += '\n';
             });
             download += '\nFeature Percents:\n';
-            d3.select('table.featurepercents').selectAll('tr').each(function() {
-                download += d3.select(this).selectAll('td').data().join('\t');
+            d3_select('table.featurepercents').selectAll('tr').each(function() {
+                download += d3_select(this).selectAll('td').data().join('\t');
                 download += '\n';
             });
             download += '\nStatistics (Raw):\n';
@@ -319,7 +324,7 @@ export function uiMapMetadata(data, context) {
                 var fileName = d.name.replace(/\s/g, '_');
                 var blob = new Blob([download], {type: 'text/tab-separated-values;charset=utf-8'});
                 window.saveAs(blob, fileName + '-stats.tsv');
-                d3.event.preventDefault();
+                d3_event.preventDefault();
             });
     }
 
@@ -331,7 +336,7 @@ export function uiMapMetadata(data, context) {
             .classed('expanded', false)
             .on('click', function() {
                 services.hoot.toggleMergedLayer(mapid);
-                d3.event.preventDefault();
+                d3_event.preventDefault();
             });
     }
 
@@ -372,8 +377,8 @@ export function uiMapMetadata(data, context) {
             .style('float', 'right')
             .style('position', 'relative')
             .on('click', function (d) {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
+                d3_event.stopPropagation();
+                d3_event.preventDefault();
                 if (showing) {
                     hide();
                 } else if (loaded) {

@@ -1,5 +1,4 @@
-import _ from 'lodash';
-import * as d3 from 'd3';
+import { select as d3_select } from 'd3-selection';
 import { d3combobox } from '../lib/d3.combobox.js';
 import { t } from '../util/locale';
 import { svgIcon } from '../svg/index';
@@ -32,7 +31,7 @@ export function uiLayerMenu(context) {
                     q[d.source] = d.mapid;
                     window.location.replace('#' + utilQsString(q, true));
 
-                    var lyrdiv = d3.select('#' + d.source);
+                    var lyrdiv = d3_select('#' + d.source);
                     var color = lyrdiv.attr('data-color');
                     //Set the layer combobox to disabled/readonly
                     lyrdiv.select('input')
@@ -149,8 +148,8 @@ export function uiLayerMenu(context) {
                     menus.append('div')
                         .attr('class','pad1 inline thumbnail dark big _icon data')
                         .on('click', function(d) {
-                            d3.select('#palette-' + lyrmenu.id)
-                                .classed('hidden', function() { return !d3.select(this).classed('hidden'); });
+                            d3_select('#palette-' + lyrmenu.id)
+                                .classed('hidden', function() { return !d3_select(this).classed('hidden'); });
                         });
 
                     var layersection = menus.append('div')
@@ -200,7 +199,7 @@ export function uiLayerMenu(context) {
                                 //highlight the new selected color swatch
                                 buildPalette(container, lyrmenu);
                                 //update the layer icon color
-                                d3.select('#' + lyrmenu.id)
+                                d3_select('#' + lyrmenu.id)
                                     .classed(oldColor, false)
                                     .classed(newColor, true)
                                     .attr('data-color', newColor);

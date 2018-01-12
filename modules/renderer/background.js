@@ -1,4 +1,5 @@
 import _find from 'lodash-es/find';
+import _remove from 'lodash-es/remove';
 
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { select as d3_select } from 'd3-selection';
@@ -130,7 +131,7 @@ export function rendererBackground(context) {
     background.removeSource = function(id) {
         var source = findSource(id);
         if (source) {
-            _.remove(backgroundSources, {id: source.id});
+            _remove(backgroundSources, {id: source.id});
             if (background.showsLayer({id: id})) background.toggleOverlayLayer(source);
         }
     };
