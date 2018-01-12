@@ -1073,3 +1073,104 @@ en:
       shortcuts: "You can view a list of commands along with their keyboard shortcuts by pressing the '{key}' key."
       save: "Don't forget to regularly save your changes!"
       start: "Start mapping!"
+  shortcuts:
+    title: "Keyboard shortcuts"
+    tooltip: "Show the keyboard shortcuts screen."
+    toggle:
+      key: '?'
+    key:
+      alt: Alt
+      backspace: Backspace
+      cmd: Cmd
+      ctrl: Ctrl
+      delete: Delete
+      del: Del
+      end: End
+      enter: Enter
+      esc: Esc
+      home: Home
+      option: Option
+      pause: Pause
+      pgdn: PgDn
+      pgup: PgUp
+      return: Return
+      shift: Shift
+      space: Space
+    gesture:
+      drag: drag
+    or: "-or-"
+    browsing:
+      title: "Browsing"
+      navigation:
+        title: "Navigation"
+        pan: "Pan map"
+        pan_more: "Pan map by one screenful"
+        zoom: "Zoom in / Zoom out"
+        zoom_more: "Zoom in / Zoom out by a lot"
+      help:
+        title: "Help"
+        help: "Show help/documentation"
+        keyboard: "Show keyboard shortcuts"
+      display_options:
+        title: "Display options"
+        background: "Show background options"
+        background_switch: "Switch back to last background"
+        map_data: "Show map data options"
+        fullscreen: "Enter full screen mode"
+        wireframe: "Toggle wireframe mode"
+        minimap: "Toggle minimap"
+      selecting:
+        title: "Selecting features"
+        select_one: "Select a single feature"
+        select_multi: "Select multiple features"
+        lasso: "Draw a selection lasso around features"
+      with_selected:
+        title: "With feature selected"
+        edit_menu: "Toggle edit menu"
+      vertex_selected:
+        title: "With node selected"
+        previous: "Jump to previous node"
+        next: "Jump to next node"
+        first: "Jump to first node"
+        last: "Jump to last node"
+        change_parent: "Switch parent way"
+    editing:
+      title: "Editing"
+      drawing:
+        title: "Drawing"
+        add_point: "'Add point' mode"
+        add_line: "'Add line' mode"
+        add_area: "'Add area' mode"
+        place_point: "Place a point"
+        disable_snap: "Hold to disable point snapping"
+        stop_line: "Finish drawing a line or area"
+      operations:
+        title: "Operations"
+        continue_line: "Continue a line at the selected node"
+        merge: "Combine (merge) selected features"
+        disconnect: "Disconnect features at the selected node"
+        split: "Split a line into two at the selected node"
+        reverse: "Reverse a line"
+        move: "Move selected features"
+        rotate: "Rotate selected features"
+        orthogonalize: "Straighten line / Square area corners"
+        circularize: "Circularize a closed line or area"
+        reflect_long: "Reflect features across the longer axis"
+        reflect_short: "Reflect features across the shorter axis"
+        delete: "Delete selected features"
+      commands:
+        title: "Commands"
+        copy: "Copy selected features"
+        paste: "Paste copied features"
+        undo: "Undo last action"
+        redo: "Redo last action"
+        save: "Save changes"
+    tools:
+      title: "Tools"
+      info:
+        title: "Information"
+        all: "Toggle all information panels"
+        background: "Toggle background panel"
+        history: "Toggle history panel"
+        location: "Toggle location panel"
+        measurement: "Toggle measurement panel"
