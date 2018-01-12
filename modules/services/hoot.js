@@ -59,7 +59,7 @@ export default {
                     //callback(null); Do we even need to callback?
             } else {
                 availableLayers = resp.layers.reduce(function(lyrs, lyr) {
-                    lyrs[lyr.id] = lyr.name;
+                    lyrs[lyr.id.toString()] = lyr.name; //important that we cast mapid to string
                     return lyrs;
                 }, {});
                 callback(resp.layers);
@@ -185,7 +185,7 @@ export default {
                 alert('Get map tags failed!');
                 //callback(null);
             } else {
-                console.log(tags);
+                // console.log(tags);
                 d3_json(services.hoot.urlroot() + '/api/0.6/map/mbr?mapId=' + mapid, function (error, mbr) {
                     if (error) {
                         //The map is empty, so assume a global extent

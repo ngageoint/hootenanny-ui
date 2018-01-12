@@ -129,7 +129,7 @@ export function rendererBackground(context) {
     };
 
     background.removeSource = function(id) {
-        var source = findSource(id);
+        var source = background.findSource(id);
         if (source) {
             _remove(backgroundSources, {id: source.id});
             if (background.showsLayer({id: id})) background.toggleOverlayLayer(source);

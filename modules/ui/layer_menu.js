@@ -64,7 +64,7 @@ export function uiLayerMenu(context) {
                                     .data(layers.map(function (n) {
                                         return {
                                             value: n.name,
-                                            mapid: n.id,
+                                            mapid: n.id.toString(), //important that we cast mapid to string
                                             source: d.source
                                         };
                                     }))
@@ -169,7 +169,7 @@ export function uiLayerMenu(context) {
                             .data(layers.map(function (n) {
                                 return {
                                     value: n.name,
-                                    mapid: n.id,
+                                    mapid: n.id.toString(), //important that we cast mapid to string
                                     source: lyrmenu.id
                                 };
                             }))
