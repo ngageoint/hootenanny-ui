@@ -400,6 +400,25 @@ export default {
         function uploadedChangeset(err) {
             if (err) return callback(err);
 
+            // Upload was successful, safe to call the callback.
+            // Add delay to allow for postgres replication #1646 #2678
+            window.setTimeout(function() {
+                callback(null, changeset);
+            }, 2500);
+
+            // At this point, we don't really care if the connection was switched..
+            // Only try to close the changeset if we're still talking to the same server.
+            if (that.getConnectionId() === cid) {
+                // Still attempt to close changeset, but ignore response because #2667
+                oauth.xhr({
+                    method: 'PUT',
+                    path: '/api/0.6/changeset/' + changeset.id + '/close',
+                    options: { header: { 'Content-Type': 'text/xml' } }
+                }, function() { return true; });
+            }
+        }
+    },
+
     //Splits changes and creates a change object per mapid
     splitChanges: function(changes) {
         var splitChangeMap = {};
@@ -679,11 +698,11 @@ export default {
 
         // Load from visible layers only
         // Hoot loadedLayers is what controls the vector data sources that are loaded
-        var visLayers = _.filter(d3.values(services.hoot.loadedLayers()), function (layer) {
+        var visLayers = _filter(_values(services.hoot.loadedLayers()), function (layer) {
             return layer.visible;
         });
 
-        var tiles = _.map(visLayers, function (layer) {
+        var tiles = _map(visLayers, function (layer) {
             var _tiles = d3geoTile()
                 .scaleExtent([tileZoom, tileZoom])
                 .scale(s)
@@ -706,7 +725,7 @@ export default {
         });
 
         // flatten visible layer tile arrays to make http requests
-        tiles = _.flatten(tiles);
+        tiles = _flatten(tiles);
 
         _filter(inflight, function(v, i) {
             var wanted = _find(tiles, function(tile) {
