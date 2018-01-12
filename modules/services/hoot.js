@@ -2,7 +2,7 @@ import _find from 'lodash-es/find';
 import _map from 'lodash-es/map';
 import _size from 'lodash-es/size';
 import _values from 'lodash-es/values';
-import { rbg as d3_rgb } from 'd3-color';
+import { rgb as d3_rgb } from 'd3-color';
 import { json as d3_json } from 'd3-request';
 import { xml as d3_xml } from 'd3-request';
 import { services } from '../services/index';
@@ -282,7 +282,7 @@ export default {
                             //Store info on the loaded layer
                             loadedLayers[mapid] = {
                                 name: name,
-                                id: mapid,
+                                id: mapid.toString(),
                                 polygon: [layerExtent.polygon()],
                                 color: color,
                                 source: source,
@@ -416,7 +416,7 @@ export default {
     },
 
     hasLayers: function() {
-        return _map(loadedLayers).size() > 0;
+        return _size(loadedLayers) > 0;
     },
 
     hasOsmLayer: function() {

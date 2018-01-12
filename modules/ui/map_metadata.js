@@ -2,7 +2,7 @@ import {
     event as d3_event,
     select as d3_select
 } from 'd3-selection';
-import d3_tsvParseRows from 'd3-dsv/tsvParseRows';
+import { tsvParseRows as d3_tsvParseRows } from 'd3-dsv';
 import _entries from 'lodash-es/entries';
 import { svgIcon } from '../svg/index';
 import { services } from '../services/index';

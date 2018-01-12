@@ -3,10 +3,12 @@ import _extend from 'lodash-es/extend';
 import _forEach from 'lodash-es/forEach';
 import _filter from 'lodash-es/filter';
 import _find from 'lodash-es/find';
+import _flatten from 'lodash-es/flatten';
 import _groupBy from 'lodash-es/groupBy';
 import _isEmpty from 'lodash-es/isEmpty';
 import _map from 'lodash-es/map';
 import _uniq from 'lodash-es/uniq';
+import _values from 'lodash-es/values';
 
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { xml as d3_xml } from 'd3-request';
@@ -703,7 +705,7 @@ export default {
         });
 
         var tiles = _map(visLayers, function (layer) {
-            var _tiles = d3geoTile()
+            var _tiles = d3_geoTile()
                 .scaleExtent([tileZoom, tileZoom])
                 .scale(s)
                 .size(dimensions)
