@@ -133,7 +133,7 @@ var parsers = {
         });
     },
 
-    way: function wayData(obj, mapId) {
+    way: function wayData(obj, uid, mapId) {
         var attrs = obj.attributes;
         return new osmWay({
             id: osmEntity.id.fromOSM('way', attrs.id.value + '_' + mapId),
@@ -147,7 +147,7 @@ var parsers = {
         });
     },
 
-    relation: function relationData(obj, mapId) {
+    relation: function relationData(obj, uid, mapId) {
         var attrs = obj.attributes;
         return new osmRelation({
             id: osmEntity.id.fromOSM('relation', attrs.id.value + '_' + mapId),
