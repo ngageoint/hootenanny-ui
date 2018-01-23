@@ -449,7 +449,7 @@ Hoot.control.conflate = function (context,sidebar) {
         var _conflationCommand = 'conflate';
         try {
             var _conflationType = thisConfType.value();
-            if(_conflationType === 'Differential'){
+            if(_conflationType === 'Differential' || _conflationType === 'Custom Differential'){
                 _conflationCommand = 'diff-conflate';
             }
         } catch (_e) {
