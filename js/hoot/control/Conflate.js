@@ -448,9 +448,8 @@ Hoot.control.conflate = function (context,sidebar) {
         // Check for differential conflation AND enabled...
         var _conflationCommand = 'conflate';
         try {
-            var _roadEngine = _.find(_instance.confLastSetVals, {id: 'hoot_road_opt_engine'}).value;
-            var _roadEnabled = _.find(_instance.confLastSetVals, {id: 'hoot_enable_road_options'}).checked;
-            if(_roadEngine === 'Differential' && _roadEnabled === true) {
+            var _conflationType = thisConfType.value();
+            if(_conflationType === 'Differential' || _conflationType === 'Custom Differential'){
                 _conflationCommand = 'diff-conflate';
             }
         } catch (_e) {
@@ -588,7 +587,7 @@ Hoot.control.conflate = function (context,sidebar) {
                 label: 'Type',
                 type: 'ConfType',
                 placeholder: 'Reference',
-                combobox: {'data':['Reference', 'Average', 'Cookie Cutter & Horizontal'],
+                combobox: {'data':['Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential'],
                             'command': _populateReferenceCombo},
                 onchange: function(){
                     //reset form
