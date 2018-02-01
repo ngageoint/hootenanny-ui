@@ -17,7 +17,6 @@
     "maxnodescount" : 10000,
     "elementMergeServerPort": 8096,
     "pluginhost":"hoot",
-    "presetMaxLevDistance" : 20,
     "presetMaxDisplayNum" : 12,
     "userEmail":"test@test.com",
     "translationCapabilites":{},
