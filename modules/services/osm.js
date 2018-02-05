@@ -31,7 +31,7 @@ import { utilRebind, utilIdleWorker } from '../util';
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded'),
     useHttps = window.location.protocol === 'https:',
     protocol = useHttps ? 'https:' : 'http:',
-    urlroot = protocol + '//nome-in-a-box:3000',
+    urlroot = protocol + '//www.openstreetmap.org',
     blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'],
     inflight = {},
     loadedTiles = {},
@@ -40,8 +40,8 @@ var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'load
     tileZoom = 16,
     oauth = osmAuth({
         url: urlroot,
-        oauth_consumer_key: '7VFoWFC53zIqBY9fLqjaufkumDxFRrjGP2BGayKL',
-        oauth_secret: 'hf0kTNizGA5Nr1Q4irwY4lOFI14JRCYbUwXUGD2S',
+        oauth_consumer_key: '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
+        oauth_secret: 'aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL',
         loading: authLoading,
         done: authDone
     }),

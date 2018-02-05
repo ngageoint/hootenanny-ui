@@ -51,7 +51,7 @@ export function uiLayerMenu(context) {
                             removeLayer(d.mapid);
                             //Reset the layer menu ui element
                             this.remove();
-                            //This should be a remove method on map_metadata
+                            //This should be a remove method on mahttps://github.com/openstreetmap/iD.gitp_metadata
                             lyrdiv.select('button.map-metadata-button').remove();
                             lyrdiv.selectAll('.map-metadata-body').remove();
 

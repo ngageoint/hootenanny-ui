@@ -58,7 +58,7 @@ if (isDevelopment) {
 
     var port = 8088;
     var hootHost = 'localhost';
-    var hootPort = 8888;
+    var hootPort = 8999;
     var hootUrl = 'http://' + hootHost + ':' + hootPort;
 
     app.use(

@@ -59,3 +59,5 @@ export { uiUndoRedo } from './undo_redo';
 export { uiVersion } from './version';
 export { uiViewOnOSM } from './view_on_osm';
 export { uiZoom } from './zoom';
+
+console.log( 'hello' );
