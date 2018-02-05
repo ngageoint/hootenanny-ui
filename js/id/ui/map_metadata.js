@@ -107,11 +107,12 @@ iD.ui.MapMetadata = function(data, context) {
         }
 
         var download = '';
+        var params;
         // params
         if (d.tags && d.tags.params) {
             var RefLayerName = d.tags.input1Name || 'Reference Layer Missing';
             var SecLayerName = d.tags.input2Name || 'Secondary Layer Missing';
-            var params = JSON.parse(d.tags.params.replace(/\\"/g, '"'));
+            params = JSON.parse(d.tags.params.replace(/\\"/g, '"'));
             var pdata = d3.entries({
                 'Reference Layer': RefLayerName,
                 'Secondary Layer': SecLayerName,
@@ -155,6 +156,16 @@ iD.ui.MapMetadata = function(data, context) {
             }).reduce(function(pv, cv) {
                 return Object.assign(pv, cv);
             }, {});
+
+            var diffstats;
+            if (params.CONFLATION_TYPE.includes('Differential'))
+            {
+              diffstats = {Differential: {1: 'count'}};
+              diffstats['New POIs'] = { count: stats['Count of New POIs'][3] };
+              diffstats['New Buildings'] = { count: stats['Count of New Buildings'][3] };
+              var km = parseInt(stats['Km of New Road'][3]);
+              diffstats['Km of New Road'] = { count: km.toFixed(2) };
+            }
 
             var layercounts = {count: {
                 1: 'nodes',
@@ -259,12 +270,25 @@ iD.ui.MapMetadata = function(data, context) {
                 };
             }
 
-            addExpandTables({
+            if (params.CONFLATION_TYPE.includes('Differential'))
+            {
+              addExpandTables({
+                diffstats: diffstats,
                 layercounts: layercounts,
                 layerfeatures: layerfeatures,
                 featurecounts: featurecounts,
                 featurepercents: featurepercents
-            }, 'Statistics');
+              }, 'Statistics');
+            }
+            else
+            {
+              addExpandTables({
+                  layercounts: layercounts,
+                  layerfeatures: layerfeatures,
+                  featurecounts: featurecounts,
+                  featurepercents: featurepercents
+              }, 'Statistics');
+            }
 
             addExpandList(d3.entries(stats), 'Statistics (Raw)');
 
