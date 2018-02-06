@@ -158,8 +158,7 @@ iD.ui.MapMetadata = function(data, context) {
             }, {});
 
             var diffstats;
-            if (params.CONFLATION_TYPE.includes('Differential'))
-            {
+            if (params.CONFLATION_TYPE.includes('Differential')) {
               var kmOrig = parseFloat(stats['Meters of Linear Features'][0]) / 1000.0;
               var kmNew  = parseFloat(stats['Km of New Road'][3]);
 
@@ -275,8 +274,8 @@ iD.ui.MapMetadata = function(data, context) {
                 };
             }
 
-            if (params.CONFLATION_TYPE.includes('Differential'))
-            {
+            // Table stats
+            if (params.CONFLATION_TYPE.includes('Differential')) {
               addExpandTables({
                 diffstats: diffstats,
                 layercounts: layercounts,
@@ -284,9 +283,7 @@ iD.ui.MapMetadata = function(data, context) {
                 featurecounts: featurecounts,
                 featurepercents: featurepercents
               }, 'Statistics');
-            }
-            else
-            {
+            } else {
               addExpandTables({
                   layercounts: layercounts,
                   layerfeatures: layerfeatures,
@@ -295,10 +292,20 @@ iD.ui.MapMetadata = function(data, context) {
               }, 'Statistics');
             }
 
+            // Raw stats
             addExpandList(d3.entries(stats), 'Statistics (Raw)');
 
             //Build the download text
             download += '\nStatistics:\n';
+
+            if (params.CONFLATION_TYPE.includes('Differential')){
+              download += '\nDiff Stats:\n';
+              d3.select('table.diffstats').selectAll('tr').each(function() {
+                  download += d3.select(this).selectAll('td').data().join('\t');
+                  download += '\n';
+              });
+            }
+
             download += '\nLayer Counts:\n';
             d3.select('table.layercounts').selectAll('tr').each(function() {
                 download += d3.select(this).selectAll('td').data().join('\t');
