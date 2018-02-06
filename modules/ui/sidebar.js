@@ -10,15 +10,6 @@ export function uiSidebar(context) {
 
 
     function sidebar(selection) {
-        var logoContainer = selection
-            .append('div')
-            .classed('fill-dark', true)
-            .append('div')
-            .classed('hoot-logo', true)
-            .on('click', function (){
-                 //context.hoot().view.versioninfo.showPopup();
-            });
-
         var featureListWrap = selection
             .append('div')
             .attr('class', 'feature-list-pane')

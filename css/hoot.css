@@ -5,7 +5,7 @@
     background-size: contain;
     vertical-align: middle;
     height: 60px;
-    margin-left: 30px;
+    width: 400px;
 }
 
 .round        { border-radius:4px; }

@@ -22,6 +22,7 @@ import { uiCoordinates } from './coordinates';
 import { uiFeatureInfo } from './feature_info';
 import { uiFullScreen } from './full_screen';
 import { uiGeolocate } from './geolocate';
+import { uiHeader } from './header';
 import { uiHelp } from './help';
 import { uiInfo } from './info';
 import { uiIntro } from './intro';
@@ -44,10 +45,10 @@ import { uiVersion } from './version';
 import { uiZoom } from './zoom';
 import { uiCmd } from './cmd';
 
+import Hoot from '../Hoot/hoot';
 
 export function uiInit(context) {
     var uiInitCounter = 0;
-
 
     function render(container) {
         container
@@ -61,6 +62,12 @@ export function uiInit(context) {
         if (!hash.hadHash) {
             map.centerZoom([0, 0], 2);
         }
+
+        //container
+        //    .append( 'div' )
+        //    .attr( 'id', 'header' )
+        //    .classed( 'contain pad2x dark fill-dark', true )
+        //    .call( ui.header );
 
         container
             .append('svg')
@@ -361,7 +368,10 @@ export function uiInit(context) {
         context.container(container);
         context.loadLocale(function(err) {
             if (!err) {
+                const hootUI = new Hoot( context, container );
+
                 render(container);
+                hootUI.render();
             }
             if (callback) {
                 callback(err);
@@ -381,8 +391,9 @@ export function uiInit(context) {
         });
     };
 
-
     ui.sidebar = uiSidebar(context);
+    //ui.header = uiHeader( context );
+	//ui.hoot = uiHoot( context );
 
     return ui;
 }

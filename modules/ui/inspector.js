@@ -4,14 +4,12 @@ import { uiEntityEditor } from './entity_editor';
 import { uiPresetList } from './preset_list';
 import { uiViewOnOSM } from './view_on_osm';
 
-
 export function uiInspector(context) {
     var presetList = uiPresetList(context),
         entityEditor = uiEntityEditor(context),
         state = 'select',
         entityID,
         newFeature = false;
-
 
     function inspector(selection) {
         presetList

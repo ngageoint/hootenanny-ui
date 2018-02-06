@@ -22,6 +22,7 @@ export { uiFlash } from './flash';
 export { uiFormFields } from './form_fields';
 export { uiFullScreen } from './full_screen';
 export { uiGeolocate } from './geolocate';
+export { uiHeader } from './header';
 export { uiHelp } from './help';
 export { uiInfo } from './info';
 export { uiInspector } from './inspector';
@@ -59,5 +60,3 @@ export { uiUndoRedo } from './undo_redo';
 export { uiVersion } from './version';
 export { uiViewOnOSM } from './view_on_osm';
 export { uiZoom } from './zoom';
-
-console.log( 'hello' );
