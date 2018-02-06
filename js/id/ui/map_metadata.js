@@ -160,11 +160,16 @@ iD.ui.MapMetadata = function(data, context) {
             var diffstats;
             if (params.CONFLATION_TYPE.includes('Differential'))
             {
-              diffstats = {Differential: {1: 'count'}};
-              diffstats['New POIs'] = { count: stats['Count of New POIs'][3] };
-              diffstats['New Buildings'] = { count: stats['Count of New Buildings'][3] };
-              var km = parseInt(stats['Km of New Road'][3]);
-              diffstats['Km of New Road'] = { count: km.toFixed(2) };
+              var kmOrig = parseFloat(stats['Meters of Linear Features'][0]) / 1000.0;
+              var kmNew  = parseFloat(stats['Km of New Road'][3]);
+
+              diffstats = {Differential: {1: 'original', 2: 'new'}};
+              diffstats['POIs']       = { original: stats['POI Count'][0],
+                                          new: stats['Count of New POIs'][3] };
+              diffstats['Buildings']  = { original: stats['Building Count'][0],
+                                          new: stats['Count of New Buildings'][3] };
+              diffstats['Km of Road'] = { original: kmOrig.toFixed(2),
+                                          new: kmNew.toFixed(2) };
             }
 
             var layercounts = {count: {
