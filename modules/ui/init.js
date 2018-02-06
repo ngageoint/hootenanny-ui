@@ -368,10 +368,10 @@ export function uiInit(context) {
         context.container(container);
         context.loadLocale(function(err) {
             if (!err) {
-                const hootUI = new Hoot( context, container );
+                const hootUI = new Hoot( context );
 
                 render(container);
-                hootUI.render();
+                hootUI.init();
             }
             if (callback) {
                 callback(err);

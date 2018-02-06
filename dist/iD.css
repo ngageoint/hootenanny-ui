@@ -6894,7 +6894,8 @@ input.round { border-radius: 4px; }
     background-size: contain;
     vertical-align: middle;
     height: 60px;
-    margin-left: 10px;
+    /*margin-left: 10px;*/
+    width: 400px;
 }
 
 .rcon.sprocket:after, ._icon.sprocket:before { background-position: 0 0; }

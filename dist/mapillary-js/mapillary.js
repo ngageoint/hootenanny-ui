@@ -3594,7 +3594,7 @@ function Individual(key, value) {
 },{}],19:[function(require,module,exports){
 'use strict';
 
-var Individual = require('./index.js');
+var Individual = require('./header.js');
 
 module.exports = OneVersion;
 
@@ -16274,7 +16274,7 @@ var diff = require("./vtree/diff.js")
 module.exports = diff
 
 },{"./vtree/diff.js":209}],185:[function(require,module,exports){
-var h = require("./virtual-hyperscript/index.js")
+var h = require("./virtual-hyperscript/header.js")
 
 module.exports = h
 

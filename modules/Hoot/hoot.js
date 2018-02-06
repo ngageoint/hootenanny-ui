@@ -6,14 +6,16 @@
 
 'use strict';
 
+import { components } from './components/index';
+
 class Hoot {
-	constructor( context, container ) {
-		this.context = context;
-		this.container = container;
+	constructor( context ) {
+		this.context    = context;
+		this.components = components( context );
 	}
 
-	render() {
-
+	init() {
+		Promise.all( this.components.map( component => component.init() ) );
 	}
 }
 
