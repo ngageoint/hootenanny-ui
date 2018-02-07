@@ -107,11 +107,12 @@ iD.ui.MapMetadata = function(data, context) {
         }
 
         var download = '';
+        var params;
         // params
         if (d.tags && d.tags.params) {
             var RefLayerName = d.tags.input1Name || 'Reference Layer Missing';
             var SecLayerName = d.tags.input2Name || 'Secondary Layer Missing';
-            var params = JSON.parse(d.tags.params.replace(/\\"/g, '"'));
+            params = JSON.parse(d.tags.params.replace(/\\"/g, '"'));
             var pdata = d3.entries({
                 'Reference Layer': RefLayerName,
                 'Secondary Layer': SecLayerName,
@@ -155,6 +156,32 @@ iD.ui.MapMetadata = function(data, context) {
             }).reduce(function(pv, cv) {
                 return Object.assign(pv, cv);
             }, {});
+
+            var diffstats;
+            if (params.CONFLATION_TYPE.includes('Differential')) {
+              diffstats = {Differential: {1: 'original', 2: 'new', 3: 'total'}};
+
+              var poiOrig  = parseInt(stats['POI Count'][0]);
+              var poiNew   = parseInt(stats['Count of New POIs'][3]);
+              var poiTotal = poiOrig + poiNew;
+              diffstats.POIs          = { original: poiOrig,
+                                          new:      poiNew,
+                                          total:    poiTotal };
+
+              var buildOrig  = parseInt(stats['Building Count'][0]);
+              var buildNew   = parseInt(stats['Count of New Buildings'][3]);
+              var buildTotal = buildOrig + buildNew;
+              diffstats.Buildings     = { original: buildOrig,
+                                          new:      buildNew,
+                                          total:    buildTotal };
+
+              var kmOrig = parseFloat(stats['Meters of Linear Features'][0]) / 1000.0;
+              var kmNew  = parseFloat(stats['Km of New Road'][3]);
+              var kmTotal = kmOrig + kmNew;
+              diffstats['Km of Road'] = { original: kmOrig.toFixed(2),
+                                          new:      kmNew.toFixed(2),
+                                          total:    kmTotal.toFixed(2)};
+            }
 
             var layercounts = {count: {
                 1: 'nodes',
@@ -259,17 +286,38 @@ iD.ui.MapMetadata = function(data, context) {
                 };
             }
 
-            addExpandTables({
+            // Table stats
+            if (params.CONFLATION_TYPE.includes('Differential')) {
+              addExpandTables({
+                diffstats: diffstats,
                 layercounts: layercounts,
                 layerfeatures: layerfeatures,
                 featurecounts: featurecounts,
                 featurepercents: featurepercents
-            }, 'Statistics');
+              }, 'Statistics');
+            } else {
+              addExpandTables({
+                  layercounts: layercounts,
+                  layerfeatures: layerfeatures,
+                  featurecounts: featurecounts,
+                  featurepercents: featurepercents
+              }, 'Statistics');
+            }
 
+            // Raw stats
             addExpandList(d3.entries(stats), 'Statistics (Raw)');
 
             //Build the download text
             download += '\nStatistics:\n';
+
+            if (params.CONFLATION_TYPE.includes('Differential')){
+              download += '\nDiff Stats:\n';
+              d3.select('table.diffstats').selectAll('tr').each(function() {
+                  download += d3.select(this).selectAll('td').data().join('\t');
+                  download += '\n';
+              });
+            }
+
             download += '\nLayer Counts:\n';
             d3.select('table.layercounts').selectAll('tr').each(function() {
                 download += d3.select(this).selectAll('td').data().join('\t');
