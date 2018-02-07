@@ -164,14 +164,14 @@ iD.ui.MapMetadata = function(data, context) {
               var poiOrig  = parseInt(stats['POI Count'][0]);
               var poiNew   = parseInt(stats['Count of New POIs'][3]);
               var poiTotal = poiOrig + poiNew;
-              diffstats['POIs']       = { original: poiOrig,
+              diffstats.POIs          = { original: poiOrig,
                                           new:      poiNew,
                                           total:    poiTotal };
 
               var buildOrig  = parseInt(stats['Building Count'][0]);
               var buildNew   = parseInt(stats['Count of New Buildings'][3]);
               var buildTotal = buildOrig + buildNew;
-              diffstats['Buildings']  = { original: buildOrig,
+              diffstats.Buildings     = { original: buildOrig,
                                           new:      buildNew,
                                           total:    buildTotal };
 
