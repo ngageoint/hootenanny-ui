@@ -121,8 +121,7 @@ iD.translationserver = function(context) {
         d3.json(window.location.protocol + '//' + window.location.hostname +
             formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) +
             '/schema?geometry='+ geometry + '&translation=' + activeTranslation + '&searchstr=' +
-            value + '&maxlevdst=' + iD.data.hootConfig.presetMaxLevDistance +
-            '&limit=' + iD.data.hootConfig.presetMaxDisplayNum, function(error, data) {
+            value + '&limit=' + iD.data.hootConfig.presetMaxDisplayNum, function(error, data) {
                 if (error) {
                     window.console.error(error);
                 } else {
