@@ -4,7 +4,7 @@ pipeline {
         
         booleanParam(name: 'npm', defaultValue: true)
         booleanParam(name: 'cucumber', defaultValue: true)
-        string(name: 'Box', defaultValue: 'hoot_centos7_prov', description: 'Vagrant Box')
+        string(name: 'Box', defaultValue: 'default', description: 'Vagrant Box')
     }
     stages {
         stage("Setup") {
