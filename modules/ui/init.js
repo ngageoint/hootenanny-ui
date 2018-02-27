@@ -22,7 +22,6 @@ import { uiCoordinates } from './coordinates';
 import { uiFeatureInfo } from './feature_info';
 import { uiFullScreen } from './full_screen';
 import { uiGeolocate } from './geolocate';
-import { uiHeader } from './header';
 import { uiHelp } from './help';
 import { uiInfo } from './info';
 import { uiIntro } from './intro';

@@ -6,17 +6,17 @@
 
 'use strict';
 
-import { components } from './components/index';
+import components from './components/index';
 
 class Hoot {
-	constructor( context ) {
-		this.context    = context;
-		this.components = components( context );
-	}
+    constructor( context ) {
+        this.$container = context.container();
+        this.components = components( context );
+    }
 
-	init() {
-		Promise.all( this.components.map( component => component.init() ) );
-	}
+    init() {
+        Promise.all( this.components.map( component => component.init( this.$container ) ) );
+    }
 }
 
 export default Hoot;

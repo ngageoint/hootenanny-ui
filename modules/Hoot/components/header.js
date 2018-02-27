@@ -8,7 +8,8 @@
 
 export default class Header {
 	constructor( context ) {
-		this.$container = context.container();
+		this.context = context;
+        this.$container = context.container();
 	}
 
 	init() {

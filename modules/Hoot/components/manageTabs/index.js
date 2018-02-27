@@ -1,17 +1,15 @@
 /** ****************************************************************************************************
  * File: index.js
  * Project: hootenanny-ui
- * @author Matt Putipong on 2/6/18
+ * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
 'use strict';
 
-import Header from './header';
-import JobsBackground from './JobsBackground';
+import Datasets from './datasets';
+import About from './about';
 
-export default context => {
-    return [
-        new Header( context ),
-        new JobsBackground( context )
-    ];
-}
+export default [
+    Datasets,
+    About
+]
