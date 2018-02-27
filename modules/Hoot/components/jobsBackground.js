@@ -44,20 +44,6 @@ export default class JobsBackground {
     }
 
     async init() {
-
-        //this.$jobsBG = this.$body
-        //    .append( 'div' )
-        //    .attr( 'id', 'jobsBG' )
-        //    .classed( 'col12 pin-bottom pin-top hidden', true )
-        //    .style( 'position', 'absolute' )
-        //    .style( 'top', '60px' )
-        //    .style( 'z-index', 999 );
-        //
-        //this.$settingsSidebar = this.$jobsBG
-        //    .append( 'div' )
-        //    .attr( 'id', 'settingsSidebar' )
-        //    .classed( 'pad2 pin-bottom pin-top fill-light keyline-right', true );
-
         this.listen();
 
         this.renderContainer()

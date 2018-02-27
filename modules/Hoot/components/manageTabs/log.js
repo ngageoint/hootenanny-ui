@@ -1,5 +1,5 @@
 /** ****************************************************************************************************
- * File: about.js
+ * File: log.js
  * Project: hootenanny-ui
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
@@ -8,12 +8,12 @@
 
 import Tab from './tab';
 
-export default class About extends Tab {
+export default class Log extends Tab {
     constructor( ...params ) {
         super( params );
 
-        this.name = 'About';
-        this.id   = 'util-about';
+        this.name = 'Log';
+        this.id   = 'util-error-log';
     }
 
     render() {
@@ -22,6 +22,5 @@ export default class About extends Tab {
 
     init() {
         this.render();
-
     }
 }
