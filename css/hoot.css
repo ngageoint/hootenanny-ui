@@ -1,19 +1,20 @@
-.hoot-logo {
-    background: url(img/hoot_logo_update.png);
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    background-size: contain;
-    vertical-align: middle;
-    height: 60px;
-    width: 400px;
-}
+/*.hoot-logo {*/
+    /*background: url(img/hoot_logo_update.png);*/
+    /*background-repeat: no-repeat;*/
+    /*background-position: 0 0;*/
+    /*background-size: contain;*/
+    /*vertical-align: middle;*/
+    /*height: 60px;*/
+    /*width: 400px;*/
+    /*margin-left: 10px;*/
+/*}*/
 
-.round        { border-radius:4px; }
-.round-top    { border-radius:4px 4px 0 0; }
-.round-right  { border-radius:0 4px 4px 0; }
-.round-bottom { border-radius:0 0 4px 4px; }
-.round-left   { border-radius:4px 0 0 4px; }
-.unround      { border-radius:0;}
+/*.round        { border-radius:4px; }*/
+/*.round-top    { border-radius:4px 4px 0 0; }*/
+/*.round-right  { border-radius:0 4px 4px 0; }*/
+/*.round-bottom { border-radius:0 0 4px 4px; }*/
+/*.round-left   { border-radius:4px 0 0 4px; }*/
+/*.unround      { border-radius:0;}*/
 
 .dark   { color:#fff; }
 .quiet  { color:rgba(68,68,68,0.5); }

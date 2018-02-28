@@ -69,7 +69,7 @@
     "rollup-plugin-includepaths": "0.2.2",
     "rollup-plugin-json": "2.2.0",
     "rollup-plugin-node-resolve": "3.0.0",
-    "rollup-plugin-sass": "^0.5.3",
+    "rollup-plugin-scss": "^0.4.0",
     "shelljs": "^0.7.5",
     "shx": "^0.2.1",
     "sinon": "^4.0.0",

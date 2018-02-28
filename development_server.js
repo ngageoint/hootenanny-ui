@@ -47,7 +47,7 @@ if ( isDevelopment ) {
 		}
 	);
 
-	gaze( [ 'modules/**/*.js' ], ( err, watcher ) => {
+	gaze( [ 'modules/**/*.js', 'css/hoot/**/*.scss' ], ( err, watcher ) => {
 		watcher.on( 'all', () => {
 			buildSrc();
 		} );
