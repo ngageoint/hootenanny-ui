@@ -22,20 +22,22 @@ export default class Tab {
     render() {
         const self = this;
 
-        this.tabHeader = this.sidebar.append( 'div' )
-            .classed( 'block strong center hoot-util-header', true )
+        this.tabHeader = this.sidebar
+            .append( 'div' )
+            .classed( 'hoot-util-header pad1y center', true )
             .attr( 'data', `#${this.id}` )
             .on( 'click', function() {
                 self.events.send( 'toggle-manage-tab', this );
             } );
 
-        this.tabLabel = this.tabHeader.append( 'label' )
+        this.tabLabel = this.tabHeader
+            .append( 'label' )
             .text( this.name )
-            .classed( 'point', true )
+            .classed( 'pointer', true )
             .style( 'font-style', 'normal' );
 
         this.tabBody = this.panel.append( 'div' )
-            .classed( 'fill-light hoot-util', true )
+            .classed( 'hoot-util fill-light', true )
             .attr( 'id', this.id );
     }
 }

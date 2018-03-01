@@ -37,7 +37,13 @@ export default class JobsBackground {
         this.settingsSidebar = this.settingsPanel
             .append( 'div' )
             .attr( 'id', 'settings-sidebar' )
-            .classed( 'pad2 fill-light keyline-right', true );
+            .classed( 'pad2 fill-light keyline-right', true )
+
+        this.settingsSidebar
+            .append( 'h3' )
+            .classed( 'settings-header pointer strong center margin2 pad1y', true )
+            .append( 'label' )
+            .text( 'Settings' );
     }
 
     async init() {
