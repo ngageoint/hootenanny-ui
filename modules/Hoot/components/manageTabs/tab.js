@@ -9,11 +9,11 @@
 import Events from '../../util/events';
 
 export default class Tab {
-    constructor( [ ctx, jobsBG, sSidebar ] ) {
-        this.events          = Events;
-        this.context         = ctx;
-        this.jobsBG          = jobsBG;
-        this.settingsSidebar = sSidebar;
+    constructor( [ ctx, panel, sidebar ] ) {
+        this.events  = Events;
+        this.context = ctx;
+        this.panel   = panel;
+        this.sidebar = sidebar;
 
         this.name = null;
         this.id   = null;
@@ -22,12 +22,8 @@ export default class Tab {
     render() {
         const self = this;
 
-        this.tabBody = this.jobsBG.append( 'div' )
-            .classed( 'pad2 round-top fill-light pin-left pin-top hoot-util', true )
-            .attr( 'id', this.id );
-
-        this.tabHeader = this.settingsSidebar.append( 'div' )
-            .classed( 'block strong center margin2 pad1y hoot-util-head', true )
+        this.tabHeader = this.sidebar.append( 'div' )
+            .classed( 'block strong center hoot-util-header', true )
             .attr( 'data', `#${this.id}` )
             .on( 'click', function() {
                 self.events.send( 'toggle-manage-tab', this );
@@ -37,5 +33,9 @@ export default class Tab {
             .text( this.name )
             .classed( 'point', true )
             .style( 'font-style', 'normal' );
+
+        this.tabBody = this.panel.append( 'div' )
+            .classed( 'fill-light hoot-util', true )
+            .attr( 'id', this.id );
     }
 }

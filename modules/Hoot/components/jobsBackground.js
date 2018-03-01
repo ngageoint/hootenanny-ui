@@ -29,18 +29,15 @@ export default class JobsBackground {
     }
 
     async renderContainer() {
-        this.jobsBG = this.container
+        this.settingsPanel = this.container
             .append( 'div' )
-            .attr( 'id', 'jobsBG' )
-            .classed( 'col12 pin-bottom pin-top hidden', true )
-            .style( 'position', 'absolute' )
-            .style( 'top', '60px' )
-            .style( 'z-index', 999 );
+            .attr( 'id', 'settings-panel' )
+            .classed( 'hidden', true );
 
-        this.settingsSidebar = this.jobsBG
+        this.settingsSidebar = this.settingsPanel
             .append( 'div' )
-            .attr( 'id', 'settingsSidebar' )
-            .classed( 'pad2 pin-bottom pin-top fill-light keyline-right', true );
+            .attr( 'id', 'settings-sidebar' )
+            .classed( 'pad2 fill-light keyline-right', true );
     }
 
     async init() {
@@ -48,7 +45,7 @@ export default class JobsBackground {
 
         this.renderContainer()
             .then( () => _.map( this.manageTabs, Tab => {
-                let tab = new Tab( this.context, this.jobsBG, this.settingsSidebar );
+                let tab = new Tab( this.context, this.settingsPanel, this.settingsSidebar );
                 tab.init();
                 //tab.init( this.$jobsBG, this.$settingsSidebar )
             } ) );

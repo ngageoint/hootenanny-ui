@@ -35,7 +35,7 @@
 .contain                      { position:relative; }
 .clip                         { overflow:hidden; }
 .header                       { height:60px; }
-.hidden                       { display:none; }
+/*.hidden                       { display:none; }*/
 .text-left                    { text-align:left; }
 .text-right                   { text-align:right; }
 .space > *                    { margin-right:5px; }

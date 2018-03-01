@@ -30,13 +30,13 @@ export default class Header {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
-                let vis = !d3.selectAll( '#jobsBG' ).classed( 'hidden' );
+                let vis = !d3.select( '#settings-panel' ).classed( 'hidden' );
 
                 d3.select( this )
                     .classed( 'fill-white', !vis )
                     .classed( 'text-dark', !vis );
 
-                d3.select( '#jobsBG' )
+                d3.select( '#settings-panel' )
                     .classed( 'hidden', vis );
 
                 d3.selectAll( '.context-menu, .tools-menu, .dataset-options-menu' ).remove();

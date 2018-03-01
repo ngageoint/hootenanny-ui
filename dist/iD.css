@@ -6503,7 +6503,7 @@ li.hide + li.version .badge .tooltip .tooltip-arrow {
 .contain                      { position:relative; }
 .clip                         { overflow:hidden; }
 .header                       { height:60px; }
-.hidden                       { display:none; }
+/*.hidden                       { display:none; }*/
 .text-left                    { text-align:left; }
 .text-right                   { text-align:right; }
 .space > *                    { margin-right:5px; }
@@ -7456,25 +7456,25 @@ button.save.has-count .count.save-to-osm {
 
 /*!*!* Fixed containers*!*/
 /*!*------------------------------------------------------- *!*!*/
-/*!*.pin-top,*!*/
-/*!*.pin-right,*!*/
-/*!*.pin-bottom,*!*/
-/*!*.pin-left {*!*/
-    /*!*position: absolute;*!*/
-/*!*}*!*/
+.pin-top,
+.pin-right,
+.pin-bottom,
+.pin-left {
+    position: absolute;
+}
 
-/*!*.pin-bottom {*!*/
-    /*!*right: 0;*!*/
-    /*!*bottom: 0;*!*/
-    /*!*left: 0;*!*/
-/*!*}*!*/
+.pin-bottom {
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
 
-/*!*.pin-top {*!*/
-    /*!*top: 0;*!*/
-    /*!*right: 0;*!*/
-    /*!*!*left: 0; *!*!*/
-/*!*}*!*/
+.pin-top {
+    top: 0;
+    right: 0;
+    /*left: 0; */
+}
 
-/*!*.pin-left { top: 0; bottom: 0; left: 0; }*!*/
+.pin-left { top: 0; bottom: 0; left: 0; }
 
-/*!*.pin-right { top: 0; right: 0; bottom: 0; }*!*/
+.pin-right { top: 0; right: 0; bottom: 0; }

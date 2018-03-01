@@ -1,0 +1,29 @@
+#settings-panel {
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+
+    > div {
+        padding: 20px;
+    }
+
+    .hoot-util-header {
+        padding: 10px 0;
+    }
+
+    .hoot-util {
+        position: absolute;
+        width: calc( 100vw - 220px );
+        height: 100%;
+        left: 220px;
+    }
+}
+
+#settings-sidebar {
+    position: absolute;
+    width: 220px;
+    height: 100%;
+}
