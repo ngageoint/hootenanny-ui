@@ -4,8 +4,6 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-'use strict';
-
 import Datasets from './datasets';
 import TranslationAssistant from './translationAssistant';
 import Translation from './translation';

@@ -4,8 +4,6 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-'use strict';
-
 import Events from '../../util/events';
 
 export default class Tab {

@@ -6,8 +6,6 @@
 
 'use strict';
 
-import Tab from './tab';
-
 export default class TranslationAssistant extends Tab {
     constructor( ...params ) {
         super( params );

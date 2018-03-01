@@ -4,8 +4,6 @@
  * @author Matt Putipong on 2/6/18
  *******************************************************************************************************/
 
-'use strict';
-
 export default class Header {
     constructor( context ) {
         this.context    = context;
@@ -51,16 +49,23 @@ export default class Header {
             .append( 'span' )
             .text( 'Settings' );
 
-        let rightContainer = navbar
-            .append( 'div' )
-            .classed( 'nav-item', true );
-
-        rightContainer
+        leftContainer
             .append( 'div' )
             .classed( 'logo-container', true )
             .append( 'img' )
             .attr( 'src', './img/hoot_logo_update.png' )
             .classed( 'pointer hoot-logo', true );
+
+        let rightContainer = navbar
+            .append( 'div' )
+            .classed( 'nav-item', true );
+
+        //rightContainer
+        //    .append( 'div' )
+        //    .classed( 'logo-container', true )
+        //    .append( 'img' )
+        //    .attr( 'src', './img/hoot_logo_update.png' )
+        //    .classed( 'pointer hoot-logo', true );
 
         rightContainer
             .append( 'div' )

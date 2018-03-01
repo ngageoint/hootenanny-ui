@@ -15,9 +15,10 @@
         "sourceType": "module"
     },
     "rules": {
+        "arrow-spacing": "warn",
         "dot-notation": "error",
         "eqeqeq": ["error", "smart"],
-        "indent": ["off", 4],
+        "indent": ["warn", 4],
         "keyword-spacing": "error",
         "linebreak-style": ["error", "unix"],
         "no-caller": "error",
@@ -26,6 +27,7 @@
         "no-div-regex": "error",
         "no-extend-native": "error",
         "no-extra-bind": "error",
+        "no-extra-parens": ["error", "all"],
         "no-floating-decimal": "error",
         "no-global-assign": "error",
         "no-implied-eval": "error",
@@ -59,13 +61,22 @@
         "no-useless-escape": "off",
         "no-void": "error",
         "no-warning-comments": "warn",
+        "no-whitespace-before-property": "error",
         "no-with": "error",
         "no-use-before-define": ["off", "nofunc"],
         "radix": ["error", "always"],
         "semi": ["error", "always"],
         "semi-spacing": "error",
+        "space-before-function-paren": ["error", "never"],
+        "space-in-parens": ["warn", "always"],
         "space-unary-ops": "error",
+        "strict": ["error", "safe"],
         "wrap-regex": "off",
-        "quotes": ["error", "single"]
+        "quotes": ["error", "single"],
+        "object-curly-spacing": [ "warn", "always", {
+            "arraysInObjects": true,
+            "objectsInObjects": true
+        } ],
+        "array-bracket-spacing": [ "warn", "always" ]
     }
 }

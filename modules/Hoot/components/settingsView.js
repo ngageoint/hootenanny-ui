@@ -4,8 +4,6 @@
  * @author Matt Putipong on 2/6/18
  *******************************************************************************************************/
 
-'use strict';
-
 import _ from 'lodash-es';
 
 import Events from '../util/events';
