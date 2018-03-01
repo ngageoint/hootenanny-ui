@@ -1,0 +1,11 @@
+.icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.material-icons {
+    &.medium {
+        font-size: 30px;
+    }
+}

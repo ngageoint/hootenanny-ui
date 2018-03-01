@@ -1,0 +1,18 @@
+$primary-light: #f8f8f8;
+$primary-gray: #444;
+
+$dark-colors: (
+    'primary': #444
+);
+
+$light-colors: (
+    'primary': #f8f8f8
+);
+
+@function dark-color( $key: 'primary' ) {
+    @return map-get($dark-colors, $key);
+}
+
+@function light-color( $key: 'primary' ) {
+    @return map-get( $light-colors, $key );
+}

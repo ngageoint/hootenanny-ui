@@ -1,6 +1,9 @@
-// Components and modules
-//@import 'modules/global.scss';
+// Modules
+@import 'modules/variables';
 @import 'modules/helpers';
-@import 'modules/navbar';
-@import 'modules/sidebar';
-@import 'modules/mapTools';
+@import 'modules/icons';
+
+// Components
+@import 'components/navbar';
+@import 'components/sidebar';
+@import 'components/mapTools';

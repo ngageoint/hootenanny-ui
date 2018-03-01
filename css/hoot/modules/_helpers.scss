@@ -1,10 +1,18 @@
+@import 'variables.scss';
+
 .pointer {
     cursor: pointer !important;
 }
 
+//.vertical-align {
+//    display: flex;
+//    align-items: center;
+//}
+
 /*****************************************/
 /**************** BORDER *****************/
 /*****************************************/
+
 .round {
     border-radius: 4px;
 }
@@ -44,6 +52,7 @@
 /*****************************************/
 /**************** PADDING ****************/
 /*****************************************/
+
 .pad1y {
     padding: 10px 0;
 }
@@ -66,4 +75,30 @@
 
 .pad2 {
     padding: 20px;
+}
+
+/*****************************************/
+/**************** COLORS *****************/
+/*****************************************/
+
+// Text
+.text-white {
+    color: #fff;
+}
+
+.text-light {
+    color: $primary-light;
+}
+
+.text-dark {
+    color: $primary-gray;
+}
+
+// Background
+.fill-white {
+    background-color: #fff;
+}
+
+.fill-dark {
+    background-color: $primary-gray;
 }

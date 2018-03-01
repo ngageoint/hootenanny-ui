@@ -12,52 +12,49 @@ export default class Header {
         this.$container = context.container();
     }
 
-    init() {
-        this.$navbar = this.$container
+    render() {
+        let navbar = this.$container
             .insert( 'nav', ':first-child' )
             .attr( 'id', 'navbar' )
-            .classed( 'contain dark fill-dark', true );
+            .classed( 'contain text-white fill-dark', true );
 
-        const leftContainer = this.$navbar
+        let leftContainer = navbar
             .append( 'div' )
-            .classed( 'float-left', true );
+            .classed( 'nav-left', true );
 
+        // icon container
         leftContainer
             .append( 'div' )
-            .classed( 'material-icons', true )
+            .classed( 'vertical-align icon-container', true )
+            .on( 'click', function() {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+
+                let vis = !d3.selectAll( '#jobsBG' ).classed( 'hidden' );
+
+                d3.select( this )
+                    .classed( 'fill-white', !vis )
+                    .classed( 'text-dark', !vis );
+
+                d3.select( '#jobsBG' )
+                    .classed( 'hidden', vis );
+
+                d3.selectAll( '.context-menu, .tools-menu, .dataset-options-menu' ).remove();
+            } )
+            .append( 'i' )
+            .classed( 'pointer medium material-icons', true )
             .text( 'settings' );
 
+        // logo container
         leftContainer
             .append( 'div' )
             .classed( 'logo-container', true )
             .append( 'img' )
             .attr( 'src', './img/hoot_logo_update.png' )
             .classed( 'pointer hoot-logo', true );
+    }
 
-        this.$navbar
-            .append( 'div' )
-            .attr( 'id', 'manageTabBtn' )
-            .attr( 'href', '#jobs' )
-            .classed( 'pointer pad2 block keyline-left keyline-right dark float-right strong small sprocket', true )
-            .text( 'Manage' )
-            .on( 'click', function() {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-
-                let vis = !d3.selectAll( '#jobsBG' ).classed( 'hidden' ),
-                    txt = vis ? 'Manage' : 'Return to Map';
-
-                d3.select( this )
-                    .classed( 'fill-light', !vis )
-                    .classed( 'dark', vis )
-                    .text( txt );
-
-                d3.selectAll( '#jobsBG' )
-                    .classed( 'hidden', vis );
-
-                d3.selectAll( '.context-menu, .tools-menu, .dataset-options-menu' ).remove();
-            } );
-
-        return true;
+    init() {
+        this.render();
     }
 }
