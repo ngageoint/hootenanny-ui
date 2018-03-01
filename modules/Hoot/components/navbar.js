@@ -23,7 +23,7 @@ export default class Header {
             .classed( 'nav-item', true );
 
         // icon container
-        let settings = leftContainer
+        let settingsButton = leftContainer
             .append( 'div' )
             .classed( 'pointer icon-container flex justify-between', true )
             .on( 'click', function() {
@@ -42,22 +42,14 @@ export default class Header {
                 d3.selectAll( '.context-menu, .tools-menu, .dataset-options-menu' ).remove();
             } );
 
-        settings
+        settingsButton
             .append( 'i' )
             .classed( 'medium material-icons', true )
             .text( 'settings' );
 
-        settings
+        settingsButton
             .append( 'span' )
-            .text( 'Manage' );
-
-        //// logo container
-        //leftContainer
-        //    .append( 'div' )
-        //    .classed( 'logo-container', true )
-        //    .append( 'img' )
-        //    .attr( 'src', './img/hoot_logo_update.png' )
-        //    .classed( 'pointer hoot-logo', true );
+            .text( 'Settings' );
 
         let rightContainer = navbar
             .append( 'div' )

@@ -16,8 +16,9 @@ export default class JobsBackground {
         this.context    = context;
         this.events     = Events;
         this.manageTabs = manageTabs;
+        this.container  = context.container();
 
-        this.container = context.container();
+        this.activeId = null;
     }
 
     listen() {
@@ -25,7 +26,15 @@ export default class JobsBackground {
     }
 
     toggleTab( d ) {
-        console.log( d );
+        this.activeId  = d3.select( d ).attr( 'data' );
+        let activeBody = d3.select( this.activeId ).node();
+
+        this.settingsPanel.node()
+            .appendChild( activeBody );
+        d3.selectAll( '.hoot-util-header' )
+            .classed( 'strong', false );
+        d3.select( d )
+            .classed( 'strong', true );
     }
 
     async renderContainer() {
@@ -37,7 +46,7 @@ export default class JobsBackground {
         this.settingsSidebar = this.settingsPanel
             .append( 'div' )
             .attr( 'id', 'settings-sidebar' )
-            .classed( 'pad2 fill-light keyline-right', true )
+            .classed( 'pad2 fill-light keyline-right', true );
 
         this.settingsSidebar
             .append( 'h3' )
@@ -53,7 +62,6 @@ export default class JobsBackground {
             .then( () => _.map( this.manageTabs, Tab => {
                 let tab = new Tab( this.context, this.settingsPanel, this.settingsSidebar );
                 tab.init();
-                //tab.init( this.$jobsBG, this.$settingsSidebar )
             } ) );
     }
 }

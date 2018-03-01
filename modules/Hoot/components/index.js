@@ -7,11 +7,11 @@
 'use strict';
 
 import Navbar from './navbar';
-import JobsBackground from './JobsBackground';
+import SettingsView from './settingsView';
 
 export default context => {
     return [
         new Navbar( context ),
-        new JobsBackground( context )
+        new SettingsView( context )
     ];
 }
