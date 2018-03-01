@@ -8,6 +8,27 @@
     display: none;
 }
 
+.flex {
+    &.justify-around {
+        justify-content: space-around;
+    }
+    &.justify-between {
+        justify-content: space-between;
+    }
+    &.justify-cetner {
+        justify-content: center;
+    }
+    &.align-start {
+        align-items: flex-start;
+    }
+    &.align-end {
+        align-items: flex-end;
+    }
+    &.align-center {
+        align-items: center;
+    }
+}
+
 /*****************************************/
 /**************** BORDER *****************/
 /*****************************************/

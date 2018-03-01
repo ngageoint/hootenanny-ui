@@ -8,18 +8,23 @@
     div {
         height: 100%;
     }
-}
 
-.nav-left {
-    display: flex;
-    align-items: center;
+    .nav-item {
+        display: flex;
+        align-items: center;
+    }
 
     .icon-container {
-        width: 45px;
+        padding: 0 10px;
+
+        span {
+            margin-left: 8px;
+            font-size: 15px;
+        }
     }
 
     .logo-container {
-        margin-left: 20px;
+        margin-right: 10px;
     }
 
     .hoot-logo {
