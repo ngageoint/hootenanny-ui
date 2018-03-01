@@ -6,12 +6,12 @@
 
 'use strict';
 
-import Header from './header';
+import Navbar from './navbar';
 import JobsBackground from './JobsBackground';
 
 export default context => {
     return [
-        new Header( context ),
+        new Navbar( context ),
         new JobsBackground( context )
     ];
 }

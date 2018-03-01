@@ -18,6 +18,22 @@ export default class Header {
             .attr( 'id', 'navbar' )
             .classed( 'contain dark fill-dark', true );
 
+        const leftContainer = this.$navbar
+            .append( 'div' )
+            .classed( 'float-left', true );
+
+        leftContainer
+            .append( 'div' )
+            .classed( 'material-icons', true )
+            .text( 'settings' );
+
+        leftContainer
+            .append( 'div' )
+            .classed( 'logo-container', true )
+            .append( 'img' )
+            .attr( 'src', './img/hoot_logo_update.png' )
+            .classed( 'pointer hoot-logo', true );
+
         this.$navbar
             .append( 'div' )
             .attr( 'id', 'manageTabBtn' )
@@ -41,13 +57,6 @@ export default class Header {
 
                 d3.selectAll( '.context-menu, .tools-menu, .dataset-options-menu' ).remove();
             } );
-
-        this.$navbar
-            .append( 'div' )
-            .classed( 'logo-container', true )
-            .append( 'img' )
-            .attr( 'src', './img/hoot_logo_update.png' )
-            .classed( 'pointer hoot-logo', true );
 
         return true;
     }
