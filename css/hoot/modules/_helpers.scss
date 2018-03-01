@@ -1,0 +1,69 @@
+.pointer {
+    cursor: pointer !important;
+}
+
+/*****************************************/
+/**************** BORDER *****************/
+/*****************************************/
+.round {
+    border-radius: 4px;
+}
+
+.unround {
+    border-radius: 0;
+}
+
+.round-top {
+    border-radius: 4px 4px 0 0;
+}
+
+.round-right {
+    border-radius: 0 4px 4px 0;
+}
+
+.round-bottom {
+    border-radius: 0 0 4px 4px;
+}
+
+.round-left {
+    border-radius: 4px 0 0 4px;
+}
+
+/*****************************************/
+/**************** FLOAT ******************/
+/*****************************************/
+
+.float-right {
+    float: right;
+}
+
+.float-left {
+    float: left;
+}
+
+/*****************************************/
+/**************** PADDING ****************/
+/*****************************************/
+.pad1y {
+    padding: 10px 0;
+}
+
+.pad2y {
+    padding: 20px 0;
+}
+
+.pad1x {
+    padding: 0 10px;
+}
+
+.pad2x {
+    padding: 0 20px;
+}
+
+.pad1 {
+    padding: 10px;
+}
+
+.pad2 {
+    padding: 20px;
+}

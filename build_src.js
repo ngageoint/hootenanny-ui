@@ -7,7 +7,7 @@ const commonjs = require('rollup-plugin-commonjs');
 const json = require('rollup-plugin-json');
 const includePaths = require('rollup-plugin-includepaths');
 const colors = require('colors/safe');
-const scss = require('rollup-plugin-scss');
+const collectSass = require('rollup-plugin-collect-sass');
 
 module.exports = function buildSrc() {
     var cache;
@@ -38,10 +38,9 @@ module.exports = function buildSrc() {
                         main: true,
                         browser: false
                     }),
-                    scss({
-                        output: function(styles) {
-                            fs.writeFileSync('dist/hoot.css', styles)
-                        }
+                    collectSass({
+                        importOnce: true,
+                        extract: 'dist/hoot.css'
                     }),
                     commonjs(),
                     json()

@@ -26,8 +26,8 @@
 .keyline-bottom { border-bottom:1px solid rgba(0,0,0,0.20); }
 .keyline-left   { border-left:1px solid rgba(0,0,0,0.20); }
 
-.fr                           { float:right; }
-.fl                           { float:left; }
+/*.fr                           { float:right; }*/
+/*.fl                           { float:left; }*/
 .dot                          { border-radius:50%; }
 .quiet                        { color:#7f7f7f; color: rgba(0,0,0,.5); }
 .dark .quiet                  { color: #7f7f7f; color: rgba(255,255,255,.5);}
@@ -49,12 +49,12 @@
 img.inline, .inline           { display:inline-block; }
 .block                        { display:block; }
 .overflow                     { overflow:auto; }
-.pad2y { padding: 20px 0; }
-.pad1y { padding: 10px 0; }
-.pad2x { padding: 0 20px; }
-.pad1x {padding-left: 10px; padding-right: 10px;}
-.pad2 { padding: 20px; }
-.pad1 { padding: 10px; }
+/*.pad2y { padding: 20px 0; }*/
+/*.pad1y { padding: 10px 0; }*/
+/*.pad2x { padding: 0 20px; }*/
+/*.pad1x {padding-left: 10px; padding-right: 10px;}*/
+/*.pad2 { padding: 20px; }*/
+/*.pad1 { padding: 10px; }*/
 
 .palette { width: auto;}
 .palette a { width:40px; height:40px;}

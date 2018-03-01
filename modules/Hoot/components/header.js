@@ -14,17 +14,15 @@ export default class Header {
 
     init() {
         this.$navbar = this.$container
-            .insert( 'div', ':first-child' )
+            .insert( 'nav', ':first-child' )
             .attr( 'id', 'navbar' )
-            .classed( 'contain pad2x dark fill-dark', true );
+            .classed( 'contain dark fill-dark', true );
 
         this.$navbar
-            .append( 'nav' )
-            .classed( 'contain inline fr', true )
             .append( 'div' )
             .attr( 'id', 'manageTabBtn' )
             .attr( 'href', '#jobs' )
-            .classed( 'pointer pad2 block keyline-left _icon dark strong small sprocket', true )
+            .classed( 'pointer pad2 block keyline-left keyline-right dark float-right strong small sprocket', true )
             .text( 'Manage' )
             .on( 'click', function() {
                 d3.event.stopPropagation();
@@ -48,7 +46,7 @@ export default class Header {
             .append( 'div' )
             .classed( 'logo-container', true )
             .append( 'img' )
-            .attr( 'src', '../../img/hoot_logo_update.png' )
+            .attr( 'src', './img/hoot_logo_update.png' )
             .classed( 'pointer hoot-logo', true );
 
         return true;
