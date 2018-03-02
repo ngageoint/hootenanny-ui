@@ -1,3 +1,136 @@
-label {
-    display: block;
+@import 'variables.scss';
+
+.pointer {
+    cursor: pointer !important;
+}
+
+.hidden {
+    display: none;
+}
+
+.flex {
+    display: flex;
+
+    &.justify-around {
+        justify-content: space-around;
+    }
+    &.justify-between {
+        justify-content: space-between;
+    }
+    &.justify-cetner {
+        justify-content: center;
+    }
+    &.align-start {
+        align-items: flex-start;
+    }
+    &.align-end {
+        align-items: flex-end;
+    }
+    &.align-center {
+        align-items: center;
+    }
+}
+
+/*****************************************/
+/**************** BORDER *****************/
+/*****************************************/
+
+.round {
+    border-radius: 4px;
+}
+
+.unround {
+    border-radius: 0;
+}
+
+.round-top {
+    border-radius: 4px 4px 0 0;
+}
+
+.round-right {
+    border-radius: 0 4px 4px 0;
+}
+
+.round-bottom {
+    border-radius: 0 0 4px 4px;
+}
+
+.round-left {
+    border-radius: 4px 0 0 4px;
+}
+
+/*****************************************/
+/**************** FLOAT ******************/
+/*****************************************/
+
+.float-right {
+    float: right;
+}
+
+.float-left {
+    float: left;
+}
+
+/*****************************************/
+/**************** PADDING ****************/
+/*****************************************/
+
+.pad1 {
+    padding: 10px;
+}
+
+.pad2 {
+    padding: 20px;
+}
+
+.pad1y {
+    padding: 10px 0;
+}
+
+.pad2y {
+    padding: 20px 0;
+}
+
+.pad1x {
+    padding: 0 10px;
+}
+
+.pad2x {
+    padding: 0 20px;
+}
+
+/*****************************************/
+/**************** COLORS *****************/
+/*****************************************/
+
+// Text
+.text-white {
+    color: #fff;
+}
+
+.text-light {
+    color: $primary-light;
+}
+
+.text-dark {
+    color: $primary-gray;
+}
+
+// Background
+.fill-white {
+    background-color: #fff;
+}
+
+.fill-dark {
+    background-color: $primary-gray;
+}
+
+button {
+    &.primary {
+        background-color: $primary-blue;
+
+        &:hover {
+            background-color: $secondary-blue;
+        }
+    }
 }

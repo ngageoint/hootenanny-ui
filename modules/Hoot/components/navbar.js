@@ -60,13 +60,6 @@ export default class Header {
             .append( 'div' )
             .classed( 'nav-item', true );
 
-        //rightContainer
-        //    .append( 'div' )
-        //    .classed( 'logo-container', true )
-        //    .append( 'img' )
-        //    .attr( 'src', './img/hoot_logo_update.png' )
-        //    .classed( 'pointer hoot-logo', true );
-
         rightContainer
             .append( 'div' )
             .classed( 'vertical-align icon-container', true )

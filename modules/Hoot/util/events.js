@@ -4,8 +4,6 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-'use strict';
-
 class Events {
     constructor() {
         this._listeners = {};
@@ -41,12 +39,12 @@ class Events {
         } );
     }
 
-    remove( k, fn, ctx, src ) {
+    remove( k, fn, ctx ) {
         const parts = k.split( ' ' );
 
         parts.forEach( d => {
             if ( this._keyExists( d ) ) {
-                delete this._listeners[ k ]
+                delete this._listeners[ k ];
             }
         } );
     }

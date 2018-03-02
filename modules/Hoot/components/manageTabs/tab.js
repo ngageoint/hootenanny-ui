@@ -34,8 +34,11 @@ export default class Tab {
             .classed( 'pointer', true )
             .style( 'font-style', 'normal' );
 
-        this.tabBody = this.panel.append( 'div' )
-            .classed( 'hoot-util fill-light', true )
+        this.tabWrapper = this.panel.append( 'div' )
+            .classed( 'hoot-util-wrapper pad2 fill-light', true )
             .attr( 'id', this.id );
+
+        this.tabBody = this.tabWrapper.append( 'div' )
+            .classed( 'hoot-util-content', true );
     }
 }

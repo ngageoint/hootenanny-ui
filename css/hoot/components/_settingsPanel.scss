@@ -10,11 +10,17 @@
 
     }
 
-    .hoot-util {
+    .hoot-util-wrapper {
         position: absolute;
         width: calc( 100vw - 220px );
+        min-width: 548px;
         height: 100%;
         left: 220px;
+    }
+
+    .hoot-util-content {
+        position: relative;
+        top: 60px;
     }
 }
 
@@ -22,6 +28,21 @@
     position: absolute;
     width: 220px;
     height: 100%;
+}
 
+#util-datasets {
+    .dataset-action-button {
+        padding: 0 10px;
+        border-right: 1px solid #fff;
+        border-radius: 0;
 
+        &:first-child {
+            margin-left: 0;
+            border-radius: 4px 0 0 4px;
+        }
+        &:last-child {
+            margin-right: 0;
+            border-radius: 0 4px 4px 0;
+        }
+    }
 }

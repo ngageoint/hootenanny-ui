@@ -4,7 +4,7 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-'use strict';
+import Tab from './tab';
 
 export default class TranslationAssistant extends Tab {
     constructor( ...params ) {
