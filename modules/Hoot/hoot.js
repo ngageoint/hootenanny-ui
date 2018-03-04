@@ -9,17 +9,22 @@ import components from './components/index';
 
 class Hoot {
     constructor( context ) {
-        this.api        = API;
+        this.api = API;
 
         this.container  = context.container();
         this.components = components( context );
     }
 
-    async init() {
-        this.folders = await this.api.getFolders();
-        this.layers = await this.api.getLayers();
-
-        console.log( this.layers );
+    init() {
+        Promise.all( [
+            this.api.getFolders(),
+            this.api.getLayers(),
+            this.api.getLinks()
+        ] ).then( data => {
+            this.folders = data[ 0 ];
+            this.layers  = data[ 1 ];
+            this.links   = data[ 2 ];
+        } );
 
         Promise.all( this.components.map( component => component.init( this.container ) ) );
     }
