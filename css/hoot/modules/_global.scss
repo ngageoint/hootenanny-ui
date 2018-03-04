@@ -1,5 +1,13 @@
 @import 'variables.scss';
 
+body {
+    //min-width: 700px !important;
+}
+
+label {
+    display: block;
+}
+
 .pointer {
     cursor: pointer !important;
 }

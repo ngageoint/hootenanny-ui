@@ -53,7 +53,7 @@ export default class Datasets extends Tab {
         let table = this.tabBody
             .append( 'div' )
             .attr( 'id', 'dataset-table' )
-            .classed( 'fille-white strong', true );
+            .classed( 'filled-white strong', true );
 
         table.insert( 'div' )
             .attr( 'id', 'dataset-table-header' )

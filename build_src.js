@@ -6,6 +6,9 @@ const nodeResolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
 const json = require('rollup-plugin-json');
 const includePaths = require('rollup-plugin-includepaths');
+//const globals = require('rollup-plugin-node-globals');
+//const builtins = require('rollup-plugin-node-builtins');
+//const npm = require('rollup-plugin-npm');
 const colors = require('colors/safe');
 const collectSass = require('rollup-plugin-collect-sass');
 
@@ -34,9 +37,10 @@ module.exports = function buildSrc() {
                         ]
                     }),
                     nodeResolve({
-                        module: true,
+                        modules: true,
                         main: true,
-                        browser: false
+                        browser: false,
+                        jsnext: true
                     }),
                     collectSass({
                         importOnce: true,
