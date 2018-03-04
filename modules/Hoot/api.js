@@ -27,11 +27,18 @@ class API {
             method: 'GET'
         };
 
-        return this.request( params );
+        return this.request( params )
+            .then( resp => resp.data );
     }
 
     getLayers() {
+        const params = {
+            path: '/hoot-services/osm/api/0.6/map/layers',
+            method: 'GET'
+        };
 
+        return this.request( params )
+            .then( resp => resp.data );
     }
 }
 

@@ -17,7 +17,10 @@ class Hoot {
 
     async init() {
         this.folders = await this.api.getFolders();
-        
+        this.layers = await this.api.getLayers();
+
+        console.log( this.layers );
+
         Promise.all( this.components.map( component => component.init( this.container ) ) );
     }
 }
