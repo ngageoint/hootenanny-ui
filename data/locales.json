@@ -12,10 +12,10 @@
         "ast": {
             "rtl": false
         },
-        "bg": {
+        "be": {
             "rtl": false
         },
-        "bg-BG": {
+        "bg": {
             "rtl": false
         },
         "bn": {
@@ -27,7 +27,13 @@
         "ca": {
             "rtl": false
         },
+        "ckb": {
+            "rtl": false
+        },
         "cs": {
+            "rtl": false
+        },
+        "cy": {
             "rtl": false
         },
         "da": {

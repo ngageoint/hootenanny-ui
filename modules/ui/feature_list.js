@@ -3,24 +3,30 @@ import {
     select as d3_select
 } from 'd3-selection';
 
+import { d3keybinding as d3_keybinding } from '../lib/d3.keybinding.js';
+
 import * as sexagesimal from '@mapbox/sexagesimal';
 import { t } from '../util/locale';
-import { geoExtent, geoChooseEdge } from '../geo/index';
-import { modeSelect } from '../modes/index';
-import { osmEntity } from '../osm/index';
-import { svgIcon } from '../svg/index';
-import { services } from '../services/index';
+import { dmsCoordinatePair } from '../util/units';
+import { coreGraph } from '../core';
+import { geoExtent, geoChooseEdge } from '../geo';
+import { modeSelect } from '../modes';
+import { osmEntity } from '../osm';
+import { services } from '../services';
+import { svgIcon } from '../svg';
+import { uiCmd } from './cmd';
 
 import {
     utilDisplayName,
     utilDisplayType,
     utilEntityOrMemberSelector,
     utilNoAuto
-} from '../util/index';
+} from '../util';
 
 
 export function uiFeatureList(context) {
-    var geocodeResults;
+    var keybinding = d3_keybinding('uiFeatureList');
+    var _geocodeResults;
 
 
     function featureList(selection) {
@@ -28,7 +34,8 @@ export function uiFeatureList(context) {
             .append('div')
             .attr('class', 'header fillL cf');
 
-        header.append('h3')
+        header
+            .append('h3')
             .text(t('inspector.feature_list'));
 
         var searchWrap = selection
@@ -41,6 +48,7 @@ export function uiFeatureList(context) {
             .attr('type', 'search')
             .call(utilNoAuto)
             .on('keypress', keypress)
+            .on('keydown', keydown)
             .on('input', inputevent);
 
         searchWrap
@@ -59,18 +67,40 @@ export function uiFeatureList(context) {
         context.map()
             .on('drawn.feature-list', mapDrawn);
 
+        keybinding
+            .on(uiCmd('⌘F'), focusSearch);
+
+        d3_select(document)
+            .call(keybinding);
+
+
+        function focusSearch() {
+            var mode = context.mode() && context.mode().id;
+            if (mode !== 'browse') return;
+
+            d3_event.preventDefault();
+            search.node().focus();
+        }
+
+
+        function keydown() {
+            if (d3_event.keyCode === 27) {  // escape
+                search.node().blur();
+            }
+        }
+
 
         function keypress() {
             var q = search.property('value'),
                 items = list.selectAll('.feature-list-item');
-            if (d3_event.keyCode === 13 && q.length && items.size()) {
+            if (d3_event.keyCode === 13 && q.length && items.size()) {  // return
                 click(items.datum());
             }
         }
 
 
         function inputevent() {
-            geocodeResults = undefined;
+            _geocodeResults = undefined;
             drawList();
         }
 
@@ -89,10 +119,10 @@ export function uiFeatureList(context) {
 
 
         function features() {
-            var entities = {},
-                result = [],
-                graph = context.graph(),
-                q = search.property('value').toLowerCase();
+            var entities = {};
+            var result = [];
+            var graph = context.graph();
+            var q = search.property('value').toLowerCase();
 
             if (!q) return result;
 
@@ -115,7 +145,7 @@ export function uiFeatureList(context) {
                     id: -1,
                     geometry: 'point',
                     type: t('inspector.location'),
-                    name: loc[0].toFixed(6) + ', ' + loc[1].toFixed(6),
+                    name: dmsCoordinatePair([loc[1], loc[0]]),
                     location: loc
                 });
             }
@@ -128,8 +158,9 @@ export function uiFeatureList(context) {
 
                 var name = utilDisplayName(entity) || '';
                 if (name.toLowerCase().indexOf(q) >= 0) {
-                    var matched = context.presets().match(entity, graph),
-                        type = (matched && matched.name()) || utilDisplayType(entity.id);
+                    var matched = context.presets().match(entity, graph);
+                    var type = (matched && matched.name()) || utilDisplayType(entity.id);
+
                     result.push({
                         id: entity.id,
                         entity: entity,
@@ -146,17 +177,34 @@ export function uiFeatureList(context) {
 
             var visible = context.surface().selectAll('.point, .line, .area').nodes();
             for (var i = 0; i < visible.length && result.length <= 200; i++) {
-                addEntity(visible[i].__data__);
+                var datum = visible[i].__data__;
+                var entity = datum && datum.properties && datum.properties.entity;
+                if (entity) { addEntity(entity); }
             }
 
-            (geocodeResults || []).forEach(function(d) {
-                // https://github.com/openstreetmap/iD/issues/1890
-                if (d.osm_type && d.osm_id) {
+            (_geocodeResults || []).forEach(function(d) {
+                if (d.osm_type && d.osm_id) {    // some results may be missing these - #1890
+
+                    // Make a temporary osmEntity so we can preset match
+                    // and better localize the search result - #4725
+                    var id = osmEntity.id.fromOSM(d.osm_type, d.osm_id);
+                    var tags = {};
+                    tags[d.class] = d.type;
+
+                    var attrs = { id: id, type: d.osm_type, tags: tags };
+                    if (d.osm_type === 'way') {   // for ways, add some fake closed nodes
+                        attrs.nodes = ['a','a'];  // so that geometry area is possible
+                    }
+
+                    var tempEntity = osmEntity(attrs);
+                    var tempGraph = coreGraph([tempEntity]);
+                    var matched = context.presets().match(tempEntity, tempGraph);
+                    var type = (matched && matched.name()) || utilDisplayType(id);
+
                     result.push({
-                        id: osmEntity.id.fromOSM(d.osm_type, d.osm_id),
-                        geometry: d.osm_type === 'relation' ? 'relation' : d.osm_type === 'way' ? 'line' : 'point',
-                        type: d.type !== 'yes' ? (d.type.charAt(0).toUpperCase() + d.type.slice(1)).replace('_', ' ')
-                                               : (d.class.charAt(0).toUpperCase() + d.class.slice(1)).replace('_', ' '),
+                        id: tempEntity.id,
+                        geometry: tempEntity.geometry(tempGraph),
+                        type: type,
                         name: d.display_name,
                         extent: new geoExtent(
                             [parseFloat(d.boundingbox[3]), parseFloat(d.boundingbox[0])],
@@ -170,16 +218,17 @@ export function uiFeatureList(context) {
 
 
         function drawList() {
-            var value = search.property('value'),
-                results = features();
+            var value = search.property('value');
+            var results = features();
 
             list.classed('filtered', value.length);
 
-            var noResultsWorldwide = geocodeResults && geocodeResults.length === 0;
+            var noResultsWorldwide = _geocodeResults && _geocodeResults.length === 0;
 
             var resultsIndicator = list.selectAll('.no-results-item')
                 .data([0])
-                .enter().append('button')
+                .enter()
+                .append('button')
                 .property('disabled', true)
                 .attr('class', 'no-results-item')
                 .call(svgIcon('#icon-alert', 'pre-text'));
@@ -193,7 +242,8 @@ export function uiFeatureList(context) {
             if (services.geocoder) {
               list.selectAll('.geocode-item')
                   .data([0])
-                  .enter().append('button')
+                  .enter()
+                  .append('button')
                   .attr('class', 'geocode-item')
                   .on('click', geocoderSearch)
                   .append('div')
@@ -207,7 +257,7 @@ export function uiFeatureList(context) {
                 .style('display', (value.length && !results.length) ? 'block' : 'none');
 
             list.selectAll('.geocode-item')
-                .style('display', (value && geocodeResults === undefined) ? 'block' : 'none');
+                .style('display', (value && _geocodeResults === undefined) ? 'block' : 'none');
 
             list.selectAll('.feature-list-item')
                 .data([-1])
@@ -227,20 +277,24 @@ export function uiFeatureList(context) {
                 .append('div')
                 .attr('class', 'label');
 
-            label.each(function(d) {
-                d3_select(this)
-                    .call(svgIcon('#icon-' + d.geometry, 'pre-text'));
-            });
+            label
+                .each(function(d) {
+                    d3_select(this)
+                        .call(svgIcon('#icon-' + d.geometry, 'pre-text'));
+                });
 
-            label.append('span')
+            label
+                .append('span')
                 .attr('class', 'entity-type')
                 .text(function(d) { return d.type; });
 
-            label.append('span')
+            label
+                .append('span')
                 .attr('class', 'entity-name')
                 .text(function(d) { return d.name; });
 
-            enter.style('opacity', 0)
+            enter
+                .style('opacity', 0)
                 .transition()
                 .style('opacity', 1);
 
@@ -274,8 +328,8 @@ export function uiFeatureList(context) {
                 if (d.entity.type === 'node') {
                     context.map().center(d.entity.loc);
                 } else if (d.entity.type === 'way') {
-                    var center = context.projection(context.map().center()),
-                        edge = geoChooseEdge(context.childNodes(d.entity), center, context.projection);
+                    var center = context.projection(context.map().center());
+                    var edge = geoChooseEdge(context.childNodes(d.entity), center, context.projection);
                     context.map().center(edge.loc);
                 }
                 context.enter(modeSelect(context, [d.entity.id]));
@@ -287,7 +341,7 @@ export function uiFeatureList(context) {
 
         function geocoderSearch() {
             services.geocoder.search(search.property('value'), function (err, resp) {
-                geocodeResults = resp || [];
+                _geocodeResults = resp || [];
                 drawList();
             });
         }

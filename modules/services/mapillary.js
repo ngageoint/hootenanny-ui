@@ -36,6 +36,7 @@ var apibase = 'https://a.mapillary.com/v3/',
     maxResults = 1000,
     tileZoom = 14,
     dispatch = d3_dispatch('loadedImages', 'loadedSigns'),
+    _mlyFallback = false,
     _mlyCache,
     _mlyClicks,
     _mlySelectedImage,
@@ -73,9 +74,15 @@ function maxPageAtZoom(z) {
 
 function localeTimestamp(s) {
     if (!s) return null;
+    var detected = utilDetect();
+    var options = {
+        day: 'numeric', month: 'short', year: 'numeric',
+        hour: 'numeric', minute: 'numeric', second: 'numeric',
+        timeZone: 'UTC'
+    };
     var d = new Date(s);
     if (isNaN(d.getTime())) return null;
-    return d.toLocaleString(undefined, { timeZone: 'UTC' });
+    return d.toLocaleString(detected.locale, options);
 }
 
 
@@ -484,6 +491,10 @@ export default {
     hideViewer: function() {
         _mlySelectedImage = null;
 
+        if (!_mlyFallback && _mlyViewer) {
+            _mlyViewer.getComponent('sequence').stop();
+        }
+
         var viewer = d3_select('#photoviewer');
         if (!viewer.empty()) viewer.datum(null);
 
@@ -508,7 +519,8 @@ export default {
         if (!_mlyViewer) {
             this.initViewer(imageKey, context);
         } else {
-            _mlyViewer.moveToKey(imageKey);
+            _mlyViewer.moveToKey(imageKey)
+                .catch(function(e) { console.error('mly3', e); });  // eslint-disable-line no-console
         }
 
         return this;
@@ -527,8 +539,26 @@ export default {
                 }
             };
 
-            _mlyViewer = new Mapillary.Viewer('mly', clientId, imageKey, opts);
+            // Disable components requiring WebGL support
+            if (!Mapillary.isSupported() && Mapillary.isFallbackSupported()) {
+                _mlyFallback = true;
+                opts.component = {
+                    cover: false,
+                    direction: false,
+                    imagePlane: false,
+                    keyboard: false,
+                    mouse: false,
+                    sequence: false,
+                    tag: false,
+                    image: true,        // fallback
+                    navigation: true    // fallback
+                };
+            }
+
+            _mlyViewer = new Mapillary.Viewer('mly', clientId, null, opts);
             _mlyViewer.on('nodechanged', nodeChanged);
+            _mlyViewer.moveToKey(imageKey)
+                .catch(function(e) { console.error('mly3', e); });  // eslint-disable-line no-console
         }
 
         // nodeChanged: called after the viewer has changed images and is ready.
@@ -540,7 +570,9 @@ export default {
         // Clicks are added to the array in `selectedImage` and removed here.
         //
         function nodeChanged(node) {
-            _mlyViewer.getComponent('tag').removeAll();  // remove previous detections
+            if (!_mlyFallback) {
+                _mlyViewer.getComponent('tag').removeAll();  // remove previous detections
+            }
 
             var clicks = _mlyClicks;
             var index = clicks.indexOf(node.key);
@@ -688,7 +720,7 @@ export default {
 
 
     updateDetections: function(d) {
-        if (!_mlyViewer) return;
+        if (!_mlyViewer || _mlyFallback) return;
 
         var imageKey = d && d.key;
         var detections = (imageKey && _mlyCache.detections[imageKey]) || [];

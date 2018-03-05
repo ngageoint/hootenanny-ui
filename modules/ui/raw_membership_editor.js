@@ -1,5 +1,6 @@
 import _extend from 'lodash-es/extend';
 import _filter from 'lodash-es/filter';
+import _forEach from 'lodash-es/forEach';
 import _groupBy from 'lodash-es/groupBy';
 
 import {
@@ -28,7 +29,8 @@ import { utilDisplayName, utilNoAuto } from '../util';
 
 export function uiRawMembershipEditor(context) {
     var taginfo = services.taginfo,
-        id, showBlank;
+        _entityID,
+        _showBlank;
 
 
     function selectRelation(d) {
@@ -47,11 +49,13 @@ export function uiRawMembershipEditor(context) {
 
 
     function addMembership(d, role) {
-        showBlank = false;
+        _showBlank = false;
+
+        var member = { id: _entityID, type: context.entity(_entityID).type, role: role };
 
         if (d.relation) {
             context.perform(
-                actionAddMember(d.relation.id, { id: id, type: context.entity(id).type, role: role }),
+                actionAddMember(d.relation.id, member),
                 t('operations.add_member.annotation')
             );
 
@@ -59,7 +63,7 @@ export function uiRawMembershipEditor(context) {
             var relation = osmRelation();
             context.perform(
                 actionAddEntity(relation),
-                actionAddMember(relation.id, { id: id, type: context.entity(id).type, role: role }),
+                actionAddMember(relation.id, member),
                 t('operations.add.annotation.relation')
             );
 
@@ -77,15 +81,12 @@ export function uiRawMembershipEditor(context) {
 
 
     function relations(q) {
-        var newRelation = {
-                relation: null,
-                value: t('inspector.new_relation')
-            },
-            result = [],
-            graph = context.graph();
+        var newRelation = { relation: null, value: t('inspector.new_relation') };
+        var result = [];
+        var graph = context.graph();
 
         context.intersects(context.extent()).forEach(function(entity) {
-            if (entity.type !== 'relation' || entity.id === id)
+            if (entity.type !== 'relation' || entity.id === _entityID)
                 return;
 
             var matched = context.presets().match(entity, graph),
@@ -96,10 +97,7 @@ export function uiRawMembershipEditor(context) {
             if (q && value.toLowerCase().indexOf(q.toLowerCase()) === -1)
                 return;
 
-            result.push({
-                relation: entity,
-                value: value
-            });
+            result.push({ relation: entity, value: value });
         });
 
         result.sort(function(a, b) {
@@ -118,13 +116,17 @@ export function uiRawMembershipEditor(context) {
             });
         });
 
+        _forEach(result, function(obj) {
+            obj.title = obj.value;
+        });
+
         result.unshift(newRelation);
         return result;
     }
 
 
     function rawMembershipEditor(selection) {
-        var entity = context.entity(id),
+        var entity = context.entity(_entityID),
             parents = context.graph().parentRelations(entity),
             memberships = [];
 
@@ -137,19 +139,15 @@ export function uiRawMembershipEditor(context) {
         });
 
         var gt = parents.length > 1000 ? '>' : '';
-        selection.call(uiDisclosure()
+        selection.call(uiDisclosure(context, 'raw_membership_editor', true)
             .title(t('inspector.all_relations') + ' (' + gt + memberships.length + ')')
             .expanded(true)
-            .on('toggled', toggled)
+            .updatePreference(false)
+            .on('toggled', function(expanded) {
+                if (expanded) { selection.node().parentNode.scrollTop += 200; }
+            })
             .content(content)
         );
-
-
-        function toggled(expanded) {
-            if (expanded) {
-                selection.node().parentNode.scrollTop += 200;
-            }
-        }
 
 
         function content(wrap) {
@@ -218,7 +216,7 @@ export function uiRawMembershipEditor(context) {
 
 
             var newrow = list.selectAll('.member-row-new')
-                .data(showBlank ? [0] : []);
+                .data(_showBlank ? [0] : []);
 
             newrow.exit()
                 .remove();
@@ -272,7 +270,7 @@ export function uiRawMembershipEditor(context) {
             addrel
                 .call(svgIcon('#icon-plus', 'light'))
                 .on('click', function() {
-                    showBlank = true;
+                    _showBlank = true;
                     content(wrap);
                     list.selectAll('.member-entity-input').node().focus();
                 });
@@ -308,7 +306,7 @@ export function uiRawMembershipEditor(context) {
                         taginfo.roles({
                             debounce: true,
                             rtype: rtype || '',
-                            geometry: context.geometry(id),
+                            geometry: context.geometry(_entityID),
                             query: role
                         }, function(err, data) {
                             if (!err) callback(sort(role, data));
@@ -328,8 +326,8 @@ export function uiRawMembershipEditor(context) {
 
 
     rawMembershipEditor.entityID = function(_) {
-        if (!arguments.length) return id;
-        id = _;
+        if (!arguments.length) return _entityID;
+        _entityID = _;
         return rawMembershipEditor;
     };
 

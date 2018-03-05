@@ -24,7 +24,8 @@ export function uiModes(context) {
 
 
     function editable() {
-        return context.editable() && context.mode().id !== 'save' && services.hoot.hasLayers();
+        var mode = context.mode();
+        return context.editable() && mode && mode.id !== 'save';
     }
 
 

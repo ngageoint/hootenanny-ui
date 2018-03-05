@@ -4,7 +4,7 @@ import _values from 'lodash-es/values';
 import { bisector as d3_bisector } from 'd3-array';
 
 import { osmEntity, osmIsSimpleMultipolygonOuterMember } from '../osm';
-import { svgPath, svgTagClasses } from './index';
+import { svgPath, svgSegmentWay, svgTagClasses } from './index';
 
 
 export function svgAreas(projection, context) {
@@ -41,7 +41,60 @@ export function svgAreas(projection, context) {
     }
 
 
-    return function drawAreas(selection, graph, entities, filter) {
+    function drawTargets(selection, graph, entities, filter) {
+        var targetClass = context.getDebug('target') ? 'pink ' : 'nocolor ';
+        var nopeClass = context.getDebug('target') ? 'red ' : 'nocolor ';
+        var getPath = svgPath(projection).geojson;
+        var activeID = context.activeID();
+
+        // The targets and nopes will be MultiLineString sub-segments of the ways
+        var data = { targets: [], nopes: [] };
+
+        entities.forEach(function(way) {
+            var features = svgSegmentWay(way, graph, activeID);
+            data.targets.push.apply(data.targets, features.passive);
+            data.nopes.push.apply(data.nopes, features.active);
+        });
+
+
+        // Targets allow hover and vertex snapping
+        var targetData = data.targets.filter(getPath);
+        var targets = selection.selectAll('.area.target-allowed')
+            .filter(function(d) { return filter(d.properties.entity); })
+            .data(targetData, function key(d) { return d.id; });
+
+        // exit
+        targets.exit()
+            .remove();
+
+        // enter/update
+        targets.enter()
+            .append('path')
+            .merge(targets)
+            .attr('d', getPath)
+            .attr('class', function(d) { return 'way area target target-allowed ' + targetClass + d.id; });
+
+
+        // NOPE
+        var nopeData = data.nopes.filter(getPath);
+        var nopes = selection.selectAll('.area.target-nope')
+            .filter(function(d) { return filter(d.properties.entity); })
+            .data(nopeData, function key(d) { return d.id; });
+
+        // exit
+        nopes.exit()
+            .remove();
+
+        // enter/update
+        nopes.enter()
+            .append('path')
+            .merge(nopes)
+            .attr('d', getPath)
+            .attr('class', function(d) { return 'way area target target-nope ' + nopeClass + d.id; });
+    }
+
+
+    function drawAreas(selection, graph, entities, filter) {
         var path = svgPath(projection, graph, true),
             areas = {},
             multipolygon;
@@ -99,7 +152,7 @@ export function svgAreas(projection, context) {
            .attr('d', path);
 
 
-        var layer = selection.selectAll('.layer-areas');
+        var layer = selection.selectAll('.layer-areas .layer-areas-areas');
 
         var areagroup = layer
             .selectAll('g.areagroup')
@@ -145,5 +198,12 @@ export function svgAreas(projection, context) {
             })
             .call(svgTagClasses())
             .attr('d', path);
-    };
+
+
+        // touch targets
+        selection.selectAll('.layer-areas .layer-areas-targets')
+            .call(drawTargets, graph, data.stroke, filter);
+    }
+
+    return drawAreas;
 }
