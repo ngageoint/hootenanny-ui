@@ -10,6 +10,7 @@
                 "barrier/ditch",
                 "barrier/gate",
                 "barrier/hedge",
+                "barrier/kerb",
                 "barrier"
             ]
         },
@@ -21,6 +22,7 @@
                 "building",
                 "building/house",
                 "building/apartments",
+                "building/retail",
                 "building/commercial",
                 "building/industrial",
                 "building/residential"
@@ -172,9 +174,12 @@
                 "type/route/foot",
                 "type/route/hiking",
                 "type/route/horse",
+                "type/route/piste",
                 "type/route/bus",
                 "type/route/train",
+                "type/route/light_rail",
                 "type/route/tram",
+                "type/route/subway",
                 "type/route/ferry",
                 "type/route/power",
                 "type/route/pipeline",

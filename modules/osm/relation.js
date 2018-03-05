@@ -109,6 +109,16 @@ _extend(osmRelation.prototype, {
         }
     },
 
+    // Same as memberByRole, but returns all members with the given role
+    membersByRole: function(role) {
+        var result = [];
+        for (var i = 0; i < this.members.length; i++) {
+            if (this.members[i].role === role) {
+                result.push(_extend({}, this.members[i], {index: i}));
+            }
+        }
+        return result;
+    },
 
     // Return the first member with the given id. A copy of the member object
     // is returned, extended with an 'index' property whose value is the member index.
@@ -161,9 +171,9 @@ _extend(osmRelation.prototype, {
 
     // Wherever a member appears with id `needle.id`, replace it with a member
     // with id `replacement.id`, type `replacement.type`, and the original role,
-    // unless a member already exists with that id and role. Return an updated
-    // relation.
-    replaceMember: function(needle, replacement) {
+    // By default, adding a duplicate member (by id and role) is prevented.
+    // Return an updated relation.
+    replaceMember: function(needle, replacement, keepDuplicates) {
         if (!this.memberById(needle.id))
             return this;
 
@@ -173,7 +183,7 @@ _extend(osmRelation.prototype, {
             var member = this.members[i];
             if (member.id !== needle.id) {
                 members.push(member);
-            } else if (!this.memberByIdAndRole(replacement.id, member.role)) {
+            } else if (keepDuplicates || !this.memberByIdAndRole(replacement.id, member.role)) {
                 members.push({id: replacement.id, type: replacement.type, role: member.role});
             }
         }
@@ -253,6 +263,26 @@ _extend(osmRelation.prototype, {
     },
 
 
+    isValidRestriction: function() {
+        if (!this.isRestriction()) return false;
+
+        var froms = this.members.filter(function(m) { return m.role === 'from'; });
+        var vias = this.members.filter(function(m) { return m.role === 'via'; });
+        var tos = this.members.filter(function(m) { return m.role === 'to'; });
+
+        if (froms.length !== 1 && this.tags.restriction !== 'no_entry') return false;
+        if (froms.some(function(m) { return m.type !== 'way'; })) return false;
+
+        if (tos.length !== 1 && this.tags.restriction !== 'no_exit') return false;
+        if (tos.some(function(m) { return m.type !== 'way'; })) return false;
+
+        if (vias.length === 0) return false;
+        if (vias.length > 1 && vias.some(function(m) { return m.type !== 'way'; })) return false;
+
+        return true;
+    },
+
+
     // Returns an array [A0, ... An], each Ai being an array of node arrays [Nds0, ... Ndsm],
     // where Nds0 is an outer ring and subsequent Ndsi's (if any i > 0) being inner rings.
     //
@@ -264,8 +294,8 @@ _extend(osmRelation.prototype, {
     // rings not matched with the intended outer ring.
     //
     multipolygon: function(resolver) {
-        var outers = this.members.filter(function(m) { return 'outer' === (m.role || 'outer'); }),
-            inners = this.members.filter(function(m) { return 'inner' === m.role; });
+        var outers = this.members.filter(function(m) { return 'outer' === (m.role || 'outer'); });
+        var inners = this.members.filter(function(m) { return 'inner' === m.role; });
 
         outers = osmJoinWays(outers, resolver);
         inners = osmJoinWays(inners, resolver);

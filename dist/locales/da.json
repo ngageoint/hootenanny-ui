@@ -25,6 +25,9 @@
             },
             "draw_line": {
                 "tail": "Klik for at tilføje flere punkter til linjen. Klik på andre linjer for at forbinde til dem og dobbeltklik for at afslutte linjen."
+            },
+            "drag_node": {
+                "connected_to_hidden": "Kan ikke redigeres da den er forbundet til et skjult kortobjekt."
             }
         },
         "operations": {
@@ -215,12 +218,6 @@
                 "connected_to_hidden": "Dette kan ikke opdeles, da det er forbundet til et skjult objekt."
             },
             "restriction": {
-                "help": {
-                    "select": "Klik for at vælge et vejsegment.",
-                    "toggle": "Klik for at slå svingbegrænsninger til.",
-                    "toggle_on": "Klik for tilføje en \"{restriction}\"-begrænsning.",
-                    "toggle_off": "Klik for at fjerne \"{restriction}\"-begrænsningen."
-                },
                 "annotation": {
                     "create": "Tilføjede en svingbegrænsning",
                     "delete": "Slettede en svingbegrænsning"
@@ -275,12 +272,13 @@
             "about_changeset_comments": "Vedr. ændringssætkommentarer",
             "about_changeset_comments_link": "http://wiki.openstreetmap.org/wiki/Good_changeset_comments",
             "google_warning": "Du nævnte Google i denne kommentar: husk at kopiering fra Google Maps er strengt forbudt.",
-            "google_warning_link": "http://www.openstreetmap.org/copyright"
+            "google_warning_link": "https://www.openstreetmap.org/copyright"
         },
         "contributors": {
             "list": "Redigeringer af {users}",
             "truncated_list": "Redigeringer af {users} og {count} andre"
         },
+<<<<<<< HEAD
         "infobox": {
             "selected": "{n} valgte",
             "geometry": "Geometri",
@@ -293,6 +291,58 @@
             "location": "Lokalitet",
             "metric": "Meter",
             "imperial": "Imperial"
+=======
+        "info_panels": {
+            "key": "I",
+            "background": {
+                "key": "B",
+                "title": "Baggrund",
+                "zoom": "Zoom",
+                "vintage": "Årgang",
+                "source": "Kilde",
+                "description": "Beskrivelse",
+                "resolution": "Opløsning",
+                "accuracy": "Nøjagtighed",
+                "unknown": "Ukendt",
+                "show_tiles": "Vis Kort-fliser",
+                "hide_tiles": "Skjul Kort-fliser",
+                "show_vintage": "Vis alder",
+                "hide_vintage": "Gem alder"
+            },
+            "history": {
+                "key": "H",
+                "title": "Historik",
+                "selected": "{n} markerede",
+                "version": "Version",
+                "last_edit": "Sidst ændret",
+                "edited_by": "Ændret af",
+                "changeset": "Ændringssæt",
+                "unknown": "Ukendt",
+                "link_text": "Historik på openstreetmap.org"
+            },
+            "location": {
+                "key": "L",
+                "title": "Lokation",
+                "unknown_location": "Ukendt lokation"
+            },
+            "measurement": {
+                "key": "M",
+                "title": "Målinger",
+                "selected": "{n} markeret",
+                "geometry": "Geometri",
+                "closed_line": "lukket linje",
+                "closed_area": "lukket område",
+                "center": "Centrum",
+                "perimeter": "Omkreds",
+                "length": "Længde",
+                "area": "Areal",
+                "centroid": "Geometrisk centrum",
+                "location": "Lokation",
+                "metric": "Metrisk",
+                "imperial": "Imperial",
+                "node_count": "Antal noder"
+            }
+>>>>>>> v2.7.0
         },
         "geometry": {
             "point": "punkt",
@@ -348,21 +398,45 @@
         "background": {
             "title": "Baggrund",
             "description": "Baggrundsindstillinger",
+<<<<<<< HEAD
             "percent_brightness": "{opacity} % lysstyrke",
+=======
+            "key": "B",
+            "backgrounds": "Baggrunde",
+>>>>>>> v2.7.0
             "none": "Ingen",
             "best_imagery": "Bedst kendte luftfotokilde for denne her lokalitet",
             "switch": "Skift tilbage til denne baggrund",
             "custom": "Brugerdefineret",
             "custom_button": "Rediger brugerdefineret baggrund",
+<<<<<<< HEAD
             "custom_prompt": "Indtast en tile URL template. Valide opsætning er  {zoom}, {x}, {y} for Z/X/Y skema og {u} for kvartile skema.",
             "fix_misalignment": "Justerer billedets offset",
             "imagery_source_faq": "Hvem er ophavsmand til luftfotoet?",
+=======
+            "custom_prompt": "Indtast en URL-skabelon for kort-fliser. Gyldige formater er:\n   - {zoom} eller {z}, {x}, {y} for Z/X/Y flise-skemaer\n   - {-y} eller {ty} for omvendte Y-koordinater i TMS-stil\n   - {u} for quad-flise-skemaer\n   - {switch:a,b,c} for multipleksning af DNS-opslag\n\nEksempel:\n{example}",
+            "overlays": "Overlægninger",
+            "imagery_source_faq": "Luftfoto-information / anmeld problem",
+>>>>>>> v2.7.0
             "reset": "nulstil",
-            "offset": "Træk et hvert sted i det grå område nedenfor for at justere billedets offset eller indtast offset-værdien i meter.",
+            "display_options": "Visningsindstillinger",
+            "brightness": "Lysstyrke",
+            "contrast": "Kontrast",
+            "saturation": "Mætning",
+            "sharpness": "Skarphed",
             "minimap": {
+<<<<<<< HEAD
                 "description": "Minikort",
                 "tooltip": "Vis et udzommet kort for at hjælpe med at lokalisere det viste område."
             }
+=======
+                "description": "Vis minikort",
+                "tooltip": "Vis et udzommet kort for at hjælpe med at lokalisere det viste område.",
+                "key": "/"
+            },
+            "fix_misalignment": "Juster luftfoto-offset",
+            "offset": "Træk et vilkårligt sted i det grå område nedenfor for at justere luftfotoets offset, eller indtast offset-værdien i meter."
+>>>>>>> v2.7.0
         },
         "map_data": {
             "title": "Kortdata",
@@ -425,7 +499,12 @@
         "area_fill": {
             "wireframe": {
                 "description": "Ingen fyld (trådnet)",
+<<<<<<< HEAD
                 "tooltip": "At slå visning med trådnet til gør det let at se baggrundsbilledet."
+=======
+                "tooltip": "Aktivering af trådnetsvisning tydeliggør luftfotoet i baggrunden.",
+                "key": "W"
+>>>>>>> v2.7.0
             },
             "partial": {
                 "description": "Delvist udfyldt",
@@ -449,7 +528,12 @@
             "error": "Der skete en fejl da du prøvede at gemme",
             "status_code": "Serveren returnerede følgende statuskode {code}",
             "unknown_error_details": "Kontrollér om du har forbindelse til internettet.",
+<<<<<<< HEAD
             "uploading": "Gemmer ændringer til OpenStreetMap.",
+=======
+            "uploading": "Uploader ændringer til OpenStreetMap...",
+            "conflict_progress": "Kontrollerer konflikter: {num} ud af {total}",
+>>>>>>> v2.7.0
             "unsaved_changes": "Du har ændringer, der endnu ikke er gemt",
             "conflict": {
                 "header": "Løs konfliktredigeringer",
@@ -509,7 +593,14 @@
             "untagged_point": "Punkt uden tags",
             "untagged_line": "Linje uden tags",
             "untagged_area": "Område uden tags",
+<<<<<<< HEAD
             "many_deletions": "Du er ved at slette {n} objekter. Er du sikker på du ønsker at gøre dette? Det vil slette dem fra det kort som alle andre ser på openstreetmap.org.",
+=======
+            "untagged_area_tooltip": "Vælg en objekttype der beskriver hvad slags område dette er.",
+            "untagged_relation": "Ej tagget relation",
+            "untagged_relation_tooltip": "Vælg en objekttype der beskriver hvad slags relation dette er.",
+            "many_deletions": "Du sletter {n} kortobjekter: {p} noder, {l} linjer, {a} områder, {r} relationer. Er du sikker på at du vil gøre dette? Dette vil slette dem fra kortet som alle andre ser på openstreetmap.org.",
+>>>>>>> v2.7.0
             "tag_suggests_area": "Tagget {tag} antyder at linjen skulle være et område, men den er ikke et område",
             "untagged_point_tooltip": "Vælg en objekttype der beskriver hvad dette punkt er.",
             "untagged_line_tooltip": "Vælg en objekttype der beskriver hvad slags linje dette er.",
@@ -529,18 +620,26 @@
             "browse": "Vælg en .gpx-fil"
         },
         "mapillary_images": {
-            "tooltip": "Gadeniveau billeder fra Mapillary",
-            "title": "Billedelag (Mapillary)"
+            "tooltip": "Gadeniveau-billeder fra Mapillary",
+            "title": "Fotooverlægning (Mapillary)"
         },
         "mapillary_signs": {
-            "tooltip": "Trafikskilte fra Mapillary (fotolag skal være slået til)",
-            "title": "Trafikskiltelag (Mapillary)"
+            "tooltip": "Trafikskilte fra Mapillary (fotooverlægning skal være slået til)",
+            "title": "Trafikskilteoverlægning (Mapillary)"
         },
         "mapillary": {
             "view_on_mapillary": "Vis dette billede på Mapillary"
         },
+        "openstreetcam_images": {
+            "tooltip": "Gadeniveau-billeder fra OpenStreetCam",
+            "title": "Fotooverlægning (OpenStreetCam)"
+        },
+        "openstreetcam": {
+            "view_on_openstreetcam": "Vis dette billede på OpenStreetCam"
+        },
         "help": {
             "title": "Hjælp",
+<<<<<<< HEAD
             "help": "# Hjælp\n\nDette er et redigeringsværktøj for [OpenStreetMap](http://www.openstreetmap.org/), det åbne og redigeringsbare verdenskort. Du kan bruge dette værktøj til at opdatere geodata i dit lokalområde. Derved skaber du et bedre verdenskort med open source og frie geodata til gavn for alle.\n\nDine ændringer på kortet vil blive synligt for alle og enhver der benytter OpenStreetMap. For at lave redigeringer skal du [logge ind](https://www.openstreetmap.org/login).\n\nDette [iD redigeringsværktøj](http://ideditor.com/) er et kollaborativ projekt og [kildekoden er tilgængelig på GitHub](https://github.com/openstreetmap/iD).\n",
             "editing_saving": "# Redigering og Gem\n\nDette redigeringsværktøj er primært beregnet til online brug ligesom\ndu bruger dette lige nu gennem en webside.\n\n### Objekt udvælgelse\n\nFor at vælge et kortobjekt fx en vej eller et interessepunkt, klik\npå dette på kortet. Dette vil tydeligt markere objektet, vil åbne et panel\nmed flere oplysninger om dette og en menu angiver hvad du kan gøre med dette objekt.\n\nFor at vælge flere objekter på en gang, hold 'Skift\" knappen nede. Dernæst klik\npå objekterne du vil udvælge eller indtegn en firkant på kortet.\nDette vil indtegne en kasse og alle objekterne er blevet udvalgt i denne.\n\n### Gem redigeringer\n\nNår du laver ændringer fx redigering af veje, bygninger og steder, så er\ndisse gemt lokalt indtil du gemmer dem på serveren. Du skal ikke bekymre\nhvis du laver en fejl - Du kan fortryde ved at klikke på fortrydknappen og\nomdanne ændringer tilbage med gendanknappen.\n\nKlik på 'Gem' for at afslutte en serie af redigeringer - fx hvis du har afsluttet\net område af en by og vil starte på et nyt område. Du vil få en chance\nfor at gennemse hvad du har lavet og redigeringsværktøjet vil give forslag\nog advarsler hvis noget ikke ser korrekt ud i ændringerne.\n\nHvis alting ser fint ud, så kan du tilføje en lille kommentar der forklarer\nændringerne du har lavet og dernæst klikker du 'Gem' igen for at afsende ændringerne\ntil [OpenStreetMap.org](http://www.openstreetmap.org/), hvor de vil blive synlige\ntil alle andre brugere og tilgængeligt for andre at bygge videre på.\n\nHvis du ikke kan nå at afslutte dine redigeringer, så kan du forlade redigeringsværktøjet\nog komme tilbage (på samme browser og computer) og redigeringsværktøjet\nvil tilbyde at gendanne dit arbejde.\n\n### Brug af redigeringsværktøjet\n\nEn liste af tilgængelige genvejstaster kan findes [her](http://wiki.openstreetmap.org/wiki/ID/Shortcuts).\n",
             "roads": "# Veje\n\nDu kan oprette, tilrette og slette veje med dette tegneværktøj. Veje kan være af mange forskellige typer: stier, landeveje, spor, cykelstier mv. Enhver ofte benyttet rute kan kortlægges.\n\n### Vælg\n\nKlik på en vej for at vælge den. Et omrids dukker op sammen med en lille værktøjsmenu og et sidepanel der viser flere oplysninger om vejen.\n\n### Ændring\n\nOfte ses veje der ikke er justeret i forhold til luftfotoet bag dem eller i forhold til et GPS-spor. Du kan justere disse veje så de er placeret rigtigt.\n\nKlik først på vejen du vil ændre. Dette fremhæver den og viser kontrolpunkter langs med den som kan trækkes det rigtige sted hen. Hvis du har brug for flere kontrolpunkter for at gøre vejen mere detaljeret, kan du dobbeltklikke på en del af vejen, så dukker et punkt op.\n\nHvis vejen er forbundet til andre veje, men ikke er korrekt forbundet på kortet, så træk et af kontrolpunkterne hen på den anden vej for at koble dem sammen. Det er vigtigt for kortet, faktisk vitalt for rutevejledninger, at veje er forbundet.\n\nDu kan også klikke på flytteværktøjet eller trykke på tastegenvejen \"M\" for at flytte hele vejen på en gang, og så klikke igen for at gemme flytningen.\n\n### Sletning\n\nHvis en vej er helt forkert - du kan ikke se den på et luftfoto og du har ideelt set fået bekræftet at vejen ikke findes lokalt - så kan du slette vejen. Men pas på med at slette hvad andre har lavet - som med andre ændringer er resultatet synligt for alle og luftfoto kan være forældede så vejen kunne være bygget i mellemtiden.\n\nDu kan slette en bygning ved at vælge den og klikke på skraldespands-ikonet - alternativt kan du bruge slet-tasten på dit tastatur.\n\n### Oprettelse\n\nHar du fundet et sted hvor der skulle være en vej, men den er ikke på kortet? Klik på linje-ikonet i øverste venstre del af tegneværktøjet eller klik på tastegenvejen \"2\" for at tegne en linje.\n\nKlik på begyndelsen af vejen for at påbegynde den. Hvis vejen forgrener sig fra en eksisterende vej, så begynd vejen der hvor de er forbundet.\n\nKlik derefter på punkter på vejens forløb så det passer med luftfoto eller GPS-spor. Hvis vejen du tegner krydser en anden vej, så kobl dem sammen ved at klikke på punktet hvor de skærer hinanden. Når du er færdig med at tegne, så dobbeltklik eller tryk på enter-tasten på tastaturet.\n",
@@ -550,6 +649,65 @@
             "inspector": "Oversæt\n# Brug af Inspektøren\n\nInspektøren er området til venstre på siden, hvor du kan redigere detaljerne for det valgte objekt.\n\n### Valg af objekttype\n\nNår du har tilføjet et punkt, en linje eller område, kan du vælge, hvilken type objekt det er, fx om det er en motorvej eller villavej, supermarked eller café. Inspektøren vil vise knapper for fælles objekttyper, og du kan finde andre ved at skrive, hvad du leder efter, i søgefeltet.\n\nKlik på i'et i nederste højre hjørne af en objekttypeknap for at lære mere om den pågældende objekttype. Klik på selve knappen for at vælge denne type.\n\n### Brug af formularer og redigeringsmærker\n\nNår du vælger en objekttype, eller når du vælger et objekt, der allerede har en type tilknyttet, vil inspektøren vise felter med detaljer om objektet, såsom dets navn og adresse.\n\nNeden for de felter, du kan se, kan du klikke på \"Tilføj felt\" for at tilføje andre detaljer, såsom et Wikipedia-link, oplysninger om adgang for kørestole og meget mere.\n\nI bunden af ​​inspektøren kan du klikke på 'Ekstra mærker' for at tilføje vilkårlige andre mærker til elementet. [Taginfo] (http://taginfo.openstreetmap.org/, på engelsk) er et godt sted at lære mere om populære kombinationer af mærker ('tags' på engelsk).\n\nÆndringer, du foretager i inspektøren, bliver automatisk anvendt på kortet. Du kan fortryde dem når som helst ved at klikke på knappen 'Fortryd'.\n",
             "buildings": "# Bygninger\n\nOpenStreetMap udgør verdens største database af bygninger. Du kan opretteendnu flere selv og gøre databasen endnu bedre.\n\n### Vælg\n\nDu vælger en bygning ved at klikke på en af dens sider. Dette vil fremhæve bygningen og vil samtidig åbne en lille værktøjsmenu og et sidepanel der viser flere oplysninger om bygningen.\n\n### Ændring\n\nNogle gange er bygninger placeret forkert eller har forkerte tags.\n\nDu kan flytte en bygning ved vælge den og klikke på flytteværktøjet. Bevæg din mus for at flytte bygningen, og klik så når bygningen er blevet placeret korrekt.\n\nHvis en bygnings form ser forkert ud, så klik og træk i punkterne i omridset af bygningen til den er rigtig.\n\n### Opret\n\nDa OpenStreetMap både kan registre bygninger som et enkelt punkt eller som en polygon, så kan følgende tommelfingerregel gives. Kortlæg så vidt muligt alle bygninger som polygoner og kortlæg så fx butikker, firmaer og andet som opererer fra en bygning som enkeltpunkter.\n\nStart kortlægning af en bygning ved at klikke på \"Område\"-knappen øverst oppe til venstre. Når du er færdig med at indtegne bygningen, så klik på entertasten på dit tastatur eller klik på det første punkt i din indtegnede bygning for at lukke.\n\n### Sletning\n\nHvis en bygning er helt forkert - du kan ikke se den på et luftfoto og du har ideelt set fået bekræftet at bygningen ikke findes lokalt - så kan du slette bygningen. Men pas meget på med at slette hvad andre har lavet. Luftfoto kan fx være forældede og der kan være blevet bygget i mellemtiden i området.\n\nDu kan slette en bygning ved at vælge den og klikke på skraldespands-ikonet - alternativt kan du bruge slet-tasten på dit tastatur.\n",
             "relations": "# Relationer\n\nEn relation er en speciel type objekt i OpenStreetMap sammenhænge som grupperer andre\nobjekter sammen. For eksempel to af de mest almindelige former for relationer er\n1) *rute relationer* der grupperer vejsegmenter der tilhører en bestemt vej/sti\nsammen. 2) *multipolygoner* som grupperer flere linjer der udgør et komplekst område\nsammen (en med flere stykker eller huller i som fx i en donut).\n\nGruppen af objekter i en relation kaldes *medlemmer*. I sidemenuen kan du se hvilke\nrelationer et objekt er medlem af. Du kan også i sidemenuen klikke på relationen. Når\nder er blevet klikket på en relation vil der dukke en liste op med alle dens medlemer og\npå kortet vil disse medlemmer være markeret tydeligt ud.\n\nDe fleste gange vil iD håndtere relationer automatisk for dig.\nDu skal her være meget opmærksom på hvis du fx sletter et vejsegment fordi du vil optegne\ndet mere præcist med et nyt vejsegment, at dette nye vejsegment også bliver tilføjet\nsom et medlem af den oprindelige relation(er).\n\n\n## Redigering relationer\n\nHer kommer de grundlæggende trin for trin for at redigere relationer\n\nDu tilføjer et objekt til en relation ved at markere objektet ud, dernæst klik \"+\" knappen\nved \"Alle relationer\" sektionen i sidemenuen. Vælg eller skriv navnet på relationen.\n\nEn helt ny relation laves ved at du først udvælger det første objekt som skal være medlem.\nKlik dernæst på \"+\" knappen ved \"Alle relationer\" sektionen og vælg \"Ny relation...\".\n\nDu fjerner et objekt fra en relation ved at udvælge objektet på kortet. Dernæst går du ned til\nrelationen du vil fjerne det fra (i sidemenuen). Klik så på skraldespands ikonet ved relationens navn.\nAdvarsel vær forsigtig med dette.\n\nDu laver en multipolygon med huller ved at benytte \"Fusioner\" værktøjet. Indtegn de to områder\n(indre og ydre område), hold så Skift knappen ned og klik på hver af dem.\nDernæst klik på \"Fusioner\" (+) knappen.\n"
+=======
+            "key": "H",
+            "help": {
+                "title": "Hjælp",
+                "welcome": "Velkommen til iD - et redigeringsværktøj til [OpenStreetMap](https://www.openstreetmap.org/). Med dette værktøj kan du opdatere OpenStreetMap direkte fra din web-browser.",
+                "open_data_h": "Open Data",
+                "open_data": "Ændringer du laver i dette kort vil være synlige for alle der anvender OpenStreetMap. Dine redigeringer kan basere sig på personligt kendskab, opmåling og udforskning på stedet eller fotos fra luften eller gadeniveau. Kopiering fra enhver kommerciel kilde, såsom Google Maps, er [strengt forbudt](https://www.openstreetmap.org/copyright).",
+                "before_start_h": "Før du starter",
+                "before_start": "Du bør gøre dig bekendt med OpenStreetMap og dette redigeringsværktøj før du begynder med egentlig redigering af kortet. iD indeholder en såkaldt Gennemgang som lærer dig de basale ting omkring redigering af OpenStreetMap. Klik på \"Start Gennemgang\" på denne side for at starte vejledningen - det tager kun omkring et kvarter.",
+                "open_source_h": "Open Source - Åben kildekode",
+                "open_source": "Dette iD-redigeringsværktøj udvikles i et fællesskabsdrevet open source-projekt og du anvender lige nu version {version}. Kildekoden er tilgængelig [på GitHub](https://github.com/openstreetmap/iD).",
+                "open_source_help": "Du kan hjælpe iD ved at [oversætte](https://github.com/openstreetmap/iD/blob/master/CONTRIBUTING.md#translating) eller [rapportere fejl](https://github.com/openstreetmap/iD/issues)."
+            },
+            "overview": {
+                "title": "Overblik",
+                "navigation_h": "Navigation",
+                "navigation_drag": "Du kan ændre området af kortet der er synligt, ved at trykke og holde {leftclick} venstre-musetast nedtrykket og flytte musen. Du kan også bruge `↓`, `↑`, `←`, `→` piletasterne på dit tastatur.",
+                "navigation_zoom": "Du kan zoome ind og ud ved brug af musens rullehjul eller tilsvarende på et trackpad, eller ved at klikke på knapperne {plus} / {minus} i kanten af kortet. Du kan også bruge `+`, `-` tasterne på dit tastatur.",
+                "features_h": "Kortobjekter",
+                "features": "Vi bruger ordet *kortobjekt* til at beskrive ting der optræder på kortet såsom veje, bygninger, eller interessepunkter. Enhver fysisk ting i den virkelige verden kan indtegnes som et kortobjekt på OpenStreetMap. Kortobjekter repræsenteres på kortet som *punkter*, *linjer* eller *områder*.",
+                "nodes_ways": "I OpenStreetMap kaldes punkter sommetider *noder*, og linjer og områder sommetider *veje*."
+            },
+            "editing": {
+                "title": "Rediger & gem",
+                "select_h": "Vælg",
+                "select_left_click": "{leftclick} Venstre-klik på et kortobjekt for at markere det. Dette vil fremhæve det med en pulserende glød, og i kanten af kortet vises detaljer om objektet, såsom navn og adresse.",
+                "select_right_click": "{rightclick} Højreklik på et kortobjekt for at vise redigeringsmenuen, som viser de mulige værktøjer der kan anvendes, såsom rotation, flytning og sletning.",
+                "multiselect_h": "Multi-markering",
+                "save_h": "Gem"
+            },
+            "feature_editor": {
+                "title": "Redigeringsværktøj til kortobjekter",
+                "intro": "*Redigeringsværktøjet til kortobjekter* kommer frem i kanten af kortet, og gør det muligt at se og redigere alle informationer om det markerede kortobjekt.",
+                "definitions": "I toppen vises kortobjektets type. I midten et antal *felter* som viser kortobjektets attributter, såsom dets navn eller adresse.",
+                "type_h": "Kortobjekt-type",
+                "type": "Du kan klikke på objekttypen for at ændre et kortobjekts type. Alt hvad der eksisterer i den virkelige verden kan tilføjes til OpenStreetMap, så der er tusindvis af typer at vælge imellem.",
+                "type_picker": "Typevælgeren viser de mest almindeligt forekommende, såsom parker, hospitaler, restauranter, veje og bygninger. Du kan søge ved at skrive hvad du leder efter i søgeboksen. Du  kan også klikke på {inspect} **Info**-ikonet ved siden af objekttypen for at lære mere om denne.",
+                "fields_h": "Felter",
+                "fields_all_fields": "Sektionen \"Alle felter\" indeholder alle de felter objektet kan indeholde, og som du kan redigere. I OpenStreetMap er alle felter valgfri, og det er helt OK at efterlade et felt tomt hvis du er usikker.",
+                "fields_example": "Hver objekttype vil vise forskellige felter. Eksempelvis kan der for en vej vises felter for dens belægning og hastighedsgrænse, mens der for en restaurant kan vises felter for hvilken mad der serveres og dens åbningstider. ",
+                "fields_add_field": "Du kan også klikke på \"Tilføj felt\"-boksen for at tilføje yderligere felter, såsom beskrivelse, Wikipedia-link, kørestolsegnethed og meget mere.",
+                "tags_h": "Tags (attributter)",
+                "tags_all_tags": "Under sektionen med felter kan du udvide \"Alle tags\"-sektionen for at redigere alle OpenStreetMap-*tags* for det markerede kortobjekt. Hvert tag består af en *nøgle* og en *værdi*, dette er dataelementer som definer samtlige de egenskaber som er gemt i OpenStreetMap.",
+                "tags_resources": "Redigering af et kortobjekts tags kræver et vist kendskab til OpenStreetMap. Du bør studere ressourcer som [OpenStreetMap-wikien](https://wiki.openstreetmap.org/wiki/Main_Page) eller [Taginfo](https://taginfo.openstreetmap.org/) for at lære mere om den gængse praksis for OpenStreetMap-tagging."
+            },
+            "points": {
+                "title": "Punkter"
+            },
+            "imagery": {
+                "title": "Luftfoto i baggrunden",
+                "intro": "Luftfotoet der vises i baggrunden bagved kortet er en vigtig ressource under redigering af kortet. Dette kan bestå af ortografiske fotos opsamlet fra satellitter, fly eller droner, eller det kan være indskannede historiske kort eller andre frit tilgængelige kildedata.",
+                "sources_h": "Luftfoto-kilder",
+                "choosing": "For at se hvilke kilder til luftfoto der er tilgængelige i området, skal du klikke på knappen {layers} **Baggrundsindstillinger** i kortets side.",
+                "sources": "Som standard vises et satellit-lag fra [Bing Maps](https://www.bing.com/maps/) som baggrundsbillede. Afhængigt af hvor i verden du redigerer, kan der være andre luftfoto-kilder tilgængelige. Nogle kan være af nyere dato eller have højere opløsning end Bing, så det er altid smart at se efter hvilket lag der er bedst at bruge til at redigere kortet ud fra.",
+                "offsets_h": "Justering af luftfoto-offset",
+                "offset": "Den registrerede position for et luftfoto er nogle gange ikke helt korrekt i forhold til kortet. Hvis du ser at bygninger og veje generelt er forskudt mellem kort og luftfoto, kan det være luftfotoet der er unøjagtigt, så i stedet for at flytte alle kortobjekter kan du justere baggrunden så den er samstemmende med kortets data ved at åbne \"Juster luftfoto-offset\" i bunden af Baggrundsindstillinger-fanen.",
+                "offset_change": "Klik på de små trekanter for at justere offset i små intervaller, eller hold venstre musetast nede og træk indenfor den grå firkant for at trække luftfotoet på plads."
+            }
+>>>>>>> v2.7.0
         },
         "intro": {
             "done": "færdig",
@@ -607,12 +765,25 @@
             },
             "areas": {
                 "title": "Områder",
+<<<<<<< HEAD
                 "add": "Områder bruges til at vise grænserne af et objekt fx søer, bygninger og bebeoelsesområder. Områder kan også bruges til mere detaljeret kortlægning af objekter som du måske normalt indsætter som enkeltpunkt. **Klik på  {button} Område knappen for at tilføje et nyt område.**",
                 "corner": "Områder indtegnes ved at indsætte punkter der omgrænser området. **Klik på et sted med et startpunkt på et af hjørnerne på legepladsens område.**",
                 "place": "Indtegn området ved at placere flere punkter. Afslut området ved at klikke på det først indtegnede punkt. **Indtegn legepladsens område.**",
                 "search": "**Søg efter  '{name}'.**",
                 "choose": "**Vælg Legeplads fra listen.**",
                 "describe": "**Tilføj et navn og klik så på  {button} knappen for at lukke objekt redigeringsværktøjet.**"
+=======
+                "start_playground": "Lad os tilføje denne legeplads til kortet ved at optegne et område. Områder tegnes ved at placere *noder* langs objektets ydre kant. **Klik eller tast mellemrum for at placere den første node i et at legepladsens hjørner.**",
+                "continue_playground": "Fortsæt med at optegne området ved at placere flere noder langs legepladsens kant. Det er fint at forbinde området til de eksisterende stier.{br}Tip: Hvis du holder '{alt}'-knappen ned forbindes noden ikke til andre objekter. **Fortsæt med at optegne legepladsens område.**",
+                "finish_playground": "Afslut området ved at taste retur, eller klikke igen på enten den første eller den sidste node. **Afslut optegningen af legepladsens område.**",
+                "search_playground": "**Søg efter '{preset}'.**",
+                "choose_playground": "**Vælg {preset} fra listen.**",
+                "add_field": "Denne legeplads har ikke et officielt navn, så vi skriver ikke noget i feltet Navn.{br}Lad os i stedet tilføje nogle flere detaljer om legepladsen i Beskrivelses-feltet. **Åbn Tilføj felt-listen.**",
+                "choose_field": "**Vælg  {field} fra listen.**",
+                "retry_add_field": "Du valgte ikke {field}-feltet. Prøv lige igen.",
+                "describe_playground": "**Tilføj en beskrivelse, klik så på {button}-knappen for at lukke objekteditoren.**",
+                "play": "Godt gjort! Prøv at tegne et par områder mere, og se hvilke andre slags du kan tilføje til OpenStreetMap. **Når du er klar til at fortsætte til næste del, så klik '{next}'.**"
+>>>>>>> v2.7.0
             },
             "lines": {
                 "title": "Linjer",
@@ -633,6 +804,150 @@
                 "start": "Start kortlægning!"
             }
         },
+<<<<<<< HEAD
+=======
+        "shortcuts": {
+            "title": "Genvejstaster",
+            "tooltip": "Vis skærmen med genvejstaster.",
+            "toggle": {
+                "key": "?"
+            },
+            "key": {
+                "alt": "Alt",
+                "backspace": "Backspace",
+                "cmd": "Cmd",
+                "ctrl": "Ctrl",
+                "delete": "Delete",
+                "del": "Del",
+                "end": "End",
+                "enter": "Enter",
+                "esc": "Esc",
+                "home": "Home",
+                "option": "Option",
+                "pause": "Pause",
+                "pgdn": "PgDn",
+                "pgup": "PgUp",
+                "return": "Retur",
+                "shift": "Shift",
+                "space": "Mellemrum"
+            },
+            "gesture": {
+                "drag": "træk"
+            },
+            "or": "-eller-",
+            "browsing": {
+                "title": "Visning",
+                "navigation": {
+                    "title": "Navigering",
+                    "pan": "Panorér på kortet",
+                    "pan_more": "Panorér en hel side",
+                    "zoom": "Zoom ind / ud",
+                    "zoom_more": "Zoom længere ind / ud "
+                },
+                "help": {
+                    "title": "Hjælp",
+                    "help": "Vis hjælp/dokumentation",
+                    "keyboard": "Vis genvejstaster"
+                },
+                "display_options": {
+                    "title": "Visnings-muligheder",
+                    "background": "Åbn baggrunds-indstilliner",
+                    "background_switch": "Skift til forrige anvendte baggrund",
+                    "map_data": "Vis kortdata-indstillinger",
+                    "fullscreen": "Aktiver fuldskærms-tilstand",
+                    "wireframe": "Skift wireframe-tilstand",
+                    "minimap": "Åbn/luk minikort"
+                },
+                "selecting": {
+                    "title": "Markering af kortobjekter",
+                    "select_one": "Marker et enkelt kortobjekt",
+                    "select_multi": "Marker flere kortobjekter",
+                    "lasso": "Tegn en markerings-lasso om kortobjekter",
+                    "search": "Find kortobjekter der indeholder tekst"
+                },
+                "with_selected": {
+                    "title": "Ved markeret kortobjekt",
+                    "edit_menu": "Åbn/luk redigeringsmenu"
+                },
+                "vertex_selected": {
+                    "title": "Ved markeret node",
+                    "previous": "Spring til forrige node",
+                    "next": "Spring til næste node",
+                    "first": "Spring til første node",
+                    "last": "Spring til sidste node",
+                    "change_parent": "Skift tilhørende vej"
+                }
+            },
+            "editing": {
+                "title": "Redigering",
+                "drawing": {
+                    "title": "Optegning",
+                    "add_point": "\"Tilføj punkt\"-tilstand",
+                    "add_line": "\"Tilføj linje\"-tilstand",
+                    "add_area": "\"Tilføj område\"-tilstand",
+                    "place_point": "Placer et punkt",
+                    "disable_snap": "Undlad at 'klistre' til eksisterende punkt",
+                    "stop_line": "Afslut tegning af linje eller område"
+                },
+                "operations": {
+                    "title": "Operationer",
+                    "continue_line": "Fortsæt linje fra markerede node",
+                    "merge": "Kombiner (sammenflet) markerede kortobjekter",
+                    "disconnect": "Separér kortobjekter ved markerede node",
+                    "split": "Opdel linje i to ved markerede node",
+                    "reverse": "Vend retning på linje",
+                    "move": "Flyt markerede kortobjekter",
+                    "rotate": "Rotér markerede kortobjekter",
+                    "orthogonalize": "Gør linje lige / Gør områdes hjørner retvinklede",
+                    "circularize": "Gør en lukket linje eller område rundt",
+                    "reflect_long": "Spejl kortobjekt over den længste led",
+                    "reflect_short": "Spejl kortobjekt over den korteste led",
+                    "delete": "Slet markerede kortobjekt"
+                },
+                "commands": {
+                    "title": "Kommandoer",
+                    "copy": "Kopier markerede kortobjekter",
+                    "paste": "Indsæt kopierede kortobjekter",
+                    "undo": "Fortryd seneste handling",
+                    "redo": "Omgør fortrudt handling",
+                    "save": "Gem ændringer"
+                }
+            },
+            "tools": {
+                "title": "Værktøjer",
+                "info": {
+                    "title": "Information",
+                    "all": "Åbn/luk alle informationspaneler",
+                    "background": "Åbn/luk baggrundspanel",
+                    "history": "Åbn/luk historikpanel",
+                    "location": "Åbn/luk baggrundspanel",
+                    "measurement": "Åbn/luk målingspanel"
+                }
+            }
+        },
+        "units": {
+            "feet": "{quantity} fod",
+            "miles": "{quantity} mil",
+            "square_feet": "{quantity} kvadratfod",
+            "square_miles": "{quantity} kvadratmil",
+            "acres": "{quantity} ager",
+            "meters": "{quantity} m",
+            "kilometers": "{quantity} km",
+            "square_meters": "{quantity} m²",
+            "square_kilometers": "{quantity} km²",
+            "hectares": "{quantity} ha",
+            "area_pair": "{area1} ({area2})",
+            "arcdegrees": "{quantity}°",
+            "arcminutes": "{quantity}′",
+            "arcseconds": "{quantity}″",
+            "north": "N",
+            "south": "S",
+            "east": "Ø",
+            "west": "V",
+            "coordinate": "{coordinate}{direction}",
+            "coordinate_pair": "{latitude}, {longitude}"
+        },
+>>>>>>> v2.7.0
         "presets": {
             "categories": {
                 "category-barrier": {
@@ -734,7 +1049,14 @@
                         "state": "Delstat",
                         "street": "Gade",
                         "subdistrict": "Kvarter",
+<<<<<<< HEAD
                         "suburb": "Forstad"
+=======
+                        "subdistrict!vn": "Afdeling/Kommune/Townlet",
+                        "suburb": "Forstad",
+                        "suburb!jp": "Afdeling",
+                        "unit": "Enhed"
+>>>>>>> v2.7.0
                     }
                 },
                 "admin_level": {
@@ -779,6 +1101,9 @@
                 },
                 "aeroway": {
                     "label": "Type"
+                },
+                "agrarian": {
+                    "label": "Produkter"
                 },
                 "amenity": {
                     "label": "Type"
@@ -839,18 +1164,41 @@
                 "board_type": {
                     "label": "Type"
                 },
+                "boules": {
+                    "label": "Type"
+                },
                 "boundary": {
                     "label": "Type"
                 },
                 "brand": {
                     "label": "Mærke"
                 },
+<<<<<<< HEAD
+=======
+                "brewery": {
+                    "label": "Fadøl"
+                },
+                "bridge": {
+                    "label": "Type",
+                    "placeholder": "Standard"
+                },
+>>>>>>> v2.7.0
                 "building": {
                     "label": "Bygning"
                 },
                 "building_area": {
                     "label": "Bygning"
                 },
+<<<<<<< HEAD
+=======
+                "bunker_type": {
+                    "label": "Type"
+                },
+                "cables": {
+                    "label": "Kabler",
+                    "placeholder": "1, 2, 3..."
+                },
+>>>>>>> v2.7.0
                 "camera/direction": {
                     "label": "Retning (grader urets retning)",
                     "placeholder": "45, 90, 180, 270"
@@ -870,6 +1218,7 @@
                     "label": "Kapacitet",
                     "placeholder": "50, 100, 200..."
                 },
+<<<<<<< HEAD
                 "cardinal_direction": {
                     "label": "Retning",
                     "options": {
@@ -897,6 +1246,16 @@
                         "anticlockwise": "Mod uret",
                         "clockwise": "Med uret"
                     }
+=======
+                "castle_type": {
+                    "label": "Type"
+                },
+                "clothes": {
+                    "label": "Beklædning"
+                },
+                "club": {
+                    "label": "Type"
+>>>>>>> v2.7.0
                 },
                 "collection_times": {
                     "label": "Indsamlingstidspunkter"
@@ -919,6 +1278,14 @@
                 },
                 "craft": {
                     "label": "Type"
+                },
+                "crane/type": {
+                    "label": "Krantype",
+                    "options": {
+                        "floor-mounted_crane": "Gulvmonteret kran",
+                        "portal_crane": "Portalkran",
+                        "travel_lift": "Skibskran"
+                    }
                 },
                 "crop": {
                     "label": "Afgrøde"
@@ -988,8 +1355,52 @@
                 "description": {
                     "label": "Beskrivelse"
                 },
+                "devices": {
+                    "label": "Enheder",
+                    "placeholder": "1, 2, 3..."
+                },
                 "diaper": {
                     "label": "Babybleskifte"
+                },
+                "direction": {
+                    "label": "Retning (grader med uret)",
+                    "placeholder": "45, 90, 180, 270"
+                },
+                "direction_cardinal": {
+                    "label": "Retning",
+                    "options": {
+                        "E": "Øst",
+                        "ENE": "Øst-nordøst",
+                        "ESE": "Øst-sydøst",
+                        "N": "Nord",
+                        "NE": "Nordøst",
+                        "NNE": "Nord-nordøst",
+                        "NNW": "Nord-nordvest",
+                        "NW": "Nordvest",
+                        "S": "Syd",
+                        "SE": "Sydøst",
+                        "SSE": "Syd-sydøst",
+                        "SSW": "Syd-sydvest",
+                        "SW": "Sydvest",
+                        "W": "Vest",
+                        "WNW": "Vest-nordvest",
+                        "WSW": "Vest-sydvest"
+                    }
+                },
+                "direction_clock": {
+                    "label": "Retning",
+                    "options": {
+                        "anticlockwise": "Mod uret",
+                        "clockwise": "Med uret"
+                    }
+                },
+                "direction_vertex": {
+                    "label": "Retning",
+                    "options": {
+                        "backward": "Baglæns",
+                        "both": "Begge / alle",
+                        "forward": "Forlæns"
+                    }
                 },
                 "display": {
                     "label": "Display"
@@ -1041,9 +1452,22 @@
                         "wall": "Mur"
                     }
                 },
+                "fitness_station": {
+                    "label": "Udstyrstype"
+                },
                 "fixme": {
                     "label": "Ret mig"
                 },
+<<<<<<< HEAD
+=======
+                "ford": {
+                    "label": "Type",
+                    "placeholder": "Standard"
+                },
+                "frequency": {
+                    "label": "Operationel frekvens"
+                },
+>>>>>>> v2.7.0
                 "fuel": {
                     "label": "Brændstof"
                 },
@@ -1071,9 +1495,17 @@
                 "generator/type": {
                     "label": "Type"
                 },
+<<<<<<< HEAD
                 "golf_hole": {
                     "label": "Reference",
                     "placeholder": "Hulnummer (1-18)"
+=======
+                "government": {
+                    "label": "Type"
+                },
+                "grape_variety": {
+                    "label": "Vinsorteliste"
+>>>>>>> v2.7.0
                 },
                 "handicap": {
                     "label": "Handikap",
@@ -1082,6 +1514,19 @@
                 "handrail": {
                     "label": "Gelænder"
                 },
+<<<<<<< HEAD
+=======
+                "hashtags": {
+                    "label": "Foreslåede hashtags",
+                    "placeholder": "#eksempel"
+                },
+                "healthcare": {
+                    "label": "Type"
+                },
+                "healthcare/speciality": {
+                    "label": "Specialer"
+                },
+>>>>>>> v2.7.0
                 "height": {
                     "label": "Højde (meter)"
                 },
@@ -1117,6 +1562,15 @@
                 "information": {
                     "label": "Type"
                 },
+<<<<<<< HEAD
+=======
+                "inscription": {
+                    "label": "Inskription"
+                },
+                "intermittent": {
+                    "label": "Sporadisk"
+                },
+>>>>>>> v2.7.0
                 "internet_access": {
                     "label": "Internetadgang",
                     "options": {
@@ -1224,6 +1678,15 @@
                 "maxstay": {
                     "label": "Max tid"
                 },
+<<<<<<< HEAD
+=======
+                "maxweight": {
+                    "label": "Maksimalvægt"
+                },
+                "memorial": {
+                    "label": "Type"
+                },
+>>>>>>> v2.7.0
                 "mtb/scale": {
                     "label": "Sværhedsgrad for mountainbike",
                     "options": {
@@ -1312,7 +1775,9 @@
                 "oneway": {
                     "label": "Ensrettet",
                     "options": {
+                        "alternating": "Skiftende",
                         "no": "Nej",
+                        "reversible": "Reversibel",
                         "undefined": "Antages at være Nej",
                         "yes": "Ja"
                     }
@@ -1320,7 +1785,9 @@
                 "oneway_yes": {
                     "label": "Ensrettet",
                     "options": {
+                        "alternating": "Skiftende",
                         "no": "Nej",
+                        "reversible": "Reversibel",
                         "undefined": "Antages at være Ja",
                         "yes": "Ja"
                     }
@@ -1332,18 +1799,11 @@
                     "label": "Operatør"
                 },
                 "outdoor_seating": {
-                    "label": "Udendørssidepladser"
+                    "label": "Udendørssiddepladser"
                 },
                 "par": {
                     "label": "Par",
                     "placeholder": "3, 4, 5..."
-                },
-                "parallel_direction": {
-                    "label": "Retning",
-                    "options": {
-                        "backward": "Tilbage",
-                        "forward": "Forlæns"
-                    }
                 },
                 "park_ride": {
                     "label": "Park and ride-anlæg"
@@ -1361,7 +1821,11 @@
                     }
                 },
                 "payment_multi": {
-                    "label": "Betallingstyper"
+                    "label": "Betalingstyper"
+                },
+                "phases": {
+                    "label": "Faser",
+                    "placeholder": "1, 2, 3..."
                 },
                 "phone": {
                     "label": "Telefon",
@@ -1408,6 +1872,25 @@
                 "place": {
                     "label": "Type"
                 },
+<<<<<<< HEAD
+=======
+                "plant": {
+                    "label": "Kraftstation"
+                },
+                "plant/output/electricity": {
+                    "label": "Udgangseffekt",
+                    "placeholder": "500 MW, 1000 MW, 2000 MW..."
+                },
+                "playground/baby": {
+                    "label": "Baby-siddeplads"
+                },
+                "playground/max_age": {
+                    "label": "Maksimal alder"
+                },
+                "playground/min_age": {
+                    "label": "Minimal alder"
+                },
+>>>>>>> v2.7.0
                 "population": {
                     "label": "Befolkning"
                 },
@@ -1423,15 +1906,16 @@
                 "railway": {
                     "label": "Type"
                 },
+                "railway/signal/direction": {
+                    "label": "Retning",
+                    "options": {
+                        "backward": "Baglæns",
+                        "both": "Begge / alle",
+                        "forward": "Forlæns"
+                    }
+                },
                 "recycling_accepts": {
                     "label": "Accepterer"
-                },
-                "recycling_type": {
-                    "label": "Genbrugstype",
-                    "options": {
-                        "centre": "Genbrugsplads",
-                        "container": "Container"
-                    }
                 },
                 "ref": {
                     "label": "Reference"
@@ -1574,8 +2058,18 @@
                     },
                     "placeholder": "Ukendt"
                 },
+                "structure_waterway": {
+                    "label": "Struktur",
+                    "options": {
+                        "tunnel": "Tunnel"
+                    },
+                    "placeholder": "Ukendt"
+                },
                 "studio": {
                     "label": "Type"
+                },
+                "substance": {
+                    "label": "Væske"
                 },
                 "substation": {
                     "label": "Type"
@@ -1603,6 +2097,14 @@
                 "surveillance/zone": {
                     "label": "Overvågningszone"
                 },
+                "switch": {
+                    "options": {
+                        "circuit_breaker": "Kredsløbskontakt",
+                        "disconnector": "Afkobler",
+                        "earthing": "Jording",
+                        "mechanical": "Mekanisk"
+                    }
+                },
                 "tactile_paving": {
                     "label": "Følbar belægning for blinde"
                 },
@@ -1627,6 +2129,9 @@
                 "tourism": {
                     "label": "Type"
                 },
+                "tourism_attraction": {
+                    "label": "Turisme"
+                },
                 "tower/construction": {
                     "label": "Konstruktion",
                     "placeholder": "Udbarduneret, Lattice, Fastspændt, ..."
@@ -1645,11 +2150,22 @@
                     },
                     "placeholder": "Fast, overvejende fast, blød …"
                 },
+                "trade": {
+                    "label": "Type"
+                },
                 "traffic_calming": {
                     "label": "Type"
                 },
                 "traffic_signals": {
                     "label": "Type"
+                },
+                "traffic_signals/direction": {
+                    "label": "Retning",
+                    "options": {
+                        "backward": "Baglæns",
+                        "both": "Begge / alle",
+                        "forward": "Forlæns"
+                    }
                 },
                 "trail_visibility": {
                     "label": "Synlighed af spor",
@@ -1662,6 +2178,16 @@
                         "no": "Ingen: sporløs, kræver fremragende orienteringsfærdigheder"
                     },
                     "placeholder": "Fremragende, god, dårlig..."
+                },
+                "transformer": {
+                    "label": "Type",
+                    "options": {
+                        "converter": "Konverter",
+                        "generator": "Generator",
+                        "phase_angle_regulator": "Fasevinkelregulator",
+                        "traction": "Fremdrift",
+                        "yes": "Ukendt"
+                    }
                 },
                 "trees": {
                     "label": "Træer"
@@ -1679,6 +2205,29 @@
                         "house": "Op til 5m (16ft)",
                         "street": "5 til 20m (16 til 65ft)"
                     }
+                },
+                "volcano/status": {
+                    "label": "Vulkan-status",
+                    "options": {
+                        "active": "Aktiv",
+                        "dormant": "I dvale",
+                        "extinct": "Udslukket"
+                    }
+                },
+                "volcano/type": {
+                    "label": "Vulkan-type"
+                },
+                "voltage": {
+                    "label": "Spænding"
+                },
+                "voltage/primary": {
+                    "label": "Primærspænding"
+                },
+                "voltage/secondary": {
+                    "label": "Sekundærspænding"
+                },
+                "voltage/tertiary": {
+                    "label": "Tertiærspænding"
                 },
                 "wall": {
                     "label": "Type"
@@ -1707,6 +2256,13 @@
                 },
                 "wikipedia": {
                     "label": "Wikipedia"
+                },
+                "windings": {
+                    "label": "Vindinger",
+                    "placeholder": "1, 2, 3..."
+                },
+                "windings/configuration": {
+                    "label": "Vindings-konfiguration"
                 }
             },
             "presets": {
@@ -1750,8 +2306,7 @@
                     "terms": "Tovlift"
                 },
                 "aerialway/station": {
-                    "name": "Skiliftstation",
-                    "terms": "Skiliftstation"
+                    "name": "Skiliftstation"
                 },
                 "aerialway/t-bar": {
                     "name": "Træklift",
@@ -1843,10 +2398,6 @@
                     "name": "Valutaveksling",
                     "terms": "Valutaveksling"
                 },
-                "amenity/bus_station": {
-                    "name": "Busstation",
-                    "terms": "Busstation, Rutebilstation"
-                },
                 "amenity/cafe": {
                     "name": "Cafe",
                     "terms": "Cafe, Café"
@@ -1935,10 +2486,6 @@
                     "name": "Fast food",
                     "terms": "Fastfood, Grillbar, Pølsevogn"
                 },
-                "amenity/ferry_terminal": {
-                    "name": "Færgeterminal",
-                    "terms": "Færgeterminal, Færgekaj"
-                },
                 "amenity/fire_station": {
                     "name": "Brandstation",
                     "terms": "<oversæt med synonymer eller beslægtet termer for 'Brandstation', adskilt med kommaer>"
@@ -1994,6 +2541,9 @@
                 "amenity/motorcycle_parking": {
                     "name": "Motorcykelparkering",
                     "terms": "Motorcykelparkering"
+                },
+                "amenity/music_school": {
+                    "name": "Musikskole"
                 },
                 "amenity/nightclub": {
                     "name": "Natklub",
@@ -2072,8 +2622,7 @@
                     "terms": "Rangerstation"
                 },
                 "amenity/recycling": {
-                    "name": "Genbrug",
-                    "terms": "Genbrug"
+                    "name": "Genbrugscontainer"
                 },
                 "amenity/recycling_centre": {
                     "name": "Genbrugsplads",
@@ -2426,7 +2975,7 @@
                     "terms": "Lager, Lagerhotel, Varelager"
                 },
                 "camp_site/camp_pitch": {
-                    "name": "Campingplads",
+                    "name": "Plads på Campingplads",
                     "terms": "Campingplads"
                 },
                 "craft": {
@@ -2468,6 +3017,9 @@
                 "craft/caterer": {
                     "name": "Catering",
                     "terms": "Catering"
+                },
+                "craft/chimney_sweeper": {
+                    "name": "Skorstensfejer"
                 },
                 "craft/clockmaker": {
                     "name": "Urmager",
@@ -2570,9 +3122,15 @@
                     "name": "Stilladsfirma",
                     "terms": "Stilladsfirma"
                 },
+<<<<<<< HEAD
                 "craft/sculpter": {
                     "name": "Skulpturmager",
                     "terms": "Skulpturmager, Billedhugger, Stenhugger"
+=======
+                "craft/sculptor": {
+                    "name": "Billedhugger",
+                    "terms": "Skulptør, Kunstner"
+>>>>>>> v2.7.0
                 },
                 "craft/shoemaker": {
                     "name": "Skomager",
@@ -2711,9 +3269,42 @@
                     "name": "Golfvandbunker",
                     "terms": "Golfvandbunker"
                 },
+                "healthcare/alternative/chiropractic": {
+                    "name": "Kiropraktor"
+                },
+                "healthcare/audiologist": {
+                    "name": "Audiolog",
+                    "terms": "audiolog,høreapparat"
+                },
+                "healthcare/birthing_center": {
+                    "name": "Fødselscenter",
+                    "terms": "fødsel,føde,gravid,baby"
+                },
                 "healthcare/blood_donation": {
                     "name": "Blodbank",
                     "terms": "Blodbank, Donorblodbank"
+                },
+                "healthcare/hospice": {
+                    "terms": "terminal,død,sygdom"
+                },
+                "healthcare/midwife": {
+                    "name": "Jordemoder"
+                },
+                "healthcare/optometrist": {
+                    "name": "Optiker",
+                    "terms": "briller,øjne,optik,linser,syn"
+                },
+                "healthcare/physiotherapist": {
+                    "name": "Fysioterapeut",
+                    "terms": "psyke,terapi,"
+                },
+                "healthcare/podiatrist": {
+                    "name": "Fodterapeut",
+                    "terms": "fod,fødder,negle"
+                },
+                "healthcare/psychotherapist": {
+                    "name": "Psykoterapeut",
+                    "terms": "psyke,angst,depression,mental,sind,selvmord"
                 },
                 "highway": {
                     "name": "Vej"
@@ -2721,10 +3312,6 @@
                 "highway/bridleway": {
                     "name": "Ridesti",
                     "terms": "Ridesti, Hestesti"
-                },
-                "highway/bus_stop": {
-                    "name": "Busstoppested",
-                    "terms": "Bustoppested, Rutebilstoppested"
                 },
                 "highway/corridor": {
                     "name": "Indendørskorridor",
@@ -2774,9 +3361,17 @@
                     "name": "Sti",
                     "terms": "Sti"
                 },
+<<<<<<< HEAD
                 "highway/pedestrian": {
                     "name": "Gågade",
                     "terms": "Gågade"
+=======
+                "highway/pedestrian_area": {
+                    "name": "Gågade areal"
+                },
+                "highway/pedestrian_line": {
+                    "name": "Gågade"
+>>>>>>> v2.7.0
                 },
                 "highway/primary": {
                     "name": "Primærvej",
@@ -2923,8 +3518,8 @@
                     "terms": "Vejsidemindesmærker"
                 },
                 "historic/wayside_shrine": {
-                    "name": "Vejsideskrin",
-                    "terms": "Vejsideskrin"
+                    "name": "Vejsidehelligdom",
+                    "terms": "Vejsidehelligdom"
                 },
                 "junction": {
                     "name": "Vejfletning",
@@ -2973,10 +3568,6 @@
                     "name": "Skov",
                     "terms": "Skov, Plantageskov"
                 },
-                "landuse/garages": {
-                    "name": "Garager",
-                    "terms": "Garager"
-                },
                 "landuse/grass": {
                     "name": "Græs",
                     "terms": "Græs"
@@ -2984,6 +3575,9 @@
                 "landuse/industrial": {
                     "name": "Industriområde",
                     "terms": "Industriområde"
+                },
+                "landuse/industrial/slaughterhouse": {
+                    "name": "Slagteri"
                 },
                 "landuse/landfill": {
                     "name": "Losseplads",
@@ -3441,6 +4035,7 @@
                     "terms": "Revisor"
                 },
                 "office/administrative": {
+<<<<<<< HEAD
                     "name": "Administrativt kontor",
                     "terms": "Administrativt kontor"
                 },
@@ -3451,6 +4046,9 @@
                 "office/company": {
                     "name": "Firmakontor",
                     "terms": "Firmakontor, Selskabskonto"
+=======
+                    "name": "Administrativt kontor"
+>>>>>>> v2.7.0
                 },
                 "office/educational_institution": {
                     "name": "Uddannelsesinstitution",
@@ -3488,9 +4086,14 @@
                     "name": "Advokatkontor",
                     "terms": "Advokatkontor, Advokatfirma"
                 },
+<<<<<<< HEAD
                 "office/newspaper": {
                     "name": "Avis",
                     "terms": "Avis"
+=======
+                "office/lawyer/notary": {
+                    "name": "Notarkontor"
+>>>>>>> v2.7.0
                 },
                 "office/ngo": {
                     "name": "NGO kontor",
@@ -3604,14 +4207,6 @@
                     "name": "Transformer",
                     "terms": "Transformer"
                 },
-                "public_transport/platform": {
-                    "name": "Platform",
-                    "terms": "Platform"
-                },
-                "public_transport/stop_position": {
-                    "name": "Stopposition",
-                    "terms": "Stopposition"
-                },
                 "railway": {
                     "name": "Jernbane"
                 },
@@ -3631,10 +4226,6 @@
                     "name": "Kabelsporvej",
                     "terms": "Kabelsporvej"
                 },
-                "railway/halt": {
-                    "name": "Togstation lille ubemandet",
-                    "terms": "Togstation lille ubemandet, Trinbræt"
-                },
                 "railway/level_crossing": {
                     "name": "Jernbaneoverskæring (vej)",
                     "terms": "Jernbaneoverskæring (vej)"
@@ -3647,17 +4238,25 @@
                     "name": "Smalspor",
                     "terms": "Smalspor, Smalsporbane, Smalsportogbane"
                 },
+<<<<<<< HEAD
                 "railway/platform": {
                     "name": "Jernbaneperron",
                     "terms": "Jernbaneperron, Perron "
                 },
+=======
+>>>>>>> v2.7.0
                 "railway/rail": {
                     "name": "Jernbanespor",
                     "terms": "Jernbanespor"
                 },
+<<<<<<< HEAD
                 "railway/station": {
                     "name": "Togstation",
                     "terms": "Togstation"
+=======
+                "railway/signal": {
+                    "name": "Jernbanesignal"
+>>>>>>> v2.7.0
                 },
                 "railway/subway": {
                     "name": "S-togspor",
@@ -3934,16 +4533,12 @@
                     "terms": "Køkkenudstyr"
                 },
                 "shop/interior_decoration": {
-                    "name": "Indendørsudsmykningsbutik",
-                    "terms": "Indendørsudsmykningsbutik"
+                    "name": "Brugskunstbutik",
+                    "terms": "Indendørsudsmykningsbutik, Indendørsudsmykning,brugskunst,kunst,indendørs,bolig"
                 },
                 "shop/jewelry": {
                     "name": "Juvelér",
-                    "terms": "Juvelér, Smykkeforretning"
-                },
-                "shop/kiosk": {
-                    "name": "Aviskiosk",
-                    "terms": "Aviskiosk"
+                    "terms": "Juvelér, Smykkeforretning,smykke,guldsmed"
                 },
                 "shop/kitchen": {
                     "name": "Køkkenudstyrsbutik",
@@ -4166,15 +4761,15 @@
                 },
                 "tourism/artwork": {
                     "name": "Kunstværk",
-                    "terms": "Kunstværk"
+                    "terms": "Skulptur, Statue, Vægmaleri"
                 },
                 "tourism/attraction": {
                     "name": "Turistattraktion",
                     "terms": "Turistattraktion, Seværdighed"
                 },
                 "tourism/camp_site": {
-                    "name": "Campinggrund",
-                    "terms": "Campinggrund"
+                    "name": "Campingplads",
+                    "terms": "Campingplads, Lejrplads, Teltplads"
                 },
                 "tourism/caravan_site": {
                     "name": "Autocamperplads",
@@ -4451,6 +5046,214 @@
                     "terms": "Stemmeværk"
                 }
             }
+<<<<<<< HEAD
+=======
+        },
+        "imagery": {
+            "Bing": {
+                "description": "Satellit og luft-foto.",
+                "name": "Bing luftfoto"
+            },
+            "DigitalGlobe-Premium": {
+                "attribution": {
+                    "text": "Betingelser & tilbagemelding"
+                },
+                "description": "Premium DigitalGlobe satellitfoto.",
+                "name": "DigitalGlobe Premium fotos"
+            },
+            "DigitalGlobe-Premium-vintage": {
+                "attribution": {
+                    "text": "Vilkår & Tilbagemelding"
+                },
+                "description": "Luftfoto grænser og optagelsesdatoer. Tekstmærkater optræder ved zoom-niveau 14 og højere.",
+                "name": "DigitalGlobe Premium ældre fotos"
+            },
+            "DigitalGlobe-Standard": {
+                "attribution": {
+                    "text": "Betingelser & tilbagemelding"
+                },
+                "description": "Standard DigitalGlobe satellitfotos.",
+                "name": "DigitalGlobe Standard fotos"
+            },
+            "DigitalGlobe-Standard-vintage": {
+                "attribution": {
+                    "text": "Vilkår & Tilbagemelding"
+                },
+                "description": "Luftfoto grænser og optagelsesdatoer. Tekstmærkater optræder ved zoom-niveau 14 og højere.",
+                "name": "DigitalGlobe Standard ældre fotos"
+            },
+            "EsriWorldImagery": {
+                "attribution": {
+                    "text": "Betingelser & tilbegemelding"
+                },
+                "description": "Esri World fotos.",
+                "name": "Esri World fotos"
+            },
+            "MAPNIK": {
+                "attribution": {
+                    "text": "© OpenStreetMap bidragsydere, CC BY-SA"
+                },
+                "description": "Standard-laget fra OpenStreetMap.",
+                "name": "OpenStreetMap (standard)"
+            },
+            "Mapbox": {
+                "attribution": {
+                    "text": "Betingelser & tilbegemelding"
+                },
+                "description": "Satellit og luft-foto.",
+                "name": "Mapbox Satellite"
+            },
+            "OSM_Inspector-Addresses": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, OpenStreetMap bidragsydere, CC BY-SA"
+                },
+                "name": "OSM Inspector: Adresser"
+            },
+            "OSM_Inspector-Geometry": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, OpenStreetMap bidragsydere, CC BY-SA"
+                },
+                "name": "OSM Inspector: Geometri"
+            },
+            "OSM_Inspector-Highways": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, OpenStreetMap bidragsydere, CC BY-SA"
+                },
+                "name": "OSM Inspector: Highway"
+            },
+            "OSM_Inspector-Multipolygon": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, OpenStreetMap bidragsydere, CC BY-SA"
+                },
+                "name": "OSM Inspector: Område"
+            },
+            "OSM_Inspector-Places": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, OpenStreetMap bidragsydere, CC BY-SA"
+                },
+                "name": "OSM Inspector: Steder"
+            },
+            "OSM_Inspector-Routing": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, OpenStreetMap bidragsydere, CC BY-SA"
+                },
+                "name": "OSM Inspector: Routing"
+            },
+            "OSM_Inspector-Tagging": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, OpenStreetMap bidragsydere, CC BY-SA"
+                },
+                "name": "OSM Inspector: Tagging"
+            },
+            "US-TIGER-Roads-2012": {
+                "name": "TIGER Roads 2012"
+            },
+            "US-TIGER-Roads-2014": {
+                "description": "Ved zoom-niveau 16+ offentligt tilgængelige public domain kort-data fra US Census. Ved lavere niveauer kun ændringer siden 2006, eksklusiv ændringer allerede indarbejdet i OpenStreetMap.",
+                "name": "TIGER Roads 2014"
+            },
+            "US-TIGER-Roads-2017": {
+                "description": "Gul = Public domain kort-data fra US Census. Rød = Ingen data i OpenStreetMap",
+                "name": "TIGER Roads 2017"
+            },
+            "Waymarked_Trails-Cycling": {
+                "name": "Afmærkede spor: Cykling"
+            },
+            "Waymarked_Trails-Hiking": {
+                "name": "Afmærkede spor: Vandring"
+            },
+            "Waymarked_Trails-MTB": {
+                "name": "Afmærkede spor: MTB"
+            },
+            "Waymarked_Trails-Skating": {
+                "name": "Afmærkede spor: Skøjtning"
+            },
+            "Waymarked_Trails-Winter_Sports": {
+                "name": "Afmærkede spor: Vintersport"
+            },
+            "basemap.at": {
+                "attribution": {
+                    "text": "basemap.at"
+                },
+                "description": "Basiskort for Østrig, baseret på offentlige data.",
+                "name": "basemap.at"
+            },
+            "basemap.at-orthofoto": {
+                "attribution": {
+                    "text": "basemap.at"
+                },
+                "description": "Ortofoto-lag leveret af basemap.at. \"Efterfølger\" til geoimage.at.",
+                "name": "basemap.at Ortofoto"
+            },
+            "hike_n_bike": {
+                "attribution": {
+                    "text": "© OpenStreetMap bidragsydere"
+                },
+                "name": "Vandring & Cykling"
+            },
+            "mapbox_locator_overlay": {
+                "attribution": {
+                    "text": "Betingelser & tilbagemelding"
+                },
+                "description": "Viser større objekter for at hjælpe dig med at finde vej.",
+                "name": "Lokaliserings-overlag"
+            },
+            "openpt_map": {
+                "attribution": {
+                    "text": "© OpenStreetMap bidragsydere, CC BY-SA"
+                },
+                "name": "OpenPT-kort (overlag)"
+            },
+            "osm-gps": {
+                "attribution": {
+                    "text": "© OpenStreetMap bidragsydere"
+                },
+                "description": "Offentlige GPS-spor uploaded til OpenStreetMap,",
+                "name": "OpenStreetMap GPS-spor"
+            },
+            "osm-mapnik-black_and_white": {
+                "attribution": {
+                    "text": "© OpenStreetMap bidragsydere, CC BY-SA"
+                },
+                "name": "OpenStreetMap (Standard sort & hvid)"
+            },
+            "osm-mapnik-german_style": {
+                "attribution": {
+                    "text": "© OpenStreetMap bidragsydere, CC BY-SA"
+                },
+                "name": "OpenStreetMap (tyskerstil)"
+            },
+            "qa_no_address": {
+                "attribution": {
+                    "text": "Simon Poole, Data ©OpenStreetMap bidragsydere"
+                },
+                "name": "QA Ingen adresse"
+            },
+            "skobbler": {
+                "attribution": {
+                    "text": "© Fliser: skobbler Map data: OpenStreetMap bidragsydere"
+                },
+                "name": "skobbler"
+            },
+            "stamen-terrain-background": {
+                "attribution": {
+                    "text": "Kort-fliser af Stamen Design, under CC BY 3.0"
+                },
+                "name": "Stamen Terræn"
+            },
+            "tf-cycle": {
+                "attribution": {
+                    "text": "Kort © Thunderforest, Data © OpenStreetMap bidragsydere"
+                },
+                "name": "Thunderforest OpenCycleMap"
+            },
+            "tf-landscape": {
+                "attribution": {
+                    "text": "Kort © Thunderforest, Data © OpenStreetMap bidragsydere"
+                },
+                "name": "Thunderforest Landskab"
+            }
+>>>>>>> v2.7.0
         }
     }
 }

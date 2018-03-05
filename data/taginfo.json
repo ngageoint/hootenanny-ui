@@ -22,6 +22,10 @@
             "key": "amenity"
         },
         {
+            "key": "junction",
+            "value": "circular"
+        },
+        {
             "key": "highway"
         },
         {
@@ -46,6 +50,10 @@
         {
             "key": "advertising",
             "value": "billboard"
+        },
+        {
+            "key": "aerialway",
+            "value": "station"
         },
         {
             "key": "aerialway",
@@ -89,10 +97,6 @@
         },
         {
             "key": "aerialway",
-            "value": "station"
-        },
-        {
-            "key": "aerialway",
             "value": "t-bar"
         },
         {
@@ -129,7 +133,15 @@
         },
         {
             "key": "amenity",
+            "value": "bus_station"
+        },
+        {
+            "key": "amenity",
             "value": "coworking_space"
+        },
+        {
+            "key": "amenity",
+            "value": "ferry_terminal"
         },
         {
             "key": "amenity",
@@ -209,11 +221,11 @@
         },
         {
             "key": "amenity",
-            "value": "bus_station"
+            "value": "cafe"
         },
         {
             "key": "amenity",
-            "value": "cafe"
+            "value": "car_pooling"
         },
         {
             "key": "amenity",
@@ -309,10 +321,6 @@
         },
         {
             "key": "amenity",
-            "value": "ferry_terminal"
-        },
-        {
-            "key": "amenity",
             "value": "fire_station"
         },
         {
@@ -358,6 +366,10 @@
         {
             "key": "amenity",
             "value": "library"
+        },
+        {
+            "key": "amenity",
+            "value": "love_hotel"
         },
         {
             "key": "amenity",
@@ -494,6 +506,10 @@
         {
             "key": "amenity",
             "value": "shower"
+        },
+        {
+            "key": "amenity",
+            "value": "smoking_area"
         },
         {
             "key": "amenity",
@@ -727,6 +743,10 @@
         },
         {
             "key": "barrier",
+            "value": "kerb"
+        },
+        {
+            "key": "barrier",
             "value": "kissing_gate"
         },
         {
@@ -778,6 +798,14 @@
         },
         {
             "key": "building",
+            "value": "boathouse"
+        },
+        {
+            "key": "building",
+            "value": "bungalow"
+        },
+        {
+            "key": "building",
             "value": "cabin"
         },
         {
@@ -791,6 +819,10 @@
         {
             "key": "building",
             "value": "church"
+        },
+        {
+            "key": "building",
+            "value": "civic"
         },
         {
             "key": "building",
@@ -811,6 +843,14 @@
         {
             "key": "building",
             "value": "dormitory"
+        },
+        {
+            "key": "building",
+            "value": "farm_auxiliary"
+        },
+        {
+            "key": "building",
+            "value": "farm"
         },
         {
             "key": "building",
@@ -850,6 +890,10 @@
         },
         {
             "key": "building",
+            "value": "mosque"
+        },
+        {
+            "key": "building",
             "value": "public"
         },
         {
@@ -866,11 +910,19 @@
         },
         {
             "key": "building",
+            "value": "ruins"
+        },
+        {
+            "key": "building",
             "value": "school"
         },
         {
             "key": "building",
             "value": "semidetached_house"
+        },
+        {
+            "key": "building",
+            "value": "service"
         },
         {
             "key": "building",
@@ -882,11 +934,23 @@
         },
         {
             "key": "building",
+            "value": "stadium"
+        },
+        {
+            "key": "building",
             "value": "static_caravan"
         },
         {
             "key": "building",
+            "value": "temple"
+        },
+        {
+            "key": "building",
             "value": "terrace"
+        },
+        {
+            "key": "building",
+            "value": "transportation"
         },
         {
             "key": "building",
@@ -1147,6 +1211,10 @@
             "value": "phone"
         },
         {
+            "key": "emergency",
+            "value": "water_tank"
+        },
+        {
             "key": "entrance"
         },
         {
@@ -1274,11 +1342,15 @@
         },
         {
             "key": "highway",
+            "value": "bus_stop"
+        },
+        {
+            "key": "highway",
             "value": "bridleway"
         },
         {
             "key": "highway",
-            "value": "bus_stop"
+            "value": "bus_guideway"
         },
         {
             "key": "highway",
@@ -1572,6 +1644,10 @@
         },
         {
             "key": "landuse",
+            "value": "greenhouse_horticulture"
+        },
+        {
+            "key": "landuse",
             "value": "harbour"
         },
         {
@@ -1684,6 +1760,10 @@
         {
             "key": "leisure",
             "value": "adult_gaming_centre"
+        },
+        {
+            "key": "leisure",
+            "value": "amusement_arcade"
         },
         {
             "key": "leisure",
@@ -1965,6 +2045,10 @@
             "value": "mast"
         },
         {
+            "key": "man_made",
+            "value": "monitoring_station"
+        },
+        {
             "key": "tower:type",
             "value": "observation"
         },
@@ -2163,6 +2247,10 @@
         },
         {
             "key": "office",
+            "value": "administrative"
+        },
+        {
+            "key": "office",
             "value": "physician"
         },
         {
@@ -2172,10 +2260,6 @@
         {
             "key": "office",
             "value": "accountant"
-        },
-        {
-            "key": "office",
-            "value": "administrative"
         },
         {
             "key": "office",
@@ -2481,12 +2565,188 @@
             "value": "transformer"
         },
         {
+            "key": "aerialway",
+            "value": "yes"
+        },
+        {
+            "key": "bus",
+            "value": "yes"
+        },
+        {
+            "key": "ferry",
+            "value": "yes"
+        },
+        {
+            "key": "light_rail",
+            "value": "yes"
+        },
+        {
+            "key": "monorail",
+            "value": "yes"
+        },
+        {
+            "key": "train",
+            "value": "yes"
+        },
+        {
+            "key": "train",
+            "value": "yes"
+        },
+        {
+            "key": "tram",
+            "value": "yes"
+        },
+        {
+            "key": "trolleybus",
+            "value": "yes"
+        },
+        {
             "key": "public_transport",
             "value": "platform"
         },
         {
+            "key": "aerialway",
+            "value": "yes"
+        },
+        {
+            "key": "bus",
+            "value": "yes"
+        },
+        {
+            "key": "ferry",
+            "value": "yes"
+        },
+        {
+            "key": "light_rail",
+            "value": "yes"
+        },
+        {
+            "key": "monorail",
+            "value": "yes"
+        },
+        {
+            "key": "train",
+            "value": "yes"
+        },
+        {
+            "key": "train",
+            "value": "yes"
+        },
+        {
+            "key": "tram",
+            "value": "yes"
+        },
+        {
+            "key": "trolleybus",
+            "value": "yes"
+        },
+        {
+            "key": "public_transport",
+            "value": "platform"
+        },
+        {
+            "key": "aerialway",
+            "value": "yes"
+        },
+        {
+            "key": "bus",
+            "value": "yes"
+        },
+        {
+            "key": "ferry",
+            "value": "yes"
+        },
+        {
+            "key": "light_rail",
+            "value": "yes"
+        },
+        {
+            "key": "monorail",
+            "value": "yes"
+        },
+        {
+            "key": "subway",
+            "value": "yes"
+        },
+        {
+            "key": "railway",
+            "value": "halt"
+        },
+        {
+            "key": "train",
+            "value": "yes"
+        },
+        {
+            "key": "tram",
+            "value": "yes"
+        },
+        {
+            "key": "trolleybus",
+            "value": "yes"
+        },
+        {
+            "key": "public_transport",
+            "value": "station"
+        },
+        {
+            "key": "public_transport",
+            "value": "stop_area"
+        },
+        {
+            "key": "aerialway",
+            "value": "yes"
+        },
+        {
+            "key": "bus",
+            "value": "yes"
+        },
+        {
+            "key": "ferry",
+            "value": "yes"
+        },
+        {
+            "key": "light_rail",
+            "value": "yes"
+        },
+        {
+            "key": "monorail",
+            "value": "yes"
+        },
+        {
+            "key": "subway",
+            "value": "yes"
+        },
+        {
+            "key": "train",
+            "value": "yes"
+        },
+        {
+            "key": "tram",
+            "value": "yes"
+        },
+        {
+            "key": "trolleybus",
+            "value": "yes"
+        },
+        {
             "key": "public_transport",
             "value": "stop_position"
+        },
+        {
+            "key": "railway",
+            "value": "halt"
+        },
+        {
+            "key": "railway",
+            "value": "platform"
+        },
+        {
+            "key": "railway",
+            "value": "station"
+        },
+        {
+            "key": "railway",
+            "value": "tram_stop"
         },
         {
             "key": "railway",
@@ -2514,10 +2774,6 @@
         },
         {
             "key": "railway",
-            "value": "halt"
-        },
-        {
-            "key": "railway",
             "value": "level_crossing"
         },
         {
@@ -2530,6 +2786,10 @@
         },
         {
             "key": "railway",
+            "value": "miniature"
+        },
+        {
+            "key": "railway",
             "value": "monorail"
         },
         {
@@ -2538,19 +2798,11 @@
         },
         {
             "key": "railway",
-            "value": "platform"
-        },
-        {
-            "key": "railway",
             "value": "rail"
         },
         {
             "key": "railway",
             "value": "signal"
-        },
-        {
-            "key": "railway",
-            "value": "station"
         },
         {
             "key": "railway",
@@ -2567,10 +2819,6 @@
         {
             "key": "railway",
             "value": "wash"
-        },
-        {
-            "key": "railway",
-            "value": "tram_stop"
         },
         {
             "key": "railway",
@@ -2833,6 +3081,10 @@
         },
         {
             "key": "shop",
+            "value": "health_food "
+        },
+        {
+            "key": "shop",
             "value": "hearing_aids"
         },
         {
@@ -3069,6 +3321,10 @@
         },
         {
             "key": "shop",
+            "value": "wholesale"
+        },
+        {
+            "key": "shop",
             "value": "window_blind"
         },
         {
@@ -3295,7 +3551,15 @@
         },
         {
             "key": "route",
+            "value": "light_rail"
+        },
+        {
+            "key": "route",
             "value": "pipeline"
+        },
+        {
+            "key": "route",
+            "value": "piste"
         },
         {
             "key": "route",
@@ -3304,6 +3568,10 @@
         {
             "key": "route",
             "value": "road"
+        },
+        {
+            "key": "route",
+            "value": "subway"
         },
         {
             "key": "route",

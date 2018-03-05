@@ -186,12 +186,15 @@
                 "multiple_ways": "Črt je preveč za razcep."
             },
             "restriction": {
+<<<<<<< HEAD
                 "help": {
                     "select": "Kliknite tukaj za izbiro dseka ceste.",
                     "toggle": "Kliknite za preklop omejitve zavijanja.",
                     "toggle_on": "Kliknite za dodajanje omejitve \\{restriction}\\ .",
                     "toggle_off": "Kliknite za odstranjevanje omejitve \\{restriction}\\."
                 },
+=======
+>>>>>>> v2.7.0
                 "annotation": {
                     "create": "Omejitev zavijanja je dodana",
                     "delete": "Omejitev zavijanja je odstranjena."
@@ -237,12 +240,19 @@
             "deleted": "Izbrisano",
             "created": "Ustvarjeno",
             "about_changeset_comments": "O povzetkih sprememb",
+<<<<<<< HEAD
             "about_changeset_comments_link": "//wiki.openstreetmap.org/wiki/Good_changeset_comments"
+=======
+            "about_changeset_comments_link": "//wiki.openstreetmap.org/wiki/Good_changeset_comments",
+            "google_warning": "V opombi je omenjeno podjetje Google: kopiranje podatkov iz zemljevida Google je strogo prepovedano!",
+            "google_warning_link": "https://www.openstreetmap.org/copyright"
+>>>>>>> v2.7.0
         },
         "contributors": {
             "list": "Spremembe uporabnikov {users}",
             "truncated_list": "Spremembe uporabnikov {users} in {count} ostalih"
         },
+<<<<<<< HEAD
         "infobox": {
             "perimeter": "Obseg",
             "length": "Dolžina",
@@ -251,6 +261,54 @@
             "location": "Lokacija",
             "metric": "Metrične",
             "imperial": "Imperialne"
+=======
+        "info_panels": {
+            "key": "I",
+            "background": {
+                "key": "O",
+                "title": "Ozadje",
+                "zoom": "Približaj",
+                "vintage": "Starinsko",
+                "source": "Vir",
+                "description": "Opis",
+                "resolution": "Ločljivost",
+                "accuracy": "Natančnost",
+                "unknown": "Neznano",
+                "show_tiles": "Pokaži sličice",
+                "hide_tiles": "Skrij sličice"
+            },
+            "history": {
+                "key": "Z",
+                "title": "Zgodovina",
+                "selected": "{n} izbranih",
+                "version": "Različica",
+                "last_edit": "Zadnje urejanje",
+                "edited_by": "Urejevalec",
+                "changeset": "Spremembe",
+                "unknown": "Neznano",
+                "link_text": "Zgodovina na openstreetmap.org"
+            },
+            "location": {
+                "key": "L",
+                "title": "Mesto",
+                "unknown_location": "Neznano mesto"
+            },
+            "measurement": {
+                "key": "M",
+                "title": "Merilo",
+                "selected": "{n} izbranih",
+                "geometry": "Geometrija",
+                "center": "Središče",
+                "perimeter": "Obseg",
+                "length": "Dolžina",
+                "area": "Površina",
+                "centroid": "Središčna točka",
+                "location": "Mesto",
+                "metric": "Metrične enote",
+                "imperial": "Imperialne enote",
+                "node_count": "Število vozlišč"
+            }
+>>>>>>> v2.7.0
         },
         "geometry": {
             "point": "točka",
@@ -303,23 +361,57 @@
         "background": {
             "title": "Ozadje",
             "description": "Nastavitve ozadja",
+<<<<<<< HEAD
             "percent_brightness": "{opacity}% svetlost",
+=======
+            "key": "B",
+            "backgrounds": "Ozadja",
+>>>>>>> v2.7.0
             "none": "Brez",
             "best_imagery": "Najbolj znani vir ozadja za to lokacijo",
             "custom": "Po meri",
             "custom_button": "Uredi ozadje po meri",
+<<<<<<< HEAD
             "custom_prompt": "Navedite naslov predloge URL. Dovoljeni nadomestni znaki so {zoom}, {x}, {y} za shemo Z/X/Y in {u} za shemo quadtile.",
             "fix_misalignment": "Prilagodi zamik ozadja",
             "imagery_source_faq": "Od kje prihajajo ta ozadja?",
             "reset": "ponastavi",
             "offset": "Povlecite kjerkoli v sivem področju spodaj za prilagoditev zamika ali vnašanje zamika z vrednostmi v metrih."
+=======
+            "reset": "ponastavi",
+            "display_options": "Možnosti prikaza",
+            "brightness": "Svetlost",
+            "contrast": "Kontrast",
+            "saturation": "Nasičenost",
+            "sharpness": "Ostrina",
+            "minimap": {
+                "description": "Pokaži mini-zemljevid",
+                "tooltip": "Pokaži oddaljen zemljevid za pomoč pri določanju trenutno prikazanega mesta.",
+                "key": "/"
+            },
+            "fix_misalignment": "Popravi zamik ozadja",
+            "offset": "Povlecite spodnje temnejše sivo področju za prilagoditev zamika ali pa vnesite zamik številčno v metrih."
+>>>>>>> v2.7.0
         },
         "map_data": {
             "title": "Podatki zemljevida",
             "description": "Podatki zemljevida",
             "data_layers": "Podatkovne plasti",
+<<<<<<< HEAD
             "fill_area": "Zapolnjevanje področij",
             "map_features": "Značilnosti zemljevida"
+=======
+            "layers": {
+                "osm": {
+                    "tooltip": "Kartografski podatki OpenStreetMap",
+                    "title": "Podatki OpenStreetMap"
+                }
+            },
+            "fill_area": "Zapolnjevanje polj",
+            "map_features": "Predmeti zemljevida",
+            "autohidden": "Nekateri predmeti so samodejno skriti, da jih na zaslonu ni prikazanih preveč. Za urejanje je treba zemljevid približati.",
+            "osmhidden": "Nekateri predmeti so samodejno skriti, ker je plast OpenStreetMap skrita."
+>>>>>>> v2.7.0
         },
         "feature": {
             "points": {
@@ -431,12 +523,21 @@
         "validations": {
             "untagged_point": "Točka je brez oznak",
             "untagged_line": "Črta je brez oznak",
+<<<<<<< HEAD
             "untagged_area": "Mnogokotnik je brez oznak",
             "many_deletions": "Izbrisati želite {n} objektov. Ali ste prepričani, da to želite storiti? Objekte boste tako odstranili z zemljevida, ki ga lahko vidijo vsi na openstreetmap.org.",
             "tag_suggests_area": "Oznaka {tag} nakazuje, da bi črta morala opisovati območje, vendar črta ni sklenjena",
             "untagged_point_tooltip": "Izberite tip točkovnega objekta.",
             "untagged_line_tooltip": "Izberite tip črtnega objekta.",
             "untagged_area_tooltip": "Izberite tip objekta, ki opisuje to območje.",
+=======
+            "untagged_line_tooltip": "Izberite vrsto predmeta, ki ga ponazarja črta na zemljevidu.",
+            "untagged_area": "Dodan je mnogokotnik brez oznak",
+            "untagged_area_tooltip": "Izberite vrsto predmeta, ki ga ponazarja polje na zemljevidu.",
+            "untagged_relation": "Neoznačena zveza",
+            "untagged_relation_tooltip": "Izberite vrsto predmeta, ki opisuje zvezo.",
+            "tag_suggests_area": "Oznaka {tag} nakazuje, da črta opisovati območje, vendar pa ni sklenjena",
+>>>>>>> v2.7.0
             "deprecated_tags": "Zastarele oznake: {tags}"
         },
         "zoom": {
@@ -458,6 +559,7 @@
             "tooltip": "Prometni znaki iz Mapilaryja (omogočena mora biti plast s fotografijami)",
             "title": "Plast s prometnimi znaki (Mapillary)"
         },
+<<<<<<< HEAD
         "help": {
             "title": "Pomoč",
             "roads": "# Ceste\n\nS tem urejevalnikom lahko ceste ustvarjate, popravljate in jih brišete. Ceste so lahko vseh\ntipov: poti, avtoceste, kolovozi, kolesarske steze idr. - vsak pogosto prečkan del ceste\n\nnaj bi bil kartiran.\n\n### Izbiranje\n\nZa izbiranje ceste kliknite nanjo. Pokazal se bo obris ceste, ob njem pa\nmajhen meni z orodji in stranski meni z več informacijami o tej cesti.\n\n### Spreminjanje\n\nPogosto boste opazili ceste, ki se ne prekrivajo s sliko v ozadju,\nali z GPS sledjo. Te ceste lahko prilagodite tako, da so na pravilnem\nmestu.\n\nNajprej klinite na cesto, ki jo želite spremeniti. Cesta bo postala poudarjena in vzdolž\nnje se bodo prikazala vozlišča, ki jih lahko premaknete na pravo mesto. Če želite\ndodati nova vozlišča za bolj podroben potek ceste, dvokliknite na del ceste, ki\nše nima vozlišča, in pojavilo se bo novo vozlišče.\nČe se cesta dotika druge ceste, toda na zemljevidu ni pravilno povezana,\nlahko enega od njenih vozlišč premaknete na drugo cesto in ju tako\npovežete. Pravilno povezane ceste so pomembne za zemljevid\nin nujne za samodejno iskanje pot med različnimi kraji.\nS klikom na 'Premakni' ali s pritiskom tipke 'M' na tipkovnici lahko aktivirate orodje\nza premik celotne ceste naenkrat; premik je končan ob naslednjem kliku.\n### Odstranjevanje\nČe je potek ceste v celoti napačen - npr. ko cesta na satelitskem posnetku sploh ne obstaja\noz. še bolje, ko imate informacijo o tem iz prve roke - jo lahko izbrišete ter jo tako\nodstranite z zemljevida. Pri brisanju objektov bodite pozorni -\nkot pri ostalih načinih urejanja bodo posledice vidne vsakomur. Včasih so satelitski posnetki\nzastareli in morda zato kakšne ceste na njih še ni.\nCesto izbrišete tako, da najprej kliknete nanjo, nato pa kliknete na ikono za smetnjak ali\npa pritisnete tipko 'Izbriši'.\n\n### Creating\n\nSte opazili, da na zemljevidu manjka kakšna cesta? Za začetek risanja kliknite ikono 'Črta'\nlevo zgoraj v urejevalniku ali pa pritisnite tipko '2'.\nKliknite na zemljevid na začetek nove ceste. Če se cesta odcepi z že obstoječe ceste,\nzačnite s klikom na mesto, kjer se ločita.\nNato klikajte na točke vzdolž ceste v pravi smeri (glede na satelitske posnetke ali GPS)\nČe cesta, ki jo rišete, prečka drugo cesto, ju povežite s klikom na njuno križišče.\nKo končate, dvokliknite z miško ali na tipkovnici pritisnite tipko 'Return' ali 'Enter'.\n",
@@ -465,6 +567,28 @@
             "addresses": "# Naslovi\n\nNaslovi so ena od najbolj uporabnih informacij za zemljevid.\n\nČeprav so naslovi pogosto predstavljeni kot deli ulic, so na OpenStreetMap\nzabeležni kot lastnost stavb in mest ob ulicah.\n\nNaslove lahko dodate točkovnim objektom in tudi obrisom stavb.\nNajboljši vir naslovov je lastna raziskava oz. zbiranje podatkov ali pa\nlastno znanje. Tako kot za ostale objekte tudi tu velja, da je kopiranje\nz ostalih tržnih virov, kot je Google Zemljevidi, strogo prepovedano.\n\n",
             "buildings": "# Stavbe\n\nOpenStreetMap je največja svetovna zbirka stavb; lahko jo soustvarjate in izboljšujete.\n\n### Izbiranje\n\nStavbo lahko izberete s klikom na njen obris. Stavba se bo poudarila,\nprikazala pa se bosta majhen meni z orodji in stransko polje z več informacijami\no stavbi.\n\n### Spreminjanje\n\nVčasih so stavbe na napačnem mestu ali pa imajo vnešene napačne oznake.\n\nZa premik celotne stavbe jo najprej izberite, nato pa kliknite na orodje 'Move'.\nPremaknite miško za premik stavbe, s ponovnim klikom se premikanje konča.\n\nZa popravilo določenega dela stavbe kliknite in vlecite vozlišče, dokler\nne bo oblika pravilna.\n\n### Ustvarjanje\n\nEna od glavnih značilnosti dodajanja novih stavb na zemljevid je,  da\nOpenStreetMap beleži stavbe tako kot obliko kot tudi kot točko. Priporočamo, da\nse _stavbe predstavijo kot mnogokotniki, kadar je le to mogoče_, medtem ko se\npodjetja, domovi, ustanove in vse ostalo, kar se dogaja v stavbah, beleži kot točke,\nki jih umestimo znotraj mnogokotnika stavbe.\n\nZa začetek risanja stavbe na levo strani urejevalnika kliknite gumb 'Mnogokotnik',\nrisanje pa lahko končate s pritiskom tipke 'Return' ali pa s klikom na prvo vozlišče\nte stavbe.\n\n### Odstranjevanje\n\nČe je stavba prikazana popolnoma napačno - če se je npr. ni na satelitskem posnetku oz.\\imate informacije o tem iz prve roke - jo lahko odstranite z zemljevida.\nPri brisanju objektov bodite pozorni -\nkot pri ostalih načinih urejanja bodo posledice vidne vsakomur.\nVčasih so satelitski posnetki\nzastareli in morda zato kakšne stavbe na njih še ni.\n\nStavbo lahko odstanite tako, da jo s klikom izberete, nato pa kliknete\nikono smetnjak ali pritisnete tipko 'Delete'.\n",
             "relations": "# Zveza\n\nZveza je posebna vrsta objekta na OpenStreetMap, ki ostale objekte povezuje v skupine.\nNa primer: dva pogosta tipa zvez sta *cestne povezave*,\nki povezuje vse odseke cest, ki pripadajo določeni prometnici\n(npr. avtocesti, regionalni cesti), in *več mnogokotnikov*; ti v skupino povezujejo\nveč črt, ki definirajo kompleksno območje (npr. na več delov razkosano območje,\nobmočja z vrzelmi).\n\nSkupina objektov v zvezi so *člani* zveze. V stranski vrstici lahko vidite,\nčlan katerih zvez je vsak objekt, s klikom na zvezo pa jo izberete.\nKo je zveza izbrana, bodo v stranski vrstici prikazani vsi njeni člani,\nhkrati pa bodo tudi poudarjeni na zemljevidu.\n\nV večini primerov bo za vzdrževanje zvez samodejno poskrbel iD že med urejanjem.\nBodite pa pozorni predvsem med brisanjem delov cest, ki jih boste na novo narisali -\nte morate nato dodati v isto skupino, kot so bili pred brisanjem.\n\n## Urejanje zvez\n\nSpodaj so navedene osnove za urejanje zvez.\n\nZa dodajanje objekta v zvezo izberite objekt in kliknite gumb \\+\\ v odseku\n\\All relations\\ stranske vrstice, nato pa izberite ali natipkajte ime zveze.\n\nZa ustvarjanje nove zveze najprej izberite objekt, ki bo njen član,\nnato klinite gumb \\+\\ v odseku \\All relations\\ nato pa izberite\new relation...\\.\n\nZa odstranitev objekta iz zveze najprej izberite objekt, nato pa kliknite na ikono\nsmetnjaka ob zvezi, iz katere želite objekt odstraniti.\n\nVeč mnogokotnikov z vrzelmi lahko ustvarite z orodjem \\Merge\\. Narišite dve območji (zunanjo\nin notranje), nato pa držite pritisnjeno tipko Shift in kliknite na obe območji, da ju izberete.\nNa koncu kliknite še gumb \\Merge\\ (+).\n\n"
+=======
+        "mapillary": {
+            "view_on_mapillary": "Pokaži sliko na spletišču Mapillary"
+        },
+        "openstreetcam_images": {
+            "tooltip": "Ulične fotografije prek sistema OpenStreetCam",
+            "title": "Plast s fotografijami (OpenStreetCam)"
+        },
+        "openstreetcam": {
+            "view_on_openstreetcam": "Pokaži sliko na spletišču OpenStreetCam"
+        },
+        "help": {
+            "title": "Pomoč",
+            "key": "H",
+            "help": {
+                "title": "Pomoč",
+                "welcome": "Dobrodošli v urejevalniku iD za [OpenStreetMap](https://www.openstreetmap.org/). S tem urejevalnikom lahko OpenStreetMap posodobite neposredno iz brskalnika."
+            },
+            "overview": {
+                "features_h": "Značilnosti zemljevida"
+            }
+>>>>>>> v2.7.0
         },
         "intro": {
             "navigation": {
@@ -480,9 +604,22 @@
             },
             "areas": {
                 "title": "Mnogokotniki",
+<<<<<<< HEAD
                 "place": "Mnogokotnike narišete s postavljanjem več vozlišč, zaključite jih s klikom na začetno vozlišče. **Narišite mnogokotnik za igrišče.**",
                 "search": "**Išči '{name}'.**",
                 "choose": "**Na seznamu izberite Igrišče.**"
+=======
+                "start_playground": "Z mnogokotnikom lahko izrišemo na primer otroško igrišče. Mnogokotniki se izrisujejo z *vozlišči* po zunanjem robu predmeta. **Kliknite na rob igrišča za dodajanje prve točke.**",
+                "continue_playground": "Nadaljujte z risanjem mnogokotnika z dodajanjem vozlišč po robu otroškega igrišča. Seveda lahko povežete polje z obstoječo pohodno potjo.{br}Namig: če pritisnete tipko »{alt}« se onemogoči samodejno povezovanje vozlišč z drugimi točkami na zemljevidu. **Nadaljujte z risanjem igrišča.**",
+                "finish_playground": "Mnogokotnik se *zaključi* kot ponovno kliknete na prvo ali zadnje narisano vozlišče. **Končajte z risanjem igrišča.**",
+                "search_playground": "**Poiščite predmet »{preset}«.**",
+                "choose_playground": "**Izberte {preset} s seznama.**",
+                "add_field": "To igrišče nima navedenega uradnega naziva, zato ga ni treba poimenovati.{br}Namesto imena pa lahko vpišemo dodatne značilnosti. **Odprite spustni meni Dodaj polje:**",
+                "choose_field": "**Izberite polje {field} s seznama.**",
+                "retry_add_field": "Niste izbrali polja {field}. Poskusite znova.",
+                "describe_playground": "**Dodajte opis, nato pa kliknite na gumb {button} za potrditev vnosa.**",
+                "play": "Izvrstno! Poskusite narisati še nekaj predmetov z orodjem in si oglejte, kakšne vrste polj in območij je mogoče dodati na zemljevid. **Ko boste pripravljeni za nadaljevanje, kliknite na gumb '{next}'.**"
+>>>>>>> v2.7.0
             },
             "lines": {
                 "title": "Črte",
@@ -685,6 +822,9 @@
                 "board_type": {
                     "label": "Vrsta"
                 },
+                "boules": {
+                    "label": "Vrsta"
+                },
                 "boundary": {
                     "label": "Vrsta"
                 },
@@ -709,6 +849,7 @@
                     "label": "Kapaciteta",
                     "placeholder": "50, 100, 200..."
                 },
+<<<<<<< HEAD
                 "cardinal_direction": {
                     "label": "Smer",
                     "options": {
@@ -736,10 +877,30 @@
                         "anticlockwise": "Proti smeri urinega kazalca",
                         "clockwise": "V smeri urinega kazalca"
                     }
+=======
+                "castle_type": {
+                    "label": "Vrsta"
+                },
+                "clothes": {
+                    "label": "Oblačila"
+                },
+                "club": {
+                    "label": "Vrsta"
+>>>>>>> v2.7.0
                 },
                 "collection_times": {
                     "label": "Ure zbiranja"
                 },
+<<<<<<< HEAD
+=======
+                "comment": {
+                    "label": "Povzetek sprememb",
+                    "placeholder": "Kratek opis sprememb (zahtevan vpis)"
+                },
+                "communication_multi": {
+                    "label": "Vrste komunikacij"
+                },
+>>>>>>> v2.7.0
                 "construction": {
                     "label": "Vrsta"
                 },
@@ -759,6 +920,14 @@
                 "craft": {
                     "label": "Vrsta"
                 },
+                "crane/type": {
+                    "label": "Vrsta žerjava",
+                    "options": {
+                        "floor-mounted_crane": "Nepremični žerjav",
+                        "portal_crane": "Tirni žerjav",
+                        "travel_lift": "Premični žerjav"
+                    }
+                },
                 "crop": {
                     "label": "Kulturna rastlina"
                 },
@@ -771,6 +940,16 @@
                 "currency_multi": {
                     "label": "Vrste valut"
                 },
+<<<<<<< HEAD
+=======
+                "cutting": {
+                    "label": "Vrsta",
+                    "placeholder": "Privzeto"
+                },
+                "cycle_network": {
+                    "label": "Omrežje"
+                },
+>>>>>>> v2.7.0
                 "cycleway": {
                     "label": "Pasovi za kolesarje",
                     "options": {
@@ -1144,9 +1323,12 @@
                     "label": "Par",
                     "placeholder": "3, 4, 5..."
                 },
+<<<<<<< HEAD
                 "parallel_direction": {
                     "label": "Smer"
                 },
+=======
+>>>>>>> v2.7.0
                 "park_ride": {
                     "label": "Parkiraj in odpelji"
                 },
@@ -1501,8 +1683,7 @@
                     "terms": "vlečnica"
                 },
                 "aerialway/station": {
-                    "name": "Postaja žičnice",
-                    "terms": "Žičniška postaja,postaja gondole"
+                    "name": "Postaja žičnice"
                 },
                 "aerialway/t-bar": {
                     "name": "Sidra",
@@ -1589,10 +1770,13 @@
                     "name": "Menjalnica",
                     "terms": "menjalnica,menjava,devize"
                 },
+<<<<<<< HEAD
                 "amenity/bus_station": {
                     "name": "Avtobusna postaja",
                     "terms": "AP"
                 },
+=======
+>>>>>>> v2.7.0
                 "amenity/cafe": {
                     "name": "Kavarna",
                     "terms": "bife,kava,bar"
@@ -1667,9 +1851,6 @@
                 "amenity/fast_food": {
                     "name": "Hitra prehrana",
                     "terms": "hitra hrana"
-                },
-                "amenity/ferry_terminal": {
-                    "name": "Pristanišče za trajekt"
                 },
                 "amenity/fire_station": {
                     "name": "Gasilska postaja",
@@ -1763,10 +1944,6 @@
                 "amenity/ranger_station": {
                     "name": "Čuvaj parka",
                     "terms": "center za obiskovalce,nadzornik parka,uprava parka,čuvaj parka"
-                },
-                "amenity/recycling": {
-                    "name": "Reciklaža",
-                    "terms": "recikliranje,ekološki otok"
                 },
                 "amenity/recycling_centre": {
                     "name": "Center za recikliranje"
@@ -2326,10 +2503,6 @@
                     "name": "Mulatjera",
                     "terms": "jahalna pot,mulatiera"
                 },
-                "highway/bus_stop": {
-                    "name": "Avtobusno postajališče",
-                    "terms": "avtobusna postaja"
-                },
                 "highway/corridor": {
                     "name": "Notranji hodnik"
                 },
@@ -2551,9 +2724,6 @@
                 "landuse/forest": {
                     "name": "Gozd",
                     "terms": "gozdne površine"
-                },
-                "landuse/garages": {
-                    "name": "Garaže"
                 },
                 "landuse/grass": {
                     "name": "Travnata površina",
@@ -2924,6 +3094,7 @@
                     "terms": "računovodja,davčno svetovanje,finančno svetovanje"
                 },
                 "office/administrative": {
+<<<<<<< HEAD
                     "name": "Upravna enota",
                     "terms": "Upravni urad,upravna pisarna"
                 },
@@ -2934,6 +3105,9 @@
                 "office/company": {
                     "name": "Podjetje",
                     "terms": "firma,sedež podjetja,podjetnik"
+=======
+                    "name": "Upravna enota"
+>>>>>>> v2.7.0
                 },
                 "office/educational_institution": {
                     "name": "Izobraževalna ustanova",
@@ -3078,14 +3252,6 @@
                     "name": "Transformator",
                     "terms": "pretvornik,trafo postaja"
                 },
-                "public_transport/platform": {
-                    "name": "Peron",
-                    "terms": "ploščad"
-                },
-                "public_transport/stop_position": {
-                    "name": "Postajališče",
-                    "terms": "avtobusna postaja,postaja"
-                },
                 "railway": {
                     "name": "Železnica"
                 },
@@ -3104,10 +3270,6 @@
                     "name": "Vzpenjača",
                     "terms": "tirna vzpenjača"
                 },
-                "railway/halt": {
-                    "name": "Železniško postajališče",
-                    "terms": "postaja brez perona in objektov"
-                },
                 "railway/level_crossing": {
                     "name": "Železniški prehod (cesta)"
                 },
@@ -3119,17 +3281,9 @@
                     "name": "Ozkotirna železnica",
                     "terms": "železnica z ozkimi tiri"
                 },
-                "railway/platform": {
-                    "name": "Železniški peron",
-                    "terms": "ploščad"
-                },
                 "railway/rail": {
                     "name": "Železniški tir",
                     "terms": "železnica,železniški tir,tirnica"
-                },
-                "railway/station": {
-                    "name": "Železniška postaja",
-                    "terms": "kolodvor"
                 },
                 "railway/subway": {
                     "name": "Podzemna železnica",
@@ -3345,9 +3499,6 @@
                 "shop/jewelry": {
                     "name": "Draguljarna",
                     "terms": "bižuterija,nakit,zlatarna"
-                },
-                "shop/kiosk": {
-                    "name": "Kiosk prodajalna"
                 },
                 "shop/laundry": {
                     "name": "Pralnica",
@@ -3731,6 +3882,176 @@
                     "terms": "vodna zapornica"
                 }
             }
+<<<<<<< HEAD
+=======
+        },
+        "imagery": {
+            "Bing": {
+                "description": "Satelitski posnetki in posnetki iz zraka",
+                "name": "Satelitski posnetki Bing"
+            },
+            "DigitalGlobe-Premium": {
+                "attribution": {
+                    "text": "Pogoji uporabe in odziv"
+                },
+                "description": "Satelitski posnetki DigitalGlobe Premium",
+                "name": "Posnetki DigitalGlobe Premium"
+            },
+            "DigitalGlobe-Premium-vintage": {
+                "attribution": {
+                    "text": "Pogoji uporabe in odziv"
+                },
+                "description": "Meje posnetkov in datumi zajema. Oznake se pojavijo na ravni povečave 14 in višjih."
+            },
+            "DigitalGlobe-Standard": {
+                "attribution": {
+                    "text": "Pogoji uporabe in odziv"
+                },
+                "description": "Satelitski posnetki DigitalGlobe Standard",
+                "name": "Posnetki DigitalGlobe Standard"
+            },
+            "DigitalGlobe-Standard-vintage": {
+                "attribution": {
+                    "text": "Pogoji uporabe in odziv"
+                },
+                "description": "Meje posnetkov in datumi zajema. Oznake se pojavijo na ravni povečave 14 in višjih."
+            },
+            "EsriWorldImagery": {
+                "attribution": {
+                    "text": "Pogoji uporabe in odziv"
+                },
+                "description": "Posnetki sveta Esri",
+                "name": "Posnetki sveta Esri"
+            },
+            "MAPNIK": {
+                "attribution": {
+                    "text": "Skupnost © OpenStreetMap z dovoljenjem CC-BY-SA"
+                },
+                "description": "Privzeta plast zemljevida OpenStreetMap",
+                "name": "OpenStreetMap (standardni)"
+            },
+            "Mapbox": {
+                "attribution": {
+                    "text": "Pogoji uporabe in odziv"
+                },
+                "description": "Satelitski posnetki in posnetki iz zraka",
+                "name": "Posnetki Mapbox Satellite"
+            },
+            "OSM_Inspector-Addresses": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, skupnost © OpenStreetMap z dovoljenjem CC-BY-SA"
+                },
+                "name": "OSM Inspector: naslovi"
+            },
+            "OSM_Inspector-Geometry": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, skupnost © OpenStreetMap z dovoljenjem CC-BY-SA"
+                },
+                "name": "OSM Inspector: geometrija"
+            },
+            "OSM_Inspector-Highways": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, skupnost © OpenStreetMap z dovoljenjem CC-BY-SA"
+                },
+                "name": "OSM Inspector: avtoceste"
+            },
+            "OSM_Inspector-Multipolygon": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, skupnost © OpenStreetMap z dovoljenjem CC-BY-SA"
+                },
+                "name": "OSM Inspector: območja"
+            },
+            "OSM_Inspector-Places": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, skupnost © OpenStreetMap z dovoljenjem CC-BY-SA"
+                },
+                "name": "OSM Inspector: kraji"
+            },
+            "OSM_Inspector-Routing": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, skupnost © OpenStreetMap z dovoljenjem CC-BY-SA"
+                },
+                "name": "OSM Inspector: ceste"
+            },
+            "OSM_Inspector-Tagging": {
+                "attribution": {
+                    "text": "© Geofabrik GmbH, skupnost © OpenStreetMap z dovoljenjem CC-BY-SA"
+                },
+                "name": "OSM Inspector: oznake"
+            },
+            "Waymarked_Trails-Cycling": {
+                "name": "Waymarked Trails: kolesarjenje"
+            },
+            "Waymarked_Trails-Hiking": {
+                "name": "Waymarked Trails: pohodništvo"
+            },
+            "Waymarked_Trails-MTB": {
+                "name": "Waymarked Trails: MTB"
+            },
+            "Waymarked_Trails-Skating": {
+                "name": "Waymarked Trails: rolkanje in rolanje"
+            },
+            "Waymarked_Trails-Winter_Sports": {
+                "name": "Waymarked Trails: zimski športi"
+            },
+            "basemap.at": {
+                "attribution": {
+                    "text": "basemap.at"
+                },
+                "description": "Osnovni zemljevid Avstrije, ki temelji na uradnih podatkih",
+                "name": "basemap.at"
+            },
+            "basemap.at-orthofoto": {
+                "attribution": {
+                    "text": "basemap.at"
+                }
+            },
+            "hike_n_bike": {
+                "attribution": {
+                    "text": "Skupnost © OpenStreetMap"
+                },
+                "name": "Pohodništvo in kolesarstvo"
+            },
+            "mapbox_locator_overlay": {
+                "attribution": {
+                    "text": "Pogoji uporabe in odziv"
+                },
+                "description": "Pokaže glavne značilnosti v okolju za hitro orientacijo."
+            },
+            "openpt_map": {
+                "attribution": {
+                    "text": "Skupnost © OpenStreetMap z dovoljenjem CC-BY-SA"
+                },
+                "name": "Zemljevid OpenPT Map (prekrivna plast)"
+            },
+            "osm-gps": {
+                "attribution": {
+                    "text": "Skupnost © OpenStreetMap"
+                },
+                "description": "Javne sledi GPS, poslane na OpenStreetMap",
+                "name": "Sledi GPS za OpenStreetMap"
+            },
+            "osm-mapnik-black_and_white": {
+                "attribution": {
+                    "text": "Skupnost © OpenStreetMap z dovoljenjem CC-BY-SA"
+                },
+                "name": "© OpenStreetMap (standardni črnobeli)"
+            },
+            "osm-mapnik-german_style": {
+                "attribution": {
+                    "text": "Skupnost © OpenStreetMap z dovoljenjem CC-BY-SA"
+                },
+                "name": "OpenStreetMap (nemški slog)"
+            },
+            "qa_no_address": {
+                "attribution": {
+                    "text": "Simon Pole, podatki skupnost © OpenStreetMap"
+                }
+            },
+            "tf-landscape": {
+                "name": "Thunderforest Landscape"
+            }
+>>>>>>> v2.7.0
         }
     }
 }

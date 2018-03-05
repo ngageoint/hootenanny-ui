@@ -1,18 +1,24 @@
 import _clone from 'lodash-es/clone';
 import _some from 'lodash-es/some';
 
-import { geoArea as d3_geoArea } from 'd3-geo';
+import {
+  geoArea as d3_geoArea,
+  geoMercatorRaw as d3_geoMercatorRaw
+} from 'd3-geo';
 
 import { t } from '../util/locale';
 import { geoExtent, geoPolygonIntersectsPolygon, geoPolygonContainsPolygon } from '../geo';
 import { jsonpRequest } from '../util/jsonp_request';
+import { utilDetect } from '../util/detect';
 
 
 function localeDateString(s) {
     if (!s) return null;
+    var detected = utilDetect();
+    var options = { day: 'numeric', month: 'short', year: 'numeric' };
     var d = new Date(s);
     if (isNaN(d.getTime())) return null;
-    return d.toLocaleDateString();
+    return d.toLocaleDateString(detected.locale, options);
 }
 
 function vintageRange(vintage) {
@@ -26,15 +32,31 @@ function vintageRange(vintage) {
     return s;
 }
 
+function getEPSG3857XY(x, y, z) {
+    //polyfill for IE11, PhantomJS
+    var sinh = Math.sinh || function(x) {
+        var y = Math.exp(x);
+        return (y - 1 / y) / 2;
+    };
+
+    var zoomSize = Math.pow(2, z);
+    var lon = x / zoomSize * Math.PI * 2 - Math.PI;
+    var lat = Math.atan(sinh(Math.PI * (1 - 2 * y / zoomSize)));
+    var mercCoords = d3_geoMercatorRaw(lon, lat);
+    return {
+        x: 20037508.34 / Math.PI * mercCoords[0],
+        y: 20037508.34 / Math.PI * mercCoords[1]
+    };
+}
+
 
 export function rendererBackgroundSource(data) {
-    var source = _clone(data),
-        offset = [0, 0],
-        name = source.name,
-        id = source.id,
-        description = source.description,
-        best = !!source.best,
-        template = source.template;
+    var source = _clone(data);
+    var offset = [0, 0];
+    var name = source.name;
+    var description = source.description;
+    var best = !!source.best;
+    var template = source.template;
 
     source.scaleExtent = data.scaleExtent || [0, 22];
     source.overzoom = data.overzoom !== false;
@@ -96,6 +118,15 @@ export function rendererBackgroundSource(data) {
 
 
     source.url = function(coord) {
+        if (this.type === 'wms') {
+            var minXmaxY = getEPSG3857XY(coord[0], coord[1], coord[2]);
+            var maxXminY = getEPSG3857XY(coord[0]+1, coord[1]+1, coord[2]);
+            return template
+                .replace('{width}', 256)
+                .replace('{height}', 256)
+                .replace('{proj}', this.projection)
+                .replace('{bbox}', minXmaxY.x + ',' + maxXminY.y + ',' + maxXminY.x + ',' + minXmaxY.y);
+        }
         return template
             .replace('{x}', coord[0])
             .replace('{y}', coord[1])
@@ -281,6 +312,9 @@ rendererBackgroundSource.Esri = function(data) {
         if (inflight[tileId]) return;
 
         switch (true) {
+            case (zoom >= 20 && esri.id === 'EsriWorldImageryClarity'):
+                metadataLayer = 4;
+                break;
             case zoom >= 19:
                 metadataLayer = 3;
                 break;
@@ -294,8 +328,15 @@ rendererBackgroundSource.Esri = function(data) {
                 metadataLayer = 99;
         }
 
+        var url;
         // build up query using the layer appropriate to the current zoom
-        var url = 'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/' + metadataLayer + '/query?returnGeometry=false&geometry=' + centerPoint + '&inSR=4326&geometryType=esriGeometryPoint&outFields=*&f=json&callback={callback}';
+        if (esri.id === 'EsriWorldImagery') {
+            url = 'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/';
+        } else if (esri.id === 'EsriWorldImageryClarity') {
+            url = 'https://serviceslab.arcgisonline.com/arcgis/rest/services/Clarity_World_Imagery/MapServer/';
+        }
+
+        url += metadataLayer + '/query?returnGeometry=false&geometry=' + centerPoint + '&inSR=4326&geometryType=esriGeometryPoint&outFields=*&f=json&callback={callback}';
 
         if (!cache[tileId]) {
             cache[tileId] = {};
