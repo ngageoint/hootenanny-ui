@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import Tab from './tab';
+import FolderTree from '../folderTree';
 import {
     datasetButtons,
     datasetTableHeaders
@@ -13,6 +14,8 @@ import {
 export default class Datasets extends Tab {
     constructor( ...params ) {
         super( params );
+
+        this.folderTree = new FolderTree();
 
         this.name = 'Datasets';
         this.id   = 'util-datasets';
@@ -63,6 +66,8 @@ export default class Datasets extends Tab {
             .text( function( d ) {
                 return d.title;
             } );
+
+        this.folderTree.init( table );
     }
 
     init() {

@@ -1,10 +1,10 @@
 /** ****************************************************************************************************
- * File: index.js
+ * File: navbar.js
  * Project: hootenanny-ui
  * @author Matt Putipong on 2/6/18
  *******************************************************************************************************/
 
-export default class Header {
+export default class Navbar {
     constructor( context ) {
         this.context    = context;
         this.$container = context.container();
