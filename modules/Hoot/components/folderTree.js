@@ -42,6 +42,8 @@ export default function FolderTree() {
         }
     };
 
+    let root;
+
     this.init = container => {
         this.container = container;
 
@@ -71,39 +73,43 @@ export default function FolderTree() {
             children: folders
         };
 
-        folders.x0 = 0;
-        folders.y0 = 0;
+        root    = d3.hierarchy( folders );
+        root.x0 = 0;
+        root.y0 = 0;
 
-        this.root = folders;
-
-        this.update( this.root );
+        this.update( root );
     };
 
     this.update = source => {
-        let tree   = this.tree( d3.hierarchy( this.root ) ),
-            nodes  = tree.descendants().sort( ( a, b ) => ),
-            links  = tree.links(),
-            height = Math.max( 150, nodes.length * this.barHeight + this.margin.top + this.margin.bottom );
-
-        console.log( nodes );
+        let nodes       = this.tree( root ),
+            height      = Math.max( 150, nodes.length * this.barHeight + this.margin.top + this.margin.bottom ),
+            nodesSort   = [],
+            parentDepth = 0;
 
         this.container.select( 'svg' ).transition()
             .duration( 0 )
             .style( 'height', `${height}px` );
 
+        nodes.eachBefore( n => {
+            // Update leaf nodes to have similar structure to regular nodes
+            if ( n.depth && n.depth > 0 ) {
+                parentDepth = n.depth;
+            } else {
+                n.data  = n;
+                n.depth = parentDepth + 1;
+            }
+
+            nodesSort.push( n );
+        } );
+
         // Set vertical position of node
-        nodes.forEach( ( d, i ) => d.x = ( i - 1 ) * this.barHeight );
+        nodesSort.forEach( ( n, i ) => {
+            n.x = ( i - 1 ) * this.barHeight;
+            n.y = n.depth * 20;
+        } );
 
         let node = this.svg.selectAll( 'g.node' )
-            .data( nodes, function( d ) {
-                if ( d.data.type ) {
-                    return d.data.type.charAt( 0 ) + d.data.id || d.data.id || (d.data.id = ++i);
-                }
-                else {
-                    return d.data.id || (d.data.id = ++i);
-                }
-            } );
-        console.log( source.x0 );
+            .data( nodesSort, d => d );
 
         let nodeElement = node.enter().append( 'g' )
             .attr( 'class', 'node' )
@@ -131,16 +137,18 @@ export default function FolderTree() {
                 return `translate( ${ dy }, -11 )`;
             } )
             .html( d => {
-                if ( d.data.type === 'folder' ) {
-                    if ( d.state === 'open' ) {
+                let { data } = d;
+
+                if ( data.type === 'dataset' ) {
+                    return '<i class="_icon data"></i>';
+                }
+
+                if ( data.type === 'folder' ) {
+                    if ( data.state === 'open' ) {
                         return '<i class="_icon open-folder"></i>';
                     } else {
                         return '<i class="_icon folder"></i>';
                     }
-                }
-
-                if ( d.data.type === 'dataset' ) {
-                    return '<i class="_icon data"></i>';
                 }
             } );
 
@@ -160,32 +168,43 @@ export default function FolderTree() {
             .style( 'fill', this.fillColor )
             .attr( 'class', this.rectClass );
 
-        node.exit().remove(); // remove old elements
-
-        let link = this.svg.selectAll( 'path.link' )
-            .data( links, d => d.target.id );
-
-        link.enter().insert( 'path', 'g' )
-            .attr( 'class', 'link' )
-            .attr( 'd', () => {
-                let o = { x: source.x0, y: source.y0 };
-                return this.diagonal( { source: o, target: o } );
-            } )
+        node.exit()
             .transition()
             .duration( this.duration )
-            .attr( 'd', this.diagonal );
+            .attr( 'transform', `translate( 0, ${ source.x } )` )
+            .style( 'opacity', 0 )
+            .remove(); // remove old elements
 
-        link.transition()
-            .duration( this.duration )
-            .attr( 'd', this.diagonal );
-
-        link.exit().remove();
+        //let link = this.svg.selectAll( 'path.link' )
+        //    .data( links, d => d.target.id );
+        //
+        //link.enter().insert( 'path', 'g' )
+        //    .attr( 'class', 'link' )
+        //    .attr( 'd', () => {
+        //        let o = { x: source.x0, y: source.y0 };
+        //        return this.diagonal( { source: o, target: o } );
+        //    } )
+        //    .transition()
+        //    .duration( this.duration )
+        //    .attr( 'd', this.diagonal );
+        //
+        //link.transition()
+        //    .duration( this.duration )
+        //    .attr( 'd', this.diagonal );
+        //
+        //link.exit().remove();
 
         // Stash the old positions for transition
-        nodes.forEach( d => {
+        //nodes.forEach( d => {
+        //    d.x0 = d.x;
+        //    d.y0 = d.y;
+        //} );
+
+        root.each( function( d ) {
             d.x0 = d.x;
             d.y0 = d.y;
         } );
+
     };
 
     this.click = function( d ) {
@@ -200,32 +219,79 @@ export default function FolderTree() {
             d3.select( this ).classed( 'selected', selected );
         }
 
-        if ( d.data.state === 'closed' ) {
-            d.data.state = 'open';
+        //if ( d.data.state === 'closed' ) {
+        //    d.data.state = 'open';
+        //
+        //    d3.select( this.parentNode )
+        //        .select( 'i' )
+        //        .classed( 'folder', false )
+        //        .classed( 'open-folder', true );
+        //
+        //    d.data.children  = d.data._children || null;
+        //    d.data._children = null;
+        //
+        //    if ( updateOpenFolders ) {
+        //        FolderManager.setOpenFolders( d.data.id, true );
+        //    }
+        //} else {
+        //    d.data.state = 'closed';
+        //
+        //    d3.select( this.parentNode )
+        //        .select( 'i' )
+        //        .classed( 'folder', true )
+        //        .classed( 'open-folder', false );
+        //
+        //    if ( d.data.children || typeof d.data.children === 'object' ) {
+        //        d.data._children = d.data.children;
+        //        d.data.children  = null;
+        //        d.data.selected  = false;
+        //    }
+        //}
 
-            d3.select( this.parentNode )
-                .select( 'i' )
-                .classed( 'folder', false )
-                .classed( 'open-folder', true );
-
-            d.data.children       = d.data._children || null;
-            d.data._children = null;
-
-            if ( updateOpenFolders ) {
-                FolderManager.setOpenFolders( d.data.id, true );
-            }
-        } else {
-            d.data.state = 'closed';
-
-            d3.select( this.parentNode )
-                .select( 'i' )
-                .classed( 'folder', true )
-                .classed( 'open-folder', false );
-
-            if ( d.data.children || typeof d.data.children === 'object' ) {
-                d.data._children = d.data.children;
-                d.data.children  = null;
+        if ( d.data.type === 'folder' ) {
+            if ( d.children ) {
+                // Close folder
+                d.data._children = d.children;
+                d.children       = null;
                 d.data.selected  = false;
+                d.data.state     = 'closed';
+                d3.select( this.parentNode )
+                    .select( 'i' )
+                    .classed( 'folder', true )
+                    .classed( 'open-folder', false );
+
+                if ( updateOpenFolders ) {
+                    FolderManager.setOpenFolders( d.data.id, false );
+                }
+            } else if ( !d.children && !d.data._children ) {
+                // Toggle an empty folder
+                if ( d.data.state === 'open' ) {
+                    d.data.state = 'closed';
+                    d3.select( this.parentNode )
+                        .select( 'i' )
+                        .classed( 'folder', true )
+                        .classed( 'open-folder', false );
+                } else {
+                    d.data.state = 'open';
+                    d3.select( this.parentNode )
+                        .select( 'i' )
+                        .classed( 'folder', false )
+                        .classed( 'open-folder', true );
+                }
+            } else {
+                // Open folder
+                d.children       = d.data._children;
+                d.data._children = null;
+                d.data.state     = 'open';
+
+                d3.select( this.parentNode )
+                    .select( 'i' )
+                    .classed( 'folder', false )
+                    .classed( 'open-folder', true );
+
+                if ( updateOpenFolders ) {
+                    FolderManager.setOpenFolders( d.data.id, true );
+                }
             }
         }
 
@@ -233,10 +299,12 @@ export default function FolderTree() {
     };
 
     this.fillColor = d => {
-        if ( d.data.type === 'folder' ) {
+        let { data } = d;
+
+        if ( data.type === 'folder' ) {
             return '#7092ff';
         }
-        else if ( d.data.type === 'dataset' ) {
+        else if ( data.type === 'dataset' ) {
             return '#efefef';
         }
         else {
@@ -245,10 +313,12 @@ export default function FolderTree() {
     };
 
     this.fontColor = d => {
-        if ( d.data.type === 'folder' ) {
+        let { data } = d;
+
+        if ( data.type === 'folder' ) {
             return '#ffffff';
         }
-        else if ( d.data.type === 'dataset' ) {
+        else if ( data.type === 'dataset' ) {
             return '#7092ff';
         }
         else {
@@ -257,22 +327,27 @@ export default function FolderTree() {
     };
 
     this.rectClass = d => {
-        //set selected layers
-        //if ( d.data.type === 'dataset' && this.container.attr( 'id' ) === 'datasettable' ) {
-        //    let lyrid = d.data.id;
-        //    if ( d.data.selected ) {
-        //        if ( self.selectedLayerIDs.indexOf( lyrid ) === -1 ) {
-        //            self.selectedLayerIDs.push( lyrid );
-        //        }
-        //    } else {
-        //        let idx = this.selectedLayerIDs.indexOf( lyrid );
-        //        if ( idx > -1 ) {
-        //            self.selectedLayerIDs.splice( idx, 1 );
-        //        }
-        //    }
-        //}
+        let { data } = d;
 
-        return d.data.selected ? 'sel' : d._children ? 'more' : 'flat';
+        // set selected layers
+        if ( data.type === 'dataset' && self.container.attr( 'id' ) === 'dataset-table' ) {
+            if ( data.selected ) {
+                if ( self.selectedLayerIDs.indexOf( data.layerId ) === -1 ) {
+                    self.selectedLayerIDs.push( data.layerId );
+                }
+            } else {
+                let idx = this.selectedLayerIDs.indexOf( data.layerId );
+                if ( idx > -1 ) {
+                    self.selectedLayerIDs.splice( idx, 1 );
+                }
+            }
+        }
+
+        return data.selected
+            ? 'sel'
+            : data._children
+                ? 'more'
+                : 'flat';
     };
 
     return this;
