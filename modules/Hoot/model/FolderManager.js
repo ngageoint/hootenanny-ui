@@ -41,6 +41,19 @@ class FolderManager {
             .then( data => this.links = data.links );
     }
 
+    setOpenFolders( folderId, add ) {
+        if ( add ) {
+            this.openFolders.push( folderId );
+        } else {
+            let index = this.openFolders.indexOf( folderId );
+            if ( index > 1 ) {
+                this.openFolders.splice( index, 1 );
+            }
+        }
+
+        return this.openFolders;
+    }
+
     unflattenFolders( array, parent = { id: 0 }, tree = [] ) {
         const children = _.filter( array, child => child.parentId === parent.id );
 
@@ -48,8 +61,12 @@ class FolderManager {
             if ( parent.id === 0 ) {
                 tree = children;
             } else {
+                const cParam = parent.state === 'open' ? 'children' : '_children';
+
+                parent[ cParam ] = !parent[ cParam ] ? [] : parent[ cParam ];
+
                 _.each( children, child => {
-                    parent.children.push( child );
+                    parent[ cParam ].push( child );
                 } );
             }
 
@@ -75,18 +92,31 @@ class FolderManager {
             }
 
             _.assign( layer, { type: 'dataset' } );
+
             return layer;
         } );
 
         let folderList = _.map( this.folders, folder => {
-            folder.children = _.filter( layerList, layer => {
-                return layer.folderId === folder.id;
-            } );
-            folder.state    = ( this.openFolders.indexOf( folder.id ) > -1 ) ? 'open' : 'closed';
+            if ( this.openFolders.indexOf( folder.id ) > -1 ) {
+                folder.children = _.filter( layerList, layer => layer.folderId === folder.id );
+                folder.state = 'open';
+            } else {
+                folder._children = _.filter( layerList, layer => layer.folderId === folder.id );
+                folder._children = !folder._children.length ? null : folder._children;
+
+                folder.state = 'closed';
+            }
 
             _.assign( folder, { type: 'folder' } );
+
             return folder;
         } );
+
+        folderList = _.union( folderList, _.each( _.filter( layerList, function( lyr ) {
+            return lyr.folderId === 0;
+        } ), function( lyr ) {
+            _.extend( lyr, { parentId: 0 } );
+        } ) );
 
         return this.unflattenFolders( folderList );
     }

@@ -9,6 +9,7 @@ import _ from 'lodash-es';
 
 export default function FolderTree() {
     const self = this;
+    let i      = 0;
 
     this.selectedLayerIDs = [];
 
@@ -16,6 +17,7 @@ export default function FolderTree() {
     this.width     = '100%';
     this.height    = '100%';
     this.barHeight = 20;
+    this.duration  = 0;
 
     this.x = d3.scaleLinear()
         .domain( [ 0, 0 ] )
@@ -31,6 +33,15 @@ export default function FolderTree() {
     this.tree = d3.tree()
         .nodeSize( [ 0, 20 ] );
 
+    this.diagonal = d => {
+        if ( d.source && d.target ) {
+            return 'M' + d.source.y + ',' + d.source.x
+                + 'C' + (d.source.y + d.target.y) / 2 + ',' + d.source.x
+                + ' ' + (d.source.y + d.target.y) / 2 + ',' + d.target.x
+                + ' ' + d.target.y + ',' + d.target.x;
+        }
+    };
+
     this.init = container => {
         this.container = container;
 
@@ -42,15 +53,15 @@ export default function FolderTree() {
                 .attr( 'transform', `translate( ${this.margin.left}, ${this.margin.top} )` );
         } else {
             this.svg = container.append( 'svg' )
-                .attr( 'width', this.width )// + margin.left + margin.right)
-                .attr( 'height', this.height )// + margin.left + margin.right)
+                .attr( 'width', this.width )
+                .attr( 'height', this.height )
                 .append( 'g' )
                 .attr( 'transform', `translate( ${this.margin.left}, ${this.margin.top} )` );
         }
 
         let folders = FolderManager.getAvailFoldersWithLayers();
 
-        if ( this.container.attr( 'id' ) === 'datasettable' ) {
+        if ( this.container.attr( 'id' ) === 'dataset-table' ) {
             folders = _.without( folders, _.find( folders, { id: -1 } ) );
         }
 
@@ -60,50 +71,172 @@ export default function FolderTree() {
             children: folders
         };
 
-        folders.x = 0;
-        folders.y = 0;
+        folders.x0 = 0;
+        folders.y0 = 0;
 
-        this.update( d3.hierarchy( folders ) );
+        this.root = folders;
+
+        this.update( this.root );
     };
 
-    this.update = root => {
-        let nodes  = this.tree( root ).descendants(),
+    this.update = source => {
+        let tree   = this.tree( d3.hierarchy( this.root ) ),
+            nodes  = tree.descendants().sort( ( a, b ) => ),
+            links  = tree.links(),
             height = Math.max( 150, nodes.length * this.barHeight + this.margin.top + this.margin.bottom );
+
+        console.log( nodes );
 
         this.container.select( 'svg' ).transition()
             .duration( 0 )
             .style( 'height', `${height}px` );
 
-        _.forEach( nodes, ( node, i ) => node.x = ( i - i ) * this.barHeight );
+        // Set vertical position of node
+        nodes.forEach( ( d, i ) => d.x = ( i - 1 ) * this.barHeight );
 
         let node = this.svg.selectAll( 'g.node' )
             .data( nodes, function( d ) {
-                //if ( d.type ) {
-                //    return d.type.charAt( 0 ) + d.id || d.id || (d.id = ++i);
-                //}
-                //else {
-                //    return d.id || (d.id = ++i);
-                //}
+                if ( d.data.type ) {
+                    return d.data.type.charAt( 0 ) + d.data.id || d.data.id || (d.data.id = ++i);
+                }
+                else {
+                    return d.data.id || (d.data.id = ++i);
+                }
             } );
+        console.log( source.x0 );
 
-        let nodeEnter = node.enter().append( 'g' )
+        let nodeElement = node.enter().append( 'g' )
             .attr( 'class', 'node' )
-            .attr( 'transform', `translate( 0, ${ root.x } )` );
+            .attr( 'transform', `translate( 0, ${ source.x0 } )` )
+            .style( 'opacity', 1e-6 );
 
-        nodeEnter.append( 'rect' )
-            .attr( 'y', this.barHeight / 2 )
+        nodeElement.append( 'rect' )
+            .attr( 'y', -this.barHeight / 2 )
             .attr( 'height', this.barHeight )
             .attr( 'width', '100%' )
             .style( 'fill', this.fillColor )
             .attr( 'class', this.rectClass )
-            //.on( 'click', click );
+            .on( 'click', function( d ) {
+                self.click.call( this, d );
+            } );
+
+        nodeElement.append( 'g' )
+            .append( 'svg:foreignObject' )
+            .attr( 'width', 20 )
+            .attr( 'height', 20 )
+            .attr( 'transform', d => {
+                let dd = d.depth - 1,
+                    dy = 5.5 + ( 11 * dd );
+
+                return `translate( ${ dy }, -11 )`;
+            } )
+            .html( d => {
+                if ( d.data.type === 'folder' ) {
+                    if ( d.state === 'open' ) {
+                        return '<i class="_icon open-folder"></i>';
+                    } else {
+                        return '<i class="_icon folder"></i>';
+                    }
+                }
+
+                if ( d.data.type === 'dataset' ) {
+                    return '<i class="_icon data"></i>';
+                }
+            } );
+
+        //nodeEnter.filter( d => d.depth > 1 );
+
+        // Transition nodes to their new position
+        nodeElement.transition()
+            .duration( this.duration )
+            .attr( 'transform', d => `translate( 0, ${ d.x } )` )
+            .style( 'opacity', 1 );
+
+        node.transition()
+            .duration( this.duration )
+            .attr( 'transform', d => `translate( 0, ${ d.x } )` )
+            .style( 'opacity', 1 )
+            .select( 'rect' )
+            .style( 'fill', this.fillColor )
+            .attr( 'class', this.rectClass );
+
+        node.exit().remove(); // remove old elements
+
+        let link = this.svg.selectAll( 'path.link' )
+            .data( links, d => d.target.id );
+
+        link.enter().insert( 'path', 'g' )
+            .attr( 'class', 'link' )
+            .attr( 'd', () => {
+                let o = { x: source.x0, y: source.y0 };
+                return this.diagonal( { source: o, target: o } );
+            } )
+            .transition()
+            .duration( this.duration )
+            .attr( 'd', this.diagonal );
+
+        link.transition()
+            .duration( this.duration )
+            .attr( 'd', this.diagonal );
+
+        link.exit().remove();
+
+        // Stash the old positions for transition
+        nodes.forEach( d => {
+            d.x0 = d.x;
+            d.y0 = d.y;
+        } );
+    };
+
+    this.click = function( d ) {
+        let selected          = d.data.selected,
+            updateOpenFolders = self.container.attr( 'id' ) === 'dataset-table';
+
+        if ( d.data.type === 'folder' ) {
+
+        }
+
+        if ( d.data.type === 'dataset' ) {
+            d3.select( this ).classed( 'selected', selected );
+        }
+
+        if ( d.data.state === 'closed' ) {
+            d.data.state = 'open';
+
+            d3.select( this.parentNode )
+                .select( 'i' )
+                .classed( 'folder', false )
+                .classed( 'open-folder', true );
+
+            d.data.children       = d.data._children || null;
+            d.data._children = null;
+
+            if ( updateOpenFolders ) {
+                FolderManager.setOpenFolders( d.data.id, true );
+            }
+        } else {
+            d.data.state = 'closed';
+
+            d3.select( this.parentNode )
+                .select( 'i' )
+                .classed( 'folder', true )
+                .classed( 'open-folder', false );
+
+            if ( d.data.children || typeof d.data.children === 'object' ) {
+                d.data._children = d.data.children;
+                d.data.children  = null;
+                d.data.selected  = false;
+            }
+        }
+
+        self.update( d );
     };
 
     this.fillColor = d => {
-        if ( d.type === 'folder' ) {
+        if ( d.data.type === 'folder' ) {
             return '#7092ff';
         }
-        else if ( d.type === 'dataset' ) {
+        else if ( d.data.type === 'dataset' ) {
             return '#efefef';
         }
         else {
@@ -112,10 +245,10 @@ export default function FolderTree() {
     };
 
     this.fontColor = d => {
-        if ( d.type === 'folder' ) {
+        if ( d.data.type === 'folder' ) {
             return '#ffffff';
         }
-        else if ( d.type === 'dataset' ) {
+        else if ( d.data.type === 'dataset' ) {
             return '#7092ff';
         }
         else {
@@ -125,21 +258,21 @@ export default function FolderTree() {
 
     this.rectClass = d => {
         //set selected layers
-        if ( d.type === 'dataset' && container.attr( 'id' ) === 'datasettable' ) {
-            let lyrid = d.id;
-            if ( d.selected ) {
-                if ( self.selectedLayerIDs.indexOf( lyrid ) === -1 ) {
-                    self.selectedLayerIDs.push( lyrid );
-                }
-            } else {
-                let idx = this.selectedLayerIDs.indexOf( lyrid );
-                if ( idx > -1 ) {
-                    self.selectedLayerIDs.splice( idx, 1 );
-                }
-            }
-        }
+        //if ( d.data.type === 'dataset' && this.container.attr( 'id' ) === 'datasettable' ) {
+        //    let lyrid = d.data.id;
+        //    if ( d.data.selected ) {
+        //        if ( self.selectedLayerIDs.indexOf( lyrid ) === -1 ) {
+        //            self.selectedLayerIDs.push( lyrid );
+        //        }
+        //    } else {
+        //        let idx = this.selectedLayerIDs.indexOf( lyrid );
+        //        if ( idx > -1 ) {
+        //            self.selectedLayerIDs.splice( idx, 1 );
+        //        }
+        //    }
+        //}
 
-        return d.selected ? 'sel' : d._children ? 'more' : 'flat';
+        return d.data.selected ? 'sel' : d._children ? 'more' : 'flat';
     };
 
     return this;
