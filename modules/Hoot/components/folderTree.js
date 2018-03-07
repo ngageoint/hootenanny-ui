@@ -6,6 +6,7 @@
 
 import FolderManager from '../model/FolderManager';
 import _ from 'lodash-es';
+import moment from 'moment';
 
 export default function FolderTree() {
     const self = this;
@@ -46,6 +47,7 @@ export default function FolderTree() {
 
     this.init = container => {
         this.container = container;
+        this.isDatasetTable = this.container.attr( 'id' ) === 'dataset-table';
 
         this._svg = container.selectAll( 'svg' );
 
@@ -63,7 +65,7 @@ export default function FolderTree() {
 
         let folders = FolderManager.getAvailFoldersWithLayers();
 
-        if ( this.container.attr( 'id' ) === 'dataset-table' ) {
+        if ( this.isDatasetTable ) {
             folders = _.without( folders, _.find( folders, { id: -1 } ) );
         }
 
@@ -82,6 +84,7 @@ export default function FolderTree() {
 
     this.update = source => {
         let nodes       = this.tree( root ),
+            links       = nodes.links(),
             height      = Math.max( 150, nodes.length * this.barHeight + this.margin.top + this.margin.bottom ),
             nodesSort   = [],
             parentDepth = 0;
@@ -114,17 +117,17 @@ export default function FolderTree() {
         let nodeElement = node.enter().append( 'g' )
             .attr( 'class', 'node' )
             .attr( 'transform', `translate( 0, ${ source.x0 } )` )
-            .style( 'opacity', 1e-6 );
+            .style( 'opacity', 0 )
+            .on( 'click', function( d ) {
+                self.click.call( this, d );
+            } );
 
         nodeElement.append( 'rect' )
             .attr( 'y', -this.barHeight / 2 )
             .attr( 'height', this.barHeight )
             .attr( 'width', '100%' )
             .style( 'fill', this.fillColor )
-            .attr( 'class', this.rectClass )
-            .on( 'click', function( d ) {
-                self.click.call( this, d );
-            } );
+            .attr( 'class', this.rectClass );
 
         nodeElement.append( 'g' )
             .append( 'svg:foreignObject' )
@@ -139,20 +142,102 @@ export default function FolderTree() {
             .html( d => {
                 let { data } = d;
 
-                if ( data.type === 'dataset' ) {
-                    return '<i class="_icon data"></i>';
-                }
-
                 if ( data.type === 'folder' ) {
                     if ( data.state === 'open' ) {
                         return '<i class="_icon open-folder"></i>';
                     } else {
                         return '<i class="_icon folder"></i>';
                     }
+                } else if ( data.type === 'dataset' ) {
+                    return '<i class="_icon data"></i>';
                 }
             } );
 
-        //nodeEnter.filter( d => d.depth > 1 );
+        nodeElement.append( 'text' )
+            .style( 'fill', this.fontColor )
+            .classed( 'dnameTxt', true )
+            .attr( 'dy', 3.5 )
+            .attr( 'dx', d => {
+                let dd = d.depth - 1;
+                return 25.5 + ( 11 * dd );
+            } )
+            .append( 'tspan' ).text( d => d.data.name )
+            .each( function( d ) {
+                let textNode = d3.select( this );
+
+                if ( d.data.type === 'folder' ) {
+                    textNode.attr( 'folder-id', d => d.id );
+                } else if ( d.data.type === 'dataset' ) {
+                    textNode.attr( 'layer-id', d => d.id );
+                }
+            } );
+
+        let nodeDataset = nodeElement.filter( d => d.data.type === 'dataset' );
+
+        nodeDataset.append( 'text' )
+            .classed( 'dsizeTxt', true )
+            .style( 'fill', this.fontColor )
+            .attr( 'dy', 3.5 )
+            .attr( 'dx', '98%' )
+            .attr( 'text-anchor', 'end' )
+            .text( d => {
+                let size = d.size,
+                    units = [ 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' ],
+                    u     = -1;
+
+                if ( Math.abs( size ) < 1000 )
+                    return size + ' B';
+
+                do {
+                    size /= 1000;
+                    ++u;
+                } while ( Math.abs( size ) >= 1000 && u < units.length - 1 );
+
+                return size.toFixed( 1 ) + ' ' + units[ u ];
+            } );
+
+        if ( this.isDatasetTable ) {
+            nodeDataset.append( 'text' )
+                .style( 'fill', this.fontColor )
+                .attr( 'dy', 3.5 )
+                .attr( 'dx', '80%' )
+                .attr( 'text-anchor', 'end' )
+                .text( d => d.date );
+
+            nodeDataset.append( 'text' )
+                .style( 'fill', this.fontColor )
+                .attr( 'dy', 3.5 )
+                .attr( 'dx', '45%' )
+                .attr( 'text-anchor', 'end' )
+                .text( d => {
+                    let lastAccessed = d.lastAccessed,
+                        timeAgo = lastAccessed.replace( /[-:]/g, '' ),
+                        dateActive = moment( timeAgo ).fromNow(),
+                        oldDate = moment().diff( moment( timeAgo ), 'days' ) > 60;
+
+                    if ( oldDate ) {
+
+                    }
+
+                    return dateActive;
+                } );
+        }
+
+        let nodeDepth = nodeElement.filter( d => d.depth > 1 );
+
+        nodeDepth.append( 'line' )
+            .attr( 'x1', d => 2.5 + ( 11 * ( d.depth - 1 ) ) )
+            .attr( 'x2', d => 9.5 + ( 11 * ( d.depth - 1 ) ) )
+            .attr( 'y1', 0 )
+            .attr( 'y2', 0 )
+            .style( 'stroke', '#444444' );
+
+        nodeDepth.append( 'line' )
+            .attr( 'x1', d => 2.5 + ( 11 * ( d.depth - 1 ) ) )
+            .attr( 'x2', d => 2.5 + ( 11 * ( d.depth - 1 ) ) )
+            .attr( 'y1', -20 )
+            .attr( 'y2', 0 )
+            .style( 'stroke', '#444444' );
 
         // Transition nodes to their new position
         nodeElement.transition()
@@ -175,32 +260,26 @@ export default function FolderTree() {
             .style( 'opacity', 0 )
             .remove(); // remove old elements
 
-        //let link = this.svg.selectAll( 'path.link' )
-        //    .data( links, d => d.target.id );
-        //
-        //link.enter().insert( 'path', 'g' )
-        //    .attr( 'class', 'link' )
-        //    .attr( 'd', () => {
-        //        let o = { x: source.x0, y: source.y0 };
-        //        return this.diagonal( { source: o, target: o } );
-        //    } )
-        //    .transition()
-        //    .duration( this.duration )
-        //    .attr( 'd', this.diagonal );
-        //
-        //link.transition()
-        //    .duration( this.duration )
-        //    .attr( 'd', this.diagonal );
-        //
-        //link.exit().remove();
+        let link = this.svg.selectAll( 'path.link' )
+            .data( links, d => d.target.id );
 
-        // Stash the old positions for transition
-        //nodes.forEach( d => {
-        //    d.x0 = d.x;
-        //    d.y0 = d.y;
-        //} );
+        link.enter().insert( 'path', 'g' )
+            .attr( 'class', 'link' )
+            .attr( 'd', () => {
+                let o = { x: source.x0, y: source.y0 };
+                return this.diagonal( { source: o, target: o } );
+            } )
+            .transition()
+            .duration( this.duration )
+            .attr( 'd', this.diagonal );
 
-        root.each( function( d ) {
+        link.transition()
+            .duration( this.duration )
+            .attr( 'd', this.diagonal );
+
+        link.exit().remove();
+
+        root.each( d => {
             d.x0 = d.x;
             d.y0 = d.y;
         } );
@@ -209,7 +288,7 @@ export default function FolderTree() {
 
     this.click = function( d ) {
         let selected          = d.data.selected,
-            updateOpenFolders = self.container.attr( 'id' ) === 'dataset-table';
+            updateOpenFolders = self.containerId === 'dataset-table';
 
         if ( d.data.type === 'folder' ) {
 
@@ -330,7 +409,7 @@ export default function FolderTree() {
         let { data } = d;
 
         // set selected layers
-        if ( data.type === 'dataset' && self.container.attr( 'id' ) === 'dataset-table' ) {
+        if ( data.type === 'dataset' && self.containerId === 'dataset-table' ) {
             if ( data.selected ) {
                 if ( self.selectedLayerIDs.indexOf( data.layerId ) === -1 ) {
                     self.selectedLayerIDs.push( data.layerId );

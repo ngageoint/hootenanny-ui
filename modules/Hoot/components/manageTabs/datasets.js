@@ -34,24 +34,18 @@ export default class Datasets extends Tab {
 
         let buttonEach = buttons.enter()
             .append( 'button' )
-            .attr( 'class', function( d ) {
-                return `${ d.class } dataset-action-button primary text-white flex align-center`;
-            } )
+            .attr( 'class', d => `${ d.class } dataset-action-button primary text-white flex align-center` )
             .on( 'click', function( d ) {
 
             } );
 
         buttonEach.append( 'i' )
             .classed( 'material-icons', true )
-            .text( function( d ) {
-                return d.icon;
-            } );
+            .text( d => d.icon );
 
         buttonEach.append( 'span' )
             .classed( 'label', true )
-            .text( function( d ) {
-                return d.title;
-            } );
+            .text( d => d.title );
 
         let table = this.tabBody
             .append( 'div' )
@@ -63,9 +57,8 @@ export default class Datasets extends Tab {
             .selectAll( 'th' )
             .data( datasetTableHeaders )
             .enter().append( 'th' )
-            .text( function( d ) {
-                return d.title;
-            } );
+            .attr( 'style', d => `width: ${ d.width }` )
+            .text( d => d.title );
 
         this.folderTree.init( table );
     }

@@ -29,8 +29,20 @@ export const datasetButtons = [
 ];
 
 export const datasetTableHeaders = [
-    { title: 'Dataset' },
-    { title: 'Last Accessed' },
-    { title: 'Import Date' },
-    { title: 'Size' }
+    {
+        title: 'Dataset',
+        width: '9%'
+    },
+    {
+        title: 'Last Accessed',
+        width: '6%'
+    },
+    {
+        title: 'Import Date',
+        width: '6%'
+    },
+    {
+        title: 'Size',
+        width: '1%'
+    }
 ];

@@ -2,7 +2,7 @@ import { geoPath as d3_geoPath } from 'd3-geo';
 import _isEmpty from 'lodash-es/isEmpty';
 import { geoExtent, geoPolygonIntersectsPolygon } from '../geo/index';
 import { utilDetect } from '../util/detect';
-import toGeoJSON from 'togeojson';
+import toGeoJSON from '@mapbox/togeojson';
 
 
 export function svgHoot(projection, context, dispatch) {
