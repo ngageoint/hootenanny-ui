@@ -8,9 +8,14 @@ import FolderManager from '../model/FolderManager';
 import _ from 'lodash-es';
 import moment from 'moment';
 
+/**
+ * Class for creating, displaying and maintaining a folder tree hierarchy
+ *
+ * @returns {Class} - Folder Tree
+ * @constructor
+ */
 export default function FolderTree() {
     const self = this;
-    let i      = 0;
 
     this.selectedLayerIDs = [];
 
@@ -43,10 +48,13 @@ export default function FolderTree() {
         }
     };
 
-    let root;
-
+    /**
+     * Initialize the folder tree
+     *
+     * @param container - Container used to render the tree into
+     */
     this.init = container => {
-        this.container = container;
+        this.container      = container;
         this.isDatasetTable = this.container.attr( 'id' ) === 'dataset-table';
 
         this._svg = container.selectAll( 'svg' );
@@ -75,16 +83,20 @@ export default function FolderTree() {
             children: folders
         };
 
-        root    = d3.hierarchy( folders );
-        root.x0 = 0;
-        root.y0 = 0;
+        this.root    = d3.hierarchy( folders );
+        this.root.x0 = 0;
+        this.root.y0 = 0;
 
-        this.update( root );
+        this.update( this.root );
     };
 
+    /**
+     * Update the tree by adding/deleting nodes and their attributes
+     *
+     * @param source - source node
+     */
     this.update = source => {
-        let nodes       = this.tree( root ),
-            links       = nodes.links(),
+        let nodes       = this.tree( this.root ),
             height      = Math.max( 150, nodes.length * this.barHeight + this.margin.top + this.margin.bottom ),
             nodesSort   = [],
             parentDepth = 0;
@@ -111,9 +123,11 @@ export default function FolderTree() {
             n.y = n.depth * 20;
         } );
 
+        // Bind node data
         let node = this.svg.selectAll( 'g.node' )
             .data( nodesSort, d => d );
 
+        // Render parent g element of node
         let nodeElement = node.enter().append( 'g' )
             .attr( 'class', 'node' )
             .attr( 'transform', `translate( 0, ${ source.x0 } )` )
@@ -122,6 +136,7 @@ export default function FolderTree() {
                 self.click.call( this, d );
             } );
 
+        // Render node rect
         nodeElement.append( 'rect' )
             .attr( 'y', -this.barHeight / 2 )
             .attr( 'height', this.barHeight )
@@ -129,6 +144,7 @@ export default function FolderTree() {
             .style( 'fill', this.fillColor )
             .attr( 'class', this.rectClass );
 
+        // Render node icon
         nodeElement.append( 'g' )
             .append( 'svg:foreignObject' )
             .attr( 'width', 20 )
@@ -153,6 +169,7 @@ export default function FolderTree() {
                 }
             } );
 
+        // Render node name
         nodeElement.append( 'text' )
             .style( 'fill', this.fontColor )
             .classed( 'dnameTxt', true )
@@ -172,72 +189,9 @@ export default function FolderTree() {
                 }
             } );
 
-        let nodeDataset = nodeElement.filter( d => d.data.type === 'dataset' );
-
-        nodeDataset.append( 'text' )
-            .classed( 'dsizeTxt', true )
-            .style( 'fill', this.fontColor )
-            .attr( 'dy', 3.5 )
-            .attr( 'dx', '98%' )
-            .attr( 'text-anchor', 'end' )
-            .text( d => {
-                let size = d.size,
-                    units = [ 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' ],
-                    u     = -1;
-
-                if ( Math.abs( size ) < 1000 )
-                    return size + ' B';
-
-                do {
-                    size /= 1000;
-                    ++u;
-                } while ( Math.abs( size ) >= 1000 && u < units.length - 1 );
-
-                return size.toFixed( 1 ) + ' ' + units[ u ];
-            } );
-
-        if ( this.isDatasetTable ) {
-            nodeDataset.append( 'text' )
-                .style( 'fill', this.fontColor )
-                .attr( 'dy', 3.5 )
-                .attr( 'dx', '80%' )
-                .attr( 'text-anchor', 'end' )
-                .text( d => d.date );
-
-            nodeDataset.append( 'text' )
-                .style( 'fill', this.fontColor )
-                .attr( 'dy', 3.5 )
-                .attr( 'dx', '45%' )
-                .attr( 'text-anchor', 'end' )
-                .text( d => {
-                    let lastAccessed = d.lastAccessed,
-                        timeAgo = lastAccessed.replace( /[-:]/g, '' ),
-                        dateActive = moment( timeAgo ).fromNow(),
-                        oldDate = moment().diff( moment( timeAgo ), 'days' ) > 60;
-
-                    if ( oldDate ) {
-
-                    }
-
-                    return dateActive;
-                } );
-        }
-
-        let nodeDepth = nodeElement.filter( d => d.depth > 1 );
-
-        nodeDepth.append( 'line' )
-            .attr( 'x1', d => 2.5 + ( 11 * ( d.depth - 1 ) ) )
-            .attr( 'x2', d => 9.5 + ( 11 * ( d.depth - 1 ) ) )
-            .attr( 'y1', 0 )
-            .attr( 'y2', 0 )
-            .style( 'stroke', '#444444' );
-
-        nodeDepth.append( 'line' )
-            .attr( 'x1', d => 2.5 + ( 11 * ( d.depth - 1 ) ) )
-            .attr( 'x2', d => 2.5 + ( 11 * ( d.depth - 1 ) ) )
-            .attr( 'y1', -20 )
-            .attr( 'y2', 0 )
-            .style( 'stroke', '#444444' );
+        // Render text values and lines for nodes
+        this.renderText( nodeElement.filter( d => d.data.type === 'dataset' ) );
+        this.renderLines( nodeElement.filter( d => d.depth > 1 ) );
 
         // Transition nodes to their new position
         nodeElement.transition()
@@ -253,42 +207,93 @@ export default function FolderTree() {
             .style( 'fill', this.fillColor )
             .attr( 'class', this.rectClass );
 
-        node.exit()
-            .transition()
-            .duration( this.duration )
-            .attr( 'transform', `translate( 0, ${ source.x } )` )
-            .style( 'opacity', 0 )
-            .remove(); // remove old elements
+        node.exit().remove(); // remove old elements
 
-        let link = this.svg.selectAll( 'path.link' )
-            .data( links, d => d.target.id );
-
-        link.enter().insert( 'path', 'g' )
-            .attr( 'class', 'link' )
-            .attr( 'd', () => {
-                let o = { x: source.x0, y: source.y0 };
-                return this.diagonal( { source: o, target: o } );
-            } )
-            .transition()
-            .duration( this.duration )
-            .attr( 'd', this.diagonal );
-
-        link.transition()
-            .duration( this.duration )
-            .attr( 'd', this.diagonal );
-
-        link.exit().remove();
-
-        root.each( d => {
+        this.root.each( d => {
             d.x0 = d.x;
             d.y0 = d.y;
         } );
 
     };
 
+    this.renderLines = node => {
+        node.append( 'line' )
+            .attr( 'x1', d => 2.5 + ( 11 * ( d.depth - 1 ) ) )
+            .attr( 'x2', d => 9.5 + ( 11 * ( d.depth - 1 ) ) )
+            .attr( 'y1', 0 )
+            .attr( 'y2', 0 )
+            .style( 'stroke', '#444444' );
+
+        node.append( 'line' )
+            .attr( 'x1', d => 2.5 + ( 11 * ( d.depth - 1 ) ) )
+            .attr( 'x2', d => 2.5 + ( 11 * ( d.depth - 1 ) ) )
+            .attr( 'y1', -20 )
+            .attr( 'y2', 0 )
+            .style( 'stroke', '#444444' );
+    };
+
+    this.renderText = node => {
+        node.append( 'text' )
+            .classed( 'dsizeTxt', true )
+            .style( 'fill', this.fontColor )
+            .attr( 'dy', 3.5 )
+            .attr( 'dx', '98%' )
+            .attr( 'text-anchor', 'end' )
+            .text( d => {
+                let size  = d.size,
+                    units = [ 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' ],
+                    u     = -1;
+
+                if ( Math.abs( size ) < 1000 ) {
+                    return size + ' B';
+                }
+
+                do {
+                    size /= 1000;
+                    ++u;
+                } while ( Math.abs( size ) >= 1000 && u < units.length - 1 );
+
+                return size.toFixed( 1 ) + ' ' + units[ u ];
+            } );
+
+        if ( this.isDatasetTable ) {
+            node.append( 'text' )
+                .style( 'fill', this.fontColor )
+                .attr( 'dy', 3.5 )
+                .attr( 'dx', '80%' )
+                .attr( 'text-anchor', 'end' )
+                .text( d => d.date );
+
+            node.append( 'text' )
+                .style( 'fill', this.fontColor )
+                .attr( 'dy', 3.5 )
+                .attr( 'dx', '45%' )
+                .attr( 'text-anchor', 'end' )
+                .text( d => {
+                    let lastAccessed = d.lastAccessed,
+                        timeAgo      = lastAccessed.replace( /[-:]/g, '' ),
+                        dateActive   = moment( timeAgo ).fromNow(),
+                        oldData      = moment().diff( moment( timeAgo ), 'days' ) > 60;
+
+                    if ( oldData ) {
+
+                    }
+
+                    return dateActive;
+                } );
+        }
+    };
+
+    /**
+     * OnClick: select, expand, or collapse an item in the table.
+     * 'this' is the dom node being clicked, and not the tree node.
+     *
+     * @param d - Tree node
+     */
     this.click = function( d ) {
         let selected          = d.data.selected,
-            updateOpenFolders = self.containerId === 'dataset-table';
+            updateOpenFolders = self.containerId === 'dataset-table',
+            isOpen            = d.data.state === 'open';
 
         if ( d.data.type === 'folder' ) {
 
@@ -298,85 +303,44 @@ export default function FolderTree() {
             d3.select( this ).classed( 'selected', selected );
         }
 
-        //if ( d.data.state === 'closed' ) {
-        //    d.data.state = 'open';
-        //
-        //    d3.select( this.parentNode )
-        //        .select( 'i' )
-        //        .classed( 'folder', false )
-        //        .classed( 'open-folder', true );
-        //
-        //    d.data.children  = d.data._children || null;
-        //    d.data._children = null;
-        //
-        //    if ( updateOpenFolders ) {
-        //        FolderManager.setOpenFolders( d.data.id, true );
-        //    }
-        //} else {
-        //    d.data.state = 'closed';
-        //
-        //    d3.select( this.parentNode )
-        //        .select( 'i' )
-        //        .classed( 'folder', true )
-        //        .classed( 'open-folder', false );
-        //
-        //    if ( d.data.children || typeof d.data.children === 'object' ) {
-        //        d.data._children = d.data.children;
-        //        d.data.children  = null;
-        //        d.data.selected  = false;
-        //    }
-        //}
+        if ( isOpen ) {
+            d.data.state = 'closed';
 
-        if ( d.data.type === 'folder' ) {
+            d3.select( this.parentNode )
+                .select( 'i' )
+                .classed( 'folder', true )
+                .classed( 'open-folder', false );
+
             if ( d.children ) {
-                // Close folder
                 d.data._children = d.children;
                 d.children       = null;
                 d.data.selected  = false;
-                d.data.state     = 'closed';
-                d3.select( this.parentNode )
-                    .select( 'i' )
-                    .classed( 'folder', true )
-                    .classed( 'open-folder', false );
+            }
+        } else {
+            d.data.state = 'open';
 
-                if ( updateOpenFolders ) {
-                    FolderManager.setOpenFolders( d.data.id, false );
-                }
-            } else if ( !d.children && !d.data._children ) {
-                // Toggle an empty folder
-                if ( d.data.state === 'open' ) {
-                    d.data.state = 'closed';
-                    d3.select( this.parentNode )
-                        .select( 'i' )
-                        .classed( 'folder', true )
-                        .classed( 'open-folder', false );
-                } else {
-                    d.data.state = 'open';
-                    d3.select( this.parentNode )
-                        .select( 'i' )
-                        .classed( 'folder', false )
-                        .classed( 'open-folder', true );
-                }
-            } else {
-                // Open folder
-                d.children       = d.data._children;
-                d.data._children = null;
-                d.data.state     = 'open';
+            d3.select( this.parentNode )
+                .select( 'i' )
+                .classed( 'folder', false )
+                .classed( 'open-folder', true );
 
-                d3.select( this.parentNode )
-                    .select( 'i' )
-                    .classed( 'folder', false )
-                    .classed( 'open-folder', true );
+            d.children       = d.data._children || null;
+            d.data._children = null;
 
-                if ( updateOpenFolders ) {
-                    FolderManager.setOpenFolders( d.data.id, true );
-                }
+            if ( updateOpenFolders ) {
+                FolderManager.setOpenFolders( d.data.id, true );
             }
         }
 
         self.update( d );
     };
 
+    /**
+     * Fill a rect element based on type of node
+     *
+     * @param d - Tree node
+     * @returns {string} - Hex color code
+     */
     this.fillColor = d => {
         let { data } = d;
 
@@ -391,6 +355,12 @@ export default function FolderTree() {
         }
     };
 
+    /**
+     * Fill a text element based on type of node
+     *
+     * @param d - Tree node
+     * @returns {string} - Hex color code
+     */
     this.fontColor = d => {
         let { data } = d;
 
@@ -405,6 +375,13 @@ export default function FolderTree() {
         }
     };
 
+    /**
+     * Assign a CSS class to a rect element based
+     * on it's type and the current state that it's in
+     *
+     * @param d - Tree node
+     * @returns {string} - CSS Class
+     */
     this.rectClass = d => {
         let { data } = d;
 
@@ -428,6 +405,4 @@ export default function FolderTree() {
                 ? 'more'
                 : 'flat';
     };
-
-    return this;
 }
