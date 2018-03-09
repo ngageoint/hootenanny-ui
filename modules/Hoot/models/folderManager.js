@@ -56,9 +56,16 @@ class FolderManager {
         return this._openFolders;
     }
 
-    setSelectedDatasets( datasets ) {
-        //this._selectedDatasets = datasets;
-        return this._selectedDatasets = datasets;
+    updateSelectedDatasets( id, clearAll ) {
+        if ( clearAll ) {
+            this._selectedDatasets = [];
+        }
+
+        if ( this._selectedDatasets.indexOf( id ) > -1 ) {
+            _.pull( this._selectedDatasets, id );
+        } else {
+            this._selectedDatasets.push( id );
+        }
     }
 
     /**

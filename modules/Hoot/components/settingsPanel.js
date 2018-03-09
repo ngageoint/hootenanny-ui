@@ -7,13 +7,13 @@
 import _ from 'lodash-es';
 
 import Events from '../util/events';
-import manageTabs from 'manageTabs/index';
+import settingsTabs from './settingsTabs/index';
 
 export default class JobsBackground {
     constructor( context ) {
         this.context    = context;
         this.events     = Events;
-        this.manageTabs = manageTabs;
+        this.settingsTabs = settingsTabs;
         this.container  = context.container();
 
         this.activeId = null;
@@ -57,7 +57,7 @@ export default class JobsBackground {
         this.listen();
 
         this.renderContainer()
-            .then( () => _.map( this.manageTabs, Tab => {
+            .then( () => _.map( this.settingsTabs, Tab => {
                 let tab = new Tab( this.context, this.settingsPanel, this.settingsSidebar );
                 tab.init();
             } ) );

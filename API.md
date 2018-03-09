@@ -61,7 +61,7 @@ are available as regular URL query parameters:
 
 iD has a documented and stable set of classes that can be used to apply style or
 attach behavior to the visual representation of map data via CSS selectors.
-These classes relate to the vocabulary of the OSM data model, a related geometric
+These classes relate to the vocabulary of the OSM data models, a related geometric
 vocabulary established by iD, and to the tags present on OSM entities.
 
 ### OSM Data Model classes

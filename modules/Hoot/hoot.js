@@ -4,7 +4,7 @@
  * @author Matt Putipong on 2/6/18
  *******************************************************************************************************/
 
-import FolderManager from './model/FolderManager';
+import FolderManager from './models/folderManager';
 import components from './components/index';
 
 class Hoot {

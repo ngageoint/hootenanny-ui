@@ -15,8 +15,6 @@ export default class Datasets extends Tab {
     constructor( ...params ) {
         super( params );
 
-        this.folderTree = new FolderTree();
-
         this.name = 'Datasets';
         this.id   = 'util-datasets';
     }
@@ -60,7 +58,7 @@ export default class Datasets extends Tab {
             .attr( 'style', d => `width: ${ d.width }` )
             .text( d => d.title );
 
-        this.folderTree.init( table );
+        new FolderTree( table ).init();
     }
 
     init() {

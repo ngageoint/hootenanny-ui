@@ -714,7 +714,7 @@ en:
       multipolygon_merge: "Merging several lines or areas will create a new multipolygon relation with all selected areas as members. iD will choose the inner and outer roles automatically, based on which features are contained inside other features."
       turn_restriction_h: "Turn restrictions"
       turn_restriction: "A *turn restriction* relation is a group of several road segments in an intersection. Turn restrictions consist of a *from* road, *via* node or roads, and a *to* road."
-      turn_restriction_field: "To edit turn restrictions, select a junction node where two or more roads meet. The feature editor will display a special \"Turn Restrictions\" field containing a model of the intersection."
+      turn_restriction_field: "To edit turn restrictions, select a junction node where two or more roads meet. The feature editor will display a special \"Turn Restrictions\" field containing a models of the intersection."
       turn_restriction_editing: "In the \"Turn Restrictions\" field, click to select a \"from\" road, and see whether turns are allowed or restricted to any of the \"to\" roads. You can click on the turn icons to toggle them between allowed and restricted. iD will create relations automatically and set the from, via, and to roles based on your choices."
       route_h: "Routes"
       route: "A *route* relation is a group of one or more line features that together form a route network, like a bus route, train route, or highway route."
@@ -751,7 +751,7 @@ en:
         title: Turn Restrictions Help
         about:
           title: About
-          about: "This field allows you to inspect and modify turn restrictions. It displays a model of the selected intersection including other nearby connected roads."
+          about: "This field allows you to inspect and modify turn restrictions. It displays a models of the selected intersection including other nearby connected roads."
           from_via_to: "A turn restriction always contains: one **FROM way**, one **TO way**, and either one **VIA node** or one or more **VIA ways**."
           maxdist: "The \"{distField}\" slider controls how far to search for additional connected roads."
           maxvia: "The \"{viaField}\" slider adjusts how many via ways may be included in the search. (Tip: simple is better)"

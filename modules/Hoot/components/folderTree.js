@@ -4,20 +4,23 @@
  * @author Matt Putipong on 3/5/18
  *******************************************************************************************************/
 
-import FolderManager from '../model/FolderManager';
+import FolderManager from '../models/folderManager';
 import _ from 'lodash-es';
 import moment from 'moment';
+import { contextMenus } from '../config/domElements';
 
 /**
  * Class for creating, displaying and maintaining a folder tree hierarchy
  *
+ * @param container - Container used to render the tree into
  * @returns {Class} - Folder Tree
  * @constructor
  */
-export default function FolderTree() {
+export default function FolderTree( container ) {
     const self = this;
 
-    this.selectedLayerIDs = [];
+    this.container      = container;
+    this.isDatasetTable = this.container.attr( 'id' ) === 'dataset-table';
 
     this.margin    = { top: 10, right: 20, bottom: 30, left: 0 };
     this.width     = '100%';
@@ -48,29 +51,16 @@ export default function FolderTree() {
         }
     };
 
+    this.svg = container.append( 'svg' )
+        .attr( 'width', this.width )
+        .attr( 'height', this.height )
+        .append( 'g' )
+        .attr( 'transform', `translate( ${this.margin.left}, ${this.margin.top} )` );
+
     /**
      * Initialize the folder tree
-     *
-     * @param container - Container used to render the tree into
      */
-    this.init = container => {
-        this.container      = container;
-        this.isDatasetTable = this.container.attr( 'id' ) === 'dataset-table';
-
-        this._svg = container.selectAll( 'svg' );
-
-        if ( !this._svg.empty() ) {
-            this._svg.selectAll( 'g' ).remove();
-            this.svg = this._svg.append( 'g' )
-                .attr( 'transform', `translate( ${this.margin.left}, ${this.margin.top} )` );
-        } else {
-            this.svg = container.append( 'svg' )
-                .attr( 'width', this.width )
-                .attr( 'height', this.height )
-                .append( 'g' )
-                .attr( 'transform', `translate( ${this.margin.left}, ${this.margin.top} )` );
-        }
-
+    this.init = () => {
         let folders = FolderManager.getAvailFolderData();
 
         if ( this.isDatasetTable ) {
@@ -216,8 +206,6 @@ export default function FolderTree() {
             d.x0 = d.x;
             d.y0 = d.y;
         } );
-
-        //this.bindContextMenu();
     };
 
     this.renderLines = nodes => {
@@ -289,61 +277,104 @@ export default function FolderTree() {
     };
 
     this.bindContextMenu = function( d ) {
-        let { data } = d,
-            selected = data.selected || false;
+        let selected = d.selected || false;
 
         d3.event.preventDefault();
 
-        if ( d3.event.ctrlKey ) {
-            if ( 'which' in d3.event ) {
-                if ( d3.event.which === 1 ) {
-                    d.data.selected = !selected;
-                }
-            }
-        } else {
-            if ( d.data.type === 'dataset' ) {
-                if ( !selected ) {
-                    let selectedNodes = _.filter( self.root.descendants(), node => node.data.selected );
+        if ( d3.event.ctrlKey && d3.event.which === 1 ) {
+            d.selected = !selected;
+            FolderManager.updateSelectedDatasets( d.id );
+        } else if ( d.data.type === 'dataset' ) {
+            if ( !selected ) {
+                let selectedNodes = _.filter( self.root.descendants(), node => node.selected );
 
-                    // Un-select all other nodes
-                    _.each( selectedNodes, node => {
-                        node.data.selected = false;
-                    } );
+                // Un-select all other nodes
+                _.each( selectedNodes, node => {
+                    node.selected = false;
+                } );
 
-                    d.data.selected = true;
-                }
-                //this.openContextMenu
+                d.selected = true;
+                FolderManager.updateSelectedDatasets( d.id, true );
             }
+
+            self.openContextMenu( d );
         }
 
         self.update( d );
+    };
 
-        //this.container.selectAll( 'rect' )
-        //    .on( 'contextmenu', d => {
-        //        let { data } = d;
-        //
-        //        if ( !this.isDatasetTable ) {
-        //            d3.event.preventDefault();
-        //            return;
-        //        }
-        //
-        //        if ( data.type === 'dataset' ) {
-        //            items.push( [
-        //                {
-        //                    title: 'Delete',
-        //                    icon: 'trash',
-        //                    click: 'deleteDataset'
-        //                },
-        //                {
-        //                    title: 'Move',
-        //                    icon: 'info',
-        //                    click: 'moveDataset'
-        //                }
-        //            ] );
-        //
-        //            //let layerLength =
-        //        }
-        //    } );
+    this.openContextMenu = d => {
+        let items;
+
+        if ( d.type === 'dataset' ) {
+            const selectedCount = FolderManager.selectedDatasets.length;
+
+            items = [
+                {
+                    title: `Delete (${ selectedCount })`,
+                    icon: 'trash',
+                    click: 'deleteDataset'
+                },
+                {
+                    title: `Move (${ selectedCount })`,
+                    icon: 'info',
+                    click: 'moveDataset'
+                }
+            ];
+
+            if ( selectedCount > 1 && selectedCount <= 10 ) {
+                items.push( contextMenus.dataset.multiDataset );
+            } else {
+                items = _.concat( items, contextMenus.dataset.singleDataset );
+                items.splice( 3, 0, {
+                    title: `Rename ${ d.name }`,
+                    icon: 'info',
+                    click: 'renameDataset'
+                } );
+            }
+        } else if ( d.type === 'folder' ) {
+            items = contextMenus.folder;
+            items = items.splice( 1, 0, {
+                title: `Rename/Move ${ d.name }`,
+                icon: 'info',
+                click: 'modifyFolder'
+            } );
+        }
+
+        if ( this.contextMenu ) {
+            this.contextMenu.remove();
+        }
+
+        const body = d3.select( 'body' )
+            .on( 'click', () => d3.select( '.context-menu' ).style( 'display', 'none' ) );
+
+        this.contextMenu = body
+            .append( 'div' )
+            .classed( 'context-menu', true )
+            .style( 'display', 'none' );
+
+        this.contextMenu
+            .html( '' )
+            .append( 'ul' )
+            .selectAll( 'li' )
+            .data( items ).enter()
+            .append( 'li' )
+            .attr( 'class', item => `_icon ${ item.icon }` )
+            .text( item => item.title )
+            .on( 'click', item => {
+                let node,
+                    key = {
+                        name: d.name,
+                        id: d.id
+                    };
+
+                console.log( item );
+            } );
+
+        this.contextMenu
+            .style( 'left', `${ d3.event.pageX - 2 }px` )
+            .style( 'top', `${ d3.event.pageY - 2 }px` )
+            .style( 'display', 'block' );
     };
 
     /**
@@ -353,24 +384,30 @@ export default function FolderTree() {
      * @param d - Tree node
      */
     this.click = function( d ) {
-        console.log( 'CLICK' );
-        let selected          = d.data.selected || false,
-            isOpen            = d.data.state === 'open';
+        let selected = d.selected || false,
+            isOpen   = d.data.state === 'open';
 
-        if ( d.data.type === 'dataset' ) {
-            // Get all currently selected nodes
-            let selectedNodes = _.filter( self.root.descendants(), node => node.data.selected );
-
-            // Un-select all other nodes
-            _.each( selectedNodes, node => {
-                node.data.selected = false;
-            } );
-
-            // If multiple are already selected, keep the current target selected
-            if ( selectedNodes.length > 1 && selected ) {
-                d.data.selected = true;
+        if ( d.type === 'dataset' ) {
+            if ( d3.event.metaKey ) {
+                d.selected = !d.selected;
+                FolderManager.updateSelectedDatasets( d.id );
             } else {
-                d.data.selected = !selected;
+                // Get all currently selected nodes
+                let selectedNodes = _.filter( self.root.descendants(), node => node.data.selected );
+
+                // Un-select all other nodes
+                _.each( selectedNodes, node => {
+                    node.data.selected = false;
+                } );
+
+                // If multiple are already selected, keep the target node selected
+                if ( selectedNodes.length > 1 && selected ) {
+                    d.data.selected = true;
+                } else {
+                    d.data.selected = !selected;
+                }
+
+                FolderManager.updateSelectedDatasets( d.id, true );
             }
         }
 
@@ -398,10 +435,6 @@ export default function FolderTree() {
 
             d.children       = d.data._children || null;
             d.data._children = null;
-
-            //if ( self.isDatasetTable ) {
-            //    FolderManager.setOpenFolders( d.data.id, true );
-            //}
         }
 
         self.update( d );

@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import Navbar from './navbar';
-import SettingsView from './settingsView';
+import SettingsView from './settingsPanel';
 
 export default context => {
     return [

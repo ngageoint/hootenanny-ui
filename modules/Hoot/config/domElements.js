@@ -47,27 +47,51 @@ export const datasetTableHeaders = [
     }
 ];
 
-export const contextMenuItems = {
-    datasetMenu: {
-        base: [
+export const contextMenus = {
+    dataset: {
+        multiDataset: {
+            title: 'Export Selected Datasets',
+            icon: 'export',
+            click: 'bulkexportDataset'
+        },
+        singleDataset: [
             {
-                title: 'Delete',
-                icon: 'trash',
-                click: 'deleteDataset'
+                title: 'Export',
+                icon: 'export',
+                click: 'exportDataset'
             },
             {
-                title: 'Move',
-                icon: 'info',
-                click: 'moveDataset'
-            }
-        ],
-        multiLayer: [
+                title: 'Prepare for Validation',
+                icon: 'sprocket',
+                click: 'prepValidation'
+            },
             {
-                title: 'Export Selected Datasets',
-                icon: 'export',
-                click: 'bulkexportDataset'
+                title: 'Filter non-HGIS POIs',
+                icon: 'sprocket',
+                click: 'filter'
             }
-        ],
-
-    }
+        ]
+    },
+    folder: [
+        {
+            title: 'Delete',
+            icon: 'trash',
+            click: 'deleteFolder'
+        },
+        {
+            title: 'Add Dataset',
+            icon: 'data',
+            click: 'addDataset'
+        },
+        {
+            title: 'Add Folder',
+            icon: 'folder',
+            click: 'addFolder'
+        },
+        {
+            title: 'Export Data in Folder',
+            icon: 'export',
+            click: 'exportFolder'
+        }
+    ]
 };
