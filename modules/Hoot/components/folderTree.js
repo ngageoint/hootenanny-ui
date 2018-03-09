@@ -298,10 +298,25 @@ export default function FolderTree() {
             if ( 'which' in d3.event ) {
                 if ( d3.event.which === 1 ) {
                     d.data.selected = !selected;
-                    self.update( d );
                 }
             }
+        } else {
+            if ( d.data.type === 'dataset' ) {
+                if ( !selected ) {
+                    let selectedNodes = _.filter( self.root.descendants(), node => node.data.selected );
+
+                    // Un-select all other nodes
+                    _.each( selectedNodes, node => {
+                        node.data.selected = false;
+                    } );
+
+                    d.data.selected = true;
+                }
+                //this.openContextMenu
+            }
         }
+
+        self.update( d );
 
         //this.container.selectAll( 'rect' )
         //    .on( 'contextmenu', d => {
@@ -338,9 +353,9 @@ export default function FolderTree() {
      * @param d - Tree node
      */
     this.click = function( d ) {
+        console.log( 'CLICK' );
         let selected          = d.data.selected || false,
-            isOpen            = d.data.state === 'open',
-            updateOpenFolders = self.containerId === 'dataset-table';
+            isOpen            = d.data.state === 'open';
 
         if ( d.data.type === 'dataset' ) {
             // Get all currently selected nodes
@@ -359,7 +374,7 @@ export default function FolderTree() {
             }
         }
 
-        // Imply that its a folder
+        // Folder
         if ( isOpen ) {
             d.data.state = 'closed';
 
@@ -384,9 +399,9 @@ export default function FolderTree() {
             d.children       = d.data._children || null;
             d.data._children = null;
 
-            if ( updateOpenFolders ) {
-                FolderManager.setOpenFolders( d.data.id, true );
-            }
+            //if ( self.isDatasetTable ) {
+            //    FolderManager.setOpenFolders( d.data.id, true );
+            //}
         }
 
         self.update( d );
