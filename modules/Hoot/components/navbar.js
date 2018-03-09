@@ -43,11 +43,11 @@ export default class Navbar {
         settingsButton
             .append( 'i' )
             .classed( 'medium material-icons', true )
-            .text( 'settings' );
+            .text( 'menu' );
 
-        settingsButton
-            .append( 'span' )
-            .text( 'Settings' );
+        //settingsButton
+        //    .append( 'span' )
+        //    .text( 'Settings' );
 
         leftContainer
             .append( 'div' )
@@ -56,19 +56,19 @@ export default class Navbar {
             .attr( 'src', './img/hoot_logo_update.png' )
             .classed( 'pointer hoot-logo', true );
 
-        let rightContainer = navbar
-            .append( 'div' )
-            .classed( 'nav-item', true );
-
-        rightContainer
-            .append( 'div' )
-            .classed( 'vertical-align icon-container', true )
-            .on( 'click', function() {
-
-            } )
-            .append( 'i' )
-            .classed( 'pointer medium material-icons', true )
-            .text( 'menu' );
+        //let rightContainer = navbar
+        //    .append( 'div' )
+        //    .classed( 'nav-item', true );
+        //
+        //rightContainer
+        //    .append( 'div' )
+        //    .classed( 'vertical-align icon-container', true )
+        //    .on( 'click', function() {
+        //
+        //    } )
+        //    .append( 'i' )
+        //    .classed( 'pointer medium material-icons', true )
+        //    .text( 'menu' );
     }
 
     init() {
