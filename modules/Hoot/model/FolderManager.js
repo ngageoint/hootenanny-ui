@@ -11,17 +11,19 @@ class FolderManager {
     constructor() {
         this.api = API;
 
-        this.folders     = [];
-        this.links       = [];
-        this.layers      = [];
-        this.openFolders = [];
-        this.childArray  = [];
+        this.folders    = [];
+        this.links      = [];
+        this.datasets   = [];
+        this.childArray = [];
+
+        this._selectedDatasets = [];
+        this._openFolders      = [];
     }
 
     refreshAll() {
         return Promise.all( [
             this.refreshFolders(),
-            this.refreshLayers(),
+            this.refreshDatasets(),
             this.refreshLinks()
         ] );
     }
@@ -31,9 +33,9 @@ class FolderManager {
             .then( data => this.folders = data.folders );
     }
 
-    refreshLayers() {
+    refreshDatasets() {
         return this.api.getLayers()
-            .then( data => this.layers = data.layers || data );
+            .then( data => this.datasets = data.layers || data );
     }
 
     refreshLinks() {
@@ -43,15 +45,69 @@ class FolderManager {
 
     setOpenFolders( folderId, add ) {
         if ( add ) {
-            this.openFolders.push( folderId );
+            this._openFolders.push( folderId );
         } else {
-            let index = this.openFolders.indexOf( folderId );
+            let index = this._openFolders.indexOf( folderId );
             if ( index > 1 ) {
-                this.openFolders.splice( index, 1 );
+                this._openFolders.splice( index, 1 );
             }
         }
 
-        return this.openFolders;
+        return this._openFolders;
+    }
+
+    setSelectedDatasets( datasets ) {
+        //this._selectedDatasets = datasets;
+        return this._selectedDatasets = datasets;
+    }
+
+    /**
+     * Create a hierarchy of folders and their children datasets
+     *
+     * @returns {Array} - Hierarchy
+     */
+    getAvailFolderData() {
+        let datasetList = _.map( this.datasets, dataset => {
+            let match = _.find( this.links, link => link.mapId === dataset.id );
+
+            if ( !match ) {
+                _.assign( dataset, { folderId: 0 } );
+            } else {
+                _.assign( dataset, { folderId: match.folderId } );
+            }
+
+            _.assign( dataset, { type: 'dataset', selected: false } );
+
+            return dataset;
+        } );
+
+        let folderList = _.map( this.folders, folder => {
+            if ( this._openFolders.indexOf( folder.id ) > -1 ) {
+                folder.children = _.filter( datasetList, dataset => dataset.folderId === folder.id );
+                folder.state    = 'open';
+            } else {
+                folder._children = _.filter( datasetList, dataset => dataset.folderId === folder.id );
+                folder._children = !folder._children.length ? null : folder._children;
+
+                folder.state = 'closed';
+            }
+
+            _.assign( folder, { type: 'folder' } );
+
+            return folder;
+        } );
+
+        folderList = _.union( folderList, _.each( _.filter( datasetList, function( lyr ) {
+            return lyr.folderId === 0;
+        } ), function( lyr ) {
+            _.extend( lyr, { parentId: 0 } );
+        } ) );
+
+        return this.unflattenFolders( folderList );
+    }
+
+    get selectedDatasets() {
+        return this._selectedDatasets;
     }
 
     unflattenFolders( array, parent = { id: 0 }, tree = [] ) {
@@ -81,45 +137,6 @@ class FolderManager {
         return tree;
     }
 
-    getAvailFoldersWithLayers() {
-        let layerList = _.map( this.layers, layer => {
-            let match = _.find( this.links, link => link.mapId === layer.id );
-
-            if ( !match ) {
-                _.assign( layer, { folderId: 0 } );
-            } else {
-                _.assign( layer, { folderId: match.folderId } );
-            }
-
-            _.assign( layer, { type: 'dataset' } );
-
-            return layer;
-        } );
-
-        let folderList = _.map( this.folders, folder => {
-            if ( this.openFolders.indexOf( folder.id ) > -1 ) {
-                folder.children = _.filter( layerList, layer => layer.folderId === folder.id );
-                folder.state = 'open';
-            } else {
-                folder._children = _.filter( layerList, layer => layer.folderId === folder.id );
-                folder._children = !folder._children.length ? null : folder._children;
-
-                folder.state = 'closed';
-            }
-
-            _.assign( folder, { type: 'folder' } );
-
-            return folder;
-        } );
-
-        folderList = _.union( folderList, _.each( _.filter( layerList, function( lyr ) {
-            return lyr.folderId === 0;
-        } ), function( lyr ) {
-            _.extend( lyr, { parentId: 0 } );
-        } ) );
-
-        return this.unflattenFolders( folderList );
-    }
 }
 
 export default new FolderManager();

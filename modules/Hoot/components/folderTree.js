@@ -71,7 +71,7 @@ export default function FolderTree() {
                 .attr( 'transform', `translate( ${this.margin.left}, ${this.margin.top} )` );
         }
 
-        let folders = FolderManager.getAvailFoldersWithLayers();
+        let folders = FolderManager.getAvailFolderData();
 
         if ( this.isDatasetTable ) {
             folders = _.without( folders, _.find( folders, { id: -1 } ) );
@@ -119,7 +119,7 @@ export default function FolderTree() {
 
         // Set vertical position of node
         nodesSort.forEach( ( n, i ) => {
-            n.x = ( i - 1 ) * this.barHeight;
+            n.x = (i - 1) * this.barHeight;
             n.y = n.depth * 20;
         } );
 
@@ -134,6 +134,9 @@ export default function FolderTree() {
             .style( 'opacity', 0 )
             .on( 'click', function( d ) {
                 self.click.call( this, d );
+            } )
+            .on( 'contextmenu', function( d ) {
+                self.bindContextMenu.call( this, d );
             } );
 
         // Render node rect
@@ -151,7 +154,7 @@ export default function FolderTree() {
             .attr( 'height', 20 )
             .attr( 'transform', d => {
                 let dd = d.depth - 1,
-                    dy = 5.5 + ( 11 * dd );
+                    dy = 5.5 + (11 * dd);
 
                 return `translate( ${ dy }, -11 )`;
             } )
@@ -176,7 +179,7 @@ export default function FolderTree() {
             .attr( 'dy', 3.5 )
             .attr( 'dx', d => {
                 let dd = d.depth - 1;
-                return 25.5 + ( 11 * dd );
+                return 25.5 + (11 * dd);
             } )
             .append( 'tspan' ).text( d => d.data.name )
             .each( function( d ) {
@@ -214,26 +217,27 @@ export default function FolderTree() {
             d.y0 = d.y;
         } );
 
+        //this.bindContextMenu();
     };
 
-    this.renderLines = node => {
-        node.append( 'line' )
-            .attr( 'x1', d => 2.5 + ( 11 * ( d.depth - 1 ) ) )
-            .attr( 'x2', d => 9.5 + ( 11 * ( d.depth - 1 ) ) )
+    this.renderLines = nodes => {
+        nodes.append( 'line' )
+            .attr( 'x1', d => 2.5 + (11 * (d.depth - 1)) )
+            .attr( 'x2', d => 9.5 + (11 * (d.depth - 1)) )
             .attr( 'y1', 0 )
             .attr( 'y2', 0 )
             .style( 'stroke', '#444444' );
 
-        node.append( 'line' )
-            .attr( 'x1', d => 2.5 + ( 11 * ( d.depth - 1 ) ) )
-            .attr( 'x2', d => 2.5 + ( 11 * ( d.depth - 1 ) ) )
+        nodes.append( 'line' )
+            .attr( 'x1', d => 2.5 + (11 * (d.depth - 1)) )
+            .attr( 'x2', d => 2.5 + (11 * (d.depth - 1)) )
             .attr( 'y1', -20 )
             .attr( 'y2', 0 )
             .style( 'stroke', '#444444' );
     };
 
-    this.renderText = node => {
-        node.append( 'text' )
+    this.renderText = nodes => {
+        nodes.append( 'text' )
             .classed( 'dsizeTxt', true )
             .style( 'fill', this.fontColor )
             .attr( 'dy', 3.5 )
@@ -257,14 +261,14 @@ export default function FolderTree() {
             } );
 
         if ( this.isDatasetTable ) {
-            node.append( 'text' )
+            nodes.append( 'text' )
                 .style( 'fill', this.fontColor )
                 .attr( 'dy', 3.5 )
                 .attr( 'dx', '80%' )
                 .attr( 'text-anchor', 'end' )
                 .text( d => d.date );
 
-            node.append( 'text' )
+            nodes.append( 'text' )
                 .style( 'fill', this.fontColor )
                 .attr( 'dy', 3.5 )
                 .attr( 'dx', '45%' )
@@ -284,6 +288,49 @@ export default function FolderTree() {
         }
     };
 
+    this.bindContextMenu = function( d ) {
+        let { data } = d,
+            selected = data.selected || false;
+
+        d3.event.preventDefault();
+
+        if ( d3.event.ctrlKey ) {
+            if ( 'which' in d3.event ) {
+                if ( d3.event.which === 1 ) {
+                    d.data.selected = !selected;
+                    self.update( d );
+                }
+            }
+        }
+
+        //this.container.selectAll( 'rect' )
+        //    .on( 'contextmenu', d => {
+        //        let { data } = d;
+        //
+        //        if ( !this.isDatasetTable ) {
+        //            d3.event.preventDefault();
+        //            return;
+        //        }
+        //
+        //        if ( data.type === 'dataset' ) {
+        //            items.push( [
+        //                {
+        //                    title: 'Delete',
+        //                    icon: 'trash',
+        //                    click: 'deleteDataset'
+        //                },
+        //                {
+        //                    title: 'Move',
+        //                    icon: 'info',
+        //                    click: 'moveDataset'
+        //                }
+        //            ] );
+        //
+        //            //let layerLength =
+        //        }
+        //    } );
+    };
+
     /**
      * OnClick: select, expand, or collapse an item in the table.
      * 'this' is the dom node being clicked, and not the tree node.
@@ -291,18 +338,28 @@ export default function FolderTree() {
      * @param d - Tree node
      */
     this.click = function( d ) {
-        let selected          = d.data.selected,
-            updateOpenFolders = self.containerId === 'dataset-table',
-            isOpen            = d.data.state === 'open';
-
-        if ( d.data.type === 'folder' ) {
-
-        }
+        let selected          = d.data.selected || false,
+            isOpen            = d.data.state === 'open',
+            updateOpenFolders = self.containerId === 'dataset-table';
 
         if ( d.data.type === 'dataset' ) {
-            d3.select( this ).classed( 'selected', selected );
+            // Get all currently selected nodes
+            let selectedNodes = _.filter( self.root.descendants(), node => node.data.selected );
+
+            // Un-select all other nodes
+            _.each( selectedNodes, node => {
+                node.data.selected = false;
+            } );
+
+            // If multiple are already selected, keep the current target selected
+            if ( selectedNodes.length > 1 && selected ) {
+                d.data.selected = true;
+            } else {
+                d.data.selected = !selected;
+            }
         }
 
+        // Imply that its a folder
         if ( isOpen ) {
             d.data.state = 'closed';
 
@@ -348,6 +405,9 @@ export default function FolderTree() {
             return '#7092ff';
         }
         else if ( data.type === 'dataset' ) {
+            if ( data.selected ) {
+                return '#ffff99';
+            }
             return '#efefef';
         }
         else {

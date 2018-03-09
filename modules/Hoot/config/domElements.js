@@ -46,3 +46,28 @@ export const datasetTableHeaders = [
         width: '1%'
     }
 ];
+
+export const contextMenuItems = {
+    datasetMenu: {
+        base: [
+            {
+                title: 'Delete',
+                icon: 'trash',
+                click: 'deleteDataset'
+            },
+            {
+                title: 'Move',
+                icon: 'info',
+                click: 'moveDataset'
+            }
+        ],
+        multiLayer: [
+            {
+                title: 'Export Selected Datasets',
+                icon: 'export',
+                click: 'bulkexportDataset'
+            }
+        ],
+
+    }
+};
