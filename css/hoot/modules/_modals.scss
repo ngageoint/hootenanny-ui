@@ -16,6 +16,15 @@
         margin-bottom: 20px;
     }
 
+    .modal-footer {
+        display: flex;
+
+        button {
+            width: 100px;
+            margin: 0 auto;
+        }
+    }
+
     .form-field {
         width: 100%;
         margin-bottom: 10px;

@@ -33,7 +33,7 @@ export default function FormFactory() {
                 .append( 'div' )
                 .classed( 'big pad1y keyline-bottom modal-header', true );
 
-        header.append( 'h4' )
+        header.append( 'h3' )
             .text( formTitle )
             .append( 'div' )
             .classed( 'fr _icon x pointer', true )
@@ -123,9 +123,11 @@ export default function FormFactory() {
 
     this.createButton = ( formDiv, buttonMeta ) => {
         let buttonContainer = formDiv.append( 'div' )
-            .classed( 'form-field', true )
+            .classed( 'modal-footer', true );
 
-        buttonContainer.append( 'span' )
-            .classed( '' )
-    }
+        buttonContainer.append( 'button' )
+            .classed( 'round strong primary', true )
+            .attr( 'disabled', true )
+            .text( buttonMeta.text );
+    };
 }

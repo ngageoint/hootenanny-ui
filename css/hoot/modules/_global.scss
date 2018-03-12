@@ -134,8 +134,13 @@ label {
 }
 
 button {
+    &[disabled] {
+        background-color: rgba(0, 0, 0, .25) !important;
+    }
+
     &.primary {
         background-color: $primary-blue;
+        color: white;
 
         &:hover {
             background-color: $secondary-blue;
