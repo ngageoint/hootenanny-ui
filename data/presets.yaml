@@ -402,6 +402,9 @@ en:
         types:
           'cycleway:left': Left side
           'cycleway:right': Right side
+      dance/style:
+        # 'dance:style=*'
+        label: Dance Styles
       date:
         # date=*
         label: Date
@@ -3617,6 +3620,11 @@ en:
         name: Dance Hall
         # 'terms: ballroom,jive,swing,tango,waltz'
         terms: '<translate with synonyms or related terms for ''Dance Hall'', separated by commas>'
+      leisure/dancing_school:
+        # 'leisure=dance, dance:teaching=yes'
+        name: Dance School
+        # 'terms: jive,swing,tango,waltz,dance teaching'
+        terms: '<translate with synonyms or related terms for ''Dance School'', separated by commas>'
       leisure/dog_park:
         # leisure=dog_park
         name: Dog Park
@@ -4550,7 +4558,7 @@ en:
         # 'terms: monorail,platform,public transit,public transportation,rail,transit,transportation'
         terms: '<translate with synonyms or related terms for ''Monorail Stop / Platform'', separated by commas>'
       public_transport/linear_platform_subway:
-        # 'public_transport=platform, train=yes'
+        # 'public_transport=platform, subway=yes'
         name: Subway Stop / Platform
         # 'terms: metro,platform,public transit,public transportation,rail,subway,track,transit,transportation,underground'
         terms: '<translate with synonyms or related terms for ''Subway Stop / Platform'', separated by commas>'
@@ -4600,7 +4608,7 @@ en:
         # 'terms: monorail,platform,public transit,public transportation,rail,transit,transportation'
         terms: '<translate with synonyms or related terms for ''Monorail Stop / Platform'', separated by commas>'
       public_transport/platform_subway:
-        # 'public_transport=platform, train=yes'
+        # 'public_transport=platform, subway=yes'
         name: Subway Stop / Platform
         # 'terms: metro,platform,public transit,public transportation,rail,subway,track,transit,transportation,underground'
         terms: '<translate with synonyms or related terms for ''Subway Stop / Platform'', separated by commas>'

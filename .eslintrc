@@ -5,11 +5,13 @@
         "es6": true
     },
     "extends": [
-        "eslint:recommended"
+        "eslint:recommended",
+        "plugin:flowtype/recommended"
     ],
     "globals": {
         "d3": false
     },
+    "parser": "babel-eslint",
     "parserOptions": {
         "ecmaVersion": 2017,
         "sourceType": "module",
@@ -17,6 +19,9 @@
             "experimentalObjectRestSpread": true
         }
     },
+    "plugins": [
+        "flowtype"
+    ],
     "rules": {
         "arrow-spacing": "warn",
         "dot-notation": "error",
@@ -77,6 +82,11 @@
             "arraysInObjects": true,
             "objectsInObjects": true
         } ],
-        "array-bracket-spacing": [ "warn", "always" ]
+        "array-bracket-spacing": [ "warn", "always" ],
+        "settings": {
+            "flowtype": {
+                "onlyFilesWithFlowAnnotation": true
+            }
+        }
     }
 }

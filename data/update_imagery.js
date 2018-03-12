@@ -35,6 +35,7 @@ var blacklist = {
 };
 var supportedWMSProjections = [
     'EPSG:3857',
+    'EPSG:4326',
     'EPSG:900913', // EPSG:3857 alternatives codes
     'EPSG:3587',
     'EPSG:54004',
@@ -59,6 +60,9 @@ sources.concat(whitelist).forEach(function(source) {
             })
         });
     if (source.type === 'wms' && supportedProjection === undefined) return;
+    if (source.type === 'wms' && sources.some(function(otherSource) {
+        return otherSource.name === source.name && otherSource.type !== source.type;
+    })) return;
 
     var im = {
         id: source.id,

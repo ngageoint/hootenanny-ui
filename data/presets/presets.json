@@ -2032,6 +2032,7 @@
         "amenity/parking": {
             "icon": "parking",
             "fields": [
+                "name",
                 "operator",
                 "parking",
                 "capacity",
@@ -9424,6 +9425,36 @@
             },
             "name": "Dance Hall"
         },
+        "leisure/dancing_school": {
+            "icon": "music",
+            "fields": [
+                "name",
+                "operator",
+                "address",
+                "opening_hours",
+                "dance/style"
+            ],
+            "geometry": [
+                "point",
+                "area"
+            ],
+            "terms": [
+                "jive",
+                "swing",
+                "tango",
+                "waltz",
+                "dance teaching"
+            ],
+            "tags": {
+                "leisure": "dance",
+                "dance:teaching": "yes"
+            },
+            "reference": {
+                "key": "leisure",
+                "value": "dance"
+            },
+            "name": "Dance School"
+        },
         "leisure/dog_park": {
             "icon": "dog-park",
             "geometry": [
@@ -10189,6 +10220,7 @@
         "leisure/pitch": {
             "icon": "pitch",
             "fields": [
+                "name",
                 "sport",
                 "surface",
                 "lit"
@@ -13668,16 +13700,16 @@
             ],
             "tags": {
                 "public_transport": "platform",
-                "train": "yes"
+                "subway": "yes"
             },
             "addTags": {
                 "public_transport": "platform",
-                "train": "yes",
+                "subway": "yes",
                 "railway": "platform"
             },
             "removeTags": {
                 "public_transport": "platform",
-                "train": "yes",
+                "subway": "yes",
                 "railway": "platform"
             },
             "reference": {
@@ -14096,16 +14128,16 @@
             ],
             "tags": {
                 "public_transport": "platform",
-                "train": "yes"
+                "subway": "yes"
             },
             "addTags": {
                 "public_transport": "platform",
-                "train": "yes",
+                "subway": "yes",
                 "railway": "platform"
             },
             "removeTags": {
                 "public_transport": "platform",
-                "train": "yes",
+                "subway": "yes",
                 "railway": "platform"
             },
             "reference": {
@@ -15968,7 +16000,7 @@
                 "operator",
                 "address",
                 "building_area",
-                "opening_hours",
+                "beauty",
                 "opening_hours",
                 "payment_multi"
             ],
@@ -38432,48 +38464,6 @@
             ],
             "suggestion": true
         },
-        "amenity/fuel/Costco Gas": {
-            "tags": {
-                "name": "Costco Gas",
-                "amenity": "fuel"
-            },
-            "name": "Costco Gas",
-            "icon": "fuel",
-            "geometry": [
-                "point",
-                "area"
-            ],
-            "fields": [
-                "name",
-                "operator",
-                "address",
-                "fuel_multi",
-                "opening_hours",
-                "payment_multi"
-            ],
-            "suggestion": true
-        },
-        "amenity/fuel/Costco Gasoline": {
-            "tags": {
-                "name": "Costco Gasoline",
-                "amenity": "fuel"
-            },
-            "name": "Costco Gasoline",
-            "icon": "fuel",
-            "geometry": [
-                "point",
-                "area"
-            ],
-            "fields": [
-                "name",
-                "operator",
-                "address",
-                "fuel_multi",
-                "opening_hours",
-                "payment_multi"
-            ],
-            "suggestion": true
-        },
         "amenity/fuel/Crodux": {
             "tags": {
                 "name": "Crodux",
@@ -55263,31 +55253,6 @@
             ],
             "suggestion": true
         },
-        "amenity/restaurant/Steak House": {
-            "tags": {
-                "name": "Steak House",
-                "amenity": "restaurant"
-            },
-            "name": "Steak House",
-            "icon": "restaurant",
-            "geometry": [
-                "point",
-                "area"
-            ],
-            "fields": [
-                "name",
-                "cuisine",
-                "address",
-                "building_area",
-                "opening_hours",
-                "capacity",
-                "takeaway",
-                "delivery",
-                "smoking",
-                "outdoor_seating"
-            ],
-            "suggestion": true
-        },
         "amenity/restaurant/Sternen": {
             "tags": {
                 "name": "Sternen",
@@ -63405,7 +63370,7 @@
                 "operator",
                 "address",
                 "building_area",
-                "opening_hours",
+                "beauty",
                 "opening_hours",
                 "payment_multi"
             ],
@@ -63427,7 +63392,7 @@
                 "operator",
                 "address",
                 "building_area",
-                "opening_hours",
+                "beauty",
                 "opening_hours",
                 "payment_multi"
             ],
@@ -80928,27 +80893,6 @@
             ],
             "suggestion": true
         },
-        "shop/kiosk/Мороженое": {
-            "tags": {
-                "name": "Мороженое",
-                "shop": "kiosk"
-            },
-            "name": "Мороженое",
-            "icon": "shop",
-            "geometry": [
-                "point",
-                "area"
-            ],
-            "fields": [
-                "name",
-                "operator",
-                "address",
-                "building_area",
-                "opening_hours",
-                "payment_multi"
-            ],
-            "suggestion": true
-        },
         "shop/kiosk/მარკეტი (Market)": {
             "tags": {
                 "name": "მარკეტი (Market)",
@@ -86158,12 +86102,12 @@
             ],
             "suggestion": true
         },
-        "shop/supermarket/Costco": {
+        "shop/supermarket/Costco Gasoline": {
             "tags": {
-                "name": "Costco",
+                "name": "Costco Gasoline",
                 "shop": "supermarket"
             },
-            "name": "Costco",
+            "name": "Costco Gasoline",
             "icon": "grocery",
             "geometry": [
                 "point",

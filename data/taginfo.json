@@ -1782,6 +1782,10 @@
             "value": "dance"
         },
         {
+            "key": "dance:teaching",
+            "value": "yes"
+        },
+        {
             "key": "leisure",
             "value": "dog_park"
         },
@@ -2585,7 +2589,7 @@
             "value": "yes"
         },
         {
-            "key": "train",
+            "key": "subway",
             "value": "yes"
         },
         {
@@ -2625,7 +2629,7 @@
             "value": "yes"
         },
         {
-            "key": "train",
+            "key": "subway",
             "value": "yes"
         },
         {

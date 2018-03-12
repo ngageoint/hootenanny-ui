@@ -1261,6 +1261,9 @@
                         "cycleway:right": "Höger sida"
                     }
                 },
+                "dance/style": {
+                    "label": "Dansstilar"
+                },
                 "date": {
                     "label": "Datum"
                 },
@@ -1318,6 +1321,9 @@
                         "both": "Båda / Alla",
                         "forward": "Framåt"
                     }
+                },
+                "dispensing": {
+                    "label": "Receptbelagda läkemedel "
                 },
                 "display": {
                     "label": "Visning"
@@ -1652,7 +1658,9 @@
                 "oneway": {
                     "label": "Enkelriktat",
                     "options": {
+                        "alternating": "Växlande",
                         "no": "Nej",
+                        "reversible": "Vändbar",
                         "undefined": "Förväntas vara Nej",
                         "yes": "Ja"
                     }
@@ -1660,7 +1668,9 @@
                 "oneway_yes": {
                     "label": "Enkelriktat",
                     "options": {
+                        "alternating": "Växlande",
                         "no": "Nej",
+                        "reversible": "Vändbar",
                         "undefined": "Förväntas vara Ja",
                         "yes": "Ja"
                     }
@@ -2091,6 +2101,9 @@
                 "wheelchair": {
                     "label": "Handikappanpassat"
                 },
+                "wholesale": {
+                    "label": "Grosist"
+                },
                 "width": {
                     "label": "Bredd (meter)"
                 },
@@ -2238,6 +2251,10 @@
                     "name": "Café",
                     "terms": "kaffeservering, kaffestuga, kafeteria, cafeteria, servering, konditori, kondis, fik, kaffe, te, bistro"
                 },
+                "amenity/car_pooling": {
+                    "name": "Bilpool",
+                    "terms": "Bilpool, hyrbil, lånebil"
+                },
                 "amenity/car_rental": {
                     "name": "Biluthyrning",
                     "terms": "Biluthyrning, billån, billeasing, lånebil, hyrbil"
@@ -2373,6 +2390,10 @@
                     "name": "Bibliotek",
                     "terms": "Bibliotek, boksamling, bokskatt, bokrum, läsesal, bibbla, bok, böcker"
                 },
+                "amenity/love_hotel": {
+                    "name": "Kärlekshotell",
+                    "terms": "Kärlekshotell, sexhotell, korttidshotell, hotell"
+                },
                 "amenity/marketplace": {
                     "name": "Marknadsplats",
                     "terms": "Saluhall, torg, marknad, salutorg"
@@ -2484,6 +2505,17 @@
                     "name": "Skydd",
                     "terms": "Skydd, tak över huvudet, hydda, vindskydd, koja, väntkur, grotta, väderskydd, lusthus, picknick"
                 },
+<<<<<<< HEAD
+=======
+                "amenity/shower": {
+                    "name": "Dusch",
+                    "terms": "Dusch, duschutrymme, duschkabin, duschbad, badrum, duschrum"
+                },
+                "amenity/smoking_area": {
+                    "name": "Rökområde",
+                    "terms": "rökrum, rökområde, rökruta, rökning tillåten, rökning, röka, cigarett"
+                },
+>>>>>>> v2.7.1
                 "amenity/social_facility": {
                     "name": "Social inrättning",
                     "terms": "Social inrättning, social hjälp, social, socialen, uteliggare, hjälparbete, välgörenhetsorganisationer, välgörenhet"
@@ -2642,6 +2674,10 @@
                     "name": "Häck",
                     "terms": "Häck, buskar"
                 },
+                "barrier/kerb": {
+                    "name": "Trottoarkant",
+                    "terms": "trottoarkant, kant, kantsten"
+                },
                 "barrier/kissing_gate": {
                     "name": "Grind vid betesmark",
                     "terms": "Grind vid betesmark, Kryssgrind"
@@ -2682,6 +2718,14 @@
                     "name": "Lada",
                     "terms": "Lada, ladugård, loge, magasin, skjul, skulle, lagård"
                 },
+                "building/boathouse": {
+                    "name": "Båthus",
+                    "terms": "Båthus, sjöbod, strandbod"
+                },
+                "building/bungalow": {
+                    "name": "Bungalow",
+                    "terms": "Bungalow, stuga, sommarstuga, fristående hus, villa, semesterhus"
+                },
                 "building/bunker": {
                     "name": "Bunker"
                 },
@@ -2700,6 +2744,10 @@
                 "building/church": {
                     "name": "Kyrkobyggnad",
                     "terms": "Kyrka, kyrkobyggnad, kyrkbyggnad, kyrksal, andaktssal, missionshus, gudstjänst, gudstjänstslokal, andaktslokal, gudshus"
+                },
+                "building/civic": {
+                    "name": "Kommunal byggnad",
+                    "terms": "Civil, kommunal, publik, stadshus, kommunhus, medborgarhus"
                 },
                 "building/college": {
                     "name": "Collegebyggnad",
@@ -2723,6 +2771,14 @@
                 },
                 "building/entrance": {
                     "name": "Entré/utgång"
+                },
+                "building/farm": {
+                    "name": "Mangårdsbyggnad (bostadshus på gård)",
+                    "terms": "Mangårdsbyggnad, bostad, hus, bostadshus, gård, lantbruk"
+                },
+                "building/farm_auxiliary": {
+                    "name": "Gårdsbyggnader",
+                    "terms": "Gårdsbyggnader, ekonomibyggnader, gårdshus, ladugård, stall, lantbruksbyggnader, gård, lantbruk"
                 },
                 "building/garage": {
                     "name": "Garage",
@@ -2779,6 +2835,10 @@
                 "building/roof": {
                     "name": "Tak",
                     "terms": "Tak, övertäckning, valv, överbyggnad, regnskydd"
+                },
+                "building/ruins": {
+                    "name": "Ruinbyggnad",
+                    "terms": "Ruinbyggnad, ruin, raserad, husrest, förfallen, ödehus, huslämning, fornlämning"
                 },
                 "building/school": {
                     "name": "Skolbyggnad",
@@ -3452,6 +3512,10 @@
                 "leisure/dance": {
                     "name": "Dansbana",
                     "terms": "Dansbana, danshus, rotunda, folkets park, bal, balsal, bugg, foxtrot, salsa, jive, swing, tango, valls, gammaldans"
+                },
+                "leisure/dancing_school": {
+                    "name": "Dansskola",
+                    "terms": "Dansskola, bugg, foxtrot, gamaldans, swing, jive, vals, dans, danskurs, dansutbildning, tiodans, salsa, tango"
                 },
                 "leisure/dog_park": {
                     "name": "Hundpark",
