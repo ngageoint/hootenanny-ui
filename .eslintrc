@@ -82,10 +82,11 @@
             "arraysInObjects": true,
             "objectsInObjects": true
         } ],
-        "array-bracket-spacing": [ "warn", "always" ]
-    "settings": {
-        "flowtype": {
-            "onlyFilesWithFlowAnnotation": true
+        "array-bracket-spacing": [ "warn", "always" ],
+        "settings": {
+            "flowtype": {
+                "onlyFilesWithFlowAnnotation": true
+            }
         }
     }
 }
