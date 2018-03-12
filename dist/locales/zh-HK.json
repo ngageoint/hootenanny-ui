@@ -856,6 +856,12 @@
                         "hamlet": "小村莊",
                         "housename": "房名",
                         "housenumber": "123",
+<<<<<<< HEAD
+=======
+                        "housenumber!jp": "建築物號碼/地段",
+                        "neighbourhood": "屋苑",
+                        "neighbourhood!jp": "丁目/字/小字 (日本)",
+>>>>>>> v2.7.1
                         "place": "地方",
                         "postcode": "郵遞區號",
                         "province": "省",

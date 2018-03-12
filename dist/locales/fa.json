@@ -271,6 +271,11 @@
                 }
             }
         },
+        "restriction": {
+            "controls": {
+                "distance": "مسافت"
+            }
+        },
         "undo": {
             "tooltip": "برگرداندن: {action}",
             "nothing": "چیزی برای برگرداندن نیست."
