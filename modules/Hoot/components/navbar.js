@@ -45,30 +45,12 @@ export default class Navbar {
             .classed( 'medium material-icons', true )
             .text( 'menu' );
 
-        //settingsButton
-        //    .append( 'span' )
-        //    .text( 'Settings' );
-
         leftContainer
             .append( 'div' )
             .classed( 'logo-container', true )
             .append( 'img' )
             .attr( 'src', './img/hoot_logo_update.png' )
             .classed( 'pointer hoot-logo', true );
-
-        //let rightContainer = navbar
-        //    .append( 'div' )
-        //    .classed( 'nav-item', true );
-        //
-        //rightContainer
-        //    .append( 'div' )
-        //    .classed( 'vertical-align icon-container', true )
-        //    .on( 'click', function() {
-        //
-        //    } )
-        //    .append( 'i' )
-        //    .classed( 'pointer medium material-icons', true )
-        //    .text( 'menu' );
     }
 
     init() {

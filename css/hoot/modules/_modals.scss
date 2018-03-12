@@ -1,0 +1,42 @@
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.modal {
+    position: absolute;
+    margin: 0 auto;
+    top: 10%;
+    z-index: 2001;
+
+    .modal-header {
+        margin-bottom: 20px;
+    }
+
+    .form-field {
+        width: 100%;
+        margin-bottom: 10px;
+
+        label {
+            padding: 5px 10px;
+        }
+
+        input {
+            border: none;
+        }
+
+        .icon-button {
+            width: 31px;
+        }
+    }
+
+    .dataset-file-upload {
+        position: absolute;
+        height: 100%;
+        opacity: 0;
+        left: 0;
+    }
+}

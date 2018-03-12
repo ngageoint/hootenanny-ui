@@ -16,8 +16,8 @@ class FolderManager {
         this.datasets   = [];
         this.childArray = [];
 
-        this._selectedDatasets = [];
-        this._openFolders      = [];
+        this.selectedDsets = [];
+        this.openFolders   = [];
     }
 
     refreshAll() {
@@ -43,28 +43,36 @@ class FolderManager {
             .then( data => this.links = data.links );
     }
 
+    get selectedDatasets() {
+        return this.selectedDsets;
+    }
+
+    get availFolders() {
+        return this.folders;
+    }
+
     setOpenFolders( folderId, add ) {
         if ( add ) {
-            this._openFolders.push( folderId );
+            this.openFolders.push( folderId );
         } else {
-            let index = this._openFolders.indexOf( folderId );
+            let index = this.openFolders.indexOf( folderId );
             if ( index > 1 ) {
-                this._openFolders.splice( index, 1 );
+                this.openFolders.splice( index, 1 );
             }
         }
 
-        return this._openFolders;
+        return this.openFolders;
     }
 
     updateSelectedDatasets( id, clearAll ) {
         if ( clearAll ) {
-            this._selectedDatasets = [];
+            this.selectedDsets = [];
         }
 
-        if ( this._selectedDatasets.indexOf( id ) > -1 ) {
-            _.pull( this._selectedDatasets, id );
+        if ( this.selectedDsets.indexOf( id ) > -1 ) {
+            _.pull( this.selectedDsets, id );
         } else {
-            this._selectedDatasets.push( id );
+            this.selectedDsets.push( id );
         }
     }
 
@@ -89,7 +97,7 @@ class FolderManager {
         } );
 
         let folderList = _.map( this.folders, folder => {
-            if ( this._openFolders.indexOf( folder.id ) > -1 ) {
+            if ( this.openFolders.indexOf( folder.id ) > -1 ) {
                 folder.children = _.filter( datasetList, dataset => dataset.folderId === folder.id );
                 folder.state    = 'open';
             } else {
@@ -111,10 +119,6 @@ class FolderManager {
         } ) );
 
         return this.unflattenFolders( folderList );
-    }
-
-    get selectedDatasets() {
-        return this._selectedDatasets;
     }
 
     unflattenFolders( array, parent = { id: 0 }, tree = [] ) {

@@ -8,8 +8,6 @@ import Datasets from './datasets';
 import TranslationAssistant from './translationAssistant';
 import Translation from './translation';
 import Basemaps from './basemaps';
-import Log from './log';
-import Reports from './reports';
 import ReviewBookmarks from './reviewBookmarks';
 import ReviewBookmarkNotes from './reviewBookmarkNotes';
 import About from './about';
@@ -19,9 +17,7 @@ export default [
     TranslationAssistant,
     Translation,
     Basemaps,
-    Log,
-    Reports,
     ReviewBookmarks,
     ReviewBookmarkNotes,
     About
-]
+];

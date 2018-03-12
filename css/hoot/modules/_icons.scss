@@ -5,6 +5,10 @@
 }
 
 .material-icons {
+    &.small {
+        font-size: 20px;
+    }
+
     &.medium {
         font-size: 30px;
     }

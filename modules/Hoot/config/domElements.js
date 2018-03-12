@@ -8,23 +8,23 @@ export const datasetButtons = [
     {
         title: 'Import Single Dataset',
         icon: 'play_for_work',
-        class: 'dataset-import-single',
+        onClick: 'import-dataset-single',
         contextmenu: 'bulkimport'
     },
     {
         title: 'Import Directory',
         icon: 'move_to_inbox',
-        class: 'dataset-import-directory'
+        onClick: 'import-dataset-directory'
     },
     {
         title: 'Add Folder',
         icon: 'create_new_folder',
-        class: 'dataset-add-folder'
+        onClick: 'add-dataset-folder'
     },
     {
         title: 'Refresh Datasets',
         icon: 'refresh',
-        class: 'dataset-refresh-layers'
+        onClick: 'refresh-dataset-layers'
     }
 ];
 
@@ -95,3 +95,18 @@ export const contextMenus = {
         }
     ]
 };
+
+export const importDatasetTypes = [
+    {
+        title: 'File (shp, zip, gdb.zip)',
+        value: 'FILE'
+    },
+    {
+        title: 'File (osm, osm.zip, pbf',
+        value: 'OSM'
+    },
+    {
+        title: 'File(geonames, txt)',
+        value: 'GEONAMES'
+    }
+];

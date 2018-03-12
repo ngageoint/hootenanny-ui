@@ -66,6 +66,16 @@ class API {
             .then( resp => resp.data );
     }
 
+    getTranslations() {
+        const params = {
+            path: '/hoot-services/ingest/customscript/getlist',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     getMapSizes( mapIds ) {
         if ( !mapIds ) {
             return null;

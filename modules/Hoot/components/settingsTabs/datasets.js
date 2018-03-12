@@ -4,8 +4,10 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
+import API from '../../util/api';
 import Tab from './tab';
 import FolderTree from '../folderTree';
+import ImportDataset from '../forms/importDataset';
 import {
     datasetButtons,
     datasetTableHeaders
@@ -32,9 +34,34 @@ export default class Datasets extends Tab {
 
         let buttonEach = buttons.enter()
             .append( 'button' )
-            .attr( 'class', d => `${ d.class } dataset-action-button primary text-white flex align-center` )
-            .on( 'click', function( d ) {
+            .classed( 'dataset-action-button primary text-white flex align-center', true )
+            .on( 'click', async item => {
+                d3.event.preventDefault();
 
+                switch ( item.onClick ) {
+                    case 'import-dataset-single': {
+                        let translations = await API.getTranslations();
+
+                        new ImportDataset().render( translations );
+
+                        break;
+                    }
+                    case 'import-dataset-directory': {
+
+                        break;
+                    }
+                    case 'add-dataset-folder': {
+
+                        break;
+                    }
+                    case 'refresh-dataset-layers': {
+
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
             } );
 
         buttonEach.append( 'i' )

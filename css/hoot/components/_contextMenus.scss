@@ -8,4 +8,20 @@
     min-width: 150px;
     border: 1px solid #d4d4d4;
     z-index: 1200;
+
+    ul {
+        list-style-type: none;
+        margin: 4px 0;
+        padding: 0;
+        cursor: default;
+
+        li {
+            padding: 4px 16px;
+
+            &:hover {
+                background-color: #4677f8;
+                color: #fefefe;
+            }
+        }
+    }
 }
