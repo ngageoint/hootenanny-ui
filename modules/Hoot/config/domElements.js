@@ -106,7 +106,7 @@ export const importDatasetTypes = [
         value: 'OSM'
     },
     {
-        title: 'File(geonames, txt)',
+        title: 'File (geonames, txt)',
         value: 'GEONAMES'
     }
 ];

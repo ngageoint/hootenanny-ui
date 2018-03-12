@@ -9,6 +9,7 @@
 .modal {
     position: absolute;
     margin: 0 auto;
+    padding: 15px;
     top: 10%;
     z-index: 2001;
 
@@ -21,7 +22,7 @@
 
         button {
             width: 100px;
-            margin: 0 auto;
+            margin: 20px auto 0;
         }
     }
 

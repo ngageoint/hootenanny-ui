@@ -18,6 +18,7 @@ class FolderManager {
 
         this.selectedDsets = [];
         this.openFolders   = [];
+        this.availFolders  = [];
     }
 
     refreshAll() {
@@ -30,7 +31,10 @@ class FolderManager {
 
     refreshFolders() {
         return this.api.getFolders()
-            .then( data => this.folders = data.folders );
+            .then( data => {
+                this.folders      = data.folders;
+                this.availFolders = this.listFolders( this.folders );
+            } );
     }
 
     refreshDatasets() {
@@ -47,8 +51,31 @@ class FolderManager {
         return this.selectedDsets;
     }
 
-    get availFolders() {
-        return this.folders;
+    get availableFolders() {
+        return this.availFolders;
+    }
+
+    listFolders( array ) {
+        return _.map( array, f => {
+            if ( f.parentId === 0 ) {
+                f.folderPath = f.name;
+            } else {
+                //use links to get parent folder as far back as possible
+                let strPath      = f.name,
+                    parentFolder = _.find( this.folders, { id: f.parentId } ),
+                    i            = 0;
+
+                do {
+                    i++;
+                    strPath      = parentFolder.name + '/' + strPath;
+                    parentFolder = _.find( this.folders, { id: parentFolder.parentId } );
+                } while ( parentFolder || i === 10 );
+
+                f.folderPath = strPath;
+            }
+
+            return { path: f.folderPath };
+        } );
     }
 
     setOpenFolders( folderId, add ) {

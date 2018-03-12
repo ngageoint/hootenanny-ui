@@ -4,6 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/12/18
  *******************************************************************************************************/
 
+import { d3combobox as d3_combobox } from '../../../lib/d3.combobox';
+import _ from 'lodash-es';
+
 export default function FormFactory() {
     const self = this;
 
@@ -89,9 +92,15 @@ export default function FormFactory() {
     };
 
     this.createCombobox = function( field ) {
-        field.append( 'input' )
+        let inputField = field.append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'placeholder', d => d.placeholder );
+
+        field.select( d => {
+            if ( d.combobox && d.combobox.data && d.combobox.command ) {
+                d.combobox.command.call( inputField.node(), d );
+            }
+        } );
     };
 
     this.createMultipart = function( field ) {

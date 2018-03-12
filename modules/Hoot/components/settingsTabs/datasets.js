@@ -42,7 +42,7 @@ export default class Datasets extends Tab {
                     case 'import-dataset-single': {
                         let translations = await API.getTranslations();
 
-                        new ImportDataset().render( translations );
+                        new ImportDataset( translations ).render();
 
                         break;
                     }
