@@ -88,6 +88,8 @@ class API {
         return this.request( params )
             .then( resp => resp.data );
     }
+
+    //importData();
 }
 
 export default new API();

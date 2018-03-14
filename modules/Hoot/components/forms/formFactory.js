@@ -4,9 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/12/18
  *******************************************************************************************************/
 
-import { d3combobox as d3_combobox } from '../../../lib/d3.combobox';
-import _ from 'lodash-es';
-
 export default function FormFactory() {
     const self = this;
 
@@ -113,7 +110,8 @@ export default function FormFactory() {
             .attr( 'placeholder', d => d.placeholder )
             .attr( 'readonly', d => d.readOnly )
             .attr( 'disabled', d => d.disabled )
-            .on( 'change', d => d.onChange );
+            .classed( 'text-input', true )
+            .on( 'keyup', d => d.onChange( d ) );
     };
 
     this.createMultipart = field => {

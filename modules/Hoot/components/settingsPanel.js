@@ -9,7 +9,7 @@ import _ from 'lodash-es';
 import Events from '../util/events';
 import settingsTabs from './settingsTabs/index';
 
-export default class JobsBackground {
+export default class SettingsPanel {
     constructor( context ) {
         this.context    = context;
         this.events     = Events;

@@ -153,14 +153,20 @@ button {
     }
 }
 
-input[type=text][disabled] {
-    &::placeholder {
-        color: #777;
+input[type=text] {
+    &.invalid {
+        border: 1px solid red !important;
     }
 
-    & ~span {
-        display: none;
-    }
+    &[disabled] {
+        &::placeholder {
+            color: #777;
+        }
 
-    background-color: rgba(0, 0, 0, .25) !important;
+        & ~span {
+            display: none;
+        }
+
+        background-color: rgba(0, 0, 0, .25) !important;
+    }
 }

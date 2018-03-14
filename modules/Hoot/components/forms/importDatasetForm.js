@@ -6,12 +6,16 @@
 
 import _ from 'lodash-es';
 import FolderManager from '../../models/folderManager';
+import ImportManager from '../../models/importManager';
 import FormFactory from './formFactory';
+import API from '../../util/api';
 import { importDatasetTypes } from '../../config/domElements';
 import { d3combobox as d3_combobox } from '../../../lib/hoot/d3.combobox';
 import { getBrowserInfo } from '../../util/utilities';
 
 export default function ImportDataset( translations ) {
+    const self = this;
+
     this.folderList   = FolderManager.availableFolders;
     this.importTypes  = importDatasetTypes;
     this.translations = translations;
@@ -56,7 +60,8 @@ export default function ImportDataset( translations ) {
                 label: 'Layer Name',
                 id: 'importDatasetLayerName',
                 placeholder: 'Enter name',
-                inputType: 'text'
+                inputType: 'text',
+                onChange: this.validateTextInput
             },
             {
                 label: 'Path',
@@ -71,7 +76,8 @@ export default function ImportDataset( translations ) {
             {
                 label: 'Enter Name for New Folder (Leave blank otherwise)',
                 id: 'importDatasetNewFolderName',
-                inputType: 'text'
+                inputType: 'text',
+                onChange: this.validateTextInput
             },
             {
                 label: 'Translation Schema of Import File',
@@ -89,7 +95,8 @@ export default function ImportDataset( translations ) {
         let button = {
             text: 'Import',
             location: 'right',
-            id: 'importDatasetBtn'
+            id: 'importDatasetBtn',
+            onClick: this.handleSubmit
         };
 
         let metadata = {
@@ -193,10 +200,10 @@ export default function ImportDataset( translations ) {
     };
 
     this.handleMultipartChange = () => {
-        let selectedVal   = this.importTypeInput.property( 'value' ),
-            selectedType  = this.getTypeName( selectedVal ),
-            files         = this.fileIngest.node().files,
-            fileNames     = [];
+        let selectedVal  = this.importTypeInput.property( 'value' ),
+            selectedType = this.getTypeName( selectedVal ),
+            files        = this.fileIngest.node().files,
+            fileNames    = [];
 
         for ( let i = 0; i < files.length; i++ ) {
             let currentFile = files[ i ],
@@ -215,7 +222,47 @@ export default function ImportDataset( translations ) {
             this.layerNameInput.property( 'value', saveName );
         }
 
-        this.submitButton.node().disabled = false;
+        this.formValid = true;
+        this.updateButtonState();
+    };
+
+    this.handleSubmit = () => {
+        //let data = d3.select( '#importDataset')
+    };
+
+    this.validateTextInput = d => {
+        let target           = d3.select( `#${ d.id }` ),
+            node             = target.node(),
+            str              = node.value,
+
+            reservedWords    = [ 'root', 'dataset', 'datasets', 'folder' ],
+            unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
+            valid = true;
+
+        if ( reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
+            valid = false;
+        }
+
+        if ( node.id === 'importDatasetLayerName' && !str.length ) {
+            valid = false;
+        }
+
+        target.classed( 'invalid', !valid );
+        this.formValid = valid;
+        this.updateButtonState();
+    };
+
+    this.updateButtonState = () => {
+        this.container.selectAll( '.text-input' )
+            .each( function( d ) {
+                let classes = d3.select( this ).attr( 'class' ).split( ' ' );
+
+                if ( classes.indexOf( 'invalid' ) > -1 ) {
+                    self.formValid = false;
+                }
+            } );
+
+        this.submitButton.node().disabled = !this.formValid;
     };
 
     this.getTypeName = val => {

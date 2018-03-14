@@ -31,3 +31,19 @@ export const getBrowserInfo = () => {
 
     return browserInfo;
 };
+
+export const checkForUnallowedChars = string => {
+    let reservedWords = [ 'root', 'dataset', 'datasets', 'folder' ],
+        unallowedPattern = new RegExp(/[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g),
+        valid = true;
+
+    if ( reservedWords.indexOf( string.toLowerCase() ) > -1 ) {
+        valid = false;
+    }
+
+    if ( unallowedPattern.test( string ) ) {
+        valid = false;
+    }
+
+    return valid;
+};
