@@ -144,6 +144,7 @@ export default function FormFactory() {
             .attr( 'disabled', true )
             .attr( 'id', buttonMeta.id )
             .classed( 'round strong primary', true )
-            .text( buttonMeta.text );
+            .text( buttonMeta.text )
+            .on( 'click', buttonMeta.onClick );
     };
 }

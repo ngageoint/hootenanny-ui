@@ -18,8 +18,37 @@ class API {
         return axios( {
             url: `${ this.baseUrl }${ params.path }`,
             method: params.method || 'GET',
-            body: params.body
+            data: params.data,
+            params: params.params
         } );
+    }
+
+    upload( data ) {
+        if ( !data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME ) {
+            return false;
+        }
+
+        let url = '/hoot-services/ingest/ingest/upload' +
+            `?TRANSLATION=${ data.TRANSLATION }` +
+            `&INPUT_TYPE=${ data.INPUT_TYPE }` +
+            `&INPUT_NAME=${ data.INPUT_NAME }` +
+            '&USER_EMAIL=null' +
+            `&NONE_TRANSLATION=${ data.NONE_TRANSLATION }`;
+
+        const params = {
+            path: '/hoot-services/ingest/ingest/upload',
+            method: 'POST',
+            params: {
+                TRANSLATION: data.TRANSLATION,
+                INPUT_TYPE: data.INPUT_TYPE,
+                INPUT_NAME: data.INPUT_NAME,
+                USER_EMAIL: 'test@test.com',
+                NONE_TRANSLATION: data.NONE_TRANSLATION
+            },
+            data: data.formData
+        };
+
+        return this.request( params );
     }
 
     getFolders() {
@@ -82,14 +111,12 @@ class API {
         }
         const params = {
             path: `/hoot-services/info/map/sizes?mapid=${ mapIds }`,
-            method: 'GET',
+            method: 'GET'
         };
 
         return this.request( params )
             .then( resp => resp.data );
     }
-
-    //importData();
 }
 
 export default new API();

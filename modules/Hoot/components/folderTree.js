@@ -232,7 +232,7 @@ export default function FolderTree( container ) {
             .attr( 'dx', '98%' )
             .attr( 'text-anchor', 'end' )
             .text( d => {
-                let size  = d.size,
+                let size  = d.data.size,
                     units = [ 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' ],
                     u     = -1;
 
@@ -254,7 +254,7 @@ export default function FolderTree( container ) {
                 .attr( 'dy', 3.5 )
                 .attr( 'dx', '80%' )
                 .attr( 'text-anchor', 'end' )
-                .text( d => d.date );
+                .text( d => d.data.date );
 
             nodes.append( 'text' )
                 .style( 'fill', this.fontColor )
@@ -262,7 +262,7 @@ export default function FolderTree( container ) {
                 .attr( 'dx', '45%' )
                 .attr( 'text-anchor', 'end' )
                 .text( d => {
-                    let lastAccessed = d.lastAccessed,
+                    let lastAccessed = d.data.lastAccessed,
                         timeAgo      = lastAccessed.replace( /[-:]/g, '' ),
                         dateActive   = moment( timeAgo ).fromNow(),
                         oldData      = moment().diff( moment( timeAgo ), 'days' ) > 60;
