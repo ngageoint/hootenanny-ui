@@ -6,6 +6,12 @@
 
 import Tab from './tab';
 
+/**
+ * Creates the about tab in the settings panel
+ *
+ * @extends Tab
+ * @constructor
+ */
 export default class About extends Tab {
     constructor( ...params ) {
         super( params );

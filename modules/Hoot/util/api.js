@@ -8,12 +8,23 @@ import _ from 'lodash-es';
 import axios from 'axios/dist/axios';
 import config from '../config/apiConfig';
 
+/**
+ * API calls to backend services
+ *
+ * @returns {class} - API
+ * @constructor
+ */
 class API {
     constructor() {
         this.config  = config;
         this.baseUrl = `${ this.config.host }:${ this.config.port }`;
     }
 
+    /**
+     * Submit a request
+     *
+     * @param params - request data
+     */
     request( params ) {
         return axios( {
             url: `${ this.baseUrl }${ params.path }`,
@@ -23,6 +34,12 @@ class API {
         } );
     }
 
+    /**
+     * Upload imported files to the database
+     *
+     * @param data - upload data
+     * @returns {promise} - request
+     */
     upload( data ) {
         if ( !data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME ) {
             return false;
@@ -51,6 +68,11 @@ class API {
         return this.request( params );
     }
 
+    /**
+     * Retrieve all folders from the database
+     *
+     * @returns {array} - folders
+     */
     getFolders() {
         const params = {
             path: '/hoot-services/osm/api/0.6/map/folders',
@@ -61,6 +83,11 @@ class API {
             .then( resp => resp.data );
     }
 
+    /**
+     * Get all layers from the database
+     *
+     * @returns {array} - layers
+     */
     getLayers() {
         const params = {
             path: '/hoot-services/osm/api/0.6/map/layers',
@@ -85,6 +112,11 @@ class API {
             } );
     }
 
+    /**
+     * Get all links from the database
+     *
+     * @returns {array} - links
+     */
     getLinks() {
         const params = {
             path: '/hoot-services/osm/api/0.6/map/links',
@@ -95,6 +127,11 @@ class API {
             .then( resp => resp.data );
     }
 
+    /**
+     * Get all running translations
+     *
+     * @returns {array} - translations
+     */
     getTranslations() {
         const params = {
             path: '/hoot-services/ingest/customscript/getlist',

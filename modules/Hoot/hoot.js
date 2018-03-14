@@ -7,6 +7,9 @@
 import FolderManager from './models/folderManager';
 import components from './components/index';
 
+/**
+ * Entry point for Hoot UI
+ */
 class Hoot {
     constructor( context ) {
         this.container  = context.container();

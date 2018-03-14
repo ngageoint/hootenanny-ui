@@ -13,7 +13,6 @@ import { contextMenus } from '../config/domElements';
  * Class for creating, displaying and maintaining a folder tree hierarchy
  *
  * @param container - Container used to render the tree into
- * @returns {Class} - Folder Tree
  * @constructor
  */
 export default function FolderTree( container ) {
@@ -208,6 +207,11 @@ export default function FolderTree( container ) {
         } );
     };
 
+    /**
+     * Render lines that connect nodes together
+     *
+     * @param nodes - tree nodes
+     */
     this.renderLines = nodes => {
         nodes.append( 'line' )
             .attr( 'x1', d => 2.5 + (11 * (d.depth - 1)) )
@@ -224,6 +228,11 @@ export default function FolderTree( container ) {
             .style( 'stroke', '#444444' );
     };
 
+    /**
+     * Render all text values for each node
+     *
+     * @param nodes - tree nodes
+     */
     this.renderText = nodes => {
         nodes.append( 'text' )
             .classed( 'dsizeTxt', true )
@@ -276,6 +285,11 @@ export default function FolderTree( container ) {
         }
     };
 
+    /**
+     * Logic for right-click and ctrl+click
+     *
+     * @param d - tree node
+     */
     this.bindContextMenu = function( d ) {
         let selected = d.selected || false;
 
@@ -303,6 +317,11 @@ export default function FolderTree( container ) {
         self.update( d );
     };
 
+    /**
+     * Create and open a context menu
+     *
+     * @param d - tree node
+     */
     this.openContextMenu = d => {
         let items;
 
@@ -378,10 +397,9 @@ export default function FolderTree( container ) {
     };
 
     /**
-     * OnClick: select, expand, or collapse an item in the table.
-     * 'this' is the dom node being clicked, and not the tree node.
+     * Select, expand, or collapse an item in the table.
      *
-     * @param d - Tree node
+     * @param d - tree node
      */
     this.click = function( d ) {
         let selected = d.selected || false,
@@ -441,9 +459,9 @@ export default function FolderTree( container ) {
     };
 
     /**
-     * Fill a rect element based on type of node
+     * Fill a rect element based on it's node type
      *
-     * @param d - Tree node
+     * @param d - tree node
      * @returns {string} - Hex color code
      */
     this.fillColor = d => {
@@ -464,10 +482,10 @@ export default function FolderTree( container ) {
     };
 
     /**
-     * Fill a text element based on type of node
+     * Fill a text element based on it's node type
      *
-     * @param d - Tree node
-     * @returns {string} - Hex color code
+     * @param d - tree node
+     * @returns {string} - hex color code
      */
     this.fontColor = d => {
         let { data } = d;
@@ -487,8 +505,8 @@ export default function FolderTree( container ) {
      * Assign a CSS class to a rect element based
      * on it's type and the current state that it's in
      *
-     * @param d - Tree node
-     * @returns {string} - CSS Class
+     * @param d - tree node
+     * @returns {string} - CSS class
      */
     this.rectClass = d => {
         let { data } = d;

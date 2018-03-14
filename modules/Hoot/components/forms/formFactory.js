@@ -4,33 +4,65 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/12/18
  *******************************************************************************************************/
 
+/**
+ * Create a form contained within a modal
+ *
+ * @constructor
+ */
 export default function FormFactory() {
     const self = this;
 
+    /**
+     * Create a form with all of it's contents using the provided metadata
+     *
+     * @param selector - where to append container to
+     * @param metadata - form data
+     * @returns {d3} - form container
+     */
     this.generateForm = ( selector, metadata ) => {
         let container = this.createContainer( selector ),
-            formDiv   = this.createFormDiv( container ),
-            form      = this.createForm( container, formDiv, metadata.title );
+            formModal = this.createFormModal( container ),
+            form      = this.createForm( container, formModal, metadata.title );
 
         this.createFieldSets( form, metadata.form );
-        this.createButton( formDiv, metadata.button );
+        this.createButton( formModal, metadata.button );
 
         return container;
     };
 
+    /**
+     * Create dark background container
+     *
+     * @param selector - where to append container to
+     * @returns {d3} - form container
+     */
     this.createContainer = selector => {
         return d3.select( selector )
             .append( 'div' )
             .classed( 'fill-darken3 modal-overlay', true );
     };
 
-    this.createFormDiv = container => {
+    /**
+     * Create modal
+     *
+     * @param container
+     * @returns {d3} - form modal
+     */
+    this.createFormModal = container => {
         return container.append( 'div' )
             .classed( 'contain col4 pad1 hoot-menu fill-white round modal', true );
     };
 
-    this.createForm = ( container, formDiv, formTitle ) => {
-        let form   = formDiv.append( 'form' ),
+    /**
+     * Create form with a header
+     *
+     * @param container - form container
+     * @param modal - form modal
+     * @param formTitle - form title
+     * @returns {d3} - form wrapper
+     */
+    this.createForm = ( container, modal, formTitle ) => {
+        let form   = modal.append( 'form' ),
             header = form
                 .append( 'div' )
                 .classed( 'big pad1y keyline-bottom modal-header', true );
@@ -44,6 +76,12 @@ export default function FormFactory() {
         return form;
     };
 
+    /**
+     * Create each input field in the form
+     *
+     * @param form - form div
+     * @param formMeta - form data
+     */
     this.createFieldSets = ( form, formMeta ) => {
         let fieldContainer = form.append( 'fieldset' )
             .selectAll( '.form-field' );
@@ -86,6 +124,11 @@ export default function FormFactory() {
         } );
     };
 
+    /**
+     * Create a custom dropdown menu
+     *
+     * @param field - field div
+     */
     this.createCombobox = field => {
         let input = field.append( 'input' )
             .attr( 'type', 'text' )
@@ -103,6 +146,11 @@ export default function FormFactory() {
         } );
     };
 
+    /**
+     * Create a text input
+     *
+     * @param field - field div
+     */
     this.createTextField = field => {
         field.append( 'input' )
             .attr( 'type', 'text' )
@@ -114,6 +162,11 @@ export default function FormFactory() {
             .on( 'keyup', d => d.onChange( d ) );
     };
 
+    /**
+     * Create a file upload input
+     *
+     * @param field - field div
+     */
     this.createMultipart = field => {
         let wrapper = field.append( 'div' ).classed( 'contain', true );
 
@@ -136,8 +189,14 @@ export default function FormFactory() {
             .on( 'change', d => d.onChange() );
     };
 
-    this.createButton = ( formDiv, buttonMeta ) => {
-        let buttonContainer = formDiv.append( 'div' )
+    /**
+     * Create a submit button
+     *
+     * @param formModal - form modal
+     * @param buttonMeta - button data
+     */
+    this.createButton = ( formModal, buttonMeta ) => {
+        let buttonContainer = formModal.append( 'div' )
             .classed( 'modal-footer', true );
 
         buttonContainer.append( 'button' )

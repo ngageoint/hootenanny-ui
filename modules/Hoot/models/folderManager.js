@@ -7,6 +7,9 @@
 import API from '../util/api';
 import _ from 'lodash-es';
 
+/**
+ * Class that retrieves and manages folders for the entire application
+ */
 class FolderManager {
     constructor() {
         this.api = API;
@@ -21,6 +24,11 @@ class FolderManager {
         this.availFolders  = [];
     }
 
+    /**
+     * Retrieve folders, datasets, and links from database
+     *
+     * @returns {promise}
+     */
     refreshAll() {
         return Promise.all( [
             this.refreshFolders(),
@@ -29,6 +37,10 @@ class FolderManager {
         ] );
     }
 
+    /**
+     * Retrieve folders from database and transform the data
+     * to be usable in a dropdown menu
+     */
     refreshFolders() {
         return this.api.getFolders()
             .then( data => {
@@ -37,24 +49,46 @@ class FolderManager {
             } );
     }
 
+    /**
+     * Retrieve datasets from database
+     */
     refreshDatasets() {
         return this.api.getLayers()
             .then( data => this.datasets = data.layers || data );
     }
 
+    /**
+     * Retrieve links from database
+     */
     refreshLinks() {
         return this.api.getLinks()
             .then( data => this.links = data.links );
     }
 
+    /**
+     * Get all currently selected datasets
+     *
+     * @returns {array} - datasets
+     */
     get selectedDatasets() {
         return this.selectedDsets;
     }
 
+    /**
+     * Get all available folders
+     *
+     * @returns {array} - folders
+     */
     get availableFolders() {
         return this.availFolders;
     }
 
+    /**
+     * Create an array of all folder names with their full path
+     *
+     * @param array - array of folder objects from database
+     * @returns {array} - folder list
+     */
     listFolders( array ) {
         return _.map( array, f => {
             if ( f.parentId === 0 ) {
@@ -78,11 +112,18 @@ class FolderManager {
         } );
     }
 
-    setOpenFolders( folderId, add ) {
+    /**
+     * Update list of currently open folders
+     *
+     * @param id - id of selected folder
+     * @param add - boolean to determine whether to add or remove the folder from the list
+     * @returns {array} - open folders
+     */
+    setOpenFolders( id, add ) {
         if ( add ) {
-            this.openFolders.push( folderId );
+            this.openFolders.push( id );
         } else {
-            let index = this.openFolders.indexOf( folderId );
+            let index = this.openFolders.indexOf( id );
             if ( index > 1 ) {
                 this.openFolders.splice( index, 1 );
             }
@@ -91,6 +132,12 @@ class FolderManager {
         return this.openFolders;
     }
 
+    /**
+     * Update list of currently selected datasets
+     *
+     * @param id - id of selected dataset
+     * @param clearAll - boolean to determine whether to clear the entire list or not
+     */
     updateSelectedDatasets( id, clearAll ) {
         if ( clearAll ) {
             this.selectedDsets = [];
@@ -104,9 +151,10 @@ class FolderManager {
     }
 
     /**
-     * Create a hierarchy of folders and their children datasets
+     * Create a list of folders and datasets and then transform
+     * it into a hierarchy to be used by D3
      *
-     * @returns {Array} - Hierarchy
+     * @returns {array} - hierarchy
      */
     getAvailFolderData() {
         let datasetList = _.map( this.datasets, dataset => {
@@ -148,8 +196,17 @@ class FolderManager {
         return this.unflattenFolders( folderList );
     }
 
-    unflattenFolders( array, parent = { id: 0 }, tree = [] ) {
-        const children = _.filter( array, child => child.parentId === parent.id );
+    /**
+     * Create a hierarchy of folders and their children datasets by
+     * recursively going through each node to see if they have children
+     *
+     * @param array - folders
+     * @param parent - parent node
+     * @returns {array} - hierarchy
+     */
+    unflattenFolders( array, parent = { id: 0 } ) {
+        let children = _.filter( array, child => child.parentId === parent.id ),
+            tree     = [];
 
         if ( !_.isEmpty( children ) ) {
             if ( parent.id === 0 ) {

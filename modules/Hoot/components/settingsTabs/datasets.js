@@ -13,6 +13,12 @@ import {
     datasetTableHeaders
 } from '../../config/domElements';
 
+/**
+ * Creates the datasets tab in the settings panel
+ *
+ * @extends Tab
+ * @constructor
+ */
 export default class Datasets extends Tab {
     constructor( ...params ) {
         super( params );
@@ -21,6 +27,9 @@ export default class Datasets extends Tab {
         this.id   = 'util-datasets';
     }
 
+    /**
+     * Render all components inside tab body
+     */
     render() {
         super.render();
 
@@ -88,6 +97,9 @@ export default class Datasets extends Tab {
         new FolderTree( table ).init();
     }
 
+    /**
+     * Initialize
+     */
     init() {
         this.render();
     }

@@ -6,6 +6,12 @@
 
 import Tab from './tab';
 
+/**
+ * Creates the translations tab in the settings panel
+ *
+ * @extends Tab
+ * @constructor
+ */
 export default class Translation extends Tab {
     constructor( ...params ) {
         super( params );

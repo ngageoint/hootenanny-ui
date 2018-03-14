@@ -12,7 +12,13 @@ import { importDatasetTypes } from '../../config/domElements';
 import { d3combobox as d3_combobox } from '../../../lib/hoot/d3.combobox';
 import { getBrowserInfo } from '../../util/utilities';
 
-export default function ImportDataset( translations ) {
+/**
+ * Form that allows user to import datasets into hoot
+ *
+ * @param translations - All translations from database
+ * @constructor
+ */
+export default function ImportDatasetForm( translations ) {
     const self = this;
 
     this.folderList   = FolderManager.availableFolders;
@@ -20,6 +26,7 @@ export default function ImportDataset( translations ) {
     this.translations = translations;
     this.browserInfo  = getBrowserInfo();
 
+    // Add "NONE" option to beginning of array
     this.translations.unshift( {
         NAME: 'NONE',
         PATH: 'NONE',
@@ -31,6 +38,9 @@ export default function ImportDataset( translations ) {
         _.remove( this.importTypes, o => o.value === 'DIR' );
     }
 
+    /**
+     * Set form parameters and create the form using the form factory
+     */
     this.render = () => {
         let form = [
             {
@@ -114,6 +124,12 @@ export default function ImportDataset( translations ) {
         this.submitButton   = d3.select( '#importDatasetBtn' );
     };
 
+    /**
+     * Populate the import-type list dropdown
+     *
+     * @param node - input node
+     * @param d - node data
+     */
     this.populateImportTypes = ( node, d ) => {
         let combobox = d3_combobox()
             .data( _.map( d.combobox.data, n => {
@@ -127,6 +143,12 @@ export default function ImportDataset( translations ) {
             .call( combobox );
     };
 
+    /**
+     * Populate the available folders list dropdown
+     *
+     * @param node - input node
+     * @param d - node data
+     */
     this.populateFolderList = ( node, d ) => {
         let combobox = d3_combobox()
             .data( _.map( d.combobox.data, n => {
@@ -149,6 +171,12 @@ export default function ImportDataset( translations ) {
             .call( combobox );
     };
 
+    /**
+     * Populate the translations list dropdown
+     *
+     * @param node - input node
+     * @param d - node data
+     */
     this.populateTranslations = ( node, d ) => {
         let combobox = d3_combobox()
             .data( _.map( d.combobox.data, n => {
@@ -162,6 +190,10 @@ export default function ImportDataset( translations ) {
             .call( combobox );
     };
 
+    /**
+     * Update the form by enabling, disabling, or clearing certain
+     * fields based on the value entered
+     */
     this.handleTypeChange = () => {
         let selectedVal  = this.typeInput.property( 'value' ),
             selectedType = this.getTypeName( selectedVal ),
@@ -198,6 +230,9 @@ export default function ImportDataset( translations ) {
         this.schemaInput.property( 'value', translationsList[ 0 ].DESCRIPTION );
     };
 
+    /**
+     * Update the file input's value with the name of the selected file
+     */
     this.handleMultipartChange = () => {
         let selectedVal  = this.typeInput.property( 'value' ),
             selectedType = this.getTypeName( selectedVal ),
@@ -225,8 +260,10 @@ export default function ImportDataset( translations ) {
         this.updateButtonState();
     };
 
+    /**
+     * Submit form data with each input field
+     */
     this.handleSubmit = () => {
-        console.log( 'submit' );
         let params = {
             container: this.container,
             typeInput: this.typeInput,
@@ -239,6 +276,12 @@ export default function ImportDataset( translations ) {
         ImportManager.importData( params );
     };
 
+    /**
+     * Validate user input to make sure it doesn't
+     * contain un-allowed characters and isn't an empty string
+     *
+     * @param d - node data
+     */
     this.validateTextInput = d => {
         let target           = d3.select( `#${ d.id }` ),
             node             = target.node(),
@@ -261,6 +304,9 @@ export default function ImportDataset( translations ) {
         this.updateButtonState();
     };
 
+    /**
+     * Enable/disable button based on form validity
+     */
     this.updateButtonState = () => {
         this.container.selectAll( '.text-input' )
             .each( function( d ) {
@@ -274,17 +320,28 @@ export default function ImportDataset( translations ) {
         this.submitButton.node().disabled = !this.formValid;
     };
 
-    this.getTypeName = val => {
+    /**
+     * Get the selected import-type's value
+     *
+     * @param title - title of selected import-type
+     * @returns {boolean|string} - value of type if found. otherwise, false.
+     */
+    this.getTypeName = title => {
         let comboData = this.container.select( '#importDatasetImportType' ).datum(),
-            match     = _.find( comboData.combobox.data, o => o.title === val );
+            match     = _.find( comboData.combobox.data, o => o.title === title );
 
         return match ? match.value : false;
     };
 
-    this.setMultipartForType = typeName => {
+    /**
+     * Update properties of the multipart upload input based on the selected import-type
+     *
+     * @param typeVal - value of selected import-type
+     */
+    this.setMultipartForType = typeVal => {
         let uploader = d3.select( '#ingestFileUploader' );
 
-        if ( typeName === 'DIR' ) {
+        if ( typeVal === 'DIR' ) {
             if ( this.browserInfo.name.substring( 0, 6 ) === 'Chrome' ) {
                 uploader
                     .property( 'multiple', false )
@@ -298,13 +355,13 @@ export default function ImportDataset( translations ) {
                     .attr( 'webkitdirectory', null )
                     .attr( 'directory', null );
             }
-        } else if ( typeName === 'GEONAMES' ) {
+        } else if ( typeVal === 'GEONAMES' ) {
             uploader
                 .property( 'multiple', false )
                 .attr( 'accept', '.geonames,.txt' )
                 .attr( 'webkitdirectory', null )
                 .attr( 'directory', null );
-        } else if ( typeName === 'OSM' ) {
+        } else if ( typeVal === 'OSM' ) {
             uploader
                 .property( 'multiple', true )
                 .attr( 'accept', '.osm, .osm.zip, .pbf' )

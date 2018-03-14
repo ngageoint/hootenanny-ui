@@ -12,6 +12,9 @@ import ReviewBookmarks from './reviewBookmarks';
 import ReviewBookmarkNotes from './reviewBookmarkNotes';
 import About from './about';
 
+/**
+ * Export all uninitialized tabs in an array
+ */
 export default [
     Datasets,
     TranslationAssistant,

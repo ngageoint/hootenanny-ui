@@ -9,6 +9,11 @@ import _ from 'lodash-es';
 import Events from '../util/events';
 import settingsTabs from './settingsTabs/index';
 
+/**
+ * Creates the settings panel
+ *
+ * @constructor
+ */
 export default class SettingsPanel {
     constructor( context ) {
         this.context    = context;
@@ -19,10 +24,18 @@ export default class SettingsPanel {
         this.activeId = null;
     }
 
+    /**
+     * Attach event handlers
+     */
     listen() {
         this.events.listen( 'toggle-manage-tab', this.toggleTab, this );
     }
 
+    /**
+     * Toggle a tab into view
+     *
+     * @param d - node data
+     */
     toggleTab( d ) {
         this.activeId  = d3.select( d ).attr( 'data' );
         let activeBody = d3.select( this.activeId ).node();
@@ -35,6 +48,9 @@ export default class SettingsPanel {
             .classed( 'strong', true );
     }
 
+    /**
+     * Render the base of the panel
+     */
     async renderContainer() {
         this.settingsPanel = this.container
             .append( 'div' )
@@ -53,6 +69,9 @@ export default class SettingsPanel {
             .text( 'Settings' );
     }
 
+    /**
+     * Initialize by rendering the base panel and then all of it's components
+     */
     async init() {
         this.listen();
 

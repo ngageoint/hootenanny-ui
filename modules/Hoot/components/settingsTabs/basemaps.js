@@ -6,6 +6,12 @@
 
 import Tab from './tab';
 
+/**
+ * Creates the basemaps tab in the settings panel
+ *
+ * @extends Tab
+ * @constructor
+ */
 export default class Basemaps extends Tab {
     constructor( ...params ) {
         super( params );

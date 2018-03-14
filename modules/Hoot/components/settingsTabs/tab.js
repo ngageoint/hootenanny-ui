@@ -6,6 +6,9 @@
 
 import Events from '../../util/events';
 
+/**
+ * Base class that all other tabs in the settings panel extends from
+ */
 export default class Tab {
     constructor( [ ctx, panel, sidebar ] ) {
         this.events  = Events;
@@ -17,6 +20,9 @@ export default class Tab {
         this.id   = null;
     }
 
+    /**
+     * Render tab header in settings panel sidebar
+     */
     render() {
         const self = this;
 

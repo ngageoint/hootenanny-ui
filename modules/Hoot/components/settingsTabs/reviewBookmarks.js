@@ -6,6 +6,12 @@
 
 import Tab from './tab';
 
+/**
+ * Creates the review-bookmarks tab in the settings panel
+ *
+ * @extends Tab
+ * @constructor
+ */
 export default class ReviewBookmarks extends Tab {
     constructor( ...params ) {
         super( params );
