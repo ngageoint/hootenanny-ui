@@ -8,6 +8,11 @@ label {
     display: block;
 }
 
+input {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .pointer {
     cursor: pointer !important;
 }
@@ -146,4 +151,16 @@ button {
             background-color: $secondary-blue;
         }
     }
+}
+
+input[type=text][disabled] {
+    &::placeholder {
+        color: #777;
+    }
+
+    & ~span {
+        display: none;
+    }
+
+    background-color: rgba(0, 0, 0, .25) !important;
 }

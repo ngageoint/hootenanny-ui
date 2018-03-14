@@ -1,4 +1,6 @@
 #sidebar {
+    height: calc( 100% - 60px );
+    
     .feature-list-pane {
         display: none;
     }

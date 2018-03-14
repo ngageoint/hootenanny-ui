@@ -17,6 +17,8 @@ export default function FormFactory() {
 
         this.createFieldSets( form, metadata.form );
         this.createButton( formDiv, metadata.button );
+
+        return container;
     };
 
     this.createContainer = selector => {
@@ -71,6 +73,10 @@ export default function FormFactory() {
                     self.createCombobox( field );
                     break;
                 }
+                case 'text': {
+                    self.createTextField( field );
+                    break;
+                }
                 case 'multipart': {
                     self.createMultipart( field );
                     break;
@@ -80,54 +86,56 @@ export default function FormFactory() {
                     break;
                 }
             }
-
-            if ( d.id ) {
-                field.attr( 'id', d.id );
-            }
-
-            if ( d.onChange ) {
-                field.on( 'change', d.onChange );
-            }
         } );
     };
 
-    this.createCombobox = function( field ) {
-        let inputField = field.append( 'input' )
+    this.createCombobox = field => {
+        let input = field.append( 'input' )
             .attr( 'type', 'text' )
-            .attr( 'placeholder', d => d.placeholder );
+            .attr( 'id', d => d.id )
+            .attr( 'autocomplete', 'off' )
+            .attr( 'placeholder', d => d.placeholder )
+            .attr( 'disabled', d => d.disabled )
+            .on( 'change', d => d.onChange() )
+            .on( 'keyup', d => d.onChange() );
 
-        field.select( d => {
+        input.select( d => {
             if ( d.combobox && d.combobox.data && d.combobox.command ) {
-                d.combobox.command.call( inputField.node(), d );
+                d.combobox.command( input.node(), d );
             }
         } );
     };
 
-    this.createMultipart = function( field ) {
-        let fieldDiv = field.append( 'div' ).classed( 'contain', true );
+    this.createTextField = field => {
+        field.append( 'input' )
+            .attr( 'type', 'text' )
+            .attr( 'id', d => d.id )
+            .attr( 'placeholder', d => d.placeholder )
+            .attr( 'readonly', d => d.readOnly )
+            .attr( 'disabled', d => d.disabled )
+            .on( 'change', d => d.onChange );
+    };
 
-        self.createTextField( fieldDiv );
+    this.createMultipart = field => {
+        let wrapper = field.append( 'div' ).classed( 'contain', true );
 
-        let wrapper = fieldDiv.append( 'span' )
+        self.createTextField( wrapper );
+
+        let span = wrapper.append( 'span' )
             .classed( 'icon-button pointer keyline-left pin-right flex align-center justify-center', true );
 
-        wrapper.append( 'div' )
+        span.append( 'div' )
             .classed( 'material-icons small', true )
             .text( 'folder' );
 
-        wrapper.append( 'input' )
+        span.append( 'input' )
             .attr( 'id', d => d.multipartId )
             .attr( 'type', 'file' )
+            .attr( 'readonly', true )
             .property( 'multiple', false )
             .attr( 'accept', '.shp, .shx, .dbf, .prj, .osm, .zip' )
-            .classed( 'pointer pin-top dataset-file-upload', true );
-    };
-
-    this.createTextField = function( field ) {
-        field.append( 'input' )
-            .attr( 'type', 'text' )
-            .attr( 'placeholder', d => d.placeholder )
-            .attr( 'class', d => d.className );
+            .classed( 'pointer pin-top dataset-file-upload', true )
+            .on( 'change', d => d.onChange() );
     };
 
     this.createButton = ( formDiv, buttonMeta ) => {
@@ -135,8 +143,9 @@ export default function FormFactory() {
             .classed( 'modal-footer', true );
 
         buttonContainer.append( 'button' )
-            .classed( 'round strong primary', true )
             .attr( 'disabled', true )
+            .attr( 'id', buttonMeta.id )
+            .classed( 'round strong primary', true )
             .text( buttonMeta.text );
     };
 }

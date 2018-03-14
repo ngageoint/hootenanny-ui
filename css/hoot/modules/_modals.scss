@@ -22,7 +22,7 @@
 
         button {
             width: 100px;
-            margin: 20px auto 0;
+            margin: 15px auto 0;
         }
     }
 
@@ -36,6 +36,14 @@
 
         input {
             border: none;
+
+            &[type="text"] {
+                border-radius: 0 0 4px 4px;
+            }
+
+            &.disabled {
+                background-color: white;
+            }
         }
 
         .icon-button {

@@ -102,11 +102,15 @@ export const importDatasetTypes = [
         value: 'FILE'
     },
     {
-        title: 'File (osm, osm.zip, pbf',
+        title: 'File (osm, osm.zip, pbf)',
         value: 'OSM'
     },
     {
         title: 'File (geonames, txt)',
         value: 'GEONAMES'
+    },
+    {
+        title: 'Directory (FGDB)',
+        value: 'DIR'
     }
 ];
