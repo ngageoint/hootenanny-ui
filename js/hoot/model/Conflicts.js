@@ -463,8 +463,22 @@ Hoot.model.conflicts = function(context)
     var doMerge = function(layerName, feature, featureAgainst, mapid, reviewMergeRelationId, callback) {
         try
         {
-            var features = [JXON.stringify(feature.asJXON()), JXON.stringify(featureAgainst.asJXON())];
             var reverse = d3.event.ctrlKey;
+            
+            //This tag identifies the feature that is being merged into and will be removed by the server
+            //after merging is completed. The tag is not needed by POI to Polygon conflation, however, 
+            //and will be ignored since POIs are always merged into polygons.
+            if (reverse)
+            {
+              featureAgainst.tags['hoot:merge:target'] = 'yes';
+            }
+            else
+            {
+              feature.tags['hoot:merge:target'] = 'yes';
+            }
+
+            var features = [JXON.stringify(feature.asJXON()), JXON.stringify(featureAgainst.asJXON())];
+            
             if (reverse) features = features.reverse();
             var osmXml = '<osm version=\'0.6\' upload=\'true\' generator=\'hootenanny\'>' +
                 features.join('') + '</osm>';
