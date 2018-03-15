@@ -6,12 +6,13 @@
 
 import _ from 'lodash-es';
 import FolderManager from '../../models/folderManager';
-import ImportManager from '../../models/importManager';
+//import ImportManager from '../../models/importManager';
 import FormFactory from './formFactory';
-import { importDatasetForm } from '../../config/formConfigs';
+import { importDatasetForm } from '../../config/formMetadata';
 import { importDatasetTypes } from '../../config/domElements';
 import { d3combobox as d3_combobox } from '../../../lib/hoot/d3.combobox';
 import { getBrowserInfo } from '../../util/utilities';
+import API from '../../util/api';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -228,7 +229,10 @@ export default function ImportDatasetForm( translations ) {
 
         this.loadingState();
 
-        ImportManager.importData( data );
+        return API.upload( data )
+            .then( resp => {
+                console.log( resp );
+            } );
     };
 
     /**

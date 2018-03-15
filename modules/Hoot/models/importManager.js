@@ -18,7 +18,7 @@ class ImportManager {
 
     importData( data ) {
         return API.upload( data )
-            .then( resp => this.importStatus( resp ) );
+            //.then( resp => this.importStatus( resp ) );
     }
 
     importStatus( resp ) {
