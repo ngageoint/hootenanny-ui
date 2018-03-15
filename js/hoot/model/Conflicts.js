@@ -516,6 +516,7 @@ Hoot.model.conflicts = function(context)
                         context.hoot().assert(
                           response.reviewRefsResponses.length === queryElements.length);
 
+                        //TODO: merged entity won't always be a node
                         //newly merged entity
                         var mergedNode = entities[0];
                         var featureToUpdate = feature;
@@ -526,6 +527,7 @@ Hoot.model.conflicts = function(context)
                           featureToUpdate = featureAgainst;
                           featureToDelete = feature;
                         }
+                        //TODO: don't think this tag update is needed anymore
                         mergedNode.tags['hoot:status'] = 3;
                         context.perform(
                           iD.actions.ChangeTags(featureToUpdate.id, mergedNode.tags),
