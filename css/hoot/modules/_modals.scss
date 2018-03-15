@@ -18,11 +18,17 @@
     }
 
     .modal-footer {
-        display: flex;
-
         button {
-            width: 100px;
-            margin: 15px auto 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: auto;
+            margin: 10px auto 0;
+            padding: 0 15px;
+
+            ._icon {
+                margin-left: 10px;
+            }
         }
     }
 

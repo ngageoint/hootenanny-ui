@@ -114,4 +114,14 @@
     &.data:before {
         background-position:-40px 0;
     }
+
+    &._loading {
+        background-image: url(img/loading-spin-dark.svg);
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        display: inline-block;
+        width: 26px;
+        height: 26px;
+        vertical-align: middle;
+    }
 }

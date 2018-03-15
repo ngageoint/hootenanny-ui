@@ -45,13 +45,6 @@ class API {
             return false;
         }
 
-        let url = '/hoot-services/ingest/ingest/upload' +
-            `?TRANSLATION=${ data.TRANSLATION }` +
-            `&INPUT_TYPE=${ data.INPUT_TYPE }` +
-            `&INPUT_NAME=${ data.INPUT_NAME }` +
-            '&USER_EMAIL=null' +
-            `&NONE_TRANSLATION=${ data.NONE_TRANSLATION }`;
-
         const params = {
             path: '/hoot-services/ingest/ingest/upload',
             method: 'POST',
@@ -63,6 +56,30 @@ class API {
                 NONE_TRANSLATION: data.NONE_TRANSLATION
             },
             data: data.formData
+        };
+
+        return this.request( params );
+    }
+
+    /**
+     * Add a new folder to the database
+     *
+     * @param data - folder data
+     * @returns {promise} - request
+     */
+    addFolder( data ) {
+        if ( !data.folderName || !( data.parentId >= 0 ) ) {
+            return false;
+        }
+
+        const params = {
+            path: '/hoot-services/osm/api/0.6/map/addfolder',
+            method: 'POST',
+            params: {
+                folderName: data.folderName,
+                parentId: data.parentId
+            },
+            data
         };
 
         return this.request( params );
@@ -141,6 +158,21 @@ class API {
         return this.request( params )
             .then( resp => resp.data );
     }
+
+    /**
+     * Status of job
+     *
+     * @param id - job id
+     */
+    getJobStatus( id ) {
+        const params = {
+            path: `/hoot-services/job/status/${ id }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    };
 
     getMapSizes( mapIds ) {
         if ( !mapIds ) {

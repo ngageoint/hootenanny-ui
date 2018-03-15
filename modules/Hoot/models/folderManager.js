@@ -8,20 +8,24 @@ import API from '../util/api';
 import _ from 'lodash-es';
 
 /**
- * Class that retrieves and manages folders for the entire application
+ * Retrieves and manages folders and datasets
  */
 class FolderManager {
     constructor() {
         this.api = API;
 
-        this.folders    = [];
-        this.links      = [];
-        this.datasets   = [];
-        this.childArray = [];
+        this.folders = {
+            base: [],
+            open: [],
+            paths: []
+        };
 
-        this.selectedDsets = [];
-        this.openFolders   = [];
-        this.availFolders  = [];
+        this.datasets = {
+            base: [],
+            selected: []
+        };
+
+        this.links = [];
     }
 
     /**
@@ -44,8 +48,8 @@ class FolderManager {
     refreshFolders() {
         return this.api.getFolders()
             .then( data => {
-                this.folders      = data.folders;
-                this.availFolders = this.listFolders( this.folders );
+                this.folders.base  = data.folders;
+                this.folders.paths = this.listFolders( this.folders.base );
             } );
     }
 
@@ -54,7 +58,7 @@ class FolderManager {
      */
     refreshDatasets() {
         return this.api.getLayers()
-            .then( data => this.datasets = data.layers || data );
+            .then( data => this.datasets.base = data.layers || data );
     }
 
     /**
@@ -71,7 +75,7 @@ class FolderManager {
      * @returns {array} - datasets
      */
     get selectedDatasets() {
-        return this.selectedDsets;
+        return this.datasets.selected;
     }
 
     /**
@@ -79,8 +83,12 @@ class FolderManager {
      *
      * @returns {array} - folders
      */
-    get availableFolders() {
-        return this.availFolders;
+    get folderPaths() {
+        return this.folders.paths;
+    }
+
+    addFolder() {
+
     }
 
     /**
@@ -96,13 +104,13 @@ class FolderManager {
             } else {
                 //use links to get parent folder as far back as possible
                 let strPath      = f.name,
-                    parentFolder = _.find( this.folders, { id: f.parentId } ),
+                    parentFolder = _.find( this.folders.base, { id: f.parentId } ),
                     i            = 0;
 
                 do {
                     i++;
                     strPath      = parentFolder.name + '/' + strPath;
-                    parentFolder = _.find( this.folders, { id: parentFolder.parentId } );
+                    parentFolder = _.find( this.folders.base, { id: parentFolder.parentId } );
                 } while ( parentFolder || i === 10 );
 
                 f.folderPath = strPath;
@@ -121,15 +129,15 @@ class FolderManager {
      */
     setOpenFolders( id, add ) {
         if ( add ) {
-            this.openFolders.push( id );
+            this.folders.open.push( id );
         } else {
-            let index = this.openFolders.indexOf( id );
+            let index = this.folders.open.indexOf( id );
             if ( index > 1 ) {
-                this.openFolders.splice( index, 1 );
+                this.folders.open.splice( index, 1 );
             }
         }
 
-        return this.openFolders;
+        return this.folders.open;
     }
 
     /**
@@ -140,13 +148,13 @@ class FolderManager {
      */
     updateSelectedDatasets( id, clearAll ) {
         if ( clearAll ) {
-            this.selectedDsets = [];
+            this.datasets.selected = [];
         }
 
-        if ( this.selectedDsets.indexOf( id ) > -1 ) {
-            _.pull( this.selectedDsets, id );
+        if ( this.datasets.selected.indexOf( id ) > -1 ) {
+            _.pull( this.datasets.selected, id );
         } else {
-            this.selectedDsets.push( id );
+            this.datasets.selected.push( id );
         }
     }
 
@@ -157,7 +165,7 @@ class FolderManager {
      * @returns {array} - hierarchy
      */
     getAvailFolderData() {
-        let datasetList = _.map( this.datasets, dataset => {
+        let datasetList = _.map( this.datasets.base, dataset => {
             let match = _.find( this.links, link => link.mapId === dataset.id );
 
             if ( !match ) {
@@ -166,13 +174,13 @@ class FolderManager {
                 _.assign( dataset, { folderId: match.folderId } );
             }
 
-            _.assign( dataset, { type: 'dataset', selected: false } );
+            _.assign( dataset, { type: 'dataset' } );
 
             return dataset;
         } );
 
-        let folderList = _.map( this.folders, folder => {
-            if ( this.openFolders.indexOf( folder.id ) > -1 ) {
+        let folderList = _.map( this.folders.base, folder => {
+            if ( this.folders.open.indexOf( folder.id ) > -1 ) {
                 folder.children = _.filter( datasetList, dataset => dataset.folderId === folder.id );
                 folder.state    = 'open';
             } else {

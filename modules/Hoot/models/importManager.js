@@ -16,35 +16,13 @@ class ImportManager {
 
     }
 
-    importData( elems ) {
-        let transVal    = elems.schemaInput.property( 'value' ),
-            typeVal     = elems.typeInput.property( 'value' ),
-
-            transCombo  = elems.schemaInput.datum(),
-            typeCombo   = elems.typeInput.datum(),
-
-            translation = _.filter( transCombo.combobox.data, o => o.DESCRIPTION === transVal )[ 0 ],
-            importType  = _.filter( typeCombo.combobox.data, o => o.title === typeVal )[ 0 ];
-
-        let data = {
-            NONE_TRANSLATION: translation.NONE === 'true',
-            TRANSLATION: translation.PATH,
-            INPUT_TYPE: importType.value,
-            INPUT_NAME: elems.layerNameInput.property( 'value' ),
-            formData: this.getFormData( elems.fileIngest.node().files )
-        };
-
-        API.upload( data );
+    importData( data ) {
+        return API.upload( data )
+            .then( resp => this.importStatus( resp ) );
     }
 
-    getFormData( files ) {
-        let formData = new FormData();
-
-        _.forEach( files, ( file, i ) => {
-            formData.append( `eltuploadfile${ i }`, file );
-        } );
-
-        return formData;
+    importStatus( resp ) {
+        console.log( resp );
     }
 }
 

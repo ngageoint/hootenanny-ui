@@ -35,9 +35,6 @@ export default function FolderTree( container ) {
         .domain( [ 0, 0 ] )
         .range( [ 20, 0 ] );
 
-    this.zoom = d3.zoom()
-        .scaleExtent( [ 1, 2 ] );
-
     this.tree = d3.tree()
         .nodeSize( [ 0, 20 ] );
 
@@ -80,7 +77,7 @@ export default function FolderTree( container ) {
     };
 
     /**
-     * Update the tree by adding/deleting nodes and their attributes
+     * Update the tree by adding/deleting nodes
      *
      * @param source - source node
      */
@@ -99,8 +96,11 @@ export default function FolderTree( container ) {
             if ( n.depth && n.depth > 0 ) {
                 parentDepth = n.depth;
             } else {
-                n.data  = n;
                 n.depth = parentDepth + 1;
+            }
+
+            if ( !n.data ) {
+                n.data = n;
             }
 
             nodesSort.push( n );
@@ -323,9 +323,10 @@ export default function FolderTree( container ) {
      * @param d - tree node
      */
     this.openContextMenu = d => {
-        let items;
+        let { data } = d,
+            items;
 
-        if ( d.type === 'dataset' ) {
+        if ( data.type === 'dataset' ) {
             const selectedCount = FolderManager.selectedDatasets.length;
 
             items = [
@@ -351,7 +352,7 @@ export default function FolderTree( container ) {
                     click: 'renameDataset'
                 } );
             }
-        } else if ( d.type === 'folder' ) {
+        } else if ( data.type === 'folder' ) {
             items = contextMenus.folder;
             items = items.splice( 1, 0, {
                 title: `Rename/Move ${ d.name }`,
@@ -381,10 +382,11 @@ export default function FolderTree( container ) {
             .attr( 'class', item => `_icon ${ item.icon }` )
             .text( item => item.title )
             .on( 'click', item => {
-                let node,
-                    key = {
-                        name: d.name,
-                        id: d.id
+                let { data } = d,
+                    node,
+                    key      = {
+                        name: data.name,
+                        id: data.id
                     };
 
                 console.log( item );
@@ -402,13 +404,13 @@ export default function FolderTree( container ) {
      * @param d - tree node
      */
     this.click = function( d ) {
-        let selected = d.selected || false,
+        let selected = d.data.selected || false,
             isOpen   = d.data.state === 'open';
 
-        if ( d.type === 'dataset' ) {
+        if ( d.data.type === 'dataset' ) {
             if ( d3.event.metaKey ) {
-                d.selected = !d.selected;
-                FolderManager.updateSelectedDatasets( d.id );
+                d.data.selected = !d.data.selected;
+                FolderManager.updateSelectedDatasets( d.data.id );
             } else {
                 // Get all currently selected nodes
                 let selectedNodes = _.filter( self.root.descendants(), node => node.data.selected );
@@ -425,7 +427,7 @@ export default function FolderTree( container ) {
                     d.data.selected = !selected;
                 }
 
-                FolderManager.updateSelectedDatasets( d.id, true );
+                FolderManager.updateSelectedDatasets( d.data.id, true );
             }
         }
 

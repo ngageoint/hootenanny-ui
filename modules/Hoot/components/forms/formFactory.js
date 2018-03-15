@@ -199,11 +199,15 @@ export default function FormFactory() {
         let buttonContainer = formModal.append( 'div' )
             .classed( 'modal-footer', true );
 
-        buttonContainer.append( 'button' )
+        let button = buttonContainer.append( 'button' )
             .attr( 'disabled', true )
             .attr( 'id', buttonMeta.id )
             .classed( 'round strong primary', true )
-            .text( buttonMeta.text )
             .on( 'click', buttonMeta.onClick );
+
+        button
+            .append( 'span' )
+            .text( buttonMeta.text );
+
     };
 }

@@ -8,6 +8,7 @@ import _ from 'lodash-es';
 import FolderManager from '../../models/folderManager';
 import ImportManager from '../../models/importManager';
 import FormFactory from './formFactory';
+import { importDatasetForm } from '../../config/formConfigs';
 import { importDatasetTypes } from '../../config/domElements';
 import { d3combobox as d3_combobox } from '../../../lib/hoot/d3.combobox';
 import { getBrowserInfo } from '../../util/utilities';
@@ -21,7 +22,7 @@ import { getBrowserInfo } from '../../util/utilities';
 export default function ImportDatasetForm( translations ) {
     const self = this;
 
-    this.folderList   = FolderManager.availableFolders;
+    this.folderList   = FolderManager.folderPaths;
     this.importTypes  = importDatasetTypes;
     this.translations = translations;
     this.browserInfo  = getBrowserInfo();
@@ -42,64 +43,7 @@ export default function ImportDatasetForm( translations ) {
      * Set form parameters and create the form using the form factory
      */
     this.render = () => {
-        let form = [
-            {
-                label: 'Import Type',
-                id: 'importDatasetImportType',
-                placeholder: 'Select Import Type',
-                inputType: 'combobox',
-                combobox: {
-                    data: this.importTypes,
-                    command: this.populateImportTypes
-                },
-                onChange: this.handleTypeChange
-            },
-            {
-                label: 'Import Data',
-                id: 'importDatasetFileImport',
-                placeholder: 'Select File',
-                icon: 'folder',
-                readOnly: true,
-                disabled: true,
-                inputType: 'multipart',
-                multipartId: 'ingestFileUploader',
-                onChange: this.handleMultipartChange
-            },
-            {
-                label: 'Layer Name',
-                id: 'importDatasetLayerName',
-                placeholder: 'Enter name',
-                inputType: 'text',
-                onChange: this.validateTextInput
-            },
-            {
-                label: 'Path',
-                placeholder: 'root',
-                id: 'importDatasetPathName',
-                inputType: 'combobox',
-                combobox: {
-                    data: this.folderList,
-                    command: this.populateFolderList
-                }
-            },
-            {
-                label: 'Enter Name for New Folder (Leave blank otherwise)',
-                id: 'importDatasetNewFolderName',
-                inputType: 'text',
-                onChange: this.validateTextInput
-            },
-            {
-                label: 'Translation Schema of Import File',
-                placeholder: 'Select Data Translation Schema',
-                id: 'importDatasetSchema',
-                inputType: 'combobox',
-                disabled: true,
-                combobox: {
-                    data: this.translations,
-                    command: this.populateTranslations
-                }
-            }
-        ];
+        let form = importDatasetForm.call( this );
 
         let button = {
             text: 'Import',
@@ -120,6 +64,7 @@ export default function ImportDatasetForm( translations ) {
         this.fileInput      = d3.select( '#importDatasetFileImport' );
         this.layerNameInput = d3.select( '#importDatasetLayerName' );
         this.schemaInput    = d3.select( '#importDatasetSchema' );
+        this.newFolderInput = d3.select( '#importDatasetNewFolderName' );
         this.fileIngest     = d3.select( '#ingestFileUploader' );
         this.submitButton   = d3.select( '#importDatasetBtn' );
     };
@@ -200,6 +145,8 @@ export default function ImportDatasetForm( translations ) {
             schemaData   = this.schemaInput.datum(),
             translationsList;
 
+        this.formData.importType = selectedVal;
+
         // clear values
         this.fileInput.property( 'value', '' );
         this.layerNameInput.property( 'value', '' );
@@ -261,19 +208,58 @@ export default function ImportDatasetForm( translations ) {
     };
 
     /**
-     * Submit form data with each input field
+     * Submit form data
      */
     this.handleSubmit = () => {
-        let params = {
-            container: this.container,
-            typeInput: this.typeInput,
-            fileInput: this.fileInput,
-            layerNameInput: this.layerNameInput,
-            schemaInput: this.schemaInput,
-            fileIngest: this.fileIngest
+        let transVal    = this.schemaInput.property( 'value' ),
+            typeVal     = this.typeInput.property( 'value' ),
+            transCombo  = this.schemaInput.datum(),
+            typeCombo   = this.typeInput.datum(),
+            translation = _.filter( transCombo.combobox.data, o => o.DESCRIPTION === transVal )[ 0 ],
+            importType  = _.filter( typeCombo.combobox.data, o => o.title === typeVal )[ 0 ];
+
+        let data = {
+            NONE_TRANSLATION: translation.NONE === 'true',
+            TRANSLATION: translation.PATH,
+            INPUT_TYPE: importType.value,
+            INPUT_NAME: this.layerNameInput.property( 'value' ),
+            formData: this.getFormData( this.fileIngest.node().files )
         };
 
-        ImportManager.importData( params );
+        this.loadingState();
+
+        ImportManager.importData( data );
+    };
+
+    /**
+     *
+     * @param files
+     * @returns {FormData}
+     */
+    this.getFormData = files => {
+        let formData = new FormData();
+
+        _.forEach( files, ( file, i ) => {
+            formData.append( `eltuploadfile${ i }`, file );
+        } );
+
+        return formData;
+    };
+
+    this.loadingState = () => {
+        this.submitButton
+            .select( 'span' )
+            .text( 'Uploading...' );
+
+        this.submitButton
+            .append( 'div' )
+            .classed( '_icon _loading float-right', true )
+            .attr( 'id', 'importSpin' );
+
+        this.container.selectAll( 'input' )
+            .each( function() {
+                d3.select( this ).node().disabled = true;
+            } );
     };
 
     /**

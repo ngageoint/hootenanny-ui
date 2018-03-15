@@ -6,9 +6,6 @@ const nodeResolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
 const json = require('rollup-plugin-json');
 const includePaths = require('rollup-plugin-includepaths');
-//const globals = require('rollup-plugin-node-globals');
-//const builtins = require('rollup-plugin-node-builtins');
-//const npm = require('rollup-plugin-npm');
 const colors = require('colors/safe');
 const collectSass = require('rollup-plugin-collect-sass');
 const flow = require('rollup-plugin-flow');
@@ -51,16 +48,19 @@ module.exports = function buildSrc() {
                     commonjs(),
                     json()
                 ],
-                cache: cache
+                cache: cache,
+                treeshake: false
             })
             .then(function (bundle) {
-                cache = bundle;
-                return bundle.write({
+                bundle.write({
                     format: 'iife',
                     file: 'dist/iD.js',
                     sourcemap: true,
                     strict: false
                 });
+
+                cache = bundle;
+                return bundle;
             })
             .then(function () {
                 building = false;
