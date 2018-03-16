@@ -58,7 +58,8 @@ class API {
             data: data.formData
         };
 
-        return this.request( params );
+        return this.request( params )
+            .then( resp => resp.data );
     }
 
     /**
@@ -82,7 +83,8 @@ class API {
             data
         };
 
-        return this.request( params );
+        return this.request( params )
+            .then( resp => resp.data );
     }
 
     /**

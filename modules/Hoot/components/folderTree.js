@@ -56,7 +56,7 @@ export default function FolderTree( container ) {
     /**
      * Initialize the folder tree
      */
-    this.init = () => {
+    this.render = () => {
         let folders = FolderManager.getAvailFolderData();
 
         if ( this.isDatasetTable ) {
@@ -79,20 +79,70 @@ export default function FolderTree( container ) {
     /**
      * Update the tree by adding/deleting nodes
      *
-     * @param source - source node
+     * @param source - source node used to update tree
      */
     this.update = source => {
-        let nodes       = this.tree( this.root ),
-            height      = Math.max( 150, nodes.length * this.barHeight + this.margin.top + this.margin.bottom ),
-            nodesSort   = [],
-            parentDepth = 0;
+        let nodes  = this.tree( this.root ),
+            height = Math.max( 150, nodes.length * this.barHeight + this.margin.top + this.margin.bottom );
 
         this.container.select( 'svg' ).transition()
             .duration( 0 )
             .style( 'height', `${height}px` );
 
+        let nodesSort = this.sortNodes( nodes );
+
+        // Bind node data and render parent g container
+        let node = this.svg.selectAll( 'g.node' )
+            .data( nodesSort, d => d )
+            .enter().append( 'g' );
+
+        // Render base element
+        let nodeElement = this.createNodeElement( node, source );
+
+        // Render text values and lines for nodes
+        this.renderText( nodeElement.filter( d => d.data.type === 'dataset' ) );
+        this.renderLines( nodeElement.filter( d => d.depth > 1 ) );
+
+        // Transition nodes to their new position
+        nodeElement.transition()
+            .duration( this.duration )
+            .attr( 'transform', d => `translate( 0, ${ d.x } )` )
+            .style( 'opacity', 1 );
+
+        node.transition()
+            .duration( this.duration )
+            .attr( 'transform', d => `translate( 0, ${ d.x } )` )
+            .style( 'opacity', 1 )
+            .select( 'rect' )
+            .style( 'fill', this.fillColor )
+            .attr( 'class', this.rectClass );
+
+        node.exit().remove(); // remove old elements
+
+        this.root.each( d => {
+            d.x0 = d.x;
+            d.y0 = d.y;
+        } );
+    };
+
+    /**
+     * Update nodes to all have a consistent data structure and
+     * sort them so that they render in the correct order
+     *
+     * @param nodes - tree nodes
+     * @returns {Array} - sorted nodes
+     */
+    this.sortNodes = nodes => {
+        let nodesSort   = [],
+            parentDepth = 0,
+            i           = 0; // manual iteration because eachBefore doesn't provide a key
+
         nodes.eachBefore( n => {
-            // Update leaf nodes to have similar structure to regular nodes
+            // set vertical and horizontal position of node
+            n.x = (i - 1) * this.barHeight;
+            n.y = n.depth * 20;
+
+            // update leaf nodes (nodes with no children) to have similar structure to regular nodes
             if ( n.depth && n.depth > 0 ) {
                 parentDepth = n.depth;
             } else {
@@ -104,20 +154,21 @@ export default function FolderTree( container ) {
             }
 
             nodesSort.push( n );
+            i++;
         } );
 
-        // Set vertical position of node
-        nodesSort.forEach( ( n, i ) => {
-            n.x = (i - 1) * this.barHeight;
-            n.y = n.depth * 20;
-        } );
+        return nodesSort;
+    };
 
-        // Bind node data
-        let node = this.svg.selectAll( 'g.node' )
-            .data( nodesSort, d => d );
-
-        // Render parent g element of node
-        let nodeElement = node.enter().append( 'g' )
+    /**
+     * Create base DOM element for node. Set it's position, icon, and name
+     *
+     * @param node - tree node
+     * @param source - source node used to update tree
+     * @returns {d3} - node DOM element
+     */
+    this.createNodeElement = ( node, source ) => {
+        let nodeElement = node
             .attr( 'class', 'node' )
             .attr( 'transform', `translate( 0, ${ source.x0 } )` )
             .style( 'opacity', 0 )
@@ -181,30 +232,7 @@ export default function FolderTree( container ) {
                 }
             } );
 
-        // Render text values and lines for nodes
-        this.renderText( nodeElement.filter( d => d.data.type === 'dataset' ) );
-        this.renderLines( nodeElement.filter( d => d.depth > 1 ) );
-
-        // Transition nodes to their new position
-        nodeElement.transition()
-            .duration( this.duration )
-            .attr( 'transform', d => `translate( 0, ${ d.x } )` )
-            .style( 'opacity', 1 );
-
-        node.transition()
-            .duration( this.duration )
-            .attr( 'transform', d => `translate( 0, ${ d.x } )` )
-            .style( 'opacity', 1 )
-            .select( 'rect' )
-            .style( 'fill', this.fillColor )
-            .attr( 'class', this.rectClass );
-
-        node.exit().remove(); // remove old elements
-
-        this.root.each( d => {
-            d.x0 = d.x;
-            d.y0 = d.y;
-        } );
+        return nodeElement;
     };
 
     /**
@@ -286,29 +314,103 @@ export default function FolderTree( container ) {
     };
 
     /**
+     * Fill a rect element based on it's node type
+     *
+     * @param d - tree node
+     * @returns {string} - Hex color code
+     */
+    this.fillColor = d => {
+        let { data } = d;
+
+        if ( data.type === 'folder' ) {
+            return '#7092ff';
+        }
+        else if ( data.type === 'dataset' ) {
+            if ( data.selected ) {
+                return '#ffff99';
+            }
+            return '#efefef';
+        }
+        else {
+            return '#ffffff';
+        }
+    };
+
+    /**
+     * Fill a text element based on it's node type
+     *
+     * @param d - tree node
+     * @returns {string} - hex color code
+     */
+    this.fontColor = d => {
+        let { data } = d;
+
+        if ( data.type === 'folder' ) {
+            return '#ffffff';
+        }
+        else if ( data.type === 'dataset' ) {
+            return '#7092ff';
+        }
+        else {
+            return '#ffffff';
+        }
+    };
+
+    /**
+     * Assign a CSS class to a rect element based
+     * on it's type and the current state that it's in
+     *
+     * @param d - tree node
+     * @returns {string} - CSS class
+     */
+    this.rectClass = d => {
+        let { data } = d;
+
+        // set selected layers
+        if ( data.type === 'dataset' && self.containerId === 'dataset-table' ) {
+            if ( data.selected ) {
+                if ( self.selectedLayerIDs.indexOf( data.layerId ) === -1 ) {
+                    self.selectedLayerIDs.push( data.layerId );
+                }
+            } else {
+                let idx = this.selectedLayerIDs.indexOf( data.layerId );
+                if ( idx > -1 ) {
+                    self.selectedLayerIDs.splice( idx, 1 );
+                }
+            }
+        }
+
+        return data.selected
+            ? 'sel'
+            : data._children
+                ? 'more'
+                : 'flat';
+    };
+
+    /**
      * Logic for right-click and ctrl+click
      *
      * @param d - tree node
      */
     this.bindContextMenu = function( d ) {
-        let selected = d.selected || false;
+        let selected = d.data.selected || false;
 
         d3.event.preventDefault();
 
         if ( d3.event.ctrlKey && d3.event.which === 1 ) {
-            d.selected = !selected;
+            d.data.selected = !selected;
             FolderManager.updateSelectedDatasets( d.id );
         } else if ( d.data.type === 'dataset' ) {
             if ( !selected ) {
-                let selectedNodes = _.filter( self.root.descendants(), node => node.selected );
+                let selectedNodes = _.filter( self.root.descendants(), d => d.data.selected );
 
                 // Un-select all other nodes
-                _.each( selectedNodes, node => {
-                    node.selected = false;
+                _.each( selectedNodes, d => {
+                    d.data.selected = false;
                 } );
 
-                d.selected = true;
-                FolderManager.updateSelectedDatasets( d.id, true );
+                d.data.selected = true;
+                FolderManager.updateSelectedDatasets( d.data.id, true );
             }
 
             self.openContextMenu( d );
@@ -458,79 +560,5 @@ export default function FolderTree( container ) {
         }
 
         self.update( d );
-    };
-
-    /**
-     * Fill a rect element based on it's node type
-     *
-     * @param d - tree node
-     * @returns {string} - Hex color code
-     */
-    this.fillColor = d => {
-        let { data } = d;
-
-        if ( data.type === 'folder' ) {
-            return '#7092ff';
-        }
-        else if ( data.type === 'dataset' ) {
-            if ( data.selected ) {
-                return '#ffff99';
-            }
-            return '#efefef';
-        }
-        else {
-            return '#ffffff';
-        }
-    };
-
-    /**
-     * Fill a text element based on it's node type
-     *
-     * @param d - tree node
-     * @returns {string} - hex color code
-     */
-    this.fontColor = d => {
-        let { data } = d;
-
-        if ( data.type === 'folder' ) {
-            return '#ffffff';
-        }
-        else if ( data.type === 'dataset' ) {
-            return '#7092ff';
-        }
-        else {
-            return '#ffffff';
-        }
-    };
-
-    /**
-     * Assign a CSS class to a rect element based
-     * on it's type and the current state that it's in
-     *
-     * @param d - tree node
-     * @returns {string} - CSS class
-     */
-    this.rectClass = d => {
-        let { data } = d;
-
-        // set selected layers
-        if ( data.type === 'dataset' && self.containerId === 'dataset-table' ) {
-            if ( data.selected ) {
-                if ( self.selectedLayerIDs.indexOf( data.layerId ) === -1 ) {
-                    self.selectedLayerIDs.push( data.layerId );
-                }
-            } else {
-                let idx = this.selectedLayerIDs.indexOf( data.layerId );
-                if ( idx > -1 ) {
-                    self.selectedLayerIDs.splice( idx, 1 );
-                }
-            }
-        }
-
-        return data.selected
-            ? 'sel'
-            : data._children
-                ? 'more'
-                : 'flat';
     };
 }

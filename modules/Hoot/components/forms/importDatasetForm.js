@@ -65,7 +65,6 @@ export default function ImportDatasetForm( translations ) {
         this.fileInput      = d3.select( '#importDatasetFileImport' );
         this.layerNameInput = d3.select( '#importDatasetLayerName' );
         this.schemaInput    = d3.select( '#importDatasetSchema' );
-        this.newFolderInput = d3.select( '#importDatasetNewFolderName' );
         this.fileIngest     = d3.select( '#ingestFileUploader' );
         this.submitButton   = d3.select( '#importDatasetBtn' );
     };
@@ -145,8 +144,6 @@ export default function ImportDatasetForm( translations ) {
             selectedType = this.getTypeName( selectedVal ),
             schemaData   = this.schemaInput.datum(),
             translationsList;
-
-        this.formData.importType = selectedVal;
 
         // clear values
         this.fileInput.property( 'value', '' );
@@ -231,7 +228,9 @@ export default function ImportDatasetForm( translations ) {
 
         return API.upload( data )
             .then( resp => {
-                console.log( resp );
+                if ( resp[ 0 ].status === 'success' ) {
+
+                }
             } );
     };
 

@@ -8,6 +8,7 @@ import API from '../../util/api';
 import Tab from './tab';
 import FolderTree from '../folderTree';
 import ImportDatasetForm from '../forms/importDatasetForm';
+import Events from '../../util/events';
 import {
     datasetButtons,
     datasetTableHeaders
@@ -94,7 +95,21 @@ export default class Datasets extends Tab {
             .attr( 'style', d => `width: ${ d.width }` )
             .text( d => d.title );
 
-        new FolderTree( table ).init();
+        //new FolderTree( table ).render();
+        this.renderDatasetTable( table );
+    }
+
+    renderDatasetTable( table ) {
+        if ( !this.datasetTable ) {
+            this.datasetTable = new FolderTree( table );
+            this.datasetTable.render();
+        } else {
+            this.datasetTable.render();
+        }
+    }
+
+    listen() {
+        Events.listen( 'render-dataset-table', this.renderDatasetTable, this );
     }
 
     /**
@@ -102,5 +117,6 @@ export default class Datasets extends Tab {
      */
     init() {
         this.render();
+        this.listen();
     }
 }
