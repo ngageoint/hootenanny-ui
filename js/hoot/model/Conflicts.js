@@ -527,21 +527,14 @@ Hoot.model.conflicts = function(context)
                           featureToUpdate = featureAgainst;
                           featureToDelete = feature;
                         }
-                        //TODO: don't think this tag update is needed anymore
-                        mergedNode.tags['hoot:status'] = 3;
                         context.perform(
                           iD.actions.ChangeTags(featureToUpdate.id, mergedNode.tags),
                           t('operations.change_tags.annotation'));
-
-
 
                         var reviewRefs =
                           _.uniq(
                             response.reviewRefsResponses[0].reviewRefs.concat(
                               response.reviewRefsResponses[1].reviewRefs));
-
-
-
 
                         //if either of the two merged features reference each other, remove those
                         //references from this list
