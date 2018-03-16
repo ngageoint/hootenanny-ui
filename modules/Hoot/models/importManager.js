@@ -4,9 +4,13 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/14/18
  *******************************************************************************************************/
 
-import _ from 'lodash-es';
 import API from '../util/api';
 
+/**
+ * Manages data imports and job statuses
+ *
+ * @constructor
+ */
 class ImportManager {
     constructor() {
         this.intervals = {};

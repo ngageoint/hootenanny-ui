@@ -14,71 +14,82 @@ import settingsTabs from './settingsTabs/index';
  *
  * @constructor
  */
-export default class SettingsPanel {
-    constructor( context ) {
-        this.context    = context;
-        this.events     = Events;
-        this.settingsTabs = settingsTabs;
-        this.container  = context.container();
 
-        this.activeId = null;
-    }
+export default function SettingsPanel( container ) {
+    this.settingsTabs = settingsTabs;
+    this.container    = container;
 
-    /**
-     * Attach event handlers
-     */
-    listen() {
-        this.events.listen( 'toggle-manage-tab', this.toggleTab, this );
-    }
-
-    /**
-     * Toggle a tab into view
-     *
-     * @param d - node data
-     */
-    toggleTab( d ) {
-        this.activeId  = d3.select( d ).attr( 'data' );
-        let activeBody = d3.select( this.activeId ).node();
-
-        this.settingsPanel.node()
-            .appendChild( activeBody );
-        d3.selectAll( '.hoot-util-header' )
-            .classed( 'strong', false );
-        d3.select( d )
-            .classed( 'strong', true );
-    }
-
-    /**
-     * Render the base of the panel
-     */
-    async renderContainer() {
-        this.settingsPanel = this.container
-            .append( 'div' )
-            .attr( 'id', 'settings-panel' )
-            .classed( 'hidden', true );
-
-        this.settingsSidebar = this.settingsPanel
-            .append( 'div' )
-            .attr( 'id', 'settings-sidebar' )
-            .classed( 'pad2 fill-light keyline-right', true );
-
-        this.settingsSidebar
-            .append( 'h3' )
-            .classed( 'settings-header pointer strong center margin2 pad1y', true )
-            .append( 'label' )
-            .text( 'Settings' );
-    }
+    this.activeId = null;
 
     /**
      * Initialize by rendering the base panel and then all of it's components
      */
-    async init() {
-        this.listen();
+    this.render = async () => {
+        this.panel   = this.createPanel();
+        this.sidebar = this.createSidebar( this.panel );
 
-        this.renderContainer()
-            .then( () => _.map( this.settingsTabs, Tab => {
-                let tab = new Tab( this.context, this.settingsPanel, this.settingsSidebar );
-                tab.init();
-            } ) );
-    }
+        // Create all tab items in the panel
+        Promise.all( _.map( this.settingsTabs, Tab => {
+            new Tab( this.panel, this.sidebar ).render();
+        } ) );
+
+        this.listen();
+    };
+
+    /**
+     * Create the settings panel.
+     * It is initially hidden and takes up the entire view when enabled
+     *
+     * @returns {d3} - settings panel
+     */
+    this.createPanel = () => {
+        return this.container
+            .append( 'div' )
+            .attr( 'id', 'settings-panel' )
+            .classed( 'hidden', true );
+    };
+
+    /**
+     * Create the sidebar in the settings panel
+     *
+     * @param container - panel container
+     * @returns {d3} - settings sidebar
+     */
+    this.createSidebar = container => {
+        let sidebar = container.append( 'div' )
+            .attr( 'id', 'settings-sidebar' )
+            .classed( 'pad2 fill-light keyline-right', true );
+
+        sidebar.append( 'h3' )
+            .classed( 'settings-header pointer strong center margin2 pad1y', true )
+            .append( 'label' )
+            .text( 'Settings' );
+
+        return sidebar;
+    };
+
+    /**
+     * Toggle tab body into view
+     *
+     * @param d - node data
+     */
+    this.toggleTab = d => {
+        this.activeId  = d3.select( d ).attr( 'data' );
+        let activeBody = d3.select( this.activeId ).node();
+
+        this.panel.node()
+            .appendChild( activeBody );
+
+        d3.selectAll( '.hoot-util-header' )
+            .classed( 'strong', false );
+        d3.select( d )
+            .classed( 'strong', true );
+    };
+
+    /**
+     * Listen for tab change
+     */
+    this.listen = () => {
+        Events.listen( 'toggle-settings-tab', this.toggleTab, this );
+    };
 }

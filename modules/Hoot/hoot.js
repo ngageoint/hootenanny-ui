@@ -5,20 +5,27 @@
  *******************************************************************************************************/
 
 import FolderManager from './models/folderManager';
-import components from './components/index';
+import Navbar from './components/navbar';
+import SettingsPanel from './components/settingsPanel';
 
 /**
  * Entry point for Hoot UI
  */
 class Hoot {
     constructor( context ) {
-        this.container  = context.container();
-        this.components = components( context );
+        this.container = context.container();
+        this.renderAll = [
+            SettingsPanel
+        ];
     }
 
     init() {
+        new Navbar( this.container ).render();
+
         FolderManager.refreshAll().then( () => {
-            Promise.all( this.components.map( component => component.init( this.container ) ) );
+            Promise.all( this.renderAll.map( component => {
+                new component( this.container ).render();
+            } ) );
         } );
     }
 }

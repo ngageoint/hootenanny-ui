@@ -23,9 +23,4 @@ export default class About extends Tab {
     render() {
         super.render();
     }
-
-    init() {
-        this.render();
-
-    }
 }

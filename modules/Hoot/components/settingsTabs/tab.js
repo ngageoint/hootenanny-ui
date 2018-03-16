@@ -10,9 +10,8 @@ import Events from '../../util/events';
  * Base class that all other tabs in the settings panel extends from
  */
 export default class Tab {
-    constructor( [ ctx, panel, sidebar ] ) {
+    constructor( [ panel, sidebar ] ) {
         this.events  = Events;
-        this.context = ctx;
         this.panel   = panel;
         this.sidebar = sidebar;
 
@@ -31,7 +30,7 @@ export default class Tab {
             .classed( 'hoot-util-header pad1y center', true )
             .attr( 'data', `#${this.id}` )
             .on( 'click', function() {
-                self.events.send( 'toggle-manage-tab', this );
+                self.events.send( 'toggle-settings-tab', this );
             } );
 
         this.tabLabel = this.tabHeader

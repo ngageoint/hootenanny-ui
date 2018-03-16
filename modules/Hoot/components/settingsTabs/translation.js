@@ -23,8 +23,4 @@ export default class Translation extends Tab {
     render() {
         super.render();
     }
-
-    init() {
-        this.render();
-    }
 }

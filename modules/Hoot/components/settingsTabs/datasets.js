@@ -42,6 +42,8 @@ export default class Datasets extends Tab {
 
         this.createButtons( buttonData );
         this.renderFolderTree( table );
+
+        this.listen();
     }
 
     /**
@@ -142,13 +144,5 @@ export default class Datasets extends Tab {
      */
     listen() {
         Events.listen( 'render-dataset-table', this.renderFolderTree, this );
-    }
-
-    /**
-     * Initialize dataset tab
-     */
-    init() {
-        this.render();
-        this.listen();
     }
 }
