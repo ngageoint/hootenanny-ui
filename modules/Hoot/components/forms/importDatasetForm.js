@@ -5,14 +5,15 @@
  *******************************************************************************************************/
 
 import _ from 'lodash-es';
+import API from '../../util/api';
+import Events from '../../util/events';
+import ImportManager from '../../models/importManager';
 import FolderManager from '../../models/folderManager';
-//import ImportManager from '../../models/importManager';
 import FormFactory from './formFactory';
 import { importDatasetForm } from '../../config/formMetadata';
 import { importDatasetTypes } from '../../config/domElements';
 import { d3combobox as d3_combobox } from '../../../lib/hoot/d3.combobox';
 import { getBrowserInfo } from '../../util/utilities';
-import API from '../../util/api';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -226,11 +227,14 @@ export default function ImportDatasetForm( translations ) {
 
         this.loadingState();
 
-        return API.upload( data )
-            .then( resp => {
-                if ( resp[ 0 ].status === 'success' ) {
+        return ImportManager.importData( data )
+            .then( status => {
+                let table = d3.select( '#dataset-table' );
 
-                }
+                FolderManager.refreshDatasets()
+                    .then( () => Events.send( 'render-dataset-table', table ) );
+
+                this.container.remove();
             } );
     };
 

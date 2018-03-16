@@ -72,7 +72,6 @@ export default class Datasets extends Tab {
                         let translations = await API.getTranslations();
 
                         new ImportDatasetForm( translations ).render();
-
                         break;
                     }
                     case 'import-dataset-directory': {

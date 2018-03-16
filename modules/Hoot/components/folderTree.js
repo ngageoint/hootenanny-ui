@@ -82,42 +82,20 @@ export default function FolderTree( container ) {
      * @param source - source node used to update tree
      */
     this.update = source => {
-        let nodes  = this.tree( this.root ),
-            height = Math.max( 150, nodes.length * this.barHeight + this.margin.top + this.margin.bottom );
+        let nodeTree = this.tree( this.root ),
+            height   = Math.max( 150, nodeTree.length * this.barHeight + this.margin.top + this.margin.bottom );
 
         this.container.select( 'svg' ).transition()
             .duration( 0 )
             .style( 'height', `${height}px` );
 
-        let nodesSort = this.sortNodes( nodes );
-
-        // Bind node data and render parent g container
-        let node = this.svg.selectAll( 'g.node' )
-            .data( nodesSort, d => d )
-            .enter().append( 'g' );
-
-        // Render base element
-        let nodeElement = this.createNodeElement( node, source );
+        let nodesSort   = this.sortNodes( nodeTree ),
+            nodes       = this.svg.selectAll( 'g.node' ).data( nodesSort, d => d ),
+            nodeElement = this.createNodeElement( nodes, source );
 
         // Render text values and lines for nodes
         this.renderText( nodeElement.filter( d => d.data.type === 'dataset' ) );
         this.renderLines( nodeElement.filter( d => d.depth > 1 ) );
-
-        // Transition nodes to their new position
-        nodeElement.transition()
-            .duration( this.duration )
-            .attr( 'transform', d => `translate( 0, ${ d.x } )` )
-            .style( 'opacity', 1 );
-
-        node.transition()
-            .duration( this.duration )
-            .attr( 'transform', d => `translate( 0, ${ d.x } )` )
-            .style( 'opacity', 1 )
-            .select( 'rect' )
-            .style( 'fill', this.fillColor )
-            .attr( 'class', this.rectClass );
-
-        node.exit().remove(); // remove old elements
 
         this.root.each( d => {
             d.x0 = d.x;
@@ -163,12 +141,12 @@ export default function FolderTree( container ) {
     /**
      * Create base DOM element for node. Set it's position, icon, and name
      *
-     * @param node - tree node
+     * @param nodes - node data
      * @param source - source node used to update tree
      * @returns {d3} - node DOM element
      */
-    this.createNodeElement = ( node, source ) => {
-        let nodeElement = node
+    this.createNodeElement = ( nodes, source ) => {
+        let nodeElement = nodes.enter().append( 'g' )
             .attr( 'class', 'node' )
             .attr( 'transform', `translate( 0, ${ source.x0 } )` )
             .style( 'opacity', 0 )
@@ -232,6 +210,15 @@ export default function FolderTree( container ) {
                 }
             } );
 
+        // Transition nodes to their new position
+        nodeElement.transition()
+            .duration( this.duration )
+            .attr( 'transform', d => `translate( 0, ${ d.x } )` )
+            .style( 'opacity', 1 );
+
+        // remove old elements
+        nodes.exit().remove();
+
         return nodeElement;
     };
 
@@ -257,7 +244,7 @@ export default function FolderTree( container ) {
     };
 
     /**
-     * Render all text values for each node
+     * Render text values for each node
      *
      * @param nodes - tree nodes
      */

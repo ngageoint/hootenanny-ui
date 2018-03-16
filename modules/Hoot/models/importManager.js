@@ -9,7 +9,8 @@ import API from '../util/api';
 
 class ImportManager {
     constructor() {
-
+        this.intervals = {};
+        this.queryInterval = 1000;
     }
 
     importDirectory() {
@@ -18,11 +19,20 @@ class ImportManager {
 
     importData( data ) {
         return API.upload( data )
-            //.then( resp => this.importStatus( resp ) );
+            .then( resp => this.importStatus( resp[ 0 ].jobid ) );
     }
 
-    importStatus( resp ) {
-        console.log( resp );
+    importStatus( jobId ) {
+        return new Promise( res => {
+            this.intervals[ jobId ] = setInterval( async () => {
+                let { status } = await API.getJobStatus( jobId );
+
+                if ( status !== 'running' ) {
+                    clearInterval( this.intervals[ jobId ] );
+                    res( status );
+                }
+            }, this.queryInterval );
+        } );
     }
 }
 
