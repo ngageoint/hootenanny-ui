@@ -14,19 +14,20 @@ import settingsTabs from './settingsTabs/index';
  *
  * @constructor
  */
+export default class SettingsPanel {
+    constructor( container ) {
+        this.settingsTabs = settingsTabs;
+        this.container    = container;
 
-export default function SettingsPanel( container ) {
-    this.settingsTabs = settingsTabs;
-    this.container    = container;
-
-    this.activeId = null;
+        this.activeId = null;
+    }
 
     /**
-     * Initialize by rendering the base panel and then all of it's components
+     * Render base panel and all of it's components
      */
-    this.render = async () => {
+    render() {
         this.panel   = this.createPanel();
-        this.sidebar = this.createSidebar( this.panel );
+        this.sidebar = this.createSidebar();
 
         // Create all tab items in the panel
         Promise.all( _.map( this.settingsTabs, Tab => {
@@ -34,7 +35,7 @@ export default function SettingsPanel( container ) {
         } ) );
 
         this.listen();
-    };
+    }
 
     /**
      * Create the settings panel.
@@ -42,21 +43,20 @@ export default function SettingsPanel( container ) {
      *
      * @returns {d3} - settings panel
      */
-    this.createPanel = () => {
+    createPanel() {
         return this.container
             .append( 'div' )
             .attr( 'id', 'settings-panel' )
             .classed( 'hidden', true );
-    };
+    }
 
     /**
      * Create the sidebar in the settings panel
      *
-     * @param container - panel container
      * @returns {d3} - settings sidebar
      */
-    this.createSidebar = container => {
-        let sidebar = container.append( 'div' )
+    createSidebar() {
+        let sidebar = this.panel.append( 'div' )
             .attr( 'id', 'settings-sidebar' )
             .classed( 'pad2 fill-light keyline-right', true );
 
@@ -66,14 +66,14 @@ export default function SettingsPanel( container ) {
             .text( 'Settings' );
 
         return sidebar;
-    };
+    }
 
     /**
      * Toggle tab body into view
      *
      * @param d - node data
      */
-    this.toggleTab = d => {
+    toggleTab( d ) {
         this.activeId  = d3.select( d ).attr( 'data' );
         let activeBody = d3.select( this.activeId ).node();
 
@@ -84,12 +84,12 @@ export default function SettingsPanel( container ) {
             .classed( 'strong', false );
         d3.select( d )
             .classed( 'strong', true );
-    };
+    }
 
     /**
      * Listen for tab change
      */
-    this.listen = () => {
+    listen() {
         Events.listen( 'toggle-settings-tab', this.toggleTab, this );
-    };
+    }
 }

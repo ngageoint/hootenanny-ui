@@ -5,7 +5,6 @@
  *******************************************************************************************************/
 
 import _ from 'lodash-es';
-import API from '../../util/api';
 import Events from '../../util/events';
 import ImportManager from '../../models/importManager';
 import FolderManager from '../../models/folderManager';
@@ -21,37 +20,37 @@ import { getBrowserInfo } from '../../util/utilities';
  * @param translations - All translations from database
  * @constructor
  */
-export default function ImportDatasetForm( translations ) {
-    const self = this;
+export default class ImportDatasetForm {
+    constructor( translations ) {
+        this.folderList   = FolderManager.folderPaths;
+        this.importTypes  = importDatasetTypes;
+        this.translations = translations;
+        this.browserInfo  = getBrowserInfo();
 
-    this.folderList   = FolderManager.folderPaths;
-    this.importTypes  = importDatasetTypes;
-    this.translations = translations;
-    this.browserInfo  = getBrowserInfo();
+        // Add "NONE" option to beginning of array
+        this.translations.unshift( {
+            NAME: 'NONE',
+            PATH: 'NONE',
+            DESCRIPTION: 'No Translation',
+            NONE: 'true'
+        } );
 
-    // Add "NONE" option to beginning of array
-    this.translations.unshift( {
-        NAME: 'NONE',
-        PATH: 'NONE',
-        DESCRIPTION: 'No Translation',
-        NONE: 'true'
-    } );
-
-    if ( this.browserInfo.name.substring( 0, 6 ) !== 'Chrome' ) {
-        _.remove( this.importTypes, o => o.value === 'DIR' );
+        if ( this.browserInfo.name.substring( 0, 6 ) !== 'Chrome' ) {
+            _.remove( this.importTypes, o => o.value === 'DIR' );
+        }
     }
 
     /**
      * Set form parameters and create the form using the form factory
      */
-    this.render = () => {
+    render() {
         let form = importDatasetForm.call( this );
 
         let button = {
             text: 'Import',
             location: 'right',
             id: 'importDatasetBtn',
-            onClick: this.handleSubmit
+            onClick: () => this.handleSubmit()
         };
 
         let metadata = {
@@ -68,7 +67,7 @@ export default function ImportDatasetForm( translations ) {
         this.schemaInput    = d3.select( '#importDatasetSchema' );
         this.fileIngest     = d3.select( '#ingestFileUploader' );
         this.submitButton   = d3.select( '#importDatasetBtn' );
-    };
+    }
 
     /**
      * Populate the import-type list dropdown
@@ -76,7 +75,7 @@ export default function ImportDatasetForm( translations ) {
      * @param node - input node
      * @param d - node data
      */
-    this.populateImportTypes = ( node, d ) => {
+    populateImportTypes( node, d ) {
         let combobox = d3_combobox()
             .data( _.map( d.combobox.data, n => {
                 return {
@@ -87,7 +86,7 @@ export default function ImportDatasetForm( translations ) {
 
         d3.select( node )
             .call( combobox );
-    };
+    }
 
     /**
      * Populate the available folders list dropdown
@@ -95,7 +94,7 @@ export default function ImportDatasetForm( translations ) {
      * @param node - input node
      * @param d - node data
      */
-    this.populateFolderList = ( node, d ) => {
+    populateFolderList( node, d ) {
         let combobox = d3_combobox()
             .data( _.map( d.combobox.data, n => {
                 return {
@@ -115,7 +114,7 @@ export default function ImportDatasetForm( translations ) {
 
         d3.select( node )
             .call( combobox );
-    };
+    }
 
     /**
      * Populate the translations list dropdown
@@ -123,7 +122,7 @@ export default function ImportDatasetForm( translations ) {
      * @param node - input node
      * @param d - node data
      */
-    this.populateTranslations = ( node, d ) => {
+    populateTranslations( node, d ) {
         let combobox = d3_combobox()
             .data( _.map( d.combobox.data, n => {
                 return {
@@ -134,13 +133,13 @@ export default function ImportDatasetForm( translations ) {
 
         d3.select( node )
             .call( combobox );
-    };
+    }
 
     /**
      * Update the form by enabling, disabling, or clearing certain
      * fields based on the value entered
      */
-    this.handleTypeChange = () => {
+    handleTypeChange() {
         let selectedVal  = this.typeInput.property( 'value' ),
             selectedType = this.getTypeName( selectedVal ),
             schemaData   = this.schemaInput.datum(),
@@ -174,12 +173,12 @@ export default function ImportDatasetForm( translations ) {
         this.populateTranslations( this.schemaInput.node(), schemaData );
 
         this.schemaInput.property( 'value', translationsList[ 0 ].DESCRIPTION );
-    };
+    }
 
     /**
      * Update the file input's value with the name of the selected file
      */
-    this.handleMultipartChange = () => {
+    handleMultipartChange() {
         let selectedVal  = this.typeInput.property( 'value' ),
             selectedType = this.getTypeName( selectedVal ),
             files        = this.fileIngest.node().files,
@@ -204,12 +203,12 @@ export default function ImportDatasetForm( translations ) {
 
         this.formValid = true;
         this.updateButtonState();
-    };
+    }
 
     /**
      * Submit form data
      */
-    this.handleSubmit = () => {
+    handleSubmit() {
         let transVal    = this.schemaInput.property( 'value' ),
             typeVal     = this.typeInput.property( 'value' ),
             transCombo  = this.schemaInput.datum(),
@@ -236,14 +235,14 @@ export default function ImportDatasetForm( translations ) {
 
                 this.container.remove();
             } );
-    };
+    }
 
     /**
      *
      * @param files
      * @returns {FormData}
      */
-    this.getFormData = files => {
+    getFormData( files ) {
         let formData = new FormData();
 
         _.forEach( files, ( file, i ) => {
@@ -251,9 +250,9 @@ export default function ImportDatasetForm( translations ) {
         } );
 
         return formData;
-    };
+    }
 
-    this.loadingState = () => {
+    loadingState() {
         this.submitButton
             .select( 'span' )
             .text( 'Uploading...' );
@@ -267,7 +266,7 @@ export default function ImportDatasetForm( translations ) {
             .each( function() {
                 d3.select( this ).node().disabled = true;
             } );
-    };
+    }
 
     /**
      * Validate user input to make sure it doesn't
@@ -275,7 +274,7 @@ export default function ImportDatasetForm( translations ) {
      *
      * @param d - node data
      */
-    this.validateTextInput = d => {
+    validateTextInput( d ) {
         let target           = d3.select( `#${ d.id }` ),
             node             = target.node(),
             str              = node.value,
@@ -295,12 +294,14 @@ export default function ImportDatasetForm( translations ) {
         target.classed( 'invalid', !valid );
         this.formValid = valid;
         this.updateButtonState();
-    };
+    }
 
     /**
      * Enable/disable button based on form validity
      */
-    this.updateButtonState = () => {
+    updateButtonState() {
+        let self = this;
+
         this.container.selectAll( '.text-input' )
             .each( function( d ) {
                 let classes = d3.select( this ).attr( 'class' ).split( ' ' );
@@ -311,7 +312,7 @@ export default function ImportDatasetForm( translations ) {
             } );
 
         this.submitButton.node().disabled = !this.formValid;
-    };
+    }
 
     /**
      * Get the selected import-type's value
@@ -319,19 +320,19 @@ export default function ImportDatasetForm( translations ) {
      * @param title - title of selected import-type
      * @returns {boolean|string} - value of type if found. otherwise, false.
      */
-    this.getTypeName = title => {
+    getTypeName( title ) {
         let comboData = this.container.select( '#importDatasetImportType' ).datum(),
             match     = _.find( comboData.combobox.data, o => o.title === title );
 
         return match ? match.value : false;
-    };
+    }
 
     /**
      * Update properties of the multipart upload input based on the selected import-type
      *
      * @param typeVal - value of selected import-type
      */
-    this.setMultipartForType = typeVal => {
+    setMultipartForType( typeVal ) {
         let uploader = d3.select( '#ingestFileUploader' );
 
         if ( typeVal === 'DIR' ) {
@@ -367,5 +368,5 @@ export default function ImportDatasetForm( translations ) {
                 .attr( 'webkitdirectory', null )
                 .attr( 'directory', null );
         }
-    };
+    }
 }

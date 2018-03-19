@@ -9,8 +9,7 @@
  *
  * @constructor
  */
-export default function FormFactory() {
-    const self = this;
+export default class FormFactory {
 
     /**
      * Create a form with all of it's contents using the provided metadata
@@ -19,7 +18,7 @@ export default function FormFactory() {
      * @param metadata - form data
      * @returns {d3} - form container
      */
-    this.generateForm = ( selector, metadata ) => {
+    generateForm( selector, metadata ) {
         let container = this.createContainer( selector ),
             formModal = this.createFormModal( container ),
             form      = this.createForm( container, formModal, metadata.title );
@@ -28,7 +27,7 @@ export default function FormFactory() {
         this.createButton( formModal, metadata.button );
 
         return container;
-    };
+    }
 
     /**
      * Create dark background container
@@ -36,11 +35,11 @@ export default function FormFactory() {
      * @param selector - where to append container to
      * @returns {d3} - form container
      */
-    this.createContainer = selector => {
+    createContainer( selector ) {
         return d3.select( selector )
             .append( 'div' )
             .classed( 'fill-darken3 modal-overlay', true );
-    };
+    }
 
     /**
      * Create modal
@@ -48,10 +47,10 @@ export default function FormFactory() {
      * @param container
      * @returns {d3} - form modal
      */
-    this.createFormModal = container => {
+    createFormModal( container ) {
         return container.append( 'div' )
             .classed( 'contain col4 pad1 hoot-menu fill-white round modal', true );
-    };
+    }
 
     /**
      * Create form with a header
@@ -61,7 +60,7 @@ export default function FormFactory() {
      * @param formTitle - form title
      * @returns {d3} - form wrapper
      */
-    this.createForm = ( container, modal, formTitle ) => {
+    createForm( container, modal, formTitle ) {
         let form   = modal.append( 'form' ),
             header = form
                 .append( 'div' )
@@ -70,11 +69,11 @@ export default function FormFactory() {
         header.append( 'h3' )
             .text( formTitle )
             .append( 'div' )
-            .classed( 'fr _icon x pointer', true )
+            .classed( 'fr _icon close pointer', true )
             .on( 'click', () => container.remove() );
 
         return form;
-    };
+    }
 
     /**
      * Create each input field in the form
@@ -82,7 +81,9 @@ export default function FormFactory() {
      * @param form - form div
      * @param formMeta - form data
      */
-    this.createFieldSets = ( form, formMeta ) => {
+    createFieldSets( form, formMeta ) {
+        let self = this;
+
         let fieldContainer = form.append( 'fieldset' )
             .selectAll( '.form-field' );
 
@@ -122,14 +123,14 @@ export default function FormFactory() {
                 }
             }
         } );
-    };
+    }
 
     /**
      * Create a custom dropdown menu
      *
      * @param field - field div
      */
-    this.createCombobox = field => {
+    createCombobox( field ) {
         let input = field.append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', d => d.id )
@@ -144,14 +145,14 @@ export default function FormFactory() {
                 d.combobox.command( input.node(), d );
             }
         } );
-    };
+    }
 
     /**
      * Create a text input
      *
      * @param field - field div
      */
-    this.createTextField = field => {
+    createTextField( field ) {
         field.append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', d => d.id )
@@ -160,17 +161,17 @@ export default function FormFactory() {
             .attr( 'disabled', d => d.disabled )
             .classed( 'text-input', true )
             .on( 'keyup', d => d.onChange( d ) );
-    };
+    }
 
     /**
      * Create a file upload input
      *
      * @param field - field div
      */
-    this.createMultipart = field => {
+    createMultipart( field ) {
         let wrapper = field.append( 'div' ).classed( 'contain', true );
 
-        self.createTextField( wrapper );
+        this.createTextField( wrapper );
 
         let span = wrapper.append( 'span' )
             .classed( 'icon-button pointer keyline-left pin-right flex align-center justify-center', true );
@@ -187,7 +188,7 @@ export default function FormFactory() {
             .attr( 'accept', '.shp, .shx, .dbf, .prj, .osm, .zip' )
             .classed( 'pointer pin-top dataset-file-upload', true )
             .on( 'change', d => d.onChange() );
-    };
+    }
 
     /**
      * Create a submit button
@@ -195,7 +196,7 @@ export default function FormFactory() {
      * @param formModal - form modal
      * @param buttonMeta - button data
      */
-    this.createButton = ( formModal, buttonMeta ) => {
+    createButton( formModal, buttonMeta ) {
         let buttonContainer = formModal.append( 'div' )
             .classed( 'modal-footer', true );
 
@@ -208,6 +209,5 @@ export default function FormFactory() {
         button
             .append( 'span' )
             .text( buttonMeta.text );
-
-    };
+    }
 }

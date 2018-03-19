@@ -1,11 +1,24 @@
 #sidebar {
     height: calc( 100% - 60px );
+    padding: 20px;
     
     .feature-list-pane {
         display: none;
     }
 
-    .sidebar-component {
-        top: 0;
+    .add-dataset-form {
+        margin-bottom: 10px;
+
+        .toggle-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+
+            i {
+                line-height: 38px;
+                margin-right: 10px;
+            }
+        }
     }
 }

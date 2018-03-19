@@ -47,6 +47,25 @@ export const datasetTableHeaders = [
     }
 ];
 
+export const importDatasetTypes = [
+    {
+        title: 'File (shp, zip, gdb.zip)',
+        value: 'FILE'
+    },
+    {
+        title: 'File (osm, osm.zip, pbf)',
+        value: 'OSM'
+    },
+    {
+        title: 'File (geonames, txt)',
+        value: 'GEONAMES'
+    },
+    {
+        title: 'Directory (FGDB)',
+        value: 'DIR'
+    }
+];
+
 export const contextMenus = {
     dataset: {
         multiDataset: {
@@ -96,21 +115,15 @@ export const contextMenus = {
     ]
 };
 
-export const importDatasetTypes = [
+export const sidebarForms = [
     {
-        title: 'File (shp, zip, gdb.zip)',
-        value: 'FILE'
+        color: 'violet',
+        toggleButtonText: 'Add Reference Dataset',
+        id: 'reference-dataset'
     },
     {
-        title: 'File (osm, osm.zip, pbf)',
-        value: 'OSM'
-    },
-    {
-        title: 'File (geonames, txt)',
-        value: 'GEONAMES'
-    },
-    {
-        title: 'Directory (FGDB)',
-        value: 'DIR'
+        color: 'orange',
+        toggleButtonText: 'Add Secondary Dataset',
+        id: 'secondary-dataset'
     }
 ];

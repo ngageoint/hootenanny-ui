@@ -6,6 +6,7 @@
 
 import FolderManager from './models/folderManager';
 import Navbar from './components/navbar';
+import Sidebar from './components/sidebar';
 import SettingsPanel from './components/settingsPanel';
 
 /**
@@ -21,6 +22,7 @@ class Hoot {
 
     init() {
         new Navbar( this.container ).render();
+        new Sidebar( d3.select( '#sidebar' ) ).render();
 
         FolderManager.refreshAll().then( () => {
             Promise.all( this.renderAll.map( component => {

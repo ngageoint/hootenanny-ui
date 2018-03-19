@@ -15,7 +15,7 @@ export function importDatasetForm() {
                 data: this.importTypes,
                 command: this.populateImportTypes
             },
-            onChange: this.handleTypeChange
+            onChange: () => this.handleTypeChange()
         },
         {
             label: 'Import Data',
@@ -26,14 +26,14 @@ export function importDatasetForm() {
             disabled: true,
             inputType: 'multipart',
             multipartId: 'ingestFileUploader',
-            onChange: this.handleMultipartChange
+            onChange: () => this.handleMultipartChange()
         },
         {
             label: 'Layer Name',
             id: 'importDatasetLayerName',
             placeholder: 'Enter name',
             inputType: 'text',
-            onChange: this.validateTextInput
+            onChange: d => this.validateTextInput( d )
         },
         {
             label: 'Path',
@@ -49,7 +49,7 @@ export function importDatasetForm() {
             label: 'Enter Name for New Folder (Leave blank otherwise)',
             id: 'importDatasetNewFolderName',
             inputType: 'text',
-            onChange: this.validateTextInput
+            onChange: d => this.validateTextInput( d )
         },
         {
             label: 'Translation Schema of Import File',

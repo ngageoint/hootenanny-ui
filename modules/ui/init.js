@@ -76,8 +76,7 @@ export function uiInit(context) {
         container
             .append('div')
             .attr('id', 'sidebar')
-            .attr('class', 'col4')
-            .call(ui.sidebar);
+            .attr('class', 'col4');
 
         var content = container
             .append('div')
