@@ -18,8 +18,8 @@ export default class Navbar {
     /**
      * Render navbar and all of its components
      */
-    render() {
-        let navbar = this.createNavbar(),
+    async render() {
+        let navbar        = this.createNavbar(),
             leftContainer = this.createLeftContainer( navbar );
 
         this.createSettingsButton( leftContainer );

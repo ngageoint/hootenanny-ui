@@ -119,11 +119,13 @@ export const sidebarForms = [
     {
         color: 'violet',
         toggleButtonText: 'Add Reference Dataset',
-        id: 'reference-dataset'
+        id: 'add-ref',
+        tableId: 'add-ref-table'
     },
     {
         color: 'orange',
         toggleButtonText: 'Add Secondary Dataset',
-        id: 'secondary-dataset'
+        id: 'add-secondary',
+        tableId: 'add-secondary-table'
     }
 ];

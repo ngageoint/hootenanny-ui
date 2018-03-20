@@ -5,20 +5,30 @@
     .feature-list-pane {
         display: none;
     }
+}
 
-    .add-dataset-form {
-        margin-bottom: 10px;
+.add-layer-form {
+    margin-bottom: 10px;
 
-        .toggle-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
+    .toggle-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
 
-            i {
-                line-height: 38px;
-                margin-right: 10px;
-            }
+        i {
+            line-height: 38px;
+            margin-right: 10px;
         }
+    }
+
+    .add-layer-table {
+        height: 150px;
+        margin-bottom: 15px;
+        resize: vertical;
+    }
+
+    fieldset {
+        padding: 10px;
     }
 }

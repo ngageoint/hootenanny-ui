@@ -50,6 +50,8 @@ class FolderManager {
             .then( data => {
                 this.folders.base  = data.folders;
                 this.folders.paths = this.listFolders( this.folders.base );
+
+                return this.folders.base;
             } );
     }
 
@@ -164,7 +166,11 @@ class FolderManager {
      *
      * @returns {array} - hierarchy
      */
-    getAvailFolderData() {
+    async getAvailFolderData() {
+        if ( !this.folders.base.length || !this.datasets.base.length ) {
+            await this.refreshAll();
+        }
+
         let datasetList = _.map( this.datasets.base, dataset => {
             let match = _.find( this.links, link => link.mapId === dataset.id );
 

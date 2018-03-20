@@ -25,7 +25,7 @@ export default class SettingsPanel {
     /**
      * Render base panel and all of it's components
      */
-    render() {
+    async render() {
         this.panel   = this.createPanel();
         this.sidebar = this.createSidebar();
 

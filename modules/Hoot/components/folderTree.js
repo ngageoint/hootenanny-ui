@@ -56,8 +56,8 @@ export default class FolderTree {
     /**
      * Initialize the folder tree
      */
-    render() {
-        let folders = FolderManager.getAvailFolderData();
+    async render() {
+        let folders = await FolderManager.getAvailFolderData();
 
         if ( this.isDatasetTable ) {
             folders = _.without( folders, _.find( folders, { id: -1 } ) );

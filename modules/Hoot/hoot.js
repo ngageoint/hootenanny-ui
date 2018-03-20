@@ -15,20 +15,12 @@ import SettingsPanel from './components/settingsPanel';
 class Hoot {
     constructor( context ) {
         this.container = context.container();
-        this.renderAll = [
-            SettingsPanel
-        ];
     }
 
     init() {
         new Navbar( this.container ).render();
+        new SettingsPanel( this.container ).render();
         new Sidebar( d3.select( '#sidebar' ) ).render();
-
-        FolderManager.refreshAll().then( () => {
-            Promise.all( this.renderAll.map( component => {
-                new component( this.container ).render();
-            } ) );
-        } );
     }
 }
 

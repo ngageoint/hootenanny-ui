@@ -34,36 +34,30 @@ export default class Datasets extends Tab {
     render() {
         super.render();
 
-        let buttonContainer = this.createButtonContainer(),
-            buttonData = buttonContainer
-                .selectAll( 'button.dataset-action-button' )
-                .data( datasetButtons ),
-            table = this.createTable();
-
-        this.createButtons( buttonData );
-        this.renderFolderTree( table );
+        this.createButtonContainer();
+        this.createTable();
+        this.createButtons();
+        this.renderFolderTree();
 
         this.listen();
     }
 
     /**
      * Create the container that wraps all dataset action buttons
-     *
-     * @returns {d3} - button container
      */
     createButtonContainer() {
-        return this.tabBody
+        this.buttonContainer = this.tabBody
             .append( 'div' )
-            .classed( 'dataset-buttons flex', true );
+            .classed( 'dataset-buttons flex', true )
+            .selectAll( 'button.dataset-action-button' )
+            .data( datasetButtons );
     }
 
     /**
      * Create each dataset action button
-     *
-     * @param buttonData - bound button data
      */
-    createButtons( buttonData ) {
-        let eachButton = buttonData.enter()
+    createButtons() {
+        let eachButton = this.buttonContainer.enter()
             .append( 'button' )
             .classed( 'dataset-action-button primary text-white flex align-center', true )
             .on( 'click', async item => {
@@ -105,38 +99,29 @@ export default class Datasets extends Tab {
 
     /**
      * Create dataset table
-     *
-     * @returns {boolean|*}
      */
     createTable() {
-        let table = this.tabBody
-            .append( 'div' )
+        this.table = this.tabBody.append( 'div' )
             .attr( 'id', 'dataset-table' )
             .classed( 'filled-white strong', true );
 
-        table.insert( 'div' )
-            .attr( 'id', 'dataset-table-header' )
+        this.table.insert( 'div' ).attr( 'id', 'dataset-table-header' )
             .selectAll( 'th' )
             .data( datasetTableHeaders )
             .enter().append( 'th' )
             .attr( 'style', d => `width: ${ d.width }` )
             .text( d => d.title );
-
-        return table;
     }
 
     /**
      * Render dataset folder tree inside table
-     *
-     * @param table - dataset table element
      */
-    renderFolderTree( table ) {
+    renderFolderTree() {
         if ( !this.datasetTable ) {
-            this.datasetTable = new FolderTree( table );
-            this.datasetTable.render();
-        } else {
-            this.datasetTable.render();
+            this.datasetTable = new FolderTree( this.table );
         }
+
+        this.datasetTable.render();
     }
 
     /**
