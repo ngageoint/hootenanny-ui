@@ -15,48 +15,48 @@ import { contextMenus } from '../config/domElements';
  * @param container - Container used to render the tree into
  * @constructor
  */
-export default function FolderTree( container ) {
-    const self = this;
+export default class FolderTree {
+    constructor( container ) {
+        this.container      = container;
+        this.isDatasetTable = this.container.attr( 'id' ) === 'dataset-table';
 
-    this.container      = container;
-    this.isDatasetTable = this.container.attr( 'id' ) === 'dataset-table';
+        this.margin    = { top: 10, right: 20, bottom: 30, left: 0 };
+        this.width     = '100%';
+        this.height    = '100%';
+        this.barHeight = 20;
+        this.duration  = 0;
 
-    this.margin    = { top: 10, right: 20, bottom: 30, left: 0 };
-    this.width     = '100%';
-    this.height    = '100%';
-    this.barHeight = 20;
-    this.duration  = 0;
+        this.x = d3.scaleLinear()
+            .domain( [ 0, 0 ] )
+            .range( [ 0, 0 ] );
 
-    this.x = d3.scaleLinear()
-        .domain( [ 0, 0 ] )
-        .range( [ 0, 0 ] );
+        this.y = d3.scaleLinear()
+            .domain( [ 0, 0 ] )
+            .range( [ 20, 0 ] );
 
-    this.y = d3.scaleLinear()
-        .domain( [ 0, 0 ] )
-        .range( [ 20, 0 ] );
+        this.tree = d3.tree()
+            .nodeSize( [ 0, 20 ] );
 
-    this.tree = d3.tree()
-        .nodeSize( [ 0, 20 ] );
+        this.diagonal = d => {
+            if ( d.source && d.target ) {
+                return 'M' + d.source.y + ',' + d.source.x
+                    + 'C' + (d.source.y + d.target.y) / 2 + ',' + d.source.x
+                    + ' ' + (d.source.y + d.target.y) / 2 + ',' + d.target.x
+                    + ' ' + d.target.y + ',' + d.target.x;
+            }
+        };
 
-    this.diagonal = d => {
-        if ( d.source && d.target ) {
-            return 'M' + d.source.y + ',' + d.source.x
-                + 'C' + (d.source.y + d.target.y) / 2 + ',' + d.source.x
-                + ' ' + (d.source.y + d.target.y) / 2 + ',' + d.target.x
-                + ' ' + d.target.y + ',' + d.target.x;
-        }
-    };
-
-    this.svg = container.append( 'svg' )
-        .attr( 'width', this.width )
-        .attr( 'height', this.height )
-        .append( 'g' )
-        .attr( 'transform', `translate( ${this.margin.left}, ${this.margin.top} )` );
+        this.svg = this.container.append( 'svg' )
+            .attr( 'width', this.width )
+            .attr( 'height', this.height )
+            .append( 'g' )
+            .attr( 'transform', `translate( ${this.margin.left}, ${this.margin.top} )` );
+    }
 
     /**
      * Initialize the folder tree
      */
-    this.render = () => {
+    render() {
         let folders = FolderManager.getAvailFolderData();
 
         if ( this.isDatasetTable ) {
@@ -74,14 +74,14 @@ export default function FolderTree( container ) {
         this.root.y0 = 0;
 
         this.update( this.root );
-    };
+    }
 
     /**
      * Update the tree by adding/deleting nodes
      *
      * @param source - source node used to update tree
      */
-    this.update = source => {
+    update( source ) {
         let nodeTree = this.tree( this.root ),
             height   = Math.max( 150, nodeTree.length * this.barHeight + this.margin.top + this.margin.bottom );
 
@@ -101,7 +101,7 @@ export default function FolderTree( container ) {
             d.x0 = d.x;
             d.y0 = d.y;
         } );
-    };
+    }
 
     /**
      * Update nodes to all have a consistent data structure and
@@ -110,7 +110,7 @@ export default function FolderTree( container ) {
      * @param nodes - tree nodes
      * @returns {Array} - sorted nodes
      */
-    this.sortNodes = nodes => {
+    sortNodes( nodes ) {
         let nodesSort   = [],
             parentDepth = 0,
             i           = 0; // manual iteration because eachBefore doesn't provide a key
@@ -136,7 +136,7 @@ export default function FolderTree( container ) {
         } );
 
         return nodesSort;
-    };
+    }
 
     /**
      * Create base DOM element for node. Set it's position, icon, and name
@@ -145,25 +145,26 @@ export default function FolderTree( container ) {
      * @param source - source node used to update tree
      * @returns {d3} - node DOM element
      */
-    this.createNodeElement = ( nodes, source ) => {
+    createNodeElement( nodes, source ) {
+        const self = this;
+
         let nodeElement = nodes.enter().append( 'g' )
             .attr( 'class', 'node' )
             .attr( 'transform', `translate( 0, ${ source.x0 } )` )
             .style( 'opacity', 0 )
             .on( 'click', function( d ) {
-                self.click.call( this, d );
+                // use self as context but still pass in the clicked element
+                self.click.call( self, this, d );
             } )
-            .on( 'contextmenu', function( d ) {
-                self.bindContextMenu.call( this, d );
-            } );
+            .on( 'contextmenu', d => this.bindContextMenu( d ) );
 
         // Render node rect
         nodeElement.append( 'rect' )
             .attr( 'y', -this.barHeight / 2 )
             .attr( 'height', this.barHeight )
             .attr( 'width', '100%' )
-            .style( 'fill', this.fillColor )
-            .attr( 'class', this.rectClass );
+            .style( 'fill', d => this.fillColor( d ) )
+            .attr( 'class', d => this.rectClass( d ) );
 
         // Render node icon
         nodeElement.append( 'g' )
@@ -220,14 +221,14 @@ export default function FolderTree( container ) {
         nodes.exit().remove();
 
         return nodeElement;
-    };
+    }
 
     /**
      * Render lines that connect nodes together
      *
      * @param nodes - tree nodes
      */
-    this.renderLines = nodes => {
+    renderLines( nodes ) {
         nodes.append( 'line' )
             .attr( 'x1', d => 2.5 + (11 * (d.depth - 1)) )
             .attr( 'x2', d => 9.5 + (11 * (d.depth - 1)) )
@@ -241,14 +242,14 @@ export default function FolderTree( container ) {
             .attr( 'y1', -20 )
             .attr( 'y2', 0 )
             .style( 'stroke', '#444444' );
-    };
+    }
 
     /**
      * Render text values for each node
      *
      * @param nodes - tree nodes
      */
-    this.renderText = nodes => {
+    renderText( nodes ) {
         nodes.append( 'text' )
             .classed( 'dsizeTxt', true )
             .style( 'fill', this.fontColor )
@@ -298,7 +299,7 @@ export default function FolderTree( container ) {
                     return dateActive;
                 } );
         }
-    };
+    }
 
     /**
      * Fill a rect element based on it's node type
@@ -306,7 +307,7 @@ export default function FolderTree( container ) {
      * @param d - tree node
      * @returns {string} - Hex color code
      */
-    this.fillColor = d => {
+    fillColor( d ) {
         let { data } = d;
 
         if ( data.type === 'folder' ) {
@@ -321,7 +322,7 @@ export default function FolderTree( container ) {
         else {
             return '#ffffff';
         }
-    };
+    }
 
     /**
      * Fill a text element based on it's node type
@@ -329,7 +330,7 @@ export default function FolderTree( container ) {
      * @param d - tree node
      * @returns {string} - hex color code
      */
-    this.fontColor = d => {
+    fontColor( d ) {
         let { data } = d;
 
         if ( data.type === 'folder' ) {
@@ -341,7 +342,7 @@ export default function FolderTree( container ) {
         else {
             return '#ffffff';
         }
-    };
+    }
 
     /**
      * Assign a CSS class to a rect element based
@@ -350,19 +351,19 @@ export default function FolderTree( container ) {
      * @param d - tree node
      * @returns {string} - CSS class
      */
-    this.rectClass = d => {
+    rectClass( d ) {
         let { data } = d;
 
         // set selected layers
-        if ( data.type === 'dataset' && self.containerId === 'dataset-table' ) {
+        if ( data.type === 'dataset' && this.containerId === 'dataset-table' ) {
             if ( data.selected ) {
-                if ( self.selectedLayerIDs.indexOf( data.layerId ) === -1 ) {
-                    self.selectedLayerIDs.push( data.layerId );
+                if ( this.selectedLayerIDs.indexOf( data.layerId ) === -1 ) {
+                    this.selectedLayerIDs.push( data.layerId );
                 }
             } else {
                 let idx = this.selectedLayerIDs.indexOf( data.layerId );
                 if ( idx > -1 ) {
-                    self.selectedLayerIDs.splice( idx, 1 );
+                    this.selectedLayerIDs.splice( idx, 1 );
                 }
             }
         }
@@ -372,14 +373,14 @@ export default function FolderTree( container ) {
             : data._children
                 ? 'more'
                 : 'flat';
-    };
+    }
 
     /**
      * Logic for right-click and ctrl+click
      *
      * @param d - tree node
      */
-    this.bindContextMenu = function( d ) {
+    bindContextMenu( d ) {
         let selected = d.data.selected || false;
 
         d3.event.preventDefault();
@@ -389,7 +390,7 @@ export default function FolderTree( container ) {
             FolderManager.updateSelectedDatasets( d.id );
         } else if ( d.data.type === 'dataset' ) {
             if ( !selected ) {
-                let selectedNodes = _.filter( self.root.descendants(), d => d.data.selected );
+                let selectedNodes = _.filter( this.root.descendants(), d => d.data.selected );
 
                 // Un-select all other nodes
                 _.each( selectedNodes, d => {
@@ -400,18 +401,18 @@ export default function FolderTree( container ) {
                 FolderManager.updateSelectedDatasets( d.data.id, true );
             }
 
-            self.openContextMenu( d );
+            this.openContextMenu( d );
         }
 
-        self.update( d );
-    };
+        this.update( d );
+    }
 
     /**
      * Create and open a context menu
      *
      * @param d - tree node
      */
-    this.openContextMenu = d => {
+    openContextMenu( d ) {
         let { data } = d,
             items;
 
@@ -485,14 +486,15 @@ export default function FolderTree( container ) {
             .style( 'left', `${ d3.event.pageX - 2 }px` )
             .style( 'top', `${ d3.event.pageY - 2 }px` )
             .style( 'display', 'block' );
-    };
+    }
 
     /**
      * Select, expand, or collapse an item in the table.
      *
+     * @param elem - clicked DOM element
      * @param d - tree node
      */
-    this.click = function( d ) {
+    click( elem, d ) {
         let selected = d.data.selected || false,
             isOpen   = d.data.state === 'open';
 
@@ -502,7 +504,7 @@ export default function FolderTree( container ) {
                 FolderManager.updateSelectedDatasets( d.data.id );
             } else {
                 // Get all currently selected nodes
-                let selectedNodes = _.filter( self.root.descendants(), node => node.data.selected );
+                let selectedNodes = _.filter( this.root.descendants(), node => node.data.selected );
 
                 // Un-select all other nodes
                 _.each( selectedNodes, node => {
@@ -524,7 +526,7 @@ export default function FolderTree( container ) {
         if ( isOpen ) {
             d.data.state = 'closed';
 
-            d3.select( this.parentNode )
+            d3.select( elem.parentNode )
                 .select( 'i' )
                 .classed( 'folder', true )
                 .classed( 'open-folder', false );
@@ -537,7 +539,7 @@ export default function FolderTree( container ) {
         } else {
             d.data.state = 'open';
 
-            d3.select( this.parentNode )
+            d3.select( elem.parentNode )
                 .select( 'i' )
                 .classed( 'folder', false )
                 .classed( 'open-folder', true );
@@ -546,6 +548,6 @@ export default function FolderTree( container ) {
             d.data._children = null;
         }
 
-        self.update( d );
-    };
+        this.update( d );
+    }
 }

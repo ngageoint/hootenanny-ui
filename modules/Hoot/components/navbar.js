@@ -10,48 +10,53 @@
  * @param container - body
  * @constructor
  */
-export default function Navbar( container ) {
-    this.container = container;
+export default class Navbar {
+    constructor( container ) {
+        this.container = container;
+    }
 
     /**
      * Render navbar and all of its components
      */
-    this.render = () => {
+    render() {
         let navbar = this.createNavbar(),
             leftContainer = this.createLeftContainer( navbar );
 
         this.createSettingsButton( leftContainer );
         this.createLogo( leftContainer );
-    };
+    }
 
     /**
      * Create navbar container
+     *
+     * @returns {d3} - navbar container
      */
-    this.createNavbar = () => {
+    createNavbar() {
         return this.container
             .insert( 'nav', ':first-child' )
             .attr( 'id', 'navbar' )
             .classed( 'contain text-white fill-dark', true );
-    };
+    }
 
     /**
      * Create left-aligned container
      *
-     * @param container - navbar container
+     * @param navbar - navbar container
+     * @returns {d3} - left container
      */
-    this.createLeftContainer = container => {
-        return container
+    createLeftContainer( navbar ) {
+        return navbar
             .append( 'div' )
             .classed( 'nav-item', true );
-    };
+    }
 
     /**
      * Create a menu button in the left container
      *
-     * @param container - left-aligned container
+     * @param leftContainer - left-aligned container
      */
-    this.createSettingsButton = container => {
-        let button = container.append( 'div' )
+    createSettingsButton( leftContainer ) {
+        let button = leftContainer.append( 'div' )
             .classed( 'pointer icon-container flex justify-between', true )
             .on( 'click', function() {
                 d3.event.stopPropagation();
@@ -72,19 +77,19 @@ export default function Navbar( container ) {
         button.append( 'i' )
             .classed( 'medium material-icons', true )
             .text( 'menu' );
-    };
+    }
 
     /**
      * Create the Hoot logo in the left container
      *
-     * @param container - left-aligned container
+     * @param leftContainer - left-aligned container
      */
-    this.createLogo = container => {
-        container
+    createLogo( leftContainer ) {
+        leftContainer
             .append( 'div' )
             .classed( 'logo-container', true )
             .append( 'img' )
             .attr( 'src', './img/hoot_logo_update.png' )
             .classed( 'pointer hoot-logo', true );
-    };
+    }
 }
