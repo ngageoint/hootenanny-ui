@@ -56,18 +56,18 @@ img.inline, .inline           { display:inline-block; }
 /*.pad2 { padding: 20px; }*/
 /*.pad1 { padding: 10px; }*/
 
-.palette { width: auto;}
-.palette a { width:40px; height:40px;}
-.palette, .palette a { border-color:#444; }
-.palette a:first-child { border-radius:4px 0 0 4px; }
-.palette a:last-child { border-radius:0 4px 4px 0; border:none; }
-.palette a.active { box-shadow:inset 0 0 0 4px rgba(0,0,0,0.25); }
-.palette .active:before {
-  position:relative;
-  top:10px;
-  left:10px;
-  opacity:0.5;
-  }
+/*.palette { width: auto;}*/
+/*.palette a { width:40px; height:40px;}*/
+/*.palette, .palette a { border-color:#444; }*/
+/*.palette a:first-child { border-radius:4px 0 0 4px; }*/
+/*.palette a:last-child { border-radius:0 4px 4px 0; border:none; }*/
+/*.palette a.active { box-shadow:inset 0 0 0 4px rgba(0,0,0,0.25); }*/
+/*.palette .active:before {*/
+  /*position:relative;*/
+  /*top:10px;*/
+  /*left:10px;*/
+  /*opacity:0.5;*/
+  /*}*/
 
 ._icon.big   { line-height:40px; }
 ._icon       { line-height:20px; }

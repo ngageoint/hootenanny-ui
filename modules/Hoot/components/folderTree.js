@@ -83,7 +83,7 @@ export default class FolderTree {
      */
     update( source ) {
         let nodeTree = this.tree( this.root ),
-            height   = Math.max( 150, nodeTree.length * this.barHeight + this.margin.top + this.margin.bottom );
+            height   = Math.max( 150, nodeTree.children.length * this.barHeight + this.margin.top + this.margin.bottom );
 
         this.container.select( 'svg' ).transition()
             .duration( 0 )

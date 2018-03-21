@@ -114,18 +114,3 @@ export const contextMenus = {
         }
     ]
 };
-
-export const sidebarForms = [
-    {
-        color: 'violet',
-        toggleButtonText: 'Add Reference Dataset',
-        id: 'add-ref',
-        tableId: 'add-ref-table'
-    },
-    {
-        color: 'orange',
-        toggleButtonText: 'Add Secondary Dataset',
-        id: 'add-secondary',
-        tableId: 'add-secondary-table'
-    }
-];

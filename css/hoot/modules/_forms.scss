@@ -32,6 +32,15 @@
         }
     }
 
+    .dataset-file-upload {
+        position: absolute;
+        height: 100%;
+        opacity: 0;
+        left: 0;
+    }
+}
+
+form {
     .form-field {
         width: 100%;
         margin-bottom: 10px;
@@ -55,12 +64,5 @@
         .icon-button {
             width: 31px;
         }
-    }
-
-    .dataset-file-upload {
-        position: absolute;
-        height: 100%;
-        opacity: 0;
-        left: 0;
     }
 }

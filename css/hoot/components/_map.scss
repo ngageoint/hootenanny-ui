@@ -1,3 +1,22 @@
+#bar {
+    position: absolute;
+    width: calc(100% - 400px);
+    top: 60px;
+    left: 400px;
+
+    .spacer {
+        width: 0;
+    }
+}
+
+#map {
+    position: absolute;
+    width: 100%;
+}
+
 #content {
+    position: absolute;
+    width: calc(100% - 400px);
     height: calc(100% - 60px);
+    left: 400px;
 }

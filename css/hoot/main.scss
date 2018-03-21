@@ -1,14 +1,12 @@
 // Modules
-@import 'modules/normalize';
 @import 'modules/variables';
 @import 'modules/global';
 @import 'modules/icons';
-@import 'modules/modals';
+@import 'modules/forms';
 
 // Components
 @import 'components/navbar';
 @import 'components/settingsPanel';
 @import 'components/sidebar';
 @import 'components/map';
-@import 'components/mapTools';
 @import 'components/contextMenus';

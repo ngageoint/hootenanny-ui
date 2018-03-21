@@ -83,7 +83,7 @@ export function uiInit(context) {
             .attr('id', 'content')
             .attr('class', 'active');
 
-        var bar = content
+        var bar = container
             .append('div')
             .attr('id', 'bar')
             .attr('class', 'fillD');

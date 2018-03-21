@@ -14,21 +14,36 @@
     }
 }
 
+._osm {
+    background-image: url(img/mag_map.svg);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: contain;
+    vertical-align: middle;
+    width: 38px !important;
+    height: 38px !important;
+    margin: 2px 0 0 3px;
+}
+
 ._icon {
     &.folder:before {
-        background-position:-480px 0;
+        background-position: -480px 0;
     }
 
     &.open-folder:before {
-        background-position:-84px 0px;
+        background-position: -84px 0px;
     }
 
     &.data:before {
-        background-position:-40px 0;
+        background-position: -40px 0;
     }
 
     &.close:before {
-        background-position:-440px 0;
+        background-position: -440px 0;
+    }
+
+    &.check:before {
+        background-position: -360px 0;
     }
 
     &._loading {
