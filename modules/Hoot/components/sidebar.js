@@ -7,8 +7,10 @@
 import _ from 'lodash-es';
 import Events from '../util/events';
 import FolderTree from './folderTree';
+import LayerManager from '../models/layerManager';
 //import { d3combobox } from '../../lib/hoot/d3.combobox';
 import { sidebarForms } from '../config/formMetadata';
+import config from '../config/apiConfig';
 import palette from '../config/colorPalette';
 
 /**
@@ -17,7 +19,8 @@ import palette from '../config/colorPalette';
  * @constructor
  */
 export default class Sidebar {
-    constructor( container ) {
+    constructor( container, context ) {
+        this.context     = context;
         this.container   = container;
         this.formData    = sidebarForms;
         this.layerTables = {};
@@ -30,6 +33,7 @@ export default class Sidebar {
         this.container.classed( 'col4', false );
 
         this.createResizer();
+        this.createWrapper();
         this.createForms();
         this.createToggleButtons();
         this.createFieldsets();
@@ -74,14 +78,21 @@ export default class Sidebar {
 
         sidebarWidth = this.container.node().getBoundingClientRect().width;
 
-        d3.select( '#bar' ).style( 'left', sidebarWidth + 'px' );
+        d3.select( '#bar' )
+            .style( 'left', sidebarWidth + 'px' )
+            .style( 'width', `calc(100% - ${ sidebarWidth }px)` );
+    }
+
+    createWrapper() {
+        this.wrapper = this.container.append( 'div' )
+            .classed( 'wrapper', true );
     }
 
     /**
      * Bind form data and create a form for each item
      */
     createForms() {
-        this.forms = this.container.selectAll( 'form' )
+        this.forms = this.wrapper.selectAll( 'form' )
             .data( this.formData )
             .enter().append( 'form' )
             .attr( 'id', d => d.id )
@@ -181,7 +192,7 @@ export default class Sidebar {
             .classed( 'keyline-all form-field palette clearfix round', true );
 
         colorPalette.selectAll( 'a' )
-            .data( _.reject( palette, c => c.name === 'green' ) )
+            .data( _.reject( palette(), c => c.name === 'green' ) )
             .enter()
             .append( 'a' )
             .attr( 'class', function( p ) {
@@ -213,6 +224,9 @@ export default class Sidebar {
             .classed( 'add-layer-button fill-dark small strong round', true )
             .text( 'Add Layer' )
             .on( 'click', d => {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+
                 this.submitLayer( d );
             } );
     }
@@ -229,11 +243,49 @@ export default class Sidebar {
             layerName;
 
         if ( !form.select( '.sel' ).empty() ) {
-            let gNode = d3.select( form.select( '.sel' ).node().parentNode );
-            console.log( gNode );
+            let gNode    = d3.select( form.select( '.sel' ).node().parentNode ),
+                textNode = gNode.select( '.dnameTxt' );
+
+            layerName = textNode.attr( 'data-name' );
+            layerId   = textNode.attr( 'data-id' );
         } else {
             // error
         }
+
+        let key = {
+            name: layerName,
+            id: layerId,
+            color
+        };
+
+        this.addLayer( form, key );
+    }
+
+    addLayer( form, key ) {
+        let source = this.getMapnikSource( key );
+
+        //console.log( this.context.map().layers.add( key ) );
+        LayerManager.addLayer( key ).then( resp => {
+            //this.context.background().addSource( source );
+        } );
+    }
+
+    getMapnikSource( d ) {
+        return {
+            name: d.name,
+            id: d.id,
+            type: 'tms',
+            description: d.name,
+            template: window.location.protocol + '//' + window.location.hostname
+            + `:${ config.mapnikServerPort }`
+            + '/?z={zoom}&x={x}&y={y}&color='
+            + encodeURIComponent( palette( d.color ) )
+            + '&mapid=' + d.id,
+            scaleExtent: [ 0, 18 ],
+            overlay: true,
+            projection: 'mercator',
+            subtype: 'density_raster'
+        };
     }
 
     /**

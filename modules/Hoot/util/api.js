@@ -6,7 +6,7 @@
 
 import _ from 'lodash-es';
 import axios from 'axios/dist/axios';
-import config from '../config/apiConfig';
+import { apiConfig } from '../config/apiConfig';
 
 /**
  * API calls to backend services
@@ -16,8 +16,8 @@ import config from '../config/apiConfig';
  */
 class API {
     constructor() {
-        this.config  = config;
-        this.baseUrl = `${ this.config.host }:${ this.config.port }`;
+        this.config  = apiConfig;
+        this.baseUrl = `${ this.config.host }:${ this.config.port }/${ this.config.basePath }`;
     }
 
     /**
@@ -29,6 +29,7 @@ class API {
         return axios( {
             url: `${ this.baseUrl }${ params.path }`,
             method: params.method || 'GET',
+            headers: params.headers,
             data: params.data,
             params: params.params
         } );
@@ -46,7 +47,7 @@ class API {
         }
 
         const params = {
-            path: '/hoot-services/ingest/ingest/upload',
+            path: '/ingest/ingest/upload',
             method: 'POST',
             params: {
                 TRANSLATION: data.TRANSLATION,
@@ -74,7 +75,7 @@ class API {
         }
 
         const params = {
-            path: '/hoot-services/osm/api/0.6/map/addfolder',
+            path: '/osm/api/0.6/map/addfolder',
             method: 'POST',
             params: {
                 folderName: data.folderName,
@@ -94,7 +95,7 @@ class API {
      */
     getFolders() {
         const params = {
-            path: '/hoot-services/osm/api/0.6/map/folders',
+            path: '/osm/api/0.6/map/folders',
             method: 'GET'
         };
 
@@ -109,7 +110,7 @@ class API {
      */
     getLayers() {
         const params = {
-            path: '/hoot-services/osm/api/0.6/map/layers',
+            path: '/osm/api/0.6/map/layers',
             method: 'GET'
         };
 
@@ -138,7 +139,7 @@ class API {
      */
     getLinks() {
         const params = {
-            path: '/hoot-services/osm/api/0.6/map/links',
+            path: '/osm/api/0.6/map/links',
             method: 'GET'
         };
 
@@ -153,7 +154,7 @@ class API {
      */
     getTranslations() {
         const params = {
-            path: '/hoot-services/ingest/customscript/getlist',
+            path: '/ingest/customscript/getlist',
             method: 'GET'
         };
 
@@ -168,20 +169,44 @@ class API {
      */
     getJobStatus( id ) {
         const params = {
-            path: `/hoot-services/job/status/${ id }`,
+            path: `/job/status/${ id }`,
             method: 'GET'
         };
 
         return this.request( params )
             .then( resp => resp.data );
-    };
+    }
+
+    getMbr( mapId ) {
+        const params = {
+            path: `/osm/api/0.6/map/mbr?mapId=${ mapId }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getTileNodesCount( data ) {
+        const params = {
+            path: '/osm/api/0.6/map/nodescount',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            data
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
 
     getMapSizes( mapIds ) {
         if ( !mapIds ) {
             return null;
         }
         const params = {
-            path: `/hoot-services/info/map/sizes?mapid=${ mapIds }`,
+            path: `/info/map/sizes?mapid=${ mapIds }`,
             method: 'GET'
         };
 

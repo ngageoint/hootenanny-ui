@@ -188,7 +188,7 @@ export function rendererBackground(context) {
 
     background.addSource = function(d) {
         var source = rendererBackgroundSource(d);
-        backgroundSources.push(source);
+        _backgroundSources.push(source);
         background.toggleOverlayLayer(source);
     };
 
@@ -200,7 +200,7 @@ export function rendererBackground(context) {
     background.removeSource = function(id) {
         var source = background.findSource(id);
         if (source) {
-            _remove(backgroundSources, {id: source.id});
+            _remove(_backgroundSources, {id: source.id});
             if (background.showsLayer({id: id})) background.toggleOverlayLayer(source);
         }
     };

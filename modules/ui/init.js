@@ -96,8 +96,8 @@ export function uiInit(context) {
 
         content
             .call(uiMapInMap(context))
-            .call(uiInfo(context))
-            .call(uiNotice(context));
+            .call(uiInfo(context));
+            //.call(uiNotice(context));
 
         bar
             .append('div')

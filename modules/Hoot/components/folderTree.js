@@ -200,16 +200,21 @@ export default class FolderTree {
                 let dd = d.depth - 1;
                 return 25.5 + (11 * dd);
             } )
-            .append( 'tspan' ).text( d => d.data.name )
+            .attr( 'data-name', d => d.data.name )
+            .attr( 'data-id', d => d.data.id )
+            // TODO: eventually remove this
             .each( function( d ) {
                 let textNode = d3.select( this );
 
                 if ( d.data.type === 'folder' ) {
-                    textNode.attr( 'folder-id', d => d.id );
+                    textNode.attr( 'folder-id', d => d.data.id );
                 } else if ( d.data.type === 'dataset' ) {
-                    textNode.attr( 'layer-id', d => d.id );
+                    textNode.attr( 'layer-id', d => d.data.id );
                 }
-            } );
+
+                //self.wrapText( d, textNode );
+            } )
+            .append( 'tspan' ).text( d => d.data.name );
 
         // Transition nodes to their new position
         nodeElement.transition()
@@ -299,6 +304,13 @@ export default class FolderTree {
                     return dateActive;
                 } );
         }
+    }
+
+    wrapText( d, elem ) {
+        let parent = elem.node().parentNode.parentNode;
+
+        //elem.text( d.data.name );
+        d3.select( parent ).append( 'title' ).text( d.data.name );
     }
 
     /**

@@ -80,6 +80,8 @@ export function rendererMap(context) {
         .filter(zoomEventFilter)
         .on('zoom', zoomPan);
 
+    context.minEditableZoom(2);
+
     var _selection = d3_select(null);
 
     var scheduleRedraw = _throttle(redraw, 750);
@@ -114,6 +116,7 @@ export function rendererMap(context) {
         var osm = context.connection();
         if (osm) {
             osm.on('change.map', immediateRedraw);
+            //osm.on('layer', immediateRedraw );
         }
 
         context.history()

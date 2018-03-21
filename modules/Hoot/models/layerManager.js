@@ -8,8 +8,8 @@ import API from '../util/api';
 
 class LayerManager {
     constructor() {
-        this.layers = [];
-
+        this.context         = null;
+        this.layers          = [];
         this._selectedLayers = [];
     }
 
@@ -21,7 +21,24 @@ class LayerManager {
         this._selectedLayers = layers;
     }
 
-    refreshLayers() {
+    set ctx( context ) {
+        this.context = context;
+    }
 
+    addLayerAndCenter( key, resp ) {
+        key.mapId = key.id;
+        this.context.connection().loadData( key );
+    }
+
+    addLayer( key ) {
+        console.log( this.context );
+        let mapId = key.id;
+
+        return API.getMbr( mapId ).then( resp => {
+            this.addLayerAndCenter( key, resp );
+        } );
     }
 }
+
+export default new LayerManager();
+// #background=Bing&map=16.20/-74.04453/40.68922
