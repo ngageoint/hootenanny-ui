@@ -48,7 +48,7 @@ export function svgHoot(projection, context, dispatch) {
             .merge(paths)
             .attr('class', function(d) {
                 if (!(_isEmpty(d))) {
-                    return 'way line stroke tag-hoot-' + d.properties.mapid;
+                    return 'way line stroke tag-hoot-' + d.properties.mapId;
                 }
             });
 

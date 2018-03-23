@@ -193,7 +193,7 @@ export default class Sidebar {
             .classed( 'keyline-all form-field palette clearfix round', true );
 
         colorPalette.selectAll( 'a' )
-            .data( _.reject( palette(), c => c.name === 'green' ) )
+            .data( _.reject( HootOSM.getPalette(), c => c.name === 'green' ) )
             .enter()
             .append( 'a' )
             .attr( 'class', function( p ) {
@@ -267,9 +267,9 @@ export default class Sidebar {
 
         HootOSM.loadLayer( source, params );
         //console.log( this.context.map().layers.add( key ) );
-        LayerManager.addLayer( params ).then( resp => {
-            //this.context.background().addSource( source );
-        } );
+        //LayerManager.addLayer( params ).then( resp => {
+        //    //this.context.background().addSource( source );
+        //} );
     }
 
     getMapnikSource( d ) {
@@ -281,7 +281,7 @@ export default class Sidebar {
             template: window.location.protocol + '//' + window.location.hostname
             + `:${ config.mapnikServerPort }`
             + '/?z={zoom}&x={x}&y={y}&color='
-            + encodeURIComponent( palette( d.color ) )
+            + encodeURIComponent( HootOSM.getPalette( d.color ) )
             + '&mapid=' + d.id,
             scaleExtent: [ 0, 18 ],
             overlay: true,
