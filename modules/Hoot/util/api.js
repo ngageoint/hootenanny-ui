@@ -24,6 +24,7 @@ class API {
      * Submit a request
      *
      * @param params - request data
+     * @returns {Promise} - request
      */
     request( params ) {
         return axios( {
@@ -39,7 +40,7 @@ class API {
      * Upload imported files to the database
      *
      * @param data - upload data
-     * @returns {promise} - request
+     * @returns {Promise} - request
      */
     upload( data ) {
         if ( !data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME ) {
@@ -67,10 +68,10 @@ class API {
      * Add a new folder to the database
      *
      * @param data - folder data
-     * @returns {promise} - request
+     * @returns {Promise} - request
      */
     addFolder( data ) {
-        if ( !data.folderName || !( data.parentId >= 0 ) ) {
+        if ( !data.folderName || !(data.parentId >= 0) ) {
             return false;
         }
 
@@ -91,7 +92,7 @@ class API {
     /**
      * Retrieve all folders from the database
      *
-     * @returns {array} - folders
+     * @returns {Promise|array} - folders
      */
     getFolders() {
         const params = {
@@ -106,7 +107,7 @@ class API {
     /**
      * Get all layers from the database
      *
-     * @returns {array} - layers
+     * @returns {Promise|array} - layers
      */
     getLayers() {
         const params = {
@@ -135,7 +136,7 @@ class API {
     /**
      * Get all links from the database
      *
-     * @returns {array} - links
+     * @returns {Promise|array} - links
      */
     getLinks() {
         const params = {
@@ -150,7 +151,7 @@ class API {
     /**
      * Get all running translations
      *
-     * @returns {array} - translations
+     * @returns {Promise|array} - translations
      */
     getTranslations() {
         const params = {
@@ -166,10 +167,36 @@ class API {
      * Status of job
      *
      * @param id - job id
+     * @returns {Promise} - job status
      */
     getJobStatus( id ) {
         const params = {
             path: `/job/status/${ id }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    // TODO: remove this if not needed
+    getTileNodesCount( data ) {
+        const params = {
+            path: '/osm/api/0.6/map/nodescount',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            data
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getTags( mapId ) {
+        const params = {
+            path: `/osm/api/0.6/map/tags?mapid=${ mapId }`,
             method: 'GET'
         };
 
@@ -184,17 +211,23 @@ class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp => resp.data )
+            .catch( err => {
+                console.log( err );
+                return {
+                    'minlon': -180,
+                    'minlat': -90,
+                    'maxlon': 180,
+                    'maxlat': 90,
+                    'nodescount': 0
+                };
+            } );
     }
 
-    getTileNodesCount( data ) {
+    getReviewStatistics( mapId ) {
         const params = {
-            path: '/osm/api/0.6/map/nodescount',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain'
-            },
-            data
+            path: `/job/review/statistics?mapId=${ mapId }`,
+            method: 'GET'
         };
 
         return this.request( params )

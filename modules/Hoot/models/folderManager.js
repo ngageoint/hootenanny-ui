@@ -4,16 +4,15 @@
  * @author Matt Putipong on 3/6/18
  *******************************************************************************************************/
 
-import API from '../util/api';
 import _ from 'lodash-es';
+import API from '../util/api';
+import LayerManager from './layerManager';
 
 /**
  * Retrieves and manages folders and datasets
  */
 class FolderManager {
     constructor() {
-        this.api = API;
-
         this.folders = {
             base: [],
             open: [],
@@ -46,7 +45,7 @@ class FolderManager {
      * to be usable in a dropdown menu
      */
     refreshFolders() {
-        return this.api.getFolders()
+        return API.getFolders()
             .then( data => {
                 this.folders.base  = data.folders;
                 this.folders.paths = this.listFolders( this.folders.base );
@@ -56,10 +55,10 @@ class FolderManager {
     }
 
     /**
-     * Retrieve datasets from database
+     * Retrieve layers from database
      */
     refreshDatasets() {
-        return this.api.getLayers()
+        return LayerManager.refreshLayers()
             .then( data => this.datasets.base = data.layers || data );
     }
 
@@ -67,7 +66,7 @@ class FolderManager {
      * Retrieve links from database
      */
     refreshLinks() {
-        return this.api.getLinks()
+        return API.getLinks()
             .then( data => this.links = data.links );
     }
 
@@ -168,7 +167,12 @@ class FolderManager {
      */
     async getAvailFolderData() {
         if ( !this.folders.base.length || !this.datasets.base.length ) {
-            await this.refreshAll();
+            if ( this.loading === undefined ) {
+                this.loading = this.refreshAll();
+            }
+
+            // make sure refresh all is only called once
+            await this.loading;
         }
 
         let datasetList = _.map( this.datasets.base, dataset => {

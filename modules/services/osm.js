@@ -14,7 +14,6 @@ import _values from 'lodash-es/values';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { xml as d3_xml } from 'd3-request';
 
-import API from '../Hoot/util/api';
 import osmAuth from 'osm-auth';
 import { JXON } from '../util/jxon';
 import { d3geoTile as d3_geoTile } from '../lib/d3.geo.tile';
@@ -28,14 +27,12 @@ import {
 import { services } from '../services/index';
 
 import { utilRebind, utilIdleWorker } from '../util';
-import { hootConfig } from '../Hoot/config/apiConfig';
-import { baseUrl } from '../Hoot/config/apiConfig';
 
 
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded');
 var urlroot = 'https://www.openstreetmap.org';
 var oauth = osmAuth({
-    url: baseUrl,
+    url: urlroot,
     oauth_consumer_key: '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
     oauth_secret: 'aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL',
     loading: authLoading,
@@ -52,9 +49,6 @@ var _rateLimitError;
 var _userChangesets;
 var _userDetails;
 var _off;
-
-let loadedData = {},
-    lastLoadedLayer;
 
 
 function authLoading() {
@@ -193,9 +187,7 @@ function parse(xml, callback, options) {
 }
 
 function getUrlRoot(path) {
-    console.log( services.hoot.urlroot() );
-    return services.hoot.urlroot();
-    //return (path.indexOf('mapId') > -1) ? services.hoot.urlroot() : urlroot;
+    return (path.indexOf('mapId') > -1) ? services.hoot.urlroot() : urlroot;
 }
 
 function isUrlHoot(path) {
@@ -305,19 +297,9 @@ export default {
         if (!isUrlHoot(path) && this.authenticated()) {
             return oauth.xhr({ method: 'GET', path: path }, done);
         } else {
-            var url = baseUrl + path;
-            return url;
+            var url = getUrlRoot(path) + path;
+            return d3_xml(url).get(done);
         }
-    },
-
-
-    loadData: data => {
-        console.log( data );
-        let mapid = data.mapId;
-        loadedData[ mapid ] = data;
-        loadedData[ mapid ].vis = true;
-        lastLoadedLayer = data.mapId.toString();
-        dispatch.call( 'change' );
     },
 
 
@@ -388,15 +370,6 @@ export default {
                 );
             });
         });
-    },
-
-
-    visLayer: function( mapId ) {
-        if ( loadedData[ mapId ] ) {
-            return loadedData[ mapId ].vis;
-        }
-
-        return false;
     },
 
 
@@ -628,7 +601,7 @@ export default {
     },
 
 
-    loadTiles: async function(projection, dimensions, callback) {
+    loadTiles: function(projection, dimensions, callback) {
         if (_off) return;
 
         var that = this;
@@ -640,136 +613,58 @@ export default {
             s / 2 - projection.translate()[1]
         ];
 
-        var visLayers = _filter( loadedData, layer => layer.vis );
-        var mapidArr = _map( loadedData, layer => layer.mapId );
+        var tiles = d3_geoTile()
+            .scaleExtent([_tileZoom, _tileZoom])
+            .scale(s)
+            .size(dimensions)
+            .translate(projection.translate())()
+            .map(function(tile) {
+                var x = tile[0] * ts - origin[0];
+                var y = tile[1] * ts - origin[1];
 
-        var tiles = _map( visLayers, function( layer ) {
-            return d3_geoTile()
-                .scaleExtent( [ _tileZoom, _tileZoom ] )
-                .scale(s)
-                .size(dimensions)
-                .translate(projection.translate())()
-                .map(function(tile) {
-                    var x = tile[0] * ts - origin[0];
-                    var y = tile[1] * ts - origin[1];
+                return {
+                    id: tile.toString(),
+                    extent: geoExtent(
+                        projection.invert([x, y + ts]),
+                        projection.invert([x + ts, y]))
+                };
+            });
 
-                    return {
-                        id: tile.toString(),
-                        extent: geoExtent(
-                            projection.invert( [ x, y + ts ] ),
-                            projection.invert( [ x + ts, y ] )
-                        ),
-                        mapId: layer.mapId,
-                        layerName: layer.name
-                    };
-                });
-        } );
+        _filter(_tiles.inflight, function(v, i) {
+            var wanted = _find(tiles, function(tile) {
+                return i === tile.id;
+            });
+            if (!wanted) delete _tiles.inflight[i];
+            return !wanted;
+        }).map(abortRequest);
 
-        tiles = _flatten( tiles );
+        tiles.forEach(function(tile) {
+            var id = tile.id;
 
-        //_filter(_tiles.inflight, function(v, i) {
-        //    var wanted = _find(tiles, function(tile) {
-        //        var mapids = _find(mapidArr, function (a) {
-        //            return tile.mapId === a;
-        //        });
-        //        return i === tile.id + ',' + mapids;
-        //    });
-        //    if (!wanted) delete _tiles.inflight[i];
-        //    return !wanted;
-        //}).map(abortRequest);
+            if (_tiles.loaded[id] || _tiles.inflight[id]) return;
 
-        let params = _map( tiles, tile => {
-            return {
-                tile: tile.extent.toParam(),
-                mapId: tile.mapId
-            };
-        } );
+            if (_isEmpty(_tiles.inflight)) {
+                dispatch.call('loading');
+            }
 
-        let nodesCount = await API.getTileNodesCount( params );
+            _tiles.inflight[id] = that.loadFromAPI(
+                '/api/0.6/map?bbox=' + tile.extent.toParam(),
+                function(err, parsed) {
+                    delete _tiles.inflight[id];
+                    if (!err) {
+                        _tiles.loaded[id] = true;
+                    }
 
-        //console.log( loadedData );
-        tiles.forEach( tile => {
-            let curLayer = _find( loadedData, layer => layer.mapId === tile.mapId ),
-                bbox;
+                    if (callback) {
+                        callback(err, _extend({ data: parsed }, tile));
+                    }
 
-            // TODO: get BBox through API instead of here
-            bbox = that.bboxUrl( tile, nodesCount > hootConfig.maxNodeCount );
-        } );
-
-        //tiles.forEach( function( tile ) {
-        //    let mapId     = tile.mapId || mapId,
-        //        layerName = tile.layerName || layerName,
-        //        vis       = that.visLayer( mapId ),
-        //        curLayer = _find( loadedData, layer => layer.mapId === mapId );
-        //
-        //    if ( !vis ) return;
-        //    //var id = tile.id + ',' + mapId;
-        //    //if (loadedTiles[id]) return;
-        //    var param   = {};
-        //    param.tile  = tile.extent.toParam();
-        //    param.mapId = '' + mapId;
-        //    params.push( param );
-        //
-        //    bboxUrl = that.bboxUrl( tile, mapId, layerName, curLayer.extent)
-        //} );
-        //
-        //console.log( params );
-        //
-        //API.getTileNodesCount( params ).then( resp => {
-        //    console.log( resp );
-        //} );
-
-        // TODO: return to this
-        //tiles.forEach(function(tile) {
-        //    var mapId = tile.mapId,
-        //        vis = that.visLayer( mapId );
-        //
-        //    if ( !vis ) {
-        //        return;
-        //    }
-        //
-        //    if (_tiles.loaded[id] || _tiles.inflight[id]) return;
-        //
-        //    if (_isEmpty(_tiles.inflight)) {
-        //        dispatch.call('loading');
-        //    }
-        //
-        //    _tiles.inflight[id] = that.loadFromAPI(
-        //        '/api/0.6/map?bbox=' + tile.extent.toParam(),
-        //        function(err, parsed) {
-        //            delete _tiles.inflight[id];
-        //            if (!err) {
-        //                _tiles.loaded[id] = true;
-        //            }
-        //
-        //            if (callback) {
-        //                callback(err, _extend({ data: parsed }, tile));
-        //            }
-        //
-        //            if (_isEmpty(_tiles.inflight)) {
-        //                dispatch.call('loaded');
-        //            }
-        //        }
-        //    );
-        //});
-    },
-
-
-
-    bboxUrl: ( tile, showBbox) => {
-        // TODO: BBox through API instead of here
-        let ext = '';
-
-        if ( showBbox ) {
-
-        }
-
-
-    },
-
-
-    showDensityRaster: doShow => {
-
+                    if (_isEmpty(_tiles.inflight)) {
+                        dispatch.call('loaded');
+                    }
+                }
+            );
+        });
     },
 
 

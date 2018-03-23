@@ -8,6 +8,7 @@ import _ from 'lodash-es';
 import Events from '../util/events';
 import FolderTree from './folderTree';
 import LayerManager from '../models/layerManager';
+import HootOSM from '../models/hootOsm';
 //import { d3combobox } from '../../lib/hoot/d3.combobox';
 import { sidebarForms } from '../config/formMetadata';
 import config from '../config/apiConfig';
@@ -252,20 +253,21 @@ export default class Sidebar {
             // error
         }
 
-        let key = {
+        let params = {
             name: layerName,
             id: layerId,
             color
         };
 
-        this.addLayer( form, key );
+        this.addLayer( form, params );
     }
 
-    addLayer( form, key ) {
-        let source = this.getMapnikSource( key );
+    addLayer( form, params ) {
+        let source = this.getMapnikSource( params );
 
+        HootOSM.loadLayer( source, params );
         //console.log( this.context.map().layers.add( key ) );
-        LayerManager.addLayer( key ).then( resp => {
+        LayerManager.addLayer( params ).then( resp => {
             //this.context.background().addSource( source );
         } );
     }

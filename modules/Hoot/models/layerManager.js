@@ -5,16 +5,37 @@
  *******************************************************************************************************/
 
 import API from '../util/api';
+import _ from 'lodash-es';
 
 class LayerManager {
     constructor() {
-        this.context         = null;
-        this.layers          = [];
-        this._selectedLayers = [];
+        this.context          = null;
+        this._layers          = [];
+        this._availableLayers = [];
+        this._selectedLayers  = [];
+    }
+
+    /**
+     * Retrieve layers from database
+     */
+    refreshLayers() {
+        return API.getLayers()
+            .then( data => {
+                this._layers = data;
+
+                return data;
+            } );
     }
 
     get selectedLayers() {
         return this._selectedLayers;
+    }
+
+    get availableLayers() {
+        return _.reduce( this._layers, ( layers, layer ) => {
+            layers[ layer.id.toString() ] = layer.name;
+            return layers;
+        }, {} );
     }
 
     set selectedLayers( layers ) {
@@ -27,11 +48,10 @@ class LayerManager {
 
     addLayerAndCenter( key, resp ) {
         key.mapId = key.id;
-        this.context.connection().loadData( key );
+        //this.context.connection().loadData( key );
     }
 
     addLayer( key ) {
-        console.log( this.context );
         let mapId = key.id;
 
         return API.getMbr( mapId ).then( resp => {
@@ -41,4 +61,3 @@ class LayerManager {
 }
 
 export default new LayerManager();
-// #background=Bing&map=16.20/-74.04453/40.68922

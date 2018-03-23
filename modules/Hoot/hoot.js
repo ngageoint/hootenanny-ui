@@ -6,6 +6,7 @@
 
 import FolderManager from './models/folderManager';
 import LayerManager from './models/layerManager';
+import HootOSM from './models/hootOsm';
 import Navbar from './components/navbar';
 import Sidebar from './components/sidebar';
 import SettingsPanel from './components/settingsPanel';
@@ -15,10 +16,11 @@ import SettingsPanel from './components/settingsPanel';
  */
 class Hoot {
     constructor( context ) {
-        this.context = context;
+        this.context   = context;
         this.container = context.container();
 
         LayerManager.ctx = this.context;
+        HootOSM.ctx      = this.context;
     }
 
     init() {
