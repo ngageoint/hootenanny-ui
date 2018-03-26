@@ -2,7 +2,7 @@ import { select as d3_select } from 'd3-selection';
 import { osmPavedTags } from '../osm/tags';
 import { osmEntity } from '../osm/index';
 import { services } from '../services/index';
-
+import HootOSM from '../Hoot/models/hootOsm';
 
 export function svgTagClasses() {
     var primaries = [
@@ -104,27 +104,28 @@ export function svgTagClasses() {
             if (entity.id) {
                 // Set a marker class on hoot entities
                 // used for assigning layer color
-                var mapid = osmEntity.id.toHootMapId(entity.id);
+                var mapId = osmEntity.id.toHootMapId(entity.id);
 
                 // For merged datasets, assign color class of source layer
-                var lyr = services.hoot.loadedLayers()[mapid];
+                var lyr = HootOSM.loadedLayers[mapId];
                 if (lyr && lyr.merged) {
                     var id;
-                    var sourceid = services.hoot.decodeHootStatus(t['hoot:status']);
-                    switch (sourceid) {
+                    var sourceId = HootOSM.decodeHootStatus(t['hoot:status']);
+                    switch (sourceId) {
                     case 1:
                     case 2:
-                        id = lyr.tags['input' + sourceid];
+                        id = lyr.tags['i' +
+                        'nput' + sourceid];
                         break;
                     case 0:
                     case 3:
                     default:
-                        id = mapid;
+                        id = mapId;
                         break;
                     }
                     classes += ' tag-hoot-' + (id || sourceid);
                 } else {
-                    classes += ' tag-hoot-' + mapid;
+                    classes += ' tag-hoot-' + mapId;
                 }
             }
 

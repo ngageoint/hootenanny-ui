@@ -284,6 +284,7 @@ export function rendererBackground(context) {
 
 
     background.toggleOverlayLayer = function(d) {
+        console.log( 'd: ', d );
         var layer;
 
         for (var i = 0; i < _overlayLayers.length; i++) {
@@ -299,8 +300,7 @@ export function rendererBackground(context) {
         layer = rendererTileLayer(context)
             .source(d)
             .projection(context.projection)
-            .dimensions(baseLayer.dimensions()
-        );
+            .dimensions(baseLayer.dimensions() );
 
         _overlayLayers.push(layer);
         dispatch.call('change');

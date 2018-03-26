@@ -14,12 +14,16 @@ import config from '../config/apiConfig';
 
 class HootOSM {
     constructor() {
-        this.loadedLayers = {};
-        this.palette      = colorPalette;
+        this._loadedLayers = {};
+        this.palette       = colorPalette;
     }
 
     set ctx( context ) {
         this.context = context;
+    }
+
+    get loadedLayers() {
+        return this._loadedLayers;
     }
 
     getMapnikSource( d ) {
@@ -74,7 +78,7 @@ class HootOSM {
             stats       = await API.getReviewStatistics( mapId ),
             layerExtent = await this.layerExtent( mapId );
 
-        this.loadedLayers[ mapId ] = {
+        this._loadedLayers[ mapId ] = {
             name: LayerManager.availableLayers[ mapId ],
             id: mapId.toString(),
             polygon: [ layerExtent.polygon() ],
@@ -86,7 +90,7 @@ class HootOSM {
 
         this.setLayerColor( mapId, params.color );
 
-        this.renderLayer( layerExtent, this.getMapnikSource( this.loadedLayers[ mapId ] ) );
+        this.renderLayer( layerExtent, this.getMapnikSource( this._loadedLayers[ mapId ] ) );
     }
 
     renderLayer( extent, mapnikSource ) {
@@ -114,6 +118,20 @@ class HootOSM {
                 }
             } ] ) );
         }
+    }
+
+    decodeHootStatus( status ) {
+        if ( status === 'Input1' ) {
+            return 1;
+        }
+        if ( status === 'Input2' ) {
+            return 2;
+        }
+        if ( status === 'Conflated' ) {
+            return 3;
+        }
+
+        return parseInt( status, 10 );
     }
 
     setLayerColor( mapId, color ) {

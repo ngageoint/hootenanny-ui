@@ -28,6 +28,8 @@ import { services } from '../services/index';
 
 import { utilRebind, utilIdleWorker } from '../util';
 
+import HootOSM from '../Hoot/models/hootOsm';
+
 
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded');
 var urlroot = 'https://www.openstreetmap.org';
@@ -170,6 +172,7 @@ function parse(xml, callback, options) {
 
     var root = xml.childNodes[0];
     var children = root.childNodes;
+    var mapId = (root.attributes.mapid) ? root.attributes.mapid.value : -1;
 
     function parseChild(child) {
         var parser = parsers[child.nodeName];
@@ -179,7 +182,7 @@ function parse(xml, callback, options) {
             if (options.cache && _entityCache[uid]) {
                 return null;
             }
-            return parser(child, uid);
+            return parser(child, uid, mapId);
         }
     }
 
@@ -604,31 +607,45 @@ export default {
     loadTiles: function(projection, dimensions, callback) {
         if (_off) return;
 
-        var that = this;
-        var s = projection.scale() * 2 * Math.PI;
-        var z = Math.max(Math.log(s) / Math.log(2) - 8, 0);
-        var ts = 256 * Math.pow(2, z - _tileZoom);
-        var origin = [
-            s / 2 - projection.translate()[0],
-            s / 2 - projection.translate()[1]
-        ];
+        var that = this,
+            s = projection.scale() * 2 * Math.PI,
+            z = Math.max(Math.log(s) / Math.log(2) - 8, 0),
+            ts = 256 * Math.pow(2, z - _tileZoom),
+            origin = [
+                s / 2 - projection.translate()[0],
+                s / 2 - projection.translate()[1]
+            ];
 
-        var tiles = d3_geoTile()
-            .scaleExtent([_tileZoom, _tileZoom])
-            .scale(s)
-            .size(dimensions)
-            .translate(projection.translate())()
-            .map(function(tile) {
-                var x = tile[0] * ts - origin[0];
-                var y = tile[1] * ts - origin[1];
+        // Load from visible layers only
+        // Hoot loadedLayers is what controls the vector data sources that are loaded
+        var visLayers = _filter(_values(HootOSM.loadedLayers), function (layer) {
+            return layer.visible;
+        });
+        //console.log( visLayers );
 
-                return {
-                    id: tile.toString(),
-                    extent: geoExtent(
-                        projection.invert([x, y + ts]),
-                        projection.invert([x + ts, y]))
-                };
-            });
+        var tiles = _map(visLayers, function (layer) {
+            return d3_geoTile()
+                .scaleExtent([_tileZoom, _tileZoom])
+                .scale(s)
+                .size(dimensions)
+                .translate(projection.translate())()
+                .map(function (tile) {
+                    var x = tile[0] * ts - origin[0],
+                        y = tile[1] * ts - origin[1];
+
+                    return {
+                        id: tile.toString() + ',' + layer.id,
+                        extent: geoExtent(
+                            projection.invert([x, y + ts]),
+                            projection.invert([x + ts, y])),
+                        mapId: layer.id,
+                        layerName: layer.name
+                    };
+                });
+        });
+
+        // flatten visible layer tile arrays to make http requests
+        tiles = _flatten(tiles);
 
         _filter(_tiles.inflight, function(v, i) {
             var wanted = _find(tiles, function(tile) {
@@ -648,7 +665,7 @@ export default {
             }
 
             _tiles.inflight[id] = that.loadFromAPI(
-                '/api/0.6/map?bbox=' + tile.extent.toParam(),
+                '/api/0.6/map?bbox=' + tile.extent.toParam() + ( tile.mapId > -1 ? '&mapId=' + tile.mapId : '' ),
                 function(err, parsed) {
                     delete _tiles.inflight[id];
                     if (!err) {
