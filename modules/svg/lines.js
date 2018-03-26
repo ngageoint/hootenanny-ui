@@ -92,6 +92,7 @@ export function svgLines(projection, context) {
 
     function drawLines(selection, graph, entities, filter) {
 
+
         function waystack(a, b) {
             var selected = context.selectedIDs();
             var scoreA = selected.indexOf(a.id) !== -1 ? 20 : 0;

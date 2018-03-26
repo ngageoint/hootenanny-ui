@@ -77,11 +77,11 @@ function getLoc(attrs) {
 }
 
 
-function getNodes(obj) {
+function getNodes(obj, mapId) {
     var elems = obj.getElementsByTagName('nd');
     var nodes = new Array(elems.length);
     for (var i = 0, l = elems.length; i < l; i++) {
-        nodes[i] = 'n' + elems[i].attributes.ref.value;
+        nodes[i] = 'n' + elems[i].attributes.ref.value + '_' + mapId;
     }
     return nodes;
 }

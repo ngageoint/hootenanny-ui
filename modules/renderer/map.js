@@ -312,6 +312,8 @@ export function rendererMap(context) {
             }
 
             if (extent) {
+                console.log( 'extent: ', extent );
+                console.log( extent );
                 data = context.intersects(map.extent().intersection(extent));
                 var set = d3_set(_map(data, 'id'));
                 filter = function(d) { return set.has(d.id); };
