@@ -72,7 +72,8 @@ export function rendererMap(context) {
         wrapper = d3_select(null),
         surface = d3_select(null),
         mouse,
-        mousemove;
+        mousemove,
+        timeoutId;
 
     var zoom = d3_zoom()
         .scaleExtent([ztok(2), ztok(24)])
@@ -84,7 +85,10 @@ export function rendererMap(context) {
 
     var _selection = d3_select(null);
 
-    var scheduleRedraw = _throttle(redraw, 750);
+    function scheduleRedraw() {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(function() { redraw(); }, 100);
+    }
     // var isRedrawScheduled = false;
     // var pendingRedrawCall;
     // function scheduleRedraw() {
@@ -101,7 +105,7 @@ export function rendererMap(context) {
     // }
 
     function cancelPendingRedraw() {
-        scheduleRedraw.cancel();
+        clearTimeout(timeoutId);
         // isRedrawScheduled = false;
         // window.cancelIdleCallback(pendingRedrawCall);
     }
@@ -312,8 +316,6 @@ export function rendererMap(context) {
             }
 
             if (extent) {
-                console.log( 'extent: ', extent );
-                console.log( extent );
                 data = context.intersects(map.extent().intersection(extent));
                 var set = d3_set(_map(data, 'id'));
                 filter = function(d) { return set.has(d.id); };
@@ -450,6 +452,7 @@ export function rendererMap(context) {
     function redraw(difference, extent) {
         if (surface.empty() || !redrawEnabled) return;
 
+        cancelPendingRedraw();
         // If we are in the middle of a zoom/pan, we can't do differenced redraws.
         // It would result in artifacts where differenced entities are redrawn with
         // one transform and unchanged entities with another.
