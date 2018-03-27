@@ -266,10 +266,6 @@ export default class Sidebar {
         let source = this.getMapnikSource( params );
 
         HootOSM.loadLayer( source, params );
-        //console.log( this.context.map().layers.add( key ) );
-        //LayerManager.addLayer( params ).then( resp => {
-        //    //this.context.background().addSource( source );
-        //} );
     }
 
     getMapnikSource( d ) {

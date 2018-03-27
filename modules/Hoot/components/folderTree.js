@@ -37,15 +37,6 @@ export default class FolderTree {
         this.tree = d3.tree()
             .nodeSize( [ 0, 20 ] );
 
-        this.diagonal = d => {
-            if ( d.source && d.target ) {
-                return 'M' + d.source.y + ',' + d.source.x
-                    + 'C' + (d.source.y + d.target.y) / 2 + ',' + d.source.x
-                    + ' ' + (d.source.y + d.target.y) / 2 + ',' + d.target.x
-                    + ' ' + d.target.y + ',' + d.target.x;
-            }
-        };
-
         this.svg = this.container.append( 'svg' )
             .attr( 'width', this.width )
             .attr( 'height', this.height )
@@ -66,7 +57,7 @@ export default class FolderTree {
         folders = {
             name: 'Datasets',
             id: 'Datasets',
-            children: folders
+            children: _.cloneDeep( folders ) // prevent collision of data
         };
 
         this.root    = d3.hierarchy( folders );

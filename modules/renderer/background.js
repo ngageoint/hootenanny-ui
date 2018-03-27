@@ -284,7 +284,6 @@ export function rendererBackground(context) {
 
 
     background.toggleOverlayLayer = function(d) {
-        console.log( 'd: ', d );
         var layer;
 
         for (var i = 0; i < _overlayLayers.length; i++) {

@@ -87,7 +87,7 @@ export function rendererMap(context) {
 
     function scheduleRedraw() {
         clearTimeout(timeoutId);
-        timeoutId = setTimeout(function() { redraw(); }, 100);
+        timeoutId = setTimeout(function() { redraw(); }, 300);
     }
     // var isRedrawScheduled = false;
     // var pendingRedrawCall;
@@ -449,7 +449,7 @@ export function rendererMap(context) {
     }
 
 
-    function redraw(difference, extent) {
+    async function redraw(difference, extent) {
         if (surface.empty() || !redrawEnabled) return;
 
         cancelPendingRedraw();
