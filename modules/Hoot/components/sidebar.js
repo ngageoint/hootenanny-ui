@@ -12,7 +12,6 @@ import HootOSM from '../models/hootOsm';
 //import { d3combobox } from '../../lib/hoot/d3.combobox';
 import { sidebarForms } from '../config/formMetadata';
 import config from '../config/apiConfig';
-import palette from '../config/colorPalette';
 
 /**
  * Create the sidebar
@@ -55,11 +54,11 @@ export default class Sidebar {
         this.resizer = this.container.append( 'div' )
             .attr( 'id', 'sidebar-resizer' )
             .on( 'dblclick', function() {
-                self.resize.call( self, this, true );
+                self.resize( this, true );
             } );
 
         this.dragResize = d3.drag().on( 'drag', function() {
-            self.resize.call( self, this );
+            self.resize( this );
         } );
 
         this.resizer.call( this.dragResize );
@@ -79,9 +78,7 @@ export default class Sidebar {
 
         sidebarWidth = this.container.node().getBoundingClientRect().width;
 
-        d3.select( '#bar' )
-            .style( 'left', sidebarWidth + 'px' )
-            .style( 'width', `calc(100% - ${ sidebarWidth }px)` );
+        d3.select( '#bar' ).style( 'width', `calc(100% - ${ sidebarWidth }px)` );
     }
 
     createWrapper() {
@@ -263,27 +260,7 @@ export default class Sidebar {
     }
 
     addLayer( form, params ) {
-        let source = this.getMapnikSource( params );
-
-        HootOSM.loadLayer( source, params );
-    }
-
-    getMapnikSource( d ) {
-        return {
-            name: d.name,
-            id: d.id,
-            type: 'tms',
-            description: d.name,
-            template: window.location.protocol + '//' + window.location.hostname
-            + `:${ config.mapnikServerPort }`
-            + '/?z={zoom}&x={x}&y={y}&color='
-            + encodeURIComponent( HootOSM.getPalette( d.color ) )
-            + '&mapid=' + d.id,
-            scaleExtent: [ 0, 18 ],
-            overlay: true,
-            projection: 'mercator',
-            subtype: 'density_raster'
-        };
+        HootOSM.loadLayer( params );
     }
 
     /**

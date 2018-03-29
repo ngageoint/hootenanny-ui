@@ -185,6 +185,16 @@ export function coreContext() {
         return context;
     };
 
+    //var minVisibleZoom = 16;
+    //context.minVisibleZoom = function(_) {
+    //    if (!arguments.length) return minVisibleZoom;
+    //    minVisibleZoom = _;
+    //    if (connection) {
+    //        connection.tileZoom(_);
+    //    }
+    //    return context;
+    //};
+
 
     /* History */
     var inIntro = false;

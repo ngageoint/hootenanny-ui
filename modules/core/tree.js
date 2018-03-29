@@ -92,6 +92,7 @@ export function coreTree(head) {
         }
 
         return rtree.search(extent.bbox()).map(function(bbox) {
+            // head => coreGraph => /core/graph.js => entity()
             return head.entity(bbox.id);
         });
     };

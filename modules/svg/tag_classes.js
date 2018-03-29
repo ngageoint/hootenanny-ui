@@ -114,8 +114,7 @@ export function svgTagClasses() {
                     switch (sourceId) {
                     case 1:
                     case 2:
-                        id = lyr.tags['i' +
-                        'nput' + sourceid];
+                        id = lyr.tags['input' + mapId];
                         break;
                     case 0:
                     case 3:
@@ -123,7 +122,7 @@ export function svgTagClasses() {
                         id = mapId;
                         break;
                     }
-                    classes += ' tag-hoot-' + (id || sourceid);
+                    classes += ' tag-hoot-' + (id || mapId);
                 } else {
                     classes += ' tag-hoot-' + mapId;
                 }

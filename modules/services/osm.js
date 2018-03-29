@@ -124,6 +124,7 @@ var parsers = {
         var attrs = obj.attributes;
         return new osmNode({
             id:osmEntity.id.fromOSM('node', attrs.id.value + '_' + mapId),
+            mapId: mapId,
             visible: getVisible(attrs),
             version: attrs.version.value,
             changeset: attrs.changeset && attrs.changeset.value,
@@ -139,6 +140,7 @@ var parsers = {
         var attrs = obj.attributes;
         return new osmWay({
             id: osmEntity.id.fromOSM('way', attrs.id.value + '_' + mapId),
+            mapId: mapId,
             version: attrs.version.value,
             changeset: attrs.changeset && attrs.changeset.value,
             timestamp: attrs.timestamp && attrs.timestamp.value,
@@ -153,6 +155,7 @@ var parsers = {
         var attrs = obj.attributes;
         return new osmRelation({
             id: osmEntity.id.fromOSM('relation', attrs.id.value + '_' + mapId),
+            mapId: mapId,
             visible: getVisible(attrs),
             version: attrs.version.value,
             changeset: attrs.changeset && attrs.changeset.value,
@@ -621,7 +624,6 @@ export default {
         var visLayers = _filter(_values(HootOSM.loadedLayers), function (layer) {
             return layer.visible;
         });
-        //console.log( visLayers );
 
         var tiles = _map(visLayers, function (layer) {
             return d3_geoTile()
@@ -637,7 +639,8 @@ export default {
                         id: tile.toString() + ',' + layer.id,
                         extent: geoExtent(
                             projection.invert([x, y + ts]),
-                            projection.invert([x + ts, y])),
+                            projection.invert([x + ts, y])
+                        ),
                         mapId: layer.id,
                         layerName: layer.name
                     };

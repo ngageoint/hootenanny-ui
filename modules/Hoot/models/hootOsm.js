@@ -72,10 +72,10 @@ class HootOSM {
         return new GeoExtent( min, max );
     }
 
-    async loadLayer( source, params ) {
-        let mapId       = source.id,
+    async loadLayer( params ) {
+        let source      = this.getMapnikSource( params ),
+            mapId       = source.id,
             tags        = await API.getTags( mapId ),
-            stats       = await API.getReviewStatistics( mapId ),
             layerExtent = await this.layerExtent( mapId );
 
         this._loadedLayers[ mapId ] = {
@@ -90,7 +90,7 @@ class HootOSM {
 
         this.setLayerColor( mapId, params.color );
 
-        this.renderLayer( layerExtent, this.getMapnikSource( this._loadedLayers[ mapId ] ) );
+        this.renderLayer( layerExtent, source );
     }
 
     renderLayer( extent, mapnikSource ) {
@@ -100,6 +100,7 @@ class HootOSM {
 
         this.context.background().addSource( mapnikSource );
 
+        // context.layers -> map.layers -> drawLayers -> svgLayers -> drawLayer.layer
         let hootOverlay = this.context.layers().layer( 'hoot' );
 
         if ( hootOverlay ) {

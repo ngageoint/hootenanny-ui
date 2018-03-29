@@ -341,7 +341,7 @@ export function rendererMap(context) {
             .call(drawLines, graph, data, filter)
             .call(drawAreas, graph, data, filter)
             .call(drawMidpoints, graph, data, filter, map.trimmedExtent())
-            .call(drawLabels, graph, data, filter, dimensions, fullRedraw)
+            //.call(drawLabels, graph, data, filter, dimensions, fullRedraw)
             .call(drawPoints, graph, data, filter);
 
         dispatch.call('drawn', this, {full: true});
@@ -354,6 +354,7 @@ export function rendererMap(context) {
 
         var mode = context.mode();
         if (mode && mode.id !== 'save') {
+            //TODO: get back to this
             context.enter(modeBrowse(context));
         }
 
@@ -414,8 +415,8 @@ export function rendererMap(context) {
         projection.transform(eventTransform);
 
         var scale = eventTransform.k / transformStart.k;
-        var tX = (eventTransform.x / scale - transformStart.x) * scale;
-        var tY = (eventTransform.y / scale - transformStart.y) * scale;
+        var tX = Math.round( (eventTransform.x / scale - transformStart.x) * scale );
+        var tY = Math.round( (eventTransform.y / scale - transformStart.y) * scale );
 
         if (context.inIntro()) {
             curtainProjection.transform({
@@ -463,7 +464,7 @@ export function rendererMap(context) {
         var z = String(~~map.zoom());
         if (surface.attr('data-zoom') !== z) {
             surface.attr('data-zoom', z)
-                .classed('low-zoom', z <= 16);
+                .classed('low-zoom', z >= 16.5);
         }
 
         if (!difference) {
@@ -474,9 +475,24 @@ export function rendererMap(context) {
             .call(drawLayers);
 
         // OSM
-        if (map.editable()) {
-            context.loadTiles(projection, dimensions);
-            drawVector(difference, extent);
+        //if (map.editable() && !map.visible()) {
+        //    console.log( 'editable and visible' );
+        //    context.connection().tileZoom( 16 );
+        //    context.loadTiles( projection, dimensions );
+        //    drawVector( difference, extent );
+        //} else if (map.editable()) {
+        //    console.log( 'editable' );
+        //    context.connection().tileZoom(2);
+        //    context.loadTiles( projection, dimensions );
+        //    drawVector( difference, extent );
+        //} else {
+        //    editOff();
+        //}
+
+        console.log( map.zoom() );
+        if ( map.editable() ) {
+            context.loadTiles( projection, dimensions );
+            drawVector( difference, extent );
         } else {
             editOff();
         }
@@ -831,6 +847,11 @@ export function rendererMap(context) {
 
         return map.zoom() >= context.minEditableZoom();
     };
+
+
+    //map.visible = function() {
+    //    return map.zoom() >= context.minVisibleZoom();
+    //};
 
 
     map.minzoom = function(_) {

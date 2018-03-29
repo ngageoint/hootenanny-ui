@@ -52,12 +52,9 @@ export function svgHoot(projection, context, dispatch) {
                 }
             });
 
-
         var path = d3_geoPath(projection);
 
-        paths
-            .attr('d', path);
-
+        paths.attr('d', path);
     }
 
 

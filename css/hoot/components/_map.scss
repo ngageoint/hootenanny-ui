@@ -2,7 +2,9 @@
     position: absolute;
     width: calc(100% - 400px);
     top: 60px;
-    left: 400px;
+    //left: 400px;
+    right: 0;
+    left: auto;
 
     .spacer {
         width: 0;
@@ -19,4 +21,49 @@
     width: calc(100% - 400px);
     height: calc(100% - 60px);
     left: 400px;
+}
+
+//path.stroke.tag-hoot {
+//    stroke-width: 7;
+//    stroke-opacity: .9;
+//}
+
+//.low-zoom {
+//    .shadow {
+//        &.tag-highway {
+//            stroke-width: 16;
+//        }
+//    }
+//}
+
+.low-zoom {
+    path {
+        &.way {
+            &.line {
+                stroke-width: 7;
+                stroke-opacity: .9;
+            }
+        }
+
+        &.shadow {
+            &.line {
+                stroke-width: 9;
+                stroke-opacity: .9;
+            }
+        }
+
+        &.casing {
+            &.line {
+                stroke-width: 6;
+            }
+        }
+    }
+}
+
+path {
+    &.way {
+        &.line {
+            stroke-width: 2;
+        }
+    }
 }
