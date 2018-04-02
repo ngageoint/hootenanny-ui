@@ -74,15 +74,17 @@ export default class FolderTree {
      */
     update( source ) {
         let nodeTree = this.tree( this.root ),
-            height   = Math.max( 150, nodeTree.children.length * this.barHeight + this.margin.top + this.margin.bottom );
-
-        this.container.select( 'svg' ).transition()
-            .duration( 0 )
-            .style( 'height', `${height}px` );
+            height;
 
         let nodesSort   = this.sortNodes( nodeTree ),
             nodes       = this.svg.selectAll( 'g.node' ).data( nodesSort, d => d ),
             nodeElement = this.createNodeElement( nodes, source );
+
+        height = Math.max( 150, nodesSort.length * this.barHeight );
+
+        this.container.select( 'svg' ).transition()
+            .duration( 0 )
+            .style( 'height', `${ height }px` );
 
         // Render text values and lines for nodes
         this.renderText( nodeElement.filter( d => d.data.type === 'dataset' ) );
