@@ -137,8 +137,8 @@ export default class FormFactory {
             .attr( 'autocomplete', 'off' )
             .attr( 'placeholder', d => d.placeholder )
             .attr( 'disabled', d => d.disabled )
-            .on( 'change', d => d.onChange() )
-            .on( 'keyup', d => d.onChange() );
+            .on( 'change', d => d.onChange && d.onChange() )
+            .on( 'keyup', d => d.onChange && d.onChange() );
 
         input.select( d => {
             if ( d.combobox && d.combobox.data && d.combobox.command ) {

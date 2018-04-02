@@ -81,7 +81,7 @@ export function rendererMap(context) {
         .filter(zoomEventFilter)
         .on('zoom', zoomPan);
 
-    //context.minEditableZoom(2);
+    context.minEditableZoom(2);
 
     var _selection = d3_select(null);
 
@@ -450,7 +450,7 @@ export function rendererMap(context) {
     }
 
 
-    async function redraw(difference, extent) {
+    function redraw(difference, extent) {
         if (surface.empty() || !redrawEnabled) return;
 
         cancelPendingRedraw();
@@ -476,7 +476,6 @@ export function rendererMap(context) {
             .call(drawLayers);
 
         // OSM
-        console.log( map.zoom() );
         if ( map.editable() ) {
             context.loadTiles( projection, dimensions );
             drawVector( difference, extent );
