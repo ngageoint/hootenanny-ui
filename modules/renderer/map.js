@@ -81,7 +81,7 @@ export function rendererMap(context) {
         .filter(zoomEventFilter)
         .on('zoom', zoomPan);
 
-    context.minEditableZoom(2);
+    //context.minEditableZoom(2);
 
     var _selection = d3_select(null);
 
@@ -293,7 +293,7 @@ export function rendererMap(context) {
     }
 
 
-    function drawVector(difference, extent) {
+    function drawVector(difference, extent, drawFar) {
         var mode = context.mode();
         var graph = context.graph();
         var features = context.features();
@@ -464,7 +464,8 @@ export function rendererMap(context) {
         var z = String(~~map.zoom());
         if (surface.attr('data-zoom') !== z) {
             surface.attr('data-zoom', z)
-                .classed('low-zoom', z >= 16.5);
+                .classed('low-zoom', z >= 16.5)
+                .classed('high-zoom', z < 14);
         }
 
         if (!difference) {
@@ -475,20 +476,6 @@ export function rendererMap(context) {
             .call(drawLayers);
 
         // OSM
-        //if (map.editable() && !map.visible()) {
-        //    console.log( 'editable and visible' );
-        //    context.connection().tileZoom( 16 );
-        //    context.loadTiles( projection, dimensions );
-        //    drawVector( difference, extent );
-        //} else if (map.editable()) {
-        //    console.log( 'editable' );
-        //    context.connection().tileZoom(2);
-        //    context.loadTiles( projection, dimensions );
-        //    drawVector( difference, extent );
-        //} else {
-        //    editOff();
-        //}
-
         console.log( map.zoom() );
         if ( map.editable() ) {
             context.loadTiles( projection, dimensions );
@@ -849,9 +836,9 @@ export function rendererMap(context) {
     };
 
 
-    //map.visible = function() {
-    //    return map.zoom() >= context.minVisibleZoom();
-    //};
+    map.visible = function() {
+        return map.zoom() >= context.minVisibleZoom();
+    };
 
 
     map.minzoom = function(_) {

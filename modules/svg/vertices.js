@@ -46,8 +46,8 @@ export function svgVertices(projection, context) {
         var directions = {};
         var wireframe = context.surface().classed('fill-wireframe');
         var zoom = geoScaleToZoom(projection.scale());
-        var z = (zoom < 17 ? 0 : zoom < 16 ? 1 : 2);
-
+        //var z = (zoom < 17 ? 0 : zoom < 16 ? 1 : 2);
+        var z = (zoom < 17 ? 0 : zoom < 18 ? 1 : 2);
 
         function getIcon(entity) {
             if (entity.id in icons) return icons[entity.id];

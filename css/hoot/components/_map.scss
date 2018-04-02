@@ -23,19 +23,6 @@
     left: 400px;
 }
 
-//path.stroke.tag-hoot {
-//    stroke-width: 7;
-//    stroke-opacity: .9;
-//}
-
-//.low-zoom {
-//    .shadow {
-//        &.tag-highway {
-//            stroke-width: 16;
-//        }
-//    }
-//}
-
 .low-zoom {
     path {
         &.way {
@@ -64,6 +51,30 @@ path {
     &.way {
         &.line {
             stroke-width: 2;
+        }
+    }
+}
+
+g.node {
+    &.vertex {
+        &.shared {
+            .stroke {
+                fill: #aaa;
+            }
+
+            .fill {
+                fill: #aaa;
+            }
+        }
+    }
+}
+
+.data-layer-hoot {
+    .bbox {
+        opacity: 0;
+
+        .high-zoom & {
+            opacity: 1;
         }
     }
 }

@@ -175,7 +175,7 @@ export function coreContext() {
         });
     };
 
-    var minEditableZoom = 16;
+    var minEditableZoom = 14;
     context.minEditableZoom = function(_) {
         if (!arguments.length) return minEditableZoom;
         minEditableZoom = _;
@@ -184,16 +184,6 @@ export function coreContext() {
         }
         return context;
     };
-
-    //var minVisibleZoom = 16;
-    //context.minVisibleZoom = function(_) {
-    //    if (!arguments.length) return minVisibleZoom;
-    //    minVisibleZoom = _;
-    //    if (connection) {
-    //        connection.tileZoom(_);
-    //    }
-    //    return context;
-    //};
 
 
     /* History */
