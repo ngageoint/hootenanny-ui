@@ -29,7 +29,7 @@ export default class Datasets extends Tab {
     }
 
     /**
-     * Render all components inside tab body
+     * Render all view inside tab body
      */
     render() {
         super.render();

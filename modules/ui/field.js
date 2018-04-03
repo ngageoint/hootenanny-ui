@@ -167,7 +167,7 @@ export function uiField(context, presetField, entity, options) {
                 d3_select(this)
                     .call(d.impl);
 
-                // add field help components
+                // add field help view
                 if (help) {
                     d3_select(this)
                         .call(help.body)
@@ -175,7 +175,7 @@ export function uiField(context, presetField, entity, options) {
                         .call(help.button);
                 }
 
-                // add tag reference components
+                // add tag reference view
                 if (reference) {
                     d3_select(this)
                         .call(reference.body)

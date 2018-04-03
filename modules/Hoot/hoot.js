@@ -7,9 +7,9 @@
 import FolderManager from './models/folderManager';
 import LayerManager from './models/layerManager';
 import HootOSM from './models/hootOsm';
-import Navbar from './components/navbar';
-import Sidebar from './components/sidebar';
-import SettingsPanel from './components/settingsPanel';
+import Navbar from './view/navbar';
+import Sidebar from './view/sidebar/sidebar';
+import SettingsPanel from './view/settingsPanel';
 
 /**
  * Entry point for Hoot UI

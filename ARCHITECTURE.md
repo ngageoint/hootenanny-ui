@@ -333,12 +333,12 @@ iD provides a lot of user interface elements other than the core map component:
 the page footer, the interface for saving changes, the splash screen you see
 the first time you use iD, the map controls, and the tag/preset editor, for example.
 
-The implementations for all non-map UI components live in the `iD.ui` module.
+The implementations for all non-map UI view live in the `iD.ui` module.
 Many of the submodules under the `ui` module follow a pattern for reusable d3
-components [originally suggested](http://bost.ocks.org/mike/chart/) by Mike
+view [originally suggested](http://bost.ocks.org/mike/chart/) by Mike
 Bostock in the context of charts.  The entry point to a UI element is a
 constructor function, e.g. `iD.uiViewOnOSM()`. The constructor function may
-require a set of mandatory arguments; for most UI components exactly one
+require a set of mandatory arguments; for most UI view exactly one
 argument is required, a `context`.
 
 The constructor function returns a draw function which accepts a d3 selection.
@@ -355,7 +355,7 @@ Drawing is then accomplished with
         .call(uiViewOnOSM(context).entityID(entityID));
 ```
 
-Some components are reconfigurable, and some provide functionality beyond
+Some view are reconfigurable, and some provide functionality beyond
 basic rendering. Both reconfiguration and extended functionality are exposed
 via module functions:
 

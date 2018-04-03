@@ -539,7 +539,7 @@ export default {
                 }
             };
 
-            // Disable components requiring WebGL support
+            // Disable view requiring WebGL support
             if (!Mapillary.isSupported() && Mapillary.isFallbackSupported()) {
                 _mlyFallback = true;
                 opts.component = {

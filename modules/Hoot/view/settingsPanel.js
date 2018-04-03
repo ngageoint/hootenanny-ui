@@ -23,7 +23,7 @@ export default class SettingsPanel {
     }
 
     /**
-     * Render base panel and all of it's components
+     * Render base panel and all of it's view
      */
     async render() {
         this.panel   = this.createPanel();

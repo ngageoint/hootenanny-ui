@@ -16,7 +16,7 @@ export default class Navbar {
     }
 
     /**
-     * Render navbar and all of its components
+     * Render navbar and all of its view
      */
     async render() {
         let navbar        = this.createNavbar(),

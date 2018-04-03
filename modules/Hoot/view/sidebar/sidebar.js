@@ -5,13 +5,13 @@
  *******************************************************************************************************/
 
 import _ from 'lodash-es';
-import Events from '../util/events';
-import FolderTree from './folderTree';
-import LayerManager from '../models/layerManager';
-import HootOSM from '../models/hootOsm';
+import Events from '../../util/events';
+import FolderTree from '../folderTree';
+import LayerManager from '../../models/layerManager';
+import HootOSM from '../../models/hootOsm';
 //import { d3combobox } from '../../lib/hoot/d3.combobox';
-import { sidebarForms } from '../config/formMetadata';
-import config from '../config/apiConfig';
+import { sidebarForms } from '../../config/formMetadata';
+import config from '../../config/apiConfig';
 
 /**
  * Create the sidebar
@@ -27,7 +27,7 @@ export default class Sidebar {
     }
 
     /**
-     * Render all components inside sidebar
+     * Render all view inside sidebar
      */
     async render() {
         this.container.classed( 'col4', false );
@@ -261,6 +261,37 @@ export default class Sidebar {
 
     addLayer( form, params ) {
         HootOSM.loadLayer( params );
+        this.loadingState( form, params );
+    }
+
+    loadingState( form, params ) {
+        form.selectAll( 'fieldset' )
+            .classed( 'hidden', true );
+
+        form
+            .attr( 'class', () => {
+                if ( params.color === 'osm' ) {
+                    return 'round space-bottom1 loadingLayer _osm';
+                }
+
+                return `round space-bottom1 loadingLayer ${ params.color }`;
+            } )
+            .select( 'a' )
+            .remove();
+
+        form.append( 'div' )
+            .classed( 'contain keyline-all round controller', true )
+            .html( '<div class="pad1 inline _loading"><span></span></div>' +
+                '<span class="strong pad1x">Loading &#8230;</span>' +
+                '<button class="keyline-left delete-button round-right inline _icon trash"></button>' )
+            .select( 'button' )
+            .on( 'click', function() {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+                if ( window.confirm( 'Are you sure you want to delete?' ) ) {
+                    // handle delete
+                }
+            } );
     }
 
     /**

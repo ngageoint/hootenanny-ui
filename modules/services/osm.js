@@ -31,7 +31,7 @@ import { utilRebind, utilIdleWorker } from '../util';
 import HootOSM from '../Hoot/models/hootOsm';
 
 
-var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded');
+var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded', 'layerAdded');
 var urlroot = 'https://www.openstreetmap.org';
 var oauth = osmAuth({
     url: urlroot,
@@ -681,6 +681,7 @@ export default {
 
                     if (_isEmpty(_tiles.inflight)) {
                         dispatch.call('loaded');
+                        dispatch.call('layerAdded');
                     }
                 }
             );

@@ -36,6 +36,10 @@
             &.line {
                 stroke-width: 9;
                 stroke-opacity: .9;
+
+                &.hover {
+                    stroke-width: 12;
+                }
             }
         }
 
@@ -50,7 +54,13 @@
 path {
     &.way {
         &.line {
-            stroke-width: 2;
+            stroke-width: 3;
+        }
+    }
+
+    &.shadow {
+        &.line {
+            stroke-width: 4;
         }
     }
 }

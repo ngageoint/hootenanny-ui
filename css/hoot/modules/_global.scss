@@ -76,6 +76,26 @@ input {
     border-radius: 4px 0 0 4px;
 }
 
+.keyline-all {
+    border: 1px solid rgba(0, 0, 0, 0.20);
+}
+
+.keyline-top {
+    border-top: 1px solid rgba(0, 0, 0, 0.20);
+}
+
+.keyline-right {
+    border-right: 1px solid rgba(0, 0, 0, 0.20);
+}
+
+.keyline-bottom {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.20);
+}
+
+.keyline-left {
+    border-left: 1px solid rgba(0, 0, 0, 0.20);
+}
+
 /*****************************************/
 /**************** FLOAT ******************/
 /*****************************************/
@@ -167,7 +187,7 @@ input[type=text] {
             color: #777;
         }
 
-        & ~span {
+        & ~ span {
             display: none;
         }
 

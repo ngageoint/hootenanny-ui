@@ -46,6 +46,10 @@
         background-position: -360px 0;
     }
 
+    &.trash:before {
+        background-position: -200px 0;
+    }
+
     &._loading {
         background-image: url(img/loading-spin-dark.svg);
         background-repeat: no-repeat;

@@ -81,7 +81,7 @@ export function rendererMap(context) {
         .filter(zoomEventFilter)
         .on('zoom', zoomPan);
 
-    context.minEditableZoom(2);
+    //context.minEditableZoom(2);
 
     var _selection = d3_select(null);
 
@@ -477,6 +477,7 @@ export function rendererMap(context) {
 
         // OSM
         if ( map.editable() ) {
+            context.connection().tileZoom( 2 );
             context.loadTiles( projection, dimensions );
             drawVector( difference, extent );
         } else {
