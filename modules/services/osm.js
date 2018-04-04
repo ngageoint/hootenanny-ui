@@ -673,14 +673,11 @@ export default {
                     delete _tiles.inflight[id];
                     if (!err) {
                         _tiles.loaded[id] = true;
+                        dispatch.call( 'loaded', this, tile.layerName );
                     }
 
                     if (callback) {
                         callback(err, _extend({ data: parsed }, tile));
-                    }
-
-                    if (_isEmpty(_tiles.inflight)) {
-                        dispatch.call( 'loaded', this, tile.layerName );
                     }
                 }
             );

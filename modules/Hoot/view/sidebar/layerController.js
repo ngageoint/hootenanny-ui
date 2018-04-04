@@ -55,10 +55,11 @@ class LayerController {
     layerAdded() {
         let layer = LayerManager.getLoadedLayers( this.name );
 
-        let form = this.wrapper.insert( 'form', '.loadingLayer' );
+        //let form = this.wrapper.insert( 'form', '.loadingLayer' );
+        this.form.html( '' );
 
-        let controller = form.append( 'div' )
-            .classed( `contain keyline-all round space-bottom1 controller layer_${ layer.mapId } ${ layer.color }`, true );
+        let controller = this.form.append( 'div' )
+            .attr( 'class', `contain keyline-all round space-bottom1 controller ${ layer.color }` );
 
         controller.append( 'div' )
             .attr( 'class', () => {
@@ -115,7 +116,7 @@ class LayerController {
             .classed( 'strong pad1x', true )
             .text( layer.name );
 
-        d3.selectAll( '.loadingLayer' ).remove();
+        //this.wrapper.select( '.loadingLayer' ).remove();
     }
 }
 
