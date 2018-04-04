@@ -42,6 +42,14 @@
         &.big:before {
             background-position: -40px -20px;
         }
+
+        &.light:before {
+            background-position: -40px -60px;
+        }
+
+        &.light.big:before {
+            background-position: -40px -80px;
+        }
     }
 
     &.close:before {

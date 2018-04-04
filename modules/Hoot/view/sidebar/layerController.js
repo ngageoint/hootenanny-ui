@@ -66,7 +66,7 @@ class LayerController {
                 let icon = layer.merged ? 'conflate' : 'data',
                     osm  = layer.color === 'osm' ? '_osm' : '';
 
-                return `pad1 inline thumbnail dark big _icon ${ icon } ${ osm }`;
+                return `pad1 inline thumbnail light big _icon ${ icon } ${ osm }`;
             } );
 
         controller.append( 'button' )
