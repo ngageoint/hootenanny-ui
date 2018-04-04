@@ -28,10 +28,10 @@ import { services } from '../services/index';
 
 import { utilRebind, utilIdleWorker } from '../util';
 
-import HootOSM from '../Hoot/models/hootOsm';
+//import HootOSM from '../Hoot/models/hootOsm';
+import LayerManager from '../Hoot/models/layerManager';
 
-
-var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded', 'layerAdded');
+var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded');
 var urlroot = 'https://www.openstreetmap.org';
 var oauth = osmAuth({
     url: urlroot,
@@ -621,7 +621,7 @@ export default {
 
         // Load from visible layers only
         // Hoot loadedLayers is what controls the vector data sources that are loaded
-        var visLayers = _filter(_values(HootOSM.loadedLayers), function (layer) {
+        var visLayers = _filter(_values(LayerManager.getLoadedLayers()), function (layer) {
             return layer.visible;
         });
 
@@ -680,8 +680,7 @@ export default {
                     }
 
                     if (_isEmpty(_tiles.inflight)) {
-                        dispatch.call('loaded');
-                        dispatch.call('layerAdded');
+                        dispatch.call( 'loaded', this, tile.layerName );
                     }
                 }
             );

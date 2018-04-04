@@ -34,8 +34,14 @@
         background-position: -84px 0px;
     }
 
-    &.data:before {
-        background-position: -40px 0;
+    &.data {
+        &:before {
+            background-position: -40px 0;
+        }
+
+        &.big:before {
+            background-position: -40px -20px;
+        }
     }
 
     &.close:before {

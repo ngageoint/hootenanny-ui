@@ -104,6 +104,18 @@
 }
 
 .controller {
+    span {
+        color: black;
+    }
+
+    .context-menu-layer {
+        position: absolute;
+        display: inline-block;
+        width: calc(100% - 100px);
+        height: 60px;
+        line-height: 60px
+    }
+
     .delete-button {
         position: absolute;
         width: 40px;

@@ -78,15 +78,16 @@ class HootOSM {
             tags        = await API.getTags( mapId ),
             layerExtent = await this.layerExtent( mapId );
 
-        this._loadedLayers[ mapId ] = {
+        LayerManager.setLoadedLayer( {
             name: LayerManager.availableLayers[ mapId ],
             id: mapId.toString(),
+            extent: layerExtent,
             polygon: [ layerExtent.polygon() ],
             color: params.color,
             source: source,
             tags: tags,
             visible: true
-        };
+        } );
 
         this.setLayerColor( mapId, params.color );
 

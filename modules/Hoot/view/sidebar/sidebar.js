@@ -5,13 +5,13 @@
  *******************************************************************************************************/
 
 import _ from 'lodash-es';
-import Events from '../../util/events';
 import FolderTree from '../folderTree';
 import LayerManager from '../../models/layerManager';
+import LayerController from './layerController';
 import HootOSM from '../../models/hootOsm';
 //import { d3combobox } from '../../lib/hoot/d3.combobox';
 import { sidebarForms } from '../../config/formMetadata';
-import config from '../../config/apiConfig';
+import Hoot from '../../hoot';
 
 /**
  * Create the sidebar
@@ -20,10 +20,11 @@ import config from '../../config/apiConfig';
  */
 export default class Sidebar {
     constructor( container, context ) {
-        this.context     = context;
-        this.container   = container;
-        this.formData    = sidebarForms;
-        this.layerTables = {};
+        this.context          = context;
+        this.container        = container;
+        this.formData         = sidebarForms;
+        this.layerTables      = {};
+        this.layerControllers = {};
     }
 
     /**
@@ -33,7 +34,6 @@ export default class Sidebar {
         this.container.classed( 'col4', false );
 
         this.createResizer();
-        this.createWrapper();
         this.createForms();
         this.createToggleButtons();
         this.createFieldsets();
@@ -81,15 +81,13 @@ export default class Sidebar {
         d3.select( '#bar' ).style( 'width', `calc(100% - ${ sidebarWidth }px)` );
     }
 
-    createWrapper() {
-        this.wrapper = this.container.append( 'div' )
-            .classed( 'wrapper', true );
-    }
-
     /**
      * Bind form data and create a form for each item
      */
     createForms() {
+        this.wrapper = this.container.append( 'div' )
+            .classed( 'wrapper', true );
+
         this.forms = this.wrapper.selectAll( 'form' )
             .data( this.formData )
             .enter().append( 'form' )
@@ -256,26 +254,27 @@ export default class Sidebar {
             color
         };
 
-        this.addLayer( form, params );
+        HootOSM.loadLayer( params );
+
+        this.layerControllers[ layerName ] = new LayerController( params, form, this.context );
+        this.layerControllers[ layerName ].init();
     }
 
     addLayer( form, params ) {
         HootOSM.loadLayer( params );
-        this.loadingState( form, params );
-    }
 
-    loadingState( form, params ) {
         form.selectAll( 'fieldset' )
             .classed( 'hidden', true );
 
         form
             .attr( 'class', () => {
                 if ( params.color === 'osm' ) {
-                    return 'round space-bottom1 loadingLayer _osm';
+                    params.color = '_osm';
                 }
 
                 return `round space-bottom1 loadingLayer ${ params.color }`;
             } )
+            .attr( 'data-name', params.name )
             .select( 'a' )
             .remove();
 
@@ -288,16 +287,83 @@ export default class Sidebar {
             .on( 'click', function() {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
+
                 if ( window.confirm( 'Are you sure you want to delete?' ) ) {
                     // handle delete
                 }
             } );
     }
 
+    layerAdded( layerName ) {
+        let layer = LayerManager.getLoadedLayers( layerName );
+
+        let form = this.wrapper.insert( 'form', '.loadingLayer' );
+
+        let controller = form.append( 'div' )
+            .classed( `contain keyline-all round space-bottom1 controller layer_${ layer.mapId } ${ layer.color }`, true );
+
+        controller.append( 'div' )
+            .attr( 'class', () => {
+                let icon = layer.merged ? 'conflate' : 'data',
+                    osm  = layer.color === 'osm' ? '_osm' : '';
+
+                return `pad1 inline thumbnail dark big _icon ${ icon } ${ osm }`;
+            } );
+
+        controller.append( 'button' )
+            .classed( 'keyline-left delete-button round-right inline _icon trash', true )
+            .on( 'click', () => {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+
+                if ( window.confirm( 'Are you sure you want to delete?' ) ) {
+                    // handle delete
+                }
+            } );
+
+        let contextLayer = controller.append( 'div' )
+            .classed( 'context-menu-layer', true )
+            .on( 'contextmenu', () => {
+                d3.event.preventDefault();
+
+                // create the div element that will hold the context menu
+                d3.selectAll( '.context-menu' ).data( [ 1 ] )
+                    .enter()
+                    .append( 'div' )
+                    .classed( 'context-menu', true )
+                    .html( '' )
+                    .append( 'ul' )
+                    .append( 'li' )
+                    .on( 'click', () => {
+                        this.context.extent( layer.extent );
+
+                        d3.select( '.context-menu' ).remove();
+                    } )
+                    .text( 'Zoom to Layer' );
+
+                // show the context menu
+                d3.select( '.context-menu' )
+                    .style( 'left', (d3.event.pageX - 2) + 'px' )
+                    .style( 'top', (d3.event.pageY - 2) + 'px' )
+                    .style( 'display', 'block' );
+
+                // close menu
+                d3.select( 'body' ).on( 'click.context-menu', () => {
+                    d3.select( '.context-menu' ).style( 'display', 'none' );
+                } );
+            } );
+
+        contextLayer.append( 'span' )
+            .classed( 'strong pad1x', true )
+            .text( layer.name );
+
+        d3.selectAll( '.loadingLayer' ).remove();
+    }
+
     /**
      * Listen for re-render
      */
     listen() {
-        Events.listen( 'render-layer-tables', this.renderFolderTree, d3.selectAll( '.add-layer-table' ) );
+        this.context.connection().on( 'loaded', layerName => this.layerControllers[ layerName ].layerAdded() );
     }
 }

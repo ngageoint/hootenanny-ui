@@ -12,6 +12,7 @@ class LayerManager {
         this.context          = null;
         this._layers          = [];
         this._availableLayers = [];
+        this._loadedLayers    = {};
         this._selectedLayers  = [];
     }
 
@@ -27,6 +28,14 @@ class LayerManager {
             } );
     }
 
+    set ctx( context ) {
+        this.context = context;
+    }
+
+    set selectedLayers( layers ) {
+        this._selectedLayers = layers;
+    }
+
     get selectedLayers() {
         return this._selectedLayers;
     }
@@ -38,25 +47,16 @@ class LayerManager {
         }, {} );
     }
 
-    set selectedLayers( layers ) {
-        this._selectedLayers = layers;
+    setLoadedLayer( layer ) {
+        this._loadedLayers[ layer.name ] = layer;
     }
 
-    set ctx( context ) {
-        this.context = context;
-    }
+    getLoadedLayers( layerName ) {
+        if ( !layerName ) {
+            return this._loadedLayers;
+        }
 
-    addLayerAndCenter( key, resp ) {
-        key.mapId = key.id;
-        //this.context.connection().loadData( key );
-    }
-
-    addLayer( key ) {
-        let mapId = key.id;
-
-        return API.getMbr( mapId ).then( resp => {
-            this.addLayerAndCenter( key, resp );
-        } );
+        return this._loadedLayers[ layerName ];
     }
 }
 
