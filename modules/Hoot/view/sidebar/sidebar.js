@@ -12,6 +12,7 @@ import HootOSM from '../../models/hootOsm';
 //import { d3combobox } from '../../lib/hoot/d3.combobox';
 import { sidebarForms } from '../../config/formMetadata';
 import Hoot from '../../hoot';
+import Events from '../../util/events';
 
 /**
  * Create the sidebar
@@ -34,15 +35,32 @@ export default class Sidebar {
         this.container.classed( 'col4', false );
 
         this.createResizer();
-        this.createForms();
+        this.createWrapper();
+        this.update();
+        //this.createForms();
+        //this.createToggleButtons();
+        //this.createFieldsets();
+        //this.createTables();
+        //this.createRecentlyUsedLayers();
+        //this.createColorPalette();
+        //this.createSubmitButton();
+
+        this.listen();
+    }
+
+    update( data ) {
+        if ( data ) {
+            this.resetForm( data );
+        } else {
+            this.createForms();
+        }
+
         this.createToggleButtons();
         this.createFieldsets();
         this.createTables();
         this.createRecentlyUsedLayers();
         this.createColorPalette();
         this.createSubmitButton();
-
-        this.listen();
     }
 
     /**
@@ -81,19 +99,38 @@ export default class Sidebar {
         d3.select( '#bar' ).style( 'width', `calc(100% - ${ sidebarWidth }px)` );
     }
 
+    createWrapper() {
+        this.wrapper = this.container.append( 'div' )
+            .classed( 'wrapper', true );
+    }
+
     /**
      * Bind form data and create a form for each item
      */
     createForms() {
-        this.wrapper = this.container.append( 'div' )
-            .classed( 'wrapper', true );
-
         this.forms = this.wrapper.selectAll( 'form' )
             .data( this.formData )
             .enter().append( 'form' )
             .attr( 'id', d => d.id )
             .classed( 'add-layer-form round importable-layer fill-white strong', true );
-        //.on( 'submit', d => this.toggleForm( d.id ) );
+    }
+
+    resetForm( data ) {
+        this.wrapper.select( `#${ data.id }` ).remove();
+        delete this.layerTables[ data.tableId ];
+
+        let enter = this.wrapper.selectAll( 'forms' )
+            .data( [ data ] )
+            .enter();
+
+        if ( data.id === 'add-ref' ) {
+            this.forms = enter.insert( 'form', ':first-child' );
+        } else {
+            this.forms = enter.append( 'form' );
+        }
+
+        this.forms.attr( 'id', d => d.id )
+            .classed( 'add-layer-form round importable-layer fill-white strong', true );
     }
 
     /**
@@ -260,10 +297,22 @@ export default class Sidebar {
         this.layerControllers[ layerName ].init();
     }
 
+    loadLayer( layerName ) {
+        this.layerControllers[ layerName ].layerAdded();
+    }
+
+    removeLayer( [ data, layerName ] ) {
+        //console.log( this.context.connection().loadedTiles() );
+        delete this.layerControllers[ layerName ];
+
+        this.update( data );
+    }
+
     /**
      * Listen for re-render
      */
     listen() {
-        this.context.connection().on( 'loaded', layerName => this.layerControllers[ layerName ].layerAdded() );
+        Events.listen( 'layer-loaded', this.loadLayer, this );
+        Events.listen( 'layer-removed', this.removeLayer, this );
     }
 }

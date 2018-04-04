@@ -7,6 +7,7 @@
 import _ from 'lodash-es';
 import LayerManager from './layerManager';
 import API from '../util/api';
+import Events from '../util/events';
 import { geoExtent as GeoExtent } from '../../geo/index';
 import { rgb as d3_rgb } from 'd3-color';
 import colorPalette from '../config/colorPalette';
@@ -14,12 +15,13 @@ import config from '../config/apiConfig';
 
 class HootOSM {
     constructor() {
-        this._loadedLayers = {};
         this.palette       = colorPalette;
+        this._loadedLayers = {};
     }
 
     set ctx( context ) {
         this.context = context;
+        this.hootOverlay = this.context.layers().layer( 'hoot' );
     }
 
     get loadedLayers() {
@@ -82,44 +84,44 @@ class HootOSM {
             name: LayerManager.availableLayers[ mapId ],
             id: mapId.toString(),
             extent: layerExtent,
-            polygon: [ layerExtent.polygon() ],
+            polygon: layerExtent.polygon(),
             color: params.color,
             source: source,
             tags: tags,
             visible: true
         } );
 
-        this.setLayerColor( mapId, params.color );
-
-        this.renderLayer( layerExtent, source );
-    }
-
-    renderLayer( extent, mapnikSource ) {
-        if ( extent.toParam() !== '-180,-90,180,90' ) {
-            this.context.extent( extent );
+        if ( layerExtent.toParam() !== '-180,-90,180,90' ) {
+            this.context.extent( layerExtent );
         }
 
-        this.context.background().addSource( mapnikSource );
-
-        // context.layers -> map.layers -> drawLayers -> svgLayers -> drawLayer.layer
-        let hootOverlay = this.context.layers().layer( 'hoot' );
-
-        if ( hootOverlay ) {
-            hootOverlay.geojson( hootOverlay.geojson().concat( [ {
+        if ( this.hootOverlay ) {
+            this.hootOverlay.geojson( {
                 type: 'FeatureCollection',
                 features: [ {
                     type: 'Feature',
                     geometry: {
                         type: 'LineString',
-                        coordinates: extent.polygon()
+                        coordinates: layerExtent.polygon()
                     }
                 } ],
                 properties: {
-                    name: mapnikSource.name,
-                    mapId: mapnikSource.id
+                    name: source.name,
+                    mapId: source.id
                 }
-            } ] ) );
+            } );
         }
+
+        this.context.background().addSource( source );
+        this.setLayerColor( mapId, params.color );
+    }
+
+    async removeLayer( layer ) {
+        LayerManager.removeLoadedLayer( layer.name );
+        this.context.background().removeSource( layer.id );
+        this.hootOverlay.removeGeojson( layer.id );
+
+        this.context.flush();
     }
 
     decodeHootStatus( status ) {

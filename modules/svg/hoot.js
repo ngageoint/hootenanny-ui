@@ -1,3 +1,4 @@
+import _ from 'lodash-es';
 import { geoPath as d3_geoPath } from 'd3-geo';
 import _isEmpty from 'lodash-es/isEmpty';
 import { geoExtent, geoPolygonIntersectsPolygon } from '../geo/index';
@@ -81,11 +82,23 @@ export function svgHoot(projection, context, dispatch) {
 
     drawHoot.geojson = function(gj) {
         if (!arguments.length) return svgHoot.geojson;
-        svgHoot.geojson = gj;
+
+        if ( _.isArray( gj ) ) {
+            svgHoot.geojson = svgHoot.geojson.concat( gj );
+        } else {
+            svgHoot.geojson.push( gj );
+        }
+
         dispatch.call('change');
         return this;
     };
 
+    drawHoot.removeGeojson = function( mapId ) {
+        svgHoot.geojson = _.filter( svgHoot.geojson, gj => gj.properties.mapId !== mapId );
+
+        dispatch.call( 'change' );
+        return this;
+    };
 
     init();
     return drawHoot;

@@ -30,6 +30,7 @@ import { utilRebind, utilIdleWorker } from '../util';
 
 //import HootOSM from '../Hoot/models/hootOsm';
 import LayerManager from '../Hoot/models/layerManager';
+import Events from '../Hoot/util/events';
 
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded');
 var urlroot = 'https://www.openstreetmap.org';
@@ -673,11 +674,15 @@ export default {
                     delete _tiles.inflight[id];
                     if (!err) {
                         _tiles.loaded[id] = true;
-                        dispatch.call( 'loaded', this, tile.layerName );
+                        Events.send( 'layer-loaded', tile.layerName );
                     }
 
                     if (callback) {
                         callback(err, _extend({ data: parsed }, tile));
+                    }
+
+                    if (_isEmpty(_tiles.inflight)) {
+                        dispatch.call('loaded');
                     }
                 }
             );

@@ -18,12 +18,12 @@ class Hoot {
     constructor( context ) {
         this.context   = context;
         this.container = context.container();
-
-        LayerManager.ctx = this.context;
-        HootOSM.ctx      = this.context;
     }
 
     init() {
+        LayerManager.ctx = this.context;
+        HootOSM.ctx      = this.context;
+
         new Navbar( this.container, this.context ).render();
         new SettingsPanel( this.container, this.context ).render();
         new Sidebar( d3.select( '#sidebar' ), this.context ).render();

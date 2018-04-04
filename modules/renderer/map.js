@@ -293,7 +293,7 @@ export function rendererMap(context) {
     }
 
 
-    function drawVector(difference, extent, drawFar) {
+    function drawVector(difference, extent) {
         var mode = context.mode();
         var graph = context.graph();
         var features = context.features();

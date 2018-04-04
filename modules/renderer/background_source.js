@@ -72,7 +72,7 @@ export function rendererBackgroundSource(data) {
 
 
     source.mapid = function() {
-        return id;
+        return source.id;
     };
 
 

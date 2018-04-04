@@ -5,12 +5,15 @@
  *******************************************************************************************************/
 
 import LayerManager from '../../models/layerManager';
+import HootOSM from '../../models/hootOsm';
+import Events from '../../util/events';
 
 class LayerController {
     constructor( layer, form, context ) {
         this.context = context;
         this.form    = form;
         this.wrapper = d3.select( this.form.node().parentNode );
+        this.layer   = layer;
         this.name    = layer.name;
         this.id      = layer.id;
         this.color   = layer.color;
@@ -42,7 +45,7 @@ class LayerController {
                 '<span class="strong pad1x">Loading &#8230;</span>' +
                 '<button class="keyline-left delete-button round-right inline _icon trash"></button>' )
             .select( 'button' )
-            .on( 'click', function() {
+            .on( 'click', () => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
@@ -56,7 +59,8 @@ class LayerController {
         let layer = LayerManager.getLoadedLayers( this.name );
 
         //let form = this.wrapper.insert( 'form', '.loadingLayer' );
-        this.form.html( '' );
+        this.form.classed( 'loadingLayer', false )
+            .html( '' );
 
         let controller = this.form.append( 'div' )
             .attr( 'class', `contain keyline-all round space-bottom1 controller ${ layer.color }` );
@@ -71,12 +75,14 @@ class LayerController {
 
         controller.append( 'button' )
             .classed( 'keyline-left delete-button round-right inline _icon trash', true )
-            .on( 'click', () => {
+            .on( 'click', d => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
                 if ( window.confirm( 'Are you sure you want to delete?' ) ) {
-                    // handle delete
+                    //LayerManager.removeLoadedLayer( this.name );
+                    HootOSM.removeLayer( this.layer );
+                    Events.send( 'layer-removed', d, this.name );
                 }
             } );
 
@@ -115,8 +121,6 @@ class LayerController {
         contextLayer.append( 'span' )
             .classed( 'strong pad1x', true )
             .text( layer.name );
-
-        //this.wrapper.select( '.loadingLayer' ).remove();
     }
 }
 

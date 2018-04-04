@@ -4,8 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/8/18
  *******************************************************************************************************/
 
-import API from '../util/api';
 import _ from 'lodash-es';
+import API from '../util/api';
+import Events from '../util/events';
 
 class LayerManager {
     constructor() {
@@ -49,6 +50,10 @@ class LayerManager {
 
     setLoadedLayer( layer ) {
         this._loadedLayers[ layer.name ] = layer;
+    }
+
+    removeLoadedLayer( layerName ) {
+        delete this._loadedLayers[ layerName ];
     }
 
     getLoadedLayers( layerName ) {
