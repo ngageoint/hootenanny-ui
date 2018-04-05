@@ -41,7 +41,7 @@ class LayerController {
 
         this.form.append( 'div' )
             .classed( 'layer-controller contain keyline-all round', true )
-            .html( '<div class="pad1 inline _loading"><span></span></div>' +
+            .html( '<div class="pad1 inline _icon _loading light"></div>' +
                 '<span class="strong pad1x">Loading &#8230;</span>' +
                 '<button class="keyline-left delete-button round-right inline _icon trash"></button>' )
             .select( 'button' )

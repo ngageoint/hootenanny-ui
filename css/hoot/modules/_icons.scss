@@ -28,13 +28,18 @@
 ._icon {
     &:before {
         background: transparent url(img/sprite@2x.png) no-repeat 0 0;
-        content:'';
-        display:inline-block;
-        width:20px;
-        height:20px;
-        vertical-align:top;
-        -webkit-background-size:600px 120px;
-        background-size:600px 120px;
+        content: '';
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        vertical-align: top;
+        -webkit-background-size: 600px 120px;
+        background-size: 600px 120px;
+    }
+
+    &.big:before {
+        width: 40px;
+        height: 40px;
     }
 
     &.folder:before {
@@ -93,11 +98,23 @@
         background-position: -200px 0;
     }
 
-    &._loading:before {
-        background: url(img/loading-spin-dark.svg) no-repeat 0 0;
-        display: inline-block;
-        width: 26px;
-        height: 26px;
-        vertical-align: middle;
+    &._loading {
+        &:before {
+            background: url(img/loading-spin-dark.svg) no-repeat 0 0;
+            display: inline-block;
+            width: 26px;
+            height: 26px;
+            vertical-align: middle;
+        }
+
+        &.light:before {
+            background-image: url(img/loading-spin.svg);
+            background-repeat: no-repeat;
+            background-position: 0 0;
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            vertical-align: middle;
+        }
     }
 }
