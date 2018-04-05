@@ -81,13 +81,13 @@ export default class FormFactory {
      * @param form - form div
      * @param formMeta - form data
      */
-    createFieldSets( form, formMeta ) {
+    createFieldSets( form, formMeta, hidden ) {
         let self = this;
 
         let fieldContainer = form.append( 'fieldset' )
-            .selectAll( '.form-field' );
+            .classed( 'hidden', hidden );
 
-        let fields = fieldContainer
+        let fields = fieldContainer.selectAll( '.form-field' )
             .data( formMeta ).enter()
             .append( 'div' )
             .classed( 'form-field fill-white small keyline-all round', true );
@@ -123,6 +123,8 @@ export default class FormFactory {
                 }
             }
         } );
+
+        return fieldContainer;
     }
 
     /**
@@ -193,11 +195,11 @@ export default class FormFactory {
     /**
      * Create a submit button
      *
-     * @param formModal - form modal
+     * @param container - container to append element to
      * @param buttonMeta - button data
      */
-    createButton( formModal, buttonMeta ) {
-        let buttonContainer = formModal.append( 'div' )
+    createButton( container, buttonMeta ) {
+        let buttonContainer = container.append( 'div' )
             .classed( 'modal-footer', true );
 
         let button = buttonContainer.append( 'button' )

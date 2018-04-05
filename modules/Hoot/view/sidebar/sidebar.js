@@ -10,7 +10,7 @@ import FolderTree        from '../folderTree';
 import HootOSM           from '../../models/hootOsm';
 import LayerManager      from '../../models/layerManager';
 import LayerController   from './layerController';
-import LayerConflateForm from '../forms/conflateForm';
+import LayerConflateForm from '../forms/layerConflateForm';
 //import { d3combobox } from '../../lib/hoot/d3.combobox';
 import { sidebarForms }  from '../../config/formMetadata';
 
@@ -106,7 +106,7 @@ export default class Sidebar {
             .data( this.formData )
             .enter().append( 'form' )
             .attr( 'id', d => d.id )
-            .classed( 'layer-add round importable-layer fill-white strong', true );
+            .classed( 'sidebar-form layer-add round importable-layer fill-white strong', true );
     }
 
     resetForm( data ) {
@@ -124,7 +124,7 @@ export default class Sidebar {
         }
 
         this.forms.attr( 'id', d => d.id )
-            .classed( 'layer-add round importable-layer fill-white strong', true );
+            .classed( 'sidebar-form layer-add round importable-layer fill-white strong', true );
     }
 
     /**
@@ -137,7 +137,7 @@ export default class Sidebar {
             .on( 'click', d => this.toggleForm( d.id ) );
 
         buttons.append( 'i' )
-            .classed( 'material-icons text-center strong', true )
+            .classed( 'material-icons center strong', true )
             .text( 'add' );
 
         buttons.append( 'span' )
@@ -246,9 +246,9 @@ export default class Sidebar {
      */
     createSubmitButton() {
         this.fieldsets.append( 'div' )
-            .classed( 'form-field', true )
+            .classed( 'form-field action-container', true )
             .append( 'button' )
-            .classed( 'layer-add-button fill-dark small strong round', true )
+            .classed( 'dark small strong round', true )
             .text( 'Add Layer' )
             .on( 'click', d => {
                 d3.event.stopPropagation();
@@ -293,19 +293,23 @@ export default class Sidebar {
 
     layerLoaded( layerName ) {
         this.layerControllers[ layerName ].update();
+        this.conflateCheck();
     }
 
     layerRemoved( [ data, layerName ] ) {
         delete this.layerControllers[ layerName ];
 
         this.update( data );
+        this.conflateCheck();
     }
 
     conflateCheck() {
         let loadedLayers = LayerManager.getLoadedLayers();
 
         if ( loadedLayers.length === 2 ) {
-            this.conflate.render();
+            if ( !this.conflate.exists ) {
+                this.conflate.render( loadedLayers );
+            }
         } else {
             this.conflate.remove();
         }

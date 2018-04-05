@@ -6,10 +6,6 @@
     right: 0;
     z-index: 999;
 
-    .hoot-util-header {
-
-    }
-
     .hoot-util-wrapper {
         position: absolute;
         width: calc(100vw - 220px);
@@ -28,6 +24,7 @@
     position: absolute;
     width: 220px;
     height: 100%;
+    font-size: 14px;
 }
 
 #util-datasets {

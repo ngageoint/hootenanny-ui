@@ -683,7 +683,7 @@ export default {
 
                     if (_isEmpty(_tiles.inflight)) {
                         dispatch.call('loaded');
-                        Events.send( 'all-loaded' );
+                        //Events.send( 'all-loaded' );
                     }
                 }
             );

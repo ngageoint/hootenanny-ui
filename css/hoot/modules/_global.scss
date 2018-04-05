@@ -1,7 +1,15 @@
-@import 'variables.scss';
+@import 'variables';
 
 body {
     //min-width: 700px !important;
+}
+
+body,
+input,
+textarea {
+    color:#333;
+    font:normal 12px/1.6667 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
 }
 
 label {
@@ -44,8 +52,12 @@ input {
     }
 }
 
-.text-center {
+.center {
     text-align: center;
+}
+
+.inline {
+    display: inline-block;
 }
 
 /*****************************************/
@@ -172,7 +184,25 @@ button {
         color: white;
 
         &:hover {
-            background-color: $secondary-blue;
+            background-color: $primary-blue-accent;
+        }
+    }
+
+    &.secondary {
+        background-color: rgb( 233, 233, 233 );
+        color: black;
+
+        &:hover {
+            background-color: rgb( 221, 221, 221 );
+        }
+    }
+
+    &.dark {
+        background-color: $primary-gray;
+        color: white;
+
+        &:hover {
+            background-color: $primary-gray-accent;
         }
     }
 }

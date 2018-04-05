@@ -4,15 +4,15 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/12/18
  *******************************************************************************************************/
 
-import _ from 'lodash-es';
-import Events from '../../util/events';
-import ImportManager from '../../models/importManager';
-import FolderManager from '../../models/folderManager';
-import FormFactory from './formFactory';
-import { importDatasetForm } from '../../config/formMetadata';
-import { importDatasetTypes } from '../../config/domElements';
+import _                             from 'lodash-es';
+import Events                        from '../../util/events';
+import ImportManager                 from '../../models/importManager';
+import FolderManager                 from '../../models/folderManager';
+import FormFactory                   from './formFactory';
+import { importDatasetForm }         from '../../config/formMetadata';
+import { importDatasetTypes }        from '../../config/domElements';
 import { d3combobox as d3_combobox } from '../../../lib/hoot/d3.combobox';
-import { getBrowserInfo } from '../../util/utilities';
+import { getBrowserInfo }            from '../../util/utilities';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -26,6 +26,7 @@ export default class ImportDatasetForm {
         this.importTypes  = importDatasetTypes;
         this.translations = translations;
         this.browserInfo  = getBrowserInfo();
+        this.formFactory  = new FormFactory();
 
         // Add "NONE" option to beginning of array
         this.translations.unshift( {
@@ -38,14 +39,14 @@ export default class ImportDatasetForm {
         if ( this.browserInfo.name.substring( 0, 6 ) !== 'Chrome' ) {
             _.remove( this.importTypes, o => o.value === 'DIR' );
         }
+
+        this.form = importDatasetForm.call( this );
     }
 
     /**
      * Set form parameters and create the form using the form factory
      */
     render() {
-        let form = importDatasetForm.call( this );
-
         let button = {
             text: 'Import',
             location: 'right',
@@ -55,11 +56,11 @@ export default class ImportDatasetForm {
 
         let metadata = {
             title: 'Import Dataset',
-            form: form,
+            form: this.form,
             button
         };
 
-        this.container = new FormFactory().generateForm( 'body', metadata );
+        this.container = this.formFactory.generateForm( 'body', metadata );
 
         this.typeInput      = d3.select( '#importDatasetImportType' );
         this.fileInput      = d3.select( '#importDatasetFileImport' );

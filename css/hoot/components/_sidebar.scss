@@ -26,7 +26,7 @@
     cursor: col-resize;
 }
 
-form {
+.sidebar-form {
     margin-bottom: 15px;
 
     .toggle-button {
@@ -35,6 +35,7 @@ form {
         justify-content: center;
         padding: 10px;
         background-color: #999;
+        font-size: 14px;
         color: white;
 
         &.active {
@@ -96,9 +97,9 @@ form {
         }
     }
 
-    .layer-add-button {
+
+    .action-container button {
         padding: 5px 20px;
-        color: white;
         height: auto;
     }
 }
@@ -121,10 +122,37 @@ form {
         width: 40px;
         height: 60px;
         right: 0;
-        background-color: #f8f8f8;
 
         &:hover {
-            background-color: white;
+            background-color: #f4f4f4;
         }
+    }
+}
+
+.layer-conflate {
+
+    .conflate-ref {
+        margin-bottom: 10px;
+
+        .thumb {
+            margin: 0 5px;
+            padding: 10px;
+        }
+
+        &:after {
+            background: rgba(0, 0, 0, 0.10);
+            content: '';
+            position: absolute;
+            display: block;
+            width: 10px;
+            height: 5px;
+            top: 18px;
+            left: 50%;
+            margin-left: -5px;
+        }
+    }
+
+    .button.dark {
+        margin-left: 10px;
     }
 }

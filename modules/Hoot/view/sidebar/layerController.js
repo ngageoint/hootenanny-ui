@@ -33,14 +33,14 @@ class LayerController {
                     this.color = '_osm';
                 }
 
-                return `round space-bottom1 layer-loading ${ this.color }`;
+                return `sidebar-form layer-controller layer-loading round fill-white ${ this.color }`;
             } )
             .attr( 'data-name', this.name )
             .select( 'a' )
             .remove();
 
         this.form.append( 'div' )
-            .classed( 'layer-controller contain keyline-all round', true )
+            .classed( 'contain keyline-all round', true )
             .html( '<div class="pad1 inline _icon _loading light"></div>' +
                 '<span class="strong pad1x">Loading &#8230;</span>' +
                 '<button class="keyline-left delete-button round-right inline _icon trash"></button>' )
@@ -60,11 +60,11 @@ class LayerController {
 
         //let form = this.wrapper.insert( 'form', '.loadingLayer' );
         this.form.classed( 'layer-loading', false )
-            .classed( 'layer-controller', true )
+            .classed( 'sidebar-form layer-controller', true )
             .html( '' );
 
         let controller = this.form.append( 'div' )
-            .attr( 'class', `layer-controller contain keyline-all round space-bottom1 ${ layer.color }` );
+            .attr( 'class', `layer-controller contain keyline-all round fill-white ${ layer.color }` );
 
         controller.append( 'div' )
             .attr( 'class', () => {
