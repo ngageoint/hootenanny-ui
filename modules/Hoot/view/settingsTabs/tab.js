@@ -28,7 +28,7 @@ export default class Tab {
         this.tabHeader = this.sidebar
             .append( 'div' )
             .classed( 'hoot-util-header pad1y center', true )
-            .attr( 'data', `#${this.id}` )
+            .attr( 'data-id', `#${this.id}` )
             .on( 'click', function() {
                 self.events.send( 'toggle-settings-tab', this );
             } );

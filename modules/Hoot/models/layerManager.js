@@ -13,7 +13,7 @@ class LayerManager {
         this.context          = null;
         this._layers          = [];
         this._availableLayers = [];
-        this._loadedLayers    = {};
+        this._loadedLayers    = [];
         this._selectedLayers  = [];
     }
 
@@ -49,11 +49,12 @@ class LayerManager {
     }
 
     setLoadedLayer( layer ) {
-        this._loadedLayers[ layer.name ] = layer;
+        //this._loadedLayers[ layer.name ] = layer;
+        this._loadedLayers.push( layer );
     }
 
     removeLoadedLayer( layerName ) {
-        delete this._loadedLayers[ layerName ];
+        _.remove( this._loadedLayers, layer => layer.name === layerName );
     }
 
     getLoadedLayers( layerName ) {
@@ -61,7 +62,7 @@ class LayerManager {
             return this._loadedLayers;
         }
 
-        return this._loadedLayers[ layerName ];
+        return _.find( this._loadedLayers, layer => layer.name === layerName );
     }
 }
 

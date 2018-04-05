@@ -20,7 +20,7 @@ class HootOSM {
     }
 
     set ctx( context ) {
-        this.context = context;
+        this.context     = context;
         this.hootOverlay = this.context.layers().layer( 'hoot' );
     }
 
@@ -139,7 +139,8 @@ class HootOSM {
     }
 
     setLayerColor( mapId, color ) {
-        let sheets = document.styleSheets[ document.styleSheets.length - 1 ];
+        let sheets = document.styleSheets[ document.styleSheets.length - 1 ],
+            lighter;
 
         //Delete existing rules for mapid
         for ( let i = 0; i < sheets.cssRules.length; i++ ) {
@@ -149,8 +150,9 @@ class HootOSM {
         }
 
         //Insert new color rules for mapid
-        color       = this.getPalette( color );
-        let lighter = d3_rgb( color ).brighter();
+        color   = this.getPalette( color );
+        lighter = d3_rgb( color ).brighter();
+
         sheets.insertRule( 'path.stroke.tag-hoot-' + mapId + ' { stroke:' + color + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'path.shadow.tag-hoot-' + mapId + ' { stroke:' + lighter + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'path.fill.tag-hoot-' + mapId + ' { fill:' + lighter + '}', sheets.cssRules.length - 1 );

@@ -26,7 +26,7 @@
     cursor: col-resize;
 }
 
-.add-layer-form {
+form {
     margin-bottom: 15px;
 
     .toggle-button {
@@ -52,7 +52,7 @@
         }
     }
 
-    .add-layer-table {
+    .layer-add-table {
         height: 150px;
         margin-bottom: 15px;
         resize: vertical;
@@ -96,14 +96,14 @@
         }
     }
 
-    .add-layer-button {
+    .layer-add-button {
         padding: 5px 20px;
         color: white;
         height: auto;
     }
 }
 
-.controller {
+.layer-controller {
     span {
         color: black;
     }

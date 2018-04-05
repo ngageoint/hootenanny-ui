@@ -4,15 +4,15 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/19/18
  *******************************************************************************************************/
 
-import _ from 'lodash-es';
-import FolderTree from '../folderTree';
-import LayerManager from '../../models/layerManager';
-import LayerController from './layerController';
-import HootOSM from '../../models/hootOsm';
+import _                 from 'lodash-es';
+import Events            from '../../util/events';
+import FolderTree        from '../folderTree';
+import HootOSM           from '../../models/hootOsm';
+import LayerManager      from '../../models/layerManager';
+import LayerController   from './layerController';
+import LayerConflateForm from '../forms/conflateForm';
 //import { d3combobox } from '../../lib/hoot/d3.combobox';
-import { sidebarForms } from '../../config/formMetadata';
-import Hoot from '../../hoot';
-import Events from '../../util/events';
+import { sidebarForms }  from '../../config/formMetadata';
 
 /**
  * Create the sidebar
@@ -24,6 +24,7 @@ export default class Sidebar {
         this.context          = context;
         this.container        = container;
         this.formData         = sidebarForms;
+        this.conflate         = new LayerConflateForm( this.container );
         this.layerTables      = {};
         this.layerControllers = {};
     }
@@ -37,13 +38,6 @@ export default class Sidebar {
         this.createResizer();
         this.createWrapper();
         this.update();
-        //this.createForms();
-        //this.createToggleButtons();
-        //this.createFieldsets();
-        //this.createTables();
-        //this.createRecentlyUsedLayers();
-        //this.createColorPalette();
-        //this.createSubmitButton();
 
         this.listen();
     }
@@ -112,7 +106,7 @@ export default class Sidebar {
             .data( this.formData )
             .enter().append( 'form' )
             .attr( 'id', d => d.id )
-            .classed( 'add-layer-form round importable-layer fill-white strong', true );
+            .classed( 'layer-add round importable-layer fill-white strong', true );
     }
 
     resetForm( data ) {
@@ -130,7 +124,7 @@ export default class Sidebar {
         }
 
         this.forms.attr( 'id', d => d.id )
-            .classed( 'add-layer-form round importable-layer fill-white strong', true );
+            .classed( 'layer-add round importable-layer fill-white strong', true );
     }
 
     /**
@@ -165,7 +159,7 @@ export default class Sidebar {
     createTables() {
         this.tables = this.fieldsets.append( 'div' )
             .attr( 'id', d => d.tableId )
-            .classed( 'add-layer-table filled-white strong overflow', true )
+            .classed( 'layer-add-table filled-white strong overflow', true )
             .select( d => this.renderFolderTree( d ) );
     }
 
@@ -254,7 +248,7 @@ export default class Sidebar {
         this.fieldsets.append( 'div' )
             .classed( 'form-field', true )
             .append( 'button' )
-            .classed( 'add-layer-button fill-dark small strong round', true )
+            .classed( 'layer-add-button fill-dark small strong round', true )
             .text( 'Add Layer' )
             .on( 'click', d => {
                 d3.event.stopPropagation();
@@ -297,22 +291,34 @@ export default class Sidebar {
         this.layerControllers[ layerName ].init();
     }
 
-    loadLayer( layerName ) {
-        this.layerControllers[ layerName ].layerAdded();
+    layerLoaded( layerName ) {
+        this.layerControllers[ layerName ].update();
+
+        this.conflateCheck();
     }
 
-    removeLayer( [ data, layerName ] ) {
-        //console.log( this.context.connection().loadedTiles() );
+    layerRemoved( [ data, layerName ] ) {
         delete this.layerControllers[ layerName ];
 
         this.update( data );
+        this.conflateCheck();
+    }
+
+    conflateCheck() {
+        let loadedLayers = LayerManager.getLoadedLayers();
+
+        if ( loadedLayers.length === 2 ) {
+            this.conflate.render();
+        } else {
+            this.conflate.remove();
+        }
     }
 
     /**
      * Listen for re-render
      */
     listen() {
-        Events.listen( 'layer-loaded', this.loadLayer, this );
-        Events.listen( 'layer-removed', this.removeLayer, this );
+        Events.listen( 'layer-loaded', this.layerLoaded, this );
+        Events.listen( 'layer-removed', this.layerRemoved, this );
     }
 }
