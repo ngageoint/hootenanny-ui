@@ -293,15 +293,12 @@ export default class Sidebar {
 
     layerLoaded( layerName ) {
         this.layerControllers[ layerName ].update();
-
-        this.conflateCheck();
     }
 
     layerRemoved( [ data, layerName ] ) {
         delete this.layerControllers[ layerName ];
 
         this.update( data );
-        this.conflateCheck();
     }
 
     conflateCheck() {
@@ -320,5 +317,6 @@ export default class Sidebar {
     listen() {
         Events.listen( 'layer-loaded', this.layerLoaded, this );
         Events.listen( 'layer-removed', this.layerRemoved, this );
+        Events.listen( 'all-loaded', this.conflateCheck, this );
     }
 }
