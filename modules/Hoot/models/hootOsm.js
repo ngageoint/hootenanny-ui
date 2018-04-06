@@ -83,10 +83,11 @@ class HootOSM {
         LayerManager.setLoadedLayer( {
             name: LayerManager.availableLayers[ mapId ],
             id: mapId.toString(),
-            extent: layerExtent,
-            polygon: layerExtent.polygon(),
+            type: params.type,
             color: params.color,
             source: source,
+            extent: layerExtent,
+            polygon: layerExtent.polygon(),
             tags: tags,
             visible: true
         } );

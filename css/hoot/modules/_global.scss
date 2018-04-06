@@ -171,11 +171,6 @@ input {
 }
 
 button, .button {
-
-    &[disabled] {
-        background-color: $dark-opacity25 !important;
-    }
-
     &.primary {
         background-color: $blue;
 
@@ -203,6 +198,10 @@ button, .button {
     &.light {
         background-color: white;
         color: $dark;
+    }
+
+    &[disabled] {
+        background-color: $dark-opacity25 !important;
     }
 }
 

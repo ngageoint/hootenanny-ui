@@ -6,46 +6,54 @@
 
 export const sidebarForms = [
     {
+        type: 'primary',
+        id: 'add-ref',
+        tableId: 'add-ref-table',
         color: 'violet',
         toggleButtonText: 'Add Reference Dataset',
-        id: 'add-ref',
-        tableId: 'add-ref-table'
     },
     {
-        color: 'orange',
-        toggleButtonText: 'Add Secondary Dataset',
+        type: 'secondary',
         id: 'add-secondary',
-        tableId: 'add-secondary-table'
+        tableId: 'add-secondary-table',
+        color: 'orange',
+        toggleButtonText: 'Add Secondary Dataset'
     }
 ];
 
-export function layerConflateForm() {
+export function layerConflateForm( data ) {
     return [
         {
             label: 'Save As',
-            type: 'saveAs',
-            //placeholder: _newName
+            id: 'conflateSaveAs',
+            inputType: 'text',
+            placeholder: this.getSaveName( data ),
+            validate: true,
+            onChange: d => this.validateTextInput( d )
         },
         {
             label: 'Path',
-            type: 'pathname',
+            id: 'conflateFolderPath',
+            inputType: 'combobox',
             placeholder: 'root',
-            //combobox: { 'data': folderList, 'command': _populateFolderListCombo },
+            data: this.folderList,
+            itemKey: 'path',
+            sort: true,
             readonly: 'readonly'
         },
         {
             label: 'New Folder Name (leave blank otherwise)',
+            id: 'conflateFolderNewName',
+            inputType: 'text',
             type: 'newfoldername',
-            placeholder: ''
+            onChange: d => this.validateTextInput( d )
         },
         {
             label: 'Type',
-            type: 'ConfType',
+            id: 'conflateType',
+            inputType: 'combobox',
             placeholder: 'Reference',
-            combobox: {
-                'data': [ 'Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential' ],
-                //'command': _populateReferenceCombo
-            },
+            data: [ 'Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential' ],
             onchange: function() {
                 //_instance.confAdvOptionsFields = null;
                 //_removeAdvancedOptionsDlg();
@@ -54,16 +62,18 @@ export function layerConflateForm() {
         },
         {
             label: 'Attribute Reference Layer',
-            type: 'referenceLayer',
-            //placeholder: primaryLayerName,
-            //combobox: refLayers,
+            id: 'conflateRefLayer',
+            inputType: 'combobox',
+            placeholder: this.refLayers.primary.name,
+            data: Object.values( this.refLayers ).map( layer => layer.name ),
             readonly: 'readonly'
         },
         {
             label: 'Collect Statistics?',
-            type: 'isCollectStats',
+            id: 'conflateCollectStats',
+            inputType: 'combobox',
             placeholder: 'false',
-            combobox: [ 'true', 'false' ],
+            data: [ 'true', 'false' ],
             onchange: function() {
                 var selVal = d3.selectAll( '.reset.isCollectStats' ).value();
             },
@@ -71,9 +81,10 @@ export function layerConflateForm() {
         },
         {
             label: 'Generate Report?',
-            type: 'isGenerateReport',
+            id: 'conflateGenerateReport',
+            inputType: 'combobox',
             placeholder: 'false',
-            combobox: [ 'true', 'false' ],
+            data: [ 'true', 'false' ],
             onchange: function() {
                 var selVal = d3.selectAll( '.reset.isGenerateReport' ).value();
                 return selVal;
@@ -89,41 +100,38 @@ export function importDatasetForm() {
         {
             label: 'Import Type',
             id: 'importDatasetImportType',
-            placeholder: 'Select Import Type',
             inputType: 'combobox',
-            combobox: {
-                data: this.importTypes,
-                command: this.populateImportTypes
-            },
+            placeholder: 'Select Import Type',
+            data: this.importTypes,
+            itemKey: 'title',
             onChange: () => this.handleTypeChange()
         },
         {
             label: 'Import Data',
             id: 'importDatasetFileImport',
+            inputType: 'multipart',
             placeholder: 'Select File',
             icon: 'folder',
             readOnly: true,
             disabled: true,
-            inputType: 'multipart',
             multipartId: 'ingestFileUploader',
             onChange: () => this.handleMultipartChange()
         },
         {
             label: 'Layer Name',
             id: 'importDatasetLayerName',
-            placeholder: 'Enter name',
             inputType: 'text',
+            placeholder: 'Enter name',
             onChange: d => this.validateTextInput( d )
         },
         {
             label: 'Path',
-            placeholder: 'root',
             id: 'importDatasetPathName',
             inputType: 'combobox',
-            combobox: {
-                data: this.folderList,
-                command: this.populateFolderList
-            }
+            placeholder: 'root',
+            data: this.folderList,
+            sort: true,
+            itemKey: 'path'
         },
         {
             label: 'Enter Name for New Folder (Leave blank otherwise)',
@@ -133,14 +141,12 @@ export function importDatasetForm() {
         },
         {
             label: 'Translation Schema of Import File',
-            placeholder: 'Select Data Translation Schema',
             id: 'importDatasetSchema',
             inputType: 'combobox',
+            placeholder: 'Select Data Translation Schema',
             disabled: true,
-            combobox: {
-                data: this.translations,
-                command: this.populateTranslations
-            }
+            data: this.translations,
+            itemKey: 'DESCRIPTION'
         }
     ];
 }

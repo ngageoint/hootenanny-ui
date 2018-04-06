@@ -283,6 +283,7 @@ export default class Sidebar {
 
         let params = {
             name: layerName,
+            type: d.type,
             id: layerId,
             color
         };

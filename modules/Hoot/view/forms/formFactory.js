@@ -4,6 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/12/18
  *******************************************************************************************************/
 
+import _              from 'lodash-es';
+import { d3combobox } from '../../../lib/hoot/d3.combobox';
+
 /**
  * Create a form contained within a modal
  *
@@ -81,11 +84,10 @@ export default class FormFactory {
      * @param form - form div
      * @param formMeta - form data
      */
-    createFieldSets( form, formMeta, hidden ) {
+    createFieldSets( form, formMeta ) {
         let self = this;
 
-        let fieldContainer = form.append( 'fieldset' )
-            .classed( 'hidden', hidden );
+        let fieldContainer = form.append( 'fieldset' );
 
         let fields = fieldContainer.selectAll( '.form-field' )
             .data( formMeta ).enter()
@@ -106,7 +108,9 @@ export default class FormFactory {
                     break;
                 }
                 case 'combobox': {
-                    self.createCombobox( field );
+                    if ( d.data ) {
+                        self.createCombobox( field );
+                    }
                     break;
                 }
                 case 'text': {
@@ -133,19 +137,39 @@ export default class FormFactory {
      * @param field - field div
      */
     createCombobox( field ) {
-        let input = field.append( 'input' )
+        field.append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', d => d.id )
             .attr( 'autocomplete', 'off' )
             .attr( 'placeholder', d => d.placeholder )
             .attr( 'disabled', d => d.disabled )
+            .call( this.populateCombobox )
             .on( 'change', d => d.onChange && d.onChange() )
             .on( 'keyup', d => d.onChange && d.onChange() );
+    }
 
+    populateCombobox( input ) {
         input.select( d => {
-            if ( d.combobox && d.combobox.data && d.combobox.command ) {
-                d.combobox.command( input.node(), d );
+            let combobox = d3combobox()
+                .data( _.map( d.data, n => {
+                    n = d.itemKey ? n[ d.itemKey ] : n;
+
+                    return { value: n, title: n };
+                } ) );
+
+            if ( d.sort ) {
+                let data = combobox.data();
+
+                data.sort( ( a, b ) => {
+                    let textA = a.value.toLowerCase(),
+                        textB = b.value.toLowerCase();
+
+                    return textA < textB ? -1 : textA > textB ? 1 : 0;
+                } ).unshift( { value: 'root', title: 0 } );
             }
+
+            d3.select( input.node() )
+                .call( combobox );
         } );
     }
 
@@ -162,7 +186,9 @@ export default class FormFactory {
             .attr( 'readonly', d => d.readOnly )
             .attr( 'disabled', d => d.disabled )
             .classed( 'text-input', true )
-            .on( 'keyup', d => d.onChange( d ) );
+            .on( 'keyup', function( d ) {
+                d.onChange( d, this );
+            } );
     }
 
     /**

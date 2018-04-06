@@ -4,15 +4,14 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/12/18
  *******************************************************************************************************/
 
-import _                             from 'lodash-es';
-import Events                        from '../../util/events';
-import ImportManager                 from '../../models/importManager';
-import FolderManager                 from '../../models/folderManager';
-import FormFactory                   from './formFactory';
-import { importDatasetForm }         from '../../config/formMetadata';
-import { importDatasetTypes }        from '../../config/domElements';
-import { d3combobox as d3_combobox } from '../../../lib/hoot/d3.combobox';
-import { getBrowserInfo }            from '../../util/utilities';
+import _                      from 'lodash-es';
+import Events                 from '../../util/events';
+import ImportManager          from '../../models/importManager';
+import FolderManager          from '../../models/folderManager';
+import FormFactory            from './formFactory';
+import { importDatasetForm }  from '../../config/formMetadata';
+import { importDatasetTypes } from '../../config/domElements';
+import { getBrowserInfo }     from '../../util/utilities';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -60,7 +59,7 @@ export default class ImportDatasetForm {
             button
         };
 
-        this.container = this.formFactory .generateForm( 'body', metadata );
+        this.container = this.formFactory.generateForm( 'body', metadata );
 
         this.typeInput      = d3.select( '#importDatasetImportType' );
         this.fileInput      = d3.select( '#importDatasetFileImport' );
@@ -71,79 +70,13 @@ export default class ImportDatasetForm {
     }
 
     /**
-     * Populate the import-type list dropdown
-     *
-     * @param node - input node
-     * @param d - node data
-     */
-    populateImportTypes( node, d ) {
-        let combobox = d3_combobox()
-            .data( _.map( d.combobox.data, n => {
-                return {
-                    value: n.title,
-                    title: n.title
-                };
-            } ) );
-
-        d3.select( node )
-            .call( combobox );
-    }
-
-    /**
-     * Populate the available folders list dropdown
-     *
-     * @param node - input node
-     * @param d - node data
-     */
-    populateFolderList( node, d ) {
-        let combobox = d3_combobox()
-            .data( _.map( d.combobox.data, n => {
-                return {
-                    value: n.path,
-                    title: n.path
-                };
-            } ) );
-
-        let data = combobox.data();
-
-        data.sort( ( a, b ) => {
-            let textA = a.value.toLowerCase(),
-                textB = b.value.toLowerCase();
-
-            return textA < textB ? -1 : textA > textB ? 1 : 0;
-        } ).unshift( { value: 'root', title: 0 } );
-
-        d3.select( node )
-            .call( combobox );
-    }
-
-    /**
-     * Populate the translations list dropdown
-     *
-     * @param node - input node
-     * @param d - node data
-     */
-    populateTranslations( node, d ) {
-        let combobox = d3_combobox()
-            .data( _.map( d.combobox.data, n => {
-                return {
-                    value: n.DESCRIPTION,
-                    title: n.DESCRIPTION
-                };
-            } ) );
-
-        d3.select( node )
-            .call( combobox );
-    }
-
-    /**
      * Update the form by enabling, disabling, or clearing certain
      * fields based on the value entered
      */
     handleTypeChange() {
         let selectedVal  = this.typeInput.property( 'value' ),
             selectedType = this.getTypeName( selectedVal ),
-            schemaData   = this.schemaInput.datum(),
+            schemaCombo  = this.schemaInput.datum(),
             translationsList;
 
         // clear values
@@ -167,11 +100,11 @@ export default class ImportDatasetForm {
             translationsList = _.reject( this.translations, o => o.NAME === 'GEONAMES' );
         }
 
-        schemaData.combobox.data = translationsList;
+        schemaCombo.data = translationsList;
 
         // set parameters for uploader and repopulate translations list
         this.setMultipartForType( selectedType );
-        this.populateTranslations( this.schemaInput.node(), schemaData );
+        this.formFactory.populateCombobox( this.schemaInput );
 
         this.schemaInput.property( 'value', translationsList[ 0 ].DESCRIPTION );
     }
@@ -214,8 +147,8 @@ export default class ImportDatasetForm {
             typeVal     = this.typeInput.property( 'value' ),
             transCombo  = this.schemaInput.datum(),
             typeCombo   = this.typeInput.datum(),
-            translation = _.filter( transCombo.combobox.data, o => o.DESCRIPTION === transVal )[ 0 ],
-            importType  = _.filter( typeCombo.combobox.data, o => o.title === typeVal )[ 0 ];
+            translation = _.filter( transCombo.data, o => o.DESCRIPTION === transVal )[ 0 ],
+            importType  = _.filter( typeCombo.data, o => o.title === typeVal )[ 0 ];
 
         let data = {
             NONE_TRANSLATION: translation.NONE === 'true',
@@ -301,13 +234,14 @@ export default class ImportDatasetForm {
      * Enable/disable button based on form validity
      */
     updateButtonState() {
-        let self = this;
+        let importType = this.container.select( '#importDatasetImportType' ).node().value,
+            self       = this;
 
         this.container.selectAll( '.text-input' )
             .each( function( d ) {
                 let classes = d3.select( this ).attr( 'class' ).split( ' ' );
 
-                if ( classes.indexOf( 'invalid' ) > -1 ) {
+                if ( classes.indexOf( 'invalid' ) > -1 || !importType.length ) {
                     self.formValid = false;
                 }
             } );
@@ -323,7 +257,7 @@ export default class ImportDatasetForm {
      */
     getTypeName( title ) {
         let comboData = this.container.select( '#importDatasetImportType' ).datum(),
-            match     = _.find( comboData.combobox.data, o => o.title === title );
+            match     = _.find( comboData.data, o => o.title === title );
 
         return match ? match.value : false;
     }
