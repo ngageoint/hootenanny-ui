@@ -34,7 +34,10 @@ class LayerConflateForm {
             .classed( 'strong', true )
             .text( 'Conflate' );
 
-        this.fieldset = this.formFactory.createFieldSets( this.form, this.formData, true );
+        this.innerWrapper = this.form.append( 'div' )
+            .classed( 'inner-wrapper', true );
+
+        this.fieldset = this.formFactory.createFieldSets( this.innerWrapper, this.formData );
 
         this.createLayerRefThumbnails( layers );
         this.createButtons();
@@ -58,7 +61,7 @@ class LayerConflateForm {
             .classed( 'button secondary round small strong', true )
             .text( 'Cancel' )
             .on( 'click', () => {
-                if (window.confirm('Cancel will remove any previously selected advanced options. Are you sure you want to cancel?')){
+                if ( window.confirm( 'Cancel will remove any previously selected advanced options. Are you sure you want to cancel?' ) ) {
                     this.toggleForm();
                 }
             } );
@@ -77,11 +80,11 @@ class LayerConflateForm {
     }
 
     toggleForm() {
-        let buttonState   = this.toggleButton.classed( 'active' ),
-            fieldsetState = this.fieldset.classed( 'hidden' );
+        let buttonState  = this.toggleButton.classed( 'active' ),
+            wrapperState = this.innerWrapper.classed( 'visible' );
 
         this.toggleButton.classed( 'active', !buttonState );
-        this.fieldset.classed( 'hidden', !fieldsetState );
+        this.innerWrapper.classed( 'visible', !wrapperState );
 
         if ( buttonState ) {
 

@@ -23,6 +23,10 @@ input {
     display: none;
 }
 
+.overflow {
+    overflow: auto;
+}
+
 .flex {
     display: flex;
 
@@ -83,23 +87,23 @@ input {
 }
 
 .keyline-all {
-    border: 1px solid $light3;
+    border: 1px solid $dark-opacity20;
 }
 
 .keyline-top {
-    border-top: 1px solid $light3;
+    border-top: 1px solid $dark-opacity20;
 }
 
 .keyline-right {
-    border-right: 1px solid $light3;
+    border-right: 1px solid $dark-opacity20;
 }
 
 .keyline-bottom {
-    border-bottom: 1px solid $light3;
+    border-bottom: 1px solid $dark-opacity20;
 }
 
 .keyline-left {
-    border-left: 1px solid $light3;
+    border-left: 1px solid $dark-opacity20;
 }
 
 /*****************************************/
@@ -169,7 +173,7 @@ input {
 button, .button {
 
     &[disabled] {
-        background-color: rgba(0, 0, 0, .25) !important;
+        background-color: $dark-opacity25 !important;
     }
 
     &.primary {

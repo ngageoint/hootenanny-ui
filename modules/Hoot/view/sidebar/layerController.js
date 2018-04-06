@@ -24,7 +24,7 @@ class LayerController {
     }
 
     render() {
-        this.form.selectAll( 'fieldset' )
+        this.form.selectAll( '.inner-wrapper' )
             .classed( 'hidden', true );
 
         this.form
@@ -41,7 +41,7 @@ class LayerController {
 
         this.form.append( 'div' )
             .classed( 'contain keyline-all round', true )
-            .html( '<div class="pad1 inline _icon _loading light"></div>' +
+            .html( '<div class="pad1 inline thumbnail _icon _loading light"></div>' +
                 '<span class="strong pad1x">Loading &#8230;</span>' +
                 '<button class="keyline-left delete-button round-right inline _icon trash"></button>' )
             .select( 'button' )

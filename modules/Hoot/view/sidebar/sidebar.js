@@ -149,8 +149,10 @@ export default class Sidebar {
      * Create fieldset for each form
      */
     createFieldsets() {
-        this.fieldsets = this.forms.append( 'fieldset' )
-            .classed( 'hidden', true );
+        this.innerWrapper = this.forms.append( 'div' )
+            .classed( 'inner-wrapper', true );
+
+        this.fieldsets = this.innerWrapper.append( 'fieldset' );
     }
 
     /**
@@ -159,7 +161,7 @@ export default class Sidebar {
     createTables() {
         this.tables = this.fieldsets.append( 'div' )
             .attr( 'id', d => d.tableId )
-            .classed( 'layer-add-table filled-white strong overflow', true )
+            .classed( 'layer-add-table keyline-all filled-white strong overflow', true )
             .select( d => this.renderFolderTree( d ) );
     }
 
@@ -184,12 +186,12 @@ export default class Sidebar {
     toggleForm( selection ) {
         let form          = d3.select( `#${ selection }` ),
             button        = form.select( '.toggle-button' ),
-            fieldset      = form.select( 'fieldset' ),
+            wrapper       = form.select( '.inner-wrapper' ),
             buttonState   = button.classed( 'active' ),
-            fieldsetState = fieldset.classed( 'hidden' );
+            fieldsetState = wrapper.classed( 'visible' );
 
         button.classed( 'active', !buttonState );
-        fieldset.classed( 'hidden', !fieldsetState );
+        wrapper.classed( 'visible', !fieldsetState );
     }
 
     /**
