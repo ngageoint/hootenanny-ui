@@ -57,7 +57,7 @@ export default class Navbar {
      */
     createSettingsButton( leftContainer ) {
         let button = leftContainer.append( 'div' )
-            .classed( 'button darker pointer icon-container flex justify-between', true )
+            .classed( 'button dark text-light pointer icon-container flex justify-between', true )
             .on( 'click', function() {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
@@ -66,7 +66,7 @@ export default class Navbar {
 
                 d3.select( this )
                     .classed( 'light', !vis )
-                    .classed( 'darker', vis );
+                    .classed( 'dark', vis );
 
                 d3.select( '#settings-panel' )
                     .classed( 'hidden', vis );

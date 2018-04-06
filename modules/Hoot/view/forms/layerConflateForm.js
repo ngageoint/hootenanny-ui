@@ -64,7 +64,7 @@ class LayerConflateForm {
             } );
 
         actions.append( 'button' )
-            .classed( 'button dark round small strong', true )
+            .classed( 'button dark text-light round small strong', true )
             .text( 'Conflate' )
             .on( 'click', () => this.handleSubmit() );
     }

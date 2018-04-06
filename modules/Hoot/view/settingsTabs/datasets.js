@@ -59,7 +59,7 @@ export default class Datasets extends Tab {
     createButtons() {
         let eachButton = this.buttonContainer.enter()
             .append( 'button' )
-            .classed( 'dataset-action-button primary flex align-center', true )
+            .classed( 'dataset-action-button primary text-light flex align-center', true )
             .on( 'click', async item => {
                 d3.event.preventDefault();
 

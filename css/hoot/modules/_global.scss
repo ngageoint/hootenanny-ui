@@ -1,9 +1,9 @@
 body,
 input,
 textarea {
-    color:#333;
-    font:normal 12px/1.6667 'Helvetica Neue', Arial, sans-serif;
-    -webkit-font-smoothing:antialiased;
+    color: $dark2;
+    font: normal 12px/1.6667 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
 label {
@@ -83,23 +83,23 @@ input {
 }
 
 .keyline-all {
-    border: 1px solid rgba(0, 0, 0, 0.20);
+    border: 1px solid $light3;
 }
 
 .keyline-top {
-    border-top: 1px solid rgba(0, 0, 0, 0.20);
+    border-top: 1px solid $light3;
 }
 
 .keyline-right {
-    border-right: 1px solid rgba(0, 0, 0, 0.20);
+    border-right: 1px solid $light3;
 }
 
 .keyline-bottom {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.20);
+    border-bottom: 1px solid $light3;
 }
 
 .keyline-left {
-    border-left: 1px solid rgba(0, 0, 0, 0.20);
+    border-left: 1px solid $light3;
 }
 
 /*****************************************/
@@ -146,74 +146,61 @@ input {
 /**************** COLORS *****************/
 /*****************************************/
 
-// Text
 .text-light {
-    color: $primary-light;
+    color: $light;
 }
 
 .text-dark {
-    color: $primary-gray;
+    color: $dark;
 }
 
 .fill-white {
-    background-color: #fff;
+    background-color: white;
+}
+
+.fill-light {
+    background-color: $light;
 }
 
 .fill-dark {
-    background-color: palette( 'dark' );
+    background-color: $dark;
 }
 
 button, .button {
+
     &[disabled] {
         background-color: rgba(0, 0, 0, .25) !important;
     }
 
     &.primary {
-        background-color: $primary-blue;
-        color: white;
+        background-color: $blue;
 
         &:hover {
-            background-color: $primary-blue-accent;
+            background-color: $blue1;
         }
     }
 
     &.secondary {
-        background-color: palette( 'secondary' );
-        color: black;
+        background-color: $light1;
 
         &:hover {
-            background-color: palette( 'secondary', 'accent' );
+            background-color: $light2;
         }
     }
 
     &.dark {
-        background-color: palette( 'primary' );
-        color: white;
+        background-color: $dark;
 
         &:hover {
-            background-color: palette( 'primary', 'accent' );
-        }
-    }
-
-    &.darker {
-        background-color: palette( 'dark' );
-        color: white;
-
-        &:hover {
-            background-color: palette( 'dark', 'accent' )
+            background-color: $dark1;
         }
     }
 
     &.light {
         background-color: white;
-        color: $primary-gray;
+        color: $dark;
     }
 }
-
-//.button.light {
-//    background-color: white;
-//    color: $primary-gray;
-//}
 
 input[type=text] {
     &.invalid {
@@ -222,13 +209,13 @@ input[type=text] {
 
     &[disabled] {
         &::placeholder {
-            color: #777;
+            color: $gray;
         }
 
         & ~ span {
             display: none;
         }
 
-        background-color: rgba(0, 0, 0, .25) !important;
+        background-color: $light3 !important;
     }
 }

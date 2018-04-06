@@ -132,7 +132,7 @@ export default class Sidebar {
      */
     createToggleButtons() {
         let buttons = this.forms.append( 'a' )
-            .classed( 'toggle-button button dark strong block round', true )
+            .classed( 'toggle-button button dark text-light strong block round', true )
             .attr( 'href', '#' )
             .on( 'click', d => this.toggleForm( d.id ) );
 
@@ -248,7 +248,7 @@ export default class Sidebar {
         this.fieldsets.append( 'div' )
             .classed( 'form-field action-container', true )
             .append( 'button' )
-            .classed( 'dark small strong round', true )
+            .classed( 'dark text-light small strong round', true )
             .text( 'Add Layer' )
             .on( 'click', d => {
                 d3.event.stopPropagation();

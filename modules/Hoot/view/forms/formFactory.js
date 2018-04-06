@@ -38,7 +38,7 @@ export default class FormFactory {
     createContainer( selector ) {
         return d3.select( selector )
             .append( 'div' )
-            .classed( 'fill-darken3 modal-overlay', true );
+            .classed( 'fill-dark modal-overlay', true );
     }
 
     /**

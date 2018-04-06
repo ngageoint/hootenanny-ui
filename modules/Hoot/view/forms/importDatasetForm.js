@@ -60,7 +60,7 @@ export default class ImportDatasetForm {
             button
         };
 
-        this.container = this.formFactory.generateForm( 'body', metadata );
+        this.container = this.formFactory .generateForm( 'body', metadata );
 
         this.typeInput      = d3.select( '#importDatasetImportType' );
         this.fileInput      = d3.select( '#importDatasetFileImport' );

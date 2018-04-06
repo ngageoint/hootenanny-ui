@@ -69,11 +69,11 @@ g.node {
     &.vertex {
         &.shared {
             .stroke {
-                fill: #aaa;
+                fill: $light5;
             }
 
             .fill {
-                fill: #aaa;
+                fill: $light5;
             }
         }
     }

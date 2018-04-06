@@ -6741,11 +6741,11 @@ li.hide + li.version .badge .tooltip .tooltip-arrow {
 .quiet  { color:rgba(68,68,68,0.5); }
 .strong { font-weight:bold; }
 
-.keyline-all    { border:1px solid rgba(0,0,0,0.20); }
-.keyline-top    { border-top:1px solid rgba(0,0,0,0.20); }
-.keyline-right  { border-right:1px solid rgba(0,0,0,0.20); }
-.keyline-bottom { border-bottom:1px solid rgba(0,0,0,0.20); }
-.keyline-left   { border-left:1px solid rgba(0,0,0,0.20); }
+/*.keyline-all    { border:1px solid rgba(0,0,0,0.20); }*/
+/*.keyline-top    { border-top:1px solid rgba(0,0,0,0.20); }*/
+/*.keyline-right  { border-right:1px solid rgba(0,0,0,0.20); }*/
+/*.keyline-bottom { border-bottom:1px solid rgba(0,0,0,0.20); }*/
+/*.keyline-left   { border-left:1px solid rgba(0,0,0,0.20); }*/
 
 /*.fr                           { float:right; }*/
 /*.fl                           { float:left; }*/
@@ -6768,8 +6768,8 @@ li.hide + li.version .badge .tooltip .tooltip-arrow {
 .show-tablet, .show-mobile    { display:none; }
 .show-mobile                  { display:none; }
 /*img.inline, .inline           { display:inline-block; }*/
-.block                        { display:block; }
-.overflow                     { overflow:auto; }
+/*.block                        { display:block; }*/
+/*.overflow                     { overflow:auto; }*/
 /*.pad2y { padding: 20px 0; }*/
 /*.pad1y { padding: 10px 0; }*/
 /*.pad2x { padding: 0 20px; }*/
@@ -6883,14 +6883,14 @@ li.hide + li.version .badge .tooltip .tooltip-arrow {
 .fill-blue   { background-color:#5fbcd3; }
 .fill-teal   { background-color:#5fd3bc; }
 .fill-green  { background-color:#a7c973; }
-.fill-light   { background-color:#f8f8f8; }
-.fill-white   { background-color:#fff; }
+/*.fill-light   { background-color:#f8f8f8; }*/
+/*.fill-white   { background-color:#fff; }*/
 /*.fill-dark    { background-color:#444; }*/
-.fill-darken  { background-color:rgba(0,0,0,0.25); z-index:1000; }
-.fill-darken0 { background-color:rgba(0,0,0,0.05); z-index:1000; }
-.fill-darken1 { background-color:rgba(0,0,0,0.25); z-index:1000; }
-.fill-darken2 { background-color:rgba(0,0,0,0.50); z-index:1000; }
-.fill-darken3 { background-color:rgba(0,0,0,0.75); z-index:1000; }
+/*.fill-darken  { background-color:rgba(0,0,0,0.25); z-index:1000; }*/
+/*.fill-darken0 { background-color:rgba(0,0,0,0.05); z-index:1000; }*/
+/*.fill-darken1 { background-color:rgba(0,0,0,0.25); z-index:1000; }*/
+/*.fill-darken2 { background-color:rgba(0,0,0,0.50); z-index:1000; }*/
+/*.fill-darken3 { background-color:rgba(0,0,0,0.75); z-index:1000; }*/
 
 .map-button {
   width:39px;
