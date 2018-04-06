@@ -164,7 +164,7 @@
 .fill-green  { background-color:#a7c973; }
 .fill-light   { background-color:#f8f8f8; }
 .fill-white   { background-color:#fff; }
-.fill-dark    { background-color:#444; }
+/*.fill-dark    { background-color:#444; }*/
 .fill-darken  { background-color:rgba(0,0,0,0.25); z-index:1000; }
 .fill-darken0 { background-color:rgba(0,0,0,0.05); z-index:1000; }
 .fill-darken1 { background-color:rgba(0,0,0,0.25); z-index:1000; }

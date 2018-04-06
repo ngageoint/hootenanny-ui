@@ -3,21 +3,52 @@ $primary-light: #f8f8f8;
 $primary-gray: #444;
 $primary-gray-accent: #4E4E4E;
 
+$secondary-gray: #555;
+
 $primary-blue: #7092ff;
 $primary-blue-accent: #597be7;
 
-$dark-colors: (
-    'primary': #444
+$palette: (
+    'primary': (
+        'light': #aaa,
+        'base': #666,
+        'accent': #555
+    ),
+    'secondary': (
+        'base': #e6e6e6,
+        'accent': #ddd
+    ),
+    'dark': (
+        'base': #444,
+        'accent': #3e3e3e,
+    ),
+    'blue': (
+        'base': #7092ff,
+        'accent': #597be7
+    )
 );
 
-$light-colors: (
-    'primary': #f8f8f8
+$palette-color-key: 'base' !default;
+
+$palette-opacity: (
+    'light': 0.8,
+    'dark': 0.4
 );
 
-@function dark-color( $key: 'primary' ) {
-    @return map-get($dark-colors, $key);
-}
+@function palette (
+    $name: 'primary',
+    $variant: $palette-color-key,
+    $opacity: 1
+) {
+    $color: null;
 
-@function light-color( $key: 'primary' ) {
-    @return map-get( $light-colors, $key );
+    // Get the color spectrum
+    $color-spectrum: map-get($palette, $name);
+
+    // Get the color variant
+    @if $color-spectrum {
+        $color: map-get($color-spectrum, $variant);
+    }
+
+    @return $color;
 }

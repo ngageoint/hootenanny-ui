@@ -3,6 +3,7 @@
     height: calc(100% - 60px);
     min-width: 400px;
     max-width: 50%;
+    //background-color: white;
 
     .wrapper {
         height: 100%;
@@ -27,24 +28,26 @@
 }
 
 .sidebar-form {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 
     .toggle-button {
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 10px;
-        background-color: #999;
+        background-color: palette( 'primary', 'light' );
         font-size: 14px;
         color: white;
 
         &.active {
             border-radius: 4px 4px 0 0;
-            background-color: #333;
+            //background-color: $primary-gray;
+            background-color: palette( 'primary' );
         }
 
         &:hover {
-            background-color: #333;
+            //background-color: $primary-gray;
+            background-color: palette( 'primary' );
         }
 
         i {

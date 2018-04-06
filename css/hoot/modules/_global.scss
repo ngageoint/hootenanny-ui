@@ -1,9 +1,3 @@
-@import 'variables';
-
-body {
-    //min-width: 700px !important;
-}
-
 body,
 input,
 textarea {
@@ -153,10 +147,6 @@ input {
 /*****************************************/
 
 // Text
-.text-white {
-    color: #fff;
-}
-
 .text-light {
     color: $primary-light;
 }
@@ -165,16 +155,15 @@ input {
     color: $primary-gray;
 }
 
-// Background
 .fill-white {
     background-color: #fff;
 }
 
 .fill-dark {
-    background-color: $primary-gray;
+    background-color: palette( 'dark' );
 }
 
-button {
+button, .button {
     &[disabled] {
         background-color: rgba(0, 0, 0, .25) !important;
     }
@@ -189,23 +178,42 @@ button {
     }
 
     &.secondary {
-        background-color: rgb( 233, 233, 233 );
+        background-color: palette( 'secondary' );
         color: black;
 
         &:hover {
-            background-color: rgb( 221, 221, 221 );
+            background-color: palette( 'secondary', 'accent' );
         }
     }
 
     &.dark {
-        background-color: $primary-gray;
+        background-color: palette( 'primary' );
         color: white;
 
         &:hover {
-            background-color: $primary-gray-accent;
+            background-color: palette( 'primary', 'accent' );
         }
     }
+
+    &.darker {
+        background-color: palette( 'dark' );
+        color: white;
+
+        &:hover {
+            background-color: palette( 'dark', 'accent' )
+        }
+    }
+
+    &.light {
+        background-color: white;
+        color: $primary-gray;
+    }
 }
+
+//.button.light {
+//    background-color: white;
+//    color: $primary-gray;
+//}
 
 input[type=text] {
     &.invalid {

@@ -132,7 +132,7 @@ export default class Sidebar {
      */
     createToggleButtons() {
         let buttons = this.forms.append( 'a' )
-            .classed( 'toggle-button strong block round', true )
+            .classed( 'toggle-button button dark strong block round', true )
             .attr( 'href', '#' )
             .on( 'click', d => this.toggleForm( d.id ) );
 
