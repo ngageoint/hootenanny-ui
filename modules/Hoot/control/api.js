@@ -246,6 +246,17 @@ class API {
         return this.request( params )
             .then( resp => resp.data );
     }
+
+    conflate( data ) {
+        const params = {
+            path: '/job/conflation/execute',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
 }
 
 export default new API();

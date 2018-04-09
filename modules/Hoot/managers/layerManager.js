@@ -6,7 +6,6 @@
 
 import _      from 'lodash-es';
 import API    from '../control/api';
-import Event from './eventManager';
 
 class LayerManager {
     constructor() {
@@ -63,6 +62,10 @@ class LayerManager {
 
     removeLoadedLayer( id ) {
         _.remove( this._loadedLayers, layer => layer.id === id );
+    }
+
+    findBy( key, val ) {
+        return _.find( this._loadedLayers, layer => layer[ key ] === val );
     }
 }
 

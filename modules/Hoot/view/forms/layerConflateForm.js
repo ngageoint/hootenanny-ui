@@ -6,8 +6,11 @@
 
 import _                     from 'lodash-es';
 import FolderManager         from '../../managers/folderManager';
+import LayerManager          from '../../managers/layerManager';
+import Conflate              from '../../control/conflate';
+import API                   from '../../control/api';
 import FormFactory           from '../models/formFactory';
-import { d3combobox }        from '../../../lib/hoot/d3.combobox';
+//import { d3combobox }        from '../../../lib/hoot/d3.combobox';
 import { layerConflateForm } from '../../config/formMetadata';
 
 class LayerConflateForm {
@@ -48,8 +51,6 @@ class LayerConflateForm {
         this.fieldset = this.formFactory.createFieldSets( this.innerWrapper, this.formData );
 
         this.saveAsInput         = d3.select( '#conflateSaveAs' );
-        this.folderPathInput     = d3.select( '#conflateFolderPath' );
-        this.newFolderNameInput  = d3.select( '#conflateNewFolderName' );
         this.typeInput           = d3.select( '#conflateType' );
         this.refLayerInput       = d3.select( '#conflateRefLayer' );
         this.collectStatsInput   = d3.select( '#conflateCollectStats' );
@@ -185,21 +186,28 @@ class LayerConflateForm {
         let data = {};
 
         data.TIME_STAMP         = new Date().getTime();
-        data.CONFLATION_COMMAND = conflateCommand;
-        data.OUTPUT_NAME        = this.saveAsInput.node().value();
-        data.CONFLATION_TYPE    = this.typeInput.node().value();
-        data.REFERENCE_LAYER    = this.refLayerInput.new().value();
-        data.GENERATE_REPORT    = this.generateReportInput.node().value();
-        data.COLLECT_STATS      = this.collectStatsInput.node().value();
+        data.CONFLATION_COMMAND = 'conflate';
+        data.INPUT1             = LayerManager.findBy( 'type', 'primary' ).id;
+        data.INPUT2             = LayerManager.findBy( 'type', 'secondary' ).id;
+        data.INPUT1_TYPE        = 'DB';
+        data.INPUT2_TYPE        = 'DB';
+        data.OUTPUT_NAME        = this.saveAsInput.node().value;
+        data.CONFLATION_TYPE    = this.typeInput.node().value;
+        data.REFERENCE_LAYER    = this.refLayerInput.node().value;
+        data.GENERATE_REPORT    = this.generateReportInput.node().value;
+        data.COLLECT_STATS      = this.collectStatsInput.node().value;
 
         if ( advOpts ) {
             let advOptionsStr = '';
+
             _.each( advOpts, opt => {
                 if ( advOptionsStr.length > 0 ) {
                     advOptionsStr += ' ';
                 }
                 advOptionsStr += `-D "${ opt.name }=${ opt.value }"`;
             } );
+
+            data.ADV_OPTIONS = advOptionsStr;
         }
         return data;
     }
@@ -212,14 +220,12 @@ class LayerConflateForm {
         d3.event.stopPropagation();
         d3.event.preventDefault();
 
-        let conflateType    = this.typeInput.node().value,
-            conflateCommand = 'conflate';
+        let data = this.preConflation();
 
-        if ( conflateType === 'Differential' || conflateType === 'Custom Differential' ) {
-            conflateCommand = 'diff-conflate';
-        }
-
-        let data = this.preConflation( conflateCommand );
+        API.conflate( data )
+            .then( resp => {
+                console.log( resp );
+            } );
     }
 }
 
