@@ -31,9 +31,3 @@ export const getBrowserInfo = () => {
 
     return browserInfo;
 };
-
-//export const to = ( Promise ) => {
-//    return Promise
-//        .then( data => [ null, data ] )
-//        .catch( err => [ err ] );
-//};

@@ -4,14 +4,13 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/22/18
  *******************************************************************************************************/
 
-import _ from 'lodash-es';
-import LayerManager from './layerManager';
-import API from '../util/api';
-import Events from '../util/events';
+import _                          from 'lodash-es';
+import LayerManager               from './layerManager';
+import API                        from '../control/api';
 import { geoExtent as GeoExtent } from '../../geo/index';
-import { rgb as d3_rgb } from 'd3-color';
-import colorPalette from '../config/colorPalette';
-import config from '../config/apiConfig';
+import { rgb as d3_rgb }          from 'd3-color';
+import colorPalette               from '../config/colorPalette';
+import config                     from '../config/apiConfig';
 
 class HootOSM {
     constructor() {
@@ -81,7 +80,7 @@ class HootOSM {
             layerExtent = await this.layerExtent( mapId );
 
         LayerManager.setLoadedLayer( {
-            name: LayerManager.availableLayers[ mapId ],
+            name: params.name,
             id: mapId.toString(),
             type: params.type,
             color: params.color,
@@ -118,7 +117,7 @@ class HootOSM {
     }
 
     async removeLayer( layer ) {
-        LayerManager.removeLoadedLayer( layer.name );
+        LayerManager.removeLoadedLayer( layer.id );
         this.context.background().removeSource( layer.id );
         this.hootOverlay.removeGeojson( layer.id );
 

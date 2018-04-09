@@ -4,14 +4,13 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import Events from '../../util/events';
+import Event from '../../managers/eventManager';
 
 /**
  * Base class that all other tabs in the settings panel extends from
  */
 export default class Tab {
     constructor( [ panel, sidebar ] ) {
-        this.events  = Events;
         this.panel   = panel;
         this.sidebar = sidebar;
 
@@ -23,14 +22,13 @@ export default class Tab {
      * Render tab header in settings panel sidebar
      */
     render() {
-        const self = this;
 
         this.tabHeader = this.sidebar
             .append( 'div' )
             .classed( 'hoot-util-header pad1y center', true )
             .attr( 'data-id', `#${this.id}` )
             .on( 'click', function() {
-                self.events.send( 'toggle-settings-tab', this );
+                Event.send( 'toggle-settings-tab', this );
             } );
 
         this.tabLabel = this.tabHeader

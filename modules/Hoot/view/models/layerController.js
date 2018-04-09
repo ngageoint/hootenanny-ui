@@ -4,9 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/3/18
  *******************************************************************************************************/
 
-import LayerManager from '../../models/layerManager';
-import HootOSM from '../../models/hootOsm';
-import Events from '../../util/events';
+import LayerManager from '../../managers/layerManager';
+import HootOSM      from '../../managers/hootOsm';
+import Event        from '../../managers/eventManager';
 
 class LayerController {
     constructor( layer, form, context ) {
@@ -56,9 +56,8 @@ class LayerController {
     }
 
     update() {
-        let layer = LayerManager.getLoadedLayers( this.name );
+        let layer = LayerManager.getLoadedLayers( this.id );
 
-        //let form = this.wrapper.insert( 'form', '.loadingLayer' );
         this.form.classed( 'layer-loading', false )
             .classed( 'sidebar-form layer-controller', true )
             .html( '' );
@@ -83,7 +82,7 @@ class LayerController {
                 if ( window.confirm( 'Are you sure you want to delete?' ) ) {
                     //LayerManager.removeLoadedLayer( this.name );
                     HootOSM.removeLayer( this.layer );
-                    Events.send( 'layer-removed', d, this.name );
+                    Event.send( 'layer-removed', d, this.name );
                 }
             } );
 

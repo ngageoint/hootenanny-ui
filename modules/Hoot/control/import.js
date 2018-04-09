@@ -4,14 +4,14 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/14/18
  *******************************************************************************************************/
 
-import API from '../util/api';
+import API from './api';
 
 /**
  * Manages data imports and job statuses
  *
  * @constructor
  */
-class ImportManager {
+class Import {
     constructor() {
         this.intervals = {};
         this.queryInterval = 1000;
@@ -40,4 +40,4 @@ class ImportManager {
     }
 }
 
-export default new ImportManager();
+export default new Import();

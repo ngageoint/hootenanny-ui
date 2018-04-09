@@ -27,7 +27,7 @@ export function layerConflateForm( data ) {
             label: 'Save As',
             id: 'conflateSaveAs',
             inputType: 'text',
-            placeholder: this.getSaveName( data ),
+            value: this.getSaveName( data ),
             validate: true,
             onChange: d => this.validateTextInput( d )
         },
@@ -35,7 +35,7 @@ export function layerConflateForm( data ) {
             label: 'Path',
             id: 'conflateFolderPath',
             inputType: 'combobox',
-            placeholder: 'root',
+            value: 'root',
             data: this.folderList,
             itemKey: 'path',
             sort: true,
@@ -43,7 +43,7 @@ export function layerConflateForm( data ) {
         },
         {
             label: 'New Folder Name (leave blank otherwise)',
-            id: 'conflateFolderNewName',
+            id: 'conflateNewFolderName',
             inputType: 'text',
             type: 'newfoldername',
             onChange: d => this.validateTextInput( d )
@@ -52,7 +52,7 @@ export function layerConflateForm( data ) {
             label: 'Type',
             id: 'conflateType',
             inputType: 'combobox',
-            placeholder: 'Reference',
+            value: 'Reference',
             data: [ 'Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential' ],
             onchange: function() {
                 //_instance.confAdvOptionsFields = null;
@@ -64,7 +64,7 @@ export function layerConflateForm( data ) {
             label: 'Attribute Reference Layer',
             id: 'conflateRefLayer',
             inputType: 'combobox',
-            placeholder: this.refLayers.primary.name,
+            value: this.refLayers.primary.name,
             data: Object.values( this.refLayers ).map( layer => layer.name ),
             readonly: 'readonly'
         },
@@ -72,7 +72,7 @@ export function layerConflateForm( data ) {
             label: 'Collect Statistics?',
             id: 'conflateCollectStats',
             inputType: 'combobox',
-            placeholder: 'false',
+            value: 'false',
             data: [ 'true', 'false' ],
             onchange: function() {
                 var selVal = d3.selectAll( '.reset.isCollectStats' ).value();
@@ -83,7 +83,7 @@ export function layerConflateForm( data ) {
             label: 'Generate Report?',
             id: 'conflateGenerateReport',
             inputType: 'combobox',
-            placeholder: 'false',
+            value: 'false',
             data: [ 'true', 'false' ],
             onchange: function() {
                 var selVal = d3.selectAll( '.reset.isGenerateReport' ).value();

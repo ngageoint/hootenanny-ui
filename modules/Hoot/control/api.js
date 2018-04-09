@@ -4,8 +4,8 @@
  * @author Matt Putipong on 3/2/18
  *******************************************************************************************************/
 
-import _ from 'lodash-es';
-import axios from 'axios/dist/axios';
+import _             from 'lodash-es';
+import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
 
 /**

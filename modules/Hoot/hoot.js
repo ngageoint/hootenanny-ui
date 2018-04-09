@@ -4,11 +4,11 @@
  * @author Matt Putipong on 2/6/18
  *******************************************************************************************************/
 
-import FolderManager from './models/folderManager';
-import LayerManager from './models/layerManager';
-import HootOSM from './models/hootOsm';
-import Navbar from './view/navbar';
-import Sidebar from './view/sidebar/sidebar';
+import FolderManager from './managers/folderManager';
+import LayerManager  from './managers/layerManager';
+import HootOSM       from './managers/hootOsm';
+import Navbar        from './view/navbar';
+import Sidebar       from './view/sidebar';
 import SettingsPanel from './view/settingsPanel';
 
 /**

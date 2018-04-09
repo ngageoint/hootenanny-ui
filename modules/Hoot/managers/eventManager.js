@@ -1,10 +1,10 @@
 /** ****************************************************************************************************
- * File: Events.js
+ * File: EventManager.js
  * Project: hootenanny-ui
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-class Events {
+class EventManager {
     constructor() {
         this._listeners = {};
     }
@@ -50,4 +50,4 @@ class Events {
     }
 }
 
-export default new Events();
+export default new EventManager();

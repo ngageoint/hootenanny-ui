@@ -4,9 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/8/18
  *******************************************************************************************************/
 
-import _ from 'lodash-es';
-import API from '../util/api';
-import Events from '../util/events';
+import _      from 'lodash-es';
+import API    from '../control/api';
+import Event from './eventManager';
 
 class LayerManager {
     constructor() {
@@ -53,16 +53,16 @@ class LayerManager {
         this._loadedLayers.push( layer );
     }
 
-    removeLoadedLayer( layerName ) {
-        _.remove( this._loadedLayers, layer => layer.name === layerName );
-    }
-
-    getLoadedLayers( layerName ) {
-        if ( !layerName ) {
+    getLoadedLayers( id ) {
+        if ( !id ) {
             return this._loadedLayers;
         }
 
-        return _.find( this._loadedLayers, layer => layer.name === layerName );
+        return _.find( this._loadedLayers, layer => layer.id === id );
+    }
+
+    removeLoadedLayer( id ) {
+        _.remove( this._loadedLayers, layer => layer.id === id );
     }
 }
 

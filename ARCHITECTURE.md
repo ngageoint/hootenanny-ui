@@ -187,7 +187,7 @@ left with just a single node), and removing it from any relations of which it
 is a member.
 
 As you can imagine, implementing all these details requires an expert
-knowledge of the OpenStreetMap data models. It is our hope that JavaScript
+knowledge of the OpenStreetMap data managers. It is our hope that JavaScript
 based tools for OpenStreetMap can reuse the iD's core implementation,
 significantly reducing the work necessary to create a robust tool.
 
@@ -287,7 +287,7 @@ accessors for such things as the current zoom level and map center.
 
 For rendering entities on screen, we found it convenient to adopt a geometric
 vocabulary that provides a slightly higher-level representation than the basic
-entity types of the OSM data models:
+entity types of the OSM data managers:
 
 * A _point_ is a node that is not a member of any way.
 * A _vertex_ is a node that is a member of one or more ways.

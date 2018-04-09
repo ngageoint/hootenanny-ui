@@ -5,13 +5,13 @@
  *******************************************************************************************************/
 
 import _                      from 'lodash-es';
-import Events                 from '../../util/events';
-import ImportManager          from '../../models/importManager';
-import FolderManager          from '../../models/folderManager';
-import FormFactory            from './formFactory';
+import Event                  from '../../managers/eventManager';
+import ImportManager          from '../../control/import';
+import FolderManager          from '../../managers/folderManager';
+import FormFactory            from '../models/formFactory';
 import { importDatasetForm }  from '../../config/formMetadata';
 import { importDatasetTypes } from '../../config/domElements';
-import { getBrowserInfo }     from '../../util/utilities';
+import { getBrowserInfo }     from '../../control/utilities';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -165,7 +165,7 @@ export default class ImportDatasetForm {
                 let table = d3.select( '#dataset-table' );
 
                 FolderManager.refreshDatasets()
-                    .then( () => Events.send( 'render-dataset-table', table ) );
+                    .then( () => Event.send( 'render-dataset-table', table ) );
 
                 this.container.remove();
             } );

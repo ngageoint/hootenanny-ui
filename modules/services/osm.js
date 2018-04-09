@@ -28,9 +28,9 @@ import { services } from '../services/index';
 
 import { utilRebind, utilIdleWorker } from '../util';
 
-//import HootOSM from '../Hoot/models/hootOsm';
-import LayerManager from '../Hoot/models/layerManager';
-import Events from '../Hoot/util/events';
+//import HootOSM from '../Hoot/managers/hootOsm';
+import LayerManager from '../Hoot/managers/layerManager';
+import Events       from '../Hoot/managers/eventManager';
 
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded');
 var urlroot = 'https://www.openstreetmap.org';

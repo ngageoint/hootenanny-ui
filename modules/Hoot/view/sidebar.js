@@ -5,14 +5,14 @@
  *******************************************************************************************************/
 
 import _                 from 'lodash-es';
-import Events            from '../../util/events';
-import FolderTree        from '../folderTree';
-import HootOSM           from '../../models/hootOsm';
-import LayerManager      from '../../models/layerManager';
-import LayerController   from './layerController';
-import LayerConflateForm from '../forms/layerConflateForm';
+import Event             from '../managers/eventManager';
+import FolderTree        from './models/folderTree';
+import HootOSM           from '../managers/hootOsm';
+import LayerManager      from '../managers/layerManager';
+import LayerController   from './models/layerController';
+import LayerConflateForm from './forms/layerConflateForm';
 //import { d3combobox } from '../../lib/hoot/d3.combobox';
-import { sidebarForms }  from '../../config/formMetadata';
+import { sidebarForms }  from '../config/formMetadata';
 
 /**
  * Create the sidebar
@@ -322,8 +322,8 @@ export default class Sidebar {
      * Listen for re-render
      */
     listen() {
-        Events.listen( 'layer-loaded', this.layerLoaded, this );
-        Events.listen( 'layer-removed', this.layerRemoved, this );
-        Events.listen( 'all-loaded', this.conflateCheck, this );
+        Event.listen( 'layer-loaded', this.layerLoaded, this );
+        Event.listen( 'layer-removed', this.layerRemoved, this );
+        Event.listen( 'all-loaded', this.conflateCheck, this );
     }
 }

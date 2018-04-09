@@ -6,7 +6,7 @@
 
 import _ from 'lodash-es';
 
-import Events from '../util/events';
+import Event from '../managers/eventManager';
 import settingsTabs from './settingsTabs/index';
 
 /**
@@ -91,6 +91,6 @@ export default class SettingsPanel {
      * Listen for tab change
      */
     listen() {
-        Events.listen( 'toggle-settings-tab', this.toggleTab, this );
+        Event.listen( 'toggle-settings-tab', this.toggleTab, this );
     }
 }

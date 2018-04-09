@@ -4,8 +4,8 @@
  * @author Matt Putipong on 3/6/18
  *******************************************************************************************************/
 
-import _ from 'lodash-es';
-import API from '../util/api';
+import _            from 'lodash-es';
+import API          from '../control/api';
 import LayerManager from './layerManager';
 
 /**

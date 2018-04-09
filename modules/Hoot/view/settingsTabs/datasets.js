@@ -4,15 +4,15 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import API from '../../util/api';
-import Tab from './tab';
-import FolderTree from '../folderTree';
+import API               from '../../control/api';
+import Tab               from './tab';
+import FolderTree        from '../models/folderTree';
 import ImportDatasetForm from '../forms/importDatasetForm';
-import Events from '../../util/events';
+import Event             from '../../managers/eventManager';
 import {
     datasetButtons,
     datasetTableHeaders
-} from '../../config/domElements';
+}                        from '../../config/domElements';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -128,6 +128,6 @@ export default class Datasets extends Tab {
      * Listen for re-render
      */
     listen() {
-        Events.listen( 'render-dataset-table', this.renderFolderTree, this );
+        Event.listen( 'render-dataset-table', this.renderFolderTree, this );
     }
 }

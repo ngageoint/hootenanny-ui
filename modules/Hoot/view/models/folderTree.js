@@ -4,10 +4,10 @@
  * @author Matt Putipong on 3/5/18
  *******************************************************************************************************/
 
-import FolderManager from '../models/folderManager';
-import _ from 'lodash-es';
-import moment from 'moment';
-import { contextMenus } from '../config/domElements';
+import FolderManager    from '../../managers/folderManager';
+import _                from 'lodash-es';
+import moment           from 'moment';
+import { contextMenus } from '../../config/domElements';
 
 /**
  * Class for creating, displaying and maintaining a folder tree hierarchy
