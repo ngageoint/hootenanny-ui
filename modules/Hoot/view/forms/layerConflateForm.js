@@ -10,7 +10,6 @@ import LayerManager               from '../../managers/layerManager';
 import Conflate                   from '../../control/conflate';
 import API                        from '../../control/api';
 import FormFactory                from '../models/formFactory';
-//import { d3combobox }        from '../../../lib/hoot/d3.combobox';
 import { layerConflateForm }      from '../../config/formMetadata';
 import { geoExtent as GeoExtent } from '../../../geo/index';
 
@@ -218,15 +217,19 @@ class LayerConflateForm {
         let gj = this.context.layers().layer( 'gpx' );
 
         if ( gj.hasGpx() ) {
-            let extent = new GeoExtent( d3.geoBounds( gj.geojson() ) );
+            let extent    = new GeoExtent( d3.geoBounds( gj.geojson() ) );
             data.TASK_BOX = extent.toParams();
         }
 
         return data;
     }
 
-    postConflation() {
+    postConflation( item ) {
+        let layers = LayerManager.getLoadedLayers();
 
+        _.each( layers, d => {
+            //this.context.layers
+        } );
     }
 
     handleSubmit() {
@@ -236,8 +239,8 @@ class LayerConflateForm {
         let data = this.preConflation();
 
         API.conflate( data )
-            .then( resp => {
-                this.postConflation();
+            .then( status => {
+                console.log( status );
             } );
     }
 }

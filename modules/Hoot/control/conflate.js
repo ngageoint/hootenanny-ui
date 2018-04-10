@@ -7,8 +7,27 @@
 import API from './api';
 
 class Conflate {
-    conflate() {
+    constructor() {
+        this.intervals     = {};
+        this.queryInterval = 1000;
+    }
 
+    conflate( data ) {
+        return API.conflate( data )
+            .then( resp => this.conflateStatus( resp.jobid ) );
+    }
+
+    conflateStatus( jobId ) {
+        return new Promise( res => {
+            this.intervals[ jobId ] = setInterval( async () => {
+                let { status } = await API.getJobStatus( jobId );
+
+                if ( status !== 'running' ) {
+                    clearInterval( this.intervals[ jobId ] );
+                    res( status );
+                }
+            }, this.queryInterval );
+        } );
     }
 }
 

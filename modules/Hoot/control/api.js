@@ -16,8 +16,10 @@ import { apiConfig } from '../config/apiConfig';
  */
 class API {
     constructor() {
-        this.config  = apiConfig;
-        this.baseUrl = `${ this.config.host }:${ this.config.port }/${ this.config.basePath }`;
+        this.config        = apiConfig;
+        this.baseUrl       = `${ this.config.host }:${ this.config.port }/${ this.config.basePath }`;
+        this.queryInterval = this.config.queryInterval;
+        this.intervals     = {};
     }
 
     /**
@@ -255,7 +257,21 @@ class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp => this.statusInterval( resp.data.jobid ) );
+    }
+
+    statusInterval( jobId ) {
+        return new Promise( res => {
+            this.intervals[ jobId ] = setInterval( async () => {
+                let { status } = await API.getJobStatus( jobId );
+
+                // TODO: error handling
+                if ( status !== 'running' ) {
+                    clearInterval( this.intervals[ jobId ] );
+                    res( status );
+                }
+            }, this.queryInterval );
+        } );
     }
 }
 

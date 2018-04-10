@@ -11,7 +11,6 @@ import HootOSM           from '../managers/hootOsm';
 import LayerManager      from '../managers/layerManager';
 import LayerController   from './models/layerController';
 import LayerConflateForm from './forms/layerConflateForm';
-//import { d3combobox } from '../../lib/hoot/d3.combobox';
 import { sidebarForms }  from '../config/formMetadata';
 
 /**

@@ -6,7 +6,7 @@
 
 import _                      from 'lodash-es';
 import Event                  from '../../managers/eventManager';
-import ImportManager          from '../../control/import';
+import ImportControl          from '../../control/import';
 import FolderManager          from '../../managers/folderManager';
 import FormFactory            from '../models/formFactory';
 import { importDatasetForm }  from '../../config/formMetadata';
@@ -160,7 +160,7 @@ export default class ImportDatasetForm {
 
         this.loadingState();
 
-        return ImportManager.importData( data )
+        return ImportControl.importData( data )
             .then( status => {
                 let table = d3.select( '#dataset-table' );
 
