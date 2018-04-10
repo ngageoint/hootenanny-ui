@@ -24,7 +24,7 @@ export default class Sidebar {
         this.context          = context;
         this.container        = container;
         this.formData         = sidebarForms;
-        this.conflate         = new LayerConflateForm( this.container );
+        this.conflate         = new LayerConflateForm( this.context, this.container );
         this.layerTables      = {};
         this.layerControllers = {};
     }

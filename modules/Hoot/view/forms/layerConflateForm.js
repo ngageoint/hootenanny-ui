@@ -4,17 +4,19 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/5/18
  *******************************************************************************************************/
 
-import _                     from 'lodash-es';
-import FolderManager         from '../../managers/folderManager';
-import LayerManager          from '../../managers/layerManager';
-import Conflate              from '../../control/conflate';
-import API                   from '../../control/api';
-import FormFactory           from '../models/formFactory';
+import _                          from 'lodash-es';
+import FolderManager              from '../../managers/folderManager';
+import LayerManager               from '../../managers/layerManager';
+import Conflate                   from '../../control/conflate';
+import API                        from '../../control/api';
+import FormFactory                from '../models/formFactory';
 //import { d3combobox }        from '../../../lib/hoot/d3.combobox';
-import { layerConflateForm } from '../../config/formMetadata';
+import { layerConflateForm }      from '../../config/formMetadata';
+import { geoExtent as GeoExtent } from '../../../geo/index';
 
 class LayerConflateForm {
-    constructor( container ) {
+    constructor( context, container ) {
+        this.context     = context;
         this.container   = container;
         this.formFactory = new FormFactory();
     }
@@ -25,7 +27,8 @@ class LayerConflateForm {
 
     render( layers ) {
         this.folderList = FolderManager.folderPaths;
-        this.refLayers  = {
+
+        this.layers = {
             primary: _.find( layers, layer => layer.type === 'primary' ),
             secondary: _.find( layers, layer => layer.type === 'secondary' )
         };
@@ -182,10 +185,10 @@ class LayerConflateForm {
         this.submitButton.node().disabled = !this.formValid;
     }
 
-    preConflation( conflateCommand, advOpts ) {
+    preConflation( advOpts ) {
         let data = {};
 
-        data.TIME_STAMP         = new Date().getTime();
+        data.TIME_STAMP         = '' + new Date().getTime();
         data.CONFLATION_COMMAND = 'conflate';
         data.INPUT1             = LayerManager.findBy( 'type', 'primary' ).id;
         data.INPUT2             = LayerManager.findBy( 'type', 'secondary' ).id;
@@ -193,9 +196,11 @@ class LayerConflateForm {
         data.INPUT2_TYPE        = 'DB';
         data.OUTPUT_NAME        = this.saveAsInput.node().value;
         data.CONFLATION_TYPE    = this.typeInput.node().value;
-        data.REFERENCE_LAYER    = this.refLayerInput.node().value;
+        data.REFERENCE_LAYER    = '1';
         data.GENERATE_REPORT    = this.generateReportInput.node().value;
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
+        data.ADV_OPTIONS        = '-D "map.cleaner.transforms=hoot::ReprojectToPlanarOp;hoot::DuplicateWayRemover;hoot::SuperfluousWayRemover;hoot::IntersectionSplitter;hoot::UnlikelyIntersectionRemover;hoot::DualWaySplitter;hoot::ImpliedDividedMarker;hoot::DuplicateNameRemover;hoot::SmallWayMerger;hoot::RemoveEmptyAreasVisitor;hoot::RemoveDuplicateAreaVisitor;hoot::NoInformationElementRemover" -D "small.way.merger.threshold=15" -D "match.creators=hoot::PoiPolygonMatchCreator;hoot::NetworkMatchCreator;hoot::BuildingMatchCreator;hoot::ScriptMatchCreator,PoiGeneric.js;hoot::ScriptMatchCreator,LinearWaterway.js" -D "merger.creators=hoot::PoiPolygonMergerCreator;hoot::NetworkMergerCreator;hoot::BuildingMergerCreator;hoot::ScriptMergerCreator" -D "poi.polygon.name.score.threshold=0.8" -D "poi.polygon.type.score.threshold=0.7" -D "poi.polygon.match.distance.threshold=5.0" -D "poi.polygon.review.distance.threshold=125.0" -D "poi.ignore.type.if.name.present=false" -D "unify.optimizer.time.limit=60" -D "ogr.split.o2s=false" -D "ogr.esri.fcsubtype=true" -D "ogr.thematic.structure=true" -D "duplicate.name.case.sensitive=true" -D "element.cache.size.node=2000000" -D "element.cache.size.relation=200000" -D "element.cache.size.way=200000" -D "network.matcher=hoot::ConflictsNetworkMatcher" -D "conflate.enable.old.roads=false" -D "waterway.subline.matcher=hoot::MaximalSublineMatcher" -D "waterway.angle.sample.distance=20.0" -D "waterway.matcher.heading.delta=150.0" -D "waterway.auto.calc.search.radius=true" -D "search.radius.waterway=-1" -D "waterway.rubber.sheet.minimum.ties=5" -D "waterway.rubber.sheet.ref=true" -D "writer.include.debug.tags=false"';
+        data.USER_EMAIL         = 'test@test.com';
 
         if ( advOpts ) {
             let advOptionsStr = '';
@@ -209,6 +214,14 @@ class LayerConflateForm {
 
             data.ADV_OPTIONS = advOptionsStr;
         }
+
+        let gj = this.context.layers().layer( 'gpx' );
+
+        if ( gj.hasGpx() ) {
+            let extent = new GeoExtent( d3.geoBounds( gj.geojson() ) );
+            data.TASK_BOX = extent.toParams();
+        }
+
         return data;
     }
 
@@ -224,7 +237,7 @@ class LayerConflateForm {
 
         API.conflate( data )
             .then( resp => {
-                console.log( resp );
+                this.postConflation();
             } );
     }
 }

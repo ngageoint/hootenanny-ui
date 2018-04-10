@@ -36,6 +36,7 @@ class LayerController {
                 return `sidebar-form layer-controller layer-loading round fill-white ${ this.color }`;
             } )
             .attr( 'data-name', this.name )
+            .attr( 'data-id', this.id )
             .select( 'a' )
             .remove();
 
