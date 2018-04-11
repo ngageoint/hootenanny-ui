@@ -38,67 +38,31 @@ class API {
         } );
     }
 
-    /**
-     * Upload imported files to the database
-     *
-     * @param data - upload data
-     * @returns {Promise} - request
-     */
-    upload( data ) {
-        if ( !data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME ) {
-            return false;
-        }
+    statusInterval( jobId ) {
+        return new Promise( res => {
+            this.intervals[ jobId ] = setInterval( async () => {
+                let { status } = await this.getJobStatus( jobId );
 
-        const params = {
-            path: '/ingest/ingest/upload',
-            method: 'POST',
-            params: {
-                TRANSLATION: data.TRANSLATION,
-                INPUT_TYPE: data.INPUT_TYPE,
-                INPUT_NAME: data.INPUT_NAME,
-                USER_EMAIL: 'test@test.com',
-                NONE_TRANSLATION: data.NONE_TRANSLATION
-            },
-            data: data.formData
-        };
+                console.log( status );
 
-        return this.request( params )
-            .then( resp => resp.data );
+                // TODO: error handling
+                if ( status !== 'running' ) {
+                    clearInterval( this.intervals[ jobId ] );
+                    res( status );
+                }
+            }, this.queryInterval );
+        } );
     }
 
     /**
-     * Add a new folder to the database
+     * Status of job
      *
-     * @param data - folder data
-     * @returns {Promise} - request
+     * @param id - job id
+     * @returns {Promise} - job status
      */
-    addFolder( data ) {
-        if ( !data.folderName || !(data.parentId >= 0) ) {
-            return false;
-        }
-
+    getJobStatus( id ) {
         const params = {
-            path: '/osm/api/0.6/map/addfolder',
-            method: 'POST',
-            params: {
-                folderName: data.folderName,
-                parentId: data.parentId
-            },
-            data
-        };
-
-        return this.request( params )
-            .then( resp => resp.data );
-    }
-
-    /**
-     * Retrieve all folders from the database
-     *
-     * @returns {Promise|array} - folders
-     */
-    getFolders() {
-        const params = {
-            path: '/osm/api/0.6/map/folders',
+            path: `/job/status/${ id }`,
             method: 'GET'
         };
 
@@ -158,22 +122,6 @@ class API {
     getTranslations() {
         const params = {
             path: '/ingest/customscript/getlist',
-            method: 'GET'
-        };
-
-        return this.request( params )
-            .then( resp => resp.data );
-    }
-
-    /**
-     * Status of job
-     *
-     * @param id - job id
-     * @returns {Promise} - job status
-     */
-    getJobStatus( id ) {
-        const params = {
-            path: `/job/status/${ id }`,
             method: 'GET'
         };
 
@@ -249,6 +197,74 @@ class API {
             .then( resp => resp.data );
     }
 
+    /**
+     * Upload imported files to the database
+     *
+     * @param data - upload data
+     * @returns {Promise} - request
+     */
+    upload( data ) {
+        if ( !data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME ) {
+            return false;
+        }
+
+        const params = {
+            path: '/ingest/ingest/upload',
+            method: 'POST',
+            params: {
+                TRANSLATION: data.TRANSLATION,
+                INPUT_TYPE: data.INPUT_TYPE,
+                INPUT_NAME: data.INPUT_NAME,
+                USER_EMAIL: 'test@test.com',
+                NONE_TRANSLATION: data.NONE_TRANSLATION
+            },
+            data: data.formData
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    /**
+     * Add a new folder to the database
+     *
+     * @param data - folder data
+     * @returns {Promise} - request
+     */
+    addFolder( data ) {
+        if ( !data.folderName || !(data.parentId >= 0) ) {
+            return false;
+        }
+
+        const params = {
+            path: '/osm/api/0.6/map/addfolder',
+            method: 'POST',
+            params: {
+                folderName: data.folderName,
+                parentId: data.parentId
+            },
+            data
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    /**
+     * Retrieve all folders from the database
+     *
+     * @returns {Promise|array} - folders
+     */
+    getFolders() {
+        const params = {
+            path: '/osm/api/0.6/map/folders',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     conflate( data ) {
         const params = {
             path: '/job/conflation/execute',
@@ -258,20 +274,6 @@ class API {
 
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) );
-    }
-
-    statusInterval( jobId ) {
-        return new Promise( res => {
-            this.intervals[ jobId ] = setInterval( async () => {
-                let { status } = await API.getJobStatus( jobId );
-
-                // TODO: error handling
-                if ( status !== 'running' ) {
-                    clearInterval( this.intervals[ jobId ] );
-                    res( status );
-                }
-            }, this.queryInterval );
-        } );
     }
 }
 

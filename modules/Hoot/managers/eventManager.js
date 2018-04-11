@@ -13,7 +13,7 @@ class EventManager {
         return this._listeners[ k ] !== undefined;
     }
 
-    send( k, ...v ) {
+    send( k, v ) {
         if ( this._keyExists( k ) ) {
             this._listeners[ k ].forEach( d => {
                 if ( !d.ctx ) {

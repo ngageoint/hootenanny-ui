@@ -9,7 +9,7 @@ import HootOSM      from '../../managers/hootOsm';
 import Event        from '../../managers/eventManager';
 
 class LayerController {
-    constructor( layer, form, context ) {
+    constructor( context, form, layer ) {
         this.context = context;
         this.form    = form;
         this.wrapper = d3.select( this.form.node().parentNode );
@@ -17,10 +17,6 @@ class LayerController {
         this.name    = layer.name;
         this.id      = layer.id;
         this.color   = layer.color;
-    }
-
-    init() {
-        this.render();
     }
 
     render() {
