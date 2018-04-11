@@ -82,14 +82,13 @@ export default class Sidebar {
      * Bind form data and create a form for each item
      */
     createForms() {
+        let sidebar = this;
+
         this.wrapper.selectAll( 'form' )
-            .data( this.formData )
-            .enter().append( 'form' )
-            .attr( 'id', d => d.id )
-            .classed( 'sidebar-form layer-add round importable-layer fill-white strong', true )
-            .select( d => {
-                this.addForms[ d.id ] = new LayerAddForm( this.context, this, d3.select( `#${ d.id }` ) );
-                this.addForms[ d.id ].render( d );
+            .data( this.formData ).enter()
+            .select( function( d ) {
+                sidebar.addForms[ d.id ] = new LayerAddForm( this.context, sidebar, d3.select( this ) );
+                sidebar.addForms[ d.id ].render( d );
             } );
     }
 

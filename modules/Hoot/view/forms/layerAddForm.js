@@ -15,11 +15,12 @@ export default class LayerAddForm {
     constructor( context, sidebar, container ) {
         this.context     = context;
         this.sidebar     = sidebar;
-        this.form        = container;
+        this.container   = container;
         this.layerTables = {};
     }
 
     render() {
+        this.createForm();
         this.createToggleButton();
         this.createFieldset();
         this.createTable();
@@ -31,7 +32,8 @@ export default class LayerAddForm {
     }
 
     reset() {
-        this.form.html( '' );
+        this.loadedLayerName = null;
+        this.form.remove();
         this.render();
     }
 
@@ -44,6 +46,12 @@ export default class LayerAddForm {
 
         this.button.classed( 'active', !buttonState );
         this.innerWrapper.classed( 'visible', !fieldsetState );
+    }
+
+    createForm() {
+        this.form = this.container.append( 'form' )
+            .attr( 'id', d => d.id )
+            .classed( 'sidebar-form layer-add round importable-layer fill-white strong', true );
     }
 
     /**
@@ -201,9 +209,11 @@ export default class LayerAddForm {
         }
     }
 
-    layerRemoved() {
-        this.reset();
-        this.sidebar.conflateCheck();
+    layerRemoved( layerName ) {
+        if ( this.loadedLayerName === layerName ) {
+            this.reset();
+            this.sidebar.conflateCheck();
+        }
     }
 
     /**

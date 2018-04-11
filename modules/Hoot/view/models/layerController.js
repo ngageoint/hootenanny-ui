@@ -72,14 +72,13 @@ class LayerController {
 
         controller.append( 'button' )
             .classed( 'keyline-left delete-button round-right inline _icon trash', true )
-            .on( 'click', d => {
+            .on( 'click', () => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
                 if ( window.confirm( 'Are you sure you want to delete?' ) ) {
-                    //LayerManager.removeLoadedLayer( this.name );
                     HootOSM.removeLayer( this.layer );
-                    Event.send( 'layer-removed', d, this.name );
+                    Event.send( 'layer-removed', this.name );
                 }
             } );
 
