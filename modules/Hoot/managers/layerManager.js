@@ -11,7 +11,6 @@ class LayerManager {
     constructor() {
         this.context          = null;
         this._layers          = [];
-        this._availableLayers = [];
         this._loadedLayers    = [];
         this._selectedLayers  = [];
     }
@@ -64,8 +63,16 @@ class LayerManager {
         _.remove( this._loadedLayers, layer => layer.id === id );
     }
 
-    findBy( key, val ) {
+    findLayersBy( key, val ) {
+        return _.find( this._layers, layer => layer[ key ] === val );
+    }
+
+    findLoadedLayersBy( key, val ) {
         return _.find( this._loadedLayers, layer => layer[ key ] === val );
+    }
+
+    getLayerIdByName( layerName ) {
+        return this.findLayersBy( 'name', layerName ).id;
     }
 }
 

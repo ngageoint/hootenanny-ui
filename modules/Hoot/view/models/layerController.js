@@ -10,13 +10,14 @@ import Event        from '../../managers/eventManager';
 
 class LayerController {
     constructor( context, form, layer ) {
-        this.context = context;
-        this.form    = form;
-        this.wrapper = d3.select( this.form.node().parentNode );
-        this.layer   = layer;
-        this.name    = layer.name;
-        this.id      = layer.id;
-        this.color   = layer.color;
+        this.context    = context;
+        this.form       = form;
+        this.wrapper    = d3.select( this.form.node().parentNode );
+        this.layer      = layer;
+        this.name       = layer.name;
+        this.id         = layer.id;
+        this.color      = layer.color;
+        this.isConflate = layer.isConflate;
     }
 
     render() {
@@ -36,10 +37,12 @@ class LayerController {
             .select( 'a' )
             .remove();
 
+        let text = this.isConflate ? 'Conflating' : 'Loading';
+
         this.form.append( 'div' )
             .classed( 'contain keyline-all round', true )
             .html( '<div class="pad1 inline thumbnail _icon _loading light"></div>' +
-                '<span class="strong pad1x">Loading &#8230;</span>' +
+                `<span class="strong pad1x">${ text } &#8230;</span>` +
                 '<button class="keyline-left delete-button round-right inline _icon trash"></button>' )
             .select( 'button' )
             .on( 'click', () => {

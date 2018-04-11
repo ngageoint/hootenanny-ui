@@ -7,9 +7,11 @@
 import _                          from 'lodash-es';
 import FolderManager              from '../../managers/folderManager';
 import LayerManager               from '../../managers/layerManager';
+import HootOSM                    from '../../managers/hootOsm';
 import Conflate                   from '../../control/conflate';
 import API                        from '../../control/api';
 import FormFactory                from '../models/formFactory';
+import LayerController            from '../models/layerController';
 import { layerConflateForm }      from '../../config/formMetadata';
 import { geoExtent as GeoExtent } from '../../../geo/index';
 
@@ -189,8 +191,8 @@ class LayerConflateForm {
 
         data.TIME_STAMP         = '' + new Date().getTime();
         data.CONFLATION_COMMAND = 'conflate';
-        data.INPUT1             = LayerManager.findBy( 'type', 'primary' ).id;
-        data.INPUT2             = LayerManager.findBy( 'type', 'secondary' ).id;
+        data.INPUT1             = LayerManager.findLoadedLayersBy( 'type', 'primary' ).id;
+        data.INPUT2             = LayerManager.findLoadedLayersBy( 'type', 'secondary' ).id;
         data.INPUT1_TYPE        = 'DB';
         data.INPUT2_TYPE        = 'DB';
         data.OUTPUT_NAME        = this.saveAsInput.node().value;
@@ -224,24 +226,37 @@ class LayerConflateForm {
         return data;
     }
 
-    postConflation( item ) {
+    postConflation( layer ) {
         let layers = LayerManager.getLoadedLayers();
+
+        layer.id = LayerManager.getLayerIdByName( layer.name );
+        layer.merged = true;
+        layer.layers = layers;
+
+        HootOSM.loadLayer( layer );
 
         _.each( layers, d => {
             //this.context.layers
         } );
     }
 
-    handleSubmit() {
+    async handleSubmit() {
         d3.event.stopPropagation();
         d3.event.preventDefault();
 
-        let data = this.preConflation();
+        let data   = this.preConflation(),
+            params = {
+                name: data.OUTPUT_NAME,
+                color: 'green',
+                isConflate: true
+            };
+
+        this.layerController = new LayerController( this.context, this.form, params );
+        this.layerController.render();
 
         API.conflate( data )
-            .then( status => {
-                console.log( status );
-            } );
+            .then( () => LayerManager.refreshLayers() )
+            .then( () => this.postConflation( params ) );
     }
 }
 

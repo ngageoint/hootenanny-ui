@@ -43,8 +43,6 @@ class API {
             this.intervals[ jobId ] = setInterval( async () => {
                 let { status } = await this.getJobStatus( jobId );
 
-                console.log( status );
-
                 // TODO: error handling
                 if ( status !== 'running' ) {
                     clearInterval( this.intervals[ jobId ] );
@@ -273,7 +271,8 @@ class API {
         };
 
         return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) );
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( () => data );
     }
 }
 

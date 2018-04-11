@@ -79,11 +79,15 @@ class HootOSM {
             tags        = await API.getTags( mapId ),
             layerExtent = await this.layerExtent( mapId );
 
+        console.log( 'source: ', source );
+
         LayerManager.setLoadedLayer( {
             name: params.name,
             id: mapId.toString(),
             type: params.type,
             color: params.color,
+            merged: params.merged || false,
+            layers: params.layers || [],
             source: source,
             extent: layerExtent,
             polygon: layerExtent.polygon(),
