@@ -120,7 +120,6 @@ export function rendererMap(context) {
         var osm = context.connection();
         if (osm) {
             osm.on('change.map', immediateRedraw);
-            //osm.on('layer', immediateRedraw );
         }
 
         context.history()

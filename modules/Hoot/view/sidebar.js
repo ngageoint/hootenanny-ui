@@ -93,7 +93,7 @@ export default class Sidebar {
     }
 
     conflateCheck() {
-        let loadedLayers = LayerManager.getLoadedLayers();
+        let loadedLayers = Object.values( LayerManager.getLoadedLayers() );
 
         if ( loadedLayers.length === 2 ) {
             if ( !this.conflate.exists ) {

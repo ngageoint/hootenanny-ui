@@ -4,15 +4,14 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/8/18
  *******************************************************************************************************/
 
-import _      from 'lodash-es';
-import API    from '../control/api';
+import _   from 'lodash-es';
+import API from '../control/api';
 
 class LayerManager {
     constructor() {
-        this.context          = null;
-        this._layers          = [];
-        this._loadedLayers    = [];
-        this._selectedLayers  = [];
+        this.context         = null;
+        this._layers         = [];
+        this._loadedLayers   = {};
     }
 
     /**
@@ -31,14 +30,6 @@ class LayerManager {
         this.context = context;
     }
 
-    set selectedLayers( layers ) {
-        this._selectedLayers = layers;
-    }
-
-    get selectedLayers() {
-        return this._selectedLayers;
-    }
-
     get availableLayers() {
         return _.reduce( this._layers, ( layers, layer ) => {
             layers[ layer.id.toString() ] = layer.name;
@@ -46,9 +37,16 @@ class LayerManager {
         }, {} );
     }
 
+    get loadedLayers() {
+        return this._loadedLayers;
+    }
+
+    hideLayer( id ) {
+        _.find( this._loadedLayers, layer => layer.id === id );
+    }
+
     setLoadedLayer( layer ) {
-        //this._loadedLayers[ layer.name ] = layer;
-        this._loadedLayers.push( layer );
+        this._loadedLayers[ layer.id ] = layer;
     }
 
     getLoadedLayers( id ) {
@@ -56,10 +54,13 @@ class LayerManager {
             return this._loadedLayers;
         }
 
-        return _.find( this._loadedLayers, layer => layer.id === id );
+        return this._loadedLayers[ id ];
     }
 
     removeLoadedLayer( id ) {
+        if ( this._loadedLayers[ id ] ) {
+            delete this._loadedLayers[ id ];
+        }
         _.remove( this._loadedLayers, layer => layer.id === id );
     }
 
@@ -71,7 +72,7 @@ class LayerManager {
         return _.find( this._loadedLayers, layer => layer[ key ] === val );
     }
 
-    getLayerIdByName( layerName ) {
+    getIdByName( layerName ) {
         return this.findLayersBy( 'name', layerName ).id;
     }
 }

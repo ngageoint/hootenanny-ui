@@ -80,7 +80,7 @@ class LayerController {
                 d3.event.preventDefault();
 
                 if ( window.confirm( 'Are you sure you want to delete?' ) ) {
-                    HootOSM.removeLayer( this.layer );
+                    HootOSM.removeLayer( this.id );
                     Event.send( 'layer-removed', this.name );
                 }
             } );

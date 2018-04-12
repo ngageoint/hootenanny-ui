@@ -74,7 +74,7 @@ export default class SettingsPanel {
      * @param d - node data
      */
     toggleTab( d ) {
-        this.activeId  = d3.selectAll( d ).attr( 'data-id' );
+        this.activeId  = d3.select( d ).attr( 'data-id' );
         let activeBody = d3.select( this.activeId ).node();
 
         this.panel.node()
@@ -83,7 +83,7 @@ export default class SettingsPanel {
         d3.selectAll( '.hoot-util-header' )
             .classed( 'strong', false );
 
-        d3.selectAll( d )
+        d3.select( d )
             .classed( 'strong', true );
     }
 

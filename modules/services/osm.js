@@ -124,7 +124,7 @@ var parsers = {
     node: function nodeData(obj, uid, mapId) {
         var attrs = obj.attributes;
         return new osmNode({
-            id:osmEntity.id.fromOSM('node', attrs.id.value + '_' + mapId),
+            id: osmEntity.id.fromOSM('node', attrs.id.value + '_' + mapId),
             mapId: mapId,
             visible: getVisible(attrs),
             version: attrs.version.value,
@@ -622,9 +622,7 @@ export default {
 
         // Load from visible layers only
         // Hoot loadedLayers is what controls the vector data sources that are loaded
-        var visLayers = _filter(_values(LayerManager.getLoadedLayers()), function (layer) {
-            return layer.visible;
-        });
+        var visLayers = _filter( _values( LayerManager.loadedLayers ), layer => layer.visible );
 
         var tiles = _map(visLayers, function (layer) {
             return d3_geoTile()
@@ -637,7 +635,7 @@ export default {
                         y = tile[1] * ts - origin[1];
 
                     return {
-                        id: tile.toString() + ',' + layer.id,
+                        id: layer.id,
                         extent: geoExtent(
                             projection.invert([x, y + ts]),
                             projection.invert([x + ts, y])
@@ -683,7 +681,6 @@ export default {
 
                     if (_isEmpty(_tiles.inflight)) {
                         dispatch.call('loaded');
-                        //Events.send( 'all-loaded' );
                     }
                 }
             );
@@ -717,6 +714,12 @@ export default {
         if (!arguments.length) return _tiles.loaded;
         _tiles.loaded = _;
         return this;
+    },
+
+
+    removeTile( id ) {
+        delete _tiles.loaded[ id ];
+        dispatch.call( 'loaded' );
     },
 
 

@@ -86,7 +86,7 @@ export function coreHistory(context) {
     }
 
 
-    // internal _overwrite with eased time
+    // internal _overwrite with eased timeid
     function _overwrite(args, t) {
         var previous = _stack[_index].graph;
         if (_index > 0) {

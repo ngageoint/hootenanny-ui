@@ -229,15 +229,15 @@ class LayerConflateForm {
     postConflation( layer ) {
         let layers = LayerManager.getLoadedLayers();
 
-        layer.id = LayerManager.getLayerIdByName( layer.name );
+        _.each( layers, d => {
+            HootOSM.hideLayer( d.id );
+        } );
+
+        layer.id = LayerManager.getIdByName( layer.name );
         layer.merged = true;
         layer.layers = layers;
 
-        HootOSM.loadLayer( layer );
-
-        _.each( layers, d => {
-            //this.context.layers
-        } );
+        //HootOSM.loadLayer( layer );
     }
 
     async handleSubmit() {

@@ -302,7 +302,6 @@ export function rendererBackground(context) {
             .dimensions(baseLayer.dimensions() );
 
         _overlayLayers.push(layer);
-        dispatch.call('change');
         background.updateImagery();
     };
 

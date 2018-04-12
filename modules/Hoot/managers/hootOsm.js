@@ -30,7 +30,7 @@ class HootOSM {
     getMapnikSource( d ) {
         return {
             name: d.name,
-            id: d.id,
+            id: d.id.toString(),
             type: 'tms',
             description: d.name,
             template: window.location.protocol + '//' + window.location.hostname
@@ -79,11 +79,9 @@ class HootOSM {
             tags        = await API.getTags( mapId ),
             layerExtent = await this.layerExtent( mapId );
 
-        console.log( 'source: ', source );
-
-        LayerManager.setLoadedLayer( {
+        let layer = {
             name: params.name,
-            id: mapId.toString(),
+            id: source.id,
             type: params.type,
             color: params.color,
             merged: params.merged || false,
@@ -93,7 +91,9 @@ class HootOSM {
             polygon: layerExtent.polygon(),
             tags: tags,
             visible: true
-        } );
+        };
+
+        LayerManager.setLoadedLayer( layer );
 
         if ( layerExtent.toParam() !== '-180,-90,180,90' ) {
             this.context.extent( layerExtent );
@@ -110,20 +110,28 @@ class HootOSM {
                     }
                 } ],
                 properties: {
-                    name: source.name,
-                    mapId: source.id
+                    name: layer.name,
+                    mapId: layer.id
                 }
             } );
         }
 
         this.context.background().addSource( source );
-        this.setLayerColor( mapId, params.color );
+        this.setLayerColor( mapId, layer.color );
     }
 
-    async removeLayer( layer ) {
-        LayerManager.removeLoadedLayer( layer.id );
-        this.context.background().removeSource( layer.id );
-        this.hootOverlay.removeGeojson( layer.id );
+    hideLayer( id ) {
+        LayerManager.loadedLayers[ id ].visible = false;
+
+        d3.select( '#map' ).selectAll( `[class*="_${ id }-"]` ).remove();
+        this.context.connection().removeTile( id );
+        this.context.flush();
+    }
+
+    async removeLayer( id ) {
+        LayerManager.removeLoadedLayer( id );
+        this.context.background().removeSource( id );
+        this.hootOverlay.removeGeojson( id );
 
         this.context.flush();
     }
