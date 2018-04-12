@@ -30,7 +30,7 @@ class LayerController {
                     this.color = '_osm';
                 }
 
-                return `sidebar-form layer-controller layer-loading round fill-white ${ this.color }`;
+                return `sidebar-form controller layer-loading round fill-white ${ this.color }`;
             } )
             .attr( 'data-name', this.name )
             .attr( 'data-id', this.id )
@@ -56,14 +56,15 @@ class LayerController {
     }
 
     update() {
-        let layer = LayerManager.getLoadedLayers( this.id );
+        let layer     = LayerManager.getLoadedLayers( this.id ),
+            typeClass = this.isConflate ? 'conflate-controller' : 'layer-controller';
 
         this.form.classed( 'layer-loading', false )
-            .classed( 'sidebar-form layer-controller', true )
+            .classed( `sidebar-form controller ${ typeClass }`, true )
             .html( '' );
 
         let controller = this.form.append( 'div' )
-            .attr( 'class', `layer-controller contain keyline-all round fill-white ${ layer.color }` );
+            .attr( 'class', `contain keyline-all round fill-white ${ layer.color }` );
 
         controller.append( 'div' )
             .attr( 'class', () => {

@@ -237,7 +237,7 @@ class LayerConflateForm {
         layer.merged = true;
         layer.layers = layers;
 
-        //HootOSM.loadLayer( layer );
+        HootOSM.loadLayer( layer );
     }
 
     async handleSubmit() {
@@ -250,6 +250,8 @@ class LayerConflateForm {
                 color: 'green',
                 isConflate: true
             };
+
+        d3.selectAll( '.layer-controller' ).remove();
 
         this.layerController = new LayerController( this.context, this.form, params );
         this.layerController.render();
