@@ -8,17 +8,15 @@ import _                          from 'lodash-es';
 import FolderManager              from '../../managers/folderManager';
 import LayerManager               from '../../managers/layerManager';
 import HootOSM                    from '../../managers/hootOsm';
-import Conflate                   from '../../control/conflate';
 import API                        from '../../control/api';
 import FormFactory                from '../models/formFactory';
-import LayerController            from '../models/layerController';
+import SidebarForm                from './SidebarForm';
 import { layerConflateForm }      from '../../config/formMetadata';
 import { geoExtent as GeoExtent } from '../../../geo/index';
 
-class LayerConflateForm {
-    constructor( context, container ) {
-        this.context     = context;
-        this.container   = container;
+class LayerConflateForm extends SidebarForm {
+    constructor( ...params ) {
+        super( params );
         this.formFactory = new FormFactory();
     }
 
@@ -30,38 +28,34 @@ class LayerConflateForm {
         this.folderList = FolderManager.folderPaths;
 
         this.layers = {
-            primary: _.find( layers, layer => layer.type === 'primary' ),
-            secondary: _.find( layers, layer => layer.type === 'secondary' )
+            primary: _.find( layers, layer => layer.refType === 'primary' ),
+            secondary: _.find( layers, layer => layer.refType === 'secondary' )
         };
 
         this.formData = layerConflateForm.call( this, layers );
 
-        this.form = this.container.select( '.wrapper' )
-            .append( 'form' )
-            .classed( 'sidebar-form layer-conflate round fill-white strong', true );
+        super.render();
 
-        this.toggleButton = this.form.append( 'a' )
-            .classed( 'toggle-button strong round _icon conflate big light', true )
-            .attr( 'href', '#' )
-            .on( 'click', () => this.toggleForm() );
-
-        this.toggleButton.append( 'span' )
-            .classed( 'strong', true )
-            .text( 'Conflate' );
-
-        this.innerWrapper = this.form.append( 'div' )
-            .classed( 'inner-wrapper', true );
-
-        this.fieldset = this.formFactory.createFieldSets( this.innerWrapper, this.formData );
+        this.createFieldset();
+        this.createLayerRefThumbnails( layers );
+        this.createButtons();
 
         this.saveAsInput         = d3.select( '#conflateSaveAs' );
         this.typeInput           = d3.select( '#conflateType' );
         this.refLayerInput       = d3.select( '#conflateRefLayer' );
         this.collectStatsInput   = d3.select( '#conflateCollectStats' );
         this.generateReportInput = d3.select( '#conflateGenerateReport' );
+    }
 
-        this.createLayerRefThumbnails( layers );
-        this.createButtons();
+    remove() {
+        if ( this.exists ) {
+            this.form.remove();
+            this.form = null;
+        }
+    }
+
+    createFieldset() {
+        this.fieldset = this.formFactory.createFieldSets( this.innerWrapper, this.formData );
     }
 
     createLayerRefThumbnails( layers ) {
@@ -90,25 +84,6 @@ class LayerConflateForm {
             .classed( 'button dark text-light round small strong', true )
             .text( 'Conflate' )
             .on( 'click', () => this.handleSubmit() );
-    }
-
-    remove() {
-        if ( this.exists ) {
-            this.form.remove();
-            this.form = null;
-        }
-    }
-
-    toggleForm() {
-        let buttonState  = this.toggleButton.classed( 'active' ),
-            wrapperState = this.innerWrapper.classed( 'visible' );
-
-        this.toggleButton.classed( 'active', !buttonState );
-        this.innerWrapper.classed( 'visible', !wrapperState );
-
-        if ( buttonState ) {
-
-        }
     }
 
     getSaveName( data ) {
@@ -191,8 +166,8 @@ class LayerConflateForm {
 
         data.TIME_STAMP         = '' + new Date().getTime();
         data.CONFLATION_COMMAND = 'conflate';
-        data.INPUT1             = LayerManager.findLoadedLayersBy( 'type', 'primary' ).id;
-        data.INPUT2             = LayerManager.findLoadedLayersBy( 'type', 'secondary' ).id;
+        data.INPUT1             = LayerManager.findLoadedLayersBy( 'refType', 'primary' ).id;
+        data.INPUT2             = LayerManager.findLoadedLayersBy( 'refType', 'secondary' ).id;
         data.INPUT1_TYPE        = 'DB';
         data.INPUT2_TYPE        = 'DB';
         data.OUTPUT_NAME        = this.saveAsInput.node().value;
@@ -229,18 +204,16 @@ class LayerConflateForm {
     postConflation( layer ) {
         let layers = LayerManager.getLoadedLayers();
 
-        _.each( layers, d => {
-            HootOSM.hideLayer( d.id );
-        } );
+        _.each( layers, d => HootOSM.hideLayer( d.id ) );
 
-        layer.id = LayerManager.getIdByName( layer.name );
+        layer.id     = LayerManager.getIdByName( layer.name );
         layer.merged = true;
         layer.layers = layers;
 
-        HootOSM.loadLayer( layer );
+        this.loadLayer( layer );
     }
 
-    async handleSubmit() {
+    handleSubmit() {
         d3.event.stopPropagation();
         d3.event.preventDefault();
 
@@ -251,10 +224,10 @@ class LayerConflateForm {
                 isConflate: true
             };
 
-        d3.selectAll( '.layer-controller' ).remove();
+        // remove reference layer controllers
+        d3.selectAll( '.add-controller' ).remove();
 
-        this.layerController = new LayerController( this.context, this.form, params );
-        this.layerController.render();
+        this.loadingState( params );
 
         API.conflate( data )
             .then( () => LayerManager.refreshLayers() )

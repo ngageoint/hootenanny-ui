@@ -57,7 +57,7 @@ class LayerController {
 
     update() {
         let layer     = LayerManager.getLoadedLayers( this.id ),
-            typeClass = this.isConflate ? 'conflate-controller' : 'layer-controller';
+            typeClass = this.isConflate ? 'conflate-controller' : 'add-controller';
 
         this.form.classed( 'layer-loading', false )
             .classed( `sidebar-form controller ${ typeClass }`, true )

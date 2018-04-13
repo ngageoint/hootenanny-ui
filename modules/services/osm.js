@@ -624,6 +624,7 @@ export default {
         // Hoot loadedLayers is what controls the vector data sources that are loaded
         var visLayers = _filter( _values( LayerManager.loadedLayers ), layer => layer.visible );
 
+        //console.log( visLayers );
         var tiles = _map(visLayers, function (layer) {
             return d3_geoTile()
                 .scaleExtent([_tileZoom, _tileZoom])

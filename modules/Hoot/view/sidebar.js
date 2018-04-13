@@ -4,6 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/10/18
  *******************************************************************************************************/
 
+import _                 from 'lodash-es';
 import LayerManager      from '../managers/layerManager';
 import LayerAddForm      from './forms/layerAddForm';
 import LayerConflateForm from './forms/layerConflateForm';
@@ -19,8 +20,9 @@ export default class Sidebar {
         this.context          = context;
         this.container        = container;
         this.formData         = sidebarForms;
+        this.addFormData      = _.filter( this.formData, form => form.id !== 'conflate' );
+        this.conflateFormData = _.filter( this.formData, form => form.id === 'conflate' );
         this.addForms         = {};
-        this.conflate         = new LayerConflateForm( this.context, this.container );
         this.layerControllers = {};
     }
 
@@ -84,23 +86,31 @@ export default class Sidebar {
     createForms() {
         let sidebar = this;
 
-        this.wrapper.selectAll( 'form' )
-            .data( this.formData ).enter()
+        this.wrapper.selectAll( '.layer-add' )
+            .data( this.addFormData ).enter()
             .select( function( d ) {
-                sidebar.addForms[ d.id ] = new LayerAddForm( this.context, sidebar, d3.select( this ) );
-                sidebar.addForms[ d.id ].render( d );
+                sidebar.addForms[ d.id ] = new LayerAddForm( sidebar.context, sidebar, d3.select( this ) );
+                sidebar.addForms[ d.id ].render();
+            } );
+
+        this.wrapper.selectAll( '.layer-conflate' )
+            .data( this.conflateFormData ).enter()
+            .select( function() {
+                sidebar.conflateForm = new LayerConflateForm( sidebar.context, sidebar, d3.select( this ) );
             } );
     }
 
     conflateCheck() {
-        let loadedLayers = Object.values( LayerManager.getLoadedLayers() );
+        let loadedLayers   = Object.values( LayerManager.getLoadedLayers() ),
+            addControllers = d3.selectAll( '.add-controller' );
+        console.log( addControllers.size() );
 
         if ( loadedLayers.length === 2 ) {
-            if ( !this.conflate.exists ) {
-                this.conflate.render( loadedLayers );
+            if ( !this.conflateForm.exists ) {
+                this.conflateForm.render( loadedLayers );
             }
-        } else {
-            this.conflate.remove();
+        } else if ( addControllers.size() > 0 ) {
+            this.conflateForm.remove();
         }
     }
 

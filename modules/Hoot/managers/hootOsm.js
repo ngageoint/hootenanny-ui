@@ -82,7 +82,7 @@ class HootOSM {
         let layer = {
             name: params.name,
             id: source.id,
-            type: params.type,
+            refType: params.refType,
             color: params.color,
             merged: params.merged || false,
             layers: params.layers || [],

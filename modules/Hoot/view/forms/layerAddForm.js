@@ -7,77 +7,28 @@
 import _               from 'lodash-es';
 import FolderTree      from '../models/folderTree';
 import HootOSM         from '../../managers/hootOsm';
-import LayerController from '../models/layerController';
-import Event           from '../../managers/eventManager';
-import LayerManager    from '../../managers/layerManager';
+import SidebarForm     from './SidebarForm';
 
-export default class LayerAddForm {
-    constructor( context, sidebar, container ) {
-        this.context     = context;
-        this.sidebar     = sidebar;
-        this.container   = container;
-        this.layerTables = {};
+export default class LayerAddForm extends SidebarForm {
+    constructor( ...params ) {
+        super( params );
     }
 
     render() {
-        this.createForm();
-        this.createToggleButton();
+        super.render();
         this.createFieldset();
         this.createTable();
         this.createRecentlyUsedLayers();
         this.createColorPalette();
         this.createSubmitButton();
-
-        this.listen();
-    }
-
-    reset() {
-        this.loadedLayerName = null;``
-        this.form.remove();
-        this.render();
-    }
-
-    /**
-     * Open or close add-layer form
-     */
-    toggleForm() {
-        let buttonState   = this.button.classed( 'active' ),
-            fieldsetState = this.innerWrapper.classed( 'visible' );
-
-        this.button.classed( 'active', !buttonState );
-        this.innerWrapper.classed( 'visible', !fieldsetState );
-    }
-
-    createForm() {
-        this.form = this.container.append( 'form' )
-            .attr( 'id', d => d.id )
-            .classed( 'sidebar-form layer-add round importable-layer fill-white strong', true );
-    }
-
-    /**
-     * Create toggle button for form
-     */
-    createToggleButton() {
-        this.button = this.form.append( 'a' )
-            .classed( 'toggle-button button dark text-light strong block round', true )
-            .attr( 'href', '#' )
-            .on( 'click', d => this.toggleForm( d.id ) );
-
-        this.button.append( 'i' )
-            .classed( 'material-icons center strong', true )
-            .text( 'add' );
-
-        this.button.append( 'span' )
-            .classed( 'strong', true )
-            .text( d => d.toggleButtonText );
     }
 
     /**
      * Create fieldset container for form
      */
     createFieldset() {
-        this.innerWrapper = this.form.append( 'div' )
-            .classed( 'inner-wrapper', true );
+        //this.innerWrapper = this.form.append( 'div' )
+        //    .classed( 'inner-wrapper', true );
 
         this.fieldset = this.innerWrapper.append( 'fieldset' );
     }
@@ -190,37 +141,12 @@ export default class LayerAddForm {
 
         let params = {
             name: layerName,
-            type: d.type,
+            refType: d.refType,
             id: layerId,
             color
         };
 
-        HootOSM.loadLayer( params );
-        this.loadedLayerName = layerName;
-
-        this.layerController = new LayerController( this.context, this.form, params );
-        this.layerController.render();
-    }
-
-    layerLoaded( layerName ) {
-        if ( this.loadedLayerName === layerName ) {
-            this.layerController.update();
-            this.sidebar.conflateCheck();
-        }
-    }
-
-    layerRemoved( layerName ) {
-        if ( this.loadedLayerName === layerName ) {
-            this.reset();
-            this.sidebar.conflateCheck();
-        }
-    }
-
-    /**
-     * Listen for re-render
-     */
-    listen() {
-        Event.listen( 'layer-loaded', this.layerLoaded, this );
-        Event.listen( 'layer-removed', this.layerRemoved, this );
+        this.loadingState( params );
+        this.loadLayer( params );
     }
 }

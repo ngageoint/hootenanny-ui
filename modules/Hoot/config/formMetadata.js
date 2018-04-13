@@ -6,18 +6,26 @@
 
 export const sidebarForms = [
     {
-        type: 'primary',
-        id: 'add-ref',
+        type: 'add',
+        refType: 'primary',
+        class: 'layer-add',
         tableId: 'add-ref-table',
         color: 'violet',
         toggleButtonText: 'Add Reference Dataset',
     },
     {
-        type: 'secondary',
-        id: 'add-secondary',
+        type: 'add',
+        refType: 'secondary',
+        class: 'layer-add',
         tableId: 'add-secondary-table',
         color: 'orange',
         toggleButtonText: 'Add Secondary Dataset'
+    },
+    {
+        type: 'conflate',
+        id: 'conflate',
+        class: 'layer-conflate',
+        toggleButtonText: 'Conflate'
     }
 ];
 
