@@ -32,7 +32,7 @@ export default class LayerAddForm {
     }
 
     reset() {
-        this.loadedLayerName = null;
+        this.loadedLayerName = null;``
         this.form.remove();
         this.render();
     }

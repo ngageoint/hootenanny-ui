@@ -402,7 +402,7 @@ export default {
             return 3;
         }
 
-        return parseInt(status);
+        return parseInt(status, 10);
     },
 
     loadedLayers: function() {
