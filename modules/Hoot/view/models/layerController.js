@@ -56,7 +56,7 @@ class LayerController {
     }
 
     update() {
-        let layer     = LayerManager.getLoadedLayers( this.id ),
+        let layer     = LayerManager.findLayersBy( 'name', this.name ),
             typeClass = this.isConflate ? 'conflate-controller' : 'add-controller';
 
         this.form.classed( 'layer-loading', false )
@@ -81,8 +81,8 @@ class LayerController {
                 d3.event.preventDefault();
 
                 if ( window.confirm( 'Are you sure you want to delete?' ) ) {
-                    HootOSM.removeLayer( this.id );
-                    Event.send( 'layer-removed', this.name );
+                    HootOSM.removeLayer( layer.id );
+                    Event.send( 'layer-removed', layer.name );
                 }
             } );
 

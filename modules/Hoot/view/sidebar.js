@@ -103,7 +103,6 @@ export default class Sidebar {
     conflateCheck() {
         let loadedLayers   = Object.values( LayerManager.getLoadedLayers() ),
             addControllers = d3.selectAll( '.add-controller' );
-        console.log( addControllers.size() );
 
         if ( loadedLayers.length === 2 ) {
             if ( !this.conflateForm.exists ) {
