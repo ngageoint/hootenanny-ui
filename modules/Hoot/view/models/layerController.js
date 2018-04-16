@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import LayerManager from '../../managers/layerManager';
+import MapMetadata  from './MapMetadata';
 
 class LayerController {
     constructor( context, form, layer ) {
@@ -62,7 +63,7 @@ class LayerController {
 
     createDeleteButton() {
         this.deleteButton = this.controller.append( 'button' )
-            .classed( 'keyline-left delete-button round-right inline _icon trash', true )
+            .classed( 'delete-button icon-button keyline-left round-right inline _icon trash', true )
             .on( 'click', () => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
@@ -124,8 +125,10 @@ class LayerController {
             .classed( 'strong pad1x', true )
             .text( layer.name );
 
-        if ( layer.tags && ( layer.tags.params || layer.tags.stats ) ) {
+        if ( layer.tags && (layer.tags.params || layer.tags.stats) ) {
             this.contextLayer.style( 'width', 'calc( 100% - 140px' );
+            this.metadata = new MapMetadata( this.context, this.controller, layer );
+            this.metadata.render();
         }
     }
 }

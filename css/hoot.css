@@ -146,22 +146,22 @@
 /*.rcon.dark.check:after, ._icon.dark.check:before               { background-position:-360px -60px; }*/
 /*.rcon.dark.big.check:after, ._icon.dark.big.check:before       { background-position:-360px -80px; }*/
 
-.gold .thumbnail, .gold ._loading      { background-color:#ffcc00; }
-.orange .thumbnail, .orange ._loading  { background-color:#ff7f2a; }
-.violet .thumbnail, .violet ._loading  { background-color:#ff5599; }
-.purple .thumbnail, .purple ._loading  { background-color:#e580ff; }
-.blue .thumbnail, .blue ._loading      { background-color:#5fbcd3; }
-.teal .thumbnail, .teal ._loading      { background-color:#5fd3bc; }
-.green .thumbnail, .green ._loading   { background-color:#A7C973; }
+/*.gold .thumbnail, .gold ._loading      { background-color:#ffcc00; }*/
+/*.orange .thumbnail, .orange ._loading  { background-color:#ff7f2a; }*/
+/*.violet .thumbnail, .violet ._loading  { background-color:#ff5599; }*/
+/*.purple .thumbnail, .purple ._loading  { background-color:#e580ff; }*/
+/*.blue .thumbnail, .blue ._loading      { background-color:#5fbcd3; }*/
+/*.teal .thumbnail, .teal ._loading      { background-color:#5fd3bc; }*/
+/*.green .thumbnail, .green ._loading   { background-color:#A7C973; }*/
 
-.fill-red {background-color:#AF0046;}
-.fill-gold   { background-color:#ffcc00; }
-.fill-orange { background-color:#ff7f2a; }
-.fill-violet { background-color:#ff5599; }
-.fill-purple { background-color:#e580ff; }
-.fill-blue   { background-color:#5fbcd3; }
-.fill-teal   { background-color:#5fd3bc; }
-.fill-green  { background-color:#a7c973; }
+/*.fill-red {background-color:#AF0046;}*/
+/*.fill-gold   { background-color:#ffcc00; }*/
+/*.fill-orange { background-color:#ff7f2a; }*/
+/*.fill-violet { background-color:#ff5599; }*/
+/*.fill-purple { background-color:#e580ff; }*/
+/*.fill-blue   { background-color:#5fbcd3; }*/
+/*.fill-teal   { background-color:#5fd3bc; }*/
+/*.fill-green  { background-color:#a7c973; }*/
 /*.fill-light   { background-color:#f8f8f8; }*/
 /*.fill-white   { background-color:#fff; }*/
 /*.fill-dark    { background-color:#444; }*/
@@ -171,10 +171,10 @@
 /*.fill-darken2 { background-color:rgba(0,0,0,0.50); z-index:1000; }*/
 /*.fill-darken3 { background-color:rgba(0,0,0,0.75); z-index:1000; }*/
 
-.map-button {
-  width:39px;
-  height:60px;
-}
+/*.map-button {*/
+  /*width:39px;*/
+  /*height:60px;*/
+/*}*/
 
 .add-dataset-pane {
   background: #f6f6f6;

@@ -26,6 +26,17 @@
 }
 
 ._icon {
+    &.thumbnail, &._loading {
+        .red & { background-color: #AF0046; }
+        .orange & { background-color: #ff7f2a; }
+        .gold & { background-color: #ffcc00; }
+        .violet & { background-color:#ff5599; }
+        .purple & { background-color: #e580ff; }
+        .blue & { background-color: #5fbcd3; }
+        .teal & { background-color: #5fd3bc; }
+        .green & { background-color: #a7c973; }
+    }
+
     &:before {
         background: transparent url(img/sprite@2x.png) no-repeat 0 0;
         content: '';
@@ -92,6 +103,10 @@
 
     &.check:before {
         background-position: -360px 0;
+    }
+
+    &.info:before {
+        background-position: -160px 0;
     }
 
     &.trash:before {

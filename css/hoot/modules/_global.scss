@@ -150,6 +150,23 @@ input {
 /**************** COLORS *****************/
 /*****************************************/
 
+//.gold .thumbnail, .gold ._loading      { background-color:#ffcc00; }
+//.orange .thumbnail, .orange ._loading  { background-color:#ff7f2a; }
+//.violet .thumbnail, .violet ._loading  { background-color:#ff5599; }
+//.purple .thumbnail, .purple ._loading  { background-color:#e580ff; }
+//.blue .thumbnail, .blue ._loading      { background-color:#5fbcd3; }
+//.teal .thumbnail, .teal ._loading      { background-color:#5fd3bc; }
+//.green .thumbnail, .green ._loading   { background-color:#A7C973; }
+
+.fill-red {background-color:#AF0046;}
+.fill-gold   { background-color:#ffcc00; }
+.fill-orange { background-color:#ff7f2a; }
+.fill-violet { background-color:#ff5599; }
+.fill-purple { background-color:#e580ff; }
+.fill-blue   { background-color:#5fbcd3; }
+.fill-teal   { background-color:#5fd3bc; }
+.fill-green  { background-color:#a7c973; }
+
 .text-light {
     color: $light;
 }
