@@ -9,8 +9,8 @@ import FolderManager              from '../../managers/folderManager';
 import LayerManager               from '../../managers/layerManager';
 import HootOSM                    from '../../managers/hootOsm';
 import API                        from '../../control/api';
-import FormFactory                from '../models/formFactory';
 import SidebarForm                from './SidebarForm';
+import FormFactory                from '../models/formFactory';
 import { layerConflateForm }      from '../../config/formMetadata';
 import { geoExtent as GeoExtent } from '../../../geo/index';
 
@@ -166,8 +166,8 @@ class LayerConflateForm extends SidebarForm {
 
         data.TIME_STAMP         = '' + new Date().getTime();
         data.CONFLATION_COMMAND = 'conflate';
-        data.INPUT1             = LayerManager.findLoadedLayersBy( 'refType', 'primary' ).id;
-        data.INPUT2             = LayerManager.findLoadedLayersBy( 'refType', 'secondary' ).id;
+        data.INPUT1             = LayerManager.findLoadedBy( 'refType', 'primary' ).id;
+        data.INPUT2             = LayerManager.findLoadedBy( 'refType', 'secondary' ).id;
         data.INPUT1_TYPE        = 'DB';
         data.INPUT2_TYPE        = 'DB';
         data.OUTPUT_NAME        = this.saveAsInput.node().value;
@@ -201,16 +201,16 @@ class LayerConflateForm extends SidebarForm {
         return data;
     }
 
-    postConflation( layer ) {
-        let layers = LayerManager.getLoadedLayers();
+    postConflation( params ) {
+        let layers = LayerManager.loadedLayers;
 
         _.each( layers, d => HootOSM.hideLayer( d.id ) );
 
-        layer.id     = LayerManager.getIdByName( layer.name );
-        layer.merged = true;
-        layer.layers = layers;
+        params.id     = LayerManager.findBy( 'name', params.name ).id;
+        params.merged = true;
+        params.layers = layers;
 
-        this.loadLayer( layer );
+        this.loadLayer( params );
     }
 
     handleSubmit() {

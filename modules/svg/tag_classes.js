@@ -110,7 +110,7 @@ export function svgTagClasses() {
                 var mapId = osmEntity.id.toHootMapId( entity.id );
 
                 // For merged datasets, assign color class of source layer
-                var lyr = LayerManager.getLoadedLayers( mapId );
+                var lyr = LayerManager.loadedLayers[ mapId ];
                 if ( lyr && lyr.merged ) {
                     var id;
                     var sourceId = HootOSM.decodeHootStatus( t[ 'hoot:status' ] );

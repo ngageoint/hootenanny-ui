@@ -4,7 +4,6 @@
  * @author Matt Putipong on 2/6/18
  *******************************************************************************************************/
 
-import FolderManager from './managers/folderManager';
 import LayerManager  from './managers/layerManager';
 import HootOSM       from './managers/hootOsm';
 import Navbar        from './view/navbar';

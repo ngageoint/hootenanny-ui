@@ -93,7 +93,7 @@ class HootOSM {
             visible: true
         };
 
-        LayerManager.setLoadedLayer( layer );
+        LayerManager.loadedLayers[ layer.id ] = layer;
 
         if ( layerExtent.toParam() !== '-180,-90,180,90' ) {
             this.context.extent( layerExtent );

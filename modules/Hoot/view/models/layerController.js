@@ -4,6 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/3/18
  *******************************************************************************************************/
 
+import _            from 'lodash-es';
 import LayerManager from '../../managers/layerManager';
 import HootOSM      from '../../managers/hootOsm';
 import Event        from '../../managers/eventManager';
@@ -56,7 +57,7 @@ class LayerController {
     }
 
     update() {
-        let layer     = LayerManager.findLayersBy( 'name', this.name ),
+        let layer     = _.find( LayerManager.loadedLayers, l => l.name === this.name ),
             typeClass = this.isConflate ? 'conflate-controller' : 'add-controller';
 
         this.form.classed( 'layer-loading', false )

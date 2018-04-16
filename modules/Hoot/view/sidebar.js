@@ -101,7 +101,7 @@ export default class Sidebar {
     }
 
     conflateCheck() {
-        let loadedLayers   = Object.values( LayerManager.getLoadedLayers() ),
+        let loadedLayers   = Object.values( LayerManager.loadedLayers ),
             addControllers = d3.selectAll( '.add-controller' );
 
         if ( loadedLayers.length === 2 ) {
