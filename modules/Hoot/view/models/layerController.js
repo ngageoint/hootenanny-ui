@@ -4,10 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/3/18
  *******************************************************************************************************/
 
-import _            from 'lodash-es';
 import LayerManager from '../../managers/layerManager';
-import HootOSM      from '../../managers/hootOsm';
-import Event        from '../../managers/eventManager';
 
 class LayerController {
     constructor( context, form, layer ) {
@@ -19,10 +16,11 @@ class LayerController {
         this.id         = layer.id;
         this.color      = layer.color;
         this.isConflate = layer.isConflate;
+        this.typeClass  = this.isConflate ? 'conflate-controller' : 'add-controller';
     }
 
     render() {
-        this.form.selectAll( '.inner-wrapper' )
+        this.form.select( '.inner-wrapper' )
             .classed( 'hidden', true );
 
         this.form
@@ -38,14 +36,33 @@ class LayerController {
             .select( 'a' )
             .remove();
 
+        this.createController();
+        this.createThumbnail();
+        this.createText();
+        this.createDeleteButton();
+    }
+
+    createController() {
+        this.controller = this.form.append( 'div' )
+            .classed( 'contain keyline-all round', true );
+    }
+
+    createThumbnail() {
+        this.thumbnail = this.controller.append( 'div' )
+            .classed( 'pad1 inline thumbnail _icon _loading light', true );
+    }
+
+    createText() {
         let text = this.isConflate ? 'Conflating' : 'Loading';
 
-        this.form.append( 'div' )
-            .classed( 'contain keyline-all round', true )
-            .html( '<div class="pad1 inline thumbnail _icon _loading light"></div>' +
-                `<span class="strong pad1x">${ text } &#8230;</span>` +
-                '<button class="keyline-left delete-button round-right inline _icon trash"></button>' )
-            .select( 'button' )
+        this.text = this.controller.append( 'span' )
+            .classed( 'strong pad1x', true )
+            .html( `${ text } &#8230;` );
+    }
+
+    createDeleteButton() {
+        this.deleteButton = this.controller.append( 'button' )
+            .classed( 'keyline-left delete-button round-right inline _icon trash', true )
             .on( 'click', () => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
@@ -57,37 +74,19 @@ class LayerController {
     }
 
     update() {
-        let layer     = _.find( LayerManager.loadedLayers, l => l.name === this.name ),
-            typeClass = this.isConflate ? 'conflate-controller' : 'add-controller';
+        let layer = LayerManager.findLoadedBy( 'name', this.name );
 
         this.form.classed( 'layer-loading', false )
-            .classed( `sidebar-form controller ${ typeClass }`, true )
-            .html( '' );
+            .classed( this.typeClass, true );
 
-        let controller = this.form.append( 'div' )
-            .attr( 'class', `contain keyline-all round fill-white ${ layer.color }` );
+        this.thumbnail.attr( 'class', () => {
+            let icon = layer.merged ? 'conflate' : 'data',
+                osm  = layer.color === 'osm' ? '_osm' : '';
 
-        controller.append( 'div' )
-            .attr( 'class', () => {
-                let icon = layer.merged ? 'conflate' : 'data',
-                    osm  = layer.color === 'osm' ? '_osm' : '';
+            return `pad1 inline thumbnail light big _icon ${ icon } ${ osm }`;
+        } );
 
-                return `pad1 inline thumbnail light big _icon ${ icon } ${ osm }`;
-            } );
-
-        controller.append( 'button' )
-            .classed( 'keyline-left delete-button round-right inline _icon trash', true )
-            .on( 'click', () => {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-
-                if ( window.confirm( 'Are you sure you want to delete?' ) ) {
-                    HootOSM.removeLayer( layer.id );
-                    Event.send( 'layer-removed', layer.name );
-                }
-            } );
-
-        let contextLayer = controller.append( 'div' )
+        this.contextLayer = this.controller.append( 'div' )
             .classed( 'context-menu-layer', true )
             .on( 'contextmenu', () => {
                 d3.event.preventDefault();
@@ -119,9 +118,15 @@ class LayerController {
                 } );
             } );
 
-        contextLayer.append( 'span' )
+        this.text.remove();
+
+        this.text = this.contextLayer.append( 'span' )
             .classed( 'strong pad1x', true )
             .text( layer.name );
+
+        if ( layer.tags && ( layer.tags.params || layer.tags.stats ) ) {
+            this.contextLayer.style( 'width', 'calc( 100% - 140px' );
+        }
     }
 }
 
