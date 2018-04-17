@@ -1,5 +1,8 @@
 {
     "zh-HK": {
+        "icons": {
+            "information": "資訊"
+        },
         "modes": {
             "add_area": {
                 "title": "範圍",
@@ -221,6 +224,21 @@
                 }
             }
         },
+        "restriction": {
+            "help": {
+                "indirect": "(間接)",
+                "turn": {
+                    "no_left_turn": "不准左轉 {indirect}",
+                    "no_right_turn": "不准右轉 {indirect}",
+                    "no_u_turn": "不准掉頭 {indirect}",
+                    "no_straight_on": "不准直行 {indirect}",
+                    "only_left_turn": "只准左轉 {indirect}",
+                    "only_right_turn": "只准右轉 {indirect}",
+                    "only_u_turn": "只准掉頭 {indirect}",
+                    "only_straight_on": "只准直行 {indirect}"
+                }
+            }
+        },
         "undo": {
             "tooltip": "還原：{action}",
             "nothing": "沒有可還原的動作。"
@@ -402,18 +420,31 @@
             "custom": "自訂",
             "custom_button": "編輯自訂背景",
 <<<<<<< HEAD
+<<<<<<< HEAD
             "custom_prompt": "輸入區塊範本的網址。有效的標記是以 {z}, {x}, {y} 作為 Z/X/Y 標記系統 Z/X/Y scheme 和 {u} 作為四分位數標記系統 quadtile scheme。",
             "fix_misalignment": "校正對位誤差",
             "imagery_source_faq": "這個背景影像來自何處？",
 =======
 >>>>>>> v2.7.0
+=======
+            "overlays": "覆蓋層",
+>>>>>>> v2.8.0
             "reset": "重設",
+            "display_options": "顯示選項",
+            "brightness": "亮度",
+            "contrast": "對比",
+            "saturation": "飽和度",
+            "sharpness": "銳利度",
             "minimap": {
+<<<<<<< HEAD
 <<<<<<< HEAD
                 "description": "小地圖",
                 "tooltip": "顯示縮小地圖以確定現在被顯示範圍的位置"
             }
 =======
+=======
+                "description": "顯示小地圖",
+>>>>>>> v2.8.0
                 "tooltip": "顯示縮小地圖以確定現在被顯示範圍的位置",
                 "key": "/"
             },
@@ -538,13 +569,7 @@
             }
         },
         "success": {
-            "edited_osm": "已編輯了OSM！",
             "just_edited": "你剛剛編輯了OpenStreetMap！",
-            "view_on_osm": "於OSM上顯示",
-            "facebook": "分享至 Facebook",
-            "twitter": "分享至 Twitter",
-            "google": "分享至 Google+",
-            "help_html": "你的變更會在幾分鐘後出現在標準圖層。其他圖層或某些特徵可能需要多些時間。",
             "help_link_text": "詳細資料",
             "help_link_url": "https://wiki.openstreetmap.org/wiki/FAQ#I_have_just_made_some_changes_to_the_map._How_do_I_get_to_see_my_changes.3F"
         },
@@ -611,6 +636,9 @@
         },
         "mapillary": {
             "view_on_mapillary": "在Mapillary上觀看這影像"
+        },
+        "openstreetcam_images": {
+            "title": "相片重疊 (OpenStreetCam)"
         },
         "openstreetcam": {
             "view_on_openstreetcam": "在 OpenStreetCam 上觀看這影像"
@@ -985,6 +1013,16 @@
                 "brand": {
                     "label": "品牌"
                 },
+<<<<<<< HEAD
+=======
+                "brewery": {
+                    "label": "生啤"
+                },
+                "bridge": {
+                    "label": "種類",
+                    "placeholder": "預設"
+                },
+>>>>>>> v2.8.0
                 "building": {
                     "label": "建築物"
                 },
@@ -1142,6 +1180,9 @@
                         "cycleway:right": "右側"
                     }
                 },
+                "dance/style": {
+                    "label": "舞蹈風格"
+                },
                 "date": {
                     "label": "日期"
                 },
@@ -1163,6 +1204,41 @@
                 },
                 "diaper": {
                     "label": "設有換片設備"
+                },
+                "direction": {
+                    "label": "方向 (順時針度數)",
+                    "placeholder": "45, 90, 180, 270"
+                },
+                "direction_cardinal": {
+                    "label": "方向",
+                    "options": {
+                        "E": "東",
+                        "ENE": "東北偏東",
+                        "ESE": "東南偏東",
+                        "N": "北",
+                        "NE": "東北",
+                        "NNE": "東北偏北",
+                        "NNW": "西北偏北",
+                        "NW": "西北",
+                        "S": "南",
+                        "SE": "東南",
+                        "SSE": "東南偏南",
+                        "SSW": "西南偏南",
+                        "SW": "西南",
+                        "W": "西",
+                        "WNW": "西北偏西",
+                        "WSW": "西南偏西"
+                    }
+                },
+                "direction_clock": {
+                    "label": "方向",
+                    "options": {
+                        "anticlockwise": "逆時針",
+                        "clockwise": "順時針"
+                    }
+                },
+                "direction_vertex": {
+                    "label": "方向"
                 },
                 "display": {
                     "label": "顯示"
@@ -1435,6 +1511,9 @@
                 },
                 "maxspeed": {
                     "label": "速度限制",
+                    "placeholder": "40, 50, 60..."
+                },
+                "maxspeed/advisory": {
                     "placeholder": "40, 50, 60..."
                 },
                 "maxstay": {
@@ -1927,9 +2006,6 @@
                 "tunnel": {
                     "label": "隧道"
                 },
-                "vending": {
-                    "label": "貨品種類"
-                },
                 "visibility": {
                     "label": "可見度",
                     "options": {
@@ -2113,6 +2189,10 @@
                     "name": "茶座",
                     "terms": "Cafe,㗎啡室,㗎啡廳,咖啡,咖啡室,咖啡廳,茶座"
                 },
+                "amenity/car_pooling": {
+                    "name": "汽車共乘",
+                    "terms": "Car Pooling, 汽車共乘"
+                },
                 "amenity/car_rental": {
                     "name": "汽車租賃",
                     "terms": "Car Rental,汽車租賃處,租車,租車店,租車舖"
@@ -2248,6 +2328,10 @@
                     "name": "圖書館",
                     "terms": "Library,圖書館"
                 },
+                "amenity/love_hotel": {
+                    "name": "愛情酒店",
+                    "terms": "Love Hotel, 時鐘酒店"
+                },
                 "amenity/marketplace": {
                     "name": "街市",
                     "terms": "Marketplace,市場,菜市場,街市"
@@ -2255,6 +2339,10 @@
                 "amenity/motorcycle_parking": {
                     "name": "電單車停車位",
                     "terms": "摩托車停車場,電單車停車場"
+                },
+                "amenity/music_school": {
+                    "name": "音樂學校",
+                    "terms": "Music School, 音樂學校"
                 },
                 "amenity/nightclub": {
                     "name": "夜總會",
@@ -2332,6 +2420,10 @@
                     "name": "郊野公園遊客中心",
                     "terms": "Ranger Station,郊野公園管理站,郊野公園訪客中心"
                 },
+                "amenity/recycling": {
+                    "name": "回收桶",
+                    "terms": "Recycling Container, 回收箱"
+                },
                 "amenity/recycling_centre": {
                     "name": "回收中心",
                     "terms": "Recycling Center, 廢物回收中心, 資源回收中心"
@@ -2355,6 +2447,17 @@
                     "name": "涼亭",
                     "terms": "Shelter,亭,蓋,避難,避難所,避雨亭"
                 },
+<<<<<<< HEAD
+=======
+                "amenity/shower": {
+                    "name": "淋浴處",
+                    "terms": "Shower,淋浴間,沖浴間"
+                },
+                "amenity/smoking_area": {
+                    "name": "吸煙區",
+                    "terms": "Smoking Area, 食煙區"
+                },
+>>>>>>> v2.8.0
                 "amenity/social_facility": {
                     "name": "社會服務設施",
                     "terms": "社福設施"
@@ -2513,6 +2616,10 @@
                     "name": "樹籬",
                     "terms": "Hedge,樹籬"
                 },
+                "barrier/kerb": {
+                    "name": "路緣",
+                    "terms": "Kerb, 路邊石, 路緣石, 路邊"
+                },
                 "barrier/kissing_gate": {
                     "name": "單人轉門 ",
                     "terms": "Kissing Gate,單人轉門"
@@ -2553,6 +2660,14 @@
                     "name": "穀倉",
                     "terms": "穀倉,糧倉"
                 },
+                "building/boathouse": {
+                    "name": "船屋",
+                    "terms": "Boathouse, 船屋"
+                },
+                "building/bungalow": {
+                    "name": "平房",
+                    "terms": "Bungalow, 平房, 別墅"
+                },
                 "building/bunker": {
                     "name": "地堡"
                 },
@@ -2571,6 +2686,10 @@
                 "building/church": {
                     "name": "教堂建築物",
                     "terms": "教堂,聖堂"
+                },
+                "building/civic": {
+                    "name": "公民建築物",
+                    "terms": "Civic Building, 市民建築物"
                 },
                 "building/college": {
                     "name": "學院校舍",
@@ -2594,6 +2713,14 @@
                 },
                 "building/entrance": {
                     "name": "入口/出口"
+                },
+                "building/farm": {
+                    "name": "農舍",
+                    "terms": "Farm House, 農莊"
+                },
+                "building/farm_auxiliary": {
+                    "name": "農場建築物",
+                    "terms": "Farm Building, 農場建築物"
                 },
                 "building/garage": {
                     "name": "車庫",
@@ -2631,6 +2758,10 @@
                     "name": "學前照顧/幼稚園建築物",
                     "terms": "幼兒園校舍,幼稚園校舍"
                 },
+                "building/mosque": {
+                    "name": "清真寺建築物",
+                    "terms": "Mosque Building, 清真寺建築物"
+                },
                 "building/public": {
                     "name": "公共建築物",
                     "terms": "公用建築物"
@@ -2646,6 +2777,10 @@
                 "building/roof": {
                     "name": "上蓋",
                     "terms": "屋頂"
+                },
+                "building/ruins": {
+                    "name": "建築物遺蹟",
+                    "terms": "Building Ruins, 建築物遺址"
                 },
                 "building/school": {
                     "name": "校舍",
@@ -3965,6 +4100,38 @@
                     "name": "變壓器",
                     "terms": "Transformer,火牛房,變電所"
                 },
+                "public_transport/station_tram": {
+                    "name": "電車站",
+                    "terms": "Tram Station, 電車大站"
+                },
+                "public_transport/stop_area": {
+                    "name": "交通工具停站範圍",
+                    "terms": "Transit Stop Area, 交通工具停站範圍"
+                },
+                "public_transport/stop_position": {
+                    "name": "交通工具停止位置",
+                    "terms": "Transit Stopping Location, 交通工具停止位置"
+                },
+                "public_transport/stop_position_aerialway": {
+                    "name": "纜車停止位置",
+                    "terms": "Aerialway Stopping Location, 纜車停止位置"
+                },
+                "public_transport/stop_position_bus": {
+                    "name": "巴士停止位置",
+                    "terms": "Bus Stopping Location, 巴士停止位置"
+                },
+                "public_transport/stop_position_ferry": {
+                    "name": "渡輪停止位置",
+                    "terms": "Ferry Stopping Location, 小輪停止位置"
+                },
+                "public_transport/stop_position_light_rail": {
+                    "name": "輕鐵停止位置",
+                    "terms": "Light Rail Stopping Location, 輕鐵停止位置"
+                },
+                "public_transport/stop_position_monorail": {
+                    "name": "單軌電車停止位置",
+                    "terms": "Monorail Stopping Location, 單軌電車停止位置"
+                },
                 "railway": {
                     "name": "鐵路"
                 },
@@ -4662,18 +4829,6 @@
                     "name": "不准掉頭",
                     "terms": "禁止掉頭"
                 },
-                "type/restriction/only_left_turn": {
-                    "name": "只准左轉",
-                    "terms": "只能左轉"
-                },
-                "type/restriction/only_right_turn": {
-                    "name": "只准右轉",
-                    "terms": "只准右轉"
-                },
-                "type/restriction/only_straight_on": {
-                    "name": "只准直駛",
-                    "terms": "禁止轉彎"
-                },
                 "type/route": {
                     "name": "路綫",
                     "terms": "Route,路綫,路線"
@@ -4705,6 +4860,10 @@
                 "type/route/horse": {
                     "name": "策騎路線",
                     "terms": "騎馬路線"
+                },
+                "type/route/light_rail": {
+                    "name": "輕鐵路綫",
+                    "terms": "Light Rail Route, 輕鐵路線"
                 },
                 "type/route/pipeline": {
                     "name": "管道路綫",
@@ -4817,7 +4976,6 @@
                 "attribution": {
                     "text": "條款和意見"
                 },
-                "description": "航攝邊界及拍攝日期。標籤會在縮放第14級或更高時顯示。",
                 "name": "DigitalGlobe Premium 舊航攝圖"
             },
             "DigitalGlobe-Standard": {
@@ -4831,7 +4989,6 @@
                 "attribution": {
                     "text": "條款和意見"
                 },
-                "description": "航攝邊界及拍攝日期。標籤會在縮放水平14或以上時顯示。",
                 "name": "DigitalGlobe Standard 舊航攝圖"
             },
             "EsriWorldImagery": {
@@ -4840,6 +4997,13 @@
                 },
                 "description": "Esri world 世界航攝圖",
                 "name": "Esri world 世界航攝圖"
+            },
+            "EsriWorldImageryClarity": {
+                "attribution": {
+                    "text": "條款和意見"
+                },
+                "description": "Esri 之前的航攝圖可能比預設圖層會更清楚和更準確。",
+                "name": "Esri World (Clarity) Beta 航攝圖"
             },
             "MAPNIK": {
                 "attribution": {
@@ -4909,25 +5073,39 @@
                 "name": "TIGER Roads 2017"
             },
             "Waymarked_Trails-Cycling": {
+                "attribution": {
+                    "text": "© waymarkedtrails.org, OpenStreetMap 貢獻者，CC by-SA 3.0"
+                },
                 "name": "Waymarked Trails: 單車"
             },
             "Waymarked_Trails-Hiking": {
+                "attribution": {
+                    "text": "© waymarkedtrails.org, OpenStreetMap 貢獻者，CC by-SA 3.0"
+                },
                 "name": "Waymarked Trails: 遠足"
             },
             "Waymarked_Trails-MTB": {
+                "attribution": {
+                    "text": "© waymarkedtrails.org, OpenStreetMap 貢獻者，CC by-SA 3.0"
+                },
                 "name": "Waymarked Trails: 越野單車"
             },
             "Waymarked_Trails-Skating": {
+                "attribution": {
+                    "text": "© waymarkedtrails.org, OpenStreetMap 貢獻者，CC by-SA 3.0"
+                },
                 "name": "Waymarked Trails: 溜冰"
             },
             "Waymarked_Trails-Winter_Sports": {
+                "attribution": {
+                    "text": "© waymarkedtrails.org, OpenStreetMap 貢獻者，CC by-SA 3.0"
+                },
                 "name": "Waymarked Trails: 冬季運動"
             },
             "basemap.at": {
                 "attribution": {
                     "text": "basemap.at"
                 },
-                "description": "基於政府資料的奧地利底圖。",
                 "name": "basemap.at"
             },
             "basemap.at-orthofoto": {
@@ -4988,9 +5166,6 @@
                 "name": "skobbler"
             },
             "stamen-terrain-background": {
-                "attribution": {
-                    "text": "Stamen 設計的區塊，以 CC-BY 3.0 授權"
-                },
                 "name": "Stamen 地形"
             },
             "tf-cycle": {
