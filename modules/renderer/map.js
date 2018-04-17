@@ -86,6 +86,7 @@ export function rendererMap(context) {
     var minzoom = 0;
     var mouse;
     var mousemove;
+    var timeoutId;
 
     var zoom = d3_zoom()
         .scaleExtent([kMin, kMax])
@@ -93,11 +94,11 @@ export function rendererMap(context) {
         .filter(zoomEventFilter)
         .on('zoom', zoomPan);
 
-    var scheduleRedraw = _throttle(redraw, 750);
-    //function scheduleRedraw() {
-    //    clearTimeout(timeoutId);
-    //    timeoutId = setTimeout(function() { redraw(); }, 300);
-    //}
+    //var scheduleRedraw = _throttle(redraw, 750);
+    function scheduleRedraw() {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(function() { redraw(); }, 300);
+    }
     // var isRedrawScheduled = false;
     // var pendingRedrawCall;
     // function scheduleRedraw() {
