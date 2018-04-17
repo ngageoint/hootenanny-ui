@@ -5,13 +5,11 @@
         "es6": true
     },
     "extends": [
-        "eslint:recommended",
-        "plugin:flowtype/recommended"
+        "eslint:recommended"
     ],
     "globals": {
         "d3": false
     },
-    "parser": "babel-eslint",
     "parserOptions": {
         "ecmaVersion": 2017,
         "sourceType": "module",
@@ -19,9 +17,6 @@
             "experimentalObjectRestSpread": true
         }
     },
-    "plugins": [
-        "flowtype"
-    ],
     "rules": {
         "arrow-spacing": "warn",
         "dot-notation": "error",

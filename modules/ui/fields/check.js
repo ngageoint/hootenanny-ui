@@ -103,7 +103,7 @@ export function uiFieldCheck(field, context) {
             .append('input')
             .property('indeterminate', field.type !== 'defaultCheck')
             .attr('type', 'checkbox')
-            .attr('id', 'preset-input-' + field.id);
+            .attr('id', 'preset-input-' + field.safeid);
 
         enter
             .append('span')
@@ -113,7 +113,7 @@ export function uiFieldCheck(field, context) {
         if (field.type === 'onewayCheck') {
             enter
                 .append('a')
-                .attr('id', 'preset-input-' + field.id + '-reverser')
+                .attr('id', 'preset-input-' + field.safeid + '-reverser')
                 .attr('class', 'reverser button' + (reverserHidden() ? ' hide' : ''))
                 .attr('href', '#')
                 .append('span')
@@ -126,10 +126,17 @@ export function uiFieldCheck(field, context) {
 
         input
             .on('click', function() {
+                d3_event.stopPropagation();
                 var t = {};
                 t[field.key] = values[(values.indexOf(_value) + 1) % values.length];
+
+                // Don't cycle through `alternating` or `reversible` states - #4970
+                // (They are supported as translated strings, but should not toggle with clicks)
+                if (t[field.key] === 'reversible' || t[field.key] === 'alternating') {
+                    t[field.key] = values[0];
+                }
+
                 dispatch.call('change', this, t);
-                d3_event.stopPropagation();
             });
 
         if (field.type === 'onewayCheck') {

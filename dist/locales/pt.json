@@ -1,5 +1,10 @@
 {
     "pt": {
+        "icons": {
+            "information": "info",
+            "remove": "remover",
+            "undo": "desfazer"
+        },
         "modes": {
             "add_area": {
                 "title": "Área",
@@ -694,8 +699,8 @@
             }
         },
         "success": {
-            "edited_osm": "Acabou de editar o OpenStreetMap!",
             "just_edited": "Acaba de editar o OpenStreetMap!",
+<<<<<<< HEAD
             "view_on_osm": "Ver no OpenStreetMap",
             "facebook": "Partilhar no Facebook",
             "twitter": "Partilhar no Twitter",
@@ -705,6 +710,8 @@
 =======
             "help_html": "As suas alterações devem aparecer na \"Camada Padrão\" em poucos minutos. Outras camadas e determinados elementos podem demorar mais tempo.",
 >>>>>>> v2.7.0
+=======
+>>>>>>> v2.8.0
             "help_link_text": "Detalhes",
             "help_link_url": "https://wiki.openstreetmap.org/wiki/FAQ#I_have_just_made_some_changes_to_the_map._How_do_I_get_to_see_my_changes.3F"
         },
@@ -974,7 +981,8 @@
                         "title": "Modificando"
                     },
                     "tips": {
-                        "title": "Dicas"
+                        "title": "Dicas",
+                        "indirect_noedit": "Não deverá editar restrições indiretas. Opte por editar a restrição direta mais próxima."
                     }
                 }
             }
@@ -1797,6 +1805,9 @@
                         "cycleway:right": "Lado direito"
                     }
                 },
+                "dance/style": {
+                    "label": "Estilos de Dança"
+                },
                 "date": {
                     "label": "Data"
                 },
@@ -1902,7 +1913,7 @@
                     "label": "Posição",
                     "options": {
                         "green": "Relvado",
-                        "lane": "Via de trânsito",
+                        "lane": "Faixa de rodagem",
                         "parking_lot": "Estacionamento",
                         "sidewalk": "Passeio"
                     }
@@ -1911,10 +1922,10 @@
                 "fire_hydrant/type": {
                     "label": "Tipo",
                     "options": {
-                        "pillar": "Superfície ",
+                        "pillar": "Marco de incêndio no solo",
                         "pond": "Poça de água",
-                        "underground": "Subterrâneo ",
-                        "wall": "Muro"
+                        "underground": "Boca de incêndio tradicional com portinholas",
+                        "wall": "Marco de incêndio na parede"
                     }
                 },
                 "fixme": {
@@ -1987,6 +1998,9 @@
                 "indoor": {
                     "label": "Interior"
                 },
+                "industrial": {
+                    "label": "Tipo"
+                },
                 "information": {
                     "label": "Tipo"
                 },
@@ -2016,7 +2030,7 @@
                     "label": "Tipo"
                 },
                 "lanes": {
-                    "label": "Número de vias de trânsito",
+                    "label": "Número de faixas de rodagem",
                     "placeholder": "1, 2, 3..."
                 },
                 "layer": {
@@ -2093,6 +2107,9 @@
                 "maxspeed": {
                     "label": "Limite de velocidade",
                     "placeholder": "50, 90, 100, 120..."
+                },
+                "maxspeed/advisory": {
+                    "placeholder": "40, 50, 60..."
                 },
                 "maxstay": {
                     "label": "Tempo máximo"
@@ -2328,6 +2345,9 @@
                     "label": "Referência"
 =======
                     "label": "Código de Referência"
+                },
+                "ref/isil": {
+                    "label": "Código ISIL"
                 },
                 "ref_aeroway_gate": {
                     "label": "Número da Porta"
@@ -2601,8 +2621,17 @@
                 "tunnel": {
                     "label": "Túnel"
                 },
+                "usage_rail": {
+                    "label": "Tipo de Utilização",
+                    "options": {
+                        "industrial": "Industrial",
+                        "military": "Militar",
+                        "test": "Testes",
+                        "tourism": "Turismo"
+                    }
+                },
                 "vending": {
-                    "label": "Tipo de produtos"
+                    "label": "Tipos de Produtos"
                 },
                 "visibility": {
                     "label": "Visibilidade",
@@ -2633,6 +2662,9 @@
                 },
                 "wheelchair": {
                     "label": "Acesso cadeira rodas"
+                },
+                "wholesale": {
+                    "label": "Grossista"
                 },
                 "width": {
                     "label": "Largura (metros)"
@@ -3030,6 +3062,17 @@
                     "name": "Abrigo",
                     "terms": "Shelter"
                 },
+<<<<<<< HEAD
+=======
+                "amenity/shower": {
+                    "name": "Chuveiro",
+                    "terms": "Shower, chuveiro público, shuveiro, xuveiro, chubeiro, xubeiro, shubeiro, banho"
+                },
+                "amenity/smoking_area": {
+                    "name": "Área para Fumadores",
+                    "terms": "fumadores, fumar"
+                },
+>>>>>>> v2.8.0
                 "amenity/social_facility": {
                     "name": "Centro social",
                     "terms": "Social Facility, Casa do Povo"
@@ -3643,7 +3686,7 @@
                 },
                 "emergency/fire_hydrant": {
                     "name": "Boca de incêndio",
-                    "terms": "Fire Hydrant, Hidrante, Marco de Água, Marco de Incêndio"
+                    "terms": "Hidrate, Marco de Água, Marco de Incêndio, boca de incêndio"
                 },
                 "emergency/no": {
                     "name": "Acesso de emergência, não"
@@ -4088,7 +4131,7 @@
                     "terms": "Recreation Ground"
                 },
                 "landuse/residential": {
-                    "name": "Zona residencial",
+                    "name": "Área residencial",
                     "terms": "Residencial, Urbano, Antrópico, Residential"
                 },
                 "landuse/retail": {
@@ -4122,6 +4165,10 @@
                 "leisure/dance": {
                     "name": "Salão de dança",
                     "terms": "Dance Hall"
+                },
+                "leisure/dancing_school": {
+                    "name": "Escola de Dança",
+                    "terms": "dança, dançar, bailado, bailarina, bailarino"
                 },
                 "leisure/dog_park": {
                     "name": "Parque para cães",
@@ -4317,6 +4364,10 @@
                 "man_made/observation": {
                     "name": "Torre de observação",
                     "terms": "Observatório Tower, Miradouro"
+                },
+                "man_made/observatory": {
+                    "name": "Observatório",
+                    "terms": "Observatório Astronómico, Observação, Observações, Astronomia"
                 },
                 "man_made/petroleum_well": {
                     "name": "Poço de petróleo",
@@ -4717,6 +4768,42 @@
                     "name": "Paragem de autocarro / plataforma",
                     "terms": "Paragem, terminal, autocarro, bus stop, bus, abrigo paragem"
 >>>>>>> v2.7.0
+                },
+                "public_transport/linear_platform_ferry": {
+                    "name": "Paragem de Ferry / Plataforma",
+                    "terms": "Ferry, Plataforma de Ferry"
+                },
+                "public_transport/linear_platform_train": {
+                    "name": "Paragem de Comboio / Plataforma",
+                    "terms": "Paragem de Comboio, Plataforma de Comboio"
+                },
+                "public_transport/platform_ferry": {
+                    "name": "Paragem de Ferry / Plataforma",
+                    "terms": "Ferry, Plataforma de Ferry"
+                },
+                "public_transport/platform_train": {
+                    "name": "Paragem de Comboio / Plataforma",
+                    "terms": "Paragem de Comboio, Plataforma de Comboio"
+                },
+                "public_transport/station_ferry": {
+                    "name": "Estação de Ferry / Terminal",
+                    "terms": "Ferry, Terminal de Ferry"
+                },
+                "public_transport/station_train": {
+                    "name": "Estação de Comboios",
+                    "terms": "Estação Ferroviária, Estação dos Caminhos de Ferro"
+                },
+                "public_transport/station_train_halt": {
+                    "name": "Apeadeiro Ferroviário",
+                    "terms": "Apeadeiro, Paragem de Comboio"
+                },
+                "public_transport/stop_position_ferry": {
+                    "name": "Localização de Paragem do Ferry",
+                    "terms": "Ferry, Paragem do Ferry"
+                },
+                "public_transport/stop_position_train": {
+                    "name": "Localização de Paragem do Comboio",
+                    "terms": "Comboio, Paragem do Comboio"
                 },
                 "railway": {
                     "name": "Ferrovia"
@@ -5259,6 +5346,10 @@
                     "name": "Loja de armas",
                     "terms": "espingardaria, Loja de Armas, Caça"
                 },
+                "shop/wholesale": {
+                    "name": "Loja Grossista",
+                    "terms": "grossista, atacado, revendedor, revenda"
+                },
                 "shop/window_blind": {
                     "name": "Loja de estores",
                     "terms": "Estores, Estor"
@@ -5304,8 +5395,13 @@
                     "terms": "Centro Cultural, Galeria, Exposição, Arte"
                 },
                 "tourism/guest_house": {
+<<<<<<< HEAD
                     "name": "Casa de hóspedes",
                     "terms": "Cama e Pequeno Almoço, Cama e Peq. Almoço, Cama e Almoço"
+=======
+                    "name": "Hospedagem Domiciliar/Casa de Hóspedes",
+                    "terms": "casa de hóspedes, Cama e Pequeno Almoço, Cama e Peq. Almoço, Cama e Almoço, albergaria, hospedaria, pensão"
+>>>>>>> v2.8.0
                 },
                 "tourism/hostel": {
                     "name": "Pousada / Hostel",
@@ -5340,7 +5436,7 @@
                 },
                 "tourism/motel": {
                     "name": "Motel",
-                    "terms": "Albergaria "
+                    "terms": "quartos de motel, albergue, parador, paradores"
                 },
                 "tourism/museum": {
                     "name": "Museu",
@@ -5434,18 +5530,6 @@
                 "type/restriction/no_u_turn": {
                     "name": "Proibição de inversão de marcha",
                     "terms": "Não Inverter o Sentido, inversão de marcha proibida,  proibida a inversão de marcha, não fazer inversão de marcha"
-                },
-                "type/restriction/only_left_turn": {
-                    "name": "Sentido obrigatório para a esquerda",
-                    "terms": "obrigatoriedade de virar à esquerda, virar para a esquerda,"
-                },
-                "type/restriction/only_right_turn": {
-                    "name": "Sentido obrigatório para a direita",
-                    "terms": "obrigatoriedade de virar à direita, virar para a direita,"
-                },
-                "type/restriction/only_straight_on": {
-                    "name": "Sentido obrigatório para a frente",
-                    "terms": "Proibido Virar, seguir em frente"
                 },
                 "type/route": {
                     "name": "Rota",
@@ -5605,7 +5689,6 @@
                 "attribution": {
                     "text": "Termos e Opinião"
                 },
-                "description": "Limites das imagens e datas de captura. As etiquetas aparecem no nível de aproximação 14 ou superior.",
                 "name": "Imagens DigitalGlobe Premium antigas"
             },
             "DigitalGlobe-Standard": {
@@ -5619,7 +5702,6 @@
                 "attribution": {
                     "text": "Termos e Opinião"
                 },
-                "description": "Limites das imagens e datas de captura. As etiquetas aparecem no nível de aproximação 14 ou superior.",
                 "name": "Imagens DigitalGlobe Standard antigaas"
             },
             "EsriWorldImagery": {
@@ -5737,7 +5819,7 @@
                 "attribution": {
                     "text": "basemap.at"
                 },
-                "description": "Mapa base Áustria, baseado em informação govenamental ",
+                "description": "Mapa Base da Áustria, baseado em dados do governo",
                 "name": "basemap.at"
             },
             "basemap.at-orthofoto": {
@@ -5793,13 +5875,13 @@
             },
             "skobbler": {
                 "attribution": {
-                    "text": "© Telas: skobbler, dados do mapa © contribuidores OpenStreetMap"
+                    "text": "© Mosaico: skobbler, dados do mapa © contribuidores OpenStreetMap"
                 },
                 "name": "skobbler"
             },
             "stamen-terrain-background": {
                 "attribution": {
-                    "text": "Telas do mapa por Stamen Design, sob licença CC BY 3.0"
+                    "text": "Mosaico do mapa por Stamen Design, sob CC BY 3.0. Dados por OpenStreetMap, sob ODbL"
                 },
                 "name": "Terreno Stamen"
             },
@@ -5815,7 +5897,18 @@
                 },
                 "name": "Thunderforest Landscape"
             }
+<<<<<<< HEAD
 >>>>>>> v2.7.0
+=======
+        },
+        "community": {
+            "GeoPhilly": {
+                "name": "GeoPhilly"
+            },
+            "Mapping-DC-meetup": {
+                "name": "Mapping DC"
+            }
+>>>>>>> v2.8.0
         }
     }
 }

@@ -611,13 +611,15 @@
             }
         },
         "success": {
-            "edited_osm": "编辑了 OSM！",
             "just_edited": "您刚刚编辑了 OpenStreetMap！",
+<<<<<<< HEAD
             "view_on_osm": "在 OSM 上查看",
             "facebook": "分享到Facebook",
             "twitter": "分享到 Twitter",
             "google": "分享到 Google+",
             "help_html": "您的修改将会在几分钟内出现在“标准”图层上，其他图层和某些特征可能需要更长的处理时间。",
+=======
+>>>>>>> v2.8.0
             "help_link_text": "详情",
             "help_link_url": "https://wiki.openstreetmap.org/wiki/FAQ#I_have_just_made_some_changes_to_the_map._How_do_I_get_to_see_my_changes.3F"
         },
@@ -1692,6 +1694,9 @@
                     "label": "速度限制",
                     "placeholder": "40, 50, 60..."
                 },
+                "maxspeed/advisory": {
+                    "placeholder": "40, 50, 60..."
+                },
                 "maxstay": {
                     "label": "可停留时间"
                 },
@@ -2219,9 +2224,6 @@
                 },
                 "tunnel": {
                     "label": "隧道"
-                },
-                "vending": {
-                    "label": "商品类型"
                 },
                 "visibility": {
                     "label": "能见度",
@@ -3633,6 +3635,53 @@
                     "name": "军事区",
                     "terms": "军事用地, 军事区域"
                 },
+<<<<<<< HEAD
+=======
+                "landuse/military/airfield": {
+                    "name": "军用机场",
+                    "terms": "军用机场,军事机场,航空,军事,机场,空军,部队"
+                },
+                "landuse/military/barracks": {
+                    "name": "军营",
+                    "terms": "军营,虎帐,兵营,军队,部队,步兵,驻扎,营房"
+                },
+                "landuse/military/bunker": {
+                    "name": "军事碉堡",
+                    "terms": "军事碉堡,碉堡"
+                },
+                "landuse/military/checkpoint": {
+                    "name": "检查点",
+                    "terms": "检查点,检查站,检查,边检"
+                },
+                "landuse/military/danger_area": {
+                    "name": "军事危险区域",
+                    "terms": "危险区"
+                },
+                "landuse/military/naval_base": {
+                    "name": "海军基地",
+                    "terms": "海军,基地"
+                },
+                "landuse/military/nuclear_explosion_site": {
+                    "name": "核爆地点",
+                    "terms": "核爆"
+                },
+                "landuse/military/obstacle_course": {
+                    "name": "障碍训练场",
+                    "terms": "障碍,训练场"
+                },
+                "landuse/military/office": {
+                    "name": "军事办公室",
+                    "terms": "军事办公室"
+                },
+                "landuse/military/range": {
+                    "name": "军事靶场",
+                    "terms": "军事,靶场,靶子"
+                },
+                "landuse/military/training_area": {
+                    "name": "军事训练场",
+                    "terms": "军事训练场,军事练习场,训练场,练习场,训练营,军训,基地"
+                },
+>>>>>>> v2.8.0
                 "landuse/orchard": {
                     "name": "果园",
                     "terms": "果园"
@@ -5226,18 +5275,6 @@
                     "name": "禁止掉头",
                     "terms": "禁止掉头"
                 },
-                "type/restriction/only_left_turn": {
-                    "name": "仅左转",
-                    "terms": "仅左转"
-                },
-                "type/restriction/only_right_turn": {
-                    "name": "仅右转",
-                    "terms": "仅右转"
-                },
-                "type/restriction/only_straight_on": {
-                    "name": "禁止转向",
-                    "terms": "禁止转向"
-                },
                 "type/route": {
                     "name": "线路",
                     "terms": "路线,路径"
@@ -5393,7 +5430,6 @@
                 "attribution": {
                     "text": "使用条款与意见反馈"
                 },
-                "description": "影像边界和拍摄日期。标签会在缩放到14层级或更高时显示。",
                 "name": "DigitalGlobe 优质影像年份"
             },
             "DigitalGlobe-Standard": {
@@ -5407,7 +5443,6 @@
                 "attribution": {
                     "text": "使用条款与意见反馈"
                 },
-                "description": "影像边界和拍摄日期。标签会在缩放到14层级或更高时显示。",
                 "name": "DigitalGlobe 标准影像年份"
             },
             "EsriWorldImagery": {
@@ -5525,7 +5560,6 @@
                 "attribution": {
                     "text": "basemap.at"
                 },
-                "description": "基于政府数据的奥地利底图",
                 "name": "basemap.at"
             },
             "basemap.at-orthofoto": {
@@ -5586,9 +5620,6 @@
                 "name": "skobbler"
             },
             "stamen-terrain-background": {
-                "attribution": {
-                    "text": "地图瓦片由 Stamen 设计，并以 署名 3.0 协议授权"
-                },
                 "name": "Stamen 地形"
             },
             "tf-cycle": {
@@ -5603,7 +5634,17 @@
                 },
                 "name": "Thunderforest 地貌"
             }
+<<<<<<< HEAD
 >>>>>>> v2.7.0
+=======
+        },
+        "community": {
+            "OSM-India-facebook": {
+                "name": "OpenStreetMap 印度 - 共同参与的街区绘图",
+                "description": "改进印度的 OpenStreetMap",
+                "extendedDescription": "在印度贡献地图？有了疑问，想要和社区共同交流？点击 {Url} 加入我们，任何问题都很欢迎！"
+            }
+>>>>>>> v2.8.0
         }
     }
 }

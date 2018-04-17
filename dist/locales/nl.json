@@ -617,6 +617,7 @@
             }
         },
         "success": {
+<<<<<<< HEAD
             "edited_osm": "OSM aangepast!",
             "just_edited": "Je hebt zojuist OpenStreetMap aangepast!",
             "view_on_osm": "Bekijk op OSM",
@@ -624,6 +625,9 @@
             "twitter": "Deel op Twitter",
             "google": "Deel op Google+",
             "help_html": "Je wijzigingen zouden binnen enkele minuten zichtbaar moeten zijn in de \"Standaard\"-laag. Het updaten van sommige soorten objecten kan langer duren. Andere lagen dan de \"Standaard\"-laag worden minder vaak bijgewerkt.",
+=======
+            "just_edited": "Je hebt OpenStreetMap bewerkt!",
+>>>>>>> v2.8.0
             "help_link_text": "Meer hierover, in het Engels",
             "help_link_url": "https://wiki.openstreetmap.org/wiki/FAQ#I_have_just_made_some_changes_to_the_map._How_do_I_get_to_see_my_changes.3F"
         },
@@ -2621,9 +2625,12 @@
                 "tunnel": {
                     "label": "Tunnel"
                 },
+<<<<<<< HEAD
                 "vending": {
                     "label": "Soort goederen"
                 },
+=======
+>>>>>>> v2.8.0
                 "visibility": {
                     "label": "Zichtbaarheid",
                     "options": {
@@ -5795,6 +5802,7 @@
                     "name": "Niet omkeren",
                     "terms": "geen U-bocht,U-bocht verboden,omkeren verboden,omdraaien verboden,verboden om te draaien,verboden om te keren,niet omdraaien"
                 },
+<<<<<<< HEAD
                 "type/restriction/only_left_turn": {
                     "name": "Enkel links afslaan"
                 },
@@ -5805,6 +5813,8 @@
                     "name": "Enkel rechtdoor",
                     "terms": "rechtdoor,niet draaien,niet afslaan,niet inslaan,draaien verboden,afslaan verboden, draaien verboden"
                 },
+=======
+>>>>>>> v2.8.0
                 "type/route": {
                     "name": "Route"
                 },
@@ -5945,7 +5955,6 @@
                 "attribution": {
                     "text": "Gebruiksvoorwaarden & feedback"
                 },
-                "description": "Luchtfoto grenzen en opnamedatum. Labels verschijnen bij zoomniveau 14 en hoger.",
                 "name": "DigitalGlobe-premiumbeelden Vintage"
             },
             "DigitalGlobe-Standard": {
@@ -5959,7 +5968,6 @@
                 "attribution": {
                     "text": "Gebruiksvoorwaarden & feedback"
                 },
-                "description": "Luchtfoto grenzen en opnamedatum. Labels verschijnen bij zoomniveau 14 en hoger.",
                 "name": "DigitalGlobe-premiumbeelden Vintage"
             },
             "EsriWorldImagery": {
@@ -6077,7 +6085,6 @@
                 "attribution": {
                     "text": "basemap.at"
                 },
-                "description": "Basiskaart van Oostenrijk, gebaseerd op overheidsgegevens.",
                 "name": "basemap.at"
             },
             "basemap.at-orthofoto": {
@@ -6138,9 +6145,6 @@
                 "name": "skobbler"
             },
             "stamen-terrain-background": {
-                "attribution": {
-                    "text": "Kaarttegels door Stamen Design, onder CC BY 3.0"
-                },
                 "name": "Stamen Terrein"
             },
             "tf-cycle": {

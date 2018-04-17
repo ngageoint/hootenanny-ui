@@ -24,16 +24,16 @@ if you're looking for something to do.
   * Stable mirror of `release` branch:  http://preview.ideditor.com/release
   * Development mirror of `master` branch + latest translations:  http://preview.ideditor.com/master
 
-Come on in, the water's lovely. More help? Ping `jfire` or `bhousel` on:
+Come on in, the water's lovely. More help? Ping `bhousel` on:
 * [OpenStreetMap US Slack](https://osmus-slack.herokuapp.com/)
 (`#dev` or `#general` channels)
 * [OpenStreetMap IRC](https://wiki.openstreetmap.org/wiki/IRC)
-(`irc.oftc.net`, in `#iD` or `#osm-dev` or `#osm`)
+(`irc.oftc.net`, in `#osm-dev` or `#osm`)
 * [OpenStreetMap `dev` mailing list](https://wiki.openstreetmap.org/wiki/Mailing_lists)
 
 ## Prerequisites
 
-* [Node.js](https://nodejs.org/) version 4 or newer
+* [Node.js](https://nodejs.org/) version 6 or newer
 * [`git`](https://www.atlassian.com/git/tutorials/install-git/) for your platform
   * Note for Windows users:
     * Edit `$HOME\.gitconfig`:<br/>

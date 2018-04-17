@@ -79,7 +79,17 @@ export function uiFieldRestrictions(field, context) {
         // It's possible for there to be no actual intersection here.
         // for example, a vertex of two `highway=path`
         // In this case, hide the field.
-        var isOK = (_intersection && _intersection.vertices.length && _intersection.ways.length);
+        var isOK = (
+            _intersection &&
+            _intersection.vertices.length &&           // has vertices
+            _intersection.vertices                     // has the vertex that the user selected
+                .filter(function(vertex) { return vertex.id === _vertexID; }).length &&
+            _intersection.ways.length > 2 &&           // has more than 2 ways
+            _intersection.ways                         // has more than 1 TO way
+                .filter(function(way) { return way.__to; }).length > 1
+        );
+
+        // Also hide in the case where
         d3_select(selection.node().parentNode).classed('hide', !isOK);
 
         // if form field is hidden or has detached from dom, clean up.
@@ -345,20 +355,25 @@ export function uiFieldRestrictions(field, context) {
                     return;
 
                 } else if (datum.restrictionID && !datum.only) {    // NO -> ONLY
+                    var seen = {};
                     var datumOnly = _cloneDeep(datum);
                     datumOnly.only = true;
                     restrictionType = restrictionType.replace(/^no/, 'only');
 
-                    // Adding an ONLY restriction should destroy all other direct restrictions from the FROM.
+                    // Adding an ONLY restriction should destroy all other direct restrictions from the FROM towards the VIA.
                     // We will remember them in _oldTurns, and restore them if the user clicks again.
                     turns = _intersection.turns(_fromWayID, 2);
                     extraActions = [];
                     _oldTurns = [];
                     for (i = 0; i < turns.length; i++) {
-                        if (turns[i].direct) {
-                            turns[i].restrictionType = osmInferRestriction(vgraph, turns[i], projection);
-                            _oldTurns.push(turns[i]);
-                            extraActions.push(actionUnrestrictTurn(turns[i]));
+                        var turn = turns[i];
+                        if (seen[turn.restrictionID]) continue;  // avoid deleting the turn twice (#4968, #4928)
+
+                        if (turn.direct && turn.path[1] === datum.path[1]) {
+                            seen[turns[i].restrictionID] = true;
+                            turn.restrictionType = osmInferRestriction(vgraph, turn, projection);
+                            _oldTurns.push(turn);
+                            extraActions.push(actionUnrestrictTurn(turn));
                         }
                     }
 

@@ -197,6 +197,20 @@
             },
             "name": "Billboard"
         },
+        "advertising/column": {
+            "fields": [
+                "direction",
+                "lit"
+            ],
+            "geometry": [
+                "point",
+                "area"
+            ],
+            "tags": {
+                "advertising": "column"
+            },
+            "name": "Advertising Column"
+        },
         "aerialway/station": {
             "icon": "aerialway",
             "geometry": [
@@ -534,6 +548,23 @@
                 "aeroway": "terminal"
             },
             "name": "Airport Terminal"
+        },
+        "allotments/plot": {
+            "geometry": [
+                "area"
+            ],
+            "fields": [
+                "name",
+                "ref"
+            ],
+            "tags": {
+                "allotments": "plot"
+            },
+            "reference": {
+                "key": "allotments",
+                "value": "plot"
+            },
+            "name": "Community Garden Plot"
         },
         "amenity/bus_station": {
             "icon": "bus",
@@ -1341,7 +1372,8 @@
                 "support",
                 "display",
                 "visibility",
-                "date"
+                "date",
+                "faces"
             ],
             "geometry": [
                 "point",
@@ -1659,6 +1691,9 @@
         },
         "amenity/fountain": {
             "icon": "poi-fountain",
+            "fields": [
+                "name"
+            ],
             "geometry": [
                 "point",
                 "area"
@@ -1672,6 +1707,7 @@
             "icon": "fuel",
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -1936,6 +1972,50 @@
                 "amenity": "marketplace"
             },
             "name": "Marketplace"
+        },
+        "amenity/monastery": {
+            "icon": "place-of-worship",
+            "fields": [
+                "name",
+                "religion",
+                "denomination",
+                "address",
+                "building_area"
+            ],
+            "geometry": [
+                "point",
+                "area"
+            ],
+            "terms": [
+                "abbey",
+                "basilica",
+                "bethel",
+                "cathedral",
+                "chancel",
+                "chantry",
+                "chapel",
+                "church",
+                "fold",
+                "house of God",
+                "house of prayer",
+                "house of worship",
+                "minster",
+                "mission",
+                "monastery",
+                "mosque",
+                "oratory",
+                "parish",
+                "sacellum",
+                "sanctuary",
+                "shrine",
+                "synagogue",
+                "tabernacle",
+                "temple"
+            ],
+            "tags": {
+                "amenity": "monastery"
+            },
+            "name": "Monastery Grounds"
         },
         "amenity/motorcycle_parking": {
             "icon": "scooter",
@@ -3175,6 +3255,7 @@
         "amenity/vending_machine/news_papers": {
             "icon": "poi-vending-machine",
             "fields": [
+                "vending",
                 "operator",
                 "fee",
                 "payment_multi",
@@ -3200,6 +3281,7 @@
         "amenity/vending_machine/cigarettes": {
             "icon": "poi-vending-machine",
             "fields": [
+                "vending",
                 "operator",
                 "payment_multi",
                 "currency_multi"
@@ -3220,9 +3302,34 @@
             },
             "name": "Cigarette Vending Machine"
         },
+        "amenity/vending_machine/coffee": {
+            "icon": "poi-vending-machine",
+            "fields": [
+                "vending",
+                "operator",
+                "payment_multi",
+                "currency_multi"
+            ],
+            "geometry": [
+                "point"
+            ],
+            "terms": [
+                "coffee"
+            ],
+            "tags": {
+                "amenity": "vending_machine",
+                "vending": "coffee"
+            },
+            "reference": {
+                "key": "vending",
+                "value": "coffee"
+            },
+            "name": "Coffee Vending Machine"
+        },
         "amenity/vending_machine/condoms": {
             "icon": "poi-vending-machine",
             "fields": [
+                "vending",
                 "operator",
                 "payment_multi",
                 "currency_multi"
@@ -3246,6 +3353,7 @@
         "amenity/vending_machine/drinks": {
             "icon": "poi-vending-machine",
             "fields": [
+                "vending",
                 "operator",
                 "payment_multi",
                 "currency_multi"
@@ -3270,9 +3378,68 @@
             },
             "name": "Drink Vending Machine"
         },
+        "amenity/vending_machine/electronics": {
+            "icon": "poi-vending-machine",
+            "fields": [
+                "vending",
+                "operator",
+                "payment_multi",
+                "currency_multi"
+            ],
+            "geometry": [
+                "point"
+            ],
+            "terms": [
+                "cable",
+                "charger",
+                "earbud",
+                "headphone",
+                "phone",
+                "tablet"
+            ],
+            "tags": {
+                "amenity": "vending_machine",
+                "vending": "electronics"
+            },
+            "reference": {
+                "key": "vending",
+                "value": "electronics"
+            },
+            "name": "Electronics Vending Machine"
+        },
+        "amenity/vending_machine/elongated_coin": {
+            "icon": "poi-vending-machine",
+            "fields": [
+                "vending",
+                "operator",
+                "payment_multi",
+                "currency_multi"
+            ],
+            "geometry": [
+                "point"
+            ],
+            "terms": [
+                "coin",
+                "crush",
+                "elongated",
+                "flatten",
+                "penny",
+                "souvenir"
+            ],
+            "tags": {
+                "amenity": "vending_machine",
+                "vending": "elongated_coin"
+            },
+            "reference": {
+                "key": "vending",
+                "value": "elongated_coin"
+            },
+            "name": "Flat Coin Vending Machine"
+        },
         "amenity/vending_machine/excrement_bags": {
             "icon": "poi-vending-machine",
             "fields": [
+                "vending",
                 "operator",
                 "fee",
                 "payment_multi",
@@ -3300,6 +3467,7 @@
         "amenity/vending_machine/feminine_hygiene": {
             "icon": "poi-vending-machine",
             "fields": [
+                "vending",
                 "operator",
                 "payment_multi",
                 "currency_multi"
@@ -3326,9 +3494,93 @@
             },
             "name": "Feminine Hygiene Vending Machine"
         },
+        "amenity/vending_machine/food": {
+            "icon": "poi-vending-machine",
+            "fields": [
+                "vending",
+                "operator",
+                "payment_multi",
+                "currency_multi"
+            ],
+            "geometry": [
+                "point"
+            ],
+            "terms": [
+                "food"
+            ],
+            "tags": {
+                "amenity": "vending_machine",
+                "vending": "food"
+            },
+            "reference": {
+                "key": "vending",
+                "value": "food"
+            },
+            "name": "Food Vending Machine"
+        },
+        "amenity/vending_machine/fuel": {
+            "icon": "poi-vending-machine",
+            "fields": [
+                "vending",
+                "operator",
+                "payment_multi",
+                "currency_multi"
+            ],
+            "geometry": [
+                "point"
+            ],
+            "terms": [
+                "petrol",
+                "fuel",
+                "gasoline",
+                "propane",
+                "diesel",
+                "lng",
+                "cng",
+                "biodiesel"
+            ],
+            "tags": {
+                "amenity": "vending_machine",
+                "vending": "fuel"
+            },
+            "reference": {
+                "key": "vending",
+                "value": "fuel"
+            },
+            "name": "Gas Pump"
+        },
+        "amenity/vending_machine/ice_cream": {
+            "icon": "poi-vending-machine",
+            "fields": [
+                "vending",
+                "operator",
+                "payment_multi",
+                "currency_multi"
+            ],
+            "geometry": [
+                "point"
+            ],
+            "terms": [
+                "chocolate",
+                "ice cream",
+                "frozen",
+                "popsicle",
+                "vanilla"
+            ],
+            "tags": {
+                "amenity": "vending_machine",
+                "vending": "ice_cream"
+            },
+            "reference": {
+                "key": "vending",
+                "value": "ice_cream"
+            },
+            "name": "Ice Cream Vending Machine"
+        },
         "amenity/vending_machine/newspapers": {
             "icon": "poi-vending-machine",
             "fields": [
+                "vending",
                 "operator",
                 "fee",
                 "payment_multi",
@@ -3353,6 +3605,7 @@
         "amenity/vending_machine/parcel_pickup_dropoff": {
             "icon": "poi-vending-machine",
             "fields": [
+                "vending",
                 "operator",
                 "payment_multi",
                 "currency_multi"
@@ -3378,6 +3631,7 @@
         "amenity/vending_machine/parking_tickets": {
             "icon": "poi-vending-machine",
             "fields": [
+                "vending",
                 "operator",
                 "payment_multi",
                 "currency_multi"
@@ -3403,6 +3657,7 @@
         "amenity/vending_machine/public_transport_tickets": {
             "icon": "poi-vending-machine",
             "fields": [
+                "vending",
                 "operator",
                 "payment_multi",
                 "currency_multi"
@@ -3428,9 +3683,36 @@
             },
             "name": "Transit Ticket Vending Machine"
         },
+        "amenity/vending_machine/stamps": {
+            "icon": "poi-vending-machine",
+            "fields": [
+                "vending",
+                "operator",
+                "payment_multi",
+                "currency_multi"
+            ],
+            "geometry": [
+                "point"
+            ],
+            "terms": [
+                "mail",
+                "postage",
+                "stamp"
+            ],
+            "tags": {
+                "amenity": "vending_machine",
+                "vending": "stamps"
+            },
+            "reference": {
+                "key": "vending",
+                "value": "stamps"
+            },
+            "name": "Postage Vending Machine"
+        },
         "amenity/vending_machine/sweets": {
             "icon": "poi-vending-machine",
             "fields": [
+                "vending",
                 "operator",
                 "payment_multi",
                 "currency_multi"
@@ -3802,6 +4084,26 @@
                 "attraction": "drop_tower"
             },
             "name": "Drop Tower"
+        },
+        "attraction/maze": {
+            "icon": "amusement-park",
+            "fields": [
+                "name",
+                "operator"
+            ],
+            "geometry": [
+                "point",
+                "area"
+            ],
+            "terms": [
+                "theme park",
+                "amusement ride",
+                "labyrinth"
+            ],
+            "tags": {
+                "attraction": "maze"
+            },
+            "name": "Maze"
         },
         "attraction/pirate_ship": {
             "icon": "amusement-park",
@@ -4197,6 +4499,7 @@
                 "name",
                 "building",
                 "levels",
+                "height",
                 "address"
             ],
             "geometry": [
@@ -4214,7 +4517,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4242,7 +4546,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "point",
@@ -4261,7 +4566,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4277,7 +4583,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4293,6 +4600,7 @@
             "fields": [
                 "name",
                 "levels",
+                "height",
                 "address"
             ],
             "geometry": [
@@ -4310,7 +4618,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4330,7 +4639,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4346,7 +4656,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4362,7 +4673,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4378,7 +4690,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4395,6 +4708,7 @@
                 "name",
                 "address",
                 "levels",
+                "height",
                 "smoking"
             ],
             "geometry": [
@@ -4411,7 +4725,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4431,6 +4746,7 @@
                 "name",
                 "address",
                 "levels",
+                "height",
                 "smoking"
             ],
             "geometry": [
@@ -4447,7 +4763,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4463,7 +4780,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4487,6 +4805,7 @@
                 "name",
                 "address",
                 "levels",
+                "height",
                 "smoking"
             ],
             "geometry": [
@@ -4503,7 +4822,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4519,7 +4839,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4565,7 +4886,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4581,7 +4903,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4598,6 +4921,7 @@
                 "name",
                 "address",
                 "levels",
+                "height",
                 "smoking"
             ],
             "geometry": [
@@ -4614,7 +4938,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4649,7 +4974,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4665,7 +4991,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4685,7 +5012,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4702,6 +5030,7 @@
                 "name",
                 "address",
                 "levels",
+                "height",
                 "smoking"
             ],
             "geometry": [
@@ -4718,7 +5047,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4735,6 +5065,7 @@
                 "name",
                 "address",
                 "levels",
+                "height",
                 "smoking"
             ],
             "geometry": [
@@ -4766,7 +5097,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4782,7 +5114,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4804,7 +5137,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4829,7 +5163,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4845,7 +5180,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4861,7 +5197,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4878,6 +5215,7 @@
                 "name",
                 "address",
                 "levels",
+                "height",
                 "smoking"
             ],
             "geometry": [
@@ -4894,7 +5232,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4910,7 +5249,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4926,7 +5266,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4951,6 +5292,7 @@
                 "name",
                 "address",
                 "levels",
+                "height",
                 "smoking"
             ],
             "geometry": [
@@ -4967,7 +5309,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -4986,7 +5329,8 @@
             "fields": [
                 "name",
                 "address",
-                "levels"
+                "levels",
+                "height"
             ],
             "geometry": [
                 "area"
@@ -6764,6 +7108,30 @@
             },
             "name": "Hospice"
         },
+        "healthcare/laboratory": {
+            "icon": "hospital",
+            "fields": [
+                "name",
+                "operator",
+                "website",
+                "ref",
+                "address",
+                "opening_hours"
+            ],
+            "geometry": [
+                "point",
+                "area"
+            ],
+            "terms": [
+                "medical_laboratory",
+                "medical_lab",
+                "blood_check"
+            ],
+            "tags": {
+                "healthcare": "laboratory"
+            },
+            "name": "Medical Laboratory"
+        },
         "healthcare/midwife": {
             "icon": "hospital",
             "fields": [
@@ -7290,6 +7658,7 @@
                 "ref_road_number",
                 "oneway",
                 "maxspeed",
+                "maxspeed/advisory",
                 "lanes",
                 "surface",
                 "structure",
@@ -7349,6 +7718,19 @@
             ],
             "name": "Motorway"
         },
+        "highway/passing_place": {
+            "icon": "circle-stroked",
+            "geometry": [
+                "vertex"
+            ],
+            "tags": {
+                "highway": "passing_place"
+            },
+            "terms": [
+                "turnout, pullout"
+            ],
+            "name": "Passing Place"
+        },
         "highway/path": {
             "icon": "highway-path",
             "fields": [
@@ -7363,6 +7745,7 @@
                 "mtb/scale",
                 "mtb/scale/uphill",
                 "mtb/scale/imba",
+                "horse_scale",
                 "ref"
             ],
             "geometry": [
@@ -7440,6 +7823,7 @@
                 "name",
                 "oneway",
                 "maxspeed",
+                "maxspeed/advisory",
                 "lanes",
                 "surface",
                 "maxheight",
@@ -7586,6 +7970,7 @@
                 "name",
                 "oneway",
                 "maxspeed",
+                "maxspeed/advisory",
                 "lanes",
                 "surface",
                 "structure",
@@ -7878,6 +8263,7 @@
                 "name",
                 "oneway",
                 "maxspeed",
+                "maxspeed/advisory",
                 "lanes",
                 "surface",
                 "structure",
@@ -7935,7 +8321,8 @@
                 "smoothness",
                 "mtb/scale",
                 "mtb/scale/uphill",
-                "mtb/scale/imba"
+                "mtb/scale/imba",
+                "horse_scale"
             ],
             "geometry": [
                 "line"
@@ -8017,6 +8404,7 @@
                 "ref_road_number",
                 "oneway",
                 "maxspeed",
+                "maxspeed/advisory",
                 "lanes",
                 "surface",
                 "structure",
@@ -8183,6 +8571,15 @@
                 "point",
                 "vertex",
                 "area"
+            ],
+            "terms": [
+                "dedicatory",
+                "epitaph",
+                "remember",
+                "remembrance",
+                "memory",
+                "monument",
+                "stolperstein"
             ],
             "tags": {
                 "historic": "memorial"
@@ -8588,7 +8985,8 @@
         "landuse/industrial": {
             "icon": "industry",
             "fields": [
-                "name"
+                "name",
+                "industrial"
             ],
             "geometry": [
                 "area"
@@ -9342,6 +9740,22 @@
                 "leisure": "amusement_arcade"
             },
             "name": "Amusement Arcade"
+        },
+        "leisure/beach_resort": {
+            "icon": "poi-beach",
+            "fields": [
+                "name",
+                "address",
+                "fee"
+            ],
+            "geometry": [
+                "point",
+                "area"
+            ],
+            "tags": {
+                "leisure": "beach_resort"
+            },
+            "name": "Beach Resort"
         },
         "leisure/bird_hide": {
             "icon": "poi-binoculars",
@@ -10168,6 +10582,31 @@
             ],
             "name": "Nature Reserve"
         },
+        "leisure/outdoor_seating": {
+            "icon": "picnic-site",
+            "geometry": [
+                "point",
+                "area"
+            ],
+            "fields": [
+                "name",
+                "operator"
+            ],
+            "terms": [
+                "al fresco",
+                "beer garden",
+                "dining",
+                "cafe",
+                "restaurant",
+                "pub",
+                "bar",
+                "patio"
+            ],
+            "tags": {
+                "leisure": "outdoor_seating"
+            },
+            "name": "Outdoor Seating Area"
+        },
         "leisure/park": {
             "icon": "park",
             "geometry": [
@@ -10240,6 +10679,7 @@
         "leisure/pitch/american_football": {
             "icon": "america-football",
             "fields": [
+                "name",
                 "surface",
                 "lit"
             ],
@@ -10261,6 +10701,7 @@
         "leisure/pitch/baseball": {
             "icon": "baseball",
             "fields": [
+                "name",
                 "lit"
             ],
             "geometry": [
@@ -10281,6 +10722,7 @@
         "leisure/pitch/basketball": {
             "icon": "basketball",
             "fields": [
+                "name",
                 "surface",
                 "hoops",
                 "lit",
@@ -10304,6 +10746,7 @@
         "leisure/pitch/beachvolleyball": {
             "icon": "basketball",
             "fields": [
+                "name",
                 "surface",
                 "lit"
             ],
@@ -10337,6 +10780,7 @@
         "leisure/pitch/boules": {
             "icon": "pitch",
             "fields": [
+                "name",
                 "boules",
                 "surface",
                 "lit"
@@ -10363,6 +10807,7 @@
         "leisure/pitch/bowls": {
             "icon": "pitch",
             "fields": [
+                "name",
                 "surface",
                 "lit"
             ],
@@ -10384,6 +10829,7 @@
         "leisure/pitch/cricket": {
             "icon": "cricket",
             "fields": [
+                "name",
                 "surface",
                 "lit"
             ],
@@ -10405,6 +10851,7 @@
         "leisure/pitch/equestrian": {
             "icon": "horse-riding",
             "fields": [
+                "name",
                 "surface",
                 "lit",
                 "building"
@@ -10433,6 +10880,7 @@
         "leisure/pitch/rugby_league": {
             "icon": "america-football",
             "fields": [
+                "name",
                 "surface",
                 "lit"
             ],
@@ -10454,6 +10902,7 @@
         "leisure/pitch/rugby_union": {
             "icon": "america-football",
             "fields": [
+                "name",
                 "surface",
                 "lit"
             ],
@@ -10475,6 +10924,7 @@
         "leisure/pitch/skateboard": {
             "icon": "pitch",
             "fields": [
+                "name",
                 "surface",
                 "lit"
             ],
@@ -10496,6 +10946,7 @@
         "leisure/pitch/soccer": {
             "icon": "soccer",
             "fields": [
+                "name",
                 "surface",
                 "lit"
             ],
@@ -10519,6 +10970,7 @@
         "leisure/pitch/table_tennis": {
             "icon": "tennis",
             "fields": [
+                "name",
                 "lit",
                 "access_simple"
             ],
@@ -10543,6 +10995,7 @@
         "leisure/pitch/tennis": {
             "icon": "tennis",
             "fields": [
+                "name",
                 "surface",
                 "lit",
                 "access_simple"
@@ -10565,6 +11018,7 @@
         "leisure/pitch/volleyball": {
             "icon": "basketball",
             "fields": [
+                "name",
                 "surface",
                 "lit"
             ],
@@ -10872,6 +11326,31 @@
             },
             "name": "Adit"
         },
+        "man_made/antenna": {
+            "icon": "poi-mast",
+            "fields": [
+                "height",
+                "communication_multi"
+            ],
+            "geometry": [
+                "point"
+            ],
+            "terms": [
+                "broadcast",
+                "cell phone",
+                "cell",
+                "communication",
+                "mobile phone",
+                "radio",
+                "television",
+                "transmission",
+                "tv"
+            ],
+            "tags": {
+                "man_made": "antenna"
+            },
+            "name": "Antenna"
+        },
         "man_made/breakwater": {
             "geometry": [
                 "line",
@@ -11046,6 +11525,20 @@
                 "tower:type": "observation"
             },
             "name": "Observation Tower"
+        },
+        "man_made/observatory": {
+            "geometry": [
+                "point",
+                "area"
+            ],
+            "terms": [
+                "astronomical",
+                "meteorological"
+            ],
+            "tags": {
+                "man_made": "observatory"
+            },
+            "name": "Observatory"
         },
         "man_made/petroleum_well": {
             "icon": "poi-storage-tank",
@@ -11605,6 +12098,18 @@
             },
             "terms": [],
             "name": "Heath"
+        },
+        "natural/mud": {
+            "geometry": [
+                "area"
+            ],
+            "tags": {
+                "natural": "mud"
+            },
+            "terms": [
+                "wetland"
+            ],
+            "name": "Mud"
         },
         "natural/peak": {
             "icon": "mountain",
@@ -15291,17 +15796,18 @@
         },
         "railway/abandoned": {
             "icon": "railway-abandoned",
+            "fields": [
+                "name",
+                "structure",
+                "service_rail",
+                "usage_rail"
+            ],
             "geometry": [
                 "line"
             ],
             "tags": {
                 "railway": "abandoned"
             },
-            "fields": [
-                "name",
-                "structure",
-                "service_rail"
-            ],
             "terms": [],
             "name": "Abandoned Railway"
         },
@@ -15354,16 +15860,17 @@
         },
         "railway/disused": {
             "icon": "railway-disused",
+            "fields": [
+                "structure",
+                "service_rail",
+                "usage_rail"
+            ],
             "geometry": [
                 "line"
             ],
             "tags": {
                 "railway": "disused"
             },
-            "fields": [
-                "structure",
-                "service_rail"
-            ],
             "terms": [],
             "name": "Disused Railway"
         },
@@ -15409,19 +15916,22 @@
         },
         "railway/light_rail": {
             "icon": "railway-light-rail",
+            "fields": [
+                "name",
+                "structure",
+                "gauge",
+                "electrified",
+                "service_rail",
+                "usage_rail",
+                "voltage",
+                "frequency"
+            ],
             "geometry": [
                 "line"
             ],
             "tags": {
                 "railway": "light_rail"
             },
-            "fields": [
-                "name",
-                "structure",
-                "gauge",
-                "electrified",
-                "service_rail"
-            ],
             "terms": [
                 "light rail",
                 "streetcar",
@@ -15471,36 +15981,42 @@
         },
         "railway/monorail": {
             "icon": "railway-monorail",
+            "fields": [
+                "name",
+                "structure",
+                "electrified",
+                "service_rail",
+                "usage_rail",
+                "voltage",
+                "frequency"
+            ],
             "geometry": [
                 "line"
             ],
             "tags": {
                 "railway": "monorail"
             },
-            "fields": [
-                "name",
-                "structure",
-                "electrified",
-                "service_rail"
-            ],
             "terms": [],
             "name": "Monorail"
         },
         "railway/narrow_gauge": {
             "icon": "railway-rail",
+            "fields": [
+                "name",
+                "structure",
+                "gauge",
+                "electrified",
+                "service_rail",
+                "usage_rail",
+                "voltage",
+                "frequency"
+            ],
             "geometry": [
                 "line"
             ],
             "tags": {
                 "railway": "narrow_gauge"
             },
-            "fields": [
-                "name",
-                "structure",
-                "gauge",
-                "electrified",
-                "service_rail"
-            ],
             "terms": [
                 "narrow gauge railway",
                 "narrow gauge railroad"
@@ -15509,20 +16025,23 @@
         },
         "railway/rail": {
             "icon": "railway-rail",
-            "geometry": [
-                "line"
-            ],
-            "tags": {
-                "railway": "rail"
-            },
             "fields": [
                 "name",
                 "structure",
                 "gauge",
                 "electrified",
                 "maxspeed",
-                "service_rail"
+                "service_rail",
+                "usage_rail",
+                "voltage",
+                "frequency"
             ],
+            "geometry": [
+                "line"
+            ],
+            "tags": {
+                "railway": "rail"
+            },
             "terms": [],
             "name": "Rail"
         },
@@ -15566,19 +16085,22 @@
         },
         "railway/subway": {
             "icon": "railway-subway",
+            "fields": [
+                "name",
+                "structure",
+                "gauge",
+                "electrified",
+                "service_rail",
+                "usage_rail",
+                "voltage",
+                "frequency"
+            ],
             "geometry": [
                 "line"
             ],
             "tags": {
                 "railway": "subway"
             },
-            "fields": [
-                "name",
-                "structure",
-                "gauge",
-                "electrified",
-                "service_rail"
-            ],
             "terms": [
                 "metro",
                 "transit"
@@ -15621,19 +16143,22 @@
         },
         "railway/tram": {
             "icon": "railway-light-rail",
+            "fields": [
+                "name",
+                "structure",
+                "gauge",
+                "electrified",
+                "service_rail",
+                "usage_rail",
+                "voltage",
+                "frequency"
+            ],
             "geometry": [
                 "line"
             ],
             "tags": {
                 "railway": "tram"
             },
-            "fields": [
-                "name",
-                "structure",
-                "gauge",
-                "electrified",
-                "service_rail"
-            ],
             "terms": [
                 "light rail",
                 "streetcar",
@@ -17701,6 +18226,28 @@
             },
             "name": "Perfume Store"
         },
+        "shop/pet_grooming": {
+            "icon": "dog-park",
+            "fields": [
+                "name",
+                "operator",
+                "address",
+                "building_area",
+                "opening_hours",
+                "payment_multi"
+            ],
+            "geometry": [
+                "point",
+                "area"
+            ],
+            "terms": [
+                "dog"
+            ],
+            "tags": {
+                "shop": "pet_grooming"
+            },
+            "name": "Pet Grooming Store"
+        },
         "shop/pet": {
             "icon": "dog-park",
             "fields": [
@@ -18664,6 +19211,7 @@
             "icon": "lodging",
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -18881,6 +19429,28 @@
                 "tourism": "theme_park"
             },
             "name": "Theme Park"
+        },
+        "tourism/trail_riding_station": {
+            "icon": "horse-riding",
+            "fields": [
+                "name",
+                "horse_stables",
+                "horse_riding",
+                "horse_dressage",
+                "address",
+                "phone",
+                "website",
+                "description"
+            ],
+            "geometry": [
+                "point",
+                "area"
+            ],
+            "tags": {
+                "tourism": "trail_riding_station"
+            },
+            "name": "Trail Riding Station",
+            "matchScore": 2
         },
         "tourism/viewpoint": {
             "icon": "poi-binoculars",
@@ -19259,7 +19829,7 @@
                 "type": "restriction",
                 "restriction": "only_left_turn"
             },
-            "name": "Left Turn Only"
+            "name": "Only Left Turn"
         },
         "type/restriction/only_right_turn": {
             "icon": "restriction-only-right-turn",
@@ -19273,7 +19843,7 @@
                 "type": "restriction",
                 "restriction": "only_right_turn"
             },
-            "name": "Right Turn Only"
+            "name": "Only Right Turn"
         },
         "type/restriction/only_straight_on": {
             "icon": "restriction-only-straight-on",
@@ -19287,7 +19857,21 @@
                 "type": "restriction",
                 "restriction": "only_straight_on"
             },
-            "name": "No Turns"
+            "name": "Only Straight On"
+        },
+        "type/restriction/only_u_turn": {
+            "icon": "restriction-only-u-turn",
+            "fields": [
+                "except"
+            ],
+            "geometry": [
+                "relation"
+            ],
+            "tags": {
+                "type": "restriction",
+                "restriction": "only_u_turn"
+            },
+            "name": "Only U-turn"
         },
         "type/route_master": {
             "icon": "route-master",
@@ -19412,7 +19996,9 @@
                 "name",
                 "ref_route",
                 "operator",
-                "network_foot"
+                "network_foot",
+                "description",
+                "distance"
             ],
             "geometry": [
                 "relation"
@@ -19429,7 +20015,9 @@
                 "name",
                 "ref_route",
                 "operator",
-                "network_horse"
+                "network_horse",
+                "description",
+                "distance"
             ],
             "geometry": [
                 "relation"
@@ -37574,6 +38162,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37595,6 +38184,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37616,6 +38206,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37637,6 +38228,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37658,6 +38250,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37679,6 +38272,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37700,6 +38294,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37721,6 +38316,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37742,6 +38338,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37763,6 +38360,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37784,6 +38382,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37805,6 +38404,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37826,6 +38426,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37847,6 +38448,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37868,6 +38470,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37889,6 +38492,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37910,6 +38514,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37931,6 +38536,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37952,6 +38558,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37973,6 +38580,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -37994,6 +38602,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38015,6 +38624,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38036,6 +38646,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38057,6 +38668,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38078,6 +38690,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38099,6 +38712,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38120,6 +38734,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38141,6 +38756,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38162,6 +38778,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38183,6 +38800,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38204,6 +38822,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38225,6 +38844,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38246,6 +38866,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38267,6 +38888,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38288,6 +38910,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38309,6 +38932,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38330,6 +38954,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38351,6 +38976,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38372,6 +38998,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38393,6 +39020,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38414,6 +39042,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38435,6 +39064,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38456,6 +39086,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38477,6 +39108,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38498,6 +39130,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38519,6 +39152,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38540,6 +39174,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38561,6 +39196,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38582,6 +39218,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38603,6 +39240,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38624,6 +39262,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38645,6 +39284,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38666,6 +39306,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38687,6 +39328,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38708,6 +39350,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38729,6 +39372,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38750,6 +39394,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38771,6 +39416,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38792,6 +39438,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38813,6 +39460,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38834,6 +39482,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38855,6 +39504,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38876,6 +39526,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38897,6 +39548,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38918,6 +39570,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38939,6 +39592,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38960,6 +39614,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -38981,6 +39636,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39002,6 +39658,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39023,6 +39680,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39044,6 +39702,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39065,6 +39724,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39086,6 +39746,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39107,6 +39768,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39128,6 +39790,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39149,6 +39812,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39170,6 +39834,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39191,6 +39856,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39212,6 +39878,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39233,6 +39900,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39254,6 +39922,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39275,6 +39944,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39296,6 +39966,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39317,6 +39988,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39338,6 +40010,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39359,6 +40032,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39380,6 +40054,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39401,6 +40076,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39422,6 +40098,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39443,6 +40120,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39464,6 +40142,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39485,6 +40164,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39506,6 +40186,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39527,6 +40208,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39548,6 +40230,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39569,6 +40252,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39590,6 +40274,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39611,6 +40296,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39632,6 +40318,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39653,6 +40340,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39674,6 +40362,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39695,6 +40384,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39716,6 +40406,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39737,6 +40428,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39758,6 +40450,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39779,6 +40472,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39800,6 +40494,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39821,6 +40516,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39842,6 +40538,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39863,6 +40560,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39884,6 +40582,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39905,6 +40604,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39926,6 +40626,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39947,6 +40648,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39968,6 +40670,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -39989,6 +40692,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40010,6 +40714,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40031,6 +40736,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40052,6 +40758,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40073,6 +40780,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40094,6 +40802,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40115,6 +40824,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40136,6 +40846,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40157,6 +40868,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40178,6 +40890,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40199,6 +40912,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40220,6 +40934,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40241,6 +40956,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40262,6 +40978,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40283,6 +41000,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40304,6 +41022,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40325,6 +41044,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40346,6 +41066,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40367,6 +41088,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40388,6 +41110,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40409,6 +41132,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40430,6 +41154,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40451,6 +41176,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40472,6 +41198,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40493,6 +41220,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40514,6 +41242,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40535,6 +41264,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40556,6 +41286,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40577,6 +41308,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40598,6 +41330,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40619,6 +41352,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40640,6 +41374,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40661,6 +41396,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40682,6 +41418,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40703,6 +41440,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40724,6 +41462,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40745,6 +41484,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40766,6 +41506,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40787,6 +41528,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40808,6 +41550,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40829,6 +41572,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40850,6 +41594,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40871,6 +41616,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40892,6 +41638,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40913,6 +41660,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40934,6 +41682,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40955,6 +41704,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40976,6 +41726,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -40997,6 +41748,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41018,6 +41770,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41039,6 +41792,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41060,6 +41814,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41081,6 +41836,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41102,6 +41858,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41123,6 +41880,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41144,6 +41902,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41165,6 +41924,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41186,6 +41946,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41207,6 +41968,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41228,6 +41990,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41249,6 +42012,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41270,6 +42034,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41291,6 +42056,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41312,6 +42078,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41333,6 +42100,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41354,6 +42122,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41375,6 +42144,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41396,6 +42166,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41417,6 +42188,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41438,6 +42210,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41459,6 +42232,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41480,6 +42254,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41501,6 +42276,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41522,6 +42298,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41543,6 +42320,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41564,6 +42342,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41585,6 +42364,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41606,6 +42386,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41627,6 +42408,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41648,6 +42430,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41669,6 +42452,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41690,6 +42474,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41711,6 +42496,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41732,6 +42518,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41753,6 +42540,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41774,6 +42562,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41795,6 +42584,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41816,6 +42606,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41837,6 +42628,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41858,6 +42650,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41879,6 +42672,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41900,6 +42694,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41921,6 +42716,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41942,6 +42738,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41963,6 +42760,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -41984,6 +42782,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42005,6 +42804,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42026,6 +42826,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42047,6 +42848,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42068,6 +42870,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42089,6 +42892,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42110,6 +42914,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42131,6 +42936,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42152,6 +42958,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42173,6 +42980,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42194,6 +43002,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42215,6 +43024,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42236,6 +43046,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42257,6 +43068,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42278,6 +43090,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42299,6 +43112,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42320,6 +43134,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42341,6 +43156,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42362,6 +43178,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42383,6 +43200,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42404,6 +43222,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42425,6 +43244,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42446,6 +43266,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42467,6 +43288,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42488,6 +43310,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42509,6 +43332,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42530,6 +43354,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42551,6 +43376,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42572,6 +43398,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42593,6 +43420,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42614,6 +43442,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42635,6 +43464,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42656,6 +43486,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42677,6 +43508,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42698,6 +43530,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42719,6 +43552,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42740,6 +43574,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42761,6 +43596,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42782,6 +43618,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42803,6 +43640,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42824,6 +43662,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42845,6 +43684,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42866,6 +43706,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42887,6 +43728,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42908,6 +43750,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42929,6 +43772,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42950,6 +43794,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42971,6 +43816,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -42992,6 +43838,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -43013,6 +43860,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -43034,6 +43882,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -43055,6 +43904,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -43076,6 +43926,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -43098,6 +43949,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -43119,6 +43971,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -43140,6 +43993,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -43161,6 +44015,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "fuel_multi",
@@ -93815,6 +94670,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -93840,6 +94696,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -93865,6 +94722,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -93890,6 +94748,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -93915,6 +94774,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -93940,6 +94800,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -93965,6 +94826,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -93990,6 +94852,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94015,6 +94878,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94040,6 +94904,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94065,6 +94930,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94090,6 +94956,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94115,6 +94982,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94140,6 +95008,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94165,6 +95034,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94190,6 +95060,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94215,6 +95086,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94240,6 +95112,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94265,6 +95138,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94290,6 +95164,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94315,6 +95190,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94340,6 +95216,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94365,6 +95242,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94390,6 +95268,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94415,6 +95294,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94440,6 +95320,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94465,6 +95346,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94490,6 +95372,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94515,6 +95398,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94540,6 +95424,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94565,6 +95450,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94590,6 +95476,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94615,6 +95502,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94640,6 +95528,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94665,6 +95554,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94690,6 +95580,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94715,6 +95606,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94740,6 +95632,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94765,6 +95658,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94790,6 +95684,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94815,6 +95710,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94840,6 +95736,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94865,6 +95762,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94890,6 +95788,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94915,6 +95814,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94940,6 +95840,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94965,6 +95866,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -94990,6 +95892,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95015,6 +95918,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95040,6 +95944,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95065,6 +95970,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95090,6 +95996,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95115,6 +96022,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95140,6 +96048,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95165,6 +96074,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95190,6 +96100,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95215,6 +96126,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95240,6 +96152,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95265,6 +96178,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95290,6 +96204,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95315,6 +96230,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95340,6 +96256,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",
@@ -95365,6 +96282,7 @@
             ],
             "fields": [
                 "name",
+                "brand",
                 "operator",
                 "address",
                 "building_area",

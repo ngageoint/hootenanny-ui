@@ -1,5 +1,10 @@
 {
     "da": {
+        "icons": {
+            "information": "info",
+            "remove": "fjern",
+            "undo": "fortryd"
+        },
         "modes": {
             "add_area": {
                 "title": "Område",
@@ -222,6 +227,42 @@
                     "create": "Tilføjede en svingbegrænsning",
                     "delete": "Slettede en svingbegrænsning"
                 }
+            }
+        },
+        "restriction": {
+            "controls": {
+                "distance": "Afstand",
+                "distance_up_to": "Op til {distance}",
+                "via": "Via",
+                "via_node_only": "Kun node",
+                "via_up_to_one": "Op til 1 vej",
+                "via_up_to_two": "Op til 2 veje"
+            },
+            "help": {
+                "indirect": "(indirekte)",
+                "turn": {
+                    "no_left_turn": "INGEN venstresving {indirect}",
+                    "no_right_turn": "INGEN højresving {indirect}",
+                    "no_u_turn": "INGEN u-vending {indirect}",
+                    "no_straight_on": "INGEN ligeudkørsel {indirect}",
+                    "only_left_turn": "KUN venstresving {indirect}",
+                    "only_right_turn": "KUN højresving {indirect}",
+                    "only_u_turn": "KUN u-vending {indirect}",
+                    "only_straight_on": "KUN ligeudkørsel {indirect}",
+                    "allowed_left_turn": "Venstresving tilladt {indirect}",
+                    "allowed_right_turn": "Højresving tilladt {indirect}",
+                    "allowed_u_turn": "U-vending tilladt  {indirect}",
+                    "allowed_straight_on": "Ligeudkørsel tilladt {indirect}"
+                },
+                "from": "FRA",
+                "via": "VIA",
+                "to": "TIL",
+                "from_name": "{from} {fromName}",
+                "from_name_to_name": "{from} {fromName} {to} {toName}",
+                "via_names": "{via} {viaNames}",
+                "select_from": "Klik for at markere et {from}-vejsegment",
+                "select_from_name": "Klik for at vælge {fromName} som {from}",
+                "toggle": "Klik for at skifte til \"{turn}\""
             }
         },
         "undo": {
@@ -559,13 +600,15 @@
             }
         },
         "success": {
-            "edited_osm": "Redigerede OSM!",
             "just_edited": "Du har lige redigeret OpenStreetMap!",
+<<<<<<< HEAD
             "view_on_osm": "Vis på OSM",
             "facebook": "Del på Facebook",
             "twitter": "Del på Twitter",
             "google": "Del på Google+",
             "help_html": "Dine ændringer vil komme frem i \"Standard\" kortlaget om få minutter. Andre kortlag  med bestemte objekter vil tage længere tid.",
+=======
+>>>>>>> v2.8.0
             "help_link_text": "Detaljer",
             "help_link_url": "https://wiki.openstreetmap.org/wiki/FAQ#I_have_just_made_some_changes_to_the_map._How_do_I_get_to_see_my_changes.3F"
         },
@@ -677,6 +720,7 @@
                 "select_left_click": "{leftclick} Venstre-klik på et kortobjekt for at markere det. Dette vil fremhæve det med en pulserende glød, og i kanten af kortet vises detaljer om objektet, såsom navn og adresse.",
                 "select_right_click": "{rightclick} Højreklik på et kortobjekt for at vise redigeringsmenuen, som viser de mulige værktøjer der kan anvendes, såsom rotation, flytning og sletning.",
                 "multiselect_h": "Multi-markering",
+                "multiselect_shift_click": "`{shift}`+{leftclick} venstreklik for at markere flere kortobjekter ad gangen. Dette gør det nemmere at flytte eller slette flere objekter i en operation.",
                 "save_h": "Gem"
             },
             "feature_editor": {
@@ -706,6 +750,44 @@
                 "offsets_h": "Justering af luftfoto-offset",
                 "offset": "Den registrerede position for et luftfoto er nogle gange ikke helt korrekt i forhold til kortet. Hvis du ser at bygninger og veje generelt er forskudt mellem kort og luftfoto, kan det være luftfotoet der er unøjagtigt, så i stedet for at flytte alle kortobjekter kan du justere baggrunden så den er samstemmende med kortets data ved at åbne \"Juster luftfoto-offset\" i bunden af Baggrundsindstillinger-fanen.",
                 "offset_change": "Klik på de små trekanter for at justere offset i små intervaller, eller hold venstre musetast nede og træk indenfor den grå firkant for at trække luftfotoet på plads."
+            },
+            "field": {
+                "restrictions": {
+                    "title": "Hjælp til svingbegrænsninger",
+                    "about": {
+                        "title": "Om",
+                        "about": "Dette felt gør det muligt at inspicere og redigere svingbegrænsninger. Det viser en model af det valgte vejkryds inklusiv forbundne veje i nærheden.",
+                        "from_via_to": "En svingbegrænsning indeholder altid: en **FRA-vej**, en **TIL-vej** og enten en **VIA-node** eller en eller flere **VIA-veje**.",
+                        "maxdist": "Med \"{distField}\"-kontrolelementet indstilles hvor langt omkring der søges efter forbundne veje,",
+                        "maxvia": "Med \"{viaField}\"-kontrolelementet justeres hvor mange VIA-veje der kan inkluderes. (tip: så få som muligt bør foretrækkes)"
+                    },
+                    "inspecting": {
+                        "title": "Inspektion",
+                        "about": "Før musen over ethvert **FRA**-segment for at se om det har eksisterende svingbegrænsninger. Ethvert muligt **TIL**-segment vil tegnes med en farvet skygge der viser om en begrænsning eksisterer.",
+                        "from_shadow": "{fromShadow} **FRA-segment**",
+                        "allow_shadow": "{allowShadow} **TIL tilladt**",
+                        "restrict_shadow": "{restrictShadow} **TIL begrænset**",
+                        "only_shadow": "{onlyShadow} **TIL kun (påbudt)**",
+                        "restricted": "\"Begrænset\" indikerer at der er en specifik svingbegrænsning, for eksempel \"ingen venstresving\".",
+                        "only": "\"Kun (påbudt)\" indikerer at et køretøj der følger denne rute kun kan vælge denne vej, for eksempel \"kun ligeudkørsel\"."
+                    },
+                    "modifying": {
+                        "title": "Redigering",
+                        "about": "For at redigere svingbegrænsninger skal du først klikke på det startende **FRA**-segment for at vælge dette. Det valgte segment vil pulsere og alle mulige **TIL**-segmenter vil blive vist med et sving-symbol.",
+                        "indicators": "Klik nu på et dreje-symbol for at skifte det mellem \"tilladt\", \"begrænset\" og \"kun (påbudt)\".",
+                        "allow_turn": "{allowTurn} **TIL tilladt**",
+                        "restrict_turn": "{restrictTurn} **TIL begrænset**",
+                        "only_turn": "{onlyTurn} **TIL kun (påbudt)**"
+                    },
+                    "tips": {
+                        "title": "Tips",
+                        "simple": "**Foretræk simple begrænsninger i stedet for komplekse.**",
+                        "simple_example": "Undgå for eksempel en begrænsning med en VIA-vej hvis en simplere med en VIA-node ville være tilstrækkeligt.",
+                        "indirect": "**Nogle begrænsninger vises med teksten \"(indirekte)\" og tegnes med en lysere farve.**",
+                        "indirect_example": "Disse begrænsninger eksisterer på grund af andre begrænsninger i nærheden. For eksempel vil en begrænsning med \"kun ligeudkørsel\" i et kryds skabe indirekte \"ingen sving\"-begrænsninger for alle øvrige veje gennem krydset.",
+                        "indirect_noedit": "Du kan ikke redigere indirekte svingbegrænsninger. I stedet skal du redigere den nærtliggende direkte svingbegrænsning."
+                    }
+                }
             }
 >>>>>>> v2.7.0
         },
@@ -2195,9 +2277,6 @@
                 "tunnel": {
                     "label": "Tunnel"
                 },
-                "vending": {
-                    "label": "Varetype"
-                },
                 "visibility": {
                     "label": "Synlighed",
                     "options": {
@@ -2250,6 +2329,9 @@
                 },
                 "wheelchair": {
                     "label": "Kørestolsadgang"
+                },
+                "wholesale": {
+                    "label": "Engros"
                 },
                 "width": {
                     "label": "Bredde (meter)"
@@ -2347,6 +2429,10 @@
                     "name": "Lufthavnsterminal",
                     "terms": "Lufthavnsterminal"
                 },
+                "allotments/plot": {
+                    "name": "Fælleshave",
+                    "terms": "fælleshave,have,fællesskab"
+                },
                 "amenity": {
                     "name": "Facilitet"
                 },
@@ -2398,9 +2484,16 @@
                     "name": "Valutaveksling",
                     "terms": "Valutaveksling"
                 },
+                "amenity/bus_station": {
+                    "name": "Busstation/rutebilstation"
+                },
                 "amenity/cafe": {
                     "name": "Cafe",
                     "terms": "Cafe, Café"
+                },
+                "amenity/car_pooling": {
+                    "name": "Samkørselsplads",
+                    "terms": "samkørsel,bildeling,deling,deleøkonomi"
                 },
                 "amenity/car_rental": {
                     "name": "Biludlejning",
@@ -2433,6 +2526,14 @@
                 "amenity/clinic": {
                     "name": "Klinik",
                     "terms": "Klinik"
+                },
+                "amenity/clinic/abortion": {
+                    "name": "Abortklinik",
+                    "terms": "abort,fosteruddrivelse,provokeret abort,foster,"
+                },
+                "amenity/clinic/fertility": {
+                    "name": "Fertilitetsklinik",
+                    "terms": "Fertilitet, børn, graviditet, reagensglas"
                 },
                 "amenity/clock": {
                     "name": "Ur",
@@ -2486,6 +2587,9 @@
                     "name": "Fast food",
                     "terms": "Fastfood, Grillbar, Pølsevogn"
                 },
+                "amenity/ferry_terminal": {
+                    "name": "Færgeterminal"
+                },
                 "amenity/fire_station": {
                     "name": "Brandstation",
                     "terms": "<oversæt med synonymer eller beslægtet termer for 'Brandstation', adskilt med kommaer>"
@@ -2534,16 +2638,25 @@
                     "name": "Bibliotek",
                     "terms": "<oversæt med synonymer eller beslægtet termer for 'Bibliotek', adskilt med kommaer>"
                 },
+                "amenity/love_hotel": {
+                    "name": "Kærlighedshotel",
+                    "terms": "kærlighed, romantik, samvær"
+                },
                 "amenity/marketplace": {
                     "name": "Markedsplads",
                     "terms": "Markedsplads"
+                },
+                "amenity/monastery": {
+                    "name": "Kloster-område",
+                    "terms": "kloster, nonne, katedral, kapel, kirke, gud, bøn"
                 },
                 "amenity/motorcycle_parking": {
                     "name": "Motorcykelparkering",
                     "terms": "Motorcykelparkering"
                 },
                 "amenity/music_school": {
-                    "name": "Musikskole"
+                    "name": "Musikskole",
+                    "terms": "musik,skole,undervisning"
                 },
                 "amenity/nightclub": {
                     "name": "Natklub",
@@ -2622,7 +2735,8 @@
                     "terms": "Rangerstation"
                 },
                 "amenity/recycling": {
-                    "name": "Genbrugscontainer"
+                    "name": "Genbrugscontainer",
+                    "terms": "genbrug, miljø, ressourcer"
                 },
                 "amenity/recycling_centre": {
                     "name": "Genbrugsplads",
@@ -2647,6 +2761,17 @@
                     "name": "Shelter",
                     "terms": "Shelter, læskur"
                 },
+<<<<<<< HEAD
+=======
+                "amenity/shower": {
+                    "name": "Brusebad",
+                    "terms": "bruser,styrtebad"
+                },
+                "amenity/smoking_area": {
+                    "name": "Rygeområde",
+                    "terms": "rygning, tobak, røg"
+                },
+>>>>>>> v2.8.0
                 "amenity/social_facility": {
                     "name": "Sociale faciliteter",
                     "terms": "Sociale faciliteter"
@@ -3026,8 +3151,17 @@
                     "terms": "Urmager"
                 },
                 "craft/confectionery": {
+<<<<<<< HEAD
                     "name": "Slikbutik",
                     "terms": "Slikbutik, Chokoladeforretning"
+=======
+                    "name": "Slikproducent",
+                    "terms": "slik, sukker, bolcher, chokolade, søde sager"
+                },
+                "craft/distillery": {
+                    "name": "Distelleri",
+                    "terms": "distellering,alkohol,sprit"
+>>>>>>> v2.8.0
                 },
                 "craft/dressmaker": {
                     "name": "Skrædder",
@@ -3269,6 +3403,14 @@
                     "name": "Golfvandbunker",
                     "terms": "Golfvandbunker"
                 },
+                "healthcare": {
+                    "name": "Sundhedsfacilitet",
+                    "terms": "sundhed, klinik, sygdom, kirurgi"
+                },
+                "healthcare/alternative": {
+                    "name": "Alternativ medicin",
+                    "terms": "alternativ, akupunktur, aromaterapi, urteterapi, urter,hypnose"
+                },
                 "healthcare/alternative/chiropractic": {
                     "name": "Kiropraktor"
                 },
@@ -3285,10 +3427,12 @@
                     "terms": "Blodbank, Donorblodbank"
                 },
                 "healthcare/hospice": {
+                    "name": "Hospice",
                     "terms": "terminal,død,sygdom"
                 },
                 "healthcare/midwife": {
-                    "name": "Jordemoder"
+                    "name": "Jordemoder",
+                    "terms": "baby, fødsel, graviditet"
                 },
                 "healthcare/optometrist": {
                     "name": "Optiker",
@@ -3312,6 +3456,9 @@
                 "highway/bridleway": {
                     "name": "Ridesti",
                     "terms": "Ridesti, Hestesti"
+                },
+                "highway/bus_stop": {
+                    "name": "Busstop / trinbrædt"
                 },
                 "highway/corridor": {
                     "name": "Indendørskorridor",
@@ -3627,6 +3774,10 @@
                     "name": "Voksen spillecenter",
                     "terms": "Voksen spillecenter, Spillehal"
                 },
+                "leisure/amusement_arcade": {
+                    "name": "Spillehal",
+                    "terms": "spil, game, gaming, pinball, flipper, videospil"
+                },
                 "leisure/bird_hide": {
                     "name": "Fugletårn",
                     "terms": "Fugletårn"
@@ -3642,6 +3793,9 @@
                 "leisure/dance": {
                     "name": "Dansehal",
                     "terms": "Dansehal, Dansested"
+                },
+                "leisure/dancing_school": {
+                    "name": "Danseskole"
                 },
                 "leisure/dog_park": {
                     "name": "Hundepark",
@@ -3687,6 +3841,10 @@
                     "name": "Naturreservat",
                     "terms": "Naturreservat"
                 },
+                "leisure/outdoor_seating": {
+                    "name": "Udendørs siddepladser",
+                    "terms": "siddeplads, udendørs, spise, drikke, cafe, restaurant"
+                },
                 "leisure/park": {
                     "name": "Park",
                     "terms": "Park, Parkområde"
@@ -3711,6 +3869,17 @@
                     "name": "Basketballbane",
                     "terms": "Basketballbane"
                 },
+<<<<<<< HEAD
+=======
+                "leisure/pitch/beachvolleyball": {
+                    "name": "Beachvolleybane",
+                    "terms": "beachvolley,beach,volley,beach volley"
+                },
+                "leisure/pitch/boules": {
+                    "name": "Boules/petanque-bane",
+                    "terms": "petanque, boules"
+                },
+>>>>>>> v2.8.0
                 "leisure/pitch/bowls": {
                     "name": "Bowling græsplæne",
                     "terms": "Bowling græsplæne, Keglebane"
@@ -3750,6 +3919,10 @@
                 "leisure/running_track": {
                     "name": "Løberute",
                     "terms": "Løberute, Løbespor, Motionsløberute"
+                },
+                "leisure/sauna": {
+                    "name": "Sauna",
+                    "terms": "sauna, varme"
                 },
                 "leisure/slipway": {
                     "name": "Bådrampe",
@@ -3791,6 +3964,10 @@
                     "name": "Mineindgang",
                     "terms": "Mineindgang"
                 },
+                "man_made/antenna": {
+                    "name": "Antenne",
+                    "terms": "antenne, radio, frekvens, kommunikation, tv, fjernsyn"
+                },
                 "man_made/breakwater": {
                     "name": "Bølgebryder",
                     "terms": "Bølgebryder"
@@ -3802,6 +3979,10 @@
                 "man_made/chimney": {
                     "name": "Skorsten",
                     "terms": "Skorsten"
+                },
+                "man_made/crane": {
+                    "name": "Kran",
+                    "terms": "kran, løft, grej"
                 },
                 "man_made/cutline": {
                     "name": "Skærelinje",
@@ -3833,6 +4014,10 @@
                 "man_made/observation": {
                     "name": "Observationstårn",
                     "terms": "observationstårn, udkigstårn"
+                },
+                "man_made/observatory": {
+                    "name": "Observatorie",
+                    "terms": "astronomi, astrofysik, meteorologi"
                 },
                 "man_made/petroleum_well": {
                     "name": "Oliebrønd",
@@ -3970,6 +4155,9 @@
                     "name": "Hede",
                     "terms": "Hede"
                 },
+                "natural/mud": {
+                    "name": "Mudder"
+                },
                 "natural/peak": {
                     "name": "Højdedrag",
                     "terms": "Højdedrag, Bakketop, Bjergtop"
@@ -4031,8 +4219,13 @@
                     "terms": "Kontor"
                 },
                 "office/accountant": {
+<<<<<<< HEAD
                     "name": "Revisor",
                     "terms": "Revisor"
+=======
+                    "name": "Revisor-kontor",
+                    "terms": "revisor, regnskab, tal, matematik"
+>>>>>>> v2.8.0
                 },
                 "office/administrative": {
 <<<<<<< HEAD
@@ -4048,7 +4241,26 @@
                     "terms": "Firmakontor, Selskabskonto"
 =======
                     "name": "Administrativt kontor"
+<<<<<<< HEAD
 >>>>>>> v2.7.0
+=======
+                },
+                "office/adoption_agency": {
+                    "name": "Adoptionsbureau",
+                    "terms": "adoption, børn, barnløshed"
+                },
+                "office/advertising_agency": {
+                    "name": "Reklamebureau",
+                    "terms": "reklame, tv, marketing, radio"
+                },
+                "office/architect": {
+                    "name": "Arkitekt-kontor",
+                    "terms": "arkitekt, tegning, bygning"
+                },
+                "office/coworking": {
+                    "name": "Kontorfællesskab",
+                    "terms": "Kontorfællesskab, Fællesskabsarbejdsplads"
+>>>>>>> v2.8.0
                 },
                 "office/educational_institution": {
                     "name": "Uddannelsesinstitution",
@@ -4910,18 +5122,6 @@
                     "name": "Ingen U-vending",
                     "terms": "Ingen U-vending"
                 },
-                "type/restriction/only_left_turn": {
-                    "name": "Kun venstresving tilladt",
-                    "terms": "Kun venstresving tilladt"
-                },
-                "type/restriction/only_right_turn": {
-                    "name": "Kun højresving tilladt",
-                    "terms": "Kun højresving tilladt"
-                },
-                "type/restriction/only_straight_on": {
-                    "name": "Ingen sving tilladt",
-                    "terms": "Ingen sving tilladt"
-                },
                 "type/route": {
                     "name": "Rute",
                     "terms": "Rute"
@@ -4998,7 +5198,7 @@
                     "terms": "Kanal"
                 },
                 "waterway/dam": {
-                    "name": "Dam",
+                    "name": "Dæmning",
                     "terms": "Dam"
                 },
                 "waterway/ditch": {
@@ -5056,38 +5256,43 @@
             },
             "DigitalGlobe-Premium": {
                 "attribution": {
-                    "text": "Betingelser & tilbagemelding"
+                    "text": "Vilkår & tilbagemelding"
                 },
                 "description": "Premium DigitalGlobe satellitfoto.",
                 "name": "DigitalGlobe Premium fotos"
             },
             "DigitalGlobe-Premium-vintage": {
                 "attribution": {
-                    "text": "Vilkår & Tilbagemelding"
+                    "text": "Vilkår & tilbagemelding"
                 },
-                "description": "Luftfoto grænser og optagelsesdatoer. Tekstmærkater optræder ved zoom-niveau 14 og højere.",
                 "name": "DigitalGlobe Premium ældre fotos"
             },
             "DigitalGlobe-Standard": {
                 "attribution": {
-                    "text": "Betingelser & tilbagemelding"
+                    "text": "Vilkår & tilbagemelding"
                 },
                 "description": "Standard DigitalGlobe satellitfotos.",
                 "name": "DigitalGlobe Standard fotos"
             },
             "DigitalGlobe-Standard-vintage": {
                 "attribution": {
-                    "text": "Vilkår & Tilbagemelding"
+                    "text": "Vilkår & tilbagemelding"
                 },
-                "description": "Luftfoto grænser og optagelsesdatoer. Tekstmærkater optræder ved zoom-niveau 14 og højere.",
                 "name": "DigitalGlobe Standard ældre fotos"
             },
             "EsriWorldImagery": {
                 "attribution": {
-                    "text": "Betingelser & tilbegemelding"
+                    "text": "Vilkår & tilbagemelding"
                 },
                 "description": "Esri World fotos.",
                 "name": "Esri World fotos"
+            },
+            "EsriWorldImageryClarity": {
+                "attribution": {
+                    "text": "Vilkår & tilbagemelding"
+                },
+                "description": "Esri arkivfotos som kan være af bedre kvalitet og mere præcise end standard-laget.",
+                "name": "Esri World fotos (Clarity) Beta"
             },
             "MAPNIK": {
                 "attribution": {
@@ -5098,7 +5303,7 @@
             },
             "Mapbox": {
                 "attribution": {
-                    "text": "Betingelser & tilbegemelding"
+                    "text": "Vilkår & tilbagemelding"
                 },
                 "description": "Satellit og luft-foto.",
                 "name": "Mapbox Satellite"
@@ -5157,25 +5362,40 @@
                 "name": "TIGER Roads 2017"
             },
             "Waymarked_Trails-Cycling": {
+                "attribution": {
+                    "text": "© waymarkedtrails.org, OpenStreetMap-bidragsydere, CC by-SA 3.0"
+                },
                 "name": "Afmærkede spor: Cykling"
             },
             "Waymarked_Trails-Hiking": {
+                "attribution": {
+                    "text": "© waymarkedtrails.org, OpenStreetMap-bidragsydere, CC by-SA 3.0"
+                },
                 "name": "Afmærkede spor: Vandring"
             },
             "Waymarked_Trails-MTB": {
+                "attribution": {
+                    "text": "© waymarkedtrails.org, OpenStreetMap-bidragsydere, CC by-SA 3.0"
+                },
                 "name": "Afmærkede spor: MTB"
             },
             "Waymarked_Trails-Skating": {
+                "attribution": {
+                    "text": "© waymarkedtrails.org, OpenStreetMap-bidragsydere, CC by-SA 3.0"
+                },
                 "name": "Afmærkede spor: Skøjtning"
             },
             "Waymarked_Trails-Winter_Sports": {
+                "attribution": {
+                    "text": "© waymarkedtrails.org, OpenStreetMap-bidragsydere, CC by-SA 3.0"
+                },
                 "name": "Afmærkede spor: Vintersport"
             },
             "basemap.at": {
                 "attribution": {
                     "text": "basemap.at"
                 },
-                "description": "Basiskort for Østrig, baseret på offentlige data.",
+                "description": "© waymarkedtrails.org, OpenStreetMap-bidragsydere, CC by-SA 3.0",
                 "name": "basemap.at"
             },
             "basemap.at-orthofoto": {
@@ -5193,7 +5413,7 @@
             },
             "mapbox_locator_overlay": {
                 "attribution": {
-                    "text": "Betingelser & tilbagemelding"
+                    "text": "Vilkår & tilbagemelding"
                 },
                 "description": "Viser større objekter for at hjælpe dig med at finde vej.",
                 "name": "Lokaliserings-overlag"
@@ -5236,9 +5456,6 @@
                 "name": "skobbler"
             },
             "stamen-terrain-background": {
-                "attribution": {
-                    "text": "Kort-fliser af Stamen Design, under CC BY 3.0"
-                },
                 "name": "Stamen Terræn"
             },
             "tf-cycle": {
