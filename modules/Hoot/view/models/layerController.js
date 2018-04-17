@@ -30,7 +30,7 @@ class LayerController {
                     this.color = '_osm';
                 }
 
-                return `sidebar-form controller layer-loading round fill-white ${ this.color }`;
+                return `sidebar-form layer-loading round fill-white ${ this.color }`;
             } )
             .attr( 'data-name', this.name )
             .attr( 'data-id', this.id )
@@ -45,7 +45,7 @@ class LayerController {
 
     createController() {
         this.controller = this.form.append( 'div' )
-            .classed( 'contain keyline-all round', true );
+            .classed( 'controller contain keyline-all round', true );
     }
 
     createThumbnail() {
@@ -78,7 +78,9 @@ class LayerController {
         let layer = LayerManager.findLoadedBy( 'name', this.name );
 
         this.form.classed( 'layer-loading', false )
-            .classed( this.typeClass, true );
+            .classed( this.typeClass, true )
+            .select( '.inner-wrapper' )
+            .remove();
 
         this.thumbnail.attr( 'class', () => {
             let icon = layer.merged ? 'conflate' : 'data',
@@ -127,7 +129,7 @@ class LayerController {
 
         if ( layer.tags && (layer.tags.params || layer.tags.stats) ) {
             this.contextLayer.style( 'width', 'calc( 100% - 140px' );
-            this.metadata = new MapMetadata( this.context, this.controller, layer );
+            this.metadata = new MapMetadata( this.context, this.form, layer );
             this.metadata.render();
         }
     }

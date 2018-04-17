@@ -28,7 +28,7 @@
 
 .sidebar-form {
     margin-bottom: 20px;
-    box-shadow: 0 3px 10px $dark-opacity20;
+    box-shadow: 0 3px 10px $dark-opacity10;
 
     .toggle-button {
         display: flex;
@@ -55,12 +55,6 @@
         }
     }
 
-    .layer-add-table {
-        height: 150px;
-        margin-bottom: 15px;
-        resize: vertical;
-    }
-
     .inner-wrapper {
         height: 0;
         border-radius: 0 0 4px 4px;
@@ -85,6 +79,68 @@
 
     &.layer-conflate .inner-wrapper.visible {
         height: 621px;
+    }
+
+    &.conflate-controller .inner-wrapper.visible {
+        height: 60px;
+    }
+
+    .action-container button {
+        padding: 5px 20px;
+        height: auto;
+    }
+}
+
+.controller {
+    border-radius: 4px;
+    transition: border-radius 300ms linear;
+
+    .thumbnail {
+        border-radius: 4px 0 0 4px;
+        transition: inherit;
+    }
+
+    .expanded & {
+        border-radius: 4px 0 0 0;
+        transition: border-radius 0ms;
+
+        .thumbnail {
+            border-radius: inherit;
+            transition: inherit;
+        }
+    }
+
+    span {
+        color: black;
+    }
+
+    .context-menu-layer {
+        position: absolute;
+        display: inline-block;
+        width: calc(100% - 100px);
+        height: 60px;
+        line-height: 60px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: black;
+    }
+
+    .icon-button {
+        width: 40px;
+        height: 60px;
+        float: right;
+
+        &:hover {
+            background-color: $light
+        }
+    }
+}
+
+.layer-add {
+    .layer-add-table {
+        height: 150px;
+        margin-bottom: 15px;
+        resize: vertical;
     }
 
     .palette {
@@ -117,47 +173,9 @@
             }
         }
     }
-
-
-    .action-container button {
-        padding: 5px 20px;
-        height: auto;
-    }
-}
-
-.controller {
-    span {
-        color: black;
-    }
-
-    .thumbnail {
-        border-radius: 4px 0 0 4px;
-    }
-
-    .context-menu-layer {
-        position: absolute;
-        display: inline-block;
-        width: calc(100% - 100px);
-        height: 60px;
-        line-height: 60px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        color: black;
-    }
-
-    .icon-button {
-        width: 40px;
-        height: 60px;
-        float: right;
-
-        &:hover {
-            background-color: $light
-        }
-    }
 }
 
 .layer-conflate {
-
     .conflate-ref {
         margin-bottom: 10px;
 
