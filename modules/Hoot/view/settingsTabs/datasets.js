@@ -103,7 +103,7 @@ export default class Datasets extends Tab {
     createTable() {
         this.table = this.tabBody.append( 'div' )
             .attr( 'id', 'dataset-table' )
-            .classed( 'filled-white strong', true );
+            .classed( 'filled-white strong overflow', true );
 
         this.table.insert( 'div' ).attr( 'id', 'dataset-table-header' )
             .selectAll( 'th' )
@@ -122,6 +122,12 @@ export default class Datasets extends Tab {
         }
 
         this.datasetTable.render();
+    }
+
+    deleteDataset( d ) {
+        let warningMsg = d.type ==='folder'? 'folder and all data?' : 'dataset?';
+
+        if(!window.confirm('Are you sure you want to remove the selected ' + warningMsg)){return;}
     }
 
     /**

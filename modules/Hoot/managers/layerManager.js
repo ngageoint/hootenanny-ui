@@ -11,31 +11,50 @@ class LayerManager {
     constructor() {
         this.context         = null;
         this._layers         = [];
+        this._selectedLayers = [];
         this._loadedLayers   = {};
     }
 
     /**
      * Retrieve layers from database
      */
-    refreshLayers() {
-        return API.getLayers()
-            .then( data => {
-                this._layers = data;
-
-                return data;
-            } );
+    async refreshLayers() {
+        return this._layers = await API.getLayers();
     }
 
     set ctx( context ) {
         this.context = context;
     }
 
-    get layers() {
-        return this._layers;
-    }
-
     get loadedLayers() {
         return this._loadedLayers;
+    }
+
+    /**
+     * Get all currently selected datasets
+     *
+     * @returns {array} - datasets
+     */
+    get selectedLayers() {
+        return this._selectedLayers;
+    }
+
+    /**
+     * Update list of currently selected layers
+     *
+     * @param id - id of selected dataset
+     * @param clearAll - boolean to determine whether to clear the entire list or not
+     */
+    updateSelectedLayers( id, clearAll ) {
+        if ( clearAll ) {
+            this._selectedLayers = [];
+        }
+
+        if ( this._selectedLayers.indexOf( id ) > -1 ) {
+            _.pull( this._selectedLayers, id );
+        } else {
+            this._selectedLayers.push( id );
+        }
     }
 
     hideLayer( id ) {

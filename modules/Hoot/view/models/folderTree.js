@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import FolderManager    from '../../managers/folderManager';
+import LayerManager     from '../../managers/layerManager';
 import _                from 'lodash-es';
 import moment           from 'moment';
 import { contextMenus } from '../../config/domElements';
@@ -57,7 +58,7 @@ export default class FolderTree {
         folders = {
             name: 'Datasets',
             id: 'Datasets',
-            children: _.cloneDeep( folders ) // prevent collision of data
+            children: folders // prevent collision of data
         };
 
         this.root    = d3.hierarchy( folders );
@@ -380,7 +381,7 @@ export default class FolderTree {
 
         if ( d3.event.ctrlKey && d3.event.which === 1 ) {
             d.data.selected = !selected;
-            FolderManager.updateSelectedDatasets( d.id );
+            LayerManager.updateSelectedLayers( d.id );
         } else if ( d.data.type === 'dataset' ) {
             if ( !selected ) {
                 let selectedNodes = _.filter( this.root.descendants(), d => d.data.selected );
@@ -391,7 +392,7 @@ export default class FolderTree {
                 } );
 
                 d.data.selected = true;
-                FolderManager.updateSelectedDatasets( d.data.id, true );
+                LayerManager.updateSelectedLayers( d.data.id, true );
             }
 
             this.openContextMenu( d );
@@ -410,7 +411,7 @@ export default class FolderTree {
             items;
 
         if ( data.type === 'dataset' ) {
-            const selectedCount = FolderManager.selectedDatasets.length;
+            const selectedCount = LayerManager.selectedLayers.length;
 
             items = [
                 {
@@ -465,14 +466,17 @@ export default class FolderTree {
             .attr( 'class', item => `_icon ${ item.icon }` )
             .text( item => item.title )
             .on( 'click', item => {
-                let { data } = d,
-                    node,
-                    key      = {
-                        name: data.name,
-                        id: data.id
-                    };
+                let key = {
+                    name: data.name,
+                    id: data.id
+                };
 
-                console.log( item );
+                switch ( item.click ) {
+                    case 'deleteDataset': {
+
+                        break;
+                    }
+                }
             } );
 
         this.contextMenu
@@ -494,7 +498,7 @@ export default class FolderTree {
         if ( d.data.type === 'dataset' ) {
             if ( d3.event.metaKey ) {
                 d.data.selected = !d.data.selected;
-                FolderManager.updateSelectedDatasets( d.data.id );
+                LayerManager.updateSelectedLayers( d.data.id );
             } else {
                 // Get all currently selected nodes
                 let selectedNodes = _.filter( this.root.descendants(), node => node.data.selected );
@@ -511,7 +515,7 @@ export default class FolderTree {
                     d.data.selected = !selected;
                 }
 
-                FolderManager.updateSelectedDatasets( d.data.id, true );
+                LayerManager.updateSelectedLayers( d.data.id, true );
             }
         }
 

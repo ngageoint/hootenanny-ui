@@ -13,18 +13,10 @@ import LayerManager from './layerManager';
  */
 class FolderManager {
     constructor() {
-        this.folders = {
-            base: [],
-            open: [],
-            paths: []
-        };
-
-        this.datasets = {
-            base: [],
-            selected: []
-        };
-
-        this.links = [];
+        this._folders     = [];
+        this._openFolders = [];
+        this._datasets    = [];
+        this._links       = [];
     }
 
     /**
@@ -44,39 +36,26 @@ class FolderManager {
      * Retrieve folders from database and transform the data
      * to be usable in a dropdown menu
      */
-    refreshFolders() {
-        return API.getFolders()
-            .then( data => {
-                this.folders.base  = data.folders;
-                this.folders.paths = this.listFolders( this.folders.base );
+    async refreshFolders() {
+        let { folders } = await API.getFolders();
 
-                return this.folders.base;
-            } );
-    }
-
-    /**
-     * Retrieve layers from database
-     */
-    refreshDatasets() {
-        return LayerManager.refreshLayers()
-            .then( data => this.datasets.base = data.layers || data );
+        return this._folders = folders;
     }
 
     /**
      * Retrieve links from database
      */
-    refreshLinks() {
-        return API.getLinks()
-            .then( data => this.links = data.links );
+    async refreshLinks() {
+        let { links } = await API.getLinks();
+
+        return this._links = links;
     }
 
     /**
-     * Get all currently selected datasets
-     *
-     * @returns {array} - datasets
+     * Retrieve layers from database
      */
-    get selectedDatasets() {
-        return this.datasets.selected;
+    async refreshDatasets() {
+        return this._datasets = await LayerManager.refreshLayers();
     }
 
     /**
@@ -85,11 +64,7 @@ class FolderManager {
      * @returns {array} - folders
      */
     get folderPaths() {
-        return this.folders.paths;
-    }
-
-    addFolder() {
-
+        return this.listFolders( this._folders );
     }
 
     /**
@@ -105,13 +80,13 @@ class FolderManager {
             } else {
                 //use links to get parent folder as far back as possible
                 let strPath      = f.name,
-                    parentFolder = _.find( this.folders.base, { id: f.parentId } ),
+                    parentFolder = _.find( this._folders, { id: f.parentId } ),
                     i            = 0;
 
                 do {
                     i++;
                     strPath      = parentFolder.name + '/' + strPath;
-                    parentFolder = _.find( this.folders.base, { id: parentFolder.parentId } );
+                    parentFolder = _.find( this._folders, { id: parentFolder.parentId } );
                 } while ( parentFolder || i === 10 );
 
                 f.folderPath = strPath;
@@ -130,43 +105,25 @@ class FolderManager {
      */
     setOpenFolders( id, add ) {
         if ( add ) {
-            this.folders.open.push( id );
+            this._openFolders.push( id );
         } else {
-            let index = this.folders.open.indexOf( id );
+            let index = this._openFolders.indexOf( id );
             if ( index > 1 ) {
-                this.folders.open.splice( index, 1 );
+                this._openFolders.splice( index, 1 );
             }
         }
 
-        return this.folders.open;
+        return this._openFolders;
     }
 
     /**
-     * Update list of currently selected datasets
-     *
-     * @param id - id of selected dataset
-     * @param clearAll - boolean to determine whether to clear the entire list or not
-     */
-    updateSelectedDatasets( id, clearAll ) {
-        if ( clearAll ) {
-            this.datasets.selected = [];
-        }
-
-        if ( this.datasets.selected.indexOf( id ) > -1 ) {
-            _.pull( this.datasets.selected, id );
-        } else {
-            this.datasets.selected.push( id );
-        }
-    }
-
-    /**
-     * Create a list of folders and datasets and then transform
+     * Create a list of folders and layers and then transform
      * it into a hierarchy to be used by D3
      *
      * @returns {array} - hierarchy
      */
     async getAvailFolderData() {
-        if ( !this.folders.base.length || !this.datasets.base.length ) {
+        if ( !this._folders.length || !this._datasets.length ) {
             if ( this.loading === undefined ) {
                 this.loading = this.refreshAll();
             }
@@ -175,41 +132,40 @@ class FolderManager {
             await this.loading;
         }
 
-        let datasetList = _.map( this.datasets.base, dataset => {
-            let match = _.find( this.links, link => link.mapId === dataset.id );
+        let layerList = _.map( _.cloneDeep( this._datasets ), layer => {
+            let match = _.find( this._links, link => link.mapId === layer.id );
 
-            if ( !match ) {
-                _.assign( dataset, { folderId: 0 } );
-            } else {
-                _.assign( dataset, { folderId: match.folderId } );
-            }
+            layer.type     = 'dataset';
+            layer.folderId = !match ? 0 : match.folderId;
 
-            _.assign( dataset, { type: 'dataset' } );
-
-            return dataset;
+            return layer;
         } );
 
-        let folderList = _.map( this.folders.base, folder => {
-            if ( this.folders.open.indexOf( folder.id ) > -1 ) {
-                folder.children = _.filter( datasetList, dataset => dataset.folderId === folder.id );
+        let folderList = _.map( _.cloneDeep( this._folders ), folder => {
+            let children = _.filter( layerList, layer => layer.folderId === folder.id );
+
+            if ( this._openFolders.indexOf( folder.id ) > -1 ) {
+                folder.children = children;
                 folder.state    = 'open';
             } else {
-                folder._children = _.filter( datasetList, dataset => dataset.folderId === folder.id );
-                folder._children = !folder._children.length ? null : folder._children;
+                folder._children = children.length && children || null;
 
                 folder.state = 'closed';
             }
 
-            _.assign( folder, { type: 'folder' } );
+            folder.type = 'folder';
 
             return folder;
         } );
 
-        folderList = _.union( folderList, _.each( _.filter( datasetList, function( lyr ) {
-            return lyr.folderId === 0;
-        } ), function( lyr ) {
-            _.extend( lyr, { parentId: 0 } );
-        } ) );
+        let rootLayers = _.filter( layerList, layer => {
+            if ( layer.folderId === 0 ) {
+                layer.parentId = 0;
+                return true;
+            }
+        } );
+
+        folderList = _.union( folderList, rootLayers );
 
         return this.unflattenFolders( folderList );
     }
@@ -234,14 +190,10 @@ class FolderManager {
 
                 parent[ cParam ] = !parent[ cParam ] ? [] : parent[ cParam ];
 
-                _.each( children, child => {
-                    parent[ cParam ].push( child );
-                } );
+                _.each( children, child => parent[ cParam ].push( child ) );
             }
 
-            _.each( children, child => {
-                this.unflattenFolders( array, child );
-            } );
+            _.each( children, child => this.unflattenFolders( array, child ) );
         }
 
         if ( !parent.type )
@@ -249,7 +201,6 @@ class FolderManager {
 
         return tree;
     }
-
 }
 
 export default new FolderManager();
