@@ -11,7 +11,6 @@ class LayerManager {
     constructor() {
         this.context         = null;
         this._layers         = [];
-        this._selectedLayers = [];
         this._loadedLayers   = {};
     }
 
@@ -30,35 +29,8 @@ class LayerManager {
         return this._loadedLayers;
     }
 
-    /**
-     * Get all currently selected datasets
-     *
-     * @returns {array} - datasets
-     */
-    get selectedLayers() {
-        return this._selectedLayers;
-    }
-
-    /**
-     * Update list of currently selected layers
-     *
-     * @param id - id of selected dataset
-     * @param clearAll - boolean to determine whether to clear the entire list or not
-     */
-    updateSelectedLayers( id, clearAll ) {
-        if ( clearAll ) {
-            this._selectedLayers = [];
-        }
-
-        if ( this._selectedLayers.indexOf( id ) > -1 ) {
-            _.pull( this._selectedLayers, id );
-        } else {
-            this._selectedLayers.push( id );
-        }
-    }
-
-    hideLayer( id ) {
-        _.find( this._loadedLayers, layer => layer.id === id );
+    removeLayer( id ) {
+        _.remove( this._layers, layer => layer.id === id );
     }
 
     setLoadedLayer( layer ) {
@@ -69,6 +41,10 @@ class LayerManager {
         if ( this._loadedLayers[ id ] ) {
             delete this._loadedLayers[ id ];
         }
+    }
+
+    hideLayer( id ) {
+        _.find( this._loadedLayers, layer => layer.id === id );
     }
 
     findBy( key, val ) {

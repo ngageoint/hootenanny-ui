@@ -4,15 +4,18 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
+import _                 from 'lodash-es';
 import API               from '../../control/api';
-import Tab               from './tab';
 import FolderTree        from '../models/folderTree';
 import DatasetImportForm from '../forms/datasetImportForm';
 import Event             from '../../managers/eventManager';
+import LayerManager      from '../../managers/layerManager';
+import Tab               from './tab';
+
 import {
     datasetButtons,
     datasetTableHeaders
-}                        from '../../config/domElements';
+} from '../../config/domElements';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -114,20 +117,33 @@ export default class Datasets extends Tab {
     }
 
     /**
-     * Render dataset folder tree inside table
+     * Render folder tree inside table
      */
     renderFolderTree() {
-        if ( !this.datasetTable ) {
-            this.datasetTable = new FolderTree( this.table );
+        if ( !this.folderTree ) {
+            this.folderTree = new FolderTree( this.table );
         }
 
-        this.datasetTable.render();
+        this.folderTree.render();
     }
 
-    deleteDataset( d ) {
-        let warningMsg = d.type ==='folder'? 'folder and all data?' : 'dataset?';
+    deleteDataset( { d, selectedLayers } ) {
+        let warningMsg = d.type === 'folder' ? 'folder and all data?' : 'dataset?';
 
-        if(!window.confirm('Are you sure you want to remove the selected ' + warningMsg)){return;}
+        if ( !window.confirm( 'Are you sure you want to remove the selected ' + warningMsg ) ) return;
+
+        // delete in parallel
+        Promise.all( _.map( selectedLayers, layer => {
+            let node = this.table.selectAll( `g[data-id="${ layer.id }"]` );
+
+            node.select( 'rect' )
+                .style( 'fill', 'rgb(255,0,0)' )
+                .classed( 'sel', false );
+
+            return API.deleteLayer( layer.name )
+                .then( () => LayerManager.removeLayer( layer.id ) );
+
+        } ) ).then( () => Event.send( 'render-dataset-table' ) );
     }
 
     /**
@@ -135,5 +151,6 @@ export default class Datasets extends Tab {
      */
     listen() {
         Event.listen( 'render-dataset-table', this.renderFolderTree, this );
+        Event.listen( 'delete-dataset', this.deleteDataset, this );
     }
 }

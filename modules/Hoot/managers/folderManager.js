@@ -132,17 +132,17 @@ class FolderManager {
             await this.loading;
         }
 
-        let layerList = _.map( _.cloneDeep( this._datasets ), layer => {
-            let match = _.find( this._links, link => link.mapId === layer.id );
+        let datasetList = _.map( _.cloneDeep( this._datasets ), dataset => {
+            let match = _.find( this._links, link => link.mapId === dataset.id );
 
-            layer.type     = 'dataset';
-            layer.folderId = !match ? 0 : match.folderId;
+            dataset.type     = 'dataset';
+            dataset.folderId = !match ? 0 : match.folderId;
 
-            return layer;
+            return dataset;
         } );
 
         let folderList = _.map( _.cloneDeep( this._folders ), folder => {
-            let children = _.filter( layerList, layer => layer.folderId === folder.id );
+            let children = _.filter( datasetList, dataset => dataset.folderId === folder.id );
 
             if ( this._openFolders.indexOf( folder.id ) > -1 ) {
                 folder.children = children;
@@ -158,9 +158,9 @@ class FolderManager {
             return folder;
         } );
 
-        let rootLayers = _.filter( layerList, layer => {
-            if ( layer.folderId === 0 ) {
-                layer.parentId = 0;
+        let rootLayers = _.filter( datasetList, dataset => {
+            if ( dataset.folderId === 0 ) {
+                dataset.parentId = 0;
                 return true;
             }
         } );

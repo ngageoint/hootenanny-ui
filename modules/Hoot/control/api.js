@@ -42,6 +42,7 @@ class API {
         return new Promise( res => {
             this.intervals[ jobId ] = setInterval( async () => {
                 let { status } = await this.getJobStatus( jobId );
+                console.log( this.intervals );
 
                 // TODO: error handling
                 if ( status !== 'running' ) {
@@ -161,7 +162,6 @@ class API {
         return this.request( params )
             .then( resp => resp.data )
             .catch( err => {
-                console.log( err );
                 return {
                     'minlon': -180,
                     'minlat': -90,
@@ -261,6 +261,16 @@ class API {
 
         return this.request( params )
             .then( resp => resp.data );
+    }
+
+    deleteLayer( layerName ) {
+        const params = {
+            path: `/osm/api/0.6/map/delete?mapId=${ layerName }`,
+            method: 'POST'
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) );
     }
 
     conflate( data ) {

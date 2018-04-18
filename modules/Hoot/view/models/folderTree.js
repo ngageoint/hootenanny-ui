@@ -4,10 +4,11 @@
  * @author Matt Putipong on 3/5/18
  *******************************************************************************************************/
 
-import FolderManager    from '../../managers/folderManager';
-import LayerManager     from '../../managers/layerManager';
 import _                from 'lodash-es';
 import moment           from 'moment';
+import Event            from '../../managers/eventManager';
+import FolderManager    from '../../managers/folderManager';
+import LayerManager     from '../../managers/layerManager';
 import { contextMenus } from '../../config/domElements';
 
 /**
@@ -20,6 +21,7 @@ export default class FolderTree {
     constructor( container ) {
         this.container      = container;
         this.isDatasetTable = this.container.attr( 'id' ) === 'dataset-table';
+        this.selectedLayers = [];
 
         this.margin    = { top: 10, right: 20, bottom: 30, left: 0 };
         this.width     = '100%';
@@ -143,22 +145,30 @@ export default class FolderTree {
         const self = this;
 
         let nodeElement = nodes.enter().append( 'g' )
-            .attr( 'class', 'node' )
+            .attr( 'data-name', d => d.data.name )
+            .attr( 'data-id', d => d.data.id )
             .attr( 'transform', `translate( 0, ${ source.x0 } )` )
+            .classed( 'node', true )
             .style( 'opacity', 0 )
             .on( 'click', function( d ) {
                 // use self as context but still pass in the clicked element
                 self.click.call( self, this, d );
             } )
-            .on( 'contextmenu', d => this.bindContextMenu( d ) );
+            .on( 'contextmenu', d => {
+                d3.event.preventDefault();
+
+                if ( this.isDatasetTable ) {
+                    this.bindContextMenu( d );
+                }
+            } );
 
         // Render node rect
         nodeElement.append( 'rect' )
             .attr( 'y', -this.barHeight / 2 )
             .attr( 'height', this.barHeight )
             .attr( 'width', '100%' )
-            .style( 'fill', d => this.fillColor( d ) )
-            .attr( 'class', d => this.rectClass( d ) );
+            .attr( 'class', d => this.rectClass( d ) )
+            .style( 'fill', d => this.fillColor( d ) );
 
         // Render node icon
         nodeElement.append( 'g' )
@@ -194,8 +204,6 @@ export default class FolderTree {
                 let dd = d.depth - 1;
                 return 25.5 + (11 * dd);
             } )
-            .attr( 'data-name', d => d.data.name )
-            .attr( 'data-id', d => d.data.id )
             .append( 'tspan' ).text( d => d.data.name );
 
         // Transition nodes to their new position
@@ -375,24 +383,21 @@ export default class FolderTree {
      * @param d - tree node
      */
     bindContextMenu( d ) {
-        let selected = d.data.selected || false;
-
-        d3.event.preventDefault();
+        let { data } = d,
+            selected = data.selected || false;
 
         if ( d3.event.ctrlKey && d3.event.which === 1 ) {
-            d.data.selected = !selected;
-            LayerManager.updateSelectedLayers( d.id );
+            data.selected = !selected;
+            this.selectedLayers.push( data );
         } else if ( d.data.type === 'dataset' ) {
             if ( !selected ) {
                 let selectedNodes = _.filter( this.root.descendants(), d => d.data.selected );
 
                 // Un-select all other nodes
-                _.each( selectedNodes, d => {
-                    d.data.selected = false;
-                } );
+                _.each( selectedNodes, d => d.data.selected = false );
 
-                d.data.selected = true;
-                LayerManager.updateSelectedLayers( d.data.id, true );
+                data.selected = true;
+                this.selectedLayers = [ data ];
             }
 
             this.openContextMenu( d );
@@ -411,7 +416,7 @@ export default class FolderTree {
             items;
 
         if ( data.type === 'dataset' ) {
-            const selectedCount = LayerManager.selectedLayers.length;
+            const selectedCount = this.selectedLayers.length;
 
             items = [
                 {
@@ -473,7 +478,12 @@ export default class FolderTree {
 
                 switch ( item.click ) {
                     case 'deleteDataset': {
+                        let params = {
+                            selectedLayers: this.selectedLayers,
+                            d
+                        };
 
+                        Event.send( 'delete-dataset', params );
                         break;
                     }
                 }
@@ -492,16 +502,17 @@ export default class FolderTree {
      * @param d - tree node
      */
     click( elem, d ) {
-        let selected = d.data.selected || false,
-            isOpen   = d.data.state === 'open';
+        let { data } = d,
+            selected = data.selected || false,
+            isOpen   = data.state === 'open';
 
-        if ( d.data.type === 'dataset' ) {
+        if ( data.type === 'dataset' ) {
             if ( d3.event.metaKey ) {
-                d.data.selected = !d.data.selected;
-                LayerManager.updateSelectedLayers( d.data.id );
+                d.data.selected = !data.selected;
+                this.selectedLayers.push( data );
             } else {
                 // Get all currently selected nodes
-                let selectedNodes = _.filter( this.root.descendants(), node => node.data.selected );
+                let selectedNodes = _.filter( this.root.descendants(), d => d.data.selected );
 
                 // Un-select all other nodes
                 _.each( selectedNodes, node => {
@@ -510,18 +521,18 @@ export default class FolderTree {
 
                 // If multiple are already selected, keep the target node selected
                 if ( selectedNodes.length > 1 && selected ) {
-                    d.data.selected = true;
+                    data.selected = true;
                 } else {
-                    d.data.selected = !selected;
+                    data.selected = !selected;
                 }
 
-                LayerManager.updateSelectedLayers( d.data.id, true );
+                this.selectedLayers = [ data ];
             }
         }
 
         // Folder
         if ( isOpen ) {
-            d.data.state = 'closed';
+            data.state = 'closed';
 
             d3.select( elem.parentNode )
                 .select( 'i' )
@@ -529,20 +540,20 @@ export default class FolderTree {
                 .classed( 'open-folder', false );
 
             if ( d.children ) {
-                d.data._children = d.children;
-                d.children       = null;
-                d.data.selected  = false;
+                data._children = d.children;
+                d.children     = null;
+                data.selected  = false;
             }
         } else {
-            d.data.state = 'open';
+            data.state = 'open';
 
             d3.select( elem.parentNode )
                 .select( 'i' )
                 .classed( 'folder', false )
                 .classed( 'open-folder', true );
 
-            d.children       = d.data._children || null;
-            d.data._children = null;
+            d.children       = data._children || null;
+            data._children = null;
         }
 
         this.update( d );

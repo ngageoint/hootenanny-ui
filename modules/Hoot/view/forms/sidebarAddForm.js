@@ -8,6 +8,7 @@ import _           from 'lodash-es';
 import FolderTree  from '../models/folderTree';
 import HootOSM     from '../../managers/hootOsm';
 import SidebarForm from './sidebarForm';
+import Event       from '../../managers/eventManager';
 
 export default class SidebarAddForm extends SidebarForm {
     constructor( ...params ) {
@@ -16,11 +17,15 @@ export default class SidebarAddForm extends SidebarForm {
 
     render() {
         super.render();
+
         this.createFieldset();
         this.createTable();
         this.createRecentlyUsedLayers();
         this.createColorPalette();
         this.createSubmitButton();
+        this.renderFolderTree();
+
+        this.listen();
     }
 
     /**
@@ -40,16 +45,16 @@ export default class SidebarAddForm extends SidebarForm {
         this.table = this.fieldset.append( 'div' )
             .attr( 'id', d => d.tableId )
             .classed( 'layer-add-table keyline-all filled-white strong overflow', true )
-            .select( d => this.renderFolderTree( d ) );
     }
 
     /**
      * Render folder tree inside table
      */
-    renderFolderTree( d ) {
-        let table = d3.select( `#${ d.tableId }` );
+    renderFolderTree() {
+        if ( !this.folderTree ) {
+            this.folderTree = new FolderTree( this.table );
+        }
 
-        this.folderTree = new FolderTree( table );
         this.folderTree.render();
     }
 
@@ -148,5 +153,13 @@ export default class SidebarAddForm extends SidebarForm {
 
         this.loadingState( params );
         this.loadLayer( params );
+    }
+
+    /**
+     * Listen for re-render
+     */
+    listen() {
+        super.listen();
+        Event.listen( 'render-dataset-table', this.renderFolderTree, this );
     }
 }

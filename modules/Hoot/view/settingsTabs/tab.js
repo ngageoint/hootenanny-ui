@@ -22,7 +22,6 @@ export default class Tab {
      * Render tab header in settings panel sidebar
      */
     render() {
-
         this.tabHeader = this.sidebar
             .append( 'div' )
             .classed( 'hoot-util-header pad1y center', true )
