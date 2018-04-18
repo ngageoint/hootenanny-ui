@@ -4,11 +4,11 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/10/18
  *******************************************************************************************************/
 
-import _                 from 'lodash-es';
-import LayerManager      from '../managers/layerManager';
-import LayerAddForm      from './forms/layerAddForm';
-import LayerConflateForm from './forms/layerConflateForm';
-import { sidebarForms }  from '../config/formMetadata';
+import _                   from 'lodash-es';
+import LayerManager        from '../managers/layerManager';
+import SidebarAddForm      from './forms/sidebarAddForm';
+import SidebarConflateForm from './forms/sidebarConflateForm';
+import { sidebarForms }    from '../config/formMetadata';
 
 /**
  * Create the sidebar
@@ -23,7 +23,6 @@ export default class Sidebar {
         this.addFormData      = _.filter( this.formData, form => form.id !== 'conflate' );
         this.conflateFormData = _.filter( this.formData, form => form.id === 'conflate' );
         this.addForms         = {};
-        this.layerControllers = {};
     }
 
     /**
@@ -89,14 +88,14 @@ export default class Sidebar {
         this.wrapper.selectAll( '.layer-add' )
             .data( this.addFormData ).enter()
             .select( function( d ) {
-                sidebar.addForms[ d.id ] = new LayerAddForm( sidebar.context, sidebar, d3.select( this ) );
+                sidebar.addForms[ d.id ] = new SidebarAddForm( sidebar.context, sidebar, d3.select( this ) );
                 sidebar.addForms[ d.id ].render();
             } );
 
         this.wrapper.selectAll( '.layer-conflate' )
             .data( this.conflateFormData ).enter()
             .select( function() {
-                sidebar.conflateForm = new LayerConflateForm( sidebar.context, sidebar, d3.select( this ) );
+                sidebar.conflateForm = new SidebarConflateForm( sidebar.context, sidebar, d3.select( this ) );
             } );
     }
 

@@ -7,7 +7,7 @@
 import API               from '../../control/api';
 import Tab               from './tab';
 import FolderTree        from '../models/folderTree';
-import ImportDatasetForm from '../forms/importDatasetForm';
+import DatasetImportForm from '../forms/datasetImportForm';
 import Event             from '../../managers/eventManager';
 import {
     datasetButtons,
@@ -67,7 +67,7 @@ export default class Datasets extends Tab {
                     case 'import-dataset-single': {
                         let translations = await API.getTranslations();
 
-                        new ImportDatasetForm( translations ).render();
+                        new DatasetImportForm( translations ).render();
                         break;
                     }
                     case 'import-dataset-directory': {

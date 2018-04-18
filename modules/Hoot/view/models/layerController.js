@@ -128,7 +128,7 @@ class LayerController {
             .text( layer.name );
 
         if ( layer.tags && (layer.tags.params || layer.tags.stats) ) {
-            this.contextLayer.style( 'width', 'calc( 100% - 140px' );
+            this.contextLayer.style( 'width', 'calc( 100% - 145px' );
             this.metadata = new MapMetadata( this.context, this.form, layer );
             this.metadata.render();
         }
