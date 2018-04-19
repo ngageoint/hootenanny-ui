@@ -6873,8 +6873,8 @@ li.hide + li.version .badge .tooltip .tooltip-arrow {
 /*.unround      { border-radius:0;}*/
 
 /*.dark   { color:#fff; }*/
-.quiet  { color:rgba(68,68,68,0.5); }
-.strong { font-weight:bold; }
+/*.quiet  { color:rgba(68,68,68,0.5); }*/
+/*.strong { font-weight:bold; }*/
 
 /*.keyline-all    { border:1px solid rgba(0,0,0,0.20); }*/
 /*.keyline-top    { border-top:1px solid rgba(0,0,0,0.20); }*/

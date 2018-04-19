@@ -32,9 +32,6 @@ export default class SidebarAddForm extends SidebarForm {
      * Create fieldset container for form
      */
     createFieldset() {
-        //this.innerWrapper = this.form.append( 'div' )
-        //    .classed( 'inner-wrapper', true );
-
         this.fieldset = this.innerWrapper.append( 'fieldset' );
     }
 
@@ -135,11 +132,10 @@ export default class SidebarAddForm extends SidebarForm {
             layerName;
 
         if ( !this.form.select( '.sel' ).empty() ) {
-            let gNode    = d3.select( this.form.select( '.sel' ).node().parentNode ),
-                textNode = gNode.select( '.dnameTxt' );
+            let gNode    = d3.select( this.form.select( '.sel' ).node().parentNode );
 
-            layerName = textNode.attr( 'data-name' );
-            layerId   = textNode.attr( 'data-id' );
+            layerName = gNode.attr( 'data-name' );
+            layerId   = gNode.attr( 'data-id' );
         } else {
             // error
         }

@@ -38,6 +38,7 @@ class SidebarConflateForm extends SidebarForm {
 
         this.createFieldset();
         this.createLayerRefThumbnails( layers );
+        this.createAdvancedOptions();
         this.createButtons();
 
         this.saveAsInput         = d3.select( '#conflateSaveAs' );
@@ -84,6 +85,12 @@ class SidebarConflateForm extends SidebarForm {
             .classed( 'button dark text-light round small strong', true )
             .text( 'Conflate' )
             .on( 'click', () => this.handleSubmit() );
+    }
+
+    createAdvancedOptions() {
+        let typeInputContainer = d3.select( '#conflateType' ).node().parentNode;
+
+
     }
 
     getSaveName( data ) {

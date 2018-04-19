@@ -47,10 +47,6 @@ form {
         width: 100%;
         margin-bottom: 10px;
 
-        label {
-            padding: 5px 10px;
-        }
-
         input {
             color: $gray;
             border: none;
@@ -71,6 +67,34 @@ form {
 
         .icon-button {
             width: 31px;
+        }
+    }
+
+    .form-field-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        label, span {
+            display: inline-block;
+            padding: 5px 10px;
+        }
+    }
+
+    .advanced-opts-container {
+        color: $light5;
+
+        &:hover {
+            background-color: $light1;
+            color: $gray;
+        }
+
+        .advanced-opts-text {
+            padding-right: 3px;
+        }
+
+        .advanced-opts-toggle {
+            padding-left: 3px;
         }
     }
 }

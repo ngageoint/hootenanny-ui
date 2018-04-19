@@ -87,18 +87,39 @@ export default class FormFactory {
     createFieldSets( form, formMeta ) {
         let self = this;
 
-        let fieldContainer = form.append( 'fieldset' );
+        let fieldsetContainer = form.append( 'fieldset' );
 
-        let fields = fieldContainer.selectAll( '.form-field' )
+        let fieldContainer = fieldsetContainer.selectAll( '.form-field' )
             .data( formMeta ).enter()
             .append( 'div' )
             .classed( 'form-field fill-white small keyline-all round', true );
 
-        fields.append( 'label' )
-            .classed( 'strong fill-light round-top keyline-bottom', true )
+        let fieldHeader = fieldContainer.append( 'div' )
+            .classed( 'form-field-header fill-light round-top keyline-bottom', true );
+
+        fieldHeader.append( 'label' )
+            .classed( 'strong', true )
             .text( d => d.label );
 
-        fields.select( function( d ) {
+        fieldHeader.select( function( d ) {
+            if ( d.id === 'conflateType' ) {
+                let header = d3.select( this )
+                    .classed( 'conflate-type-header', true );
+
+                let advOpts = header.append( 'a' )
+                    .classed( 'advanced-opts-container', true );
+
+                advOpts.append( 'span' )
+                    .classed( 'advanced-opts-text inline normal', true )
+                    .text( 'Advanced Options' );
+
+                advOpts.append( 'span' )
+                    .classed( 'advanced-opts-toggle inline strong', true )
+                    .text( '►' );
+            }
+        } );
+
+        fieldContainer.select( function( d ) {
             let field = d3.select( this )
                 .classed( 'contain', true );
 
@@ -128,7 +149,7 @@ export default class FormFactory {
             }
         } );
 
-        return fieldContainer;
+        return fieldsetContainer;
     }
 
     /**

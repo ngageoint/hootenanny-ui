@@ -137,8 +137,8 @@ export default class Datasets extends Tab {
             let node = this.table.selectAll( `g[data-id="${ layer.id }"]` );
 
             node.select( 'rect' )
-                .style( 'fill', 'rgb(255,0,0)' )
-                .classed( 'sel', false );
+                .classed( 'sel', false )
+                .style( 'fill', 'rgb(255,0,0)' );
 
             return API.deleteLayer( layer.name )
                 .then( () => LayerManager.removeLayer( layer.id ) );
