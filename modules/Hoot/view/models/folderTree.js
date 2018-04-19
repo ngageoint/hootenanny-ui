@@ -8,7 +8,6 @@ import _                from 'lodash-es';
 import moment           from 'moment';
 import Event            from '../../managers/eventManager';
 import FolderManager    from '../../managers/folderManager';
-import LayerManager     from '../../managers/layerManager';
 import { contextMenus } from '../../config/domElements';
 
 /**
@@ -19,9 +18,11 @@ import { contextMenus } from '../../config/domElements';
  */
 export default class FolderTree {
     constructor( container ) {
-        this.container      = container;
-        this.isDatasetTable = this.container.attr( 'id' ) === 'dataset-table';
-        this.selectedLayers = [];
+        this.container              = container;
+        this.isDatasetTable         = this.container.attr( 'id' ) === 'dataset-table';
+        this.selectedNodes          = [];
+        this.lastSelectedNode       = null;
+        this.lastSelectedRangeNodes = null;
 
         this.margin    = { top: 10, right: 20, bottom: 30, left: 0 };
         this.width     = '100%';
@@ -153,6 +154,9 @@ export default class FolderTree {
             .on( 'click', function( d ) {
                 // use self as context but still pass in the clicked element
                 self.click.call( self, this, d );
+            } )
+            .on( 'mousedown', () => {
+                d3.event.preventDefault();
             } )
             .on( 'contextmenu', d => {
                 d3.event.preventDefault();
@@ -384,20 +388,22 @@ export default class FolderTree {
      */
     bindContextMenu( d ) {
         let { data } = d,
-            selected = data.selected || false;
+            selected = d.data.selected || false;
 
         if ( d3.event.ctrlKey && d3.event.which === 1 ) {
             data.selected = !selected;
-            this.selectedLayers.push( data );
+            this.selectedNodes.push( data );
         } else if ( d.data.type === 'dataset' ) {
             if ( !selected ) {
-                let selectedNodes = _.filter( this.root.descendants(), d => d.data.selected );
+                let selectedNodes = _.filter( this.root.descendants(), node => node.data.selected );
 
                 // Un-select all other nodes
-                _.each( selectedNodes, d => d.data.selected = false );
+                _.each( selectedNodes, node => {
+                    node.data.selected = false;
+                } );
 
-                data.selected = true;
-                this.selectedLayers = [ data ];
+                data.selected      = true;
+                this.selectedNodes = [ data ];
             }
 
             this.openContextMenu( d );
@@ -416,7 +422,7 @@ export default class FolderTree {
             items;
 
         if ( data.type === 'dataset' ) {
-            const selectedCount = this.selectedLayers.length;
+            const selectedCount = this.selectedNodes.length;
 
             items = [
                 {
@@ -471,15 +477,14 @@ export default class FolderTree {
             .attr( 'class', item => `_icon ${ item.icon }` )
             .text( item => item.title )
             .on( 'click', item => {
-                let key = {
-                    name: data.name,
-                    id: data.id
-                };
-
+                //let key = {
+                //    name: data.name,
+                //    id: data.id
+                //};
                 switch ( item.click ) {
                     case 'deleteDataset': {
                         let params = {
-                            selectedLayers: this.selectedLayers,
+                            layers: this.selectedNodes,
                             d
                         };
 
@@ -508,9 +513,44 @@ export default class FolderTree {
 
         if ( data.type === 'dataset' ) {
             if ( d3.event.metaKey ) {
-                d.data.selected = !data.selected;
-                this.selectedLayers.push( data );
-            } else {
+                data.selected = !data.selected;
+                this.selectedNodes.push( data );
+                this.lastSelectedNode = data.selected ? data.id : null;
+            }
+            else if ( d3.event.shiftKey && this.lastSelectedNode ) {
+                let nodes        = _.drop( this.root.descendants(), 1 ),
+                    basePosition = _.findIndex( nodes, node => node.data.id === this.lastSelectedNode ),
+                    position     = _.findIndex( nodes, node => node.data.id === data.id ),
+                    selectBegin  = Math.min( basePosition, position ),
+                    selectEnd    = Math.max( basePosition, position ) + 1,
+
+                    rangeNodes   = _.slice( nodes, selectBegin, selectEnd );
+
+                if ( basePosition !== this.lastBasePosition ) {
+                    // user ctrl+clicked on a new location
+                    this.lastSelectedRangeNodes = [];
+                }
+                else {
+                    // unselect nodes from previous range that don't match the new range
+                    let oldNodes = _.difference( this.lastSelectedRangeNodes, rangeNodes );
+
+                    _.each( oldNodes, node => {
+                        node.data.selected = false;
+                        _.remove( this.selectedNodes, layer => layer.id === node.data.id );
+                    } );
+                }
+
+                // select nodes starting from base position to current position
+                _.each( rangeNodes, node => {
+                    node.data.selected = true;
+                    this.selectedNodes.push( node.data );
+                    this.lastSelectedRangeNodes.push( node );
+                } );
+
+                this.selectedNodes    = _.uniq( this.selectedNodes );
+                this.lastBasePosition = basePosition;
+            }
+            else {
                 // Get all currently selected nodes
                 let selectedNodes = _.filter( this.root.descendants(), d => d.data.selected );
 
@@ -526,7 +566,8 @@ export default class FolderTree {
                     data.selected = !selected;
                 }
 
-                this.selectedLayers = [ data ];
+                this.selectedNodes    = [ data ];
+                this.lastSelectedNode = data.selected ? data.id : null;
             }
         }
 
@@ -552,7 +593,7 @@ export default class FolderTree {
                 .classed( 'folder', false )
                 .classed( 'open-folder', true );
 
-            d.children       = data._children || null;
+            d.children     = data._children || null;
             data._children = null;
         }
 

@@ -42,7 +42,6 @@ class API {
         return new Promise( res => {
             this.intervals[ jobId ] = setInterval( async () => {
                 let { status } = await this.getJobStatus( jobId );
-                console.log( this.intervals );
 
                 // TODO: error handling
                 if ( status !== 'running' ) {

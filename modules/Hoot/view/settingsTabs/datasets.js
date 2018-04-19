@@ -127,13 +127,13 @@ export default class Datasets extends Tab {
         this.folderTree.render();
     }
 
-    deleteDataset( { d, selectedLayers } ) {
+    deleteDataset( { d, layers } ) {
         let warningMsg = d.type === 'folder' ? 'folder and all data?' : 'dataset?';
 
         if ( !window.confirm( 'Are you sure you want to remove the selected ' + warningMsg ) ) return;
 
         // delete in parallel
-        Promise.all( _.map( selectedLayers, layer => {
+        Promise.all( _.map( layers, layer => {
             let node = this.table.selectAll( `g[data-id="${ layer.id }"]` );
 
             node.select( 'rect' )
