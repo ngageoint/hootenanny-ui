@@ -272,6 +272,15 @@ class API {
             .then( resp => this.statusInterval( resp.data.jobid ) );
     }
 
+    getAdvancedOptions( confType = 'custom' ) {
+        const params = {
+            path: `/info/advancedopts/getoptions?conftype=${ confType }`,
+            method: 'GET'
+        };
+
+        return this.request( params );
+    }
+
     conflate( data ) {
         const params = {
             path: '/job/conflation/execute',
