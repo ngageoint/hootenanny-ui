@@ -107,9 +107,11 @@ export default class FormFactory {
                     .classed( 'conflate-type-header', true );
 
                 let advOpts = header.append( 'a' )
-                    .attr( 'id', 'advOptsToggle' );
+                    .attr( 'id', 'advOptsToggle' )
+                    .classed( 'advanced-opts-container', true );
 
                 advOpts.append( 'span' )
+                    .classed( 'advaced-opts-text', true )
                     .text( 'Advanced Options' );
 
                 advOpts.append( 'span' )

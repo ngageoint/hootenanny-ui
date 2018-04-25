@@ -5,7 +5,7 @@
     left: 0;
     right: 0;
     background-color: rgba(0, 0, 0, 0.75);
-    z-index: 1000;
+    z-index: 100;
 }
 
 .modal {
@@ -13,7 +13,7 @@
     margin: 0 auto;
     padding: 15px;
     top: 10%;
-    z-index: 2001;
+    z-index: 101;
 
     .modal-header {
         margin-bottom: 20px;
@@ -82,11 +82,13 @@ form {
     }
 
     .advanced-opts-container {
-        color: $light5;
+        color: $light4;
+        transition: all 100ms ease-in;
 
         &:hover {
             background-color: $light1;
             color: $gray;
+            transition: all 100ms ease-out;
         }
 
         .advanced-opts-text {
@@ -97,4 +99,9 @@ form {
             padding-left: 3px;
         }
     }
+}
+
+#advanced-opts-form {
+    width: 400px;
+    z-index: 10;
 }

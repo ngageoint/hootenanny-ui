@@ -9,7 +9,10 @@ import API             from '../../control/api';
 import FieldsRetriever from '../models/advancedOptions/fieldsRetriever';
 
 export default class SidebarAdvancedOptions {
-    constructor() {
+    constructor( context ) {
+        this.context         = context;
+        this.body            = context.container();
+        this.sidebar         = d3.select( '#sidebar' );
         this.optTypes        = [ 'custom', 'horizontal', 'average', 'reference' ];
         this.advancedOptions = null;
     }
@@ -26,11 +29,27 @@ export default class SidebarAdvancedOptions {
 
         this.fieldsRetriever = new FieldsRetriever( _.cloneDeep( this.advancedOptions ) );
 
-        this.update();
+        this.render();
     }
 
-    update() {
-        let fields = this.fieldsRetriever.getDefaultFields();
+    render() {
+        let fieldsMeta = this.fieldsRetriever.getDefaultFields();
+
+        this.createContainer();
+        this.createForm();
+    }
+
+    createContainer() {
+        this.container = this.body.append( 'div' )
+            .attr( 'id', 'advanced-opts-form' )
+            .style( 'margin-left', () => this.sidebar.node().getBoundingClientRect().width = 'px' );
+    }
+
+    createForm() {
+
+    }
+
+    createButtons() {
 
     }
 }
