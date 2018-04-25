@@ -45,11 +45,13 @@ export default class SidebarAdvancedOptions {
 
         this.container.classed( 'visible', !containerState );
         this.overlay.classed( 'visible', !containerState );
+        d3.select( '#sidebar-resizer' ).classed( 'light', !containerState );
     }
 
     createContainer() {
         this.container = this.sidebar.append( 'div' )
             .attr( 'id', 'advanced-opts-form' )
+            .classed( 'fill-light', true )
             .style( 'margin-left', () => this.sidebar.node().getBoundingClientRect().width = 'px' );
 
         this.overlay = d3.select( '#content' ).append( 'div' )

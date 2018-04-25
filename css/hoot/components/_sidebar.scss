@@ -10,6 +10,7 @@
         display: inline-block;
         width: 100%;
         height: 100%;
+        padding-right: 25px;
         overflow-y: auto;
     }
 
@@ -24,9 +25,15 @@
     top: 0;
     bottom: 0;
     right: -5px;
-    background: #999;
+    background-color: #999;
     opacity: 0.8;
     cursor: col-resize;
+    transition: background-color 500ms ease-in;
+
+    &.light {
+        background-color: $light4;
+        transition: background-color 500ms ease-out;
+    }
 }
 
 .sidebar-form {
@@ -41,7 +48,7 @@
         background-color: $light-gray;
         font-size: 14px;
         color: white;
-        transition: border-radius 250ms linear;
+        transition: border-radius 400ms linear;
 
         &.active {
             border-radius: 4px 4px 0 0;

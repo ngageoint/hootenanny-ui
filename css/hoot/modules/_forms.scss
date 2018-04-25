@@ -127,14 +127,14 @@ form {
     width: 0;
     height: calc(100% - 60px);
     z-index: 10;
-    background-color: white;
     visibility: hidden;
     overflow: hidden;
-    transition: width 250ms ease-in-out, visibility 300ms;
+    transition: width 250ms ease-in-out, box-shadow 250ms ease-in, visibility 300ms;
 
     &.visible {
         width: 400px;
         visibility: visible;
-        transition: width 200ms ease-in-out;
+        box-shadow: inset 1px 0 25px 0 #bfbfbf;
+        transition: width 250ms ease-in-out, box-shadow 300ms ease-out;
     }
 }
