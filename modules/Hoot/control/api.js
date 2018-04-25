@@ -278,7 +278,8 @@ class API {
             method: 'GET'
         };
 
-        return this.request( params );
+        return this.request( params )
+            .then( resp => resp.data );
     }
 
     conflate( data ) {
