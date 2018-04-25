@@ -1,49 +1,51 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset='utf-8'>
-        <title>Hootenanny</title>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel='stylesheet' href='dist/iD.css'/>
-        <link rel='stylesheet' href='dist/hoot.css'/>
-        <meta name='viewport' content='initial-scale=1.0 maximum-scale=1.0'/>
-        <meta name='apple-mobile-web-app-capable' content='yes'/>
-        <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent'/>
-        <script src='dist/iD.js'></script>
-    </head>
-    <body>
-        <div id='id-container'></div>
-        <script>
+<head>
+    <meta charset="utf-8">
+    <title>Hootenanny</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="dist/iD.css"/>
+    <link rel="stylesheet" href="dist/hoot.css"/>
+    <meta name="viewport" content="initial-scale=1.0 maximum-scale=1.0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <script src="dist/iD.js"></script>
+</head>
+<body>
+<div id="id-wrapper">
+    <div id="id-container"></div>
+</div>
+<script>
 
-        id = iD.Context()
-            .assetPath('dist/');
+    id = iD.Context()
+        .assetPath( 'dist/' );
 
-        // disable boundaries (unless we have an explicit disable_features list)
-        var q = iD.utilStringQs(window.location.hash.substring(1));
-        if (!q.hasOwnProperty('disable_features')) {
-            id.features().disable('boundaries');
-        }
+    // disable boundaries (unless we have an explicit disable_features list)
+    var q = iD.utilStringQs( window.location.hash.substring( 1 ) );
+    if ( !q.hasOwnProperty( 'disable_features' ) ) {
+        id.features().disable( 'boundaries' );
+    }
 
-        id.ui()(document.getElementById('id-container'), function() {
-            id.container().select('#about-list')
-                .insert('li', '.user-list')
-                .attr('class', 'source-switch')
-                .call(iD.uiSourceSwitch(id)
-                    .keys([
-                        {
-                            'urlroot': 'https://www.openstreetmap.org',
-                            'oauth_consumer_key': '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
-                            'oauth_secret': 'aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL'
-                        },
-                        {
-                            'urlroot': 'http://localhost:8080/hoot-services/osm',
-                            'oauth_consumer_key': 'zwQZFivccHkLs3a8Rq5CoS412fE5aPCXDw9DZj7R',
-                            'oauth_secret': 'aMnOOCwExO2XYtRVWJ1bI9QOdqh1cay2UgpbhA6p'
-                        }
-                    ])
-                );
-        });
+    id.ui()( document.getElementById( 'id-container' ), function() {
+        id.container().select( '#about-list' )
+            .insert( 'li', '.user-list' )
+            .attr( 'class', 'source-switch' )
+            .call( iD.uiSourceSwitch( id )
+                .keys( [
+                    {
+                        'urlroot': 'https://www.openstreetmap.org',
+                        'oauth_consumer_key': '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
+                        'oauth_secret': 'aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL'
+                    },
+                    {
+                        'urlroot': 'http://localhost:8080/hoot-services/osm',
+                        'oauth_consumer_key': 'zwQZFivccHkLs3a8Rq5CoS412fE5aPCXDw9DZj7R',
+                        'oauth_secret': 'aMnOOCwExO2XYtRVWJ1bI9QOdqh1cay2UgpbhA6p'
+                    }
+                ] )
+            );
+    } );
 
-        </script>
-    </body>
+</script>
+</body>
 </html>

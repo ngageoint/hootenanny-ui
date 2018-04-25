@@ -23,7 +23,7 @@ class Hoot {
         LayerManager.ctx = this.context;
         HootOSM.ctx      = this.context;
 
-        new Navbar( this.container, this.context ).render();
+        new Navbar( d3.select( '#id-wrapper' ), this.context ).render();
         new SettingsPanel( this.container, this.context ).render();
         new Sidebar( d3.select( '#sidebar' ), this.context ).render();
     }

@@ -1,12 +1,12 @@
 #sidebar {
-    position: absolute;
+    position: relative;
     width: 400px;
-    height: auto;
+    height: 100%;
     min-width: 400px;
     max-width: 50%;
-    top: 60px;
-    bottom: 0;
-    left: 0;
+    //top: 60px;
+    //bottom: 0;
+    //left: 0;
 
     .wrapper {
         height: 100%;

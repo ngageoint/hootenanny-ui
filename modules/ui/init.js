@@ -62,12 +62,6 @@ export function uiInit(context) {
             map.centerZoom([0, 0], 2);
         }
 
-        //container
-        //    .append( 'div' )
-        //    .attr( 'id', 'header' )
-        //    .classed( 'contain pad2x dark fill-dark', true )
-        //    .call( ui.header );
-
         container
             .append('svg')
             .attr('id', 'defs')
@@ -390,8 +384,6 @@ export function uiInit(context) {
     };
 
     ui.sidebar = uiSidebar(context);
-    //ui.header = uiHeader( context );
-	//ui.hoot = uiHoot( context );
 
     return ui;
 }
