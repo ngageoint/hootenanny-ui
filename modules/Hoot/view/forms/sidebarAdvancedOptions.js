@@ -36,13 +36,25 @@ export default class SidebarAdvancedOptions {
         let fieldsMeta = this.fieldsRetriever.getDefaultFields();
 
         this.createContainer();
+        this.createInnerWrapper();
         this.createForm();
     }
 
+    toggle() {
+        let containerState = this.container.classed( 'visible' );
+
+        this.container.classed( 'visible', !containerState );
+    }
+
     createContainer() {
-        this.container = this.body.append( 'div' )
+        this.container = this.sidebar.append( 'div' )
             .attr( 'id', 'advanced-opts-form' )
             .style( 'margin-left', () => this.sidebar.node().getBoundingClientRect().width = 'px' );
+    }
+
+    createInnerWrapper() {
+        this.innerWrapper = this.container.append( 'div' )
+            .classed( 'inner-wrapper', true );
     }
 
     createForm() {

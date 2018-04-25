@@ -78,7 +78,7 @@ class SidebarConflateLayers extends SidebarForm {
             .text( 'Cancel' )
             .on( 'click', () => {
                 if ( window.confirm( 'Cancel will remove any previously selected advanced options. Are you sure you want to cancel?' ) ) {
-                    this.toggleForm();
+                    this.toggle();
                 }
             } );
 
@@ -89,15 +89,18 @@ class SidebarConflateLayers extends SidebarForm {
     }
 
     createAdvancedOptions() {
-        this.advOpts       = new SidebarAdvancedOptions( this.context );
-        //advOptsToggle = d3.select( '#advOptsToggle' );
+        this.advancedOptions = new SidebarAdvancedOptions( this.context );
+        this.advancedOptions.init();
 
-        this.advOpts.init();
-
-        //advOptsToggle.on( 'click', () => )
+        let advancedOptionsToggle = d3.select( '#advOptsToggle' );
+        advancedOptionsToggle.on( 'click', () => this.toggleAdvancedOptions() );
 
         //console.log( typeInputContainer );
         //let advOpts = typeInputContainer.
+    }
+
+    toggleAdvancedOptions() {
+        this.advancedOptions.toggle();
     }
 
     getSaveName( data ) {

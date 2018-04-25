@@ -102,6 +102,19 @@ form {
 }
 
 #advanced-opts-form {
-    width: 400px;
+    position: fixed;
+    display: inline-block;
+    width: 0;
+    height: 100%;
     z-index: 10;
+    background-color: white;
+    visibility: hidden;
+    overflow: hidden;
+    transition: width 250ms ease-in-out, visibility 300ms;
+
+    &.visible {
+        width: 400px;
+        visibility: visible;
+        transition: width 200ms ease-in-out;
+    }
 }

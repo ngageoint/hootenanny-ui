@@ -36,7 +36,7 @@ export default class SidebarForm {
     /**
      * Open or close add-layer form
      */
-    toggleForm() {
+    toggle() {
         let buttonState  = this.button.classed( 'active' ),
             wrapperState = this.innerWrapper.classed( 'visible' ),
             wrapperNode  = this.innerWrapper.node();
@@ -66,7 +66,7 @@ export default class SidebarForm {
         this.button = this.form.append( 'a' )
             .classed( 'toggle-button button dark text-light strong block round', true )
             .attr( 'href', '#' )
-            .on( 'click', d => this.toggleForm( d.id ) );
+            .on( 'click', d => this.toggle( d.id ) );
 
         this.button.append( 'i' )
             .classed( 'material-icons center strong', true )
