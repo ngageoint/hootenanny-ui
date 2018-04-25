@@ -37,7 +37,7 @@ export default class Tab {
             .style( 'font-style', 'normal' );
 
         this.tabWrapper = this.panel.append( 'div' )
-            .classed( 'hoot-util-wrapper pad2 fill-light', true )
+            .classed( 'hoot-util-wrapper wrapper fill-light', true )
             .attr( 'id', this.id );
 
         this.tabBody = this.tabWrapper.append( 'div' )

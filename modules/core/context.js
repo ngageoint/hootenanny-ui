@@ -340,7 +340,6 @@ export function coreContext() {
     context.container = function(_) {
         if (!arguments.length) return container;
         container = _;
-        container.classed('id-container', true);
         return context;
     };
     var embed;

@@ -1,3 +1,12 @@
+.overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
 .modal-overlay {
     position: absolute;
     top: 0;
@@ -5,7 +14,18 @@
     left: 0;
     right: 0;
     background-color: rgba(0, 0, 0, 0.75);
-    z-index: 100;
+}
+
+.map-overlay {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 200ms linear, visibility 250ms;
+
+    &.visible {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 150ms linear;
+    }
 }
 
 .modal {
@@ -105,7 +125,7 @@ form {
     position: fixed;
     display: inline-block;
     width: 0;
-    height: 100%;
+    height: calc(100% - 60px);
     z-index: 10;
     background-color: white;
     visibility: hidden;

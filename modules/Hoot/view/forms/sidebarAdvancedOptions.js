@@ -44,17 +44,21 @@ export default class SidebarAdvancedOptions {
         let containerState = this.container.classed( 'visible' );
 
         this.container.classed( 'visible', !containerState );
+        this.overlay.classed( 'visible', !containerState );
     }
 
     createContainer() {
         this.container = this.sidebar.append( 'div' )
             .attr( 'id', 'advanced-opts-form' )
             .style( 'margin-left', () => this.sidebar.node().getBoundingClientRect().width = 'px' );
+
+        this.overlay = d3.select( '#content' ).append( 'div' )
+            .classed( 'map-overlay overlay', true );
     }
 
     createInnerWrapper() {
-        this.innerWrapper = this.container.append( 'div' )
-            .classed( 'inner-wrapper', true );
+        this.wrapper = this.container.append( 'div' )
+            .classed( 'wrapper', true );
     }
 
     createForm() {

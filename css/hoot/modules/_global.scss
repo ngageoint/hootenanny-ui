@@ -1,9 +1,10 @@
-#id-wrapper {
+#id-container {
     height: 100%;
 }
 
-#id-container {
+#id-sink {
     width: 100%;
+    min-width: 768px;
     height: calc(100% - 60px);
 }
 
@@ -123,9 +124,9 @@ input {
     border-left: 1px solid $dark-opacity20;
 }
 
-/*****************************************/
-/**************** FLOAT ******************/
-/*****************************************/
+/******************************************/
+/***************** LAYOUT *****************/
+/******************************************/
 
 .float-right {
     float: right;
@@ -135,9 +136,9 @@ input {
     float: left;
 }
 
-/*****************************************/
-/**************** PADDING ****************/
-/*****************************************/
+.wrapper {
+    padding: 20px;
+}
 
 .pad1 {
     padding: 10px;
@@ -166,14 +167,6 @@ input {
 /*****************************************/
 /**************** COLORS *****************/
 /*****************************************/
-
-//.gold .thumbnail, .gold ._loading      { background-color:#ffcc00; }
-//.orange .thumbnail, .orange ._loading  { background-color:#ff7f2a; }
-//.violet .thumbnail, .violet ._loading  { background-color:#ff5599; }
-//.purple .thumbnail, .purple ._loading  { background-color:#e580ff; }
-//.blue .thumbnail, .blue ._loading      { background-color:#5fbcd3; }
-//.teal .thumbnail, .teal ._loading      { background-color:#5fd3bc; }
-//.green .thumbnail, .green ._loading   { background-color:#A7C973; }
 
 .fill-red {background-color: #AF0046;}
 

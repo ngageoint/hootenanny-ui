@@ -58,10 +58,10 @@ export default class SettingsPanel {
     createSidebar() {
         let sidebar = this.panel.append( 'div' )
             .attr( 'id', 'settings-sidebar' )
-            .classed( 'pad2 fill-light keyline-right', true );
+            .classed( 'wrapper fill-light keyline-right', true );
 
         sidebar.append( 'h3' )
-            .classed( 'settings-header pointer strong center margin2 pad1y', true )
+            .classed( 'settings-header pad1y pointer strong center', true )
             .append( 'label' )
             .text( 'Settings' );
 

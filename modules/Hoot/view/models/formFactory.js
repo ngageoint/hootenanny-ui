@@ -52,7 +52,7 @@ export default class FormFactory {
      */
     createFormModal( container ) {
         return container.append( 'div' )
-            .classed( 'contain col4 pad1 hoot-menu fill-white round modal', true );
+            .classed( 'contain col4 hoot-menu fill-white round modal', true );
     }
 
     /**
@@ -67,7 +67,7 @@ export default class FormFactory {
         let form   = modal.append( 'form' ),
             header = form
                 .append( 'div' )
-                .classed( 'big pad1y keyline-bottom modal-header', true );
+                .classed( 'modal-header pad1y big keyline-bottom', true );
 
         header.append( 'h3' )
             .text( formTitle )

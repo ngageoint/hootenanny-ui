@@ -12,8 +12,8 @@
     <script src="dist/iD.js"></script>
 </head>
 <body>
-<div id="id-wrapper">
-    <div id="id-container"></div>
+<div id="id-container">
+    <div id="id-sink"></div>
 </div>
 <script>
 
@@ -26,7 +26,7 @@
         id.features().disable( 'boundaries' );
     }
 
-    id.ui()( document.getElementById( 'id-container' ), function() {
+    id.ui()( document.getElementById( 'id-sink' ), function() {
         id.container().select( '#about-list' )
             .insert( 'li', '.user-list' )
             .attr( 'class', 'source-switch' )
