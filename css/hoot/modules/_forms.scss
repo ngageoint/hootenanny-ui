@@ -100,28 +100,28 @@ form {
             padding: 5px 10px;
         }
     }
+}
 
-    .advanced-opts-container {
-        color: $light4;
-        transition: all 100ms ease-in;
+#advanced-opts-toggle {
+    color: $light4;
+    transition: all 100ms ease-in;
 
-        &:hover {
-            background-color: $light1;
-            color: $gray;
-            transition: all 100ms ease-out;
-        }
+    &:hover {
+        background-color: $light1;
+        color: $gray;
+        transition: all 100ms ease-out;
+    }
 
-        .advanced-opts-text {
-            padding-right: 3px;
-        }
+    .toggle-text {
+        padding-right: 3px;
+    }
 
-        .advanced-opts-toggle {
-            padding-left: 3px;
-        }
+    .toggle-caret {
+        padding-left: 3px;
     }
 }
 
-#advanced-opts-form {
+#advanced-opts-panel {
     position: fixed;
     display: inline-block;
     width: 0;
@@ -129,12 +129,46 @@ form {
     z-index: 10;
     visibility: hidden;
     overflow: hidden;
+    white-space: nowrap;
     transition: width 250ms ease-in-out, box-shadow 250ms ease-in, visibility 300ms;
 
+    & > div {
+        position: absolute;
+        width: 100%;
+    }
+
     &.visible {
-        width: 400px;
+        width: 350px;
         visibility: visible;
         box-shadow: inset 1px 0 25px 0 #bfbfbf;
         transition: width 250ms ease-in-out, box-shadow 300ms ease-out;
+    }
+
+    .advanced-opts-header {
+        padding: 20px 15px;
+
+        h4 {
+            padding: 0;
+        }
+    }
+
+    .advanced-opts-content {
+        top: 61px;
+        bottom: 150px;
+        padding: 10px 0;
+        overflow-y: auto;
+
+        .group-toggle {
+            cursor: pointer;
+
+            .inner-wrapper {
+                padding: 5px 15px;
+            }
+        }
+    }
+
+    .advanced-opts-actions {
+        height: 150px;
+        bottom: 0;
     }
 }

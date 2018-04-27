@@ -36,8 +36,11 @@ export default class SidebarAdvancedOptions {
         let fieldsMeta = this.fieldsRetriever.getDefaultFields();
 
         this.createContainer();
-        this.createInnerWrapper();
-        this.createForm();
+        //this.createForm();
+        this.createHeader();
+        this.createContentDiv();
+        this.createGroups( fieldsMeta );
+        this.createButtons();
     }
 
     toggle() {
@@ -50,24 +53,68 @@ export default class SidebarAdvancedOptions {
 
     createContainer() {
         this.container = this.sidebar.append( 'div' )
-            .attr( 'id', 'advanced-opts-form' )
-            .classed( 'fill-light', true )
+            .attr( 'id', 'advanced-opts-panel' )
+            .classed( 'fill-white', true )
             .style( 'margin-left', () => this.sidebar.node().getBoundingClientRect().width = 'px' );
 
         this.overlay = d3.select( '#content' ).append( 'div' )
             .classed( 'map-overlay overlay', true );
     }
 
-    createInnerWrapper() {
-        this.wrapper = this.container.append( 'div' )
-            .classed( 'wrapper', true );
+    createHeader() {
+        this.container.append( 'div' )
+            .classed( 'advanced-opts-header big keyline-bottom', true )
+            .append( 'h3' )
+            .text( 'Advanced Conflation Options' )
+            .append( 'div' )
+            .classed( 'fr _icon close pointer', true );
     }
 
-    createForm() {
+    createContentDiv() {
+        this.contentDiv = this.container.append( 'div' )
+            .classed( 'advanced-opts-content', true );
+    }
 
+    createGroups( fieldsMeta ) {
+        this.group = this.contentDiv.selectAll( '.form-group' )
+            .data( fieldsMeta ).enter()
+            .append( 'div' )
+            .classed( 'form-group', true );
+
+
+        this.group.append( 'div' )
+            .classed( 'group-toggle', true )
+            .append( 'div' )
+            .classed( 'inner-wrapper strong fill-light keyline-top keyline-bottom', true )
+            .append( 'span' )
+            .attr( 'id', d => `${ d.id }_label` )
+            .text( d => d.label )
+            .on( 'click', () => {} );
+
+        this.groupBody = this.group.append( 'div' )
+            .classed( 'group-body fill-white', true );
+
+        this.groupBody.select( d => {
+            if ( d.children && d.children.length ) {
+                this.createFormFields( d.children );
+            }
+        } );
+    }
+
+    createFormFields( children ) {
+        this.groupBody.selectAll( '.form-field' )
+            .data( children ).enter()
+            .append( 'div' )
+            .classed( 'form-field contain small', true )
+            .select( d => {
+                //switch( d.type ) {
+                //    case: 'check'
+                //}
+            } );
     }
 
     createButtons() {
-
+        this.container.append( 'div' )
+            .classed( 'advanced-opts-actions keyline-top', true );
     }
 }

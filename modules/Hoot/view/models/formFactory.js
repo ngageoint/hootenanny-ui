@@ -107,15 +107,15 @@ export default class FormFactory {
                     .classed( 'conflate-type-header', true );
 
                 let advOpts = header.append( 'a' )
-                    .attr( 'id', 'advOptsToggle' )
-                    .classed( 'advanced-opts-container', true );
+                    .attr( 'id', 'advanced-opts-toggle' );
+                    //.classed( 'advanced-opts-toggle', true );
 
                 advOpts.append( 'span' )
-                    .classed( 'advaced-opts-text', true )
+                    .classed( 'toggle-text', true )
                     .text( 'Advanced Options' );
 
                 advOpts.append( 'span' )
-                    .classed( 'advanced-opts-caret inline strong', true )
+                    .classed( 'toggle-caret inline strong', true )
                     .text( '►' );
             }
         } );

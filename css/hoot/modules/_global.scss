@@ -16,6 +16,10 @@ textarea {
     -webkit-font-smoothing: antialiased;
 }
 
+h4, h5 {
+    font-size: 14px;
+}
+
 label {
     display: block;
 }
@@ -140,6 +144,10 @@ input {
     padding: 20px;
 }
 
+.pad0 {
+    padding: 5px;
+}
+
 .pad1 {
     padding: 10px;
 }
@@ -148,12 +156,8 @@ input {
     padding: 20px;
 }
 
-.pad1y {
-    padding: 10px 0;
-}
-
-.pad2y {
-    padding: 20px 0;
+.pad0x {
+    padding: 0 5px;
 }
 
 .pad1x {
@@ -162,6 +166,18 @@ input {
 
 .pad2x {
     padding: 0 20px;
+}
+
+.pad0y {
+    padding: 5px 0;
+}
+
+.pad1y {
+    padding: 10px 0;
+}
+
+.pad2y {
+    padding: 20px 0;
 }
 
 /*****************************************/

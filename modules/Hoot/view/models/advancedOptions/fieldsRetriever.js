@@ -29,8 +29,9 @@ export default class FieldsRetriever {
             return member;
         } );
 
-        let data      = this.mergeWithBase( _.cloneDeep( this.baseOpts ), overrideKeys ),
-            fieldMeta = this.generateFields( data );
+        let data      = this.mergeWithBase( _.cloneDeep( this.baseOpts ), overrideKeys );
+
+        return this.generateFields( data );
     }
 
     mergeWithBase( members, overrideKeys ) {

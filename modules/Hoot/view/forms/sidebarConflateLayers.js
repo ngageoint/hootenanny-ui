@@ -92,11 +92,9 @@ class SidebarConflateLayers extends SidebarForm {
         this.advancedOptions = new SidebarAdvancedOptions( this.context );
         this.advancedOptions.init();
 
-        let advancedOptionsToggle = d3.select( '#advOptsToggle' );
-        advancedOptionsToggle.on( 'click', () => this.toggleAdvancedOptions() );
+        let advancedOptionsToggle = d3.select( '#advanced-opts-toggle' );
 
-        //console.log( typeInputContainer );
-        //let advOpts = typeInputContainer.
+        advancedOptionsToggle.on( 'click', () => this.toggleAdvancedOptions() );
     }
 
     toggleAdvancedOptions() {
