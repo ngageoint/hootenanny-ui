@@ -108,7 +108,6 @@ export default class FormFactory {
 
                 let advOpts = header.append( 'a' )
                     .attr( 'id', 'advanced-opts-toggle' );
-                    //.classed( 'advanced-opts-toggle', true );
 
                 advOpts.append( 'span' )
                     .classed( 'toggle-text', true )

@@ -62,45 +62,45 @@
     }
 }
 
-form {
-    .form-field {
-        width: 100%;
-        margin-bottom: 10px;
+.form-field-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-        input {
-            color: $gray;
-            border: none;
-
-            &[type="text"] {
-                border-radius: 0 0 4px 4px;
-
-                &:focus {
-                    color: $dark2;
-                    background: none;
-                }
-            }
-
-            &.disabled {
-                background-color: white;
-            }
-        }
-
-        .icon-button {
-            width: 31px;
-        }
-    }
-
-    .form-field-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        label, span {
-            display: inline-block;
-            padding: 5px 10px;
-        }
+    label, span {
+        display: inline-block;
+        padding: 5px 10px;
     }
 }
+
+
+.form-field {
+    width: 100%;
+    margin-bottom: 10px;
+
+    input {
+        color: $gray;
+        border: none;
+
+        &[type="text"] {
+            border-radius: 0 0 4px 4px;
+
+            &:focus {
+                color: $dark2;
+                background: none;
+            }
+        }
+
+        &.disabled {
+            background-color: white;
+        }
+    }
+
+    .icon-button {
+        width: 31px;
+    }
+}
+
 
 #advanced-opts-toggle {
     color: $light4;
@@ -140,12 +140,12 @@ form {
     &.visible {
         width: 350px;
         visibility: visible;
-        box-shadow: inset 1px 0 25px 0 #bfbfbf;
-        transition: width 250ms ease-in-out, box-shadow 300ms ease-out;
+        transition: width 250ms ease-in-out;
     }
 
     .advanced-opts-header {
         padding: 20px 15px;
+        box-shadow: 0 1px 10px 0 $light2;
 
         h4 {
             padding: 0;
@@ -156,19 +156,56 @@ form {
         top: 61px;
         bottom: 150px;
         padding: 10px 0;
+        overflow-x: hidden;
         overflow-y: auto;
-
-        .group-toggle {
-            cursor: pointer;
-
-            .inner-wrapper {
-                padding: 5px 15px;
-            }
-        }
     }
 
     .advanced-opts-actions {
         height: 150px;
         bottom: 0;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        box-shadow: 0 -2px 10px 0 $light2;
+
+        button {
+            display: block;
+            width: 100%;
+            height: 45px;
+        }
+    }
+
+    .group-toggle {
+        cursor: pointer;
+
+        .inner-wrapper {
+            padding: 5px 15px;
+        }
+    }
+
+    .group-body {
+        padding: 10px 0;
+    }
+
+    .form-field {
+        label {
+            margin-bottom: 5px;
+        }
+
+        span {
+            line-height: 22px;
+        }
+
+        input[type="text"] {
+            border: 1px solid $dark-opacity20;
+            border-radius: 4px;
+        }
+    }
+
+    .form-field.has-children {
+        .form-field {
+            padding: 0 20px;
+        }
     }
 }

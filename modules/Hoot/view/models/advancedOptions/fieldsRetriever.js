@@ -129,7 +129,7 @@ export default class FieldsRetriever {
                             arr.push( subcheck );
 
                             return arr;
-                        }, arr );
+                        }, [] );
                         break;
                     }
                     case 'long':

@@ -36,7 +36,6 @@ export default class SidebarAdvancedOptions {
         let fieldsMeta = this.fieldsRetriever.getDefaultFields();
 
         this.createContainer();
-        //this.createForm();
         this.createHeader();
         this.createContentDiv();
         this.createGroups( fieldsMeta );
@@ -62,11 +61,12 @@ export default class SidebarAdvancedOptions {
     }
 
     createHeader() {
-        this.container.append( 'div' )
+        let header = this.container.append( 'div' )
             .classed( 'advanced-opts-header big keyline-bottom', true )
             .append( 'h3' )
-            .text( 'Advanced Conflation Options' )
-            .append( 'div' )
+            .text( 'Advanced Conflation Options' );
+
+        header.append( 'div' )
             .classed( 'fr _icon close pointer', true );
     }
 
@@ -76,45 +76,136 @@ export default class SidebarAdvancedOptions {
     }
 
     createGroups( fieldsMeta ) {
-        this.group = this.contentDiv.selectAll( '.form-group' )
+        let self = this;
+
+        let group = this.contentDiv.selectAll( '.form-group' )
             .data( fieldsMeta ).enter()
             .append( 'div' )
             .classed( 'form-group', true );
 
-
-        this.group.append( 'div' )
+        let groupToggle = group.append( 'div' )
             .classed( 'group-toggle', true )
-            .append( 'div' )
+            .on( 'click', function() {
+                let parent    = d3.select( this ).node().parentNode,
+                    body      = d3.select( parent ).select( '.group-body' ),
+                    bodyState = body.classed( 'hidden' );
+
+                body.classed( 'hidden', !bodyState );
+            } );
+
+        groupToggle.append( 'div' )
             .classed( 'inner-wrapper strong fill-light keyline-top keyline-bottom', true )
             .append( 'span' )
             .attr( 'id', d => `${ d.id }_label` )
-            .text( d => d.label )
-            .on( 'click', () => {} );
+            .text( d => d.label );
 
-        this.groupBody = this.group.append( 'div' )
-            .classed( 'group-body fill-white', true );
+        let groupBody = group.append( 'div' )
+            .classed( 'group-body fill-white hidden', true );
 
-        this.groupBody.select( d => {
+        groupBody.select( function( d ) {
             if ( d.children && d.children.length ) {
-                this.createFormFields( d.children );
+                self.createFormFields( d.children, d3.select( this ) );
             }
         } );
     }
 
-    createFormFields( children ) {
-        this.groupBody.selectAll( '.form-field' )
+    createFormFields( children, group ) {
+        let self = this;
+
+        let fieldContinaer = group.selectAll( '.form-field' )
             .data( children ).enter()
             .append( 'div' )
-            .classed( 'form-field contain small', true )
-            .select( d => {
-                //switch( d.type ) {
-                //    case: 'check'
-                //}
+            .classed( 'form-field pad1x small contain', true );
+
+        fieldContinaer.select( function( d ) {
+            let field = d3.select( this );
+
+            switch ( d.type ) {
+                case 'checkbox': {
+                    self.createCheckbox( field );
+                    break;
+                }
+                case 'checkplus': {
+                    self.createCheckplus( field );
+                    break;
+                }
+                case 'long':
+                case 'int':
+                case 'double':
+                case 'string': {
+                    self.createTextField( field );
+                    break;
+                }
+            }
+        } );
+    }
+
+    createCheckbox( field ) {
+        let label = field.append( 'label' )
+            .attr( 'title', d => d.description );
+
+        label.append( 'input' )
+            .attr( 'type', 'checkbox' )
+            .classed( 'reset', true )
+            .select( function( d ) {
+                this.checked = d.placeholder === 'true';
             } );
+
+        label.append( 'span' )
+            .text( d => d.label );
+    }
+
+    createCheckplus( field ) {
+        let self = this;
+
+        this.createCheckbox( field );
+
+        field.select( function( d ) {
+            if ( d.subchecks && d.subchecks.length ) {
+                d3.select( this ).classed( 'has-children', true );
+                self.createFormFields( d.subchecks, field );
+            }
+        } );
+    }
+
+    createTextField( field ) {
+        field.append( 'label' )
+            .text( d => d.label )
+            .property( 'title', d => d.description );
+
+        field.append( 'input' )
+            .attr( 'type', 'text' )
+            .attr( 'placeholder', d => d.placeholder )
+            .classed( '' );
+
+        field.select( function( d ) {
+            let node = d3.select( this );
+
+            if ( d.minvalue ) {
+                node.attr( 'min', d.minvalue > 0 ? d.minvalue : 'na' );
+            }
+
+            if ( d.maxvalue ) {
+                node.attr( 'max', d.maxvalue > 0 ? d.maxvalue : 'na' );
+            }
+
+            if ( d.onchange ) {
+                node.on( 'change', () => {
+                } );
+            }
+        } );
     }
 
     createButtons() {
-        this.container.append( 'div' )
+        let actionsContainer = this.container.append( 'div' )
             .classed( 'advanced-opts-actions keyline-top', true );
+
+        actionsContainer.append( 'button' )
+            .classed( 'button primary round strong', true )
+            .text( 'Apply' );
+
+        actionsContainer.append( 'button' )
+            .classed( 'button alert round strong', true )
+            .text( 'Cancel' );
     }
 }

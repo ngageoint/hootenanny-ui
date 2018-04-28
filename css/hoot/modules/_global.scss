@@ -223,14 +223,28 @@ input {
 button, .button {
     &.primary {
         background-color: $blue;
+        border: 1px solid $blue1;
+        color: white;
 
         &:hover {
             background-color: $blue1;
         }
     }
 
+    &.alert {
+        background-color: $red;
+        border: 1px solid $red1;
+        color: white;
+
+        &:hover {
+            background-color: $red1;
+        }
+    }
+
     &.secondary {
         background-color: $light1;
+        color: black;
+        border: 1px solid $light4;
 
         &:hover {
             background-color: $light2;
