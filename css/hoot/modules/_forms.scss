@@ -205,6 +205,10 @@
             border-radius: 4px;
             display: block;
         }
+
+        input.combobox-input {
+            display: inline-block;
+        }
     }
 
     .form-field.has-children {

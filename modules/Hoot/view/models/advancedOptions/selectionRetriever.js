@@ -19,30 +19,11 @@ export default class SelectionRetriever {
 
             this.getAllValues( item, results );
 
-            //_.forEach( item.members, subItem => {
-            //    let fieldId = subItem.id;
-            //
-            //    switch ( subItem.elem_type ) {
-            //        case 'checkbox': {
-            //            this.getCheckValue( item, subItem, results );
-            //            break;
-            //        }
-            //        case 'checkplus': {
-            //            if ( !this.form.select( `#${ subItem.id }` ).property( 'checked' ) ) break;
-            //
-            //            //_.forEach( subItem.members, cpItem => this.getCheckValue( subItem,))
-            //            this.getCheckValue( item, subItem, results );
-            //        }
-            //    }
-            //} );
-
-            //console.log( results );
             return results;
         }, [] );
     }
 
     getAllValues( item, results  ) {
-        //console.log( item );
         _.forEach( item.members, subItem => {
             switch ( subItem.elem_type ) {
                 case 'checkbox': {
@@ -56,7 +37,6 @@ export default class SelectionRetriever {
                     if ( subItem.members ) {
                         this.getAllValues( subItem, results );
                     }
-                    //_.forEach( subItem.members, cpItem => this.getAllValues( cpItem , results ) );
                     break;
                 }
                 default: {
@@ -96,13 +76,20 @@ export default class SelectionRetriever {
     }
 
     getTextValue( item, subItem, results ) {
-        console.log( subItem );
-        let value = this.form.select( `#${ subItem.id }` ).node();
-        console.log( value );
+        let node = this.form.select( `#${ subItem.id }` ).node(),
+            value,
+            key = {};
 
-        if ( !value || !value.length ) return;
+        if ( node ) {
+            value = node.value;
+        }
 
-        console.log( item );
-        console.log( subItem );
+        if ( !value || !value.length ) {
+            value = subItem.defaultvalue;
+        }
+
+        if ( subItem.hoot_key ) {
+
+        }
     }
 }

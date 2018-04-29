@@ -8,6 +8,7 @@ import _                  from 'lodash-es';
 import API                from '../../control/api';
 import FieldsRetriever    from '../models/advancedOptions/fieldsRetriever';
 import SelectionRetriever from '../models/advancedOptions/selectionRetriever';
+import { d3combobox }     from '../../../lib/hoot/d3.combobox';
 
 export default class SidebarAdvancedOptions {
     constructor( context ) {
@@ -114,15 +115,17 @@ export default class SidebarAdvancedOptions {
     createFormFields( members, group ) {
         let self = this;
 
-        let fieldContinaer = group.selectAll( '.form-field' )
+        let fieldContainer = group.selectAll( '.form-field' )
             .data( members ).enter()
             .append( 'div' )
             .classed( 'form-field small contain', true );
 
-        fieldContinaer.select( function( d ) {
+        fieldContainer.append( 'label' )
+            .text( d => d.label );
+
+        fieldContainer.select( function( d ) {
             let field = d3.select( this );
 
-            // TODO: multilist
             switch ( d.type ) {
                 case 'checkbox': {
                     self.createCheckbox( field );
@@ -130,6 +133,11 @@ export default class SidebarAdvancedOptions {
                 }
                 case 'checkplus': {
                     self.createCheckplus( field );
+                    break;
+                }
+                case 'bool':
+                case 'list': {
+                    self.createCombobox( field );
                     break;
                 }
                 case 'long':
@@ -144,10 +152,7 @@ export default class SidebarAdvancedOptions {
     }
 
     createCheckbox( field ) {
-        let label = field.append( 'label' )
-            .attr( 'title', d => d.description );
-
-        label.append( 'input' )
+        field.append( 'input' )
             .attr( 'type', 'checkbox' )
             .attr( 'id', d => d.id )
             .attr( 'name', d => _.snakeCase( d.label ) )
@@ -155,9 +160,6 @@ export default class SidebarAdvancedOptions {
             .select( function( d ) {
                 this.checked = d.placeholder === 'true';
             } );
-
-        label.append( 'span' )
-            .text( d => d.label );
     }
 
     createCheckplus( field ) {
@@ -174,32 +176,49 @@ export default class SidebarAdvancedOptions {
     }
 
     createTextField( field ) {
-        field.append( 'label' )
-            .text( d => d.label )
-            .property( 'title', d => d.description );
-
-        field.append( 'input' )
+        field.append( 'div' )
+            .classed( 'contain', true )
+            .append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', d => d.id )
             .attr( 'placeholder', d => d.placeholder )
-            .classed( '' );
+            .select( function( d ) {
+                let node = d3.select( this );
 
-        field.select( function( d ) {
-            let node = d3.select( this );
+                if ( d.minvalue ) {
+                    node.attr( 'min', d.minvalue > 0 ? d.minvalue : 'na' );
+                }
 
-            if ( d.minvalue ) {
-                node.attr( 'min', d.minvalue > 0 ? d.minvalue : 'na' );
-            }
+                if ( d.maxvalue ) {
+                    node.attr( 'max', d.maxvalue > 0 ? d.maxvalue : 'na' );
+                }
 
-            if ( d.maxvalue ) {
-                node.attr( 'max', d.maxvalue > 0 ? d.maxvalue : 'na' );
-            }
+                if ( d.onchange ) {
+                    node.on( 'change', () => {
+                    } );
+                }
+            } );
+    }
 
-            if ( d.onchange ) {
-                node.on( 'change', () => {
-                } );
-            }
-        } );
+    createCombobox( field ) {
+        field.append( 'div' )
+            .classed( 'contain', true )
+            .append( 'input' )
+            .attr( 'type', 'text' )
+            .attr( 'placeholder', d => d.placeholder )
+            .select( function( d ) {
+                let combobox = d3combobox()
+                    .data( _.map( d.combobox, n => {
+                        return {
+                            value: n.name,
+                            title: n.name,
+                            id: n.id
+                        };
+                    } ) );
+
+                d3.select( this )
+                    .call( combobox );
+            } );
     }
 
     createButtons() {

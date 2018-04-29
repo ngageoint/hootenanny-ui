@@ -90,11 +90,9 @@ export default class FieldsRetriever {
                 if ( subItem.onchange )
                     subField.onchange = subItem.onchange;
 
-                if ( subItem.combobox )
-                    subField.combobox = subItem.combobox;
-
                 switch ( subItem.elem_type ) {
                     case 'bool': {
+                        console.log( subItem );
                         if ( subItem.members ) {
                             _.forEach( subItem.members, member => {
                                 if ( member.isDefault === 'true' ) {
@@ -102,7 +100,7 @@ export default class FieldsRetriever {
                                 }
                             } );
                         } else {
-                            subField.combobox = [ { value: 'true' }, { value: 'false' } ];
+                            subField.combobox = [ { name: 'true' }, { name: 'false' } ];
                         }
                         break;
                     }
