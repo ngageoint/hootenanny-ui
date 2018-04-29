@@ -4,8 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/13/18
  *******************************************************************************************************/
 
-import HootOSM         from '../../managers/hootOsm';
 import LayerController from '../models/layerController';
+import LayerManager    from '../../managers/layerManager';
+import HootOSM         from '../../managers/hootOsm';
 import Event           from '../../managers/eventManager';
 
 export default class SidebarForm {
@@ -20,7 +21,6 @@ export default class SidebarForm {
     }
 
     reset() {
-        this.loadingLayer = null;
         this.form.remove();
         this.render();
     }
@@ -29,8 +29,6 @@ export default class SidebarForm {
         this.createForm();
         this.createToggleButton();
         this.createInnerWrapper();
-
-        this.listen();
     }
 
     /**
@@ -85,6 +83,7 @@ export default class SidebarForm {
     loadingState( params ) {
         this.loadingLayer = params.name;
         this.controller   = new LayerController( this.context, this.form, params );
+
         this.controller.render();
     }
 
@@ -96,7 +95,15 @@ export default class SidebarForm {
         if ( this.loadingLayer === layerName ) {
             this.controller.update();
             this.sidebar.conflateCheck();
+
+            let loadedLayer = LayerManager.findLoadedBy( 'name', layerName );
+
+            if ( loadedLayer.merged ) {
+                Event.send( 'layer-merged', loadedLayer );
+            }
         }
+
+        this.loadingLayer = null;
     }
 
     layerRemoved( layerName ) {

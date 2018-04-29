@@ -34,8 +34,6 @@ export default class Sidebar {
         this.createResizer();
         this.createWrapper();
         this.createForms();
-
-        this.listen();
     }
 
     /**
@@ -110,12 +108,5 @@ export default class Sidebar {
         } else if ( addControllers.size() > 0 ) {
             this.conflateForm.remove();
         }
-    }
-
-    /**
-     * Listen for re-render
-     */
-    listen() {
-
     }
 }

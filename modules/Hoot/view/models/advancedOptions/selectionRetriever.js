@@ -19,7 +19,6 @@ export default class SelectionRetriever {
 
             this.getAllValues( item, results );
 
-            console.log( results );
             return results;
         }, [] );
     }

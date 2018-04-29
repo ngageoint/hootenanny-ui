@@ -33,10 +33,6 @@ class LayerManager {
         _.remove( this._layers, layer => layer.id === id );
     }
 
-    setLoadedLayer( layer ) {
-        this._loadedLayers[ layer.id ] = layer;
-    }
-
     removeLoadedLayer( id ) {
         if ( this._loadedLayers[ id ] ) {
             delete this._loadedLayers[ id ];

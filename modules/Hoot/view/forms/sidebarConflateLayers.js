@@ -8,6 +8,7 @@ import _                          from 'lodash-es';
 import FolderManager              from '../../managers/folderManager';
 import LayerManager               from '../../managers/layerManager';
 import HootOSM                    from '../../managers/hootOsm';
+import Event                     from '../../managers/eventManager';
 import API                        from '../../control/api';
 import SidebarForm                from './sidebarForm';
 import SidebarAdvancedOptions     from './sidebarAdvancedOptions';
@@ -47,6 +48,8 @@ class SidebarConflateLayers extends SidebarForm {
         this.refLayerInput       = d3.select( '#conflateRefLayer' );
         this.collectStatsInput   = d3.select( '#conflateCollectStats' );
         this.generateReportInput = d3.select( '#conflateGenerateReport' );
+
+        this.listen();
     }
 
     remove() {
@@ -247,6 +250,15 @@ class SidebarConflateLayers extends SidebarForm {
         API.conflate( data )
             .then( () => LayerManager.refreshLayers() )
             .then( () => this.postConflation( params ) );
+    }
+
+    layerMerged( layer ) {
+        console.log( layer );
+    }
+
+    listen() {
+        super.listen();
+        Event.listen( 'layer-merged', this.layerMerged, this );
     }
 }
 

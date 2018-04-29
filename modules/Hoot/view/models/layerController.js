@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import LayerManager from '../../managers/layerManager';
-import MapMetadata  from './MapMetadata';
+import MapMetadata  from './mapMetadata';
 
 class LayerController {
     constructor( context, form, layer ) {
