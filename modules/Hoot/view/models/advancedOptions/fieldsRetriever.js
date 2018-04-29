@@ -92,7 +92,6 @@ export default class FieldsRetriever {
 
                 switch ( subItem.elem_type ) {
                     case 'bool': {
-                        console.log( subItem );
                         if ( subItem.members ) {
                             _.forEach( subItem.members, member => {
                                 if ( member.isDefault === 'true' ) {

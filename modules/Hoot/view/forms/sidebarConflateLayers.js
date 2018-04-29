@@ -94,11 +94,7 @@ class SidebarConflateLayers extends SidebarForm {
 
         let advancedOptionsToggle = d3.select( '#advanced-opts-toggle' );
 
-        advancedOptionsToggle.on( 'click', () => this.toggleAdvancedOptions() );
-    }
-
-    toggleAdvancedOptions() {
-        this.advancedOptions.toggle();
+        advancedOptionsToggle.on( 'click', () => this.advancedOptions.toggle() );
     }
 
     getSaveName( data ) {
@@ -190,7 +186,7 @@ class SidebarConflateLayers extends SidebarForm {
         data.REFERENCE_LAYER    = '1';
         data.GENERATE_REPORT    = this.generateReportInput.node().value;
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
-        data.ADV_OPTIONS        = '-D "map.cleaner.transforms=hoot::ReprojectToPlanarOp;hoot::DuplicateWayRemover;hoot::SuperfluousWayRemover;hoot::IntersectionSplitter;hoot::UnlikelyIntersectionRemover;hoot::DualWaySplitter;hoot::ImpliedDividedMarker;hoot::DuplicateNameRemover;hoot::SmallWayMerger;hoot::RemoveEmptyAreasVisitor;hoot::RemoveDuplicateAreaVisitor;hoot::NoInformationElementRemover" -D "small.way.merger.threshold=15" -D "match.creators=hoot::PoiPolygonMatchCreator;hoot::NetworkMatchCreator;hoot::BuildingMatchCreator;hoot::ScriptMatchCreator,PoiGeneric.js;hoot::ScriptMatchCreator,LinearWaterway.js" -D "merger.creators=hoot::PoiPolygonMergerCreator;hoot::NetworkMergerCreator;hoot::BuildingMergerCreator;hoot::ScriptMergerCreator" -D "poi.polygon.name.score.threshold=0.8" -D "poi.polygon.type.score.threshold=0.7" -D "poi.polygon.match.distance.threshold=5.0" -D "poi.polygon.review.distance.threshold=125.0" -D "poi.ignore.type.if.name.present=false" -D "unify.optimizer.time.limit=60" -D "ogr.split.o2s=false" -D "ogr.esri.fcsubtype=true" -D "ogr.thematic.structure=true" -D "duplicate.name.case.sensitive=true" -D "element.cache.size.node=2000000" -D "element.cache.size.relation=200000" -D "element.cache.size.way=200000" -D "network.matcher=hoot::ConflictsNetworkMatcher" -D "conflate.enable.old.roads=false" -D "waterway.subline.matcher=hoot::MaximalSublineMatcher" -D "waterway.angle.sample.distance=20.0" -D "waterway.matcher.heading.delta=150.0" -D "waterway.auto.calc.search.radius=true" -D "search.radius.waterway=-1" -D "waterway.rubber.sheet.minimum.ties=5" -D "waterway.rubber.sheet.ref=true" -D "writer.include.debug.tags=false"';
+        data.ADV_OPTIONS        = this.advancedOptions.parsedOptions;
         data.USER_EMAIL         = 'test@test.com';
 
         if ( advOpts ) {
@@ -241,6 +237,10 @@ class SidebarConflateLayers extends SidebarForm {
 
         // remove reference layer controllers
         d3.selectAll( '.add-controller' ).remove();
+
+        if ( this.advancedOptions.isOpen ) {
+            this.advancedOptions.toggle();
+        }
 
         this.loadingState( params );
 

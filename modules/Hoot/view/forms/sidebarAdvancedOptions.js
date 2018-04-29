@@ -19,6 +19,26 @@ export default class SidebarAdvancedOptions {
         this.advancedOptions = null;
     }
 
+    get isOpen() {
+        return this.form.classed( 'visible' );
+    }
+
+    get parsedOptions() {
+        if ( !this.selectedOpts ) {
+            let selectionRetriever = new SelectionRetriever( this.form, this.defaultFields );
+
+            this.selectedOpts = selectionRetriever.generateSelectedValues();
+        }
+
+        return _.reduce( this.selectedOpts, ( str, opt ) => {
+            if ( str.length > 0 ) str += ' ';
+
+            str += `-D "${ opt.name }=${ opt.value }"`;
+
+            return str;
+        }, '' );
+    }
+
     async init() {
         let allOpts = await Promise.all( _.map( this.optTypes, type => API.getAdvancedOptions( type ) ) );
 
@@ -204,6 +224,7 @@ export default class SidebarAdvancedOptions {
         field.append( 'div' )
             .classed( 'contain', true )
             .append( 'input' )
+            .attr( 'id', d => d.id )
             .attr( 'type', 'text' )
             .attr( 'placeholder', d => d.placeholder )
             .select( function( d ) {
@@ -231,7 +252,9 @@ export default class SidebarAdvancedOptions {
             .on( 'click', () => {
                 let selectionRetriever = new SelectionRetriever( this.form, this.defaultFields );
 
-                this.selectedVals = selectionRetriever.generateSelectedValues();
+                this.selectedOpts = selectionRetriever.generateSelectedValues();
+
+                this.toggle();
             } );
 
         actionsContainer.append( 'button' )

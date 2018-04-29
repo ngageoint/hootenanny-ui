@@ -13,17 +13,18 @@ export default class SelectionRetriever {
     }
 
     generateSelectedValues() {
-        _.reduce( this.metadata, ( results, item ) => {
+        return _.reduce( this.metadata, ( results, item ) => {
             if ( item.members[ 0 ].name === 'Enabled' &&
                 !this.form.select( `#${ item.members[ 0 ].id }` ).property( 'checked' ) ) return results;
 
             this.getAllValues( item, results );
 
+            console.log( results );
             return results;
         }, [] );
     }
 
-    getAllValues( item, results  ) {
+    getAllValues( item, results ) {
         _.forEach( item.members, subItem => {
             switch ( subItem.elem_type ) {
                 case 'checkbox': {
@@ -48,7 +49,7 @@ export default class SelectionRetriever {
     }
 
     getCheckValue( item, subItem, results ) {
-        let selected = this.form.select( `#${ subItem.id }` ).property( 'checked' ),
+        let selected = this.form.select( `#${ subItem.id }` ).property( 'checked' ).toString(),
             key      = {};
 
         if ( !selected ) return;
@@ -63,11 +64,12 @@ export default class SelectionRetriever {
         if ( subItem.hoot_val ) {
             let idx = results.indexOf( _.find( results, obj => obj.name === item.hoot_key ) );
 
-            if ( idx > -1 && results[ idx ].value.indexOf( subItem.hoot_val ) === -1) { // hoot key already exists but the value does not
+            if ( idx > -1 && results[ idx ].value.indexOf( subItem.hoot_val ) === -1 ) {
                 // concat new value to existing string
                 results[ idx ].value += ';' + subItem.hoot_val;
-            } else { // add new entry
-                key.name = item.hoot_key;
+            } else {
+                // add new entry
+                key.name  = item.hoot_key;
                 key.value = subItem.hoot_val;
 
                 results.push( key );
@@ -76,20 +78,37 @@ export default class SelectionRetriever {
     }
 
     getTextValue( item, subItem, results ) {
-        let node = this.form.select( `#${ subItem.id }` ).node(),
-            value,
-            key = {};
-
-        if ( node ) {
-            value = node.value;
-        }
+        let value = this.form.select( `#${ subItem.id }` ).node().value,
+            key   = {};
 
         if ( !value || !value.length ) {
             value = subItem.defaultvalue;
         }
 
-        if ( subItem.hoot_key ) {
+        let idx = results.indexOf( _.find( results, obj => obj.name === subItem.hoot_key ) );
 
+        if ( subItem.hoot_key ) {
+            if ( idx > -1 && results[ idx ].value.indexOf( value ) === -1 ) {
+                // concat new value to existing string
+                results[ idx ].value += ';' + value;
+            } else {
+                // add new entry
+                key.name  = subItem.hoot_key;
+                key.value = value;
+                results.push( key );
+            }
+        }
+
+        if ( subItem.hoot_val ) {
+            if ( idx > -1 && results[ idx ].value.indexOf( value === -1 ) ) {
+                // concat new value to existing string
+                results[ idx ].value += ';' + subItem.hoot_val;
+            } else {
+                // add new entry
+                key.name  = item.hoot_key;
+                key.value = subItem.hoot_val;
+                results.push( key );
+            }
         }
     }
 }
