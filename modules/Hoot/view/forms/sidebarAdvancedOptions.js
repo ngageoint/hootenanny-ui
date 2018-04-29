@@ -4,9 +4,10 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/23/18
  *******************************************************************************************************/
 
-import _               from 'lodash-es';
-import API             from '../../control/api';
-import FieldsRetriever from '../models/advancedOptions/fieldsRetriever';
+import _                  from 'lodash-es';
+import API                from '../../control/api';
+import FieldsRetriever    from '../models/advancedOptions/fieldsRetriever';
+import SelectionRetriever from '../models/advancedOptions/selectionRetriever';
 
 export default class SidebarAdvancedOptions {
     constructor( context ) {
@@ -33,25 +34,26 @@ export default class SidebarAdvancedOptions {
     }
 
     render() {
-        let fieldsMeta = this.fieldsRetriever.getDefaultFields();
+        this.defaultFields = this.fieldsRetriever.getDefaultFields();
+        this.fieldsMeta    = this.fieldsRetriever.generateFields( this.defaultFields );
 
         this.createContainer();
         this.createHeader();
         this.createContentDiv();
-        this.createGroups( fieldsMeta );
+        this.createGroups();
         this.createButtons();
     }
 
     toggle() {
-        let containerState = this.container.classed( 'visible' );
+        let formState = this.form.classed( 'visible' );
 
-        this.container.classed( 'visible', !containerState );
-        this.overlay.classed( 'visible', !containerState );
-        d3.select( '#sidebar-resizer' ).classed( 'light', !containerState );
+        this.form.classed( 'visible', !formState );
+        this.overlay.classed( 'visible', !formState );
+        d3.select( '#sidebar-resizer' ).classed( 'light', !formState );
     }
 
     createContainer() {
-        this.container = this.sidebar.append( 'div' )
+        this.form = this.sidebar.append( 'div' )
             .attr( 'id', 'advanced-opts-panel' )
             .classed( 'fill-white', true )
             .style( 'margin-left', () => this.sidebar.node().getBoundingClientRect().width = 'px' );
@@ -61,7 +63,7 @@ export default class SidebarAdvancedOptions {
     }
 
     createHeader() {
-        let header = this.container.append( 'div' )
+        let header = this.form.append( 'div' )
             .classed( 'advanced-opts-header big keyline-bottom', true )
             .append( 'h3' )
             .text( 'Advanced Conflation Options' );
@@ -71,15 +73,15 @@ export default class SidebarAdvancedOptions {
     }
 
     createContentDiv() {
-        this.contentDiv = this.container.append( 'div' )
+        this.contentDiv = this.form.append( 'div' )
             .classed( 'advanced-opts-content', true );
     }
 
-    createGroups( fieldsMeta ) {
+    createGroups() {
         let self = this;
 
         let group = this.contentDiv.selectAll( '.form-group' )
-            .data( fieldsMeta ).enter()
+            .data( this.fieldsMeta ).enter()
             .append( 'div' )
             .classed( 'form-group', true );
 
@@ -109,17 +111,18 @@ export default class SidebarAdvancedOptions {
         } );
     }
 
-    createFormFields( children, group ) {
+    createFormFields( members, group ) {
         let self = this;
 
         let fieldContinaer = group.selectAll( '.form-field' )
-            .data( children ).enter()
+            .data( members ).enter()
             .append( 'div' )
-            .classed( 'form-field pad1x small contain', true );
+            .classed( 'form-field small contain', true );
 
         fieldContinaer.select( function( d ) {
             let field = d3.select( this );
 
+            // TODO: multilist
             switch ( d.type ) {
                 case 'checkbox': {
                     self.createCheckbox( field );
@@ -146,6 +149,8 @@ export default class SidebarAdvancedOptions {
 
         label.append( 'input' )
             .attr( 'type', 'checkbox' )
+            .attr( 'id', d => d.id )
+            .attr( 'name', d => _.snakeCase( d.label ) )
             .classed( 'reset', true )
             .select( function( d ) {
                 this.checked = d.placeholder === 'true';
@@ -175,6 +180,7 @@ export default class SidebarAdvancedOptions {
 
         field.append( 'input' )
             .attr( 'type', 'text' )
+            .attr( 'id', d => d.id )
             .attr( 'placeholder', d => d.placeholder )
             .classed( '' );
 
@@ -197,12 +203,17 @@ export default class SidebarAdvancedOptions {
     }
 
     createButtons() {
-        let actionsContainer = this.container.append( 'div' )
+        let actionsContainer = this.form.append( 'div' )
             .classed( 'advanced-opts-actions keyline-top', true );
 
         actionsContainer.append( 'button' )
             .classed( 'button primary round strong', true )
-            .text( 'Apply' );
+            .text( 'Apply' )
+            .on( 'click', () => {
+                let selectionRetriever = new SelectionRetriever( this.form, this.defaultFields );
+
+                this.selectedVals = selectionRetriever.generateSelectedValues();
+            } );
 
         actionsContainer.append( 'button' )
             .classed( 'button alert round strong', true )

@@ -29,9 +29,7 @@ export default class FieldsRetriever {
             return member;
         } );
 
-        let data      = this.mergeWithBase( _.cloneDeep( this.baseOpts ), overrideKeys );
-
-        return this.generateFields( data );
+        return this.mergeWithBase( _.cloneDeep( this.baseOpts ), overrideKeys );
     }
 
     mergeWithBase( members, overrideKeys ) {
@@ -67,7 +65,7 @@ export default class FieldsRetriever {
             field.type        = item.elem_type;
             field.description = item.description;
 
-            field.children    = _.reduce( item.members, ( arr, subItem ) => {
+            field.children = _.reduce( item.members, ( arr, subItem ) => {
                 let subField = {};
 
                 subField.id          = subItem.id;

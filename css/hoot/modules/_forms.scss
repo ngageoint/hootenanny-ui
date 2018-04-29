@@ -163,7 +163,7 @@
     .advanced-opts-actions {
         height: 150px;
         bottom: 0;
-        padding: 10px;
+        padding: 15px;
         display: flex;
         flex-direction: column;
         justify-content: space-around;
@@ -189,7 +189,10 @@
     }
 
     .form-field {
+        padding: 0 15px;
+
         label {
+            display: inline-block;
             margin-bottom: 5px;
         }
 
@@ -200,12 +203,17 @@
         input[type="text"] {
             border: 1px solid $dark-opacity20;
             border-radius: 4px;
+            display: block;
         }
     }
 
     .form-field.has-children {
         .form-field {
             padding: 0 20px;
+
+            label {
+                display: block;
+            }
         }
     }
 }
