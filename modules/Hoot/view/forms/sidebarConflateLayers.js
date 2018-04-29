@@ -8,17 +8,17 @@ import _                          from 'lodash-es';
 import FolderManager              from '../../managers/folderManager';
 import LayerManager               from '../../managers/layerManager';
 import HootOSM                    from '../../managers/hootOsm';
-import Event                     from '../../managers/eventManager';
 import API                        from '../../control/api';
+import FormFactory                from '../models/formFactory';
 import SidebarForm                from './sidebarForm';
 import SidebarAdvancedOptions     from './sidebarAdvancedOptions';
-import FormFactory                from '../models/formFactory';
+import ReviewLayer                from './sidebar/reviewLayer';
 import { layerConflateForm }      from '../../config/formMetadata';
 import { geoExtent as GeoExtent } from '../../../geo/index';
 
 class SidebarConflateLayers extends SidebarForm {
-    constructor( ...params ) {
-        super( params );
+    constructor( sidebar, container ) {
+        super( sidebar, container );
         this.formFactory = new FormFactory();
     }
 
@@ -49,7 +49,7 @@ class SidebarConflateLayers extends SidebarForm {
         this.collectStatsInput   = d3.select( '#conflateCollectStats' );
         this.generateReportInput = d3.select( '#conflateGenerateReport' );
 
-        this.listen();
+        super.listen();
     }
 
     remove() {
@@ -253,12 +253,9 @@ class SidebarConflateLayers extends SidebarForm {
     }
 
     layerMerged( layer ) {
-        console.log( layer );
-    }
+        this.reviewLayer = new ReviewLayer( layer );
 
-    listen() {
-        super.listen();
-        Event.listen( 'layer-merged', this.layerMerged, this );
+        this.reviewLayer.render();
     }
 }
 

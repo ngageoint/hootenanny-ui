@@ -30,7 +30,7 @@
         .red & { background-color: #AF0046; }
         .orange & { background-color: #ff7f2a; }
         .gold & { background-color: #ffcc00; }
-        .violet & { background-color:#ff5599; }
+        .violet & { background-color: #ff5599; }
         .purple & { background-color: #e580ff; }
         .blue & { background-color: #5fbcd3; }
         .teal & { background-color: #5fd3bc; }
@@ -51,14 +51,6 @@
     &.big:before {
         width: 40px;
         height: 40px;
-    }
-
-    &.folder:before {
-        background-position: -480px 0;
-    }
-
-    &.open-folder:before {
-        background-position: -84px 0px;
     }
 
     &.data {
@@ -97,20 +89,74 @@
         }
     }
 
-    &.close:before {
-        background-position: -440px 0;
+    &.open-folder:before {
+        background-position: -84px 0px;
     }
 
-    &.check:before {
-        background-position: -360px 0;
-    }
+    &.info {
+        &:before {
+            background-position: -160px 0;
+        }
 
-    &.info:before {
-        background-position: -160px 0;
+        &.big:before {
+            background-position: -160px -20px;
+        }
+
+        &.light:before {
+            background-position: -160px -60px;
+        }
+
+        &.light.big:before {
+            background-position: -160px -80px;
+        }
     }
 
     &.trash:before {
         background-position: -200px 0;
+    }
+
+    &.check {
+        &:before {
+            background-position: -360px 0;
+        }
+
+        &.big:before {
+            background-position:-360px -20px;
+        }
+
+        &.light:before {
+            background-position:-360px -60px;
+        }
+
+        &.light.big:before {
+            background-position:-360px -80px;
+        }
+    }
+
+    &.plus {
+        &:before {
+            background-position: -400px 0;
+        }
+
+        &.big:before {
+            background-position:-400px -20px;
+        }
+
+        &.light:before {
+            background-position:-400px -60px;
+        }
+
+        &.light.big:before {
+            background-position:-400px -80px;
+        }
+    }
+
+    &.close:before {
+        background-position: -440px 0;
+    }
+
+    &.folder:before {
+        background-position: -480px 0;
     }
 
     &._loading {

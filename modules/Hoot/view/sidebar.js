@@ -6,8 +6,10 @@
 
 import _                     from 'lodash-es';
 import LayerManager          from '../managers/layerManager';
+import Event                 from '../managers/eventManager';
 import SidebarAddLayer       from './forms/sidebarAddLayer';
 import SidebarConflateLayers from './forms/sidebarConflateLayers';
+import ReviewLayer           from './forms/sidebar/reviewLayer';
 import { sidebarForms }      from '../config/formMetadata';
 
 /**
@@ -20,8 +22,9 @@ export default class Sidebar {
         this.context          = context;
         this.container        = container;
         this.formData         = sidebarForms;
-        this.addFormData      = _.filter( this.formData, form => form.id !== 'conflate' );
-        this.conflateFormData = _.filter( this.formData, form => form.id === 'conflate' );
+        this.addFormData      = _.filter( this.formData, form => form.type === 'add' );
+        this.conflateFormData = _.filter( this.formData, form => form.type === 'conflate' );
+        this.reviewFormData   = _.filter( this.formData, form => form.type === 'review' );
         this.addForms         = {};
     }
 
@@ -34,6 +37,8 @@ export default class Sidebar {
         this.createResizer();
         this.createWrapper();
         this.createForms();
+
+        this.listen();
     }
 
     /**
@@ -86,15 +91,33 @@ export default class Sidebar {
         this.wrapper.selectAll( '.layer-add' )
             .data( this.addFormData ).enter()
             .select( function( d ) {
-                sidebar.addForms[ d.id ] = new SidebarAddLayer( sidebar.context, sidebar, d3.select( this ) );
+                sidebar.addForms[ d.id ] = new SidebarAddLayer( sidebar, d3.select( this ) );
                 sidebar.addForms[ d.id ].render();
             } );
 
         this.wrapper.selectAll( '.layer-conflate' )
             .data( this.conflateFormData ).enter()
             .select( function() {
-                sidebar.conflateForm = new SidebarConflateLayers( sidebar.context, sidebar, d3.select( this ) );
+                sidebar.conflateForm = new SidebarConflateLayers( sidebar, d3.select( this ) );
             } );
+    }
+
+    layerMerged( layer ) {
+        console.log( 'layer merged' );
+        console.log( 'layer: ', layer );
+        let sidebar = this;
+
+        this.wrapper.selectAll( '.layer-review' )
+            .data( this.reviewFormData ).enter()
+            .select( function() {
+                this.reviewLayer = new ReviewLayer( sidebar, d3.select( this ) );
+
+                this.reviewLayer.render( layer );
+            } );
+
+        //this.reviewLayer = new ReviewLayer( layer );
+        //
+        //this.reviewLayer.render( this, d3.select( this.wrapper ) );
     }
 
     conflateCheck() {
@@ -108,5 +131,9 @@ export default class Sidebar {
         } else if ( addControllers.size() > 0 ) {
             this.conflateForm.remove();
         }
+    }
+
+    listen() {
+        Event.listen( 'layer-merged', this.layerMerged, this );
     }
 }

@@ -10,8 +10,8 @@ import HootOSM         from '../../managers/hootOsm';
 import Event           from '../../managers/eventManager';
 
 export default class SidebarForm {
-    constructor( [ context, sidebar, container ] ) {
-        this.context   = context;
+    constructor( sidebar, container ) {
+        this.context   = sidebar.context;
         this.sidebar   = sidebar;
         this.container = container;
 
@@ -62,13 +62,14 @@ export default class SidebarForm {
      */
     createToggleButton() {
         this.button = this.form.append( 'a' )
-            .classed( 'toggle-button button dark text-light strong block round', true )
             .attr( 'href', '#' )
-            .on( 'click', d => this.toggle( d.id ) );
+            //.classed( 'toggle-button button dark text-light strong block round', true )
+            .attr( 'class', d => {
+                let iconClass = d.type === 'add' ? 'plus' : d.type === 'conflate' ? 'conflate' : 'check';
 
-        this.button.append( 'i' )
-            .classed( 'material-icons center strong', true )
-            .text( 'add' );
+                return `toggle-button dark button light _icon big text-light strong block round ${ iconClass }`;
+            } )
+            .on( 'click', d => this.toggle( d.id ) );
 
         this.button.append( 'span' )
             .classed( 'strong', true )

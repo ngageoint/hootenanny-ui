@@ -11,8 +11,8 @@ import SidebarForm from './sidebarForm';
 import Event       from '../../managers/eventManager';
 
 export default class SidebarAddLayer extends SidebarForm {
-    constructor( ...params ) {
-        super( params );
+    constructor( sidebar, container ) {
+        super( sidebar, container );
     }
 
     render() {

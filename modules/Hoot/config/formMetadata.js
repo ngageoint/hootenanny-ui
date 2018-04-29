@@ -26,6 +26,12 @@ export const sidebarForms = [
         id: 'conflate',
         class: 'layer-conflate',
         toggleButtonText: 'Conflate'
+    },
+    {
+        type: 'review',
+        id: 'review',
+        class: 'layer-review',
+        toggleButtonText: 'Complete Review'
     }
 ];
 
