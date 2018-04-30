@@ -84,6 +84,7 @@ class API {
                 let layers    = resp.data.layers,
                     layerList = [];
 
+
                 if ( !layers || !layers.length )
                     return resp.data;
 

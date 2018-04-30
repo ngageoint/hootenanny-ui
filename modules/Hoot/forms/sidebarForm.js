@@ -4,10 +4,12 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/13/18
  *******************************************************************************************************/
 
-import SidebarLayerController from './sidebarLayerController';
-import LayerManager           from '../managers/layerManager';
-import HootOSM                from '../managers/hootOsm';
-import Event                  from '../managers/eventManager';
+import SidebarLayerController      from './sidebarLayerController';
+import LayerManager                from '../managers/layerManager';
+import HootOSM                     from '../managers/hootOsm';
+import Event                       from '../managers/eventManager';
+import { utilRebind }              from '../../util/rebind';
+import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 export default class SidebarForm {
     constructor( sidebar, container ) {

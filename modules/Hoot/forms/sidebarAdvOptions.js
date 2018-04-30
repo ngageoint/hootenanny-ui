@@ -135,7 +135,8 @@ export default class SidebarAdvOptions {
         let fieldContainer = group.selectAll( '.form-field' )
             .data( members ).enter()
             .append( 'div' )
-            .classed( 'form-field small contain', true );
+            .classed( 'form-field small contain', true )
+            .classed( 'hidden', d => d.required === 'true' );
 
         fieldContainer.append( 'label' )
             .text( d => d.label );
@@ -172,7 +173,6 @@ export default class SidebarAdvOptions {
         field.append( 'input' )
             .attr( 'type', 'checkbox' )
             .attr( 'id', d => d.id )
-            .attr( 'name', d => _.snakeCase( d.label ) )
             .classed( 'reset', true )
             .select( function( d ) {
                 this.checked = d.placeholder === 'true';

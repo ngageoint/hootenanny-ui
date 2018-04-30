@@ -124,11 +124,13 @@ class HootOSM {
         LayerManager.loadedLayers[ id ].visible = false;
 
         d3.select( '#map' ).selectAll( `[class*="_${ id }-"]` ).remove();
+        //d3.select( '#map' ).selectAll( `[class*="tag-hoot-${ id }"]` ).remove();
         this.context.connection().removeTile( id );
         this.context.flush();
     }
 
     async removeLayer( id ) {
+        //delete LayerManager.loadedLayers[ id ];
         LayerManager.removeLoadedLayer( id );
         this.context.background().removeSource( id );
         this.hootOverlay.removeGeojson( id );
@@ -151,6 +153,7 @@ class HootOSM {
     }
 
     setLayerColor( mapId, color ) {
+        console.log( mapId, color );
         let sheets = document.styleSheets[ document.styleSheets.length - 1 ],
             lighter;
 

@@ -103,8 +103,6 @@ export default class Sidebar {
     }
 
     layerMerged( layer ) {
-        console.log( 'layer merged' );
-        console.log( 'layer: ', layer );
         let sidebar = this;
 
         this.wrapper.selectAll( '.layer-review' )

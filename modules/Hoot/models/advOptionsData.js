@@ -172,10 +172,15 @@ export default class AdvOptionsData {
                 case 'checkplus': {
                     if ( !this.form.select( `#${ subItem.id }` ).property( 'checked' ) ) break;
 
-                    // recursion baby
+                    this.getCheckValue( item, subItem, results );
+
                     if ( subItem.members ) {
                         this.getAllValues( subItem, results );
                     }
+                    break;
+                }
+                case 'list': {
+                    this.getListValue( item, subItem, results );
                     break;
                 }
                 default: {
@@ -215,8 +220,42 @@ export default class AdvOptionsData {
         }
     }
 
+    getListValue( item, subItem, results ) {
+        let node  = this.form.select( `${ subItem.id }` ).node(),
+            value = node ? node.value : null;
+
+        if ( !value || !value.length ) {
+            value = subItem.defaultvalue;
+        }
+
+        let selectedMember = _.find( subItem.members, { name: value } );
+
+        _.forEach( selectedMember.members, subMember => {
+            let node  = this.form.select( `${ subMember.id }` ).node(),
+                subValue = node ? node.value : null,
+                key   = {};
+
+            if ( !subValue || !subValue.length ) {
+                subValue = subMember.defaultvalue;
+            }
+
+            if ( subMember.hoot_key ) {
+                let idx = results.indexOf( _.find( results, obj => obj.name === subMember.hoot_key ) );
+
+                if ( idx > -1 && results[ idx ].value.indexOf( subValue ) === -1 ) {
+                    results[ idx ].value += ';' + subValue;
+                } else {
+                    key.name  = subMember.hoot_key;
+                    key.value = subValue;
+                    results.push( key );
+                }
+            }
+        } );
+    }
+
     getTextValue( item, subItem, results ) {
-        let value = this.form.select( `#${ subItem.id }` ).node().value,
+        let node  = this.form.select( `#${ subItem.id }` ).node(),
+            value = node ? node.value : null,
             key   = {};
 
         if ( !value || !value.length ) {
@@ -226,9 +265,11 @@ export default class AdvOptionsData {
         let idx = results.indexOf( _.find( results, obj => obj.name === subItem.hoot_key ) );
 
         if ( subItem.hoot_key ) {
-            if ( idx > -1 && results[ idx ].value.indexOf( value ) === -1 ) {
-                // concat new value to existing string
-                results[ idx ].value += ';' + value;
+            if ( idx > -1 ) {
+                if ( results[ idx ].value.indexOf( value ) === -1 ) {
+                    // concat new value to existing string
+                    results[ idx ].value += ';' + value;
+                }
             } else {
                 // add new entry
                 key.name  = subItem.hoot_key;

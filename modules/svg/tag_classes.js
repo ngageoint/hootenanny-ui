@@ -125,7 +125,7 @@ export function svgTagClasses() {
                             id = mapId;
                             break;
                     }
-                    classes += ' tag-hoot-' + (id || mapId);
+                    classes += ' tag-hoot-' + (id || sourceId);
                 } else {
                     classes += ' tag-hoot-' + mapId;
                 }

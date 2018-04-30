@@ -175,7 +175,7 @@ class SidebarLayerConflate extends SidebarForm {
         this.submitButton.node().disabled = !this.formValid;
     }
 
-    preConflation( advOpts ) {
+    preConflation() {
         let data = {};
 
         data.TIME_STAMP         = '' + new Date().getTime();
@@ -191,19 +191,6 @@ class SidebarLayerConflate extends SidebarForm {
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
         data.ADV_OPTIONS        = this.advancedOptions.parsedOptions;
         data.USER_EMAIL         = 'test@test.com';
-
-        if ( advOpts ) {
-            let advOptionsStr = '';
-
-            _.each( advOpts, opt => {
-                if ( advOptionsStr.length > 0 ) {
-                    advOptionsStr += ' ';
-                }
-                advOptionsStr += `-D "${ opt.name }=${ opt.value }"`;
-            } );
-
-            data.ADV_OPTIONS = advOptionsStr;
-        }
 
         let gj = this.context.layers().layer( 'gpx' );
 

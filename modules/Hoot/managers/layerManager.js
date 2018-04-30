@@ -44,6 +44,7 @@ class LayerManager {
     }
 
     findBy( key, val ) {
+        console.log( this._layers );
         return _.find( this._layers, layer => layer[ key ] === val );
     }
 
