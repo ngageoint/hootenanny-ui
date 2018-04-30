@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import _              from 'lodash-es';
-import { d3combobox } from '../../../lib/hoot/d3.combobox';
+import { d3combobox } from '../../lib/hoot/d3.combobox';
 
 /**
  * Create a form contained within a modal

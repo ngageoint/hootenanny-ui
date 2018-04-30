@@ -1,13 +1,13 @@
 /*******************************************************************************************************
- * File: layerController.js
+ * File: sidebarLayerController.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/3/18
  *******************************************************************************************************/
 
-import LayerManager from '../../managers/layerManager';
-import MapMetadata  from './mapMetadata';
+import LayerManager         from '../managers/layerManager';
+import SidebarLayerMetadata from './sidebarLayerMetadata';
 
-class LayerController {
+class SidebarLayerController {
     constructor( context, form, layer ) {
         this.context    = context;
         this.form       = form;
@@ -129,10 +129,10 @@ class LayerController {
 
         if ( layer.tags && (layer.tags.params || layer.tags.stats) ) {
             this.contextLayer.style( 'width', 'calc( 100% - 145px' );
-            this.metadata = new MapMetadata( this.context, this.form, layer );
+            this.metadata = new SidebarLayerMetadata( this.context, this.form, layer );
             this.metadata.render();
         }
     }
 }
 
-export default LayerController;
+export default SidebarLayerController;

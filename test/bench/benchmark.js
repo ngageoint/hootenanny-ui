@@ -2843,7 +2843,7 @@
         // Abort the cycle loop when the minimum sample size has been collected
         // and the elapsed time exceeds the maximum time allowed per benchmark.
         // We don't count cycle delays toward the max time because delays may be
-        // increased by browsers that clamp timeouts for inactive tabs.
+        // increased by browsers that clamp timeouts for inactive settingsPanelTabs.
         // https://developer.mozilla.org/en/window.setTimeout#Inactive_tabs
         if (maxedOut) {
           // reset the `initCount` in case the benchmark is rerun

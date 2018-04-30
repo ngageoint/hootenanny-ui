@@ -6,8 +6,8 @@
 
 import _ from 'lodash-es';
 
-import Event from '../managers/eventManager';
-import settingsTabs from './settingsTabs/index';
+import Event        from './managers/eventManager';
+import settingsTabs from './settingsPanelTabs/index';
 
 /**
  * Creates the settings panel
@@ -63,7 +63,7 @@ export default class SettingsPanel {
         sidebar.append( 'h3' )
             .classed( 'settings-header pad1y pointer strong center', true )
             .append( 'label' )
-            .text( 'Settings' );
+            .text( 'SettingsPanel' );
 
         return sidebar;
     }

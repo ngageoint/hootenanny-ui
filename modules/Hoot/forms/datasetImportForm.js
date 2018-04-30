@@ -5,13 +5,13 @@
  *******************************************************************************************************/
 
 import _                      from 'lodash-es';
-import Event                  from '../../managers/eventManager';
-import ImportControl          from '../../control/import';
-import FolderManager          from '../../managers/folderManager';
+import Event                  from '../managers/eventManager';
+import ImportControl          from '../control/import';
+import FolderManager          from '../managers/folderManager';
 import FormFactory            from '../models/formFactory';
-import { importDatasetForm }  from '../../config/formMetadata';
-import { importDatasetTypes } from '../../config/domElements';
-import { getBrowserInfo }     from '../../control/utilities';
+import { importDatasetForm }  from '../config/formMetadata';
+import { importDatasetTypes } from '../config/domElements';
+import { getBrowserInfo }     from '../control/utilities';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -19,7 +19,7 @@ import { getBrowserInfo }     from '../../control/utilities';
  * @param translations - All translations from database
  * @constructor
  */
-export default class DatasetImport {
+export default class DatasetImportForm {
     constructor( translations ) {
         this.folderList   = FolderManager.folderPaths;
         this.importTypes  = importDatasetTypes;

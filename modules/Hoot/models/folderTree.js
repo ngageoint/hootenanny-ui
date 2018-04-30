@@ -6,9 +6,9 @@
 
 import _                from 'lodash-es';
 import moment           from 'moment';
-import Event            from '../../managers/eventManager';
-import FolderManager    from '../../managers/folderManager';
-import { contextMenus } from '../../config/domElements';
+import Event            from '../managers/eventManager';
+import FolderManager    from '../managers/folderManager';
+import { contextMenus } from '../config/domElements';
 
 /**
  * Class for creating, displaying and maintaining a folder tree hierarchy

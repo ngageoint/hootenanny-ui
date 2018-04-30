@@ -4,10 +4,10 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import Event from '../../managers/eventManager';
+import Event from '../managers/eventManager';
 
 /**
- * Base class that all other tabs in the settings panel extends from
+ * Base class that all other settingsPanelTabs in the settings panel extends from
  */
 export default class Tab {
     constructor( [ panel, sidebar ] ) {

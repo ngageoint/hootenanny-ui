@@ -4,10 +4,10 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/13/18
  *******************************************************************************************************/
 
-import LayerController from '../models/layerController';
-import LayerManager    from '../../managers/layerManager';
-import HootOSM         from '../../managers/hootOsm';
-import Event           from '../../managers/eventManager';
+import SidebarLayerController from './sidebarLayerController';
+import LayerManager           from '../managers/layerManager';
+import HootOSM                from '../managers/hootOsm';
+import Event                  from '../managers/eventManager';
 
 export default class SidebarForm {
     constructor( sidebar, container ) {
@@ -83,7 +83,7 @@ export default class SidebarForm {
 
     loadingState( params ) {
         this.loadingLayer = params.name;
-        this.controller   = new LayerController( this.context, this.form, params );
+        this.controller   = new SidebarLayerController( this.context, this.form, params );
 
         this.controller.render();
     }

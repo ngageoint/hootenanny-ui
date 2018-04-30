@@ -1,10 +1,10 @@
 /*******************************************************************************************************
- * File: mapMetadata.js
+ * File: sidebarLayerMetadata.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/16/18
  *******************************************************************************************************/
 
-export default class MapMetadata {
+export default class SidebarLayerMetadata {
     constructor( context, form, layer ) {
         this.context  = context;
         this.form     = form;

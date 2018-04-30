@@ -1,12 +1,12 @@
 /*******************************************************************************************************
- * File: reviewLayer.js
+ * File: sidebarLayerReview.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/29/18
  *******************************************************************************************************/
 
-import SidebarForm from '../sidebarForm';
+import SidebarForm from './sidebarForm';
 
-export default class ReviewLayer extends SidebarForm {
+export default class SidebarLayerReview extends SidebarForm {
     constructor( sidebar, container ) {
         super( sidebar, container );
     }
@@ -43,17 +43,5 @@ export default class ReviewLayer extends SidebarForm {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
             } );
-
-        //this.acceptAll = this.fieldset.append( 'div' )
-        //    .classed( 'small keyline-all round', true )
-        //    .append( 'label' )
-        //    .classed( 'pad1x pad1y', true )
-        //    .append( 'a' )
-        //    .attr( 'href', '!#' )
-        //    .text( 'Resolve all remaining reviews' )
-        //    .on( 'click', function() {
-        //        d3.event.stopPropagation();
-        //        d3.event.preventDefault();
-        //    } );
     }
 }

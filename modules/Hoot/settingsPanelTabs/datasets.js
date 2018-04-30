@@ -4,18 +4,18 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import _             from 'lodash-es';
-import API           from '../../control/api';
-import FolderTree    from '../models/folderTree';
-import DatasetImport from '../forms/datasetImport';
-import Event         from '../../managers/eventManager';
-import LayerManager  from '../../managers/layerManager';
-import Tab           from './tab';
+import _                 from 'lodash-es';
+import API               from '../control/api';
+import FolderTree        from '../models/folderTree';
+import DatasetImportForm from '../forms/datasetImportForm';
+import Event             from '../managers/eventManager';
+import LayerManager      from '../managers/layerManager';
+import Tab               from './tab';
 
 import {
     datasetButtons,
     datasetTableHeaders
-} from '../../config/domElements';
+} from '../config/domElements';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -70,7 +70,7 @@ export default class Datasets extends Tab {
                     case 'import-dataset-single': {
                         let translations = await API.getTranslations();
 
-                        new DatasetImport( translations ).render();
+                        new DatasetImportForm( translations ).render();
                         break;
                     }
                     case 'import-dataset-directory': {

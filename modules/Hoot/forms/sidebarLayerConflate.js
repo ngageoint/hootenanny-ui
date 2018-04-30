@@ -1,22 +1,22 @@
 /*******************************************************************************************************
- * File: sidebarConflateLayers.js
+ * File: sidebarLayerConflate.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/5/18
  *******************************************************************************************************/
 
 import _                          from 'lodash-es';
-import FolderManager              from '../../managers/folderManager';
-import LayerManager               from '../../managers/layerManager';
-import HootOSM                    from '../../managers/hootOsm';
-import API                        from '../../control/api';
+import API                        from '../control/api';
+import FolderManager              from '../managers/folderManager';
+import LayerManager               from '../managers/layerManager';
+import HootOSM                    from '../managers/hootOsm';
 import FormFactory                from '../models/formFactory';
 import SidebarForm                from './sidebarForm';
-import SidebarAdvancedOptions     from './sidebarAdvancedOptions';
-import ReviewLayer                from './sidebar/reviewLayer';
-import { layerConflateForm }      from '../../config/formMetadata';
-import { geoExtent as GeoExtent } from '../../../geo/index';
+import SidebarAdvOptions          from './sidebarAdvOptions';
+import SidebarLayerReview         from './sidebarLayerReview';
+import { layerConflateForm }      from '../config/formMetadata';
+import { geoExtent as GeoExtent } from '../../geo/index';
 
-class SidebarConflateLayers extends SidebarForm {
+class SidebarLayerConflate extends SidebarForm {
     constructor( sidebar, container ) {
         super( sidebar, container );
         this.formFactory = new FormFactory();
@@ -92,7 +92,7 @@ class SidebarConflateLayers extends SidebarForm {
     }
 
     createAdvancedOptions() {
-        this.advancedOptions = new SidebarAdvancedOptions( this.context );
+        this.advancedOptions = new SidebarAdvOptions( this.context );
         this.advancedOptions.init();
 
         let advancedOptionsToggle = d3.select( '#advanced-opts-toggle' );
@@ -253,10 +253,10 @@ class SidebarConflateLayers extends SidebarForm {
     }
 
     layerMerged( layer ) {
-        this.reviewLayer = new ReviewLayer( layer );
+        this.reviewLayer = new SidebarLayerReview( layer );
 
         this.reviewLayer.render();
     }
 }
 
-export default SidebarConflateLayers;
+export default SidebarLayerConflate;

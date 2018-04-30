@@ -1,16 +1,16 @@
 /*******************************************************************************************************
- * File: sidebarAddLayer.js
+ * File: sidebarLayerAdd.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/10/18
  *******************************************************************************************************/
 
 import _           from 'lodash-es';
+import HootOSM     from '../managers/hootOsm';
+import Event       from '../managers/eventManager';
 import FolderTree  from '../models/folderTree';
-import HootOSM     from '../../managers/hootOsm';
 import SidebarForm from './sidebarForm';
-import Event       from '../../managers/eventManager';
 
-export default class SidebarAddLayer extends SidebarForm {
+export default class SidebarLayerAdd extends SidebarForm {
     constructor( sidebar, container ) {
         super( sidebar, container );
     }

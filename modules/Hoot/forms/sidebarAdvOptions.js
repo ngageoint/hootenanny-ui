@@ -1,16 +1,15 @@
 /*******************************************************************************************************
- * File: sidebarAdvancedOptions.js
+ * File: sidebarAdvOptions.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/23/18
  *******************************************************************************************************/
 
-import _                  from 'lodash-es';
-import API                from '../../control/api';
-import FieldsRetriever    from '../models/advancedOptions/fieldsRetriever';
-import SelectionRetriever from '../models/advancedOptions/selectionRetriever';
-import { d3combobox }     from '../../../lib/hoot/d3.combobox';
+import _              from 'lodash-es';
+import API            from '../control/api';
+import AdvOptionsData from '../models/advOptionsData';
+import { d3combobox } from '../../lib/hoot/d3.combobox';
 
-export default class SidebarAdvancedOptions {
+export default class SidebarAdvOptions {
     constructor( context ) {
         this.context         = context;
         this.body            = context.container();
@@ -25,9 +24,7 @@ export default class SidebarAdvancedOptions {
 
     get parsedOptions() {
         if ( !this.selectedOpts ) {
-            let selectionRetriever = new SelectionRetriever( this.form, this.defaultFields );
-
-            this.selectedOpts = selectionRetriever.generateSelectedValues();
+            this.selectedOpts = this.advOptsData.generateSelectedValues( this.form );
         }
 
         return _.reduce( this.selectedOpts, ( str, opt ) => {
@@ -49,14 +46,14 @@ export default class SidebarAdvancedOptions {
             reference: allOpts[ 3 ]
         };
 
-        this.fieldsRetriever = new FieldsRetriever( _.cloneDeep( this.advancedOptions ) );
+        this.advOptsData = new AdvOptionsData( _.cloneDeep( this.advancedOptions ) );
 
         this.render();
     }
 
     render() {
-        this.defaultFields = this.fieldsRetriever.getDefaultFields();
-        this.fieldsMeta    = this.fieldsRetriever.generateFields( this.defaultFields );
+        this.defaultFields = this.advOptsData.getDefaultFields();
+        this.fieldsMeta    = this.advOptsData.generateFields( this.defaultFields );
 
         this.createContainer();
         this.createHeader();
@@ -250,9 +247,7 @@ export default class SidebarAdvancedOptions {
             .classed( 'button primary round strong', true )
             .text( 'Apply' )
             .on( 'click', () => {
-                let selectionRetriever = new SelectionRetriever( this.form, this.defaultFields );
-
-                this.selectedOpts = selectionRetriever.generateSelectedValues();
+                this.selectedOpts = this.advOptsData.generateSelectedValues( this.form );
 
                 this.toggle();
             } );

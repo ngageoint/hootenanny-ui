@@ -4,13 +4,13 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/10/18
  *******************************************************************************************************/
 
-import _                     from 'lodash-es';
-import LayerManager          from '../managers/layerManager';
-import Event                 from '../managers/eventManager';
-import SidebarAddLayer       from './forms/sidebarAddLayer';
-import SidebarConflateLayers from './forms/sidebarConflateLayers';
-import ReviewLayer           from './forms/sidebar/reviewLayer';
-import { sidebarForms }      from '../config/formMetadata';
+import _                    from 'lodash-es';
+import LayerManager         from './managers/layerManager';
+import Event                from './managers/eventManager';
+import SidebarLayerAdd      from './forms/sidebarLayerAdd';
+import SidebarLayerConflate from './forms/sidebarLayerConflate';
+import SidebarLayerReview   from './forms/sidebarLayerReview';
+import { sidebarForms }     from './config/formMetadata';
 
 /**
  * Create the sidebar
@@ -91,14 +91,14 @@ export default class Sidebar {
         this.wrapper.selectAll( '.layer-add' )
             .data( this.addFormData ).enter()
             .select( function( d ) {
-                sidebar.addForms[ d.id ] = new SidebarAddLayer( sidebar, d3.select( this ) );
+                sidebar.addForms[ d.id ] = new SidebarLayerAdd( sidebar, d3.select( this ) );
                 sidebar.addForms[ d.id ].render();
             } );
 
         this.wrapper.selectAll( '.layer-conflate' )
             .data( this.conflateFormData ).enter()
             .select( function() {
-                sidebar.conflateForm = new SidebarConflateLayers( sidebar, d3.select( this ) );
+                sidebar.conflateForm = new SidebarLayerConflate( sidebar, d3.select( this ) );
             } );
     }
 
@@ -110,12 +110,12 @@ export default class Sidebar {
         this.wrapper.selectAll( '.layer-review' )
             .data( this.reviewFormData ).enter()
             .select( function() {
-                this.reviewLayer = new ReviewLayer( sidebar, d3.select( this ) );
+                this.reviewLayer = new SidebarLayerReview( sidebar, d3.select( this ) );
 
                 this.reviewLayer.render( layer );
             } );
 
-        //this.reviewLayer = new ReviewLayer( layer );
+        //this.reviewLayer = new SidebarLayerReview( layer );
         //
         //this.reviewLayer.render( this, d3.select( this.wrapper ) );
     }
