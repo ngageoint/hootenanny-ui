@@ -789,7 +789,7 @@ export function rendererMap(context) {
             map.centerZoom(extent.center(), map.extentZoom(extent));
         }
     };
-    
+
 
     map.trimmedExtent = function(_) {
         if (!arguments.length) {

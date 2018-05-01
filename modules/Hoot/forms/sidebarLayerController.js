@@ -19,6 +19,7 @@ class SidebarLayerController {
         this.layerId    = layer.id;
         this.layerColor = layer.color;
         this.isConflate = layer.isConflate;
+        this.refType    = layer.refType;
         this.typeClass  = this.isConflate ? 'conflate-controller' : 'add-controller';
     }
 
@@ -117,6 +118,7 @@ class SidebarLayerController {
             .on( 'click', function( p ) {
                 d3.select( this.parentNode )
                     .selectAll( 'a' )
+
                     .classed( 'active _icon check', false );
 
                 d3.select( this )
@@ -148,12 +150,13 @@ class SidebarLayerController {
     createDeleteButton() {
         this.deleteButton = this.controller.append( 'button' )
             .classed( 'delete-button icon-button keyline-left round-right inline _icon trash', true )
-            .on( 'click', () => {
+            .on( 'click', d => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
                 if ( window.confirm( 'Are you sure you want to delete?' ) ) {
-                    // handle delete
+                    HootOSM.removeLayer( this.layerId );
+                    Event.send( 'layer-removed', d );
                 }
             } );
     }

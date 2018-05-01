@@ -77,20 +77,25 @@ export default class AdvOptionsData {
                 subField.description = subItem.description;
                 subField.placeholder = subItem.defaultvalue;
 
-                if ( subItem.required )
+                if ( subItem.required ) {
                     subField.required = subItem.required;
+                }
 
-                if ( subItem.dependency )
+                if ( subItem.dependency ) {
                     subField.dependency = subItem.dependency;
+                }
 
-                if ( subItem.dependents )
+                if ( subItem.dependents ) {
                     subField.dependents = subItem.dependents;
+                }
 
-                if ( subItem.members )
+                if ( subItem.members ) {
                     subField.combobox = subItem.members;
+                }
 
-                if ( subItem.onchange )
+                if ( subItem.onchange ) {
                     subField.onchange = subItem.onchange;
+                }
 
                 switch ( subItem.elem_type ) {
                     case 'bool': {

@@ -144,7 +144,6 @@ class API {
     }
 
     getTags( mapId ) {
-        console.log( 'get tags' );
         const params = {
             path: `/osm/api/0.6/map/tags?mapid=${ mapId }`,
             method: 'GET'

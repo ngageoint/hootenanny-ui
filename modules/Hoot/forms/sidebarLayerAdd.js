@@ -15,8 +15,8 @@ export default class SidebarLayerAdd extends SidebarForm {
         super( sidebar, container );
     }
 
-    render() {
-        super.render();
+    render( data ) {
+        super.render( data );
 
         this.createFieldset();
         this.createTable();
@@ -41,7 +41,7 @@ export default class SidebarLayerAdd extends SidebarForm {
     createTable() {
         this.table = this.fieldset.append( 'div' )
             .attr( 'id', d => d.tableId )
-            .classed( 'layer-add-table keyline-all filled-white strong overflow', true )
+            .classed( 'layer-add-table keyline-all filled-white strong overflow', true );
     }
 
     /**

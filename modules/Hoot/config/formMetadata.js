@@ -8,6 +8,7 @@ export const sidebarForms = [
     {
         type: 'add',
         refType: 'primary',
+        id: 'primary',
         class: 'layer-add',
         tableId: 'add-ref-table',
         color: 'violet',
@@ -16,6 +17,7 @@ export const sidebarForms = [
     {
         type: 'add',
         refType: 'secondary',
+        id: 'secondary',
         class: 'layer-add',
         tableId: 'add-secondary-table',
         color: 'orange',

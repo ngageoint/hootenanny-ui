@@ -26,6 +26,7 @@ export default class Sidebar {
         this.conflateFormData = _.filter( this.formData, form => form.type === 'conflate' );
         this.reviewFormData   = _.filter( this.formData, form => form.type === 'review' );
         this.addForms         = {};
+        this.forms = {};
     }
 
     /**
@@ -91,8 +92,11 @@ export default class Sidebar {
         this.wrapper.selectAll( '.layer-add' )
             .data( this.addFormData ).enter()
             .select( function( d ) {
-                sidebar.addForms[ d.id ] = new SidebarLayerAdd( sidebar, d3.select( this ) );
-                sidebar.addForms[ d.id ].render();
+                sidebar.forms[ d.id ] = new SidebarLayerAdd( sidebar, d3.select( this ) );
+                sidebar.forms[ d.id ].render();
+
+                //sidebar.addForms[ d.id ] = new SidebarLayerAdd( sidebar, d3.select( this ) );
+                //sidebar.addForms[ d.id ].render();
             } );
 
         this.wrapper.selectAll( '.layer-conflate' )
@@ -100,6 +104,10 @@ export default class Sidebar {
             .select( function() {
                 sidebar.conflateForm = new SidebarLayerConflate( sidebar, d3.select( this ) );
             } );
+    }
+
+    layerRemoved( data ) {
+        this.forms[ data.id ].render( data );
     }
 
     layerMerged( layer ) {
@@ -132,6 +140,7 @@ export default class Sidebar {
     }
 
     listen() {
+        Event.listen( 'layer-removed', this.layerRemoved, this );
         Event.listen( 'layer-merged', this.layerMerged, this );
     }
 }

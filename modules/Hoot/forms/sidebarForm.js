@@ -4,12 +4,10 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/13/18
  *******************************************************************************************************/
 
-import SidebarLayerController      from './sidebarLayerController';
-import LayerManager                from '../managers/layerManager';
-import HootOSM                     from '../managers/hootOsm';
-import Event                       from '../managers/eventManager';
-import { utilRebind }              from '../../util/rebind';
-import { dispatch as d3_dispatch } from 'd3-dispatch';
+import SidebarLayerController from './sidebarLayerController';
+import LayerManager           from '../managers/layerManager';
+import HootOSM                from '../managers/hootOsm';
+import Event                  from '../managers/eventManager';
 
 export default class SidebarForm {
     constructor( sidebar, container ) {
@@ -23,13 +21,13 @@ export default class SidebarForm {
         this.loadedLayer  = null;
     }
 
-    reset() {
-        this.form.remove();
-        this.render();
-    }
+    render( data ) {
+        if ( data ) {
+            this.resetForm( data );
+        } else {
+            this.createForm();
+        }
 
-    render() {
-        this.createForm();
         this.createToggleButton();
         this.createInnerWrapper();
     }
@@ -60,13 +58,28 @@ export default class SidebarForm {
             .attr( 'class', d => `sidebar-form round importable-layer fill-white strong ${ d.class }` );
     }
 
+    resetForm( d ) {
+        this.form.remove();
+        this.folderTree = null;
+
+        if ( d.id === 'primary' ) {
+            this.form = this.container.insert( 'form', ':first-child' );
+        } else {
+            this.form = this.container.append( 'form' );
+        }
+
+        this.form.attr( 'id', d => d.id )
+            .attr( 'class', d => `sidebar-form round importable-layer fill-white strong ${ d.class }` );
+
+        this.sidebar.conflateCheck();
+    }
+
     /**
      * Create toggle button for form
      */
     createToggleButton() {
         this.button = this.form.append( 'a' )
             .attr( 'href', '#' )
-            //.classed( 'toggle-button button dark text-light strong block round', true )
             .attr( 'class', d => {
                 let iconClass = d.type === 'add' ? 'plus' : d.type === 'conflate' ? 'conflate' : 'check';
 
@@ -109,18 +122,17 @@ export default class SidebarForm {
         }
     }
 
-    layerRemoved( layerName ) {
-        if ( this.loadingLayer === layerName ) {
-            this.reset();
-            this.sidebar.conflateCheck();
-        }
-    }
+    //layerRemoved( layerName ) {
+    //    if ( this.loadingLayer === layerName || ( this.loadedLayer && this.loadedLayer.name === layerName ) ) {
+    //        this.reset();
+    //        this.sidebar.conflateCheck();
+    //    }
+    //}
 
     /**
      * Listen for re-render
      */
     listen() {
         Event.listen( 'layer-loaded', this.layerLoaded, this );
-        Event.listen( 'layer-removed', this.layerRemoved, this );
     }
 }
