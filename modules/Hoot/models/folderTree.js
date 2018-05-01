@@ -477,10 +477,6 @@ export default class FolderTree {
             .attr( 'class', item => `_icon ${ item.icon }` )
             .text( item => item.title )
             .on( 'click', item => {
-                //let key = {
-                //    name: data.name,
-                //    id: data.id
-                //};
                 switch ( item.click ) {
                     case 'deleteDataset': {
                         let params = {

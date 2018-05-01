@@ -37,19 +37,30 @@ export default class SidebarForm {
      */
     toggle() {
         let buttonState  = this.button.classed( 'active' ),
+            wrapper      = this.innerWrapper,
             wrapperState = this.innerWrapper.classed( 'visible' ),
-            wrapperNode  = this.innerWrapper.node();
+            wrapperNode  = this.innerWrapper.node(),
+            fieldset     = this.innerWrapper.select( 'fieldset' ).node();
 
-        this.button.classed( 'active', !buttonState );
-        this.innerWrapper.classed( 'visible', !wrapperState );
+        function onEnd() {
+            wrapperNode.removeEventListener( 'transitionend', onEnd );
+            wrapperNode.style.height = 'auto';
+            wrapperNode.style.minHeight = fieldset.clientHeight + 'px';
+            wrapper.classed( 'no-transition', true );
+        }
 
         if ( wrapperNode.clientHeight ) {
-            wrapperNode.style.height = '0';
-        } else {
-            let fieldset = this.innerWrapper.select( 'fieldset' ).node();
-
+            wrapper.classed( 'no-transition', false );
+            wrapperNode.style.minHeight = '0';
             wrapperNode.style.height = fieldset.clientHeight + 'px';
+            setTimeout( () => wrapperNode.style.height = '0', 1 );
+        } else {
+            wrapperNode.style.height = fieldset.clientHeight + 'px';
+            wrapperNode.addEventListener( 'transitionend', onEnd, false );
         }
+
+        this.button.classed( 'active', !buttonState );
+        wrapper.classed( 'visible', !wrapperState );
     }
 
     createForm() {

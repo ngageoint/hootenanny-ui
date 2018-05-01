@@ -67,6 +67,7 @@
 
     .inner-wrapper {
         height: 0;
+        min-height: 0;
         border-radius: 0 0 4px 4px;
         border: 0 solid $dark-opacity25;
         visibility: hidden;
@@ -235,7 +236,6 @@
 
         td {
             padding: 4px 6px;
-
         }
 
         .metadata-key {
@@ -250,5 +250,4 @@
 }
 
 .layer-review {
-
 }
