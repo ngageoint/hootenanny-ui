@@ -272,6 +272,7 @@ button, .button {
 
     &[disabled] {
         background-color: $dark-opacity25 !important;
+        border: 1px solid $light4;
     }
 }
 

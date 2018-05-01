@@ -37,7 +37,8 @@ export default class SidebarAdvOptions {
     }
 
     async init() {
-        let allOpts = await Promise.all( _.map( this.optTypes, type => API.getAdvancedOptions( type ) ) );
+        this.optTypes = [ 'custom', 'horizontal', 'average', 'reference' ];
+        let allOpts   = await Promise.all( _.map( this.optTypes, type => API.getAdvancedOptions( type ) ) );
 
         this.advancedOptions = {
             base: allOpts[ 0 ],
