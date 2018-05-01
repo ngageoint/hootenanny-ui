@@ -97,7 +97,7 @@ export function rendererMap(context) {
     //var scheduleRedraw = _throttle(redraw, 750);
     function scheduleRedraw() {
         clearTimeout(timeoutId);
-        timeoutId = setTimeout(function() { redraw(); }, 300);
+        timeoutId = setTimeout(function() { redraw(); }, 200);
     }
     // var isRedrawScheduled = false;
     // var pendingRedrawCall;
@@ -738,7 +738,7 @@ export function rendererMap(context) {
             dispatch.call('move', this, map);
         }
 
-        scheduleRedraw();
+        redraw();
         return map;
     };
 
@@ -789,7 +789,7 @@ export function rendererMap(context) {
             map.centerZoom(extent.center(), map.extentZoom(extent));
         }
     };
-
+    
 
     map.trimmedExtent = function(_) {
         if (!arguments.length) {
