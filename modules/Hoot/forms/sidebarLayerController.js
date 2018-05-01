@@ -172,9 +172,7 @@ class SidebarLayerController {
                 osm  = layer.color === 'osm' ? '_osm' : '';
 
             return `pad1 inline thumbnail light big _icon ${ icon } ${ osm }`;
-        } ).on( 'click', () => {
-            this.togglePanel();
-        } );
+        } ).on( 'click', () => this.togglePanel() );
 
         this.contextLayer = this.controller.append( 'div' )
             .classed( 'context-menu-layer', true )
