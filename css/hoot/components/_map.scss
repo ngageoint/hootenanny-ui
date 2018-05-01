@@ -1,12 +1,26 @@
 #bar {
-    position: absolute;
-    width: calc(100% - 400px);
-    top: 60px;
-    right: 0;
-    left: auto;
+    position: relative;
+    //position: absolute;
+    //width: calc(100% - 400px);
+    //top: 60px;
+    //right: 0;
+    //left: auto;
 
     .spacer {
         width: 0;
+    }
+
+    .limiter {
+        max-width: 100%;
+    }
+
+    .button-wrap button {
+        max-width: 100px;
+    }
+
+    .undo-button,
+    .redo-button {
+        max-width: 60px;
     }
 }
 
