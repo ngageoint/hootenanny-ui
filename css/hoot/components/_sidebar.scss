@@ -10,7 +10,7 @@
         display: inline-block;
         width: 100%;
         height: 100%;
-        padding-right: 25px;
+        padding-right: 23px;
         overflow-y: auto;
     }
 
@@ -106,34 +106,34 @@
         margin-bottom: 15px;
         resize: vertical;
     }
+}
 
-    .palette {
-        width: 284px;
-        display: inline-block;
+.palette {
+    width: auto;
+    display: inline-block;
+    border-color: #444;
+
+    a {
+        width: 40px;
+        height: 40px;
         border-color: #444;
 
-        a {
-            width: 40px;
-            height: 40px;
-            border-color: #444;
+        &:first-child {
+            border-radius: 4px 0 0 4px;
+        }
 
-            &:first-child {
-                border-radius: 4px 0 0 4px;
-            }
+        &:last-child {
+            border: none;
+        }
 
-            &:last-child {
-                border: none;
-            }
+        &.active {
+            box-shadow: inset 0 0 0 4px $dark-opacity25;
 
-            &.active {
-                box-shadow: inset 0 0 0 4px $dark-opacity25;
-
-                &:before {
-                    position: relative;
-                    top: 10px;
-                    left: 10px;
-                    opacity: 0.5;
-                }
+            &:before {
+                position: relative;
+                top: 10px;
+                left: 10px;
+                opacity: 0.5;
             }
         }
     }
@@ -172,6 +172,10 @@
     border-radius: 4px;
     transition: border-radius 300ms linear;
 
+    span {
+        color: black;
+    }
+
     .thumbnail {
         border-radius: 4px 0 0 4px;
         transition: inherit;
@@ -185,10 +189,6 @@
             border-radius: inherit;
             transition: inherit;
         }
-    }
-
-    span {
-        color: black;
     }
 
     .context-menu-layer {

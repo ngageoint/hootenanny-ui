@@ -6,6 +6,7 @@
 
 import _                          from 'lodash-es';
 import LayerManager               from './layerManager';
+import Event                      from './eventManager';
 import API                        from '../control/api';
 import { geoExtent as GeoExtent } from '../../geo/index';
 import { rgb as d3_rgb }          from 'd3-color';
@@ -153,7 +154,6 @@ class HootOSM {
     }
 
     setLayerColor( mapId, color ) {
-        console.log( mapId, color );
         let sheets = document.styleSheets[ document.styleSheets.length - 1 ],
             lighter;
 
@@ -172,6 +172,10 @@ class HootOSM {
         sheets.insertRule( 'path.shadow.tag-hoot-' + mapId + ' { stroke:' + lighter + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'path.fill.tag-hoot-' + mapId + ' { fill:' + lighter + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'g.point.tag-hoot-' + mapId + ' .stroke { fill:' + color + '}', sheets.cssRules.length - 1 );
+    }
+
+    listen() {
+        Event.listen( 'color-select', this.setLayerColor );
     }
 }
 

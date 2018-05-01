@@ -4,8 +4,10 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/3/18
  *******************************************************************************************************/
 
+import _                    from 'lodash-es';
 import LayerManager         from '../managers/layerManager';
 import SidebarLayerMetadata from './sidebarLayerMetadata';
+import HootOSM              from '../managers/hootOsm';
 
 class SidebarLayerController {
     constructor( context, form, layer ) {
@@ -21,8 +23,7 @@ class SidebarLayerController {
     }
 
     render() {
-        this.form.select( '.inner-wrapper' )
-            .classed( 'hidden', true );
+        this.form.select( '.inner-wrapper' ).remove();
 
         this.form
             .attr( 'class', () => {
@@ -38,14 +39,88 @@ class SidebarLayerController {
             .remove();
 
         this.createController();
+        this.createInnerWrapper();
+        this.createFieldset();
+        this.createColorPalette();
         this.createThumbnail();
         this.createText();
         this.createDeleteButton();
     }
 
+    togglePanel() {
+        let formState    = this.form.classed( 'expanded' ),
+            wrapper      = this.innerWrapper,
+            wrapperState = this.innerWrapper.classed( 'visible' ),
+            wrapperNode  = this.innerWrapper.node();
+
+        // remove listener so class isn't re-added to element
+        function onEnd() {
+            wrapper.classed( 'no-transition', true );
+            wrapperNode.removeEventListener( 'transitionend', onEnd );
+        }
+
+        if ( wrapperNode.clientHeight ) {
+            // close panel and re-enable transition
+            this.innerWrapper.classed( 'no-transition', false );
+            wrapperNode.style.height = '0';
+        } else {
+            // open panel
+            let bodyNode = this.fieldset.node();
+
+            wrapperNode.style.height = bodyNode.clientHeight + 'px';
+            // disable transition when panel is completely open
+            wrapperNode.addEventListener( 'transitionend', onEnd, false );
+        }
+
+        this.form.classed( 'expanded', !formState );
+        this.innerWrapper.classed( 'visible', !wrapperState );
+    }
+
     createController() {
         this.controller = this.form.append( 'div' )
             .classed( 'controller contain keyline-all round', true );
+    }
+
+    createInnerWrapper() {
+        this.innerWrapper = this.form.append( 'div' )
+            .classed( 'inner-wrapper', true );
+    }
+
+    createFieldset() {
+        this.fieldset = this.innerWrapper.append( 'fieldset' );
+    }
+
+    createColorPalette() {
+        let palette = HootOSM.getPalette();
+
+        this.colorPalette = this.fieldset.append( 'div' )
+            .classed( 'keyline-all form-field palette clearfix round', true );
+
+        if ( !this.isConflate ) {
+            palette = _.reject( palette, color => color.name === 'green' );
+        }
+
+        this.colorPalette.selectAll( 'a' )
+            .data( palette )
+            .enter()
+            .append( 'a' )
+            .attr( 'class', p => {
+                let activeClass = this.color === p.name ? 'active _icon check' : '',
+                    osmClass    = p.name === 'osm' ? '_osm' : '';
+
+                return `block float-left keyline-right ${ activeClass } ${ osmClass }`;
+            } )
+            .attr( 'href', '#' )
+            .attr( 'data-color', p => p.name )
+            .style( 'background', p => p.hex )
+            .on( 'click', function() {
+                d3.select( this.parentNode )
+                    .selectAll( 'a' )
+                    .classed( 'active _icon check', false );
+
+                d3.select( this )
+                    .classed( 'active _icon check', true );
+            } );
     }
 
     createThumbnail() {
@@ -78,15 +153,15 @@ class SidebarLayerController {
         let layer = LayerManager.findLoadedBy( 'name', this.name );
 
         this.form.classed( 'layer-loading', false )
-            .classed( this.typeClass, true )
-            .select( '.inner-wrapper' )
-            .remove();
+            .classed( this.typeClass, true );
 
         this.thumbnail.attr( 'class', () => {
             let icon = layer.merged ? 'conflate' : 'data',
                 osm  = layer.color === 'osm' ? '_osm' : '';
 
             return `pad1 inline thumbnail light big _icon ${ icon } ${ osm }`;
+        } ).on( 'click', () => {
+            this.togglePanel();
         } );
 
         this.contextLayer = this.controller.append( 'div' )
@@ -127,10 +202,10 @@ class SidebarLayerController {
             .classed( 'strong pad1x', true )
             .text( layer.name );
 
-        if ( layer.tags && (layer.tags.params || layer.tags.stats) ) {
-            this.contextLayer.style( 'width', 'calc( 100% - 145px' );
+        if ( this.isConflate ) {
             this.metadata = new SidebarLayerMetadata( this.context, this.form, layer );
             this.metadata.render();
+            this.contextLayer.style( 'width', 'calc( 100% - 145px' );
         }
     }
 }
