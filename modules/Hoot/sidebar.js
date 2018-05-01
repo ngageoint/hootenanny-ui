@@ -74,8 +74,7 @@ export default class Sidebar {
         this.container.style( 'width', width + 'px' );
 
         sidebarWidth = this.container.node().getBoundingClientRect().width;
-
-        d3.select( '#bar' ).style( 'width', `calc(100% - ${ sidebarWidth }px)` );
+        d3.select( '#bar' ).style( 'left', `${ sidebarWidth }px` );
     }
 
     createWrapper() {
