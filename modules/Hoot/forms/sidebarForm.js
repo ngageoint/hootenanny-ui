@@ -20,6 +20,7 @@ export default class SidebarForm {
         this.form         = null;
         this.controller   = null;
         this.loadingLayer = null;
+        this.loadedLayer  = null;
     }
 
     reset() {
@@ -99,14 +100,13 @@ export default class SidebarForm {
             this.controller.update();
             this.sidebar.conflateCheck();
 
-            let loadedLayer = LayerManager.findLoadedBy( 'name', layerName );
+            this.loadingLayer = null;
+            this.loadedLayer  = LayerManager.findLoadedBy( 'name', layerName );
 
-            if ( loadedLayer.merged ) {
-                Event.send( 'layer-merged', loadedLayer );
+            if ( this.loadedLayer.merged ) {
+                Event.send( 'layer-merged', this.loadedLayer );
             }
         }
-
-        this.loadingLayer = null;
     }
 
     layerRemoved( layerName ) {

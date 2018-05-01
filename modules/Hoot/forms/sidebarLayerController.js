@@ -8,16 +8,16 @@ import _                    from 'lodash-es';
 import LayerManager         from '../managers/layerManager';
 import SidebarLayerMetadata from './sidebarLayerMetadata';
 import HootOSM              from '../managers/hootOsm';
+import Event                from '../managers/eventManager';
 
 class SidebarLayerController {
     constructor( context, form, layer ) {
         this.context    = context;
         this.form       = form;
         this.wrapper    = d3.select( this.form.node().parentNode );
-        this.layer      = layer;
-        this.name       = layer.name;
-        this.id         = layer.id;
-        this.color      = layer.color;
+        this.layerName  = layer.name;
+        this.layerId    = layer.id;
+        this.layerColor = layer.color;
         this.isConflate = layer.isConflate;
         this.typeClass  = this.isConflate ? 'conflate-controller' : 'add-controller';
     }
@@ -27,14 +27,14 @@ class SidebarLayerController {
 
         this.form
             .attr( 'class', () => {
-                if ( this.color === 'osm' ) {
-                    this.color = '_osm';
+                if ( this.layerColor === 'osm' ) {
+                    this.layerColor = '_osm';
                 }
 
-                return `sidebar-form layer-loading round fill-white ${ this.color }`;
+                return `sidebar-form layer-loading round fill-white ${ this.layerColor }`;
             } )
-            .attr( 'data-name', this.name )
-            .attr( 'data-id', this.id )
+            .attr( 'data-name', this.layerName )
+            .attr( 'data-id', this.layerId )
             .select( 'a' )
             .remove();
 
@@ -91,7 +91,8 @@ class SidebarLayerController {
     }
 
     createColorPalette() {
-        let palette = HootOSM.getPalette();
+        let self    = this,
+            palette = HootOSM.getPalette();
 
         this.colorPalette = this.fieldset.append( 'div' )
             .classed( 'keyline-all form-field palette clearfix round', true );
@@ -105,7 +106,7 @@ class SidebarLayerController {
             .enter()
             .append( 'a' )
             .attr( 'class', p => {
-                let activeClass = this.color === p.name ? 'active _icon check' : '',
+                let activeClass = this.layerColor === p.name ? 'active _icon check' : '',
                     osmClass    = p.name === 'osm' ? '_osm' : '';
 
                 return `block float-left keyline-right ${ activeClass } ${ osmClass }`;
@@ -113,13 +114,21 @@ class SidebarLayerController {
             .attr( 'href', '#' )
             .attr( 'data-color', p => p.name )
             .style( 'background', p => p.hex )
-            .on( 'click', function() {
+            .on( 'click', function( p ) {
                 d3.select( this.parentNode )
                     .selectAll( 'a' )
                     .classed( 'active _icon check', false );
 
                 d3.select( this )
                     .classed( 'active _icon check', true );
+
+                self.form
+                    .classed( self.layerColor, false )
+                    .classed( p.name, true );
+
+                self.layerColor = p.name;
+
+                Event.send( 'color-select', self.layerId, self.layerColor );
             } );
     }
 
@@ -150,7 +159,10 @@ class SidebarLayerController {
     }
 
     update() {
-        let layer = LayerManager.findLoadedBy( 'name', this.name );
+        let layer = LayerManager.findLoadedBy( 'name', this.layerName );
+
+        this.layerId   = layer.id;
+        this.layerName = layer.name;
 
         this.form.classed( 'layer-loading', false )
             .classed( this.typeClass, true );

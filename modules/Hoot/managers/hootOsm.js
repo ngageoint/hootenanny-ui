@@ -17,6 +17,7 @@ class HootOSM {
     constructor() {
         this.palette       = colorPalette;
         this._loadedLayers = {};
+        this.listen();
     }
 
     set ctx( context ) {
@@ -125,7 +126,6 @@ class HootOSM {
         LayerManager.loadedLayers[ id ].visible = false;
 
         d3.select( '#map' ).selectAll( `[class*="_${ id }-"]` ).remove();
-        //d3.select( '#map' ).selectAll( `[class*="tag-hoot-${ id }"]` ).remove();
         this.context.connection().removeTile( id );
         this.context.flush();
     }
@@ -175,7 +175,7 @@ class HootOSM {
     }
 
     listen() {
-        Event.listen( 'color-select', this.setLayerColor );
+        Event.listen( 'color-select', this.setLayerColor, this );
     }
 }
 
