@@ -63,7 +63,7 @@ export default class SettingsPanel {
         sidebar.append( 'h3' )
             .classed( 'settings-header pad1y pointer strong center', true )
             .append( 'label' )
-            .text( 'SettingsPanel' );
+            .text( 'Settings Panel' );
 
         return sidebar;
     }
