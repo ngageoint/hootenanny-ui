@@ -165,11 +165,11 @@ export function uiInit(context) {
             .append('div')
             .attr('id', 'about');
 
-        about
-            .append('div')
-            .attr('id', 'attrib')
-            .attr('dir', 'ltr')
-            .call(uiAttribution(context));
+        //about
+        //    .append('div')
+        //    .attr('id', 'attrib')
+        //    .attr('dir', 'ltr')
+        //    .call(uiAttribution(context));
 
         about
             .append('div')

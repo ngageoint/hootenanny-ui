@@ -68,13 +68,9 @@ export default class Sidebar {
      * @param reset - whether to reset to original width or not
      */
     resize( target, reset ) {
-        let width = reset ? 400 : d3.mouse( target.parentNode )[ 0 ],
-            sidebarWidth;
+        let width = reset ? 400 : d3.mouse( target.parentNode )[ 0 ];
 
         this.container.style( 'width', width + 'px' );
-
-        sidebarWidth = this.container.node().getBoundingClientRect().width;
-        //d3.select( '#bar' ).style( 'left', `${ sidebarWidth }px` );
     }
 
     createWrapper() {
@@ -93,9 +89,6 @@ export default class Sidebar {
             .select( function( d ) {
                 sidebar.forms[ d.id ] = new SidebarLayerAdd( sidebar, d3.select( this ) );
                 sidebar.forms[ d.id ].render();
-
-                //sidebar.addForms[ d.id ] = new SidebarLayerAdd( sidebar, d3.select( this ) );
-                //sidebar.addForms[ d.id ].render();
             } );
 
         this.wrapper.selectAll( '.layer-conflate' )
@@ -119,10 +112,6 @@ export default class Sidebar {
 
                 this.reviewLayer.render( layer );
             } );
-
-        //this.reviewLayer = new SidebarLayerReview( layer );
-        //
-        //this.reviewLayer.render( this, d3.select( this.wrapper ) );
     }
 
     conflateCheck() {
