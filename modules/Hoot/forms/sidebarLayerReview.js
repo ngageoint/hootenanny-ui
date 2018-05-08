@@ -5,19 +5,17 @@
  *******************************************************************************************************/
 
 import SidebarForm from './sidebarForm';
-import Conflicts from '../control/conflicts';
+import Conflicts   from '../control/conflicts';
 
 export default class SidebarLayerReview extends SidebarForm {
-    constructor( sidebar, container ) {
+    constructor( sidebar, container, layer ) {
         super( sidebar, container );
 
-        this.conflicts = new Conflicts( d3.select( '#content' ) );
+        this.conflicts = new Conflicts( sidebar.context, d3.select( '#content' ), layer );
     }
 
-    render( layer ) {
+    render() {
         super.render();
-
-        this.layerData = layer;
 
         this.createFieldset();
         this.createReviewCount();

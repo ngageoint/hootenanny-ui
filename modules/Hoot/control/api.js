@@ -172,6 +172,19 @@ class API {
             } );
     }
 
+    getMapSizes( mapIds ) {
+        if ( !mapIds ) {
+            return null;
+        }
+        const params = {
+            path: `/info/map/sizes?mapid=${ mapIds }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     getReviewStatistics( mapId ) {
         const params = {
             path: `/job/review/statistics?mapId=${ mapId }`,
@@ -182,14 +195,11 @@ class API {
             .then( resp => resp.data );
     }
 
-    getMapSizes( mapIds ) {
-        if ( !mapIds ) {
-            return null;
-        }
+    reviewGetNext( { mapId, sequence, direction } ) {
         const params = {
-            path: `/info/map/sizes?mapid=${ mapIds }`,
+            path: `/job/review/next?mapid=${ mapId }&offsetseqid=${ sequence }&direction=${ direction }`,
             method: 'GET'
-        };
+        }
 
         return this.request( params )
             .then( resp => resp.data );

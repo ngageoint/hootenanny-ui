@@ -7,9 +7,9 @@ const commonjs = require('rollup-plugin-commonjs');
 const json = require('rollup-plugin-json');
 const colors = require('colors/safe');
 const collectSass = require('rollup-plugin-collect-sass');
-const flow = require('rollup-plugin-flow');
+const babel = require( 'rollup-plugin-babel' );
 
-module.exports = function buildSrc() {
+module.exports = function buildSrc(isDevelopment) {
     var cache;
     var building = false;
     return function () {
@@ -24,25 +24,33 @@ module.exports = function buildSrc() {
 
         building = true;
 
+        const plugins = [
+            nodeResolve({
+                modules: true,
+                main: true,
+                browser: false,
+                jsnext: true
+            }),
+            collectSass({
+                importOnce: true,
+                extract: 'dist/hoot.css'
+            }),
+            commonjs(),
+            json()
+        ];
+
+        if (!isDevelopment) {
+            plugins.push(babel({
+                exclude: 'node_modules/**'
+            }));
+        }
+
         return rollup
             .rollup({
                 input: './modules/id.js',
-                plugins: [
-                    nodeResolve({
-                        modules: true,
-                        main: true,
-                        browser: false,
-                        jsnext: true
-                    }),
-                    collectSass({
-                        importOnce: true,
-                        extract: 'dist/hoot.css'
-                    }),
-                    commonjs(),
-                    json()
-                ],
+                plugins,
                 cache: cache,
-                treeshake: false
+                treeshake: !isDevelopment
             })
             .then(function (bundle) {
                 bundle.write({

@@ -108,9 +108,9 @@ export default class Sidebar {
         this.wrapper.selectAll( '.layer-review' )
             .data( this.reviewFormData ).enter()
             .select( function() {
-                this.reviewLayer = new SidebarLayerReview( sidebar, d3.select( this ) );
+                this.reviewLayer = new SidebarLayerReview( sidebar, d3.select( this ), layer );
 
-                this.reviewLayer.render( layer );
+                this.reviewLayer.render();
             } );
     }
 

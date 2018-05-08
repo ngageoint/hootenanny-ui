@@ -114,3 +114,47 @@ export const contextMenus = {
         }
     ]
 };
+
+export function conflictButtons() {
+    return [
+        {
+            id: 'resolved',
+            text: 'Resolved',
+            class: 'primary',
+            icon: '_icon check'
+
+        },
+        {
+            id: 'next',
+            name: 'review_foward',
+            text: 'Next',
+            color: 'fill-grey button round pad0y pad1x dark small strong'
+        },
+        {
+            id: 'previous',
+            name: 'review_backward',
+            text: 'Previous',
+            color: 'fill-grey button round pad0y pad1x dark small strong'
+        },
+        {
+            id: 'merge',
+            name: 'auto_merge',
+            text: 'Merge',
+            color: 'loud',
+            icon: '_icon plus'
+        },
+        {
+            id: 'toggletable',
+            name: 'toggle_table',
+            text: 'Hide Table',
+            color: 'fill-grey button round pad0y pad1x dark small strong'
+        },
+        {
+            id: 'sharereview',
+            name: 'share_review',
+            text: 'Bookmark Review',
+            color: 'fill-grey button round pad0y pad1x dark small strong',
+            icon: '_icon plus'
+        }
+    ];
+}
