@@ -12,6 +12,9 @@ const babel = require( 'rollup-plugin-babel' );
 module.exports = function buildSrc(isDevelopment) {
     var cache;
     var building = false;
+
+    process.env.BABEL_ENV = !isDevelopment ? 'production' : 'development';
+
     return function () {
         if (building) return;
 
@@ -36,13 +39,18 @@ module.exports = function buildSrc(isDevelopment) {
                 extract: 'dist/hoot.css'
             }),
             commonjs(),
-            json()
+            json(),
+            babel({
+                exclude: 'node_modules/**'
+            })
         ];
 
         if (!isDevelopment) {
-            plugins.push(babel({
-                exclude: 'node_modules/**'
-            }));
+            plugins.push(
+                babel({
+                    exclude: 'node_modules/**'
+                })
+            );
         }
 
         return rollup
@@ -50,13 +58,13 @@ module.exports = function buildSrc(isDevelopment) {
                 input: './modules/id.js',
                 plugins,
                 cache: cache,
-                treeshake: !isDevelopment
+                treeshake: false
             })
             .then(function (bundle) {
                 bundle.write({
                     format: 'iife',
                     file: 'dist/iD.js',
-                    sourcemap: true,
+                    sourcemap: !isDevelopment,
                     strict: false
                 });
 
