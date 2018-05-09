@@ -23,7 +23,6 @@ export default class ConflictGraphSync {
         if ( feature ) {
             let memberCount = this.getRelationMembersCount( feature );
 
-            console.log( memberCount );
         }
     }
 
@@ -31,7 +30,6 @@ export default class ConflictGraphSync {
         let count = 0;
 
         _.forEach( feature.members, member => {
-            console.log( member );
             count += this.context.hasEntity( member.id ) ? 1 : 0;
         } );
 

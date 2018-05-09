@@ -32,11 +32,6 @@ export default class Conflicts {
 
         this.metadata.init()
             .then( () => this.traverse.jumpTo( 'forward' ) );
-
-        //Promise.all( [
-        //    this.metadata.init(),
-        //    this.map.init()
-        //] ).then( () => this.render() );
     }
 
     render() {

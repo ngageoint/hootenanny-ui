@@ -39,10 +39,7 @@ module.exports = function buildSrc(isDevelopment) {
                 extract: 'dist/hoot.css'
             }),
             commonjs(),
-            json(),
-            babel({
-                exclude: 'node_modules/**'
-            })
+            json()
         ];
 
         if (!isDevelopment) {
