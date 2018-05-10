@@ -7,10 +7,10 @@
 import API from '../api';
 
 export default class ConflictTraverse {
-    constructor( parent ) {
-        this.conflicts = parent;
+    constructor( instance ) {
+        this.instance = instance;
+        this.data     = instance.data;
 
-        this.mapId    = this.conflicts.mapId;
         this.nextId   = 'next';
         this.prevId   = 'previous';
         this.sequence = -999;
@@ -19,19 +19,15 @@ export default class ConflictTraverse {
     async jumpTo( direction ) {
         let reviewData = {};
 
-        reviewData.mapId     = this.mapId;
+        reviewData.mapId     = this.data.mapId;
         reviewData.sequence  = this.sequence;
         reviewData.direction = direction;
 
-        let nextReview = await API.reviewGetNext( reviewData );
+        let reviewItem = await API.reviewGetNext( reviewData );
 
-        this.nextReviewHandler( nextReview );
-    }
+        this.data.currentReviewItem = reviewItem;
 
-    nextReviewHandler( review ) {
-        if ( review.resultCount > 0 ) {
-            this.conflicts.metadata.currentReviewItem = review;
-            this.conflicts.graphSync.getRelationFeature( review.relationId );
-        }
+        this.instance.graphSync.getRelationMembers( reviewItem.relationId )
+            .then( members => this.instance.map.highlightLayer( members[ 0 ], members[ 1 ] ) );
     }
 }

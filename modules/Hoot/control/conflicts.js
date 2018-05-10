@@ -4,23 +4,29 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
-//import _                   from 'lodash-es';
-//import Event               from '../managers/eventManager';
-import ConflictMetadata    from './conflicts/conflictMetadata';
+import ConflictInfo        from './conflicts/conflictInfo';
 import ConflictMap         from './conflicts/conflictMap';
 import ConflictTraverse    from './conflicts/conflictTraverse';
 import ConflictGraphSync   from './conflicts/conflictGraphSync';
 import { conflictButtons } from '../config/domElements';
+import API                 from './api';
 
 export default class Conflicts {
     constructor( context, contentContainer, layer ) {
         this.context          = context;
         this.contentContainer = contentContainer;
 
-        this.layer            = layer;
-        this.mapId            = layer.id;
+        this.data = {
+            layer: layer,
+            mapId: layer.id,
+            poiTableCols: [],
+            reviewStats: null,
+            curReviewItem: null,
+            curEntityId: null,
+            curEntity: null
+        };
 
-        this.metadata  = new ConflictMetadata( this );
+        this.info      = new ConflictInfo( this );
         this.map       = new ConflictMap( this );
         this.traverse  = new ConflictTraverse( this );
         this.graphSync = new ConflictGraphSync( this );
@@ -30,24 +36,32 @@ export default class Conflicts {
         this.render();
         this.listen();
 
-        this.metadata.init()
-            .then( () => this.traverse.jumpTo( 'forward' ) );
+        this.reviewStats = await API.getReviewStatistics( this.data.mapId );
+
+        this.traverse.jumpTo( 'forward' );
     }
 
     render() {
         this.createContainer();
+        this.createReviewBlock();
         this.createMetaDialog();
         this.createActionButtons();
+        this.createPoiTable();
     }
 
     createContainer() {
         this.container = this.contentContainer.append( 'div' )
             .attr( 'id', 'conflicts-container' )
-            .classed( 'pin-bottom review-block unclickable fillD', true );
+            .classed( 'pin-bottom unclickable', true );
+    }
+
+    createReviewBlock() {
+        this.reviewBlock = this.container.append( 'div' )
+            .classed( 'review-block fillD', true );
     }
 
     createMetaDialog() {
-        this.metaDialog = this.container.append( 'div' )
+        this.metaDialog = this.reviewBlock.append( 'div' )
             .classed( 'meta-dialog', true )
             .append( 'span' )
             .classed( '_icon info dark', true )
@@ -57,7 +71,7 @@ export default class Conflicts {
     createActionButtons() {
         let buttons = conflictButtons.call( this );
 
-        this.actionButtons = this.container.append( 'div' )
+        this.actionButtons = this.reviewBlock.append( 'div' )
             .classed( 'action-buttons', true )
             .selectAll( 'button' )
             .data( buttons ).enter()
@@ -65,8 +79,12 @@ export default class Conflicts {
             .text( d => d.text );
     }
 
-    updateMetaDialog() {
-        //this.metaDialog
+    createPoiTable() {
+        this.poiTable = this.container
+            .insert( 'div', ':first-child' )
+            .classed( 'tag-table block', true )
+            .append( 'table' )
+            .classed( 'round keyline-all', true );
     }
 
     listen() {

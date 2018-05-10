@@ -100,13 +100,13 @@ function getTags(obj) {
 }
 
 
-function getMembers(obj) {
+function getMembers(obj, mapId) {
     var elems = obj.getElementsByTagName('member');
     var members = new Array(elems.length);
     for (var i = 0, l = elems.length; i < l; i++) {
         var attrs = elems[i].attributes;
         members[i] = {
-            id: attrs.type.value[0] + attrs.ref.value,
+            id: attrs.type.value[0] + attrs.ref.value + '_' + mapId,
             type: attrs.type.value,
             role: attrs.role.value
         };

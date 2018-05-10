@@ -31,3 +31,11 @@ export const getBrowserInfo = () => {
 
     return browserInfo;
 };
+
+export const isValidCoords = coords => {
+    return ( coords.length === 2 ||
+        ( !isNaN( coords[ 0 ] ) && !isNaN( coords[ 1 ] ) ) ||
+        ( coords[ 0 ] < 180.0 && coords[ 0 ] > -180.0 ) ||
+        ( coords[ 1 ] < 90.0 && coords[ 1 ] > -90.0 )
+    );
+};

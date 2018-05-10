@@ -7,29 +7,38 @@
 import _ from 'lodash-es';
 
 export default class ConflictGraphSync {
-    constructor( parent ) {
-        this.conflicts = parent;
-        this.context = this.conflicts.context;
-
-        this.mapId            = this.conflicts.layer.id;
-        this.currentFeatureId = null;
+    constructor( instance ) {
+        this.instance = instance;
+        this.context  = instance.context;
+        this.data     = instance.data;
     }
 
-    getRelationFeature( relationId ) {
-        this.currentFeatureId = `r${ relationId }_${ this.mapId }`;
+    async getRelationMembers( relationId ) {
+        let entityId = `r${ relationId }_${ this.data.mapId }`,
+            entity   = this.context.hasEntity( entityId );
 
-        let feature = this.context.hasEntity( this.currentFeatureId );
+        if ( entity ) {
+            this.data.currentEntity = entity;
+            let memberCount = this.getRelationMembersCount( entity );
 
-        if ( feature ) {
-            let memberCount = this.getRelationMembersCount( feature );
+            if ( !memberCount ) return;
 
+            if ( memberCount !== entity.members.length ) {
+
+            } else if ( memberCount === 1 ) {
+                // TODO: load missing features
+            } else {
+                // TODO: show alert
+            }
+
+            return entity.members;
         }
     }
 
-    getRelationMembersCount( feature ) {
+    getRelationMembersCount( entity ) {
         let count = 0;
 
-        _.forEach( feature.members, member => {
+        _.forEach( entity.members, member => {
             count += this.context.hasEntity( member.id ) ? 1 : 0;
         } );
 
