@@ -80,11 +80,24 @@ export default class Conflicts {
     }
 
     createPoiTable() {
-        this.poiTable = this.container
-            .insert( 'div', ':first-child' )
-            .classed( 'tag-table block', true )
-            .append( 'table' )
-            .classed( 'round keyline-all', true );
+        //let navHtml = '<div class="navigation-wrapper"><div class="prev">&lt;&lt;</div><div class="next">&gt;&gt;</div></div>';
+        //
+        //this.poiTable = this.container
+        //    .insert( 'div', ':first-child' )
+        //    .classed( 'tag-table block', true )
+        //    .append( 'table' )
+        //    .classed( 'round keyline-all', true );
+        //
+        //let tableHead = this.poiTable.append( 'tr' )
+        //    .classed( 'table-head', true );
+        //
+        //tableHead.append( 'td' )
+        //    .classed( 'f1', true )
+        //    .html( navHtml );
+        //
+        //tableHead.append( 'td' )
+        //    .classed( 'f2', true )
+        //    .html( navHtml );
     }
 
     listen() {

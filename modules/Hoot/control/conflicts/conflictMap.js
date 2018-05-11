@@ -42,36 +42,5 @@ export default class ConflictMap {
         if ( relation && relation.members && relation.members.length > 0 ) {
 
         }
-
-        //if ( feature ) {
-        //    let extent = feature.extent( this.context.graph() );
-        //
-        //    if ( isValidCoords( extent[ 0 ] ) && isValidCoords( extent[ 1 ] ) ) {
-        //        panToId = feature.id;
-        //    }
-        //
-        //    poiTableCols.push( feature );
-        //
-        //    d3.selectAll( '.activeReviewFeature' )
-        //        .classed( 'activeReviewFeature', false );
-        //    d3.selectAll( '.' + feature.id )
-        //        .classed( 'tag-hoot activeReviewFeature', true );
-        //}
-        //
-        //if ( againstFeature ) {
-        //    let extent = feature.extent( this.context.graph() );
-        //
-        //    if ( !panToId && isValidCoords( extent[ 0 ] ) && isValidCoords( extent[ 1 ] ) ) {
-        //        panToId = againstFeature.id;
-        //    }
-        //
-        //    poiTableCols.push( feature );
-        //
-        //    d3.selectAll( '.activeReviewFeature' )
-        //        .classed( 'activeReviewFeature', false );
-        //    d3.selectAll( '.' + feature.id )
-        //        .classed( 'tag-hoot activeReviewFeature', true );
-        //}
-        //console.log( checkForValidCoords( feature.extent( this.context.graph() ) ) );
     }
 }
