@@ -19,11 +19,10 @@ export default class Conflicts {
         this.data = {
             layer: layer,
             mapId: layer.id,
-            poiTableCols: [],
             reviewStats: null,
-            curReviewItem: null,
-            curEntityId: null,
-            curEntity: null
+            currentReviewItem: null,
+            //curEntityId: null,
+            currentRelation: null
         };
 
         this.info      = new ConflictInfo( this );
@@ -34,7 +33,6 @@ export default class Conflicts {
 
     async init() {
         this.render();
-        this.listen();
 
         this.reviewStats = await API.getReviewStatistics( this.data.mapId );
 
@@ -46,7 +44,8 @@ export default class Conflicts {
         this.createReviewBlock();
         this.createMetaDialog();
         this.createActionButtons();
-        this.createPoiTable();
+
+        //this.info.createPoiTable( this.container );
     }
 
     createContainer() {
@@ -98,9 +97,5 @@ export default class Conflicts {
         //tableHead.append( 'td' )
         //    .classed( 'f2', true )
         //    .html( navHtml );
-    }
-
-    listen() {
-        //Event.listen( 'meta-updated' );
     }
 }

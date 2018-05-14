@@ -15,15 +15,15 @@ export default class ConflictGraphSync {
 
     async getRelationMembers( relationId ) {
         let entityId = `r${ relationId }_${ this.data.mapId }`,
-            entity   = this.context.hasEntity( entityId );
+            relation = this.context.hasEntity( entityId );
 
-        if ( entity ) {
-            this.data.currentEntity = entity;
-            let memberCount = this.getRelationMembersCount( entity );
+        if ( relation ) {
+            this.data.currentRelation = relation;
+            let memberCount         = this.getRelationMembersCount( relation );
 
             if ( !memberCount ) return;
 
-            if ( memberCount !== entity.members.length ) {
+            if ( memberCount !== relation.members.length ) {
 
             } else if ( memberCount === 1 ) {
                 // TODO: load missing features
@@ -31,14 +31,14 @@ export default class ConflictGraphSync {
                 // TODO: show alert
             }
 
-            return entity.members;
+            return relation.members;
         }
     }
 
-    getRelationMembersCount( entity ) {
+    getRelationMembersCount( relation ) {
         let count = 0;
 
-        _.forEach( entity.members, member => {
+        _.forEach( relation.members, member => {
             count += this.context.hasEntity( member.id ) ? 1 : 0;
         } );
 

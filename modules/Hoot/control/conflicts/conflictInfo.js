@@ -4,7 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
-//import Event from '../../managers/eventManager';
+import Event from '../../managers/eventManager';
 import _ from 'lodash-es';
 
 export default class ConflictMetadata {
@@ -23,67 +23,76 @@ export default class ConflictMetadata {
         ];
     }
 
-    updateMeta( note ) {
+    //createPoiTable( container ) {
+    //    this.container = container;
+    //
+    //    this.poiTable = container
+    //        .insert( 'div', ':first-child' )
+    //        .classed( 'tag-table block', true )
+    //        .append( 'table' );
+    //}
 
-        //Event.send( 'meta-updated' );
-    }
+    buildPoiTable( colData ) {
+        let tags1      = this.filterTags( colData[ 0 ].tags ),
+            tags2      = this.filterTags( colData[ 1 ].tags ),
+            tagsMerged = this.mergeTags( [ tags1, tags2 ] );
 
-    buildPoiTable() {
-        let f1      = this.filterTags( this.data.poiTableCols[ 0 ].tags ),
-            f2      = this.filterTags( this.data.poiTableCols[ 1 ].tags ),
-            fMerged = this.mergeTags( [ f1, f2 ] );
+        if ( this.poiTable ) {
+            this.poiTable.remove();
+        }
 
-        let navHtml = '<div class="navigation-wrapper"><div class="prev">&lt;&lt;</div><div class="next">&gt;&gt;</div></div>';
-
-        let poiTable = this.conflicts.container
+        this.poiTable = this.conflicts.container
             .insert( 'div', ':first-child' )
             .classed( 'tag-table block', true )
-            .append( 'table' )
-            .classed( 'round keyline-all', true );
+            .append( 'table' );
 
-        if ( this.data.currentEntity.members.length > 2 ) {
-            let row = poiTable.append( 'tr' )
+        if ( this.data.currentRelation.members.length > 2 ) {
+            let navHtml = '<div class="navigation-wrapper"><div class="prev">&lt;&lt;</div><div class="next">&gt;&gt;</div></div>';
+
+            let row = this.poiTable.append( 'tr' )
                 .classed( 'table-head', true );
 
             row.append( 'td' )
                 .classed( 'fillD', true )
                 .text( 'Review Item' );
 
-            row.selectAll( 'td.f1' )
+            row.selectAll( 'td.feature1' )
                 .data( [ { k: 1 } ] ).enter()
                 .append( 'td' )
-                .classed( 'value-col f1', true )
+                .classed( 'value-col feature1', true )
                 .html( navHtml );
 
-            row.selectAll( 'td.f2' )
+            row.selectAll( 'td.feature2' )
                 .data( [ { k: 2 } ] ).enter()
                 .append( 'td' )
-                .classed( 'value-col f2', true )
+                .classed( 'value-col feature2', true )
                 .html( navHtml );
         }
 
-        _.forEach( fMerged, tag => {
-            let row = poiTable.append( 'tr' );
+        _.forEach( tagsMerged, tag => {
+            let row = this.poiTable.append( 'tr' );
 
             row.append( 'td' )
                 .classed( 'fillD', true )
                 .text( _.startCase( tag.key ) );
 
-            row.selectAll( 'td.f1' )
+            row.selectAll( 'td.feature1' )
                 .data( [ { k: 1 } ] ).enter()
                 .append( 'td' )
-                .classed( 'value-col f1', true )
+                .classed( 'value-col feature1', true )
                 .text( tag.value[ 0 ] );
 
-            row.selectAll( 'td.f2' )
+            row.selectAll( 'td.feature2' )
                 .data( [ { k: 2 } ] ).enter()
                 .append( 'td' )
-                .classed( 'value-col f2', true )
+                .classed( 'value-col feature2', true )
                 .text( tag.value[ 1 ] );
         } );
 
-        poiTable.selectAll( '.value-col' )
-            .on( 'mouseenter', d => d3.selectAll( `.actionReviewFeature${ d.k }` ).classed( 'extra-highlight', true ) )
+        this.poiTable.selectAll( '.value-col' )
+            .on( 'mouseenter', d => {
+                d3.selectAll( `.actionReviewFeature${ d.k }` ).classed( 'extra-highlight', true )
+            } )
             .on( 'mouseleave', d => d3.selectAll( `.actionReviewFeature${ d.k }` ).classed( 'extra-highlight', false ) );
     }
 
@@ -97,7 +106,7 @@ export default class ConflictMetadata {
         let tagKeys   = d3.set( _.map( _.flatten( tags ), 'key' ) ),
             mergedMap = d3.map();
 
-        _.forEach( tagKeys, key => {
+        _.forEach( tagKeys.values().sort(), key => {
             mergedMap.set( key, [] );
 
             _.forEach( tags, tag => {

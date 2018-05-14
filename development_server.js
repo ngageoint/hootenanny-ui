@@ -54,12 +54,12 @@ if ( isDevelopment ) {
         } );
     } );
 
-    //gaze( [ 'css/hoot/**/*.scss' ], ( err, watcher ) => {
-    //    'use strict';
-    //    watcher.on( 'all', () => {
-    //        buildSrc();
-    //    } );
-    //} );
+    gaze( [ 'css/hoot/**/*.scss' ], ( err, watcher ) => {
+        'use strict';
+        watcher.on( 'all', () => {
+            buildSrc();
+        } );
+    } );
 
     let port     = 8088,
         hootHost = 'localhost',
