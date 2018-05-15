@@ -78,7 +78,13 @@ path {
     &.shadow.line {
         stroke-width: 4;
 
-        //&.activeReviewFeature1
+        &.activeReviewFeature1 {
+            stroke: #F00;
+        }
+
+        &.activeReviewFeature2 {
+            stroke: #00F;
+        }
     }
 }
 
