@@ -32,6 +32,22 @@ export function uiSuccess(context) {
     var _location;
 
 
+    // string-to-date parsing in JavaScript is weird
+    function parseEventDate(when) {
+        if (!when) return;
+
+        var raw = when.trim();
+        if (!raw) return;
+
+        if (!/Z$/.test(raw)) {    // if no trailing 'Z', add one
+            raw += 'Z';           // this forces date to be parsed as a UTC date
+        }
+
+        var parsed = new Date(raw);
+        return new Date(parsed.toUTCString().substr(0, 25));  // convert to local timezone
+    }
+
+
     function success(selection) {
         var header = selection
             .append('div')
@@ -213,10 +229,17 @@ export function uiSuccess(context) {
             .attr('href', d.url)
             .text(t('community.' + d.id + '.name'));
 
+        var descriptionHTML = t('community.' + d.id + '.description', replacements);
+
+        if (d.type === 'reddit') {   // linkify subreddits  #4997
+            descriptionHTML = descriptionHTML
+                .replace(/(\/r\/\w*\/*)/i, function(match) { return linkify(d.url, match); });
+        }
+
         selection
             .append('div')
             .attr('class', 'community-description')
-            .html(t('community.' + d.id + '.description', replacements));
+            .html(descriptionHTML);
 
         if (d.extendedDescription || (d.languageCodes && d.languageCodes.length)) {
             selection
@@ -230,8 +253,8 @@ export function uiSuccess(context) {
         }
 
         var nextEvents = (d.events || [])
-            .map(function(event) {                  // add parsed date
-                event.date = new Date(event.when);
+            .map(function(event) {
+                event.date = parseEventDate(event.when);
                 return event;
             })
             .filter(function(event) {               // date is valid and future (or today)
@@ -345,8 +368,9 @@ export function uiSuccess(context) {
         }
 
 
-        function linkify(url) {
-            return '<a target="_blank" href="' + url + '">' + url + '</a>';
+        function linkify(url, text) {
+            text = text || url;
+            return '<a target="_blank" href="' + url + '">' + text + '</a>';
         }
     }
 

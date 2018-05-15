@@ -1,0 +1,17 @@
+{
+    "icon": "logging",
+    "geometry": [
+        "area"
+    ],
+    "tags": {
+        "man_made": "clearcut"
+    },
+    "terms": [
+        "cut",
+        "forest",
+        "lumber",
+        "tree",
+        "wood"
+    ],
+    "name": "Clearcut Forest"
+}

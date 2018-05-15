@@ -28,6 +28,87 @@ _Breaking changes, which may affect downstream projects or sites that embed iD, 
 [@xxxx]: https://github.com/xxxx
 -->
 
+# 2.8.2
+##### May 14, 2018
+
+#### :tada: New Features
+* Allow performing Merge command when several nodes are selected ([#3774], [#4484], thanks [@ferdibiflator])
+* Add support for building iD on Node 10 ([#5028])
+
+[#5028]: https://github.com/openstreetmap/iD/issues/5028
+[#4484]: https://github.com/openstreetmap/iD/issues/4484
+[#3774]: https://github.com/openstreetmap/iD/issues/3774
+[@ferdibiflator]: https://github.com/ferdibiflator
+
+#### :sparkles: Usability
+* Exclude non-administrative boundary from address city suggestions ([#5034])
+* Replace `suburb` with `town` in "Thank you for editing near.." message ([#4989])
+* Rename "Phone" to "Telephone" in Add Field dropdown (so user can type either) ([#5019])
+
+[#5034]: https://github.com/openstreetmap/iD/issues/5034
+[#5019]: https://github.com/openstreetmap/iD/issues/5019
+[#4989]: https://github.com/openstreetmap/iD/issues/4989
+
+#### :bug: Bugfixes
+* Don't write 'undefined' to storage when deleting the changeset source ([#5021])
+* Make date parsing from community index more consistent ([#5011])
+* Fix a bug in setting some tags as read-only ([#5025], thanks [@guyarad])
+
+[#5025]: https://github.com/openstreetmap/iD/issues/5025
+[#5021]: https://github.com/openstreetmap/iD/issues/5021
+[#5011]: https://github.com/openstreetmap/iD/issues/5011
+[@guyarad]: https://github.com/guyarad
+
+#### :rocket: Presets
+
+* Add preset for `man_made=clearcut` ([#5027], thanks [@obama])
+* Add preset for `building=grandstand` ([#5026], thanks [@tyrasd])
+* Remove trailing space from health food preset ([#5022])
+* Added dance style field to dance hall preset ([#5020], thanks [@hikemaniac])
+* Add `natural=reef` preset ([#5006], thanks [@obama])
+
+[#5027]: https://github.com/openstreetmap/iD/issues/5027
+[#5026]: https://github.com/openstreetmap/iD/issues/5026
+[#5022]: https://github.com/openstreetmap/iD/issues/5022
+[#5020]: https://github.com/openstreetmap/iD/issues/5020
+[#5006]: https://github.com/openstreetmap/iD/issues/5006
+[@obama]: https://github.com/obama
+[@tyrasd]: https://github.com/tyrasd
+[@hikemaniac]: https://github.com/hikemaniac
+
+
+# 2.8.1
+##### April 24, 2018
+
+#### :sparkles: Usability
+* Linkify subreddit in community description ([#4997])
+
+[#4997]: https://github.com/openstreetmap/iD/issues/4997
+
+#### :bug: Bugfixes
+
+* Avoid reversing ways when using the join operation ([#4872])
+* Fix join-line and join-point cursors ([#4887])
+* Fix tabbing between fields in the tag editor on Firefox ([#4991])
+* Don't add empty `source` tag on a changeset ([#4993])
+
+[#4993]: https://github.com/openstreetmap/iD/issues/4993
+[#4991]: https://github.com/openstreetmap/iD/issues/4991
+[#4887]: https://github.com/openstreetmap/iD/issues/4887
+[#4872]: https://github.com/openstreetmap/iD/issues/4872
+
+#### :rocket: Presets
+* Change `amenity=bureau_de_change` to allow tagging as a building/area ([#5005])
+* Remove point as allowable geometry from `barrier=gate` ([#5004])
+* Add `brand=*` field to `shop=car` preset ([#4998], [#4999], thanks [@hikemaniac])
+
+[#5005]: https://github.com/openstreetmap/iD/issues/5005
+[#5004]: https://github.com/openstreetmap/iD/issues/5004
+[#4999]: https://github.com/openstreetmap/iD/issues/4999
+[#4998]: https://github.com/openstreetmap/iD/issues/4998
+[@hikemaniac]: https://github.com/hikemaniac
+
+
 # 2.8.0
 ##### April 16, 2018
 
@@ -94,7 +175,7 @@ _Reach out to nearby mappers and say hello!_
 * Guard code to avoid deleting a turn twice ([#4968], [#4928])
 * When connecting nodes, prefer to keep an existing (not new) node ([#4974], [#4674])
 * When boundaries are shared with roads, consider them as roads for purposes of filtering ([#4973])
-* Fix bug when deleting an only restriction on a bidirectional road ([#4951])
+* Fix bug when deleting a "No U-turn" restriction on a bidirectional road ([#4951])
 * Prevent clicking in restriction editor from selecting nearby text
 * Handle "entry only" and "exit only" variants of 'stop' and 'platform' when identifying PTv2 members ([#4946])
 * Fix ';'-space delimiting within `conditional` opening hours style files, add tests ([#4925])
@@ -119,7 +200,7 @@ _Reach out to nearby mappers and say hello!_
 * Add `faces=*` field to clock preset ([#4962], [#4961], thanks [@Xavier-J-Ortiz])
 * Add preset for `leisure=beach_resort` ([#4956], [#4955], thanks [@Xavier-J-Ortiz])
 * Add more kinds of vending machines, change vending to multiple select field ([#4888])
-* Add `usage` `voltage` `frequency` fields to several rail presets ([#4919])
+* Add `usage`, `voltage` and `frequency` fields to several rail presets ([#4919])
 * Add `industrial=*` field to landuse industrial preset ([#4949], thanks [@hikemaniac])
 * Add preset for `shop=pet_grooming` ([#4942], [#4939], thanks [@Xavier-J-Ortiz])
 * Add preset for Trail Riding Station, add fields to Horseback Riding and Hiking routes ([#4912], thanks [@NopMap])
@@ -176,6 +257,7 @@ _Reach out to nearby mappers and say hello!_
 [@Xavier-J-Ortiz]: https://github.com/Xavier-J-Ortiz
 [@hikemaniac]: https://github.com/hikemaniac
 [@NopMap]: https://github.com/NopMap
+[@obama]: https://github.com/obama
 [@umarpreet1]: https://github.com/umarpreet1
 
 
