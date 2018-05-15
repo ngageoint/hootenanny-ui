@@ -28,6 +28,6 @@ export default class ConflictTraverse {
         this.data.currentReviewItem = reviewItem;
 
         this.instance.graphSync.getRelationMembers( reviewItem.relationId )
-            .then( members => this.instance.map.highlightLayer( members[ 0 ], members[ 1 ] ) );
+            .then( members => this.instance.map.highlightLayer( members[ 0 ], members[ 1 ], true ) );
     }
 }

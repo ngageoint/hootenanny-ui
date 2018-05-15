@@ -14,17 +14,19 @@ export default class ConflictMap {
         this.data      = instance.data;
     }
 
-    highlightLayer( item1, item2 ) {
+    highlightLayer( item1, item2, panTo ) {
         let feature        = this.context.hasEntity( item1.id ),
             againstFeature = this.context.hasEntity( item2.id ),
             features       = [ feature, againstFeature ],
             relation       = this.data.currentRelation,
             poiTableCols   = [],
-            panToId;
+            panToId        = null,
+            extent         = null;
 
         _.forEach( features, ( feature, key ) => {
-            let extent = feature.extent( this.context.graph() ),
-                k      = key + 1;
+            let k = key + 1;
+
+            extent = feature.extent( this.context.graph() );
 
             if ( !panToId && isValidCoords( extent[ 0 ] ) && isValidCoords( extent[ 1 ] ) ) {
                 panToId = feature.id;
@@ -32,10 +34,12 @@ export default class ConflictMap {
 
             poiTableCols.push( feature );
 
-            d3.selectAll( `.activeReviewFeature${ k }` )
-                .classed( `activeReviewFeature${ k }`, false );
+            console.log( feature.id );
+
+            d3.selectAll( `.review-feature${ k }` )
+                .classed( `review-feature${ k }`, false );
             d3.selectAll( '.' + feature.id )
-                .classed( `tag-hoot activeReviewFeature${ k }`, true );
+                .classed( `tag-hoot review-feature${ k }`, true );
         } );
 
         this.conflicts.info.buildPoiTable( poiTableCols );
@@ -43,13 +47,17 @@ export default class ConflictMap {
         if ( relation && relation.members && relation.members.length > 2 ) {
             let idx1 = relation.members.findIndex( d => d.id === item1.id ),
                 idx2 = relation.members.findIndex( d => d.id === item2.id ),
-                len = relation.members.length;
+                len  = relation.members.length;
 
             d3.select( 'td.feature1 .prev' ).on( 'click', () => this.highlightLayer( relation.members[ this.calcNewIndex( idx1, idx2, len, 'prev' ) ], item2 ) );
             d3.select( 'td.feature1 .next' ).on( 'click', () => this.highlightLayer( relation.members[ this.calcNewIndex( idx1, idx2, len, 'next' ) ], item2 ) );
 
             d3.select( 'td.feature2 .prev' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'prev' ) ] ) );
             d3.select( 'td.feature2 .next' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'next' ) ] ) );
+        }
+
+        if ( panToId && panTo ) {
+            this.context.map().centerZoom( extent.center(), this.context.map().trimmedExtentZoom( extent ) - 0.5 );
         }
     }
 
@@ -70,28 +78,4 @@ export default class ConflictMap {
 
         return newIdx;
     }
-
-    //calculatePrevious( actionIdx, staticIdx, memberLen ) {
-    //    let prev = actionIdx - 1;
-    //
-    //    if ( prev < 0 ) {
-    //        prev = memberLen - 1;
-    //    }
-    //
-    //    if ( prev === staticIdx ) {
-    //        return this.calculatePrevious( prev, staticIdx, memberLen );
-    //    }
-    //
-    //    return prev;
-    //}
-    //
-    //calculateNext( actionIdx, staticIdx, memberLen ) {
-    //    let next = actionIdx + 1;
-    //
-    //    if ( next > memberLen - 1 ) {
-    //        next = 0;
-    //    }
-    //
-    //    //if ( next === staticIdx)
-    //}
 }

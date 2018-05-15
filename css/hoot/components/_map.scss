@@ -75,10 +75,10 @@ path {
         }
     }
 
-    &.shadow {
-        &.line {
-            stroke-width: 4;
-        }
+    &.shadow.line {
+        stroke-width: 4;
+
+        &.activeReviewFeature1
     }
 }
 
