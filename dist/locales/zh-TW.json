@@ -134,7 +134,9 @@
                     "vertex": "已連接路徑到另一路徑。",
                     "line": "已連接路徑到一線段。",
                     "area": "已連接路徑到一區域。"
-                }
+                },
+                "relation": "這些特徵並不能連結，因為它們的關聯角色有衝突。",
+                "restriction": "這些特徵並不能連結，因為會破壞 \"{relation}\" 關聯。"
             },
             "disconnect": {
                 "title": "斷開",
@@ -151,8 +153,14 @@
                 "key": "C",
                 "annotation": "合併 {n} 個特徵",
                 "not_eligible": "不能合併這些物件。",
+<<<<<<< HEAD
                 "not_adjacent": "這些特徵並不能合併，因為它們並不相連。",
                 "restriction": "這些特徵並不能合併，因為其中一個是關聯 \"{relation}\" 成員。",
+=======
+                "not_adjacent": "這些特徵並不能合併，因為它們的端點並不相連。",
+                "restriction": "這些圖徽無法合併，因為它會危害到「{relation}」關係。",
+                "relation": "這些圖徽無法合併，因為它們有衝突的關係。",
+>>>>>>> v2.8.2
                 "incomplete_relation": "這些物件不能合併，因為其中最少有一件未有完全下載。",
                 "conflicting_tags": "這些特徵並不能合儀，因為它們有彼此衝突的標籤。"
             },
@@ -354,6 +362,7 @@
                 "key": "H",
                 "title": "歷史",
                 "selected": "{n} 被選擇",
+                "no_history": "無歷史 (新功能)",
                 "version": "版本",
                 "last_edit": "最近編輯",
                 "edited_by": "編輯由",
@@ -596,8 +605,19 @@
         },
         "success": {
             "just_edited": "您剛剛編輯了OpenStreetMap！",
+            "thank_you": "感謝你改進地圖。",
+            "thank_you_location": "感謝你改進 {where} 週遭的地圖。",
+            "help_html": "你編輯的變動應該過幾分會出現在開放街圖裡。其他的地圖更新需要花久一點時間。",
             "help_link_text": "詳細資料",
-            "help_link_url": "https://wiki.openstreetmap.org/wiki/FAQ#I_have_just_made_some_changes_to_the_map._How_do_I_get_to_see_my_changes.3F"
+            "help_link_url": "https://wiki.openstreetmap.org/wiki/FAQ#I_have_just_made_some_changes_to_the_map._How_do_I_get_to_see_my_changes.3F",
+            "view_on_osm": "在OSM上顯示變動",
+            "changeset_id": "你的變更集 #：{changeset_id}",
+            "like_osm": "喜歡開放街圖嗎？與其他人聯繫：",
+            "more": "更多",
+            "events": "活動",
+            "languages": "語言：{languages}",
+            "missing": "清單上仍有遺漏資訊？",
+            "tell_us": "告訴我們！"
         },
         "confirm": {
             "okay": "確定",
@@ -1543,6 +1563,9 @@
                 "display": {
                     "label": "顯示"
                 },
+                "distance": {
+                    "label": "全部距離"
+                },
                 "dock": {
                     "label": "碼頭種類"
                 },
@@ -1570,6 +1593,9 @@
                 },
                 "except": {
                     "label": "例外"
+                },
+                "faces": {
+                    "label": "面"
                 },
                 "fax": {
                     "label": "傳真",
@@ -1643,6 +1669,39 @@
                 "hoops": {
                     "label": "藍框數量",
                     "placeholder": "1, 2, 4..."
+                },
+                "horse_dressage": {
+                    "label": "馬場馬術",
+                    "options": {
+                        "equestrian": "是",
+                        "undefined": "否"
+                    }
+                },
+                "horse_riding": {
+                    "label": "馬背騎乘",
+                    "options": {
+                        "horse_riding": "是",
+                        "undefined": "否"
+                    }
+                },
+                "horse_scale": {
+                    "label": "騎馬難度",
+                    "options": {
+                        "common": "容易：沒有問題或困難度。(預設)",
+                        "critical": "邊緣：有經驗騎士和馬匹可通行，主要障礙，橋樑要小心檢驗。",
+                        "dangerous": "危險：只適合非常有經驗的騎士和馬匹通行，而且只在天氣好的狀況，下馬狀況。",
+                        "demanding": "小心使用：不平的道路，時常有難以通行的通道。",
+                        "difficult": "困難：狹窄和裸露的道路，也許需要踩過障礙物和通過狹窄通道。",
+                        "impossible": "不可能：道路或橋樑馬匹不可能通行，太狹窄，沒有足夠的支援，有障礙物像是梯子，有生命危險。"
+                    },
+                    "placeholder": "危險，困難..."
+                },
+                "horse_stables": {
+                    "label": "騎馬馬房",
+                    "options": {
+                        "stables": "是",
+                        "undefined": "否"
+                    }
                 },
                 "iata": {
                     "label": "IATA"
@@ -2353,6 +2412,10 @@
                     "name": "廣告牌",
                     "terms": "廣告看板"
                 },
+                "advertising/column": {
+                    "name": "廣告看板",
+                    "terms": "廣告看板,廣告欄"
+                },
                 "aerialway": {
                     "name": "纜車路線"
                 },
@@ -3004,6 +3067,10 @@
                     "name": "自由落體",
                     "terms": "大怒神"
                 },
+                "attraction/maze": {
+                    "name": "迷宮",
+                    "terms": "迷宮"
+                },
                 "attraction/pirate_ship": {
                     "name": "海盜船",
                     "terms": "海盜船"
@@ -3185,6 +3252,10 @@
                 "building/garages": {
                     "name": "車庫",
                     "terms": "車庫"
+                },
+                "building/grandstand": {
+                    "name": "正面看臺",
+                    "terms": "正面看臺,看臺"
                 },
                 "building/greenhouse": {
                     "name": "溫室",
@@ -3613,6 +3684,49 @@
                     "name": "捐血中心",
                     "terms": "捐血中心,捐血站,捐血車"
                 },
+<<<<<<< HEAD
+=======
+                "healthcare/hospice": {
+                    "name": "安養院",
+                    "terms": "安養院"
+                },
+                "healthcare/laboratory": {
+                    "name": "醫事檢驗所",
+                    "terms": "醫檢"
+                },
+                "healthcare/midwife": {
+                    "name": "助產士",
+                    "terms": "助產士"
+                },
+                "healthcare/occupational_therapist": {
+                    "name": "職能治療師",
+                    "terms": "職能治療師"
+                },
+                "healthcare/optometrist": {
+                    "name": "驗光師",
+                    "terms": "驗光師"
+                },
+                "healthcare/physiotherapist": {
+                    "name": "物理治療師",
+                    "terms": "物理治療師"
+                },
+                "healthcare/podiatrist": {
+                    "name": "足科醫師",
+                    "terms": "足科醫師,足科醫生"
+                },
+                "healthcare/psychotherapist": {
+                    "name": "心理治療師",
+                    "terms": "心理治療師"
+                },
+                "healthcare/rehabilitation": {
+                    "name": "復建設施",
+                    "terms": "復建設施"
+                },
+                "healthcare/speech_therapist": {
+                    "name": "語言治療師",
+                    "terms": "語言治療師"
+                },
+>>>>>>> v2.8.2
                 "highway": {
                     "name": "道路"
                 },
@@ -4471,6 +4585,17 @@
                     "name": "山頂",
                     "terms": "山峰,山巔"
                 },
+<<<<<<< HEAD
+=======
+                "natural/reef": {
+                    "name": "暗礁",
+                    "terms": "暗礁,礁"
+                },
+                "natural/ridge": {
+                    "name": "山脊",
+                    "terms": "山陵"
+                },
+>>>>>>> v2.8.2
                 "natural/saddle": {
                     "name": "埡口",
                     "terms": "埡口,山口,鞍部"
@@ -5742,6 +5867,10 @@
                     "name": "主題公園",
                     "terms": "主題樂園"
                 },
+                "tourism/trail_riding_station": {
+                    "name": "騎馬車站",
+                    "terms": "騎馬車站"
+                },
                 "tourism/viewpoint": {
                     "name": "觀景點",
                     "terms": "風景點"
@@ -6098,6 +6227,7 @@
                 "name": "TIGER 道路 2017"
             },
             "US_Forest_Service_roads_overlay": {
+                "description": "道路：綠色外框 = 非分類道路。棕色外框 = 土路。路面：碎石路 = 亮棕色實心填滿，柏油 = 黑色，有舖面 = 灰色，地面 = 白色，水泥 = 藍色，草地 = 綠色。季節性 = 白色條紋",
                 "name": "美國森林道路覆蓋層"
             },
             "Waymarked_Trails-Cycling": {
@@ -6217,6 +6347,24 @@
 =======
         },
         "community": {
+            "cape-coast-youthmappers": {
+                "name": "University of Cape Coast YouthMappers",
+                "description": "追隨我們的 Twitter： {url} ",
+                "extendedDescription": "這是迦納 University of Cape Coast Youth Mappers 分會的官方頻道，我們愛地圖、開放資料和幫助別人。"
+            },
+            "osm-gh-facebook": {
+                "name": "開放街圖迦納 Facebook",
+                "description": "迦納對開放街圖有興趣的人參與的 Facebook 社團。",
+                "extendedDescription": " 迦納社群中的圖客，推廣迦納開放街圖和人道救援開放街圖計畫。加入我們吧！"
+            },
+            "osm-gh-twitter": {
+                "name": "開放街圖迦納 Twitter",
+                "description": "追隨我們的 Twitter： {url} "
+            },
+            "talk-gh": {
+                "name": "Talk-gh 郵件論壇",
+                "description": "Talk-gh 是迦納社群的官方郵件論壇 "
+            },
             "osm-mg-facebook": {
                 "name": "開放街圖馬達加斯加 Facebook 社團",
                 "description": "馬達加斯加對開放街圖有興趣的人參與的 Facebook 社團。"
@@ -6227,13 +6375,19 @@
             },
             "OSM-BGD-facebook": {
                 "name": "開放街圖孟加拉",
-                "description": "改進孟加拉的開放街圖",
-                "extendedDescription": "在孟加拉畫地圖嗎？想要問問題，想要與社群連結？請加入 {Url}，所有人都歡迎噢！"
+                "description": "改進孟加拉的開放街圖"
             },
             "OSM-India-facebook": {
                 "name": "開放街圖印度 - 參與社區畫圖",
                 "description": "改善印度的 OpenStreetMap",
-                "extendedDescription": "在印度畫地圖嗎？有問題，想要與社群互動？來  {Url} 加入我們，歡迎所有人。"
+                "extendedDescription": "在印度畫地圖嗎？想要問問題，想要與社群連結？請加入 {Url}，所有人都歡迎噢！",
+                "events": {
+                    "sotmasia2018": {
+                        "name": "State of the Map Asia 2018",
+                        "description": "加入 2018 開放街圖在印度的亞洲地區性的大會活動",
+                        "where": "印度班加羅爾，印度管理學院"
+                    }
+                }
             },
             "OSM-india-mailinglist": {
                 "name": "開放街圖印度郵件論壇",
@@ -6242,6 +6396,16 @@
             "OSM-india-twitter": {
                 "name": "開放街圖印度 Twitter",
                 "description": "我們只是喜歡 tweet：{url}"
+            },
+            "OSM-India-Puducherry-Facebook": {
+                "name": "Free Software Hardware Movement - Facebook",
+                "description": "FSHM Facebook 粉絲頁讓你知道社群活動",
+                "extendedDescription": "FSHM 組織跟自由軟體/硬體、科技、倡議和開放街圖的活動。FSHM Facebook 粉絲頁是最好跟他們活動保持聯繫的方式。"
+            },
+            "OSM-India-Puducherry-Matrix": {
+                "name": "自由軟體硬體運動 - Matrix",
+                "description": "FSHM Riot 小組討論、分享和更新本地治里一帶畫地圖活動",
+                "extendedDescription": "FSHM 社群成員經由 Riot.im 群組分享他們的開放街圖畫地圖狀況 / 經驗，社群也會討論與自由軟體 / 硬體、科技和行動主義。"
             },
             "OSM-IDN-facebook": {
                 "name": "開放街圖印尼",
@@ -6260,10 +6424,35 @@
                 "name": "開放街圖日本 Twitter",
                 "description": "Twitter 的標籤：{url}"
             },
+            "OSM-japan-website": {
+                "name": "開放街圖日本",
+                "description": "日本圖客和開放街圖使用者"
+            },
+            "OSM-korea-telegram": {
+                "name": "開放街圖南韓 Telegram 頻道",
+                "description": "南韓開放街圖貢獻者、社群和使用者分享和討論的非官方頻道。"
+            },
+            "OSM-MY-facebook": {
+                "name": "開放街圖馬來西亞 Facebook",
+                "description": "討論任何跟開放街圖相關的事物！"
+            },
+            "OSM-MY-forum": {
+                "name": "開放街圖馬來西亞論壇",
+                "description": "官方開放街圖馬來西亞論壇"
+            },
+            "OSM-MY-matrix": {
+                "name": "OpenStreetMap 馬來西亞 Riot channel",
+                "description": "歡迎所有圖客！在 {signupUrl} 註冊"
+            },
             "OSM-MNG-facebook": {
                 "name": "開放街圖蒙古",
                 "description": "改進蒙古的開放街圖",
                 "extendedDescription": "在蒙古畫地圖嗎？有問題，想要與社群互動？來 {Url} 加入我們，歡迎所有人。"
+            },
+            "OSM-MMR-facebook": {
+                "name": "開放街圖緬甸",
+                "description": "改進緬甸的開放街圖",
+                "extendedDescription": "在緬甸畫地圖嗎？有問題，想要與社群互動？來  {Url} 加入我們，歡迎所有人。"
             },
             "OSM-Nepal-facebook": {
                 "name": "開放街圖尼泊爾",
@@ -6271,11 +6460,182 @@
                 "extendedDescription": "在尼泊爾畫地圖嗎？有問題，想要與社群互動？來 {Url} 加入我們，歡迎所有人。"
             },
             "OSM-PH-facebook": {
-                "name": "開放街圖菲律賓 Facebook"
+                "name": "開放街圖菲律賓 Facebook",
+                "description": "歡迎來到開放街圖菲律賓，我們歡迎所有菲律賓人貢獻一己之力到開放街圖計畫。"
+            },
+            "OSM-PH-mailinglist": {
+                "name": "Talk-ph 郵件論壇",
+                "description": "討論開放街圖在菲律賓事物的郵件論壇"
+            },
+            "OSM-PH-slack": {
+                "name": "開放街圖 PH Slack",
+                "description": "歡迎所有人加入！在 {signupUrl} 註冊"
+            },
+            "OSM-PH-telegram": {
+                "name": "開放街圖 PH Telegram",
+                "description": "非官方的菲律賓貢獻者和友好者的 Telegram 群組。"
+            },
+            "OSM-RU-forum": {
+                "name": "開放街圖俄羅斯論壇",
+                "description": "開放街圖俄羅斯網頁論壇"
+            },
+            "OSM-RU-telegram": {
+                "name": "開放街圖 RU Telegram",
+                "description": "開放街圖俄羅斯 Telegram 聊天群組"
+            },
+            "OSM-LKA-facebook": {
+                "name": "開放街圖斯里蘭卡",
+                "description": "改進斯里蘭卡的開放街圖",
+                "extendedDescription": "在斯里蘭卡畫地圖嗎？有問題，想要與社群互動？來  {Url} 加入我們，歡迎所有人。"
+            },
+            "OSM-TW-facebook": {
+                "name": "開放街圖台灣社群",
+                "description": "台灣社群專門討論有關台灣圖資的臉書社團"
+            },
+            "OSM-TW-mailinglist": {
+                "name": "開放街圖台灣郵件論壇",
+                "description": "Talk-tw 是台灣社群專門討論有關台灣圖資的官方郵件論壇"
+            },
+            "at-forum": {
+                "name": "開放街圖奧地利論壇",
+                "description": "開放街圖在奧地利問答的官方論壇"
+            },
+            "at-mailinglist": {
+                "name": "Talk-at 郵件論壇",
+                "description": "Talk-at 是奧地利社群的官方郵件論壇 "
+            },
+            "at-twitter": {
+                "name": "開放街圖奧地利 Twitter",
+                "description": "開放街圖奧地利 Twitter：{url}"
+            },
+            "osmgraz-meetup": {
+                "name": "OSM community meetup Graz",
+                "description": "開放街圖格拉茨社群的每月聚會"
+            },
+            "osmgraz-twitter": {
+                "name": "OSM community Graz Twitter",
+                "description": "開放街圖格拉茨社群的 Twitter"
+            },
+            "osm-at": {
+                "name": "開放街圖奧地利",
+                "description": "開放街圖在奧地利交流資訊的平台"
             },
             "byosm": {
                 "name": "開放街圖白羅斯",
                 "description": "開放街圖白羅斯 Telegram 聊天室"
+            },
+            "be-facebook": {
+                "name": "開放街圖比利時社群",
+                "description": "比利時圖客和開放街圖 Facebook"
+            },
+            "be-forum": {
+                "name": "開放街圖比利時論壇",
+                "description": "開放街圖比利時網頁論壇"
+            },
+            "be-irc": {
+                "name": "開放街圖奧地利 IRC",
+                "description": "在 irc.oftc.net (port 6667) 上面加入 #osmbe",
+                "extendedDescription": "運用 Matrix chat channel，在 irc.oftc.net (port 6667) 上面加入 #osmbe"
+            },
+            "be-mailinglist": {
+                "name": "Talk-be 郵件論壇",
+                "description": "Talk-be 是比利時社群的官方郵件論壇 "
+            },
+            "be-matrix": {
+                "name": "OpenStreetMap BE Matrix channel",
+                "description": "歡迎所有圖客！"
+            },
+            "be-meetup": {
+                "name": "開放街圖比利時聚會",
+                "description": "實體聚會中見到每一位對開放街圖有興趣的人",
+                "extendedDescription": "實體的聚會是與其他圖客碰面的好機會，能夠論論問題，學到很多事情，特別是歡迎新的貢獻者。"
+            },
+            "be-twitter": {
+                "name": "開放街圖比利時 Twitter"
+            },
+            "talk-cz-mailinglist": {
+                "name": "Talk-cz 郵件論壇",
+                "description": "Talk-cz 是捷克社群的官方郵件論壇 "
+            },
+            "dk-forum": {
+                "name": "開放街圖丹麥網頁論壇",
+                "description": "開放街圖丹麥的網頁論壇"
+            },
+            "dk-irc": {
+                "name": "OpenStreetMap Denmark IRC",
+                "description": "在 irc.oftc.net (port 6667) 上面加入 #osm-dk"
+            },
+            "dk-mailinglist": {
+                "name": "Talk-dk 郵件論壇",
+                "description": "討論開放街圖在丹麥事物的郵件論壇"
+            },
+            "fr-facebook": {
+                "name": "開放街圖法國 Facebook 頁面",
+                "description": "開放街圖法國 Facebook 頁面"
+            },
+            "fr-forum": {
+                "name": "開放街圖法國網頁論壇",
+                "description": "開放街圖法國網頁論壇"
+            },
+            "fr-irc": {
+                "name": "開放街圖法國 IRC",
+                "description": "在 irc.oftc.net (port 6667) 上面加入 #osm-fr"
+            },
+            "fr-mailinglist": {
+                "name": "Talk-fr 郵件論壇",
+                "description": "Talk-fr 郵件論壇"
+            },
+            "fr-twitter": {
+                "name": "開放街圖法國 Twitter",
+                "description": "開放街圖法國 Twitter：{url}"
+            },
+            "de-berlin-mailinglist": {
+                "name": "柏林郵件論壇",
+                "description": "這是柏林開放街圖社群的郵件論壇"
+            },
+            "de-berlin-meetup": {
+                "name": "OpenStreetMap Berlin-Brandenburg Meetup",
+                "description": "柏林和布蘭登堡一帶的圖客與開放街圖使用者"
+            },
+            "de-berlin-telegram": {
+                "name": "Telegram 上的 @osmberlin",
+                "description": "開放街圖柏林 Telegram 聊天室"
+            },
+            "de-berlin-twitter": {
+                "name": "開放街圖柏林 Twitter",
+                "description": "追隨我們的 Twitter： {url}"
+            },
+            "de-forum": {
+                "name": "OpenStreetMap DE forum",
+                "description": "開放街圖德國網頁論壇"
+            },
+            "de-irc": {
+                "name": "OpenStreetMap Germany IRC",
+                "description": "在 irc.oftc.net (port 6667) 上面加入 #osm-de"
+            },
+            "de-mailinglist": {
+                "name": "Talk-de 郵件論壇",
+                "description": "Talk-de 是德國開放街圖社群的郵件論壇 "
+            },
+            "de-ostwestfalen-lippe-mailinglist": {
+                "name": "OWL 郵件論壇",
+                "description": "這是東威斯特法倫 - 利普開放街圖社群的郵件論壇"
+            },
+            "osm-de": {
+                "name": "開放街圖德國",
+                "description": "開放街圖在德國交流資訊的平台"
+            },
+            "OSM-ES-mailinglist": {
+                "name": "Talk-es 郵件論壇",
+                "description": "討論開放街圖在西班牙事物的郵件論壇"
+            },
+            "OSM-ES-telegram": {
+                "name": "Telegram 上的 @OSMes",
+                "description": "開放街圖西班牙 Telegram 聊天室"
+            },
+            "Nottingham-OSM-pub-meetup": {
+                "name": "East Midlands (諾丁漢) 酒吧每月聚會",
+                "description": "East Midlands 圖客和使用者的社交聚會"
             },
             "Bay-Area-OpenStreetMappers": {
                 "name": "灣區的 OpenStreetMap 圖客",
@@ -6299,6 +6659,11 @@
                 "name": "GeoPhilly",
                 "description": "費城地區的地圖愛好者聚會",
                 "extendedDescription": "GeoPhilly 將開發者、地理學家、資料極客、開放原始碼愛好者、公民駭客與地圖愛好者聯合起來，並將我們對地圖的熱愛與他們的故事連結起來。如果你在工作中會用到地圖，或僅僅只是想要了解更多，這就是為你而辦的聚會！我們的活動旨在開放、友好、教育與社交，從歡樂時光到閃電講，甚至是工作坊都有。跟我們一起在費城建立一個多元化且激勵人心的地理空間社群！"
+            },
+            "MapMinnesota": {
+                "name": "MapMinnesota",
+                "description": "在雙城區一帶的圖客與開放街圖使用者",
+                "extendedDescription": "接觸明尼蘇達和雙城區一帶開放街圖熱情參與者！"
             },
             "Mapping-DC-meetup": {
                 "name": "Mapping DC",
@@ -6383,9 +6748,63 @@
                 "name": "Maptime Australia Slack",
                 "description": "在 {signupUrl} 註冊"
             },
+            "Maptime-Bogota": {
+                "name": "Maptime Bogotá",
+                "description": "我們是一群關心波哥大一帶開放街圖狀況的圖客。",
+                "extendedDescription": "學習在現場收集資料，然後在開放街圖上面數位位。你不需要有先備知識！你只要有心參與、學習以及好好玩。"
+            },
+            "OSM-CO-facebook": {
+                "name": "開放街圖哥倫比亞 Facebook",
+                "description": "加入開放街圖哥倫比亞社群 Facebook"
+            },
+            "OSM-PE-mailinglist": {
+                "name": "Talk-pe 郵件論壇",
+                "description": "Talk-be 是開放街圖祕魯社群的官方郵件論壇 "
+            },
+            "OSM-PE-matrix": {
+                "name": "OpenStreetMap 祕魯 Matrix 頻道",
+                "description": "在開放街圖祕魯社群的 Matrix 與其他成員聊天。"
+            },
+            "OSM-PE-telegram": {
+                "name": "開放街圖祕魯 Telegram",
+                "description": "加入開放街圖祕魯 Telegram 聊天室"
+            },
+            "OSM-PE-twitter": {
+                "name": "開放街圖祕魯 Twitter",
+                "description": "在 {url} 上追隨我們的 Twitter "
+            },
+            "OSM-PE": {
+                "name": "開放街圖祕魯",
+                "description": "開放街圖社群的新聞和資源頁面"
+            },
+            "OSM-Facebook": {
+                "name": "開放街圖 Facebook",
+                "description": "在 Facebook 為我們按讚，追蹤開放街圖相關的新聞和動態。"
+            },
+            "OSM-help": {
+                "name": "開放街圖幫助論壇",
+                "description": "在開放街圖社群驅動的問答站，詢問問題以及得到答案。",
+                "extendedDescription": "{url} 是讓對開放街圖有需要幫助的人，無論你是初學者，或是有技術問題，來到這邊尋求協助吧！"
+            },
             "OSM-Reddit": {
                 "name": "在 Reddit 上的 OpenStreetMap",
                 "description": "/r/openstreetmap/ 是一個取得更多關於 OpenStreetMap 資訊的好地方。什麼事都能問！"
+            },
+            "OSM-Twitter": {
+                "name": "開放街圖 Twitter",
+                "description": "在 {url} 上追隨我們的 Twitter"
+            },
+            "OSMF": {
+                "name": "開放街圖基金會",
+                "description": "開放街圖基金會是位於英國，支持開放街圖計劃的非營利組織",
+                "extendedDescription": "開放街圖基金會藉由募款，維持開放街圖背後的伺服器，舉行年度 State of the Map 大會，以及協調志工維持開放街圖運作，支援開放街圖計畫。你可以在這裡藉由加入開放街圖基金會成為會員：{signupUrl}，顯示你的支持，還有在開放街圖中帶進你的聲音，指導開放街圖的發展方向。",
+                "events": {
+                    "sotm2018": {
+                        "name": "State of the Map 2018",
+                        "description": "加入我們這三天在義大利米蘭的年度全球尺度的開放街圖大會，讓社群中的每一個人彼此社交、分享和學習。",
+                        "where": "義大利米蘭"
+                    }
+                }
             }
 >>>>>>> v2.8.0
         }

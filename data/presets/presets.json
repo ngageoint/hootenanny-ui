@@ -1065,12 +1065,15 @@
             "icon": "bank",
             "fields": [
                 "name",
+                "currency_multi",
                 "operator",
-                "currency_multi"
+                "address",
+                "building_area",
+                "opening_hours"
             ],
             "geometry": [
                 "point",
-                "vertex"
+                "area"
             ],
             "terms": [
                 "bureau de change",
@@ -4360,7 +4363,6 @@
                 "access"
             ],
             "geometry": [
-                "point",
                 "vertex",
                 "line"
             ],
@@ -4417,8 +4419,8 @@
                 "access"
             ],
             "geometry": [
-                "point",
-                "vertex"
+                "vertex",
+                "line"
             ],
             "tags": {
                 "barrier": "lift_gate"
@@ -4441,7 +4443,6 @@
                 "access"
             ],
             "geometry": [
-                "point",
                 "vertex"
             ],
             "tags": {
@@ -4880,6 +4881,27 @@
             },
             "matchScore": 0.5,
             "name": "Garages"
+        },
+        "building/grandstand": {
+            "icon": "building",
+            "fields": [
+                "name",
+                "height"
+            ],
+            "geometry": [
+                "area"
+            ],
+            "tags": {
+                "building": "grandstand"
+            },
+            "terms": [
+                "tribune",
+                "stand",
+                "stands",
+                "bleachers"
+            ],
+            "matchScore": 0.5,
+            "name": "Grandstand"
         },
         "building/greenhouse": {
             "icon": "garden-center",
@@ -8902,6 +8924,9 @@
                 "landuse": "forest"
             },
             "terms": [
+                "cut",
+                "forest",
+                "lumber",
                 "tree"
             ],
             "name": "Forest"
@@ -9821,6 +9846,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "dance/style",
                 "opening_hours"
             ],
             "geometry": [
@@ -11381,6 +11407,23 @@
             },
             "name": "Chimney"
         },
+        "man_made/clearcut": {
+            "icon": "logging",
+            "geometry": [
+                "area"
+            ],
+            "tags": {
+                "man_made": "clearcut"
+            },
+            "terms": [
+                "cut",
+                "forest",
+                "lumber",
+                "tree",
+                "wood"
+            ],
+            "name": "Clearcut Forest"
+        },
         "man_made/crane": {
             "icon": "poi-crane",
             "fields": [
@@ -12140,6 +12183,24 @@
                 "top"
             ],
             "name": "Peak"
+        },
+        "natural/reef": {
+            "icon": "poi-beach",
+            "geometry": [
+                "point",
+                "area"
+            ],
+            "tags": {
+                "natural": "reef"
+            },
+            "terms": [
+                "barrier",
+                "coral",
+                "ocean",
+                "sand",
+                "shoal"
+            ],
+            "name": "Reef"
         },
         "natural/ridge": {
             "geometry": [
@@ -16816,6 +16877,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -17627,7 +17689,7 @@
                 "vegan"
             ],
             "tags": {
-                "shop": "health_food "
+                "shop": "health_food"
             },
             "name": "Health Food Shop"
         },
@@ -22101,28 +22163,6 @@
             ],
             "suggestion": true
         },
-        "amenity/bank/Banco Bradesco": {
-            "tags": {
-                "name": "Banco Bradesco",
-                "amenity": "bank"
-            },
-            "name": "Banco Bradesco",
-            "icon": "bank",
-            "geometry": [
-                "point",
-                "area"
-            ],
-            "fields": [
-                "name",
-                "atm",
-                "operator",
-                "address",
-                "building_area",
-                "opening_hours",
-                "drive_through"
-            ],
-            "suggestion": true
-        },
         "amenity/bank/Banco Continental": {
             "tags": {
                 "name": "Banco Continental",
@@ -22261,28 +22301,6 @@
                 "amenity": "bank"
             },
             "name": "Banco Internacional",
-            "icon": "bank",
-            "geometry": [
-                "point",
-                "area"
-            ],
-            "fields": [
-                "name",
-                "atm",
-                "operator",
-                "address",
-                "building_area",
-                "opening_hours",
-                "drive_through"
-            ],
-            "suggestion": true
-        },
-        "amenity/bank/Banco Itaú": {
-            "tags": {
-                "name": "Banco Itaú",
-                "amenity": "bank"
-            },
-            "name": "Banco Itaú",
             "icon": "bank",
             "geometry": [
                 "point",
@@ -31677,12 +31695,15 @@
             "icon": "bank",
             "geometry": [
                 "point",
-                "vertex"
+                "area"
             ],
             "fields": [
                 "name",
+                "currency_multi",
                 "operator",
-                "currency_multi"
+                "address",
+                "building_area",
+                "opening_hours"
             ],
             "suggestion": true
         },
@@ -31695,12 +31716,15 @@
             "icon": "bank",
             "geometry": [
                 "point",
-                "vertex"
+                "area"
             ],
             "fields": [
                 "name",
+                "currency_multi",
                 "operator",
-                "currency_multi"
+                "address",
+                "building_area",
+                "opening_hours"
             ],
             "suggestion": true
         },
@@ -31713,12 +31737,15 @@
             "icon": "bank",
             "geometry": [
                 "point",
-                "vertex"
+                "area"
             ],
             "fields": [
                 "name",
+                "currency_multi",
                 "operator",
-                "currency_multi"
+                "address",
+                "building_area",
+                "opening_hours"
             ],
             "suggestion": true
         },
@@ -33505,6 +33532,7 @@
         "amenity/cafe/ドトールコーヒーショップ": {
             "tags": {
                 "name": "ドトールコーヒーショップ",
+                "name:en": "Doutor",
                 "amenity": "cafe"
             },
             "name": "ドトールコーヒーショップ",
@@ -37625,7 +37653,7 @@
         "amenity/fast_food/すき家": {
             "tags": {
                 "name": "すき家",
-                "name:en": "SUKIYA",
+                "name:en": "Sukiya",
                 "amenity": "fast_food"
             },
             "name": "すき家",
@@ -37890,7 +37918,7 @@
         "amenity/fast_food/モスバーガー": {
             "tags": {
                 "name": "モスバーガー",
-                "name:en": "MOS BURGER",
+                "name:en": "Mos Burger",
                 "amenity": "fast_food"
             },
             "name": "モスバーガー",
@@ -40836,6 +40864,8 @@
         "amenity/fuel/Oilibya": {
             "tags": {
                 "name": "Oilibya",
+                "brand": "Oilibya",
+                "name:ar": "أويليبيا",
                 "amenity": "fuel"
             },
             "name": "Oilibya",
@@ -41163,28 +41193,6 @@
             ],
             "suggestion": true
         },
-        "amenity/fuel/Petrobras": {
-            "tags": {
-                "name": "Petrobras",
-                "amenity": "fuel"
-            },
-            "name": "Petrobras",
-            "icon": "fuel",
-            "geometry": [
-                "point",
-                "area"
-            ],
-            "fields": [
-                "name",
-                "brand",
-                "operator",
-                "address",
-                "fuel_multi",
-                "opening_hours",
-                "payment_multi"
-            ],
-            "suggestion": true
-        },
         "amenity/fuel/Petrochina": {
             "tags": {
                 "name": "Petrochina",
@@ -41477,28 +41485,6 @@
                 "amenity": "fuel"
             },
             "name": "Posto Atem",
-            "icon": "fuel",
-            "geometry": [
-                "point",
-                "area"
-            ],
-            "fields": [
-                "name",
-                "brand",
-                "operator",
-                "address",
-                "fuel_multi",
-                "opening_hours",
-                "payment_multi"
-            ],
-            "suggestion": true
-        },
-        "amenity/fuel/Posto BR": {
-            "tags": {
-                "name": "Posto BR",
-                "amenity": "fuel"
-            },
-            "name": "Posto BR",
             "icon": "fuel",
             "geometry": [
                 "point",
@@ -43938,7 +43924,7 @@
         "amenity/fuel/出光": {
             "tags": {
                 "name": "出光",
-                "name:en": "IDEMITSU",
+                "name:en": "Idemitsu",
                 "amenity": "fuel"
             },
             "name": "出光",
@@ -65049,6 +65035,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65072,6 +65059,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65095,6 +65083,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65118,6 +65107,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65141,6 +65131,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65164,6 +65155,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65187,6 +65179,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65210,6 +65203,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65233,6 +65227,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65256,6 +65251,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65279,6 +65275,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65302,6 +65299,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65325,6 +65323,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65348,6 +65347,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65371,6 +65371,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65394,6 +65395,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65417,6 +65419,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65440,6 +65443,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65463,6 +65467,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65486,6 +65491,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65509,6 +65515,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65532,6 +65539,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65555,6 +65563,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65578,6 +65587,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65601,6 +65611,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65624,6 +65635,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65647,6 +65659,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65670,6 +65683,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65693,6 +65707,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -65716,6 +65731,7 @@
                 "operator",
                 "address",
                 "building_area",
+                "brand",
                 "second_hand",
                 "service/vehicle",
                 "opening_hours",
@@ -75991,7 +76007,7 @@
         "shop/convenience/サンクス": {
             "tags": {
                 "name": "サンクス",
-                "name:en": "sunkus",
+                "name:en": "Sunkus",
                 "shop": "convenience"
             },
             "name": "サンクス",
@@ -76074,13 +76090,13 @@
             ],
             "suggestion": true
         },
-        "shop/convenience/セブンイレブン": {
+        "shop/convenience/セブン-イレブン": {
             "tags": {
-                "name": "セブンイレブン",
+                "name": "セブン-イレブン",
                 "name:en": "7-Eleven",
                 "shop": "convenience"
             },
-            "name": "セブンイレブン",
+            "name": "セブン-イレブン",
             "icon": "shop",
             "geometry": [
                 "point",
@@ -76248,7 +76264,7 @@
         "shop/convenience/ローソン": {
             "tags": {
                 "name": "ローソン",
-                "name:en": "LAWSON",
+                "name:en": "Lawson",
                 "shop": "convenience"
             },
             "name": "ローソン",

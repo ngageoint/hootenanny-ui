@@ -14,7 +14,10 @@ let buildData = require( './build_data' )( isDevelopment ),
     buildSrc  = require( './build_src' )( isDevelopment ),
     buildCSS  = require( './build_css' )( isDevelopment );
 
-buildData().then( () => buildSrc() );
+buildData()
+    .then(function () {
+        return buildSrc();
+    });
 
 buildCSS();
 

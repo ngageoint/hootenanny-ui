@@ -1084,7 +1084,7 @@ en:
         placeholder: '1, 2, 3...'
       phone:
         # phone=*
-        label: Phone
+        label: Telephone
         # phone field placeholder
         placeholder: +31 42 123 4567
       piste/difficulty:
@@ -2709,6 +2709,11 @@ en:
         # building=garages
         name: Garages
         terms: '<translate with synonyms or related terms for ''Garages'', separated by commas>'
+      building/grandstand:
+        # building=grandstand
+        name: Grandstand
+        # 'terms: tribune,stand,stands,bleachers'
+        terms: '<translate with synonyms or related terms for ''Grandstand'', separated by commas>'
       building/greenhouse:
         # building=greenhouse
         name: Greenhouse
@@ -3575,7 +3580,7 @@ en:
       landuse/forest:
         # landuse=forest
         name: Forest
-        # 'terms: tree'
+        # 'terms: cut,forest,lumber,tree'
         terms: '<translate with synonyms or related terms for ''Forest'', separated by commas>'
       landuse/garages:
         # landuse=garages
@@ -4048,6 +4053,11 @@ en:
         # man_made=chimney
         name: Chimney
         terms: '<translate with synonyms or related terms for ''Chimney'', separated by commas>'
+      man_made/clearcut:
+        # man_made=clearcut
+        name: Clearcut Forest
+        # 'terms: cut,forest,lumber,tree,wood'
+        terms: '<translate with synonyms or related terms for ''Clearcut Forest'', separated by commas>'
       man_made/crane:
         # man_made=crane
         name: Crane
@@ -4250,6 +4260,11 @@ en:
         name: Peak
         # 'terms: acme,aiguille,alp,climax,crest,crown,hill,mount,mountain,pinnacle,summit,tip,top'
         terms: '<translate with synonyms or related terms for ''Peak'', separated by commas>'
+      natural/reef:
+        # natural=reef
+        name: Reef
+        # 'terms: barrier,coral,ocean,sand,shoal'
+        terms: '<translate with synonyms or related terms for ''Reef'', separated by commas>'
       natural/ridge:
         # natural=ridge
         name: Ridge
@@ -5295,7 +5310,7 @@ en:
         name: Hardware Store
         terms: '<translate with synonyms or related terms for ''Hardware Store'', separated by commas>'
       shop/health_food:
-        # 'shop=health_food '
+        # shop=health_food
         name: Health Food Shop
         # 'terms: wholefood,vitamins,vegetarian,vegan'
         terms: '<translate with synonyms or related terms for ''Health Food Shop'', separated by commas>'
