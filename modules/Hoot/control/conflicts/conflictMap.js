@@ -34,12 +34,10 @@ export default class ConflictMap {
 
             poiTableCols.push( feature );
 
-            console.log( feature.id );
-
             d3.selectAll( `.review-feature${ k }` )
-                .classed( `review-feature${ k }`, false );
+                .classed( `highlight review-feature${ k }`, false );
             d3.selectAll( '.' + feature.id )
-                .classed( `tag-hoot review-feature${ k }`, true );
+                .classed( `highlight review-feature${ k }`, true );
         } );
 
         this.conflicts.info.buildPoiTable( poiTableCols );

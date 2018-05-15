@@ -1,10 +1,5 @@
 #bar {
     position: relative;
-    //position: absolute;
-    //width: calc(100% - 400px);
-    //top: 60px;
-    //right: 0;
-    //left: auto;
 
     .spacer {
         width: 0;
@@ -42,62 +37,69 @@
 
 .low-zoom {
     path {
-        &.way {
-            &.line {
-                stroke-width: 7;
-                stroke-opacity: .9;
+        &.way.line {
+            stroke-width: 7;
+            stroke-opacity: .9;
+        }
+
+        &.shadow.line {
+            stroke-width: 9;
+            stroke-opacity: .9;
+
+            &.hover {
+                stroke-width: 12;
             }
         }
 
-        &.shadow {
-            &.line {
-                stroke-width: 9;
-                stroke-opacity: .9;
-
-                &.hover {
-                    stroke-width: 12;
-                }
-            }
-        }
-
-        &.casing {
-            &.line {
-                stroke-width: 6;
-            }
+        &.casing.line {
+            stroke-width: 6;
         }
     }
 }
 
 path {
-    &.way {
-        &.line {
-            stroke-width: 3;
-        }
+    &.way.line {
+        stroke-width: 3;
     }
 
     &.shadow.line {
         stroke-width: 4;
+    }
+}
 
-        &.activeReviewFeature1 {
+path.highlight {
+    &.shadow.line {
+        stroke-width: 20;
+        stroke-opacity: .6;
+
+        &.hover {
+            stroke-width: 20;
+            stroke-opacity: .9;
+        }
+
+        &.extra-highlight {
+            stroke-width: 22;
+            stroke-opacity: .9;
+        }
+
+        &.review-feature1 {
             stroke: #F00;
         }
 
-        &.activeReviewFeature2 {
+        &.review-feature2 {
             stroke: #00F;
         }
     }
 }
 
 g.node {
-    &.vertex {
-        &.shared {
-            .stroke {
-                fill: $light5;
-            }
+    &.vertex.shared {
+        .stroke {
+            fill: $light5;
+        }
 
-            .fill {
-                fill: $light5;
-            }
+        .fill {
+            fill: $light5;
         }
     }
 }

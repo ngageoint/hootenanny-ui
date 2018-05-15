@@ -90,9 +90,7 @@ export default class ConflictMetadata {
         } );
 
         this.poiTable.selectAll( '.value-col' )
-            .on( 'mouseenter', d => {
-                d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', true )
-            } )
+            .on( 'mouseenter', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', true ) )
             .on( 'mouseleave', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
     }
 

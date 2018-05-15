@@ -357,7 +357,7 @@ export function svgVertices(projection, context) {
 
         var all = _assign({}, (isMoving ? _currHover : {}), _currSelected, _currPersistent);
 
-        // Draw the vertices..
+        // Draw the vertices..targets
         // The filter function controls the scope of what objects d3 will touch (exit/enter/update)
         // Adjust the filter function to expand the scope beyond whatever entities were passed in.
         var filterRendered = function(d) {
