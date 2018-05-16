@@ -4,7 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
+import _ from 'lodash-es';
 import API from '../api';
+import LayerManager from '../../managers/layerManager';
 
 export default class ConflictTraverse {
     constructor( instance ) {
@@ -29,5 +31,23 @@ export default class ConflictTraverse {
 
         this.instance.graphSync.getRelationMembers( reviewItem.relationId )
             .then( members => this.instance.map.highlightLayer( members[ 0 ], members[ 1 ], true ) );
+    }
+
+    traverseForward() {
+        this.vischeck();
+
+        this.jumpTo( 'forward' );
+    }
+
+    traverseBackward() {
+        if ( !this.vischeck() ) return;
+
+        this.jumpTo( 'backward' );
+    }
+
+    vischeck() {
+        let visible = _.filter( LayerManager.loadedLayers, layer => layer.visible );
+
+        return visible.length === 1;
     }
 }

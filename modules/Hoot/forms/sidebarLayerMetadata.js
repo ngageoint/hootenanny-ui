@@ -18,6 +18,8 @@ export default class SidebarLayerMetadata {
         this.createInnerWrapper();
         this.createBody();
         this.parseTags();
+
+        this.listen();
     }
 
     /**

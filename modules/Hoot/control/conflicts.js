@@ -8,7 +8,10 @@ import ConflictInfo        from './conflicts/conflictInfo';
 import ConflictMap         from './conflicts/conflictMap';
 import ConflictTraverse    from './conflicts/conflictTraverse';
 import ConflictGraphSync   from './conflicts/conflictGraphSync';
+import ConflictMerge       from './conflicts/conflictMerge';
 import { conflictButtons } from '../config/domElements';
+import { d3keybinding }    from '../../lib/d3.keybinding';
+import { getOS }           from './utilities';
 import API                 from './api';
 
 export default class Conflicts {
@@ -21,31 +24,35 @@ export default class Conflicts {
             mapId: layer.id,
             reviewStats: null,
             currentReviewItem: null,
-            //curEntityId: null,
             currentRelation: null
         };
+
+        this.buttonEnabled = true;
 
         this.info      = new ConflictInfo( this );
         this.map       = new ConflictMap( this );
         this.traverse  = new ConflictTraverse( this );
         this.graphSync = new ConflictGraphSync( this );
+        this.merge     = new ConflictMerge( this );
     }
 
     async init() {
         this.render();
 
-        this.reviewStats = await API.getReviewStatistics( this.data.mapId );
+        this.data.reviewStats = await API.getReviewStatistics( this.data.mapId );
 
         this.traverse.jumpTo( 'forward' );
     }
 
     render() {
+        this.buttons = conflictButtons.call( this );
+
         this.createContainer();
         this.createReviewBlock();
         this.createMetaDialog();
         this.createActionButtons();
 
-        //this.info.createPoiTable( this.container );
+        this.bindKeys();
     }
 
     createContainer() {
@@ -75,27 +82,81 @@ export default class Conflicts {
             .selectAll( 'button' )
             .data( buttons ).enter()
             .append( 'button' )
-            .text( d => d.text );
+            .attr( 'class', d => d.class )
+            .text( d => d.text )
+            .on( 'click', d => {
+                setTimeout( () => this.buttonEnabled = true, 500 );
+
+                if ( this.buttonEnabled ) {
+                    this.buttonEnabled = false;
+                    d.action();
+                }
+            } );
     }
 
-    createPoiTable() {
-        //let navHtml = '<div class="navigation-wrapper"><div class="prev">&lt;&lt;</div><div class="next">&gt;&gt;</div></div>';
-        //
-        //this.poiTable = this.container
-        //    .insert( 'div', ':first-child' )
-        //    .classed( 'tag-table block', true )
-        //    .append( 'table' )
-        //    .classed( 'round keyline-all', true );
-        //
-        //let tableHead = this.poiTable.append( 'tr' )
-        //    .classed( 'table-head', true );
-        //
-        //tableHead.append( 'td' )
-        //    .classed( 'f1', true )
-        //    .html( navHtml );
-        //
-        //tableHead.append( 'td' )
-        //    .classed( 'f2', true )
-        //    .html( navHtml );
+    bindKeys() {
+        let bt = this.buttons;
+
+        let keybinding = d3keybinding( 'conflicts' )
+            .on( bt[ 0 ].cmd, () => {
+                d3.event.preventDefault();
+                this.callHotkeyAction( bt[ 0 ] );
+            } )
+            .on( bt[ 1 ].cmd, () => {
+                d3.event.preventDefault();
+                this.callHotkeyAction( bt[ 1 ] );
+            } )
+            .on( bt[ 2 ].cmd, () => {
+                d3.event.preventDefault();
+                this.callHotkeyAction( bt[ 2 ] );
+            } )
+            .on( bt[ 3 ].cmd, () => {
+                d3.event.preventDefault();
+                this.callHotkeyAction( bt[ 3 ] );
+            } )
+            .on( bt[ 4 ].cmd, () => {
+                d3.event.preventDefault();
+                this.callHotkeyAction( bt[ 4 ] );
+            } )
+            .on( bt[ 5 ].cmd, () => {
+                d3.event.preventDefault();
+                this.callHotkeyAction( bt[ 5 ] );
+            } );
+
+        d3.select( document )
+            .call( keybinding );
+    }
+
+    cmd( code ) {
+        if ( getOS() === 'mac' ) {
+            return code;
+        }
+
+        if ( getOS() === 'win' ) {
+            if ( code === '⌘⇧Z' ) return 'Ctrl+Y';
+        }
+
+        let replacements = {
+                '⌘': 'Ctrl',
+                '⇧': 'Shift',
+                '⌥': 'Alt',
+                '⌫': 'Backspace',
+                '⌦': 'Delete'
+            },
+            result       = '';
+
+        for ( let i = 0; i < code.length; i++ ) {
+            if ( code[ i ] in replacements ) {
+                result += replacements[ code[ i ] ] + '+';
+            } else {
+                result += code[ i ];
+            }
+        }
+
+        return result;
+    }
+
+    callHotkeyAction( button ) {
+        button.action();
     }
 }

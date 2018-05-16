@@ -120,41 +120,47 @@ export function conflictButtons() {
         {
             id: 'resolved',
             text: 'Resolved',
-            class: 'primary',
-            icon: '_icon check'
-
+            class: '_icon check primary',
+            cmd: this.cmd( 'r' )
         },
         {
             id: 'next',
             name: 'review_foward',
             text: 'Next',
-            color: 'fill-grey button round pad0y pad1x dark small strong'
+            class: 'fill-grey button round pad0y pad1x small strong',
+            cmd: this.cmd( 'n' ),
+            action: () => this.traverse.traverseForward()
         },
         {
             id: 'previous',
             name: 'review_backward',
             text: 'Previous',
-            color: 'fill-grey button round pad0y pad1x dark small strong'
+            class: 'fill-grey button round pad0y pad1x small strong',
+            cmd: this.cmd( 'p' ),
+            action: () => this.traverse.traverseBackward()
         },
         {
             id: 'merge',
             name: 'auto_merge',
             text: 'Merge',
-            color: 'loud',
-            icon: '_icon plus'
+            color: '',
+            class: '_icon plus merge',
+            cmd: this.cmd( 'm' ),
+            action: () => this.merge.autoMerge()
         },
         {
             id: 'toggletable',
             name: 'toggle_table',
             text: 'Hide Table',
-            color: 'fill-grey button round pad0y pad1x dark small strong'
+            class: 'fill-grey button round pad0y pad1x small strong',
+            cmd: this.cmd( 't' )
         },
         {
             id: 'sharereview',
             name: 'share_review',
             text: 'Bookmark Review',
-            color: 'fill-grey button round pad0y pad1x dark small strong',
-            icon: '_icon plus'
+            class: '_icon plus fill-grey button round pad0y pad1x small strong',
+            cmd: this.cmd( 'Ctrl+b' )
         }
     ];
 }

@@ -24,8 +24,7 @@ export default class ConflictMap {
             extent         = null;
 
         _.forEach( features, ( feature, key ) => {
-            let k = key + 1;
-
+            key = key + 1;
             extent = feature.extent( this.context.graph() );
 
             if ( !panToId && isValidCoords( extent[ 0 ] ) && isValidCoords( extent[ 1 ] ) ) {
@@ -34,13 +33,25 @@ export default class ConflictMap {
 
             poiTableCols.push( feature );
 
-            d3.selectAll( `.review-feature${ k }` )
-                .classed( `highlight review-feature${ k }`, false );
+            if ( panTo && panToId ) {
+                this.context.map().centerZoom( extent.center(), this.context.map().trimmedExtentZoom( extent ) - 0.5 );
+            }
+
+            d3.selectAll( `.review-feature${ key }` )
+                .classed( `highlight review-feature${ key }`, false );
             d3.selectAll( '.' + feature.id )
-                .classed( `highlight review-feature${ k }`, true );
+                .classed( `highlight review-feature${ key }`, true );
         } );
 
         this.conflicts.info.buildPoiTable( poiTableCols );
+
+        if ( relation.tags[ 'hoot:review:type' ] === 'POI to Polygon' ||
+            feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n'
+        ) {
+            this.conflicts.container.select( 'button.merge' ).classed( 'hidden', false );
+        } else {
+            this.conflicts.container.select( 'button.merge' ).classed( 'hidden', true );
+        }
 
         if ( relation && relation.members && relation.members.length > 2 ) {
             let idx1 = relation.members.findIndex( d => d.id === item1.id ),
@@ -54,9 +65,9 @@ export default class ConflictMap {
             d3.select( 'td.feature2 .next' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'next' ) ] ) );
         }
 
-        if ( panToId && panTo ) {
-            this.context.map().centerZoom( extent.center(), this.context.map().trimmedExtentZoom( extent ) - 0.5 );
-        }
+        this.conflicts.info.updateMeta();
+
+        // TODO: update meta
     }
 
     calcNewIndex( actionIdx, staticIdx, memberLen, direction ) {

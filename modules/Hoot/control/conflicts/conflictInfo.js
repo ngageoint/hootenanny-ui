@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import Event from '../../managers/eventManager';
-import _ from 'lodash-es';
+import _     from 'lodash-es';
 
 export default class ConflictMetadata {
     constructor( instance ) {
@@ -22,15 +22,6 @@ export default class ConflictMetadata {
             /uuid/
         ];
     }
-
-    //createPoiTable( container ) {
-    //    this.container = container;
-    //
-    //    this.poiTable = container
-    //        .insert( 'div', ':first-child' )
-    //        .classed( 'tag-table block', true )
-    //        .append( 'table' );
-    //}
 
     buildPoiTable( colData ) {
         let tags1      = this.filterTags( colData[ 0 ].tags ),
@@ -119,5 +110,43 @@ export default class ConflictMetadata {
         } );
 
         return mergedMap.entries();
+    }
+
+    updateMeta( note ) {
+        let multiFeatureMsg   = '',
+            noteText          = '',
+            currentMeta       = this.data.reviewStats;
+
+        let nTotal      = 0,
+            nUnreviewed = 0,
+            nReviewed   = 0;
+
+        if ( currentMeta ) {
+            nTotal      = currentMeta.totalCount;
+            nUnreviewed = currentMeta.unreviewedCount;
+            nReviewed   = nTotal - nUnreviewed;
+        }
+
+        if ( note ) {
+            noteText = note;
+        } else if ( this.data.currentRelation ) {
+            let relationNote = this.data.currentRelation.tags[ 'hoot:review:now' ];
+
+            if ( relationNote ) {
+                noteText = relationNote;
+            }
+        }
+
+        this.conflicts.metaDialog.html(
+            `<strong class="review-note">
+                Review note: ${ noteText }
+            </strong>
+            <br>
+            <strong class="reviews-remaining">
+                Reviews remaining: ${ nUnreviewed } (Resolved: ${ nReviewed } ${ multiFeatureMsg })
+            </strong>`
+        );
+
+        Event.send( 'meta-updated', `there are ${ nUnreviewed } reviews` );
     }
 }

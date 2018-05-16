@@ -6,6 +6,7 @@
 
 import SidebarForm from './sidebarForm';
 import Conflicts   from '../control/conflicts';
+import Event       from '../managers/eventManager';
 
 export default class SidebarLayerReview extends SidebarForm {
     constructor( sidebar, container, layer ) {
@@ -33,7 +34,7 @@ export default class SidebarLayerReview extends SidebarForm {
             .classed( 'form-field', true )
             .append( 'span' )
             .classed( '_icon info review-count', true )
-            .text( 'There are 0 reviews:' );
+            .text( 'There are 0 reviews' );
     }
 
     createAcceptAllButton() {
@@ -46,5 +47,13 @@ export default class SidebarLayerReview extends SidebarForm {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
             } );
+    }
+
+    updateReviewCount( text ) {
+        this.reviewCount.text( text );
+    }
+
+    listen() {
+        Event.listen( 'meta-updated', this.updateReviewCount, this );
     }
 }

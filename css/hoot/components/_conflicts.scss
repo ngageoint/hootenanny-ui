@@ -15,11 +15,21 @@
     background-color: black;
     float: right;
 
+    table {
+        background: transparent;
+        border: 1px solid #aaa;
+    }
+
+    tr:not(:last-child) {
+        border-bottom: 1px solid #aaa;
+    }
+
     td {
         min-width: 75px;
         text-align: center;
         vertical-align: middle;
         padding: 0 5px;
+        color: white;
 
         .prev {
             float: left;
@@ -28,5 +38,13 @@
         .next {
             float: right;
         }
+    }
+
+    .feature1 {
+        background: rgba(255, 0, 0, 0.5);
+    }
+
+    .feature2 {
+        background: rgba(0, 0, 255, 0.5);
     }
 }

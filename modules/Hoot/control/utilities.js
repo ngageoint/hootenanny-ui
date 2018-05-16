@@ -32,6 +32,22 @@ export const getBrowserInfo = () => {
     return browserInfo;
 };
 
+export const getOS = () => {
+    let os;
+
+    if ( navigator.userAgent.indexOf( 'Win' ) > -1 ) {
+        os = 'win';
+    } else if ( navigator.userAgent.indexOf( 'Mac' ) > -1 ) {
+        os = 'mac';
+    } else if ( navigator.userAgent.indexOf( 'X11' ) > -1 || navigator.userAgent.indexOf( 'Linux' ) > -1 ) {
+        os = 'linux';
+    } else {
+        os = 'win';
+    }
+
+    return os;
+};
+
 export const isValidCoords = coords => {
     return ( coords.length === 2 ||
         ( !isNaN( coords[ 0 ] ) && !isNaN( coords[ 1 ] ) ) ||
