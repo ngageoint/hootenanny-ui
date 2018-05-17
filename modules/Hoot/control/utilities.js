@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import _ from 'lodash-es';
+import { t } from '../../util/locale';
 
 export const getBrowserInfo = () => {
     let browserInfo = {},
@@ -54,4 +55,17 @@ export const isValidCoords = coords => {
         ( coords[ 0 ] < 180.0 && coords[ 0 ] > -180.0 ) ||
         ( coords[ 1 ] < 90.0 && coords[ 1 ] > -90.0 )
     );
+};
+
+export const tooltipHtml = ( text, key ) => {
+    let html = `<span>${ text }</span>`;
+
+    if ( key ) {
+        html += `<div class="keyhint-wrap">
+                    <span>${ t( 'tooltip_keyhint' ) }</span>
+                    <span class="keyhint">${ key }</span>
+                </div>`;
+    }
+
+    return html;
 };

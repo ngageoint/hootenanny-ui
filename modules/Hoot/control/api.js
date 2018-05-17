@@ -199,7 +199,7 @@ class API {
         const params = {
             path: `/job/review/next?mapid=${ mapId }&offsetseqid=${ sequence }&direction=${ direction }`,
             method: 'GET'
-        }
+        };
 
         return this.request( params )
             .then( resp => resp.data );

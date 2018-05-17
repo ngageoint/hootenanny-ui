@@ -267,6 +267,23 @@ en:
   redo:
     tooltip: "Redo: {action}"
     nothing: Nothing to redo.
+  append:
+    tooltip: Paste tags, append to existing
+  overwrite:
+    tooltip: Paste tags, overwrite existing
+  review:
+    merge:
+      description: Merge review features. Hold Ctrl to reverse.
+    bookmark_review:
+      description: Save review to share with others.
+    previous:
+      description: Skip to previous review.
+    next:
+      description: Skip to next review.
+    resolved:
+      description: Review is resolved.
+    toggle_table:
+      description: Hide/Show tag table.
   tooltip_keyhint: "Shortcut:"
   browser_notice: "This editor is supported in Firefox, Chrome, Safari, Opera, and Internet Explorer 11 and above. Please upgrade your browser or use Potlatch 2 to edit the map."
   translate:

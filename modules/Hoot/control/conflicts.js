@@ -4,6 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
+import API                 from './api';
 import ConflictInfo        from './conflicts/conflictInfo';
 import ConflictMap         from './conflicts/conflictMap';
 import ConflictTraverse    from './conflicts/conflictTraverse';
@@ -11,8 +12,13 @@ import ConflictGraphSync   from './conflicts/conflictGraphSync';
 import ConflictMerge       from './conflicts/conflictMerge';
 import { conflictButtons } from '../config/domElements';
 import { d3keybinding }    from '../../lib/d3.keybinding';
-import { getOS }           from './utilities';
-import API                 from './api';
+import { t }               from '../../util/locale';
+import { tooltip }         from '../../util/tooltip';
+
+import {
+    getOS,
+    tooltipHtml
+} from './utilities';
 
 export default class Conflicts {
     constructor( context, contentContainer, layer ) {
@@ -75,7 +81,11 @@ export default class Conflicts {
     }
 
     createActionButtons() {
-        let buttons = conflictButtons.call( this );
+        let buttons  = conflictButtons.call( this ),
+            _tooltip = tooltip()
+                .placement( 'top' )
+                .html( true )
+                .title( d => tooltipHtml( t( `review.${ d.id }.description` ), d.cmd ) );
 
         this.actionButtons = this.reviewBlock.append( 'div' )
             .classed( 'action-buttons', true )
@@ -91,7 +101,8 @@ export default class Conflicts {
                     this.buttonEnabled = false;
                     d.action();
                 }
-            } );
+            } )
+            .call( _tooltip );
     }
 
     bindKeys() {

@@ -149,14 +149,15 @@ export function conflictButtons() {
             action: () => this.merge.autoMerge()
         },
         {
-            id: 'toggletable',
+            id: 'toggle_table',
             name: 'toggle_table',
             text: 'Hide Table',
             class: 'fill-grey button round pad0y pad1x small strong',
-            cmd: this.cmd( 't' )
+            cmd: this.cmd( 't' ),
+            action: () => this.info.toggleTable()
         },
         {
-            id: 'sharereview',
+            id: 'bookmark_review',
             name: 'share_review',
             text: 'Bookmark Review',
             class: '_icon plus fill-grey button round pad0y pad1x small strong',

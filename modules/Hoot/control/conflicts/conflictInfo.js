@@ -85,6 +85,13 @@ export default class ConflictMetadata {
             .on( 'mouseleave', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
     }
 
+    toggleTable() {
+        let tableState = this.poiTable.classed( 'hidden' );
+            //tooletip =
+
+        this.poiTable.classed( 'hidden', !tableState );
+    }
+
     filterTags( tags ) {
         return _.filter( d3.entries( tags ), tag => {
             return _.every( this.tagBlacklist, t => !tag.key.match( t ) );
