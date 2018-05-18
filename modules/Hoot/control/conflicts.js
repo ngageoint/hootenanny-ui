@@ -54,7 +54,8 @@ export default class Conflicts {
         this.buttons = conflictButtons.call( this );
 
         this.createContainer();
-        this.createReviewBlock();
+        this.createInnerWrapper();
+        this.createLeftRightContainers();
         this.createMetaDialog();
         this.createActionButtons();
 
@@ -64,30 +65,39 @@ export default class Conflicts {
     createContainer() {
         this.container = this.contentContainer.append( 'div' )
             .attr( 'id', 'conflicts-container' )
-            .classed( 'pin-bottom unclickable', true );
+            .classed( 'pin-bottom', true );
     }
 
-    createReviewBlock() {
-        this.reviewBlock = this.container.append( 'div' )
-            .classed( 'review-block fillD', true );
+    createInnerWrapper() {
+        this.innerWrapper = this.container.append( 'div' )
+            .classed( 'inner-wrapper', true );
+    }
+
+    createLeftRightContainers() {
+        this.leftContainer = this.innerWrapper.append( 'div' )
+            .classed( 'left-container', true );
+
+        this.rightContainer = this.innerWrapper.append( 'div' )
+            .classed( 'right-container fillD', true );
     }
 
     createMetaDialog() {
-        this.metaDialog = this.reviewBlock.append( 'div' )
+        this.metaDialog = this.rightContainer.append( 'div' )
             .classed( 'meta-dialog', true )
             .append( 'span' )
-            .classed( '_icon info dark', true )
+            .classed( '_icon info light', true )
             .html( '<strong class="review-note">Initialzing...</strong>' );
     }
 
     createActionButtons() {
-        let buttons  = conflictButtons.call( this ),
-            _tooltip = tooltip()
-                .placement( 'top' )
-                .html( true )
-                .title( d => tooltipHtml( t( `review.${ d.id }.description` ), d.cmd ) );
+        let buttons  = conflictButtons.call( this );
 
-        this.actionButtons = this.reviewBlock.append( 'div' )
+        this.tooltip = tooltip()
+            .placement( 'top' )
+            .html( true )
+            .title( d => tooltipHtml( t( `review.${ d.id }.description` ), d.cmd ) );
+
+        this.actionButtons = this.rightContainer.append( 'div' )
             .classed( 'action-buttons', true )
             .selectAll( 'button' )
             .data( buttons ).enter()
@@ -102,7 +112,7 @@ export default class Conflicts {
                     d.action();
                 }
             } )
-            .call( _tooltip );
+            .call( this.tooltip );
     }
 
     bindKeys() {

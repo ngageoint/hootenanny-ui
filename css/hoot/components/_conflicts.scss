@@ -3,17 +3,35 @@
     width: 100%;
     height: auto;
     bottom: 30px;
-}
 
-.review-block {
-    clear: both;
+    .inner-wrapper {
+        clear: both;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-end;
+    }
+
+    .left-container {
+        padding: 0 15px 15px;
+        align-self: flex-start;
+    }
+
+    .right-container {
+        width: 100%;
+        padding: 10px 15px;
+
+        button:not(:last-child) {
+            margin-right: 10px;
+        }
+    }
 }
 
 .tag-table {
     width: auto;
     height: auto;
     background-color: black;
-    float: right;
+    float: left;
+    display: inline-block;
 
     table {
         background: transparent;
@@ -47,4 +65,8 @@
     .feature2 {
         background: rgba(0, 0, 255, 0.5);
     }
+}
+
+.meta-dialog {
+    margin-bottom: 5px;
 }

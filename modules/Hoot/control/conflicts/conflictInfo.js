@@ -29,13 +29,14 @@ export default class ConflictMetadata {
             tagsMerged = this.mergeTags( [ tags1, tags2 ] );
 
         if ( this.poiTable ) {
-            this.poiTable.remove();
+            this.tableContainer.remove();
         }
 
-        this.poiTable = this.conflicts.container
+        this.tableContainer =  this.conflicts.leftContainer
             .insert( 'div', ':first-child' )
-            .classed( 'tag-table block', true )
-            .append( 'table' );
+            .classed( 'tag-table', true );
+
+        this.poiTable = this.tableContainer.append( 'table' );
 
         if ( this.data.currentRelation.members.length > 2 ) {
             let navHtml = '<div class="navigation-wrapper"><div class="prev">&lt;&lt;</div><div class="next">&gt;&gt;</div></div>';
@@ -86,10 +87,12 @@ export default class ConflictMetadata {
     }
 
     toggleTable() {
-        let tableState = this.poiTable.classed( 'hidden' );
-            //tooletip =
+        let tableState = this.tableContainer.classed( 'hidden' );
 
-        this.poiTable.classed( 'hidden', !tableState );
+        this.tableContainer.classed( 'hidden', !tableState );
+        this.conflicts.container.select( 'button.toggle_table' )
+            .text( tableState ? 'Hide Table' : 'Show Table' )
+            .call( this.conflicts.tooltip );
     }
 
     filterTags( tags ) {
@@ -120,8 +123,7 @@ export default class ConflictMetadata {
     }
 
     updateMeta( note ) {
-        let multiFeatureMsg   = '',
-            noteText          = '',
+        let noteText          = '',
             currentMeta       = this.data.reviewStats;
 
         let nTotal      = 0,
@@ -150,7 +152,7 @@ export default class ConflictMetadata {
             </strong>
             <br>
             <strong class="reviews-remaining">
-                Reviews remaining: ${ nUnreviewed } (Resolved: ${ nReviewed } ${ multiFeatureMsg })
+                Reviews remaining: ${ nUnreviewed } (Resolved: ${ nReviewed })
             </strong>`
         );
 

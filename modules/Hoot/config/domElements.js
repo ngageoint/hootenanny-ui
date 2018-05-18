@@ -118,26 +118,19 @@ export const contextMenus = {
 export function conflictButtons() {
     return [
         {
-            id: 'resolved',
-            text: 'Resolved',
-            class: '_icon check primary',
-            cmd: this.cmd( 'r' )
+            id: 'bookmark_review',
+            name: 'share_review',
+            text: 'Bookmark Review',
+            class: '_icon plus fill-grey button round pad0y pad1x small strong',
+            cmd: this.cmd( 'Ctrl+b' )
         },
         {
-            id: 'next',
-            name: 'review_foward',
-            text: 'Next',
-            class: 'fill-grey button round pad0y pad1x small strong',
-            cmd: this.cmd( 'n' ),
-            action: () => this.traverse.traverseForward()
-        },
-        {
-            id: 'previous',
-            name: 'review_backward',
-            text: 'Previous',
-            class: 'fill-grey button round pad0y pad1x small strong',
-            cmd: this.cmd( 'p' ),
-            action: () => this.traverse.traverseBackward()
+            id: 'toggle_table',
+            name: 'toggle_table',
+            text: 'Hide Table',
+            class: 'fill-grey button round pad0y pad1x small strong toggle_table',
+            cmd: this.cmd( 't' ),
+            action: () => this.info.toggleTable()
         },
         {
             id: 'merge',
@@ -149,19 +142,26 @@ export function conflictButtons() {
             action: () => this.merge.autoMerge()
         },
         {
-            id: 'toggle_table',
-            name: 'toggle_table',
-            text: 'Hide Table',
+            id: 'previous',
+            name: 'review_backward',
+            text: 'Previous',
             class: 'fill-grey button round pad0y pad1x small strong',
-            cmd: this.cmd( 't' ),
-            action: () => this.info.toggleTable()
+            cmd: this.cmd( 'p' ),
+            action: () => this.traverse.traverseBackward()
         },
         {
-            id: 'bookmark_review',
-            name: 'share_review',
-            text: 'Bookmark Review',
-            class: '_icon plus fill-grey button round pad0y pad1x small strong',
-            cmd: this.cmd( 'Ctrl+b' )
+            id: 'next',
+            name: 'review_foward',
+            text: 'Next',
+            class: 'fill-grey button round pad0y pad1x small strong',
+            cmd: this.cmd( 'n' ),
+            action: () => this.traverse.traverseForward()
+        },
+        {
+            id: 'resolved',
+            text: 'Resolved',
+            class: '_icon check primary pad0y pad1x',
+            cmd: this.cmd( 'r' )
         }
     ];
 }
