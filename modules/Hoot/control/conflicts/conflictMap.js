@@ -25,7 +25,12 @@ export default class ConflictMap {
 
         _.forEach( features, ( feature, key ) => {
             key = key + 1;
-            extent = feature.extent( this.context.graph() );
+
+            if ( !extent ) {
+                extent = feature.extent( this.context.graph() );
+            } else {
+                extent = extent.extend( feature.extent( this.context.graph() ) );
+            }
 
             if ( !panToId && isValidCoords( extent[ 0 ] ) && isValidCoords( extent[ 1 ] ) ) {
                 panToId = feature.id;
@@ -37,10 +42,16 @@ export default class ConflictMap {
                 this.context.map().centerZoom( extent.center(), this.context.map().trimmedExtentZoom( extent ) - 0.5 );
             }
 
+            //let highlightClass = `highlight review-feature${ key }`;
+
             d3.selectAll( `.review-feature${ key }` )
                 .classed( `highlight review-feature${ key }`, false );
+
             d3.selectAll( '.' + feature.id )
                 .classed( `highlight review-feature${ key }`, true );
+
+            //d3.selectAll( `g.${ feature.id } path.shadow` )
+            //    .classed( highlightClass, true );
         } );
 
         this.conflicts.info.buildPoiTable( poiTableCols );

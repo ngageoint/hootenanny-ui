@@ -13,4 +13,8 @@ export default class ConflictMerge {
     autoMerge() {
 
     }
+
+    mergeFeatures() {
+
+    }
 }
