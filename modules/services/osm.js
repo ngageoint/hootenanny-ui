@@ -28,9 +28,9 @@ import { services } from '../services/index';
 
 import { utilRebind, utilIdleWorker } from '../util';
 
-//import HootOSM from '../Hoot/managers/hootOsm';
+import API from '../Hoot/control/api';
 import LayerManager from '../Hoot/managers/layerManager';
-import Events       from '../Hoot/managers/eventManager';
+import Events from '../Hoot/managers/eventManager';
 
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded');
 var urlroot = 'https://www.openstreetmap.org';
@@ -125,6 +125,7 @@ var parsers = {
         var attrs = obj.attributes;
         return new osmNode({
             id: osmEntity.id.fromOSM('node', attrs.id.value + '_' + mapId),
+            //origid:
             mapId: mapId,
             visible: getVisible(attrs),
             version: attrs.version.value,
@@ -307,6 +308,19 @@ export default {
             var url = getUrlRoot(path) + path;
             return d3_xml(url).get(done);
         }
+    },
+
+
+    loadFromHootAPI: function(data) {
+        return new Promise( res => {
+            API.poiMerge( data ).then( xml => {
+                let document = new DOMParser().parseFromString( xml.data, 'text/xml' );
+
+                parse( document, function(entities) {
+                    res( entities );
+                } );
+            } );
+        } );
     },
 
 

@@ -30,7 +30,7 @@ class API {
      */
     request( params ) {
         return axios( {
-            url: `${ this.baseUrl }${ params.path }`,
+            url: params.url || `${ this.baseUrl }${ params.path }`,
             method: params.method || 'GET',
             headers: params.headers,
             data: params.data,
@@ -83,7 +83,6 @@ class API {
             .then( resp => {
                 let layers    = resp.data.layers,
                     layerList = [];
-
 
                 if ( !layers || !layers.length )
                     return resp.data;
@@ -305,6 +304,21 @@ class API {
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) )
             .then( () => data );
+    }
+
+    poiMerge( data ) {
+        let baseUrl = `${ this.config.host }:${ this.config.elementMergeServerPort }`;
+
+        const params = {
+            url: `${ baseUrl }/elementmerge`,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            data
+        };
+
+        return this.request( params );
     }
 }
 

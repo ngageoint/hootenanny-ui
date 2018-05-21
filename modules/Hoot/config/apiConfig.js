@@ -9,7 +9,8 @@ export const apiConfig = {
     port: '8999',
     basePath: 'hoot-services',
     mapnikServerPort: '8000',
-    queryInterval: 1000
+    elementMergeServerPort: '8096',
+    queryInterval: 2000
 };
 
 export const hootConfig = {

@@ -23,6 +23,13 @@ export default class ConflictMap {
             panToId        = null,
             extent         = null;
 
+        if ( !feature || !againstFeature ) {
+            return;
+        }
+
+        this.data.feature        = feature;
+        this.data.againstFeature = againstFeature;
+
         _.forEach( features, ( feature, key ) => {
             key = key + 1;
 
@@ -42,16 +49,11 @@ export default class ConflictMap {
                 this.context.map().centerZoom( extent.center(), this.context.map().trimmedExtentZoom( extent ) - 0.5 );
             }
 
-            //let highlightClass = `highlight review-feature${ key }`;
-
             d3.selectAll( `.review-feature${ key }` )
                 .classed( `highlight review-feature${ key }`, false );
 
             d3.selectAll( '.' + feature.id )
                 .classed( `highlight review-feature${ key }`, true );
-
-            //d3.selectAll( `g.${ feature.id } path.shadow` )
-            //    .classed( highlightClass, true );
         } );
 
         this.conflicts.info.buildPoiTable( poiTableCols );

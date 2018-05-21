@@ -4,8 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
-import _ from 'lodash-es';
-import API from '../api';
+import _            from 'lodash-es';
+import API          from '../api';
 import LayerManager from '../../managers/layerManager';
 
 export default class ConflictTraverse {
@@ -21,9 +21,15 @@ export default class ConflictTraverse {
     async jumpTo( direction ) {
         let reviewData = {};
 
-        reviewData.mapId     = this.data.mapId;
-        reviewData.sequence  = this.sequence;
-        reviewData.direction = direction;
+        if ( this.data.currentReviewItem ) {
+            reviewData.mapId     = this.data.currentReviewItem.mapId;
+            reviewData.sequence  = this.data.currentReviewItem.sortOrder;
+            reviewData.direction = direction;
+        } else {
+            reviewData.mapId     = this.data.mapId;
+            reviewData.sequence  = this.sequence;
+            reviewData.direction = direction;
+        }
 
         let reviewItem = await API.reviewGetNext( reviewData );
 

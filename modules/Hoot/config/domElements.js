@@ -139,7 +139,7 @@ export function conflictButtons() {
             color: '',
             class: '_icon plus merge',
             cmd: this.cmd( 'm' ),
-            action: () => this.merge.autoMerge()
+            action: () => this.merge.mergeFeatures()
         },
         {
             id: 'previous',
