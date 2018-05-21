@@ -35,16 +35,16 @@
     left: 400px;
 }
 
-.surface {
-    .stroke.line {
+path.line {
+    &.stroke {
         stroke-width: 3;
     }
 
-    .casing.line {
+    &.casing {
         stroke-width: 5;
     }
 
-    .shadow.line {
+    &.shadow {
         stroke-width: 3;
         stroke-opacity: 0;
 
@@ -53,7 +53,7 @@
         }
     }
 
-    .highlight.shadow {
+    &.highlight.shadow {
         stroke-width: 8;
         stroke-opacity: .6;
 
@@ -75,20 +75,20 @@
         }
     }
 
-    &.low-zoom {
-        .stroke.line {
+    .low-zoom & {
+        &.stroke {
             stroke-width: 7;
         }
 
-        .casing.line {
+        &.casing {
             stroke-width: 10;
         }
 
-        .shadow.line {
+        &.shadow {
             stroke-width: 12;
         }
 
-        .highlight.shadow {
+        &.highlight.shadow {
             stroke-width: 18;
 
             &.hover {
@@ -102,7 +102,7 @@
     }
 }
 
-g.node {
+.node.point {
     &.vertex.shared {
         .stroke {
             fill: $light5;
@@ -110,6 +110,29 @@ g.node {
 
         .fill {
             fill: $light5;
+        }
+    }
+
+    &.highlight .shadow {
+        stroke-width: 12;
+        stroke-opacity: .6;
+
+        @at-root .hover#{&} {
+            stroke-width: 14;
+            stroke-opacity: .9;
+        }
+
+        @at-root .extra-highlight#{&} {
+            stroke-width: 16;
+            stroke-opacity: .9;
+        }
+
+        @at-root .review-feature1#{&} {
+            stroke: #F00;
+        }
+
+        @at-root .review-feature2#{&} {
+            stroke: #00F;
         }
     }
 }
