@@ -152,6 +152,14 @@ class HootOSM {
         return parseInt( status, 10 );
     }
 
+    changeTags( entityId, tags ) {
+        return graph => {
+            let entity = graph.entity( entityId );
+
+            return graph.replace( entity.update( { tags } ) );
+        };
+    }
+
     setLayerColor( mapId, color ) {
         let sheets = document.styleSheets[ document.styleSheets.length - 1 ],
             lighter;

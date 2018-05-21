@@ -125,7 +125,7 @@ var parsers = {
         var attrs = obj.attributes;
         return new osmNode({
             id: osmEntity.id.fromOSM('node', attrs.id.value + '_' + mapId),
-            //origid:
+            origid: 'n' + attrs.id.value,
             mapId: mapId,
             visible: getVisible(attrs),
             version: attrs.version.value,
@@ -142,6 +142,7 @@ var parsers = {
         var attrs = obj.attributes;
         return new osmWay({
             id: osmEntity.id.fromOSM('way', attrs.id.value + '_' + mapId),
+            origid: 'w' + attrs.id.value,
             mapId: mapId,
             version: attrs.version.value,
             changeset: attrs.changeset && attrs.changeset.value,
@@ -157,6 +158,7 @@ var parsers = {
         var attrs = obj.attributes;
         return new osmRelation({
             id: osmEntity.id.fromOSM('relation', attrs.id.value + '_' + mapId),
+            origid: 'r' + attrs.id.value,
             mapId: mapId,
             visible: getVisible(attrs),
             version: attrs.version.value,
@@ -311,10 +313,19 @@ export default {
     },
 
 
+    parseXml( document ) {
+        return new Promise( res => {
+            parse( document, function(entities) {
+                res( entities );
+            } );
+        } );
+    },
+
+
     loadFromHootAPI: function(data) {
         return new Promise( res => {
             API.poiMerge( data ).then( xml => {
-                let document = new DOMParser().parseFromString( xml.data, 'text/xml' );
+                let document = new DOMParser().parseFromString( xml, 'text/xml' );
 
                 parse( document, function(entities) {
                     res( entities );

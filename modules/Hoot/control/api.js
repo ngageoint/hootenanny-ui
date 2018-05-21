@@ -194,6 +194,22 @@ class API {
             .then( resp => resp.data );
     }
 
+    getReviewRefs( queryElements ) {
+        const params = {
+            path: '/job/review/refs',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                queryElements
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     reviewGetNext( { mapId, sequence, direction } ) {
         const params = {
             path: `/job/review/next?mapid=${ mapId }&offsetseqid=${ sequence }&direction=${ direction }`,
@@ -318,7 +334,8 @@ class API {
             data
         };
 
-        return this.request( params );
+        return this.request( params )
+            .then( resp => resp.data );
     }
 }
 
