@@ -35,7 +35,7 @@ class HootOSM {
             id: d.id.toString(),
             type: 'tms',
             description: d.name,
-            template: window.location.protocol + '//' + window.location.hostname
+            template: config.host
             + `:${ config.mapnikServerPort }`
             + '/?z={zoom}&x={x}&y={-y}&color='
             + encodeURIComponent( this.getPalette( d.color ) )

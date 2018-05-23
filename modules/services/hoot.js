@@ -484,6 +484,6 @@ export default {
     },
 
     urlroot: function() {
-        return '/hoot-services/osm';
+        return 'http://52.23.188.104:8080/hoot-services/osm';
     }
 };

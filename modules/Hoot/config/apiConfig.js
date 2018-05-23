@@ -5,8 +5,8 @@
  *******************************************************************************************************/
 
 export const apiConfig = {
-    host: 'http://localhost',
-    port: '8999',
+    host: 'http://52.23.188.104',
+    port: '8080',
     basePath: 'hoot-services',
     mapnikServerPort: '8000',
     elementMergeServerPort: '8096',

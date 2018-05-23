@@ -4,11 +4,12 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/16/18
  *******************************************************************************************************/
 
-import _        from 'lodash-es';
-import API      from '../../control/api';
-import HootOSM  from '../../managers/hootOsm';
-import { JXON } from '../../../util/jxon';
-import { t }    from '../../../util/locale';
+import _                   from 'lodash-es';
+import API                 from '../../control/api';
+import HootOSM             from '../../managers/hootOsm';
+import { JXON }            from '../../../util/jxon';
+import { t }               from '../../../util/locale';
+import { operationDelete } from '../../../operations/delete';
 
 export default class ConflictMerge {
     constructor( instance ) {
@@ -52,6 +53,39 @@ export default class ConflictMerge {
 
         let missingRelationIds = this.getMissingRelationIds( reviewRefs );
 
+        this.processMerge( reviewRefs, mergedNode, featureDelete );
+    }
+
+    processMerge( reviewRefs, mergedNode, deleteNode ) {
+        let reviewMergeRelationId = this.data.currentReviewItem.relationId;
+
+        _.forEach( reviewRefs, ref => {
+            let refRelation    = this.context.hasEntity( `r${ ref.reviewRelationId }_${ this.data.mapId }` ),
+                mergedRelation = this.context.hasEntity( `r${ reviewMergeRelationId }_${ this.data.mapId }` );
+
+            if ( refRelation.members.length === mergedRelation.members.length ) {
+                let foundCount = 0;
+
+                _.forEach( refRelation.members, refMember => {
+                    let found = _.find( mergedRelation.members, mergedMember => mergedMember.id === refMember.id );
+
+                    if ( found ) {
+                        foundCount++;
+                    }
+                } );
+
+                if ( foundCount === refRelation.members.length ) {
+                    refRelation.tags[ 'hoot:review:needs' ] = 'no';
+
+                    this.context.perform(
+                        HootOSM.changeTags( refRelation.id, refRelation.tags ),
+                        t( 'operations.change_tags.annotation' )
+                    );
+                }
+            }
+        } );
+
+        operationDelete( [ deleteNode.id ], this.context )();
     }
 
     /**
@@ -105,10 +139,10 @@ export default class ConflictMerge {
      * @returns {array} - new list of relevant review items
      */
     removeNonRefs( reviewRefs, mergeIds ) {
-        let relationId = this.data.currentReviewItem.relationId;
+        let reviewMergeRelationId = this.data.currentReviewItem.relationId;
 
         return _.reduce( reviewRefs, ( arr, ref ) => {
-            if ( mergeIds.indexOf( ref.id === -1 ) || ref.reviewRelationId !== relationId ) {
+            if ( (mergeIds.indexOf( '' + ref.id ) === -1) || ref.reviewRelationId !== reviewMergeRelationId ) {
                 arr.push( ref );
             }
 
