@@ -30851,20 +30851,6 @@
         "default": true
     },
     {
-        "name": "OpenStreetMap GPS traces",
-        "type": "tms",
-        "description": "Public GPS traces uploaded to OpenStreetMap.",
-        "template": "http://{switch:a,b,c}.gps-tile.openstreetmap.org/lines/{zoom}/{x}/{y}.png",
-        "scaleExtent": [
-            0,
-            20
-        ],
-        "terms_url": "http://www.openstreetmap.org/copyright",
-        "terms_text": "© OpenStreetMap contributors",
-        "terms_html": "© <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap contributors</a>. North: <span style='display: inline-block; width: 10px; height: 10px; background-color: #7fed11;'></span> South: <span style='display: inline-block; width: 10px; height: 10px; background-color: #7f11ed;'></span> East: <span style='display: inline-block; width: 10px; height: 10px; background-color: #ff3f3f;'></span> West: <span style='display: inline-block; width: 10px; height: 10px; background-color: #00bfbf;'></span>",
-        "overlay": true
-    },
-    {
         "name": "OS 1:25k historic (OSM)",
         "type": "tms",
         "template": "http://ooc.openstreetmap.org/os1/{zoom}/{x}/{y}.jpg",
