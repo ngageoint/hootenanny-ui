@@ -33,10 +33,12 @@ export default class ConflictTraverse {
 
         let reviewItem = await API.reviewGetNext( reviewData );
 
-        this.data.currentReviewItem = reviewItem;
+        if ( reviewItem.resultCount > 0 ) {
+            this.data.currentReviewItem = reviewItem;
 
-        this.instance.graphSync.getRelationMembers( reviewItem.relationId )
-            .then( members => this.instance.map.highlightLayer( members[ 0 ], members[ 1 ], true ) );
+            this.instance.graphSync.getRelationMembers( reviewItem.relationId )
+                .then( members => this.instance.map.highlightLayer( members[ 0 ], members[ 1 ], true ) );
+        }
     }
 
     traverseForward() {

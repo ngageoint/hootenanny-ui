@@ -74,7 +74,7 @@ class SidebarLayerConflate extends SidebarForm {
 
     createButtons() {
         let actions = this.fieldset.append( 'div' )
-            .classed( 'form-field action-container pill', true );
+            .classed( 'hoot-form-field action-container pill', true );
 
         actions.append( 'button' )
             .classed( 'button secondary round small strong', true )

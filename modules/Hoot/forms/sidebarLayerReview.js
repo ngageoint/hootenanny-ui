@@ -31,7 +31,7 @@ export default class SidebarLayerReview extends SidebarForm {
 
     createReviewCount() {
         this.reviewCount = this.fieldset.append( 'div' )
-            .classed( 'form-field', true )
+            .classed( 'hoot-form-field', true )
             .append( 'span' )
             .classed( '_icon info review-count', true )
             .text( 'There are 0 reviews' );
@@ -39,7 +39,7 @@ export default class SidebarLayerReview extends SidebarForm {
 
     createAcceptAllButton() {
         this.acceptAll = this.fieldset.append( 'div' )
-            .classed( 'form-field', true )
+            .classed( 'hoot-form-field', true )
             .append( 'a' )
             .attr( 'href', '!#' )
             .text( 'Resolve all remaining reviews' )

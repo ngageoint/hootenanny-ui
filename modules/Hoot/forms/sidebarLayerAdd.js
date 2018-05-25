@@ -60,7 +60,7 @@ export default class SidebarLayerAdd extends SidebarForm {
      */
     createRecentlyUsedLayers() {
         let recentlyUsed = this.fieldset.append( 'div' )
-            .classed( 'form-field fill-white small keyline-all round', true );
+            .classed( 'hoot-form-field fill-white small keyline-all round', true );
 
         recentlyUsed.append( 'label' )
             .classed( 'strong fill-light round-top keyline-bottom', true )
@@ -109,7 +109,7 @@ export default class SidebarLayerAdd extends SidebarForm {
      */
     createSubmitButton() {
         this.fieldset.append( 'div' )
-            .classed( 'form-field action-container', true )
+            .classed( 'hoot-form-field action-container', true )
             .append( 'button' )
             .classed( 'dark text-light small strong round', true )
             .text( 'Add Layer' )

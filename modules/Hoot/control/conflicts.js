@@ -10,6 +10,7 @@ import ConflictMap         from './conflicts/conflictMap';
 import ConflictTraverse    from './conflicts/conflictTraverse';
 import ConflictGraphSync   from './conflicts/conflictGraphSync';
 import ConflictMerge       from './conflicts/conflictMerge';
+import ConflictResolve     from './conflicts/conflictResolve';
 import { conflictButtons } from '../config/domElements';
 import { d3keybinding }    from '../../lib/d3.keybinding';
 import { t }               from '../../util/locale';
@@ -34,15 +35,25 @@ export default class Conflicts {
         };
 
         this.buttonEnabled = true;
-
-        this.info      = new ConflictInfo( this );
-        this.map       = new ConflictMap( this );
-        this.traverse  = new ConflictTraverse( this );
-        this.graphSync = new ConflictGraphSync( this );
-        this.merge     = new ConflictMerge( this );
     }
 
     async init() {
+        let modules = await Promise.all( [
+            new ConflictInfo( this ),
+            new ConflictMap( this ),
+            new ConflictTraverse( this ),
+            new ConflictGraphSync( this ),
+            new ConflictMerge( this ),
+            new ConflictResolve( this )
+        ] );
+
+        this.info      = modules[ 0 ];
+        this.map       = modules[ 1 ];
+        this.traverse  = modules[ 2 ];
+        this.graphSync = modules[ 3 ];
+        this.merge     = modules[ 4 ];
+        this.resolve   = modules[ 5 ];
+
         this.render();
 
         this.data.reviewStats = await API.getReviewStatistics( this.data.mapId );
@@ -90,7 +101,7 @@ export default class Conflicts {
     }
 
     createActionButtons() {
-        let buttons  = conflictButtons.call( this );
+        let buttons = conflictButtons.call( this );
 
         this.tooltip = tooltip()
             .placement( 'top' )

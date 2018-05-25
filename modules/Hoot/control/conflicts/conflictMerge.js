@@ -97,6 +97,7 @@ export default class ConflictMerge {
     async getMergedOsm( features ) {
         let jxonFeatures = [ JXON.stringify( features[ 0 ].asJXON() ), JXON.stringify( features[ 1 ].asJXON() ) ],
             reverse      = d3.event.ctrlKey,
+            mapId        = this.data.currentReviewItem.mapId,
             osmXml;
 
         if ( reverse ) {
@@ -108,7 +109,7 @@ export default class ConflictMerge {
         let mergedXml = await API.poiMerge( osmXml ),
             document  = new DOMParser().parseFromString( mergedXml, 'text/xml' );
 
-        return await this.context.connection().parseXml( document );
+        return await this.context.connection().parseXml( document, mapId );
     }
 
     /**

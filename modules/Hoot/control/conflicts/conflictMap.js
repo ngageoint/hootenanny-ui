@@ -15,45 +15,47 @@ export default class ConflictMap {
     }
 
     highlightLayer( item1, item2, panTo ) {
-        let feature        = this.context.hasEntity( item1.id ),
-            againstFeature = this.context.hasEntity( item2.id ),
+        let feature        = item1 ? this.context.hasEntity( item1.id ) : null,
+            againstFeature = item2 ? this.context.hasEntity( item2.id ) : null,
             features       = [ feature, againstFeature ],
             relation       = this.data.currentRelation,
             poiTableCols   = [],
             panToId        = null,
             extent         = null;
 
-        if ( !feature || !againstFeature ) {
-            return;
-        }
+        //if ( !feature || !againstFeature ) {
+        //    return;
+        //}
 
         this.data.feature        = feature;
         this.data.againstFeature = againstFeature;
 
         _.forEach( features, ( feature, key ) => {
-            key = key + 1;
+            if ( feature ) {
+                key = key + 1;
 
-            if ( !extent ) {
-                extent = feature.extent( this.context.graph() );
-            } else {
-                extent = extent.extend( feature.extent( this.context.graph() ) );
+                if ( !extent ) {
+                    extent = feature.extent( this.context.graph() );
+                } else {
+                    extent = extent.extend( feature.extent( this.context.graph() ) );
+                }
+
+                if ( !panToId && isValidCoords( extent[ 0 ] ) && isValidCoords( extent[ 1 ] ) ) {
+                    panToId = feature.id;
+                }
+
+                poiTableCols.push( feature );
+
+                if ( panTo && panToId ) {
+                    this.context.map().centerZoom( extent.center(), this.context.map().trimmedExtentZoom( extent ) - 0.5 );
+                }
+
+                d3.selectAll( `.review-feature${ key }` )
+                    .classed( `highlight review-feature${ key }`, false );
+
+                d3.selectAll( '.' + feature.id )
+                    .classed( `highlight review-feature${ key }`, true );
             }
-
-            if ( !panToId && isValidCoords( extent[ 0 ] ) && isValidCoords( extent[ 1 ] ) ) {
-                panToId = feature.id;
-            }
-
-            poiTableCols.push( feature );
-
-            if ( panTo && panToId ) {
-                this.context.map().centerZoom( extent.center(), this.context.map().trimmedExtentZoom( extent ) - 0.5 );
-            }
-
-            d3.selectAll( `.review-feature${ key }` )
-                .classed( `highlight review-feature${ key }`, false );
-
-            d3.selectAll( '.' + feature.id )
-                .classed( `highlight review-feature${ key }`, true );
         } );
 
         this.conflicts.info.buildPoiTable( poiTableCols );

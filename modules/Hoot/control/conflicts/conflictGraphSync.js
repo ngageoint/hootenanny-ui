@@ -19,7 +19,7 @@ export default class ConflictGraphSync {
 
         if ( relation ) {
             this.data.currentRelation = relation;
-            let memberCount         = this.getRelationMembersCount( relation );
+            let memberCount           = this.getRelationMembersCount( relation );
 
             if ( !memberCount ) return;
 
@@ -30,6 +30,7 @@ export default class ConflictGraphSync {
             } else {
                 // TODO: show alert
             }
+
 
             return relation.members;
         }

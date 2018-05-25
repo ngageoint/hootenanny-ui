@@ -81,7 +81,8 @@ export function modeSave(context) {
     }
 
 
-    function save(changeset, tryAgain, checkConflicts) {
+    function save(changeset, tryAgain, checkConflicts, hootCallback) {
+        console.log( changeset );
         // Guard against accidentally entering save code twice - #4641
         if (_isSaving && !tryAgain) {
             return;
@@ -95,16 +96,16 @@ export function modeSave(context) {
 
         // If user somehow got logged out mid-save, try to reauthenticate..
         // This can happen if they were logged in from before, but the tokens are no longer valid.
-        if (!osm.authenticated()) {
-            osm.authenticate(function(err) {
-                if (err) {
-                    cancel();   // quit save mode..
-                } else {
-                    save(changeset, tryAgain, checkConflicts);  // continue where we left off..
-                }
-            });
-            return;
-        }
+        //if (!osm.authenticated()) {
+        //    osm.authenticate(function(err) {
+        //        if (err) {
+        //            cancel();   // quit save mode..
+        //        } else {
+        //            save(changeset, tryAgain, checkConflicts);  // continue where we left off..
+        //        }
+        //    });
+        //    return;
+        //}
 
         if (!_isSaving) {
             keybindingOff();
@@ -149,9 +150,6 @@ export function modeSave(context) {
                 upload(changeset);
             }
         }
-
-        return;
-
 
         function withChildNodes(ids, graph) {
             return _uniq(_reduce(ids, function(result, id) {
@@ -313,7 +311,7 @@ export function modeSave(context) {
             var changes = history.changes(actionDiscardTags(history.difference()));
             if (changes.modified.length || changes.created.length || changes.deleted.length) {
                 loadLocation();  // so it is ready when we display the save screen
-                osm.putChangeset(changeset, changes, uploadCallback);
+                osm.putChangeset(changeset, changes, true, history.imageryUsed(), uploadCallback);
             } else {        // changes were insignificant or reverted by user
                 d3_select('.inspector-wrap *').remove();
                 loading.close();
@@ -555,6 +553,10 @@ export function modeSave(context) {
             .attr('class', 'active');
 
         context.ui().sidebar.hide();
+    };
+
+    mode.save = function(callback) {
+        save(null, false, null, callback);
     };
 
     return mode;

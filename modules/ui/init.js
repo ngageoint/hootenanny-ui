@@ -70,7 +70,8 @@ export function uiInit(context) {
         container
             .append('div')
             .attr('id', 'sidebar')
-            .attr('class', 'col4');
+            .attr('class', 'col4')
+            .call(ui.sidebar);
 
         var content = container
             .append('div')
@@ -363,6 +364,7 @@ export function uiInit(context) {
                 const hootUI = new Hoot( context );
 
                 render(container);
+
                 hootUI.init();
             }
             if (callback) {

@@ -94,7 +94,7 @@ export default class SidebarLayerMetadata {
             mapMeta = this;
 
         container = this.body.append( 'a' )
-            .classed( 'hide-toggle expand-title', true )
+            .classed( 'hide-toggle-button expand-title', true )
             .text( title )
             .on( 'click', () => mapMeta.toggleList( container, title ) );
 

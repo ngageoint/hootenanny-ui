@@ -161,7 +161,8 @@ export function conflictButtons() {
             id: 'resolved',
             text: 'Resolved',
             class: '_icon check primary pad0y pad1x',
-            cmd: this.cmd( 'r' )
+            cmd: this.cmd( 'r' ),
+            action: () => this.resolve.retainFeature()
         }
     ];
 }

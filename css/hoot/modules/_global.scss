@@ -294,13 +294,13 @@ input[type=text] {
     }
 }
 
-.hide-toggle {
+.hide-toggle-button {
     display: block;
     padding-left: 12px;
     position: relative;
 }
 
-.hide-toggle:before {
+.hide-toggle-button:before {
     content: '';
     display: block;
     position: absolute;

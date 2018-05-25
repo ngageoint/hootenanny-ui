@@ -18,14 +18,13 @@ import { sidebarForms }     from './config/formMetadata';
  * @constructor
  */
 export default class Sidebar {
-    constructor( container, context ) {
+    constructor( iDSidebar, context ) {
         this.context          = context;
-        this.container        = container;
+        this.iDSidebar        = iDSidebar;
         this.formData         = sidebarForms;
         this.addFormData      = _.filter( this.formData, form => form.type === 'add' );
         this.conflateFormData = _.filter( this.formData, form => form.type === 'conflate' );
         this.reviewFormData   = _.filter( this.formData, form => form.type === 'review' );
-        this.addForms         = {};
         this.forms = {};
     }
 
@@ -33,7 +32,10 @@ export default class Sidebar {
      * Render all view inside sidebar
      */
     async render() {
-        this.container.classed( 'col4', false );
+        this.iDSidebar.classed( 'col4', false );
+        this.iDSidebar.select( '.sidebar-component' ).remove();
+        this.container = this.iDSidebar.append( 'div' )
+            .attr( 'id', 'hootSidebar' );
 
         this.createResizer();
         this.createWrapper();
@@ -48,7 +50,7 @@ export default class Sidebar {
     createResizer() {
         const self = this;
 
-        this.resizer = this.container.append( 'div' )
+        this.resizer = this.iDSidebar.append( 'div' )
             .attr( 'id', 'sidebar-resizer' )
             .on( 'dblclick', function() {
                 self.resize( this, true );
@@ -70,7 +72,7 @@ export default class Sidebar {
     resize( target, reset ) {
         let width = reset ? 400 : d3.mouse( target.parentNode )[ 0 ];
 
-        this.container.style( 'width', width + 'px' );
+        this.iDSidebar.style( 'width', width + 'px' );
     }
 
     createWrapper() {

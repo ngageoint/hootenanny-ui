@@ -10,9 +10,12 @@ import _isEmpty from 'lodash-es/isEmpty';
 import _map from 'lodash-es/map';
 import _uniq from 'lodash-es/uniq';
 import _values from 'lodash-es/values';
+import _reduce from 'lodash-es/reduce';
+import _includes from 'lodash-es/includes';
 
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { xml as d3_xml } from 'd3-request';
+import { utilDetect } from '../util/detect';
 
 import osmAuth from 'osm-auth';
 import { JXON } from '../util/jxon';
@@ -33,7 +36,8 @@ import LayerManager from '../Hoot/managers/layerManager';
 import Events from '../Hoot/managers/eventManager';
 
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded');
-var urlroot = 'https://www.openstreetmap.org';
+//var urlroot = 'https://www.openstreetmap.org';
+var urlroot = API.baseUrl + '/osm';
 var oauth = osmAuth({
     url: urlroot,
     oauth_consumer_key: '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
@@ -41,6 +45,10 @@ var oauth = osmAuth({
     loading: authLoading,
     done: authDone
 });
+
+oauth.authenticated = function() {
+    return true;
+};
 
 var _blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'];
 var _tiles = { loaded: {}, inflight: {} };
@@ -173,13 +181,16 @@ var parsers = {
 };
 
 
-function parse(xml, callback, options) {
+function parse(xml, callback, options, mapId) {
     options = _extend({ cache: true }, options);
     if (!xml || !xml.childNodes) return;
 
     var root = xml.childNodes[0];
     var children = root.childNodes;
-    var mapId = (root.attributes.mapid) ? root.attributes.mapid.value : -1;
+
+    if ( !mapId ) {
+        mapId = root.attributes.mapid ? root.attributes.mapid.value : -1;
+    }
 
     function parseChild(child) {
         var parser = parsers[child.nodeName];
@@ -313,11 +324,11 @@ export default {
     },
 
 
-    parseXml( document ) {
+    parseXml( document, mapId ) {
         return new Promise( res => {
             parse( document, function(entities) {
                 res( entities );
-            } );
+            }, null, mapId );
         } );
     },
 
@@ -406,28 +417,112 @@ export default {
 
 
     authenticated: function() {
-        return oauth.authenticated();
+        return true;
+        //return oauth.authenticated();
     },
 
 
-    putChangeset: function(changeset, changes, callback) {
+    filterChanges: ( changes ) => {
+        let ways = _filter( _flatten( _map( changes, featArr => featArr ) ), feat => feat.type !== 'node' );
+
+        return _reduce( changes, ( obj, featArr, type ) => {
+            let changeTypes = {
+                created: [],
+                deleted: [],
+                modified: []
+            };
+
+            _forEach( featArr, feat => {
+                let mapId = feat.mapId;
+
+                if ( feat.isNew() && feat.type === 'node' ) {
+                    let parent = _.find( ways, way => _includes( way.nodes, feat.id ) );
+
+                    if ( parent && parent.mapId ) {
+                        mapId = parent.mapId;
+                    }
+                }
+
+                // create map ID key if not yet exists
+                if ( !obj[ mapId ] ) {
+                    obj[ mapId ] = {};
+                }
+
+                // create change type key if not yet exists
+                if ( !obj[ mapId ][ type ] ) {
+                    obj[ mapId ][ type ] = [];
+                }
+
+                obj[ mapId ][ type ].push( feat );
+
+                // merge object into default types array so that the final result
+                // will contain all keys in case change type is empty
+                obj[ mapId ] = Object.assign( changeTypes, obj[ mapId ] );
+            } );
+
+            return obj;
+        }, {} );
+    },
+
+
+    changesetJXON: ( tags ) => {
+        return {
+            osm: {
+                changeset: {
+                    tag: _map( tags, ( val, key ) => {
+                        return { '@k': key, '@v': val };
+                    } ),
+                    '@version': 0.6,
+                    '@generator': 'iD'
+                }
+            }
+        };
+    },
+
+    changesetTags: ( hootCmd, imageryUsed ) => {
+        let detected = utilDetect(),
+            tags = {
+                created_by: 'iD',
+                imagery_used: imageryUsed.join( ';' ).substr( 0, 255 ),
+                host: ( window.location.origin + window.location.pathName ).substr( 0, 255 ),
+                locale: detected.locale,
+                browser: detected.browser + ' ' + detected.version,
+                platform: detected.platform
+            };
+
+        if ( hootCmd ) {
+            tags.comment = 'Hoot Save';
+        }
+
+        return tags;
+    },
+
+
+    putChangeset: function(changeset, changes, hootCmd, imageryUsed, callback) {
         if (_changeset.inflight) {
             return callback({ message: 'Changeset already inflight', status: -2 }, changeset);
         }
 
         var that = this;
         var cid = _connectionID;
+        var changesetIdArr = this.filterChanges( changes );
 
-        if (_changeset.open) {   // reuse existing open changeset..
-            createdChangeset(null, _changeset.open);
-        } else {                 // open a new changeset..
-            _changeset.inflight = oauth.xhr({
-                method: 'PUT',
-                path: '/api/0.6/changeset/create',
-                options: { header: { 'Content-Type': 'text/xml' } },
-                content: JXON.stringify(changeset.asJXON())
-            }, createdChangeset);
-        }
+        _forEach( changesetIdArr, ( changeset, mapId ) => {
+            if (_changeset.open) {   // reuse existing open changeset..
+                createdChangeset(null, _changeset.open);
+            } else {                 // open a new changeset..
+                //if ( hootCmd ) {
+                //    API.createChangeset();
+                //}
+                _changeset.inflight = oauth.xhr({
+                    method: 'PUT',
+                    path: '/api/0.6/changeset/create?mapId=' + mapId,
+                    options: { header: { 'Content-Type': 'text/xml' } },
+                    //content: JXON.stringify(changeset.asJXON())
+                    content: JXON.stringify(this.changesetJXON(this.changesetTags(hootCmd, imageryUsed)))
+                }, createdChangeset);
+            }
+        } );
 
 
         function createdChangeset(err, changesetID) {

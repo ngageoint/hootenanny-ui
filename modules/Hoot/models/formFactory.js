@@ -93,10 +93,10 @@ export default class FormFactory {
 
         let fieldsetContainer = form.append( 'fieldset' );
 
-        let fieldContainer = fieldsetContainer.selectAll( '.form-field' )
+        let fieldContainer = fieldsetContainer.selectAll( '.hoot-form-field' )
             .data( formMeta ).enter()
             .append( 'div' )
-            .classed( 'form-field fill-white small keyline-all round', true );
+            .classed( 'hoot-form-field fill-white small keyline-all round', true );
 
         let fieldHeader = fieldContainer.append( 'div' )
             .classed( 'form-field-header fill-light round-top keyline-bottom', true );

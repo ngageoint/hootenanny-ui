@@ -96,7 +96,7 @@ class SidebarLayerController {
             palette = HootOSM.getPalette();
 
         this.colorPalette = this.fieldset.append( 'div' )
-            .classed( 'keyline-all form-field palette clearfix round', true );
+            .classed( 'keyline-all hoot-form-field palette clearfix round', true );
 
         if ( !this.isConflate ) {
             palette = _.reject( palette, color => color.name === 'green' );

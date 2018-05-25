@@ -133,10 +133,10 @@ export default class SidebarAdvOptions {
     createFormFields( members, group ) {
         let self = this;
 
-        let fieldContainer = group.selectAll( '.form-field' )
+        let fieldContainer = group.selectAll( '.hoot-form-field' )
             .data( members ).enter()
             .append( 'div' )
-            .classed( 'form-field small contain', true )
+            .classed( 'hoot-form-field small contain', true )
             .classed( 'hidden', d => d.required === 'true' );
 
         fieldContainer.append( 'label' )
