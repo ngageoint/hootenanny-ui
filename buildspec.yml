@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Build started on `date`
+      - apt-get update
+      - apt-get install -y awscli
+      - npm config set loglevel error
+      - npm i
+  build:
+    commands:
+      - npm run production
+  post_build:
+    commands:
+      - cd dist
+      - aws s3 sync . s3://staging.xterrain.io/
+artifacts:
+  files:
+    - ./dist/*

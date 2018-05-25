@@ -19,8 +19,8 @@ module.exports = function buildSrc(isDevelopment) {
         if (building) return;
 
         // Start clean
-        unlink('dist/iD.js');
-        unlink('dist/iD.js.map');
+        unlink('dist/iD.min.js');
+        unlink('dist/iD.min.js.map');
 
         console.log('building src');
         console.time(colors.green('src built'));
@@ -60,7 +60,7 @@ module.exports = function buildSrc(isDevelopment) {
             .then(function (bundle) {
                 bundle.write({
                     format: 'iife',
-                    file: 'dist/iD.js',
+                    file: 'dist/iD.min.js',
                     sourcemap: !isDevelopment,
                     strict: false
                 });
