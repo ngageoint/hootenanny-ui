@@ -6,7 +6,9 @@
     ],
     "env": {
         "production": {
-            "presets": ["minify"]
+            "presets": [
+                ["minify", {"evaluate": false}]
+            ]
         }
     },
     "plugins": ["external-helpers", "lodash"]
