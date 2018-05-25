@@ -17,6 +17,10 @@
     .feature-list-pane {
         display: none;
     }
+
+    .sidebar-component {
+        top: 0;
+    }
 }
 
 #sidebar-resizer {
@@ -27,6 +31,7 @@
     right: -5px;
     background-color: #999;
     opacity: 0.8;
+    z-index: 1;
     cursor: col-resize;
     transition: background-color 500ms ease-in;
 

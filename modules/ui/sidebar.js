@@ -54,7 +54,8 @@ export function uiSidebar(context) {
         }
 
 
-        sidebar.hover = _throttle(hover, 200);
+        // disable hover behavior
+        //sidebar.hover = _throttle(hover, 200);
 
 
         sidebar.select = function(id, newFeature) {
@@ -98,6 +99,8 @@ export function uiSidebar(context) {
                 .classed('inspector-hidden', true);
             inspectorWrap
                 .classed('inspector-hidden', true);
+            d3.select( '.hoot-sidebar' )
+                .classed( 'hidden', true );
 
             if (current) current.remove();
             current = selection
@@ -112,6 +115,8 @@ export function uiSidebar(context) {
                 .classed('inspector-hidden', false);
             inspectorWrap
                 .classed('inspector-hidden', true);
+            d3.select( '.hoot-sidebar' )
+                .classed( 'hidden', false );
 
             if (current) current.remove();
             current = null;

@@ -35,7 +35,8 @@ export default class Sidebar {
         this.iDSidebar.classed( 'col4', false );
         this.iDSidebar.select( '.sidebar-component' ).remove();
         this.container = this.iDSidebar.append( 'div' )
-            .attr( 'id', 'hootSidebar' );
+            .attr( 'id', 'hootSidebar' )
+            .classed( 'hoot-sidebar', true );
 
         this.createResizer();
         this.createWrapper();
