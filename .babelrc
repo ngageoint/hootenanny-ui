@@ -4,12 +4,5 @@
             "modules": false
         }]
     ],
-    "env": {
-        "production": {
-            "presets": [
-                ["minify", {"evaluate": false}]
-            ]
-        }
-    },
     "plugins": ["external-helpers", "lodash"]
 }

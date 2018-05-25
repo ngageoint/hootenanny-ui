@@ -7,12 +7,11 @@ phases:
       - apt-get update
       - npm config set loglevel error
       - npm i
-      - ls -l
-      - ls -l dist
   build:
     commands:
       - npm run production
   post_build:
     commands:
       - cd dist
+      - ls -l
       - aws s3 sync . s3://hootenanny-ui/
