@@ -7,7 +7,7 @@
 let { expect } = require( 'chai' );
 
 describe( 'Adding a layer', () => {
-    
+
     after( ( client, done ) => {
         client.end( () => done() );
     } );
