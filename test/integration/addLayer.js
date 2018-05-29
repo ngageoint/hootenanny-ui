@@ -7,17 +7,7 @@
 let { expect } = require( 'chai' );
 
 describe( 'Adding a layer', () => {
-
-    before( ( client, done ) => {
-        client
-            .url( 'http://d1x11dgx2ymfgq.cloudfront.net' )
-            .pause( 5000 )
-            .waitForElementVisible( 'body', 30000 )
-            .element( 'css selector', 'body', () => {
-                done();
-            } );
-    } );
-
+    
     after( ( client, done ) => {
         client.end( () => done() );
     } );
@@ -28,6 +18,9 @@ describe( 'Adding a layer', () => {
 
     it( 'should load the sidebar', client => {
         client
+            .url( 'http://d1x11dgx2ymfgq.cloudfront.net' )
+            .pause( 5000 )
+            .waitForElementVisible( 'body', 30000 )
             .waitForElementVisible( 'button.start-editing', 3000 )
             .click( 'button.start-editing' )
             .waitForElementVisible( '#sidebar', 3000 )
