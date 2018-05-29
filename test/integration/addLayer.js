@@ -12,6 +12,7 @@ describe( 'Adding a layer', () => {
         client
             .url( 'http://d1x11dgx2ymfgq.cloudfront.net' )
             .pause( 5000 )
+            .waitForElementVisible( 'body', 30000 )
             .element( 'css selector', 'body', () => {
                 done();
             } );
