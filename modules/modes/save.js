@@ -82,7 +82,7 @@ export function modeSave(context) {
     }
 
 
-    function save(changeset, tryAgain, checkConflicts, callback) {
+    function save(changeset, tryAgain, checkConflicts) {
         // Guard against accidentally entering save code twice - #4641
         if (_isSaving && !tryAgain) {
             return;
@@ -131,7 +131,7 @@ export function modeSave(context) {
 
         // Attempt a fast upload.. If there are conflicts, re-enter with `checkConflicts = true`
         if (!checkConflicts) {
-            upload(changeset, callback);
+            upload(changeset);
 
         // Do the full (slow) conflict check..
         } else {
@@ -147,7 +147,7 @@ export function modeSave(context) {
                 _toLoad.forEach(function(id) { _loaded[id] = false; });
                 osm.loadMultiple(_toLoad, loaded);
             } else {
-                upload(changeset, callback);
+                upload(changeset);
             }
         }
 
@@ -237,7 +237,7 @@ export function modeSave(context) {
             }
             function formatUser(d) {
                 return '<a href="' + osm.userURL(d) + '" target="_blank">' + d + '</a>';
-            }
+            }0
             function entityName(entity) {
                 return utilDisplayName(entity) || (utilDisplayType(entity.id) + ' ' + entity.id);
             }
@@ -288,12 +288,12 @@ export function modeSave(context) {
                 });
             });
 
-            upload(changeset, callback);
+            upload(changeset);
         }
     }
 
 
-    function upload(changeset, hootCallback) {
+    function upload(changeset) {
         var osm = context.connection();
         if (!osm) {
             _errors.push({ msg: 'No OSM Service' });
@@ -311,7 +311,7 @@ export function modeSave(context) {
             var changes = history.changes(actionDiscardTags(history.difference()));
             if (changes.modified.length || changes.created.length || changes.deleted.length) {
                 loadLocation();  // so it is ready when we display the save screen
-                osm.putChangeset(changeset, changes, uploadCallback, hootCallback);
+                osm.putChangeset(changeset, changes, uploadCallback);
             } else {        // changes were insignificant or reverted by user
                 d3_select('.inspector-wrap *').remove();
                 loading.close();
@@ -323,7 +323,7 @@ export function modeSave(context) {
     }
 
 
-    function uploadCallback(err, changeset, hootCallback) {
+    function uploadCallback(err, changeset) {
         if (err) {
             if (err.status === 409) {          // 409 Conflict
                 save(changeset, true, true);   // tryAgain = true, checkConflicts = true
@@ -344,10 +344,6 @@ export function modeSave(context) {
                 loading.close();
                 _isSaving = false;
                 context.flush();
-
-                if ( hootCallback ) {
-                    hootCallback();
-                }
             }, 2500);
         }
     }

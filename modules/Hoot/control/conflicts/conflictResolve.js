@@ -4,11 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/24/18
  *******************************************************************************************************/
 
-//import _ from 'lodash-es';
-import HootOSM          from '../../managers/hootOsm';
-import { osmChangeset } from '../../../osm';
-import { modeSave }     from '../../../modes/save';
-import Hoot             from '../../hoot';
+import _       from 'lodash-es';
+import HootOSM from '../../managers/hootOsm';
 
 export default class ConflictResolve {
     constructor( instance ) {
@@ -19,26 +16,26 @@ export default class ConflictResolve {
 
     retainFeature() {
         let reviewItem = this.data.currentReviewItem,
-            relation   = this.data.currentRelation;
+            reviewRel  = this.data.currentRelation;
 
         if ( reviewItem ) {
-            if ( relation ) {
-                for ( let i = 0; i < relation.members.length; i++ ) {
+            if ( reviewRel ) {
+                for ( let i = 0; i < reviewRel.members.length; i++ ) {
                     let key = i + 1;
 
                     d3.selectAll( `.review-feature${ key }` )
                         .classed( `highlight review-feature${ key }`, false );
                 }
 
-                this.instance.info.tableContainer.remove();
-            } else {
-                this.instance.info.tableContainer.remove();
+                this.instance.graphSync.updateReviewTagsForResolve( reviewRel );
             }
+
+            this.instance.info.tableContainer.remove();
 
             let hasChanges = this.context.history().hasChanges();
 
             if ( hasChanges ) {
-                HootOSM.save( false, () => {
+                HootOSM.save( this.data.mergedItems, false, () => {
                     this.instance.traverse.jumpTo( 'forward' );
                 } );
             }

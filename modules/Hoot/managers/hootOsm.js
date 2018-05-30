@@ -232,20 +232,6 @@ class HootOSM {
         }, {} );
     }
 
-    changesetJXON( tags ) {
-        return {
-            osm: {
-                changeset: {
-                    tag: _.map( tags, ( val, key ) => {
-                        return { '@k': key, '@v': val };
-                    } ),
-                    '@version': 0.6,
-                    '@generator': 'iD'
-                }
-            }
-        };
-    }
-
     makeChangesetTags( imageryUsed ) {
         let detected = utilDetect();
 
@@ -259,7 +245,7 @@ class HootOSM {
         };
     }
 
-    save( tryAgain, callback ) {
+    save( mergedItems, tryAgain, callback ) {
         let history = this.context.history(),
             changes = history.changes( actionDiscardTags( history.difference() ) );
 
@@ -273,7 +259,17 @@ class HootOSM {
                 _osmChangeset = new osmChangeset( { tags } );
 
             _.forEach( changesetArr, ( changeset, mapId ) => {
-                this.context.connection().putChangeset( _osmChangeset, changeset, mapId, callback );
+                this.context.connection().putChangeset( _osmChangeset, changeset, mapId, mergedItems, err => {
+                    if ( err ) {
+
+                    } else {
+                        this.context.flush();
+
+                        if ( callback ) {
+                            callback( changeset );
+                        }
+                    }
+                } );
             } );
         }
     }

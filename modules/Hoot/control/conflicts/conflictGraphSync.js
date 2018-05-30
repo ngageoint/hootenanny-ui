@@ -4,7 +4,10 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
-import _ from 'lodash-es';
+import _            from 'lodash-es';
+import HootOSM      from '../../managers/hootOsm';
+import LayerManager from '../../managers/layerManager';
+import { t }        from '../../../util/locale';
 
 export default class ConflictGraphSync {
     constructor( instance ) {
@@ -14,8 +17,8 @@ export default class ConflictGraphSync {
     }
 
     async getRelationMembers( relationId ) {
-        let entityId = `r${ relationId }_${ this.data.mapId }`,
-            relation = this.context.hasEntity( entityId );
+        let featId   = `r${ relationId }_${ this.data.mapId }`,
+            relation = this.context.hasEntity( featId );
 
         if ( relation ) {
             this.data.currentRelation = relation;
@@ -31,8 +34,13 @@ export default class ConflictGraphSync {
                 // TODO: show alert
             }
 
-
             return relation.members;
+        } else {
+            if ( _.find( this.context.history().changes().deleted, { id: featId } ) ) {
+                return;
+            }
+
+            this.loadMissingFeatures( featId );
         }
     }
 
@@ -44,5 +52,29 @@ export default class ConflictGraphSync {
         } );
 
         return count;
+    }
+
+    updateReviewTagsForResolve( reviewRel ) {
+        let tags    = reviewRel.tags,
+            newTags = _.cloneDeep( tags );
+
+        newTags[ 'hoot:review:needs' ] = 'no';
+
+        this.context.perform(
+            HootOSM.changeTags( reviewRel.id, newTags ),
+            t( 'operations.change_tags.annotation' )
+        );
+    }
+
+    loadMissingFeatures( featId ) {
+        let layerNames = d3.entries( LayerManager.loadedLayers ).filter( d => d.value.id === this.data.mapId );
+
+        if ( layerNames.length ) {
+            let layerName = layerNames[ 0 ].key;
+
+            this.context.loadMissing( [ featId ], layerName, ( err, entity ) => {
+
+            } );
+        }
     }
 }

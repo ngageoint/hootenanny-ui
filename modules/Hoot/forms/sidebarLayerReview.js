@@ -12,7 +12,7 @@ export default class SidebarLayerReview extends SidebarForm {
     constructor( sidebar, container, layer ) {
         super( sidebar, container );
 
-        this.conflicts = new Conflicts( sidebar.context, d3.select( '#content' ), layer );
+        this.conflicts = new Conflicts( this.context, d3.select( '#content' ), layer );
     }
 
     render() {

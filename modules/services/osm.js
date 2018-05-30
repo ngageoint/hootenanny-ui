@@ -34,6 +34,7 @@ import { utilRebind, utilIdleWorker } from '../util';
 import API from '../Hoot/control/api';
 import LayerManager from '../Hoot/managers/layerManager';
 import Events from '../Hoot/managers/eventManager';
+import HootOSM from '../Hoot/managers/hootOsm';
 
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded');
 //var urlroot = 'https://www.openstreetmap.org';
@@ -422,83 +423,7 @@ export default {
     },
 
 
-    filterChanges: ( changes ) => {
-        let ways = _filter( _flatten( _map( changes, featArr => featArr ) ), feat => feat.type !== 'node' );
-
-        return _reduce( changes, ( obj, featArr, type ) => {
-            let changeTypes = {
-                created: [],
-                deleted: [],
-                modified: []
-            };
-
-            _forEach( featArr, feat => {
-                let mapId = feat.mapId;
-
-                if ( feat.isNew() && feat.type === 'node' ) {
-                    let parent = _.find( ways, way => _includes( way.nodes, feat.id ) );
-
-                    if ( parent && parent.mapId ) {
-                        mapId = parent.mapId;
-                    }
-                }
-
-                // create map ID key if not yet exists
-                if ( !obj[ mapId ] ) {
-                    obj[ mapId ] = {};
-                }
-
-                // create change type key if not yet exists
-                if ( !obj[ mapId ][ type ] ) {
-                    obj[ mapId ][ type ] = [];
-                }
-
-                obj[ mapId ][ type ].push( feat );
-
-                // merge object into default types array so that the final result
-                // will contain all keys in case change type is empty
-                obj[ mapId ] = Object.assign( changeTypes, obj[ mapId ] );
-            } );
-
-            return obj;
-        }, {} );
-    },
-
-
-    changesetJXON: ( tags ) => {
-        return {
-            osm: {
-                changeset: {
-                    tag: _map( tags, ( val, key ) => {
-                        return { '@k': key, '@v': val };
-                    } ),
-                    '@version': 0.6,
-                    '@generator': 'iD'
-                }
-            }
-        };
-    },
-
-    changesetTags: ( hootCmd, imageryUsed ) => {
-        let detected = utilDetect(),
-            tags = {
-                created_by: 'iD',
-                imagery_used: imageryUsed.join( ';' ).substr( 0, 255 ),
-                host: ( window.location.origin + window.location.pathName ).substr( 0, 255 ),
-                locale: detected.locale,
-                browser: detected.browser + ' ' + detected.version,
-                platform: detected.platform
-            };
-
-        if ( hootCmd ) {
-            tags.comment = 'Hoot Save';
-        }
-
-        return tags;
-    },
-
-
-    putChangeset: function(changeset, changes, mapId, callback) {
+    putChangeset: function(changeset, changes, mapId, mergedItems, callback) {
         if (_changeset.inflight) {
             return callback({ message: 'Changeset already inflight', status: -2 }, changeset);
         }
@@ -538,6 +463,50 @@ export default {
 
             _changeset.open = changesetID;
             changeset = changeset.update({ id: changesetID });
+
+            //console.log( mergedItems );
+            _forEach( mergedItems, item => {
+                let refId     = item.id,
+                    newMember = item.obj;
+
+                let changedRel = _find( changes.modified, feat => feat.id === refId );
+
+                console.log( 'changedRel: ', changedRel );
+                if ( changedRel ) {
+                    //console.log( changedRel );
+                    //console.log( newMember );
+                    if ( changedRel.members.length >= newMember.index ) {
+                        changedRel.members.splice( newMember.index, 0, newMember );
+                    } else {
+                        changedRel.members.push( newMember );
+                    }
+
+                    if ( changedRel.members.length < 2 ) {
+                        changedRel.tags[ 'hoot:review:needs' ] = 'no';
+                    }
+                } else {
+                    let modifiedRel = HootOSM.context.hasEntity( refId );
+                    console.log( 'modifiedRel: ', modifiedRel );
+
+                    if ( modifiedRel ) {
+                        //console.log( modifiedRel.members.length );
+                        //console.log( newMember );
+                        if ( modifiedRel.members.length >= newMember.index ) {
+                            modifiedRel.members.splice( newMember.index, 0, newMember );
+                        } else {
+                            modifiedRel.members.push( newMember );
+                        }
+
+                        if ( modifiedRel.members.length < 2 ) {
+                            modifiedRel.tags[ 'hoot:review:needs' ] = 'no';
+                        }
+
+                        changes.modified.push( modifiedRel );
+                    }
+                }
+            } );
+
+            console.log( changes );
 
             let path = '/api/0.6/changeset/' + changesetID + '/upload';
             path += mapId ? `?mapId=${ mapId }` : '';

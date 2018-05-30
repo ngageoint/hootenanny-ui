@@ -151,6 +151,10 @@ export function coreContext() {
         }
     };
 
+    context.loadMissing = function(ids, layerName, callback) {
+
+    };
+
     context.zoomToEntity = function(entityId, zoomTo) {
         if (zoomTo !== false) {
             this.loadEntity(entityId, function(err, result) {

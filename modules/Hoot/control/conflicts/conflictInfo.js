@@ -24,8 +24,8 @@ export default class ConflictMetadata {
     }
 
     buildPoiTable( colData ) {
-        let tags1      = this.filterTags( colData[ 0 ].tags ),
-            tags2      = this.filterTags( colData[ 1 ].tags ),
+        let tags1      = this.filterTags( colData[ 0 ] ? colData[ 0 ].tags : {} ),
+            tags2      = this.filterTags( colData[ 1 ] ? colData[ 1 ].tags : {} ),
             tagsMerged = this.mergeTags( [ tags1, tags2 ] );
 
         if ( this.poiTable ) {

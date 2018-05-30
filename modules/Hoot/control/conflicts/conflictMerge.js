@@ -4,12 +4,14 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/16/18
  *******************************************************************************************************/
 
-import _                   from 'lodash-es';
-import API                 from '../../control/api';
-import HootOSM             from '../../managers/hootOsm';
-import { JXON }            from '../../../util/jxon';
-import { t }               from '../../../util/locale';
-import { operationDelete } from '../../../operations/delete';
+import _                    from 'lodash-es';
+import API                  from '../../control/api';
+import HootOSM              from '../../managers/hootOsm';
+import { osmNode }          from '../../../osm';
+import { JXON }             from '../../../util/jxon';
+import { t }                from '../../../util/locale';
+import { operationDelete }  from '../../../operations/delete';
+import { actionChangeTags } from '../../../actions';
 
 export default class ConflictMerge {
     constructor( instance ) {
@@ -33,10 +35,10 @@ export default class ConflictMerge {
             featureDelete = this.data.feature;
         }
 
-        mergedNode.tags[ 'hoot:stats' ] = 3;
+        mergedNode.tags[ 'hoot:status' ] = 3;
 
         this.context.perform(
-            HootOSM.changeTags( featureUpdate.id, mergedNode.tags ),
+            actionChangeTags( featureUpdate.id, mergedNode.tags ),
             t( 'operations.change_tags.annotation' )
         );
 
@@ -57,11 +59,13 @@ export default class ConflictMerge {
     }
 
     processMerge( reviewRefs, mergedNode, deleteNode ) {
-        let reviewMergeRelationId = this.data.currentReviewItem.relationId;
+        let reviewRelationId = this.data.currentReviewItem.relationId;
 
         _.forEach( reviewRefs, ref => {
             let refRelation    = this.context.hasEntity( `r${ ref.reviewRelationId }_${ this.data.mapId }` ),
-                mergedRelation = this.context.hasEntity( `r${ reviewMergeRelationId }_${ this.data.mapId }` );
+                mergedRelation = this.context.hasEntity( `r${ reviewRelationId }_${ this.data.mapId }` );
+
+            console.log( 'refRelation: ', refRelation );
 
             if ( refRelation.members.length === mergedRelation.members.length ) {
                 let foundCount = 0;
@@ -78,9 +82,27 @@ export default class ConflictMerge {
                     refRelation.tags[ 'hoot:review:needs' ] = 'no';
 
                     this.context.perform(
-                        HootOSM.changeTags( refRelation.id, refRelation.tags ),
+                        actionChangeTags( refRelation.id, refRelation.tags ),
                         t( 'operations.change_tags.annotation' )
                     );
+                }
+            }
+
+            let refRelationMember = refRelation.memberById( deleteNode.id );
+
+            console.log( 'refRelationMember: ', refRelationMember );
+
+            if ( refRelationMember ) {
+                let exists = _.find( this.data.mergedItems, { id: refRelation.id } );
+
+                if ( exists && exists.obj ) {
+                    exists = exists.obj.id === mergedNode.id;
+                }
+
+                if ( !exists && !refRelation.memberById( mergedNode.id ) ) {
+                    let newNode = this.createNewRelationNodeMeta( mergedNode.id, refRelation.id, refRelationMember.index );
+
+                    this.data.mergedItems.push( newNode );
                 }
             }
         } );
@@ -149,6 +171,21 @@ export default class ConflictMerge {
 
             return arr;
         }, [] );
+    }
+
+    createNewRelationNodeMeta( mergedNodeId, relationId, mergedIdx ) {
+        let node = new osmNode(),
+            obj  = {};
+
+        node.id    = mergedNodeId;
+        node.type  = 'node';
+        node.role  = 'reviewee';
+        node.index = mergedIdx;
+
+        obj.id  = relationId;
+        obj.obj = node;
+
+        return obj;
     }
 
     getMissingRelationIds( reviewRefs ) {

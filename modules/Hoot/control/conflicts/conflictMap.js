@@ -23,10 +23,6 @@ export default class ConflictMap {
             panToId        = null,
             extent         = null;
 
-        //if ( !feature || !againstFeature ) {
-        //    return;
-        //}
-
         this.data.feature        = feature;
         this.data.againstFeature = againstFeature;
 
@@ -61,7 +57,7 @@ export default class ConflictMap {
         this.conflicts.info.buildPoiTable( poiTableCols );
 
         if ( relation.tags[ 'hoot:review:type' ] === 'POI to Polygon' ||
-            feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n'
+            ( ( feature && againstFeature ) && feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n')
         ) {
             this.conflicts.container.select( 'button.merge' ).classed( 'hidden', false );
         } else {

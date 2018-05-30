@@ -31,7 +31,8 @@ export default class Conflicts {
             mapId: layer.id,
             reviewStats: null,
             currentReviewItem: null,
-            currentRelation: null
+            currentRelation: null,
+            mergedItems: []
         };
 
         this.buttonEnabled = true;
