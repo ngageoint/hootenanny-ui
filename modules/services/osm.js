@@ -377,6 +377,13 @@ export default {
     },
 
 
+    //loadMissing: function(ids, layerName, callback) {
+    //    this.loadMultiple(ids, function(err, entities) {
+    //
+    //    } );
+    //},
+
+
     loadMultiple: function(ids, callback) {
         var that = this;
         //Split feature ids up by maps, then by type

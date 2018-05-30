@@ -4,10 +4,12 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
-import _            from 'lodash-es';
-import HootOSM      from '../../managers/hootOsm';
-import LayerManager from '../../managers/layerManager';
-import { t }        from '../../../util/locale';
+import _             from 'lodash-es';
+import HootOSM       from '../../managers/hootOsm';
+import LayerManager  from '../../managers/layerManager';
+import { t }         from '../../../util/locale';
+import { osmEntity } from '../../../osm';
+import API           from '../api';
 
 export default class ConflictGraphSync {
     constructor( instance ) {
@@ -66,15 +68,54 @@ export default class ConflictGraphSync {
         );
     }
 
-    loadMissingFeatures( featId ) {
-        let layerNames = d3.entries( LayerManager.loadedLayers ).filter( d => d.value.id === this.data.mapId );
+    async loadMissingFeatures( featId ) {
+        //let layerNames = d3.entries( LayerManager.loadedLayers ).filter( d => d.value.id === this.data.mapId );
+        //
+        //if ( layerNames.length ) {
+        //    let { featXml, mapId } = await HootOSM.loadMissing( [ featId ] );
+        //
+        //    if ( featXml ) {
+        //        let document = new DOMParser().parseFromString( featXml, 'text/xml' ),
+        //            featOsm  = this.context.connection().parseXml( document, mapId );
+        //
+        //        console.log( document );
+        //        console.log( mapId );
+        //        console.log( featOsm );
+        //    }
+        //}
 
-        if ( layerNames.length ) {
-            let layerName = layerNames[ 0 ].key;
+        let mapId    = featId.split( '_' )[ 1 ],
+            type     = osmEntity.id.type( featId ) + 's',
+            osmIds   = _.map( [ featId ], osmEntity.id.toOSM ),
+            featXml  = await API.getFeatures( type, mapId, osmIds ),
+            document = new DOMParser().parseFromString( featXml, 'text/xml' ),
+            featOsm  = await this.context.connection().parseXml( document, mapId );
 
-            this.context.loadMissing( [ featId ], layerName, ( err, entity ) => {
+        //TODO: load missing handler
+        console.log( featOsm );
 
-            } );
-        }
+        //_.forEach( _.groupBy( featId, osmEntity.id.type ), ( v, k ) => {
+        //    let type   = k + 's',
+        //        osmIds = _.map( v, osmEntity.id.toOSM );
+        //
+        //    _.forEach( _.chunk( osmIds, 150 ), async idArr => {
+        //        let featXml = await API.getFeatures( type, mapId, idArr );
+        //
+        //        console.log( featXml );
+        //        console.log( mapId );
+        //        return { featXml, mapId };
+        //    } );
+        //} );
+        //
+        //let { featXml } = await HootOSM.loadMissing( [ featId ] );
+        //
+        //if ( featXml ) {
+        //    let document = new DOMParser().parseFromString( featXml, 'text/xml' ),
+        //        featOsm  = this.context.connection().parseXml( document, mapId );
+        //
+        //    console.log( document );
+        //    console.log( mapId );
+        //    console.log( featOsm );
+        //}
     }
 }

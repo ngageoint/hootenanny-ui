@@ -220,24 +220,6 @@ class API {
             .then( resp => resp.data );
     }
 
-    createChangeset( mapId, content ) {
-        const params = {
-            path: `/api/0.6/changeset/create?mapId=${ mapId }`,
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'text/xml'
-            },
-            data: JSON.stringify( content )
-        };
-
-        return this.request( params )
-            .then( resp => resp.data );
-    }
-
-    updateChangeset( data ) {
-
-    }
-
     /**
      * Upload imported files to the database
      *
@@ -306,14 +288,17 @@ class API {
             .then( resp => resp.data );
     }
 
-    deleteLayer( layerName ) {
+    getFeatures( type, mapId, featIds ) {
         const params = {
-            path: `/osm/api/0.6/map/delete?mapId=${ layerName }`,
-            method: 'POST'
+            path: `/osm/api/0.6/${ type }?mapId=${ mapId }&elementIds=${ featIds.join() }`,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'text/xml'
+            }
         };
 
         return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) );
+            .then( resp => resp.data );
     }
 
     getAdvancedOptions( confType = 'custom' ) {
@@ -324,6 +309,16 @@ class API {
 
         return this.request( params )
             .then( resp => resp.data );
+    }
+
+    deleteLayer( layerName ) {
+        const params = {
+            path: `/osm/api/0.6/map/delete?mapId=${ layerName }`,
+            method: 'POST'
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) );
     }
 
     conflate( data ) {

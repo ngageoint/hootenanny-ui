@@ -152,7 +152,12 @@ export function coreContext() {
     };
 
     context.loadMissing = function(ids, layerName, callback) {
+        function done(err, result) {
+            if (!err) history.merge(result.data, result.extent);
+            if (callback) callback(err, result);
+        }
 
+        connection.loadMissing(ids, layerName, done);
     };
 
     context.zoomToEntity = function(entityId, zoomTo) {
