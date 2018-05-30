@@ -5,7 +5,10 @@
  *******************************************************************************************************/
 
 //import _ from 'lodash-es';
-import { modeSave } from '../../../modes/save';
+import HootOSM          from '../../managers/hootOsm';
+import { osmChangeset } from '../../../osm';
+import { modeSave }     from '../../../modes/save';
+import Hoot             from '../../hoot';
 
 export default class ConflictResolve {
     constructor( instance ) {
@@ -35,10 +38,9 @@ export default class ConflictResolve {
             let hasChanges = this.context.history().hasChanges();
 
             if ( hasChanges ) {
-                this.context.enter( modeSave( this.context ) );
-                //modeSave( this.context ).save( () => {
-                //    this.instance.traverse.jumpTo( 'forward' );
-                //} );
+                HootOSM.save( false, () => {
+                    this.instance.traverse.jumpTo( 'forward' );
+                } );
             }
         } else {
             // TODO: alert nothing to review

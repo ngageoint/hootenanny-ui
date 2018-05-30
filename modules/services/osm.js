@@ -498,31 +498,28 @@ export default {
     },
 
 
-    putChangeset: function(changeset, changes, hootCmd, imageryUsed, callback) {
+    putChangeset: function(changeset, changes, mapId, callback) {
         if (_changeset.inflight) {
             return callback({ message: 'Changeset already inflight', status: -2 }, changeset);
         }
 
         var that = this;
         var cid = _connectionID;
-        var changesetIdArr = this.filterChanges( changes );
 
-        _forEach( changesetIdArr, ( changeset, mapId ) => {
-            if (_changeset.open) {   // reuse existing open changeset..
-                createdChangeset(null, _changeset.open);
-            } else {                 // open a new changeset..
-                //if ( hootCmd ) {
-                //    API.createChangeset();
-                //}
-                _changeset.inflight = oauth.xhr({
-                    method: 'PUT',
-                    path: '/api/0.6/changeset/create?mapId=' + mapId,
-                    options: { header: { 'Content-Type': 'text/xml' } },
-                    //content: JXON.stringify(changeset.asJXON())
-                    content: JXON.stringify(this.changesetJXON(this.changesetTags(hootCmd, imageryUsed)))
-                }, createdChangeset);
-            }
-        } );
+        if (_changeset.open) {   // reuse existing open changeset..
+            createdChangeset(null, _changeset.open);
+        } else {                 // open a new changeset..
+            let path = '/api/0.6/changeset/create';
+            path += mapId ? `?mapId=${ mapId }` : '';
+
+            _changeset.inflight = oauth.xhr({
+                method: 'PUT',
+                path: path,
+                options: { header: { 'Content-Type': 'text/xml' } },
+                content: JXON.stringify(changeset.asJXON())
+                //content: JXON.stringify(this.changesetJXON(this.changesetTags(hootCmd, imageryUsed)))
+            }, createdChangeset);
+        }
 
 
         function createdChangeset(err, changesetID) {
@@ -542,10 +539,13 @@ export default {
             _changeset.open = changesetID;
             changeset = changeset.update({ id: changesetID });
 
+            let path = '/api/0.6/changeset/' + changesetID + '/upload';
+            path += mapId ? `?mapId=${ mapId }` : '';
+
             // Upload the changeset..
             _changeset.inflight = oauth.xhr({
                 method: 'POST',
-                path: '/api/0.6/changeset/' + changesetID + '/upload',
+                path: path,
                 options: { header: { 'Content-Type': 'text/xml' } },
                 content: JXON.stringify(changeset.osmChangeJXON(changes))
             }, uploadedChangeset);
@@ -568,10 +568,13 @@ export default {
             // At this point, we don't really care if the connection was switched..
             // Only try to close the changeset if we're still talking to the same server.
             if (that.getConnectionId() === cid) {
+                let path = '/api/0.6/changeset/' + changeset.id + '/close';
+                path += mapId ? `?mapId=${ mapId }` : '';
+
                 // Still attempt to close changeset, but ignore response because #2667
                 oauth.xhr({
                     method: 'PUT',
-                    path: '/api/0.6/changeset/' + changeset.id + '/close',
+                    path: path,
                     options: { header: { 'Content-Type': 'text/xml' } }
                 }, function() { return true; });
             }

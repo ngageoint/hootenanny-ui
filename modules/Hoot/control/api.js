@@ -220,6 +220,24 @@ class API {
             .then( resp => resp.data );
     }
 
+    createChangeset( mapId, content ) {
+        const params = {
+            path: `/api/0.6/changeset/create?mapId=${ mapId }`,
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'text/xml'
+            },
+            data: JSON.stringify( content )
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    updateChangeset( data ) {
+
+    }
+
     /**
      * Upload imported files to the database
      *
@@ -247,8 +265,6 @@ class API {
         return this.request( params )
             .then( resp => resp.data );
     }
-
-    //createChangeset( data)
 
     /**
      * Add a new folder to the database

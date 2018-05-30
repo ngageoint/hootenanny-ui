@@ -4,14 +4,23 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/22/18
  *******************************************************************************************************/
 
-import _                          from 'lodash-es';
+import _                 from 'lodash-es';
+import { rgb as d3_rgb } from 'd3-color';
+
 import LayerManager               from './layerManager';
 import Event                      from './eventManager';
 import API                        from '../control/api';
 import { geoExtent as GeoExtent } from '../../geo/index';
-import { rgb as d3_rgb }          from 'd3-color';
-import colorPalette               from '../config/colorPalette';
-import config                     from '../config/apiConfig';
+import { utilDetect }             from '../../util/detect';
+import { osmChangeset }           from '../../osm';
+
+import {
+    actionDiscardTags,
+    actionNoop
+} from '../../actions';
+
+import colorPalette from '../config/colorPalette';
+import config       from '../config/apiConfig';
 
 class HootOSM {
     constructor() {
@@ -152,14 +161,6 @@ class HootOSM {
         return parseInt( status, 10 );
     }
 
-    changeTags( entityId, tags ) {
-        return graph => {
-            let entity = graph.entity( entityId );
-
-            return graph.replace( entity.update( { tags } ) );
-        };
-    }
-
     setLayerColor( mapId, color ) {
         let sheets = document.styleSheets[ document.styleSheets.length - 1 ],
             lighter;
@@ -179,6 +180,102 @@ class HootOSM {
         sheets.insertRule( 'path.shadow.tag-hoot-' + mapId + ' { stroke:' + lighter + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'path.fill.tag-hoot-' + mapId + ' { fill:' + lighter + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'g.point.tag-hoot-' + mapId + ' .stroke { fill:' + color + '}', sheets.cssRules.length - 1 );
+    }
+
+    changeTags( entityId, tags ) {
+        return graph => {
+            let entity = graph.entity( entityId );
+
+            return graph.replace( entity.update( { tags } ) );
+        };
+    }
+
+    filterChanges( changes ) {
+        let ways = _.filter( _.flatten( _.map( changes, featArr => featArr ) ), feat => feat.type !== 'node' );
+
+        return _.reduce( changes, ( obj, featArr, type ) => {
+            let changeTypes = {
+                created: [],
+                deleted: [],
+                modified: []
+            };
+
+            _.forEach( featArr, feat => {
+                let mapId = feat.mapId;
+
+                if ( feat.isNew() && feat.type === 'node' ) {
+                    let parent = _.find( ways, way => _.includes( way.nodes, feat.id ) );
+
+                    if ( parent && parent.mapId ) {
+                        mapId = parent.mapId;
+                    }
+                }
+
+                // create map ID key if not yet exists
+                if ( !obj[ mapId ] ) {
+                    obj[ mapId ] = {};
+                }
+
+                // create change type key if not yet exists
+                if ( !obj[ mapId ][ type ] ) {
+                    obj[ mapId ][ type ] = [];
+                }
+
+                obj[ mapId ][ type ].push( feat );
+
+                // merge object into default types array so that the final result
+                // will contain all keys in case change type is empty
+                obj[ mapId ] = Object.assign( changeTypes, obj[ mapId ] );
+            } );
+
+            return obj;
+        }, {} );
+    }
+
+    changesetJXON( tags ) {
+        return {
+            osm: {
+                changeset: {
+                    tag: _.map( tags, ( val, key ) => {
+                        return { '@k': key, '@v': val };
+                    } ),
+                    '@version': 0.6,
+                    '@generator': 'iD'
+                }
+            }
+        };
+    }
+
+    makeChangesetTags( imageryUsed ) {
+        let detected = utilDetect();
+
+        return {
+            created_by: 'iD',
+            imagery_used: imageryUsed.join( ';' ).substr( 0, 255 ),
+            host: (window.location.origin + window.location.pathName).substr( 0, 255 ),
+            locale: detected.locale,
+            browser: detected.browser + ' ' + detected.version,
+            platform: detected.platform
+        };
+    }
+
+    save( tryAgain, callback ) {
+        let history = this.context.history(),
+            changes = history.changes( actionDiscardTags( history.difference() ) );
+
+        if ( !tryAgain ) {
+            history.perform( actionNoop() );
+        }
+
+        if ( changes.modified.length || changes.created.length || changes.deleted.length ) {
+            let tags          = this.makeChangesetTags( history.imageryUsed() ),
+                changesetArr  = this.filterChanges( changes ),
+                _osmChangeset = new osmChangeset( { tags } );
+
+            _.forEach( changesetArr, ( changeset, mapId ) => {
+                this.context.connection().putChangeset( _osmChangeset, changeset, mapId, callback );
+            } );
+        }
     }
 
     listen() {
