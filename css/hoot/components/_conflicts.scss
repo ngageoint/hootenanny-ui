@@ -20,8 +20,12 @@
         width: 100%;
         padding: 10px 15px;
 
-        button:not(:last-child) {
-            margin-right: 10px;
+        button {
+            height: 35px;
+
+            &:not(:last-child) {
+                margin-right: 10px;
+            }
         }
     }
 }

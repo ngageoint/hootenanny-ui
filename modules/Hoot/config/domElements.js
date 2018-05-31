@@ -128,7 +128,7 @@ export function conflictButtons() {
             id: 'toggle_table',
             name: 'toggle_table',
             text: 'Hide Table',
-            class: 'fill-grey button round pad0y pad1x small strong toggle_table',
+            class: 'fill-grey button round pad1x small strong toggle_table',
             cmd: this.cmd( 't' ),
             action: () => this.info.toggleTable()
         },
@@ -137,7 +137,7 @@ export function conflictButtons() {
             name: 'auto_merge',
             text: 'Merge',
             color: '',
-            class: '_icon plus merge',
+            class: '_icon plus merge pad1x small strong',
             cmd: this.cmd( 'm' ),
             action: () => this.merge.mergeFeatures()
         },
@@ -145,7 +145,7 @@ export function conflictButtons() {
             id: 'previous',
             name: 'review_backward',
             text: 'Previous',
-            class: 'fill-grey button round pad0y pad1x small strong',
+            class: 'fill-grey button round pad1x small strong',
             cmd: this.cmd( 'p' ),
             action: () => this.traverse.traverseBackward()
         },
@@ -153,14 +153,14 @@ export function conflictButtons() {
             id: 'next',
             name: 'review_foward',
             text: 'Next',
-            class: 'fill-grey button round pad0y pad1x small strong',
+            class: 'fill-grey button round pad1x small strong',
             cmd: this.cmd( 'n' ),
             action: () => this.traverse.traverseForward()
         },
         {
             id: 'resolved',
             text: 'Resolved',
-            class: '_icon check primary pad0y pad1x',
+            class: '_icon check primary pad1x',
             cmd: this.cmd( 'r' ),
             action: () => this.resolve.retainFeature()
         }
