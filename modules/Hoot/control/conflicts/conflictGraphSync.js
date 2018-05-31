@@ -16,11 +16,13 @@ export default class ConflictGraphSync {
         this.instance = instance;
         this.context  = instance.context;
         this.data     = instance.data;
+
+        this.relationTreeIdx = {};
     }
 
     async getRelationMembers( relationId ) {
-        let featId   = `r${ relationId }_${ this.data.mapId }`,
-            relation = this.context.hasEntity( featId );
+        let featureId = `r${ relationId }_${ this.data.mapId }`,
+            relation  = this.context.hasEntity( featureId );
 
         if ( relation ) {
             this.data.currentRelation = relation;
@@ -38,11 +40,12 @@ export default class ConflictGraphSync {
 
             return relation.members;
         } else {
-            if ( _.find( this.context.history().changes().deleted, { id: featId } ) ) {
+            if ( _.find( this.context.history().changes().deleted, { id: featureId } ) ) {
                 return;
             }
 
-            this.loadMissingFeatures( featId );
+            return this.loadMissingFeatures( featureId )
+                .then( () => this.validateMemberCount( featureId ) );
         }
     }
 
@@ -68,54 +71,106 @@ export default class ConflictGraphSync {
         );
     }
 
-    async loadMissingFeatures( featId ) {
-        //let layerNames = d3.entries( LayerManager.loadedLayers ).filter( d => d.value.id === this.data.mapId );
-        //
-        //if ( layerNames.length ) {
-        //    let { featXml, mapId } = await HootOSM.loadMissing( [ featId ] );
-        //
-        //    if ( featXml ) {
-        //        let document = new DOMParser().parseFromString( featXml, 'text/xml' ),
-        //            featOsm  = this.context.connection().parseXml( document, mapId );
-        //
-        //        console.log( document );
-        //        console.log( mapId );
-        //        console.log( featOsm );
-        //    }
-        //}
+    async loadMissingFeatures( featureId ) {
+        let type     = osmEntity.id.type( featureId ) + 's',
+            mapId    = featureId.split( '_' )[ 1 ],
+            osmIds   = _.map( [ featureId ], osmEntity.id.toOSM ),
 
-        let mapId    = featId.split( '_' )[ 1 ],
-            type     = osmEntity.id.type( featId ) + 's',
-            osmIds   = _.map( [ featId ], osmEntity.id.toOSM ),
-            featXml  = await API.getFeatures( type, mapId, osmIds ),
-            document = new DOMParser().parseFromString( featXml, 'text/xml' ),
-            featOsm  = await this.context.connection().parseXml( document, mapId );
+            featureXml  = await API.getFeatures( type, mapId, osmIds ),
+            document = new DOMParser().parseFromString( featureXml, 'text/xml' ),
+            featureOsm  = await this.context.connection().parseXml( document, mapId );
 
-        //TODO: load missing handler
-        console.log( featOsm );
+        return Promise.all( _.map( featureOsm, feature => this.updateMissingFeature( feature ) ) );
+    }
 
-        //_.forEach( _.groupBy( featId, osmEntity.id.type ), ( v, k ) => {
-        //    let type   = k + 's',
-        //        osmIds = _.map( v, osmEntity.id.toOSM );
-        //
-        //    _.forEach( _.chunk( osmIds, 150 ), async idArr => {
-        //        let featXml = await API.getFeatures( type, mapId, idArr );
-        //
-        //        console.log( featXml );
-        //        console.log( mapId );
-        //        return { featXml, mapId };
-        //    } );
-        //} );
-        //
-        //let { featXml } = await HootOSM.loadMissing( [ featId ] );
-        //
-        //if ( featXml ) {
-        //    let document = new DOMParser().parseFromString( featXml, 'text/xml' ),
-        //        featOsm  = this.context.connection().parseXml( document, mapId );
-        //
-        //    console.log( document );
-        //    console.log( mapId );
-        //    console.log( featOsm );
-        //}
+    async updateMissingFeature( feature ) {
+        if ( feature.type === 'relation' ) {
+            this.relationTreeIdx[ feature.id ] = feature.members.length;
+
+            return Promise.all( _.map( feature.members, member => {
+                let entity = this.context.hasEntity( member.id );
+
+                if ( !entity || member.type === 'relation' ) {
+                    return this.loadMissingFeatures( member.id );
+                } else {
+                    return this.updateParentRelations( member.id, entity );
+                }
+            } ) );
+        } else {
+            let entity = this.context.hasEntity( feature.id );
+
+            if ( entity ) {
+                return this.updateParentRelations( feature.id );
+            } else {
+                throw new Error( `Failed to load missing features (${ feature.id }).` );
+            }
+        }
+    }
+
+    updateParentRelations( entity ) {
+        let parents = this.context.graph().parentRelations( entity );
+
+        if ( !parents ) return;
+
+        // go through each parents and if it is in
+        // relation index then update member counts
+        // or remove if the unprocessed member count goes to 0
+        _.forEach( parents, parent => {
+            if ( this.relationTreeIdx[ parent.id ] ) {
+                let parentChildCount = this.relationTreeIdx[ parent.id ];
+
+                if ( parentChildCount > 1 ) {
+                    this.relationTreeIdx[ parent.id ] = parentChildCount - 1;
+                } else {
+                    let parentRelations = this.context.graph().parentRelations( parent );
+
+                    delete this.relationTreeIdx[ parent.id ];
+                    this.cleanParentTree( parentRelations );
+                }
+            }
+        } );
+    }
+
+    /**
+     * Traverse the parent tree and update index for relation in relation
+     *
+     * @param parentRelations
+     */
+    cleanParentTree( parentRelations ) {
+        _.forEach( parentRelations, parentRel => {
+            let parentIdxCount = this.relationTreeIdx[ parentRel.id ];
+
+            if ( parentIdxCount ) {
+                if ( parentIdxCount > 1 ) {
+                    this.relationTreeIdx[ parentRel.id ] = parentIdxCount - 1;
+                } else {
+                    delete this.relationTreeIdx[ parentIdxCount ];
+                }
+
+                let pr = this.context.graph().parentRelations( parentRel );
+
+
+                if ( pr ) {
+                    this.cleanParentTree( pr );
+                }
+            }
+        } );
+    }
+
+    validateMemberCount( featureId ) {
+        let entity = this.context.hasEntity( featureId ),
+            memberCount = 0;
+
+        if ( entity ) {
+            _.forEach( entity.members, member => {
+                if ( this.context.hasEntity( member.id ) ) {
+                    memberCount++;
+                }
+            } );
+        }
+
+        if ( memberCount > 0 ) {
+            return entity.members;
+        }
     }
 }

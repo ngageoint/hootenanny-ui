@@ -88,34 +88,6 @@ class HootOSM {
         return new GeoExtent( min, max );
     }
 
-    loadMissing( ids ) {
-        if ( !ids || !ids.length ) return;
-
-        let mapId;
-
-        if ( ids && ids.length ) {
-            let firstId = ids[ 0 ],
-                parts   = firstId.split( '_' );
-
-            if ( parts.length > 1 ) {
-                mapId = '' + parts[ 1 ];
-            }
-        }
-
-        _.forEach( _.groupBy( _.uniq( ids ), osmEntity.id.type ), ( v, k ) => {
-            let type = k + 's',
-                osmIds = _.map( v, osmEntity.id.toOSM );
-
-            _.forEach( _.chunk( osmIds, 150 ), async idArr => {
-                let featXml = await API.getFeatures( type, mapId, idArr );
-
-                console.log( featXml );
-                console.log( mapId );
-                return { featXml, mapId };
-            } );
-        } );
-    }
-
     async loadLayer( params ) {
         let source      = this.getMapnikSource( params ),
             mapId       = source.id,

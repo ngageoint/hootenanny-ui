@@ -1,3 +1,4 @@
+import _                        from 'lodash-es';
 import { actionDeleteRelation } from './delete_relation';
 import { actionDeleteWay }      from './delete_way';
 import { actionChangeTags }     from './change_tags';
@@ -38,11 +39,16 @@ export function actionDeleteNode(nodeId) {
                 parent = parent.removeMembersWithID(nodeId);
                 graph = graph.replace(parent);
 
+
                 if (parent.isDegenerate()) {
                     if (!isHootReview( parent)) {
                         graph = actionDeleteRelation(parent.id)(graph);
                     } else {
                         graph = updateHootReviewTags(parent, graph);
+                    }
+                } else {
+                    if ( !node.hootMeta || ( node.hootMeta && !node.hootMeta.isReviewDel ) ) {
+                        graph = updateHootReviewTags( parent, graph );
                     }
                 }
             });

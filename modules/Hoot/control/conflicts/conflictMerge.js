@@ -27,20 +27,23 @@ export default class ConflictMerge {
             mergedOsm     = await this.getMergedOsm( features ),
             mergedNode    = mergedOsm[ 0 ],
 
-            featureUpdate = this.data.feature,
-            featureDelete = this.data.againstFeature;
+            featureToUpdate = this.data.feature,
+            featureToDelete = this.data.againstFeature;
 
         if ( reverse ) {
-            featureUpdate = featureDelete;
-            featureDelete = this.data.feature;
+            featureToUpdate = featureToDelete;
+            featureToDelete = this.data.feature;
         }
 
         mergedNode.tags[ 'hoot:status' ] = 3;
 
         this.context.perform(
-            actionChangeTags( featureUpdate.id, mergedNode.tags ),
+            actionChangeTags( featureToUpdate.id, mergedNode.tags ),
             t( 'operations.change_tags.annotation' )
         );
+
+        // feature that is updated is now the new merged node
+        mergedNode = featureToUpdate;
 
         let mergeItems              = this.getMergeItems( features ),
             { reviewRefsResponses } = await API.getReviewRefs( mergeItems ),
@@ -55,7 +58,7 @@ export default class ConflictMerge {
 
         let missingRelationIds = this.getMissingRelationIds( reviewRefs );
 
-        this.processMerge( reviewRefs, mergedNode, featureDelete );
+        this.processMerge( reviewRefs, mergedNode, featureToDelete );
     }
 
     processMerge( reviewRefs, mergedNode, deleteNode ) {
@@ -64,8 +67,6 @@ export default class ConflictMerge {
         _.forEach( reviewRefs, ref => {
             let refRelation    = this.context.hasEntity( `r${ ref.reviewRelationId }_${ this.data.mapId }` ),
                 mergedRelation = this.context.hasEntity( `r${ reviewRelationId }_${ this.data.mapId }` );
-
-            console.log( 'refRelation: ', refRelation );
 
             if ( refRelation.members.length === mergedRelation.members.length ) {
                 let foundCount = 0;
@@ -90,8 +91,6 @@ export default class ConflictMerge {
 
             let refRelationMember = refRelation.memberById( deleteNode.id );
 
-            console.log( 'refRelationMember: ', refRelationMember );
-
             if ( refRelationMember ) {
                 let exists = _.find( this.data.mergedItems, { id: refRelation.id } );
 
@@ -106,6 +105,12 @@ export default class ConflictMerge {
                 }
             }
         } );
+
+        let fe = this.context.hasEntity( deleteNode.id );
+
+        if ( fe ) {
+            fe.hootMeta = { 'isReviewDel': true };
+        }
 
         operationDelete( [ deleteNode.id ], this.context )();
     }
@@ -129,9 +134,9 @@ export default class ConflictMerge {
         osmXml = `<osm version="0.6" upload="true" generator="hootenanny">${ jxonFeatures.join( '' ) }</osm>`;
 
         let mergedXml = await API.poiMerge( osmXml ),
-            document  = new DOMParser().parseFromString( mergedXml, 'text/xml' );
+            dom       = new DOMParser().parseFromString( mergedXml, 'text/xml' );
 
-        return await this.context.connection().parseXml( document, mapId );
+        return await this.context.connection().parseXml( dom, mapId );
     }
 
     /**

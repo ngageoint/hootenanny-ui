@@ -325,24 +325,11 @@ export default {
     },
 
 
-    parseXml( document, mapId ) {
+    parseXml( dom, mapId ) {
         return new Promise( res => {
-            parse( document, function(entities) {
+            parse( dom, function(entities) {
                 res( entities );
             }, null, mapId );
-        } );
-    },
-
-
-    loadFromHootAPI: function(data) {
-        return new Promise( res => {
-            API.poiMerge( data ).then( xml => {
-                let document = new DOMParser().parseFromString( xml, 'text/xml' );
-
-                parse( document, function(entities) {
-                    res( entities );
-                } );
-            } );
         } );
     },
 
@@ -478,7 +465,6 @@ export default {
 
                 let changedRel = _find( changes.modified, feat => feat.id === refId );
 
-                console.log( 'changedRel: ', changedRel );
                 if ( changedRel ) {
                     //console.log( changedRel );
                     //console.log( newMember );
@@ -493,7 +479,6 @@ export default {
                     }
                 } else {
                     let modifiedRel = HootOSM.context.hasEntity( refId );
-                    console.log( 'modifiedRel: ', modifiedRel );
 
                     if ( modifiedRel ) {
                         //console.log( modifiedRel.members.length );
@@ -512,8 +497,6 @@ export default {
                     }
                 }
             } );
-
-            console.log( changes );
 
             let path = '/api/0.6/changeset/' + changesetID + '/upload';
             path += mapId ? `?mapId=${ mapId }` : '';

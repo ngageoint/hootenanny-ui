@@ -33,8 +33,6 @@ export default class ConflictTraverse {
 
         let reviewItem = await API.reviewGetNext( reviewData );
 
-        console.log( reviewItem );
-
         if ( reviewItem.resultCount > 0 ) {
             this.data.currentReviewItem = reviewItem;
 
