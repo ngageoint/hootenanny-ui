@@ -6,7 +6,6 @@
 
 import _                    from 'lodash-es';
 import API                  from '../../control/api';
-import HootOSM              from '../../managers/hootOsm';
 import { osmNode }          from '../../../osm';
 import { JXON }             from '../../../util/jxon';
 import { t }                from '../../../util/locale';
@@ -15,7 +14,7 @@ import { actionChangeTags } from '../../../actions';
 
 export default class ConflictMerge {
     constructor( instance ) {
-        this.conflicts = instance;
+        this.instance = instance;
         this.context   = instance.context;
         this.data      = instance.data;
     }
@@ -34,6 +33,8 @@ export default class ConflictMerge {
             featureToUpdate = featureToDelete;
             featureToDelete = this.data.feature;
         }
+
+        this.toggleMergeButton( true );
 
         mergedNode.tags[ 'hoot:status' ] = 3;
 
@@ -203,5 +204,9 @@ export default class ConflictMerge {
 
             return arr;
         }, [] );
+    }
+
+    toggleMergeButton( hide ) {
+        d3.select( '.action-buttons .merge' ).classed( 'hidden', hide );
     }
 }

@@ -9,9 +9,9 @@ import { isValidCoords } from '../utilities';
 
 export default class ConflictMap {
     constructor( instance ) {
-        this.conflicts = instance;
-        this.context   = instance.context;
-        this.data      = instance.data;
+        this.instance = instance;
+        this.context  = instance.context;
+        this.data     = instance.data;
     }
 
     highlightLayer( item1, item2, panTo ) {
@@ -54,14 +54,14 @@ export default class ConflictMap {
             }
         } );
 
-        this.conflicts.info.buildPoiTable( poiTableCols );
+        this.instance.info.buildPoiTable( poiTableCols );
 
         if ( relation.tags[ 'hoot:review:type' ] === 'POI to Polygon' ||
-            ( ( feature && againstFeature ) && feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n')
+            ((feature && againstFeature) && feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n')
         ) {
-            this.conflicts.container.select( 'button.merge' ).classed( 'hidden', false );
+            this.instance.merge.toggleMergeButton( false );
         } else {
-            this.conflicts.container.select( 'button.merge' ).classed( 'hidden', true );
+            this.instance.merge.toggleMergeButton( true );
         }
 
         if ( relation && relation.members && relation.members.length > 2 ) {
@@ -76,7 +76,7 @@ export default class ConflictMap {
             d3.select( 'td.feature2 .next' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'next' ) ] ) );
         }
 
-        this.conflicts.info.updateMeta();
+        this.instance.info.updateMeta();
 
         // TODO: update meta
     }

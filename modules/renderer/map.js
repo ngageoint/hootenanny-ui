@@ -52,6 +52,7 @@ import {
 import { utilBindOnce } from '../util/bind_once';
 import { utilGetDimensions } from '../util/dimensions';
 
+import Event from '../Hoot/managers/eventManager';
 
 // constants
 var TAU = 2 * Math.PI;
@@ -478,7 +479,7 @@ export function rendererMap(context) {
 
         // OSM
         if ( map.editable() ) {
-            context.connection().tileZoom( 2 );
+            context.connection().tileZoom( 1 );
             context.loadTiles( projection, dimensions );
             drawVector( difference, extent );
         } else {
