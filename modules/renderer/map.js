@@ -2,6 +2,8 @@ import _compact from 'lodash-es/compact';
 import _map from 'lodash-es/map';
 import _throttle from 'lodash-es/throttle';
 import _values from 'lodash-es/values';
+import _filter from 'lodash-es/filter';
+import _forEach from 'lodash-es/forEach';
 
 import { set as d3_set } from 'd3-collection';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
@@ -52,7 +54,8 @@ import {
 import { utilBindOnce } from '../util/bind_once';
 import { utilGetDimensions } from '../util/dimensions';
 
-import Event from '../Hoot/managers/eventManager';
+import Event        from '../Hoot/managers/eventManager';
+import LayerManager from '../Hoot/managers/layerManager';
 
 // constants
 var TAU = 2 * Math.PI;
@@ -484,6 +487,10 @@ export function rendererMap(context) {
             drawVector( difference, extent );
         } else {
             editOff();
+
+            var visLayers = _filter( _values( LayerManager.loadedLayers ), layer => layer.visible );
+
+            _map( visLayers, layer => Event.send( 'layer-loaded', layer.name ) );
         }
 
         transformStart = projection.transform();

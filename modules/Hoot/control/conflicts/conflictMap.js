@@ -75,10 +75,6 @@ export default class ConflictMap {
             d3.select( 'td.feature2 .prev' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'prev' ) ] ) );
             d3.select( 'td.feature2 .next' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'next' ) ] ) );
         }
-
-        this.instance.info.updateMeta();
-
-        // TODO: update meta
     }
 
     calcNewIndex( actionIdx, staticIdx, memberLen, direction ) {
