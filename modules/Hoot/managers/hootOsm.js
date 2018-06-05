@@ -139,6 +139,9 @@ class HootOSM {
         LayerManager.loadedLayers[ id ].visible = false;
 
         d3.select( '#map' ).selectAll( `[class*="_${ id }-"]` ).remove();
+
+        this.hootOverlay.removeGeojson( id );
+
         this.context.connection().removeTile( id );
         this.context.flush();
     }

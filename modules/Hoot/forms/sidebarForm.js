@@ -121,15 +121,16 @@ export default class SidebarForm {
 
     layerLoaded( layerName ) {
         if ( this.loadingLayer === layerName ) {
+            let loadedLayer = LayerManager.findLoadedBy( 'name', layerName );
+
+            if ( loadedLayer.merged ) {
+                this.sidebar.mergedLayer = loadedLayer;
+            }
+
             this.controller.update();
             this.sidebar.conflateCheck();
 
             this.loadingLayer = null;
-            this.loadedLayer  = LayerManager.findLoadedBy( 'name', layerName );
-
-            if ( this.loadedLayer.merged ) {
-                Event.send( 'layer-merged', this.loadedLayer );
-            }
         }
     }
 

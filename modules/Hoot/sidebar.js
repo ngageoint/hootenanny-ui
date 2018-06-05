@@ -19,13 +19,16 @@ import { sidebarForms }     from './config/formMetadata';
  */
 export default class Sidebar {
     constructor( iDSidebar, context ) {
-        this.context          = context;
-        this.iDSidebar        = iDSidebar;
-        this.formData         = sidebarForms;
+        this.context   = context;
+        this.iDSidebar = iDSidebar;
+        this.formData  = sidebarForms;
+
         this.addFormData      = _.filter( this.formData, form => form.type === 'add' );
         this.conflateFormData = _.filter( this.formData, form => form.type === 'conflate' );
         this.reviewFormData   = _.filter( this.formData, form => form.type === 'review' );
-        this.forms = {};
+
+        this.forms       = {};
+        this.mergedLayer = null;
     }
 
     /**
@@ -43,6 +46,8 @@ export default class Sidebar {
         this.createForms();
 
         this.listen();
+
+        return this;
     }
 
     /**
@@ -111,9 +116,10 @@ export default class Sidebar {
         this.wrapper.selectAll( '.layer-review' )
             .data( this.reviewFormData ).enter()
             .select( function() {
-                this.reviewLayer = new SidebarLayerReview( sidebar, d3.select( this ), layer );
+                sidebar.reviewLayer = new SidebarLayerReview( sidebar, d3.select( this ), layer );
 
-                this.reviewLayer.render();
+                sidebar.reviewLayer.render();
+                sidebar.mergedLayer = null;
             } );
     }
 

@@ -27,6 +27,10 @@ export default class Hoot {
             new Navbar( d3.select( '#id-container' ), this.context ).render(),
             new SettingsPanel( this.container, this.context ).render(),
             new Sidebar( d3.select( '#sidebar' ), this.context ).render()
-        ] );
+        ] ).then( modules => {
+            this.navbar        = modules[ 0 ];
+            this.settingsPanel = modules[ 1 ];
+            this.sidebar       = modules[ 2 ];
+        } );
     }
 }

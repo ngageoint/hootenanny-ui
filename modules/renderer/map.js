@@ -483,7 +483,11 @@ export function rendererMap(context) {
         // OSM
         if ( map.editable() ) {
             context.connection().tileZoom( 1 );
-            context.loadTiles( projection, dimensions );
+            context.loadTiles( projection, dimensions, () => {
+                if ( context.hoot.sidebar.mergedLayer ) {
+                    Event.send( 'layer-merged', context.hoot.sidebar.mergedLayer  );
+                }
+            } );
             drawVector( difference, extent );
         } else {
             editOff();

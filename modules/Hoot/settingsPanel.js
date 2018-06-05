@@ -35,6 +35,8 @@ export default class SettingsPanel {
         } ) );
 
         this.listen();
+
+        return this;
     }
 
     /**

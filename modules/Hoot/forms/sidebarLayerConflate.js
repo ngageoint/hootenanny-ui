@@ -12,7 +12,6 @@ import HootOSM                    from '../managers/hootOsm';
 import FormFactory                from '../models/formFactory';
 import SidebarForm                from './sidebarForm';
 import SidebarAdvOptions          from './sidebarAdvOptions';
-import SidebarLayerReview         from './sidebarLayerReview';
 import { layerConflateForm }      from '../config/formMetadata';
 import { geoExtent as GeoExtent } from '../../geo/index';
 
@@ -237,12 +236,6 @@ class SidebarLayerConflate extends SidebarForm {
         API.conflate( data )
             .then( () => LayerManager.refreshLayers() )
             .then( () => this.postConflation( params ) );
-    }
-
-    layerMerged( layer ) {
-        this.reviewLayer = new SidebarLayerReview( layer );
-
-        this.reviewLayer.render();
     }
 }
 

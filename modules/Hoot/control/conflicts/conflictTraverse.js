@@ -11,6 +11,7 @@ import LayerManager from '../../managers/layerManager';
 export default class ConflictTraverse {
     constructor( instance ) {
         this.instance = instance;
+        this.context  = instance.context;
         this.data     = instance.data;
 
         this.nextId   = 'next';
@@ -19,7 +20,15 @@ export default class ConflictTraverse {
     }
 
     async jumpTo( direction ) {
-        let reviewData = {};
+        let reviewData = {},
+            hasChanges = this.context.history().hasChanges();
+
+        if ( hasChanges ) {
+            // TODO: set processing to false
+
+            alert( 'Please resolve or undo the current feature changes before proceeding to the next review.' );
+            return;
+        }
 
         this.data.reviewStats = await API.getReviewStatistics( this.data.mapId );
 

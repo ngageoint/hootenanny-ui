@@ -366,6 +366,7 @@ export function uiInit(context) {
                 render(container);
 
                 hootUI.init();
+                context.hoot = hootUI;
             }
             if (callback) {
                 callback(err);

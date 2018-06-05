@@ -24,6 +24,8 @@ export default class Navbar {
 
         this.createSettingsButton( leftContainer );
         this.createLogo( leftContainer );
+
+        return this;
     }
 
     /**
