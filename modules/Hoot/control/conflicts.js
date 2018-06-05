@@ -55,11 +55,16 @@ export default class Conflicts {
         this.merge     = modules[ 4 ];
         this.resolve   = modules[ 5 ];
 
-        this.render();
+        try {
+            this.data.reviewStats = await API.getReviewStatistics( this.data.mapId );
 
-        this.data.reviewStats = await API.getReviewStatistics( this.data.mapId );
-
-        this.traverse.jumpTo( 'forward' );
+            if ( this.data.reviewStats && this.data.reviewStats.totalCount > 0 ) {
+                this.render();
+                this.traverse.jumpTo( 'forward' );
+            }
+        } catch ( e ) {
+            console.log( e );
+        }
     }
 
     render() {
