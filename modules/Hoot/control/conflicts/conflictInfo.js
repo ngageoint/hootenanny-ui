@@ -32,7 +32,7 @@ export default class ConflictMetadata {
             this.tableContainer.remove();
         }
 
-        this.tableContainer =  this.conflicts.leftContainer
+        this.tableContainer =  this.conflicts.rightContainer
             .insert( 'div', ':first-child' )
             .classed( 'tag-table', true );
 

@@ -12,11 +12,6 @@
     }
 
     .left-container {
-        padding: 0 15px 15px;
-        align-self: flex-start;
-    }
-
-    .right-container {
         width: 100%;
         padding: 10px 15px;
 
@@ -27,6 +22,11 @@
                 margin-right: 10px;
             }
         }
+    }
+
+    .right-container {
+        padding: 0 15px 15px;
+        align-self: flex-start;
     }
 }
 

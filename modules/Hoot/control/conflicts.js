@@ -92,14 +92,14 @@ export default class Conflicts {
 
     createLeftRightContainers() {
         this.leftContainer = this.innerWrapper.append( 'div' )
-            .classed( 'left-container', true );
+            .classed( 'left-container fillD', true );
 
         this.rightContainer = this.innerWrapper.append( 'div' )
-            .classed( 'right-container fillD', true );
+            .classed( 'right-container', true );
     }
 
     createMetaDialog() {
-        this.metaDialog = this.rightContainer.append( 'div' )
+        this.metaDialog = this.leftContainer.append( 'div' )
             .classed( 'meta-dialog', true )
             .append( 'span' )
             .classed( '_icon info light', true )
@@ -114,7 +114,7 @@ export default class Conflicts {
             .html( true )
             .title( d => tooltipHtml( t( `review.${ d.id }.description` ), d.cmd ) );
 
-        this.actionButtons = this.rightContainer.append( 'div' )
+        this.actionButtons = this.leftContainer.append( 'div' )
             .classed( 'action-buttons', true )
             .selectAll( 'button' )
             .data( buttons ).enter()
