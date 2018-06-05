@@ -21,6 +21,10 @@ export default class ConflictTraverse {
     async jumpTo( direction ) {
         let reviewData = {};
 
+        this.data.reviewStats = await API.getReviewStatistics( this.data.mapId );
+
+        this.instance.info.updateMeta();
+
         if ( this.data.currentReviewItem ) {
             reviewData.mapId     = this.data.currentReviewItem.mapId;
             reviewData.sequence  = this.data.currentReviewItem.sortOrder;
@@ -38,6 +42,8 @@ export default class ConflictTraverse {
 
             this.instance.graphSync.getRelationMembers( reviewItem.relationId )
                 .then( members => this.instance.map.highlightLayer( members[ 0 ], members[ 1 ], true ) );
+        } else {
+            this.instance.deactivate();
         }
     }
 

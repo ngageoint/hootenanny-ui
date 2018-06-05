@@ -22,6 +22,8 @@ export default class SidebarLayerReview extends SidebarForm {
         this.createReviewCount();
         this.createAcceptAllButton();
 
+        this.listen();
+
         this.conflicts.init();
     }
 

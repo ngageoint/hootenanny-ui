@@ -38,6 +38,10 @@ export default class Conflicts {
         this.buttonEnabled = true;
     }
 
+    deactivate() {
+        this.container.remove();
+    }
+
     async init() {
         let modules = await Promise.all( [
             new ConflictInfo( this ),
@@ -55,16 +59,12 @@ export default class Conflicts {
         this.merge     = modules[ 4 ];
         this.resolve   = modules[ 5 ];
 
-        try {
-            this.data.reviewStats = await API.getReviewStatistics( this.data.mapId );
+        let reviewStats = await API.getReviewStatistics( this.data.mapId );
 
-            if ( this.data.reviewStats && this.data.reviewStats.totalCount > 0 ) {
-                this.render();
-                this.traverse.jumpTo( 'forward' );
-            }
-        } catch ( e ) {
-            console.log( e );
-        }
+        if ( reviewStats.totalCount === 0 ) return;
+
+        this.render();
+        this.traverse.jumpTo( 'forward' );
     }
 
     render() {

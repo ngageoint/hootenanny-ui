@@ -156,6 +156,6 @@ export default class ConflictMetadata {
             </strong>`
         );
 
-        Event.send( 'meta-updated', `there are ${ nUnreviewed } reviews` );
+        Event.send( 'meta-updated', `There are ${ nUnreviewed } reviews` );
     }
 }
