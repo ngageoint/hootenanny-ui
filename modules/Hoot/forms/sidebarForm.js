@@ -32,6 +32,17 @@ export default class SidebarForm {
         this.createInnerWrapper();
     }
 
+    get exists() {
+        return this.form;
+    }
+
+    remove() {
+        if ( this.exists ) {
+            this.form.remove();
+            this.form = null;
+        }
+    }
+
     /**
      * Open or close add-layer form
      */

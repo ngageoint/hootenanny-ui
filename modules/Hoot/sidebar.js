@@ -106,10 +106,6 @@ export default class Sidebar {
             } );
     }
 
-    layerRemoved( data ) {
-        this.forms[ data.id ].render( data );
-    }
-
     layerMerged( layer ) {
         let sidebar = this;
 
@@ -121,6 +117,14 @@ export default class Sidebar {
                 sidebar.reviewLayer.render();
                 sidebar.mergedLayer = null;
             } );
+    }
+
+    layerRemoved( data ) {
+        if ( !data ) {
+            this.reset();
+        } else {
+            this.forms[ data.id ].render( data );
+        }
     }
 
     conflateCheck() {
@@ -136,8 +140,14 @@ export default class Sidebar {
         }
     }
 
+    reset() {
+        this.wrapper.selectAll( '.sidebar-form' ).remove();
+
+        this.createForms();
+    }
+
     listen() {
-        Event.listen( 'layer-removed', this.layerRemoved, this );
         Event.listen( 'layer-merged', this.layerMerged, this );
+        Event.listen( 'layer-removed', this.layerRemoved, this );
     }
 }

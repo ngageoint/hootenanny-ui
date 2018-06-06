@@ -21,10 +21,6 @@ class SidebarLayerConflate extends SidebarForm {
         this.formFactory = new FormFactory();
     }
 
-    get exists() {
-        return this.form;
-    }
-
     render( layers ) {
         this.folderList = FolderManager.folderPaths;
 
@@ -49,13 +45,6 @@ class SidebarLayerConflate extends SidebarForm {
         this.generateReportInput = d3.select( '#conflateGenerateReport' );
 
         super.listen();
-    }
-
-    remove() {
-        if ( this.exists ) {
-            this.form.remove();
-            this.form = null;
-        }
     }
 
     createFieldset() {

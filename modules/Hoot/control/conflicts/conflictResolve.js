@@ -4,13 +4,14 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/24/18
  *******************************************************************************************************/
 
-import _       from 'lodash-es';
 import HootOSM from '../../managers/hootOsm';
+import Event from '../../managers/eventManager';
 
 export default class ConflictResolve {
     constructor( instance ) {
         this.instance = instance;
         this.context  = instance.context;
+        this.sidebar  = instance.context.hoot.sidebar;
         this.data     = instance.data;
     }
 
@@ -44,7 +45,36 @@ export default class ConflictResolve {
         }
     }
 
-    acceptAll() {
+    acceptAll( layer ) {
+        let hasChanges = this.context.history().hasChanges();
 
+        if ( hasChanges ) {
+            HootOSM.save( this.data.mergedItems, false, () => {
+                this.performAcceptAll( layer );
+            } );
+        } else {
+            this.performAcceptAll( layer );
+        }
+    }
+
+    performAcceptAll( layer ) {
+        let conflateController = this.sidebar.conflateForm.controller,
+            key = {
+                name: layer.name,
+                id: layer.id,
+                color: layer.color
+            };
+
+        // enter controller refresh state
+        conflateController.text.html( 'Refreshing &#8230;' );
+
+        // update layer
+        HootOSM.removeLayer( layer.id );
+        HootOSM.loadLayer( key );
+
+        // exit controller refresh state
+        conflateController.text.html( layer.name );
+
+        Event.send( 'review-complete' );
     }
 }

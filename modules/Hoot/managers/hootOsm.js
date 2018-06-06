@@ -146,7 +146,7 @@ class HootOSM {
         this.context.flush();
     }
 
-    async removeLayer( id ) {
+    removeLayer( id ) {
         delete LayerManager.loadedLayers[ id ];
         this.context.background().removeSource( id );
         this.hootOverlay.removeGeojson( id );

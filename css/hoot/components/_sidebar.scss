@@ -102,6 +102,12 @@
         button {
             padding: 5px 20px;
             height: auto;
+
+            .action-container {
+                .button.dark {
+                    margin-left: 10px;
+                }
+            }
         }
     }
 }
@@ -167,6 +173,14 @@
         }
     }
 
+    .action-container {
+        .button.dark {
+            margin-left: 10px;
+        }
+    }
+}
+
+.layer-review {
     .action-container {
         .button.dark {
             margin-left: 10px;
@@ -252,7 +266,4 @@
             width: 60%;
         }
     }
-}
-
-.layer-review {
 }

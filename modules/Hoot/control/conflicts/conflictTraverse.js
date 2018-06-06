@@ -13,10 +13,6 @@ export default class ConflictTraverse {
         this.instance = instance;
         this.context  = instance.context;
         this.data     = instance.data;
-
-        this.nextId   = 'next';
-        this.prevId   = 'previous';
-        this.sequence = -999;
     }
 
     async jumpTo( direction ) {
@@ -34,13 +30,15 @@ export default class ConflictTraverse {
 
         this.instance.info.updateMeta();
 
+        const sequence = -999;
+
         if ( this.data.currentReviewItem ) {
             reviewData.mapId     = this.data.currentReviewItem.mapId;
             reviewData.sequence  = this.data.currentReviewItem.sortOrder;
             reviewData.direction = direction;
         } else {
             reviewData.mapId     = this.data.mapId;
-            reviewData.sequence  = this.sequence;
+            reviewData.sequence  = sequence;
             reviewData.direction = direction;
         }
 

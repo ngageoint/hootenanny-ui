@@ -12,6 +12,7 @@ export default class SidebarLayerReview extends SidebarForm {
     constructor( sidebar, container, layer ) {
         super( sidebar, container );
 
+        this.layer     = layer;
         this.conflicts = new Conflicts( this.context, d3.select( '#content' ), layer );
     }
 
@@ -32,7 +33,7 @@ export default class SidebarLayerReview extends SidebarForm {
     }
 
     createReviewCount() {
-        this.reviewCount = this.fieldset.append( 'div' )
+        this.reviewInfo = this.fieldset.append( 'div' )
             .classed( 'hoot-form-field', true )
             .append( 'span' )
             .classed( '_icon info review-count', true )
@@ -45,17 +46,36 @@ export default class SidebarLayerReview extends SidebarForm {
             .append( 'a' )
             .attr( 'href', '!#' )
             .text( 'Resolve all remaining reviews' )
-            .on( 'click', function() {
+            .on( 'click', () => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
+
+                this.conflicts.resolve.acceptAll( this.layer );
             } );
     }
 
     updateReviewCount( text ) {
-        this.reviewCount.text( text );
+        this.reviewInfo.text( text );
+    }
+
+    reviewComplete() {
+        this.reviewInfo.text( 'All reviews resolved!' );
+        this.acceptAll.remove();
+
+        let btnContainer = this.fieldset.append( 'div' )
+            .classed( 'hoot-form-field action-container', true );
+
+        btnContainer.append( 'button' )
+            .classed( 'button secondary small strong round', true )
+            .text( 'Export Data' );
+
+        btnContainer.append( 'button' )
+            .classed( 'button dark text-light small strong round', true )
+            .text( 'Add Another Dataset' );
     }
 
     listen() {
         Event.listen( 'meta-updated', this.updateReviewCount, this );
+        Event.listen( 'review-complete', this.reviewComplete, this );
     }
 }
