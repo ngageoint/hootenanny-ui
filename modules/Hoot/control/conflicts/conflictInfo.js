@@ -9,8 +9,8 @@ import _     from 'lodash-es';
 
 export default class ConflictMetadata {
     constructor( instance ) {
-        this.conflicts = instance;
-        this.data      = instance.data;
+        this.instance = instance;
+        this.data     = instance.data;
 
         this.tagBlacklist = [
             /hoot*/,
@@ -23,8 +23,9 @@ export default class ConflictMetadata {
         ];
     }
 
-    buildPoiTable( colData ) {
-        let tags1      = this.filterTags( colData[ 0 ] ? colData[ 0 ].tags : {} ),
+    buildPoiTable() {
+        let colData    = this.data.currentFeatures,
+            tags1      = this.filterTags( colData[ 0 ] ? colData[ 0 ].tags : {} ),
             tags2      = this.filterTags( colData[ 1 ] ? colData[ 1 ].tags : {} ),
             tagsMerged = this.mergeTags( [ tags1, tags2 ] );
 
@@ -32,7 +33,7 @@ export default class ConflictMetadata {
             this.tableContainer.remove();
         }
 
-        this.tableContainer =  this.conflicts.rightContainer
+        this.tableContainer = this.instance.rightContainer
             .insert( 'div', ':first-child' )
             .classed( 'tag-table', true );
 
@@ -90,9 +91,9 @@ export default class ConflictMetadata {
         let tableState = this.tableContainer.classed( 'hidden' );
 
         this.tableContainer.classed( 'hidden', !tableState );
-        this.conflicts.container.select( 'button.toggle_table' )
+        this.instance.container.select( 'button.toggle_table' )
             .text( tableState ? 'Hide Table' : 'Show Table' )
-            .call( this.conflicts.tooltip );
+            .call( this.instance.tooltip );
     }
 
     filterTags( tags ) {
@@ -123,8 +124,8 @@ export default class ConflictMetadata {
     }
 
     updateMeta( note ) {
-        let noteText          = '',
-            currentMeta       = this.data.reviewStats;
+        let noteText    = '',
+            currentMeta = this.data.reviewStats;
 
         let nTotal      = 0,
             nUnreviewed = 0,
@@ -146,7 +147,7 @@ export default class ConflictMetadata {
             }
         }
 
-        this.conflicts.metaDialog.html(
+        this.instance.metaDialog.html(
             `<strong class="review-note">
                 Review note: ${ noteText }
             </strong>

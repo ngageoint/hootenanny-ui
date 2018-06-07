@@ -17,44 +17,20 @@ export default class ConflictMap {
     highlightLayer( item1, item2, panTo ) {
         let feature        = item1 ? this.context.hasEntity( item1.id ) : null,
             againstFeature = item2 ? this.context.hasEntity( item2.id ) : null,
-            features       = [ feature, againstFeature ],
-            relation       = this.data.currentRelation,
-            poiTableCols   = [],
-            panToId        = null,
-            extent         = null;
+            relation       = this.data.currentRelation;
 
-        this.data.feature        = feature;
-        this.data.againstFeature = againstFeature;
+        // reference of current feature data in review process
+        this.data.currentFeatures = [ feature, againstFeature ];
 
-        _.forEach( features, ( feature, key ) => {
-            if ( feature ) {
-                key = key + 1;
+        this.instance.info.buildPoiTable();
 
-                if ( !extent ) {
-                    extent = feature.extent( this.context.graph() );
-                } else {
-                    extent = extent.extend( feature.extent( this.context.graph() ) );
-                }
+        this.unsetHighlight();
 
-                if ( !panToId && isValidCoords( extent[ 0 ] ) && isValidCoords( extent[ 1 ] ) ) {
-                    panToId = feature.id;
-                }
+        if ( panTo ) {
+            this.panToConflict();
+        }
 
-                poiTableCols.push( feature );
-
-                if ( panTo && panToId ) {
-                    this.context.map().centerZoom( extent.center(), this.context.map().trimmedExtentZoom( extent ) - 0.5 );
-                }
-
-                d3.selectAll( `.review-feature${ key }` )
-                    .classed( `highlight review-feature${ key }`, false );
-
-                d3.selectAll( '.' + feature.id )
-                    .classed( `highlight review-feature${ key }`, true );
-            }
-        } );
-
-        this.instance.info.buildPoiTable( poiTableCols );
+        this.setHighlight();
 
         if ( relation.tags[ 'hoot:review:type' ] === 'POI to Polygon' ||
             ((feature && againstFeature) && feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n')
@@ -75,6 +51,47 @@ export default class ConflictMap {
             d3.select( 'td.feature2 .prev' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'prev' ) ] ) );
             d3.select( 'td.feature2 .next' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'next' ) ] ) );
         }
+    }
+
+    /**
+     * Remove highlight class from previous nodes
+     */
+    unsetHighlight() {
+        d3.selectAll( '.review-feature1' ).classed( 'highlight review-feature1', false );
+        d3.selectAll( '.review-feature2' ).classed( 'highlight review-feature2', false );
+    }
+
+    /**
+     * Apply highlight class to applicable nodes in view. Use feature data to
+     * to get the current review feature IDs and update their class
+     */
+    setHighlight( featureId, key ) {
+        _.forEach( this.data.currentFeatures, ( feature, key ) => {
+            key = key + 1;
+
+            d3.selectAll( '.' + feature.id ).classed( `highlight review-feature${ key }`, true );
+        } );
+    }
+
+    panToConflict() {
+        let panToId = null,
+            extent = null;
+
+        _.forEach( this.data.currentFeatures, feature => {
+            if ( !extent ) {
+                extent = feature.extent( this.context.graph() );
+            } else {
+                extent = extent.extend( feature.extent( this.context.graph() ) );
+            }
+
+            if ( !panToId && isValidCoords( extent[ 0 ] ) && isValidCoords( extent[ 1 ] ) ) {
+                panToId = feature.id;
+            }
+
+            if ( panToId ) {
+                this.context.map().centerZoom( extent.center(), this.context.map().trimmedExtentZoom( extent ) - 0.5 );
+            }
+        } );
     }
 
     calcNewIndex( actionIdx, staticIdx, memberLen, direction ) {

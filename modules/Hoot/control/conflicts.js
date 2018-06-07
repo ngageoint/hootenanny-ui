@@ -26,12 +26,14 @@ export default class Conflicts {
         this.context          = context;
         this.contentContainer = contentContainer;
 
+        // data store for all conflict components
         this.data = {
             layer: layer,
             mapId: layer.id,
             reviewStats: null,
             currentReviewItem: null,
             currentRelation: null,
+            poiTableCols: null,
             mergedItems: []
         };
 
@@ -64,6 +66,11 @@ export default class Conflicts {
         if ( reviewStats.totalCount === 0 ) return;
 
         this.render();
+
+        this.context.map().on( 'drawn', () => {
+            this.map.setHighlight();
+        } );
+
         this.traverse.jumpTo( 'forward' );
     }
 

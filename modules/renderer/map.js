@@ -488,13 +488,19 @@ export function rendererMap(context) {
                     Event.send( 'layer-merged', context.hoot.sidebar.mergedLayer  );
                 }
             } );
+
             drawVector( difference, extent );
         } else {
             editOff();
 
+            context.connection().tileZoom( 1 );
             var visLayers = _filter( _values( LayerManager.loadedLayers ), layer => layer.visible );
 
             _map( visLayers, layer => Event.send( 'layer-loaded', layer.name ) );
+
+            //context.loadTiles( projection, dimensions );
+
+            //drawVector( difference, extent );
         }
 
         transformStart = projection.transform();

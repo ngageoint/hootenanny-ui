@@ -158,7 +158,7 @@ class SidebarLayerController {
                     HootOSM.removeLayer( this.layerId );
 
                     // if removing a merged layer, reset the sidebar by sending no data.
-                    // otherwise, send data for specific form to reset
+                    // otherwise, send data of specific form to reset
                     Event.send( 'layer-removed', d.id === 'conflate' ? null : d );
                 }
             } );
