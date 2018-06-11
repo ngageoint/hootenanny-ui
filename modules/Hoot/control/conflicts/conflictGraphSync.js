@@ -10,7 +10,13 @@ import { t }         from '../../../util/locale';
 import { osmEntity } from '../../../osm';
 import API           from '../api';
 
+/**
+ * @class ConflictGraphSync
+ */
 export default class ConflictGraphSync {
+    /**
+     * @param instance - conflict class
+     */
     constructor( instance ) {
         this.instance = instance;
         this.context  = instance.context;
@@ -19,6 +25,11 @@ export default class ConflictGraphSync {
         this.relationTreeIdx = {};
     }
 
+    /**
+     * Get the current relation being reviewed
+     *
+     * @returns {object} - relation
+     */
     getCurrentRelation() {
         let reviewItem = this.data.currentReviewItem;
 
@@ -31,9 +42,16 @@ export default class ConflictGraphSync {
         return this.context.entity( relationId );
     }
 
+    /**
+     * Search for all members of the current relation being reviewed and if not found
+     * then load missing members from backend.
+     *
+     * @param relationId - ID of current relation being reviewed
+     * @returns {Promise<*>|array}
+     */
     async getRelationMembers( relationId ) {
-        let featureId = `r${ relationId }_${ this.data.mapId }`,
-            relation  = this.context.hasEntity( featureId );
+        let relId = `r${ relationId }_${ this.data.mapId }`,
+            relation  = this.context.hasEntity( relId );
 
         if ( relation ) {
             let memberCount = this.getRelationMembersCount( relation );
@@ -41,8 +59,8 @@ export default class ConflictGraphSync {
             if ( !memberCount ) return;
 
             if ( memberCount !== relation.members.length ) {
-                return this.loadMissingFeatures( featureId )
-                    .then( () => this.validateMemberCount( featureId ) );
+                return this.loadMissingFeatures( relId )
+                    .then( () => this.validateMemberCount( relId ) );
             } else if ( memberCount === 1 ) {
 
             } else {
@@ -51,15 +69,21 @@ export default class ConflictGraphSync {
 
             return relation.members;
         } else {
-            if ( _.find( this.context.history().changes().deleted, { id: featureId } ) ) {
+            if ( _.find( this.context.history().changes().deleted, { id: relId } ) ) {
                 return;
             }
 
-            return this.loadMissingFeatures( featureId )
-                .then( () => this.validateMemberCount( featureId ) );
+            return this.loadMissingFeatures( relId )
+                .then( () => this.validateMemberCount( relId ) );
         }
     }
 
+    /**
+     * Get number of members in relation
+     *
+     * @param relation - current relation being reviewed
+     * @returns {number} - number of members
+     */
     getRelationMembersCount( relation ) {
         let count = 0;
 
@@ -70,6 +94,11 @@ export default class ConflictGraphSync {
         return count;
     }
 
+    /**
+     * Updates hoot:review:needs tag when resolved
+     *
+     * @param reviewRel - target relation to update
+     */
     updateReviewTagsForResolve( reviewRel ) {
         let tags    = reviewRel.tags,
             newTags = _.clone( tags );
@@ -82,6 +111,13 @@ export default class ConflictGraphSync {
         );
     }
 
+    /**
+     * Get missing feature from backend and recursively load its
+     * children features if feature is a relation
+     *
+     * @param featureId - ID of feature to load
+     * @returns {Promise<[]>}
+     */
     async loadMissingFeatures( featureId ) {
         let type       = osmEntity.id.type( featureId ) + 's',
             mapId      = featureId.split( '_' )[ 1 ],
@@ -96,8 +132,14 @@ export default class ConflictGraphSync {
         return Promise.all( _.map( featureOsm, feature => this.updateMissingFeature( feature ) ) );
     }
 
+    /**
+     * Recursively load children features if feature is a relation.
+     * Otherwise, recursively update its parent relations
+     *
+     * @param feature - current feature
+     * @returns {Promise<*>}
+     */
     async updateMissingFeature( feature ) {
-        //console.log( 'update missing feature: ', feature );
         if ( feature.type === 'relation' ) {
             this.relationTreeIdx[ feature.id ] = feature.members.length;
 
@@ -121,8 +163,13 @@ export default class ConflictGraphSync {
         }
     }
 
-    updateParentRelations( entity ) {
-        let parents = this.context.graph().parentRelations( entity );
+    /**
+     * Recursively traverse the parent tree and update index for relation in relation
+     *
+     * @param feature - current feature
+     */
+    updateParentRelations( feature ) {
+        let parents = this.context.graph().parentRelations( feature );
 
         if ( !parents ) return;
 
@@ -136,46 +183,27 @@ export default class ConflictGraphSync {
                 if ( childCount > 1 ) {
                     this.relationTreeIdx[ parent.id ] = childCount - 1;
                 } else {
-                    let parentRelations = this.context.graph().parentRelations( parent );
-
                     delete this.relationTreeIdx[ parent.id ];
-                    this.cleanParentTree( parentRelations );
+
+                    let parentRelations = this.context.graph().parentRelations( parent );
+                    this.updateParentRelations( parentRelations );
                 }
             }
         } );
     }
 
     /**
-     * Traverse the parent tree and update index for relation in relation
+     * Check to make sure relation has members
      *
-     * @param parentRelations
+     * @param relationId - relation ID
+     * @returns {array} - list of members
      */
-    cleanParentTree( parentRelations ) {
-        _.forEach( parentRelations, parentRel => {
-            let parentIdxCount = this.relationTreeIdx[ parentRel.id ];
-
-            if ( parentIdxCount ) {
-                if ( parentIdxCount > 1 ) {
-                    this.relationTreeIdx[ parentRel.id ] = parentIdxCount - 1;
-                } else {
-                    delete this.relationTreeIdx[ parentIdxCount ];
-                }
-
-                let pr = this.context.graph().parentRelations( parentRel );
-
-                if ( pr ) {
-                    this.cleanParentTree( pr );
-                }
-            }
-        } );
-    }
-
-    validateMemberCount( featureId ) {
-        let entity      = this.context.hasEntity( featureId ),
+    validateMemberCount( relationId ) {
+        let relation    = this.context.hasEntity( relationId ),
             memberCount = 0;
 
-        if ( entity ) {
-            _.forEach( entity.members, member => {
+        if ( relation ) {
+            _.forEach( relation.members, member => {
                 if ( this.context.hasEntity( member.id ) ) {
                     memberCount++;
                 }
@@ -183,7 +211,7 @@ export default class ConflictGraphSync {
         }
 
         if ( memberCount > 0 ) {
-            return entity.members;
+            return relation.members;
         }
     }
 }
