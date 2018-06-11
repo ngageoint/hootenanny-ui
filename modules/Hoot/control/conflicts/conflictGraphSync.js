@@ -6,7 +6,6 @@
 
 import _             from 'lodash-es';
 import HootOSM       from '../../managers/hootOsm';
-import LayerManager  from '../../managers/layerManager';
 import { t }         from '../../../util/locale';
 import { osmEntity } from '../../../osm';
 import API           from '../api';
@@ -20,20 +19,32 @@ export default class ConflictGraphSync {
         this.relationTreeIdx = {};
     }
 
+    getCurrentRelation() {
+        let reviewItem = this.data.currentReviewItem;
+
+        if ( !reviewItem ) {
+            return null;
+        }
+
+        let relationId = `r${ reviewItem.relationId }_${ reviewItem.mapId }`;
+
+        return this.context.entity( relationId );
+    }
+
     async getRelationMembers( relationId ) {
         let featureId = `r${ relationId }_${ this.data.mapId }`,
             relation  = this.context.hasEntity( featureId );
 
         if ( relation ) {
-            this.data.currentRelation = relation;
-            let memberCount           = this.getRelationMembersCount( relation );
+            let memberCount = this.getRelationMembersCount( relation );
 
             if ( !memberCount ) return;
 
             if ( memberCount !== relation.members.length ) {
-
+                return this.loadMissingFeatures( featureId )
+                    .then( () => this.validateMemberCount( featureId ) );
             } else if ( memberCount === 1 ) {
-                // TODO: load missing features
+
             } else {
                 // TODO: show alert
             }
@@ -60,8 +71,10 @@ export default class ConflictGraphSync {
     }
 
     updateReviewTagsForResolve( reviewRel ) {
+        console.log( 'update review tags for resolve: ', reviewRel );
+
         let tags    = reviewRel.tags,
-            newTags = _.cloneDeep( tags );
+            newTags = _.clone( tags );
 
         newTags[ 'hoot:review:needs' ] = 'no';
 
@@ -72,18 +85,21 @@ export default class ConflictGraphSync {
     }
 
     async loadMissingFeatures( featureId ) {
-        let type     = osmEntity.id.type( featureId ) + 's',
-            mapId    = featureId.split( '_' )[ 1 ],
-            osmIds   = _.map( [ featureId ], osmEntity.id.toOSM ),
+        let type       = osmEntity.id.type( featureId ) + 's',
+            mapId      = featureId.split( '_' )[ 1 ],
+            osmIds     = _.map( [ featureId ], osmEntity.id.toOSM ),
 
-            featureXml  = await API.getFeatures( type, mapId, osmIds ),
-            document = new DOMParser().parseFromString( featureXml, 'text/xml' ),
-            featureOsm  = await this.context.connection().parseXml( document, mapId );
+            featureXml = await API.getFeatures( type, mapId, osmIds ),
+            document   = new DOMParser().parseFromString( featureXml, 'text/xml' ),
+            featureOsm = await this.context.connection().parseXml( document, mapId );
+
+        this.context.history().merge( featureOsm );
 
         return Promise.all( _.map( featureOsm, feature => this.updateMissingFeature( feature ) ) );
     }
 
     async updateMissingFeature( feature ) {
+        //console.log( 'update missing feature: ', feature );
         if ( feature.type === 'relation' ) {
             this.relationTreeIdx[ feature.id ] = feature.members.length;
 
@@ -117,10 +133,10 @@ export default class ConflictGraphSync {
         // or remove if the unprocessed member count goes to 0
         _.forEach( parents, parent => {
             if ( this.relationTreeIdx[ parent.id ] ) {
-                let parentChildCount = this.relationTreeIdx[ parent.id ];
+                let childCount = this.relationTreeIdx[ parent.id ];
 
-                if ( parentChildCount > 1 ) {
-                    this.relationTreeIdx[ parent.id ] = parentChildCount - 1;
+                if ( childCount > 1 ) {
+                    this.relationTreeIdx[ parent.id ] = childCount - 1;
                 } else {
                     let parentRelations = this.context.graph().parentRelations( parent );
 
@@ -149,7 +165,6 @@ export default class ConflictGraphSync {
 
                 let pr = this.context.graph().parentRelations( parentRel );
 
-
                 if ( pr ) {
                     this.cleanParentTree( pr );
                 }
@@ -158,7 +173,7 @@ export default class ConflictGraphSync {
     }
 
     validateMemberCount( featureId ) {
-        let entity = this.context.hasEntity( featureId ),
+        let entity      = this.context.hasEntity( featureId ),
             memberCount = 0;
 
         if ( entity ) {

@@ -17,7 +17,7 @@ export default class ConflictMap {
     highlightLayer( item1, item2, panTo ) {
         let feature        = item1 ? this.context.hasEntity( item1.id ) : null,
             againstFeature = item2 ? this.context.hasEntity( item2.id ) : null,
-            relation       = this.data.currentRelation;
+            relation       = this.instance.graphSync.getCurrentRelation();
 
         // reference of current feature data in review process
         this.data.currentFeatures = [ feature, againstFeature ];
@@ -26,11 +26,12 @@ export default class ConflictMap {
 
         this.unsetHighlight();
 
+        // panning will cause a 'drawn' event to fire and will automatically highlight the nodes
         if ( panTo ) {
             this.panToConflict();
+        } else {
+            this.setHighlight();
         }
-
-        this.setHighlight();
 
         if ( relation.tags[ 'hoot:review:type' ] === 'POI to Polygon' ||
             ((feature && againstFeature) && feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n')
@@ -51,6 +52,8 @@ export default class ConflictMap {
             d3.select( 'td.feature2 .prev' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'prev' ) ] ) );
             d3.select( 'td.feature2 .next' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'next' ) ] ) );
         }
+
+        this.instance.info.updateMeta();
     }
 
     /**
@@ -65,7 +68,7 @@ export default class ConflictMap {
      * Apply highlight class to applicable nodes in view. Use feature data to
      * to get the current review feature IDs and update their class
      */
-    setHighlight( featureId, key ) {
+    setHighlight() {
         _.forEach( this.data.currentFeatures, ( feature, key ) => {
             key = key + 1;
 
@@ -75,7 +78,7 @@ export default class ConflictMap {
 
     panToConflict() {
         let panToId = null,
-            extent = null;
+            extent  = null;
 
         _.forEach( this.data.currentFeatures, feature => {
             if ( !extent ) {

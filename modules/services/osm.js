@@ -364,13 +364,6 @@ export default {
     },
 
 
-    //loadMissing: function(ids, layerName, callback) {
-    //    this.loadMultiple(ids, function(err, entities) {
-    //
-    //    } );
-    //},
-
-
     loadMultiple: function(ids, callback) {
         var that = this;
         //Split feature ids up by maps, then by type
@@ -418,6 +411,8 @@ export default {
 
 
     putChangeset: function(changeset, changes, mapId, mergedItems, callback) {
+        console.log( 'putchangeset' );
+        console.log( changes );
         if (_changeset.inflight) {
             return callback({ message: 'Changeset already inflight', status: -2 }, changeset);
         }
@@ -436,7 +431,6 @@ export default {
                 path: path,
                 options: { header: { 'Content-Type': 'text/xml' } },
                 content: JXON.stringify(changeset.asJXON())
-                //content: JXON.stringify(this.changesetJXON(this.changesetTags(hootCmd, imageryUsed)))
             }, createdChangeset);
         }
 
@@ -458,21 +452,24 @@ export default {
             _changeset.open = changesetID;
             changeset = changeset.update({ id: changesetID });
 
-            //console.log( mergedItems );
+            console.log( 'merged items: ', mergedItems );
+
             _forEach( mergedItems, item => {
                 let refId     = item.id,
                     newMember = item.obj;
 
                 let changedRel = _find( changes.modified, feat => feat.id === refId );
 
+                console.log( 'changed rel: ', changedRel );
+
                 if ( changedRel ) {
-                    //console.log( changedRel );
-                    //console.log( newMember );
                     if ( changedRel.members.length >= newMember.index ) {
                         changedRel.members.splice( newMember.index, 0, newMember );
                     } else {
                         changedRel.members.push( newMember );
                     }
+
+                    //console.log( 'NEW changed relation: ', changedRel );
 
                     if ( changedRel.members.length < 2 ) {
                         changedRel.tags[ 'hoot:review:needs' ] = 'no';
@@ -480,9 +477,9 @@ export default {
                 } else {
                     let modifiedRel = HootOSM.context.hasEntity( refId );
 
+                    console.log( 'modified relation: ', modifiedRel );
+
                     if ( modifiedRel ) {
-                        //console.log( modifiedRel.members.length );
-                        //console.log( newMember );
                         if ( modifiedRel.members.length >= newMember.index ) {
                             modifiedRel.members.splice( newMember.index, 0, newMember );
                         } else {
@@ -492,11 +489,11 @@ export default {
                         if ( modifiedRel.members.length < 2 ) {
                             modifiedRel.tags[ 'hoot:review:needs' ] = 'no';
                         }
-
-                        changes.modified.push( modifiedRel );
                     }
                 }
             } );
+
+            console.log( JXON.stringify(changeset.osmChangeJXON(changes)) );
 
             let path = '/api/0.6/changeset/' + changesetID + '/upload';
             path += mapId ? `?mapId=${ mapId }` : '';

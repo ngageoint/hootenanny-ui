@@ -13,6 +13,8 @@ export function actionDeleteNode(nodeId) {
     }
 
     function updateHootReviewTags(entity, graph) {
+        console.log( 'update hoot review tags' );
+
         let tags = entity.tags,
             newTags = _.clone(tags);
 
@@ -34,8 +36,10 @@ export function actionDeleteNode(nodeId) {
                 }
             });
 
+        console.log( 'node: ', node );
         graph.parentRelations(node)
             .forEach(function(parent) {
+                console.log( 'parent: ', parent );
                 parent = parent.removeMembersWithID(nodeId);
                 graph = graph.replace(parent);
 

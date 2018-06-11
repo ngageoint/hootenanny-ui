@@ -26,9 +26,8 @@ export default class ConflictTraverse {
             return;
         }
 
-        this.data.reviewStats = await API.getReviewStatistics( this.data.mapId );
-
-        this.instance.info.updateMeta();
+        let reviewStats       = await API.getReviewStatistics( this.data.mapId );
+        this.data.reviewStats = reviewStats;
 
         const sequence = -999;
 
@@ -43,6 +42,8 @@ export default class ConflictTraverse {
         }
 
         let reviewItem = await API.reviewGetNext( reviewData );
+
+        console.log( 'review item: ', reviewItem );
 
         if ( reviewItem.resultCount > 0 ) {
             this.data.currentReviewItem = reviewItem;

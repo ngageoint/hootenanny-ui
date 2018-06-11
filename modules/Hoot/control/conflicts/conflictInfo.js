@@ -29,6 +29,8 @@ export default class ConflictMetadata {
             tags2      = this.filterTags( colData[ 1 ] ? colData[ 1 ].tags : {} ),
             tagsMerged = this.mergeTags( [ tags1, tags2 ] );
 
+        let currentRelation = this.instance.graphSync.getCurrentRelation();
+
         if ( this.poiTable ) {
             this.tableContainer.remove();
         }
@@ -39,7 +41,7 @@ export default class ConflictMetadata {
 
         this.poiTable = this.tableContainer.append( 'table' );
 
-        if ( this.data.currentRelation.members.length > 2 ) {
+        if ( currentRelation.members.length > 2 ) {
             let navHtml = '<div class="navigation-wrapper"><div class="prev">&lt;&lt;</div><div class="next">&gt;&gt;</div></div>';
 
             let row = this.poiTable.append( 'tr' )
@@ -125,7 +127,8 @@ export default class ConflictMetadata {
 
     updateMeta( note ) {
         let noteText    = '',
-            currentMeta = this.data.reviewStats;
+            currentMeta = this.data.reviewStats,
+            currentRelation = this.instance.graphSync.getCurrentRelation();
 
         let nTotal      = 0,
             nUnreviewed = 0,
@@ -139,8 +142,8 @@ export default class ConflictMetadata {
 
         if ( note ) {
             noteText = note;
-        } else if ( this.data.currentRelation ) {
-            let relationNote = this.data.currentRelation.tags[ 'hoot:review:now' ];
+        } else if ( currentRelation ) {
+            let relationNote = currentRelation.tags[ 'hoot:review:note' ];
 
             if ( relationNote ) {
                 noteText = relationNote;

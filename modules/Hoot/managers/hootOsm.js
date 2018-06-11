@@ -191,6 +191,7 @@ class HootOSM {
 
     changeTags( entityId, tags ) {
         return graph => {
+            console.log( 'graph: ', graph );
             let entity = graph.entity( entityId );
 
             return graph.replace( entity.update( { tags } ) );
@@ -248,7 +249,8 @@ class HootOSM {
             host: (window.location.origin + window.location.pathName).substr( 0, 255 ),
             locale: detected.locale,
             browser: detected.browser + ' ' + detected.version,
-            platform: detected.platform
+            platform: detected.platform,
+            comment: 'Hoot Save'
         };
     }
 
@@ -273,7 +275,7 @@ class HootOSM {
                         this.context.flush();
 
                         if ( callback ) {
-                            callback( changeset );
+                            callback();
                         }
                     }
                 } );

@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import HootOSM from '../../managers/hootOsm';
-import Event from '../../managers/eventManager';
+import Event   from '../../managers/eventManager';
 
 export default class ConflictResolve {
     constructor( instance ) {
@@ -16,19 +16,22 @@ export default class ConflictResolve {
     }
 
     retainFeature() {
-        let reviewItem = this.data.currentReviewItem,
-            reviewRel  = this.data.currentRelation;
+        let reviewItem      = this.data.currentReviewItem,
+            currentRelation = this.instance.graphSync.getCurrentRelation();
+
+        console.log( 'review item: ', reviewItem );
+        console.log( 'reviewable relation entity: ', currentRelation );
 
         if ( reviewItem ) {
-            if ( reviewRel ) {
-                for ( let i = 0; i < reviewRel.members.length; i++ ) {
+            if ( currentRelation ) {
+                for ( let i = 0; i < currentRelation.members.length; i++ ) {
                     let key = i + 1;
 
                     d3.selectAll( `.review-feature${ key }` )
                         .classed( `highlight review-feature${ key }`, false );
                 }
 
-                this.instance.graphSync.updateReviewTagsForResolve( reviewRel );
+                this.instance.graphSync.updateReviewTagsForResolve( currentRelation );
             }
 
             this.instance.info.tableContainer.remove();
@@ -37,6 +40,7 @@ export default class ConflictResolve {
 
             if ( hasChanges ) {
                 HootOSM.save( this.data.mergedItems, false, () => {
+                    this.data.mergedItems = [];
                     this.instance.traverse.jumpTo( 'forward' );
                 } );
             }
@@ -59,7 +63,7 @@ export default class ConflictResolve {
 
     performAcceptAll( layer ) {
         let conflateController = this.sidebar.conflateForm.controller,
-            key = {
+            key                = {
                 name: layer.name,
                 id: layer.id,
                 color: layer.color

@@ -15,54 +15,60 @@ import { actionChangeTags } from '../../../actions';
 export default class ConflictMerge {
     constructor( instance ) {
         this.instance = instance;
-        this.context   = instance.context;
-        this.data      = instance.data;
+        this.context  = instance.context;
+        this.data     = instance.data;
     }
 
     async mergeFeatures() {
-        let features      = [ this.data.feature, this.data.againstFeature ],
-            reverse       = d3.event.ctrlKey,
-
-            mergedOsm     = await this.getMergedOsm( features ),
-            mergedNode    = mergedOsm[ 0 ],
-
-            featureToUpdate = this.data.feature,
-            featureToDelete = this.data.againstFeature;
-
-        if ( reverse ) {
-            featureToUpdate = featureToDelete;
-            featureToDelete = this.data.feature;
-        }
-
-        this.toggleMergeButton( true );
-
-        mergedNode.tags[ 'hoot:status' ] = 3;
-
-        this.context.perform(
-            actionChangeTags( featureToUpdate.id, mergedNode.tags ),
-            t( 'operations.change_tags.annotation' )
-        );
-
-        // feature that is updated is now the new merged node
-        mergedNode = featureToUpdate;
-
-        let mergeItems              = this.getMergeItems( features ),
-            { reviewRefsResponses } = await API.getReviewRefs( mergeItems ),
+        let features = _.clone( this.data.currentFeatures ),
+            reverse  = d3.event.ctrlKey,
+            featureToUpdate,
+            featureToDelete,
+            mergedFeature,
             reviewRefs;
 
-        if ( reviewRefsResponses.length !== mergeItems.length ) {
-            // TODO: throw error?
+        // show merge button
+        this.toggleMergeButton( true );
+
+        if ( reverse ) {
+            // flip features
+            features.reverse();
         }
 
-        reviewRefs = _.uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
-        reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ] );
+        featureToUpdate = features[ 0 ];
+        featureToDelete = features[ 1 ];
 
-        let missingRelationIds = this.getMissingRelationIds( reviewRefs );
+        try {
+            let mergedNode = await this.getMergedNode( features );
 
-        this.processMerge( reviewRefs, mergedNode, featureToDelete );
+            mergedNode.tags[ 'hoot:status' ] = 3;
+
+            this.context.perform(
+                actionChangeTags( featureToUpdate.id, mergedNode.tags ),
+                t( 'operations.change_tags.annotation' )
+            );
+
+            mergedFeature = featureToUpdate; // feature that is updated is now the new merged node
+        } catch ( e ) {
+            throw new Error( 'Unable to merge features' );
+        }
+
+        try {
+            let mergeItems              = this.getMergeItems( features ),
+                { reviewRefsResponses } = await API.getReviewRefs( mergeItems );
+
+            reviewRefs = _.uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
+            reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ] );
+
+            let missingRelationIds = this.getMissingRelationIds( reviewRefs );
+        } catch ( e ) {
+            throw new Error( 'Unable to retrieve review references for merged items' );
+        }
+
+        this.processMerge( reviewRefs, mergedFeature, featureToDelete );
     }
 
-    processMerge( reviewRefs, mergedNode, deleteNode ) {
+    processMerge( reviewRefs, mergedFeature, featureToDelete ) {
         let reviewRelationId = this.data.currentReviewItem.relationId;
 
         _.forEach( reviewRefs, ref => {
@@ -90,30 +96,30 @@ export default class ConflictMerge {
                 }
             }
 
-            let refRelationMember = refRelation.memberById( deleteNode.id );
+            let refRelationMember = refRelation.memberById( featureToDelete.id );
 
             if ( refRelationMember ) {
                 let exists = _.find( this.data.mergedItems, { id: refRelation.id } );
 
                 if ( exists && exists.obj ) {
-                    exists = exists.obj.id === mergedNode.id;
+                    exists = exists.obj.id === mergedFeature.id;
                 }
 
-                if ( !exists && !refRelation.memberById( mergedNode.id ) ) {
-                    let newNode = this.createNewRelationNodeMeta( mergedNode.id, refRelation.id, refRelationMember.index );
+                if ( !exists && !refRelation.memberById( mergedFeature.id ) ) {
+                    let newNode = this.createNewRelationNodeMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
 
                     this.data.mergedItems.push( newNode );
                 }
             }
         } );
 
-        let fe = this.context.hasEntity( deleteNode.id );
+        let fe = this.context.hasEntity( featureToDelete.id );
 
         if ( fe ) {
             fe.hootMeta = { 'isReviewDel': true };
         }
 
-        operationDelete( [ deleteNode.id ], this.context )();
+        operationDelete( [ featureToDelete.id ], this.context )();
     }
 
     /**
@@ -122,7 +128,7 @@ export default class ConflictMerge {
      * @param features - list of OSM nodes to merge
      * @returns {array} - merged OSM data
      */
-    async getMergedOsm( features ) {
+    async getMergedNode( features ) {
         let jxonFeatures = [ JXON.stringify( features[ 0 ].asJXON() ), JXON.stringify( features[ 1 ].asJXON() ) ],
             reverse      = d3.event.ctrlKey,
             mapId        = this.data.currentReviewItem.mapId,
@@ -137,7 +143,9 @@ export default class ConflictMerge {
         let mergedXml = await API.poiMerge( osmXml ),
             dom       = new DOMParser().parseFromString( mergedXml, 'text/xml' );
 
-        return await this.context.connection().parseXml( dom, mapId );
+        let featureOsm = await this.context.connection().parseXml( dom, mapId );
+
+        return featureOsm[ 0 ];
     }
 
     /**

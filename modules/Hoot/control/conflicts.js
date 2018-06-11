@@ -33,7 +33,7 @@ export default class Conflicts {
             reviewStats: null,
             currentReviewItem: null,
             currentRelation: null,
-            poiTableCols: null,
+            currentFeatures: null,
             mergedItems: []
         };
 
