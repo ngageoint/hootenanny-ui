@@ -8,13 +8,25 @@ import _            from 'lodash-es';
 import API          from '../api';
 import LayerManager from '../../managers/layerManager';
 
+/**
+ * @class ConflictTraverse
+ */
 export default class ConflictTraverse {
+    /**
+     * @param instance - conflict class
+     */
     constructor( instance ) {
         this.instance = instance;
         this.context  = instance.context;
         this.data     = instance.data;
     }
 
+    /**
+     * Jumps to next available reviewable relation
+     *
+     * @param direction - forward | backward
+     * @returns {Promise<void>}
+     */
     async jumpTo( direction ) {
         let reviewData = {},
             hasChanges = this.context.history().hasChanges();
@@ -53,18 +65,29 @@ export default class ConflictTraverse {
         }
     }
 
+    /**
+     * Go forward
+     */
     traverseForward() {
         if ( !this.vischeck() ) return;
 
         this.jumpTo( 'forward' );
     }
 
+    /**
+     * Go backward
+     */
     traverseBackward() {
         if ( !this.vischeck() ) return;
 
         this.jumpTo( 'backward' );
     }
 
+    /**
+     * Check to see if there are layers visible on the map
+     *
+     * @returns {boolean}
+     */
     vischeck() {
         let visible = _.filter( LayerManager.loadedLayers, layer => layer.visible );
 
