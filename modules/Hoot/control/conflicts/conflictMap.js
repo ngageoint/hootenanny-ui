@@ -36,7 +36,7 @@ export default class ConflictMap {
         // reference of current feature data in review process
         this.data.currentFeatures = [ feature, againstFeature ];
 
-        this.instance.info.buildPoiTable();
+        this.instance.info.buildTagTable();
 
         this.unsetHighlight();
 

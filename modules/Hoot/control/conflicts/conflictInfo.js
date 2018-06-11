@@ -23,7 +23,10 @@ export default class ConflictMetadata {
         ];
     }
 
-    buildPoiTable() {
+    /**
+     * Create tag table for revieawble items
+     */
+    buildTagTable() {
         let colData    = this.data.currentFeatures,
             tags1      = this.filterTags( colData[ 0 ] ? colData[ 0 ].tags : {} ),
             tags2      = this.filterTags( colData[ 1 ] ? colData[ 1 ].tags : {} ),
@@ -89,6 +92,9 @@ export default class ConflictMetadata {
             .on( 'mouseleave', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
     }
 
+    /**
+     * Show/hide tag table
+     */
     toggleTable() {
         let tableState = this.tableContainer.classed( 'hidden' );
 
@@ -98,12 +104,24 @@ export default class ConflictMetadata {
             .call( this.instance.tooltip );
     }
 
+    /**
+     * Filter tags to show in table
+     *
+     * @param tags - feature tags
+     * @returns {object} - filtered tags
+     */
     filterTags( tags ) {
         return _.filter( d3.entries( tags ), tag => {
             return _.every( this.tagBlacklist, t => !tag.key.match( t ) );
         } );
     }
 
+    /**
+     * Create a map of unique tags between features
+     *
+     * @param tags - feature tags
+     * @returns {IterableIterator} - map of unique tags
+     */
     mergeTags( tags ) {
         let tagKeys   = d3.set( _.map( _.flatten( tags ), 'key' ) ),
             mergedMap = d3.map();
@@ -125,6 +143,12 @@ export default class ConflictMetadata {
         return mergedMap.entries();
     }
 
+    /**
+     * Update metadata used to show status of review process. Display total items
+     * remaining for review and how many have already been resolved.
+     *
+     * @param note - Note about review
+     */
     updateMeta( note ) {
         let noteText    = '',
             currentMeta = this.data.reviewStats,
