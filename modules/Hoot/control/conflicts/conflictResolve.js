@@ -7,7 +7,13 @@
 import HootOSM from '../../managers/hootOsm';
 import Event   from '../../managers/eventManager';
 
+/**
+ * @class ConflictResolve
+ */
 export default class ConflictResolve {
+    /**
+     * @param instance - conflict class
+     */
     constructor( instance ) {
         this.instance = instance;
         this.context  = instance.context;
@@ -15,6 +21,9 @@ export default class ConflictResolve {
         this.data     = instance.data;
     }
 
+    /**
+     * Resolve current review item
+     */
     retainFeature() {
         let reviewItem      = this.data.currentReviewItem,
             currentRelation = this.instance.graphSync.getCurrentRelation();
@@ -46,6 +55,11 @@ export default class ConflictResolve {
         }
     }
 
+    /**
+     * Save any unsaved items and resolve all remaining reviewables
+     *
+     * @param layer - review layer
+     */
     acceptAll( layer ) {
         let hasChanges = this.context.history().hasChanges();
 
@@ -58,6 +72,11 @@ export default class ConflictResolve {
         }
     }
 
+    /**
+     * Resolve all remaining reviewables
+     *
+     * @param layer - review layer
+     */
     performAcceptAll( layer ) {
         let conflateController = this.sidebar.conflateForm.controller,
             key                = {
