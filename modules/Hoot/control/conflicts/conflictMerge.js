@@ -12,13 +12,24 @@ import { t }                from '../../../util/locale';
 import { operationDelete }  from '../../../operations/delete';
 import { actionChangeTags } from '../../../actions';
 
+/**
+ * @class ConflictMerge
+ */
 export default class ConflictMerge {
+    /**
+     * @param instance - conflict class
+     */
     constructor( instance ) {
         this.instance = instance;
         this.context  = instance.context;
         this.data     = instance.data;
     }
 
+    /**
+     * Merge together 2 POI nodes
+     *
+     * @returns {Promise<void>}
+     */
     async mergeFeatures() {
         let features = _.clone( this.data.currentFeatures ),
             reverse  = d3.event.ctrlKey,
@@ -68,6 +79,14 @@ export default class ConflictMerge {
         this.processMerge( reviewRefs, mergedFeature, featureToDelete );
     }
 
+    /**
+     * Process and finalize the merge by deleting the node being merged and by updating
+     * the tags of both nodes and their parent relations to indicate the relations have been resolved.
+     *
+     * @param reviewRefs - reference of nodes being merged
+     * @param mergedFeature - data of merged node
+     * @param featureToDelete - data of node to delete
+     */
     processMerge( reviewRefs, mergedFeature, featureToDelete ) {
         let reviewRelationId = this.data.currentReviewItem.relationId;
 
@@ -125,8 +144,8 @@ export default class ConflictMerge {
     /**
      * Generate and parse the new merged feature
      *
-     * @param features - list of OSM nodes to merge
-     * @returns {array} - merged OSM data
+     * @param features - list of nodes to merge
+     * @returns {object} - merged node
      */
     async getMergedNode( features ) {
         let jxonFeatures = [ JXON.stringify( features[ 0 ].asJXON() ), JXON.stringify( features[ 1 ].asJXON() ) ],
@@ -151,8 +170,8 @@ export default class ConflictMerge {
     /**
      * Generate parameters for nodes being merged together
      *
-     * @param features - OSM nodes
-     * @returns {*}
+     * @param features - list of nodes to merge
+     * @returns {array} - data of merged items
      */
     getMergeItems( features ) {
         return _.reduce( features, ( arr, feature ) => {
@@ -171,7 +190,7 @@ export default class ConflictMerge {
     /**
      * Remove any irrelevant reviews that don't reference either of the 2 items being merged together
      *
-     * @param reviewRefs - list of review references
+     * @param reviewRefs - reference of nodes being merged
      * @param mergeIds - ids of items being merged
      * @returns {array} - new list of relevant review items
      */
@@ -187,6 +206,13 @@ export default class ConflictMerge {
         }, [] );
     }
 
+    /**
+     * Generate metadata for merged node
+     *
+     * @param mergedNodeId - node ID
+     * @param relationId - relation ID
+     * @param mergedIdx - index of node in relation
+     */
     createNewRelationNodeMeta( mergedNodeId, relationId, mergedIdx ) {
         let node = new osmNode(),
             obj  = {};
@@ -202,6 +228,12 @@ export default class ConflictMerge {
         return obj;
     }
 
+    /**
+     * Get IDs of missing relations
+     *
+     * @param reviewRefs - reference of nodes being merged
+     * @returns {array} - list of missing relation IDs
+     */
     getMissingRelationIds( reviewRefs ) {
         return _.reduce( reviewRefs, ( arr, ref ) => {
             let relId = `r${ ref.reviewRelationId }_${ this.data.mapId }`;
@@ -214,6 +246,11 @@ export default class ConflictMerge {
         }, [] );
     }
 
+    /**
+     * Show/hide merge button in conflict review container
+     *
+     * @param hide - true | false
+     */
     toggleMergeButton( hide ) {
         d3.select( '.action-buttons .merge' ).classed( 'hidden', hide );
     }
