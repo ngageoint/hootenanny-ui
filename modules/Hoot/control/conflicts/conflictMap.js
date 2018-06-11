@@ -7,13 +7,27 @@
 import _                 from 'lodash-es';
 import { isValidCoords } from '../utilities';
 
+/**
+ * @class ConflictMap
+ */
 export default class ConflictMap {
+    /**
+     * @param instance - conflict class
+     */
     constructor( instance ) {
         this.instance = instance;
         this.context  = instance.context;
         this.data     = instance.data;
     }
 
+    /**
+     * Highlight and pan to the reviewable items on map. Also update review info to reflect
+     * metadata of review process.
+     *
+     * @param item1 - review item 1
+     * @param item2 - review item 2
+     * @param panTo - true | false
+     */
     highlightLayer( item1, item2, panTo ) {
         let feature        = item1 ? this.context.hasEntity( item1.id ) : null,
             againstFeature = item2 ? this.context.hasEntity( item2.id ) : null,
@@ -76,6 +90,9 @@ export default class ConflictMap {
         } );
     }
 
+    /**
+     * Pan map to current conflict
+     */
     panToConflict() {
         let panToId = null,
             extent  = null;
@@ -97,6 +114,16 @@ export default class ConflictMap {
         } );
     }
 
+    /**
+     * Calculate the index of the item to highlight when traversing between
+     * a relation's members when clicking next/prev in tag table
+     *
+     * @param actionIdx - index of member in relation to move from
+     * @param staticIdx - index of other highlighted member
+     * @param memberLen - number of members in relation
+     * @param direction - next | prev
+     * @returns {number} - new index
+     */
     calcNewIndex( actionIdx, staticIdx, memberLen, direction ) {
         let newIdx = direction === 'next' ? actionIdx + 1 : actionIdx - 1;
 

@@ -26,7 +26,7 @@ import {
  */
 export default class Conflicts {
     /**
-     * @param context - iD
+     * @param context - iD context
      * @param contentContainer - div to render conflict UI in
      * @param layer - merged layer
      */
