@@ -8,39 +8,35 @@ import SidebarForm from './sidebarForm';
 import Conflicts   from '../control/conflicts';
 import Event       from '../managers/eventManager';
 
+/**
+ * @class SidebarLayerReview
+ */
 export default class SidebarLayerReview extends SidebarForm {
+    /**
+     * @param sidebar - Hoot sidebar container
+     * @param container - div to render UI in
+     * @param layer - merged layer
+     */
     constructor( sidebar, container, layer ) {
         super( sidebar, container );
 
         this.layer = layer;
     }
 
+    /**
+     * Render UI of layer review form
+     */
     render() {
         super.render();
 
-        this.createFieldset();
-        this.createReviewCount();
-        this.createAcceptAllButton();
-
-        this.listen();
-
-        this.conflicts = new Conflicts( this.context, d3.select( '#content' ), this.layer );
-        this.conflicts.init();
-    }
-
-    createFieldset() {
         this.fieldset = this.innerWrapper.append( 'fieldset' );
-    }
 
-    createReviewCount() {
         this.reviewInfo = this.fieldset.append( 'div' )
             .classed( 'hoot-form-field', true )
             .append( 'span' )
             .classed( '_icon info review-count', true )
             .text( 'There are 0 reviews' );
-    }
 
-    createAcceptAllButton() {
         this.acceptAll = this.fieldset.append( 'div' )
             .classed( 'hoot-form-field', true )
             .append( 'a' )
@@ -52,12 +48,26 @@ export default class SidebarLayerReview extends SidebarForm {
 
                 this.conflicts.resolve.acceptAll( this.layer );
             } );
+
+        this.conflicts = new Conflicts( this.context, d3.select( '#content' ), this.layer );
+        this.conflicts.init();
+
+        this.listen();
     }
 
+    /**
+     * Update the number of remaining reviews
+     *
+     * @param text - text to replace old text
+     */
     updateReviewCount( text ) {
         this.reviewInfo.text( text );
     }
 
+    /**
+     * Update text to reflect that all reviews have been resolved.
+     * Display buttons to export data or to add another dataset
+     */
     reviewComplete() {
         this.reviewInfo.text( 'All reviews resolved!' );
         this.acceptAll.remove();
@@ -74,6 +84,9 @@ export default class SidebarLayerReview extends SidebarForm {
             .text( 'Add Another Dataset' );
     }
 
+    /**
+     * Listen for events
+     */
     listen() {
         Event.listen( 'meta-updated', this.updateReviewCount, this );
         Event.listen( 'review-complete', this.reviewComplete, this );
