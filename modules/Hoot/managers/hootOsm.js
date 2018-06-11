@@ -191,7 +191,6 @@ class HootOSM {
 
     changeTags( entityId, tags ) {
         return graph => {
-            console.log( 'graph: ', graph );
             let entity = graph.entity( entityId );
 
             return graph.replace( entity.update( { tags } ) );

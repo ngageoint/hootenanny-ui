@@ -19,9 +19,6 @@ export default class ConflictResolve {
         let reviewItem      = this.data.currentReviewItem,
             currentRelation = this.instance.graphSync.getCurrentRelation();
 
-        console.log( 'review item: ', reviewItem );
-        console.log( 'reviewable relation entity: ', currentRelation );
-
         if ( reviewItem ) {
             if ( currentRelation ) {
                 for ( let i = 0; i < currentRelation.members.length; i++ ) {

@@ -21,7 +21,15 @@ import {
     tooltipHtml
 } from './utilities';
 
+/**
+ * @class Conflicts
+ */
 export default class Conflicts {
+    /**
+     * @param context - iD
+     * @param contentContainer - div to render conflict UI in
+     * @param layer - merged layer
+     */
     constructor( context, contentContainer, layer ) {
         this.context          = context;
         this.contentContainer = contentContainer;
@@ -40,10 +48,16 @@ export default class Conflicts {
         this.buttonEnabled = true;
     }
 
+    /**
+     * Deactivate conflict review
+     */
     deactivate() {
         this.container.remove();
     }
 
+    /**
+     * Initialize conflict review and all of its submodules
+     */
     async init() {
         let modules = await Promise.all( [
             new ConflictInfo( this ),
@@ -74,47 +88,30 @@ export default class Conflicts {
         this.traverse.jumpTo( 'forward' );
     }
 
+    /**
+     * Render conflict review UI
+     */
     render() {
-        this.buttons = conflictButtons.call( this );
+        this.buttonData = conflictButtons.call( this );
 
-        this.createContainer();
-        this.createInnerWrapper();
-        this.createLeftRightContainers();
-        this.createMetaDialog();
-        this.createActionButtons();
-
-        this.bindKeys();
-    }
-
-    createContainer() {
         this.container = this.contentContainer.append( 'div' )
             .attr( 'id', 'conflicts-container' )
             .classed( 'pin-bottom', true );
-    }
 
-    createInnerWrapper() {
         this.innerWrapper = this.container.append( 'div' )
             .classed( 'inner-wrapper', true );
-    }
 
-    createLeftRightContainers() {
         this.leftContainer = this.innerWrapper.append( 'div' )
             .classed( 'left-container fillD', true );
 
         this.rightContainer = this.innerWrapper.append( 'div' )
             .classed( 'right-container', true );
-    }
 
-    createMetaDialog() {
         this.metaDialog = this.leftContainer.append( 'div' )
             .classed( 'meta-dialog', true )
             .append( 'span' )
             .classed( '_icon info light', true )
             .html( '<strong class="review-note">Initialzing...</strong>' );
-    }
-
-    createActionButtons() {
-        let buttons = conflictButtons.call( this );
 
         this.tooltip = tooltip()
             .placement( 'top' )
@@ -124,7 +121,7 @@ export default class Conflicts {
         this.actionButtons = this.leftContainer.append( 'div' )
             .classed( 'action-buttons', true )
             .selectAll( 'button' )
-            .data( buttons ).enter()
+            .data( this.buttonData ).enter()
             .append( 'button' )
             .attr( 'class', d => d.class )
             .text( d => d.text )
@@ -137,10 +134,15 @@ export default class Conflicts {
                 }
             } )
             .call( this.tooltip );
+
+        this.bindKeys();
     }
 
+    /**
+     * Bind key press events to actions buttons
+     */
     bindKeys() {
-        let bt = this.buttons;
+        let bt = this.buttonData;
 
         let keybinding = d3keybinding( 'conflicts' )
             .on( bt[ 0 ].cmd, () => {
@@ -172,6 +174,12 @@ export default class Conflicts {
             .call( keybinding );
     }
 
+    /**
+     * Get key code based on current OS
+     *
+     * @param code
+     * @returns {string} - key code
+     */
     cmd( code ) {
         if ( getOS() === 'mac' ) {
             return code;
@@ -201,6 +209,11 @@ export default class Conflicts {
         return result;
     }
 
+    /**
+     * Fire key press action
+     *
+     * @param button - button data
+     */
     callHotkeyAction( button ) {
         button.action();
     }

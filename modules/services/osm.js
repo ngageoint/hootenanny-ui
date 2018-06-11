@@ -411,8 +411,6 @@ export default {
 
 
     putChangeset: function(changeset, changes, mapId, mergedItems, callback) {
-        console.log( 'putchangeset' );
-        console.log( changes );
         if (_changeset.inflight) {
             return callback({ message: 'Changeset already inflight', status: -2 }, changeset);
         }
@@ -452,15 +450,11 @@ export default {
             _changeset.open = changesetID;
             changeset = changeset.update({ id: changesetID });
 
-            console.log( 'merged items: ', mergedItems );
-
             _forEach( mergedItems, item => {
                 let refId     = item.id,
                     newMember = item.obj;
 
                 let changedRel = _find( changes.modified, feat => feat.id === refId );
-
-                console.log( 'changed rel: ', changedRel );
 
                 if ( changedRel ) {
                     if ( changedRel.members.length >= newMember.index ) {
@@ -477,8 +471,6 @@ export default {
                 } else {
                     let modifiedRel = HootOSM.context.hasEntity( refId );
 
-                    console.log( 'modified relation: ', modifiedRel );
-
                     if ( modifiedRel ) {
                         if ( modifiedRel.members.length >= newMember.index ) {
                             modifiedRel.members.splice( newMember.index, 0, newMember );
@@ -492,8 +484,6 @@ export default {
                     }
                 }
             } );
-
-            console.log( JXON.stringify(changeset.osmChangeJXON(changes)) );
 
             let path = '/api/0.6/changeset/' + changesetID + '/upload';
             path += mapId ? `?mapId=${ mapId }` : '';

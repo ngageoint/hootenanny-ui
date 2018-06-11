@@ -71,8 +71,6 @@ export default class ConflictGraphSync {
     }
 
     updateReviewTagsForResolve( reviewRel ) {
-        console.log( 'update review tags for resolve: ', reviewRel );
-
         let tags    = reviewRel.tags,
             newTags = _.clone( tags );
 
