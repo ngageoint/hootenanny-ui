@@ -1,0 +1,28 @@
+#manage-panel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 60px;
+    z-index: 11;
+
+    .panel-body {
+        position: absolute;
+        width: calc(100vw - 220px);
+        min-width: 548px;
+        height: 100%;
+        left: 220px;
+        padding: 20px;
+    }
+
+    .panel-content {
+        position: relative;
+        //top: 60px;
+    }
+}
+
+#manage-sidebar-menu {
+    position: absolute;
+    width: 220px;
+    height: 100%;
+    font-size: 14px;
+}

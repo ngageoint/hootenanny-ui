@@ -105,7 +105,7 @@ export default class SidebarForm {
             .attr( 'class', d => {
                 let iconClass = d.type === 'add' ? 'plus' : d.type === 'conflate' ? 'conflate' : 'check';
 
-                return `toggle-button dark button light _icon big text-light strong block round ${ iconClass }`;
+                return `toggle-button button _icon big light text-light strong block round ${ iconClass }`;
             } )
             .on( 'click', d => this.toggle( d.id ) );
 

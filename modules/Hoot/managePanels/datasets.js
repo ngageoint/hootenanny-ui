@@ -32,35 +32,18 @@ export default class Datasets extends Tab {
     }
 
     /**
-     * Render all view inside tab body
+     * Render view inside tab body
      */
     render() {
         super.render();
 
-        this.createButtonContainer();
-        this.createTable();
-        this.createButtons();
-        this.renderFolderTree();
-
-        this.listen();
-    }
-
-    /**
-     * Create the container that wraps all dataset action buttons
-     */
-    createButtonContainer() {
-        this.buttonContainer = this.panelContent
+        let buttonContainer = this.panelContent
             .append( 'div' )
             .classed( 'dataset-buttons flex', true )
             .selectAll( 'button.dataset-action-button' )
             .data( datasetButtons );
-    }
 
-    /**
-     * Create each dataset action button
-     */
-    createButtons() {
-        let eachButton = this.buttonContainer.enter()
+        let buttons = buttonContainer.enter()
             .append( 'button' )
             .classed( 'dataset-action-button primary text-light flex align-center', true )
             .on( 'click', async item => {
@@ -91,29 +74,30 @@ export default class Datasets extends Tab {
                 }
             } );
 
-        eachButton.append( 'i' )
+        buttons.append( 'i' )
             .classed( 'material-icons', true )
             .text( d => d.icon );
 
-        eachButton.append( 'span' )
+        buttons.append( 'span' )
             .classed( 'label', true )
             .text( d => d.title );
-    }
 
-    /**
-     * Create dataset table
-     */
-    createTable() {
-        this.table = this.panelContent.append( 'div' )
+        let table = this.panelContent.append( 'div' )
             .attr( 'id', 'dataset-table' )
             .classed( 'filled-white strong overflow', true );
 
-        this.table.insert( 'div' ).attr( 'id', 'dataset-table-header' )
+        table.insert( 'div' ).attr( 'id', 'dataset-table-header' )
             .selectAll( 'th' )
             .data( datasetTableHeaders )
             .enter().append( 'th' )
             .attr( 'style', d => `width: ${ d.width }` )
             .text( d => d.title );
+
+        this.table = table;
+
+        this.renderFolderTree();
+
+        this.listen();
     }
 
     /**
@@ -127,6 +111,12 @@ export default class Datasets extends Tab {
         this.folderTree.render();
     }
 
+    /**
+     * Remove one or multiple datasets from the table
+     *
+     * @param d
+     * @param layers
+     */
     deleteDataset( { d, layers } ) {
         let warningMsg = d.type === 'folder' ? 'folder and all data?' : 'dataset?';
 

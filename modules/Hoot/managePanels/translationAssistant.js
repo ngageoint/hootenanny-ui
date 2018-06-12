@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import Tab from './tab';
+import { transAssistButtons } from '../config/domElements';
 
 /**
  * Creates the translation-assistant tab in the settings panel
@@ -35,17 +36,13 @@ export default class TranslationAssistant extends Tab {
     render() {
         super.render();
 
-        this.createUploadForm();
-    }
-
-    createUploadForm() {
-        this.uploadForm = this.panelContent
+        let uploadForm = this.panelContent
             .append( 'form' )
             .classed( 'trans-assist-form round keyline-all', true );
 
-        let schema = this.uploadForm
+        let schema = uploadForm
             .append( 'div' )
-            .classed( 'fill-dark0 pad1 space-bottom1', true );
+            .classed( 'schema-select-container fill-dark0', true );
 
         schema
             .append( 'label' )
@@ -72,5 +69,26 @@ export default class TranslationAssistant extends Tab {
             .classed( 'inline', true )
             .attr( 'for', d => d.name )
             .html( d => d.name );
+
+        let buttonContainer = uploadForm
+            .append( 'div' )
+            .classed( 'upload-button-container pad1x pad2y', true )
+            .selectAll( 'button' )
+            .data( transAssistButtons );
+
+        let buttons = buttonContainer
+            .enter()
+            .append( 'button' )
+            .classed( 'primary text-light flex align-center', true );
+
+        buttons
+            .append( 'i' )
+            .classed( 'material-icons', true )
+            .text( d => d.icon );
+
+        buttons
+            .append( 'span' )
+            .classed( 'label', true )
+            .text( d => d.title );
     }
 }
