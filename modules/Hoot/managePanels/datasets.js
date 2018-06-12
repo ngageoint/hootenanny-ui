@@ -6,10 +6,10 @@
 
 import _             from 'lodash-es';
 import API           from '../control/api';
-import FolderTree    from '../models/folderTree';
-import DatasetImport from '../forms/datasetImport';
 import Event         from '../managers/eventManager';
 import LayerManager  from '../managers/layerManager';
+import FolderTree    from '../models/folderTree';
+import DatasetImport from '../forms/datasetImport';
 import Tab           from './tab';
 
 import {

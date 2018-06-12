@@ -4,8 +4,9 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import Tab from './tab';
+import API                    from '../control/api';
 import { transAssistButtons } from '../config/domElements';
+import Tab                    from './tab';
 
 /**
  * Creates the translation-assistant tab in the settings panel
@@ -104,7 +105,7 @@ export default class TranslationAssistant extends Tab {
             .attr( 'accept', '.shp, .shx, .dbf, .zip' )
             .classed( 'hidden', true )
             .on( 'change', function( d ) {
-                instance.upload.call( this, d.uploadType );
+                instance.processSchemaData.call( this, d.uploadType );
             } );
 
         buttons
@@ -118,7 +119,7 @@ export default class TranslationAssistant extends Tab {
             .text( d => d.title );
     }
 
-    upload( type ) {
+    async processSchemaData( type ) {
         let formData = new FormData();
 
         for ( let i = 0; i < this.files.length; i++ ) {
@@ -130,6 +131,9 @@ export default class TranslationAssistant extends Tab {
         // if the same files/folder is selected twice in a row
         this.value = null;
 
+        let upload     = await API.uploadSchemaData( type, formData ),
+            attrValues = await API.getSchemaAttrValues( upload );
 
+        console.log( attrValues );
     }
 }

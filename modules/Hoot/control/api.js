@@ -52,7 +52,7 @@ class API {
                 // TODO: error handling
                 if ( status !== 'running' ) {
                     clearInterval( this.intervals[ jobId ] );
-                    res( status );
+                    res( jobId );
                 }
             }, this.queryInterval );
         } );
@@ -247,6 +247,16 @@ class API {
             .then( resp => resp.data );
     }
 
+    getSchemaAttrValues( jobId ) {
+        const params = {
+            path: `/ogr/info/${ jobId }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     /**
      * Upload imported files to the database
      *
@@ -273,6 +283,27 @@ class API {
 
         return this.request( params )
             .then( resp => resp.data );
+    }
+
+    /**
+     * Upload imported schema files to the database for processing
+     *
+     * @param type - FILE | DIR
+     * @param data - form data
+     */
+    uploadSchemaData( type, data ) {
+        const params = {
+            path: `/ogr/info/upload?INPUT_TYPE=${ type }`,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobId ) )
+            .then( jobId => jobId );
     }
 
     /**
