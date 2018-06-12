@@ -1,11 +1,11 @@
-#settings-panel {
+#manage-panel {
     position: absolute;
     width: 100%;
     height: 100%;
     top: 60px;
     z-index: 11;
 
-    .hoot-util-wrapper {
+    .manage-body {
         position: absolute;
         width: calc(100vw - 220px);
         min-width: 548px;
@@ -13,20 +13,20 @@
         left: 220px;
     }
 
-    .hoot-util-content {
+    .manage-content {
         position: relative;
         top: 60px;
     }
 }
 
-#settings-sidebar {
+#manage-sidebar {
     position: absolute;
     width: 220px;
     height: 100%;
     font-size: 14px;
 }
 
-#util-datasets {
+#manage-datasets {
     .dataset-action-button {
         padding: 0 10px;
         border-right: 1px solid white;

@@ -19,7 +19,7 @@ import { getBrowserInfo }     from '../control/utilities';
  * @param translations - All translations from database
  * @constructor
  */
-export default class DatasetImportForm {
+export default class DatasetImport {
     constructor( translations ) {
         this.folderList   = FolderManager.folderPaths;
         this.importTypes  = importDatasetTypes;

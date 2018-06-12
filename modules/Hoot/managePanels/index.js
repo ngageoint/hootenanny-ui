@@ -13,7 +13,7 @@ import ReviewBookmarkNotes  from './reviewBookmarkNotes';
 import About                from './about';
 
 /**
- * Export all uninitialized settingsPanelTabs in an array
+ * Export all uninitialized managePanels in an array
  */
 export default [
     Datasets,

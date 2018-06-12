@@ -290,10 +290,10 @@ you're going to update the presets, [review the Presets README](/data/presets/RE
 We use the [Airbnb style for JavaScript](https://github.com/airbnb/javascript) with
 only one difference:
 
-**4 space soft settingsPanelTabs always for JavaScript, not 2.**
+**4 space soft managePanels always for JavaScript, not 2.**
 
 No aligned `=`, no aligned arguments, spaces are either indents or the 1
-space between expressions. No hard settingsPanelTabs, ever.
+space between expressions. No hard managePanels, ever.
 
 JavaScript code should pass through [ESLint](http://eslint.org/) with no
 warnings. iD uses [ES6 modules](http://exploringjs.com/es6/ch_modules.html) to
@@ -314,7 +314,7 @@ always, indented by the level of the tree:
 
 ## CSS
 
-Just like HTML and JavaScript, 4 space soft settingsPanelTabs always.
+Just like HTML and JavaScript, 4 space soft managePanels always.
 
 ```css
 .radial-menu-tooltip {

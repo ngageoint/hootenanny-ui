@@ -18,9 +18,25 @@ export default class TranslationAssistant extends Tab {
 
         this.name = 'Translation Assistant';
         this.id   = 'util-translation-assistant';
+
+        this.options = [
+            {
+                name: 'OSM',
+                enabled: true,
+                checked: true
+            },
+            {
+                name: 'TDSv61',
+                enabled: true
+            }
+        ];
     }
 
     render() {
         super.render();
+
+        //this.container = this.bodyContent
+        //    .append( 'div' )
+            //.classed( 'trans-assistant-container' )
     }
 }

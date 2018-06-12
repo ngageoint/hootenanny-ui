@@ -7,12 +7,12 @@
 import Event from '../managers/eventManager';
 
 /**
- * Base class that all other settingsPanelTabs in the settings panel extends from
+ * Base class that all other managePanels in the settings panel extends from
  */
 export default class Tab {
-    constructor( [ panel, sidebar ] ) {
+    constructor( [ panel, sidebarMenu ] ) {
         this.panel   = panel;
-        this.sidebar = sidebar;
+        this.sidebarMenu = sidebarMenu;
 
         this.name = null;
         this.id   = null;
@@ -22,12 +22,12 @@ export default class Tab {
      * Render tab header in settings panel sidebar
      */
     render() {
-        this.tabHeader = this.sidebar
+        this.tabHeader = this.sidebarMenu
             .append( 'div' )
-            .classed( 'hoot-util-header pad1y center', true )
+            .classed( 'manage-tab-header pad1y center', true )
             .attr( 'data-id', `#${this.id}` )
             .on( 'click', function() {
-                Event.send( 'toggle-settings-tab', this );
+                Event.send( 'toggle-manage-tab', this );
             } );
 
         this.tabLabel = this.tabHeader
@@ -36,11 +36,11 @@ export default class Tab {
             .classed( 'pointer', true )
             .style( 'font-style', 'normal' );
 
-        this.tabWrapper = this.panel.append( 'div' )
-            .classed( 'hoot-util-wrapper wrapper fill-light', true )
+        this.bodyWrapper = this.panel.append( 'div' )
+            .classed( 'manage-body wrapper fill-light', true )
             .attr( 'id', this.id );
 
-        this.tabBody = this.tabWrapper.append( 'div' )
-            .classed( 'hoot-util-content', true );
+        this.bodyContent = this.bodyWrapper.append( 'div' )
+            .classed( 'manage-content', true );
     }
 }

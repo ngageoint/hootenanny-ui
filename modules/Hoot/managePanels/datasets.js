@@ -4,13 +4,13 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import _                 from 'lodash-es';
-import API               from '../control/api';
-import FolderTree        from '../models/folderTree';
-import DatasetImportForm from '../forms/datasetImportForm';
-import Event             from '../managers/eventManager';
-import LayerManager      from '../managers/layerManager';
-import Tab               from './tab';
+import _             from 'lodash-es';
+import API           from '../control/api';
+import FolderTree    from '../models/folderTree';
+import DatasetImport from '../forms/datasetImport';
+import Event         from '../managers/eventManager';
+import LayerManager  from '../managers/layerManager';
+import Tab           from './tab';
 
 import {
     datasetButtons,
@@ -28,7 +28,7 @@ export default class Datasets extends Tab {
         super( params );
 
         this.name = 'Datasets';
-        this.id   = 'util-datasets';
+        this.id   = 'manage-datasets';
     }
 
     /**
@@ -49,7 +49,7 @@ export default class Datasets extends Tab {
      * Create the container that wraps all dataset action buttons
      */
     createButtonContainer() {
-        this.buttonContainer = this.tabBody
+        this.buttonContainer = this.bodyContent
             .append( 'div' )
             .classed( 'dataset-buttons flex', true )
             .selectAll( 'button.dataset-action-button' )
@@ -70,7 +70,7 @@ export default class Datasets extends Tab {
                     case 'import-dataset-single': {
                         let translations = await API.getTranslations();
 
-                        new DatasetImportForm( translations ).render();
+                        new DatasetImport( translations ).render();
                         break;
                     }
                     case 'import-dataset-directory': {
@@ -104,7 +104,7 @@ export default class Datasets extends Tab {
      * Create dataset table
      */
     createTable() {
-        this.table = this.tabBody.append( 'div' )
+        this.table = this.bodyContent.append( 'div' )
             .attr( 'id', 'dataset-table' )
             .classed( 'filled-white strong overflow', true );
 

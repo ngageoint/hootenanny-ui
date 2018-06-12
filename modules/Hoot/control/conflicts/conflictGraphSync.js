@@ -74,7 +74,8 @@ export default class ConflictGraphSync {
             }
 
             return this.loadMissingFeatures( relId )
-                .then( () => this.validateMemberCount( relId ) );
+                .then( () => this.validateMemberCount( relId ) )
+                .catch( err => console.log( err ) );
         }
     }
 
@@ -119,17 +120,21 @@ export default class ConflictGraphSync {
      * @returns {Promise<[]>}
      */
     async loadMissingFeatures( featureId ) {
-        let type       = osmEntity.id.type( featureId ) + 's',
-            mapId      = featureId.split( '_' )[ 1 ],
-            osmIds     = _.map( [ featureId ], osmEntity.id.toOSM ),
+        try {
+            let type       = osmEntity.id.type( featureId ) + 's',
+                mapId      = featureId.split( '_' )[ 1 ],
+                osmIds     = _.map( [ featureId ], osmEntity.id.toOSM ),
 
-            featureXml = await API.getFeatures( type, mapId, osmIds ),
-            document   = new DOMParser().parseFromString( featureXml, 'text/xml' ),
-            featureOsm = await this.context.connection().parseXml( document, mapId );
+                featureXml = await API.getFeatures( type, mapId, osmIds ),
+                document   = new DOMParser().parseFromString( featureXml, 'text/xml' ),
+                featureOsm = await this.context.connection().parseXml( document, mapId );
 
-        this.context.history().merge( featureOsm );
+            this.context.history().merge( featureOsm );
 
-        return Promise.all( _.map( featureOsm, feature => this.updateMissingFeature( feature ) ) );
+            return Promise.all( _.map( featureOsm, feature => this.updateMissingFeature( feature ) ) );
+        } catch( e ) {
+            throw new Error( 'Unable to retrieve missing features from Hoot DB.' );
+        }
     }
 
     /**
