@@ -17,9 +17,9 @@ export default class TranslationAssistant extends Tab {
         super( params );
 
         this.name = 'Translation Assistant';
-        this.id   = 'util-translation-assistant';
+        this.id   = 'manage-translation-assistant';
 
-        this.options = [
+        this.schemaOptions = [
             {
                 name: 'OSM',
                 enabled: true,
@@ -35,8 +35,42 @@ export default class TranslationAssistant extends Tab {
     render() {
         super.render();
 
-        //this.container = this.bodyContent
-        //    .append( 'div' )
-            //.classed( 'trans-assistant-container' )
+        this.createUploadForm();
+    }
+
+    createUploadForm() {
+        this.uploadForm = this.panelContent
+            .append( 'form' )
+            .classed( 'trans-assist-form round keyline-all', true );
+
+        let schema = this.uploadForm
+            .append( 'div' )
+            .classed( 'fill-dark0 pad1 space-bottom1', true );
+
+        schema
+            .append( 'label' )
+            .classed( 'inline', true )
+            .html( 'Tag Schema' );
+
+        let schemaOpts = schema
+            .selectAll( 'span' )
+            .data( this.schemaOptions )
+            .enter()
+            .append( 'span' )
+            .classed( 'inline pad0', true );
+
+        schemaOpts.append( 'input' )
+            .classed( 'inline schema-option', true )
+            .attr( 'type', 'radio' )
+            .attr( 'name', 'schema' )
+            .attr( 'id', d => d.name )
+            .attr( 'value', d => d.name )
+            .property( 'disabled', d => !d.enabled )
+            .property( 'checked', d => d.checked );
+
+        schemaOpts.append( 'label' )
+            .classed( 'inline', true )
+            .attr( 'for', d => d.name )
+            .html( d => d.name );
     }
 }

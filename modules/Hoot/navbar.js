@@ -19,20 +19,40 @@ export default class Navbar {
      * Render navbar and all of its view
      */
     async render() {
-        // create navbar container
-        let navbar = this.container
+        this.createNavbar();
+        this.createLeftContainer();
+        this.createMenuButton();
+        this.createLogo();
+
+        return this;
+    }
+
+    /**
+     * Create navbar container
+     *
+     * @returns {d3} - navbar container
+     */
+    createNavbar() {
+        this.navbar = this.container
             .insert( 'nav', ':first-child' )
             .attr( 'id', 'navbar' )
             .classed( 'contain text-white fill-dark', true );
+    }
 
-        // Create left-aligned container
-        let leftContainer = navbar
+    /**
+     * Create left-aligned container
+     */
+    createLeftContainer() {
+        this.leftContainer = this.navbar
             .append( 'div' )
             .classed( 'nav-item', true );
+    }
 
-        // create menu button in the left container for toggling manage panel
-        let menuButton = leftContainer
-            .append( 'div' )
+    /**
+     * Create a menu button in the left container
+     */
+    createMenuButton() {
+        this.menuButton = this.leftContainer.append( 'div' )
             .classed( 'button dark text-light pointer icon-container flex justify-between', true )
             .on( 'click', function() {
                 d3.event.stopPropagation();
@@ -50,17 +70,20 @@ export default class Navbar {
                 d3.selectAll( '.context-menu, .tools-menu, .dataset-options-menu' ).remove();
             } );
 
-        menuButton.append( 'i' )
+        this.menuButton.append( 'i' )
             .classed( 'medium material-icons', true )
             .text( 'menu' );
+    }
 
-        leftContainer
+    /**
+     * Create the Hoot logo in the left container
+     */
+    createLogo() {
+        this.leftContainer
             .append( 'div' )
             .classed( 'logo-container', true )
             .append( 'img' )
             .attr( 'src', './img/hoot_logo_update.png' )
             .classed( 'pointer hoot-logo', true );
-
-        return this;
     }
 }

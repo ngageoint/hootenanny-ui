@@ -36,17 +36,17 @@ export default class ManagePanel {
             .attr( 'id', 'manage-panel' )
             .classed( 'hidden', true );
 
-        this.sidebarMenu = this.panel.append( 'div' )
-            .attr( 'id', 'manage-sidebar' )
+        this.panelSidebar = this.panel.append( 'div' )
+            .attr( 'id', 'manage-sidebar-menu' )
             .classed( 'wrapper fill-light keyline-right', true );
 
-        this.sidebarMenu.append( 'h3' )
+        this.panelSidebar.append( 'h3' )
             .classed( 'manage-header pad1y pointer strong center', true )
             .append( 'label' )
             .text( 'Settings Panel' );
 
         // Create all tab items in the panel
-        Promise.all( _.map( this.manageTabs, Tab => new Tab( this.panel, this.sidebarMenu ).render() ) );
+        Promise.all( _.map( this.manageTabs, Tab => new Tab( this.panel, this.panelSidebar ).render() ) );
 
         this.listen();
 
@@ -65,7 +65,7 @@ export default class ManagePanel {
         this.panel.node()
             .appendChild( activeBody );
 
-        d3.selectAll( '.manage-tab-header' )
+        this.panelSidebar.selectAll( '.tab-header' )
             .classed( 'strong', false );
 
         d3.select( d )

@@ -226,6 +226,10 @@ input {
     background-color: $dark;
 }
 
+.fill-dark0 {
+    background-color: $dark-opacity05;
+}
+
 button, .button {
     &.primary {
         background-color: $blue;

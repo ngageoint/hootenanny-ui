@@ -49,7 +49,7 @@ export default class Datasets extends Tab {
      * Create the container that wraps all dataset action buttons
      */
     createButtonContainer() {
-        this.buttonContainer = this.bodyContent
+        this.buttonContainer = this.panelContent
             .append( 'div' )
             .classed( 'dataset-buttons flex', true )
             .selectAll( 'button.dataset-action-button' )
@@ -104,7 +104,7 @@ export default class Datasets extends Tab {
      * Create dataset table
      */
     createTable() {
-        this.table = this.bodyContent.append( 'div' )
+        this.table = this.panelContent.append( 'div' )
             .attr( 'id', 'dataset-table' )
             .classed( 'filled-white strong overflow', true );
 
