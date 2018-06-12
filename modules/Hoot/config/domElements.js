@@ -70,12 +70,12 @@ export const transAssistButtons = [
     {
         title: 'Upload File(s)',
         icon: 'play_for_work',
-        onClick: ''
+        uploadType: 'FILE'
     },
     {
         title: 'Upload Folder',
         icon: 'move_to_inbox',
-        onClick: ''
+        uploadType: 'DIR'
     }
 ];
 

@@ -36,11 +36,19 @@ export default class TranslationAssistant extends Tab {
     render() {
         super.render();
 
-        let uploadForm = this.panelContent
+        this.createUploadForm();
+        this.createSchemaSelector();
+        this.createUploadButtons();
+    }
+
+    createUploadForm() {
+        this.uploadForm = this.panelContent
             .append( 'form' )
             .classed( 'trans-assist-form round keyline-all', true );
+    }
 
-        let schema = uploadForm
+    createSchemaSelector() {
+        let schema = this.uploadForm
             .append( 'div' )
             .classed( 'schema-select-container fill-dark0', true );
 
@@ -69,8 +77,12 @@ export default class TranslationAssistant extends Tab {
             .classed( 'inline', true )
             .attr( 'for', d => d.name )
             .html( d => d.name );
+    }
 
-        let buttonContainer = uploadForm
+    createUploadButtons() {
+        let instance = this;
+
+        let buttonContainer = this.uploadForm
             .append( 'div' )
             .classed( 'upload-button-container pad1x pad2y', true )
             .selectAll( 'button' )
@@ -79,7 +91,21 @@ export default class TranslationAssistant extends Tab {
         let buttons = buttonContainer
             .enter()
             .append( 'button' )
-            .classed( 'primary text-light flex align-center', true );
+            .classed( 'primary text-light flex align-center', true )
+            .on( 'click', function( d ) {
+                d3.select( this ).select( 'input' ).node().click();
+            } );
+
+        buttons
+            .append( 'input' )
+            .attr( 'type', 'file' )
+            .attr( 'name', 'taFiles' )
+            .attr( 'multiple', true )
+            .attr( 'accept', '.shp, .shx, .dbf, .zip' )
+            .classed( 'hidden', true )
+            .on( 'change', function( d ) {
+                instance.upload.call( this, d.uploadType );
+            } );
 
         buttons
             .append( 'i' )
@@ -90,5 +116,20 @@ export default class TranslationAssistant extends Tab {
             .append( 'span' )
             .classed( 'label', true )
             .text( d => d.title );
+    }
+
+    upload( type ) {
+        let formData = new FormData();
+
+        for ( let i = 0; i < this.files.length; i++ ) {
+            let file = this.files[ i ];
+            formData.append( i, file );
+        }
+
+        // reset the file input value so on change will fire
+        // if the same files/folder is selected twice in a row
+        this.value = null;
+
+
     }
 }

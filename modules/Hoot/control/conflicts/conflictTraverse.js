@@ -53,7 +53,7 @@ export default class ConflictTraverse {
             reviewData.direction = direction;
         }
 
-        let reviewItem = await API.reviewGetNext( reviewData );
+        let reviewItem = await API.getNextReview( reviewData );
 
         if ( reviewItem.resultCount > 0 ) {
             this.data.currentReviewItem = reviewItem;

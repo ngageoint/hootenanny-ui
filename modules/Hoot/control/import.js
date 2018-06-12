@@ -22,7 +22,7 @@ class Import {
     }
 
     importData( data ) {
-        return API.upload( data )
+        return API.uploadDataset( data )
             .then( resp => this.importStatus( resp[ 0 ].jobid ) );
     }
 

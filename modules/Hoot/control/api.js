@@ -38,6 +38,12 @@ class API {
         } );
     }
 
+    /**
+     * Recursively poll the backend to check the status of a job
+     *
+     * @param jobId
+     * @returns {Promise<any>}
+     */
     statusInterval( jobId ) {
         return new Promise( res => {
             this.intervals[ jobId ] = setInterval( async () => {
@@ -53,7 +59,7 @@ class API {
     }
 
     /**
-     * Status of job
+     * Get the status of an ongoing backend job
      *
      * @param id - job id
      * @returns {Promise} - job status
@@ -142,6 +148,12 @@ class API {
             .then( resp => resp.data );
     }
 
+    /**
+     * Get map tags using map ID
+     *
+     * @param mapId
+     * @returns {Promise<any>}
+     */
     getTags( mapId ) {
         const params = {
             path: `/osm/api/0.6/map/tags?mapid=${ mapId }`,
@@ -184,6 +196,13 @@ class API {
             .then( resp => resp.data );
     }
 
+    /**
+     * Get statistics on conflict review process to see how many reviews are left
+     * and how many have already been resolved
+     *
+     * @param mapId
+     * @returns {Promise<any>}
+     */
     getReviewStatistics( mapId ) {
         const params = {
             path: `/job/review/statistics?mapId=${ mapId }`,
@@ -210,7 +229,15 @@ class API {
             .then( resp => resp.data );
     }
 
-    reviewGetNext( { mapId, sequence, direction } ) {
+    /**
+     * Get next review item in current conflict review process
+     *
+     * @param mapId
+     * @param sequence
+     * @param direction
+     * @returns {Promise<any>}
+     */
+    getNextReview( { mapId, sequence, direction } ) {
         const params = {
             path: `/job/review/next?mapid=${ mapId }&offsetseqid=${ sequence }&direction=${ direction }`,
             method: 'GET'
@@ -226,7 +253,7 @@ class API {
      * @param data - upload data
      * @returns {Promise} - request
      */
-    upload( data ) {
+    uploadDataset( data ) {
         if ( !data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME ) {
             return false;
         }
@@ -274,7 +301,7 @@ class API {
     }
 
     /**
-     * Retrieve all folders from the database
+     * Get all folders from the database
      *
      * @returns {Promise|array} - folders
      */
@@ -288,6 +315,14 @@ class API {
             .then( resp => resp.data );
     }
 
+    /**
+     * Get missing features
+     *
+     * @param type - feature type (node | way | relation)
+     * @param mapId - map ID
+     * @param featIds - list of feature IDs to retrieve
+     * @returns {Promise<any>}
+     */
     getFeatures( type, mapId, featIds ) {
         const params = {
             path: `/osm/api/0.6/${ type }?mapId=${ mapId }&elementIds=${ featIds.join() }`,
@@ -311,6 +346,12 @@ class API {
             .then( resp => resp.data );
     }
 
+    /**
+     * Delete a layer from the database
+     *
+     * @param layerName - name of layer to delete
+     * @returns {Promise<any>}
+     */
     deleteLayer( layerName ) {
         const params = {
             path: `/osm/api/0.6/map/delete?mapId=${ layerName }`,
@@ -321,6 +362,12 @@ class API {
             .then( resp => this.statusInterval( resp.data.jobid ) );
     }
 
+    /**
+     * Conflate layers together
+     *
+     * @param data
+     * @returns {Promise<any>}
+     */
     conflate( data ) {
         const params = {
             path: '/job/conflation/execute',
@@ -335,6 +382,12 @@ class API {
             .then( () => data );
     }
 
+    /**
+     * Merge POI nodes together
+     *
+     * @param data
+     * @returns {Promise<any>}
+     */
     poiMerge( data ) {
         let baseUrl = `${ this.config.host }:${ this.config.elementMergeServerPort }`;
 
