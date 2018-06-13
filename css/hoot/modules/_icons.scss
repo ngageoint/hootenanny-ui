@@ -179,3 +179,23 @@
         }
     }
 }
+
+.arrow-icon {
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+    cursor: pointer;
+    opacity: 0.75;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    &.forward-arrow {
+        background: transparent url(img/keyboard53.svg) no-repeat;
+    }
+
+    &.back-arrow {
+        background: transparent url(img/keyboard54.svg) no-repeat;
+    }
+}

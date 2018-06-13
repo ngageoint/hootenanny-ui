@@ -1,29 +1,48 @@
-#manage-translation-assistant {
+.ta-upload-form {
+    margin-bottom: 30px;
+}
 
-    .schema-select-container {
-        padding: 10px 15px;
+.ta-schema-select {
+    padding: 10px 15px;
+}
+
+.ta-attribute-mapping {
+    .attributes-nav {
+        & > div {
+            display: inline-block;
+        }
     }
 
-    .upload-button-container {
-        display: flex;
-        justify-content: space-between;
+    .tag-map-container {
         padding: 10px 15px;
 
-        button {
+        .add-mapping-button {
             width: 100%;
-            height: 60px;
-            display: flex;
-            justify-content: center;
-            text-align: center;
-            font-size: 14px;
+        }
+    }
 
-            &:first-child {
-                margin-right: 10px;
-            }
+    .actions-container {
+        border-top: 1px solid #ccc;
+    }
+}
 
-            &:last-child {
-                margin-left: 10px;
-            }
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 15px;
+
+    button {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+
+        &:first-child {
+            margin-right: 15px;
+        }
+
+        &:last-child {
+            margin-left: 15px;
         }
     }
 }

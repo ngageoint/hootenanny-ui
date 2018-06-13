@@ -4,6 +4,7 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
+import _                      from 'lodash-es';
 import API                    from '../control/api';
 import { transAssistButtons } from '../config/domElements';
 import Tab                    from './tab';
@@ -37,21 +38,27 @@ export default class TranslationAssistant extends Tab {
     render() {
         super.render();
 
+        this.loadTags();
         this.createUploadForm();
         this.createSchemaSelector();
         this.createUploadButtons();
     }
 
+    async loadTags() {
+        let osm   = await API.getOSMTagInfo(),
+            tds61 = await API.getTDSTagInfo();
+    }
+
     createUploadForm() {
         this.uploadForm = this.panelContent
             .append( 'form' )
-            .classed( 'trans-assist-form round keyline-all', true );
+            .classed( 'ta-upload-form round keyline-all fill-white', true );
     }
 
     createSchemaSelector() {
         let schema = this.uploadForm
             .append( 'div' )
-            .classed( 'schema-select-container fill-dark0', true );
+            .classed( 'ta-schema-select fill-dark0', true );
 
         schema
             .append( 'label' )
@@ -85,14 +92,14 @@ export default class TranslationAssistant extends Tab {
 
         let buttonContainer = this.uploadForm
             .append( 'div' )
-            .classed( 'upload-button-container pad1x pad2y', true )
+            .classed( 'action-buttons', true )
             .selectAll( 'button' )
             .data( transAssistButtons );
 
         let buttons = buttonContainer
             .enter()
             .append( 'button' )
-            .classed( 'primary text-light flex align-center', true )
+            .classed( 'primary text-light big flex align-center', true )
             .on( 'click', function( d ) {
                 d3.select( this ).select( 'input' ).node().click();
             } );
@@ -105,7 +112,8 @@ export default class TranslationAssistant extends Tab {
             .attr( 'accept', '.shp, .shx, .dbf, .zip' )
             .classed( 'hidden', true )
             .on( 'change', function( d ) {
-                instance.processSchemaData.call( this, d.uploadType );
+                instance.processSchemaData( d3.select( this ).node(), d.uploadType )
+                    .then( valuesMap => instance.initMapping( valuesMap ) );
             } );
 
         buttons
@@ -119,21 +127,127 @@ export default class TranslationAssistant extends Tab {
             .text( d => d.title );
     }
 
-    async processSchemaData( type ) {
-        let formData = new FormData();
+    async processSchemaData( input, type ) {
+        try {
+            let formData = new FormData();
 
-        for ( let i = 0; i < this.files.length; i++ ) {
-            let file = this.files[ i ];
-            formData.append( i, file );
+            for ( let i = 0; i < input.files.length; i++ ) {
+                let file = input.files[ i ];
+                formData.append( i, file );
+            }
+
+            // reset the file input value so on change will fire
+            // if the same files/folder is selected twice in a row
+            input.value = null;
+
+            let upload     = await API.uploadSchemaData( type, formData ),
+                attrValues = await API.getSchemaAttrValues( upload );
+
+            return this.convertUniqueValues( attrValues );
+
+        } catch ( e ) {
+            throw new Error( 'Unable to process schema data.' );
         }
+    }
 
-        // reset the file input value so on change will fire
-        // if the same files/folder is selected twice in a row
-        this.value = null;
+    convertUniqueValues( json ) {
+        let obj = {};
 
-        let upload     = await API.uploadSchemaData( type, formData ),
-            attrValues = await API.getSchemaAttrValues( upload );
+        d3.values( json ).forEach( v => {
+            d3.entries( v ).forEach( e => {
+                let map = d3.map();
 
-        console.log( attrValues );
+                d3.entries( e.value ).forEach( a => {
+                    //Omit empty fields
+                    if ( a.value.length ) {
+                        map.set( a.key, d3.set( a.value ) );
+                    }
+                } );
+
+                obj[ e.key ] = map;
+            } );
+        } );
+
+        return obj;
+    }
+
+    initMapping( valuesMap ) {
+        let layers = d3.values( valuesMap ),
+            layer  = layers[ 0 ];
+
+        this.valuesMap = valuesMap;
+
+        this.createMappingForm();
+        this.createAttributesContainer();
+        this.createTagMapContainer();
+        this.createMappingActionButtons();
+
+        this.changeLayer( layer );
+    }
+
+    createMappingForm() {
+        this.mappingForm = this.panelContent
+            .append( 'form' )
+            .classed( 'ta-attribute-mapping keyline-all round', true );
+    }
+
+    createAttributesContainer() {
+        this.attributesContainer = this.mappingForm
+            .append( 'div' )
+            .classed( 'attributes-container', true );
+
+        this.attributesNav = this.attributesContainer
+            .append( 'div' )
+            .classed( 'attributes-nav fill-dark text-light center strong pad0y', true );
+
+        this.attributesNav
+            .append( 'div' )
+            .classed( 'arrow-icon back-arrow text-light', true )
+            .on( 'click', () => '' );
+
+        this.attributesNav
+            .append( 'div' )
+            .classed( 'arrow-icon forward-arrow text-light', true );
+
+        this.attributeCount = this.attributesNav
+            .insert( 'div', '.back-arrow + *' )
+            .classed( 'attributes-count text-light pad1x', true );
+    }
+
+    createTagMapContainer() {
+        this.tagMapContainer = this.mappingForm
+            .append( 'div' )
+            .classed( 'tag-map-container fill-white keyline-bottom keyline-top', true );
+
+        this.tagMapContainer
+            .append( 'button' )
+            .classed( 'add-mapping-button round _icon big plus', true )
+            .on( 'click', () => {
+
+            } );
+
+        this.tagLookup = this.tagMapContainer
+            .insert( 'div', '.add-mapping-button' )
+            .classed( 'tag-lookup round fill-white' );
+    }
+
+    createMappingActionButtons() {
+        this.actionButtonContainer = this.mappingForm
+            .append( 'div' )
+            .classed( 'actions-container action-buttons fill-white', true );
+
+        this.actionButtonContainer
+            .append( 'button' )
+            .classed( 'secondary big round', true )
+            .text( 'Ignore' );
+
+        this.actionButtonContainer
+            .append( 'button' )
+            .classed( 'primary text-light big round', true )
+            .text( 'Next' );
+    }
+
+    changeLayer( newLayer ) {
+
     }
 }

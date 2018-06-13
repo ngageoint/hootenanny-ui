@@ -274,6 +274,11 @@ button, .button {
         color: $dark;
     }
 
+    &.big {
+        height: 60px;
+        font-size: 14px;
+    }
+
     &[disabled] {
         background-color: $dark-opacity25 !important;
         border: 1px solid $light4;

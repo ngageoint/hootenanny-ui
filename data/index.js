@@ -22,6 +22,8 @@ import { presets } from './presets/presets.json';
 import { defaults } from './presets/defaults.json';
 import { categories } from './presets/categories.json';
 import { fields } from './presets/fields.json';
+import { osmTagInfo } from './osm-plus-taginfo.json';
+import { tdsv61FieldValues } from './tdsv61_field_values.json';
 
 import maki from '@mapbox/maki';
 export var dataFeatureIcons = maki.layouts.all.all;
@@ -59,3 +61,9 @@ export var data = {
         fields: fields
     }
 };
+
+// data for Translation Assistant tag lookup
+export var tagInfo = {
+    OSM: osmTagInfo,
+    TDSv61: tdsv61FieldValues
+}
