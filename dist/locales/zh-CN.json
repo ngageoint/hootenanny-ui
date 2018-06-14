@@ -7,15 +7,9 @@
         },
         "modes": {
             "add_area": {
-<<<<<<< HEAD
-                "title": "面",
-                "description": "添加公园、建筑物、湖泊或其他面到地图上。",
-                "tail": "在地图上单击开始绘制面状要素，如公园、湖泊或建筑物。"
-=======
                 "title": "区域",
                 "description": "在地图上添加公园、建筑物、湖泊或其他区域。",
                 "tail": "在地图上单击，开始绘制一个区域，如公园、湖泊或建筑物。"
->>>>>>> v2.7.0
             },
             "add_line": {
                 "title": "线",
@@ -59,32 +53,32 @@
                 "key": "A",
                 "title": "继续",
                 "description": "继续绘制这条线。",
-                "not_eligible": "这里没有线可以在继续。",
-                "multiple": "多条线可以在此延长。要选定其中一条，按住Shift键并单击以选中它。",
+                "not_eligible": "无法在此继续绘制线段",
+                "multiple": "有多条线段可以在此延长。要选定其中一条，按住Shift键并单击以选中它。",
                 "annotation": {
                     "line": "继续绘制线。",
-                    "area": "继续绘制面状要素。"
+                    "area": "继续绘制区域。"
                 }
             },
             "cancel_draw": {
                 "annotation": "取消绘制。"
             },
             "change_role": {
-                "annotation": "更改关系成员的定位。"
+                "annotation": "更改关系成员的角色。"
             },
             "change_tags": {
-                "annotation": "更改标签。"
+                "annotation": "标签已更改。"
             },
             "circularize": {
                 "title": "环状化",
                 "description": {
                     "line": "环状化该线。",
-                    "area": "环状化该面。"
+                    "area": "将此区域变成圆形。"
                 },
                 "key": "O",
                 "annotation": {
                     "line": "使线环状化。",
-                    "area": "使面环状化。"
+                    "area": "将区域变成圆形。"
                 },
                 "not_closed": "它不是首尾相接的线，无法将其环状化。",
                 "too_large": "由于可见部分不足，无法将其环状化。",
@@ -94,12 +88,12 @@
                 "title": "直角化",
                 "description": {
                     "line": "将这条线上的弯角转化成直角。",
-                    "area": "将这个面状要素上的弯角转化成直角。"
+                    "area": "将这个区域上的弯角转化成直角。"
                 },
                 "key": "S",
                 "annotation": {
-                    "line": "拉直线上角的边。",
-                    "area": "已将面要素的弯角换成直角。"
+                    "line": "已将线段上的弯角换成直角。",
+                    "area": "已将区域的弯角换成直角。"
                 },
                 "not_squarish": "因为它不是近似方形的，这不能被直角化。",
                 "too_large": "因为可见部分不足，不能变成方形。",
@@ -110,39 +104,48 @@
                 "description": "把这一条线拉直。",
                 "key": "S",
                 "annotation": "拉直线。",
-                "too_bendy": "因为它弯曲太多，不能拉直。",
+                "too_bendy": "因为它弯曲太多，无法被拉直。",
                 "connected_to_hidden": "该线不能取直，因为其与一隐藏要素相连。"
             },
             "delete": {
                 "title": "删除",
-                "description": "彻底删除对象。",
-                "annotation": {
-                    "point": "删除点。",
-                    "vertex": "删除路径上的节点。",
-                    "line": "删除线。",
-                    "area": "删除面状要素。",
-                    "relation": "删除关系。",
-                    "multiple": "删除{n}个对象。"
+                "description": {
+                    "single": "彻底删除该要素。",
+                    "multiple": "彻底删除这些要素。"
                 },
-                "incomplete_relation": "此内容暂未下载完成无法删除。",
-                "part_of_relation": "无法删除该要素，因为它是更大的关系的一部分。必须先将其从关系中移除。",
-                "connected_to_hidden": "无法删除，因为其与一隐藏要素相连。"
+                "annotation": {
+                    "point": "删除了一个点。",
+                    "vertex": "删除了路径上的一个节点。",
+                    "line": "删除了一条线。",
+                    "area": "删除了一个区域。",
+                    "relation": "删除了一个关系。",
+                    "multiple": "删除了 {n} 个要素。"
+                },
+                "too_large": {
+                    "single": "该要素暂不能删除，因为该要素在当前视角可视部分太少。",
+                    "multiple": "这些要素暂不能删除，因为其在当前视角可视部分不足。"
+                },
+                "incomplete_relation": {
+                    "single": "因该要素未完全下载，所以无法被删除。",
+                    "multiple": "因这些要素未完全下载，所以无法被删除。"
+                },
+                "part_of_relation": {
+                    "single": "因该要素是更大关系中的一部分，所以无法被删除。您必须先将其从关系中移除。",
+                    "multiple": "因这些要素是更大关系中的一部分，所以无法被删除。您必须先将它们从关系中移除。"
+                },
+                "connected_to_hidden": {
+                    "single": "因该要素与某个隐藏的要素相连，所以无法被删除。",
+                    "multiple": "因这些要素与某些隐藏的要素相连，所以无法被删除。"
+                }
             },
             "add_member": {
-                "annotation": "增加关系中的成员。"
+                "annotation": "关系中增加了一个成员。"
             },
             "delete_member": {
-                "annotation": "删除关系中的成员。"
+                "annotation": "从关系中删除了一个成员。"
             },
             "connect": {
                 "annotation": {
-<<<<<<< HEAD
-                    "point": "连接路径到点。",
-                    "vertex": "连接路径到另一路径。",
-                    "line": "连接路径到线。",
-                    "area": "连接条线要素到面要素。"
-                }
-=======
                     "point": "已连接路径到一个点。",
                     "vertex": "已连接路径到另一路径。",
                     "line": "已连接路径到一线段。",
@@ -150,18 +153,8 @@
                 },
                 "relation": "这些要素不能被连接，因为其有冲突的关系成员。",
                 "restriction": "这些要素不能被连接，因为这样会破坏 “{relation}” 关系。"
->>>>>>> v2.8.2
             },
             "disconnect": {
-<<<<<<< HEAD
-                "title": "断开连接",
-                "description": "断开这些线/面之间的连接。",
-                "key": "D",
-                "annotation": "断开线/面连接。",
-                "not_connected": "没有足够的线/面来断开。",
-                "connected_to_hidden": "无法断开连接，因为其与一隐藏要素相连。",
-                "relation": "无法断开连接，因为其构成关系成员间的连接。"
-=======
                 "title": "分离",
                 "description": "将这些线/区域相互分离。",
                 "key": "D",
@@ -169,69 +162,112 @@
                 "not_connected": "没有足够的线/区域来分离。",
                 "connected_to_hidden": "无法分离，因为其与一隐藏要素相连。",
                 "relation": "无法分离，因为它与一个关系的成员间相连。"
->>>>>>> v2.7.0
             },
             "merge": {
                 "title": "合并",
-                "description": "合并这些特征。",
+                "description": "合并这些要素。",
                 "key": "C",
-<<<<<<< HEAD
-                "annotation": "已合并 {n} 个特征。",
-                "not_eligible": "这些特征不可以合并。",
-                "not_adjacent": "这些特征不能被合并，因为它们不相连。",
-                "restriction": "这些特征不能被合并，因为其中至少有一个特征是某个“{relation}”关系的成员。",
-=======
                 "annotation": "已合并 {n} 个要素。",
                 "not_eligible": "这些要素不可以合并。",
                 "not_adjacent": "这些要素的结束节点并未相连，无法将其合并。",
                 "restriction": "这些要素不能被合并，因为这样会破坏 “{relation}” 关系。",
                 "relation": "这些要素不能被合并，因为其有冲突的关系成员。",
->>>>>>> v2.8.2
                 "incomplete_relation": "此要素暂未下载完成，无法合并。",
-                "conflicting_tags": "这些特征不能被合并，因为它们的某些标签具有冲突的值。"
+                "conflicting_tags": "这些要素不能被合并，因为它们的某些标签具有冲突的值。"
             },
             "move": {
                 "title": "移动",
-                "description": "移动到不同的位置。",
+                "description": {
+                    "single": "移动该要素到不同的位置。",
+                    "multiple": "移动这些要素到不同的位置。"
+                },
                 "key": "M",
                 "annotation": {
                     "point": "移动点。",
                     "vertex": "移动路径中节点。",
-                    "line": "移动线。",
-                    "area": "移动面状要素。",
-                    "multiple": "移动多个对象。"
+                    "line": "移动了一条线。",
+                    "area": "移动了一个区域",
+                    "multiple": "移动了多个要素。"
                 },
-                "incomplete_relation": "该特征还没有下载完整，无法移动。",
-                "too_large": "因为可见部分不足，不能移动。",
-                "connected_to_hidden": "无法移动，因为其与一隐藏要素相连。"
+                "incomplete_relation": {
+                    "single": "因该要素未完全下载，所以无法被移动。",
+                    "multiple": "因这些要素未完全下载，所以无法被移动。"
+                },
+                "too_large": {
+                    "single": "因该要素的可见部分不足，所以无法被移动。",
+                    "multiple": "因这些要素的可见部分不足，所以无法被移动。"
+                },
+                "connected_to_hidden": {
+                    "single": "因该要素与某个隐藏的要素相连，所以无法被移动。",
+                    "multiple": "因这些要素与某些隐藏的要素相连，所以无法被移动。"
+                }
             },
             "reflect": {
-                "title": "翻转",
+                "title": {
+                    "long": "沿长轴翻转",
+                    "short": "沿短轴翻转"
+                },
                 "description": {
-                    "long": "沿该对象的长轴翻转。",
-                    "short": "沿该对象的短轴翻转。"
+                    "long": {
+                        "single": "沿该要素的长轴翻转。",
+                        "multiple": "沿这些要素的长轴翻转。"
+                    },
+                    "short": {
+                        "single": "沿该要素的短轴翻转。",
+                        "multiple": "沿这些要素的短轴翻转。"
+                    }
                 },
                 "key": {
                     "long": "T",
                     "short": "Y"
                 },
                 "annotation": {
-                    "long": "沿一个面的长轴翻转。",
-                    "short": "沿一个面的短轴翻转。"
+                    "long": {
+                        "single": "已沿长轴翻转一个要素。",
+                        "multiple": "沿多个要素的长轴翻转。"
+                    },
+                    "short": {
+                        "single": "已沿短轴翻转一个要素。",
+                        "multiple": "沿多个要素的短轴翻转。"
+                    }
                 },
-                "too_large": "由于可见部分不足，无法将其翻转。",
-                "connected_to_hidden": "由于该面与某隐藏特征相连，无法将其翻转。"
+                "incomplete_relation": {
+                    "single": "因该要素未完全下载，所以无法被翻转。",
+                    "multiple": "因这些要素未完全下载，所以无法被翻转。"
+                },
+                "too_large": {
+                    "single": "因该要素的可见部分不足，所以无法被翻转。",
+                    "multiple": "因这些要素的可见部分不足，所以无法被翻转。"
+                },
+                "connected_to_hidden": {
+                    "single": "因该要素与某个隐藏的要素相连，所以无法被翻转。",
+                    "multiple": "因这些要素与某些隐藏的要素相连，所以无法被翻转。"
+                }
             },
             "rotate": {
                 "title": "旋转",
-                "description": "绕这个对象的中心点旋转。",
+                "description": {
+                    "single": "绕该要素的中心点旋转。",
+                    "multiple": "绕这些要素的中心点旋转。"
+                },
                 "key": "R",
                 "annotation": {
                     "line": "旋转线。",
-                    "area": "旋转面状要素。"
+                    "area": "旋转了一个区域。",
+                    "multiple": "旋转多个要素。"
                 },
-                "too_large": "因为可见部分不足，不能旋转。",
-                "connected_to_hidden": "无法旋转，因为其与一隐藏要素相连。"
+                "incomplete_relation": {
+                    "single": "因该要素未完全下载，所以无法旋转。",
+                    "multiple": "因这些要素未完全下载，所以无法旋转。"
+                },
+                "too_large": {
+                    "single": "因该要素的可见部分不足，所以无法旋转。",
+                    "multiple": "因这些要素的可见部分不足，所以无法旋转。"
+                },
+                "connected_to_hidden": {
+                    "single": "因该要素与某个隐藏的要素相连，所以无法旋转。",
+                    "multiple": "因这些要素与某些隐藏的要素相连，所以无法旋转。"
+                }
             },
             "reverse": {
                 "title": "反转",
@@ -318,12 +354,12 @@
         "zoom_in_edit": "放大地图以编辑",
         "login": "登录",
         "logout": "退出",
-        "loading_auth": "正在连接OpenStreetMap...",
-        "report_a_bug": "报告漏洞",
+        "loading_auth": "正在连接 OpenStreetMap...",
+        "report_a_bug": "反馈 BUG",
         "help_translate": "帮助改进翻译",
         "feature_info": {
-            "hidden_warning": "{count}个隐藏特征",
-            "hidden_details": "以下特征目前被隐藏：{details}"
+            "hidden_warning": "{count}个隐藏要素",
+            "hidden_details": "以下要素目前被隐藏：{details}"
         },
         "status": {
             "error": "无法连接到 API。",
@@ -332,16 +368,6 @@
             "rateLimit": "该接口是限制匿名连接的。您可以通过登录来解决这个问题。"
         },
         "commit": {
-<<<<<<< HEAD
-            "title": "保存变更",
-            "description_placeholder": "简单说明您的贡献(必填)",
-            "message_label": "修改集合注释",
-            "upload_explanation": "您上传的修改将会在所有使用OpenStreetMap数据的地图上可见。",
-            "upload_explanation_with_user": "{user}，您上传的修改将会在所有使用OpenStreetMap数据的地图上可见。",
-            "save": "保存",
-            "cancel": "取消",
-            "changes": "{count}个变更",
-=======
             "title": "上传至 OpenStreetMap",
             "upload_explanation": "您上传的更改将会在所有使用 OpenStreetMap 数据的地图上可见。",
             "upload_explanation_with_user": "{user}，您上传的更改将会在所有使用 OpenStreetMap 数据的地图上可见。",
@@ -350,39 +376,19 @@
             "cancel": "取消",
             "changes": "{count} 个更改",
             "download_changes": "下载 osmChange 文件",
->>>>>>> v2.8.2
             "warnings": "警告",
             "modified": "已更改",
             "deleted": "已删除",
             "created": "已创建",
-            "about_changeset_comments": "关于修改集合说明",
+            "about_changeset_comments": "关于编辑变动",
             "about_changeset_comments_link": "//wiki.openstreetmap.org/wiki/Good_changeset_comments",
-<<<<<<< HEAD
-            "google_warning": "您在评论中提及Google: 注意从Google地图抄袭是严格禁止的。",
-            "google_warning_link": "http://www.openstreetmap.org/copyright"
-=======
             "google_warning": "您在该评论中提及 Google : 请注意从 Google Maps 中复制信息是被严格禁止的。",
             "google_warning_link": "https://www.openstreetmap.org/copyright"
->>>>>>> v2.7.0
         },
         "contributors": {
-            "list": "{users}编辑",
-            "truncated_list": "{users}及另外{count}人编辑"
+            "list": "由 {users} 编辑",
+            "truncated_list": "由 {users} 及另外{count}人编辑"
         },
-<<<<<<< HEAD
-        "infobox": {
-            "selected": "已选择{n}个",
-            "geometry": "几何",
-            "closed": "已关闭",
-            "center": "中心",
-            "perimeter": "周长",
-            "length": "长度",
-            "area": "面",
-            "centroid": "重心",
-            "location": "位置",
-            "metric": "公制",
-            "imperial": "英制"
-=======
         "info_panels": {
             "key": "I",
             "background": {
@@ -434,13 +440,12 @@
                 "imperial": "英制",
                 "node_count": "节点数"
             }
->>>>>>> v2.7.0
         },
         "geometry": {
             "point": "点",
             "vertex": "顶点",
             "line": "线",
-            "area": "面状要素",
+            "area": "区域",
             "relation": "关系"
         },
         "geocoder": {
@@ -457,27 +462,35 @@
             "no_documentation_key": "这个键值没有可用的说明",
             "documentation_redirect": "这个文档被重定向到一个新的页面",
             "show_more": "显示更多",
-            "view_on_osm": "在openstreetmap.org上查看",
+            "view_on_osm": "在 openstreetmap.org 上查看",
             "all_fields": "所有字段",
             "all_tags": "所有标签",
             "all_members": "所有成员",
             "all_relations": "所有关系",
             "new_relation": "新关系...",
-            "role": "定位",
-            "choose": "选择特征类型",
+            "role": "角色",
+            "choose": "选择要素类型",
             "results": "{search}有{n}个结果。",
-            "reference": "在OpenStreetMap Wiki中查看",
-            "back_tooltip": "变更特征",
+            "reference": "在 OpenStreetMap Wiki 中查看",
+            "back_tooltip": "变更要素",
             "remove": "删除",
             "search": "搜索",
-            "multiselect": "选择项目",
+            "multiselect": "已选择的要素",
             "unknown": "未知",
             "incomplete": "<未下载>",
-            "feature_list": "搜索特征",
-            "edit": "编辑特征",
+            "feature_list": "搜索要素",
+            "edit": "编辑要素",
             "check": {
                 "yes": "是",
-                "no": "否"
+                "no": "否",
+                "reverser": "反向"
+            },
+            "radio": {
+                "structure": {
+                    "type": "类型",
+                    "default": "默认值",
+                    "layer": "图层"
+                }
             },
             "add": "添加",
             "none": "无",
@@ -490,26 +503,16 @@
         "background": {
             "title": "背景",
             "description": "背景设置",
-<<<<<<< HEAD
-            "percent_brightness": "{opacity}%亮度",
-=======
             "key": "B",
             "backgrounds": "背景影像",
->>>>>>> v2.7.0
             "none": "无",
             "best_imagery": "此地最知名的影像数据源",
             "switch": "切换回该底图",
             "custom": "自定义",
             "custom_button": "编辑自定义背景",
-<<<<<<< HEAD
-            "custom_prompt": "输入地图影像的URL模版。以Z/X/Y方式的服务器使用 {zoom}, {x}, {y} 作为参数，而以quadtile方式的服务器，则使用 {u} 作参数。",
-            "fix_misalignment": "调整影像偏移",
-            "imagery_source_faq": "该影像的来源是？",
-=======
             "custom_prompt": "输入地图瓦片URL地址。有效的参数有：\n   - {zoom} 或 {z}, {x}, {y} 作为 Z/X/Y 坐标系\n   - {-y} 或 {ty} 作为翻转的 TMS 算法 Y 坐标\n   - {u} 作为四叉树坐标编码\n   - {switch:a,b,c} 作为 DNS 服务器解析的并行连接子域\n\n示例：\n{example}",
             "overlays": "叠加图层",
             "imagery_source_faq": "影像信息 / 报告问题",
->>>>>>> v2.7.0
             "reset": "重置",
             "display_options": "显示设定",
             "brightness": "亮度",
@@ -517,26 +520,28 @@
             "saturation": "饱和度",
             "sharpness": "锐化",
             "minimap": {
-<<<<<<< HEAD
-                "description": "小地图",
-                "tooltip": "显示一个大范围的地图来帮助定位当前显示的区域"
-            }
-=======
                 "description": "显示小地图",
                 "tooltip": "显示一个大范围的地图来帮助定位当前显示的区域",
                 "key": "/"
             },
             "fix_misalignment": "调整影像偏移",
             "offset": "在下面的灰色区域拖动来调整影像偏移，或输入以米为单位的偏移量。"
->>>>>>> v2.7.0
         },
         "map_data": {
             "title": "地图数据",
             "description": "地图数据",
+            "key": "F",
             "data_layers": "数据图层",
-            "fill_area": "填充面状要素",
-            "map_features": "地图特征",
-            "autohidden": "这些要素已被自动隐藏，因为屏幕中的要素过多。请放大再编辑。"
+            "layers": {
+                "osm": {
+                    "tooltip": "来自 OpenStreetMap 的地图数据",
+                    "title": "OpenStreetMap 数据"
+                }
+            },
+            "fill_area": "填充区域",
+            "map_features": "地图要素",
+            "autohidden": "这些要素已被自动隐藏，因为屏幕中的要素过多。请放大再编辑。",
+            "osmhidden": "由于禁用的 OpenStreetMap 数据图层，这些要素已被自动隐藏。"
         },
         "feature": {
             "points": {
@@ -544,12 +549,12 @@
                 "tooltip": "兴趣点(POI)"
             },
             "traffic_roads": {
-                "description": "交通干线",
+                "description": "交通道路",
                 "tooltip": "公路、街道等"
             },
             "service_roads": {
-                "description": "专用道路",
-                "tooltip": "专用道路、停车场通道、轮迹路等"
+                "description": "服务性道路",
+                "tooltip": "服务性道路、停车场通道、赛道等"
             },
             "paths": {
                 "description": "小路",
@@ -560,7 +565,7 @@
                 "tooltip": "建筑物，遮蔽处，车库等。"
             },
             "landuse": {
-                "description": "土地利用特征",
+                "description": "土地利用要素",
                 "tooltip": "森林，农田，公园，居民地，商用地等。"
             },
             "boundaries": {
@@ -568,15 +573,15 @@
                 "tooltip": "行政分界线"
             },
             "water": {
-                "description": "水体特征",
+                "description": "水体要素",
                 "tooltip": "河流，湖泊，池塘，盆地等。"
             },
             "rail": {
-                "description": "铁路特征",
+                "description": "铁路要素",
                 "tooltip": "铁路"
             },
             "power": {
-                "description": "电力特征",
+                "description": "电力要素",
                 "tooltip": "输电线，发电厂，变电所等。"
             },
             "past_future": {
@@ -590,8 +595,9 @@
         },
         "area_fill": {
             "wireframe": {
-                "description": "无填充（线框）",
-                "tooltip": "开启线框模式，以便看清背景影像。"
+                "description": "无填充 (线框)",
+                "tooltip": "开启线框模式，以便看清背景影像。",
+                "key": "W"
             },
             "partial": {
                 "description": "部分填充",
@@ -599,37 +605,25 @@
             },
             "full": {
                 "description": "全部填充",
-<<<<<<< HEAD
-                "tooltip": "面状要素以全部填充绘制。"
-=======
                 "tooltip": "在区域内全部填充。"
->>>>>>> v2.8.2
             }
         },
         "restore": {
             "heading": "您有未保存的更改",
             "description": "您在上一次编辑时有未保存的修改，您想恢复这些修改吗？",
-            "restore": "恢复",
-            "reset": "重置"
+            "restore": "恢复我的修改",
+            "reset": "丢弃我的修改"
         },
         "save": {
             "title": "保存",
-            "help": "保存改变至OpenStreetMap，让其他用户可见。",
+            "help": "复审更改，然后上传至 OpenStreetMap 供其他用户查看。",
             "no_changes": "没有待保存变更。",
             "error": "尝试保存时发生错误。",
             "status_code": "服务器返回的状态代码{code}",
             "unknown_error_details": "请确保您已连接到互联网。",
-<<<<<<< HEAD
-            "uploading": "正在向 OpenStreetMap 上传更改。",
-=======
             "uploading": "正在向 OpenStreetMap 上传更改……",
             "conflict_progress": "正在检查冲突：第 {num} / {total} 处",
-<<<<<<< HEAD
->>>>>>> v2.7.0
-            "unsaved_changes": "您有未保存的修改",
-=======
             "unsaved_changes": "您有未保存的更改",
->>>>>>> v2.8.2
             "conflict": {
                 "header": "调解编辑冲突",
                 "count": "第{num}处冲突，共{total}处",
@@ -639,15 +633,15 @@
                 "keep_remote": "使用他人的编辑",
                 "restore": "还原",
                 "delete": "恢复被删除的内容",
-                "download_changes": "或者下载您的修改。",
+                "download_changes": "或者下载 osmChange 文件",
                 "done": "所有冲突已调解！",
-                "help": "另一位用户修改了您刚刚修改的地图要素。\n点击下面条目查看冲突详情，并选择保留您自己的或者别人的修改。\n"
+                "help": "另一位用户修改了您刚刚修改的地图要素。\n点击下面条目查看冲突详情，并选择保留\n您自己的或者别人的修改。\n"
             }
         },
         "merge_remote_changes": {
             "conflict": {
-                "deleted": "该对象已被{user}删除。",
-                "location": "您和{user}同时移动了该对象。",
+                "deleted": "该要素已被 {user} 删除。",
+                "location": "您和 {user} 同时移动了该要素。",
                 "nodelist": "您和{user}同时修改了节点。",
                 "memberlist": "您和{user}同时修改了关系成员。",
                 "tags": "您将<b>{tag}</b>标签改为\"{local}\"而{user}将其改为\"{remote}\"。"
@@ -655,20 +649,9 @@
         },
         "success": {
             "just_edited": "您刚刚编辑了 OpenStreetMap！",
-<<<<<<< HEAD
-<<<<<<< HEAD
-            "view_on_osm": "在 OSM 上查看",
-            "facebook": "分享到Facebook",
-            "twitter": "分享到 Twitter",
-            "google": "分享到 Google+",
-            "help_html": "您的修改将会在几分钟内出现在“标准”图层上，其他图层和某些特征可能需要更长的处理时间。",
-=======
->>>>>>> v2.8.0
-=======
             "thank_you": "感谢您改进地图。",
             "thank_you_location": "感谢您改进 {where} 周边的地图。",
             "help_html": "您的更改将会在几分钟内于 OpenStreetMap 上显示。其他地图可能需要更长的时间接收更新。 ",
->>>>>>> v2.8.2
             "help_link_text": "详情",
             "help_link_url": "https://wiki.openstreetmap.org/wiki/FAQ#I_have_just_made_some_changes_to_the_map._How_do_I_get_to_see_my_changes.3F",
             "view_on_osm": "在 OSM 上查看更改",
@@ -685,39 +668,39 @@
             "cancel": "取消"
         },
         "splash": {
-            "welcome": "欢迎使用OpenStreetMap iD编辑器",
-            "text": "ID编辑器是一个既易用而又功能强大的工具，以助您编辑世界上最好的自由世界地图。这是{version}版本。欲知详情，请浏览{website}及在{github}报告程序错误。“",
+            "welcome": "欢迎使用 OpenStreetMap iD 编辑器",
+            "text": "iD 编辑器是一个既易用而又功能强大的工具，以助您编辑世界上最好的自由世界地图。这是 {version} 版本。欲知详情，请浏览 {website} 及在 {github} 报告程序错误。",
             "walkthrough": "开始演练",
-            "start": "现在编辑"
+            "start": "现在就编辑"
         },
         "source_switch": {
             "live": "实况模式",
             "lose_changes": "您有尚未保存的编辑，切换地图服务器会失去这些编辑。您是否确定要切换服务器？",
             "dev": "开发模式"
         },
+        "version": {
+            "whats_new": "iD编辑器{version}版本新特性"
+        },
         "tag_reference": {
-            "description": "说明",
+            "description": "描述",
             "on_wiki": "wiki.osm.org上的{tag}",
             "used_with": "使用 {type}"
         },
         "validations": {
+            "disconnected_highway": "断开的道路",
+            "disconnected_highway_tooltip": "道路应当与其他道路连接或通往建筑入口。",
+            "old_multipolygon": "复合多边形的标签添加在外围路径",
+            "old_multipolygon_tooltip": "我们不赞成这种复合多边形的样式。请将标签添加在父复合多边形中，而不是在其外围的路径上添加。",
             "untagged_point": "未标记的点",
-            "untagged_line": "未标记的线",
-            "untagged_area": "未标记的面",
-            "many_deletions": "您正在删除 {n} 个对象，您确定要这么做吗？这将会把它们从大家所见的 openstreetmap.org 地图上删除。",
-            "tag_suggests_area": "标签{tag}表明线应该为面要素，但它不是面",
             "untagged_point_tooltip": "选择该点的要素类型。",
+            "untagged_line": "未标记的线",
             "untagged_line_tooltip": "选择描述这条线的要素类型。",
-<<<<<<< HEAD
-            "untagged_area_tooltip": "选择描述这个面的要素类型。",
-=======
             "untagged_area": "未标记的区域",
             "untagged_area_tooltip": "选择描述这块区域的要素类型。",
             "untagged_relation": "未标记的关系",
             "untagged_relation_tooltip": "选择描述这个关系的要素类型。",
             "many_deletions": "您正在删除 {n} 个要素：{p} 个节点、{l} 条路径、{a} 片区域、{r} 个关系。您确定要这么做吗？这些要素将会在任何人所见的 openstreetmap.org 地图上被删除。",
             "tag_suggests_area": "{tag}的标签所建议的线段应为区域，但这个不是一区域",
->>>>>>> v2.7.0
             "deprecated_tags": "弃用标签：{tags}"
         },
         "zoom": {
@@ -727,42 +710,36 @@
         "cannot_zoom": "在此模式下不能再缩小",
         "full_screen": "切换全屏",
         "gpx": {
-            "local_layer": "本地GPX文件",
-            "drag_drop": "拖放GPX文件到页面上，或按一下浏览按钮，",
-            "zoom": "缩放到GPX轨迹",
-            "browse": "浏览GPX文件"
+            "local_layer": "本地文件",
+            "drag_drop": "将.gpx、.geojson或.kml文件拖放到页面上，或单击右侧的按钮浏览",
+            "zoom": "缩放到图层",
+            "browse": "浏览文件"
+        },
+        "streetside": {
+            "tooltip": "来自微软公司的街景照片",
+            "title": "照片叠加层 (必应 Streetside)",
+            "report": "报告该图像的隐私问题"
         },
         "mapillary_images": {
             "tooltip": "来自Mapillary的街景照片",
             "title": "照片叠加层 (Mapillary)"
         },
         "mapillary_signs": {
-            "tooltip": "来自Mapillary的交通标志(需开启照片叠加层)",
-            "title": "交通标志叠加层(Mapillary)"
+            "tooltip": "来自Mapillary的交通标志 (需开启照片叠加层)",
+            "title": "交通标志叠加层 (Mapillary)"
         },
         "mapillary": {
             "view_on_mapillary": "在Mapillary上查看这张图片"
         },
         "openstreetcam_images": {
             "tooltip": "来自 OpenStreetCam 的街道等级照片",
-            "title": "照片覆盖（OpenStreetCam）"
+            "title": "照片叠加层 (OpenStreetCam)"
         },
         "openstreetcam": {
             "view_on_openstreetcam": "在 OpenStreetCam 上查看该图像"
         },
         "help": {
             "title": "帮助",
-<<<<<<< HEAD
-            "help": "#帮助\n\n这是一个免费且可编辑的世界地图[OpenStreetMap](http://www.openstreetmap.org/)\n的编辑器，你可以用它来增加和更新你所在地区的数据，\n为全世界将这个开源、开放数据的世界地图变得更好。\n\n你在这张地图上的编辑将会被使用OpenStreetMap的所有人看到。\n你需要[登录](https://www.openstreetmap.org/login)才能编辑。\n\n本编辑器名为[iD](http://ideditor.com/)，是一个[源码在GitHub上共享](https://github.com/openstreetmap/iD)\n的协作项目。\n",
-            "editing_saving": "# 编辑和保存\n\n本编辑器为在线编辑设计，您正在经由本网站使用它。\n\n### 选择要素\n\n您可以在地图上单击以选中一个要素，如道路或一个兴趣点。\n被选中的要素将被高亮显示，同时弹出一个显示其详细信息的面板，\n以及一个列出了可对该特征进行之操作的菜单。\n\n如需同时选中多个要素，您需要先按住 Shift 键。然后请多次点击选择全部的特征，\n或者在地图上画出一个长方形以圈出并选中长方形中所有的点。\n\n### 保存编辑内容\n\n当您做了比如编辑道路、建筑物或地点的更改后，\n这些更改在您将它们保存到服务器之前都只会保存在本地。\n无需担心犯错：您随时可以点击撤销按钮或重做按钮以撤销或重做更改。\n\n请点击“保存”按钮以结束一组编辑内容。例如，如果您刚完成了城镇的一个区域，\n正打算开始下一个区域的工作，这时您有机会重新检查之前完成的工作，\n同时编辑器会自动给出有用的建议。如果您的更改有一些问题，编辑器也会给出警告。\n\n如果一切正常，您可以在保存时写入一小段注释以解释上一阶段的工作内容，\n然后再次点击“保存”按钮以向\n[OpenStreetMap.org](http://www.openstreetmap.org/) 提交更改。\n在此之后，您的更改将对所有其它用户可见，其它用户也将以此为基础继续改进地图。\n\n如果您一时无法完成编辑内容，您可以关闭编辑器窗口。\n待稍后您返回 (至同一台计算机的同一个浏览器) 时，\n重新打开编辑器将会恢复您的工作进度。\n\n## 使用编辑器\n\n编辑器可用的键盘快捷键列表可以 [在此](http://wiki.openstreetmap.org/wiki/ID/Shortcuts) 找到。\n",
-            "roads": "# 道路\n\n您可以利用这个编辑器创建，修复，及删除道路。道路可以有很多种：路径，公路，郊游径，单车径，和更多－ 任何经常使用的路段都可制图。\n\n### 选择道路\n\n点击图上的道路以选择该道路。道路的轮廓会以高亮度显示，而同时地图上会出现小工具选单，旁边亦会弹出面板，显示有关该道路的信息。\n\n### 编辑道路\n\n您或会经常注意到，道路并非对齐在背景中显示的卫星图像或GPS轨迹。您可以调整这些道路，让他们位于正确的位置。\n\n首先，点击您想编辑的道路。这会将道路以高亮度显示，并显示沿着这道路的节点，你可以拖曳这些节点到更好的位置。如果您想增加细节，可以为道路添加新的节点，点击两下道路上没有节点的部分，便可在该处増加节点。\n\n如果道路连接到另一条道路，但在地图上并未妥善连接，你可以拖曳道路的其中一个节点到另一条道路上，以连接两条道路。连接好道路，对地图非常重要，特别是对提供驾驶指示的应用程序而言，是必要的。\n\n您也可以点击'移动'工具或按`M`快速键，来移动整条道路，然后点击一下以完成移动的动作。\n\n### 删除道路\n\n如果一条道路完全不正确－ 您看到它在卫星图像上不存在，并最好实地证实它根本不存在－ 您可以将道路删除，这会从地图中将之移除。删除物件时务必要小心－ 像任何其他的编辑，结果会被大家看见，而卫星图像往往会过时，因此该道路或许只是新建的。\n\n要删除道路，您可以点击它以选择，然后点击垃圾桶图标，或按'Delete' 键。\n\n### 绘制新道路\n\n发现某处应有一条道路，但地图上没有？点击编辑器左上方的'线'图标，或按下`2`快速键，以开始绘制线段。\n\n在地图上点击道路的开端，以开始绘制道路。如果道路从一条现有的道路分支出来，应点击两者连接的地方，以开始绘制。\n\n然后点击沿着道路的点，以根据卫星影像或GPS轨迹，正确地绘制道路。如果您绘制的道路如果与另一条道路交汇，请点击相交点以将它们连接起来。当您完成绘制后，可点击两下或按键盘上的'Return' 或'Enter' 键。\n",
-            "gps": "# GPS\n\n户外采集的GPS轨迹是OpenStreetMap的重要数据源之一。本编辑器\n支持本地轨迹——即你的电脑上的.gpx文件。你可以用众多智能手机\n应用或者个人GPS硬件采集这种GPS轨迹。\n\n有关如何使用GPS测量的信息，请参见\n[用智能手机、GPS或纸质图测图](http://learnosm.org/en/mobile-mapping/)。\n\n要使用GPX轨迹制图，将GPX文件拖曳到编辑器上即可。\n如果可以识别，将以亮紫色线条在地图上显示。\n点击右侧“地图数据”菜单可以打开、关闭或者\n缩放到新添加的GPX图层。\n\nGPX轨迹不会被直接上传到OpenStreetMap——最佳的使用方法是\n将其展绘到地图上作为辅助来绘制新增的地图要素，\n或者将其[上传到OpenStreetMap](http://www.openstreetmap.org/trace/create)\n供他人使用。\n",
-            "imagery": "# 影像\n\n航拍影像是绘制地图的一个重要资源。编辑器右侧「背景设置」菜单里提供了一组飞机航拍、卫星影像及自由编译的来源。\n\n默认情况下编辑器显示的是[必应地图](http://www.bing.com/maps/)的卫星图层，但当您移动或缩放地图到一个新的地理区域会得到新的来源。一些国家，比如美国、法国和丹麦，会在一些区域提供非常高质量的影像。\n\n影像有时会因为影像提供商的错误和地图数据存在偏移。如果您看到许多道路偏离背景，请不要立刻移动它们来匹配背景，您可以点击背景设置界面底部的「修复对齐」来调整影像以使它和已有数据吻合。\n",
-            "addresses": "# 地址\n\n地址是地图上的最有用的一些信息。\n\nOpenStreetMap通过沿街位置记录建筑和场所的地址，地址通常表示为街道的一部分。\n\n您可以添加地址信息映射为建筑轮廓的地方以及那些映射为单个点。地址的最佳来源数据是来自于实地调查或个人的知识与任何其他功能，从谷歌地图商业来源的复制是严格禁止的。\n",
-            "inspector": "# 使用查看器\n\n查看器是页面左侧窗格中供你\n查看所选要素详细信息栏目。\n\n### 选择要素类型\n\n你添加完一个点、线或面之后，要选择它是什么类型，\n比如高速公路还是居民区街道、超市还是咖啡厅。\n查看器会显示一些常见要素类型的按钮，你也可以通过\n搜索框查找其他标签。\n\n点击要素类型按钮右下角的“i”可以深入了解该类型。\n点击类型按钮即可选择该类型。\n\n### 使用表格编辑标签\n\n选择要素类型后，或者某要素本来已有类型时，\n查看器会显示要素的字段详情，比如名称和地\n址。\n\n在已有的字段下方，你可以点击“添加字段”下拉菜单\n来添加其他详情，比如维基百科链接、轮椅通行情况\n等。\n\n在查看器底部，可以点击“附加标签”按钮来给要素添加\n任意其他标签。[Taginfo](http://taginfo.openstreetmap.org/)\n是了解更多常见标签组合的好资源。\n\n你在查看器里所做的变更会自动应用到地图。\n你可以随时点击“撤销”按钮撤销这些变更。\n",
-            "buildings": "# 建筑物\n\nOpenStreetMap 是世界上最大的建筑物的数据库。您可以建立和改善这个数据库。\n\n### 选择建筑物\n\n您可以点击建筑物的边界，以选择该建筑物。该建筑物将以高亮度显示，并会开启小工具选单，和在右边显示有关建筑物更多资料的面板。\n\n### 修改建筑物\n\n有时候，建筑物的位置或其标签或许会不正确。\n\n要移动整个建筑物的位置，先选择该建筑物，然后点击'移动'工具。移动您的鼠标以移动筑物，在移到正确位置上点击一下。\n\n要更正建筑物的形状，点击并拖曳建筑物轮廓的节点，以移到更佳的位置。\n\n### 绘制新建筑物\n\n为地图添加建筑物的主要问题之一，是OpenStreetMap 可以用轮廓或点的形式，记录建筑物。一般来说，应_尽可能以区域记录建筑物的轮廓_，并以置于建筑轮廓内的点，记录建筑物中的公司、住宅、设施及其他东西。\n\n要开始绘制建筑物，先单击左上方的'区域'按钮，最后则按键盘上的回车键或点击所绘的第一个节点，完成轮廓的绘制。\n\n### 删除建筑物\n\n如果一个建筑物完全不正确－ 您看到它在卫星图像上不存在，并最好实地证实它根本不存在－ 您可以将建筑物删除，这会从地图中将之移除。删除要素时务必要小心－ 像任何其他的编辑一样，结果会公之于众，而卫星图像往往会过时，因此该建筑物或许只是新建的。\n\n要删除建筑物，您可以点击它以选择，然后点击垃圾桶图标，或按'Delete' 键。\n",
-            "relations": "# 关系\n\n关系是 OpenStreetMap 中用于组合其它特征的特殊要素类型。比如，两个基本关系类型*路径关系*和*复合多边形*，它们分别用于组合同一条公路或高速公路的不同部分和一个复杂区域(分成多块或像油炸圈饼一样中间有个洞)的多条线条。\n\n关系中包含的要素称为*成员*。在侧边栏中，您可以看到成员所属的关系，并点击选中它。选中某个关系后，您就能看到它的所有成员在侧边栏被全部列出并在地图上被高亮显示。\n\n在大多数时候，iD 会在您编辑的时候自动处理关系。您主要注意的是当您删除道路的某个部分并重绘它时，请确保新的部分还是原来的关系中的一员。\n\n## 编辑关系\n\n如果您想要编辑关系，这里是一些基本技巧。\n\n要向关系中添加要素，选择该要素，点击侧边栏「所有关系」中的「+」按钮，并选择或输入关系的名称。\n\n要创建一个新的关系，选中要作为成员的第一个特征，点击「所有关系」中的「+」按钮，并选择「新建关系...」。\n\n要从一个关系中移除要素，选择要素并点击您要从中移除的关系旁边的垃圾箱按钮。\n\n您可以使用「合并」工具创建有洞的复合多边形。绘制两个区域(内部和外部)，按住 Shift 键并点击各个多边形来选中它们，然后点击「合并」(+)按钮。\n"
-=======
             "key": "H",
             "help": {
                 "title": "帮助",
@@ -846,84 +823,166 @@
                     }
                 }
             }
->>>>>>> v2.7.0
         },
         "intro": {
             "done": "完成",
+            "ok": "确定",
             "graph": {
-                "city_hall": "三里屯市政厅",
-                "fire_department": "三里屯消防站",
-                "memory_isle_park": "北海公园",
-                "riverwalk_trail": "河滨小道",
-                "w_michigan_ave": "南京西路",
-                "e_michigan_ave": "南京东路",
-                "spring_st": "解放路",
-                "scidmore_park": "中山公园",
-                "petting_zoo": "野生动物园",
-                "n_andrews_st": "北五环",
-                "s_andrews_st": "南五环",
-                "n_constantine_st": "北光明路",
-                "s_constantine_st": "南光明路",
-                "rocky_river": "李家沟",
-                "railroad_dr": "铁道线",
-                "conrail_rr": "大秦铁路",
-                "st_joseph_river": "吴淞江",
-                "n_main_st": "北二环",
-                "s_main_st": "南二环",
-                "water_st": "水岸路",
-                "foster_st": "跃进街",
-                "portage_river": "货运河",
-                "flower_st": "幸福街",
-                "elm_st": "江榆路",
-                "walnut_st": "江松路",
-                "morris_ave": "世纪大道",
-                "east_st": "东街",
-                "portage_ave": "货运大道"
+                "block_number": "<value for addr:block_number>",
+                "city": "叁泉市",
+                "county": "<value for addr:county>",
+                "district": "朝阳区",
+                "hamlet": "<value for addr:hamlet>",
+                "neighbourhood": "<value for addr:neighbourhood>",
+                "postcode": "49093",
+                "province": "密歇根省",
+                "quarter": "<value for addr:quarter>",
+                "state": "MI",
+                "subdistrict": "<value for addr:subdistrict>",
+                "suburb": "<value for addr:suburb>",
+                "countrycode": "cn",
+                "name": {
+                    "1st-avenue": "甲子路",
+                    "2nd-avenue": "乙丑路",
+                    "4th-avenue": "丁卯路",
+                    "5th-avenue": "戊辰路",
+                    "6th-avenue": "己巳路",
+                    "6th-street": "己巳路",
+                    "7th-avenue": "庚午路",
+                    "8th-avenue": "辛未路",
+                    "9th-avenue": "壬申路",
+                    "10th-avenue": "癸酉路",
+                    "11th-avenue": "甲戌路",
+                    "12th-avenue": "乙亥路",
+                    "access-point-employment": "就业机构",
+                    "adams-street": "屈原路",
+                    "andrews-elementary-school": "燕竹小学",
+                    "andrews-street": "燕竹路",
+                    "armitage-street": "营觅台路",
+                    "barrows-school": "龙辕小学",
+                    "battle-street": "剑戟路",
+                    "bennett-street": "班尼路",
+                    "bowman-park": "羽林公园",
+                    "collins-drive": "柯林斯路",
+                    "conrail-railroad": "联运铁路",
+                    "conservation-park": "五柳公园",
+                    "constantine-street": "光明路",
+                    "cushman-street": "布泉路",
+                    "dollar-tree": "摇钱树",
+                    "douglas-avenue": "道格拉路",
+                    "east-street": "东街",
+                    "elm-street": "江榆路",
+                    "flower-street": "玫瑰街",
+                    "foster-street": "跃进街",
+                    "french-street": "高卢路",
+                    "garden-street": "听香路",
+                    "gem-pawnbroker": "珍宝典当",
+                    "golden-finch-framing": "金凤相框",
+                    "grant-avenue": "惠民路",
+                    "hoffman-pond": "霍夫曼湖",
+                    "hoffman-street": "霍夫曼路",
+                    "hook-avenue": "放翁路",
+                    "jefferson-street": "刘秀路",
+                    "kelsey-street": "凯旋路",
+                    "lafayette-park": "拉斐公园",
+                    "las-coffee-cafe": "天使咖啡",
+                    "lincoln-avenue": "中山路",
+                    "lowrys-books": "劳拉书屋",
+                    "lynns-garage": "林家车行",
+                    "main-street-barbell": "华尔杠铃",
+                    "main-street-cafe": "华尔咖啡",
+                    "main-street-fitness": "华尔健身",
+                    "main-street": "人民路",
+                    "maple-street": "枫林路",
+                    "marina-park": "船舫公园",
+                    "market-street": "槐市路",
+                    "memory-isle-park": "北海公园",
+                    "memory-isle": "记忆之岛",
+                    "michigan-avenue": "密歇根大道",
+                    "middle-street": "午街",
+                    "millard-street": "缪兰路",
+                    "moore-street": "莫迩路",
+                    "morris-avenue": "世纪路",
+                    "mural-mall": "清江画廊",
+                    "paisanos-bar-and-grill": "野夫烧烤",
+                    "paisley-emporium": "佩斯利百货",
+                    "paparazzi-tattoo": "狗仔刺青",
+                    "pealer-street": "钟鸣路",
+                    "pine-street": "松乔路",
+                    "pizza-hut": "必胜客",
+                    "portage-avenue": "货运路",
+                    "portage-river": "联运河",
+                    "preferred-insurance-services": "首选保险",
+                    "railroad-drive": "联运路",
+                    "river-city-appliance": "泉城电器",
+                    "river-drive": "长江路",
+                    "river-road": "淮河路",
+                    "river-street": "渭水路",
+                    "riverside-cemetery": "滨河陵园",
+                    "riverwalk-trail": "滨河步道",
+                    "riviera-theatre": "海滨剧院",
+                    "rocky-river": "磐石河",
+                    "saint-joseph-river": "盘古河",
+                    "scidmore-park-petting-zoo": "艾青动物园",
+                    "scidmore-park": "艾青公园",
+                    "scouter-park": "斥候公园",
+                    "sherwin-williams": "宣伟涂料",
+                    "south-street": "南街",
+                    "southern-michigan-bank": "南州银行",
+                    "spring-street": "迎春路",
+                    "sturgeon-river-road": "鲟江路",
+                    "three-rivers-city-hall": "叁泉市政厅",
+                    "three-rivers-elementary-school": "叁泉小学",
+                    "three-rivers-fire-department": "叁泉消防站",
+                    "three-rivers-high-school": "叁泉高中",
+                    "three-rivers-middle-school": "叁泉初中",
+                    "three-rivers-municipal-airport": "叁泉机场",
+                    "three-rivers-post-office": "叁泉邮政局",
+                    "three-rivers-public-library": "叁泉图书馆",
+                    "three-rivers": "叁泉市",
+                    "unique-jewelry": "优雅珠宝",
+                    "walnut-street": "江松路",
+                    "washington-street": "长安路",
+                    "water-street": "水岸路",
+                    "west-street": "西街",
+                    "wheeler-street": "轿夫路",
+                    "william-towing": "威廉拖车",
+                    "willow-drive": "杨柳路",
+                    "wood-street": "乔木街",
+                    "world-fare": "世界之窗"
+                }
+            },
+            "welcome": {
+                "title": "欢迎",
+                "welcome": "欢迎！本教程将会为您介绍编辑 OpenStreetMap 的基本操作。",
+                "practice": "在本教程中，所有的数据仅供练习使用，您所做的任何编辑亦不会被保存。",
+                "words": "本教程将会介绍一些新的字词和概念。每当我们引入新词，我们将用 *斜体* 来表示。",
+                "mouse": "您可以使用任意输入设备来编辑地图，但本教程假定您拥有一个带有左右键的鼠标。 **如果您想连接鼠标，那么请现在做，然后点击确定。**",
+                "leftclick": "当本教程要求您单击或双击时，我们指的是左键点击。若您使用触控板，则为单次点按或用一个手指点按。 **左键点击 {num} 次。**",
+                "rightclick": "有时我们也会要求您右键点击。这与右击菜单，或在触控板上用两个手指点按一样。您的键盘甚至会有菜单键可以代替右键点击。 **右键点击 {num} 次。**",
+                "chapters": "到目前为止一切顺利！您可以在任何时间点击下面的按钮来跳过章节，或是在遇到问题时重新开始章节。让我们开始吧！ **点击‘{next}’以继续。**"
             },
             "navigation": {
-                "title": "导航",
-                "drag": "主地图区域在背景上展示了 OpenStreetMap 数据。您可以像在其它网络地图一样通过拖动和滚动来移动。**拖动地图！**",
-                "select": "地图要素有三种表示方法：点、线、面。所有要素都可以通过点击选择。**单击该点来选定它。**",
-                "pane": "当选定一个地理特征时，特征编辑器将出现。其抬头展示特征类型，主窗格展示特征的属性，如名称和地址。**单击特征编辑器右上角的 {button} 按钮来关闭特征编辑器。**",
-                "search": "您也可以搜索目前视野上或世界的地理特征。**搜索'{name}'**",
-                "choose": "**在列表中选择{name}。**",
-                "chosen": "好！{name}已经被选中了。**按下{button}来关闭地理特征编辑器。**"
+                "title": "导览",
+                "drag": "主地图区域在背景上显示了 OpenStreetMap 数据。{br}您可以在左键点击同时移动鼠标来拖动地图。您也可以使用键盘上的方向键。**拖动地图！**",
+                "zoom": "您可以滚动鼠标、触控板或点击 {plus} / {minus} 按钮来放大或缩小地图。 **缩放地图！**",
+                "features": "我们使用 *要素* 一词来描述在地图上出现的东西。现实世界上的任何东西都可以在 OpenStreetMap 中描绘成要素。",
+                "points_lines_areas": "地图要素以 *点、线、区域* 的形式呈现。",
+                "nodes_ways": "在 OpenStreetMap 中，点有时被称为 *节点* ，线和区域有时被称为 *路径* 。",
+                "click_townhall": "所有地图上的要素都可以通过点击来选中。 **点击选中该点。**",
+                "selected_townhall": "很好！该点已经被选中了。选中的要素的周围会有光亮不停闪烁。",
+                "editor_townhall": "当一个要素被选中时， *要素编辑器* 将会在地图旁边显示。",
+                "preset_townhall": "要素编辑器的顶端显示该要素的类型。该点表示这是一所 {preset} 。",
+                "fields_townhall": "要素编辑器的中间部分含有 *字段* 来表明该要素的属性，比如它的名称和地址。",
+                "close_townhall": "**使用 Esc 键或点击右上角的 {button} 按钮来关闭要素编辑器。**",
+                "search_street": "您可以在当前视野里或在全世界中搜索要素。 **搜索 '{name}' 。**",
+                "choose_street": "**在列表里选中 {name} 。**",
+                "selected_street": "很好！ {name} 已经被选中了。",
+                "editor_street": "街道所显示的字段和之前市政厅显示的字段不同。{br}在该选中的街道，要素编辑器会显示像 '{field1}' 和 '{field2}' 等这样的字段。 **使用 Esc 键或点击右上角的 {button} 按钮来关闭要素编辑器。**",
+                "play": "尝试移动地图并点击其他一些要素来查看哪些东西可以被添加到 OpenStreetMap 。 **当您准备好进入下一章节时，点击 '{next}' 。**"
             },
             "points": {
                 "title": "点",
-<<<<<<< HEAD
-                "add": "点可以用来表示某些地理特征，比如商店、餐厅和纪念碑。它们标定了一个特定的位置，并且描述了那里有什么。**按下{button}按钮来增加一个新点。**",
-                "place": "可以用点击地图的方式来放置点。**点击地图，把新点放置在这座建筑的上面。**",
-                "search": "很多不同的物体可以用点来代表。您刚刚新增加的点是一间咖啡厅。**搜索'{name}'**",
-                "choose": "**在列表中选择咖啡馆。**",
-                "describe": "这个点已经标记为咖啡馆了。使用特征编辑器，我们可以添加更多关于特征的信息。**添加名称**",
-                "close": "地理特征编辑器会自动记下您所有的改动。当你改动一个地理特征时，关闭按钮会变成对勾。**按下{button}按钮来关闭编辑器**",
-                "reselect": "有些点已经存在，但是信息有错误或不完整。我们可以编辑已经存在的点。**点击那个您刚刚创建的点。**",
-                "fixname": "**改变它的名字，然后点击{button}按钮来关闭编辑器。**",
-                "reselect_delete": "所有在地图上的特征都能被删除。**点击那个您刚刚创建的点。**",
-                "delete": "在点周围的菜单包含在该点可执行的操作，包括删除。**点击{button}按钮来删除点。**"
-            },
-            "areas": {
-                "title": "面状要素",
-                "add": "面可以用来表示特征的界限，像是湖、建筑物或住宅区。也就是说可以让原本只是个兴趣点的特征呈现更多细节。 **按{button}按钮新建面。**",
-                "corner": "通过将节点放到面的边界上，可绘制面。 **将起始节点置于游乐场的其中一角。**",
-                "place": "放置更多节点可绘制面要素。点击开始节点即可完成绘制。**在沙盒绘制一个面。**",
-                "search": "**搜索'{name}'。**",
-                "choose": "**在列表中选择儿童游乐场。**",
-                "describe": "**添加名称，然后按{button}按钮来关闭特征编辑器**"
-            },
-            "lines": {
-                "title": "线",
-                "add": "线用于代表诸如道路、铁路和河流的特征。**单击{button}按钮添加新线。**",
-                "start": "**点击道路末端，以开始绘制线段。 **",
-                "intersect": "点击向线添加更多节点。必要时您可以在绘制时拖动地图。道路和许多其它类型的线都是一个更大的网络的组成部分，因此正确连接这些线以便导航应用使用是十分重要的。**点击{name}创建连接两条线的交叉点。**",
-                "finish": "再次点击最后一个节点可结束绘制线。**完成道路的绘制。**",
-                "road": "**在列表中选择道路**",
-                "residential": "道路有不同种类，最常见的为住宅区道路。 **选择住宅区道路**",
-                "describe": "**给道路命名，然后按{button}按钮关闭特征编辑器。**",
-                "restart": "这个道路需要和{name}相交。",
-                "wrong_preset": "您没有选择住宅道路类型。 **点击这里重新选择**"
-=======
                 "add_point": "*点* 可以用来表示诸如商店、餐厅或纪念碑等要素。{br}它们标注一个特定位置，并描述那里有什么。 **点击 {button} 按钮来添加一个新的点。**",
                 "place_point": "若要在地图上放置新的点，将鼠标移到该点应处的位置，然后左键点击或按空格键。 **将鼠标指针移动到这个建筑的上方，然后左键点击或按空格键。**",
                 "search_cafe": "有许多的要素可以用点来表示。您刚才添加的点是一间咖啡馆。 **搜索 '{preset}' 。**",
@@ -1005,17 +1064,15 @@
                 "circle_tank": "**点击 {button} 按钮使储罐变成一个圆。**",
                 "retry_circle": "您并未点击环状化按钮。请重试。",
                 "play": "干得漂亮！练习勾画更多建筑物的轮廓，并尝试使用编辑菜单的一些其他控制。 **当您准备好进入下一章节时，点击 '{next}' 。**"
->>>>>>> v2.8.2
             },
             "startediting": {
                 "title": "开始编辑",
-                "help": "如需重新查看本导览，或者查看更多文档，您可以点击 {button} 帮助 按钮。",
+                "help": "您现在已经学会编辑 OpenStreetMap 了！{br}您可以在任何时候点击 {button} 帮助按钮或按下{key}键来重放该教程或查看更多参考文档。",
+                "shortcuts": "您可以通过按下{key}键来查看命令列表及相应快捷键。",
                 "save": "不要忘了定期保存您的修改！",
                 "start": "开始绘制地图！"
             }
         },
-<<<<<<< HEAD
-=======
         "shortcuts": {
             "title": "键盘快捷键",
             "tooltip": "显示键盘快捷键界面",
@@ -1157,50 +1214,58 @@
             "coordinate": "{coordinate}{direction}",
             "coordinate_pair": "{latitude}, {longitude}"
         },
->>>>>>> v2.7.0
         "presets": {
             "categories": {
                 "category-barrier": {
-                    "name": "障碍特征"
+                    "name": "屏障"
                 },
                 "category-building": {
-                    "name": "建筑特征"
+                    "name": "建筑"
                 },
                 "category-golf": {
-                    "name": "高尔夫特征"
+                    "name": "高尔夫"
                 },
                 "category-landuse": {
-                    "name": "土地利用特征"
+                    "name": "土地用途"
+                },
+                "category-natural-area": {
+                    "name": "自然"
+                },
+                "category-natural-line": {
+                    "name": "自然"
+                },
+                "category-natural-point": {
+                    "name": "自然"
                 },
                 "category-path": {
-                    "name": "路径特征"
+                    "name": "小路"
                 },
                 "category-rail": {
-                    "name": "铁路特征"
+                    "name": "铁路"
                 },
                 "category-restriction": {
-                    "name": "限制特征"
+                    "name": "限制"
                 },
                 "category-road": {
-                    "name": "道路特征"
+                    "name": "道路"
                 },
                 "category-route": {
-                    "name": "线路特征"
+                    "name": "线路"
                 },
                 "category-water-area": {
-                    "name": "水体特征"
+                    "name": "水体"
                 },
                 "category-water-line": {
-                    "name": "水体特征"
+                    "name": "水体"
                 }
             },
             "fields": {
                 "access": {
-                    "label": "通行规则",
+                    "label": "允许通行",
                     "options": {
                         "designated": {
-                            "description": "只限标志指定或特定本地法律容许人士进入",
-                            "title": "特定的"
+                            "description": "只限标志指定或特定本地法律容许的人士、车辆进入",
+                            "title": "指定"
                         },
                         "destination": {
                             "description": "只限前往目的地人士进入",
@@ -1212,11 +1277,11 @@
                         },
                         "no": {
                             "description": "禁止一般公众进入",
-                            "title": "禁止的"
+                            "title": "禁止"
                         },
                         "permissive": {
-                            "description": "容许进入，直至拥有者撇回许可",
-                            "title": "获许可进入"
+                            "description": "容许进入，直至拥有者撤回许可",
+                            "title": "默许"
                         },
                         "private": {
                             "description": "须拥有者个别批准，方可进入",
@@ -1224,12 +1289,12 @@
                         },
                         "yes": {
                             "description": "按法律及路权，有权使用",
-                            "title": "允许的"
+                            "title": "允许"
                         }
                     },
-                    "placeholder": "未指定",
+                    "placeholder": "未知",
                     "types": {
-                        "access": "全部",
+                        "access": "全部交通方式",
                         "bicycle": "自行车",
                         "foot": "步行",
                         "horse": "马匹",
@@ -1237,29 +1302,42 @@
                     }
                 },
                 "access_simple": {
-                    "label": "通行限制"
-                },
-                "access_toilets": {
-                    "label": "使用者"
+                    "label": "允许进入"
                 },
                 "address": {
                     "label": "地址",
                     "placeholders": {
-                        "city": "城市",
-                        "conscriptionnumber": "123",
+                        "block_number": "街区编号",
+                        "block_number!jp": "街区号",
+                        "city": "地级市/自治州",
+                        "city!jp": "市/镇/村/东京都特别区",
+                        "city!vn": "市/镇",
+                        "conscriptionnumber": "123号",
                         "country": "国家",
-                        "district": "行政区",
+                        "county": "郡",
+                        "county!jp": "郡 (日本)",
+                        "district": "市辖区/县/县级市",
+                        "district!vn": "郡/镇/区",
                         "floor": "楼层",
                         "hamlet": "村庄",
                         "housename": "房屋名称",
                         "housenumber": "123号",
+                        "housenumber!jp": "楼号/地段号",
+                        "neighbourhood": "小区",
+                        "neighbourhood!jp": "丁目/字/小字",
                         "place": "地方",
                         "postcode": "邮政编码",
-                        "province": "行政省",
+                        "province": "省/自治区/特别行政区",
+                        "province!jp": "日本县",
+                        "quarter": "地方",
+                        "quarter!jp": "大字/町",
                         "state": "行政州",
-                        "street": "街道",
+                        "street": "路",
                         "subdistrict": "街道",
-                        "suburb": "地区"
+                        "subdistrict!vn": "行政区/社区/小镇",
+                        "suburb": "地区",
+                        "suburb!jp": "行政区",
+                        "unit": "单元"
                     }
                 },
                 "admin_level": {
@@ -1280,7 +1358,7 @@
                     "label": "圆形顶"
                 },
                 "aerialway/capacity": {
-                    "label": "容量(每小时)",
+                    "label": "客流量(每小时)",
                     "placeholder": "500, 2500, 5000..."
                 },
                 "aerialway/duration": {
@@ -1297,7 +1375,7 @@
                 "aerialway/summer/access": {
                     "label": "通行方向（夏季）",
                     "options": {
-                        "both": "双方",
+                        "both": "双向",
                         "entry": "入口",
                         "exit": "出口"
                     }
@@ -1311,11 +1389,20 @@
                 "amenity": {
                     "label": "类型"
                 },
+                "animal_boarding": {
+                    "label": "寄养动物类型"
+                },
+                "animal_breeding": {
+                    "label": "饲养动物类型"
+                },
+                "animal_shelter": {
+                    "label": "收留动物类型"
+                },
                 "area/highway": {
                     "label": "类型"
                 },
                 "artist": {
-                    "label": "艺人"
+                    "label": "艺术家"
                 },
                 "artwork_type": {
                     "label": "类型"
@@ -1340,7 +1427,7 @@
                     "options": {
                         "foot_bath": "足浴",
                         "hot_spring": "温泉",
-                        "onsen": "日本温泉"
+                        "onsen": "日式温泉"
                     }
                 },
                 "beauty": {
@@ -1356,7 +1443,7 @@
                     "label": "垃圾箱"
                 },
                 "blood_components": {
-                    "label": "血液组成",
+                    "label": "血液成分",
                     "options": {
                         "plasma": "血浆",
                         "platelets": "血小板",
@@ -1367,14 +1454,15 @@
                 "board_type": {
                     "label": "类型"
                 },
+                "boules": {
+                    "label": "类型"
+                },
                 "boundary": {
                     "label": "类型"
                 },
                 "brand": {
                     "label": "品牌"
                 },
-<<<<<<< HEAD
-=======
                 "brewery": {
                     "label": "生啤酒"
                 },
@@ -1382,15 +1470,12 @@
                     "label": "类型",
                     "placeholder": "默认"
                 },
->>>>>>> v2.7.0
                 "building": {
                     "label": "建筑物"
                 },
                 "building_area": {
                     "label": "建筑物"
                 },
-<<<<<<< HEAD
-=======
                 "bunker_type": {
                     "label": "类型"
                 },
@@ -1398,13 +1483,12 @@
                     "label": "电缆数量",
                     "placeholder": "1, 2, 3..."
                 },
->>>>>>> v2.7.0
                 "camera/direction": {
-                    "label": "方向 (度顺时针)",
+                    "label": "方向 (顺时针度)",
                     "placeholder": "45, 90, 180, 270"
                 },
                 "camera/mount": {
-                    "label": "相机支架"
+                    "label": "相机架设"
                 },
                 "camera/type": {
                     "label": "相机类型",
@@ -1418,35 +1502,6 @@
                     "label": "容量",
                     "placeholder": "50, 100, 200..."
                 },
-<<<<<<< HEAD
-                "cardinal_direction": {
-                    "label": "方向",
-                    "options": {
-                        "E": "东",
-                        "ENE": "东北偏东",
-                        "ESE": "东南偏东",
-                        "N": "北",
-                        "NE": "东北",
-                        "NNE": "东北偏北",
-                        "NNW": "西北偏北",
-                        "NW": "西北",
-                        "S": "南",
-                        "SE": "东南",
-                        "SSE": "东南偏南",
-                        "SSW": "西南偏南",
-                        "SW": "西南",
-                        "W": "西",
-                        "WNW": "西北偏西",
-                        "WSW": "西南偏西"
-                    }
-                },
-                "clock_direction": {
-                    "label": "方向",
-                    "options": {
-                        "anticlockwise": "逆时针",
-                        "clockwise": "顺时针"
-                    }
-=======
                 "castle_type": {
                     "label": "类型"
                 },
@@ -1455,12 +1510,8 @@
                 },
                 "club": {
                     "label": "类型"
->>>>>>> v2.7.0
                 },
                 "collection_times": {
-<<<<<<< HEAD
-                    "label": "收集时间"
-=======
                     "label": "收取时间"
                 },
                 "comment": {
@@ -1469,7 +1520,6 @@
                 },
                 "communication_multi": {
                     "label": "通讯类型"
->>>>>>> v2.8.2
                 },
                 "construction": {
                     "label": "类型"
@@ -1485,22 +1535,34 @@
                     "label": "国家"
                 },
                 "covered": {
-                    "label": "覆盖"
+                    "label": "有上盖"
                 },
                 "craft": {
                     "label": "种类"
                 },
+                "crane/type": {
+                    "label": "起重机类型",
+                    "options": {
+                        "floor-mounted_crane": "固定式起重机",
+                        "portal_crane": "门式起重机",
+                        "travel_lift": "流动式起重机"
+                    }
+                },
                 "crop": {
-                    "label": "农作物"
+                    "label": "作物"
                 },
                 "crossing": {
                     "label": "类型"
                 },
                 "cuisine": {
-                    "label": "菜肴"
+                    "label": "菜系"
                 },
                 "currency_multi": {
                     "label": "货币类型"
+                },
+                "cutting": {
+                    "label": "类型",
+                    "placeholder": "默认"
                 },
                 "cycle_network": {
                     "label": "自行车网络"
@@ -1509,7 +1571,7 @@
                     "label": "自行车道",
                     "options": {
                         "lane": {
-                            "description": "交通标线与机动车隔开的自行车道",
+                            "description": "通过交通标线与机动车隔开的自行车道",
                             "title": "标准自行车道"
                         },
                         "none": {
@@ -1517,7 +1579,7 @@
                             "title": "无"
                         },
                         "opposite": {
-                            "description": "单行街道上双向行驶的自行车道",
+                            "description": "单行路上可双向通行的自行车道",
                             "title": "逆向自行车道"
                         },
                         "opposite_lane": {
@@ -1556,10 +1618,10 @@
                     "label": "教派"
                 },
                 "denotation": {
-                    "label": "意思"
+                    "label": "树木指示性"
                 },
                 "description": {
-                    "label": "说明"
+                    "label": "描述"
                 },
                 "devices": {
                     "label": "设备数量",
@@ -1623,21 +1685,33 @@
                 "drive_through": {
                     "label": "免下车"
                 },
+                "duration": {
+                    "label": "乘坐时长",
+                    "placeholder": "hh:mm"
+                },
                 "electrified": {
                     "label": "电气化",
                     "options": {
                         "contact_line": "接触线",
                         "no": "否",
-                        "rail": "电气化铁路",
+                        "rail": "第三轨供电",
                         "yes": "是(未指明)"
                     },
-                    "placeholder": "接触线、电气化铁路…"
+                    "placeholder": "架空接触线、第三轨供电…"
                 },
                 "elevation": {
                     "label": "海拔"
                 },
+                "email": {
+                    "label": "Email",
+                    "placeholder": "example@example.com"
+                },
+                "embankment": {
+                    "label": "类型",
+                    "placeholder": "默认"
+                },
                 "emergency": {
-                    "label": "急诊室"
+                    "label": "急诊"
                 },
                 "entrance": {
                     "label": "类型"
@@ -1658,17 +1732,33 @@
                 "fence_type": {
                     "label": "类型"
                 },
+                "fire_hydrant/position": {
+                    "label": "位置",
+                    "options": {
+                        "green": "绿地",
+                        "lane": "车道",
+                        "parking_lot": "停车场",
+                        "sidewalk": "人行道"
+                    }
+                },
                 "fire_hydrant/type": {
                     "label": "类型",
                     "options": {
                         "pillar": "支柱/地上",
                         "pond": "池塘",
-                        "underground": "地铁",
+                        "underground": "地下",
                         "wall": "墙"
                     }
                 },
+                "fitness_station": {
+                    "label": "器械种类"
+                },
                 "fixme": {
-                    "label": "修复我"
+                    "label": "Fix Me"
+                },
+                "ford": {
+                    "label": "类型",
+                    "placeholder": "默认"
                 },
                 "frequency": {
                     "label": "工作频率"
@@ -1687,12 +1777,16 @@
                     "options": {
                         "female": "女",
                         "male": "男",
-                        "unisex": "无性别"
+                        "unisex": "男女通用"
                     },
                     "placeholder": "未知"
                 },
                 "generator/method": {
                     "label": "模式"
+                },
+                "generator/output/electricity": {
+                    "label": "电力输出",
+                    "placeholder": "50 MW, 100 MW, 200 MW..."
                 },
                 "generator/source": {
                     "label": "来源"
@@ -1700,17 +1794,11 @@
                 "generator/type": {
                     "label": "类型"
                 },
-<<<<<<< HEAD
-                "golf_hole": {
-                    "label": "参考",
-                    "placeholder": "球洞编号（1-18）"
-=======
                 "government": {
                     "label": "类型"
                 },
                 "grape_variety": {
                     "label": "葡萄品种"
->>>>>>> v2.7.0
                 },
                 "handicap": {
                     "label": "手工店",
@@ -1718,6 +1806,16 @@
                 },
                 "handrail": {
                     "label": "扶手"
+                },
+                "hashtags": {
+                    "label": "#标签",
+                    "placeholder": "#example"
+                },
+                "healthcare": {
+                    "label": "类型"
+                },
+                "healthcare/speciality": {
+                    "label": "专科"
                 },
                 "height": {
                     "label": "高度 (米)"
@@ -1728,8 +1826,11 @@
                 "historic": {
                     "label": "类型"
                 },
+                "historic/civilization": {
+                    "label": "所属文化及历史时期"
+                },
                 "hoops": {
-                    "label": "篮球",
+                    "label": "篮圈数",
                     "placeholder": "1, 2, 4..."
                 },
                 "horse_dressage": {
@@ -1766,16 +1867,16 @@
                     }
                 },
                 "iata": {
-                    "label": "国际航空运输协会IATA"
+                    "label": "IATA(国际航空运输协会)"
                 },
                 "icao": {
-                    "label": "国际民航组织ICAO"
+                    "label": "ICAO(国际民航组织)"
                 },
                 "incline": {
                     "label": "斜度"
                 },
                 "incline_steps": {
-                    "label": "坡度",
+                    "label": "斜坡",
                     "options": {
                         "down": "下",
                         "up": "上"
@@ -1789,6 +1890,12 @@
                 },
                 "information": {
                     "label": "类型"
+                },
+                "inscription": {
+                    "label": "铭文"
+                },
+                "intermittent": {
+                    "label": "断流现象"
                 },
                 "internet_access": {
                     "label": "互联网接入",
@@ -1807,7 +1914,10 @@
                     "label": "SSID (网络名称)"
                 },
                 "kerb": {
-                    "label": "路缘坡道"
+                    "label": "路缘"
+                },
+                "label": {
+                    "label": "标识"
                 },
                 "lamp_type": {
                     "label": "类型"
@@ -1816,11 +1926,12 @@
                     "label": "类型"
                 },
                 "lanes": {
-                    "label": "车道",
+                    "label": "车道数目",
                     "placeholder": "1, 2, 3..."
                 },
                 "layer": {
-                    "label": "图层"
+                    "label": "图层",
+                    "placeholder": "0"
                 },
                 "leaf_cycle": {
                     "label": "叶寿命",
@@ -1862,13 +1973,13 @@
                     "label": "类型"
                 },
                 "length": {
-                    "label": "高度（米）"
+                    "label": "长度 (米)"
                 },
                 "level": {
                     "label": "楼层"
                 },
                 "levels": {
-                    "label": "层数",
+                    "label": "楼层数",
                     "placeholder": "2, 4, 6..."
                 },
                 "lit": {
@@ -1880,6 +1991,9 @@
                 "man_made": {
                     "label": "类型"
                 },
+                "manhole": {
+                    "label": "类型"
+                },
                 "map_size": {
                     "label": "范围"
                 },
@@ -1887,11 +2001,11 @@
                     "label": "类型"
                 },
                 "maxheight": {
-                    "label": "最大高度",
+                    "label": "限制高度",
                     "placeholder": "4, 4.5, 5, 14'0\", 14'6\", 15'0\""
                 },
                 "maxspeed": {
-                    "label": "速度限制",
+                    "label": "限制速度",
                     "placeholder": "40, 50, 60..."
                 },
                 "maxspeed/advisory": {
@@ -1901,30 +2015,27 @@
                 "maxstay": {
                     "label": "可停留时间"
                 },
-<<<<<<< HEAD
-=======
                 "maxweight": {
                     "label": "最大重量"
                 },
                 "memorial": {
                     "label": "类型"
                 },
->>>>>>> v2.7.0
                 "mtb/scale": {
                     "label": "山地自行车骑行难度",
                     "options": {
-                        "0": "0：坚实的硕石土路，没有障碍物，大湾曲",
-                        "1": "1：铺面部分松散，有小的障碍物，大弯曲",
-                        "2": "2：大都是松散的铺面，有的障碍物，容易通过的发夹弯",
-                        "3": "3：铺面光滑，有大的障碍物",
+                        "0": "0：坚实的硕石土路，没有障碍物，路线较直",
+                        "1": "1：路面部分松散，有小的障碍物，路线较直",
+                        "2": "2：大都是松散的路面，有大的障碍物，容易通过的发夹弯",
+                        "3": "3：路面容易打滑，有大的障碍物，有发夹弯",
                         "4": "4：路面松散或是充满石头，有危险的发夹弯",
                         "5": "5：骑乘等级最困难，路面充满石头，或者是路面坍方",
-                        "6": "6：除非是技巧极好的越野车手，否则并不适合骑乘"
+                        "6": "6：无法骑行，除非是技巧极好的越野车手"
                     },
                     "placeholder": "0, 1, 2, 3..."
                 },
                 "mtb/scale/imba": {
-                    "label": "国际登山车协会路径难度",
+                    "label": "IMBA(国际登山车协会)路径难度",
                     "options": {
                         "0": "最简单(白圈)",
                         "1": "容易(绿圈)",
@@ -1967,7 +2078,7 @@
                     "placeholder": "本地的，地区的，国家的，国际的"
                 },
                 "network_foot": {
-                    "label": "网络类型",
+                    "label": "徒步网络类型",
                     "options": {
                         "iwn": "国际的",
                         "lwn": "本地的",
@@ -2033,8 +2144,8 @@
                         "carports": "车棚",
                         "garage_boxes": "车库盒",
                         "lane": "路边",
-                        "multi-storey": "多晨",
-                        "sheds": "单独车库",
+                        "multi-storey": "多层",
+                        "sheds": "车棚",
                         "surface": "地面",
                         "underground": "地下"
                     }
@@ -2078,7 +2189,7 @@
                     "label": "类型",
                     "options": {
                         "downhill": "下坡",
-                        "hike": "徒步旅行",
+                        "hike": "徒步",
                         "ice_skate": "冰刀",
                         "nordic": "北欧人",
                         "playground": "练习场",
@@ -2091,6 +2202,22 @@
                 "place": {
                     "label": "类型"
                 },
+                "plant": {
+                    "label": "栽培物"
+                },
+                "plant/output/electricity": {
+                    "label": "输出功率",
+                    "placeholder": "500 MW, 1000 MW, 2000 MW..."
+                },
+                "playground/baby": {
+                    "label": "婴儿车"
+                },
+                "playground/max_age": {
+                    "label": "最高年龄"
+                },
+                "playground/min_age": {
+                    "label": "最低年龄"
+                },
                 "population": {
                     "label": "人口"
                 },
@@ -2099,6 +2226,9 @@
                 },
                 "power_supply": {
                     "label": "供电"
+                },
+                "produce": {
+                    "label": "产品"
                 },
                 "product": {
                     "label": "产品"
@@ -2110,13 +2240,8 @@
                     "label": "里程碑位置",
                     "placeholder": "距离，精确到一位小数 (123.4)"
                 },
-<<<<<<< HEAD
-                "recycling_type": {
-                    "label": "回收场所",
-=======
                 "railway/signal/direction": {
                     "label": "方向",
->>>>>>> v2.7.0
                     "options": {
                         "backward": "向后",
                         "both": "双向 / 全部",
@@ -2127,9 +2252,6 @@
                     "label": "接受"
                 },
                 "ref": {
-<<<<<<< HEAD
-                    "label": "参考"
-=======
                     "label": "编号"
                 },
                 "ref/isil": {
@@ -2164,7 +2286,6 @@
                 "ref_taxiway": {
                     "label": "滑行道编号",
                     "placeholder": "如: A5"
->>>>>>> v2.7.0
                 },
                 "relation": {
                     "label": "类型"
@@ -2190,14 +2311,14 @@
                 "sac_scale": {
                     "label": "远足难度",
                     "options": {
-                        "alpine_hiking": "T4：高山旅行",
-                        "demanding_alpine_hiking": "T5：进阶高山旅行",
-                        "demanding_mountain_hiking": "T3：进阶登山旅行",
-                        "difficult_alpine_hiking": "T6：艰困高山旅行",
-                        "hiking": "T1：徒步旅行",
-                        "mountain_hiking": "T2：登山旅行"
+                        "alpine_hiking": "T4：高山徒步",
+                        "demanding_alpine_hiking": "T5：进阶高山徒步",
+                        "demanding_mountain_hiking": "T3：进阶山地徒步",
+                        "difficult_alpine_hiking": "T6：艰困高山徒步",
+                        "hiking": "T1：徒步",
+                        "mountain_hiking": "T2：山地徒步"
                     },
-                    "placeholder": "登山旅行，越岭行走..."
+                    "placeholder": "山地徒步，高山远足..."
                 },
                 "sanitary_dump_station": {
                     "label": "厕所废物"
@@ -2220,6 +2341,9 @@
                 "service/bicycle": {
                     "label": "服务"
                 },
+                "service/vehicle": {
+                    "label": "车辆服务"
+                },
                 "service_rail": {
                     "label": "服务类型",
                     "options": {
@@ -2229,8 +2353,11 @@
                         "yard": "站场线路"
                     }
                 },
+                "service_times": {
+                    "label": "服务时间"
+                },
                 "shelter": {
-                    "label": "避难所"
+                    "label": "候车亭"
                 },
                 "shelter_type": {
                     "label": "类型"
@@ -2247,8 +2374,8 @@
                         "dedicated": "吸烟专用",
                         "isolated": "指定区域可使用（隔开）",
                         "no": "禁止吸烟",
-                        "outside": "外面可使用",
-                        "separated": "指定区域可使用（布隔开）",
+                        "outside": "室外可使用",
+                        "separated": "指定区域可使用（不隔开）",
                         "yes": "随处可使用"
                     },
                     "placeholder": "禁止、隔开、允许..."
@@ -2260,16 +2387,18 @@
                         "excellent": "轴承：溜冰，滑板",
                         "good": "细轮：竞速自行车",
                         "horrible": "越野：高负重越野车辆",
-                        "impassable": "禁止通行/禁止轮类交通工具",
+                        "impassable": "无法通行 / 有轮车辆无法通行",
                         "intermediate": "轮胎：通勤脚踏车，轮椅，滑板车",
                         "very_bad": "轻量化：低负重越野车辆",
                         "very_horrible": "越野专用：拖拉机，全地形越野车"
                     },
                     "placeholder": "轴承, 轮胎, 越野..."
                 },
+                "social_facility": {
+                    "label": "类型"
+                },
                 "social_facility_for": {
-                    "label": "服务对象",
-                    "placeholder": "无家可归者，残疾人，儿童等"
+                    "label": "服务对象"
                 },
                 "source": {
                     "label": "来源"
@@ -2278,13 +2407,22 @@
                     "label": "运动"
                 },
                 "sport_ice": {
-                    "label": "体育"
+                    "label": "冰上项目"
                 },
-                "sport_racing": {
-                    "label": "运动"
+                "sport_racing_motor": {
+                    "label": "赛车项目"
+                },
+                "sport_racing_nonmotor": {
+                    "label": "非机动竞速项目"
                 },
                 "stars": {
                     "label": "星级"
+                },
+                "start_date": {
+                    "label": "启用或竣工日期"
+                },
+                "step_count": {
+                    "label": "台阶数"
                 },
                 "stop": {
                     "label": "停车指示类型",
@@ -2296,16 +2434,26 @@
                 "structure": {
                     "label": "结构",
                     "options": {
-                        "bridge": "桥",
-                        "cutting": "开凿",
-                        "embankment": "堤岸",
-                        "ford": "浅滩",
+                        "bridge": "桥梁",
+                        "cutting": "路堑",
+                        "embankment": "路堤",
+                        "ford": "过水路面",
                         "tunnel": "隧道"
                     },
                     "placeholder": "未知种类"
                 },
+                "structure_waterway": {
+                    "label": "结构",
+                    "options": {
+                        "tunnel": "隧道"
+                    },
+                    "placeholder": "未知"
+                },
                 "studio": {
                     "label": "类型"
+                },
+                "substance": {
+                    "label": "材质"
                 },
                 "substation": {
                     "label": "类型"
@@ -2317,7 +2465,7 @@
                     "label": "支持物"
                 },
                 "surface": {
-                    "label": "路面铺设"
+                    "label": "表面铺设"
                 },
                 "surveillance": {
                     "label": "监视"
@@ -2357,7 +2505,16 @@
                         "pitlatrine": "旱厕/茅厕"
                     }
                 },
+                "toll": {
+                    "label": "收费"
+                },
+                "tomb": {
+                    "label": "类型"
+                },
                 "tourism": {
+                    "label": "类型"
+                },
+                "tourism_attraction": {
                     "label": "类型"
                 },
                 "tower/construction": {
@@ -2377,6 +2534,9 @@
                         "grade5": "柔性铺面：只有土壤，砂土与草地"
                     },
                     "placeholder": "坚硬地面, 硬物铺面, 软铺面..."
+                },
+                "trade": {
+                    "label": "类型"
                 },
                 "traffic_calming": {
                     "label": "类型"
@@ -2404,8 +2564,6 @@
                     },
                     "placeholder": "良好，尚可，稍差..."
                 },
-<<<<<<< HEAD
-=======
                 "transformer": {
                     "label": "变压器类型",
                     "options": {
@@ -2419,12 +2577,12 @@
                         "yes": "未知"
                     }
                 },
->>>>>>> v2.7.0
                 "trees": {
                     "label": "树林"
                 },
                 "tunnel": {
-                    "label": "隧道"
+                    "label": "类型",
+                    "placeholder": "默认"
                 },
                 "usage_rail": {
                     "label": "使用类型",
@@ -2445,8 +2603,6 @@
                         "street": "5 至 20米 (16 至 65英尺)"
                     }
                 },
-<<<<<<< HEAD
-=======
                 "volcano/status": {
                     "label": "火山活动",
                     "options": {
@@ -2475,7 +2631,6 @@
                 "voltage/tertiary": {
                     "label": "三次电压"
                 },
->>>>>>> v2.7.0
                 "wall": {
                     "label": "类型"
                 },
@@ -2502,12 +2657,10 @@
                     "label": "批发"
                 },
                 "width": {
-                    "label": "宽度（米）"
+                    "label": "宽度 (米)"
                 },
                 "wikipedia": {
                     "label": "维基百科"
-<<<<<<< HEAD
-=======
                 },
                 "windings": {
                     "label": "绕组数",
@@ -2524,7 +2677,6 @@
                         "star": "星型（Y型）",
                         "zigzag": "曲折连接"
                     }
->>>>>>> v2.7.0
                 }
             },
             "presets": {
@@ -2544,24 +2696,36 @@
                     "name": "缆车线路"
                 },
                 "aerialway/cable_car": {
-                    "name": "缆车",
-                    "terms": "缆车, 索道车"
+                    "name": "大缆车",
+                    "terms": "缆车,索道车"
                 },
                 "aerialway/chair_lift": {
                     "name": "登山吊椅",
                     "terms": "座椅式索道,观光索道,升降椅"
                 },
+                "aerialway/drag_lift": {
+                    "name": "拖拽缆道",
+                    "terms": "路面缆道,drag lift,surface lift,滑雪拖车"
+                },
                 "aerialway/gondola": {
-                    "name": "贡多拉",
-                    "terms": "长平底船,两头尖的平底船,狭长小船"
+                    "name": "环路缆车",
+                    "terms": "环路缆车,很多缆车,很多很多缆车,群体打转的缆车"
+                },
+                "aerialway/goods": {
+                    "name": "物品缆车线路",
+                    "terms": "物资缆车"
                 },
                 "aerialway/magic_carpet": {
                     "name": "魔毯电梯",
                     "terms": "魔毯,传送带式电梯"
                 },
+                "aerialway/mixed_lift": {
+                    "name": "环路吊椅",
+                    "terms": "混合吊椅,很多大缆车"
+                },
                 "aerialway/platter": {
                     "name": "吊盘",
-                    "terms": "吊盘"
+                    "terms": "吊盘,滑雪吊盘"
                 },
                 "aerialway/pylon": {
                     "name": "缆车塔",
@@ -2590,8 +2754,8 @@
                     "terms": "停机坪"
                 },
                 "aeroway/gate": {
-                    "name": "机场登机口",
-                    "terms": "机场闸口"
+                    "name": "登机口",
+                    "terms": "登机口,登机门"
                 },
                 "aeroway/hangar": {
                     "name": "飞机库",
@@ -2603,22 +2767,34 @@
                 },
                 "aeroway/runway": {
                     "name": "机场跑道",
-                    "terms": "机场跑道"
+                    "terms": "机场,跑道,飞机,飞机场,滑行,起飞,飞行,降落"
                 },
                 "aeroway/taxiway": {
                     "name": "滑行道",
-                    "terms": "滑行道"
+                    "terms": "机场,滑行,滑行道,飞机,飞机场,候机楼,跑道"
                 },
                 "aeroway/terminal": {
-                    "name": "机场航站楼",
-                    "terms": "机场航站楼,机场大楼,机场客运大楼"
+                    "name": "航站楼",
+                    "terms": "机场航站楼"
                 },
                 "amenity": {
                     "name": "便利设施"
                 },
+                "amenity/animal_boarding": {
+                    "name": "动物寄养机构",
+                    "terms": "动物,寄养,机构,宠物,狗,猫,犬"
+                },
+                "amenity/animal_breeding": {
+                    "name": "动物饲养繁育机构",
+                    "terms": "动物,饲养,繁育,机构,宠物,猫,狗,犬,繁殖,驯养,种源"
+                },
+                "amenity/animal_shelter": {
+                    "name": "动物收容救助所",
+                    "terms": "动物,收容,救助,机构,流浪,猫,狗,犬,收养,救护,宠物,兽医,急救"
+                },
                 "amenity/arts_centre": {
-                    "name": "美术馆",
-                    "terms": "美术馆,艺术馆,美术中心,艺术中心"
+                    "name": "艺术中心",
+                    "terms": "美术馆,艺术馆,美术中心,画廊,艺术中心"
                 },
                 "amenity/atm": {
                     "name": "ATM机",
@@ -2693,7 +2869,7 @@
                 },
                 "amenity/childcare": {
                     "name": "托儿所/保育园",
-                    "terms": "幼儿园"
+                    "terms": "幼儿园,学前班,托儿所"
                 },
                 "amenity/cinema": {
                     "name": "电影院",
@@ -2701,7 +2877,15 @@
                 },
                 "amenity/clinic": {
                     "name": "诊所",
-                    "terms": "诊所,门诊,医务所,医务室"
+                    "terms": "诊所,医务室,医务所,医院,门诊,急诊,治疗,医疗,医生"
+                },
+                "amenity/clinic/abortion": {
+                    "name": "流产诊所",
+                    "terms": "堕胎,流产,人流,诊所,医院,医疗,卫生,妊娠,孕"
+                },
+                "amenity/clinic/fertility": {
+                    "name": "生育诊所",
+                    "terms": "生育,计生所,妇科,诊所,医院,医疗,卫生,妊娠,孕,不孕,不育"
                 },
                 "amenity/clock": {
                     "name": "时钟",
@@ -2709,7 +2893,7 @@
                 },
                 "amenity/college": {
                     "name": "学院",
-                    "terms": "学院,大专校园,大学,学校"
+                    "terms": "学院,大学,院校,大专,校园,学校,学习"
                 },
                 "amenity/community_centre": {
                     "name": "社区活动中心",
@@ -2724,20 +2908,19 @@
                     "terms": "法院,法庭"
                 },
                 "amenity/coworking_space": {
-                    "name": "联合办公空间",
-                    "terms": "办公共享,联合办公空间,联合办公室,共用工作空间,共同工作空间,众创空间,联创空间"
+                    "name": "共享办公空间"
                 },
                 "amenity/crematorium": {
                     "name": "火葬场",
                     "terms": "火葬场,火化,火化场,殡仪馆,墓地,死亡,停尸,吊唁,遗体,殡葬,骨灰,尸体"
                 },
                 "amenity/dentist": {
-                    "name": "牙科",
-                    "terms": "牙医,牙"
+                    "name": "牙科医院",
+                    "terms": "牙科,医院,牙医,牙,牙齿,治疗,医疗,医生"
                 },
                 "amenity/doctors": {
-                    "name": "医生",
-                    "terms": "医生,医护人员"
+                    "name": "医师",
+                    "terms": "医生,医师,护士,医院,医护,医疗,治疗,办公室,技师"
                 },
                 "amenity/dojo": {
                     "name": "道场/武术学院",
@@ -2746,6 +2929,10 @@
                 "amenity/drinking_water": {
                     "name": "饮水处",
                     "terms": "饮水处,饮水处,饮水"
+                },
+                "amenity/driving_school": {
+                    "name": "驾校",
+                    "terms": "驾校,汽车,车,教练,驾驶,驾照,学校,交通,运输,培训,学习"
                 },
                 "amenity/embassy": {
                     "name": "使馆",
@@ -2760,7 +2947,7 @@
                 },
                 "amenity/fire_station": {
                     "name": "消防站",
-                    "terms": "消防站,消费局"
+                    "terms": "消防站,消防局,消防队,消防,火灾,火,灾害,救火,灭火"
                 },
                 "amenity/food_court": {
                     "name": "美食广场",
@@ -2784,7 +2971,7 @@
                 },
                 "amenity/hospital": {
                     "name": "医院",
-                    "terms": "医院场地"
+                    "terms": "医院,急诊,门诊,医务室,医生,场地,治疗,医疗,急救,手术"
                 },
                 "amenity/hunting_stand": {
                     "name": "狩猎站",
@@ -2799,8 +2986,8 @@
                     "terms": "网吧,上网咖啡馆,上网咖啡厅"
                 },
                 "amenity/kindergarten": {
-                    "name": "学前班/幼儿园用地",
-                    "terms": "学前班/幼儿园用地"
+                    "name": "幼儿园",
+                    "terms": "幼儿园,学前班,托儿所,幼稚园,学校,校园,学习"
                 },
                 "amenity/library": {
                     "name": "图书馆",
@@ -2824,19 +3011,26 @@
                 },
                 "amenity/nightclub": {
                     "name": "夜总会",
-                    "terms": "夜店,夜总会"
+                    "terms": "夜店,夜总会,舞厅,迪厅,酒吧"
+                },
+                "amenity/nursing_home": {
+                    "name": "疗养院"
                 },
                 "amenity/parking": {
                     "name": "停车场",
                     "terms": "停车"
                 },
                 "amenity/parking_entrance": {
-                    "name": "停车场入口/出口",
-                    "terms": "停车场出入口"
+                    "name": "车库出入口",
+                    "terms": "停车场出入口,地下车库出入口,多层车库出入口"
                 },
                 "amenity/parking_space": {
-                    "name": "停车空间",
-                    "terms": "停车空间,停车场地"
+                    "name": "停车位",
+                    "terms": "停车空间,停车场地,停车位"
+                },
+                "amenity/pavilion": {
+                    "name": "休息亭",
+                    "terms": "休息,亭,阁楼"
                 },
                 "amenity/pharmacy": {
                     "name": "药店",
@@ -2847,12 +3041,16 @@
                     "terms": "礼拜场所,宗教礼拜处"
                 },
                 "amenity/place_of_worship/buddhist": {
-                    "name": "寺",
-                    "terms": "寺庙,佛堂,和尚寺,尼姑庵"
+                    "name": "佛教寺庙",
+                    "terms": "寺庙,佛堂,和尚寺,尼姑庵,佛教,宗教,庙宇,礼拜,寺观,寺院,佛寺,梵刹,禅林,净院"
                 },
                 "amenity/place_of_worship/christian": {
                     "name": "基督教堂",
                     "terms": "教堂"
+                },
+                "amenity/place_of_worship/hindu": {
+                    "name": "印度教寺庙",
+                    "terms": "印度教,宗教,寺庙,庙宇,神社,神祇,祭祀,崇奉,礼拜,吠陀"
                 },
                 "amenity/place_of_worship/jewish": {
                     "name": "犹太教堂",
@@ -2860,7 +3058,19 @@
                 },
                 "amenity/place_of_worship/muslim": {
                     "name": "清真寺",
-                    "terms": "清真寺,回教寺"
+                    "terms": "清真寺,回教寺,伊斯兰,寺庙,寺坊,庙宇,礼拜,拜倒,宗教,清真,麦斯吉德,哲马尔提"
+                },
+                "amenity/place_of_worship/shinto": {
+                    "name": "神道教神社",
+                    "terms": "神道教,日本,神社,社屋,拜殿,宗教,寺庙,庙宇,神祇,祭祀,崇奉,礼拜,祈福,牌坊,鸟居"
+                },
+                "amenity/place_of_worship/sikh": {
+                    "name": "锡克教教堂",
+                    "terms": "锡克教,印度,神教,宗教,寺庙,庙宇,崇奉,礼拜,信仰,膜拜,尊崇,神寺,拜殿"
+                },
+                "amenity/place_of_worship/taoist": {
+                    "name": "道教宫观",
+                    "terms": "道教,宗教,寺庙,庙宇,奉崇,礼拜,拜殿,神寺,尊崇,信仰,膜拜,宫观,法事,院,殿,祠,堂,坛,馆,庵,阁,洞,府,修道院,僧侣,道家,黄老,老氏,玄门,道门"
                 },
                 "amenity/planetarium": {
                     "name": "天文馆",
@@ -2887,8 +3097,8 @@
                     "terms": "酒馆"
                 },
                 "amenity/public_bath": {
-                    "name": "浴室",
-                    "terms": "浴室,浴池,澡堂,温泉,足浴"
+                    "name": "公共浴室",
+                    "terms": "公共,浴室,淋浴,浴池,澡堂,洗澡,冲澡,冲凉,洗浴,搓澡,清洁,搓背,修脚,温泉,足浴"
                 },
                 "amenity/public_bookcase": {
                     "name": "公共书架",
@@ -2907,7 +3117,7 @@
                 },
                 "amenity/restaurant": {
                     "name": "餐馆",
-                    "terms": "餐馆,餐厅,饭店,酒楼,酒家,茶楼,美食"
+                    "terms": "餐馆,餐厅,饭店,酒楼,酒家,茶楼,美食,饭馆,食堂,食物,吃,美食,食肆,菜馆"
                 },
                 "amenity/sanitary_dump_station": {
                     "name": "厕所卸污处",
@@ -2915,14 +3125,15 @@
                 },
                 "amenity/school": {
                     "name": "学校",
-                    "terms": "学校场地"
+                    "terms": "学校,高中,初中,中学,小学,校园,中专,学习"
+                },
+                "amenity/scrapyard": {
+                    "name": "废品堆放场"
                 },
                 "amenity/shelter": {
                     "name": "亭",
                     "terms": "棚,棚屋"
                 },
-<<<<<<< HEAD
-=======
                 "amenity/shower": {
                     "name": "淋浴间",
                     "terms": "公共,浴室,淋浴,浴池,澡堂,洗澡,冲澡,冲凉,洗浴,搓澡,清洁,搓背,修脚,温泉,足浴,雨"
@@ -2931,7 +3142,6 @@
                     "name": "吸烟区域",
                     "terms": "吸烟,抽烟,烟,香烟,烟草"
                 },
->>>>>>> v2.7.0
                 "amenity/social_facility": {
                     "name": "社会服务设施",
                     "terms": "社会服务设施,社会保障设施"
@@ -2942,11 +3152,15 @@
                 },
                 "amenity/social_facility/group_home": {
                     "name": "敬老院",
-                    "terms": "敬老院,养老院,老年之家"
+                    "terms": "敬老院,养老院,老年之家,老人"
                 },
                 "amenity/social_facility/homeless_shelter": {
                     "name": "流浪者庇护站",
                     "terms": "流浪者庇护站,流浪者救护所"
+                },
+                "amenity/social_facility/nursing_home": {
+                    "name": "疗养院",
+                    "terms": "养老院"
                 },
                 "amenity/studio": {
                     "name": "工作室",
@@ -2977,7 +3191,11 @@
                 },
                 "amenity/university": {
                     "name": "大学",
-                    "terms": "大学,学院,学校"
+                    "terms": "大学,学院,院校,大专,校园,学校,学习"
+                },
+                "amenity/vending_machine": {
+                    "name": "自动售货机",
+                    "terms": "自动售货机,售货,售卖,自助,自动,付货,零售"
                 },
                 "amenity/vending_machine/cigarettes": {
                     "name": "香烟售货机",
@@ -3007,11 +3225,6 @@
                     "name": "粪便袋售货机",
                     "terms": "粪便袋,粪便,屎,狗屎,售货,售卖,自助,自动,付货,零售,贩卖,售货机,贩卖机"
                 },
-<<<<<<< HEAD
-                "amenity/vending_machine/news_papers": {
-                    "name": "报纸售货机",
-                    "terms": "报纸售货机,报纸贩卖机"
-=======
                 "amenity/vending_machine/feminine_hygiene": {
                     "name": "女性卫生用品售货机",
                     "terms": "女,女性,避孕套,安全套,月经,棉条,卫生巾,卫生,私人,售货,售卖,自助,自动,付货,零售,贩卖,售货机,贩卖机"
@@ -3030,7 +3243,6 @@
                 "amenity/vending_machine/newspapers": {
                     "name": "报纸售货机",
                     "terms": "报,报纸,售货,售卖,自助,自动,付货,零售,贩卖,售货机,贩卖机"
->>>>>>> v2.8.2
                 },
                 "amenity/vending_machine/parcel_pickup_dropoff": {
                     "name": "行李提取/装卸机",
@@ -3052,21 +3264,21 @@
                     "name": "零食售货机",
                     "terms": "零食,点心,小食,售货,售卖,贩卖,售货机,自助,自动,付货,零售,食物"
                 },
-                "amenity/vending_machine/vending_machine": {
-                    "name": "售货机",
-                    "terms": "贩卖机"
-                },
                 "amenity/veterinary": {
-                    "name": "兽医",
-                    "terms": "兽医"
+                    "name": "动物医院",
+                    "terms": "兽医,动物,宠物,医院,家畜,治疗,医疗,急救,手术,猫,狗,犬,门诊"
+                },
+                "amenity/waste/dog_excrement": {
+                    "name": "狗粪便箱",
+                    "terms": "狗,动物,宠物,犬,粪便,大便,屎,排泄,尿,垃圾,箱,盒,垃圾桶,厕所"
                 },
                 "amenity/waste_basket": {
                     "name": "垃圾桶",
-                    "terms": "垃圾箱,垃圾桶"
+                    "terms": "垃圾,垃圾桶,垃圾箱"
                 },
                 "amenity/waste_disposal": {
                     "name": "大型垃圾箱",
-                    "terms": "大型垃圾箱,垃圾箱"
+                    "terms": "垃圾,垃圾箱,垃圾桶"
                 },
                 "amenity/waste_transfer_station": {
                     "name": "垃圾中转站",
@@ -3076,6 +3288,10 @@
                     "name": "直饮水",
                     "terms": "直饮水"
                 },
+                "amenity/watering_place": {
+                    "name": "动物饮水地",
+                    "terms": "动物,饮水,水,水源,渴,野生,生命,资源,农业,牧,农"
+                },
                 "area": {
                     "name": "区域",
                     "terms": "区域"
@@ -3084,8 +3300,6 @@
                     "name": "道路表面",
                     "terms": "道路表面"
                 },
-<<<<<<< HEAD
-=======
                 "attraction/amusement_ride": {
                     "name": "游乐设施",
                     "terms": "游乐设施,游乐,游艺,娱乐,乐园,游乐园,主题乐园,儿童乐园,景点,大摆锤,狂欢节"
@@ -3142,7 +3356,6 @@
                     "name": "水滑梯",
                     "terms": "水滑梯,水,水上乐园,游泳池,滑梯,游乐设施,游乐,游艺,娱乐,乐园,游乐园,主题乐园,儿童乐园,景点"
                 },
->>>>>>> v2.8.2
                 "barrier": {
                     "name": "屏障",
                     "terms": "屏障,阻挡"
@@ -3154,6 +3367,10 @@
                 "barrier/bollard": {
                     "name": "护柱",
                     "terms": "护柱"
+                },
+                "barrier/border_control": {
+                    "name": "边境检查站",
+                    "terms": "边境检查站,边境,边防,海关,检查"
                 },
                 "barrier/cattle_grid": {
                     "name": "家畜栅栏",
@@ -3168,8 +3385,8 @@
                     "terms": "自行车,单车,路障"
                 },
                 "barrier/ditch": {
-                    "name": "沟",
-                    "terms": "沟"
+                    "name": "堑壕",
+                    "terms": "沟,壕沟,堑壕"
                 },
                 "barrier/entrance": {
                     "name": "入口"
@@ -3223,8 +3440,8 @@
                     "terms": "建筑物，屋宇"
                 },
                 "building/apartments": {
-                    "name": "公寓",
-                    "terms": "公寓"
+                    "name": "住宅楼",
+                    "terms": "公寓,住宅楼"
                 },
                 "building/barn": {
                     "name": "谷仓",
@@ -3255,7 +3472,7 @@
                 },
                 "building/college": {
                     "name": "学院建筑",
-                    "terms": "学院建筑,大专院校建筑,大学建筑,学校建筑"
+                    "terms": "学院,建筑,教学楼,实验室,校舍,宿舍,大学,院校,大专,校园,学校,学习"
                 },
                 "building/commercial": {
                     "name": "商业建筑物",
@@ -3266,7 +3483,7 @@
                     "terms": "在建建筑"
                 },
                 "building/detached": {
-                    "name": "独立式房屋",
+                    "name": "独栋住宅",
                     "terms": "独立式房屋"
                 },
                 "building/dormitory": {
@@ -3290,14 +3507,14 @@
                 },
                 "building/hospital": {
                     "name": "医院建筑",
-                    "terms": "医院建筑"
+                    "terms": "医院,急诊,门诊,医务室,医生,建筑,治疗,医疗,急救,手术"
                 },
                 "building/hotel": {
                     "name": "宾馆楼",
                     "terms": "宾馆建筑"
                 },
                 "building/house": {
-                    "name": "房屋",
+                    "name": "洋房",
                     "terms": "房屋"
                 },
                 "building/hut": {
@@ -3325,8 +3542,8 @@
                     "terms": "零售业建筑,百货"
                 },
                 "building/roof": {
-                    "name": "楼顶",
-                    "terms": "楼顶,房顶,屋顶"
+                    "name": "开放式建筑",
+                    "terms": "大棚,屋顶,上盖,开放式建筑"
                 },
                 "building/ruins": {
                     "name": "建筑物遗迹",
@@ -3334,7 +3551,7 @@
                 },
                 "building/school": {
                     "name": "学校建筑",
-                    "terms": "校舍,学校建筑"
+                    "terms": "学校,高中,初中,中学,小学,中专,建筑,教学楼,实验室,校舍,宿舍,学院,院校,校园,学习"
                 },
                 "building/semidetached_house": {
                     "name": "半独立式房屋",
@@ -3353,11 +3570,11 @@
                     "terms": "固定房车,房车"
                 },
                 "building/terrace": {
-                    "name": "屋列",
+                    "name": "联排式住宅",
                     "terms": "屋列,房列,一列房,一列屋"
                 },
                 "building/train_station": {
-                    "name": "火车站"
+                    "name": "列车站"
                 },
                 "building/transportation": {
                     "name": "公共交通建筑",
@@ -3365,7 +3582,7 @@
                 },
                 "building/university": {
                     "name": "大学建筑",
-                    "terms": "大学建筑,学院建筑,学校建筑"
+                    "terms": "大学,建筑,教学楼,实验室,校舍,宿舍,学院,院校,大专,校园,学校,学习"
                 },
                 "building/warehouse": {
                     "name": "仓库",
@@ -3375,8 +3592,6 @@
                     "name": "宿营位",
                     "terms": "宿营位,露营位,野营位,露营地,野营地,露营场,野营场,露营,野营,野营场地,露营场地,宿营地,宿营,扎营,帐篷,野外,荒野,郊野,郊外,度假"
                 },
-<<<<<<< HEAD
-=======
                 "circular": {
                     "name": "信号控制环岛"
                 },
@@ -3384,7 +3599,6 @@
                     "name": "俱乐部",
                     "terms": "俱乐部,社团,夜总会,会所,可乐部,社交,组织,娱乐,社区,会议,驿站,平台,会,汇,社会,文化,团体,会员"
                 },
->>>>>>> v2.8.2
                 "craft": {
                     "name": "工艺作坊",
                     "terms": "工艺作坊,工场"
@@ -3430,8 +3644,12 @@
                     "terms": "钟表匠"
                 },
                 "craft/confectionery": {
-                    "name": "甜食",
-                    "terms": "甜食"
+                    "name": "甜食店",
+                    "terms": "甜食,食物,糖果,糖,甜品,商店"
+                },
+                "craft/distillery": {
+                    "name": "酿酒厂",
+                    "terms": "酿酒厂,蒸馏间,蒸馏,酒,酒精,酿酒,酿造"
                 },
                 "craft/dressmaker": {
                     "name": "女装裁缝",
@@ -3440,6 +3658,10 @@
                 "craft/electrician": {
                     "name": "电工",
                     "terms": "电工"
+                },
+                "craft/electronics_repair": {
+                    "name": "电子用品修理商店",
+                    "terms": "电子修理商店,电子用品修理点"
                 },
                 "craft/gardener": {
                     "name": "园艺工",
@@ -3466,7 +3688,7 @@
                 },
                 "craft/key_cutter": {
                     "name": "配匙工",
-                    "terms": "配匙工,切割钥匙,配匙"
+                    "terms": "配匙工,切割,钥匙,配匙,钥匙,锁,锁匠,门锁"
                 },
                 "craft/locksmith": {
                     "name": "锁匠"
@@ -3526,15 +3748,9 @@
                     "name": "脚手架搭建工",
                     "terms": "脚手架搭建工,搭脚手架的人"
                 },
-<<<<<<< HEAD
-                "craft/sculpter": {
-                    "name": "雕刻师",
-                    "terms": "雕刻师"
-=======
                 "craft/sculptor": {
                     "name": "雕塑工作室",
                     "terms": "雕塑,雕塑家,工作室,手艺,工艺,艺术,艺术品,雕刻,石膏,树脂,粘土,黏土"
->>>>>>> v2.8.2
                 },
                 "craft/shoemaker": {
                     "name": "鞋匠",
@@ -3543,10 +3759,6 @@
                 "craft/stonemason": {
                     "name": "石匠",
                     "terms": "石匠"
-                },
-                "craft/sweep": {
-                    "name": "烟囱清理工",
-                    "terms": "烟囱清理工,扫烟囱的人"
                 },
                 "craft/tailor": {
                     "name": "裁缝"
@@ -3576,8 +3788,8 @@
                     "terms": "酒庄,酒厂"
                 },
                 "embankment": {
-                    "name": "堤坝",
-                    "terms": "堤,堤坝,堤岸"
+                    "name": "堤岸",
+                    "terms": "堤,堤坝,堤岸,路堤"
                 },
                 "emergency/ambulance_station": {
                     "name": "救护站",
@@ -3585,7 +3797,7 @@
                 },
                 "emergency/defibrillator": {
                     "name": "除颤器",
-                    "terms": "除颤器,体外除颤器,自动体外除颤仪,AED"
+                    "terms": "除颤器,心脏,电复律机,体外,急救,抢救,除颤仪,心电图,心律,心率,电击,窦性,AED"
                 },
                 "emergency/designated": {
                     "name": "紧急设施：指定"
@@ -3596,6 +3808,10 @@
                 "emergency/fire_hydrant": {
                     "name": "消防栓",
                     "terms": "消防栓"
+                },
+                "emergency/life_ring": {
+                    "name": "救生圈",
+                    "terms": "救生圈,橡皮圈,应急,救生,游泳"
                 },
                 "emergency/no": {
                     "name": "紧急设施：关闭"
@@ -3618,20 +3834,28 @@
                     "terms": "入口/出口,出入口"
                 },
                 "footway/crossing": {
-                    "name": "路口",
+                    "name": "人行横道",
                     "terms": "路口"
+                },
+                "footway/crossing-raised": {
+                    "name": "抬高的人行横道",
+                    "terms": "人行横道,速度,减速,交通稳静化"
                 },
                 "footway/crosswalk": {
                     "name": "人行横道",
                     "terms": "人行横道,斑马线"
+                },
+                "footway/crosswalk-raised": {
+                    "name": "抬高的人行横道",
+                    "terms": "人行横道,斑马线,速度,减速,交通稳静化"
                 },
                 "footway/sidewalk": {
                     "name": "路边人行道",
                     "terms": "路边人行道,人行道,便道,走道"
                 },
                 "ford": {
-                    "name": "浅滩",
-                    "terms": "浅滩"
+                    "name": "过水路面",
+                    "terms": "过水路面,浅滩,漫水桥,垫脚石"
                 },
                 "golf/bunker": {
                     "name": "高尔夫沙坑",
@@ -3650,7 +3874,7 @@
                     "terms": "高尔夫球洞"
                 },
                 "golf/lateral_water_hazard_area": {
-                    "name": "高尔夫侧面水障碍水体",
+                    "name": "高尔夫侧面水障碍区",
                     "terms": "高尔夫侧面水障碍水体,水障碍,侧面水障碍,水障碍区"
                 },
                 "golf/lateral_water_hazard_line": {
@@ -3666,19 +3890,37 @@
                     "terms": "高尔夫开球区,开球区,发球台"
                 },
                 "golf/water_hazard_area": {
-                    "name": "高尔夫水障碍水体",
+                    "name": "高尔夫水障碍区",
                     "terms": "高尔夫水障碍水体,水障碍,正面水障碍,水障碍区"
                 },
                 "golf/water_hazard_line": {
                     "name": "高尔夫水障碍",
                     "terms": "高尔夫水障碍,水障碍,正面水障碍,水障碍区"
                 },
+                "healthcare": {
+                    "name": "医疗机构",
+                    "terms": "医疗,诊所,机构,卫生,医院,医务,医生,治疗,门诊,急诊,病,健康,保健,外科"
+                },
+                "healthcare/alternative": {
+                    "name": "替代医学",
+                    "terms": "替代,医学,医疗,补充,疗法,针疗,针灸,按摩,推拿,人智,顺势,反射,整骨,水疗,催眠,冥想,香薰,香味,传统,维生素,矿物质,草药,指压,气功,免疫,自然疗法,诊所,医院,卫生"
+                },
+                "healthcare/alternative/chiropractic": {
+                    "name": "脊骨神经医师",
+                    "terms": "脊椎,脊骨,关节,神经,肌肉,骨骼,矫正,手疗,整脊,推拿,按摩,后背,背部,替代,诊所,医院,医学,医疗,疗法,卫生"
+                },
+                "healthcare/audiologist": {
+                    "name": "听力学家",
+                    "terms": "听力,听觉,听觉病,矫治,耳,听,声,聋,助听,医师,学家,诊所,医院,医学,医疗,疗法,卫生"
+                },
+                "healthcare/birthing_center": {
+                    "name": "分娩中心",
+                    "terms": "妊娠,怀孕,出生,分娩,婴儿,孩子,顺产,刨腹,难产,宝宝,妇产,治疗,医院,医学,医疗,疗法,卫生"
+                },
                 "healthcare/blood_donation": {
                     "name": "献血中心",
                     "terms": "献血中心,献血室"
                 },
-<<<<<<< HEAD
-=======
                 "healthcare/hospice": {
                     "name": "临终安养院",
                     "terms": "临终,善终,安宁,宁养,安养,关怀,保守,疾病,病房,垂死,致命,癌症,晚期,末期,死亡,诊所,医院,医学,医疗,疗法,卫生"
@@ -3719,7 +3961,6 @@
                     "name": "语言治疗师",
                     "terms": "语言,语音,口语,声音,说话,哑,喉咙,治疗,诊所,医院,医学,医疗,疗法,卫生"
                 },
->>>>>>> v2.8.2
                 "highway": {
                     "name": "道路"
                 },
@@ -3742,24 +3983,36 @@
                     "name": "路口",
                     "terms": "路口"
                 },
+                "highway/crossing-raised": {
+                    "name": "抬高的街道十字路口",
+                    "terms": "人行横道,速度,减速,交通稳静化"
+                },
                 "highway/crosswalk": {
                     "name": "人行横道",
                     "terms": "人行横道"
+                },
+                "highway/crosswalk-raised": {
+                    "name": "抬高的人行横道",
+                    "terms": "人行横道,斑马线,速度,减速,交通稳静化"
                 },
                 "highway/cycleway": {
                     "name": "自行车道",
                     "terms": "自行车,单车"
                 },
+                "highway/elevator": {
+                    "name": "电梯",
+                    "terms": "电梯,直梯"
+                },
                 "highway/footway": {
-                    "name": "独立人行道",
-                    "terms": "独立人行道,人行道,步行径"
+                    "name": "步行道路",
+                    "terms": "步行径"
                 },
                 "highway/give_way": {
                     "name": "让行标志",
                     "terms": "让行标志,减速让行标志"
                 },
                 "highway/living_street": {
-                    "name": "生活街",
+                    "name": "生活性街道",
                     "terms": "居住街道"
                 },
                 "highway/mini_roundabout": {
@@ -3775,42 +4028,32 @@
                     "terms": "高速公路交界处/出口,入口/出口,出入口"
                 },
                 "highway/motorway_link": {
-                    "name": "高速公路匝道",
-                    "terms": "高速公路匝道"
+                    "name": "高速公路连接路",
+                    "terms": "高速公路连接路"
                 },
                 "highway/path": {
                     "name": "小道",
                     "terms": "路径"
                 },
-<<<<<<< HEAD
-                "highway/pedestrian": {
-                    "name": "步行街",
-                    "terms": "步行街"
-=======
                 "highway/pedestrian_area": {
                     "name": "行人区域（广场）",
                     "terms": "公交,公交站,公交车,巴士,大巴,客车,车站,站台"
                 },
                 "highway/pedestrian_line": {
-<<<<<<< HEAD
-                    "name": "步行街"
->>>>>>> v2.7.0
-=======
                     "name": "步行街",
                     "terms": "步行街,广场,人行道,步道,购物中心"
->>>>>>> v2.8.2
                 },
                 "highway/primary": {
                     "name": "主要道路",
                     "terms": "主要道路"
                 },
                 "highway/primary_link": {
-                    "name": "主要道路匝道",
-                    "terms": "主要道路匝道"
+                    "name": "主要道路连接路",
+                    "terms": "主要道路连接路"
                 },
                 "highway/raceway": {
-                    "name": "赛车赛道",
-                    "terms": "赛车赛道"
+                    "name": "跑道(赛车)",
+                    "terms": "跑道,赛车,赛道"
                 },
                 "highway/residential": {
                     "name": "住宅区道路",
@@ -3829,21 +4072,16 @@
                     "terms": "次要道路"
                 },
                 "highway/secondary_link": {
-                    "name": "次要道路匝道",
-                    "terms": "次要道路匝道"
+                    "name": "次要道路连接路",
+                    "terms": "次要道路连接路"
                 },
                 "highway/service": {
                     "name": "辅助道路",
                     "terms": "辅助道路"
                 },
                 "highway/service/alley": {
-<<<<<<< HEAD
-                    "name": "胡同/弄堂",
-                    "terms": "胡同,巷,弄堂,里弄,小巷,巷,弄,巷弄"
-=======
                     "name": "窄路 (机动车通行)",
                     "terms": "胡同,巷,弄堂,里弄,小巷,巷,弄,巷弄（可通行机动车）"
->>>>>>> v2.7.0
                 },
                 "highway/service/drive-through": {
                     "name": "免下车",
@@ -3865,25 +4103,29 @@
                     "name": "服务区",
                     "terms": "服务区"
                 },
+                "highway/speed_camera": {
+                    "name": "超速摄像头",
+                    "terms": "超速摄像头,电子警察,电子眼"
+                },
                 "highway/steps": {
-                    "name": "楼梯",
+                    "name": "阶梯",
                     "terms": "楼梯,台阶"
                 },
                 "highway/stop": {
                     "name": "停车标志",
-                    "terms": "停车标志"
+                    "terms": "停标志"
                 },
                 "highway/street_lamp": {
                     "name": "街灯",
-                    "terms": "街灯"
+                    "terms": "街灯,路灯,灯光,照明,灯具,灯"
                 },
                 "highway/tertiary": {
                     "name": "三级道路",
                     "terms": "三级道路"
                 },
                 "highway/tertiary_link": {
-                    "name": "三级道路匝道",
-                    "terms": "三级道路匝道"
+                    "name": "三级道路连接路",
+                    "terms": "三级道路连接路"
                 },
                 "highway/track": {
                     "name": "未铺设路面的车径",
@@ -3902,8 +4144,8 @@
                     "terms": "干线道路,干道"
                 },
                 "highway/trunk_link": {
-                    "name": "干线道路匝道",
-                    "terms": "干线道路匝道"
+                    "name": "干线道路连接路",
+                    "terms": "干线道路连接路"
                 },
                 "highway/turning_circle": {
                     "name": "环岛",
@@ -3918,12 +4160,12 @@
                     "terms": "小型/未分级道路"
                 },
                 "historic": {
-                    "name": "历史遗迹",
+                    "name": "历史地点",
                     "terms": "历史遗迹,史迹"
                 },
                 "historic/archaeological_site": {
-                    "name": "遗址",
-                    "terms": "考古遗址"
+                    "name": "考古地点",
+                    "terms": "考古,遗址"
                 },
                 "historic/boundary_stone": {
                     "name": "界碑",
@@ -3945,6 +4187,10 @@
                     "name": "遗迹",
                     "terms": "废墟"
                 },
+                "historic/tomb": {
+                    "name": "陵墓",
+                    "terms": "墓地,坟墓,坟,墓,死,逝世,碑,陵,陵园"
+                },
                 "historic/wayside_cross": {
                     "name": "路旁十字架",
                     "terms": "路边十字架"
@@ -3965,17 +4211,18 @@
                     "name": "公共花园",
                     "terms": "公共花园,公共菜园"
                 },
+                "landuse/aquaculture": {
+                    "name": "水产养殖",
+                    "terms": "水产养殖,水产业"
+                },
                 "landuse/basin": {
                     "name": "水池",
                     "terms": "水池"
                 },
-<<<<<<< HEAD
-=======
                 "landuse/brownfield": {
                     "name": "棕土",
                     "terms": "棕土,棕地,工商业使用过但被弃置的土地"
                 },
->>>>>>> v2.7.0
                 "landuse/cemetery": {
                     "name": "墓地",
                     "terms": "墓地"
@@ -3990,7 +4237,7 @@
                 },
                 "landuse/construction": {
                     "name": "建设用地",
-                    "terms": "建筑物"
+                    "terms": "建设,建造,施工,工地,在建,建筑,构筑,构建,承建,用地,建设用地"
                 },
                 "landuse/farm": {
                     "name": "农田"
@@ -4011,12 +4258,18 @@
                     "name": "草坪",
                     "terms": "草地"
                 },
+                "landuse/greenfield": {
+                    "name": "待开发荒地",
+                    "terms": "未开发过的土地"
+                },
+                "landuse/harbour": {
+                    "name": "港口",
+                    "terms": "港口,港,岸,海"
+                },
                 "landuse/industrial": {
                     "name": "工业区",
                     "terms": "工业区"
                 },
-<<<<<<< HEAD
-=======
                 "landuse/industrial/scrap_yard": {
                     "name": "废料场",
                     "terms": "废料场"
@@ -4025,10 +4278,9 @@
                     "name": "屠宰场",
                     "terms": "屠宰,屠宰场,宰杀,牲畜,牛,猪,鸡,羊,肉,禽"
                 },
->>>>>>> v2.8.2
                 "landuse/landfill": {
                     "name": "垃圾填埋区",
-                    "terms": "垃圾填埋区"
+                    "terms": "垃圾,填埋,填埋场,填埋区,焚烧,填埋坑,废物"
                 },
                 "landuse/meadow": {
                     "name": "草甸",
@@ -4038,8 +4290,6 @@
                     "name": "军事区",
                     "terms": "军事用地, 军事区域"
                 },
-<<<<<<< HEAD
-=======
                 "landuse/military/airfield": {
                     "name": "军用机场",
                     "terms": "军用机场,军事机场,航空,军事,机场,空军,部队"
@@ -4084,7 +4334,6 @@
                     "name": "军事训练场",
                     "terms": "军事训练场,军事练习场,训练场,练习场,训练营,军训,基地"
                 },
->>>>>>> v2.8.0
                 "landuse/orchard": {
                     "name": "果园",
                     "terms": "果园"
@@ -4097,24 +4346,18 @@
                     "name": "矿场",
                     "terms": "矿场"
                 },
-<<<<<<< HEAD
-=======
                 "landuse/railway": {
                     "name": "铁路用地",
                     "terms": "铁路用地"
                 },
->>>>>>> v2.7.0
                 "landuse/recreation_ground": {
                     "name": "绿地",
                     "terms": "绿地"
                 },
-<<<<<<< HEAD
-=======
                 "landuse/religious": {
                     "name": "宗教场所",
                     "terms": "宗教,国教,信仰,崇拜,基督教,天主教,东正教,佛教,伊斯兰教,印度教,儒教,道教,神道教,本教,锡克教,场所"
                 },
->>>>>>> v2.8.2
                 "landuse/residential": {
                     "name": "居民区",
                     "terms": "住宅小区"
@@ -4187,13 +4430,21 @@
                     "name": "高尔夫球场",
                     "terms": "高尔夫球场"
                 },
+                "leisure/hackerspace": {
+                    "name": "创客空间",
+                    "terms": "创客空间,创客,众创,创业,创新,孵化器,黑客,电脑,软件,硬件,程序,互联网,机械,技术,科学,电子,数字,艺术,联合办公,共享办公,办公,工作室,社区"
+                },
+                "leisure/horse_riding": {
+                    "name": "骑马场",
+                    "terms": "骑马场,马场,骑马"
+                },
                 "leisure/ice_rink": {
                     "name": "滑冰场",
                     "terms": "滑冰,滑冰场"
                 },
                 "leisure/marina": {
-                    "name": "船坞",
-                    "terms": "船坞,码头"
+                    "name": "游艇码头",
+                    "terms": "码头,游艇码头"
                 },
                 "leisure/miniature_golf": {
                     "name": "迷你高尔夫",
@@ -4212,8 +4463,8 @@
                     "terms": "Picnic Table"
                 },
                 "leisure/pitch": {
-                    "name": "运动场",
-                    "terms": "体育场,运动场所,运动场地,操场"
+                    "name": "运动场地",
+                    "terms": "体育场,操场,运动,田径,跑道"
                 },
                 "leisure/pitch/american_football": {
                     "name": "美式足球场",
@@ -4227,9 +4478,21 @@
                     "name": "篮球场",
                     "terms": "篮球场"
                 },
+                "leisure/pitch/beachvolleyball": {
+                    "name": "沙滩排球场",
+                    "terms": "沙滩排球,沙,沙滩,海滩,球,排球,沙排"
+                },
                 "leisure/pitch/bowls": {
                     "name": "草地滚球场",
                     "terms": "草地滚球,滚球,滚球场"
+                },
+                "leisure/pitch/cricket": {
+                    "name": "板球场地",
+                    "terms": "板球,场地"
+                },
+                "leisure/pitch/equestrian": {
+                    "name": "骑行场地",
+                    "terms": "骑行,场地,自行车,单车"
                 },
                 "leisure/pitch/rugby_league": {
                     "name": "橄榄球联盟场地",
@@ -4246,6 +4509,10 @@
                 "leisure/pitch/soccer": {
                     "name": "足球场",
                     "terms": "足球场"
+                },
+                "leisure/pitch/table_tennis": {
+                    "name": "乒乓球场地",
+                    "terms": "乒乓桌,乒乓球桌,乒乓球"
                 },
                 "leisure/pitch/tennis": {
                     "name": "网球场",
@@ -4264,17 +4531,12 @@
                     "terms": "度假,度假区,度假胜地,度假村,旅游,娱乐场,休闲"
                 },
                 "leisure/running_track": {
-<<<<<<< HEAD
-                    "name": "体育跑道",
-                    "terms": "操场跑道"
-=======
                     "name": "跑道(跑步)",
                     "terms": "跑步,跑道,操场,跑"
                 },
                 "leisure/sauna": {
                     "name": "桑拿",
                     "terms": "桑拿,桑拿房,桑拿浴,浴室,蒸汽,按摩"
->>>>>>> v2.8.2
                 },
                 "leisure/slipway": {
                     "name": "船台",
@@ -4297,8 +4559,8 @@
                     "terms": "游泳池"
                 },
                 "leisure/track": {
-                    "name": "跑道(非机动竞赛)",
-                    "terms": "赛道(非机动竞赛),跑道"
+                    "name": "赛道(非机动竞速项目)",
+                    "terms": "赛道,跑道,竞速"
                 },
                 "leisure/water_park": {
                     "name": "水上乐园",
@@ -4321,7 +4583,7 @@
                     "terms": "天线,天线杆,天线塔,电话,通讯,手机,无线电,电视,广播,频道,电台,信号塔"
                 },
                 "man_made/breakwater": {
-                    "name": "避风塘",
+                    "name": "防波堤",
                     "terms": "避风塘,避风港"
                 },
                 "man_made/bridge": {
@@ -4331,6 +4593,10 @@
                 "man_made/chimney": {
                     "name": "烟囱",
                     "terms": "烟囱,烟囱塔"
+                },
+                "man_made/crane": {
+                    "name": "起重机",
+                    "terms": "起重机,起重,吊车,天车,行车,航吊,塔吊,重物,搬运"
                 },
                 "man_made/cutline": {
                     "name": "树林分界线",
@@ -4348,8 +4614,8 @@
                     "terms": "大型燃气罐,大型储气罐,煤气包"
                 },
                 "man_made/groyne": {
-                    "name": "防波堤",
-                    "terms": "防波堤"
+                    "name": "拦沙坝",
+                    "terms": "防波堤,拦沙坝"
                 },
                 "man_made/lighthouse": {
                     "name": "灯塔",
@@ -4357,7 +4623,7 @@
                 },
                 "man_made/mast": {
                     "name": "通讯天线杆",
-                    "terms": "通讯天线杆,无线电杆,电线杆"
+                    "terms": "通讯天线杆,无线电杆,电线杆,杆"
                 },
                 "man_made/observation": {
                     "name": "瞭望塔",
@@ -4423,49 +4689,37 @@
                     "name": "供水厂",
                     "terms": "供水厂"
                 },
+                "man_made/watermill": {
+                    "name": "水车",
+                    "terms": "水磨,水车,水力,水力磨,水,轮,轴,磨,坊,发电,电力,灌溉,提水,农耕,农业,天车,水斗"
+                },
+                "man_made/windmill": {
+                    "name": "风车",
+                    "terms": "风,轮,磨,坊,提水,灌溉,风能,风轮机,发电,风力,风力机,风帆,风轮"
+                },
                 "man_made/works": {
                     "name": "工厂",
                     "terms": "工厂,加工,制造"
                 },
-                "military/airfield": {
-                    "name": "军用机场",
-                    "terms": "机场,飞机场"
+                "manhole": {
+                    "name": "人井",
+                    "terms": "人井,人孔,检修,探孔,入孔,盖,洞,孔,下水道,排水,污水,通信,电信,电缆,通讯,人孔井,手井,穿线,下水管"
                 },
-                "military/barracks": {
-                    "name": "军营",
-                    "terms": "军营,兵营,营房"
+                "manhole/drain": {
+                    "name": "窨井口",
+                    "terms": "窨井盖,窨井口,窨井,下水道,盖,下水管,排水,排水道,污水,排水管,排水沟,洞,井,孔,雨,雷雨,台风,沙井,沙井盖"
                 },
-                "military/bunker": {
-                    "name": "地堡",
-                    "terms": "地堡,暗堡"
-                },
-                "military/checkpoint": {
-                    "name": "军区检查点",
-                    "terms": "军区检查点,军事检查站"
-                },
-                "military/danger_area": {
-                    "name": "危险区域",
-                    "terms": "危险区域,危险地区"
-                },
-                "military/naval_base": {
-                    "name": "海军基地",
-                    "terms": "海军基地"
-                },
-                "military/obstacle_course": {
-                    "name": "军事障碍训练场",
-                    "terms": "军事障碍训练场,障碍训练场,训练场,练习场"
-                },
-                "military/range": {
-                    "name": "军事靶场",
-                    "terms": "靶场,射击场,军事射击场"
-                },
-                "military/training_area": {
-                    "name": "军事训练场",
-                    "terms": "军事训练场,军事练习场,训练场,练习场"
+                "manhole/telecom": {
+                    "name": "电信检查井",
+                    "terms": "井盖,井,检查,人孔,手机,盖,通讯,通信,移动,联通,电信,电话,洞,孔,下水道,基站"
                 },
                 "natural": {
                     "name": "自然",
                     "terms": "自然"
+                },
+                "natural/bare_rock": {
+                    "name": "岩石",
+                    "terms": "岩石,裸露岩石,石头,礁石,沉积,石"
                 },
                 "natural/bay": {
                     "name": "海湾",
@@ -4511,9 +4765,17 @@
                     "name": "山峰",
                     "terms": "山峰"
                 },
-                "natural/saddle": {
+                "natural/ridge": {
                     "name": "山脊",
-                    "terms": "山脊,山鞍,鞍部"
+                    "terms": "山脊,山高,凸,坡,斜坡,山峰,山冈,山"
+                },
+                "natural/saddle": {
+                    "name": "垭口",
+                    "terms": "垭口,山口,山鞍,鞍部"
+                },
+                "natural/sand": {
+                    "name": "沙漠",
+                    "terms": "沙漠,沙子,沙,沙幕,干旱,沙滩,沙丘,岩滩,风成地貌,缺水,干枯"
                 },
                 "natural/scree": {
                     "name": "碎石坡",
@@ -4540,7 +4802,7 @@
                     "terms": "火山"
                 },
                 "natural/water": {
-                    "name": "水",
+                    "name": "水体",
                     "terms": "水"
                 },
                 "natural/water/lake": {
@@ -4563,33 +4825,21 @@
                     "name": "树林",
                     "terms": "树林"
                 },
+                "noexit/yes": {
+                    "name": "路终点",
+                    "terms": "死胡同"
+                },
                 "office": {
-                    "name": "写字楼",
+                    "name": "办公地点",
                     "terms": "办公室,写字楼"
                 },
                 "office/accountant": {
-<<<<<<< HEAD
-                    "name": "会计师楼",
-                    "terms": "会计师楼"
-=======
                     "name": "会计师事务所",
                     "terms": "会计,事务所,会计师,审计,会计,咨询,税务,账"
->>>>>>> v2.8.2
                 },
                 "office/administrative": {
                     "name": "行政楼"
                 },
-<<<<<<< HEAD
-                "office/architect": {
-                    "name": "建筑师楼",
-                    "terms": "建筑师楼"
-                },
-<<<<<<< HEAD
-                "office/company": {
-                    "name": "公司",
-                    "terms": "公司"
-=======
-=======
                 "office/adoption_agency": {
                     "name": "领养中介",
                     "terms": "领养,收养,孤儿,孤儿院,留守"
@@ -4603,7 +4853,7 @@
                     "terms": "建筑事务所"
                 },
                 "office/association": {
-                    "name": "非盈利机构办公室",
+                    "name": "非营利机构办公室",
                     "terms": "非盈利机构办公室"
                 },
                 "office/charity": {
@@ -4614,11 +4864,9 @@
                     "name": "企业公司",
                     "terms": "公司,企业,办公室"
                 },
->>>>>>> v2.8.2
                 "office/coworking": {
                     "name": "共享办公空间",
                     "terms": "共享办公空间"
->>>>>>> v2.7.0
                 },
                 "office/educational_institution": {
                     "name": "教育机构",
@@ -4628,22 +4876,15 @@
                     "name": "就业机构",
                     "terms": "就业机构"
                 },
-<<<<<<< HEAD
-=======
                 "office/energy_supplier": {
                     "name": "电力公司",
                     "terms": "电力,电源,电,能源,煤气,天然气,电网,公司"
                 },
->>>>>>> v2.8.2
                 "office/estate_agent": {
                     "name": "地产代理",
                     "terms": "地产代理"
                 },
                 "office/financial": {
-<<<<<<< HEAD
-                    "name": "财务部写字楼",
-                    "terms": "财务部写字楼"
-=======
                     "name": "金融机构",
                     "terms": "金融机构"
                 },
@@ -4654,18 +4895,15 @@
                 "office/foundation": {
                     "name": "基金办公室",
                     "terms": "基金办公室"
->>>>>>> v2.8.2
                 },
                 "office/government": {
-                    "name": "政府楼",
-                    "terms": "政府楼"
+                    "name": "政府办公点",
+                    "terms": "政府办公点"
                 },
                 "office/government/register_office": {
                     "name": "登记处",
                     "terms": "登记处,出生登记处,结婚登记处,死亡登记处"
                 },
-<<<<<<< HEAD
-=======
                 "office/government/tax": {
                     "name": "税局",
                     "terms": "税局"
@@ -4674,25 +4912,18 @@
                     "name": "导游机构",
                     "terms": "导游,旅行,旅行社,旅游,游览,潜水,登山,爬山"
                 },
->>>>>>> v2.8.2
                 "office/insurance": {
                     "name": "保险公司",
                     "terms": "保险公司"
                 },
                 "office/it": {
                     "name": "IT公司",
-<<<<<<< HEAD
-                    "terms": "IT公司"
-=======
                     "terms": "电脑,信息,科技,信息科技,软件,工程,编程,计算机,公司,it"
->>>>>>> v2.8.2
                 },
                 "office/lawyer": {
                     "name": "律师事务所",
                     "terms": "律师事务所"
                 },
-<<<<<<< HEAD
-=======
                 "office/lawyer/notary": {
                     "name": "公证处"
                 },
@@ -4700,7 +4931,6 @@
                     "name": "搬家公司",
                     "terms": "搬家,搬床,搬场,动迁,装修"
                 },
->>>>>>> v2.7.0
                 "office/newspaper": {
                     "name": "报社",
                     "terms": "报社,通讯社"
@@ -4709,23 +4939,17 @@
                     "name": "非政府组织",
                     "terms": "非政府组织"
                 },
-<<<<<<< HEAD
-=======
                 "office/notary": {
                     "name": "公证处",
                     "terms": "公证,公证处,契约,保证,签名,学历,学位,成绩,刑事,婚姻,出生,委托,遗嘱,遗产,继承,声明,机构,抽奖,拍卖,证据"
                 },
->>>>>>> v2.8.2
                 "office/physician": {
-                    "name": "医生",
-                    "terms": "医生"
+                    "name": "医生"
                 },
                 "office/political_party": {
                     "name": "政党",
                     "terms": "政党"
                 },
-<<<<<<< HEAD
-=======
                 "office/private_investigator": {
                     "name": "私家侦探事务所",
                     "terms": "侦探,私家,私家侦探,私人,侦查,侦察,民商,调查,推理,行踪,诈骗,取证,警察,警官"
@@ -4734,41 +4958,29 @@
                     "name": "准非政府组织",
                     "terms": "非政府,民意,民间,政府,组织,自治,自主,非盈利,非营利"
                 },
->>>>>>> v2.8.2
                 "office/research": {
                     "name": "研究所",
                     "terms": "研究所"
                 },
-<<<<<<< HEAD
-=======
                 "office/tax_advisor": {
                     "name": "税务顾问机构",
                     "terms": "税,税务,税收,经济,顾问,机构"
                 },
->>>>>>> v2.8.2
                 "office/telecommunication": {
                     "name": "电信办公室",
                     "terms": "电信公司"
                 },
                 "office/therapist": {
-<<<<<<< HEAD
-                    "name": "医疗师",
-                    "terms": "医疗师"
-=======
                     "name": "治疗师工作室",
                     "terms": "理疗,医生,中医,推拿,整骨,医疗,治疗,医疗,医师,护士,医护,办公室,技师,医院"
->>>>>>> v2.7.0
                 },
                 "office/travel_agent": {
                     "name": "旅行社"
                 },
-<<<<<<< HEAD
-=======
                 "office/water_utility": {
                     "name": "水务设施机构",
                     "terms": "水务,水源,设施,机构,水,自来水,废水,污水"
                 },
->>>>>>> v2.8.2
                 "piste": {
                     "name": "滑雪道",
                     "terms": "滑雪道"
@@ -4781,8 +4993,7 @@
                     "terms": "城市"
                 },
                 "place/farm": {
-                    "name": "农场",
-                    "terms": "农场"
+                    "name": "农场"
                 },
                 "place/hamlet": {
                     "name": "小村庄",
@@ -4791,6 +5002,10 @@
                 "place/island": {
                     "name": "岛屿",
                     "terms": "岛屿"
+                },
+                "place/islet": {
+                    "name": "小岛",
+                    "terms": "小岛"
                 },
                 "place/isolated_dwelling": {
                     "name": "孤立居所",
@@ -4801,23 +5016,29 @@
                     "terms": "地方,地点"
                 },
                 "place/neighbourhood": {
-                    "name": "街坊",
+                    "name": "街坊社区 / 小区",
                     "terms": "社区,街坊"
                 },
+                "place/quarter": {
+                    "name": "街道办/片区",
+                    "terms": "街道,片区,办"
+                },
+                "place/square": {
+                    "name": "广场",
+                    "terms": "广场,公共,枢纽,中心,市场,集会,庆典,活动"
+                },
                 "place/suburb": {
-                    "name": "区",
-                    "terms": "区"
+                    "name": "区(城市)",
+                    "terms": "区,城市,郊区,自治,行政"
                 },
                 "place/town": {
                     "name": "城镇",
-                    "terms": "城镇"
+                    "terms": "镇,城镇,乡镇"
                 },
                 "place/village": {
                     "name": "村庄",
                     "terms": "村庄"
                 },
-<<<<<<< HEAD
-=======
                 "playground/balance_beam": {
                     "name": "跷跷板",
                     "terms": "平衡木,独木桥,木桩,勇敢者道路,儿童,小孩,游乐,游乐设施,游乐园,游乐场,乐园,儿童乐园"
@@ -4874,7 +5095,6 @@
                     "name": "滑索 (儿童游乐)",
                     "terms": "滑索,索道,绳索,绳子,速滑,速降,空中飞人,儿童,小孩,游乐,游乐设施,游乐园,游乐场,乐园,儿童乐园"
                 },
->>>>>>> v2.7.0
                 "point": {
                     "name": "点",
                     "terms": "点"
@@ -4886,13 +5106,21 @@
                     "name": "发电机",
                     "terms": "发电机"
                 },
+                "power/generator/source_nuclear": {
+                    "name": "核反应堆",
+                    "terms": "原子能,核,原子核,核电站,反应堆,链式,核裂变,发电,发电机,反应器,反应机,铀,核化学,中子"
+                },
+                "power/generator/source_wind": {
+                    "name": "风力涡轮机",
+                    "terms": "风能,风轮机,涡轮,发电机,发电器,风力,风车,风,发电"
+                },
                 "power/line": {
-                    "name": "供电线",
-                    "terms": "供电线"
+                    "name": "输电线",
+                    "terms": "输电线"
                 },
                 "power/minor_line": {
-                    "name": "小供电线",
-                    "terms": "小供电线"
+                    "name": "次要输电线",
+                    "terms": "次要输电线"
                 },
                 "power/plant": {
                     "name": "发电厂",
@@ -5089,12 +5317,20 @@
                     "name": "铁路"
                 },
                 "railway/abandoned": {
-                    "name": "已拆除铁路",
+                    "name": "已拆除铁路遗迹",
                     "terms": "废弃的铁路"
+                },
+                "railway/buffer_stop": {
+                    "name": "铁路挡车器",
+                    "terms": "止冲器,末端,缓冲器,缓冲,停车,减速,挡车,停止,轨道,股道,铁轨,铁路,路轨,火车,列车,站台"
                 },
                 "railway/crossing": {
                     "name": "铁路道口 (人行道)",
                     "terms": "铁路道口,平交道口,铁路道口(人行道)"
+                },
+                "railway/derail": {
+                    "name": "铁路脱轨器",
+                    "terms": "轨道,股道,铁轨,铁路,路轨,脱轨,脱线,隔离,防护,机车,逼轨,道岔,岔路,火车,列车"
                 },
                 "railway/disused": {
                     "name": "废弃铁路",
@@ -5111,8 +5347,6 @@
                     "name": "铁路道口 (道路)",
                     "terms": "铁路道口,平交道口,铁路道口(道路)"
                 },
-<<<<<<< HEAD
-=======
                 "railway/light_rail": {
                     "name": "轻轨",
                     "terms": "轻轨,地铁,地下铁,有轨,电车"
@@ -5125,7 +5359,6 @@
                     "name": "微型铁路",
                     "terms": "微型铁路,铁路,模型,小火车,玩具"
                 },
->>>>>>> v2.7.0
                 "railway/monorail": {
                     "name": "单轨铁路",
                     "terms": "单轨铁路"
@@ -5135,38 +5368,42 @@
                     "terms": "窄轨铁路,铁路"
                 },
                 "railway/platform": {
-<<<<<<< HEAD
-                    "name": "铁路站台",
-                    "terms": "站台"
-=======
                     "name": "火车站 / 站台"
->>>>>>> v2.7.0
                 },
                 "railway/rail": {
-                    "name": "铁轨",
+                    "name": "标准铁路",
                     "terms": "铁轨"
+                },
+                "railway/signal": {
+                    "name": "铁路信号机",
+                    "terms": "色灯,信号机,信号,灯,信号灯,红绿灯,表示器,轨道,股道,铁轨,铁路,路轨,火车,列车,调车,进站,出站"
                 },
                 "railway/station": {
                     "name": "火车站"
                 },
                 "railway/subway": {
                     "name": "地铁",
-                    "terms": "地铁"
+                    "terms": "地铁,轻轨,轨道交通,地下铁,有轨,电车,单轨"
                 },
                 "railway/subway_entrance": {
-                    "name": "地铁入口",
-                    "terms": "地铁口"
+                    "name": "地铁出入口",
+                    "terms": "地铁,地铁口,地铁站,出口,入口,轻轨,地下铁,轨道交通"
+                },
+                "railway/switch": {
+                    "name": "轨道转辙器",
+                    "terms": "轨道,股道,转辙器,转换,铁轨,铁路,路轨,道岔,岔路,交叉,拉杆,火车,列车"
+                },
+                "railway/train_wash": {
+                    "name": "列车清洗机",
+                    "terms": "轨道,股道,铁轨,铁路,路轨,火车,列车,清洗,清洁,水洗,外皮,洗澡,机器"
                 },
                 "railway/tram": {
                     "name": "电车",
                     "terms": "电车"
                 },
-<<<<<<< HEAD
-=======
                 "railway/tram_stop": {
                     "name": "有轨电车停车处"
                 },
->>>>>>> v2.7.0
                 "relation": {
                     "name": "关系",
                     "terms": "关系"
@@ -5176,11 +5413,11 @@
                 },
                 "route/ferry": {
                     "name": "航线",
-                    "terms": "航线"
+                    "terms": "航线,轮渡,渡轮,渡船,渡口,摆渡"
                 },
                 "shop": {
                     "name": "商店",
-                    "terms": "商店"
+                    "terms": "商店,超市,便利店,汽车,汽修,百货,商场,服装,面包,报刊,报纸,美发,理发,家具,硬件,电脑,花,电器,肉,酒,鞋,轮胎,自行车,单车,4S"
                 },
                 "shop/alcohol": {
                     "name": "酒水店",
@@ -5193,6 +5430,10 @@
                 "shop/antiques": {
                     "name": "古董店",
                     "terms": "古董店"
+                },
+                "shop/appliance": {
+                    "name": "家用电器店",
+                    "terms": "家,电器,电器店,家用"
                 },
                 "shop/art": {
                     "name": "艺术品店",
@@ -5386,8 +5627,7 @@
                     "terms": "殡仪馆,墓园,墓地,坟墓,丧葬承办人,殡葬业者,殡葬,死亡,逝世,丧礼,葬"
                 },
                 "shop/furnace": {
-                    "name": "熔炉店",
-                    "terms": "熔炉店"
+                    "name": "熔炉店"
                 },
                 "shop/furniture": {
                     "name": "家具店",
@@ -5396,6 +5636,10 @@
                 "shop/garden_centre": {
                     "name": "园艺品店",
                     "terms": "花店"
+                },
+                "shop/gas": {
+                    "name": "瓶装燃气站",
+                    "terms": "燃气,站,瓶,气,燃料"
                 },
                 "shop/gift": {
                     "name": "礼品店",
@@ -5419,14 +5663,14 @@
                 },
                 "shop/herbalist": {
                     "name": "草药店",
-                    "terms": "草药店,中医"
+                    "terms": "草药店,草药,中医,医疗,药房,药品,用品,商店,治疗,医院"
                 },
                 "shop/hifi": {
                     "name": "音响店",
                     "terms": "音响店"
                 },
                 "shop/houseware": {
-                    "name": "小型家饰店",
+                    "name": "家居用品店",
                     "terms": "小型家饰店"
                 },
                 "shop/interior_decoration": {
@@ -5455,7 +5699,7 @@
                 },
                 "shop/locksmith": {
                     "name": "锁匠铺",
-                    "terms": "锁匠铺,开锁匠"
+                    "terms": "锁匠铺,开锁匠,锁匠,开锁,锁,门锁,钥匙"
                 },
                 "shop/lottery": {
                     "name": "彩票店",
@@ -5471,7 +5715,7 @@
                 },
                 "shop/medical_supply": {
                     "name": "医疗用品店",
-                    "terms": "医疗用品店,医护用品店"
+                    "terms": "医疗,医护,药房,药品,用品,商店,医院,治疗"
                 },
                 "shop/mobile_phone": {
                     "name": "手机店",
@@ -5524,6 +5768,10 @@
                 "shop/pawnbroker": {
                     "name": "典当商铺",
                     "terms": "典当商铺,当铺"
+                },
+                "shop/perfumery": {
+                    "name": "香水店",
+                    "terms": "香水,商店,香精,香,店"
                 },
                 "shop/pet": {
                     "name": "宠物店",
@@ -5593,6 +5841,10 @@
                     "name": "售票处",
                     "terms": "售票处,售票亭"
                 },
+                "shop/tiles": {
+                    "name": "瓷砖商店",
+                    "terms": "磁磚商店"
+                },
                 "shop/tobacco": {
                     "name": "烟草店",
                     "terms": "烟草店"
@@ -5600,6 +5852,10 @@
                 "shop/toys": {
                     "name": "玩具店",
                     "terms": "玩具店"
+                },
+                "shop/trade": {
+                    "name": "材料商店",
+                    "terms": "建材商店,材料行"
                 },
                 "shop/travel_agency": {
                     "name": "旅行社",
@@ -5628,8 +5884,12 @@
                     "name": "电子游戏店",
                     "terms": "电子游戏店,视频游戏店"
                 },
+                "shop/watches": {
+                    "name": "手表店",
+                    "terms": "手表店,钟表店,Watches Shop"
+                },
                 "shop/water_sports": {
-                    "name": "水上运动/泳装店",
+                    "name": "水上运动/泳具店",
                     "terms": "水上运动/泳装店"
                 },
                 "shop/weapons": {
@@ -5649,16 +5909,16 @@
                     "terms": "酒品商店,酒店,酒楼,酒坊"
                 },
                 "tourism": {
-                    "name": "旅行",
-                    "terms": "旅行"
+                    "name": "旅游设施",
+                    "terms": "旅行,旅游设施"
                 },
                 "tourism/alpine_hut": {
                     "name": "高山小屋",
                     "terms": "高山小屋"
                 },
                 "tourism/apartment": {
-                    "name": "公寓",
-                    "terms": "公寓,客人公寓"
+                    "name": "出租公寓",
+                    "terms": "公寓,客人公寓,出租公寓"
                 },
                 "tourism/aquarium": {
                     "name": "水族馆",
@@ -5666,7 +5926,7 @@
                 },
                 "tourism/artwork": {
                     "name": "艺术品",
-                    "terms": "艺术品"
+                    "terms": "艺术,壁画,雕塑,雕刻,雕像,人像,塑像,油画,绘画,石像,写真,浮雕,画像,街头艺术,颜料"
                 },
                 "tourism/attraction": {
                     "name": "旅游名胜",
@@ -5681,15 +5941,15 @@
                     "terms": "房车营地"
                 },
                 "tourism/chalet": {
-                    "name": "木屋",
-                    "terms": "木屋"
+                    "name": "度假屋",
+                    "terms": "度假屋"
                 },
                 "tourism/gallery": {
                     "name": "美术馆",
                     "terms": "美术馆,画廊,艺术中心"
                 },
                 "tourism/guest_house": {
-                    "name": "招待所",
+                    "name": "客栈",
                     "terms": "招待所,旅馆,宾馆"
                 },
                 "tourism/hostel": {
@@ -5734,33 +5994,30 @@
                 },
                 "tourism/theme_park": {
                     "name": "主题公园",
-                    "terms": "主题公园"
+                    "terms": "乐园,游乐园,公园,主题,度假区,娱乐,游乐场"
                 },
                 "tourism/viewpoint": {
                     "name": "观景点",
                     "terms": "景点"
                 },
-<<<<<<< HEAD
-=======
                 "tourism/wilderness_hut": {
                     "name": "野外住宿小屋",
                     "terms": "野外,郊野,荒郊,野营,宿营,营地,探险,旅游,小屋,木屋,草屋,屋,住宿"
                 },
->>>>>>> v2.8.2
                 "tourism/zoo": {
                     "name": "动物园",
                     "terms": "动物园"
                 },
                 "traffic_calming": {
-                    "name": "交通稳静化",
-                    "terms": "交通稳静化,交通静稳化,车辆减速措施"
+                    "name": "交通减速设置",
+                    "terms": "车辆减速措施"
                 },
                 "traffic_calming/bump": {
                     "name": "减速带",
-                    "terms": "减速带"
+                    "terms": "减速,减速带,交通稳静化"
                 },
                 "traffic_calming/chicane": {
-                    "name": "曲折车行道",
+                    "name": "减速弯道",
                     "terms": "曲折车行道,减速弯道"
                 },
                 "traffic_calming/choker": {
@@ -5769,27 +6026,27 @@
                 },
                 "traffic_calming/cushion": {
                     "name": "减速垫",
-                    "terms": "减速垫,减速板,减速带,减速胶"
+                    "terms": "减速,减速垫,减速板,减速带,减速胶,交通稳静化"
                 },
                 "traffic_calming/dip": {
-                    "name": "路凹",
+                    "name": "减速路凹",
                     "terms": "路凹,减速路凹,减速坑"
                 },
                 "traffic_calming/hump": {
-                    "name": "减速台",
-                    "terms": "减速台"
+                    "name": "减速丘",
+                    "terms": "减速,减速丘,交通稳静化"
                 },
                 "traffic_calming/island": {
-                    "name": "交通岛",
-                    "terms": "交通岛,导流岛,安全岛,中心岛,交通稳静化"
+                    "name": "交通分隔岛",
+                    "terms": "交通岛,导流岛,安全岛,中心岛,分隔岛"
                 },
                 "traffic_calming/rumble_strip": {
                     "name": "路肩警示带",
                     "terms": "路肩警示带,路侧振动带"
                 },
                 "traffic_calming/table": {
-                    "name": "人行横道",
-                    "terms": "行人专用路"
+                    "name": "减速台",
+                    "terms": "减速,减速台,交通稳静化"
                 },
                 "type/boundary": {
                     "name": "边界",
@@ -5800,7 +6057,7 @@
                     "terms": "行政边界"
                 },
                 "type/multipolygon": {
-                    "name": "多个面"
+                    "name": "复合多边形"
                 },
                 "type/restriction": {
                     "name": "限制",
@@ -5910,6 +6167,10 @@
                     "name": "场址",
                     "terms": "场址,地点,场地"
                 },
+                "type/waterway": {
+                    "name": "水路",
+                    "terms": "水路,水系,水道,航道,水沟,河道,河流,流域,水体,水域"
+                },
                 "vertex": {
                     "name": "其它",
                     "terms": "其它"
@@ -5943,7 +6204,7 @@
                 },
                 "waterway/fuel": {
                     "name": "船舶加油站",
-                    "terms": "船舶加油站"
+                    "terms": "船舶加油站,加油,船,航海"
                 },
                 "waterway/river": {
                     "name": "河",
@@ -5961,6 +6222,10 @@
                     "name": "溪",
                     "terms": "小河,小溪,涧,溪流"
                 },
+                "waterway/stream_intermittent": {
+                    "name": "间歇溪流",
+                    "terms": "时令河,季节河,溪流,歇性,间歇,间断,断流,河流,河,溪,水沟,运河,流,支流,航道,漂流,细流,水道"
+                },
                 "waterway/water_point": {
                     "name": "航行用淡水",
                     "terms": "航行用淡水,淡水,饮用水"
@@ -5974,8 +6239,6 @@
                     "terms": "坝,堰坝,拦河坝"
                 }
             }
-<<<<<<< HEAD
-=======
         },
         "imagery": {
             "Bing": {
@@ -6207,9 +6470,6 @@
                 },
                 "name": "Thunderforest 地貌"
             }
-<<<<<<< HEAD
->>>>>>> v2.7.0
-=======
         },
         "community": {
             "cape-coast-youthmappers": {
@@ -6240,7 +6500,8 @@
             },
             "OSM-BGD-facebook": {
                 "name": "OpenStreetMap 孟加拉国",
-                "description": "改进位于孟加拉国的 OpenStreetMap"
+                "description": "改进位于孟加拉国的 OpenStreetMap",
+                "extendedDescription": "在孟加拉国绘图？有任何疑问，想要与当地的社区交流？在 {url} 加入我们。欢迎所有人！"
             },
             "OSM-India-facebook": {
                 "name": "OpenStreetMap 印度 - 共同参与的街区绘图",
@@ -6285,6 +6546,10 @@
             "OSM-japan-twitter": {
                 "name": "OpenStreetMap 日本 Twitter",
                 "description": "Twitter 上的#标签：{url}"
+            },
+            "OSM-japan-website": {
+                "name": "OpenStreetMap 日本",
+                "description": "位于日本的绘图者和 OpenStreetMap 用户"
             },
             "OSM-MY-forum": {
                 "name": "OpenStreetMap 马来西亚论坛",
@@ -6382,7 +6647,6 @@
                 "name": "OpenStreetMap 比利时 Twitter"
             },
             "talk-cz-mailinglist": {
-                "name": "Talk-cz 邮件列表",
                 "description": "Talk-cz 是捷克 OpenStreetMap 社区的官方邮件列表"
             },
             "fr-facebook": {
@@ -6689,21 +6953,25 @@
                 "name": "OpenStreetMap Reddit 社区",
                 "description": "/r/openstreetmap/ 是了解更多关于 OpenStreetMap 的好地方。来尽管问我们吧！"
             },
+            "OSM-Telegram": {
+                "name": "OpenStreetMap Telegram 群组",
+                "description": "加入 OpenStreetMap Telegram 全球大群：{url}"
+            },
             "OSM-Twitter": {
                 "name": "OpenStreetMap Twitter 主页",
                 "description": "在 Twitter 上关注我们：{url}"
             },
             "OSMF": {
                 "name": "OpenStreetMap 基金会 (OSMF)",
-                "description": "OSMF 是总部位于英国的非盈利组织，用于支持 OpenStreetMap 项目。",
+                "description": "OSMF 是总部位于英国的非营利组织，用于支持 OpenStreetMap 项目。",
                 "events": {
                     "sotm2018": {
                         "name": "State of the Map 2018",
+                        "description": "加入我们为期3天在意大利米兰举办的年度全球 OpenStreetMap 会议，与社区中的每个人相聚并进行交流、分享和学习。",
                         "where": "意大利米兰"
                     }
                 }
             }
->>>>>>> v2.8.0
         }
     }
 }

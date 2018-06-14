@@ -53,9 +53,16 @@ module.exports = function buildSrc(isDevelopment) {
         return rollup
             .rollup({
                 input: './modules/id.js',
-                plugins,
-                cache: cache,
-                treeshake: false
+                plugins: [
+                    nodeResolve({
+                        module: true,
+                        main: true,
+                        browser: false
+                    }),
+                    commonjs(),
+                    json( { indent: '' } )
+                ],
+                cache: cache
             })
             .then(function (bundle) {
                 bundle.write({
