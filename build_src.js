@@ -53,6 +53,7 @@ module.exports = function buildSrc(isDevelopment) {
         return rollup
             .rollup({
                 input: './modules/id.js',
+                plugins,
                 cache
             })
             .then(function (bundle) {
