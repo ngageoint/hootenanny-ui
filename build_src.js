@@ -39,7 +39,7 @@ module.exports = function buildSrc(isDevelopment) {
                 extract: 'dist/hoot.css'
             }),
             commonjs(),
-            json()
+            json( { indent: '' } )
         ];
 
         if (!isDevelopment) {
@@ -53,9 +53,7 @@ module.exports = function buildSrc(isDevelopment) {
         return rollup
             .rollup({
                 input: './modules/id.js',
-                plugins,
-                cache: cache,
-                treeshake: false
+                cache
             })
             .then(function (bundle) {
                 bundle.write({

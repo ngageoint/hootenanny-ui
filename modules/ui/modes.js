@@ -68,7 +68,7 @@ export function uiModes(context) {
         buttons
             .each(function(d) {
                 d3_select(this)
-                    .call(svgIcon('#icon-' + d.button, 'pre-text'));
+                    .call(svgIcon('#iD-icon-' + d.button, 'pre-text'));
             });
 
         buttons

@@ -222,7 +222,7 @@ export function uiInit(context) {
             .attr('target', '_blank')
             .attr('tabindex', -1)
             .attr('href', 'https://github.com/openstreetmap/iD/issues')
-            .call(svgIcon('#icon-bug', 'light'))
+            .call(svgIcon('#iD-icon-bug', 'light'))
             .call(tooltip().title(t('report_a_bug')).placement('top'));
 
         issueLinks
@@ -230,7 +230,7 @@ export function uiInit(context) {
             .attr('target', '_blank')
             .attr('tabindex', -1)
             .attr('href', 'https://github.com/openstreetmap/iD/blob/master/CONTRIBUTING.md#translating')
-            .call(svgIcon('#icon-translate', 'light'))
+            .call(svgIcon('#iD-icon-translate', 'light'))
             .call(tooltip().title(t('help_translate')).placement('top'));
 */
         aboutList
@@ -264,11 +264,12 @@ export function uiInit(context) {
             .append('button')
             .attr('class', 'thumb-hide')
             .on('click', function () {
+                if (services.streetside) { services.streetside.hideViewer(); }
                 if (services.mapillary) { services.mapillary.hideViewer(); }
                 if (services.openstreetcam) { services.openstreetcam.hideViewer(); }
             })
             .append('div')
-            .call(svgIcon('#icon-close'));
+            .call(svgIcon('#iD-icon-close'));
 
 
         window.onbeforeunload = function() {
