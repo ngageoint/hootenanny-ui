@@ -257,16 +257,6 @@ class API {
             .then( resp => resp.data );
     }
 
-    getOSMTagInfo() {
-        const params = {
-            path: 'localhost'
-        }
-    }
-
-    getTDSTagInfo() {
-
-    }
-
     /**
      * Upload imported files to the database
      *

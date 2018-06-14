@@ -159,6 +159,10 @@
         background-position: -480px 0;
     }
 
+    &.blank:before {
+        background-position: -260px 15px;
+    }
+
     &._loading {
         &:before {
             background: url(img/loading-spin-dark.svg) no-repeat 0 0;
@@ -198,4 +202,8 @@
     &.back-arrow {
         background: transparent url(img/keyboard54.svg) no-repeat;
     }
+}
+
+.search-icon {
+    background: transparent url(img/magnify.svg) no-repeat 4px 4px;
 }

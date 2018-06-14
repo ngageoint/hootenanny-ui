@@ -7,6 +7,7 @@
 import _                      from 'lodash-es';
 import API                    from '../control/api';
 import { transAssistButtons } from '../config/domElements';
+import { tagInfo }            from '../../../data/index';
 import Tab                    from './tab';
 
 /**
@@ -38,15 +39,9 @@ export default class TranslationAssistant extends Tab {
     render() {
         super.render();
 
-        this.loadTags();
         this.createUploadForm();
         this.createSchemaSelector();
         this.createUploadButtons();
-    }
-
-    async loadTags() {
-        let osm   = await API.getOSMTagInfo(),
-            tds61 = await API.getTDSTagInfo();
     }
 
     createUploadForm() {
@@ -223,12 +218,26 @@ export default class TranslationAssistant extends Tab {
             .append( 'button' )
             .classed( 'add-mapping-button round _icon big plus', true )
             .on( 'click', () => {
-
+                d3.event.preventDefault();
+                this.createTagLookup();
             } );
+    }
+
+    createTagLookup() {
+        let schemaOption = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
 
         this.tagLookup = this.tagMapContainer
             .insert( 'div', '.add-mapping-button' )
-            .classed( 'tag-lookup round fill-white' );
+            .classed( 'tag-lookup round fill-white keyline-all', true );
+
+        this.tagLookup
+            .append( 'div' )
+            .classed( 'pad1 thumbnail _icon big blank search-icon keyline-right', true );
+
+        this.searchTag = this.tagLookup.append( 'input' )
+            .attr( 'type', 'text' )
+            .attr( 'placeholder', 'Search Tag' )
+            .classed( 'strong bigger pad1x pad2y reset', true );
     }
 
     createMappingActionButtons() {
@@ -243,7 +252,7 @@ export default class TranslationAssistant extends Tab {
 
         this.actionButtonContainer
             .append( 'button' )
-            .classed( 'primary text-light big round', true )
+            .classed( 'dark text-light big round', true )
             .text( 'Next' );
     }
 
