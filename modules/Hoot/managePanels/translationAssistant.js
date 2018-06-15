@@ -167,27 +167,37 @@ export default class TranslationAssistant extends Tab {
     }
 
     initMapping( valuesMap ) {
-        let layers = d3.values( valuesMap ),
+        let layers = d3.keys( valuesMap ),
             layer  = layers[ 0 ];
 
-        this.valuesMap = valuesMap;
+        this.currentIndex = {};
+        this.valuesMap    = valuesMap;
 
-        this.createMappingForm();
-        this.createAttributesContainer();
-        this.createTagMapContainer();
-        this.createMappingActionButtons();
+        this.mappingForm = this.panelContent
+            .append( 'form' )
+            .classed( 'ta-attribute-mapping keyline-all round', true );
 
         this.changeLayer( layer );
     }
 
-    createMappingForm() {
-        this.mappingForm = this.panelContent
-            .append( 'form' )
-            .classed( 'ta-attribute-mapping keyline-all round', true );
+    changeLayer( newLayer ) {
+        this.layer = newLayer;
+        this.attributeValues = this.valuesMap[ this.layer ];
+
+        if ( !this.currentIndex[ this.layer ] ) this.currentIndex[ this.layer ] = 0;
+
+        this.createAttributesContainer();
+        this.createTagMapContainer();
+        this.createMappingActionButtons();
+
+        this.updateAttributes();
     }
 
     createAttributesContainer() {
         this.attributesContainer = this.mappingForm
+            .selectAll( '.attributes-container' )
+            .data( [ this.attributeValues ] )
+            .enter()
             .append( 'div' )
             .classed( 'attributes-container', true );
 
@@ -198,15 +208,26 @@ export default class TranslationAssistant extends Tab {
         this.attributesNav
             .append( 'div' )
             .classed( 'arrow-icon back-arrow text-light', true )
-            .on( 'click', () => '' );
+            .on( 'click', () => this.back() );
 
         this.attributesNav
             .append( 'div' )
-            .classed( 'arrow-icon forward-arrow text-light', true );
+            .classed( 'arrow-icon forward-arrow text-light', true )
+            .on( 'click', () => this.forward() );
 
-        this.attributeCount = this.attributesNav
+        this.attributesCount = this.attributesNav
             .insert( 'div', '.back-arrow + *' )
             .classed( 'attributes-count text-light pad1x', true );
+
+        this.attributesName = this.attributesContainer
+            .append( 'div' )
+            .classed( 'attributes-name center strong', true );
+
+        this.attributesSample = this.attributesContainer
+            .append( 'div' )
+            .classed( 'attributes-sample italic center quiet', true );
+
+        this.attributesContainer.exit().remove();
     }
 
     createTagMapContainer() {
@@ -256,7 +277,38 @@ export default class TranslationAssistant extends Tab {
             .text( 'Next' );
     }
 
-    changeLayer( newLayer ) {
+    back() {
+        if ( this.currentIndex[ this.layer ] === 0 ) {
+            this.currentIndex[ this.layer ] = this.attributeValues.size() - 1;
+        } else {
+            this.currentIndex[ this.layer ]--;
+        }
 
+        this.updateAttributes();
+    }
+
+    forward() {
+        if ( this.currentIndex[ this.layer ] < this.attributeValues.size() - 1 ) {
+            this.currentIndex[ this.layer ]++;
+        } else {
+            this.currentIndex[ this.layer ] = 0;
+        }
+
+        this.updateAttributes();
+    }
+
+    updateAttributes() {
+        let currentAttribute = this.attributesContainer.datum().entries()[ this.currentIndex[ this.layer ] ];
+
+        this.attributesCount
+            .text( d => `${ this.currentIndex[ this.layer ] + 1 } of ${ d.keys().length } Attributes` );
+
+        this.attributesList = this.attributesName
+            .selectAll( '.attributes-list' )
+            .data( [ currentAttribute ] )
+            .enter()
+            .append( 'div' )
+            .classed( 'attributes-list', true )
+            .text( d => d.key );
     }
 }
