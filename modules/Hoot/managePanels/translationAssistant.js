@@ -171,7 +171,7 @@ export default class TranslationAssistant extends Tab {
             layer  = layers[ 0 ];
 
         this.currentIndex = {};
-        this.valuesMap    = valuesMap;
+        this.valuesMap    = valuesMap; // hoot1: attributeValues
 
         this.mappingForm = this.panelContent
             .append( 'form' )
@@ -181,7 +181,7 @@ export default class TranslationAssistant extends Tab {
     }
 
     changeLayer( newLayer ) {
-        this.layer = newLayer;
+        this.layer           = newLayer;
         this.attributeValues = this.valuesMap[ this.layer ];
 
         if ( !this.currentIndex[ this.layer ] ) this.currentIndex[ this.layer ] = 0;
@@ -219,13 +219,17 @@ export default class TranslationAssistant extends Tab {
             .insert( 'div', '.back-arrow + *' )
             .classed( 'attributes-count text-light pad1x', true );
 
-        this.attributesName = this.attributesContainer
+        this.currentAttribute = this.attributesContainer
             .append( 'div' )
-            .classed( 'attributes-name center strong', true );
+            .classed( 'current-attribute pad2y fill-white', true );
 
-        this.attributesSample = this.attributesContainer
-            .append( 'div' )
-            .classed( 'attributes-sample italic center quiet', true );
+        //this.attributesName = this.currentAttribute
+        //    .append( 'div' )
+        //    .classed( 'attributes-name center strong', true );
+        //
+        //this.attributesSample = this.currentAttribute
+        //    .append( 'div' )
+        //    .classed( 'attributes-sample italic center quiet', true );
 
         this.attributesContainer.exit().remove();
     }
@@ -298,17 +302,82 @@ export default class TranslationAssistant extends Tab {
     }
 
     updateAttributes() {
-        let currentAttribute = this.attributesContainer.datum().entries()[ this.currentIndex[ this.layer ] ];
+        let allAttributes    = this.attributesContainer.datum().entries(),
+            currentAttribute = allAttributes[ this.currentIndex[ this.layer ] ],
+            attributeList    = _.filter( allAttributes, attribute => attribute.key !== currentAttribute.key );
 
         this.attributesCount
             .text( d => `${ this.currentIndex[ this.layer ] + 1 } of ${ d.keys().length } Attributes` );
 
-        this.attributesList = this.attributesName
-            .selectAll( '.attributes-list' )
+        this.attributesName = this.currentAttribute
+            .selectAll( '.attributes-name' )
             .data( [ currentAttribute ] )
             .enter()
             .append( 'div' )
-            .classed( 'attributes-list', true )
+            .classed( 'attributes-name center strong', true )
+            .text( d => d.key )
+            .on( 'click', () => {
+                this.toggleAttributeList();
+            } );
+
+        this.attributesList = this.currentAttribute
+            .append( 'div' )
+            .classed( 'attributes-list', true );
+
+        this.attributesList
+            .append( 'div' )
+            .classed( 'inner-wrapper', true )
+            .selectAll( '.list-option' )
+            .data( attributeList )
+            .enter()
+            .append( 'div' )
+            .classed( 'list-option center', true )
             .text( d => d.key );
+
+        this.attributesSample = this.currentAttribute
+            .selectAll( '.attributes-sample' )
+            .data( [ currentAttribute ] )
+            .enter()
+            .append( 'div' )
+            .classed( 'attributes-sample center quiet', true )
+            .text( d => {
+                return _.reduce( d.value.values(), ( prev, curr, idx ) => {
+                    if ( idx === 3 ) {
+                        return prev + '...';
+                    }
+                    if ( idx > 3 ) {
+                        return prev;
+                    }
+
+                    return prev + ', ' + curr;
+                } );
+            } );
+    }
+
+    toggleAttributeList() {
+        let list        = this.attributesList,
+            listState   = list.classed( 'visible' ),
+            listNode    = list.node(),
+            wrapperNode = list.select( '.inner-wrapper' ).node();
+
+        function onEnd() {
+            listNode.removeEventListener( 'transitionend', onEnd );
+            listNode.style.height    = 'auto';
+            listNode.style.minHeight = wrapperNode.clientHeight + 'px';
+            list.classed( 'no-transition', true );
+        }
+
+        if ( listNode.clientHeight ) {
+            list.classed( 'no-transition', false );
+            listNode.style.minHeight = '0';
+            listNode.style.height = wrapperNode.clientHeight + 'px';
+            setTimeout( () => listNode.style.height = '0', 1 );
+        } else {
+            listNode.style.height = wrapperNode.clientHeight + 'px';
+            listNode.addEventListener( 'transitionend', onEnd, false );
+        }
+
+        list.classed( 'visible', !listState );
+        this.attributesSample.classed( 'hide', !listState );
     }
 }

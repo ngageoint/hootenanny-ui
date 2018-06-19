@@ -49,9 +49,9 @@ export default class SidebarForm {
     toggle() {
         let buttonState  = this.button.classed( 'active' ),
             wrapper      = this.innerWrapper,
-            wrapperState = this.innerWrapper.classed( 'visible' ),
-            wrapperNode  = this.innerWrapper.node(),
-            fieldset     = this.innerWrapper.select( 'fieldset' ).node();
+            wrapperState = wrapper.classed( 'visible' ),
+            wrapperNode  = wrapper.node(),
+            fieldset     = wrapper.select( 'fieldset' ).node();
 
         function onEnd() {
             wrapperNode.removeEventListener( 'transitionend', onEnd );

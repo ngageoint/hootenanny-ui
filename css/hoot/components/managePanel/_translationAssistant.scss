@@ -38,6 +38,48 @@
     }
 }
 
+.attributes-name {
+    font-size: 18px;
+}
+
+.attributes-list {
+    height: 0;
+    min-height: 0;
+    font-size: 16px;
+    visibility: hidden;
+    overflow: hidden;
+    transition: height 250ms linear, margin 250ms, visibility 300ms;
+
+    &.visible {
+        //margin: 10px -10px 0 0;
+        margin-top: 5px;
+        visibility: visible;
+        transition: height 200ms linear, margin 500ms ease-out;
+    }
+
+    .inner-wrapper {
+        max-height: 200px;
+        overflow-y: scroll;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+}
+
+.attributes-sample {
+    font-size: 14px;
+    font-style: italic;
+    opacity: 1;
+    transition: opacity 1000ms;
+
+    &.hide {
+        display: block;
+        opacity: 0;
+        transition: opacity 500ms;
+    }
+}
+
 .action-buttons {
     display: flex;
     justify-content: space-between;
