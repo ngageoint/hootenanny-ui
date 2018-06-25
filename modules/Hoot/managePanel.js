@@ -6,7 +6,7 @@
 
 import _ from 'lodash-es';
 
-import Event      from './managers/eventManager';
+import Event      from './nodeManagers/eventManager';
 import manageTabs from './managePanels/index';
 
 /**

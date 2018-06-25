@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import _             from 'lodash-es';
-import HootOSM       from '../../managers/hootOsm';
+import HootOSM       from '../../nodeManagers/hootOsm';
 import { t }         from '../../../util/locale';
 import { osmEntity } from '../../../osm';
 import API           from '../api';

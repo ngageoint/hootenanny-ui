@@ -4,8 +4,8 @@
  * @author Matt Putipong on 2/6/18
  *******************************************************************************************************/
 
-import LayerManager from './managers/layerManager';
-import HootOSM      from './managers/hootOsm';
+import LayerManager from './nodeManagers/layerManager';
+import HootOSM      from './nodeManagers/hootOsm';
 import Navbar       from './navbar';
 import Sidebar      from './sidebar';
 import ManagePanel  from './managePanel';

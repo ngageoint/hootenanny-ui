@@ -5,10 +5,10 @@
  *******************************************************************************************************/
 
 import _                    from 'lodash-es';
-import LayerManager         from '../managers/layerManager';
+import LayerManager         from '../nodeManagers/layerManager';
 import SidebarLayerMetadata from './sidebarLayerMetadata';
-import HootOSM              from '../managers/hootOsm';
-import Event                from '../managers/eventManager';
+import HootOSM              from '../nodeManagers/hootOsm';
+import Event                from '../nodeManagers/eventManager';
 
 class SidebarLayerController {
     constructor( context, form, layer ) {

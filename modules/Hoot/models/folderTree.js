@@ -6,8 +6,8 @@
 
 import _                from 'lodash-es';
 import moment           from 'moment';
-import Event            from '../managers/eventManager';
-import FolderManager    from '../managers/folderManager';
+import Event            from '../nodeManagers/eventManager';
+import FolderManager    from '../nodeManagers/folderManager';
 import { contextMenus } from '../config/domElements';
 
 /**

@@ -5,8 +5,8 @@
  *******************************************************************************************************/
 
 import _                    from 'lodash-es';
-import LayerManager         from './managers/layerManager';
-import Event                from './managers/eventManager';
+import LayerManager         from './nodeManagers/layerManager';
+import Event                from './nodeManagers/eventManager';
 import SidebarLayerAdd      from './forms/sidebarLayerAdd';
 import SidebarLayerConflate from './forms/sidebarLayerConflate';
 import SidebarLayerReview   from './forms/sidebarLayerReview';

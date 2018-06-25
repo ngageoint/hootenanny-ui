@@ -5,9 +5,9 @@
  *******************************************************************************************************/
 
 import SidebarLayerController from './sidebarLayerController';
-import LayerManager           from '../managers/layerManager';
-import HootOSM                from '../managers/hootOsm';
-import Event                  from '../managers/eventManager';
+import LayerManager           from '../nodeManagers/layerManager';
+import HootOSM                from '../nodeManagers/hootOsm';
+import Event                  from '../nodeManagers/eventManager';
 
 export default class SidebarForm {
     constructor( sidebar, container ) {

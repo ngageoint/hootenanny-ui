@@ -54,8 +54,8 @@ import {
 import { utilBindOnce } from '../util/bind_once';
 import { utilGetDimensions } from '../util/dimensions';
 
-import Event        from '../Hoot/managers/eventManager';
-import LayerManager from '../Hoot/managers/layerManager';
+import Event        from '../Hoot/nodeManagers/eventManager';
+import LayerManager from '../Hoot/nodeManagers/layerManager';
 
 // constants
 var TAU = 2 * Math.PI;

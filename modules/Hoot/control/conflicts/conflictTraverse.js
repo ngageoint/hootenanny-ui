@@ -6,7 +6,7 @@
 
 import _            from 'lodash-es';
 import API          from '../api';
-import LayerManager from '../../managers/layerManager';
+import LayerManager from '../../nodeManagers/layerManager';
 
 /**
  * @class ConflictTraverse

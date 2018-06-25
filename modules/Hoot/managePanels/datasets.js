@@ -6,8 +6,8 @@
 
 import _             from 'lodash-es';
 import API           from '../control/api';
-import Event         from '../managers/eventManager';
-import LayerManager  from '../managers/layerManager';
+import Event         from '../nodeManagers/eventManager';
+import LayerManager  from '../nodeManagers/layerManager';
 import FolderTree    from '../models/folderTree';
 import DatasetImport from '../forms/datasetImport';
 import Tab           from './tab';

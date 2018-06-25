@@ -6,7 +6,7 @@
 
 import SidebarForm from './sidebarForm';
 import Conflicts   from '../control/conflicts';
-import Event       from '../managers/eventManager';
+import Event       from '../nodeManagers/eventManager';
 
 /**
  * @class SidebarLayerReview

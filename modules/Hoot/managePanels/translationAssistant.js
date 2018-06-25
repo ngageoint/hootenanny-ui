@@ -262,7 +262,8 @@ export default class TranslationAssistant extends Tab {
         this.searchTag = this.tagLookup.append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'placeholder', 'Search Tag' )
-            .classed( 'strong bigger pad1x pad2y reset', true );
+            .classed( 'strong bigger pad1x pad2y reset', true )
+            .on( 'keydown', keydown );
     }
 
     createMappingActionButtons() {

@@ -5,9 +5,9 @@
  *******************************************************************************************************/
 
 import _                      from 'lodash-es';
-import Event                  from '../managers/eventManager';
+import Event                  from '../nodeManagers/eventManager';
 import ImportControl          from '../control/import';
-import FolderManager          from '../managers/folderManager';
+import FolderManager          from '../nodeManagers/folderManager';
 import FormFactory            from '../models/formFactory';
 import { importDatasetForm }  from '../config/formMetadata';
 import { importDatasetTypes } from '../config/domElements';

@@ -4,7 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
-import Event from '../../managers/eventManager';
+import Event from '../../nodeManagers/eventManager';
 import _     from 'lodash-es';
 
 export default class ConflictMetadata {

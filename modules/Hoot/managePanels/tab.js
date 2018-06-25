@@ -4,7 +4,7 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import Event from '../managers/eventManager';
+import Event from '../nodeManagers/eventManager';
 
 /**
  * Base class that all other managePanels in the settings panel extends from

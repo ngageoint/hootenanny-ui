@@ -20,7 +20,7 @@ function getNodeMapnikSource(d) {
             type: 'tms',
             description: d.name,
             template: window.location.protocol + '//' + window.location.hostname
-                //+ Hoot.managers.REST.formatNodeJsPortOrPath(iD.data.hootConfig.nodeMapnikServerPort)
+                //+ Hoot.nodeManagers.REST.formatNodeJsPortOrPath(iD.data.hootConfig.nodeMapnikServerPort)
                 + ':8000'
                 + '/?z={zoom}&x={x}&y={-y}&color='
                 + encodeURIComponent(services.hoot.palette(d.color))

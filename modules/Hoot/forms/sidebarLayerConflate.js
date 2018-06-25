@@ -6,9 +6,9 @@
 
 import _                          from 'lodash-es';
 import API                        from '../control/api';
-import FolderManager              from '../managers/folderManager';
-import LayerManager               from '../managers/layerManager';
-import HootOSM                    from '../managers/hootOsm';
+import FolderManager              from '../nodeManagers/folderManager';
+import LayerManager               from '../nodeManagers/layerManager';
+import HootOSM                    from '../nodeManagers/hootOsm';
 import FormFactory                from '../models/formFactory';
 import SidebarForm                from './sidebarForm';
 import SidebarAdvOptions          from './sidebarAdvOptions';

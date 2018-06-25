@@ -5,8 +5,8 @@
  *******************************************************************************************************/
 
 import _           from 'lodash-es';
-import HootOSM     from '../managers/hootOsm';
-import Event       from '../managers/eventManager';
+import HootOSM     from '../nodeManagers/hootOsm';
+import Event       from '../nodeManagers/eventManager';
 import FolderTree  from '../models/folderTree';
 import SidebarForm from './sidebarForm';
 
