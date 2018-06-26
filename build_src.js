@@ -60,7 +60,7 @@ module.exports = function buildSrc(isDevelopment) {
                 bundle.write({
                     format: 'iife',
                     file: 'dist/iD.min.js',
-                    sourcemap: !isDevelopment,
+                    sourcemap: isDevelopment,
                     strict: false
                 });
 
