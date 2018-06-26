@@ -125,6 +125,11 @@
     .attr-map-wrap {
         input {
             border: none;
+            color: $gray;
+
+            &:focus {
+                color: black;
+            }
         }
     }
 
@@ -132,7 +137,7 @@
         display: flex;
 
         &>div {
-            width: 100%;
+            width: 50%;
         }
 
         .preset-key-wrap {
@@ -143,7 +148,7 @@
                 margin: 0;
             }
 
-            &:last-child {
+            &:only-child, &:last-child {
                 border-radius: 0 0 0 4px;
             }
         }
