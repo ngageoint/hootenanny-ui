@@ -107,6 +107,7 @@ export default class TranslationAssistant extends Tab {
             .attr( 'multiple', true )
             .attr( 'accept', '.shp, .shx, .dbf, .zip' )
             .classed( 'hidden', true )
+            .on( 'click', () => d3.event.stopPropagation() )
             .on( 'change', function( d ) {
                 instance.processSchemaData( d3.select( this ).node(), d.uploadType )
                     .then( valuesMap => instance.initMapping( valuesMap ) );
@@ -383,114 +384,6 @@ export default class TranslationAssistant extends Tab {
             .text( 'Next' );
     }
 
-    back() {
-        if ( this.currentIndex[ this.layer ] === 0 ) {
-            this.currentIndex[ this.layer ] = this.attributeValues.size() - 1;
-        } else {
-            this.currentIndex[ this.layer ]--;
-        }
-
-        this.updateAttributes();
-    }
-
-    forward() {
-        if ( this.currentIndex[ this.layer ] < this.attributeValues.size() - 1 ) {
-            this.currentIndex[ this.layer ]++;
-        } else {
-            this.currentIndex[ this.layer ] = 0;
-        }
-
-        this.updateAttributes();
-    }
-
-    selectTag( tagLookup, d ) {
-        let tagKey = d.key,
-            values = d.value;
-
-        this.actionButtonContainer.select( '.next-button' ).property( 'disabled', false );
-
-        tagLookup.html( null );
-
-        tagLookup.append( 'div' )
-            .classed( 'inline thumbnail big _icon blank remove-tag translate-icon keyline-left', true )
-            .on( 'click', () => {
-                tagLookup.remove();
-            } );
-
-        tagLookup.append( 'div' )
-            .classed( 'inline thumbnail big _icon blank remove-map-tag translate-icon keyline-left', true )
-            .on( 'click', function() {
-                let icon = d3.select( this );
-
-                if ( icon.classed( 'remove-map-tag' ) ) {
-                    icon.classed( 'remove-map-tag', false );
-                    icon.classed( 'link-tag', true );
-                    tagLookup.select( '.attr-map-single' ).classed( 'hidden', false );
-                    tagLookup.select( '.attr-map-list' ).classed( 'hidden', true );
-                } else if ( icon.classed( 'link-tag' ) ) {
-                    icon.classed( 'link-tag', false );
-                    icon.classed( 'map-tag', true );
-                    tagLookup.select( '.attr-map-single' ).classed( 'hidden', true );
-                    tagLookup.select( '.attr-map-list' ).classed( 'hidden', false );
-                } else {
-                    icon.classed( 'map-tag', false );
-                    icon.classed( 'remove-map-tag', true );
-                    tagLookup.select( '.attr-map-single' ).classed( 'hidden', true );
-                    tagLookup.select( '.attr-map-list' ).classed( 'hidden', true );
-                }
-            } );
-
-        tagLookup.append( 'label' )
-            .classed( 'selected-tag pad1 space-bottom0 center bigger', true )
-            .text( tagKey );
-
-        // single
-        tagLookup.append( 'div' )
-            .classed( 'attr-map-wrap attr-map-single keyline-top hidden', true )
-            .append( 'div' )
-            .classed( 'inner-wrapper', true )
-            .append( 'input' )
-            .attr( 'type', 'text' )
-            .select( function() {
-                let combobox = d3combobox()
-                    .data( values.map( obj => {
-                        return { title: obj.replace( '_', ' ' ), value: obj };
-                    } ) );
-
-                d3.select( this ).call( combobox );
-            } );
-
-        // list
-        let attrMapList = tagLookup.append( 'div' )
-            .classed( 'attr-map-wrap attr-map-list keyline-top hidden', true )
-            .append( 'div' )
-            .classed( 'inner-wrapper', true )
-            .append( 'ul' );
-
-        let attrMapListRows = attrMapList.selectAll( 'li' )
-            .data( this.currentAttribute.value.values() )
-            .enter()
-            .append( 'li' )
-            .classed( 'preset-row', true );
-
-        attrMapListRows.append( 'div' )
-            .classed( 'preset-key-wrap keyline-right', true )
-            .append( 'span' )
-            .text( d => d );
-
-        attrMapListRows.append( 'div' )
-            .append( 'input' )
-            .attr( 'type', 'text' )
-            .select( function() {
-                let combobox = d3combobox()
-                    .data( values.map( obj => {
-                        return { title: obj.replace( '_', ' ' ), value: obj };
-                    } ) );
-
-                d3.select( this ).call( combobox );
-            } );
-    }
-
     updateAttributes() {
         let allAttributes    = this.attributesContainer.datum().entries(),
             currentAttribute = allAttributes[ this.currentIndex[ this.layer ] ],
@@ -546,6 +439,26 @@ export default class TranslationAssistant extends Tab {
             } );
     }
 
+    back() {
+        if ( this.currentIndex[ this.layer ] === 0 ) {
+            this.currentIndex[ this.layer ] = this.attributeValues.size() - 1;
+        } else {
+            this.currentIndex[ this.layer ]--;
+        }
+
+        this.updateAttributes();
+    }
+
+    forward() {
+        if ( this.currentIndex[ this.layer ] < this.attributeValues.size() - 1 ) {
+            this.currentIndex[ this.layer ]++;
+        } else {
+            this.currentIndex[ this.layer ] = 0;
+        }
+
+        this.updateAttributes();
+    }
+
     toggleAttributeList() {
         let list        = this.attributesList,
             listState   = list.classed( 'visible' ),
@@ -571,5 +484,89 @@ export default class TranslationAssistant extends Tab {
 
         list.classed( 'visible', !listState );
         this.attributesSample.classed( 'hide', !listState );
+    }
+
+    selectTag( tagLookup, d ) {
+        let tagKey = d.key,
+            values = d.value;
+
+        this.actionButtonContainer.select( '.next-button' ).property( 'disabled', false );
+
+        tagLookup.html( null );
+
+        tagLookup.append( 'div' )
+            .classed( 'inline thumbnail big _icon blank remove-tag translate-icon keyline-left', true )
+            .on( 'click', () => {
+                tagLookup.remove();
+            } );
+
+        tagLookup.append( 'div' )
+            .classed( 'inline thumbnail big _icon blank remove-map-tag translate-icon keyline-left', true )
+            .on( 'click', function() {
+                let icon = d3.select( this );
+
+                if ( icon.classed( 'remove-map-tag' ) ) {
+                    icon.classed( 'remove-map-tag', false );
+                    icon.classed( 'link-tag', true );
+                    tagLookup.select( '.attr-map-single' ).classed( 'hidden', false );
+                    tagLookup.select( '.attr-map-list' ).classed( 'hidden', true );
+                } else if ( icon.classed( 'link-tag' ) ) {
+                    icon.classed( 'link-tag', false );
+                    icon.classed( 'map-tag', true );
+                    tagLookup.select( '.attr-map-single' ).classed( 'hidden', true );
+                    tagLookup.select( '.attr-map-list' ).classed( 'hidden', false );
+                } else {
+                    icon.classed( 'map-tag', false );
+                    icon.classed( 'remove-map-tag', true );
+                    tagLookup.select( '.attr-map-single' ).classed( 'hidden', true );
+                    tagLookup.select( '.attr-map-list' ).classed( 'hidden', true );
+                }
+            } );
+
+        tagLookup.append( 'label' )
+            .classed( 'selected-tag pad1 space-bottom0 center bigger', true )
+            .text( tagKey );
+
+        // single
+        tagLookup.append( 'div' )
+            .classed( 'attr-map-wrap attr-map-single keyline-top hidden', true )
+            .append( 'input' )
+            .attr( 'type', 'text' )
+            .select( function() {
+                let combobox = d3combobox()
+                    .data( values.map( obj => {
+                        return { title: obj.replace( '_', ' ' ), value: obj };
+                    } ) );
+
+                d3.select( this ).call( combobox );
+            } );
+
+        // list
+        let attrMapList = tagLookup.append( 'div' )
+            .classed( 'attr-map-wrap attr-map-list keyline-top hidden', true )
+            .append( 'ul' );
+
+        let attrMapListRows = attrMapList.selectAll( 'li' )
+            .data( this.currentAttribute.value.values() )
+            .enter()
+            .append( 'li' )
+            .classed( 'preset-row', true );
+
+        attrMapListRows.append( 'div' )
+            .classed( 'preset-key-wrap keyline-right', true )
+            .append( 'span' )
+            .text( d => d );
+
+        attrMapListRows.append( 'div' )
+            .append( 'input' )
+            .attr( 'type', 'text' )
+            .select( function() {
+                let combobox = d3combobox()
+                    .data( values.map( obj => {
+                        return { title: obj.replace( '_', ' ' ), value: obj };
+                    } ) );
+
+                d3.select( this ).call( combobox );
+            } );
     }
 }

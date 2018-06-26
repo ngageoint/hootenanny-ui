@@ -109,19 +109,22 @@
     }
 
     .translate-icon {
-        padding: 5px;
+        position: absolute;
         float: right;
+        padding: 5px;
+
+        &.remove-tag {
+            right: 0;
+        }
+
+        &.remove-map-tag, &.link-tag, &.map-tag {
+            right: 51px;
+        }
     }
 
     .attr-map-wrap {
-        .inner-wrapper {
-            width: calc(100% - 101px);
-        }
-
         input {
             border: none;
-            border-right: 1px solid $light3;
-            border-radius: 0;
         }
     }
 
