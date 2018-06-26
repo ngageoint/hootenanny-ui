@@ -8,6 +8,7 @@ import _                      from 'lodash-es';
 import API                    from '../control/api';
 import { transAssistButtons } from '../config/domElements';
 import { tagInfo }            from '../../../data/index';
+import { d3combobox }         from '../../lib/hoot/d3.combobox';
 import Tab                    from './tab';
 
 /**
@@ -87,7 +88,7 @@ export default class TranslationAssistant extends Tab {
 
         let buttonContainer = this.uploadForm
             .append( 'div' )
-            .classed( 'action-buttons', true )
+            .classed( 'action-buttons pad2', true )
             .selectAll( 'button' )
             .data( transAssistButtons );
 
@@ -219,17 +220,9 @@ export default class TranslationAssistant extends Tab {
             .insert( 'div', '.back-arrow + *' )
             .classed( 'attributes-count text-light pad1x', true );
 
-        this.currentAttribute = this.attributesContainer
+        this.attributesDisplay = this.attributesContainer
             .append( 'div' )
             .classed( 'current-attribute pad2y fill-white', true );
-
-        //this.attributesName = this.currentAttribute
-        //    .append( 'div' )
-        //    .classed( 'attributes-name center strong', true );
-        //
-        //this.attributesSample = this.currentAttribute
-        //    .append( 'div' )
-        //    .classed( 'attributes-sample italic center quiet', true );
 
         this.attributesContainer.exit().remove();
     }
@@ -237,7 +230,7 @@ export default class TranslationAssistant extends Tab {
     createTagMapContainer() {
         this.tagMapContainer = this.mappingForm
             .append( 'div' )
-            .classed( 'tag-map-container fill-white keyline-bottom keyline-top', true );
+            .classed( 'tag-map-container pad2 fill-white keyline-bottom keyline-top', true );
 
         this.tagMapContainer
             .append( 'button' )
@@ -249,8 +242,8 @@ export default class TranslationAssistant extends Tab {
     }
 
     createTagLookup() {
-        let that = this;
-        let schemaOption = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
+        let that         = this,
+            schemaOption = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
 
         let tagLookup = this.tagMapContainer
             .insert( 'div', '.add-mapping-button' )
@@ -268,11 +261,50 @@ export default class TranslationAssistant extends Tab {
             .attr( 'type', 'text' )
             .attr( 'placeholder', 'Search Tag' )
             .classed( 'strong bigger pad1x pad2y reset', true )
-            .on( 'input', change );
+            .on( 'input', () => change.call( this ) );
 
         let resultsList = tagLookup
             .append( 'div' )
             .classed( 'results-list', true );
+
+        searchTag.node().focus();
+
+        function keydown() {
+            switch ( d3.event.keyCode ) {
+                // tab
+                case 9:
+                    accept();
+                    break;
+                // return
+                case 13:
+                    d3.event.preventDefault();
+                    break;
+                // up arrow
+                case 38:
+                    scroll( 'up', this );
+                    d3.event.preventDefault();
+                    break;
+                // down arrow
+                case 40:
+                    scroll( 'down', this );
+                    d3.event.preventDefault();
+                    break;
+            }
+            d3.event.stopPropagation();
+        }
+
+        function keyup() {
+            switch ( d3.event.keyCode ) {
+                // escape
+                case 27:
+                    remove();
+                    break;
+                // return
+                case 13:
+                    accept();
+                    break;
+            }
+        }
 
         function change() {
             let value = searchTag.property( 'value' ),
@@ -309,25 +341,45 @@ export default class TranslationAssistant extends Tab {
                 .merge( searchResult )
                 .html( d => {
                     return !d || d.key.replace( value, '<span class="match">' + value + '</span>' );
+                } )
+                .on( 'click', d => {
+                    that.selectTag( tagLookup, d );
                 } );
 
             searchResult.exit().remove();
+        }
+
+        function accept() {
+            let value = searchTag.property( 'value' );
+
+            if ( value.length ) {
+                let el     = resultsList.select( '.search-result:first-child' );
+                //If selection is empty, use the user specified value as the tag key
+                var d      = (!el.empty() && el.text() === value) ? el.datum() : { key: value, value: [] };
+                var lookup = d3.select( searchTag.node().parentNode );
+                //selectTag( lookup, d );
+            }
+        }
+
+        function remove() {
+            inputWrapper.remove();
         }
     }
 
     createMappingActionButtons() {
         this.actionButtonContainer = this.mappingForm
             .append( 'div' )
-            .classed( 'actions-container action-buttons fill-white', true );
+            .classed( 'actions-container action-buttons pad2 fill-white', true );
 
         this.actionButtonContainer
             .append( 'button' )
-            .classed( 'secondary big round', true )
+            .classed( 'ignore-button secondary big round', true )
             .text( 'Ignore' );
 
         this.actionButtonContainer
             .append( 'button' )
-            .classed( 'dark text-light big round', true )
+            .attr( 'disabled', true )
+            .classed( 'next-button dark text-light big round', true )
             .text( 'Next' );
     }
 
@@ -351,15 +403,105 @@ export default class TranslationAssistant extends Tab {
         this.updateAttributes();
     }
 
+    selectTag( tagLookup, d ) {
+        let tagKey = d.key,
+            values = d.value;
+
+        this.actionButtonContainer.select( '.next-button' ).property( 'disabled', false );
+
+        tagLookup.html( null );
+
+        tagLookup.append( 'div' )
+            .classed( 'inline thumbnail big _icon blank remove-tag translate-icon keyline-left', true )
+            .on( 'click', () => {
+                tagLookup.remove();
+            } );
+
+        tagLookup.append( 'div' )
+            .classed( 'inline thumbnail big _icon blank remove-map-tag translate-icon keyline-left', true )
+            .on( 'click', function() {
+                let icon = d3.select( this );
+
+                if ( icon.classed( 'remove-map-tag' ) ) {
+                    icon.classed( 'remove-map-tag', false );
+                    icon.classed( 'link-tag', true );
+                    tagLookup.select( '.attr-map-single' ).classed( 'hidden', false );
+                    tagLookup.select( '.attr-map-list' ).classed( 'hidden', true );
+                } else if ( icon.classed( 'link-tag' ) ) {
+                    icon.classed( 'link-tag', false );
+                    icon.classed( 'map-tag', true );
+                    tagLookup.select( '.attr-map-single' ).classed( 'hidden', true );
+                    tagLookup.select( '.attr-map-list' ).classed( 'hidden', false );
+                } else {
+                    icon.classed( 'map-tag', false );
+                    icon.classed( 'remove-map-tag', true );
+                    tagLookup.select( '.attr-map-single' ).classed( 'hidden', true );
+                    tagLookup.select( '.attr-map-list' ).classed( 'hidden', true );
+                }
+            } );
+
+        tagLookup.append( 'label' )
+            .classed( 'selected-tag pad1 space-bottom0 center bigger', true )
+            .text( tagKey );
+
+        // single
+        tagLookup.append( 'div' )
+            .classed( 'attr-map-wrap attr-map-single keyline-top hidden', true )
+            .append( 'div' )
+            .classed( 'inner-wrapper', true )
+            .append( 'input' )
+            .attr( 'type', 'text' )
+            .select( function() {
+                let combobox = d3combobox()
+                    .data( values.map( obj => {
+                        return { title: obj.replace( '_', ' ' ), value: obj };
+                    } ) );
+
+                d3.select( this ).call( combobox );
+            } );
+
+        // list
+        let attrMapList = tagLookup.append( 'div' )
+            .classed( 'attr-map-wrap attr-map-list keyline-top hidden', true )
+            .append( 'div' )
+            .classed( 'inner-wrapper', true )
+            .append( 'ul' );
+
+        let attrMapListRows = attrMapList.selectAll( 'li' )
+            .data( this.currentAttribute.value.values() )
+            .enter()
+            .append( 'li' )
+            .classed( 'preset-row', true );
+
+        attrMapListRows.append( 'div' )
+            .classed( 'preset-key-wrap keyline-right', true )
+            .append( 'span' )
+            .text( d => d );
+
+        attrMapListRows.append( 'div' )
+            .append( 'input' )
+            .attr( 'type', 'text' )
+            .select( function() {
+                let combobox = d3combobox()
+                    .data( values.map( obj => {
+                        return { title: obj.replace( '_', ' ' ), value: obj };
+                    } ) );
+
+                d3.select( this ).call( combobox );
+            } );
+    }
+
     updateAttributes() {
         let allAttributes    = this.attributesContainer.datum().entries(),
             currentAttribute = allAttributes[ this.currentIndex[ this.layer ] ],
             attributeList    = _.filter( allAttributes, attribute => attribute.key !== currentAttribute.key );
 
+        this.currentAttribute = currentAttribute;
+
         this.attributesCount
             .text( d => `${ this.currentIndex[ this.layer ] + 1 } of ${ d.keys().length } Attributes` );
 
-        this.attributesName = this.currentAttribute
+        this.attributesName = this.attributesDisplay
             .selectAll( '.attributes-name' )
             .data( [ currentAttribute ] )
             .enter()
@@ -370,7 +512,7 @@ export default class TranslationAssistant extends Tab {
                 this.toggleAttributeList();
             } );
 
-        this.attributesList = this.currentAttribute
+        this.attributesList = this.attributesDisplay
             .append( 'div' )
             .classed( 'attributes-list', true );
 
@@ -384,7 +526,7 @@ export default class TranslationAssistant extends Tab {
             .classed( 'list-option center', true )
             .text( d => d.key );
 
-        this.attributesSample = this.currentAttribute
+        this.attributesSample = this.attributesDisplay
             .selectAll( '.attributes-sample' )
             .data( [ currentAttribute ] )
             .enter()
