@@ -249,21 +249,70 @@ export default class TranslationAssistant extends Tab {
     }
 
     createTagLookup() {
+        let that = this;
         let schemaOption = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
 
-        this.tagLookup = this.tagMapContainer
+        let tagLookup = this.tagMapContainer
             .insert( 'div', '.add-mapping-button' )
             .classed( 'tag-lookup round fill-white keyline-all', true );
 
-        this.tagLookup
+        let inputWrapper = tagLookup
             .append( 'div' )
-            .classed( 'pad1 thumbnail _icon big blank search-icon keyline-right', true );
+            .classed( 'input-wrapper', true );
 
-        this.searchTag = this.tagLookup.append( 'input' )
+        inputWrapper
+            .append( 'div' )
+            .classed( 'pad1 thumbnail searchtag _icon big blank search-icon keyline-right', true );
+
+        let searchTag = inputWrapper.append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'placeholder', 'Search Tag' )
             .classed( 'strong bigger pad1x pad2y reset', true )
-            .on( 'keydown', keydown );
+            .on( 'input', change );
+
+        let resultsList = tagLookup
+            .append( 'div' )
+            .classed( 'results-list', true );
+
+        function change() {
+            let value = searchTag.property( 'value' ),
+                results;
+
+            if ( value.length ) {
+                results = tagInfo[ schemaOption ]
+                    .filter( val => val.key && val.key.toLowerCase().indexOf( value.toLowerCase() ) > -1 )
+                    .sort( ( a, b ) => {
+                        if ( a.key > b.key ) {
+                            return 1;
+                        }
+                        if ( a.key < b.key ) {
+                            return -1;
+                        }
+                        // a is equal to b
+                        return 0;
+                    } );
+            } else {
+                results = [];
+            }
+
+            updateTagResults( results, value );
+        }
+
+        function updateTagResults( results, value ) {
+            let searchResult = resultsList.selectAll( '.search-result' )
+                .data( results );
+
+            searchResult
+                .enter()
+                .append( 'div' )
+                .classed( 'search-result pad1x pad1y keyline-left keyline-top', true )
+                .merge( searchResult )
+                .html( d => {
+                    return !d || d.key.replace( value, '<span class="match">' + value + '</span>' );
+                } );
+
+            searchResult.exit().remove();
+        }
     }
 
     createMappingActionButtons() {
@@ -371,7 +420,7 @@ export default class TranslationAssistant extends Tab {
         if ( listNode.clientHeight ) {
             list.classed( 'no-transition', false );
             listNode.style.minHeight = '0';
-            listNode.style.height = wrapperNode.clientHeight + 'px';
+            listNode.style.height    = wrapperNode.clientHeight + 'px';
             setTimeout( () => listNode.style.height = '0', 1 );
         } else {
             listNode.style.height = wrapperNode.clientHeight + 'px';

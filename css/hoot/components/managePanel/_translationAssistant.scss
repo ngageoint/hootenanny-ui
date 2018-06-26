@@ -17,18 +17,6 @@
         padding: 20px 15px;
     }
 
-    .tag-lookup {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-
-        input {
-            width: 100%;
-            height: 60px;
-            border: none;
-        }
-    }
-
     .add-mapping-button {
         width: 100%;
     }
@@ -85,6 +73,38 @@
         display: block;
         opacity: 0;
         transition: opacity 500ms;
+    }
+}
+
+.tag-lookup {
+    align-items: center;
+    margin-bottom: 20px;
+
+    .input-wrapper {
+        display: flex;
+
+        input {
+            width: 100%;
+            height: 60px;
+            border: none;
+        }
+    }
+
+    .results-list {
+        max-height: 200px;
+        overflow: auto;
+
+        .match {
+            font-weight: bold;
+        }
+    }
+
+    .search-result {
+        margin-left: 60px;
+
+        &:hover {
+            background-color: $light;
+        }
     }
 }
 
