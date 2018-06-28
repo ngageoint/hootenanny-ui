@@ -56,7 +56,7 @@ export default class TranslationAssistant extends Tab {
     createSchemaSelector() {
         let schema = this.uploadForm
             .append( 'div' )
-            .classed( 'ta-schema-select fill-dark0', true );
+            .classed( 'ta-schema-select fill-dark0 keyline-bottom', true );
 
         schema
             .append( 'label' )
@@ -191,11 +191,6 @@ export default class TranslationAssistant extends Tab {
         this.currentIndex[ this.layer ] = this.currentIndex[ this.layer ] || 0;
         this.jsonMapping[ this.layer ]  = this.jsonMapping[ this.layer ] || {};
 
-        //if ( !this.currentIndex[ this.layer ] ) {
-        //    this.currentIndex[ this.layer ] = 0;
-        //}
-        //if ( !this.jsonMapping[ this.layer ] ) this.jsonMapping[ this.layer ] = {};
-
         this.createAttributesContainer();
         this.createTagMapContainer();
         this.createMappingActionButtons();
@@ -231,7 +226,7 @@ export default class TranslationAssistant extends Tab {
 
         this.attributesDisplay = this.attributesContainer
             .append( 'div' )
-            .classed( 'current-attribute pad2y fill-white', true );
+            .classed( 'current-attribute fill-white', true );
 
         this.attributesName = this.attributesDisplay
             .append( 'div' )
@@ -248,7 +243,10 @@ export default class TranslationAssistant extends Tab {
 
         this.attributesSample = this.attributesDisplay
             .append( 'div' )
-            .classed( 'attributes-sample center quiet', true );
+            .classed( 'attributes-sample', true );
+
+        this.attributesSample.append( 'span' )
+            .classed( 'center quiet', true );
 
         this.attributesContainer.exit().remove();
     }
@@ -256,7 +254,7 @@ export default class TranslationAssistant extends Tab {
     createTagMapContainer() {
         this.tagMapContainer = this.mappingForm
             .append( 'div' )
-            .classed( 'tag-map-container pad2 fill-white keyline-bottom keyline-top', true );
+            .classed( 'tag-map-container pad2 fill-white', true );
 
         this.tagMapContainer
             .append( 'button' )
@@ -449,6 +447,7 @@ export default class TranslationAssistant extends Tab {
         list.exit().remove();
 
         this.attributesSample
+            .select( 'span' )
             .text( () => {
                 return _.reduce( currentAttribute.value.values(), ( prev, curr, idx ) => {
                     if ( idx === 3 ) {
@@ -582,7 +581,10 @@ export default class TranslationAssistant extends Tab {
         }
 
         list.classed( 'visible', !listState );
-        this.attributesSample.classed( 'hide', !listState );
+
+        this.attributesName.classed( 'box-shadow', !listState );
+        this.attributesSample.classed( 'box-shadow', !listState );
+        this.attributesSample.select( 'span' ).classed( 'hide', !listState );
     }
 
     selectTag( tagLookup, d ) {
