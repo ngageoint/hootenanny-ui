@@ -179,6 +179,10 @@ export default class TranslationAssistant extends Tab {
         this.currentIndex = {};
         this.valuesMap    = valuesMap; // hoot1: attributeValues
 
+        if ( this.mappingForm ) {
+            this.mappingForm.remove();
+        }
+
         this.mappingForm = this.panelContent
             .append( 'form' )
             .classed( 'ta-attribute-mapping keyline-all round', true );
@@ -474,6 +478,26 @@ export default class TranslationAssistant extends Tab {
 
         this.currentAttribute = currentAttribute;
 
+        let tagJson = this.jsonMapping[ this.layer ][ currentAttribute.key ];
+
+        if ( tagJson && tagJson !== 'IGNORED' ) {
+            let mapping = d3.map( tagJson );
+
+            mapping.entries().forEach( d => {
+                let tagKey = d.key,
+                    schemaOption = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
+
+                let values = tagInfo[ schemaOption ]
+                    .filter( val => val.key && val.key.toLowerCase() === tagKey.toLowerCase() );
+
+                let tagLookup = this.tagMapContainer
+                    .insert( 'div', '.add-mapping-button' )
+                    .classed( 'tag-lookup round fill-white keyline-all', true );
+
+                this.selectTag( tagLookup, values.length ? values[ 0 ] : { key: tagKey, value: [] } );
+            } );
+        }
+
         if ( d3.entries( this.jsonMapping[ this.layer ] ).some( d => d.value !== 'IGNORED' ) ) {
             this.enableTranslate();
         }
@@ -609,30 +633,33 @@ export default class TranslationAssistant extends Tab {
 
         tagLookup
             .append( 'div' )
-            .classed( 'inline thumbnail big _icon blank remove-tag translate-icon keyline-left', true )
+            .classed( 'translate-icon remove-tag inline thumbnail big _icon blank keyline-left', true )
             .on( 'click', () => {
                 tagLookup.remove();
             } );
 
         tagLookup
             .append( 'div' )
-            .classed( 'inline thumbnail big _icon blank remove-map-tag translate-icon keyline-left', true )
+            .classed( 'translate-icon map-type-icon remove-map-tag inline thumbnail big _icon blank keyline-left', true )
             .on( 'click', function() {
                 let icon = d3.select( this );
 
                 if ( icon.classed( 'remove-map-tag' ) ) {
                     icon.classed( 'remove-map-tag', false );
                     icon.classed( 'link-tag', true );
+
                     tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
                     tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
                 } else if ( icon.classed( 'link-tag' ) ) {
                     icon.classed( 'link-tag', false );
                     icon.classed( 'map-tag', true );
+
                     tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
                     tagLookup.select( '.mapping-list' ).classed( 'hidden', false );
                 } else {
                     icon.classed( 'map-tag', false );
                     icon.classed( 'remove-map-tag', true );
+
                     tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
                     tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
                 }
@@ -648,6 +675,7 @@ export default class TranslationAssistant extends Tab {
             .append( 'div' )
             .classed( 'mapping-wrapper mapping-single keyline-top hidden', true )
             .append( 'input' )
+            .attr( 'id', d => 'preset-input-' + this.hashCode( tagKey ) )
             .attr( 'type', 'text' )
             .select( function() {
                 let combobox = d3combobox()
@@ -680,6 +708,7 @@ export default class TranslationAssistant extends Tab {
         attrMapListRows
             .append( 'div' )
             .append( 'input' )
+            .attr( 'id', d => 'preset-input-' + this.hashCode( tagKey + d ) )
             .attr( 'type', 'text' )
             .select( function() {
                 let combobox = d3combobox()
@@ -690,10 +719,57 @@ export default class TranslationAssistant extends Tab {
                 d3.select( this ).call( combobox );
             } );
 
-        // TODO: restore preset dropdown if mapping exists
+
+        let tagJson = this.jsonMapping[ this.layer ][ this.currentAttribute.key ];
+
+        if ( tagJson ) {
+            let mapping = d3.map( tagJson );
+
+            let isCustomized = mapping
+                .entries()
+                .filter( entry => d.key === entry.key && entry.value !== this.currentAttribute.key );
+
+            isCustomized.forEach( entry => {
+                if ( typeof entry.value === 'string' ) { //entry is a single tag value
+                    tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
+
+                    tagLookup.select( '.map-type-icon' )
+                        .classed( 'remove-map-tag', false )
+                        .classed( 'link-tag', true );
+
+                    tagLookup.select( '#preset-input-' + this.hashCode( tagKey ) ).property( 'value', entry.value );
+                } else { //entry is map of attr:tag values
+                    tagLookup.select( '.mapping-list' ).classed( 'hidden', false );
+
+                    tagLookup.select( '.map-type-icon' )
+                        .classed( 'remove-map-tag', false )
+                        .classed( 'map-tag', true );
+
+                    d3.map( entry.value ).entries().forEach( e => {
+                        d3.select( '#preset-input-' + this.hashCode( tagKey + e.key ) ).property( 'value', e.value );
+                    } );
+                }
+            } );
+        }
+    }
+
+    hashCode( input ) {
+        let hash = 0, i, chr, len;
+
+        if ( input.length === 0 ) return hash;
+
+        for ( i = 0, len = input.length; i < len; i++ ) {
+            chr  = input.charCodeAt( i );
+            hash = ((hash << 5) - hash) + chr;
+            hash |= 0; // Convert to 32bit integer
+        }
+
+        return hash;
     }
 
     enableTranslate() {
+        if ( !this.actionButtonContainer.select( '.translate-button' ).empty() ) return;
+
         this.actionButtonContainer
             .append( 'div' )
             .classed( 'button-row', true )
@@ -728,7 +804,7 @@ export default class TranslationAssistant extends Tab {
                 }
 
                 if ( window.confirm( 'Do you want to add this to internal translation list?' ) ) {
-                    this.renderSaveForm( output );
+                    new TranslationSaveForm( this, output ).render();
                 }
             } );
     }
@@ -737,8 +813,7 @@ export default class TranslationAssistant extends Tab {
 
     }
 
-    renderSaveForm( templateText ) {
-        console.log( 'render save form' );
-        let saveForm = new TranslationSaveForm( templateText ).render();
+    showTranslations() {
+        d3.select( '[data-id="#util-translations"]' ).node().click();
     }
 }

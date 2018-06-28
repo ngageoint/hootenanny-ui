@@ -9,7 +9,8 @@ import FormFactory             from '../../models/formFactory';
 import { translationSaveForm } from '../../config/formMetadata';
 
 export default class TranslationSaveForm {
-    constructor( templateText ) {
+    constructor( instance, templateText ) {
+        this.instance     = instance;
         this.formFactory  = new FormFactory();
         this.templateText = templateText;
 
@@ -58,20 +59,18 @@ export default class TranslationSaveForm {
         this.submitButton.node().disabled = !formValid;
     }
 
-    async handleSubmit() {
-        try {
-            let data = {
-                NAME: this.nameInput.property( 'value' ),
-                DESCRIPTION: this.descriptionInput.property( 'value' ),
-                data: this.templateInput.property( 'value' )
-            };
+    handleSubmit() {
+        let data = {
+            NAME: this.nameInput.property( 'value' ),
+            DESCRIPTION: this.descriptionInput.property( 'value' ),
+            data: this.templateInput.property( 'value' )
+        };
 
-            let postTranslation = await API.postTranslation( data );
-
-            console.log( postTranslation );
-        } catch ( e ) {
-            console.log( e );
-        }
+        API.postTranslation( data )
+            .then( () => {
+                this.container.remove();
+                this.instance.showTranslations();
+            } );
     }
 
 }
