@@ -4,6 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 6/28/18
  *******************************************************************************************************/
 
+import API                     from '../../control/api';
 import FormFactory             from '../../models/formFactory';
 import { translationSaveForm } from '../../config/formMetadata';
 
@@ -41,7 +42,7 @@ export default class TranslationSaveForm {
     }
 
     validateFields( d ) {
-        let target = d3.select( `#${ d.id }` );
+        let target         = d3.select( `#${ d.id }` );
         let nameVal        = this.nameInput.property( 'value' ),
             descriptionVal = this.descriptionInput.property( 'value' ),
             templateVal    = this.templateInput.property( 'value' );
@@ -57,7 +58,20 @@ export default class TranslationSaveForm {
         this.submitButton.node().disabled = !formValid;
     }
 
-    handleSubmit() {
+    async handleSubmit() {
+        try {
+            let data = {
+                NAME: this.nameInput.property( 'value' ),
+                DESCRIPTION: this.descriptionInput.property( 'value' ),
+                data: this.templateInput.property( 'value' )
+            };
 
+            let postTranslation = await API.postTranslation( data );
+
+            console.log( postTranslation );
+        } catch ( e ) {
+            console.log( e );
+        }
     }
+
 }

@@ -122,7 +122,7 @@
     position: relative;
     align-items: center;
     margin-bottom: 20px;
-    box-shadow: 0 1px 10px rgba(0, 0, 0, .1);
+    box-shadow: 1px 1px 1px $dark-opacity30;
 
     .input-wrapper {
         display: flex;
@@ -209,6 +209,7 @@
 
 .actions-container {
     border-top: 1px solid #ccc;
+    border-radius: 0 0 4px 4px;
 
     .button-row:first-child {
         margin-bottom: 20px;
@@ -250,5 +251,6 @@
 
     textarea {
         color: $light-gray;
+        border: none;
     }
 }

@@ -706,12 +706,12 @@ export default class TranslationAssistant extends Tab {
                 let json   = JSON.stringify( this.jsonMapping, null, 4 ),
                     output = 'hoot.require(\'translation_assistant\')\n' +
                         '\n' +
-                        'let attributeMapping = ' + json + ';\n' +
-                        'let fcode;\n' +
-                        'let schema;\n' +
+                        'var attributeMapping = ' + json + ';\n' +
+                        'var fcode;\n' +
+                        'var schema;\n' +
                         '\n' +
                         '//translateToOsm - takes \'attrs\' and returns OSM \'tags\'\n' +
-                        'let translateToOsm = function(attrs, layerName) {\n' +
+                        'var translateToOsm = function(attrs, layerName) {\n' +
                         '    return translation_assistant.translateAttributes(attrs, layerName, attributeMapping, fcode, schema);\n' +
                         '};\n';
 
@@ -724,7 +724,7 @@ export default class TranslationAssistant extends Tab {
                         //TODO: handle error
                     }
 
-                    output = output.replace( 'let schema;', `let schema = ${ schema };` );
+                    output = output.replace( 'var schema;', `var schema = ${ schema };` );
                 }
 
                 if ( window.confirm( 'Do you want to add this to internal translation list?' ) ) {

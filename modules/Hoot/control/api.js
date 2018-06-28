@@ -306,6 +306,22 @@ class API {
             .then( jobId => jobId );
     }
 
+    postTranslation( data ) {
+        let payload = data.data;
+
+        const params = {
+            path: `/ingest/customscript/save?SCRIPT_NAME=${ data.NAME }&SCRIPT_DESCRIPTION=${ data.DESCRIPTION }`,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            data: payload
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     /**
      * Add a new folder to the database
      *
