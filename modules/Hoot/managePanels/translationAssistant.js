@@ -10,6 +10,7 @@ import { transAssistButtons } from '../config/domElements';
 import { tagInfo }            from '../../../data/index';
 import { d3combobox }         from '../../lib/hoot/d3.combobox';
 import Tab                    from './tab';
+import TranslationSaveForm   from './translationAssistant/translationSaveForm';
 
 /**
  * Creates the translation-assistant tab in the settings panel
@@ -90,14 +91,15 @@ export default class TranslationAssistant extends Tab {
 
         let buttonContainer = this.uploadForm
             .append( 'div' )
-            .classed( 'action-buttons pad2', true )
+            .classed( 'button-row pad2', true )
             .selectAll( 'button' )
             .data( transAssistButtons );
 
         let buttons = buttonContainer
             .enter()
             .append( 'button' )
-            .classed( 'primary text-light big flex align-center', true )
+            .attr( 'type', 'button' )
+            .classed( 'primary text-light big', true )
             .on( 'click', function( d ) {
                 d3.select( this ).select( 'input' ).node().click();
             } );
@@ -395,8 +397,13 @@ export default class TranslationAssistant extends Tab {
             .append( 'div' )
             .classed( 'actions-container action-buttons pad2 fill-white', true );
 
-        this.actionButtonContainer
+        let row1 = this.actionButtonContainer
+            .append( 'div' )
+            .classed( 'button-row', true );
+
+        row1
             .append( 'button' )
+            .attr( 'type', 'button' )
             .classed( 'ignore-button secondary big round', true )
             .text( 'Ignore' )
             .on( 'click', () => {
@@ -408,8 +415,9 @@ export default class TranslationAssistant extends Tab {
                 this.updateMappingJson( originalKey, mapping );
             } );
 
-        this.actionButtonContainer
+        row1
             .append( 'button' )
+            .attr( 'type', 'button' )
             .attr( 'disabled', true )
             .classed( 'next-button dark text-light big round', true )
             .text( 'Next' )
@@ -465,6 +473,10 @@ export default class TranslationAssistant extends Tab {
         this.toggleNextButton();
 
         this.currentAttribute = currentAttribute;
+
+        if ( d3.entries( this.jsonMapping[ this.layer ] ).some( d => d.value !== 'IGNORED' ) ) {
+            this.enableTranslate();
+        }
     }
 
     buildAttributeMappingJson( originalKey ) {
@@ -595,13 +607,15 @@ export default class TranslationAssistant extends Tab {
 
         tagLookup.html( null );
 
-        tagLookup.append( 'div' )
+        tagLookup
+            .append( 'div' )
             .classed( 'inline thumbnail big _icon blank remove-tag translate-icon keyline-left', true )
             .on( 'click', () => {
                 tagLookup.remove();
             } );
 
-        tagLookup.append( 'div' )
+        tagLookup
+            .append( 'div' )
             .classed( 'inline thumbnail big _icon blank remove-map-tag translate-icon keyline-left', true )
             .on( 'click', function() {
                 let icon = d3.select( this );
@@ -624,12 +638,14 @@ export default class TranslationAssistant extends Tab {
                 }
             } );
 
-        tagLookup.append( 'label' )
+        tagLookup
+            .append( 'label' )
             .classed( 'tag-key pad1 space-bottom0 center bigger', true )
             .text( tagKey );
 
         // single
-        tagLookup.append( 'div' )
+        tagLookup
+            .append( 'div' )
             .classed( 'mapping-wrapper mapping-single keyline-top hidden', true )
             .append( 'input' )
             .attr( 'type', 'text' )
@@ -643,22 +659,26 @@ export default class TranslationAssistant extends Tab {
             } );
 
         // list
-        let attrMapList = tagLookup.append( 'div' )
+        let attrMapList = tagLookup
+            .append( 'div' )
             .classed( 'mapping-wrapper mapping-list keyline-top hidden', true )
             .append( 'ul' );
 
-        let attrMapListRows = attrMapList.selectAll( 'li' )
+        let attrMapListRows = attrMapList
+            .selectAll( 'li' )
             .data( this.currentAttribute.value.values() )
             .enter()
             .append( 'li' )
             .classed( 'preset-row', true );
 
-        attrMapListRows.append( 'div' )
+        attrMapListRows
+            .append( 'div' )
             .classed( 'preset-key-wrap keyline-right', true )
             .append( 'span' )
             .text( d => d );
 
-        attrMapListRows.append( 'div' )
+        attrMapListRows
+            .append( 'div' )
             .append( 'input' )
             .attr( 'type', 'text' )
             .select( function() {
@@ -671,5 +691,54 @@ export default class TranslationAssistant extends Tab {
             } );
 
         // TODO: restore preset dropdown if mapping exists
+    }
+
+    enableTranslate() {
+        this.actionButtonContainer
+            .append( 'div' )
+            .classed( 'button-row', true )
+            .append( 'button' )
+            .attr( 'type', 'button' )
+            .classed( 'translate-button primary big round _icon light conflate', true )
+            .append( 'span' )
+            .text( 'Save Translation' )
+            .on( 'click', () => {
+                let json   = JSON.stringify( this.jsonMapping, null, 4 ),
+                    output = 'hoot.require(\'translation_assistant\')\n' +
+                        '\n' +
+                        'let attributeMapping = ' + json + ';\n' +
+                        'let fcode;\n' +
+                        'let schema;\n' +
+                        '\n' +
+                        '//translateToOsm - takes \'attrs\' and returns OSM \'tags\'\n' +
+                        'let translateToOsm = function(attrs, layerName) {\n' +
+                        '    return translation_assistant.translateAttributes(attrs, layerName, attributeMapping, fcode, schema);\n' +
+                        '};\n';
+
+                let schema = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
+
+                if ( schema === 'TDSv61' ) {
+                    let isValid = this.validateMapping();
+
+                    if ( !isValid.state ) {
+                        //TODO: handle error
+                    }
+
+                    output = output.replace( 'let schema;', `let schema = ${ schema };` );
+                }
+
+                if ( window.confirm( 'Do you want to add this to internal translation list?' ) ) {
+                    this.renderSaveForm( output );
+                }
+            } );
+    }
+
+    validateMapping() {
+
+    }
+
+    renderSaveForm( templateText ) {
+        console.log( 'render save form' );
+        let saveForm = new TranslationSaveForm( templateText ).render();
     }
 }

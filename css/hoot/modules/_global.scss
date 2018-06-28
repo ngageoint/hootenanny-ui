@@ -285,7 +285,7 @@ button, .button {
     }
 }
 
-input[type=text] {
+input[type=text], textarea {
     &.invalid {
         border: 1px solid red !important;
     }

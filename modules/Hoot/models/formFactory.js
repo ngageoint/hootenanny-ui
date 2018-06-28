@@ -21,9 +21,9 @@ export default class FormFactory {
      * @param metadata - form data
      * @returns {d3} - form container
      */
-    generateForm( selector, metadata ) {
+    generateForm( selector, formId, metadata ) {
         let container = this.createContainer( selector ),
-            formModal = this.createFormModal( container ),
+            formModal = this.createFormModal( container, formId ),
             form      = this.createForm( container, formModal, metadata.title );
 
         this.createFieldSets( form, metadata.form );
@@ -54,8 +54,9 @@ export default class FormFactory {
      * @param container
      * @returns {d3} - form modal
      */
-    createFormModal( container ) {
+    createFormModal( container, formId ) {
         return container.append( 'div' )
+            .attr( 'id', formId )
             .classed( 'contain col4 hoot-menu fill-white round modal', true );
     }
 
@@ -68,10 +69,11 @@ export default class FormFactory {
      * @returns {d3} - form wrapper
      */
     createForm( container, modal, formTitle ) {
-        let form   = modal.append( 'form' ),
-            header = form
-                .append( 'div' )
-                .classed( 'modal-header pad1y big keyline-bottom', true );
+        let form = modal.append( 'form' );
+
+        let header = form
+            .append( 'div' )
+            .classed( 'modal-header pad1y big keyline-bottom', true );
 
         header.append( 'h3' )
             .text( formTitle )
@@ -128,10 +130,6 @@ export default class FormFactory {
                 .classed( 'contain', true );
 
             switch ( d.inputType ) {
-                case 'textarea': {
-
-                    break;
-                }
                 case 'combobox': {
                     if ( d.data ) {
                         self.createCombobox( field );
@@ -140,6 +138,10 @@ export default class FormFactory {
                 }
                 case 'text': {
                     self.createTextField( field );
+                    break;
+                }
+                case 'textarea': {
+                    self.createTextarea( field );
                     break;
                 }
                 case 'multipart': {
@@ -216,6 +218,19 @@ export default class FormFactory {
             .on( 'keyup', function( d ) {
                 d.onChange( d, this );
             } );
+    }
+
+    /**
+     * Create a textarea input
+     *
+     * @param field - field div
+     */
+    createTextarea( field ) {
+        field.append( 'textarea' )
+            .attr( 'id', d => d.id )
+            .text( d => d.data )
+            .on( 'keyup', d => d.onChange( d ) )
+            .on( 'drop', d => d.onDrop() );
     }
 
     /**

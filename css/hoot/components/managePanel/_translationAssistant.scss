@@ -25,10 +25,6 @@
             transition: background-color 250ms ease-in-out;
         }
     }
-
-    .actions-container {
-        border-top: 1px solid #ccc;
-    }
 }
 
 .current-attribute {
@@ -211,7 +207,21 @@
     }
 }
 
-.action-buttons {
+.actions-container {
+    border-top: 1px solid #ccc;
+
+    .button-row:first-child {
+        margin-bottom: 20px;
+    }
+
+    .translate-button {
+        margin: 0 !important;
+        color: white;
+        background-color: $blue;
+    }
+}
+
+.button-row {
     display: flex;
     justify-content: space-between;
     border-radius: 0 0 4px 4px;
@@ -220,6 +230,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
+        align-items: center;
         text-align: center;
 
         &:first-child {
@@ -229,5 +240,15 @@
         &:last-child {
             margin-left: 15px;
         }
+    }
+}
+
+#translation-save-form {
+    width: 50%;
+    min-width: 400px;
+    max-width: 700px;
+
+    textarea {
+        color: $light-gray;
     }
 }

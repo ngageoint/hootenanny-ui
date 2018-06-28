@@ -12,7 +12,7 @@ export const sidebarForms = [
         class: 'layer-add',
         tableId: 'add-ref-table',
         color: 'violet',
-        toggleButtonText: 'Add Reference Dataset',
+        toggleButtonText: 'Add Reference Dataset'
     },
     {
         type: 'add',
@@ -163,6 +163,31 @@ export function importDatasetForm() {
             disabled: true,
             data: this.translations,
             itemKey: 'DESCRIPTION'
+        }
+    ];
+}
+
+export function translationSaveForm() {
+    return [
+        {
+            label: 'Name',
+            id: 'translationSaveName',
+            inputType: 'text',
+            onChange: d => this.validateFields( d )
+        },
+        {
+            label: 'Description',
+            id: 'translationSaveDescription',
+            inputType: 'text',
+            onChange: d => this.validateFields( d )
+        },
+        {
+            label: 'Paste New Translation in Box (or drag .js file into text area)',
+            id: 'translationTemplate',
+            inputType: 'textarea',
+            data: this.templateText,
+            onChange: d => this.validateFields( d ),
+            onDrop: () => this.handleFileDrop()
         }
     ];
 }
