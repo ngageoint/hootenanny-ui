@@ -51,11 +51,29 @@
     }
 
     .list-option {
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         cursor: pointer;
 
         &:hover {
             background-color: $light;
         }
+    }
+}
+
+.attribute-status {
+    position: relative;
+    font-size: 20px;
+
+    .attributes-name & {
+        top: -1px;
+    }
+
+    .attributes-list & {
+        top: -2px;
+        margin-right: 5px;
     }
 }
 

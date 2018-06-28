@@ -434,7 +434,7 @@ export default class TranslationAssistant extends Tab {
             .text( d => `${ this.currentIndex[ this.layer ] + 1 } of ${ d.keys().length } Attributes` );
 
         this.attributesName
-            .text( currentAttribute.key );
+            .html( this.getAttributeStatus( currentAttribute.key ) );
 
         let list = this.attributesList
             .selectAll( '.list-option' )
@@ -442,9 +442,9 @@ export default class TranslationAssistant extends Tab {
 
         list.enter()
             .append( 'div' )
-            .classed( 'list-option center', true )
+            .classed( 'list-option strong center', true )
             .merge( list )
-            .text( d => d.key );
+            .html( d => this.getAttributeStatus( d.key ) );
 
         list.exit().remove();
 
@@ -511,6 +511,20 @@ export default class TranslationAssistant extends Tab {
         } );
 
         return json;
+    }
+
+    getAttributeStatus( attribute ) {
+        let status;
+
+        if ( !this.jsonMapping[ this.layer ] || !this.jsonMapping[ this.layer ][ attribute ] ) {
+            status = '&#9744;';
+        } else if ( this.jsonMapping[ this.layer ][ attribute ] === 'IGNORED' ) {
+            status = '&#9746;';
+        } else {
+            status = '&#9745;';
+        }
+
+        return `<span class="attribute-status">${status}</span> ${ attribute }`;
     }
 
     updateMappingJson( key, mapping ) {
