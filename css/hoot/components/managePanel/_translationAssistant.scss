@@ -108,6 +108,11 @@
         }
     }
 
+    .tag-key {
+        height: 50px;
+        font-size: 18px;
+    }
+
     .translate-icon {
         position: absolute;
         float: right;
@@ -122,7 +127,7 @@
         }
     }
 
-    .attr-map-wrap {
+    .mapping-wrapper {
         input {
             border: none;
             color: $gray;
@@ -136,7 +141,7 @@
     .preset-row {
         display: flex;
 
-        &>div {
+        & > div {
             width: 50%;
         }
 
@@ -153,10 +158,6 @@
             }
         }
     }
-}
-
-.selected-tag {
-    font-size: 18px;
 }
 
 .action-buttons {
