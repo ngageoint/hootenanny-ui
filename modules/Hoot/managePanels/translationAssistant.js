@@ -454,7 +454,13 @@ export default class TranslationAssistant extends Tab {
             .append( 'div' )
             .classed( 'list-option strong center', true )
             .merge( list )
-            .html( d => this.getAttributeStatus( d.key ) );
+            .html( d => this.getAttributeStatus( d.key ) )
+            .on( 'click', d => {
+                this.currentIndex[ this.layer ] = _.findIndex( allAttributes, attr => attr.key === d.key );
+
+                this.updateAttributes();
+                this.toggleAttributeList();
+            } );
 
         list.exit().remove();
 
