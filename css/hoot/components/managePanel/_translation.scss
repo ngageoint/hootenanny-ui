@@ -26,9 +26,13 @@
         padding: 0 10px;
     }
 
-    button {
+    .button-container {
         height: 100%;
-        padding: 0 20px;
-        border-radius: 0;
+
+        button {
+            height: 100%;
+            padding: 0 20px;
+            border-radius: 0;
+        }
     }
 }

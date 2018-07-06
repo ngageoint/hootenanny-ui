@@ -115,6 +115,10 @@
         background-position: -200px 0;
     }
 
+    &.export:before {
+        background-position: -330px 0;
+    }
+
     &.check {
         &:before {
             background-position: -360px 0;

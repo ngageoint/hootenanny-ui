@@ -8,6 +8,7 @@ import API                from '../../control/api';
 import Tab                from '../tab';
 import TranslationAddForm from './translationAddForm';
 import { tooltip }        from '../../../util/tooltip';
+import { saveAs }         from '../../../lib/hoot/FileSaver';
 
 /**
  * Creates the translations tab in the settings panel
@@ -111,7 +112,21 @@ export default class Translation extends Tab {
 
         translationName.call( translationTooltip );
 
-        translationItem
+        let buttonContainer = translationItem
+            .append( 'div' )
+            .classed( 'button-container fr', true );
+
+        buttonContainer
+            .append( 'button' )
+            .classed( 'keyline-left _icon export', true )
+            .on( 'click', d => {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+
+                this.exportTranslation( d );
+            } );
+
+        buttonContainer
             .append( 'button' )
             .on( 'click', function( d ) {
                 d3.event.stopPropagation();
@@ -128,7 +143,7 @@ export default class Translation extends Tab {
             } )
             .select( function( d ) {
                 if ( d.DEFAULT ) {
-                    d3.select( this ).classed( 'keyline-left fr _icon close', true )
+                    d3.select( this ).classed( 'keyline-left _icon close', true )
                         .on( 'click', () => {
                             d3.event.stopPropagation();
                             d3.event.preventDefault();
@@ -136,18 +151,27 @@ export default class Translation extends Tab {
                             alert( 'Can not delete default translation.' );
                         } );
                 } else {
-                    d3.select( this ).classed( 'keyline-left fr _icon trash', true );
+                    d3.select( this ).classed( 'keyline-left _icon trash', true );
                 }
             } );
     }
 
-    //async deleteTranslation( name ) {
-    //    try {
-    //        let deleted = await API.deleteTranslation( name );
-    //
-    //        console.log( deleted );
-    //    } catch ( e ) {
-    //
-    //    }
-    //}
+    async exportTranslation( d ) {
+        try {
+            let translationText;
+
+            if ( d.DEFAULT ) {
+                translationText = await API.getDefaultTranslation( d.PATH );
+            } else {
+                translationText = await API.getTranslation( d.NAME );
+            }
+
+            let transBlob = new Blob( [ translationText ], { type: 'text/javascript' } );
+            saveAs( transBlob, d.NAME + '.js' );
+
+        } catch ( e ) {
+            console.log( 'Unable to get translation text' );
+            throw new Error( e );
+        }
+    }
 }

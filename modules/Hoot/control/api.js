@@ -133,6 +133,26 @@ class API {
             .then( resp => resp.data );
     }
 
+    getTranslation( name ) {
+        const params = {
+            path: `/ingest/customscript/getscript?SCRIPT_NAME=${ name }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getDefaultTranslation( path ) {
+        const params = {
+            path: `/ingest/customscript/getdefaultscript?SCRIPT_PATH=${ path }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     // TODO: remove this if not needed
     getTileNodesCount( data ) {
         const params = {
