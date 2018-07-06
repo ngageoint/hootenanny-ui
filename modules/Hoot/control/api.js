@@ -409,6 +409,16 @@ class API {
             .then( resp => this.statusInterval( resp.data.jobid ) );
     }
 
+    deleteTranslation( name ) {
+        const params = {
+            path: `/ingest/customscript/deletescript?SCRIPT_NAME=${ name }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     /**
      * Conflate layers together
      *

@@ -50,7 +50,19 @@ export default class Translation extends Tab {
         try {
             let translations = await API.getTranslations();
 
-            console.log( translations );
+            translations.sort( ( a, b ) => {
+                // Set undefined to false
+                if ( !a.DEFAULT ) a.DEFAULT = false;
+                if ( !b.DEFAULT ) b.DEFAULT = false;
+                // We check DEFAULT property, putting true first
+                if ( a.DEFAULT !== b.DEFAULT ) {
+                    return (a.DEFAULT) ? -1 : 1;
+                } else {
+                    // We only get here if the DEFAULT prop is equal
+                    return d3.ascending( a.NAME.toLowerCase(), b.NAME.toLowerCase() );
+                }
+            } );
+
             this.populateTranslations( translations );
         } catch ( e ) {
             console.log( 'Unable to retrieve translations' );
@@ -59,6 +71,8 @@ export default class Translation extends Tab {
     }
 
     populateTranslations( translations ) {
+        let instance = this;
+
         let rows = this.translationTable
             .selectAll( '.translation-item' )
             .data( translations );
@@ -96,5 +110,44 @@ export default class Translation extends Tab {
             } );
 
         translationName.call( translationTooltip );
+
+        translationItem
+            .append( 'button' )
+            .on( 'click', function( d ) {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+
+                let r = confirm( 'Are you sure you want to delete selected translation?' );
+                if ( !r ) return;
+
+                API.deleteTranslation( d.NAME )
+                    .then( () => {
+                        d3.select( this.parentNode ).remove();
+                        instance.loadTranslations();
+                    } );
+            } )
+            .select( function( d ) {
+                if ( d.DEFAULT ) {
+                    d3.select( this ).classed( 'keyline-left fr _icon close', true )
+                        .on( 'click', () => {
+                            d3.event.stopPropagation();
+                            d3.event.preventDefault();
+
+                            alert( 'Can not delete default translation.' );
+                        } );
+                } else {
+                    d3.select( this ).classed( 'keyline-left fr _icon trash', true );
+                }
+            } );
     }
+
+    //async deleteTranslation( name ) {
+    //    try {
+    //        let deleted = await API.deleteTranslation( name );
+    //
+    //        console.log( deleted );
+    //    } catch ( e ) {
+    //
+    //    }
+    //}
 }
