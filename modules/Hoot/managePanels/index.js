@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import Datasets             from './datasets';
-import TranslationAssistant from './translationAssistant';
+import TranslationAssistant from './translationAssistant/translationAssistant';
 import Translation          from './translation';
 import Basemaps             from './basemaps';
 import ReviewBookmarks      from './reviewBookmarks';
