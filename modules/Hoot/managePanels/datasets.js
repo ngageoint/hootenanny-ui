@@ -37,7 +37,7 @@ export default class Datasets extends Tab {
     render() {
         super.render();
 
-        let buttonContainer = this.panelContent
+        let buttonContainer = this.panelWrapper
             .append( 'div' )
             .classed( 'dataset-buttons flex', true )
             .selectAll( 'button.dataset-action-button' )
@@ -82,7 +82,7 @@ export default class Datasets extends Tab {
             .classed( 'label', true )
             .text( d => d.title );
 
-        let table = this.panelContent.append( 'div' )
+        let table = this.panelWrapper.append( 'div' )
             .attr( 'id', 'dataset-table' )
             .classed( 'filled-white strong overflow', true );
 

@@ -4,10 +4,10 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import Tab                 from '../tab';
-import TransAssistUpload   from './transAssistUpload';
-import TransAssistMapping  from './transAssistMapping';
-import TransAssistSaveForm from './transAssistSaveForm';
+import Tab                from '../tab';
+import TransAssistUpload  from './transAssistUpload';
+import TransAssistMapping from './transAssistMapping';
+import TranslationAddForm from '../translation/translationAddForm';
 
 /**
  * Creates the translation-assistant tab in the settings panel
@@ -34,7 +34,7 @@ export default class TranslationAssistant extends Tab {
     }
 
     openSaveForm( output ) {
-        new TransAssistSaveForm( this, output ).render();
+        new TranslationAddForm( this, output ).render();
     }
 
     showTranslations() {

@@ -119,7 +119,7 @@ class API {
     }
 
     /**
-     * Get all running translations
+     * Get all translations
      *
      * @returns {Promise|array} - translations
      */

@@ -232,9 +232,9 @@ input {
 
 button, .button {
     &.primary {
-        background-color: $blue;
+        background-color: $blue !important;
+        color: white !important;
         border: 1px solid $blue1;
-        color: white;
 
         &:hover {
             background-color: $blue1;
@@ -243,8 +243,8 @@ button, .button {
 
     &.alert {
         background-color: $red;
-        border: 1px solid $red1;
         color: white;
+        border: 1px solid $red1;
 
         &:hover {
             background-color: $red1;

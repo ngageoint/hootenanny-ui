@@ -32,7 +32,7 @@ export default class TransAssistUpload {
     }
 
     createUploadForm() {
-        this.uploadForm = this.instance.panelContent
+        this.uploadForm = this.instance.panelWrapper
             .append( 'form' )
             .classed( 'ta-upload-form round keyline-all fill-white', true );
     }

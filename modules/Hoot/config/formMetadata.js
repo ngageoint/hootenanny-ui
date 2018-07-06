@@ -185,7 +185,7 @@ export function translationSaveForm() {
             label: 'Paste New Translation in Box (or drag .js file into text area)',
             id: 'translationTemplate',
             inputType: 'textarea',
-            data: this.templateText,
+            data: this.templateText || null,
             onChange: d => this.validateFields( d ),
             onDrop: () => this.handleFileDrop()
         }

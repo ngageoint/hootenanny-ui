@@ -1,5 +1,5 @@
 /*******************************************************************************************************
- * File: transAssistSaveForm.js
+ * File: translationAddForm.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 6/28/18
  *******************************************************************************************************/
@@ -8,7 +8,7 @@ import API                     from '../../control/api';
 import FormFactory             from '../../models/formFactory';
 import { translationSaveForm } from '../../config/formMetadata';
 
-export default class TransAssistSaveForm {
+export default class TranslationAddForm {
     constructor( instance, templateText ) {
         this.instance     = instance;
         this.formFactory  = new FormFactory();
@@ -69,7 +69,10 @@ export default class TransAssistSaveForm {
         API.postTranslation( data )
             .then( () => {
                 this.container.remove();
-                this.instance.showTranslations();
+
+                if ( this.instance.id === 'manage-translation-assistant' ) {
+                    this.instance.showTranslations();
+                }
             } );
     }
 

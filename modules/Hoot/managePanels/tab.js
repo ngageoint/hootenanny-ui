@@ -40,7 +40,7 @@ export default class Tab {
             .classed( 'panel-body fill-light', true )
             .attr( 'id', this.id );
 
-        this.panelContent = this.panelBody.append( 'div' )
-            .classed( 'panel-content', true );
+        this.panelWrapper = this.panelBody.append( 'div' )
+            .classed( 'panel-wrapper', true );
     }
 }

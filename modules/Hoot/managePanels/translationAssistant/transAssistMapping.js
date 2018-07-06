@@ -26,7 +26,7 @@ export default class TransAssistMapping {
             this.mappingForm.remove();
         }
 
-        this.mappingForm = this.instance.panelContent
+        this.mappingForm = this.instance.panelWrapper
             .append( 'form' )
             .classed( 'ta-attribute-mapping keyline-all round', true );
 
