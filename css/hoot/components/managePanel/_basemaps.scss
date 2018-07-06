@@ -1,18 +1,18 @@
-.add-translation-button {
+.add-basemap-button {
     display: flex;
     align-items: center;
     height: 40px !important;
     padding: 0 20px 0 10px;
 }
 
-.translation-table {
+.basemap-table {
     height: 400px;
     margin-top: 20px;
     overflow-y: auto;
     box-shadow: 0 3px 10px $dark-opacity10;
 }
 
-.translation-item {
+.basemap-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -22,7 +22,7 @@
         background-color: $light;
     }
 
-    a {
+    span {
         padding: 0 10px;
     }
 

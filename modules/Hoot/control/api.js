@@ -153,6 +153,16 @@ class API {
             .then( resp => resp.data );
     }
 
+    getBasemaps() {
+        const params = {
+            path: '/ingest/basemap/getlist',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     // TODO: remove this if not needed
     getTileNodesCount( data ) {
         const params = {
@@ -432,6 +442,16 @@ class API {
     deleteTranslation( name ) {
         const params = {
             path: `/ingest/customscript/deletescript?SCRIPT_NAME=${ name }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    deleteBasemap( name ) {
+        const params = {
+            path: `/ingest/basemap/delete?NAME=${ name }`,
             method: 'GET'
         };
 

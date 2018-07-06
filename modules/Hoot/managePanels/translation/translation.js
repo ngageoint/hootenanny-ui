@@ -76,12 +76,16 @@ export default class Translation extends Tab {
 
         let rows = this.translationTable
             .selectAll( '.translation-item' )
-            .data( translations );
+            .data( translations, d => d.NAME );
+
+        rows.exit().remove();
 
         let translationItem = rows
             .enter()
             .append( 'div' )
             .classed( 'translation-item keyline-bottom', true );
+
+        rows.merge( translationItem );
 
         let translationName = translationItem
             .append( 'span' )
@@ -97,6 +101,8 @@ export default class Translation extends Tab {
             .on( 'click', d => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
+
+                //TODO: open translation edit form
             } );
 
         let translationTooltip = tooltip()
@@ -136,10 +142,7 @@ export default class Translation extends Tab {
                 if ( !r ) return;
 
                 API.deleteTranslation( d.NAME )
-                    .then( () => {
-                        d3.select( this.parentNode ).remove();
-                        instance.loadTranslations();
-                    } );
+                    .then( () => instance.loadTranslations() );
             } )
             .select( function( d ) {
                 if ( d.DEFAULT ) {

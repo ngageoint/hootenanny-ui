@@ -237,7 +237,7 @@ button, .button {
         border: 1px solid $blue1;
 
         &:hover {
-            background-color: $blue1;
+            background-color: $blue1 !important;
         }
     }
 
