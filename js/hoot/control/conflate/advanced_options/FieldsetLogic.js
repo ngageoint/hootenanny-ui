@@ -351,7 +351,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
                 .data(_.map(c.combobox, function (n) {
                     return {
                         value: n.name,
-                        title: n.name,
+                        title: n.description || n.name,
                         id:n.id
                     };
                 }));
