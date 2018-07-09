@@ -336,6 +336,18 @@ class API {
             .then( jobId => jobId );
     }
 
+    uploadBasemap( data ) {
+        const params = {
+            path: `/ingest/basemap/upload?INPUT_NAME=${ data.INPUT_NAME }`,
+            method: 'POST',
+            data: data.formData
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobId ) )
+            .then( jobId => jobId );
+    }
+
     postTranslation( data ) {
         let payload = data.data;
 

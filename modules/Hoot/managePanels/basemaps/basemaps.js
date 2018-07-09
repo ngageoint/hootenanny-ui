@@ -36,7 +36,7 @@ export default class Basemaps extends Tab {
             .append( 'button' )
             .classed( 'add-basemap-button button primary _icon big light plus', true )
             .text( 'Add New Basemap' )
-            .on( 'click', () => new BasemapAddForm().render() );
+            .on( 'click', () => new BasemapAddForm( this ).render() );
     }
 
     createBasemapTable() {
@@ -73,7 +73,6 @@ export default class Basemaps extends Tab {
         rows.merge( basemapItem );
 
         basemapItem
-
             .append( 'span' )
             .text( d => d.name );
 

@@ -202,7 +202,6 @@ export function basemapAddForm() {
             icon: 'folder',
             readOnly: true,
             multipartId: 'ingestFileUploader',
-            accept: '.shp, .shx, .dbf, .prj, .osm, .zip',
             onChange: () => this.handleMultipartChange()
         },
         {

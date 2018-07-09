@@ -4,6 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/6/18
  *******************************************************************************************************/
 
+import _                  from 'lodash-es';
 import API                from '../../control/api';
 import FormFactory        from '../../models/formFactory';
 import { basemapAddForm } from '../../config/formMetadata';
@@ -64,6 +65,43 @@ export default class BasemapAddForm {
     }
 
     handleSubmit() {
+        let data = {
+            INPUT_NAME: this.nameInput.property( 'value' ),
+            formData: this.getFormData( this.fileIngest.node().files )
+        };
 
+        this.loadingState();
+
+        API.uploadBasemap( data )
+            .then( () => {
+                this.container.remove();
+                this.instance.loadBasemaps();
+            } );
+    }
+
+    getFormData( files ) {
+        let formData = new FormData();
+
+        _.forEach( files, ( file, i ) => {
+            formData.append( `basemapuploadfile${ i }`, file );
+        } );
+
+        return formData;
+    }
+
+    loadingState() {
+        this.submitButton
+            .select( 'span' )
+            .text( 'Uploading...' );
+
+        this.submitButton
+            .append( 'div' )
+            .classed( '_icon _loading float-right', true )
+            .attr( 'id', 'importSpin' );
+
+        this.container.selectAll( 'input' )
+            .each( function() {
+                d3.select( this ).node().disabled = true;
+            } );
     }
 }
