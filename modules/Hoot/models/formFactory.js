@@ -244,7 +244,12 @@ export default class FormFactory {
         this.createTextField( wrapper );
 
         let span = wrapper.append( 'span' )
-            .classed( 'icon-button pointer keyline-left pin-right flex align-center justify-center', true );
+            .classed( 'icon-button pointer keyline-left pin-right flex align-center justify-center', true )
+            .on( 'click', function() {
+                let evt = new MouseEvent( 'click' );
+
+                d3.select( this ).select( 'input' ).node().dispatchEvent( evt );
+            } );
 
         span.append( 'div' )
             .classed( 'material-icons small', true )
@@ -255,7 +260,7 @@ export default class FormFactory {
             .attr( 'type', 'file' )
             .attr( 'readonly', true )
             .property( 'multiple', false )
-            .attr( 'accept', '.shp, .shx, .dbf, .prj, .osm, .zip' )
+            .attr( 'accept', d => d.accept || null )
             .classed( 'pointer pin-top dataset-file-upload', true )
             .on( 'change', d => d.onChange() );
     }

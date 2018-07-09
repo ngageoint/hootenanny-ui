@@ -6,6 +6,7 @@
 
 import API from '../../control/api';
 import Tab from '../tab';
+import BasemapAddForm from './basemapAddForm';
 
 /**
  * Creates the basemaps tab in the settings panel
@@ -34,7 +35,8 @@ export default class Basemaps extends Tab {
         this.panelWrapper
             .append( 'button' )
             .classed( 'add-basemap-button button primary _icon big light plus', true )
-            .text( 'Add New Basemap' );
+            .text( 'Add New Basemap' )
+            .on( 'click', () => new BasemapAddForm().render() );
     }
 
     createBasemapTable() {

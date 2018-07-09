@@ -4,23 +4,22 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 6/28/18
  *******************************************************************************************************/
 
-import API                     from '../../control/api';
-import FormFactory             from '../../models/formFactory';
-import { translationSaveForm } from '../../config/formMetadata';
+import API                    from '../../control/api';
+import FormFactory            from '../../models/formFactory';
+import { translationAddForm } from '../../config/formMetadata';
 
 export default class TranslationAddForm {
     constructor( instance, templateText ) {
         this.instance     = instance;
-        this.formFactory  = new FormFactory();
         this.templateText = templateText;
 
-        this.form = translationSaveForm.call( this );
+        this.form = translationAddForm.call( this );
     }
 
     render() {
         let button = {
             text: 'Save Edits',
-            id: 'saveTranslationBtn',
+            id: 'addTranslationBtn',
             onClick: () => this.handleSubmit()
         };
 
@@ -30,7 +29,7 @@ export default class TranslationAddForm {
             button
         };
 
-        this.container = this.formFactory.generateForm( 'body', 'translation-save-form', metadata );
+        this.container = new FormFactory().generateForm( 'body', 'translation-add-form', metadata );
 
         this.nameInput        = d3.select( '#translationSaveName' );
         this.descriptionInput = d3.select( '#translationSaveDescription' );
@@ -43,8 +42,8 @@ export default class TranslationAddForm {
     }
 
     validateFields( d ) {
-        let target         = d3.select( `#${ d.id }` );
-        let nameVal        = this.nameInput.property( 'value' ),
+        let target         = d3.select( `#${ d.id }` ),
+            nameVal        = this.nameInput.property( 'value' ),
             descriptionVal = this.descriptionInput.property( 'value' ),
             templateVal    = this.templateInput.property( 'value' );
 

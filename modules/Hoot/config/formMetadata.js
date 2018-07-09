@@ -167,7 +167,7 @@ export function importDatasetForm() {
     ];
 }
 
-export function translationSaveForm() {
+export function translationAddForm() {
     return [
         {
             label: 'Name',
@@ -188,6 +188,29 @@ export function translationSaveForm() {
             data: this.templateText || null,
             onChange: d => this.validateFields( d ),
             onDrop: () => this.handleFileDrop()
+        }
+    ];
+}
+
+export function basemapAddForm() {
+    return [
+        {
+            label: 'Raster File',
+            id: 'basemapFileImport',
+            inputType: 'multipart',
+            placeholder: 'Select File',
+            icon: 'folder',
+            readOnly: true,
+            multipartId: 'ingestFileUploader',
+            accept: '.shp, .shx, .dbf, .prj, .osm, .zip',
+            onChange: () => this.handleMultipartChange()
+        },
+        {
+            label: 'Name',
+            id: 'basemapName',
+            inputType: 'text',
+            placeholder: 'Enter name',
+            onChange: d => this.validateTextInput( d )
         }
     ];
 }

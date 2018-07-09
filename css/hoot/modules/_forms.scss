@@ -75,13 +75,6 @@
             }
         }
     }
-
-    .dataset-file-upload {
-        position: absolute;
-        height: 100%;
-        opacity: 0;
-        left: 0;
-    }
 }
 
 .form-field-header {
@@ -123,6 +116,14 @@
                 color: $dark2;
                 background: none;
             }
+        }
+
+        &[type="file"] {
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: 0;
+            opacity: 0;
         }
 
         &.disabled {

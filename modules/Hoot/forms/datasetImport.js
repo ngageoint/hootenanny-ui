@@ -287,7 +287,7 @@ export default class DatasetImport {
         } else if ( typeVal === 'GEONAMES' ) {
             uploader
                 .property( 'multiple', false )
-                .attr( 'accept', '.geonames,.txt' )
+                .attr( 'accept', '.geonames, .txt' )
                 .attr( 'webkitdirectory', null )
                 .attr( 'directory', null );
         } else if ( typeVal === 'OSM' ) {
