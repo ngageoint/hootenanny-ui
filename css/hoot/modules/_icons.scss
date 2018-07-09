@@ -163,6 +163,14 @@
         background-position: -480px 0;
     }
 
+    &.closedeye:before {
+        background-position: -480px -30px;
+    }
+
+    &.openeye:before {
+        background-position: -520px -30px;
+    }
+
     &.blank:before {
         background-position: -260px 15px;
     }

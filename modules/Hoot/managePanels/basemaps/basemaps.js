@@ -35,7 +35,6 @@ export default class Basemaps extends Tab {
             .append( 'button' )
             .classed( 'add-basemap-button button primary _icon big light plus', true )
             .text( 'Add New Basemap' );
-            //.on( 'click', () => )
     }
 
     createBasemapTable() {
@@ -72,12 +71,20 @@ export default class Basemaps extends Tab {
         rows.merge( basemapItem );
 
         basemapItem
+
             .append( 'span' )
             .text( d => d.name );
 
         let buttonContainer = basemapItem
             .append( 'div' )
             .classed( 'button-container fr', true );
+
+        buttonContainer
+            .append( 'button' )
+            .classed( 'keyline-left _icon openeye', true )
+            .on( 'click', d => {
+
+            } );
 
         buttonContainer
             .append( 'button' )
@@ -94,3 +101,4 @@ export default class Basemaps extends Tab {
             } );
     }
 }
+
