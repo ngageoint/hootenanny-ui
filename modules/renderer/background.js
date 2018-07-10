@@ -196,6 +196,18 @@ export function rendererBackground(context) {
         dispatch.call( 'change' );
     };
 
+    background.removeBackgroundSource = function(d) {
+        for (let i = 0; i < _backgroundSources.length; i++) {
+            let src = _backgroundSources[i];
+
+            if (src.name() === d.name) {
+                _backgroundSources.splice(i, 1);
+                dispatch.call( 'change' );
+                break;
+            }
+        }
+    };
+
     background.addSource = function(d) {
         var source = rendererBackgroundSource(d);
         _backgroundSources.push(source);

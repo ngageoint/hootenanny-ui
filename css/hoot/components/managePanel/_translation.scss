@@ -23,7 +23,12 @@
     }
 
     a {
+        position: relative;
         padding: 0 10px;
+    }
+
+    .tooltip {
+        width: 500px;
     }
 
     .button-container {

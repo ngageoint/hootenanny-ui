@@ -4,11 +4,11 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import _              from 'lodash-es';
-import API            from '../../control/api';
-import Tab            from '../tab';
-import BasemapAddForm from './basemapAddForm';
+import API                        from '../../control/api';
+import Tab                        from '../tab';
+import BasemapAddForm             from './basemapAddForm';
 import { geoExtent as GeoExtent } from '../../../geo/index';
+import { tooltip }                from '../../../util/tooltip';
 
 /**
  * Creates the basemaps tab in the settings panel
@@ -52,7 +52,6 @@ export default class Basemaps extends Tab {
             let basemaps = await API.getBasemaps();
 
             this.basemapList = basemaps;
-            console.log( this.basemapList );
             this.populateBasemaps( basemaps );
         } catch ( e ) {
             console.log( 'Unable to retrieve basemaps' );
@@ -84,34 +83,52 @@ export default class Basemaps extends Tab {
             .append( 'div' )
             .classed( 'button-container fr', true );
 
-        let toggleButton = buttonContainer
+        buttonContainer
             .append( 'button' )
             .classed( 'keyline-left _icon', true )
-            .classed( 'closedeye', d => d.status === 'enabled' )
-            .classed( 'openeye', d => d.status === 'disabled' )
-            .on( 'click', d => {
+            .on( 'click', function( d ) {
+                let button = d3.select( this );
+
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
-                let bm = _.find( this.basemapList, basemap => basemap.name === d.name );
-
                 if ( d.status === 'disabled' ) {
                     API.enableBasemap( d ).then( () => {
-                        toggleButton
-                            .classed( 'closedeye', true )
-                            .classed( 'openeye', false );
-
-                        bm.status = 'enabled';
-                        this.showBasemap( bm );
-                    } );
-                } else {
-                    API.disableBasemap( d ).then( () => {
-                        toggleButton
+                        button
                             .classed( 'closedeye', false )
                             .classed( 'openeye', true );
 
-                        bm.status = 'disabled';
+                        d.status = 'enabled';
+
+                        instance.renderBasemap( d );
                     } );
+                } else {
+                    API.disableBasemap( d ).then( () => {
+                        button
+                            .classed( 'closedeye', true )
+                            .classed( 'openeye', false );
+
+                        d.status = 'disabled';
+
+                        instance.context.background().removeBackgroundSource( d );
+                    } );
+                }
+            } )
+            .select( function( d ) {
+                let button = d3.select( this );
+
+                if ( d.status === 'processing' ) {
+
+                } else if ( d.status === 'failed' ) {
+
+                } else if ( d.status === 'disabled' ) {
+                    button.classed( 'closedeye', true );
+                    button.classed( 'openeye', false );
+                } else {
+                    button.classed( 'closedeye', false );
+                    button.classed( 'openeye', true );
+                    // basemap is already enabled, so just render it in the UI
+                    instance.renderBasemap( d );
                 }
             } );
 
@@ -130,15 +147,15 @@ export default class Basemaps extends Tab {
             } );
     }
 
-    showBasemap( bm ) {
+    renderBasemap( d ) {
         let newSource = {
-            name: bm.name,
+            name: d.name,
             type: 'tms',
             projection: 'mercator',
-            template: `${ API.config.host }:${ API.config.port }/static/BASEMAP/${ bm.name }/{zoom}/{x}/{y}.png`,
+            template: `${ API.config.host }:${ API.config.port }/static/BASEMAP/${ d.name }/{zoom}/{x}/{y}.png`,
             default: true,
             nocache: true,
-            extent: new GeoExtent( [ bm.extent.minx, bm.extent.miny ], [ bm.extent.maxx, bm.extent.maxy ] )
+            extent: new GeoExtent( [ d.extent.minx, d.extent.miny ], [ d.extent.maxx, d.extent.maxy ] )
         };
 
         this.context.background().addNewBackgroundSource( newSource );
