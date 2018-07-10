@@ -17,8 +17,8 @@ import { saveAs }         from '../../../lib/hoot/FileSaver';
  * @constructor
  */
 export default class Translation extends Tab {
-    constructor( ...params ) {
-        super( params );
+    constructor( instance ) {
+        super( instance );
 
         this.name = 'Translations';
         this.id   = 'util-translations';

@@ -13,8 +13,8 @@ import Tab from './tab';
  * @constructor
  */
 export default class About extends Tab {
-    constructor( ...params ) {
-        super( params );
+    constructor( instance ) {
+        super( instance );
 
         this.name = 'About';
         this.id   = 'util-about';

@@ -10,9 +10,10 @@ import Event from '../nodeManagers/eventManager';
  * Base class that all other managePanels in the settings panel extends from
  */
 export default class Tab {
-    constructor( [ panel, panelSidebar ] ) {
-        this.panel      = panel;
-        this.panelSidebar = panelSidebar;
+    constructor( instance ) {
+        this.context      = instance.context;
+        this.panelSidebar = instance.panelSidebar;
+        this.panel        = instance.panel;
 
         this.name = null;
         this.id   = null;

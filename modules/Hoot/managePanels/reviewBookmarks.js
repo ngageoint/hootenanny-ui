@@ -13,8 +13,8 @@ import Tab from './tab';
  * @constructor
  */
 export default class ReviewBookmarks extends Tab {
-    constructor( ...params ) {
-        super( params );
+    constructor( instance ) {
+        super( instance );
 
         this.name = 'Review Bookmarks';
         this.id   = 'util-review-bookmarks';

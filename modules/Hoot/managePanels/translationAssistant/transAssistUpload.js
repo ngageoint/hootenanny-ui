@@ -9,7 +9,6 @@ import API                    from '../../control/api';
 
 export default class TransAssistUpload {
     constructor( instance ) {
-        console.log( instance );
         this.instance = instance;
 
         this.schemaOptions = [

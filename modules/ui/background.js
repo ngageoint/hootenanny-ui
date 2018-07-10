@@ -97,6 +97,13 @@ export function uiBackground(context) {
         context.background().baseLayerSource(d);
         _backgroundList.call(updateLayerSelections);
         document.activeElement.blur();
+
+        if (d.extent && d.type === 'tms') {
+            //ask if user wants to zoom to basemap
+            if (window.confirm('Do you want to zoom to base layer?')) {
+                context.extent(d.extent);
+            }
+        }
     }
 
 

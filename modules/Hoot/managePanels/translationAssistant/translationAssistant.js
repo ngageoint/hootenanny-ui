@@ -16,8 +16,8 @@ import TranslationAddForm from '../translation/translationAddForm';
  * @constructor
  */
 export default class TranslationAssistant extends Tab {
-    constructor( ...params ) {
-        super( params );
+    constructor( instance ) {
+        super( instance );
 
         this.name = 'Translation Assistant';
         this.id   = 'manage-translation-assistant';

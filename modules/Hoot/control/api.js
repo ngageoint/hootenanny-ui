@@ -340,12 +340,35 @@ class API {
         const params = {
             path: `/ingest/basemap/upload?INPUT_NAME=${ data.INPUT_NAME }`,
             method: 'POST',
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
             data: data.formData
         };
 
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobId ) )
             .then( jobId => jobId );
+    }
+
+    enableBasemap( data ) {
+        const params = {
+            path: `/ingest/basemap/enable?NAME=${ data.name }&ENABLE=true`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    disableBasemap( data ) {
+        const params = {
+            path: `/ingest/basemap/enable?NAME=${ data.name }&ENABLE=false`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
     }
 
     postTranslation( data ) {

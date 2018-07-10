@@ -24,8 +24,8 @@ import {
  * @constructor
  */
 export default class Datasets extends Tab {
-    constructor( ...params ) {
-        super( params );
+    constructor( instance ) {
+        super( instance );
 
         this.name = 'Datasets';
         this.id   = 'manage-datasets';

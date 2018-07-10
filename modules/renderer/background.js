@@ -190,6 +190,11 @@ export function rendererBackground(context) {
         context.history().imageryUsed(imageryUsed);
     };
 
+    background.addNewBackgroundSource = function(d) {
+        var source = rendererBackgroundSource(d);
+        _backgroundSources.push(source);
+        dispatch.call( 'change' );
+    };
 
     background.addSource = function(d) {
         var source = rendererBackgroundSource(d);

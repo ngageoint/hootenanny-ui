@@ -20,7 +20,8 @@ export default class ManagePanel {
      * @constructor
      * @param container
      */
-    constructor( container ) {
+    constructor( container, context ) {
+        this.context    = context;
         this.manageTabs = manageTabs;
         this.container  = container;
 
@@ -46,7 +47,7 @@ export default class ManagePanel {
             .text( 'Settings Panel' );
 
         // Create all tab items in the panel
-        Promise.all( _.map( this.manageTabs, Tab => new Tab( this.panel, this.panelSidebar ).render() ) );
+        Promise.all( _.map( this.manageTabs, Tab => new Tab( this ).render() ) );
 
         this.listen();
 

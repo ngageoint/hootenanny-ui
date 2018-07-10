@@ -4,9 +4,11 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import API from '../../control/api';
-import Tab from '../tab';
+import _              from 'lodash-es';
+import API            from '../../control/api';
+import Tab            from '../tab';
 import BasemapAddForm from './basemapAddForm';
+import { geoExtent as GeoExtent } from '../../../geo/index';
 
 /**
  * Creates the basemaps tab in the settings panel
@@ -15,8 +17,8 @@ import BasemapAddForm from './basemapAddForm';
  * @constructor
  */
 export default class Basemaps extends Tab {
-    constructor( ...params ) {
-        super( params );
+    constructor( instance ) {
+        super( instance );
 
         this.name = 'Basemaps';
         this.id   = 'util-basemaps';
@@ -49,6 +51,8 @@ export default class Basemaps extends Tab {
         try {
             let basemaps = await API.getBasemaps();
 
+            this.basemapList = basemaps;
+            console.log( this.basemapList );
             this.populateBasemaps( basemaps );
         } catch ( e ) {
             console.log( 'Unable to retrieve basemaps' );
@@ -80,11 +84,35 @@ export default class Basemaps extends Tab {
             .append( 'div' )
             .classed( 'button-container fr', true );
 
-        buttonContainer
+        let toggleButton = buttonContainer
             .append( 'button' )
-            .classed( 'keyline-left _icon openeye', true )
+            .classed( 'keyline-left _icon', true )
+            .classed( 'closedeye', d => d.status === 'enabled' )
+            .classed( 'openeye', d => d.status === 'disabled' )
             .on( 'click', d => {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
 
+                let bm = _.find( this.basemapList, basemap => basemap.name === d.name );
+
+                if ( d.status === 'disabled' ) {
+                    API.enableBasemap( d ).then( () => {
+                        toggleButton
+                            .classed( 'closedeye', true )
+                            .classed( 'openeye', false );
+
+                        bm.status = 'enabled';
+                        this.showBasemap( bm );
+                    } );
+                } else {
+                    API.disableBasemap( d ).then( () => {
+                        toggleButton
+                            .classed( 'closedeye', false )
+                            .classed( 'openeye', true );
+
+                        bm.status = 'disabled';
+                    } );
+                }
             } );
 
         buttonContainer
@@ -100,6 +128,20 @@ export default class Basemaps extends Tab {
                 API.deleteBasemap( d.name )
                     .then( () => instance.loadBasemaps() );
             } );
+    }
+
+    showBasemap( bm ) {
+        let newSource = {
+            name: bm.name,
+            type: 'tms',
+            projection: 'mercator',
+            template: `${ API.config.host }:${ API.config.port }/static/BASEMAP/${ bm.name }/{zoom}/{x}/{y}.png`,
+            default: true,
+            nocache: true,
+            extent: new GeoExtent( [ bm.extent.minx, bm.extent.miny ], [ bm.extent.maxx, bm.extent.maxy ] )
+        };
+
+        this.context.background().addNewBackgroundSource( newSource );
     }
 }
 

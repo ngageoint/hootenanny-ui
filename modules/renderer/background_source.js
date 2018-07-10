@@ -60,12 +60,14 @@ export function rendererBackgroundSource(data) {
 
 
     source.name = function() {
+        return name;
         var id_safe = source.id.replace('.', '<TX_DOT>');
         return t('imagery.' + id_safe + '.name', { default: name });
     };
 
 
     source.description = function() {
+        return description;
         var id_safe = source.id.replace('.', '<TX_DOT>');
         return t('imagery.' + id_safe + '.description', { default: description });
     };
@@ -135,15 +137,25 @@ export function rendererBackgroundSource(data) {
                 .replace('{proj}', this.projection)
                 .replace('{bbox}', minXmaxY.x + ',' + maxXminY.y + ',' + maxXminY.x + ',' + minXmaxY.y);
         }
+
+        var x = coord[0];
+        var y = coord[1];
+        var z = coord[2];
+
+        if (this.projection === 'mercator') {
+            var ymax = 1 << z;
+            y = ymax - y - 1;
+        }
+
         return template
-            .replace('{x}', coord[0])
-            .replace('{y}', coord[1])
+            .replace('{x}', x)
+            .replace('{y}', y)
             // TMS-flipped y coordinate
-            .replace(/\{[t-]y\}/, Math.pow(2, coord[2]) - coord[1] - 1)
-            .replace(/\{z(oom)?\}/, coord[2])
+            .replace(/\{[t-]y\}/, Math.pow(2, z) - y - 1)
+            .replace(/\{z(oom)?\}/, z)
             .replace(/\{switch:([^}]+)\}/, function(s, r) {
                 var subdomains = r.split(',');
-                return subdomains[(coord[0] + coord[1]) % subdomains.length];
+                return subdomains[(x + y) % subdomains.length];
             })
             .replace('{u}', function() {
                 var u = '';
