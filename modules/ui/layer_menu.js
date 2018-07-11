@@ -12,8 +12,8 @@ export function uiLayerMenu(context) {
     return function(selection) {
 
         var data = [
-            {id: 'reference', text: 'Add Reference Dataset', color: 'violet'},
-            {id: 'secondary', text: 'Add Secondary Dataset', color: 'orange'}
+            {id: 'reference', text: 'Add Reference Datasets', color: 'violet'},
+            {id: 'secondary', text: 'Add Secondary Datasets', color: 'orange'}
         ];
         //t('geocoder.no_results_worldwide')
 
@@ -85,7 +85,7 @@ export function uiLayerMenu(context) {
 
                         //Zoom to the layer extent if not global
                         if (extent.toParam() !== '-180,-90,180,90') {
-                            if (!context.extent().intersects(extent) //map extent doesn't intersect dataset -or-
+                            if (!context.extent().intersects(extent) //map extent doesn't intersect datasets -or-
                                 || (context.map().center()[0] === 0 && context.map().center()[1] === 0) //center is null island
                                 ) {
                                 context.extent(extent);

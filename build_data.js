@@ -52,7 +52,7 @@ module.exports = function buildData() {
             }
         }
 
-        // Translation strings
+        // Translations strings
         var tstrings = {
             categories: {},
             fields: {},

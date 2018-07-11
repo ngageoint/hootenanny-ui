@@ -129,7 +129,7 @@ export function modeSave(context) {
             history.perform(actionNoop());
         }
 
-        // Attempt a fast upload.. If there are conflicts, re-enter with `checkConflicts = true`
+        // Attempt a fast upload.. If there are conflict, re-enter with `checkConflicts = true`
         if (!checkConflicts) {
             upload(changeset);
 
@@ -172,7 +172,7 @@ export function modeSave(context) {
             return parseInt(osmEntity.id.toOSM(ref), 10) > -1;
         }
 
-        // Reload modified entities into an alternate graph and check for conflicts..
+        // Reload modified entities into an alternate graph and check for conflict..
         function loaded(err, result) {
             if (_errors.length) return;
 
@@ -273,8 +273,8 @@ export function modeSave(context) {
 
                 var forceLocal = action(id, localGraph, remoteGraph).withOption('force_local');
                 var forceRemote = action(id, localGraph, remoteGraph).withOption('force_remote');
-                var keepMine = t('save.conflict.' + (remote.visible ? 'keep_local' : 'restore'));
-                var keepTheirs = t('save.conflict.' + (remote.visible ? 'keep_remote' : 'delete'));
+                var keepMine = t('save.conflicts.' + (remote.visible ? 'keep_local' : 'restore'));
+                var keepTheirs = t('save.conflicts.' + (remote.visible ? 'keep_remote' : 'delete'));
 
                 _conflicts.push({
                     id: id,

@@ -6,31 +6,31 @@
 
 export const datasetButtons = [
     {
-        title: 'Import Single Dataset',
+        title: 'Import Single Datasets',
         icon: 'play_for_work',
-        onClick: 'import-dataset-single',
+        onClick: 'import-datasets-single',
         contextmenu: 'bulkimport'
     },
     {
         title: 'Import Directory',
         icon: 'move_to_inbox',
-        onClick: 'import-dataset-directory'
+        onClick: 'import-datasets-directory'
     },
     {
         title: 'Add Folder',
         icon: 'create_new_folder',
-        onClick: 'add-dataset-folder'
+        onClick: 'add-datasets-folder'
     },
     {
         title: 'Refresh Datasets',
         icon: 'refresh',
-        onClick: 'refresh-dataset-layers'
+        onClick: 'refresh-datasets-layers'
     }
 ];
 
 export const datasetTableHeaders = [
     {
-        title: 'Dataset',
+        title: 'Datasets',
         width: '9%'
     },
     {
@@ -111,7 +111,7 @@ export const contextMenus = {
             click: 'deleteFolder'
         },
         {
-            title: 'Add Dataset',
+            title: 'Add Datasets',
             icon: 'data',
             click: 'addDataset'
         },

@@ -20,7 +20,7 @@ function getNodeMapnikSource(d) {
             type: 'tms',
             description: d.name,
             template: window.location.protocol + '//' + window.location.hostname
-                //+ Hoot.nodeManagers.REST.formatNodeJsPortOrPath(iD.data.hootConfig.nodeMapnikServerPort)
+                //+ Hoot.managers.REST.formatNodeJsPortOrPath(iD.data.hootConfig.nodeMapnikServerPort)
                 + ':8000'
                 + '/?z={zoom}&x={x}&y={-y}&color='
                 + encodeURIComponent(services.hoot.palette(d.color))
@@ -106,7 +106,7 @@ export default {
 //     "outputname": "changeset",
 //     "USER_ID": "1",
 //     "TASK_BBOX": "34.040297648723,31.174810720402537,34.06423943771007,31.186143336347865",
-//     "translation": "NONE"
+//     "translations": "NONE"
 // }
         var json = {
             input: mapid.toString(),

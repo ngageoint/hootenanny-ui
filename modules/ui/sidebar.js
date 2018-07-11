@@ -22,7 +22,7 @@ export function uiSidebar(context) {
 
         var layerMenuWrap = selection
             .append('div')
-            .attr('class', 'add-dataset-pane sidebar-component')
+            .attr('class', 'add-datasets-pane sidebar-component')
             .call(uiLayerMenu(context));
 
         function hover(id) {

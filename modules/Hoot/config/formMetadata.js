@@ -12,7 +12,7 @@ export const sidebarForms = [
         class: 'layer-add',
         tableId: 'add-ref-table',
         color: 'violet',
-        toggleButtonText: 'Add Reference Dataset'
+        toggleButtonText: 'Add Reference Datasets'
     },
     {
         type: 'add',
@@ -21,7 +21,7 @@ export const sidebarForms = [
         class: 'layer-add',
         tableId: 'add-secondary-table',
         color: 'orange',
-        toggleButtonText: 'Add Secondary Dataset'
+        toggleButtonText: 'Add Secondary Datasets'
     },
     {
         type: 'conflate',
@@ -156,10 +156,10 @@ export function importDatasetForm() {
             onChange: d => this.validateTextInput( d )
         },
         {
-            label: 'Translation Schema of Import File',
+            label: 'Translations Schema of Import File',
             id: 'importDatasetSchema',
             inputType: 'combobox',
-            placeholder: 'Select Data Translation Schema',
+            placeholder: 'Select Data Translations Schema',
             disabled: true,
             data: this.translations,
             itemKey: 'DESCRIPTION'
@@ -182,7 +182,7 @@ export function translationAddForm() {
             onChange: d => this.validateFields( d )
         },
         {
-            label: 'Paste New Translation in Box (or drag .js file into text area)',
+            label: 'Paste New Translations in Box (or drag .js file into text area)',
             id: 'translationTemplate',
             inputType: 'textarea',
             data: this.templateText || null,

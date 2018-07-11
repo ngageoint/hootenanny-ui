@@ -194,7 +194,7 @@ _Reach out to nearby mappers and say hello!_
   * Social sharing options are gone (was: share your edit on Facebook, Twitter, Google+)
   * Community resources are displayed from most local to global
   * Nice icons come from FontAwesome
-  * Each resource has a name, short description, and extended description (all available for translation)
+  * Each resource has a name, short description, and extended description (all available for translations)
   * Each resource can include a list of which languages are spoken (currently displays language codes)
   * Resources can optionally have events. If events exist, the next upcoming 2 will be shown.
   * Events can have a name, description, where, when
@@ -1496,7 +1496,7 @@ _Check out the new imagery by opening the Background pane (shortcut <kbd>B</kbd>
 #### :tada: New Features
 
 * Update to Mapillary API v3, use traffic signs from Mapillary sprites ([#4050], thanks [@nickplesha])
-* iD editor translation project on Transifex has moved to the [OpenStreetMap organization](https://www.transifex.com/openstreetmap/)
+* iD editor translations project on Transifex has moved to the [OpenStreetMap organization](https://www.transifex.com/openstreetmap/)
 * New Keyboard Shortcuts help screen, press <kbd>?</kbd> to view ([#3791], [#1481], thanks [@ajithranka] and [@kepta])
 
 [#4050]: https://github.com/openstreetmap/iD/issues/4050
@@ -1874,7 +1874,7 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 
 #### :tada: New Features
 * Add KML and GeoJSON support to GPX layer ([#3811], thanks [@mertemin])
-* Add language debugging mode that shows translation keys ([#3755])
+* Add language debugging mode that shows translations keys ([#3755])
 * Upgrade to MapillaryJS viewer v2.4
 * Add ability to restart ui and change locale on the fly ([#3764], thanks [@kepta])
 * Upgrade to latest maki icons ([#3024], [#3756], thanks [@ajithranka])
@@ -2129,7 +2129,7 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
   * Remove diacritics (accented chars) when doing fuzzy searches (#3159)
 * Bugfixes:
   * Prevent imagery offset nudging buttons from getting stuck if user clicks again (#3576)
-  * Don't include terms for non-searchable presets in translation source (#3323)
+  * Don't include terms for non-searchable presets in translations source (#3323)
   * Let user know if the documentation points to a redirect page (#3337)
   * Fix line labeling placement for IE11, Edge (#3020)
   * Better label placement, use smaller collision boxes (#1645)
@@ -2479,7 +2479,7 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Add network=* tag to public transport presets (#2549) (Thanks @gileri)
 * Add incline field for highway=steps preset (#2456)
 * Support node v0.12 (#2535)
-* Resolve editing conflicts before saving (#2525, #1053)
+* Resolve editing conflict before saving (#2525, #1053)
 * Don't delete ways from route, boundary, multipolygon relations (#2526, #1461) (Thanks @systemed)
 
 ## 1.7.0
@@ -2886,7 +2886,7 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 
 ## 1.0.1
 ##### May 10, 2013
-* Test, imagery, translation, and preset updates
+* Test, imagery, translations, and preset updates
 * Fix untranslatable strings
 * Prefer to keep existing ways when joining
 * Fix creating intersecting ways and cope with 0 and 1 node ways
@@ -2895,4 +2895,4 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Fixes for Opera compatibility
 * Update `osm-auth` to 0.2.1
 * Fix the `note` functionality and textarea UI in presets
-* Fix walkthrough translation issues
+* Fix walkthrough translations issues

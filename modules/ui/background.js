@@ -99,7 +99,7 @@ export function uiBackground(context) {
         document.activeElement.blur();
 
         if (d.extent && d.type === 'tms') {
-            //ask if user wants to zoom to basemap
+            //ask if user wants to zoom to basemaps
             if (window.confirm('Do you want to zoom to base layer?')) {
                 context.extent(d.extent);
             }

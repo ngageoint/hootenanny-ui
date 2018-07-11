@@ -4,7 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/14/18
  *******************************************************************************************************/
 
-import API from './api';
+import API from '../managers/api';
 
 /**
  * Manages data imports and job statuses

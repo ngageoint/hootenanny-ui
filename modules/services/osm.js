@@ -31,10 +31,10 @@ import { services } from '../services/index';
 
 import { utilRebind, utilIdleWorker } from '../util';
 
-import API          from '../Hoot/control/api';
-import LayerManager from '../Hoot/nodeManagers/layerManager';
-import Events       from '../Hoot/nodeManagers/eventManager';
-import HootOSM      from '../Hoot/nodeManagers/hootOsm';
+import API          from '../Hoot/managers/api';
+import LayerManager from '../Hoot/managers/layerManager';
+import Events       from '../Hoot/managers/eventManager';
+import HootOSM      from '../Hoot/managers/hootOsm';
 
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded');
 //var urlroot = 'https://www.openstreetmap.org';

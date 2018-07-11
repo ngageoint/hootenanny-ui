@@ -186,7 +186,7 @@ Work in Progress.  Don't start work on these, somebody else already did!
 
 To verify a bug fix (or test a new feature), use the [master deployment](http://preview.ideditor.com/master/)
 (http://preview.ideditor.com/master/), which is updated every 10 minutes with the
-latest code and translation strings.
+latest code and translations strings.
 
 The deployments on openstreetmap.org and http://preview.ideditor.com/release/ are updated only
 with stable releases. Issues that are marked fixed in the tracker may still be present.
@@ -206,7 +206,7 @@ separate resources:
 
 The words in brackets, for example `{name}`, should not be translated into a
 new language: it's replaced with a place name when iD presents the text. So a
-French translation of `Couldn't locate a place named '{name}'` would look like
+French translations of `Couldn't locate a place named '{name}'` would look like
 `Impossible de localiser l'endroit nommé '{name}'`.
 
 The translations for presets consist of the names of presets, labels for
@@ -216,11 +216,11 @@ to the target language, separated by commas.
 
 You can check your translations in the [master deployment](http://preview.ideditor.com/master/)
 (http://preview.ideditor.com/master/), which is updated every 10 minutes with the
-latest code and translation strings.
+latest code and translations strings.
 
 [iD translation project on Transifex](https://www.transifex.com/projects/p/id-editor/)
 
-To get notifications when translation source files change, click **Watch
+To get notifications when translations source files change, click **Watch
 project** button near the bottom of the project page. You can edit your
 [notification settings](https://www.transifex.com/user/settings/notices/) if you're
 getting too many notifications.
@@ -249,7 +249,7 @@ iD translates strings with a `t` function - `t('foo.bar')` translate the key
 `foo.bar` into the current language. If you introduce new translatable strings
 to iD, only display them in the interface through the `t()` function.
 
-Then, add the new string to `data/core.yaml`. The translation system, Transifex,
+Then, add the new string to `data/core.yaml`. The translations system, Transifex,
 will automatically detect the change.
 
 If you are updating an existing string, update it in `data/core/yaml` and run
@@ -290,10 +290,10 @@ you're going to update the presets, [review the Presets README](/data/presets/RE
 We use the [Airbnb style for JavaScript](https://github.com/airbnb/javascript) with
 only one difference:
 
-**4 space soft managePanels always for JavaScript, not 2.**
+**4 space soft managePanel always for JavaScript, not 2.**
 
 No aligned `=`, no aligned arguments, spaces are either indents or the 1
-space between expressions. No hard managePanels, ever.
+space between expressions. No hard managePanel, ever.
 
 JavaScript code should pass through [ESLint](http://eslint.org/) with no
 warnings. iD uses [ES6 modules](http://exploringjs.com/es6/ch_modules.html) to
@@ -314,7 +314,7 @@ always, indented by the level of the tree:
 
 ## CSS
 
-Just like HTML and JavaScript, 4 space soft managePanels always.
+Just like HTML and JavaScript, 4 space soft managePanel always.
 
 ```css
 .radial-menu-tooltip {

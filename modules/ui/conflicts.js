@@ -66,7 +66,7 @@ export function uiConflicts(context) {
 
         headerEnter
             .append('h3')
-            .text(t('save.conflict.header'));
+            .text(t('save.conflicts.header'));
 
         var bodyEnter = selection.selectAll('.body')
             .data([0])
@@ -76,8 +76,8 @@ export function uiConflicts(context) {
 
         var conflictsHelpEnter = bodyEnter
             .append('div')
-            .attr('class', 'conflicts-help')
-            .text(t('save.conflict.help'));
+            .attr('class', 'conflict-help')
+            .text(t('save.conflicts.help'));
 
 
         // Download changes link
@@ -110,7 +110,7 @@ export function uiConflicts(context) {
         linkEnter
             .call(svgIcon('#iD-icon-load', 'inline'))
             .append('span')
-            .text(t('save.conflict.download_changes'));
+            .text(t('save.conflicts.download_changes'));
 
 
         bodyEnter
@@ -120,25 +120,25 @@ export function uiConflicts(context) {
 
         bodyEnter
             .append('div')
-            .attr('class', 'conflicts-done')
+            .attr('class', 'conflict-done')
             .attr('opacity', 0)
             .style('display', 'none')
-            .text(t('save.conflict.done'));
+            .text(t('save.conflicts.done'));
 
         var buttonsEnter = bodyEnter
             .append('div')
-            .attr('class','buttons col12 joined conflicts-buttons');
+            .attr('class','buttons col12 joined conflict-buttons');
 
         buttonsEnter
             .append('button')
             .attr('disabled', _conflictList.length > 1)
-            .attr('class', 'action conflicts-button col6')
+            .attr('class', 'action conflict-button col6')
             .text(t('save.title'))
             .on('click.try_again', tryAgain);
 
         buttonsEnter
             .append('button')
-            .attr('class', 'secondary-action conflicts-button col6')
+            .attr('class', 'secondary-action conflict-button col6')
             .text(t('confirm.cancel'))
             .on('click.cancel', cancel);
     }
@@ -152,10 +152,10 @@ export function uiConflicts(context) {
         // enable save button if this is the last conflict being reviewed..
         if (index === _conflictList.length - 1) {
             window.setTimeout(function() {
-                parent.select('.conflicts-button')
+                parent.select('.conflict-button')
                     .attr('disabled', null);
 
-                parent.select('.conflicts-done')
+                parent.select('.conflict-done')
                     .transition()
                     .attr('opacity', 1)
                     .style('display', 'block');
@@ -163,7 +163,7 @@ export function uiConflicts(context) {
         }
 
         var conflict = selection
-            .selectAll('.conflict')
+            .selectAll('.conflicts')
             .data([_conflictList[index]]);
 
         conflict.exit()
@@ -171,12 +171,12 @@ export function uiConflicts(context) {
 
         var conflictEnter = conflict.enter()
             .append('div')
-            .attr('class', 'conflict');
+            .attr('class', 'conflicts');
 
         conflictEnter
             .append('h4')
             .attr('class', 'conflict-count')
-            .text(t('save.conflict.count', { num: index + 1, total: _conflictList.length }));
+            .text(t('save.conflicts.count', { num: index + 1, total: _conflictList.length }));
 
         conflictEnter
             .append('a')
@@ -214,7 +214,7 @@ export function uiConflicts(context) {
             .data(['previous', 'next'])
             .enter()
             .append('button')
-            .text(function(d) { return t('save.conflict.' + d); })
+            .text(function(d) { return t('save.conflicts.' + d); })
             .attr('class', 'conflict-nav-button action col6')
             .attr('disabled', function(d, i) {
                 return (i === 0 && index === 0) ||
@@ -227,7 +227,7 @@ export function uiConflicts(context) {
                 var sign = (i === 0 ? -1 : 1);
 
                 container
-                    .selectAll('.conflict')
+                    .selectAll('.conflicts')
                     .remove();
 
                 container
@@ -323,7 +323,7 @@ export function uiConflicts(context) {
     // {
     //     id: id,
     //     name: entityName(local),
-    //     details: merge.conflicts(),
+    //     details: merge.conflict(),
     //     chosen: 1,
     //     choices: [
     //         choice(id, keepMine, forceLocal),

@@ -3,8 +3,8 @@ import { osmPavedTags }        from '../osm/tags';
 import { osmEntity }           from '../osm/index';
 import { services }            from '../services/index';
 
-import LayerManager from '../Hoot/nodeManagers/layerManager';
-import HootOSM      from '../Hoot/nodeManagers/hootOsm';
+import LayerManager from '../Hoot/managers/layerManager';
+import HootOSM      from '../Hoot/managers/hootOsm';
 
 export function svgTagClasses() {
     var primaries   = [

@@ -31,7 +31,7 @@ export function uiHeader( context ) {
 					.text( txt );
 				d3.selectAll( '#jobsBG' )
 					.classed( 'hidden', vis );
-				d3.selectAll( '.context-menu, .tools-menu, .dataset-options-menu' ).remove();
+				d3.selectAll( '.context-menu, .tools-menu, .datasets-options-menu' ).remove();
 			} );
 
 		let logoContainer = selection

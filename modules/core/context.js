@@ -55,7 +55,7 @@ export function coreContext() {
     var context = {};
     context.version = '2.9.0';
 
-    // create a special translation that contains the keys in place of the strings
+    // create a special translations that contains the keys in place of the strings
     var tkeys = _cloneDeep(dataEn);
     var parents = [];
 
