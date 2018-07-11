@@ -51,7 +51,6 @@ export default class Basemaps extends Tab {
         try {
             let basemaps = await API.getBasemaps();
 
-            this.basemapList = basemaps;
             this.populateBasemaps( basemaps );
         } catch ( e ) {
             console.log( 'Unable to retrieve basemaps' );
@@ -152,7 +151,7 @@ export default class Basemaps extends Tab {
             name: d.name,
             type: 'tms',
             projection: 'mercator',
-            template: `${ API.config.host }:${ API.config.port }/static/BASEMAP/${ d.name }/{zoom}/{x}/{y}.png`,
+            template: `${ API.config.host }:${ API.config.port }/static/BASEMAP/${ d.name }/{zoom}/{x}/{-y}.png`,
             default: true,
             nocache: true,
             extent: new GeoExtent( [ d.extent.minx, d.extent.miny ], [ d.extent.maxx, d.extent.maxy ] )

@@ -138,24 +138,15 @@ export function rendererBackgroundSource(data) {
                 .replace('{bbox}', minXmaxY.x + ',' + maxXminY.y + ',' + maxXminY.x + ',' + minXmaxY.y);
         }
 
-        var x = coord[0];
-        var y = coord[1];
-        var z = coord[2];
-
-        if (this.projection === 'mercator') {
-            var ymax = 1 << z;
-            y = ymax - y - 1;
-        }
-
         return template
-            .replace('{x}', x)
-            .replace('{y}', y)
+            .replace('{x}', coord[0])
+            .replace('{y}', coord[1])
             // TMS-flipped y coordinate
-            .replace(/\{[t-]y\}/, Math.pow(2, z) - y - 1)
-            .replace(/\{z(oom)?\}/, z)
+            .replace(/\{[t-]y\}/, Math.pow(2, coord[2]) - coord[1] - 1)
+            .replace(/\{z(oom)?\}/, coord[2])
             .replace(/\{switch:([^}]+)\}/, function(s, r) {
                 var subdomains = r.split(',');
-                return subdomains[(x + y) % subdomains.length];
+                return subdomains[(coord[0] + coord[1]) % subdomains.length];
             })
             .replace('{u}', function() {
                 var u = '';

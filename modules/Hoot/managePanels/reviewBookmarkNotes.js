@@ -16,11 +16,13 @@ export default class ReviewBookmarkNotes extends Tab {
     constructor( instance ) {
         super( instance );
 
-        this.name = 'ReviewBookmarkNotes';
+        this.name = 'Review Bookmark Notes';
         this.id   = 'util-review-bookmark-notes';
     }
 
     render() {
         super.render();
+
+        this.tabHeader.classed( 'hidden', true );
     }
 }
