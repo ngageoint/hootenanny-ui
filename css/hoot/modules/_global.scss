@@ -272,6 +272,10 @@ button, .button {
     &.light {
         background-color: $light;
         color: $dark;
+
+        &:hover {
+            background-color: $light1;
+        }
     }
 
     &.big {

@@ -1,7 +1,6 @@
 #navbar {
     height: 60px;
-    line-height: 60px;
-    padding: 0 1.5rem;
+    padding: 0 15px;
     display: flex;
     justify-content: space-between;
 
@@ -13,6 +12,11 @@
         display: flex;
         align-items: center;
     }
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
 
     .icon-container {
         padding: 0 10px;
@@ -30,5 +34,23 @@
     .hoot-logo {
         width: 300px;
         height: 100%;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        width: auto;
+        top: 50px;
+        right: 25px;
+        z-index: 10;
+
+        &.visible {
+            display: block;
+        }
+    }
+
+    .dropdown-item {
+        height: 50px;
+        line-height: 50px;
     }
 }
