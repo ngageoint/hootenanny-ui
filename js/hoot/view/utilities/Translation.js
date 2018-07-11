@@ -31,7 +31,7 @@ Hoot.view.utilities.translation = function(context) {
             }
             Hoot.model.REST('getTranslations', function (d) {
                 if(d.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                    window.console.error(d.error);
                     return;
                 }
                 
@@ -94,7 +94,7 @@ Hoot.view.utilities.translation = function(context) {
 
                     Hoot.model.REST('deleteTranslation', n.NAME, function (res) {
                         if(res.error){
-                            context.hoot().view.utilities.errorlog.reportUIError(res.error);
+                            window.console.error(res.error);
                             hoot_view_utilities_translation.populateTranslations();
                             return;
                         }

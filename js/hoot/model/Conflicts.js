@@ -681,7 +681,7 @@ Hoot.model.conflicts = function(context)
       if (hasChanges)
       {
         var message = context.history().changes(iD.actions.DiscardTags(context.history().difference()));
-        context.hoot().view.utilities.errorlog.reportUIError(message,new Error().stack);
+        window.console.error(message,new Error().stack);
       }
     };*/
 

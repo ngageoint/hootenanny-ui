@@ -12,11 +12,8 @@ Hoot.view.utilities = function (context){
     var _activeSettingsTabId;
 
     utilities.dataset = Hoot.view.utilities.dataset(context);
-    /*utilities.wfsdataset = Hoot.view.utilities.wfsdataset(context);*/
     utilities.basemapdataset = Hoot.view.utilities.basemapdataset(context);
     utilities.translation = Hoot.view.utilities.translation(context);
-    utilities.errorlog = Hoot.view.utilities.errorlog(context);
-    utilities.reports = Hoot.view.utilities.reports(context);
     utilities.about = Hoot.view.utilities.about(context);
     utilities.reviewbookmarks = Hoot.view.utilities.reviewbookmarks(context);
     utilities.reviewbookmarknotes = Hoot.view.utilities.reviewbookmarknotes(context);

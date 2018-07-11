@@ -47,7 +47,7 @@ Hoot.model.layers = function (context)
 
             if(a.status === 'failed'){
                 if(a.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(a.error);
+                    window.console.error(a.error);
                 }
             }
 
@@ -279,7 +279,7 @@ Hoot.model.layers = function (context)
         _request.offset = 0;
         Hoot.model.REST('getAllReviewBookmarks', _request, function (d) {
             if(d.error){
-                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                window.console.error(d.error);
                 return;
             }
 

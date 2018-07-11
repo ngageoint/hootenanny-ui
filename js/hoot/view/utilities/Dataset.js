@@ -33,7 +33,7 @@ Hoot.view.utilities.dataset = function(context)
                 if(d.class === 'import-add-dataset'){
                     Hoot.model.REST('getTranslations', function (d) {
                         if(d.error){
-                            context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                            window.console.error(d.error);
                             return;
                         }
                         context.hoot().control.utilities.importdataset.importDataContainer(d);
@@ -265,7 +265,7 @@ Hoot.view.utilities.dataset = function(context)
 
             Hoot.model.REST('getTranslations', function (trans) {
                 if(trans.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(trans.error);
+                    window.console.error(trans.error);
                     return;
                 }
                 context.hoot().control.utilities.exportdataset.exportDataContainer(d, trans);
@@ -303,7 +303,7 @@ Hoot.view.utilities.dataset = function(context)
         
         Hoot.model.REST('getTranslations', function (trans) {
             if(trans.error){
-                context.hoot().view.utilities.errorlog.reportUIError(trans.error);
+                window.console.error(trans.error);
                 return;
             }
             context.hoot().control.utilities.bulkexportdataset.bulkExportDataContainer(_exportList, trans);
@@ -375,7 +375,7 @@ Hoot.view.utilities.dataset = function(context)
     hoot_view_utilities_dataset.importDatasets = function() {
         Hoot.model.REST('getTranslations', function (d) {
             if(d.error){
-                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                window.console.error(d.error);
                 return;
             }
            context.hoot().control.utilities.bulkimportdataset.bulkImportDataContainer(d);
@@ -385,7 +385,7 @@ Hoot.view.utilities.dataset = function(context)
     hoot_view_utilities_dataset.importDirectory = function() {
         Hoot.model.REST('getTranslations', function (d) {
             if(d.error){
-                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                window.console.error(d.error);
                 return;
             }
            context.hoot().control.utilities.importdirectory.importDirectoryContainer(d);
