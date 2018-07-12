@@ -76,6 +76,22 @@ export default class About {
     }
 
     handleSubmit() {
+        let sUrl = `${ API.baseUrl }/info/document/export`,
+            link = document.createElement( 'a' );
 
+        link.href = sUrl;
+
+        if ( link.download !== undefined ) {
+            //Set HTML5 download attribute. This will prevent file from opening if supported.
+            link.download = sUrl.substring(sUrl.lastIndexOf('/') + 1, sUrl.length);
+        }
+
+        // dispatch click event
+        if (document.createEvent) {
+            let e = document.createEvent('MouseEvents');
+            e.initEvent('click', true, true);
+            link.dispatchEvent(e);
+            return true;
+        }
     }
 }
