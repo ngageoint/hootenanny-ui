@@ -78,15 +78,6 @@ iD.ui.Alert = function(message,type,stack) {
         alertDiv.append('p').text(message);
     }
 
-    var d = new Date().toLocaleString();
-    try{
-        if(type === 'warning'||type === 'error'){
-            Hoot.view.utilities.errorlog().reportUIError(d + ': ' + message,stack);
-        }
-    } catch(e){
-        alert(message);
-    }
-
     function fadeOut(selection){
         selection.style('opacity',1).transition().duration(fadeTime).style('opacity',0).remove();
     }

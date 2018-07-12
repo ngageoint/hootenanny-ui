@@ -150,7 +150,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
       Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {
 
         if(resp.error){
-          context.hoot().view.utilities.errorlog.reportUIError(resp.error);
+          window.console.error(resp.error);
           return;
         }
 
@@ -213,7 +213,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
         Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {
 
             if(resp.error){
-                context.hoot().view.utilities.errorlog.reportUIError(resp.error);
+                window.console.error(resp.error);
                 return;
             }
 

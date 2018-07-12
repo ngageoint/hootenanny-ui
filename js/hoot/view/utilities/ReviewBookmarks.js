@@ -390,7 +390,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
         Hoot.model.REST('getAllReviewBookmarks', _cleanUpRequest, function (d) {
             if(d.error){
-                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                window.console.error(d.error);
                 return;
             }
             
@@ -462,7 +462,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
                 Hoot.model.REST('getReviewBookmarkStat', null, function (resp) {
                     if(resp.error){
-                        context.hoot().view.utilities.errorlog.reportUIError(resp.error);
+                        window.console.error(resp.error);
                         return;
                     }
 
@@ -486,7 +486,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
                     Hoot.model.REST('getAllReviewBookmarks', _lastSortRequest, function (d) {
                         if(d.error){
-                            context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                            window.console.error(d.error);
                             return;
                         }
 
@@ -629,7 +629,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
         Hoot.model.REST('deleteReviewBookmark', request, function (d) {
             if(d.error){
-                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                window.console.error(d.error);
                 return;
             }
             _instance.populatePopulateBookmarks(null, _lastSortRequest);   

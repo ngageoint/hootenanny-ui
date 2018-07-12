@@ -306,7 +306,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
 
         context.hoot().model.export.exportData(_fakeContainer, _dataset, function(status){
             if(status === 'failed'){
-                iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','warning',new Error().stack);
+                iD.ui.Alert('Export has failed or partially failed.','warning',new Error().stack);
                 _updateExportText('FAILURE: ' + layerName + ' was not successfully exported.');
                 if(callback){callback();}
             } else {

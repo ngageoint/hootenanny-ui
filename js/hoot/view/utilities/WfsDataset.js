@@ -23,7 +23,7 @@
       Hoot.model.REST('getWFSList',
         function (d) {
                 if(d.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                    window.console.error(d.error);
                 }
 
                 var la = container.selectAll('span')
