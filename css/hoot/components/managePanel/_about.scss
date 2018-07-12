@@ -1,0 +1,18 @@
+#about-hootenanny {
+    width: 600px;
+    max-width: 100%;
+
+    .about-item {
+        padding: 0 15px;
+
+        &:last-child {
+            border-bottom: none;
+            border-radius: 0 0 4px 4px;
+        }
+
+        &:only-child {
+            border: none;
+            border-radius: 0 0 4px 4px;
+        }
+    }
+}

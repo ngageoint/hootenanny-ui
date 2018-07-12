@@ -13,7 +13,7 @@ import LayerManager from '../../managers/layerManager';
  */
 export default class ConflictsTraverse {
     /**
-     * @param instance - conflict class
+     * @param instance - conflicts class
      */
     constructor( instance ) {
         this.instance = instance;

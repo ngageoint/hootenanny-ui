@@ -17,7 +17,7 @@ import { actionChangeTags } from '../../../actions/index';
  */
 export default class ConflictsMerge {
     /**
-     * @param instance - conflict class
+     * @param instance - conflicts class
      */
     constructor( instance ) {
         this.instance = instance;
@@ -247,7 +247,7 @@ export default class ConflictsMerge {
     }
 
     /**
-     * Show/hide merge button in conflict review container
+     * Show/hide merge button in conflicts review container
      *
      * @param hide - true | false
      */

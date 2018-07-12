@@ -63,8 +63,8 @@ export function actionMergeRemoteChanges(id, localGraph, remoteGraph, formatUser
             if (hunk.ok) {
                 nodes.push.apply(nodes, hunk.ok);
             } else {
-                // for all conflict, we can assume c.a !== c.b
-                // because `diff3Merge` called with `true` option to exclude false conflict..
+                // for all conflicts, we can assume c.a !== c.b
+                // because `diff3Merge` called with `true` option to exclude false conflicts..
                 var c = hunk.conflict;
                 if (_isEqual(c.o, c.a)) {  // only changed remotely
                     nodes.push.apply(nodes, c.b);
@@ -206,7 +206,7 @@ export function actionMergeRemoteChanges(id, localGraph, remoteGraph, formatUser
     //  `localGraph` contains user's edits up to saving
     //  `remoteGraph` contains remote edits to modified nodes
     //  `graph` must be a descendent of `localGraph` and may include
-    //      some conflict resolution actions performed on it.
+    //      some conflicts resolution actions performed on it.
     //
     //                  --- ... --- `localGraph` -- ... -- `graph`
     //                 /

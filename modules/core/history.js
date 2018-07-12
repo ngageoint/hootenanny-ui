@@ -108,7 +108,7 @@ export function coreHistory(context) {
     }
 
 
-    // iD uses namespaced keys so multiple installations do not conflict
+    // iD uses namespaced keys so multiple installations do not conflicts
     function getKey(n) {
         return 'iD_' + window.location.origin + '_' + n;
     }

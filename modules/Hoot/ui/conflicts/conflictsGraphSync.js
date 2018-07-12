@@ -1,5 +1,5 @@
 /*******************************************************************************************************
- * File: conflictGraphSync.js
+ * File: conflictsGraphSync.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
@@ -11,11 +11,11 @@ import { osmEntity } from '../../../osm/index';
 import API           from '../../managers/api';
 
 /**
- * @class ConflictGraphSync
+ * @class ConflictsGraphSync
  */
-export default class ConflictGraphSync {
+export default class ConflictsGraphSync {
     /**
-     * @param instance - conflict class
+     * @param instance - conflicts class
      */
     constructor( instance ) {
         this.instance = instance;

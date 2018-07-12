@@ -1,16 +1,16 @@
 /*******************************************************************************************************
- * File: conflict.js
+ * File: conflicts.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
 import API                 from '../managers/api';
-import ConflictInfo        from './conflict/conflictInfo';
-import ConflictsMap        from './conflict/conflictsMap';
-import ConflictsTraverse   from './conflict/conflictsTraverse';
-import ConflictGraphSync   from './conflict/conflictGraphSync';
-import ConflictsMerge      from './conflict/conflictsMerge';
-import ConflictsResolve    from './conflict/conflictsResolve';
+import ConflictInfo        from './conflicts/conflictsInfo';
+import ConflictsMap        from './conflicts/conflictsMap';
+import ConflictsTraverse   from './conflicts/conflictsTraverse';
+import ConflictsGraphSync  from './conflicts/conflictsGraphSync';
+import ConflictsMerge      from './conflicts/conflictsMerge';
+import ConflictsResolve    from './conflicts/conflictsResolve';
 import { conflictButtons } from '../config/domElements';
 import { d3keybinding }    from '../../lib/d3.keybinding';
 import { t }               from '../../util/locale';
@@ -22,19 +22,19 @@ import {
 } from '../tools/utilities';
 
 /**
- * @class Conflict
+ * @class Conflicts
  */
-export default class Conflict {
+export default class Conflicts {
     /**
      * @param context - iD context
-     * @param contentContainer - div to render conflict UI in
+     * @param contentContainer - div to render conflicts UI in
      * @param layer - merged layer
      */
     constructor( context, contentContainer, layer ) {
         this.context          = context;
         this.contentContainer = contentContainer;
 
-        // data store for all conflict components
+        // data store for all conflicts components
         this.data = {
             layer: layer,
             mapId: layer.id,
@@ -49,21 +49,21 @@ export default class Conflict {
     }
 
     /**
-     * Deactivate conflict review
+     * Deactivate conflicts review
      */
     deactivate() {
         this.container.remove();
     }
 
     /**
-     * Initialize conflict review and all of its submodules
+     * Initialize conflicts review and all of its submodules
      */
     async init() {
         let modules = await Promise.all( [
             new ConflictInfo( this ),
             new ConflictsMap( this ),
             new ConflictsTraverse( this ),
-            new ConflictGraphSync( this ),
+            new ConflictsGraphSync( this ),
             new ConflictsMerge( this ),
             new ConflictsResolve( this )
         ] );
@@ -89,13 +89,13 @@ export default class Conflict {
     }
 
     /**
-     * Render conflict review UI
+     * Render conflicts review UI
      */
     render() {
         this.buttonData = conflictButtons.call( this );
 
         this.container = this.contentContainer.append( 'div' )
-            .attr( 'id', 'conflict-container' )
+            .attr( 'id', 'conflicts-container' )
             .classed( 'pin-bottom', true );
 
         this.innerWrapper = this.container.append( 'div' )

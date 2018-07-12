@@ -17,16 +17,14 @@ export default class TranslationsAddForm {
     }
 
     render() {
-        let button = {
-            text: 'Save Edits',
-            id: 'addTranslationBtn',
-            onClick: () => this.handleSubmit()
-        };
-
         let metadata = {
             title: 'Create New Translations',
             form: this.form,
-            button
+            button: {
+                text: 'Save Edits',
+                id: 'addTranslationBtn',
+                onClick: () => this.handleSubmit()
+            }
         };
 
         this.container = new FormFactory().generateForm( 'body', 'translations-add-form', metadata );

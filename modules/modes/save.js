@@ -124,16 +124,16 @@ export function modeSave(context) {
         _origChanges = history.changes(actionDiscardTags(history.difference()));
 
         // First time, `history.perform` a no-op action.
-        // Any conflict resolutions will be done as `history.replace`
+        // Any conflicts resolutions will be done as `history.replace`
         if (!tryAgain) {
             history.perform(actionNoop());
         }
 
-        // Attempt a fast upload.. If there are conflict, re-enter with `checkConflicts = true`
+        // Attempt a fast upload.. If there are conflicts, re-enter with `checkConflicts = true`
         if (!checkConflicts) {
             upload(changeset);
 
-        // Do the full (slow) conflict check..
+        // Do the full (slow) conflicts check..
         } else {
             var modified = _filter(history.difference().summary(), { changeType: 'modified' });
             _toCheck = _map(_map(modified, 'entity'), 'id');
@@ -172,7 +172,7 @@ export function modeSave(context) {
             return parseInt(osmEntity.id.toOSM(ref), 10) > -1;
         }
 
-        // Reload modified entities into an alternate graph and check for conflict..
+        // Reload modified entities into an alternate graph and check for conflicts..
         function loaded(err, result) {
             if (_errors.length) return;
 
@@ -325,7 +325,7 @@ export function modeSave(context) {
 
     function uploadCallback(err, changeset) {
         if (err) {
-            if (err.status === 409) {          // 409 Conflict
+            if (err.status === 409) {          // 409 Conflicts
                 save(changeset, true, true);   // tryAgain = true, checkConflicts = true
             } else {
                 _errors.push({

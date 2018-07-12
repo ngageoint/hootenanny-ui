@@ -62,7 +62,7 @@ assigned by the iD editor for local newly-created objects.
 `id` values from the OSM database as treated as opaque strings; no
 [assumptions](http://lists.openstreetmap.org/pipermail/dev/2013-February/026495.html)
 are made of them other than that they can be compared for identity and do not
-begin with a minus sign (and thus will not conflict with local `id` values).
+begin with a minus sign (and thus will not conflicts with local `id` values).
 The three types of entities have separate `id` spaces:  a node can have the
 same numeric `id` as a way or a relation.  Instead of segregating ways, nodes,
 and other entities into different datastructures, iD internally uses fully-unique

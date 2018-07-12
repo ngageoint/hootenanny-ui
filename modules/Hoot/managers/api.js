@@ -74,6 +74,26 @@ class API {
             .then( resp => resp.data );
     }
 
+    getCoreVersionInfo() {
+        const params = {
+            path: '/info/about/coreVersionInfo',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getServicesVersionInfo() {
+        const params = {
+            path: '/info/about/servicesVersionInfo',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     /**
      * Get all layers from the database
      *
@@ -227,7 +247,7 @@ class API {
     }
 
     /**
-     * Get statistics on conflict review process to see how many reviews are left
+     * Get statistics on conflicts review process to see how many reviews are left
      * and how many have already been resolved
      *
      * @param mapId
@@ -260,7 +280,7 @@ class API {
     }
 
     /**
-     * Get next review item in current conflict review process
+     * Get next review item in current conflicts review process
      *
      * @param mapId
      * @param sequence

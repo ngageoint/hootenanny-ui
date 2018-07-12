@@ -221,7 +221,7 @@ class SidebarController {
         if ( this.isConflate ) {
             this.metadata = new LayerMetadata( this.context, this.form, layer );
             this.metadata.render();
-            this.contextLayer.style( 'width', 'calc( 100% - 145px' );
+            this.contextLayer.style( 'width', 'calc( 100% - 145px )' );
         }
     }
 }

@@ -12,7 +12,7 @@ import Event   from '../../managers/eventManager';
  */
 export default class ConflictsResolve {
     /**
-     * @param instance - conflict class
+     * @param instance - conflicts class
      */
     constructor( instance ) {
         this.instance = instance;

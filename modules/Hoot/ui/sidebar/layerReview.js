@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import SidebarForm from './sidebarForm';
-import Conflict    from '../conflict';
+import Conflicts   from '../conflicts';
 import Event       from '../../managers/eventManager';
 
 /**
@@ -49,7 +49,7 @@ export default class LayerReview extends SidebarForm {
                 this.conflicts.resolve.acceptAll( this.layer );
             } );
 
-        this.conflicts = new Conflict( this.context, d3.select( '#content' ), this.layer );
+        this.conflicts = new Conflicts( this.context, d3.select( '#content' ), this.layer );
         this.conflicts.init();
 
         this.listen();

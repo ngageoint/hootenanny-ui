@@ -148,6 +148,10 @@ export default class FormFactory {
                     self.createMultipart( field );
                     break;
                 }
+                case 'custom': {
+                    d.createCustom( field );
+                    break;
+                }
                 default: {
                     self.createTextField( field );
                     break;

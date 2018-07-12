@@ -4,6 +4,8 @@
  * @author Matt Putipong on 2/6/18
  *******************************************************************************************************/
 
+import About from './about';
+
 /**
  * Creates the navigation bar
  *
@@ -95,33 +97,50 @@ export default class Navbar {
 
         let dropdownToggle = rightContainer
             .append( 'div' )
-            .classed( 'flex align-center text-light pointer', true )
-            .on( 'click', () => this.toggleDropdown() );
+            .classed( 'dropdown-toggle flex align-center text-light pointer', true );
 
         dropdownToggle
             .append( 'i' )
             .classed( 'medium material-icons', true )
-            .text( 'info_outline' );
+            .text( 'info_outline' )
+            .on( 'click', () => this.openAboutModal() );
 
-        dropdownToggle
-            .append( 'i' )
-            .classed( 'medium material-icons', true )
-            .text( 'arrow_drop_down' );
+        //dropdownToggle
+        //    .append( 'i' )
+        //    .classed( 'medium material-icons', true )
+        //    .text( 'arrow_drop_down' );
+
+        //this.initDropdown();
     }
 
-    toggleDropdown() {
-        let dropdown = d3.select( '.dropdown-content' ),
-            visibleState = dropdown.classed( 'visible' );
-
-        dropdown.classed( 'visible', !visibleState );
-
-        if ( !visibleState ) {
-            d3.select( 'body' )
-                .on( 'mousedown', () => dropdown.classed( 'visible', false ) );
-        }
-    }
+    //////////////////// possibly use in the future
+    //initDropdown() {
+    //    let that = this;
+    //
+    //    // bind single click listener to open dropdown
+    //    $( '.dropdown-toggle' ).one( 'click', () => toggleDropdown() );
+    //
+    //    // toggle the dropdown
+    //    function toggleDropdown( cb ) {
+    //        $( '.dropdown-content' ).slideToggle( 50, () => {
+    //            if ( cb ) {
+    //                cb();
+    //                return;
+    //            }
+    //
+    //            if ( !$( '.dropdown-content' ).is( ':visible' ) ) return;
+    //
+    //            bindBodyClick();
+    //        } );
+    //    }
+    //
+    //    // bind single click listener to body after dropdown is visible to close dropdown
+    //    function bindBodyClick() {
+    //        $( 'body' ).one( 'click', () => toggleDropdown( () => that.initDropdown()  ) );
+    //    }
+    //}
 
     openAboutModal() {
-
+        new About().render();
     }
 }

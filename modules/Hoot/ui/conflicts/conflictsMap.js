@@ -12,7 +12,7 @@ import { isValidCoords } from '../../tools/utilities';
  */
 export default class ConflictsMap {
     /**
-     * @param instance - conflict class
+     * @param instance - conflicts class
      */
     constructor( instance ) {
         this.instance = instance;
@@ -91,7 +91,7 @@ export default class ConflictsMap {
     }
 
     /**
-     * Pan map to current conflict
+     * Pan map to current conflicts
      */
     panToConflict() {
         let panToId = null,

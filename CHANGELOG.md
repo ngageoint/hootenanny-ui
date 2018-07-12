@@ -653,7 +653,7 @@ _Check out the new help texts by opening the Help pane (shortcut <kbd>H</kbd>)._
 * Fix bug causing open/close of panels to mess up the url ([#4570])
 * Fix manual entry of offset values in the imagery offset control ([#4553])
 * Allow self connecting to a way when drawing ([#4455])
-* Fix bugs on conflict resolution screen ([#4351])
+* Fix bugs on conflicts resolution screen ([#4351])
 * Draw streetview photo viewer close 'X' below keyboard shortcuts screen ([#4596], thanks [@briandaviddavidson])
 * Remove click counter if user skips to another step in walkthrough ([#4605], [#4630], thanks [@ajlomagno])
 * When reversing direction of a way, reverse `traffic_signals:direction` on children ([#4595])
@@ -696,7 +696,7 @@ _Check out the new help texts by opening the Help pane (shortcut <kbd>H</kbd>)._
 [@Andygol]: https://github.com/Andygol
 
 #### :hourglass: Performance
-* Faster uploading - only perform conflict check if the server returns "409 Conflict" ([#3056])
+* Faster uploading - only perform conflicts check if the server returns "409 Conflicts" ([#3056])
 * Avoid deferred fetching of OSM tiles at low zooms or with layer disabled ([#4572])
 * Optimise image files in `dist/` ([#4573], thanks [@grischard])
 
@@ -910,7 +910,7 @@ _Check out what streetlevel photo coverage is available by opening the Map Data 
 * Clicking on a search result should take you to that location the first time ([#4276])
 * Fix label placement on areas that don't have an icon ([#4479])
 * Don't add underscores to `source=*` field ([#4475], [#4474], thanks [@octagonal])
-* Depend on `bhousel/node-diff3` which includes fix for conflict resolution node duplication bug ([#3544], [#3058])
+* Depend on `bhousel/node-diff3` which includes fix for conflicts resolution node duplication bug ([#3544], [#3058])
 * Allow copying text from info panels ([#4456], [#4406], thanks [@ferdibiflator])
 * Make sure `imagery_used` field is updated if a user cancels save and makes more edits ([#4445], [#4443], thanks [@moshen])
 * Fallback Area preset should preserve the `area=yes` tag ([#4424])
@@ -2479,7 +2479,7 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Add network=* tag to public transport presets (#2549) (Thanks @gileri)
 * Add incline field for highway=steps preset (#2456)
 * Support node v0.12 (#2535)
-* Resolve editing conflict before saving (#2525, #1053)
+* Resolve editing conflicts before saving (#2525, #1053)
 * Don't delete ways from route, boundary, multipolygon relations (#2526, #1461) (Thanks @systemed)
 
 ## 1.7.0
