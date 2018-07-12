@@ -18,9 +18,9 @@ import LayerReview      from './sidebar/layerReview';
  * @constructor
  */
 export default class Sidebar {
-    constructor( iDSidebar, context ) {
+    constructor( context ) {
         this.context   = context;
-        this.iDSidebar = iDSidebar;
+        this.iDSidebar = d3.select( '#sidebar' );
         this.formData  = sidebarForms;
 
         this.addFormData      = _.filter( this.formData, form => form.type === 'add' );

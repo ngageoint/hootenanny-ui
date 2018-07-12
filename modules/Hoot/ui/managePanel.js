@@ -24,9 +24,9 @@ export default class ManagePanel {
      * @constructor
      * @param container
      */
-    constructor( container, context ) {
+    constructor( context ) {
         this.context   = context;
-        this.container = container;
+        this.container = d3.select( '#id-container' );
 
         this.manageTabs = [
             Datasets,

@@ -13,8 +13,8 @@ import About from './about';
  * @constructor
  */
 export default class Navbar {
-    constructor( container ) {
-        this.container = container;
+    constructor() {
+        this.container = d3.select( '#id-container' );
 
         this.dropdownItems = [
             {
@@ -97,13 +97,13 @@ export default class Navbar {
 
         let dropdownToggle = rightContainer
             .append( 'div' )
-            .classed( 'dropdown-toggle flex align-center text-light pointer', true );
+            .classed( 'dropdown-toggle icon-container button dark flex align-center text-light pointer', true )
+            .on( 'click', () => this.openAboutModal() );
 
         dropdownToggle
             .append( 'i' )
             .classed( 'medium material-icons', true )
-            .text( 'info_outline' )
-            .on( 'click', () => this.openAboutModal() );
+            .text( 'info_outline' );
 
         //dropdownToggle
         //    .append( 'i' )

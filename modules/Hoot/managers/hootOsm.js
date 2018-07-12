@@ -28,6 +28,7 @@ import config       from '../config/apiConfig';
 
 class HootOSM {
     constructor() {
+        this.appInfo       = [];
         this.palette       = colorPalette;
         this._loadedLayers = {};
         this.listen();

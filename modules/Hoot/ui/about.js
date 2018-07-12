@@ -5,39 +5,18 @@
  *******************************************************************************************************/
 
 import API           from '../managers/api';
+import HootOSM       from '../managers/hootOsm';
 import { aboutForm } from '../config/formMetadata';
-import buildInfo     from '../config/buildInfo.json';
 import FormFactory   from '../tools/formFactory';
 
 export default class About {
     constructor() {
         this.form = aboutForm.call( this );
 
-        this.aboutData = [];
+        this.appInfo = HootOSM.appInfo;
     }
 
     render() {
-        this.getAboutData()
-            .then( () => this.createForm() );
-    }
-
-    async getAboutData() {
-        try {
-            let info = await Promise.all( [
-                API.getCoreVersionInfo(),
-                API.getServicesVersionInfo()
-            ] );
-
-            info.forEach( d => this.aboutData.push( d ) );
-        } catch( e ) {
-            console.log( 'Unable to get Hootenanny core and service info.', e );
-        }
-
-        // build info will always be available
-        this.aboutData.push( buildInfo );
-    }
-
-    createForm() {
         this.formData = aboutForm.call( this );
 
         let metadata = {
@@ -50,8 +29,8 @@ export default class About {
             }
         };
 
-        this.container = new FormFactory().generateForm( 'body', 'about-hootenanny', metadata );
-        this.form      = this.container.select( 'form' );
+        new FormFactory().generateForm( 'body', 'about-hootenanny', metadata );
+
         d3.select( '#downloadUserGuideBtn' ).property( 'disabled', false );
     }
 
@@ -59,7 +38,7 @@ export default class About {
         let table = field
             .selectAll( '.about-item' )
             .append( 'div' )
-            .data( this.aboutData );
+            .data( this.appInfo );
 
         let rows = table
             .enter()
@@ -83,14 +62,14 @@ export default class About {
 
         if ( link.download !== undefined ) {
             //Set HTML5 download attribute. This will prevent file from opening if supported.
-            link.download = sUrl.substring(sUrl.lastIndexOf('/') + 1, sUrl.length);
+            link.download = sUrl.substring( sUrl.lastIndexOf( '/' ) + 1, sUrl.length );
         }
 
         // dispatch click event
-        if (document.createEvent) {
-            let e = document.createEvent('MouseEvents');
-            e.initEvent('click', true, true);
-            link.dispatchEvent(e);
+        if ( document.createEvent ) {
+            let e = document.createEvent( 'MouseEvents' );
+            e.initEvent( 'click', true, true );
+            link.dispatchEvent( e );
             return true;
         }
     }
