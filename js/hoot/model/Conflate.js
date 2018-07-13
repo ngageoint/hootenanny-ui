@@ -25,7 +25,7 @@ Hoot.model.conflate = function(context)
                 if(statusInfo.status === 'failed'){
                     context.hoot().reset();
                     if(statusInfo.error){
-                        context.hoot().view.utilities.errorlog.reportUIError(statusInfo.error);
+                        window.console.error(statusInfo.error);
                     }
                 } else {
 
@@ -34,7 +34,7 @@ Hoot.model.conflate = function(context)
                         if(a.status === 'failed'){
                             context.hoot().reset();
                             if(a.error){
-                                context.hoot().view.utilities.errorlog.reportUIError(a.error);
+                                window.console.error(a.error);
                                 return;
                             }
                         }
@@ -48,7 +48,6 @@ Hoot.model.conflate = function(context)
                             callback(key);
                         }
                     });
-                    context.hoot().view.utilities.reports.populateReports();
                 }
             }
 

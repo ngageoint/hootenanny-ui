@@ -30,20 +30,6 @@
     "callback":"view.utilities.basemapdataset.createContent"
   },
   {
-    "name":"Log",
-    "id":"utilErrorLog",
-    "order":"6",
-    "contentbodyid":"errorlogbody",
-    "callback":"view.utilities.errorlog.createContent"
-  },
-  {
-    "name":"Reports",
-    "id":"utilReports",
-    "order":"7",
-    "contentbodyid":"reportsContent",
-    "callback":"view.utilities.reports.createContent"
-  },
-  {
     "name":"Review Bookmarks",
     "id":"utilReviewBookmarks",
     "order":"8",

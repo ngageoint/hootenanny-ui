@@ -128,7 +128,7 @@ Hoot.view.utilities.basemapdataset = function(context)
                     Hoot.model.REST('enableBaseMap', data, function(resp){
                         if(resp.status === 'failed'){
                             if(resp.error){
-                                context.hoot().view.utilities.errorlog.reportUIError(resp.error);
+                                window.console.error(resp.error);
                                 return;
                             }
                         }
@@ -143,7 +143,7 @@ Hoot.view.utilities.basemapdataset = function(context)
                     Hoot.model.REST('disableBaseMap', data, function(resp){
                         if(resp.status === 'failed'){
                             if(resp.error){
-                                context.hoot().view.utilities.errorlog.reportUIError(resp.error);
+                                window.console.error(resp.error);
                                 return;
                             }
                         }
@@ -210,7 +210,7 @@ Hoot.view.utilities.basemapdataset = function(context)
         Hoot.model.REST('getBaseMapsList',
             function (d) {
                 if(d.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                    window.console.error(d.error);
                 }
                 context.hoot().view.utilities.basemaplist = d;
                 hoot_view_utilities_basemapdataset.renderBaseMapsDataset(container, d);

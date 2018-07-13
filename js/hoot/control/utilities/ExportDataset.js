@@ -146,7 +146,7 @@ Hoot.control.utilities.exportdataset = function(context) {
 
 
             if(status === 'failed'){
-                iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','warning',new Error().stack);
+                iD.ui.Alert('Export has failed or partially failed.','warning',new Error().stack);
                 _container.remove();
             } else {
                 /*var tblContainer = d3.select('#wfsdatasettable');

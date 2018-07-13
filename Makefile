@@ -301,8 +301,6 @@ dist/iD.js: \
 	js/hoot/view/utilities/Dataset.js \
 	js/hoot/view/utilities/BasemapDataset.js \
 	js/hoot/view/utilities/Translation.js \
-	js/hoot/view/utilities/ErrorLog.js \
-	js/hoot/view/utilities/Reports.js \
 	js/hoot/view/utilities/About.js \
 	js/hoot/view/utilities/ReviewBookmarks.js \
 	js/hoot/view/utilities/ReviewBookmarkNotes.js \
@@ -323,7 +321,6 @@ dist/iD.js: \
 	js/hoot/control/utilities/Utilities.js \
 	js/hoot/control/utilities/Translation.js \
 	js/hoot/control/utilities/BasemapDataset.js \
-	js/hoot/control/utilities/Reports.js \
 	js/hoot/control/utilities/Folder.js \
 	js/hoot/control/utilities/Validation.js \
 	js/hoot/control/utilities/Filter.js \

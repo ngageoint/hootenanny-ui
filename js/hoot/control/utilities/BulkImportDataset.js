@@ -353,7 +353,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 _jobIds = status.jobids;
                 _mapIds = status.mapids;
             } else if(status.info === 'failed'){
-                var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
+                var errorMessage = status.error || 'Import has failed or partially failed.';
                 _updateImportText(errorMessage);
                 _loadPostProcess(row);
                 if(callback){callback();}

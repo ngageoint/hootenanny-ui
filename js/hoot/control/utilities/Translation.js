@@ -122,7 +122,7 @@ Hoot.control.utilities.translation = function(context) {
         function postTranslation(e) {
             Hoot.model.REST('postTranslation', e, function (resp) {
                 if(resp.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(resp.error);
+                    window.console.error(resp.error);
                     return;
                 }
                 modalbg.remove();
@@ -138,7 +138,7 @@ Hoot.control.utilities.translation = function(context) {
     hoot_control_utilities_translation.renderTranslationDlg = function(e, d){
 
             if(d.error){
-                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                window.console.error(d.error);
                 return;
             }
             var modalbg = d3.select('body')
@@ -210,7 +210,7 @@ Hoot.control.utilities.translation = function(context) {
             function postTranslation(e) {
                 Hoot.model.REST('postTranslation', e, function (resp) {
                     if(resp.error){
-                        context.hoot().view.utilities.errorlog.reportUIError(resp.error);
+                        window.console.error(resp.error);
                         return;
                     }
                     modalbg.remove();

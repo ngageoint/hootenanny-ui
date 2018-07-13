@@ -207,7 +207,7 @@ Hoot.ui.hootformreviewnote = function (context)
             Hoot.model.REST('getSaveUser', req, function (resp) {
 
                 if(resp.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(resp.error);
+                    window.console.error(resp.error);
                     return;
                 }
                 if(resp.user) {

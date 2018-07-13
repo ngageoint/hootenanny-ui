@@ -902,19 +902,6 @@ en:
       Hootenanny only supports GeoTIFF or png file types. To generate a new basemap that can be displayed in Hootenanny, click on the
       Basemap tab and the New Basemap button. Use the file browser to upload your local georeferenced image (GeoTIFF or png only).
 
-      ### Log
-
-      The Log tab provides both the Application and UI log for users to troubleshoot any issues that may occur during a user session.
-      There are two panels that are provided here; The Error log which provides core and service logging detail (i.e. tomcat catalina.out)
-      and the UI log which provides errors generated from the iD web client. The full log can be exported by clicking on the export
-      full log button. Note that any UI issues will also appear on the map map in the upper right corner in red highlight when they are
-      triggered. This messages are maintained in the UI log until the browser session is reloaded.
-
-      ### Reports
-
-      The Reports tab contains all of the generated reports for conflation jobs where Generate Report = True has been specified. To
-      download a report, click on the arrow and save the file to your local desktop.
-
       ### Review Bookmarks
       The Review Bookmarks tab stores all of the shared reviews saved by various Hootenanny users.  Each bookmark can be edited to add any additional notes or comments. To
       view the bookmarked review in the map, click on the magnifying glass in the opened bookmark in the top right corner.  Once a review has been resolved the bookmark will

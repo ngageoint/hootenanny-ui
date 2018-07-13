@@ -34,7 +34,7 @@ Hoot.model.folders = function (context)
 
             if(a.status === 'failed'){
                 if(a.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(a.error);
+                    window.console.error(a.error);
                 }
             }
 
@@ -103,7 +103,7 @@ Hoot.model.folders = function (context)
 
             if(a.status === 'failed'){
                 if(a.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(a.error);
+                    window.console.error(a.error);
                 }
             }
 
