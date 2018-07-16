@@ -7,8 +7,8 @@
 import LayerManager from './managers/layerManager';
 import HootOSM      from './managers/hootOsm';
 import Navbar       from './ui/navbar';
-import Sidebar      from './ui/sidebar';
-import ManagePanel  from './ui/managePanel';
+import Sidebar      from './ui/sidebar/sidebar';
+import ManagePanel  from './ui/managePanel/managePanel';
 import API          from './managers/api';
 
 import buildInfo     from './config/buildInfo.json';

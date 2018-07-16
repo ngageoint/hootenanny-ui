@@ -1,12 +1,12 @@
 /*******************************************************************************************************
- * File: advOptionsData.js
+ * File: advancedOptsData.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/24/18
  *******************************************************************************************************/
 
 import _ from 'lodash-es';
 
-export default class AdvOptionsData {
+export default class AdvancedOptsData {
     constructor( options ) {
         this.baseOpts       = options.base;
         this.horizontalOpts = options.horizontal;
@@ -67,7 +67,7 @@ export default class AdvOptionsData {
             field.type        = item.elem_type;
             field.description = item.description;
 
-            field.children = _.reduce( item.members, ( arr, subItem ) => {
+            field.children = _.reduce( item.members, ( arr1, subItem ) => {
                 let subField = {};
 
                 subField.id          = subItem.id;
@@ -111,7 +111,9 @@ export default class AdvOptionsData {
                         break;
                     }
                     case 'checkplus': {
-                        subField.subchecks = _.reduce( subItem.members, ( arr, member ) => {
+                        if ( !subItem.members ) break;
+
+                        subField.subchecks = _.reduce( subItem.members, ( arr2, member ) => {
                             let subcheck = {};
 
                             subcheck.id          = member.id;
@@ -128,9 +130,9 @@ export default class AdvOptionsData {
                                 subcheck.onchange = 'true';
                             }
 
-                            arr.push( subcheck );
+                            arr2.push( subcheck );
 
-                            return arr;
+                            return arr2;
                         }, [] );
                         break;
                     }
@@ -145,8 +147,8 @@ export default class AdvOptionsData {
                     }
                 }
 
-                arr.push( subField );
-                return arr;
+                arr1.push( subField );
+                return arr1;
             }, [] );
 
             arr.push( field );

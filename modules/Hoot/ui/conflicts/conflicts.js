@@ -4,22 +4,22 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
-import API                 from '../managers/api';
-import ConflictInfo        from './conflicts/conflictsInfo';
-import ConflictsMap        from './conflicts/conflictsMap';
-import ConflictsTraverse   from './conflicts/conflictsTraverse';
-import ConflictsGraphSync  from './conflicts/conflictsGraphSync';
-import ConflictsMerge      from './conflicts/conflictsMerge';
-import ConflictsResolve    from './conflicts/conflictsResolve';
-import { conflictButtons } from '../config/domElements';
-import { d3keybinding }    from '../../lib/d3.keybinding';
-import { t }               from '../../util/locale';
-import { tooltip }         from '../../util/tooltip';
+import API                 from '../../managers/api';
+import ConflictInfo        from './conflictsInfo';
+import ConflictsMap        from './conflictsMap';
+import ConflictsTraverse   from './conflictsTraverse';
+import ConflictsGraphSync  from './conflictsGraphSync';
+import ConflictsMerge      from './conflictsMerge';
+import ConflictsResolve    from './conflictsResolve';
+import { conflictButtons } from '../../config/domElements';
+import { d3keybinding }    from '../../../lib/d3.keybinding';
+import { t }               from '../../../util/locale';
+import { tooltip }         from '../../../util/tooltip';
 
 import {
     getOS,
     tooltipHtml
-} from '../tools/utilities';
+} from '../../tools/utilities';
 
 /**
  * @class Conflicts

@@ -5,13 +5,13 @@
  *******************************************************************************************************/
 
 import _                   from 'lodash-es';
-import Event               from '../managers/eventManager';
-import Datasets            from './managePanel/datasets/datasets';
-import TransAssist         from './managePanel/transAssist/transAssist';
-import Translations        from './managePanel/translations/translations';
-import Basemaps            from './managePanel/basemaps/basemaps';
-import ReviewBookmarks     from './managePanel/reviewBookmarks';
-import ReviewBookmarkNotes from './managePanel/reviewBookmarkNotes';
+import Event               from '../../managers/eventManager';
+import Datasets            from './datasets/datasets';
+import TransAssist         from './transAssist/transAssist';
+import Translations        from './translations/translations';
+import Basemaps            from './basemaps/basemaps';
+import ReviewBookmarks     from './reviewBookmarks';
+import ReviewBookmarkNotes from './reviewBookmarkNotes';
 
 /**
  * Creates the settings panel

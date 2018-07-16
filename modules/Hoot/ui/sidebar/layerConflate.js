@@ -11,7 +11,7 @@ import LayerManager               from '../../managers/layerManager';
 import HootOSM                    from '../../managers/hootOsm';
 import FormFactory                from '../../tools/formFactory';
 import SidebarForm                from './sidebarForm';
-import LayerAdvOpts               from './layerAdvOpts';
+import AdvancedOpts               from './advancedOpts/advancedOpts';
 import { layerConflateForm }      from '../../config/formMetadata';
 import { geoExtent as GeoExtent } from '../../../geo/index';
 
@@ -80,7 +80,7 @@ class LayerConflate extends SidebarForm {
     }
 
     createAdvancedOptions() {
-        this.advancedOptions = new LayerAdvOpts( this.context );
+        this.advancedOptions = new AdvancedOpts( this.context );
         this.advancedOptions.init();
 
         let advancedOptionsToggle = d3.select( '#advanced-opts-toggle' );

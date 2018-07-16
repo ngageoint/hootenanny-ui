@@ -5,12 +5,12 @@
  *******************************************************************************************************/
 
 import _                from 'lodash-es';
-import LayerManager     from '../managers/layerManager';
-import Event            from '../managers/eventManager';
-import { sidebarForms } from '../config/formMetadata';
-import LayerAdd         from './sidebar/layerAdd';
-import LayerConflate    from './sidebar/layerConflate';
-import LayerReview      from './sidebar/layerReview';
+import LayerManager     from '../../managers/layerManager';
+import Event            from '../../managers/eventManager';
+import { sidebarForms } from '../../config/formMetadata';
+import LayerAdd         from './layerAdd';
+import LayerConflate    from './layerConflate';
+import LayerReview      from './layerReview';
 
 /**
  * Create the sidebar
@@ -38,7 +38,7 @@ export default class Sidebar {
         this.iDSidebar.classed( 'col4', false );
         this.iDSidebar.select( '.sidebar-component' ).remove();
         this.container = this.iDSidebar.append( 'div' )
-            .attr( 'id', 'hootSidebar' )
+            .attr( 'id', 'hoot-sidebar' )
             .classed( 'hoot-sidebar', true );
 
         this.createResizer();

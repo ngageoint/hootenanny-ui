@@ -1,21 +1,23 @@
 /*******************************************************************************************************
- * File: layerAdvOpts.js
+ * File: advancedOpts.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/23/18
  *******************************************************************************************************/
 
-import _              from 'lodash-es';
-import API            from '../../managers/api';
-import AdvOptionsData from '../../tools/advOptionsData';
-import { d3combobox } from '../../../lib/hoot/d3.combobox';
+import _                 from 'lodash-es';
+import API               from '../../../managers/api';
+import AdvancedOptsData  from './advancedOptsData';
+import AdvancedOptsLogic from './advancedOptsLogic';
+import { d3combobox }    from '../../../../lib/hoot/d3.combobox';
 
-export default class LayerAdvOpts {
+export default class AdvancedOpts {
     constructor( context ) {
         this.context         = context;
         this.body            = context.container();
-        this.sidebar         = d3.select( '#sidebar' );
+        this.sidebar         = d3.select( '#hoot-sidebar' );
         this.optTypes        = [ 'custom', 'horizontal', 'average', 'reference' ];
         this.advancedOptions = null;
+        this.logic           = new AdvancedOptsLogic();
     }
 
     get isOpen() {
@@ -24,7 +26,7 @@ export default class LayerAdvOpts {
 
     get parsedOptions() {
         if ( !this.selectedOpts ) {
-            this.selectedOpts = this.advOptsData.generateSelectedValues( this.form );
+            this.selectedOpts = this.data.generateSelectedValues( this.form );
         }
 
         return _.reduce( this.selectedOpts, ( str, opt ) => {
@@ -47,14 +49,14 @@ export default class LayerAdvOpts {
             reference: allOpts[ 3 ]
         };
 
-        this.advOptsData = new AdvOptionsData( _.cloneDeep( this.advancedOptions ) );
+        this.data = new AdvancedOptsData( _.cloneDeep( this.advancedOptions ) );
 
         this.render();
     }
 
     render() {
-        this.defaultFields = this.advOptsData.getDefaultFields();
-        this.fieldsMeta    = this.advOptsData.generateFields( this.defaultFields );
+        this.defaultFields = this.data.getDefaultFields();
+        this.fieldsMeta    = this.data.generateFields( this.defaultFields );
 
         this.createContainer();
         this.createHeader();
@@ -102,6 +104,7 @@ export default class LayerAdvOpts {
         let group = this.contentDiv.selectAll( '.form-group' )
             .data( this.fieldsMeta ).enter()
             .append( 'div' )
+            .attr( 'id', d => d.id + '_group' )
             .classed( 'form-group', true );
 
         let groupToggle = group.append( 'div' )
@@ -131,13 +134,16 @@ export default class LayerAdvOpts {
     }
 
     createFormFields( members, group ) {
-        let self = this;
+        let instance = this;
 
         let fieldContainer = group.selectAll( '.hoot-form-field' )
             .data( members ).enter()
             .append( 'div' )
             .classed( 'hoot-form-field small contain', true )
-            .classed( 'hidden', d => d.required === 'true' );
+            .classed( 'hidden', d => d.required === 'true' )
+            .on( 'change', function( d ) {
+                instance.logic.handleFieldChange( d );
+            } );
 
         fieldContainer.append( 'label' )
             .text( d => d.label );
@@ -147,23 +153,23 @@ export default class LayerAdvOpts {
 
             switch ( d.type ) {
                 case 'checkbox': {
-                    self.createCheckbox( field );
+                    instance.createCheckbox( field );
                     break;
                 }
                 case 'checkplus': {
-                    self.createCheckplus( field );
+                    instance.createCheckplus( field );
                     break;
                 }
                 case 'bool':
                 case 'list': {
-                    self.createCombobox( field );
+                    instance.createCombobox( field );
                     break;
                 }
                 case 'long':
                 case 'int':
                 case 'double':
                 case 'string': {
-                    self.createTextField( field );
+                    instance.createTextField( field );
                     break;
                 }
             }
@@ -175,6 +181,8 @@ export default class LayerAdvOpts {
             .attr( 'type', 'checkbox' )
             .attr( 'id', d => d.id )
             .classed( 'reset', true )
+            .classed( 'checkbox-input', d => d.type === 'checkbox' )
+            .classed( 'checkplus-input', d => d.type === 'checkplus' )
             .select( function( d ) {
                 this.checked = d.placeholder === 'true';
             } );
@@ -189,6 +197,8 @@ export default class LayerAdvOpts {
             if ( d.subchecks && d.subchecks.length ) {
                 d3.select( this ).classed( 'has-children', true );
                 self.createFormFields( d.subchecks, field );
+
+                field.selectAll( '.hoot-form-field' ).classed( d.id + '_child', true );
             }
         } );
     }
@@ -248,7 +258,7 @@ export default class LayerAdvOpts {
             .classed( 'button primary round strong', true )
             .text( 'Apply' )
             .on( 'click', () => {
-                this.selectedOpts = this.advOptsData.generateSelectedValues( this.form );
+                this.selectedOpts = this.data.generateSelectedValues( this.form );
 
                 this.toggle();
             } );
