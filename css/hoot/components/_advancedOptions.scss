@@ -108,13 +108,9 @@
 
         label {
             display: inline-block;
+            white-space: initial;
             margin-bottom: 5px;
             padding: 0;
-            line-height: 22px;
-        }
-
-        span {
-            line-height: 22px;
         }
 
         input[type="text"] {

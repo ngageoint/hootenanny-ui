@@ -4,6 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/16/18
  *******************************************************************************************************/
 
+import _ from 'lodash-es';
 
 export default class AdvancedOptsLogic {
     constructor() {
@@ -11,6 +12,8 @@ export default class AdvancedOptsLogic {
     }
 
     handleFieldChange( d ) {
+        if ( !d.onchange ) return;
+
         let fid = `#${ d.id }`,
             checked;
 
@@ -23,6 +26,14 @@ export default class AdvancedOptsLogic {
 
             d3.select( gid ).selectAll( 'input' ).property( 'disabled', !checked );
             d3.select( fid ).property( 'disabled', false );
+
+            if ( d.id === 'hoot_enable_waterway_options' && checked ) {
+                let c = d3.select( '#waterway_auto_calc_search_radius' ).property( 'checked' );
+
+                d3.select( '#search_radius_waterway' ).property( 'disabled', c );
+                d3.select( '#waterway_rubber_sheet_minimum_ties' ).property( 'disabled', !c );
+                d3.select( '#waterway_rubber_sheet_ref' ).property( 'disabled', !c );
+            }
 
             return;
         }
@@ -45,15 +56,20 @@ export default class AdvancedOptsLogic {
                 break;
             }
             case 'hoot_road_opt_engine': {
+                break;
+            }
+            case 'waterway_auto_calc_search_radius': {
+                d3.select( '#search_radius_waterway' ).property( 'disabled', checked );
+                d3.select( '#waterway_rubber_sheet_minimum_ties' ).property( 'disabled', !checked );
+                d3.select( '#waterway_rubber_sheet_ref' ).property( 'disabled', !checked );
 
+                break;
+            }
+            default: {
+                if ( _.includes( [ 'long', 'int', 'double' ], d.type )  ) {
+                    // TODO: validate input
+                }
             }
         }
-    }
-
-    /**
-     * Handler for fields that have the "onchange" property set to true
-     */
-    fieldChangeEvent() {
-
     }
 }

@@ -146,6 +146,7 @@ export default class AdvancedOpts {
             } );
 
         fieldContainer.append( 'label' )
+            .append( 'span' )
             .text( d => d.label );
 
         fieldContainer.select( function( d ) {
@@ -177,7 +178,8 @@ export default class AdvancedOpts {
     }
 
     createCheckbox( field ) {
-        field.append( 'input' )
+        field.select( 'label' )
+            .insert( 'input', ':first-child' )
             .attr( 'type', 'checkbox' )
             .attr( 'id', d => d.id )
             .classed( 'reset', true )
