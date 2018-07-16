@@ -24,7 +24,7 @@ Hoot.control.utilities.exportdataset = function(context) {
     };
 
     _instance.setOverrideList = function(tagList){
-        _overrideList = tagList;        
+        _overrideList = tagList;
     };
 
     /**
@@ -77,10 +77,10 @@ Hoot.control.utilities.exportdataset = function(context) {
             placeholder: { 'default': placeHolder, 'command': _getTranslationComboPlaceHolder},
             inputtype:'combobox'
         },  {
-            label: 'Include Hoot Status Field',
-            type: 'exportTextStatus',
+            label: 'Include Hoot Tags',
+            type: 'exportHootTags',
             inputtype:'checkbox',
-            checkbox:'cboxExportTextStatus',
+            checkbox:'cboxExportHootTags',
             hidden: true
         },  {
             label: 'Export Format',
@@ -123,7 +123,7 @@ Hoot.control.utilities.exportdataset = function(context) {
         meta.form = d_form;
         meta.button = d_btn;
 
-        _instance.setOverrideList([]);
+        _instance.setOverrideList({});
 
         _container = context.hoot().ui.formfactory.create('body', meta);
     };
@@ -242,9 +242,9 @@ Hoot.control.utilities.exportdataset = function(context) {
          d3.select('.cboxAppendFGDBTemplate').select('input').property('checked',false);
         }
 
-        d3.select('.cboxExportTextStatus').classed('hidden',hideExport);
+        d3.select('.cboxExportHootTags').classed('hidden',hideExport);
         if(hideExport){
-            d3.select('.cboxExportTextStatus').select('input').property('checked',false);
+            d3.select('.cboxExportHootTags').select('input').property('checked',false);
         }
     };
 
