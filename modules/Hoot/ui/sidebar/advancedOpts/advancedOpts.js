@@ -285,6 +285,8 @@ export default class AdvancedOpts {
             .on( 'click', () => {
                 this.selectedOpts = this.data.generateSelectedValues( this.form );
 
+                console.log( this.selectedOpts );
+
                 this.toggle();
             } );
 

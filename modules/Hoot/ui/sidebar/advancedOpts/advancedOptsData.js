@@ -199,7 +199,7 @@ export default class AdvancedOptsData {
     }
 
     getCheckValue( item, subItem, results ) {
-        let selected = this.form.select( `#${ subItem.id }` ).property( 'checked' ).toString(),
+        let selected = this.form.select( `#${ subItem.id }` ).property( 'checked' ),
             key      = {};
 
         if ( !selected ) return;

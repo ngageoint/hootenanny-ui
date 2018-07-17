@@ -44,7 +44,6 @@ export default class AdvancedOptsLogic {
 
                 group.selectAll( '.checkbox-input:not([id*=enable])' ).property( 'checked', checked );
                 group.selectAll( '.checkplus-input' ).property( 'checked', checked );
-
                 break;
             }
             case 'duplicate_way_remover': {
