@@ -99,7 +99,7 @@ export default class AdvancedOpts {
     }
 
     createGroups() {
-        let self = this;
+        let instance = this;
 
         let group = this.contentDiv.selectAll( '.form-group' )
             .data( this.fieldsMeta ).enter()
@@ -128,7 +128,7 @@ export default class AdvancedOpts {
 
         groupBody.select( function( d ) {
             if ( d.children && d.children.length ) {
-                self.createFormFields( d.children, d3.select( this ) );
+                instance.createFormFields( d.children, d3.select( this ) );
             }
         } );
     }
@@ -141,11 +141,10 @@ export default class AdvancedOpts {
             .append( 'div' )
             .classed( 'hoot-form-field small contain', true )
             .classed( 'hidden', d => d.required === 'true' )
-            .on( 'change', function( d ) {
-                instance.logic.handleFieldChange( d );
-            } );
+            .on( 'change', d => this.logic.handleFieldChange( d ) );
 
-        fieldContainer.append( 'label' )
+        fieldContainer
+            .append( 'label' )
             .append( 'span' )
             .text( d => d.label );
 
@@ -191,14 +190,14 @@ export default class AdvancedOpts {
     }
 
     createCheckplus( field ) {
-        let self = this;
+        let instance = this;
 
         this.createCheckbox( field );
 
         field.select( function( d ) {
             if ( d.subchecks && d.subchecks.length ) {
                 d3.select( this ).classed( 'has-children', true );
-                self.createFormFields( d.subchecks, field );
+                instance.createFormFields( d.subchecks, field );
 
                 field.selectAll( '.hoot-form-field' ).classed( d.id + '_child', true );
             }
@@ -206,8 +205,7 @@ export default class AdvancedOpts {
     }
 
     createTextField( field ) {
-        field.append( 'div' )
-            .classed( 'contain', true )
+        field.select( 'label' )
             .append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', d => d.id )
@@ -231,24 +229,49 @@ export default class AdvancedOpts {
     }
 
     createCombobox( field ) {
-        field.append( 'div' )
-            .classed( 'contain', true )
+        let instance = this;
+
+        field.select( 'label' )
             .append( 'input' )
             .attr( 'id', d => d.id )
             .attr( 'type', 'text' )
             .attr( 'placeholder', d => d.placeholder )
             .select( function( d ) {
-                let combobox = d3combobox()
-                    .data( _.map( d.combobox, n => {
-                        return {
-                            value: n.name,
-                            title: n.name,
-                            id: n.id
-                        };
-                    } ) );
+                if ( d.combobox ) {
+                    let combobox = d3combobox()
+                        .data( _.map( d.combobox, n => {
+                            return {
+                                value: n.name,
+                                title: n.name,
+                                id: n.id
+                            };
+                        } ) );
 
-                d3.select( this )
-                    .call( combobox );
+                    d3.select( this )
+                        .call( combobox );
+
+                    instance.createSubGroup( field, d );
+                }
+            } );
+    }
+
+    createSubGroup( field, d ) {
+        let instance  = this,
+            fieldData = this.data.generateFields( d.combobox );
+
+        field.selectAll( '.form-group' )
+            .data( fieldData )
+            .enter()
+            .append( 'div' )
+            .attr( 'id', s => s.label + '_engine_group')
+            .classed( `form-group contain ${d.id}_group`, true )
+            .classed( 'hidden', s => s.label !== d.placeholder )
+            .select( function( s ) {
+                if ( s.children && s.children.length ) {
+                    field.classed( 'has-children', true );
+
+                    instance.createFormFields( s.children, d3.select( this ) );
+                }
             } );
     }
 

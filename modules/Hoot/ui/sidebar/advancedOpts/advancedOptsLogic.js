@@ -56,13 +56,17 @@ export default class AdvancedOptsLogic {
                 break;
             }
             case 'hoot_road_opt_engine': {
+                let selectedVal = d3.select( fid ).node().value,
+                    gid = `#${selectedVal}_engine_group`;
+
+                d3.selectAll( '.hoot_road_opt_engine_group' ).classed( 'hidden', true );
+                d3.select( gid ).classed( 'hidden', false );
                 break;
             }
             case 'waterway_auto_calc_search_radius': {
                 d3.select( '#search_radius_waterway' ).property( 'disabled', checked );
                 d3.select( '#waterway_rubber_sheet_minimum_ties' ).property( 'disabled', !checked );
                 d3.select( '#waterway_rubber_sheet_ref' ).property( 'disabled', !checked );
-
                 break;
             }
             default: {
