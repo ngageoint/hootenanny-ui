@@ -16,8 +16,9 @@ export default class AdvancedOpts {
         this.body            = context.container();
         this.sidebar         = d3.select( '#hoot-sidebar' );
         this.optTypes        = [ 'custom', 'horizontal', 'average', 'reference' ];
-        this.advancedOptions = null;
         this.logic           = new AdvancedOptsLogic();
+        this.advancedOptions = null;
+        this.lastSetFields     = [];
     }
 
     get isOpen() {
@@ -63,6 +64,8 @@ export default class AdvancedOpts {
         this.createContentDiv();
         this.createGroups();
         this.createButtons();
+
+        this.saveFields();
     }
 
     toggle() {
@@ -90,7 +93,14 @@ export default class AdvancedOpts {
             .text( 'Advanced Conflation Options' );
 
         header.append( 'div' )
-            .classed( 'fr _icon close pointer', true );
+            .classed( 'fr _icon close pointer', true )
+            .on( 'click', () => {
+                if ( !window.confirm( 'All options will be reset to previously selected values. Are you sure you want to exit?' ) )
+                    return;
+
+                this.toggle();
+                setTimeout( () => this.restoreValues(), 300 );
+            } );
     }
 
     createContentDiv() {
@@ -263,7 +273,7 @@ export default class AdvancedOpts {
             .data( fieldData )
             .enter()
             .append( 'div' )
-            .attr( 'id', s => s.label + '_engine_group')
+            .attr( 'id', s => s.label + '_engine_group' )
             .classed( `form-group contain ${d.id}_group`, true )
             .classed( 'hidden', s => s.label !== d.placeholder )
             .select( function( s ) {
@@ -284,14 +294,54 @@ export default class AdvancedOpts {
             .text( 'Apply' )
             .on( 'click', () => {
                 this.selectedOpts = this.data.generateSelectedValues( this.form );
-
-                console.log( this.selectedOpts );
-
+                this.saveFields();
                 this.toggle();
             } );
 
         actionsContainer.append( 'button' )
             .classed( 'button alert round strong', true )
-            .text( 'Cancel' );
+            .text( 'Cancel' )
+            .on( 'click', () => {
+                if ( !window.confirm( 'All options will be reset to previously selected values. Are you sure you want to exit?' ) )
+                    return;
+
+                this.toggle();
+                setTimeout( () => this.restoreValues(), 300 );
+            } );
+    }
+
+    saveFields() {
+        let instance = this;
+
+        this.lastSetFields = [];
+
+        this.form.selectAll( 'input' ).each( function() {
+            let item = {
+                id: this.id,
+                type: this.type,
+                checked: this.checked,
+                value: this.value,
+                disabled: this.disabled,
+                hidden: d3.select( this.parentNode.parentNode ).classed( 'hidden' )
+            };
+
+            instance.lastSetFields.push( item );
+        } );
+    }
+
+    restoreValues() {
+        _.forEach( this.lastSetFields, item => {
+            let input = d3.select( '#' + item.id );
+
+            if ( item.type === 'checkbox' ) {
+                input.property( 'checked', item.checked );
+            } else {
+                input.property( 'value', item.value );
+            }
+
+            d3.select( input.node().parentNode.parentNode ).classed( 'hidden', item.hidden );
+
+            input.property( 'disabled', item.disabled );
+        } );
     }
 }

@@ -43,7 +43,16 @@ export default class AdvancedOptsLogic {
                 let group = d3.select( '#hoot_cleaning_options_group' );
 
                 group.selectAll( '.checkbox-input:not([id*=enable])' ).property( 'checked', checked );
-                group.selectAll( '.checkplus-input' ).property( 'checked', checked );
+
+                group.selectAll( '.checkplus-input' )
+                    .property( 'checked', checked )
+                    .each( function() {
+                        // toggle children fields
+                        d3.select( this.parentNode.parentNode )
+                            .selectAll( '.hoot-form-field' )
+                            .classed( 'hidden', !checked );
+                    } );
+
                 break;
             }
             case 'duplicate_way_remover': {
