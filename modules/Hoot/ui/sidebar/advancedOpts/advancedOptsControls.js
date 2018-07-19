@@ -1,14 +1,19 @@
 /*******************************************************************************************************
- * File: advancedOptsLogic.js
+ * File: advancedOptsControls.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/16/18
  *******************************************************************************************************/
 
 import _ from 'lodash-es';
 
-export default class AdvancedOptsLogic {
-    constructor() {
+export default class AdvancedOptsControls {
+    constructor( panel ) {
+        this.panel = panel;
+        this.data  = panel.data;
 
+        this.transitionTime = 300;
+        this.defaultFields  = null;
+        this.lastSetFields  = null;
     }
 
     handleFieldChange( d ) {
@@ -65,7 +70,7 @@ export default class AdvancedOptsLogic {
             }
             case 'hoot_road_opt_engine': {
                 let selectedVal = d3.select( fid ).node().value,
-                    gid = `#${selectedVal}_engine_group`;
+                    gid         = `#${selectedVal}_engine_group`;
 
                 d3.selectAll( '.hoot_road_opt_engine_group' ).classed( 'hidden', true );
                 d3.select( gid ).classed( 'hidden', false );
@@ -78,10 +83,89 @@ export default class AdvancedOptsLogic {
                 break;
             }
             default: {
-                if ( _.includes( [ 'long', 'int', 'double' ], d.type )  ) {
+                if ( _.includes( [ 'long', 'int', 'double' ], d.type ) ) {
                     // TODO: validate input
                 }
             }
         }
+    }
+
+    cancel() {
+        if ( !_.differenceWith( this.getFields(), this.lastSetFields, _.isEqual ).length ) {
+            this.panel.toggle();
+            return;
+        }
+
+        if ( !window.confirm( 'All options will be reset to previously selected values. Are you sure you want to continue?' ) )
+            return;
+
+        setTimeout( () => this.restoreFields(), this.transitionTime );
+        this.panel.toggle();
+    }
+
+    saveOrCancel() {
+        if ( !_.differenceWith( this.getFields(), this.lastSetFields, _.isEqual ).length ) {
+            this.panel.toggle();
+            return;
+        }
+
+        if ( !window.confirm( 'You have unsaved changes. Click OK to save, or cancel to reset to previously selected values.' ) ) {
+            setTimeout( () => this.restoreFields(), this.transitionTime );
+        } else {
+            this.saveFields();
+        }
+
+        this.panel.toggle();
+    }
+
+    reset() {
+        if ( !window.confirm( 'All options will be reset to their default values. Are you sure you want to continue?' ) )
+            return;
+
+        this.restoreFields( this.defaultFields );
+    }
+
+    getFields() {
+        let fields = [];
+
+        this.panel.form.selectAll( 'input' ).each( d => {
+            let node = d3.select( '#' + d.id ).node();
+
+            let field = {
+                id: node.id,
+                type: node.type,
+                checked: node.checked,
+                value: node.value,
+                disabled: node.disabled,
+                hidden: d3.select( node.parentNode.parentNode ).classed( 'hidden' )
+            };
+
+            fields.push( field );
+        } );
+
+        return fields;
+    }
+
+    saveFields() {
+        this.lastSetFields = this.getFields();
+    }
+
+    restoreFields( defaultFields ) {
+        let fields = defaultFields ? defaultFields : this.lastSetFields;
+
+        _.forEach( fields, field => {
+            let input = d3.select( '#' + field.id ),
+                node  = input.node();
+
+            if ( field.type === 'checkbox' ) {
+                input.property( 'checked', field.checked );
+            } else {
+                input.property( 'value', field.value );
+            }
+
+            d3.select( node.parentNode.parentNode ).classed( 'hidden', field.hidden );
+
+            input.property( 'disabled', field.disabled );
+        } );
     }
 }

@@ -85,7 +85,13 @@ class LayerConflate extends SidebarForm {
 
         let advancedOptionsToggle = d3.select( '#advanced-opts-toggle' );
 
-        advancedOptionsToggle.on( 'click', () => this.advancedOptions.toggle() );
+        advancedOptionsToggle.on( 'click', () => {
+            if ( this.advancedOptions.isOpen ) {
+                this.advancedOptions.control.saveOrCancel();
+            } else {
+                this.advancedOptions.toggle();
+            }
+        } );
     }
 
     getSaveName( data ) {
@@ -177,7 +183,7 @@ class LayerConflate extends SidebarForm {
         data.REFERENCE_LAYER    = '1';
         data.GENERATE_REPORT    = this.generateReportInput.node().value;
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
-        data.ADV_OPTIONS        = this.advancedOptions.parsedOptions;
+        data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
         data.USER_EMAIL         = 'test@test.com';
 
         let gj = this.context.layers().layer( 'gpx' );

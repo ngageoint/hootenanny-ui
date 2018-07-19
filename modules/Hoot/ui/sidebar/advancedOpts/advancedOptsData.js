@@ -7,31 +7,13 @@
 import _ from 'lodash-es';
 
 export default class AdvancedOptsData {
-    constructor( options ) {
+    constructor( instance, options ) {
+        this.instance       = instance;
+
         this.baseOpts       = options.base;
         this.horizontalOpts = options.horizontal;
         this.averageOpts    = options.average;
         this.referenceOpts  = options.reference;
-    }
-
-    getDefaultFields() {
-        let conflateType = d3.select( '#conflateType' ).node().value,
-            overrideOpts = conflateType === 'Reference'
-                ? this.referenceOpts
-                : conflateType === 'Average'
-                    ? this.averageOpts
-                    : this.horizontalOpts;
-
-        let overrideKeys = _.map( _.cloneDeep( overrideOpts[ 0 ] ).members, member => {
-            member.id       = member.hoot_key.indexOf( '.creators' ) > -1 ? member.id : member.hoot_key.replace( /\./g, '_' );
-            member.required = member.required || false;
-
-            return member;
-        } );
-
-        this.defaultFields = this.mergeWithBase( _.cloneDeep( this.baseOpts ), overrideKeys );
-
-        return this.defaultFields;
     }
 
     mergeWithBase( members, overrideKeys ) {
@@ -58,7 +40,27 @@ export default class AdvancedOptsData {
         return members;
     }
 
-    generateFields( fieldData ) {
+    getDefaultMeta() {
+        let conflateType = d3.select( '#conflateType' ).node().value,
+            overrideOpts = conflateType === 'Reference'
+                ? this.referenceOpts
+                : conflateType === 'Average'
+                    ? this.averageOpts
+                    : this.horizontalOpts;
+
+        let overrideKeys = _.map( _.cloneDeep( overrideOpts[ 0 ] ).members, member => {
+            member.id       = member.hoot_key.indexOf( '.creators' ) > -1 ? member.id : member.hoot_key.replace( /\./g, '_' );
+            member.required = member.required || false;
+
+            return member;
+        } );
+
+        this.defaultMeta = this.mergeWithBase( _.cloneDeep( this.baseOpts ), overrideKeys );
+
+        return this.getFieldMeta( this.defaultMeta );
+    }
+
+    getFieldMeta( fieldData ) {
         return _.reduce( fieldData, ( arr, item ) => {
             let field = {};
 
@@ -156,16 +158,26 @@ export default class AdvancedOptsData {
         }, [] );
     }
 
-    generateSelectedValues( advOptsForm ) {
+    getParsedValues() {
+        let selectedVals = this.getSelectedValues( this.instance.form );
+
+        return _.reduce( selectedVals, ( str, opt ) => {
+            if ( str.length > 0 ) str += ' ';
+
+            str += `-D "${ opt.name }=${ opt.value }"`;
+
+            return str;
+        }, '' );
+    }
+
+    getSelectedValues( advOptsForm ) {
         this.form = advOptsForm;
 
-        return _.reduce( this.defaultFields, ( results, item ) => {
+        return _.reduce( this.defaultMeta, ( results, item ) => {
             if ( item.members[ 0 ].name === 'Enabled' &&
-                !this.form.select( `#${ item.members[ 0 ].id }` ).property( 'checked' ) ) return results;
+                !this.form.select( '#' + item.members[ 0 ].id ).property( 'checked' ) ) return results;
 
-            this.getAllValues( item, results );
-
-            return results;
+            return this.getAllValues( item, results );
         }, [] );
     }
 
@@ -196,10 +208,12 @@ export default class AdvancedOptsData {
                 }
             }
         } );
+
+        return results;
     }
 
     getCheckValue( item, subItem, results ) {
-        let selected = this.form.select( `#${ subItem.id }` ).property( 'checked' ),
+        let selected = this.form.select( '#' + subItem.id ).property( 'checked' ),
             key      = {};
 
         if ( !selected ) return;
@@ -228,7 +242,7 @@ export default class AdvancedOptsData {
     }
 
     getListValue( item, subItem, results ) {
-        let node  = this.form.select( `${ subItem.id }` ).node(),
+        let node  = this.form.select( '#' + subItem.id ).node(),
             value = node ? node.value : null;
 
         if ( !value || !value.length ) {
@@ -238,9 +252,9 @@ export default class AdvancedOptsData {
         let selectedMember = _.find( subItem.members, { name: value } );
 
         _.forEach( selectedMember.members, subMember => {
-            let node  = this.form.select( `${ subMember.id }` ).node(),
+            let node     = this.form.select( `${ subMember.id }` ).node(),
                 subValue = node ? node.value : null,
-                key   = {};
+                key      = {};
 
             if ( !subValue || !subValue.length ) {
                 subValue = subMember.defaultvalue;
@@ -261,7 +275,7 @@ export default class AdvancedOptsData {
     }
 
     getTextValue( item, subItem, results ) {
-        let node  = this.form.select( `#${ subItem.id }` ).node(),
+        let node  = this.form.select( '#' + subItem.id ).node(),
             value = node ? node.value : null,
             key   = {};
 
