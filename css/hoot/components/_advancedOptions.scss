@@ -59,16 +59,22 @@
     }
 
     .advanced-opts-header {
-        padding: 20px 15px;
+        height: 60px;
+        padding: 15px;
         box-shadow: 0 1px 10px 0 $light2;
 
-        h4 {
-            padding: 0;
+        h3 {
+            margin: 0;
         }
     }
 
+    .advanced-opts-reset {
+        height: auto;
+        padding: 0 10px;
+    }
+
     .advanced-opts-content {
-        top: 61px;
+        top: 65px;
         bottom: 150px;
         padding: 10px 0;
         overflow-x: hidden;

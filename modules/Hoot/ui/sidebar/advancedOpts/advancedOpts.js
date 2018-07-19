@@ -61,11 +61,14 @@ export default class AdvancedOpts {
 
         this.createContainer();
         this.createHeader();
+        //this.createResetButton();
         this.createContentDiv();
         this.createGroups();
         this.createButtons();
 
         this.saveFields();
+
+        this.defaultValues = this.lastSetFields;
     }
 
     toggle() {
@@ -88,18 +91,22 @@ export default class AdvancedOpts {
 
     createHeader() {
         let header = this.form.append( 'div' )
-            .classed( 'advanced-opts-header big keyline-bottom', true )
-            .append( 'h3' )
+            .classed( 'advanced-opts-header big keyline-bottom flex justify-between align-center', true )
+
+        header.append( 'h3' )
             .text( 'Advanced Conflation Options' );
 
+        // reset button
         header.append( 'div' )
-            .classed( 'fr _icon close pointer', true )
+            .append( 'button' )
+            .classed( 'advanced-opts-reset button secondary strong', true )
+            .text( 'Reset' )
             .on( 'click', () => {
-                if ( !window.confirm( 'All options will be reset to previously selected values. Are you sure you want to exit?' ) )
+                if ( !window.confirm( 'All options will be reset to their default values. Are you sure you want to continue?' ) )
                     return;
 
-                this.toggle();
-                setTimeout( () => this.restoreValues(), 300 );
+                this.lastSetFields = this.defaultValues;
+                this.restoreValues();
             } );
     }
 
