@@ -55,7 +55,7 @@ export function uiModes(context) {
                     return uiTooltipHtml(mode.description, mode.key);
                 })
             );
-/*
+
         context.map()
             .on('move.modes', _debounce(update, 500));
 
@@ -64,7 +64,12 @@ export function uiModes(context) {
 
         context
             .on('enter.modes', update);
-*/
+
+        context
+            .on('change.modes', update);
+
+        update();
+
         buttons
             .each(function(d) {
                 d3_select(this)

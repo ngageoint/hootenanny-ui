@@ -70,6 +70,7 @@ export function uiTools( context ) {
         let toolsMenu = selection
             .append( 'button' )
             .classed( 'tools-toggle', true )
+            .text( 'Tools' )
             .on( 'click', () => toggleMenu() );
 
         let toolItems = d3.select( '.limiter' )

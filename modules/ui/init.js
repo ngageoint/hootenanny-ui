@@ -84,7 +84,7 @@ export function uiInit(context) {
             .attr('id', 'bar')
             .attr('class', 'fillD');
 
-        content
+        let m = content
             .append('div')
             .attr('id', 'map')
             .attr('dir', 'ltr')
@@ -290,7 +290,7 @@ export function uiInit(context) {
 
 
         function onResize() {
-            mapDimensions = utilGetDimensions(content, true);
+            mapDimensions = utilGetDimensions(m, true);
             map.dimensions(mapDimensions);
         }
 

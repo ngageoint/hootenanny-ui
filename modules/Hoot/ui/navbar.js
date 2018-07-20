@@ -14,7 +14,7 @@ import About from './about';
  */
 export default class Navbar {
     constructor() {
-        this.container = d3.select( '#id-container' );
+        this.container = d3.select( 'body' );
 
         this.dropdownItems = [
             {

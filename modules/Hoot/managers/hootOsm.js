@@ -283,6 +283,11 @@ class HootOSM {
         }
     }
 
+    editable() {
+        //console.log( this.hootOverlay.geojson() );
+        return Object.keys( LayerManager.loadedLayers ).length;
+    }
+
     listen() {
         Event.listen( 'color-select', this.setLayerColor, this );
     }

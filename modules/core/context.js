@@ -43,6 +43,7 @@ import {
     utilRebind
 } from '../util';
 
+import HootOSM from '../Hoot/managers/hootOsm';
 
 export var areaKeys = {};
 
@@ -256,6 +257,9 @@ export function coreContext() {
         mode.enter();
         dispatch.call('enter', this, mode);
     };
+    context.change = function() {
+        dispatch.call( 'change', this );
+    };
 
     context.selectedIDs = function() {
         if (mode && mode.selectedIDs) {
@@ -314,7 +318,9 @@ export function coreContext() {
     context.map = function() { return map; };
     context.layers = function() { return map.layers; };
     context.surface = function() { return map.surface; };
-    context.editable = function() { return map.editable(); };
+    context.editable = function() {
+        return map.editable() && HootOSM.editable();
+    };
     context.surfaceRect = function() {
         return map.surface.node().getBoundingClientRect();
     };

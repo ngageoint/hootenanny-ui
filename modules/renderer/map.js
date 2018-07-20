@@ -858,7 +858,7 @@ export function rendererMap(context) {
     };
 
 
-    map.editable = function() {
+    map.editable = function(_) {
         var osmLayer = surface.selectAll('.data-layer-osm');
         if (!osmLayer.empty() && osmLayer.classed('disabled')) return false;
 

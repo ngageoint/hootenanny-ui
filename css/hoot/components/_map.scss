@@ -9,12 +9,16 @@
     }
 
     .limiter {
+        display: flex;
+        justify-content: flex-start;
         max-width: 100%;
     }
 
 
     .button-wrap button {
+        width: auto;
         padding: 0 20px;
+        float: none;
     }
 
     button[disabled] {
@@ -28,7 +32,6 @@
 }
 
 #map {
-    position: absolute;
     width: 100%;
 }
 
