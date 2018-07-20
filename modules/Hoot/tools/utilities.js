@@ -69,3 +69,7 @@ export const tooltipHtml = ( text, key ) => {
 
     return html;
 };
+
+export const isNaN = x => {
+    return Number.isNaN( parseFloat( x ) );
+};

@@ -148,4 +148,24 @@
     .hoot_road_opt_engine_group {
         margin-top: 10px;
     }
+
+    .tooltip {
+        max-width: 270px;
+        top: -30px !important;
+        left: unset !important;
+        right: 20px !important;
+        margin: 0;
+        opacity: 0.9;
+
+        .tooltip-arrow {
+            border-top-color: #F37676;
+            left: unset;
+            right: 30px;
+        }
+
+        .tooltip-inner {
+            background-color: #ccc;
+            border: 1px solid #F37676;
+        }
+    }
 }

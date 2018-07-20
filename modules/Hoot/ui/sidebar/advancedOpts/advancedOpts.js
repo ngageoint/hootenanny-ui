@@ -204,22 +204,9 @@ export default class AdvancedOpts {
             .attr( 'type', 'text' )
             .attr( 'id', d => d.id )
             .attr( 'placeholder', d => d.placeholder )
-            .select( function( d ) {
-                let node = d3.select( this );
-
-                if ( d.minvalue ) {
-                    node.attr( 'min', d.minvalue > 0 ? d.minvalue : 'na' );
-                }
-
-                if ( d.maxvalue ) {
-                    node.attr( 'max', d.maxvalue > 0 ? d.maxvalue : 'na' );
-                }
-
-                if ( d.onchange ) {
-                    node.on( 'change', () => {
-                    } );
-                }
-            } );
+            .attr( 'min', d => d.minvalue > 0 ? d.minvalue : 'na' )
+            .attr( 'max', d => d.maxvalue > 0 ? d.maxvalue : 'na' )
+            .on( 'input', d => this.control.handleFieldInput( d ) );
     }
 
     createCombobox( field ) {
@@ -242,6 +229,7 @@ export default class AdvancedOpts {
                         } ) );
 
                     d3.select( this )
+                        .attr( 'readonly', true )
                         .call( combobox );
 
                     instance.createSubGroup( field, d );
@@ -277,8 +265,11 @@ export default class AdvancedOpts {
             .classed( 'button primary round strong', true )
             .text( 'Apply' )
             .on( 'click', () => {
-                this.control.saveFields();
-                this.toggle();
+                let saved = this.control.saveFields();
+
+                if ( saved ) {
+                    this.toggle();
+                }
             } );
 
         actionsContainer.append( 'button' )

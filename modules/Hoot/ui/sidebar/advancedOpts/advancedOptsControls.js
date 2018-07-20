@@ -4,7 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/16/18
  *******************************************************************************************************/
 
-import _ from 'lodash-es';
+import _           from 'lodash-es';
+import { isNaN }   from '../../../tools/utilities';
+import { tooltip } from '../../../../util/tooltip';
 
 export default class AdvancedOptsControls {
     constructor( panel ) {
@@ -12,8 +14,10 @@ export default class AdvancedOptsControls {
         this.data  = panel.data;
 
         this.transitionTime = 300;
+
         this.defaultFields  = null;
         this.lastSetFields  = null;
+        this.formValid      = true;
     }
 
     handleFieldChange( d ) {
@@ -83,10 +87,65 @@ export default class AdvancedOptsControls {
                 break;
             }
             default: {
-                if ( _.includes( [ 'long', 'int', 'double' ], d.type ) ) {
-                    // TODO: validate input
-                }
+                break;
             }
+        }
+    }
+
+    handleFieldInput( d ) {
+        if ( _.includes( [ 'long', 'int', 'double' ], d.type ) ) {
+            this.validateField( d );
+        }
+    }
+
+    validateField( d ) {
+        let target      = d3.select( '#' + d.id ),
+            parent      = d3.select( target.node().parentNode ),
+            val         = target.property( 'value' ),
+            min         = target.property( 'min' ),
+            max         = target.property( 'max' ),
+            valid       = true,
+            invalidText = '';
+
+        if ( isNaN( val ) ) {
+            valid       = false;
+            invalidText = 'Value must be a valid number';
+        }
+
+        if ( !isNaN( min ) && val < min ) {
+            valid       = false;
+            invalidText = `Value must be greater than ${ min }`;
+        }
+
+        if ( !isNaN( max ) && val > max ) {
+            valid       = false;
+            invalidText = `Value must be less than ${ max }`;
+        }
+
+        if ( d.id === 'poipolygon_review_distance_threshold' || d.id === 'poipolygon_match_distance_threshold' ) {
+            let reviewElem = d3.select( '#poipolygon_review_distance_threshold' ),
+                matchElem  = d3.select( '#poipolygon_match_distance_threshold' ),
+                reviewVal  = parseFloat( reviewElem.property( 'value' ) ) || reviewElem.attr( 'placeholder' ),
+                matchVal   = parseFloat( matchElem.property( 'value' ) || matchElem.attr( 'placeholder' ) );
+
+            if ( reviewVal <= matchVal ) {
+                valid       = false;
+                invalidText = 'POI Polygon Review Distance Threshold must be greater than the POI Polygon Match Distance Threshold.';
+            }
+        }
+
+        let textTooltip = tooltip()
+            .placement( 'top' )
+            .html( 'true' )
+            .title( invalidText );
+
+        target.classed( 'invalid', !valid );
+
+        if ( !valid ) {
+            parent.call( textTooltip );
+            textTooltip.show( parent );
+        } else {
+            textTooltip.destroy( parent );
         }
     }
 
@@ -147,7 +206,13 @@ export default class AdvancedOptsControls {
     }
 
     saveFields() {
-        this.lastSetFields = this.getFields();
+        if ( this.panel.form.selectAll( 'input.invalid' ).size() > 0 ) {
+            alert( 'Please fix invalid fields before continuing.' );
+            return false;
+        } else {
+            this.lastSetFields = this.getFields();
+            return true;
+        }
     }
 
     restoreFields( defaultFields ) {
