@@ -39,6 +39,7 @@ import { uiSidebar } from './sidebar';
 import { uiSpinner } from './spinner';
 import { uiSplash } from './splash';
 import { uiStatus } from './status';
+import { uiTools } from './tools';
 import { uiUndoRedo } from './undo_redo';
 import { uiVersion } from './version';
 import { uiZoom } from './zoom';
@@ -94,26 +95,31 @@ export function uiInit(context) {
             .call(uiInfo(context));
             //.call(uiNotice(context));
 
-        bar
-            .append('div')
-            .attr('class', 'spacer col4');
+        //bar
+        //    .append('div')
+        //    .attr('class', 'spacer col4');
 
         var limiter = bar.append('div')
             .attr('class', 'limiter');
 
         limiter
+            .append( 'div' )
+            .attr( 'class', 'button-wrap' )
+            .call(uiTools(context));
+
+        limiter
             .append('div')
-            .attr('class', 'button-wrap joined col3')
+            .attr('class', 'button-wrap joined')
             .call(uiModes(context), limiter);
 
         limiter
             .append('div')
-            .attr('class', 'button-wrap joined col1')
+            .attr('class', 'button-wrap joined')
             .call(uiUndoRedo(context));
 
         limiter
             .append('div')
-            .attr('class', 'button-wrap col1')
+            .attr('class', 'button-wrap')
             .call(uiSave(context));
 
         // limiter

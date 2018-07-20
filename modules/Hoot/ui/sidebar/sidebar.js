@@ -79,6 +79,8 @@ export default class Sidebar {
         let width = reset ? 400 : d3.mouse( target.parentNode )[ 0 ];
 
         this.iDSidebar.style( 'width', width + 'px' );
+
+        d3.select( '#bar' ).style( 'left', this.iDSidebar.node().clientWidth + 'px' );
     }
 
     createWrapper() {
