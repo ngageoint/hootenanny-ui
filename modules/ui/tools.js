@@ -41,7 +41,7 @@ export function uiTools( context ) {
                     tooltip: '',
                     group: 'measure',
                     type: 'help',
-                    icon: 'id-icon-help',
+                    icon: 'iD-icon-help',
                     action: 'measureHelp'
                 }
             ]
