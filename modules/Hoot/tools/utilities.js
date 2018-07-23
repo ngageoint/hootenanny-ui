@@ -50,10 +50,10 @@ export const getOS = () => {
 };
 
 export const isValidCoords = coords => {
-    return ( coords.length === 2 ||
-        ( !isNaN( coords[ 0 ] ) && !isNaN( coords[ 1 ] ) ) ||
-        ( coords[ 0 ] < 180.0 && coords[ 0 ] > -180.0 ) ||
-        ( coords[ 1 ] < 90.0 && coords[ 1 ] > -90.0 )
+    return (coords.length === 2 ||
+        (!isNaN( coords[ 0 ] ) && !isNaN( coords[ 1 ] )) ||
+        (coords[ 0 ] < 180.0 && coords[ 0 ] > -180.0) ||
+        (coords[ 1 ] < 90.0 && coords[ 1 ] > -90.0)
     );
 };
 
@@ -72,4 +72,30 @@ export const tooltipHtml = ( text, key ) => {
 
 export const isNaN = x => {
     return Number.isNaN( parseFloat( x ) );
+};
+
+export const dropdown = ( selector, duration, callback ) => {
+    duration = duration || 100;
+
+    $( selector ).one( 'click', () => toggle() );
+
+    function toggle( cb ) {
+        $( selector ).parent().siblings( '.dropdown-content' ).slideToggle( duration, function() {
+            if ( cb ) {
+                cb();
+            }
+
+            if ( callback ) {
+                callback();
+            }
+
+            if ( !$( this ).is( ':visible' ) ) return;
+
+            bindBodyClick();
+        } );
+    }
+
+    function bindBodyClick() {
+        $( 'body' ).one( 'click', () => toggle( () => dropdown( selector, duration, callback ) ) );
+    }
 };

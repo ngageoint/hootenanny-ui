@@ -60,7 +60,7 @@ export default class Navbar {
                 d3.select( '#manage-panel' )
                     .classed( 'hidden', vis );
 
-                d3.selectAll( '.context-menu, .tools-menu, .datasets-options-menu' ).remove();
+                d3.selectAll( '.context-menu, .datasets-options-menu' ).remove();
             } );
 
         menuButton

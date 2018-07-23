@@ -1,0 +1,87 @@
+#bar {
+    display: inline-block;
+    top: 60px;
+    left: 400px;
+    padding: 10px;
+
+    .spacer {
+        width: 0;
+    }
+
+    .limiter {
+        display: flex;
+        justify-content: flex-start;
+        max-width: 100%;
+    }
+
+
+    .button-wrap button {
+        width: auto;
+        padding: 0 20px;
+        float: none;
+    }
+
+    button[disabled] {
+        border: none;
+        background-color: rgba(255,255,255,.25) !important;
+        color: rgba(0,0,0,0.4) !important;
+    }
+
+    .undo-button,
+    .redo-button {
+        max-width: 60px;
+    }
+}
+
+.tools-menu {
+    display: none;
+    position: absolute;
+    top: 45px;
+    background-color: $light;
+    color: black;
+    cursor: default;
+    white-space: nowrap;
+
+    li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 5px 4px 16px;
+
+        &.highlight {
+            background-color: $blue;
+        }
+
+        &:first-child {
+            border-radius: 4px 4px 0 0;
+        }
+
+        &:last-child {
+            border-radius: 0 0 4px 4px;
+        }
+
+        &:only-child {
+            border-radius: 4px;
+        }
+
+        i {
+            vertical-align: middle;
+            float: right;
+        }
+    }
+
+    .sub-menu {
+        position: absolute;
+        background-color: $light;
+        cursor: default;
+
+        li {
+            padding: 4px 16px;
+            justify-content: flex-start;
+
+            &:hover {
+                background-color: $blue;
+            }
+        }
+    }
+}

@@ -19,7 +19,7 @@ import { contextMenus } from '../config/domElements';
 export default class FolderTree {
     constructor( container ) {
         this.container              = container;
-        this.isDatasetTable         = this.container.attr( 'id' ) === 'datasets-table';
+        this.isDatasetTable         = this.container.attr( 'id' ) === 'dataset-table';
         this.selectedNodes          = [];
         this.lastSelectedNode       = null;
         this.lastSelectedRangeNodes = null;
