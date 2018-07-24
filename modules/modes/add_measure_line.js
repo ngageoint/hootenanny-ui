@@ -8,7 +8,7 @@ import { behaviorDrawMeasureLine } from '../behavior';
 import { modeBrowse }              from './browse';
 
 export function modeAddMeasureLine( context ) {
-    let mode = {
+    let addLine = {
         id: 'measure-add-line',
         key: '6'
     };
@@ -16,22 +16,31 @@ export function modeAddMeasureLine( context ) {
     let svg = d3.select( '.data-layer-measure' ).select( 'svg' );
 
     let behavior = behaviorDrawMeasureLine( context, svg )
+        .on( 'cancel', addLine.cancel )
         .on( 'finish', finish );
 
-    function finish() {
-        d3.event.stopPropagation();
-        context.pop();
+    function finish( nodeId ) {
+        d3.selectAll( '.measure-line-' + nodeId ).each( function() {
+            d3.select( this.parentNode ).remove();
+        } );
+
+        d3.selectAll( '.measure-vertex-' + nodeId ).remove();
+
         context.enter( modeBrowse( context ) );
     }
 
-    mode.enter = function() {
+    addLine.cancel = function() {
+
+    };
+
+    addLine.enter = function() {
         d3.select('.data-layer-measure').selectAll('g').remove();
         context.install( behavior );
     };
 
-    mode.exit = function() {
+    addLine.exit = function() {
         context.uninstall( behavior );
     };
 
-    return mode;
+    return addLine;
 }

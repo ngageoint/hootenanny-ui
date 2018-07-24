@@ -13,11 +13,12 @@ export function behaviorDrawMeasureLine( context, svg ) {
         keybinding     = d3_keybinding( 'measure' ),
         closeTolerance = 4,
         tolerance      = 12,
-        nodeId         = 0,
-        line, label,//rect,
         lastPoint      = null,
         totDist        = 0,
-        segmentDist    = 0;
+        segmentDist    = 0,
+        nodeId,
+        line,
+        label;
 
     function mousedown() {
         d3.event.stopPropagation();
@@ -89,8 +90,7 @@ export function behaviorDrawMeasureLine( context, svg ) {
         let c = context.projection( context.map().mouseCoordinates() );
 
         svg.append( 'g' )
-            .classed( 'node point', true )
-            .attr( 'id', 'measure-vertex-' + nodeId )
+            .classed( 'node point measure-vertex-' + nodeId , true )
             .attr( 'transform', 'translate(' + c[ 0 ] + ',' + c[ 1 ] + ')' );
 
         totDist     = totDist + segmentDist;
@@ -161,7 +161,7 @@ export function behaviorDrawMeasureLine( context, svg ) {
 
     function backspace() {
         d3.event.preventDefault();
-        d3.event.call( 'undo' );
+        dispatch.call( 'undo' );
     }
 
     function del() {
@@ -170,11 +170,15 @@ export function behaviorDrawMeasureLine( context, svg ) {
     }
 
     function ret() {
+        let prevNodeId = nodeId - 1;
+
         d3.event.preventDefault();
-        dispatch.call( 'finish' );
+        dispatch.call( 'finish', this, prevNodeId );
     }
 
     function drawline( selection ) {
+        nodeId = 0;
+
         keybinding
             .on( '⌫', backspace )
             .on( '⌦', del )
