@@ -9,7 +9,7 @@ import { d3keybinding as d3_keybinding } from '../lib/d3.keybinding';
 import { geoEuclideanDistance }          from '../geo';
 
 export function behaviorDrawMeasureLine( context, svg ) {
-    let dispatch       = d3.dispatch( 'move', 'click', 'cancel', 'finish', 'dblclick' ),
+    let dispatch       = d3.dispatch( 'move', 'click', 'undo', 'cancel', 'finish', 'dblclick' ),
         keybinding     = d3_keybinding( 'measure' ),
         closeTolerance = 4,
         tolerance      = 12,
@@ -26,9 +26,9 @@ export function behaviorDrawMeasureLine( context, svg ) {
         function point() {
             let p = element.node().parentNode;
 
-            return touchId !== null ? d3.touches( p ).filter( function( p ) {
-                return p.identifier === touchId;
-            } )[ 0 ] : d3.mouse( p );
+            return touchId !== null
+                ? d3.touches( p ).filter( p => p.identifier === touchId )[ 0 ]
+                : d3.mouse( p );
         }
 
         let element = d3.select( this ),
@@ -47,13 +47,13 @@ export function behaviorDrawMeasureLine( context, svg ) {
                     (+new Date() - time) < 500) ) {
 
                 // Prevent a quick second click
-                d3.select( window ).on( 'click.drawline-block', function() {
+                d3.select( window ).on( 'click.drawline-block', () => {
                     d3.event.stopPropagation();
                 }, true );
 
                 context.map().dblclickEnable( false );
 
-                setTimeout( function() {
+                setTimeout( () => {
                     context.map().dblclickEnable( true );
                     d3.select( window ).on( 'click.drawline-block', null );
                 }, 500 );
@@ -188,8 +188,6 @@ export function behaviorDrawMeasureLine( context, svg ) {
         selection
             .on( 'mousedown.drawline', mousedown )
             .on( 'mousemove.drawline', mousemove );
-
-        //d3.select( document ).on( 'mouseup.drawline', mouseup );
 
         d3.select( document )
             .call( keybinding );

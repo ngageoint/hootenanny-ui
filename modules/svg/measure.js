@@ -4,14 +4,16 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/23/18
  *******************************************************************************************************/
 
+import _ from 'lodash-es';
+
 import {
     utilGetDimensions,
     utilSetDimensions
 } from '../util/dimensions';
 
-export function svgMeasure(projection, context, dispatch) {
-    let gj      = {},
-        enable  = true,
+export function svgMeasure( projection, context, dispatch ) {
+    let gj     = {},
+        enable = true,
         svg;
 
     function drawMeasure( selection ) {
@@ -70,29 +72,42 @@ export function svgMeasure(projection, context, dispatch) {
             measureLabel
                 .attr( 'x', c[ 0 ] + labelMargin )
                 .attr( 'y', c[ 1 ] + labelMargin );
+
+            let tspans = measureLabel.selectAll( 'tspan' );
+
+            if ( !tspans.empty() ) {
+                let diff = 0;
+
+                tspans.each( function() {
+                    d3.select( this )
+                        .attr( 'x', c[ 0 ] + 10 )
+                        .attr( 'y', c[ 1 ] + diff );
+                    diff += 25;
+                } );
+            }
         }
     }
 
-    drawMeasure.projection = function(_) {
-        if (!arguments.length) return projection;
+    drawMeasure.projection = function( _ ) {
+        if ( !arguments.length ) return projection;
         projection = _;
         return this;
     };
 
-    drawMeasure.enable = function(_) {
-        if (!arguments.length) return enable;
+    drawMeasure.enable = function( _ ) {
+        if ( !arguments.length ) return enable;
         enable = _;
-        dispatch.call('change');
+        dispatch.call( 'change' );
         return this;
     };
 
-    drawMeasure.geojson = function(_) {
-        if (!arguments.length) return gj;
+    drawMeasure.geojson = function( _ ) {
+        if ( !arguments.length ) return gj;
         gj = _;
         return this;
     };
 
-    drawMeasure.dimensions = function(_) {
+    drawMeasure.dimensions = function( _ ) {
         if ( !arguments.length ) return utilGetDimensions( svg );
         utilSetDimensions( svg, _ );
         return this;

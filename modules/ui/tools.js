@@ -5,8 +5,7 @@
  *******************************************************************************************************/
 
 import {
-    modeAddArea,
-    modeAddLine,
+    modeAddMeasureArea,
     modeAddMeasureLine
 } from '../modes';
 
@@ -35,7 +34,7 @@ export function uiTools( context ) {
                     group: 'measure',
                     type: 'area',
                     icon: 'iD-icon-area',
-                    mode: modeAddArea( context )
+                    mode: modeAddMeasureArea( context )
                 },
                 {
                     title: 'Measure Help',
