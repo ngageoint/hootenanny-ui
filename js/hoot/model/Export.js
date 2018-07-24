@@ -105,12 +105,14 @@ Hoot.model.export = function (context)
 
         // Check to see if we are exporting hoot tags, including "status" as text
         var exportHootTags= '';
-        if (container.exportHootTags) { exportHootTags = container.exportHootTags; }
-        else {
-            try{
-                exportHootTags=container.select('.cboxExportHootTags').select('input').property('checked');
+        if (container.exportHootTags) {
+            console.log('bulk here')
+            exportHootTags = container.exportHootTags;
+        } else {
+            try {
+                exportHootTags = container.select('.cboxExportHootTags').select('input').property('checked');
             } catch (e) {
-                exportHootTags=true;
+                exportHootTags = true;
             }
         }
 
@@ -149,7 +151,8 @@ Hoot.model.export = function (context)
         param.outputname = outputname;
         param.USER_EMAIL = iD.data.hootConfig.userEmail;
         param.append = appendTemplate.toString();
-        param.textstatus = exportHootTags.toString();
+        param.textstatus = false;
+        param.includehoottags = exportHootTags.toString();
         param.tagoverrides = (exportHootTags) ? JSON.stringify(tagoverrides) : JSON.stringify(Object.assign(context.hoot().control.utilities.settagoverrides.getHootTagList, tagoverrides));
 
         d3.json('/hoot-services/job/export/execute')

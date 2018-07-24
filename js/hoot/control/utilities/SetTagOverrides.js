@@ -36,8 +36,7 @@ Hoot.control.utilities.settagoverrides = function(context) {
             'hoot:score:match':'',
             'hoot:score:miss':'',
             'hoot:score:review':'',
-            'hoot:score:uuid':'',
-            'uuid':''
+            'hoot:score:uuid':''
         };
 
     /**
