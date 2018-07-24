@@ -3,60 +3,74 @@
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/23/18
  *******************************************************************************************************/
- 
+
+import {
+    utilGetDimensions,
+    utilSetDimensions
+} from '../util/dimensions';
+
 export function svgMeasure(projection, context, dispatch) {
-    var gj = {},
-        enable = true,
-        svg,
-        markers = [{
-            id: 'measureCircle',
-            w: 10,
-            h: 10,
-            x: 5,
-            y: 5,
-            t: '<circle cx="5" cy="5" r="5" class="measure tail"/>',
-            u: 'userSpaceOnUse'
-        }];
+    let gj      = {},
+        enable  = true,
+        svg;
 
-    function drawMeasure(selection) {
-        svg = selection.selectAll('svg')
-            .data(enable ? [0] : []);
-
-        var defs = svg.enter()
-            .append('svg')
-            .append('defs');
-
-        var m = defs.selectAll('marker')
-            .data(markers);
-
-        m.enter().append('marker')
-            .attr('id', function(d) { return d.id; })
-            .attr('markerWidth', function(d) { return d.w; })
-            .attr('markerHeight', function(d) { return d.h; })
-            .attr('refX', function(d) { return d.x; })
-            .attr('refY', function(d) { return d.y; })
-            .attr('orient', function(d) { return d.o; })
-            .attr('markerUnits', function(d) { return d.u; })
-            .html(function(d) { return d.t; });
-
-        svg.style('display', enable ? 'block' : 'none');
-
-
-        var paths = svg
-            .selectAll('path.measure.line')
-            .data([gj]);
-
-        paths
+    function drawMeasure( selection ) {
+        svg = selection.selectAll( 'svg' )
+            .data( [ 0 ] )
             .enter()
-            .append('path')
-            .attr('class', 'measure line')
-            .attr('style', 'marker-end: url(#markerMeasure);');
+            .append( 'svg' );
 
-        var path = d3.geoPath()
-            .projection(projection);
+        let measureLines = d3.selectAll( '[class*=measure-line-]' ),
+            measureArea  = d3.selectAll( '.measure-area' ),
+            measureLabel = d3.select( '.measure-label-text' );
 
-        paths
-            .attr('d', path);
+        if ( !measureLines.empty() ) {
+            measureLines.each( function() {
+                let line = d3.select( this ),
+                    loc1 = line.attr( 'loc1' ).split( /,/ ).map( parseFloat ),
+                    loc2 = line.attr( 'loc2' ).split( /,/ ).map( parseFloat ),
+                    c1   = context.projection( loc1 ),
+                    c2   = context.projection( loc2 );
+
+                line.attr( 'x1', c1[ 0 ].toString() )
+                    .attr( 'y1', c1[ 1 ].toString() );
+
+                line.attr( 'x2', c2[ 0 ].toString() )
+                    .attr( 'y2', c2[ 1 ].toString() );
+            } );
+        }
+
+        if ( !measureArea.empty() ) {
+            measureArea.each( function() {
+                let measArea = d3.select( this ),
+                    newPts   = '';
+
+                if ( _.isEmpty( measArea.attr( 'loc' ) ) ) return;
+
+                let pts       = measArea.attr( 'loc' ).trim().split( / / ),
+                    ptsLength = measureArea.classed( 'measure-complete' ) ? pts.length : pts.length - 1;
+
+                for ( let i = 0; i < ptsLength; i++ ) {
+                    let newpt = pts[ i ].split( /,/ ).map( parseFloat ),
+                        c     = context.projection( newpt );
+
+                    newPts = newPts + ' ' + c.toString();
+                }
+
+                measureArea.attr( 'points', newPts );
+                measureArea.classed( 'updated', true );
+            } );
+        }
+
+        if ( !measureLabel.empty() ) {
+            let labelMargin = !measureLines.empty() ? 10 : 30,
+                loc         = measureLabel.attr( 'loc' ).split( /,/ ).map( parseFloat ),
+                c           = context.projection( loc );
+
+            measureLabel
+                .attr( 'x', c[ 0 ] + labelMargin )
+                .attr( 'y', c[ 1 ] + labelMargin );
+        }
     }
 
     drawMeasure.projection = function(_) {
@@ -79,8 +93,8 @@ export function svgMeasure(projection, context, dispatch) {
     };
 
     drawMeasure.dimensions = function(_) {
-        if (!arguments.length) return svg.dimensions();
-        svg.dimensions(_);
+        if ( !arguments.length ) return utilGetDimensions( svg );
+        utilSetDimensions( svg, _ );
         return this;
     };
 

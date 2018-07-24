@@ -13,12 +13,10 @@ export function modeAddMeasureLine( context ) {
         key: '6'
     };
 
-    let svg = d3.select( '.layer-measure' ).select( 'svg' );
+    let svg = d3.select( '.data-layer-measure' ).select( 'svg' );
 
     let behavior = behaviorDrawMeasureLine( context, svg )
         .on( 'finish', finish );
-
-    d3.select('.layer-measure').selectAll('g').remove();
 
     function finish() {
         d3.event.stopPropagation();
@@ -27,7 +25,7 @@ export function modeAddMeasureLine( context ) {
     }
 
     mode.enter = function() {
-        d3.select('.layer-measure').selectAll('g').remove();
+        d3.select('.data-layer-measure').selectAll('g').remove();
         context.install( behavior );
     };
 

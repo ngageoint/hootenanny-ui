@@ -13,16 +13,7 @@ export function rendererMeasureLayer( context ) {
     let projection,
         gj      = {},
         enable  = true,
-        svg,
-        markers = [ {
-            id: 'measureCircle',
-            w: 10,
-            h: 10,
-            x: 5,
-            y: 5,
-            t: '<circle cx="5" cy="5" r="5" class="measure tail"/>',
-            u: 'userSpaceOnUse'
-        } ];
+        svg;
 
     function render( selection ) {
         svg = selection.selectAll( 'svg' )
@@ -30,44 +21,6 @@ export function rendererMeasureLayer( context ) {
             .enter()
             .append( 'svg' );
 
-        let defs = svg
-            .append( 'defs' );
-
-        let m = defs.selectAll( 'marker' )
-            .data( markers );
-
-        m.enter().append( 'marker' )
-            .attr( 'id', d => d.id )
-            .attr( 'markerWidth', d => d.w )
-            .attr( 'markerHeight', d => d.h )
-            .attr( 'refX', d => d.x )
-            .attr( 'refY', d => d.y )
-            .attr( 'orient', d => d.o )
-            .attr( 'markerUnits', d => d.u )
-            .html( d => d.t );
-
-        svg.style( 'display', enable ? 'block' : 'none' );
-
-        let paths = svg
-            .selectAll( 'path.measure.line' )
-            .data( [ gj ] );
-
-        paths
-            .enter()
-            .append( 'path' )
-            .attr( 'class', 'measure line' )
-            .attr( 'style', 'marker-end: url(#markerMeasure);' );
-
-        let path = d3.geoPath()
-            .projection( projection );
-
-        paths
-            .attr( 'd', path );
-
-        render.update();
-    }
-
-    render.update = function() {
         let measureLines = d3.selectAll( '[class*=measure-line-]' ),
             measureArea  = d3.selectAll( '.measure-area' ),
             measureLabel = d3.select( '.measure-label-text' );
@@ -118,23 +71,8 @@ export function rendererMeasureLayer( context ) {
             measureLabel
                 .attr( 'x', c[ 0 ] + labelMargin )
                 .attr( 'y', c[ 1 ] + labelMargin );
-
-            // TODO: delete if not needed
-            //let tspans = measureLabel.selectAll( 'tspan' );
-            //
-            //if ( !tspans.empty() ) {
-            //    let diff = 0;
-            //
-            //    tspans.each( function() {
-            //        d3.select( this )
-            //            .attr( 'x', c[ 0 ] + 10 )
-            //            .attr( 'y', c[ 1 ] + diff );
-            //
-            //        diff += 25;
-            //    } );
-            //}
         }
-    };
+    }
 
     render.projection = function( _ ) {
         if ( !arguments.length ) return projection;
