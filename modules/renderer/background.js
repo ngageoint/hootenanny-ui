@@ -5,19 +5,21 @@ import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { interpolateNumber as d3_interpolateNumber } from 'd3-interpolate';
 import { select as d3_select } from 'd3-selection';
 
-import { data } from '../../data';
+import { data }                                           from '../../data';
 import { geoExtent, geoMetersToOffset, geoOffsetToMeters} from '../geo';
-import { rendererBackgroundSource } from './background_source';
-import { rendererTileLayer } from './tile_layer';
-import { utilQsString, utilStringQs } from '../util';
-import { utilDetect } from '../util/detect';
-import { utilRebind } from '../util/rebind';
+import { rendererBackgroundSource }                       from './background_source';
+import { rendererTileLayer }                              from './tile_layer';
+import { rendererMeasureLayer }                           from './measure_layer';
+import { utilQsString, utilStringQs }                     from '../util';
+import { utilDetect }                                     from '../util/detect';
+import { utilRebind }                                     from '../util/rebind';
 
 
 export function rendererBackground(context) {
     var dispatch = d3_dispatch('change');
     var detected = utilDetect();
     var baseLayer = rendererTileLayer(context).projection(context.projection);
+    var measureLayer = rendererMeasureLayer(context).projection(context.projection);
     var _overlayLayers = [];
     var _backgroundSources = [];
     var _brightness = 1;
@@ -109,6 +111,19 @@ export function rendererBackground(context) {
             .attr('class', 'layer layer-overlay')
             .merge(overlays)
             .each(function(layer) { d3_select(this).call(layer); });
+
+        // Added for Hoot measurement tool
+        var measure = selection.selectAll('.layer-measure')
+            .data([0]);
+
+        measure.exit()
+            .remove();
+
+        measure.enter()
+            .insert( 'div', '.layer-data' )
+            .attr( 'class', 'layer layer-measure' )
+            .merge( measure )
+            .call( measureLayer );
     }
 
 
@@ -237,6 +252,7 @@ export function rendererBackground(context) {
     background.dimensions = function(_) {
         if (!_) return;
         baseLayer.dimensions(_);
+        measureLayer.dimensions(_);
 
         _overlayLayers.forEach(function(layer) {
             layer.dimensions(_);

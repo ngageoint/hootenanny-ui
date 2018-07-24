@@ -49,7 +49,7 @@ export function rendererTileLayer(context) {
     }
 
 
-    function lookUp(d) {
+    function lookUp(d) {w
         for (var up = -1; up > -d[2]; up--) {
             var tile = atZoom(d, up);
             if (_cache[_source.url(tile)] !== false) {

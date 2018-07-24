@@ -4,6 +4,7 @@ export { behaviorCopy } from './copy';
 export { behaviorDrag } from './drag';
 export { behaviorDrawWay } from './draw_way';
 export { behaviorDraw } from './draw';
+export { behaviorDrawMeasureLine } from './draw_measure_line';
 export { behaviorEdit } from './edit';
 export { behaviorHash } from './hash';
 export { behaviorHover } from './hover';

@@ -6,7 +6,8 @@
 
 import {
     modeAddArea,
-    modeAddLine
+    modeAddLine,
+    modeAddMeasureLine
 } from '../modes';
 
 import { svgIcon } from '../svg';
@@ -26,7 +27,7 @@ export function uiTools( context ) {
                     group: 'measure',
                     type: 'line',
                     icon: 'iD-icon-line',
-                    mode: modeAddLine( context )
+                    mode: modeAddMeasureLine( context )
                 },
                 {
                     title: 'Measure Area',
@@ -130,7 +131,12 @@ export function uiTools( context ) {
         let item = subItems
             .append( 'li' )
             .attr( 'class', d => `${ d.icon } tools-${ d.group }` )
-            .style( 'height', selected.node().getBoundingClientRect().height + 'px' );
+            .style( 'height', selected.node().getBoundingClientRect().height + 'px' )
+            .on( 'click', d => {
+                if ( d.mode ) {
+                    context.enter( d.mode );
+                }
+            } );
 
         item.each( function( d ) {
             d3.select( this ).call( svgIcon( `#${ d.icon }`, 'pre-text' ) );

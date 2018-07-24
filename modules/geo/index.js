@@ -8,6 +8,7 @@ export { geoMetersToOffset } from './geo.js';
 export { geoOffsetToMeters } from './geo.js';
 export { geoScaleToZoom } from './geo.js';
 export { geoSphericalDistance } from './geo.js';
+export { geoEuclideanDistance } from './geo.js';
 export { geoZoomToScale } from './geo.js';
 
 export { geoAngle } from './geom.js';

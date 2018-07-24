@@ -52,6 +52,12 @@ export function geoSphericalDistance(a, b) {
 }
 
 
+export function geoEuclideanDistance(a, b) {
+    var x = a[0] - b[0], y = a[1] - b[1];
+    return Math.sqrt((x * x) + (y * y));
+}
+
+
 // scale to zoom
 export function geoScaleToZoom(k, tileSize) {
     tileSize = tileSize || 256;
@@ -65,4 +71,3 @@ export function geoZoomToScale(z, tileSize) {
     tileSize = tileSize || 256;
     return tileSize * Math.pow(2, z) / TAU;
 }
-
