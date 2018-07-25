@@ -103,18 +103,18 @@ export function uiTools( context ) {
         let duration = 50,
             $toolsToggle = $( '.tools-toggle' );
 
-        $toolsToggle.one( 'click', () => toggle() );
-
-        function toggle( cb ) {
+        $toolsToggle.one( 'click', () => {
             if ( toolsToggle.text() === 'Clear' ) {
                 d3.select( '.data-layer-measure' ).selectAll( 'g' ).remove();
                 toolsToggle.text( 'Tools' );
 
                 initDropdown();
-
-                return;
+            } else {
+                toggle();
             }
+        } );
 
+        function toggle( cb ) {
             $toolsToggle.parent().siblings( '.dropdown-content' ).slideToggle( duration, function() {
                 if ( cb ) {
                     cb();

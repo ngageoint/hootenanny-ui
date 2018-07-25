@@ -26,6 +26,10 @@ export function modeAddMeasureLine( context ) {
 
         d3.selectAll( '.measure-vertex-' + nodeId ).remove();
 
+        if ( d3.select( '.data-layer-measure' ).selectAll( 'g' ).size() ) {
+            d3.select( '.tools-toggle' ).text( 'Clear' );
+        }
+
         context.enter( modeBrowse( context ) );
     }
 
@@ -39,7 +43,10 @@ export function modeAddMeasureLine( context ) {
     };
 
     addLine.exit = function() {
-        d3.select( '.tools-toggle' ).text( 'Clear' );
+        //if ( d3.select('.data-layer-measure').selectAll('g').size() ) {
+        //    d3.select( '.tools-toggle' ).text( 'Clear' );
+        //}
+
         context.uninstall( behavior );
     };
 
