@@ -74,28 +74,28 @@ export const isNaN = x => {
     return Number.isNaN( parseFloat( x ) );
 };
 
-export const dropdown = ( selector, duration, callback ) => {
-    duration = duration || 100;
-
-    $( selector ).one( 'click', () => toggle() );
-
-    function toggle( cb ) {
-        $( selector ).parent().siblings( '.dropdown-content' ).slideToggle( duration, function() {
-            if ( cb ) {
-                cb();
-            }
-
-            if ( callback ) {
-                callback();
-            }
-
-            if ( !$( this ).is( ':visible' ) ) return;
-
-            bindBodyClick();
-        } );
-    }
-
-    function bindBodyClick() {
-        $( 'body' ).one( 'click', () => toggle( () => dropdown( selector, duration, callback ) ) );
-    }
-};
+//export const dropdown = ( selector, duration, callback ) => {
+//    duration = duration || 100;
+//
+//    $( selector ).one( 'click', () => toggle() );
+//
+//    function toggle( cb ) {
+//        $( selector ).parent().siblings( '.dropdown-content' ).slideToggle( duration, function() {
+//            if ( cb ) {
+//                cb();
+//            }
+//
+//            if ( callback ) {
+//                callback();
+//            }
+//
+//            if ( !$( this ).is( ':visible' ) ) return;
+//
+//            bindBodyClick();
+//        } );
+//    }
+//
+//    function bindBodyClick() {
+//        $( 'body' ).one( 'click', () => toggle( () => dropdown( selector, duration, callback ) ) );
+//    }
+//};

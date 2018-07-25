@@ -43,6 +43,7 @@ export function modeAddMeasureArea( context ) {
     };
 
     addArea.exit = function() {
+        d3.select( '.tools-toggle' ).text( 'Clear' );
         context.uninstall( behavior );
     };
 

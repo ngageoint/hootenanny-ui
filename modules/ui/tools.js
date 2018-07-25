@@ -63,13 +63,14 @@ export function uiTools( context ) {
         }
     ];
 
-    let toolsMenu,
+    let toolsToggle,
+        toolsMenu,
         menuItems,
         subMenu,
         subItems;
 
     return function( selection ) {
-        selection
+        toolsToggle = selection
             .append( 'button' )
             .classed( 'tools-toggle', true )
             .text( 'Tools' );
@@ -95,12 +96,44 @@ export function uiTools( context ) {
             .classed( 'material-icons', true )
             .text( 'arrow_right' );
 
-        dropdown( '.tools-toggle', 50, () => {
-            if ( toolsMenu.style( 'display' ) === 'none' ) {
-                destroySubMenu();
-            }
-        } );
+        initDropdown();
     };
+
+    function initDropdown() {
+        let duration = 50,
+            $toolsToggle = $( '.tools-toggle' );
+
+        $toolsToggle.one( 'click', () => toggle() );
+
+        function toggle( cb ) {
+            if ( toolsToggle.text() === 'Clear' ) {
+                d3.select( '.data-layer-measure' ).selectAll( 'g' ).remove();
+                toolsToggle.text( 'Tools' );
+
+                initDropdown();
+
+                return;
+            }
+
+            $toolsToggle.parent().siblings( '.dropdown-content' ).slideToggle( duration, function() {
+                if ( cb ) {
+                    cb();
+                }
+
+                if ( toolsMenu.style( 'display' ) === 'none' ) {
+                    destroySubMenu();
+                }
+
+                if ( !$( this ).is( ':visible' ) ) return;
+
+                bindBodyClick();
+            } );
+        }
+
+        function bindBodyClick() {
+            $( 'body' ).one( 'click', () => toggle( () => initDropdown() ) );
+        }
+    }
 
     function renderSubMenu() {
         let selected = d3.select( this );
