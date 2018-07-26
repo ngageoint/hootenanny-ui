@@ -322,6 +322,9 @@ Hoot.control.utilities.settagoverrides = function(context) {
         _form = null;
 
         _submitExp = null;
+
+        context.hoot().control.utilities.exportdataset.setOverrideList({});
+
     };
 
     return d3.rebind(_instance, _events, 'on');
