@@ -129,18 +129,6 @@ export function behaviorDrawMeasureArea( context, svg ) {
         points = points + ' ' + c;
         loc    = loc + ' ' + mouseCoords;
 
-        //if ( nodeId === 1 ) {
-        //    ptArr.splice( ptArr.length - 1, 1 );
-        //    for ( let i = 0; i < 2; i++ ) {
-        //        ptArr.push( context.map().mouseCoordinates() );
-        //    }
-        //} else if ( nodeId > 1 ) {
-        //    ptArr.splice( ptArr.length - 1, 1 );
-        //    for ( let j = 0; j < 2; j++ ) {
-        //        ptArr.push( context.map().mouseCoordinates() );
-        //    }
-        //}
-
         if ( nodeId > 0 ) {
             ptArr.splice( ptArr.length - 1, 1 );
             for ( let i = 0; i < 2; i++ ) {

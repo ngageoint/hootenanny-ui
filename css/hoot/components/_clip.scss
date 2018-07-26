@@ -17,10 +17,18 @@
         width: 120px;
         border: 1px solid $light5;
         color: $gray;
+        text-align: center;
+        box-shadow: 0 0 10px 0 rgba(42, 226, 34, 0);
+        transition: box-shadow 300ms ease-in-out;
 
         &:focus {
             background-color: $light;
             color: black;
+        }
+
+        &.updated {
+            box-shadow: 0 0 10px 0 rgba(42, 226, 34, 0.8);
+            transition: box-shadow 100ms ease-in-out;
         }
     }
 }

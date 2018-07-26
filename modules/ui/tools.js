@@ -136,7 +136,7 @@ export function uiTools( context ) {
                 if ( d.mode ) {
                     context.enter( d.mode );
                 } else if ( d.action === 'clipData' ) {
-                    if ( !Object.keys( LayerManager.loadedLayers ).length ) {
+                    if ( Object.keys( LayerManager.loadedLayers ).length ) {
                         let clipDataset = new ClipDataset( context );
 
                         clipDataset.render();

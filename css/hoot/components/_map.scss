@@ -70,6 +70,10 @@
         cursor: url(img/cursor-ruler.png) 9 9,url(img/cursor-draw.png) 9 9, crosshair;
     }
 
+    .mode-clip-bounding-box & {
+        cursor: url(img/cursor-draw.png) 9 9, crosshair;
+    }
+
     .point:active,
     .vertex:active,
     .line:active,

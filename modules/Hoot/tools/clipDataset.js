@@ -7,6 +7,8 @@
 import EventEmitter from 'events';
 import FormFactory  from './formFactory';
 
+import { modeClipBoundingBox } from '../../modes';
+
 export default class ClipDataset extends EventEmitter {
     constructor( context ) {
         super();
@@ -37,12 +39,12 @@ export default class ClipDataset extends EventEmitter {
 
         let mapExtent = this.context.map().extent();
 
-        this.getCoords( mapExtent );
+        this.updateCoords( mapExtent );
         this.createCoordsField();
         this.createClipOptions();
     }
 
-    getCoords( extent ) {
+    updateCoords( extent ) {
         this.minlon = extent[ 0 ][ 0 ].toFixed( 6 );
         this.minlat = extent[ 0 ][ 1 ].toFixed( 6 );
         this.maxlon = extent[ 1 ][ 0 ].toFixed( 6 );
@@ -50,23 +52,23 @@ export default class ClipDataset extends EventEmitter {
     }
 
     createCoordsField() {
-        let coordsField = this.form
+        this.extentBox = this.form
             .insert( 'div', '.modal-footer' )
             .classed( 'extent-box keyline-all round', true );
 
-        let topRow = coordsField
+        let topRow = this.extentBox
             .append( 'div' )
             .classed( 'row', true );
 
-        let midRow = coordsField
+        let midRow = this.extentBox
             .append( 'div' )
             .classed( 'row', true );
 
-        let bottomRow = coordsField
+        let bottomRow = this.extentBox
             .append( 'div' )
             .classed( 'row', true );
 
-        topRow
+        this.maxLatInput = topRow
             .append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', 'maxlat' )
@@ -74,7 +76,7 @@ export default class ClipDataset extends EventEmitter {
             .classed( 'extent-bound', true )
             .property( 'value', this.maxlat );
 
-        midRow
+        this.minLonInput = midRow
             .append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', 'minlon' )
@@ -82,7 +84,7 @@ export default class ClipDataset extends EventEmitter {
             .classed( 'extent-bound', true )
             .property( 'value', this.minlon );
 
-        midRow
+        this.maxLonInput = midRow
             .append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', 'maxlon' )
@@ -90,7 +92,7 @@ export default class ClipDataset extends EventEmitter {
             .classed( 'extent-bound', true )
             .property( 'value', this.maxlon );
 
-        bottomRow
+        this.minLatInput = bottomRow
             .append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', 'minlat' )
@@ -116,8 +118,9 @@ export default class ClipDataset extends EventEmitter {
                     .classed( 'selected', false );
 
                 d3.select( this ).classed( 'selected', true );
-
                 that.container.classed( 'hidden', true );
+
+                that.context.enter( modeClipBoundingBox( that, that.context ) );
             } );
 
         clipOptions
@@ -131,5 +134,25 @@ export default class ClipDataset extends EventEmitter {
 
                 d3.select( this ).classed( 'selected', true );
             } );
+    }
+
+    handleBbox( extent ) {
+        this.updateCoords( extent );
+        this.container.classed( 'hidden', false );
+
+        this.maxLatInput.property( 'value', this.maxlat );
+        this.minLonInput.property( 'value', this.minlon );
+        this.maxLonInput.property( 'value', this.maxlon );
+        this.minLatInput.property( 'value', this.minlat );
+
+        let inputs =  this.extentBox.selectAll( 'input' );
+
+        setTimeout( () => {
+            inputs.classed( 'updated', true );
+
+            setTimeout( () => {
+                inputs.classed( 'updated', false );
+            }, 800 );
+        }, 100 );
     }
 }

@@ -6,6 +6,7 @@ export { behaviorDrawWay } from './draw_way';
 export { behaviorDraw } from './draw';
 export { behaviorDrawMeasureLine } from './draw_measure_line';
 export { behaviorDrawMeasureArea } from './draw_measure_area';
+export { clip } from './clip';
 export { behaviorEdit } from './edit';
 export { behaviorHash } from './hash';
 export { behaviorHover } from './hover';
