@@ -106,13 +106,12 @@ Hoot.model.export = function (context)
         // Check to see if we are exporting hoot tags, including "status" as text
         var exportHootTags= '';
         if (container.exportHootTags) {
-            console.log('bulk here')
             exportHootTags = container.exportHootTags;
         } else {
             try {
                 exportHootTags = container.select('.cboxExportHootTags').select('input').property('checked');
             } catch (e) {
-                exportHootTags = true;
+                exportHootTags = false;
             }
         }
 
