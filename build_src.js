@@ -7,7 +7,8 @@ const commonjs = require('rollup-plugin-commonjs');
 const json = require('rollup-plugin-json');
 const colors = require('colors/safe');
 const collectSass = require('rollup-plugin-collect-sass');
-const babel = require( 'rollup-plugin-babel' );
+const babel = require('rollup-plugin-babel');
+const builtins = require('rollup-plugin-node-builtins' );
 
 module.exports = function buildSrc(isDevelopment) {
     var cache;
@@ -28,6 +29,7 @@ module.exports = function buildSrc(isDevelopment) {
         building = true;
 
         const plugins = [
+            builtins(),
             nodeResolve({
                 modules: true,
                 main: true,
@@ -61,7 +63,10 @@ module.exports = function buildSrc(isDevelopment) {
                     format: 'iife',
                     file: 'dist/iD.min.js',
                     sourcemap: isDevelopment,
-                    strict: false
+                    strict: false,
+                    globals: {
+                        'events': 'events'
+                    }
                 });
 
                 cache = bundle;

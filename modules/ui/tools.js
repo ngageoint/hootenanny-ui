@@ -11,7 +11,8 @@ import {
 
 import { svgIcon } from '../svg';
 
-import { dropdown } from '../Hoot/tools/utilities';
+import LayerManager from '../Hoot/managers/layerManager';
+import ClipDataset from '../Hoot/tools/clipDataset';
 
 export function uiTools( context ) {
     let items = [
@@ -69,7 +70,7 @@ export function uiTools( context ) {
         subMenu,
         subItems;
 
-    return function( selection ) {
+    function renderMenu( selection ) {
         toolsToggle = selection
             .append( 'button' )
             .classed( 'tools-toggle', true )
@@ -86,8 +87,11 @@ export function uiTools( context ) {
 
         let item = menuItems
             .append( 'li' )
-            .attr( 'class', d => `${ d.icon } tools-${ d.group }` )
-            .on( 'mouseenter', renderSubMenu );
+            .attr( 'class', d => `menu-item tools-${ d.group }` )
+            .on( 'click', () => d3.event.stopPropagation() )
+            .on( 'mouseenter', function( d ) {
+                renderSubMenu( this, d.items );
+            } );
 
         item.append( 'span' )
             .text( d => d.title );
@@ -97,7 +101,65 @@ export function uiTools( context ) {
             .text( 'arrow_right' );
 
         initDropdown();
-    };
+    }
+
+    function renderSubMenu( node, items ) {
+        let selected = d3.select( node );
+
+        if ( !selected.select( '.sub-menu' ).empty() ) return;
+
+        destroySubMenu();
+
+        selected.classed( 'highlight', true );
+
+        subMenu = d3.select( node.parentNode )
+            .append( 'ul' )
+            .classed( 'sub-menu round', true )
+            .style( 'left', () => {
+                let menuWidth = Math.ceil( toolsMenu.node().getBoundingClientRect().width ),
+                    marginLeft = 5;
+
+                return menuWidth + marginLeft + 'px';
+            } )
+            .style( 'top', selected.node().offsetTop + 'px' );
+
+        subItems = subMenu
+            .selectAll( '.sub-items' )
+            .data( items )
+            .enter();
+
+        let item = subItems
+            .append( 'li' )
+            .attr( 'class', d => `${ d.icon } tools-${ d.group }` )
+            .style( 'height', selected.node().getBoundingClientRect().height + 'px' )
+            .on( 'click', d => {
+                if ( d.mode ) {
+                    context.enter( d.mode );
+                } else if ( d.action === 'clipData' ) {
+                    if ( !Object.keys( LayerManager.loadedLayers ).length ) {
+                        let clipDataset = new ClipDataset( context );
+
+                        clipDataset.render();
+                    } else {
+                        // TODO: alert - add data before clipping
+                    }
+                } else if ( d.action === 'measureHelp' ) {
+                    // TODO: alert - measure help
+                }
+            } );
+
+        item.each( function( d ) {
+            d3.select( this ).call( svgIcon( `#${ d.icon }`, 'pre-text' ) );
+        } );
+
+        item.append( 'span' )
+            .text( d => d.title );
+    }
+
+    function destroySubMenu() {
+        toolsMenu.selectAll( 'li' ).classed( 'highlight', false );
+        toolsMenu.selectAll( '.sub-menu' ).remove();
+    }
 
     function initDropdown() {
         let duration = 50,
@@ -135,51 +197,5 @@ export function uiTools( context ) {
         }
     }
 
-    function renderSubMenu() {
-        let selected = d3.select( this );
-
-        if ( !selected.select( '.sub-menu' ).empty() ) return;
-
-        destroySubMenu();
-
-        selected.classed( 'highlight', true );
-
-        subMenu = d3.select( this )
-            .append( 'ul' )
-            .classed( 'sub-menu round', true )
-            .style( 'left', () => {
-                let menuWidth = Math.ceil( toolsMenu.node().getBoundingClientRect().width ),
-                    marginLeft = 5;
-
-                return menuWidth + marginLeft + 'px';
-            } )
-            .style( 'top', selected.node().offsetTop + 'px' );
-
-        subItems = subMenu
-            .selectAll( '.sub-items' )
-            .data( d => d.items )
-            .enter();
-
-        let item = subItems
-            .append( 'li' )
-            .attr( 'class', d => `${ d.icon } tools-${ d.group }` )
-            .style( 'height', selected.node().getBoundingClientRect().height + 'px' )
-            .on( 'click', d => {
-                if ( d.mode ) {
-                    context.enter( d.mode );
-                }
-            } );
-
-        item.each( function( d ) {
-            d3.select( this ).call( svgIcon( `#${ d.icon }`, 'pre-text' ) );
-        } );
-
-        item.append( 'span' )
-            .text( d => d.title );
-    }
-
-    function destroySubMenu() {
-        toolsMenu.selectAll( 'li' ).classed( 'highlight', false );
-        toolsMenu.selectAll( '.sub-menu' ).remove();
-    }
+    return renderMenu;
 }

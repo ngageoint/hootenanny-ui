@@ -91,6 +91,8 @@ export default class FormFactory {
      * @param formMeta - form data
      */
     createFieldSets( form, formMeta ) {
+        if ( !formMeta ) return;
+
         let self = this;
 
         let fieldsetContainer = form.append( 'fieldset' );

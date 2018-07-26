@@ -1,0 +1,69 @@
+.extent-box {
+    margin-bottom: 20px;
+    background-color: $light1;
+
+    .row {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        &:nth-child( 2 ) {
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+    }
+
+    input.extent-bound {
+        width: 120px;
+        border: 1px solid $light5;
+        color: $gray;
+
+        &:focus {
+            background-color: $light;
+            color: black;
+        }
+    }
+}
+
+.clip-options {
+    margin-bottom: 20px;
+    padding: 0;
+
+    button {
+        width: 100%;
+
+        &:first-child {
+            border-radius: 4px 0 0 4px;
+        }
+
+        &:last-child {
+            border-right: 1px solid $light3 !important;
+            border-radius: 0 4px 4px 0;
+        }
+
+        &.selected {
+            background-color: $blue;
+            color: $light;
+        }
+    }
+}
+
+#minlat {
+    margin-bottom: -1px;
+    border-radius: 4px 4px 0 0;
+}
+
+#maxlat {
+    margin-top: -1px;
+    border-radius: 0 0 4px 4px;
+}
+
+#minlon {
+    margin-left: -1px;
+    border-radius: 0 4px 4px 0;
+}
+
+#maxlon {
+    margin-right: -1px;
+    border-radius: 4px 0 0 4px;
+}

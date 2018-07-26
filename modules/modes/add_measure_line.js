@@ -43,10 +43,6 @@ export function modeAddMeasureLine( context ) {
     };
 
     addLine.exit = function() {
-        //if ( d3.select('.data-layer-measure').selectAll('g').size() ) {
-        //    d3.select( '.tools-toggle' ).text( 'Clear' );
-        //}
-
         context.uninstall( behavior );
     };
 
