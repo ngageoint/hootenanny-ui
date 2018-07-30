@@ -103,19 +103,20 @@ Hoot.model.export = function (context)
             }
         }
 
-        // Check to see if we are export status as text
-        var exportTextStatus= '';
-        if (container.exportTextStatus) { exportTextStatus = container.exportTextStatus; }
-        else {
-            try{
-                exportTextStatus=container.select('.cboxExportTextStatus').select('input').property('checked');
+        // Check to see if we are exporting hoot tags, including "status" as text
+        var exportHootTags= '';
+        if (container.exportHootTags) {
+            exportHootTags = container.exportHootTags;
+        } else {
+            try {
+                exportHootTags = container.select('.cboxExportHootTags').select('input').property('checked');
             } catch (e) {
-                exportTextStatus=true;
+                exportHootTags = false;
             }
         }
 
         var tagoverrides = '';
-        tagoverrides = JSON.stringify(context.hoot().control.utilities.exportdataset.getOverrideList());
+        tagoverrides = context.hoot().control.utilities.exportdataset.getOverrideList();
 
         var param = {};
         param.translation = selectedTranslation;
@@ -149,8 +150,9 @@ Hoot.model.export = function (context)
         param.outputname = outputname;
         param.USER_EMAIL = iD.data.hootConfig.userEmail;
         param.append = appendTemplate.toString();
-        param.textstatus = exportTextStatus.toString();
-        param.tagoverrides = tagoverrides;
+        param.textstatus = false;
+        param.includehoottags = exportHootTags.toString();
+        param.tagoverrides = (exportHootTags) ? JSON.stringify(tagoverrides) : JSON.stringify(Object.assign(context.hoot().control.utilities.settagoverrides.getHootTagList, tagoverrides));
 
         d3.json('/hoot-services/job/export/execute')
             .header('Content-Type', 'application/json')
