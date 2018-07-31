@@ -4,10 +4,14 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/25/18
  *******************************************************************************************************/
 
-import EventEmitter from 'events';
-import FormFactory  from './formFactory';
+import _             from 'lodash-es';
+import EventEmitter  from 'events';
+import FormFactory   from './formFactory';
+import LayerManager  from '../managers/layerManager';
+import FolderManager from '../managers/folderManager';
 
-import { modeClipBoundingBox } from '../../modes';
+import { checkForUnallowedChar } from './utilities';
+import { modeClipBoundingBox }   from '../../modes';
 
 export default class ClipDataset extends EventEmitter {
     constructor( context ) {
@@ -16,10 +20,11 @@ export default class ClipDataset extends EventEmitter {
         this.context     = context;
         this.formFactory = new FormFactory();
 
-        this.minlon = null;
-        this.minlat = null;
-        this.maxlon = null;
-        this.maxlat = null;
+        this.minlon   = null;
+        this.minlat   = null;
+        this.maxlon   = null;
+        this.maxlat   = null;
+        this.clipType = 'visualExtent';
     }
 
     render() {
@@ -27,12 +32,13 @@ export default class ClipDataset extends EventEmitter {
             title: 'Enter Coordinates for Clip Bounding Box',
             button: {
                 text: 'Next',
-                id: 'clipNextBtn'
+                id: 'clipNextBtn',
+                onClick: () => this.renderClipDataset( this.clipType )
             }
         };
 
-        this.container  = this.formFactory.generateForm( 'body', 'clipDataset', metadata );
-        this.form       = d3.select( '#clipDataset' );
+        this.container  = this.formFactory.generateForm( 'body', 'selectClipBbox', metadata );
+        this.form       = d3.select( '#selectClipBbox' );
         this.nextButton = d3.select( '#clipNextBtn' );
 
         this.nextButton.property( 'disabled', false );
@@ -121,6 +127,7 @@ export default class ClipDataset extends EventEmitter {
                 that.container.classed( 'hidden', true );
 
                 that.context.enter( modeClipBoundingBox( that, that.context ) );
+                that.clipType = 'boundingBox';
             } );
 
         clipOptions
@@ -133,6 +140,9 @@ export default class ClipDataset extends EventEmitter {
                     .classed( 'selected', false );
 
                 d3.select( this ).classed( 'selected', true );
+
+                that.handleBbox( that.context.map().extent() );
+                that.clipType = 'visualExtent';
             } );
     }
 
@@ -145,7 +155,7 @@ export default class ClipDataset extends EventEmitter {
         this.maxLonInput.property( 'value', this.maxlon );
         this.minLatInput.property( 'value', this.minlat );
 
-        let inputs =  this.extentBox.selectAll( 'input' );
+        let inputs = this.extentBox.selectAll( 'input' );
 
         setTimeout( () => {
             inputs.classed( 'updated', true );
@@ -154,5 +164,145 @@ export default class ClipDataset extends EventEmitter {
                 inputs.classed( 'updated', false );
             }, 800 );
         }, 100 );
+    }
+
+    renderClipDataset() {
+        let titleText = this.clipType === 'visualExtent'
+            ? 'Clip Data to Visual Extent'
+            : this.clipType === 'boundingBox'
+                ? 'Clip Data to Bounding Box'
+                : 'Clip Data';
+
+        let metadata = {
+            title: titleText,
+            button: {
+                text: 'Clip',
+                id: 'clipSubmitBtn',
+                onClick: this.handleSubmit()
+            }
+        };
+
+        this.container.remove();
+        this.nextButton = null;
+
+        this.container    = this.formFactory.generateForm( 'body', 'clipDataset', metadata );
+        this.form         = d3.select( '#clipDataset' );
+        this.submitButton = d3.select( '#clipSubmitBtn' );
+
+        this.createTable();
+    }
+
+    createTable() {
+        let loadedLayers = LayerManager.loadedLayers,
+            folderList   = FolderManager.folderPaths,
+            that         = this;
+
+        let columns = [
+            {
+                label: 'Dataset',
+                type: 'datasetName'
+            },
+            {
+                label: 'Clip?',
+                checkbox: true
+            },
+            {
+                label: 'Output Name',
+                placeholder: 'Save As',
+                type: 'layerName'
+            },
+            {
+                label: 'Path',
+                placeholder: 'root'
+            }
+        ];
+
+        let table = this.form
+            .insert( 'table', '.modal-footer' )
+            .attr( 'id', 'clipTable' );
+
+        table
+            .append( 'thead' )
+            .append( 'tr' )
+            .selectAll( 'th' )
+            .data( columns )
+            .enter()
+            .append( 'th' )
+            .text( d => d.label );
+
+        let tableBody = table.append( 'tbody' );
+
+        _.forEach( loadedLayers, layer => {
+            let mapId = layer.id;
+
+            tableBody
+                .append( 'tr' )
+                .attr( 'id', `row-${ mapId }` )
+                .selectAll( 'td' )
+                .data( columns )
+                .enter()
+                .append( 'td' )
+                .append( 'input' )
+                .attr( 'type', 'text' )
+                .attr( 'placeholder', d => d.placeholder )
+                .select( function( d ) {
+                    if ( d.checkbox ) {
+                        let parent = d3.select( this.parentElement );
+
+                        parent
+                            .selectAll( 'input' )
+                            .remove();
+
+                        parent
+                            .append( 'input' )
+                            .attr( 'type', 'checkbox' )
+                            .property( 'checked', true )
+                            .attr( 'id', `clip-${ mapId }` );
+                    }
+
+                    if ( d.type === 'datasetName' ) {
+                        d3.select( this )
+                            .attr( 'placeholder', layer.name )
+                            .attr( 'readonly', true );
+                    }
+
+                    if ( d.type === 'layerName' ) {
+                        that.createLayerNameField( d3.select( this ), layer );
+                    }
+                } );
+        } );
+    }
+
+    createLayerNameField( input, layer ) {
+        let uniquename = false,
+            layerName  = layer.name,
+            i          = 1;
+
+        while ( uniquename === false ) {
+            if ( !_.isEmpty( LayerManager.findBy( 'name', layerName ) ) ) {
+                layerName = layer.name + i.toString();
+                i++;
+            } else {
+                uniquename = true;
+            }
+        }
+
+        input
+            .property( 'value', layerName )
+            .on( 'input', function() {
+                let resp = checkForUnallowedChar( this.value );
+
+                if ( resp !== true ) {
+                    console.log( 'fail' );
+                    d3.select( this ).classed( 'invalid', true ).attr( 'title', resp );
+                } else {
+                    console.log( 'pass' );
+                    d3.select( this ).classed( 'invalid', false ).attr( 'title', null );
+                }
+            } );
+    }
+
+    handleSubmit() {
+
     }
 }

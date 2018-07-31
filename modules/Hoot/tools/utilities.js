@@ -57,6 +57,30 @@ export const isValidCoords = coords => {
     );
 };
 
+export const specialCharsExist = str => {
+    let pattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g );
+
+    return pattern.test( str );
+};
+
+export const unallowableWordsExist = str => {
+    let unallowable = [ 'root', 'dataset', 'datasets', 'folder' ];
+
+    return unallowable.indexOf( str.toLowerCase() ) >= 0;
+};
+
+export const checkForUnallowedChar = str => {
+    if ( specialCharsExist( str ) ) {
+        return `Please do not use special characters: ${ str }.`;
+    }
+
+    if ( unallowableWordsExist( str ) ) {
+        return `Please do not use any unallowable terms: ${ str }.`;
+    }
+
+    return true;
+};
+
 export const tooltipHtml = ( text, key ) => {
     let html = `<span>${ text }</span>`;
 
