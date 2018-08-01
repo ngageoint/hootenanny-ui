@@ -293,10 +293,8 @@ export default class ClipDataset extends EventEmitter {
                 let resp = checkForUnallowedChar( this.value );
 
                 if ( resp !== true ) {
-                    console.log( 'fail' );
                     d3.select( this ).classed( 'invalid', true ).attr( 'title', resp );
                 } else {
-                    console.log( 'pass' );
                     d3.select( this ).classed( 'invalid', false ).attr( 'title', null );
                 }
             } );
