@@ -18,7 +18,9 @@
     <!--<![endif]-->
 </head>
 <body>
-<div id='id-container'></div>
+<div id='id-container'>
+    <div id="id-sink"></div>
+</div>
 <script>
     // google analytics
     var _gaq = _gaq || [];
@@ -49,7 +51,7 @@
             id.features().disable('boundaries');
         }
 
-        id.ui()(document.getElementById('id-container'), function() {
+        id.ui()(document.getElementById('id-sink'), function() {
             id.container().select('#about-list')
                 .insert('li', '.user-list')
                 .attr('class', 'source-switch')
