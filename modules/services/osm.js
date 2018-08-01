@@ -37,8 +37,8 @@ import Events       from '../Hoot/managers/eventManager';
 import HootOSM      from '../Hoot/managers/hootOsm';
 
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded');
-var urlroot = 'https://www.openstreetmap.org';
-//var urlroot = API.baseUrl + '/osm';
+//var urlroot = 'https://www.openstreetmap.org';
+var urlroot = API.baseUrl + '/osm';
 var oauth = osmAuth({
     url: urlroot,
     oauth_consumer_key: '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
