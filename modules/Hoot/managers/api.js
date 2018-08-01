@@ -534,6 +534,18 @@ class API {
             .then( () => data );
     }
 
+    clipDataset( data ) {
+        const params = {
+            path: '/job/clipdataset/execute',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( () => data );
+    }
+
     /**
      * Merge POI nodes together
      *

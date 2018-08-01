@@ -4,11 +4,11 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/1/18
  *******************************************************************************************************/
 
-import _                         from 'lodash-es';
-import FormFactory               from './formFactory';
-import API                       from '../managers/api';
-import FolderManager             from '../managers/folderManager';
-import LayerManager              from '../managers/layerManager';
+import _             from 'lodash-es';
+import FormFactory   from './formFactory';
+import API           from '../managers/api';
+import FolderManager from '../managers/folderManager';
+import LayerManager  from '../managers/layerManager';
 
 import { checkForUnallowedChar } from './utilities';
 import { d3combobox }            from '../../lib/hoot/d3.combobox';
@@ -18,10 +18,10 @@ export default class ClipDataset {
         this.instance = instance;
     }
 
-    render( clipType ) {
-        let titleText = clipType === 'visualExtent'
+    render() {
+        let titleText = this.instance.clipType === 'visualExtent'
             ? 'Clip Data to Visual Extent'
-            : clipType === 'boundingBox'
+            : this.instance.clipType === 'boundingBox'
                 ? 'Clip Data to Bounding Box'
                 : 'Clip Data';
 
@@ -30,7 +30,7 @@ export default class ClipDataset {
             button: {
                 text: 'Clip',
                 id: 'clipSubmitBtn',
-                onClick: this.handleSubmit()
+                onClick: () => this.handleSubmit()
             }
         };
 
@@ -51,21 +51,22 @@ export default class ClipDataset {
         let columns = [
             {
                 label: 'Dataset',
-                type: 'datasetName'
+                name: 'datasetName'
             },
             {
                 label: 'Clip?',
-                checkbox: true
+                name: 'doClip'
             },
             {
                 label: 'Output Name',
                 placeholder: 'Save As',
-                type: 'layerName'
+                name: 'outputName'
             },
             {
                 label: 'Path',
                 placeholder: 'root',
-                combobox: folderList
+                combobox: folderList,
+                name: 'outputPath'
             }
         ];
 
@@ -105,9 +106,15 @@ export default class ClipDataset {
                 .append( 'td' )
                 .append( 'input' )
                 .attr( 'type', 'text' )
+                .attr( 'data-map-id', mapId )
+                .attr( 'class', d => d.name )
                 .attr( 'placeholder', d => d.placeholder )
                 .select( function( d ) {
-                    if ( d.checkbox ) {
+                    if ( d.name === 'datasetName' ) {
+                        d3.select( this )
+                            .attr( 'placeholder', layer.name )
+                            .attr( 'readonly', true );
+                    } else if ( d.name === 'doClip' ) {
                         let parent = d3.select( this.parentElement );
 
                         parent
@@ -118,21 +125,11 @@ export default class ClipDataset {
                             .append( 'input' )
                             .attr( 'type', 'checkbox' )
                             .property( 'checked', true )
-                            .attr( 'id', `clip-${ mapId }` );
-                    }
-
-                    if ( d.combobox ) {
-                        that.createFolderListCombo( d3.select( this ), d, layer );
-                    }
-
-                    if ( d.type === 'datasetName' ) {
-                        d3.select( this )
-                            .attr( 'placeholder', layer.name )
-                            .attr( 'readonly', true );
-                    }
-
-                    if ( d.type === 'layerName' ) {
+                            .attr( 'data-map-id', mapId );
+                    } else if ( d.name === 'outputName' ) {
                         that.createLayerNameField( d3.select( this ), layer );
+                    } else {
+                        that.createFolderListCombo( d3.select( this ), d );
                     }
                 } );
         } );
@@ -158,7 +155,7 @@ export default class ClipDataset {
             .on( 'input', function() {
                 let resp = checkForUnallowedChar( this.value );
 
-                if ( resp !== true ) {
+                if ( resp !== true || !this.value.length ) {
                     d3.select( this ).classed( 'invalid', true ).attr( 'title', resp );
                     that.submitButton.property( 'disabled', true );
                 } else {
@@ -172,10 +169,9 @@ export default class ClipDataset {
      * Create folder list selection dropdown
      *
      * @param input - selected field
-     * @param d     - selected field meta-data
-     * @param layer - selected layer meta-data
+     * @param d     - field metadata
      **/
-    createFolderListCombo( input, d, layer ) {
+    createFolderListCombo( input, d ) {
         let combobox = d3combobox()
             .data( _.map( d.combobox, n => {
                 return {
@@ -197,6 +193,30 @@ export default class ClipDataset {
     }
 
     handleSubmit() {
+        let checkedRows = this.form.selectAll( '[type="checkbox"]' ),
+            bbox        = this.instance.bbox;
 
+        checkedRows.select( function() {
+            let checkbox = d3.select( this );
+
+            if ( !checkbox.property( 'checked' ) ) return;
+
+            let mapId  = checkbox.attr( 'data-map-id' ),
+                params = {};
+
+            let row         = d3.select( `#row-${ mapId }` ),
+                datasetName = row.select( '.datasetName' ),
+                outputName  = row.select( '.outputName' ),
+                pathName    = row.select( '.outputPath' );
+
+            params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
+            params.OUTPUT_NAME = outputName.property( 'value' ) || outputName.attr( 'placeholder' );
+            params.PATH_NAME   = pathName.property( 'value' ) || pathName.attr( 'placeholder' ) || 'root';
+            params.BBOX        = bbox;
+
+            API.clipDataset( params )
+                .then( resp => console.log( resp ) )
+                .catch( err => console.log( err ) );
+        } );
     }
 }

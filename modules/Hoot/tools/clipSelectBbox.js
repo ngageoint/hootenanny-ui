@@ -163,9 +163,14 @@ export default class ClipSelectBbox extends EventEmitter {
     }
 
     handleNext() {
+        this.bbox = this.minLonInput.property( 'value' ) + ',' +
+            this.minLatInput.property( 'value' ) + ',' +
+            this.maxLonInput.property( 'value' ) + ',' +
+            this.maxLatInput.property( 'value' );
+
         this.container.remove();
         this.nextButton = null;
 
-        new ClipDataset( this ).render( this.clipType );
+        new ClipDataset( this ).render();
     }
 }
