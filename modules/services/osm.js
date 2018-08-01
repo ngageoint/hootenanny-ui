@@ -405,8 +405,8 @@ export default {
 
 
     authenticated: function() {
-        return true;
-        //return oauth.authenticated();
+        //return true;
+        return oauth.authenticated();
     },
 
 
