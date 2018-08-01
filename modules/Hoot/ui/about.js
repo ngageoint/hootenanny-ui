@@ -48,7 +48,7 @@ export default class About {
         rows
             .append( 'span' )
             .text( d => {
-                let builtBy = d.buildBy || d.user;
+                let builtBy = d.builtBy || d.user;
 
                 return `${ d.name } - Version: ${ d.version } - Built By: ${ builtBy }`;
             } );
