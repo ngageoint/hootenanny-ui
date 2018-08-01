@@ -79,8 +79,22 @@
 #clipDataset {
     max-width: unset;
     width: 80%;
+}
+
+#clipTable {
+    table-layout: fixed;
+    margin-bottom: 20px;
+
+    th {
+        padding: 10px;
+    }
+
+    td {
+        padding: 0 10px;
+    }
 
     input[type="text"] {
-
+        border: none;
+        padding: 0;
     }
 }

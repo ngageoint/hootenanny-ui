@@ -11,8 +11,8 @@ import {
 
 import { svgIcon } from '../svg';
 
-import LayerManager from '../Hoot/managers/layerManager';
-import ClipDataset from '../Hoot/tools/clipDataset';
+import LayerManager   from '../Hoot/managers/layerManager';
+import ClipSelectBbox from '../Hoot/tools/clipSelectBbox';
 
 export function uiTools( context ) {
     let items = [
@@ -137,9 +137,9 @@ export function uiTools( context ) {
                     context.enter( d.mode );
                 } else if ( d.action === 'clipData' ) {
                     if ( Object.keys( LayerManager.loadedLayers ).length ) {
-                        let clipDataset = new ClipDataset( context );
+                        let clipSelectBbox = new ClipSelectBbox( context );
 
-                        clipDataset.render();
+                        clipSelectBbox.render();
                     } else {
                         // TODO: alert - add data before clipping
                     }

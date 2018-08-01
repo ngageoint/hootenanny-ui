@@ -1,5 +1,5 @@
 /*******************************************************************************************************
- * File: clipDataset.js
+ * File: clipSelectBbox.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/25/18
  *******************************************************************************************************/
@@ -12,8 +12,9 @@ import FolderManager from '../managers/folderManager';
 
 import { checkForUnallowedChar } from './utilities';
 import { modeClipBoundingBox }   from '../../modes';
+import { d3combobox }            from '../../lib/hoot/d3.combobox';
 
-export default class ClipDataset extends EventEmitter {
+export default class ClipSelectBbox extends EventEmitter {
     constructor( context ) {
         super();
 
@@ -189,6 +190,8 @@ export default class ClipDataset extends EventEmitter {
         this.form         = d3.select( '#clipDataset' );
         this.submitButton = d3.select( '#clipSubmitBtn' );
 
+        this.submitButton.property( 'disabled', false );
+
         this.createTable();
     }
 
@@ -213,13 +216,23 @@ export default class ClipDataset extends EventEmitter {
             },
             {
                 label: 'Path',
-                placeholder: 'root'
+                placeholder: 'root',
+                combobox: folderList
             }
         ];
 
         let table = this.form
             .insert( 'table', '.modal-footer' )
             .attr( 'id', 'clipTable' );
+
+        let colgroup = table
+            .append( 'colgroup' );
+
+        colgroup.append( 'col' )
+            .attr( 'span', '1' );
+
+        colgroup.append( 'col' )
+            .style( 'width', '100px' );
 
         table
             .append( 'thead' )
@@ -260,6 +273,10 @@ export default class ClipDataset extends EventEmitter {
                             .attr( 'id', `clip-${ mapId }` );
                     }
 
+                    if ( d.combobox ) {
+                        that.createFolderListCombo( d3.select( this ), d, layer );
+                    }
+
                     if ( d.type === 'datasetName' ) {
                         d3.select( this )
                             .attr( 'placeholder', layer.name )
@@ -274,7 +291,8 @@ export default class ClipDataset extends EventEmitter {
     }
 
     createLayerNameField( input, layer ) {
-        let uniquename = false,
+        let that       = this,
+            uniquename = false,
             layerName  = layer.name,
             i          = 1;
 
@@ -294,10 +312,40 @@ export default class ClipDataset extends EventEmitter {
 
                 if ( resp !== true ) {
                     d3.select( this ).classed( 'invalid', true ).attr( 'title', resp );
+                    that.submitButton.property( 'disabled', true );
                 } else {
                     d3.select( this ).classed( 'invalid', false ).attr( 'title', null );
+                    that.submitButton.property( 'disabled', false );
                 }
             } );
+    }
+
+    /**
+     * Create folder list selection dropdown
+     *
+     * @param input - selected field
+     * @param d     - selected field meta-data
+     * @param layer - selected layer meta-data
+     **/
+    createFolderListCombo( input, d, layer ) {
+        let combobox = d3combobox()
+            .data( _.map( d.combobox, n => {
+                return {
+                    value: n.path,
+                    title: n.path
+                };
+            } ) );
+
+        let data = combobox.data();
+
+        data.sort( ( a, b ) => {
+            let textA = a.value.toLowerCase(),
+                textB = b.value.toLowerCase();
+
+            return textA < textB ? -1 : textA > textB ? 1 : 0;
+        } ).unshift( { value: 'root', title: 0 } );
+
+        input.call( combobox );
     }
 
     handleSubmit() {
