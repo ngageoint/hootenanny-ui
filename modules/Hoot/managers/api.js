@@ -307,6 +307,23 @@ class API {
             .then( resp => resp.data );
     }
 
+    //addFolder( data ) {
+    //    const params = {
+    //        path: `/osm/api/0.6/map/addfolder?folderName=${ data.folderName }&parentId=${ data.parentId }`,
+    //        method: 'POST',
+    //        data
+    //    };
+    //
+    //    return this.request( params )
+    //        .then( resp => resp.data );
+    //}
+
+    updateMapFolderLinks( data ) {
+        const params = {
+
+        }
+    }
+
     /**
      * Upload imported files to the database
      *
@@ -420,6 +437,9 @@ class API {
         const params = {
             path: '/osm/api/0.6/map/addfolder',
             method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
             params: {
                 folderName: data.folderName,
                 parentId: data.parentId

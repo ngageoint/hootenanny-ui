@@ -39,7 +39,9 @@ class FolderManager {
     async refreshFolders() {
         let { folders } = await API.getFolders();
 
-        return this._folders = folders;
+        this._folders = this.getFolderPaths( folders );
+
+        return this._folders;
     }
 
     /**
@@ -67,6 +69,29 @@ class FolderManager {
         return this.listFolders( this._folders );
     }
 
+    getFolderPaths( folders ) {
+        return _.map( folders, f => {
+            if ( f.parentId === 0 ) {
+                f.path = f.name;
+            } else {
+                //use links to get parent folder as far back as possible
+                let strPath      = f.name,
+                    parentFolder = _.find( folders, { id: f.parentId } ),
+                    i            = 0;
+
+                do {
+                    i++;
+                    strPath      = parentFolder.name + '/' + strPath;
+                    parentFolder = _.find( folders, { id: parentFolder.parentId } );
+                } while ( parentFolder || i === 10 );
+
+                f.path = strPath;
+            }
+
+            return f;
+        } );
+    }
+
     /**
      * Create an array of all folder names with their full path
      *
@@ -92,7 +117,7 @@ class FolderManager {
                 f.folderPath = strPath;
             }
 
-            return { path: f.folderPath };
+            return { path: f.folderPath, name: f.name, id: f.id };
         } );
     }
 

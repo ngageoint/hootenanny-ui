@@ -5,9 +5,11 @@
  *******************************************************************************************************/
 
 import _                      from 'lodash-es';
+import API                    from '../../../managers/api';
 import Event                  from '../../../managers/eventManager';
 import ImportControl          from '../../../control/import';
 import FolderManager          from '../../../managers/folderManager';
+import LayerManager           from '../../../managers/layerManager';
 import FormFactory            from '../../../tools/formFactory';
 import { importDatasetForm }  from '../../../config/formMetadata';
 import { importDatasetTypes } from '../../../config/domElements';
@@ -21,7 +23,7 @@ import { getBrowserInfo }     from '../../../tools/utilities';
  */
 export default class DatasetsImport {
     constructor( translations ) {
-        this.folderList   = FolderManager.folderPaths;
+        this.folderList   = FolderManager._folders;
         this.importTypes  = importDatasetTypes;
         this.translations = translations;
         this.browserInfo  = getBrowserInfo();
@@ -61,12 +63,14 @@ export default class DatasetsImport {
 
         this.container = this.formFactory.generateForm( 'body', 'datasets-import-form', metadata );
 
-        this.typeInput      = d3.select( '#importDatasetImportType' );
-        this.fileInput      = d3.select( '#importDatasetFileImport' );
-        this.layerNameInput = d3.select( '#importDatasetLayerName' );
-        this.schemaInput    = d3.select( '#importDatasetSchema' );
-        this.fileIngest     = d3.select( '#ingestFileUploader' );
-        this.submitButton   = d3.select( '#importDatasetBtn' );
+        this.typeInput          = d3.select( '#importDatasetImportType' );
+        this.fileInput          = d3.select( '#importDatasetFileImport' );
+        this.layerNameInput     = d3.select( '#importDatasetLayerName' );
+        this.folderPathInput    = d3.select( '#importDatasetPathName' );
+        this.newFolderNameInput = d3.select( '#importDatasetNewFolderName' );
+        this.schemaInput        = d3.select( '#importDatasetSchema' );
+        this.fileIngest         = d3.select( '#ingestFileUploader' );
+        this.submitButton       = d3.select( '#importDatasetBtn' );
     }
 
     /**
@@ -160,15 +164,50 @@ export default class DatasetsImport {
 
         this.loadingState();
 
-        return ImportControl.importData( data )
+        return API.uploadDataset( data )
+            .then( () => FolderManager.refreshDatasets() )
             .then( () => {
-                let table = d3.select( '#datasets-table' );
-
-                FolderManager.refreshDatasets()
-                    .then( () => Event.send( 'render-dataset-table', table ) );
-
-                this.container.remove();
+                if ( this.newFolderNameInput.property( 'value' ) ) {
+                    this.addFolder();
+                } else {
+                    this.updateFolderLink();
+                }
             } );
+    }
+
+    addFolder() {
+        let pathName   = this.folderPathInput.property( 'value' ) || this.folderPathInput.attr( 'placeholder' ),
+            folderName = this.newFolderNameInput.property( 'value' ),
+            folderData = _.find( this.folderList, folder => folder.name === pathName ),
+            parentId   = folderData ? folderData.parentId : 0;
+
+        let params = {
+            folderName,
+            parentId
+        };
+
+        API.addFolder( params )
+            .then( resp => console.log( resp ) )
+            .catch( err => console.log( err ) );
+    }
+
+    // TODO: update folder links
+    updateFolderLink() {
+        //let layerName  = this.layerNameInput.property( 'value' ),
+        //    folderName = this.newFolderNameInput.property( 'value' ),
+        //    pathName   = this.folderPathInput.property( 'value' ) || this.folderPathInput.attr( 'placeholder' ),
+        //
+        //    layerData  = _.find( LayerManager._layers, layer => layer.name === layerName ),
+        //    folderData = _.find( this.folderList, folder => folder.name === pathName );
+        //
+        //let params = {
+        //    folderName,
+        //    mapId: layerData.id || 0,
+        //    parentId: folderData.parentId,
+        //    updateType: 'new'
+        //};
+        //
+        //if ( !params.mapId ) return;
     }
 
     /**
