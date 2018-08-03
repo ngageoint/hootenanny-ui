@@ -39,6 +39,8 @@ class LayerConflate extends SidebarForm {
         this.createButtons();
 
         this.saveAsInput         = d3.select( '#conflateSaveAs' );
+        this.folderPathInput     = d3.select( '#conflateFolderPath' );
+        this.newFolderNameInput  = d3.select( '#conflateNewFolderName' );
         this.typeInput           = d3.select( '#conflateType' );
         this.refLayerInput       = d3.select( '#conflateRefLayer' );
         this.collectStatsInput   = d3.select( '#conflateCollectStats' );
@@ -206,6 +208,11 @@ class LayerConflate extends SidebarForm {
         params.layers = layers;
 
         this.loadLayer( params );
+
+        FolderManager.updateFolders( this.innerWrapper )
+            .catch( err => {
+                // TODO: alert - show err message
+            } );
     }
 
     handleSubmit() {

@@ -166,69 +166,10 @@ export default class DatasetsImport {
 
         return API.uploadDataset( data )
             .then( () => FolderManager.refreshDatasets() )
-            .then( () => {
-                if ( this.newFolderNameInput.property( 'value' ) ) {
-                    this.addFolder();
-                } else {
-                    this.updateFolderLink();
-                }
-            } )
-            .catch( err => {
-                // TODO: alert error - unable to upload dataset
-                console.log( err );
-                this.container.remove();
-            } );
-    }
-
-    /**
-     * Create a new folder and then add the uploaded layer to the folder
-     */
-    addFolder() {
-        let fullPath = this.folderPathInput.property( 'value' ) || this.folderPathInput.attr( 'placeholder' ),
-            pathName = fullPath.substring( fullPath.lastIndexOf( '/' ) + 1 ),
-            folderName = this.newFolderNameInput.property( 'value' ),
-            parentId   = _.get( _.find( this.folderList, folder => folder.name === pathName ), 'id' ) || 0;
-
-        let params = {
-            folderName,
-            parentId
-        };
-
-        API.addFolder( params )
-            .then( resp => this.updateFolderLink( pathName, resp.folderId ) )
-            .catch( err => {
-                // TODO: alert error - unable to create new folder
-                console.log( err );
-                this.container.remove();
-            } );
-    }
-
-    /**
-     * Move the new layer to the correct folder by updating its parent id
-     *
-     * @param pathName - folder path where layer is being created
-     * @param folderId - id of parent folder to move the layer to
-     */
-    updateFolderLink( pathName, folderId ) {
-        let fullPath = this.folderPathInput.property( 'value' ) || this.folderPathInput.attr( 'placeholder' ),
-            layerName = this.layerNameInput.property( 'value' ),
-            mapId     = _.get( _.find( LayerManager._layers, layer => layer.name === layerName ), 'id' ) || 0;
-
-        pathName = pathName || fullPath.substring( fullPath.lastIndexOf( '/' ) + 1 );
-        folderId = folderId || _.get( _.find( this.folderList, folder => folder.name === pathName ), 'parentId' ) || 0;
-
-        let params = {
-            folderId,
-            mapId,
-            updateType: 'new'
-        };
-
-        API.updateMapFolderLinks( params )
-            .then( () => FolderManager.refreshAll() )
-            .then( () => Event.send( 'render-dataset-table' ) )
+            .then( () => FolderManager.updateFolders( this.container ) )
             .then( () => this.container.remove() )
             .catch( err => {
-                // TODO: alert error - unable to update folder links
+                // TODO: alert error - unable to upload dataset
                 console.log( err );
                 this.container.remove();
             } );

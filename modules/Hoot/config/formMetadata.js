@@ -42,6 +42,7 @@ export function layerConflateForm( data ) {
         {
             label: 'Save As',
             id: 'conflateSaveAs',
+            class: 'layer-name',
             inputType: 'text',
             value: this.getSaveName( data ),
             validate: true,
@@ -50,6 +51,7 @@ export function layerConflateForm( data ) {
         {
             label: 'Path',
             id: 'conflateFolderPath',
+            class: 'path-name',
             inputType: 'combobox',
             value: 'root',
             data: this.folderList,
@@ -60,6 +62,7 @@ export function layerConflateForm( data ) {
         {
             label: 'New Folder Name (leave blank otherwise)',
             id: 'conflateNewFolderName',
+            class: 'new-folder-name',
             inputType: 'text',
             type: 'newfoldername',
             onChange: d => this.validateTextInput( d )
@@ -136,6 +139,7 @@ export function importDatasetForm() {
         {
             label: 'Layer Name',
             id: 'importDatasetLayerName',
+            class: 'layer-name',
             inputType: 'text',
             placeholder: 'Enter name',
             onChange: d => this.validateTextInput( d )
@@ -143,6 +147,7 @@ export function importDatasetForm() {
         {
             label: 'Path',
             id: 'importDatasetPathName',
+            class: 'path-name',
             inputType: 'combobox',
             placeholder: 'root',
             data: this.folderList,
@@ -152,6 +157,7 @@ export function importDatasetForm() {
         {
             label: 'Enter Name for New Folder (Leave blank otherwise)',
             id: 'importDatasetNewFolderName',
+            class: 'new-folder-name',
             inputType: 'text',
             onChange: d => this.validateTextInput( d )
         },

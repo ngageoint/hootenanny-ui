@@ -173,6 +173,7 @@ export default class FormFactory {
         field.append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', d => d.id )
+            .attr( 'class', d => d.class )
             .attr( 'autocomplete', 'off' )
             .attr( 'placeholder', d => d.placeholder )
             .attr( 'value', d => d.value )
@@ -216,6 +217,7 @@ export default class FormFactory {
         field.append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', d => d.id )
+            .attr( 'class', d => d.class )
             .attr( 'placeholder', d => d.placeholder )
             .attr( 'value', d => d.value )
             .attr( 'readonly', d => d.readOnly )
@@ -234,6 +236,7 @@ export default class FormFactory {
     createTextarea( field ) {
         field.append( 'textarea' )
             .attr( 'id', d => d.id )
+            .attr( 'class', d => d.class )
             .text( d => d.data || '' )
             .on( 'keyup', d => d.onChange( d ) )
             .on( 'drop', d => d.onDrop() );

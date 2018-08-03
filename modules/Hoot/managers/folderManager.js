@@ -7,6 +7,7 @@
 import _            from 'lodash-es';
 import API          from './api';
 import LayerManager from './layerManager';
+import Event        from './eventManager';
 
 /**
  * Retrieves and manages folders and datasets
@@ -225,6 +226,68 @@ class FolderManager {
             parent.type = 'folder';
 
         return tree;
+    }
+
+    /**
+     * Create a folder in the specified path if a new folder name is provided.
+     * Update the folder structure and their links with other folders.
+     * Move new layers into the correct folder.
+     *
+     * @param container - form used to create new layer
+     * @returns {*}
+     */
+    updateFolders( container ) {
+        let that = this;
+
+        let pathNameInput      = container.select( '.path-name' ),
+            newFolderNameInput = container.select( '.new-folder-name' );
+
+        let fullPath   = pathNameInput.property( 'value' ) || pathNameInput.attr( 'placeholder' ),
+            pathName   = fullPath.substring( fullPath.lastIndexOf( '/' ) + 1 ),
+            folderName = newFolderNameInput.property( 'value' );
+
+        if ( folderName ) {
+            // create new folder and then update folder structure
+            return addFolder();
+        } else {
+            // update folder structure
+            return updateFolderLink();
+        }
+
+        function addFolder() {
+            let parentId = _.get( _.find( that._folders, folder => folder.name === pathName ), 'id' ) || 0;
+
+            let params = {
+                folderName,
+                parentId
+            };
+
+            return API.addFolder( params )
+                .then( resp => updateFolderLink( resp.folderId ) )
+                .catch( err => {
+                    // TODO: response - unable to create new folder
+                } );
+        }
+
+        function updateFolderLink( folderId ) {
+            let layerName = container.select( '.layer-name' ).property( 'value' ),
+                mapId     = _.get( _.find( LayerManager._layers, layer => layer.name === layerName ), 'id' ) || 0;
+
+            folderId = folderId || _.get( _.find( that._folders, folder => folder.name === pathName ), 'id' ) || 0;
+
+            let params = {
+                folderId,
+                mapId,
+                updateType: 'new'
+            };
+
+            return API.updateMapFolderLinks( params )
+                .then( () => that.refreshAll() )
+                .then( () => Event.send( 'render-dataset-table' ) )
+                .catch( err => {
+                    // TODO: response - unable to update folder links
+                } );
+        }
     }
 }
 
