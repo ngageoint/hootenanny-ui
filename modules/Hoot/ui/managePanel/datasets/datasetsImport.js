@@ -172,14 +172,22 @@ export default class DatasetsImport {
                 } else {
                     this.updateFolderLink();
                 }
+            } )
+            .catch( err => {
+                // TODO: alert error - unable to upload dataset
+                console.log( err );
+                this.container.remove();
             } );
     }
 
+    /**
+     * Create a new folder and then add the uploaded layer to the folder
+     */
     addFolder() {
-        let pathName   = this.folderPathInput.property( 'value' ) || this.folderPathInput.attr( 'placeholder' ),
+        let fullPath = this.folderPathInput.property( 'value' ) || this.folderPathInput.attr( 'placeholder' ),
+            pathName = fullPath.substring( fullPath.lastIndexOf( '/' ) + 1 ),
             folderName = this.newFolderNameInput.property( 'value' ),
-            folderData = _.find( this.folderList, folder => folder.name === pathName ),
-            parentId   = folderData ? folderData.parentId : 0;
+            parentId   = _.get( _.find( this.folderList, folder => folder.name === pathName ), 'id' ) || 0;
 
         let params = {
             folderName,
@@ -187,27 +195,43 @@ export default class DatasetsImport {
         };
 
         API.addFolder( params )
-            .then( resp => console.log( resp ) )
-            .catch( err => console.log( err ) );
+            .then( resp => this.updateFolderLink( pathName, resp.folderId ) )
+            .catch( err => {
+                // TODO: alert error - unable to create new folder
+                console.log( err );
+                this.container.remove();
+            } );
     }
 
-    // TODO: update folder links
-    updateFolderLink() {
-        //let layerName  = this.layerNameInput.property( 'value' ),
-        //    folderName = this.newFolderNameInput.property( 'value' ),
-        //    pathName   = this.folderPathInput.property( 'value' ) || this.folderPathInput.attr( 'placeholder' ),
-        //
-        //    layerData  = _.find( LayerManager._layers, layer => layer.name === layerName ),
-        //    folderData = _.find( this.folderList, folder => folder.name === pathName );
-        //
-        //let params = {
-        //    folderName,
-        //    mapId: layerData.id || 0,
-        //    parentId: folderData.parentId,
-        //    updateType: 'new'
-        //};
-        //
-        //if ( !params.mapId ) return;
+    /**
+     * Move the new layer to the correct folder by updating its parent id
+     *
+     * @param pathName - folder path where layer is being created
+     * @param folderId - id of parent folder to move the layer to
+     */
+    updateFolderLink( pathName, folderId ) {
+        let fullPath = this.folderPathInput.property( 'value' ) || this.folderPathInput.attr( 'placeholder' ),
+            layerName = this.layerNameInput.property( 'value' ),
+            mapId     = _.get( _.find( LayerManager._layers, layer => layer.name === layerName ), 'id' ) || 0;
+
+        pathName = pathName || fullPath.substring( fullPath.lastIndexOf( '/' ) + 1 );
+        folderId = folderId || _.get( _.find( this.folderList, folder => folder.name === pathName ), 'parentId' ) || 0;
+
+        let params = {
+            folderId,
+            mapId,
+            updateType: 'new'
+        };
+
+        API.updateMapFolderLinks( params )
+            .then( () => FolderManager.refreshAll() )
+            .then( () => Event.send( 'render-dataset-table' ) )
+            .then( () => this.container.remove() )
+            .catch( err => {
+                // TODO: alert error - unable to update folder links
+                console.log( err );
+                this.container.remove();
+            } );
     }
 
     /**

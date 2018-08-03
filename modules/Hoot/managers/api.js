@@ -307,23 +307,6 @@ class API {
             .then( resp => resp.data );
     }
 
-    //addFolder( data ) {
-    //    const params = {
-    //        path: `/osm/api/0.6/map/addfolder?folderName=${ data.folderName }&parentId=${ data.parentId }`,
-    //        method: 'POST',
-    //        data
-    //    };
-    //
-    //    return this.request( params )
-    //        .then( resp => resp.data );
-    //}
-
-    updateMapFolderLinks( data ) {
-        const params = {
-
-        }
-    }
-
     /**
      * Upload imported files to the database
      *
@@ -349,7 +332,7 @@ class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp => this.statusInterval( resp.data.jobId ) );
     }
 
     /**
@@ -429,22 +412,35 @@ class API {
      * @param data - folder data
      * @returns {Promise} - request
      */
-    addFolder( data ) {
-        if ( !data.folderName || !(data.parentId >= 0) ) {
+    addFolder( { folderName, parentId } ) {
+        if ( !folderName || parentId < 0 ) {
             return false;
         }
 
         const params = {
             path: '/osm/api/0.6/map/addfolder',
             method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain'
-            },
             params: {
-                folderName: data.folderName,
-                parentId: data.parentId
-            },
-            data
+                folderName,
+                parentId
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    updateMapFolderLinks( { mapId, folderId, updateType } ) {
+        if ( !mapId || folderId < 0 ) return;
+
+        const params = {
+            path: '/osm/api/0.6/map/linkMapFolder',
+            method: 'POST',
+            params: {
+                mapId,
+                folderId,
+                updateType
+            }
         };
 
         return this.request( params )
