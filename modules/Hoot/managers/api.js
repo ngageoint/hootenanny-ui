@@ -45,14 +45,14 @@ class API {
      * @returns {Promise<any>}
      */
     statusInterval( jobId ) {
-        return new Promise( res => {
+        return new Promise( ( res, rej ) => {
             this.intervals[ jobId ] = setInterval( async () => {
                 let { status } = await this.getJobStatus( jobId );
 
                 // TODO: error handling
                 if ( status !== 'running' ) {
                     clearInterval( this.intervals[ jobId ] );
-                    res( jobId );
+                    res( { status, jobId } );
                 }
             }, this.queryInterval );
         } );
@@ -353,7 +353,7 @@ class API {
 
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobId ) )
-            .then( jobId => jobId );
+            .then( resp => resp.jobId );
     }
 
     uploadBasemap( data ) {
@@ -367,8 +367,7 @@ class API {
         };
 
         return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobId ) )
-            .then( jobId => jobId );
+            .then( resp => this.statusInterval( resp.data.jobId ) );
     }
 
     enableBasemap( data ) {
@@ -541,9 +540,18 @@ class API {
             data
         };
 
+        //let jobId;
+        //
+        //return this.request( params )
+        //    .then( resp => {
+        //        jobId = resp.data.jobId;
+        //
+        //        return this.statusInterval( jobId );
+        //    } )
+        //    .then( () => jobId );
+
         return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) )
-            .then( () => data );
+            .then( resp => this.statusInterval( resp.data.jobid ) );
     }
 
     /**

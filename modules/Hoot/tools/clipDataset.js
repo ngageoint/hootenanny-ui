@@ -12,6 +12,7 @@ import LayerManager  from '../managers/layerManager';
 
 import { checkForUnallowedChar } from './utilities';
 import { d3combobox }            from '../../lib/hoot/d3.combobox';
+import Event                     from '../managers/eventManager';
 
 export default class ClipDataset {
     constructor( instance ) {
@@ -215,8 +216,8 @@ export default class ClipDataset {
             params.BBOX        = bbox;
 
             API.clipDataset( params )
-                .then( resp => console.log( resp ) )
-                .catch( err => console.log( err ) );
+                .then( () => FolderManager.refreshDatasets() )
+                .then( () => Event.send( 'render-dataset-table' ) );
         } );
 
         this.container.remove();

@@ -198,48 +198,6 @@ class HootOSM {
         };
     }
 
-    filterChanges( changes ) {
-        let ways = _.filter( _.flatten( _.map( changes, featArr => featArr ) ), feat => feat.type !== 'node' );
-
-        return _.reduce( changes, ( obj, featArr, type ) => {
-            let changeTypes = {
-                created: [],
-                deleted: [],
-                modified: []
-            };
-
-            _.forEach( featArr, feat => {
-                let mapId = feat.mapId;
-
-                if ( feat.isNew() && feat.type === 'node' ) {
-                    let parent = _.find( ways, way => _.includes( way.nodes, feat.id ) );
-
-                    if ( parent && parent.mapId ) {
-                        mapId = parent.mapId;
-                    }
-                }
-
-                // create map ID key if not yet exists
-                if ( !obj[ mapId ] ) {
-                    obj[ mapId ] = {};
-                }
-
-                // create change type key if not yet exists
-                if ( !obj[ mapId ][ type ] ) {
-                    obj[ mapId ][ type ] = [];
-                }
-
-                obj[ mapId ][ type ].push( feat );
-
-                // merge object into default types array so that the final result
-                // will contain all keys in case change type is empty
-                obj[ mapId ] = Object.assign( changeTypes, obj[ mapId ] );
-            } );
-
-            return obj;
-        }, {} );
-    }
-
     makeChangesetTags( imageryUsed ) {
         let detected = utilDetect();
 

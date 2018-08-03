@@ -29,7 +29,7 @@ export default class About {
             }
         };
 
-        new FormFactory().generateForm( 'body', 'about-hootenanny', metadata );
+        this.container = new FormFactory().generateForm( 'body', 'about-hootenanny', metadata );
 
         d3.select( '#downloadUserGuideBtn' ).property( 'disabled', false );
     }
@@ -70,6 +70,7 @@ export default class About {
             let e = document.createEvent( 'MouseEvents' );
             e.initEvent( 'click', true, true );
             link.dispatchEvent( e );
+            this.container.remove();
             return true;
         }
     }

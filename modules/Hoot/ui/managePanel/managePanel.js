@@ -54,7 +54,7 @@ export default class ManagePanel {
         this.panelSidebar.append( 'h3' )
             .classed( 'manage-header pad1y pointer strong center', true )
             .append( 'label' )
-            .text( 'Settings Panel' );
+            .text( 'Manage Panel' );
 
         // Create all tab items in the panel
         Promise.all( _.map( this.manageTabs, Tab => new Tab( this ).render() ) );

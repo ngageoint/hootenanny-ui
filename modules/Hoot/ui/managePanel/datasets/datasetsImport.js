@@ -161,7 +161,7 @@ export default class DatasetsImport {
         this.loadingState();
 
         return ImportControl.importData( data )
-            .then( status => {
+            .then( () => {
                 let table = d3.select( '#datasets-table' );
 
                 FolderManager.refreshDatasets()
