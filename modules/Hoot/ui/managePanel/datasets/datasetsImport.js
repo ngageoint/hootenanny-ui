@@ -163,9 +163,7 @@ export default class DatasetsImport {
         };
 
         this.loadingState();
-
-        return;
-
+        
         return API.uploadDataset( data )
             .then( () => FolderManager.refreshDatasets() )
             .then( () => FolderManager.updateFolders( this.container ) )
