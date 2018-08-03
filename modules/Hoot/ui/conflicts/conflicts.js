@@ -52,6 +52,8 @@ export default class Conflicts {
      * Deactivate conflicts review
      */
     deactivate() {
+        this.context.map().on( 'drawn', null );
+        this.map.unsetHighlight();
         this.container.remove();
     }
 

@@ -410,10 +410,55 @@ export default {
     },
 
 
-    putChangeset: function(changeset, changes, mapId, mergedItems, callback) {
+    filterChanges: function( changes ) {
+        let ways = _filter( _flatten( _map( changes, featArr => featArr ) ), feat => feat.type !== 'node' );
+
+        return _reduce( changes, ( obj, featArr, type ) => {
+            let changeTypes = {
+                created: [],
+                deleted: [],
+                modified: []
+            };
+
+            _forEach( featArr, feat => {
+                let mapId = feat.mapId;
+
+                if ( feat.isNew() && feat.type === 'node' ) {
+                    let parent = _find( ways, way => _includes( way.nodes, feat.id ) );
+
+                    if ( parent && parent.mapId ) {
+                        mapId = parent.mapId;
+                    }
+                }
+
+                // create map ID key if not yet exists
+                if ( !obj[ mapId ] ) {
+                    obj[ mapId ] = {};
+                }
+
+                // create change type key if not yet exists
+                if ( !obj[ mapId ][ type ] ) {
+                    obj[ mapId ][ type ] = [];
+                }
+
+                obj[ mapId ][ type ].push( feat );
+
+                // merge object into default types array so that the final result
+                // will contain all keys in case change type is empty
+                obj[ mapId ] = Object.assign( changeTypes, obj[ mapId ] );
+            } );
+
+            return obj;
+        }, {} );
+    },
+
+
+    putChangeset: function(changeset, changes, callback, mergedItems ) {
         if (_changeset.inflight) {
             return callback({ message: 'Changeset already inflight', status: -2 }, changeset);
         }
+
+        let changesArr = this.filterChanges( changes );
 
         var that = this;
         var cid = _connectionID;
@@ -421,19 +466,21 @@ export default {
         if (_changeset.open) {   // reuse existing open changeset..
             createdChangeset(null, _changeset.open);
         } else {                 // open a new changeset..
-            let path = '/api/0.6/changeset/create';
-            path += mapId ? `?mapId=${ mapId }` : '';
+            _forEach( changesArr, ( changes, mapId ) => {
+                let path = '/api/0.6/changeset/create';
+                path += mapId ? `?mapId=${ mapId }` : '';
 
-            _changeset.inflight = oauth.xhr({
-                method: 'PUT',
-                path: path,
-                options: { header: { 'Content-Type': 'text/xml' } },
-                content: JXON.stringify(changeset.asJXON())
-            }, createdChangeset);
+                _changeset.inflight = oauth.xhr({
+                    method: 'PUT',
+                    path: path,
+                    options: { header: { 'Content-Type': 'text/xml' } },
+                    content: JXON.stringify(changeset.asJXON())
+                }, (err, changesetID) => createdChangeset(err, changesetID, mapId));
+            } );
         }
 
 
-        function createdChangeset(err, changesetID) {
+        function createdChangeset(err, changesetID, mapId) {
             _changeset.inflight = null;
 
             if (err) {
@@ -494,11 +541,11 @@ export default {
                 path: path,
                 options: { header: { 'Content-Type': 'text/xml' } },
                 content: JXON.stringify(changeset.osmChangeJXON(changes))
-            }, uploadedChangeset);
+            }, err => uploadedChangeset(err, mapId));
         }
 
 
-        function uploadedChangeset(err) {
+        function uploadedChangeset(err, mapId) {
             _changeset.inflight = null;
 
             if (err) return callback(err, changeset);
@@ -507,7 +554,7 @@ export default {
             // Add delay to allow for postgres replication #1646 #2678
             window.setTimeout(function() {
                 callback(null, changeset);
-            }, 2500);
+            }, 500);
 
             _changeset.open = null;
 

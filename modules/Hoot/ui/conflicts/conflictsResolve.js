@@ -4,8 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/24/18
  *******************************************************************************************************/
 
-import HootOSM from '../../managers/hootOsm';
-import Event   from '../../managers/eventManager';
+import HootOSM          from '../../managers/hootOsm';
+import Event            from '../../managers/eventManager';
 
 /**
  * @class ConflictsResolve
@@ -54,6 +54,20 @@ export default class ConflictsResolve {
             // TODO: alert nothing to review
         }
     }
+
+    //makeChangesetTags( imageryUsed ) {
+    //    let detected = utilDetect();
+    //
+    //    return {
+    //        created_by: 'iD',
+    //        imagery_used: imageryUsed.join( ';' ).substr( 0, 255 ),
+    //        host: (window.location.origin + window.location.pathName).substr( 0, 255 ),
+    //        locale: detected.locale,
+    //        browser: detected.browser + ' ' + detected.version,
+    //        platform: detected.platform,
+    //        comment: 'Hoot Save'
+    //    };
+    //}
 
     /**
      * Save any unsaved items and resolve all remaining reviewables

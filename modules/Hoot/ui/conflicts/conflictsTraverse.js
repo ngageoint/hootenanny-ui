@@ -61,6 +61,7 @@ export default class ConflictsTraverse {
             this.instance.graphSync.getRelationMembers( reviewItem.relationId )
                 .then( members => this.instance.map.highlightLayer( members[ 0 ], members[ 1 ], true ) );
         } else {
+            this.instance.map.unsetHighlight();
             this.instance.deactivate();
         }
     }

@@ -50,6 +50,7 @@
 
         &.highlight {
             background-color: $blue;
+            color: $light;
         }
 
         &:first-child {
@@ -81,6 +82,7 @@
 
             &:hover {
                 background-color: $blue;
+                color: $light;
             }
         }
     }

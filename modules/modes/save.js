@@ -305,7 +305,6 @@ export function modeSave(context) {
 
         } else if (_errors.length) {
             showErrors();
-
         } else {
             var history = context.history();
             var changes = history.changes(actionDiscardTags(history.difference()));
@@ -344,7 +343,7 @@ export function modeSave(context) {
                 loading.close();
                 _isSaving = false;
                 context.flush();
-            }, 2500);
+            }, 500);
         }
     }
 
@@ -472,12 +471,15 @@ export function modeSave(context) {
     function success(changeset) {
         commit.reset();
 
-        var ui = uiSuccess(context)
-            .changeset(changeset)
-            .location(_location)
-            .on('cancel', function() { context.ui().sidebar.hide(); });
+        // commented out to prevent success UI from showing
+        //var ui = uiSuccess(context)
+        //    .changeset(changeset)
+        //    .location(_location)
+        //    .on('cancel', function() { context.ui().sidebar.hide(); });
 
-        context.enter(modeBrowse(context).sidebar(ui));
+        //context.enter(modeBrowse(context).sidebar(ui));
+
+        context.enter(modeBrowse(context));
     }
 
 

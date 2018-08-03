@@ -262,25 +262,20 @@ class HootOSM {
             history.perform( actionNoop() );
         }
 
-        if ( changes.modified.length || changes.created.length || changes.deleted.length ) {
-            let tags          = this.makeChangesetTags( history.imageryUsed() ),
-                changesetArr  = this.filterChanges( changes ),
-                _osmChangeset = new osmChangeset( { tags } );
+        let tags          = this.makeChangesetTags( history.imageryUsed() ),
+            _osmChangeset = new osmChangeset( { tags } );
 
-            _.forEach( changesetArr, ( changeset, mapId ) => {
-                this.context.connection().putChangeset( _osmChangeset, changeset, mapId, mergedItems, err => {
-                    if ( err ) {
+        this.context.connection().putChangeset( _osmChangeset, changes, err => {
+            if ( err ) {
 
-                    } else {
-                        this.context.flush();
+            } else {
+                this.context.flush();
 
-                        if ( callback ) {
-                            callback();
-                        }
-                    }
-                } );
-            } );
-        }
+                if ( callback ) {
+                    callback();
+                }
+            }
+        } );
     }
 
     editable() {
