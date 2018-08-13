@@ -49,19 +49,17 @@ export function uiPasteTags( context ) {
         let copyTags    = context.copyTags(),
             oldIDs      = context.copyIDs(),
             oldGraph    = context.copyGraph(),
-            selectedIDs = context.selectedIDs(),
-            selectEntity,
-            eid, i;
+            selectedIDs = context.selectedIDs();
 
         if ( !copyTags && !oldIDs.length ) return;
 
-        for ( eid in selectedIDs ) {
-            selectEntity = oldGraph.entity( selectedIDs[ eid ] );
+        _.forEach( selectedIDs, eid => {
+            let selectEntity = oldGraph.entity( eid );
 
             if ( Object.keys( copyTags ).length > 0 ) { //use copied tags
                 selectEntity = selectEntity.mergeTags( _.omit( copyTags, omitTag ), d3.event.shiftKey || overwrite );
             } else { //use copied features
-                for ( i = 0; i < oldIDs.length; i++ ) {
+                for ( let i = 0; i < oldIDs.length; i++ ) {
                     let oldEntity = oldGraph.entity( oldIDs[ i ] );
 
                     selectEntity = selectEntity.mergeTags( _.omit( oldEntity.tags, omitTag ), d3.event.shiftKey || overwrite );
@@ -70,7 +68,7 @@ export function uiPasteTags( context ) {
 
             context.perform( actionChangeTags( selectEntity.id, selectEntity.tags ),
                 t( 'operations.change_tags.annotation' ) );
-        }
+        } );
 
         context.enter( modeSelect( context, selectedIDs ) );
     }
@@ -85,9 +83,7 @@ export function uiPasteTags( context ) {
             .data( commands )
             .enter().append( 'button' )
             .attr( 'class', 'col6 disabled' )
-            .on( 'click', function( d ) {
-                return d.action();
-            } )
+            .on( 'click', d => d.action() )
             .call( buttonTooltip );
 
         buttons.each( function( d ) {
@@ -118,8 +114,9 @@ export function uiPasteTags( context ) {
             buttons
                 .property( 'disabled', disabled )
                 .classed( 'disabled', disabled )
-                .each( function() {
-                    var selection = d3.select( this );
+                .each( () => {
+                    let selection = d3.select( this );
+
                     if ( selection.property( 'tooltipVisible' ) ) {
                         selection.call( tooltip.show );
                     }

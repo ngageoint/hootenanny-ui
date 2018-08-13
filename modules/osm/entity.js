@@ -130,7 +130,7 @@ osmEntity.prototype = {
     },
 
 
-    mergeTags: function(tags) {
+    mergeTags: function(tags, overwrite) {
         var merged = _clone(this.tags), changed = false;
         for (var k in tags) {
             var t1 = merged[k],
@@ -140,7 +140,11 @@ osmEntity.prototype = {
                 merged[k] = t2;
             } else if (t1 !== t2) {
                 changed = true;
-                merged[k] = _union(t1.split(/;\s*/), t2.split(/;\s*/)).join(';');
+                if (overwrite) {
+                    merged[k] = t2;
+                } else {
+                    merged[k] = _union(t1.split(/;\s*/), t2.split(/;\s*/)).join(';');
+                }
             }
         }
         return changed ? this.update({tags: merged}) : this;
