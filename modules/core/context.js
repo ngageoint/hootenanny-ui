@@ -283,13 +283,42 @@ export function coreContext() {
 
 
     /* Copy/Paste */
-    var copyIDs = [], copyGraph;
+    var copyIDs = [], copyTags = {}, copyGraph;
     context.copyGraph = function() { return copyGraph; };
     context.copyIDs = function(_) {
         if (!arguments.length) return copyIDs;
         copyIDs = _;
         copyGraph = history.graph();
         return context;
+    };
+    context.copyTags = function(_) {
+        if (!arguments.length) return copyTags;
+        copyIDs = [];
+        copyTags = _;
+        copyGraph = history.graph();
+        translateCopyTags(copyTags);
+        return context;
+    };
+
+    var changeTagsCallback = function(tcTags) {
+        Object.keys(tcTags).forEach(function(key) {
+            if (tcTags[key] === undefined) {
+                delete tcTags[key];
+            }
+        });
+
+        copyTags = tcTags;
+    };
+
+    var translateCopyTags = function(tcTags) {
+        var entity = context.entity(context.selectedIDs()[0]);
+        if (context.translationserver().activeTranslation() !== 'OSM' && !_.isEmpty(tcTags)) {
+            context.translationserver().translateToOsm(tcTags, entity, false, function(resp){
+                changeTagsCallback(resp);
+            });
+        } else {
+            changeTagsCallback(tcTags);
+        }
     };
 
 

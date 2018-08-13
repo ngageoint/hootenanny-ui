@@ -30,6 +30,7 @@ import { uiMapData } from './map_data';
 import { uiMapInMap } from './map_in_map';
 import { uiModes } from './modes';
 import { uiNotice } from './notice';
+import { uiPasteTags } from './paste_tags';
 import { uiRestore } from './restore';
 import { uiSave } from './save';
 // import { uiSaveToOsm } from './save_to_osm';
@@ -93,11 +94,6 @@ export function uiInit(context) {
         content
             .call(uiMapInMap(context))
             .call(uiInfo(context));
-            //.call(uiNotice(context));
-
-        //bar
-        //    .append('div')
-        //    .attr('class', 'spacer col4');
 
         var limiter = bar.append('div')
             .attr('class', 'limiter');
@@ -106,6 +102,11 @@ export function uiInit(context) {
             .append( 'div' )
             .attr( 'class', 'button-wrap' )
             .call(uiTools(context));
+
+        limiter
+            .append( 'div' )
+            .attr( 'class', 'button-wrap joined' )
+            .call(uiPasteTags(context));
 
         limiter
             .append('div')

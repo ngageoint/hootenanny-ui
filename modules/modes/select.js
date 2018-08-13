@@ -471,6 +471,10 @@ export function modeSelect(context, selectedIDs) {
             ? uiRadialMenu(context, operations)
             : uiEditMenu(context, operations);
 
+        console.log( singular() );
+        console.log( singular().id );
+        console.log( newFeature );
+
         context.ui().sidebar
             .select(singular() ? singular().id : null, newFeature);
 
