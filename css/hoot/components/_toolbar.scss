@@ -93,3 +93,30 @@
         }
     }
 }
+
+@media only screen and (max-width: 1130px) {
+    #bar .limiter button {
+        & > span {
+            display: none !important;
+        }
+
+        .icon.pre-text {
+            margin: 0;
+        }
+    }
+}
+
+@media only screen and (max-width: 990px) {
+    #bar .limiter button {
+        padding: 0 10px !important;
+
+        &.save .tooltip {
+            left: 273px !important;
+
+            .tooltip-arrow {
+                left: auto;
+                right: 15px;
+            }
+        }
+    }
+}

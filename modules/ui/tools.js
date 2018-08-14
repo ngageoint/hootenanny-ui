@@ -74,6 +74,10 @@ export function uiTools( context ) {
         toolsToggle = selection
             .append( 'button' )
             .classed( 'tools-toggle', true )
+            .call( svgIcon( '#iD-icon-tools', 'pre-text' ) );
+
+        toolsToggle
+            .append( 'span' )
             .text( 'Tools' );
 
         toolsMenu = d3.select( '.limiter' )
