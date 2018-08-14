@@ -6577,20 +6577,20 @@ svg.mouseclick use.right {
 }
 
 /* Move over tooltips that are near the edge of screen */
-.add-point .tooltip {
-    left: 33.3333% !important;
-}
-[dir='rtl'] .add-point .tooltip {
-    left: inherit !important;
-}
+/*.add-point .tooltip {*/
+    /*left: 33.3333% !important;*/
+/*}*/
+/*[dir='rtl'] .add-point .tooltip {*/
+    /*left: inherit !important;*/
+/*}*/
 
-.add-point .tooltip .tooltip-arrow {
-    left: 60px;
-}
-[dir='rtl'] .add-point .tooltip .tooltip-arrow {
-    left: auto;
-    right: 60px;
-}
+/*.add-point .tooltip .tooltip-arrow {*/
+    /*left: 60px;*/
+/*}*/
+/*[dir='rtl'] .add-point .tooltip .tooltip-arrow {*/
+    /*left: auto;*/
+    /*right: 60px;*/
+/*}*/
 
 li:first-of-type .badge .tooltip,
 li.hide + li.version .badge .tooltip {
