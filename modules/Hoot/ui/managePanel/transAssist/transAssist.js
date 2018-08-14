@@ -19,7 +19,7 @@ export default class TransAssist extends Tab {
     constructor( instance ) {
         super( instance );
 
-        this.name = 'Translations Assistant';
+        this.name = 'Translation Assistant';
         this.id   = 'manage-translations-assistant';
     }
 

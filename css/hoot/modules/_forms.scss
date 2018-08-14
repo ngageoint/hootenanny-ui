@@ -131,7 +131,11 @@
         }
     }
 
-    .icon-button {
+    .multipart-icon-button {
+        position: absolute;
         width: 31px;
+        top: 0;
+        bottom: 0;
+        right: 0;
     }
 }

@@ -201,11 +201,22 @@ path.line {
 }
 
 .data-layer-hoot {
+    .layer-hoot {
+        fill-opacity: 0;
+        pointer-events: none;
+    }
+
     .bbox {
         opacity: 0;
 
         .high-zoom & {
             opacity: 1;
         }
+    }
+}
+
+#about {
+    .coordinates {
+        cursor: pointer;
     }
 }

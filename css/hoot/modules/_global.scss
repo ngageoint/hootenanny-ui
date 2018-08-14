@@ -57,6 +57,10 @@ input {
     overflow: auto;
 }
 
+.contain {
+    position: relative;
+}
+
 .flex {
     display: flex;
 

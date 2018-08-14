@@ -30,9 +30,9 @@ export default class ManagePanel {
 
         this.manageTabs = [
             Datasets,
-            TransAssist,
-            Translations,
             Basemaps,
+            Translations,
+            TransAssist,
             ReviewBookmarks,
             ReviewBookmarkNotes
         ];

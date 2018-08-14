@@ -214,7 +214,7 @@ export default class FormFactory {
      * @param field - field div
      */
     createTextField( field ) {
-        field.append( 'input' )
+        return field.append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', d => d.id )
             .attr( 'class', d => d.class )
@@ -250,14 +250,24 @@ export default class FormFactory {
     createMultipart( field ) {
         let wrapper = field.append( 'div' ).classed( 'contain', true );
 
-        this.createTextField( wrapper );
-
-        let span = wrapper.append( 'span' )
-            .classed( 'icon-button pointer keyline-left pin-right flex align-center justify-center', true )
+        this.createTextField( wrapper )
             .on( 'click', function() {
                 let evt = new MouseEvent( 'click' );
 
-                d3.select( this ).select( 'input' ).node().dispatchEvent( evt );
+                d3.select( this.parentNode )
+                    .select( '.multipart-icon-button' )
+                    .select( 'input' ).node()
+                    .dispatchEvent( evt );
+            } );
+
+        let span = wrapper.append( 'span' )
+            .classed( 'multipart-icon-button pointer keyline-left flex align-center justify-center', true )
+            .on( 'click', function() {
+                let evt = new MouseEvent( 'click' );
+
+                d3.select( this )
+                    .select( 'input' ).node()
+                    .dispatchEvent( evt );
             } );
 
         span.append( 'div' )
