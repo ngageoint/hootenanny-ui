@@ -87,6 +87,57 @@ export function uiSave(context) {
             .on('click', save)
             .call(tooltipBehavior);
 
+        // added in Hoot to recalculate position of tooltip that is too close to edge of screen
+        button.on( 'mouseover', function() {
+            let tagName = d3.event.target.tagName;
+
+            if ( tagName !== 'BUTTON' || this.tooltipVisible ) return;
+
+            // set timeout so that the other 'mouseover' event is executed first.
+            // the tooltip completely render before trying to recalculating its position
+            setTimeout( () => {
+                let tooltip = d3.select( this ).select( '.tooltip' ),
+                    padding = 40;
+
+                let parentWidth = d3.select( '#content' ).node().offsetWidth,
+
+                    buttonWidth    = this.clientWidth,
+                    buttonLeft     = this.offsetLeft,
+                    buttonRightPos = buttonLeft + buttonWidth,
+
+                    tooltipWidth    = tooltip.node().clientWidth,
+                    tooltipLeft     = tooltip.node().offsetLeft,
+                    tooltipRightPos = tooltipLeft + tooltipWidth;
+
+                let diff, left, arrowLeft;
+
+                if ( tooltipRightPos <= parentWidth - padding ) {
+                    // there's enough space for the tooltip to be centered below the button.
+                    // reset the position of the tooltip.
+                    diff = tooltipWidth - buttonWidth;
+                    left = buttonLeft - ( diff / 2 );
+
+                    tooltip
+                        .style( 'left', left + 'px' )
+                        .select( '.tooltip-arrow' )
+                        .style( 'left', '50%' );
+
+                    return;
+                }
+
+                // tooltip will overflow paste screen.
+                // make the right-side edges of tooltip and button flushed with each other
+                diff = tooltipRightPos - buttonRightPos;
+                left = tooltipLeft - diff;
+                arrowLeft = ( tooltipWidth - buttonWidth ) + ( buttonWidth / 2 );
+
+                tooltip
+                    .style( 'left', left + 'px' )
+                    .select( '.tooltip-arrow' )
+                    .style( 'left', arrowLeft + 'px' );
+            }, 0 );
+        } );
+
         button
             .call(svgIcon('#iD-icon-save', 'pre-text'))
             .append('span')

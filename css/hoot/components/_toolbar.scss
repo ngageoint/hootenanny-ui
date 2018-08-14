@@ -32,10 +32,12 @@
         max-width: 60px;
     }
 
-    .add-point {
-        .tooltip {
-            left: initial;
-        }
+    .add-point .tooltip {
+        left: initial;
+    }
+
+    .save .tooltip {
+        white-space: nowrap;
     }
 }
 
@@ -94,7 +96,7 @@
     }
 }
 
-@media only screen and (max-width: 1130px) {
+@media only screen and (max-width: 1160px) {
     #bar .limiter button {
         & > span {
             display: none !important;
@@ -109,14 +111,5 @@
 @media only screen and (max-width: 990px) {
     #bar .limiter button {
         padding: 0 10px !important;
-
-        &.save .tooltip {
-            left: 273px !important;
-
-            .tooltip-arrow {
-                left: auto;
-                right: 15px;
-            }
-        }
     }
 }
