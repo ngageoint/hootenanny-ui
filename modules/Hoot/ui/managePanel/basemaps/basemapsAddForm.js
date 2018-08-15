@@ -7,7 +7,7 @@
 import _                  from 'lodash-es';
 import API                from '../../../managers/api';
 import FormFactory        from '../../../tools/formFactory';
-import { basemapAddForm } from '../../../config/formMetadata';
+import { basemapAddForm } from '../../../config/domMetadata';
 
 export default class BasemapsAddForm {
     constructor( instance ) {

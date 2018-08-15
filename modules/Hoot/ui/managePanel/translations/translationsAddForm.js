@@ -6,7 +6,7 @@
 
 import API                    from '../../../managers/api';
 import FormFactory            from '../../../tools/formFactory';
-import { translationAddForm } from '../../../config/formMetadata';
+import { translationAddForm } from '../../../config/domMetadata';
 
 export default class TranslationsAddForm {
     constructor( instance, templateText ) {

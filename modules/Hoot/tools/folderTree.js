@@ -8,7 +8,6 @@ import _                from 'lodash-es';
 import moment           from 'moment';
 import Event            from '../managers/eventManager';
 import FolderManager    from '../managers/folderManager';
-import { contextMenus } from '../config/domElements';
 
 /**
  * Class for creating, displaying and maintaining a folder tree hierarchy
@@ -23,6 +22,54 @@ export default class FolderTree {
         this.selectedNodes          = [];
         this.lastSelectedNode       = null;
         this.lastSelectedRangeNodes = null;
+
+        this.datasetContextMenu = {
+            multiDataset: {
+                title: 'Export Selected Datasets',
+                icon: 'export',
+                click: 'bulkexportDataset'
+            },
+            singleDataset: [
+                {
+                    title: 'Export',
+                    icon: 'export',
+                    click: 'exportDataset'
+                },
+                {
+                    title: 'Prepare for Validation',
+                    icon: 'sprocket',
+                    click: 'prepValidation'
+                },
+                {
+                    title: 'Filter non-HGIS POIs',
+                    icon: 'sprocket',
+                    click: 'filter'
+                }
+            ]
+        };
+
+        this.folderContextMenu = [
+            {
+                title: 'Delete',
+                icon: 'trash',
+                click: 'deleteFolder'
+            },
+            {
+                title: 'Add Datasets',
+                icon: 'data',
+                click: 'addDataset'
+            },
+            {
+                title: 'Add Folder',
+                icon: 'folder',
+                click: 'addFolder'
+            },
+            {
+                title: 'Export Data in Folder',
+                icon: 'export',
+                click: 'exportFolder'
+            }
+        ];
 
         this.margin    = { top: 10, right: 20, bottom: 30, left: 0 };
         this.width     = '100%';
@@ -438,9 +485,9 @@ export default class FolderTree {
             ];
 
             if ( selectedCount > 1 && selectedCount <= 10 ) {
-                items.push( contextMenus.dataset.multiDataset );
+                items.push( this.datasetContextMenu.multiDataset );
             } else {
-                items = _.concat( items, contextMenus.dataset.singleDataset );
+                items = _.concat( items, this.datasetContextMenu.singleDataset );
                 items.splice( 3, 0, {
                     title: `Rename ${ d.name }`,
                     icon: 'info',
@@ -448,7 +495,7 @@ export default class FolderTree {
                 } );
             }
         } else if ( data.type === 'folder' ) {
-            items = contextMenus.folder;
+            items = this.folderContextMenu;
             items = items.splice( 1, 0, {
                 title: `Rename/Move ${ d.name }`,
                 icon: 'info',

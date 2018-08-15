@@ -4,16 +4,12 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/12/18
  *******************************************************************************************************/
 
-import _                      from 'lodash-es';
-import API                    from '../../../managers/api';
-import Event                  from '../../../managers/eventManager';
-import ImportControl          from '../../../control/import';
-import FolderManager          from '../../../managers/folderManager';
-import LayerManager           from '../../../managers/layerManager';
-import FormFactory            from '../../../tools/formFactory';
-import { importDatasetForm }  from '../../../config/formMetadata';
-import { importDatasetTypes } from '../../../config/domElements';
-import { getBrowserInfo }     from '../../../tools/utilities';
+import _                     from 'lodash-es';
+import API                   from '../../../managers/api';
+import FolderManager         from '../../../managers/folderManager';
+import FormFactory           from '../../../tools/formFactory';
+import { importDatasetForm } from '../../../config/domMetadata';
+import { getBrowserInfo }    from '../../../tools/utilities';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -21,10 +17,9 @@ import { getBrowserInfo }     from '../../../tools/utilities';
  * @param translations - All translations from database
  * @constructor
  */
-export default class DatasetsImport {
+export default class ImportSingle {
     constructor( translations ) {
         this.folderList   = FolderManager._folders;
-        this.importTypes  = importDatasetTypes;
         this.translations = translations;
         this.browserInfo  = getBrowserInfo();
         this.formFactory  = new FormFactory();
@@ -41,6 +36,25 @@ export default class DatasetsImport {
             _.remove( this.importTypes, o => o.value === 'DIR' );
         }
 
+        this.importTypes = [
+            {
+                title: 'File (shp, zip, gdb.zip)',
+                value: 'FILE'
+            },
+            {
+                title: 'File (osm, osm.zip, pbf)',
+                value: 'OSM'
+            },
+            {
+                title: 'File (geonames, txt)',
+                value: 'GEONAMES'
+            },
+            {
+                title: 'Directory (FGDB)',
+                value: 'DIR'
+            }
+        ];
+
         this.form = importDatasetForm.call( this );
     }
 
@@ -48,17 +62,15 @@ export default class DatasetsImport {
      * Set form parameters and create the form using the form factory
      */
     render() {
-        let button = {
-            text: 'Import',
-            location: 'right',
-            id: 'importDatasetBtn',
-            onClick: () => this.handleSubmit()
-        };
-
         let metadata = {
             title: 'Import Datasets',
             form: this.form,
-            button
+            button: {
+                text: 'Import',
+                location: 'right',
+                id: 'importDatasetBtn',
+                onClick: () => this.handleSubmit()
+            }
         };
 
         this.container = this.formFactory.generateForm( 'body', 'datasets-import-form', metadata );

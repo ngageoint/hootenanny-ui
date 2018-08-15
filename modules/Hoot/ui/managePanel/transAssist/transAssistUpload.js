@@ -4,8 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/5/18
  *******************************************************************************************************/
 
-import { transAssistButtons } from '../../../config/domElements';
-import API                    from '../../../managers/api';
+import API from '../../../managers/api';
 
 export default class TransAssistUpload {
     constructor( instance ) {
@@ -20,6 +19,19 @@ export default class TransAssistUpload {
             {
                 name: 'TDSv61',
                 enabled: true
+            }
+        ];
+
+        this.uploadButtons = [
+            {
+                title: 'Upload File(s)',
+                icon: 'play_for_work',
+                uploadType: 'FILE'
+            },
+            {
+                title: 'Upload Folder',
+                icon: 'move_to_inbox',
+                uploadType: 'DIR'
             }
         ];
     }
@@ -75,7 +87,7 @@ export default class TransAssistUpload {
             .append( 'div' )
             .classed( 'button-row pad2', true )
             .selectAll( 'button' )
-            .data( transAssistButtons );
+            .data( this.uploadButtons );
 
         let buttons = buttonContainer
             .enter()

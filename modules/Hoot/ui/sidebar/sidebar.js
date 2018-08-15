@@ -4,13 +4,12 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/10/18
  *******************************************************************************************************/
 
-import _                from 'lodash-es';
-import LayerManager     from '../../managers/layerManager';
-import Event            from '../../managers/eventManager';
-import { sidebarForms } from '../../config/formMetadata';
-import LayerAdd         from './layerAdd';
-import LayerConflate    from './layerConflate';
-import LayerReview      from './layerReview';
+import _             from 'lodash-es';
+import LayerManager  from '../../managers/layerManager';
+import Event         from '../../managers/eventManager';
+import LayerAdd      from './layerAdd';
+import LayerConflate from './layerConflate';
+import LayerReview   from './layerReview';
 
 /**
  * Create the sidebar
@@ -19,16 +18,47 @@ import LayerReview      from './layerReview';
  */
 export default class Sidebar {
     constructor( context ) {
-        this.context   = context;
-        this.iDSidebar = d3.select( '#sidebar' );
-        this.formData  = sidebarForms;
-
-        this.addFormData      = _.filter( this.formData, form => form.type === 'add' );
-        this.conflateFormData = _.filter( this.formData, form => form.type === 'conflate' );
-        this.reviewFormData   = _.filter( this.formData, form => form.type === 'review' );
-
+        this.context     = context;
+        this.iDSidebar   = d3.select( '#sidebar' );
         this.forms       = {};
         this.mergedLayer = null;
+
+        let formMeta = [
+            {
+                type: 'add',
+                refType: 'primary',
+                id: 'primary',
+                class: 'layer-add',
+                tableId: 'add-ref-table',
+                color: 'violet',
+                toggleButtonText: 'Add Reference Datasets'
+            },
+            {
+                type: 'add',
+                refType: 'secondary',
+                id: 'secondary',
+                class: 'layer-add',
+                tableId: 'add-secondary-table',
+                color: 'orange',
+                toggleButtonText: 'Add Secondary Datasets'
+            },
+            {
+                type: 'conflate',
+                id: 'conflate',
+                class: 'layer-conflate',
+                toggleButtonText: 'Conflate'
+            },
+            {
+                type: 'review',
+                id: 'review',
+                class: 'layer-review',
+                toggleButtonText: 'Complete Review'
+            }
+        ];
+
+        this.addFormData      = _.filter( formMeta, form => form.type === 'add' );
+        this.conflateFormData = _.filter( formMeta, form => form.type === 'conflate' );
+        this.reviewFormData   = _.filter( formMeta, form => form.type === 'review' );
     }
 
     /**

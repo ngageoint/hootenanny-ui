@@ -4,39 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/15/18
  *******************************************************************************************************/
 
-export const sidebarForms = [
-    {
-        type: 'add',
-        refType: 'primary',
-        id: 'primary',
-        class: 'layer-add',
-        tableId: 'add-ref-table',
-        color: 'violet',
-        toggleButtonText: 'Add Reference Datasets'
-    },
-    {
-        type: 'add',
-        refType: 'secondary',
-        id: 'secondary',
-        class: 'layer-add',
-        tableId: 'add-secondary-table',
-        color: 'orange',
-        toggleButtonText: 'Add Secondary Datasets'
-    },
-    {
-        type: 'conflate',
-        id: 'conflate',
-        class: 'layer-conflate',
-        toggleButtonText: 'Conflate'
-    },
-    {
-        type: 'review',
-        id: 'review',
-        class: 'layer-review',
-        toggleButtonText: 'Complete Review'
-    }
-];
-
 export function layerConflateForm( data ) {
     return [
         {
@@ -227,6 +194,58 @@ export function aboutForm() {
             id: 'aboutMainVersion',
             inputType: 'custom',
             createCustom: field => this.createTableFieldset( field )
+        }
+    ];
+}
+
+export function conflictButtons() {
+    return [
+        {
+            id: 'bookmark_review',
+            name: 'share_review',
+            text: 'Bookmark Review',
+            class: '_icon plus fill-grey button round pad0y pad1x small strong',
+            cmd: this.cmd( 'Ctrl+b' )
+        },
+        {
+            id: 'toggle_table',
+            name: 'toggle_table',
+            text: 'Hide Table',
+            class: 'fill-grey button round pad1x small strong toggle_table',
+            cmd: this.cmd( 't' ),
+            action: () => this.info.toggleTable()
+        },
+        {
+            id: 'merge',
+            name: 'auto_merge',
+            text: 'Merge',
+            color: '',
+            class: '_icon plus merge pad1x small strong',
+            cmd: this.cmd( 'm' ),
+            action: () => this.merge.mergeFeatures()
+        },
+        {
+            id: 'previous',
+            name: 'review_backward',
+            text: 'Previous',
+            class: 'fill-grey button round pad1x small strong',
+            cmd: this.cmd( 'p' ),
+            action: () => this.traverse.traverseBackward()
+        },
+        {
+            id: 'next',
+            name: 'review_foward',
+            text: 'Next',
+            class: 'fill-grey button round pad1x small strong',
+            cmd: this.cmd( 'n' ),
+            action: () => this.traverse.traverseForward()
+        },
+        {
+            id: 'resolved',
+            text: 'Resolved',
+            class: '_icon check primary pad1x',
+            cmd: this.cmd( 'r' ),
+            action: () => this.resolve.retainFeature()
         }
     ];
 }

@@ -4,6 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
+import _                   from 'lodash-es';
 import API                 from '../../managers/api';
 import ConflictInfo        from './conflictsInfo';
 import ConflictsMap        from './conflictsMap';
@@ -11,7 +12,7 @@ import ConflictsTraverse   from './conflictsTraverse';
 import ConflictsGraphSync  from './conflictsGraphSync';
 import ConflictsMerge      from './conflictsMerge';
 import ConflictsResolve    from './conflictsResolve';
-import { conflictButtons } from '../../config/domElements';
+import { conflictButtons } from '../../config/domMetadata';
 import { d3keybinding }    from '../../../lib/d3.keybinding';
 import { t }               from '../../../util/locale';
 import { tooltip }         from '../../../util/tooltip';
@@ -144,33 +145,14 @@ export default class Conflicts {
      * Bind key press events to actions buttons
      */
     bindKeys() {
-        let bt = this.buttonData;
+        let keybinding = d3keybinding( 'conflicts' );
 
-        let keybinding = d3keybinding( 'conflicts' )
-            .on( bt[ 0 ].cmd, () => {
+        _.forEach( this.buttonData, bt => {
+            keybinding.on( bt.cmd, () => {
                 d3.event.preventDefault();
-                this.callHotkeyAction( bt[ 0 ] );
-            } )
-            .on( bt[ 1 ].cmd, () => {
-                d3.event.preventDefault();
-                this.callHotkeyAction( bt[ 1 ] );
-            } )
-            .on( bt[ 2 ].cmd, () => {
-                d3.event.preventDefault();
-                this.callHotkeyAction( bt[ 2 ] );
-            } )
-            .on( bt[ 3 ].cmd, () => {
-                d3.event.preventDefault();
-                this.callHotkeyAction( bt[ 3 ] );
-            } )
-            .on( bt[ 4 ].cmd, () => {
-                d3.event.preventDefault();
-                this.callHotkeyAction( bt[ 4 ] );
-            } )
-            .on( bt[ 5 ].cmd, () => {
-                d3.event.preventDefault();
-                this.callHotkeyAction( bt[ 5 ] );
+                bt.action();
             } );
+        } );
 
         d3.select( document )
             .call( keybinding );
@@ -209,14 +191,5 @@ export default class Conflicts {
         }
 
         return result;
-    }
-
-    /**
-     * Fire key press action
-     *
-     * @param button - button data
-     */
-    callHotkeyAction( button ) {
-        button.action();
     }
 }

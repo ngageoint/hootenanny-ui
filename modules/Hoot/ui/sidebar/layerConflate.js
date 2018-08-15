@@ -12,7 +12,7 @@ import HootOSM                    from '../../managers/hootOsm';
 import FormFactory                from '../../tools/formFactory';
 import SidebarForm                from './sidebarForm';
 import AdvancedOpts               from './advancedOpts/advancedOpts';
-import { layerConflateForm }      from '../../config/formMetadata';
+import { layerConflateForm }      from '../../config/domMetadata';
 import { geoExtent as GeoExtent } from '../../../geo/index';
 
 class LayerConflate extends SidebarForm {

@@ -6,7 +6,7 @@
 
 import API           from '../managers/api';
 import HootOSM       from '../managers/hootOsm';
-import { aboutForm } from '../config/formMetadata';
+import { aboutForm } from '../config/domMetadata';
 import FormFactory   from '../tools/formFactory';
 
 export default class About {

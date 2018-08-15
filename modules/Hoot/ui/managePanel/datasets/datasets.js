@@ -4,18 +4,13 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import _              from 'lodash-es';
-import API            from '../../../managers/api';
-import Event          from '../../../managers/eventManager';
-import LayerManager   from '../../../managers/layerManager';
-import FolderTree     from '../../../tools/folderTree';
-import DatasetsImport from './datasetsImport';
-import Tab            from '../tab';
-
-import {
-    datasetButtons,
-    datasetTableHeaders
-} from '../../../config/domElements';
+import _            from 'lodash-es';
+import API          from '../../../managers/api';
+import Event        from '../../../managers/eventManager';
+import LayerManager from '../../../managers/layerManager';
+import FolderTree   from '../../../tools/folderTree';
+import ImportSingle from './importSingle';
+import Tab          from '../tab';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -29,6 +24,49 @@ export default class Datasets extends Tab {
 
         this.name = 'Datasets';
         this.id   = 'manage-datasets';
+
+        this.datasetButtons = [
+            {
+                title: 'Import Single',
+                icon: 'play_for_work',
+                onClick: 'import-datasets-single',
+                contextmenu: 'bulkimport'
+            },
+            {
+                title: 'Import Multiple',
+                icon: 'move_to_inbox',
+                onClick: 'import-datasets-directory'
+            },
+            {
+                title: 'Add Folder',
+                icon: 'create_new_folder',
+                onClick: 'add-datasets-folder'
+            },
+            {
+                title: 'Refresh Datasets',
+                icon: 'refresh',
+                onClick: 'refresh-datasets-layers'
+            }
+        ];
+
+        this.datasetTableHeaders = [
+            {
+                title: 'Datasets',
+                width: '9%'
+            },
+            {
+                title: 'Last Accessed',
+                width: '6%'
+            },
+            {
+                title: 'Import Date',
+                width: '6%'
+            },
+            {
+                title: 'Size',
+                width: '1%'
+            }
+        ];
     }
 
     /**
@@ -41,7 +79,7 @@ export default class Datasets extends Tab {
             .append( 'div' )
             .classed( 'dataset-buttons flex', true )
             .selectAll( 'button.dataset-action-button' )
-            .data( datasetButtons );
+            .data( this.datasetButtons );
 
         let buttons = buttonContainer.enter()
             .append( 'button' )
@@ -53,7 +91,7 @@ export default class Datasets extends Tab {
                     case 'import-datasets-single': {
                         let translations = await API.getTranslations();
 
-                        new DatasetsImport( translations ).render();
+                        new ImportSingle( translations ).render();
                         break;
                     }
                     case 'import-datasets-directory': {
@@ -88,7 +126,7 @@ export default class Datasets extends Tab {
 
         table.insert( 'div' ).attr( 'id', 'dataset-table-header' )
             .selectAll( 'th' )
-            .data( datasetTableHeaders )
+            .data( this.datasetTableHeaders )
             .enter().append( 'th' )
             .attr( 'style', d => `width: ${ d.width }` )
             .text( d => d.title );
