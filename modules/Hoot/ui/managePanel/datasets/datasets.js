@@ -4,13 +4,13 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import _            from 'lodash-es';
-import API          from '../../../managers/api';
-import Event        from '../../../managers/eventManager';
-import LayerManager from '../../../managers/layerManager';
-import FolderTree   from '../../../tools/folderTree';
-import ImportSingle from './importSingle';
-import Tab          from '../tab';
+import _                 from 'lodash-es';
+import API               from '../../../managers/api';
+import Event             from '../../../managers/eventManager';
+import LayerManager      from '../../../managers/layerManager';
+import FolderTree        from '../../../tools/folderTree';
+import ImportDatasetForm from './importDatasetForm';
+import Tab               from '../tab';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -91,11 +91,13 @@ export default class Datasets extends Tab {
                     case 'import-datasets-single': {
                         let translations = await API.getTranslations();
 
-                        new ImportSingle( translations ).render();
+                        new ImportDatasetForm( 'single', translations ).render();
                         break;
                     }
                     case 'import-datasets-directory': {
+                        let translations = await API.getTranslations();
 
+                        new ImportDatasetForm( 'multi', translations ).render();
                         break;
                     }
                     case 'add-datasets-folder': {

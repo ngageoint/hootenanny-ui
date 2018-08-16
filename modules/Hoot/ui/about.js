@@ -13,7 +13,7 @@ export default class About {
     constructor() {
         this.form = aboutForm.call( this );
 
-        this.appInfo = HootOSM.appInfo;
+        this.appInfo = HootOSM.config.appInfo;
     }
 
     render() {

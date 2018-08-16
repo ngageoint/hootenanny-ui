@@ -95,7 +95,7 @@ export default class Conflicts {
      * Render conflicts review UI
      */
     render() {
-        this.buttonData = conflictButtons.call( this );
+        this.buttonMeta = conflictButtons.call( this );
 
         this.container = this.contentContainer.append( 'div' )
             .attr( 'id', 'conflicts-container' )
@@ -121,10 +121,11 @@ export default class Conflicts {
             .html( true )
             .title( d => tooltipHtml( t( `review.${ d.id }.description` ), d.cmd ) );
 
-        this.actionButtons = this.leftContainer.append( 'div' )
+        // create buttons
+        this.leftContainer.append( 'div' )
             .classed( 'action-buttons', true )
             .selectAll( 'button' )
-            .data( this.buttonData ).enter()
+            .data( this.buttonMeta ).enter()
             .append( 'button' )
             .attr( 'class', d => d.class )
             .text( d => d.text )
@@ -147,7 +148,7 @@ export default class Conflicts {
     bindKeys() {
         let keybinding = d3keybinding( 'conflicts' );
 
-        _.forEach( this.buttonData, bt => {
+        _.forEach( this.buttonMeta, bt => {
             keybinding.on( bt.cmd, () => {
                 d3.event.preventDefault();
                 bt.action();

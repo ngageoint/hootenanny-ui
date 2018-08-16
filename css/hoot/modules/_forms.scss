@@ -131,6 +131,11 @@
         }
     }
 
+    select {
+        width: 100%;
+        vertical-align: middle;
+    }
+
     .multipart-icon-button {
         position: absolute;
         width: 31px;

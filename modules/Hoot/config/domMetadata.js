@@ -81,20 +81,19 @@ export function layerConflateForm( data ) {
     ];
 }
 
-export function importDatasetForm() {
+export function importSingleForm() {
     return [
         {
             label: 'Import Type',
-            id: 'importDatasetImportType',
+            id: 'importType',
             inputType: 'combobox',
             placeholder: 'Select Import Type',
-            data: this.importTypes,
             itemKey: 'title',
             onChange: () => this.handleTypeChange()
         },
         {
             label: 'Import Data',
-            id: 'importDatasetFileImport',
+            id: 'importFile',
             inputType: 'multipart',
             placeholder: 'Select File',
             icon: 'folder',
@@ -105,7 +104,7 @@ export function importDatasetForm() {
         },
         {
             label: 'Layer Name',
-            id: 'importDatasetLayerName',
+            id: 'importLayerName',
             class: 'layer-name',
             inputType: 'text',
             placeholder: 'Enter name',
@@ -113,7 +112,7 @@ export function importDatasetForm() {
         },
         {
             label: 'Path',
-            id: 'importDatasetPathName',
+            id: 'importPathName',
             class: 'path-name',
             inputType: 'combobox',
             placeholder: 'root',
@@ -123,19 +122,87 @@ export function importDatasetForm() {
         },
         {
             label: 'Enter Name for New Folder (Leave blank otherwise)',
-            id: 'importDatasetNewFolderName',
+            id: 'importNewFolderName',
             class: 'new-folder-name',
             inputType: 'text',
             onChange: d => this.validateTextInput( d )
         },
         {
             label: 'Translations Schema of Import File',
-            id: 'importDatasetSchema',
+            id: 'importSchema',
             inputType: 'combobox',
             placeholder: 'Select Data Translations Schema',
             disabled: true,
             data: this.translations,
             itemKey: 'DESCRIPTION'
+        }
+    ];
+}
+
+export function importMultiForm() {
+    return [
+        {
+            label: 'Import Type',
+            id: 'importType',
+            inputType: 'combobox',
+            placeholder: 'Select Import Type',
+            itemKey: 'title',
+            onChange: () => this.handleTypeChange()
+        },
+        {
+            label: 'Import Data',
+            id: 'importFile',
+            inputType: 'multipart',
+            placeholder: 'Select Files',
+            icon: 'folder',
+            readOnly: true,
+            disabled: true,
+            multipartId: 'ingestFileUploader',
+            onChange: () => this.handleMultipartChange()
+        },
+        {
+            label: 'Import Files List',
+            id: 'importFileList',
+            inputType: 'listbox',
+            readOnly: true
+        },
+        {
+            label: 'Path',
+            id: 'importPathName',
+            class: 'path-name',
+            inputType: 'combobox',
+            placeholder: 'root',
+            data: this.folderList,
+            sort: true,
+            itemKey: 'path'
+        },
+        {
+            label: 'Enter Name for New Folder (Leave blank otherwise)',
+            id: 'importNewFolderName',
+            class: 'new-folder-name',
+            inputType: 'text',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Translations Schema of Import File',
+            id: 'importSchema',
+            inputType: 'combobox',
+            placeholder: 'Select Data Translations Schema',
+            disabled: true,
+            data: this.translations,
+            itemKey: 'DESCRIPTION'
+        },
+        {
+            label: 'Append FCODE Descriptions',
+            type: 'appendFCodeDescription',
+            inputType: 'checkbox',
+            checkbox: 'cboxAppendFCode',
+            hidden: true
+        },
+        {
+            label: 'Custom Suffix',
+            id: 'importCustomPrefix',
+            onChange: d => this.validateTextInput( d )
         }
     ];
 }

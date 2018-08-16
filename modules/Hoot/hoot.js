@@ -4,14 +4,14 @@
  * @author Matt Putipong on 2/6/18
  *******************************************************************************************************/
 
+import API          from './managers/api';
 import LayerManager from './managers/layerManager';
 import HootOSM      from './managers/hootOsm';
 import Navbar       from './ui/navbar';
 import Sidebar      from './ui/sidebar/sidebar';
 import ManagePanel  from './ui/managePanel/managePanel';
-import API          from './managers/api';
 
-import buildInfo     from './config/buildInfo.json';
+import buildInfo from './config/buildInfo.json';
 
 /**
  * Entry point for Hoot UI
@@ -27,6 +27,7 @@ export default class Hoot {
         HootOSM.ctx      = this.context;
 
         this.getAboutData();
+        this.getMapSizeThresholds();
 
         Promise.all( [
             new Navbar().render(),
@@ -46,12 +47,26 @@ export default class Hoot {
                 API.getServicesVersionInfo()
             ] );
 
-            info.forEach( d => HootOSM.appInfo.push( d ) );
-        } catch( e ) {
+            info.forEach( d => HootOSM.config.appInfo.push( d ) );
+        } catch ( e ) {
+            // TODO: show error
             console.log( 'Unable to get Hootenanny core and service info.', e );
         }
 
         // build info will always be available
-        HootOSM.appInfo.push( buildInfo );
+        HootOSM.config.appInfo.push( buildInfo );
+    }
+
+    async getMapSizeThresholds() {
+        try {
+            let thresholds = await API.getMapSizeThresholds();
+
+            HootOSM.config.exportSizeThreshold   = thresholds.export_threshold;
+            HootOSM.config.ingestSizeThreshold   = thresholds.ingest_threshold;
+            HootOSM.config.conflateSizeThreshold = thresholds.conflate_threshold;
+        } catch ( e ) {
+            // TODO: show error
+            console.log( 'Unable to get Hootenanny core and service info.', e );
+        }
     }
 }

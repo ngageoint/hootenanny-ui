@@ -15,7 +15,7 @@ import LayerManager   from '../Hoot/managers/layerManager';
 import ClipSelectBbox from '../Hoot/tools/clipSelectBbox';
 
 export function uiTools( context ) {
-    let items = [
+    let menuItemMeta = [
         {
             title: 'Measurement Tools',
             icon: 'line',
@@ -86,7 +86,7 @@ export function uiTools( context ) {
 
         menuItems = toolsMenu
             .selectAll( 'li' )
-            .data( items )
+            .data( menuItemMeta )
             .enter();
 
         let item = menuItems

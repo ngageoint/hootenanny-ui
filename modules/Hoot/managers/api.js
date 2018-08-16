@@ -246,7 +246,17 @@ class API {
             .then( resp => resp.data );
     }
 
-    /**
+    getMapSizeThresholds() {
+        const params = {
+            path: '/info/map/thresholds',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    /**getMapSizeThresholds
      * Get statistics on conflicts review process to see how many reviews are left
      * and how many have already been resolved
      *
@@ -332,7 +342,7 @@ class API {
         };
 
         return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobId ) );
+            .then( resp => this.statusInterval( resp.data[ 0 ].jobid ) );
     }
 
     /**
@@ -555,16 +565,6 @@ class API {
             method: 'POST',
             data
         };
-
-        //let jobId;
-        //
-        //return this.request( params )
-        //    .then( resp => {
-        //        jobId = resp.data.jobId;
-        //
-        //        return this.statusInterval( jobId );
-        //    } )
-        //    .then( () => jobId );
 
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) );

@@ -236,7 +236,7 @@ class FolderManager {
      * @param container - form used to create new layer
      * @returns {*}
      */
-    updateFolders( container ) {
+    updateFolders( container, name ) {
         let that = this;
 
         let pathNameInput      = container.select( '.path-name' ),
@@ -265,12 +265,13 @@ class FolderManager {
             return API.addFolder( params )
                 .then( resp => updateFolderLink( resp.folderId ) )
                 .catch( err => {
+                    console.log( err );
                     // TODO: response - unable to create new folder
                 } );
         }
 
         function updateFolderLink( folderId ) {
-            let layerName = container.select( '.layer-name' ).property( 'value' ),
+            let layerName = name || container.select( '.layer-name' ).property( 'value' ),
                 mapId     = _.get( _.find( LayerManager._layers, layer => layer.name === layerName ), 'id' ) || 0;
 
             folderId = folderId || _.get( _.find( that._folders, folder => folder.name === pathName ), 'id' ) || 0;
@@ -285,6 +286,7 @@ class FolderManager {
                 .then( () => that.refreshAll() )
                 .then( () => Event.send( 'render-dataset-table' ) )
                 .catch( err => {
+                    console.log( err );
                     // TODO: response - unable to update folder links
                 } );
         }

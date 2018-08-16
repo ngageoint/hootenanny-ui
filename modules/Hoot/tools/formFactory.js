@@ -146,6 +146,10 @@ export default class FormFactory {
                     self.createTextarea( field );
                     break;
                 }
+                case 'listbox': {
+                    self.createListbox( field );
+                    break;
+                }
                 case 'multipart': {
                     self.createMultipart( field );
                     break;
@@ -224,7 +228,9 @@ export default class FormFactory {
             .attr( 'disabled', d => d.disabled )
             .classed( 'text-input', true )
             .on( 'keyup', function( d ) {
-                d.onChange( d, this );
+                if ( d.onChange ) {
+                    d.onChange( d, this );
+                }
             } );
     }
 
@@ -240,6 +246,14 @@ export default class FormFactory {
             .text( d => d.data || '' )
             .on( 'keyup', d => d.onChange( d ) )
             .on( 'drop', d => d.onDrop() );
+    }
+
+    createListbox( field ) {
+        field.append( 'select' )
+            .attr( 'id', d => d.id )
+            .attr( 'size', '5' )
+            .attr( 'disabled', d => d.readOnly )
+            .style( 'height', '90px' );
     }
 
     /**
