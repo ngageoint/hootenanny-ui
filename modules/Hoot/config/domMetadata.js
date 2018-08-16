@@ -207,6 +207,18 @@ export function importMultiForm() {
     ];
 }
 
+export function datasetAddFolderForm() {
+    return [
+        {
+            label: 'Folder Name',
+            id: 'addFolderName',
+            class: 'new-folder-name',
+            inputType: 'text',
+            onChange: d => this.validateTextInput( d )
+        },
+    ];
+}
+
 export function translationAddForm() {
     return [
         {

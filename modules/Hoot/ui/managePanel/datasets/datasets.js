@@ -4,13 +4,15 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import _                 from 'lodash-es';
-import API               from '../../../managers/api';
-import Event             from '../../../managers/eventManager';
-import LayerManager      from '../../../managers/layerManager';
-import FolderTree        from '../../../tools/folderTree';
-import ImportDatasetForm from './importDatasetForm';
+import _            from 'lodash-es';
+import API          from '../../../managers/api';
+import Event        from '../../../managers/eventManager';
+import LayerManager from '../../../managers/layerManager';
+import FolderTree   from '../../../tools/folderTree';
+
 import Tab               from '../tab';
+import ImportDatasetForm from './importDatasetForm';
+import AddFolderForm     from './addFolderForm';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -101,7 +103,7 @@ export default class Datasets extends Tab {
                         break;
                     }
                     case 'add-datasets-folder': {
-
+                        new AddFolderForm().render();
                         break;
                     }
                     case 'refresh-datasets-layers': {

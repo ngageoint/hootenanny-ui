@@ -291,6 +291,11 @@ class FolderManager {
                 } );
         }
     }
+
+    // should eventually somehow be combined with the addFolder function inside the updateFolders function
+    addFolder() {
+
+    }
 }
 
 export default new FolderManager();
