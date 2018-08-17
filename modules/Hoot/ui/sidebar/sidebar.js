@@ -5,7 +5,8 @@
  *******************************************************************************************************/
 
 import _             from 'lodash-es';
-import LayerManager  from '../../managers/layerManager';
+import EventEmitter  from 'events';
+import Hoot          from '../../hoot';
 import Event         from '../../managers/eventManager';
 import LayerAdd      from './layerAdd';
 import LayerConflate from './layerConflate';
@@ -16,9 +17,11 @@ import LayerReview   from './layerReview';
  *
  * @constructor
  */
-export default class Sidebar {
-    constructor( context ) {
-        this.context     = context;
+export default class Sidebar extends EventEmitter {
+    constructor( Hoot ) {
+        super();
+
+        this.hoot        = Hoot;
         this.iDSidebar   = d3.select( '#sidebar' );
         this.forms       = {};
         this.mergedLayer = null;
@@ -122,32 +125,34 @@ export default class Sidebar {
      * Bind form data and create a form for each item
      */
     createForms() {
-        let sidebar = this;
+        let that = this;
 
         this.wrapper.selectAll( '.layer-add' )
             .data( this.addFormData ).enter()
             .select( function( d ) {
-                sidebar.forms[ d.id ] = new LayerAdd( sidebar, d3.select( this ) );
-                sidebar.forms[ d.id ].render();
+                that.forms[ d.id ] = new LayerAdd( d3.select( this ) );
+                that.forms[ d.id ].render();
+
+                //that.forms[ d.id ]
             } );
 
         this.wrapper.selectAll( '.layer-conflate' )
             .data( this.conflateFormData ).enter()
             .select( function() {
-                sidebar.conflateForm = new LayerConflate( sidebar, d3.select( this ) );
+                that.conflateForm = new LayerConflate( d3.select( this ) );
             } );
     }
 
     layerMerged( layer ) {
-        let sidebar = this;
+        let that = this;
 
         this.wrapper.selectAll( '.layer-review' )
             .data( this.reviewFormData ).enter()
             .select( function() {
-                sidebar.reviewLayer = new LayerReview( sidebar, d3.select( this ), layer );
+                that.reviewLayer = new LayerReview( d3.select( this ), layer );
 
-                sidebar.reviewLayer.render();
-                sidebar.mergedLayer = null;
+                that.reviewLayer.render();
+                that.mergedLayer = null;
             } );
     }
 
@@ -160,7 +165,7 @@ export default class Sidebar {
     }
 
     conflateCheck() {
-        let loadedLayers   = Object.values( LayerManager.loadedLayers ),
+        let loadedLayers   = Object.values( Hoot.layers.loadedLayers ),
             addControllers = d3.selectAll( '.add-controller' );
 
         if ( loadedLayers.length === 2 ) {
@@ -179,7 +184,8 @@ export default class Sidebar {
     }
 
     listen() {
-        Event.listen( 'layer-merged', this.layerMerged, this );
+        this.on( 'layer-merged', this.layerMerged );
+        //Event.listen( 'layer-merged', this.layerMerged, this );
         Event.listen( 'layer-removed', this.layerRemoved, this );
     }
 }

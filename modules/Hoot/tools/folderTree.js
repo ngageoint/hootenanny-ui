@@ -4,10 +4,10 @@
  * @author Matt Putipong on 3/5/18
  *******************************************************************************************************/
 
-import _                from 'lodash-es';
-import moment           from 'moment';
-import Event            from '../managers/eventManager';
-import FolderManager    from '../managers/folderManager';
+import _      from 'lodash-es';
+import moment from 'moment';
+import Event  from '../managers/eventManager';
+import Hoot   from '../hoot';
 
 /**
  * Class for creating, displaying and maintaining a folder tree hierarchy
@@ -99,7 +99,7 @@ export default class FolderTree {
      * Initialize the folder tree
      */
     async render() {
-        let folders = await FolderManager.getAvailFolderData();
+        let folders = await Hoot.folders.getAvailFolderData();
 
         if ( this.isDatasetTable ) {
             folders = _.without( folders, _.find( folders, { id: -1 } ) );

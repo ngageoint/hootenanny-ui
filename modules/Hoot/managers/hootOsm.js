@@ -7,9 +7,7 @@
 import _                 from 'lodash-es';
 import { rgb as d3_rgb } from 'd3-color';
 
-import LayerManager               from './layerManager';
 import Event                      from './eventManager';
-import API                        from './api';
 import { geoExtent as GeoExtent } from '../../geo/index';
 import { utilDetect }             from '../../util/detect';
 
@@ -26,21 +24,18 @@ import {
 import colorPalette from '../config/colorPalette';
 import config       from '../config/apiConfig';
 
-class HootOSM {
-    constructor() {
+export default class HootOSM {
+    constructor( hoot ) {
+        this.hoot = hoot;
+
         this.config = {
             appInfo: [],
             mapThresholds: {}
         };
 
-        this.palette       = colorPalette;
         this._loadedLayers = {};
+        this.palette       = colorPalette;
         this.listen();
-    }
-
-    set ctx( context ) {
-        this.context     = context;
-        this.hootOverlay = this.context.layers().layer( 'hoot' );
     }
 
     get loadedLayers() {
@@ -54,10 +49,10 @@ class HootOSM {
             type: 'tms',
             description: d.name,
             template: config.host
-            + `:${ config.mapnikServerPort }`
-            + '/?z={zoom}&x={x}&y={-y}&color='
-            + encodeURIComponent( this.getPalette( d.color ) )
-            + '&mapid=' + d.id,
+                + `:${ config.mapnikServerPort }`
+                + '/?z={zoom}&x={x}&y={-y}&color='
+                + encodeURIComponent( this.getPalette( d.color ) )
+                + '&mapid=' + d.id,
             scaleExtent: [ 0, 16 ],
             polygon: d.polygon,
             overzoom: false,
@@ -81,10 +76,10 @@ class HootOSM {
 
         if ( Array.isArray( ids ) ) {
             _.forEach( ids, async id => {
-                mbr = await API.getMbr( id );
+                mbr = await this.hoot.api.getMbr( id );
             } );
         } else {
-            mbr = await API.getMbr( ids );
+            mbr = await this.hoot.api.getMbr( ids );
         }
 
         let min = [ mbr.minlon, mbr.minlat ],
@@ -96,7 +91,7 @@ class HootOSM {
     async loadLayer( params ) {
         let source      = this.getMapnikSource( params ),
             mapId       = source.id,
-            tags        = await API.getTags( mapId ),
+            tags        = await this.hoot.api.getTags( mapId ),
             layerExtent = await this.layerExtent( mapId );
 
         let layer = {
@@ -113,50 +108,52 @@ class HootOSM {
             visible: true
         };
 
-        LayerManager.loadedLayers[ layer.id ] = layer;
+        this.hoot.layers.loadedLayers[ layer.id ] = layer;
 
         if ( layerExtent.toParam() !== '-180,-90,180,90' ) {
-            this.context.extent( layerExtent );
+            this.hoot.context.extent( layerExtent );
         }
 
-        if ( this.hootOverlay ) {
-            this.hootOverlay.geojson( {
-                type: 'FeatureCollection',
-                features: [ {
-                    type: 'Feature',
-                    geometry: {
-                        type: 'LineString',
-                        coordinates: layerExtent.polygon()
-                    }
-                } ],
-                properties: {
-                    name: layer.name,
-                    mapId: layer.id
+        if ( !this.hootOverlay ) {
+            this.hootOverlay = this.hoot.context.layers().layer( 'hoot' );
+        }
+
+        this.hootOverlay.geojson( {
+            type: 'FeatureCollection',
+            features: [ {
+                type: 'Feature',
+                geometry: {
+                    type: 'LineString',
+                    coordinates: layerExtent.polygon()
                 }
-            } );
-        }
+            } ],
+            properties: {
+                name: layer.name,
+                mapId: layer.id
+            }
+        } );
 
-        this.context.background().addSource( source );
+        this.hoot.context.background().addSource( source );
         this.setLayerColor( mapId, layer.color );
     }
 
     hideLayer( id ) {
-        LayerManager.loadedLayers[ id ].visible = false;
+        this.hoot.layers.loadedLayers[ id ].visible = false;
 
         d3.select( '#map' ).selectAll( `[class*="_${ id }-"]` ).remove();
 
         this.hootOverlay.removeGeojson( id );
 
-        this.context.connection().removeTile( id );
-        this.context.flush();
+        this.hoot.context.connection().removeTile( id );
+        this.hoot.context.flush();
     }
 
     removeLayer( id ) {
-        delete LayerManager.loadedLayers[ id ];
-        this.context.background().removeSource( id );
+        delete this.hoot.layers.loadedLayers[ id ];
+        this.hoot.context.background().removeSource( id );
         this.hootOverlay.removeGeojson( id );
 
-        this.context.flush();
+        this.hoot.context.flush();
     }
 
     decodeHootStatus( status ) {
@@ -212,12 +209,12 @@ class HootOSM {
             locale: detected.locale,
             browser: detected.browser + ' ' + detected.version,
             platform: detected.platform,
-            comment: 'Hoot Save'
+            comment: 'HootOld Save'
         };
     }
 
     save( mergedItems, tryAgain, callback ) {
-        let history = this.context.history(),
+        let history = this.hoot.context.history(),
             changes = history.changes( actionDiscardTags( history.difference() ) );
 
         if ( !tryAgain ) {
@@ -227,11 +224,11 @@ class HootOSM {
         let tags          = this.makeChangesetTags( history.imageryUsed() ),
             _osmChangeset = new osmChangeset( { tags } );
 
-        this.context.connection().putChangeset( _osmChangeset, changes, err => {
+        this.hoot.context.connection().putChangeset( _osmChangeset, changes, err => {
             if ( err ) {
 
             } else {
-                this.context.flush();
+                this.hoot.context.flush();
 
                 if ( callback ) {
                     callback();
@@ -242,7 +239,7 @@ class HootOSM {
 
     editable() {
         //console.log( this.hootOverlay.geojson() );
-        return Object.keys( LayerManager.loadedLayers ).length;
+        return Object.keys( this.hoot.layers.loadedLayers ).length;
     }
 
     listen() {
@@ -250,4 +247,4 @@ class HootOSM {
     }
 }
 
-export default new HootOSM();
+//export default new HootOSM();

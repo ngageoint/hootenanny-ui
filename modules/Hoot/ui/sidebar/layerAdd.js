@@ -5,14 +5,14 @@
  *******************************************************************************************************/
 
 import _           from 'lodash-es';
-import HootOSM     from '../../managers/hootOsm';
+import Hoot        from '../../hoot';
 import Event       from '../../managers/eventManager';
 import FolderTree  from '../../tools/folderTree';
 import SidebarForm from './sidebarForm';
 
 export default class LayerAdd extends SidebarForm {
-    constructor( sidebar, container ) {
-        super( sidebar, container );
+    constructor( container ) {
+        super( container );
     }
 
     render( data ) {
@@ -82,7 +82,7 @@ export default class LayerAdd extends SidebarForm {
             .classed( 'keyline-all form-field palette clearfix round', true );
 
         colorPalette.selectAll( 'a' )
-            .data( _.reject( HootOSM.getPalette(), c => c.name === 'green' ) )
+            .data( _.reject( Hoot.hootOsm.getPalette(), c => c.name === 'green' ) )
             .enter()
             .append( 'a' )
             .attr( 'class', function( p ) {
@@ -132,7 +132,7 @@ export default class LayerAdd extends SidebarForm {
             layerName;
 
         if ( !this.form.select( '.sel' ).empty() ) {
-            let gNode    = d3.select( this.form.select( '.sel' ).node().parentNode );
+            let gNode = d3.select( this.form.select( '.sel' ).node().parentNode );
 
             layerName = gNode.attr( 'data-name' );
             layerId   = gNode.attr( 'data-id' );

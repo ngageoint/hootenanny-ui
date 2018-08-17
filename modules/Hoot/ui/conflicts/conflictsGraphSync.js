@@ -133,7 +133,7 @@ export default class ConflictsGraphSync {
 
             return Promise.all( _.map( featureOsm, feature => this.updateMissingFeature( feature ) ) );
         } catch( e ) {
-            throw new Error( 'Unable to retrieve missing features from Hoot DB.' );
+            throw new Error( 'Unable to retrieve missing features from HootOld DB.' );
         }
     }
 

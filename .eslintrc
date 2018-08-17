@@ -9,7 +9,8 @@
     ],
     "globals": {
         "d3": false,
-        "$": false
+        "$": false,
+        "iD": false
     },
     "parserOptions": {
         "ecmaVersion": 2017,

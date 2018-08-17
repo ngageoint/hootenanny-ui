@@ -54,8 +54,8 @@ import {
 import { utilBindOnce } from '../util/bind_once';
 import { utilGetDimensions } from '../util/dimensions';
 
-import Event        from '../Hoot/managers/eventManager';
-import LayerManager from '../Hoot/managers/layerManager';
+import Event from '../Hoot/managers/eventManager';
+import Hoot from '../Hoot/hoot';
 
 // constants
 var TAU = 2 * Math.PI;
@@ -485,16 +485,21 @@ export function rendererMap(context) {
             context.connection().tileZoom( 1 );
             context.loadTiles( projection, dimensions, () => {
                 if ( context.hoot.sidebar.mergedLayer ) {
-                    Event.send( 'layer-merged', context.hoot.sidebar.mergedLayer  );
+                    context.hoot.sidebar.emit( 'layer-merged', context.hoot.sidebar.mergedLayer );
+                    //Event.send( 'layer-merged', context.hoot.sidebar.mergedLayer  );
                 }
             } );
 
             drawVector( difference, extent );
         } else {
+            if ( context.hoot.sidebar.mergedLayer ) {
+                context.hoot.sidebar.emit( 'layer-merged', context.hoot.sidebar.mergedLayer );
+                //Event.send( 'layer-merged', context.hoot.sidebar.mergedLayer  );
+            }
             editOff();
 
             context.connection().tileZoom( 1 );
-            var visLayers = _filter( _values( LayerManager.loadedLayers ), layer => layer.visible );
+            var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
 
             _map( visLayers, layer => Event.send( 'layer-loaded', layer.name ) );
 

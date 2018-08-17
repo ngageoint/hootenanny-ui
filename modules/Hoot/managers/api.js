@@ -14,7 +14,7 @@ import { apiConfig } from '../config/apiConfig';
  * @returns {class} - API
  * @constructor
  */
-class API {
+export default class API {
     constructor() {
         this.config        = apiConfig;
         this.baseUrl       = `${ this.config.host }:${ this.config.port }/${ this.config.basePath }`;
@@ -593,4 +593,4 @@ class API {
     }
 }
 
-export default new API();
+//export default new API();

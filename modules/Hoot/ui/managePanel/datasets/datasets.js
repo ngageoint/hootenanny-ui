@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import _            from 'lodash-es';
-import API          from '../../../managers/api';
+import Hoot         from '../../../hoot';
 import Event        from '../../../managers/eventManager';
 import LayerManager from '../../../managers/layerManager';
 import FolderTree   from '../../../tools/folderTree';
@@ -91,13 +91,13 @@ export default class Datasets extends Tab {
 
                 switch ( item.onClick ) {
                     case 'import-datasets-single': {
-                        let translations = await API.getTranslations();
+                        let translations = await Hoot.api.getTranslations();
 
                         new ImportDatasetForm( 'single', translations ).render();
                         break;
                     }
                     case 'import-datasets-directory': {
-                        let translations = await API.getTranslations();
+                        let translations = await Hoot.api.getTranslations();
 
                         new ImportDatasetForm( 'multi', translations ).render();
                         break;
@@ -172,7 +172,7 @@ export default class Datasets extends Tab {
                 .classed( 'sel', false )
                 .style( 'fill', 'rgb(255,0,0)' );
 
-            return API.deleteLayer( layer.name )
+            return Hoot.api.deleteLayer( layer.name )
                 .then( () => LayerManager.removeLayer( layer.id ) );
 
         } ) ).then( () => Event.send( 'render-dataset-table' ) );

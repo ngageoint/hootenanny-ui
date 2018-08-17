@@ -43,7 +43,7 @@ import {
     utilRebind
 } from '../util';
 
-import HootOSM from '../Hoot/managers/hootOsm';
+import Hoot from '../Hoot/hoot';
 
 export var areaKeys = {};
 
@@ -348,7 +348,7 @@ export function coreContext() {
     context.layers = function() { return map.layers; };
     context.surface = function() { return map.surface; };
     context.editable = function() {
-        return map.editable() && HootOSM.editable();
+        return map.editable() && Hoot.hootOsm.editable();
     };
     context.surfaceRect = function() {
         return map.surface.node().getBoundingClientRect();
@@ -471,6 +471,8 @@ export function coreContext() {
 
 
     /* Init */
+
+    context.hoot = Hoot;
 
     context.projection = geoRawMercator();
     context.curtainProjection = geoRawMercator();

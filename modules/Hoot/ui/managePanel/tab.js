@@ -4,14 +4,15 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import Event from '../../managers/eventManager';
+import EventEmitter from 'events';
 
 /**
  * Base class that all other managePanel in the settings panel extends from
  */
-export default class Tab {
+export default class Tab extends EventEmitter {
     constructor( instance ) {
-        this.context      = instance.context;
+        super();
+
         this.panelSidebar = instance.panelSidebar;
         this.panel        = instance.panel;
 
@@ -23,12 +24,14 @@ export default class Tab {
      * Render tab header in settings panel sidebar
      */
     render() {
+        let that = this;
+
         this.tabHeader = this.panelSidebar
             .append( 'div' )
             .classed( 'tab-header pad1y center', true )
             .attr( 'data-id', `#${this.id}` )
             .on( 'click', function() {
-                Event.send( 'toggle-manage-tab', this );
+                that.emit( 'toggle', this );
             } );
 
         this.tabHeader
@@ -43,5 +46,7 @@ export default class Tab {
 
         this.panelWrapper = this.panelBody.append( 'div' )
             .classed( 'panel-wrapper', true );
+
+        return this;
     }
 }

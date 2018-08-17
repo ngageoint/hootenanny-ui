@@ -5,14 +5,10 @@
  *******************************************************************************************************/
 
 import SidebarController from './sidebarController';
-import LayerManager      from '../../managers/layerManager';
-import HootOSM           from '../../managers/hootOsm';
-import Event             from '../../managers/eventManager';
+import Hoot              from '../../hoot';
 
 export default class SidebarForm {
-    constructor( sidebar, container ) {
-        this.context   = sidebar.context;
-        this.sidebar   = sidebar;
+    constructor( container ) {
         this.container = container;
 
         this.form         = null;
@@ -55,7 +51,7 @@ export default class SidebarForm {
 
         function onEnd() {
             wrapperNode.removeEventListener( 'transitionend', onEnd );
-            wrapperNode.style.height = 'auto';
+            wrapperNode.style.height    = 'auto';
             wrapperNode.style.minHeight = fieldset.clientHeight + 'px';
             wrapper.classed( 'no-transition', true );
         }
@@ -63,7 +59,7 @@ export default class SidebarForm {
         if ( wrapperNode.clientHeight ) {
             wrapper.classed( 'no-transition', false );
             wrapperNode.style.minHeight = '0';
-            wrapperNode.style.height = fieldset.clientHeight + 'px';
+            wrapperNode.style.height    = fieldset.clientHeight + 'px';
             setTimeout( () => wrapperNode.style.height = '0', 1 );
         } else {
             wrapperNode.style.height = fieldset.clientHeight + 'px';
@@ -93,7 +89,7 @@ export default class SidebarForm {
         this.form.attr( 'id', d => d.id )
             .attr( 'class', d => `sidebar-form round importable-layer fill-white strong ${ d.class }` );
 
-        this.sidebar.conflateCheck();
+        Hoot.sidebar.conflateCheck();
     }
 
     /**
@@ -121,25 +117,25 @@ export default class SidebarForm {
 
     loadingState( params ) {
         this.loadingLayer = params.name;
-        this.controller   = new SidebarController( this.context, this.form, params );
+        this.controller   = new SidebarController( Hoot.context, this.form, params );
 
         this.controller.render();
     }
 
     loadLayer( params ) {
-        HootOSM.loadLayer( params );
+        Hoot.hootOsm.loadLayer( params );
     }
 
-    layerLoaded( layerName ) {
+    layerLoaded( layerName, loadingLayer ) {
         if ( this.loadingLayer === layerName ) {
-            let loadedLayer = LayerManager.findLoadedBy( 'name', layerName );
+            let loadedLayer = Hoot.layers.findLoadedBy( 'name', layerName );
 
             if ( loadedLayer.merged ) {
-                this.sidebar.mergedLayer = loadedLayer;
+                Hoot.sidebar.mergedLayer = loadedLayer;
             }
 
             this.controller.update();
-            this.sidebar.conflateCheck();
+            this.hoot.sidebar.conflateCheck();
 
             this.loadingLayer = null;
         }
@@ -156,6 +152,8 @@ export default class SidebarForm {
      * Listen for re-render
      */
     listen() {
-        Event.listen( 'layer-loaded', this.layerLoaded, this );
+        //Event.listen( 'layer-loaded', this.layerLoaded, this );
+
+        Hoot.on( 'layer-loaded', layerName => this.layerLoaded( layerName, this.loadingLayer ) );
     }
 }

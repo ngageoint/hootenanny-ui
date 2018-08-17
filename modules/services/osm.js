@@ -31,14 +31,11 @@ import { services } from '../services/index';
 
 import { utilRebind, utilIdleWorker } from '../util';
 
-import API          from '../Hoot/managers/api';
-import LayerManager from '../Hoot/managers/layerManager';
-import Events       from '../Hoot/managers/eventManager';
-import HootOSM      from '../Hoot/managers/hootOsm';
+import Hoot from '../Hoot/hoot';
 
-var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded');
+var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded', 'layer-loaded');
 //var urlroot = 'https://www.openstreetmap.org';
-var urlroot = API.baseUrl + '/osm';
+var urlroot = Hoot.api.baseUrl + '/osm';
 var oauth = osmAuth({
     url: urlroot,
     oauth_consumer_key: '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
@@ -282,7 +279,7 @@ export default {
                 return;
             }
 
-            //We don't authenticate against Hoot services
+            //We don't authenticate against HootOld services
             var isAuthenticated = isUrlHoot(path) || that.authenticated();
 
             // 400 Bad Request, 401 Unauthorized, 403 Forbidden
@@ -315,7 +312,7 @@ export default {
             }
         }
 
-        //We don't authenticate against Hoot services
+        //We don't authenticate against HootOld services
         if (!isUrlHoot(path) && this.authenticated()) {
             return oauth.xhr({ method: 'GET', path: path }, done);
         } else {
@@ -374,7 +371,7 @@ export default {
                     osmIDs  = _map(v, osmEntity.id.toOSM),
                     options = {cache: false};
                 _forEach(_chunk(osmIDs, 150), function(arr) {
-                    //Hoot service calls need mapId and use elementIds instead of feature type
+                    //HootOld service calls need mapId and use elementIds instead of feature type
                     that.loadFromAPI(
                         '/api/0.6/' + type + '?' + ((m > -1) ? 'elementIds' : type) + '=' + arr.join()
                         + ((m > -1) ? '&mapId=' + m : ''),
@@ -516,7 +513,7 @@ export default {
                         changedRel.tags[ 'hoot:review:needs' ] = 'no';
                     }
                 } else {
-                    let modifiedRel = HootOSM.context.hasEntity( refId );
+                    let modifiedRel = Hoot.context.hasEntity( refId );
 
                     if ( modifiedRel ) {
                         if ( modifiedRel.members.length >= newMember.index ) {
@@ -737,8 +734,8 @@ export default {
             ];
 
         // Load from visible layers only
-        // Hoot loadedLayers is what controls the vector data sources that are loaded
-        var visLayers = _filter( _values( LayerManager.loadedLayers ), layer => layer.visible );
+        // HootOld loadedLayers is what controls the vector data sources that are loaded
+        var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
 
         //console.log( visLayers );
         var tiles = _map(visLayers, function (layer) {
@@ -789,7 +786,8 @@ export default {
                     delete _tiles.inflight[id];
                     if (!err) {
                         _tiles.loaded[id] = true;
-                        Events.send( 'layer-loaded', tile.layerName );
+                        dispatch( 'layer-loaded', tile.layerName );
+                        //Events.send( 'layer-loaded', tile.layerName );
                     }
 
                     if (callback) {
@@ -797,7 +795,7 @@ export default {
                     }
 
                     if (_isEmpty(_tiles.inflight)) {
-                        dispatch.call('loaded');
+                        dispatch.call('loaded', tile.layerName);
                     }
                 }
             );

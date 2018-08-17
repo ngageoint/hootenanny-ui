@@ -65,7 +65,7 @@ export default class ConflictsResolve {
     //        locale: detected.locale,
     //        browser: detected.browser + ' ' + detected.version,
     //        platform: detected.platform,
-    //        comment: 'Hoot Save'
+    //        comment: 'HootOld Save'
     //    };
     //}
 

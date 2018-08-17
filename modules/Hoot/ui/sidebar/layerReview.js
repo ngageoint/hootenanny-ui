@@ -13,12 +13,11 @@ import Event       from '../../managers/eventManager';
  */
 export default class LayerReview extends SidebarForm {
     /**
-     * @param sidebar - Hoot sidebar container
      * @param container - div to render UI in
      * @param layer - merged layer
      */
-    constructor( sidebar, container, layer ) {
-        super( sidebar, container );
+    constructor( container, layer ) {
+        super( container );
 
         this.layer = layer;
     }

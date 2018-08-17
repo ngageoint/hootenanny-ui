@@ -5,8 +5,7 @@
  *******************************************************************************************************/
 
 import _             from 'lodash-es';
-import LayerManager  from '../../managers/layerManager';
-import HootOSM       from '../../managers/hootOsm';
+import Hoot          from '../../hoot';
 import Event         from '../../managers/eventManager';
 import LayerMetadata from './layerMetadata';
 
@@ -93,7 +92,7 @@ class SidebarController {
 
     createColorPalette() {
         let self    = this,
-            palette = HootOSM.getPalette();
+            palette = Hoot.hootOsm.getPalette();
 
         this.colorPalette = this.fieldset.append( 'div' )
             .classed( 'keyline-all hoot-form-field palette clearfix round', true );
@@ -155,7 +154,7 @@ class SidebarController {
                 d3.event.preventDefault();
 
                 if ( window.confirm( 'Are you sure you want to delete?' ) ) {
-                    HootOSM.removeLayer( this.layerId );
+                    Hoot.hootOsm.removeLayer( this.layerId );
 
                     // if removing a merged layer, reset the sidebar by sending no data.
                     // otherwise, send data of specific form to reset
@@ -165,7 +164,7 @@ class SidebarController {
     }
 
     update() {
-        let layer = LayerManager.findLoadedBy( 'name', this.layerName );
+        let layer = Hoot.layers.findLoadedBy( 'name', this.layerName );
 
         this.layerId   = layer.id;
         this.layerName = layer.name;

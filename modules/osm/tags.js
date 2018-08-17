@@ -5,7 +5,7 @@ export function osmIsInterestingTag(key) {
         key !== 'odbl' &&
         key.indexOf('tiger:') !== 0 &&
         key !== 'error:circular' &&
-        key !== 'hoot:status'; //These last two added for Hoot, https://github.com/ngageoint/hootenanny/issues/1459
+        key !== 'hoot:status'; //These last two added for HootOld, https://github.com/ngageoint/hootenanny/issues/1459
 
 }
 

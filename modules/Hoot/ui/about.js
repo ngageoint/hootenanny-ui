@@ -4,7 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/11/18
  *******************************************************************************************************/
 
-import API           from '../managers/api';
+import Hoot          from '../hoot';
 import HootOSM       from '../managers/hootOsm';
 import { aboutForm } from '../config/domMetadata';
 import FormFactory   from '../tools/formFactory';
@@ -55,7 +55,7 @@ export default class About {
     }
 
     handleSubmit() {
-        let sUrl = `${ API.baseUrl }/info/document/export`,
+        let sUrl = `${ Hoot.api.baseUrl }/info/document/export`,
             link = document.createElement( 'a' );
 
         link.href = sUrl;

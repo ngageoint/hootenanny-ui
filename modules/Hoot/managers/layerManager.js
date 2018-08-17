@@ -4,25 +4,21 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/8/18
  *******************************************************************************************************/
 
-import _   from 'lodash-es';
-import API from './api';
+import _ from 'lodash-es';
 
-class LayerManager {
-    constructor() {
-        this.context         = null;
-        this._layers         = [];
-        this._loadedLayers   = {};
+export default class LayerManager {
+    constructor( hoot ) {
+        this.hoot = hoot;
+
+        this._layers       = [];
+        this._loadedLayers = {};
     }
 
     /**
      * Retrieve layers from database
      */
     async refreshLayers() {
-        return this._layers = await API.getLayers();
-    }
-
-    set ctx( context ) {
-        this.context = context;
+        return this._layers = await this.hoot.api.getLayers();
     }
 
     get loadedLayers() {
@@ -51,5 +47,3 @@ class LayerManager {
         return _.find( this._loadedLayers, layer => layer[ key ] === val );
     }
 }
-
-export default new LayerManager();

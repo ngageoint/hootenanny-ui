@@ -46,7 +46,7 @@ import { uiVersion } from './version';
 import { uiZoom } from './zoom';
 import { uiCmd } from './cmd';
 
-import Hoot from '../Hoot/hoot';
+//import HootOld from '../Hoot/hootOld';
 
 export function uiInit(context) {
     var uiInitCounter = 0;
@@ -369,12 +369,13 @@ export function uiInit(context) {
         context.container(container);
         context.loadLocale(function(err) {
             if (!err) {
-                const hootUI = new Hoot( context );
+                //const hootUI = new HootOld( context );
 
                 render(container);
 
-                hootUI.init();
-                context.hoot = hootUI;
+                context.hoot.init( context );
+                //hootUI.init();
+                //context.hoot = hootUI;
             }
             if (callback) {
                 callback(err);

@@ -4,7 +4,7 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import API                 from '../../../managers/api';
+import Hoot                from '../../../hoot';
 import Tab                 from '../tab';
 import TranslationsAddForm from './translationsAddForm';
 import { tooltip }         from '../../../../util/tooltip';
@@ -49,7 +49,7 @@ export default class Translations extends Tab {
 
     async loadTranslations() {
         try {
-            let translations = await API.getTranslations();
+            let translations = await Hoot.api.getTranslations();
 
             translations.sort( ( a, b ) => {
                 // Set undefined to false
@@ -141,7 +141,7 @@ export default class Translations extends Tab {
                 let r = confirm( 'Are you sure you want to delete selected translations?' );
                 if ( !r ) return;
 
-                API.deleteTranslation( d.NAME )
+                Hoot.api.deleteTranslation( d.NAME )
                     .then( () => instance.loadTranslations() );
             } )
             .select( function( d ) {
@@ -164,9 +164,9 @@ export default class Translations extends Tab {
             let translationText;
 
             if ( d.DEFAULT ) {
-                translationText = await API.getDefaultTranslation( d.PATH );
+                translationText = await Hoot.api.getDefaultTranslation( d.PATH );
             } else {
-                translationText = await API.getTranslation( d.NAME );
+                translationText = await Hoot.api.getTranslation( d.NAME );
             }
 
             let transBlob = new Blob( [ translationText ], { type: 'text/javascript' } );

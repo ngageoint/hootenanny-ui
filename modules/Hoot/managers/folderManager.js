@@ -5,15 +5,15 @@
  *******************************************************************************************************/
 
 import _            from 'lodash-es';
-import API          from './api';
-import LayerManager from './layerManager';
 import Event        from './eventManager';
 
 /**
  * Retrieves and manages folders and datasets
  */
-class FolderManager {
-    constructor() {
+export default class FolderManager {
+    constructor( hoot ) {
+        this.hoot = hoot;
+
         this._folders     = [];
         this._openFolders = [];
         this._datasets    = [];
@@ -38,7 +38,7 @@ class FolderManager {
      * to be usable in a dropdown menu
      */
     async refreshFolders() {
-        let { folders } = await API.getFolders();
+        let { folders } = await this.hoot.api.getFolders();
 
         this._folders = this.getFolderPaths( folders );
 
@@ -49,7 +49,7 @@ class FolderManager {
      * Retrieve links from database
      */
     async refreshLinks() {
-        let { links } = await API.getLinks();
+        let { links } = await this.hoot.api.getLinks();
 
         return this._links = links;
     }
@@ -58,7 +58,7 @@ class FolderManager {
      * Retrieve layers from database
      */
     async refreshDatasets() {
-        return this._datasets = await LayerManager.refreshLayers();
+        return this._datasets = await this.hoot.layers.refreshLayers();
     }
 
     /**
@@ -262,7 +262,7 @@ class FolderManager {
                 parentId
             };
 
-            return API.addFolder( params )
+            return this.hoot.api.addFolder( params )
                 .then( resp => updateFolderLink( resp.folderId ) )
                 .catch( err => {
                     console.log( err );
@@ -272,7 +272,7 @@ class FolderManager {
 
         function updateFolderLink( folderId ) {
             let layerName = name || container.select( '.layer-name' ).property( 'value' ),
-                mapId     = _.get( _.find( LayerManager._layers, layer => layer.name === layerName ), 'id' ) || 0;
+                mapId     = _.get( _.find( this.hoot.layers._layers, layer => layer.name === layerName ), 'id' ) || 0;
 
             folderId = folderId || _.get( _.find( that._folders, folder => folder.name === pathName ), 'id' ) || 0;
 
@@ -282,7 +282,7 @@ class FolderManager {
                 updateType: 'new'
             };
 
-            return API.updateMapFolderLinks( params )
+            return this.hoot.api.updateMapFolderLinks( params )
                 .then( () => that.refreshAll() )
                 .then( () => Event.send( 'render-dataset-table' ) )
                 .catch( err => {
@@ -291,11 +291,6 @@ class FolderManager {
                 } );
         }
     }
-
-    // should eventually somehow be combined with the addFolder function inside the updateFolders function
-    addFolder() {
-
-    }
 }
 
-export default new FolderManager();
+//export default new FolderManager();

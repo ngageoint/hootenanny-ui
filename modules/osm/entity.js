@@ -42,7 +42,7 @@ osmEntity.id.fromOSM = function(type, id) {
 
 //This method is called when formatting iD entities to OSM xml
 osmEntity.id.toOSM = function(id) {
-    //Strip off the _mapid added by Hoot
+    //Strip off the _mapid added by HootOld
     var arr = id.match(/[^_]*/i);
     //Then strip off the element type indicator
     return arr[0].slice(1);

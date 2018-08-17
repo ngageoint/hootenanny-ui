@@ -4,9 +4,9 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import API                        from '../../../managers/api';
-import Tab                        from '../tab';
+import Hoot                       from '../../../hoot';
 import BasemapsAddForm            from './basemapsAddForm';
+import Tab                        from '../tab';
 import { geoExtent as GeoExtent } from '../../../../geo/index';
 
 /**
@@ -48,7 +48,7 @@ export default class Basemaps extends Tab {
 
     async loadBasemaps() {
         try {
-            let basemaps = await API.getBasemaps();
+            let basemaps = await Hoot.api.getBasemaps();
 
             this.populateBasemaps( basemaps );
         } catch ( e ) {
@@ -91,7 +91,7 @@ export default class Basemaps extends Tab {
                 d3.event.preventDefault();
 
                 if ( d.status === 'disabled' ) {
-                    API.enableBasemap( d ).then( () => {
+                    Hoot.api.enableBasemap( d ).then( () => {
                         button
                             .classed( 'closedeye', false )
                             .classed( 'openeye', true );
@@ -101,14 +101,14 @@ export default class Basemaps extends Tab {
                         instance.renderBasemap( d );
                     } );
                 } else {
-                    API.disableBasemap( d ).then( () => {
+                    Hoot.api.disableBasemap( d ).then( () => {
                         button
                             .classed( 'closedeye', true )
                             .classed( 'openeye', false );
 
                         d.status = 'disabled';
 
-                        instance.context.background().removeBackgroundSource( d );
+                        Hoot.context.background().removeBackgroundSource( d );
                     } );
                 }
             } )
@@ -140,7 +140,7 @@ export default class Basemaps extends Tab {
                 let r = confirm( `Are you sure you want to delete: ${ d.name }?` );
                 if ( !r ) return;
 
-                API.deleteBasemap( d.name )
+                Hoot.api.deleteBasemap( d.name )
                     .then( () => instance.loadBasemaps() );
             } );
     }
@@ -150,13 +150,13 @@ export default class Basemaps extends Tab {
             name: d.name,
             type: 'tms',
             projection: 'mercator',
-            template: `${ API.config.host }:${ API.config.port }/static/BASEMAP/${ d.name }/{zoom}/{x}/{-y}.png`,
+            template: `${ Hoot.api.config.host }:${ Hoot.api.config.port }/static/BASEMAP/${ d.name }/{zoom}/{x}/{-y}.png`,
             default: true,
             nocache: true,
             extent: new GeoExtent( [ d.extent.minx, d.extent.miny ], [ d.extent.maxx, d.extent.maxy ] )
         };
 
-        this.context.background().addNewBackgroundSource( newSource );
+        Hoot.context.background().addNewBackgroundSource( newSource );
     }
 }
 

@@ -16,15 +16,15 @@ import { layerConflateForm }      from '../../config/domMetadata';
 import { geoExtent as GeoExtent } from '../../../geo/index';
 
 class LayerConflate extends SidebarForm {
-    constructor( sidebar, container ) {
-        super( sidebar, container );
+    constructor( container ) {
+        super( container );
         this.formFactory = new FormFactory();
     }
 
     render( layers ) {
         this.folderList = FolderManager.folderPaths;
 
-        this.layers = {
+        this.selectedLayers = {
             primary: _.find( layers, layer => layer.refType === 'primary' ),
             secondary: _.find( layers, layer => layer.refType === 'secondary' )
         };
