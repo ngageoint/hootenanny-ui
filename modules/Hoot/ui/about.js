@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import Hoot          from '../hoot';
-import HootOSM       from '../managers/hootOsm';
+import HootOSM       from '../managers/layerManager';
 import { aboutForm } from '../config/domMetadata';
 import FormFactory   from '../tools/formFactory';
 

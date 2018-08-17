@@ -5,24 +5,20 @@
  *******************************************************************************************************/
 
 import _                          from 'lodash-es';
-import API                        from '../../managers/api';
-import FolderManager              from '../../managers/folderManager';
-import LayerManager               from '../../managers/layerManager';
-import HootOSM                    from '../../managers/hootOsm';
-import FormFactory                from '../../tools/formFactory';
+import Hoot                       from '../../hoot';
 import SidebarForm                from './sidebarForm';
 import AdvancedOpts               from './advancedOpts/advancedOpts';
+import FormFactory                from '../../tools/formFactory';
 import { layerConflateForm }      from '../../config/domMetadata';
 import { geoExtent as GeoExtent } from '../../../geo/index';
 
 class LayerConflate extends SidebarForm {
     constructor( container ) {
         super( container );
-        this.formFactory = new FormFactory();
     }
 
     render( layers ) {
-        this.folderList = FolderManager.folderPaths;
+        this.folderList = Hoot.folders.folderPaths;
 
         this.selectedLayers = {
             primary: _.find( layers, layer => layer.refType === 'primary' ),
@@ -50,7 +46,7 @@ class LayerConflate extends SidebarForm {
     }
 
     createFieldset() {
-        this.fieldset = this.formFactory.createFieldSets( this.innerWrapper, this.formData );
+        this.fieldset = new FormFactory().createFieldSets( this.innerWrapper, this.formData );
     }
 
     createLayerRefThumbnails( layers ) {
@@ -82,7 +78,7 @@ class LayerConflate extends SidebarForm {
     }
 
     createAdvancedOptions() {
-        this.advancedOptions = new AdvancedOpts( this.context );
+        this.advancedOptions = new AdvancedOpts();
         this.advancedOptions.init();
 
         let advancedOptionsToggle = d3.select( '#advanced-opts-toggle' );
@@ -176,8 +172,8 @@ class LayerConflate extends SidebarForm {
 
         data.TIME_STAMP         = '' + new Date().getTime();
         data.CONFLATION_COMMAND = 'conflate';
-        data.INPUT1             = LayerManager.findLoadedBy( 'refType', 'primary' ).id;
-        data.INPUT2             = LayerManager.findLoadedBy( 'refType', 'secondary' ).id;
+        data.INPUT1             = Hoot.layers.findLoadedBy( 'refType', 'primary' ).id;
+        data.INPUT2             = Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id;
         data.INPUT1_TYPE        = 'DB';
         data.INPUT2_TYPE        = 'DB';
         data.OUTPUT_NAME        = this.saveAsInput.node().value;
@@ -188,7 +184,7 @@ class LayerConflate extends SidebarForm {
         data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
         data.USER_EMAIL         = 'test@test.com';
 
-        let gj = this.context.layers().layer( 'gpx' );
+        let gj = Hoot.context.layers().layer( 'gpx' );
 
         if ( gj.hasGpx() ) {
             let extent    = new GeoExtent( d3.geoBounds( gj.geojson() ) );
@@ -199,17 +195,17 @@ class LayerConflate extends SidebarForm {
     }
 
     postConflation( params ) {
-        let layers = LayerManager.loadedLayers;
+        let layers = Hoot.layers.loadedLayers;
 
-        _.each( layers, d => HootOSM.hideLayer( d.id ) );
+        _.each( layers, d => Hoot.layers.hideLayer( d.id ) );
 
-        params.id     = LayerManager.findBy( 'name', params.name ).id;
+        params.id     = Hoot.layers.findBy( 'name', params.name ).id;
         params.merged = true;
         params.layers = layers;
 
         this.loadLayer( params );
 
-        FolderManager.updateFolders( this.innerWrapper )
+        Hoot.folders.updateFolders( this.innerWrapper )
             .catch( err => {
                 // TODO: alert - show err message
             } );
@@ -235,8 +231,8 @@ class LayerConflate extends SidebarForm {
 
         this.loadingState( params );
 
-        API.conflate( data )
-            .then( () => LayerManager.refreshLayers() )
+        Hoot.api.conflate( data )
+            .then( () => Hoot.layers.refreshLayers() )
             .then( () => this.postConflation( params ) );
     }
 }

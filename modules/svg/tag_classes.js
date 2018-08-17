@@ -3,8 +3,7 @@ import { osmPavedTags }        from '../osm/tags';
 import { osmEntity }           from '../osm/index';
 import { services }            from '../services/index';
 
-import LayerManager from '../Hoot/managers/layerManager';
-import HootOSM      from '../Hoot/managers/hootOsm';
+import Hoot from '../Hoot/hoot';
 
 export function svgTagClasses() {
     var primaries   = [
@@ -110,10 +109,10 @@ export function svgTagClasses() {
                 var mapId = osmEntity.id.toHootMapId( entity.id );
 
                 // For merged datasets, assign color class of source layer
-                var lyr = LayerManager.loadedLayers[ mapId ];
+                var lyr = Hoot.layers.loadedLayers[ mapId ];
                 if ( lyr && lyr.merged ) {
                     var id;
-                    var sourceId = HootOSM.decodeHootStatus( t[ 'hoot:status' ] );
+                    var sourceId = Hoot.layers.decodeHootStatus( t[ 'hoot:status' ] );
                     switch ( sourceId ) {
                         case 1:
                         case 2:

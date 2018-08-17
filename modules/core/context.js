@@ -348,7 +348,7 @@ export function coreContext() {
     context.layers = function() { return map.layers; };
     context.surface = function() { return map.surface; };
     context.editable = function() {
-        return map.editable() && Hoot.hootOsm.editable();
+        return map.editable() && Hoot.layers.editable();
     };
     context.surfaceRect = function() {
         return map.surface.node().getBoundingClientRect();

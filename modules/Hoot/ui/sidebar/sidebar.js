@@ -23,8 +23,14 @@ export default class Sidebar extends EventEmitter {
 
         this.hoot        = Hoot;
         this.iDSidebar   = d3.select( '#sidebar' );
-        this.forms       = {};
-        this.mergedLayer = null;
+
+        //this.forms       = {
+        //    addForms: [],
+        //    conflateForm: null,
+        //    reviewForm: null
+        //};
+
+        this.forms = {};
 
         let formMeta = [
             {
@@ -130,29 +136,50 @@ export default class Sidebar extends EventEmitter {
         this.wrapper.selectAll( '.layer-add' )
             .data( this.addFormData ).enter()
             .select( function( d ) {
+                //let form = new LayerAdd( d3.select( this ) );
+                //
+                //form.render();
+                //that.forms.addForms.push( form );
                 that.forms[ d.id ] = new LayerAdd( d3.select( this ) );
                 that.forms[ d.id ].render();
-
-                //that.forms[ d.id ]
             } );
 
         this.wrapper.selectAll( '.layer-conflate' )
             .data( this.conflateFormData ).enter()
-            .select( function() {
-                that.conflateForm = new LayerConflate( d3.select( this ) );
+            .select( function( d ) {
+                that.forms[ d.id ] = new LayerConflate( d3.select( this ) );
             } );
     }
 
-    layerMerged( layer ) {
+    layerLoaded( layerName ) {
+        _.forEach( this.forms, form => {
+            if ( form.loadingLayerName === layerName ) {
+                let loadedLayer = Hoot.layers.findLoadedBy( 'name', layerName );
+
+                if ( loadedLayer.merged ) {
+                    Hoot.layers.mergedLayer = loadedLayer;
+                }
+
+                form.controller.update();
+                form.loadingLayer = null;
+
+                this.conflateCheck();
+            }
+        } );
+    }
+
+    layerMerged() {
         let that = this;
 
         this.wrapper.selectAll( '.layer-review' )
             .data( this.reviewFormData ).enter()
             .select( function() {
+                let layer = Hoot.layers.mergedLayer;
+
                 that.reviewLayer = new LayerReview( d3.select( this ), layer );
 
                 that.reviewLayer.render();
-                that.mergedLayer = null;
+                Hoot.layers.layerMerged = null;
             } );
     }
 
@@ -169,11 +196,11 @@ export default class Sidebar extends EventEmitter {
             addControllers = d3.selectAll( '.add-controller' );
 
         if ( loadedLayers.length === 2 ) {
-            if ( !this.conflateForm.exists ) {
-                this.conflateForm.render( loadedLayers );
+            if ( !this.forms.conflate.exists ) {
+                this.forms.conflate.render( loadedLayers );
             }
         } else if ( addControllers.size() > 0 ) {
-            this.conflateForm.remove();
+            this.forms.conflate.remove();
         }
     }
 
@@ -184,8 +211,9 @@ export default class Sidebar extends EventEmitter {
     }
 
     listen() {
-        this.on( 'layer-merged', this.layerMerged );
-        //Event.listen( 'layer-merged', this.layerMerged, this );
+        Hoot.layers.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
+        Hoot.layers.on( 'layer-merged', () => this.layerMerged() );
+
         Event.listen( 'layer-removed', this.layerRemoved, this );
     }
 }

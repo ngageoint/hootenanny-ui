@@ -6,11 +6,10 @@
 
 import EventEmitter from 'events';
 
-import LayerManager    from './managers/layerManager';
 import API             from './managers/api';
 import ResponseManager from './managers/responseManager';
 import FolderManager   from './managers/folderManager';
-import HootOSM         from './managers/hootOsm';
+import LayerManager    from './managers/layerManager';
 import UI              from './ui/init';
 import buildInfo       from './config/buildInfo.json';
 
@@ -22,7 +21,6 @@ class Hoot extends EventEmitter {
         this.response = new ResponseManager( this );
         this.layers   = new LayerManager( this );
         this.folders  = new FolderManager( this );
-        this.hootOsm  = new HootOSM( this );
     }
 
     init( context ) {
@@ -36,6 +34,10 @@ class Hoot extends EventEmitter {
         this.ui = new UI();
 
         this.ui.render();
+
+        // prevent this class from being modified in any way.
+        // this does not affect children objects
+        Object.freeze( this );
     }
 
     async getAboutData() {
@@ -45,23 +47,23 @@ class Hoot extends EventEmitter {
                 this.api.getServicesVersionInfo()
             ] );
 
-            info.forEach( d => this.hootOsm.config.appInfo.push( d ) );
+            info.forEach( d => this.layers.config.appInfo.push( d ) );
         } catch ( e ) {
             // TODO: show error
             console.log( 'Unable to get Hootenanny core and service info.', e );
         }
 
         // build info will always be available
-        this.hootOsm.config.appInfo.push( buildInfo );
+        this.layers.config.appInfo.push( buildInfo );
     }
 
     async getMapSizeThresholds() {
         try {
             let thresholds = await this.api.getMapSizeThresholds();
 
-            this.hootOsm.config.exportSizeThreshold   = thresholds.export_threshold;
-            this.hootOsm.config.ingestSizeThreshold   = thresholds.ingest_threshold;
-            this.hootOsm.config.conflateSizeThreshold = thresholds.conflate_threshold;
+            this.layers.config.exportSizeThreshold   = thresholds.export_threshold;
+            this.layers.config.ingestSizeThreshold   = thresholds.ingest_threshold;
+            this.layers.config.conflateSizeThreshold = thresholds.conflate_threshold;
         } catch ( e ) {
             // TODO: show error
             console.log( 'Unable to get Hootenanny core and service info.', e );
@@ -69,4 +71,10 @@ class Hoot extends EventEmitter {
     }
 }
 
+// Export this class as a "Singleton". When it is imported the very first time,
+// it will create a new instance of the object and store it in memory. Every other
+// import afterwards will receive this cached object, and not create a new instance.
+
+// * Note: This is not a true Singleton, but it mimics the Singleton pattern
+// because of NodeJS's caching behavior.
 export default new Hoot();

@@ -92,7 +92,7 @@ class SidebarController {
 
     createColorPalette() {
         let self    = this,
-            palette = Hoot.hootOsm.getPalette();
+            palette = Hoot.layers.getPalette();
 
         this.colorPalette = this.fieldset.append( 'div' )
             .classed( 'keyline-all hoot-form-field palette clearfix round', true );
@@ -154,7 +154,7 @@ class SidebarController {
                 d3.event.preventDefault();
 
                 if ( window.confirm( 'Are you sure you want to delete?' ) ) {
-                    Hoot.hootOsm.removeLayer( this.layerId );
+                    Hoot.layers.removeLayer( this.layerId );
 
                     // if removing a merged layer, reset the sidebar by sending no data.
                     // otherwise, send data of specific form to reset

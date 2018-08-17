@@ -6,7 +6,7 @@
 
 import _                  from 'lodash-es';
 import API                from '../../../managers/api';
-import HootOSM            from '../../../managers/hootOsm';
+import HootOSM            from '../../../managers/layerManager';
 import FolderManager      from '../../../managers/folderManager';
 import FormFactory        from '../../../tools/formFactory';
 import { getBrowserInfo } from '../../../tools/utilities';

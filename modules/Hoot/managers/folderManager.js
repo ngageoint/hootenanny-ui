@@ -262,7 +262,7 @@ export default class FolderManager {
                 parentId
             };
 
-            return this.hoot.api.addFolder( params )
+            return that.hoot.api.addFolder( params )
                 .then( resp => updateFolderLink( resp.folderId ) )
                 .catch( err => {
                     console.log( err );
@@ -272,7 +272,7 @@ export default class FolderManager {
 
         function updateFolderLink( folderId ) {
             let layerName = name || container.select( '.layer-name' ).property( 'value' ),
-                mapId     = _.get( _.find( this.hoot.layers._layers, layer => layer.name === layerName ), 'id' ) || 0;
+                mapId     = _.get( _.find( that.hoot.layers._layers, layer => layer.name === layerName ), 'id' ) || 0;
 
             folderId = folderId || _.get( _.find( that._folders, folder => folder.name === pathName ), 'id' ) || 0;
 
@@ -282,7 +282,7 @@ export default class FolderManager {
                 updateType: 'new'
             };
 
-            return this.hoot.api.updateMapFolderLinks( params )
+            return that.hoot.api.updateMapFolderLinks( params )
                 .then( () => that.refreshAll() )
                 .then( () => Event.send( 'render-dataset-table' ) )
                 .catch( err => {
@@ -292,5 +292,3 @@ export default class FolderManager {
         }
     }
 }
-
-//export default new FolderManager();

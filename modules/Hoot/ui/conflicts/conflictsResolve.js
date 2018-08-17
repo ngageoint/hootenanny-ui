@@ -4,8 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/24/18
  *******************************************************************************************************/
 
-import HootOSM          from '../../managers/hootOsm';
-import Event            from '../../managers/eventManager';
+import HootOSM from '../../managers/layerManager';
+import Event   from '../../managers/eventManager';
 
 /**
  * @class ConflictsResolve

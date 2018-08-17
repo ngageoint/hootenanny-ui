@@ -5,15 +5,13 @@
  *******************************************************************************************************/
 
 import _                    from 'lodash-es';
-import API                  from '../../../managers/api';
+import Hoot                 from '../../../hoot';
 import AdvancedOptsData     from './advancedOptsData';
 import AdvancedOptsControls from './advancedOptsControls';
 import { d3combobox }       from '../../../../lib/hoot/d3.combobox';
 
 export default class AdvancedOpts {
-    constructor( context ) {
-        this.context         = context;
-        this.body            = context.container();
+    constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
         this.optTypes        = [ 'custom', 'horizontal', 'average', 'reference' ];
         this.advancedOptions = null;
@@ -25,7 +23,7 @@ export default class AdvancedOpts {
 
     async init() {
         this.optTypes = [ 'custom', 'horizontal', 'average', 'reference' ];
-        let allOpts   = await Promise.all( _.map( this.optTypes, type => API.getAdvancedOptions( type ) ) );
+        let allOpts   = await Promise.all( _.map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
 
         this.advancedOptions = {
             base: allOpts[ 0 ],

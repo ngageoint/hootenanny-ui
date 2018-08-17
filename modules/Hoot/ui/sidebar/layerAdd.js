@@ -82,7 +82,7 @@ export default class LayerAdd extends SidebarForm {
             .classed( 'keyline-all form-field palette clearfix round', true );
 
         colorPalette.selectAll( 'a' )
-            .data( _.reject( Hoot.hootOsm.getPalette(), c => c.name === 'green' ) )
+            .data( _.reject( Hoot.layers.getPalette(), c => c.name === 'green' ) )
             .enter()
             .append( 'a' )
             .attr( 'class', function( p ) {

@@ -4,11 +4,14 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/13/18
  *******************************************************************************************************/
 
-import SidebarController from './sidebarController';
+import EventEmitter      from 'events';
 import Hoot              from '../../hoot';
+import SidebarController from './sidebarController';
 
-export default class SidebarForm {
+export default class SidebarForm extends EventEmitter {
     constructor( container ) {
+        super();
+
         this.container = container;
 
         this.form         = null;
@@ -116,26 +119,26 @@ export default class SidebarForm {
     }
 
     loadingState( params ) {
-        this.loadingLayer = params.name;
+        this.loadingLayerName = params.name;
         this.controller   = new SidebarController( Hoot.context, this.form, params );
 
         this.controller.render();
     }
 
     loadLayer( params ) {
-        Hoot.hootOsm.loadLayer( params );
+        Hoot.layers.loadLayer( params );
     }
 
-    layerLoaded( layerName, loadingLayer ) {
+    layerLoaded( layerName ) {
         if ( this.loadingLayer === layerName ) {
             let loadedLayer = Hoot.layers.findLoadedBy( 'name', layerName );
 
             if ( loadedLayer.merged ) {
-                Hoot.sidebar.mergedLayer = loadedLayer;
+                Hoot.layers.mergedLayer = loadedLayer;
             }
 
             this.controller.update();
-            this.hoot.sidebar.conflateCheck();
+            Hoot.ui.sidebar.conflateCheck();
 
             this.loadingLayer = null;
         }
@@ -152,8 +155,9 @@ export default class SidebarForm {
      * Listen for re-render
      */
     listen() {
+        //Hoot.layers.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
         //Event.listen( 'layer-loaded', this.layerLoaded, this );
 
-        Hoot.on( 'layer-loaded', layerName => this.layerLoaded( layerName, this.loadingLayer ) );
+        //Hoot.on( 'layer-loaded', layerName => this.layerLoaded( layerName, this.loadingLayer ) );
     }
 }

@@ -786,7 +786,8 @@ export default {
                     delete _tiles.inflight[id];
                     if (!err) {
                         _tiles.loaded[id] = true;
-                        dispatch( 'layer-loaded', tile.layerName );
+                        Hoot.layers.emit( 'layer-loaded', tile.layerName );
+                        //dispatch( 'layer-loaded', tile.layerName );
                         //Events.send( 'layer-loaded', tile.layerName );
                     }
 

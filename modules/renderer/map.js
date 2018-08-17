@@ -484,17 +484,15 @@ export function rendererMap(context) {
         if ( map.editable() ) {
             context.connection().tileZoom( 1 );
             context.loadTiles( projection, dimensions, () => {
-                if ( context.hoot.sidebar.mergedLayer ) {
-                    context.hoot.sidebar.emit( 'layer-merged', context.hoot.sidebar.mergedLayer );
-                    //Event.send( 'layer-merged', context.hoot.sidebar.mergedLayer  );
+                if ( context.hoot.layers.mergedLayer ) {
+                    context.hoot.layers.emit( 'layer-merged' );
                 }
             } );
 
             drawVector( difference, extent );
         } else {
-            if ( context.hoot.sidebar.mergedLayer ) {
-                context.hoot.sidebar.emit( 'layer-merged', context.hoot.sidebar.mergedLayer );
-                //Event.send( 'layer-merged', context.hoot.sidebar.mergedLayer  );
+            if ( context.hoot.layers.mergedLayer ) {
+                context.hoot.layers.emit( 'layer-merged', context.hoot.layers.mergedLayer );
             }
             editOff();
 
