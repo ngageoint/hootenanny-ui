@@ -10,7 +10,6 @@ import FormFactory from './formFactory';
 
 import { checkForUnallowedChar } from './utilities';
 import { d3combobox }            from '../../lib/hoot/d3.combobox';
-import Event                     from '../managers/eventManager';
 
 export default class ClipDataset {
     constructor( instance ) {
@@ -215,7 +214,7 @@ export default class ClipDataset {
 
             Hoot.api.clipDataset( params )
                 .then( () => Hoot.folders.refreshDatasets() )
-                .then( () => Event.send( 'render-dataset-table' ) );
+                .then( () => Hoot.events.emit( 'render-dataset-table' ) );
         } );
 
         this.container.remove();

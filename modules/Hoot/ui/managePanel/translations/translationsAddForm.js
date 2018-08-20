@@ -4,7 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 6/28/18
  *******************************************************************************************************/
 
-import API                    from '../../../managers/api';
+import Hoot                   from '../../../hoot';
 import FormFactory            from '../../../tools/formFactory';
 import { translationAddForm } from '../../../config/domMetadata';
 
@@ -63,7 +63,7 @@ export default class TranslationsAddForm {
             data: this.templateInput.property( 'value' )
         };
 
-        API.postTranslation( data )
+        Hoot.api.postTranslation( data )
             .then( () => {
                 this.container.remove();
 

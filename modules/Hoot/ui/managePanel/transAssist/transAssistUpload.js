@@ -4,7 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/5/18
  *******************************************************************************************************/
 
-import API from '../../../managers/api';
+import Hoot from '../../../hoot';
 
 export default class TransAssistUpload {
     constructor( instance ) {
@@ -135,8 +135,8 @@ export default class TransAssistUpload {
             // if the same files/folder is selected twice in a row
             input.value = null;
 
-            let upload     = await API.uploadSchemaData( type, formData ),
-                attrValues = await API.getSchemaAttrValues( upload );
+            let upload     = await Hoot.api.uploadSchemaData( type, formData ),
+                attrValues = await Hoot.api.getSchemaAttrValues( upload );
 
             return this.convertUniqueValues( attrValues );
 

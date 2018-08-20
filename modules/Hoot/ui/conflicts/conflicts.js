@@ -28,15 +28,14 @@ import {
 export default class Conflicts {
     /**
      * @param contentContainer - div to render conflicts UI in
-     * @param layer - merged layer
      */
-    constructor( contentContainer, layer ) {
+    constructor( contentContainer ) {
         this.contentContainer = contentContainer;
 
         // data store for all conflicts components
         this.data = {
-            layer: layer,
-            mapId: layer.id,
+            layer: null,
+            mapId: null,
             reviewStats: null,
             currentReviewItem: null,
             currentRelation: null,
@@ -59,7 +58,10 @@ export default class Conflicts {
     /**
      * Initialize conflicts review and all of its submodules
      */
-    async init() {
+    async init( layer ) {
+        this.data.layer = layer;
+        this.data.mapId = layer.id;
+
         let modules = await Promise.all( [
             new ConflictInfo( this ),
             new ConflictsMap( this ),
@@ -82,9 +84,7 @@ export default class Conflicts {
 
         this.render();
 
-        Hoot.context.map().on( 'drawn', () => {
-            this.map.setHighlight();
-        } );
+        Hoot.context.map().on( 'drawn', () => this.map.setHighlight() );
 
         this.traverse.jumpTo( 'forward' );
     }

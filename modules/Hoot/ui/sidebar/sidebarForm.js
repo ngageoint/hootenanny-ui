@@ -4,14 +4,11 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/13/18
  *******************************************************************************************************/
 
-import EventEmitter      from 'events';
 import Hoot              from '../../hoot';
 import SidebarController from './sidebarController';
 
-export default class SidebarForm extends EventEmitter {
+export default class SidebarForm {
     constructor( container ) {
-        super();
-
         this.container = container;
 
         this.form         = null;

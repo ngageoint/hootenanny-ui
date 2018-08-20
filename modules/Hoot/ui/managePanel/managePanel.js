@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import _                   from 'lodash-es';
-import EventEmitter        from 'events';
+import Hoot                from '../../hoot';
 import Datasets            from './datasets/datasets';
 import TransAssist         from './transAssist/transAssist';
 import Translations        from './translations/translations';
@@ -18,13 +18,11 @@ import ReviewBookmarkNotes from './reviewBookmarkNotes';
  *
  * @constructor
  */
-export default class ManagePanel extends EventEmitter {
+export default class ManagePanel {
     /**
      * @constructor
      */
     constructor() {
-        super();
-
         this.container = d3.select( '#id-container' );
 
         this.manageTabs = [
@@ -56,12 +54,8 @@ export default class ManagePanel extends EventEmitter {
             .text( 'Manage Panel' );
 
         // Create all tab items in the panel
-        Promise.all( _.map( this.manageTabs, Tab => {
-            let tab = new Tab( this );
-
-            tab.render();
-            tab.on( 'toggle', this.toggleTab );
-        } ) );
+        Promise.all( _.map( this.manageTabs, Tab => new Tab( this ).render() ) )
+            .then( () => this.listen() );
 
         return this;
     }
@@ -83,5 +77,9 @@ export default class ManagePanel extends EventEmitter {
 
         d3.select( d )
             .classed( 'strong', true );
+    }
+
+    listen() {
+        Hoot.events.on( 'tab-toggle', d => this.toggleTab( d ) );
     }
 }

@@ -4,10 +4,10 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
-import _     from 'lodash-es';
-import Event from '../../managers/eventManager';
+import _            from 'lodash-es';
+import Hoot         from '../../hoot';
 
-export default class ConflictMetadata {
+export default class ConflictMetadata{
     constructor( instance ) {
         this.instance = instance;
         this.data     = instance.data;
@@ -150,8 +150,8 @@ export default class ConflictMetadata {
      * @param note - Note about review
      */
     updateMeta( note ) {
-        let noteText    = '',
-            currentMeta = this.data.reviewStats,
+        let noteText        = '',
+            currentMeta     = this.data.reviewStats,
             currentRelation = this.instance.graphSync.getCurrentRelation();
 
         let nTotal      = 0,
@@ -184,6 +184,6 @@ export default class ConflictMetadata {
             </strong>`
         );
 
-        Event.send( 'meta-updated', `There are ${ nUnreviewed } reviews` );
+        Hoot.events.emit( 'meta-updated', `There are ${ nUnreviewed } reviews` );
     }
 }

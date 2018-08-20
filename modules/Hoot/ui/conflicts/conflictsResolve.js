@@ -5,7 +5,6 @@
  *******************************************************************************************************/
 
 import Hoot  from '../../hoot';
-import Event from '../../managers/eventManager';
 
 /**
  * @class ConflictsResolve
@@ -109,6 +108,6 @@ export default class ConflictsResolve {
         // exit controller refresh state
         conflateController.text.html( layer.name );
 
-        Event.send( 'review-complete' );
+        Hoot.events.emit( 'review-complete' );
     }
 }

@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import _                  from 'lodash-es';
-import API                from '../../../managers/api';
+import Hoot               from '../../../hoot';
 import FormFactory        from '../../../tools/formFactory';
 import { basemapAddForm } from '../../../config/domMetadata';
 
@@ -72,7 +72,7 @@ export default class BasemapsAddForm {
 
         this.loadingState();
 
-        API.uploadBasemap( data )
+        Hoot.api.uploadBasemap( data )
             .then( () => {
                 this.container.remove();
                 this.instance.loadBasemaps();

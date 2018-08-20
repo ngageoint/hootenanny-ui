@@ -5,7 +5,6 @@
  *******************************************************************************************************/
 
 import _                 from 'lodash-es';
-import EventEmitter      from 'events';
 import { rgb as d3_rgb } from 'd3-color';
 
 import { geoExtent as GeoExtent } from '../../geo/index';
@@ -23,10 +22,8 @@ import {
     actionNoop
 } from '../../actions';
 
-export default class Layers extends EventEmitter {
+export default class Layers {
     constructor( hoot ) {
-        super();
-
         this.hoot = hoot;
 
         this.config = {
@@ -152,20 +149,12 @@ export default class Layers extends EventEmitter {
             }
         } );
 
-        this.emit( 'layer-loaded', layer.name );
-
-        //if ( layer.merged ) {
-        //    this.emit( 'layer-merged' );
-        //}
-
         this.hoot.context.background().addSource( source );
         this.setLayerColor( mapId, layer.color );
     }
 
     removeLayer( id ) {
-        if ( id && this._layers[ id ] ) {
-            _.remove( this._layers, layer => layer.id === id );
-        }
+        _.remove( this._layers, layer => layer.id === id );
     }
 
     removeLoadedLayer( id ) {
@@ -188,14 +177,6 @@ export default class Layers extends EventEmitter {
         this.hoot.context.connection().removeTile( id );
         this.hoot.context.flush();
     }
-
-    //removeLoadedLayer( id ) {
-    //    delete this.loadedLayers[ id ];
-    //    this.hoot.context.background().removeSource( id );
-    //    this.hootOverlay.removeGeojson( id );
-    //
-    //    this.hoot.context.flush();
-    //}
 
     decodeHootStatus( status ) {
         if ( status === 'Input1' ) {

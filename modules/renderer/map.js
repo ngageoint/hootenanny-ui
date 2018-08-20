@@ -54,9 +54,6 @@ import {
 import { utilBindOnce } from '../util/bind_once';
 import { utilGetDimensions } from '../util/dimensions';
 
-import Event from '../Hoot/managers/eventManager';
-import Hoot from '../Hoot/hoot';
-
 // constants
 var TAU = 2 * Math.PI;
 var TILESIZE = 256;
@@ -483,13 +480,21 @@ export function rendererMap(context) {
         // OSM
         if ( map.editable() ) {
             context.connection().tileZoom( 1 );
-            context.loadTiles( projection, dimensions );
+            context.loadTiles( projection, dimensions, () => {
+                if ( context.hoot.layers.mergedLayer ) {
+                    context.hoot.events.emit( 'layer-merged' );
+                }
+            } );
 
             drawVector( difference, extent );
         } else {
             editOff();
 
             context.connection().tileZoom( 1 );
+
+            if ( context.hoot.layers.mergedLayer ) {
+                context.hoot.events.emit( 'layer-merged' );
+            }
 
             //context.loadTiles( projection, dimensions );
 

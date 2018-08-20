@@ -4,8 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/29/18
  *******************************************************************************************************/
 
+import Hoot        from '../../hoot';
 import SidebarForm from './sidebarForm';
-import Conflicts   from '../conflicts/conflicts';
+//import Conflicts   from '../conflicts/conflicts';
 import Event       from '../../managers/eventManager';
 
 /**
@@ -20,6 +21,7 @@ export default class LayerReview extends SidebarForm {
         super( container );
 
         this.layer = layer;
+        this.conflicts = Hoot.ui.conflicts;
     }
 
     /**
@@ -48,10 +50,8 @@ export default class LayerReview extends SidebarForm {
                 this.conflicts.resolve.acceptAll( this.layer );
             } );
 
-        this.conflicts = new Conflicts( d3.select( '#content' ), this.layer );
-        this.conflicts.init();
-
-        this.listen();
+        this.conflicts.init( this.layer )
+            .then( () => this.listen() );
     }
 
     /**
@@ -87,7 +87,7 @@ export default class LayerReview extends SidebarForm {
      * Listen for events
      */
     listen() {
-        Event.listen( 'meta-updated', this.updateReviewCount, this );
-        Event.listen( 'review-complete', this.reviewComplete, this );
+        Hoot.events.on( 'meta-updated', text => this.updateReviewCount( text ) );
+        Hoot.events.on( 'review-complete', () => this.reviewComplete() );
     }
 }

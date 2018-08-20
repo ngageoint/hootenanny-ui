@@ -5,9 +5,7 @@
  *******************************************************************************************************/
 
 import _             from 'lodash-es';
-import EventEmitter  from 'events';
 import Hoot          from '../../hoot';
-import Event         from '../../managers/eventManager';
 import LayerAdd      from './layerAdd';
 import LayerConflate from './layerConflate';
 import LayerReview   from './layerReview';
@@ -17,10 +15,8 @@ import LayerReview   from './layerReview';
  *
  * @constructor
  */
-export default class Sidebar extends EventEmitter {
+export default class Sidebar {
     constructor( Hoot ) {
-        super();
-
         this.hoot        = Hoot;
         this.iDSidebar   = d3.select( '#sidebar' );
 
@@ -147,7 +143,8 @@ export default class Sidebar extends EventEmitter {
                 let loadedLayer = Hoot.layers.findLoadedBy( 'name', layerName );
 
                 if ( loadedLayer.merged ) {
-                    this.layerMerged( loadedLayer );
+                    Hoot.layers.mergedLayer = loadedLayer;
+                    //this.layerMerged( loadedLayer );
                 }
 
                 form.controller.update();
@@ -158,8 +155,11 @@ export default class Sidebar extends EventEmitter {
         } );
     }
 
-    layerMerged( layer ) {
+    layerMerged() {
         let that = this;
+
+        let layer = Hoot.layers.mergedLayer;
+        Hoot.layers.mergedLayer = null;
 
         this.wrapper.selectAll( '.layer-review' )
             .data( this.reviewFormData ).enter()
@@ -201,7 +201,7 @@ export default class Sidebar extends EventEmitter {
     }
 
     listen() {
-        Hoot.layers.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
-        Hoot.layers.on( 'layer-merged', () => this.layerMerged() );
+        Hoot.events.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
+        Hoot.events.on( 'layer-merged', () => this.layerMerged() );
     }
 }

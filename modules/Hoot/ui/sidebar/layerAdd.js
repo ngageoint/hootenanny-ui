@@ -6,7 +6,6 @@
 
 import _           from 'lodash-es';
 import Hoot        from '../../hoot';
-import Event       from '../../managers/eventManager';
 import FolderTree  from '../../tools/folderTree';
 import SidebarForm from './sidebarForm';
 
@@ -155,6 +154,6 @@ export default class LayerAdd extends SidebarForm {
      * Listen for re-render
      */
     listen() {
-        Event.listen( 'render-dataset-table', this.renderFolderTree, this );
+        Hoot.events.on( 'render-dataset-table', () => this.renderFolderTree() );
     }
 }

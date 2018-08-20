@@ -4,9 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/16/18
  *******************************************************************************************************/
 
-import API                      from '../../../managers/api';
-import Event                    from '../../../managers/eventManager';
-import FolderManager            from '../../../managers/folderManager';
+import Hoot                     from '../../../hoot';
 import FormFactory              from '../../../tools/formFactory';
 import { datasetAddFolderForm } from '../../../config/domMetadata';
 
@@ -78,9 +76,9 @@ export default class AddFolderForm {
             folderName: name
         };
 
-        return API.addFolder( params )
-            .then( () => FolderManager.refreshAll() )
-            .then( () => Event.send( 'render-dataset-table' ) )
+        return Hoot.api.addFolder( params )
+            .then( () => Hoot.folders.refreshAll() )
+            .then( () => Hoot.events.send( 'render-dataset-table' ) )
             .then( () => this.container.remove() )
             .catch( err => {
                 console.log( err );

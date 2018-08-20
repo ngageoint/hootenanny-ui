@@ -6,7 +6,6 @@
 
 import _             from 'lodash-es';
 import Hoot          from '../../hoot';
-import Event         from '../../managers/eventManager';
 import LayerMetadata from './layerMetadata';
 
 class SidebarController {

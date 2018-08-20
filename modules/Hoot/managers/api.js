@@ -592,5 +592,3 @@ export default class API {
             .then( resp => resp.data );
     }
 }
-
-//export default new API();

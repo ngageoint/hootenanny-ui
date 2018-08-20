@@ -6,7 +6,6 @@
 
 import _      from 'lodash-es';
 import moment from 'moment';
-import Event  from '../managers/eventManager';
 import Hoot   from '../hoot';
 
 /**
@@ -531,7 +530,7 @@ export default class FolderTree {
                             d
                         };
 
-                        Event.send( 'delete-dataset', params );
+                        Hoot.events.emit( 'delete-dataset', params );
                         break;
                     }
                 }

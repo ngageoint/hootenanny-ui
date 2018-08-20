@@ -4,15 +4,13 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import EventEmitter from 'events';
+import Hoot from '../../hoot';
 
 /**
  * Base class that all other managePanel in the settings panel extends from
  */
-export default class Tab extends EventEmitter {
+export default class Tab {
     constructor( instance ) {
-        super();
-
         this.panelSidebar = instance.panelSidebar;
         this.panel        = instance.panel;
 
@@ -24,14 +22,12 @@ export default class Tab extends EventEmitter {
      * Render tab header in settings panel sidebar
      */
     render() {
-        let that = this;
-
         this.tabHeader = this.panelSidebar
             .append( 'div' )
             .classed( 'tab-header pad1y center', true )
             .attr( 'data-id', `#${this.id}` )
             .on( 'click', function() {
-                that.emit( 'toggle', this );
+                Hoot.events.emit( 'tab-toggle', this );
             } );
 
         this.tabHeader

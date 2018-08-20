@@ -4,8 +4,7 @@
  * @author Matt Putipong on 3/6/18
  *******************************************************************************************************/
 
-import _            from 'lodash-es';
-import Event        from './eventManager';
+import _ from 'lodash-es';
 
 /**
  * Retrieves and manages folders and datasets
@@ -58,7 +57,7 @@ export default class FolderManager {
      * Retrieve layers from database
      */
     async refreshDatasets() {
-        return this._datasets = await this.hoot.layers.refreshLayers();
+        this._datasets = await this.hoot.layers.refreshLayers();
     }
 
     /**
@@ -284,7 +283,7 @@ export default class FolderManager {
 
             return that.hoot.api.updateMapFolderLinks( params )
                 .then( () => that.refreshAll() )
-                .then( () => Event.send( 'render-dataset-table' ) )
+                .then( () => that.hoot.events.emit( 'render-dataset-table' ) )
                 .catch( err => {
                     console.log( err );
                     // TODO: response - unable to update folder links

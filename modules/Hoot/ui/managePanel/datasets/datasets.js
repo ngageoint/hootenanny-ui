@@ -6,8 +6,6 @@
 
 import _            from 'lodash-es';
 import Hoot         from '../../../hoot';
-import Event        from '../../../managers/eventManager';
-import LayerManager from '../../../managers/layerManager';
 import FolderTree   from '../../../tools/folderTree';
 
 import Tab               from '../tab';
@@ -175,14 +173,14 @@ export default class Datasets extends Tab {
             return Hoot.api.deleteLayer( layer.name )
                 .then( () => Hoot.layers.removeLayer( layer.id ) );
 
-        } ) ).then( () => Event.send( 'render-dataset-table' ) );
+        } ) ).then( () => Hoot.events.emit( 'render-dataset-table' ) );
     }
 
     /**
      * Listen for re-render
      */
     listen() {
-        Event.listen( 'render-dataset-table', this.renderFolderTree, this );
-        Event.listen( 'delete-dataset', this.deleteDataset, this );
+        Hoot.events.on( 'render-dataset-table', () => this.renderFolderTree() );
+        Hoot.events.on( 'delete-dataset', params => this.deleteDataset( params ) );
     }
 }

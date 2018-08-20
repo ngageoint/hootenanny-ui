@@ -4,23 +4,21 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/16/18
  *******************************************************************************************************/
 
-import EventEmitter from 'events';
-
 import API             from './managers/api';
 import ResponseManager from './managers/responseManager';
 import FolderManager   from './managers/folderManager';
 import LayerManager    from './managers/layerManager';
+import EventManager    from './managers/eventManager';
 import UI              from './ui/init';
 import buildInfo       from './config/buildInfo.json';
 
-class Hoot extends EventEmitter {
+class Hoot {
     constructor() {
-        super();
-
         this.api      = new API( this );
         this.response = new ResponseManager( this );
         this.layers   = new LayerManager( this );
         this.folders  = new FolderManager( this );
+        this.events   = new EventManager();
 
         this.config = {
             appInfo: [],

@@ -4,6 +4,7 @@ import _isEmpty from 'lodash-es/isEmpty';
 import { geoExtent, geoPolygonIntersectsPolygon } from '../geo/index';
 import { utilDetect } from '../util/detect';
 import toGeoJSON from '@mapbox/togeojson';
+import Hoot from '../Hoot/hoot';
 
 
 export function svgHoot(projection, context, dispatch) {
@@ -90,6 +91,8 @@ export function svgHoot(projection, context, dispatch) {
         }
 
         dispatch.call('change');
+        Hoot.events.emit( 'layer-loaded', gj.properties.name );
+
         return this;
     };
 
