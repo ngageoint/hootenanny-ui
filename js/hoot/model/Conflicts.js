@@ -650,6 +650,9 @@ Hoot.model.conflicts = function(context)
         if (status === 'Conflated') {
             return 3;
         }
+        if (status === 'TagChange') {
+            return 4;
+        } 
 
         return parseInt(status);
     };

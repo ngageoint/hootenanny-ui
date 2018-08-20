@@ -116,6 +116,11 @@ iD.svg.TagClasses = function(context) {
                         break;
                     case 0:
                     case 3:
+                        id = lyr.mapId;
+                        break;
+                    case 4:
+                        id = "tagchange";
+                        break;
                     default:
                         id = lyr.mapId;
                         break;

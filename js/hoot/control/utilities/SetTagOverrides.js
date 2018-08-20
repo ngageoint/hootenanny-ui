@@ -23,6 +23,22 @@ Hoot.control.utilities.settagoverrides = function(context) {
             {'key':'source','value':''}
         ];
 
+    _instance.getHootTagList = {
+            'error:circular':'',
+            'hoot:building:match':'',
+            'hoot:status':'',
+            'hoot:review:members':'',
+            'hoot:review:score':'',
+            'hoot:review:note':'',
+            'hoot:review:sort_order':'',
+            'hoot:review:type':'',
+            'hoot:review:needs':'',
+            'hoot:score:match':'',
+            'hoot:score:miss':'',
+            'hoot:score:review':'',
+            'hoot:score:uuid':''
+        };
+
     /**
     * @desc Entry point where it creates form.
     * @param trans - Translations list.
@@ -152,7 +168,7 @@ Hoot.control.utilities.settagoverrides = function(context) {
             .text('Add Row')
             .on('click', function () {
                 _addRow(d3.select('#tagOverrideTable').select('tbody'));
-            });            
+            });
     };
 
 
@@ -197,7 +213,7 @@ Hoot.control.utilities.settagoverrides = function(context) {
             var _value = d3.select(r).select('.tagValue').value();
             if(_key !== ''){
                 _tagList[_key] = _value;
-            }            
+            }
         });
 
         context.hoot().control.utilities.exportdataset.setOverrideList(_tagList);
@@ -306,6 +322,9 @@ Hoot.control.utilities.settagoverrides = function(context) {
         _form = null;
 
         _submitExp = null;
+
+        context.hoot().control.utilities.exportdataset.setOverrideList({});
+
     };
 
     return d3.rebind(_instance, _events, 'on');
