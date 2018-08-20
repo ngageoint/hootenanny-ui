@@ -128,8 +128,7 @@ class SidebarController {
                     .classed( p.name, true );
 
                 self.layerColor = p.name;
-
-                Event.send( 'color-select', self.layerId, self.layerColor );
+                Hoot.layers.setLayerColor( self.layerId, self.layerColor );
             } );
     }
 
@@ -154,11 +153,8 @@ class SidebarController {
                 d3.event.preventDefault();
 
                 if ( window.confirm( 'Are you sure you want to delete?' ) ) {
-                    Hoot.layers.removeLayer( this.layerId );
-
-                    // if removing a merged layer, reset the sidebar by sending no data.
-                    // otherwise, send data of specific form to reset
-                    Event.send( 'layer-removed', d.id === 'conflate' ? null : d );
+                    Hoot.layers.removeLoadedLayer( this.layerId );
+                    Hoot.ui.sidebar.layerRemoved( d );
                 }
             } );
     }

@@ -483,23 +483,13 @@ export function rendererMap(context) {
         // OSM
         if ( map.editable() ) {
             context.connection().tileZoom( 1 );
-            context.loadTiles( projection, dimensions, () => {
-                if ( context.hoot.layers.mergedLayer ) {
-                    context.hoot.layers.emit( 'layer-merged' );
-                }
-            } );
+            context.loadTiles( projection, dimensions );
 
             drawVector( difference, extent );
         } else {
-            if ( context.hoot.layers.mergedLayer ) {
-                context.hoot.layers.emit( 'layer-merged', context.hoot.layers.mergedLayer );
-            }
             editOff();
 
             context.connection().tileZoom( 1 );
-            var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
-
-            _map( visLayers, layer => Event.send( 'layer-loaded', layer.name ) );
 
             //context.loadTiles( projection, dimensions );
 

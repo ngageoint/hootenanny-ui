@@ -48,7 +48,7 @@ export default class LayerReview extends SidebarForm {
                 this.conflicts.resolve.acceptAll( this.layer );
             } );
 
-        this.conflicts = new Conflicts( this.context, d3.select( '#content' ), this.layer );
+        this.conflicts = new Conflicts( d3.select( '#content' ), this.layer );
         this.conflicts.init();
 
         this.listen();

@@ -5,9 +5,7 @@
  *******************************************************************************************************/
 
 import _                  from 'lodash-es';
-import API                from '../../../managers/api';
-import HootOSM            from '../../../managers/layerManager';
-import FolderManager      from '../../../managers/folderManager';
+import Hoot               from '../../../hoot';
 import FormFactory        from '../../../tools/formFactory';
 import { getBrowserInfo } from '../../../tools/utilities';
 
@@ -25,7 +23,7 @@ import {
 export default class ImportDatasetForm {
     constructor( type, translations ) {
         this.formType     = type;
-        this.folderList   = FolderManager._folders;
+        this.folderList   = Hoot.folders._folders;
         this.translations = translations;
         this.browserInfo  = getBrowserInfo();
         this.formFactory  = new FormFactory();
@@ -258,7 +256,7 @@ export default class ImportDatasetForm {
     }
 
     validateLoaded( selectedType, fileList, totalFileSize ) {
-        let ingestThreshold = HootOSM.config.ingestSizeThreshold,
+        let ingestThreshold = Hoot.config.ingestSizeThreshold,
             valid           = true;
 
         if ( selectedType === 'FILE' ) {
@@ -375,9 +373,9 @@ export default class ImportDatasetForm {
     }
 
     upload( data ) {
-        return API.uploadDataset( data )
-            .then( () => FolderManager.refreshDatasets() )
-            .then( () => FolderManager.updateFolders( this.container, data.INPUT_NAME ) )
+        return Hoot.api.uploadDataset( data )
+            .then( () => Hoot.folders.refreshDatasets() )
+            .then( () => Hoot.folders.updateFolders( this.container, data.INPUT_NAME ) )
             .then( () => this.container.remove() )
             .catch( err => {
                 // TODO: alert error - unable to upload dataset

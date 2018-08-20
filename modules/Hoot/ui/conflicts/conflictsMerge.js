@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import _                    from 'lodash-es';
-import API                  from '../../managers/api';
+import Hoot                 from '../../hoot';
 import { osmNode }          from '../../../osm/index';
 import { JXON }             from '../../../util/jxon';
 import { t }                from '../../../util/locale';
@@ -20,9 +20,7 @@ export default class ConflictsMerge {
      * @param instance - conflicts class
      */
     constructor( instance ) {
-        this.instance = instance;
-        this.context  = instance.context;
-        this.data     = instance.data;
+        this.data = instance.data;
     }
 
     /**
@@ -54,7 +52,7 @@ export default class ConflictsMerge {
 
             mergedNode.tags[ 'hoot:status' ] = 3;
 
-            this.context.perform(
+            Hoot.context.perform(
                 actionChangeTags( featureToUpdate.id, mergedNode.tags ),
                 t( 'operations.change_tags.annotation' )
             );
@@ -66,7 +64,7 @@ export default class ConflictsMerge {
 
         try {
             let mergeItems              = this.getMergeItems( features ),
-                { reviewRefsResponses } = await API.getReviewRefs( mergeItems );
+                { reviewRefsResponses } = await Hoot.api.getReviewRefs( mergeItems );
 
             reviewRefs = _.uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
             reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ] );
@@ -91,8 +89,8 @@ export default class ConflictsMerge {
         let reviewRelationId = this.data.currentReviewItem.relationId;
 
         _.forEach( reviewRefs, ref => {
-            let refRelation    = this.context.hasEntity( `r${ ref.reviewRelationId }_${ this.data.mapId }` ),
-                mergedRelation = this.context.hasEntity( `r${ reviewRelationId }_${ this.data.mapId }` );
+            let refRelation    = Hoot.context.hasEntity( `r${ ref.reviewRelationId }_${ this.data.mapId }` ),
+                mergedRelation = Hoot.context.hasEntity( `r${ reviewRelationId }_${ this.data.mapId }` );
 
             if ( refRelation.members.length === mergedRelation.members.length ) {
                 let foundCount = 0;
@@ -108,7 +106,7 @@ export default class ConflictsMerge {
                 if ( foundCount === refRelation.members.length ) {
                     refRelation.tags[ 'hoot:review:needs' ] = 'no';
 
-                    this.context.perform(
+                    Hoot.context.perform(
                         actionChangeTags( refRelation.id, refRelation.tags ),
                         t( 'operations.change_tags.annotation' )
                     );
@@ -132,13 +130,13 @@ export default class ConflictsMerge {
             }
         } );
 
-        let fe = this.context.hasEntity( featureToDelete.id );
+        let fe = Hoot.context.hasEntity( featureToDelete.id );
 
         if ( fe ) {
             fe.hootMeta = { 'isReviewDel': true };
         }
 
-        operationDelete( [ featureToDelete.id ], this.context )();
+        operationDelete( [ featureToDelete.id ], Hoot.context )();
     }
 
     /**
@@ -159,10 +157,10 @@ export default class ConflictsMerge {
 
         osmXml = `<osm version="0.6" upload="true" generator="hootenanny">${ jxonFeatures.join( '' ) }</osm>`;
 
-        let mergedXml = await API.poiMerge( osmXml ),
+        let mergedXml = await Hoot.api.poiMerge( osmXml ),
             dom       = new DOMParser().parseFromString( mergedXml, 'text/xml' );
 
-        let featureOsm = await this.context.connection().parseXml( dom, mapId );
+        let featureOsm = await Hoot.context.connection().parseXml( dom, mapId );
 
         return featureOsm[ 0 ];
     }
@@ -238,7 +236,7 @@ export default class ConflictsMerge {
         return _.reduce( reviewRefs, ( arr, ref ) => {
             let relId = `r${ ref.reviewRelationId }_${ this.data.mapId }`;
 
-            if ( !this.context.hasEntity( relId ) ) {
+            if ( !Hoot.context.hasEntity( relId ) ) {
                 arr.push( relId );
             }
 

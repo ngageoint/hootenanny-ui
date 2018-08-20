@@ -8,7 +8,6 @@ import _                 from 'lodash-es';
 import EventEmitter      from 'events';
 import { rgb as d3_rgb } from 'd3-color';
 
-import Event                      from './eventManager';
 import { geoExtent as GeoExtent } from '../../geo/index';
 import { utilDetect }             from '../../util/detect';
 import colorPalette               from '../config/colorPalette';
@@ -39,8 +38,6 @@ export default class Layers extends EventEmitter {
         this._loadedLayers = {};
         this.mergedLayer   = null;
         this.palette       = colorPalette;
-
-        this.listen();
     }
 
     get loadedLayers() {
@@ -51,21 +48,9 @@ export default class Layers extends EventEmitter {
      * Retrieve layers from database
      */
     async refreshLayers() {
-        return this._layers = await this.hoot.api.getLayers();
-    }
+        this._layers = await this.hoot.api.getLayers();
 
-    removeLayer( id ) {
-        _.remove( this._layers, layer => layer.id === id );
-    }
-
-    removeLoadedLayer( id ) {
-        if ( this._loadedLayers[ id ] ) {
-            delete this._loadedLayers[ id ];
-        }
-    }
-
-    hideLayer( id ) {
-        _.find( this._loadedLayers, layer => layer.id === id );
+        return this._layers;
     }
 
     findBy( key, val ) {
@@ -167,8 +152,30 @@ export default class Layers extends EventEmitter {
             }
         } );
 
+        this.emit( 'layer-loaded', layer.name );
+
+        //if ( layer.merged ) {
+        //    this.emit( 'layer-merged' );
+        //}
+
         this.hoot.context.background().addSource( source );
         this.setLayerColor( mapId, layer.color );
+    }
+
+    removeLayer( id ) {
+        if ( id && this._layers[ id ] ) {
+            _.remove( this._layers, layer => layer.id === id );
+        }
+    }
+
+    removeLoadedLayer( id ) {
+        if ( id && this._loadedLayers[ id ] ) {
+            delete this._loadedLayers[ id ];
+            this.hoot.context.background().removeSource( id );
+            this.hootOverlay.removeGeojson( id );
+
+            this.hoot.context.flush();
+        }
     }
 
     hideLayer( id ) {
@@ -182,13 +189,13 @@ export default class Layers extends EventEmitter {
         this.hoot.context.flush();
     }
 
-    removeLayer( id ) {
-        delete this.hoot.layers.loadedLayers[ id ];
-        this.hoot.context.background().removeSource( id );
-        this.hootOverlay.removeGeojson( id );
-
-        this.hoot.context.flush();
-    }
+    //removeLoadedLayer( id ) {
+    //    delete this.loadedLayers[ id ];
+    //    this.hoot.context.background().removeSource( id );
+    //    this.hootOverlay.removeGeojson( id );
+    //
+    //    this.hoot.context.flush();
+    //}
 
     decodeHootStatus( status ) {
         if ( status === 'Input1' ) {
@@ -273,9 +280,5 @@ export default class Layers extends EventEmitter {
 
     editable() {
         return Object.keys( this.hoot.layers.loadedLayers ).length;
-    }
-
-    listen() {
-        Event.listen( 'color-select', this.setLayerColor, this );
     }
 }

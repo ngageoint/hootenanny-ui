@@ -4,11 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/1/18
  *******************************************************************************************************/
 
-import _             from 'lodash-es';
-import FormFactory   from './formFactory';
-import API           from '../managers/api';
-import FolderManager from '../managers/folderManager';
-import LayerManager  from '../managers/layerManager';
+import _           from 'lodash-es';
+import Hoot        from '../hoot';
+import FormFactory from './formFactory';
 
 import { checkForUnallowedChar } from './utilities';
 import { d3combobox }            from '../../lib/hoot/d3.combobox';
@@ -45,8 +43,8 @@ export default class ClipDataset {
     }
 
     createTable() {
-        let loadedLayers = LayerManager.loadedLayers,
-            folderList   = FolderManager.folderPaths,
+        let loadedLayers = Hoot.layers.loadedLayers,
+            folderList   = Hoot.folders.folderPaths,
             that         = this;
 
         let columns = [
@@ -143,7 +141,7 @@ export default class ClipDataset {
             i          = 1;
 
         while ( uniquename === false ) {
-            if ( !_.isEmpty( LayerManager.findBy( 'name', layerName ) ) ) {
+            if ( !_.isEmpty( Hoot.layers.findBy( 'name', layerName ) ) ) {
                 layerName = layer.name + i.toString();
                 i++;
             } else {
@@ -215,8 +213,8 @@ export default class ClipDataset {
             params.PATH_NAME   = pathName.property( 'value' ) || pathName.attr( 'placeholder' ) || 'root';
             params.BBOX        = bbox;
 
-            API.clipDataset( params )
-                .then( () => FolderManager.refreshDatasets() )
+            Hoot.api.clipDataset( params )
+                .then( () => Hoot.folders.refreshDatasets() )
                 .then( () => Event.send( 'render-dataset-table' ) );
         } );
 

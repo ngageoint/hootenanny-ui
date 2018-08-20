@@ -155,7 +155,6 @@ export default class LayerAdd extends SidebarForm {
      * Listen for re-render
      */
     listen() {
-        super.listen();
         Event.listen( 'render-dataset-table', this.renderFolderTree, this );
     }
 }

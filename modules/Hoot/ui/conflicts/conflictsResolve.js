@@ -4,8 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/24/18
  *******************************************************************************************************/
 
-import HootOSM from '../../managers/layerManager';
-import Event   from '../../managers/eventManager';
+import Hoot  from '../../hoot';
+import Event from '../../managers/eventManager';
 
 /**
  * @class ConflictsResolve
@@ -16,9 +16,9 @@ export default class ConflictsResolve {
      */
     constructor( instance ) {
         this.instance = instance;
-        this.context  = instance.context;
-        this.sidebar  = instance.context.hoot.sidebar;
         this.data     = instance.data;
+
+        this.sidebar = Hoot.ui.sidebar;
     }
 
     /**
@@ -42,10 +42,10 @@ export default class ConflictsResolve {
 
             this.instance.info.tableContainer.remove();
 
-            let hasChanges = this.context.history().hasChanges();
+            let hasChanges = Hoot.context.history().hasChanges();
 
             if ( hasChanges ) {
-                HootOSM.save( this.data.mergedItems, false, () => {
+                Hoot.layers.save( this.data.mergedItems, false, () => {
                     this.data.mergedItems = [];
                     this.instance.traverse.jumpTo( 'forward' );
                 } );
@@ -75,10 +75,10 @@ export default class ConflictsResolve {
      * @param layer - review layer
      */
     acceptAll( layer ) {
-        let hasChanges = this.context.history().hasChanges();
+        let hasChanges = Hoot.context.history().hasChanges();
 
         if ( hasChanges ) {
-            HootOSM.save( this.data.mergedItems, false, () => {
+            Hoot.layers.save( this.data.mergedItems, false, () => {
                 this.performAcceptAll( layer );
             } );
         } else {
@@ -92,7 +92,7 @@ export default class ConflictsResolve {
      * @param layer - review layer
      */
     performAcceptAll( layer ) {
-        let conflateController = this.sidebar.conflateForm.controller,
+        let conflateController = this.sidebar.forms.conflate.controller,
             key                = {
                 name: layer.name,
                 id: layer.id,
@@ -103,8 +103,8 @@ export default class ConflictsResolve {
         conflateController.text.html( 'Refreshing &#8230;' );
 
         // update layer
-        HootOSM.removeLayer( layer.id );
-        HootOSM.loadLayer( key );
+        Hoot.layers.removeLayer( layer.id );
+        Hoot.layers.loadLayer( key );
 
         // exit controller refresh state
         conflateController.text.html( layer.name );

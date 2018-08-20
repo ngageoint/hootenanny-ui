@@ -5,10 +5,9 @@
  *******************************************************************************************************/
 
 import _             from 'lodash-es';
-import HootOSM       from '../../managers/layerManager';
+import Hoot          from '../../hoot';
 import { t }         from '../../../util/locale';
 import { osmEntity } from '../../../osm/index';
-import API           from '../../managers/api';
 
 /**
  * @class ConflictsGraphSync
@@ -18,9 +17,7 @@ export default class ConflictsGraphSync {
      * @param instance - conflicts class
      */
     constructor( instance ) {
-        this.instance = instance;
-        this.context  = instance.context;
-        this.data     = instance.data;
+        this.data = instance.data;
 
         this.relationTreeIdx = {};
     }
@@ -39,7 +36,7 @@ export default class ConflictsGraphSync {
 
         let relationId = `r${ reviewItem.relationId }_${ reviewItem.mapId }`;
 
-        return this.context.entity( relationId );
+        return Hoot.context.entity( relationId );
     }
 
     /**
@@ -50,8 +47,8 @@ export default class ConflictsGraphSync {
      * @returns {Promise<*>|array}
      */
     async getRelationMembers( relationId ) {
-        let relId = `r${ relationId }_${ this.data.mapId }`,
-            relation  = this.context.hasEntity( relId );
+        let relId    = `r${ relationId }_${ this.data.mapId }`,
+            relation = Hoot.context.hasEntity( relId );
 
         if ( relation ) {
             let memberCount = this.getRelationMembersCount( relation );
@@ -69,7 +66,7 @@ export default class ConflictsGraphSync {
 
             return relation.members;
         } else {
-            if ( _.find( this.context.history().changes().deleted, { id: relId } ) ) {
+            if ( _.find( Hoot.context.history().changes().deleted, { id: relId } ) ) {
                 return;
             }
 
@@ -89,7 +86,7 @@ export default class ConflictsGraphSync {
         let count = 0;
 
         _.forEach( relation.members, member => {
-            count += this.context.hasEntity( member.id ) ? 1 : 0;
+            count += Hoot.context.hasEntity( member.id ) ? 1 : 0;
         } );
 
         return count;
@@ -106,8 +103,8 @@ export default class ConflictsGraphSync {
 
         newTags[ 'hoot:review:needs' ] = 'no';
 
-        this.context.perform(
-            HootOSM.changeTags( reviewRel.id, newTags ),
+        Hoot.context.perform(
+            Hoot.layers.changeTags( reviewRel.id, newTags ),
             t( 'operations.change_tags.annotation' )
         );
     }
@@ -125,14 +122,14 @@ export default class ConflictsGraphSync {
                 mapId      = featureId.split( '_' )[ 1 ],
                 osmIds     = _.map( [ featureId ], osmEntity.id.toOSM ),
 
-                featureXml = await API.getFeatures( type, mapId, osmIds ),
+                featureXml = await Hoot.api.getFeatures( type, mapId, osmIds ),
                 document   = new DOMParser().parseFromString( featureXml, 'text/xml' ),
-                featureOsm = await this.context.connection().parseXml( document, mapId );
+                featureOsm = await Hoot.context.connection().parseXml( document, mapId );
 
-            this.context.history().merge( featureOsm );
+            Hoot.context.history().merge( featureOsm );
 
             return Promise.all( _.map( featureOsm, feature => this.updateMissingFeature( feature ) ) );
-        } catch( e ) {
+        } catch ( e ) {
             throw new Error( 'Unable to retrieve missing features from HootOld DB.' );
         }
     }
@@ -149,7 +146,7 @@ export default class ConflictsGraphSync {
             this.relationTreeIdx[ feature.id ] = feature.members.length;
 
             return Promise.all( _.map( feature.members, member => {
-                let entity = this.context.hasEntity( member.id );
+                let entity = Hoot.context.hasEntity( member.id );
 
                 if ( !entity || member.type === 'relation' ) {
                     return this.loadMissingFeatures( member.id );
@@ -158,7 +155,7 @@ export default class ConflictsGraphSync {
                 }
             } ) );
         } else {
-            let entity = this.context.hasEntity( feature.id );
+            let entity = Hoot.context.hasEntity( feature.id );
 
             if ( entity ) {
                 return this.updateParentRelations( feature.id );
@@ -174,7 +171,7 @@ export default class ConflictsGraphSync {
      * @param feature - current feature
      */
     updateParentRelations( feature ) {
-        let parents = this.context.graph().parentRelations( feature );
+        let parents = Hoot.context.graph().parentRelations( feature );
 
         if ( !parents ) return;
 
@@ -190,7 +187,7 @@ export default class ConflictsGraphSync {
                 } else {
                     delete this.relationTreeIdx[ parent.id ];
 
-                    let parentRelations = this.context.graph().parentRelations( parent );
+                    let parentRelations = Hoot.context.graph().parentRelations( parent );
                     this.updateParentRelations( parentRelations );
                 }
             }
@@ -204,12 +201,12 @@ export default class ConflictsGraphSync {
      * @returns {array} - list of members
      */
     validateMemberCount( relationId ) {
-        let relation    = this.context.hasEntity( relationId ),
+        let relation    = Hoot.context.hasEntity( relationId ),
             memberCount = 0;
 
         if ( relation ) {
             _.forEach( relation.members, member => {
-                if ( this.context.hasEntity( member.id ) ) {
+                if ( Hoot.context.hasEntity( member.id ) ) {
                     memberCount++;
                 }
             } );

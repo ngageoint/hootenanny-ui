@@ -92,7 +92,6 @@ export default class SidebarForm extends EventEmitter {
         this.form.attr( 'id', d => d.id )
             .attr( 'class', d => `sidebar-form round importable-layer fill-white strong ${ d.class }` );
 
-        Hoot.sidebar.conflateCheck();
     }
 
     /**
@@ -127,37 +126,5 @@ export default class SidebarForm extends EventEmitter {
 
     loadLayer( params ) {
         Hoot.layers.loadLayer( params );
-    }
-
-    layerLoaded( layerName ) {
-        if ( this.loadingLayer === layerName ) {
-            let loadedLayer = Hoot.layers.findLoadedBy( 'name', layerName );
-
-            if ( loadedLayer.merged ) {
-                Hoot.layers.mergedLayer = loadedLayer;
-            }
-
-            this.controller.update();
-            Hoot.ui.sidebar.conflateCheck();
-
-            this.loadingLayer = null;
-        }
-    }
-
-    //layerRemoved( layerName ) {
-    //    if ( this.loadingLayer === layerName || ( this.loadedLayer && this.loadedLayer.name === layerName ) ) {
-    //        this.reset();
-    //        this.sidebar.conflateCheck();
-    //    }
-    //}
-
-    /**
-     * Listen for re-render
-     */
-    listen() {
-        //Hoot.layers.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
-        //Event.listen( 'layer-loaded', this.layerLoaded, this );
-
-        //Hoot.on( 'layer-loaded', layerName => this.layerLoaded( layerName, this.loadingLayer ) );
     }
 }

@@ -41,8 +41,6 @@ class LayerConflate extends SidebarForm {
         this.refLayerInput       = d3.select( '#conflateRefLayer' );
         this.collectStatsInput   = d3.select( '#conflateCollectStats' );
         this.generateReportInput = d3.select( '#conflateGenerateReport' );
-
-        super.listen();
     }
 
     createFieldset() {

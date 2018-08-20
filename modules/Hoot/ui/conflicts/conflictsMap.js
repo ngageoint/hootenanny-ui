@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import _                 from 'lodash-es';
+import Hoot              from '../../hoot';
 import { isValidCoords } from '../../tools/utilities';
 
 /**
@@ -16,7 +17,6 @@ export default class ConflictsMap {
      */
     constructor( instance ) {
         this.instance = instance;
-        this.context  = instance.context;
         this.data     = instance.data;
     }
 
@@ -29,8 +29,8 @@ export default class ConflictsMap {
      * @param panTo - true | false
      */
     highlightLayer( item1, item2, panTo ) {
-        let feature        = item1 ? this.context.hasEntity( item1.id ) : null,
-            againstFeature = item2 ? this.context.hasEntity( item2.id ) : null,
+        let feature        = item1 ? Hoot.context.hasEntity( item1.id ) : null,
+            againstFeature = item2 ? Hoot.context.hasEntity( item2.id ) : null,
             relation       = this.instance.graphSync.getCurrentRelation();
 
         // reference of current feature data in review process
@@ -99,9 +99,9 @@ export default class ConflictsMap {
 
         _.forEach( this.data.currentFeatures, feature => {
             if ( !extent ) {
-                extent = feature.extent( this.context.graph() );
+                extent = feature.extent( Hoot.context.graph() );
             } else {
-                extent = extent.extend( feature.extent( this.context.graph() ) );
+                extent = extent.extend( feature.extent( Hoot.context.graph() ) );
             }
 
             if ( !panToId && isValidCoords( extent[ 0 ] ) && isValidCoords( extent[ 1 ] ) ) {
@@ -109,7 +109,7 @@ export default class ConflictsMap {
             }
 
             if ( panToId ) {
-                this.context.map().centerZoom( extent.center(), this.context.map().trimmedExtentZoom( extent ) - 0.5 );
+                Hoot.context.map().centerZoom( extent.center(), Hoot.context.map().trimmedExtentZoom( extent ) - 0.5 );
             }
         } );
     }

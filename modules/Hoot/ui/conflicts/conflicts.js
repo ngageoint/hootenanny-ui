@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import _                   from 'lodash-es';
-import API                 from '../../managers/api';
+import Hoot                from '../../hoot';
 import ConflictInfo        from './conflictsInfo';
 import ConflictsMap        from './conflictsMap';
 import ConflictsTraverse   from './conflictsTraverse';
@@ -27,12 +27,10 @@ import {
  */
 export default class Conflicts {
     /**
-     * @param context - iD context
      * @param contentContainer - div to render conflicts UI in
      * @param layer - merged layer
      */
-    constructor( context, contentContainer, layer ) {
-        this.context          = context;
+    constructor( contentContainer, layer ) {
         this.contentContainer = contentContainer;
 
         // data store for all conflicts components
@@ -53,7 +51,7 @@ export default class Conflicts {
      * Deactivate conflicts review
      */
     deactivate() {
-        this.context.map().on( 'drawn', null );
+        Hoot.context.map().on( 'drawn', null );
         this.map.unsetHighlight();
         this.container.remove();
     }
@@ -78,13 +76,13 @@ export default class Conflicts {
         this.merge     = modules[ 4 ];
         this.resolve   = modules[ 5 ];
 
-        let reviewStats = await API.getReviewStatistics( this.data.mapId );
+        let reviewStats = await Hoot.api.getReviewStatistics( this.data.mapId );
 
         if ( reviewStats.totalCount === 0 ) return;
 
         this.render();
 
-        this.context.map().on( 'drawn', () => {
+        Hoot.context.map().on( 'drawn', () => {
             this.map.setHighlight();
         } );
 

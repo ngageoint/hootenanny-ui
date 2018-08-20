@@ -11,7 +11,7 @@ import {
 
 import { svgIcon } from '../svg';
 
-import LayerManager   from '../Hoot/managers/layerManager';
+import Hoot           from '../Hoot/hoot';
 import ClipSelectBbox from '../Hoot/tools/clipSelectBbox';
 
 export function uiTools( context ) {
@@ -120,7 +120,7 @@ export function uiTools( context ) {
             .append( 'ul' )
             .classed( 'sub-menu round', true )
             .style( 'left', () => {
-                let menuWidth = Math.ceil( toolsMenu.node().getBoundingClientRect().width ),
+                let menuWidth  = Math.ceil( toolsMenu.node().getBoundingClientRect().width ),
                     marginLeft = 5;
 
                 return menuWidth + marginLeft + 'px';
@@ -140,7 +140,7 @@ export function uiTools( context ) {
                 if ( d.mode ) {
                     context.enter( d.mode );
                 } else if ( d.action === 'clipData' ) {
-                    if ( Object.keys( LayerManager.loadedLayers ).length ) {
+                    if ( Object.keys( Hoot.layers.loadedLayers ).length ) {
                         let clipSelectBbox = new ClipSelectBbox( context );
 
                         clipSelectBbox.render();
@@ -166,7 +166,7 @@ export function uiTools( context ) {
     }
 
     function initDropdown() {
-        let duration = 50,
+        let duration     = 50,
             $toolsToggle = $( '.tools-toggle' );
 
         $toolsToggle.one( 'click', () => {

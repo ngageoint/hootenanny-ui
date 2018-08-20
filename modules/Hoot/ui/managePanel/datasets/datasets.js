@@ -173,7 +173,7 @@ export default class Datasets extends Tab {
                 .style( 'fill', 'rgb(255,0,0)' );
 
             return Hoot.api.deleteLayer( layer.name )
-                .then( () => LayerManager.removeLayer( layer.id ) );
+                .then( () => Hoot.layers.removeLayer( layer.id ) );
 
         } ) ).then( () => Event.send( 'render-dataset-table' ) );
     }

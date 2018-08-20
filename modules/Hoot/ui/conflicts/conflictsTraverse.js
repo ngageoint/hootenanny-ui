@@ -5,8 +5,7 @@
  *******************************************************************************************************/
 
 import _            from 'lodash-es';
-import API          from '../../managers/api';
-import LayerManager from '../../managers/layerManager';
+import Hoot         from '../../hoot';
 
 /**
  * @class ConflictsTraverse
@@ -17,7 +16,6 @@ export default class ConflictsTraverse {
      */
     constructor( instance ) {
         this.instance = instance;
-        this.context  = instance.context;
         this.data     = instance.data;
     }
 
@@ -29,7 +27,7 @@ export default class ConflictsTraverse {
      */
     async jumpTo( direction ) {
         let reviewData = {},
-            hasChanges = this.context.history().hasChanges();
+            hasChanges = Hoot.context.history().hasChanges();
 
         if ( hasChanges ) {
             // TODO: set processing to false
@@ -38,7 +36,7 @@ export default class ConflictsTraverse {
             return;
         }
 
-        let reviewStats       = await API.getReviewStatistics( this.data.mapId );
+        let reviewStats       = await Hoot.api.getReviewStatistics( this.data.mapId );
         this.data.reviewStats = reviewStats;
 
         const sequence = -999;
@@ -53,7 +51,7 @@ export default class ConflictsTraverse {
             reviewData.direction = direction;
         }
 
-        let reviewItem = await API.getNextReview( reviewData );
+        let reviewItem = await Hoot.api.getNextReview( reviewData );
 
         if ( reviewItem.resultCount > 0 ) {
             this.data.currentReviewItem = reviewItem;
@@ -90,7 +88,7 @@ export default class ConflictsTraverse {
      * @returns {boolean}
      */
     vischeck() {
-        let visible = _.filter( LayerManager.loadedLayers, layer => layer.visible );
+        let visible = _.filter( Hoot.layers.loadedLayers, layer => layer.visible );
 
         return visible.length === 1;
     }

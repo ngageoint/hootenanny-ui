@@ -21,6 +21,13 @@ class Hoot extends EventEmitter {
         this.response = new ResponseManager( this );
         this.layers   = new LayerManager( this );
         this.folders  = new FolderManager( this );
+
+        this.config = {
+            appInfo: [],
+            exportSizeThreshold: null,
+            ingestSizeThreshold: null,
+            conflateSizeThreshold: null
+        };
     }
 
     init( context ) {
@@ -47,23 +54,23 @@ class Hoot extends EventEmitter {
                 this.api.getServicesVersionInfo()
             ] );
 
-            info.forEach( d => this.layers.config.appInfo.push( d ) );
+            info.forEach( d => this.config.appInfo.push( d ) );
         } catch ( e ) {
             // TODO: show error
             console.log( 'Unable to get Hootenanny core and service info.', e );
         }
 
         // build info will always be available
-        this.layers.config.appInfo.push( buildInfo );
+        this.config.appInfo.push( buildInfo );
     }
 
     async getMapSizeThresholds() {
         try {
             let thresholds = await this.api.getMapSizeThresholds();
 
-            this.layers.config.exportSizeThreshold   = thresholds.export_threshold;
-            this.layers.config.ingestSizeThreshold   = thresholds.ingest_threshold;
-            this.layers.config.conflateSizeThreshold = thresholds.conflate_threshold;
+            this.config.exportSizeThreshold   = thresholds.export_threshold;
+            this.config.ingestSizeThreshold   = thresholds.ingest_threshold;
+            this.config.conflateSizeThreshold = thresholds.conflate_threshold;
         } catch ( e ) {
             // TODO: show error
             console.log( 'Unable to get Hootenanny core and service info.', e );

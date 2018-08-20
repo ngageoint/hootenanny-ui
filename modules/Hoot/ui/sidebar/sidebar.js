@@ -24,12 +24,6 @@ export default class Sidebar extends EventEmitter {
         this.hoot        = Hoot;
         this.iDSidebar   = d3.select( '#sidebar' );
 
-        //this.forms       = {
-        //    addForms: [],
-        //    conflateForm: null,
-        //    reviewForm: null
-        //};
-
         this.forms = {};
 
         let formMeta = [
@@ -136,10 +130,6 @@ export default class Sidebar extends EventEmitter {
         this.wrapper.selectAll( '.layer-add' )
             .data( this.addFormData ).enter()
             .select( function( d ) {
-                //let form = new LayerAdd( d3.select( this ) );
-                //
-                //form.render();
-                //that.forms.addForms.push( form );
                 that.forms[ d.id ] = new LayerAdd( d3.select( this ) );
                 that.forms[ d.id ].render();
             } );
@@ -157,37 +147,37 @@ export default class Sidebar extends EventEmitter {
                 let loadedLayer = Hoot.layers.findLoadedBy( 'name', layerName );
 
                 if ( loadedLayer.merged ) {
-                    Hoot.layers.mergedLayer = loadedLayer;
+                    this.layerMerged( loadedLayer );
                 }
 
                 form.controller.update();
-                form.loadingLayer = null;
+                form.loadingLayerName = null;
 
                 this.conflateCheck();
             }
         } );
     }
 
-    layerMerged() {
+    layerMerged( layer ) {
         let that = this;
 
         this.wrapper.selectAll( '.layer-review' )
             .data( this.reviewFormData ).enter()
             .select( function() {
-                let layer = Hoot.layers.mergedLayer;
-
                 that.reviewLayer = new LayerReview( d3.select( this ), layer );
 
                 that.reviewLayer.render();
-                Hoot.layers.layerMerged = null;
             } );
     }
 
-    layerRemoved( data ) {
-        if ( !data ) {
+    layerRemoved( d ) {
+        if ( d.id === 'conflate' ) {
+            Hoot.layers._loadedLayers = {};
+            delete this.forms[ d.id ];
             this.reset();
         } else {
-            this.forms[ data.id ].render( data );
+            this.forms[ d.id ].render( d );
+            this.conflateCheck();
         }
     }
 
@@ -213,7 +203,5 @@ export default class Sidebar extends EventEmitter {
     listen() {
         Hoot.layers.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
         Hoot.layers.on( 'layer-merged', () => this.layerMerged() );
-
-        Event.listen( 'layer-removed', this.layerRemoved, this );
     }
 }

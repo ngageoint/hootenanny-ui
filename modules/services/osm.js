@@ -33,7 +33,7 @@ import { utilRebind, utilIdleWorker } from '../util';
 
 import Hoot from '../Hoot/hoot';
 
-var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded', 'layer-loaded');
+var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded');
 //var urlroot = 'https://www.openstreetmap.org';
 var urlroot = Hoot.api.baseUrl + '/osm';
 var oauth = osmAuth({
@@ -737,7 +737,6 @@ export default {
         // HootOld loadedLayers is what controls the vector data sources that are loaded
         var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
 
-        //console.log( visLayers );
         var tiles = _map(visLayers, function (layer) {
             return d3_geoTile()
                 .scaleExtent([_tileZoom, _tileZoom])
@@ -786,9 +785,6 @@ export default {
                     delete _tiles.inflight[id];
                     if (!err) {
                         _tiles.loaded[id] = true;
-                        Hoot.layers.emit( 'layer-loaded', tile.layerName );
-                        //dispatch( 'layer-loaded', tile.layerName );
-                        //Events.send( 'layer-loaded', tile.layerName );
                     }
 
                     if (callback) {
@@ -796,7 +792,7 @@ export default {
                     }
 
                     if (_isEmpty(_tiles.inflight)) {
-                        dispatch.call('loaded', tile.layerName);
+                        dispatch.call('loaded');
                     }
                 }
             );

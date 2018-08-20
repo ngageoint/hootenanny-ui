@@ -5,15 +5,14 @@
  *******************************************************************************************************/
 
 import Hoot          from '../hoot';
-import HootOSM       from '../managers/layerManager';
-import { aboutForm } from '../config/domMetadata';
 import FormFactory   from '../tools/formFactory';
+import { aboutForm } from '../config/domMetadata';
 
 export default class About {
     constructor() {
         this.form = aboutForm.call( this );
 
-        this.appInfo = HootOSM.config.appInfo;
+        this.appInfo = Hoot.config.appInfo;
     }
 
     render() {
