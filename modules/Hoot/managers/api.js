@@ -543,7 +543,7 @@ export default class API {
      * Conflate layers together
      *
      * @param data
-     * @returns {Promise<any>}
+     * @returns {Promise<string>}
      */
     conflate( data ) {
         const params = {
@@ -556,7 +556,15 @@ export default class API {
 
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) )
-            .then( () => data );
+            .then( () => data )
+            .then( () => 'Conflation job complete.' )
+            .catch( err => {
+                const message = 'Error during conflation! Please try again later.';
+
+                console.log( message, err );
+
+                return message;
+            } );
     }
 
     clipDataset( data ) {

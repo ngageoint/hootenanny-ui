@@ -78,7 +78,7 @@ export default class AddFolderForm {
 
         return Hoot.api.addFolder( params )
             .then( () => Hoot.folders.refreshAll() )
-            .then( () => Hoot.events.send( 'render-dataset-table' ) )
+            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( () => this.container.remove() )
             .catch( err => {
                 console.log( err );

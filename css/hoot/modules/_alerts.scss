@@ -1,0 +1,61 @@
+.hoot-alert {
+    position: absolute;
+    max-width: 250px;
+    top: 72px;
+    right: 50px;
+    padding: 10px 18px 10px 15px;
+    font-size: 13px;
+    opacity: 0;
+    transform: translateX( -50px );
+    animation: slide-out 300ms forwards;
+    z-index:10;
+
+    &.show {
+        animation: slide-in 500ms forwards;
+    }
+
+    .close {
+        position: absolute;
+        width: auto;
+        height: auto;
+        top: 4px;
+        right: 6px;
+        font-size: 18px;
+        line-height: 10px;
+        background: transparent;
+        color: inherit;
+    }
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+@keyframes slide-in {
+    50% {
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-out {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    //50% {
+    //    opacity: 0.7;
+    //}
+
+    100% {
+        transform: translateX( 50px );
+        opacity: 0;
+    }
+}

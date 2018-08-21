@@ -54,6 +54,7 @@ class Hoot {
 
             info.forEach( d => this.config.appInfo.push( d ) );
         } catch ( e ) {
+            console.log( e );
             // TODO: show error
             console.log( 'Unable to get Hootenanny core and service info.', e );
         }
@@ -81,5 +82,5 @@ class Hoot {
 // import afterwards will receive this cached object, and not create a new instance.
 
 // * Note: This is not a true Singleton, but it mimics the Singleton pattern
-// because of NodeJS's caching behavior.
+// because of Node's module caching behavior.
 export default new Hoot();

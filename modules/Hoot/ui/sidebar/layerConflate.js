@@ -203,10 +203,7 @@ class LayerConflate extends SidebarForm {
 
         this.loadLayer( params );
 
-        Hoot.folders.updateFolders( this.innerWrapper )
-            .catch( err => {
-                // TODO: alert - show err message
-            } );
+        Hoot.folders.updateFolders( this.innerWrapper );
     }
 
     handleSubmit() {
@@ -230,8 +227,10 @@ class LayerConflate extends SidebarForm {
         this.loadingState( params );
 
         Hoot.api.conflate( data )
+            .then( msg => Hoot.response.alert( msg, 'success' ) )
             .then( () => Hoot.layers.refreshLayers() )
-            .then( () => this.postConflation( params ) );
+            .then( () => this.postConflation( params ) )
+            .catch( msg => Hoot.response.alert( msg, 'error' ) );
     }
 }
 
