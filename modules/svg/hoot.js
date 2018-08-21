@@ -91,7 +91,15 @@ export function svgHoot(projection, context, dispatch) {
         }
 
         dispatch.call('change');
-        Hoot.events.emit( 'layer-loaded', gj.properties.name );
+
+        // only emit the layer-loaded event if the map is zoomed far away.
+        //
+        // this is because the layer BBox loads much quicker than the layer itself
+        // and we don't want the layer controller in the sidebar to update before
+        // the layer is actually done loading.
+        if ( !context.map().editable() ) {
+            Hoot.events.emit( 'layer-loaded', gj.properties.name );
+        }
 
         return this;
     };

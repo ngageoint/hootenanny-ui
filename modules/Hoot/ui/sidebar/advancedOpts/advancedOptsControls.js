@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import _           from 'lodash-es';
+import Hoot        from '../../../hoot';
 import { isNaN }   from '../../../tools/utilities';
 import { tooltip } from '../../../../util/tooltip';
 
@@ -15,9 +16,9 @@ export default class AdvancedOptsControls {
 
         this.transitionTime = 300;
 
-        this.defaultFields  = null;
-        this.lastSetFields  = null;
-        this.formValid      = true;
+        this.defaultFields = null;
+        this.lastSetFields = null;
+        this.formValid     = true;
     }
 
     handleFieldChange( d ) {
@@ -155,11 +156,19 @@ export default class AdvancedOptsControls {
             return;
         }
 
-        if ( !window.confirm( 'All options will be reset to previously selected values. Are you sure you want to continue?' ) )
-            return;
+        let message = 'All options will be reset to previously selected values. Are you sure you want to continue?';
 
-        setTimeout( () => this.restoreFields(), this.transitionTime );
-        this.panel.toggle();
+        Hoot.response.confirm( message )
+            .then( () => {
+                setTimeout( () => this.restoreFields(), this.transitionTime );
+                this.panel.toggle();
+            } );
+
+        //if ( !window.confirm( 'All options will be reset to previously selected values. Are you sure you want to continue?' ) )
+        //    return;
+        //
+        //setTimeout( () => this.restoreFields(), this.transitionTime );
+        //this.panel.toggle();
     }
 
     saveOrCancel() {

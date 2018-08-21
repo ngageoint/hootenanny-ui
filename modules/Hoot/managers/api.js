@@ -38,6 +38,18 @@ export default class API {
         } );
     }
 
+    internalError( { response } ) {
+        if ( response.status >= 500 ) {
+            return 'API is not responding. Please try again later.';
+        } else {
+            return false;
+        }
+    }
+
+    is404( { response } ) {
+        return response.status >= 400;
+    }
+
     /**
      * Recursively poll the backend to check the status of a job
      *
@@ -81,7 +93,12 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp => resp.data )
+            .catch( err => {
+                const message = this.internalError( err ) || 'Unable to get Hootenanny core info';
+
+                return Promise.reject( message );
+            } );
     }
 
     getServicesVersionInfo() {
@@ -91,7 +108,12 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp => resp.data )
+            .catch( err => {
+                const message = this.internalError( err ) || 'Unable to get Hootenanny services info';
+
+                return Promise.reject( message );
+            } );
     }
 
     /**
@@ -120,11 +142,16 @@ export default class API {
 
                     return layers;
                 } );
+            } )
+            .catch( err => {
+                const message = this.internalError( err ) || 'Unable to retrieve layers';
+
+                return Promise.reject( message );
             } );
     }
 
     /**
-     * Get all links from the database
+     * Get all layer links from the database
      *
      * @returns {Promise|array} - links
      */
@@ -135,7 +162,12 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp => resp.data )
+            .catch( err => {
+                const message = this.internalError( err ) || 'Unable to retrieve layer links';
+
+                return Promise.reject( message );
+            } );
     }
 
     /**
@@ -256,7 +288,7 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    /**getMapSizeThresholds
+    /**
      * Get statistics on conflicts review process to see how many reviews are left
      * and how many have already been resolved
      *
@@ -557,13 +589,13 @@ export default class API {
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) )
             .then( () => data )
-            .then( () => 'Conflation job complete.' )
+            .then( () => 'Conflation job complete' )
             .catch( err => {
                 const message = 'Error during conflation! Please try again later.';
 
                 console.log( message, err );
 
-                return message;
+                return Promise.reject( message );
             } );
     }
 

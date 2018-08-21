@@ -8,30 +8,97 @@ export default class ResponseManager {
     constructor( hoot ) {
         this.hoot = hoot;
 
+        this.displayTime = 8000;
         this.animateTime = 500;
     }
 
     alert( message, type ) {
         let container = d3.select( '#id-sink' )
             .append( 'div' )
-            .classed( `hoot-alert alert-${ type } show round`, true );
+            .classed( `hoot-alert alert-${ type } show round`, true )
+            .on( 'mouseover', () => this.handleMouseover( container ) )
+            .on( 'mouseout', () => this.handleMouseout( container ) );
 
         container
             .append( 'button' )
             .attr( 'type', 'button' )
-            .classed( 'close pointer', true )
+            .classed( 'close pointer hidden', true )
             .text( '×' )
             .on( 'click', () => this.destroy( container ) );
 
         container
             .append( 'span' )
             .text(  message );
+
+        this.autoHide( container );
+    }
+
+    confirm( message ) {
+        return new Promise( res => {
+            let overlay = d3.select( 'body' )
+                .append( 'div' )
+                .classed( 'hoot-confirm overlay confirm-overlay', true );
+
+            let modal = overlay
+                .append( 'div' )
+                .classed( 'contain col4 hoot-menu fill-white round modal', true );
+
+            modal
+                .append( 'div' )
+                .classed( 'confirm-message', true )
+                .text( message );
+
+            let buttonContainer = modal
+                .append( 'div' )
+                .classed( 'confirm-actions flex justify-end', true );
+
+            buttonContainer
+                .append( 'button' )
+                .classed( 'secondary', true )
+                .text( 'Cancel' )
+                .on( 'click', () => {
+                    overlay.remove();
+                } );
+
+            buttonContainer
+                .append( 'button' )
+                .classed( 'primary', true )
+                .text( 'OK' )
+                .on( 'click', () => {
+                    overlay.remove();
+                    res();
+                } );
+        } );
+    }
+
+    autoHide( container ) {
+        this.hideTimeout = setTimeout( () => this.destroy( container ), this.displayTime );
+    }
+
+    clearAutoHide() {
+        clearTimeout( this.hideTimeout );
+    }
+
+    handleMouseover( container ) {
+        container
+            .select( '.close' )
+            .classed( 'hidden', false );
+
+        this.clearAutoHide();
+    }
+
+    handleMouseout( container ) {
+        container
+            .select( '.close' )
+            .classed( 'hidden', true );
+
+        this.autoHide( container );
     }
 
     destroy( container ) {
-        container
-            .classed( 'show', false );
+        container.classed( 'show', false );
 
         setTimeout( () => container.remove(), this.animateTime );
+        this.clearAutoHide();
     }
 }

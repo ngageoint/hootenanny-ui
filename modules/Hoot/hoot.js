@@ -33,8 +33,10 @@ class Hoot {
 
         this.context = context;
 
-        this.getAboutData();
-        this.getMapSizeThresholds();
+        Promise.all( [
+            this.getAboutData(),
+            this.getMapSizeThresholds()
+        ] );
 
         this.ui = new UI();
 
@@ -53,10 +55,8 @@ class Hoot {
             ] );
 
             info.forEach( d => this.config.appInfo.push( d ) );
-        } catch ( e ) {
-            console.log( e );
-            // TODO: show error
-            console.log( 'Unable to get Hootenanny core and service info.', e );
+        } catch ( err ) {
+            this.response.alert( err.message, 'error' );
         }
 
         // build info will always be available
@@ -70,9 +70,8 @@ class Hoot {
             this.config.exportSizeThreshold   = thresholds.export_threshold;
             this.config.ingestSizeThreshold   = thresholds.ingest_threshold;
             this.config.conflateSizeThreshold = thresholds.conflate_threshold;
-        } catch ( e ) {
-            // TODO: show error
-            console.log( 'Unable to get Hootenanny core and service info.', e );
+        } catch ( msg ) {
+            this.response.alert( msg, 'error' );
         }
     }
 }

@@ -64,6 +64,12 @@ input {
 .flex {
     display: flex;
 
+    &.justify-start {
+        justify-content: flex-start;
+    }
+    &.justify-end {
+        justify-content: flex-end;
+    }
     &.justify-around {
         justify-content: space-around;
     }

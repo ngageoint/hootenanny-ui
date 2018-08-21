@@ -230,7 +230,7 @@ class LayerConflate extends SidebarForm {
             .then( msg => Hoot.response.alert( msg, 'success' ) )
             .then( () => Hoot.layers.refreshLayers() )
             .then( () => this.postConflation( params ) )
-            .catch( msg => Hoot.response.alert( msg, 'error' ) );
+            .catch( msg => Hoot.response.queue( msg, 'error' ) );
     }
 }
 
