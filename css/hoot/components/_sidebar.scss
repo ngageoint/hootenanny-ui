@@ -108,10 +108,9 @@
             padding: 5px 20px;
             height: auto;
 
-            .action-container {
-                .button.dark {
-                    margin-left: 10px;
-                }
+            &.dark.disabled {
+                background-color: #999;
+                color: #ddd;
             }
         }
     }

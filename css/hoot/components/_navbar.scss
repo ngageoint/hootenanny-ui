@@ -21,6 +21,20 @@
     display: flex;
     align-items: center;
 
+    .menu-button {
+        @extend button.dark;
+        border: none;
+
+        &.active {
+            background-color: $light;
+            color: $dark;
+
+            &:hover {
+                background-color: $light1;
+            }
+        }
+    }
+
     .icon-container {
         padding: 0 10px;
 

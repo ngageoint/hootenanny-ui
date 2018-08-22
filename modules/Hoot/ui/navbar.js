@@ -46,7 +46,7 @@ export default class Navbar {
 
         let menuButton = leftContainer
             .append( 'div' )
-            .classed( 'button dark text-light pointer icon-container', true )
+            .classed( 'menu-button button text-light pointer icon-container', true )
             .on( 'click', function() {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
@@ -54,8 +54,7 @@ export default class Navbar {
                 let vis = !d3.select( '#manage-panel' ).classed( 'hidden' );
 
                 d3.select( this )
-                    .classed( 'light', !vis )
-                    .classed( 'dark', vis );
+                    .classed( 'active', !vis );
 
                 d3.select( '#manage-panel' )
                     .classed( 'hidden', vis );

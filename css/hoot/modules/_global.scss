@@ -250,12 +250,12 @@ input {
 
 button, .button {
     &.primary {
-        background-color: $blue !important;
-        color: white !important;
+        background-color: $blue;
+        color: white;
         border: 1px solid $blue1;
 
         &:hover {
-            background-color: $blue1 !important;
+            background-color: $blue1;
         }
     }
 
@@ -281,18 +281,10 @@ button, .button {
 
     &.dark {
         background-color: $dark;
+        border: 1px solid $dark2;
 
         &:hover {
             background-color: $dark1;
-        }
-    }
-
-    &.light {
-        background-color: $light;
-        color: $dark;
-
-        &:hover {
-            background-color: $light1;
         }
     }
 

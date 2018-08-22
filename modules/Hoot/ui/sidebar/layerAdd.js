@@ -110,7 +110,8 @@ export default class LayerAdd extends SidebarForm {
         this.fieldset.append( 'div' )
             .classed( 'hoot-form-field action-container', true )
             .append( 'button' )
-            .classed( 'dark text-light small strong round', true )
+            .classed( 'add-layer dark text-light small strong round', true )
+            .property( 'disabled', true )
             .text( 'Add Layer' )
             .on( 'click', d => {
                 d3.event.stopPropagation();
@@ -130,8 +131,8 @@ export default class LayerAdd extends SidebarForm {
             layerId,
             layerName;
 
-        if ( !this.form.select( '.sel' ).empty() ) {
-            let gNode = d3.select( this.form.select( '.sel' ).node().parentNode );
+        if ( !this.table.select( '.sel' ).empty() ) {
+            let gNode = d3.select( this.table.select( '.sel' ).node().parentNode );
 
             layerName = gNode.attr( 'data-name' );
             layerId   = gNode.attr( 'data-id' );
@@ -155,5 +156,11 @@ export default class LayerAdd extends SidebarForm {
      */
     listen() {
         Hoot.events.on( 'render-dataset-table', () => this.renderFolderTree() );
+
+        this.table.on( 'click', () => {
+            let selected = !this.table.select( '.sel' ).empty();
+
+            this.form.select( '.add-layer' ).property( 'disabled', !selected );
+        } );
     }
 }
