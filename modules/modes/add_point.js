@@ -24,7 +24,6 @@ export function modeAddPoint(context) {
 
 
     function add(loc) {
-        console.log( loc );
         var node = osmNode({ loc: loc });
 
         context.perform(

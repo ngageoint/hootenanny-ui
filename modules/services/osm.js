@@ -408,8 +408,16 @@ export default {
 
 
     filterChanges: function( changes ) {
-        console.log( changes );
-        let ways = _filter( _flatten( _map( changes, featArr => featArr ) ), feat => feat.type !== 'node' );
+        let ways = _filter( _flatten( _map( changes, featArr => featArr ) ), feat => feat.type !== 'node' ),
+            visLayers = _map( _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible ), layer => layer.id ),
+            defaultMapId;
+
+        // Make sure there is only one layer visible. Otherwise, return a falsy value to prevent save.
+        if (visLayers.length === 1 || changes.created.length === 0){
+            defaultMapId = visLayers[0];
+        } else {
+            return false;
+        }
 
         return _reduce( changes, ( obj, featArr, type ) => {
             let changeTypes = {
@@ -419,7 +427,7 @@ export default {
             };
 
             _forEach( featArr, feat => {
-                let mapId = feat.mapId;
+                let mapId = defaultMapId;
 
                 if ( feat.isNew() && feat.type === 'node' ) {
                     let parent = _find( ways, way => _includes( way.nodes, feat.id ) );
@@ -458,7 +466,12 @@ export default {
 
         let changesArr = this.filterChanges( changes );
 
-        console.log( changesArr );
+        if ( !changesArr ) {
+            return callback( {
+                message: 'New feature updated with multiple layers visible. To continue, remove all layers but the target layer.',
+                status: 400 // bad request
+            }, changeset );
+        }
 
         var that = this;
         var cid = _connectionID;
