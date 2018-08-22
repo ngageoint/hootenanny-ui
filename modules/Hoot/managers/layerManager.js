@@ -26,36 +26,32 @@ export default class Layers {
     constructor( hoot ) {
         this.hoot = hoot;
 
-        this.config = {
-            appInfo: [],
-            mapThresholds: {}
-        };
-
-        this._layers       = [];
-        this._loadedLayers = {};
-        this.mergedLayer   = null;
-        this.palette       = colorPalette;
-    }
-
-    get loadedLayers() {
-        return this._loadedLayers;
+        this.allLayers          = [];
+        this.loadedLayers       = {};
+        this.recentlyUsedLayers = null;
+        this.mergedLayer        = null;
+        this.palette            = colorPalette;
     }
 
     /**
      * Retrieve layers from database
      */
     async refreshLayers() {
-        this._layers = await this.hoot.api.getLayers();
+        this.allLayers          = await this.hoot.api.getLayers();
+        this.recentlyUsedLayers = JSON.parse( this.hoot.context.storage( 'recentlyUsedLayers' ) ) || [];
 
-        return this._layers;
+        this.syncRecentlyUsedLayers();
+        this.hoot.events.emit( 'recent-layers-retrieved' );
+
+        return this.allLayers;
     }
 
     findBy( key, val ) {
-        return _.find( this._layers, layer => layer[ key ] === val );
+        return _.find( this.allLayers, layer => layer[ key ] === val );
     }
 
     findLoadedBy( key, val ) {
-        return _.find( this._loadedLayers, layer => layer[ key ] === val );
+        return _.find( this.loadedLayers, layer => layer[ key ] === val );
     }
 
     getMapnikSource( d ) {
@@ -154,12 +150,12 @@ export default class Layers {
     }
 
     removeLayer( id ) {
-        _.remove( this._layers, layer => layer.id === id );
+        _.remove( this.allLayers, layer => layer.id === id );
     }
 
     removeLoadedLayer( id ) {
-        if ( id && this._loadedLayers[ id ] ) {
-            delete this._loadedLayers[ id ];
+        if ( id && this.loadedLayers[ id ] ) {
+            delete this.loadedLayers[ id ];
             this.hoot.context.background().removeSource( id );
             this.hootOverlay.removeGeojson( id );
 
@@ -211,6 +207,33 @@ export default class Layers {
         sheets.insertRule( 'path.shadow.tag-hoot-' + mapId + ' { stroke:' + lighter + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'path.fill.tag-hoot-' + mapId + ' { fill:' + lighter + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'g.point.tag-hoot-' + mapId + ' .stroke { fill:' + color + '}', sheets.cssRules.length - 1 );
+    }
+
+    setRecentlyUsedLayers( layerName ) {
+        if ( layerName ) {
+            let index = this.recentlyUsedLayers.indexOf( layerName );
+
+            if ( index > -1 ) {
+                this.recentlyUsedLayers.splice( index, 1 );
+                this.recentlyUsedLayers.unshift( layerName );
+
+                return;
+            }
+
+            if ( this.recentlyUsedLayers.length > 5 ) {
+                this.recentlyUsedLayers.splice( 0, 1, layerName );
+            } else {
+                this.recentlyUsedLayers.unshift( layerName );
+            }
+        }
+
+        this.syncRecentlyUsedLayers();
+
+        this.hoot.context.storage( 'recentlyUsedLayers', JSON.stringify( this.recentlyUsedLayers ) );
+    }
+
+    syncRecentlyUsedLayers() {
+        this.recentlyUsedLayers = _.intersection( this.recentlyUsedLayers, _.map( this.allLayers, 'name' ) );
     }
 
     changeTags( entityId, tags ) {

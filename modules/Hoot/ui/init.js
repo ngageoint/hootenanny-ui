@@ -4,18 +4,12 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/16/18
  *******************************************************************************************************/
 
-import EventEmitter from 'events';
-
 import Navbar      from './navbar';
 import Sidebar     from './sidebar/sidebar';
 import ManagePanel from './managePanel/managePanel';
 import Conflicts   from './conflicts/conflicts';
 
-export default class UI extends EventEmitter {
-    constructor() {
-        super();
-    }
-
+export default class UI {
     render() {
         Promise.all( [
             new Navbar().render(),

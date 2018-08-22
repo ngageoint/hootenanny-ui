@@ -9,9 +9,16 @@ import Hoot        from '../../hoot';
 import FolderTree  from '../../tools/folderTree';
 import SidebarForm from './sidebarForm';
 
+import { d3combobox } from '../../../lib/hoot/d3.combobox';
+
 export default class LayerAdd extends SidebarForm {
     constructor( container ) {
         super( container );
+
+        this.selectedLayer = {
+            name: null,
+            id: null
+        };
     }
 
     render( data ) {
@@ -40,7 +47,24 @@ export default class LayerAdd extends SidebarForm {
     createTable() {
         this.table = this.fieldset.append( 'div' )
             .attr( 'id', d => d.tableId )
-            .classed( 'layer-add-table keyline-all filled-white strong overflow', true );
+            .classed( 'layer-add-table layer-table keyline-all filled-white strong overflow', true )
+            .on( 'click', () => {
+                let rect     = this.table.select( '.sel' ),
+                    selected = !rect.empty();
+
+                this.form.select( '.add-layer' ).property( 'disabled', !selected );
+
+                if ( selected ) {
+                    let input = this.form.select( '.recently-used-input' ),
+                        gNode = d3.select( rect.node().parentNode );
+
+                    input.property( 'value', '' );
+                    input.node().blur();
+
+                    this.selectedLayer.name = gNode.attr( 'data-name' );
+                    this.selectedLayer.id   = gNode.attr( 'data-id' );
+                }
+            } );
     }
 
     /**
@@ -58,6 +82,8 @@ export default class LayerAdd extends SidebarForm {
      * Create combobox of recently added layers
      */
     createRecentlyUsedLayers() {
+        let that = this;
+
         let recentlyUsed = this.fieldset.append( 'div' )
             .classed( 'hoot-form-field fill-white small keyline-all round', true );
 
@@ -68,8 +94,11 @@ export default class LayerAdd extends SidebarForm {
         recentlyUsed.append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'placeholder', 'Recently Used Layers' )
+            .classed( 'recently-used-input', true )
             .select( function() {
-                //let combobox = d3combobox();
+                if ( Hoot.layers.recentlyUsedLayers ) {
+                    that.updateRecentlyUsed();
+                }
             } );
     }
 
@@ -121,46 +150,72 @@ export default class LayerAdd extends SidebarForm {
             } );
     }
 
+    updateRecentlyUsed() {
+        let that = this;
+
+        if ( this.selectedLayer.name ) {
+            Hoot.layers.setRecentlyUsedLayers( this.selectedLayer.name );
+        }
+
+        let combobox = d3combobox()
+            .data( _.map( Hoot.layers.recentlyUsedLayers, n => {
+                return {
+                    value: n,
+                    title: n
+                };
+            } ) );
+
+        this.form.select( '.recently-used-input' )
+            .call( combobox )
+            .on( 'change', function() {
+                if ( !that.table.select( '.sel' ).empty() ) {
+                    let evt = new MouseEvent( 'click' );
+
+                    that.table.select( '.sel' ).node().parentNode.dispatchEvent( evt );
+                }
+
+                that.form.select( '.add-layer' ).property( 'disabled', false );
+
+                let name = d3.select( this ).property( 'value' ),
+                    id   = Hoot.layers.findBy( 'name', name ).id;
+
+                that.selectedLayer.name = name;
+                that.selectedLayer.id   = id;
+            } );
+    }
+
     /**
      * Submit layer event
      *
      * @param d - form data
      */
     submitLayer( d ) {
-        let color = this.form.select( '.palette .active' ).attr( 'data-color' ),
-            layerId,
-            layerName;
-
-        if ( !this.table.select( '.sel' ).empty() ) {
-            let gNode = d3.select( this.table.select( '.sel' ).node().parentNode );
-
-            layerName = gNode.attr( 'data-name' );
-            layerId   = gNode.attr( 'data-id' );
-        } else {
-            // error
-        }
+        let color = this.form.select( '.palette .active' ).attr( 'data-color' );
 
         let params = {
-            name: layerName,
+            name: this.selectedLayer.name,
+            id: this.selectedLayer.id,
             refType: d.refType,
-            id: layerId,
             color
         };
 
         this.loadingState( params );
         this.loadLayer( params );
+
+        Hoot.events.emit( 'load-layer' );
     }
 
     /**
-     * Listen for re-render
+     * Listen for events
      */
     listen() {
-        Hoot.events.on( 'render-dataset-table', () => this.renderFolderTree() );
-
-        this.table.on( 'click', () => {
-            let selected = !this.table.select( '.sel' ).empty();
-
-            this.form.select( '.add-layer' ).property( 'disabled', !selected );
+        Hoot.events.on( 'render-dataset-table', () => {
+            this.renderFolderTree();
+            Hoot.layers.syncRecentlyUsedLayers();
+            this.updateRecentlyUsed();
         } );
+
+        Hoot.events.on( 'recent-layers-retrieved', () => this.updateRecentlyUsed() );
+        Hoot.events.on( 'load-layer', () => this.updateRecentlyUsed() );
     }
 }

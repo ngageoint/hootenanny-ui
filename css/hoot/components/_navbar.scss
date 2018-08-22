@@ -21,10 +21,12 @@
     display: flex;
     align-items: center;
 
-    .menu-button {
+    .button {
         @extend button.dark;
         border: none;
+    }
 
+    .menu-button {
         &.active {
             background-color: $light;
             color: $dark;

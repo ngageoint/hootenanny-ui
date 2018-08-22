@@ -246,7 +246,8 @@ export default class FolderTree {
             } );
 
         // Render node name
-        nodeElement.append( 'text' )
+        nodeElement
+            .append( 'text' )
             .style( 'fill', this.fontColor )
             .classed( 'dnameTxt', true )
             .attr( 'dy', 3.5 )

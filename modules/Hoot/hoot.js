@@ -41,7 +41,6 @@ class Hoot {
         ] );
 
         this.ui = new UI();
-
         this.ui.render();
 
         // prevent this class from being modified in any way.

@@ -124,9 +124,11 @@ export default class Datasets extends Tab {
 
         let table = this.panelWrapper.append( 'div' )
             .attr( 'id', 'dataset-table' )
-            .classed( 'filled-white strong overflow', true );
+            .classed( 'layer-table filled-white strong overflow', true );
 
-        table.insert( 'div' ).attr( 'id', 'dataset-table-header' )
+        table
+            .insert( 'div' )
+            .attr( 'id', 'dataset-table-header' )
             .selectAll( 'th' )
             .data( this.datasetTableHeaders )
             .enter().append( 'th' )

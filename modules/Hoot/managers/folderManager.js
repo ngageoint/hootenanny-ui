@@ -271,7 +271,7 @@ export default class FolderManager {
 
         function updateFolderLink( folderId ) {
             let layerName = name || container.select( '.layer-name' ).property( 'value' ),
-                mapId     = _.get( _.find( that.hoot.layers._layers, layer => layer.name === layerName ), 'id' ) || 0;
+                mapId     = _.get( _.find( that.hoot.layers.allLayers, layer => layer.name === layerName ), 'id' ) || 0;
 
             folderId = folderId || _.get( _.find( that._folders, folder => folder.name === pathName ), 'id' ) || 0;
 
