@@ -32,7 +32,7 @@ export default class TranslationsAddForm {
         this.nameInput        = d3.select( '#translationSaveName' );
         this.descriptionInput = d3.select( '#translationSaveDescription' );
         this.templateInput    = d3.select( '#translationTemplate' );
-        this.submitButton     = d3.select( '#saveTranslationBtn' );
+        this.submitButton     = d3.select( '#addTranslationBtn' );
     }
 
     handleFileDrop() {

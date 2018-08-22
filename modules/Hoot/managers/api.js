@@ -39,7 +39,7 @@ export default class API {
     }
 
     internalError( { response } ) {
-        if ( response.status >= 500 ) {
+        if ( response.status > 500 ) {
             return 'API is not responding. Please try again later.';
         } else {
             return false;
@@ -591,9 +591,7 @@ export default class API {
             .then( () => data )
             .then( () => 'Conflation job complete' )
             .catch( err => {
-                const message = 'Error during conflation! Please try again later.';
-
-                console.log( message, err );
+                const message = this.internalError( err ) || 'Error during conflation! Please try again later.';
 
                 return Promise.reject( message );
             } );

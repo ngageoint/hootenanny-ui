@@ -5,8 +5,8 @@
  *******************************************************************************************************/
 
 import _                 from 'lodash-es';
+import Hoot              from '../../../hoot';
 import TransAssistTagMap from './transAssistTagMap';
-import { tagInfo }       from '../../../../../data/index';
 
 export default class TransAssistMapping {
     constructor( instance ) {
@@ -80,9 +80,7 @@ export default class TransAssistMapping {
         this.attributesName = this.attributesDisplay
             .append( 'div' )
             .classed( 'attributes-name center strong', true )
-            .on( 'click', () => {
-                this.toggleAttributeList();
-            } );
+            .on( 'click', () => this.toggleAttributeList() );
 
         this.attributesList = this.attributesDisplay
             .append( 'div' )
@@ -211,19 +209,22 @@ export default class TransAssistMapping {
                 let tagKey       = d.key,
                     schemaOption = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
 
-                let values = tagInfo[ schemaOption ]
+                let values = Hoot.config.tagInfo[ schemaOption ]
                     .filter( val => val.key && val.key.toLowerCase() === tagKey.toLowerCase() );
 
                 let tagLookup = this.tagMapContainer
                     .insert( 'div', '.add-mapping-button' )
                     .classed( 'tag-lookup round fill-white keyline-all', true );
 
-                this.selectTag( tagLookup, values.length ? values[ 0 ] : { key: tagKey, value: [] } );
+                let tagMap = new TransAssistTagMap( this );
+
+                tagMap.createTagLookup();
+                tagMap.selectTag( tagLookup, values.length ? values[ 0 ] : { key: tagKey, value: [] } );
             } );
         }
 
         if ( d3.entries( this.jsonMapping[ this.layer ] ).some( d => d.value !== 'IGNORED' ) ) {
-            this.enableTranslate();
+            this.enableTranslateButton();
         }
     }
 
@@ -347,18 +348,16 @@ export default class TransAssistMapping {
         this.attributesSample.select( 'span' ).classed( 'hide', !listState );
     }
 
-    enableTranslate() {
+    enableTranslateButton() {
         if ( !this.actionButtonContainer.select( '.translate-button' ).empty() ) return;
 
-        this.actionButtonContainer
+        let translateButton = this.actionButtonContainer
             .append( 'div' )
             .classed( 'button-row', true )
             .append( 'button' )
             .attr( 'type', 'button' )
             .classed( 'translate-button primary big round _icon light conflate', true )
-            .append( 'span' )
-            .text( 'Save Translations' )
-            .on( 'click', () => {
+            .on( 'click', async () => {
                 let json   = JSON.stringify( this.jsonMapping, null, 4 ),
                     output = 'hoot.require(\'translation_assistant\')\n' +
                         '\n' +
@@ -383,10 +382,17 @@ export default class TransAssistMapping {
                     output = output.replace( 'var schema;', `var schema = ${ schema };` );
                 }
 
-                if ( window.confirm( 'Do you want to add this to internal translations list?' ) ) {
+                let message = 'Do you want to add this to internal translation list?',
+                    confirm = await Hoot.response.confirm( message );
+
+                if ( confirm ) {
                     this.instance.openSaveForm( output );
                 }
             } );
+
+        translateButton
+            .append( 'span' )
+            .text( 'Save Translations' );
     }
 
     validateMapping() {

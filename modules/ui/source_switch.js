@@ -6,12 +6,13 @@ import {
 import { t } from '../util/locale';
 import { modeBrowse } from '../modes';
 
+import Hoot from '../Hoot/hoot';
 
 export function uiSourceSwitch(context) {
     var keys;
 
 
-    function click() {
+    async function click() {
         d3_event.preventDefault();
 
         var osm = context.connection();
@@ -19,8 +20,11 @@ export function uiSourceSwitch(context) {
 
         if (context.inIntro()) return;
 
-        if (context.history().hasChanges() &&
-            !window.confirm(t('source_switch.lose_changes'))) return;
+        if (context.history().hasChanges() ) {
+            var confirmLoseChanges = await Hoot.response.confirm(t('source_switch.lose_changes'));
+
+            if (!confirmLoseChanges) return;
+        }
 
         var isLive = d3_select(this)
             .classed('live');

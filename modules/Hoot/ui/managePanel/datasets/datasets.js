@@ -157,23 +157,26 @@ export default class Datasets extends Tab {
      * @param d
      * @param layers
      */
-    deleteDataset( { d, layers } ) {
+    async deleteDataset( { d, layers } ) {
         let warningMsg = d.type === 'folder' ? 'folder and all data?' : 'datasets?';
 
-        if ( !window.confirm( 'Are you sure you want to remove the selected ' + warningMsg ) ) return;
+        let message = `Are you sure you want to remove the selected ${ warningMsg }`,
+            confirm = await Hoot.response.confirm( message );
 
-        // delete in parallel
-        Promise.all( _.map( layers, layer => {
-            let node = this.table.selectAll( `g[data-id="${ layer.id }"]` );
+        if ( confirm ) {
+            // delete in parallel
+            Promise.all( _.map( layers, layer => {
+                let node = this.table.selectAll( `g[data-id="${ layer.id }"]` );
 
-            node.select( 'rect' )
-                .classed( 'sel', false )
-                .style( 'fill', 'rgb(255,0,0)' );
+                node.select( 'rect' )
+                    .classed( 'sel', false )
+                    .style( 'fill', 'rgb(255,0,0)' );
 
-            return Hoot.api.deleteLayer( layer.name )
-                .then( () => Hoot.layers.removeLayer( layer.id ) );
+                return Hoot.api.deleteLayer( layer.name )
+                    .then( () => Hoot.layers.removeLayer( layer.id ) );
 
-        } ) ).then( () => Hoot.events.emit( 'render-dataset-table' ) );
+            } ) ).then( () => Hoot.events.emit( 'render-dataset-table' ) );
+        }
     }
 
     /**

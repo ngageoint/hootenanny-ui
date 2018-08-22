@@ -150,34 +150,31 @@ export default class AdvancedOptsControls {
         }
     }
 
-    cancel() {
+    async cancel() {
         if ( !_.differenceWith( this.getFields(), this.lastSetFields, _.isEqual ).length ) {
             this.panel.toggle();
             return;
         }
 
-        let message = 'All options will be reset to previously selected values. Are you sure you want to continue?';
+        let message = 'All options will be reset to previously selected values. Are you sure you want to continue?',
+            confirm = await Hoot.response.confirm( message );
 
-        Hoot.response.confirm( message )
-            .then( () => {
-                setTimeout( () => this.restoreFields(), this.transitionTime );
-                this.panel.toggle();
-            } );
-
-        //if ( !window.confirm( 'All options will be reset to previously selected values. Are you sure you want to continue?' ) )
-        //    return;
-        //
-        //setTimeout( () => this.restoreFields(), this.transitionTime );
-        //this.panel.toggle();
+        if ( confirm ) {
+            setTimeout( () => this.restoreFields(), this.transitionTime );
+            this.panel.toggle();
+        }
     }
 
-    saveOrCancel() {
+    async saveOrCancel() {
         if ( !_.differenceWith( this.getFields(), this.lastSetFields, _.isEqual ).length ) {
             this.panel.toggle();
             return;
         }
 
-        if ( !window.confirm( 'You have unsaved changes. Click OK to save, or cancel to reset to previously selected values.' ) ) {
+        let message = 'You have unsaved changes. Click <strong>OK to save</strong>, or <strong>cancel to reset</strong> options to previously selected values.',
+            confirm = await Hoot.response.confirm( message );
+
+        if ( !confirm ) {
             setTimeout( () => this.restoreFields(), this.transitionTime );
         } else {
             this.saveFields();
@@ -186,11 +183,13 @@ export default class AdvancedOptsControls {
         this.panel.toggle();
     }
 
-    reset() {
-        if ( !window.confirm( 'All options will be reset to their default values. Are you sure you want to continue?' ) )
-            return;
+    async reset() {
+        let message = 'All options will be reset to their default values. Are you sure you want to continue?',
+            confirm = await Hoot.response.confirm( message );
 
-        this.restoreFields( this.defaultFields );
+        if ( confirm ) {
+            this.restoreFields( this.defaultFields );
+        }
     }
 
     getFields() {

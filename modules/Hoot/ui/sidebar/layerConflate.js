@@ -63,8 +63,11 @@ class LayerConflate extends SidebarForm {
         actions.append( 'button' )
             .classed( 'button secondary round small strong', true )
             .text( 'Cancel' )
-            .on( 'click', () => {
-                if ( window.confirm( 'Cancel will remove any previously selected advanced options. Are you sure you want to cancel?' ) ) {
+            .on( 'click', async () => {
+                let message = 'All changes will be undone. Are you sure you want to cancel?',
+                    confirm = await Hoot.response.confirm( message );
+
+                if ( confirm ) {
                     this.toggle();
                 }
             } );
@@ -230,7 +233,10 @@ class LayerConflate extends SidebarForm {
             .then( msg => Hoot.response.alert( msg, 'success' ) )
             .then( () => Hoot.layers.refreshLayers() )
             .then( () => this.postConflation( params ) )
-            .catch( msg => Hoot.response.queue( msg, 'error' ) );
+            .catch( msg => {
+                Hoot.ui.sidebar.reset();
+                Hoot.response.alert( msg, 'error' );
+            } );
     }
 }
 

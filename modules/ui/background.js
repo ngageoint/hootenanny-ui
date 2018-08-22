@@ -25,6 +25,7 @@ import { uiTooltipHtml } from './tooltipHtml';
 import { utilCallWhenIdle } from '../util';
 import { tooltip } from '../util/tooltip';
 
+import Hoot from '../Hoot/hoot';
 
 export function uiBackground(context) {
     var key = t('background.key');
@@ -85,7 +86,7 @@ export function uiBackground(context) {
     }
 
 
-    function chooseBackground(d) {
+    async function chooseBackground(d) {
         if (d.id === 'custom' && !d.template()) {
             return editCustom();
         }
@@ -100,7 +101,10 @@ export function uiBackground(context) {
 
         if (d.extent && d.type === 'tms') {
             //ask if user wants to zoom to basemaps
-            if (window.confirm('Do you want to zoom to base layer?')) {
+            let message = 'Do you want to zoom to base layer?',
+                confirm = await Hoot.response.confirm(message);
+
+            if (confirm) {
                 context.extent(d.extent);
             }
         }

@@ -7,7 +7,7 @@
     border: 1px solid transparent;
     font-size: 13px;
     opacity: 0;
-    z-index:10;
+    z-index: 103;
     transform: translateX( -50px );
     animation: slide-out 300ms forwards;
 
@@ -48,6 +48,8 @@
 }
 
 .hoot-confirm {
+    z-index: 102;
+
     .confirm-message {
         margin-bottom: 20px;
     }

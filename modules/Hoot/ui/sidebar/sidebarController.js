@@ -147,11 +147,14 @@ class SidebarController {
     createDeleteButton() {
         this.deleteButton = this.controller.append( 'button' )
             .classed( 'delete-button icon-button keyline-left round-right inline _icon trash', true )
-            .on( 'click', d => {
+            .on( 'click', async d => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
-                if ( window.confirm( 'Are you sure you want to delete?' ) ) {
+                let message = 'Are you sure you want to delete?',
+                    confirm = await Hoot.response.confirm( message );
+
+                if ( confirm ) {
                     Hoot.layers.removeLoadedLayer( this.layerId );
                     Hoot.ui.sidebar.layerRemoved( d );
                 }

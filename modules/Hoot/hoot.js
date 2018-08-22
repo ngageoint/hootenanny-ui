@@ -11,6 +11,7 @@ import LayerManager    from './managers/layerManager';
 import EventManager    from './managers/eventManager';
 import UI              from './ui/init';
 import buildInfo       from './config/buildInfo.json';
+import { tagInfo }     from '../../data/index';
 
 class Hoot {
     constructor() {
@@ -21,6 +22,7 @@ class Hoot {
         this.events   = new EventManager();
 
         this.config = {
+            tagInfo,
             appInfo: [],
             exportSizeThreshold: null,
             ingestSizeThreshold: null,

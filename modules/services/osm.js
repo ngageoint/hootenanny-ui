@@ -408,6 +408,7 @@ export default {
 
 
     filterChanges: function( changes ) {
+        console.log( changes );
         let ways = _filter( _flatten( _map( changes, featArr => featArr ) ), feat => feat.type !== 'node' );
 
         return _reduce( changes, ( obj, featArr, type ) => {
@@ -456,6 +457,8 @@ export default {
         }
 
         let changesArr = this.filterChanges( changes );
+
+        console.log( changesArr );
 
         var that = this;
         var cid = _connectionID;

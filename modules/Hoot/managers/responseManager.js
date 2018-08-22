@@ -13,7 +13,15 @@ export default class ResponseManager {
     }
 
     alert( message, type ) {
-        let container = d3.select( '#id-sink' )
+        let parent;
+
+        if ( !d3.select( '#manage-panel' ).classed( 'hidden' ) ) {
+            parent = d3.select( 'body' );
+        } else {
+            parent = d3.select( '#id-sink' );
+        }
+
+        let container = parent
             .append( 'div' )
             .classed( `hoot-alert alert-${ type } show round`, true )
             .on( 'mouseover', () => this.handleMouseover( container ) )
@@ -46,7 +54,7 @@ export default class ResponseManager {
             modal
                 .append( 'div' )
                 .classed( 'confirm-message', true )
-                .text( message );
+                .html( message );
 
             let buttonContainer = modal
                 .append( 'div' )
@@ -58,6 +66,7 @@ export default class ResponseManager {
                 .text( 'Cancel' )
                 .on( 'click', () => {
                     overlay.remove();
+                    res( false );
                 } );
 
             buttonContainer
@@ -66,7 +75,7 @@ export default class ResponseManager {
                 .text( 'OK' )
                 .on( 'click', () => {
                     overlay.remove();
-                    res();
+                    res( true );
                 } );
         } );
     }

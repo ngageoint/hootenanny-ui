@@ -147,7 +147,7 @@ export default class ImportDatasetForm {
     /**
      * Update the file input's value with the name of the selected file
      */
-    handleMultipartChange() {
+    async handleMultipartChange() {
         this.fileListInput.selectAll( 'option' ).remove();
 
         let selectedVal  = this.typeInput.property( 'value' ),
@@ -164,6 +164,8 @@ export default class ImportDatasetForm {
                 zip: 0
             };
 
+        if ( !files.length ) return;
+
         for ( let i = 0; i < files.length; i++ ) {
             let currentFile = files[ i ],
                 fileName    = currentFile.name;
@@ -176,7 +178,7 @@ export default class ImportDatasetForm {
             }
         }
 
-        let valid = this.validateLoaded( selectedType, fileList, totalFileSize );
+        let valid = await this.validateLoaded( selectedType, fileList, totalFileSize );
 
         if ( !valid ) {
             this.formValid = false;
@@ -257,7 +259,8 @@ export default class ImportDatasetForm {
 
     validateLoaded( selectedType, fileList, totalFileSize ) {
         let ingestThreshold = Hoot.config.ingestSizeThreshold,
-            valid           = true;
+            valid           = true,
+            message;
 
         if ( selectedType === 'FILE' ) {
             _.forEach( fileList, file => {
@@ -269,7 +272,8 @@ export default class ImportDatasetForm {
             } );
 
             if ( !valid ) {
-                // TODO: alert – missing shapefile dependency. Import requires shp, shx and dbf.
+                message = 'Missing shapefile dependency. Import requires shp, shx and dbf.'
+                Hoot.response.alert( message, 'warning' );
                 return false;
             }
         }
@@ -277,15 +281,12 @@ export default class ImportDatasetForm {
         if ( totalFileSize > ingestThreshold ) {
             let thresholdInMb = Math.floor( ingestThreshold / 1000000 );
 
-            if ( !window.confirm( 'The total size of ingested files are greater than ingest threshold size of ' +
-                thresholdInMb + 'MB and it may have problem. Do you wish to continue?' ) ) {
+            message = `The total size of ingested files are greater than ingest threshold size of ${ thresholdInMb } MB and it may have problem. Do you wish to continue?`
 
-                // TODO: alert - total size of ingested files are greater than threshold
-                return false;
-            }
+            return Hoot.response.confirm( message );
+        } else {
+            return true;
         }
-
-        return true;
     }
 
     /**
