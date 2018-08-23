@@ -334,7 +334,7 @@ Hoot.tools = function (context) {
     function renderMergedLayer(layerName, mapid) {
 
         // Color tag-diff changes purple
-        context.hoot().replaceColor("tagchange", "purple");
+        context.hoot().replaceColor('tagchange', 'purple');
 
         //Get tags for loaded layer
         Hoot.model.REST('getMapTags', {mapId: mapid}, function (tags) {
