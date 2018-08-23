@@ -36,8 +36,12 @@
         left: initial;
     }
 
-    .save .tooltip {
-        white-space: nowrap;
+    //.save .tooltip {
+    //    white-space: nowrap;
+    //}
+
+    span.count {
+        margin-left: 80px;
     }
 }
 
@@ -98,8 +102,12 @@
 
 @media only screen and (max-width: 1160px) {
     #bar .limiter button {
-        & > span {
+        & > span.label {
             display: none !important;
+        }
+
+        span.count {
+            margin-left: 50px;
         }
 
         .icon.pre-text {
@@ -111,5 +119,9 @@
 @media only screen and (max-width: 990px) {
     #bar .limiter button {
         padding: 0 10px !important;
+
+        span.count {
+            margin-left: 40px;
+        }
     }
 }

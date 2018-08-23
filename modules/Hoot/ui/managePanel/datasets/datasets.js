@@ -163,7 +163,7 @@ export default class Datasets extends Tab {
         let warningMsg = d.type === 'folder' ? 'folder and all data?' : 'datasets?';
 
         let message = `Are you sure you want to remove the selected ${ warningMsg }`,
-            confirm = await Hoot.response.confirm( message );
+            confirm = await Hoot.message.confirm( message );
 
         if ( confirm ) {
             // delete in parallel

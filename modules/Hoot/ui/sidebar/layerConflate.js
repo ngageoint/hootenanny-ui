@@ -65,7 +65,7 @@ class LayerConflate extends SidebarForm {
             .text( 'Cancel' )
             .on( 'click', async () => {
                 let message = 'All changes will be undone. Are you sure you want to cancel?',
-                    confirm = await Hoot.response.confirm( message );
+                    confirm = await Hoot.message.confirm( message );
 
                 if ( confirm ) {
                     this.toggle();
@@ -183,6 +183,7 @@ class LayerConflate extends SidebarForm {
         data.GENERATE_REPORT    = this.generateReportInput.node().value;
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
         data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
+        //data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
         data.USER_EMAIL         = 'test@test.com';
 
         let gj = Hoot.context.layers().layer( 'gpx' );
@@ -229,14 +230,16 @@ class LayerConflate extends SidebarForm {
 
         this.loadingState( params );
 
-        Hoot.api.conflate( data )
-            .then( msg => Hoot.response.alert( msg, 'success' ) )
-            .then( () => Hoot.layers.refreshLayers() )
-            .then( () => this.postConflation( params ) )
-            .catch( msg => {
+        return Hoot.api.conflate( data )
+            .then( resp => Hoot.message.alert( resp ) )
+            .catch( err => {
                 Hoot.ui.sidebar.reset();
-                Hoot.response.alert( msg, 'error' );
-            } );
+                Hoot.message.alert( err );
+
+                return false;
+            } )
+            .then( () => Hoot.layers.refreshLayers() )
+            .then( () => this.postConflation( params ) );
     }
 }
 

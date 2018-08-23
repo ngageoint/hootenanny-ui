@@ -152,7 +152,7 @@ class SidebarController {
                 d3.event.preventDefault();
 
                 let message = 'Are you sure you want to delete?',
-                    confirm = await Hoot.response.confirm( message );
+                    confirm = await Hoot.message.confirm( message );
 
                 if ( confirm ) {
                     Hoot.layers.removeLoadedLayer( this.layerId );

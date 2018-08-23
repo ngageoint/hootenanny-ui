@@ -35,6 +35,22 @@ export default class API {
             headers: params.headers,
             data: params.data,
             params: params.params
+        } ).catch( err => {
+            let { response } = err;
+            let data, message, status, type;
+
+            if ( response ) {
+                data    = response.data;
+                message = response.message;
+                status  = response.status;
+                type    = 'error';
+            } else {
+                message = err.message;
+                status  = 500;
+                type    = 'error';
+            }
+
+            return Promise.reject( { data, message, status, type } );
         } );
     }
 
@@ -46,10 +62,6 @@ export default class API {
         }
     }
 
-    is404( { response } ) {
-        return response.status >= 400;
-    }
-
     /**
      * Recursively poll the backend to check the status of a job
      *
@@ -59,12 +71,19 @@ export default class API {
     statusInterval( jobId ) {
         return new Promise( ( res, rej ) => {
             this.intervals[ jobId ] = setInterval( async () => {
-                let { status } = await this.getJobStatus( jobId );
+                let data   = await this.getJobStatus( jobId ),
+                    status = data.status;
 
-                // TODO: error handling
-                if ( status !== 'running' ) {
+                if ( status === 'running' ) return;
+
+                if ( status === 'complete' ) {
                     clearInterval( this.intervals[ jobId ] );
-                    res( { status, jobId } );
+                    res( { data, type: 'success', status: 200 } );
+                } else if ( status === 'failed' ) {
+                    clearInterval( this.intervals[ jobId ] );
+                    rej( { data, type: 'error', status: 500 } );
+                } else {
+                    // TODO: handle warning
                 }
             }, this.queryInterval );
         } );
@@ -144,9 +163,12 @@ export default class API {
                 } );
             } )
             .catch( err => {
-                const message = this.internalError( err ) || 'Unable to retrieve layers';
+                let message, type;
 
-                return Promise.reject( message );
+                message = 'Unable to retrieve layers';
+                type    = 'error';
+
+                return Promise.reject( { message, type } );
             } );
     }
 
@@ -243,7 +265,19 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp => resp.data )
+            .catch( err => {
+                let { response } = err,
+                    message, status, type;
+
+                if ( response.status === 404 ) {
+                    message = `Layer ID = ${ mapId } does no exist! It may have possibly been removed.`;
+                    status  = response.status;
+                    type    = 'error';
+                }
+
+                return Promise.reject( { message, status, type } );
+            } );
     }
 
     getMbr( mapId ) {
@@ -575,7 +609,7 @@ export default class API {
      * Conflate layers together
      *
      * @param data
-     * @returns {Promise<string>}
+     * @returns {Promise<object>}
      */
     conflate( data ) {
         const params = {
@@ -588,12 +622,25 @@ export default class API {
 
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) )
-            .then( () => data )
-            .then( () => 'Conflation job complete' )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Conflation job complete',
+                    status: 200,
+                    type: resp.type
+                };
+            } )
             .catch( err => {
-                const message = this.internalError( err ) || 'Error during conflation! Please try again later.';
+                let message, status, type;
 
-                return Promise.reject( message );
+                status = err.status;
+
+                if ( status >= 500 ) {
+                    message = 'Error during conflation! Please try again later.';
+                    type    = err.type;
+                }
+
+                return Promise.reject( { message, status, type } );
             } );
     }
 

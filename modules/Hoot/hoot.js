@@ -4,22 +4,22 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/16/18
  *******************************************************************************************************/
 
-import API             from './managers/api';
-import ResponseManager from './managers/responseManager';
-import FolderManager   from './managers/folderManager';
-import LayerManager    from './managers/layerManager';
-import EventManager    from './managers/eventManager';
-import UI              from './ui/init';
-import buildInfo       from './config/buildInfo.json';
-import { tagInfo }     from '../../data/index';
+import API            from './managers/api';
+import MessageManager from './managers/messages/messageManager';
+import FolderManager  from './managers/folderManager';
+import LayerManager   from './managers/layerManager';
+import EventManager   from './managers/eventManager';
+import UI             from './ui/init';
+import buildInfo      from './config/buildInfo.json';
+import { tagInfo }    from '../../data/index';
 
 class Hoot {
     constructor() {
-        this.api      = new API( this );
-        this.response = new ResponseManager( this );
-        this.layers   = new LayerManager( this );
-        this.folders  = new FolderManager( this );
-        this.events   = new EventManager();
+        this.api     = new API( this );
+        this.message = new MessageManager( this );
+        this.layers  = new LayerManager( this );
+        this.folders = new FolderManager( this );
+        this.events  = new EventManager();
 
         this.config = {
             tagInfo,
@@ -57,7 +57,7 @@ class Hoot {
 
             info.forEach( d => this.config.appInfo.push( d ) );
         } catch ( err ) {
-            this.response.alert( err.message, 'error' );
+            this.response.alert( err );
         }
 
         // build info will always be available
@@ -71,8 +71,8 @@ class Hoot {
             this.config.exportSizeThreshold   = thresholds.export_threshold;
             this.config.ingestSizeThreshold   = thresholds.ingest_threshold;
             this.config.conflateSizeThreshold = thresholds.conflate_threshold;
-        } catch ( msg ) {
-            this.response.alert( msg, 'error' );
+        } catch ( err ) {
+            this.response.alert( err );
         }
     }
 }

@@ -37,13 +37,17 @@ export default class Layers {
      * Retrieve layers from database
      */
     async refreshLayers() {
-        this.allLayers          = await this.hoot.api.getLayers();
-        this.recentlyUsedLayers = JSON.parse( this.hoot.context.storage( 'recentlyUsedLayers' ) ) || [];
+        try {
+            this.allLayers          = await this.hoot.api.getLayers();
+            this.recentlyUsedLayers = JSON.parse( this.hoot.context.storage( 'recentlyUsedLayers' ) ) || [];
 
-        this.syncRecentlyUsedLayers();
-        this.hoot.events.emit( 'recent-layers-retrieved' );
+            this.syncRecentlyUsedLayers();
+            this.hoot.events.emit( 'recent-layers-retrieved' );
 
-        return this.allLayers;
+            return this.allLayers;
+        } catch ( err ) {
+            this.hoot.response.alert( err );
+        }
     }
 
     findBy( key, val ) {
@@ -101,52 +105,56 @@ export default class Layers {
     }
 
     async loadLayer( params ) {
-        let source      = this.getMapnikSource( params ),
-            mapId       = source.id,
-            tags        = await this.hoot.api.getTags( mapId ),
-            layerExtent = await this.layerExtent( mapId );
+        try {
+            let source      = this.getMapnikSource( params ),
+                mapId       = source.id,
+                tags        = await this.hoot.api.getTags( mapId ),
+                layerExtent = await this.layerExtent( mapId );
 
-        let layer = {
-            name: params.name,
-            id: source.id,
-            refType: params.refType,
-            color: params.color,
-            merged: params.merged || false,
-            layers: params.layers || [],
-            source: source,
-            extent: layerExtent,
-            polygon: layerExtent.polygon(),
-            tags: tags,
-            visible: true
-        };
+            let layer = {
+                name: params.name,
+                id: source.id,
+                refType: params.refType,
+                color: params.color,
+                merged: params.merged || false,
+                layers: params.layers || [],
+                source: source,
+                extent: layerExtent,
+                polygon: layerExtent.polygon(),
+                tags: tags,
+                visible: true
+            };
 
-        this.loadedLayers[ layer.id ] = layer;
+            this.loadedLayers[ layer.id ] = layer;
 
-        if ( layerExtent.toParam() !== '-180,-90,180,90' ) {
-            this.hoot.context.extent( layerExtent );
-        }
-
-        if ( !this.hootOverlay ) {
-            this.hootOverlay = this.hoot.context.layers().layer( 'hoot' );
-        }
-
-        this.hootOverlay.geojson( {
-            type: 'FeatureCollection',
-            features: [ {
-                type: 'Feature',
-                geometry: {
-                    type: 'LineString',
-                    coordinates: layerExtent.polygon()
-                }
-            } ],
-            properties: {
-                name: layer.name,
-                mapId: layer.id
+            if ( layerExtent.toParam() !== '-180,-90,180,90' ) {
+                this.hoot.context.extent( layerExtent );
             }
-        } );
 
-        this.hoot.context.background().addSource( source );
-        this.setLayerColor( mapId, layer.color );
+            if ( !this.hootOverlay ) {
+                this.hootOverlay = this.hoot.context.layers().layer( 'hoot' );
+            }
+
+            this.hootOverlay.geojson( {
+                type: 'FeatureCollection',
+                features: [ {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: layerExtent.polygon()
+                    }
+                } ],
+                properties: {
+                    name: layer.name,
+                    mapId: layer.id
+                }
+            } );
+
+            this.hoot.context.background().addSource( source );
+            this.setLayerColor( mapId, layer.color );
+        } catch ( err ) {
+            this.hoot.response.alert( err );
+        }
     }
 
     removeLayer( id ) {

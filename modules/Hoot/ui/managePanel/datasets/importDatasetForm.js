@@ -273,7 +273,7 @@ export default class ImportDatasetForm {
 
             if ( !valid ) {
                 message = 'Missing shapefile dependency. Import requires shp, shx and dbf.'
-                Hoot.response.alert( message, 'warning' );
+                Hoot.message.alert( message, 'warning' );
                 return false;
             }
         }
@@ -283,7 +283,7 @@ export default class ImportDatasetForm {
 
             message = `The total size of ingested files are greater than ingest threshold size of ${ thresholdInMb } MB and it may have problem. Do you wish to continue?`
 
-            return Hoot.response.confirm( message );
+            return Hoot.message.confirm( message );
         } else {
             return true;
         }

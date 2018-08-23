@@ -1,44 +1,65 @@
 /*******************************************************************************************************
- * File: responseManager.js
+ * File: messageManager.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/16/18
  *******************************************************************************************************/
 
-export default class ResponseManager {
+import Alert from './alert';
+
+export default class MessageManager {
     constructor( hoot ) {
         this.hoot = hoot;
 
-        this.displayTime = 8000;
-        this.animateTime = 500;
+        this.messageQueue = [];
+        this.showing      = [];
+        this.interval     = null;
+        this.intervalTime = 500;
     }
 
-    alert( message, type ) {
-        let parent;
+    alert( params ) {
+        let alert = new Alert( params );
 
-        if ( !d3.select( '#manage-panel' ).classed( 'hidden' ) ) {
-            parent = d3.select( 'body' );
-        } else {
-            parent = d3.select( '#id-sink' );
+        this.messageQueue.push( alert );
+
+        if ( !this.interval ) {
+            this.interval = setInterval( () => this.sendAlerts(), this.intervalTime );
+        }
+    }
+
+    sendAlerts() {
+        if ( !this.showing.length ) {
+            this.createAlertContainer();
         }
 
-        let container = parent
+        if ( this.messageQueue.length ) {
+            let alert = this.messageQueue.shift();
+
+            alert.send();
+
+            alert.on( 'destroy', alert => this.updateShowing( alert ) );
+
+            this.showing.push( alert );
+        } else {
+            clearInterval( this.interval );
+        }
+    }
+
+    updateShowing( alert ) {
+        this.showing.splice( this.showing.indexOf( alert ), 1 );
+
+        if ( !this.showing.length ) {
+            this.container.remove();
+        }
+    }
+
+    createAlertContainer() {
+        let parent;
+
+        parent = d3.select( 'body' );
+
+        this.container = parent
             .append( 'div' )
-            .classed( `hoot-alert alert-${ type } show round`, true )
-            .on( 'mouseover', () => this.handleMouseover( container ) )
-            .on( 'mouseout', () => this.handleMouseout( container ) );
-
-        container
-            .append( 'button' )
-            .attr( 'type', 'button' )
-            .classed( 'close pointer hidden', true )
-            .text( '×' )
-            .on( 'click', () => this.destroy( container ) );
-
-        container
-            .append( 'span' )
-            .text(  message );
-
-        this.autoHide( container );
+            .classed( 'alert-container', true );
     }
 
     confirm( message ) {
@@ -78,36 +99,5 @@ export default class ResponseManager {
                     res( true );
                 } );
         } );
-    }
-
-    autoHide( container ) {
-        this.hideTimeout = setTimeout( () => this.destroy( container ), this.displayTime );
-    }
-
-    clearAutoHide() {
-        clearTimeout( this.hideTimeout );
-    }
-
-    handleMouseover( container ) {
-        container
-            .select( '.close' )
-            .classed( 'hidden', false );
-
-        this.clearAutoHide();
-    }
-
-    handleMouseout( container ) {
-        container
-            .select( '.close' )
-            .classed( 'hidden', true );
-
-        this.autoHide( container );
-    }
-
-    destroy( container ) {
-        container.classed( 'show', false );
-
-        setTimeout( () => container.remove(), this.animateTime );
-        this.clearAutoHide();
     }
 }

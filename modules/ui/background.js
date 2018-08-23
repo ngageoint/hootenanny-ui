@@ -102,7 +102,7 @@ export function uiBackground(context) {
         if (d.extent && d.type === 'tms') {
             //ask if user wants to zoom to basemaps
             let message = 'Do you want to zoom to base layer?',
-                confirm = await Hoot.response.confirm(message);
+                confirm = await Hoot.message.confirm(message);
 
             if (confirm) {
                 context.extent(d.extent);

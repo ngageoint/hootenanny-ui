@@ -16,8 +16,7 @@ import LayerReview   from './layerReview';
  * @constructor
  */
 export default class Sidebar {
-    constructor( Hoot ) {
-        this.hoot        = Hoot;
+    constructor() {
         this.iDSidebar   = d3.select( '#sidebar' );
 
         this.forms = {};

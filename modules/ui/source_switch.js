@@ -21,7 +21,7 @@ export function uiSourceSwitch(context) {
         if (context.inIntro()) return;
 
         if (context.history().hasChanges() ) {
-            var confirmLoseChanges = await Hoot.response.confirm(t('source_switch.lose_changes'));
+            var confirmLoseChanges = await Hoot.message.confirm(t('source_switch.lose_changes'));
 
             if (!confirmLoseChanges) return;
         }

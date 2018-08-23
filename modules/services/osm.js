@@ -312,7 +312,7 @@ export default {
             }
         }
 
-        //We don't authenticate against HootOld services
+        //We don't authenticate against Hoot services
         if (!isUrlHoot(path) && this.authenticated()) {
             return oauth.xhr({ method: 'GET', path: path }, done);
         } else {

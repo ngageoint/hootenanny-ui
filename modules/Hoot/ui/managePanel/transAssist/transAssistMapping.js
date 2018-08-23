@@ -383,7 +383,7 @@ export default class TransAssistMapping {
                 }
 
                 let message = 'Do you want to add this to internal translation list?',
-                    confirm = await Hoot.response.confirm( message );
+                    confirm = await Hoot.message.confirm( message );
 
                 if ( confirm ) {
                     this.instance.openSaveForm( output );

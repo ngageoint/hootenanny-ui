@@ -13,8 +13,8 @@ export default class UI {
     render() {
         Promise.all( [
             new Navbar().render(),
-            new Sidebar( this.hoot ).render(),
-            new ManagePanel( this.hoot ).render(),
+            new Sidebar().render(),
+            new ManagePanel().render(),
             new Conflicts( d3.select( '#content' ) )
         ] ).then( modules => {
             this.navbar  = modules[ 0 ];

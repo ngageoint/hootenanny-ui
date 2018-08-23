@@ -157,7 +157,7 @@ export default class AdvancedOptsControls {
         }
 
         let message = 'All options will be reset to previously selected values. Are you sure you want to continue?',
-            confirm = await Hoot.response.confirm( message );
+            confirm = await Hoot.message.confirm( message );
 
         if ( confirm ) {
             setTimeout( () => this.restoreFields(), this.transitionTime );
@@ -172,7 +172,7 @@ export default class AdvancedOptsControls {
         }
 
         let message = 'You have unsaved changes. Click <strong>OK to save</strong>, or <strong>cancel to reset</strong> options to previously selected values.',
-            confirm = await Hoot.response.confirm( message );
+            confirm = await Hoot.message.confirm( message );
 
         if ( !confirm ) {
             setTimeout( () => this.restoreFields(), this.transitionTime );
@@ -185,7 +185,7 @@ export default class AdvancedOptsControls {
 
     async reset() {
         let message = 'All options will be reset to their default values. Are you sure you want to continue?',
-            confirm = await Hoot.response.confirm( message );
+            confirm = await Hoot.message.confirm( message );
 
         if ( confirm ) {
             this.restoreFields( this.defaultFields );
