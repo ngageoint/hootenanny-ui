@@ -17,7 +17,7 @@
     animation: slide-out 500ms forwards;
 
     &.show {
-        animation: slide-in 800ms forwards;
+        animation: slide-in 500ms forwards;
         animation-delay: 100ms;
     }
 
@@ -131,7 +131,6 @@
     100% {
         transform: translateX(0);
         opacity: 1;
-        //width: auto;
     }
 }
 
