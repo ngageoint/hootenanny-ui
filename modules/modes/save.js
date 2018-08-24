@@ -237,7 +237,7 @@ export function modeSave(context) {
             }
             function formatUser(d) {
                 return '<a href="' + osm.userURL(d) + '" target="_blank">' + d + '</a>';
-            }0
+            }
             function entityName(entity) {
                 return utilDisplayName(entity) || (utilDisplayType(entity.id) + ' ' + entity.id);
             }
