@@ -23,7 +23,8 @@ export default class FormFactory {
      */
     generateForm( selector, formId, metadata ) {
         let container = this.createContainer( selector ),
-            formModal = this.createFormModal( container, formId ),
+            wrapper   = this.createWrapper( container ),
+            formModal = this.createFormModal( wrapper, formId ),
             form      = this.createForm( container, formModal, metadata.title );
 
         this.createFieldSets( form, metadata.form );
@@ -48,16 +49,21 @@ export default class FormFactory {
         return overlay;
     }
 
+    createWrapper( container ) {
+        return container
+            .append( 'div' )
+            .classed( 'wrapper', true );
+    }
+
     /**
      * Create modal
      *
-     * @param container
      * @returns {d3} - form modal
      */
-    createFormModal( container, formId ) {
-        return container.append( 'div' )
+    createFormModal( wrapper, formId ) {
+        return wrapper.append( 'div' )
             .attr( 'id', formId )
-            .classed( 'contain col4 hoot-menu fill-white round modal', true );
+            .classed( 'contain hoot-menu fill-white round modal', true );
     }
 
     /**

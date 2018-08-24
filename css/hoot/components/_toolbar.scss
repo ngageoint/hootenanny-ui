@@ -36,10 +36,6 @@
         left: initial;
     }
 
-    //.save .tooltip {
-    //    white-space: nowrap;
-    //}
-
     span.count {
         margin-left: 80px;
     }
@@ -101,6 +97,10 @@
 }
 
 @media only screen and (max-width: 1160px) {
+    #bar {
+        left: 300px;
+    }
+
     #bar .limiter button {
         & > span.label {
             display: none !important;

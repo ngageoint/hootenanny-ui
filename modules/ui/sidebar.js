@@ -18,7 +18,7 @@ export function uiSidebar(context) {
 
         var inspectorWrap = selection
             .append('div')
-            .attr('class', 'inspector-hidden inspector-wrap fr');
+            .attr('class', 'inspector-hidden inspector-wrap');
 
         var layerMenuWrap = selection
             .append('div')

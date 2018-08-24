@@ -73,6 +73,10 @@ export default class Sidebar {
         this.createWrapper();
         this.createForms();
 
+        //this.container
+        //    .append( 'div' )
+        //    .classed( 'cover-bar', true );
+
         this.listen();
 
         return this;

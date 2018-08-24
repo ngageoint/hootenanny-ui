@@ -63,20 +63,17 @@ export default class ManagePanel {
     /**
      * Toggle tab body into view
      *
-     * @param d - node data
+     * @param id - panel id
      */
-    toggleTab( d ) {
-        this.activeId  = d3.select( d ).attr( 'data-id' );
-        let activeBody = d3.select( this.activeId ).node();
+    toggleTab( id ) {
+        d3.selectAll( '.panel-body' ).classed( 'active', false );
+        d3.select( '#' + id ).classed( 'active', true );
 
-        this.panel.node()
-            .appendChild( activeBody );
-
-        this.panelSidebar.selectAll( '.tab-header' )
+        this.panelSidebar
+            .selectAll( '.tab-header' )
             .classed( 'strong', false );
 
-        d3.select( d )
-            .classed( 'strong', true );
+        d3.select( `[data-id="#${id}"` ).classed( 'strong', true );
     }
 
     listen() {

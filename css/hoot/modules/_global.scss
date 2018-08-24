@@ -12,16 +12,17 @@
 }
 
 body,
-html {
-    overflow: auto;
-}
-
-body,
 input,
 textarea {
     color: $dark2;
     font: normal 13px/1.6667 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
+}
+
+@media only screen and (max-width: 1160px) {
+    body {
+        font: normal 12px/1.6667 'Helvetica Neue', Arial, sans-serif;
+    }
 }
 
 h4, h5 {

@@ -78,6 +78,7 @@ export function uiTools( context ) {
 
         toolsToggle
             .append( 'span' )
+            .classed( 'label', true )
             .text( 'Tools' );
 
         toolsMenu = d3.select( '.limiter' )
@@ -172,7 +173,12 @@ export function uiTools( context ) {
         $toolsToggle.one( 'click', () => {
             if ( toolsToggle.text() === 'Clear' ) {
                 d3.select( '.data-layer-measure' ).selectAll( 'g' ).remove();
-                toolsToggle.text( 'Tools' );
+                toolsToggle
+                    .text( '' )
+                    .call( svgIcon( '#iD-icon-tools', 'pre-text' ) )
+                    .append( 'span' )
+                    .classed( 'label', true )
+                    .text( 'Tools' );
 
                 initDropdown();
             } else {

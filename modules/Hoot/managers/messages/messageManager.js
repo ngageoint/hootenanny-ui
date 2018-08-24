@@ -68,9 +68,13 @@ export default class MessageManager {
                 .append( 'div' )
                 .classed( 'hoot-confirm overlay confirm-overlay', true );
 
-            let modal = overlay
+            let wrapper = overlay
                 .append( 'div' )
-                .classed( 'contain col4 hoot-menu fill-white round modal', true );
+                .classed( 'wrapper', true );
+
+            let modal = wrapper
+                .append( 'div' )
+                .classed( 'contain hoot-menu fill-white round modal', true );
 
             modal
                 .append( 'div' )

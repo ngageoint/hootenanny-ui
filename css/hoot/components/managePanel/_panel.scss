@@ -1,27 +1,33 @@
 #manage-panel {
-    position: absolute;
+    display: flex;
+    justify-content: flex-start;
     width: 100%;
     height: 100%;
     z-index: 11;
 
     .panel-body {
-        position: absolute;
+        position: relative;
+        display: none;
         width: calc(100vw - 220px);
         min-width: 548px;
-        height: 100%;
-        left: 220px;
-        padding: 20px;
+        height: calc(100% - 60px);
+
+        &.active {
+            display: block;
+        }
     }
 
     .panel-wrapper {
         position: relative;
-        padding-top: 10px;
+        height: 100%;
+        padding: 30px 20px;
+        overflow-y: auto;
     }
 }
 
 #manage-sidebar-menu {
-    position: absolute;
+    position: relative;
     width: 220px;
-    height: 100%;
+    height: calc(100% - 60px);
     font-size: 14px;
 }

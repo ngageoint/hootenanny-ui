@@ -191,3 +191,9 @@
         opacity: 0;
     }
 }
+
+@media only screen and (max-width: 1160px) {
+    .alert-message {
+        font-size: 12px;
+    }
+}

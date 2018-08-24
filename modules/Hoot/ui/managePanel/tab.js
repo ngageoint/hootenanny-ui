@@ -4,8 +4,6 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import Hoot from '../../hoot';
-
 /**
  * Base class that all other managePanel in the settings panel extends from
  */
@@ -26,9 +24,7 @@ export default class Tab {
             .append( 'div' )
             .classed( 'tab-header pad1y center', true )
             .attr( 'data-id', `#${this.id}` )
-            .on( 'click', function() {
-                Hoot.events.emit( 'tab-toggle', this );
-            } );
+            .on( 'click', () => this.toggle() );
 
         this.tabHeader
             .append( 'label' )
@@ -44,5 +40,13 @@ export default class Tab {
             .classed( 'panel-wrapper', true );
 
         return this;
+    }
+
+    toggle() {
+        d3.selectAll( '.tab-header' ).classed( 'strong', false );
+        d3.selectAll( '.panel-body' ).classed( 'active', false );
+
+        this.tabHeader.classed( 'strong', true );
+        this.panelBody.classed( 'active', true );
     }
 }

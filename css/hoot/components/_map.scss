@@ -109,7 +109,6 @@ path.line {
 
     &.shadow {
         stroke-width: 3;
-        stroke-opacity: 0;
 
         &.hover {
             stroke-opacity: .9;
@@ -219,4 +218,15 @@ path.line {
     .coordinates {
         cursor: pointer;
     }
+}
+
+@media only screen and (max-width: 1160px) {
+    #content {
+        width: calc(100% - 300px);
+        left: 300px;
+    }
+}
+
+@media only screen and (max-width: 990px) {
+
 }

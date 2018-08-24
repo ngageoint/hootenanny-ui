@@ -75,6 +75,9 @@ export default class Datasets extends Tab {
     render() {
         super.render();
 
+        // automatically show this panel on first load
+        this.toggle();
+
         let buttonContainer = this.panelWrapper
             .append( 'div' )
             .classed( 'dataset-buttons flex', true )
