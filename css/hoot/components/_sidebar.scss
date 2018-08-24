@@ -289,7 +289,7 @@
         color: $dark;
 
         tr {
-            word-break: break-all;
+            word-break: break-word;
         }
 
         td {
@@ -355,6 +355,10 @@
 
     .sidebar-form .toggle-button {
         font-size: 13px;
+
+        &::before {
+            margin-left: -15px;
+        }
     }
 
     .layer-add {

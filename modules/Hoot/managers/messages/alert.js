@@ -43,6 +43,7 @@ export default class Alert extends EventEmitter {
             .html( this.message );
 
         if ( this.data ) {
+            this.container.classed( 'has-data', true );
             this.createDetails();
         }
 
@@ -120,7 +121,7 @@ export default class Alert extends EventEmitter {
             .select( '.close' )
             .classed( 'hidden', true );
 
-        if ( !this.details.classed( 'show' ) ) {
+        if ( this.details && !this.details.classed( 'show' ) ) {
             this.autoHide();
         }
     }

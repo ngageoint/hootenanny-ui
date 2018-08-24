@@ -21,6 +21,10 @@
         animation-delay: 200ms;
     }
 
+    &.has-data {
+        width: auto;
+    }
+
     .close {
         position: absolute;
         width: auto;
@@ -92,7 +96,7 @@
     color: #721c24;
 }
 
-.alert-warning {
+.alert-warn {
     background-color: #fff3cd;
     border-color: #ffeeba;
     color: #856404;
@@ -127,7 +131,7 @@
     100% {
         transform: translateX(0);
         opacity: 1;
-        width: auto;
+        //width: auto;
     }
 }
 
@@ -147,7 +151,6 @@
     0% {
         visibility: visible;
         margin-top: 0;
-        //width: auto;
     }
 
     20% {
@@ -168,7 +171,6 @@
         margin-top: 10px;
         visibility: visible;
         opacity: 1;
-        //width: auto;
     }
 }
 
