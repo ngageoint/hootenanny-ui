@@ -63,9 +63,13 @@
         padding: 15px;
         box-shadow: 0 1px 10px 0 $light2;
 
-        h3 {
-            margin: 0;
+        .title {
+            font-size: 17px;
+            font-weight: bold;
         }
+        //h3 {
+        //    margin: 0;
+        //}
     }
 
     .advanced-opts-reset {
@@ -166,6 +170,26 @@
         .tooltip-inner {
             background-color: #ccc;
             border: 1px solid #F37676;
+        }
+    }
+}
+
+@media only screen and (max-width: 1160px) {
+    #advanced-opts-panel {
+        & > div {
+            position: absolute;
+            width: 300px;
+        }
+
+        &.visible {
+            width: 300px;
+            visibility: visible;
+            transition: width 250ms ease-in-out;
+        }
+
+        .advanced-opts-header .title {
+            font-size: 14px;
+            font-weight: bold;
         }
     }
 }

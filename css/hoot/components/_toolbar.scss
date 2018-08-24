@@ -3,6 +3,7 @@
     top: 60px;
     left: 400px;
     padding: 10px;
+    min-width: auto;
 
     .spacer {
         width: 0;
@@ -15,10 +16,14 @@
     }
 
 
-    .button-wrap button {
-        width: auto;
-        padding: 0 20px;
-        float: none;
+    .button-wrap {
+        white-space: nowrap;
+
+        button {
+            width: auto;
+            padding: 0 20px;
+            float: none;
+        }
     }
 
     button[disabled] {
@@ -116,7 +121,11 @@
     }
 }
 
-@media only screen and (max-width: 990px) {
+@media only screen and (max-width: 900px) {
+    #bar {
+        left: 250px;
+    }
+
     #bar .limiter button {
         padding: 0 10px !important;
 

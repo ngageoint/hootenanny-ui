@@ -71,14 +71,18 @@ export default class AdvancedOpts {
     }
 
     createHeader() {
-        let header = this.form.append( 'div' )
+        let header = this.form
+            .append( 'div' )
             .classed( 'advanced-opts-header big keyline-bottom flex justify-between align-center', true );
 
-        header.append( 'h3' )
+        header
+            .append( 'div' )
+            .classed( 'title', true )
             .text( 'Advanced Conflation Options' );
 
         // reset button
-        header.append( 'div' )
+        header
+            .append( 'div' )
             .append( 'button' )
             .classed( 'advanced-opts-reset button secondary strong', true )
             .text( 'Reset' )
