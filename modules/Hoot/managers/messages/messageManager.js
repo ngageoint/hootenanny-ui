@@ -41,6 +41,7 @@ export default class MessageManager {
             this.showing.push( alert );
         } else {
             clearInterval( this.interval );
+            this.interval = null;
         }
     }
 

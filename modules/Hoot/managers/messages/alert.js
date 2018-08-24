@@ -14,7 +14,7 @@ export default class Alert extends EventEmitter {
         this.message = message;
         this.type    = type;
 
-        this.displayTime = 10000;
+        this.displayTime = 5000;
         this.animateTime = 500;
         this.hideTimeout = null;
     }
@@ -43,6 +43,7 @@ export default class Alert extends EventEmitter {
             .html( this.message );
 
         if ( this.data ) {
+            this.displayTime = 10000;
             this.container.classed( 'has-data', true );
             this.createDetails();
         }
@@ -129,7 +130,11 @@ export default class Alert extends EventEmitter {
     destroy() {
         this.container.classed( 'show', false );
 
-        setTimeout( () => this.container.remove(), this.animateTime );
+        setTimeout( () => {
+            this.container.remove();
+            this.emit( 'destroy' );
+        }, this.animateTime );
+
         this.clearAutoHide();
     }
 }
