@@ -202,5 +202,9 @@ export default class Sidebar {
     listen() {
         Hoot.events.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
         Hoot.events.on( 'layer-merged', () => this.layerMerged() );
+
+        d3.select( window ).on( 'resize', () => {
+            d3.select( '#bar' ).style( 'left', this.iDSidebar.node().clientWidth + 'px' );
+        } );
     }
 }
