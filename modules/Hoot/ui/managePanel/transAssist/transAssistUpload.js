@@ -136,7 +136,7 @@ export default class TransAssistUpload {
             input.value = null;
 
             let upload     = await Hoot.api.uploadSchemaData( type, formData ),
-                attrValues = await Hoot.api.getSchemaAttrValues( upload );
+                attrValues = await Hoot.api.getSchemaAttrValues( upload.jobId );
 
             return this.convertUniqueValues( attrValues );
 

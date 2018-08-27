@@ -78,7 +78,7 @@ export default class API {
 
                 if ( status === 'complete' ) {
                     clearInterval( this.intervals[ jobId ] );
-                    res( { data, type: 'success', status: 200 } );
+                    res( { data, type: 'success', status: 200, jobId } );
                 } else if ( status === 'failed' ) {
                     clearInterval( this.intervals[ jobId ] );
                     rej( { data, type: 'error', status: 500 } );
@@ -429,7 +429,15 @@ export default class API {
 
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobId ) )
-            .then( resp => resp.jobId );
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Schema data successfully uploaded',
+                    status: 200,
+                    type: resp.type,
+                    jobId: resp.jobId
+                };
+            } );
     }
 
     uploadBasemap( data ) {
