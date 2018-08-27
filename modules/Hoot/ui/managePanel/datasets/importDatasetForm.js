@@ -332,7 +332,7 @@ export default class ImportDatasetForm {
         if ( this.formType === 'single' ) {
             data = {
                 NONE_TRANSLATION: translation.NONE === 'true',
-                TRANSLATION: translation.PATH,
+                TRANSLATION: translation.DESCRIPTION,
                 INPUT_TYPE: importType.value,
                 INPUT_NAME: this.layerNameInput.property( 'value' ),
                 formData: this.getFormData( this.fileIngest.node().files )
@@ -361,7 +361,7 @@ export default class ImportDatasetForm {
 
                 return {
                     NONE_TRANSLATION: translation.NONE === 'true',
-                    TRANSLATION: translation.PATH,
+                    TRANSLATION: translation.DESCRIPTION,
                     INPUT_TYPE: importType.value,
                     INPUT_NAME: name,
                     formData: this.getFormData( importFiles )

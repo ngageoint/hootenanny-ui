@@ -135,8 +135,10 @@ export default class TransAssistUpload {
             // if the same files/folder is selected twice in a row
             input.value = null;
 
-            let upload     = await Hoot.api.uploadSchemaData( type, formData ),
-                attrValues = await Hoot.api.getSchemaAttrValues( upload.jobId );
+            let resp       = await Hoot.api.uploadSchemaData( type, formData ),
+                attrValues = await Hoot.api.getSchemaAttrValues( resp.jobId );
+
+            Hoot.message.alert( resp );
 
             return this.convertUniqueValues( attrValues );
 

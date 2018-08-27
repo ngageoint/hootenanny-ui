@@ -57,7 +57,7 @@ class Hoot {
 
             info.forEach( d => this.config.appInfo.push( d ) );
         } catch ( err ) {
-            this.response.alert( err );
+            this.message.alert( err );
         }
 
         // build info will always be available
@@ -72,7 +72,7 @@ class Hoot {
             this.config.ingestSizeThreshold   = thresholds.ingest_threshold;
             this.config.conflateSizeThreshold = thresholds.conflate_threshold;
         } catch ( err ) {
-            this.response.alert( err );
+            this.message.alert( err );
         }
     }
 }

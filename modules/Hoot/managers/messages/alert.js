@@ -33,7 +33,7 @@ export default class Alert extends EventEmitter {
             .text( '×' )
             .on( 'click', () => {
                 this.destroy( this.container );
-                this.emit( 'destroy', this );
+                //this.emit( 'destroy', this );
             } );
 
         this.container

@@ -390,6 +390,7 @@ export default class API {
      * @returns {Promise} - request
      */
     uploadDataset( data ) {
+        console.log( data );
         if ( !data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME ) {
             return false;
         }
@@ -408,7 +409,22 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => this.statusInterval( resp.data[ 0 ].jobid ) );
+            .then( resp => this.statusInterval( resp.data[ 0 ].jobid ) )
+            .then( resp => {
+                console.log( resp );
+                return Promise.resolve( {
+                    data: resp.data,
+                    message: 'Dataset uploaded',
+                    status: 200,
+                    type: resp.type,
+                    jobId: resp.jobId
+                } );
+            } )
+            .catch( err => {
+                console.log( err );
+                return Promise.reject( 'unable to upload' );
+                // TODO: handle error
+            } );
     }
 
     /**
@@ -432,11 +448,25 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Schema data successfully uploaded',
+                    message: 'Schema data uploaded',
                     status: 200,
                     type: resp.type,
                     jobId: resp.jobId
                 };
+            } )
+            .catch( err => {
+                let message, status, type;
+
+                status = err.status;
+                type   = err.type;
+
+                if ( status >= 500 ) {
+                    message = 'Error during conflation! Please try again later.';
+                } else {
+                    message = 'Error while uploading schema data!';
+                }
+
+                return Promise.reject( { message, status, type } );
             } );
     }
 
