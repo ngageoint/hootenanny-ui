@@ -266,14 +266,13 @@ export function d3combobox() {
                 .on('click', accept)
                 .order();
 
-
             var node = attachTo ? attachTo.node() : input.node();
             var rect = node.getBoundingClientRect();
 
             wrapper
                 .style('left', (rect.left + 5) + 'px')
                 .style('width', (rect.width - 10) + 'px')
-                .style('top', rect.height + rect.top + 'px');
+                .style('top', rect.height + rect.top - 60 + 'px');
         }
 
         function select(d, i) {
