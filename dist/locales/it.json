@@ -21,6 +21,11 @@
                 "description": "Aggiungi alla mappa ristoranti, monumenti, cassette postali o altri punti.",
                 "tail": "Clicca sulla mappa per inserire un punto."
             },
+            "add_note": {
+                "title": "Nota",
+                "description": "Hai trovato un errore? Segnalalo agli altri mappatori.",
+                "tail": "Clicca sulla mappa per aggiungere una nota."
+            },
             "browse": {
                 "title": "Naviga",
                 "description": "Muovi ed ingrandisci la mappa."
@@ -40,7 +45,8 @@
                 "annotation": {
                     "point": "Aggiunto un punto.",
                     "vertex": "Aggiunto un nodo ad una strada.",
-                    "relation": "Aggiunta una relazione."
+                    "relation": "Aggiunta una relazione.",
+                    "note": "Una nota aggiunta."
                 }
             },
             "start": {
@@ -270,7 +276,7 @@
                 }
             },
             "reverse": {
-                "title": "Inverti Direzione",
+                "title": "Inverti direzione",
                 "description": "Inverti il senso di direzione di questa linea.",
                 "key": "V",
                 "annotation": "Cambiato verso ad una linea."
@@ -297,6 +303,14 @@
                     "create": "Limitazione aggiunta",
                     "delete": "Limitazione rimossa"
                 }
+            },
+            "detach_node": {
+                "title": "Stacca",
+                "key": "E",
+                "description": "Stacca questo nodo da linee/aree.",
+                "annotation": "Un nodo staccato da una linea/area genitore.",
+                "restriction": "Questo nodo non può essere staccato perché ciò danneggerebbe una relazione “{relation}”.",
+                "connected_to_hidden": "Questo nodo non può essere staccato perché è collegato ad un elemento nascosto."
             }
         },
         "restriction": {
@@ -352,8 +366,8 @@
             "localized_translation_name": "Nome"
         },
         "zoom_in_edit": "Ingrandisci per modificare",
-        "login": "accedi",
-        "logout": "esci",
+        "login": "Accedi",
+        "logout": "Esci",
         "loading_auth": "Connettendomi ad OpenStreetMap...",
         "report_a_bug": "Segnala un bug",
         "help_translate": "Aiuta nelle traduzioni",
@@ -416,7 +430,12 @@
                 "edited_by": "Modificato da",
                 "changeset": "Gruppo di modifiche",
                 "unknown": "Sconosciuto",
-                "link_text": "Cronologia su openstreetmap.org"
+                "link_text": "Cronologia su openstreetmap.org",
+                "note_no_history": "Nessuna cronologia (nota nuova)",
+                "note_comments": "Commenti",
+                "note_created_date": "Data di creazione",
+                "note_created_user": "Creata da",
+                "note_link_text": "Nota su openstreetmap.org"
             },
             "location": {
                 "key": "L",
@@ -446,7 +465,8 @@
             "vertex": "vertice",
             "line": "linea",
             "area": "area",
-            "relation": "relazione"
+            "relation": "relazione",
+            "note": "nota"
         },
         "geocoder": {
             "search": "Cerca in tutto il mondo...",
@@ -509,8 +529,6 @@
             "best_imagery": "Migliore sorgente di immagini per questo luogo",
             "switch": "Ritorna a questo sfondo",
             "custom": "Personalizzato",
-            "custom_button": "Modifica sfondo personalizzato",
-            "custom_prompt": "Inserisci un modello di URL per i tasselli. Sono validi i valori:\n- {zoom} oppure {z}, {x}, {y} per il modello dei tasselli Z/X/Y\n- {-y} oppure {ty} per le coordinate Y in stile TMS rovesciato\n- {u} per il modello QuadTile\n- {switch:a,b,c} per il multiplexing del server DNS\n\nEsempio:\n{example}",
             "overlays": "Livelli sovrapposti",
             "imagery_source_faq": "Informazioni sulle immagini satellitari / Segnala un problema",
             "reset": "reset",
@@ -536,6 +554,10 @@
                 "osm": {
                     "tooltip": "Dati delle mappe da OpenStreetMap",
                     "title": "Dati OpenStreetMap"
+                },
+                "notes": {
+                    "tooltip": "Dati delle note da OpenStreetMap",
+                    "title": "Note di OpenStreetMap"
                 }
             },
             "fill_area": "Riempimento aree",
@@ -606,6 +628,16 @@
             "full": {
                 "description": "Riempimento totale",
                 "tooltip": "Le aree vengono completamente riempite."
+            }
+        },
+        "settings": {
+            "custom_background": {
+                "tooltip": "Modifica sfondo personalizzato",
+                "header": "Impostazioni sfondo personalizzato",
+                "instructions": "Inserire un modello di URL. I token validi sono:\n{zoom} oppure {z}, {x}, {y} per lo schema dei tasselli Z/X/Y\n{-y} oppure {ty} per le coordinate Y stile TMS rovesciato\n{u} per lo schema quadtile\n{switch:a,b,c} per il bilanciamento del carico via DNS\n\nEsempio:\n{example}",
+                "template": {
+                    "placeholder": "Inserisci un modello di URL "
+                }
             }
         },
         "restore": {
@@ -707,18 +739,14 @@
             "in": "Ingrandisci",
             "out": "Rimpicciolisci"
         },
-        "cannot_zoom": "Impossibile fare zooCannot zoom out further in current mode.",
+        "cannot_zoom": "Impossibile rimpicciolire ulteriormente nella modalità attuale.",
         "full_screen": "Passa a schermo intero",
-        "gpx": {
-            "local_layer": "File locale",
-            "drag_drop": "Trascina e rilascia un file .gpx, .geojson o .kml sulla pagina o clicca il pulsante a destra per sceglierne uno",
-            "zoom": "Zoom sul livello",
-            "browse": "Scegli un file"
-        },
         "streetside": {
             "tooltip": "Foto Streetside da Microsoft",
             "title": "Foto sovrimpresse (Bing Streetside)",
-            "report": "Segnala un problema di privacy su questa foto"
+            "report": "Segnala un problema di privacy su questa foto",
+            "view_on_bing": "Vedi su Bing Maps",
+            "hires": "Alta risoluzione"
         },
         "mapillary_images": {
             "tooltip": "Fotografie stradali da Mapillary",
@@ -737,6 +765,33 @@
         },
         "openstreetcam": {
             "view_on_openstreetcam": "Visualizza questa immagine con OpenStreetCam"
+        },
+        "note": {
+            "note": "Nota",
+            "title": "Modifica nota",
+            "anonymous": "anonimo",
+            "closed": "(Chiusa)",
+            "commentTitle": "Commenti",
+            "status": {
+                "opened": "aperta il {when}",
+                "reopened": "riaperta il {when}",
+                "commented": "commentata il {when}",
+                "closed": "chiusa il {when}"
+            },
+            "newComment": "Nuovo commento",
+            "inputPlaceholder": "Inserire un commento da condividere con gli altri utenti.",
+            "close": "Chiudi nota",
+            "open": "Riapri nota",
+            "comment": "Commenta",
+            "close_comment": "Chiudi e commenta",
+            "open_comment": "Riapri e commenta",
+            "report": "Segnala",
+            "new": "Nuova nota",
+            "newDescription": "Descrivi il problema.",
+            "save": "Salva nota",
+            "login": "Per poter modificare o commentare questa nota devi aver effettuato l’accesso.",
+            "upload_explanation": "I tuoi commenti saranno visibili pubblicamente da tutti gli utenti di OpenStreetMap.",
+            "upload_explanation_with_user": "I tuoi commenti come utente {user} saranno visibili pubblicamente da tutti gli utenti di OpenStreetMap."
         },
         "help": {
             "title": "Aiuto",
@@ -875,6 +930,17 @@
                 "boundary": "Una relazione *Confine* consiste in un gruppo di uno o più elementi linea che insieme formano un confine amministrativo.",
                 "boundary_add": "Per aggiungere un elemento ad una relazione confine, seleziona l'elemento e scorri verso il basso fino alla sezione \"Tutte le relazioni\" dell'editor dell'elemento, poi clicca sul pulsante {plus} aggiungi per aggiungere l'elemento ad una relazione vicina già esistente o per crearne una nuova."
             },
+            "notes": {
+                "title": "Note",
+                "intro": "Le *note* servono per far sapere agli altri utenti che un elemento della mappa ha bisogno di essere controllato o corretto. Le note segnano una posizione specifica della mappa. Per vedere le note esistenti o aggiungerne di nuove, clicca sul pannello {data} **Dati della mappa** e abilita il livello delle note OpenStreetMap. ",
+                "add_note_h": "Aggiunta di note",
+                "add_note": "Per aggiungere una nuova nota, clicca il pulsante {note} **Nota** sulla barra degli strumenti sopra la mappa oppure premi la scorciatoia da tastiera `4`. Il cursore del mouse diventerà un simbolo a forma di croce. Per piazzare una nuova nota sulla mappa, posiziona il cursore del mouse dove deve stare la nota e poi clicca col {leftclick} tasto sinistro del mouse oppure premi `Spazio`.",
+                "move_note": "Solo le nuove note possono essere spostate. Per muovere una nota, posiziona il cursore del mouse sulla nuova nota e poi premi e tieni premuto il {leftclick} tasto sinistro del mouse mentre la sposti nella sua nuova posizione.",
+                "update_note_h": "Chiusura, riapertura e aggiunta di commenti",
+                "update_note": "Una nota esistente può essere aggiornata chiudendola, riaprendola oppure commentandola. La chiusura di una nota indica che il problema è stato risolto. La riapertura di una nota indica che il problema originale non è stato risolto.",
+                "save_note_h": "Salvataggio delle note",
+                "save_note": "Devi effettuare il salvataggio delle modifiche alle note per ogni nota cliccando nei pulsanti sotto ai commenti della nota. Le modifiche alle note **non** sono incluse nei gruppi di modifica che carichi su OpenStreetMap."
+            },
             "imagery": {
                 "title": "Immagini di sfondo",
                 "intro": "Le immagini di sfondo che appaiono dietro i dati della mappa sono una risorsa importante per il mappatore. Queste immagini possono essere foto aeree scattate da satelliti, aeroplani o droni oppure ancora mappe antiche digitalizzate o dati fruibili liberamente.",
@@ -887,7 +953,7 @@
             },
             "streetlevel": {
                 "title": "Foto a livello stradale",
-                "intro": "Le foto a livello stradale sono utili per mappare segnali stradali, attività commerciali e altri dettagli che non si possono vedere da foto satellitari o aeree. L'editor iD è compatibile con le foto a livello stradale di [Mapillary](https://www.mapillary.com) e [OpenStreetCam](https://www.openstreetcam.org).",
+                "intro": "Le foto a livello stradale sono utili per mappare segnali stradali, attività commerciali e altri dettagli che non si possono vedere da foto satellitari o aeree. L’editor iD è compatibile con le foto a livello stradale di [Bing Streetside](https://www.microsoft.com/en-us/maps/streetside), [Mapillary](https://www.mapillary.com) e [OpenStreetCam](https://www.openstreetcam.org).",
                 "using_h": "Utilizzo delle foto a livello stradale",
                 "using": "Per usare le foto a livello stradale, clicca sul pannello {data} **Dati mappa** a lato della mappa per abilitare o disabilitare i livelli di foto disponibili.",
                 "photos": "Quando abilitato, il livello delle foto mostra una linea lungo la sequenza di foto. A livelli di ingrandimento maggiori, un cerchio indica il punto in cui ogni foto è stata scattata, mentre a livelli di ingrandimento ancora più grandi, un cono mostra la direzione della fotocamera al momento dello scatto.",
@@ -1266,10 +1332,11 @@
                 "title": "Modifica",
                 "drawing": {
                     "title": "Disegna",
-                    "add_point": "modo 'aggiungi punto'",
-                    "add_line": "modo 'aggiungi linea'",
-                    "add_area": "modo 'aggiungi area'",
-                    "place_point": "Fai un punto",
+                    "add_point": "modo ‘aggiungi punto’",
+                    "add_line": "modo ‘aggiungi linea’",
+                    "add_area": "modo ‘aggiungi area’",
+                    "add_note": "modo ‘Aggiungi nota’",
+                    "place_point": "Posiziona un nodo o una nota",
                     "disable_snap": "Tieni premuto per disabilitare l'ancoraggio ai nodi preesistenti",
                     "stop_line": "Termine disegno di una linea o di un'area"
                 },
@@ -1278,6 +1345,7 @@
                     "continue_line": "Continua una linea dal nodo selezionato",
                     "merge": "Unisci (fondi) gli elementi selezionati",
                     "disconnect": "Disconnetti gli elementi dal nodo selezionato",
+                    "detach_node": "Stacca il nodo selezionato da linee/aree genitore",
                     "split": "Spezza una linea in due sul nodo selezionato",
                     "reverse": "Inverti la direzione di una linea",
                     "move": "Sposta gli elementi selezionati",
@@ -1381,24 +1449,28 @@
                     "label": "Accesso consentito",
                     "options": {
                         "designated": {
-                            "description": "Accesso consentito stando ai cartelli stradali od alle norme locali",
+                            "description": "Accesso consentito secondo i cartelli stradali o specifiche norme locali",
                             "title": "Preferenziale"
                         },
                         "destination": {
-                            "description": "Accesso consentito solo se la destinazione coincide con l'elemento stesso",
+                            "description": "Accesso consentito solo per raggiungere una destinazione",
                             "title": "Destinazione"
                         },
                         "dismount": {
-                            "description": "Accesso consentito, ma si deve scendere dal veicolo",
+                            "description": "Accesso consentito ma si deve scendere dal veicolo",
                             "title": "Scendere dal veicolo"
                         },
                         "no": {
-                            "description": "Accesso consentito ai soli autorizzati",
+                            "description": "Accesso non consentito al pubblico",
                             "title": "Vietato"
                         },
                         "permissive": {
                             "description": "Accesso consentito fino a quando il proprietario lo consente",
                             "title": "Permissivo"
+                        },
+                        "permit": {
+                            "description": "Accesso consentito solo ai possessori di un’autorizzazione o una licenza",
+                            "title": "Autorizzazione"
                         },
                         "private": {
                             "description": "Accesso consentito solo con il permesso individuale del proprietario",
@@ -1406,7 +1478,7 @@
                         },
                         "yes": {
                             "description": "Accesso consentito a norma di legge; diritto di passaggio",
-                            "title": "Permesso"
+                            "title": "Consentito"
                         }
                     },
                     "placeholder": "Non specificato",
@@ -1571,6 +1643,9 @@
                 "board_type": {
                     "label": "Tipo"
                 },
+                "booth": {
+                    "label": "Cabina"
+                },
                 "boules": {
                     "label": "Tipo"
                 },
@@ -1618,6 +1693,9 @@
                 "capacity": {
                     "label": "Capienza",
                     "placeholder": "50, 100, 200..."
+                },
+                "cash_in": {
+                    "label": "Versamenti"
                 },
                 "castle_type": {
                     "label": "Tipo"
@@ -2274,6 +2352,9 @@
                         "underground": "Sotterraneo"
                     }
                 },
+                "passenger_information_display": {
+                    "label": "Display arrivi/partenze"
+                },
                 "payment_multi": {
                     "label": "Tipologie di pagamento"
                 },
@@ -2492,8 +2573,22 @@
                 "shop": {
                     "label": "Tipo"
                 },
+                "siren/purpose": {
+                    "label": "Scopo"
+                },
+                "siren/type": {
+                    "label": "Tipo",
+                    "options": {
+                        "electronic": "Elettronico",
+                        "other": "Altro",
+                        "pneumatic": "Pneumatico"
+                    }
+                },
                 "site": {
                     "label": "Tipo"
+                },
+                "site_type": {
+                    "label": "Tipo di sito"
                 },
                 "smoking": {
                     "label": "Zona fumatori",
@@ -2967,10 +3062,6 @@
                 "amenity/bicycle_repair_station": {
                     "name": "Stazione di riparazione biciclette",
                     "terms": "riparazione,bibiclette,meccanico,bici,cicli"
-                },
-                "amenity/biergarten": {
-                    "name": "Birreria all'aperto",
-                    "terms": "birreria,distesa"
                 },
                 "amenity/boat_rental": {
                     "name": "Noleggio barche",
@@ -3465,52 +3556,41 @@
                     "terms": "zoo,zoo safari,safari,parco animali,gabbia,gabbie,leone,leoni,tigre,tigri,orso,orsi,giraffa,giraffe,elefante,elefanti,zebra,zebre"
                 },
                 "attraction/big_wheel": {
-                    "name": "Ruota panoramica",
-                    "terms": "<translate with synonyms or related terms for 'Big Wheel', separated by commas>"
+                    "name": "Ruota panoramica"
                 },
                 "attraction/bumper_car": {
-                    "name": "Autoscontro",
-                    "terms": "<translate with synonyms or related terms for 'Bumper Car', separated by commas>"
+                    "name": "Autoscontro"
                 },
                 "attraction/bungee_jumping": {
-                    "name": "Bungee Jumping",
-                    "terms": "<translate with synonyms or related terms for 'Bungee Jumping', separated by commas>"
+                    "name": "Bungee Jumping"
                 },
                 "attraction/carousel": {
-                    "name": "Carosello",
-                    "terms": "<translate with synonyms or related terms for 'Carousel', separated by commas>"
+                    "name": "Carosello"
                 },
                 "attraction/dark_ride": {
-                    "name": "Percorso al buio",
-                    "terms": "<translate with synonyms or related terms for 'Dark Ride', separated by commas>"
+                    "name": "Percorso al buio"
                 },
                 "attraction/drop_tower": {
-                    "name": "Torre a caduta libera",
-                    "terms": "<translate with synonyms or related terms for 'Drop Tower', separated by commas>"
+                    "name": "Torre a caduta libera"
                 },
                 "attraction/maze": {
                     "name": "Labirinto",
                     "terms": "parco a tema,parco tematico,parco di divertimento,parco divertimenti,parco dei divertimenti,giostra,giostre,attrazione,divertimento,labirinto,dedalo"
                 },
                 "attraction/pirate_ship": {
-                    "name": "Nave dei pirati",
-                    "terms": "<translate with synonyms or related terms for 'Pirate Ship', separated by commas>"
+                    "name": "Nave dei pirati"
                 },
                 "attraction/river_rafting": {
-                    "name": "Rafting",
-                    "terms": "<translate with synonyms or related terms for 'River Rafting', separated by commas>"
+                    "name": "Rafting"
                 },
                 "attraction/roller_coaster": {
-                    "name": "Montagne russe",
-                    "terms": "<translate with synonyms or related terms for 'Roller Coaster', separated by commas>"
+                    "name": "Montagne russe"
                 },
                 "attraction/train": {
-                    "name": "Trenino turistico",
-                    "terms": "<translate with synonyms or related terms for 'Tourist Train', separated by commas>"
+                    "name": "Trenino turistico"
                 },
                 "attraction/water_slide": {
-                    "name": "Scivolo",
-                    "terms": "<translate with synonyms or related terms for 'Water Slide', separated by commas>"
+                    "name": "Scivolo"
                 },
                 "barrier": {
                     "name": "Barriera",
@@ -3560,8 +3640,7 @@
                     "terms": "Siepe"
                 },
                 "barrier/kerb": {
-                    "name": "Cordolo",
-                    "terms": "<translate with synonyms or related terms for 'Kerb', separated by commas>"
+                    "name": "Cordolo"
                 },
                 "barrier/kissing_gate": {
                     "name": "Cancello che non fa passare il bestiame",
@@ -3604,8 +3683,7 @@
                     "terms": "granaio,basso servizio,tesa"
                 },
                 "building/boathouse": {
-                    "name": "Rimessa per barche",
-                    "terms": "<translate with synonyms or related terms for 'Boathouse', separated by commas>"
+                    "name": "Rimessa per barche"
                 },
                 "building/bungalow": {
                     "name": "Bungalow",
@@ -3769,8 +3847,7 @@
                     "name": "Stazione ferroviaria"
                 },
                 "building/transportation": {
-                    "name": "Stazione (mezzi di trasporto)",
-                    "terms": "<translate with synonyms or related terms for 'Transportation Building', separated by commas>"
+                    "name": "Stazione (mezzi di trasporto)"
                 },
                 "building/university": {
                     "name": "Edificio universitario",
@@ -3832,20 +3909,17 @@
                     "terms": "Addetto al catering,Azienda di catering"
                 },
                 "craft/chimney_sweeper": {
-                    "name": "Spazzacamino",
-                    "terms": "<translate with synonyms or related terms for 'Chimney Sweeper', separated by commas>"
+                    "name": "Spazzacamino"
                 },
                 "craft/clockmaker": {
                     "name": "Costruttore di orologi",
                     "terms": "orologi"
                 },
                 "craft/confectionery": {
-                    "name": "Mercato delle caramelle",
-                    "terms": "<translate with synonyms or related terms for 'Candy Maker', separated by commas>"
+                    "name": "Mercato delle caramelle"
                 },
                 "craft/distillery": {
-                    "name": "Distilleria",
-                    "terms": "<translate with synonyms or related terms for 'Distillery', separated by commas>"
+                    "name": "Distilleria"
                 },
                 "craft/dressmaker": {
                     "name": "Sartoria",
@@ -3945,8 +4019,7 @@
                     "terms": "Costruttore di impalcature"
                 },
                 "craft/sculptor": {
-                    "name": "Scultore",
-                    "terms": "<translate with synonyms or related terms for 'Sculptor', separated by commas>"
+                    "name": "Scultore"
                 },
                 "craft/shoemaker": {
                     "name": "Calzolaio",
@@ -4001,17 +4074,28 @@
                 "emergency/destination": {
                     "name": "Destinazione d'uso accesso di emergenzza"
                 },
+                "emergency/fire_alarm": {
+                    "name": "Box soccorso antincendio",
+                    "terms": "antincendio,pompieri,fuoco,incendio,allarme,soccorso,chiamata"
+                },
                 "emergency/fire_extinguisher": {
                     "name": "Estintore",
                     "terms": "estintore fuoco,incendio,emergenza,antincendio,pompieri,fiamme,fuoco"
                 },
                 "emergency/fire_hydrant": {
                     "name": "Idrante",
-                    "terms": " Pompa antincendio "
+                    "terms": "Pompa antincendio"
+                },
+                "emergency/first_aid_kit": {
+                    "name": "Kit di primo soccorso",
+                    "terms": "bende,bendaggi,garze,cerotti,disinfettante,sterile,sterili,medicine,kit,pronto soccorso,medico,primo soccorso,soccorso"
                 },
                 "emergency/life_ring": {
-                    "name": "Salvagente",
-                    "terms": "<translate with synonyms or related terms for 'Life Ring', separated by commas>"
+                    "name": "Salvagente"
+                },
+                "emergency/lifeguard": {
+                    "name": "Salvamento",
+                    "terms": "bagnino,bagnini,salvataggio,salvamento,CPR,rianimazione,massaggio cardiaco,respirazione,soccorso,acqua,mare"
                 },
                 "emergency/no": {
                     "name": "Nessun accesso di emergenza"
@@ -4026,9 +4110,12 @@
                 "emergency/private": {
                     "name": "Accesso di emergenza privato"
                 },
+                "emergency/siren": {
+                    "name": "Sirena",
+                    "terms": "attacco aereo,stridente,alto,rumore,temporale,tornado,segnalazione,allerta"
+                },
                 "emergency/water_tank": {
-                    "name": "Serbatoio d'emergenza per l'acqua",
-                    "terms": "<translate with synonyms or related terms for 'Emergency Water Tank', separated by commas>"
+                    "name": "Serbatoio d'emergenza per l'acqua"
                 },
                 "emergency/yes": {
                     "name": "Accesso di emergenza"
@@ -4042,16 +4129,14 @@
                     "terms": "attraversamento pedonale,strisce pedonali,attraversamento,dosso"
                 },
                 "footway/crossing-raised": {
-                    "name": "Incrocio rialzato",
-                    "terms": "<translate with synonyms or related terms for 'Raised Street Crossing', separated by commas>"
+                    "name": "Incrocio rialzato"
                 },
                 "footway/crosswalk": {
                     "name": "Strisce pedonali",
                     "terms": "strisce pedonali,attraversamento"
                 },
                 "footway/crosswalk-raised": {
-                    "name": "Attraversamento pedonale rialzato",
-                    "terms": "<translate with synonyms or related terms for 'Raised Pedestrian Crosswalk', separated by commas>"
+                    "name": "Attraversamento pedonale rialzato"
                 },
                 "footway/sidewalk": {
                     "name": "Marciapiede",
@@ -4106,52 +4191,42 @@
                     "terms": "clinica,ospedale,clinica ospedaliera,dottori,studio dottori,medicina,aiuto medico,guardia medica,centro igiene mentale,pediatra,medico,oftalmologo,dentista,ginecologo,andrologo,geriatra,medico dello sport"
                 },
                 "healthcare/alternative": {
-                    "name": "Medicina alternativa",
-                    "terms": "<translate with synonyms or related terms for 'Alternative Medicine', separated by commas>"
+                    "name": "Medicina alternativa"
                 },
                 "healthcare/alternative/chiropractic": {
-                    "name": "Chiropratico",
-                    "terms": "<translate with synonyms or related terms for 'Chiropractor', separated by commas>"
+                    "name": "Chiropratico"
                 },
                 "healthcare/audiologist": {
-                    "name": "Audiologo",
-                    "terms": "<translate with synonyms or related terms for 'Audiologist', separated by commas>"
+                    "name": "Audiologo"
                 },
                 "healthcare/birthing_center": {
-                    "name": "Centro nascita",
-                    "terms": "<translate with synonyms or related terms for 'Birthing Center', separated by commas>"
+                    "name": "Centro nascita"
                 },
                 "healthcare/blood_donation": {
                     "name": "Centro trasfusionale",
                     "terms": "donatori,sangue,banca dl sangue,trasfusioni,plasmaferesi,piastrinoaferesi,donazione"
                 },
                 "healthcare/hospice": {
-                    "name": "Ospizio",
-                    "terms": "<translate with synonyms or related terms for 'Hospice', separated by commas>"
+                    "name": "Ospizio"
                 },
                 "healthcare/laboratory": {
                     "name": "Laboratorio medico",
                     "terms": "laboratorio,clinica,medico,medica,medicina,esame del sangue,esami del sangue,laboratorio medico,controllo medico,controlli medici"
                 },
                 "healthcare/midwife": {
-                    "name": "Clinica prenatale",
-                    "terms": "<translate with synonyms or related terms for 'Midwife', separated by commas>"
+                    "name": "Clinica prenatale"
                 },
                 "healthcare/occupational_therapist": {
-                    "name": "Medico del lavoro",
-                    "terms": "<translate with synonyms or related terms for 'Occupational Therapist', separated by commas>"
+                    "name": "Medico del lavoro"
                 },
                 "healthcare/optometrist": {
-                    "name": "Oculista",
-                    "terms": "<translate with synonyms or related terms for 'Optometrist', separated by commas>"
+                    "name": "Oculista"
                 },
                 "healthcare/physiotherapist": {
-                    "name": "Fisioterapista",
-                    "terms": "<translate with synonyms or related terms for 'Physiotherapist', separated by commas>"
+                    "name": "Fisioterapista"
                 },
                 "healthcare/podiatrist": {
-                    "name": "Podologo",
-                    "terms": "<translate with synonyms or related terms for 'Podiatrist', separated by commas>"
+                    "name": "Podologo"
                 },
                 "healthcare/psychotherapist": {
                     "name": "Psicoterapista",
@@ -4162,8 +4237,7 @@
                     "terms": "riabilitazione,terapia,terapista"
                 },
                 "healthcare/speech_therapist": {
-                    "name": "Logopedista",
-                    "terms": "<translate with synonyms or related terms for 'Speech Therapist', separated by commas>"
+                    "name": "Logopedista"
                 },
                 "highway": {
                     "name": "Strada"
@@ -4173,8 +4247,7 @@
                     "terms": "ippovia, percorso per cavalli, percorso equestre"
                 },
                 "highway/bus_guideway": {
-                    "name": "Binario per autobus",
-                    "terms": "<translate with synonyms or related terms for 'Bus Guideway', separated by commas>"
+                    "name": "Binario per autobus"
                 },
                 "highway/bus_stop": {
                     "name": "Fermata autobus / banchina"
@@ -4196,8 +4269,7 @@
                     "terms": "strisce pedonali,attraversamento"
                 },
                 "highway/crosswalk-raised": {
-                    "name": "Attraversamento pedonale rialzato",
-                    "terms": "<translate with synonyms or related terms for 'Raised Pedestrian Crosswalk', separated by commas>"
+                    "name": "Attraversamento pedonale rialzato"
                 },
                 "highway/cycleway": {
                     "name": "Percorso ciclabile",
@@ -4244,12 +4316,10 @@
                     "terms": "Sentiero"
                 },
                 "highway/pedestrian_area": {
-                    "name": "Area pedonale",
-                    "terms": "<translate with synonyms or related terms for 'Pedestrian Area', separated by commas>"
+                    "name": "Area pedonale"
                 },
                 "highway/pedestrian_line": {
-                    "name": "Strada pedonale",
-                    "terms": "<translate with synonyms or related terms for 'Pedestrian Street', separated by commas>"
+                    "name": "Strada pedonale"
                 },
                 "highway/primary": {
                     "name": "Primaria",
@@ -4428,8 +4498,7 @@
                     "terms": "Bacino"
                 },
                 "landuse/brownfield": {
-                    "name": "Area industriale dismessa",
-                    "terms": "<translate with synonyms or related terms for 'Brownfield', separated by commas>"
+                    "name": "Area industriale dismessa"
                 },
                 "landuse/cemetery": {
                     "name": "Cimitero",
@@ -4463,16 +4532,14 @@
                     "terms": "Foresta"
                 },
                 "landuse/garages": {
-                    "name": "Area garage",
-                    "terms": "<translate with synonyms or related terms for 'Garage Landuse', separated by commas>"
+                    "name": "Area garage"
                 },
                 "landuse/grass": {
                     "name": "Erba",
                     "terms": "Erba"
                 },
                 "landuse/greenfield": {
-                    "name": "Terreno edificabile",
-                    "terms": "<translate with synonyms or related terms for 'Greenfield', separated by commas>"
+                    "name": "Terreno edificabile"
                 },
                 "landuse/greenhouse_horticulture": {
                     "name": "Serra",
@@ -4487,8 +4554,7 @@
                     "terms": "zona industriale,zona artigianale,industria,artigianato"
                 },
                 "landuse/industrial/scrap_yard": {
-                    "name": "Sfasciacarrozze",
-                    "terms": "<translate with synonyms or related terms for 'Scrap Yard', separated by commas>"
+                    "name": "Sfasciacarrozze"
                 },
                 "landuse/industrial/slaughterhouse": {
                     "name": "Macello",
@@ -4571,8 +4637,7 @@
                     "terms": "Campo da gioco,Campo giochi,Campo da giochi"
                 },
                 "landuse/religious": {
-                    "name": "Area religiosa",
-                    "terms": "<translate with synonyms or related terms for 'Religious Area', separated by commas>"
+                    "name": "Area religiosa"
                 },
                 "landuse/residential": {
                     "name": "Area residenziale",
@@ -4647,48 +4712,38 @@
                     "terms": "Palestra a cielo aperto,Attrezzatura ginnica all'aperto"
                 },
                 "leisure/fitness_station/balance_beam": {
-                    "name": "Trave (attrezzo ginnico)",
-                    "terms": "<translate with synonyms or related terms for 'Exercise Balance Beam', separated by commas>"
+                    "name": "Trave (attrezzo ginnico)"
                 },
                 "leisure/fitness_station/box": {
-                    "name": "Scatola per salti",
-                    "terms": "<translate with synonyms or related terms for 'Exercise Box', separated by commas>"
+                    "name": "Scatola per salti"
                 },
                 "leisure/fitness_station/horizontal_bar": {
-                    "name": "Sbarra per trazioni",
-                    "terms": "<translate with synonyms or related terms for 'Exercise Horizontal Bar', separated by commas>"
+                    "name": "Sbarra per trazioni"
                 },
                 "leisure/fitness_station/horizontal_ladder": {
-                    "name": "Scala orizzontale",
-                    "terms": "<translate with synonyms or related terms for 'Exercise Monkey Bars', separated by commas>"
+                    "name": "Scala orizzontale"
                 },
                 "leisure/fitness_station/hyperextension": {
-                    "name": "Stazione per lombari",
-                    "terms": "<translate with synonyms or related terms for 'Hyperextension Station', separated by commas>"
+                    "name": "Stazione per lombari"
                 },
                 "leisure/fitness_station/parallel_bars": {
                     "name": "Barre Parallele",
                     "terms": "barra,trazioni,barre,esercizi,fitness,palestra,percorso"
                 },
                 "leisure/fitness_station/push-up": {
-                    "name": "Stazione per piegamenti sulle braccia",
-                    "terms": "<translate with synonyms or related terms for 'Push-Up Station', separated by commas>"
+                    "name": "Stazione per piegamenti sulle braccia"
                 },
                 "leisure/fitness_station/rings": {
-                    "name": "Anelli (attrezzo ginnico)",
-                    "terms": "<translate with synonyms or related terms for 'Exercise Rings', separated by commas>"
+                    "name": "Anelli (attrezzo ginnico)"
                 },
                 "leisure/fitness_station/sign": {
-                    "name": "Cartello illustrativo per esercizi",
-                    "terms": "<translate with synonyms or related terms for 'Exercise Instruction Sign', separated by commas>"
+                    "name": "Cartello illustrativo per esercizi"
                 },
                 "leisure/fitness_station/sit-up": {
-                    "name": "Stazione per addominali",
-                    "terms": "<translate with synonyms or related terms for 'Sit-Up Station', separated by commas>"
+                    "name": "Stazione per addominali"
                 },
                 "leisure/fitness_station/stairs": {
-                    "name": "Scala per esercizi",
-                    "terms": "<translate with synonyms or related terms for 'Exercise Stairs', separated by commas>"
+                    "name": "Scala per esercizi"
                 },
                 "leisure/garden": {
                     "name": "Giardino",
@@ -4699,8 +4754,7 @@
                     "terms": "Campo da golf"
                 },
                 "leisure/hackerspace": {
-                    "name": "Spazio hacker",
-                    "terms": "<translate with synonyms or related terms for 'Hackerspace', separated by commas>"
+                    "name": "Spazio hacker"
                 },
                 "leisure/horse_riding": {
                     "name": "Centro equestre",
@@ -4755,8 +4809,7 @@
                     "terms": "pallavolo,pista,palla,volley,campetto"
                 },
                 "leisure/pitch/boules": {
-                    "name": "Campo da bocce",
-                    "terms": "<translate with synonyms or related terms for 'Boules/Bocce Court', separated by commas>"
+                    "name": "Campo da bocce"
                 },
                 "leisure/pitch/bowls": {
                     "name": "Campo da bocce",
@@ -4811,8 +4864,7 @@
                     "terms": "atletica,tartan,pista"
                 },
                 "leisure/sauna": {
-                    "name": "Sauna",
-                    "terms": "<translate with synonyms or related terms for 'Sauna', separated by commas>"
+                    "name": "Sauna"
                 },
                 "leisure/slipway": {
                     "name": "Scivolo per barche",
@@ -4866,6 +4918,10 @@
                     "name": "Ponte",
                     "terms": "ponte,viadotto,pontile,arco,strallato,cavalcavia"
                 },
+                "man_made/bunker_silo": {
+                    "name": "Bunker silo",
+                    "terms": "insilato,silaggio,stoccaggio,immagazzinamento,magazzino"
+                },
                 "man_made/chimney": {
                     "name": "Ciminiera",
                     "terms": "torre,camino"
@@ -4875,8 +4931,7 @@
                     "terms": "taglio,bosco,foresta,legna,legname,legno,albero,alberi,tronchi,disboscamento,deforestazione,selvicoltura"
                 },
                 "man_made/crane": {
-                    "name": "Gru",
-                    "terms": "<translate with synonyms or related terms for 'Crane', separated by commas>"
+                    "name": "Gru"
                 },
                 "man_made/cutline": {
                     "name": "Linea di demarcazione",
@@ -4906,8 +4961,7 @@
                     "terms": "albero,torre,comunicazione,radio,cellulari,antenna,trasmissioni,tv,televisione,telefoni"
                 },
                 "man_made/monitoring_station": {
-                    "name": "Stazione di controllo",
-                    "terms": "<translate with synonyms or related terms for 'Monitoring Station', separated by commas>"
+                    "name": "Stazione di controllo"
                 },
                 "man_made/observation": {
                     "name": "Torre di osservazione",
@@ -4915,7 +4969,7 @@
                 },
                 "man_made/observatory": {
                     "name": "Osservatorio",
-                    "terms": "osservatorio,astronomico,meteorologico,vulcanologico,osservatorio meteorologico,osservatorio astronomico,radiotelescopio"
+                    "terms": "osservatorio,astronomico,meteorologico,vulcanologico,osservatorio meteorologico,osservatorio astronomico,radiotelescopio,specola"
                 },
                 "man_made/petroleum_well": {
                     "name": "Pozzo petrolifero",
@@ -4923,7 +4977,7 @@
                 },
                 "man_made/pier": {
                     "name": "Molo",
-                    "terms": " Passerella "
+                    "terms": "Passerella"
                 },
                 "man_made/pipeline": {
                     "name": "Conduttura",
@@ -4963,7 +5017,7 @@
                 },
                 "man_made/water_tower": {
                     "name": "Torre Idrica",
-                    "terms": " Torre idrica "
+                    "terms": "Torre idrica"
                 },
                 "man_made/water_well": {
                     "name": "Pozzo",
@@ -4971,31 +5025,26 @@
                 },
                 "man_made/water_works": {
                     "name": "Impianto Idrico",
-                    "terms": " Impianto idrico "
+                    "terms": "Impianto idrico"
                 },
                 "man_made/watermill": {
-                    "name": "Mulino ad acqua",
-                    "terms": "<translate with synonyms or related terms for 'Watermill', separated by commas>"
+                    "name": "Mulino ad acqua"
                 },
                 "man_made/windmill": {
-                    "name": "Mulino a vento",
-                    "terms": "<translate with synonyms or related terms for 'Windmill', separated by commas>"
+                    "name": "Mulino a vento"
                 },
                 "man_made/works": {
                     "name": "Fabbrica",
                     "terms": "industria,manifattura,officina,opificio,stabilimento,laboratorio"
                 },
                 "manhole": {
-                    "name": "Tombino",
-                    "terms": "<translate with synonyms or related terms for 'Manhole', separated by commas>"
+                    "name": "Tombino"
                 },
                 "manhole/drain": {
-                    "name": "Tombino",
-                    "terms": "<translate with synonyms or related terms for 'Storm Drain', separated by commas>"
+                    "name": "Tombino"
                 },
                 "manhole/telecom": {
-                    "name": "Tombino per telecominicazioni",
-                    "terms": "<translate with synonyms or related terms for 'Telecom Manhole', separated by commas>"
+                    "name": "Tombino per telecominicazioni"
                 },
                 "natural": {
                     "name": "Naturale",
@@ -5035,7 +5084,7 @@
                 },
                 "natural/grassland": {
                     "name": "Prateria",
-                    "terms": " Prateria naurale "
+                    "terms": "Prateria naurale"
                 },
                 "natural/heath": {
                     "name": "Brughiera",
@@ -5107,7 +5156,7 @@
                 },
                 "natural/wetland": {
                     "name": "Zona umida",
-                    "terms": " Zona umida "
+                    "terms": "Zona umida"
                 },
                 "natural/wood": {
                     "name": "Foresta",
@@ -5122,35 +5171,28 @@
                     "terms": "Ufficio"
                 },
                 "office/accountant": {
-                    "name": "Commercialista",
-                    "terms": "<translate with synonyms or related terms for 'Accountant Office', separated by commas>"
+                    "name": "Commercialista"
                 },
                 "office/administrative": {
                     "name": "Autorità locale"
                 },
                 "office/adoption_agency": {
-                    "name": "Agenzia per adozioni",
-                    "terms": "<translate with synonyms or related terms for 'Adoption Agency', separated by commas>"
+                    "name": "Agenzia per adozioni"
                 },
                 "office/advertising_agency": {
-                    "name": "Agenzia pubblicitaria",
-                    "terms": "<translate with synonyms or related terms for 'Advertising Agency', separated by commas>"
+                    "name": "Agenzia pubblicitaria"
                 },
                 "office/architect": {
-                    "name": "Studio di architettura",
-                    "terms": "<translate with synonyms or related terms for 'Architect Office', separated by commas>"
+                    "name": "Studio di architettura"
                 },
                 "office/association": {
-                    "name": "Ufficio associazione senza scopo di lucro",
-                    "terms": "<translate with synonyms or related terms for 'Nonprofit Organization Office', separated by commas>"
+                    "name": "Ufficio associazione senza scopo di lucro"
                 },
                 "office/charity": {
-                    "name": "Organizzazione benefica",
-                    "terms": "<translate with synonyms or related terms for 'Charity Office', separated by commas>"
+                    "name": "Organizzazione benefica"
                 },
                 "office/company": {
-                    "name": "Ufficio aziendale",
-                    "terms": "<translate with synonyms or related terms for 'Corporate Office', separated by commas>"
+                    "name": "Ufficio aziendale"
                 },
                 "office/coworking": {
                     "name": "Ufficio in Coworking",
@@ -5165,8 +5207,7 @@
                     "terms": "interinale,impiego,lavoro,ufficio per l'impiego,ufficio interinale"
                 },
                 "office/energy_supplier": {
-                    "name": "Ufficio azienda fornitrice di energia",
-                    "terms": "<translate with synonyms or related terms for 'Energy Supplier Office', separated by commas>"
+                    "name": "Ufficio azienda fornitrice di energia"
                 },
                 "office/estate_agent": {
                     "name": "Agente Immobiliare",
@@ -5177,12 +5218,10 @@
                     "terms": "finanza,finanziaria,fiduciaria,mag"
                 },
                 "office/forestry": {
-                    "name": "Ufficio forestale",
-                    "terms": "<translate with synonyms or related terms for 'Forestry Office', separated by commas>"
+                    "name": "Ufficio forestale"
                 },
                 "office/foundation": {
-                    "name": "Fondazione",
-                    "terms": "<translate with synonyms or related terms for 'Foundation Office', separated by commas>"
+                    "name": "Fondazione"
                 },
                 "office/government": {
                     "name": "Ufficio governativo",
@@ -5193,20 +5232,17 @@
                     "terms": "anagrafe,comune,archivio di stato"
                 },
                 "office/government/tax": {
-                    "name": "Agenzia delle entrate",
-                    "terms": "<translate with synonyms or related terms for 'Tax and Revenue Office', separated by commas>"
+                    "name": "Agenzia delle entrate"
                 },
                 "office/guide": {
-                    "name": "Ufficio guide turistiche",
-                    "terms": "<translate with synonyms or related terms for 'Tour Guide Office', separated by commas>"
+                    "name": "Ufficio guide turistiche"
                 },
                 "office/insurance": {
                     "name": "Assicurazione",
                     "terms": "assicurativo,sinistri,polizza assicurativa"
                 },
                 "office/it": {
-                    "name": "Ufficio società IT",
-                    "terms": "<translate with synonyms or related terms for 'Information Technology Office', separated by commas>"
+                    "name": "Ufficio società IT"
                 },
                 "office/lawyer": {
                     "name": "Studio legale",
@@ -5216,20 +5252,17 @@
                     "name": "Ufficio notarile"
                 },
                 "office/moving_company": {
-                    "name": "Ufficio compagnia di traslochi",
-                    "terms": "<translate with synonyms or related terms for 'Moving Company Office', separated by commas>"
+                    "name": "Ufficio compagnia di traslochi"
                 },
                 "office/newspaper": {
-                    "name": "Ufficio giornalistico",
-                    "terms": "<translate with synonyms or related terms for 'Newspaper Office', separated by commas>"
+                    "name": "Ufficio giornalistico"
                 },
                 "office/ngo": {
                     "name": "Organizzazione non governativa",
                     "terms": "ong,ngo,onu,associazione,non profit,nonprofit,no profit,onlus,non lucrativa,senza fini di lucro,cooperativa,cooperazione"
                 },
                 "office/notary": {
-                    "name": "Ufficio notarile",
-                    "terms": "<translate with synonyms or related terms for 'Notary Office', separated by commas>"
+                    "name": "Ufficio notarile"
                 },
                 "office/physician": {
                     "name": "Medico"
@@ -5239,39 +5272,33 @@
                     "terms": "circolo,partito,politica,sezione"
                 },
                 "office/private_investigator": {
-                    "name": "Ufficio agenzia investigativa privata",
-                    "terms": "<translate with synonyms or related terms for 'Private Investigator Office', separated by commas>"
+                    "name": "Ufficio agenzia investigativa privata"
                 },
                 "office/quango": {
-                    "name": "Ufficio di una simil ONG",
-                    "terms": "<translate with synonyms or related terms for 'Quasi-NGO Office', separated by commas>"
+                    "name": "Ufficio di una simil ONG"
                 },
                 "office/research": {
                     "name": "Istituto di Ricerca",
                     "terms": "Ufficio ricerca,Ufficio di ricerca"
                 },
                 "office/surveyor": {
-                    "name": "Ufficio di supervisione",
-                    "terms": "<translate with synonyms or related terms for 'Surveyor Office', separated by commas>"
+                    "name": "Ufficio di supervisione"
                 },
                 "office/tax_advisor": {
-                    "name": "Centro assistenza fiscale",
-                    "terms": "<translate with synonyms or related terms for 'Tax Advisor Office', separated by commas>"
+                    "name": "Centro assistenza fiscale"
                 },
                 "office/telecommunication": {
                     "name": "Ufficio di telecomunicazioni",
                     "terms": "telecomunicazioni,telefonia"
                 },
                 "office/therapist": {
-                    "name": "Studio psichiatrico",
-                    "terms": "<translate with synonyms or related terms for 'Therapist Office', separated by commas>"
+                    "name": "Studio psichiatrico"
                 },
                 "office/travel_agent": {
                     "name": "Agenzia di viaggi"
                 },
                 "office/water_utility": {
-                    "name": "Ufficio azienda di fornitura dell'acqua",
-                    "terms": "<translate with synonyms or related terms for 'Water Utility Office', separated by commas>"
+                    "name": "Ufficio azienda di fornitura dell'acqua"
                 },
                 "piste": {
                     "name": "Piste da sci",
@@ -5296,12 +5323,11 @@
                     "terms": "arcipelago,atollo,banco,isola,isolotto,scoglio"
                 },
                 "place/islet": {
-                    "name": "Isoletta",
-                    "terms": "<translate with synonyms or related terms for 'Islet', separated by commas>"
+                    "name": "Isoletta"
                 },
                 "place/isolated_dwelling": {
                     "name": "Case Sparse",
-                    "terms": " Insediamento rurale isolato "
+                    "terms": "Insediamento rurale isolato"
                 },
                 "place/locality": {
                     "name": "Località",
@@ -5312,12 +5338,10 @@
                     "terms": "Quartiere,Zona"
                 },
                 "place/plot": {
-                    "name": "Particella catastale",
-                    "terms": "<translate with synonyms or related terms for 'Plot', separated by commas>"
+                    "name": "Particella catastale"
                 },
                 "place/quarter": {
-                    "name": "Sotto-distretto / Quartiere",
-                    "terms": "<translate with synonyms or related terms for 'Sub-Borough / Quarter', separated by commas>"
+                    "name": "Sotto-distretto / Quartiere"
                 },
                 "place/square": {
                     "name": "Piazza",
@@ -5336,60 +5360,47 @@
                     "terms": "Frazione"
                 },
                 "playground/balance_beam": {
-                    "name": "Trave",
-                    "terms": "<translate with synonyms or related terms for 'Play Balance Beam', separated by commas>"
+                    "name": "Trave"
                 },
                 "playground/basket_spinner": {
-                    "name": "Girello",
-                    "terms": "<translate with synonyms or related terms for 'Basket Spinner', separated by commas>"
+                    "name": "Girello"
                 },
                 "playground/basket_swing": {
-                    "name": "Altalena a cesto",
-                    "terms": "<translate with synonyms or related terms for 'Basket Swing', separated by commas>"
+                    "name": "Altalena a cesto"
                 },
                 "playground/climbing_frame": {
-                    "name": "Struttura da arrampicata",
-                    "terms": "<translate with synonyms or related terms for 'Climbing Frame', separated by commas>"
+                    "name": "Struttura da arrampicata"
                 },
                 "playground/cushion": {
-                    "name": "Materasso gonfiato",
-                    "terms": "<translate with synonyms or related terms for 'Bouncy Cushion', separated by commas>"
+                    "name": "Materasso gonfiato"
                 },
                 "playground/horizontal_bar": {
-                    "name": "Barra per trazioni",
-                    "terms": "<translate with synonyms or related terms for 'Play Horizontal Bar', separated by commas>"
+                    "name": "Barra per trazioni"
                 },
                 "playground/rocker": {
                     "name": "Gioco a molla",
                     "terms": "Dondolo a molla"
                 },
                 "playground/roundabout": {
-                    "name": "Girello",
-                    "terms": "<translate with synonyms or related terms for 'Play Roundabout', separated by commas>"
+                    "name": "Girello"
                 },
                 "playground/sandpit": {
-                    "name": "Buca di sabbia",
-                    "terms": "<translate with synonyms or related terms for 'Sandpit', separated by commas>"
+                    "name": "Buca di sabbia"
                 },
                 "playground/seesaw": {
-                    "name": "Altalena a dondolo",
-                    "terms": "<translate with synonyms or related terms for 'Seesaw', separated by commas>"
+                    "name": "Altalena a dondolo"
                 },
                 "playground/slide": {
-                    "name": "Scivolo",
-                    "terms": "<translate with synonyms or related terms for 'Slide', separated by commas>"
+                    "name": "Scivolo"
                 },
                 "playground/structure": {
-                    "name": "Struttura da gioco",
-                    "terms": "<translate with synonyms or related terms for 'Play Structure', separated by commas>"
+                    "name": "Struttura da gioco"
                 },
                 "playground/swing": {
-                    "name": "Altalena",
-                    "terms": "<translate with synonyms or related terms for 'Swing', separated by commas>"
+                    "name": "Altalena"
                 },
                 "playground/zipwire": {
-                    "name": "Teleferica",
-                    "terms": "<translate with synonyms or related terms for 'Zip Wire', separated by commas>"
+                    "name": "Teleferica"
                 },
                 "point": {
                     "name": "Punto",
@@ -5400,15 +5411,13 @@
                 },
                 "power/generator": {
                     "name": "Generatore di energia",
-                    "terms": " Centrale elettrica "
+                    "terms": "Centrale elettrica"
                 },
                 "power/generator/source_nuclear": {
-                    "name": "Reattore nucleare",
-                    "terms": "<translate with synonyms or related terms for 'Nuclear Reactor', separated by commas>"
+                    "name": "Reattore nucleare"
                 },
                 "power/generator/source_wind": {
-                    "name": "Turbina eolica",
-                    "terms": "<translate with synonyms or related terms for 'Wind Turbine', separated by commas>"
+                    "name": "Turbina eolica"
                 },
                 "power/line": {
                     "name": "Linea elettrica",
@@ -5434,8 +5443,7 @@
                     "terms": "Sottostazione"
                 },
                 "power/switch": {
-                    "name": "Interruttore di potenza",
-                    "terms": "<translate with synonyms or related terms for 'Power Switch', separated by commas>"
+                    "name": "Interruttore di potenza"
                 },
                 "power/tower": {
                     "name": "Traliccio ad alta tensione",
@@ -5446,172 +5454,130 @@
                     "terms": "Trasformatore"
                 },
                 "public_transport/linear_platform": {
-                    "name": "Fermata / Banchina del trasporto pubblico",
-                    "terms": "<translate with synonyms or related terms for 'Transit Stop / Platform', separated by commas>"
+                    "name": "Fermata / Banchina del trasporto pubblico"
                 },
                 "public_transport/linear_platform_aerialway": {
-                    "name": "Fermata / banchina del trasporto a fune",
-                    "terms": "<translate with synonyms or related terms for 'Aerialway Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina del trasporto a fune"
                 },
                 "public_transport/linear_platform_bus": {
-                    "name": "Fermata / banchina dell'autobus",
-                    "terms": "<translate with synonyms or related terms for 'Bus Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina dell'autobus"
                 },
                 "public_transport/linear_platform_ferry": {
-                    "name": "Fermata / banchina del traghetto",
-                    "terms": "<translate with synonyms or related terms for 'Ferry Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina del traghetto"
                 },
                 "public_transport/linear_platform_light_rail": {
-                    "name": "Fermata / banchina della metropolitana di superficie",
-                    "terms": "<translate with synonyms or related terms for 'Light Rail Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina della metropolitana di superficie"
                 },
                 "public_transport/linear_platform_monorail": {
-                    "name": "Fermata / banchina della monorotaia",
-                    "terms": "<translate with synonyms or related terms for 'Monorail Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina della monorotaia"
                 },
                 "public_transport/linear_platform_subway": {
-                    "name": "Fermata / banchina della metropolitana",
-                    "terms": "<translate with synonyms or related terms for 'Subway Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina della metropolitana"
                 },
                 "public_transport/linear_platform_train": {
-                    "name": "Fermata / banchina del treno",
-                    "terms": "<translate with synonyms or related terms for 'Train Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina del treno"
                 },
                 "public_transport/linear_platform_tram": {
-                    "name": "Fermata / banchina del tram",
-                    "terms": "<translate with synonyms or related terms for 'Tram Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina del tram"
                 },
                 "public_transport/linear_platform_trolleybus": {
-                    "name": "Fermata / Banchina del filobus",
-                    "terms": "<translate with synonyms or related terms for 'Trolleybus Stop / Platform', separated by commas>"
+                    "name": "Fermata / Banchina del filobus"
                 },
                 "public_transport/platform": {
-                    "name": "Fermata / Banchina del trasporto pubblico",
-                    "terms": "<translate with synonyms or related terms for 'Transit Stop / Platform', separated by commas>"
+                    "name": "Fermata / Banchina del trasporto pubblico"
                 },
                 "public_transport/platform_aerialway": {
-                    "name": "Fermata / banchina del trasporto a fune",
-                    "terms": "<translate with synonyms or related terms for 'Aerialway Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina del trasporto a fune"
                 },
                 "public_transport/platform_bus": {
-                    "name": "Fermata / banchina dell'autobus",
-                    "terms": "<translate with synonyms or related terms for 'Bus Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina dell'autobus"
                 },
                 "public_transport/platform_ferry": {
-                    "name": "Fermata / banchina del traghetto",
-                    "terms": "<translate with synonyms or related terms for 'Ferry Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina del traghetto"
                 },
                 "public_transport/platform_light_rail": {
-                    "name": "Fermata / banchina della metropolitana di superficie",
-                    "terms": "<translate with synonyms or related terms for 'Light Rail Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina della metropolitana di superficie"
                 },
                 "public_transport/platform_monorail": {
-                    "name": "Fermata / banchina della monorotaia",
-                    "terms": "<translate with synonyms or related terms for 'Monorail Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina della monorotaia"
                 },
                 "public_transport/platform_subway": {
-                    "name": "Fermata / banchina della metropolitana",
-                    "terms": "<translate with synonyms or related terms for 'Subway Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina della metropolitana"
                 },
                 "public_transport/platform_train": {
-                    "name": "Fermata / banchina del treno",
-                    "terms": "<translate with synonyms or related terms for 'Train Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina del treno"
                 },
                 "public_transport/platform_tram": {
-                    "name": "Fermata / banchina del tram",
-                    "terms": "<translate with synonyms or related terms for 'Tram Stop / Platform', separated by commas>"
+                    "name": "Fermata / banchina del tram"
                 },
                 "public_transport/platform_trolleybus": {
-                    "name": "Fermata / Banchina del filobus",
-                    "terms": "<translate with synonyms or related terms for 'Trolleybus Stop / Platform', separated by commas>"
+                    "name": "Fermata / Banchina del filobus"
                 },
                 "public_transport/station": {
-                    "name": "Stazione del trasporto pubblico",
-                    "terms": "<translate with synonyms or related terms for 'Transit Station', separated by commas>"
+                    "name": "Stazione del trasporto pubblico"
                 },
                 "public_transport/station_aerialway": {
-                    "name": "Stazione di trasporto a fune",
-                    "terms": "<translate with synonyms or related terms for 'Aerialway Station', separated by commas>"
+                    "name": "Stazione di trasporto a fune"
                 },
                 "public_transport/station_bus": {
-                    "name": "Stazione /Terminal degli autobus",
-                    "terms": "<translate with synonyms or related terms for 'Bus Station / Terminal', separated by commas>"
+                    "name": "Stazione /Terminal degli autobus"
                 },
                 "public_transport/station_ferry": {
-                    "name": "Stazione / Terminal dei traghetti",
-                    "terms": "<translate with synonyms or related terms for 'Ferry Station / Terminal', separated by commas>"
+                    "name": "Stazione / Terminal dei traghetti"
                 },
                 "public_transport/station_light_rail": {
-                    "name": "Stazione della metropolitana di superficie",
-                    "terms": "<translate with synonyms or related terms for 'Light Rail Station', separated by commas>"
+                    "name": "Stazione della metropolitana di superficie"
                 },
                 "public_transport/station_monorail": {
-                    "name": "Stazione della monorotaia",
-                    "terms": "<translate with synonyms or related terms for 'Monorail Station', separated by commas>"
+                    "name": "Stazione della monorotaia"
                 },
                 "public_transport/station_subway": {
-                    "name": "Stazione metropolitana",
-                    "terms": "<translate with synonyms or related terms for 'Subway Station', separated by commas>"
+                    "name": "Stazione metropolitana"
                 },
                 "public_transport/station_train": {
-                    "name": "Stazione treno",
-                    "terms": "<translate with synonyms or related terms for 'Train Station', separated by commas>"
+                    "name": "Stazione treno"
                 },
                 "public_transport/station_train_halt": {
-                    "name": "Fermata del treno a richiesta",
-                    "terms": "<translate with synonyms or related terms for 'Train Station (Halt / Request)', separated by commas>"
+                    "name": "Fermata del treno a richiesta"
                 },
                 "public_transport/station_tram": {
-                    "name": "Stazione tram",
-                    "terms": "<translate with synonyms or related terms for 'Tram Station', separated by commas>"
+                    "name": "Stazione tram"
                 },
                 "public_transport/station_trolleybus": {
-                    "name": "Stazione / Terminal dei filobus",
-                    "terms": "<translate with synonyms or related terms for 'Trolleybus Station / Terminal', separated by commas>"
+                    "name": "Stazione / Terminal dei filobus"
                 },
                 "public_transport/stop_area": {
-                    "name": "Area della fermata del trasporto pubblico",
-                    "terms": "<translate with synonyms or related terms for 'Transit Stop Area', separated by commas>"
+                    "name": "Area della fermata del trasporto pubblico"
                 },
                 "public_transport/stop_position": {
-                    "name": "Punto di stop del trasporto pubblico",
-                    "terms": "<translate with synonyms or related terms for 'Transit Stopping Location', separated by commas>"
+                    "name": "Punto di stop del trasporto pubblico"
                 },
                 "public_transport/stop_position_aerialway": {
-                    "name": "Punto di stop del trasporto a fune",
-                    "terms": "<translate with synonyms or related terms for 'Aerialway Stopping Location', separated by commas>"
+                    "name": "Punto di stop del trasporto a fune"
                 },
                 "public_transport/stop_position_bus": {
-                    "name": "Fermata autobus",
-                    "terms": "<translate with synonyms or related terms for 'Bus Stopping Location', separated by commas>"
+                    "name": "Fermata autobus"
                 },
                 "public_transport/stop_position_ferry": {
-                    "name": "Fermata battello",
-                    "terms": "<translate with synonyms or related terms for 'Ferry Stopping Location', separated by commas>"
+                    "name": "Fermata battello"
                 },
                 "public_transport/stop_position_light_rail": {
-                    "name": "Punto di stop della metropolitana di superficie",
-                    "terms": "<translate with synonyms or related terms for 'Light Rail Stopping Location', separated by commas>"
+                    "name": "Punto di stop della metropolitana di superficie"
                 },
                 "public_transport/stop_position_monorail": {
-                    "name": "Punto di stop della monorotaia",
-                    "terms": "<translate with synonyms or related terms for 'Monorail Stopping Location', separated by commas>"
+                    "name": "Punto di stop della monorotaia"
                 },
                 "public_transport/stop_position_subway": {
-                    "name": "Punto di stop della metropolitana",
-                    "terms": "<translate with synonyms or related terms for 'Subway Stopping Location', separated by commas>"
+                    "name": "Punto di stop della metropolitana"
                 },
                 "public_transport/stop_position_train": {
-                    "name": "Posizione fermata del treno ",
-                    "terms": "<translate with synonyms or related terms for 'Train Stopping Location', separated by commas>"
+                    "name": "Posizione fermata del treno "
                 },
                 "public_transport/stop_position_tram": {
-                    "name": "Punto di stop del tram",
-                    "terms": "<translate with synonyms or related terms for 'Tram Stopping Location', separated by commas>"
+                    "name": "Punto di stop del tram"
                 },
                 "public_transport/stop_position_trolleybus": {
-                    "name": "Punto di stop del filobus",
-                    "terms": "<translate with synonyms or related terms for 'Trolleybus Stopping Location', separated by commas>"
+                    "name": "Punto di stop del filobus"
                 },
                 "railway": {
                     "name": "Ferrovia"
@@ -6015,7 +5981,7 @@
                 },
                 "shop/mall": {
                     "name": "Centro commerciale",
-                    "terms": " Centro commerciale "
+                    "terms": "Centro commerciale"
                 },
                 "shop/massage": {
                     "name": "Centro Massaggi",
@@ -6242,7 +6208,7 @@
                 },
                 "tourism/artwork": {
                     "name": "Opera d'arte",
-                    "terms": " Opera d'arte "
+                    "terms": "Opera d'arte"
                 },
                 "tourism/attraction": {
                     "name": "Attrazione turistica",
@@ -6258,7 +6224,7 @@
                 },
                 "tourism/chalet": {
                     "name": "Chalet",
-                    "terms": " Casetta (chalet),cottage,vacanze"
+                    "terms": "Casetta (chalet),cottage,vacanze"
                 },
                 "tourism/gallery": {
                     "name": "Galleria d'arte",
@@ -6306,7 +6272,7 @@
                 },
                 "tourism/picnic_site": {
                     "name": "Area picnic",
-                    "terms": " Area picnic "
+                    "terms": "Area picnic"
                 },
                 "tourism/theme_park": {
                     "name": "Parco a tema",
@@ -6318,7 +6284,7 @@
                 },
                 "tourism/viewpoint": {
                     "name": "Punto panoramico",
-                    "terms": " Punto panoramico "
+                    "terms": "Punto panoramico"
                 },
                 "tourism/wilderness_hut": {
                     "name": "Bivacco",
@@ -6489,7 +6455,7 @@
                 },
                 "type/waterway": {
                     "name": "Corso d'acqua",
-                    "terms": " Corso d’acqua,via d'acqua,canale,fiume"
+                    "terms": "Corso d’acqua,via d'acqua,canale,fiume"
                 },
                 "vertex": {
                     "name": "Altro",
@@ -6520,7 +6486,7 @@
                 },
                 "waterway/drain": {
                     "name": "Canale di scolo",
-                    "terms": " Canale di scolo "
+                    "terms": "Canale di scolo"
                 },
                 "waterway/fuel": {
                     "name": "Stazione di rifornimento marittima",
@@ -6561,6 +6527,24 @@
             }
         },
         "imagery": {
+            "AGIV": {
+                "attribution": {
+                    "text": "Ortofoto Flanders le più recenti © AGIV"
+                },
+                "name": "AGIV Flanders le immagini aeree più recenti"
+            },
+            "AGIV10cm": {
+                "attribution": {
+                    "text": "Ortofoto Flanders © AGIV"
+                },
+                "name": "AGIV Flanders 2013-2015 immagini aeree 10cm"
+            },
+            "AGIVFlandersGRB": {
+                "attribution": {
+                    "text": "GRB Flanders © AGIV"
+                },
+                "name": "AGIV Flanders GRB"
+            },
             "Bing": {
                 "description": "Immagini satellitari e aeree.",
                 "name": "Immagini aeree Bing"
@@ -6569,7 +6553,7 @@
                 "attribution": {
                     "text": "Termini & Feedback"
                 },
-                "description": "Immagini satellitari Premium DigitalGlobe.",
+                "description": "DigitalGlobe-Premium è un mosaico di DigitalGlobe basemap con alcune selezionate regioni in +Vivid o immagini da aree di interesse personalizzate, con una risoluzione di meno di 50cm, aggiornamenti più frequenti e migliorata continuamente.",
                 "name": "Immagini DigitalGlobe Premium"
             },
             "DigitalGlobe-Premium-vintage": {
@@ -6583,7 +6567,7 @@
                 "attribution": {
                     "text": "Termini & Feedback"
                 },
-                "description": "Immagini satellitari Standard DigitalGlobe.",
+                "description": "DigitalGlobe-Standard è un set curato di immagini che copre l’86% della terra emersa mondiale, con risoluzione disponibile dai 30 ai 60cm e copertura alternativa che usa Landsat. L’età media è di 2,31 anni anche se alcune aree vengono aggiornate due volte l’anno.",
                 "name": "Immagini DigitalGlobe Standard"
             },
             "DigitalGlobe-Standard-vintage": {
@@ -6663,6 +6647,12 @@
                 },
                 "name": "OSM Inspector: Etichette"
             },
+            "SPW_ORTHO_LAST": {
+                "name": "SPW(allonie) le immagini aeree più recenti"
+            },
+            "SPW_PICC": {
+                "name": "SPW(allonie) PICC  immagini numeriche"
+            },
             "US-TIGER-Roads-2012": {
                 "name": "TIGER Roads 2012"
             },
@@ -6677,6 +6667,30 @@
             "US_Forest_Service_roads_overlay": {
                 "description": "Strada: bordo verde = non classificata. Bordo marrone = carrareccia. Manto in ghiaia = colore diriempimento marrone chiaro, asfaltato = nero, pavimentato = grigio, terra = bianco,  cemento = blu, erboso = verde. Stagionale = con barre bianche",
                 "name": "Strade forestali U.S. (sovrapposta)"
+            },
+            "UrbISOrtho2016": {
+                "attribution": {
+                    "text": "Realizzato con i mezzi di Bruxelles UrbIS®© - Distribuzione & Copyright CIRB"
+                },
+                "name": "UrbIS-Ortho 2016"
+            },
+            "UrbISOrtho2017": {
+                "attribution": {
+                    "text": "Realizzato con i mezzi di Bruxelles UrbIS®© - Distribuzione & Copyright CIRB"
+                },
+                "name": "UrbIS-Ortho 2017"
+            },
+            "UrbisAdmFR": {
+                "attribution": {
+                    "text": "Realizzato con i mezzi di Bruxelles UrbIS®© - Distribuzione & Copyright CIRB"
+                },
+                "name": "UrbisAdm FR"
+            },
+            "UrbisAdmNL": {
+                "attribution": {
+                    "text": "Realizzato con i mezzi di Bruxelles UrbIS®© - Distribuzione & Copyright CIRB"
+                },
+                "name": "UrbisAdm NL"
             },
             "Waymarked_Trails-Cycling": {
                 "attribution": {
@@ -6728,6 +6742,27 @@
                 },
                 "name": "Hike & Bike"
             },
+            "kelkkareitit": {
+                "attribution": {
+                    "text": "© Kelkkareitit.fi"
+                },
+                "description": "Kelkkareitit.fi piste per motoslitte da OSM (copre l’area scandinava)",
+                "name": "Motoslitte della Scandinavia (sovrapposta)"
+            },
+            "lantmateriet-orto1960": {
+                "attribution": {
+                    "text": "© Lantmäteriet, CC0"
+                },
+                "description": "Mosaico di ortofoto svedesi del periodo 1955–1965. Potrebbe contenere foto più antiche o più recenti.",
+                "name": "Ortofoto storiche di Lantmäteriet, 1960"
+            },
+            "lantmateriet-orto1975": {
+                "attribution": {
+                    "text": "© Lantmäteriet, CC0"
+                },
+                "description": "Mosaico di ortofoto svedesi del periodo 1970–1980. Non ancora concluso.",
+                "name": "Ortofoto storiche di Lantmäteriet, 1975"
+            },
             "mapbox_locator_overlay": {
                 "attribution": {
                     "text": "Termini & Feedback"
@@ -6760,6 +6795,13 @@
                 },
                 "name": "OpenStreetMap (Stile tedesco)"
             },
+            "osmse-ekonomiska": {
+                "attribution": {
+                    "text": "© Lantmäteriet"
+                },
+                "description": "Digitalizzazione di “Economic maps” ca. 1950–1980",
+                "name": "Cartina economica Lantmäteriet 1950–1980"
+            },
             "qa_no_address": {
                 "attribution": {
                     "text": "Simon Poole, Data ©OpenStreetMap contributors"
@@ -6771,6 +6813,13 @@
                     "text": "© Tiles: skobbler Map data: OpenStreetMap contributors"
                 },
                 "name": "skobbler"
+            },
+            "skoterleder": {
+                "attribution": {
+                    "text": "© Skoterleder.org"
+                },
+                "description": "Piste per motoslitte",
+                "name": "Mappa svedese per motoslitte"
             },
             "stamen-terrain-background": {
                 "attribution": {
@@ -6789,9 +6838,59 @@
                     "text": "Maps © Thunderforest, Data © OpenStreetMap contributors"
                 },
                 "name": "Thunderforest Landscape"
+            },
+            "trafikverket-baninfo": {
+                "attribution": {
+                    "text": "© Trafikverket, CC0"
+                },
+                "description": "Rete ferroviaria della Svezia, inclusi binari di servizio",
+                "name": "Rete ferroviaria di Trafikverket"
+            },
+            "trafikverket-baninfo-option": {
+                "attribution": {
+                    "text": "© Trafikverket, CC0"
+                },
+                "description": "Rete ferroviaria della Svezia con diverse opzioni per gli strati della mappa",
+                "name": "Opzioni delle rete ferroviaria di Trafikverket"
+            },
+            "trafikverket-vagnat": {
+                "attribution": {
+                    "text": "© Trafikverket, CC0"
+                },
+                "description": "Rete stradale NVDB della Svezia",
+                "name": "Rete stradale di Trafikverket"
+            },
+            "trafikverket-vagnat-extra": {
+                "attribution": {
+                    "text": "© Trafikverket, CC0"
+                },
+                "description": "Dettagli extra su NVDB svedese: numero di riferimento della strada, fermata autobus, tunnel, autovelox",
+                "name": "Rete stradale extra di Trafikverket"
+            },
+            "trafikverket-vagnat-navn": {
+                "attribution": {
+                    "text": "© Trafikverket, CC0"
+                },
+                "description": "Nomi delle strade NVDB della Svezia",
+                "name": "Nomi stradali di Trafikverket"
+            },
+            "trafikverket-vagnat-option": {
+                "attribution": {
+                    "text": "© Trafikverket, CC0"
+                },
+                "description": "Rete stradale NVDB svedese con diverse opzioni per gli strati della mappa",
+                "name": "Opzioni della rete stradale di Trafikverket"
             }
         },
         "community": {
+            "bw-facebook": {
+                "name": "Mappando il Botswana su Facebook",
+                "description": "Pagina di OpenStreetMap nel Botswana"
+            },
+            "bw-twitter": {
+                "name": "Mappando il Botswana su Twitter",
+                "description": "Twitter di OpenStreetMap nel Botswana"
+            },
             "cape-coast-youthmappers": {
                 "name": "Giovani mappatori dell’università di Cape Coast",
                 "description": "Seguici su Twitter: {url}",
@@ -7032,6 +7131,18 @@
                 "name": "Twitter di OpenStreetMap del Belgio",
                 "description": "OSM del Belgio su Twitter: @osm_be"
             },
+            "hr-facebook": {
+                "name": "Gruppo Facebook di OpenStreetMap della Croazia",
+                "description": "Gruppo Facebook di OpenStreetMap della Croazia"
+            },
+            "hr-irc": {
+                "name": "OpenStreetMap della Croazia su IRC",
+                "description": "Entra in #osm-hr su irc.freenode.org (port 6667)"
+            },
+            "hr-mailinglist": {
+                "name": "Mailinglist talk-hr",
+                "description": "Mailinglist talk-hr"
+            },
             "czech-community": {
                 "name": "Comunità OSM della Repubblica Ceca",
                 "description": "Portale delle mappe, sito web e contatti fra i membri di OSM nella Repubblica Ceca"
@@ -7144,6 +7255,18 @@
                 "name": "Meetup di OpenStreetMap in Ungheria",
                 "description": "La piattaforma per organizzare incontri in Ungheria"
             },
+            "is-facebook": {
+                "name": "OSM dell’Islanda su Facebook",
+                "description": "Pagina di OpenStreetMap in Islanda"
+            },
+            "is-mailinglist": {
+                "name": "Mailinglist talk-is",
+                "description": "Talk-is è la mailinglist ufficiale della comunità OSM islandese"
+            },
+            "is-twitter": {
+                "name": "OSM Islanda su Twitter",
+                "description": "Twitter di OpenStreetMap in Islanda"
+            },
             "it-facebook": {
                 "name": "Facebook di OpenStreetMap dell’Italia",
                 "description": "Unisciti alla comunità italiana di OpenStreetMap su Facebook"
@@ -7201,6 +7324,14 @@
             "OSM-PL-forum": {
                 "name": "Forum web di OpenStreetMap della Polonia",
                 "description": "Forum web della comunità polacca di OpenStreetMap"
+            },
+            "si-forum": {
+                "name": "Forum di OpenStreetMap della Slovenia",
+                "description": "Forum della comunità di OpenStreetMap della Slovenia"
+            },
+            "si-mailinglist": {
+                "name": "Mailinglist di OpenStreetMap della Slovenia",
+                "description": "Mailinglist della comunità di OpenStreetMap della Slovenia"
             },
             "OSM-ES-mailinglist": {
                 "name": "Mailinglist talk-es",
@@ -7307,6 +7438,10 @@
                 "description": "Mappatori e utenti OpenStreetMap nei dintorni di Portland, Maine",
                 "extendedDescription": "Maptime è letteralmente tempo per la mappatura. La nostra missione è quella di aprire le porte della cartografia a chiunque sia interessato, creando un posto e dei momenti per l’apprendimento collaborativo, l’esplorazione, la creazione di mappe usando strumenti e tecnologie per la mappatura."
             },
+            "us-ma-mailinglist": {
+                "name": "Mailinglist Talk-us-massachusetts",
+                "description": "Mailinglist per la comunità OSM del Massachusetts"
+            },
             "OpenCleveland-meetup": {
                 "name": "Open Cleveland",
                 "description": "Miglioriamo OpenStreetMap nell’area di Cleveland",
@@ -7334,6 +7469,11 @@
             "OSM-NYC": {
                 "name": "OpenStreetMap NYC",
                 "description": "Mappatori e utenti OpenStreetMap, sviluppatori e appassionati nell'area Metropolitana di New York"
+            },
+            "OSM-Portland-forum": {
+                "name": "Gruppo Google di OpenStreetMap PDX",
+                "description": "Forum e mailinglist degli utenti di OpenStreetMap nell’area di Portland",
+                "extendedDescription": "Questo gruppo serve a facilitare i miglioramenti di OpenStreetMap nell’area di Portland (stato dell’Oregon) e per sostenere applicazioni come Open trip Planner."
             },
             "OSM-Portland": {
                 "name": "OpenStreetMap Portland",
@@ -7366,7 +7506,14 @@
             "OSM-US": {
                 "name": "OpenStreetMap degli Stati Uniti",
                 "description": "Aiutiamo a crescere e migliorare OpenStreetMap negli Stati Uniti.",
-                "extendedDescription": "Supportiamo OpenStreetMap organizzando conferenze annuali, producendo risorse per la comunità, costruendo relazioni e diffondendo la voce. Unisciti a OpenStreetMap degli Stati Uniti qui: {signupUrl}"
+                "extendedDescription": "Supportiamo OpenStreetMap organizzando conferenze annuali, producendo risorse per la comunità, costruendo relazioni e diffondendo la voce. Unisciti a OpenStreetMap degli Stati Uniti qui: {signupUrl}",
+                "events": {
+                    "sotmus2018": {
+                        "name": "State of the Map Stati Uniti 2018",
+                        "description": "Unisciti alla comunità di OpenStreetMap per lo State of the Map degli Stati Uniti che si terrà a Detroit nello stato del Michigan. Entra in contatto con gli altri mappatori, le aziende, le agenzie governative e quelle no-profit, tutti insieme per collaborare alla mappa del mondo libera e modificabile.",
+                        "where": "Detroit, Michigan"
+                    }
+                }
             },
             "OSM-Utah": {
                 "name": "OpenStreetMap dello Utah",
@@ -7536,6 +7683,29 @@
             "OSM-PE": {
                 "name": "OpenStreetMap del Perù",
                 "description": "Novità e risorse per la comunità di OpenStreetMap del Perù"
+            },
+            "LATAM-Facebook": {
+                "name": "Facebook di OpenStreetMap dell’America Latina",
+                "description": "OpenStreetMap dell’America Latina su Facebook"
+            },
+            "LATAM-Telegram": {
+                "name": "Telegram di OpenStreetMap dell’America Latina",
+                "description": "Telegram di OpenStreetMap per l’America Latina"
+            },
+            "LATAM-Twitter": {
+                "name": "Twitter di OpenStreetMap dell’America Latina",
+                "description": "Seguici su Twitter all’indirizzo {url}"
+            },
+            "osm-latam": {
+                "name": "OpenStreetMap dell’America Latina",
+                "description": "Sosteniamo OpenStreetMap in America Latina",
+                "events": {
+                    "sotm-latam-2018": {
+                        "name": "State of the Map America Latina 2018",
+                        "description": "State of the Map America Latina è la conferenza annuale per tutti i mappatori e gli utenti di OpenStreetMap in America Latina. Il programma include discussioni, gruppi, lezioni e mapathon riguardanti OpenStreetMap.",
+                        "where": "Buenos Aires, Argentina"
+                    }
+                }
             },
             "OSM-Facebook": {
                 "name": "OpenStreetMap su Facebook",

@@ -21,6 +21,11 @@
                 "description": "Thêm nhà hàng, đài tưởng niệm, hòm thư, hoặc địa điểm khác vào bản đồ.",
                 "tail": "Nhấn vào bản đồ để thêm địa điểm."
             },
+            "add_note": {
+                "title": "Ghi chú",
+                "description": "Nhận ra khuyết điểm? Hãy báo cho người khác biết.",
+                "tail": "Nhấn chuột vào bản đồ để đăng ghi chú."
+            },
             "browse": {
                 "title": "Xem",
                 "description": "Di chuyển và thu phóng bản đồ."
@@ -40,7 +45,8 @@
                 "annotation": {
                     "point": "thêm địa điểm",
                     "vertex": "thêm nốt vào lối",
-                    "relation": "thêm quan hệ"
+                    "relation": "thêm quan hệ",
+                    "note": "đăng ghi chú"
                 }
             },
             "start": {
@@ -297,6 +303,14 @@
                     "create": "thêm hạn chế rẽ",
                     "delete": "bỏ hạn chế rẽ"
                 }
+            },
+            "detach_node": {
+                "title": "Rút trích",
+                "key": "R",
+                "description": "Rút trích điểm riêng từ các đường kẻ hoặc vùng này.",
+                "annotation": "rút trích điểm từ đường kẻ hoặc vùng",
+                "restriction": "Không thể rút trích nốt này vì điều này sẽ làm hư một quan hệ “{relation}”.",
+                "connected_to_hidden": "Không thể rút trích nốt này vì nó nối liền với một đối tượng ẩn."
             }
         },
         "restriction": {
@@ -352,8 +366,8 @@
             "localized_translation_name": "Tên"
         },
         "zoom_in_edit": "Phong to để sửa đổi",
-        "login": "đăng nhập",
-        "logout": "đăng xuất",
+        "login": "Đăng nhập",
+        "logout": "Đăng xuất",
         "loading_auth": "Đang kết nối với OpenStreetMap…",
         "report_a_bug": "Báo cáo lỗi",
         "help_translate": "Hợp tác biên dịch",
@@ -509,8 +523,6 @@
             "best_imagery": "Nguồn hình ảnh hữu ích nhất đối với nơi này",
             "switch": "Quay về hình nền này",
             "custom": "Tùy biến",
-            "custom_button": "Sửa hình nền tùy biến",
-            "custom_prompt": "Nhập định dạng URL của các mảnh bản đồ. Bạn có thể sử dụng các dấu hiệu:\n   - {zoom} hoặc {z}, {x}, {y} cho định dạng mảnh Z/X/Y\n   - {-y} hoặc {ty} cho tọa độ Y kiểu TMS phản chiếu\n   - {u} cho định dạng quadtile\n   - {switch:a,b,c} để luân phiên các máy chủ DNS\n\nVí dụ:\n{example}",
             "overlays": "Lớp phủ",
             "imagery_source_faq": "Chi tiết Hình ảnh / Báo cáo Vấn đề",
             "reset": "đặt lại",
@@ -536,6 +548,10 @@
                 "osm": {
                     "tooltip": "Dữ liệu từ OpenStreetMap",
                     "title": "Dữ liệu OpenStreetMap"
+                },
+                "notes": {
+                    "tooltip": "Dữ liệu ghi chú từ OpenStreetMap",
+                    "title": "Ghi chú OpenStreetMap"
                 }
             },
             "fill_area": "Cách Tô màu các Vùng",
@@ -709,14 +725,12 @@
         },
         "cannot_zoom": "Không thể thu nhỏ hơn trong chế độ hiện tại.",
         "full_screen": "Bật/tắt Chế độ Toàn màn hình",
-        "gpx": {
-            "local_layer": "Tập tin địa phương",
-            "drag_drop": "Kéo thả một tập tin .gpx, .geojson, hoặc .kml vào trang hoặc bấm nút bên phải để duyệt",
-            "zoom": "Phóng vừa lớp",
-            "browse": "Duyệt tập tin"
-        },
         "streetside": {
-            "report": "Báo cáo lo ngại riêng tư trong hình"
+            "tooltip": "Hình ảnh Streetside của Microsoft",
+            "title": "Lớp phủ Hình ảnh (Bing Streetside)",
+            "report": "Báo cáo lo ngại riêng tư trong hình",
+            "view_on_bing": "Xem tại Bản đồ Bing",
+            "hires": "Độ phân giải cao"
         },
         "mapillary_images": {
             "tooltip": "Hình ảnh cấp phố do Mapillary cung cấp",
@@ -735,6 +749,33 @@
         },
         "openstreetcam": {
             "view_on_openstreetcam": "Xem hình này trên OpenStreetCam"
+        },
+        "note": {
+            "note": "Ghi chú",
+            "title": "Sửa ghi chú",
+            "anonymous": "vô danh",
+            "closed": "(Giải quyết)",
+            "commentTitle": "Bình luận",
+            "status": {
+                "opened": "tạo {when}",
+                "reopened": "mở lại {when}",
+                "commented": "bình luận {when}",
+                "closed": "giải quyết {when}"
+            },
+            "newComment": "Bình luận Mới",
+            "inputPlaceholder": "Nhập lời bình luận để người dùng khác xem.",
+            "close": "Giải quyết Ghi chú",
+            "open": "Mở lại Ghi chú",
+            "comment": "Bình luận",
+            "close_comment": "Giải quyết và Bình luận",
+            "open_comment": "Mở lại và Bình luận",
+            "report": "Báo cáo",
+            "new": "Ghi chú Mới",
+            "newDescription": "Miêu tả khuyết điểm.",
+            "save": "Lưu Ghi chú",
+            "login": "Bạn phải đăng nhập để thay đổi hoặc bình luận về ghi chú này.",
+            "upload_explanation": "Lời bình luận của bạn sẽ xuất hiện để mọi người dùng OpenStreetMap xem.",
+            "upload_explanation_with_user": "Lời bình luận bạn đăng lên dưới tên {user} sẽ xuất hiện để mọi người dùng OpenStreetMap xem."
         },
         "help": {
             "title": "Trợ giúp",
@@ -873,6 +914,17 @@
                 "boundary": "Quan hệ *biên giới* nhóm lại một hay nhiều đường kẻ thành biên giới của một đơn vị hành chính.",
                 "boundary_add": "Để xếp một đối tượng vào một quan hệ biên giới, chọn đối tượng và bấm nút {plus} **Thêm** trong phần “Tất cả các quan hệ” của thanh bên. Bạn có thể chọn quan hệ từ một danh sách quan hệ lân cận hoặc tạo một quan hệ mới dùng mục “Quan hệ mới…”. "
             },
+            "notes": {
+                "title": "Ghi chú",
+                "intro": "Lời *ghi chú* báo động cho người dùng khác rằng một đối tượng nào đó cần được sửa chữa hoặc một địa điểm cần được chú ý. Một lời ghi chú ứng với một địa điểm cụ thể trên bản đồ. Để xem các ghi chú đã tồn tại hoặc đăng ghi chú mới, bấm nút {data} **Dữ liệu Bản đồ** ở bên phải của bản đồ để kích hoạt lớp phủ ghi chú OpenStreetMap.",
+                "add_note_h": "Đăng Ghi chú",
+                "add_note": "Để tạo ghi chú mới, bấm nút {note} **Ghi chú** trên thanh công cụ bên trên bản đồ hoặc bấm phím tắt `4`. Con trỏ sẽ biến thành chữ thập. Để đặt ghi chú mới trên bản đồ, đặt con trỏ tại vị trí muốn ghi chú, rồi {leftclick} nhấn chuột trái hoặc bấm `Dấu cách`.",
+                "move_note": "Để di chuyển một ghi chú mới, đặt con trỏ trên nó và kéo nó đến vị trí khác dùng {leftclick} chuột trái. Không thể di chuyển một ghi chú đã được đăng.",
+                "update_note_h": "Giải quyết, Mở lại, và Bình luận",
+                "update_note": "Bạn có thể cập nhật ghi chú bằng cách giải quyết, mở lại, hoặc đăng lời bình luận. Đánh dấu giải quyết đối với lời ghi chú nếu khuyết điểm đã được khắc phục. Mở lại ghi chú nếu khuyết điểm vẫn chưa được khắc phục.",
+                "save_note_h": "Đăng Ghi chú",
+                "save_note": "Bạn phải đăng mỗi một thay đổi ghi chú bằng cách bấm nút bên dưới các bình luận của ghi chú. Lưu ý rằng việc đăng bộ thay đổi lên OpenStreetMap sẽ **không** bao gồm các thay đổi ghi chú."
+            },
             "imagery": {
                 "title": "Hình nền",
                 "intro": "Hình nền đằng sau bản đồ là tài nguyên quan trọng trong việc vẽ bản đồ. Hình nền có thể chụp từ vệ tinh, máy bay, và máy bay không người lái, hoặc quét từ sách bản đồ lịch sử, hoặc lấy từ cơ sở dữ liệu mở.",
@@ -885,7 +937,7 @@
             },
             "streetlevel": {
                 "title": "Hình ảnh Cấp phố",
-                "intro": "Hình ảnh cấp phố giúp bạn bổ sung bảng giao thông, kinh doanh, và nhiều chi tiết không nhìn được từ hình ảnh chụp từ không trung hoặc vệ tinh. Chương trình iD lấy hình ảnh cấp phố nguồn mở từ [Mapillary](https://www.mapillary.com) và [OpenStreetCam](https://www.openstreetcam.org).",
+                "intro": "Hình ảnh cấp phố giúp bạn bổ sung bảng giao thông, kinh doanh, và nhiều chi tiết không nhìn được từ hình ảnh chụp từ không trung hoặc vệ tinh. Chương trình iD lấy hình ảnh cấp phố nguồn mở từ [Bing Streetside](https://www.microsoft.com/en-us/maps/streetside), [Mapillary](https://www.mapillary.com), và [OpenStreetCam](https://www.openstreetcam.org).",
                 "using_h": "Sử dụng Hình ảnh Cấp phố",
                 "using": "Để sử dụng hình ảnh cấp phố trong việc vẽ bản đồ, bấm nút {data} **Dữ liệu Bản đồ** ở bên phải của bản đồ và bật các lớp dữ liệu có sẵn.",
                 "photos": "Khi lớp hình ảnh được kích hoạt, bản đồ hiển thị đường kẻ theo đường đi của các máy chụp hình. Nếu phóng to đủ mức, mỗi vị trí chụp hình được đánh dấu bằng hình tròn. Nếu phóng to hơn, một hình nón cho biết hương nhìn vào lúc chụp hình.",
@@ -1267,7 +1319,8 @@
                     "add_point": "Chế độ “thêm địa điểm”",
                     "add_line": "Chế độ “thêm đường kẻ”",
                     "add_area": "Chế độ “thêm vùng”",
-                    "place_point": "Đặt địa điểm hoặc nốt",
+                    "add_note": "Chế độ tạo ghi chú",
+                    "place_point": "Đặt địa điểm hoặc tạo ghi chú",
                     "disable_snap": "Giữ xuống để tránh nối liền với đối tượng khác khi đặt địa điểm hoặc nốt",
                     "stop_line": "Kết thúc vẽ đường kẻ hoặc vùng"
                 },
@@ -1276,6 +1329,7 @@
                     "continue_line": "Vẽ tiếp đường kẻ từ nốt được chọn",
                     "merge": "Gộp các đối tượng được chọn",
                     "disconnect": "Tháo gỡ các đối tượng tại nốt được chọn",
+                    "detach_node": "Rút trích điểm từ nốt được chọn trên đường kẻ hoặc vùng",
                     "split": "Cắt đôi các đường kẻ tại nốt được chọn",
                     "reverse": "Đảo ngược chiều đường kẻ",
                     "move": "Di chuyển các đối tượng được chọn",
@@ -1379,31 +1433,24 @@
                     "label": "Quyền Truy cập",
                     "options": {
                         "designated": {
-                            "description": "Được xây với mục đích cho phép vận chuyển bằng phương thức này, theo bảng hay luật pháp địa phương",
                             "title": "Theo mục đích"
                         },
                         "destination": {
-                            "description": "Chỉ cho phép truy cập để tới nơi",
                             "title": "Nơi đến"
                         },
                         "dismount": {
-                            "description": "Chỉ cho phép nếu xuống đi bộ",
                             "title": "Bắt xuống đi bộ"
                         },
                         "no": {
-                            "description": "Công chúng không được phép truy cập",
                             "title": "Cấm"
                         },
                         "permissive": {
-                            "description": "Chủ cho phép rộng rãi nhưng có thể cấm sau",
                             "title": "Chủ cho phép"
                         },
                         "private": {
-                            "description": "Chỉ có những người được chủ cho phép truy cập",
                             "title": "Tư nhân"
                         },
                         "yes": {
-                            "description": "Mọi người được phép truy cập theo luật pháp",
                             "title": "Cho phép"
                         }
                     },
@@ -1569,6 +1616,9 @@
                 "board_type": {
                     "label": "Kiểu"
                 },
+                "booth": {
+                    "label": "Buồng"
+                },
                 "boules": {
                     "label": "Kiểu"
                 },
@@ -1616,6 +1666,9 @@
                 "capacity": {
                     "label": "Sức chứa",
                     "placeholder": "50, 100, 200…"
+                },
+                "cash_in": {
+                    "label": "Nhận tiền"
                 },
                 "castle_type": {
                     "label": "Kiểu"
@@ -2272,6 +2325,9 @@
                         "underground": "Ngầm"
                     }
                 },
+                "passenger_information_display": {
+                    "label": "Hệ thống Thông tin Hành khách"
+                },
                 "payment_multi": {
                     "label": "Phương thức Thanh toán"
                 },
@@ -2490,8 +2546,22 @@
                 "shop": {
                     "label": "Kiểu"
                 },
+                "siren/purpose": {
+                    "label": "Mục đích"
+                },
+                "siren/type": {
+                    "label": "Kiểu",
+                    "options": {
+                        "electronic": "Điện tử",
+                        "other": "Khác",
+                        "pneumatic": "Gió"
+                    }
+                },
                 "site": {
                     "label": "Loại"
+                },
+                "site_type": {
+                    "label": "Loại Di chỉ"
                 },
                 "smoking": {
                     "label": "Hút thuốc",
@@ -2965,10 +3035,6 @@
                 "amenity/bicycle_repair_station": {
                     "name": "Quầy Sửa Xe đạp",
                     "terms": "quầy sửa xe đạp, xích, bơm, quay sua xe dap, xich, bom"
-                },
-                "amenity/biergarten": {
-                    "name": "Vườn Bia",
-                    "terms": "vườn bia, vườn uống bia, vườn nhậu, vuon bia, vuon uong bia, vuon nhau"
                 },
                 "amenity/boat_rental": {
                     "name": "Cho thuê Tàu",
@@ -3999,6 +4065,10 @@
                 "emergency/destination": {
                     "name": "Dịch vụ Khẩn cấp Đến nơi"
                 },
+                "emergency/fire_alarm": {
+                    "name": "Hộp Điện thoại Báo cháy",
+                    "terms": "hộp điện thoại báo cháy, hộp cuộc gọi báo cháy, hộp khẩn cấp cứu hỏa, hộp khẩn cấp cứu hoả"
+                },
                 "emergency/fire_extinguisher": {
                     "name": "Bình Cứu hỏa",
                     "terms": "bình cứu hỏa, bình cứu hoả, bình chữa cháy, bình chữa lửa, binh cuu hoa, binh chua chay, binh chua lua"
@@ -4007,9 +4077,17 @@
                     "name": "Trụ Cứu hỏa",
                     "terms": "trụ cứu hỏa, trụ cứu hoả, trụ chữa cháy, cột cứu hỏa, cột cứu hoả, cột chữa cháy, tru cuu hoa, tru chua chay, cot cuu hoa, cot chua chay"
                 },
+                "emergency/first_aid_kit": {
+                    "name": "Hộp Cấp cứu",
+                    "terms": "hộp cấp cứu, hộp sơ cứu, hộp y tế, hộp cứu thương, trạm cấp cứu, trạm sơ cứu, trạm y tế, trạm cứu thương, bộ cấp cứu, bộ sơ cứu, bộ y tế, bộ cứu thương, hop cap cuu, hop so cuu, hop cuu thuong, tram cap cuu, tram so cuu, tram y te, tram cuu thuong, bo cap cuu, bo so cuu, bo y te, bo cuu thuong"
+                },
                 "emergency/life_ring": {
                     "name": "Phao Cứu đắm",
                     "terms": "phao cứu đắm, phao cuu dam"
+                },
+                "emergency/lifeguard": {
+                    "name": "Nhân viên Cứu hộ Bơi lội",
+                    "terms": "nhân viên cứu hộ bơi lội, cứu hộ viên bơi lội, nhân viên cứu hộ hồ bơi, cứu hộ viên hồ bơi, nhân viên cứu hộ bờ biển, cứu hộ viên bờ biển, nhân viên cứu hộ bờ sông, cứu hộ viên bờ sông, nhân viên trực hồ bơi, nhan vien cuu ho boi loi, cuu ho vien boi loi, nhan vien cuu ho ho boi, cuu ho vien ho boi, nhan vien cuu ho bo bien, cuu ho vien bo bien, nhan vien cuu ho bo song, cuu ho vien bo song, nhan vien truc ho boi"
                 },
                 "emergency/no": {
                     "name": "Không cho phép Dịch vụ Khẩn cấp"
@@ -4023,6 +4101,10 @@
                 },
                 "emergency/private": {
                     "name": "Chỉ Dịch vụ Khẩn cấp được Chủ Cho phép"
+                },
+                "emergency/siren": {
+                    "name": "Còi Báo động",
+                    "terms": "còi báo động, còi báo, còi tầm, còi hú, coi bao dong, coi bao, coi tam, coi hu"
                 },
                 "emergency/water_tank": {
                     "name": "Bể nước Cứu hỏa",
@@ -4370,8 +4452,8 @@
                     "terms": "nơi lịch sử, tưởng niệm lịch sử, kỷ niệm lịch sử, kỉ niệm lịch sử, noi lich su, tuong niem lich su, ky niem lich su, ki niem lich su"
                 },
                 "historic/archaeological_site": {
-                    "name": "Khu vực Khảo cổ",
-                    "terms": "khu vực khảo cổ, khẩo cổ học, khu vuc khao co, khao co hoc"
+                    "name": "Di chỉ Khảo cổ",
+                    "terms": "di chỉ khảo cổ, di chỉ, địa điểm khảo cổ học, khu vực khảo cổ, khẩo cổ học, di chi khao co, di chi, dia diem khao co hoc, khu vuc khao co, khao co hoc"
                 },
                 "historic/boundary_stone": {
                     "name": "Mốc Biên giới",
@@ -4863,6 +4945,10 @@
                 "man_made/bridge": {
                     "name": "Cầu",
                     "terms": "cầu, cau"
+                },
+                "man_made/bunker_silo": {
+                    "name": "Xilô Boong ke",
+                    "terms": "xilô boong ke, xi-lô boong ke, xi lô boong ke, xilô boongke, xi-lô boong-ke, xi lô boong ke, xilo boong ke, xi-lo boong ke, xi lo boong ke, xilo boonke, xi-lo boong-ke, xi lo boong ke"
                 },
                 "man_made/chimney": {
                     "name": "Ống khói",
@@ -5697,7 +5783,7 @@
                 },
                 "railway/tram": {
                     "name": "Đường Tàu điện",
-                    "terms": "đường tàu điện, tàu điện, đường xe điện, xe điện, duong tau dien, tau dien, duong xe dien, xe dien "
+                    "terms": "đường tàu điện, tàu điện, đường xe điện, xe điện, duong tau dien, tau dien, duong xe dien, xe dien"
                 },
                 "railway/tram_stop": {
                     "name": "Vị trí Đón khách Tàu điện"
@@ -6559,6 +6645,24 @@
             }
         },
         "imagery": {
+            "AGIV": {
+                "attribution": {
+                    "text": "Hình ảnh trực giao Vlaanderen mới nhất © AGIV"
+                },
+                "name": "Hình ảnh trực giao Vlaanderen mới nhất của AGIV"
+            },
+            "AGIV10cm": {
+                "attribution": {
+                    "text": "Hình ảnh trực giao Vlaanderen © AGIV"
+                },
+                "name": "Hình chụp trên không 10 cm 2013–2015 Vlaanderen AGIV"
+            },
+            "AGIVFlandersGRB": {
+                "attribution": {
+                    "text": "GRB Vlaanderen © AGIV"
+                },
+                "name": "AGIV Vlaanderen GRB"
+            },
             "Bing": {
                 "description": "Hình ảnh chụp từ vệ tinh và trên không trung.",
                 "name": "Hình chụp trên không Bing"
@@ -6567,7 +6671,7 @@
                 "attribution": {
                     "text": "Điều khoản & Phản hồi"
                 },
-                "description": "Hình ảnh thượng hạng chụp từ vệ tinh DigitalGlobe.",
+                "description": "DigitalGlobe Thượng hạng là một lớp hình ảnh hỗn hợp: ở nhiều nơi có lớp hình gốc của DigitalGlobe, còn một số khu vực được ghép lại hình ảnh +Vivid hoặc hình ảnh khu vực quan tâm tùy biến có độ phân giải 50 cm trở lên, và được cập nhật thường xuyên hơn.",
                 "name": "DigitalGlobe Thượng hạng"
             },
             "DigitalGlobe-Premium-vintage": {
@@ -6581,7 +6685,7 @@
                 "attribution": {
                     "text": "Điều khoản & Phản hồi"
                 },
-                "description": "Hình ảnh tiêu chuẩn chụp từ vệ tinh DigitalGlobe.",
+                "description": "DigitalGlobe Tiêu chuẩn là tập hợp hình ảnh được lựa chọn chiếm 86% tổng diện tích đất đai của Trái Đất có độ phân giải 30–60 cm ở nơi nào có sẵn; ở nơi nào không có sẵn thì có hình ảnh Landsat thay thế. Hình ảnh được chụp cách đây trung bình 2,31 năm, một số khu vực được cập nhật mỗi năm hai lần.",
                 "name": "DigitalGlobe Tiêu chuẩn"
             },
             "DigitalGlobe-Standard-vintage": {
@@ -6661,6 +6765,12 @@
                 },
                 "name": "Trình kiểm tra OSM: Thẻ"
             },
+            "SPW_ORTHO_LAST": {
+                "name": "Hình chụp trên không Wallonie mới nhất của SPW"
+            },
+            "SPW_PICC": {
+                "name": "Hình ảnh số PICC Wallonie của SPW"
+            },
             "US-TIGER-Roads-2012": {
                 "name": "Đường sá TIGER 2012"
             },
@@ -6675,6 +6785,30 @@
             "US_Forest_Service_roads_overlay": {
                 "description": "Đường sá: vỏ xanh là ngõ; vỏ nâu là đường mòn.\nMặt đường: sỏi đá được tô màu nâu nhạt; nhựa là màu đen, mặt lát là màu xám; đất là màu trắng; bê tông là màu xanh lam; cỏ là màu xanh lá cây.\nTùy mùa có vạch màu trắng.",
                 "name": "Lớp phủ Đường Lâm nghiệp Hoa Kỳ"
+            },
+            "UrbISOrtho2016": {
+                "attribution": {
+                    "text": "UrbIS®© Bruxelles thực hiện; CIRB phân phát và giữ bản quyền"
+                },
+                "name": "UrbIS trực giao 2016"
+            },
+            "UrbISOrtho2017": {
+                "attribution": {
+                    "text": "UrbIS®© Bruxelles thực hiện; CIRB phân phát và giữ bản quyền"
+                },
+                "name": "UrbIS trực giao 2017"
+            },
+            "UrbisAdmFR": {
+                "attribution": {
+                    "text": "UrbIS®© Bruxelles thực hiện; CIRB phân phát và giữ bản quyền"
+                },
+                "name": "UrbisAdm Pháp"
+            },
+            "UrbisAdmNL": {
+                "attribution": {
+                    "text": "UrbIS®© Bruxelles thực hiện; CIRB phân phát và giữ bản quyền"
+                },
+                "name": "UrbisAdm Hà Lan"
             },
             "Waymarked_Trails-Cycling": {
                 "attribution": {
@@ -6726,6 +6860,25 @@
                 },
                 "name": "Đi bộ & Đạp xe"
             },
+            "kelkkareitit": {
+                "attribution": {
+                    "text": "© Kelkkareitit.fi"
+                },
+                "description": "Đường xe máy trượt tuyết Kelkkareitit.fi từ OSM (Bắc Âu)",
+                "name": "Lớp phủ xe máy trượt tuyết Bắc Âu"
+            },
+            "lantmateriet-orto1960": {
+                "attribution": {
+                    "text": "© Lantmäteriet, CC0"
+                },
+                "name": "Hình ảnh trực giao lịch sử Lantmäteriet 1960"
+            },
+            "lantmateriet-orto1975": {
+                "attribution": {
+                    "text": "© Lantmäteriet, CC0"
+                },
+                "name": "Hình ảnh trực giao lịch sử Lantmäteriet 1975"
+            },
             "mapbox_locator_overlay": {
                 "attribution": {
                     "text": "Điều khoản & Phản hồi"
@@ -6758,6 +6911,11 @@
                 },
                 "name": "OpenStreetMap (Kiểu Đức)"
             },
+            "osmse-ekonomiska": {
+                "attribution": {
+                    "text": "© Lantmäteriet"
+                }
+            },
             "qa_no_address": {
                 "attribution": {
                     "text": "Simon Poole, Dữ liệu © những người đóng góp vào OpenStreetMap"
@@ -6769,6 +6927,13 @@
                     "text": "© Hình bản đồ: skobbler Dữ liệu bản đồ: những người đóng góp vào OpenStreetMap"
                 },
                 "name": "skobbler"
+            },
+            "skoterleder": {
+                "attribution": {
+                    "text": "© Skoterleder.org"
+                },
+                "description": "Đường xe máy trượt tuyết",
+                "name": "Bản đồ xe máy trượt tuyết Thụy Điển"
             },
             "stamen-terrain-background": {
                 "attribution": {
@@ -6787,9 +6952,59 @@
                     "text": "Bản đồ © Thunderforest, dữ liệu © những người đóng góp vào OpenStreetMap"
                 },
                 "name": "Phong cảnh Thunderforest"
+            },
+            "trafikverket-baninfo": {
+                "attribution": {
+                    "text": "© Bộ Giao thông Thụy Điển, CC0"
+                },
+                "description": "Hệ thống đường sắt Thụy Điển có cả đường tránh",
+                "name": "Hệ thống Đường sắt Bộ Giao thông Thụy Điển"
+            },
+            "trafikverket-baninfo-option": {
+                "attribution": {
+                    "text": "© Bộ Giao thông Thụy Điển, CC0"
+                },
+                "description": "Hệ thống đường sắt Thụy Điển có vài lớp bản đồ để lựa chọn",
+                "name": "Hệ thống Đường sắt Thụy Điển có tùy chọn"
+            },
+            "trafikverket-vagnat": {
+                "attribution": {
+                    "text": "© Bộ Giao thông Thụy Điển, CC0"
+                },
+                "description": "Hệ thống Đường bộ NVDB Thụy Điển",
+                "name": "Hệ thống Đường bộ Bộ Giao thông Thụy Điển"
+            },
+            "trafikverket-vagnat-extra": {
+                "attribution": {
+                    "text": "© Bộ Giao thông Thụy Điển, CC0"
+                },
+                "description": "Chi tiết bổ sung từ NVDB Thụy Điển: số đường, thiết bị điều hòa giao thông, trạm dừng nghỉ, trạm xe buýt, cầu, đường hầm, camera giám sát tốc độ",
+                "name": "Hệ thống Đường bộ Bộ Giao thông Thụy Điển bổ sung"
+            },
+            "trafikverket-vagnat-navn": {
+                "attribution": {
+                    "text": "© Bộ Giao thông Thụy Điển, CC0"
+                },
+                "description": "Tên Đường NVDB Thụy Điển",
+                "name": "Tên Đường Bộ Giao thông Thụy Điển"
+            },
+            "trafikverket-vagnat-option": {
+                "attribution": {
+                    "text": "© Bộ Giao thông Thụy Điển, CC0"
+                },
+                "description": "Hệ thống đường bộ Thụy Điển có vài lớp bản đồ để lựa chọn",
+                "name": "Hệ thống Đường bộ Thụy Điển có tùy chọn"
             }
         },
         "community": {
+            "bw-facebook": {
+                "name": "Mapping Botswana tại Facebook",
+                "description": "Trang OpenStreetMap tại Botswana"
+            },
+            "bw-twitter": {
+                "name": "Mapping Botswana tại Twitter",
+                "description": "Twitter OpenStreetMap tại Botswana"
+            },
             "cape-coast-youthmappers": {
                 "name": "YouthMappers Đại học Cape Coast",
                 "description": "Theo dõi chúng tôi trên Twitter: {url}"
@@ -7017,6 +7232,18 @@
                 "name": "Twitter OpenStreetMap Bỉ",
                 "description": "OSM Bỉ tại Twitter: @osm_be"
             },
+            "hr-facebook": {
+                "name": "Nhóm Facebook OpenStreetMap Croatia",
+                "description": "Nhóm Facebook OpenStreetMap Croatia"
+            },
+            "hr-irc": {
+                "name": "OpenStreetMap Croatia trên IRC",
+                "description": "Hãy tham gia #osm-hr tại irc.oftc.net (cổng 6667)"
+            },
+            "hr-mailinglist": {
+                "name": "Danh sách thư talk-hr",
+                "description": "Danh sách thư talk-hr"
+            },
             "czech-community": {
                 "name": "Cộng đồng OSM Séc",
                 "description": "Trang bản đồ và thông tin liên lạc với thành viên OSM tại Séc"
@@ -7066,7 +7293,7 @@
                 "description": "Diễn đàn Web của OpenStreetMap Pháp"
             },
             "fr-irc": {
-                "name": "IRC OpenStreetMap Pháp",
+                "name": "OpenStreetMap Pháp trên IRC",
                 "description": "Hãy tham gia #osm-fr tại irc.oftc.net (cổng 6667)"
             },
             "fr-mailinglist": {
@@ -7129,6 +7356,18 @@
                 "name": "Họp mặt OpenStreetMap Hungary",
                 "description": "Trang tổ chức cuộc họp mặt tại Hungary"
             },
+            "is-facebook": {
+                "name": "OSM Iceland tại Facebook",
+                "description": "Trang OpenStreetMap tại Iceland"
+            },
+            "is-mailinglist": {
+                "name": "Danh sách thư talk-is",
+                "description": "talk-is là danh sách thư chính thức của cộng đồng OSM Iceland"
+            },
+            "is-twitter": {
+                "name": "OSM Iceland tại Twittter",
+                "description": "Twitter OpenStreetMap tại Iceland"
+            },
             "it-facebook": {
                 "name": "Facebook OpenStreetMap Ý",
                 "description": "Hãy tham gia cộng đồng OpenStreetMap Ý tại Facebook"
@@ -7172,7 +7411,7 @@
                 "description": "Diễn đàn Web của OpenStreetMap Na Uy"
             },
             "no-irc": {
-                "name": "IRC OpenStreetMap Na Uy",
+                "name": "OpenStreetMap Na Uy trên IRC",
                 "description": "Phòng trò chuyện của những người lập bản đồ và những người sử dụng, nhà phát triển, và người hâm mộ OpenStreetMap ở Na Uy"
             },
             "no-mailinglist": {
@@ -7186,6 +7425,14 @@
             "OSM-PL-forum": {
                 "name": "Diễn đàn OpenStreetMap Ba Lan",
                 "description": "Diễn đàn của cộng đồng OpenStreetMap Ba Lan"
+            },
+            "si-forum": {
+                "name": "Diễn đàn OpenStreetMap Slovenia",
+                "description": "Diễn đàn của cộng đồng OpenStreetMap tại Slovenia"
+            },
+            "si-mailinglist": {
+                "name": "Danh sách thư OpenStreetMap Slovenia",
+                "description": "Danh sách thư để thảo luận về OpenStreetMap tại Slovenia"
             },
             "OSM-ES-mailinglist": {
                 "name": "Danh sách thư talk-es",
@@ -7288,6 +7535,10 @@
                 "description": "Những người lập bản đồ và người dùng OpenStreetMap ở vùng Portland, Maine",
                 "extendedDescription": "Maptime đúng là thì giờ để lập bản đồ. Chúng ta nhằm mục đích mở cửa bản đồ học để cho mọi người có quan tâm có thể lập bản đồ, bằng cách để dành thì giờ và không gian để cộng tác tìm hiểu, khám phá, và lập bản đồ dùng công cụ và công nghệ bản đồ."
             },
+            "us-ma-mailinglist": {
+                "name": "Danh sách thư talk-us-massachusetts",
+                "description": "Danh sách thư của cộng đồng OSM tại Massachusetts"
+            },
             "OpenCleveland-meetup": {
                 "name": "Open Cleveland",
                 "description": "Cải thiện OpenStreetMap tại khu vực Cleveland",
@@ -7315,6 +7566,10 @@
             "OSM-NYC": {
                 "name": "OpenStreetMap Thành phố New York",
                 "description": "Những người lập bản đồ và những người sử dụng, nhà phát triển, và người hâm mộ OpenStreetMap ở khu vực đô thị New York"
+            },
+            "OSM-Portland-forum": {
+                "name": "Nhóm Google OpenStreetMap PDX",
+                "description": "Diễn đàn và danh sách thư của những người OpenStreetMap ở vùng Portland"
             },
             "OSM-Portland": {
                 "name": "OpenStreetMap Portland",
@@ -7346,7 +7601,14 @@
             "OSM-US": {
                 "name": "OpenStreetMap Hoa Kỳ",
                 "description": "Chúng ta giúp phát triển và cải thiện OpenStreetMap tại Hoa Kỳ.",
-                "extendedDescription": "Chúng ta giúp OpenStreetMap bằng cách tổ chức các hội nghị hàng năm, cung cấp tài nguyên cộng đồng, tạo quan hệ đối tác, và truyền bá dự án. Mời tham gia OpenStreetMap Hoa Kỳ tại đây: {signupUrl}"
+                "extendedDescription": "Chúng ta giúp OpenStreetMap bằng cách tổ chức các hội nghị hàng năm, cung cấp tài nguyên cộng đồng, tạo quan hệ đối tác, và truyền bá dự án. Mời tham gia OpenStreetMap Hoa Kỳ tại đây: {signupUrl}",
+                "events": {
+                    "sotmus2018": {
+                        "name": "State of the Map Hoa Kỳ 2018",
+                        "description": "Hãy tham dự hội nghị State of the Map Hoa Kỳ tại Detroit, Michigan, cùng với cộng đồng OpenStreetMap. Gặp gỡ với những người đóng góp khác, kinh doanh, và tổ chức phi lợi nhuận đều cộng tác xây dựng bản đồ thế giới mở có thể sửa đổi.",
+                        "where": "Detroit, Michigan"
+                    }
+                }
             },
             "OSM-Utah": {
                 "name": "OpenStreetMap Utah",
@@ -7455,7 +7717,8 @@
                 "description": "Theo dõi chúng tôi trên Twitter: {url}"
             },
             "Maptime-Bogota": {
-                "name": "Maptime Bogotá"
+                "name": "Maptime Bogotá",
+                "description": "Chúng ta là nhóm người lập bản đồ quan tâm đến việc đóng góp vào OpenStreetMap ở vùng Bogotá."
             },
             "OSM-CO-facebook": {
                 "name": "Facebook OpenStreetMap Colombia",
@@ -7509,6 +7772,29 @@
             "OSM-PE": {
                 "name": "OpenStreetMap Peru",
                 "description": "Tin tức về và tài nguyên cho cộng đồng OpenStreetMap Peru"
+            },
+            "LATAM-Facebook": {
+                "name": "Facebook OpenStreetMap Mỹ Latinh",
+                "description": "OpenStreetMap Mỹ Latinh tại Facebook"
+            },
+            "LATAM-Telegram": {
+                "name": "Telegram OpenStreetMap Mỹ Latinh",
+                "description": "Telegram OpenStreetMap dành cho Mỹ Latinh"
+            },
+            "LATAM-Twitter": {
+                "name": "Twitter OpenStreetMap Mỹ Latinh",
+                "description": "Theo dõi chúng tôi trên Twitter: {url}"
+            },
+            "osm-latam": {
+                "name": "OpenStreetMap Mỹ Latinh",
+                "description": "Hỗ trợ OpenStreetMap tại Mỹ Latinh",
+                "events": {
+                    "sotm-latam-2018": {
+                        "name": "State of the Map Mỹ Latinh 2018",
+                        "description": "State of the Map Mỹ Latinh là hội nghị hàng năng dành cho tất cả mọi người xây dựng và sử dụng OpenStreetMap tại Mỹ Latinh. Chương trình bao gồm các bài thuyêt trình, phiên thảo luận, hội thảo, và phiên vẽ bản đồ đều có liên quan đến OpenStreetMap.",
+                        "where": "Buenos Aires, Argentina"
+                    }
+                }
             },
             "OSM-Facebook": {
                 "name": "OpenStreetMap tại Facebook",

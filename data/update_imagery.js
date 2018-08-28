@@ -1,26 +1,45 @@
-var fs = require('fs');
-var sources = require('editor-layer-index/imagery.json');
+const fs = require('fs');
+const sources = require('editor-layer-index/imagery.json');
+const prettyStringify = require('json-stringify-pretty-compact');
 var imagery = [];
 
 // ignore imagery more than 20 years old..
 var cutoffDate = new Date();
 cutoffDate.setFullYear(cutoffDate.getFullYear() - 20);
 
-var blacklist = {
-    'hike_n_bike': true,                  // 'Hike & Bike'
+const blacklist = {
+    'osmbe': true,                        // 'OpenStreetMap (Belgian Style)'
+    'osmfr': true,                        // 'OpenStreetMap (French Style)'
     'osm-mapnik-german_style': true,      // 'OpenStreetMap (German Style)'
+    'HDM_HOT': true,                      // 'OpenStreetMap (HOT Style)'
     'osm-mapnik-black_and_white': true,   // 'OpenStreetMap (Standard Black & White)'
-    'skobbler': true,                     // 'Skobbler'
-    'openpt_map': true,                   // 'OpenPT Map (overlay)'
-    'tf-cycle': true,                     // 'Thunderforest OpenCycleMap'
-    'qa_no_address': true,                // 'QA No Address'
+    'osm-mapnik-no_labels': true,         // 'OpenStreetMap (Mapnik, no labels)'
+    'OpenStreetMap-turistautak': true,    // 'OpenStreetMap (turistautak)'
+    'OpenTopoMap': true,                  // 'OpenTopoMap'
+
+    'hike_n_bike': true,                  // 'Hike & Bike'
     'landsat': true,                      // 'Landsat'
+    'skobbler': true,                     // 'Skobbler'
+    'public_transport_oepnv': true,       // 'Public Transport (ÖPNV)'
+    'tf-cycle': true,                     // 'Thunderforest OpenCycleMap'
+    'tf-landscape': true,                 // 'Thunderforest Landscape'
+    'qa_no_address': true,                // 'QA No Address'
+    'wikimedia-map': true,                // 'Wikimedia Map'
+
+    'openinframap-petroleum': true,
+    'openinframap-power': true,
+    'openinframap-telecoms': true,
+    'openpt_map': true,
+    'openrailwaymap': true,
+    'openseamap': true,
+    'opensnowmap-overlay': true,
 
     'US-TIGER-Roads-2012': true,
     'US-TIGER-Roads-2014': true,
 
     'Waymarked_Trails-Cycling': true,
     'Waymarked_Trails-Hiking': true,
+    'Waymarked_Trails-Horse_Riding': true,
     'Waymarked_Trails-MTB': true,
     'Waymarked_Trails-Skating': true,
     'Waymarked_Trails-Winter_Sports': true,
@@ -33,7 +52,8 @@ var blacklist = {
     'OSM_Inspector-Routing': true,
     'OSM_Inspector-Tagging': true
 };
-var supportedWMSProjections = [
+
+const supportedWMSProjections = [
     'EPSG:3857',
     'EPSG:4326',
     'EPSG:900913', // EPSG:3857 alternatives codes
@@ -45,7 +65,7 @@ var supportedWMSProjections = [
     'EPSG:3785'
 ];
 
-var whitelist = [
+const whitelist = [
     // Add custom sources here if needed.
 ];
 
@@ -70,6 +90,15 @@ sources.concat(whitelist).forEach(function(source) {
         type: source.type,
         template: source.url
     };
+
+
+    // supports 512px tiles
+    if (source.id === 'Mapbox') {
+        im.template = im.template.replace('.jpg', '@2x.jpg');
+        im.tileSize = 512;
+    } else if (source.id === 'mtbmap-no') {
+        im.tileSize = 512;
+    }
 
     if (source.type === 'wms') {
         im.projection = supportedProjection;
@@ -96,7 +125,7 @@ sources.concat(whitelist).forEach(function(source) {
 
     var extent = source.extent || {};
     if (extent.min_zoom || extent.max_zoom) {
-        im.scaleExtent = [
+        im.zoomExtent = [
             extent.min_zoom || 0,
             extent.max_zoom || 22
         ];
@@ -129,7 +158,7 @@ sources.concat(whitelist).forEach(function(source) {
         im.terms_html = attribution.html;
     }
 
-    ['best', 'default', 'description', 'icon', 'overlay'].forEach(function(a) {
+    ['best', 'default', 'description', 'icon', 'overlay', 'tileSize'].forEach(function(a) {
         if (source[a]) {
             im[a] = source[a];
         }
@@ -142,4 +171,4 @@ imagery.sort(function(a, b) {
     return a.name.localeCompare(b.name);
 });
 
-fs.writeFileSync('data/imagery.json', JSON.stringify({ dataImagery: imagery }, null, 4));
+fs.writeFileSync('data/imagery.json', prettyStringify({ dataImagery: imagery }));

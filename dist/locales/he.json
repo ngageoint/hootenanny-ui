@@ -21,6 +21,11 @@
                 "description": "ניתן להוסיף מסעדות, אתרי מורשת, תיבות דואר ונקודות אחרות למפה.",
                 "tail": "יש ללחוץ על המפה כדי להוסיף נקודה."
             },
+            "add_note": {
+                "title": "הערה",
+                "description": "הבחנת בתקלה? כדאי לדווח לשאר הממפים.",
+                "tail": "יש ללחוץ על המפה כדי להוסיף הערה."
+            },
             "browse": {
                 "title": "עיון",
                 "description": "ניתן להזיז את המפה ולהתמקד בה."
@@ -40,7 +45,8 @@
                 "annotation": {
                     "point": "נוספה נקודה.",
                     "vertex": "נוספה נקודה לדרך.",
-                    "relation": "נוסף קשר."
+                    "relation": "נוסף קשר.",
+                    "note": "נוספה הערה."
                 }
             },
             "start": {
@@ -297,6 +303,14 @@
                     "create": "נוספה הגבלת פנייה",
                     "delete": "נמחקה הגבלת פנייה"
                 }
+            },
+            "detach_node": {
+                "title": "הפרדה",
+                "key": "פ",
+                "description": "הפרדת הצומת הזה מהקווים/שטחים האלה.",
+                "annotation": "צומת הופרדה מקווי/שטחי הורה.",
+                "restriction": "לא ניתן לנתק את הצומת הזה כיוון שזה יפגע ביחס „{relation}”.",
+                "connected_to_hidden": "לא ניתן לנתק את הצומת הזה כיוון שהוא מחובר לתכונה נסתרת."
             }
         },
         "restriction": {
@@ -416,7 +430,12 @@
                 "edited_by": "נערך על ידי",
                 "changeset": "ערכת שינויים",
                 "unknown": "לא ידוע",
-                "link_text": "היסטוריה ב־openstreetmap.org"
+                "link_text": "היסטוריה ב־openstreetmap.org",
+                "note_no_history": "אין היסטוריה (הערה חדשה)",
+                "note_comments": "תגובות",
+                "note_created_date": "מועד יצירה",
+                "note_created_user": "נוצר על ידי",
+                "note_link_text": "הערה ב־openstreetmap.org"
             },
             "location": {
                 "key": "L",
@@ -446,7 +465,8 @@
             "vertex": "קודקוד",
             "line": "קו",
             "area": "שטח",
-            "relation": "יחס"
+            "relation": "יחס",
+            "note": "הערה"
         },
         "geocoder": {
             "search": "חיפוש בכל העולם…",
@@ -509,8 +529,6 @@
             "best_imagery": "מקור התמונה המוכר והטוב ביותר למיקום זה",
             "switch": "חזרה לרקע זה",
             "custom": "התאמה אישית",
-            "custom_button": "עריכת רקע בהתאמה אישית",
-            "custom_prompt": "נא להקליד כתובת תבנית. האסימונים התקניים הם:\n   - {zoom} או {z}, {x}, {y} לסכימת אריחים מסוג Z/X/Y\n   - {‎-y} או {ty} לנקודות ציון הפוכות בציר Y בסגנון TMS\n   - {u} לסכימת אריחים מרובעת (QuadTile)\n   - {switch:a,b,c} למעבר בין DNS של שרתים\n\nדוגמה:\n{example}",
             "overlays": "שכבות על",
             "imagery_source_faq": "פרטי צילום / דיווח על תקלה",
             "reset": "איפוס",
@@ -536,6 +554,10 @@
                 "osm": {
                     "tooltip": "נתוני מפה מ־OpenStreetMap",
                     "title": "נתוני OpenStreetMap"
+                },
+                "notes": {
+                    "tooltip": "נתוני הערה מ־OpenStreetMap",
+                    "title": "הערות OpenStreetMap"
                 }
             },
             "fill_area": "אזורי מילוי",
@@ -606,6 +628,16 @@
             "full": {
                 "description": "מילוי מלא",
                 "tooltip": "השטחים מצויירים עם מילוי מלא."
+            }
+        },
+        "settings": {
+            "custom_background": {
+                "tooltip": "עריכת רקע בהתאמה אישית",
+                "header": "הגדרות רקע בהתאמה אישית",
+                "instructions": "נא להקליד כתובת תבנית. האסימונים התקניים הם:\n     {zoom} או {z}, {x}, {y} לסכימת אריחים מסוג Z/X/Y\n     {‎-y} או {ty} לנקודות ציון הפוכות בציר Y בסגנון TMS\n     {u} לסכימת אריחים מרובעת (QuadTile)\n     {switch:a,b,c} למעבר בין DNS של שרתים\n\nדוגמה:\n{example}",
+                "template": {
+                    "placeholder": "נא להקליד תבנית כתובת"
+                }
             }
         },
         "restore": {
@@ -709,11 +741,12 @@
         },
         "cannot_zoom": "לא ניתן להתקרב יותר במצב הנוכחי.",
         "full_screen": "החלפת מצב מסך מלא",
-        "gpx": {
-            "local_layer": "קובץ מקומי",
-            "drag_drop": "יש לגרור ולהשליך קובצי ‎.gpx,‏ ‎.geojson או ‎.kml לעמוד או ללחוץ על הכפתור שמשמאל לעיון",
-            "zoom": "התקרבות לשכבה",
-            "browse": "עיון אחר קובץ"
+        "streetside": {
+            "tooltip": "תמונות של Streetside מבית Microsoft",
+            "title": "שכבת תמונות (Bing Streetside)",
+            "report": "דיווח על בעיית פרטיות עם תמונה זו",
+            "view_on_bing": "הצגה במפות Bing",
+            "hires": "רזולוציה גבוהה"
         },
         "mapillary_images": {
             "tooltip": "תמונות בהתמקדות על רחובות מ־Mapillary",
@@ -732,6 +765,33 @@
         },
         "openstreetcam": {
             "view_on_openstreetcam": "צפייה בתמונה הזאת ב־OpenStreetCam"
+        },
+        "note": {
+            "note": "הערה",
+            "title": "עריכת הערה",
+            "anonymous": "אלמוני",
+            "closed": "(נסגרה)",
+            "commentTitle": "תגובות",
+            "status": {
+                "opened": "נפתח {when}",
+                "reopened": "נפתח מחדש  {when}",
+                "commented": "נוסף תגובה {when}",
+                "closed": "נסגר {when}"
+            },
+            "newComment": "תגובה חדשה",
+            "inputPlaceholder": "נא להקליד תגובה שתשותף עם משתמשים אחרים.",
+            "close": "סגירת הערה",
+            "open": "פתיחת הערה מחדש",
+            "comment": "תגובה",
+            "close_comment": "סגירה והוספת תגובה",
+            "open_comment": "פתיחה מחדש והוספת תגובה",
+            "report": "דיוח",
+            "new": "הערה חדשה",
+            "newDescription": "תיאור הבעיה.",
+            "save": "שמירת ההערה",
+            "login": "עליך להיכנס כדי לשנות או להגיב על ההערה הזאת.",
+            "upload_explanation": "התגובות שלך יופיעו בפני כל משתמשי OpenStreetMap.",
+            "upload_explanation_with_user": "ההערות שלך בתור {user} תהיינה זמינות באופן ציבורי לכל משתמשי OpenStreetMap."
         },
         "help": {
             "title": "עזרה",
@@ -870,6 +930,17 @@
                 "boundary": "יחס *גבול* הוא קבוצה של תכונה אחת או יותר מסוג קו שמייצרות גבול מנהלי יחד.",
                 "boundary_add": "כדי להוסיף תכונה ליחס גבול, יש לבחור את התכונה ולגלול לאגף „כל היחסים” בעורך התכונות ואז ללחוץ על {plus} כפתור ההוספה כדי להוסיף את התכונה הזאת ליחס קרוב נוכחי או ליחס חדש."
             },
+            "notes": {
+                "title": "הערות",
+                "intro": "*הערות* משמשות להודיע למשתמשים אחרים שתכונה מסוימת דורשת תיקון או תשומת לב. הערות מסמנות מיקום מסוים במפה. כדי לצפות בהערות קיימות או להוסיף חדשות, יש ללחות על לוח {data} **נתוני מפה** כדי להפעיל את שכבת ההערות של OpenStreetMap.",
+                "add_note_h": "הוספת הערות",
+                "add_note": "כדי להוסיף הערה חדשה יש ללחוץ על הכפתור {note} **הערה** בסרגל הכלים שמעל למפה או ללחוץ על מקש הקיצור `4`. פעולה זו תשנה את סמן העכבר לסמל של צלב. כדי להציב הערה חדשה על המפה, יש למקם את סמן העכבר במקום ההערה המיועד, לאחר מכן יש ללחוץ במיקום זה עם {leftclick} הלחצן השמאלי בעכבר או ללחוץ על `רווח`.",
+                "move_note": "ניתן להעביר הערות חדשות בלבד. כדי להעביר הערה, עליך להציב את סמן העכבר על ההערה החדשה, לאחר מכן ללחוץ ולהחזיק את הכפתור השמאלי {leftclick} בעכבר בעת גרירת ההערה למיקומה החדש.",
+                "update_note_h": "סגירה, פתיחה מחדש והוספת תגובות",
+                "update_note": "ניתן לעדכן הערה קיימת על ידי סגירתה, פתיחתה מחדש או הוספת תגובה עליה. סגירת הערה מציינת שהתקלה נפתרה. פתיחה הערה מחדש מציינת כי הבעיה המקורית טרם נפתרה.",
+                "save_note_h": "שמירת הערות",
+                "save_note": "עליך לשמור כל עריכה בנפרד על ידי לחיצה על הכפתורים שמתחת לתגובות על ההערות. עריכות של הערות **אינן** נכללות בערכות השינויים שנשלחות על ידיך ל־OpenStreetMap."
+            },
             "imagery": {
                 "title": "תמונות רקע",
                 "intro": "צילום הרקע שמופיע מתחת לנתוני המפה הוא מקור חשוב למיפוי. התמונה הזאת יכולה להיות צילומי אוויר שנאספו דרך לוויינים, מטוסים ורחפנים או סריקת מפות היסטוריות או נתוני מקור חופשיים שזמינים לציבור הרחב.",
@@ -882,7 +953,7 @@
             },
             "streetlevel": {
                 "title": "תמונות ברמת רחוב",
-                "intro": "תמונות ברמת רחוב שימושיות למיפוי תמרורים, בתי עסק ופרטים נוספים שלא ניתן לראות מהלוויין ובצילום אווירי. עורך iD תומך בתמונות ברמת רחוב בעזרת [Mapillary](https://www.mapillary.com) ו־[OpenStreetCam](https://www.openstreetcam.org).",
+                "intro": "תמונות ברמת הרחוב יעילות למיפוי תמרורים, בתי עסק ופרטים נוספים שלא ניתן לראות מלוויין או תצלומי אוויר. העורך iD תומך בתמונות ברמת רחוב מ־[Bing Streetside](https://www.microsoft.com/en-us/maps/streetside),‏ [Mapillary](https://www.mapillary.com), ו־[OpenStreetCam](https://www.openstreetcam.org).",
                 "using_h": "שימוש בתמונות ברמת רחוב",
                 "using": "כדי להשתמש בתמונות ברמת רחוב לטובת מיפוי, יש ללחוץ על הלוח {data} **נתוני מפה**  לצד המפה כדי להפעיל או להשבית את שכבות התמונות הזמינות.",
                 "photos": "כשאפשרות זו פעילה, שכבת התמונה מציגה קו לאורך סדרה של תמונות. ברמות תקריב גבוהות יותר, עיגול מסמן כל מיקום של תמונה, וברמות תקריב יותר גדולות, חרוט מציין את המיקום אליו פנתה המצלמה כאשר התמונה צולמה.",
@@ -1264,7 +1335,8 @@
                     "add_point": "מצב ‚הוספת נקודה’",
                     "add_line": "מצב ‚הוספת קו’",
                     "add_area": "מצב ’הוספת שטח’",
-                    "place_point": "הצבת נקודה",
+                    "add_note": "מצב ’הוספת הערה’",
+                    "place_point": "הצבת נקודה או הערה",
                     "disable_snap": "יש להחזיק כדי להשבית הצמדת נקודות",
                     "stop_line": "סיום ציור קו או שטח"
                 },
@@ -1273,6 +1345,7 @@
                     "continue_line": "להמשיך את הקו במפרק הנבחר",
                     "merge": "שילוב (מיזוג) התכונות הנבחרות",
                     "disconnect": "ניתוק תכונות במפרק הנבחר",
+                    "detach_node": "הפרדת הצומת הנבחר מקווי/שטחי הורה",
                     "split": "פיצול קו לשניים במפרק הנבחר",
                     "reverse": "היפוך כיוון קו",
                     "move": "העברת התכונות הנבחרות",
@@ -1362,7 +1435,7 @@
                     "name": "מאפייני דרך"
                 },
                 "category-route": {
-                    "name": "מאפייני שביל"
+                    "name": "מאפייני מסלול"
                 },
                 "category-water-area": {
                     "name": "מאפייני מים"
@@ -1376,31 +1449,34 @@
                     "label": "הכניסה מותרת",
                     "options": {
                         "designated": {
-                            "description": "הגישה מותרת לפי שילוט או חוקים מקומיים",
+                            "description": "הגישה מותרת בהתאם לשילוט או חוקים מקומיים מסוימים",
                             "title": "מיועד"
                         },
                         "destination": {
-                            "description": "הגישה מותרת רק כדי להגיע לאזור בהמשך",
+                            "description": "הגישה מותרת רק לצורך הגעה ליעד",
                             "title": "יעד"
                         },
                         "dismount": {
-                            "description": "הגישה מותרת ללא רכיבה",
+                            "description": "הגישה מותרת אך ללא רכיבה",
                             "title": "ירידה מסוס/אופניים"
                         },
                         "no": {
-                            "description": "הכניסה אסורה לקהל הרחב",
+                            "description": "הגישה לציבור חסומה",
                             "title": "הכניסה אסורה"
                         },
                         "permissive": {
-                            "description": "הגישה מותרת כל עוד בעל המקום עוד מרשה זאת",
+                            "description": "הגישה מותרת עד להודעה חדשה",
                             "title": "מתירני"
                         },
+                        "permit": {
+                            "description": "הגישה מותרת רק עם רישיון או היתר בתוקף",
+                            "title": "היתר"
+                        },
                         "private": {
-                            "description": "הכניסה מותרת רק עם אישור מבעל המקום על בסיס פרטני",
+                            "description": "הגישה מותרת רק עם הרשאת הבעלים באופן פרטני",
                             "title": "פרטי"
                         },
                         "yes": {
-                            "description": "הכניסה מותרת לפי חוק",
                             "title": "מותר"
                         }
                     },
@@ -1523,7 +1599,7 @@
                     "label": "כספומט"
                 },
                 "backrest": {
-                    "label": "מסעד"
+                    "label": "משענת"
                 },
                 "barrier": {
                     "label": "סוג"
@@ -1565,6 +1641,9 @@
                 },
                 "board_type": {
                     "label": "סוג"
+                },
+                "booth": {
+                    "label": "ביתן"
                 },
                 "boules": {
                     "label": "סוג"
@@ -1613,6 +1692,9 @@
                 "capacity": {
                     "label": "קיבולת",
                     "placeholder": "50, 100, 200…"
+                },
+                "cash_in": {
+                    "label": "הפקדה"
                 },
                 "castle_type": {
                     "label": "סוג"
@@ -1795,7 +1877,7 @@
                     "label": "סוג"
                 },
                 "drive_through": {
-                    "label": "נסיעת-דרך של מסעדה\\בנק"
+                    "label": "הזמנה-דרך-אשנב"
                 },
                 "duration": {
                     "label": "משך",
@@ -2004,7 +2086,7 @@
                     "label": "סוג"
                 },
                 "inscription": {
-                    "label": "חריטה"
+                    "label": "כתובת"
                 },
                 "intermittent": {
                     "label": "תקופתי"
@@ -2269,6 +2351,9 @@
                         "underground": "תת־קרקעי"
                     }
                 },
+                "passenger_information_display": {
+                    "label": "תצוגת נתוני נוסעים"
+                },
                 "payment_multi": {
                     "label": "צורות תשלום"
                 },
@@ -2487,8 +2572,22 @@
                 "shop": {
                     "label": "סוג"
                 },
+                "siren/purpose": {
+                    "label": "תכלית"
+                },
+                "siren/type": {
+                    "label": "סוג",
+                    "options": {
+                        "electronic": "אלקטרוני",
+                        "other": "אחר",
+                        "pneumatic": "פנאומטי"
+                    }
+                },
                 "site": {
                     "label": "סוג"
+                },
+                "site_type": {
+                    "label": "סוג אתר"
                 },
                 "smoking": {
                     "label": "העישון מותר",
@@ -2964,8 +3063,8 @@
                     "terms": "עמדת תיקון אופניים"
                 },
                 "amenity/biergarten": {
-                    "name": "גן בירה",
-                    "terms": "גינת בירה,ביר גארדן,ביר גרדן"
+                    "name": "ביר גרדן",
+                    "terms": "בירגרטן, גן בירה, בירגרדן, ביר גארדן"
                 },
                 "amenity/boat_rental": {
                     "name": "השכרת סירה",
@@ -3537,7 +3636,7 @@
                 },
                 "barrier/ditch": {
                     "name": "תעלה",
-                    "terms": "תעלה"
+                    "terms": "חפיר,חפירה,חפרה,מחפורת,ביצור,בצור"
                 },
                 "barrier/entrance": {
                     "name": "כניסה"
@@ -3996,6 +4095,10 @@
                 "emergency/destination": {
                     "name": "גישת חירום"
                 },
+                "emergency/fire_alarm": {
+                    "name": "תיבת שיחה לכיבוי אש",
+                    "terms": "מכבי אש,לוחמי אש,לוחמת אש,כיבוי אש"
+                },
                 "emergency/fire_extinguisher": {
                     "name": "מטפה",
                     "terms": "מטפה כיבוי אש,מטף כיבוי אש,מטף"
@@ -4004,9 +4107,17 @@
                     "name": "ברז כיבוי אש",
                     "terms": "ברז כיבוי אש"
                 },
+                "emergency/first_aid_kit": {
+                    "name": "ערכת עזרה ראשונה",
+                    "terms": "קיט עזרה ראשונה"
+                },
                 "emergency/life_ring": {
                     "name": "גלגל הצלה",
                     "terms": "גלגל הצלה"
+                },
+                "emergency/lifeguard": {
+                    "name": "מציל",
+                    "terms": "מצילה,הצלה,החייאה,החיאה"
                 },
                 "emergency/no": {
                     "name": "אין גישת חירום"
@@ -4020,6 +4131,10 @@
                 },
                 "emergency/private": {
                     "name": "גישת חירום פרטית"
+                },
+                "emergency/siren": {
+                    "name": "סירנה",
+                    "terms": "צופר,צפירור"
                 },
                 "emergency/water_tank": {
                     "name": "מיכל מים לחירום",
@@ -4387,8 +4502,8 @@
                     "terms": "מונומנט"
                 },
                 "historic/ruins": {
-                    "name": "אתר חורבן",
-                    "terms": "אתר חורבן"
+                    "name": "חורבות",
+                    "terms": "אתר חורבן,חורבה"
                 },
                 "historic/tomb": {
                     "name": "קבר",
@@ -4454,7 +4569,7 @@
                     "terms": "חצר חקלאית"
                 },
                 "landuse/forest": {
-                    "name": "יער",
+                    "name": "יער נטוע",
                     "terms": "יער"
                 },
                 "landuse/garages": {
@@ -4546,7 +4661,7 @@
                     "terms": "אזור אימונים"
                 },
                 "landuse/orchard": {
-                    "name": "פרדס",
+                    "name": "מטע",
                     "terms": "פרדס"
                 },
                 "landuse/plant_nursery": {
@@ -4571,7 +4686,7 @@
                 },
                 "landuse/residential": {
                     "name": " אזור מגורים",
-                    "terms": " אזור מגורים"
+                    "terms": "אזור מגורים"
                 },
                 "landuse/retail": {
                     "name": "אזור מסחרי",
@@ -4736,6 +4851,10 @@
                 "leisure/pitch/american_football": {
                     "name": "מגרש פוטבול",
                     "terms": "מגרש פוטבול"
+                },
+                "leisure/pitch/badminton": {
+                    "name": "מגרש בדמינטון",
+                    "terms": "בדמינטון,כדור נוצה"
                 },
                 "leisure/pitch/baseball": {
                     "name": "מגרש בייסבול",
@@ -4922,7 +5041,7 @@
                 },
                 "man_made/pipeline": {
                     "name": "קו צינורות ",
-                    "terms": "קו צינורות "
+                    "terms": "קו צינורות"
                 },
                 "man_made/pumping_station": {
                     "name": "תחנת שאיבה",
@@ -5105,7 +5224,7 @@
                     "terms": "ביצה"
                 },
                 "natural/wood": {
-                    "name": "יער",
+                    "name": "חורש טבעי",
                     "terms": "יער"
                 },
                 "noexit/yes": {
@@ -6498,7 +6617,7 @@
                     "terms": "מרינה"
                 },
                 "waterway/canal": {
-                    "name": "תעלה",
+                    "name": "תעלת מים",
                     "terms": "תעלה"
                 },
                 "waterway/dam": {
@@ -6506,8 +6625,8 @@
                     "terms": "סכר"
                 },
                 "waterway/ditch": {
-                    "name": "תעלה",
-                    "terms": "תעלה"
+                    "name": "שוחה",
+                    "terms": "תעלה,מחפורת,ביב,חפיר"
                 },
                 "waterway/dock": {
                     "name": "רציף",
@@ -6542,8 +6661,8 @@
                     "terms": "נחל תקופתי"
                 },
                 "waterway/water_point": {
-                    "name": "תחנת מי שתיה ימי",
-                    "terms": "תחנת מי שתיה ימי"
+                    "name": "תחנת מי שתייה ימית",
+                    "terms": "תחנת מי שתיה ימית"
                 },
                 "waterway/waterfall": {
                     "name": "מפל",
@@ -6556,6 +6675,24 @@
             }
         },
         "imagery": {
+            "AGIV": {
+                "attribution": {
+                    "text": "Orthophoto Flanders העדכני ביותר © AGIV"
+                },
+                "name": "צילומי האוויר העדכניים ביותר של AGIV Flanders"
+            },
+            "AGIV10cm": {
+                "attribution": {
+                    "text": "Orthophoto Flanders © AGIV"
+                },
+                "name": "AGIV Flanders‏ 2013-‎2015 צילום אווירי 10 ס״מ"
+            },
+            "AGIVFlandersGRB": {
+                "attribution": {
+                    "text": "GRB Flanders © AGIV"
+                },
+                "name": "AGIV Flanders GRB"
+            },
             "Bing": {
                 "description": "צילומי אוויר ולוויין.",
                 "name": "צילומי אוויר של Bing"
@@ -6564,7 +6701,6 @@
                 "attribution": {
                     "text": "תנאים ומשוב"
                 },
-                "description": "צילומי לוויין של Premium DigitalGlobe.",
                 "name": "צילומי DigitalGlobe Premium"
             },
             "DigitalGlobe-Premium-vintage": {
@@ -6578,7 +6714,6 @@
                 "attribution": {
                     "text": "תנאים ומשוב"
                 },
-                "description": "צילומי לוויין תקניים של DigitalGlobe.",
                 "name": "צילומים תקניים של DigitalGlobe"
             },
             "DigitalGlobe-Standard-vintage": {
@@ -6658,6 +6793,12 @@
                 },
                 "name": "חוקר OSM: תיוג"
             },
+            "SPW_ORTHO_LAST": {
+                "name": "הצילום האווירי העדכני ביותר של SPW(allonie)"
+            },
+            "SPW_PICC": {
+                "name": "SPW(allonie) צילום PICC אלפא נומרי"
+            },
             "US-TIGER-Roads-2012": {
                 "name": "מידע טופולוגי ארה\"ב  2012"
             },
@@ -6672,6 +6813,18 @@
             "US_Forest_Service_roads_overlay": {
                 "description": "כביש מהיר: תחימה ירוקה = ללא סיווג. תחימה חומה = מסלול. פני שטח: חצץ = מילוי חום בהיר, אספלט = שחור, מרוצף = אפור, אדמה =לבן, בטון = כחול, דשא = ירוק. עונתי = פסים לבנים",
                 "name": "שכבת דרכי יערות בארה״ב"
+            },
+            "UrbISOrtho2016": {
+                "name": "UrbIS-Ortho 2016"
+            },
+            "UrbISOrtho2017": {
+                "name": "UrbIS-Ortho 2017"
+            },
+            "UrbisAdmFR": {
+                "name": "UrbisAdm FR"
+            },
+            "UrbisAdmNL": {
+                "name": "UrbisAdm NL"
             },
             "Waymarked_Trails-Cycling": {
                 "attribution": {
@@ -6755,6 +6908,11 @@
                 },
                 "name": "OpenStreetMap (סגנון גרמני)"
             },
+            "osmse-ekonomiska": {
+                "attribution": {
+                    "text": "© Lantmäteriet"
+                }
+            },
             "qa_no_address": {
                 "attribution": {
                     "text": "Simon Poole, נתונים באדיבות מתנדבי ©OpenStreetMap"
@@ -6784,9 +6942,59 @@
                     "text": "מפות © Thunderforest, נתונים באדיבות מתנדבי © OpenStreetMap"
                 },
                 "name": "תווי שטח מThunderforest"
+            },
+            "trafikverket-baninfo": {
+                "attribution": {
+                    "text": "‎© Trafikverket, CC0"
+                },
+                "description": "רשת מסילות הרכבת השוודית, כולל מסילות נלוות",
+                "name": "רשת מסילות הרכבת של Trafikverket"
+            },
+            "trafikverket-baninfo-option": {
+                "attribution": {
+                    "text": "‎© Trafikverket, CC0"
+                },
+                "description": "רשת מסילות הרכבת השוודית עם מגוון אפשרויות לשכבות מפה",
+                "name": "אפשרויות רשת מסילות רכבת Trafikverket"
+            },
+            "trafikverket-vagnat": {
+                "attribution": {
+                    "text": "‎© Trafikverket, CC0"
+                },
+                "description": "רשת כבישים שוודית NVDB",
+                "name": "רשת כבישים Trafikverket"
+            },
+            "trafikverket-vagnat-extra": {
+                "attribution": {
+                    "text": "‎© Trafikverket, CC0"
+                },
+                "description": "פרטים מורחבים של NVDB השבדית: סימון כבישים ראשיים, האטת תנועה, אזור מנוחה, תחנת אוטובוס, גשר, מנהרה, מצלמת מהירות",
+                "name": "תוספות לרשת כבישים Trafikverket"
+            },
+            "trafikverket-vagnat-navn": {
+                "attribution": {
+                    "text": "‎© Trafikverket, CC0"
+                },
+                "description": "שמות רחובות שוודיים NVDB",
+                "name": "שמות רחובות Trafikverket"
+            },
+            "trafikverket-vagnat-option": {
+                "attribution": {
+                    "text": "‎© Trafikverket, CC0"
+                },
+                "description": "רשת הכבישים של NVDB השבדית עם מגוון אפשרויות לשכבות מפה",
+                "name": "אפשרויות רשת כבישים Trafikverket"
             }
         },
         "community": {
+            "bw-facebook": {
+                "name": "מיפוי בוטסואנה בפייסבוק",
+                "description": "העמוד של OpenStreetMap בבוטסואנה"
+            },
+            "bw-twitter": {
+                "name": "מיפוי בוטסואנה בטוויטר",
+                "description": "הטוויטר של OpenStreetMap בבוטסואנה"
+            },
             "cape-coast-youthmappers": {
                 "name": "הממפים הצעירים של אוניברסיטת קייפ קוסט",
                 "description": "ניתן לעקוב אחרינו בטוויטר: {url}",
@@ -7027,6 +7235,18 @@
                 "name": "הטוויטר של OpenStreetMap בלגיה",
                 "description": "OSM בלגיה בטווויטר: ‎@osm_be"
             },
+            "hr-facebook": {
+                "name": "קבוצת הפייסבוק של OpenStreetMap קרואטיה",
+                "description": "קבוצת הפייסבוק של OpenStreetMap קרואטיה"
+            },
+            "hr-irc": {
+                "name": "OpenStreetMap קרואטיה ב־IRC",
+                "description": "ניתן להצטרף ל־‎#osm-hr תחת irc.oftc.net (פתחה 6667)"
+            },
+            "hr-mailinglist": {
+                "name": "קבוצת הדיוור Talk-hr",
+                "description": "קבוצת הדיוור Talk-hr"
+            },
             "czech-community": {
                 "name": "קהילת OSM הצ׳כית",
                 "description": "פורטל המפה, האתר ופרטי הקשר של חברי OSM בצ׳כיה"
@@ -7139,6 +7359,18 @@
                 "name": "קבוצת המפגשים של OpenStreetMap הונגרי",
                 "description": "הפלטפורמה לכינוס מפגשים בהונגריה"
             },
+            "is-facebook": {
+                "name": "OSM איסלנד בפייסבוק",
+                "description": "העמוד של OpenStreetMap באיסלנד"
+            },
+            "is-mailinglist": {
+                "name": "קבוצת הדיוור Talk-is",
+                "description": "Talk-is היא קבוצת הדיוור הרשמית של קהילת OSM האיסלנדית"
+            },
+            "is-twitter": {
+                "name": "OSM איסלנד בטוויטר",
+                "description": "הטוויטר של OpenStreetMap באיסלנד"
+            },
             "it-facebook": {
                 "name": "הפייסבוק של OpenStreetMap איטליה",
                 "description": "ניתן להצטרף לקהילה של OpenStreetMap איטליה בפייסבוק"
@@ -7196,6 +7428,14 @@
             "OSM-PL-forum": {
                 "name": "הפורום של OpenStreetMap פולין",
                 "description": "הפורום של קהילת OpenStreetMap הפולנית"
+            },
+            "si-forum": {
+                "name": "הפורום של OpenStreetMap סלובניה",
+                "description": "הפורום של קהילת OpenStreetMap בסלובניה"
+            },
+            "si-mailinglist": {
+                "name": "קבוצת הדיוור של OpenStreetMap סלובניה",
+                "description": "קבוצת דיוור על OpenStreetMap בסלובניה"
             },
             "OSM-ES-mailinglist": {
                 "name": "קבוצת הדיוור Talk-es",
@@ -7302,6 +7542,10 @@
                 "description": "ממפים ומשתמשי OpenStreetMap סביב פורטלנד, מיין",
                 "extendedDescription": "Maptime כשמו כן הוא, זמן ליצירת מפות. המטרה שלנו היא לפתוח את הדלת לאפשרויות מגוונות ליצירת מפות לכל מי שמעוניין על ידי יצירת מקום ללמידה שיתופית, חקירה ויצירת מפות באמצעות כלים וטכנולוגיות למיפוי."
             },
+            "us-ma-mailinglist": {
+                "name": "קבוצת הדיוור Talk-us-massachusetts",
+                "description": "רשימת דיוור בדוא״ל לקהילת OSM במסצ׳וסטס"
+            },
             "OpenCleveland-meetup": {
                 "name": "קליבלנד פתוחה",
                 "description": "שיפור OpenStreetMap באזור קליבלנד",
@@ -7329,6 +7573,11 @@
             "OSM-NYC": {
                 "name": "OpenStreetMap העיר ניו יורק",
                 "description": "ממפי, משתמשי, מפתחי וחובבי OpenStreetMap באיזור המטרופולין של ניו יורק "
+            },
+            "OSM-Portland-forum": {
+                "name": "קבוצת ה־Google של OpenStreetMap בפורטלנד",
+                "description": "פורום ורשימת דיוור למשתמשים OpenStreetMap באזור פורטלנד",
+                "extendedDescription": "קבוצה זו מיועדת לקדם שיפורים ל־OpenStreetMap באזור של פורטלנד, אורגון כדי לתמוך ביישומים כגון Open Trip Planner."
             },
             "OSM-Portland": {
                 "name": "OpenStreetMap פורטלנד",
@@ -7361,7 +7610,14 @@
             "OSM-US": {
                 "name": "OpenStreetMap ארה״ב",
                 "description": "אנו מסייעים להצמיח ולשפר את OpenStreetMap בארצות הברית.",
-                "extendedDescription": "אנו תומכים ב־OpenStreetMap על ידי אירוח של כנסים שנתיים, אספקת משאבים קהילתיים, בניית שותפויות והפצה ברבים. ניתן להצטרף ל־OpenStreetMap ארה״ב כאן: {signupUrl}"
+                "extendedDescription": "אנו תומכים ב־OpenStreetMap על ידי אירוח של כנסים שנתיים, אספקת משאבים קהילתיים, בניית שותפויות והפצה ברבים. ניתן להצטרף ל־OpenStreetMap ארה״ב כאן: {signupUrl}",
+                "events": {
+                    "sotmus2018": {
+                        "name": "State of the Map ארה״ב 2018",
+                        "description": "ניתן להצטרף לקהילת OpenStreetMap ב־State of the Map ארה״ב שייערך בדטרויט, מישיגן. ניתן להתחבר עם ממפים, בעלי עסקים, סוכנויות ממשלתיות וארגונים ללא מטרות רווח, כולם משתפים פעולה סביב מפת העולם הפתוחה שניתן לערוך.",
+                        "where": "דטרויט, מישיגן"
+                    }
+                }
             },
             "OSM-Utah": {
                 "name": "OpenStreetMap יוטה",
@@ -7531,6 +7787,29 @@
             "OSM-PE": {
                 "name": "OpenStreetMap פרו",
                 "description": "חדשות ומשאבים לקהילת OpenStreetMap פרו"
+            },
+            "LATAM-Facebook": {
+                "name": " הפייסבוק של OpenStreetMap אמריקה הלטינית",
+                "description": "OpenStreetMap אמריקה הלטינית בפייסבוק"
+            },
+            "LATAM-Telegram": {
+                "name": "הטלגרם של OpenStreetMap אמריקה הלטינית",
+                "description": "טלגרם של OpenStreetMap עבור אמריקה הלטינית"
+            },
+            "LATAM-Twitter": {
+                "name": "הטוויטר של OpenStreetMap אמריקה הלטינית",
+                "description": "ניתן לעקוב אחרינו בטוויטר בכתובת {url}"
+            },
+            "osm-latam": {
+                "name": "OpenStreetMap אמריקה הלטינית",
+                "description": "תמיכה ב־OpenStreetMap באמריקה הלטינית",
+                "events": {
+                    "sotm-latam-2018": {
+                        "name": "State of the Map Latam 2018",
+                        "description": "State of the Map Latam הוא הכנס השנתי של כל הממפים והמשתמשים ב־OpenStreetMap באמריקה הלטינית. התכנית כוללת הרצאות בזק, פאנלים, סדנאות ומפאתונים (האקתונים של מיפוי) שקשורים ב־OpenStreetMap.",
+                        "where": "בואנוס איירס, ארגנטינה"
+                    }
+                }
             },
             "OSM-Facebook": {
                 "name": "OpenStreetMap בפייסבוק",

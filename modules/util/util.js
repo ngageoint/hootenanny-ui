@@ -101,6 +101,9 @@ export function utilStringQs(str) {
         if (parts.length === 2) {
             obj[parts[0]] = (null === parts[1]) ? '' : decodeURIComponent(parts[1]);
         }
+        if (parts[0] === 'mvt') {
+            obj[parts[0]] = (parts[2] !== undefined) ? (decodeURIComponent(parts[1]) + '=' + decodeURIComponent(parts[2])) : (decodeURIComponent(parts[1]));
+        }
         return obj;
     }, {});
 }
@@ -262,4 +265,20 @@ export function utilNoAuto(selection) {
         .attr('autocorrect', 'off')
         .attr('autocapitalize', 'off')
         .attr('spellcheck', isText ? 'true' : 'false');
+}
+
+
+// https://stackoverflow.com/questions/194846/is-there-any-kind-of-hash-code-function-in-javascript
+// https://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
+export function utilHashcode(str) {
+    var hash = 0;
+    if (str.length === 0) {
+        return hash;
+    }
+    for (var i = 0; i < str.length; i++) {
+        var char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
 }

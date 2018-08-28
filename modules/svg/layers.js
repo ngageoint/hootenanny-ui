@@ -1,3 +1,4 @@
+
 import _difference from 'lodash-es/difference';
 import _find from 'lodash-es/find';
 import _map from 'lodash-es/map';
@@ -6,8 +7,8 @@ import _reject from 'lodash-es/reject';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { select as d3_select } from 'd3-selection';
 
+import { svgData } from './data';
 import { svgDebug } from './debug';
-import { svgGpx } from './gpx';
 import { svgHoot } from './hoot';
 import { svgStreetside } from './streetside';
 import { svgMapillaryImages } from './mapillary_images';
@@ -15,6 +16,7 @@ import { svgMapillarySigns } from './mapillary_signs';
 import { svgMeasure } from './measure';
 import { svgOpenstreetcamImages } from './openstreetcam_images';
 import { svgOsm } from './osm';
+import { svgNotes } from './notes';
 import { utilRebind } from '../util/rebind';
 import { utilGetDimensions, utilSetDimensions } from '../util/dimensions';
 
@@ -24,7 +26,8 @@ export function svgLayers(projection, context) {
     var svg = d3_select(null);
     var layers = [
         { id: 'osm', layer: svgOsm(projection, context, dispatch) },
-        { id: 'gpx', layer: svgGpx(projection, context, dispatch) },
+        { id: 'notes', layer: svgNotes(projection, context, dispatch) },
+        { id: 'data', layer: svgData(projection, context, dispatch) },
         { id: 'hoot', layer: svgHoot(projection, context, dispatch) },
         { id: 'streetside', layer: svgStreetside(projection, context, dispatch)},
         { id: 'mapillary-images', layer: svgMapillaryImages(projection, context, dispatch) },

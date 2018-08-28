@@ -21,6 +21,11 @@
                 "description": "Add restaurants, monuments, postal boxes or other points to the map.",
                 "tail": "Click on the map to add a point."
             },
+            "add_note": {
+                "title": "Note",
+                "description": "Spotted an issue? Let other mappers know.",
+                "tail": "Click on the map to add a note."
+            },
             "browse": {
                 "title": "Browse",
                 "description": "Pan and zoom the map."
@@ -40,7 +45,8 @@
                 "annotation": {
                     "point": "Added a point.",
                     "vertex": "Added a node to a way.",
-                    "relation": "Added a relation."
+                    "relation": "Added a relation.",
+                    "note": "Added a note."
                 }
             },
             "start": {
@@ -297,6 +303,14 @@
                     "create": "Added a turn restriction",
                     "delete": "Deleted a turn restriction"
                 }
+            },
+            "detach_node": {
+                "title": "Detach",
+                "key": "E",
+                "description": "Detach this node from these lines/areas.",
+                "annotation": "Detached a node from parent lines/areas.",
+                "restriction": "This node can't be detached because it would damage a \"{relation}\" relation.",
+                "connected_to_hidden": "This node can't be detached because it is connected to a hidden feature."
             }
         },
         "restriction": {
@@ -378,8 +392,8 @@
             "localized_translation_name": "Name"
         },
         "zoom_in_edit": "Zoom in to edit",
-        "login": "login",
-        "logout": "logout",
+        "login": "Log In",
+        "logout": "Log Out",
         "loading_auth": "Connecting to OpenStreetMap...",
         "report_a_bug": "Report a bug",
         "help_translate": "Help translate",
@@ -442,7 +456,12 @@
                 "edited_by": "Edited By",
                 "changeset": "Changeset",
                 "unknown": "Unknown",
-                "link_text": "History on openstreetmap.org"
+                "link_text": "History on openstreetmap.org",
+                "note_no_history": "No History (New Note)",
+                "note_comments": "Comments",
+                "note_created_date": "Created Date",
+                "note_created_user": "Created By",
+                "note_link_text": "Note on openstreetmap.org"
             },
             "location": {
                 "key": "L",
@@ -472,7 +491,8 @@
             "vertex": "vertex",
             "line": "line",
             "area": "area",
-            "relation": "relation"
+            "relation": "relation",
+            "note": "note"
         },
         "geocoder": {
             "search": "Search worldwide...",
@@ -535,8 +555,6 @@
             "best_imagery": "Best known imagery source for this location",
             "switch": "Switch back to this background",
             "custom": "Custom",
-            "custom_button": "Edit custom background",
-            "custom_prompt": "Enter a tile URL template. Valid tokens are:\n   - {zoom} or {z}, {x}, {y} for Z/X/Y tile scheme\n   - {-y} or {ty} for flipped TMS-style Y coordinates\n   - {u} for quadtile scheme\n   - {switch:a,b,c} for DNS server multiplexing\n\nExample:\n{example}",
             "overlays": "Overlays",
             "imagery_source_faq": "Imagery Info / Report a Problem",
             "reset": "reset",
@@ -562,6 +580,15 @@
                 "osm": {
                     "tooltip": "Map data from OpenStreetMap",
                     "title": "OpenStreetMap data"
+                },
+                "notes": {
+                    "tooltip": "Note data from OpenStreetMap",
+                    "title": "OpenStreetMap notes"
+                },
+                "custom": {
+                    "tooltip": "Drag and drop a data file onto the page, or click the button to setup",
+                    "title": "Custom Map Data",
+                    "zoom": "Zoom to data"
                 }
             },
             "fill_area": "Fill Areas",
@@ -632,6 +659,29 @@
             "full": {
                 "description": "Full Fill",
                 "tooltip": "Areas are drawn fully filled."
+            }
+        },
+        "settings": {
+            "custom_background": {
+                "tooltip": "Edit custom background",
+                "header": "Custom Background Settings",
+                "instructions": "Enter a tile URL template. Valid tokens are:\n   {zoom} or {z}, {x}, {y} for Z/X/Y tile scheme\n   {-y} or {ty} for flipped TMS-style Y coordinates\n   {u} for quadtile scheme\n   {switch:a,b,c} for DNS server multiplexing\n\nExample:\n{example}",
+                "template": {
+                    "placeholder": "Enter a url template"
+                }
+            },
+            "custom_data": {
+                "tooltip": "Edit custom data layer",
+                "header": "Custom Map Data Settings",
+                "file": {
+                    "instructions": "Choose a local data file. Supported types are:\n   .gpx, .kml, .geojson, .json",
+                    "label": "Browse files"
+                },
+                "or": "Or",
+                "url": {
+                    "instructions": "Enter a data file URL or vector tile URL template. Valid tokens are:\n   {zoom} or {z}, {x}, {y} for Z/X/Y tile scheme",
+                    "placeholder": "Enter a url"
+                }
             }
         },
         "restore": {
@@ -740,16 +790,12 @@
         },
         "cannot_zoom": "Cannot zoom out further in current mode.",
         "full_screen": "Toggle Full Screen",
-        "gpx": {
-            "local_layer": "Local file",
-            "drag_drop": "Drag and drop a .gpx, .geojson or .kml file on the page, or click the button to the right to browse",
-            "zoom": "Zoom to layer",
-            "browse": "Browse for a file"
-        },
         "streetside": {
             "tooltip": "Streetside photos from Microsoft",
             "title": "Photo Overlay (Bing Streetside)",
-            "report": "Report a privacy concern with this image"
+            "report": "Report a privacy concern with this image",
+            "view_on_bing": "View on Bing Maps",
+            "hires": "High resolution"
         },
         "mapillary_images": {
             "tooltip": "Street-level photos from Mapillary",
@@ -768,6 +814,33 @@
         },
         "openstreetcam": {
             "view_on_openstreetcam": "View this image on OpenStreetCam"
+        },
+        "note": {
+            "note": "Note",
+            "title": "Edit note",
+            "anonymous": "anonymous",
+            "closed": "(Closed)",
+            "commentTitle": "Comments",
+            "status": {
+                "opened": "opened {when}",
+                "reopened": "reopened {when}",
+                "commented": "commented {when}",
+                "closed": "closed {when}"
+            },
+            "newComment": "New Comment",
+            "inputPlaceholder": "Enter a comment to share with other users.",
+            "close": "Close Note",
+            "open": "Reopen Note",
+            "comment": "Comment",
+            "close_comment": "Close and Comment",
+            "open_comment": "Reopen and Comment",
+            "report": "Report",
+            "new": "New Note",
+            "newDescription": "Describe the issue.",
+            "save": "Save Note",
+            "login": "You must log in to change or comment on this note.",
+            "upload_explanation": "Your comments will be publicly visible to all OpenStreetMap users.",
+            "upload_explanation_with_user": "Your comments as {user} will be publicly visible to all OpenStreetMap users."
         },
         "help": {
             "title": "Help",
@@ -906,6 +979,17 @@
                 "boundary": "A *boundary* relation is a group of one or more line features that together form an administrative boundary.",
                 "boundary_add": "To add a feature to a boundary relation, select the feature and scroll down to the \"All relations\" section of the feature editor, then click the {plus} add button to add this feature to a nearby existing relation or a new relation."
             },
+            "notes": {
+                "title": "Notes",
+                "intro": "*Notes* are used to alert other users that a feature requires fixing or attention. Notes mark a specific location on the map. To view existing notes or add new ones, click the {data} **Map data** panel to enable the OpenStreetMap notes layer.",
+                "add_note_h": "Adding Notes",
+                "add_note": "To add a new note, click the {note} **Note** button on the toolbar above the map, or press the shortcut key `4`. This will change the mouse cursor to a cross symbol. To place the new note on the map, position the mouse cursor where the note should go, then {leftclick} left-click or press `Space`.",
+                "move_note": "Only new notes can be moved. To move a note, place the mouse cursor over the new note, then press and hold the {leftclick} left mouse button while dragging the note to its new location.",
+                "update_note_h": "Closing, Reopening, and Commenting",
+                "update_note": "An existing note can be updated by closing it, reopening it, or adding a comment to it. Closing a note indicates that the problem has been resolved. Reopening a note indicates that the original issue is not resolved.",
+                "save_note_h": "Saving Notes",
+                "save_note": "You must save any note edits individually by clicking the buttons below the note comments. Note edits are **not** included in changesets that you upload to OpenStreetMap."
+            },
             "imagery": {
                 "title": "Background Imagery",
                 "intro": "The background imagery that appears beneath the map data is an important resource for mapping. This imagery can be aerial photos collected from satellites, airplanes, and drones, or it can be scanned historical maps or other freely available source data.",
@@ -918,7 +1002,7 @@
             },
             "streetlevel": {
                 "title": "Street Level Photos",
-                "intro": "Street level photos are useful for mapping traffic signs, businesses, and other details that you can't see from satellite and aerial images. The iD editor supports street level photos from [Mapillary](https://www.mapillary.com) and [OpenStreetCam](https://www.openstreetcam.org).",
+                "intro": "Street level photos are useful for mapping traffic signs, businesses, and other details that you can't see from satellite and aerial images. The iD editor supports street level photos from [Bing Streetside](https://www.microsoft.com/en-us/maps/streetside), [Mapillary](https://www.mapillary.com), and [OpenStreetCam](https://www.openstreetcam.org).",
                 "using_h": "Using Street Level Photos",
                 "using": "To use street level photos for mapping, click the {data} **Map data** panel on the side of the map to enable or disable the available photo layers.",
                 "photos": "When enabled, the photo layer displays a line along the sequence of photos. At higher zoom levels, a circle marks at each photo location, and at even higher zoom levels, a cone indicates the direction the camera was facing when the photo was taken.",
@@ -1300,7 +1384,8 @@
                     "add_point": "'Add point' mode",
                     "add_line": "'Add line' mode",
                     "add_area": "'Add area' mode",
-                    "place_point": "Place a point",
+                    "add_note": "'Add note' mode",
+                    "place_point": "Place a point or note",
                     "disable_snap": "Hold to disable point snapping",
                     "stop_line": "Finish drawing a line or area"
                 },
@@ -1309,6 +1394,7 @@
                     "continue_line": "Continue a line at the selected node",
                     "merge": "Combine (merge) selected features",
                     "disconnect": "Disconnect features at the selected node",
+                    "detach_node": "Detach selected node from parent lines/areas",
                     "split": "Split a line into two at the selected node",
                     "reverse": "Reverse a line",
                     "move": "Move selected features",
@@ -1424,31 +1510,35 @@
                     "options": {
                         "yes": {
                             "title": "Allowed",
-                            "description": "Access permitted by law; a right of way"
+                            "description": "Access allowed by law; a right of way"
                         },
                         "no": {
                             "title": "Prohibited",
-                            "description": "Access not permitted to the general public"
+                            "description": "Access not allowed to the general public"
                         },
                         "permissive": {
                             "title": "Permissive",
-                            "description": "Access permitted until such time as the owner revokes the permission"
+                            "description": "Access allowed until such time as the owner revokes the permission"
                         },
                         "private": {
                             "title": "Private",
-                            "description": "Access permitted only with permission of the owner on an individual basis"
+                            "description": "Access allowed only with permission of the owner on an individual basis"
                         },
                         "designated": {
                             "title": "Designated",
-                            "description": "Access permitted according to signs or specific local laws"
+                            "description": "Access allowed according to signs or specific local laws"
                         },
                         "destination": {
                             "title": "Destination",
-                            "description": "Access permitted only to reach a destination"
+                            "description": "Access allowed only to reach a destination"
                         },
                         "dismount": {
                             "title": "Dismount",
-                            "description": "Access permitted but rider must dismount"
+                            "description": "Access allowed but rider must dismount"
+                        },
+                        "permit": {
+                            "title": "Permit",
+                            "description": "Access allowed only with a valid permit or license"
                         }
                     }
                 },
@@ -1602,6 +1692,9 @@
                 "board_type": {
                     "label": "Type"
                 },
+                "booth": {
+                    "label": "Booth"
+                },
                 "boules": {
                     "label": "Type"
                 },
@@ -1649,6 +1742,9 @@
                 "capacity": {
                     "label": "Capacity",
                     "placeholder": "50, 100, 200..."
+                },
+                "cash_in": {
+                    "label": "Cash In"
                 },
                 "castle_type": {
                     "label": "Type"
@@ -2305,6 +2401,9 @@
                         "lane": "Roadside Lane"
                     }
                 },
+                "passenger_information_display": {
+                    "label": "Passenger information display"
+                },
                 "payment_multi": {
                     "label": "Payment Types"
                 },
@@ -2522,6 +2621,20 @@
                 },
                 "shop": {
                     "label": "Type"
+                },
+                "siren/purpose": {
+                    "label": "Purpose"
+                },
+                "siren/type": {
+                    "label": "Type",
+                    "options": {
+                        "pneumatic": "Pneumatic",
+                        "electronic": "Electronic",
+                        "other": "Other"
+                    }
+                },
+                "site_type": {
+                    "label": "Site Type"
                 },
                 "site": {
                     "label": "Type"
@@ -2949,7 +3062,7 @@
                 },
                 "aeroway/aerodrome": {
                     "name": "Airport",
-                    "terms": "airplane,airport,aerodrome"
+                    "terms": "aerodrome,aeroway,airplane,airport,jet,plane"
                 },
                 "aeroway/apron": {
                     "name": "Apron",
@@ -3060,7 +3173,7 @@
                     "terms": "bike,repair,chain,pump"
                 },
                 "amenity/biergarten": {
-                    "name": "Beer Garden",
+                    "name": "Biergarten",
                     "terms": "beer,bier,booze"
                 },
                 "amenity/boat_rental": {
@@ -3261,7 +3374,7 @@
                 },
                 "amenity/pharmacy": {
                     "name": "Pharmacy",
-                    "terms": "drug*,med*,prescription"
+                    "terms": "apothecary,drug*,med*,prescription"
                 },
                 "amenity/place_of_worship": {
                     "name": "Place of Worship",
@@ -4095,6 +4208,10 @@
                     "name": "Defibrillator",
                     "terms": "AED"
                 },
+                "emergency/fire_alarm": {
+                    "name": "Fire Alarm Call Box",
+                    "terms": ""
+                },
                 "emergency/fire_extinguisher": {
                     "name": "Fire Extinguisher",
                     "terms": ""
@@ -4103,13 +4220,25 @@
                     "name": "Fire Hydrant",
                     "terms": "fire plug"
                 },
+                "emergency/first_aid_kit": {
+                    "name": "First Aid Kit",
+                    "terms": "bandage,first aid,med,med kit,medic*,medkit"
+                },
                 "emergency/life_ring": {
                     "name": "Life Ring",
                     "terms": "life buoy,kisby ring,kisbie ring,perry buoy"
                 },
+                "emergency/lifeguard": {
+                    "name": "Lifeguard",
+                    "terms": "CPR,rescue"
+                },
                 "emergency/phone": {
                     "name": "Emergency Phone",
                     "terms": ""
+                },
+                "emergency/siren": {
+                    "name": "Siren",
+                    "terms": "air raid,loud,noise,storm,tornado,warning"
                 },
                 "emergency/water_tank": {
                     "name": "Emergency Water Tank",
@@ -4117,7 +4246,7 @@
                 },
                 "entrance": {
                     "name": "Entrance/Exit",
-                    "terms": ""
+                    "terms": "entrance,exit,door"
                 },
                 "footway/crossing-raised": {
                     "name": "Raised Street Crossing",
@@ -4253,7 +4382,7 @@
                 },
                 "highway/bridleway": {
                     "name": "Bridle Path",
-                    "terms": "bridleway,equestrian,horse"
+                    "terms": "bridleway,equestrian,horse,trail"
                 },
                 "highway/bus_guideway": {
                     "name": "Bus Guideway",
@@ -4305,15 +4434,15 @@
                 },
                 "highway/motorway_junction": {
                     "name": "Motorway Junction / Exit",
-                    "terms": ""
+                    "terms": "exit"
                 },
                 "highway/motorway_link": {
                     "name": "Motorway Link",
-                    "terms": "ramp,on ramp,off ramp"
+                    "terms": "exit,ramp,road,street,on ramp,off ramp"
                 },
                 "highway/motorway": {
                     "name": "Motorway",
-                    "terms": "autobahn,expressway,freeway,highway,interstate,parkway,thruway,turnpike"
+                    "terms": "autobahn,expressway,freeway,highway,interstate,parkway,road,street,thruway,turnpike"
                 },
                 "highway/passing_place": {
                     "name": "Passing Place",
@@ -4333,11 +4462,11 @@
                 },
                 "highway/primary_link": {
                     "name": "Primary Link",
-                    "terms": "ramp,on ramp,off ramp"
+                    "terms": "on ramp,off ramp,ramp,road,street"
                 },
                 "highway/primary": {
                     "name": "Primary Road",
-                    "terms": ""
+                    "terms": "road,street"
                 },
                 "highway/raceway": {
                     "name": "Racetrack (Motorsport)",
@@ -4345,7 +4474,7 @@
                 },
                 "highway/residential": {
                     "name": "Residential Road",
-                    "terms": ""
+                    "terms": "road,street"
                 },
                 "highway/rest_area": {
                     "name": "Rest Area",
@@ -4353,19 +4482,19 @@
                 },
                 "highway/road": {
                     "name": "Unknown Road",
-                    "terms": ""
+                    "terms": "road,street"
                 },
                 "highway/secondary_link": {
                     "name": "Secondary Link",
-                    "terms": "ramp,on ramp,off ramp"
+                    "terms": "on ramp,off ramp,ramp,road,street"
                 },
                 "highway/secondary": {
                     "name": "Secondary Road",
-                    "terms": ""
+                    "terms": "road,street"
                 },
                 "highway/service": {
                     "name": "Service Road",
-                    "terms": ""
+                    "terms": "road,street"
                 },
                 "highway/service/alley": {
                     "name": "Alley",
@@ -4409,11 +4538,11 @@
                 },
                 "highway/tertiary_link": {
                     "name": "Tertiary Link",
-                    "terms": "ramp,on ramp,off ramp"
+                    "terms": "on ramp,off ramp,ramp,road,street"
                 },
                 "highway/tertiary": {
                     "name": "Tertiary Road",
-                    "terms": ""
+                    "terms": "road,street"
                 },
                 "highway/track": {
                     "name": "Unmaintained Track Road",
@@ -4429,11 +4558,11 @@
                 },
                 "highway/trunk_link": {
                     "name": "Trunk Link",
-                    "terms": "ramp,on ramp,off ramp"
+                    "terms": "on ramp,off ramp,ramp,road,street"
                 },
                 "highway/trunk": {
                     "name": "Trunk Road",
-                    "terms": ""
+                    "terms": "road,street"
                 },
                 "highway/turning_circle": {
                     "name": "Turning Circle",
@@ -4445,7 +4574,7 @@
                 },
                 "highway/unclassified": {
                     "name": "Minor/Unclassified Road",
-                    "terms": ""
+                    "terms": "road,street"
                 },
                 "historic": {
                     "name": "Historic Site",
@@ -4589,7 +4718,7 @@
                 },
                 "landuse/military/airfield": {
                     "name": "Military Airfield",
-                    "terms": "air force,army,base,bomb,fight,force,guard,heli*,jet,marine,navy,plane,troop,war"
+                    "terms": "aerodrome,aeroway,air force,airplane,airport,army,base,bomb,fight,force,guard,heli*,jet,marine,navy,plane,troop,war"
                 },
                 "landuse/military/barracks": {
                     "name": "Barracks",
@@ -4823,6 +4952,10 @@
                     "name": "American Football Field",
                     "terms": ""
                 },
+                "leisure/pitch/badminton": {
+                    "name": "Badminton Court",
+                    "terms": ""
+                },
                 "leisure/pitch/baseball": {
                     "name": "Baseball Diamond",
                     "terms": ""
@@ -4950,6 +5083,10 @@
                 "man_made/bridge": {
                     "name": "Bridge",
                     "terms": ""
+                },
+                "man_made/bunker_silo": {
+                    "name": "Bunker Silo",
+                    "terms": "Silage,Storage"
                 },
                 "man_made/chimney": {
                     "name": "Chimney",
@@ -5101,7 +5238,7 @@
                 },
                 "natural/cliff": {
                     "name": "Cliff",
-                    "terms": "escarpment"
+                    "terms": "crag,escarpment,rock face,scarp"
                 },
                 "natural/coastline": {
                     "name": "Coastline",
@@ -5921,7 +6058,7 @@
                 },
                 "shop/chemist": {
                     "name": "Drugstore",
-                    "terms": "med*,drug*,gift"
+                    "terms": "apothecary,med*,drug*,gift"
                 },
                 "shop/chocolate": {
                     "name": "Chocolate Store",
@@ -6970,6 +7107,14 @@
             }
         },
         "community": {
+            "bw-facebook": {
+                "name": "Mapping Botswana on Facebook",
+                "description": "Page of OpenStreetMap in Botswana"
+            },
+            "bw-twitter": {
+                "name": "Mapping Botswana on Twitter",
+                "description": "Twitter of OpenStreetMap in Botswana"
+            },
             "cape-coast-youthmappers": {
                 "name": "University of Cape Coast YouthMappers",
                 "description": "Follow us on Twitter: {url}",
@@ -7210,6 +7355,18 @@
                 "name": "OpenStreetMap Belgium Twitter",
                 "description": "OSM Belgium on Twitter: @osm_be"
             },
+            "hr-facebook": {
+                "name": "OpenStreetMap Croatia Facebook group",
+                "description": "OpenStreetMap Croatia Facebook group"
+            },
+            "hr-irc": {
+                "name": "OpenStreetMap Croatia on IRC",
+                "description": "Join #osm-hr on irc.freenode.org (port 6667)"
+            },
+            "hr-mailinglist": {
+                "name": "Talk-hr Mailing List",
+                "description": "Talk-hr mailing list"
+            },
             "czech-community": {
                 "name": "Czech OSM community",
                 "description": "Map portal, website and contacts on OSM members in Czechia"
@@ -7322,6 +7479,18 @@
                 "name": "OpenStreetMap Hungary Meetup",
                 "description": "The platform for organizing meetups in Hungary"
             },
+            "is-facebook": {
+                "name": "OSM Iceland on Facebook",
+                "description": "Page of OpenStreetMap in Iceland"
+            },
+            "is-mailinglist": {
+                "name": "Talk-is Mailing List",
+                "description": "Talk-is is the official mailing list for the Icelandic OSM community"
+            },
+            "is-twitter": {
+                "name": "OSM Iceland on Twittter",
+                "description": "Twitter of OpenStreetMap in Iceland"
+            },
             "it-facebook": {
                 "name": "OpenStreetMap Italy Facebook",
                 "description": "Join the OpenStreetMap Italy community on Facebook"
@@ -7379,6 +7548,14 @@
             "OSM-PL-forum": {
                 "name": "OpenStreetMap Poland Forum",
                 "description": "Forum of Polish OpenStreetMap community"
+            },
+            "si-forum": {
+                "name": "OpenStreetMap Slovenia Forum",
+                "description": "Forum of OpenStreetMap community in Slovenia"
+            },
+            "si-mailinglist": {
+                "name": "OpenStreetMap Slovenia mailing list",
+                "description": "Mailing list of OpenStreetMap community in Slovenia"
             },
             "OSM-ES-mailinglist": {
                 "name": "Talk-es mailing list",
@@ -7485,6 +7662,10 @@
                 "description": "Mappers and OpenStreetMap users, around Portland, ME",
                 "extendedDescription": "Maptime is, rather literally, time for mapmaking.  Our mission is to open the doors of cartographic possibility to anyone interested by creating a time and space for collaborative learning, exploration, and map creation using mapping tools and technologies."
             },
+            "us-ma-mailinglist": {
+                "name": "Talk-us-massachusetts Mailing List",
+                "description": "Email mailing list for the Massachusetts OSM community"
+            },
             "OpenCleveland-meetup": {
                 "name": "Open Cleveland",
                 "description": "Improve OpenStreetMap in the Cleveland area",
@@ -7512,6 +7693,11 @@
             "OSM-NYC": {
                 "name": "OpenStreetMap NYC",
                 "description": "Mappers and OpenStreetMap users, developers and enthusiasts in the New York Metropolitan area"
+            },
+            "OSM-Portland-forum": {
+                "name": "OpenStreetMap PDX Google Group",
+                "description": "Forum and mailing list for OpenStreetMap users in the Portland area",
+                "extendedDescription": "This group is to facilitate improvements to OpenStreetMap in the Portland, Oregon area to support applications such as the Open Trip Planner."
             },
             "OSM-Portland": {
                 "name": "OpenStreetMap Portland",
@@ -7544,7 +7730,14 @@
             "OSM-US": {
                 "name": "OpenStreetMap US",
                 "description": "We help grow and improve OpenStreetMap in the United States.",
-                "extendedDescription": "We support OpenStreetMap by holding annual conferences, providing community resources, building partnerships, and by spreading the word. Join OpenStreetMap US here: {signupUrl}"
+                "extendedDescription": "We support OpenStreetMap by holding annual conferences, providing community resources, building partnerships, and by spreading the word. Join OpenStreetMap US here: {signupUrl}",
+                "events": {
+                    "sotmus2018": {
+                        "name": "State of the Map US 2018",
+                        "description": "Join the OpenStreetMap community at State of the Map US in Detroit, Michigan. Connect with other mappers, businesses, government agencies, and non profits, all collaborating around the free and editable map of the world.",
+                        "where": "Detroit, Michigan"
+                    }
+                }
             },
             "OSM-Utah": {
                 "name": "OpenStreetMap Utah",
@@ -7639,6 +7832,11 @@
                 "name": "OpenStreetMap Brasil Twitter",
                 "description": "Follow us on Twitter at {url}"
             },
+            "RS-telegram": {
+                "name": "OpenStreetMap Rio Grande do Sul Telegram Group",
+                "description": "Join the OpenStreetMap Rio Grande do Sul community on Telegram",
+                "extendedDescription": "Join the community to learn more about OpenStreetMap, ask questions or participate in our meetings. Everyone is welcome!"
+            },
             "OSM-CL-facebook": {
                 "name": "OpenStreetMap Chile Facebook",
                 "description": "Join the OpenStreetMap Chile community on Facebook",
@@ -7714,6 +7912,29 @@
             "OSM-PE": {
                 "name": "OpenStreetMap Peru",
                 "description": "News and resources for the OpenStreetMap Peru community"
+            },
+            "LATAM-Facebook": {
+                "name": "OpenStreetMap Latam Facebook",
+                "description": "OpenStreetMap Latam on Facebook"
+            },
+            "LATAM-Telegram": {
+                "name": "OpenStreetMap Latam Telegram",
+                "description": "OpenStreetMap Telegram for Latin America"
+            },
+            "LATAM-Twitter": {
+                "name": "OpenStreetMap Latam Twitter",
+                "description": "Follow us on Twitter at {url}"
+            },
+            "osm-latam": {
+                "name": "OpenStreetMap Latam",
+                "description": "Supporting OpenStreetMap in Latin America",
+                "events": {
+                    "sotm-latam-2018": {
+                        "name": "State of the Map Latam 2018",
+                        "description": "State of the Map Latam is the annual conference for all mappers and users of OpenStreetMap in Latin America. The program includes talks, panels, workshops, and mapathons related to OpenStreetMap.",
+                        "where": "Buenos Aires, Argentina"
+                    }
+                }
             },
             "OSM-Facebook": {
                 "name": "OpenStreetMap on Facebook",

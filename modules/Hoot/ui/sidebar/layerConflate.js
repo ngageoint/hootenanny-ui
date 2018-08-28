@@ -183,15 +183,7 @@ class LayerConflate extends SidebarForm {
         data.GENERATE_REPORT    = this.generateReportInput.node().value;
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
         data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
-        //data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
         data.USER_EMAIL         = 'test@test.com';
-
-        let gj = Hoot.context.layers().layer( 'gpx' );
-
-        if ( gj.hasGpx() ) {
-            let extent    = new GeoExtent( d3.geoBounds( gj.geojson() ) );
-            data.TASK_BOX = extent.toParams();
-        }
 
         return data;
     }

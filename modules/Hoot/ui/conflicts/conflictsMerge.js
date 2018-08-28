@@ -160,7 +160,7 @@ export default class ConflictsMerge {
         let mergedXml = await Hoot.api.poiMerge( osmXml ),
             dom       = new DOMParser().parseFromString( mergedXml, 'text/xml' );
 
-        let featureOsm = await Hoot.context.connection().parseXml( dom, mapId );
+        let featureOsm = await Hoot.context.connection().parse( dom, mapId );
 
         return featureOsm[ 0 ];
     }
