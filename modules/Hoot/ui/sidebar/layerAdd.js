@@ -12,8 +12,8 @@ import SidebarForm from './sidebarForm';
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 
 export default class LayerAdd extends SidebarForm {
-    constructor( container ) {
-        super( container );
+    constructor( container, d ) {
+        super( container, d );
 
         this.selectedLayer = {
             name: null,
@@ -63,6 +63,9 @@ export default class LayerAdd extends SidebarForm {
 
                     this.selectedLayer.name = gNode.attr( 'data-name' );
                     this.selectedLayer.id   = gNode.attr( 'data-id' );
+                } else {
+                    this.selectedLayer.name = null;
+                    this.selectedLayer.id = null;
                 }
             } );
     }
@@ -142,11 +145,11 @@ export default class LayerAdd extends SidebarForm {
             .classed( 'add-layer dark text-light small strong round', true )
             .property( 'disabled', true )
             .text( 'Add Layer' )
-            .on( 'click', d => {
+            .on( 'click', () => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
-                this.submitLayer( d );
+                this.submitLayer();
             } );
     }
 
@@ -184,6 +187,10 @@ export default class LayerAdd extends SidebarForm {
             } );
     }
 
+    forceAdd( d ) {
+
+    }
+
     /**
      * Submit layer event
      *
@@ -193,16 +200,16 @@ export default class LayerAdd extends SidebarForm {
         let color = this.form.select( '.palette .active' ).attr( 'data-color' );
 
         let params = {
-            name: this.selectedLayer.name,
-            id: this.selectedLayer.id,
-            refType: d.refType,
+            name: d ? d.name : this.selectedLayer.name,
+            id: d ? d.id : this.selectedLayer.id,
+            refType: this.formMeta.refType,
             color
         };
 
         this.loadingState( params );
-        this.loadLayer( params );
 
-        Hoot.events.emit( 'load-layer' );
+        return Hoot.layers.loadLayer( params )
+            .then( () => Hoot.events.emit( 'load-layer' ) );
     }
 
     /**

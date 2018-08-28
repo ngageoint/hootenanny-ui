@@ -8,9 +8,9 @@ import Hoot              from '../../hoot';
 import SidebarController from './sidebarController';
 
 export default class SidebarForm {
-    constructor( container ) {
-        this.container = container;
-
+    constructor( container, d ) {
+        this.container    = container;
+        this.formMeta     = d;
         this.form         = null;
         this.controller   = null;
         this.loadingLayer = null;
@@ -80,7 +80,7 @@ export default class SidebarForm {
         this.form.remove();
         this.folderTree = null;
 
-        if ( d.id === 'primary' ) {
+        if ( d.id === 'reference' ) {
             this.form = this.container.insert( 'form', ':first-child' );
         } else {
             this.form = this.container.append( 'form' );
@@ -88,7 +88,6 @@ export default class SidebarForm {
 
         this.form.attr( 'id', d => d.id )
             .attr( 'class', d => `sidebar-form round importable-layer fill-white strong ${ d.class }` );
-
     }
 
     /**
@@ -116,7 +115,7 @@ export default class SidebarForm {
 
     loadingState( params ) {
         this.loadingLayerName = params.name;
-        this.controller   = new SidebarController( Hoot.context, this.form, params );
+        this.controller       = new SidebarController( Hoot.context, this.form, params );
 
         this.controller.render();
     }

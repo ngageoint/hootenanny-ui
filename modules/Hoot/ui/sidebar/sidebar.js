@@ -24,19 +24,19 @@ export default class Sidebar {
         let formMeta = [
             {
                 type: 'add',
-                refType: 'primary',
-                id: 'primary',
+                id: 'reference',
                 class: 'layer-add',
                 tableId: 'add-ref-table',
+                refType: 'primary',
                 color: 'violet',
                 toggleButtonText: 'Add Reference Datasets'
             },
             {
                 type: 'add',
-                refType: 'secondary',
                 id: 'secondary',
                 class: 'layer-add',
                 tableId: 'add-secondary-table',
+                refType: 'secondary',
                 color: 'orange',
                 toggleButtonText: 'Add Secondary Datasets'
             },
@@ -125,14 +125,14 @@ export default class Sidebar {
         this.wrapper.selectAll( '.layer-add' )
             .data( this.addFormData ).enter()
             .select( function( d ) {
-                that.forms[ d.id ] = new LayerAdd( d3.select( this ) );
+                that.forms[ d.id ] = new LayerAdd( d3.select( this ), d );
                 that.forms[ d.id ].render();
             } );
 
         this.wrapper.selectAll( '.layer-conflate' )
             .data( this.conflateFormData ).enter()
             .select( function( d ) {
-                that.forms[ d.id ] = new LayerConflate( d3.select( this ) );
+                that.forms[ d.id ] = new LayerConflate( d3.select( this ), d );
             } );
     }
 

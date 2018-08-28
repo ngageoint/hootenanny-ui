@@ -31,10 +31,7 @@ export default class Alert extends EventEmitter {
             .attr( 'type', 'button' )
             .classed( 'close pointer hidden', true )
             .text( '×' )
-            .on( 'click', () => {
-                this.destroy( this.container );
-                //this.emit( 'destroy', this );
-            } );
+            .on( 'click', () => this.destroy( this.container ) );
 
         this.container
             .append( 'div' )
@@ -122,7 +119,7 @@ export default class Alert extends EventEmitter {
             .select( '.close' )
             .classed( 'hidden', true );
 
-        if ( this.details && !this.details.classed( 'show' ) ) {
+        if ( !this.details || ( this.details && !this.details.classed( 'show' ) ) ) {
             this.autoHide();
         }
     }

@@ -13,8 +13,8 @@ import { layerConflateForm }      from '../../config/domMetadata';
 import { geoExtent as GeoExtent } from '../../../geo/index';
 
 class LayerConflate extends SidebarForm {
-    constructor( container ) {
-        super( container );
+    constructor( container, d ) {
+        super( container, d );
     }
 
     render( layers ) {
@@ -197,9 +197,8 @@ class LayerConflate extends SidebarForm {
         params.merged = true;
         params.layers = layers;
 
-        this.loadLayer( params );
-
-        Hoot.folders.updateFolders( this.innerWrapper );
+        Hoot.layers.loadLayer( params )
+            .then( () => Hoot.folders.updateFolders( this.innerWrapper ) );
     }
 
     handleSubmit() {

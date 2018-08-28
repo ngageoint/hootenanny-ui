@@ -23,12 +23,12 @@ export default class FolderTree {
         this.lastSelectedRangeNodes = null;
 
         this.datasetContextMenu = {
-            multiDataset: {
+            multiDatasetOpts: {
                 title: 'Export Selected Datasets',
                 icon: 'export',
                 click: 'bulkexportDataset'
             },
-            singleDataset: [
+            singleDatasetOpts: [
                 {
                     title: 'Export',
                     icon: 'export',
@@ -43,6 +43,22 @@ export default class FolderTree {
                     title: 'Filter non-HGIS POIs',
                     icon: 'sprocket',
                     click: 'filter'
+                }
+            ],
+            addDatasetOpts: [
+                {
+                    title: 'Add as Reference Dataset',
+                    formId: 'reference',
+                    refType: 'primary',
+                    icon: 'plus',
+                    click: 'addDataset'
+                },
+                {
+                    title: 'Add as Secondary Dataset',
+                    formId: 'secondary',
+                    refType: 'secondary',
+                    icon: 'plus',
+                    click: 'addDataset'
                 }
             ]
         };
@@ -452,9 +468,9 @@ export default class FolderTree {
                 data.selected      = true;
                 this.selectedNodes = [ data ];
             }
-
-            this.openContextMenu( d );
         }
+
+        this.openContextMenu( d );
 
         this.update( d );
     }
@@ -466,12 +482,12 @@ export default class FolderTree {
      */
     openContextMenu( d ) {
         let { data } = d,
-            items;
+            opts;
 
         if ( data.type === 'dataset' ) {
             const selectedCount = this.selectedNodes.length;
 
-            items = [
+            opts = [
                 {
                     title: `Delete (${ selectedCount })`,
                     icon: 'trash',
@@ -485,19 +501,30 @@ export default class FolderTree {
             ];
 
             if ( selectedCount > 1 && selectedCount <= 10 ) {
-                items.push( this.datasetContextMenu.multiDataset );
+                // add options for multiple selected datasets
+                opts.push( this.datasetContextMenu.multiDatasetOpts );
             } else {
-                items = _.concat( items, this.datasetContextMenu.singleDataset );
-                items.splice( 3, 0, {
-                    title: `Rename ${ d.name }`,
+                // add options for single selected dataset
+                _.forEach( this.datasetContextMenu.addDatasetOpts, o => {
+                    let form = Hoot.ui.sidebar.forms[ o.formId ].exists;
+
+                    if ( form && !form.attr( 'data-id' ) ) {
+                        opts.push( o );
+                    }
+                } );
+
+                opts = _.concat( opts, this.datasetContextMenu.singleDatasetOpts );
+
+                opts.splice( 4, 0, {
+                    title: `Rename ${ data.name }`,
                     icon: 'info',
                     click: 'renameDataset'
                 } );
             }
         } else if ( data.type === 'folder' ) {
-            items = this.folderContextMenu;
-            items = items.splice( 1, 0, {
-                title: `Rename/Move ${ d.name }`,
+            opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
+            opts.splice( 1, 0, {
+                title: `Rename/Move ${ data.name }`,
                 icon: 'info',
                 click: 'modifyFolder'
             } );
@@ -519,7 +546,7 @@ export default class FolderTree {
             .html( '' )
             .append( 'ul' )
             .selectAll( 'li' )
-            .data( items ).enter()
+            .data( opts ).enter()
             .append( 'li' )
             .attr( 'class', item => `_icon ${ item.icon }` )
             .text( item => item.title )
@@ -532,6 +559,23 @@ export default class FolderTree {
                         };
 
                         Hoot.events.emit( 'delete-dataset', params );
+                        break;
+                    }
+                    case 'addDataset': {
+                        let params = {
+                            name: data.name,
+                            id: data.id
+                        };
+
+                        Hoot.ui.sidebar.forms[ item.formId ].submitLayer( params )
+                            .then( () => {
+                                let refType = item.formId.charAt( 0 ).toUpperCase() + item.formId.substr( 1 ),
+                                    message = `${refType} layer added to map: <u>${data.name}</u>`,
+                                    type    = 'info';
+
+                                Hoot.message.alert( { message, type } );
+                            } );
+
                         break;
                     }
                 }

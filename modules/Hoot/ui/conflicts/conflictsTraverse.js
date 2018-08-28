@@ -30,9 +30,10 @@ export default class ConflictsTraverse {
             hasChanges = Hoot.context.history().hasChanges();
 
         if ( hasChanges ) {
-            // TODO: set processing to false
+            let message = 'Please resolve or undo the current feature changes before proceeding to the next review.',
+                type = 'warn';
 
-            alert( 'Please resolve or undo the current feature changes before proceeding to the next review.' );
+            Hoot.message.alert( { message, type } );
             return;
         }
 
@@ -59,6 +60,11 @@ export default class ConflictsTraverse {
             this.instance.graphSync.getRelationMembers( reviewItem.relationId )
                 .then( members => this.instance.map.highlightLayer( members[ 0 ], members[ 1 ], true ) );
         } else {
+            let message = 'There are no more available features to review. Exiting the review session.',
+                type = 'info';
+
+            Hoot.message.alert( { message, type } );
+
             this.instance.map.unsetHighlight();
             this.instance.deactivate();
         }
