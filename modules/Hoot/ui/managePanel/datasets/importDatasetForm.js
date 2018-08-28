@@ -272,7 +272,7 @@ export default class ImportDatasetForm {
             } );
 
             if ( !valid ) {
-                message = 'Missing shapefile dependency. Import requires shp, shx and dbf.'
+                message = 'Missing shapefile dependency. Import requires shp, shx and dbf.';
                 Hoot.message.alert( message, 'warning' );
                 return false;
             }
@@ -281,7 +281,7 @@ export default class ImportDatasetForm {
         if ( totalFileSize > ingestThreshold ) {
             let thresholdInMb = Math.floor( ingestThreshold / 1000000 );
 
-            message = `The total size of ingested files are greater than ingest threshold size of ${ thresholdInMb } MB and it may have problem. Do you wish to continue?`
+            message = `The total size of ingested files are greater than ingest threshold size of ${ thresholdInMb } MB and it may have problem. Do you wish to continue?`;
 
             return Hoot.message.confirm( message );
         } else {
@@ -327,19 +327,33 @@ export default class ImportDatasetForm {
             typeCombo   = this.typeInput.datum(),
             translation = _.filter( transCombo.data, o => o.DESCRIPTION === transVal )[ 0 ],
             importType  = _.filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
+            translationName,
             data;
+
+        if ( translation.DEFAULT ) {
+            if ( translation.IMPORTPATH && translation.IMPORTPATH.length ) {
+                translationName = translation.IMPORTPATH;
+            }
+        } else {
+            translationName = translation.NAME + '.js';
+        }
 
         if ( this.formType === 'single' ) {
             data = {
                 NONE_TRANSLATION: translation.NONE === 'true',
-                TRANSLATION: translation.DESCRIPTION,
+                TRANSLATION: translationName,
                 INPUT_TYPE: importType.value,
                 INPUT_NAME: this.layerNameInput.property( 'value' ),
                 formData: this.getFormData( this.fileIngest.node().files )
             };
 
             this.loadingState();
-            this.upload( data );
+
+            Hoot.api.uploadDataset( data )
+                .then( resp => Hoot.message.alert( resp ) )
+                .then( () => this.refresh() )
+                .catch( err => Hoot.message.alert( err ) )
+                .finally( () => this.container.remove() );
         } else {
             let fileNames = [];
 
@@ -361,7 +375,7 @@ export default class ImportDatasetForm {
 
                 return {
                     NONE_TRANSLATION: translation.NONE === 'true',
-                    TRANSLATION: translation.DESCRIPTION,
+                    TRANSLATION: translationName,
                     INPUT_TYPE: importType.value,
                     INPUT_NAME: name,
                     formData: this.getFormData( importFiles )
@@ -369,20 +383,27 @@ export default class ImportDatasetForm {
             } );
 
             this.loadingState();
-            Promise.all( _.map( data, d => this.upload( d ) ) );
+
+            // TODO: synchonously upload datasets
+            Promise.all( _.map( data, d => Hoot.api.uploadDataset( d ) ) )
+                .then( resp => Hoot.message.alert( resp ) )
+                .then( () => this.refresh() )
+                .catch( err => Hoot.message.alert( err ) )
+                .finally( () => this.container.remove() );
         }
     }
 
-    upload( data ) {
-        return Hoot.api.uploadDataset( data )
-            .then( () => Hoot.folders.refreshDatasets() )
-            .then( () => Hoot.folders.updateFolders( this.container, data.INPUT_NAME ) )
-            .then( () => this.container.remove() )
-            .catch( err => {
-                // TODO: alert error - unable to upload dataset
-                console.log( err );
-                this.container.remove();
-            } );
+    //upload( data ) {
+    //    return Hoot.api.uploadDataset( data )
+    //        .catch( err => {
+    //            console.log( err );
+    //            this.container.remove();
+    //        } );
+    //}
+
+    refresh() {
+        return Hoot.folders.refreshDatasets()
+            .then( () => Hoot.folders.updateFolders( this.container ) );
     }
 
     /**

@@ -390,7 +390,6 @@ export default class API {
      * @returns {Promise} - request
      */
     uploadDataset( data ) {
-        console.log( data );
         if ( !data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME ) {
             return false;
         }
@@ -412,20 +411,36 @@ export default class API {
             .then( resp => this.statusInterval( resp.data[ 0 ].jobid ) )
             .then( resp => {
                 console.log( resp );
-                return Promise.resolve( {
+                return {
                     data: resp.data,
-                    message: 'Dataset uploaded',
+                    message: 'Dataset successfully imported',
                     status: 200,
                     type: resp.type,
                     jobId: resp.jobId
-                } );
+                };
             } )
             .catch( err => {
                 console.log( err );
-                return Promise.reject( 'unable to upload' );
-                // TODO: handle error
+                return Promise.reject( {
+                    data: err.data,
+                    message: 'Failed to import dataset!',
+                    status: err.status,
+                    type: err.type
+                } );
             } );
     }
+
+    // TODO: get back to this?
+    //uploadMultiDatasets( data ) {
+    //    return Promise.all( _.map( data, d => this.uploadDataset( d ) ) )
+    //        .then( resp => {
+    //            return {
+    //                message: `Successfully imported ${resp.length} datasets`,
+    //                status: 200,
+    //                type: 'success'
+    //            };
+    //        } );
+    //}
 
     /**
      * Upload imported schema files to the database for processing
@@ -455,6 +470,7 @@ export default class API {
                 };
             } )
             .catch( err => {
+                console.log( err );
                 let message, status, type;
 
                 status = err.status;

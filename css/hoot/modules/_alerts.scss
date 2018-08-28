@@ -18,7 +18,7 @@
 
     &.show {
         animation: slide-in 500ms forwards;
-        animation-delay: 50ms;
+        animation-delay: 100ms;
     }
 
     &.has-data {
@@ -57,6 +57,10 @@
     &.show {
         width: auto;
         animation: expand-show 500ms forwards;
+    }
+
+    .detail-row {
+        white-space: nowrap;
     }
 
     .detail-name {
@@ -165,7 +169,7 @@
     }
 
     100% {
-        max-width: 300px;
+        max-width: 350px;
         max-height: 150px;
         margin-top: 10px;
         visibility: visible;
