@@ -7,6 +7,7 @@ import {
     modeAddArea,
     modeAddLine,
     modeAddPoint,
+    modeAddNote,
     modeBrowse
 } from '../modes';
 
@@ -19,7 +20,8 @@ export function uiModes(context) {
     var modes = [
         modeAddPoint(context),
         modeAddLine(context),
-        modeAddArea(context)
+        modeAddArea(context),
+        modeAddNote(context)
     ];
 
 
@@ -28,59 +30,18 @@ export function uiModes(context) {
         return context.editable() && mode && mode.id !== 'save';
     }
 
+    function notesEnabled() {
+        var noteLayer = context.layers().layer('notes');
+        return noteLayer && noteLayer.enabled();
+    }
+
+    function notesEditable() {
+        var mode = context.mode();
+        return context.map().notesEditable() && mode && mode.id !== 'save';
+    }
+
 
     return function(selection) {
-        var buttons = selection.selectAll('button.add-button')
-            .data(modes);
-
-        buttons = buttons.enter()
-            .append('button')
-            .attr('tabindex', -1)
-            .attr('class', function(mode) { return mode.id + ' add-button col4'; })
-            .on('click.mode-buttons', function(mode) {
-                // When drawing, ignore accidental clicks on mode buttons - #4042
-                var currMode = context.mode().id;
-                if (currMode.match(/^draw/) !== null) return;
-
-                if (mode.id === currMode) {
-                    context.enter(modeBrowse(context));
-                } else {
-                    context.enter(mode);
-                }
-            })
-            .call(tooltip()
-                .placement('bottom')
-                .html(true)
-                .title(function(mode) {
-                    return uiTooltipHtml(mode.description, mode.key);
-                })
-            );
-
-        context.map()
-            .on('move.modes', _debounce(update, 500));
-
-        context.background()
-            .on('change.modes', update);
-
-        context
-            .on('enter.modes', update);
-
-        context
-            .on('change.modes', update);
-
-        update();
-
-        buttons
-            .each(function(d) {
-                d3_select(this)
-                    .call(svgIcon('#iD-icon-' + d.button, 'pre-text'));
-            });
-
-        buttons
-            .append('span')
-            .attr('class', 'label')
-            .text(function(mode) { return mode.title; });
-
         context
             .on('enter.editor', function(entered) {
                 selection.selectAll('button.add-button')
@@ -99,12 +60,13 @@ export function uiModes(context) {
 
         modes.forEach(function(mode) {
             keybinding.on(mode.key, function() {
-                if (editable()) {
-                    if (mode.id === context.mode().id) {
-                        context.enter(modeBrowse(context));
-                    } else {
-                        context.enter(mode);
-                    }
+                if (mode.id === 'add-note' && !(notesEnabled() && notesEditable())) return;
+                if (mode.id !== 'add-note' && !editable()) return;
+
+                if (mode.id === context.mode().id) {
+                    context.enter(modeBrowse(context));
+                } else {
+                    context.enter(mode);
                 }
             });
         });
@@ -122,11 +84,67 @@ export function uiModes(context) {
         context
             .on('enter.modes', update);
 
+        update();
 
 
         function update() {
-            selection.selectAll('button.add-button')
-                .property('disabled', !editable());
+            var showNotes = notesEnabled();
+            var data = showNotes ? modes : modes.slice(0, 3);
+
+            //selection
+            //    .classed('col3', !showNotes)  // 25%
+            //    .classed('col4', showNotes);  // 33%
+
+            var buttons = selection.selectAll('button.add-button')
+                .data(data, function(d) { return d.id; });
+
+            // exit
+            buttons.exit()
+                .remove();
+
+            // enter
+            var buttonsEnter = buttons.enter()
+                .append('button')
+                .attr('tabindex', -1)
+                .attr('class', function(d) { return d.id + ' add-button'; })
+                .on('click.mode-buttons', function(mode) {
+                    // When drawing, ignore accidental clicks on mode buttons - #4042
+                    var currMode = context.mode().id;
+                    if (currMode.match(/^draw/) !== null) return;
+
+                    if (mode.id === currMode) {
+                        context.enter(modeBrowse(context));
+                    } else {
+                        context.enter(mode);
+                    }
+                })
+                .call(tooltip()
+                    .placement('bottom')
+                    .html(true)
+                    .title(function(mode) {
+                        return uiTooltipHtml(mode.description, mode.key);
+                    })
+                );
+
+            buttonsEnter
+                .each(function(d) {
+                    d3_select(this)
+                        .call(svgIcon('#iD-icon-' + d.button, 'pre-text'));
+                });
+
+            buttonsEnter
+                .append('span')
+                .attr('class', 'label')
+                .text(function(mode) { return mode.title; });
+
+            // update
+            buttons = buttons
+                .merge(buttonsEnter)
+                //.classed('col3', showNotes)    // 25%
+                //.classed('col4', !showNotes)   // 33%
+                .property('disabled', function(d) {
+                    return d.id === 'add-note' ? !notesEditable() : !editable();
+                });
         }
     };
 }

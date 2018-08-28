@@ -54,7 +54,7 @@ export function setAreaKeys(value) {
 
 export function coreContext() {
     var context = {};
-    context.version = '2.9.0';
+    context.version = '2.11.0';
 
     // create a special translations that contains the keys in place of the strings
     var tkeys = _cloneDeep(dataEn);
@@ -120,7 +120,7 @@ export function coreContext() {
         return context;
     };
 
-    context.loadTiles = utilCallWhenIdle(function(projection, dimensions, callback) {
+    context.loadTiles = utilCallWhenIdle(function(projection, callback) {
         var cid;
         function done(err, result) {
             if (connection.getConnectionId() !== cid) {
@@ -132,11 +132,11 @@ export function coreContext() {
         }
         if (connection) {
             cid = connection.getConnectionId();
-            connection.loadTiles(projection, dimensions, done);
+            connection.loadTiles(projection, done);
         }
     });
 
-    context.loadEntity = function(entityId, callback) {
+    context.loadEntity = function(entityID, callback) {
         var cid;
         function done(err, result) {
             if (connection.getConnectionId() !== cid) {
@@ -148,7 +148,7 @@ export function coreContext() {
         }
         if (connection) {
             cid = connection.getConnectionId();
-            connection.loadEntity(entityId, done);
+            connection.loadEntity(entityID, done);
         }
     };
 
@@ -211,6 +211,13 @@ export function coreContext() {
         var canSave;
         if (mode && mode.id === 'save') {
             canSave = false;
+
+            // Attempt to prevent user from creating duplicate changes - see #5200
+            if (services.osm && services.osm.isChangesetInflight()) {
+                history.clearSaved();
+                return;
+            }
+
         } else {
             canSave = context.selectedIDs().every(function(id) {
                 var entity = context.hasEntity(id);
@@ -268,8 +275,16 @@ export function coreContext() {
             return [];
         }
     };
+
     context.activeID = function() {
         return mode && mode.activeID && mode.activeID();
+    };
+
+    var _selectedNoteID;
+    context.selectedNoteID = function(noteID) {
+        if (!arguments.length) return _selectedNoteID;
+        _selectedNoteID = noteID;
+        return context;
     };
 
 

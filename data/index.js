@@ -1,3 +1,5 @@
+import _values from 'lodash-es/values';
+
 export { wikipedia as dataWikipedia } from 'wmf-sitematrix';
 export { default as dataSuggestions } from 'name-suggestion-index/name-suggestions.json';
 
@@ -26,20 +28,20 @@ import { osmTagInfo } from './osm-plus-taginfo.json';
 import { tdsv61FieldValues } from './tdsv61_field_values.json';
 
 import { geoArea as d3_geoArea } from 'd3-geo';
-import _values from 'lodash-es/values';
 import whichPolygon from 'which-polygon';
 
-var features = _values(ociFeatures).map(function(feature) {
-    // workaround for which-polygon
-    // only supports `properties`, not `id`
+
+// index the osm-community-index
+var ociFeatureCollection = _values(ociFeatures).map(function(feature) {
+    // workaround for which-polygon: only supports `properties`, not `id`
     // https://github.com/mapbox/which-polygon/pull/6
     feature.properties = {
         id: feature.id,
         area: d3_geoArea(feature)   // also precompute areas
     };
-
     return feature;
 });
+
 
 export var data = {
     community: {
@@ -47,10 +49,10 @@ export var data = {
         resources: ociResources,
         query: whichPolygon({
             type: 'FeatureCollection',
-            features: features
+            features: ociFeatureCollection
         })
     },
-    imagery: dataImagery,
+    imagery: dataImagery,  //legacy
     presets: {
         presets: presets,
         defaults: defaults,

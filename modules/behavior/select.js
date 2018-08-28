@@ -10,10 +10,15 @@ import { geoVecLength } from '../geo';
 
 import {
     modeBrowse,
-    modeSelect
+    modeSelect,
+    modeSelectData,
+    modeSelectNote
 } from '../modes';
 
-import { osmEntity } from '../osm';
+import {
+    osmEntity,
+    osmNote
+} from '../osm';
 
 
 export function behaviorSelect(context) {
@@ -122,15 +127,9 @@ export function behaviorSelect(context) {
             datum = datum.parents[0];
         }
 
-        if (!(datum instanceof osmEntity)) {
-            // clicked nothing..
-            if (!isMultiselect && mode.id !== 'browse') {
-                context.enter(modeBrowse(context));
-            }
-
-        } else {
-            // clicked an entity..
+        if (datum instanceof osmEntity) {    // clicked an entity..
             var selectedIDs = context.selectedIDs();
+            context.selectedNoteID(null);
 
             if (!isMultiselect) {
                 if (selectedIDs.length > 1 && (!suppressMenu && !isShowAlways)) {
@@ -157,6 +156,22 @@ export function behaviorSelect(context) {
                     selectedIDs = selectedIDs.concat([datum.id]);
                     context.enter(modeSelect(context, selectedIDs).suppressMenu(suppressMenu));
                 }
+            }
+
+        } else if (datum && datum.__featurehash__ && !isMultiselect) {    // clicked Data..
+            context
+                .selectedNoteID(null)
+                .enter(modeSelectData(context, datum));
+
+        } else if (datum instanceof osmNote && !isMultiselect) {    // clicked a Note..
+            context
+                .selectedNoteID(datum.id)
+                .enter(modeSelectNote(context, datum.id));
+
+        } else {    // clicked nothing..
+            context.selectedNoteID(null);
+            if (!isMultiselect && mode.id !== 'browse') {
+                context.enter(modeBrowse(context));
             }
         }
 

@@ -6,9 +6,10 @@ import {
   geoMercatorRaw as d3_geoMercatorRaw
 } from 'd3-geo';
 
+import { json as d3_json } from 'd3-request';
+
 import { t } from '../util/locale';
-import { geoExtent, geoPolygonIntersectsPolygon, geoPolygonContainsPolygon } from '../geo';
-import { jsonpRequest } from '../util/jsonp_request';
+import { geoExtent, geoSphericalDistance } from '../geo';
 import { utilDetect } from '../util/detect';
 
 
@@ -41,9 +42,9 @@ export function rendererBackgroundSource(data) {
     var best = !!source.best;
     var template = source.template;
 
-    source.scaleExtent = data.scaleExtent || [0, 22];
+    source.tileSize = data.tileSize || 256;
+    source.zoomExtent = data.zoomExtent || [0, 22];
     source.overzoom = data.overzoom !== false;
-
 
     source.offset = function(_) {
         if (!arguments.length) return offset;
@@ -116,24 +117,25 @@ export function rendererBackgroundSource(data) {
                 var lat = Math.atan(sinh(Math.PI * (1 - 2 * y / zoomSize)));
 
                 switch (this.projection) {
-                  case 'EPSG:4326': // todo: alternative codes of WGS 84?
-                    return {
-                      x: lon * 180 / Math.PI,
-                      y: lat * 180 / Math.PI
-                    };
-                  default: // EPSG:3857 and synonyms
-                    var mercCoords = d3_geoMercatorRaw(lon, lat);
-                    return {
-                      x: 20037508.34 / Math.PI * mercCoords[0],
-                      y: 20037508.34 / Math.PI * mercCoords[1]
-                    };
+                    case 'EPSG:4326':
+                        return {
+                            x: lon * 180 / Math.PI,
+                            y: lat * 180 / Math.PI
+                        };
+                    default: // EPSG:3857 and synonyms
+                        var mercCoords = d3_geoMercatorRaw(lon, lat);
+                        return {
+                            x: 20037508.34 / Math.PI * mercCoords[0],
+                            y: 20037508.34 / Math.PI * mercCoords[1]
+                        };
                 }
             }).bind(this);
+
             var minXmaxY = tileToProjectedCoords(coord[0], coord[1], coord[2]);
             var maxXminY = tileToProjectedCoords(coord[0]+1, coord[1]+1, coord[2]);
             return template
-                .replace('{width}', 256)
-                .replace('{height}', 256)
+                .replace('{width}', this.tileSize)
+                .replace('{height}', this.tileSize)
                 .replace('{proj}', this.projection)
                 .replace('{bbox}', minXmaxY.x + ',' + maxXminY.y + ',' + maxXminY.x + ',' + minXmaxY.y);
         }
@@ -162,19 +164,9 @@ export function rendererBackgroundSource(data) {
     };
 
 
-    source.intersects = function(extent) {
-        extent = extent.polygon();
-        return !data.polygon || data.polygon.some(function(polygon) {
-            return geoPolygonIntersectsPolygon(polygon, extent, true)
-                || geoPolygonContainsPolygon(extent, polygon)
-                || geoPolygonContainsPolygon(polygon, extent); //full containment also counts as intersection
-        });
-    };
-
-
     source.validZoom = function(z) {
-        return source.scaleExtent[0] <= z &&
-            (source.overzoom || source.scaleExtent[1] > z);
+        return source.zoomExtent[0] <= z &&
+            (source.overzoom || source.zoomExtent[1] > z);
     };
 
 
@@ -215,15 +207,15 @@ rendererBackgroundSource.Bing = function(data, dispatch) {
 
     data.template = 'https://ecn.t{switch:0,1,2,3}.tiles.virtualearth.net/tiles/a{u}.jpeg?g=587&mkt=en-gb&n=z';
 
-    var bing = rendererBackgroundSource(data),
-        key = 'Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU', // Same as P2 and JOSM
-        url = 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial?include=ImageryProviders&key=' +
-            key + '&jsonp={callback}',
-        cache = {},
-        inflight = {},
-        providers = [];
+    var bing = rendererBackgroundSource(data);
+    var key = 'Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU'; // Same as P2 and JOSM
+    var url = 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial?include=ImageryProviders&key=' +
+            key;
+    var cache = {};
+    var inflight = {};
+    var providers = [];
 
-    jsonpRequest(url, function(json) {
+    d3_json(url, function(err, json) {
         providers = json.resourceSets[0].resources[0].imageryProviders.map(function(provider) {
             return {
                 attribution: provider.attribution,
@@ -254,11 +246,11 @@ rendererBackgroundSource.Bing = function(data, dispatch) {
 
 
     bing.getMetadata = function(center, tileCoord, callback) {
-        var tileId = tileCoord.slice(0, 3).join('/'),
-            zoom = Math.min(tileCoord[2], 21),
-            centerPoint = center[1] + ',' + center[0],  // lat,lng
-            url = 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/' + centerPoint +
-                '?zl=' + zoom + '&key=' + key + '&jsonp={callback}';
+        var tileId = tileCoord.slice(0, 3).join('/');
+        var zoom = Math.min(tileCoord[2], 21);
+        var centerPoint = center[1] + ',' + center[0];  // lat,lng
+        var url = 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/' + centerPoint +
+                '?zl=' + zoom + '&key=' + key;
 
         if (inflight[tileId]) return;
 
@@ -270,10 +262,15 @@ rendererBackgroundSource.Bing = function(data, dispatch) {
         }
 
         inflight[tileId] = true;
-        jsonpRequest(url, function(result) {
+        d3_json(url, function(error, result) {
             delete inflight[tileId];
 
-            var err = (!result && 'Unknown Error') || result.errorDetails;
+            var err;
+            if (error) {
+                err = error;
+            } else if (!result && 'Unknown Error') {
+                err = result.errorDetails;
+            }
             if (err) {
                 return callback(err);
             } else {
@@ -300,25 +297,62 @@ rendererBackgroundSource.Bing = function(data, dispatch) {
 
 
 rendererBackgroundSource.Esri = function(data) {
-
-    // don't request blank tiles, instead overzoom real tiles - #4327
-    // deprecated technique, but it works (for now)
+    // in addition to using the tilemap at zoom level 20, overzoom real tiles - #4327 (deprecated technique, but it works)
     if (data.template.match(/blankTile/) === null) {
         data.template = data.template + '?blankTile=false';
     }
 
-    var esri = rendererBackgroundSource(data),
-        cache = {},
-        inflight = {};
+    var esri = rendererBackgroundSource(data);
+    var cache = {};
+    var inflight = {};
+    var _prevCenter;
+
+    // use a tilemap service to set maximum zoom for esri tiles dynamically
+    // https://developers.arcgis.com/documentation/tiled-elevation-service/
+    esri.fetchTilemap = function(center) {
+        // skip if we have already fetched a tilemap within 5km
+        if (_prevCenter && geoSphericalDistance(center, _prevCenter) < 5000) return;
+        _prevCenter = center;
+
+        // tiles are available globally to zoom level 19, afterward they may or may not be present
+        var z = 20;
+
+        // first generate a random url using the template
+        var dummyUrl = esri.url([1,2,3]);
+
+        // calculate url z/y/x from the lat/long of the center of the map
+        var x = (Math.floor((center[0] + 180) / 360 * Math.pow(2, z)));
+        var y = (Math.floor((1 - Math.log(Math.tan(center[1] * Math.PI / 180) + 1 / Math.cos(center[1] * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, z)));
+
+        // fetch an 8x8 grid to leverage cache
+        var tilemapUrl = dummyUrl.replace(/tile\/[0-9]+\/[0-9]+\/[0-9]+\?blankTile=false/, 'tilemap') + '/' + z + '/' + y + '/' + x + '/8/8';
+
+        // make the request and introspect the response from the tilemap server
+        d3_json(tilemapUrl, function (err, tilemap) {
+            if (err || !tilemap) return;
+
+            var hasTiles = true;
+            for (var i = 0; i < tilemap.data.length; i++) {
+                // 0 means an individual tile in the grid doesn't exist
+                if (!tilemap.data[i]) {
+                    hasTiles = false;
+                    break;
+                }
+            }
+
+            // if any tiles are missing at level 20 we restrict maxZoom to 19
+            esri.zoomExtent[1] = (hasTiles ? 22 : 19);
+        });
+    };
 
     esri.getMetadata = function(center, tileCoord, callback) {
-        var tileId = tileCoord.slice(0, 3).join('/'),
-            zoom = Math.min(tileCoord[2], esri.scaleExtent[1]),
-            centerPoint = center[0] + ',' + center[1],  // long, lat (as it should be)
-            unknown = t('info_panels.background.unknown'),
-            metadataLayer,
-            vintage = {},
-            metadata = {};
+        var tileId = tileCoord.slice(0, 3).join('/');
+        var zoom = Math.min(tileCoord[2], esri.zoomExtent[1]);
+        var centerPoint = center[0] + ',' + center[1];  // long, lat (as it should be)
+        var unknown = t('info_panels.background.unknown');
+        var metadataLayer;
+        var vintage = {};
+        var metadata = {};
 
         if (inflight[tileId]) return;
 
@@ -347,7 +381,7 @@ rendererBackgroundSource.Esri = function(data) {
             url = 'https://serviceslab.arcgisonline.com/arcgis/rest/services/Clarity_World_Imagery/MapServer/';
         }
 
-        url += metadataLayer + '/query?returnGeometry=false&geometry=' + centerPoint + '&inSR=4326&geometryType=esriGeometryPoint&outFields=*&f=json&callback={callback}';
+        url += metadataLayer + '/query?returnGeometry=false&geometry=' + centerPoint + '&inSR=4326&geometryType=esriGeometryPoint&outFields=*&f=json';
 
         if (!cache[tileId]) {
             cache[tileId] = {};
@@ -375,11 +409,13 @@ rendererBackgroundSource.Esri = function(data) {
 
         } else {
             inflight[tileId] = true;
-            jsonpRequest(url, function(result) {
+            d3_json(url, function(error, result) {
                 delete inflight[tileId];
 
                 var err;
-                if (!result) {
+                if (error) {
+                    err = error;
+                } else if (!result) {
                     err = 'Unknown Error';
                 } else if (result.features && result.features.length < 1) {
                     err = 'No Results';

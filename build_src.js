@@ -2,8 +2,9 @@
 
 const fs = require('fs');
 const rollup = require('rollup');
-const nodeResolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
+const includePaths = require('rollup-plugin-includepaths');
+const nodeResolve = require('rollup-plugin-node-resolve');
 const json = require('rollup-plugin-json');
 const colors = require('colors/safe');
 const collectSass = require('rollup-plugin-collect-sass');
@@ -11,7 +12,7 @@ const babel = require('rollup-plugin-babel');
 const builtins = require('rollup-plugin-node-builtins' );
 
 module.exports = function buildSrc(isDevelopment) {
-    var cache;
+    //var cache;
     var building = false;
 
     process.env.BABEL_ENV = !isDevelopment ? 'production' : 'development';
@@ -30,6 +31,13 @@ module.exports = function buildSrc(isDevelopment) {
 
         const plugins = [
             builtins(),
+            includePaths( {
+                paths: ['node_modules/d3/node_modules'],  // npm2 or windows
+                include: {
+                    'martinez-polygon-clipping': 'node_modules/martinez-polygon-clipping/dist/martinez.umd.js'
+                },
+                external: []
+            }),
             nodeResolve({
                 modules: true,
                 main: true,
@@ -55,11 +63,10 @@ module.exports = function buildSrc(isDevelopment) {
         return rollup
             .rollup({
                 input: './modules/id.js',
-                plugins,
-                cache
+                plugins
             })
             .then(function (bundle) {
-                bundle.write({
+                return bundle.write({
                     format: 'iife',
                     file: 'dist/iD.min.js',
                     sourcemap: isDevelopment,
@@ -68,9 +75,6 @@ module.exports = function buildSrc(isDevelopment) {
                         'events': 'events'
                     }
                 });
-
-                cache = bundle;
-                return bundle;
             })
             .then(function () {
                 building = false;
@@ -78,7 +82,6 @@ module.exports = function buildSrc(isDevelopment) {
             })
             .catch(function (err) {
                 building = false;
-                cache = undefined;
                 console.error(err);
                 process.exit(1);
             });

@@ -21,6 +21,11 @@
                 "description": "レストランや記念碑、郵便ボックス等、ポイント情報を追加",
                 "tail": "クリックした地点にポイントを追加します"
             },
+            "add_note": {
+                "title": "メモ",
+                "description": "問題を指摘したら他のマッパーに知らせましょう。",
+                "tail": "マップをクリックしてメモを追加します。"
+            },
             "browse": {
                 "title": "ブラウズ",
                 "description": "マップの拡大縮小"
@@ -40,7 +45,8 @@
                 "annotation": {
                     "point": "ポイントの追加",
                     "vertex": "ウェイへのノード追加",
-                    "relation": "リレーションを追加しました。"
+                    "relation": "リレーションを追加しました。",
+                    "note": "メモを追加しました。"
                 }
             },
             "start": {
@@ -156,7 +162,7 @@
             },
             "disconnect": {
                 "title": "接続解除",
-                "description": "ウェイの接続を解除して切り離す",
+                "description": "ウェイの接続を解除して切り離します。",
                 "key": "D",
                 "annotation": "ウェイの接続を解除",
                 "not_connected": "ライン/エリアの接続を解除できません",
@@ -169,7 +175,7 @@
                 "key": "C",
                 "annotation": "{n} 個の地物をマージ",
                 "not_eligible": "地物情報がマージできません",
-                "not_adjacent": "短点が接続されていないため、地物をマージできません。",
+                "not_adjacent": "端点が接続されていないため、地物をマージできません。",
                 "restriction": "\"{relation}\" リレーションを壊してしまうため、これらの地物はマージできません。",
                 "relation": "リレーションのロールが競合しているため、地物をマージできません",
                 "incomplete_relation": "地物全体がダウンロードされていないため、マージさせることができません。",
@@ -297,6 +303,14 @@
                     "create": "進行方向制限を追加しました",
                     "delete": "進行方向制限を削除しました"
                 }
+            },
+            "detach_node": {
+                "title": "取り外し",
+                "key": "E",
+                "description": "このノードをライン／エリアから取り外します。",
+                "annotation": "ノードを元のライン／エリアから取り外す。",
+                "restriction": "\"{relation}\" リレーションを壊してしまうため、このノードは取り外しできません。",
+                "connected_to_hidden": "このノードは非表示の地物に接続しているため、削除できません。"
             }
         },
         "restriction": {
@@ -369,8 +383,8 @@
         },
         "commit": {
             "title": "OpenStreetMapへアップロード",
-            "upload_explanation": "あなたがアップロードした編集内容は、OpenStreetMapを利用しているすべてのユーザが閲覧できるようになります。",
-            "upload_explanation_with_user": "編集した内容を {user} アカウントでアップロードし、OpenStreetMapを利用しているすべてのユーザが閲覧できるようにします。",
+            "upload_explanation": "あなたがアップロードした編集内容は、OpenStreetMapのデータを利用しているすべてのマップで閲覧できるようになります。",
+            "upload_explanation_with_user": " {user} アカウントでアップロードした編集内容は、OpenStreetMapを利用しているすべてのマップで閲覧できるようになります。",
             "request_review": "編集のレビューを希望します。",
             "save": "アップロード",
             "cancel": "キャンセル",
@@ -416,7 +430,12 @@
                 "edited_by": "編集者",
                 "changeset": "変更セット",
                 "unknown": "不明",
-                "link_text": "openstreetmap.org上の履歴"
+                "link_text": "openstreetmap.org上の履歴",
+                "note_no_history": "履歴なし(新しいメモ)",
+                "note_comments": "コメント",
+                "note_created_date": "作成日",
+                "note_created_user": "作成者",
+                "note_link_text": "openstreetmap.orgのメモ"
             },
             "location": {
                 "key": "L",
@@ -446,7 +465,8 @@
             "vertex": "交点",
             "line": "ライン",
             "area": "エリア",
-            "relation": "リレーション"
+            "relation": "リレーション",
+            "note": "メモ"
         },
         "geocoder": {
             "search": "世界中のデータから検索",
@@ -509,8 +529,6 @@
             "best_imagery": "表示中の場所に最適な航空写真",
             "switch": "背景に切り替え",
             "custom": "カスタム",
-            "custom_button": "カスタム背景の設定",
-            "custom_prompt": "URLテンプレートを入力。正しい形式:\n   - {zoom} または {z}, {x}, {y} （Z/X/Y タイルスキーム）\n   - {-y} または {ty} （flipped TMS-style Y coordinates）\n   - {u} （quadtileスキーム）\n   - {switch:a,b,c} （DNS server multiplexing）\n\nサンプル:\n{example}",
             "overlays": "オーバーレイの選択",
             "imagery_source_faq": "画像の情報 / 問題を報告",
             "reset": "設定リセット",
@@ -534,8 +552,17 @@
             "data_layers": "データレイヤの選択",
             "layers": {
                 "osm": {
-                    "tooltip": "Map data from OpenStreetMap",
-                    "title": "OpenStreetMap data"
+                    "tooltip": "OpenStreetMapのマップデータ",
+                    "title": "OpenStreetMapのデータ"
+                },
+                "notes": {
+                    "tooltip": "OpenStreetMapのメモデータ",
+                    "title": "OpenStreetMapのメモ"
+                },
+                "custom": {
+                    "tooltip": "ページ上にデータファイルをドラッグ＆ドロップするか、画面右側のボタンをクリックして設定してください",
+                    "title": "カスタム地図データ",
+                    "zoom": "データにズーム"
                 }
             },
             "fill_area": "エリアの塗りつぶし有無",
@@ -606,6 +633,29 @@
             "full": {
                 "description": "完全塗りつぶし",
                 "tooltip": "エリアがすべて塗りつぶされます。"
+            }
+        },
+        "settings": {
+            "custom_background": {
+                "tooltip": "カスタム背景の設定",
+                "header": "カスタム背景画像設定",
+                "instructions": "タイルのURLテンプレートを入力。正しい形式:\n   - {zoom} または {z}, {x}, {y} （Z/X/Y タイルスキーム）\n   - {-y} または {ty} （flipped TMS-style Y coordinates）\n   - {u} （quadtileスキーム）\n   - {switch:a,b,c} （DNS server multiplexing）\n\nサンプル:\n{example}",
+                "template": {
+                    "placeholder": "URLテンプレートを入力"
+                }
+            },
+            "custom_data": {
+                "tooltip": "カスタムデータレイヤの編集",
+                "header": "カスタム地図データ設定",
+                "file": {
+                    "instructions": "ローカルのデータファイルを選択。サポート対象：\n   .gpx, .kml, .geojson, .json",
+                    "label": "ファイルをブラウズ"
+                },
+                "or": "または",
+                "url": {
+                    "instructions": "データファイルのURL、またはベクタータイルのURLテンプレートを入力。有効なトークン：\n   {zoom}、またはZ/X/Yタイルスキーマ用 {z}, {x}, {y}",
+                    "placeholder": "URLを入力"
+                }
             }
         },
         "restore": {
@@ -709,11 +759,12 @@
         },
         "cannot_zoom": "現在のモードでは、これ以上ズームアウトできません。",
         "full_screen": "フルスクリーンにする",
-        "gpx": {
-            "local_layer": "ローカル・ファイル",
-            "drag_drop": "ページ上に .gpx, .geojson, .kml ファイルをドラッグ＆ドロップするか、右のボタンを押して参照するかしてください",
-            "zoom": "レイヤにズーム",
-            "browse": "ファイルをブラウズ"
+        "streetside": {
+            "tooltip": "Microsoftによる街路写真",
+            "title": "写真の重ね合わせ(Bing街路)",
+            "report": "この画像のプライバシーについてレポートする",
+            "view_on_bing": "Bing 地図で確認",
+            "hires": "高解像度"
         },
         "mapillary_images": {
             "tooltip": "Mapillary から路上の写真を取得します",
@@ -732,6 +783,33 @@
         },
         "openstreetcam": {
             "view_on_openstreetcam": "この画像をOpenStreetCamで見る"
+        },
+        "note": {
+            "note": "メモ",
+            "title": "メモを編集",
+            "anonymous": "匿名ユーザー",
+            "closed": "(クローズ済)",
+            "commentTitle": "コメント",
+            "status": {
+                "opened": "オープン日付 {when}",
+                "reopened": "再オープン日付 {when}",
+                "commented": "コメント日付 {when}",
+                "closed": "クローズ日付 {when}"
+            },
+            "newComment": "新しいコメント",
+            "inputPlaceholder": "他のユーザーと共有するコメントを入力。",
+            "close": "メモをクローズ",
+            "open": "メモを再オープン",
+            "comment": "コメント",
+            "close_comment": "クローズしてコメント",
+            "open_comment": "再オープンしてコメント",
+            "report": "報告",
+            "new": "新しいメモ",
+            "newDescription": "問題の内容を記述します。",
+            "save": "メモを保存",
+            "login": "ログインしないとこのメモを変更したりコメントをつけたりできません。",
+            "upload_explanation": "あなたのコメントはOpenStreetMap の全ユーザーに公開されます。",
+            "upload_explanation_with_user": "{user} としてのあなたのコメントはOpenStreetMap の全ユーザーに公開されます。"
         },
         "help": {
             "title": "ヘルプ",
@@ -870,6 +948,17 @@
                 "boundary": "*境界*リレーションは、行政界を形成するひとつ以上のラインの地物のグループです。",
                 "boundary_add": "ある地物を境界リレーションに追加するには、その地物を選んで地物エディタの「すべてのリレーション」セクションまで下にスクロールして、{plus}追加ボタンをクリックして近くにある既存のリレーションまたは新しいリレーションに追加します。 "
             },
+            "notes": {
+                "title": "メモ",
+                "intro": "*メモ*は修正や連絡が必要な地物について、他のユーザーにアラートを送るために使います。メモはマップ上に指定された位置を示します。既存のメモを閲覧したり新しく追加する場合には、{data} **地図データ**パネルをクリックしてOpenStreetMapメモのレイヤを有効化してください。",
+                "add_note_h": "メモの追加",
+                "add_note": "新しいメモを追加する際には、マップ上部にあるツールバーの{note} **メモ**ボタンをクリックするか、ショートカットキー`4`を押してください。するとマウスカーソルのシンボルが十字型に変わります。新しいメモをマップに置く際には、マウスカーソルをメモがあるべき場所に置いて、{leftclick}左クリックするか、スペースキーを押してください。",
+                "move_note": "新しいメモだけが移動できます。メモを動かす際には、新しいメモの上にマウスカーソルを置いて、{leftclick}左マウスボタンを押したままメモを新しい位置にドラッグします。",
+                "update_note_h": "クローズ、再オープン、コメント",
+                "update_note": "既存のメモはクローズ済にしたり、再オープンしたり、コメントを追加したりして更新することができます。メモのクローズは問題が解決されたことを示します。メモの再オープンは元々の問題が解決されていないことを示します。",
+                "save_note_h": "メモの保存",
+                "save_note": "メモを編集したら、メモのコメントの下にあるボタンをクリックして個々に保存しなければなりません。メモの編集はOpenStreetMapにアップロードする変更セットには含まれ**ません**。"
+            },
             "imagery": {
                 "title": "背景画像",
                 "intro": "マップデータの下に表示される背景画像はマッピングの重要な情報源です。この画像は宇宙衛星、航空機、ドローンによって収集された写真の場合や、歴史的な地図をスキャンしたものであったりその他のフリーに利用できる情報源のデータであったりします。",
@@ -882,7 +971,7 @@
             },
             "streetlevel": {
                 "title": "街路写真",
-                "intro": "衛星／航空写真では見えない交通標識、ビジネスの種類、その他の詳細情報などをマッピングするのには街路写真が役立ちます。iDエディタは[Mapillary](https://www.mapillary.com)や[OpenStreetCam](https://www.openstreetcam.org)の街路写真をサポートしています。",
+                "intro": "衛星／航空写真では見えない交通標識、ビジネスの種類、その他の詳細情報などをマッピングするのには街路写真が役立ちます。iDエディタは[Bing Streetside](https://www.microsoft.com/en-us/maps/streetside)や[Mapillary](https://www.mapillary.com)や[OpenStreetCam](https://www.openstreetcam.org)の街路写真をサポートしています。",
                 "using_h": "街路写真の利用",
                 "using": "街路写真をマッピングに利用するには、マップ脇にある{data}**地図データ設定**パネルをクリックして利用可能な写真レイヤを有効化／無効化してください。",
                 "photos": "有効化すると、写真レイヤには写真の撮影順に沿ったラインが表示されます。高ズームレベルでは、各写真の位置に円形のマークがあり、より高ズームレベルでは撮影時のカメラの向きが円錐形で示されます。",
@@ -1264,7 +1353,8 @@
                     "add_point": "「ポイントの追加」モード",
                     "add_line": "「ラインの追加」モード",
                     "add_area": "「エリアの追加」モード",
-                    "place_point": "ポイントを配置",
+                    "add_note": "「メモの追加」モード",
+                    "place_point": "ポイントまたはメモを置く",
                     "disable_snap": "押下中はポイント接近時の自動接続(SNAP)を無効化",
                     "stop_line": "ラインやエリアの描画を終了"
                 },
@@ -1273,6 +1363,7 @@
                     "continue_line": "選択モードでラインを継続",
                     "merge": "選択した地物を連結(マージ)",
                     "disconnect": "選択したノードで地物を切り離し",
+                    "detach_node": "選択したノードを元のライン／エリアから取り外す。",
                     "split": "選択したノードでラインを2つに分割",
                     "reverse": "ラインを反転",
                     "move": "選択した地物を移動",
@@ -1329,13 +1420,13 @@
         "presets": {
             "categories": {
                 "category-barrier": {
-                    "name": "障害物"
+                    "name": "障害物の地物"
                 },
                 "category-building": {
-                    "name": "建物"
+                    "name": "建物の地物"
                 },
                 "category-golf": {
-                    "name": "ゴルフ"
+                    "name": "ゴルフの地物"
                 },
                 "category-landuse": {
                     "name": "土地利用の地物"
@@ -1356,13 +1447,13 @@
                     "name": "線路の地物"
                 },
                 "category-restriction": {
-                    "name": "進行方向制限"
+                    "name": "進行方向制限の地物"
                 },
                 "category-road": {
                     "name": "道路の地物"
                 },
                 "category-route": {
-                    "name": "ルート"
+                    "name": "ルートの地物"
                 },
                 "category-water-area": {
                     "name": "水域の地物"
@@ -1384,7 +1475,7 @@
                             "title": "目的外通行の禁止"
                         },
                         "dismount": {
-                            "description": "下車すれば通行可能",
+                            "description": "降りれば通行可能",
                             "title": "下車"
                         },
                         "no": {
@@ -1395,8 +1486,12 @@
                             "description": "所有者が通行制限しない限り通行可",
                             "title": "所有者許諾あり"
                         },
+                        "permit": {
+                            "description": "妥当な許可や利用許諾がある場合のみ通行が許可されている",
+                            "title": "許可"
+                        },
                         "private": {
-                            "description": "通行時には所有者の許可を得る必要がある",
+                            "description": "通行時には所有者から個々に許可を得る必要がある",
                             "title": "私有"
                         },
                         "yes": {
@@ -1566,6 +1661,9 @@
                 "board_type": {
                     "label": "種類"
                 },
+                "booth": {
+                    "label": "ブース"
+                },
                 "boules": {
                     "label": "種類"
                 },
@@ -1613,6 +1711,9 @@
                 "capacity": {
                     "label": "収容数",
                     "placeholder": "50, 100, 200..."
+                },
+                "cash_in": {
+                    "label": "入金"
                 },
                 "castle_type": {
                     "label": "種類"
@@ -1960,7 +2061,23 @@
                     }
                 },
                 "horse_scale": {
-                    "label": "乗馬の難易度"
+                    "label": "乗馬の難易度",
+                    "options": {
+                        "common": "簡易: 問題や難しさは無い。(既定値)",
+                        "critical": "ボーダーライン: 経験のある騎手と馬なら通過可能。大きな障害物あり。橋は要注意。",
+                        "dangerous": "危険: よく熟練した騎手と馬で好天時のみ通過可能。馬から下りる。",
+                        "demanding": "注意して利用: でこぼこな道、たまに困難な通路。",
+                        "difficult": "困難: 狭くて荒れた道。乗り越えるべき障害物や狭い通路の可能性あり。",
+                        "impossible": "通過不能: 馬では道または橋が通過できない。極端に狭い、サポート不足、はしごのような障害物。生命の危険あり。"
+                    },
+                    "placeholder": "困難, 危険..."
+                },
+                "horse_stables": {
+                    "label": "乗馬施設",
+                    "options": {
+                        "stables": "Yes",
+                        "undefined": "No"
+                    }
                 },
                 "iata": {
                     "label": "IATA"
@@ -2072,10 +2189,10 @@
                     "label": "長さ (m)"
                 },
                 "level": {
-                    "label": "階数"
+                    "label": "フロア番号（日本の1階は0）"
                 },
                 "levels": {
-                    "label": "階数",
+                    "label": "総階数",
                     "placeholder": "2, 4, 6..."
                 },
                 "lit": {
@@ -2252,6 +2369,9 @@
                         "surface": "地面",
                         "underground": "地下"
                     }
+                },
+                "passenger_information_display": {
+                    "label": "乗客向け情報掲示板"
                 },
                 "payment_multi": {
                     "label": "支払の種類"
@@ -2471,8 +2591,22 @@
                 "shop": {
                     "label": "店舗の種類"
                 },
+                "siren/purpose": {
+                    "label": "利用目的"
+                },
+                "siren/type": {
+                    "label": "種類",
+                    "options": {
+                        "electronic": "電子式",
+                        "other": "その他",
+                        "pneumatic": "空気式"
+                    }
+                },
                 "site": {
                     "label": "種類"
+                },
+                "site_type": {
+                    "label": "遺跡の種類"
                 },
                 "smoking": {
                     "label": "喫煙の可否",
@@ -2690,7 +2824,7 @@
                     }
                 },
                 "trees": {
-                    "label": "木の数"
+                    "label": "樹種"
                 },
                 "tunnel": {
                     "label": "種類",
@@ -2901,7 +3035,7 @@
                 },
                 "amenity/animal_boarding": {
                     "name": "ペットホテル",
-                    "terms": "ペットホテル, 動物, ホテル"
+                    "terms": "ペットホテル, 動物, ホテル, ペット"
                 },
                 "amenity/animal_breeding": {
                     "name": "動物繁殖施設",
@@ -2909,7 +3043,7 @@
                 },
                 "amenity/animal_shelter": {
                     "name": "動物保護施設",
-                    "terms": "アニマルシェルター, 動物保護センター, 鳥獣保護施設"
+                    "terms": "アニマルシェルター, 動物保護センター, 鳥獣保護施設, 動物, 鳥獣, アニマル"
                 },
                 "amenity/arts_centre": {
                     "name": "アートセンター",
@@ -2949,7 +3083,7 @@
                 },
                 "amenity/biergarten": {
                     "name": "ビアガーデン",
-                    "terms": "ビアガーデン, ビール, 酒, アルコール, 軽食, 呑む, 飲む, 飲食店, 食べる, 食事, 料理, 飲み屋"
+                    "terms": "ビアガーデン, ビアホール, ビール, 酒, 飲む, 呑む, 飲食店, アルコール"
                 },
                 "amenity/boat_rental": {
                     "name": "貸しボート",
@@ -3271,7 +3405,7 @@
                 },
                 "amenity/smoking_area": {
                     "name": "喫煙所",
-                    "terms": "喫煙所, 喫煙エリア, たばこ, タバコ, 公園, 駅前, 広場"
+                    "terms": "喫煙所, 喫煙エリア, たばこ, タバコ, 公園, 駅前, 広場, 煙草, 灰皿"
                 },
                 "amenity/social_facility": {
                     "name": "福祉施設",
@@ -3330,7 +3464,7 @@
                 },
                 "amenity/vending_machine/cigarettes": {
                     "name": "たばこ自動販売機",
-                    "terms": "たばこ, 自動販売機, 自販機, 嗜好品, タバコ"
+                    "terms": "たばこ, 自動販売機, 自販機, 嗜好品, タバコ, 煙草"
                 },
                 "amenity/vending_machine/coffee": {
                     "name": "コーヒー自販機",
@@ -3401,11 +3535,11 @@
                 },
                 "amenity/veterinary": {
                     "name": "獣医",
-                    "terms": "獣医, ペット医, 病院, 医療, 動物病院"
+                    "terms": "獣医, ペット医, 病院, 医療, 動物病院, 犬猫病院, 動物, ペット, 鳥獣, アニマル"
                 },
                 "amenity/waste/dog_excrement": {
                     "name": "犬の便入れ",
-                    "terms": "犬の便入れ, 動物"
+                    "terms": "犬の便入れ, 動物, ペット, 犬"
                 },
                 "amenity/waste_basket": {
                     "name": "ゴミ箱",
@@ -3425,7 +3559,7 @@
                 },
                 "amenity/watering_place": {
                     "name": "動物の水飲み場",
-                    "terms": "動物の水飲み場, 水場"
+                    "terms": "動物の水飲み場, 水場, 動物, ペット"
                 },
                 "area": {
                     "name": "エリア",
@@ -3441,7 +3575,7 @@
                 },
                 "attraction/animal": {
                     "name": "動物",
-                    "terms": "動物"
+                    "terms": "動物, アニマル, 鳥獣"
                 },
                 "attraction/big_wheel": {
                     "name": "大観覧車",
@@ -3800,15 +3934,15 @@
                 },
                 "craft/carpenter": {
                     "name": "工務店",
-                    "terms": "工務店, 職人, 工房, 大工, リフォーム"
+                    "terms": "工務店, 職人, 工房, 大工, リフォーム, 建具店, 表具店, 指物店, 経師, 建具師, 指物師"
                 },
                 "craft/carpet_layer": {
                     "name": "畳・カーペット工事店",
-                    "terms": "畳・カーペット工事店, 職人, 工房"
+                    "terms": "畳・カーペット工事店, 職人, 工房, 畳, カーペット, インテリア"
                 },
                 "craft/caterer": {
                     "name": "仕出し料理店",
-                    "terms": "仕出し料理店, ケータリング, ホカ弁, 弁当"
+                    "terms": "仕出し料理店, ケータリング, ホカ弁, 弁当, 持ち帰り, 持ち帰り専門店, 持帰り, ランチパック, 仕出し, 弁当屋"
                 },
                 "craft/chimney_sweeper": {
                     "name": "煙突掃除人",
@@ -3824,7 +3958,7 @@
                 },
                 "craft/distillery": {
                     "name": "蒸留所",
-                    "terms": "<translate with synonyms or related terms for 'Distillery', separated by commas>, 職人, 工房"
+                    "terms": ", 職人, 工房"
                 },
                 "craft/dressmaker": {
                     "name": "衣服製造所",
@@ -3839,8 +3973,8 @@
                     "terms": "家電修理店, 電気機器修理店, 修理店, リペアショップ, 職人, 工房"
                 },
                 "craft/gardener": {
-                    "name": "庭師",
-                    "terms": "庭師, 職人, 工房"
+                    "name": "造園業",
+                    "terms": "庭師, 職人, 工房, 造園, 造園業, 樹木"
                 },
                 "craft/glaziery": {
                     "name": "ガラス細工師",
@@ -3980,13 +4114,29 @@
                 "emergency/destination": {
                     "name": "行き先に用事がある緊急車両, 救命"
                 },
+                "emergency/fire_alarm": {
+                    "name": "火災通報ボックス",
+                    "terms": "火災通報ボックス, 火災通報装置"
+                },
+                "emergency/fire_extinguisher": {
+                    "name": "消火器",
+                    "terms": "消火器"
+                },
                 "emergency/fire_hydrant": {
                     "name": "消火栓/消防水利",
                     "terms": "消火栓, 消防, 消防水利, 救命, 緊急, 火災"
                 },
+                "emergency/first_aid_kit": {
+                    "name": "救命キット",
+                    "terms": "救命キット, 救急セット, 救急救命セット"
+                },
                 "emergency/life_ring": {
                     "name": "救命浮き輪",
                     "terms": "救命浮き輪, ライフブイ, 救命浮環, 救命浮標"
+                },
+                "emergency/lifeguard": {
+                    "name": "ライフガード",
+                    "terms": "ライフガード, 救護員, 監視員"
                 },
                 "emergency/no": {
                     "name": "緊急車両の利用不可"
@@ -4000,6 +4150,10 @@
                 },
                 "emergency/private": {
                     "name": "私有の緊急車両"
+                },
+                "emergency/siren": {
+                    "name": "サイレン",
+                    "terms": "サイレン, 緊急サイレン"
                 },
                 "emergency/water_tank": {
                     "name": "防火水槽",
@@ -4567,7 +4721,7 @@
                 },
                 "leisure/adult_gaming_centre": {
                     "name": "遊技場（成人向け）",
-                    "terms": "遊技場, パチンコ, パチスロ, スロット, 娯楽, アダルト, レジャー, パチンコ店, パチンコ屋, スロットルマシン"
+                    "terms": "遊技場, パチンコ, パチスロ, スロット, 娯楽, アダルト, レジャー, パチンコ店, パチンコ屋, スロットマシン, ギャンブル"
                 },
                 "leisure/amusement_arcade": {
                     "name": "ゲームセンター",
@@ -4717,6 +4871,10 @@
                     "name": "アメリカンフットボール場",
                     "terms": "アメリカンフットボール場, アメフト競技場, スポーツ, 運動, 競技"
                 },
+                "leisure/pitch/badminton": {
+                    "name": "バドミントンコート",
+                    "terms": "バドミントンコート, バドミントン場, スポーツ, 運動, 競技"
+                },
                 "leisure/pitch/baseball": {
                     "name": "野球場",
                     "terms": "野球場, 球場, スポーツ, 運動, 競技"
@@ -4840,6 +4998,10 @@
                 "man_made/bridge": {
                     "name": "橋",
                     "terms": "橋, 橋梁, 高架"
+                },
+                "man_made/bunker_silo": {
+                    "name": "バンカーサイロ",
+                    "terms": "バンカーサイロ, サイロ"
                 },
                 "man_made/chimney": {
                     "name": "煙突",
@@ -5192,7 +5354,7 @@
                 },
                 "office/moving_company": {
                     "name": "引っ越し業者",
-                    "terms": "引っ越し業者"
+                    "terms": "引っ越し業者, 引越業者, 引越"
                 },
                 "office/newspaper": {
                     "name": "新聞社",
@@ -5256,7 +5418,7 @@
                     "name": "地名"
                 },
                 "place/city": {
-                    "name": "市名",
+                    "name": "市制地方自治体",
                     "terms": "市名, 地名"
                 },
                 "place/farm": {
@@ -5288,7 +5450,7 @@
                 },
                 "place/plot": {
                     "name": "小区画",
-                    "terms": " 小区画, プロット"
+                    "terms": "小区画, プロット"
                 },
                 "place/quarter": {
                     "name": "大字 / (市内の)町",
@@ -5303,11 +5465,11 @@
                     "terms": "Borough, Suburb, 区, 行政区, 区界"
                 },
                 "place/town": {
-                    "name": "町",
+                    "name": "町制地方自治体",
                     "terms": "町, 地名"
                 },
                 "place/village": {
-                    "name": "村",
+                    "name": "村制の地方自治体",
                     "terms": "村, 地名"
                 },
                 "playground/balance_beam": {
@@ -5421,127 +5583,127 @@
                     "terms": "変圧器"
                 },
                 "public_transport/linear_platform": {
-                    "name": "交通機関の乗り場",
-                    "terms": "プラットホーム, 待合所, 乗り場"
+                    "name": "交通機関のプラットホーム/のりば",
+                    "terms": "プラットホーム, 待合所, 乗り場, ホーム, 駅, 乗降所, 停車場, 停留所, のりば"
                 },
                 "public_transport/linear_platform_aerialway": {
-                    "name": "ロープウェイ（乗り場）",
-                    "terms": "ロープウェイ, チェアリフト, 牽引リフト, スキーリフト, リフト"
+                    "name": "ロープウェイのりば/プラットホーム",
+                    "terms": "ロープウェイ, チェアリフト, 牽引リフト, スキーリフト, リフト, のりば, ホーム, プラットホーム, 索道駅, 駅"
                 },
                 "public_transport/linear_platform_bus": {
-                    "name": "バス（乗り場）",
-                    "terms": "バス停, バス乗り場, バスのりば, バス"
+                    "name": "バスのりば/プラットホーム",
+                    "terms": "バス停, バス乗り場, バスのりば, バス, BRT, バスターミナル, バスステーション, バスストップ, BS, のりば, ホーム, プラットホーム, 停留所, 駅"
                 },
                 "public_transport/linear_platform_ferry": {
-                    "name": "フェリー（乗り場）",
-                    "terms": "フェリー乗り場, フェリー"
+                    "name": "旅客船のりば/プラットホーム",
+                    "terms": "フェリー乗り場, フェリー, 港, 船着場, 船, 客船, 旅客船, フェリーターミナル, 舟, 連絡船, 渡し船, 渡船, のりば, ホーム, プラットホーム"
                 },
                 "public_transport/linear_platform_light_rail": {
-                    "name": "ライトレール（乗り場）",
-                    "terms": "ライトレール乗り場, ライトレール"
+                    "name": "ライトレールのりば/プラットホーム",
+                    "terms": "ライトレール乗り場, ライトレール, LRT, 路面電車, トラム, 駅, 停留所, 電停, 停車場, 乗降所, のりば, ホーム, プラットホーム"
                 },
                 "public_transport/linear_platform_monorail": {
-                    "name": "モノレール（乗り場）",
-                    "terms": "モノレール乗り場, モノレール"
+                    "name": "モノレールのりば/プラットホーム",
+                    "terms": "モノレール乗り場, モノレール, 駅, 停車場, 停留場, のりば, ホーム, プラットホーム"
                 },
                 "public_transport/linear_platform_subway": {
-                    "name": "地下鉄（乗り場）",
-                    "terms": "地下鉄乗り場, 地下鉄"
+                    "name": "地下鉄のりば/プラットホーム",
+                    "terms": "地下鉄乗り場, 地下鉄, のりば, ホーム, プラットホーム, 駅, メトロ, 地下駅, 地下鉄駅, 停車場, 停留場"
                 },
                 "public_transport/linear_platform_train": {
-                    "name": "鉄道（乗り場）",
-                    "terms": "鉄道乗り場, 鉄道, 列車, 電車"
+                    "name": "鉄道のりば/プラットホーム",
+                    "terms": "鉄道乗り場, 鉄道, 列車, 電車, のりば, ホーム, プラットホーム, 駅, 停車場, 停留場"
                 },
                 "public_transport/linear_platform_tram": {
-                    "name": "トラム（乗り場）",
-                    "terms": "トラム乗り場, トラム"
+                    "name": "路面電車のりば/プラットホーム",
+                    "terms": "トラム乗り場, トラム, 路面電車, LRT, ライトレール, 市電, ちんちん電車, チンチン電車, のりば, ホーム, プラットホーム, 駅, 電停, 停留場, 停車場, 乗降所"
                 },
                 "public_transport/linear_platform_trolleybus": {
-                    "name": "トロリーバス（乗り場）",
-                    "terms": "トロリーバス乗り場, トロリーバス"
+                    "name": "トロリーバスのりば/プラットホーム",
+                    "terms": "トロリーバス乗り場, トロリーバス, のりば, ホーム, プラットホーム, バス停, バス乗り場, バスのりば, バス, バスターミナル, バスステーション, バスストップ, BS, のりば, ホーム, プラットホーム, 停留所"
                 },
                 "public_transport/platform": {
-                    "name": "交通機関の乗り場（全般）",
-                    "terms": "交通機関の乗り場, 乗り場, プラットホーム"
+                    "name": "交通機関（全般）の乗り場/プラットホーム",
+                    "terms": "プラットホーム, 待合所, 乗り場, ホーム, 駅, 乗降所, 停車場, 停留所, 電停, のりば"
                 },
                 "public_transport/platform_aerialway": {
-                    "name": "ロープウェイ（乗り場）",
-                    "terms": "ロープウェイ, チェアリフト, 牽引リフト, スキーリフト, リフト"
+                    "name": "ロープウェイのりば/プラットホーム",
+                    "terms": "ロープウェイ, チェアリフト, 牽引リフト, スキーリフト, リフト, のりば, ホーム, プラットホーム, 索道駅, 駅"
                 },
                 "public_transport/platform_bus": {
-                    "name": "バス停（乗り場）",
-                    "terms": "バス停, バス, バス停留所, バス乗り場"
+                    "name": "バス停のりば/プラットホーム",
+                    "terms": "バス停, バス乗り場, バスのりば, バス, BRT, バスターミナル, バスステーション, バスストップ, BS, のりば, ホーム, プラットホーム, 停留所, 駅"
                 },
                 "public_transport/platform_ferry": {
-                    "name": "フェリー（乗り場）",
-                    "terms": "フェリー乗り場, フェリー"
+                    "name": "旅客船のりば/プラットホーム",
+                    "terms": "フェリー乗り場, フェリー, 港, 船着場, 船, 客船, 旅客船, フェリーターミナル, 舟, 連絡船, 渡し船, 渡船, のりば, ホーム, プラットホーム"
                 },
                 "public_transport/platform_light_rail": {
-                    "name": "ライトレール（乗り場）",
-                    "terms": "ライトレール乗り場, ライトレール"
+                    "name": "ライトレールのりば/プラットホーム",
+                    "terms": "ライトレール乗り場, ライトレール, LRT, 路面電車, トラム, 駅, 停留所, 電停, 停車場, 乗降所, のりば, ホーム, プラットホーム"
                 },
                 "public_transport/platform_monorail": {
-                    "name": "モノレール（乗り場）",
-                    "terms": "モノレール乗り場, モノレール"
+                    "name": "モノレールのりば/プラットホーム",
+                    "terms": "モノレール乗り場, モノレール, 駅, 停車場, 停留場, のりば, ホーム, プラットホーム"
                 },
                 "public_transport/platform_subway": {
-                    "name": "地下鉄（乗り場）",
-                    "terms": "地下鉄乗り場, 地下鉄, プラットホーム"
+                    "name": "地下鉄のりば/プラットホーム",
+                    "terms": "地下鉄乗り場, 地下鉄, のりば, ホーム, プラットホーム, 駅, メトロ, 地下駅, 地下鉄駅, 停車場, 停留場"
                 },
                 "public_transport/platform_train": {
-                    "name": "鉄道（乗り場）",
-                    "terms": "鉄道乗り場, 鉄道, 電車, 列車, プラットホーム"
+                    "name": "鉄道のりば/プラットホーム",
+                    "terms": "鉄道乗り場, 鉄道, 列車, 電車, のりば, ホーム, プラットホーム, 駅, 停車場, 停留場"
                 },
                 "public_transport/platform_tram": {
-                    "name": "トラム（乗り場）",
-                    "terms": "トラム乗り場, トラム"
+                    "name": "路面電車のりば/プラットホーム",
+                    "terms": "トラム乗り場, トラム, 路面電車, LRT, ライトレール, 市電, ちんちん電車, チンチン電車, のりば, ホーム, プラットホーム, 駅, 電停, 停留場, 停車場, 乗降所"
                 },
                 "public_transport/platform_trolleybus": {
-                    "name": "トロリーバス（乗り場）",
-                    "terms": "トロリーバス乗り場, トロリーバス"
+                    "name": "トロリーバスのりば/プラットホーム",
+                    "terms": "トロリーバス乗り場, トロリーバス, のりば, ホーム, プラットホーム, バス停, バス乗り場, バスのりば, バス, バスターミナル, バスステーション, バスストップ, BS, のりば, ホーム, プラットホーム, 停留所"
                 },
                 "public_transport/station": {
-                    "name": "駅（全般）",
-                    "terms": "駅"
+                    "name": "交通機関（全般）の駅",
+                    "terms": "駅, 停留所, 停車場, 乗降所, のりば"
                 },
                 "public_transport/station_aerialway": {
-                    "name": "ロープウェイ（駅）",
+                    "name": "ロープウェイの駅",
                     "terms": "ロープウェイ駅, ロープウェイ, リフト, スキーリフト, チェアリフト, 牽引リフト"
                 },
                 "public_transport/station_bus": {
-                    "name": "バス（駅/ターミナル）",
+                    "name": "バスターミナル/バスの駅",
                     "terms": "バス, バスターミナル, バスステーション"
                 },
                 "public_transport/station_ferry": {
-                    "name": "フェリー（駅/ターミナル）",
+                    "name": "旅客船ターミナル/旅客港",
                     "terms": "フェリーターミナル, フェリー"
                 },
                 "public_transport/station_light_rail": {
-                    "name": "ライトレール（駅）",
+                    "name": "ライトレールの駅",
                     "terms": "ライトレール駅, ライトレール"
                 },
                 "public_transport/station_monorail": {
-                    "name": "モノレール（駅）",
+                    "name": "モノレールの駅",
                     "terms": "モノレール駅, モノレール"
                 },
                 "public_transport/station_subway": {
-                    "name": "地下鉄（駅）",
+                    "name": "地下鉄の駅",
                     "terms": "地下鉄駅, 地下鉄, サブウェイ"
                 },
                 "public_transport/station_train": {
-                    "name": "鉄道（駅）",
+                    "name": "鉄道の停車場/駅",
                     "terms": "鉄道駅, 鉄道, 駅, 電車, 列車"
                 },
                 "public_transport/station_train_halt": {
-                    "name": "小駅(英国用)",
+                    "name": "鉄道の停留所/駅",
                     "terms": "小さな駅, 小駅, 駅, 鉄道"
                 },
                 "public_transport/station_tram": {
-                    "name": "トラム（駅）",
+                    "name": "路面電車の駅",
                     "terms": "トラム駅, トラム"
                 },
                 "public_transport/station_trolleybus": {
-                    "name": "トロリーバス（駅/ターミナル）",
+                    "name": "トロリーバスターミナル/駅",
                     "terms": "トロリーバス, トロリーバスターミナル"
                 },
                 "public_transport/stop_area": {
@@ -5597,7 +5759,7 @@
                 },
                 "railway/buffer_stop": {
                     "name": "車止め（鉄道）",
-                    "terms": "車止め, "
+                    "terms": "車止め"
                 },
                 "railway/crossing": {
                     "name": "踏切 (歩道)",
@@ -5616,7 +5778,7 @@
                     "terms": "ケーブルカー"
                 },
                 "railway/halt": {
-                    "name": "小駅(英国用)"
+                    "name": "鉄道駅（停留場）"
                 },
                 "railway/level_crossing": {
                     "name": "踏切 (車道)",
@@ -5639,11 +5801,11 @@
                     "terms": "モノレール"
                 },
                 "railway/narrow_gauge": {
-                    "name": "軽便鉄道",
-                    "terms": "軽便鉄道, ナローゲージ, 線路"
+                    "name": "ナローゲージ",
+                    "terms": "軽便鉄道, ナローゲージ, 線路, 特殊狭軌, 狭軌"
                 },
                 "railway/platform": {
-                    "name": "鉄道停車場 / プラットホーム"
+                    "name": "プラットホーム（旧）"
                 },
                 "railway/rail": {
                     "name": "線路",
@@ -5748,7 +5910,7 @@
                 },
                 "shop/bed": {
                     "name": "寝具店",
-                    "terms": "ベッド店, マットレス店, 寝具店, 家具, 枕"
+                    "terms": "ベッド店, マットレス店, 寝具店, 家具, 枕, ふとん, 布団, ふとん店"
                 },
                 "shop/beverages": {
                     "name": "飲料店",
@@ -5868,7 +6030,7 @@
                 },
                 "shop/e-cigarette": {
                     "name": "電子タバコ店",
-                    "terms": "電子タバコ店, 嗜好品, タバコ, たばこ"
+                    "terms": "電子タバコ店, 嗜好品, タバコ, たばこ, 煙草"
                 },
                 "shop/electronics": {
                     "name": "家電販売店（小型製品）",
@@ -5880,7 +6042,7 @@
                 },
                 "shop/fabric": {
                     "name": "生地屋",
-                    "terms": "布地, 織物, 反物, ファブリック店, 生地, 裏地, 衣料, 服, 裁縫, 衣類"
+                    "terms": "布地, 織物, 反物, ファブリック店, 生地, 裏地, 衣料, 服, 裁縫, 衣類, 生地店, 布地店, お店"
                 },
                 "shop/farm": {
                     "name": "農産物直売所",
@@ -6062,11 +6224,11 @@
                 },
                 "shop/pet": {
                     "name": "ペットショップ",
-                    "terms": "ペット売り場, ペット, 家禽, ペットショップ, 動物"
+                    "terms": "ペット売り場, ペット, 家禽, ペットショップ, 動物, 愛玩動物"
                 },
                 "shop/pet_grooming": {
                     "name": "ペット美容室",
-                    "terms": "ペット美容室, 動物美容, ペット, 美容, 犬の美容室, 愛犬美容, 犬, 猫"
+                    "terms": "ペット美容室, 動物美容, ペット, 美容, 犬の美容室, 愛犬美容, 犬, 猫, 動物"
                 },
                 "shop/photo": {
                     "name": "写真店",
@@ -6138,7 +6300,7 @@
                 },
                 "shop/tobacco": {
                     "name": "たばこ店",
-                    "terms": "たばこ店, たばこ屋, タバコ, たばこ, 嗜好品"
+                    "terms": "たばこ店, たばこ屋, タバコ, たばこ, 嗜好品, タバコ店, タバコ屋, 煙草"
                 },
                 "shop/toys": {
                     "name": "玩具店",
@@ -6209,7 +6371,7 @@
                 },
                 "tourism/apartment": {
                     "name": "リゾートマンション",
-                    "terms": "リゾートマンション, リゾート, 別荘, 保養"
+                    "terms": "リゾートマンション, リゾート, 別荘, 保養, 保養所, 保養施設"
                 },
                 "tourism/aquarium": {
                     "name": "水族館",
@@ -6536,6 +6698,24 @@
             }
         },
         "imagery": {
+            "AGIV": {
+                "attribution": {
+                    "text": "オルソ写真Flanders 最新 © AGIV"
+                },
+                "name": "AGIV Flanders 最新航空画像"
+            },
+            "AGIV10cm": {
+                "attribution": {
+                    "text": "オルソ写真Flanders © AGIV"
+                },
+                "name": "AGIV Flanders 2013-2015 航空写真 10cm"
+            },
+            "AGIVFlandersGRB": {
+                "attribution": {
+                    "text": "GRB Flanders © AGIV"
+                },
+                "name": "AGIV Flanders GRB"
+            },
             "Bing": {
                 "description": "衛星・航空画像です。",
                 "name": "Bing航空画像"
@@ -6544,7 +6724,7 @@
                 "attribution": {
                     "text": "規約＆フィードバック"
                 },
-                "description": "DigitalGlobeのプレミアム衛星画像です。",
+                "description": "DigitalGlobe-Premiumは DigitalGlobe ベースマップの繋ぎ合わせから成り、50cm以上の解像度した組み合わせで、選ばれた地域が+Vividや興味深いカスタムエリアで埋められ、今後の更新でより頻繁にリフレッシュされます。",
                 "name": "DigitalGlobeプレミアム画像"
             },
             "DigitalGlobe-Premium-vintage": {
@@ -6558,7 +6738,7 @@
                 "attribution": {
                     "text": "規約＆フィードバック"
                 },
-                "description": "DigitalGlobeの標準衛星画像です。",
+                "description": "DigitalGlobe-Standardは地球の大陸部の86%をカバーする画像を集めたセットで、一部30-60cm解像度でランドサットを下敷きにしています。平均年齢は2.31歳で、場所によっては毎年2x 更新されます。",
                 "name": "DigitalGlobe標準画像"
             },
             "DigitalGlobe-Standard-vintage": {
@@ -6638,6 +6818,12 @@
                 },
                 "name": "OSM Inspector: タグ付け"
             },
+            "SPW_ORTHO_LAST": {
+                "name": "SPW(allonie) 最新航空画像"
+            },
+            "SPW_PICC": {
+                "name": "SPW(allonie) PICC numerical imagery"
+            },
             "US-TIGER-Roads-2012": {
                 "name": "TIGER Roads 2012"
             },
@@ -6652,6 +6838,30 @@
             "US_Forest_Service_roads_overlay": {
                 "description": "Highway: 緑枠 = unclassified.ブラウン枠 = track. Surface: gravel = ライトブラウン, Asphalt = 黒, paved = グレイ, ground =白, concrete = 青, grass = 緑. Seasonal = 白棒",
                 "name": "U.S. Forest Roads Overlay"
+            },
+            "UrbISOrtho2016": {
+                "attribution": {
+                    "text": "Realized by means of Brussels UrbIS®© - Distribution & Copyright CIRB"
+                },
+                "name": "UrbIS-オルソ 2016"
+            },
+            "UrbISOrtho2017": {
+                "attribution": {
+                    "text": "Realized by means of Brussels UrbIS®© - Distribution & Copyright CIRB"
+                },
+                "name": "UrbIS-オルソ 2017"
+            },
+            "UrbisAdmFR": {
+                "attribution": {
+                    "text": "Realized by means of Brussels UrbIS®© - Distribution & Copyright CIRB"
+                },
+                "name": "UrbisAdm FR"
+            },
+            "UrbisAdmNL": {
+                "attribution": {
+                    "text": "Realized by means of Brussels UrbIS®© - Distribution & Copyright CIRB"
+                },
+                "name": "UrbisAdm NL"
             },
             "Waymarked_Trails-Cycling": {
                 "attribution": {
@@ -6703,6 +6913,27 @@
                 },
                 "name": "Hike & Bike"
             },
+            "kelkkareitit": {
+                "attribution": {
+                    "text": "© Kelkkareitit.fi"
+                },
+                "description": "Kelkkareitit.fi snowmobile trails from OSM (Nordic coverage)",
+                "name": "Nordic snowmobile オーバーレイ"
+            },
+            "lantmateriet-orto1960": {
+                "attribution": {
+                    "text": "© Lantmäteriet, CC0"
+                },
+                "description": "Mosaic of Swedish orthophotos from the period 1955–1965. Older and younger pictures may occur.",
+                "name": "Lantmäteriet Historic Orthophoto 1960"
+            },
+            "lantmateriet-orto1975": {
+                "attribution": {
+                    "text": "© Lantmäteriet, CC0"
+                },
+                "description": "Mosaic of Swedish orthophotos from the period 1970–1980. Is under construction.",
+                "name": "Lantmäteriet Historic Orthophoto 1975"
+            },
             "mapbox_locator_overlay": {
                 "attribution": {
                     "text": "規約 & フィードバック"
@@ -6735,6 +6966,13 @@
                 },
                 "name": "OpenStreetMap (ドイツスタイル)"
             },
+            "osmse-ekonomiska": {
+                "attribution": {
+                    "text": "© Lantmäteriet"
+                },
+                "description": "Scan of \"Economic maps\" ca. 1950–1980",
+                "name": "Lantmäteriet Economic Map 1950–1980"
+            },
             "qa_no_address": {
                 "attribution": {
                     "text": "Simon Poole, Data ©OpenStreetMap contributors"
@@ -6746,6 +6984,13 @@
                     "text": "© Tiles: skobbler Map data: OpenStreetMap contributors"
                 },
                 "name": "skobbler"
+            },
+            "skoterleder": {
+                "attribution": {
+                    "text": "© Skoterleder.org"
+                },
+                "description": "Snowmobile trails",
+                "name": "Snowmobile map Sweden"
             },
             "stamen-terrain-background": {
                 "attribution": {
@@ -6764,9 +7009,59 @@
                     "text": "Maps © Thunderforest, Data © OpenStreetMap contributors"
                 },
                 "name": "Thunderforest Landscape"
+            },
+            "trafikverket-baninfo": {
+                "attribution": {
+                    "text": "© Trafikverket, CC0"
+                },
+                "description": "Swedish railway network, including sidings",
+                "name": "Trafikverket Railway Network"
+            },
+            "trafikverket-baninfo-option": {
+                "attribution": {
+                    "text": "© Trafikverket, CC0"
+                },
+                "description": "Swedish railway network with several options for map layers",
+                "name": "Trafikverket Railway Network options"
+            },
+            "trafikverket-vagnat": {
+                "attribution": {
+                    "text": "© Trafikverket, CC0"
+                },
+                "description": "Swedish NVDB road network",
+                "name": "Trafikverket Road Network"
+            },
+            "trafikverket-vagnat-extra": {
+                "attribution": {
+                    "text": "© Trafikverket, CC0"
+                },
+                "description": "Swedish NVDB extra details: Highway reference, traffic calming, rest area, bus stop, bridge, tunnel, speed camera",
+                "name": "Trafikverket Road Network extra"
+            },
+            "trafikverket-vagnat-navn": {
+                "attribution": {
+                    "text": "© Trafikverket, CC0"
+                },
+                "description": "Swedish NVDB street names",
+                "name": "Trafikverket Street Names"
+            },
+            "trafikverket-vagnat-option": {
+                "attribution": {
+                    "text": "© Trafikverket, CC0"
+                },
+                "description": "Swedish NVDB road network with several options for map layers",
+                "name": "Trafikverket Road Network options"
             }
         },
         "community": {
+            "bw-facebook": {
+                "name": "Mapping Botswana on Facebook",
+                "description": "Page of OpenStreetMap in Botswana"
+            },
+            "bw-twitter": {
+                "name": "Mapping Botswana on Twitter",
+                "description": "Twitter of OpenStreetMap in Botswana"
+            },
             "cape-coast-youthmappers": {
                 "name": "University of Cape Coast YouthMappers",
                 "description": "Follow us on Twitter: {url}",
@@ -7007,6 +7302,18 @@
                 "name": "OpenStreetMap Belgium Twitter",
                 "description": "OSM Belgium on Twitter: @osm_be"
             },
+            "hr-facebook": {
+                "name": "OpenStreetMap Croatia Facebook group",
+                "description": "OpenStreetMap Croatia Facebook group"
+            },
+            "hr-irc": {
+                "name": "OpenStreetMap Croatia on IRC",
+                "description": "Join #osm-hr on irc.freenode.org (port 6667)"
+            },
+            "hr-mailinglist": {
+                "name": "Talk-hr Mailing List",
+                "description": "Talk-hr mailing list"
+            },
             "czech-community": {
                 "name": "Czech OSM community",
                 "description": "Map portal, website and contacts on OSM members in Czechia"
@@ -7119,6 +7426,18 @@
                 "name": "OpenStreetMap Hungary Meetup",
                 "description": "The platform for organizing meetups in Hungary"
             },
+            "is-facebook": {
+                "name": "OSM Iceland on Facebook",
+                "description": "Page of OpenStreetMap in Iceland"
+            },
+            "is-mailinglist": {
+                "name": "Talk-is Mailing List",
+                "description": "Talk-is is the official mailing list for the Icelandic OSM community"
+            },
+            "is-twitter": {
+                "name": "OSM Iceland on Twittter",
+                "description": "Twitter of OpenStreetMap in Iceland"
+            },
             "it-facebook": {
                 "name": "OpenStreetMap Italy Facebook",
                 "description": "Join the OpenStreetMap Italy community on Facebook"
@@ -7176,6 +7495,14 @@
             "OSM-PL-forum": {
                 "name": "OpenStreetMap Poland Forum",
                 "description": "Forum of Polish OpenStreetMap community"
+            },
+            "si-forum": {
+                "name": "OpenStreetMap Slovenia Forum",
+                "description": "Forum of OpenStreetMap community in Slovenia"
+            },
+            "si-mailinglist": {
+                "name": "OpenStreetMap Slovenia mailing list",
+                "description": "Mailing list of OpenStreetMap community in Slovenia"
             },
             "OSM-ES-mailinglist": {
                 "name": "Talk-es mailing list",
@@ -7282,6 +7609,10 @@
                 "description": "Mappers and OpenStreetMap users, around Portland, ME",
                 "extendedDescription": "Maptime is, rather literally, time for mapmaking.  Our mission is to open the doors of cartographic possibility to anyone interested by creating a time and space for collaborative learning, exploration, and map creation using mapping tools and technologies."
             },
+            "us-ma-mailinglist": {
+                "name": "Talk-us-massachusetts Mailing List",
+                "description": "Email mailing list for the Massachusetts OSM community"
+            },
             "OpenCleveland-meetup": {
                 "name": "Open Cleveland",
                 "description": "Improve OpenStreetMap in the Cleveland area",
@@ -7309,6 +7640,11 @@
             "OSM-NYC": {
                 "name": "OpenStreetMap NYC",
                 "description": "Mappers and OpenStreetMap users, developers and enthusiasts in the New York Metropolitan area"
+            },
+            "OSM-Portland-forum": {
+                "name": "OpenStreetMap PDX Google Group",
+                "description": "Forum and mailing list for OpenStreetMap users in the Portland area",
+                "extendedDescription": "This group is to facilitate improvements to OpenStreetMap in the Portland, Oregon area to support applications such as the Open Trip Planner."
             },
             "OSM-Portland": {
                 "name": "OpenStreetMap Portland",
@@ -7341,7 +7677,14 @@
             "OSM-US": {
                 "name": "OpenStreetMap US",
                 "description": "We help grow and improve OpenStreetMap in the United States.",
-                "extendedDescription": "We support OpenStreetMap by holding annual conferences, providing community resources, building partnerships, and by spreading the word. Join OpenStreetMap US here: {signupUrl}"
+                "extendedDescription": "We support OpenStreetMap by holding annual conferences, providing community resources, building partnerships, and by spreading the word. Join OpenStreetMap US here: {signupUrl}",
+                "events": {
+                    "sotmus2018": {
+                        "name": "State of the Map US 2018",
+                        "description": "Join the OpenStreetMap community at State of the Map US in Detroit, Michigan. Connect with other mappers, businesses, government agencies, and non profits, all collaborating around the free and editable map of the world.",
+                        "where": "Detroit, Michigan"
+                    }
+                }
             },
             "OSM-Utah": {
                 "name": "OpenStreetMap Utah",
@@ -7436,6 +7779,11 @@
                 "name": "OpenStreetMap Brasil Twitter",
                 "description": "Follow us on Twitter at {url}"
             },
+            "RS-telegram": {
+                "name": "OpenStreetMap Rio Grande do Sul Telegram Group",
+                "description": "Join the OpenStreetMap Rio Grande do Sul community on Telegram",
+                "extendedDescription": "Join the community to learn more about OpenStreetMap, ask questions or participate in our meetings. Everyone is welcome!"
+            },
             "OSM-CL-facebook": {
                 "name": "OpenStreetMap Chile Facebook",
                 "description": "Join the OpenStreetMap Chile community on Facebook",
@@ -7511,6 +7859,29 @@
             "OSM-PE": {
                 "name": "OpenStreetMap Peru",
                 "description": "News and resources for the OpenStreetMap Peru community"
+            },
+            "LATAM-Facebook": {
+                "name": "OpenStreetMap Latam Facebook",
+                "description": "OpenStreetMap Latam on Facebook"
+            },
+            "LATAM-Telegram": {
+                "name": "OpenStreetMap Latam Telegram",
+                "description": "OpenStreetMap Telegram for Latin America"
+            },
+            "LATAM-Twitter": {
+                "name": "OpenStreetMap Latam Twitter",
+                "description": "Follow us on Twitter at {url}"
+            },
+            "osm-latam": {
+                "name": "OpenStreetMap Latam",
+                "description": "Supporting OpenStreetMap in Latin America",
+                "events": {
+                    "sotm-latam-2018": {
+                        "name": "State of the Map Latam 2018",
+                        "description": "State of the Map Latam is the annual conference for all mappers and users of OpenStreetMap in Latin America. The program includes talks, panels, workshops, and mapathons related to OpenStreetMap.",
+                        "where": "Buenos Aires, Argentina"
+                    }
+                }
             },
             "OSM-Facebook": {
                 "name": "Facebook上のOpenStreetMap",

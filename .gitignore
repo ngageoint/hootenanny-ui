@@ -1,11 +1,13 @@
 .DS_Store
 .esm-cache
+.vscode/
 /data/data.js
 /dist/*.js
 /dist/*.css
 /dist/*.map
 /dist/img/*.svg
 /dist/mapillary-js/
+/dist/pannellum-streetside/
 /node_modules/
 /.tx/tmp/
 npm-debug.log
@@ -21,3 +23,5 @@ land.html
 
 .idea
 node_modules
+
+\.vscode/

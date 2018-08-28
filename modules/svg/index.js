@@ -1,7 +1,7 @@
 export { svgAreas } from './areas.js';
+export { svgData } from './data.js';
 export { svgDebug } from './debug.js';
 export { svgDefs } from './defs.js';
-export { svgGpx } from './gpx.js';
 export { svgHoot } from './hoot.js';
 export { svgIcon } from './icon.js';
 export { svgLabels } from './labels.js';
@@ -10,6 +10,7 @@ export { svgLines } from './lines.js';
 export { svgMapillaryImages } from './mapillary_images.js';
 export { svgMapillarySigns } from './mapillary_signs.js';
 export { svgMidpoints } from './midpoints.js';
+export { svgNotes } from './notes.js';
 export { svgOneWaySegments } from './helpers.js';
 export { svgOpenstreetcamImages } from './openstreetcam_images.js';
 export { svgOsm } from './osm.js';

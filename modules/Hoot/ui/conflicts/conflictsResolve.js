@@ -44,8 +44,9 @@ export default class ConflictsResolve {
             let hasChanges = Hoot.context.history().hasChanges();
 
             if ( hasChanges ) {
-                Hoot.layers.save( this.data.mergedItems, false, () => {
-                    this.data.mergedItems = [];
+                Hoot.layers.mergedConflicts = this.data.mergedConflicts;
+                Hoot.layers.save( false, () => {
+                    this.data.mergedConflicts = [];
                     this.instance.traverse.jumpTo( 'forward' );
                 } );
             }
@@ -53,20 +54,6 @@ export default class ConflictsResolve {
             // TODO: alert nothing to review
         }
     }
-
-    //makeChangesetTags( imageryUsed ) {
-    //    let detected = utilDetect();
-    //
-    //    return {
-    //        created_by: 'iD',
-    //        imagery_used: imageryUsed.join( ';' ).substr( 0, 255 ),
-    //        host: (window.location.origin + window.location.pathName).substr( 0, 255 ),
-    //        locale: detected.locale,
-    //        browser: detected.browser + ' ' + detected.version,
-    //        platform: detected.platform,
-    //        comment: 'HootOld Save'
-    //    };
-    //}
 
     /**
      * Save any unsaved items and resolve all remaining reviewables
@@ -77,7 +64,7 @@ export default class ConflictsResolve {
         let hasChanges = Hoot.context.history().hasChanges();
 
         if ( hasChanges ) {
-            Hoot.layers.save( this.data.mergedItems, false, () => {
+            Hoot.layers.save( false, () => {
                 this.performAcceptAll( layer );
             } );
         } else {

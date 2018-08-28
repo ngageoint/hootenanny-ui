@@ -272,11 +272,6 @@
             "localized_translation_name": "Navn"
         },
         "zoom_in_edit": "Zoom inn for å redigere",
-<<<<<<< HEAD
-=======
-        "login": "logg inn",
->>>>>>> v2.7.0
-        "logout": "logg ut",
         "loading_auth": "Kobler til OpenStreetMap...",
         "report_a_bug": "Rapporter feil",
         "help_translate": "Hjelp til med oversettelse",
@@ -411,13 +406,6 @@
 >>>>>>> v2.7.0
             "none": "Ingen",
             "custom": "Egendefinert",
-            "custom_button": "Endre egendefinert bakgrunn",
-<<<<<<< HEAD
-            "reset": "tilbakestill",
-            "minimap": {
-                "description": "Mini-kart"
-            }
-=======
             "overlays": "Overlegg",
             "reset": "tilbakestill",
             "brightness": "Lysstyrke",
@@ -569,17 +557,9 @@
         },
         "cannot_zoom": "Kan ikke zoome ut lenger i gjeldende modus.",
         "full_screen": "Skru av/på fullskjerm.",
-        "gpx": {
-            "local_layer": "Lokal fil",
-            "drag_drop": "Dra og slipp en .gpx, .geojson eller .kml-fil på siden, eller trykk knappen til høyre for å bla etter fil",
-            "zoom": "Zoom til lag",
-            "browse": "Bla etter en fil"
->>>>>>> v2.7.0
-        },
-        "gpx": {
-            "local_layer": "Lokal GPX-fil",
-            "zoom": "Zoom inn til GPX-spor",
-            "browse": "Finn .gpx-fil"
+        "mapillary_images": {
+            "tooltip": "Bilder på gate-nivå fra Mapillary",
+            "title": "Bilde-overlegg (Mapillary)"
         },
         "help": {
 <<<<<<< HEAD
@@ -725,26 +705,21 @@
                     "label": "Tillatt for",
                     "options": {
                         "designated": {
-                            "description": "Tilgang tillatt i henhold til skilt eller spesifike lokale lover"
+                            "title": "Utpekt"
                         },
                         "destination": {
-                            "description": "Tilgang kun tillatt for å nå et mål",
                             "title": "Mål"
                         },
                         "no": {
-                            "description": "Tilgang ikke tillatt for allmennheten",
                             "title": "Forbudt"
                         },
                         "permissive": {
-                            "description": "Tilgang tillatt frem til eieren trekker tillatelsen tilbake",
                             "title": "Begrenset"
                         },
                         "private": {
-                            "description": "Tilgang tillatt kun ved tillatelse fra eieren på individuell basis",
                             "title": "Privat"
                         },
                         "yes": {
-                            "description": "Tilgang gitt av lov; fri tilgang",
                             "title": "Tillatt"
                         }
                     },
