@@ -515,7 +515,7 @@ export default {
 
     parse( dom, mapId ) {
         return new Promise( res => {
-            parseXML( dom, function(entities) {
+            parseXML( dom, function(err, entities) {
                 res( entities );
             }, null, mapId );
         } );
@@ -661,11 +661,12 @@ export default {
     // PUT /api/0.6/changeset/create
     // POST /api/0.6/changeset/#id/upload
     // PUT /api/0.6/changeset/#id/close
-    putChangeset: function(changeset, changes, callback) {
-        var that = this;
+    putChangeset: function(changeset, changes, callback ) {
         var cid = _connectionID;
-        
-        if (_changeset.inflight) {
+
+        let changesArr = this.filterChanges( changes );
+
+        if (_changeset.inflight || !changesArr) {
             return callback({ message: 'Changeset already inflight', status: -2 }, changeset);
 
         } else if (_changeset.open) {   // reuse existing open changeset..
@@ -697,7 +698,7 @@ export default {
             _changeset.open = changesetID;
             changeset = changeset.update({ id: changesetID });
 
-            _forEach( mergedItems, item => {
+            _forEach( Hoot.layers.mergedConflicts, item => {
                 let refId     = item.id,
                     newMember = item.obj;
 
@@ -744,12 +745,12 @@ export default {
             };
             _changeset.inflight = oauth.xhr(
                 options,
-                wrapcb(this, uploadedChangeset, cid)
+                wrapcb(this, uploadedChangeset, cid, mapId)
             );
         }
 
 
-        function uploadedChangeset(err, mapId) {
+        function uploadedChangeset(err, result, mapId) {
             _changeset.inflight = null;
             if (err) return callback(err, changeset);
 

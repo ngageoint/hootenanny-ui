@@ -116,7 +116,7 @@ export default class ConflictsMerge {
             let refRelationMember = refRelation.memberById( featureToDelete.id );
 
             if ( refRelationMember ) {
-                let exists = _.find( this.data.mergedItems, { id: refRelation.id } );
+                let exists = _.find( this.data.mergedConflicts, { id: refRelation.id } );
 
                 if ( exists && exists.obj ) {
                     exists = exists.obj.id === mergedFeature.id;
@@ -125,7 +125,7 @@ export default class ConflictsMerge {
                 if ( !exists && !refRelation.memberById( mergedFeature.id ) ) {
                     let newNode = this.createNewRelationNodeMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
 
-                    this.data.mergedItems.push( newNode );
+                    this.data.mergedConflicts.push( newNode );
                 }
             }
         } );

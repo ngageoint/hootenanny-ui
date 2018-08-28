@@ -30,6 +30,7 @@ export default class Layers {
         this.loadedLayers       = {};
         this.recentlyUsedLayers = null;
         this.mergedLayer        = null;
+        this.mergedConflicts    = null;
         this.palette            = colorPalette;
     }
 
@@ -266,7 +267,7 @@ export default class Layers {
         };
     }
 
-    save( mergedItems, tryAgain, callback ) {
+    save( tryAgain, callback ) {
         let history = this.hoot.context.history(),
             changes = history.changes( actionDiscardTags( history.difference() ) );
 

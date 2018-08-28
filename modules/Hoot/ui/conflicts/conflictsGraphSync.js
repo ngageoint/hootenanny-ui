@@ -114,7 +114,7 @@ export default class ConflictsGraphSync {
      * children features if feature is a relation
      *
      * @param featureId - ID of feature to load
-     * @returns {Promise<[]>}
+     * @returns {Promise<>}
      */
     async loadMissingFeatures( featureId ) {
         try {
@@ -124,12 +124,13 @@ export default class ConflictsGraphSync {
 
                 featureXml = await Hoot.api.getFeatures( type, mapId, osmIds ),
                 document   = new DOMParser().parseFromString( featureXml, 'text/xml' ),
-                featureOsm = await Hoot.context.connection().parseXml( document, mapId );
+                featureOsm = await Hoot.context.connection().parse( document, mapId );
 
             Hoot.context.history().merge( featureOsm );
 
             return Promise.all( _.map( featureOsm, feature => this.updateMissingFeature( feature ) ) );
         } catch ( e ) {
+            console.log( e );
             throw new Error( 'Unable to retrieve missing features from HootOld DB.' );
         }
     }
