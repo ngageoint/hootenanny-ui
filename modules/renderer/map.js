@@ -99,7 +99,7 @@ export function rendererMap(context) {
     //var scheduleRedraw = _throttle(redraw, 750);
     function scheduleRedraw() {
         clearTimeout(timeoutId);
-        timeoutId = setTimeout(function() { redraw(); }, 200);
+        timeoutId = setTimeout( function() { redraw(); }, 150);
     }
     // var isRedrawScheduled = false;
     // var pendingRedrawCall;
@@ -294,7 +294,7 @@ export function rendererMap(context) {
     }
 
 
-    function drawVector(difference, extent) {
+    async function drawVector(difference, extent) {
         var mode = context.mode();
         var graph = context.graph();
         var features = context.features();
@@ -337,15 +337,25 @@ export function rendererMap(context) {
                 .call(drawVertices.drawSelected, graph, map.extent());
         }
 
-        surface.selectAll('.data-layer-osm')
-            .call(drawVertices, graph, data, filter, map.extent(), fullRedraw)
-            .call(drawLines, graph, data, filter)
-            .call(drawAreas, graph, data, filter)
-            .call(drawMidpoints, graph, data, filter, map.trimmedExtent())
-            //.call(drawLabels, graph, data, filter, dimensions, fullRedraw)
-            .call(drawPoints, graph, data, filter);
+        let osmLayer = surface.selectAll('.data-layer-osm');
+        Promise.all( [
+            osmLayer.call(drawVertices, graph, data, filter, map.extent(), fullRedraw),
+            osmLayer.call(drawLines, graph, data, filter),
+            osmLayer.call(drawAreas, graph, data, filter),
+            osmLayer.call(drawMidpoints, graph, data, filter, map.trimmedExtent()),
+            osmLayer.call(drawPoints, graph, data, filter)
+        ] ).then( () => {
+            dispatch.call('drawn', this, {full: true});
+        })
+        //surface.selectAll('.data-layer-osm')
+        //    .call(drawVertices, graph, data, filter, map.extent(), fullRedraw)
+        //    .call(drawLines, graph, data, filter)
+        //    .call(drawAreas, graph, data, filter)
+        //    .call(drawMidpoints, graph, data, filter, map.trimmedExtent())
+        //    //.call(drawLabels, graph, data, filter, dimensions, fullRedraw)
+        //    .call(drawPoints, graph, data, filter);
 
-        dispatch.call('drawn', this, {full: true});
+        //dispatch.call('drawn', this, {full: true});
     }
 
 
@@ -502,7 +512,7 @@ export function rendererMap(context) {
         } else {
             editOff();
 
-            context.connection().tileZoom( 1 );
+            context.connection().tileZoom( 16 );
 
             if ( context.hoot.layers.mergedLayer ) {
                 context.hoot.events.emit( 'layer-merged' );

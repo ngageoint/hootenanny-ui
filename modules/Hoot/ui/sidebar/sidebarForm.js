@@ -119,8 +119,4 @@ export default class SidebarForm {
 
         this.controller.render();
     }
-
-    loadLayer( params ) {
-        Hoot.layers.loadLayer( params );
-    }
 }

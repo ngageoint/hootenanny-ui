@@ -312,7 +312,7 @@ var parsers = {
 };
 
 
-function parseXML(xml, callback, options, mapId) {
+async function parseXML(xml, callback, options, mapId) {
     options = _extend({ skipSeen: true }, options);
     if (!xml || !xml.childNodes) {
         return callback({ message: 'No XML', status: -1 });
@@ -325,7 +325,18 @@ function parseXML(xml, callback, options, mapId) {
         mapId = root.attributes.mapid ? root.attributes.mapid.value : -1;
     }
 
-    utilIdleWorker(children, parseChild, done);
+    //utilIdleWorker(children, parseChild, done);
+
+    Promise.all( await _reduce( children, async ( results, child ) => {
+        let prevResults = await results,
+            r = await parseChild( child );
+
+        if ( r ) {
+            prevResults.push( r );
+        }
+
+        return prevResults;
+    }, [] ) ).then( done );
 
     function done(results) {
         callback(null, results);
@@ -354,7 +365,7 @@ function parseXML(xml, callback, options, mapId) {
             }
         }
 
-        return parser(child, uid, mapId);
+        return Promise.resolve( parser(child, uid, mapId) );
     }
 }
 
@@ -676,7 +687,7 @@ export default {
             _forEach( changesArr, ( changes, mapId ) => {
                 let path = '/api/0.6/changeset/create';
                 path += mapId ? `?mapId=${ mapId }` : '';
-                
+
                 var options = {
                     method: 'PUT',
                     path: path,
@@ -948,7 +959,7 @@ export default {
 
     // Load data (entities) from the API in tiles
     // GET /api/0.6/map?bbox=
-    loadTiles: function(projection, callback) {
+    loadTiles: async function(projection, callback) {
         if (_off) return;
 
         var that = this;
@@ -994,13 +1005,13 @@ export default {
                     delete _tileCache.inflight[tile.id];
                     if (!err) {
                         _tileCache.loaded[tile.id] = true;
-                        Hoot.events.emit( 'layer-loaded', tile.layerName );
                     }
                     if (callback) {
                         callback(err, _extend({ data: parsed }, tile));
                     }
                     if (_isEmpty(_tileCache.inflight)) {
                         dispatch.call('loaded');     // stop the spinner
+                        Hoot.events.emit( 'layer-loaded', tile.layerName );
                     }
                 },
                 options

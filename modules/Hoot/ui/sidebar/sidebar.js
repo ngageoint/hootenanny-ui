@@ -143,7 +143,6 @@ export default class Sidebar {
 
                 if ( loadedLayer.merged ) {
                     Hoot.layers.mergedLayer = loadedLayer;
-                    //this.layerMerged( loadedLayer );
                 }
 
                 form.controller.update();

@@ -153,7 +153,7 @@ export function uiTools( context ) {
                     }
                 } else if ( d.action === 'measureHelp' ) {
                     let message = 'Click anywhere on the map to start measuring.  Double-click to end measurement. Clicking on the Tools menu will clear the vectors from the screen.',
-                        type = 'warn';
+                        type = 'info';
 
                     Hoot.message.alert( { message, type } );
                 }
