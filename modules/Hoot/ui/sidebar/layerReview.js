@@ -6,8 +6,6 @@
 
 import Hoot        from '../../hoot';
 import SidebarForm from './sidebarForm';
-//import Conflicts   from '../conflicts/conflicts';
-import Event       from '../../managers/eventManager';
 
 /**
  * @class LayerReview

@@ -6,12 +6,12 @@
 
 import _                   from 'lodash-es';
 import Hoot                from '../../hoot';
-import ConflictInfo        from './conflictsInfo';
-import ConflictsMap        from './conflictsMap';
-import ConflictsTraverse   from './conflictsTraverse';
-import ConflictsGraphSync  from './conflictsGraphSync';
-import ConflictsMerge      from './conflictsMerge';
-import ConflictsResolve    from './conflictsResolve';
+import ConflictInfo        from './info';
+import Map                 from './map';
+import Traverse            from './traverse';
+import GraphSync           from './graphSync';
+import Merge               from './merge';
+import Resolve             from './resolve';
 import { conflictButtons } from '../../config/domMetadata';
 import { d3keybinding }    from '../../../lib/d3.keybinding';
 import { t }               from '../../../util/locale';
@@ -64,11 +64,11 @@ export default class Conflicts {
 
         let modules = await Promise.all( [
             new ConflictInfo( this ),
-            new ConflictsMap( this ),
-            new ConflictsTraverse( this ),
-            new ConflictsGraphSync( this ),
-            new ConflictsMerge( this ),
-            new ConflictsResolve( this )
+            new Map( this ),
+            new Traverse( this ),
+            new GraphSync( this ),
+            new Merge( this ),
+            new Resolve( this )
         ] );
 
         this.info      = modules[ 0 ];

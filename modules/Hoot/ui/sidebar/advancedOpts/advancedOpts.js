@@ -4,11 +4,11 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/23/18
  *******************************************************************************************************/
 
-import _                    from 'lodash-es';
-import Hoot                 from '../../../hoot';
-import AdvancedOptsData     from './advancedOptsData';
-import AdvancedOptsControls from './advancedOptsControls';
-import { d3combobox }       from '../../../../lib/hoot/d3.combobox';
+import _                from 'lodash-es';
+import Hoot             from '../../../hoot';
+import FieldsetData     from './fieldsetData';
+import FieldsetControls from './fieldsetControls';
+import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
 
 export default class AdvancedOpts {
     constructor() {
@@ -32,8 +32,8 @@ export default class AdvancedOpts {
             reference: allOpts[ 3 ]
         };
 
-        this.data    = new AdvancedOptsData( this, _.cloneDeep( this.advancedOptions ) );
-        this.control = new AdvancedOptsControls( this );
+        this.data    = new FieldsetData( this, _.cloneDeep( this.advancedOptions ) );
+        this.control = new FieldsetControls( this );
 
         this.render();
     }

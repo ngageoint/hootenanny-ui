@@ -4,10 +4,10 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import Tab                 from '../tab';
-import TransAssistUpload   from './transAssistUpload';
-import TransAssistMapping  from './transAssistMapping';
-import TranslationsAddForm from '../translations/translationsAddForm';
+import Tab            from '../tab';
+import Upload         from './upload';
+import TagMapForm     from './tagMapForm';
+import AddTranslation from '../../modals/addTranslation';
 
 /**
  * Creates the translations-assistant tab in the settings panel
@@ -26,15 +26,15 @@ export default class TransAssist extends Tab {
     render() {
         super.render();
 
-        new TransAssistUpload( this ).render();
+        new Upload( this ).render();
     }
 
     initMapping( valuesMap ) {
-        new TransAssistMapping( this ).render( valuesMap );
+        new TagMapForm( this ).render( valuesMap );
     }
 
     openSaveForm( output ) {
-        new TranslationsAddForm( this, output ).render();
+        new AddTranslation( this, output ).render();
     }
 
     showTranslations() {

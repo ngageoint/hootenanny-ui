@@ -207,7 +207,7 @@ export function importMultiForm() {
     ];
 }
 
-export function datasetAddFolderForm() {
+export function addFolderForm() {
     return [
         {
             label: 'Folder Name',
@@ -216,6 +216,36 @@ export function datasetAddFolderForm() {
             inputType: 'text',
             onChange: d => this.validateTextInput( d )
         },
+    ];
+}
+
+export function modifyDatasetForm() {
+    return [
+        {
+            label: 'Output Name',
+            id: 'modifyLayerName',
+            class: 'layer-name',
+            inputType: 'text',
+            placeholder: 'Enter name',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Path',
+            id: 'modifyPathName',
+            class: 'path-name',
+            inputType: 'combobox',
+            placeholder: 'root',
+            data: this.folderList,
+            sort: true,
+            itemKey: 'path'
+        },
+        {
+            label: 'Enter Name for New Folder (Leave blank otherwise)',
+            id: 'modifyNewFolderName',
+            class: 'new-folder-name',
+            inputType: 'text',
+            onChange: d => this.validateTextInput( d )
+        }
     ];
 }
 

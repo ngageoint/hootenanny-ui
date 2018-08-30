@@ -6,10 +6,10 @@
 
 import _                   from 'lodash-es';
 import Hoot                from '../../hoot';
-import Datasets            from './datasets/datasets';
+import Datasets            from './datasets';
 import TransAssist         from './transAssist/transAssist';
-import Translations        from './translations/translations';
-import Basemaps            from './basemaps/basemaps';
+import Translations        from './translations';
+import Basemaps            from './basemaps';
 import ReviewBookmarks     from './reviewBookmarks';
 import ReviewBookmarkNotes from './reviewBookmarkNotes';
 

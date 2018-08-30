@@ -534,7 +534,7 @@ export default class FolderTree {
             this.contextMenu.remove();
         }
 
-        const body = d3.select( 'body' )
+        let body = d3.select( 'body' )
             .on( 'click', () => d3.select( '.context-menu' ).style( 'display', 'none' ) );
 
         this.contextMenu = body
@@ -576,6 +576,14 @@ export default class FolderTree {
                                 Hoot.message.alert( { message, type } );
                             } );
 
+                        break;
+                    }
+                    case 'moveDataset': {
+
+                        break;
+                    }
+                    case 'modifyDataset': {
+                        Hoot.events.emit( 'modify-dataset', this.selectedNodes );
                         break;
                     }
                 }
