@@ -442,6 +442,23 @@ export default class API {
     //        } );
     //}
 
+    modifyDataset( data ) {
+        const params = {
+            path: '/osm/api/0.6/map/modify',
+            method: 'POST',
+            params: {
+                ...data
+            },
+            data: JSON.stringify( data )
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( err => {
+                console.log( err );
+            } );
+    }
+
     /**
      * Upload imported schema files to the database for processing
      *

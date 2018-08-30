@@ -10,7 +10,7 @@ import FolderTree    from '../../tools/folderTree';
 import Tab           from './tab';
 import ImportDataset from '../modals/importDataset';
 import AddFolder     from '../modals/addFolder';
-import ModifyDataset from '../modals/modifyDataset';
+import ModifyDataset from '../modals/modifyDatasetFolder';
 
 /**
  * Creates the datasets tab in the settings panel

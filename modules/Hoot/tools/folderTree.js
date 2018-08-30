@@ -4,9 +4,10 @@
  * @author Matt Putipong on 3/5/18
  *******************************************************************************************************/
 
-import _      from 'lodash-es';
-import moment from 'moment';
-import Hoot   from '../hoot';
+import _                   from 'lodash-es';
+import moment              from 'moment';
+import Hoot                from '../hoot';
+import ModifyDatasetFolder from '../ui/modals/ModifyDatasetFolder';
 
 /**
  * Class for creating, displaying and maintaining a folder tree hierarchy
@@ -492,17 +493,18 @@ export default class FolderTree {
                     title: `Delete (${ selectedCount })`,
                     icon: 'trash',
                     click: 'deleteDataset'
-                },
-                {
-                    title: `Move (${ selectedCount })`,
-                    icon: 'info',
-                    click: 'moveDataset'
                 }
             ];
 
             if ( selectedCount > 1 && selectedCount <= 10 ) {
                 // add options for multiple selected datasets
                 opts.push( this.datasetContextMenu.multiDatasetOpts );
+
+                opts.splice( 1, 0, {
+                    title: `Move (${ selectedCount })`,
+                    icon: 'info',
+                    click: 'modify'
+                } );
             } else {
                 // add options for single selected dataset
                 _.forEach( this.datasetContextMenu.addDatasetOpts, o => {
@@ -513,20 +515,20 @@ export default class FolderTree {
                     }
                 } );
 
-                opts = _.concat( opts, this.datasetContextMenu.singleDatasetOpts );
-
                 opts.splice( 4, 0, {
-                    title: `Rename ${ data.name }`,
+                    title: `Move/Rename ${ data.name }`,
                     icon: 'info',
-                    click: 'renameDataset'
+                    click: 'modify'
                 } );
+
+                opts = _.concat( opts, this.datasetContextMenu.singleDatasetOpts );
             }
         } else if ( data.type === 'folder' ) {
             opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
             opts.splice( 1, 0, {
-                title: `Rename/Move ${ data.name }`,
+                title: `Move/Rename ${ data.name }`,
                 icon: 'info',
-                click: 'modifyFolder'
+                click: 'modify'
             } );
         }
 
@@ -578,12 +580,9 @@ export default class FolderTree {
 
                         break;
                     }
-                    case 'moveDataset': {
+                    case 'modify': {
+                        new ModifyDatasetFolder( this.selectedNodes ).render();
 
-                        break;
-                    }
-                    case 'modifyDataset': {
-                        Hoot.events.emit( 'modify-dataset', this.selectedNodes );
                         break;
                     }
                 }

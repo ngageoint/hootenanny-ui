@@ -39,7 +39,9 @@ export default class FolderManager {
     async refreshFolders() {
         let { folders } = await this.hoot.api.getFolders();
 
-        this._folders = this.getFolderPaths( folders );
+        this._folders = this.listFolders( folders );
+
+        console.log( this._folders );
 
         return this._folders;
     }
@@ -95,29 +97,34 @@ export default class FolderManager {
     /**
      * Create an array of all folder names with their full path
      *
-     * @param array - array of folder objects from database
+     * @param folders - array of folder metadata from database
      * @returns {array} - folder list
      */
-    listFolders( array ) {
-        return _.map( array, f => {
+    listFolders( folders ) {
+        return _.map( folders, f => {
             if ( f.parentId === 0 ) {
                 f.folderPath = f.name;
             } else {
                 //use links to get parent folder as far back as possible
                 let strPath      = f.name,
-                    parentFolder = _.find( this._folders, { id: f.parentId } ),
+                    parentFolder = _.find( folders, { id: f.parentId } ),
                     i            = 0;
 
                 do {
                     i++;
                     strPath      = parentFolder.name + '/' + strPath;
-                    parentFolder = _.find( this._folders, { id: parentFolder.parentId } );
+                    parentFolder = _.find( folders, { id: parentFolder.parentId } );
                 } while ( parentFolder || i === 10 );
 
                 f.folderPath = strPath;
             }
 
-            return { path: f.folderPath, name: f.name, id: f.id };
+            return {
+                path: f.folderPath,
+                name: f.name,
+                id: f.id,
+                parentId: f.parentId
+            };
         } );
     }
 
@@ -247,10 +254,10 @@ export default class FolderManager {
 
         if ( folderName ) {
             // create new folder and then update folder structure
-            return addFolder();
+            return addFolder.call( this );
         } else {
             // update folder structure
-            return updateFolderLink();
+            return updateFolderLink.call( this );
         }
 
         function addFolder() {
@@ -261,8 +268,8 @@ export default class FolderManager {
                 parentId
             };
 
-            return that.hoot.api.addFolder( params )
-                .then( resp => updateFolderLink( resp.folderId ) )
+            return this.hoot.api.addFolder( params )
+                .then( resp => updateFolderLink.call( this, resp.folderId ) )
                 .catch( err => {
                     console.log( err );
                     // TODO: response - unable to create new folder
@@ -271,9 +278,9 @@ export default class FolderManager {
 
         function updateFolderLink( folderId ) {
             let layerName = name || container.select( '.layer-name' ).property( 'value' ),
-                mapId     = _.get( _.find( that.hoot.layers.allLayers, layer => layer.name === layerName ), 'id' ) || 0;
+                mapId     = _.get( _.find( this.hoot.layers.allLayers, layer => layer.name === layerName ), 'id' ) || 0;
 
-            folderId = folderId || _.get( _.find( that._folders, folder => folder.name === pathName ), 'id' ) || 0;
+            folderId = folderId || _.get( _.find( this._folders, folder => folder.name === pathName ), 'id' ) || 0;
 
             let params = {
                 folderId,
@@ -281,9 +288,9 @@ export default class FolderManager {
                 updateType: 'new'
             };
 
-            return that.hoot.api.updateMapFolderLinks( params )
-                .then( () => that.refreshAll() )
-                .then( () => that.hoot.events.emit( 'render-dataset-table' ) )
+            return this.hoot.api.updateMapFolderLinks( params )
+                .then( () => this.refreshAll() )
+                .then( () => this.hoot.events.emit( 'render-dataset-table' ) )
                 .catch( err => {
                     console.log( err );
                     // TODO: response - unable to update folder links

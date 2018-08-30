@@ -240,7 +240,7 @@ export function modifyDatasetForm() {
             itemKey: 'path'
         },
         {
-            label: 'Enter Name for New Folder (Leave blank otherwise)',
+            label: 'Move to New Folder (Leave blank otherwise)',
             id: 'modifyNewFolderName',
             class: 'new-folder-name',
             inputType: 'text',
