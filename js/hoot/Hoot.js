@@ -423,7 +423,7 @@ Hoot.hoot = function (context) {
             return (a.DEFAULT) ? -1 : 1;
         } else {
             // We only get here if the DEFAULT prop is equal
-            return d3.ascending(a.NAME.toLowerCase(), b.NAME.toLowerCase());
+            return d3.ascending(a.DESCRIPTION.toLowerCase(), b.DESCRIPTION.toLowerCase());
         }
     };
 
