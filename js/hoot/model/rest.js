@@ -31,7 +31,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         if(data.FGDB_FC) {
             url += '&FGDB_FC=' + data.FGDB_FC;
         }
-        d3.xhr(url).header('access-control-allow-origin', '*')
+        d3.xhr(url)
             .post(data.formData, function (error, json) {
 
 
@@ -778,6 +778,11 @@ Hoot.model.REST = function (command, data, callback, option) {
             callback(resp);
         });
     };
+    rest.getOAuthRedirectURL = function(callback) {
+        d3.text('/hoot-services/auth/oauth1/request', function(e, r) {
+            callback(e, r);
+        });
+    }
 
 
     rest['' + command + ''](data, callback, option);
