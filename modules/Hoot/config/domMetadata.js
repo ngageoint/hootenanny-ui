@@ -236,6 +236,7 @@ export function modifyDatasetForm() {
             inputType: 'combobox',
             placeholder: 'root',
             data: this.folderList,
+            readonly: 'readonly',
             sort: true,
             itemKey: 'path'
         },

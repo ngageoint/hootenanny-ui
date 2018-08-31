@@ -188,6 +188,7 @@ export default class FormFactory {
             .attr( 'placeholder', d => d.placeholder )
             .attr( 'value', d => d.value )
             .attr( 'disabled', d => d.disabled )
+            .attr( 'readonly', d => d.readonly )
             .call( this.populateCombobox )
             .on( 'change', d => d.onChange && d.onChange() )
             .on( 'keyup', d => d.onChange && d.onChange() );

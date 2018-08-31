@@ -453,7 +453,13 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data )
+            .then( () => {
+                return {
+                    message: `Successfully modified dataset: ${data.modName}`,
+                    status: 200,
+                    type: 'success'
+                };
+            } )
             .catch( err => {
                 console.log( err );
             } );

@@ -4,7 +4,13 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/22/18
  *******************************************************************************************************/
 
-import _                 from 'lodash-es';
+import _intersection from 'lodash-es/intersection';
+import _isEmpty      from 'lodash-es/isEmpty';
+import _find         from 'lodash-es/find';
+import _forEach      from 'lodash-es/forEach';
+import _map          from 'lodash-es/map';
+import _remove       from 'lodash-es/remove';
+
 import { rgb as d3_rgb } from 'd3-color';
 
 import { geoExtent as GeoExtent } from '../../geo/index';
@@ -20,7 +26,7 @@ import {
 import {
     actionDiscardTags,
     actionNoop
-} from '../../actions';
+}           from '../../actions';
 
 export default class Layers {
     constructor( hoot ) {
@@ -52,11 +58,15 @@ export default class Layers {
     }
 
     findBy( key, val ) {
-        return _.find( this.allLayers, layer => layer[ key ] === val );
+        return _find( this.allLayers, layer => layer[ key ] === val );
     }
 
     findLoadedBy( key, val ) {
-        return _.find( this.loadedLayers, layer => layer[ key ] === val );
+        return _find( this.loadedLayers, layer => layer[ key ] === val );
+    }
+
+    exists( layerName ) {
+        return !_isEmpty( _find( this.allLayers, layer => layer.name === layerName ) );
     }
 
     getMapnikSource( d ) {
@@ -83,7 +93,7 @@ export default class Layers {
             return this.palette;
         }
 
-        let obj = _.find( this.palette, color => color.name === name || color.hex === name );
+        let obj = _find( this.palette, color => color.name === name || color.hex === name );
 
         return obj.name === name ? obj.hex : obj.name;
     }
@@ -92,7 +102,7 @@ export default class Layers {
         let mbr;
 
         if ( Array.isArray( ids ) ) {
-            _.forEach( ids, async id => {
+            _forEach( ids, async id => {
                 mbr = await this.hoot.api.getMbr( id );
             } );
         } else {
@@ -159,7 +169,7 @@ export default class Layers {
     }
 
     removeLayer( id ) {
-        _.remove( this.allLayers, layer => layer.id === id );
+        _remove( this.allLayers, layer => layer.id === id );
     }
 
     removeLoadedLayer( id ) {
@@ -242,7 +252,7 @@ export default class Layers {
     }
 
     syncRecentlyUsedLayers() {
-        this.recentlyUsedLayers = _.intersection( this.recentlyUsedLayers, _.map( this.allLayers, 'name' ) );
+        this.recentlyUsedLayers = _intersection( this.recentlyUsedLayers, _map( this.allLayers, 'name' ) );
     }
 
     changeTags( entityId, tags ) {
