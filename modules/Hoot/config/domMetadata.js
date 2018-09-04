@@ -223,7 +223,7 @@ export function modifyDatasetForm() {
     return [
         {
             label: 'Output Name',
-            id: 'modifyLayerName',
+            id: 'modifyName',
             class: 'layer-name',
             inputType: 'text',
             placeholder: 'Enter name',

@@ -34,6 +34,7 @@
     opacity: 0;
     visibility: hidden;
     transition: opacity 200ms linear, visibility 250ms;
+    z-index: 10;
 
     &.visible {
         opacity: 1;

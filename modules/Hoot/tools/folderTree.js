@@ -4,10 +4,11 @@
  * @author Matt Putipong on 3/5/18
  *******************************************************************************************************/
 
-import _                   from 'lodash-es';
-import moment              from 'moment';
-import Hoot                from '../hoot';
-import ModifyDatasetFolder from '../ui/modals/ModifyDatasetFolder';
+import _             from 'lodash-es';
+import moment        from 'moment';
+import Hoot          from '../hoot';
+import ModifyDataset from '../ui/modals/modifyDataset';
+import ModifyFolder  from '../ui/modals/modifyFolder';
 
 /**
  * Class for creating, displaying and maintaining a folder tree hierarchy
@@ -503,7 +504,7 @@ export default class FolderTree {
                 opts.splice( 1, 0, {
                     title: `Move (${ selectedCount })`,
                     icon: 'info',
-                    click: 'modify'
+                    click: 'modifyDataset'
                 } );
             } else {
                 // add options for single selected dataset
@@ -518,7 +519,7 @@ export default class FolderTree {
                 opts.splice( 4, 0, {
                     title: `Move/Rename ${ data.name }`,
                     icon: 'info',
-                    click: 'modify'
+                    click: 'modifyDataset'
                 } );
 
                 opts = _.concat( opts, this.datasetContextMenu.singleDatasetOpts );
@@ -528,7 +529,7 @@ export default class FolderTree {
             opts.splice( 1, 0, {
                 title: `Move/Rename ${ data.name }`,
                 icon: 'info',
-                click: 'modify'
+                click: 'modifyFolder'
             } );
         }
 
@@ -580,9 +581,12 @@ export default class FolderTree {
 
                         break;
                     }
-                    case 'modify': {
-                        new ModifyDatasetFolder( this.selectedNodes ).render();
-
+                    case 'modifyDataset': {
+                        new ModifyDataset( this.selectedNodes ).render();
+                        break;
+                    }
+                    case 'modifyFolder': {
+                        new ModifyFolder( d ).render();
                         break;
                     }
                 }

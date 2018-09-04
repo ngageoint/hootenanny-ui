@@ -1,5 +1,5 @@
 /*******************************************************************************************************
- * File: modifyDatasetFolder.js
+ * File: modifyDataset.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/30/18
  *******************************************************************************************************/
@@ -13,7 +13,7 @@ import Hoot                  from '../../hoot';
 import FormFactory           from '../../tools/formFactory';
 import { modifyDatasetForm } from '../../config/domMetadata';
 
-export default class ModifyDatasetFolder {
+export default class ModifyDataset {
     constructor( datasets ) {
         this.formType   = datasets.length === 1 ? 'single' : 'multi';
         this.datasets   = datasets.length === 1 ? datasets[ 0 ] : datasets;
@@ -64,7 +64,7 @@ export default class ModifyDatasetFolder {
 
         this.container = new FormFactory().generateForm( 'body', 'modify-dataset-form', metadata );
 
-        this.layerNameInput     = this.container.select( '#modifyLayerName' );
+        this.layerNameInput     = this.container.select( '#modifyName' );
         this.pathNameInput      = this.container.select( '#modifyPathName' );
         this.newFolderNameInput = this.container.select( '#modifyNewFolderName' );
         this.submitButton       = this.container.select( '#modifySubmitBtn' );
@@ -74,7 +74,6 @@ export default class ModifyDatasetFolder {
         }
 
         this.pathNameInput.property( 'value', this.pathName );
-
         this.submitButton.node().disabled = false;
     }
 
@@ -102,18 +101,25 @@ export default class ModifyDatasetFolder {
         this.submitButton.node().disabled = !valid;
     }
 
-    validateForm( layerName, pathName, newFolderName ) {
+    async handleSubmit() {
+        let pathName      = this.pathNameInput.property( 'value' ),
+            newFolderName = this.newFolderNameInput.property( 'value' ),
+            layerName     = this.formType === 'single' ? this.layerNameInput.property( 'value' ) : null,
+            pathId        = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0;
+
         if ( !newFolderName && layerName ) {
-            if ( layerName !== this.datasets.name && Hoot.layers.exists( layerName ) ) {
-                let message = 'A layer already exists with this name. Please remove the old layer or select a new name for this layer.',
+            // make sure another layer with the same name doesn't exist at specified path
+            if ( layerName !== this.datasets.name && Hoot.layers.exists( layerName, pathId ) ) {
+                let message = 'A layer already exists with this name in the destination folder. Please remove the old layer or select a new name for this layer.',
                     type    = 'warn';
 
                 Hoot.message.alert( { message, type } );
                 return false;
             }
         } else {
-            if ( Hoot.folders.exists( newFolderName ) ) {
-                let message = 'A folder already exists with this name. Please remove the old folder or select a new name for this folder.',
+            // make sure another folder with the same name doesn't exist at specified path
+            if ( Hoot.folders.exists( newFolderName, pathId ) ) {
+                let message = 'A folder already exists with this name in the destination path. Please remove the old folder or select a new name for this folder.',
                     type    = 'warn';
 
                 Hoot.message.alert( { message, type } );
@@ -121,35 +127,23 @@ export default class ModifyDatasetFolder {
             }
         }
 
-        return true;
-    }
-
-    async handleSubmit() {
-        let pathName      = this.pathNameInput.property( 'value' ),
-            newFolderName = this.newFolderNameInput.property( 'value' ),
-            layerName,
-            folderId,
-            formValid;
+        let folderId;
 
         if ( newFolderName ) {
             folderId = await Hoot.folders.addFolder( pathName, newFolderName );
         } else {
-            folderId = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' );
+            folderId = pathId;
         }
 
         if ( this.formType === 'single' ) {
-            layerName = this.layerNameInput.property( 'value' );
-            formValid = this.validateForm( layerName, pathName, newFolderName );
-
-            if ( !formValid ) return;
-
             let params = {
                 mapId: this.datasets.id,
                 inputType: this.datasets.type,
                 modName: layerName
             };
 
-            return Hoot.api.modifyDataset( params )
+            return Hoot.api.modify( params )
+                .then( () => Hoot.layers.refreshLayers() )
                 .then( () => Hoot.folders.updateFolderLink( layerName, folderId ) )
                 .then( () => Hoot.folders.refreshAll() )
                 .then( () => {
@@ -174,10 +168,6 @@ export default class ModifyDatasetFolder {
                 } )
                 .finally( () => this.container.remove() );
         } else {
-            formValid = this.validateForm( null, pathName, newFolderName );
-
-            if ( !formValid ) return;
-
             return Promise.all( _map( this.datasets, dataset => Hoot.folders.updateFolderLink( dataset.name, folderId ) ) )
                 .then( () => Hoot.folders.refreshAll() )
                 .then( () => {

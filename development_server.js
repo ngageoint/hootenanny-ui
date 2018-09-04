@@ -63,7 +63,7 @@ if ( isDevelopment ) {
         } );
     } );
 
-    let port     = 8088,
+    let port     = 3000,
         hootHost = 'localhost',
         hootPort = 8999,
         hootUrl  = 'http://' + hootHost + ':' + hootPort;
@@ -74,7 +74,7 @@ if ( isDevelopment ) {
 
     app.get( '/hootenanny-id', ( req, res ) => {
         res.writeHead( 301,
-            { Location: 'http://localhost:8080' }
+            { Location: 'http://localhost:3000' }
         );
         res.end();
     } );

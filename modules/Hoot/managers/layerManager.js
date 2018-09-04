@@ -4,12 +4,15 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/22/18
  *******************************************************************************************************/
 
-import _intersection from 'lodash-es/intersection';
-import _isEmpty      from 'lodash-es/isEmpty';
-import _find         from 'lodash-es/find';
-import _forEach      from 'lodash-es/forEach';
-import _map          from 'lodash-es/map';
-import _remove       from 'lodash-es/remove';
+import _intersection   from 'lodash-es/intersection';
+import _intersectionBy from 'lodash-es/intersectionBy';
+import _isEmpty        from 'lodash-es/isEmpty';
+import _filter         from 'lodash-es/filter';
+import _find           from 'lodash-es/find';
+import _forEach        from 'lodash-es/forEach';
+import _map            from 'lodash-es/map';
+import _reduce         from 'lodash-es/reduce';
+import _remove         from 'lodash-es/remove';
 
 import { rgb as d3_rgb } from 'd3-color';
 
@@ -26,7 +29,7 @@ import {
 import {
     actionDiscardTags,
     actionNoop
-}           from '../../actions';
+} from '../../actions';
 
 export default class Layers {
     constructor( hoot ) {
@@ -65,8 +68,17 @@ export default class Layers {
         return _find( this.loadedLayers, layer => layer[ key ] === val );
     }
 
-    exists( layerName ) {
-        return !_isEmpty( _find( this.allLayers, layer => layer.name === layerName ) );
+    exists( layerName, pathId ) {
+        let idsInDestination = _reduce( _filter( this.hoot.folders._links, link => link.folderId === pathId ), ( arr, obj ) => {
+            let o = { id: obj.mapId };
+            arr.push( o );
+            return arr;
+        }, [] );
+
+        let layersInDestination = _intersectionBy( this.allLayers, idsInDestination, 'id' );
+        let match = _filter( layersInDestination, layer => layer.name === layerName );
+
+        return match.length > 0;
     }
 
     getMapnikSource( d ) {

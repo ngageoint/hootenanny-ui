@@ -45,8 +45,8 @@ export default class FolderManager {
      */
     async refreshFolders() {
         let { folders } = await this.hoot.api.getFolders();
-
         this._folders = this.listFolders( folders );
+        //this._folders = [];
 
         return this._folders;
     }
@@ -76,8 +76,12 @@ export default class FolderManager {
         return this.listFolders( this._folders );
     }
 
-    exists( folderName ) {
-        return !_isEmpty( _find( this._folders, folder => folder.name === folderName ) );
+    exists( folderName, folderId ) {
+        let folderList = _forEach( _map( this._folders, _cloneDeep ), folder => {
+            folder.name = folder.name.toLowerCase();
+        } );
+
+        return !_isEmpty( _find( folderList, { name: folderName.toLowerCase(), parentId: folderId } ) );
     }
 
     /**
@@ -87,29 +91,29 @@ export default class FolderManager {
      * @returns {array} - folder list
      */
     listFolders( folders ) {
-        return _map( folders, f => {
-            if ( f.parentId === 0 ) {
-                f.folderPath = f.name;
+        return _map( folders, folder => {
+            if ( folder.parentId === 0 ) {
+                folder.folderPath = folder.name;
             } else {
                 //use links to get parent folder as far back as possible
-                let strPath      = f.name,
-                    parentFolder = _find( folders, { id: f.parentId } ),
+                let strPath      = folder.name,
+                    parentFolder = _find( folders, { id: folder.parentId } ),
                     i            = 0;
 
                 do {
                     i++;
                     strPath      = parentFolder.name + '/' + strPath;
                     parentFolder = _find( folders, { id: parentFolder.parentId } );
-                } while ( parentFolder || i === 10 );
+                } while ( parentFolder );
 
-                f.folderPath = strPath;
+                folder.folderPath = strPath;
             }
 
             return {
-                path: f.folderPath,
-                name: f.name,
-                id: f.id,
-                parentId: f.parentId
+                path: folder.folderPath,
+                name: folder.name,
+                id: folder.id,
+                parentId: folder.parentId
             };
         } );
     }
@@ -281,6 +285,14 @@ export default class FolderManager {
                 } );
         }
     }
+
+    //duplicateFolderCheck( folder ) {
+    //    let folderList = _forEach( _map( this._folders, _cloneDeep ), folder => {
+    //        folder.name = folder.name.toLowerCase();
+    //    } );
+    //
+    //    return !_isEmpty( _find( folderList, { name: folder.name.toLowerCase(), parentId: folder.parentId } ) );
+    //}
 
     addFolder( pathName, folderName ) {
         let parentId = _get( _find( this._folders, folder => folder.name === pathName ), 'id' ) || 0;

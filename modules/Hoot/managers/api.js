@@ -442,7 +442,7 @@ export default class API {
     //        } );
     //}
 
-    modifyDataset( data ) {
+    modify( data ) {
         const params = {
             path: '/osm/api/0.6/map/modify',
             method: 'POST',
@@ -455,13 +455,48 @@ export default class API {
         return this.request( params )
             .then( () => {
                 return {
-                    message: `Successfully modified dataset: ${data.modName}`,
+                    message: `Successfully modified item: ${data.modName}`,
                     status: 200,
                     type: 'success'
                 };
             } )
             .catch( err => {
                 console.log( err );
+
+                return {
+                    message: `Failed to modify item: ${data.modName}`,
+                    status: 500,
+                    type: 'success'
+                };
+            } );
+    }
+
+    updateFolder( data ) {
+        const params = {
+            path: '/osm/api/0.6/map/updateParentId',
+            method: 'POST',
+            params: {
+                ...data
+            },
+            data: JSON.stringify( data )
+        };
+
+        return this.request( params )
+            .then( () => {
+                return {
+                    message: `Successfully updated folder: ${data.folderId}`,
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                console.log( err );
+
+                return {
+                    message: `Failed to update folder: ${data.folderId}`,
+                    status: 500,
+                    type: 'success'
+                };
             } );
     }
 
