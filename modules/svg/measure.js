@@ -4,7 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/23/18
  *******************************************************************************************************/
 
-import _ from 'lodash-es';
+import _isEmpty from 'lodash-es/isEmpty';
 
 import {
     utilGetDimensions,
@@ -47,7 +47,7 @@ export function svgMeasure( projection, context, dispatch ) {
                 let measArea = d3.select( this ),
                     newPts   = '';
 
-                if ( _.isEmpty( measArea.attr( 'loc' ) ) ) return;
+                if ( _isEmpty( measArea.attr( 'loc' ) ) ) return;
 
                 let pts       = measArea.attr( 'loc' ).trim().split( / / ),
                     ptsLength = measureArea.classed( 'measure-complete' ) ? pts.length : pts.length - 1;

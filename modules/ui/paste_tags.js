@@ -4,7 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/13/18
  *******************************************************************************************************/
 
-import _                                 from 'lodash-es';
+import _forEach from 'lodash-es/forEach';
+import _omit    from 'lodash-es/omit';
+
 import { d3keybinding as d3_keybinding } from '../lib/d3.keybinding';
 import { t }                             from '../util/locale';
 import { tooltip }                       from '../util/tooltip';
@@ -53,16 +55,16 @@ export function uiPasteTags( context ) {
 
         if ( !copyTags && !oldIDs.length ) return;
 
-        _.forEach( selectedIDs, eid => {
+        _forEach( selectedIDs, eid => {
             let selectEntity = oldGraph.entity( eid );
 
             if ( Object.keys( copyTags ).length > 0 ) { //use copied tags
-                selectEntity = selectEntity.mergeTags( _.omit( copyTags, omitTag ), d3.event.shiftKey || overwrite );
+                selectEntity = selectEntity.mergeTags( _omit( copyTags, omitTag ), d3.event.shiftKey || overwrite );
             } else { //use copied features
                 for ( let i = 0; i < oldIDs.length; i++ ) {
                     let oldEntity = oldGraph.entity( oldIDs[ i ] );
 
-                    selectEntity = selectEntity.mergeTags( _.omit( oldEntity.tags, omitTag ), d3.event.shiftKey || overwrite );
+                    selectEntity = selectEntity.mergeTags( _omit( oldEntity.tags, omitTag ), d3.event.shiftKey || overwrite );
                 }
             }
 

@@ -3,6 +3,7 @@ import _debounce from 'lodash-es/debounce';
 import _each from 'lodash-es/each';
 import _find from 'lodash-es/find';
 import _forOwn from 'lodash-es/forOwn';
+import _isEmpty from 'lodash-es/isEmpty';
 import _isObject from 'lodash-es/isObject';
 import _isString from 'lodash-es/isString';
 
@@ -327,7 +328,7 @@ export function coreContext() {
 
     var translateCopyTags = function(tcTags) {
         var entity = context.entity(context.selectedIDs()[0]);
-        if (context.translationserver().activeTranslation() !== 'OSM' && !_.isEmpty(tcTags)) {
+        if (context.translationserver().activeTranslation() !== 'OSM' && !_isEmpty(tcTags)) {
             context.translationserver().translateToOsm(tcTags, entity, false, function(resp){
                 changeTagsCallback(resp);
             });

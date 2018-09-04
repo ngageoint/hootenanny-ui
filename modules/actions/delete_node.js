@@ -1,4 +1,5 @@
-import _                        from 'lodash-es';
+import _clone from 'lodash-es/clone';
+
 import { actionDeleteRelation } from './delete_relation';
 import { actionDeleteWay }      from './delete_way';
 import { actionChangeTags }     from './change_tags';
@@ -14,7 +15,7 @@ export function actionDeleteNode(nodeId) {
 
     function updateHootReviewTags(entity, graph) {
         let tags = entity.tags,
-            newTags = _.clone(tags);
+            newTags = _clone(tags);
 
         newTags['hoot:review:needs'] = 'no';
 
