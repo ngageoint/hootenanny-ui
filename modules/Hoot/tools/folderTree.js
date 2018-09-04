@@ -4,8 +4,20 @@
  * @author Matt Putipong on 3/5/18
  *******************************************************************************************************/
 
-import _             from 'lodash-es';
+import _concat     from 'lodash-es/concat';
+import _difference from 'lodash-es/difference';
+import _drop       from 'lodash-es/drop';
+import _filter     from 'lodash-es/filter';
+import _find       from 'lodash-es/find';
+import _findIndex  from 'lodash-es/findIndex';
+import _forEach    from 'lodash-es/forEach';
+import _remove     from 'lodash-es/remove';
+import _slice      from 'lodash-es/slice';
+import _uniq       from 'lodash-es/uniq';
+import _without    from 'lodash-es/without';
+
 import moment        from 'moment';
+import EventEmitter  from 'events';
 import Hoot          from '../hoot';
 import ModifyDataset from '../ui/modals/modifyDataset';
 import ModifyFolder  from '../ui/modals/modifyFolder';
@@ -16,8 +28,10 @@ import ModifyFolder  from '../ui/modals/modifyFolder';
  * @param container - Container used to render the tree into
  * @constructor
  */
-export default class FolderTree {
+export default class FolderTree extends EventEmitter {
     constructor( container ) {
+        super();
+
         this.container              = container;
         this.isDatasetTable         = this.container.attr( 'id' ) === 'dataset-table';
         this.selectedNodes          = [];
@@ -69,7 +83,7 @@ export default class FolderTree {
             {
                 title: 'Delete',
                 icon: 'trash',
-                click: 'deleteFolder'
+                click: 'delete'
             },
             {
                 title: 'Add Datasets',
@@ -119,7 +133,7 @@ export default class FolderTree {
         let folders = await Hoot.folders.getAvailFolderData();
 
         if ( this.isDatasetTable ) {
-            folders = _.without( folders, _.find( folders, { id: -1 } ) );
+            folders = _without( folders, _find( folders, { id: -1 } ) );
         }
 
         folders = {
@@ -460,16 +474,20 @@ export default class FolderTree {
             this.selectedNodes.push( data );
         } else if ( d.data.type === 'dataset' ) {
             if ( !selected ) {
-                let selectedNodes = _.filter( this.root.descendants(), node => node.data.selected );
+                let selectedNodes = _filter( this.root.descendants(), node => node.data.selected );
 
                 // Un-select all other nodes
-                _.each( selectedNodes, node => {
+                _forEach( selectedNodes, node => {
                     node.data.selected = false;
                 } );
 
                 data.selected      = true;
                 this.selectedNodes = [ data ];
             }
+        }
+
+        if ( this.contextMenu ) {
+            this.contextMenu.remove();
         }
 
         this.openContextMenu( d );
@@ -493,7 +511,7 @@ export default class FolderTree {
                 {
                     title: `Delete (${ selectedCount })`,
                     icon: 'trash',
-                    click: 'deleteDataset'
+                    click: 'delete'
                 }
             ];
 
@@ -508,7 +526,7 @@ export default class FolderTree {
                 } );
             } else {
                 // add options for single selected dataset
-                _.forEach( this.datasetContextMenu.addDatasetOpts, o => {
+                _forEach( this.datasetContextMenu.addDatasetOpts, o => {
                     let form = Hoot.ui.sidebar.forms[ o.formId ].exists;
 
                     if ( form && !form.attr( 'data-id' ) ) {
@@ -522,7 +540,7 @@ export default class FolderTree {
                     click: 'modifyDataset'
                 } );
 
-                opts = _.concat( opts, this.datasetContextMenu.singleDatasetOpts );
+                opts = _concat( opts, this.datasetContextMenu.singleDatasetOpts );
             }
         } else if ( data.type === 'folder' ) {
             opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
@@ -531,10 +549,6 @@ export default class FolderTree {
                 icon: 'info',
                 click: 'modifyFolder'
             } );
-        }
-
-        if ( this.contextMenu ) {
-            this.contextMenu.remove();
         }
 
         let body = d3.select( 'body' )
@@ -555,13 +569,17 @@ export default class FolderTree {
             .text( item => item.title )
             .on( 'click', item => {
                 switch ( item.click ) {
-                    case 'deleteDataset': {
+                    case 'delete': {
                         let params = {
                             layers: this.selectedNodes,
                             d
                         };
 
                         Hoot.events.emit( 'delete-dataset', params );
+                        break;
+                    }
+                    case 'deleteFolder': {
+
                         break;
                     }
                     case 'addDataset': {
@@ -616,13 +634,13 @@ export default class FolderTree {
                 this.lastSelectedNode = data.selected ? data.id : null;
             }
             else if ( d3.event.shiftKey && this.lastSelectedNode ) {
-                let nodes        = _.drop( this.root.descendants(), 1 ),
-                    basePosition = _.findIndex( nodes, node => node.data.id === this.lastSelectedNode ),
-                    position     = _.findIndex( nodes, node => node.data.id === data.id ),
+                let nodes        = _drop( this.root.descendants(), 1 ),
+                    basePosition = _findIndex( nodes, node => node.data.id === this.lastSelectedNode ),
+                    position     = _findIndex( nodes, node => node.data.id === data.id ),
                     selectBegin  = Math.min( basePosition, position ),
                     selectEnd    = Math.max( basePosition, position ) + 1,
 
-                    rangeNodes   = _.slice( nodes, selectBegin, selectEnd );
+                    rangeNodes   = _slice( nodes, selectBegin, selectEnd );
 
                 if ( basePosition !== this.lastBasePosition ) {
                     // user ctrl+clicked on a new location
@@ -630,30 +648,30 @@ export default class FolderTree {
                 }
                 else {
                     // unselect nodes from previous range that don't match the new range
-                    let oldNodes = _.difference( this.lastSelectedRangeNodes, rangeNodes );
+                    let oldNodes = _difference( this.lastSelectedRangeNodes, rangeNodes );
 
-                    _.each( oldNodes, node => {
+                    _forEach( oldNodes, node => {
                         node.data.selected = false;
-                        _.remove( this.selectedNodes, layer => layer.id === node.data.id );
+                        _remove( this.selectedNodes, layer => layer.id === node.data.id );
                     } );
                 }
 
                 // select nodes starting from base position to current position
-                _.each( rangeNodes, node => {
+                _forEach( rangeNodes, node => {
                     node.data.selected = true;
                     this.selectedNodes.push( node.data );
                     this.lastSelectedRangeNodes.push( node );
                 } );
 
-                this.selectedNodes    = _.uniq( this.selectedNodes );
+                this.selectedNodes    = _uniq( this.selectedNodes );
                 this.lastBasePosition = basePosition;
             }
             else {
                 // Get all currently selected nodes
-                let selectedNodes = _.filter( this.root.descendants(), d => d.data.selected );
+                let selectedNodes = _filter( this.root.descendants(), d => d.data.selected );
 
                 // Un-select all other nodes
-                _.each( selectedNodes, node => {
+                _forEach( selectedNodes, node => {
                     node.data.selected = false;
                 } );
 

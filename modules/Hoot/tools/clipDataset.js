@@ -4,7 +4,10 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/1/18
  *******************************************************************************************************/
 
-import _           from 'lodash-es';
+import _isEmpty    from 'lodash-es/isEmpty';
+import _forEach    from 'lodash-es/forEach';
+import _map        from 'lodash-es/map';
+
 import Hoot        from '../hoot';
 import FormFactory from './formFactory';
 
@@ -92,7 +95,7 @@ export default class ClipDataset {
 
         let tableBody = table.append( 'tbody' );
 
-        _.forEach( loadedLayers, layer => {
+        _forEach( loadedLayers, layer => {
             let mapId = layer.id;
 
             tableBody
@@ -140,7 +143,7 @@ export default class ClipDataset {
             i          = 1;
 
         while ( uniquename === false ) {
-            if ( !_.isEmpty( Hoot.layers.findBy( 'name', layerName ) ) ) {
+            if ( !_isEmpty( Hoot.layers.findBy( 'name', layerName ) ) ) {
                 layerName = layer.name + i.toString();
                 i++;
             } else {
@@ -171,7 +174,7 @@ export default class ClipDataset {
      **/
     createFolderListCombo( input, d ) {
         let combobox = d3combobox()
-            .data( _.map( d.combobox, n => {
+            .data( _map( d.combobox, n => {
                 return {
                     value: n.path,
                     title: n.path

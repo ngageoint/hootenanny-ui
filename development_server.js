@@ -63,7 +63,7 @@ if ( isDevelopment ) {
         } );
     } );
 
-    let port     = 3000,
+    let port     = 8088,
         hootHost = 'localhost',
         hootPort = 8999,
         hootUrl  = 'http://' + hootHost + ':' + hootPort;

@@ -4,8 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
-import _            from 'lodash-es';
-import Hoot         from '../../hoot';
+import _filter from 'lodash-es/filter';
+
+import Hoot from '../../hoot';
 
 /**
  * @class Traverse
@@ -31,7 +32,7 @@ export default class Traverse {
 
         if ( hasChanges ) {
             let message = 'Please resolve or undo the current feature changes before proceeding to the next review.',
-                type = 'warn';
+                type    = 'warn';
 
             Hoot.message.alert( { message, type } );
             return;
@@ -61,7 +62,7 @@ export default class Traverse {
                 .then( members => this.instance.map.highlightLayer( members[ 0 ], members[ 1 ], true ) );
         } else {
             let message = 'There are no more available features to review. Exiting the review session.',
-                type = 'info';
+                type    = 'info';
 
             Hoot.message.alert( { message, type } );
 
@@ -94,7 +95,7 @@ export default class Traverse {
      * @returns {boolean}
      */
     vischeck() {
-        let visible = _.filter( Hoot.layers.loadedLayers, layer => layer.visible );
+        let visible = _filter( Hoot.layers.loadedLayers, layer => layer.visible );
 
         return visible.length === 1;
     }

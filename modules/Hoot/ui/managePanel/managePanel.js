@@ -4,7 +4,8 @@
  * @author Matt Putipong on 2/6/18
  *******************************************************************************************************/
 
-import _                   from 'lodash-es';
+import _map                from 'lodash-es/map';
+
 import Hoot                from '../../hoot';
 import Datasets            from './datasets';
 import TransAssist         from './transAssist/transAssist';
@@ -54,7 +55,7 @@ export default class ManagePanel {
             .text( 'Manage Panel' );
 
         // Create all tab items in the panel
-        Promise.all( _.map( this.manageTabs, Tab => new Tab( this ).render() ) )
+        Promise.all( _map( this.manageTabs, Tab => new Tab( this ).render() ) )
             .then( () => this.listen() );
 
         return this;

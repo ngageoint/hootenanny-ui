@@ -4,10 +4,16 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
-import _            from 'lodash-es';
-import Hoot         from '../../hoot';
+import _every     from 'lodash-es/every';
+import _filter    from 'lodash-es/filter';
+import _flatten   from 'lodash-es/flatten';
+import _forEach   from 'lodash-es/forEach';
+import _map       from 'lodash-es/map';
+import _startCase from 'lodash-es/startCase';
 
-export default class ConflictMetadata{
+import Hoot from '../../hoot';
+
+export default class ConflictMetadata {
     constructor( instance ) {
         this.instance = instance;
         this.data     = instance.data;
@@ -67,12 +73,12 @@ export default class ConflictMetadata{
                 .html( navHtml );
         }
 
-        _.forEach( tagsMerged, tag => {
+        _forEach( tagsMerged, tag => {
             let row = this.poiTable.append( 'tr' );
 
             row.append( 'td' )
                 .classed( 'fillD', true )
-                .text( _.startCase( tag.key ) );
+                .text( _startCase( tag.key ) );
 
             row.selectAll( 'td.feature1' )
                 .data( [ { k: 1 } ] ).enter()
@@ -111,8 +117,8 @@ export default class ConflictMetadata{
      * @returns {object} - filtered tags
      */
     filterTags( tags ) {
-        return _.filter( d3.entries( tags ), tag => {
-            return _.every( this.tagBlacklist, t => !tag.key.match( t ) );
+        return _filter( d3.entries( tags ), tag => {
+            return _every( this.tagBlacklist, t => !tag.key.match( t ) );
         } );
     }
 
@@ -123,16 +129,16 @@ export default class ConflictMetadata{
      * @returns {IterableIterator} - map of unique tags
      */
     mergeTags( tags ) {
-        let tagKeys   = d3.set( _.map( _.flatten( tags ), 'key' ) ),
+        let tagKeys   = d3.set( _map( _flatten( tags ), 'key' ) ),
             mergedMap = d3.map();
 
-        _.forEach( tagKeys.values().sort(), key => {
+        _forEach( tagKeys.values().sort(), key => {
             mergedMap.set( key, [] );
 
-            _.forEach( tags, tag => {
+            _forEach( tags, tag => {
                 let tagMap = d3.map();
 
-                _.forEach( tag, t => {
+                _forEach( tag, t => {
                     tagMap.set( t.key, t.value );
                 } );
 

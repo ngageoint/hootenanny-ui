@@ -4,7 +4,11 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/16/18
  *******************************************************************************************************/
 
-import _           from 'lodash-es';
+import _includes       from 'lodash-es/includes';
+import _isEqual        from 'lodash-es/isEqual';
+import _differenceWith from 'lodash-es/differenceWith';
+import _forEach        from 'lodash-es/forEach';
+
 import Hoot        from '../../../hoot';
 import { isNaN }   from '../../../tools/utilities';
 import { tooltip } from '../../../../util/tooltip';
@@ -94,7 +98,7 @@ export default class FieldsetControls {
     }
 
     handleFieldInput( d ) {
-        if ( _.includes( [ 'long', 'int', 'double' ], d.type ) ) {
+        if ( _includes( [ 'long', 'int', 'double' ], d.type ) ) {
             this.validateField( d );
         }
     }
@@ -151,7 +155,7 @@ export default class FieldsetControls {
     }
 
     async cancel() {
-        if ( !_.differenceWith( this.getFields(), this.lastSetFields, _.isEqual ).length ) {
+        if ( !_differenceWith( this.getFields(), this.lastSetFields, _isEqual ).length ) {
             this.panel.toggle();
             return;
         }
@@ -166,7 +170,7 @@ export default class FieldsetControls {
     }
 
     async saveOrCancel() {
-        if ( !_.differenceWith( this.getFields(), this.lastSetFields, _.isEqual ).length ) {
+        if ( !_differenceWith( this.getFields(), this.lastSetFields, _isEqual ).length ) {
             this.panel.toggle();
             return;
         }
@@ -226,7 +230,7 @@ export default class FieldsetControls {
     restoreFields( defaultFields ) {
         let fields = defaultFields ? defaultFields : this.lastSetFields;
 
-        _.forEach( fields, field => {
+        _forEach( fields, field => {
             let input = d3.select( '#' + field.id ),
                 node  = input.node();
 

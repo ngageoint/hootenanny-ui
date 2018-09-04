@@ -4,7 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/23/18
  *******************************************************************************************************/
 
-import _                from 'lodash-es';
+import _cloneDeep from 'lodash-es/cloneDeep';
+import _map       from 'lodash-es/map';
+
 import Hoot             from '../../../hoot';
 import FieldsetData     from './fieldsetData';
 import FieldsetControls from './fieldsetControls';
@@ -23,7 +25,7 @@ export default class AdvancedOpts {
 
     async init() {
         this.optTypes = [ 'custom', 'horizontal', 'average', 'reference' ];
-        let allOpts   = await Promise.all( _.map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
+        let allOpts   = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
 
         this.advancedOptions = {
             base: allOpts[ 0 ],
@@ -32,7 +34,7 @@ export default class AdvancedOpts {
             reference: allOpts[ 3 ]
         };
 
-        this.data    = new FieldsetData( this, _.cloneDeep( this.advancedOptions ) );
+        this.data    = new FieldsetData( this, _cloneDeep( this.advancedOptions ) );
         this.control = new FieldsetControls( this );
 
         this.render();
@@ -222,7 +224,7 @@ export default class AdvancedOpts {
             .select( function( d ) {
                 if ( d.combobox ) {
                     let combobox = d3combobox()
-                        .data( _.map( d.combobox, n => {
+                        .data( _map( d.combobox, n => {
                             return {
                                 value: n.name,
                                 title: n.name,

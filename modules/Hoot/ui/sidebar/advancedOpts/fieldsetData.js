@@ -4,11 +4,17 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/24/18
  *******************************************************************************************************/
 
-import _ from 'lodash-es';
+import _cloneDeep from 'lodash-es/cloneDeep';
+import _includes  from 'lodash-es/includes';
+import _filter    from 'lodash-es/filter';
+import _find      from 'lodash-es/find';
+import _forEach   from 'lodash-es/forEach';
+import _map       from 'lodash-es/map';
+import _reduce    from 'lodash-es/reduce';
 
 export default class FieldsetData {
     constructor( instance, options ) {
-        this.instance       = instance;
+        this.instance = instance;
 
         this.baseOpts       = options.base;
         this.horizontalOpts = options.horizontal;
@@ -17,12 +23,12 @@ export default class FieldsetData {
     }
 
     mergeWithBase( members, overrideKeys ) {
-        _.forEach( members, item => {
-            let memberIds = _.map( item.members, 'id' ),
-                replacers = _.filter( overrideKeys, key => _.includes( memberIds, key.id ) );
+        _forEach( members, item => {
+            let memberIds = _map( item.members, 'id' ),
+                replacers = _filter( overrideKeys, key => _includes( memberIds, key.id ) );
 
-            _.forEach( replacers, replaceItem => {
-                let match = _.find( item.members, { id: replaceItem.id } );
+            _forEach( replacers, replaceItem => {
+                let match = _find( item.members, { id: replaceItem.id } );
 
                 if ( match ) {
                     match.defaultvalue = replaceItem.defaultvalue;
@@ -30,7 +36,7 @@ export default class FieldsetData {
                 }
             } );
 
-            _.forEach( item.members, subItem => {
+            _forEach( item.members, subItem => {
                 if ( subItem.members && subItem.members.length ) {
                     subItem.members = this.mergeWithBase( subItem.members, overrideKeys );
                 }
@@ -48,20 +54,20 @@ export default class FieldsetData {
                     ? this.averageOpts
                     : this.horizontalOpts;
 
-        let overrideKeys = _.map( _.cloneDeep( overrideOpts[ 0 ] ).members, member => {
+        let overrideKeys = _map( _cloneDeep( overrideOpts[ 0 ] ).members, member => {
             member.id       = member.hoot_key.indexOf( '.creators' ) > -1 ? member.id : member.hoot_key.replace( /\./g, '_' );
             member.required = member.required || false;
 
             return member;
         } );
 
-        this.defaultMeta = this.mergeWithBase( _.cloneDeep( this.baseOpts ), overrideKeys );
+        this.defaultMeta = this.mergeWithBase( _cloneDeep( this.baseOpts ), overrideKeys );
 
         return this.getFieldMeta( this.defaultMeta );
     }
 
     getFieldMeta( fieldData ) {
-        return _.reduce( fieldData, ( arr, item ) => {
+        return _reduce( fieldData, ( arr, item ) => {
             let field = {};
 
             field.label = field.heading = item.name;
@@ -69,7 +75,7 @@ export default class FieldsetData {
             field.type        = item.elem_type;
             field.description = item.description;
 
-            field.children = _.reduce( item.members, ( arr1, subItem ) => {
+            field.children = _reduce( item.members, ( arr1, subItem ) => {
                 let subField = {};
 
                 subField.id          = subItem.id;
@@ -102,7 +108,7 @@ export default class FieldsetData {
                 switch ( subItem.elem_type ) {
                     case 'bool': {
                         if ( subItem.members ) {
-                            _.forEach( subItem.members, member => {
+                            _forEach( subItem.members, member => {
                                 if ( member.isDefault === 'true' ) {
                                     subField.placeholder = member.name;
                                 }
@@ -115,7 +121,7 @@ export default class FieldsetData {
                     case 'checkplus': {
                         if ( !subItem.members ) break;
 
-                        subField.subchecks = _.reduce( subItem.members, ( arr2, member ) => {
+                        subField.subchecks = _reduce( subItem.members, ( arr2, member ) => {
                             let subcheck = {};
 
                             subcheck.id          = member.id;
@@ -125,7 +131,7 @@ export default class FieldsetData {
                             subcheck.description = member.description;
                             subcheck.required    = member.required;
 
-                            if ( _.includes( [ 'long', 'int', 'double' ], member.elem_type ) ) {
+                            if ( _includes( [ 'long', 'int', 'double' ], member.elem_type ) ) {
                                 subcheck.maxvalue = member.maxvalue;
                                 subcheck.minvalue = member.minvalue;
                                 subcheck.disabled = subItem.disabled || false;
@@ -161,7 +167,7 @@ export default class FieldsetData {
     getParsedValues() {
         let selectedVals = this.getSelectedValues( this.instance.form );
 
-        return _.reduce( selectedVals, ( str, opt ) => {
+        return _reduce( selectedVals, ( str, opt ) => {
             if ( str.length > 0 ) str += ' ';
 
             str += `-D "${ opt.name }=${ opt.value }"`;
@@ -173,7 +179,7 @@ export default class FieldsetData {
     getSelectedValues( advOptsForm ) {
         this.form = advOptsForm;
 
-        return _.reduce( this.defaultMeta, ( results, item ) => {
+        return _reduce( this.defaultMeta, ( results, item ) => {
             if ( item.members[ 0 ].name === 'Enabled' &&
                 !this.form.select( '#' + item.members[ 0 ].id ).property( 'checked' ) ) return results;
 
@@ -182,7 +188,7 @@ export default class FieldsetData {
     }
 
     getAllValues( item, results ) {
-        _.forEach( item.members, subItem => {
+        _forEach( item.members, subItem => {
             switch ( subItem.elem_type ) {
                 case 'checkbox': {
                     this.getCheckValue( item, subItem, results );
@@ -226,7 +232,7 @@ export default class FieldsetData {
         }
 
         if ( subItem.hoot_val ) {
-            let idx = results.indexOf( _.find( results, obj => obj.name === item.hoot_key ) );
+            let idx = results.indexOf( _find( results, obj => obj.name === item.hoot_key ) );
 
             if ( idx > -1 && results[ idx ].value.indexOf( subItem.hoot_val ) === -1 ) {
                 // concat new value to existing string
@@ -249,9 +255,9 @@ export default class FieldsetData {
             value = subItem.defaultvalue;
         }
 
-        let selectedMember = _.find( subItem.members, { name: value } );
+        let selectedMember = _find( subItem.members, { name: value } );
 
-        _.forEach( selectedMember.members, subMember => {
+        _forEach( selectedMember.members, subMember => {
             let node     = this.form.select( `${ subMember.id }` ).node(),
                 subValue = node ? node.value : null,
                 key      = {};
@@ -261,7 +267,7 @@ export default class FieldsetData {
             }
 
             if ( subMember.hoot_key ) {
-                let idx = results.indexOf( _.find( results, obj => obj.name === subMember.hoot_key ) );
+                let idx = results.indexOf( _find( results, obj => obj.name === subMember.hoot_key ) );
 
                 if ( idx > -1 && results[ idx ].value.indexOf( subValue ) === -1 ) {
                     results[ idx ].value += ';' + subValue;
@@ -283,7 +289,7 @@ export default class FieldsetData {
             value = subItem.defaultvalue;
         }
 
-        let idx = results.indexOf( _.find( results, obj => obj.name === subItem.hoot_key ) );
+        let idx = results.indexOf( _find( results, obj => obj.name === subItem.hoot_key ) );
 
         if ( subItem.hoot_key ) {
             if ( idx > -1 ) {

@@ -4,7 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/12/18
  *******************************************************************************************************/
 
-import _              from 'lodash-es';
+import _map from 'lodash-es/map';
+
 import { d3combobox } from '../../lib/hoot/d3.combobox';
 
 /**
@@ -197,7 +198,7 @@ export default class FormFactory {
     populateCombobox( input ) {
         input.select( d => {
             let combobox = d3combobox()
-                .data( _.map( d.data, n => {
+                .data( _map( d.data, n => {
                     n = d.itemKey ? n[ d.itemKey ] : n;
 
                     return { value: n, title: n };

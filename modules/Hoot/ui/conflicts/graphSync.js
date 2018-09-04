@@ -4,7 +4,11 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
-import _             from 'lodash-es';
+import _clone   from 'lodash-es/clone';
+import _find    from 'lodash-es/find';
+import _forEach from 'lodash-es/forEach';
+import _map     from 'lodash-es/map';
+
 import Hoot          from '../../hoot';
 import { t }         from '../../../util/locale';
 import { osmEntity } from '../../../osm/index';
@@ -66,7 +70,7 @@ export default class GraphSync {
 
             return relation.members;
         } else {
-            if ( _.find( Hoot.context.history().changes().deleted, { id: relId } ) ) {
+            if ( _find( Hoot.context.history().changes().deleted, { id: relId } ) ) {
                 return;
             }
 
@@ -85,7 +89,7 @@ export default class GraphSync {
     getRelationMembersCount( relation ) {
         let count = 0;
 
-        _.forEach( relation.members, member => {
+        _forEach( relation.members, member => {
             count += Hoot.context.hasEntity( member.id ) ? 1 : 0;
         } );
 
@@ -99,7 +103,7 @@ export default class GraphSync {
      */
     updateReviewTagsForResolve( reviewRel ) {
         let tags    = reviewRel.tags,
-            newTags = _.clone( tags );
+            newTags = _clone( tags );
 
         newTags[ 'hoot:review:needs' ] = 'no';
 
@@ -120,7 +124,7 @@ export default class GraphSync {
         try {
             let type       = osmEntity.id.type( featureId ) + 's',
                 mapId      = featureId.split( '_' )[ 1 ],
-                osmIds     = _.map( [ featureId ], osmEntity.id.toOSM ),
+                osmIds     = _map( [ featureId ], osmEntity.id.toOSM ),
 
                 featureXml = await Hoot.api.getFeatures( type, mapId, osmIds ),
                 document   = new DOMParser().parseFromString( featureXml, 'text/xml' ),
@@ -128,7 +132,7 @@ export default class GraphSync {
 
             Hoot.context.history().merge( featureOsm );
 
-            return Promise.all( _.map( featureOsm, feature => this.updateMissingFeature( feature ) ) );
+            return Promise.all( _map( featureOsm, feature => this.updateMissingFeature( feature ) ) );
         } catch ( e ) {
             console.log( e );
             throw new Error( 'Unable to retrieve missing features from HootOld DB.' );
@@ -146,7 +150,7 @@ export default class GraphSync {
         if ( feature.type === 'relation' ) {
             this.relationTreeIdx[ feature.id ] = feature.members.length;
 
-            return Promise.all( _.map( feature.members, member => {
+            return Promise.all( _map( feature.members, member => {
                 let entity = Hoot.context.hasEntity( member.id );
 
                 if ( !entity || member.type === 'relation' ) {
@@ -179,7 +183,7 @@ export default class GraphSync {
         // go through each parents and if it is in
         // relation index then update member counts
         // or remove if the unprocessed member count goes to 0
-        _.forEach( parents, parent => {
+        _forEach( parents, parent => {
             if ( this.relationTreeIdx[ parent.id ] ) {
                 let childCount = this.relationTreeIdx[ parent.id ];
 
@@ -206,7 +210,7 @@ export default class GraphSync {
             memberCount = 0;
 
         if ( relation ) {
-            _.forEach( relation.members, member => {
+            _forEach( relation.members, member => {
                 if ( Hoot.context.hasEntity( member.id ) ) {
                     memberCount++;
                 }

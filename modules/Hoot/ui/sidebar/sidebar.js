@@ -4,7 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/10/18
  *******************************************************************************************************/
 
-import _             from 'lodash-es';
+import _filter  from 'lodash-es/filter';
+import _forEach from 'lodash-es/forEach';
+
 import Hoot          from '../../hoot';
 import LayerAdd      from './layerAdd';
 import LayerConflate from './layerConflate';
@@ -17,7 +19,7 @@ import LayerReview   from './layerReview';
  */
 export default class Sidebar {
     constructor() {
-        this.iDSidebar   = d3.select( '#sidebar' );
+        this.iDSidebar = d3.select( '#sidebar' );
 
         this.forms = {};
 
@@ -54,9 +56,9 @@ export default class Sidebar {
             }
         ];
 
-        this.addFormData      = _.filter( formMeta, form => form.type === 'add' );
-        this.conflateFormData = _.filter( formMeta, form => form.type === 'conflate' );
-        this.reviewFormData   = _.filter( formMeta, form => form.type === 'review' );
+        this.addFormData      = _filter( formMeta, form => form.type === 'add' );
+        this.conflateFormData = _filter( formMeta, form => form.type === 'conflate' );
+        this.reviewFormData   = _filter( formMeta, form => form.type === 'review' );
     }
 
     /**
@@ -137,7 +139,7 @@ export default class Sidebar {
     }
 
     layerLoaded( layerName ) {
-        _.forEach( this.forms, form => {
+        _forEach( this.forms, form => {
             if ( form.loadingLayerName === layerName ) {
                 let loadedLayer = Hoot.layers.findLoadedBy( 'name', layerName );
 
@@ -156,7 +158,7 @@ export default class Sidebar {
     layerMerged() {
         let that = this;
 
-        let layer = Hoot.layers.mergedLayer;
+        let layer               = Hoot.layers.mergedLayer;
         Hoot.layers.mergedLayer = null;
 
         this.wrapper.selectAll( '.layer-review' )

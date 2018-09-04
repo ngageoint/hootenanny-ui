@@ -4,7 +4,13 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/12/18
  *******************************************************************************************************/
 
-import _                  from 'lodash-es';
+import _filter  from 'lodash-es/filter';
+import _find    from 'lodash-es/find';
+import _forEach from 'lodash-es/forEach';
+import _map     from 'lodash-es/map';
+import _reject  from 'lodash-es/reject';
+import _remove  from 'lodash-es/remove';
+
 import Hoot               from '../../hoot';
 import FormFactory        from '../../tools/formFactory';
 import { getBrowserInfo } from '../../tools/utilities';
@@ -69,15 +75,15 @@ export default class ImportDataset {
      */
     render() {
         if ( this.browserInfo.name.substring( 0, 6 ) !== 'Chrome' ) {
-            _.remove( this.importTypes, o => o.value === 'DIR' );
+            _remove( this.importTypes, o => o.value === 'DIR' );
         }
 
         if ( this.formType === 'single' ) {
             this.form           = importSingleForm.call( this );
-            this.form[ 0 ].data = _.reject( this.importTypes, o => o.title === 'Shapefile' || o.title === 'OSM or PBF' );
+            this.form[ 0 ].data = _reject( this.importTypes, o => o.title === 'Shapefile' || o.title === 'OSM or PBF' );
         } else {
             this.form           = importMultiForm.call( this );
-            this.form[ 0 ].data = _.reject( this.importTypes, o => o.title !== 'Shapefile' && o.title !== 'OSM or PBF' );
+            this.form[ 0 ].data = _reject( this.importTypes, o => o.title !== 'Shapefile' && o.title !== 'OSM or PBF' );
         }
 
         let metadata = {
@@ -130,9 +136,9 @@ export default class ImportDataset {
 
         // filter translations for selected type
         if ( selectedType === 'GEONAMES' ) {
-            translationsList = _.filter( this.translations, o => o.NAME === 'GEONAMES' );
+            translationsList = _filter( this.translations, o => o.NAME === 'GEONAMES' );
         } else {
-            translationsList = _.reject( this.translations, o => o.NAME === 'GEONAMES' );
+            translationsList = _reject( this.translations, o => o.NAME === 'GEONAMES' );
         }
 
         schemaCombo.data = translationsList;
@@ -198,7 +204,7 @@ export default class ImportDataset {
             if ( this.formType === 'single' ) {
                 this.layerNameInput.property( 'value', saveName );
             } else {
-                _.forEach( fileList, file => {
+                _forEach( fileList, file => {
                     this.fileListInput
                         .append( 'option' )
                         .classed( 'file-import-option', true )
@@ -221,7 +227,7 @@ export default class ImportDataset {
             fName = fileName.toLowerCase().substring( 0, fileName.length - 8 );
         }
 
-        let fObj = _.find( fileList, file => file.name === fName );
+        let fObj = _find( fileList, file => file.name === fName );
 
         if ( !fObj ) {
             fObj = {
@@ -263,7 +269,7 @@ export default class ImportDataset {
             message;
 
         if ( selectedType === 'FILE' ) {
-            _.forEach( fileList, file => {
+            _forEach( fileList, file => {
                 if ( file.isSHP && (!file.isSHX || !file.isDBF)
                     || file.isSHX && (!file.isSHP || !file.isDBF)
                     || file.isDBF && (!file.isSHX || !file.isSHP) ) {
@@ -325,8 +331,8 @@ export default class ImportDataset {
             typeVal     = this.typeInput.property( 'value' ),
             transCombo  = this.schemaInput.datum(),
             typeCombo   = this.typeInput.datum(),
-            translation = _.filter( transCombo.data, o => o.DESCRIPTION === transVal )[ 0 ],
-            importType  = _.filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
+            translation = _filter( transCombo.data, o => o.DESCRIPTION === transVal )[ 0 ],
+            importType  = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
             translationName,
             data;
 
@@ -362,8 +368,8 @@ export default class ImportDataset {
                     fileNames.push( this.value );
                 } );
 
-            data = _.map( fileNames, name => {
-                let importFiles = _.filter( this.fileIngest.node().files, file => {
+            data = _map( fileNames, name => {
+                let importFiles = _filter( this.fileIngest.node().files, file => {
                     let fName = file.name.substring( 0, file.name.length - 4 );
 
                     if ( file.name.toLowerCase().indexOf( '.shp.xml' ) > -1 ) {
@@ -385,7 +391,7 @@ export default class ImportDataset {
             this.loadingState();
 
             // TODO: synchonously upload datasets
-            Promise.all( _.map( data, d => Hoot.api.uploadDataset( d ) ) )
+            Promise.all( _map( data, d => Hoot.api.uploadDataset( d ) ) )
                 .then( resp => Hoot.message.alert( resp ) )
                 .then( () => this.refresh() )
                 .catch( err => Hoot.message.alert( err ) )
@@ -414,7 +420,7 @@ export default class ImportDataset {
     getFormData( files ) {
         let formData = new FormData();
 
-        _.forEach( files, ( file, i ) => {
+        _forEach( files, ( file, i ) => {
             formData.append( `eltuploadfile${ i }`, file );
         } );
 
@@ -464,7 +470,7 @@ export default class ImportDataset {
      */
     getTypeName( title ) {
         let comboData = this.container.select( '#importType' ).datum(),
-            match     = _.find( comboData.data, o => o.title === title );
+            match     = _find( comboData.data, o => o.title === title );
 
         return match ? match.value : false;
     }

@@ -4,7 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/6/18
  *******************************************************************************************************/
 
-import _                  from 'lodash-es';
+import _forEach from 'lodash-es/forEach';
+
 import Hoot               from '../../hoot';
 import FormFactory        from '../../tools/formFactory';
 import { basemapAddForm } from '../../config/domMetadata';
@@ -82,7 +83,7 @@ export default class AddBasemap {
     getFormData( files ) {
         let formData = new FormData();
 
-        _.forEach( files, ( file, i ) => {
+        _forEach( files, ( file, i ) => {
             formData.append( `basemapuploadfile${ i }`, file );
         } );
 

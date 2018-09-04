@@ -4,7 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/13/18
  *******************************************************************************************************/
 
-import Hoot              from '../../hoot';
 import SidebarController from './sidebarController';
 
 export default class SidebarForm {
@@ -115,7 +114,7 @@ export default class SidebarForm {
 
     loadingState( params ) {
         this.loadingLayerName = params.name;
-        this.controller       = new SidebarController( Hoot.context, this.form, params );
+        this.controller       = new SidebarController( this.form, params );
 
         this.controller.render();
     }

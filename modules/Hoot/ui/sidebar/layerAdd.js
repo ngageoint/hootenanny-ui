@@ -4,7 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/10/18
  *******************************************************************************************************/
 
-import _           from 'lodash-es';
+import _map    from 'lodash-es/map';
+import _reject from 'lodash-es/reject';
+
 import Hoot        from '../../hoot';
 import FolderTree  from '../../tools/folderTree';
 import SidebarForm from './sidebarForm';
@@ -65,7 +67,7 @@ export default class LayerAdd extends SidebarForm {
                     this.selectedLayer.id   = gNode.attr( 'data-id' );
                 } else {
                     this.selectedLayer.name = null;
-                    this.selectedLayer.id = null;
+                    this.selectedLayer.id   = null;
                 }
             } );
     }
@@ -113,7 +115,7 @@ export default class LayerAdd extends SidebarForm {
             .classed( 'keyline-all form-field palette clearfix round', true );
 
         colorPalette.selectAll( 'a' )
-            .data( _.reject( Hoot.layers.getPalette(), c => c.name === 'green' ) )
+            .data( _reject( Hoot.layers.getPalette(), c => c.name === 'green' ) )
             .enter()
             .append( 'a' )
             .attr( 'class', function( p ) {
@@ -161,7 +163,7 @@ export default class LayerAdd extends SidebarForm {
         }
 
         let combobox = d3combobox()
-            .data( _.map( Hoot.layers.recentlyUsedLayers, n => {
+            .data( _map( Hoot.layers.recentlyUsedLayers, n => {
                 return {
                     value: n,
                     title: n
@@ -185,10 +187,6 @@ export default class LayerAdd extends SidebarForm {
                 that.selectedLayer.name = name;
                 that.selectedLayer.id   = id;
             } );
-    }
-
-    forceAdd( d ) {
-
     }
 
     /**

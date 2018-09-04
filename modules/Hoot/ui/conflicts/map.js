@@ -4,7 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
-import _                 from 'lodash-es';
+import _forEach from 'lodash-es/forEach';
+
 import Hoot              from '../../hoot';
 import { isValidCoords } from '../../tools/utilities';
 
@@ -83,7 +84,7 @@ export default class Map {
      * to get the current review feature IDs and update their class
      */
     setHighlight() {
-        _.forEach( this.data.currentFeatures, ( feature, key ) => {
+        _forEach( this.data.currentFeatures, ( feature, key ) => {
             key = key + 1;
 
             d3.selectAll( '.' + feature.id ).classed( `highlight review-feature${ key }`, true );
@@ -97,7 +98,7 @@ export default class Map {
         let panToId = null,
             extent  = null;
 
-        _.forEach( this.data.currentFeatures, feature => {
+        _forEach( this.data.currentFeatures, feature => {
             if ( !extent ) {
                 extent = feature.extent( Hoot.context.graph() );
             } else {

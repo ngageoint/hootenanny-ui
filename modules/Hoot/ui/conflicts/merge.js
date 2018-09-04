@@ -4,7 +4,12 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/16/18
  *******************************************************************************************************/
 
-import _                    from 'lodash-es';
+import _clone   from 'lodash-es/clone';
+import _find    from 'lodash-es/find';
+import _forEach from 'lodash-es/forEach';
+import _reduce  from 'lodash-es/reduce';
+import _uniq    from 'lodash-es/uniq';
+
 import Hoot                 from '../../hoot';
 import { osmNode }          from '../../../osm/index';
 import { JXON }             from '../../../util/jxon';
@@ -29,7 +34,7 @@ export default class Merge {
      * @returns {Promise<void>}
      */
     async mergeFeatures() {
-        let features = _.clone( this.data.currentFeatures ),
+        let features = _clone( this.data.currentFeatures ),
             reverse  = d3.event.ctrlKey,
             featureToUpdate,
             featureToDelete,
@@ -66,7 +71,7 @@ export default class Merge {
             let mergeItems              = this.getMergeItems( features ),
                 { reviewRefsResponses } = await Hoot.api.getReviewRefs( mergeItems );
 
-            reviewRefs = _.uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
+            reviewRefs = _uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
             reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ] );
 
             let missingRelationIds = this.getMissingRelationIds( reviewRefs );
@@ -88,15 +93,15 @@ export default class Merge {
     processMerge( reviewRefs, mergedFeature, featureToDelete ) {
         let reviewRelationId = this.data.currentReviewItem.relationId;
 
-        _.forEach( reviewRefs, ref => {
+        _forEach( reviewRefs, ref => {
             let refRelation    = Hoot.context.hasEntity( `r${ ref.reviewRelationId }_${ this.data.mapId }` ),
                 mergedRelation = Hoot.context.hasEntity( `r${ reviewRelationId }_${ this.data.mapId }` );
 
             if ( refRelation.members.length === mergedRelation.members.length ) {
                 let foundCount = 0;
 
-                _.forEach( refRelation.members, refMember => {
-                    let found = _.find( mergedRelation.members, mergedMember => mergedMember.id === refMember.id );
+                _forEach( refRelation.members, refMember => {
+                    let found = _find( mergedRelation.members, mergedMember => mergedMember.id === refMember.id );
 
                     if ( found ) {
                         foundCount++;
@@ -116,7 +121,7 @@ export default class Merge {
             let refRelationMember = refRelation.memberById( featureToDelete.id );
 
             if ( refRelationMember ) {
-                let exists = _.find( this.data.mergedConflicts, { id: refRelation.id } );
+                let exists = _find( this.data.mergedConflicts, { id: refRelation.id } );
 
                 if ( exists && exists.obj ) {
                     exists = exists.obj.id === mergedFeature.id;
@@ -172,7 +177,7 @@ export default class Merge {
      * @returns {array} - data of merged items
      */
     getMergeItems( features ) {
-        return _.reduce( features, ( arr, feature ) => {
+        return _reduce( features, ( arr, feature ) => {
             let item = {
                 mapId: this.data.mapId,
                 id: feature.origid.substring( 1 ),
@@ -195,7 +200,7 @@ export default class Merge {
     removeNonRefs( reviewRefs, mergeIds ) {
         let reviewMergeRelationId = this.data.currentReviewItem.relationId;
 
-        return _.reduce( reviewRefs, ( arr, ref ) => {
+        return _reduce( reviewRefs, ( arr, ref ) => {
             if ( (mergeIds.indexOf( '' + ref.id ) === -1) || ref.reviewRelationId !== reviewMergeRelationId ) {
                 arr.push( ref );
             }
@@ -233,7 +238,7 @@ export default class Merge {
      * @returns {array} - list of missing relation IDs
      */
     getMissingRelationIds( reviewRefs ) {
-        return _.reduce( reviewRefs, ( arr, ref ) => {
+        return _reduce( reviewRefs, ( arr, ref ) => {
             let relId = `r${ ref.reviewRelationId }_${ this.data.mapId }`;
 
             if ( !Hoot.context.hasEntity( relId ) ) {

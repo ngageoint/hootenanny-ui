@@ -4,7 +4,10 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/5/18
  *******************************************************************************************************/
 
-import _            from 'lodash-es';
+import _filter    from 'lodash-es/filter';
+import _findIndex from 'lodash-es/findIndex';
+import _reduce    from 'lodash-es/reduce';
+
 import Hoot         from '../../../hoot';
 import TagMapWidget from './tagMapWidget';
 
@@ -154,7 +157,7 @@ export default class TagMapForm {
     updateAttributes() {
         let allAttributes    = this.attributesContainer.datum().entries(),
             currentAttribute = allAttributes[ this.currentIndex[ this.layer ] ],
-            attributeList    = _.filter( allAttributes, attribute => attribute.key !== currentAttribute.key );
+            attributeList    = _filter( allAttributes, attribute => attribute.key !== currentAttribute.key );
 
         this.attributesCount
             .text( d => `${ this.currentIndex[ this.layer ] + 1 } of ${ d.keys().length } Attributes` );
@@ -172,7 +175,7 @@ export default class TagMapForm {
             .merge( list )
             .html( d => this.getAttributeStatus( d.key ) )
             .on( 'click', d => {
-                this.currentIndex[ this.layer ] = _.findIndex( allAttributes, attr => attr.key === d.key );
+                this.currentIndex[ this.layer ] = _findIndex( allAttributes, attr => attr.key === d.key );
 
                 this.updateAttributes();
                 this.toggleAttributeList();
@@ -183,7 +186,7 @@ export default class TagMapForm {
         this.attributesSample
             .select( 'span' )
             .text( () => {
-                return _.reduce( currentAttribute.value.values(), ( prev, curr, idx ) => {
+                return _reduce( currentAttribute.value.values(), ( prev, curr, idx ) => {
                     if ( idx === 3 ) {
                         return prev + '...';
                     }

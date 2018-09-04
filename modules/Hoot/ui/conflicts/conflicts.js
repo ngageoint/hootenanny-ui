@@ -4,7 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
-import _                   from 'lodash-es';
+import _forEach from 'lodash-es/forEach';
+
 import Hoot                from '../../hoot';
 import ConflictInfo        from './info';
 import Map                 from './map';
@@ -146,7 +147,7 @@ export default class Conflicts {
     bindKeys() {
         let keybinding = d3keybinding( 'conflicts' );
 
-        _.forEach( this.buttonMeta, bt => {
+        _forEach( this.buttonMeta, bt => {
             keybinding.on( bt.cmd, () => {
                 d3.event.preventDefault();
                 bt.action();

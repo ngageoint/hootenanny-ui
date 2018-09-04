@@ -4,13 +4,14 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/3/18
  *******************************************************************************************************/
 
-import _             from 'lodash-es';
+import _reject       from 'lodash-es/reject';
+
 import Hoot          from '../../hoot';
 import LayerMetadata from './layerMetadata';
 
 class SidebarController {
-    constructor( context, form, layer ) {
-        this.context    = context;
+    constructor( form, layer ) {
+        this.context    = Hoot.context;
         this.form       = form;
         this.wrapper    = d3.select( this.form.node().parentNode );
         this.layerName  = layer.name;
@@ -97,7 +98,7 @@ class SidebarController {
             .classed( 'keyline-all hoot-form-field palette clearfix round', true );
 
         if ( !this.isConflate ) {
-            palette = _.reject( palette, color => color.name === 'green' );
+            palette = _reject( palette, color => color.name === 'green' );
         }
 
         this.colorPalette.selectAll( 'a' )

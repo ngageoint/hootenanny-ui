@@ -4,7 +4,10 @@
  * @author Matt Putipong on 3/2/18
  *******************************************************************************************************/
 
-import _             from 'lodash-es';
+import _assign from 'lodash-es/assign';
+import _find   from 'lodash-es/find';
+import _map    from 'lodash-es/map';
+
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
 
@@ -154,9 +157,9 @@ export default class API {
                 if ( !layers || !layers.length )
                     return resp.data;
 
-                return this.getMapSizes( _.map( layers, 'id' ) ).then( sizeInfo => {
-                    _.map( layers, layer => {
-                        _.assign( layer, _.find( sizeInfo.layers, { id: layer.id } ) );
+                return this.getMapSizes( _map( layers, 'id' ) ).then( sizeInfo => {
+                    _map( layers, layer => {
+                        _assign( layer, _find( sizeInfo.layers, { id: layer.id } ) );
                     } );
 
                     return layers;

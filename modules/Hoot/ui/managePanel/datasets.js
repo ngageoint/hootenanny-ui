@@ -4,7 +4,8 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import _             from 'lodash-es';
+import _map from 'lodash-es/map';
+
 import Hoot          from '../../hoot';
 import FolderTree    from '../../tools/folderTree';
 import Tab           from './tab';
@@ -168,9 +169,11 @@ export default class Datasets extends Tab {
         let message = `Are you sure you want to remove the selected ${ warningMsg }`,
             confirm = await Hoot.message.confirm( message );
 
-        if ( confirm ) {
+        if ( !confirm ) return;
+
+        if ( d.type === 'dataset' ) {
             // delete in parallel
-            Promise.all( _.map( layers, layer => {
+            Promise.all( _map( layers, layer => {
                 let node = this.table.selectAll( `g[data-id="${ layer.id }"]` );
 
                 node.select( 'rect' )
@@ -181,10 +184,12 @@ export default class Datasets extends Tab {
                     .then( () => Hoot.layers.removeLayer( layer.id ) );
 
             } ) ).then( () => Hoot.events.emit( 'render-dataset-table' ) );
+        } else {
+
         }
     }
 
-    modifyDataset( layers ) {
+    handleContextMenuClick( d ) {
 
     }
 
@@ -194,6 +199,7 @@ export default class Datasets extends Tab {
     listen() {
         Hoot.events.on( 'render-dataset-table', () => this.renderFolderTree() );
         Hoot.events.on( 'delete-dataset', params => this.deleteDataset( params ) );
-        Hoot.events.on( 'modify-dataset', layers => this.modifyDataset( layers ) );
+
+        this.folderTree.on( 'context-menu', d => this.handleContextMenuClick( d ) );
     }
 }

@@ -4,7 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/5/18
  *******************************************************************************************************/
 
-import _                          from 'lodash-es';
+import _find    from 'lodash-es/find';
+import _forEach from 'lodash-es/forEach';
+
 import Hoot                       from '../../hoot';
 import SidebarForm                from './sidebarForm';
 import AdvancedOpts               from './advancedOpts/advancedOpts';
@@ -21,8 +23,8 @@ class LayerConflate extends SidebarForm {
         this.folderList = Hoot.folders.folderPaths;
 
         this.selectedLayers = {
-            primary: _.find( layers, layer => layer.refType === 'primary' ),
-            secondary: _.find( layers, layer => layer.refType === 'secondary' )
+            primary: _find( layers, layer => layer.refType === 'primary' ),
+            secondary: _find( layers, layer => layer.refType === 'secondary' )
         };
 
         this.formData = layerConflateForm.call( this, layers );
@@ -191,7 +193,7 @@ class LayerConflate extends SidebarForm {
     postConflation( params ) {
         let layers = Hoot.layers.loadedLayers;
 
-        _.each( layers, d => Hoot.layers.hideLayer( d.id ) );
+        _forEach( layers, d => Hoot.layers.hideLayer( d.id ) );
 
         params.id     = Hoot.layers.findBy( 'name', params.name ).id;
         params.merged = true;
