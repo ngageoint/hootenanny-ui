@@ -180,6 +180,11 @@ export default class Layers {
         }
     }
 
+    /**
+     * Remove a layer from the list of all available layers
+     *
+     * @param id - layer ID
+     */
     removeLayer( id ) {
         _remove( this.allLayers, layer => layer.id === id );
     }

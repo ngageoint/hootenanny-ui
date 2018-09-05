@@ -11,6 +11,7 @@ import _forEach   from 'lodash-es/forEach';
 import _get       from 'lodash-es/get';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _map       from 'lodash-es/map';
+import _remove    from 'lodash-es/remove';
 import _union     from 'lodash-es/union';
 
 /**
@@ -45,7 +46,7 @@ export default class FolderManager {
      */
     async refreshFolders() {
         let { folders } = await this.hoot.api.getFolders();
-        this._folders = this.listFolders( folders );
+        this._folders   = this.listFolders( folders );
         //this._folders = [];
 
         return this._folders;
@@ -76,6 +77,17 @@ export default class FolderManager {
         return this.listFolders( this._folders );
     }
 
+    get datasetList() {
+        return _map( _cloneDeep( this._datasets ), dataset => {
+            let match = _find( this._links, link => link.mapId === dataset.id );
+
+            dataset.type     = 'dataset';
+            dataset.folderId = !match ? 0 : match.folderId;
+
+            return dataset;
+        } );
+    }
+
     exists( folderName, folderId ) {
         let folderList = _forEach( _map( this._folders, _cloneDeep ), folder => {
             folder.name = folder.name.toLowerCase();
@@ -85,10 +97,12 @@ export default class FolderManager {
     }
 
     /**
-     * Create an array of all folder names with their full path
+     * Updates each folder object to have a full path name, beginning with the first folder after root
      *
-     * @param folders - array of folder metadata from database
-     * @returns {array} - folder list
+     * Note: this method mutates objects in the array
+     *
+     * @param folders - base folder array
+     * @returns {Array} - updated folder array
      */
     listFolders( folders ) {
         return _map( folders, folder => {
@@ -97,11 +111,9 @@ export default class FolderManager {
             } else {
                 //use links to get parent folder as far back as possible
                 let strPath      = folder.name,
-                    parentFolder = _find( folders, { id: folder.parentId } ),
-                    i            = 0;
+                    parentFolder = _find( folders, { id: folder.parentId } );
 
                 do {
-                    i++;
                     strPath      = parentFolder.name + '/' + strPath;
                     parentFolder = _find( folders, { id: parentFolder.parentId } );
                 } while ( parentFolder );
@@ -118,12 +130,31 @@ export default class FolderManager {
         } );
     }
 
+    ///**
+    // * Updates each dataset object to have a reference to their parent folder ID
+    // *
+    // * Note: this method mutates objects in the array
+    // *
+    // * @param datasets - base dataset array
+    // * @returns {Array} - updated dataset array
+    // */
+    //listDatasets( datasets ) {
+    //    return _map( datasets, dataset => {
+    //        let match = _find( this._links, link => link.mapId === dataset.id );
+    //
+    //        dataset.type     = 'dataset';
+    //        dataset.folderId = !match ? 0 : match.folderId;
+    //
+    //        return dataset;
+    //    } );
+    //}
+
     /**
      * Update list of currently open folders
      *
      * @param id - id of selected folder
      * @param add - boolean to determine whether to add or remove the folder from the list
-     * @returns {array} - open folders
+     * @returns {Array} - open folders
      */
     setOpenFolders( id, add ) {
         if ( add ) {
@@ -136,6 +167,16 @@ export default class FolderManager {
         }
 
         return this._openFolders;
+    }
+
+    getFolderChildren( folderId ) {
+        let datasetList = this.datasetList;
+        let allChildren = {};
+
+        allChildren.folders  = _filter( this._folders, folder => folder.parentId === folderId );
+        allChildren.datasets = _filter( datasetList, dataset => dataset.folderId === folderId );
+
+        return allChildren;
     }
 
     /**
@@ -154,7 +195,7 @@ export default class FolderManager {
             await this.loading;
         }
 
-        let datasetList = _map( _cloneDeep( this._datasets ), dataset => {
+        let datasetList = _map( this._datasets, dataset => {
             let match = _find( this._links, link => link.mapId === dataset.id );
 
             dataset.type     = 'dataset';
@@ -315,5 +356,14 @@ export default class FolderManager {
         };
 
         return this.hoot.api.updateMapFolderLinks( params );
+    }
+
+    /**
+     * Remove a folder from the list of all available folders
+     *
+     * @param id - folder ID
+     */
+    removeFolder( id ) {
+        _remove( this._folders, folder => folder.id === id );
     }
 }

@@ -700,6 +700,24 @@ export default class API {
             .then( resp => this.statusInterval( resp.data.jobid ) );
     }
 
+    /**
+     * Delete a folder from the database
+     *
+     * @param folderId - ID of folder to delete
+     * @returns {Promise<any>}
+     */
+    deleteFolder( folderId ) {
+        const params = {
+            path: '/osm/api/0.6/map/deletefolder',
+            method: 'POST',
+            params: {
+                folderId
+            }
+        };
+
+        return this.request( params );
+    }
+
     deleteTranslation( name ) {
         const params = {
             path: `/ingest/customscript/deletescript?SCRIPT_NAME=${ name }`,

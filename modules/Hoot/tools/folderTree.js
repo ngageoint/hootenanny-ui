@@ -4,6 +4,7 @@
  * @author Matt Putipong on 3/5/18
  *******************************************************************************************************/
 
+import _cloneDeep     from 'lodash-es/cloneDeep';
 import _concat     from 'lodash-es/concat';
 import _difference from 'lodash-es/difference';
 import _drop       from 'lodash-es/drop';
@@ -19,8 +20,6 @@ import _without    from 'lodash-es/without';
 import moment        from 'moment';
 import EventEmitter  from 'events';
 import Hoot          from '../hoot';
-import ModifyDataset from '../ui/modals/modifyDataset';
-import ModifyFolder  from '../ui/modals/modifyFolder';
 
 /**
  * Class for creating, displaying and maintaining a folder tree hierarchy
@@ -496,7 +495,7 @@ export default class FolderTree extends EventEmitter {
     }
 
     /**
-     * Create and open a context menu
+     * Render the context menu for a dataset or folder
      *
      * @param d - tree node
      */
@@ -567,48 +566,7 @@ export default class FolderTree extends EventEmitter {
             .append( 'li' )
             .attr( 'class', item => `_icon ${ item.icon }` )
             .text( item => item.title )
-            .on( 'click', item => {
-                switch ( item.click ) {
-                    case 'delete': {
-                        let params = {
-                            layers: this.selectedNodes,
-                            d
-                        };
-
-                        Hoot.events.emit( 'delete-dataset', params );
-                        break;
-                    }
-                    case 'deleteFolder': {
-
-                        break;
-                    }
-                    case 'addDataset': {
-                        let params = {
-                            name: data.name,
-                            id: data.id
-                        };
-
-                        Hoot.ui.sidebar.forms[ item.formId ].submitLayer( params )
-                            .then( () => {
-                                let refType = item.formId.charAt( 0 ).toUpperCase() + item.formId.substr( 1 ),
-                                    message = `${refType} layer added to map: <u>${data.name}</u>`,
-                                    type    = 'info';
-
-                                Hoot.message.alert( { message, type } );
-                            } );
-
-                        break;
-                    }
-                    case 'modifyDataset': {
-                        new ModifyDataset( this.selectedNodes ).render();
-                        break;
-                    }
-                    case 'modifyFolder': {
-                        new ModifyFolder( d ).render();
-                        break;
-                    }
-                }
-            } );
+            .on( 'click', item => Hoot.events.emit( 'context-menu', this, d, item ) );
 
         this.contextMenu
             .style( 'left', `${ d3.event.pageX - 2 }px` )

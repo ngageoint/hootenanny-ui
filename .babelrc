@@ -4,5 +4,9 @@
             "modules": false
         }]
     ],
-    "plugins": ["external-helpers", "lodash"]
+    "plugins": [
+        "external-helpers",
+        "lodash",
+        "transform-object-rest-spread"
+    ]
 }

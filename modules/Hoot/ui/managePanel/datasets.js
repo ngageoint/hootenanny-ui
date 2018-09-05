@@ -4,14 +4,17 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import _map from 'lodash-es/map';
+import _forEach from 'lodash-es/forEach';
+import _map     from 'lodash-es/map';
 
-import Hoot          from '../../hoot';
-import FolderTree    from '../../tools/folderTree';
-import Tab           from './tab';
+import Hoot       from '../../hoot';
+import FolderTree from '../../tools/folderTree';
+import Tab        from './tab';
+
 import ImportDataset from '../modals/importDataset';
 import AddFolder     from '../modals/addFolder';
 import ModifyDataset from '../modals/modifyDataset';
+import ModifyFolder  from '../modals/modifyFolder';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -158,39 +161,81 @@ export default class Datasets extends Tab {
     }
 
     /**
-     * Remove one or multiple datasets from the table
+     * Delete one or multiple items from the database. This method will also update the local data store
+     * after each item has successfully been deleted.
      *
-     * @param d
-     * @param layers
+     * Note: If deleting a folder, this method will recursively delete all children (both, layers and folders) of the folder.
+     * It will begin at the outer-most folder and work inwards until reaching the target folder. Once all children
+     * have been deleted, the target folder will then be deleted.
+     *
+     * @param toDelete - array of items to delete
      */
-    async deleteDataset( { d, layers } ) {
-        let warningMsg = d.type === 'folder' ? 'folder and all data?' : 'datasets?';
+    deleteItems( toDelete ) {
+        return Promise.all( _map( toDelete, child => {
+            let node = this.table.selectAll( `g[data-id="${ child.id }"]` );
 
-        let message = `Are you sure you want to remove the selected ${ warningMsg }`,
-            confirm = await Hoot.message.confirm( message );
+            node.select( 'rect' )
+                .classed( 'sel', false )
+                .style( 'fill', 'rgb(255,0,0)' );
 
-        if ( !confirm ) return;
-
-        if ( d.type === 'dataset' ) {
-            // delete in parallel
-            Promise.all( _map( layers, layer => {
-                let node = this.table.selectAll( `g[data-id="${ layer.id }"]` );
-
-                node.select( 'rect' )
-                    .classed( 'sel', false )
-                    .style( 'fill', 'rgb(255,0,0)' );
-
-                return Hoot.api.deleteLayer( layer.name )
-                    .then( () => Hoot.layers.removeLayer( layer.id ) );
-
-            } ) ).then( () => Hoot.events.emit( 'render-dataset-table' ) );
-        } else {
-
-        }
+            if ( child.type === 'dataset' ) {
+                return Hoot.api.deleteLayer( child.name )
+                    .then( () => Hoot.layers.removeLayer( child.id ) );
+            } else {
+                if ( child.children && child.children.length ) {
+                    return this.deleteItems( child.children )
+                        .then( () => Hoot.api.deleteFolder( child.id ) )
+                        .then( () => Hoot.folders.removeFolder( child.id ) );
+                } else {
+                    return Hoot.api.deleteFolder( child.id )
+                        .then( () => Hoot.folders.removeFolder( child.id ) );
+                }
+            }
+        } ) );
     }
 
-    handleContextMenuClick( d ) {
+    async handleContextMenuClick( [ tree, d, item ] ) {
+        switch ( item.click ) {
+            case 'delete': {
+                let warningMsg = d.type === 'folder' ? 'folder and all data?' : 'datasets?',
+                    message    = `Are you sure you want to remove the selected ${ warningMsg }`,
+                    confirm    = await Hoot.message.confirm( message );
 
+                if ( !confirm ) return;
+
+                let items = d.type === 'folder' ? new Array( d ) : tree.selectedNodes;
+
+                this.deleteItems( items )
+                    .then( () => Hoot.events.emit( 'render-dataset-table' ) );
+
+                break;
+            }
+            case 'addDataset': {
+                let params = {
+                    name: d.data.name,
+                    id: d.data.id
+                };
+
+                Hoot.ui.sidebar.forms[ item.formId ].submitLayer( params )
+                    .then( () => {
+                        let refType = item.formId.charAt( 0 ).toUpperCase() + item.formId.substr( 1 ),
+                            message = `${refType} layer added to map: <u>${d.data.name}</u>`,
+                            type    = 'info';
+
+                        Hoot.message.alert( { message, type } );
+                    } );
+
+                break;
+            }
+            case 'modifyDataset': {
+                new ModifyDataset( tree.selectedNodes ).render();
+                break;
+            }
+            case 'modifyFolder': {
+                new ModifyFolder( d ).render();
+                break;
+            }
+        }
     }
 
     /**
@@ -198,8 +243,7 @@ export default class Datasets extends Tab {
      */
     listen() {
         Hoot.events.on( 'render-dataset-table', () => this.renderFolderTree() );
-        Hoot.events.on( 'delete-dataset', params => this.deleteDataset( params ) );
-
-        this.folderTree.on( 'context-menu', d => this.handleContextMenuClick( d ) );
+        //Hoot.events.on( 'delete-dataset', params => this.deleteDataset( params ) );
+        Hoot.events.on( 'context-menu', ( ...params ) => this.handleContextMenuClick( params ) );
     }
 }
