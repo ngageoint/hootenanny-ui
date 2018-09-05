@@ -625,15 +625,15 @@ export default class FolderTree extends EventEmitter {
                 this.lastBasePosition = basePosition;
             }
             else {
-                // Get all currently selected nodes
+                // get all currently selected nodes
                 let selectedNodes = _filter( this.root.descendants(), d => d.data.selected );
 
-                // Un-select all other nodes
+                // un-select all other nodes
                 _forEach( selectedNodes, node => {
                     node.data.selected = false;
                 } );
 
-                // If multiple are already selected, keep the target node selected
+                // if multiple are already selected, keep the target node selected
                 if ( selectedNodes.length > 1 && selected ) {
                     data.selected = true;
                 } else {
@@ -643,32 +643,37 @@ export default class FolderTree extends EventEmitter {
                 this.selectedNodes    = [ data ];
                 this.lastSelectedNode = data.selected ? data.id : null;
             }
-        }
+        } else { // folder
+            if ( isOpen ) {
+                // close folder
+                data.state = 'closed';
 
-        // Folder
-        if ( isOpen ) {
-            data.state = 'closed';
+                d3.select( elem.parentNode )
+                    .select( 'i' )
+                    .classed( 'folder', true )
+                    .classed( 'open-folder', false );
 
-            d3.select( elem.parentNode )
-                .select( 'i' )
-                .classed( 'folder', true )
-                .classed( 'open-folder', false );
+                if ( d.children ) {
+                    data._children = d.children;
+                    d.children     = null;
+                    data.selected  = false;
+                }
+            } else {
+                // open folder
+                data.state = 'open';
 
-            if ( d.children ) {
-                data._children = d.children;
-                d.children     = null;
-                data.selected  = false;
+                d3.select( elem.parentNode )
+                    .select( 'i' )
+                    .classed( 'folder', false )
+                    .classed( 'open-folder', true );
+
+                d.children     = data._children || null;
+                data._children = null;
             }
-        } else {
-            data.state = 'open';
 
-            d3.select( elem.parentNode )
-                .select( 'i' )
-                .classed( 'folder', false )
-                .classed( 'open-folder', true );
-
-            d.children     = data._children || null;
-            data._children = null;
+            if ( this.isDatasetTable ) {
+                Hoot.folders.setOpenFolders( data.id, !isOpen );
+            }
         }
 
         this.update( d );

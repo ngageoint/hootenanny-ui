@@ -166,6 +166,7 @@ export default class FolderManager {
             }
         }
 
+        console.log( this._openFolders );
         return this._openFolders;
     }
 
