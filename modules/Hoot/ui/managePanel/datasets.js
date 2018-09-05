@@ -112,7 +112,8 @@ export default class Datasets extends Tab {
                         break;
                     }
                     case 'refresh-datasets-layers': {
-
+                        Hoot.folders.refreshAll()
+                            .then( () => Hoot.events.emit( 'render-dataset-table' ) );
                         break;
                     }
                     default: {
@@ -243,7 +244,6 @@ export default class Datasets extends Tab {
      */
     listen() {
         Hoot.events.on( 'render-dataset-table', () => this.renderFolderTree() );
-        //Hoot.events.on( 'delete-dataset', params => this.deleteDataset( params ) );
         Hoot.events.on( 'context-menu', ( ...params ) => this.handleContextMenuClick( params ) );
     }
 }

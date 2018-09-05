@@ -13,7 +13,7 @@ import { modifyDatasetForm } from '../../config/domMetadata';
 
 export default class ModifyFolder {
     constructor( d ) {
-        this.data       = d;
+        this.data       = d.data;
         this.folderList = Hoot.folders._folders;
         this.form       = modifyDatasetForm.call( this );
     }
@@ -72,7 +72,7 @@ export default class ModifyFolder {
     async handleSubmit() {
         let folderName = this.nameInput.property( 'value' ),
             pathName   = this.pathNameInput.property( 'value' ),
-            folderId   = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' );
+            folderId   = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0;
 
         if ( Hoot.folders.exists( folderName, folderId ) ) {
             let message = 'A folder already exists with this name in the destination path. Please remove the old folder or select a new name for this folder.',
