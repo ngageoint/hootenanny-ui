@@ -779,8 +779,11 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
     rest.getOAuthRedirectURL = function(callback) {
-        d3.text('/hoot-services/auth/oauth1/request', function(e, r) {
-            callback(e, r);
+        d3.text('/hoot-services/auth/oauth1/request', function(error, resp) {
+            if (error) {
+                return callback(_alertError(error, 'Failed to get redirect URL for oauth provider!'));
+            }
+            callback(resp);
         });
     }
 

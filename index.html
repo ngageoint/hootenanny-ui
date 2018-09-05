@@ -414,12 +414,12 @@
                             d3.select('#id-container').call(id.ui());
                         });
                     }
-                    Hoot.model.REST('servicesVersionInfo', function(e, r) {
-                        if(e) {
+                    Hoot.model.REST('servicesVersionInfo', function(r) {
+                        if(r && r.error) {
                             // redirect.
-                            Hoot.model.REST('getOAuthRedirectURL', function(e, r) {
-                                if(e) {
-                                    // TODO.
+                            Hoot.model.REST('getOAuthRedirectURL', function(r) {
+                                if(r.error) {
+                                    // TODO:
                                 } else {
                                     window.open(r, "_blank", "width=500,height=800");
                                     window.oAuthDone = function() {
