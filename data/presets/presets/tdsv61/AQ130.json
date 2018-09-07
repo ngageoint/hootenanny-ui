@@ -1,0 +1,12 @@
+{
+    "geometry": [
+        "line",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Tunnel",
+    "hoot:tagschema":"TDSv61",
+    "hoot:fcode": "AQ130",
+    "name": "Tunnel (AQ130)"
+}

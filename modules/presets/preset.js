@@ -24,6 +24,11 @@ export function presetPreset(id, preset, fields) {
     };
 
 
+    preset.matchSchema = function(schema) {
+        return preset['hoot:tagschema'] === schema || (schema === 'OSM' && preset['hoot:tagschema'] === undefined);
+    };
+
+
     preset.originalScore = preset.matchScore || 1;
 
 

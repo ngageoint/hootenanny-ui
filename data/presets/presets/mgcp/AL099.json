@@ -1,0 +1,11 @@
+{
+  "icon": "iD-lodging",
+  "geometry": [
+    "point"
+  ],
+  "tags": {},
+  "hoot:featuretype": "Hut",
+  "hoot:tagschema": "MGCP",
+  "hoot:fcode": "AL099",
+  "name": "Hut (AL099)"
+}

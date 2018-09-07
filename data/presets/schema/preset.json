@@ -84,6 +84,18 @@
                 }
             },
             "additionalProperties": false
+        },
+        "hoot:featuretype": {
+            "description": "The feature type",
+            "type": "string"
+        },
+        "hoot:tagschema": {
+            "description": "The translated tag schema",
+            "type": "string"
+        },
+        "hoot:fcode": {
+            "description": "The feature code",
+            "type": "string"
         }
     },
     "additionalProperties": false

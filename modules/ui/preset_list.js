@@ -1,3 +1,5 @@
+import _map from 'lodash-es/map';
+
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import {
@@ -7,15 +9,19 @@ import {
 
 import { d3keybinding as d3_keybinding } from '../lib/d3.keybinding.js';
 
-import { t, textDirection } from '../util/locale';
-import { actionChangePreset } from '../actions/index';
-import { operationDelete } from '../operations/index';
-import { modeBrowse } from '../modes/index';
-import { svgIcon } from '../svg/index';
-import { uiPresetIcon } from './preset_icon';
-import { uiTagReference } from './tag_reference';
+import { t, textDirection }       from '../util/locale';
+import { actionChangePreset }     from '../actions/index';
+import { operationDelete }        from '../operations/index';
+import { modeBrowse }             from '../modes/index';
+import { svgIcon }                from '../svg/index';
+import { uiPresetIcon }           from './preset_icon';
+import { uiTagReference }         from './tag_reference';
 import { utilNoAuto, utilRebind } from '../util';
+import { presetCollection }       from '../presets';
+import { presetPreset }           from '../presets';
+import { uiSchemaSwitcher }       from './schema_switcher';
 
+import Hoot from '../Hoot/hoot';
 
 export function uiPresetList(context) {
     var dispatch = d3_dispatch('choose'),
@@ -88,19 +94,49 @@ export function uiPresetList(context) {
             }
         }
 
-        function inputevent() {
+        async function inputevent() {
             var value = search.property('value');
             list.classed('filtered', value.length);
+
             if (value.length) {
-                var results = presets.search(value, geometry);
+                var tagSchema = Hoot.translations.activeTranslation;
+                var results = presets.search(value, geometry).matchSchema(tagSchema);
+
+                if (tagSchema === Hoot.translations.defaultTranslation) {
+                    searchHandler(value, results);
+                } else {
+                    let params = {
+                        geometry,
+                        translation: tagSchema,
+                        searchstr: value,
+                        limit: Hoot.config.presetMaxDisplayNum
+                    };
+
+                    let schemas = await Hoot.api.searchTranslatedSchema( params );
+                    let translatedPresets = _map( schemas, schema => {
+                        return presetPreset( `${tagSchema}/${schema.fcode}`, {
+                            geometry,
+                            tags: {},
+                            name: `${schema.desc} (${schema.fcode})`,
+                            'hoot:tagschema': tagSchema,
+                            'hoot:featuretype': schema.desc,
+                            'hoot:fcode': schema.fcode
+                        }, {} );
+                    } );
+
+                    searchHandler( value, presetCollection( results.collection.concat( translatedPresets ) ) );
+                }
+            } else {
+                list.call(drawList, context.presets().defaults(geometry, 36));
+                message.text(t('inspector.choose'));
+            }
+
+            function searchHandler(value, results) {
                 message.text(t('inspector.results', {
                     n: results.collection.length,
                     search: value
                 }));
                 list.call(drawList, results);
-            } else {
-                list.call(drawList, context.presets().defaults(geometry, 36));
-                message.text(t('inspector.choose'));
             }
         }
 
@@ -129,10 +165,21 @@ export function uiPresetList(context) {
             .append('div')
             .attr('class', 'inspector-body');
 
+        var schemaSwitcher = uiSchemaSwitcher();
+
+        listWrap
+            .append('div')
+            .classed('fillL', true)
+            .append('div')
+            .call(schemaSwitcher, function() {
+                list.selectAll('.preset-list-item').remove();
+                list.call(drawList, context.presets().defaults(geometry, 72).matchSchema(Hoot.translations.activeTranslation));
+            });
+
         var list = listWrap
             .append('div')
             .attr('class', 'preset-list fillL cf')
-            .call(drawList, context.presets().defaults(geometry, 36));
+            .call(drawList, context.presets().defaults(geometry, 72).matchSchema(Hoot.translations.activeTranslation));
     }
 
 

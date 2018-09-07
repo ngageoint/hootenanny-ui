@@ -1,0 +1,12 @@
+{
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Checkpoint",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "AH070",
+    "name": "Checkpoint (AH070)"
+}

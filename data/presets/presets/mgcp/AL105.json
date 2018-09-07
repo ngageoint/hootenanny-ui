@@ -1,0 +1,12 @@
+{
+  "icon": "iD-commercial",
+  "geometry": [
+    "point",
+    "area"
+  ],
+  "tags": {},
+  "hoot:featuretype": "Settlement",
+  "hoot:tagschema": "MGCP",
+  "hoot:fcode": "AL105",
+  "name": "Settlement (AL105)"
+}

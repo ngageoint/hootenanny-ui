@@ -1,0 +1,13 @@
+{
+   "icon": "iD-commercial",
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Settlement",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "AL105",
+    "name": "Settlement (AL105)"
+}

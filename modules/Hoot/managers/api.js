@@ -19,8 +19,14 @@ import { apiConfig } from '../config/apiConfig';
  */
 export default class API {
     constructor() {
-        this.config        = apiConfig;
-        this.baseUrl       = `${ this.config.host }:${ this.config.port }/${ this.config.basePath }`;
+        this.config = apiConfig;
+
+        this.host = this.config.host;
+
+        this.baseUrl        = Object.assign( new URL( this.host ), { port: this.config.port, pathname: this.config.path } );
+        this.mergeUrl       = Object.assign( new URL( this.host ), { port: this.config.mergeServerPort } );
+        this.translationUrl = Object.assign( new URL( this.host ), { port: this.config.translationServerPort } );
+
         this.queryInterval = this.config.queryInterval;
         this.intervals     = {};
     }
@@ -795,10 +801,8 @@ export default class API {
      * @returns {Promise<any>}
      */
     poiMerge( data ) {
-        let baseUrl = `${ this.config.host }:${ this.config.elementMergeServerPort }`;
-
         const params = {
-            url: `${ baseUrl }/elementmerge`,
+            url: `${ this.mergeUrl }elementmerge`,
             method: 'POST',
             headers: {
                 'Content-Type': 'text/plain'
@@ -808,5 +812,33 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data );
+    }
+
+    /****************** TRANSLATIONS *******************/
+
+    getCapabilities() {
+        const params = {
+            url: `${ this.translationUrl }capabilities`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    searchTranslatedSchema( data ) {
+        const params = {
+            url: `${ this.translationUrl }schema`,
+            method: 'GET',
+            params: {
+                ...data
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( err => {
+                console.log( err );
+            })
     }
 }

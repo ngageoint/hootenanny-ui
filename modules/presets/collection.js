@@ -31,6 +31,14 @@ export function presetCollection(collection) {
         },
 
 
+        matchSchema: function(schema) {
+            console.log( this.collection );
+            return presetCollection(this.collection.filter(function(d) {
+                return d.matchSchema(schema);
+            }));
+        },
+
+
         search: function(value, geometry) {
             if (!value) return this;
 

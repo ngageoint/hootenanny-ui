@@ -4,29 +4,32 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/16/18
  *******************************************************************************************************/
 
-import API            from './managers/api';
-import MessageManager from './managers/messages/messageManager';
-import FolderManager  from './managers/folderManager';
-import LayerManager   from './managers/layerManager';
-import EventManager   from './managers/eventManager';
-import UI             from './ui/init';
-import buildInfo      from './config/buildInfo.json';
-import { tagInfo }    from '../../data/index';
+import API                from './managers/api';
+import MessageManager     from './managers/messages/messageManager';
+import FolderManager      from './managers/folderManager';
+import LayerManager       from './managers/layerManager';
+import TranslationManager from './managers/translationManager';
+import EventManager       from './managers/eventManager';
+import UI                 from './ui/init';
+import buildInfo          from './config/buildInfo.json';
+import { tagInfo }        from '../../data/index';
 
 class Hoot {
     constructor() {
-        this.api     = new API( this );
-        this.message = new MessageManager( this );
-        this.layers  = new LayerManager( this );
-        this.folders = new FolderManager( this );
-        this.events  = new EventManager();
+        this.api          = new API( this );
+        this.message      = new MessageManager( this );
+        this.layers       = new LayerManager( this );
+        this.folders      = new FolderManager( this );
+        this.translations = new TranslationManager( this );
+        this.events       = new EventManager();
 
         this.config = {
             tagInfo,
             appInfo: [],
             exportSizeThreshold: null,
             ingestSizeThreshold: null,
-            conflateSizeThreshold: null
+            conflateSizeThreshold: null,
+            presetMaxDisplayNum: 12
         };
     }
 
@@ -37,7 +40,8 @@ class Hoot {
 
         Promise.all( [
             this.getAboutData(),
-            this.getMapSizeThresholds()
+            this.getMapSizeThresholds(),
+            this.translations.getTranslations()
         ] );
 
         this.ui = new UI();

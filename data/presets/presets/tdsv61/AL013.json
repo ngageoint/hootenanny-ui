@@ -1,0 +1,13 @@
+{
+    "icon": "iD-building",
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Building",
+    "hoot:tagschema":"TDSv61",
+    "hoot:fcode": "AL013",
+    "name": "Building (AL013)"
+}

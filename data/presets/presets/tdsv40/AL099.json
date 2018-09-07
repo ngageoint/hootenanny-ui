@@ -1,0 +1,12 @@
+{
+    "icon": "iD-lodging",
+    "geometry": [
+        "point"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Hut",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "AL099",
+    "name": "Hut (AL099)"
+}

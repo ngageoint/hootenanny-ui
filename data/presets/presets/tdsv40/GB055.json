@@ -1,0 +1,11 @@
+{
+    "geometry": [
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Runway",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "GB055",
+    "name": "Runway (GB055)"
+}

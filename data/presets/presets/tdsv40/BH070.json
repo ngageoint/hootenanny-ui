@@ -1,0 +1,13 @@
+{
+    "icon": "iD-highway-footway",
+    "geometry": [
+        "point",
+        "line"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Ford",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "BH070",
+    "name": "Ford (BH070)"
+}

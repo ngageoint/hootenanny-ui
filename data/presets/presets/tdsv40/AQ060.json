@@ -1,0 +1,12 @@
+{
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"ControlTower",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "AQ060",
+    "name": "Control Tower (AQ060)"
+}

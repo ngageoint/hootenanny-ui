@@ -19,6 +19,11 @@ export function presetCategory(id, category, all) {
     };
 
 
+    category.matchSchema = function(schema) {
+        return category['hoot:tagschema'] === schema || (schema === 'OSM' && category['hoot:tagschema'] === undefined);
+    };
+
+
     category.matchScore = function() {
         return -1;
     };

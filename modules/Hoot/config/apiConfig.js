@@ -7,9 +7,10 @@
 export const apiConfig = {
     host: 'http://52.23.188.104',
     port: '8080',
-    basePath: 'hoot-services',
+    path: 'hoot-services',
+    translationServerPort: '8094',
     mapnikServerPort: '8000',
-    elementMergeServerPort: '8096',
+    mergeServerPort: '8096',
     queryInterval: 2000
 };
 

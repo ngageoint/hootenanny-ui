@@ -1,0 +1,12 @@
+{
+    "geometry": [
+        "area",
+        "line"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"CausewayStructure",
+    "hoot:tagschema":"TDSv61",
+    "hoot:fcode": "AQ063",
+    "name": "Causeway Structure (AQ063)"
+}

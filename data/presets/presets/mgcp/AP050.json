@@ -1,0 +1,11 @@
+{
+  "icon": "iD-highway-path",
+  "geometry": [
+    "line"
+  ],
+  "tags": {},
+  "hoot:featuretype": "Trail",
+  "hoot:tagschema": "MGCP",
+  "hoot:fcode": "AP050",
+  "name": "Trail (AP050)"
+}

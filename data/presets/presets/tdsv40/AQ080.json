@@ -1,0 +1,12 @@
+{
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"FerryStation",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "AQ080",
+    "name": "Ferry Station (AQ080)"
+}

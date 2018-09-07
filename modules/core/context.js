@@ -328,7 +328,7 @@ export function coreContext() {
 
     var translateCopyTags = function(tcTags) {
         var entity = context.entity(context.selectedIDs()[0]);
-        if (context.translationserver().activeTranslation() !== 'OSM' && !_isEmpty(tcTags)) {
+        if (context.translationserver().activeTranslation !== 'OSM' && !_isEmpty(tcTags)) {
             context.translationserver().translateToOsm(tcTags, entity, false, function(resp){
                 changeTagsCallback(resp);
             });

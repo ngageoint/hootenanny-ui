@@ -1,0 +1,12 @@
+{
+  "icon": "iD-building",
+  "geometry": [
+    "point",
+    "area"
+  ],
+  "tags": {},
+  "hoot:featuretype": "Building",
+  "hoot:tagschema": "MGCP",
+  "hoot:fcode": "AL015",
+  "name": "Building (AL015)"
+}

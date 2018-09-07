@@ -1,0 +1,12 @@
+{
+    "icon": "iD-highway-track",
+    "geometry": [
+        "line"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Cart Track",
+    "hoot:tagschema":"TDSv40",
+    "hoot:fcode": "AP010",
+    "name": "Cart Track (AP010)"
+}
