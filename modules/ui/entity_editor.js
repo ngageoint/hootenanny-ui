@@ -21,7 +21,9 @@ import { uiRawTagEditor } from './raw_tag_editor';
 import { uiTagReference } from './tag_reference';
 import { uiPresetEditor } from './preset_editor';
 import { utilCleanTags, utilRebind } from '../util';
+import { uiSchemaSwitcher } from './schema_switcher';
 
+import Hoot from '../Hoot/hoot'
 
 export function uiEntityEditor(context) {
     var dispatch = d3_dispatch('choose');
@@ -81,10 +83,25 @@ export function uiEntityEditor(context) {
         var body = selection.selectAll('.inspector-body')
             .data([0]);
 
+        var schemaSwitcher = uiSchemaSwitcher();
+
         // Enter
         enter = body.enter()
             .append('div')
             .attr('class', 'inspector-body');
+
+        enter
+            .append('div')
+            .call(schemaSwitcher, function() {
+                entity = context.entity(context.entity.selectedIDs()[0]);
+
+                //Do we need to translate tags?
+                if (Hoot.translations.activeTranslation !== 'OSM') {
+                    //dbounce translate
+                } else {
+                    updateTags(context.presets().match(entity, context.graph()), entity.tags);
+                }
+            });
 
         enter
             .append('div')

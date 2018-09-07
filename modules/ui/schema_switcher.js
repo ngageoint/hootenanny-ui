@@ -26,7 +26,6 @@ export function uiSchemaSwitcher() {
             .attr( 'type', 'text' )
             .attr( 'value', Hoot.translations.activeTranslation )
             .on( 'change', function() {
-                console.log( this.value );
                 Hoot.translations.setActiveTranslation( this.value );
 
                 if ( callback && typeof callback === 'function' ) {
