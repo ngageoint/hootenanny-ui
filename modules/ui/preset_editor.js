@@ -42,7 +42,7 @@ export function uiPresetEditor(context) {
             _preset.fields.forEach(function(field) {
                 if (field.matchGeometry(geometry)) {
                     _fieldsArr.push(
-                        uiField(context, field, entity)
+                        uiField(context, field, entity, {show: field.show === undefined ? true : field.show})
                     );
                 }
             });

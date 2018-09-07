@@ -17,6 +17,7 @@ import { uiFields } from './fields';
 import { uiTagReference } from './tag_reference';
 import { utilRebind } from '../util';
 
+import Hoot from '../Hoot/hoot';
 
 export function uiField(context, presetField, entity, options) {
     options = _extend({
@@ -217,7 +218,7 @@ export function uiField(context, presetField, entity, options) {
 
 
     field.isShown = function() {
-        return _show || _some(field.keys, function(key) { return !!_tags[key]; });
+        return field.id === 'name' && Hoot.translations.activeTranslation === 'OSM' || _show || _some(field.keys, function(key) { return !!_tags[key]; });
     };
 
 

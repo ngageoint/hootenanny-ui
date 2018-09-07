@@ -839,6 +839,38 @@ export default class API {
             .then( resp => resp.data )
             .catch( err => {
                 console.log( err );
-            })
+            });
+    }
+
+    translateToXml( osmXml, translation ) {
+        const params = {
+            url: `${ this.translationUrl }translateTo`,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/xml'
+            },
+            params: {
+                translation
+            },
+            data: osmXml
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( err => console.log( err ) );
+    }
+
+    translateToJson( p ) {
+        const params = {
+            url: `${ this.translationUrl }translateTo`,
+            method: 'GET',
+            params: {
+                ...p
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( err => console.log( err ) );
     }
 }

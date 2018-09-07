@@ -1,4 +1,5 @@
 import _clone from 'lodash-es/clone';
+import _debounce from 'lodash-es/debounce';
 import _isEmpty from 'lodash-es/isEmpty';
 import _isEqual from 'lodash-es/isEqual';
 
@@ -23,7 +24,7 @@ import { uiPresetEditor } from './preset_editor';
 import { utilCleanTags, utilRebind } from '../util';
 import { uiSchemaSwitcher } from './schema_switcher';
 
-import Hoot from '../Hoot/hoot'
+import Hoot from '../Hoot/hoot';
 
 export function uiEntityEditor(context) {
     var dispatch = d3_dispatch('choose');
@@ -40,6 +41,10 @@ export function uiEntityEditor(context) {
     var rawTagEditor = uiRawTagEditor(context)
         .on('change', changeTags);
 
+    var debouncedTranslate = _debounce( ( entity, updateTags ) => {
+        Hoot.translations.translateEntity( entity )
+            .then( data => updateTags( data.preset, data.tags ) );
+    }, 500 );
 
     function entityEditor(selection) {
         var entity = context.entity(_entityID);
@@ -93,11 +98,11 @@ export function uiEntityEditor(context) {
         enter
             .append('div')
             .call(schemaSwitcher, function() {
-                entity = context.entity(context.entity.selectedIDs()[0]);
+                entity = context.entity(context.selectedIDs()[0]);
 
                 //Do we need to translate tags?
                 if (Hoot.translations.activeTranslation !== 'OSM') {
-                    //dbounce translate
+                    debouncedTranslate( entity, updateTags );
                 } else {
                     updateTags(context.presets().match(entity, context.graph()), entity.tags);
                 }
@@ -162,37 +167,37 @@ export function uiEntityEditor(context) {
         body.select('.preset-list-item .label')
             .text(_activePreset.name());
 
-        body.select('.preset-editor')
-            .call(presetEditor
-                .preset(_activePreset)
-                .entityID(_entityID)
-                .tags(tags)
-                .state(_state)
-            );
-
-        body.select('.raw-tag-editor')
-            .call(rawTagEditor
-                .preset(_activePreset)
-                .entityID(_entityID)
-                .tags(tags)
-                .state(_state)
-            );
-
-        if (entity.type === 'relation') {
-            body.select('.raw-member-editor')
-                .style('display', 'block')
-                .call(uiRawMemberEditor(context)
-                    .entityID(_entityID)
-                );
-        } else {
-            body.select('.raw-member-editor')
-                .style('display', 'none');
-        }
-
-        body.select('.raw-membership-editor')
-            .call(uiRawMembershipEditor(context)
-                .entityID(_entityID)
-            );
+        //body.select('.preset-editor')
+        //    .call(presetEditor
+        //        .preset(_activePreset)
+        //        .entityID(_entityID)
+        //        .tags(tags)
+        //        .state(_state)
+        //    );
+        //
+        //body.select('.raw-tag-editor')
+        //    .call(rawTagEditor
+        //        .preset(_activePreset)
+        //        .entityID(_entityID)
+        //        .tags(tags)
+        //        .state(_state)
+        //    );
+        //
+        //if (entity.type === 'relation') {
+        //    body.select('.raw-member-editor')
+        //        .style('display', 'block')
+        //        .call(uiRawMemberEditor(context)
+        //            .entityID(_entityID)
+        //        );
+        //} else {
+        //    body.select('.raw-member-editor')
+        //        .style('display', 'none');
+        //}
+        //
+        //body.select('.raw-membership-editor')
+        //    .call(uiRawMembershipEditor(context)
+        //        .entityID(_entityID)
+        //    );
 
         body.select('.key-trap')
             .on('keydown.key-trap', function() {
@@ -207,6 +212,51 @@ export function uiEntityEditor(context) {
         context.history()
             .on('change.entity-editor', historyChanged);
 
+        //Do we need to translate tags?
+        if (Hoot.translations.activeTranslation !== 'OSM' && !_isEmpty(entity.tags)) {
+            debouncedTranslate(entity, updateTags);
+        } else {
+            updateTags(_activePreset, tags);
+        }
+
+        function updateTags(preset, tags) {
+            body.select('.preset-list-item .label')
+                .text(preset.name());
+
+            body.select('.preset-editor')
+                .call( presetEditor
+                    .preset(preset)
+                    .entityID(_entityID)
+                    .tags(tags)
+                    .state(_state)
+                );
+
+            body.select('.raw-tag-editor')
+                .call(rawTagEditor
+                    .preset(_activePreset)
+                    .entityID(_entityID)
+                    .tags(tags)
+                    .state(_state)
+                );
+
+            if (entity.type === 'relation') {
+                body.select('.raw-member-editor')
+                    .style('display', 'block' )
+                    .call(uiRawMemberEditor(context)
+                        .entityID(_entityID)
+                    );
+            } else {
+                body.select('.raw-member-editor')
+                    .style('display', 'none');
+            }
+
+            body.select('.raw-membership-editor')
+                .call(uiRawMembershipEditor(context)
+                    .entityID(_entityID));
+
+            context.history()
+                .on('change.entity-editor', historyChanged);
+        }
 
         function historyChanged() {
             if (_state === 'hide') return;
