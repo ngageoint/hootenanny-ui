@@ -133,6 +133,22 @@ Hoot.view.utilities = function (context){
             .classed('contain pad2x dark fill-dark', true);
         var nav = header.append('nav')
             .classed('contain inline fr', true);
+
+        var warnMsg = 'browser does not support localStorage -or- failed to retrieve user from store';
+        if(localStorage && localStorage.getItem('user')) {
+            try {
+                var user = JSON.parse(localStorage.getItem('user'));
+                nav.append('div')
+                    .classed('pad2 inline _icon dark strong small', true)
+                    .text('Contributing as ' + user.display_name);
+            } catch(e) {
+                console.warn(warnMsg);
+                console.warn(e);
+            }
+        } else {
+            console.warn(warnMsg);
+        }
+
         nav.append('div')
             .attr('id', 'logoutTabBtn')
             .attr('href', '#logout')
@@ -178,25 +194,13 @@ Hoot.view.utilities = function (context){
             .style('z-index',999);
 
         ////////////VERSION///////////////////
-
-        var labelContainer = header.append('div');
-
-        labelContainer.append('div')
+        header.append('div')
         .attr('href', '#version')
         .classed('point hoot_label', true)
         .attr('height', '60px')
         .on('click', function (){
              context.hoot().view.versioninfo.showPopup();
         });
-
-        var versionBG = d3.select('body')
-         .append('div')
-         .attr('id', 'versionBG')
-         .classed('col12 fill-white pin-bottom pin-top hidden', true)
-         .style('position', 'absolute')
-         .style('top', '60px');
-         versionBG.append('div')
-           .classed('row2 fill-light round-top keyline-all', true);
         /////////////////////////////////////////
 
          ////////////ALERTS///////////////////
