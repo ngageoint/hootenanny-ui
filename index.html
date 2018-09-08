@@ -393,7 +393,7 @@
                         // TODO:
                     } else {
                         window.onbeforeunload = function() {
-                            opener.oAuthDone();
+                            opener.oAuthDone(r);
                         }
                         window.close();
                     }
@@ -422,8 +422,10 @@
                                     // TODO:
                                 } else {
                                     window.open(r, "_blank", "width=500,height=800");
-                                    window.oAuthDone = function() {
-                                        console.log('calling load()');
+                                    window.oAuthDone = function(user_object) {
+                                        if(localStorage) {
+                                            localStorage.setItem('user', JSON.stringify(user_object));
+                                        }
                                         load();
                                     }
                                 }

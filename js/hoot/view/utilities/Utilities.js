@@ -131,12 +131,24 @@ Hoot.view.utilities = function (context){
             .insert('div', ':first-child')
             .attr('id', 'header')
             .classed('contain pad2x dark fill-dark', true);
-        header.append('nav')
-            .classed('contain inline fr', true)
-            .append('div')
+        var nav = header.append('nav')
+            .classed('contain inline fr', true);
+        nav.append('div')
+            .attr('id', 'logoutTabBtn')
+            .attr('href', '#logout')
+            .classed('point pad2 inline keyline-left _icon dark strong small x', true)
+            .text('Logout')
+            .on('click', function() {
+                Hoot.model.REST('logout', function(e) {
+                    if(!e) {
+                        window.location = '/';
+                    }
+                })
+            });
+        nav.append('div')
             .attr('id', 'manageTabBtn')
             .attr('href', '#jobs')
-            .classed('point pad2 block keyline-left _icon dark strong small sprocket', true)
+            .classed('point pad2 inline keyline-left keyline-right _icon dark strong small sprocket', true)
             .text('Manage')
             .on('click', function () {
                 d3.event.stopPropagation();
