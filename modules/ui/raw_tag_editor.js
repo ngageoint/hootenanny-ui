@@ -182,7 +182,7 @@ export function uiRawTagEditor(context) {
         items.selectAll('input.value')
             .attr('title', function(d) { return d.value; })
             .call(utilGetSetValue, function(d) { return d.value; })
-            .property('disabled', isReadOnly);
+            .property('disabled', isReadOnly)
 
         items.selectAll('button.remove')
             .on('click', removeTag);
@@ -215,32 +215,46 @@ export function uiRawTagEditor(context) {
             key.call(d3_combobox()
                 .container(context.container())
                 .fetcher(function(value, callback) {
-                    taginfo.keys({
-                        debounce: true,
-                        geometry: geometry,
-                        query: value
-                    }, function(err, data) {
-                        if (!err) callback(sort(value, data));
-                    });
+                    if (context.hoot.translations.activeTranslation === 'OSM') {
+                        taginfo.keys({
+                            debounce: true,
+                            geometry: geometry,
+                            query: value
+                        }, function(err, data) {
+                            if (!err) callback(sort(value, data));
+                        });
+                    } else {
+                        var data = context.hoot.translations.filterSchemaKeys(value);
+                        callback(sort(value, data));
+                    }
                 }));
 
             value.call(d3_combobox()
                 .container(context.container())
                 .fetcher(function(value, callback) {
-                    taginfo.values({
-                        debounce: true,
-                        key: utilGetSetValue(key),
-                        geometry: geometry,
-                        query: value
-                    }, function(err, data) {
-                        if (!err) callback(sort(value, data));
-                    });
+                    if (context.hoot.translations.activeTranslation === 'OSM') {
+                        taginfo.values({
+                            debounce: true,
+                            key: utilGetSetValue(key),
+                            geometry: geometry,
+                            query: value
+                        }, function(err, data) {
+                            if (!err) callback(sort(value, data));
+                        });
+                    } else {
+                        var data = context.hoot.translations.filterSchemaValues(key.property('value'));
+                        callback(sort(value, data));
+                    }
                 }));
 
 
             function sort(value, data) {
                 var sameletter = [];
                 var other = [];
+                data.sort(function(a,b){var textA = a.value.toUpperCase();
+                    var textB = b.value.toUpperCase();
+                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                });
                 for (var i = 0; i < data.length; i++) {
                     if (data[i].value.substring(0, value.length) === value) {
                         sameletter.push(data[i]);

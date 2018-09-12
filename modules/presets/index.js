@@ -185,7 +185,6 @@ export function presetIndex() {
     all.defaults = function(geometry, n) {
         var rec = _recent.matchGeometry(geometry).collection.slice(0, 4);
         var def = _uniq(rec.concat(_defaults[geometry].collection)).slice(0, n - 1);
-        console.log( def );
         return presetCollection(_uniq(rec.concat(def).concat(all.item(geometry))));
     };
 

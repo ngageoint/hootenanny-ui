@@ -1,3 +1,5 @@
+import _assign from 'lodash-es/assign';
+import _assignIn from 'lodash-es/assignIn';
 import _clone from 'lodash-es/clone';
 import _debounce from 'lodash-es/debounce';
 import _isEmpty from 'lodash-es/isEmpty';
@@ -164,8 +166,8 @@ export function uiEntityEditor(context) {
                 .preset(_activePreset)
             );
 
-        body.select('.preset-list-item .label')
-            .text(_activePreset.name());
+        //body.select('.preset-list-item .label')
+        //    .text(_activePreset.name());
 
         //body.select('.preset-editor')
         //    .call(presetEditor
@@ -282,10 +284,10 @@ export function uiEntityEditor(context) {
 
     // Tag changes that fire on input can all get coalesced into a single
     // history operation when the user leaves the field.  #2342
-    function changeTags(changed, onInput) {
+    function changeTagsCallback( changed, onInput ) {
         var entity = context.entity(_entityID);
         var annotation = t('operations.change_tags.annotation');
-        var tags = _clone(entity.tags);
+        var tags = _assignIn({}, entity.tags, changed);
 
         for (var k in changed) {
             if (!k) continue;
@@ -299,6 +301,7 @@ export function uiEntityEditor(context) {
             tags = utilCleanTags(tags);
         }
 
+        //TODO: check if review exists
         if (!_isEqual(entity.tags, tags)) {
             if (_coalesceChanges) {
                 context.overwrite(actionChangeTags(_entityID, tags), annotation);
@@ -306,6 +309,42 @@ export function uiEntityEditor(context) {
                 context.perform(actionChangeTags(_entityID, tags), annotation);
                 _coalesceChanges = !!onInput;
             }
+        }
+    }
+
+
+    function changeTags(changed, onInput) {
+        var translatedTags = rawTagEditor.tags();
+        var entity = context.entity(_entityID);
+
+        // do we need to translate tags?
+        if ( Hoot.translations.activeTranslation !== 'OSM' && !_isEmpty( entity.tags ) ) {
+            // don't call translate on input events like keypress
+            // wait til the field loses focus
+            if ( !onInput ) {
+                // some changeTags events fire even when tag hasn't changed
+                if ( d3.entries( changed ).every( c => {
+                    return d3.entries( translatedTags ).some( d => {
+                        return c.key === d.key && c.value === d.value;
+                    } );
+                } ) ) return; //return if no real change
+
+                if ( d3.entries( changed ).every( c => {
+                    return !translatedTags[ c.key ] && (c.value === undefined || c.value === '');
+                } ) ) return; //return if empty change
+
+                var translatedEntity = entity.copy( context.graph(), [] );
+
+                translatedEntity.tags = d3.entries( _assign( translatedTags, changed ) ).reduce( ( tags, tag ) => {
+                    if ( tag.value !== undefined ) tags[ tag.key ] = tag.value;
+                    return tags;
+                }, {} );
+
+                Hoot.translations.translateToOsm( entity.tags, translatedEntity )
+                    .then( changed => changeTagsCallback( changed, onInput ) );
+            }
+        } else {
+            changeTagsCallback(changed, onInput);
         }
     }
 

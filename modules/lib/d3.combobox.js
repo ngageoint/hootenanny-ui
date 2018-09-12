@@ -269,10 +269,19 @@ export function d3combobox() {
             var node = attachTo ? attachTo.node() : input.node();
             var rect = node.getBoundingClientRect();
 
-            wrapper
-                .style('left', (rect.left + 5) + 'px')
-                .style('width', (rect.width - 10) + 'px')
-                .style('top', rect.height + rect.top - 60 + 'px');
+            //If the height of the menu is going to go off the screen, have it go towards the top of the screen instead
+            var dropDownHeight = (d3.select('.combobox-option').node().getBoundingClientRect().height * _suggestions.length) + rect.height;
+            if((window.innerHeight-rect.top) < dropDownHeight){
+                wrapper
+                    .style('left', (rect.left + 5) + 'px')
+                    .style('width', (rect.width - 10) + 'px')
+                    .style('bottom', window.innerHeight - rect.top + 'px');
+            } else {
+                wrapper
+                    .style('left', (rect.left + 5) + 'px')
+                    .style('width', (rect.width - 10) + 'px')
+                    .style('top', rect.height + rect.top - 60 + 'px');
+            }
         }
 
         function select(d, i) {

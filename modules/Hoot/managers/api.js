@@ -842,7 +842,25 @@ export default class API {
             });
     }
 
-    translateToXml( osmXml, translation ) {
+    translateFromXml( xml, translation ) {
+        const params = {
+            url: `${ this.translationUrl }translateFrom`,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/xml'
+            },
+            params: {
+                translation
+            },
+            data: xml
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( err => console.log( err ) );
+    }
+
+    translateToXml( xml, translation ) {
         const params = {
             url: `${ this.translationUrl }translateTo`,
             method: 'POST',
@@ -852,7 +870,7 @@ export default class API {
             params: {
                 translation
             },
-            data: osmXml
+            data: xml
         };
 
         return this.request( params )

@@ -4,10 +4,11 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 9/5/18
  *******************************************************************************************************/
 
-import _filter from 'lodash-es/filter';
-import _map    from 'lodash-es/map';
-import _reduce from 'lodash-es/reduce';
-import _some   from 'lodash-es/some';
+import _filter  from 'lodash-es/filter';
+import _forEach from 'lodash-es/forEach';
+import _map     from 'lodash-es/map';
+import _reduce  from 'lodash-es/reduce';
+import _some    from 'lodash-es/some';
 
 import { JXON } from '../../util/jxon';
 
@@ -43,9 +44,38 @@ export default class TranslationManager {
         }
     }
 
+    async translateToOsm( entityTags, translatedEntity ) {
+        //Turn translated tag xml into a osm tags
+        let xml           = `<osm version="0.6" upload="true" generator="hootenanny">${JXON.stringify( translatedEntity.asJXON() )}</osm>`,
+            translatedXml = await this.hoot.api.translateFromXml( xml, this.activeTranslation ),
+            document      = new DOMParser().parseFromString( translatedXml, 'text/xml' );
+
+        let osmTags = this.tagXmlToJson( document );
+        let changed = _reduce( osmTags, ( diff, val, key ) => {
+            if ( entityTags[ key ] ) {
+                if ( entityTags[ key ] !== val ) {
+                    diff[ key ] = val;
+                }
+            } else {
+                diff[ key ] = val;
+            }
+
+            return diff;
+        }, {} );
+
+        _forEach( entityTags, ( val, key ) => {
+            if ( !osmTags[ key ] ) {
+                delete changed[ key ];
+            }
+        } );
+
+        return changed;
+    }
+
     async translateEntity( entity ) {
-        let osmXml        = `<osm version="0.6" upload="true" generator="hootenanny">${JXON.stringify( entity.asJXON() )}</osm>`,
-            translatedXml = await this.hoot.api.translateToXml( osmXml, this.activeTranslation ),
+        //Turn osm xml into a coded tags
+        let xml           = `<osm version="0.6" upload="true" generator="hootenanny">${JXON.stringify( entity.asJXON() )}</osm>`,
+            translatedXml = await this.hoot.api.translateToXml( xml, this.activeTranslation ),
             document      = new DOMParser().parseFromString( translatedXml, 'text/xml' );
 
         let tags = this.tagXmlToJson( document );
@@ -99,12 +129,15 @@ export default class TranslationManager {
                 id: this.activeTranslation + '/' + column.name,
                 overrideLabel: column.desc,
                 show: false,
+                defaultValue: column.defValue,
                 placeholder
             };
 
-            if ( column.type === 'string' ) {
+            let type = column.type.toLowerCase();
+
+            if ( type === 'string' ) {
                 f.type = 'text';
-            } else if ( column.type === 'enumeration' ) {
+            } else if ( type === 'enumeration' ) {
                 //check if enumeration should use a checkbox
                 if ( _some( column.enumerations, e => e.value === '1000' && e.name === 'False' ) ) {
                     f.type = 'check';
@@ -152,5 +185,33 @@ export default class TranslationManager {
         }, {} );
 
         return tags;
+    }
+
+    filterSchemaKeys( value ) {
+        return _map( _filter( this.activeSchema.columns, d => {
+            return d.name.startsWith( value.toUpperCase() );
+        } ), f => {
+            return {
+                title: f.desc,
+                value: f.name
+            };
+        } );
+    }
+
+    filterSchemaValues( value ) {
+        let values  = [],
+            columns = _filter( this.activeSchema.columns, d => d.name === value.toUpperCase() );
+
+        if ( columns.length === 1 ) {
+            if ( columns[ 0 ].enumerations ) {
+                values = columns[ 0 ].enumerations.map( function( d ) {
+                    return {
+                        title: d.name,
+                        value: d.value
+                    };
+                } );
+            }
+        }
+        return values;
     }
 }
