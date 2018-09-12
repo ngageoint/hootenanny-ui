@@ -13,6 +13,7 @@
         <link rel='stylesheet' href='css/style2.css'>
         <link rel='stylesheet' href='css/hoot-style.css'>
         <link rel='stylesheet' href='css/translation_assistant.css'>
+        <link rel='stylesheet' href='css/login.css'>
         <link rel='icon' href='css/img/favicon.png'>
 
         <!-- mobile devices -->
@@ -303,6 +304,7 @@
 
         <script src='js/hoot/view/View.js'></script>
         <script src='js/hoot/view/VersionInfo.js'></script>
+        <script src='js/hoot/view/Login.js'></script>
         <script src='js/hoot/view/utilities/Utilities.js'></script>
         <script src='js/hoot/view/utilities/Dataset.js'></script>
         <!-- <script src='js/hoot/view/utilities/WfsDataset.js'></script> -->
@@ -370,7 +372,6 @@
     <body>
         <div id='id-container'></div>
         <script>
-
             function findGetParameter(parameterName) {
                 var result = null,
                     tmp = [];
@@ -383,7 +384,6 @@
                     });
                 return result;
             }
-
             var oauth_token = findGetParameter('oauth_token');
             var oauth_verifier = findGetParameter('oauth_verifier');
             if(oauth_token && oauth_verifier) {
@@ -395,10 +395,15 @@
                         console.warn('XMLHttpRequest.responseText ', e.responseText);
                         window.location = '/';
                     } else {
-                        window.onbeforeunload = function() {
-                            opener.oAuthDone(r);
+                        if(opener) {
+                            window.onbeforeunload = function() {
+                                opener.oAuthDone(r);
+                            }
+                            window.close();
+                        } else {
+                            // force refresh.
+                            window.location = '/';
                         }
-                        window.close();
                     }
                 });
             } else {
@@ -409,28 +414,46 @@
                         iD.version = "Unknown(Hootenanny)";
                     }
                     id = iD().presets(iD.data.presets)
-                    .imagery(iD.data.imagery)
-                    .taginfo(iD.services.taginfo())
-                    .assetPath('dist/');
+                        .imagery(iD.data.imagery)
+                        .taginfo(iD.services.taginfo())
+                        .assetPath('dist/');
+
                     function load() {
+                        // unload landing page.
+                        Hoot.view.unload_login();
+
+                        // load application.
                         id.hoot().load(function() {
                             d3.select('#id-container').call(id.ui());
                         });
                     }
-                    Hoot.model.REST('servicesVersionInfo', function(r) {
-                        if(r && r.error) {
+                    // launch popup & attach callback function
+                    // to child window.
+                    function launch_login(oauth_redirect_url) {
+                        window.open(oauth_redirect_url, "hootenanny_login_redirect", "width=500,height=800,toolbar=no,status=no,menubar=no");
+
+                        window.oAuthDone = function(user_object) {
+                            if(localStorage) {
+                                localStorage.setItem('user', JSON.stringify(user_object));
+                            }
+                            load();
+                        }
+                    }
+                    Hoot.model.REST('servicesVersionInfo', function(services_version_info) {
+                        if(services_version_info && services_version_info.error) {
                             // redirect.
-                            Hoot.model.REST('getOAuthRedirectURL', function(r) {
-                                if(r.error) {
+                            Hoot.model.REST('getOAuthRedirectURL', function(oauth_redirect_url) {
+                                if(oauth_redirect_url && oauth_redirect_url.error) {
                                     // TODO:
                                 } else {
-                                    window.open(r, "_blank", "width=500,height=800");
-                                    window.oAuthDone = function(user_object) {
-                                        if(localStorage) {
-                                            localStorage.setItem('user', JSON.stringify(user_object));
-                                        }
-                                        load();
-                                    }
+                                    // render landing page.
+                                    Hoot.view.login(function() {
+                                        launch_login(oauth_redirect_url);
+                                    }, function() {
+                                        window.location = oauth_redirect_url;
+                                    });
+
+                                    launch_login(oauth_redirect_url);
                                 }
                             });
                         } else {
