@@ -328,10 +328,9 @@ export function coreContext() {
 
     var translateCopyTags = function(tcTags) {
         var entity = context.entity(context.selectedIDs()[0]);
-        if (context.translationserver().activeTranslation !== 'OSM' && !_isEmpty(tcTags)) {
-            context.translationserver().translateToOsm(tcTags, entity, false, function(resp){
-                changeTagsCallback(resp);
-            });
+        if (context.hoot.translations.activeTranslation !== 'OSM' && !_isEmpty(tcTags)) {
+            context.hoot.translations.translateToOsm(tcTags, entity)
+                .then(resp => changeTagsCallback(resp));
         } else {
             changeTagsCallback(tcTags);
         }

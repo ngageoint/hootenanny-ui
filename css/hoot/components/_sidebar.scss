@@ -1,3 +1,4 @@
+// iD-Editor sidebar
 #sidebar {
     position: relative;
     display: inline-block;
@@ -16,6 +17,29 @@
 
         input {
             width: 50%;
+        }
+    }
+
+    .select-all-button {
+        width: 10%;
+        top: 0;
+        float: right;
+        background: $light;
+    }
+
+    .tag-select-button {
+        width: 10%;
+        top: 0;
+        right: 0;
+        border-radius: 0;
+        background: #fafafa;
+
+        &:hover {
+            background: #f1f1f1;
+        }
+
+        svg:not(.visible) {
+            color: #fafafa;
         }
     }
 }

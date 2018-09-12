@@ -15,7 +15,7 @@ import { t } from '../util/locale';
 import { services } from '../services';
 import { svgIcon } from '../svg';
 import { uiDisclosure } from './disclosure';
-import { uiTagReference } from './tag_reference';
+import { uiTagSelectCopy } from './tag_select_copy';
 import {
     utilGetSetValue,
     utilNoAuto,
@@ -73,6 +73,16 @@ export function uiRawTagEditor(context) {
             entries.push({key: '', value: ''});
             _newRow = '';
         }
+
+        var selectAll = wrap.selectAll('.select-all-button')
+            .data([0]);
+
+        selectAll.enter()
+            .append('button')
+            .attr('tab-index', -1)
+            .classed('select-all-button', true)
+            .on('click', selectAllTags)
+            .call(svgIcon('#iD-icon-apply'));
 
         var list = wrap.selectAll('.tag-list')
             .data([0]);
@@ -147,7 +157,7 @@ export function uiRawTagEditor(context) {
             });
 
         items
-            .each(function(tag) {
+            .each(function() {
                 var row = d3_select(this);
                 var key = row.select('input.key');      // propagate bound data to child
                 var value = row.select('input.value');  // propagate bound data to child
@@ -156,22 +166,10 @@ export function uiRawTagEditor(context) {
                     bindTypeahead(key, value);
                 }
 
-                var isRelation = (_entityID && context.entity(_entityID).type === 'relation');
-                var reference;
+                // Override tag reference with tag copy
+                var select = uiTagSelectCopy(context);
 
-                if (isRelation && tag.key === 'type') {
-                    reference = uiTagReference({ rtype: tag.value }, context);
-                } else {
-                    reference = uiTagReference({ key: tag.key, value: tag.value }, context);
-                }
-
-                if (_state === 'hover') {
-                    reference.showing(false);
-                }
-
-                row
-                    .call(reference.button)
-                    .call(reference.body);
+                row.call( select );
             });
 
         items.selectAll('input.key')
@@ -350,6 +348,30 @@ export function uiRawTagEditor(context) {
                 content(wrap);
                 list.selectAll('li:last-child input.key').node().focus();
             }, 1);
+        }
+
+
+        function selectAllTags() {
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
+
+            var buttons = d3.selectAll('.tag-row .tag-select-button svg');
+
+            // Determine if we are selecting all or unselecting all
+            if (d3.selectAll('.tag-row .tag-select-button svg.visible').size() > 0){
+                buttons.classed('visible',false);
+            } else {
+                buttons.classed('visible',true);
+            }
+
+            var seltags = d3.selectAll('li.tag-row').filter(function() {
+                return d3.select(this).selectAll('svg.icon.checked.visible').size() === 1;
+            }).data().reduce(function(m, d) {
+                m[d.key] = d.value;
+                return m;
+            }, {});
+
+            context.copyTags(seltags);
         }
     }
 
