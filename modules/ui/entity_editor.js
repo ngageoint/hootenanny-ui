@@ -166,41 +166,6 @@ export function uiEntityEditor(context) {
                 .preset(_activePreset)
             );
 
-        //body.select('.preset-list-item .label')
-        //    .text(_activePreset.name());
-
-        //body.select('.preset-editor')
-        //    .call(presetEditor
-        //        .preset(_activePreset)
-        //        .entityID(_entityID)
-        //        .tags(tags)
-        //        .state(_state)
-        //    );
-        //
-        //body.select('.raw-tag-editor')
-        //    .call(rawTagEditor
-        //        .preset(_activePreset)
-        //        .entityID(_entityID)
-        //        .tags(tags)
-        //        .state(_state)
-        //    );
-        //
-        //if (entity.type === 'relation') {
-        //    body.select('.raw-member-editor')
-        //        .style('display', 'block')
-        //        .call(uiRawMemberEditor(context)
-        //            .entityID(_entityID)
-        //        );
-        //} else {
-        //    body.select('.raw-member-editor')
-        //        .style('display', 'none');
-        //}
-        //
-        //body.select('.raw-membership-editor')
-        //    .call(uiRawMembershipEditor(context)
-        //        .entityID(_entityID)
-        //    );
-
         body.select('.key-trap')
             .on('keydown.key-trap', function() {
                 // On tabbing, send focus back to the first field on the inspector-body

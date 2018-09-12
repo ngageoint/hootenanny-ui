@@ -180,7 +180,7 @@ export function uiRawTagEditor(context) {
         items.selectAll('input.value')
             .attr('title', function(d) { return d.value; })
             .call(utilGetSetValue, function(d) { return d.value; })
-            .property('disabled', isReadOnly)
+            .property('disabled', isReadOnly);
 
         items.selectAll('button.remove')
             .on('click', removeTag);
@@ -249,10 +249,13 @@ export function uiRawTagEditor(context) {
             function sort(value, data) {
                 var sameletter = [];
                 var other = [];
-                data.sort(function(a,b){var textA = a.value.toUpperCase();
+
+                data.sort(function(a,b) {
+                    var textA = a.value.toUpperCase();
                     var textB = b.value.toUpperCase();
                     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                 });
+
                 for (var i = 0; i < data.length; i++) {
                     if (data[i].value.substring(0, value.length) === value) {
                         sameletter.push(data[i]);
@@ -322,7 +325,7 @@ export function uiRawTagEditor(context) {
             var tag = {};
             tag[d.key] = this.value;
 
-            if (_newRow === d.key && d.key !== '' && d.value !== '') {   // not a new row anymore
+            if (_newRow === d.key && d.key !== '' && this.value !== '') {   // not a new row anymore
                 _newRow = undefined;
             }
 
@@ -372,6 +375,10 @@ export function uiRawTagEditor(context) {
             }, {});
 
             context.copyTags(seltags);
+        }
+
+        function sortTags() {
+
         }
     }
 

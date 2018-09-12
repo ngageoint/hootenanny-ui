@@ -65,7 +65,7 @@ export default class TranslationManager {
 
         _forEach( entityTags, ( val, key ) => {
             if ( !osmTags[ key ] ) {
-                delete changed[ key ];
+                changed[ key ] = undefined; // tag is removed
             }
         } );
 
