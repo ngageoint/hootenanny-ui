@@ -1,4 +1,6 @@
-Hoot.view.login = function(fn_launch_login, fn_direct_login) {
+Hoot.view.login = function(fn_launch_login, fn_direct_login, assetPath) {
+    assetPath = assetPath || '';
+
     var body = d3.select('body')
         .style('overflow', 'auto')
         .style('background-color', '#f6f6f6');
@@ -80,12 +82,12 @@ Hoot.view.login = function(fn_launch_login, fn_direct_login) {
     row.append('div')
         .classed('hoot-login-cell', true)
         .append('img')
-            .attr('src', '/dist/img/login-popup-chrome-1.png');
+            .attr('src', assetPath + 'img/login-popup-chrome-1.png');
 
     row.append('div')
         .classed('hoot-login-cell', true)
         .append('img')
-            .attr('src', '/dist/img/login-popup-chrome-2.png');
+            .attr('src', assetPath + 'img/login-popup-chrome-2.png');
 
 
     container.append('h2').text('Enabling Popup Windows: Firefox');
@@ -105,7 +107,7 @@ Hoot.view.login = function(fn_launch_login, fn_direct_login) {
     row.append('div')
         .classed('hoot-login-cell', true)
         .append('img')
-            .attr('src', '/dist/img/login-popup-firefox-1.png');
+            .attr('src', assetPath + 'img/login-popup-firefox-1.png');
 
     var row = table.append('div')
         .classed('hoot-login-row', true);
@@ -120,7 +122,7 @@ Hoot.view.login = function(fn_launch_login, fn_direct_login) {
     row.append('div')
         .classed('hoot-login-cell', true)
         .append('img')
-            .attr('src', '/dist/img/login-popup-firefox-2.png');
+            .attr('src', assetPath + 'img/login-popup-firefox-2.png');
 
     var row = table.append('div')
         .classed('hoot-login-row', true);
@@ -135,7 +137,7 @@ Hoot.view.login = function(fn_launch_login, fn_direct_login) {
     row.append('div')
         .classed('hoot-login-cell', true)
         .append('img')
-            .attr('src', '/dist/img/login-popup-firefox-3.png');
+            .attr('src', assetPath + 'img/login-popup-firefox-3.png');
 
     container.append('h2').text('Without Popup Windows');
     container.append('p')
