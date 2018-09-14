@@ -4,7 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/24/18
  *******************************************************************************************************/
 
-import Hoot  from '../../hoot';
+import Hoot           from '../../hoot';
+import BookmarkReview from '../modals/bookmarkReview';
 
 /**
  * @class Resolve
@@ -96,5 +97,9 @@ export default class Resolve {
         conflateController.text.html( layer.name );
 
         Hoot.events.emit( 'review-complete' );
+    }
+
+    bookmarkReview() {
+        new BookmarkReview().render();
     }
 }

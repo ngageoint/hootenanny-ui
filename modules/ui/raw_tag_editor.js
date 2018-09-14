@@ -376,10 +376,6 @@ export function uiRawTagEditor(context) {
 
             context.copyTags(seltags);
         }
-
-        function sortTags() {
-
-        }
     }
 
 

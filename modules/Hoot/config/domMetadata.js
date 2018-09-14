@@ -308,14 +308,15 @@ export function aboutForm() {
     ];
 }
 
-export function conflictButtons() {
+export function conflictActions() {
     return [
         {
             id: 'bookmark_review',
             name: 'share_review',
             text: 'Bookmark Review',
             class: '_icon plus fill-grey button round pad0y pad1x small strong',
-            cmd: this.cmd( 'Ctrl+b' )
+            cmd: this.cmd( 'Ctrl+b' ),
+            action: () => this.resolve.bookmarkReview()
         },
         {
             id: 'toggle_table',

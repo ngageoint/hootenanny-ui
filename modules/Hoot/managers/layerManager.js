@@ -81,25 +81,6 @@ export default class Layers {
         return match.length > 0;
     }
 
-    getMapnikSource( d ) {
-        return {
-            name: d.name,
-            id: d.id.toString(),
-            type: 'tms',
-            description: d.name,
-            template: config.host
-                + `:${ config.mapnikServerPort }`
-                + '/?z={zoom}&x={x}&y={-y}&color='
-                + encodeURIComponent( this.getPalette( d.color ) )
-                + '&mapid=' + d.id,
-            scaleExtent: [ 0, 16 ],
-            polygon: d.polygon,
-            overzoom: false,
-            overlay: true,
-            hootlayer: true
-        };
-    }
-
     getPalette( name ) {
         if ( !name ) {
             return this.palette;
@@ -129,19 +110,17 @@ export default class Layers {
 
     async loadLayer( params ) {
         try {
-            let source      = this.getMapnikSource( params ),
-                mapId       = source.id,
+            let mapId       = params.id,
                 tags        = await this.hoot.api.getTags( mapId ),
                 layerExtent = await this.layerExtent( mapId );
 
             let layer = {
                 name: params.name,
-                id: source.id,
+                id: params.id,
                 refType: params.refType,
                 color: params.color,
                 merged: params.merged || false,
                 layers: params.layers || [],
-                source: source,
                 extent: layerExtent,
                 polygon: layerExtent.polygon(),
                 tags: tags,
@@ -173,10 +152,9 @@ export default class Layers {
                 }
             } );
 
-            this.hoot.context.background().addSource( source );
             this.setLayerColor( mapId, layer.color );
         } catch ( err ) {
-            this.hoot.response.alert( err );
+            this.hoot.message.alert( err );
         }
     }
 

@@ -23,7 +23,10 @@ export default class API {
 
         this.host = this.config.host;
 
-        this.baseUrl        = Object.assign( new URL( this.host ), { port: this.config.port, pathname: this.config.path } );
+        this.baseUrl        = Object.assign( new URL( this.host ), {
+            port: this.config.port,
+            pathname: this.config.path
+        } );
         this.mergeUrl       = Object.assign( new URL( this.host ), { port: this.config.mergeServerPort } );
         this.translationUrl = Object.assign( new URL( this.host ), { port: this.config.translationServerPort } );
 
@@ -96,6 +99,19 @@ export default class API {
                 }
             }, this.queryInterval );
         } );
+    }
+
+    getSaveUser( userEmail ) {
+        const params = {
+            path: '/osm/user/-1',
+            method: 'POST',
+            params: {
+                userEmail
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
     }
 
     /**
@@ -814,6 +830,35 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    saveReviewBookmark( data ) {
+        const params = {
+            path: '/job/review/bookmarks/save',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify( data )
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Review has successfully been saved. It can be viewed in Manage Panel -> Review Bookmarks',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error saving review!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
     /****************** TRANSLATIONS *******************/
 
     getCapabilities() {
@@ -837,9 +882,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => {
-                console.log( err );
-            });
+            .catch( err => console.log( err ) );
     }
 
     translateFromXml( xml, translation ) {

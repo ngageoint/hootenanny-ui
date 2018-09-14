@@ -7,13 +7,13 @@
 import _forEach from 'lodash-es/forEach';
 
 import Hoot                from '../../hoot';
-import ConflictInfo        from './info';
+import Info                from './info';
 import Map                 from './map';
 import Traverse            from './traverse';
 import GraphSync           from './graphSync';
 import Merge               from './merge';
 import Resolve             from './resolve';
-import { conflictButtons } from '../../config/domMetadata';
+import { conflictActions } from '../../config/domMetadata';
 import { d3keybinding }    from '../../../lib/d3.keybinding';
 import { t }               from '../../../util/locale';
 import { tooltip }         from '../../../util/tooltip';
@@ -64,7 +64,7 @@ export default class Conflicts {
         this.data.mapId = layer.id;
 
         let modules = await Promise.all( [
-            new ConflictInfo( this ),
+            new Info( this ),
             new Map( this ),
             new Traverse( this ),
             new GraphSync( this ),
@@ -94,7 +94,7 @@ export default class Conflicts {
      * Render conflicts review UI
      */
     render() {
-        this.buttonMeta = conflictButtons.call( this );
+        this.buttonMeta = conflictActions.call( this );
 
         this.container = this.contentContainer.append( 'div' )
             .attr( 'id', 'conflicts-container' )

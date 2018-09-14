@@ -585,12 +585,12 @@ export default class FolderTree extends EventEmitter {
             isOpen   = data.state === 'open';
 
         if ( data.type === 'dataset' ) {
-            if ( d3.event.metaKey ) {
+            if ( d3.event.metaKey && this.isDatasetTable ) {
                 data.selected = !data.selected;
                 this.selectedNodes.push( data );
                 this.lastSelectedNode = data.selected ? data.id : null;
             }
-            else if ( d3.event.shiftKey && this.lastSelectedNode ) {
+            else if ( d3.event.shiftKey && this.lastSelectedNode && this.isDatasetTable ) {
                 let nodes        = _drop( this.root.descendants(), 1 ),
                     basePosition = _findIndex( nodes, node => node.data.id === this.lastSelectedNode ),
                     position     = _findIndex( nodes, node => node.data.id === data.id ),

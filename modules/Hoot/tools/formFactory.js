@@ -252,8 +252,8 @@ export default class FormFactory {
             .attr( 'id', d => d.id )
             .attr( 'class', d => d.class )
             .text( d => d.data || '' )
-            .on( 'keyup', d => d.onChange( d ) )
-            .on( 'drop', d => d.onDrop() );
+            .on( 'keyup', d => d.onChange && d.onChange( d ) )
+            .on( 'drop', d => d.onDrop && d.onDrop() );
     }
 
     createListbox( field ) {
