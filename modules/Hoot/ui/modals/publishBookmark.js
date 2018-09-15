@@ -1,5 +1,5 @@
 /*******************************************************************************************************
- * File: bookmarkReview.js
+ * File: publishBookmark.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 9/13/18
  *******************************************************************************************************/
@@ -7,7 +7,7 @@
 import Hoot        from '../../hoot';
 import FormFactory from '../../tools/formFactory';
 
-export default class BookmarkReview {
+export default class PublishBookmark {
     constructor() {
         this.formMeta = {
             title: 'Bookmark Review',

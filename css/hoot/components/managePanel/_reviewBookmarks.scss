@@ -1,0 +1,52 @@
+.bookmark-filter-container {
+    white-space: nowrap;
+    display: flex;
+    align-items: flex-end;
+
+    .filter-control {
+        margin-right: 20px;
+    }
+
+    .reset-button {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        top: 5px;
+        border-radius: 100%;
+    }
+}
+
+.bookmark-table {
+    height: 800px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 3px 10px $dark-opacity10;
+    overflow-y: auto;
+}
+
+.bookmark-item {
+    min-height: 100px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 1px 1px 1px $dark-opacity30;
+}
+
+.bookmark-title {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.bookmark-details {
+    display: flex;
+    justify-content: flex-start;
+
+    label {
+        font-weight: 500;
+    }
+
+    .bookmark-description {
+        width: 40%;
+        min-width: 250px;
+        margin-right: 10px;
+    }
+}

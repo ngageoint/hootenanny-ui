@@ -316,7 +316,7 @@ export function conflictActions() {
             text: 'Bookmark Review',
             class: '_icon plus fill-grey button round pad0y pad1x small strong',
             cmd: this.cmd( 'Ctrl+b' ),
-            action: () => this.resolve.bookmarkReview()
+            action: () => this.resolve.publishBookmark()
         },
         {
             id: 'toggle_table',

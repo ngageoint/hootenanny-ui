@@ -41,6 +41,7 @@ class Hoot {
         Promise.all( [
             this.getAboutData(),
             this.getMapSizeThresholds(),
+            this.folders.refreshAll(),
             this.translations.getTranslations()
         ] );
 

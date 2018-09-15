@@ -262,6 +262,16 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    getReviewBookmarks( data ) {
+        const params = {
+            path: '/job/review/bookmarks/getall',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     // TODO: remove this if not needed
     getTileNodesCount( data ) {
         const params = {

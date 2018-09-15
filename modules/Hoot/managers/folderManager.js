@@ -47,7 +47,6 @@ export default class FolderManager {
     async refreshFolders() {
         let { folders } = await this.hoot.api.getFolders();
         this._folders   = this.listFolders( folders );
-        //this._folders = [];
 
         return this._folders;
     }
@@ -66,6 +65,17 @@ export default class FolderManager {
      */
     async refreshDatasets() {
         this._datasets = await this.hoot.layers.refreshLayers();
+    }
+
+    async dataExists() {
+        if ( !this._folders.length || !this._datasets.length ) {
+            if ( this.loading === undefined ) {
+                this.loading = this.refreshAll();
+            }
+
+            // make sure refresh all is only called once
+            await this.loading;
+        } else return true;
     }
 
     /**
@@ -186,14 +196,16 @@ export default class FolderManager {
      * @returns {array} - hierarchy
      */
     async getAvailFolderData() {
-        if ( !this._folders.length || !this._datasets.length ) {
-            if ( this.loading === undefined ) {
-                this.loading = this.refreshAll();
-            }
+        //if ( !this._folders.length || !this._datasets.length ) {
+        //    if ( this.loading === undefined ) {
+        //        this.loading = this.refreshAll();
+        //    }
+        //
+        //    // make sure refresh all is only called once
+        //    await this.loading;
+        //}
 
-            // make sure refresh all is only called once
-            await this.loading;
-        }
+        await this.dataExists();
 
         let datasetList = _map( this._datasets, dataset => {
             let match = _find( this._links, link => link.mapId === dataset.id );

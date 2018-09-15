@@ -11,8 +11,8 @@ import Datasets            from './datasets';
 import TransAssist         from './transAssist/transAssist';
 import Translations        from './translations';
 import Basemaps            from './basemaps';
-import ReviewBookmarks     from './reviewBookmarks';
-import ReviewBookmarkNotes from './reviewBookmarkNotes';
+import ReviewBookmarks     from './reviewBookmarks/reviewBookmarks';
+import ReviewBookmarkNotes from './reviewBookmarks/reviewBookmarkNotes';
 
 /**
  * Creates the settings panel
