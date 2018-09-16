@@ -152,7 +152,7 @@ Hoot.view.utilities = function (context){
         nav.append('div')
             .attr('id', 'logoutTabBtn')
             .attr('href', '#logout')
-            .classed('point pad2 inline keyline-left _icon dark strong small x', true)
+            .classed('point pad2 inline keyline-left _icon dark strong small logout-icon', true)
             .text('Logout')
             .on('click', function() {
                 Hoot.model.REST('logout', function(e) {
