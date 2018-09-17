@@ -120,7 +120,6 @@ export default class ReviewBookmarks extends Tab {
             let resp = await Hoot.api.getReviewBookmarks();
 
             this.bookmarks = resp.reviewBookmarks;
-            console.log( this.bookmarks );
         } catch ( e ) {
             console.log( 'Unable to retrieve bookmarks for review' );
             throw new Error( e );
@@ -132,28 +131,44 @@ export default class ReviewBookmarks extends Tab {
     populateBookmarks() {
         let items = this.bookmarkTable
             .selectAll( '.bookmark-item' )
-            .data( this.bookmarks )
-            .enter();
+            .data( this.bookmarks, d => d.id );
 
-        let item = items
+        items = items
+            .enter()
             .append( 'div' )
             .classed( 'bookmark-item keyline-all round', true );
 
-        let body = item
-            .append( 'div' )
-            .classed( 'bookmark-body', true );
+        items = items
+            .merge( items );
 
-        body
+        items.exit().remove();
+
+        let wrapper = items
+            .append( 'div' )
+            .classed( 'bookmark-wrapper', true );
+
+        let header = wrapper
+            .append( 'div' )
+            .classed( 'bookmark-header flex justify-between align-center', true );
+
+        header
             .append( 'div' )
             .classed( 'bookmark-title', true )
             .append( 'a' )
             .text( this.renderBookmarkTitle );
 
-        let details = body
+        header
             .append( 'div' )
-            .classed( 'bookmark-details', true );
+            .classed( 'delete-bookmark', true )
+            .append( 'button' )
+            .classed( '_icon trash', true )
+            .on( 'click', d => this.deleteBookmark( d ) );
 
-        let description = details
+        let body = wrapper
+            .append( 'div' )
+            .classed( 'bookmark-body', true );
+
+        let description = body
             .append( 'div' )
             .classed( 'bookmark-description', true );
 
@@ -165,22 +180,17 @@ export default class ReviewBookmarks extends Tab {
             .append( 'span' )
             .text( d => d.detail.bookmarkdetail.desc );
 
-        let subDescription = details
+        let details = body
             .append( 'div' )
-            .classed( 'bookmark-sub-description', true );
+            .classed( 'bookmark-details', true );
 
-        let createdBy = subDescription
-            .append( 'div' )
-            .classed( 'bookmark-sub-description', true );
-
-        createdBy
+        details
             .append( 'label' )
             .text( 'Created At:' );
 
-        createdBy
+        details
             .append( 'span' )
             .text( this.renderBookmarkCreatedBy );
-
     }
 
     renderBookmarkTitle( d ) {
@@ -196,5 +206,19 @@ export default class ReviewBookmarks extends Tab {
             createdBy = 'matt@test.com';
 
         return `${ createdAt } by ${ createdBy }`;
+    }
+
+    async deleteBookmark( d ) {
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+
+        let message = 'Are you sure you want to delete selected bookmark?',
+            confirm = await Hoot.message.confirm( message );
+
+        if ( !confirm ) return;
+
+        return Hoot.api.deleteReviewBookmark( d.id )
+            .then( resp => Hoot.message.alert( resp ) )
+            .then( () => this.loadBookmarks() );
     }
 }

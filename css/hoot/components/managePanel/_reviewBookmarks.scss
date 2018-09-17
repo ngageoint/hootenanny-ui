@@ -26,27 +26,35 @@
 
 .bookmark-item {
     min-height: 100px;
-    padding: 10px;
+    padding: 10px 15px;
     margin-bottom: 20px;
     box-shadow: 1px 1px 1px $dark-opacity30;
-}
 
-.bookmark-title {
-    font-size: 16px;
-    margin-bottom: 5px;
-}
+    .bookmark-header {
+        margin-bottom: 5px;
 
-.bookmark-details {
-    display: flex;
-    justify-content: flex-start;
+        .bookmark-title {
+            font-size: 16px;
+        }
 
-    label {
-        font-weight: 500;
+        .delete-bookmark button {
+            height: auto;
+            padding: 5px;
+        }
+    }
+
+    .bookmark-body {
+        display: flex;
+        justify-content: flex-start;
+
+        label {
+            font-weight: 500;
+        }
     }
 
     .bookmark-description {
         width: 40%;
-        min-width: 250px;
+        min-width: 180px;
         margin-right: 10px;
     }
 }

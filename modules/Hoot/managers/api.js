@@ -272,6 +272,34 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    deleteReviewBookmark( bookmarkId ) {
+        const params = {
+            path: '/job/review/bookmarks/delete',
+            method: 'DELETE',
+            params: {
+                bookmarkId
+            }
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Bookmark successfully deleted.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error deleting bookmark. Please try again later.',
+                    status: err.status || 500,
+                    type: 'error'
+                };
+            } );
+    }
+
     // TODO: remove this if not needed
     getTileNodesCount( data ) {
         const params = {
