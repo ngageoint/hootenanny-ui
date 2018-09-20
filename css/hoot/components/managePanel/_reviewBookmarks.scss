@@ -22,8 +22,8 @@
 }
 
 .bookmark-table {
-    min-height: 115px;
-    max-height: calc(100% - 95px);
+    min-height: 210px;
+    max-height: calc(100% - 130px);
     box-shadow: 0 3px 10px $dark-opacity10;
     overflow: auto;
 
@@ -41,10 +41,10 @@
 
     &:last-child {
         border-bottom: none;
-    }
 
-    &:only-child {
-        border: none;
+        &:nth-child(1), &:nth-child(2) {
+            border-bottom: 1px solid $dark-opacity20
+        }
     }
 
     .delete-bookmark button {
@@ -69,20 +69,46 @@
 
 .bookmark-pagination {
     position: static;
-    height: 50px;
+    display: flex;
+    justify-content: flex-end;
     bottom: 0;
     padding: 10px 0;
-    //border-top: 1px solid $light-gray;
 
-    .pages {
-        width: auto;
+    .page-nav {
         float: right;
+        display: flex;
 
-        .page {
-            width: 20px;
-            height: 20px;
-            border: 1px solid $light-gray;
+        & > div {
             display: inline-block;
+        }
+
+        button {
+            width: 30px;
+            height: 100%;
+            padding: 5px;
+            border-right: 1px solid $dark-opacity20;
+
+            &:last-child {
+                border-right: none;
+            }
+
+            &.material-icons {
+                font-size: 20px;
+                line-height: 0;
+            }
+
+            &.selected {
+                background-color: $blue;
+                color: $light;
+            }
+        }
+
+        .page-buttons {
+            margin: 0 10px;
+        }
+
+        .joined {
+            border-radius: 4px;
         }
     }
 }

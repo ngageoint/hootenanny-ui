@@ -12,6 +12,7 @@ import _get       from 'lodash-es/get';
 import _isEqual   from 'lodash-es/isEqual';
 import _map       from 'lodash-es/map';
 import _reject    from 'lodash-es/reject';
+import _slice     from 'lodash-es/slice';
 import _sortBy    from 'lodash-es/sortBy';
 import _uniq      from 'lodash-es/uniq';
 
@@ -62,8 +63,9 @@ export default class ReviewBookmarks extends Tab {
             }
         ];
 
-        this.perPageCount = 10;
-        this.bookmarks    = [];
+        this.perPageCount   = 10;
+        this.currentPageIdx = 0;
+        this.bookmarks      = [];
 
         this.defaultSortOpt = 'createdAt';
 
@@ -86,7 +88,11 @@ export default class ReviewBookmarks extends Tab {
         d3.select( '#itemsPerPage' ).property( 'value', this.perPageCount );
 
         this.loadBookmarks()
-            .then( bookmarks => this.populateBookmarks( this.sortBookmarks( bookmarks ) ) );
+            .then( bookmarks => {
+                this.currentBookmarks = this.sortBookmarks( bookmarks );
+
+                this.paginateBookmarks();
+            } );
     }
 
     createFilterControls() {
@@ -140,18 +146,57 @@ export default class ReviewBookmarks extends Tab {
             .append( 'div' )
             .classed( 'bookmark-pagination', true );
 
-        let pages = pagination
+        let pageNav = pagination
             .append( 'div' )
-            .classed( 'pages', true )
-            .selectAll( '.page' )
-            .data( [ 1, 2, 3, 4, 5 ] )
-            .enter()
-            .append( 'div' )
-            .classed( 'page', true );
+            .classed( 'page-nav', true );
 
-        let navButtons = pagination
+        this.reverseButtons = pageNav
             .append( 'div' )
-            .classed( 'nav-buttons', true );
+            .classed( 'reverse-buttons keyline-all joined', true );
+
+        this.forwardButtons = pageNav
+            .append( 'div' )
+            .classed( 'forward-buttons keyline-all joined', true );
+
+        this.pageButtons = pageNav
+            .insert( 'div', '.forward-buttons' )
+            .classed( 'page-buttons keyline-all joined', true );
+
+        this.reverseButtons
+            .append( 'button' )
+            .classed( 'material-icons', true )
+            .text( 'first_page' )
+            .on( 'click', () => {
+                this.currentPageIdx = 0;
+                this.paginateBookmarks();
+            } );
+
+        this.reverseButtons
+            .append( 'button' )
+            .classed( 'material-icons', true )
+            .text( 'chevron_left' )
+            .on( 'click', () => {
+                this.currentPageIdx--;
+                this.paginateBookmarks();
+            } );
+
+        this.forwardButtons
+            .append( 'button' )
+            .classed( 'material-icons', true )
+            .text( 'chevron_right' )
+            .on( 'click', () => {
+                this.currentPageIdx++;
+                this.paginateBookmarks();
+            } );
+
+        this.forwardButtons
+            .append( 'button' )
+            .classed( 'material-icons', true )
+            .text( 'last_page' )
+            .on( 'click', () => {
+                this.currentPageIdx = this.pageButtons.selectAll( '.page' ).size() - 1;
+                this.paginateBookmarks();
+            } );
     }
 
     async loadBookmarks() {
@@ -183,12 +228,12 @@ export default class ReviewBookmarks extends Tab {
 
     populateFilterCombos() {
         // created by
-        this.filterControls[ 1 ].options = _uniq( _map( this.bookmarks, bookmark => {
+        this.filterControls[ 2 ].options = _uniq( _map( this.bookmarks, bookmark => {
             return bookmark.createdBy;
         } ) );
 
         // layer name
-        this.filterControls[ 2 ].options = _uniq( _map( this.bookmarks, bookmark => {
+        this.filterControls[ 3 ].options = _uniq( _map( this.bookmarks, bookmark => {
             return bookmark.layerName;
         } ) );
 
@@ -201,8 +246,12 @@ export default class ReviewBookmarks extends Tab {
                     };
                 } ) )
                 .on( 'accept', () => {
-                    if ( d.name === 'sortBy' ) {
-                        this.populateBookmarks( this.sortBookmarks( this.currentBookmarks ), true );
+                    if ( d.name === 'itemsPerPage' ) {
+                        this.perPageCount = d3.select( '#' + d.name ).property( 'value' );
+                        this.paginateBookmarks();
+                    } else if ( d.name === 'sortBy' ) {
+                        this.currentBookmarks = this.sortBookmarks( this.currentBookmarks );
+                        this.paginateBookmarks();
                     } else {
                         this.setFilterOpt( d );
                     }
@@ -215,8 +264,6 @@ export default class ReviewBookmarks extends Tab {
     }
 
     populateBookmarks( bookmarks, hardRefresh ) {
-        this.currentBookmarks = bookmarks;
-
         if ( hardRefresh ) {
             this.bookmarkTable.selectAll( '.bookmark-item' ).remove();
         }
@@ -236,7 +283,7 @@ export default class ReviewBookmarks extends Tab {
             .enter()
             .append( 'div' )
             .attr( 'id', d => d.id )
-            .classed( 'bookmark-item fill-white keyline-top keyline-bottom', true )
+            .classed( 'bookmark-item fill-white keyline-bottom', true )
             .style( 'opacity', 0 );
 
         items
@@ -322,6 +369,8 @@ export default class ReviewBookmarks extends Tab {
         d3.select( '#filterByCreator' ).property( 'value', '' );
         d3.select( '#filterByLayerName' ).property( 'value', '' );
 
+        this.currentPageIdx = 0;
+
         this.populateBookmarks( this.sortBookmarks( this.bookmarks ), true );
     }
 
@@ -357,7 +406,10 @@ export default class ReviewBookmarks extends Tab {
         }
 
         if ( !_isEqual( this.currentBookmarks, layerNameFiltered ) ) {
-            this.populateBookmarks( layerNameFiltered, true );
+            this.currentPageIdx   = 0;
+            this.currentBookmarks = this.sortBookmarks( layerNameFiltered );
+
+            this.paginateBookmarks();
         }
     }
 
@@ -369,8 +421,56 @@ export default class ReviewBookmarks extends Tab {
         return bookmarks;
     }
 
-    paginateBookmarks( idx ) {
+    paginateBookmarks() {
+        // slice appropriate range of items from array
+        let startIdx = this.perPageCount * this.currentPageIdx,
+            endIdx   = this.perPageCount * (this.currentPageIdx + 1);
 
+        let bookmarks = _slice( this.currentBookmarks, startIdx, endIdx );
+
+        if ( bookmarks.length === 0 ) {
+            this.currentPageIdx--;
+            this.paginateBookmarks();
+            return;
+        }
+
+        let pageCount = Math.ceil( this.currentBookmarks.length / this.perPageCount ),
+            items     = [ ...Array( pageCount ).keys() ],
+            lastIdx   = pageCount - 1;
+
+        let pages = this.pageButtons
+            .selectAll( '.page' )
+            .data( items );
+
+        pages.exit().remove();
+
+        pages
+            .enter()
+            .append( 'button' )
+            .classed( 'page', true )
+            .attr( 'data-index', d => d )
+            .text( d => d + 1 )
+            .on( 'click', d => {
+                this.currentPageIdx = d;
+                this.paginateBookmarks();
+            } );
+
+        this.pageButtons
+            .selectAll( '.page' )
+            .classed( 'selected', false );
+
+        this.pageButtons
+            .select( `[data-index="${ this.currentPageIdx }"]` )
+            .classed( 'selected', true );
+
+        this.reverseButtons.selectAll( 'button' )
+            .classed( 'disabled', this.currentPageIdx === 0 );
+
+        this.forwardButtons
+            .selectAll( 'button' )
+            .classed( 'disabled', this.currentPageIdx === lastIdx );
+
+        this.populateBookmarks( bookmarks, true );
     }
 
     async deleteBookmark( d ) {
@@ -385,9 +485,9 @@ export default class ReviewBookmarks extends Tab {
         return Hoot.api.deleteReviewBookmark( d.id )
             .then( resp => Hoot.message.alert( resp ) )
             .then( () => {
-                let bookmarks = _reject( this.currentBookmarks, bookmark => bookmark.id === d.id );
+                this.currentBookmarks = _reject( this.currentBookmarks, bookmark => bookmark.id === d.id );
 
-                this.populateBookmarks( bookmarks );
+                this.paginateBookmarks();
             } );
     }
 }
