@@ -144,7 +144,15 @@ export default class ReviewBookmarks extends Tab {
     createPagination() {
         let pagination = this.panelWrapper
             .append( 'div' )
-            .classed( 'bookmark-pagination', true );
+            .classed( 'bookmark-pagination flex justify-between align-center', true );
+
+        this.showingOnPage = pagination
+            .append( 'div' )
+            .classed( 'showing-on-page', true )
+            .html( 'Showing <span class="from-count"></span>-' +
+                '<span class="to-count"></span> of ' +
+                '<span class="total-count"></span> items'
+            );
 
         let pageNav = pagination
             .append( 'div' )
@@ -263,84 +271,6 @@ export default class ReviewBookmarks extends Tab {
         } );
     }
 
-    populateBookmarks( bookmarks, hardRefresh ) {
-        if ( hardRefresh ) {
-            this.bookmarkTable.selectAll( '.bookmark-item' ).remove();
-        }
-
-        let items = this.bookmarkTable
-            .selectAll( '.bookmark-item' )
-            .data( bookmarks, d => d.id );
-
-        items
-            .exit()
-            .transition()
-            .duration( 400 )
-            .style( 'opacity', 0 )
-            .remove();
-
-        items = items
-            .enter()
-            .append( 'div' )
-            .attr( 'id', d => d.id )
-            .classed( 'bookmark-item fill-white keyline-bottom', true )
-            .style( 'opacity', 0 );
-
-        items
-            .transition()
-            .duration( 400 )
-            .style( 'opacity', 1 );
-
-        let wrapper = items
-            .append( 'div' )
-            .classed( 'bookmark-wrapper', true );
-
-        let header = wrapper
-            .append( 'div' )
-            .classed( 'bookmark-header flex justify-between align-center', true );
-
-        header
-            .append( 'div' )
-            .classed( 'bookmark-title', true )
-            .append( 'a' )
-            .text( this.renderBookmarkTitle );
-
-        header
-            .append( 'div' )
-            .classed( 'delete-bookmark', true )
-            .append( 'button' )
-            .classed( '_icon trash', true )
-            .on( 'click', d => this.deleteBookmark( d ) );
-
-        let body = wrapper
-            .append( 'div' )
-            .classed( 'bookmark-body', true );
-
-        let description = body
-            .append( 'div' )
-            .classed( 'bookmark-description', true );
-
-        description
-            .append( 'label' )
-            .text( 'Description:' );
-
-        description
-            .append( 'span' )
-            .text( d => d.detail.bookmarkdetail.desc );
-
-        let details = body
-            .append( 'div' )
-            .classed( 'bookmark-details', true );
-
-        details
-            .append( 'label' )
-            .text( 'Created At:' );
-
-        details
-            .append( 'span' )
-            .text( this.renderBookmarkCreatedBy );
-    }
-
     renderBookmarkTitle( d ) {
         let title      = d.detail.bookmarkdetail.title,
             layerName  = d.layerName,
@@ -423,11 +353,11 @@ export default class ReviewBookmarks extends Tab {
 
     paginateBookmarks() {
         // slice appropriate range of items from array
-        let startIdx = this.perPageCount * this.currentPageIdx,
-            endIdx   = this.perPageCount * (this.currentPageIdx + 1);
+        let startIdx  = this.perPageCount * this.currentPageIdx,
+            endIdx    = this.perPageCount * (this.currentPageIdx + 1),
+            bookmarks = _slice( this.currentBookmarks, startIdx, endIdx );
 
-        let bookmarks = _slice( this.currentBookmarks, startIdx, endIdx );
-
+        // last bookmark on page was deleted so move back one page and re-render
         if ( bookmarks.length === 0 ) {
             this.currentPageIdx--;
             this.paginateBookmarks();
@@ -437,6 +367,19 @@ export default class ReviewBookmarks extends Tab {
         let pageCount = Math.ceil( this.currentBookmarks.length / this.perPageCount ),
             items     = [ ...Array( pageCount ).keys() ],
             lastIdx   = pageCount - 1;
+
+        let from  = startIdx + 1,
+            to    = endIdx,
+            total = this.currentBookmarks.length;
+
+        // if last page is showing, set the end of range to total number of bookmarks
+        if ( this.currentPageIdx === lastIdx && bookmarks.length < endIdx ) {
+            to = this.currentBookmarks.length;
+        }
+
+        this.showingOnPage.select( '.from-count' ).text( from );
+        this.showingOnPage.select( '.to-count' ).text( to );
+        this.showingOnPage.select( '.total-count' ).text( total );
 
         let pages = this.pageButtons
             .selectAll( '.page' )
@@ -464,13 +407,91 @@ export default class ReviewBookmarks extends Tab {
             .classed( 'selected', true );
 
         this.reverseButtons.selectAll( 'button' )
-            .classed( 'disabled', this.currentPageIdx === 0 );
+            .property( 'disabled', this.currentPageIdx === 0 );
 
         this.forwardButtons
             .selectAll( 'button' )
-            .classed( 'disabled', this.currentPageIdx === lastIdx );
+            .property( 'disabled', this.currentPageIdx === lastIdx );
 
         this.populateBookmarks( bookmarks, true );
+    }
+
+    populateBookmarks( bookmarks, hardRefresh ) {
+        if ( hardRefresh ) {
+            this.bookmarkTable.selectAll( '.bookmark-item' ).remove();
+        }
+
+        let items = this.bookmarkTable
+            .selectAll( '.bookmark-item' )
+            .data( bookmarks, d => d.id );
+
+        items
+            .exit()
+            .transition()
+            .duration( 400 )
+            .style( 'opacity', 0 )
+            .remove();
+
+        items = items
+            .enter()
+            .append( 'div' )
+            .attr( 'id', d => d.id )
+            .classed( 'bookmark-item fill-white keyline-bottom', true )
+            .style( 'opacity', 0 );
+
+        items
+            .transition()
+            .duration( 400 )
+            .style( 'opacity', 1 );
+
+        let wrapper = items
+            .append( 'div' )
+            .classed( 'bookmark-wrapper', true );
+
+        let header = wrapper
+            .append( 'div' )
+            .classed( 'bookmark-header flex justify-between align-center', true );
+
+        header
+            .append( 'div' )
+            .classed( 'bookmark-title', true )
+            .append( 'a' )
+            .text( this.renderBookmarkTitle );
+
+        header
+            .append( 'div' )
+            .classed( 'delete-bookmark', true )
+            .append( 'button' )
+            .classed( '_icon trash', true )
+            .on( 'click', d => this.deleteBookmark( d ) );
+
+        let body = wrapper
+            .append( 'div' )
+            .classed( 'bookmark-body', true );
+
+        let description = body
+            .append( 'div' )
+            .classed( 'bookmark-description', true );
+
+        description
+            .append( 'label' )
+            .text( 'Description:' );
+
+        description
+            .append( 'span' )
+            .text( d => d.detail.bookmarkdetail.desc );
+
+        let details = body
+            .append( 'div' )
+            .classed( 'bookmark-details', true );
+
+        details
+            .append( 'label' )
+            .text( 'Created At:' );
+
+        details
+            .append( 'span' )
+            .text( this.renderBookmarkCreatedBy );
     }
 
     async deleteBookmark( d ) {

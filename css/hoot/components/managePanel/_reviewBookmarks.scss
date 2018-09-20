@@ -1,5 +1,4 @@
 #util-review-bookmarks .panel-wrapper {
-    //padding: 0;
     overflow: hidden;
 }
 
@@ -70,9 +69,12 @@
 .bookmark-pagination {
     position: static;
     display: flex;
-    justify-content: flex-end;
     bottom: 0;
     padding: 10px 0;
+
+    .showing-on-page span {
+        font-weight: 500;
+    }
 
     .page-nav {
         float: right;
