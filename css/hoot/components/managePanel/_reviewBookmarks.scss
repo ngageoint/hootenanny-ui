@@ -1,7 +1,13 @@
+#util-review-bookmarks .panel-wrapper {
+    //padding: 0;
+    overflow: hidden;
+}
+
 .bookmark-filter-container {
     white-space: nowrap;
     display: flex;
     align-items: flex-end;
+    margin-bottom: 15px;
 
     .filter-control {
         margin-right: 20px;
@@ -9,38 +15,40 @@
 
     .reset-button {
         position: relative;
-        width: 40px;
-        height: 40px;
-        top: 5px;
+        width: 30px;
+        height: 30px;
         border-radius: 100%;
     }
 }
 
 .bookmark-table {
-    height: 800px;
-    padding: 20px;
-    margin-top: 20px;
+    min-height: 115px;
+    max-height: calc(100% - 95px);
     box-shadow: 0 3px 10px $dark-opacity10;
-    overflow-y: auto;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 .bookmark-item {
-    min-height: 100px;
-    padding: 10px 15px;
-    margin-bottom: 20px;
-    box-shadow: 1px 1px 1px $dark-opacity30;
+    padding: 5px 10px 5px 15px;
 
-    .bookmark-header {
-        margin-bottom: 5px;
+    &:first-child {
+        border-top: none;
+    }
 
-        .bookmark-title {
-            font-size: 16px;
-        }
+    &:last-child {
+        border-bottom: none;
+    }
 
-        .delete-bookmark button {
-            height: auto;
-            padding: 5px;
-        }
+    &:only-child {
+        border: none;
+    }
+
+    .delete-bookmark button {
+        height: auto;
     }
 
     .bookmark-body {
@@ -56,5 +64,25 @@
         width: 40%;
         min-width: 180px;
         margin-right: 10px;
+    }
+}
+
+.bookmark-pagination {
+    position: static;
+    height: 50px;
+    bottom: 0;
+    padding: 10px 0;
+    //border-top: 1px solid $light-gray;
+
+    .pages {
+        width: auto;
+        float: right;
+
+        .page {
+            width: 20px;
+            height: 20px;
+            border: 1px solid $light-gray;
+            display: inline-block;
+        }
     }
 }

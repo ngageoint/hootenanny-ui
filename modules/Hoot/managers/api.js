@@ -114,6 +114,16 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    getAllUsers() {
+        const params = {
+            path: '/osm/user/-1/all',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     /**
      * Get the status of an ongoing backend job
      *

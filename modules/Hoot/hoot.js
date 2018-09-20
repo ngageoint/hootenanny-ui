@@ -4,6 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/16/18
  *******************************************************************************************************/
 
+import _forEach from 'lodash-es/forEach';
+
 import API                from './managers/api';
 import MessageManager     from './managers/messages/messageManager';
 import FolderManager      from './managers/folderManager';
@@ -26,6 +28,7 @@ class Hoot {
         this.config = {
             tagInfo,
             appInfo: [],
+            users: [],
             exportSizeThreshold: null,
             ingestSizeThreshold: null,
             conflateSizeThreshold: null,
@@ -40,6 +43,7 @@ class Hoot {
 
         Promise.all( [
             this.getAboutData(),
+            this.getAllUsers(),
             this.getMapSizeThresholds(),
             this.folders.refreshAll(),
             this.translations.getTranslations()
@@ -60,13 +64,27 @@ class Hoot {
                 this.api.getServicesVersionInfo()
             ] );
 
-            info.forEach( d => this.config.appInfo.push( d ) );
+            _forEach( info, d => this.config.appInfo.push( d ) );
         } catch ( err ) {
             this.message.alert( err );
         }
 
         // build info will always be available
         this.config.appInfo.push( buildInfo );
+    }
+
+    async getAllUsers() {
+        try {
+            let resp = await this.api.getAllUsers();
+
+            this.config.users = {};
+
+            _forEach( resp.users, user => {
+                this.config.users[ user.id ] = user;
+            } );
+        } catch ( err ) {
+            this.message.alert( err );
+        }
     }
 
     async getMapSizeThresholds() {
