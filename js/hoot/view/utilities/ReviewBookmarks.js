@@ -20,7 +20,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     **/
     _instance.createContent = function(form){
         form.append('div').classed('fr col10 fill-white small keyline-bottom', true);
-        
+
         var filterBar = _instance.datasetcontainer = form.append('div')
             .attr('id','reviewBookmarksFilters')
             .classed('fl col4 fill-white small overflow keyline-all row16',true);
@@ -133,7 +133,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         _.each(meta.data, function(c){
             var lbl = parent.append('label')
                 .style('text-align','left');
-            
+
             var filterInput = lbl.append('input')
                 .attr('type',this.type)
                 .attr('filter_id',c.id)
@@ -245,7 +245,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                 _lastSortRequest.createFilterVal = createFilterVal.slice(0,-1);
             } else {
                 _lastSortRequest.createFilterVal = null;
-            }            
+            }
         }
 
         if(layerGroup.selectAll('input:checked')[0].length === 0) {_lastSortRequest.layerFilterVal = -999;}
@@ -295,9 +295,9 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
         var data = [];
 
         var newobj = {};
-        newobj.name = 'anonymous';
+        newobj.name = 'anonymous'; /* used by _createMenu */
         newobj.id = -1;
-        newobj.displayName = 'anonymous';
+        newobj.display_name = 'anonymous';
         newobj.action = function(d){_filterData(d);};
         data.push(newobj);
 
@@ -305,9 +305,9 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
             var usr = usersList[i];
 
             newobj = {};
-            newobj.name = usr.email;
+            newobj.name = usr.email; /* used by _createMenu */
             newobj.id = usr.id;
-            newobj.displayName = usr.displayName;
+            newobj.display_name = usr.display_name;
             newobj.action = _filterData;
             data.push(newobj);
         }
@@ -393,7 +393,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                 window.console.error(d.error);
                 return;
             }
-            
+
             var bookmarksArray = d.reviewBookmarks;
 
             // Clean up user list
@@ -523,7 +523,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                             d3.select(this).classed('fr _icon trash', true);
                         });
 
-                        _instance.cleanUpMenus();        
+                        _instance.cleanUpMenus();
                     });
 
                 });
@@ -609,10 +609,10 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
     var _deleteBtnHandler = function(d) {
         d3.event.stopPropagation();
         d3.event.preventDefault();
-        
+
 
         var r = confirm('Are you sure you want to delete selected bookmark?');
-        if (r === true) { 
+        if (r === true) {
             _instance.deleteBookmark(d);
         } else {
             return;
@@ -632,7 +632,7 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
                 window.console.error(d.error);
                 return;
             }
-            _instance.populatePopulateBookmarks(null, _lastSortRequest);   
+            _instance.populatePopulateBookmarks(null, _lastSortRequest);
         });
     };
 
