@@ -434,15 +434,10 @@ Hoot.model.layers = function (context)
         return merged;
     };
 
-    model_layers.updateLayerName = function(data,callback){
-
-        Hoot.model.REST('Modify',data,function(resp){
-            //if(resp.success === true){
-                if(callback){callback(resp.success);}
-            //}
-            //return resp.success;
+    model_layers.updateLayerName = function(data, callback){
+        Hoot.model.REST('Modify',data,function(resp) {
+            callback && callback();
         });
-        //return true;
     };
 
     model_layers.getSelectedLayers = function() {

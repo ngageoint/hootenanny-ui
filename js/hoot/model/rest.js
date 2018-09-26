@@ -47,21 +47,25 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.Modify = function (data, callback) {
         if (!data.inputType || !data.mapid || !data.modifiedName) {
-            callback(false);
-            return false;
+            iD.ui.Alert('Modify name failed: malformed request!', 'error', new Error().stack);
+            return;
         }
-        /*callback(true);
-        return true;*/
-        d3.json('/hoot-services/osm/api/0.6/map/modify?mapId=' + data.mapid +
-                '&inputType=' + data.inputType + '&modName=' + data.modifiedName)
-        .post(data, function (error, data) {
-            if (error){
-                iD.ui.Alert('Modify name failed!','error',new Error().stack);
-                return error;
-            }
-            callback(data);
-            return data;
-        });
+        // d3.json('/hoot-services/osm/api/0.6/map/modify?mapId=' + data.mapid + '&inputType=' + data.inputType + '&modName=' + data.modifiedName)
+        // .put(data, function (error, data) {
+        //     if (error) {
+        //         iD.ui.Alert('Modify name failed!','error',new Error().stack);
+        //     } else {
+        //         callback();
+        //     }
+        // });
+        d3.request('/hoot-services/osm/api/0.6/map/modify?mapId=' + data.mapid + '&inputType=' + data.inputType + '&modName=' + data.modifiedName)
+            .send('put', function(e, r) {
+                if (e) {
+                    iD.ui.Alert('Modify name failed!', 'error', new Error().stack);
+                } else {
+                    callback();
+                }
+            });
     };
 
     rest.updateMapFolderLinks = function(data,callback){
