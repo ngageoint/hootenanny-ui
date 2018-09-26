@@ -137,6 +137,8 @@ Hoot.view.versioninfo = function(){
         uiInfo.description = uiDesc;
         headerVersionInfo.push(uiInfo);
 
+        console.log( headerVersionInfo );
+
         if(_mainVer){
             var la = _mainVer.selectAll('span')
             .data(headerVersionInfo)

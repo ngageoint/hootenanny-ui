@@ -69,6 +69,8 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
     function displayLength(m){
         var imperial = context.imperial;
 
+        console.log( imperial );
+
         var d = m * (imperial ? 3.28084 : 1),
             p, unit;
 
@@ -119,7 +121,7 @@ iD.behavior.MeasureDrawLine = function(context,svg) {
     
     function click() {
         var c = context.projection(context.map().mouseCoordinates());
-        
+
         svg.append('g')
             .classed('node point',true)
             .attr('id','measure-vertex-'+nodeId)

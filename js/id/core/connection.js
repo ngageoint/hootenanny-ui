@@ -151,10 +151,14 @@ iD.Connection = function(context, useHttps) {
             }
         }
 
+        //console.log( ids );
+
 
         _.each(_.groupBy(_.uniq(ids), iD.Entity.id.type), function(v, k) {
             var type = k + 's',
                 osmIDs = _.map(v, iD.Entity.id.toOSM);
+
+            //console.log( osmIDs );
 
             _.each(_.chunk(osmIDs, 150), function(arr) {
                 if(currMapId){
@@ -460,6 +464,8 @@ iD.Connection = function(context, useHttps) {
             var changemapId = b;
             var changes = a;
 
+            console.log( changemapId );
+
             oauth.xhr({
                 method: 'PUT',
                 path: '/api/0.6/changeset/create?mapId=' + changemapId,
@@ -469,6 +475,8 @@ iD.Connection = function(context, useHttps) {
                 if (err) return callback(err);
 
                 var mergedPoiReviewItems = context.hoot().model.conflicts.getReviewMergedElements();
+
+                console.log( 'merged items:', mergedPoiReviewItems );
 
                 if(mergedPoiReviewItems){
                     _.each(mergedPoiReviewItems, function(itm){
@@ -480,6 +488,8 @@ iD.Connection = function(context, useHttps) {
                             return mod.id === curRefId;
                         });
 
+                        console.log( 'changed rel: ', changeRel );
+
                         if(changeRel){ // if exists in changes.modified
                             if(changeRel.members.length >= newMember.index){
                                 changeRel.members.splice(newMember.index, 0, newMember);
@@ -489,8 +499,10 @@ iD.Connection = function(context, useHttps) {
                             if(changeRel.members.length < 2){
                                 changeRel.tags['hoot:review:needs'] = 'no';
                             }
+
                         } else { // need to add to changes.modified
                             var modRelation = context.hasEntity(curRefId);
+
                             if(modRelation){
                                 if(modRelation.members.length >= newMember.index){
                                     modRelation.members.splice(newMember.index, 0, newMember);
@@ -501,12 +513,14 @@ iD.Connection = function(context, useHttps) {
                             if(modRelation.members.length < 2){
                                 modRelation.tags['hoot:review:needs'] = 'no';
                             }
-                            changes.modified.push(modRelation);
+
                         }
                     });
+
                     context.hoot().model.conflicts.setReviewMergedElements(null);
                 }
 
+                console.log( JXON.stringify(connection.osmChangeJXON(changeset_id, changes)) );
                 oauth.xhr({
                     method: 'POST',
                     path: '/api/0.6/changeset/' + changeset_id + '/upload?mapId=' + changemapId,

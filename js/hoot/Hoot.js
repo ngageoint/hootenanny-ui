@@ -173,6 +173,7 @@ Hoot.hoot = function (context) {
     * @param color - selected color
     **/
     hoot.changeColor = function (lyrid, color) {
+        console.log( lyrid );
         var modifiedId = lyrid.toString();
         var sheets = document.styleSheets[document.styleSheets.length - 1];
         color = hoot

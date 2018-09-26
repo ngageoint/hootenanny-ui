@@ -13,12 +13,12 @@ iD.actions.DeleteNode = function(nodeId) {
     // but this seems to be low level tag ops which may make
     // sense to leave it here
     function updateHootReviewTags(entity, graph) {
+        console.log( 'update hoot review tags' );
         var tags = entity.tags;
         //console.log(tags);
         var newTags = _.clone(tags);
         newTags['hoot:review:needs'] = 'no';
         return iD.actions.ChangeTags(entity.id, newTags)(graph);
-
     }
 
 
@@ -35,8 +35,10 @@ iD.actions.DeleteNode = function(nodeId) {
                 }
             });
 
+        console.log( 'node: ', node );
         graph.parentRelations(node)
             .forEach(function(parent) {
+                console.log( 'parent: ', parent );
                 parent = parent.removeMembersWithID(nodeId);
                 graph = graph.replace(parent);
 

@@ -134,10 +134,6 @@ Hoot.view.utilities.translation = function(context) {
                     context.hoot().control.utilities.translation.exportTranslation(d);
                 });
 
-
-
-
-
             });
         };
 

@@ -159,7 +159,8 @@ iD.behavior.DrawWay = function(context, wayId, index, mode, baseGraph) {
     // Finish the draw operation, removing the temporary node. If the way has enough
     // nodes to be valid, it's selected. Otherwise, return to browse mode.
     drawWay.finish = function() {
-        context.pop();
+        console.log( 'finish' );
+        //context.pop();
         finished = true;
 
         window.setTimeout(function() {

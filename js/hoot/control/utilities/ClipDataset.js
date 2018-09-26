@@ -54,19 +54,45 @@ Hoot.control.utilities.clipdataset = function(context) {
         var maxlat = context.map().extent()[1][1].toFixed(6);
 
         var _coordsDiv = _form.append('div').append('div').classed('exportbox',true);
-        _coordsDiv.append('input').attr('type','text').attr('id','maxlat')
-            .attr('size',10).classed('export_bound',true).value(maxlat);
-        _coordsDiv.append('br');
-        _coordsDiv.append('input').attr('type','text')
-            .attr('id','minlon').attr('size',10).classed('export_bound',true).value(minlon);
-        _coordsDiv.append('input').attr('type','text').attr('id','maxlon')
-            .attr('size',10).classed('export_bound',true).value(maxlon);
-        _coordsDiv.append('br');
-        _coordsDiv.append('br');
-        _coordsDiv.append('input').attr('type','text').attr('id','minlat')
-            .attr('size',10).classed('export_bound',true).value(minlat);
 
-        var _clipOptions = _form.append('div')
+        _coordsDiv
+            .append('input')
+            .attr('type','text')
+            .attr('id','maxlat')
+            .attr('size',10)
+            .classed('export_bound',true)
+            .value(maxlat);
+
+        _coordsDiv.append('br');
+
+        _coordsDiv
+            .append('input')
+            .attr('type','text')
+            .attr('id','minlon')
+            .attr('size',10)
+            .classed('export_bound',true)
+            .value(minlon);
+
+        _coordsDiv
+            .append('input')
+            .attr('type','text')
+            .attr('id','maxlon')
+            .attr('size',10)
+            .classed('export_bound',true).value(maxlon);
+
+        _coordsDiv.append('br');
+        _coordsDiv.append('br');
+
+        _coordsDiv
+            .append('input')
+            .attr('type','text')
+            .attr('id','minlat')
+            .attr('size',10)
+            .classed('export_bound',true)
+            .value(minlat);
+
+        var _clipOptions = _form
+            .append('div')
             .classed('button-wrap joined col12 pad1y', true);
 
         _clipOptions.append('button')
@@ -88,7 +114,7 @@ Hoot.control.utilities.clipdataset = function(context) {
             .classed('col6', true).style('border','1px solid #ccc')
             .append('div')
             .append('span')
-            .classed('label',true)            
+            .classed('label',true)
             .attr('id','clip2ve')
             .text('Use Visual Extent')
             .on('click',function(){
@@ -118,7 +144,7 @@ Hoot.control.utilities.clipdataset = function(context) {
                 }
             });
 
-        return _modalcoord; 
+        return _modalcoord;
     };
 
     /**
@@ -256,7 +282,7 @@ Hoot.control.utilities.clipdataset = function(context) {
     _instance.populateCoordinates = function(maxCoords,minCoords) {
         // populate coordinates with bbox
         var maxlon = maxCoords[0].toFixed(6);
-        var maxlat = maxCoords[1].toFixed(6);        
+        var maxlat = maxCoords[1].toFixed(6);
         var minlon = minCoords[0].toFixed(6);
         var minlat = minCoords[1].toFixed(6);
 
@@ -354,12 +380,12 @@ Hoot.control.utilities.clipdataset = function(context) {
 
         var clipType = d3.select('#clipType').attr('clipType');
         var checkedRows = d3.select('#clipTable').selectAll('tr').selectAll('[type=checkbox]');
-            var selectedLayers = [];
-            _.each(checkedRows,function(d){
-                if(!_.isEmpty(d)){
-                    if(d3.select(d[0]).property('checked')){selectedLayers.push(d.parentNode.id.replace('row-',''));}
-                }
-            });
+        var selectedLayers = [];
+        _.each(checkedRows,function(d){
+            if(!_.isEmpty(d)){
+                if(d3.select(d[0]).property('checked')){selectedLayers.push(d.parentNode.id.replace('row-',''));}
+            }
+        });
 
         //Set up params for clipping
         var params = [];

@@ -68,6 +68,7 @@ Hoot.model.folders = function (context)
     };
 
     model_folders.addFolder = function(data,callback){
+        console.log( 'add folder: ', data );
         if(!data.folderName || !(data.parentId>=0)){
             if(callback){callback(data.parentId);}
             return false;

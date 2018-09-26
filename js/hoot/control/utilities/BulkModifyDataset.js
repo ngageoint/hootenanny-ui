@@ -7,144 +7,150 @@
 //      17 Feb. 2016
 //      15 Apr. 2016 eslint updates -- Sisskind
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Hoot.control.utilities.bulkmodifydataset = function(context) {
-    var _events = d3.dispatch();
+Hoot.control.utilities.bulkmodifydataset = function( context ) {
+    var _events   = d3.dispatch();
     var _instance = {};
 
     var _datasets;
     var _container;
 
-
     /**
-    * @desc Entry point where it creates form.
-    * @param datasets - Target datasets meta data.
-    **/
-    _instance.bulkModifyContainer = function(datasets) {
-        _createContainer(datasets);
+     * @desc Entry point where it creates form.
+     * @param datasets - Target datasets meta data.
+     **/
+    _instance.bulkModifyContainer = function( datasets ) {
+        _createContainer( datasets );
     };
 
     /**
-    * @desc Internal form creation.
-    * @param datasets - Target datasets meta data.
-    **/
-    var _createContainer = function(datasets) {
+     * @desc Internal form creation.
+     * @param datasets - Target datasets meta data.
+     **/
+    var _createContainer = function( datasets ) {
         _datasets = datasets;
-        context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
-        var folderList = _.map(context.hoot().model.folders.getAvailFolders(),_.clone);
+        context.hoot().model.folders.listFolders( context.hoot().model.folders.getAvailFolders() );
+        var folderList  = _.map( context.hoot().model.folders.getAvailFolders(), _.clone );
         var placeholder = 'root';
 
-        var d_form = [{
+        var d_form = [ {
             label: 'Path',
             id: 'bulkModifyPathname',
-            placeholder:placeholder,
-            combobox: {'data':folderList, 'command': _populatePaths },
-            inputtype:'combobox'
+            placeholder: placeholder,
+            combobox: { 'data': folderList, 'command': _populatePaths },
+            inputtype: 'combobox'
         },
-        {
-            label: 'New Folder Name (leave blank otherwise)',
-            id: 'bulkModifyNewfoldername',
-            placeholder:''
-        }];
-
+            {
+                label: 'New Folder Name (leave blank otherwise)',
+                id: 'bulkModifyNewfoldername',
+                placeholder: ''
+            } ];
 
         var d_btn = [
-                    {
-                        text: 'Update',
-                        location: 'right',
-                        id: 'bulkModifyDatasetBtnContainer',
-                        onclick: _submitClickHandler
-                    }
-                ];
+            {
+                text: 'Update',
+                location: 'right',
+                id: 'bulkModifyDatasetBtnContainer',
+                onclick: _submitClickHandler
+            }
+        ];
 
-        var meta = {};
-        meta.title = 'Move Datasets';
-        meta.form = d_form;
+        var meta    = {};
+        meta.title  = 'Move Datasets';
+        meta.form   = d_form;
         meta.button = d_btn;
 
-        _container = context.hoot().ui.formfactory.create('body', meta);
+        _container = context.hoot().ui.formfactory.create( 'body', meta );
     };
 
     /**
-    * @desc Populates folders list.
-    * @param field - fieldset meta data.
-    **/
-    var _populatePaths = function(field) {
+     * @desc Populates folders list.
+     * @param field - fieldset meta data.
+     **/
+    var _populatePaths = function( field ) {
         var comboPathName = d3.combobox()
-            .data(_.map(field.combobox.data, function (n) {
+            .data( _.map( field.combobox.data, function( n ) {
                 return {
                     value: n.folderPath,
                     title: n.folderPath
                 };
-            }));
+            } ) );
 
-        comboPathName.data().sort(function(a,b){
-              var textA = a.value.toUpperCase();
-              var textB=b.value.toUpperCase();
-              return (textA<textB)?-1 : (textA>textB)?1:0;
-          });
+        comboPathName.data().sort( function( a, b ) {
+            var textA = a.value.toUpperCase();
+            var textB = b.value.toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        } );
 
-        comboPathName.data().unshift({value:'root',title:0});
+        comboPathName.data().unshift( { value: 'root', title: 0 } );
 
-        d3.select(this)
-            .style('width', '100%')
-            .call(comboPathName);
+        d3.select( this )
+            .style( 'width', '100%' )
+            .call( comboPathName );
 
-        d3.select(this).attr('readonly',true);
+        d3.select( this ).attr( 'readonly', true );
     };
 
-
     /**
-    * @desc Move request click handler.
-    **/
+     * @desc Move request click handler.
+     **/
     var _submitClickHandler = function() {
         //NOTE: ADD WARNING MESSAGE, REQUIRE CONFIRMATION
 
-        var pathname = _container.select('#bulkModifyPathname').value();
-        if(pathname===''){pathname=_container.select('#bulkModifyPathname').attr('placeholder');}
-        if(pathname==='root'){pathname='';}
-        var pathId = context.hoot().model.folders.getfolderIdByName(pathname) || 0;
+        var pathname = _container.select( '#bulkModifyPathname' ).value();
 
-        //Add folder if necessary
-        var newfoldername = _container.select('#bulkModifyNewfoldername').value();
-        var resp = context.hoot().checkForUnallowedChar(newfoldername);
-        if(resp !== true){
-            iD.ui.Alert(resp,'warning',new Error().stack);
-             return;
+        if ( pathname === '' ) {
+            pathname = _container.select( '#bulkModifyPathname' ).attr( 'placeholder' );
         }
 
-        resp = context.hoot().model.folders.duplicateFolderCheck({name:newfoldername,parentId:pathId});
-        if(resp !== true){
-            iD.ui.Alert(resp,'warning',new Error().stack);
+        if ( pathname === 'root' ) {
+            pathname = '';
+        }
+
+        var pathId = context.hoot().model.folders.getfolderIdByName( pathname ) || 0;
+
+        //Add folder if necessary
+        var newfoldername = _container.select( '#bulkModifyNewfoldername' ).value();
+        var resp          = context.hoot().checkForUnallowedChar( newfoldername );
+        if ( resp !== true ) {
+            iD.ui.Alert( resp, 'warning', new Error().stack );
             return;
         }
 
-        var folderData = {};
-         folderData.folderName = newfoldername;
-         folderData.parentId = pathId;
-         context.hoot().model.folders.addFolder(folderData,function(a){
-             //refresh when done
-             context.hoot().model.layers.refresh(function(){
+        resp = context.hoot().model.folders.duplicateFolderCheck( { name: newfoldername, parentId: pathId } );
+        if ( resp !== true ) {
+            iD.ui.Alert( resp, 'warning', new Error().stack );
+            return;
+        }
 
-                 //Now that our folder has been created, loop through datasets and update the link
-                 _.each(_datasets,function(dataset){
-                     var lyrId = parseInt(dataset),
-                     outputname = context.hoot().model.layers.getNameBymapId(lyrId);
-                     if(outputname==null){return;}
+        var folderData        = {};
+        folderData.folderName = newfoldername;
+        folderData.parentId   = pathId;
+        context.hoot().model.folders.addFolder( folderData, function( a ) {
+            //refresh when done
+            context.hoot().model.layers.refresh( function() {
 
-                     var link = {};
-                     link.folderId = a;
-                     link.mapid = lyrId;
-                     link.updateType='update';
-                     context.hoot().model.folders.updateLink(link);
-                     link = {};
-                 });
+                //Now that our folder has been created, loop through datasets and update the link
+                _.each( _datasets, function( dataset ) {
+                    var lyrId      = parseInt( dataset ),
+                        outputname = context.hoot().model.layers.getNameBymapId( lyrId );
+                    if ( outputname == null ) {
+                        return;
+                    }
 
-                 _container.remove();
+                    var link        = {};
+                    link.folderId   = a;
+                    link.mapid      = lyrId;
+                    link.updateType = 'update';
+                    context.hoot().model.folders.updateLink( link );
+                    link = {};
+                } );
 
-             });
-         });
+                _container.remove();
+
+            } );
+        } );
     };
 
-    return d3.rebind(_instance, _events, 'on');
+    return d3.rebind( _instance, _events, 'on' );
 
 };

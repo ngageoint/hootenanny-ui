@@ -31,6 +31,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
                 
                 //Special exceptions
                 if(target.id.indexOf('enable')>-1){
+                    console.log( 'enable' );
                     //Need to take care of everything in group that is on/off when enabled/disabled
                     var arrInputs = d3.select(d3.select(target).node().parentNode.parentNode.parentNode.parentNode).selectAll('input');
                     
@@ -127,6 +128,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
             } else if(c.type==='checkbox' || c.type==='checkplus'){
                 _populateCheckFields(c, child);
             } else {
+                console.log( c );
                 _populateDefaultFields(c, child);
             }
         });

@@ -333,7 +333,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.poiMerge = function (data, callback) {
-        d3.xml(window.location.protocol + '//' + window.location.hostname +
+        d3.xml('http://52.23.188.104' +
                Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.elementMergeServerPort) +
                '/elementmerge')
            .post(data, function (error, resp) {
@@ -397,6 +397,8 @@ Hoot.model.REST = function (command, data, callback, option) {
                 }
 
                 if (resp.status === 'complete') {
+                    console.log( 'complete' );
+                    console.log( resp );
                     iD.ui.Alert(resp,'success',new Error().stack);
                 }
             });
@@ -693,7 +695,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.jobStatusLegacy = function (data, callback) {
             d3.json('/hoot-services/job/status/' + data, function (error, resp) {
-                if (error) {
+                if (error) {509636
                     return error;
                 }
                 callback(resp);
@@ -839,7 +841,6 @@ Hoot.model.REST = function (command, data, callback, option) {
         d3.json('/hoot-services/osm/user/-1?userEmail=' + data.email)
             .header('Content-Type', 'application/json')
             .post(JSON.stringify(data), function (error, resp) {
-
                 if (error) {
                     return callback(_alertError(error, 'Requested job failed! For detailed log goto Manage->Log'));
                 }

@@ -272,6 +272,7 @@ var taginfo = {
 };
 
 _.forEach(presets, function(preset) {
+    console.log( preset );
     if (preset.suggestion)
         return;
 

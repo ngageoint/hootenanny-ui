@@ -422,11 +422,13 @@ Hoot.control.utilities.importdirectory = function(context) {
         d3.select('#dirImportProgress').attr('value',fileNo.toString());
         d3.select('#importprogresstext').text('Importing ' + newLayerName);
 
+        console.log( fileNames );
+
         var importFiles = _.filter(document.getElementById('ingestdirectoryuploader').files, function(file){
-                var fName = file.name.substring(0, file.name.length - 4);
-                if(file.name.toLowerCase().indexOf('.shp.xml') > -1){fName = file.name.substring(0, file.name.length - 8);} 
-                return fName === fileNames[fileNo].value;
-            });
+            var fName = file.name.substring(0, file.name.length - 4);
+            if(file.name.toLowerCase().indexOf('.shp.xml') > -1){fName = file.name.substring(0, file.name.length - 8);}
+            return fName === fileNames[fileNo].value;
+        });
 
         _importDirectoryJob(_container, newLayerName, importFiles, submitExp, function(){
             fileNo++;

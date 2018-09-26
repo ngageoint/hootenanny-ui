@@ -119,9 +119,12 @@ Hoot.control.conflicts.info.reviewtable = function (context)
                 t.forEach(function(p) {
                     m.set(p.key, p.value);
                 });
+
+                //console.log( merged.get( d ) );
                 merged.get(d).push(m.has(d) ? m.get(d) : null);
             });
         });
+
 
         return merged.entries();
     };

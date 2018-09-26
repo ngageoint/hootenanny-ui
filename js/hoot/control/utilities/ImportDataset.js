@@ -297,6 +297,7 @@ Hoot.control.utilities.importdataset = function(context) {
                                     return f.name === _container.select('#importDatasetLayerName').value();
                                 }),'id')[0] || 0;
                             }
+
                             if(link.mapid===0){return;}
                             link.updateType='new';
                             context.hoot().model.folders.updateLink(link);
@@ -418,6 +419,7 @@ Hoot.control.utilities.importdataset = function(context) {
     * @param a - Translations list combo meta data.
     **/
     var _populateTranslations = function (a) {
+        console.log( a.combobox.data );
         var combo = d3.combobox()
             .data(_.map(a.combobox.data, function (n) {
                 return {

@@ -1,15 +1,15 @@
-iD.modes.Save = function(context) {
-    var ui = iD.ui.Commit(context)
-        .on('cancel', cancel)
-        .on('save', save);
+iD.modes.Save = function( context ) {
+    var ui = iD.ui.Commit( context )
+        .on( 'cancel', cancel )
+        .on( 'save', save );
 
     function cancel() {
-        context.enter(iD.modes.Browse(context));
+        context.enter( iD.modes.Browse( context ) );
     }
 
     // hootCallback is for hootenany specific callback. This may need to be moved
     // in the future during upstream merge with iD code
-    function save(e, tryAgain, hootCallback) {
+    function save( e, tryAgain, hootCallback ) {
         // function withChildNodes(ids, graph) {
         //     return _.uniq(_.reduce(ids, function(result, id) {
         //         var e = graph.entity(id);
@@ -27,29 +27,28 @@ iD.modes.Save = function(context) {
         //     }, _.clone(ids)));
         // }
 
-        var loading = iD.ui.Loading(context).message(t('save.uploading')).blocking(true),
-            history = context.history(),
-            origChanges = history.changes(iD.actions.DiscardTags(history.difference())),
+        var loading     = iD.ui.Loading( context ).message( t( 'save.uploading' ) ).blocking( true ),
+            history     = context.history(),
+            origChanges = history.changes( iD.actions.DiscardTags( history.difference() ) ),
             //localGraph = context.graph(),
             //remoteGraph = iD.Graph(history.base(), true),
             //modified = _.filter(history.difference().summary(), {changeType: 'modified'}),
             //toCheck = _.pluck(_.pluck(modified, 'entity'), 'id'),
             //toLoad = withChildNodes(toCheck, localGraph),
-            conflicts = [],
-            errors = [];
+            conflicts   = [],
+            errors      = [];
 
-        if (!tryAgain) history.perform(iD.actions.Noop());  // checkpoint
-        context.container().call(loading);
+        if ( !tryAgain ) history.perform( iD.actions.Noop() );  // checkpoint
+        context.container().call( loading );
 
         // Disabling toCheck for hoot. iD conflict validation is causing race condition
         // while retrieving the osm data and saving.
-       /* if (toCheck.length) {
-            console.debug('call loadMultiple');
-            context.connection().loadMultiple(toLoad, loaded, hootCallback);
-        } else {*/
-            finalize(hootCallback);
+        /* if (toCheck.length) {
+             console.debug('call loadMultiple');
+             context.connection().loadMultiple(toLoad, loaded, hootCallback);
+         } else {*/
+        finalize( hootCallback );
         //}
-
 
         // hootCallback is for hootenany specific callback. This may need to be moved
         // in the future during upstream merge with iD code
@@ -92,7 +91,6 @@ iD.modes.Save = function(context) {
                 }
             }
         }*/
-
 
         // hootCallback is for hootenany specific callback. This may need to be moved
         // in the future during upstream merge with iD code
@@ -165,42 +163,43 @@ iD.modes.Save = function(context) {
 
         // hootCallback is for hootenany specific callback. This may need to be moved
         // in the future during upstream merge with iD code
-        function finalize(hootCallback) {
-            if (conflicts.length) {
-                conflicts.sort(function(a,b) { return b.id.localeCompare(a.id); });
+        function finalize( hootCallback ) {
+            if ( conflicts.length ) {
+                conflicts.sort( function( a, b ) {
+                    return b.id.localeCompare( a.id );
+                } );
                 showConflicts();
-            } else if (errors.length) {
+            } else if ( errors.length ) {
                 showErrors();
             } else {
                 context.connection().putChangeset(
-                    history.changes(iD.actions.DiscardTags(history.difference())),
+                    history.changes( iD.actions.DiscardTags( history.difference() ) ),
                     'Hoot Save',
                     history.imageryUsed(),
-                    function(err/*, changeset_id*/) {
-                        if (err) {
+                    function( err/*, changeset_id*/ ) {
+                        if ( err ) {
                             var isReviewing = context.hoot().control.conflicts.isConflictReviewExist();
-                            var errMsg = err.responseText;
-                            
-                            if(!err.overwriteErrMsg){
+                            var errMsg      = err.responseText;
+
+                            if ( !err.overwriteErrMsg ) {
                                 errMsg += ' (The feature may have been deleted by other ' +
                                     'user and may require reloading of the layer.';
-                                if(isReviewing === true){
+                                if ( isReviewing === true ) {
                                     errMsg += ' Will jump to next valid review item';
                                 }
                                 errMsg += ')';
                             }
-                            
-                            errors.push({
-                                msg: errMsg,
-                                details: [ t('save.status_code', { code: err.status }) ]
-                            });
 
-                            if(isReviewing === true){
+                            errors.push( {
+                                msg: errMsg,
+                                details: [ t( 'save.status_code', { code: err.status } ) ]
+                            } );
+
+                            if ( isReviewing === true ) {
                                 showErrors(
-                                    function(){
+                                    function() {
                                         context.hoot().control.conflicts.actions.traversereview.gotoNext();
                                     }
-
                                 );
 
                             } else {
@@ -210,127 +209,131 @@ iD.modes.Save = function(context) {
                         } else {
                             loading.close();
                             context.flush();
-                            if (hootCallback) { hootCallback(); }
+                            if ( hootCallback ) {
+                                hootCallback();
+                            }
                             //success(e, changeset_id);
                         }
-                        context.enter(iD.modes.Browse(context));
-                    });
+                        context.enter( iD.modes.Browse( context ) );
+                    } );
             }
         }
 
-
         function showConflicts() {
             var selection = context.container()
-                .select('#sidebar')
-                .append('div')
-                .attr('class','sidebar-component');
+                .select( '#sidebar' )
+                .append( 'div' )
+                .attr( 'class', 'sidebar-component' );
 
             loading.close();
 
-            selection.call(iD.ui.Conflicts(context)
-                .list(conflicts)
-                .on('download', function() {
-                    var data = JXON.stringify(context.connection().osmChangeJXON('CHANGEME', origChanges)),
-                        win = window.open('data:text/xml,' + encodeURIComponent(data), '_blank');
+            selection.call( iD.ui.Conflicts( context )
+                .list( conflicts )
+                .on( 'download', function() {
+                    var data = JXON.stringify( context.connection().osmChangeJXON( 'CHANGEME', origChanges ) ),
+                        win  = window.open( 'data:text/xml,' + encodeURIComponent( data ), '_blank' );
                     win.focus();
-                })
-                .on('cancel', function() {
+                } )
+                .on( 'cancel', function() {
                     history.pop();
                     selection.remove();
-                })
-                .on('save', function() {
+                } )
+                .on( 'save', function() {
                     //iD v1.7.5
-                    for (var i = 0; i < conflicts.length; i++) {
-                        if (conflicts[i].chosen === 1) {  // user chose 'keep theirs'
-                            var entity = context.hasEntity(conflicts[i].id);
-                            if (entity && entity.type === 'way') {
-                                var children = _.uniq(entity.nodes);
-                                for (var j = 0; j < children.length; j++) {
-                                    history.replace(iD.actions.Revert(children[j]));
+                    for ( var i = 0; i < conflicts.length; i++ ) {
+                        if ( conflicts[ i ].chosen === 1 ) {  // user chose 'keep theirs'
+                            var entity = context.hasEntity( conflicts[ i ].id );
+                            if ( entity && entity.type === 'way' ) {
+                                var children = _.uniq( entity.nodes );
+                                for ( var j = 0; j < children.length; j++ ) {
+                                    history.replace( iD.actions.Revert( children[ j ] ) );
                                 }
                             }
-                            history.replace(iD.actions.Revert(conflicts[i].id));
+                            history.replace( iD.actions.Revert( conflicts[ i ].id ) );
                         }
                     }
 
                     selection.remove();
-                    save(e, true);
-                })
+                    save( e, true );
+                } )
             );
         }
 
-
-        function showErrors(callback) {
-            var selection = iD.ui.confirm(context.container());
+        function showErrors( callback ) {
+            var selection = iD.ui.confirm( context.container() );
 
             history.pop();
             loading.close();
 
             selection
-                .select('.modal-section.header')
-                .append('h3')
-                .text(t('save.error'));
+                .select( '.modal-section.header' )
+                .append( 'h3' )
+                .text( t( 'save.error' ) );
 
-            addErrors(selection, errors);
-            if(callback){
-                selection.okButton(callback);
+            addErrors( selection, errors );
+            if ( callback ) {
+                selection.okButton( callback );
             } else {
                 selection.okButton();
             }
 
         }
 
-
-        function addErrors(selection, data) {
+        function addErrors( selection, data ) {
             var message = selection
-                .select('.modal-section.message-text');
+                .select( '.modal-section.message-text' );
 
             var items = message
-                .selectAll('.error-container')
-                .data(data);
+                .selectAll( '.error-container' )
+                .data( data );
 
             var enter = items.enter()
-                .append('div')
-                .attr('class', 'error-container');
+                .append( 'div' )
+                .attr( 'class', 'error-container' );
 
             enter
-                .append('a')
-                .attr('class', 'error-description')
-                .attr('href', '#')
-                .classed('hide-toggle', true)
-                .text(function(d) { return d.msg || t('save.unknown_error_details'); })
-                .on('click', function() {
-                    var error = d3.select(this),
-                        detail = d3.select(this.nextElementSibling),
-                        exp = error.classed('expanded');
+                .append( 'a' )
+                .attr( 'class', 'error-description' )
+                .attr( 'href', '#' )
+                .classed( 'hide-toggle', true )
+                .text( function( d ) {
+                    return d.msg || t( 'save.unknown_error_details' );
+                } )
+                .on( 'click', function() {
+                    var error  = d3.select( this ),
+                        detail = d3.select( this.nextElementSibling ),
+                        exp    = error.classed( 'expanded' );
 
-                    detail.style('display', exp ? 'none' : 'block');
-                    error.classed('expanded', !exp);
+                    detail.style( 'display', exp ? 'none' : 'block' );
+                    error.classed( 'expanded', !exp );
 
                     d3.event.preventDefault();
-                });
+                } );
 
             var details = enter
-                .append('div')
-                .attr('class', 'error-detail-container')
-                .style('display', 'none');
+                .append( 'div' )
+                .attr( 'class', 'error-detail-container' )
+                .style( 'display', 'none' );
 
             details
-                .append('ul')
-                .attr('class', 'error-detail-list')
-                .selectAll('li')
-                .data(function(d) { return d.details || []; })
+                .append( 'ul' )
+                .attr( 'class', 'error-detail-list' )
+                .selectAll( 'li' )
+                .data( function( d ) {
+                    return d.details || [];
+                } )
                 .enter()
-                .append('li')
-                .attr('class', 'error-detail-item')
-                .text(function(d) { return d; });
+                .append( 'li' )
+                .attr( 'class', 'error-detail-item' )
+                .text( function( d ) {
+                    return d;
+                } );
 
             items.exit()
                 .remove();
         }
 
     }
-
 
     // function success(e, changeset_id) {
     //     context.enter(iD.modes.Browse(context)
@@ -349,35 +352,35 @@ iD.modes.Save = function(context) {
     };
 
     var behaviors = [
-        iD.behavior.Hover(context),
-        iD.behavior.Select(context),
-        iD.behavior.Lasso(context),
-        iD.modes.DragNode(context).behavior];
+        iD.behavior.Hover( context ),
+        iD.behavior.Select( context ),
+        iD.behavior.Lasso( context ),
+        iD.modes.DragNode( context ).behavior ];
 
     mode.enter = function() {
-        behaviors.forEach(function(behavior) {
-            context.install(behavior);
-        });
+        behaviors.forEach( function( behavior ) {
+            context.install( behavior );
+        } );
 
-        context.connection().authenticate(function(err) {
-            if (err) {
+        context.connection().authenticate( function( err ) {
+            if ( err ) {
                 cancel();
             } else {
-                context.ui().sidebar.show(ui);
+                context.ui().sidebar.show( ui );
             }
-        });
+        } );
     };
 
     mode.exit = function() {
-        behaviors.forEach(function(behavior) {
-            context.uninstall(behavior);
-        });
+        behaviors.forEach( function( behavior ) {
+            context.uninstall( behavior );
+        } );
 
-        context.ui().sidebar.hide(ui);
+        context.ui().sidebar.hide( ui );
     };
 
-    mode.save = function(e, callback) {
-        save(e, false, callback);
+    mode.save = function( e, callback ) {
+        save( e, false, callback );
     };
 
     return mode;

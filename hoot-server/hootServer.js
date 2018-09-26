@@ -7,13 +7,13 @@ var hoot = function(options) {
     app.listen(options.port);
     console.log('server running');
 
-    var hootHost = 'localhost';
-    var hootPort = 8888;
+    var hootHost = '52.23.188.104';
+    var hootPort = 8080;
     var hootUrl = 'http://' + hootHost + ':' + hootPort;
 
     app.get('/hootenanny-id', function(req, res) {
         res.writeHead(301,
-          {Location: 'http://localhost:' + options.port}
+          {Location: 'http://52.23.188.104:' + options.port}
         );
         res.end();
     });

@@ -85,6 +85,7 @@ iD.presets = function() {
     };
 
     all.load = function(d) {
+        console.log( d );
 
         if (d.fields) {
             _.forEach(d.fields, function(d, id) {

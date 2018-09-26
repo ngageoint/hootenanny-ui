@@ -82,6 +82,7 @@ Hoot.control.conflicts.info.metadata = function (context)
             nUnreviewed = 1*curMeta.unreviewedCount;
             nReviewed = nTotal - nUnreviewed;
         }
+
         var rId = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
         var rf = context.hasEntity(rId);
 
@@ -99,6 +100,7 @@ Hoot.control.conflicts.info.metadata = function (context)
             nUnreviewed +
             '  (Resolved: ' + nReviewed +
                 multiFeatureMsg + ')</strong>');
+
         context.hoot().control.conflicts.info.metadata.setInfo('There are ' + nUnreviewed + ' reviews');
     };
 

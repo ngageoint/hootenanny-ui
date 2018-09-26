@@ -400,5 +400,6 @@ iD.ui.tooltipHtml = function(text, key) {
             '<span> ' + (t('tooltip_keyhint')) + ' </span>' +
             '<span class="keyhint"> ' + key + '</span></div>';
     }
+
     return s;
 };

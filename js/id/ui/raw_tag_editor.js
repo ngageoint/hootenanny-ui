@@ -31,7 +31,8 @@ iD.ui.RawTagEditor = function(context) {
             else{sortAZ=false;}
         }
         if(sortAZ){
-            entries.sort(function(a,b){var textA = a.key.toUpperCase();
+            entries.sort(function(a,b){
+                var textA = a.key.toUpperCase();
                 var textB = b.key.toUpperCase();
                 return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
             });
@@ -235,7 +236,6 @@ iD.ui.RawTagEditor = function(context) {
                 }
                 return sameletter.concat(other);
             }
-
             key.call(d3.combobox()
                 .fetcher(function(value, callback) {
                     if (context.translationserver().activeTranslation() === 'OSM') {
@@ -265,6 +265,7 @@ iD.ui.RawTagEditor = function(context) {
                         });
                     } else {
                         var data = context.translationserver().filterSchemaValues(key.value());
+                        console.log( data );
                         callback(sort(value, data));
                     }
                 }));

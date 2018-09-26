@@ -1,84 +1,86 @@
-iD.ui.PresetList = function(context) {
-    var dispatch = d3.dispatch('choose'),
+iD.ui.PresetList = function( context ) {
+    var dispatch  = d3.dispatch( 'choose' ),
         id,
         currentPreset,
         autofocus = false;
 
-    function presetList(selection) {
-        var entity = context.entity(id),
-            geometry = context.geometry(id);
+    function presetList( selection ) {
+        var entity   = context.entity( id ),
+            geometry = context.geometry( id );
 
         // Treat entities on addr:interpolation lines as points, not vertices (#3241)
-        if (geometry === 'vertex' && entity.isOnAddressLine(context.graph())) {
+        if ( geometry === 'vertex' && entity.isOnAddressLine( context.graph() ) ) {
             geometry = 'point';
         }
 
-        var presets = context.presets().matchGeometry(geometry);
+        var presets = context.presets().matchGeometry( geometry );
 
-        selection.html('');
+        selection.html( '' );
 
-        var messagewrap = selection.append('div')
-            .attr('class', 'header fillL cf');
+        var messagewrap = selection.append( 'div' )
+            .attr( 'class', 'header fillL cf' );
 
-        var message = messagewrap.append('h3')
-            .text(t('inspector.choose'));
+        var message = messagewrap.append( 'h3' )
+            .text( t( 'inspector.choose' ) );
 
-        if (context.entity(id).isUsed(context.graph())) {
-            messagewrap.append('button')
-                .attr('class', 'preset-choose')
-                .on('click', function() { dispatch.choose(currentPreset); })
-                .append('span')
-                .html('&#9658;');
+        if ( context.entity( id ).isUsed( context.graph() ) ) {
+            messagewrap.append( 'button' )
+                .attr( 'class', 'preset-choose' )
+                .on( 'click', function() {
+                    dispatch.choose( currentPreset );
+                } )
+                .append( 'span' )
+                .html( '&#9658;' );
         } else {
-            messagewrap.append('button')
-                .attr('class', 'close')
-                .on('click', function() {
-                    context.enter(iD.modes.Browse(context));
-                })
-                .call(iD.svg.Icon('#icon-close'));
+            messagewrap.append( 'button' )
+                .attr( 'class', 'close' )
+                .on( 'click', function() {
+                    context.enter( iD.modes.Browse( context ) );
+                } )
+                .call( iD.svg.Icon( '#icon-close' ) );
         }
 
         function keydown() {
             // hack to let delete shortcut work when search is autofocused
-            if (search.property('value').length === 0 &&
-                (d3.event.keyCode === d3.keybinding.keyCodes['⌫'] ||
-                 d3.event.keyCode === d3.keybinding.keyCodes['⌦'])) {
+            if ( search.property( 'value' ).length === 0 &&
+                (d3.event.keyCode === d3.keybinding.keyCodes[ '⌫' ] ||
+                    d3.event.keyCode === d3.keybinding.keyCodes[ '⌦' ]) ) {
                 d3.event.preventDefault();
                 d3.event.stopPropagation();
-                iD.operations.Delete([id], context)();
-            } else if (search.property('value').length === 0 &&
+                iD.operations.Delete( [ id ], context )();
+            } else if ( search.property( 'value' ).length === 0 &&
                 (d3.event.ctrlKey || d3.event.metaKey) &&
-                d3.event.keyCode === d3.keybinding.keyCodes.z) {
+                d3.event.keyCode === d3.keybinding.keyCodes.z ) {
                 d3.event.preventDefault();
                 d3.event.stopPropagation();
                 context.undo();
-            } else if (!d3.event.ctrlKey && !d3.event.metaKey) {
-                d3.select(this).on('keydown', null);
+            } else if ( !d3.event.ctrlKey && !d3.event.metaKey ) {
+                d3.select( this ).on( 'keydown', null );
             }
         }
 
         function keypress() {
             // enter
-            var value = search.property('value');
-            if (d3.event.keyCode === 13 && value.length) {
-                list.selectAll('.preset-list-item:first-child').datum().choose();
+            var value = search.property( 'value' );
+            if ( d3.event.keyCode === 13 && value.length ) {
+                list.selectAll( '.preset-list-item:first-child' ).datum().choose();
             }
         }
 
         function inputevent() {
-            var value = search.property('value');
-            list.classed('filtered', value.length);
+            var value = search.property( 'value' );
+            list.classed( 'filtered', value.length );
 
-            if (value.length) {
+            if ( value.length ) {
                 var tagSchema = context.translationserver().activeTranslation();
-                var results = presets.search(value, geometry).matchSchema(context.translationserver().activeTranslation());
-                if(tagSchema === context.translationserver().defaultTranslation()) {
-                    searchHandler(value, results);
+                var results   = presets.search( value, geometry ).matchSchema( context.translationserver().activeTranslation() );
+                if ( tagSchema === context.translationserver().defaultTranslation() ) {
+                    searchHandler( value, results );
                 } else {
-                //Add translation server search for translated tag schemas
-                    context.translationserver().searchTranslatedSchema(value, geometry, function(data){
-                        var translatedPresets = data.map(function(d) {
-                            return iD.presets.Preset(tagSchema + '/' + d.fcode,
+                    //Add translation server search for translated tag schemas
+                    context.translationserver().searchTranslatedSchema( value, geometry, function( data ) {
+                        var translatedPresets = data.map( function( d ) {
+                            return iD.presets.Preset( tagSchema + '/' + d.fcode,
                                 {
                                     geometry: geometry,
                                     tags: {},
@@ -86,78 +88,84 @@ iD.ui.PresetList = function(context) {
                                     'hoot:tagschema': tagSchema,
                                     'hoot:fcode': d.fcode,
                                     name: d.desc + ' (' + d.fcode + ')'
-                                }, {});
-                        });
-                        searchHandler(value, iD.presets.Collection(results.collection.concat(translatedPresets)));
-                    });
+                                }, {} );
+                        } );
+                        searchHandler( value, iD.presets.Collection( results.collection.concat( translatedPresets ) ) );
+                    } );
                 }
             } else {
-                list.call(drawList, context.presets().defaults(geometry, 72).matchSchema(context.translationserver().activeTranslation()));
-                message.text(t('inspector.choose'));
+                list.call( drawList, context.presets().defaults( geometry, 72 ).matchSchema( context.translationserver().activeTranslation() ) );
+                message.text( t( 'inspector.choose' ) );
             }
 
-            function searchHandler(value, results) {
-                message.text(t('inspector.results', {
+            function searchHandler( value, results ) {
+                message.text( t( 'inspector.results', {
                     n: results.collection.length,
                     search: value
-                }));
-                list.call(drawList, results);
+                } ) );
+                list.call( drawList, results );
             }
         }
 
-        var searchWrap = selection.append('div')
-            .attr('class', 'search-header');
+        var searchWrap = selection.append( 'div' )
+            .attr( 'class', 'search-header' );
 
-        var search = searchWrap.append('input')
-            .attr('class', 'preset-search-input')
-            .attr('placeholder', t('inspector.search'))
-            .attr('type', 'search')
-            .on('keydown', keydown)
-            .on('keypress', keypress)
-            .on('input', inputevent);
+        var search = searchWrap.append( 'input' )
+            .attr( 'class', 'preset-search-input' )
+            .attr( 'placeholder', t( 'inspector.search' ) )
+            .attr( 'type', 'search' )
+            .on( 'keydown', keydown )
+            .on( 'keypress', keypress )
+            .on( 'input', inputevent );
 
         searchWrap
-            .call(iD.svg.Icon('#icon-search', 'pre-text'));
+            .call( iD.svg.Icon( '#icon-search', 'pre-text' ) );
 
-        if (autofocus) {
+        if ( autofocus ) {
             search.node().focus();
         }
 
-        var listWrap = selection.append('div')
-            .attr('class', 'inspector-body');
+        var listWrap = selection.append( 'div' )
+            .attr( 'class', 'inspector-body' );
 
-        var schemaSwitcher = iD.ui.SchemaSwitcher(context);
-        listWrap.append('div').classed('fillL', true)
-            .append('div').call(schemaSwitcher, function() {
-                list.selectAll('.preset-list-item').remove();
-                list.call(drawList, context.presets().defaults(geometry, 72).matchSchema(context.translationserver().activeTranslation()));
+        var schemaSwitcher = iD.ui.SchemaSwitcher( context );
+        listWrap.append( 'div' ).classed( 'fillL', true )
+            .append( 'div' ).call( schemaSwitcher, function() {
+            list.selectAll( '.preset-list-item' ).remove();
+            list.call( drawList, context.presets().defaults( geometry, 72 ).matchSchema( context.translationserver().activeTranslation() ) );
 
-                // Trigger search on input value
-                //search.trigger('input');
-            });
+            // Trigger search on input value
+            //search.trigger('input');
+        } );
 
-        var list = listWrap.append('div')
-            .attr('class', 'preset-list fillL cf')
-            .call(drawList, context.presets().defaults(geometry, 72).matchSchema(context.translationserver().activeTranslation()));
+        var list = listWrap.append( 'div' )
+            .attr( 'class', 'preset-list fillL cf' )
+            .call( drawList, context.presets().defaults( geometry, 72 ).matchSchema( context.translationserver().activeTranslation() ) );
     }
 
-    function drawList(list, presets) {
-        var collection = presets.collection.map(function(preset) {
-            return preset.members ? CategoryItem(preset) : PresetItem(preset);
-        });
+    function drawList( list, presets ) {
+        var collection = presets.collection.map( function( preset ) {
+            return preset.members ? CategoryItem( preset ) : PresetItem( preset );
+        } );
 
-        var items = list.selectAll('.preset-list-item')
-            .data(collection, function(d) { return d.preset.id; });
+        var items = list.selectAll( '.preset-list-item' )
+            .data( collection, function( d ) {
+                return d.preset.id;
+            } );
 
-        items.enter().append('div')
-            .attr('class', function(item) { return 'preset-list-item preset-' + item.preset.id.replace('/', '-'); })
-            .classed('current', function(item) { return item.preset === currentPreset; })
-            .each(function(item) {
-                d3.select(this).call(item);
-            })
-            .style('opacity', 0)
+        items.enter().append( 'div' )
+            .attr( 'class', function( item ) {
+                return 'preset-list-item preset-' + item.preset.id.replace( '/', '-' );
+            } )
+            .classed( 'current', function( item ) {
+                return item.preset === currentPreset;
+            } )
+            .each( function( item ) {
+                d3.select( this ).call( item );
+            } )
+            .style( 'opacity', 0 )
             .transition()
-            .style('opacity', 1);
+            .style( 'opacity', 1 );
 
         items.order();
 
@@ -165,62 +173,62 @@ iD.ui.PresetList = function(context) {
             .remove();
     }
 
-    function CategoryItem(preset) {
+    function CategoryItem( preset ) {
         var box, sublist, shown = false;
 
-        function item(selection) {
-            var wrap = selection.append('div')
-                .attr('class', 'preset-list-button-wrap category col12');
+        function item( selection ) {
+            var wrap = selection.append( 'div' )
+                .attr( 'class', 'preset-list-button-wrap category col12' );
 
-            wrap.append('button')
-                .attr('class', 'preset-list-button')
-                .classed('expanded', false)
-                .call(iD.ui.PresetIcon()
-                    .geometry(context.geometry(id))
-                    .preset(preset))
-                .on('click', function() {
-                    var isExpanded = d3.select(this).classed('expanded');
-                    var triangle = isExpanded ? '▶ ' :  '▼ ';
-                    d3.select(this).classed('expanded', !isExpanded);
-                    d3.select(this).selectAll('.label').text(triangle + preset.name());
+            wrap.append( 'button' )
+                .attr( 'class', 'preset-list-button' )
+                .classed( 'expanded', false )
+                .call( iD.ui.PresetIcon()
+                    .geometry( context.geometry( id ) )
+                    .preset( preset ) )
+                .on( 'click', function() {
+                    var isExpanded = d3.select( this ).classed( 'expanded' );
+                    var triangle   = isExpanded ? '▶ ' : '▼ ';
+                    d3.select( this ).classed( 'expanded', !isExpanded );
+                    d3.select( this ).selectAll( '.label' ).text( triangle + preset.name() );
                     item.choose();
-                })
-                .append('div')
-                .attr('class', 'label')
-                .text(function() {
-                  return '▶ ' + preset.name();
-                });
+                } )
+                .append( 'div' )
+                .attr( 'class', 'label' )
+                .text( function() {
+                    return '▶ ' + preset.name();
+                } );
 
-            box = selection.append('div')
-                .attr('class', 'subgrid col12')
-                .style('max-height', '0px')
-                .style('opacity', 0);
+            box = selection.append( 'div' )
+                .attr( 'class', 'subgrid col12' )
+                .style( 'max-height', '0px' )
+                .style( 'opacity', 0 );
 
-            box.append('div')
-                .attr('class', 'arrow');
+            box.append( 'div' )
+                .attr( 'class', 'arrow' );
 
-            sublist = box.append('div')
-                .attr('class', 'preset-list fillL3 cf fl');
+            sublist = box.append( 'div' )
+                .attr( 'class', 'preset-list fillL3 cf fl' );
         }
 
         item.choose = function() {
-            if (!box || !sublist) return;
+            if ( !box || !sublist ) return;
 
-            if (shown) {
+            if ( shown ) {
                 shown = false;
                 box.transition()
-                    .duration(200)
-                    .style('opacity', '0')
-                    .style('max-height', '0px')
-                    .style('padding-bottom', '0px');
+                    .duration( 200 )
+                    .style( 'opacity', '0' )
+                    .style( 'max-height', '0px' )
+                    .style( 'padding-bottom', '0px' );
             } else {
                 shown = true;
-                sublist.call(drawList, preset.members);
+                sublist.call( drawList, preset.members );
                 box.transition()
-                    .duration(200)
-                    .style('opacity', '1')
-                    .style('max-height', 200 + preset.members.collection.length * 80 + 'px')
-                    .style('padding-bottom', '20px');
+                    .duration( 200 )
+                    .style( 'opacity', '1' )
+                    .style( 'max-height', 200 + preset.members.collection.length * 80 + 'px' )
+                    .style( 'padding-bottom', '20px' );
             }
         };
 
@@ -229,43 +237,43 @@ iD.ui.PresetList = function(context) {
         return item;
     }
 
-    function PresetItem(preset) {
-        function item(selection) {
-            var wrap = selection.append('div')
-                .attr('class', 'preset-list-button-wrap col12');
+    function PresetItem( preset ) {
+        function item( selection ) {
+            var wrap = selection.append( 'div' )
+                .attr( 'class', 'preset-list-button-wrap col12' );
 
-            wrap.append('button')
-                .attr('class', 'preset-list-button')
-                .call(iD.ui.PresetIcon()
-                    .geometry(context.geometry(id))
-                    .preset(preset))
-                .on('click', item.choose)
-                .append('div')
-                .attr('class', 'label')
-                .text(preset.name());
+            wrap.append( 'button' )
+                .attr( 'class', 'preset-list-button' )
+                .call( iD.ui.PresetIcon()
+                    .geometry( context.geometry( id ) )
+                    .preset( preset ) )
+                .on( 'click', item.choose )
+                .append( 'div' )
+                .attr( 'class', 'label' )
+                .text( preset.name() );
 
-            wrap.call(item.reference.button);
-            selection.call(item.reference.body);
+            wrap.call( item.reference.button );
+            selection.call( item.reference.body );
         }
 
         item.choose = function() {
-            context.presets().choose(preset);
+            context.presets().choose( preset );
 
             var tagSchema = context.translationserver().activeTranslation();
-            if (tagSchema === 'OSM') {
+            if ( tagSchema === 'OSM' ) {
                 context.perform(
-                    iD.actions.ChangePreset(id, currentPreset, preset),
-                    t('operations.change_tags.annotation'));
+                    iD.actions.ChangePreset( id, currentPreset, preset ),
+                    t( 'operations.change_tags.annotation' ) );
 
-                dispatch.choose(preset);
+                dispatch.choose( preset );
             } else {
-                context.translationserver().addTagsForFcode(preset, function(preset) {
+                context.translationserver().addTagsForFcode( preset, function( preset ) {
                     context.perform(
-                        iD.actions.ChangePreset(id, currentPreset, preset),
-                        t('operations.change_tags.annotation'));
+                        iD.actions.ChangePreset( id, currentPreset, preset ),
+                        t( 'operations.change_tags.annotation' ) );
 
-                    dispatch.choose(preset);
-                });
+                    dispatch.choose( preset );
+                } );
             }
         };
 
@@ -274,30 +282,30 @@ iD.ui.PresetList = function(context) {
             item.reference.toggle();
         };
 
-        item.preset = preset;
-        item.reference = iD.ui.TagReference(preset.reference(context.geometry(id)), context);
+        item.preset    = preset;
+        item.reference = iD.ui.TagReference( preset.reference( context.geometry( id ) ), context );
 
         return item;
     }
 
-    presetList.autofocus = function(_) {
-        if (!arguments.length) return autofocus;
+    presetList.autofocus = function( _ ) {
+        if ( !arguments.length ) return autofocus;
         autofocus = _;
         return presetList;
     };
 
-    presetList.entityID = function(_) {
-        if (!arguments.length) return id;
+    presetList.entityID = function( _ ) {
+        if ( !arguments.length ) return id;
         id = _;
-        presetList.preset(context.presets().match(context.entity(id), context.graph()));
+        presetList.preset( context.presets().match( context.entity( id ), context.graph() ) );
         return presetList;
     };
 
-    presetList.preset = function(_) {
-        if (!arguments.length) return currentPreset;
+    presetList.preset = function( _ ) {
+        if ( !arguments.length ) return currentPreset;
         currentPreset = _;
         return presetList;
     };
 
-    return d3.rebind(presetList, dispatch, 'on');
+    return d3.rebind( presetList, dispatch, 'on' );
 };

@@ -30,10 +30,14 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
                 return;
             }
             var currentReviewable = _parent().actions.traversereview.getCurrentReviewable();
+            console.log( 'current reviewable: ', currentReviewable );
             if(currentReviewable) {
 
                 var fid = 'r' + currentReviewable.relationId + '_' + currentReviewable.mapId;
                 var reviewableRelEntity = context.hasEntity(fid);
+
+                console.log( 'fid: ', fid );
+                console.log( 'reviewable relation entity: ', reviewableRelEntity );
 
                 if(reviewableRelEntity)
                 {
@@ -87,6 +91,7 @@ Hoot.control.conflicts.actions.reviewresolution = function (context)
     _instance.acceptAll = function(data) {
         var hasChanges = context.history().hasChanges();
         if (hasChanges) {
+            console.log( 'has changes' );
             _parent().setProcessing(false);
             iD.modes.Save(context).save(context, function () {
                 try {

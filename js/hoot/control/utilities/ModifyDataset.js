@@ -29,6 +29,7 @@ Hoot.control.utilities.modifydataset = function(context) {
     * @param dataset - Target dataset meta data.
     **/
     var _createContainer = function(dataset) {
+        console.log( dataset );
         _dataset = dataset;
 
 

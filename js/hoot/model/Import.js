@@ -215,6 +215,8 @@ Hoot.model.import = function (context)
             data.formData = import_layer.getFormData(document.getElementById('ingestfileuploader'+container.attr('id').substring(3)).files);
         }
 
+        console.log( data );
+
         Hoot.model.REST('Upload', data, _importResultHandler);
     };
 
@@ -319,7 +321,7 @@ Hoot.model.import = function (context)
                 }
             }
             importCallback(status);
-            }
+        }
     };
 
     var _initVariables = function()

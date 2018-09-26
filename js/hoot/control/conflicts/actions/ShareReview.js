@@ -174,7 +174,7 @@ Hoot.control.conflicts.actions.sharereview = function (context)
     };
 
     /**
-    * @desc Helper function to creat request parameter object.
+    * @desc Helper function to create request parameter object.
     * @param title - title text
     * @param desc - description text
     * @param note - note text

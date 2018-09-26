@@ -201,17 +201,87 @@ iD.Map = function(context) {
             .call(drawPoints, graph, data, filter);
 
         //Need to document why this was added for Hoot
-        var lastLoadedLayer = context.connection().lastLoadedLayer();
-        if(lastLoadedLayer){
-            var modifiedId = lastLoadedLayer.toString();
-            d3.selectAll('.tag-hoot-'+modifiedId).each(function(){d3.select(this).moveToFront();});
-        }
+        //var lastLoadedLayer = context.connection().lastLoadedLayer();
+        //if(lastLoadedLayer){
+        //    var modifiedId = lastLoadedLayer.toString();
+        //    d3.selectAll('.tag-hoot-'+modifiedId).each(function(){d3.select(this).moveToFront();});
+        //}
 
 
         dispatch.drawn({full: true});
         //Need to document why this was added for Hoot
-        dispatch.drawVector();
+        //dispatch.drawVector();
     }
+
+    //Need to document why this was added for Hoot
+    map.drawVectorFar = function(difference, extent) {
+        var graph = context.graph(),
+            features = context.features(),
+            all = context.intersects(map.extent()),
+            data, filter, hidden=context.connection().hiddenLayers();
+
+        if (difference) {
+            var complete = difference.complete(map.extent());
+            data = _.compact(_.values(complete));
+            filter = function(d) { return d.id in complete; };
+            features.clear(data);
+
+        } else {
+            // force a full redraw if gatherStats detects that a feature
+            // should be auto-hidden (e.g. points or buildings)..
+            if (features.gatherStats(all, graph, dimensions)) {
+                extent = undefined;
+            }
+
+            if (extent) {
+                data = context.intersects(map.extent().intersection(extent));
+                var set = d3.set(_.pluck(data, 'id'));
+                filter = function(d) { return set.has(d.id); };
+
+            } else {
+                all=_.filter(all, function(a) { return !_.contains(hidden, a.mapId); });
+                data = all;
+                filter = d3.functor(true);
+            }
+        }
+
+        data = features.filter(data, graph);
+
+        d3.selectAll('.vertex').remove();
+        //d3.selectAll('.shadow').remove();
+        var linesContainer = d3.select('.layer-lines');
+        linesContainer.selectAll('path.shadow:not(.activeReviewFeature):not(.activeReviewFeature2):not(.unsaved)').remove();
+
+        var farLine = iD.svg.FarLine(projection, context);
+        var farArea = iD.svg.FarArea(projection, context);
+
+        surface
+            .call(farLine, graph, data, filter, context)
+            .call(farArea, graph, data, filter, context)
+            .call(drawPoints, graph, data, filter, context);
+
+        //var lastLoadedLayer = context.connection().lastLoadedLayer();
+        //if(lastLoadedLayer){
+        //    var modifiedId = lastLoadedLayer.toString();
+        //    d3.selectAll('.tag-hoot-'+modifiedId).each(function(){d3.select(this).moveToFront();});
+        //}
+
+
+        //if (typeof context.hoot === 'function') {
+        //    if(!context.hoot().model.conflicts.reviews){
+        //        dispatch.drawVector();
+        //        return;
+        //    }
+        //
+        //    var mapid = context.hoot().model.layers.getmapIdByName(context.connection().lastLoadedLayer());
+        //    var reviews = context.hoot().model.conflicts.reviews.reviewableItems;
+        //    var conflicts = _.map(reviews,function(d){return d.type.charAt(0)+d.id+'_'+ mapid;});
+        //    _.each(conflicts,function(d){d3.select('.'+d).classed('activeReviewFeature', true).moveToFront();});
+        //}
+
+        dispatch.drawn({full: true});
+        dispatch.drawVector();
+    };
 
     function editOff() {
         context.features().resetStats();
@@ -759,77 +829,6 @@ iD.Map = function(context) {
 
     //Added in iD v1.9.2
     map.layers = drawLayers;
-
-    //Need to document why this was added for Hoot
-    map.drawVectorFar = function(difference, extent) {
-        var graph = context.graph(),
-            features = context.features(),
-            all = context.intersects(map.extent()),
-            data, filter, hidden=context.connection().hiddenLayers();
-
-        if (difference) {
-            var complete = difference.complete(map.extent());
-            data = _.compact(_.values(complete));
-            filter = function(d) { return d.id in complete; };
-            features.clear(data);
-
-        } else {
-            // force a full redraw if gatherStats detects that a feature
-            // should be auto-hidden (e.g. points or buildings)..
-            if (features.gatherStats(all, graph, dimensions)) {
-                extent = undefined;
-            }
-
-            if (extent) {
-                data = context.intersects(map.extent().intersection(extent));
-                var set = d3.set(_.pluck(data, 'id'));
-                filter = function(d) { return set.has(d.id); };
-
-            } else {
-                all=_.filter(all, function(a) { return !_.contains(hidden, a.mapId); });
-                data = all;
-                filter = d3.functor(true);
-            }
-        }
-
-        data = features.filter(data, graph);
-
-        d3.selectAll('.vertex').remove();
-        //d3.selectAll('.shadow').remove();
-        var linesContainer = d3.select('.layer-lines');
-        linesContainer.selectAll('path.shadow:not(.activeReviewFeature):not(.activeReviewFeature2):not(.unsaved)').remove();
-
-        var farLine = iD.svg.FarLine(projection, context);
-        var farArea = iD.svg.FarArea(projection, context);
-
-        surface
-        .call(farLine, graph, data, filter, context)
-        .call(farArea, graph, data, filter, context)
-        .call(drawPoints, graph, data, filter, context);
-
-        var lastLoadedLayer = context.connection().lastLoadedLayer();
-        if(lastLoadedLayer){
-          var modifiedId = lastLoadedLayer.toString();
-            d3.selectAll('.tag-hoot-'+modifiedId).each(function(){d3.select(this).moveToFront();});
-        }
-
-
-        if (typeof context.hoot === 'function') {
-            if(!context.hoot().model.conflicts.reviews){
-                dispatch.drawVector();
-                return;
-            }
-
-            var mapid = context.hoot().model.layers.getmapIdByName(context.connection().lastLoadedLayer());
-            var reviews = context.hoot().model.conflicts.reviews.reviewableItems;
-            var conflicts = _.map(reviews,function(d){return d.type.charAt(0)+d.id+'_'+ mapid;});
-            _.each(conflicts,function(d){d3.select('.'+d).classed('activeReviewFeature', true).moveToFront();});
-        }
-
-        dispatch.drawn({full: true});
-        dispatch.drawVector();
-
-    };
 
     map.updateEditedHighlights = function() {
         //Clear any 'edited' class from features
