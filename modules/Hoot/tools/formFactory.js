@@ -62,7 +62,8 @@ export default class FormFactory {
      * @returns {d3} - form modal
      */
     createFormModal( wrapper, formId ) {
-        return wrapper.append( 'div' )
+        return wrapper
+            .append( 'div' )
             .attr( 'id', formId )
             .classed( 'contain hoot-menu fill-white round modal', true );
     }
@@ -82,7 +83,8 @@ export default class FormFactory {
             .append( 'div' )
             .classed( 'modal-header pad1y big keyline-bottom', true );
 
-        header.append( 'h3' )
+        header
+            .append( 'h3' )
             .text( formTitle )
             .append( 'div' )
             .classed( 'fr _icon close pointer', true )
@@ -104,15 +106,18 @@ export default class FormFactory {
 
         let fieldsetContainer = form.append( 'fieldset' );
 
-        let fieldContainer = fieldsetContainer.selectAll( '.hoot-form-field' )
+        let fieldContainer = fieldsetContainer
+            .selectAll( '.hoot-form-field' )
             .data( formMeta ).enter()
             .append( 'div' )
             .classed( 'hoot-form-field fill-white small keyline-all round', true );
 
-        let fieldHeader = fieldContainer.append( 'div' )
+        let fieldHeader = fieldContainer
+            .append( 'div' )
             .classed( 'form-field-header fill-light round-top keyline-bottom', true );
 
-        fieldHeader.append( 'label' )
+        fieldHeader
+            .append( 'label' )
             .classed( 'strong', true )
             .text( d => d.label );
 
@@ -181,7 +186,8 @@ export default class FormFactory {
      * @param field - field div
      */
     createCombobox( field ) {
-        field.append( 'input' )
+        field
+            .append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', d => d.id )
             .attr( 'class', d => d.class )
@@ -226,7 +232,8 @@ export default class FormFactory {
      * @param field - field div
      */
     createTextField( field ) {
-        return field.append( 'input' )
+        return field
+            .append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', d => d.id )
             .attr( 'class', d => d.class )
@@ -248,7 +255,8 @@ export default class FormFactory {
      * @param field - field div
      */
     createTextarea( field ) {
-        field.append( 'textarea' )
+        field
+            .append( 'textarea' )
             .attr( 'id', d => d.id )
             .attr( 'class', d => d.class )
             .text( d => d.data || '' )
@@ -257,7 +265,8 @@ export default class FormFactory {
     }
 
     createListbox( field ) {
-        field.append( 'select' )
+        field
+            .append( 'select' )
             .attr( 'id', d => d.id )
             .attr( 'size', '5' )
             .attr( 'disabled', d => d.readOnly )
@@ -292,11 +301,13 @@ export default class FormFactory {
                     .dispatchEvent( evt );
             } );
 
-        span.append( 'div' )
+        span
+            .append( 'div' )
             .classed( 'material-icons small', true )
             .text( 'folder' );
 
-        span.append( 'input' )
+        span
+            .append( 'input' )
             .attr( 'id', d => d.multipartId )
             .attr( 'type', 'file' )
             .attr( 'readonly', true )
@@ -313,10 +324,12 @@ export default class FormFactory {
      * @param buttonMeta - button data
      */
     createButton( container, buttonMeta ) {
-        let buttonContainer = container.append( 'div' )
+        let buttonContainer = container
+            .append( 'div' )
             .classed( 'modal-footer', true );
 
-        let button = buttonContainer.append( 'button' )
+        let button = buttonContainer
+            .append( 'button' )
             .attr( 'disabled', true )
             .attr( 'id', buttonMeta.id )
             .classed( 'round strong primary', true )

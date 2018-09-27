@@ -27,6 +27,8 @@ export default class TransAssist extends Tab {
         super.render();
 
         new Upload( this ).render();
+
+        return this;
     }
 
     initMapping( valuesMap ) {

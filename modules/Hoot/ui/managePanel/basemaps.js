@@ -30,6 +30,8 @@ export default class Basemaps extends Tab {
         this.createBasemapTable();
 
         this.loadBasemaps();
+
+        return this;
     }
 
     createNewBasemapButton() {

@@ -89,10 +89,13 @@ export default class ReviewBookmarks extends Tab {
 
         this.loadBookmarks()
             .then( bookmarks => {
+                console.log( bookmarks );
                 this.currentBookmarks = this.sortBookmarks( bookmarks );
 
                 this.paginateBookmarks();
             } );
+
+        return this;
     }
 
     createFilterControls() {
@@ -456,7 +459,8 @@ export default class ReviewBookmarks extends Tab {
             .append( 'div' )
             .classed( 'bookmark-title', true )
             .append( 'a' )
-            .text( this.renderBookmarkTitle );
+            .text( this.renderBookmarkTitle )
+            .on( 'click', d => this.openBookmark( d ) );
 
         header
             .append( 'div' )
@@ -510,5 +514,12 @@ export default class ReviewBookmarks extends Tab {
 
                 this.paginateBookmarks();
             } );
+    }
+
+    openBookmark( d ) {
+        let bookmarkNotes = Hoot.ui.managePanel.bookmarkNotes;
+
+        bookmarkNotes.toggle( true );
+        bookmarkNotes.load( d );
     }
 }

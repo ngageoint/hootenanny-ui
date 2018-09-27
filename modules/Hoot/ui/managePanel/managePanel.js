@@ -4,9 +4,8 @@
  * @author Matt Putipong on 2/6/18
  *******************************************************************************************************/
 
-import _map                from 'lodash-es/map';
+import _map from 'lodash-es/map';
 
-import Hoot                from '../../hoot';
 import Datasets            from './datasets';
 import TransAssist         from './transAssist/transAssist';
 import Translations        from './translations';
@@ -24,8 +23,6 @@ export default class ManagePanel {
      * @constructor
      */
     constructor() {
-        this.container = d3.select( '#id-container' );
-
         this.manageTabs = [
             Datasets,
             Basemaps,
@@ -40,44 +37,33 @@ export default class ManagePanel {
      * Render base panel and all of its components
      */
     async render() {
-        this.panel = this.container
+        this.container = d3.select( '#id-container' )
             .append( 'div' )
             .attr( 'id', 'manage-panel' )
             .classed( 'hidden', true );
 
-        this.panelSidebar = this.panel.append( 'div' )
+        this.panelSidebar = this.container
+            .append( 'div' )
             .attr( 'id', 'manage-sidebar-menu' )
             .classed( 'wrapper fill-light keyline-right', true );
 
-        this.panelSidebar.append( 'h3' )
+        this.panelSidebar
+            .append( 'h3' )
             .classed( 'manage-header pad1y pointer strong center', true )
             .append( 'label' )
             .text( 'Manage Panel' );
 
-        // Create all tab items in the panel
+        // Render all tabs
         Promise.all( _map( this.manageTabs, Tab => new Tab( this ).render() ) )
-            .then( () => this.listen() );
+            .then( modules => {
+                this.datasets        = modules[ 0 ];
+                this.basemaps        = modules[ 1 ];
+                this.translations    = modules[ 2 ];
+                this.transAssist     = modules[ 3 ];
+                this.reviewBookmarks = modules[ 4 ];
+                this.bookmarkNotes   = modules[ 5 ];
+            } );
 
         return this;
-    }
-
-    /**
-     * Toggle tab body into view
-     *
-     * @param id - panel id
-     */
-    toggleTab( id ) {
-        d3.selectAll( '.panel-body' ).classed( 'active', false );
-        d3.select( '#' + id ).classed( 'active', true );
-
-        this.panelSidebar
-            .selectAll( '.tab-header' )
-            .classed( 'strong', false );
-
-        d3.select( `[data-id="#${id}"` ).classed( 'strong', true );
-    }
-
-    listen() {
-        Hoot.events.on( 'tab-toggle', d => this.toggleTab( d ) );
     }
 }

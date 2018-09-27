@@ -31,6 +31,8 @@ export default class Translations extends Tab {
         this.createTranslationTable();
 
         this.loadTranslations();
+
+        return this;
     }
 
     createNewTranslationButton() {

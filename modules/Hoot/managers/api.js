@@ -272,9 +272,11 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    getReviewBookmarks( data ) {
+    getReviewBookmarks( bookmarkId ) {
+        const path = bookmarkId ? `get?bookmarkId=${ bookmarkId }` : 'getall';
+
         const params = {
-            path: '/job/review/bookmarks/getall',
+            path: `/job/review/bookmarks/${ path }`,
             method: 'GET'
         };
 
@@ -421,6 +423,23 @@ export default class API {
             },
             data: {
                 queryElements
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getReviewItem( data ) {
+        const params = {
+            path: '/job/review/reviewable',
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            params: {
+                mapid: data.mapId,
+                offsetseqid: data.sequence
             }
         };
 

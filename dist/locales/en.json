@@ -7312,11 +7312,60 @@
                 "description": "Orthofoto layer provided by basemap.at. \"Successor\" of geoimage.at imagery.",
                 "name": "basemap.at Orthofoto"
             },
+            "eufar-balaton": {
+                "attribution": {
+                    "text": "EUFAR Balaton ortofotó 2010"
+                },
+                "description": "1940 geo-tagged photography from Balaton Limnological Institute.",
+                "name": "EUFAR Balaton orthophotos"
+            },
+            "finds.jp_KBN_2500": {
+                "attribution": {
+                    "text": "GSI KIBAN 2500"
+                },
+                "description": "GSI Kiban 2500 via finds.jp. Good for tracing, but a bit older.",
+                "name": "Japan GSI KIBAN 2500"
+            },
+            "gsi.go.jp": {
+                "attribution": {
+                    "text": "GSI Japan"
+                },
+                "description": "Japan GSI ortho Imagery. Usually better than bing, but a bit older.",
+                "name": "Japan GSI ortho Imagery"
+            },
+            "gsi.go.jp_std_map": {
+                "attribution": {
+                    "text": "GSI Japan"
+                },
+                "description": "Japan GSI Standard Map. Widely covered.",
+                "name": "Japan GSI Standard Map"
+            },
             "hike_n_bike": {
                 "attribution": {
                     "text": "© OpenStreetMap contributors"
                 },
                 "name": "Hike & Bike"
+            },
+            "kelkkareitit": {
+                "attribution": {
+                    "text": "© Kelkkareitit.fi"
+                },
+                "description": "Kelkkareitit.fi snowmobile trails from OSM (Nordic coverage)",
+                "name": "Nordic snowmobile overlay"
+            },
+            "lantmateriet-orto1960": {
+                "attribution": {
+                    "text": "© Lantmäteriet, CC0"
+                },
+                "description": "Mosaic of Swedish orthophotos from the period 1955–1965. Older and younger pictures may occur.",
+                "name": "Lantmäteriet Historic Orthophoto 1960"
+            },
+            "lantmateriet-orto1975": {
+                "attribution": {
+                    "text": "© Lantmäteriet, CC0"
+                },
+                "description": "Mosaic of Swedish orthophotos from the period 1970–1980. Is under construction.",
+                "name": "Lantmäteriet Historic Orthophoto 1975"
             },
             "mapbox_locator_overlay": {
                 "attribution": {
@@ -7354,8 +7403,8 @@
                 "attribution": {
                     "text": "© Lantmäteriet"
                 },
-                "description": "Scan of ´Economic maps´ ca 1950-1980",
-                "name": "Lantmäteriet Economic Map (historic)"
+                "description": "Scan of \"Economic maps\" ca. 1950–1980",
+                "name": "Lantmäteriet Economic Map 1950–1980"
             },
             "qa_no_address": {
                 "attribution": {
@@ -7368,6 +7417,13 @@
                     "text": "© Tiles: skobbler Map data: OpenStreetMap contributors"
                 },
                 "name": "skobbler"
+            },
+            "skoterleder": {
+                "attribution": {
+                    "text": "© Skoterleder.org"
+                },
+                "description": "Snowmobile trails",
+                "name": "Snowmobile map Sweden"
             },
             "stamen-terrain-background": {
                 "attribution": {

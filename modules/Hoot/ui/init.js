@@ -17,9 +17,10 @@ export default class UI {
             new ManagePanel().render(),
             new Conflicts( d3.select( '#content' ) )
         ] ).then( modules => {
-            this.navbar  = modules[ 0 ];
-            this.sidebar = modules[ 1 ];
-            this.conflicts = modules[ 3 ];
+            this.navbar      = modules[ 0 ];
+            this.sidebar     = modules[ 1 ];
+            this.managePanel = modules[ 2 ];
+            this.conflicts   = modules[ 3 ];
         } );
     }
 }

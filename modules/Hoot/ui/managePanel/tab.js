@@ -9,8 +9,8 @@
  */
 export default class Tab {
     constructor( instance ) {
+        this.container    = instance.container;
         this.panelSidebar = instance.panelSidebar;
-        this.panel        = instance.panel;
 
         this.name = null;
         this.id   = null;
@@ -32,18 +32,23 @@ export default class Tab {
             .classed( 'pointer', true )
             .style( 'font-style', 'normal' );
 
-        this.panelBody = this.panel.append( 'div' )
+        this.panelBody = this.container
+            .append( 'div' )
             .classed( 'panel-body fill-light', true )
             .attr( 'id', this.id );
 
-        this.panelWrapper = this.panelBody.append( 'div' )
+        this.panelWrapper = this.panelBody
+            .append( 'div' )
             .classed( 'panel-wrapper', true );
 
         return this;
     }
 
-    toggle() {
-        d3.selectAll( '.tab-header' ).classed( 'strong', false );
+    toggle( keepSelected ) {
+        if ( !keepSelected ) {
+            d3.selectAll( '.tab-header' ).classed( 'strong', false );
+        }
+
         d3.selectAll( '.panel-body' ).classed( 'active', false );
 
         this.tabHeader.classed( 'strong', true );

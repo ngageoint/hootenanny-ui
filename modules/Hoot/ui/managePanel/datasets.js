@@ -148,6 +148,8 @@ export default class Datasets extends Tab {
         this.renderFolderTree();
 
         this.listen();
+
+        return this;
     }
 
     /**
