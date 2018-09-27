@@ -34,7 +34,7 @@ Hoot.view.login = function(fn_launch_login, fn_direct_login, assetPath) {
     var blurb = container.append('div');
 
     blurb.append('h2')
-        .text('What is Hootenanny?')
+        .text('What is Hootenanny?');
 
     blurb.append('p').append('em').text('Hootenanny:');
 
@@ -48,13 +48,13 @@ Hoot.view.login = function(fn_launch_login, fn_direct_login, assetPath) {
             .text('Fancy word for merge');
     blurb.append('p');
     blurb.append('p')
-        .text("Hootenanny is an open source conflation tool developed to facilitate automated and semi-automated conflation of critical Foundation GEOINT features in the topographic domain. In short, it merges multiple maps of geodata into a single seamless map.");
+        .text('Hootenanny is an open source conflation tool developed to facilitate automated and semi-automated conflation of critical Foundation GEOINT features in the topographic domain. In short, it merges multiple maps of geodata into a single seamless map.');
 
     blurb.append('p')
-        .text("Hootenanny conflation occurs at the dataset level, where the user’s workflow determines the best reference dataset, source content, geometry, and attributes to transfer to the output map. Hootenanny's internal processing leverages the key value pair structure of OpenStreetMap (OSM) for improved utility and applicability to broader user groups. Normalized attributes can be used to aid in feature matching, and OSM’s free tagging system allows the map to include an unlimited number of attributes describing each feature.");
+        .text('Hootenanny conflation occurs at the dataset level, where the user\'s workflow determines the best reference dataset, source content, geometry, and attributes to transfer to the output map. Hootenanny\'s internal processing leverages the key value pair structure of OpenStreetMap (OSM) for improved utility and applicability to broader user groups. Normalized attributes can be used to aid in feature matching, and OSM’s free tagging system allows the map to include an unlimited number of attributes describing each feature.');
 
     blurb.append('p')
-        .html("Hootenanny is developed under the open source General Public License (GPL) and maintained on the National Geospatial-Intelligence Agency’s (NGA) GitHub <a href=\"https://github.com/ngageoint/hootenanny\" target=\"_new\">site</a>.");
+        .html('Hootenanny is developed under the open source General Public License (GPL) and maintained on the National Geospatial-Intelligence Agency’s (NGA) GitHub <a href=\"https://github.com/ngageoint/hootenanny\" target=\"_new\">site</a>.');
 
     blurb.append('h2').text('Access & Authentication');
     blurb.append('p')
@@ -73,10 +73,10 @@ Hoot.view.login = function(fn_launch_login, fn_direct_login, assetPath) {
 
     row.append('div')
         .classed('hoot-login-cell text', true)
-        .html("&#9658; Click 'Always Allow' and 'Done'");
+        .html('&#9658; Click \'Always Allow\' and \'Done\'');
 
 
-    var row = table.append('div')
+    row = table.append('div')
         .classed('hoot-login-row', true);
 
     row.append('div')
@@ -91,17 +91,17 @@ Hoot.view.login = function(fn_launch_login, fn_direct_login, assetPath) {
 
 
     container.append('h2').text('Enabling Popup Windows: Firefox');
-    var table = container.append('div')
+    table = container.append('div')
         .classed('hoot-login-table', true);
 
-    var row = table.append('div')
+    row = table.append('div')
         .classed('hoot-login-row', true);
 
     row.append('div')
         .classed('hoot-login-cell', true)
         .html('&#9658; You might see a yellow bar with a notification of a popup blocked');
 
-    var row = table.append('div')
+    row = table.append('div')
         .classed('hoot-login-row', true);
 
     row.append('div')
@@ -109,14 +109,14 @@ Hoot.view.login = function(fn_launch_login, fn_direct_login, assetPath) {
         .append('img')
             .attr('src', assetPath + 'img/login-popup-firefox-1.png');
 
-    var row = table.append('div')
+    row = table.append('div')
         .classed('hoot-login-row', true);
 
     row.append('div')
         .classed('hoot-login-cell padtop', true)
-        .html("&#9658; Click 'Options' and then select 'Allow...' or 'Show...'");
+        .html('&#9658; Click \'Options\' and then select \'Allow...\' or \'Show...\'');
 
-    var row = table.append('div')
+    row = table.append('div')
         .classed('hoot-login-row', true);
 
     row.append('div')
@@ -124,14 +124,14 @@ Hoot.view.login = function(fn_launch_login, fn_direct_login, assetPath) {
         .append('img')
             .attr('src', assetPath + 'img/login-popup-firefox-2.png');
 
-    var row = table.append('div')
+    row = table.append('div')
         .classed('hoot-login-row', true);
 
     row.append('div')
         .classed('hoot-login-cell padtop', true)
-        .html("&#9658; Alternatively if the yellow notification is not present, look to the left in the address bar. Click on the discrete notification, and then select 'Show...' or toggle 'Block' to 'Allow'");
+        .html('&#9658; Alternatively if the yellow notification is not present, look to the left in the address bar. Click on the discrete notification, and then select \'Show...\' or toggle \'Block\' to \'Allow\'');
 
-    var row = table.append('div')
+    row = table.append('div')
         .classed('hoot-login-row', true);
 
     row.append('div')
@@ -145,7 +145,7 @@ Hoot.view.login = function(fn_launch_login, fn_direct_login, assetPath) {
         .append('a')
             .text('here')
             .on('click', fn_direct_login);
-}
+};
 
 Hoot.view.unload_login = function() {
     d3.select('body')
@@ -153,4 +153,4 @@ Hoot.view.unload_login = function() {
         .style('background-color', null);
     d3.select('div.login-header').remove();
     d3.select('div#id-container').html('');
-}
+};

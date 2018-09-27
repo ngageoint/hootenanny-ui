@@ -142,11 +142,11 @@ Hoot.view.utilities = function (context){
                     .classed('pad2 inline _icon dark strong small', true)
                     .text('Logged in as ' + user.display_name);
             } catch(e) {
-                console.warn(warnMsg);
-                console.warn(e);
+                window.console.warn(warnMsg);
+                window.console.warn(e);
             }
         } else {
-            console.warn(warnMsg);
+            window.console.warn(warnMsg);
         }
 
         nav.append('div')
@@ -159,7 +159,7 @@ Hoot.view.utilities = function (context){
                     if(!e) {
                         window.location.reload(true);
                     }
-                })
+                });
             });
         nav.append('div')
             .attr('id', 'manageTabBtn')

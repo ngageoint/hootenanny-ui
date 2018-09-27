@@ -785,7 +785,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             }
             callback(resp);
         });
-    }
+    };
     rest.logout = function(callback) {
         d3.text('/hoot-services/auth/oauth1/logout', function(err, resp) {
             if (err) {
@@ -794,7 +794,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                 callback();
             }
         });
-    }
+    };
 
 
     rest['' + command + ''](data, callback, option);
