@@ -47,7 +47,8 @@ export default class LayerAdd extends SidebarForm {
      * Create table inside fieldset
      */
     createTable() {
-        this.table = this.fieldset.append( 'div' )
+        this.table = this.fieldset
+            .append( 'div' )
             .attr( 'id', d => d.tableId )
             .classed( 'layer-add-table layer-table keyline-all filled-white strong overflow', true )
             .on( 'click', () => {

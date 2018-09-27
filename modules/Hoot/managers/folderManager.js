@@ -37,7 +37,7 @@ export default class FolderManager {
             this.refreshFolders(),
             this.refreshDatasets(),
             this.refreshLinks()
-        ] ).then( () => this.hoot.events.emit( 'render-dataset-table' ) );
+        ] );
     }
 
     /**
@@ -103,7 +103,7 @@ export default class FolderManager {
             folder.name = folder.name.toLowerCase();
         } );
 
-        return !_isEmpty( _find( folderList, { name: folderName.toLowerCase(), parentId: folderId } ) );
+        return !_isEmpty( _find( folderList, { name : folderName.toLowerCase(), parentId : folderId } ) );
     }
 
     /**
@@ -121,21 +121,21 @@ export default class FolderManager {
             } else {
                 //use links to get parent folder as far back as possible
                 let strPath      = folder.name,
-                    parentFolder = _find( folders, { id: folder.parentId } );
+                    parentFolder = _find( folders, { id : folder.parentId } );
 
                 do {
                     strPath      = parentFolder.name + '/' + strPath;
-                    parentFolder = _find( folders, { id: parentFolder.parentId } );
+                    parentFolder = _find( folders, { id : parentFolder.parentId } );
                 } while ( parentFolder );
 
                 folder.folderPath = strPath;
             }
 
             return {
-                path: folder.folderPath,
-                name: folder.name,
-                id: folder.id,
-                parentId: folder.parentId
+                path : folder.folderPath,
+                name : folder.name,
+                id : folder.id,
+                parentId : folder.parentId
             };
         } );
     }
@@ -196,15 +196,6 @@ export default class FolderManager {
      * @returns {array} - hierarchy
      */
     async getAvailFolderData() {
-        //if ( !this._folders.length || !this._datasets.length ) {
-        //    if ( this.loading === undefined ) {
-        //        this.loading = this.refreshAll();
-        //    }
-        //
-        //    // make sure refresh all is only called once
-        //    await this.loading;
-        //}
-
         await this.dataExists();
 
         let datasetList = _map( this._datasets, dataset => {
@@ -253,7 +244,7 @@ export default class FolderManager {
      * @param parent - parent node
      * @returns {array} - hierarchy
      */
-    unflattenFolders( array, parent = { id: 0 } ) {
+    unflattenFolders( array, parent = { id : 0 } ) {
         let children = _filter( array, child => child.parentId === parent.id ),
             tree     = [];
 
@@ -326,7 +317,7 @@ export default class FolderManager {
             let params = {
                 folderId,
                 mapId,
-                updateType: 'new'
+                updateType : 'new'
             };
 
             return this.hoot.api.updateMapFolderLinks( params )
@@ -364,7 +355,7 @@ export default class FolderManager {
         let params = {
             folderId,
             mapId,
-            updateType: 'update'
+            updateType : 'update'
         };
 
         return this.hoot.api.updateMapFolderLinks( params );

@@ -4,6 +4,7 @@
  * @author Matt Putipong on 2/6/18
  *******************************************************************************************************/
 
+import Hoot  from '../hoot';
 import About from './about';
 
 /**
@@ -18,8 +19,8 @@ export default class Navbar {
 
         this.dropdownItems = [
             {
-                title: 'About',
-                onClick: () => this.openAboutModal()
+                title : 'About',
+                onClick : () => this.openAboutModal()
             }
         ];
     }
@@ -44,35 +45,22 @@ export default class Navbar {
             .append( 'div' )
             .classed( 'nav-item', true );
 
-        let menuButton = leftContainer
-            .append( 'div' )
-            .classed( 'menu-button button text-light pointer icon-container', true )
-            .on( 'click', function() {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-
-                let vis = !d3.select( '#manage-panel' ).classed( 'hidden' );
-
-                d3.select( this )
-                    .classed( 'active', !vis );
-
-                d3.select( '#manage-panel' )
-                    .classed( 'hidden', vis );
-
-                d3.selectAll( '.context-menu, .datasets-options-menu' ).remove();
-            } );
-
-        menuButton
-            .append( 'i' )
-            .classed( 'medium material-icons', true )
-            .text( 'menu' );
-
         leftContainer
             .append( 'div' )
             .classed( 'logo-container', true )
             .append( 'img' )
             .attr( 'src', './img/hoot_logo_update.png' )
             .classed( 'pointer hoot-logo', true );
+
+        this.menuButton = leftContainer
+            .insert( 'div', '.logo-container' )
+            .classed( 'menu-button button text-light pointer icon-container', true )
+            .on( 'click', () => this.toggleManagePanel() );
+
+        this.menuButton
+            .append( 'i' )
+            .classed( 'medium material-icons', true )
+            .text( 'menu' );
     }
 
     createRightContainer() {
@@ -110,6 +98,16 @@ export default class Navbar {
         //    .text( 'arrow_drop_down' );
 
         //this.initDropdown();
+    }
+
+    toggleManagePanel() {
+        let managePanel = Hoot.ui.managePanel.container,
+            vis         = !managePanel.classed( 'hidden' );
+
+        this.menuButton.classed( 'active', !vis );
+        managePanel.classed( 'hidden', vis );
+
+        d3.selectAll( '.context-menu, .datasets-options-menu' ).remove();
     }
 
     //////////////////// possibly use in the future

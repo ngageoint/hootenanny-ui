@@ -25,34 +25,34 @@ export default class Sidebar {
 
         let formMeta = [
             {
-                type: 'add',
-                id: 'reference',
-                class: 'layer-add',
-                tableId: 'add-ref-table',
-                refType: 'primary',
-                color: 'violet',
-                toggleButtonText: 'Add Reference Datasets'
+                type : 'add',
+                id : 'reference',
+                class : 'layer-add',
+                tableId : 'add-ref-table',
+                refType : 'primary',
+                color : 'violet',
+                toggleButtonText : 'Add Reference Datasets'
             },
             {
-                type: 'add',
-                id: 'secondary',
-                class: 'layer-add',
-                tableId: 'add-secondary-table',
-                refType: 'secondary',
-                color: 'orange',
-                toggleButtonText: 'Add Secondary Datasets'
+                type : 'add',
+                id : 'secondary',
+                class : 'layer-add',
+                tableId : 'add-secondary-table',
+                refType : 'secondary',
+                color : 'orange',
+                toggleButtonText : 'Add Secondary Datasets'
             },
             {
-                type: 'conflate',
-                id: 'conflate',
-                class: 'layer-conflate',
-                toggleButtonText: 'Conflate'
+                type : 'conflate',
+                id : 'conflate',
+                class : 'layer-conflate',
+                toggleButtonText : 'Conflate'
             },
             {
-                type: 'review',
-                id: 'review',
-                class: 'layer-review',
-                toggleButtonText: 'Complete Review'
+                type : 'review',
+                id : 'review',
+                class : 'layer-review',
+                toggleButtonText : 'Complete Review'
             }
         ];
 
@@ -158,7 +158,8 @@ export default class Sidebar {
     layerMerged() {
         let that = this;
 
-        let layer               = Hoot.layers.mergedLayer;
+        let layer = Hoot.layers.mergedLayer;
+
         Hoot.layers.mergedLayer = null;
 
         this.wrapper.selectAll( '.layer-review' )

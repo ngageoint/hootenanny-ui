@@ -77,12 +77,14 @@ class SidebarController {
     }
 
     createController() {
-        this.controller = this.form.append( 'div' )
+        this.controller = this.form
+            .append( 'div' )
             .classed( 'controller contain keyline-all round', true );
     }
 
     createInnerWrapper() {
-        this.innerWrapper = this.form.append( 'div' )
+        this.innerWrapper = this.form
+            .append( 'div' )
             .classed( 'inner-wrapper', true );
     }
 
@@ -94,14 +96,16 @@ class SidebarController {
         let self    = this,
             palette = Hoot.layers.getPalette();
 
-        this.colorPalette = this.fieldset.append( 'div' )
+        this.colorPalette = this.fieldset
+            .append( 'div' )
             .classed( 'keyline-all hoot-form-field palette clearfix round', true );
 
         if ( !this.isConflate ) {
             palette = _reject( palette, color => color.name === 'green' );
         }
 
-        this.colorPalette.selectAll( 'a' )
+        this.colorPalette
+            .selectAll( 'a' )
             .data( palette )
             .enter()
             .append( 'a' )
@@ -133,20 +137,23 @@ class SidebarController {
     }
 
     createThumbnail() {
-        this.thumbnail = this.controller.append( 'div' )
+        this.thumbnail = this.controller
+            .append( 'div' )
             .classed( 'pad1 inline thumbnail _icon _loading light', true );
     }
 
     createText() {
         let text = this.isConflate ? 'Conflating' : 'Loading';
 
-        this.text = this.controller.append( 'span' )
+        this.text = this.controller
+            .append( 'span' )
             .classed( 'strong pad1x', true )
             .html( `${ text } &#8230;` );
     }
 
     createDeleteButton() {
-        this.deleteButton = this.controller.append( 'button' )
+        this.deleteButton = this.controller
+            .append( 'button' )
             .classed( 'delete-button icon-button keyline-left round-right inline _icon trash', true )
             .on( 'click', async d => {
                 d3.event.stopPropagation();
@@ -168,7 +175,8 @@ class SidebarController {
         this.layerId   = layer.id;
         this.layerName = layer.name;
 
-        this.form.classed( 'layer-loading', false )
+        this.form
+            .classed( 'layer-loading', false )
             .classed( this.typeClass, true );
 
         this.thumbnail.attr( 'class', () => {
@@ -178,13 +186,15 @@ class SidebarController {
             return `pad1 inline thumbnail light big _icon ${ icon } ${ osm }`;
         } ).on( 'click', () => this.togglePanel() );
 
-        this.contextLayer = this.controller.append( 'div' )
+        this.contextLayer = this.controller
+            .append( 'div' )
             .classed( 'context-menu-layer', true )
             .on( 'contextmenu', () => {
                 d3.event.preventDefault();
 
                 // create the div element that will hold the context menu
-                d3.selectAll( '.context-menu' ).data( [ 1 ] )
+                d3.selectAll( '.context-menu' )
+                    .data( [ 1 ] )
                     .enter()
                     .append( 'div' )
                     .classed( 'context-menu', true )
@@ -212,7 +222,8 @@ class SidebarController {
 
         this.text.remove();
 
-        this.text = this.contextLayer.append( 'span' )
+        this.text = this.contextLayer
+            .append( 'span' )
             .classed( 'strong pad1x', true )
             .text( layer.name );
 

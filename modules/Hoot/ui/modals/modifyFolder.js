@@ -96,6 +96,7 @@ export default class ModifyFolder {
         return Hoot.api.modify( modParams )
             .then( () => Hoot.api.updateFolder( updateParams ) )
             .then( () => Hoot.folders.refreshAll() )
+            .then( () => Hoot.events.emit( 'refresh-dataset-table' ) )
             .then( () => {
                 let type = 'success',
                     message;

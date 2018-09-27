@@ -146,6 +146,7 @@ export default class ModifyDataset {
                 .then( () => Hoot.layers.refreshLayers() )
                 .then( () => Hoot.folders.updateFolderLink( layerName, folderId ) )
                 .then( () => Hoot.folders.refreshAll() )
+                .then( () => Hoot.events.emit( 'refresh-dataset-table' ) )
                 .then( () => {
                     let type = 'success',
                         message;
@@ -170,6 +171,7 @@ export default class ModifyDataset {
         } else {
             return Promise.all( _map( this.datasets, dataset => Hoot.folders.updateFolderLink( dataset.name, folderId ) ) )
                 .then( () => Hoot.folders.refreshAll() )
+                .then( () => Hoot.events.emit( 'refresh-dataset-table' ) )
                 .then( () => {
                     let message = 'Successfully moved all datasets',
                         type    = 'success';

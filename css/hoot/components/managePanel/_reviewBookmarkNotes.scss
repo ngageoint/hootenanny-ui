@@ -1,31 +1,31 @@
-.notes-back-button {
+.bookmark-notes-back-button {
     height: 40px !important;
     padding: 0 20px 0 10px;
 }
 
-.bookmark-notes {
+.bookmark-notes-form {
     margin-top: 20px;
 }
 
-.notes-header {
+.bookmark-notes-header {
     padding: 10px 15px;
     background-color: $dark-opacity05;
 
-    .bookmark-title {
+    .bookmark-notes-title {
         margin: 0;
     }
+}
 
-    .note-actions {
-        height: 24px;
+.bookmark-notes-actions {
+    height: 24px;
 
-        & > div {
-            display: inline-block;
-            cursor: pointer;
-            margin-right: 5px;
+    & > div {
+        display: inline-block;
+        cursor: pointer;
+        margin-right: 5px;
 
-            &:last-child {
-                margin-right: 0;
-            }
+        &:last-child {
+            margin-right: 0;
         }
     }
 }

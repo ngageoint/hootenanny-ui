@@ -35,7 +35,7 @@ export default class ReviewBookmarkNotes extends Tab {
 
         let backButton = this.panelWrapper
             .append( 'button' )
-            .classed( 'notes-back-button button primary big flex align-center', true )
+            .classed( 'bookmark-notes-back-button button primary big flex align-center', true )
             .on( 'click', () => {
                 //TODO: go back to review bookmarks panel
             } );
@@ -92,33 +92,29 @@ export default class ReviewBookmarkNotes extends Tab {
 
         this.form = this.panelWrapper
             .append( 'div' )
-            .classed( 'bookmark-notes keyline-all fill-white', true );
+            .classed( 'notes-form keyline-all fill-white', true );
     }
 
     createHeader() {
         let header = this.form
             .append( 'div' )
-            .classed( 'notes-header keyline-bottom flex justify-between align-center', true );
+            .classed( 'bookmark-notes-header keyline-bottom flex justify-between align-center', true );
 
         header
             .append( 'h3' )
-            .classed( 'bookmark-title', true )
+            .classed( 'bookmark-notes-title', true )
             .text( this.bookmark.detail.bookmarkdetail.title );
 
         let icons = header
             .append( 'div' )
-            .classed( 'note-actions', true );
+            .classed( 'bookmark-notes-actions', true );
 
         if ( this.reviewItem.resultCount > 0 ) {
             icons
                 .append( 'div' )
                 .classed( 'material-icons', true )
                 .text( 'launch' )
-                .on( 'click', function() {
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
-
-                } );
+                .on( 'click', () => this.jumpToReviewItem() );
         }
 
         icons
@@ -136,5 +132,15 @@ export default class ReviewBookmarkNotes extends Tab {
         let notesBody = this.form
             .append( 'div' )
             .classed( 'notes-body pad2', true );
+
+        let notes = notesBody
+            .selectAll( '.note' )
+            .data( this.bookmark.detail.bookmarknotes )
+            .enter();
+    }
+
+    jumpToReviewItem() {
+        Hoot.ui.navbar.toggleManagePanel();
+        Hoot.layers.removeAllLoadedLayers();
     }
 }

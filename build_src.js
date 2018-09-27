@@ -49,7 +49,7 @@ module.exports = function buildSrc(isDevelopment) {
             }),
             collectSass({
                 importOnce: true,
-                extractPath: 'dist/hoot.css'
+                extract: 'dist/hoot.css'
             }),
             commonjs(),
             json( { indent: '' } )

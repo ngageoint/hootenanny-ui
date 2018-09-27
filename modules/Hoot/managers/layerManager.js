@@ -177,6 +177,18 @@ export default class Layers {
         }
     }
 
+    removeAllLoadedLayers() {
+        _forEach( this.loadedLayers, layer => {
+            this.hoot.context.background().removeSource( layer.id );
+            this.hootOverlay.removeGeojson( layer.id );
+        } );
+
+        this.loadedLayers = {};
+
+        this.hoot.context.flush();
+        this.hoot.ui.sidebar.reset();
+    }
+
     hideLayer( id ) {
         this.hoot.layers.loadedLayers[ id ].visible = false;
 

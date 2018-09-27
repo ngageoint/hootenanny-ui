@@ -4,6 +4,7 @@
  * @author Matt Putipong on 3/5/18
  *******************************************************************************************************/
 
+import _cloneDeep  from 'lodash-es/cloneDeep';
 import _concat     from 'lodash-es/concat';
 import _difference from 'lodash-es/difference';
 import _drop       from 'lodash-es/drop';
@@ -16,9 +17,9 @@ import _slice      from 'lodash-es/slice';
 import _uniq       from 'lodash-es/uniq';
 import _without    from 'lodash-es/without';
 
-import moment        from 'moment';
-import EventEmitter  from 'events';
-import Hoot          from '../hoot';
+import moment       from 'moment';
+import EventEmitter from 'events';
+import Hoot         from '../hoot';
 
 /**
  * Class for creating, displaying and maintaining a folder tree hierarchy
@@ -37,70 +38,70 @@ export default class FolderTree extends EventEmitter {
         this.lastSelectedRangeNodes = null;
 
         this.datasetContextMenu = {
-            multiDatasetOpts: {
-                title: 'Export Selected Datasets',
-                icon: 'export',
-                click: 'bulkexportDataset'
+            multiDatasetOpts : {
+                title : 'Export Selected Datasets',
+                icon : 'export',
+                click : 'bulkexportDataset'
             },
-            singleDatasetOpts: [
+            singleDatasetOpts : [
                 {
-                    title: 'Export',
-                    icon: 'export',
-                    click: 'exportDataset'
+                    title : 'Export',
+                    icon : 'export',
+                    click : 'exportDataset'
                 },
                 {
-                    title: 'Prepare for Validation',
-                    icon: 'sprocket',
-                    click: 'prepValidation'
+                    title : 'Prepare for Validation',
+                    icon : 'sprocket',
+                    click : 'prepValidation'
                 },
                 {
-                    title: 'Filter non-HGIS POIs',
-                    icon: 'sprocket',
-                    click: 'filter'
+                    title : 'Filter non-HGIS POIs',
+                    icon : 'sprocket',
+                    click : 'filter'
                 }
             ],
-            addDatasetOpts: [
+            addDatasetOpts : [
                 {
-                    title: 'Add as Reference Dataset',
-                    formId: 'reference',
-                    refType: 'primary',
-                    icon: 'plus',
-                    click: 'addDataset'
+                    title : 'Add as Reference Dataset',
+                    formId : 'reference',
+                    refType : 'primary',
+                    icon : 'plus',
+                    click : 'addDataset'
                 },
                 {
-                    title: 'Add as Secondary Dataset',
-                    formId: 'secondary',
-                    refType: 'secondary',
-                    icon: 'plus',
-                    click: 'addDataset'
+                    title : 'Add as Secondary Dataset',
+                    formId : 'secondary',
+                    refType : 'secondary',
+                    icon : 'plus',
+                    click : 'addDataset'
                 }
             ]
         };
 
         this.folderContextMenu = [
             {
-                title: 'Delete',
-                icon: 'trash',
-                click: 'delete'
+                title : 'Delete',
+                icon : 'trash',
+                click : 'delete'
             },
             {
-                title: 'Add Datasets',
-                icon: 'data',
-                click: 'addDataset'
+                title : 'Add Datasets',
+                icon : 'data',
+                click : 'addDataset'
             },
             {
-                title: 'Add Folder',
-                icon: 'folder',
-                click: 'addFolder'
+                title : 'Add Folder',
+                icon : 'folder',
+                click : 'addFolder'
             },
             {
-                title: 'Export Data in Folder',
-                icon: 'export',
-                click: 'exportFolder'
+                title : 'Export Data in Folder',
+                icon : 'export',
+                click : 'exportFolder'
             }
         ];
 
-        this.margin    = { top: 10, right: 20, bottom: 30, left: 0 };
+        this.margin    = { top : 10, right : 20, bottom : 30, left : 0 };
         this.width     = '100%';
         this.height    = '100%';
         this.barHeight = 20;
@@ -128,16 +129,16 @@ export default class FolderTree extends EventEmitter {
      * Initialize the folder tree
      */
     async render() {
-        let folders = await Hoot.folders.getAvailFolderData();
+        let folders = _cloneDeep( await Hoot.folders.getAvailFolderData() );
 
         if ( this.isDatasetTable ) {
-            folders = _without( folders, _find( folders, { id: -1 } ) );
+            folders = _without( folders, _find( folders, { id : -1 } ) );
         }
 
         folders = {
-            name: 'Datasets',
-            id: 'Datasets',
-            children: folders // prevent collision of data
+            name : 'Datasets',
+            id : 'Datasets',
+            children : folders // prevent collision of data
         };
 
         this.root    = d3.hierarchy( folders );
@@ -507,9 +508,9 @@ export default class FolderTree extends EventEmitter {
 
             opts = [
                 {
-                    title: `Delete (${ selectedCount })`,
-                    icon: 'trash',
-                    click: 'delete'
+                    title : `Delete (${ selectedCount })`,
+                    icon : 'trash',
+                    click : 'delete'
                 }
             ];
 
@@ -518,9 +519,9 @@ export default class FolderTree extends EventEmitter {
                 opts.push( this.datasetContextMenu.multiDatasetOpts );
 
                 opts.splice( 1, 0, {
-                    title: `Move (${ selectedCount })`,
-                    icon: 'info',
-                    click: 'modifyDataset'
+                    title : `Move (${ selectedCount })`,
+                    icon : 'info',
+                    click : 'modifyDataset'
                 } );
             } else {
                 // add options for single selected dataset
@@ -533,9 +534,9 @@ export default class FolderTree extends EventEmitter {
                 } );
 
                 opts.splice( 4, 0, {
-                    title: `Move/Rename ${ data.name }`,
-                    icon: 'info',
-                    click: 'modifyDataset'
+                    title : `Move/Rename ${ data.name }`,
+                    icon : 'info',
+                    click : 'modifyDataset'
                 } );
 
                 opts = _concat( opts, this.datasetContextMenu.singleDatasetOpts );
@@ -543,9 +544,9 @@ export default class FolderTree extends EventEmitter {
         } else if ( data.type === 'folder' ) {
             opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
             opts.splice( 1, 0, {
-                title: `Move/Rename ${ data.name }`,
-                icon: 'info',
-                click: 'modifyFolder'
+                title : `Move/Rename ${ data.name }`,
+                icon : 'info',
+                click : 'modifyFolder'
             } );
         }
 

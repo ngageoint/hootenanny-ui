@@ -45,7 +45,6 @@ class Hoot {
             this.getAboutData(),
             this.getAllUsers(),
             this.getMapSizeThresholds(),
-            this.folders.refreshAll(),
             this.translations.getTranslations()
         ] );
 
