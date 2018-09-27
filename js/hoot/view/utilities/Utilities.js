@@ -140,7 +140,7 @@ Hoot.view.utilities = function (context){
                 var user = JSON.parse(localStorage.getItem('user'));
                 nav.append('div')
                     .classed('pad2 inline _icon dark strong small', true)
-                    .text('Contributing as ' + user.display_name);
+                    .text('Logged in as ' + user.display_name);
             } catch(e) {
                 console.warn(warnMsg);
                 console.warn(e);
@@ -157,7 +157,7 @@ Hoot.view.utilities = function (context){
             .on('click', function() {
                 Hoot.model.REST('logout', function(e) {
                     if(!e) {
-                        window.location = '/';
+                        window.location.reload(true);
                     }
                 })
             });
