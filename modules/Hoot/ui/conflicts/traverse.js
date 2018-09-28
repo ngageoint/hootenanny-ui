@@ -27,8 +27,9 @@ export default class Traverse {
      * @returns {Promise<void>}
      */
     async jumpTo( direction ) {
-        let reviewData = {},
-            hasChanges = Hoot.context.history().hasChanges();
+        let hasChanges = Hoot.context.history().hasChanges(),
+            reviewData = {},
+            reviewItem;
 
         if ( hasChanges ) {
             let message = 'Please resolve or undo the current feature changes before proceeding to the next review.',
@@ -38,22 +39,27 @@ export default class Traverse {
             return;
         }
 
-        let reviewStats       = await Hoot.api.getReviewStatistics( this.data.mapId );
-        this.data.reviewStats = reviewStats;
+        this.data.reviewStats = await Hoot.api.getReviewStatistics( this.data.mapId );
 
-        const sequence = -999;
+        if ( this.data.forcedReviewItem ) {
+            reviewItem = this.data.forcedReviewItem;
 
-        if ( this.data.currentReviewItem ) {
-            reviewData.mapId     = this.data.currentReviewItem.mapId;
-            reviewData.sequence  = this.data.currentReviewItem.sortOrder;
-            reviewData.direction = direction;
+            this.data.forcedReviewItem = null;
         } else {
-            reviewData.mapId     = this.data.mapId;
-            reviewData.sequence  = sequence;
-            reviewData.direction = direction;
-        }
+            let sequence = -999;
 
-        let reviewItem = await Hoot.api.getNextReview( reviewData );
+            if ( this.data.currentReviewItem ) {
+                reviewData.mapId     = this.data.currentReviewItem.mapId;
+                reviewData.sequence  = this.data.currentReviewItem.sortOrder;
+                reviewData.direction = direction;
+            } else {
+                reviewData.mapId     = this.data.mapId;
+                reviewData.sequence  = sequence;
+                reviewData.direction = direction;
+            }
+
+            reviewItem = await Hoot.api.getNextReview( reviewData );
+        }
 
         if ( reviewItem.resultCount > 0 ) {
             this.data.currentReviewItem = reviewItem;

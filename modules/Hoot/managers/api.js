@@ -333,7 +333,7 @@ export default class API {
      * @param mapId
      * @returns {Promise<any>}
      */
-    getTags( mapId ) {
+    getMapTags( mapId ) {
         const params = {
             path: `/osm/api/0.6/map/tags?mapid=${ mapId }`,
             method: 'GET'

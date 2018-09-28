@@ -89,7 +89,6 @@ export default class ReviewBookmarks extends Tab {
 
         this.loadBookmarks()
             .then( bookmarks => {
-                console.log( bookmarks );
                 this.currentBookmarks = this.sortBookmarks( bookmarks );
 
                 this.paginateBookmarks();
@@ -274,6 +273,85 @@ export default class ReviewBookmarks extends Tab {
         } );
     }
 
+    populateBookmarks( bookmarks, hardRefresh ) {
+        if ( hardRefresh ) {
+            this.bookmarkTable.selectAll( '.bookmark-item' ).remove();
+        }
+
+        let items = this.bookmarkTable
+            .selectAll( '.bookmark-item' )
+            .data( bookmarks, d => d.id );
+
+        items
+            .exit()
+            .transition()
+            .duration( 400 )
+            .style( 'opacity', 0 )
+            .remove();
+
+        items = items
+            .enter()
+            .append( 'div' )
+            .attr( 'id', d => d.id )
+            .classed( 'bookmark-item fill-white keyline-bottom', true )
+            .style( 'opacity', 0 );
+
+        items
+            .transition()
+            .duration( 400 )
+            .style( 'opacity', 1 );
+
+        let wrapper = items
+            .append( 'div' )
+            .classed( 'bookmark-wrapper', true );
+
+        let header = wrapper
+            .append( 'div' )
+            .classed( 'bookmark-header flex justify-between align-center', true );
+
+        header
+            .append( 'div' )
+            .classed( 'bookmark-title', true )
+            .append( 'a' )
+            .text( this.renderBookmarkTitle )
+            .on( 'click', d => this.openBookmark( d ) );
+
+        header
+            .append( 'div' )
+            .classed( 'delete-bookmark', true )
+            .append( 'button' )
+            .classed( '_icon trash', true )
+            .on( 'click', d => this.deleteBookmark( d ) );
+
+        let body = wrapper
+            .append( 'div' )
+            .classed( 'bookmark-body', true );
+
+        let description = body
+            .append( 'div' )
+            .classed( 'bookmark-description', true );
+
+        description
+            .append( 'label' )
+            .text( 'Description:' );
+
+        description
+            .append( 'span' )
+            .text( d => d.detail.bookmarkdetail.desc );
+
+        let details = body
+            .append( 'div' )
+            .classed( 'bookmark-details', true );
+
+        details
+            .append( 'label' )
+            .text( 'Created At:' );
+
+        details
+            .append( 'span' )
+            .text( this.renderBookmarkCreatedBy );
+    }
+
     renderBookmarkTitle( d ) {
         let title      = d.detail.bookmarkdetail.title,
             layerName  = d.layerName,
@@ -417,85 +495,6 @@ export default class ReviewBookmarks extends Tab {
             .property( 'disabled', this.currentPageIdx === lastIdx );
 
         this.populateBookmarks( bookmarks, true );
-    }
-
-    populateBookmarks( bookmarks, hardRefresh ) {
-        if ( hardRefresh ) {
-            this.bookmarkTable.selectAll( '.bookmark-item' ).remove();
-        }
-
-        let items = this.bookmarkTable
-            .selectAll( '.bookmark-item' )
-            .data( bookmarks, d => d.id );
-
-        items
-            .exit()
-            .transition()
-            .duration( 400 )
-            .style( 'opacity', 0 )
-            .remove();
-
-        items = items
-            .enter()
-            .append( 'div' )
-            .attr( 'id', d => d.id )
-            .classed( 'bookmark-item fill-white keyline-bottom', true )
-            .style( 'opacity', 0 );
-
-        items
-            .transition()
-            .duration( 400 )
-            .style( 'opacity', 1 );
-
-        let wrapper = items
-            .append( 'div' )
-            .classed( 'bookmark-wrapper', true );
-
-        let header = wrapper
-            .append( 'div' )
-            .classed( 'bookmark-header flex justify-between align-center', true );
-
-        header
-            .append( 'div' )
-            .classed( 'bookmark-title', true )
-            .append( 'a' )
-            .text( this.renderBookmarkTitle )
-            .on( 'click', d => this.openBookmark( d ) );
-
-        header
-            .append( 'div' )
-            .classed( 'delete-bookmark', true )
-            .append( 'button' )
-            .classed( '_icon trash', true )
-            .on( 'click', d => this.deleteBookmark( d ) );
-
-        let body = wrapper
-            .append( 'div' )
-            .classed( 'bookmark-body', true );
-
-        let description = body
-            .append( 'div' )
-            .classed( 'bookmark-description', true );
-
-        description
-            .append( 'label' )
-            .text( 'Description:' );
-
-        description
-            .append( 'span' )
-            .text( d => d.detail.bookmarkdetail.desc );
-
-        let details = body
-            .append( 'div' )
-            .classed( 'bookmark-details', true );
-
-        details
-            .append( 'label' )
-            .text( 'Created At:' );
-
-        details
-            .append( 'span' )
-            .text( this.renderBookmarkCreatedBy );
     }
 
     async deleteBookmark( d ) {

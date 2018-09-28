@@ -9,8 +9,6 @@ import _merge     from 'lodash-es/merge';
 
 import Tab            from '../tab';
 import Hoot           from '../../../hoot';
-import { svgIcon }    from '../../../../svg';
-import AddTranslation from '../../modals/addTranslation';
 
 /**
  * Creates the review-bookmark-notes tab in the settings panel
@@ -58,12 +56,12 @@ export default class ReviewBookmarkNotes extends Tab {
         }
     }
 
-    load( d ) {
-        this.bookmark = _cloneDeep( d );
+    load( bookmark ) {
+        this.bookmark = _cloneDeep( bookmark );
 
         this.removeSelf();
 
-        this.loadBookmarkNotes( d )
+        this.loadBookmarkNotes( bookmark )
             .then( () => {
                 this.createHeader();
                 this.createBody();
@@ -77,11 +75,11 @@ export default class ReviewBookmarkNotes extends Tab {
             if ( resp && resp.reviewBookmarks && resp.reviewBookmarks.length ) {
                 _merge( this.bookmark, resp.reviewBookmarks[ 0 ] );
 
-                let currentReviewable = this.bookmark.detail.bookmarkreviewitem;
+                this.currentReviewable = this.bookmark.detail.bookmarkreviewitem;
 
                 let params = {
-                    mapId : currentReviewable.mapId,
-                    sequence : currentReviewable.sortOrder
+                    mapId : this.currentReviewable.mapId,
+                    sequence : this.currentReviewable.sortOrder
                 };
 
                 this.reviewItem = await Hoot.api.getReviewItem( params );
@@ -139,8 +137,21 @@ export default class ReviewBookmarkNotes extends Tab {
             .enter();
     }
 
-    jumpToReviewItem() {
+    /**
+     * @desc Initiates the jump to review item. Jumping has many dependencies so eventually it ends up in TraverReview
+     *   and the value in _forcedReviewableItem gets used to display review item.
+     **/
+    async jumpToReviewItem() {
         Hoot.ui.navbar.toggleManagePanel();
         Hoot.layers.removeAllLoadedLayers();
+
+        Hoot.ui.conflicts.data.forcedReviewItem = this.currentReviewable;
+
+        let params = {
+            name: this.bookmark.layerName,
+            id: this.bookmark.mapId
+        };
+
+        Hoot.ui.sidebar.forms.reference.submitLayer( params );
     }
 }

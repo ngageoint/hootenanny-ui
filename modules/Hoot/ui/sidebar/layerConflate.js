@@ -234,6 +234,11 @@ class LayerConflate extends SidebarForm {
             .then( () => Hoot.layers.refreshLayers() )
             .then( () => this.postConflation( params ) );
     }
+
+    forceAdd( params ) {
+        this.createForm();
+        this.loadingState( params );
+    }
 }
 
 export default LayerConflate;

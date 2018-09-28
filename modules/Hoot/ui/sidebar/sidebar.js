@@ -195,6 +195,11 @@ export default class Sidebar {
         }
     }
 
+    removeLayerAddForms() {
+        delete this.forms.reference;
+        delete this.forms.secondary;
+    }
+
     reset() {
         this.wrapper.selectAll( '.sidebar-form' ).remove();
 

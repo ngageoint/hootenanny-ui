@@ -31,6 +31,8 @@ export default class ManagePanel {
             ReviewBookmarks,
             ReviewBookmarkNotes
         ];
+
+        this.isOpen = false;
     }
 
     /**

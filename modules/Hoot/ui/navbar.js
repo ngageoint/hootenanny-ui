@@ -101,13 +101,15 @@ export default class Navbar {
     }
 
     toggleManagePanel() {
-        let managePanel = Hoot.ui.managePanel.container,
-            vis         = !managePanel.classed( 'hidden' );
+        let managePanel = Hoot.ui.managePanel,
+            vis         = managePanel.isOpen === true;
 
         this.menuButton.classed( 'active', !vis );
-        managePanel.classed( 'hidden', vis );
+        managePanel.container.classed( 'hidden', vis );
 
         d3.selectAll( '.context-menu, .datasets-options-menu' ).remove();
+
+        managePanel.isOpen = !managePanel.isOpen;
     }
 
     //////////////////// possibly use in the future
