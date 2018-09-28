@@ -31,7 +31,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         if(data.FGDB_FC) {
             url += '&FGDB_FC=' + data.FGDB_FC;
         }
-        d3.xhr(url).header('access-control-allow-origin', '*')
+        d3.xhr(url)
             .post(data.formData, function (error, json) {
 
 
@@ -776,6 +776,23 @@ Hoot.model.REST = function (command, data, callback, option) {
                 return callback(_alertError(error, 'Get all users failed!'));
             }
             callback(resp);
+        });
+    };
+    rest.getOAuthRedirectURL = function(callback) {
+        d3.text('/hoot-services/auth/oauth1/request', function(error, resp) {
+            if (error) {
+                return callback(_alertError(error, 'Failed to get redirect URL for oauth provider!'));
+            }
+            callback(resp);
+        });
+    };
+    rest.logout = function(callback) {
+        d3.text('/hoot-services/auth/oauth1/logout', function(err, resp) {
+            if (err) {
+                return callback(_alertError(err, 'Failed to logout!'));
+            } else {
+                callback();
+            }
         });
     };
 

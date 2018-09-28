@@ -297,6 +297,7 @@ dist/iD.js: \
 	js/hoot/model/rest.js \
 	js/hoot/view/View.js \
 	js/hoot/view/VersionInfo.js \
+	js/hoot/view/Login.js \
 	js/hoot/view/utilities/Utilities.js \
 	js/hoot/view/utilities/Dataset.js \
 	js/hoot/view/utilities/BasemapDataset.js \
@@ -366,7 +367,7 @@ else
 endif
 
 dist/iD.css: css/*.css
-	cat css/base.css css/reset.css css/map.css css/app.css css/dgcarousel.css css/style2.css css/hoot-style.css css/translation_assistant.css > $@
+	cat css/base.css css/reset.css css/map.css css/app.css css/dgcarousel.css css/style2.css css/login.css css/hoot-style.css css/translation_assistant.css > $@
 
 node_modules/.install: package.json
 ifneq (,$(findstring s,$(MAKEFLAGS)))

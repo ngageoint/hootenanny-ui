@@ -231,10 +231,10 @@ input.round        { border-radius:4px; }
 .rcon.dark.plus:after, ._icon.dark.plus:before                 { background-position:-400px -60px; }
 .rcon.dark.big.plus:after, ._icon.dark.big.plus:before         { background-position:-400px -80px; }
 
-.rcon.x:after, ._icon.x:before                                 { background-position:-440px 0; }
-.rcon.big.x:after, ._icon.big.x:before                         { background-position:-440px -20px; }
-.rcon.dark.x:after, ._icon.dark.x:before                       { background-position:-440px -60px; }
-.rcon.dark.big.x:after, ._icon.dark.big.x:before               { background-position:-440px -80px; }
+.rcon.x:after, ._icon.x:before, ._icon.logout-icon:before                            { background-position:-440px 0; }
+.rcon.big.x:after, ._icon.big.x:before, ._icon.big.logout-icon:before                { background-position:-440px -20px; }
+.rcon.dark.x:after, ._icon.dark.x:before, ._icon.dark.logout-icon:before             { background-position:-440px -60px; }
+.rcon.dark.big.x:after, ._icon.dark.big.x:before, ._icon.dark.big.logout-icon:before { background-position:-440px -80px; }
 
 .rcon.folder:after, ._icon.folder:before                       { background-position:-480px 0; }
 .rcon.big.folder:after, ._icon.big.folder:before               { background-position:-480px -20px; }
@@ -449,8 +449,8 @@ span.logo{
   left:0%;
 }
 
-.exportbox { 
-  border: 1px solid #ccc; 
+.exportbox {
+  border: 1px solid #ccc;
   background: #eee;
   border-radius: 3px;
   text-align: center;
@@ -460,8 +460,8 @@ span.logo{
 }
 
 .exportbox input {
-  width:120px; 
-  text-align: center; 
+  width:120px;
+  text-align: center;
   margin-bottom: 5px;
 }
 .exportbox #maxlat {margin-top: -1px;}

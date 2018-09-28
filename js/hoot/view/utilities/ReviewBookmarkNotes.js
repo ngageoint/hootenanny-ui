@@ -14,7 +14,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
     var _currentBookmark;
     var _forcedReviewableItem;
     var _currentNotes;
-    var _currentUser = {'id':-1, 'displayName':'anonymous', 'email':''};
+    var _currentUser = {'id':-1, 'display_name':'anonymous', 'email':''};
 
     /**
     * @desc Getter for current user being used.
@@ -356,7 +356,7 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
               return;
             }
 
-            if(_currentUser.id===-1 || _currentUser.displayName==='anonymous'){
+            if(_currentUser.id===-1 || _currentUser.display_name==='anonymous'){
               iD.ui.Alert('Anonymous comments are not allowed.  Please click on user icon and provide name or email address.','warning',null);
               return;
             }

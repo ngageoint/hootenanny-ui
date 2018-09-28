@@ -1,0 +1,43 @@
+div.hoot-login-table {
+    width: 100%;
+    display: table;
+}
+div.hoot-login-row {
+    display: table-row;
+}
+div.hoot-login-cell {
+    display: table-cell;
+    width: 50%;
+    padding: 0px 10px;
+}
+div.hoot-login-cell.padtop {
+    padding-top: 20px;
+}
+div.hoot-login-cell img {
+    width: 100%;
+    border-top-right-radius: 6px;
+}
+
+div.hoot-login-cell.text {
+    vertical-align: top;
+}
+div.hoot-login-container {
+    margin: 0px 15% 0px 15%;
+    padding: 10px;
+    width: 70%;
+}
+div.hoot-login-container p+h2 {
+    margin-top: 16px;
+}
+div.hoot-login-container ol {
+    padding-left: 2em;
+}
+div.hoot-login-container ol li {
+    list-style-type: decimal;
+}
+div.hoot-login-container p+p {
+    margin-top: 16px;
+}
+div.hoot-login-container > h2 {
+    margin-top: 16px;
+}

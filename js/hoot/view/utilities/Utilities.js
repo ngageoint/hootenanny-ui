@@ -131,12 +131,40 @@ Hoot.view.utilities = function (context){
             .insert('div', ':first-child')
             .attr('id', 'header')
             .classed('contain pad2x dark fill-dark', true);
-        header.append('nav')
-            .classed('contain inline fr', true)
-            .append('div')
+        var nav = header.append('nav')
+            .classed('contain inline fr', true);
+
+        var warnMsg = 'browser does not support localStorage -or- failed to retrieve user from store';
+        if(localStorage && localStorage.getItem('user')) {
+            try {
+                var user = JSON.parse(localStorage.getItem('user'));
+                nav.append('div')
+                    .classed('pad2 inline _icon dark strong small', true)
+                    .text('Logged in as ' + user.display_name);
+            } catch(e) {
+                window.console.warn(warnMsg);
+                window.console.warn(e);
+            }
+        } else {
+            window.console.warn(warnMsg);
+        }
+
+        nav.append('div')
+            .attr('id', 'logoutTabBtn')
+            .attr('href', '#logout')
+            .classed('point pad2 inline keyline-left _icon dark strong small logout-icon', true)
+            .text('Logout')
+            .on('click', function() {
+                Hoot.model.REST('logout', function(e) {
+                    if(!e) {
+                        window.location.reload(true);
+                    }
+                });
+            });
+        nav.append('div')
             .attr('id', 'manageTabBtn')
             .attr('href', '#jobs')
-            .classed('point pad2 block keyline-left _icon dark strong small sprocket', true)
+            .classed('point pad2 inline keyline-left keyline-right _icon dark strong small sprocket', true)
             .text('Manage')
             .on('click', function () {
                 d3.event.stopPropagation();
@@ -166,25 +194,13 @@ Hoot.view.utilities = function (context){
             .style('z-index',999);
 
         ////////////VERSION///////////////////
-
-        var labelContainer = header.append('div');
-
-        labelContainer.append('div')
+        header.append('div')
         .attr('href', '#version')
         .classed('point hoot_label', true)
         .attr('height', '60px')
         .on('click', function (){
              context.hoot().view.versioninfo.showPopup();
         });
-
-        var versionBG = d3.select('body')
-         .append('div')
-         .attr('id', 'versionBG')
-         .classed('col12 fill-white pin-bottom pin-top hidden', true)
-         .style('position', 'absolute')
-         .style('top', '60px');
-         versionBG.append('div')
-           .classed('row2 fill-light round-top keyline-all', true);
         /////////////////////////////////////////
 
          ////////////ALERTS///////////////////
