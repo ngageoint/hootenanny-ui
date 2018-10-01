@@ -1,22 +1,22 @@
-.bookmark-notes-back-button {
+.bm-notes-back-button {
     height: 40px !important;
     padding: 0 20px 0 10px;
 }
 
-.bookmark-notes-form {
+.bm-notes-form {
     margin-top: 20px;
 }
 
-.bookmark-notes-header {
+.notes-header {
     padding: 10px 15px;
     background-color: $dark-opacity05;
 
-    .bookmark-notes-title {
+    .notes-title {
         margin: 0;
     }
 }
 
-.bookmark-notes-actions {
+.notes-actions {
     height: 24px;
 
     & > div {

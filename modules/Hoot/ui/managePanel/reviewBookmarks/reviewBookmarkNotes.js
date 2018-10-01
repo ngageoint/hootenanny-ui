@@ -5,10 +5,13 @@
  *******************************************************************************************************/
 
 import _cloneDeep from 'lodash-es/cloneDeep';
+import _forEach   from 'lodash-es/forEach';
 import _merge     from 'lodash-es/merge';
 
-import Tab            from '../tab';
-import Hoot           from '../../../hoot';
+import Hoot     from '../../../hoot';
+import Tab      from '../tab';
+import Note     from './note';
+import EditNote from './editNote';
 
 /**
  * Creates the review-bookmark-notes tab in the settings panel
@@ -21,7 +24,7 @@ export default class ReviewBookmarkNotes extends Tab {
         super( instance );
 
         this.name = 'Review Bookmark Notes';
-        this.id   = 'util-review-bookmark-notes';
+        this.id   = 'review-bookmark-notes';
 
         this.notesForm = null;
     }
@@ -33,7 +36,7 @@ export default class ReviewBookmarkNotes extends Tab {
 
         let backButton = this.panelWrapper
             .append( 'button' )
-            .classed( 'bookmark-notes-back-button button primary big flex align-center', true )
+            .classed( 'notes-back-button button primary big flex align-center', true )
             .on( 'click', () => {
                 //TODO: go back to review bookmarks panel
             } );
@@ -46,6 +49,8 @@ export default class ReviewBookmarkNotes extends Tab {
         backButton
             .append( 'span' )
             .text( 'Back' );
+
+        this.listen();
 
         return this;
     }
@@ -61,10 +66,14 @@ export default class ReviewBookmarkNotes extends Tab {
 
         this.removeSelf();
 
-        this.loadBookmarkNotes( bookmark )
+        this.form = this.panelWrapper
+            .append( 'div' )
+            .classed( 'notes-form keyline-all round fill-white', true );
+
+        this.loadBookmarkNotes()
             .then( () => {
                 this.createHeader();
-                this.createBody();
+                this.createNotes();
             } );
     }
 
@@ -78,8 +87,8 @@ export default class ReviewBookmarkNotes extends Tab {
                 this.currentReviewable = this.bookmark.detail.bookmarkreviewitem;
 
                 let params = {
-                    mapId : this.currentReviewable.mapId,
-                    sequence : this.currentReviewable.sortOrder
+                    mapId: this.currentReviewable.mapId,
+                    sequence: this.currentReviewable.sortOrder
                 };
 
                 this.reviewItem = await Hoot.api.getReviewItem( params );
@@ -87,25 +96,21 @@ export default class ReviewBookmarkNotes extends Tab {
         } catch ( err ) {
 
         }
-
-        this.form = this.panelWrapper
-            .append( 'div' )
-            .classed( 'notes-form keyline-all fill-white', true );
     }
 
     createHeader() {
         let header = this.form
             .append( 'div' )
-            .classed( 'bookmark-notes-header keyline-bottom flex justify-between align-center', true );
+            .classed( 'form-header notes-header keyline-bottom flex', true );
 
         header
             .append( 'h3' )
-            .classed( 'bookmark-notes-title', true )
+            .classed( 'note-title', true )
             .text( this.bookmark.detail.bookmarkdetail.title );
 
         let icons = header
             .append( 'div' )
-            .classed( 'bookmark-notes-actions', true );
+            .classed( 'notes-actions', true );
 
         if ( this.reviewItem.resultCount > 0 ) {
             icons
@@ -122,19 +127,43 @@ export default class ReviewBookmarkNotes extends Tab {
             .on( 'click', function() {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
-
             } );
     }
 
-    createBody() {
-        let notesBody = this.form
+    createNotes() {
+        this.notesBody = this.form
             .append( 'div' )
-            .classed( 'notes-body pad2', true );
+            .classed( 'notes-fieldset pad2', true )
+            .append( 'fieldset' );
 
-        let notes = notesBody
-            .selectAll( '.note' )
-            .data( this.bookmark.detail.bookmarknotes )
-            .enter();
+        this.notesBody
+            .append( 'button' )
+            .classed( 'add-note-button round _icon plus big', true )
+            .on( 'click', () => {
+                let newNote = new EditNote( 'add' );
+
+                newNote.render();
+
+                // new Note( this.notesBody, true ).render();
+            } );
+
+        _forEach( this.bookmark.detail.bookmarknotes, item => {
+            let note = new Note( this.notesBody );
+
+            note.render( item );
+        } );
+    }
+
+    renderNoteTitle( d ) {
+        let date          = new Date( d.modifiedAt ).toLocaleString(),
+            createByEmail = 'anonymous',
+            uid           = d.modifiedBy ? d.modifiedBy : d.userId;
+
+        if ( uid && uid > -1 ) {
+            createByEmail = Hoot.config.users[ uid ].email;
+        }
+
+        return `User ${ createByEmail } commented at ${ date }`;
     }
 
     /**
@@ -153,5 +182,9 @@ export default class ReviewBookmarkNotes extends Tab {
         };
 
         Hoot.ui.sidebar.forms.reference.submitLayer( params );
+    }
+
+    listen() {
+        // Hoot.events.on( 'submit-note', note => )
     }
 }

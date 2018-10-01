@@ -114,3 +114,76 @@
         }
     }
 }
+
+#review-bookmark-notes {
+    .notes-back-button {
+        height: 40px !important;
+        padding: 0 20px 0 10px;
+    }
+
+    .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+
+        .spacer {
+            height: 0;
+        }
+
+        .note-title {
+            padding: 0;
+            margin: 0;
+        }
+    }
+
+    .notes-form {
+        margin-top: 20px;
+
+        .form-header {
+            background-color: $dark-opacity05;
+        }
+
+        .note-title {
+
+        }
+    }
+
+    .notes-actions {
+        height: 24px;
+
+        & > div {
+            display: inline-block;
+            cursor: pointer;
+            margin-right: 5px;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+
+    .note {
+        margin-bottom: 20px;
+
+        .form-header {
+            background-color: $dark-opacity10;
+        }
+
+        .field textarea {
+            height: 65px;
+            min-height: 65px;
+            overflow-y: hidden;
+        }
+    }
+
+    .add-note-button {
+        width: 100%;
+        transition: background-color 200ms ease-in-out;
+
+        &:hover {
+            background-color: $light;
+            transition: background-color 250ms ease-in-out;
+        }
+    }
+}
