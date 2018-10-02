@@ -50,15 +50,10 @@ Hoot.model.REST = function (command, data, callback, option) {
             iD.ui.Alert('Modify name failed: malformed request!', 'error', new Error().stack);
             return;
         }
-        // d3.json('/hoot-services/osm/api/0.6/map/modify?mapId=' + data.mapid + '&inputType=' + data.inputType + '&modName=' + data.modifiedName)
-        // .put(data, function (error, data) {
-        //     if (error) {
-        //         iD.ui.Alert('Modify name failed!','error',new Error().stack);
-        //     } else {
-        //         callback();
-        //     }
-        // });
-        d3.request('/hoot-services/osm/api/0.6/map/modify?mapId=' + data.mapid + '&inputType=' + data.inputType + '&modName=' + data.modifiedName)
+        var baseUrl = '/hoot-services/osm/api/0.6/map';
+        if(data.inputType == 'folder') { baseUrl += '/folders'; }
+
+        d3.xhr(baseUrl + '/modify/' + data.mapid + '/' + data.modifiedName)
             .send('put', function(e, r) {
                 if (e) {
                     iD.ui.Alert('Modify name failed!', 'error', new Error().stack);
@@ -110,9 +105,8 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
 
-        d3.json('/hoot-services/osm/api/0.6/map/addfolder?folderName=' + data.folderName +
-                '&parentId=' + data.parentId)
-        .post(data, function (error, data) {
+        d3.json('/hoot-services/osm/api/0.6/map/folders/add/' + data.parentId + '/' + data.folderName)
+        .post(null, function (error, data) {
             if (error){
                 iD.ui.Alert('Add folder failed!','error',new Error().stack);
                 return error;
@@ -128,8 +122,8 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
 
-        d3.json('/hoot-services/osm/api/0.6/map/deletefolder?folderId=' + folderId)
-        .post(function (error, json) {
+        d3.xhr('/hoot-services/osm/api/0.6/map/folders/delete/' + folderId)
+        .send('DELETE', function (error, json) {
             if(error){
                 callback(false);
             } else {callback(true);}
@@ -156,7 +150,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getAvailLinks = function (callback) {
-        var request = d3.json('/hoot-services/osm/api/0.6/map/links');
+        var request = d3.json('/hoot-services/osm/api/0.6/map/folders/linked');
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get available links failed!'));
@@ -192,7 +186,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getMapTags = function (data, callback) {
-        var request = d3.json('/hoot-services/osm/api/0.6/map/tags?mapid=' + data.mapId);
+        var request = d3.json('/hoot-services/osm/api/0.6/map/tags/' + data.mapId);
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get tags failed!'));

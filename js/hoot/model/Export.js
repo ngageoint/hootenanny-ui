@@ -50,7 +50,7 @@ Hoot.model.export = function (context)
         var transName = null;
         var oTrans = null;
 
-        if (container.trans) { 
+        if (container.trans) {
             transName = container.transName;
             oTrans = container.oTrans;
         } else {
@@ -188,7 +188,7 @@ Hoot.model.export = function (context)
             if(result.status !== 'failed'){
                 //Huh?
                 // if(removeConflationRes === 'true'){
-                //     d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + mapId)
+                //     d3.json('/hoot-services/osm/api/0.6/map/delete/' + mapId)
                 //     .header('Content-Type', 'text/plain')
                 //     .post('', function (error, data) {
 
