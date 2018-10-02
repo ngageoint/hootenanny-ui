@@ -9,6 +9,13 @@ import FormFactory from '../../tools/formFactory';
 
 export default class PublishBookmark {
     constructor() {
+        let currentUser = Hoot.context.storage( 'currentUser' ),
+            userEmail;
+
+        if ( Hoot.config.users[ currentUser ] > -1 ) {
+            userEmail = Hoot.config.users[ currentUser ].email;
+        }
+
         this.formMeta = {
             title: 'Bookmark Review',
             form: [
@@ -31,8 +38,7 @@ export default class PublishBookmark {
                     id: 'bookmarkCreatorEmail',
                     placeholder: '',
                     inputType: 'text',
-                    text: this.userEmail,
-                    onChange: d => this.validateTextInput( d )
+                    value: userEmail
                 },
                 {
                     label: 'Note (Optional)',
@@ -88,7 +94,6 @@ export default class PublishBookmark {
     updateButtonState() {
         let title       = this.titleInput.property( 'value' ),
             description = this.descriptionInput.property( 'value' ),
-            email       = this.emailInput.property( 'value' ),
             valid       = true;
 
         this.container.selectAll( '.text-input' )
@@ -100,7 +105,7 @@ export default class PublishBookmark {
                 }
             } );
 
-        if ( !title.length || !description.length || !email.length ) {
+        if ( !title.length || !description.length ) {
             valid = false;
         }
 
@@ -121,6 +126,8 @@ export default class PublishBookmark {
                 confirm = await Hoot.message.confirm( message );
 
             if ( !confirm ) return;
+
+            userInfo = { id: '-1' };
         } else {
             let resp = await Hoot.api.getSaveUser( email );
 
@@ -137,6 +144,8 @@ export default class PublishBookmark {
             relationId: currentReviewItem.relationId,
             userId: userInfo.id
         };
+
+        Hoot.context.storage( 'currentUser', userInfo.id );
 
         Hoot.api.saveReviewBookmark( params )
             .then( resp => Hoot.message.alert( resp ) )

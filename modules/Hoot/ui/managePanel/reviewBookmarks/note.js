@@ -4,8 +4,8 @@
  * @author Matt Putipong on 10/1/18
  *******************************************************************************************************/
 
-import Hoot from '../../../hoot';
-import EditNote from './editNote';
+import Hoot             from '../../../hoot';
+import EditBookmarkNote from '../../modals/editBookmarkNote';
 
 export default class Note {
     constructor( notesBody, isNew ) {
@@ -39,9 +39,15 @@ export default class Note {
             .classed( 'note-title', true )
             .text( () => this.renderWidgetTitle() );
 
-        let icons = header
+        header
             .append( 'div' )
-            .classed( 'note-actions', true );
+            .classed( 'material-icons small pointer', true )
+            .text( 'edit' )
+            .on( 'click', () => {
+                let editNote = new EditBookmarkNote( 'edit', this.data );
+
+                editNote.render();
+            } );
     }
 
     createTextField() {

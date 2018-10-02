@@ -89,18 +89,27 @@
     width: 100%;
     margin-bottom: 10px;
 
-    label {
-        padding: 5px 10px;
-    }
-
     &:only-child {
         margin-bottom: 0;
     }
 
+    label {
+        padding: 5px 10px;
+    }
+
     textarea {
+        color: $gray;
         height: 200px;
         margin-bottom: -6px;
         border: none;
+
+        &:focus {
+            background: none;
+
+            &:not([readonly="readonly"]) {
+                color: $dark2;
+            }
+        }
     }
 
     input {
@@ -111,8 +120,11 @@
             border-radius: 0 0 4px 4px;
 
             &:focus {
-                color: $dark2;
                 background: none;
+
+                &:not([readonly="readonly"]) {
+                    color: $dark2;
+                }
             }
         }
 

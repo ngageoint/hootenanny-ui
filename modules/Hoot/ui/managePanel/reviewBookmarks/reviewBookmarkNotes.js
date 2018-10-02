@@ -8,10 +8,10 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _forEach   from 'lodash-es/forEach';
 import _merge     from 'lodash-es/merge';
 
-import Hoot     from '../../../hoot';
-import Tab      from '../tab';
-import Note     from './note';
-import EditNote from './editNote';
+import Hoot             from '../../../hoot';
+import Tab              from '../tab';
+import Note             from './note';
+import EditBookmarkNote from '../../modals/editBookmarkNote';
 
 /**
  * Creates the review-bookmark-notes tab in the settings panel
@@ -115,14 +115,14 @@ export default class ReviewBookmarkNotes extends Tab {
         if ( this.reviewItem.resultCount > 0 ) {
             icons
                 .append( 'div' )
-                .classed( 'material-icons', true )
+                .classed( 'material-icons pointer', true )
                 .text( 'launch' )
                 .on( 'click', () => this.jumpToReviewItem() );
         }
 
         icons
             .append( 'div' )
-            .classed( 'material-icons', true )
+            .classed( 'material-icons pointer', true )
             .text( 'refresh' )
             .on( 'click', function() {
                 d3.event.stopPropagation();
@@ -140,11 +140,9 @@ export default class ReviewBookmarkNotes extends Tab {
             .append( 'button' )
             .classed( 'add-note-button round _icon plus big', true )
             .on( 'click', () => {
-                let newNote = new EditNote( 'add' );
+                let newNote = new EditBookmarkNote( 'add' );
 
                 newNote.render();
-
-                // new Note( this.notesBody, true ).render();
             } );
 
         _forEach( this.bookmark.detail.bookmarknotes, item => {
@@ -152,18 +150,6 @@ export default class ReviewBookmarkNotes extends Tab {
 
             note.render( item );
         } );
-    }
-
-    renderNoteTitle( d ) {
-        let date          = new Date( d.modifiedAt ).toLocaleString(),
-            createByEmail = 'anonymous',
-            uid           = d.modifiedBy ? d.modifiedBy : d.userId;
-
-        if ( uid && uid > -1 ) {
-            createByEmail = Hoot.config.users[ uid ].email;
-        }
-
-        return `User ${ createByEmail } commented at ${ date }`;
     }
 
     /**

@@ -228,8 +228,15 @@ export default class ReviewBookmarks extends Tab {
     }
 
     parseBookmarks( bookmarks ) {
+
         _forEach( bookmarks, bookmark => {
-            bookmark.createdBy = Hoot.config.users[ bookmark.createdBy ].email || 'anonymous';
+            let createdBy = 'anonymous';
+
+            if ( Hoot.config.users[ bookmark.createdBy ] > -1 ) {
+                createdBy = Hoot.config.users[ bookmark.createdBy ].email;
+            }
+
+            bookmark.createdBy = createdBy;
             bookmark.layerName = _get( Hoot.layers.findBy( 'id', bookmark.mapId ), 'name' );
         } );
 
