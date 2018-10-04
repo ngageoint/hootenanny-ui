@@ -23,7 +23,7 @@ div.hoot-login-cell.text {
 }
 div.hoot-login-container {
     margin: 0px 15% 0px 15%;
-    padding: 10px;
+    padding: 10px 10px 60px 10px;
     width: 70%;
 }
 div.hoot-login-container p+h2 {
