@@ -104,8 +104,11 @@ Hoot.model.REST = function (command, data, callback, option) {
             callback(false);
             return false;
         }
-
-        d3.json('/hoot-services/osm/api/0.6/map/folders/add/' + data.parentId + '/' + data.folderName)
+        var url = '/hoot-services/osm/api/0.6/map/folders/add/' + data.parentId + '/' + data.folderName;
+        if(!data.isPublic) {
+            url += '?isPublic=false';
+        }
+        d3.json(url)
         .post(null, function (error, data) {
             if (error){
                 iD.ui.Alert('Add folder failed!','error',new Error().stack);
