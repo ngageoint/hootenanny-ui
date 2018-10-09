@@ -8,9 +8,9 @@ import Hoot             from '../../../hoot';
 import EditBookmarkNote from '../../modals/editBookmarkNote';
 
 export default class Note {
-    constructor( notesBody, isNew ) {
+    constructor( instance, notesBody ) {
+        this.instance  = instance;
         this.notesBody = notesBody;
-        this.isNew     = isNew;
     }
 
     render( noteData ) {
@@ -37,14 +37,14 @@ export default class Note {
             .append( 'div' )
             .append( 'h4' )
             .classed( 'note-title', true )
-            .text( () => this.renderWidgetTitle() );
+            .text( () => this.renderTitle() );
 
         header
             .append( 'div' )
             .classed( 'material-icons small pointer', true )
             .text( 'edit' )
             .on( 'click', () => {
-                let editNote = new EditBookmarkNote( 'edit', this.data );
+                let editNote = new EditBookmarkNote( this.instance, 'edit', this.data );
 
                 editNote.render();
             } );
@@ -59,11 +59,7 @@ export default class Note {
             .text( this.data.note );
     }
 
-    renderWidgetTitle() {
-        if ( this.isNew ){
-            return 'New Comment';
-        }
-
+    renderTitle() {
         let date          = new Date( this.data.modifiedAt ).toLocaleString(),
             createByEmail = 'anonymous',
             uid           = this.data.modifiedBy ? this.data.modifiedBy : this.data.userId;

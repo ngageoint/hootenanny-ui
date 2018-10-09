@@ -38,6 +38,7 @@ export default class PublishBookmark {
                     id: 'bookmarkCreatorEmail',
                     placeholder: '',
                     inputType: 'text',
+                    onChange: d => this.validateTextInput( d ),
                     value: userEmail
                 },
                 {
@@ -116,7 +117,8 @@ export default class PublishBookmark {
         let title = this.titleInput.property( 'value' ),
             desc  = this.descriptionInput.property( 'value' ),
             email = this.emailInput.property( 'value' ),
-            note  = this.noteInput.property( 'value' );
+            note  = this.noteInput.property( 'value' ),
+            notes = note.length ? [ { userId: userInfo.id, note } ] : [];
 
         let currentReviewItem = Hoot.ui.conflicts.data.currentReviewItem,
             userInfo;
@@ -137,7 +139,7 @@ export default class PublishBookmark {
         let params = {
             detail: {
                 bookmarkdetail: { title, desc },
-                bookmarknotes: [ { userId: userInfo.id, note } ],
+                bookmarknotes: notes,
                 bookmarkreviewitem: currentReviewItem
             },
             mapId: currentReviewItem.mapId,

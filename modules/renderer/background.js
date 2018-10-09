@@ -17,7 +17,7 @@ import { utilRebind }                                     from '../util/rebind';
 
 
 export function rendererBackground(context) {
-    var dispatch = d3_dispatch('change');
+    var dispatch = d3_dispatch('change', 'baseLayerChange');
     var detected = utilDetect();
     var baseLayer = rendererTileLayer(context).projection(context.projection);
     var _overlayLayers = [];
@@ -291,6 +291,7 @@ export function rendererBackground(context) {
 
         baseLayer.source(!fail ? d : background.findSource('none'));
         dispatch.call('change');
+        dispatch.call('baseLayerChange');
         background.updateImagery();
         return background;
     };

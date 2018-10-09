@@ -45,6 +45,7 @@ import {
 } from '../util';
 
 import Hoot from '../Hoot/hoot';
+import DGServcies from '../services/dgservices';
 
 export var areaKeys = {};
 
@@ -488,6 +489,7 @@ export function coreContext() {
     /* Init */
 
     context.hoot = Hoot;
+    context.dgservices = DGServcies;
 
     context.projection = geoRawMercator();
     context.curtainProjection = geoRawMercator();

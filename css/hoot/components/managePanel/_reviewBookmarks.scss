@@ -139,13 +139,10 @@
 
     .notes-form {
         margin-top: 20px;
+        box-shadow: 0 3px 10px $dark-opacity10;
 
         .form-header {
             background-color: $dark-opacity05;
-        }
-
-        .note-title {
-
         }
     }
 

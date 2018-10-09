@@ -569,7 +569,28 @@
                 "key": "/"
             },
             "fix_misalignment": "Adjust imagery offset",
-            "offset": "Drag anywhere in the gray area below to adjust the imagery offset, or enter the offset values in meters."
+            "offset": "Drag anywhere in the gray area below to adjust the imagery offset, or enter the offset values in meters.",
+            "dgbg": "DigitalGlobe Imagery",
+            "dgbg_button": "Change imagery profile",
+            "dgbg_tooltip": "Satellite imagery",
+            "dgbg_profiles": {
+                "Global_Currency_Profile": "Most Recent",
+                "MyDG_Color_Consumer_Profile": "Most Aesthetic Color",
+                "MyDG_Consumer_Profile": "Most Aesthetic All",
+                "Cloud_Cover_Profile": "Least Cloud Cover",
+                "Color_Infrared_Profile": "False Color Only"
+            },
+            "dgcl": "DigitalGlobe Collection",
+            "dgcl_tooltip": "Imagery footprints",
+            "dgcl_button": "Change collection date range",
+            "dgcl_collections": {
+                "24h": "Show less than 24 hours",
+                "1w": "Show less than 7 days",
+                "1m": "Show less than 30 days",
+                "6m": "Show less than 6 months",
+                "1y": "Show less than 1 year",
+                "all": "Show all"
+            }
         },
         "map_data": {
             "title": "Map Data",
@@ -1055,6 +1076,12 @@
                     }
                 }
             }
+        },
+        "dgcarousel": {
+            "title": "Image Carousel",
+            "zoom_warning": "Zoom in to display image metadata",
+            "thumbnail_tooltip": "Click to add image layer, double-click to open image metadata",
+            "popup_title": "Image Metadata"
         },
         "intro": {
             "done": "done",

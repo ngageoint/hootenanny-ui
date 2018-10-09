@@ -21,6 +21,7 @@ import { uiAttribution } from './attribution';
 import { uiBackground } from './background';
 import { uiContributors } from './contributors';
 import { uiCoordinates } from './coordinates';
+import { uiDgcarousel } from './dgcarousel'
 import { uiFeatureInfo } from './feature_info';
 import { uiFullScreen } from './full_screen';
 import { uiGeolocate } from './geolocate';
@@ -160,6 +161,13 @@ export function uiInit(context) {
             .append('div')
             .attr('class', 'map-control background-control')
             .call(uiBackground(context));
+
+        if (context.dgservices().enabled) {
+            console.log( 'enabled' );
+            controls.append('div')
+                .attr('class', 'map-control carousel-control')
+                .call(uiDgcarousel(context));
+        }
 
         controls
             .append('div')

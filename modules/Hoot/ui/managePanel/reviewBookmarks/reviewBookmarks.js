@@ -232,7 +232,7 @@ export default class ReviewBookmarks extends Tab {
         _forEach( bookmarks, bookmark => {
             let createdBy = 'anonymous';
 
-            if ( Hoot.config.users[ bookmark.createdBy ] > -1 ) {
+            if ( Hoot.config.users[ bookmark.createdBy ] ) {
                 createdBy = Hoot.config.users[ bookmark.createdBy ].email;
             }
 
@@ -246,6 +246,7 @@ export default class ReviewBookmarks extends Tab {
     populateFilterCombos() {
         // created by
         this.filterControls[ 2 ].options = _uniq( _map( this.bookmarks, bookmark => {
+            console.log( bookmark )
             return bookmark.createdBy;
         } ) );
 
@@ -321,7 +322,7 @@ export default class ReviewBookmarks extends Tab {
             .classed( 'bookmark-title', true )
             .append( 'a' )
             .text( this.renderBookmarkTitle )
-            .on( 'click', d => this.openBookmark( d ) );
+            .on( 'click', d => this.openBookmarkNotes( d ) );
 
         header
             .append( 'div' )
@@ -522,7 +523,7 @@ export default class ReviewBookmarks extends Tab {
             } );
     }
 
-    openBookmark( d ) {
+    openBookmarkNotes( d ) {
         let bookmarkNotes = Hoot.ui.managePanel.bookmarkNotes;
 
         bookmarkNotes.toggle( true );

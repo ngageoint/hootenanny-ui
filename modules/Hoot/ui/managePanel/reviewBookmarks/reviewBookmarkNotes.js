@@ -37,9 +37,7 @@ export default class ReviewBookmarkNotes extends Tab {
         let backButton = this.panelWrapper
             .append( 'button' )
             .classed( 'notes-back-button button primary big flex align-center', true )
-            .on( 'click', () => {
-                //TODO: go back to review bookmarks panel
-            } );
+            .on( 'click', () => Hoot.ui.managePanel.reviewBookmarks.toggle() );
 
         backButton
             .append( 'span' )
@@ -68,7 +66,7 @@ export default class ReviewBookmarkNotes extends Tab {
 
         this.form = this.panelWrapper
             .append( 'div' )
-            .classed( 'notes-form keyline-all round fill-white', true );
+            .classed( 'notes-form keyline-all fill-white', true );
 
         this.loadBookmarkNotes()
             .then( () => {
@@ -140,13 +138,13 @@ export default class ReviewBookmarkNotes extends Tab {
             .append( 'button' )
             .classed( 'add-note-button round _icon plus big', true )
             .on( 'click', () => {
-                let newNote = new EditBookmarkNote( 'add' );
+                let newNote = new EditBookmarkNote( this, 'add' );
 
                 newNote.render();
             } );
 
         _forEach( this.bookmark.detail.bookmarknotes, item => {
-            let note = new Note( this.notesBody );
+            let note = new Note( this, this.notesBody );
 
             note.render( item );
         } );
@@ -168,6 +166,10 @@ export default class ReviewBookmarkNotes extends Tab {
         };
 
         Hoot.ui.sidebar.forms.reference.submitLayer( params );
+    }
+
+    refresh() {
+        this.load( this.bookmark );
     }
 
     listen() {
