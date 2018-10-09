@@ -70,8 +70,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         }
         /*callback(true);
         return true;*/
-        d3.json('/hoot-services/osm/api/0.6/map/linkMapFolder?mapId=' + data.mapid +
-                '&folderId=' + data.folderId + '&updateType=' + data.updateType)
+        d3.json('/hoot-services/osm/api/0.6/map/link/' + data.mapid + '/update/folder/' + data.folderId)
         .post(data, function (error, data) {
             if (error){
                 iD.ui.Alert('Folder-Map link failed!','error',new Error().stack);
