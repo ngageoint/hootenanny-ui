@@ -25,7 +25,7 @@ export function uiDgcarousel( context ) {
 
         function toggle() {
             if ( d3.event ) d3.event.preventDefault();
-            tooltip.hide( button );
+            ttp.hide( button );
             setVisible( !button.classed( 'active' ) );
         }
 
@@ -34,14 +34,14 @@ export function uiDgcarousel( context ) {
                 button.classed( 'active', show );
                 shown = show;
                 if ( show ) {
-                    selection.on( 'mousedown.carousel-inside', function() {
-                        return d3.event.stopPropagation();
-                    } );
+                    selection.on( 'mousedown.carousel-inside', () => d3.event.stopPropagation() );
+
                     pane.style( 'display', 'block' )
                         .style( 'right', '-200px' )
                         .transition()
                         .duration( 200 )
                         .style( 'right', '0px' );
+
                     getImageMetadata();
                 } else {
                     pane.style( 'display', 'block' )
@@ -49,15 +49,16 @@ export function uiDgcarousel( context ) {
                         .transition()
                         .duration( 200 )
                         .style( 'right', '-200px' )
-                        .each( 'end', function() {
+                        .on( 'end', function() {
                             d3.select( this ).style( 'display', 'none' );
                         } );
+
                     selection.on( 'mousedown.carousel-inside', null );
                 }
             }
         }
 
-        var pane = selection.append( 'div' ).attr( 'class', 'fillL map-overlay carousel-column content hide' );
+        var pane = selection.append( 'div' ).attr( 'class', 'fill-white carousel-column content hide' );
 
         pane.append( 'div' )
             .attr( 'class', 'dgarrow up' )
@@ -92,24 +93,8 @@ export function uiDgcarousel( context ) {
             };
         }
 
-//        function mouseWheelScroll() {
-//            window.console.log(d3.event);
-//            var delta = Math.max(-1, Math.min(1, (d3.event.wheelDelta || -d3.event.detail)));
-//            window.console.log(delta);
-//            var scrollable = d3.select('#dgCarouselThumbnails');
-//            var clientheight = scrollable.property('clientHeight');
-//            var scrolltop = scrollable.property('scrollTop');
-//            scrollable.transition().duration(1500)
-//                .tween('uniquetweenname', scrollTopTween(scrolltop + ( delta * clientheight)));
-//
-//        }
-
         var ul = metadiv.append( 'ul' )
-                .attr( 'class', 'carousel-metadata-list' )
-            //.on('mousewheel.scroll', mouseWheelScroll)
-            //.on('DOMMouseScroll.scroll', _.debounce(mouseWheelScroll, 1000)) // older versions of Firefox
-            //.on('wheel.scroll', mouseWheelScroll) // newer versions of Firefox            ;
-        ;
+            .attr( 'class', 'carousel-metadata-list' );
 
         var ttp = tooltip()
             .placement( 'left' )
@@ -185,11 +170,6 @@ export function uiDgcarousel( context ) {
                                 .html( function( d ) {
                                     return formatImageMetadata( d );
                                 } )
-                                //An issue with overflow hidden is keeping this from being useful
-                                //                                .call(bootstrap.tooltip()
-                                //                                    .title(t('dgcarousel.thumbnail_tooltip'))
-                                //                                    .placement('top')
-                                //                                )
                                 .on( 'click', function( d ) {
                                     var active = !d3.select( this ).classed( 'active' );
                                     d3.select( this ).classed( 'active', active );

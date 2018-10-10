@@ -163,7 +163,6 @@ export function uiInit(context) {
             .call(uiBackground(context));
 
         if (context.dgservices().enabled) {
-            console.log( 'enabled' );
             controls.append('div')
                 .attr('class', 'map-control carousel-control')
                 .call(uiDgcarousel(context));

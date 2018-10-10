@@ -46,6 +46,8 @@ export function uiBackground(context) {
     var settingsCustomBackground = uiSettingsCustomBackground(context)
         .on('change', customChanged);
 
+    var dgServices = context.dgservices();
+
 
     function setTooltips(selection) {
         selection.each(function(d, i, nodes) {
@@ -411,6 +413,110 @@ export function uiBackground(context) {
         _offsetContainer = content
             .append('div')
             .attr('class', 'background-offset');
+
+        var custom = backgroundList.append('li')
+            .attr('class', 'custom_layer')
+            .datum(iD.BackgroundSource.Custom());
+
+        custom.append('button')
+            .attr('class', 'layer-browse')
+            .call(bootstrap.tooltip()
+                .title(t('background.custom_button'))
+                .placement('left'))
+            .on('click', editCustom)
+            .call(iD.svg.Icon('#icon-search'));
+
+        var label = custom.append('label');
+
+        label.append('input')
+            .attr('type', 'radio')
+            .attr('name', 'layers')
+            .on('change', function () {
+                if (customTemplate) {
+                    setCustom(customTemplate);
+                } else {
+                    editCustom();
+                }
+            });
+
+        label.append('span')
+            .text(t('background.custom'));
+
+        if (dgServices.enabled) {
+            var dgbackground = backgroundList.append('li')
+                .attr('class', 'dg_layer')
+                .call(bootstrap.tooltip()
+                    .title(t('background.dgbg_tooltip'))
+                    .placement('top'))
+                .datum(dgServices.backgroundSource());
+
+            dgbackground.append('button')
+                .attr('class', 'dg-layer-profile')
+                .call(bootstrap.tooltip()
+                    .title(t('background.dgbg_button'))
+                    .placement('left'))
+                .on('click', function () {
+                    d3.event.preventDefault();
+                    profiles.classed('hide', function() { return !profiles.classed('hide'); });
+                })
+                .call(iD.svg.Icon('#icon-layers'));
+
+            label = dgbackground.append('label');
+
+            label.append('input')
+                .attr('type', 'radio')
+                .attr('name', 'layers')
+                .on('change', function(d) {
+                    d3.event.preventDefault();
+                    clickSetSource(iD.BackgroundSource(d));
+                });
+
+            label.append('span')
+                .text(t('background.dgbg'));
+
+            var profiles = content.append('div')
+                .attr('id', 'dgProfiles')
+                .attr('class', 'dgprofile hide'); //fillL map-overlay col3 content
+
+            profiles
+                .append('div')
+                .attr('class', 'imagery-faq')
+                .append('a')
+                .attr('target', '_blank')
+                .attr('tabindex', -1)
+                .call(iD.svg.Icon('#icon-out-link', 'inline'))
+                .append('span')
+                .text('Use my EV-WHS Connect ID')
+                .on('click', function() {
+                    var cid = window.prompt('Enter your EV-WHS Connect ID', dgServices.evwhs.connectId());
+                    if (cid) dgServices.evwhs.connectId(cid);
+
+                    //Need to update current background when service changes
+                    var activeProfile = d3.select('.dgprofile.active').datum().value;
+                    var bsource = dgServices.backgroundSource(null/*connectId*/, activeProfile/*profile*/);
+                    clickSetSource(iD.BackgroundSource(bsource));
+                });
+
+            var profileList = profiles.append('ul')
+                .attr('class', 'layer-list');
+
+            profileList.selectAll('li')
+                .data(dgServices.profiles).enter()
+                .append('li')
+                .attr('class', function(d) {
+                    return (dgServices.defaultProfile === d.value) ? 'dgprofile active' : 'dgprofile';
+                })
+                .text(function(d) { return d.text; })
+                .attr('value', function(d) { return d.value; })
+                .on('click', function(d) {
+                    d3.event.preventDefault();
+                    selectProfile(d.value);
+                    var bsource = dgServices.backgroundSource(null/*connectId*/, d.value/*profile*/);
+                    clickSetSource(iD.BackgroundSource(bsource));
+                    //Update radio button datum for dgbackground
+                    dgbackground.selectAll('input').datum(bsource);
+                });
+        }
 
 
         // add listeners
