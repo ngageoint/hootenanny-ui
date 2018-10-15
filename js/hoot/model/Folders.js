@@ -88,8 +88,12 @@ Hoot.model.folders = function (context)
             });
     };
 
-    model_folders.updateLink = function(link,callback) {
-        Hoot.model.REST('updateMapFolderLinks',link,function(){
+    model_folders.updateLink = function(link, callback) {
+        Hoot.model.REST('updateMapFolderLinks', link, function(e, r){
+            if(e) {
+                iD.ui.Alert('Failed to update folder.', 'error', new Error().stack);
+                return;
+            }
             model_folders.refreshLinks(function(){
                 context.hoot().model.import.updateTrees();
 

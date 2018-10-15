@@ -91,7 +91,7 @@ iD.Connection = function(context, useHttps) {
 
   //Need to document why this was added for Hoot
     connection.getMbrFromUrl = function( mapId, callback) {
-        var request = d3.json(url + '/api/0.6/map/mbr/' + mapId);
+        var request = d3.json(url + '/api/0.6/map/' + mapId + '/mbr');
         request.get(function (error, resp) {
             if (error) {
                 window.console.log(error);
@@ -847,8 +847,7 @@ iD.Connection = function(context, useHttps) {
                         layerZoomObj.zoomLevel = context.map().zoom();
                         layerZoomArray.push(layerZoomObj);
                     }
-                    ext = '?manualExtent=' + layerExt.maxlon + ',' + layerExt.maxlat +
-                    ',' + layerExt.minlon + ',' + layerExt.minlat;
+                    ext = '?manualExtent=' + layerExt.maxlon + ',' + layerExt.maxlat + ',' + layerExt.minlon + ',' + layerExt.minlat;
                 }
             }
 

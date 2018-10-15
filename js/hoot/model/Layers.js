@@ -297,21 +297,15 @@ Hoot.model.layers = function (context)
             }
 
             if(deleteDataset){
-                d3.xhr('/hoot-services/osm/api/0.6/map/delete/' + params.dataset.name)
+                d3.xhr('/hoot-services/osm/api/0.6/map/' + params.dataset.name)
                     .header('Content-Type', 'text/plain')
                     .send('DELETE', function (error, data) {
                         var statusUrl = '/hoot-services/job/status/' + data.jobid;
                         var statusTimer = setInterval(function () {
                             d3.json(statusUrl, function (error, result) {
                                 if (result.status !== 'running') {
-                                    Hoot.model.REST.WarningHandler(result);
                                     clearInterval(statusTimer);
-
-                                    //update link
-                                    var link={};
-                                    link.folderId = 0;
-                                    link.updateType='delete';
-                                    link.mapid=context.hoot().model.layers.getmapIdByName(params.dataset.name)||0;
+                                    Hoot.model.REST.WarningHandler(result);
                                     context.hoot().model.layers.refresh(function(){
                                         if(callback){callback(true,params);}
                                     });

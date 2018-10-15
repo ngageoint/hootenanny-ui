@@ -863,10 +863,16 @@ Hoot.control.utilities.folder = function(context) {
                         folderData.parentId=data.folderId;
                         folderData.folderId=data.mapid;
 
-                        Hoot.model.REST('updateFolder',folderData,function(){
+                        Hoot.model.REST('updateFolder',folderData,function(e, r){
+                            if(e) {
+                              iD.ui.Alert('Failed to update folder', 'error', new Error().stack);
+                              return;
+                            }
+
                             context.hoot().model.folders.refresh(function(){
                                 context.hoot().model.import.updateTrees();
                             });
+
                             modalbg.remove();
                         });
                     });

@@ -53,7 +53,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         var baseUrl = '/hoot-services/osm/api/0.6/map';
         if(data.inputType == 'folder') { baseUrl += '/folders'; }
 
-        d3.xhr(baseUrl + '/modify/' + data.mapid + '/' + data.modifiedName)
+        d3.xhr(baseUrl + '/' + data.mapid + '/rename/' + data.modifiedName)
             .send('put', function(e, r) {
                 if (e) {
                     iD.ui.Alert('Modify name failed!', 'error', new Error().stack);
@@ -63,39 +63,24 @@ Hoot.model.REST = function (command, data, callback, option) {
             });
     };
 
-    rest.updateMapFolderLinks = function(data,callback){
+    rest.updateMapFolderLinks = function(data, callback){
         if (!(data.folderId >= 0) || !(data.mapid >= 0) || !data.updateType) {
-            callback(false);
-            return false;
+            callback('invalid parameters', null);
+            return;
         }
-        /*callback(true);
-        return true;*/
-        d3.json('/hoot-services/osm/api/0.6/map/link/' + data.mapid + '/update/folder/' + data.folderId)
-        .post(data, function (error, data) {
-            if (error){
-                iD.ui.Alert('Folder-Map link failed!','error',new Error().stack);
-                return error;
-            }
-            callback(data);
-            return data;
-        });
+
+        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + data.mapid + '/move/' + data.folderId)
+        .send('PUT', function (e, r) { callback(e, r); });
     };
 
-    rest.updateFolder = function(data,callback){
+    rest.updateFolder = function(data, callback){
         if(!(data.parentId >= 0)||!(data.folderId >= 0)||data.parentId===data.folderId){
             callback(false);
             return false;
         }
 
-        d3.json('/hoot-services/osm/api/0.6/map/updateParentId?folderId=' + data.folderId +
-                '&parentId=' + data.parentId)
-        .post(data, function (error, data) {
-            if (error){
-                return error;
-            }
-            callback(data);
-            return data;
-        });
+        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + folderId + '/move/' + parentId)
+            .send('put', function(e, r) { callback(e, r); });
     };
 
     rest.addFolder = function (data, callback) {
@@ -124,7 +109,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
 
-        d3.xhr('/hoot-services/osm/api/0.6/map/folders/delete/' + folderId)
+        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + folderId)
         .send('DELETE', function (error, json) {
             if(error){
                 callback(false);
@@ -188,7 +173,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getMapTags = function (data, callback) {
-        var request = d3.json('/hoot-services/osm/api/0.6/map/tags/' + data.mapId);
+        var request = d3.json('/hoot-services/osm/api/0.6/map/' + data.mapId + '/tags');
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get tags failed!'));
@@ -264,7 +249,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     rest.clipDataset = function (context, data, callback) {
         if(!data.INPUT_NAME || !data.BBOX || !data.OUTPUT_NAME || !data.PATH_NAME){return false;}
 
-        var postClip = function(a){
+        var postClip = function(a) {
             if(a.status==='complete'){
                 context.hoot().model.layers.refresh(function(){
                     context.hoot().model.layers.setLayerLinks(function(){
@@ -279,10 +264,10 @@ Hoot.model.REST = function (command, data, callback, option) {
                                 callback(a,data.OUTPUT_NAME);
                             }
                         }
-                    });
-                });
-            }
-        };
+                    }); // set layer links
+                }); // layer refresh
+            } // if(complete)
+        }; //postClip()
 
         // Commented out section below placeholder for future alpha-shape clipping
         /*if(option === 'bbox'){*/
