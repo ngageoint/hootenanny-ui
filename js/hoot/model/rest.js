@@ -69,7 +69,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             return;
         }
 
-        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + data.mapid + '/move/' + data.folderId)
+        d3.xhr('/hoot-services/osm/api/0.6/map/' + data.mapid + '/move/' + data.folderId)
         .send('PUT', function (e, r) { callback(e, r); });
     };
 
@@ -79,7 +79,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
 
-        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + folderId + '/move/' + parentId)
+        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + data.folderId + '/move/' + data.parentId)
             .send('put', function(e, r) { callback(e, r); });
     };
 
