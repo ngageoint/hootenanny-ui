@@ -166,7 +166,7 @@ Hoot.tools = function (context) {
 
         var refLayer = '1';
         var oRefLayerId = hoot.model.layers.getmapIdByName(a.select('.referenceLayer').value());
-        if(oRefLayerId === data.INPUT2){
+        if(oRefLayerId === parseInt(data.INPUT2)){
             refLayer = '2';
         }
 
