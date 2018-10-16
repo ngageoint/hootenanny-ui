@@ -132,7 +132,7 @@ function roleKey(d) {
 function sortKeys(a, b) {
     return (a.key.indexOf(':') === -1 && b.key.indexOf(':') !== -1) ? -1
         : (a.key.indexOf(':') !== -1 && b.key.indexOf(':') === -1) ? 1
-        : 0;
+            : 0;
 }
 
 

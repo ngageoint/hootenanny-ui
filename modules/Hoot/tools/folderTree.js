@@ -370,7 +370,7 @@ export default class FolderTree extends EventEmitter {
                         oldData      = moment().diff( moment( timeAgo ), 'days' ) > 60;
 
                     if ( oldData ) {
-
+                        // TODO: get back to this
                     }
 
                     return dateActive;

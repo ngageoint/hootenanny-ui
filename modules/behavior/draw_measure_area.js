@@ -367,4 +367,4 @@ export function behaviorDrawMeasureArea( context, svg ) {
     };
 
     return utilRebind( drawarea, dispatch, 'on' );
-};
+}

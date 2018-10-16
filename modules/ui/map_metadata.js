@@ -12,7 +12,9 @@ export function uiMapMetadata(data, context) {
         button,
         body,
         loaded,
-        showing = false;
+        showing = false,
+        RefLayerName,
+        SecLayerName;
 
     function load(d) {
 
@@ -122,8 +124,8 @@ export function uiMapMetadata(data, context) {
             }
 
 
-            var RefLayerName = d.tags.input1Name || 'Reference Layer Missing';
-            var SecLayerName = d.tags.input2Name || 'Secondary Layer Missing';
+            RefLayerName = d.tags.input1Name || 'Reference Layer Missing';
+            SecLayerName = d.tags.input2Name || 'Secondary Layer Missing';
             var params = JSON.parse(d.tags.params.replace(/\\"/g, '"'));
             var pdata = _entries({
                 'Reference Layer': RefLayerName,
@@ -142,10 +144,10 @@ export function uiMapMetadata(data, context) {
             // options
             var optdata = _entries(params.ADV_OPTIONS).sort(function(a, b) {
                 if (a.key < b.key) {
-                  return -1;
+                    return -1;
                 }
                 if (a.key > b.key) {
-                  return 1;
+                    return 1;
                 }
                 // a must be equal to b
                 return 0;
@@ -161,8 +163,8 @@ export function uiMapMetadata(data, context) {
 
         // stats
         if (d.tags && d.tags.stats) {
-            var RefLayerName = 'reference';
-            var SecLayerName = 'secondary';
+            RefLayerName = 'reference';
+            SecLayerName = 'secondary';
             var ConfLayerName = 'conflated';
 
             var stats = d3_tsvParseRows(d.tags.stats, function(d) {
@@ -386,7 +388,7 @@ export function uiMapMetadata(data, context) {
                 } else {
                     load(d);
                 }
-        });
+            });
     };
 
     mapMetadata.body = function(selection) {
@@ -409,4 +411,4 @@ export function uiMapMetadata(data, context) {
     };
 
     return mapMetadata;
-};
+}

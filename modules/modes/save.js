@@ -44,7 +44,6 @@ import {
 } from '../util';
 
 import { osmEntity } from '../osm/index';
-import hoot          from '../services/hoot';
 
 var _isSaving = false;
 

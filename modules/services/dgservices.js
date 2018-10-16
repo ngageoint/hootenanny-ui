@@ -4,50 +4,6 @@
  * @author Matt Putipong on 10/9/18
  *******************************************************************************************************/
 
-// class DGServices {
-//     constructor() {
-//         this.evwhs_proxy       = '/hoot-services/evwhs';
-//         this.evwhs_host        = 'https://{switch:a,b,c,d,e}-evwhs.digitalglobe.com';
-//         this.evwhs_connectId   = '68fc9933-7b40-4462-9c6d-51566f39b5af';
-//         this.default_connectId = this.evwhs_connectId;
-//         this.defaultProfile    = 'Global_Currency_Profile';
-//         this.defaultCollection = '24h';
-//
-//         this.wmtps_template = '/earthservice/wmtsaccess?CONNECTID={connectId}&request=GetTile&version=1.0.0'
-//             + '&layer=DigitalGlobe:ImageryTileService&featureProfile={profile}&style=default&format=image/png'
-//             + '&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:{zoom}&TileRow={y}&TileCol={x}';
-//
-//         this.wms_template = '/mapservice/wmsaccess?connectId={connectId}&SERVICE=WMS&REQUEST=GetMap&SERVICE=WMS&VERSION=1.1.1'
-//             + '&LAYERS=DigitalGlobe:Imagery&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE'
-//             + '&featureProfile={profile}&SRS=EPSG:3857&FEATURECOLLECTION={featureId}&BBOX={bbox}&WIDTH=256&HEIGHT=256';
-//
-//         this.wfs_template = '/catalogservice/wfsaccess?connectid={connectId}&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature'
-//             + '&typeName=FinishedFeature&featureProfile={profile}&outputFormat=json'
-//             + '&BBOX={bbox}&HEIGHT={height}&WIDTH={width}';
-//
-//         this.collection_template = '/mapservice/wmsaccess?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap'
-//             + '&STYLES=imagery_footprint&env=color:ff6600&FORMAT=image/png8&LAYERS=DigitalGlobe:ImageryFootprint'
-//             + '&featureProfile={profile}&TRANSPARENT=true&SRS=EPSG:3857&SUPEROVERLAY=true'
-//             + '&FORMAT_OPTIONS=OPACITY:0.6;GENERALIZE:true&connectId={connectId}&FRESHNESS={freshness}'
-//             + '&BBOX={bbox}&WIDTH=256&HEIGHT=256';
-//     }
-//
-//     isUUID( str ) {
-//         if (str === null){
-//             return false;
-//         } else{
-//             var match = str.search(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
-//             return match !== -1;
-//         }
-//     }
-//
-//     get enabled() {
-//         return this.isUUID( this.evwhs_connectId );
-//     }
-// }
-//
-// export default new DGServices();
-
 import { t } from '../util/locale';
 
 export default function() {
@@ -308,4 +264,4 @@ export default function() {
     };
 
     return dg;
-};
+}

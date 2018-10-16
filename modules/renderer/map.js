@@ -346,7 +346,7 @@ export function rendererMap(context) {
             osmLayer.call(drawPoints, graph, data, filter)
         ] ).then( () => {
             dispatch.call('drawn', this, {full: true});
-        })
+        });
         //surface.selectAll('.data-layer-osm')
         //    .call(drawVertices, graph, data, filter, map.extent(), fullRedraw)
         //    .call(drawLines, graph, data, filter)

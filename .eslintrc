@@ -10,22 +10,18 @@
     "globals": {
         "d3": false,
         "$": false,
-        "iD": false
+        "iD": false,
+        "define": false
     },
     "parserOptions": {
-        "ecmaVersion": 2017,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "experimentalObjectRestSpread": true
-        }
+        "ecmaVersion": 9,
+        "sourceType": "module"
     },
     "rules": {
         "arrow-spacing": "warn",
         "dot-notation": "error",
         "eqeqeq": ["error", "smart"],
-        "indent": ["warn", 4, {
-            "SwitchCase": 1
-        }],
+        "indent": ["warn", 4],
         "keyword-spacing": "error",
         "linebreak-style": ["error", "unix"],
         "no-caller": "error",
@@ -77,11 +73,6 @@
         "strict": ["error", "safe"],
         "wrap-regex": "off",
         "quotes": ["error", "single"],
-        "object-curly-spacing": [ "warn", "always", {
-            "arraysInObjects": true,
-            "objectsInObjects": true
-        } ],
-        "array-bracket-spacing": [ "warn", "always" ],
         "settings": {
             "flowtype": {
                 "onlyFilesWithFlowAnnotation": true

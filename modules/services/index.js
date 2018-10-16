@@ -8,8 +8,6 @@ import serviceVectorTile from './vector_tile';
 import serviceWikidata from './wikidata';
 import serviceWikipedia from './wikipedia';
 
-import serviceHoot from './hoot';
-
 export var services = {
     geocoder: serviceNominatim,
     mapillary: serviceMapillary,
@@ -19,8 +17,7 @@ export var services = {
     taginfo: serviceTaginfo,
     vectorTile: serviceVectorTile,
     wikidata: serviceWikidata,
-    wikipedia: serviceWikipedia,
-    hoot: serviceHoot
+    wikipedia: serviceWikipedia
 };
 
 export {

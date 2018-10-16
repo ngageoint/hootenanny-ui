@@ -271,7 +271,7 @@ export function d3combobox() {
 
             //If the height of the menu is going to go off the screen, have it go towards the top of the screen instead
             var dropDownHeight = (d3.select('.combobox-option').node().getBoundingClientRect().height * _suggestions.length) + rect.height;
-            if((window.innerHeight-rect.top) < dropDownHeight){
+            if ((window.innerHeight-rect.top) < dropDownHeight){
                 wrapper
                     .style('left', (rect.left + 5) + 'px')
                     .style('width', (rect.width - 10) + 'px')

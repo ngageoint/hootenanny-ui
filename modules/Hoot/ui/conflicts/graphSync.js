@@ -63,7 +63,7 @@ export default class GraphSync {
                 return this.loadMissingFeatures( relId )
                     .then( () => this.validateMemberCount( relId ) );
             } else if ( memberCount === 1 ) {
-
+                // TODO: get back to this
             } else {
                 // TODO: show alert
             }

@@ -25,7 +25,7 @@
     "dist:svg:mapillary": "svg-sprite --symbol --symbol-dest . --symbol-sprite dist/img/mapillary-sprite.svg node_modules/mapillary_sprite_source/package_signs/*.svg",
     "dist:svg:temaki": "svg-sprite --symbol --symbol-dest . --shape-id-generator \"temaki-%s\" --symbol-sprite dist/img/temaki-sprite.svg node_modules/temaki/icons/*.svg",
     "imagery": "node data/update_imagery",
-    "lint": "eslint *.js js/id test/spec modules",
+    "lint": "eslint *.js test/spec modules",
     "production": "npm-run-all -s build dist",
     "start": "node development_server.js develop",
     "test": "npm-run-all -s lint build test:**",

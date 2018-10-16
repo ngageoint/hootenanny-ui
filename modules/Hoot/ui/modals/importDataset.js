@@ -194,7 +194,8 @@ export default class ImportDataset {
         }
 
         if ( selectedType === 'DIR' ) {
-
+            console.log( 'dir' );
+            //TODO: get back to this
         } else {
             let firstFile = fileNames[ 0 ],
                 saveName  = firstFile.indexOf( '.' ) ? firstFile.substring( 0, firstFile.indexOf( '.' ) ) : firstFile;

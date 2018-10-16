@@ -25,8 +25,6 @@ export default class ReviewBookmarkNotes extends Tab {
 
         this.name = 'Review Bookmark Notes';
         this.id   = 'review-bookmark-notes';
-
-        this.notesForm = null;
     }
 
     render() {
@@ -92,7 +90,8 @@ export default class ReviewBookmarkNotes extends Tab {
                 this.reviewItem = await Hoot.api.getReviewItem( params );
             }
         } catch ( err ) {
-
+            // TODO: show error
+            throw new Error( err );
         }
     }
 

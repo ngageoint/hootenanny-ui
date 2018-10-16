@@ -111,9 +111,9 @@ export function utilStringQs(str) {
 
 export function utilQsString(obj, noencode) {
     function softEncode(s) {
-      // encode everything except special characters used in certain hash parameters:
-      // "/" in map states, ":", ",", {" and "}" in background
-      return encodeURIComponent(s).replace(/(%2F|%3A|%2C|%7B|%7D)/g, decodeURIComponent);
+        // encode everything except special characters used in certain hash parameters:
+        // "/" in map states, ":", ",", {" and "}" in background
+        return encodeURIComponent(s).replace(/(%2F|%3A|%2C|%7B|%7D)/g, decodeURIComponent);
     }
     return Object.keys(obj).sort().map(function(key) {
         return encodeURIComponent(key) + '=' + (
@@ -186,7 +186,7 @@ export function utilEditDistance(a, b) {
             } else {
                 matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, // substitution
                     Math.min(matrix[i][j-1] + 1, // insertion
-                    matrix[i-1][j] + 1)); // deletion
+                        matrix[i-1][j] + 1)); // deletion
             }
         }
     }

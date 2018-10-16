@@ -21,7 +21,7 @@ import { uiAttribution } from './attribution';
 import { uiBackground } from './background';
 import { uiContributors } from './contributors';
 import { uiCoordinates } from './coordinates';
-import { uiDgcarousel } from './dgcarousel'
+import { uiDgcarousel } from './dgcarousel';
 import { uiFeatureInfo } from './feature_info';
 import { uiFullScreen } from './full_screen';
 import { uiGeolocate } from './geolocate';

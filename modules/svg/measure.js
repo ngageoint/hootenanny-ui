@@ -116,4 +116,4 @@ export function svgMeasure( projection, context, dispatch ) {
     drawMeasure.id = 'layer-measure';
 
     return drawMeasure;
-};
+}

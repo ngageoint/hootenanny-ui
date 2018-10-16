@@ -27,6 +27,7 @@ export default class API {
             port: this.config.port,
             pathname: this.config.path
         } );
+
         this.mergeUrl       = Object.assign( new URL( this.host ), { port: this.config.mergeServerPort } );
         this.translationUrl = Object.assign( new URL( this.host ), { port: this.config.translationServerPort } );
 

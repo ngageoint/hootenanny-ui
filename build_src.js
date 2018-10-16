@@ -15,8 +15,6 @@ module.exports = function buildSrc(isDevelopment) {
     //var cache;
     var building = false;
 
-    process.env.BABEL_ENV = !isDevelopment ? 'production' : 'development';
-
     return function () {
         if (building) return;
 

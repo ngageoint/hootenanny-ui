@@ -408,7 +408,7 @@ export default class Layers {
 
         this.hoot.context.connection().putChangeset( _osmChangeset, changes, err => {
             if ( err ) {
-
+                //TODO: get back to this
             } else {
                 this.hoot.context.flush();
 

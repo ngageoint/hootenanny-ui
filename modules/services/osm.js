@@ -380,7 +380,7 @@ function updateRtree(item, replace) {
 }
 
 function getUrlRoot(path) {
-    return (path.indexOf('mapId') > -1) ? services.hoot.urlroot() : urlroot;
+    return (path.indexOf('mapId') > -1) ? Hoot.config.urlroot : urlroot;
 }
 
 function isUrlHoot(path) {
