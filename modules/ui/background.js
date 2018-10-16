@@ -25,6 +25,7 @@ import { uiSettingsCustomBackground } from './settings/custom_background';
 import { uiTooltipHtml } from './tooltipHtml';
 import { utilCallWhenIdle } from '../util';
 import { tooltip } from '../util/tooltip';
+import { rendererBackgroundSource } from '../renderer/background_source';
 
 import Hoot from '../Hoot/hoot';
 
@@ -143,6 +144,24 @@ export function uiBackground(context) {
     }
 
 
+    // function chooseCollection( value ) {
+    //     function active( d ) {
+    //         return d.value === value;
+    //     }
+    //
+    //     // collections
+    //     //     .selectAll( 'li' )
+    //     //     .classed( 'active', active );
+    //     //collections.classed('hide', true);
+    // }
+    //
+    // function addOrUpdateOverlay( d ) {
+    //     d3.event.preventDefault();
+    //     context.background().addOrUpdateOverlayLayer( d );
+    //     selectLayer();
+    // }
+
+
     function drawListItems(layerList, type, change, filter) {
         var sources = context.background()
             .sources(context.map().extent())
@@ -155,7 +174,7 @@ export function uiBackground(context) {
             .remove();
 
         var enter = layerLinks.enter()
-            .append('li')
+            .insert('li', '.dg_layer')
             .attr('class', 'layer')
             .classed('layer-custom', function(d) { return d.id === 'custom'; })
             .classed('best', function(d) { return d.best(); });
@@ -404,6 +423,12 @@ export function uiBackground(context) {
                 .content(renderOverlayList)
             );
 
+        // dg collection list
+        let collections = content
+            .append('div')
+            .attr('id', 'dgProfiles')
+            .attr('class', 'dgprofile hide');
+
         // display options
         _displayOptionsContainer = content
             .append('div')
@@ -414,111 +439,6 @@ export function uiBackground(context) {
             .append('div')
             .attr('class', 'background-offset');
 
-        var custom = backgroundList.append('li')
-            .attr('class', 'custom_layer')
-            .datum(iD.BackgroundSource.Custom());
-
-        custom.append('button')
-            .attr('class', 'layer-browse')
-            .call(bootstrap.tooltip()
-                .title(t('background.custom_button'))
-                .placement('left'))
-            .on('click', editCustom)
-            .call(iD.svg.Icon('#icon-search'));
-
-        var label = custom.append('label');
-
-        label.append('input')
-            .attr('type', 'radio')
-            .attr('name', 'layers')
-            .on('change', function () {
-                if (customTemplate) {
-                    setCustom(customTemplate);
-                } else {
-                    editCustom();
-                }
-            });
-
-        label.append('span')
-            .text(t('background.custom'));
-
-        if (dgServices.enabled) {
-            var dgbackground = backgroundList.append('li')
-                .attr('class', 'dg_layer')
-                .call(bootstrap.tooltip()
-                    .title(t('background.dgbg_tooltip'))
-                    .placement('top'))
-                .datum(dgServices.backgroundSource());
-
-            dgbackground.append('button')
-                .attr('class', 'dg-layer-profile')
-                .call(bootstrap.tooltip()
-                    .title(t('background.dgbg_button'))
-                    .placement('left'))
-                .on('click', function () {
-                    d3.event.preventDefault();
-                    profiles.classed('hide', function() { return !profiles.classed('hide'); });
-                })
-                .call(iD.svg.Icon('#icon-layers'));
-
-            label = dgbackground.append('label');
-
-            label.append('input')
-                .attr('type', 'radio')
-                .attr('name', 'layers')
-                .on('change', function(d) {
-                    d3.event.preventDefault();
-                    clickSetSource(iD.BackgroundSource(d));
-                });
-
-            label.append('span')
-                .text(t('background.dgbg'));
-
-            var profiles = content.append('div')
-                .attr('id', 'dgProfiles')
-                .attr('class', 'dgprofile hide'); //fillL map-overlay col3 content
-
-            profiles
-                .append('div')
-                .attr('class', 'imagery-faq')
-                .append('a')
-                .attr('target', '_blank')
-                .attr('tabindex', -1)
-                .call(iD.svg.Icon('#icon-out-link', 'inline'))
-                .append('span')
-                .text('Use my EV-WHS Connect ID')
-                .on('click', function() {
-                    var cid = window.prompt('Enter your EV-WHS Connect ID', dgServices.evwhs.connectId());
-                    if (cid) dgServices.evwhs.connectId(cid);
-
-                    //Need to update current background when service changes
-                    var activeProfile = d3.select('.dgprofile.active').datum().value;
-                    var bsource = dgServices.backgroundSource(null/*connectId*/, activeProfile/*profile*/);
-                    clickSetSource(iD.BackgroundSource(bsource));
-                });
-
-            var profileList = profiles.append('ul')
-                .attr('class', 'layer-list');
-
-            profileList.selectAll('li')
-                .data(dgServices.profiles).enter()
-                .append('li')
-                .attr('class', function(d) {
-                    return (dgServices.defaultProfile === d.value) ? 'dgprofile active' : 'dgprofile';
-                })
-                .text(function(d) { return d.text; })
-                .attr('value', function(d) { return d.value; })
-                .on('click', function(d) {
-                    d3.event.preventDefault();
-                    selectProfile(d.value);
-                    var bsource = dgServices.backgroundSource(null/*connectId*/, d.value/*profile*/);
-                    clickSetSource(iD.BackgroundSource(bsource));
-                    //Update radio button datum for dgbackground
-                    dgbackground.selectAll('input').datum(bsource);
-                });
-        }
-
-
         // add listeners
         context.map()
             .on('move.background-update', _debounce(utilCallWhenIdle(update), 1000));
@@ -526,6 +446,89 @@ export function uiBackground(context) {
         context.background()
             .on('change.background-update', update);
 
+        if (dgServices.enabled) {
+            let dgCollection = _overlayList
+                .append('li')
+                .attr('class', 'dg_layer')
+                .call(tooltip()
+                    .title(t('background.dgcl_button'))
+                    .placement('left')
+                )
+                .datum(dgServices.collectionSource());
+
+            dgCollection.append('button')
+                .attr('class', 'dg-layer-profile')
+                .call(tooltip()
+                    .title(t( 'background.dgcl_button'))
+                    .placement('left')
+                )
+                .on('click', () => {
+                    d3.event.preventDefault();
+                    collections.classed('hide', () => !collections.classed('hide'));
+                })
+                .call(svgIcon( '#iD-icon-layers'));
+
+            let label = dgCollection.append('label');
+
+            label
+                .append('input')
+                .attr('type', 'checkbox')
+                .attr('name', 'layers')
+                .on('change', d => {
+                    function active( d ) {
+                        return context.background().showsLayer( d );
+                    }
+
+                    context.background().toggleOverlayLayer( rendererBackgroundSource(d) );
+                    document.activeElement.blur();
+
+                    dgCollection
+                        .classed( 'active', active )
+                        .selectAll( 'input' )
+                        .property( 'checked', active );
+                });
+
+            label
+                .append( 'span' )
+                .text( t( 'background.dgcl' ) );
+
+            let collectionList = collections
+                .append( 'ul' )
+                .attr( 'class', 'layer-list' );
+
+            collectionList
+                .selectAll( 'li' )
+                .data( dgServices.collections )
+                .enter()
+                .append( 'li' )
+                .attr( 'class', d => dgServices.defaultCollection === d.value ? 'dgprofile active' : 'dgprofile' )
+                .text( d => d.text )
+                .attr( 'value', d => d.value)
+                .on( 'click', d => {
+                    function active( d ) {
+                        return context.background().showsLayer( d );
+                    }
+
+                    d3.event.preventDefault();
+
+                    let source = rendererBackgroundSource( dgServices.collectionSource( null, 'Default_Profile', d.value ) );
+
+                    collections
+                        .selectAll( 'li' )
+                        .classed( 'active', dd => {
+                            return dd.value === d.value;
+                        } );
+
+                    context
+                        .background()
+                        .addOrUpdateOverlayLayer( source );
+
+                    dgCollection
+                        .classed( 'active', active )
+                        .selectAll( 'input' )
+                        .property( 'checked', active );
+                } );
+        }
 
         update();
 

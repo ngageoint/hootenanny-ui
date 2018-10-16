@@ -20,10 +20,12 @@ export function utilSetDimensions(selection, dimensions) {
         return selection;
     }
     var node = selection.node();
+
     if (dimensions === null) {
         refresh(selection, node);
         return selection;
     }
+
     return selection
         .property('__dimensions__', [dimensions[0], dimensions[1]])
         .attr('width', dimensions[0])

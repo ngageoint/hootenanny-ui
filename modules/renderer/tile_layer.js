@@ -35,7 +35,7 @@ export function rendererTileLayer(context) {
     }
 
 
-    function lookUp(d) {w
+    function lookUp(d) {
         for (var up = -1; up > -d[2]; up--) {
             var tile = atZoom(d, up);
             if (_cache[_source.url(tile)] !== false) {
@@ -201,7 +201,7 @@ export function rendererTileLayer(context) {
           .append('img')
             .attr('class', 'tile')
             .attr('src', function(d) { return d[3]; })
-            .on('error', error)
+            // .on('error', error)
             .on('load', load)
           .merge(image)
             .style(transformProp, imageTransform)

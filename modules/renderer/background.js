@@ -7,9 +7,10 @@ import { select as d3_select } from 'd3-selection';
 
 import whichPolygon from 'which-polygon';
 
-import { data } from '../../data';
+import { data }                                           from '../../data';
 import { geoExtent, geoMetersToOffset, geoOffsetToMeters} from '../geo';
 import { rendererBackgroundSource }                       from './background_source';
+import { rendererFootprintLayer }                         from './footprint_layer';
 import { rendererTileLayer }                              from './tile_layer';
 import { utilQsString, utilStringQs }                     from '../util';
 import { utilDetect }                                     from '../util/detect';
@@ -20,6 +21,7 @@ export function rendererBackground(context) {
     var dispatch = d3_dispatch('change', 'baseLayerChange');
     var detected = utilDetect();
     var baseLayer = rendererTileLayer(context).projection(context.projection);
+    var footprintLayer = rendererFootprintLayer().projection(context.projection);
     var _overlayLayers = [];
     var _backgroundSources = [];
     var _brightness = 1;
@@ -63,6 +65,18 @@ export function rendererBackground(context) {
             .insert('div', '.layer-data')
             .attr('class', 'layer layer-background')
             .merge(base);
+
+        var footprint = selection
+            .selectAll( '.footprint-background' )
+            .data( [ 0 ] );
+
+        footprint = footprint
+            .enter()
+            .insert( 'div', '.layer-data' )
+            .attr( 'class', 'layer footprint-background' )
+            .merge( footprint );
+
+        footprint.call( footprintLayer );
 
         if (detected.cssfilters) {
             base.style('filter', baseFilter || null);
@@ -232,7 +246,7 @@ export function rendererBackground(context) {
         var source = background.findSource(id);
         if (source) {
             _remove(_backgroundSources, {id: source.id});
-            if (background.showsLayer({id: id})) background.toggleOverlayLayer(source);
+            if (background.showsLayer(source)) background.toggleOverlayLayer(source);
         }
     };
 
@@ -252,6 +266,7 @@ export function rendererBackground(context) {
     background.dimensions = function(d) {
         if (!d) return;
         baseLayer.dimensions(d);
+        footprintLayer.dimensions(d);
 
         _overlayLayers.forEach(function(layer) {
             layer.dimensions(d);
@@ -311,6 +326,8 @@ export function rendererBackground(context) {
 
     background.showsLayer = function(d) {
         return d.id === baseLayer.source().id ||
+            (d.name() === 'DigitalGlobe Imagery' && (baseLayer.source().id && baseLayer.source().id.indexOf('DigitalGlobe') === 0)) ||
+            (d.name() === 'DigitalGlobe Imagery Collection' && _overlayLayers.some(function(l) { return l.source().id  === 'dgCollection'; })) ||
             _overlayLayers.some(function(layer) { return d.id === layer.source().id; });
     };
 
@@ -335,10 +352,39 @@ export function rendererBackground(context) {
         layer = rendererTileLayer(context)
             .source(d)
             .projection(context.projection)
-            .dimensions(baseLayer.dimensions() );
+            .dimensions(baseLayer.dimensions());
 
         _overlayLayers.push(layer);
+        dispatch.call('change');
         background.updateImagery();
+    };
+
+
+    background.addOrUpdateOverlayLayer = function(d) {
+        var layer;
+
+        for (var i = 0; i < _overlayLayers.length; i++) {
+            layer = _overlayLayers[i];
+            if (d.id === layer.source().id) {
+                _overlayLayers.splice(i, 1);
+            }
+        }
+
+        layer = rendererTileLayer(context)
+            .source(d)
+            .projection(context.projection)
+            .dimensions(baseLayer.dimensions());
+
+        _overlayLayers.push(layer);
+        dispatch.call('change');
+        background.updateImagery();
+    };
+
+
+    //Added for EGD-plugin
+    background.updateFootprintLayer = function(d) {
+        footprintLayer.geojson(d);
+        dispatch.call('change');
     };
 
 

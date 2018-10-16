@@ -14,10 +14,10 @@ import { svgIcon }     from '../svg';
 import { d3keybinding as d3_keybinding } from '../lib';
 
 export function uiDgcarousel( context ) {
-    var key = '⌘I';
+    let key = '⌘I';
 
     function dgcarousel( selection ) {
-        var shown = false;
+        let shown = false;
 
         function hide() {
             setVisible( false );
@@ -36,7 +36,8 @@ export function uiDgcarousel( context ) {
                 if ( show ) {
                     selection.on( 'mousedown.carousel-inside', () => d3.event.stopPropagation() );
 
-                    pane.style( 'display', 'block' )
+                    pane
+                        .style( 'display', 'block' )
                         .style( 'right', '-200px' )
                         .transition()
                         .duration( 200 )
@@ -44,7 +45,8 @@ export function uiDgcarousel( context ) {
 
                     getImageMetadata();
                 } else {
-                    pane.style( 'display', 'block' )
+                    pane
+                        .style( 'display', 'block' )
                         .style( 'right', '0px' )
                         .transition()
                         .duration( 200 )
@@ -58,56 +60,64 @@ export function uiDgcarousel( context ) {
             }
         }
 
-        var pane = selection.append( 'div' ).attr( 'class', 'fill-white carousel-column content hide' );
+        let pane = selection
+            .append( 'div' )
+            .attr( 'class', 'fill-white carousel-column content hide' );
 
-        pane.append( 'div' )
+        pane
+            .append( 'div' )
             .attr( 'class', 'dgarrow up' )
             .on( 'click', function() {
-                var scrollable   = d3.select( '#dgCarouselThumbnails' );
-                var clientheight = scrollable.property( 'clientHeight' );
-                var scrolltop    = scrollable.property( 'scrollTop' );
+                let scrollable   = d3.select( '#dgCarouselThumbnails' );
+                let clientheight = scrollable.property( 'clientHeight' );
+                let scrolltop    = scrollable.property( 'scrollTop' );
                 scrollable.transition().duration( 1500 )
                     .tween( 'uniquetweenname', scrollTopTween( scrolltop - clientheight ) );
             } );
 
-        var metadiv = pane.append( 'div' )
+        let metadiv = pane
+            .append( 'div' )
             .attr( 'id', 'dgCarouselThumbnails' )
             .attr( 'class', 'carousel-thumbnails' );
 
-        pane.append( 'div' )
+        pane
+            .append( 'div' )
             .attr( 'class', 'dgarrow down' )
             .on( 'click', function() {
-                var scrollable   = d3.select( '#dgCarouselThumbnails' );
-                var clientheight = scrollable.property( 'clientHeight' );
-                var scrolltop    = scrollable.property( 'scrollTop' );
+                let scrollable   = d3.select( '#dgCarouselThumbnails' );
+                let clientheight = scrollable.property( 'clientHeight' );
+                let scrolltop    = scrollable.property( 'scrollTop' );
                 scrollable.transition().duration( 1500 )
                     .tween( 'uniquetweenname', scrollTopTween( scrolltop + clientheight ) );
             } );
 
         function scrollTopTween( scrollTop ) {
             return function() {
-                var i = d3.interpolateNumber( this.scrollTop, scrollTop );
+                let i = d3.interpolateNumber( this.scrollTop, scrollTop );
                 return function( t ) {
                     this.scrollTop = i( t );
                 };
             };
         }
 
-        var ul = metadiv.append( 'ul' )
+        let ul = metadiv
+            .append( 'ul' )
             .attr( 'class', 'carousel-metadata-list' );
 
-        var ttp = tooltip()
+        let ttp = tooltip()
             .placement( 'left' )
             .html( true )
             .title( tooltipHtml( t( 'dgcarousel.title' ), key ) );
 
-        var button = selection.append( 'button' )
+        let button = selection
+            .append( 'button' )
             .attr( 'tabindex', -1 )
             .on( 'click', toggle )
             .call( svgIcon( '#iD-icon-carousel', 'light' ) )
             .call( ttp );
 
-        button.append( 'span' )
+        button
+            .append( 'span' )
             .attr( 'class', 'icon dgcarousel light' );
 
         context.map()
@@ -116,7 +126,7 @@ export function uiDgcarousel( context ) {
         context.background()
             .on( 'baseLayerChange.carousel-update', _debounce( getImageMetadata, 1000 ) );
 
-        var keybinding = d3_keybinding( 'dgcarousel' )
+        let keybinding = d3_keybinding( 'dgcarousel' )
             .on( key, toggle );
 
         d3.select( document )
@@ -129,24 +139,30 @@ export function uiDgcarousel( context ) {
             //get zoom
             if ( context.map().zoom() > 13 ) {
                 //get extent
-                var extent = context.map().extent();
-                var size   = context.map().dimensions();
+                let extent = context.map().extent(),
+                    size   = context.map().dimensions();
+
                 if ( extent && size ) {
                     //get features from wfs
-                    var dg            = context.dgservices();
-                    var activeProfile = d3.select( '#dgProfiles' ).selectAll( 'li.active' ).attr( 'value' );
-                    dg.wfs.getFeatureInRaster( null/*connectId*/, activeProfile/*profile*/, extent, size, function( error, data ) {
+                    let dg = context.dgservices();
+
+                    let activeProfile = d3.select( '#dgProfiles' )
+                        .selectAll( 'li.active' )
+                        .property( 'value' );
+
+                    dg.wfs.getFeatureInRaster( null, activeProfile, extent, size, function( error, data ) {
                         if ( error ) {
                             window.console.warn( error );
                         } else {
-                            //Update dgservices variables tracking visible image metadata
+                            //Update dgservices letiables tracking visible image metadata
                             //The first feature in the response is the top (visible) image
                             //in the stacking profile.  Record this metadata.
                             dg.imagemeta.add( 'DigitalGlobe EV-WHS - ' + dg.getProfile( activeProfile ),
                                 data.features );
                         }
                     } );
-                    dg.wfs.getFeature( null/*connectId*/, activeProfile/*profile*/, extent, size, function( error, data ) {
+
+                    dg.wfs.getFeature( null, activeProfile, extent, size, function( error, data ) {
                         if ( error ) {
                             window.console.warn( error );
                         } else {
@@ -154,36 +170,29 @@ export function uiDgcarousel( context ) {
                             //display available images in carousel
 
                             //remove image thumbnails already selected
-                            var activeData    = ul.selectAll( 'li.active' ).data();
-                            var availableData = data.features.filter( function( d ) {
-                                return !(activeData.some( function( s ) {
-                                    return d.id === s.id;
-                                } ));
-                            } );
+                            let activeData    = ul.selectAll( 'li.active' ).data(),
+                                availableData = data.features.filter( d => !(activeData.some( s => d.id === s.id )) );
 
-                            var images = ul.selectAll( 'li:not(.active)' )
+                            let images = ul
+                                .selectAll( 'li:not(.active)' )
                                 .data( availableData );
 
-                            images.enter().append( 'li' );
+                            images
+                                .enter()
+                                .append( 'li' );
 
-                            images.classed( 'carousel-zoom-warn', false )
-                                .html( function( d ) {
-                                    return formatImageMetadata( d );
-                                } )
+                            images
+                                .classed( 'carousel-zoom-warn', false )
+                                .html( d => formatImageMetadata( d ) )
                                 .on( 'click', function( d ) {
-                                    var active = !d3.select( this ).classed( 'active' );
+                                    let active = !d3.select( this ).classed( 'active' );
+
                                     d3.select( this ).classed( 'active', active );
                                     loadImage( d, active );
                                 } )
-                                .on( 'dblclick', function( d ) {
-                                    loadMetadataPopup( d );
-                                } )
-                                .on( 'mouseenter', function( d ) {
-                                    loadFootprint( d );
-                                } )
-                                .on( 'mouseleave', function( d ) {
-                                    loadFootprint( d );
-                                } );
+                                .on( 'dblclick', d => loadMetadataPopup( d ) )
+                                .on( 'mouseenter', d => loadFootprint( d ) )
+                                .on( 'mouseleave', d => loadFootprint( d ) );
 
                             images.exit().remove();
 
@@ -192,7 +201,7 @@ export function uiDgcarousel( context ) {
                 }
 
             } else {
-                var images = ul.selectAll( 'li:not(.active)' )
+                let images = ul.selectAll( 'li:not(.active)' )
                     .data( [ { message: t( 'dgcarousel.zoom_warning' ) } ] );
 
                 images.enter().append( 'li' );
@@ -207,7 +216,7 @@ export function uiDgcarousel( context ) {
         }
 
         function formatImageMetadata( d ) {
-            var imageDiv = '';
+            let imageDiv = '';
 
             imageDiv += '<div>' + d.properties.formattedDate + '</div>';
             imageDiv += '<span>' + d.properties.source + '</span>';
@@ -217,7 +226,7 @@ export function uiDgcarousel( context ) {
         }
 
         function formatZoomWarning( d ) {
-            var imageDiv = '';
+            let imageDiv = '';
 
             imageDiv += '<div class=\'carousel-zoom-warn\'>' + d.message + '</div>';
 
@@ -225,11 +234,12 @@ export function uiDgcarousel( context ) {
         }
 
         function loadImage( d, active ) {
-            var dg            = context.dgservices();
-            var activeProfile = d3.select( '#dgProfiles' ).selectAll( 'li.active' ).attr( 'value' );
-            var template      = dg.wms.getMap( null/*connectId*/, activeProfile/*profile*/, d.properties.featureId );
-            var terms         = dg.terms();
-            var source        = {
+            let dg            = context.dgservices(),
+                activeProfile = d3.select( '#dgProfiles' ).selectAll( 'li.active' ).property( 'value' ),
+                template      = dg.wms.getMap( null, activeProfile, d.properties.featureId ),
+                terms         = dg.terms();
+
+            let source = {
                 'name': d.properties.formattedDate + ', ' + d.properties.source,
                 'type': 'wms',
                 'description': d.properties.productType,
@@ -273,24 +283,23 @@ export function uiDgcarousel( context ) {
                 //Add image to dg.imagemeta
                 dg.imagemeta.add( source.id, [ d ] );
             } else {
-                context.background().removeSource( source );
+                context.background().removeSource( source.id );
                 //Remove image from dg.imagemeta
                 dg.imagemeta.remove( source.id );
             }
-
         }
 
         function loadMetadataPopup( data ) {
             if ( d3.event ) d3.event.preventDefault();
             popup.classed( 'hide', false );
-            var metarows = metatable.selectAll( 'tr' )
+            let metarows = metatable.selectAll( 'tr' )
                 .data( d3.entries( data.properties ) );
             metarows.enter()
                 .append( 'tr' )
                 .attr( 'class', 'carousel-metadata-table' );
             metarows.exit().remove();
 
-            var metacells = metarows.selectAll( 'td' )
+            let metacells = metarows.selectAll( 'td' )
                 .data( function( d ) {
                     return d3.values( d );
                 } );
@@ -308,6 +317,7 @@ export function uiDgcarousel( context ) {
 
         function loadFootprint( d ) {
             if ( d3.event ) d3.event.preventDefault();
+
             if ( d3.event.type === 'mouseover' || d3.event.type === 'mouseenter' ) {
                 context.background().updateFootprintLayer( d.geometry );
             } else {
@@ -315,9 +325,12 @@ export function uiDgcarousel( context ) {
             }
         }
 
-        var popup      = d3.select( '#content' ).append( 'div' )
+        let popup = d3.select( '#content' )
+            .append( 'div' )
             .attr( 'class', 'carousel-popup hide' );
-        var metaheader = popup.append( 'div' );
+
+        let metaheader = popup.append( 'div' );
+
         metaheader.append( 'span' )
             .append( 'label' )
             .text( t( 'dgcarousel.popup_title' ) )
@@ -334,7 +347,7 @@ export function uiDgcarousel( context ) {
                 if ( d3.event ) d3.event.stopPropagation();
             } );
 
-        var metatable = popup.append( 'div' )
+        let metatable = popup.append( 'div' )
             .attr( 'class', 'carousel-metadata' )
             .append( 'table' )
             .attr( 'class', 'carousel-metadata-table' );

@@ -137,7 +137,11 @@ export function rendererBackgroundSource(data) {
                 .replace('{width}', this.tileSize)
                 .replace('{height}', this.tileSize)
                 .replace('{proj}', this.projection)
-                .replace('{bbox}', minXmaxY.x + ',' + maxXminY.y + ',' + maxXminY.x + ',' + minXmaxY.y);
+                .replace('{bbox}', minXmaxY.x + ',' + maxXminY.y + ',' + maxXminY.x + ',' + minXmaxY.y)
+                .replace(/\{switch:([^}]+)\}/, function(s, r) {
+                    var subdomains = r.split(',');
+                    return subdomains[(coord[0] + coord[1]) % subdomains.length];
+                });
         }
 
         return template
