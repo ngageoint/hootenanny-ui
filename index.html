@@ -393,7 +393,7 @@
                         console.warn('failed to verify oauth tokens w/ provider:');
                         console.warn('XMLHttpRequest.status', e.status);
                         console.warn('XMLHttpRequest.responseText ', e.responseText);
-                        window.location = '/';
+                        window.location.reload(true);
                     } else {
                         if(opener) {
                             window.onbeforeunload = function() {
@@ -402,7 +402,7 @@
                             window.close();
                         } else {
                             // force refresh.
-                            window.location = '/';
+                            window.location.reload(true);
                         }
                     }
                 });
