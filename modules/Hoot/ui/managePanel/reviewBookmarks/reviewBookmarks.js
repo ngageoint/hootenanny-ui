@@ -246,7 +246,6 @@ export default class ReviewBookmarks extends Tab {
     populateFilterCombos() {
         // created by
         this.filterControls[ 2 ].options = _uniq( _map( this.bookmarks, bookmark => {
-            console.log( bookmark )
             return bookmark.createdBy;
         } ) );
 
