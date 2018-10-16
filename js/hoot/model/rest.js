@@ -51,10 +51,10 @@ Hoot.model.REST = function (command, data, callback, option) {
             return;
         }
         var baseUrl = '/hoot-services/osm/api/0.6/map';
-        if(data.inputType == 'folder') { baseUrl += '/folders'; }
+        if(data.inputType === 'folder') { baseUrl += '/folders'; }
 
         d3.xhr(baseUrl + '/' + data.mapid + '/rename/' + data.modifiedName)
-            .send('put', function(e, r) {
+            .send('put', function(e) {
                 if (e) {
                     iD.ui.Alert('Modify name failed!', 'error', new Error().stack);
                 } else {
@@ -772,7 +772,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
     rest.logout = function(callback) {
-        d3.text('/hoot-services/auth/oauth1/logout', function(err, resp) {
+        d3.text('/hoot-services/auth/oauth1/logout', function(err) {
             if (err) {
                 return callback(_alertError(err, 'Failed to logout!'));
             } else {

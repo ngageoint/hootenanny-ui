@@ -429,8 +429,8 @@ Hoot.model.layers = function (context)
     };
 
     model_layers.updateLayerName = function(data, callback){
-        Hoot.model.REST('Modify',data,function(resp) {
-            callback && callback();
+        Hoot.model.REST('Modify',data,function() {
+            if(callback) callback();
         });
     };
 

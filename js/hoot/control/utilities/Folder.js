@@ -161,7 +161,7 @@ Hoot.control.utilities.folder = function(context) {
                 .append('g').append('svg:foreignObject')
                 .attr('class', 'expiring')
                 .attr('y', '-9px')
-                .attr('x', function(d){ return '48%';} );
+                .attr('x', function(){ return '48%';} );
 
         }
 
@@ -697,7 +697,6 @@ Hoot.control.utilities.folder = function(context) {
             data.parentId=folderId;
             data.folderName = _form.select('.reset.NewFolderName').value();
             data.isPublic = _form.select('#form_isPublic').node().checked;
-            console.log(data);
             Hoot.model.REST('addFolder', data, function(){
                 context.hoot().model.folders.refresh(function () {
                     context.hoot().model.folders.refreshLinks(function(){
@@ -863,7 +862,7 @@ Hoot.control.utilities.folder = function(context) {
                         folderData.parentId=data.folderId;
                         folderData.folderId=data.mapid;
 
-                        Hoot.model.REST('updateFolder',folderData,function(e, r){
+                        Hoot.model.REST('updateFolder',folderData,function(e){
                             if(e) {
                               iD.ui.Alert('Failed to update folder', 'error', new Error().stack);
                               return;
