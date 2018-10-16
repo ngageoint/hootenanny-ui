@@ -3,15 +3,11 @@ import _filter from 'lodash-es/filter';
 
 import { geoPath as d3_geoPath } from 'd3-geo';
 import _isEmpty from 'lodash-es/isEmpty';
-import { geoExtent, geoPolygonIntersectsPolygon } from '../geo/index';
-import { utilDetect } from '../util/detect';
-import toGeoJSON from '@mapbox/togeojson';
 import Hoot from '../Hoot/hoot';
 
 
 export function svgHoot(projection, context, dispatch) {
     var showLabels = true,
-        detected = utilDetect(),
         layer;
 
 

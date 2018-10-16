@@ -303,7 +303,6 @@ export default class FolderManager {
             return this.hoot.api.addFolder( params )
                 .then( resp => updateFolderLink.call( this, resp.folderId ) )
                 .catch( err => {
-                    console.log( err );
                     // TODO: response - unable to create new folder
                 } );
         }
@@ -324,7 +323,6 @@ export default class FolderManager {
                 .then( () => this.refreshAll() )
                 .then( () => this.hoot.events.emit( 'render-dataset-table' ) )
                 .catch( err => {
-                    console.log( err );
                     // TODO: response - unable to update folder links
                 } );
         }

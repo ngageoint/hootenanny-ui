@@ -1,8 +1,3 @@
-import * as d3 from 'd3';
-import { t } from '../util/locale';
-import { svgIcon } from '../svg/index';
-
-
 export function uiCoordinates(context) {
     var projection = context.projection;
     var formats = ['DMS', 'DD', 'UTM'];

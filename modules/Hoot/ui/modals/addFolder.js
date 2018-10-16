@@ -81,8 +81,7 @@ export default class AddFolder {
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( () => this.container.remove() )
             .catch( err => {
-                console.log( err );
-                // TODO: response - unable to add folder
+                // TODO: alert - unable to add folder
             } );
     }
 }

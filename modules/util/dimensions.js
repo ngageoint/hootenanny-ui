@@ -1,5 +1,5 @@
 function refresh(selection, node) {
-    var cr = node.getBoundingClientRect();
+    // var cr = node.getBoundingClientRect();
     var prop = [node.offsetWidth, node.offsetHeight];
     selection.property('__dimensions__', prop);
     return prop;

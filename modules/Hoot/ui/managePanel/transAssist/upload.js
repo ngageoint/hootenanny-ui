@@ -94,7 +94,7 @@ export default class Upload {
             .append( 'button' )
             .attr( 'type', 'button' )
             .classed( 'primary text-light big', true )
-            .on( 'click', function( d ) {
+            .on( 'click', function() {
                 d3.select( this ).select( 'input' ).node().click();
             } );
 

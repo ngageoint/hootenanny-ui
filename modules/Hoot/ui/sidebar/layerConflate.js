@@ -12,7 +12,6 @@ import SidebarForm                from './sidebarForm';
 import AdvancedOpts               from './advancedOpts/advancedOpts';
 import FormFactory                from '../../tools/formFactory';
 import { layerConflateForm }      from '../../config/domMetadata';
-import { geoExtent as GeoExtent } from '../../../geo/index';
 
 class LayerConflate extends SidebarForm {
     constructor( container, d ) {

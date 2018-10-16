@@ -220,7 +220,8 @@ export default class ReviewBookmarks extends Tab {
 
             return this.bookmarks;
         } catch ( e ) {
-            console.log( 'Unable to retrieve bookmarks for review' );
+            // TODO: show alert
+            // console.log( 'Unable to retrieve bookmarks for review' );
             throw new Error( e );
         } finally {
             this.populateFilterCombos();

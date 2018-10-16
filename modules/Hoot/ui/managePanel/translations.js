@@ -68,7 +68,8 @@ export default class Translations extends Tab {
 
             this.populateTranslations( translations );
         } catch ( e ) {
-            console.log( 'Unable to retrieve translations' );
+            // TODO: show alert
+            // console.log( 'Unable to retrieve translations' );
             throw new Error( e );
         }
     }
@@ -100,7 +101,7 @@ export default class Translations extends Tab {
 
                 return d.NAME;
             } )
-            .on( 'click', d => {
+            .on( 'click', () => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
@@ -175,7 +176,8 @@ export default class Translations extends Tab {
             saveAs( transBlob, d.NAME + '.js' );
 
         } catch ( e ) {
-            console.log( 'Unable to get translations text' );
+            //TODO: show warning
+            // console.log( 'Unable to get translations text' );
             throw new Error( e );
         }
     }

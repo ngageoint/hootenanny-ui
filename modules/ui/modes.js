@@ -14,7 +14,6 @@ import {
 import { svgIcon } from '../svg';
 import { tooltip } from '../util/tooltip';
 import { uiTooltipHtml } from './tooltipHtml';
-import { services } from '../services/index';
 
 export function uiModes(context) {
     var modes = [

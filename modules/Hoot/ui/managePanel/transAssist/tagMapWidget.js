@@ -125,9 +125,11 @@ export default class TagMapWidget {
 
         if ( value.length ) {
             let el     = this.resultsList.select( '.search-result:first-child' );
+
+            //TODO: get back to this
             //If selection is empty, use the user specified value as the tag key
-            var d      = (!el.empty() && el.text() === value) ? el.datum() : { key: value, value: [] };
-            var lookup = d3.select( this.searchTag.node().parentNode );
+            // var d      = (!el.empty() && el.text() === value) ? el.datum() : { key: value, value: [] };
+            // var lookup = d3.select( this.searchTag.node().parentNode );
             //selectTag( lookup, d );
         }
     }
@@ -188,7 +190,7 @@ export default class TagMapWidget {
             .append( 'div' )
             .classed( 'mapping-wrapper mapping-single keyline-top hidden', true )
             .append( 'input' )
-            .attr( 'id', d => 'preset-input-' + this.hashCode( tagKey ) )
+            .attr( 'id', () => 'preset-input-' + this.hashCode( tagKey ) )
             .attr( 'type', 'text' )
             .select( function() {
                 let combobox = d3combobox()

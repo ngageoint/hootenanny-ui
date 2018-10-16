@@ -40,7 +40,7 @@ export default class TranslationManager {
 
             this.availableTranslations = [ this.defaultTranslation ].concat( Object.keys( translations ) );
         } catch ( e ) {
-            console.log( e );
+            // TODO: alert error
         }
     }
 

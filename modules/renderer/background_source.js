@@ -61,6 +61,7 @@ export function rendererBackgroundSource(data) {
 
 
     source.name = function() {
+        // TODO: investigate why i did this
         return name;
         var id_safe = source.id.replace('.', '<TX_DOT>');
         return t('imagery.' + id_safe + '.name', { default: name });
@@ -68,6 +69,7 @@ export function rendererBackgroundSource(data) {
 
 
     source.description = function() {
+        // TODO: investigate why i did this
         return description;
         var id_safe = source.id.replace('.', '<TX_DOT>');
         return t('imagery.' + id_safe + '.description', { default: description });

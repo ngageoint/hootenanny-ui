@@ -167,10 +167,6 @@ export function modeSave(context) {
             }, _clone(ids)));
         }
 
-        function removeNegativeIds(ref) {
-            return parseInt(osmEntity.id.toOSM(ref), 10) > -1;
-        }
-
         // Reload modified entities into an alternate graph and check for conflicts..
         function loaded(err, result) {
             if (_errors.length) return;

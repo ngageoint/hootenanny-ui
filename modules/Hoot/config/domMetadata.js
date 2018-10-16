@@ -61,7 +61,7 @@ export function layerConflateForm( data ) {
             value: 'false',
             data: [ 'true', 'false' ],
             onchange: function() {
-                var selVal = d3.selectAll( '.reset.isCollectStats' ).value();
+                // var selVal = d3.selectAll( '.reset.isCollectStats' ).value();
             },
             readonly: 'readonly'
         },
@@ -72,8 +72,8 @@ export function layerConflateForm( data ) {
             value: 'false',
             data: [ 'true', 'false' ],
             onchange: function() {
-                var selVal = d3.selectAll( '.reset.isGenerateReport' ).value();
-                return selVal;
+                // var selVal = d3.selectAll( '.reset.isGenerateReport' ).value();
+                // return selVal;
             },
             readonly: 'readonly',
             testmode: true

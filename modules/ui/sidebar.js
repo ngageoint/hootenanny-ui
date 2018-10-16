@@ -1,5 +1,3 @@
-import _throttle from 'lodash-es/throttle';
-
 import { selectAll as d3_selectAll } from 'd3-selection';
 
 import {

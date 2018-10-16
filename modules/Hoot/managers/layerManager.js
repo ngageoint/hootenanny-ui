@@ -6,7 +6,6 @@
 
 import _intersection   from 'lodash-es/intersection';
 import _intersectionBy from 'lodash-es/intersectionBy';
-import _isEmpty        from 'lodash-es/isEmpty';
 import _filter         from 'lodash-es/filter';
 import _find           from 'lodash-es/find';
 import _forEach        from 'lodash-es/forEach';
@@ -19,12 +18,8 @@ import { rgb as d3_rgb } from 'd3-color';
 import { geoExtent as GeoExtent } from '../../geo/index';
 import { utilDetect }             from '../../util/detect';
 import colorPalette               from '../config/colorPalette';
-import config                     from '../config/apiConfig';
 
-import {
-    osmEntity,
-    osmChangeset
-} from '../../osm';
+import { osmChangeset } from '../../osm';
 
 import {
     actionDiscardTags,
@@ -161,7 +156,6 @@ export default class Layers {
 
             return layer;
         } catch ( err ) {
-            console.log( err );
             this.hoot.message.alert( err );
         }
     }

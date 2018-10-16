@@ -1,7 +1,6 @@
 import { select as d3_select } from 'd3-selection';
 import { osmPavedTags }        from '../osm/tags';
 import { osmEntity }           from '../osm/index';
-import { services }            from '../services/index';
 
 import Hoot from '../Hoot/hoot';
 

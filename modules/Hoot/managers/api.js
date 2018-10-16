@@ -184,8 +184,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => {
-                let layers    = resp.data.layers,
-                    layerList = [];
+                let layers    = resp.data.layers;
 
                 if ( !layers || !layers.length )
                     return resp.data;
@@ -199,6 +198,8 @@ export default class API {
                 } );
             } )
             .catch( err => {
+                if ( err ) throw new Error( err );
+
                 let message, type;
 
                 message = 'Unable to retrieve layers';

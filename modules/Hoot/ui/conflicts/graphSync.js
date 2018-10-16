@@ -76,7 +76,9 @@ export default class GraphSync {
 
             return this.loadMissingFeatures( relId )
                 .then( () => this.validateMemberCount( relId ) )
-                .catch( err => console.log( err ) );
+                .catch( err => {
+                    // TODO: show alert
+                } );
         }
     }
 
@@ -134,7 +136,7 @@ export default class GraphSync {
 
             return Promise.all( _map( featureOsm, feature => this.updateMissingFeature( feature ) ) );
         } catch ( e ) {
-            console.log( e );
+            // TODO: show alert
             throw new Error( 'Unable to retrieve missing features from HootOld DB.' );
         }
     }

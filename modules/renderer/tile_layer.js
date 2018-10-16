@@ -4,9 +4,6 @@ import { t } from '../util/locale';
 import { geoScaleToZoom, geoVecLength } from '../geo';
 import { utilPrefixCSSProperty, utilTiler } from '../util';
 
-import { geoSphericalMercator } from '../geo/spherical_mercator';
-import { rendererBackgroundSource } from './background_source.js';
-
 export function rendererTileLayer(context) {
     var transformProp = utilPrefixCSSProperty('Transform');
     var tiler = utilTiler();
@@ -201,7 +198,7 @@ export function rendererTileLayer(context) {
           .append('img')
             .attr('class', 'tile')
             .attr('src', function(d) { return d[3]; })
-            // .on('error', error)
+            .on('error', error)
             .on('load', load)
           .merge(image)
             .style(transformProp, imageTransform)

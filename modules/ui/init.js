@@ -7,7 +7,6 @@ import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { d3keybinding as d3_keybinding } from '../lib/d3.keybinding.js';
 
 import { t, textDirection } from '../util/locale';
-import { tooltip } from '../util/tooltip';
 
 import { behaviorHash } from '../behavior';
 import { modeBrowse } from '../modes';
@@ -17,7 +16,6 @@ import { utilGetDimensions } from '../util/dimensions';
 import { utilRebind } from '../util';
 
 import { uiAccount } from './account';
-import { uiAttribution } from './attribution';
 import { uiBackground } from './background';
 import { uiContributors } from './contributors';
 import { uiCoordinates } from './coordinates';
@@ -32,11 +30,9 @@ import { uiLoading } from './loading';
 import { uiMapData } from './map_data';
 import { uiMapInMap } from './map_in_map';
 import { uiModes } from './modes';
-import { uiNotice } from './notice';
 import { uiPasteTags } from './paste_tags';
 import { uiRestore } from './restore';
 import { uiSave } from './save';
-// import { uiSaveToOsm } from './save_to_osm';
 import { uiScale } from './scale';
 import { uiShortcuts } from './shortcuts';
 import { uiSidebar } from './sidebar';
@@ -89,7 +85,7 @@ export function uiInit(context) {
             .attr('id', 'bar')
             .attr('class', 'fillD');
 
-        let m = content
+        content
             .append('div')
             .attr('id', 'map')
             .attr('dir', 'ltr')

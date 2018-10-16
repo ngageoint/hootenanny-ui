@@ -1,14 +1,10 @@
 import _compact from 'lodash-es/compact';
 import _map from 'lodash-es/map';
-import _throttle from 'lodash-es/throttle';
 import _values from 'lodash-es/values';
-import _filter from 'lodash-es/filter';
-import _forEach from 'lodash-es/forEach';
 
 import { set as d3_set } from 'd3-collection';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { interpolate as d3_interpolate } from 'd3-interpolate';
-import { scaleLinear as d3_scaleLinear } from 'd3-scale';
 
 import {
     event as d3_event,
@@ -878,7 +874,7 @@ export function rendererMap(context) {
     };
 
 
-    map.editable = function(_) {
+    map.editable = function() {
         var osmLayer = surface.selectAll('.data-layer-osm');
         if (!osmLayer.empty() && osmLayer.classed('disabled')) return false;
 

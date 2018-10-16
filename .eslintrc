@@ -21,7 +21,7 @@
         "arrow-spacing": "warn",
         "dot-notation": "error",
         "eqeqeq": ["error", "smart"],
-        "indent": ["warn", 4],
+        "indent": ["off", 4],
         "keyword-spacing": "error",
         "linebreak-style": ["error", "unix"],
         "no-caller": "error",

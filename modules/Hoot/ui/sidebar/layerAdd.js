@@ -207,37 +207,11 @@ export default class LayerAdd extends SidebarForm {
 
         this.loadingState( params );
 
-        let layer = await Hoot.layers.loadLayer( params );
+        await Hoot.layers.loadLayer( params );
 
         Hoot.events.emit( 'load-layer' );
 
         // return this.checkForReview( layer );
-    }
-
-    async checkForReview( layer ) {
-        let reviewStats = await Hoot.api.getReviewStatistics( layer.id );
-
-        if ( reviewStats && !reviewStats.length ) return;
-
-        let tags = layer.tags;
-
-        if ( tags.reviewtype === 'hgisvalidation' ) {
-            let message = 'The layer has been prepared for validation. Do you want to go into validation mode?',
-                confirm = await Hoot.message.confirm( message );
-
-            if ( !confirm ) return;
-
-            // TODO: begin validation
-        } else {
-            let message = 'The layer contains unreviewed items. Do you want to go into review mode?',
-                confirm = await Hoot.message.confirm( message );
-
-            if ( !confirm ) return;
-
-            if ( Hoot.ui.managePanel.isOpen ) {
-                Hoot.ui.navbar.toggleManagePanel();
-            }
-        }
     }
 
     /**

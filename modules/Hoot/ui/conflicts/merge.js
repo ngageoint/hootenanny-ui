@@ -74,7 +74,8 @@ export default class Merge {
             reviewRefs = _uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
             reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ] );
 
-            let missingRelationIds = this.getMissingRelationIds( reviewRefs );
+            // TODO: get back to this
+            // let missingRelationIds = this.getMissingRelationIds( reviewRefs );
         } catch ( e ) {
             throw new Error( 'Unable to retrieve review references for merged items' );
         }

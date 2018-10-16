@@ -4,7 +4,6 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import _forEach from 'lodash-es/forEach';
 import _map     from 'lodash-es/map';
 
 import Hoot       from '../../hoot';
