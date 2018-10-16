@@ -340,7 +340,6 @@ export function uiDgcarousel( context ) {
         d3.select( document )
             .call( keybinding );
 
-        //context.surface().on('mousedown.carousel-outside', hide);
         context.container().on( 'mousedown.carousel-outside', hide );
 
         let popup = d3.select( '#content' )

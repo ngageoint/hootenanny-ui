@@ -94,7 +94,7 @@
     "mocha": "^5.2.0",
     "mocha-phantomjs-core": "^2.1.0",
     "name-suggestion-index": "0.1.6",
-    "nightwatch": "^0.9.19",
+    "nightwatch": "^1.0.11",
     "npm-run-all": "^4.0.0",
     "osm-community-index": "0.4.7",
     "phantomjs-prebuilt": "~2.1.11",
