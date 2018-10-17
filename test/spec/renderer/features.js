@@ -2,6 +2,14 @@ describe('iD.Features', function() {
     var dimensions = [1000, 1000],
         context, features;
 
+    before(function() {
+        iD.services.osm = iD.serviceOsm;
+    });
+
+    after(function() {
+        delete iD.services.osm;
+    });
+
     function _values(obj) {
         var result = [];
         for (var k in obj) {
@@ -97,63 +105,63 @@ describe('iD.Features', function() {
 
     describe('matching', function() {
         var graph = iD.Graph([
-            // Points
-            iD.Node({id: 'point_bar', tags: {amenity: 'bar'}, version: 1}),
-            iD.Node({id: 'point_dock', tags: {waterway: 'dock'}, version: 1}),
-            iD.Node({id: 'point_rail_station', tags: {railway: 'station'}, version: 1}),
-            iD.Node({id: 'point_generator', tags: {power: 'generator'}, version: 1}),
-            iD.Node({id: 'point_old_rail_station', tags: {railway: 'station', disused: 'yes'}, version: 1}),
+                // Points
+                iD.Node({id: 'point_bar', tags: {amenity: 'bar'}, version: 1}),
+                iD.Node({id: 'point_dock', tags: {waterway: 'dock'}, version: 1}),
+                iD.Node({id: 'point_rail_station', tags: {railway: 'station'}, version: 1}),
+                iD.Node({id: 'point_generator', tags: {power: 'generator'}, version: 1}),
+                iD.Node({id: 'point_old_rail_station', tags: {railway: 'station', disused: 'yes'}, version: 1}),
 
-            // Traffic Roads
-            iD.Way({id: 'motorway', tags: {highway: 'motorway'}, version: 1}),
-            iD.Way({id: 'motorway_link', tags: {highway: 'motorway_link'}, version: 1}),
-            iD.Way({id: 'trunk', tags: {highway: 'trunk'}, version: 1}),
-            iD.Way({id: 'trunk_link', tags: {highway: 'trunk_link'}, version: 1}),
-            iD.Way({id: 'primary', tags: {highway: 'primary'}, version: 1}),
-            iD.Way({id: 'primary_link', tags: {highway: 'primary_link'}, version: 1}),
-            iD.Way({id: 'secondary', tags: {highway: 'secondary'}, version: 1}),
-            iD.Way({id: 'secondary_link', tags: {highway: 'secondary_link'}, version: 1}),
-            iD.Way({id: 'tertiary', tags: {highway: 'tertiary'}, version: 1}),
-            iD.Way({id: 'tertiary_link', tags: {highway: 'tertiary_link'}, version: 1}),
-            iD.Way({id: 'residential', tags: {highway: 'residential'}, version: 1}),
-            iD.Way({id: 'unclassified', tags: {highway: 'unclassified'}, version: 1}),
-            iD.Way({id: 'living_street', tags: {highway: 'living_street'}, version: 1}),
+                // Traffic Roads
+                iD.Way({id: 'motorway', tags: {highway: 'motorway'}, version: 1}),
+                iD.Way({id: 'motorway_link', tags: {highway: 'motorway_link'}, version: 1}),
+                iD.Way({id: 'trunk', tags: {highway: 'trunk'}, version: 1}),
+                iD.Way({id: 'trunk_link', tags: {highway: 'trunk_link'}, version: 1}),
+                iD.Way({id: 'primary', tags: {highway: 'primary'}, version: 1}),
+                iD.Way({id: 'primary_link', tags: {highway: 'primary_link'}, version: 1}),
+                iD.Way({id: 'secondary', tags: {highway: 'secondary'}, version: 1}),
+                iD.Way({id: 'secondary_link', tags: {highway: 'secondary_link'}, version: 1}),
+                iD.Way({id: 'tertiary', tags: {highway: 'tertiary'}, version: 1}),
+                iD.Way({id: 'tertiary_link', tags: {highway: 'tertiary_link'}, version: 1}),
+                iD.Way({id: 'residential', tags: {highway: 'residential'}, version: 1}),
+                iD.Way({id: 'unclassified', tags: {highway: 'unclassified'}, version: 1}),
+                iD.Way({id: 'living_street', tags: {highway: 'living_street'}, version: 1}),
 
-            // Service Roads
-            iD.Way({id: 'service', tags: {highway: 'service'}, version: 1}),
-            iD.Way({id: 'road', tags: {highway: 'road'}, version: 1}),
-            iD.Way({id: 'track', tags: {highway: 'track'}, version: 1}),
+                // Service Roads
+                iD.Way({id: 'service', tags: {highway: 'service'}, version: 1}),
+                iD.Way({id: 'road', tags: {highway: 'road'}, version: 1}),
+                iD.Way({id: 'track', tags: {highway: 'track'}, version: 1}),
 
-            // Paths
-            iD.Way({id: 'path', tags: {highway: 'path'}, version: 1}),
-            iD.Way({id: 'footway', tags: {highway: 'footway'}, version: 1}),
-            iD.Way({id: 'cycleway', tags: {highway: 'cycleway'}, version: 1}),
-            iD.Way({id: 'bridleway', tags: {highway: 'bridleway'}, version: 1}),
-            iD.Way({id: 'steps', tags: {highway: 'steps'}, version: 1}),
-            iD.Way({id: 'pedestrian', tags: {highway: 'pedestrian'}, version: 1}),
-            iD.Way({id: 'corridor', tags: {highway: 'corridor'}, version: 1}),
+                // Paths
+                iD.Way({id: 'path', tags: {highway: 'path'}, version: 1}),
+                iD.Way({id: 'footway', tags: {highway: 'footway'}, version: 1}),
+                iD.Way({id: 'cycleway', tags: {highway: 'cycleway'}, version: 1}),
+                iD.Way({id: 'bridleway', tags: {highway: 'bridleway'}, version: 1}),
+                iD.Way({id: 'steps', tags: {highway: 'steps'}, version: 1}),
+                iD.Way({id: 'pedestrian', tags: {highway: 'pedestrian'}, version: 1}),
+                iD.Way({id: 'corridor', tags: {highway: 'corridor'}, version: 1}),
 
-            // Buildings
-            iD.Way({id: 'building_yes', tags: {area: 'yes', amenity: 'school', building: 'yes'}, version: 1}),
-            iD.Way({id: 'building_no', tags: {area: 'yes', amenity: 'school', building: 'no'}, version: 1}),
-            iD.Way({id: 'building_part', tags: { 'building:part': 'yes'}, version: 1}),
-            iD.Way({id: 'garage1', tags: {area: 'yes', amenity: 'parking', parking: 'multi-storey'}, version: 1}),
-            iD.Way({id: 'garage2', tags: {area: 'yes', amenity: 'parking', parking: 'sheds'}, version: 1}),
-            iD.Way({id: 'garage3', tags: {area: 'yes', amenity: 'parking', parking: 'carports'}, version: 1}),
-            iD.Way({id: 'garage4', tags: {area: 'yes', amenity: 'parking', parking: 'garage_boxes'}, version: 1}),
+                // Buildings
+                iD.Way({id: 'building_yes', tags: {area: 'yes', amenity: 'school', building: 'yes'}, version: 1}),
+                iD.Way({id: 'building_no', tags: {area: 'yes', amenity: 'school', building: 'no'}, version: 1}),
+                iD.Way({id: 'building_part', tags: { 'building:part': 'yes'}, version: 1}),
+                iD.Way({id: 'garage1', tags: {area: 'yes', amenity: 'parking', parking: 'multi-storey'}, version: 1}),
+                iD.Way({id: 'garage2', tags: {area: 'yes', amenity: 'parking', parking: 'sheds'}, version: 1}),
+                iD.Way({id: 'garage3', tags: {area: 'yes', amenity: 'parking', parking: 'carports'}, version: 1}),
+                iD.Way({id: 'garage4', tags: {area: 'yes', amenity: 'parking', parking: 'garage_boxes'}, version: 1}),
 
-            // Landuse
-            iD.Way({id: 'forest', tags: {area: 'yes', landuse: 'forest'}, version: 1}),
-            iD.Way({id: 'scrub', tags: {area: 'yes', natural: 'scrub'}, version: 1}),
-            iD.Way({id: 'industrial', tags: {area: 'yes', landuse: 'industrial'}, version: 1}),
-            iD.Way({id: 'parkinglot', tags: {area: 'yes', amenity: 'parking', parking: 'surface'}, version: 1}),
+                // Landuse
+                iD.Way({id: 'forest', tags: {area: 'yes', landuse: 'forest'}, version: 1}),
+                iD.Way({id: 'scrub', tags: {area: 'yes', natural: 'scrub'}, version: 1}),
+                iD.Way({id: 'industrial', tags: {area: 'yes', landuse: 'industrial'}, version: 1}),
+                iD.Way({id: 'parkinglot', tags: {area: 'yes', amenity: 'parking', parking: 'surface'}, version: 1}),
 
-            // Landuse Multipolygon
-            iD.Way({id: 'outer', version: 1}),
-            iD.Way({id: 'inner1', version: 1}),
-            iD.Way({id: 'inner2', tags: {barrier: 'fence'}, version: 1}),
-            iD.Way({id: 'inner3', tags: {highway: 'residential'}, version: 1}),
-            iD.Relation({id: 'retail', tags: {landuse: 'retail', type: 'multipolygon'},
+                // Landuse Multipolygon
+                iD.Way({id: 'outer', version: 1}),
+                iD.Way({id: 'inner1', version: 1}),
+                iD.Way({id: 'inner2', tags: {barrier: 'fence'}, version: 1}),
+                iD.Way({id: 'inner3', tags: {highway: 'residential'}, version: 1}),
+                iD.Relation({id: 'retail', tags: {landuse: 'retail', type: 'multipolygon'},
                     members: [
                         {id: 'outer', role: 'outer', type: 'way'},
                         {id: 'inner1', role: 'inner', type: 'way'},
@@ -163,41 +171,41 @@ describe('iD.Features', function() {
                     version: 1
                 }),
 
-            // Boundaries
-            iD.Way({id: 'boundary', tags: {boundary: 'administrative'}, version: 1}),
-            iD.Way({id: 'boundary_road', tags: {boundary: 'administrative', highway: 'primary'}, version: 1}),
+                // Boundaries
+                iD.Way({id: 'boundary', tags: {boundary: 'administrative'}, version: 1}),
+                iD.Way({id: 'boundary_road', tags: {boundary: 'administrative', highway: 'primary'}, version: 1}),
 
-            // Water
-            iD.Way({id: 'water', tags: {area: 'yes', natural: 'water'}, version: 1}),
-            iD.Way({id: 'coastline', tags: {natural: 'coastline'}, version: 1}),
-            iD.Way({id: 'bay', tags: {area: 'yes', natural: 'bay'}, version: 1}),
-            iD.Way({id: 'pond', tags: {area: 'yes', landuse: 'pond'}, version: 1}),
-            iD.Way({id: 'basin', tags: {area: 'yes', landuse: 'basin'}, version: 1}),
-            iD.Way({id: 'reservoir', tags: {area: 'yes', landuse: 'reservoir'}, version: 1}),
-            iD.Way({id: 'salt_pond', tags: {area: 'yes', landuse: 'salt_pond'}, version: 1}),
-            iD.Way({id: 'river', tags: {waterway: 'river'}, version: 1}),
+                // Water
+                iD.Way({id: 'water', tags: {area: 'yes', natural: 'water'}, version: 1}),
+                iD.Way({id: 'coastline', tags: {natural: 'coastline'}, version: 1}),
+                iD.Way({id: 'bay', tags: {area: 'yes', natural: 'bay'}, version: 1}),
+                iD.Way({id: 'pond', tags: {area: 'yes', landuse: 'pond'}, version: 1}),
+                iD.Way({id: 'basin', tags: {area: 'yes', landuse: 'basin'}, version: 1}),
+                iD.Way({id: 'reservoir', tags: {area: 'yes', landuse: 'reservoir'}, version: 1}),
+                iD.Way({id: 'salt_pond', tags: {area: 'yes', landuse: 'salt_pond'}, version: 1}),
+                iD.Way({id: 'river', tags: {waterway: 'river'}, version: 1}),
 
-            // Rail
-            iD.Way({id: 'railway', tags: {railway: 'rail'}, version: 1}),
-            iD.Way({id: 'rail_landuse', tags: {area: 'yes', landuse: 'railway'}, version: 1}),
-            iD.Way({id: 'rail_disused', tags: {railway: 'disused'}, version: 1}),
-            iD.Way({id: 'rail_streetcar', tags: {railway: 'tram', highway: 'residential'}, version: 1}),
-            iD.Way({id: 'rail_trail', tags: {railway: 'disused', highway: 'cycleway'}, version: 1}),
+                // Rail
+                iD.Way({id: 'railway', tags: {railway: 'rail'}, version: 1}),
+                iD.Way({id: 'rail_landuse', tags: {area: 'yes', landuse: 'railway'}, version: 1}),
+                iD.Way({id: 'rail_disused', tags: {railway: 'disused'}, version: 1}),
+                iD.Way({id: 'rail_streetcar', tags: {railway: 'tram', highway: 'residential'}, version: 1}),
+                iD.Way({id: 'rail_trail', tags: {railway: 'disused', highway: 'cycleway'}, version: 1}),
 
-            // Power
-            iD.Way({id: 'power_line', tags: {power: 'line'}, version: 1}),
+                // Power
+                iD.Way({id: 'power_line', tags: {power: 'line'}, version: 1}),
 
-            // Past/Future
-            iD.Way({id: 'motorway_construction', tags: {highway: 'construction', construction: 'motorway'}, version: 1}),
-            iD.Way({id: 'cycleway_proposed', tags: {highway: 'proposed', proposed: 'cycleway'}, version: 1}),
-            iD.Way({id: 'landuse_construction', tags: {area: 'yes', landuse: 'construction'}, version: 1}),
+                // Past/Future
+                iD.Way({id: 'motorway_construction', tags: {highway: 'construction', construction: 'motorway'}, version: 1}),
+                iD.Way({id: 'cycleway_proposed', tags: {highway: 'proposed', proposed: 'cycleway'}, version: 1}),
+                iD.Way({id: 'landuse_construction', tags: {area: 'yes', landuse: 'construction'}, version: 1}),
 
-            // Others
-            iD.Way({id: 'fence', tags: {barrier: 'fence'}, version: 1}),
-            iD.Way({id: 'pipeline', tags: {man_made: 'pipeline'}, version: 1}),
+                // Others
+                iD.Way({id: 'fence', tags: {barrier: 'fence'}, version: 1}),
+                iD.Way({id: 'pipeline', tags: {man_made: 'pipeline'}, version: 1}),
 
-            // Site relation
-            iD.Relation({id: 'site', tags: {type: 'site'},
+                // Site relation
+                iD.Relation({id: 'site', tags: {type: 'site'},
                     members: [
                         {id: 'fence', role: 'perimeter'},
                         {id: 'building_yes'}
@@ -205,8 +213,8 @@ describe('iD.Features', function() {
                     version: 1
                 })
 
-        ]),
-        all = _values(graph.base().entities);
+            ]),
+            all = _values(graph.base().entities);
 
 
         function doMatch(ids) {

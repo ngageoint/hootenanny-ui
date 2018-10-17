@@ -3,6 +3,14 @@ describe('iD.behaviorHash', function () {
 
     var hash, context;
 
+    before(function() {
+        iD.services.osm = iD.serviceOsm;
+    });
+
+    after(function() {
+        delete iD.services.osm;
+    });
+
     beforeEach(function () {
         context = iD.Context();
         var container = d3.select(document.createElement('div'));

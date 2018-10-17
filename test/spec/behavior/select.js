@@ -1,6 +1,14 @@
 describe('iD.behaviorSelect', function() {
     var a, b, context, behavior, container;
 
+    before(function() {
+        iD.services.osm = iD.serviceOsm;
+    });
+
+    after(function() {
+        delete iD.services.osm;
+    });
+
     beforeEach(function() {
         container = d3.select('body').append('div');
         context = iD.Context().container(container);

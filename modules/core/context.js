@@ -187,7 +187,7 @@ export function coreContext() {
         });
     };
 
-    var minEditableZoom = 14;
+    var minEditableZoom = 16;
     context.minEditableZoom = function(_) {
         if (!arguments.length) return minEditableZoom;
         minEditableZoom = _;
@@ -363,9 +363,7 @@ export function coreContext() {
     context.map = function() { return map; };
     context.layers = function() { return map.layers; };
     context.surface = function() { return map.surface; };
-    context.editable = function() {
-        return map.editable() && Hoot.layers.editable();
-    };
+    context.editable = function() { return map.editable(); };
     context.surfaceRect = function() {
         return map.surface.node().getBoundingClientRect();
     };

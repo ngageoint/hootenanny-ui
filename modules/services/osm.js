@@ -54,9 +54,9 @@ var oauth = osmAuth({
     done: authDone
 });
 
-oauth.authenticated = function() {
-    return true;
-};
+// oauth.authenticated = function() {
+//     return true;
+// };
 
 var _blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'];
 var _tileCache = { loaded: {}, inflight: {}, seen: {} };
@@ -112,7 +112,7 @@ function getNodes(obj, mapId) {
     var elems = obj.getElementsByTagName('nd');
     var nodes = new Array(elems.length);
     for (var i = 0, l = elems.length; i < l; i++) {
-        nodes[i] = 'n' + elems[i].attributes.ref.value + '_' + mapId;
+        nodes[i] = 'n' + elems[i].attributes.ref.value + mapId !== -1 ? '_' + mapId : '';
     }
     return nodes;
 }
@@ -136,7 +136,7 @@ function getMembers(obj, mapId) {
     for (var i = 0, l = elems.length; i < l; i++) {
         var attrs = elems[i].attributes;
         members[i] = {
-            id: attrs.type.value[0] + attrs.ref.value + '_' + mapId,
+            id: attrs.type.value[0] + attrs.ref.value + mapId !== -1 ? '_' + mapId : '',
             type: attrs.type.value,
             role: attrs.role.value
         };
@@ -198,7 +198,7 @@ var parsers = {
     node: function nodeData(obj, uid, mapId) {
         var attrs = obj.attributes;
         return new osmNode({
-            id: osmEntity.id.fromOSM('node', attrs.id.value + '_' + mapId),
+            id: osmEntity.id.fromOSM('node', attrs.id.value + mapId !== -1 ? '_' + mapId : ''),
             origid: 'n' + attrs.id.value,
             mapId: mapId,
             visible: getVisible(attrs),
@@ -215,7 +215,7 @@ var parsers = {
     way: function wayData(obj, uid, mapId) {
         var attrs = obj.attributes;
         return new osmWay({
-            id: osmEntity.id.fromOSM('way', attrs.id.value + '_' + mapId),
+            id: osmEntity.id.fromOSM('way', attrs.id.value + mapId !== -1 ? '_' + mapId : ''),
             origid: 'w' + attrs.id.value,
             mapId: mapId,
             version: attrs.version.value,
@@ -231,7 +231,7 @@ var parsers = {
     relation: function relationData(obj, uid, mapId) {
         var attrs = obj.attributes;
         return new osmRelation({
-            id: osmEntity.id.fromOSM('relation', attrs.id.value + '_' + mapId),
+            id: osmEntity.id.fromOSM('relation', attrs.id.value + mapId !== -1 ? '_' + mapId : ''),
             origid: 'r' + attrs.id.value,
             mapId: mapId,
             visible: getVisible(attrs),
@@ -516,9 +516,12 @@ export default {
 
         //We don't authenticate against Hoot services
         if (!isUrlHoot(path) && this.authenticated()) {
+            console.log( 'load from osm' );
             return oauth.xhr({ method: 'GET', path: path }, done);
         } else {
+            console.log( 'load from hoot' );
             var url = getUrlRoot(path) + path;
+            console.log( 'url: ', url );
             return d3_xml(url).get(done);
         }
     },
@@ -540,6 +543,8 @@ export default {
         var type = osmEntity.id.type(id);
         var osmID = osmEntity.id.toOSM(id);
         var options = { skipSeen: false };
+
+        console.log( type );
 
         this.loadFromAPI(
             '/api/0.6/' + type + '/' + osmID + (type !== 'node' ? '/full' : ''),
