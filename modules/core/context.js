@@ -56,7 +56,7 @@ export function setAreaKeys(value) {
 
 export function coreContext() {
     var context = {};
-    context.version = '2.11.0';
+    context.version = '2.11.1';
 
     // create a special translations that contains the keys in place of the strings
     var tkeys = _cloneDeep(dataEn);
