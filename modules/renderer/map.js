@@ -497,7 +497,9 @@ export function rendererMap(context) {
 
         // OSM
         if ( map.editable() ) {
-            context.connection().tileZoom( 1 );
+            if ( context.connection() ) {
+                context.connection().tileZoom( 1 );
+            }
             context.loadTiles( projection, () => {
                 if ( context.hoot.layers.mergedLayer ) {
                     context.hoot.events.emit( 'layer-merged' );
@@ -508,7 +510,9 @@ export function rendererMap(context) {
         } else {
             editOff();
 
-            context.connection().tileZoom( 16 );
+            if ( context.connection() ) {
+                context.connection().tileZoom( 16 );
+            }
 
             if ( context.hoot.layers.mergedLayer ) {
                 context.hoot.events.emit( 'layer-merged' );

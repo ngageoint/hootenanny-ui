@@ -2,14 +2,6 @@ describe('iD.Features', function() {
     var dimensions = [1000, 1000],
         context, features;
 
-    before(function() {
-        iD.services.osm = iD.serviceOsm;
-    });
-
-    after(function() {
-        delete iD.services.osm;
-    });
-
     function _values(obj) {
         var result = [];
         for (var k in obj) {

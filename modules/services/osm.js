@@ -198,7 +198,7 @@ var parsers = {
     node: function nodeData(obj, uid, mapId) {
         var attrs = obj.attributes;
         return new osmNode({
-            id: osmEntity.id.fromOSM('node', attrs.id.value + mapId !== -1 ? '_' + mapId : ''),
+            id: uid,
             origid: 'n' + attrs.id.value,
             mapId: mapId,
             visible: getVisible(attrs),
@@ -215,7 +215,7 @@ var parsers = {
     way: function wayData(obj, uid, mapId) {
         var attrs = obj.attributes;
         return new osmWay({
-            id: osmEntity.id.fromOSM('way', attrs.id.value + mapId !== -1 ? '_' + mapId : ''),
+            id: uid,
             origid: 'w' + attrs.id.value,
             mapId: mapId,
             version: attrs.version.value,
@@ -231,7 +231,7 @@ var parsers = {
     relation: function relationData(obj, uid, mapId) {
         var attrs = obj.attributes;
         return new osmRelation({
-            id: osmEntity.id.fromOSM('relation', attrs.id.value + mapId !== -1 ? '_' + mapId : ''),
+            id: uid,
             origid: 'r' + attrs.id.value,
             mapId: mapId,
             visible: getVisible(attrs),
@@ -325,7 +325,7 @@ async function parseXML(xml, callback, options, mapId) {
         mapId = root.attributes.mapid ? root.attributes.mapid.value : -1;
     }
 
-    //utilIdleWorker(children, parseChild, done);
+    // utilIdleWorker(children, parseChild, done);
 
     Promise.all( await _reduce( children, async ( results, child ) => {
         let prevResults = await results,
@@ -359,13 +359,15 @@ async function parseXML(xml, callback, options, mapId) {
 
         } else {
             uid = osmEntity.id.fromOSM(child.nodeName, child.attributes.id.value);
+            uid += mapId !== -1 ? '_' + mapId : '';
             if (options.skipSeen) {
                 if (_tileCache.seen[uid]) return null;  // avoid reparsing a "seen" entity
                 _tileCache.seen[uid] = true;
             }
         }
 
-        return Promise.resolve( parser(child, uid, mapId) );
+        // return Promise.resolve( parser(child, uid, mapId) );
+        return parser(child, uid);
     }
 }
 
@@ -485,7 +487,7 @@ export default {
                 return;
             }
 
-            //We don't authenticate against HootOld services
+            //We don't authenticate against Hoot services
             var isAuthenticated = isUrlHoot(path) || that.authenticated();
 
             // 400 Bad Request, 401 Unauthorized, 403 Forbidden
@@ -516,12 +518,9 @@ export default {
 
         //We don't authenticate against Hoot services
         if (!isUrlHoot(path) && this.authenticated()) {
-            console.log( 'load from osm' );
             return oauth.xhr({ method: 'GET', path: path }, done);
         } else {
-            console.log( 'load from hoot' );
             var url = getUrlRoot(path) + path;
-            console.log( 'url: ', url );
             return d3_xml(url).get(done);
         }
     },
@@ -543,8 +542,6 @@ export default {
         var type = osmEntity.id.type(id);
         var osmID = osmEntity.id.toOSM(id);
         var options = { skipSeen: false };
-
-        console.log( type );
 
         this.loadFromAPI(
             '/api/0.6/' + type + '/' + osmID + (type !== 'node' ? '/full' : ''),
