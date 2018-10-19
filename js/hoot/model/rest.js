@@ -96,7 +96,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         d3.json(url)
         .post(null, function (error, data) {
             if (error){
-                iD.ui.Alert('Add folder failed!','error',new Error().stack);
+                iD.ui.Alert('Error: ' + error.responseText, 'error', new Error().stack);
                 return error;
             }
             callback(data);

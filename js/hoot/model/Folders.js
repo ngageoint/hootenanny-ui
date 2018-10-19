@@ -91,7 +91,11 @@ Hoot.model.folders = function (context)
     model_folders.updateLink = function(link, callback) {
         Hoot.model.REST('updateMapFolderLinks', link, function(e, r){
             if(e) {
-                iD.ui.Alert('Failed to update folder.', 'error', new Error().stack);
+                var errorMsg = 'Failed to move map.'
+                if(e.responseText && e.responseText.length > 0) {
+                    errorMsg = 'Error: ' + e.responseText;
+                }
+                iD.ui.Alert(errorMsg, 'error', new Error().stack);
                 return;
             }
             model_folders.refreshLinks(function(){
