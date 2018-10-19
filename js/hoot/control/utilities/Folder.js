@@ -58,9 +58,7 @@ Hoot.control.utilities.folder = function(context) {
         if(container.attr('id')==='datasettable'){
             folders = _.without(folders, _.find(folders, {id:-1}));
         }
-
         folders= JSON.parse('{"name":"Datasets","id":"Datasets","children":' + JSON.stringify(folders) +'}');
-
         var margin = {top: 10, right: 20, bottom: 30, left: 0},
             width = '100%',
             height = '100%',
@@ -189,7 +187,6 @@ Hoot.control.utilities.folder = function(context) {
               nodes.forEach(function(n, i) {
                 n.x = (i-1) * barHeight;    //This will remove the 'Datasets' title
               });
-
               // Update the nodes…
               var node = svg.selectAll('g.node')
                   .data(nodes, function(d) {
@@ -258,7 +255,7 @@ Hoot.control.utilities.folder = function(context) {
               }
 
               nodeEnter.append('text')
-                  .style('fill',fontColor)
+                  .style('fill', fontColor)
                   .classed('dnameTxt',true)
                   .attr('dy', 3.5)
                   .attr('dx', function(d){
@@ -574,7 +571,8 @@ Hoot.control.utilities.folder = function(context) {
         }
 
         function fillColor(d) {
-            if(d.type==='folder'){return '#7092ff';}
+            if(d.type==='folder' && d.public === true) { return '#996FFF'; }
+            else if(d.type ==='folder') {return '#7092ff';}
             else if(d.type==='dataset'){return '#efefef';}
             else {return '#ffffff';}
         }

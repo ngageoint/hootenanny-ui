@@ -148,7 +148,6 @@ Hoot.model.export = function (context)
         param.input = selectedInput;
         param.outputtype = selectedOutType;
         param.outputname = outputname;
-        param.USER_EMAIL = iD.data.hootConfig.userEmail;
         param.append = appendTemplate.toString();
         param.textstatus = false;
         param.includehoottags = exportHootTags.toString();

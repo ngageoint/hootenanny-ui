@@ -25,8 +25,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
         var url = '/hoot-services/ingest/ingest/upload?TRANSLATION=' + data.TRANSLATION + '&INPUT_TYPE=' +
-                data.INPUT_TYPE + '&INPUT_NAME=' + data.INPUT_NAME + '&USER_EMAIL=' +
-                iD.data.hootConfig.userEmail + '&NONE_TRANSLATION=' + data.NONE_TRANSLATION;
+                data.INPUT_TYPE + '&INPUT_NAME=' + data.INPUT_NAME + '&NONE_TRANSLATION=' + data.NONE_TRANSLATION;
 
         if(data.FGDB_FC) {
             url += '&FGDB_FC=' + data.FGDB_FC;
@@ -89,7 +88,9 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
         var url = '/hoot-services/osm/api/0.6/map/folders/add/' + data.parentId + '/' + data.folderName;
-        if(!data.isPublic) {
+        // API Default is public folder
+        // toggle to private only when explicitly specified `false`
+        if(data.isPublic === false) {
             url += '?isPublic=false';
         }
         d3.json(url)
@@ -300,7 +301,6 @@ Hoot.model.REST = function (command, data, callback, option) {
 
         data.CONFLATION_COMMAND = data.CONFLATION_COMMAND || 'conflate';
 
-        data.USER_EMAIL = iD.data.hootConfig.userEmail;
         d3.json('/hoot-services/job/conflation/execute')
             .header('Content-Type', 'application/json')
             .post(JSON.stringify(data), function (error, resp) {
