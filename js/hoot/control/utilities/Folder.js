@@ -603,7 +603,7 @@ Hoot.control.utilities.folder = function(context) {
 
 
 
-    hoot_control_utilities_folder.importFolderContainer = function(data) {
+    hoot_control_utilities_folder.importFolderContainer = function(data /* 0 -or- parent folder object */) {
         context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
 
         var modalbg = d3.select('body')
@@ -615,11 +615,17 @@ Hoot.control.utilities.folder = function(context) {
 
         var _form = ingestDiv.append('form');
 
+        var ifcTitle = 'Add Folder';
+        if(data !== 0) {
+          ifcTitle = 'Add <span style="color: ' + (data.public ? '#996FFF' : '#7092ff') + '">';
+          ifcTitle += (data.public ? 'Public' : 'Private') + '</span>'
+          ifcTitle +=  ' Folder' + ' Under`' + data.name + '`';
+        }
         _form.classed('round space-bottom1 importableLayer', true)
             .append('div')
             .classed('big pad1y keyline-bottom space-bottom2', true)
             .append('h4')
-            .text('Add Folder')
+            .html(ifcTitle)
             .append('div')
             .classed('fr _icon x point', true)
             .on('click', function () { modalbg.remove(); });
@@ -652,25 +658,27 @@ Hoot.control.utilities.folder = function(context) {
                 if (key === 13) { _submit(); }
             });
 
-        fieldset.append('div')
-            .classed('form-field fill-white small keyline-all round space-bottom1', true)
-            .append('label')
-              .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
-              .text('Folder Visibility');
+        if(data === 0) {
+          fieldset.append('div')
+              .classed('form-field fill-white small keyline-all round space-bottom1', true)
+              .append('label')
+                .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
+                .text('Folder Visibility');
 
-        var visiDiv = fieldset.append('div')
-            .classed('contain', true)
-            .style('padding-left', '10px')
-            .style('margin-bottom', '12px');
-        visiDiv.append('input')
-            .attr('id', 'form_isPublic')
-            .attr('type', 'checkbox')
-            .attr('name', 'isPublic')
-            .attr('value', 'isPublic')
-            .attr('checked', '');
-        visiDiv.append('label')
-            .attr('for', 'isPublic')
-            .text('Public');
+          var visiDiv = fieldset.append('div')
+              .classed('contain', true)
+              .style('padding-left', '10px')
+              .style('margin-bottom', '12px');
+          visiDiv.append('input')
+              .attr('id', 'form_isPublic')
+              .attr('type', 'checkbox')
+              .attr('name', 'isPublic')
+              .attr('value', 'isPublic')
+              .attr('checked', '');
+          visiDiv.append('label')
+              .attr('for', 'isPublic')
+              .text('Public');
+        }
 
         function _submit() {
             if(!d3.selectAll('.invalidName').empty()){return;}
@@ -696,7 +704,7 @@ Hoot.control.utilities.folder = function(context) {
             var data={};
             data.parentId=folderId;
             data.folderName = _form.select('.reset.NewFolderName').value();
-            data.isPublic = _form.select('#form_isPublic').node().checked;
+            data.isPublic = _form.select('#form_isPublic').node() && _form.select('#form_isPublic').node().checked
             Hoot.model.REST('addFolder', data, function(){
                 context.hoot().model.folders.refresh(function () {
                     context.hoot().model.folders.refreshLinks(function(){
