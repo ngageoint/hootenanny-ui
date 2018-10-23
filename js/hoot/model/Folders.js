@@ -89,9 +89,9 @@ Hoot.model.folders = function (context)
     };
 
     model_folders.updateLink = function(link, callback) {
-        Hoot.model.REST('updateMapFolderLinks', link, function(e, r){
+        Hoot.model.REST('updateMapFolderLinks', link, function(e){
             if(e) {
-                var errorMsg = 'Failed to move map.'
+                var errorMsg = 'Failed to move map.';
                 if(e.responseText && e.responseText.length > 0) {
                     errorMsg = 'Error: ' + e.responseText;
                 }

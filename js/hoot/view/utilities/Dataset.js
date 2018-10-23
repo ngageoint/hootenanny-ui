@@ -284,7 +284,7 @@ Hoot.view.utilities.dataset = function(context)
         d3.event.preventDefault();
 
         // Loop through the datasets and flag any that may be over the size limit
-        var expThreshold = 1*iD.data.hootConfig.export_size_threshold;
+        // var expThreshold = 1*iD.data.hootConfig.export_size_threshold;
 
         var _exportList = [];
         _.each(d,function(lyrid){

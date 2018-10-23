@@ -54,7 +54,7 @@ Hoot.control.utilities.translation = function(context) {
                 handleFileDrop();
             });
 
-        var handleFileDrop = function(evt){
+        var handleFileDrop = function(){
             event.stopPropagation();
             event.preventDefault();
 
@@ -67,10 +67,10 @@ Hoot.control.utilities.translation = function(context) {
                 document.getElementById('translationName').value = file.name.replace('.js','');
             }
 
-            var reader = new FileReader();  
-            reader.onload = function(event) {            
+            var reader = new FileReader();
+            reader.onload = function(event) {
                  document.getElementById('transDropzone').value = event.target.result;
-            };   
+            };
             reader.readAsText(files[0],'UTF-8');
           };
 

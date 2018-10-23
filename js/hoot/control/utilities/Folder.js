@@ -618,7 +618,7 @@ Hoot.control.utilities.folder = function(context) {
         var ifcTitle = 'Add Folder';
         if(data !== 0) {
           ifcTitle = 'Add <span style="color: ' + (data.public ? '#996FFF' : '#7092ff') + '">';
-          ifcTitle += (data.public ? 'Public' : 'Private') + '</span>'
+          ifcTitle += (data.public ? 'Public' : 'Private') + '</span>';
           ifcTitle +=  ' Folder' + ' Under`' + data.name + '`';
         }
         _form.classed('round space-bottom1 importableLayer', true)
@@ -704,7 +704,7 @@ Hoot.control.utilities.folder = function(context) {
             var data={};
             data.parentId=folderId;
             data.folderName = _form.select('.reset.NewFolderName').value();
-            data.isPublic = _form.select('#form_isPublic').node() && _form.select('#form_isPublic').node().checked
+            data.isPublic = _form.select('#form_isPublic').node() && _form.select('#form_isPublic').node().checked;
             Hoot.model.REST('addFolder', data, function(){
                 context.hoot().model.folders.refresh(function () {
                     context.hoot().model.folders.refreshLinks(function(){
@@ -771,20 +771,20 @@ Hoot.control.utilities.folder = function(context) {
             .classed('form-field fill-white small keyline-all round space-bottom1', true)
             .append('label')
                 .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
-                .text(metadata.length + ' Folders Affected')
+                .text(metadata.length + ' Folders Affected');
 
         mvc_fieldset.append('div')
             .classed('contain', true)
             .append('p')
                 .style('margin-bottom', '10px')
-                .text(metadata.map(function(d) { return d.displayName; }).join(','))
+                .text(metadata.map(function(d) { return d.displayName; }).join(','));
 
 
         mvc_fieldset.append('div')
             .classed('form-field fill-white small keyline-all round space-bottom1', true)
             .append('label')
                 .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
-                .text('Visibility')
+                .text('Visibility');
 
         var mvc_div = mvc_fieldset.append('div')
             .classed('contain', true);
@@ -807,7 +807,7 @@ Hoot.control.utilities.folder = function(context) {
             .text('Update')
             .on('click', function () {
                 mvc_modalbg.remove();
-                Hoot.model.REST('setFolderVisibility', folder, mvc_check.node().checked,function(e, r) {
+                Hoot.model.REST('setFolderVisibility', folder, mvc_check.node().checked,function(e) {
                     if(e) {
                         iD.ui.Alert('Failed to update folder attributes', 'error', new Error().stack);
                         return;

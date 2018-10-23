@@ -13,7 +13,6 @@ Hoot.model.export = function (context)
     var statusTimer;
     var outputname;
     var selectedInput;
-    var transType;
     var selExportTypeDesc;
     //var removeConflationRes;
     var selectedOutType;
@@ -46,7 +45,6 @@ Hoot.model.export = function (context)
         };
         selectedOutType = _expType[selExportTypeDesc] || selExportTypeDesc;
 
-        var transType = null;
         var transName = null;
         var oTrans = null;
 
@@ -54,7 +52,7 @@ Hoot.model.export = function (context)
             transName = container.transName;
             oTrans = container.oTrans;
         } else {
-            transType = container.select('#fileExportTranslation').value();
+            var transType = container.select('#fileExportTranslation').value();
 
             var comboData = container.select('#fileExportTranslation').datum();
 
