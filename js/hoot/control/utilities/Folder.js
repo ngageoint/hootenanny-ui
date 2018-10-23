@@ -323,6 +323,15 @@ Hoot.control.utilities.folder = function(context) {
               .style('fill', fillColor)
               .attr('class', rectClass);
 
+          // update font-color:
+          node.selectAll('text')
+            .style('fill', function(d) {
+              // if(d.children) return;
+              if(d.public === true && d.type === "dataset" && d.selected === true) {
+                return 'rgb(0,0,0)';
+              } else { return fontColor(d); }
+            });
+
           // Transition exiting nodes to the parent's new position.
           node.exit().transition()
               .duration(duration)
@@ -506,7 +515,7 @@ Hoot.control.utilities.folder = function(context) {
 
               });
           } else {container.selectAll('rect').on('contextmenu',function(){d3.event.preventDefault();});}
-        }
+        } // update()
 
         // Toggle children on click.
         // If no children, consider it a dataset!
@@ -573,16 +582,19 @@ Hoot.control.utilities.folder = function(context) {
         }
 
         function fillColor(d) {
-            if(d.type==='folder' && d.public === true) { return '#996FFF'; }
-            else if(d.type ==='folder') {return '#7092ff';}
+            if(d.type==='folder' && d.public === true) { return '#7092ff'; }
+            else if(d.type ==='folder') {return '#efefef';}
+            else if(d.type==='dataset' && d.public === true){return '#7092ff';}
             else if(d.type==='dataset'){return '#efefef';}
-            else {return '#ffffff';}
+            else {return '#FFC0CB' /* pink */;}
         }
 
         function fontColor(d){
-            if(d.type==='folder'){return '#ffffff';}
+            if(d.type==='folder' && d.public === true){return '#fff';}
+            else if(d.type==='folder'){return '#7092ff';}
+            else if(d.type==='dataset' && d.public === true){return '#fff';}
             else if(d.type==='dataset'){return '#7092ff';}
-            else {return '#ffffff';}
+            else {return '#FFC0CB' /* pink */;}
         }
 
         function rectClass(d) {
@@ -617,7 +629,7 @@ Hoot.control.utilities.folder = function(context) {
 
         var ifcTitle = 'Add Folder';
         if(data !== 0) {
-          ifcTitle = 'Add <span style="color: ' + (data.public ? '#996FFF' : '#7092ff') + '">';
+          ifcTitle = 'Add <span style="color: ' + (data.public ? '#7092ff' : '#000') + '">';
           ifcTitle += (data.public ? 'Public' : 'Private') + '</span>';
           ifcTitle +=  ' Folder' + ' Under`' + data.name + '`';
         }
