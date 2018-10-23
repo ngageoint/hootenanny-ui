@@ -400,7 +400,7 @@ export default class ImportDataset {
     }
 
     //upload( data ) {
-    //    return Hoot.api.uploadDataset( data )
+    //    return hoot.api.uploadDataset( data )
     //        .catch( err => {
     //            console.log( err );
     //            this.container.remove();

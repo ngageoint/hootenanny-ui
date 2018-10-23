@@ -33,7 +33,7 @@ describe('iD.osmEntity', function () {
             it('reverses fromOSM', function () {
                 expect(iD.Entity.id.toOSM(iD.Entity.id.fromOSM('node', '1'))).to.equal('1');
             });
-            it('reverses fromOSM with Hoot map id', function () {
+            it('reverses fromOSM with hoot map id', function () {
                 expect(iD.Entity.id.toOSM('n2921_2764')).to.equal('2921');
             });
         });

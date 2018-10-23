@@ -84,7 +84,7 @@ export default class Navbar {
 
         let dropdownToggle = rightContainer
             .append( 'div' )
-            .classed( 'dropdown-toggle icon-container button flex align-center text-light pointer', true )
+            .classed( 'about-toggle icon-container button flex align-center text-light pointer', true )
             .on( 'click', () => this.openAboutModal() );
 
         dropdownToggle

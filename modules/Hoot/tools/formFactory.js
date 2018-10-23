@@ -23,7 +23,7 @@ export default class FormFactory {
      * @returns {d3} - form container
      */
     generateForm( selector, formId, metadata ) {
-        let container = this.createContainer( selector ),
+        let container = this.createContainer( selector, formId ),
             wrapper   = this.createWrapper( container ),
             formModal = this.createFormModal( wrapper, formId ),
             form      = this.createForm( container, formModal, metadata.title );
@@ -40,9 +40,10 @@ export default class FormFactory {
      * @param selector - where to append container to
      * @returns {d3} - form container
      */
-    createContainer( selector ) {
+    createContainer( selector, formId ) {
         let overlay = d3.select( selector )
             .append( 'div' )
+            .attr( 'id', formId )
             .classed( 'fill-dark overlay modal-overlay', true );
 
         setTimeout( () => overlay.classed( 'visible', true ), 50 );
@@ -61,10 +62,9 @@ export default class FormFactory {
      *
      * @returns {d3} - form modal
      */
-    createFormModal( wrapper, formId ) {
+    createFormModal( wrapper ) {
         return wrapper
             .append( 'div' )
-            .attr( 'id', formId )
             .classed( 'contain hoot-menu fill-white round modal', true );
     }
 

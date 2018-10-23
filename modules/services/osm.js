@@ -112,7 +112,7 @@ function getNodes(obj, mapId) {
     var elems = obj.getElementsByTagName('nd');
     var nodes = new Array(elems.length);
     for (var i = 0, l = elems.length; i < l; i++) {
-        nodes[i] = 'n' + elems[i].attributes.ref.value + mapId !== -1 ? '_' + mapId : '';
+        nodes[i] = 'n' + elems[i].attributes.ref.value + '_' + mapId;
     }
     return nodes;
 }
@@ -136,7 +136,7 @@ function getMembers(obj, mapId) {
     for (var i = 0, l = elems.length; i < l; i++) {
         var attrs = elems[i].attributes;
         members[i] = {
-            id: attrs.type.value[0] + attrs.ref.value + mapId !== -1 ? '_' + mapId : '',
+            id: attrs.type.value[0] + attrs.ref.value + '_' + mapId,
             type: attrs.type.value,
             role: attrs.role.value
         };
@@ -366,8 +366,8 @@ async function parseXML(xml, callback, options, mapId) {
             }
         }
 
-        // return Promise.resolve( parser(child, uid, mapId) );
-        return parser(child, uid);
+        return Promise.resolve( parser(child, uid, mapId) );
+        // return parser(child, uid);
     }
 }
 
@@ -487,7 +487,7 @@ export default {
                 return;
             }
 
-            //We don't authenticate against Hoot services
+            //We don't authenticate against hoot services
             var isAuthenticated = isUrlHoot(path) || that.authenticated();
 
             // 400 Bad Request, 401 Unauthorized, 403 Forbidden
@@ -516,7 +516,7 @@ export default {
             }
         }
 
-        //We don't authenticate against Hoot services
+        //We don't authenticate against hoot services
         if (!isUrlHoot(path) && this.authenticated()) {
             return oauth.xhr({ method: 'GET', path: path }, done);
         } else {

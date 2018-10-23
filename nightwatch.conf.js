@@ -10,9 +10,9 @@ const seleniumDriver = require( 'selenium-server' );
 
 module.exports = {
     src_folders: [
-        './test/integration',
+        './test/hoot',
     ],
-    output_folder: 'reports',
+    output_folder: './reports',
     //custom_commands_path: './test/integration/customCommands',
     page_objects_path: '',
     globals_path: '',
@@ -27,14 +27,21 @@ module.exports = {
     },
     test_settings: {
         default: {
-            launch_url: 'http://d1x11dgx2ymfgq.cloudfront.net',
             desiredCapabilities: {
                 browserName: 'chrome',
                 acceptSslCerts: true,
                 chromeOptions: {
-                    args: [ 'headless', 'no-sandbox', 'disable-gpu' ]
+                    args: [ 'no-sandbox' ]
                 }
             },
+            exclude: './test/hoot/unit'
+        },
+        unit: {
+            selenium: {
+                start_process: false,
+                start_session: false
+            },
+            filter: './unit'
         }
     },
     test_runner: {

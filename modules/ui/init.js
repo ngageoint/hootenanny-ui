@@ -45,7 +45,7 @@ import { uiVersion } from './version';
 import { uiZoom } from './zoom';
 import { uiCmd } from './cmd';
 
-//import HootOld from '../Hoot/hootOld';
+//import HootOld from '../hoot/hootOld';
 
 export function uiInit(context) {
     var uiInitCounter = 0;
