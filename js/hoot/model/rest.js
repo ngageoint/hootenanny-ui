@@ -62,6 +62,27 @@ Hoot.model.REST = function (command, data, callback, option) {
             });
     };
 
+    rest.getFolderVisibility = function(data, callback) {
+        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + data.id + '/visibility')
+        .send('GET', function(e, r) {
+            if(e) {
+                callback(e, null);
+            } else {
+                callback(null, JSON.parse(r.responseText));
+            }
+        });
+    };
+    rest.setFolderVisibility = function(data, isPublic, callback) {
+        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + data.id + '/visibility/' + (isPublic ? 'public' : 'private'))
+        .send('PUT', function(e, r) {
+            if(e) {
+                callback(e, null);
+            } else {
+                callback(null, JSON.parse(r.responseText));
+            }
+        });
+    };
+
     rest.updateMapFolderLinks = function(data, callback){
         if (!(data.folderId >= 0) || !(data.mapid >= 0) || !data.updateType) {
             callback('invalid parameters', null);

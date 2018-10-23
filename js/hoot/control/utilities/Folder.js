@@ -417,11 +417,12 @@ Hoot.control.utilities.folder = function(context) {
                       }
                   } else if (d.type.toLowerCase()==='folder') {
                       items = [
-                               {title:'Delete',icon:'trash',click:'deleteFolder'},
-                               {title:'Rename/Move ' + d.name,icon:'info',click:'modifyFolder'},
-                               {title:'Add Dataset',icon:'data',click:'addDataset'},
-                               {title:'Add Folder',icon:'folder',click:'addFolder'},
-                               {title:'Export Data in Folder',icon:'export',click:'exportFolder'}
+                               {title:'Delete',                icon:'trash',    click:'deleteFolder' },
+                               {title:'Rename/Move ' + d.name, icon:'info',     click:'modifyFolder' },
+                               {title:'Modify Visibility',     icon:'sprocket', click:'modifyVis'    },
+                               {title:'Add Dataset',           icon:'data',     click:'addDataset'   },
+                               {title:'Add Folder',            icon:'folder',   click:'addFolder'    },
+                               {title:'Export Data in Folder', icon:'export',   click:'exportFolder' }
                            ];
                       } else {
                           d3.select('.context-menu').style('display', 'none');
@@ -471,6 +472,7 @@ Hoot.control.utilities.folder = function(context) {
                             case 'bulkexportDataset': context.hoot().view.utilities.dataset.bulkexportDataset(context.hoot().model.layers.getSelectedLayers()); break;
 
                             //Folders
+                            case 'modifyVis':    context.hoot().view.utilities.dataset.modifyFolderVisibility(d); break;
                             case 'deleteFolder': context.hoot().view.utilities.dataset.deleteDataset(d,container); break;
                             case 'modifyFolder': context.hoot().view.utilities.dataset.modifyDataset(d); break;
                             case 'addDataset': Hoot.model.REST('getTranslations',function(e){
@@ -725,7 +727,91 @@ Hoot.control.utilities.folder = function(context) {
         return modalbg;
     };
 
-     hoot_control_utilities_folder.modifyNameContainer = function(folder) {
+    hoot_control_utilities_folder.modifyVisibilityContainer = function(folder, callback) {
+        Hoot.model.REST('getFolderVisibility', folder, function(e, r) {
+            if(e) {
+                iD.ui.Alert('Unable to continue, failed to retrieve folder metadata', 'error', new Error().stack);
+                return;
+            }
+
+            hoot_control_utilities_folder._modifyVisibilityContainer(folder, r, callback);
+
+        });
+    };
+    hoot_control_utilities_folder._modifyVisibilityContainer = function(folder, metadata, callback) {
+        var mvc_modalbg = d3.select('body')
+            .append('div')
+            .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+
+        var mvc_ingestDiv = mvc_modalbg.append('div')
+            .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
+
+        var mvc_form = mvc_ingestDiv.append('form');
+        mvc_form.classed('round space-bottom1 importableLayer', true)
+            .append('div')
+            .classed('big pad1y keyline-bottom space-bottom2', true)
+            .append('h4')
+            .text('Modify Folder `' + folder.name + '`')
+            .append('div')
+            .classed('fr _icon x point', true)
+            .on('click', function () {
+                mvc_modalbg.remove();
+            });
+
+        var mvc_fieldset = mvc_form.append('fieldset');
+        mvc_fieldset.append('div')
+            .classed('form-field fill-white small keyline-all round space-bottom1', true)
+            .append('label')
+                .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
+                .text(metadata.length + ' Folders Affected')
+
+        mvc_fieldset.append('div')
+            .classed('contain', true)
+            .append('p')
+                .style('margin-bottom', '10px')
+                .text(metadata.map(function(d) { return d.displayName; }).join(','))
+
+
+        mvc_fieldset.append('div')
+            .classed('form-field fill-white small keyline-all round space-bottom1', true)
+            .append('label')
+                .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
+                .text('Visibility')
+
+        var mvc_div = mvc_fieldset.append('div')
+            .classed('contain', true);
+        var mvc_check = mvc_div.append('input')
+            .attr('id', 'folderIsPublic')
+            .attr('type', 'checkbox')
+            .attr('checked', folder.public === true ? true : undefined);
+
+        mvc_div.append('label')
+            .attr('for', 'folderIsPublic')
+            .text('Public');
+
+        var mvc_submitExp = mvc_ingestDiv.append('div')
+            .classed('form-field col12 center ', true);
+
+        mvc_submitExp.append('span')
+            .classed('round strong big loud dark center col10 margin1 point', true)
+            .classed('inline row1 fl col10 pad1y', true)
+            .style('margin-top', '20px')
+            .text('Update')
+            .on('click', function () {
+                mvc_modalbg.remove();
+                Hoot.model.REST('setFolderVisibility', folder, mvc_check.node().checked,function(e, r) {
+                    if(e) {
+                        iD.ui.Alert('Failed to update folder attributes', 'error', new Error().stack);
+                        return;
+                    }
+
+                    callback();
+                });
+            });
+
+
+    };
+    hoot_control_utilities_folder.modifyNameContainer = function(folder) {
             context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
             var folderList = _.map(context.hoot().model.folders.getAvailFolders(),_.clone);
             var folderId = folder.parentId || 0;
@@ -876,7 +962,7 @@ Hoot.control.utilities.folder = function(context) {
                 });
 
             return modalbg;
-        };
+    };
 
     return hoot_control_utilities_folder;
 };
