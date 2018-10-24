@@ -1,12 +1,10 @@
 {
     "presets": [
-        ["env", {
-            "modules": false
-        }]
+        ["env"]
     ],
     "plugins": [
-        "external-helpers",
         "lodash",
-        "transform-object-rest-spread"
+        "transform-object-rest-spread",
+        "add-module-exports"
     ]
 }

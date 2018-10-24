@@ -19,7 +19,7 @@ import _uniq      from 'lodash-es/uniq';
 import Hoot from '../../../hoot';
 import Tab  from '../tab';
 
-import { d3combobox } from 'lib/hoot/d3.combobox'; // resolved by include-paths rollup plugin
+import { d3combobox } from 'lib/hoot/d3.combobox';
 
 /**
  * Creates the review-bookmarks tab in the settings panel

@@ -1,13 +1,5 @@
 /* Carousel */
 
-//.carousel-control button {
-//    border-radius: 0 0 0 0;
-//}
-
-//.carousel-control .map-overlay {
-//    z-index: -1;
-//}
-
 .carousel-control {
     button {
         border-radius: 0 0 0 0;
@@ -23,11 +15,6 @@
         z-index: -1;
     }
 }
-
-//.carousel-column {
-//    float: left;
-//    width: 160px;
-//}
 
 .carousel-thumbnails {
     overflow-x: hidden;
@@ -70,39 +57,6 @@
         }
     }
 }
-
-//.carousel-metadata-list li {
-//    font-size: 80%;
-//    position: relative;
-//    height: 60px;
-//    background-color: white;
-//    color: #7092FF;
-//    border: 1px solid #CCC;
-//    border-radius: 3px;
-//    margin-bottom: 20px;
-//    padding: 10px;
-//}
-//
-//.carousel-metadata-list li:hover {
-//    background-color: #ececec;
-//}
-//
-//.carousel-metadata-list li.active {
-//    background: #E8EBFF;
-//}
-//
-//.carousel-metadata-list label {
-//    display: block;
-//    padding: 5px 10px;
-//    cursor: pointer;
-//}
-//
-//.carousel-metadata-list label > span {
-//    display: block;
-//    overflow: hidden;
-//    white-space: nowrap;
-//    text-overflow: ellipsis;
-//}
 
 li.carousel-zoom-warn {
     padding: 5px;
@@ -160,7 +114,7 @@ path.carousel-footprint {
 
 /* Icons */
 
-.icon.dgcarousel.light { background:transparent url(img/carousel.png) no-repeat 0 0; }
+.icon.dgcarousel.light { background:transparent url(~img/carousel.png) no-repeat 0 0; }
 
 .dgicon {
     display:inline-block;
@@ -171,8 +125,8 @@ path.carousel-footprint {
     float:right;
     margin-top:3px;
 }
-.dgicon.rgb { background:transparent url(img/imgBandIcon-color.png) no-repeat 0 0; }
-.dgicon.pan { background:transparent url(img/imgBandIcon-bw.png) no-repeat 0 0; }
+.dgicon.rgb { background:transparent url(~img/imgBandIcon-color.png) no-repeat 0 0; }
+.dgicon.pan { background:transparent url(~img/imgBandIcon-bw.png) no-repeat 0 0; }
 
 .dgarrow {
     display:inline-block;
@@ -188,7 +142,7 @@ path.carousel-footprint {
     -ms-transform: rotate(270deg);
     -o-transform: rotate(270deg);
     transform: rotate(270deg);
-    background:transparent url(img/carousel-arrow.png) no-repeat 0 0;
+    background:transparent url(~img/carousel-arrow.png) no-repeat 0 0;
 }
 .dgarrow.up:hover {
     background-position: 0px -29px;
@@ -199,7 +153,7 @@ path.carousel-footprint {
     -ms-transform: rotate(90deg);
     -o-transform: rotate(90deg);
     transform: rotate(90deg);
-    background:transparent url(img/carousel-arrow.png) no-repeat 0 0;
+    background:transparent url(~img/carousel-arrow.png) no-repeat 0 0;
 }
 .dgarrow.down:hover {
     background-position: 0px -29px;
