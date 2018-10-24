@@ -134,8 +134,6 @@ iD.ui.Coordinates = function(context){
     }
 
     function UTMtoMGRS(coords, DDtoUTM){
-        var lat = coords[1];
-        var lng = coords[0];
         var UTM = DDtoUTM(coords).split(' ');
         var zone = Number((UTM[0]).slice(0, -1));
         var utmEasting = Number((UTM[1]).slice(0, -1));
@@ -143,7 +141,7 @@ iD.ui.Coordinates = function(context){
         var latBands = 'CDEFGHJKLMNPQRSTUVWXX';
         var e100kLetters = [ 'ABCDEFGH', 'JKLMNPQR', 'STUVWXYZ' ];
         var n100kLetters = ['ABCDEFGHJKLMNPQRSTUV', 'FGHJKLMNPQRSTUVABCDE'];
-        var band = latBands.charAt(Math.floor(lat/8+10));
+        var band = latBands.charAt(Math.floor(coords[1]/8+10));
         var col = Math.floor(utmEasting / 100e3);
         var e100k = e100kLetters[(zone-1)%3].charAt(col-1);
         var row = Math.floor(utmNorthing / 100e3) % 20;

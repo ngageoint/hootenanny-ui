@@ -202,7 +202,7 @@ iD.Connection = function(context, useHttps) {
     }
 
   //Need to document why this was modified for Hoot
-    function getTags(obj, layerName) {
+    function getTags(obj) {
         var elems = obj.getElementsByTagName(tagStr),
             tags = {};
         for (var i = 0, l = elems.length; i < l; i++) {

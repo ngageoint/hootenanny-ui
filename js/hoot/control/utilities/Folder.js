@@ -327,7 +327,7 @@ Hoot.control.utilities.folder = function(context) {
           node.selectAll('text')
             .style('fill', function(d) {
               // if(d.children) return;
-              if(d.public === true && d.type === "dataset" && d.selected === true) {
+              if(d.public === true && d.type === 'dataset' && d.selected === true) {
                 return 'rgb(0,0,0)';
               } else { return fontColor(d); }
             });
@@ -586,7 +586,7 @@ Hoot.control.utilities.folder = function(context) {
             else if(d.type ==='folder') {return '#efefef';}
             else if(d.type==='dataset' && d.public === true){return '#7092ff';}
             else if(d.type==='dataset'){return '#efefef';}
-            else {return '#FFC0CB' /* pink */;}
+            else {return '#FFC0CB'; /* pink */ }
         }
 
         function fontColor(d){
@@ -594,7 +594,7 @@ Hoot.control.utilities.folder = function(context) {
             else if(d.type==='folder'){return '#7092ff';}
             else if(d.type==='dataset' && d.public === true){return '#fff';}
             else if(d.type==='dataset'){return '#7092ff';}
-            else {return '#FFC0CB' /* pink */;}
+            else {return '#FFC0CB'; /* pink */ }
         }
 
         function rectClass(d) {
