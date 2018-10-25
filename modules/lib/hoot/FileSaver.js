@@ -12,7 +12,7 @@
 
 /*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
 
-export var saveAs = saveAs
+var saveAs = saveAs
     // IE 10+ (native saveAs)
     || (typeof navigator !== 'undefined' &&
         navigator.msSaveOrOpenBlob && navigator.msSaveOrOpenBlob.bind( navigator ))
@@ -230,10 +230,10 @@ export var saveAs = saveAs
 // while `this` is nsIContentFrameMessageManager
 // with an attribute `content` that corresponds to the window
 
-// if ( typeof module !== 'undefined' && module !== null ) {
-//     module.exports = saveAs;
-// } else if ( (typeof define !== 'undefined' && define !== null) && (define.amd != null) ) {
-//     define( [], function() {
-//         return saveAs;
-//     } );
-// }
+if ( typeof module !== 'undefined' && module !== null ) {
+    module.exports = saveAs;
+} else if ( (typeof define !== 'undefined' && define !== null) && (define.amd != null) ) {
+    define( [], function() {
+        return saveAs;
+    } );
+}

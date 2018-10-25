@@ -4,10 +4,10 @@
  * @author Matt Putipong on 10/24/18
  *******************************************************************************************************/
 
-import { resolve }          from 'path';
-import webpack              from 'webpack';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import CopyWebpackPlugin    from 'copy-webpack-plugin';
+const { resolve } = require( 'path' );
+const webpack = require( 'webpack' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
+const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 
 const
     extractAssets = new CopyWebpackPlugin( [
@@ -18,11 +18,10 @@ const
     ] ),
     includeModules = new webpack.ProvidePlugin( {
         $: 'jquery',
-        jQuery: 'jquery',
-        'window.jQuery': 'jquery'
+        jQuery: 'jquery'
     } );
 
-export default {
+module.exports = {
     context: resolve( __dirname, '../' ),
     entry: {
         iD: './modules/id.js',
@@ -30,8 +29,7 @@ export default {
     output: {
         path: resolve( __dirname, '../dist/' ),
         filename: '[name].min.js',
-        publicPath: '/',
-        globalObject: this
+        publicPath: '/'
     },
     module: {
         rules: [

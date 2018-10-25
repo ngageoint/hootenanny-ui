@@ -4,24 +4,20 @@
  * @author Matt Putipong on 10/24/18
  *******************************************************************************************************/
 
-import webpack from 'webpack';
-import Merge from 'webpack-merge';
-import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
-import LodashModuleReplacementPlugin from 'lodash-webpack-plugin';
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
-import CommonConfig from './webpack.base.config';
+const webpack = require( 'webpack' );
+const Merge = require( 'webpack-merge' );
+const OptimizeCssAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' );
+const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
+const CommonConfig = require( './webpack.base.config' );
 
-export default Merge( CommonConfig, {
+module.exports = Merge( CommonConfig, {
     mode: 'production',
     module: {
         rules: [
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                exclude: /node_modules/,
-                options: {
-                    babelrc: true
-                }
+                exclude: /node_modules/
             }
         ]
     },
@@ -34,10 +30,9 @@ export default Merge( CommonConfig, {
         new UglifyJsPlugin( {
             sourceMap: false
         } ),
-        // new OptimizeCssAssetsPlugin( {
-        //     assetNameRegExp: /\.css$/,
-        //     cssProcessorOptions: { discardComments: { removeAll: true } }
-        // } ),
-        new LodashModuleReplacementPlugin()
+        new OptimizeCssAssetsPlugin( {
+            assetNameRegExp: /\.css$/,
+            cssProcessorOptions: { discardComments: { removeAll: true } }
+        } ),
     ]
 } );

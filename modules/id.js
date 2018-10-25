@@ -1,3 +1,4 @@
+import '@babel/polyfill';
 import * as iD from './index';
 import $ from 'jquery';
 

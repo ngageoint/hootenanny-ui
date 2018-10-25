@@ -7,16 +7,18 @@
 import Merge from 'webpack-merge';
 import CommonConfig from './webpack.base.config';
 
-export default Merge( CommonConfig, {
-    mode: 'development',
-    devtool: 'cheap-module-source-map',
-    devServer: {
-        compress: true,
-        port: 9000,
-        publicPath: '/',
-        contentBase: './dist',
-        stats: {
-            timings: true
+export default () => {
+    return Merge( CommonConfig, {
+        mode: 'development',
+        devtool: 'cheap-module-source-map',
+        devServer: {
+            compress: true,
+            port: 9000,
+            publicPath: '/',
+            contentBase: './dist',
+            stats: {
+                timings: true
+            }
         }
-    }
-} );
+    } );
+}
