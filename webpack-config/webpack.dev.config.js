@@ -6,7 +6,6 @@
 
 import Merge from 'webpack-merge';
 import CommonConfig from './webpack.base.config';
-import ProfilePlugin from 'webpack/lib/debug/ProfilingPlugin';
 
 export default Merge( CommonConfig, {
     mode: 'development',
@@ -19,8 +18,5 @@ export default Merge( CommonConfig, {
         stats: {
             timings: true
         }
-    },
-    plugins: [
-        // new ProfilePlugin()
-    ]
+    }
 } );

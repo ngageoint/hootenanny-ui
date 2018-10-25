@@ -4,13 +4,13 @@
  * @author Matt Putipong on 10/24/18
  *******************************************************************************************************/
 
-import { resolve } from 'path';
-import webpack from 'webpack';
+import { resolve }          from 'path';
+import webpack              from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
+import CopyWebpackPlugin    from 'copy-webpack-plugin';
 
 const
-    extractAssets  = new CopyWebpackPlugin( [
+    extractAssets = new CopyWebpackPlugin( [
         {
             from: './img', // context: root
             to: './img' // context: dist
@@ -49,7 +49,7 @@ export default {
             {
                 test: /\.css$/,
                 use: [
-                    'style-loader',
+                    MiniCssExtractPlugin.loader,
                     'css-loader'
                 ]
             },
@@ -58,7 +58,6 @@ export default {
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader',
-                    // 'resolve-url-loader',
                     'sass-loader'
                 ]
             }
@@ -73,14 +72,8 @@ export default {
     plugins: [
         extractAssets,
         includeModules,
-        // new HtmlWebpackPlugin( {
-        //     hash: true,
-        //     template: './templates/index.html',
-        //     chunks: [ 'index' ],
-        //     filename: '../dist/index.html'
-        // } ),
         new MiniCssExtractPlugin( {
-            fileName: 'iD.css'
+            filename: '[name].css'
         } ),
         new webpack.EnvironmentPlugin( [ 'NODE_ENV', 'BUILD_INFO' ] )
     ],

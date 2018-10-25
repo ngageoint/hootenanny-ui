@@ -16,25 +16,28 @@ export default Merge( CommonConfig, {
     module: {
         rules: [
             {
-                test: /\.js?$/,
+                test: /\.js$/,
                 loader: 'babel-loader',
-                exclude: /node_modules/
+                exclude: /node_modules/,
+                options: {
+                    babelrc: true
+                }
             }
         ]
     },
-    // plugins: [
-    //     new webpack.LoaderOptionsPlugin( {
-    //         minimize: false,
-    //         debug: false
-    //     } ),
-    //     new webpack.optimize.ModuleConcatenationPlugin(),
-    //     new UglifyJsPlugin( {
-    //         sourceMap: false
-    //     } ),
-    //     new OptimizeCssAssetsPlugin( {
-    //         assetNameRegExp: /\.min\.css$/,
-    //         cssProcessorOptions: { discardComments: { removeAll: true } }
-    //     } ),
-    //     new LodashModuleReplacementPlugin()
-    // ]
+    plugins: [
+        new webpack.LoaderOptionsPlugin( {
+            minimize: false,
+            debug: false
+        } ),
+        new webpack.optimize.ModuleConcatenationPlugin(),
+        new UglifyJsPlugin( {
+            sourceMap: false
+        } ),
+        // new OptimizeCssAssetsPlugin( {
+        //     assetNameRegExp: /\.css$/,
+        //     cssProcessorOptions: { discardComments: { removeAll: true } }
+        // } ),
+        new LodashModuleReplacementPlugin()
+    ]
 } );

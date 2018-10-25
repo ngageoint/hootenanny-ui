@@ -1,10 +1,6 @@
 {
     "presets": [
-        ["env"]
+        "@babel/env"
     ],
-    "plugins": [
-        "lodash",
-        "transform-object-rest-spread",
-        "add-module-exports"
-    ]
+    "plugins": []
 }
