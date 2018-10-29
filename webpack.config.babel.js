@@ -4,8 +4,6 @@
  * @author Matt Putipong on 10/24/18
  *******************************************************************************************************/
 
-console.log( require( `./webpack-config/webpack.prod.config.js` ) );
-
 module.exports = env => {
     let buildData = require( './build_data' )( env );
 

@@ -4,21 +4,38 @@
  * @author Matt Putipong on 10/24/18
  *******************************************************************************************************/
 
-import Merge from 'webpack-merge';
-import CommonConfig from './webpack.base.config';
+// import Merge from 'webpack-merge';
+// import CommonConfig from './webpack.base.config';
 
-export default () => {
-    return Merge( CommonConfig, {
-        mode: 'development',
-        devtool: 'cheap-module-source-map',
-        devServer: {
-            compress: true,
-            port: 9000,
-            publicPath: '/',
-            contentBase: './dist',
-            stats: {
-                timings: true
-            }
+const Merge = require( 'webpack-merge' );
+const CommonConfig = require( './webpack.base.config' );
+
+// export default () => {
+//     return Merge( CommonConfig, {
+//         mode: 'development',
+//         devtool: 'cheap-module-source-map',
+//         devServer: {
+//             compress: true,
+//             port: 9000,
+//             publicPath: '/',
+//             contentBase: './dist',
+//             stats: {
+//                 timings: true
+//             }
+//         }
+//     } );
+// }
+
+module.exports = Merge( CommonConfig, {
+    mode: 'development',
+    devtool: 'cheap-module-source-map',
+    devServer: {
+        compress: true,
+        port: 9000,
+        publicPath: '/',
+        contentBase: './dist',
+        stats: {
+            timings: true
         }
-    } );
-}
+    }
+} );
