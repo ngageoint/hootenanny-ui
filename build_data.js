@@ -41,7 +41,7 @@ module.exports = function buildData() {
         // Create symlinks if necessary..  { 'target': 'source' }
         const symlinks = {
             'land.html': 'dist/land.html',
-            img: 'dist/img'
+            // img: 'dist/img'
         };
 
         for (var target of Object.keys(symlinks)) {

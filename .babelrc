@@ -1,12 +1,9 @@
 {
     "presets": [
-        ["env", {
-            "modules": false
-        }]
+        ["@babel/preset-env"]
     ],
     "plugins": [
-        "external-helpers",
-        "lodash",
-        "transform-object-rest-spread"
+        "@babel/plugin-transform-runtime",
+        "@babel/plugin-syntax-dynamic-import"
     ]
 }
