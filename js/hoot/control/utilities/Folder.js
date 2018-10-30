@@ -667,7 +667,10 @@ Hoot.control.utilities.folder = function(context) {
             })
             .on('keypress', function() {
                 var key = d3.event.keyCode;
-                if (key === 13) { _submit(); }
+                if (key === 13) {
+                  d3.event.preventDefault();
+                  _submit();
+                }
             });
 
         if(data === 0) {
