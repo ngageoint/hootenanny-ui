@@ -38,6 +38,7 @@ class Hoot {
     }
 
     init( context ) {
+        console.log( 'INIT' );
         if ( this.ui && this.ui instanceof UI ) return;
 
         this.context = context;

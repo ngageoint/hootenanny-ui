@@ -18,21 +18,34 @@ module.exports = Merge( CommonConfig, {
                 test: /\.js$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/
-            }
+            },
+            // {
+            //     test: /\.js$/,
+            //     use: {
+            //         loader: 'istanbul-instrumenter-loader',
+            //         options: {
+            //             esModules: true,
+            //             debug: true,
+            //             compact: false,
+            //         }
+            //     },
+            //     enforce: 'post',
+            //     exclude: /nodeModules|\.spec\.js$/
+            // }
         ]
     },
-    plugins: [
-        new webpack.LoaderOptionsPlugin( {
-            minimize: false,
-            debug: false
-        } ),
-        new webpack.optimize.ModuleConcatenationPlugin(),
-        new UglifyJsPlugin( {
-            sourceMap: false
-        } ),
-        new OptimizeCssAssetsPlugin( {
-            assetNameRegExp: /\.css$/,
-            cssProcessorOptions: { discardComments: { removeAll: true } }
-        } ),
-    ]
+    // plugins: [
+    //     new webpack.LoaderOptionsPlugin( {
+    //         minimize: false,
+    //         debug: false
+    //     } ),
+    //     new webpack.optimize.ModuleConcatenationPlugin(),
+    //     new UglifyJsPlugin( {
+    //         sourceMap: false
+    //     } ),
+    //     new OptimizeCssAssetsPlugin( {
+    //         assetNameRegExp: /\.css$/,
+    //         cssProcessorOptions: { discardComments: { removeAll: true } }
+    //     } ),
+    // ]
 } );

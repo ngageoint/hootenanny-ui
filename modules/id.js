@@ -20,3 +20,5 @@ import '../css/hoot/hoot.scss';
 
 window.iD = iD;
 window.$ = window.jQuery = $;
+
+export default iD;

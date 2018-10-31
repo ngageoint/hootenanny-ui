@@ -1,3 +1,5 @@
+@import '../modules/variables';
+
 #navbar {
     position: fixed;
     height: 60px;
@@ -22,7 +24,7 @@
     align-items: center;
 
     .button {
-        @extend button.dark;
+        @extend button.dark !optional;
         border: none;
     }
 
