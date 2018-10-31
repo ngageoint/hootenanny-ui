@@ -73,8 +73,7 @@ module.exports = {
         includeModules,
         new MiniCssExtractPlugin( {
             filename: '[name].css'
-        } ),
-        new webpack.EnvironmentPlugin( [ 'NODE_ENV', 'BUILD_INFO' ] )
+        } )
     ],
     node: {
         dns: 'empty',

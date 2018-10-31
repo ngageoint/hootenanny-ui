@@ -12,7 +12,7 @@
 .mode-select-note .layer-notes .note .note-fill {
     pointer-events: visible;
     cursor: pointer; /* Opera */
-    cursor: url(~img/cursor-select-point.png), pointer; /* FF */
+    cursor: url(/img/cursor-select-point.png), pointer; /* FF */
 }
 
 .note-header-icon .note-shadow,

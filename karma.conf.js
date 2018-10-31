@@ -7,6 +7,7 @@ const Merge = require( 'webpack-merge' );
 const baseConfig = require( './webpack-config/webpack.base.config' );
 
 const webpackConfig = Merge( baseConfig, {
+    mode: 'development',
     entry: './test/index.js',
     module: {
         rules: [
@@ -22,7 +23,13 @@ const webpackConfig = Merge( baseConfig, {
                 // exclude: /node_modules|\.spec\.js$/
             }
         ]
-    }
+    },
+    resolve: {
+        alias: {
+            img: resolve( __dirname, 'img' ),
+            lib: resolve( __dirname, 'modules/lib' )
+        }
+    },
 } );
 
 const materialIconFiles = [
@@ -51,6 +58,7 @@ module.exports = function( config ) {
             ...materialIconFiles,
             { pattern: 'img/**/*.svg', included: false },
             { pattern: 'img/**/*.png', included: false },
+            { pattern: 'img/**/*.gif', included: false },
             'css/**/*.css',
             'css/**/*.scss',
             'test/index.js'

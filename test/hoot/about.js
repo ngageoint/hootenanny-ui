@@ -8,8 +8,6 @@ import * as iD from '../../modules/index';
 import $ from 'jquery';
 import chai from 'chai';
 
-chai.use( require( 'chai-dom' ) );
-
 const { expect } = chai;
 
 window.d3 = iD.d3;

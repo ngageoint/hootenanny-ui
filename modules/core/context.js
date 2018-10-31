@@ -429,7 +429,7 @@ export function coreContext() {
     };
 
     context.imagePath = function(_) {
-        return context.asset('img/' + _);
+        return context.asset('/img/' + _);
     };
 
 
