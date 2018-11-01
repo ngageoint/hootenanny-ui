@@ -132,7 +132,7 @@ Hoot.view.utilities = function (context){
             .attr('id', 'header')
             .classed('contain pad2x dark fill-dark', true);
         var nav = header.append('nav')
-            .classed('contain inline fr', true);
+            .classed('contain inline fr disable-selection', true);
 
         var warnMsg = 'browser does not support localStorage -or- failed to retrieve user from store';
         if(localStorage && localStorage.getItem('user')) {
