@@ -779,9 +779,9 @@ Hoot.model.REST = function (command, data, callback, option) {
     rest.getAllUsers = function(callback) {
         d3.json('/hoot-services/osm/user/all', function (error, resp) {
             if (error) {
-                return callback(_alertError(error, 'Get all users failed!'));
+                return callback(_alertError(error, 'Get all users failed!'), null);
             }
-            callback(resp);
+            callback(null, resp);
         });
     };
     rest.getOAuthRedirectURL = function(callback) {
