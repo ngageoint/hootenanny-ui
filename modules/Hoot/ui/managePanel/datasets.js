@@ -97,7 +97,7 @@ export default class Datasets extends Tab {
                     case 'import-datasets-single': {
                         let translations = await Hoot.api.getTranslations();
 
-                        new ImportDataset( 'single', translations ).render();
+                        this.importSingle = new ImportDataset( 'single', translations ).render();
                         break;
                     }
                     case 'import-datasets-directory': {

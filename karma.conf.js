@@ -65,6 +65,7 @@ module.exports = function( config ) {
             { pattern: 'img/**/*.svg', included: false },
             { pattern: 'img/**/*.png', included: false },
             { pattern: 'img/**/*.gif', included: false },
+            { pattern: 'test/data/UndividedHighway.osm', included: false },
             'css/**/*.css',
             'css/**/*.scss',
             'test/hoot/index.js'

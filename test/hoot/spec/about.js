@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 describe( 'About Modal', () => {
-    it( 'opens', async () => {
+    it( 'opens', () => {
         expect( d3.select( '#about-hootenanny' ).size() ).to.equal( 0 );
 
         d3.select( '#navbar .about-toggle' ).dispatch( 'click' );
@@ -13,7 +13,7 @@ describe( 'About Modal', () => {
         expect( d3.select( '#about-hootenanny' ).size() ).to.equal( 1 );
     } );
 
-    it( 'closes', async () => {
+    it( 'closes', () => {
         expect( d3.select( '#about-hootenanny' ).size() ).to.equal( 1 );
 
         d3.select( '#about-hootenanny ._icon.close' ).dispatch( 'click' );

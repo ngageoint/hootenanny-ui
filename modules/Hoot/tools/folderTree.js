@@ -379,12 +379,12 @@ export default class FolderTree extends EventEmitter {
         }
     }
 
-    wrapText( d, elem ) {
-        let parent = elem.node().parentNode.parentNode;
-
-        //elem.text( d.data.name );
-        d3.select( parent ).append( 'title' ).text( d.data.name );
-    }
+    // wrapText( d, elem ) {
+    //     let parent = elem.node().parentNode.parentNode;
+    //
+    //     //elem.text( d.data.name );
+    //     d3.select( parent ).append( 'title' ).text( d.data.name );
+    // }
 
     /**
      * Fill a rect element based on it's node type
@@ -439,19 +439,19 @@ export default class FolderTree extends EventEmitter {
     rectClass( d ) {
         let { data } = d;
 
-        // set selected layers
-        if ( data.type === 'dataset' && this.containerId === 'datasets-table' ) {
-            if ( data.selected ) {
-                if ( this.selectedLayerIDs.indexOf( data.layerId ) === -1 ) {
-                    this.selectedLayerIDs.push( data.layerId );
-                }
-            } else {
-                let idx = this.selectedLayerIDs.indexOf( data.layerId );
-                if ( idx > -1 ) {
-                    this.selectedLayerIDs.splice( idx, 1 );
-                }
-            }
-        }
+        // // set selected layers
+        // if ( data.type === 'dataset' && this.containerId === 'datasets-table' ) {
+        //     if ( data.selected ) {
+        //         if ( this.selectedLayerIDs.indexOf( data.layerId ) === -1 ) {
+        //             this.selectedLayerIDs.push( data.layerId );
+        //         }
+        //     } else {
+        //         let idx = this.selectedLayerIDs.indexOf( data.layerId );
+        //         if ( idx > -1 ) {
+        //             this.selectedLayerIDs.splice( idx, 1 );
+        //         }
+        //     }
+        // }
 
         return data.selected
             ? 'sel'

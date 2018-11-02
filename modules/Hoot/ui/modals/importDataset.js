@@ -108,6 +108,8 @@ export default class ImportDataset {
         this.customPrefix   = d3.select( '#importCustomPrefix' );
         this.fileIngest     = d3.select( '#ingestFileUploader' );
         this.submitButton   = d3.select( '#importSubmitBtn' );
+
+        return this;
     }
 
     /**

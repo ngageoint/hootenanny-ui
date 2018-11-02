@@ -4,6 +4,8 @@
  * @author Matt Putipong on 11/1/18
  *******************************************************************************************************/
 
+const CONTEXT_TIMEOUT = 300;
+
 describe( 'Dataset Table', () => {
     let table,
         selected,
@@ -88,11 +90,21 @@ describe( 'Dataset Table', () => {
                 } );
 
             selected = table.selectAll( 'g[data-type="dataset"] .sel' );
-
             expect( selected.size() ).to.equal( 4 );
 
             datasets
                 .filter( ( d, i ) => i === 5 )
+                .each( function() {
+                    let e = new MouseEvent( 'click', { shiftKey: true } );
+
+                    d3.select( this ).node().dispatchEvent( e );
+                } );
+
+            selected = table.selectAll( 'g[data-type="dataset"] .sel' );
+            expect( selected.size() ).to.equal( 6 );
+
+            datasets
+                .filter( ( d, i ) => i === 7 )
                 .each( function() {
                     let e = new MouseEvent( 'click', { metaKey: true } );
 
@@ -100,11 +112,10 @@ describe( 'Dataset Table', () => {
                 } );
 
             selected = table.selectAll( 'g[data-type="dataset"] .sel' );
-
-            expect( selected.size() ).to.equal( 5 );
+            expect( selected.size() ).to.equal( 7 );
         } );
 
-        it( 'open context menu for single selected layer', () => {
+        it( 'open context menu for single selected layer', done => {
             deselectAll();
             let dataset = table.select( 'g[data-type="dataset"]' );
 
@@ -118,9 +129,14 @@ describe( 'Dataset Table', () => {
 
             expect( contextMenu.style( 'display' ) ).to.equal( 'block' );
             expect( items.size() ).to.equal( 7 );
+
+            setTimeout( () => {
+                d3.select( 'body' ).dispatch( 'click' );
+                done();
+            }, CONTEXT_TIMEOUT );
         } );
 
-        it( 'open context menu for multiple selected layers', () => {
+        it( 'open context menu for multiple selected layers', done => {
             deselectAll();
             let dataset  = table.select( 'g[data-type="dataset"]' ),
                 datasets = table.selectAll( 'g[data-type="dataset"]' );
@@ -144,9 +160,14 @@ describe( 'Dataset Table', () => {
 
             expect( contextMenu.style( 'display' ) ).to.equal( 'block' );
             expect( items.size() ).to.equal( 3 );
+
+            setTimeout( () => {
+                d3.select( 'body' ).dispatch( 'click' );
+                done();
+            }, CONTEXT_TIMEOUT );
         } );
 
-        it( 'open context menu when clicking and holding CTRL key', () => {
+        it( 'open context menu when clicking and holding CTRL key', done => {
             deselectAll();
             let dataset = table.select( 'g[data-type="dataset"]' );
 
@@ -162,6 +183,11 @@ describe( 'Dataset Table', () => {
             expect( table.selectAll( 'g[data-type="dataset"] .sel' ).size() ).to.equal( 1 );
             expect( contextMenu.style( 'display' ) ).to.equal( 'block' );
             expect( items.size() ).to.equal( 7 );
+
+            setTimeout( () => {
+                d3.select( 'body' ).dispatch( 'click' );
+                done();
+            }, CONTEXT_TIMEOUT );
         } );
     } );
 
@@ -201,7 +227,7 @@ describe( 'Dataset Table', () => {
             expect( newNodesCount ).to.equal( nodesCount - childrenCount );
         } );
 
-        it( 'open context menu', () => {
+        it( 'open context menu', done => {
             let folder = table.select( 'g[data-type="folder"]' );
 
             let e = new MouseEvent( 'contextmenu' );
@@ -213,6 +239,11 @@ describe( 'Dataset Table', () => {
 
             expect( contextMenu.style( 'display' ) ).to.equal( 'block' );
             expect( items.size() ).to.equal( 5 );
+
+            setTimeout( () => {
+                d3.select( 'body' ).dispatch( 'click' );
+                done();
+            }, CONTEXT_TIMEOUT );
         } );
     } );
 } );
