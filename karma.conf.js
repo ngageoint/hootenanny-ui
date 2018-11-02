@@ -1,36 +1,9 @@
 // Karma configuration
 // Generated on Mon Oct 29 2018 14:12:47 GMT-0400 (Eastern Daylight Time)
 
-const { resolve, join } = require( 'path' );
-const _ = require( 'lodash' );
-const Merge = require( 'webpack-merge' );
-const baseConfig = require( './webpack-config/webpack.base.config' );
-
-const webpackConfig = Merge( baseConfig, {
-    mode: 'development',
-    entry: './test/index.js',
-    module: {
-        rules: [
-            // instrument only testing sources with Istanbul
-            {
-                test: /\.js$/,
-                use: {
-                    loader: 'istanbul-instrumenter-loader',
-                    options: { esModules: true }
-                },
-                include: resolve( __dirname, 'modules/Hoot/' ),
-                enforce: 'post'
-                // exclude: /node_modules|\.spec\.js$/
-            }
-        ]
-    },
-    resolve: {
-        alias: {
-            img: resolve( __dirname, 'img' ),
-            lib: resolve( __dirname, 'modules/lib' )
-        }
-    },
-} );
+const path = require( 'path' );
+const Merge             = require( 'webpack-merge' );
+const baseConfig        = require( './webpack-config/webpack.base.config' );
 
 const materialIconFiles = [
     { pattern: 'node_modules/material-design-icons/iconfont/material-icons.css', included: true },
@@ -40,6 +13,32 @@ const materialIconFiles = [
     { pattern: 'node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff', included: false },
     { pattern: 'node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff2', included: false },
 ];
+
+const webpackConfig = Merge( baseConfig, {
+    mode: 'development',
+    entry: './test/hoot/index.js',
+    module: {
+        rules: [
+            // instrument only testing sources with Istanbul
+            {
+                test: /\.js$/,
+                use: {
+                    loader: 'istanbul-instrumenter-loader',
+                    options: { esModules: true }
+                },
+                include: path.resolve( __dirname, 'modules/Hoot/' ),
+                enforce: 'post'
+                // exclude: /node_modules|\.spec\.js$/
+            }
+        ]
+    },
+    resolve: {
+        alias: {
+            img: path.resolve( __dirname, 'img' ),
+            lib: path.resolve( __dirname, 'modules/lib' )
+        }
+    },
+} );
 
 module.exports = function( config ) {
     config.set( {
@@ -53,6 +52,13 @@ module.exports = function( config ) {
         frameworks: [ 'mocha' ],
 
 
+        client: {
+            mocha: {
+                timeout: 5000
+            }
+        },
+
+
         // list of files / patterns to load in the browser
         files: [
             ...materialIconFiles,
@@ -61,7 +67,7 @@ module.exports = function( config ) {
             { pattern: 'img/**/*.gif', included: false },
             'css/**/*.css',
             'css/**/*.scss',
-            'test/index.js'
+            'test/hoot/index.js'
         ],
 
 
@@ -72,7 +78,7 @@ module.exports = function( config ) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'test/index.js': [ 'webpack' ],
+            'test/hoot/index.js': [ 'webpack' ],
             'css/**/*.scss': [ 'scss' ]
         },
 
@@ -93,7 +99,7 @@ module.exports = function( config ) {
 
         coverageIstanbulReporter: {
             reports: [ 'html', 'lcov', 'text-summary' ],
-            dir: join( __dirname, 'coverage' ),
+            dir: path.join( __dirname, 'coverage' ),
             fixWebpackSourcePaths: true
         },
 
@@ -122,7 +128,7 @@ module.exports = function( config ) {
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
-        singleRun: true,
+        singleRun: false,
 
         // Concurrency level
         // how many browser should be started simultaneous

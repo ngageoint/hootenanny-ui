@@ -44,7 +44,7 @@ export default class FormFactory {
         let overlay = d3.select( selector )
             .append( 'div' )
             .attr( 'id', formId )
-            .classed( 'fill-dark overlay modal-overlay', true );
+            .classed( 'overlay modal-overlay', true );
 
         setTimeout( () => overlay.classed( 'visible', true ), 50 );
 

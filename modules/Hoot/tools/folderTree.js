@@ -225,6 +225,7 @@ export default class FolderTree extends EventEmitter {
         let nodeElement = nodes.enter().append( 'g' )
             .attr( 'data-name', d => d.data.name )
             .attr( 'data-id', d => d.data.id )
+            .attr( 'data-type', d => d.data.type )
             .attr( 'transform', `translate( 0, ${ source.x0 } )` )
             .classed( 'node', true )
             .style( 'opacity', 0 )

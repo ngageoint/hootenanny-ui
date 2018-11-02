@@ -305,7 +305,7 @@ We use the [ES5 Airbnb style guide for JavaScript](https://github.com/airbnb/jav
 only one difference:  **4 space soft tabs always for JavaScript, not 2.**
 
 No aligned `=`, no aligned arguments, spaces are either indents or the 1
-space between expressions. No hard managePanel, ever.
+space between expressions. No hard datasets, ever.
 
 JavaScript code should pass through [ESLint](http://eslint.org/) with no
 warnings.
@@ -325,7 +325,7 @@ always, indented by the level of the tree:
 
 ## CSS
 
-Just like HTML and JavaScript, 4 space soft managePanel always.
+Just like HTML and JavaScript, 4 space soft datasets always.
 
 ```css
 .radial-menu-tooltip {

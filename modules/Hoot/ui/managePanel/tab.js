@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 /**
- * Base class that all other managePanel in the settings panel extends from
+ * Base class that all other datasets in the settings panel extends from
  */
 export default class Tab {
     constructor( instance ) {

@@ -1,10 +1,10 @@
 // /** ****************************************************************************************************
-//  * File: managePanel.js
+//  * File: datasetTable.js
 //  * Project: hootenanny-ui
 //  * @author Matt Putipong on 10/22/18
 //  *******************************************************************************************************/
 //
-// describe( 'Hoot.managePanel', () => {
+// describe( 'Hoot.datasets', () => {
 //     it( 'should open the mananage panel', async () => {
 //         expect( await page.$$( '#manage-panel.hidden' ) ).to.have.lengthOf( 1 );
 //

@@ -4,13 +4,13 @@
  * @author Matt Putipong on 10/24/18
  *******************************************************************************************************/
 
-const { resolve } = require( 'path' );
-const webpack = require( 'webpack' );
+const { resolve }          = require( 'path' );
+const webpack              = require( 'webpack' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
-const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
+const CopyWebpackPlugin    = require( 'copy-webpack-plugin' );
 
 const
-    extractAssets = new CopyWebpackPlugin( [
+    extractAssets  = new CopyWebpackPlugin( [
         {
             from: './img', // context: root
             to: './img' // context: dist
@@ -79,6 +79,7 @@ module.exports = {
         dns: 'empty',
         fs: 'empty',
         net: 'empty',
-        tls: 'empty'
+        tls: 'empty',
+        child_process: 'empty'
     }
 };
