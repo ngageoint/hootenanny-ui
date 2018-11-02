@@ -30,9 +30,9 @@ before( () => {
     id.ui()( document.getElementById( 'id-sink' ) );
 } );
 
-beforeEach( function( done ) {
-    setTimeout( done, 2000 );
-} );
+// beforeEach( function( done ) {
+//     setTimeout( done, 1000 );
+// } );
 
 const tests = require.context( './spec/', true, /.js$/ );
 
