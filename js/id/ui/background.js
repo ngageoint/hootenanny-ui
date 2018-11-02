@@ -81,7 +81,7 @@ iD.ui.Background = function(context) {
                     .filter(function(d) { return d.overlay;});
 
                 var layerUsed = d.imageryUsed();
-                if (layerUsed === 'USGS Topographic Maps') {
+                if (layerUsed === 'MAPNIK' || layerUsed === 'USGS Topographic Maps'){
                     if (checkbox.classed('active')){
                         context.background().hideOverlayLayer(overlays[0]);
                     } else {
