@@ -45,48 +45,8 @@ Hoot.control.import = function (context,selection) {
                         resetForm(self);
                         return;
                     }
-
                 });
-                //The OSM API db layer with id = -1 doesn't actually exist in hoot, so can't be
-                //viewed.
-                if (key.id !== '-1')
-                {
-                    context.background().addSource(getNodeMapnikSource(key));
-                }
-
             }
-            function getNodeMapnikSource(d) {
-                var source = {
-                        name: d.name,
-                        id: d.id,
-                        type: 'tms',
-                        description: d.name,
-                        template: window.location.protocol + '//' + window.location.hostname
-                            + Hoot.model.REST.formatNodeJsPortOrPath(iD.data.hootConfig.nodeMapnikServerPort)
-                            + '/?z={zoom}&x={x}&y={y}&color='
-                            + encodeURIComponent(context.hoot().palette(d.color))
-                            + '&mapid=' + d.id,
-                        scaleExtent: [0,18],
-                        overlay: true,
-                        projection: 'mercator',
-                        subtype: 'density_raster'
-                    };
-                return source;
-            }
-            context.hoot().control.view.on('layerColor.background', function(lyrname, color, mapid) {
-                var updateSource = getNodeMapnikSource({
-                    name: lyrname,
-                    color: color,
-                    id: mapid
-                });
-                context.background().updateSource(updateSource);
-            });
-            context.hoot().control.view.on('layerRemove.background', function (layerName, isPrimary, mapId) {
-                context.background().removeSource(getNodeMapnikSource({
-                    name: layerName,
-                    id: mapId
-                }));
-            });
         });
     };
 

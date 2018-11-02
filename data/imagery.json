@@ -30837,20 +30837,6 @@
         "terms_text": "© OpenStreetMap contributors, CC-BY-SA"
     },
     {
-        "name": "OpenStreetMap (Standard)",
-        "type": "tms",
-        "description": "The default OpenStreetMap layer.",
-        "template": "http://{switch:a,b,c}.tile.openstreetmap.org/{zoom}/{x}/{y}.png",
-        "scaleExtent": [
-            0,
-            19
-        ],
-        "terms_url": "http://openstreetmap.org/",
-        "terms_text": "© OpenStreetMap contributors, CC-BY-SA",
-        "id": "MAPNIK",
-        "default": true
-    },
-    {
         "name": "OS 1:25k historic (OSM)",
         "type": "tms",
         "template": "http://ooc.openstreetmap.org/os1/{zoom}/{x}/{y}.jpg",
