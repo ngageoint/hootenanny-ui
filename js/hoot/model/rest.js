@@ -133,7 +133,8 @@ Hoot.model.REST = function (command, data, callback, option) {
 
         d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + folderId)
         .send('DELETE', function (error, json) {
-            if(error){
+            if(error && error.responseText) {
+                iD.ui.Alert('Error: ' + error.responseText, 'error', new Error().stack);
                 callback(false);
             } else {callback(true);}
             return json;
