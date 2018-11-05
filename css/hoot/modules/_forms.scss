@@ -142,6 +142,10 @@
         &.disabled {
             background-color: white;
         }
+
+        &.multipart-input {
+            padding-right: 40px;
+        }
     }
 
     select {

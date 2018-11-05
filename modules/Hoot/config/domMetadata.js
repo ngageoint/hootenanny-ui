@@ -94,6 +94,7 @@ export function importSingleForm() {
         {
             label: 'Import Data',
             id: 'importFile',
+            class: 'multipart-input',
             inputType: 'multipart',
             placeholder: 'Select File',
             icon: 'folder',
@@ -152,6 +153,7 @@ export function importMultiForm() {
         {
             label: 'Import Data',
             id: 'importFile',
+            class: 'multipart-input',
             inputType: 'multipart',
             placeholder: 'Select Files',
             icon: 'folder',
@@ -201,7 +203,7 @@ export function importMultiForm() {
         },
         {
             label: 'Custom Suffix',
-            id: 'importCustomPrefix',
+            id: 'importCustomSuffix',
             onChange: d => this.validateTextInput( d )
         }
     ];

@@ -7,7 +7,7 @@
 const { retrieveFile } = require( '../../helpers' );
 
 module.exports = () => {
-    describe( 'import single layer', () => {
+    describe( 'import single', () => {
         let datasets,
             importModal;
 
@@ -47,7 +47,7 @@ module.exports = () => {
             expect( submitButton.property( 'disabled' ) ).to.be.true;
 
             let dT   = new ClipboardEvent( '' ).clipboardData || new DataTransfer(),
-                file = await retrieveFile();
+                file = await retrieveFile( 'base/test/data/UndividedHighway.osm' );
 
             dT.items.add( file );
 
@@ -81,20 +81,21 @@ module.exports = () => {
             expect( folderNameInput.classed( 'invalid' ) ).to.be.false;
             expect( submitButton.property( 'disabled' ) ).to.be.true;
 
-            // update layer name to signify that this layer was created during unit tests
+            // update layer name to signify that this layer was created during unit tests &
+            // check for correct values in all fields
             layerNameInput
-                .property( 'value', 'ImportSingleTest' )
+                .property( 'value', 'UnitTestSingle' )
                 .dispatch( 'keyup' );
 
             expect( layerNameInput.classed( 'invalid' ) ).to.be.false;
             expect( submitButton.property( 'disabled' ) ).to.be.false;
         } );
 
-        it( 'imports a new layer', async () => {
+        it( 'imports a new layer from OSM file', async () => {
             let importSubmit = importModal.submitButton;
 
             expect( importSubmit.select( 'span' ).text() ).to.equal( 'Import' );
-            expect( Hoot.layers.findBy( 'name', 'ImportSingleTest' ) ).to.be.undefined;
+            expect( Hoot.layers.findBy( 'name', 'UnitTestSingle' ) ).to.be.undefined;
 
             importSubmit.dispatch( 'click' );
 
@@ -103,8 +104,8 @@ module.exports = () => {
             await importModal.processRequest;
 
             expect( datasets.importSingleModal ).to.be.undefined;
-            expect( Hoot.layers.findBy( 'name', 'ImportSingleTest' ) ).to.be.ok;
-            expect( d3.select( '#dataset-table' ).select( 'g[data-name="ImportSingleTest"]' ).size() ).to.equal( 1 );
+            expect( Hoot.layers.findBy( 'name', 'UnitTestSingle' ) ).to.be.ok;
+            expect( d3.select( '#dataset-table' ).select( 'g[data-name="UnitTestSingle"]' ).size() ).to.equal( 1 );
         } );
 
         it( 'closes import single modal', done => {

@@ -504,7 +504,7 @@ export default class API {
         return this.request( params )
             .then( resp => this.statusInterval( resp.data[ 0 ].jobid ) )
             .then( resp => {
-                // console.log( resp );
+                console.log( resp );
                 return {
                     data: resp.data,
                     message: 'Dataset successfully imported',
@@ -514,7 +514,7 @@ export default class API {
                 };
             } )
             .catch( err => {
-                // console.log( err );
+                console.log( err );
                 return Promise.reject( {
                     data: err.data,
                     message: 'Failed to import dataset!',

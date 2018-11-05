@@ -5,11 +5,9 @@
  *******************************************************************************************************/
 
 module.exports = {
-    retrieveFile: () => {
+    retrieveFile: filePath => {
         return new Promise( res => {
             let xhr = new XMLHttpRequest();
-
-            let filePath = 'base/test/data/UndividedHighway.osm';
 
             xhr.open( 'GET', filePath, true ); //set path to any file
             xhr.responseType = 'blob';
@@ -18,6 +16,9 @@ module.exports = {
                 if ( xhr.status === 200 ) {
                     let files = []; // This is our files array
 
+                    let lastSlashIdx = filePath.lastIndexOf( '/' ),
+                        fileName     = filePath.substring( lastSlashIdx + 1 );
+
                     // Manually create the guts of the File
                     let blob = new Blob( [ this.response ], { type: 'application/octet-stream' } ),
                         bits = [ blob, new ArrayBuffer( blob.size ) ];
@@ -25,7 +26,7 @@ module.exports = {
                     // Put the pieces together to create the File.
                     // Typically the raw response Object won't contain the file name
                     // so you may have to manually add that as a property.
-                    let file = new File( bits, 'UndividedHighway.osm', {
+                    let file = new File( bits, fileName, {
                         lastModified: new Date( 0 ),
                         type: 'application/octet-stream'
                     } );

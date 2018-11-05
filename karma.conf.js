@@ -62,10 +62,16 @@ module.exports = function( config ) {
         // list of files / patterns to load in the browser
         files: [
             ...materialIconFiles,
+
             { pattern: 'img/**/*.svg', included: false },
             { pattern: 'img/**/*.png', included: false },
             { pattern: 'img/**/*.gif', included: false },
+
             { pattern: 'test/data/UndividedHighway.osm', included: false },
+            { pattern: 'test/data/SplitLongWaysTest.dbf', included: false },
+            { pattern: 'test/data/SplitLongWaysTest.shp', included: false },
+            { pattern: 'test/data/SplitLongWaysTest.shx', included: false },
+
             'css/**/*.css',
             'css/**/*.scss',
             'test/hoot/index.js'

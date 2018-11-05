@@ -106,8 +106,8 @@ export default class ImportDataset {
         this.layerNameInput     = this.container.select( '#importLayerName' );
         this.newFolderNameInput = this.container.select( '#importNewFolderName' );
         this.schemaInput        = this.container.select( '#importSchema' );
-        this.fcodeDescInput     = this.container.select( '#appendFCodeDescription' );
-        this.customPrefix       = this.container.select( '#importCustomPrefix' );
+        this.fcodeDescInput     = this.container.select( '#importFCodeDescription' );
+        this.customSuffixInput  = this.container.select( '#importCustomSuffix' );
         this.fileIngest         = this.container.select( '#ingestFileUploader' );
         this.submitButton       = this.container.select( '#importSubmitBtn' );
 
