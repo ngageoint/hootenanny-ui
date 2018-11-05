@@ -97,21 +97,28 @@ export default class Datasets extends Tab {
                     case 'import-datasets-single': {
                         let translations = await Hoot.api.getTranslations();
 
-                        this.importSingle = new ImportDataset( 'single', translations ).render();
+                        this.importSingleModal = new ImportDataset( 'single', translations ).render();
+
+                        Hoot.events.once( 'modal-closed', () => delete this.importSingleModal );
                         break;
                     }
                     case 'import-datasets-directory': {
                         let translations = await Hoot.api.getTranslations();
 
-                        new ImportDataset( 'multi', translations ).render();
+                        this.importMultiModal = new ImportDataset( 'multi', translations ).render();
+
+                        Hoot.events.once( 'modal-closed', () => delete this.importMultiModal );
                         break;
                     }
                     case 'add-datasets-folder': {
                         new AddFolder().render();
+
+                        Hoot.events.once( 'modal-closed', () => delete this.importSingleModal );
                         break;
                     }
                     case 'refresh-datasets-layers': {
-                        Hoot.folders.refreshAll()
+                        Hoot.folders
+                            .refreshAll()
                             .then( () => Hoot.events.emit( 'render-dataset-table' ) );
                         break;
                     }

@@ -28,11 +28,12 @@ import {
  */
 export default class ImportDataset {
     constructor( type, translations ) {
-        this.formType     = type;
-        this.folderList   = Hoot.folders._folders;
-        this.translations = translations;
-        this.browserInfo  = getBrowserInfo();
-        this.formFactory  = new FormFactory();
+        this.formType       = type;
+        this.folderList     = Hoot.folders._folders;
+        this.translations   = translations;
+        this.browserInfo    = getBrowserInfo();
+        this.formFactory    = new FormFactory();
+        this.processRequest = null;
 
         // Add "NONE" option to beginning of array
         this.translations.unshift( {
@@ -99,15 +100,16 @@ export default class ImportDataset {
 
         this.container = this.formFactory.generateForm( 'body', 'datasets-import-form', metadata );
 
-        this.typeInput      = d3.select( '#importType' );
-        this.fileInput      = d3.select( '#importFile' );
-        this.fileListInput  = d3.select( '#importFileList' );
-        this.layerNameInput = d3.select( '#importLayerName' );
-        this.schemaInput    = d3.select( '#importSchema' );
-        this.fcodeDescInput = d3.select( '#appendFCodeDescription' );
-        this.customPrefix   = d3.select( '#importCustomPrefix' );
-        this.fileIngest     = d3.select( '#ingestFileUploader' );
-        this.submitButton   = d3.select( '#importSubmitBtn' );
+        this.typeInput          = this.container.select( '#importType' );
+        this.fileInput          = this.container.select( '#importFile' );
+        this.fileListInput      = this.container.select( '#importFileList' );
+        this.layerNameInput     = this.container.select( '#importLayerName' );
+        this.newFolderNameInput = this.container.select( '#importNewFolderName' );
+        this.schemaInput        = this.container.select( '#importSchema' );
+        this.fcodeDescInput     = this.container.select( '#appendFCodeDescription' );
+        this.customPrefix       = this.container.select( '#importCustomPrefix' );
+        this.fileIngest         = this.container.select( '#ingestFileUploader' );
+        this.submitButton       = this.container.select( '#importSubmitBtn' );
 
         return this;
     }
@@ -357,15 +359,19 @@ export default class ImportDataset {
 
             this.loadingState();
 
-            Hoot.api.uploadDataset( data )
+            this.processRequest = Hoot.api.uploadDataset( data )
                 .then( resp => Hoot.message.alert( resp ) )
                 .then( () => this.refresh() )
                 .catch( err => Hoot.message.alert( err ) )
-                .finally( () => this.container.remove() );
+                .finally( () => {
+                    this.container.remove();
+                    Hoot.events.emit( 'modal-closed' );
+                } );
         } else {
             let fileNames = [];
 
-            this.fileListInput.selectAll( 'option' )
+            this.fileListInput
+                .selectAll( 'option' )
                 .each( function() {
                     fileNames.push( this.value );
                 } );
@@ -393,11 +399,14 @@ export default class ImportDataset {
             this.loadingState();
 
             // TODO: synchonously upload datasets
-            Promise.all( _map( data, d => Hoot.api.uploadDataset( d ) ) )
+            this.processRequest = Promise.all( _map( data, d => Hoot.api.uploadDataset( d ) ) )
                 .then( resp => Hoot.message.alert( resp ) )
                 .then( () => this.refresh() )
                 .catch( err => Hoot.message.alert( err ) )
-                .finally( () => this.container.remove() );
+                .finally( () => {
+                    this.container.remove();
+                    Hoot.events.emit( 'modal-closed' );
+                } );
         }
     }
 

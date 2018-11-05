@@ -16,13 +16,6 @@ import About from './about';
 export default class Navbar {
     constructor() {
         this.container = d3.select( 'body' );
-
-        this.dropdownItems = [
-            {
-                title : 'About',
-                onClick : () => this.openAboutModal()
-            }
-        ];
     }
 
     /**
@@ -70,17 +63,14 @@ export default class Navbar {
 
         let dropdownContent = rightContainer
             .append( 'ul' )
-            .classed( 'dropdown-content fill-white', true )
-            .selectAll( '.dropdown-item' )
-            .data( this.dropdownItems );
+            .classed( 'dropdown-content fill-white', true );
 
         dropdownContent
-            .enter()
             .append( 'li' )
             .classed( 'dropdown-item pad2x strong pointer', true )
             .append( 'a' )
             .attr( 'href', '#!' )
-            .text( d => d.title );
+            .text( 'About' );
 
         let dropdownToggle = rightContainer
             .append( 'div' )

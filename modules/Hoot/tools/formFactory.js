@@ -7,6 +7,7 @@
 import _map from 'lodash-es/map';
 
 import { d3combobox } from '../../lib/hoot/d3.combobox';
+import Hoot from '../hoot';
 
 /**
  * Create a form contained within a modal
@@ -88,7 +89,10 @@ export default class FormFactory {
             .text( formTitle )
             .append( 'div' )
             .classed( 'fr _icon close pointer', true )
-            .on( 'click', () => container.remove() );
+            .on( 'click', () => {
+                container.remove();
+                Hoot.events.emit( 'modal-closed' );
+            } );
 
         return form;
     }
