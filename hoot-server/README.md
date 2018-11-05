@@ -7,7 +7,5 @@ To run the current development version, clone this project and serve it locally.
 
 ## Basics
 
-* npm install - install express server, socket.i.o(beta) & grunt
+* npm install - install express server
 * npm start - runs hoot on <strong>http://localhost:8080</strong>
-* grunt test - javascript validator
-* grunt - compile js/css code into /dist. Must have hoot database
