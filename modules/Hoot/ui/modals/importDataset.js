@@ -18,7 +18,8 @@ import { getBrowserInfo } from '../../tools/utilities';
 import {
     importSingleForm,
     importMultiForm
-} from '../../config/domMetadata';
+}           from '../../config/domMetadata';
+import _get from 'lodash-es/get';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -104,6 +105,7 @@ export default class ImportDataset {
         this.fileInput          = this.container.select( '#importFile' );
         this.fileListInput      = this.container.select( '#importFileList' );
         this.layerNameInput     = this.container.select( '#importLayerName' );
+        this.pathNameInput      = this.container.select( '#importPathName' );
         this.newFolderNameInput = this.container.select( '#importNewFolderName' );
         this.schemaInput        = this.container.select( '#importSchema' );
         this.fcodeDescInput     = this.container.select( '#importFCodeDescription' );
@@ -330,13 +332,20 @@ export default class ImportDataset {
     /**
      * Submit form data
      */
-    handleSubmit() {
-        let transVal    = this.schemaInput.property( 'value' ),
-            typeVal     = this.typeInput.property( 'value' ),
-            transCombo  = this.schemaInput.datum(),
-            typeCombo   = this.typeInput.datum(),
-            translation = _filter( transCombo.data, o => o.DESCRIPTION === transVal )[ 0 ],
-            importType  = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
+    async handleSubmit() {
+        let pathName      = this.pathNameInput.property( 'value' ),
+            newFolderName = this.newFolderNameInput.property( 'value' ),
+            pathId        = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0,
+
+            transVal      = this.schemaInput.property( 'value' ),
+            typeVal       = this.typeInput.property( 'value' ),
+
+            transCombo    = this.schemaInput.datum(),
+            typeCombo     = this.typeInput.datum(),
+
+            translation   = _filter( transCombo.data, o => o.DESCRIPTION === transVal )[ 0 ],
+            importType    = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
+
             translationName,
             data;
 
@@ -348,12 +357,23 @@ export default class ImportDataset {
             translationName = translation.NAME + '.js';
         }
 
+        let folderId;
+
+        if ( newFolderName ) {
+            folderId = await Hoot.folders.addFolder( pathName, newFolderName );
+        } else {
+            folderId = pathId;
+        }
+
+
         if ( this.formType === 'single' ) {
+            let layerName = this.layerNameInput.property( 'value' );
+
             data = {
                 NONE_TRANSLATION: translation.NONE === 'true',
                 TRANSLATION: translationName,
                 INPUT_TYPE: importType.value,
-                INPUT_NAME: this.layerNameInput.property( 'value' ),
+                INPUT_NAME: layerName,
                 formData: this.getFormData( this.fileIngest.node().files )
             };
 
@@ -361,7 +381,9 @@ export default class ImportDataset {
 
             this.processRequest = Hoot.api.uploadDataset( data )
                 .then( resp => Hoot.message.alert( resp ) )
-                .then( () => this.refresh() )
+                .then( () => Hoot.layers.refreshLayers() )
+                .then( () => this.updateLinks( layerName, folderId ) )
+                .then( () => Hoot.events.emit( 'render-dataset-table' ) )
                 .catch( err => Hoot.message.alert( err ) )
                 .finally( () => {
                     this.container.remove();
@@ -376,7 +398,9 @@ export default class ImportDataset {
                     fileNames.push( this.value );
                 } );
 
-            data = _map( fileNames, name => {
+            this.loadingState();
+
+            this.processRequest = Promise.all( _map( fileNames, name => {
                 let importFiles = _filter( this.fileIngest.node().files, file => {
                     let fName = file.name.substring( 0, file.name.length - 4 );
 
@@ -387,21 +411,21 @@ export default class ImportDataset {
                     return fName === name;
                 } );
 
-                return {
+                let params = {
                     NONE_TRANSLATION: translation.NONE === 'true',
                     TRANSLATION: translationName,
                     INPUT_TYPE: importType.value,
                     INPUT_NAME: name,
                     formData: this.getFormData( importFiles )
                 };
-            } );
 
-            this.loadingState();
+                return Hoot.api.uploadDataset( params );
 
-            // TODO: synchonously upload datasets
-            this.processRequest = Promise.all( _map( data, d => Hoot.api.uploadDataset( d ) ) )
-                .then( resp => Hoot.message.alert( resp ) )
-                .then( () => this.refresh() )
+            } ) )
+                .then( resp => Hoot.message.alert( resp ) ) // TODO: create message for multi upload success
+                .then( () => Hoot.layers.refreshLayers() )
+                .then( () => Promise.all( _map( fileNames, name => this.updateLinks( name, folderId ) ) ) )
+                .then( () => Hoot.events.emit( 'render-dataset-table' ) )
                 .catch( err => Hoot.message.alert( err ) )
                 .finally( () => {
                     this.container.remove();
@@ -410,17 +434,9 @@ export default class ImportDataset {
         }
     }
 
-    //upload( data ) {
-    //    return hoot.api.uploadDataset( data )
-    //        .catch( err => {
-    //            console.log( err );
-    //            this.container.remove();
-    //        } );
-    //}
-
-    refresh() {
-        return Hoot.folders.refreshDatasets()
-            .then( () => Hoot.folders.updateFolders( this.container ) );
+    updateLinks( layerName, folderId ) {
+        return Hoot.folders.updateFolderLink( layerName, folderId )
+            .then( () => Hoot.folders.refreshAll() );
     }
 
     /**

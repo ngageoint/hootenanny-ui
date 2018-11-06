@@ -111,9 +111,9 @@ export default class Datasets extends Tab {
                         break;
                     }
                     case 'add-datasets-folder': {
-                        new AddFolder().render();
+                        this.addFolderModal = new AddFolder().render();
 
-                        Hoot.events.once( 'modal-closed', () => delete this.importSingleModal );
+                        Hoot.events.once( 'modal-closed', () => delete this.addFolderModal );
                         break;
                     }
                     case 'refresh-datasets-layers': {

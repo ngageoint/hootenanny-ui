@@ -353,7 +353,7 @@ export default class FolderManager {
         let params = {
             folderId,
             mapId,
-            updateType : 'update'
+            updateType : 'new'
         };
 
         return this.hoot.api.updateMapFolderLinks( params );

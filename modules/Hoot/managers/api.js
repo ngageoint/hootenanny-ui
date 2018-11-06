@@ -504,7 +504,6 @@ export default class API {
         return this.request( params )
             .then( resp => this.statusInterval( resp.data[ 0 ].jobid ) )
             .then( resp => {
-                console.log( resp );
                 return {
                     data: resp.data,
                     message: 'Dataset successfully imported',
@@ -523,18 +522,6 @@ export default class API {
                 } );
             } );
     }
-
-    // TODO: get back to this?
-    //uploadMultiDatasets( data ) {
-    //    return Promise.all( _.map( data, d => this.uploadDataset( d ) ) )
-    //        .then( resp => {
-    //            return {
-    //                message: `Successfully imported ${resp.length} datasets`,
-    //                status: 200,
-    //                type: 'success'
-    //            };
-    //        } );
-    //}
 
     modify( data ) {
         const params = {

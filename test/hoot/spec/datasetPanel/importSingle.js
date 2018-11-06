@@ -107,20 +107,5 @@ module.exports = () => {
             expect( Hoot.layers.findBy( 'name', 'UnitTestSingle' ) ).to.be.ok;
             expect( d3.select( '#dataset-table' ).select( 'g[data-name="UnitTestSingle"]' ).size() ).to.equal( 1 );
         } );
-
-        it( 'closes import single modal', done => {
-            expect( d3.select( '#datasets-import-form' ).size() ).to.equal( 0 );
-
-            d3.select( '.dataset-action-button:first-child' ).dispatch( 'click' );
-
-            setTimeout( () => {
-                expect( d3.select( '#datasets-import-form' ).size() ).to.equal( 1 );
-
-                d3.select( '#datasets-import-form ._icon.close' ).dispatch( 'click' );
-
-                expect( d3.select( '#datasets-import-form' ).size() ).to.equal( 0 );
-                done();
-            }, 200 );
-        } );
     } );
 };

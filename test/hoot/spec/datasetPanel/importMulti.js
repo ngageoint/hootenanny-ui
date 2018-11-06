@@ -14,8 +14,6 @@ module.exports = () => {
             importModal;
 
         it( 'opens import multi modal', done => {
-            expect( d3.select( '#datasets-import-form' ).size() ).to.equal( 0 );
-
             d3.select( '.dataset-action-button:nth-child(2)' ).dispatch( 'click' );
 
             setTimeout( () => {
@@ -24,7 +22,7 @@ module.exports = () => {
             }, 200 );
         } );
 
-        it( 'performs validation on form fields', async () => {
+        it( 'validates form fields', async () => {
             datasets    = Hoot.ui.managePanel.datasets;
             importModal = datasets.importMultiModal;
 
@@ -104,6 +102,6 @@ module.exports = () => {
             expect( datasets.importMultiModal ).to.be.undefined;
             expect( Hoot.layers.findBy( 'name', 'SplitLongWaysTest' ) ).to.be.ok;
             expect( d3.select( '#dataset-table' ).select( 'g[data-name="SplitLongWaysTest"]' ).size() ).to.equal( 1 );
-        } ).timeout( 10000 );
+        } ).timeout( 15000 );
     } );
 };

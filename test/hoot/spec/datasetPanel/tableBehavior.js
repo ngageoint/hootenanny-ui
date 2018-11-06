@@ -1,5 +1,5 @@
 /** ****************************************************************************************************
- * File: tableClickBehavior.js
+ * File: tableBehavior.js
  * Project: hootenanny-ui
  * @author Matt Putipong on 11/5/18
  *******************************************************************************************************/
@@ -17,18 +17,16 @@ function deselectAll() {
 }
 
 module.exports = () => {
-    describe( 'table click behavior', () => {
+    describe( 'table behavior', () => {
         let table,
             selected,
             folderId;
 
         before( () => {
-            d3.select( '#navbar .menu-button' ).dispatch( 'click' );
-
             table = d3.select( '#dataset-table' );
         } );
 
-        describe( 'layers', () => {
+        describe( 'item selection', () => {
             it( 'selects a single layer', () => {
                 let dataset = table.select( 'g[data-type="dataset"]' ); // use select instead of selectAll to get first element
 
@@ -190,9 +188,7 @@ module.exports = () => {
                     done();
                 }, CONTEXT_TIMEOUT );
             } );
-        } );
 
-        describe( 'folders', () => {
             it( 'opens folder with children', () => {
                 let isChild = _.filter( Hoot.layers.allLayers, layer => layer.folderId && layer.folderId > 0 );
 
@@ -246,6 +242,10 @@ module.exports = () => {
                     done();
                 }, CONTEXT_TIMEOUT );
             } );
+        } );
+
+        describe( 'folders', () => {
+
         } );
     } );
 };

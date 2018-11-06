@@ -79,9 +79,12 @@ export default class AddFolder {
         return Hoot.api.addFolder( params )
             .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
-            .then( () => this.container.remove() )
             .catch( err => {
                 // TODO: alert - unable to add folder
+            } )
+            .finally( () => {
+                this.container.remove();
+                Hoot.events.emit( 'modal-closed' );
             } );
     }
 }
