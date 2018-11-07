@@ -4,7 +4,7 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import _map     from 'lodash-es/map';
+import _map from 'lodash-es/map';
 
 import Hoot       from '../../hoot';
 import FolderTree from '../../tools/folderTree';
@@ -171,7 +171,7 @@ export default class Datasets extends Tab {
      * after each item has successfully been deleted.
      *
      * Note: If deleting a folder, this method will recursively delete all children (both, layers and folders) of the folder.
-     * It will begin at the outer-most folder and work inwards until reaching the target folder. Once all children
+     * It will begin at the inner-most folder and work outwards until reaching the target folder. Once all children
      * have been deleted, the target folder will then be deleted.
      *
      * @param toDelete - array of items to delete
@@ -214,7 +214,7 @@ export default class Datasets extends Tab {
 
                 let items = d.data.type === 'folder' ? new Array( d ) : tree.selectedNodes;
 
-                this.deleteItems( items )
+                this.processRequest = this.deleteItems( items )
                     .then( () => Hoot.events.emit( 'render-dataset-table' ) );
 
                 break;

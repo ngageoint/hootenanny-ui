@@ -38,7 +38,6 @@ class Hoot {
     }
 
     init( context ) {
-        console.log( 'INIT' );
         if ( this.ui && this.ui instanceof UI ) return;
 
         this.context = context;
@@ -54,7 +53,7 @@ class Hoot {
         this.ui.render();
 
         // prevent this class from being modified in any way.
-        // this does not affect children objects
+        // this does not affect children objectslayerNames
         Object.freeze( this );
     }
 
@@ -103,7 +102,7 @@ class Hoot {
 
 // Export this class as a "Singleton". When it is imported the very first time,
 // it will create a new instance of the object and store it in memory. Every other
-// import afterwards will receive this cached object, and not create a new instance.
+// import afterwards will receive this cached object instead of creating a new instance.
 
 // * Note: This is not a true Singleton, but it mimics the Singleton pattern
 // because of Node's module caching behavior.

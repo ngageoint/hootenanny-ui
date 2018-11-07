@@ -13,6 +13,13 @@ module.exports = () => {
         let datasets,
             importModal;
 
+        after( async () => {
+            if ( Hoot.layers.findBy( 'name', 'UnitTestImportMulti' ) ) {
+                console.log( 'Deleting layer: "UnitTestImportMulti"');
+                await Hoot.api.deleteLayer( 'UnitTestImportMulti' );
+            }
+        } );
+
         it( 'opens import multi modal', done => {
             d3.select( '.dataset-action-button:nth-child(2)' ).dispatch( 'click' );
 
@@ -49,9 +56,9 @@ module.exports = () => {
             let dT = new ClipboardEvent( '' ).clipboardData || new DataTransfer();
 
             let fileNames = [
-                'base/test/data/ImportMultiTest.dbf',
-                'base/test/data/ImportMultiTest.shp',
-                'base/test/data/ImportMultiTest.shx',
+                'base/test/data/UnitTestImportMulti.dbf',
+                'base/test/data/UnitTestImportMulti.shp',
+                'base/test/data/UnitTestImportMulti.shx',
             ];
 
             await Promise.all( _map( fileNames, async name => {
@@ -64,10 +71,10 @@ module.exports = () => {
 
             await fileIngest.dispatch( 'change' );
 
-            expect( fileInput.property( 'value' ) ).to.have.string( 'ImportMultiTest.dbf' );
-            expect( fileInput.property( 'value' ) ).to.have.string( 'ImportMultiTest.shp' );
-            expect( fileInput.property( 'value' ) ).to.have.string( 'ImportMultiTest.shx' );
-            expect( fileListInput.select( 'option' ).property( 'value' ) ).to.equal( 'ImportMultiTest' );
+            expect( fileInput.property( 'value' ) ).to.have.string( 'UnitTestImportMulti.dbf' );
+            expect( fileInput.property( 'value' ) ).to.have.string( 'UnitTestImportMulti.shp' );
+            expect( fileInput.property( 'value' ) ).to.have.string( 'UnitTestImportMulti.shx' );
+            expect( fileListInput.select( 'option' ).property( 'value' ) ).to.equal( 'UnitTestImportMulti' );
             expect( submitButton.property( 'disabled' ) ).to.be.false;
 
             // check for invalid character in text field
@@ -92,7 +99,7 @@ module.exports = () => {
             let importSubmit = importModal.submitButton;
 
             expect( importSubmit.select( 'span' ).text() ).to.equal( 'Import' );
-            expect( Hoot.layers.findBy( 'name', 'ImportMultiTest' ) ).to.be.undefined;
+            expect( Hoot.layers.findBy( 'name', 'UnitTestImportMulti' ) ).to.be.undefined;
 
             importSubmit.dispatch( 'click' );
 
@@ -101,8 +108,8 @@ module.exports = () => {
             await importModal.processRequest;
 
             expect( datasets.importMultiModal ).to.be.undefined;
-            expect( Hoot.layers.findBy( 'name', 'ImportMultiTest' ) ).to.be.ok;
-            expect( d3.select( '#dataset-table' ).select( 'g[data-name="ImportMultiTest"]' ).size() ).to.equal( 1 );
+            expect( Hoot.layers.findBy( 'name', 'UnitTestImportMulti' ) ).to.be.ok;
+            expect( d3.select( '#dataset-table' ).select( 'g[data-name="UnitTestImportMulti"]' ).size() ).to.equal( 1 );
         } ).timeout( 15000 );
     } );
 };

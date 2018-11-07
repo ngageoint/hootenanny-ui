@@ -11,6 +11,13 @@ module.exports = () => {
         let datasets,
             importModal;
 
+        after( async () => {
+            if ( Hoot.layers.findBy( 'name', 'UnitTestImportSingle' ) ) {
+                console.log( 'Deleting layer: "UnitTestImportSingle"');
+                await Hoot.api.deleteLayer( 'UnitTestImportSingle' );
+            }
+        } );
+
         it( 'opens import single modal', done => {
             expect( d3.select( '#datasets-import-form' ).size() ).to.equal( 0 );
 
@@ -84,7 +91,7 @@ module.exports = () => {
             // update layer name to signify that this layer was created during unit tests &
             // check for correct values in all fields
             layerNameInput
-                .property( 'value', 'ImportSingleTest' )
+                .property( 'value', 'UnitTestImportSingle' )
                 .dispatch( 'keyup' );
 
             expect( layerNameInput.classed( 'invalid' ) ).to.be.false;
@@ -95,7 +102,7 @@ module.exports = () => {
             let importSubmit = importModal.submitButton;
 
             expect( importSubmit.select( 'span' ).text() ).to.equal( 'Import' );
-            expect( Hoot.layers.findBy( 'name', 'ImportSingleTest' ) ).to.be.undefined;
+            expect( Hoot.layers.findBy( 'name', 'UnitTestImportSingle' ) ).to.be.undefined;
 
             importSubmit.dispatch( 'click' );
 
@@ -104,8 +111,8 @@ module.exports = () => {
             await importModal.processRequest;
 
             expect( datasets.importSingleModal ).to.be.undefined;
-            expect( Hoot.layers.findBy( 'name', 'ImportSingleTest' ) ).to.be.ok;
-            expect( d3.select( '#dataset-table' ).select( 'g[data-name="ImportSingleTest"]' ).size() ).to.equal( 1 );
+            expect( Hoot.layers.findBy( 'name', 'UnitTestImportSingle' ) ).to.be.ok;
+            expect( d3.select( '#dataset-table' ).select( 'g[data-name="UnitTestImportSingle"]' ).size() ).to.equal( 1 );
         } );
     } );
 };

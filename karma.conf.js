@@ -68,9 +68,9 @@ module.exports = function( config ) {
             { pattern: 'img/**/*.gif', included: false },
 
             { pattern: 'test/data/UndividedHighway.osm', included: false },
-            { pattern: 'test/data/ImportMultiTest.dbf', included: false },
-            { pattern: 'test/data/ImportMultiTest.shp', included: false },
-            { pattern: 'test/data/ImportMultiTest.shx', included: false },
+            { pattern: 'test/data/UnitTestImportMulti.dbf', included: false },
+            { pattern: 'test/data/UnitTestImportMulti.shp', included: false },
+            { pattern: 'test/data/UnitTestImportMulti.shx', included: false },
 
             'css/**/*.css',
             'css/**/*.scss',
@@ -106,7 +106,7 @@ module.exports = function( config ) {
 
 
         coverageIstanbulReporter: {
-            reports: [ 'html', 'lcov', 'text-summary' ],
+            reports: [ 'html', 'lcov' ],
             dir: path.join( __dirname, 'coverage' ),
             fixWebpackSourcePaths: true
         },
@@ -132,6 +132,11 @@ module.exports = function( config ) {
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: [ 'Chrome' ],
+
+
+        // browserConsoleLogOptions: {
+        //     terminal: false
+        // },
 
 
         // Continuous Integration mode

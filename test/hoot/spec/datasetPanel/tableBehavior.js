@@ -4,30 +4,41 @@
  * @author Matt Putipong on 11/5/18
  *******************************************************************************************************/
 
-const _                          = require( 'lodash' );
-const sinon                      = require( 'sinon' );
+const _     = require( 'lodash' );
+const sinon = require( 'sinon' );
+
 const { generateOsmLayerParams } = require( '../../helpers' );
 
 const CONTEXT_TIMEOUT = 300;
 
-function deselectAll() {
-    let selected = d3.selectAll( 'g[data-type="dataset"] .sel' );
-
-    if ( !selected.size() ) return;
-
-    selected.each( function() {
-        d3.select( this.parentNode ).dispatch( 'click' );
-    } );
-}
-
 module.exports = () => {
-    describe( 'table behavior', () => {
-        let table,
-            selected,
-            folderId;
+    let metaClick    = new MouseEvent( 'click', { metaKey: true } ),
+        shiftClick   = new MouseEvent( 'click', { shiftKey: true } ),
+        contextClick = new MouseEvent( 'contextmenu' ),
+        table, datasetsPanel;
 
+    function deselectAllDatasets() {
+        let selected = d3.selectAll( 'g[data-type="dataset"] .sel' );
+
+        if ( !selected.size() ) return;
+
+        selected.each( function() {
+            d3.select( this.parentNode ).dispatch( 'click' );
+        } );
+    }
+
+    function ensureFolderOpen( folderName ) {
+        let parentFolder = table.select( `g[data-name="${folderName}"]` );
+
+        if ( !parentFolder.select( '._icon' ).classed( 'open-folder' ) ) {
+            parentFolder.dispatch( 'click' );
+        }
+    }
+
+    describe( 'table behavior', () => {
         before( () => {
-            table = d3.select( '#dataset-table' );
+            table         = d3.select( '#dataset-table' );
+            datasetsPanel = Hoot.ui.managePanel.datasets;
         } );
 
         describe( 'table refresh', () => {
@@ -48,101 +59,71 @@ module.exports = () => {
         } );
 
         describe( 'item selection', () => {
+            let folderId;
+
             it( 'selects a single layer', () => {
-                let dataset = table.select( 'g[data-type="dataset"]' ); // use select instead of selectAll to get first element
+                table.select( 'g[data-type="dataset"]' ).dispatch( 'click' );
 
-                dataset.dispatch( 'click' );
-
-                let rect = table.select( 'g[data-type="dataset"]' ).select( 'rect' );
-
-                expect( rect.classed( 'sel' ) ).to.be.true;
+                expect( table.select( 'g[data-type="dataset"] rect' ).classed( 'sel' ) ).to.be.true;
             } );
 
             it( 'deselects a single layer', () => {
-                let dataset = table.select( 'g[data-type="dataset"]' );
+                table.select( 'g[data-type="dataset"]' ).dispatch( 'click' );
 
-                dataset.dispatch( 'click' );
-
-                let rect = table.select( 'g[data-type="dataset"]' ).select( 'rect' );
-
-                expect( rect.classed( 'sel' ) ).to.be.false;
+                expect( table.select( 'g[data-type="dataset"] rect' ).classed( 'sel' ) ).to.be.false;
             } );
 
             it( 'selects multiple layers while holding META key', () => {
                 let datasets = table.selectAll( 'g[data-type="dataset"]' );
 
-                datasets.each( function() {
-                    let e = new MouseEvent( 'click', { metaKey: true } );
+                table
+                    .selectAll( 'g[data-type="dataset"]' )
+                    .each( function() {
+                        d3.select( this ).node().dispatchEvent( metaClick );
+                    } );
 
-                    d3.select( this ).node().dispatchEvent( e );
-                } );
-
-                selected = table.selectAll( 'g[data-type="dataset"] .sel' );
-
-                expect( selected.size() ).to.equal( datasets.size() );
+                expect( table.selectAll( '.sel' ).size() ).to.equal( datasets.size() );
             } );
 
             it( 'selects single layer after selecting multiple datasets', () => {
-                let datasets = table.selectAll( 'g[data-type="dataset"]' );
-
-                // use selected datsets from previous test
-                expect( selected.size() ).to.equal( datasets.size() );
-
                 table.select( 'g[data-type="dataset"]' ).dispatch( 'click' );
 
-                selected = table.selectAll( 'g[data-type="dataset"] .sel' );
-
-                expect( selected.size() ).to.equal( 1 );
+                expect( table.selectAll( '.sel' ).size() ).to.equal( 1 );
             } );
 
             it( 'selects groups of layers while holding META and SHIFT keys', () => {
                 let datasets = table.selectAll( 'g[data-type="dataset"]' );
 
-                // use selected datsets from previous test
-                expect( selected.size() ).to.equal( 1 );
-
                 datasets
                     .filter( ( d, i ) => i === 3 )
                     .each( function() {
-                        let e = new MouseEvent( 'click', { shiftKey: true } );
-
-                        d3.select( this ).node().dispatchEvent( e );
+                        d3.select( this ).node().dispatchEvent( shiftClick );
                     } );
 
-                selected = table.selectAll( 'g[data-type="dataset"] .sel' );
-                expect( selected.size() ).to.equal( 4 );
+                expect( table.selectAll( 'g[data-type="dataset"] .sel' ).size() ).to.equal( 4 );
 
                 datasets
                     .filter( ( d, i ) => i === 5 )
                     .each( function() {
-                        let e = new MouseEvent( 'click', { shiftKey: true } );
-
-                        d3.select( this ).node().dispatchEvent( e );
+                        d3.select( this ).node().dispatchEvent( shiftClick );
                     } );
 
-                selected = table.selectAll( 'g[data-type="dataset"] .sel' );
-                expect( selected.size() ).to.equal( 6 );
+                expect( table.selectAll( 'g[data-type="dataset"] .sel' ).size() ).to.equal( 6 );
 
                 datasets
                     .filter( ( d, i ) => i === 7 )
                     .each( function() {
-                        let e = new MouseEvent( 'click', { metaKey: true } );
-
-                        d3.select( this ).node().dispatchEvent( e );
+                        d3.select( this ).node().dispatchEvent( metaClick );
                     } );
 
-                selected = table.selectAll( 'g[data-type="dataset"] .sel' );
-                expect( selected.size() ).to.equal( 7 );
+                expect( table.selectAll( 'g[data-type="dataset"] .sel' ).size() ).to.equal( 7 );
             } );
 
             it( 'opens context menu for single selected layer', done => {
-                deselectAll();
                 let dataset = table.select( 'g[data-type="dataset"]' );
 
-
-                let e = new MouseEvent( 'contextmenu' );
-
-                dataset.node().dispatchEvent( e );
+                deselectAllDatasets();
+                dataset.node().dispatchEvent( contextClick );
 
                 let contextMenu = d3.select( '.context-menu' ),
                     items       = contextMenu.selectAll( 'li' );
@@ -157,23 +138,20 @@ module.exports = () => {
             } );
 
             it( 'opens context menu for multiple selected layers', done => {
-                deselectAll();
                 let dataset  = table.select( 'g[data-type="dataset"]' ),
                     datasets = table.selectAll( 'g[data-type="dataset"]' );
 
-                dataset.dispatch( 'click' ); // make sure only one dataset is selected
+                // make sure only one dataset is selected
+                deselectAllDatasets();
+                dataset.dispatch( 'click' );
 
                 datasets
                     .filter( ( d, i ) => i === 3 )
                     .each( function() {
-                        let e = new MouseEvent( 'click', { shiftKey: true } );
-
-                        d3.select( this ).node().dispatchEvent( e );
+                        d3.select( this ).node().dispatchEvent( shiftClick );
                     } );
 
-                let e = new MouseEvent( 'contextmenu' );
-
-                dataset.node().dispatchEvent( e );
+                dataset.node().dispatchEvent( contextClick );
 
                 let contextMenu = d3.select( '.context-menu' ),
                     items       = contextMenu.selectAll( 'li' );
@@ -188,14 +166,12 @@ module.exports = () => {
             } );
 
             it( 'opens context menu when clicking and holding CTRL key', done => {
-                deselectAll();
                 let dataset = table.select( 'g[data-type="dataset"]' );
 
-                dataset.dispatch( 'click' ); // make sure only one dataset is selected
-
-                let e = new MouseEvent( 'contextmenu' );
-
-                dataset.node().dispatchEvent( e );
+                // make sure only one dataset is selected before firing context click
+                deselectAllDatasets();
+                dataset.dispatch( 'click' );
+                dataset.node().dispatchEvent( contextClick );
 
                 let contextMenu = d3.select( '.context-menu' ),
                     items       = contextMenu.selectAll( 'li' );
@@ -211,18 +187,16 @@ module.exports = () => {
             } );
 
             it( 'opens folder with children', () => {
-                let isChild = _.filter( Hoot.layers.allLayers, layer => layer.folderId && layer.folderId > 0 );
+                let isChild = _.filter( Hoot.layers.allLayers, layer => layer.folderId && layer.folderId > 0 ); // folderId > 0 means it resides in a folder other than root
 
                 folderId = isChild[ 0 ].folderId;
 
-                let childrenCount = _.filter( isChild, child => child.folderId === folderId ).length,
-                    nodesCount    = table.selectAll( 'g.node' ).size();
+                let childrenCount = _.filter( isChild, child => child.folderId === folderId ).length, // get number of children inside of selected folder
+                    nodesCount    = table.selectAll( 'g.node' ).size(); // total number of nodes *shown* in dataset table
 
-                let folder = table.select( `g[data-type="folder"][data-id="${folderId}"]` );
+                table.select( `g[data-type="folder"][data-id="${folderId}"]` ).dispatch( 'click' ); // click on folder to open
 
-                folder.dispatch( 'click' );
-
-                let folderIcon    = table.select( `g[data-type="folder"][data-id="${folderId}"]` ).select( '._icon' ),
+                let folderIcon    = table.select( `g[data-type="folder"][data-id="${folderId}"] ._icon` ),
                     newNodesCount = table.selectAll( 'g.node' ).size();
 
                 expect( folderIcon.classed( 'open-folder' ) ).to.be.true;
@@ -234,11 +208,9 @@ module.exports = () => {
                     childrenCount = _.filter( isChild, child => child.folderId === folderId ).length, // use folder ID from previous test
                     nodesCount    = table.selectAll( 'g.node' ).size();
 
-                let folder = table.select( `g[data-type="folder"][data-id="${folderId}"]` );
+                table.select( `g[data-type="folder"][data-id="${folderId}"]` ).dispatch( 'click' );
 
-                folder.dispatch( 'click' );
-
-                let folderIcon    = table.select( `g[data-type="folder"][data-id="${folderId}"]` ).select( '._icon' ),
+                let folderIcon    = table.select( `g[data-type="folder"][data-id="${folderId}"] ._icon` ),
                     newNodesCount = table.selectAll( 'g.node' ).size();
 
                 expect( folderIcon.classed( 'open-folder' ) ).to.be.false;
@@ -246,11 +218,7 @@ module.exports = () => {
             } );
 
             it( 'opens folder context menu', done => {
-                let folder = table.select( 'g[data-type="folder"]' );
-
-                let e = new MouseEvent( 'contextmenu' );
-
-                folder.node().dispatchEvent( e );
+                table.select( 'g[data-type="folder"]' ).node().dispatchEvent( contextClick );
 
                 let contextMenu = d3.select( '.context-menu' ),
                     items       = contextMenu.selectAll( 'li' );
@@ -266,13 +234,10 @@ module.exports = () => {
         } );
 
         describe( 'item modify/rename', () => {
-            let datasetsPanel,
-                modifyModal;
+            let modifyModal;
 
             before( async function() {
                 this.timeout( 10000 );
-
-                datasetsPanel = Hoot.ui.managePanel.datasets;
 
                 let generateCount = 5,
                     layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] ),
@@ -285,15 +250,10 @@ module.exports = () => {
                 await Hoot.api.addFolder( folderParams ); // generate test folder
                 await Hoot.folders.refreshAll();
                 await Hoot.events.emit( 'render-dataset-table' );
-
-                // await setTimeout( () => {}, 200 ); // delay to make sure table has finished refreshing
             } );
 
             it( 'opens modify modal for single layer', () => {
-                let layer = table.select( 'g[data-name="UnitTestLayer0"]' ),
-                    e     = new MouseEvent( 'contextmenu' );
-
-                layer.node().dispatchEvent( e );
+                table.select( 'g[data-name="UnitTestLayer0"]' ).node().dispatchEvent( contextClick );
 
                 d3.select( '.context-menu' )
                     .select( 'li:nth-child(4)' )
@@ -385,8 +345,8 @@ module.exports = () => {
                     endLayer   = table.select( 'g[data-name="UnitTestLayer4"]' );
 
                 startLayer.dispatch( 'click' );
-                endLayer.node().dispatchEvent( new MouseEvent( 'click', { shiftKey: true } ) );
-                endLayer.node().dispatchEvent( new MouseEvent( 'contextmenu' ) );
+                endLayer.node().dispatchEvent( shiftClick );
+                endLayer.node().dispatchEvent( contextClick );
 
                 d3.select( '.context-menu' )
                     .select( 'li:nth-child(2)' )
@@ -407,7 +367,7 @@ module.exports = () => {
             it( 'moves multiple layers to a different folder', async () => {
                 let pathNameInput = modifyModal.pathNameInput,
                     submitButton  = modifyModal.submitButton,
-                    layerNames = [
+                    layerNames    = [
                         'UnitTestLayer1',
                         'UnitTestLayer2',
                         'UnitTestLayer3',
@@ -433,8 +393,41 @@ module.exports = () => {
                 } ) );
             } );
 
+            it( 'renames a layer', async () => {
+                ensureFolderOpen( 'UnitTestFolder' );
+
+                table.select( 'g[data-name="UnitTestLayer0"]' ).node().dispatchEvent( contextClick );
+
+                d3.select( '.context-menu' )
+                    .select( 'li:nth-child(4)' )
+                    .dispatch( 'click' );
+
+                d3.select( 'body' )
+                    .dispatch( 'click' );
+
+                modifyModal = datasetsPanel.modifyLayerModal;
+
+                let layerNameInput = modifyModal.layerNameInput,
+                    pathNameInput  = modifyModal.pathNameInput,
+                    submitButton   = modifyModal.submitButton;
+
+                expect( layerNameInput.property( 'value' ) ).to.equal( 'UnitTestLayer0' );
+                expect( pathNameInput.property( 'value' ) ).to.equal( 'UnitTestFolder' );
+
+                layerNameInput
+                    .property( 'value', 'UnitTestLayerNew' )
+                    .dispatch( 'keyup' );
+
+                submitButton.dispatch( 'click' );
+
+                await modifyModal.processRequest;
+
+                expect( table.select( 'g[data-name="UnitTestLayer0"]' ).size() ).to.equal( 0 );
+                expect( table.select( 'g[data-name="UnitTestLayerNew"]' ).size() ).to.equal( 1 );
+            } );
+
             it( 'opens modify folder modal', () => {
-                table.select( 'g[data-name="UnitTestFolder1"]' ).node().dispatchEvent( new MouseEvent( 'contextmenu' ) );
+                table.select( 'g[data-name="UnitTestFolder1"]' ).node().dispatchEvent( contextClick );
 
                 d3.select( '.context-menu' )
                     .select( 'li:nth-child(2)' )
@@ -500,6 +493,141 @@ module.exports = () => {
                 expect( d3.select( '#modify-folder-form' ).size() ).to.equal( 0 );
                 expect( datasetsPanel.modifyFolderModal ).to.be.undefined;
                 expect( parentName ).to.equal( 'UnitTestFolder' );
+            } );
+
+            it( 'renames a folder', async () => {
+                ensureFolderOpen( 'UnitTestFolder' );
+
+                table.select( 'g[data-name="UnitTestFolder1"]' ).node().dispatchEvent( contextClick );
+
+                d3.select( '.context-menu' )
+                    .select( 'li:nth-child(2)' )
+                    .dispatch( 'click' );
+
+                d3.select( 'body' ).dispatch( 'click' );
+
+                modifyModal = datasetsPanel.modifyFolderModal;
+
+                let folderNameInput = modifyModal.folderNameInput,
+                    pathNameInput   = modifyModal.pathNameInput,
+                    submitButton    = modifyModal.submitButton;
+
+                expect( folderNameInput.property( 'value' ) ).to.equal( 'UnitTestFolder1' );
+                expect( pathNameInput.property( 'value' ) ).to.equal( 'UnitTestFolder' );
+
+                folderNameInput
+                    .property( 'value', 'UnitTestFolderNew' )
+                    .dispatch( 'keyup' );
+
+                submitButton.dispatch( 'click' );
+
+                await modifyModal.processRequest;
+
+                expect( table.select( 'g[data-name="UnitTestFolder1"]' ).size() ).to.equal( 0 );
+                expect( table.select( 'g[data-name="UnitTestFolderNew"]' ).size() ).to.equal( 1 );
+            } );
+        } );
+
+        describe( 'item delete', () => {
+            it( 'shows delete confirmation', () => {
+                ensureFolderOpen( 'UnitTestFolder' );
+
+                table.select( 'g[data-name="UnitTestLayerNew"]' ).node().dispatchEvent( contextClick );
+
+                let deleteItem = d3.select( '.context-menu li:nth-child(1)' );
+
+                expect( deleteItem.text() ).to.equal( 'Delete (1)' );
+
+                deleteItem.dispatch( 'click' );
+                d3.select( 'body' ).dispatch( 'click' );
+
+                let confirmOverlay = d3.select( '.hoot-confirm' );
+
+                expect( confirmOverlay.size() ).to.equal( 1 );
+                expect( confirmOverlay.select( '.confirm-message' ).text() ).to.equal( 'Are you sure you want to remove the selected datasets?' );
+            } );
+
+            it( 'deletes a single layer', done => {
+                d3.select( '.hoot-confirm .confirm-actions button.primary' ).dispatch( 'click' );
+
+                setTimeout( () => { // wait for delete process to begin
+                    Hoot.ui.managePanel.datasets.processRequest.then( () => {
+                        setTimeout( () => { // wait for table to finish re-rendering
+                            expect( d3.select( '.hoot-confirm' ).size() ).to.equal( 0 );
+                            expect( table.select( 'g[data-name="UnitTestLayerNew"]' ).size() ).to.equal( 0 );
+                            expect( Hoot.layers.findBy( 'name', 'UnitTestLayerNew' ) ).to.be.undefined;
+                            done();
+                        }, 100 );
+                    } );
+                }, 100 );
+            } );
+
+            it( 'deletes multiple layers', done => {
+                ensureFolderOpen( 'UnitTestFolder' );
+
+                let startLayer = table.select( 'g[data-name="UnitTestLayer1"]' ),
+                    endLayer   = table.select( 'g[data-name="UnitTestLayer3"]' );
+
+                startLayer.dispatch( 'click' );
+                endLayer.node().dispatchEvent( shiftClick );
+                endLayer.node().dispatchEvent( contextClick );
+
+                let deleteItem = d3.select( '.context-menu li:nth-child(1)' );
+
+                expect( deleteItem.text() ).to.equal( 'Delete (3)' );
+
+                deleteItem.dispatch( 'click' );
+                d3.select( 'body' ).dispatch( 'click' );
+                d3.select( '.hoot-confirm .confirm-actions button.primary' ).dispatch( 'click' );
+
+                setTimeout( () => { // wait for delete process to begin
+                    Hoot.ui.managePanel.datasets.processRequest.then( () => {
+                        setTimeout( () => { // wait for table to finish re-rendering
+                            expect( d3.select( '.hoot-confirm' ).size() ).to.equal( 0 );
+
+                            expect( table.select( 'g[data-name="UnitTestLayer1"]' ).size() ).to.equal( 0 );
+                            expect( table.select( 'g[data-name="UnitTestLayer2"]' ).size() ).to.equal( 0 );
+                            expect( table.select( 'g[data-name="UnitTestLayer3"]' ).size() ).to.equal( 0 );
+
+                            expect( Hoot.layers.findBy( 'name', 'UnitTestLayer1' ) ).to.be.undefined;
+                            expect( Hoot.layers.findBy( 'name', 'UnitTestLayer2' ) ).to.be.undefined;
+                            expect( Hoot.layers.findBy( 'name', 'UnitTestLayer3' ) ).to.be.undefined;
+                            done();
+                        }, 100 );
+                    } );
+                }, 100 );
+            } );
+
+            it( 'recursively deletes folders and layers', done => {
+                ensureFolderOpen( 'UnitTestFolder' );
+
+                table.select( 'g[data-name="UnitTestFolder"]' ).node().dispatchEvent( contextClick );
+                d3.select( '.context-menu li:nth-child(1)' ).dispatch( 'click' );
+                d3.select( 'body' ).dispatch( 'click' );
+
+                let confirmOverlay = d3.select( '.hoot-confirm' );
+
+                expect( confirmOverlay.size() ).to.equal( 1 );
+                expect( confirmOverlay.select( '.confirm-message' ).text() ).to.equal( 'Are you sure you want to remove the selected folder and all data?' );
+
+                d3.select( '.hoot-confirm .confirm-actions button.primary' ).dispatch( 'click' );
+
+                setTimeout( () => { // wait for delete process to begin
+                    Hoot.ui.managePanel.datasets.processRequest.then( () => {
+                        setTimeout( () => { // wait for table to finish re-rendering
+                            expect( d3.select( '.hoot-confirm' ).size() ).to.equal( 0 );
+
+                            expect( table.select( 'g[data-name="UnitTestFolder"]' ).size() ).to.equal( 0 );
+                            expect( table.select( 'g[data-name="UnitTestFolderNew"]' ).size() ).to.equal( 0 );
+                            expect( table.select( 'g[data-name="UnitTestLayer4"]' ).size() ).to.equal( 0 );
+
+                            expect( Hoot.folders.findBy( 'name', 'UnitTestFolder' ) ).to.be.undefined;
+                            expect( Hoot.folders.findBy( 'name', 'UnitTestFolderNew' ) ).to.be.undefined;
+                            expect( Hoot.layers.findBy( 'name', 'UnitTestLayer4' ) ).to.be.undefined;
+                            done();
+                        }, 100 );
+                    } );
+                }, 100 );
             } );
         } );
     } );

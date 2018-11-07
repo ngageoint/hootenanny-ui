@@ -91,6 +91,7 @@ export default class MessageManager {
                 .classed( 'secondary', true )
                 .text( 'Cancel' )
                 .on( 'click', () => {
+                    this.currentConfirm = null;
                     overlay.remove();
                     res( false );
                 } );
@@ -100,6 +101,7 @@ export default class MessageManager {
                 .classed( 'primary', true )
                 .text( 'OK' )
                 .on( 'click', () => {
+                    this.currentConfirm = null;
                     overlay.remove();
                     res( true );
                 } );
