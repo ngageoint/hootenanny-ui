@@ -4,8 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/31/18
  *******************************************************************************************************/
 
-import _find    from 'lodash-es/find';
-import _get     from 'lodash-es/get';
+import _find from 'lodash-es/find';
+import _get  from 'lodash-es/get';
 
 import Hoot                  from '../../hoot';
 import FormFactory           from '../../tools/formFactory';
@@ -36,11 +36,11 @@ export default class ModifyFolder {
 
         this.container = new FormFactory().generateForm( 'body', 'modify-folder-form', metadata );
 
-        this.nameInput     = this.container.select( '#modifyName' );
+        this.folderNameInput     = this.container.select( '#modifyName' );
         this.pathNameInput = this.container.select( '#modifyPathName' );
-        this.submitButton  = this.container.select( '#modifySubmitBtn' );
+        this.submitButton        = this.container.select( '#modifySubmitBtn' );
 
-        this.nameInput.property( 'value', this.data.name );
+        this.folderNameInput.property( 'value', this.data.name );
         this.pathNameInput.property( 'value', this.pathName );
         this.submitButton.node().disabled = false;
 
@@ -72,7 +72,7 @@ export default class ModifyFolder {
     }
 
     async handleSubmit() {
-        let folderName = this.nameInput.property( 'value' ),
+        let folderName = this.folderNameInput.property( 'value' ),
             pathName   = this.pathNameInput.property( 'value' ),
             folderId   = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0;
 
@@ -95,10 +95,10 @@ export default class ModifyFolder {
             parentId: folderId
         };
 
-        return Hoot.api.modify( modParams )
+        this.processRequest = Hoot.api.modify( modParams )
             .then( () => Hoot.api.updateFolder( updateParams ) )
             .then( () => Hoot.folders.refreshAll() )
-            .then( () => Hoot.events.emit( 'refresh-dataset-table' ) )
+            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( () => {
                 let type = 'success',
                     message;
@@ -113,7 +113,10 @@ export default class ModifyFolder {
 
                 Hoot.message.alert( { message, type } );
             } )
-            .finally( () => this.container.remove() );
+            .finally( () => {
+                this.container.remove();
+                Hoot.events.emit( 'modal-closed' );
+            } );
 
     }
 }
