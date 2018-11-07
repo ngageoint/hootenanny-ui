@@ -68,9 +68,9 @@ module.exports = function( config ) {
             { pattern: 'img/**/*.gif', included: false },
 
             { pattern: 'test/data/UndividedHighway.osm', included: false },
-            { pattern: 'test/data/SplitLongWaysTest.dbf', included: false },
-            { pattern: 'test/data/SplitLongWaysTest.shp', included: false },
-            { pattern: 'test/data/SplitLongWaysTest.shx', included: false },
+            { pattern: 'test/data/ImportMultiTest.dbf', included: false },
+            { pattern: 'test/data/ImportMultiTest.shp', included: false },
+            { pattern: 'test/data/ImportMultiTest.shx', included: false },
 
             'css/**/*.css',
             'css/**/*.scss',
@@ -86,6 +86,7 @@ module.exports = function( config ) {
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
             'test/hoot/index.js': [ 'webpack' ],
+            'test/hoot/helpers.js': [ 'webpack' ],
             'css/**/*.scss': [ 'scss' ]
         },
 

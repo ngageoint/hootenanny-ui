@@ -43,6 +43,8 @@ export default class ModifyFolder {
         this.nameInput.property( 'value', this.data.name );
         this.pathNameInput.property( 'value', this.pathName );
         this.submitButton.node().disabled = false;
+
+        return this;
     }
 
     validateTextInput( d ) {

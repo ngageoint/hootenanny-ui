@@ -9,7 +9,8 @@ describe( 'dataset panel', () => {
         d3.select( '#navbar .menu-button' ).dispatch( 'click' );
     } );
 
-    require( './importSingle' )();
-    require( './importMulti' )();
+    // require( './importSingle' )();
+    // require( './importMulti' )();
+    // require( './addFolder' )();
     require( './tableBehavior' )();
 } );

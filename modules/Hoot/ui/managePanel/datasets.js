@@ -122,9 +122,6 @@ export default class Datasets extends Tab {
                             .then( () => Hoot.events.emit( 'render-dataset-table' ) );
                         break;
                     }
-                    default: {
-                        break;
-                    }
                 }
             } );
 
@@ -180,24 +177,27 @@ export default class Datasets extends Tab {
      * @param toDelete - array of items to delete
      */
     deleteItems( toDelete ) {
-        return Promise.all( _map( toDelete, child => {
-            let node = this.table.selectAll( `g[data-id="${ child.id }"]` );
+        return Promise.all( _map( toDelete, item => {
+            let data = item.data || item,
+                node = this.table.selectAll( `g[data-id="${ data.id }"]` );
 
             node.select( 'rect' )
                 .classed( 'sel', false )
                 .style( 'fill', 'rgb(255,0,0)' );
 
-            if ( child.type === 'dataset' ) {
-                return Hoot.api.deleteLayer( child.name )
-                    .then( () => Hoot.layers.removeLayer( child.id ) );
+            if ( data.type === 'dataset' ) {
+                return Hoot.api.deleteLayer( data.name )
+                    .then( () => Hoot.layers.removeLayer( data.id ) );
             } else {
-                if ( child.children && child.children.length ) {
-                    return this.deleteItems( child.children )
-                        .then( () => Hoot.api.deleteFolder( child.id ) )
-                        .then( () => Hoot.folders.removeFolder( child.id ) );
+                let children = item.children || data._children; // children are placed in root of object when folder is open
+
+                if ( children && children.length ) {
+                    return this.deleteItems( children )
+                        .then( () => Hoot.api.deleteFolder( data.id ) )
+                        .then( () => Hoot.folders.removeFolder( data.id ) );
                 } else {
-                    return Hoot.api.deleteFolder( child.id )
-                        .then( () => Hoot.folders.removeFolder( child.id ) );
+                    return Hoot.api.deleteFolder( data.id )
+                        .then( () => Hoot.folders.removeFolder( data.id ) );
                 }
             }
         } ) );
@@ -206,13 +206,13 @@ export default class Datasets extends Tab {
     async handleContextMenuClick( [ tree, d, item ] ) {
         switch ( item.click ) {
             case 'delete': {
-                let warningMsg = d.type === 'folder' ? 'folder and all data?' : 'datasets?',
+                let warningMsg = d.data.type === 'folder' ? 'folder and all data?' : 'datasets?',
                     message    = `Are you sure you want to remove the selected ${ warningMsg }`,
                     confirm    = await Hoot.message.confirm( message );
 
                 if ( !confirm ) return;
 
-                let items = d.type === 'folder' ? new Array( d ) : tree.selectedNodes;
+                let items = d.data.type === 'folder' ? new Array( d ) : tree.selectedNodes;
 
                 this.deleteItems( items )
                     .then( () => Hoot.events.emit( 'render-dataset-table' ) );
@@ -237,11 +237,15 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'modifyDataset': {
-                new ModifyDataset( tree.selectedNodes ).render();
+                this.modifyLayerModal = new ModifyDataset( tree.selectedNodes ).render();
+
+                Hoot.events.once( 'modal-closed', () => delete this.modifyLayerModal );
                 break;
             }
             case 'modifyFolder': {
-                new ModifyFolder( d ).render();
+                this.modifyFolderModal = new ModifyFolder( d ).render();
+
+                Hoot.events.once( 'modal-closed', () => delete this.modifyFolderModal );
                 break;
             }
         }

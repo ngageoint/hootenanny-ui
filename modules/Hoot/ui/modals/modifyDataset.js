@@ -75,6 +75,8 @@ export default class ModifyDataset {
 
         this.pathNameInput.property( 'value', this.pathName );
         this.submitButton.node().disabled = false;
+
+        return this;
     }
 
     validateTextInput( d ) {

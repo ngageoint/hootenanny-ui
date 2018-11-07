@@ -46,12 +46,13 @@ module.exports = () => {
             expect( customSuffixInput.property( 'disabled' ) ).to.be.false;
             expect( submitButton.property( 'disabled' ) ).to.be.true;
 
-            let dT        = new ClipboardEvent( '' ).clipboardData || new DataTransfer(),
-                fileNames = [
-                    'base/test/data/SplitLongWaysTest.dbf',
-                    'base/test/data/SplitLongWaysTest.shp',
-                    'base/test/data/SplitLongWaysTest.shx',
-                ];
+            let dT = new ClipboardEvent( '' ).clipboardData || new DataTransfer();
+
+            let fileNames = [
+                'base/test/data/ImportMultiTest.dbf',
+                'base/test/data/ImportMultiTest.shp',
+                'base/test/data/ImportMultiTest.shx',
+            ];
 
             await Promise.all( _map( fileNames, async name => {
                 let file = await retrieveFile( name );
@@ -63,10 +64,10 @@ module.exports = () => {
 
             await fileIngest.dispatch( 'change' );
 
-            expect( fileInput.property( 'value' ) ).to.have.string( 'SplitLongWaysTest.dbf' );
-            expect( fileInput.property( 'value' ) ).to.have.string( 'SplitLongWaysTest.shp' );
-            expect( fileInput.property( 'value' ) ).to.have.string( 'SplitLongWaysTest.shx' );
-            expect( fileListInput.select( 'option' ).property( 'value' ) ).to.equal( 'SplitLongWaysTest' );
+            expect( fileInput.property( 'value' ) ).to.have.string( 'ImportMultiTest.dbf' );
+            expect( fileInput.property( 'value' ) ).to.have.string( 'ImportMultiTest.shp' );
+            expect( fileInput.property( 'value' ) ).to.have.string( 'ImportMultiTest.shx' );
+            expect( fileListInput.select( 'option' ).property( 'value' ) ).to.equal( 'ImportMultiTest' );
             expect( submitButton.property( 'disabled' ) ).to.be.false;
 
             // check for invalid character in text field
@@ -91,7 +92,7 @@ module.exports = () => {
             let importSubmit = importModal.submitButton;
 
             expect( importSubmit.select( 'span' ).text() ).to.equal( 'Import' );
-            expect( Hoot.layers.findBy( 'name', 'SplitLongWaysTest' ) ).to.be.undefined;
+            expect( Hoot.layers.findBy( 'name', 'ImportMultiTest' ) ).to.be.undefined;
 
             importSubmit.dispatch( 'click' );
 
@@ -100,8 +101,8 @@ module.exports = () => {
             await importModal.processRequest;
 
             expect( datasets.importMultiModal ).to.be.undefined;
-            expect( Hoot.layers.findBy( 'name', 'SplitLongWaysTest' ) ).to.be.ok;
-            expect( d3.select( '#dataset-table' ).select( 'g[data-name="SplitLongWaysTest"]' ).size() ).to.equal( 1 );
+            expect( Hoot.layers.findBy( 'name', 'ImportMultiTest' ) ).to.be.ok;
+            expect( d3.select( '#dataset-table' ).select( 'g[data-name="ImportMultiTest"]' ).size() ).to.equal( 1 );
         } ).timeout( 15000 );
     } );
 };

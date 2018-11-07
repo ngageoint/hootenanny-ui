@@ -84,7 +84,7 @@ module.exports = () => {
             // update layer name to signify that this layer was created during unit tests &
             // check for correct values in all fields
             layerNameInput
-                .property( 'value', 'UnitTestSingle' )
+                .property( 'value', 'ImportSingleTest' )
                 .dispatch( 'keyup' );
 
             expect( layerNameInput.classed( 'invalid' ) ).to.be.false;
@@ -95,7 +95,7 @@ module.exports = () => {
             let importSubmit = importModal.submitButton;
 
             expect( importSubmit.select( 'span' ).text() ).to.equal( 'Import' );
-            expect( Hoot.layers.findBy( 'name', 'UnitTestSingle' ) ).to.be.undefined;
+            expect( Hoot.layers.findBy( 'name', 'ImportSingleTest' ) ).to.be.undefined;
 
             importSubmit.dispatch( 'click' );
 
@@ -104,8 +104,8 @@ module.exports = () => {
             await importModal.processRequest;
 
             expect( datasets.importSingleModal ).to.be.undefined;
-            expect( Hoot.layers.findBy( 'name', 'UnitTestSingle' ) ).to.be.ok;
-            expect( d3.select( '#dataset-table' ).select( 'g[data-name="UnitTestSingle"]' ).size() ).to.equal( 1 );
+            expect( Hoot.layers.findBy( 'name', 'ImportSingleTest' ) ).to.be.ok;
+            expect( d3.select( '#dataset-table' ).select( 'g[data-name="ImportSingleTest"]' ).size() ).to.equal( 1 );
         } );
     } );
 };

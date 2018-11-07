@@ -29,6 +29,8 @@ export default class AddFolder {
 
         this.folderNameInput = this.container.select( '#addFolderName' );
         this.submitButton    = this.container.select( '#addSubmitBtn' );
+
+        return this;
     }
 
     validateTextInput( d ) {
@@ -40,7 +42,7 @@ export default class AddFolder {
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
-        if ( reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
+        if ( !str.length || reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
             valid = false;
         }
 
@@ -76,7 +78,7 @@ export default class AddFolder {
             folderName: name
         };
 
-        return Hoot.api.addFolder( params )
+        this.processRequest = Hoot.api.addFolder( params )
             .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .catch( err => {

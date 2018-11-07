@@ -447,7 +447,7 @@ export default class ReviewBookmarks extends Tab {
             bookmarks = _slice( this.currentBookmarks, startIdx, endIdx );
 
         // last bookmark on page was deleted so move back one page and re-render
-        if ( bookmarks.length === 0 ) {
+        if ( bookmarks.length === 0 && this.currentPageIdx > 0 ) {
             this.currentPageIdx--;
             this.paginateBookmarks();
             return;
