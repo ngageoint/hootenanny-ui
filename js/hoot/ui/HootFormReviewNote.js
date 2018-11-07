@@ -204,18 +204,14 @@ Hoot.ui.hootformreviewnote = function (context)
         {
             var req = {};
             req.email=creatorEmail;
-            Hoot.model.REST('getSaveUser', req, function (resp) {
+            Hoot.model.REST('getSaveUser', req, function (e, resp) {
+                if(e) { return; }
 
-                if(resp.error){
-                    window.console.error(resp.error);
-                    return;
-                }
-                if(resp.user) {
-                    _parent.setUser(resp.user);
-                    d3.selectAll('[id^=bmkNoteFormUser]').attr('title',resp.user.display_name);
-                    // sets user back to share dialog. (We need to refactor this)
-                    context.hoot().control.conflicts.actions.sharereview.setUserInfo(resp.user);
-                }
+                _parent.setUser(resp);
+                d3.selectAll('[id^=bmkNoteFormUser]').attr('title', resp.display_name);
+                // sets user back to share dialog. (We need to refactor this)
+                context.hoot().control.conflicts.actions.sharereview.setUserInfo(resp);
+
                 // relaod global users list
                 context.hoot().getAllusers();
                 if(_currentUserForm) {

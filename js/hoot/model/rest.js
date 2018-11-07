@@ -766,23 +766,23 @@ Hoot.model.REST = function (command, data, callback, option) {
 
 
     rest.getSaveUser = function(data, callback) {
-        d3.json('/hoot-services/osm/user/-1?userEmail=' + data.email)
+        d3.json('/hoot-services/osm/user?userEmail=' + data.email)
             .header('Content-Type', 'application/json')
             .post(JSON.stringify(data), function (error, resp) {
 
                 if (error) {
-                    return callback(_alertError(error, 'Requested job failed!'));
+                    return callback(_alertError(error, 'Requested job failed!'), null);
                 }
-                callback(resp);
+                callback(null, resp);
             });
     };
 
     rest.getAllUsers = function(callback) {
-        d3.json('/hoot-services/osm/user/-1/all', function (error, resp) {
+        d3.json('/hoot-services/osm/user/all', function (error, resp) {
             if (error) {
-                return callback(_alertError(error, 'Get all users failed!'));
+                return callback(_alertError(error, 'Get all users failed!'), null);
             }
-            callback(resp);
+            callback(null, resp);
         });
     };
     rest.getOAuthRedirectURL = function(callback) {
