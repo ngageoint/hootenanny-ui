@@ -771,9 +771,9 @@ Hoot.model.REST = function (command, data, callback, option) {
             .post(JSON.stringify(data), function (error, resp) {
 
                 if (error) {
-                    return callback(_alertError(error, 'Requested job failed!'));
+                    return callback(_alertError(error, 'Requested job failed!'), null);
                 }
-                callback(resp);
+                callback(null, resp);
             });
     };
 

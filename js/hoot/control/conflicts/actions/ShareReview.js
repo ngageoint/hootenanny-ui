@@ -145,17 +145,12 @@ Hoot.control.conflicts.actions.sharereview = function (context)
             } else {
                 var req = {};
                 req.email=creatorEmail;
-                Hoot.model.REST('getSaveUser', req, function (resp) {
+                Hoot.model.REST('getSaveUser', req, function (e, resp) {
+                    if(e) { return; }
+                    _userInfo = resp;
 
-                    if(resp.error){
-                        window.console.error(resp.error);
-                        return;
-                    }
-                    if(resp.user) {
-                        _userInfo = resp.user;
-                        // sets user back to notes view. (We need to refactor this)
-                        context.hoot().view.utilities.reviewbookmarknotes.setUser(_userInfo);
-                    }
+                    // sets user back to notes view. (We need to refactor this)
+                    context.hoot().view.utilities.reviewbookmarknotes.setUser(_userInfo);
 
                     _createReqParams(title, desc, note, reqParam);
                     if(callback) {
