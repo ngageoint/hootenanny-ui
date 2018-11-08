@@ -14,8 +14,9 @@ import About from './about';
  * @constructor
  */
 export default class Navbar {
-    constructor() {
-        this.container = d3.select( 'body' );
+    constructor( isLoggedIn ) {
+        this.container  = d3.select( 'body' );
+        this.isLoggedIn = isLoggedIn;
     }
 
     /**
@@ -45,15 +46,17 @@ export default class Navbar {
             .attr( 'src', './img/hoot_logo_update.png' )
             .classed( 'pointer hoot-logo', true );
 
-        this.menuButton = leftContainer
-            .insert( 'div', '.logo-container' )
-            .classed( 'menu-button button text-light pointer icon-container', true )
-            .on( 'click', () => this.toggleManagePanel() );
+        if ( this.isLoggedIn ) {
+            this.menuButton = leftContainer
+                .insert( 'div', '.logo-container' )
+                .classed( 'menu-button button text-light pointer icon-container', true )
+                .on( 'click', () => this.toggleManagePanel() );
 
-        this.menuButton
-            .append( 'i' )
-            .classed( 'medium material-icons', true )
-            .text( 'menu' );
+            this.menuButton
+                .append( 'i' )
+                .classed( 'medium material-icons', true )
+                .text( 'menu' );
+        }
     }
 
     createRightContainer() {
@@ -61,26 +64,35 @@ export default class Navbar {
             .append( 'div' )
             .classed( 'nav-item', true );
 
-        let dropdownContent = rightContainer
-            .append( 'ul' )
-            .classed( 'dropdown-content fill-white', true );
+        // let dropdownContent = rightContainer
+        //     .append( 'ul' )
+        //     .classed( 'dropdown-content fill-white', true );
+        //
+        // dropdownContent
+        //     .append( 'li' )
+        //     .classed( 'dropdown-item pad2x strong pointer', true )
+        //     .append( 'a' )
+        //     .attr( 'href', '#!' )
+        //     .text( 'About' );
 
-        dropdownContent
-            .append( 'li' )
-            .classed( 'dropdown-item pad2x strong pointer', true )
-            .append( 'a' )
-            .attr( 'href', '#!' )
-            .text( 'About' );
+        if ( this.isLoggedIn ) {
+            let dropdownToggle = rightContainer
+                .append( 'div' )
+                .classed( 'about-toggle icon-container button flex align-center text-light pointer', true )
+                .on( 'click', () => this.openAboutModal() );
 
-        let dropdownToggle = rightContainer
-            .append( 'div' )
-            .classed( 'about-toggle icon-container button flex align-center text-light pointer', true )
-            .on( 'click', () => this.openAboutModal() );
-
-        dropdownToggle
-            .append( 'i' )
-            .classed( 'medium material-icons', true )
-            .text( 'info_outline' );
+            dropdownToggle
+                .append( 'i' )
+                .classed( 'medium material-icons', true )
+                .text( 'info_outline' );
+        } else {
+            rightContainer
+                .append( 'div' )
+                .attr( 'id', 'logoutTabBtn' )
+                .attr( 'href', '#logout' )
+                .classed( '_icon light strong small info pad2x flex align-center text-light pointer', true )
+                .text( 'Launch Login' );
+        }
 
         //dropdownToggle
         //    .append( 'i' )

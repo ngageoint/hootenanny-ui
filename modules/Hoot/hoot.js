@@ -18,6 +18,7 @@ import { tagInfo }        from '../../data/index';
 
 class Hoot {
     constructor() {
+        this.ui           = new UI();
         this.api          = new API( this );
         this.message      = new MessageManager( this );
         this.layers       = new LayerManager( this );
@@ -37,26 +38,6 @@ class Hoot {
         };
     }
 
-    init( context ) {
-        if ( this.ui && this.ui instanceof UI ) return;
-
-        this.context = context;
-
-        Promise.all( [
-            this.getAboutData(),
-            this.getAllUsers(),
-            this.getMapSizeThresholds(),
-            this.translations.getTranslations()
-        ] );
-
-        this.ui = new UI();
-        this.ui.render();
-
-        // prevent this class from being modified in any way.
-        // this does not affect children objectslayerNames
-        Object.freeze( this );
-    }
-
     async getAboutData() {
         try {
             let info = await Promise.all( [
@@ -66,7 +47,8 @@ class Hoot {
 
             _forEach( info, d => this.config.appInfo.push( d ) );
         } catch ( err ) {
-            this.message.alert( err );
+            // this.message.alert( err );
+            return Promise.reject( err );
         }
 
         // build info will always be available
@@ -83,7 +65,8 @@ class Hoot {
                 this.config.users[ user.id ] = user;
             } );
         } catch ( err ) {
-            this.message.alert( err );
+            // this.message.alert( err );
+            return Promise.reject( err );
         }
     }
 
@@ -95,8 +78,26 @@ class Hoot {
             this.config.ingestSizeThreshold   = thresholds.ingest_threshold;
             this.config.conflateSizeThreshold = thresholds.conflate_threshold;
         } catch ( err ) {
-            this.message.alert( err );
+            // this.message.alert( err );
+            return Promise.reject( err );
         }
+    }
+
+    init( context ) {
+        this.context = context;
+
+        Promise.all( [
+            this.getAboutData(),
+            this.getAllUsers(),
+            this.getMapSizeThresholds(),
+            this.translations.getTranslations()
+        ] )
+            .then( () => this.ui.render() )
+            .catch( () => this.ui.login.render() );
+
+        // prevent this class from being modified in any way.
+        // this does not affect children objects
+        Object.freeze( this );
     }
 }
 

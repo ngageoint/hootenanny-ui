@@ -42,31 +42,169 @@
         document.getElementById('id-container').className = 'unsupported';
 
     } else {
-        var id = iD.Context();
-
-        // disable boundaries (unless we have an explicit disable_features list)
-        var q = iD.utilStringQs(window.location.hash.substring(1));
-        if (!q.hasOwnProperty('disable_features')) {
-            id.features().disable('boundaries');
+        // var id = iD.Context();
+        //
+        // // disable boundaries (unless we have an explicit disable_features list)
+        // var q = iD.utilStringQs(window.location.hash.substring(1));
+        // if (!q.hasOwnProperty('disable_features')) {
+        //     id.features().disable('boundaries');
+        // }
+        //
+        // id.ui()(document.getElementById('id-sink'), function() {
+        //     id.container().select('#about-list')
+        //         .insert('li', '.user-list')
+        //         .attr('class', 'source-switch')
+        //         .call(iD.uiSourceSwitch(id)
+        //             .keys([{
+        //                 'urlroot': 'https://www.openstreetmap.org',
+        //                 'oauth_consumer_key': '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
+        //                 'oauth_secret': 'aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL'
+        //             }, {
+        //                 'urlroot': 'https://api06.dev.openstreetmap.org',
+        //                 'oauth_consumer_key': 'zwQZFivccHkLs3a8Rq5CoS412fE5aPCXDw9DZj7R',
+        //                 'oauth_secret': 'aMnOOCwExO2XYtRVWJ1bI9QOdqh1cay2UgpbhA6p'
+        //             }
+        //             ])
+        //         );
+        // });
+        function findGetParameter(parameterName) {
+            var result = null,
+                tmp = [];
+            location.search
+                .substr(1)
+                .split("&")
+                .forEach(function (item) {
+                    tmp = item.split("=");
+                    if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+                });
+            return result;
         }
 
-        id.ui()(document.getElementById('id-sink'), function() {
-            id.container().select('#about-list')
-                .insert('li', '.user-list')
-                .attr('class', 'source-switch')
-                .call(iD.uiSourceSwitch(id)
-                    .keys([{
-                        'urlroot': 'https://www.openstreetmap.org',
-                        'oauth_consumer_key': '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
-                        'oauth_secret': 'aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL'
-                    }, {
-                        'urlroot': 'https://api06.dev.openstreetmap.org',
-                        'oauth_consumer_key': 'zwQZFivccHkLs3a8Rq5CoS412fE5aPCXDw9DZj7R',
-                        'oauth_secret': 'aMnOOCwExO2XYtRVWJ1bI9QOdqh1cay2UgpbhA6p'
+        var oauth_token = findGetParameter('oauth_token');
+        var oauth_verifier = findGetParameter('oauth_verifier');
+        if(oauth_token && oauth_verifier) {
+            // if we have these tokens, this is the spawned popup-
+            d3.json('/hoot-services/auth/oauth1/verify?oauth_verifier=' + oauth_verifier + '&oauth_token=' + oauth_token, function(e, r) {
+                if(e) {
+                    console.warn('failed to verify oauth tokens w/ provider:');
+                    console.warn('XMLHttpRequest.status', e.status || null);
+                    console.warn('XMLHttpRequest.responseText ', e.responseText || null);
+
+                    if(opener) {
+                        window.onbeforeunload = function() {
+                            opener.oAuthDone(e, null);
+                        }
+                        window.close();
+                    } else {
+                        window.alert('Failed to complete oauth handshake. Check console for details & retry.');
+                        // clear oauth params.
+                        window.history.pushState({}, document.title, window.location.pathname);
                     }
-                    ])
-                );
-        });
+
+                } else {
+                    if(opener) {
+                        window.onbeforeunload = function() {
+                            opener.oAuthDone(null, r);
+                        }
+                        window.close();
+                    } else {
+                        // force refresh.
+                        window.location.reload(true);
+                    }
+                }
+            });
+        } else {
+            let id = iD.Context(),
+                hoot = id.hoot;
+
+            // function load() {
+            //     console.log( 'load' );
+            //     // unload landing page.
+            //     Hoot.view.unload_login();
+            //
+            //     // load application.
+            //     id.hoot().load(function() {
+            //         d3.select('#id-container').call(id.ui());
+            //     });
+            // }
+
+            // launch popup & attach callback function
+            // to child window.
+            function launchLogin(oauth_redirect_url) {
+                window.open(oauth_redirect_url, "hootenanny_login_redirect", "width=500,height=800,toolbar=no,status=no,menubar=no");
+
+                window.oAuthDone = function(e, user_object) {
+                    if(e) {
+                        console.warn('failed to verify oauth tokens w/ provider:');
+                        console.warn('XMLHttpRequest.status', e.status || null);
+                        console.warn('XMLHttpRequest.responseText ', e.responseText || null);
+
+                        window.alert('Failed to complete oauth handshake. Check console for details & retry.');
+                        window.history.pushState({}, document.title, window.location.pathname);
+
+                    } else {
+                        if(localStorage) {
+                            localStorage.setItem('user', JSON.stringify(user_object));
+                        }
+                        load();
+                    }
+                }
+            }
+
+            hoot.api.getServicesVersionInfo()
+                .then( () => load() )
+                .catch( () => {
+                    hoot.api.getOAuthRedirectUrl()
+                        .then( oauthRedirectUrl => {
+                            console.log( 'blah' );
+                            hoot.init();
+                            // render landing page.
+                            // Hoot.view.login(function() {
+                            //     launchLogin(oauthRedirectUrl);
+                            // }, function() {
+                            //     window.location = oauthRedirectUrl;
+                            // }, 'dist/');
+                            //
+                            // launchLogin(oauthRedirectUrl);
+                        } )
+                        .catch( err => {
+                            console.log( 'get oauth redirect error' );
+                            console.log( err );
+                            // if(oauthRedirectUrl && oauthRedirectUrl.error) {
+                            //     // failed to get oauth redirect url from hoot-services.
+                            //     // must be offline or misconfigured.
+                            //     console.error(oauthRedirectUrl);
+                            //     window.alert('Failed to retrieve authentication environment from services. Check console for details.');
+                            // }
+                        } );
+                } );
+
+            // Hoot.model.REST('servicesVersionInfo', function(services_version_info) {
+            //     if(services_version_info && services_version_info.error) {
+            //         // redirect.
+            //         Hoot.model.REST('getOAuthRedirectURL', function(oauth_redirect_url) {
+            //             if(oauth_redirect_url && oauth_redirect_url.error) {
+            //                 // failed to get oauth redirect url from hoot-services.
+            //                 // must be offline or misconfigured.
+            //                 console.error(oauth_redirect_url);
+            //                 window.alert('Failed to retrieve authentication environment from services. Check console for details.');
+            //
+            //             } else {
+            //                 // render landing page.
+            //                 Hoot.view.login(function() {
+            //                     launchLogin(oauth_redirect_url);
+            //                 }, function() {
+            //                     window.location = oauth_redirect_url;
+            //                 }, 'dist/');
+            //
+            //                 launchLogin(oauth_redirect_url);
+            //             }
+            //         });
+            //     } else {
+            //         load();
+            //     }
+            // });
+        }
     }
 </script>
 </body>

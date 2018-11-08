@@ -125,6 +125,19 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    getOAuthRedirectUrl() {
+        const params = {
+            path: '/auth/oauth1/request',
+            method: 'GET',
+            headers: {
+                'Content-Type': 'text/plain'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     /**
      * Get the status of an ongoing backend job
      *
