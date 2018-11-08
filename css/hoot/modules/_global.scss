@@ -7,10 +7,10 @@
 }
 
 #id-sink {
-    width: 100%;
-    //min-width: 768px;
-    height: calc(100% - 60px);
     position: inherit;
+    width: 100%;
+    height: calc(100% - 60px);
+    overflow: auto;
 }
 
 body,

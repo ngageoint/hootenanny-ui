@@ -1,0 +1,47 @@
+#login-page {
+    min-width: 768px;
+
+    h2 {
+        font-size: 20px;
+        margin: 16px 0 0;
+    }
+
+    p + p {
+        margin-top: 16px;
+    }
+
+    ol {
+        padding-left: 2em;
+
+        li {
+            list-style-type: decimal;
+        }
+    }
+
+    img {
+        width: 100%;
+    }
+
+    .login-container {
+        margin: 0 15% 0 15%;
+        padding: 0 0 50px;
+    }
+
+    .hoot-login-cell {
+        display: table-cell;
+        width: 50%;
+        padding: 0 10px;
+
+        //&:first-child {
+        //    padding-left: 10px;
+        //}
+        //
+        //&:last-child {
+        //    padding-left: 10px;
+        //}
+
+        &.pad-top {
+            padding-top: 20px;
+        }
+    }
+}
