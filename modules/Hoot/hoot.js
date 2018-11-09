@@ -4,101 +4,101 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/16/18
  *******************************************************************************************************/
 
-import _forEach from 'lodash-es/forEach';
+import _forEach from "lodash-es/forEach";
 
-import API                from './managers/api';
-import MessageManager     from './managers/messages/messageManager';
-import FolderManager      from './managers/folderManager';
-import LayerManager       from './managers/layerManager';
-import TranslationManager from './managers/translationManager';
-import EventManager       from './managers/eventManager';
-import UI                 from './ui/init';
-import buildInfo          from './config/buildInfo.json';
-import { tagInfo }        from '../../data/index';
+import API from "./managers/api";
+import MessageManager from "./managers/messages/messageManager";
+import FolderManager from "./managers/folderManager";
+import LayerManager from "./managers/layerManager";
+import TranslationManager from "./managers/translationManager";
+import EventManager from "./managers/eventManager";
+import UI from "./ui/init";
+import buildInfo from "./config/buildInfo.json";
+import { tagInfo } from "../../data/index";
 
 class Hoot {
-    constructor() {
-        this.api          = new API( this );
-        this.message      = new MessageManager( this );
-        this.layers       = new LayerManager( this );
-        this.folders      = new FolderManager( this );
-        this.translations = new TranslationManager( this );
-        this.events       = new EventManager();
+  constructor() {
+    this.api = new API(this);
+    this.message = new MessageManager(this);
+    this.layers = new LayerManager(this);
+    this.folders = new FolderManager(this);
+    this.translations = new TranslationManager(this);
+    this.events = new EventManager();
 
-        this.config = {
-            urlroot: 'http://52.23.188.104:8080/hoot-services/osm',
-            tagInfo,
-            appInfo: [],
-            users: [],
-            exportSizeThreshold: null,
-            ingestSizeThreshold: null,
-            conflateSizeThreshold: null,
-            presetMaxDisplayNum: 12
-        };
+    this.config = {
+      urlroot: "http://54.165.118.78:8080/hoot-services/osm",
+      tagInfo,
+      appInfo: [],
+      users: [],
+      exportSizeThreshold: null,
+      ingestSizeThreshold: null,
+      conflateSizeThreshold: null,
+      presetMaxDisplayNum: 12
+    };
+  }
+
+  init(context) {
+    console.log("INIT");
+    if (this.ui && this.ui instanceof UI) return;
+
+    this.context = context;
+
+    Promise.all([
+      this.getAboutData(),
+      this.getAllUsers(),
+      this.getMapSizeThresholds(),
+      this.translations.getTranslations()
+    ]);
+
+    this.ui = new UI();
+    this.ui.render();
+
+    // prevent this class from being modified in any way.
+    // this does not affect children objects
+    Object.freeze(this);
+  }
+
+  async getAboutData() {
+    try {
+      let info = await Promise.all([
+        this.api.getCoreVersionInfo(),
+        this.api.getServicesVersionInfo()
+      ]);
+
+      _forEach(info, d => this.config.appInfo.push(d));
+    } catch (err) {
+      this.message.alert(err);
     }
 
-    init( context ) {
-        console.log( 'INIT' );
-        if ( this.ui && this.ui instanceof UI ) return;
+    // build info will always be available
+    this.config.appInfo.push(buildInfo);
+  }
 
-        this.context = context;
+  async getAllUsers() {
+    try {
+      let resp = await this.api.getAllUsers();
 
-        Promise.all( [
-            this.getAboutData(),
-            this.getAllUsers(),
-            this.getMapSizeThresholds(),
-            this.translations.getTranslations()
-        ] );
+      this.config.users = {};
 
-        this.ui = new UI();
-        this.ui.render();
-
-        // prevent this class from being modified in any way.
-        // this does not affect children objects
-        Object.freeze( this );
+      _forEach(resp.users, user => {
+        this.config.users[user.id] = user;
+      });
+    } catch (err) {
+      this.message.alert(err);
     }
+  }
 
-    async getAboutData() {
-        try {
-            let info = await Promise.all( [
-                this.api.getCoreVersionInfo(),
-                this.api.getServicesVersionInfo()
-            ] );
+  async getMapSizeThresholds() {
+    try {
+      let thresholds = await this.api.getMapSizeThresholds();
 
-            _forEach( info, d => this.config.appInfo.push( d ) );
-        } catch ( err ) {
-            this.message.alert( err );
-        }
-
-        // build info will always be available
-        this.config.appInfo.push( buildInfo );
+      this.config.exportSizeThreshold = thresholds.export_threshold;
+      this.config.ingestSizeThreshold = thresholds.ingest_threshold;
+      this.config.conflateSizeThreshold = thresholds.conflate_threshold;
+    } catch (err) {
+      this.message.alert(err);
     }
-
-    async getAllUsers() {
-        try {
-            let resp = await this.api.getAllUsers();
-
-            this.config.users = {};
-
-            _forEach( resp.users, user => {
-                this.config.users[ user.id ] = user;
-            } );
-        } catch ( err ) {
-            this.message.alert( err );
-        }
-    }
-
-    async getMapSizeThresholds() {
-        try {
-            let thresholds = await this.api.getMapSizeThresholds();
-
-            this.config.exportSizeThreshold   = thresholds.export_threshold;
-            this.config.ingestSizeThreshold   = thresholds.ingest_threshold;
-            this.config.conflateSizeThreshold = thresholds.conflate_threshold;
-        } catch ( err ) {
-            this.message.alert( err );
-        }
-    }
+  }
 }
 
 // Export this class as a "Singleton". When it is imported the very first time,

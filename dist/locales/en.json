@@ -7256,9 +7256,6 @@
             "SPW_PICC": {
                 "name": "SPW(allonie) PICC numerical imagery"
             },
-            "US-TIGER-Roads-2012": {
-                "name": "TIGER Roads 2012"
-            },
             "US-TIGER-Roads-2014": {
                 "description": "At zoom level 16+, public domain map data from the US Census. At lower zooms, only changes since 2006 minus changes already incorporated into OpenStreetMap",
                 "name": "TIGER Roads 2014"
@@ -7266,6 +7263,10 @@
             "US-TIGER-Roads-2017": {
                 "description": "Yellow = Public domain map data from the US Census. Red = Data not found in OpenStreetMap",
                 "name": "TIGER Roads 2017"
+            },
+            "US-TIGER-Roads-2018": {
+                "description": "Yellow = Public domain map data from the US Census. Red = Data not found in OpenStreetMap",
+                "name": "TIGER Roads 2018"
             },
             "US_Forest_Service_roads_overlay": {
                 "description": "Highway: Green casing = unclassified. Brown casing = track. Surface: gravel = light brown fill, Asphalt = black, paved = gray, ground =white, concrete = blue, grass = green. Seasonal = white bars",
@@ -7373,12 +7374,6 @@
                 },
                 "description": "Orthophotos from the municipality of Helsingborg 2016, public domain",
                 "name": "Helsingborg Orthophoto"
-            },
-            "hike_n_bike": {
-                "attribution": {
-                    "text": "© OpenStreetMap contributors"
-                },
-                "name": "Hike & Bike"
             },
             "kalmar-orto-2014": {
                 "attribution": {
