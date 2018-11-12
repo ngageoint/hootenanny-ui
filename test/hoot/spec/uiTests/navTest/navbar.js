@@ -4,7 +4,7 @@
  * @author Jack Grossman on 11/9/18 jack.grossman@radiantsolutions.com
  *******************************************************************************************************/
 
-describe(" Hoot.navbar ", () => {
+describe(" Manage Panel ", () => {
   it(" All navbar options are available ", done => {
     d3.select("nav#navbar div.nav-item div.menu-button").dispatch("click");
     setTimeout(() => {
@@ -90,7 +90,7 @@ describe(" Basemap component rendered ", () => {
       var selectBasemap = d3.selectAll("#util-basemaps  div  button").text();
       expect(selectBasemap).to.be.eql("Add New Basemaps");
       done();
-    }, 500);
+    }, 250);
   });
 });
 
@@ -105,7 +105,7 @@ describe(" Translation component rendered ", () => {
         .text();
       expect(selectTranslations).to.be.eql("Add New Translations");
       done();
-    }, 500);
+    }, 250);
   });
 });
 
@@ -122,7 +122,7 @@ describe(" Translation Assistant rendered ", () => {
         .text();
       expect(selectTranslationsFiles).to.be.eql("play_for_workUpload File(s)");
       done();
-    }, 500);
+    }, 250);
   });
   it(" Can upload folder ", done => {
     setTimeout(() => {
@@ -133,7 +133,7 @@ describe(" Translation Assistant rendered ", () => {
         .text();
       expect(selectTranslationsFolder).to.be.eql("move_to_inboxUpload Folder");
       done();
-    }, 500);
+    }, 250);
   });
 });
 
@@ -143,46 +143,35 @@ describe(" Review Bookmarks ", () => {
       "click"
     );
     setTimeout(() => {
-      var itemsPerPage = d3
-        .selectAll(
-          "#util-review-bookmarks  div  div.bookmark-filter-container  div:nth-child(1)"
-        )
-        .text();
-      expect(itemsPerPage).to.be.eql("Items Per Page");
+      var itemsPerPage = d3.selectAll("#itemsPerPage").attr("id");
+      expect(itemsPerPage).to.be.eql("itemsPerPage");
       done();
-    }, 500);
+    }, 250);
   });
   it(" Sort by tab ", done => {
     setTimeout(() => {
-      var sortByTab = d3
-        .selectAll(
-          "#util-review-bookmarks  div  div.bookmark-filter-container  div:nth-child(2)"
-        )
-        .text();
-      expect(sortByTab).to.be.eql("Sort By");
+      var sortByTab = d3.selectAll("#sortBy").attr("id");
+      expect(sortByTab).to.be.eql("sortBy");
       done();
-    }, 500);
+    }, 250);
   });
   it(" Filter by creator tab ", done => {
     setTimeout(() => {
       var sortCreators = d3
         .selectAll(
-          "#util-review-bookmarks  div  div.bookmark-filter-container  div:nth-child(3)"
+          "#filterByCreator"
+          // #filterByCreator
         )
-        .text();
-      expect(sortCreators).to.be.eql("");
+        .attr("id");
+      expect(sortCreators).to.be.eql("filterByCreator");
       done();
-    }, 500);
+    }, 250);
   });
   it(" Filter by layer name tab ", done => {
     setTimeout(() => {
-      var sortLayers = d3
-        .selectAll(
-          "#util-review-bookmarks  div  div.bookmark-filter-container  div:nth-child(4)"
-        )
-        .text();
-      expect(sortLayers).to.be.eql("Filter By Layer Name");
+      var sortLayers = d3.selectAll("#filterByLayerName").attr("id");
+      expect(sortLayers).to.be.eql("filterByLayerName");
       done();
-    }, 500);
+    }, 250);
   });
 });
