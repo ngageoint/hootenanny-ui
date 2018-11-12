@@ -51,26 +51,3 @@ describe(" Secondary Dataset Form Working ", () => {
     }, 1000);
   });
 });
-
-// describe(" loading display working ", async () => {
-//   it(" checks visible loading interaction ", function() {
-//     var loading = d3.selectAll("span.strong.padx1").text("Loading");
-//     console.log(loading);
-//     expect(loading).to.be.eql("Loading");
-//   });
-// });
-
-// describe(" checks for layer added to map ", function() {
-//   it(" confirms layer was added to map ", {});
-// });
-
-//   it("checks for style color change", done => {
-//     expect(d3.select(".block").size()).to.equal(0);
-
-//     d3.select(".dataset-action-button:first-child").dispatch("click");
-
-//     setTimeout(() => {
-//       expect(d3.select("#datasets-import-form").size()).to.equal(1);
-//       done();
-//     }, 200);
-//   });
