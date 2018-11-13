@@ -37,6 +37,6 @@ beforeEach(function(done) {
   setTimeout(done, 50);
 });
 
-const tests = require.context("./spec/uiTests/navTest/", true, /.js$/);
+const tests = require.context("./spec/uiTests/addLayers/", true, /.js$/);
 
 tests.keys().forEach(tests);

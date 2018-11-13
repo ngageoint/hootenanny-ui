@@ -5,19 +5,21 @@
  *******************************************************************************************************/
 
 export const apiConfig = {
-    host: 'http://52.23.188.104',
-    port: '8080',
-    path: 'hoot-services',
-    translationServerPort: '8094',
-    mapnikServerPort: '8000',
-    mergeServerPort: '8096',
-    queryInterval: 2000
+  host: "http://34.201.113.202",
+  port: "8080",
+  path: "hoot-services",
+  translationServerPort: "8094",
+  mapnikServerPort: "8000",
+  mergeServerPort: "8096",
+  queryInterval: 2000
 };
 
 export const hootConfig = {
-    maxNodeCount: 10000
+  maxNodeCount: 10000
 };
 
 export default apiConfig;
 
-export let baseUrl = `${ apiConfig.host }:${ apiConfig.port }/${ apiConfig.basePath }`;
+export let baseUrl = `${apiConfig.host}:${apiConfig.port}/${
+  apiConfig.basePath
+}`;

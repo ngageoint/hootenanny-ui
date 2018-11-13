@@ -26,7 +26,7 @@ class Hoot {
     this.events = new EventManager();
 
     this.config = {
-      urlroot: "http://54.165.118.78:8080/hoot-services/osm",
+      urlroot: "http://34.201.113.202/hoot-services/osm",
       tagInfo,
       appInfo: [],
       users: [],
