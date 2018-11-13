@@ -150,7 +150,7 @@ export default class Layers {
                     name: layer.name,
                     mapId: layer.id
                 }
-            } );
+        } );
 
             this.setLayerColor( mapId, layer.color );
 
