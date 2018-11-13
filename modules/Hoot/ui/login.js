@@ -5,40 +5,20 @@
  *******************************************************************************************************/
 
 import Navbar from './navbar';
+import EventEmitter from 'events';
 
-export default class Login {
+export default class Login extends EventEmitter {
     constructor() {
-
+        super();
     }
 
-    render() {
+    render( cb, oauthRedirectUrl ) {
+        this.cb = cb;
+        this.oauthRedirectUrl = oauthRedirectUrl;
+
         new Navbar( false ).render();
 
-        let body = d3.select( 'body' )
-            .style( 'overflow', 'auto' )
-            .style( 'background-color', '#f6f6f6' );
-
-        // let header = body
-        //     .insert( 'div', ':first-child' )
-        //     .attr( 'id', 'header' )
-        //     .classed( 'login-header contain pad2x dark fill-dark', true );
-
-        // let nav = header.append( 'nav' )
-        //     .classed( 'contain inline fr', true );
-        //
-        // nav.append( 'div' )
-        //     .attr( 'id', 'logoutTabBtn' )
-        //     .attr( 'href', '#logout' )
-        //     .classed( 'point pad2 inline keyline-left _icon dark strong small info', true )
-        //     .text( 'Launch Login' );
-        // .on('click', function() {
-        //     fn_launch_login();
-        // });
-
-        // header.append( 'div' )
-        //     .attr( 'href', '#version' )
-        //     .classed( 'point hoot_label', true )
-        //     .attr( 'height', '60px' );
+        d3.select( 'body' ).style( 'background-color', '#f6f6f6' );
 
         let wrapper = d3.select( '#id-sink' )
             .append( 'div' )
@@ -129,13 +109,13 @@ export default class Login {
             .append( 'div' )
             .classed( 'hoot-login-cell', true )
             .append( 'img' )
-            .attr('src', 'img/login-popup-chrome-1.png');
+            .attr( 'src', 'img/login-popup-chrome-1.png' );
 
         row
             .append( 'div' )
             .classed( 'hoot-login-cell', true )
             .append( 'img' )
-            .attr('src', './img/login-popup-chrome-2.png');
+            .attr( 'src', './img/login-popup-chrome-2.png' );
 
 
         container
@@ -163,7 +143,7 @@ export default class Login {
             .append( 'div' )
             .classed( 'hoot-login-cell', true )
             .append( 'img' )
-            .attr('src', '/img/login-popup-firefox-1.png');
+            .attr( 'src', '/img/login-popup-firefox-1.png' );
 
         row = table
             .append( 'div' )
@@ -182,7 +162,7 @@ export default class Login {
             .append( 'div' )
             .classed( 'hoot-login-cell', true )
             .append( 'img' )
-            .attr('src', './img/login-popup-firefox-2.png');
+            .attr( 'src', './img/login-popup-firefox-2.png' );
 
         row = table
             .append( 'div' )
@@ -201,7 +181,7 @@ export default class Login {
             .append( 'div' )
             .classed( 'hoot-login-cell', true )
             .append( 'img' )
-            .attr('src', './img/login-popup-firefox-3.png');
+            .attr( 'src', './img/login-popup-firefox-3.png' );
 
         container
             .append( 'h2' )
@@ -211,7 +191,36 @@ export default class Login {
             .append( 'p' )
             .html( '&#9658; Click ' )
             .append( 'a' )
-            .text( 'here' );
-        // .on('click', fn_direct_login);
+            .text( 'here' )
+            .on('click', () => window.location = this.oauthRedirectUrl );
+
+        this.cb();
+
+        return this;
+    }
+
+    launchOAuthLogin() {
+        window.open( this.oauthRedirectUrl, 'hootenannyLoginRedirect', 'width=500,height=800,toolbar=no,status=no,menubar=no' );
+
+        window.oAuthDone = ( e, user_object ) => {
+            console.log( user_object );
+            if ( e ) {
+                console.log( 'fail' );
+                console.warn( 'failed to verify oauth tokens w/ provider:' );
+                console.warn( 'XMLHttpRequest.status', e.status || null );
+                console.warn( 'XMLHttpRequest.responseText ', e.responseText || null );
+
+                window.alert( 'Failed to complete oauth handshake. Check console for details & retry.' );
+                window.history.pushState( {}, document.title, window.location.pathname );
+
+            } else {
+                console.log( 'success' );
+                if ( localStorage ) {
+                    localStorage.setItem( 'user', JSON.stringify( user_object ) );
+                }
+
+                this.emit( 'oAuthDone' );
+            }
+        };
     }
 }

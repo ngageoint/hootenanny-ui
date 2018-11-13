@@ -138,6 +138,19 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    verifyOAuth( oauth_verifier, oauth_token ) {
+        const params = {
+            path: `/auth/oauth1/verify?oauth_verifier=${oauth_verifier}&oauth_token=${oauth_token}`,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     /**
      * Get the status of an ongoing backend job
      *
@@ -459,7 +472,10 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( async resp => {
+                await setTimeout( () => { console.log( 'blahhh' ); }, 30000 );
+                return resp.data
+            } );
     }
 
     /**

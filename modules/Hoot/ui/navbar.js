@@ -91,7 +91,8 @@ export default class Navbar {
                 .attr( 'id', 'logoutTabBtn' )
                 .attr( 'href', '#logout' )
                 .classed( '_icon light strong small info pad2x flex align-center text-light pointer', true )
-                .text( 'Launch Login' );
+                .text( 'Launch Login' )
+                .on( 'click', () => Hoot.login.cb() );
         }
 
         //dropdownToggle

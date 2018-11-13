@@ -13,12 +13,13 @@ import LayerManager       from './managers/layerManager';
 import TranslationManager from './managers/translationManager';
 import EventManager       from './managers/eventManager';
 import UI                 from './ui/init';
+import Login              from './ui/login';
 import buildInfo          from './config/buildInfo.json';
 import { tagInfo }        from '../../data/index';
 
 class Hoot {
     constructor() {
-        this.ui           = new UI();
+        this.login        = new Login();
         this.api          = new API( this );
         this.message      = new MessageManager( this );
         this.layers       = new LayerManager( this );
@@ -27,7 +28,7 @@ class Hoot {
         this.events       = new EventManager();
 
         this.config = {
-            urlroot: 'http://52.23.188.104:8080/hoot-services/osm',
+            urlroot: 'http://35.174.111.201:8080/hoot-services/osm',
             tagInfo,
             appInfo: [],
             users: [],
@@ -83,6 +84,26 @@ class Hoot {
         }
     }
 
+    async checkLogin() {
+        return this.api.getServicesVersionInfo();
+    }
+
+    renderLogin( callback ) {
+        this.login = new Login();
+
+        this.api.getOAuthRedirectUrl()
+            .then( oauthRedirectUrl => {
+                this.login.render( oauthRedirectUrl )
+                    .on( 'oAuthDone', () => callback() );
+            } )
+            .catch( err => {
+                console.log( err );
+
+                this.login.render()
+                    .on( 'oAuthDone', () => callback() );
+            } );
+    }
+
     init( context ) {
         this.context = context;
 
@@ -91,9 +112,10 @@ class Hoot {
             this.getAllUsers(),
             this.getMapSizeThresholds(),
             this.translations.getTranslations()
-        ] )
-            .then( () => this.ui.render() )
-            .catch( () => this.ui.login.render() );
+        ] );
+
+        this.ui = new UI();
+        this.ui.render();
 
         // prevent this class from being modified in any way.
         // this does not affect children objects

@@ -31,11 +31,16 @@ module.exports = Merge( CommonConfig, {
     devtool: 'cheap-module-source-map',
     devServer: {
         compress: true,
-        port: 9000,
+        port: 8080,
         publicPath: '/',
         contentBase: './dist',
         stats: {
             timings: true
+        },
+        proxy: {
+            '/hoot-services/auth/oauth1/verify': {
+                target: 'http://35.174.111.201:8080'
+            }
         }
     }
 } );
