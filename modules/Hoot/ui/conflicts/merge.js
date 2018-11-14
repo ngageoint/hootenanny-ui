@@ -10,8 +10,6 @@ import _forEach from 'lodash-es/forEach';
 import _reduce  from 'lodash-es/reduce';
 import _uniq    from 'lodash-es/uniq';
 
-import Hoot                 from '../../hoot';
-import { osmNode }          from '../../../osm/index';
 import { JXON }             from '../../../util/jxon';
 import { t }                from '../../../util/locale';
 import { operationDelete }  from '../../../operations/delete';

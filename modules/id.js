@@ -16,8 +16,6 @@ import '../css/65_data.css';
 import '../css/70_fills.css';
 import '../css/80_app.css';
 
-import '../css/hoot/hoot.scss';
-
 window.iD = iD;
 window.$ = window.jQuery = $;
 

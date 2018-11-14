@@ -4,7 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/24/18
  *******************************************************************************************************/
 
-import Hoot            from '../../hoot';
 import PublishBookmark from '../modals/publishBookmark';
 
 /**

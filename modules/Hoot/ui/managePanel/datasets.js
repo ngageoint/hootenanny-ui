@@ -6,7 +6,6 @@
 
 import _map from 'lodash-es/map';
 
-import Hoot       from '../../hoot';
 import FolderTree from '../../tools/folderTree';
 import Tab        from './tab';
 

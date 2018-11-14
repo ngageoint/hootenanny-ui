@@ -501,8 +501,8 @@ export function rendererMap(context) {
                 context.connection().tileZoom( 1 );
             }
             context.loadTiles( projection, () => {
-                if ( context.hoot.layers.mergedLayer ) {
-                    context.hoot.events.emit( 'layer-merged' );
+                if ( Hoot.layers.mergedLayer ) {
+                    Hoot.events.emit( 'layer-merged' );
                 }
             } );
 
@@ -514,8 +514,8 @@ export function rendererMap(context) {
                 context.connection().tileZoom( 16 );
             }
 
-            if ( context.hoot.layers.mergedLayer ) {
-                context.hoot.events.emit( 'layer-merged' );
+            if ( Hoot.layers.mergedLayer ) {
+                Hoot.events.emit( 'layer-merged' );
             }
 
             //context.loadTiles( projection, dimensions );

@@ -466,7 +466,7 @@ export function uiInit(context) {
 
                 render(container);
 
-                context.hoot.init( context );
+                // context.hoot.init( context );
                 //hootUI.init();
                 //context.hoot = hootUI;
             }
