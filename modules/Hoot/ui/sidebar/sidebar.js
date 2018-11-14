@@ -7,7 +7,6 @@
 import _filter  from 'lodash-es/filter';
 import _forEach from 'lodash-es/forEach';
 
-import Hoot          from '../../hoot';
 import LayerAdd      from './layerAdd';
 import LayerConflate from './layerConflate';
 import LayerReview   from './layerReview';

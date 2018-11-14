@@ -16,7 +16,6 @@ import _slice     from 'lodash-es/slice';
 import _sortBy    from 'lodash-es/sortBy';
 import _uniq      from 'lodash-es/uniq';
 
-import Hoot from '../../../hoot';
 import Tab  from '../tab';
 
 import { d3combobox } from '../../../../lib/hoot/d3.combobox';

@@ -11,7 +11,6 @@ import {
 
 import { svgIcon } from '../svg';
 
-import Hoot           from '../Hoot/hoot';
 import ClipSelectBbox from '../Hoot/tools/clipSelectBbox';
 
 export function uiTools( context ) {

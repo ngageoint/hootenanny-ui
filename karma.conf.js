@@ -2,8 +2,6 @@
 // Generated on Mon Oct 29 2018 14:12:47 GMT-0400 (Eastern Daylight Time)
 
 const path = require( 'path' );
-const Merge             = require( 'webpack-merge' );
-const baseConfig        = require( './webpack-config/webpack.base.config' );
 
 const materialIconFiles = [
     { pattern: 'node_modules/material-design-icons/iconfont/material-icons.css', included: true },
@@ -14,7 +12,7 @@ const materialIconFiles = [
     { pattern: 'node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff2', included: false },
 ];
 
-const webpackConfig = Merge( baseConfig, {
+const webpackConfig = {
     mode: 'development',
     entry: './test/hoot/index.js',
     module: {
@@ -29,6 +27,13 @@ const webpackConfig = Merge( baseConfig, {
                 include: path.resolve( __dirname, 'modules/Hoot/' ),
                 enforce: 'post'
                 // exclude: /node_modules|\.spec\.js$/
+            },
+            {
+                test: /\.(scss|css)$/,
+                use: [
+                    'css-loader',
+                    'sass-loader'
+                ]
             }
         ]
     },
@@ -37,8 +42,8 @@ const webpackConfig = Merge( baseConfig, {
             img: path.resolve( __dirname, 'img' ),
             lib: path.resolve( __dirname, 'modules/lib' )
         }
-    },
-} );
+    }
+};
 
 module.exports = function( config ) {
     config.set( {

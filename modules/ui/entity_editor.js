@@ -26,8 +26,6 @@ import { uiPresetEditor } from './preset_editor';
 import { utilCleanTags, utilRebind } from '../util';
 import { uiSchemaSwitcher } from './schema_switcher';
 
-import Hoot from '../Hoot/hoot';
-
 export function uiEntityEditor(context) {
     var dispatch = d3_dispatch('choose');
     var _state = 'select';

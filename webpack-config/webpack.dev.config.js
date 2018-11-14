@@ -7,7 +7,7 @@
 // import Merge from 'webpack-merge';
 // import CommonConfig from './webpack.base.config';
 
-const Merge = require( 'webpack-merge' );
+const Merge        = require( 'webpack-merge' );
 const CommonConfig = require( './webpack.base.config' );
 
 // export default () => {

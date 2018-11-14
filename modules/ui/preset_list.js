@@ -21,8 +21,6 @@ import { presetCollection }       from '../presets';
 import { presetPreset }           from '../presets';
 import { uiSchemaSwitcher }       from './schema_switcher';
 
-import Hoot from '../Hoot/hoot';
-
 export function uiPresetList(context) {
     var dispatch = d3_dispatch('choose'),
         id,

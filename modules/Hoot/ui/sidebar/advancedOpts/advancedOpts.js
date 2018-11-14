@@ -7,7 +7,6 @@
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 
-import Hoot             from '../../../hoot';
 import FieldsetData     from './fieldsetData';
 import FieldsetControls from './fieldsetControls';
 import { d3combobox }   from '../../../../lib/hoot/d3.combobox';

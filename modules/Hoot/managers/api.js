@@ -658,14 +658,11 @@ export default class API {
         const params = {
             path: `/ingest/basemap/upload?INPUT_NAME=${ data.INPUT_NAME }`,
             method: 'POST',
-            headers: {
-                'Access-Control-Allow-Origin': '*'
-            },
             data: data.formData
         };
 
         return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobId ) );
+            .then( resp => this.statusInterval( resp.data[ 0 ].jobid ) );
     }
 
     enableBasemap( data ) {

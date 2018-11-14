@@ -6,8 +6,6 @@
 
 import _filter from 'lodash-es/filter';
 
-import Hoot from '../../hoot';
-
 /**
  * @class Traverse
  */

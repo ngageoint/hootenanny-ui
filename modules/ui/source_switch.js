@@ -6,8 +6,6 @@ import {
 import { t } from '../util/locale';
 import { modeBrowse } from '../modes';
 
-import Hoot from '../Hoot/hoot';
-
 export function uiSourceSwitch(context) {
     var keys;
 

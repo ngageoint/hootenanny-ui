@@ -8,7 +8,6 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _forEach   from 'lodash-es/forEach';
 import _merge     from 'lodash-es/merge';
 
-import Hoot             from '../../../hoot';
 import Tab              from '../tab';
 import Note             from './note';
 import EditBookmarkNote from '../../modals/editBookmarkNote';

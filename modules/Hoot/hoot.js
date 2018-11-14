@@ -4,6 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/16/18
  *******************************************************************************************************/
 
+import '../../css/hoot/hoot.scss';
+
 import _forEach from 'lodash-es/forEach';
 
 import API                from './managers/api';
@@ -28,7 +30,7 @@ class Hoot {
         this.events       = new EventManager();
 
         this.config = {
-            urlroot: 'http://localhost:8080/hoot-services/osm',
+            urlroot: 'http://34.201.113.202/hoot-services/osm',
             tagInfo,
             appInfo: [],
             users: [],
@@ -129,4 +131,5 @@ class Hoot {
 
 // * Note: This is not a true Singleton, but it mimics the Singleton pattern
 // because of Node's module caching behavior.
+window.Hoot = new Hoot();
 export default new Hoot();
