@@ -9,7 +9,6 @@ import _forEach from 'lodash-es/forEach';
 import _get     from 'lodash-es/get';
 import _map     from 'lodash-es/map';
 
-import Hoot                  from '../../hoot';
 import FormFactory           from '../../tools/formFactory';
 import { modifyDatasetForm } from '../../config/domMetadata';
 

@@ -44,7 +44,6 @@ import {
     utilRebind
 } from '../util';
 
-import Hoot from '../Hoot/hoot';
 import DGServcies from '../services/dgservices';
 
 export var areaKeys = {};
@@ -329,8 +328,8 @@ export function coreContext() {
 
     var translateCopyTags = function(tcTags) {
         var entity = context.entity(context.selectedIDs()[0]);
-        if (context.hoot.translations.activeTranslation !== 'OSM' && !_isEmpty(tcTags)) {
-            context.hoot.translations.translateToOsm(tcTags, entity)
+        if (Hoot.translations.activeTranslation !== 'OSM' && !_isEmpty(tcTags)) {
+            Hoot.translations.translateToOsm(tcTags, entity)
                 .then(resp => changeTagsCallback(resp));
         } else {
             changeTagsCallback(tcTags);
@@ -486,7 +485,7 @@ export function coreContext() {
 
     /* Init */
 
-    context.hoot = Hoot;
+    // context.hoot = Hoot;
     context.dgservices = DGServcies;
 
     context.projection = geoRawMercator();

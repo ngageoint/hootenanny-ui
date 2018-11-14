@@ -4,8 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/5/18
  *******************************************************************************************************/
 
-import Hoot from '../../../hoot';
-
 export default class Upload {
     constructor( instance ) {
         this.instance = instance;

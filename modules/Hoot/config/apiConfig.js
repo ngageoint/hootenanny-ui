@@ -16,4 +16,4 @@ export const apiConfig = {
 
 export default apiConfig;
 
-export let baseUrl = `${ apiConfig.host }:${ apiConfig.port }/${ apiConfig.basePath }`;
+export let baseUrl = `${ apiConfig.host }:${ apiConfig.port }/hoot-services`;

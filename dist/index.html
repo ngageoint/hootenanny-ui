@@ -7,6 +7,7 @@
     <link rel="icon" href="favicon.ico"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel='stylesheet' href='./iD.css'>
+    <link rel='stylesheet' href='./hoot.css'>
 
     <!-- mobile devices -->
     <meta name='viewport' content='initial-scale=1.0 maximum-scale=1.0'>
@@ -18,6 +19,7 @@
     <div id="id-sink"></div>
 </div>
 <!--[if !IE]>-->
+<script src='./hoot.min.js'></script>
 <script src='./iD.min.js'></script>
 <!--<![endif]-->
 <script>
@@ -42,6 +44,7 @@
         document.getElementById('id-container').className = 'unsupported';
 
     } else {
+        // var Hoot = new Hoot();
         var id = iD.Context();
 
         // disable boundaries (unless we have an explicit disable_features list)
@@ -51,6 +54,7 @@
         }
 
         id.ui()(document.getElementById('id-sink'), function() {
+            Hoot.init( id );
             id.container().select('#about-list')
                 .insert('li', '.user-list')
                 .attr('class', 'source-switch')

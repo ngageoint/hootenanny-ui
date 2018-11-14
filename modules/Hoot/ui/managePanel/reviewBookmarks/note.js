@@ -4,7 +4,6 @@
  * @author Matt Putipong on 10/1/18
  *******************************************************************************************************/
 
-import Hoot             from '../../../hoot';
 import EditBookmarkNote from '../../modals/editBookmarkNote';
 
 export default class Note {

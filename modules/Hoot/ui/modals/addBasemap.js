@@ -6,7 +6,6 @@
 
 import _forEach from 'lodash-es/forEach';
 
-import Hoot               from '../../hoot';
 import FormFactory        from '../../tools/formFactory';
 import { basemapAddForm } from '../../config/domMetadata';
 

@@ -11,7 +11,8 @@
         "d3": false,
         "$": false,
         "iD": false,
-        "define": false
+        "define": false,
+        "Hoot": false
     },
     "parserOptions": {
         "ecmaVersion": 9,
