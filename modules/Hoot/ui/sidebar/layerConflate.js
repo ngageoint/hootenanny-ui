@@ -7,7 +7,6 @@
 import _find    from 'lodash-es/find';
 import _forEach from 'lodash-es/forEach';
 
-import Hoot                       from '../../hoot';
 import SidebarForm                from './sidebarForm';
 import AdvancedOpts               from './advancedOpts/advancedOpts';
 import FormFactory                from '../../tools/formFactory';

@@ -24,8 +24,7 @@ import { osmChangeset } from '../../osm';
 import {
     actionDiscardTags,
     actionNoop
-}           from '../../actions';
-import Hoot from '../hoot';
+} from '../../actions';
 
 export default class Layers {
     constructor( hoot ) {
@@ -150,7 +149,7 @@ export default class Layers {
                     name: layer.name,
                     mapId: layer.id
                 }
-        } );
+            } );
 
             this.setLayerColor( mapId, layer.color );
 

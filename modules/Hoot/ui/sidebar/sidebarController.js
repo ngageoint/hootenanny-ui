@@ -6,7 +6,6 @@
 
 import _reject       from 'lodash-es/reject';
 
-import Hoot          from '../../hoot';
 import LayerMetadata from './layerMetadata';
 
 class SidebarController {

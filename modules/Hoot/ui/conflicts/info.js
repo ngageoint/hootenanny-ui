@@ -11,8 +11,6 @@ import _forEach   from 'lodash-es/forEach';
 import _map       from 'lodash-es/map';
 import _startCase from 'lodash-es/startCase';
 
-import Hoot from '../../hoot';
-
 export default class ConflictMetadata {
     constructor( instance ) {
         this.instance = instance;

@@ -6,7 +6,6 @@
 
 import _forEach from 'lodash-es/forEach';
 
-import Hoot                from '../../hoot';
 import Info                from './info';
 import Map                 from './map';
 import Traverse            from './traverse';

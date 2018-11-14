@@ -4,7 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/11/18
  *******************************************************************************************************/
 
-import Hoot          from '../hoot';
 import FormFactory   from '../tools/formFactory';
 import { aboutForm } from '../config/domMetadata';
 

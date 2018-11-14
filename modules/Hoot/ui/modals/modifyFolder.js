@@ -7,7 +7,6 @@
 import _find from 'lodash-es/find';
 import _get  from 'lodash-es/get';
 
-import Hoot                  from '../../hoot';
 import FormFactory           from '../../tools/formFactory';
 import { modifyDatasetForm } from '../../config/domMetadata';
 

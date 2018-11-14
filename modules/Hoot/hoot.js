@@ -4,6 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/16/18
  *******************************************************************************************************/
 
+import '../../css/hoot/hoot.scss';
+
 import _forEach from 'lodash-es/forEach';
 
 import API                from './managers/api';
@@ -106,4 +108,7 @@ class Hoot {
 
 // * Note: This is not a true Singleton, but it mimics the Singleton pattern
 // because of Node's module caching behavior.
+// window.Hoot = new Hoot();
+
+window.Hoot = new Hoot();
 export default new Hoot();

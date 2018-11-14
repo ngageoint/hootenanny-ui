@@ -11,7 +11,6 @@ import _map     from 'lodash-es/map';
 import _reject  from 'lodash-es/reject';
 import _remove  from 'lodash-es/remove';
 
-import Hoot               from '../../hoot';
 import FormFactory        from '../../tools/formFactory';
 import { getBrowserInfo } from '../../tools/utilities';
 

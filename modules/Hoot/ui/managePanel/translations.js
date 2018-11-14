@@ -4,7 +4,6 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import Hoot           from '../../hoot';
 import Tab            from './tab';
 import AddTranslation from '../modals/addTranslation';
 import { tooltip }    from '../../../util/tooltip';
