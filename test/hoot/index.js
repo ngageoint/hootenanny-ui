@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 let iD        = require( '../../modules/index' ),
+    Hoot      = require( '../../modules/Hoot/hoot' ).default,
     $         = require( 'jquery' ),
     _         = require( 'lodash-es' ),
     chai      = require( 'chai' ),
@@ -14,7 +15,7 @@ chai.use( sinonChai );
 
 let id = iD.Context();
 
-global.Hoot   = id.hoot;
+global.Hoot   = Hoot;
 global.d3     = iD.d3;
 global.$      = $;
 global._      = _;
@@ -30,7 +31,9 @@ before( () => {
         .append( 'div' )
         .attr( 'id', 'id-sink' );
 
-    id.ui()( document.getElementById( 'id-sink' ) );
+    id.ui()( document.getElementById( 'id-sink' ), function() {
+        Hoot.init( id );
+    } );
 } );
 
 beforeEach( function( done ) {

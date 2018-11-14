@@ -25,7 +25,7 @@ module.exports = {
     context: resolve( __dirname, '../' ),
     entry: {
         iD: './modules/id.js',
-        hoot: './modules/Hoot/hoot.js'
+        hoot: './modules/Hoot/index.js'
     },
     output: {
         path: resolve( __dirname, '../dist/' ),
