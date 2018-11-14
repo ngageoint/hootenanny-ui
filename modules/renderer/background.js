@@ -175,9 +175,9 @@ export function rendererBackground(context) {
             delete q.offset;
         }
 
-        if (!window.mocha) {
-            window.location.replace('#' + utilQsString(q, true));
-        }
+        // if (!window.mocha) {
+        //     window.location.replace('#' + utilQsString(q, true));
+        // }
 
         var imageryUsed = [b.imageryUsed()];
 

@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 export const apiConfig = {
-    host: 'http://35.174.111.201',
+    host: 'http://localhost',
     port: '8080',
     path: 'hoot-services',
     translationServerPort: '8094',

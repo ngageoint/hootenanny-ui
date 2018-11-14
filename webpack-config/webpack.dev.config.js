@@ -38,7 +38,7 @@ module.exports = Merge( CommonConfig, {
             timings: true
         },
         proxy: {
-            '/hoot-services/auth/oauth1/verify': {
+            '/hoot-services': {
                 target: 'http://35.174.111.201:8080'
             }
         }

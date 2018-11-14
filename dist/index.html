@@ -85,88 +85,11 @@
         var oauth_token = findGetParameter('oauth_token');
         var oauth_verifier = findGetParameter('oauth_verifier');
 
-        console.log( oauth_token );
-        console.log( oauth_verifier );
         if(oauth_token && oauth_verifier) {
             // if we have these tokens, this is the spawned popup-
-
-            // d3.json('/hoot-services/auth/oauth1/verify?oauth_verifier=' + oauth_verifier + '&oauth_token=' + oauth_token ).then( function( data ) {
-            //     window.alert( 'wait' );
-            //     console.log( data );
-            //     // if(e) {
-            //     //     console.log( e );
-            //     //     console.warn('failed to verify oauth tokens w/ provider:');
-            //     //     console.warn('XMLHttpRequest.status', e.status || null);
-            //     //     console.warn('XMLHttpRequest.responseText ', e.responseText || null);
-            //     //
-            //     //     if(opener) {
-            //     //         window.onbeforeunload = function() {
-            //     //             opener.oAuthDone(e, null);
-            //     //         }
-            //     //         window.close();
-            //     //     } else {
-            //     //         window.alert('Failed to complete oauth handshake. Check console for details & retry.');
-            //     //         // clear oauth params.
-            //     //         window.history.pushState({}, document.title, window.location.pathname);
-            //     //     }
-            //     //
-            //     // } else {
-            //     //     if(opener) {
-            //     //         window.onbeforeunload = function() {
-            //     //             opener.oAuthDone(null, r);
-            //     //         };
-            //     //
-            //     //         window.close();
-            //     //     } else {
-            //     //         // force refresh.
-            //     //         window.location.reload(true);
-            //     //     }
-            //     // }
-            //
-            //     // window.alert( 'Failed to complete oauth handshake. Check console for details & retry.' );
-            //     // window.onbeforeunload = function() {
-            //     //     opener.oAuthDone(null, r);
-            //     // };
-            //     // window.close();
-            //     //
-            //     // if(opener) {
-            //     //     console.log( r, e );
-            //     //     window.alert( 'Failed to complete oauth handshake. Check console for details & retry.' );
-            //     //     window.onbeforeunload = function() {
-            //     //         opener.oAuthDone(null, r);
-            //     //     };
-            //     //     // window.close();
-            //     // } else {
-            //     //     // force refresh.
-            //     //     // window.location.reload(true);
-            //     // }
-            // })
-
-            d3.json( '/hoot-services/auth/oauth1/verify?oauth_verifier=' + oauth_verifier + '&oauth_token=' + oauth_token )
-                .on( 'progress', d => {
-                    console.log( d.srcElement.response );
-                } )
-                .on( 'load', r => {
-                    console.log( 'loaded: ', r );
-                    //
-                    // window.onbeforeunload = function() {
-                    //     opener.oAuthDone(null, r);
-                    // };
-                    //
-                    // window.close();
-
-                    if(opener) {
-                        window.onbeforeunload = function() {
-                            opener.oAuthDone(null, r);
-                        }
-                        window.close();
-                    } else {
-                        // force refresh.
-                        window.location.reload(true);
-                    }
-                } )
-                .on( 'error', e => {
-                    console.log( 'error: ', e );
+            d3.json('/hoot-services/auth/oauth1/verify?oauth_verifier=' + oauth_verifier + '&oauth_token=' + oauth_token, function( e, r ) {
+                if(e) {
+                    console.log( e );
                     console.warn('failed to verify oauth tokens w/ provider:');
                     console.warn('XMLHttpRequest.status', e.status || null);
                     console.warn('XMLHttpRequest.responseText ', e.responseText || null);
@@ -182,8 +105,22 @@
                         // clear oauth params.
                         window.history.pushState({}, document.title, window.location.pathname);
                     }
-                } )
-                .get();
+
+                } else {
+                    if(opener) {
+                        console.log( r );
+                        window.alert( 'wait' );
+                        window.onbeforeunload = function() {
+                            opener.oAuthDone(null, r);
+                        };
+
+                        window.close();
+                    } else {
+                        // force refresh.
+                        window.location.reload(true);
+                    }
+                }
+            })
         } else {
             function load() {
                 console.log( 'load' );
@@ -228,62 +165,15 @@
             hoot.api.getServicesVersionInfo()
                 .then( () => load() )
                 .catch( () => {
-                    // hoot.renderLogin();
-                    // d3.text( '/hoot-services/auth/oauth1/request', ( e, r ) => {
-                    //     // console.log( e );
-                    //     // console.log( r );
-                    //     hoot.login.render( () => launchLogin( r ) )
-                    // } );
-
                     hoot.api.getOAuthRedirectUrl()
                         .then( oauthRedirectUrl => {
                             hoot.login.render( () => launchLogin( oauthRedirectUrl ) )
-                            // render landing page.
-                            // Hoot.view.login(function() {
-                            //     launchLogin(oauthRedirectUrl);
-                            // }, function() {
-                            //     window.location = oauthRedirectUrl;
-                            // }, 'dist/');
-                            //
-                            // launchLogin(oauthRedirectUrl);
                         } )
                         .catch( err => {
                             console.log( 'get oauth redirect error' );
                             console.log( err );
-                            // if(oauthRedirectUrl && oauthRedirectUrl.error) {
-                            //     // failed to get oauth redirect url from hoot-services.
-                            //     // must be offline or misconfigured.
-                            //     console.error(oauthRedirectUrl);
-                            //     window.alert('Failed to retrieve authentication environment from services. Check console for details.');
-                            // }
                         } );
                 } );
-
-            // Hoot.model.REST('servicesVersionInfo', function(services_version_info) {
-            //     if(services_version_info && services_version_info.error) {
-            //         // redirect.
-            //         Hoot.model.REST('getOAuthRedirectURL', function(oauth_redirect_url) {
-            //             if(oauth_redirect_url && oauth_redirect_url.error) {
-            //                 // failed to get oauth redirect url from hoot-services.
-            //                 // must be offline or misconfigured.
-            //                 console.error(oauth_redirect_url);
-            //                 window.alert('Failed to retrieve authentication environment from services. Check console for details.');
-            //
-            //             } else {
-            //                 // render landing page.
-            //                 Hoot.view.login(function() {
-            //                     launchLogin(oauth_redirect_url);
-            //                 }, function() {
-            //                     window.location = oauth_redirect_url;
-            //                 }, 'dist/');
-            //
-            //                 launchLogin(oauth_redirect_url);
-            //             }
-            //         });
-            //     } else {
-            //         load();
-            //     }
-            // });
         }
     }
 </script>
