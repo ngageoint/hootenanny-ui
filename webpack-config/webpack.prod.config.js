@@ -21,6 +21,11 @@ module.exports = Merge( CommonConfig, {
             }
         ]
     },
+    optimization: {
+        splitChunks: {
+            chunks: 'initial'
+        }
+    },
     plugins: [
         new webpack.LoaderOptionsPlugin( {
             minimize: false,

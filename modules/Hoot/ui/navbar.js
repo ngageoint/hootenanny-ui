@@ -13,9 +13,10 @@ import About from './about';
  * @constructor
  */
 export default class Navbar {
-    constructor( isLoggedIn ) {
+    constructor( isLoggedIn, login ) {
         this.container  = d3.select( 'body' );
         this.isLoggedIn = isLoggedIn;
+        this.login      = login;
     }
 
     /**
@@ -91,7 +92,7 @@ export default class Navbar {
                 .attr( 'href', '#logout' )
                 .classed( '_icon light strong small info pad2x flex align-center text-light pointer', true )
                 .text( 'Launch Login' )
-                .on( 'click', () => Hoot.login.cb() );
+                .on( 'click', () => this.login.launchOAuthLogin() );
         }
 
         //dropdownToggle

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset='utf-8'>
+    <title>Hootenanny</title>
+    <base href="/">
+    <link rel="icon" href="favicon.ico"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel='stylesheet' href='./login.css'>
+
+    <!-- mobile devices -->
+    <meta name='viewport' content='initial-scale=1.0 maximum-scale=1.0'>
+    <meta name='apple-mobile-web-app-capable' content='yes' />
+    <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />
+</head>
+<body>
+<div id='id-container'>
+    <div id="id-sink"></div>
+</div>
+<script src='login.min.js'></script>
+<script src='vendors~login.min.js'></script>
+<script src='vendors~hoot~iD~login.min.js'></script>
+<script>
+    let login = new Login();
+
+    login.render()
+        .then(() => {
+            login.oauth();
+        })
+</script>
+</body>
+</html>

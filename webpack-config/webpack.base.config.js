@@ -25,7 +25,8 @@ module.exports = {
     context: resolve( __dirname, '../' ),
     entry: {
         iD: './modules/id.js',
-        hoot: './modules/Hoot/hoot.js'
+        hoot: './modules/Hoot/hoot.js',
+        login: './modules/Hoot/login.js'
     },
     output: {
         path: resolve( __dirname, '../dist/' ),
@@ -36,14 +37,21 @@ module.exports = {
         rules: [
             {
                 test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3)$/,
-                use: {
-                    loader: 'file-loader',
-                    options: {
-                        outputPath: 'img/',
-                        // publicPath: '/',
-                        name: '[name].[ext]'
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            outputPath: 'img/',
+                            name: '[name].[ext]'
+                        }
+                    },
+                    {
+                        loader: 'image-webpack-loader',
+                        options: {
+                            disable: true, // webpack@2.x and newer
+                        }
                     }
-                }
+                ]
             },
             // {
             //     test: /\.css$/,

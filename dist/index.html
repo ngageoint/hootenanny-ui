@@ -19,8 +19,10 @@
     <div id="id-sink"></div>
 </div>
 <!--[if !IE]>-->
-<script src='./hoot.min.js'></script>
 <script src='./iD.min.js'></script>
+<script src='./hoot.min.js'></script>
+<script src='./vendors~hoot~iD.min.js'></script>
+<script src='./vendors~hoot~iD~login.min.js'></script>
 <!--<![endif]-->
 <script>
     // google analytics
@@ -159,23 +161,23 @@
                     }
                 }
             }
-
+            Hoot.login.render( () => launchLogin( oauthRedirectUrl ) )
             // hoot.checkLogin()
             //     .then( () => load() )
             //     .catch( () => hoot.renderLogin( load ) );
 
-            Hoot.api.getServicesVersionInfo()
-                .then( () => load() )
-                .catch( () => {
-                    Hoot.api.getOAuthRedirectUrl()
-                        .then( oauthRedirectUrl => {
-                            Hoot.login.render( () => launchLogin( oauthRedirectUrl ) )
-                        } )
-                        .catch( err => {
-                            console.log( 'get oauth redirect error' );
-                            console.log( err );
-                        } );
-                } );
+            // Hoot.api.getServicesVersionInfo()
+            //     .then( () => load() )
+            //     .catch( () => {
+            //         Hoot.api.getOAuthRedirectUrl()
+            //             .then( oauthRedirectUrl => {
+            //                 Hoot.login.render( () => launchLogin( oauthRedirectUrl ) )
+            //             } )
+            //             .catch( err => {
+            //                 console.log( 'get oauth redirect error' );
+            //                 console.log( err );
+            //             } );
+            //     } );
         }
     }
 </script>
