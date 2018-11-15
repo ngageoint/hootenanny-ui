@@ -34,7 +34,7 @@ Hoot.view.utilities.translation = function(context) {
                     window.console.error(d.error);
                     return;
                 }
-                
+
                 container.selectAll('div').remove();
                 var tla = container.selectAll('div')
                     .data(d)
@@ -44,7 +44,7 @@ Hoot.view.utilities.translation = function(context) {
                 var tla3 = tla2.append('span')
                     .classed('text-left big col12 fill-white small hoverDiv2', true);
 
-                var tla3A = tla3.append('a')
+                tla3.append('a')
                     .classed('transl pad1x', true)
                     .style('position', 'relative')
                     .style('top', '20px')
@@ -54,7 +54,7 @@ Hoot.view.utilities.translation = function(context) {
                                 return d.NAME + '*';
                             }
                         }
-                        return d.NAME; 
+                        return d.NAME;
                     })
                     .on('click',function(d){
                         d3.event.stopPropagation();
@@ -68,7 +68,7 @@ Hoot.view.utilities.translation = function(context) {
                         if(d.DEFAULT === true){
                             return d.DESCRIPTION + ' (Hootenanny Default Translation)';
                         }
-                        return d.DESCRIPTION; 
+                        return d.DESCRIPTION;
                     });
 
                     d3.selectAll('a.transl').call(tooltip);
@@ -130,7 +130,7 @@ Hoot.view.utilities.translation = function(context) {
                 .on('click', function (d) {
                     // Export translation to new .js file
                     d3.event.stopPropagation();
-                    d3.event.preventDefault();  
+                    d3.event.preventDefault();
                     context.hoot().control.utilities.translation.exportTranslation(d);
                 });
 

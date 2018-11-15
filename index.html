@@ -13,6 +13,7 @@
         <link rel='stylesheet' href='css/style2.css'>
         <link rel='stylesheet' href='css/hoot-style.css'>
         <link rel='stylesheet' href='css/translation_assistant.css'>
+        <link rel='stylesheet' href='css/login.css'>
         <link rel='icon' href='css/img/favicon.png'>
 
         <!-- mobile devices -->
@@ -303,6 +304,7 @@
 
         <script src='js/hoot/view/View.js'></script>
         <script src='js/hoot/view/VersionInfo.js'></script>
+        <script src='js/hoot/view/Login.js'></script>
         <script src='js/hoot/view/utilities/Utilities.js'></script>
         <script src='js/hoot/view/utilities/Dataset.js'></script>
         <!-- <script src='js/hoot/view/utilities/WfsDataset.js'></script> -->
@@ -339,7 +341,7 @@
         <script src='js/hoot/control/utilities/ModifyDataset.js'></script>
         <script src='js/hoot/control/utilities/ImportDataset.js'></script>
         <script src='js/hoot/control/utilities/BulkImportDataset.js'></script>
-        <script src='js/hoot/control/utilities/BulkExportDataset.js'></script>        
+        <script src='js/hoot/control/utilities/BulkExportDataset.js'></script>
         <script src='js/hoot/control/utilities/ImportDirectory.js'></script>
         <script src='js/hoot/control/utilities/ClipDataset.js'></script>
         <script src='js/hoot/control/utilities/SetTagOverrides.js'></script>
@@ -370,20 +372,121 @@
     <body>
         <div id='id-container'></div>
         <script>
-            iD.data.load(function() {
+            function findGetParameter(parameterName) {
+                var result = null,
+                    tmp = [];
+                location.search
+                    .substr(1)
+                    .split("&")
+                    .forEach(function (item) {
+                      tmp = item.split("=");
+                      if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+                    });
+                return result;
+            }
+            var oauth_token = findGetParameter('oauth_token');
+            var oauth_verifier = findGetParameter('oauth_verifier');
+            if(oauth_token && oauth_verifier) {
+                // if we have these tokens, this is the spawned popup-
+                d3.json('/hoot-services/auth/oauth1/verify?oauth_verifier=' + oauth_verifier + '&oauth_token=' + oauth_token, function(e, r) {
+                    if(e) {
+                        console.warn('failed to verify oauth tokens w/ provider:');
+                        console.warn('XMLHttpRequest.status', e.status || null);
+                        console.warn('XMLHttpRequest.responseText ', e.responseText || null);
+
+                        if(opener) {
+                            window.onbeforeunload = function() {
+                                opener.oAuthDone(e, null);
+                            }
+                            window.close();
+                        } else {
+                            window.alert('Failed to complete oauth handshake. Check console for details & retry.');
+                            // clear oauth params.
+                            window.history.pushState({}, document.title, window.location.pathname);
+                        }
+
+                    } else {
+                        if(opener) {
+                            window.onbeforeunload = function() {
+                                opener.oAuthDone(null, r);
+                            }
+                            window.close();
+                        } else {
+                            // force refresh.
+                            window.location.reload(true);
+                        }
+                    }
+                });
+            } else {
+                iD.data.load(function() {
                     if(iD.data.buildInfo && iD.data.buildInfo.version){
                         iD.version = iD.data.buildInfo.version + "(Hootenanny)";
                     } else {
                         iD.version = "Unknown(Hootenanny)";
                     }
                     id = iD().presets(iD.data.presets)
-                    .imagery(iD.data.imagery)
-                    .taginfo(iD.services.taginfo())
-                    .assetPath('dist/');
-                    id.hoot().load(function() {
-                        d3.select('#id-container').call(id.ui());
+                        .imagery(iD.data.imagery)
+                        .taginfo(iD.services.taginfo())
+                        .assetPath('dist/');
+
+                    function load() {
+                        // unload landing page.
+                        Hoot.view.unload_login();
+
+                        // load application.
+                        id.hoot().load(function() {
+                            d3.select('#id-container').call(id.ui());
+                        });
+                    }
+                    // launch popup & attach callback function
+                    // to child window.
+                    function launch_login(oauth_redirect_url) {
+                        window.open(oauth_redirect_url, "hootenanny_login_redirect", "width=500,height=800,toolbar=no,status=no,menubar=no");
+
+                        window.oAuthDone = function(e, user_object) {
+                            if(e) {
+                                console.warn('failed to verify oauth tokens w/ provider:');
+                                console.warn('XMLHttpRequest.status', e.status || null);
+                                console.warn('XMLHttpRequest.responseText ', e.responseText || null);
+
+                                window.alert('Failed to complete oauth handshake. Check console for details & retry.');
+                                window.history.pushState({}, document.title, window.location.pathname);
+
+                            } else {
+                                if(localStorage) {
+                                    localStorage.setItem('user', JSON.stringify(user_object));
+                                }
+                                load();
+                            }
+                        }
+                    }
+                    Hoot.model.REST('servicesVersionInfo', function(services_version_info) {
+                        if(services_version_info && services_version_info.error) {
+                            // redirect.
+                            Hoot.model.REST('getOAuthRedirectURL', function(oauth_redirect_url) {
+                                if(oauth_redirect_url && oauth_redirect_url.error) {
+                                    // failed to get oauth redirect url from hoot-services.
+                                    // must be offline or misconfigured.
+                                    console.error(oauth_redirect_url);
+                                    window.alert('Failed to retrieve authentication environment from services. Check console for details.');
+
+                                } else {
+                                    // render landing page.
+                                    Hoot.view.login(function() {
+                                        launch_login(oauth_redirect_url);
+                                    }, function() {
+                                        window.location = oauth_redirect_url;
+                                    }, 'dist/');
+
+                                    launch_login(oauth_redirect_url);
+                                }
+                            });
+                        } else {
+                            load();
+                        }
                     });
-            });
+                });
+            }
         </script>
     </body>
 </html>

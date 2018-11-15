@@ -127,7 +127,7 @@ Hoot.ui.hootformreviewnote = function (context)
                             .attr('id', 'bmkNoteFormUser' + _rawData.id)
                             .classed('fr', true)
                             .call(iD.svg.Icon('#icon-avatar'))
-                            .attr('title',_parent.getUser().displayName || 'Anonymous User')
+                            .attr('title',_parent.getUser().display_name || 'Anonymous User')
                             .on('click', _bmkUserClickHanlder);
 
                         _createButtons(d_btn, formDiv);
@@ -144,7 +144,7 @@ Hoot.ui.hootformreviewnote = function (context)
             .append('div').classed('fr',true)
             .attr('id', 'bmkNoteFormUser' + 'NEW')
             .call(iD.svg.Icon('#icon-avatar'))
-            .attr('title',_parent.getUser().displayName || 'Anonymous User')
+            .attr('title',_parent.getUser().display_name || 'Anonymous User')
             .on('click', _bmkUserClickHanlder);
         }
 
@@ -204,18 +204,14 @@ Hoot.ui.hootformreviewnote = function (context)
         {
             var req = {};
             req.email=creatorEmail;
-            Hoot.model.REST('getSaveUser', req, function (resp) {
+            Hoot.model.REST('getSaveUser', req, function (e, resp) {
+                if(e) { return; }
 
-                if(resp.error){
-                    window.console.error(resp.error);
-                    return;
-                }
-                if(resp.user) {
-                    _parent.setUser(resp.user);
-                    d3.selectAll('[id^=bmkNoteFormUser]').attr('title',resp.user.displayName);
-                    // sets user back to share dialog. (We need to refactor this)
-                    context.hoot().control.conflicts.actions.sharereview.setUserInfo(resp.user);
-                }
+                _parent.setUser(resp);
+                d3.selectAll('[id^=bmkNoteFormUser]').attr('title', resp.display_name);
+                // sets user back to share dialog. (We need to refactor this)
+                context.hoot().control.conflicts.actions.sharereview.setUserInfo(resp);
+
                 // relaod global users list
                 context.hoot().getAllusers();
                 if(_currentUserForm) {

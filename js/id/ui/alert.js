@@ -1,4 +1,4 @@
-iD.ui.Alert = function(message,type,stack) {
+iD.ui.Alert = function(message,type/*,stack*/) {
     var alerts = d3.select('#alerts');
     var alertDiv = alerts.append('div')
         .classed('fillD alertDiv overflow',true)

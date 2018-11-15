@@ -88,12 +88,25 @@ Hoot.model.folders = function (context)
             });
     };
 
-    model_folders.updateLink = function(link,callback) {
-        Hoot.model.REST('updateMapFolderLinks',link,function(){
+    model_folders.updateLink = function(link, callback) {
+        Hoot.model.REST('updateMapFolderLinks', link, function(e){
+            if(e) {
+                var errorMsg = 'Failed to move map.';
+                if(e.responseText && e.responseText.length > 0) {
+                    errorMsg = 'Error: ' + e.responseText;
+                }
+                iD.ui.Alert(errorMsg, 'error', new Error().stack);
+                return;
+            }
             model_folders.refreshLinks(function(){
-                context.hoot().model.import.updateTrees();
+                context.hoot().model.folders.refresh(function () {
+                    context.hoot().model.layers.refresh(function(){
+                        context.hoot().model.folders.refreshLinks(function(){
+                            context.hoot().model.import.updateTrees(callback);
+                        });
+                    });
+                });
 
-                if(callback){callback();}
             });
         });
     };

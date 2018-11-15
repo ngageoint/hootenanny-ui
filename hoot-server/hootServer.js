@@ -22,14 +22,14 @@ var hoot = function(options) {
 
     app.use('/hoot-services', proxy(hootUrl, {
         limit: '1000mb',
-        forwardPath: function(req, res) {
+        proxyReqPathResolver: function(req) {
             return '/hoot-services' + url.parse(req.url).path;
         }
     }));
 
     app.use('/static', proxy(hootUrl, {
         //limit: '1000mb',
-        forwardPath: function(req, res) {
+        proxyReqPathResolver: function(req) {
             return '/static' + url.parse(req.url).path;
         }
     }));

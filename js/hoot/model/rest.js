@@ -25,13 +25,12 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
         var url = '/hoot-services/ingest/ingest/upload?TRANSLATION=' + data.TRANSLATION + '&INPUT_TYPE=' +
-                data.INPUT_TYPE + '&INPUT_NAME=' + data.INPUT_NAME + '&USER_EMAIL=' +
-                iD.data.hootConfig.userEmail + '&NONE_TRANSLATION=' + data.NONE_TRANSLATION;
+                data.INPUT_TYPE + '&INPUT_NAME=' + data.INPUT_NAME + '&NONE_TRANSLATION=' + data.NONE_TRANSLATION;
 
         if(data.FGDB_FC) {
             url += '&FGDB_FC=' + data.FGDB_FC;
         }
-        d3.xhr(url).header('access-control-allow-origin', '*')
+        d3.xhr(url)
             .post(data.formData, function (error, json) {
 
 
@@ -47,57 +46,61 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.Modify = function (data, callback) {
         if (!data.inputType || !data.mapid || !data.modifiedName) {
-            callback(false);
-            return false;
+            iD.ui.Alert('Modify name failed: malformed request!', 'error', new Error().stack);
+            return;
         }
-        /*callback(true);
-        return true;*/
-        d3.json('/hoot-services/osm/api/0.6/map/modify?mapId=' + data.mapid +
-                '&inputType=' + data.inputType + '&modName=' + data.modifiedName)
-        .post(data, function (error, data) {
-            if (error){
-                iD.ui.Alert('Modify name failed!','error',new Error().stack);
-                return error;
+        var baseUrl = '/hoot-services/osm/api/0.6/map';
+        if(data.inputType === 'folder') { baseUrl += '/folders'; }
+
+        d3.xhr(baseUrl + '/' + data.mapid + '/rename/' + data.modifiedName)
+            .send('put', function(e) {
+                if (e) {
+                    iD.ui.Alert('Modify name failed!', 'error', new Error().stack);
+                } else {
+                    callback();
+                }
+            });
+    };
+
+    rest.getFolderVisibility = function(data, callback) {
+        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + data.id + '/visibility')
+        .send('GET', function(e, r) {
+            if(e) {
+                callback(e, null);
+            } else {
+                callback(null, JSON.parse(r.responseText));
             }
-            callback(data);
-            return data;
+        });
+    };
+    rest.setFolderVisibility = function(data, isPublic, callback) {
+        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + data.id + '/visibility/' + (isPublic ? 'public' : 'private'))
+        .send('PUT', function(e, r) {
+            if(e) {
+                callback(e, null);
+            } else {
+                callback(null, JSON.parse(r.responseText));
+            }
         });
     };
 
-    rest.updateMapFolderLinks = function(data,callback){
+    rest.updateMapFolderLinks = function(data, callback){
         if (!(data.folderId >= 0) || !(data.mapid >= 0) || !data.updateType) {
-            callback(false);
-            return false;
+            callback('invalid parameters', null);
+            return;
         }
-        /*callback(true);
-        return true;*/
-        d3.json('/hoot-services/osm/api/0.6/map/linkMapFolder?mapId=' + data.mapid +
-                '&folderId=' + data.folderId + '&updateType=' + data.updateType)
-        .post(data, function (error, data) {
-            if (error){
-                iD.ui.Alert('Folder-Map link failed!','error',new Error().stack);
-                return error;
-            }
-            callback(data);
-            return data;
-        });
+
+        d3.xhr('/hoot-services/osm/api/0.6/map/' + data.mapid + '/move/' + data.folderId)
+        .send('PUT', function (e, r) { callback(e, r); });
     };
 
-    rest.updateFolder = function(data,callback){
+    rest.updateFolder = function(data, callback){
         if(!(data.parentId >= 0)||!(data.folderId >= 0)||data.parentId===data.folderId){
             callback(false);
             return false;
         }
 
-        d3.json('/hoot-services/osm/api/0.6/map/updateParentId?folderId=' + data.folderId +
-                '&parentId=' + data.parentId)
-        .post(data, function (error, data) {
-            if (error){
-                return error;
-            }
-            callback(data);
-            return data;
-        });
+        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + data.folderId + '/move/' + data.parentId)
+            .send('put', function(e, r) { callback(e, r); });
     };
 
     rest.addFolder = function (data, callback) {
@@ -105,12 +108,16 @@ Hoot.model.REST = function (command, data, callback, option) {
             callback(false);
             return false;
         }
-
-        d3.json('/hoot-services/osm/api/0.6/map/addfolder?folderName=' + data.folderName +
-                '&parentId=' + data.parentId)
-        .post(data, function (error, data) {
+        var url = '/hoot-services/osm/api/0.6/map/folders/add/' + data.parentId + '/' + data.folderName;
+        // API Default is public folder
+        // toggle to private only when explicitly specified `false`
+        if(data.isPublic === false) {
+            url += '?isPublic=false';
+        }
+        d3.json(url)
+        .post(null, function (error, data) {
             if (error){
-                iD.ui.Alert('Add folder failed!','error',new Error().stack);
+                iD.ui.Alert('Error: ' + error.responseText, 'error', new Error().stack);
                 return error;
             }
             callback(data);
@@ -124,9 +131,10 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
 
-        d3.json('/hoot-services/osm/api/0.6/map/deletefolder?folderId=' + folderId)
-        .post(function (error, json) {
-            if(error){
+        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + folderId)
+        .send('DELETE', function (error, json) {
+            if(error && error.responseText) {
+                iD.ui.Alert('Error: ' + error.responseText, 'error', new Error().stack);
                 callback(false);
             } else {callback(true);}
             return json;
@@ -152,7 +160,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getAvailLinks = function (callback) {
-        var request = d3.json('/hoot-services/osm/api/0.6/map/links');
+        var request = d3.json('/hoot-services/osm/api/0.6/map/folders/linked');
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get available links failed!'));
@@ -188,7 +196,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getMapTags = function (data, callback) {
-        var request = d3.json('/hoot-services/osm/api/0.6/map/tags?mapid=' + data.mapId);
+        var request = d3.json('/hoot-services/osm/api/0.6/map/' + data.mapId + '/tags');
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get tags failed!'));
@@ -264,7 +272,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     rest.clipDataset = function (context, data, callback) {
         if(!data.INPUT_NAME || !data.BBOX || !data.OUTPUT_NAME || !data.PATH_NAME){return false;}
 
-        var postClip = function(a){
+        var postClip = function(a) {
             if(a.status==='complete'){
                 context.hoot().model.layers.refresh(function(){
                     context.hoot().model.layers.setLayerLinks(function(){
@@ -279,10 +287,10 @@ Hoot.model.REST = function (command, data, callback, option) {
                                 callback(a,data.OUTPUT_NAME);
                             }
                         }
-                    });
-                });
-            }
-        };
+                    }); // set layer links
+                }); // layer refresh
+            } // if(complete)
+        }; //postClip()
 
         // Commented out section below placeholder for future alpha-shape clipping
         /*if(option === 'bbox'){*/
@@ -315,7 +323,6 @@ Hoot.model.REST = function (command, data, callback, option) {
 
         data.CONFLATION_COMMAND = data.CONFLATION_COMMAND || 'conflate';
 
-        data.USER_EMAIL = iD.data.hootConfig.userEmail;
         d3.json('/hoot-services/job/conflation/execute')
             .header('Content-Type', 'application/json')
             .post(JSON.stringify(data), function (error, resp) {
@@ -759,23 +766,40 @@ Hoot.model.REST = function (command, data, callback, option) {
 
 
     rest.getSaveUser = function(data, callback) {
-        d3.json('/hoot-services/osm/user/-1?userEmail=' + data.email)
+        d3.json('/hoot-services/osm/user?userEmail=' + data.email)
             .header('Content-Type', 'application/json')
             .post(JSON.stringify(data), function (error, resp) {
 
                 if (error) {
-                    return callback(_alertError(error, 'Requested job failed!'));
+                    return callback(_alertError(error, 'Requested job failed!'), null);
                 }
-                callback(resp);
+                callback(null, resp);
             });
     };
 
     rest.getAllUsers = function(callback) {
-        d3.json('/hoot-services/osm/user/-1/all', function (error, resp) {
+        d3.json('/hoot-services/osm/user/all', function (error, resp) {
             if (error) {
-                return callback(_alertError(error, 'Get all users failed!'));
+                return callback(_alertError(error, 'Get all users failed!'), null);
+            }
+            callback(null, resp);
+        });
+    };
+    rest.getOAuthRedirectURL = function(callback) {
+        d3.text('/hoot-services/auth/oauth1/request', function(error, resp) {
+            if (error) {
+                return callback(_alertError(error, 'Failed to get redirect URL for oauth provider!'));
             }
             callback(resp);
+        });
+    };
+    rest.logout = function(callback) {
+        d3.text('/hoot-services/auth/oauth1/logout', function(err) {
+            if (err) {
+                return callback(_alertError(err, 'Failed to logout!'));
+            } else {
+                callback();
+            }
         });
     };
 
