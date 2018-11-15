@@ -7,7 +7,6 @@
 import _find from 'lodash-es/find';
 
 import FormFactory from '../../tools/formFactory';
-import Hoot        from '../../hoot';
 
 export default class EditBookmarkNote {
     constructor( instance, type, noteData ) {

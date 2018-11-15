@@ -4,7 +4,6 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import Hoot                       from '../../hoot';
 import AddBasemap                 from '../modals/addBasemap';
 import Tab                        from './tab';
 import { geoExtent as GeoExtent } from '../../../geo/index';

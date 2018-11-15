@@ -4,7 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/29/18
  *******************************************************************************************************/
 
-import Hoot        from '../../hoot';
 import SidebarForm from './sidebarForm';
 
 /**

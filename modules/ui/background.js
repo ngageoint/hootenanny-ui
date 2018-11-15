@@ -27,8 +27,6 @@ import { utilCallWhenIdle } from '../util';
 import { tooltip } from '../util/tooltip';
 import { rendererBackgroundSource } from '../renderer/background_source';
 
-import Hoot from '../Hoot/hoot';
-
 export function uiBackground(context) {
     var key = t('background.key');
 

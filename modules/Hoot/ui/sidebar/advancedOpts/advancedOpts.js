@@ -7,7 +7,6 @@
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 
-import Hoot             from '../../../hoot';
 import FieldsetData     from './fieldsetData';
 import FieldsetControls from './fieldsetControls';
 import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
@@ -15,7 +14,7 @@ import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
 export default class AdvancedOpts {
     constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
-        this.optTypes        = [ 'custom', 'horizontal', 'average', 'reference' ];
+        this.optTypes        = [ 'custom', 'horizontal', 'average', 'reference'];
         this.advancedOptions = null;
     }
 
@@ -24,7 +23,7 @@ export default class AdvancedOpts {
     }
 
     async init() {
-        this.optTypes = [ 'custom', 'horizontal', 'average', 'reference' ];
+        this.optTypes = [ 'custom', 'horizontal', 'average', 'reference'];
         let allOpts   = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
 
         this.advancedOptions = {

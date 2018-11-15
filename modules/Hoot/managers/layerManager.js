@@ -24,8 +24,7 @@ import { osmChangeset } from '../../osm';
 import {
     actionDiscardTags,
     actionNoop
-}           from '../../actions';
-import Hoot from '../hoot';
+} from '../../actions';
 
 export default class Layers {
     constructor( hoot ) {

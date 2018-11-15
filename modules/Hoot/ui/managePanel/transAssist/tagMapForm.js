@@ -8,7 +8,6 @@ import _filter    from 'lodash-es/filter';
 import _findIndex from 'lodash-es/findIndex';
 import _reduce    from 'lodash-es/reduce';
 
-import Hoot         from '../../../hoot';
 import TagMapWidget from './tagMapWidget';
 
 export default class TagMapForm {

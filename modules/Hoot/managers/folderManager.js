@@ -98,6 +98,10 @@ export default class FolderManager {
         } );
     }
 
+    findBy( key, val ) {
+        return _find( this._folders, folder => folder[ key ] === val );
+    }
+
     exists( folderName, folderId ) {
         let folderList = _forEach( _map( this._folders, _cloneDeep ), folder => {
             folder.name = folder.name.toLowerCase();
@@ -353,7 +357,7 @@ export default class FolderManager {
         let params = {
             folderId,
             mapId,
-            updateType : 'new'
+            updateType : 'update'
         };
 
         return this.hoot.api.updateMapFolderLinks( params );

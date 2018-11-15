@@ -40,12 +40,12 @@ import {
     utilQsString
 } from '../util';
 
-import Hoot from '../Hoot/hoot';
+import { baseUrl as hootBaseUrl } from '../Hoot/config/apiConfig';
 
 var tiler = utilTiler();
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded', 'loadedNotes');
 //var urlroot = 'https://www.openstreetmap.org';
-var urlroot = Hoot.api.baseUrl + '/osm';
+var urlroot = hootBaseUrl + '/osm';
 var oauth = osmAuth({
     url: urlroot,
     oauth_consumer_key: '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',

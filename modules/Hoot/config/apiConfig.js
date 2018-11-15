@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 export const apiConfig = {
-  host: "http://34.201.113.202",
+  host: "http://54.165.118.78",
   port: "8080",
   path: "hoot-services",
   translationServerPort: "8094",
@@ -20,6 +20,4 @@ export const hootConfig = {
 
 export default apiConfig;
 
-export let baseUrl = `${apiConfig.host}:${apiConfig.port}/${
-  apiConfig.basePath
-}`;
+export let baseUrl = `${ apiConfig.host }:${ apiConfig.port }/hoot-services`;

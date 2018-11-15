@@ -8,7 +8,6 @@ import _isEmpty    from 'lodash-es/isEmpty';
 import _forEach    from 'lodash-es/forEach';
 import _map        from 'lodash-es/map';
 
-import Hoot        from '../hoot';
 import FormFactory from './formFactory';
 
 import { checkForUnallowedChar } from './utilities';

@@ -7,7 +7,6 @@
 import _map    from 'lodash-es/map';
 import _reject from 'lodash-es/reject';
 
-import Hoot        from '../../hoot';
 import FolderTree  from '../../tools/folderTree';
 import SidebarForm from './sidebarForm';
 

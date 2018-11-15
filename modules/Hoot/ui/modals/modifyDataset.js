@@ -9,7 +9,6 @@ import _forEach from 'lodash-es/forEach';
 import _get     from 'lodash-es/get';
 import _map     from 'lodash-es/map';
 
-import Hoot                  from '../../hoot';
 import FormFactory           from '../../tools/formFactory';
 import { modifyDatasetForm } from '../../config/domMetadata';
 
@@ -88,9 +87,11 @@ export default class ModifyDataset {
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
-        if ( !str.length ||
-            reservedWords.indexOf( str.toLowerCase() ) > -1 ||
-            unallowedPattern.test( str ) ) {
+        if ( reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
+            valid = false;
+        }
+
+        if ( d.id === 'modifyName' && !str.length ) {
             valid = false;
         }
 
@@ -144,11 +145,11 @@ export default class ModifyDataset {
                 modName: layerName
             };
 
-            return Hoot.api.modify( params )
+            this.processRequest = Hoot.api.modify( params )
                 .then( () => Hoot.layers.refreshLayers() )
                 .then( () => Hoot.folders.updateFolderLink( layerName, folderId ) )
                 .then( () => Hoot.folders.refreshAll() )
-                .then( () => Hoot.events.emit( 'refresh-dataset-table' ) )
+                .then( () => Hoot.events.emit( 'render-dataset-table' ) )
                 .then( () => {
                     let type = 'success',
                         message;
@@ -169,11 +170,14 @@ export default class ModifyDataset {
 
                     Hoot.message.alert( { message, type } );
                 } )
-                .finally( () => this.container.remove() );
+                .finally( () => {
+                    this.container.remove();
+                    Hoot.events.emit( 'modal-closed' );
+                } );
         } else {
-            return Promise.all( _map( this.datasets, dataset => Hoot.folders.updateFolderLink( dataset.name, folderId ) ) )
+            this.processRequest = Promise.all( _map( this.datasets, dataset => Hoot.folders.updateFolderLink( dataset.name, folderId ) ) )
                 .then( () => Hoot.folders.refreshAll() )
-                .then( () => Hoot.events.emit( 'refresh-dataset-table' ) )
+                .then( () => Hoot.events.emit( 'render-dataset-table' ) )
                 .then( () => {
                     let message = 'Successfully moved all datasets',
                         type    = 'success';
@@ -186,7 +190,10 @@ export default class ModifyDataset {
 
                     Hoot.message.alert( { message, type } );
                 } )
-                .finally( () => this.container.remove() );
+                .finally( () => {
+                    this.container.remove();
+                    Hoot.events.emit( 'modal-closed' );
+                } );
         }
     }
 }

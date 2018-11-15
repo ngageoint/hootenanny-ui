@@ -19,7 +19,6 @@ import _without    from 'lodash-es/without';
 
 import moment       from 'moment';
 import EventEmitter from 'events';
-import Hoot         from '../hoot';
 
 /**
  * Class for creating, displaying and maintaining a folder tree hierarchy
@@ -157,11 +156,12 @@ export default class FolderTree extends EventEmitter {
         let nodeTree = this.tree( this.root ),
             height;
 
-        let nodesSort   = this.sortNodes( nodeTree ),
-            nodes       = this.svg.selectAll( 'g.node' ).data( nodesSort, d => d ),
+        this.nodes = this.sortNodes( nodeTree );
+
+        let nodes       = this.svg.selectAll( 'g.node' ).data( this.nodes, d => d ),
             nodeElement = this.createNodeElement( nodes, source );
 
-        height = Math.max( 150, nodesSort.length * this.barHeight );
+        height = Math.max( 150, this.nodes.length * this.barHeight );
 
         this.container.select( 'svg' ).transition()
             .duration( 0 )
@@ -595,9 +595,9 @@ export default class FolderTree extends EventEmitter {
                 this.lastSelectedNode = data.selected ? data.id : null;
             }
             else if ( d3.event.shiftKey && this.lastSelectedNode && this.isDatasetTable ) {
-                let nodes        = _drop( this.root.descendants(), 1 ),
-                    basePosition = _findIndex( nodes, node => node.data.id === this.lastSelectedNode ),
-                    position     = _findIndex( nodes, node => node.data.id === data.id ),
+                let nodes        = _drop( this.nodes, 1 ),
+                    basePosition = _findIndex( nodes, node => node.data.type === 'dataset' && node.data.id === this.lastSelectedNode ),
+                    position     = _findIndex( nodes, node => node.data.type === 'dataset' && node.data.id === data.id ),
                     selectBegin  = Math.min( basePosition, position ),
                     selectEnd    = Math.max( basePosition, position ) + 1,
 

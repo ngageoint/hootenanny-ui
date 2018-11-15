@@ -9,7 +9,6 @@ import _isEqual        from 'lodash-es/isEqual';
 import _differenceWith from 'lodash-es/differenceWith';
 import _forEach        from 'lodash-es/forEach';
 
-import Hoot        from '../../../hoot';
 import { isNaN }   from '../../../tools/utilities';
 import { tooltip } from '../../../../util/tooltip';
 
