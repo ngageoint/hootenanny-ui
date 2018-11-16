@@ -10,8 +10,8 @@
 
     <!-- mobile devices -->
     <meta name='viewport' content='initial-scale=1.0 maximum-scale=1.0'>
-    <meta name='apple-mobile-web-app-capable' content='yes' />
-    <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />
+    <meta name='apple-mobile-web-app-capable' content='yes'/>
+    <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent'/>
 </head>
 <body>
 <div id='id-container'>
@@ -23,10 +23,15 @@
 <script>
     let login = new Login();
 
-    login.render()
-        .then(() => {
-            login.oauth();
-        })
+    let oauthToken    = login.findGetParameter( 'oauth_token' ),
+        oauthVerifier = login.findGetParameter( 'oauth_verifier' );
+
+    if ( oauthToken && oauthVerifier ) {
+        // if we have these tokens, this is the spawned popup-
+        login.verifyOAuth( oauthToken, oauthVerifier );
+    } else {
+        login.render();
+    }
 </script>
 </body>
 </html>

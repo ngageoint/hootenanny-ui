@@ -138,9 +138,9 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    verifyOAuth( oauth_verifier, oauth_token ) {
+    verifyOAuth( oauth_token, oauth_verifier ) {
         const params = {
-            path: `/auth/oauth1/verify?oauth_verifier=${oauth_verifier}&oauth_token=${oauth_token}`,
+            path: `/auth/oauth1/verify?oauth_token=${oauth_token}&oauth_verifier=${oauth_verifier}`,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

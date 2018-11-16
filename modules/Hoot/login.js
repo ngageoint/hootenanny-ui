@@ -197,23 +197,35 @@ class Login extends EventEmitter {
             .text( 'here' )
             .on( 'click', () => window.location = this.oauthRedirectUrl );
 
-        return this;
-    }
-
-    async oauth() {
         this.oauthRedirectUrl = await this.api.getOAuthRedirectUrl();
 
         this.launchOAuthLogin();
+
+        return this;
+    }
+
+    findGetParameter( parameterName ) {
+        var result = null,
+            tmp    = [];
+
+        location.search
+            .substr( 1 )
+            .split( '&' )
+            .forEach( function( item ) {
+                tmp = item.split( '=' );
+                if ( tmp[ 0 ] === parameterName ) result = decodeURIComponent( tmp[ 1 ] );
+            } );
+
+        return result;
     }
 
     launchOAuthLogin() {
+        // in parent
         window.open( this.oauthRedirectUrl, 'hootenannyLoginRedirect', 'width=500,height=800,toolbar=no,status=no,menubar=no' );
 
         window.oAuthDone = ( e, user_object ) => {
-            console.log( user_object );
             if ( e ) {
-                console.log( 'fail' );
-                console.warn( 'failed to verify oauth tokens w/ provider:' );
+                console.warn( 'Failed to verify oauth tokens w/ provider:' );
                 console.warn( 'XMLHttpRequest.status', e.status || null );
                 console.warn( 'XMLHttpRequest.responseText ', e.responseText || null );
 
@@ -221,14 +233,46 @@ class Login extends EventEmitter {
                 window.history.pushState( {}, document.title, window.location.pathname );
 
             } else {
-                console.log( 'success' );
                 if ( localStorage ) {
                     localStorage.setItem( 'user', JSON.stringify( user_object ) );
                 }
-
-                this.emit( 'oAuthDone' );
             }
         };
+    }
+
+    verifyOAuth( oauthToken, oauthVerifier ) {
+        // in popup
+        this.api.verifyOAuth( oauthToken, oauthVerifier )
+            .then( resp => {
+                if ( opener ) {
+                    window.onbeforeunload = function() {
+                        opener.oAuthDone( null, resp );
+                    };
+
+                    // redirect parent
+                    opener.location.replace( '/index.html' );
+
+                    // close self
+                    window.close();
+                } else {
+                    // force refresh.
+                    window.location.reload( true );
+                }
+            } )
+            .catch( err => {
+                window.alert( 'wait error' );
+                if ( opener ) {
+                    window.onbeforeunload = function() {
+                        opener.oAuthDone( err, null );
+                    };
+
+                    self.close();
+                } else {
+                    window.alert( 'Failed to complete oauth handshake. Check console for details & retry.' );
+                    // clear oauth params.
+                    window.history.pushState( {}, document.title, window.location.pathname );
+                }
+            } );
     }
 }
 
