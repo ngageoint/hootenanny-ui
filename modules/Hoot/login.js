@@ -250,7 +250,7 @@ class Login extends EventEmitter {
                     };
 
                     // redirect parent
-                    opener.location.replace( '/index.html' );
+                    opener.location.replace( '/' );
 
                     // close self
                     window.close();

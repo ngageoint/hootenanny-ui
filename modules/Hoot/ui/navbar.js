@@ -64,27 +64,56 @@ export default class Navbar {
             .append( 'div' )
             .classed( 'nav-item', true );
 
-        // let dropdownContent = rightContainer
-        //     .append( 'ul' )
-        //     .classed( 'dropdown-content fill-white', true );
-        //
-        // dropdownContent
-        //     .append( 'li' )
-        //     .classed( 'dropdown-item pad2x strong pointer', true )
-        //     .append( 'a' )
-        //     .attr( 'href', '#!' )
-        //     .text( 'About' );
-
         if ( this.isLoggedIn ) {
+            let user = JSON.parse( localStorage.getItem( 'user' ) );
+
             let dropdownToggle = rightContainer
                 .append( 'div' )
-                .classed( 'about-toggle icon-container button flex align-center text-light pointer', true )
-                .on( 'click', () => this.openAboutModal() );
+                .classed( 'dropdown-toggle icon-container button flex align-center text-light pointer', true );
 
             dropdownToggle
                 .append( 'i' )
                 .classed( 'medium material-icons', true )
                 .text( 'info_outline' );
+
+            dropdownToggle
+                .append( 'i' )
+                .classed( 'medium material-icons', true )
+                .text( 'arrow_drop_down' );
+
+            let dropdownContent = rightContainer
+                .append( 'ul' )
+                .classed( 'dropdown-content fill-white', true );
+
+            dropdownContent
+                .append( 'li' )
+                .classed( 'dropdown-item pad2x strong', true )
+                .append( 'span' )
+                .text( 'Loggin in as ' + user.display_name );
+
+            dropdownContent
+                .append( 'li' )
+                .classed( 'dropdown-item pad2x strong pointer', true )
+                .on( 'click', () => this.openAboutModal() )
+                .append( 'a' )
+                .attr( 'href', '#!' )
+                .text( 'About' );
+
+            dropdownContent
+                .append( 'li' )
+                .classed( 'dropdown-item pad2x strong pointer', true )
+                .on( 'click', () => {
+                    Hoot.api.logout()
+                        .then( () => {
+                            localStorage.removeItem( 'user' );
+                            window.location.replace( '/login.html' );
+                        } );
+                } )
+                .append( 'a' )
+                .attr( 'href', '#!' )
+                .text( 'Logout' );
+
+            this.initDropdown();
         } else {
             rightContainer
                 .append( 'div' )
@@ -94,13 +123,6 @@ export default class Navbar {
                 .text( 'Launch Login' )
                 .on( 'click', () => this.login.launchOAuthLogin() );
         }
-
-        //dropdownToggle
-        //    .append( 'i' )
-        //    .classed( 'medium material-icons', true )
-        //    .text( 'arrow_drop_down' );
-
-        //this.initDropdown();
     }
 
     toggleManagePanel() {
@@ -116,31 +138,31 @@ export default class Navbar {
     }
 
     //////////////////// possibly use in the future
-    //initDropdown() {
-    //    let that = this;
-    //
-    //    // bind single click listener to open dropdown
-    //    $( '.dropdown-toggle' ).one( 'click', () => toggleDropdown() );
-    //
-    //    // toggle the dropdown
-    //    function toggleDropdown( cb ) {
-    //        $( '.dropdown-content' ).slideToggle( 50, () => {
-    //            if ( cb ) {
-    //                cb();
-    //                return;
-    //            }
-    //
-    //            if ( !$( '.dropdown-content' ).is( ':visible' ) ) return;
-    //
-    //            bindBodyClick();
-    //        } );
-    //    }
-    //
-    //    // bind single click listener to body after dropdown is visible to close dropdown
-    //    function bindBodyClick() {
-    //        $( 'body' ).one( 'click', () => toggleDropdown( () => that.initDropdown()  ) );
-    //    }
-    //}
+    initDropdown() {
+       let that = this;
+
+       // bind single click listener to open dropdown
+       $( 'nav .dropdown-toggle' ).one( 'click', () => toggleDropdown() );
+
+       // toggle the dropdown
+       function toggleDropdown( cb ) {
+           $( 'nav .dropdown-content' ).slideToggle( 50, () => {
+               if ( cb ) {
+                   cb();
+                   return;
+               }
+
+               if ( !$( 'nav .dropdown-content' ).is( ':visible' ) ) return;
+
+               bindBodyClick();
+           } );
+       }
+
+       // bind single click listener to body after dropdown is visible to close dropdown
+       function bindBodyClick() {
+           $( 'body' ).one( 'click', () => toggleDropdown( () => that.initDropdown()  ) );
+       }
+    }
 
     openAboutModal() {
         new About().render();

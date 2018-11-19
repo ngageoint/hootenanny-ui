@@ -97,11 +97,18 @@ module.exports = function( config ) {
 
 
         proxies: {
-            '/img/': '/base/img/'
+            '/img/': '/base/img/',
+            '/hoot-services': 'http://35.174.111.201:8080',
+            '/capabilities': 'http://35.174.111.201:8094'
         },
 
 
         webpack: webpackConfig,
+
+
+        webpackMiddleware: {
+            publicPath: '/'
+        },
 
 
         // test results reporter to use
@@ -119,6 +126,12 @@ module.exports = function( config ) {
 
         // web server port
         port: 9876,
+
+
+        // proxy: {
+        //     '/hoot-services': 'http://35.174.111.201:8080',
+        //     '/capabilities': 'http://35.174.111.201:8094'
+        // },
 
 
         // enable / disable colors in the output (reporters and logs)

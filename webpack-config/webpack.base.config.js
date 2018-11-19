@@ -25,7 +25,6 @@ module.exports = {
     context: resolve( __dirname, '../' ),
     entry: {
         iD: './modules/id.js',
-        hoot: './modules/Hoot/hoot.js',
         login: './modules/Hoot/login.js'
     },
     output: {
@@ -48,7 +47,7 @@ module.exports = {
                     {
                         loader: 'image-webpack-loader',
                         options: {
-                            disable: true, // webpack@2.x and newer
+                            disable: true,
                         }
                     }
                 ]

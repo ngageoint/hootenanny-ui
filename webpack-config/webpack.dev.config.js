@@ -38,7 +38,8 @@ module.exports = Merge( CommonConfig, {
             timings: true
         },
         proxy: {
-            '/hoot-services': 'http://35.174.111.201:8080'
+            '/hoot-services': 'http://35.174.111.201:8080',
+            '/capabilities': 'http://35.174.111.201:8094'
         }
     }
 } );
