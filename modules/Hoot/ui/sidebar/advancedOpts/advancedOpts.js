@@ -23,14 +23,16 @@ export default class AdvancedOpts {
     }
 
     async init() {
-        this.optTypes = [ 'custom', 'horizontal', 'average', 'reference'];
+        this.optTypes = [ 'custom', 'horizontal', 'average', 'reference', 'diff', 'diffTags'];
         let allOpts   = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
 
         this.advancedOptions = {
             base: allOpts[ 0 ],
             horizontal: allOpts[ 1 ],
             average: allOpts[ 2 ],
-            reference: allOpts[ 3 ]
+            reference: allOpts[ 3 ],
+            diff: allOpts[ 4 ],
+            diffTags: allOpts [ 5 ]
         };
 
         this.data    = new FieldsetData( this, _cloneDeep( this.advancedOptions ) );

@@ -73,6 +73,7 @@ module.exports = function( config ) {
             { pattern: 'test/data/UnitTestImportMulti.dbf', included: false },
             { pattern: 'test/data/UnitTestImportMulti.shp', included: false },
             { pattern: 'test/data/UnitTestImportMulti.shx', included: false },
+            { pattern: 'test/data/RomanColosseum_WV2naturalcolor_clip.tif', included: false},
 
             'css/**/*.css',
             'css/**/*.scss',
