@@ -20,8 +20,8 @@ export default class FieldsetData {
         this.horizontalOpts = options.horizontal;
         this.averageOpts    = options.average;
         this.referenceOpts  = options.reference;
-        this.diffOpts = options.diff;
-        this.diffTagsOpts = options.diffTags;
+        this.diffOpts       = options.diff;
+        this.diffTagsOpts   = options.diffTags;
     }
 
     mergeWithBase( members, overrideKeys ) {
