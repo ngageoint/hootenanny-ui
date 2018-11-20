@@ -1,3 +1,9 @@
+/** ****************************************************************************************************
+ * File: reviewBookmark.js
+ * Project: hootenanny-ui
+ * @author Jack Grossman on 11/20/18 jack.grossman@radiantsolutions.com
+ *******************************************************************************************************/
+
 describe( 'Review Bookmark component rendered', () => {
 
     it( 'Review bookmark tab selected', done => {

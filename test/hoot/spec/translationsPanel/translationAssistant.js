@@ -1,5 +1,5 @@
 /** ****************************************************************************************************
- * File: navbar.js
+ * File: translationAssistant.js
  * Project: hootenanny-ui
  * @author Jack Grossman on 11/16/18 jack.grossman@radiantsolutions.com
  *******************************************************************************************************/
