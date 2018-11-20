@@ -89,7 +89,7 @@ export default class Navbar {
                 .append( 'li' )
                 .classed( 'dropdown-item pad2x strong', true )
                 .append( 'span' )
-                .text( 'Loggin in as ' + user.display_name );
+                .text( 'Logged in as ' + user.display_name );
 
             dropdownContent
                 .append( 'li' )
@@ -139,29 +139,29 @@ export default class Navbar {
 
     //////////////////// possibly use in the future
     initDropdown() {
-       let that = this;
+        let that = this;
 
-       // bind single click listener to open dropdown
-       $( 'nav .dropdown-toggle' ).one( 'click', () => toggleDropdown() );
+        // bind single click listener to open dropdown
+        $( 'nav .dropdown-toggle' ).one( 'click', () => toggleDropdown() );
 
-       // toggle the dropdown
-       function toggleDropdown( cb ) {
-           $( 'nav .dropdown-content' ).slideToggle( 50, () => {
-               if ( cb ) {
-                   cb();
-                   return;
-               }
+        // toggle the dropdown
+        function toggleDropdown( cb ) {
+            $( 'nav .dropdown-content' ).slideToggle( 50, () => {
+                if ( cb ) {
+                    cb();
+                    return;
+                }
 
-               if ( !$( 'nav .dropdown-content' ).is( ':visible' ) ) return;
+                if ( !$( 'nav .dropdown-content' ).is( ':visible' ) ) return;
 
-               bindBodyClick();
-           } );
-       }
+                bindBodyClick();
+            } );
+        }
 
-       // bind single click listener to body after dropdown is visible to close dropdown
-       function bindBodyClick() {
-           $( 'body' ).one( 'click', () => toggleDropdown( () => that.initDropdown()  ) );
-       }
+        // bind single click listener to body after dropdown is visible to close dropdown
+        function bindBodyClick() {
+            $( 'body' ).one( 'click', () => toggleDropdown( () => that.initDropdown() ) );
+        }
     }
 
     openAboutModal() {
