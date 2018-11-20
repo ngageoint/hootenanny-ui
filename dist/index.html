@@ -39,44 +39,45 @@
     //    a.src=document.location.protocol+'//dnn506yrbagrg.cloudfront.net/pages/scripts/0013/6714.js?'+Math.floor(new Date().getTime()/3600000);
     //    a.async=true;a.type='text/javascript';b.parentNode.insertBefore(a,b)}, 1);
 
-    if (typeof iD == 'undefined' || !iD.Detect().support) {
-        document.getElementById('id-container').innerHTML = 'Sorry, your browser is not currently supported. Please use Potlatch 2 to edit the map.';
-        document.getElementById('id-container').className = 'unsupported';
+    Hoot.api.getServicesVersionInfo()
+        .then( () => {
+            // user logged in - continue with render
+            if (typeof iD == 'undefined' || !iD.Detect().support) {
+                document.getElementById('id-container').innerHTML = 'Sorry, your browser is not currently supported. Please use Potlatch 2 to edit the map.';
+                document.getElementById('id-container').className = 'unsupported';
 
-    } else {
-        let user = localStorage.getItem( 'user' );
+            } else {
+                var id = iD.Context();
 
-        if ( !user || !user.length ) {
-            window.location.replace( 'login.html' );
-        } else {
-            var id = iD.Context();
+                // disable boundaries (unless we have an explicit disable_features list)
+                var q = iD.utilStringQs(window.location.hash.substring(1));
+                if (!q.hasOwnProperty('disable_features')) {
+                    id.features().disable('boundaries');
+                }
 
-            // disable boundaries (unless we have an explicit disable_features list)
-            var q = iD.utilStringQs(window.location.hash.substring(1));
-            if (!q.hasOwnProperty('disable_features')) {
-                id.features().disable('boundaries');
+                id.ui()(document.getElementById('id-sink'), function() {
+                    Hoot.init( id );
+                    id.container().select('#about-list')
+                        .insert('li', '.user-list')
+                        .attr('class', 'source-switch')
+                        .call(iD.uiSourceSwitch(id)
+                            .keys([{
+                                'urlroot': 'https://www.openstreetmap.org',
+                                'oauth_consumer_key': '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
+                                'oauth_secret': 'aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL'
+                            }, {
+                                'urlroot': 'https://api06.dev.openstreetmap.org',
+                                'oauth_consumer_key': 'zwQZFivccHkLs3a8Rq5CoS412fE5aPCXDw9DZj7R',
+                                'oauth_secret': 'aMnOOCwExO2XYtRVWJ1bI9QOdqh1cay2UgpbhA6p'
+                            }
+                            ])
+                        );
+                });
             }
-
-            id.ui()(document.getElementById('id-sink'), function() {
-                Hoot.init( id );
-                id.container().select('#about-list')
-                    .insert('li', '.user-list')
-                    .attr('class', 'source-switch')
-                    .call(iD.uiSourceSwitch(id)
-                        .keys([{
-                            'urlroot': 'https://www.openstreetmap.org',
-                            'oauth_consumer_key': '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
-                            'oauth_secret': 'aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL'
-                        }, {
-                            'urlroot': 'https://api06.dev.openstreetmap.org',
-                            'oauth_consumer_key': 'zwQZFivccHkLs3a8Rq5CoS412fE5aPCXDw9DZj7R',
-                            'oauth_secret': 'aMnOOCwExO2XYtRVWJ1bI9QOdqh1cay2UgpbhA6p'
-                        }
-                        ])
-                    );
-            });
-        }
-    }
+        } )
+        .catch( () => { // user not logged in - redirect to login page
+            window.location.replace( '/login.html' );
+        } );
 </script>
 </body>
 </html>

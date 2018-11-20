@@ -23,7 +23,7 @@ export default class API {
 
         this.host = this.config.host;
 
-        this.baseUrl        = Object.assign( new URL( this.host ), {
+        this.baseUrl = Object.assign( new URL( this.host ), {
             port: this.config.port,
             pathname: this.config.path
         } );
@@ -50,21 +50,22 @@ export default class API {
             params: params.params
         } ).catch( err => {
             let { response } = err;
-            let data, message, status, type;
+            let data, message, status, statusText, type;
 
             if ( response ) {
-                data    = response.data;
-                message = response.message;
-                status  = response.status;
-                type    = 'error';
+                data       = response.data;
+                message    = response.message;
+                status     = response.status;
+                statusText = response.statusText;
+                type       = 'error';
             } else {
                 message = err.message;
                 status  = 500;
                 type    = 'error';
             }
 
-            if ( status === 401 ) {
-                // window.location.replace( '/login.html' );
+            if ( status === 401 && statusText === 'Unauthorized' ) {
+                window.location.replace( '/login.html' );
             }
 
             return Promise.reject( { data, message, status, type } );
@@ -224,7 +225,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => {
-                let layers    = resp.data.layers;
+                let layers = resp.data.layers;
 
                 if ( !layers || !layers.length )
                     return resp.data;
@@ -487,8 +488,10 @@ export default class API {
 
         return this.request( params )
             .then( async resp => {
-                await setTimeout( () => { console.log( 'blahhh' ); }, 30000 );
-                return resp.data
+                await setTimeout( () => {
+                    console.log( 'blahhh' );
+                }, 30000 );
+                return resp.data;
             } );
     }
 
