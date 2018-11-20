@@ -14,7 +14,7 @@ describe(' UI tools ', () => {
             expect(d3.select('#bar div.limiter ul').size() ).to.be.equal( 1 );
             done();
         }, 1000);
-    });
+    } );
     it(' Measurement and Clip tools appear ', done => {
 
         d3.select('#bar  div.limiter  div:nth-child(1)  button').dispatch('click');
@@ -24,19 +24,19 @@ describe(' UI tools ', () => {
             done();
         }, 1000);
 
-    });
+    } );
     it(' All measurement tools active ', done => {
         d3.select('#bar div.limiter ul li.menu-item.tools-measure').dispatch('mouseenter');
         setTimeout(() => {
             expect(d3.selectAll('#bar div.limiter ul ul li').size( )).to.be.equal( 3 );
             done();
         }, 1000);
-    });
+    } );
     it(' All clip tools active ', done => {
         d3.select('#bar div.limiter ul li.menu-item.tools-clip').dispatch('mouseenter');
         setTimeout(() => {
             expect(d3.selectAll('#bar div.limiter ul ul li').size( )).to.be.equal( 1 );
             done();
         });
-    });
-});
+    } );
+} );

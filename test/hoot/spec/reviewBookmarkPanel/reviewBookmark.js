@@ -23,4 +23,4 @@ describe(' Review Bookmark component rendered ', () => {
             done();
         });
     });
-});
+} );

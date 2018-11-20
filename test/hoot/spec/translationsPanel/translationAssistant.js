@@ -37,4 +37,4 @@ describe(' Translation Assistant Component ', () => {
         d3.select(' #manage-translations-assistant div form div.button-row.pad2 button:nth-child(1) ').dispatch('click');
         done();
     });
-});
+} );

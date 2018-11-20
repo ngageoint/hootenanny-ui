@@ -40,4 +40,4 @@ describe(' Basemap component rendered ', () => {
             done();
         }, 1000);
     });
-  });
+  } );
