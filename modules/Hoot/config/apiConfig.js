@@ -14,6 +14,10 @@ export const apiConfig = {
     queryInterval: 2000
 };
 
+export const hootConfig = {
+  maxNodeCount: 10000
+};
+
 export default apiConfig;
 
 export let baseUrl = `${ apiConfig.host }:${ apiConfig.port }/hoot-services`;
