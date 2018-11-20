@@ -54,9 +54,9 @@ export default class FieldsetData {
                 ? this.referenceOpts
                 : conflateType === 'Average'
                     ? this.averageOpts
-                    : overrideOpts = conflateType === 'Differential'
+                    : conflateType === 'Differential'
                         ? this.diffOpts
-                        : overrideOpts = conflateType === 'Differenatial w/ Tags'
+                        : conflateType === 'Differenatial w/ Tags'
                             ? this.diffTagsOpts
                             : this.horizontalOpts;
 
