@@ -64,7 +64,7 @@ export default class API {
             }
 
             if ( status === 401 ) {
-                window.location.replace( '/login.html' );
+                // window.location.replace( '/login.html' );
             }
 
             return Promise.reject( { data, message, status, type } );
@@ -567,7 +567,7 @@ export default class API {
     }
 
     modify( { mapId, modName, inputType } ) {
-        let basePath = '/osm/api/0.6/map/';
+        let basePath = '/osm/api/0.6/map';
 
         if ( inputType === 'folder' ) {
             basePath += '/folders';
@@ -803,8 +803,8 @@ export default class API {
      */
     deleteLayer( layerName ) {
         const params = {
-            path: `/osm/api/0.6/map/delete?mapId=${ layerName }`,
-            method: 'POST'
+            path: `/osm/api/0.6/map/${ layerName }`,
+            method: 'DELETE'
         };
 
         return this.request( params )
@@ -819,8 +819,8 @@ export default class API {
      */
     deleteFolder( folderId ) {
         const params = {
-            path: '/osm/api/0.6/map/deletefolder',
-            method: 'POST',
+            path: `/osm/api/0.6/map/folders/${ folderId }`,
+            method: 'DELETE',
             params: {
                 folderId
             }

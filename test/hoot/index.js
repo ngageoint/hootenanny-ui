@@ -6,7 +6,6 @@
 
 let iD        = require( '../../modules/index' ),
     Hoot      = require( '../../modules/Hoot/hoot' ).default,
-    // Login     = require( '../../modules/Hoot/login' ).default,
     $         = require( 'jquery' ),
     _         = require( 'lodash-es' ),
     chai      = require( 'chai' ),
@@ -23,9 +22,9 @@ global._      = _;
 global.iD     = iD;
 global.expect = chai.expect;
 
-before( () => {
+before( async () => {
     localStorage.setItem( 'sawSplash', 'true' );
-    localStorage.setItem( 'user', '{"email":"6935834@hootenanny","id":6935834,"display_name":"Putipong","provider_created_at":1510002712000,"last_authorized":1542647276773,"created_at":1542647276766}' );
+    localStorage.setItem( 'user', '{"email":"karma@test.com","id":-1541432234,"display_name":"Karma","provider_created_at":1510002712000,"last_authorized":1542647276773,"created_at":1542647276766}' );
 
     d3.select( 'body' )
         .append( 'div' )
@@ -33,9 +32,6 @@ before( () => {
         .append( 'div' )
         .attr( 'id', 'id-sink' );
 
-    // let login = new Login();
-
-    // login.render();
     id.ui()( document.getElementById( 'id-sink' ), function() {
         Hoot.init( id );
     } );

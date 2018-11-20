@@ -1,7 +1,8 @@
 // Karma configuration
 // Generated on Mon Oct 29 2018 14:12:47 GMT-0400 (Eastern Daylight Time)
 
-const path = require( 'path' );
+const path  = require( 'path' );
+const proxy = require( 'express-http-proxy' );
 
 const materialIconFiles = [
     { pattern: 'node_modules/material-design-icons/iconfont/material-icons.css', included: true },
@@ -26,7 +27,6 @@ const webpackConfig = {
                 },
                 include: path.resolve( __dirname, 'modules/Hoot/' ),
                 enforce: 'post'
-                // exclude: /node_modules|\.spec\.js$/
             },
             {
                 test: /\.(scss|css)$/,
@@ -54,7 +54,7 @@ module.exports = function( config ) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: [ 'mocha' ],
+        frameworks: [ 'mocha', 'express-http-server' ],
 
 
         client: {
@@ -97,18 +97,25 @@ module.exports = function( config ) {
 
 
         proxies: {
-            '/img/': '/base/img/',
-            '/hoot-services': 'http://35.174.111.201:8080',
-            '/capabilities': 'http://35.174.111.201:8094'
+            '/img/': '/base/img/'
+        },
+
+
+        expressHttpServer: {
+            port: '8080',
+            appVisitor: function( app ) {
+                app.use( '/', proxy( 'http://35.174.111.201:8080', {
+                    limit: '1000mb',
+                    proxyReqOptDecorator: function( proxyReqOpts ) {
+                        proxyReqOpts.headers.cookie = 'SESSION=ff47f751-c831-41ee-800f-5ef8b9371ee3; lock=1';
+                        return proxyReqOpts;
+                    }
+                } ) );
+            }
         },
 
 
         webpack: webpackConfig,
-
-
-        webpackMiddleware: {
-            publicPath: '/'
-        },
 
 
         // test results reporter to use
@@ -118,7 +125,7 @@ module.exports = function( config ) {
 
 
         coverageIstanbulReporter: {
-            reports: [ 'html', 'lcov' ],
+            reports: [ 'html', 'lcov', 'text-summary' ],
             dir: path.join( __dirname, 'coverage' ),
             fixWebpackSourcePaths: true
         },
@@ -127,11 +134,6 @@ module.exports = function( config ) {
         // web server port
         port: 9876,
 
-
-        // proxy: {
-        //     '/hoot-services': 'http://35.174.111.201:8080',
-        //     '/capabilities': 'http://35.174.111.201:8094'
-        // },
 
 
         // enable / disable colors in the output (reporters and logs)
@@ -151,10 +153,6 @@ module.exports = function( config ) {
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: [ 'Chrome' ],
 
-
-        // browserConsoleLogOptions: {
-        //     terminal: false
-        // },
 
 
         // Continuous Integration mode
