@@ -39,8 +39,8 @@ export function layerConflateForm( data ) {
             id: 'conflateType',
             inputType: 'combobox',
             value: 'Reference',
-            data: [ 'Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential' ],
-            onchange: () => {
+            data: [ 'Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential', 'Differenatial w/ Tags' ],
+            onChange: () => {
                 this.confAdnvOptionsFields = null;
                 this.removeAdvancedOptionsDlg();
             },

@@ -20,6 +20,8 @@ export default class FieldsetData {
         this.horizontalOpts = options.horizontal;
         this.averageOpts    = options.average;
         this.referenceOpts  = options.reference;
+        this.diffOpts       = options.diff;
+        this.diffTagsOpts   = options.diffTags;
     }
 
     mergeWithBase( members, overrideKeys ) {
@@ -52,7 +54,11 @@ export default class FieldsetData {
                 ? this.referenceOpts
                 : conflateType === 'Average'
                     ? this.averageOpts
-                    : this.horizontalOpts;
+                    : conflateType === 'Differential'
+                        ? this.diffOpts
+                        : conflateType === 'Differenatial w/ Tags'
+                            ? this.diffTagsOpts
+                            : this.horizontalOpts;
 
         let overrideKeys = _map( _cloneDeep( overrideOpts[ 0 ] ).members, member => {
             member.id       = member.hoot_key.indexOf( '.creators' ) > -1 ? member.id : member.hoot_key.replace( /\./g, '_' );

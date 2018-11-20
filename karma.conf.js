@@ -17,9 +17,11 @@ const materialIconFiles = [
 const webpackConfig = Merge( baseConfig, {
     mode: 'development',
     entry: './test/hoot/index.js',
-    module: {
+  
+  module: {
         rules: [
-            // instrument only testing sources with Istanbul
+            // instrument only testing sources with Istanbulvar fs = require('fs')
+
             {
                 test: /\.js$/,
                 use: {
@@ -71,6 +73,7 @@ module.exports = function( config ) {
             { pattern: 'test/data/UnitTestImportMulti.dbf', included: false },
             { pattern: 'test/data/UnitTestImportMulti.shp', included: false },
             { pattern: 'test/data/UnitTestImportMulti.shx', included: false },
+            { pattern: 'test/data/RomanColosseum_WV2naturalcolor_clip.tif', included: false},
 
             'css/**/*.css',
             'css/**/*.scss',
