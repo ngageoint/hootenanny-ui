@@ -43,7 +43,6 @@ export function layerConflateForm( data ) {
             onChange: () => {
                 this.confAdnvOptionsFields = null;
                 this.changeAdvancedOptions();
-                // this.removeAdvancedOptionsDlg();
             },
             readonly: 'readonly'
         },
