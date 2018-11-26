@@ -40,6 +40,10 @@ beforeEach( function( done ) {
     setTimeout( done, 50 );
 } );
 
+<<<<<<< HEAD
 const tests = require.context( './spec/reviewBookmarkPanel/', true, /.js$/ );
+=======
+const tests = require.context( './spec/', true, /.js$/ );
+>>>>>>> 1265
 
 tests.keys().forEach( tests );

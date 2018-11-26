@@ -92,6 +92,9 @@ class LayerConflate extends SidebarForm {
             }
         } );
     }
+    changeAdvancedOptions() {
+        this.advancedOptions.clear();
+    }
 
     getSaveName( data ) {
         let newName = this.subCompare( data, 4 );
