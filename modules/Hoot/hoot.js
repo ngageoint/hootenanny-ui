@@ -84,26 +84,6 @@ class Hoot {
         }
     }
 
-    async checkLogin() {
-        return this.api.getServicesVersionInfo();
-    }
-
-    renderLogin( callback ) {
-        this.login = new Login();
-
-        this.api.getOAuthRedirectUrl()
-            .then( oauthRedirectUrl => {
-                this.login.render( oauthRedirectUrl )
-                    .on( 'oAuthDone', () => callback() );
-            } )
-            .catch( err => {
-                console.log( err );
-
-                this.login.render()
-                    .on( 'oAuthDone', () => callback() );
-            } );
-    }
-
     init( context ) {
         this.context = context;
 

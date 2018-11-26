@@ -246,8 +246,10 @@ class Login {
                         opener.oAuthDone( null, resp );
                     };
 
+                    let pathname = opener.location.pathname;
+
                     // redirect parent
-                    opener.location.replace( '/' );
+                    opener.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
 
                     // close self
                     window.close();

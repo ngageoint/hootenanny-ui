@@ -106,7 +106,7 @@ export default class Navbar {
                     Hoot.api.logout()
                         .then( () => {
                             localStorage.removeItem( 'user' );
-                            window.location.replace( '/login.html' );
+                            window.location.replace( 'login.html' );
                         } );
                 } )
                 .append( 'a' )
