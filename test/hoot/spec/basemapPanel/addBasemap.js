@@ -17,31 +17,24 @@ describe( 'Basemap component rendered', () => {
     it( 'Raster input window opens', done => {
         d3.select('.add-basemap-button').dispatch('click');      
         setTimeout(() => {
-            var newBasemapWindow = d3.select('.contain hoot-menu');
-            expect(d3.select(newBasemapWindow).size() ).to.equal( 1 );
+            var newBasemapWindow = d3.select('.contain');
+            expect(d3.select(newBasemapWindow).size() ).to.be.eql( 1 );
             done();
         }, 2000);
     } );
     it( 'Raster input window closes', done => {
-        var windowClose = d3.select('.fr _icon close pointer');
-        windowClose.dispatch('click');
-
+        var closeFormButton = d3.select('div.fr._icon.close.pointer');
+        closeFormButton.dispatch('click');
         setTimeout(() => {
-            expect(d3.select('#basemaps-add-form  div  div  form  div  h3  div').size() ).to.equal( 0 );
+            var newBasemapWindow = d3.select('.contain.hoot-menu');
+            expect(newBasemapWindow.size() ).to.equal( 0 );
             done();
         }, 1000);
     } );
-    it( 'File added to table', done => {
-        var newBasemapWindow = d3.select('.contain hoot-menu');
-        setTimeout(() => {
-            expect(newBasemapWindow.size() ).to.equal( 1 );
-            done();
-        },1000);
-    }); 
     it( 'Basemap table contains buttons', done => {
         setTimeout(() => {
-            var tableButtons = d3.select('.button-container');
-            expect(tableButtons.size() ).to.be.equal( 1 );
+            var basemapFormButtons = d3.select('div.button-container.fr');
+            expect(basemapFormButtons.size() ).to.equal( 1 );
             done();
         }, 1000);
     } );
