@@ -21,7 +21,7 @@ export default class FieldsetData {
         this.averageOpts    = options.average;
         this.referenceOpts  = options.reference;
         this.diffOpts       = options.diffConflator;
-        this.diffTagsOpts   = options.diffConflator;
+        this.diffTagsOpts   = options.diffTags;
     }
 
     mergeWithBase( members, overrideKeys ) {
@@ -38,6 +38,7 @@ export default class FieldsetData {
                 }
             } );
 
+            // recursively check if children members are overridden
             _forEach( item.members, subItem => {
                 if ( subItem.members && subItem.members.length ) {
                     subItem.members = this.mergeWithBase( subItem.members, overrideKeys );
@@ -50,21 +51,43 @@ export default class FieldsetData {
 
     getDefaultMeta() {
         let conflateType = d3.select( '#conflateType' ).node().value,
-            overrideOpts = conflateType === 'Reference' ? this.referenceOpts: conflateType === 'Average'
-            ? this.averageOpts : conflateType === 'Differential'
-            ? this.diffOpts : conflateType === 'Differenatial w/ Tags'
-            ? this.diffTagsOpts: this.horizontalOpts;
+            overrideOpts = conflateType === 'Reference'
+                ? this.referenceOpts
+                : conflateType === 'Average'
+                    ? this.averageOpts
+                    : conflateType === 'Differential'
+                        ? this.diffOpts
+                        : conflateType === 'Differenatial w/ Tags'
+                            ? this.diffTagsOpts
+                            : this.horizontalOpts;
 
-        let overrideKeys = _map( _cloneDeep( overrideOpts[ 0 ] ).members, member => {
-            member.id       = member.hoot_key.indexOf( '.creators' ) > -1 ? member.id : member.hoot_key.replace( /\./g, '_' );
-            member.required = member.required || false;
-
-            return member;
-        } );
+        let overrideKeys = this.getOverrideKeys( overrideOpts );
 
         this.defaultMeta = this.mergeWithBase( _cloneDeep( this.baseOpts ), overrideKeys );
 
         return this.getFieldMeta( this.defaultMeta );
+    }
+
+    getOverrideKeys( overrideOpts ) {
+        let members;
+
+        if ( overrideOpts.length === 1 ) {
+            members = overrideOpts[ 0 ].members;
+        } else {
+            members = overrideOpts;
+        }
+
+        return _map( _cloneDeep( members ), member => {
+            if ( member.hoot_key ) {
+                if ( member.hoot_key.indexOf( '.creators' ) === -1 ) {
+                    member.id = member.hoot_key.replace( /\./g, '_' );
+                }
+            }
+
+            member.required = member.required || false;
+
+            return member;
+        } );
     }
 
     getFieldMeta( fieldData ) {
