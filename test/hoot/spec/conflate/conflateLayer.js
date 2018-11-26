@@ -53,10 +53,22 @@ describe( 'Layers successfully conflated', () => {
         });
     }, 2500);
     it( 'Closed alert window', done => {
+
+        // avoiding review mode
         d3.select('button.primary').dispatch('click');
+
+        // accepting changes
+        d3.select('button.secondary').dispatch('click');
+
+        var confirmActions = d3.select('div.confirm-actions button.primary');
+        
+        // accepting all changes
+        confirmActions.dispatch('click');
+        confirmActions.dispatch('click');
+        confirmActions.dispatch('click');
         setTimeout(() => {
-            var alertWindow = d3.select('div.contain.hoot-menu');
-            expect(alertWindow.size() ).to.be.eql( 0 );
+            var mergedFiles = d3.select('#conflate').attr('data-name');
+            expect(mergedFiles).to.include('Merged');
             done();
         }, 2500);
     } );
