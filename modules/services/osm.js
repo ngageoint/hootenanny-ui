@@ -382,7 +382,7 @@ function updateRtree(item, replace) {
 }
 
 function getUrlRoot(path) {
-    return (path.indexOf('mapId') > -1) ? Hoot.config.urlroot : urlroot;
+    return (path.indexOf('mapId') > -1) ? Hoot.api.baseUrl + '/osm' : urlroot;
 }
 
 function isUrlHoot(path) {

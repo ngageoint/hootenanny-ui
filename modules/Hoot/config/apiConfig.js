@@ -5,9 +5,9 @@
  *******************************************************************************************************/
 
 export const apiConfig = {
-    host: 'http://localhost',
+    host: window.location.protocol + '//' + window.location.host,
     port: '8080',
-    path: 'hoot-services',
+    path: '/hoot-services',
     translationServerPort: '8094',
     mapnikServerPort: '8000',
     mergeServerPort: '8096',
@@ -20,4 +20,4 @@ export const hootConfig = {
 
 export default apiConfig;
 
-export let baseUrl = `${ apiConfig.host }:${ apiConfig.port }/hoot-services`;
+export let baseUrl = `${ apiConfig.host }/hoot-services`;

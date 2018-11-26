@@ -28,7 +28,6 @@ class Hoot {
         this.events       = new EventManager();
 
         this.config = {
-            urlroot: 'http://localhost:8080/hoot-services/osm',
             tagInfo,
             appInfo: [],
             users: [],
