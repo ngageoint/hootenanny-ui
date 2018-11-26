@@ -32,7 +32,7 @@ export default class AdvancedOpts {
             average: allOpts[ 2 ],
             reference: allOpts[ 3 ],
             diff: allOpts[ 4 ],
-            diffTags: allOpts [ 5 ]
+            diffTags: allOpts[ 5 ]
         };
 
         this.data    = new FieldsetData( this, _cloneDeep( this.advancedOptions ) );

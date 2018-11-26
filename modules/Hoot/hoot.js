@@ -15,13 +15,11 @@ import LayerManager       from './managers/layerManager';
 import TranslationManager from './managers/translationManager';
 import EventManager       from './managers/eventManager';
 import UI                 from './ui/init';
-import Login              from './ui/login';
 import buildInfo          from './config/buildInfo.json';
 import { tagInfo }        from '../../data/index';
 
 class Hoot {
     constructor() {
-        this.login        = new Login();
         this.api          = new API( this );
         this.message      = new MessageManager( this );
         this.layers       = new LayerManager( this );

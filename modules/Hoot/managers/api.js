@@ -487,12 +487,7 @@ export default class API {
         };
 
         return this.request( params )
-            .then( async resp => {
-                await setTimeout( () => {
-                    console.log( 'blahhh' );
-                }, 30000 );
-                return resp.data;
-            } );
+            .then( resp => resp.data );
     }
 
     /**

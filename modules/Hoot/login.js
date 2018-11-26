@@ -9,12 +9,9 @@ import '../../css/hoot/login.scss';
 import * as d3      from 'd3';
 import API          from './managers/api';
 import Navbar       from './ui/navbar';
-import EventEmitter from 'events';
 
-class Login extends EventEmitter {
+class Login {
     constructor() {
-        super();
-
         this.api = new API();
     }
 
@@ -112,7 +109,7 @@ class Login extends EventEmitter {
             .append( 'div' )
             .classed( 'hoot-login-cell', true )
             .append( 'img' )
-            .attr( 'src', 'img/login-popup-chrome-1.png' );
+            .attr( 'src', './img/login-popup-chrome-1.png' );
 
         row
             .append( 'div' )
@@ -146,7 +143,7 @@ class Login extends EventEmitter {
             .append( 'div' )
             .classed( 'hoot-login-cell', true )
             .append( 'img' )
-            .attr( 'src', '/img/login-popup-firefox-1.png' );
+            .attr( 'src', './img/login-popup-firefox-1.png' );
 
         row = table
             .append( 'div' )
