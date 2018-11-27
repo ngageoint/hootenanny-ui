@@ -3,7 +3,6 @@
 <head>
     <meta charset='utf-8'>
     <title>Hootenanny</title>
-    <base href="/">
     <link rel="icon" href="favicon.ico"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel='stylesheet' href='./iD.css'>
@@ -41,7 +40,6 @@
 
     Hoot.api.getServicesVersionInfo()
         .then( () => {
-            console.log( 'whut' );
             // user logged in - continue with render
             if (typeof iD == 'undefined' || !iD.Detect().support) {
                 document.getElementById('id-container').innerHTML = 'Sorry, your browser is not currently supported. Please use Potlatch 2 to edit the map.';
