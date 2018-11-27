@@ -5,8 +5,8 @@
  *******************************************************************************************************/
 
 export const apiConfig = {
-    host: window.location.protocol + '//' + window.location.host,
-    port: '8080',
+    host: window.location.protocol + '//' + window.location.host, //host includes port, hostname is just host name
+    port: window.location.port,
     path: '/hoot-services',
     translationServerPort: '8094',
     mapnikServerPort: '8000',
@@ -20,4 +20,4 @@ export const hootConfig = {
 
 export default apiConfig;
 
-export let baseUrl = `${ apiConfig.host }/hoot-services`;
+export let baseUrl = `${ apiConfig.host }${ apiConfig.path }`;
