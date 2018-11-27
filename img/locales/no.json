@@ -1,0 +1,2943 @@
+{
+    "no": {
+        "icons": {
+            "information": "info",
+            "remove": "fjern",
+            "undo": "angre"
+        },
+        "modes": {
+            "add_area": {
+                "title": "Område",
+                "description": "Legg til parker, bygninger, innsjøer eller andre området på kartet.",
+                "tail": "Trykk på kartet for å starte og tegne et område, slik som en park, innsjø eller bygning."
+            },
+            "add_line": {
+                "title": "Linje",
+                "description": "Legg til hovedveier, gater, gangveier, kanaler eller andre linjer på kartet.",
+                "tail": "Trykk på kartet for å begynne og tegne en vei, sti eller rute."
+            },
+            "add_point": {
+                "title": "Punkt",
+                "description": "Legg till restauranter, monumenter, postbokser eller andre punkter på kartet.",
+                "tail": "Trykk på kartet for å legge til et punkt."
+            },
+            "browse": {
+                "title": "Utforsk",
+                "description": "Flytt og forstørr/forminsk kartet."
+            },
+            "draw_area": {
+                "tail": "Klikk for å legge til området ditt. Klikk på den første noden for å bli ferdig med området"
+            },
+            "draw_line": {
+<<<<<<< HEAD
+                "tail": "Klikk for å legge til flere noder på linjen. Klikk på andre linjer for å sammenkoble dem, og dobbelklikk for å avslutte linjen."
+=======
+                "tail": "Klikk for å legge til flere noder på linjen. Klikk på andre linjer for å sammenkoble dem, og dobbeltklikk for å avslutte linjen."
+            },
+            "drag_node": {
+                "connected_to_hidden": "Denne kan ikke redigeres fordi den er koblet til en skjult kartegenskap."
+>>>>>>> v2.7.0
+            }
+        },
+        "operations": {
+            "add": {
+                "annotation": {
+<<<<<<< HEAD
+                    "point": "Legg til et punkt.",
+                    "vertex": "Legg til et punkt til veien.",
+=======
+                    "point": "La til et punkt.",
+                    "vertex": "La til et punkt til linjen.",
+>>>>>>> v2.8.2
+                    "relation": "La til en relasjon."
+                }
+            },
+            "start": {
+                "annotation": {
+                    "line": "Startet en linje.",
+                    "area": "Startet et areal."
+                }
+            },
+            "continue": {
+                "key": "A",
+                "title": "Fortsett",
+                "description": "Videreføre en linje.",
+                "not_eligible": "Ingen linje kan bli videreført her.",
+                "multiple": "Flere linjer kan videreføres her. For å velge en linje, hold Shift knappen og klikk på en linje for å velge den.",
+                "annotation": {
+                    "line": "Videreførte en linje.",
+                    "area": "Videreførte et areal."
+                }
+            },
+            "cancel_draw": {
+                "annotation": "Avbrøt tegning."
+            },
+            "change_role": {
+                "annotation": "Endret rollen til et relasjonsmedlem."
+            },
+            "change_tags": {
+                "annotation": "Endret egenskaper."
+            },
+            "circularize": {
+                "title": "Gjør rund",
+                "description": {
+                    "line": "Gjør denne linjen sirkulær.",
+                    "area": "Gjør dette området sirkulært."
+                },
+                "key": "O",
+                "annotation": {
+                    "line": "Laget en linje rund.",
+                    "area": "Laget et areal rundt."
+                },
+                "not_closed": "Denne kan ikke bli sirkulær, for endene er ikke koblet.",
+                "too_large": "Denne kan ikke bli sirkulær fordi for lite av den er synlig.",
+                "connected_to_hidden": "Denne kan ikke bli sirkulær fordi den er koblet til en skjult egenskap."
+            },
+            "orthogonalize": {
+                "title": "Rett opp hjørner",
+                "description": {
+                    "line": "Rett opp hjørner på denne linja.",
+                    "area": "Rett opp hjørner i dette området."
+                },
+                "key": "S",
+                "annotation": {
+                    "line": "Laget hjørnene på linjen vinkelrette.",
+                    "area": "Laget hjørnene på arealet vinkelrette."
+                },
+                "not_squarish": "Denne kan ikke rettes opp fordi det er vanskelig å finne hjørner.",
+                "too_large": "Denne kan ikke rettes opp fordi kun noen deler er synlige.",
+                "connected_to_hidden": "Denne kan ikke rettes opp fordi den er knyttet til en skjult kartegenskap."
+            },
+            "straighten": {
+                "title": "Gjør rett.",
+                "description": "Gjør denne linjen rett.",
+                "key": "S",
+                "annotation": "Gjorde en linje rett.",
+                "too_bendy": "Denne kan ikke rettes ut fordi den er for bøyet."
+            },
+            "delete": {
+                "title": "Fjern",
+                "description": "Ta vekk objektet permanent.",
+                "annotation": {
+<<<<<<< HEAD
+                    "point": "Fjern et punkt.",
+                    "vertex": "Fjernet en node fra veien.",
+                    "line": "Fjernet en linje.",
+                    "area": "Fjernet et areal.",
+                    "relation": "Fjernet en relasjon.",
+                    "multiple": "Fjernet {n} objekter."
+=======
+                    "point": "Slettet et punkt.",
+                    "vertex": "Slettet et punkt fra en linje.",
+                    "line": "Slettet en linje.",
+                    "area": "Slettet et område.",
+                    "relation": "Slettet en relasjon.",
+                    "multiple": "Slettet {n} kartegenskaper."
+                },
+                "too_large": {
+                    "single": "Denne kartegenskapen kan ikke slettes fordi kun noen deler av den er synlig.",
+                    "multiple": "Disse kartegenskapene kan ikke slettes fordi kun noen deler av dem er synlige."
+                },
+                "incomplete_relation": {
+                    "single": "Denne kartegenskapen kan ikke slettes fordi den ikke er fullstendig lastet ned.",
+                    "multiple": "Disse kartegenskapene kan ikke slettes fordi de ikke er fullstendig lastet ned."
+                },
+                "part_of_relation": {
+                    "single": "Denne kartegenskapen kan ikke slettes fordi den er en del av en større relasjon. Du må fjerne den fra relasjonen først.",
+                    "multiple": "Disse kartegenskapene kan ikke slettes fordi de er en del av en større relasjon. Du må fjerne de fra relasjonen først."
+                },
+                "connected_to_hidden": {
+                    "single": "Denne kartegenskapen kan ikke slettes fordi den er koblet til en skjult kartegenskap.",
+                    "multiple": "Disse kartegenskapene kan ikke slettes fordi noen av dem er koblet til en skjult kartegenskap."
+>>>>>>> v2.8.2
+                }
+            },
+            "add_member": {
+                "annotation": "La et medlem til i en relasjon"
+            },
+            "delete_member": {
+                "annotation": "Fjernet et medlem fra en relasjon"
+            },
+            "connect": {
+                "annotation": {
+<<<<<<< HEAD
+                    "point": "Koblet en vei til et punkt.",
+                    "vertex": "Koblet en vei til en annen.",
+                    "line": "Koblet en vei til en linje.",
+                    "area": "Koblet en vei til et areal."
+=======
+                    "point": "Koblet en linje til et punkt.",
+                    "vertex": "Koblet en linje til en annen.",
+                    "line": "Koblet en linje til en annen linje.",
+                    "area": "Koblet en linje til et område."
+>>>>>>> v2.8.2
+                }
+            },
+            "disconnect": {
+                "title": "Kobl fra",
+                "description": "Koble disse linjene/areane fra hverandre",
+                "key": "D"
+            },
+            "merge": {
+                "title": "Knytt sammen",
+                "description": "Slå sammen disse kartegenskapene.",
+                "key": "C",
+                "annotation": "{n} kartegenskaper er slått sammen.",
+<<<<<<< HEAD
+                "incomplete_relation": "Disse funksjonene kan ikke bli knyttet sammen fordi hvertfall én av dem er ikke ferdig nedlastet."
+=======
+                "not_eligible": "Disse kartegenskapene kan ikke bli slått sammen.",
+                "not_adjacent": "Disse objektene kan ikke bli slått sammen da endepunktene ikke er sammenkoblet.",
+                "incomplete_relation": "Disse kartegenskapene kan ikke bli slått sammen fordi minst én av dem er ikke ferdig nedlastet.",
+                "conflicting_tags": "Disse kartegenskapene kan ikke bli slått sammen fordi noen av deres merker har konfliktskapende verdier."
+>>>>>>> v2.8.2
+            },
+            "move": {
+                "title": "Flytt",
+                "description": "Flytt dette til et annet sted.",
+                "key": "M",
+                "annotation": {
+                    "point": "Flyttet et punkt.",
+<<<<<<< HEAD
+                    "vertex": "Flyttet en node til en vei.",
+=======
+                    "vertex": "Flyttet et punkt på en linje.",
+>>>>>>> v2.8.2
+                    "line": "Flyttet en linje.",
+                    "area": "Flyttet et areal.",
+                    "multiple": "Flyttet flere objekter."
+                }
+            },
+            "rotate": {
+                "title": "Rotér",
+                "key": "R",
+                "annotation": {
+                    "line": "Rotér en linje.",
+                    "area": "Rotér et areal."
+                }
+            },
+            "reverse": {
+                "title": "Reverser",
+                "description": "Få linjen til å gå motsatt vei.",
+                "key": "V",
+                "annotation": "Reverserte en linje."
+            },
+            "split": {
+                "title": "Del",
+                "key": "X",
+                "annotation": {
+<<<<<<< HEAD
+                    "line": "Splitt en linje"
+=======
+                    "line": "Splitt en linje",
+                    "area": "Splitt et områdes yttergrense.",
+                    "multiple": "Splitt {n} linjer/yttergrenser."
+                },
+                "not_eligible": "Linjers endepunkter kan ikke splittes.",
+                "multiple_ways": "Det er for mange linjer til at det kan splittes.",
+                "connected_to_hidden": "Dette/denne kan ikke splittes da det er koblet til et skjult objekt."
+            },
+            "restriction": {
+                "annotation": {
+                    "create": "La til en svingebegrensning.",
+                    "delete": "Fjernet en svingebegrensning."
+>>>>>>> v2.7.0
+                }
+            }
+        },
+        "restriction": {
+            "controls": {
+                "distance": "Distanse",
+                "via": "Via"
+            },
+            "help": {
+                "from": "FRA",
+                "via": "VIA",
+                "to": "TIL",
+                "from_name": "{from} {fromName}",
+                "from_name_to_name": "{from} {fromName} {to} {toName}",
+                "via_names": "{via} {viaNames}"
+            }
+        },
+        "undo": {
+            "nothing": "Ingen ting å gjøre."
+        },
+        "redo": {
+            "tooltip": "Omgjør: {action}",
+            "nothing": "Ingen ting å gjøre tilbake."
+        },
+        "translate": {
+            "translate": "Oversett",
+            "localized_translation_language": "Velg språk",
+            "localized_translation_name": "Navn"
+        },
+        "zoom_in_edit": "Zoom inn for å redigere",
+        "loading_auth": "Kobler til OpenStreetMap...",
+        "report_a_bug": "Rapporter feil",
+        "help_translate": "Hjelp til med oversettelse",
+        "commit": {
+            "title": "Lagre endringer",
+            "message_label": "Kommentar til endringssettet",
+            "save": "Lagre",
+            "cancel": "Avbryt",
+            "changes": "{count} endringer",
+            "download_changes": "Last ned osmChange-fil",
+            "warnings": "Advarsler",
+            "modified": "Endret",
+            "deleted": "Fjernet",
+            "created": "Opprettet",
+<<<<<<< HEAD
+            "about_changeset_comments": "Angående kommentarer til endringssett"
+=======
+            "about_changeset_comments": "Angående kommentarer til endringssett",
+            "about_changeset_comments_link": "//wiki.openstreetmap.org/wiki/Good_changeset_comments",
+            "google_warning": "Du nevnte Google i kommentaren: husk at det er strengt forbudt å kopiere fra Google Maps."
+>>>>>>> v2.7.0
+        },
+        "contributors": {
+            "list": "Redigeringer utført av {users}"
+        },
+<<<<<<< HEAD
+        "infobox": {
+            "selected": "{n} valgt(e)",
+            "geometry": "Geometri",
+            "closed": "lukket",
+            "center": "Senter",
+            "perimeter": "Perimeter",
+            "length": "Lengde",
+            "area": "Område",
+            "metric": "Metrisk"
+=======
+        "info_panels": {
+            "key": "I",
+            "background": {
+                "key": "B",
+                "title": "Bakgrunn",
+                "zoom": "Zoom",
+                "source": "Kilde",
+                "description": "Beskrivelse",
+                "resolution": "Oppløsning",
+                "accuracy": "Nøyaktighet",
+                "unknown": "Ukjent",
+                "show_tiles": "Vis fliser",
+                "hide_tiles": "Skjul fliser"
+            },
+            "history": {
+                "key": "H",
+                "title": "Historik",
+                "selected": "{n} valgt",
+                "no_history": "Ingen Historikk (Ny Egenskap)",
+                "version": "Versjon",
+                "last_edit": "Siste endring",
+                "edited_by": "Endret av",
+                "changeset": "Endringssett",
+                "unknown": "Ukjent",
+                "link_text": "Historikk på openstreetmap.org"
+            },
+            "location": {
+                "key": "L",
+                "title": "Lokasjon",
+                "unknown_location": "Ukjent lokasjon"
+            },
+            "measurement": {
+                "key": "M",
+                "title": "Måling",
+                "selected": "{n} valgt",
+                "geometry": "Geometri",
+                "closed_line": "lukket linje",
+                "length": "Lengde",
+                "area": "Område",
+                "location": "Sted",
+                "metric": "Metrisk",
+                "imperial": "Imperisk",
+                "node_count": "Antall noder"
+            }
+>>>>>>> v2.7.0
+        },
+        "geometry": {
+            "point": "punkt",
+            "line": "linje",
+            "area": "område"
+        },
+        "geocoder": {
+            "search": "Søk over hele verden...",
+            "no_results_worldwide": "Ingen resultater funnet"
+        },
+        "geolocate": {
+            "title": "Vis min posisjon"
+        },
+        "inspector": {
+            "no_documentation_combination": "Det finnes ingen dokumentasjon for denne tag-kombinasjonen",
+            "no_documentation_key": "Det finnes ingen dokumentasjon tilgjengelig for denne nøkkelen",
+            "show_more": "Vis mer",
+            "all_fields": "Alle felter",
+            "all_tags": "Alle tagger",
+            "all_members": "Alle medlemmer",
+            "new_relation": "Ny relasjon...",
+            "role": "Rolle",
+            "choose": "Velg egenskapstype",
+            "results": "{n} resultater for {search}",
+            "reference": "Les mere på OpenStreetMap Wiki",
+            "back_tooltip": "Endre funksjon",
+            "remove": "Fjern",
+            "search": "Søk",
+            "unknown": "Ukjent",
+            "feature_list": "Søkeegenskaper",
+            "edit": "Endre funksjon",
+            "check": {
+                "yes": "Ja",
+                "no": "Nei"
+            },
+            "none": "Ingen",
+            "node": "Node",
+            "way": "Linje",
+            "relation": "Relasjon",
+            "location": "Sted",
+            "add_fields": "Legg til felt:"
+        },
+        "background": {
+            "title": "Bakgrunn",
+            "description": "Bakgrunnsinnstillinger",
+<<<<<<< HEAD
+            "percent_brightness": "{opacity}% lysstyrke",
+=======
+            "key": "B",
+            "backgrounds": "Bakgrunner",
+>>>>>>> v2.7.0
+            "none": "Ingen",
+            "custom": "Egendefinert",
+            "overlays": "Overlegg",
+            "reset": "tilbakestill",
+            "brightness": "Lysstyrke",
+            "contrast": "Kontrast",
+            "minimap": {
+                "tooltip": "Vis et kart som er zoomet ut for å hjelpe med å lokalisere området som vises.",
+                "key": "/"
+            },
+            "fix_misalignment": "Finjuster ortofotoet",
+            "offset": "Dra hvor som helst i det grå feltet under for justere ortofotoet. Du kan også angi justeringsverdiene i meter."
+>>>>>>> v2.7.0
+        },
+        "map_data": {
+            "data_layers": "Datalag",
+            "layers": {
+                "osm": {
+                    "tooltip": "Kartdata fra OpenStreetMap",
+                    "title": "OpenStreetMap-data"
+                }
+            },
+            "fill_area": "Fyll områder",
+            "map_features": "Kartegenskaper"
+        },
+        "feature": {
+            "points": {
+                "description": "Punkter",
+                "tooltip": "Interessepunkter"
+            },
+            "paths": {
+                "description": "Stier",
+                "tooltip": "Fortau, gangveier, sykkelveier etc."
+            },
+            "buildings": {
+                "description": "Bygninger",
+                "tooltip": "Bygninger, skur, garasjer etc."
+            },
+            "landuse": {
+                "description": "Kartegenskaper for arealbruk"
+            },
+            "boundaries": {
+                "description": "Grenser",
+                "tooltip": "Administrative grenser"
+            },
+            "water": {
+                "description": "Vannrelaterte egenskaper",
+                "tooltip": "Elver, innsjøer, bekker, badedammer etc."
+            },
+            "rail": {
+                "description": "Jernbanerelaterte egenskaper",
+                "tooltip": "Jernbane"
+            },
+            "power": {
+                "description": "Kartegenskaper for kraftanlegg",
+                "tooltip": "Kraftlinjer, kraftverk etc."
+            },
+            "others": {
+                "description": "Andre",
+                "tooltip": "Alt annet"
+            }
+        },
+        "area_fill": {
+            "wireframe": {
+                "description": "Ingen fyll (wireframe)"
+            },
+            "partial": {
+                "description": "Delvis fylt"
+            },
+            "full": {
+                "description": "Helfylt"
+            }
+        },
+        "restore": {
+            "heading": "Du har ulagrede endringer",
+            "reset": "Tilbakestill"
+        },
+        "save": {
+            "title": "Lagre",
+            "help": "Lagre endringene i OpenStreetMap, slik at de blir synlige for andre brukere.",
+            "no_changes": "Ingen endringer å lagre.",
+            "uploading": "Laster opp endringer til OpenStreetMap.",
+            "unsaved_changes": "Du har ulagrede endringer",
+            "conflict": {
+                "previous": "< Forrige",
+                "next": "Neste >",
+                "keep_local": "Behold min",
+                "keep_remote": "Bruk de andre sin",
+                "delete": "Behold som slettet",
+                "download_changes": "Eller last ned dine endringer",
+                "done": "Alle konflikter er løst!"
+            }
+        },
+        "success": {
+            "just_edited": "Du har akkurat endret OpenStreetMap!",
+<<<<<<< HEAD
+            "view_on_osm": "Vis på OSM",
+            "facebook": "Del på Facebook",
+            "twitter": "Del på Twitter",
+            "google": "Del på Google+",
+=======
+>>>>>>> v2.8.0
+            "help_link_text": "Detaljer"
+        },
+        "confirm": {
+            "okay": "OK",
+            "cancel": "Avbryt"
+        },
+        "splash": {
+            "welcome": "Velkommen til iD OpenStreetMap editor",
+<<<<<<< HEAD
+            "walkthrough": "Begynn Gjennomgangen",
+            "start": "Rediger Nå"
+=======
+            "text": "iD er et brukervennlig, men kraftig verktøy for å bidra til verdens beste frie kart. Dette er versjon {version}. For mer informasjon, se {website} og meld om feil på {github}.",
+            "walkthrough": "Begynn Gjennomgangen",
+            "start": "Rediger nå"
+>>>>>>> v2.7.0
+        },
+        "source_switch": {
+            "live": "direkte",
+            "lose_changes": "Du har ulagrede endringer. Hvis du bytter fra kartserveren så vil du miste dem. Er du sikker på at du vil bytte server?"
+        },
+        "tag_reference": {
+            "description": "Beskrivelse",
+            "on_wiki": "{tag} på wiki.osm.org",
+            "used_with": "brukes med {type}"
+        },
+        "validations": {
+            "untagged_line": "Utagget linje",
+<<<<<<< HEAD
+            "untagged_area": "Utagget areal",
+            "many_deletions": "Du skal slette {n} objekter. Er du sikker på at du vil gjøre dette? Dette vil slette dem fra kartet som alle andre ser på openstreetmap.org.",
+=======
+            "untagged_line_tooltip": "Velg en kartegenskaptype som beskriver hva denne linjen er.",
+            "untagged_area": "Utagget område",
+            "untagged_area_tooltip": "Velg en kartegenskaptype som beskriver hva dette område er.",
+            "untagged_relation": "Utagget relasjon",
+            "untagged_relation_tooltip": "Velg en kartegenskaptype som beskriver hva denne relasjonen er.",
+>>>>>>> v2.7.0
+            "tag_suggests_area": "Taggen {tag} anbefaler at linje bør være et areal, men dette er ikke et areal",
+            "deprecated_tags": "Utgående tagger: {tags}"
+        },
+        "zoom": {
+<<<<<<< HEAD
+            "in": "Forstørr",
+            "out": "Forminsk"
+=======
+            "in": "Zoom inn",
+            "out": "Zoom ut"
+        },
+        "cannot_zoom": "Kan ikke zoome ut lenger i gjeldende modus.",
+        "full_screen": "Skru av/på fullskjerm.",
+        "mapillary_images": {
+            "tooltip": "Bilder på gate-nivå fra Mapillary",
+            "title": "Bilde-overlegg (Mapillary)"
+        },
+        "help": {
+<<<<<<< HEAD
+            "title": "Hjelp"
+=======
+            "title": "Hjelp",
+            "key": "H",
+            "help": {
+                "title": "Hjelp"
+            },
+            "overview": {
+                "title": "Oversikt",
+                "navigation_h": "Navigasjon",
+                "nodes_ways": "I OpenStreetMap kaller vi av og til punkter for *noder*, og linjer og områder for *veier*."
+            },
+            "editing": {
+                "save_h": "Lagre",
+                "upload_h": "Last opp",
+                "keyboard_h": "Tastatursnarveier"
+            },
+            "points": {
+                "title": "Punkter",
+                "add_point_h": "Legge til Punkter",
+                "move_point_h": "Flytte Punkter",
+                "delete_point_h": "Slette Punkter"
+            },
+            "lines": {
+                "title": "Linjer",
+                "add_line_h": "Legge til Linjer",
+                "modify_line_h": "Endre Linjer",
+                "connect_line_h": "Koble sammen Linjer",
+                "disconnect_line_h": "Koble Linjer fra Hverandre",
+                "move_line_h": "Flytte Linjer",
+                "delete_line_h": "Slette Linjer"
+            },
+            "areas": {
+                "title": "Områder",
+                "point_or_area_h": "Punkter eller Områder?",
+                "add_area_h": "Legge til Områder",
+                "square_area_h": "Rette ut Vinkler",
+                "modify_area_h": "Endre Områder",
+                "delete_area_h": "Slette Områder"
+            },
+            "relations": {
+                "title": "Relasjoner",
+                "edit_relation_h": "Endre Relasjoner",
+                "relation_types_h": "Typer Relasjoner",
+                "multipolygon_h": "Multipolygoner",
+                "turn_restriction_h": "Sving-begrensing",
+                "route_h": "Ruter",
+                "boundary_h": "Grenser"
+            },
+            "gps": {
+                "title": "GPS-spor",
+                "using_h": "Bruke GPS-spor"
+            },
+            "field": {
+                "restrictions": {
+                    "about": {
+                        "title": "Om"
+                    },
+                    "tips": {
+                        "title": "Tips"
+                    }
+                }
+            }
+>>>>>>> v2.7.0
+        },
+        "intro": {
+            "navigation": {
+                "title": "Navigasjon",
+                "drag": "Hovedkartet viser data fra OpenstreetMap lagt over en bakgrunn. Du kan navigere ved å dra eller scrolle, slik som et vanlig nettkart. **Dra kartet!**"
+            },
+            "points": {
+                "title": "Punkter"
+            },
+            "areas": {
+                "title": "Områder",
+<<<<<<< HEAD
+                "search": "**Søk etter '{name}'.**"
+=======
+                "start_playground": "La oss legge til denne lekeplassen i kartet ved å tegne et område. Områder tegnes ved å plassere *noder* langs ytterkanten av kartegenskapen. **Klikk eller trykk mellomromtasten for å plassere en startnode på et av hjørnene til lekeplassen.**",
+                "continue_playground": "Fortsett å tegne område ved å plassere flere noder langs lekeplassens ytterkant. Det er greit å koble området til eksisterende gangveier.{br}Tips: Du kan holde inne '{alt}'-tasten for å forhindre noder fra å kobles sammen med andre kartegenskaper. **Fortsett med å tegne et område for lekeplassen.**",
+                "finish_playground": "Avslutt området ved å trykke enter, eller å klikke igjen på den første eller siste noden. **Fullfør tegningen av området for lekeplassen.**",
+                "search_playground": "**Søk etter '{preset}'.**",
+                "choose_playground": "**Velg {preset} fra listen.**",
+                "add_field": "Denne lekeplassen har ikke noe offisielt navn, så vi legger ikke til noe i Navn-feltet.{br}I stedet kan vi legge til noe tilleggsinformasjon om lekeplassen i Beskrivelse-feltet. **Åpne Legg til felt-listen.**",
+                "choose_field": "**Velg {field} fra listen.**",
+                "retry_add_field": "Du valgte ikke {field}-feltet. Prøv på nytt.",
+                "describe_playground": "**Legg til en beskrivelse, og klikk deretter {button}-knappen for å lukke kartegenskapeditoren.**",
+                "play": "Godt jobbet! Prøv å tegne noen flere områder, og se hva slags andre typer områder du kan legge til i OpenStreetMap. **Når du er klar for å fortsette til neste kapittel, trykker du '{next}'.**"
+>>>>>>> v2.7.0
+            },
+            "lines": {
+                "title": "Linjer"
+            },
+            "startediting": {
+                "title": "Begynn redigeringen",
+                "start": "Begynn kartredigeringen!"
+            }
+        },
+        "presets": {
+            "categories": {
+                "category-building": {
+                    "name": "Bygingsrelatert"
+                },
+                "category-golf": {
+                    "name": "Golfrelatert"
+                },
+<<<<<<< HEAD
+=======
+                "category-landuse": {
+                    "name": "Arealbrukrelaterte egenskaper"
+                },
+                "category-natural-area": {
+                    "name": "Naturrelatert"
+                },
+                "category-natural-line": {
+                    "name": "Naturrelatert"
+                },
+                "category-natural-point": {
+                    "name": "Naturrelatert"
+                },
+                "category-path": {
+                    "name": "Stirelaterte egenskaper"
+                },
+>>>>>>> v2.8.2
+                "category-rail": {
+                    "name": "Togsporrelaterte egenskaper"
+                },
+                "category-road": {
+                    "name": "Veirelatert"
+                },
+                "category-water-area": {
+                    "name": "Vannrelaterte egenskaper"
+                },
+                "category-water-line": {
+                    "name": "Vannrelaterte egenskaper"
+                }
+            },
+            "fields": {
+                "access": {
+                    "label": "Tillatt for",
+                    "options": {
+                        "designated": {
+                            "title": "Utpekt"
+                        },
+                        "destination": {
+                            "title": "Mål"
+                        },
+                        "no": {
+                            "title": "Forbudt"
+                        },
+                        "permissive": {
+                            "title": "Begrenset"
+                        },
+                        "private": {
+                            "title": "Privat"
+                        },
+                        "yes": {
+                            "title": "Tillatt"
+                        }
+                    },
+                    "placeholder": "Ikke spesifisert",
+                    "types": {
+                        "bicycle": "Sykler",
+                        "foot": "Fot",
+                        "horse": "Hester",
+                        "motor_vehicle": "Motorkjøretøy"
+                    }
+                },
+                "access_simple": {
+                    "label": "Tillatt for"
+                },
+                "address": {
+                    "label": "Adresse",
+                    "placeholders": {
+                        "city": "By",
+                        "city!vn": "By/Tettsted",
+                        "conscriptionnumber": "123",
+                        "country": "Land",
+                        "district": "Distrikt",
+                        "hamlet": "Bosetning",
+                        "housename": "Husnavn",
+                        "housenumber": "123",
+                        "place": "Sted",
+                        "postcode": "Postnummer",
+                        "province": "Provins",
+                        "state": "Stat",
+                        "street": "Gate",
+                        "subdistrict": "Underdistrikt",
+                        "suburb": "Forstad"
+                    }
+                },
+                "admin_level": {
+                    "label": "Administrasjonsnivå"
+                },
+                "aerialway": {
+                    "label": "Type"
+                },
+                "aerialway/access": {
+                    "options": {
+                        "both": "Begge",
+                        "entry": "Inngang",
+                        "exit": "Utgang"
+                    }
+                },
+                "aerialway/capacity": {
+                    "label": "Kapasitet (per time)",
+                    "placeholder": "500, 2500, 5000..."
+                },
+                "aerialway/duration": {
+                    "placeholder": "1, 2, 3..."
+                },
+                "aerialway/heating": {
+                    "label": "Oppvarmet"
+                },
+                "aerialway/occupancy": {
+                    "placeholder": "2, 4, 8..."
+                },
+                "aerialway/summer/access": {
+                    "options": {
+                        "both": "Begge",
+                        "entry": "Inngang",
+                        "exit": "Utgang"
+                    }
+                },
+                "aeroway": {
+                    "label": "Type"
+                },
+                "agrarian": {
+                    "label": "Produkter"
+                },
+                "amenity": {
+                    "label": "Type"
+                },
+                "animal_boarding": {
+                    "label": "For Dyr"
+                },
+                "animal_breeding": {
+                    "label": "For Dyr"
+                },
+                "animal_shelter": {
+                    "label": "For Dyr"
+                },
+                "area/highway": {
+                    "label": "Type"
+                },
+                "artwork_type": {
+                    "label": "Type"
+                },
+                "atm": {
+                    "label": "Minibank"
+                },
+                "barrier": {
+                    "label": "Type"
+                },
+                "bench": {
+                    "label": "Benk"
+                },
+                "bicycle_parking": {
+                    "label": "Type"
+                },
+                "boundary": {
+                    "label": "Type"
+                },
+                "brand": {
+                    "label": "Merke"
+                },
+                "building": {
+                    "label": "Bygning"
+                },
+                "building_area": {
+                    "label": "Bygning"
+                },
+<<<<<<< HEAD
+=======
+                "cables": {
+                    "label": "Kabler",
+                    "placeholder": "1, 2, 3..."
+                },
+                "camera/direction": {
+                    "label": "Retning (Grader med klokken)",
+                    "placeholder": "45, 90, 180, 270"
+                },
+                "camera/type": {
+                    "label": "Kameratype",
+                    "options": {
+                        "dome": "Kuppel",
+                        "fixed": "Fikset",
+                        "panning": "Panorerende"
+                    }
+                },
+>>>>>>> v2.8.2
+                "capacity": {
+                    "label": "Kapasitet",
+                    "placeholder": "50, 100, 200..."
+                },
+                "clothes": {
+                    "label": "Klær"
+                },
+                "collection_times": {
+                    "label": "Hentetider"
+                },
+                "comment": {
+                    "label": "Kommentar til endringssettet"
+                },
+                "construction": {
+                    "label": "Type"
+                },
+<<<<<<< HEAD
+                "content": {
+                    "label": "Innhold"
+=======
+                "contact/webcam": {
+                    "label": "Webkamera-URL",
+                    "placeholder": "http://eksempel.no/"
+>>>>>>> v2.8.2
+                },
+                "country": {
+                    "label": "Land"
+                },
+                "craft": {
+                    "label": "Type"
+                },
+                "crop": {
+                    "label": "Avling"
+                },
+                "crossing": {
+                    "label": "Type"
+                },
+<<<<<<< HEAD
+                "cuisine": {
+                    "label": "Kjøkken"
+=======
+                "cycle_network": {
+                    "label": "Nettverk"
+>>>>>>> v2.8.2
+                },
+                "cycleway": {
+                    "label": "Sykkelfelter",
+                    "options": {
+                        "lane": {
+                            "description": "Et sykkelfelt separat fra biltrafikk med en malt linje",
+                            "title": "Standard sykkelfelt"
+                        },
+                        "none": {
+                            "description": "Ingen sykklfelt",
+                            "title": "Ingen"
+                        },
+                        "shared_lane": {
+                            "title": "Delt sykkelfelt"
+                        }
+                    },
+                    "placeholder": "ingen",
+                    "types": {
+                        "cycleway:left": "Venstresidig",
+                        "cycleway:right": "Høyresidig"
+                    }
+                },
+                "delivery": {
+                    "label": "Levering"
+                },
+                "description": {
+                    "label": "Beskrivelse"
+                },
+                "devices": {
+                    "placeholder": "1, 2, 3..."
+                },
+                "direction": {
+                    "placeholder": "45, 90, 180, 270"
+                },
+                "direction_cardinal": {
+                    "label": "Retning",
+                    "options": {
+                        "E": "Øst",
+                        "ENE": "Øst-nordøst",
+                        "ESE": "Øst-sørøst",
+                        "N": "Nord",
+                        "NE": "Nordøst",
+                        "NNE": "Nord-nordøst",
+                        "NNW": "Nord-nordvest",
+                        "NW": "Nordvest",
+                        "S": "Sør",
+                        "SE": "Sørøst",
+                        "SSE": "Sør-sørøst",
+                        "SSW": "Sør-sørvest",
+                        "SW": "Sørvest",
+                        "W": "Vest",
+                        "WNW": "Vest-nordvest",
+                        "WSW": "Vest-sørvest"
+                    }
+                },
+                "direction_clock": {
+                    "label": "Retning",
+                    "options": {
+                        "anticlockwise": "Mot klokken",
+                        "clockwise": "Med klokken"
+                    }
+                },
+                "direction_vertex": {
+                    "label": "Retning",
+                    "options": {
+                        "backward": "Bakover",
+                        "both": "Begge / Alle",
+                        "forward": "Fremover"
+                    }
+                },
+                "dock": {
+                    "label": "Type"
+                },
+                "drive_through": {
+                    "label": "Gjennomkjøring"
+                },
+                "duration": {
+                    "label": "Varighet",
+                    "placeholder": "00:00"
+                },
+                "electrified": {
+                    "label": "Elektrifisering",
+                    "options": {
+                        "no": "Nei",
+                        "rail": "Elektrifisert jernbane",
+                        "yes": "Ja (uspesifisert)"
+                    }
+                },
+                "elevation": {
+                    "label": "Høyde over havet"
+                },
+                "email": {
+                    "label": "E-post",
+                    "placeholder": "eksempel@eksempel.no"
+                },
+                "emergency": {
+                    "label": "Nød"
+                },
+                "entrance": {
+                    "label": "Type"
+                },
+                "except": {
+                    "label": "Unntak"
+                },
+                "fax": {
+                    "label": "Fax",
+                    "placeholder": "+47 22 12 34 56"
+                },
+                "fee": {
+                    "label": "Avgift"
+                },
+                "fire_hydrant/type": {
+                    "label": "Type",
+                    "options": {
+                        "pillar": "Over bakken",
+                        "pond": "Vanndam",
+                        "underground": "Under overflaten",
+                        "wall": "Vegg"
+                    }
+                },
+                "fixme": {
+                    "label": "Fiks meg"
+                },
+                "fuel": {
+                    "label": "Drivstoff"
+                },
+                "gauge": {
+                    "label": "Måler"
+                },
+                "gender": {
+                    "label": "Kjønn",
+                    "options": {
+                        "female": "Hunkjønn",
+                        "male": "Hankjønn",
+                        "unisex": "Unisex"
+                    },
+                    "placeholder": "Ukjent"
+                },
+                "generator/method": {
+                    "label": "Metode"
+                },
+                "generator/source": {
+                    "label": "Kilde"
+                },
+                "generator/type": {
+                    "label": "Type"
+                },
+                "golf_hole": {
+                    "label": "Referanse",
+                    "placeholder": "Hull nummer (1-18)"
+                },
+                "handicap": {
+                    "label": "Handikapp",
+                    "placeholder": "1-18"
+                },
+                "handrail": {
+                    "label": "Gelender"
+                },
+<<<<<<< HEAD
+=======
+                "hashtags": {
+                    "placeholder": "#eksempel"
+                },
+                "height": {
+                    "label": "Høyde (meter)"
+                },
+>>>>>>> v2.8.2
+                "highway": {
+                    "label": "Type"
+                },
+                "historic": {
+                    "label": "Type"
+                },
+                "hoops": {
+                    "placeholder": "1, 2, 4..."
+                },
+                "horse_dressage": {
+                    "options": {
+                        "equestrian": "Ja",
+                        "undefined": "Nei"
+                    }
+                },
+                "horse_riding": {
+                    "label": "Hesteridning",
+                    "options": {
+                        "horse_riding": "Ja"
+                    }
+                },
+                "horse_stables": {
+                    "options": {
+                        "stables": "Ja"
+                    }
+                },
+                "iata": {
+                    "label": "IATA"
+                },
+                "icao": {
+                    "label": "ICAO"
+                },
+                "incline": {
+                    "label": "Stigning"
+                },
+                "incline_steps": {
+                    "options": {
+                        "down": "Ned",
+                        "up": "Opp"
+                    }
+                },
+                "information": {
+                    "label": "Type"
+                },
+                "internet_access": {
+                    "label": "Internettilgang",
+                    "options": {
+                        "no": "Nei",
+                        "terminal": "Terminal",
+                        "wired": "Kablet",
+                        "wlan": "Trådløs",
+                        "yes": "Ja"
+                    }
+                },
+                "lamp_type": {
+                    "label": "Type"
+                },
+                "landuse": {
+                    "label": "Type"
+                },
+                "lanes": {
+                    "label": "Filer",
+                    "placeholder": "1, 2, 3..."
+                },
+                "layer": {
+                    "label": "Lag"
+                },
+                "leaf_cycle": {
+                    "options": {
+                        "evergreen": "Eviggrønn",
+                        "mixed": "Blandet"
+                    }
+                },
+                "leaf_cycle_singular": {
+                    "options": {
+                        "evergreen": "Eviggrønn"
+                    }
+                },
+                "leaf_type": {
+                    "options": {
+                        "mixed": "Blandet"
+                    }
+                },
+                "leisure": {
+                    "label": "Type"
+                },
+                "levels": {
+                    "label": "Etasjer",
+                    "placeholder": "2, 4, 6..."
+                },
+                "location": {
+                    "label": "Sted"
+                },
+                "man_made": {
+                    "label": "Type"
+                },
+                "maxspeed": {
+                    "label": "Fartsgrense",
+                    "placeholder": "40, 50, 60..."
+                },
+                "name": {
+                    "label": "Navn",
+                    "placeholder": "Fellesnavn (hvis kjent)"
+                },
+                "natural": {
+                    "label": "Naturlig"
+                },
+                "network": {
+                    "label": "Nettverk"
+                },
+                "note": {
+                    "label": "Notat"
+                },
+                "office": {
+                    "label": "Type"
+                },
+                "oneway": {
+                    "label": "Enveis",
+                    "options": {
+                        "no": "Nei",
+                        "undefined": "Antatt til å være Nei",
+                        "yes": "Ja"
+                    }
+                },
+                "oneway_yes": {
+                    "label": "Enveis",
+                    "options": {
+                        "no": "Nei",
+                        "yes": "Ja"
+                    }
+                },
+                "opening_hours": {
+                    "label": "Timer"
+                },
+                "operator": {
+                    "label": "Betjener"
+                },
+<<<<<<< HEAD
+=======
+                "par": {
+                    "placeholder": "3, 4, 5..."
+                },
+>>>>>>> v2.7.0
+                "park_ride": {
+                    "label": "Park & Ride"
+                },
+                "parking": {
+                    "label": "Type",
+                    "options": {
+                        "sheds": "Skur/utebod",
+                        "surface": "Overflate",
+                        "underground": "Under overflaten"
+                    }
+                },
+                "phone": {
+                    "placeholder": "+47 22 12 34 56"
+                },
+                "piste/type": {
+                    "label": "Type"
+                },
+                "place": {
+                    "label": "Type"
+                },
+                "power": {
+                    "label": "Type"
+                },
+                "railway": {
+                    "label": "Type"
+                },
+                "ref": {
+                    "label": "Referanse"
+                },
+                "relation": {
+                    "label": "Type"
+                },
+                "religion": {
+                    "label": "Religion"
+                },
+                "restriction": {
+                    "label": "Type"
+                },
+                "route": {
+                    "label": "Type"
+                },
+                "route_master": {
+                    "label": "Type"
+                },
+                "second_hand": {
+                    "options": {
+                        "yes": "Ja"
+                    }
+                },
+                "service": {
+                    "label": "Type"
+                },
+                "shelter": {
+                    "label": "Skur"
+                },
+                "shelter_type": {
+                    "label": "Type"
+                },
+                "shop": {
+                    "label": "Type"
+                },
+                "site": {
+                    "label": "Type"
+                },
+                "smoking": {
+                    "label": "Røyking"
+                },
+                "source": {
+                    "label": "Kilde"
+                },
+                "sport": {
+                    "label": "Sport"
+                },
+                "sport_ice": {
+                    "label": "Sport"
+                },
+                "sport_racing": {
+                    "label": "Idrett"
+                },
+                "structure": {
+                    "label": "Struktur",
+                    "options": {
+                        "bridge": "Bru",
+                        "embankment": "Dike",
+                        "ford": "Vadested",
+                        "tunnel": "Tunnel"
+                    },
+                    "placeholder": "Ukjent"
+                },
+                "substation": {
+                    "label": "Type"
+                },
+                "surface": {
+                    "label": "Overflate"
+                },
+                "takeaway": {
+                    "options": {
+                        "no": "Nei",
+                        "yes": "Ja"
+                    }
+                },
+                "tourism": {
+                    "label": "Type"
+                },
+                "traffic_signals": {
+                    "label": "Type"
+                },
+                "trees": {
+                    "label": "Trær"
+                },
+                "tunnel": {
+                    "label": "Tunnel"
+                },
+                "water": {
+                    "label": "Type"
+                },
+                "waterway": {
+                    "label": "Type"
+                },
+                "website": {
+                    "label": "Nettside",
+                    "placeholder": "http://example.com/"
+                },
+                "wetland": {
+                    "label": "Type"
+                },
+                "wheelchair": {
+                    "label": "Rullestoltilgang"
+                },
+                "wikipedia": {
+                    "label": "Wikipedia"
+                }
+            },
+            "presets": {
+                "address": {
+                    "name": "Adresse"
+                },
+                "aeroway": {
+                    "name": "Taksebane"
+                },
+                "aeroway/aerodrome": {
+                    "name": "Flyplass"
+                },
+                "aeroway/gate": {
+                    "name": "Flyplassgate"
+                },
+                "aeroway/hangar": {
+                    "name": "Hangar"
+                },
+                "aeroway/helipad": {
+                    "name": "Helikopterlandingsplass"
+                },
+                "aeroway/runway": {
+                    "name": "Rullebane"
+                },
+                "aeroway/taxiway": {
+                    "name": "Taxibane"
+                },
+                "aeroway/terminal": {
+                    "name": "Flyplassterminal"
+                },
+                "amenity": {
+                    "name": "Fasilitet"
+                },
+                "amenity/atm": {
+                    "name": "Minibank"
+                },
+                "amenity/bank": {
+                    "name": "Bank"
+                },
+                "amenity/bar": {
+                    "name": "Bar"
+                },
+                "amenity/bench": {
+                    "name": "Benk"
+                },
+                "amenity/bicycle_parking": {
+                    "name": "Sykkelparkering"
+                },
+                "amenity/bicycle_rental": {
+                    "name": "Sykkelutleie"
+                },
+                "amenity/cafe": {
+                    "name": "Kafé"
+                },
+                "amenity/car_rental": {
+                    "name": "Bilutleie"
+                },
+                "amenity/car_sharing": {
+                    "name": "Bildeling"
+                },
+                "amenity/car_wash": {
+                    "name": "Bilvask"
+                },
+                "amenity/casino": {
+                    "name": "Kasino"
+                },
+                "amenity/charging_station": {
+                    "name": "Ladestasjon"
+                },
+                "amenity/cinema": {
+                    "name": "Kino"
+                },
+                "amenity/clinic": {
+                    "name": "Klinikk"
+                },
+                "amenity/clock": {
+                    "name": "Klokke"
+                },
+                "amenity/drinking_water": {
+                    "name": "Drikkevann"
+                },
+                "amenity/embassy": {
+                    "name": "Ambassade"
+                },
+                "amenity/fast_food": {
+                    "name": "Hurtigmat"
+                },
+                "amenity/fire_station": {
+                    "name": "Brannstasjon"
+                },
+                "amenity/fountain": {
+                    "name": "Fontene"
+                },
+                "amenity/fuel": {
+                    "name": "Bensinstasjon"
+                },
+                "amenity/grave_yard": {
+                    "name": "Kirkegård"
+                },
+                "amenity/hospital": {
+                    "name": "Sykehusområde"
+                },
+                "amenity/kindergarten": {
+                    "name": "Barnehageområde"
+                },
+                "amenity/library": {
+                    "name": "Bibliotek"
+                },
+                "amenity/marketplace": {
+                    "name": "Markedsplass"
+                },
+                "amenity/motorcycle_parking": {
+                    "name": "Motorsykkelparkering"
+                },
+                "amenity/nightclub": {
+                    "name": "Nattklubb"
+                },
+                "amenity/parking": {
+                    "name": "Bilparkering"
+                },
+                "amenity/parking_entrance": {
+                    "name": "Innkjøring/utkjøring parkeringsgarasje"
+                },
+                "amenity/parking_space": {
+                    "name": "Parkeringsplass"
+                },
+                "amenity/pharmacy": {
+                    "name": "Apotek"
+                },
+                "amenity/place_of_worship": {
+                    "name": "Bedested"
+                },
+                "amenity/place_of_worship/buddhist": {
+                    "name": "Buddhisttempel"
+                },
+                "amenity/place_of_worship/christian": {
+                    "name": "Kirke"
+                },
+                "amenity/place_of_worship/jewish": {
+                    "name": "Synagoge"
+                },
+                "amenity/place_of_worship/muslim": {
+                    "name": "Moské"
+                },
+                "amenity/police": {
+                    "name": "Politi"
+                },
+                "amenity/post_box": {
+                    "name": "Postkasse"
+                },
+                "amenity/post_office": {
+                    "name": "Postkontor"
+                },
+                "amenity/pub": {
+                    "name": "Pub"
+                },
+                "amenity/restaurant": {
+                    "name": "Restaurant"
+                },
+                "amenity/school": {
+                    "name": "Skoleområde"
+                },
+                "amenity/shelter": {
+                    "name": "Skur"
+                },
+                "amenity/social_facility/homeless_shelter": {
+                    "name": "Overnatting for hjemløse"
+                },
+                "amenity/studio": {
+                    "name": "Studio"
+                },
+                "amenity/swimming_pool": {
+                    "name": "Svømmebasseng"
+                },
+                "amenity/taxi": {
+                    "name": "Taxiholdeplass"
+                },
+                "amenity/telephone": {
+                    "name": "Telefon"
+                },
+                "amenity/theatre": {
+                    "name": "Teater"
+                },
+                "amenity/toilets": {
+                    "name": "Toaletter"
+                },
+                "amenity/townhall": {
+                    "name": "Rådhus"
+                },
+                "amenity/university": {
+                    "name": "Universitetsområde"
+                },
+                "amenity/veterinary": {
+                    "name": "Veterinær"
+                },
+                "amenity/waste_basket": {
+                    "name": "Søppel"
+                },
+                "area": {
+                    "name": "Areal"
+                },
+                "barrier": {
+                    "name": "Hinder"
+                },
+                "barrier/city_wall": {
+                    "name": "Bymur"
+                },
+                "barrier/cycle_barrier": {
+                    "name": "Sykkelhinder"
+                },
+                "barrier/entrance": {
+                    "name": "Inngang"
+                },
+                "barrier/fence": {
+                    "name": "Gjerde"
+                },
+                "barrier/gate": {
+                    "name": "Port"
+                },
+                "barrier/hedge": {
+                    "name": "Hekk"
+                },
+                "barrier/toll_booth": {
+                    "name": "Bomstasjon"
+                },
+                "barrier/wall": {
+                    "name": "Mur"
+                },
+                "boundary/administrative": {
+                    "name": "Administrativ grense"
+                },
+                "building": {
+                    "name": "Bygning"
+                },
+                "building/apartments": {
+                    "name": "Leiligheter"
+                },
+                "building/barn": {
+                    "name": "Låve"
+                },
+                "building/bunker": {
+                    "name": "Bunker"
+                },
+                "building/cabin": {
+                    "name": "Hytte"
+                },
+                "building/cathedral": {
+                    "name": "Katedral"
+                },
+                "building/chapel": {
+                    "name": "Kapell"
+                },
+                "building/church": {
+                    "name": "Kirke"
+                },
+                "building/college": {
+                    "name": "College"
+                },
+                "building/commercial": {
+                    "name": "Kommersiell bygning"
+                },
+                "building/construction": {
+                    "name": "Bygning under oppføring"
+                },
+                "building/dormitory": {
+                    "name": "Sovesal"
+                },
+                "building/entrance": {
+                    "name": "Inngang/utgang"
+                },
+                "building/garage": {
+                    "name": "Garasje"
+                },
+                "building/garages": {
+                    "name": "Garasjer"
+                },
+                "building/greenhouse": {
+                    "name": "Veksthus"
+                },
+                "building/hospital": {
+                    "name": "Sykehus"
+                },
+                "building/hotel": {
+                    "name": "Hotell"
+                },
+                "building/house": {
+                    "name": "Hus"
+                },
+                "building/industrial": {
+                    "name": "Industribygg"
+                },
+                "building/kindergarten": {
+                    "name": "Barnehage"
+                },
+                "building/public": {
+                    "name": "Offentlig bygning"
+                },
+                "building/residential": {
+                    "name": "Boliger"
+                },
+                "building/roof": {
+                    "name": "Tak"
+                },
+                "building/school": {
+                    "name": "Skole"
+                },
+                "building/shed": {
+                    "name": "Skur/naust"
+                },
+                "building/stable": {
+                    "name": "Stall"
+                },
+                "building/train_station": {
+                    "name": "Togstasjon"
+                },
+                "building/university": {
+                    "name": "Universitetsbygning"
+                },
+                "building/warehouse": {
+                    "name": "Lagerbygning"
+                },
+                "craft": {
+                    "name": "Håndverk"
+                },
+                "craft/basket_maker": {
+                    "name": "Kurvmaker"
+                },
+                "craft/beekeeper": {
+                    "name": "Birøkter"
+                },
+                "craft/blacksmith": {
+                    "name": "Grovsmed"
+                },
+                "craft/boatbuilder": {
+                    "name": "Båtbygger"
+                },
+                "craft/bookbinder": {
+                    "name": "Bokbinderi"
+                },
+                "craft/brewery": {
+                    "name": "Bryggeri"
+                },
+                "craft/carpenter": {
+                    "name": "Snekker"
+                },
+                "craft/carpet_layer": {
+                    "name": "Teppelegger"
+                },
+                "craft/caterer": {
+                    "name": "Cateringfirma"
+                },
+                "craft/clockmaker": {
+                    "name": "Klokkemaker"
+                },
+                "craft/confectionery": {
+                    "name": "Konfektmaker"
+                },
+                "craft/dressmaker": {
+                    "name": "Syer/syerske"
+                },
+                "craft/electrician": {
+                    "name": "Elektriker"
+                },
+                "craft/gardener": {
+                    "name": "Gartner"
+                },
+                "craft/glaziery": {
+                    "name": "Glassmester"
+                },
+                "craft/handicraft": {
+                    "name": "Kunsthåndverk"
+                },
+                "craft/hvac": {
+                    "name": "VVS"
+                },
+                "craft/insulator": {
+                    "name": "Isolatør"
+                },
+                "craft/jeweler": {
+                    "name": "Gullsmed"
+                },
+                "craft/key_cutter": {
+                    "name": "Nøkkelsliper"
+                },
+                "craft/locksmith": {
+                    "name": "Låsesmed"
+                },
+                "craft/metal_construction": {
+                    "name": "Metallkonstruktør"
+                },
+                "craft/optician": {
+                    "name": "Optiker"
+                },
+                "craft/painter": {
+                    "name": "Maler"
+                },
+                "craft/photographer": {
+                    "name": "Fotograf"
+                },
+                "craft/photographic_laboratory": {
+                    "name": "Fotolaboratorium"
+                },
+                "craft/plasterer": {
+                    "name": "Murpusser"
+                },
+                "craft/plumber": {
+                    "name": "Rørlegger"
+                },
+                "craft/pottery": {
+                    "name": "Keramikk"
+                },
+                "craft/rigger": {
+                    "name": "Scenerigger"
+                },
+                "craft/roofer": {
+                    "name": "Taktekker"
+                },
+                "craft/saddler": {
+                    "name": "Salmaker"
+                },
+                "craft/sailmaker": {
+                    "name": "Seilmaker"
+                },
+                "craft/sawmill": {
+                    "name": "Sagbruk"
+                },
+                "craft/scaffolder": {
+                    "name": "Stillasbygger"
+                },
+                "craft/sculpter": {
+                    "name": "Skulptør"
+                },
+                "craft/shoemaker": {
+                    "name": "Skomaker"
+                },
+                "craft/stonemason": {
+                    "name": "Steinhugger"
+                },
+                "craft/sweep": {
+                    "name": "Feier"
+                },
+                "craft/tailor": {
+                    "name": "Skredder"
+                },
+                "craft/tiler": {
+                    "name": "Flislegger"
+                },
+                "craft/tinsmith": {
+                    "name": "Blikkenslager"
+                },
+                "craft/upholsterer": {
+                    "name": "Møbeltapetserer"
+                },
+                "craft/watchmaker": {
+                    "name": "Urmaker"
+                },
+                "craft/winery": {
+                    "name": "Vingård"
+                },
+                "embankment": {
+                    "name": "Dike"
+                },
+                "emergency/ambulance_station": {
+                    "name": "Ambulansebase"
+                },
+                "emergency/fire_hydrant": {
+                    "name": "Brannhydrant"
+                },
+                "emergency/phone": {
+                    "name": "Nødtelefon"
+                },
+                "entrance": {
+                    "name": "Inngang/utgang"
+                },
+                "footway/crossing": {
+                    "name": "Fotgjengerovergang"
+                },
+                "footway/crosswalk": {
+                    "name": "Fotgjengerovergang"
+                },
+                "footway/sidewalk": {
+                    "name": "Fortau"
+                },
+                "ford": {
+                    "name": "Vadested"
+                },
+                "golf/bunker": {
+                    "name": "Bunkers"
+                },
+                "golf/fairway": {
+                    "name": "Golfbane"
+                },
+                "golf/green": {
+                    "name": "Green"
+                },
+                "golf/hole": {
+                    "name": "Golfbanehull"
+                },
+                "golf/rough": {
+                    "name": "Rough"
+                },
+                "golf/tee": {
+                    "name": "Utslagssted"
+                },
+                "highway": {
+                    "name": "Vei"
+                },
+                "highway/bridleway": {
+                    "name": "Ridevei"
+                },
+                "highway/crossing": {
+                    "name": "Fotgjengerovergang"
+                },
+                "highway/crosswalk": {
+                    "name": "Fotgjengerovergang"
+                },
+                "highway/cycleway": {
+                    "name": "Sykkelvei"
+                },
+                "highway/footway": {
+                    "name": "Gangvei"
+                },
+                "highway/living_street": {
+                    "name": "Beboelsesgate"
+                },
+                "highway/mini_roundabout": {
+                    "name": "Mini-rundkjøring"
+                },
+                "highway/motorway": {
+                    "name": "Motorvei"
+                },
+                "highway/motorway_junction": {
+                    "name": "Motorveikryss / Avkjøring"
+                },
+                "highway/motorway_link": {
+                    "name": "Motorveirampe"
+                },
+                "highway/path": {
+                    "name": "Sti"
+                },
+                "highway/pedestrian": {
+                    "name": "Gågate"
+                },
+                "highway/primary": {
+                    "name": "Primær hovedvei"
+                },
+                "highway/residential": {
+                    "name": "Boligvei"
+                },
+                "highway/road": {
+                    "name": "Ukjent vei"
+                },
+                "highway/secondary": {
+                    "name": "Sekundær hovedvei"
+                },
+                "highway/service": {
+                    "name": "Stikkvei"
+                },
+                "highway/service/alley": {
+                    "name": "Smug"
+                },
+                "highway/service/drive-through": {
+                    "name": "Gjennomkjøring"
+                },
+                "highway/service/driveway": {
+                    "name": "Innkjørsel"
+                },
+                "highway/service/emergency_access": {
+                    "name": "Nødtilgang"
+                },
+                "highway/service/parking_aisle": {
+                    "name": "Parkeringsfil"
+                },
+                "highway/steps": {
+                    "name": "Trapp"
+                },
+                "highway/stop": {
+                    "name": "Stoppskilt"
+                },
+                "highway/tertiary": {
+                    "name": "Tertiær hovedvei"
+                },
+                "highway/traffic_signals": {
+                    "name": "Trafikklys"
+                },
+                "historic": {
+                    "name": "Historisk sted"
+                },
+                "historic/archaeological_site": {
+                    "name": "Arkeologisk sted"
+                },
+                "historic/castle": {
+                    "name": "Slott"
+                },
+                "historic/monument": {
+                    "name": "Monument"
+                },
+                "historic/ruins": {
+                    "name": "Ruiner"
+                },
+                "landuse/cemetery": {
+                    "name": "Kirkegård"
+                },
+                "landuse/churchyard": {
+                    "name": "Kirkegård"
+                },
+                "landuse/commercial": {
+                    "name": "Kommersielt område"
+                },
+                "landuse/construction": {
+                    "name": "Konstruksjon"
+                },
+                "landuse/farm": {
+                    "name": "Jordbruksland"
+                },
+                "landuse/farmland": {
+                    "name": "Jordbruksland"
+                },
+                "landuse/farmyard": {
+                    "name": "Gårdsplass"
+                },
+                "landuse/forest": {
+                    "name": "Skog"
+                },
+                "landuse/grass": {
+                    "name": "Gress"
+                },
+                "landuse/industrial": {
+                    "name": "Industrielt område"
+                },
+                "landuse/landfill": {
+                    "name": "Deponi"
+                },
+                "landuse/meadow": {
+                    "name": "Blomstereng"
+                },
+                "landuse/military": {
+                    "name": "Militært område"
+                },
+                "landuse/orchard": {
+                    "name": "Frukthage"
+                },
+                "landuse/plant_nursery": {
+                    "name": "Planteskole"
+                },
+                "landuse/quarry": {
+                    "name": "Steinbrudd"
+                },
+                "landuse/residential": {
+                    "name": "Boligområde"
+                },
+                "landuse/retail": {
+                    "name": "Butikkområde"
+                },
+                "landuse/vineyard": {
+                    "name": "Vingård"
+                },
+                "leisure": {
+                    "name": "Fritid"
+                },
+                "leisure/adult_gaming_centre": {
+                    "name": "Spillekasino"
+                },
+                "leisure/bowling_alley": {
+                    "name": "Bowlingsenter"
+                },
+                "leisure/common": {
+                    "name": "Fellesområde"
+                },
+                "leisure/dog_park": {
+                    "name": "Hundepark"
+                },
+                "leisure/firepit": {
+                    "name": "Bålsted"
+                },
+                "leisure/garden": {
+                    "name": "Hage"
+                },
+                "leisure/golf_course": {
+                    "name": "Golfbane"
+                },
+                "leisure/ice_rink": {
+                    "name": "Skøytebane"
+                },
+                "leisure/marina": {
+                    "name": "Marina"
+                },
+                "leisure/nature_reserve": {
+                    "name": "Naturreservat"
+                },
+                "leisure/park": {
+                    "name": "Park"
+                },
+                "leisure/picnic_table": {
+                    "name": "Piknikbord"
+                },
+                "leisure/pitch": {
+                    "name": "Idrettsbane"
+                },
+                "leisure/pitch/american_football": {
+                    "name": "Amerikansk fotballbane"
+                },
+                "leisure/pitch/baseball": {
+                    "name": "Baseballbane"
+                },
+                "leisure/pitch/basketball": {
+                    "name": "Basketballbane"
+                },
+                "leisure/pitch/rugby_league": {
+                    "name": "Rugby league-bane"
+                },
+                "leisure/pitch/rugby_union": {
+                    "name": "Rugby union-bane"
+                },
+                "leisure/pitch/skateboard": {
+                    "name": "Skatepark"
+                },
+                "leisure/pitch/soccer": {
+                    "name": "Fotballbane"
+                },
+                "leisure/pitch/tennis": {
+                    "name": "Tennisbane"
+                },
+                "leisure/pitch/volleyball": {
+                    "name": "Volleyballbane"
+                },
+                "leisure/playground": {
+                    "name": "Lekeplass"
+                },
+                "leisure/running_track": {
+                    "name": "Løpebane"
+                },
+                "leisure/slipway": {
+                    "name": "Båtslipp"
+                },
+                "leisure/sports_centre/swimming": {
+                    "name": "Svømmehall / badeland"
+                },
+                "leisure/stadium": {
+                    "name": "Stadion"
+                },
+                "leisure/swimming_pool": {
+                    "name": "Svømmebasseng"
+                },
+                "leisure/water_park": {
+                    "name": "Utendørs badeland"
+                },
+                "line": {
+                    "name": "Linje"
+                },
+                "man_made": {
+                    "name": "Menneskeskapt"
+                },
+                "man_made/adit": {
+                    "name": "Stoll"
+                },
+                "man_made/breakwater": {
+                    "name": "Molo"
+                },
+                "man_made/chimney": {
+                    "name": "Pipe"
+                },
+                "man_made/cutline": {
+                    "name": "Utsiktssted"
+                },
+                "man_made/embankment": {
+                    "name": "Dike"
+                },
+                "man_made/flagpole": {
+                    "name": "Flaggstang"
+                },
+                "man_made/gasometer": {
+                    "name": "Gasometer"
+                },
+                "man_made/groyne": {
+                    "name": "Bølgebryter / høfde"
+                },
+                "man_made/lighthouse": {
+                    "name": "Fyrtårn"
+                },
+                "man_made/mast": {
+                    "name": "Radiomast"
+                },
+                "man_made/observation": {
+                    "name": "Observasjonstårn"
+                },
+                "man_made/petroleum_well": {
+                    "name": "Oljebrønn"
+                },
+                "man_made/pier": {
+                    "name": "Pir"
+                },
+                "man_made/pipeline": {
+                    "name": "Rørledning"
+                },
+                "man_made/silo": {
+                    "name": "Silo"
+                },
+                "man_made/storage_tank": {
+                    "name": "Lagringstank"
+                },
+                "man_made/surveillance": {
+                    "name": "Overvåkning"
+                },
+                "man_made/survey_point": {
+                    "name": "Oppmålingspunkt"
+                },
+                "man_made/tower": {
+                    "name": "Tårn"
+                },
+                "man_made/wastewater_plant": {
+                    "name": "Renseanlegg"
+                },
+                "man_made/water_tower": {
+                    "name": "Vanntårn"
+                },
+                "man_made/water_well": {
+                    "name": "Brønn"
+                },
+                "man_made/water_works": {
+                    "name": "Vannfiltreringsanlegg"
+                },
+                "military/airfield": {
+                    "name": "Flyplass / lufthavn"
+                },
+                "military/barracks": {
+                    "name": "Militærforlegning"
+                },
+                "military/bunker": {
+                    "name": "Bunker"
+                },
+                "military/checkpoint": {
+                    "name": "Sjekkpunkt"
+                },
+                "military/danger_area": {
+                    "name": "Farlig område"
+                },
+                "military/naval_base": {
+                    "name": "Marinebase"
+                },
+                "military/obstacle_course": {
+                    "name": "Hinderløype"
+                },
+                "military/range": {
+                    "name": "Militær skytebane"
+                },
+                "military/training_area": {
+                    "name": "Militært skytefelt"
+                },
+                "natural": {
+                    "name": "Naturlig"
+                },
+                "natural/bay": {
+                    "name": "Bukt"
+                },
+                "natural/beach": {
+                    "name": "Strand"
+                },
+                "natural/cave_entrance": {
+                    "name": "Huleinngang"
+                },
+                "natural/cliff": {
+                    "name": "Klippe"
+                },
+                "natural/coastline": {
+                    "name": "Kystlinje"
+                },
+                "natural/fell": {
+                    "name": "Snaufjell"
+                },
+                "natural/glacier": {
+                    "name": "Bre"
+                },
+                "natural/grassland": {
+                    "name": "Gressåker"
+                },
+                "natural/heath": {
+                    "name": "Hei"
+                },
+                "natural/peak": {
+                    "name": "Topp"
+                },
+                "natural/saddle": {
+                    "name": "Sadelpunkt"
+                },
+                "natural/scree": {
+                    "name": "Ur"
+                },
+                "natural/scrub": {
+                    "name": "Krattskog"
+                },
+                "natural/spring": {
+                    "name": "Vannkilde"
+                },
+                "natural/tree": {
+                    "name": "Tre"
+                },
+                "natural/tree_row": {
+                    "name": "Trerekke"
+                },
+                "natural/volcano": {
+                    "name": "Vulkan"
+                },
+                "natural/water": {
+                    "name": "Vann"
+                },
+                "natural/water/lake": {
+                    "name": "Innsjø"
+                },
+                "natural/water/pond": {
+                    "name": "Dam"
+                },
+                "natural/water/reservoir": {
+                    "name": "Vannreservoir"
+                },
+                "natural/wetland": {
+                    "name": "Myr"
+                },
+                "natural/wood": {
+                    "name": "Skog"
+                },
+                "office": {
+                    "name": "Kontor"
+                },
+                "office/accountant": {
+                    "name": "Regnskapsfører"
+                },
+                "office/architect": {
+                    "name": "Arkitekt"
+                },
+                "office/lawyer": {
+                    "name": "Advokatkontor"
+                },
+                "office/newspaper": {
+                    "name": "Avisredaksjon"
+                },
+                "office/political_party": {
+                    "name": "Politisk parti"
+                },
+                "office/travel_agent": {
+                    "name": "Reisebyrå"
+                },
+                "place": {
+                    "name": "Sted"
+                },
+                "place/city": {
+                    "name": "By"
+                },
+                "place/farm": {
+                    "name": "Gård"
+                },
+                "place/hamlet": {
+                    "name": "Bosetning"
+                },
+                "place/island": {
+                    "name": "Øy"
+                },
+                "place/town": {
+                    "name": "Tettsted"
+                },
+                "place/village": {
+                    "name": "Tettsted"
+                },
+                "point": {
+                    "name": "Punkt"
+                },
+                "power": {
+                    "name": "Strøm"
+                },
+                "power/line": {
+                    "name": "Høyspentlinje"
+                },
+                "power/pole": {
+                    "name": "Høyspentmast"
+                },
+                "power/transformer": {
+                    "name": "Transformator"
+                },
+                "railway": {
+                    "name": "Jernbane"
+                },
+                "railway/abandoned": {
+                    "name": "Nedlagt jernbane"
+                },
+                "railway/funicular": {
+                    "name": "Kabelbane"
+                },
+                "railway/monorail": {
+                    "name": "Monorail"
+                },
+                "railway/narrow_gauge": {
+                    "name": "Smalsporet jernbane"
+                },
+                "railway/rail": {
+                    "name": "Skinne"
+                },
+                "railway/subway": {
+                    "name": "T-bane"
+                },
+                "railway/subway_entrance": {
+                    "name": "T-baneinngang"
+                },
+                "railway/tram": {
+                    "name": "Trikk"
+                },
+                "relation": {
+                    "name": "Relasjon"
+                },
+                "roundabout": {
+                    "name": "Rundkjøring"
+                },
+                "route/ferry": {
+                    "name": "Fergerute"
+                },
+                "shop": {
+                    "name": "Butikk"
+                },
+                "shop/alcohol": {
+                    "name": "Vinutsalg"
+                },
+                "shop/anime": {
+                    "name": "Anime-butikk"
+                },
+                "shop/antiques": {
+                    "name": "Antikvariat / antikvitetshandel"
+                },
+                "shop/art": {
+                    "name": "Kunsthandel"
+                },
+                "shop/baby_goods": {
+                    "name": "Babyutstyrsbutikk"
+                },
+                "shop/bag": {
+                    "name": "Veskebutikk"
+                },
+                "shop/bakery": {
+                    "name": "Bakeri"
+                },
+                "shop/bathroom_furnishing": {
+                    "name": "Baderomsbutikk"
+                },
+                "shop/beauty": {
+                    "name": "Skjønnhetsbutikk"
+                },
+                "shop/bed": {
+                    "name": "Sengebutikk"
+                },
+                "shop/beverages": {
+                    "name": "Øl- og vinutsalg"
+                },
+                "shop/bicycle": {
+                    "name": "Sykkelbutikk"
+                },
+                "shop/bookmaker": {
+                    "name": "Bookmaker"
+                },
+                "shop/books": {
+                    "name": "Bokhandel"
+                },
+                "shop/boutique": {
+                    "name": "Klesbutikk"
+                },
+                "shop/butcher": {
+                    "name": "Slakter"
+                },
+                "shop/candles": {
+                    "name": "Lysstøperi"
+                },
+                "shop/car": {
+                    "name": "Bilforhandler"
+                },
+                "shop/car_parts": {
+                    "name": "Bildelforhandler"
+                },
+                "shop/car_repair": {
+                    "name": "Bilverksted"
+                },
+                "shop/carpet": {
+                    "name": "Teppehandler"
+                },
+                "shop/cheese": {
+                    "name": "Ostebutikk"
+                },
+                "shop/chocolate": {
+                    "name": "Sjokoladebutikk"
+                },
+                "shop/clothes": {
+                    "name": "Klesbutikk"
+                },
+                "shop/computer": {
+                    "name": "Databutikk"
+                },
+                "shop/confectionery": {
+                    "name": "Godtebutikk"
+                },
+                "shop/convenience": {
+                    "name": "Nærbutikk"
+                },
+                "shop/copyshop": {
+                    "name": "Printsjappe"
+                },
+                "shop/cosmetics": {
+                    "name": "Parfymeri"
+                },
+                "shop/craft": {
+                    "name": "Håndverks- og kunstbutikk"
+                },
+                "shop/curtain": {
+                    "name": "Gardinbutikk"
+                },
+                "shop/dairy": {
+                    "name": "Ferskvarebutikk"
+                },
+                "shop/deli": {
+                    "name": "Delikatessebutikk"
+                },
+                "shop/department_store": {
+                    "name": "Supermarked"
+                },
+                "shop/doityourself": {
+                    "name": "Byggevarehus"
+                },
+                "shop/dry_cleaning": {
+                    "name": "Renseri"
+                },
+                "shop/electronics": {
+                    "name": "Elektronikkbutikk"
+                },
+                "shop/erotic": {
+                    "name": "Erotikkbutikk"
+                },
+                "shop/fabric": {
+                    "name": "Stoffbutikk"
+                },
+                "shop/farm": {
+                    "name": "Gårdsutsalg"
+                },
+                "shop/fashion": {
+                    "name": "Motebutikk"
+                },
+                "shop/fishmonger": {
+                    "name": "Fiskeforhandler"
+                },
+                "shop/florist": {
+                    "name": "Blomsterbutikk"
+                },
+                "shop/frame": {
+                    "name": "Innrammingsbutikk"
+                },
+                "shop/funeral_directors": {
+                    "name": "Begravelsesagent"
+                },
+                "shop/furnace": {
+                    "name": "Varmebutikk"
+                },
+                "shop/furniture": {
+                    "name": "Møbelforhandler"
+                },
+                "shop/garden_centre": {
+                    "name": "Gartneri"
+                },
+                "shop/gift": {
+                    "name": "Gavebutikk"
+                },
+                "shop/greengrocer": {
+                    "name": "Grønnsakshandler"
+                },
+                "shop/hairdresser": {
+                    "name": "Frisør"
+                },
+                "shop/hardware": {
+                    "name": "Jernvarehandel"
+                },
+                "shop/hearing_aids": {
+                    "name": "Høreapparatutsalg"
+                },
+                "shop/herbalist": {
+                    "name": "Plantelegemiddelbutikk"
+                },
+                "shop/hifi": {
+                    "name": "Hifi-butikk"
+                },
+                "shop/houseware": {
+                    "name": "Isenkrambutikk"
+                },
+                "shop/interior_decoration": {
+                    "name": "Interiørbutikk"
+                },
+                "shop/jewelry": {
+                    "name": "Smykkeforhandler"
+                },
+                "shop/kitchen": {
+                    "name": "Kjøkkenbutikk"
+                },
+                "shop/laundry": {
+                    "name": "Vaskeri"
+                },
+                "shop/leather": {
+                    "name": "Skinnbutikk"
+                },
+                "shop/locksmith": {
+                    "name": "Låsesmed"
+                },
+                "shop/mall": {
+                    "name": "Kjøpesenter"
+                },
+                "shop/massage": {
+                    "name": "Massasjesenter"
+                },
+                "shop/medical_supply": {
+                    "name": "Medisinsk utstyrsbutikk"
+                },
+                "shop/mobile_phone": {
+                    "name": "Mobiltelefonforhandler"
+                },
+                "shop/money_lender": {
+                    "name": "Pengeutlåner"
+                },
+                "shop/motorcycle": {
+                    "name": "Motorsykkelforhandler"
+                },
+                "shop/music": {
+                    "name": "Musikkforretning"
+                },
+                "shop/musical_instrument": {
+                    "name": "Musikkinstrumentbutikk"
+                },
+                "shop/newsagent": {
+                    "name": "Aviskiosk"
+                },
+                "shop/optician": {
+                    "name": "Optiker"
+                },
+                "shop/organic": {
+                    "name": "Økologisk matbutikk"
+                },
+                "shop/outdoor": {
+                    "name": "Villmarksbutikk"
+                },
+                "shop/paint": {
+                    "name": "Malingsbutikk"
+                },
+                "shop/pawnbroker": {
+                    "name": "Pantelåner"
+                },
+                "shop/pet": {
+                    "name": "Dyrebutikk"
+                },
+                "shop/photo": {
+                    "name": "Fotobutikk"
+                },
+                "shop/pyrotechnics": {
+                    "name": "Fyrverkerihandel"
+                },
+                "shop/radiotechnics": {
+                    "name": "Elektronikkbutikk"
+                },
+                "shop/religion": {
+                    "name": "Religiøs butikk"
+                },
+                "shop/scuba_diving": {
+                    "name": "Dykkerutstyrsbutikk"
+                },
+                "shop/seafood": {
+                    "name": "Sjømatbutikk"
+                },
+                "shop/second_hand": {
+                    "name": "Gjenbruksbutikk"
+                },
+                "shop/shoes": {
+                    "name": "Skobutikk"
+                },
+                "shop/sports": {
+                    "name": "Sportsbutikk"
+                },
+                "shop/stationery": {
+                    "name": "Papirhandel"
+                },
+                "shop/storage_rental": {
+                    "name": "Minilager"
+                },
+                "shop/supermarket": {
+                    "name": "Supermarked"
+                },
+                "shop/tailor": {
+                    "name": "Skredder"
+                },
+                "shop/tattoo": {
+                    "name": "Tatovør"
+                },
+                "shop/tea": {
+                    "name": "Tebutikk"
+                },
+                "shop/ticket": {
+                    "name": "Billettutsalg"
+                },
+                "shop/tobacco": {
+                    "name": "Tobakksbutikk"
+                },
+                "shop/toys": {
+                    "name": "Lekebutikk"
+                },
+                "shop/travel_agency": {
+                    "name": "Reisebyrå"
+                },
+                "shop/tyres": {
+                    "name": "Dekkutsalg"
+                },
+                "shop/vacuum_cleaner": {
+                    "name": "Støvsugerbutikk"
+                },
+                "shop/video": {
+                    "name": "Videoforhandler"
+                },
+                "shop/video_games": {
+                    "name": "Dataspillbutikk"
+                },
+                "shop/weapons": {
+                    "name": "Våpenbutikk"
+                },
+                "shop/wine": {
+                    "name": "Vinbutikk"
+                },
+                "tourism": {
+                    "name": "Turisme"
+                },
+                "tourism/alpine_hut": {
+                    "name": "Fjellhytte"
+                },
+                "tourism/artwork": {
+                    "name": "Kunstverk"
+                },
+                "tourism/attraction": {
+                    "name": "Turistattraksjon"
+                },
+                "tourism/chalet": {
+                    "name": "Hytte"
+                },
+                "tourism/gallery": {
+                    "name": "Kunstgalleri"
+                },
+                "tourism/guest_house": {
+                    "name": "Gjestehus"
+                },
+                "tourism/hostel": {
+                    "name": "Hostell"
+                },
+                "tourism/hotel": {
+                    "name": "Hotell"
+                },
+                "tourism/information": {
+                    "name": "Informasjon"
+                },
+                "tourism/motel": {
+                    "name": "Motell"
+                },
+                "tourism/museum": {
+                    "name": "Museum"
+                },
+                "tourism/picnic_site": {
+                    "name": "Pikniksted"
+                },
+                "tourism/viewpoint": {
+                    "name": "Utsiktspunkt"
+                },
+                "tourism/zoo": {
+                    "name": "Zoologisk hage"
+                },
+                "traffic_calming/bump": {
+                    "name": "Fartsdump"
+                },
+                "traffic_calming/hump": {
+                    "name": "Fartshump"
+                },
+                "type/boundary": {
+                    "name": "Grense"
+                },
+                "type/boundary/administrative": {
+                    "name": "Adminstrativ grense"
+                },
+                "type/multipolygon": {
+                    "name": "Multipolygon"
+                },
+                "type/restriction": {
+                    "name": "Begrensning"
+                },
+                "type/restriction/no_left_turn": {
+                    "name": "Ingen venstresving"
+                },
+                "type/restriction/no_right_turn": {
+                    "name": "Ingen høyresving"
+                },
+                "type/restriction/no_straight_on": {
+                    "name": "Ikke rett fram"
+                },
+                "type/restriction/no_u_turn": {
+                    "name": "Ingen U-sving"
+                },
+                "type/route": {
+                    "name": "Rute"
+                },
+                "type/route/bicycle": {
+                    "name": "Sykkelrute"
+                },
+                "type/route/bus": {
+                    "name": "Bussrute"
+                },
+                "type/route/detour": {
+                    "name": "Omkjøringsrute"
+                },
+                "type/route/ferry": {
+                    "name": "Fergerute"
+                },
+                "type/route/foot": {
+                    "name": "Gangrute"
+                },
+                "type/route/hiking": {
+                    "name": "Oppmerket sti"
+                },
+                "type/route/pipeline": {
+                    "name": "Rørledningsrute"
+                },
+                "type/route/power": {
+                    "name": "Kraftlinje"
+                },
+                "type/route/train": {
+                    "name": "Jernbanelinje"
+                },
+                "type/route/tram": {
+                    "name": "Trikkelinje"
+                },
+                "type/site": {
+                    "name": "Sted"
+                },
+                "vertex": {
+                    "name": "Andre"
+                },
+                "waterway": {
+                    "name": "Vannvei"
+                },
+                "waterway/boatyard": {
+                    "name": "Skipsverft"
+                },
+                "waterway/canal": {
+                    "name": "Kanal"
+                },
+                "waterway/dam": {
+                    "name": "Demning"
+                },
+                "waterway/ditch": {
+                    "name": "Grøft"
+                },
+                "waterway/drain": {
+                    "name": "Sluk"
+                },
+                "waterway/river": {
+                    "name": "Elv"
+                },
+                "waterway/riverbank": {
+                    "name": "Elvebredd"
+                },
+                "waterway/stream": {
+                    "name": "Bekk"
+                }
+            }
+<<<<<<< HEAD
+=======
+        },
+        "imagery": {
+            "Bing": {
+                "description": "Flyfoto og satellitt-ortofoto.",
+                "name": "Bing ortofoto"
+            },
+            "DigitalGlobe-Premium": {
+                "attribution": {
+                    "text": "Vilkår og tilbakemelding"
+                }
+            },
+            "osm-gps": {
+                "attribution": {
+                    "text": "© OpenStreetMap bidragsytere"
+                }
+            }
+        },
+        "community": {
+            "cape-coast-youthmappers": {
+                "description": "Følg oss på Twitter: {url}"
+            },
+            "osm-gh-twitter": {
+                "name": "OpenStreetMap Ghana på Twitter",
+                "description": "Følg oss på Twitter: {url}"
+            },
+            "OSM-BGD-facebook": {
+                "description": "Forbedre OpenStreetMap i Bangladesh"
+            },
+            "OSM-India-facebook": {
+                "description": "Forbedre OpenStreetMap i India"
+            },
+            "OSM-india-twitter": {
+                "name": "OpenStreetMap India Twitter"
+            },
+            "OSM-IDN-facebook": {
+                "description": "Forbedre OpenStreetMap i Indonesia"
+            },
+            "OSM-japan-twitter": {
+                "name": "OpenStreetMap Japan Twitter",
+                "description": "Hashtag på Twitter: {url}"
+            },
+            "OSM-MNG-facebook": {
+                "description": "Forbedre OpenStreetMap i Mongolia"
+            },
+            "OSM-MMR-facebook": {
+                "description": "Forbedre OpenStreetMap i Myanmar"
+            },
+            "OSM-Nepal-facebook": {
+                "description": "Forbedre OpenStreetMap i Nepal"
+            },
+            "OSM-LKA-facebook": {
+                "description": "Forbedre OpenStreetMap i Sri Lanka"
+            },
+            "at-twitter": {
+                "name": "OpenStreetMap Østerrike Twitter",
+                "description": "OpenStreetMap Østerrike på Twitter: {url}"
+            },
+            "osmgraz-twitter": {
+                "name": "OSM-samfunnet i Graz på Twitter",
+                "description": "OpenStreetMap-samfunnet i Graz på Twitter"
+            },
+            "osm-at": {
+                "name": "OpenStreetMap Østerrike"
+            },
+            "be-twitter": {
+                "name": "OpenStreetMap Belgia Twitter"
+            },
+            "fr-twitter": {
+                "name": "OpenStreetMap Frankrike på Twitter",
+                "description": "OpenStreetMap Frankrike på Twitter: {url}"
+            },
+            "de-berlin-twitter": {
+                "name": "OpenStreetMap Berlin Twitter",
+                "description": "Følg oss på Twitter: {url}"
+            },
+            "it-twitter": {
+                "name": "OpenStreetMap Italia Twitter",
+                "description": "Følg oss på Twitter på {url}"
+            },
+            "talk-it-lazio": {
+                "description": "Alle er velkomne! Registrer deg på {signupUrl}"
+            },
+            "no-forum": {
+                "name": "OpenStreetMap Norge Nettforum",
+                "description": "OpenStreetMap Norge Nettforum"
+            },
+            "no-irc": {
+                "name": "OpenStreetMap Norge på IRC",
+                "description": "Chatterom for kartleggere og OpenStreetMap-brukere, utviklere og entusiaster i Norge"
+            },
+            "no-mailinglist": {
+                "name": "OpenStreetMap Norge e-postliste",
+                "description": "E-postliste for kartleggere og OpenStreetMap-brukere, utviklere og entusiaster i Norge"
+            },
+            "se-twitter": {
+                "name": "OpenStreetMap Sverige på Twitter",
+                "description": "Følg oss på Twitter: {url}"
+            },
+            "OSM-CA-Slack": {
+                "description": "Alle er velkomne! Registrer deg på {signupUrl}."
+            },
+            "OSM-US-Slack": {
+                "description": "Alle er velkomne! Registrer deg på {signupUrl}"
+            },
+            "PHXGeo-twitter": {
+                "description": "Følg oss på Twitter på {url}"
+            },
+            "OSM-AR-twitter": {
+                "name": "OpenStreetMap Argentina Twitter",
+                "description": "Følg oss på Twitter på {url}"
+            },
+            "OSM-br-twitter": {
+                "name": "OpenStreetMap Brasil Twitter",
+                "description": "Følg oss på Twitter på {url}"
+            },
+            "OSM-CL-twitter": {
+                "name": "OpenStreetMap Chile Twitter",
+                "description": "Følg oss på Twitter på {url}"
+            },
+            "OSM-CO-twitter": {
+                "name": "OpenStreetMap Colombia Twitter",
+                "description": "Følg oss på Twitter på {url}"
+            },
+            "OSM-PE-twitter": {
+                "name": "OpenStreetMap Peru Twitter",
+                "description": "Følg oss på Twitter på {url}"
+            },
+            "OSM-Twitter": {
+                "name": "OpenStreetMap Twitter",
+                "description": "Følg oss på Twitter på {url}"
+            }
+>>>>>>> v2.8.2
+        }
+    }
+}
