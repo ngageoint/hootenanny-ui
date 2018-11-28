@@ -4,6 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/16/18
  *******************************************************************************************************/
 
+import '../../css/hoot/hoot.scss';
+
 import _forEach from 'lodash-es/forEach';
 
 import API                from './managers/api';
@@ -26,7 +28,7 @@ class Hoot {
         this.events       = new EventManager();
 
         this.config = {
-            urlroot: 'http://54.165.118.78:8080/hoot-services/osm',
+            urlroot: 'http://34.201.113.202:8080/hoot-services/osm',
             tagInfo,
             appInfo: [],
             users: [],

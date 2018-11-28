@@ -98,9 +98,6 @@ export function d3keybinding(namespace) {
 
 
     function bubble() {
-        console.log( d3_event );
-        console.log( d3_event.target );
-        console.log( d3_select(d3_event.target).node() );
         var tagName = d3_select(d3_event.target).node().tagName;
         if (tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA') {
             return;

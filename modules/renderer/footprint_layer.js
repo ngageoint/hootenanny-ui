@@ -14,10 +14,12 @@ export function rendererFootprintLayer() {
         s;
 
     function render( selection ) {
-        svg = selection.selectAll( 'svg' )
+        svg = selection
+            .selectAll( 'svg' )
             .data( [ render ] );
 
-        s = svg.enter()
+        s = svg
+            .enter()
             .append( 'svg' );
 
         svg.style( 'display', enable ? 'block' : 'none' );
@@ -35,8 +37,7 @@ export function rendererFootprintLayer() {
         let path = d3.geoPath()
             .projection( projection );
 
-        paths
-            .attr( 'd', path );
+        paths.attr( 'd', path );
 
         if ( typeof gj.features !== 'undefined' ) {
             svg

@@ -274,9 +274,13 @@ export default class Merge {
         this.mergeArrow.from = feature;
         this.mergeArrow.to   = againstFeature;
 
+        that.updateMergeArrow();
+
         d3.select( '.action-buttons .merge' )
             .on( 'mouseenter', function() {
-                if ( d3.event.ctrlKey ) {
+                this.focus();
+
+                if ( d3.event.ctrlKey || d3.event.metaKey ) {
                     that.updateMergeArrow( 'reverse' );
                 } else {
                     that.updateMergeArrow();
@@ -284,7 +288,7 @@ export default class Merge {
 
                 d3.select( this )
                     .on( 'keydown', () => {
-                        if (d3.event.ctrlKey) {
+                        if ( d3.event.ctrlKey || d3.event.metaKey ) {
                             that.updateMergeArrow( 'reverse' );
                         }
                     } )
@@ -293,11 +297,31 @@ export default class Merge {
                     } );
             } )
             .on( 'mouseleave', function() {
+                this.blur();
+
                 that.updateMergeArrow( 'delete' );
             } );
     }
 
     updateMergeArrow( mode ) {
-        console.log( mode );
+        if ( !Hoot.context.graph().entities[ this.mergeArrow.from.id ] ||
+            !Hoot.context.graph().entities[ this.mergeArrow.to.id ] ) {
+            Hoot.context.background().updateArrowLayer( {} );
+
+            return;
+        }
+
+        let pt1   = d3.geoCentroid( this.mergeArrow.to.asGeoJSON( Hoot.context.graph ) ),
+            pt2   = d3.geoCentroid( this.mergeArrow.from.asGeoJSON( Hoot.context.graph ) ),
+            coord = [ pt1, pt2 ];
+
+        if ( mode === 'reverse' ) coord = coord.reverse();
+
+        let gj = mode === 'delete' ? {} : {
+            type: 'LineString',
+            coordinates: coord
+        };
+
+        Hoot.context.background().updateArrowLayer( gj );
     }
 }
