@@ -24,6 +24,11 @@ export default class Merge {
      */
     constructor( instance ) {
         this.data = instance.data;
+
+        this.mergeArrow = {
+            from: null,
+            to: null
+        };
     }
 
     /**
@@ -255,5 +260,44 @@ export default class Merge {
      */
     toggleMergeButton( hide ) {
         d3.select( '.action-buttons .merge' ).classed( 'hidden', hide );
+    }
+
+    /**
+     * Activate merge arrow layer. Arrow appears when hovering over merge button
+     *
+     * @param feature
+     * @param againstFeature
+     */
+    activateMergeArrow( feature, againstFeature ) {
+        let that = this;
+
+        this.mergeArrow.from = feature;
+        this.mergeArrow.to   = againstFeature;
+
+        d3.select( '.action-buttons .merge' )
+            .on( 'mouseenter', function() {
+                if ( d3.event.ctrlKey ) {
+                    that.updateMergeArrow( 'reverse' );
+                } else {
+                    that.updateMergeArrow();
+                }
+
+                d3.select( this )
+                    .on( 'keydown', () => {
+                        if (d3.event.ctrlKey) {
+                            that.updateMergeArrow( 'reverse' );
+                        }
+                    } )
+                    .on( 'keyup', () => {
+                        that.updateMergeArrow();
+                    } );
+            } )
+            .on( 'mouseleave', function() {
+                that.updateMergeArrow( 'delete' );
+            } );
+    }
+
+    updateMergeArrow( mode ) {
+        console.log( mode );
     }
 }

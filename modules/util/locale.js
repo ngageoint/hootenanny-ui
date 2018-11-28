@@ -1,5 +1,7 @@
 var translations = Object.create(null);
 
+console.log( translations );
+
 export var currentLocale = 'en';
 export var textDirection = 'ltr';
 
@@ -34,6 +36,11 @@ export function t(s, o, loc) {
         .reverse();
 
     var rep = translations[loc];
+    console.log( 'loc: ', loc );
+    console.log( 'translations: ', translations );
+    console.log( 'path: ', path );
+
+    console.log( 'rep: ', rep );
 
     while (rep !== undefined && path.length) {
         rep = rep[path.pop()];

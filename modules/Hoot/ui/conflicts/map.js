@@ -51,6 +51,7 @@ export default class Map {
             ((feature && againstFeature) && feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n')
         ) {
             this.instance.merge.toggleMergeButton( false );
+            this.instance.merge.activateMergeArrow( feature, againstFeature );
         } else {
             this.instance.merge.toggleMergeButton( true );
         }
