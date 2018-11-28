@@ -291,7 +291,7 @@ label.streetside-hires {
 .osc-wrapper {
     position: relative;
     background-color: #000;
-    background-image: url(img/loader-black.gif);
+    background-image: url(./img/loader-black.gif);
     background-position: center;
     background-repeat: no-repeat;
 }

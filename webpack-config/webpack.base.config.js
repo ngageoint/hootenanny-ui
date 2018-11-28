@@ -43,23 +43,9 @@ module.exports = {
                             outputPath: 'img/',
                             name: '[name].[ext]'
                         }
-                    },
-                    {
-                        loader: 'image-webpack-loader',
-                        options: {
-                            disable: true,
-                        }
                     }
                 ]
             },
-            // {
-            //     test: /\.css$/,
-            //     use: [
-            //         'style-loader',
-            //         MiniCssExtractPlugin.loader,
-            //         'css-loader'
-            //     ]
-            // },
             {
                 test: /\.(scss|css)$/,
                 use: [
@@ -72,7 +58,7 @@ module.exports = {
     },
     resolve: {
         alias: {
-            img: resolve( __dirname, '../img' ),
+            './img': resolve( __dirname, '../img' ),
             lib: resolve( __dirname, '../modules/lib' )
         }
     },

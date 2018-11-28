@@ -384,7 +384,7 @@ li.hide {
 }
 
 .loading {
-    background: url(img/loader_bg.gif);
+    background: url(./img/loader_bg.gif);
     background-size: 5px 5px;
 }
 
@@ -2290,7 +2290,7 @@ button.minor.tag-reference-loading {
 }
 
 .tag-reference-loading .icon {
-    background-image: url(img/mini-loader.gif);
+    background-image: url(./img/mini-loader.gif);
     background-position: 0 0;
 }
 
