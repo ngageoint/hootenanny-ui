@@ -30,7 +30,7 @@ module.exports = {
     output: {
         path: resolve( __dirname, '../dist/' ),
         filename: '[name].min.js',
-        publicPath: '/'
+        publicPath: './'
     },
     module: {
         rules: [
