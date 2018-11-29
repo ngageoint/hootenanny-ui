@@ -1,9 +1,8 @@
 // Karma configuration
 // Generated on Mon Oct 29 2018 14:12:47 GMT-0400 (Eastern Daylight Time)
 
-const path = require( 'path' );
-const Merge             = require( 'webpack-merge' );
-const baseConfig        = require( './webpack-config/webpack.base.config' );
+const path  = require( 'path' );
+const proxy = require( 'express-http-proxy' );
 
 const materialIconFiles = [
     { pattern: 'node_modules/material-design-icons/iconfont/material-icons.css', included: true },
@@ -14,7 +13,7 @@ const materialIconFiles = [
     { pattern: 'node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff2', included: false },
 ];
 
-const webpackConfig = Merge( baseConfig, {
+const webpackConfig = {
     mode: 'development',
     entry: './test/hoot/index.js',
   
@@ -30,7 +29,13 @@ const webpackConfig = Merge( baseConfig, {
                 },
                 include: path.resolve( __dirname, 'modules/Hoot/' ),
                 enforce: 'post'
-                // exclude: /node_modules|\.spec\.js$/
+            },
+            {
+                test: /\.(scss|css)$/,
+                use: [
+                    'css-loader',
+                    'sass-loader'
+                ]
             }
         ]
     },
@@ -39,8 +44,8 @@ const webpackConfig = Merge( baseConfig, {
             img: path.resolve( __dirname, 'img' ),
             lib: path.resolve( __dirname, 'modules/lib' )
         }
-    },
-} );
+    }
+};
 
 module.exports = function( config ) {
     config.set( {
@@ -51,7 +56,7 @@ module.exports = function( config ) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: [ 'mocha' ],
+        frameworks: [ 'mocha', 'express-http-server' ],
 
 
         client: {
@@ -99,6 +104,20 @@ module.exports = function( config ) {
         },
 
 
+        expressHttpServer: {
+            port: '8080',
+            appVisitor: function( app ) {
+                app.use( '/', proxy( 'http://35.174.111.201:8080', {
+                    limit: '1000mb',
+                    proxyReqOptDecorator: function( proxyReqOpts ) {
+                        proxyReqOpts.headers.cookie = 'SESSION=ff47f751-c831-41ee-800f-5ef8b9371ee3; lock=1';
+                        return proxyReqOpts;
+                    }
+                } ) );
+            }
+        },
+
+
         webpack: webpackConfig,
 
 
@@ -109,7 +128,7 @@ module.exports = function( config ) {
 
 
         coverageIstanbulReporter: {
-            reports: [ 'html', 'lcov' ],
+            reports: [ 'html', 'lcov', 'text-summary' ],
             dir: path.join( __dirname, 'coverage' ),
             fixWebpackSourcePaths: true
         },
@@ -117,6 +136,7 @@ module.exports = function( config ) {
 
         // web server port
         port: 9876,
+
 
 
         // enable / disable colors in the output (reporters and logs)
@@ -137,14 +157,10 @@ module.exports = function( config ) {
         browsers: [ 'Chrome' ],
 
 
-        // browserConsoleLogOptions: {
-        //     terminal: false
-        // },
-
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
-        singleRun: false,
+        singleRun: true,
 
         // Concurrency level
         // how many browser should be started simultaneous

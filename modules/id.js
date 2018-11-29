@@ -19,6 +19,7 @@ import '../css/80_app.css';
 
 window.Hoot = Hoot;
 window.iD = iD;
+window.Hoot = Hoot;
 window.$ = window.jQuery = $;
 
 export default iD;

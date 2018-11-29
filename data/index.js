@@ -65,4 +65,4 @@ export var data = {
 export var tagInfo = {
     OSM: osmTagInfo,
     TDSv61: tdsv61FieldValues
-}
+};
