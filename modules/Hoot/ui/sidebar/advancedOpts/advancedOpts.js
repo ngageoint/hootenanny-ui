@@ -31,11 +31,7 @@ export default class AdvancedOpts {
             horizontal: allOpts[ 1 ],
             average: allOpts[ 2 ],
             reference: allOpts[ 3 ],
-<<<<<<< HEAD
-            diffConflator: allOpts[ 4 ],
-=======
             diff: allOpts[ 4 ],
->>>>>>> hoot2x
             diffTags: allOpts[ 5 ]
         };
 
