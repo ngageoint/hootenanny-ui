@@ -1,3 +1,4 @@
+
 /** ****************************************************************************************************
  * File: apiConfig.js
  * Project: hootenanny-ui
@@ -5,12 +6,12 @@
  *******************************************************************************************************/
 
 export const apiConfig = {
-  host: "http://54.165.118.78",
-  port: "8080",
-  path: "hoot-services",
-  translationServerPort: "8094",
-  mapnikServerPort: "8000",
-  mergeServerPort: "8096",
+  host: 'http://34.201.113.202',
+  port: '8080',
+  path: 'hoot-services',
+  translationServerPort: '8094',
+  mapnikServerPort: '8000',
+  mergeServerPort: '8096',
   queryInterval: 2000
 };
 
