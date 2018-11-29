@@ -3,11 +3,13 @@
 #navbar {
     position: fixed;
     height: 60px;
+    min-width: 768px;
     left: 0;
     right: 0;
     padding: 0 15px;
     display: flex;
     justify-content: space-between;
+    z-index: 10;
 
     div {
         height: 100%;
@@ -61,9 +63,9 @@
         display: none;
         position: absolute;
         width: auto;
-        top: 50px;
-        right: 25px;
-        z-index: 10;
+        min-width: 80px;
+        top: 60px;
+        right: 35px;
 
         &.visible {
             display: block;
@@ -73,5 +75,9 @@
     .dropdown-item {
         height: 50px;
         line-height: 50px;
+
+        &.pointer:hover {
+            background-color: $light;
+        }
     }
 }

@@ -6,7 +6,13 @@
 
 describe( 'dataset panel', () => {
     before( () => {
-        d3.select( '#navbar .menu-button' ).dispatch( 'click' );
+        let menuButton = d3.select( '#navbar .menu-button' );
+
+        if ( !menuButton.classed( 'active' ) ) {
+            d3.select( '#navbar .menu-button' ).dispatch( 'click' );
+        }
+
+        d3.select( '[data-id="#manage-datasets"]' ).dispatch( 'click' );
     } );
 
     // after( async () => {

@@ -4,25 +4,25 @@
     width: 100%;
 
     .map-in-map & {
-        cursor: url(/img/cursor-grab.png) 9 9, auto;
+        cursor: url(./img/cursor-grab.png) 9 9, auto;
     }
 
     .mode-browse &,
     .mode-select & {
         .point {
-            cursor: url(/img/cursor-select-point.png), pointer;
+            cursor: url(./img/cursor-select-point.png), pointer;
         }
 
         .vertex {
-            cursor: url(/img/cursor-select-point.png), pointer;
+            cursor: url(./img/cursor-select-point.png), pointer;
         }
 
         .line {
-            cursor: url(/img/cursor-select-area.png), pointer;
+            cursor: url(./img/cursor-select-area.png), pointer;
         }
 
         .midpoint {
-            cursor: url(/img/cursor-select-split.png), pointer;
+            cursor: url(./img/cursor-select-split.png), pointer;
         }
     }
 
@@ -31,23 +31,23 @@
         .vertex,
         .line,
         .area {
-            cursor: url(/img/cursor-select-split.png), pointer;
+            cursor: url(./img/cursor-select-split.png), pointer;
         }
 
         .selected {
-            cursor: url(/img/cursor-select-remove.png), pointer;
+            cursor: url(./img/cursor-select-remove.png), pointer;
         }
     }
 
     .mode-add-point &,
     .mode-browse.lasso &,
     .mode-select.lasso & {
-        cursor: url(/img/cursor-draw.png) 9 9, crosshair;
+        cursor: url(./img/cursor-draw.png) 9 9, crosshair;
 
         .way,
         .vertex,
         .midpoint {
-            cursor: url(/img/cursor-draw.png) 9 9, crosshair;
+            cursor: url(./img/cursor-draw.png) 9 9, crosshair;
         }
     }
 
@@ -56,24 +56,24 @@
     .mode-add-line &,
     .mode-add-area &,
     .mode-drag-node & {
-        cursor: url(/img/cursor-draw.png) 9 9, crosshair;
+        cursor: url(./img/cursor-draw.png) 9 9, crosshair;
 
         .way.hover {
-            cursor: url(/img/cursor-draw-connect-line.png) 9 9, crosshair;
+            cursor: url(./img/cursor-draw-connect-line.png) 9 9, crosshair;
         }
 
         .vertex.hover {
-            cursor: url(/img/cursor-draw-connect-vertex.png) 9 9, crosshair;
+            cursor: url(./img/cursor-draw-connect-vertex.png) 9 9, crosshair;
         }
     }
 
     .mode-measure-add-line &,
     .mode-measure-add-area & {
-        cursor: url(/img/cursor-ruler.png) 9 9,url(/img/cursor-draw.png) 9 9, crosshair;
+        cursor: url(./img/cursor-ruler.png) 9 9,url(./img/cursor-draw.png) 9 9, crosshair;
     }
 
     .mode-clip-bounding-box & {
-        cursor: url(/img/cursor-draw.png) 9 9, crosshair;
+        cursor: url(./img/cursor-draw.png) 9 9, crosshair;
     }
 
     .point:active,
@@ -82,11 +82,11 @@
     .area:active,
     .midpoint:active,
     .mode-select .selected {
-        cursor: url(/img/cursor-select-acting.png), pointer;
+        cursor: url(./img/cursor-select-acting.png), pointer;
     }
 
     .turn & rect {
-        cursor: url(/img/cursor-pointer.png) 6 1, pointer;
+        cursor: url(./img/cursor-pointer.png) 6 1, pointer;
     }
 
     .lasso & {

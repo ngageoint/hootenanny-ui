@@ -382,7 +382,7 @@ function updateRtree(item, replace) {
 }
 
 function getUrlRoot(path) {
-    return (path.indexOf('mapId') > -1) ? Hoot.config.urlroot : urlroot;
+    return (path.indexOf('mapId') > -1) ? Hoot.api.baseUrl + '/osm' : urlroot;
 }
 
 function isUrlHoot(path) {
@@ -965,7 +965,7 @@ export default {
         if (_off) return;
 
         var that = this;
-        var path = '/api/0.6/map?bbox=';
+        // var path = '/api/0.6/map?bbox=';
 
         // Load from visible layers only
         // HootOld loadedLayers is what controls the vector data sources that are loaded
@@ -1000,24 +1000,28 @@ export default {
                 dispatch.call('loading');   // start the spinner
             }
 
+            var path;
+
+            if ( tile.mapId && tile.mapId > -1 ) {
+                path = `/api/0.6/map/${ tile.mapId }/${ tile.extent.toParam() }`;
+            } else {
+                path = `/api/0.6/map?bbox=${ tile.extent.toParam() }`;
+            }
+
             var options = { skipSeen: false };
-            _tileCache.inflight[tile.id] = that.loadFromAPI(
-                path + tile.extent.toParam() + ( tile.mapId > -1 ? '&mapId=' + tile.mapId : '' ),
-                function(err, parsed) {
-                    delete _tileCache.inflight[tile.id];
-                    if (!err) {
-                        _tileCache.loaded[tile.id] = true;
-                    }
-                    if (callback) {
-                        callback(err, _extend({ data: parsed }, tile));
-                    }
-                    if (_isEmpty(_tileCache.inflight)) {
-                        dispatch.call('loaded');     // stop the spinner
-                        Hoot.events.emit( 'layer-loaded', tile.layerName );
-                    }
-                },
-                options
-            );
+            _tileCache.inflight[tile.id] = that.loadFromAPI( path, function(err, parsed) {
+                delete _tileCache.inflight[tile.id];
+                if (!err) {
+                    _tileCache.loaded[tile.id] = true;
+                }
+                if (callback) {
+                    callback(err, _extend({ data: parsed }, tile));
+                }
+                if (_isEmpty(_tileCache.inflight)) {
+                    dispatch.call('loaded');     // stop the spinner
+                    Hoot.events.emit( 'layer-loaded', tile.layerName );
+                }
+            }, options );
         });
     },
 

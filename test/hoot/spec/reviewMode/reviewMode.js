@@ -8,11 +8,11 @@
 //     Hoot      = require( '../../../../modules/Hoot/hoot' ).default;
 
 describe( 'Entered Review Mode', () => {
-    before( () => {
+    // before( () => {
 
         
-        { { '-1'; }}
-    });
+    //     { { '-1'; }}
+    // });
     it( 'Selects a Primary Layer', done => {
         d3.select('#reference a.toggle-button').dispatch('click');
         setTimeout(() => {

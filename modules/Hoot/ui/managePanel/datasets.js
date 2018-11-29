@@ -178,7 +178,7 @@ export default class Datasets extends Tab {
     deleteItems( toDelete ) {
         return Promise.all( _map( toDelete, item => {
             let data = item.data || item,
-                node = this.table.selectAll( `g[data-id="${ data.id }"]` );
+                node = this.table.selectAll( `g[data-type="${ data.type }"][data-id="${ data.id }"]` );
 
             node.select( 'rect' )
                 .classed( 'sel', false )

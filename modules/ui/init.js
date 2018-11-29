@@ -462,13 +462,7 @@ export function uiInit(context) {
         context.container(container);
         context.loadLocale(function(err) {
             if (!err) {
-                //const hootUI = new HootOld( context );
-
                 render(container);
-
-                // context.hoot.init( context );
-                //hootUI.init();
-                //context.hoot = hootUI;
             }
             if (callback) {
                 callback(err);

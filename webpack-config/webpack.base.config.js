@@ -25,34 +25,27 @@ module.exports = {
     context: resolve( __dirname, '../' ),
     entry: {
         iD: './modules/id.js',
-        hoot: './modules/Hoot/index.js'
+        login: './modules/Hoot/login.js'
     },
     output: {
         path: resolve( __dirname, '../dist/' ),
         filename: '[name].min.js',
-        publicPath: '/'
+        publicPath: './'
     },
     module: {
         rules: [
             {
                 test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3)$/,
-                use: {
-                    loader: 'file-loader',
-                    options: {
-                        outputPath: 'img/',
-                        // publicPath: '/',
-                        name: '[name].[ext]'
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            outputPath: 'img/',
+                            name: '[name].[ext]'
+                        }
                     }
-                }
+                ]
             },
-            // {
-            //     test: /\.css$/,
-            //     use: [
-            //         'style-loader',
-            //         MiniCssExtractPlugin.loader,
-            //         'css-loader'
-            //     ]
-            // },
             {
                 test: /\.(scss|css)$/,
                 use: [
@@ -65,7 +58,7 @@ module.exports = {
     },
     resolve: {
         alias: {
-            img: resolve( __dirname, '../img' ),
+            './img': resolve( __dirname, '../img' ),
             lib: resolve( __dirname, '../modules/lib' )
         }
     },

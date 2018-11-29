@@ -12,7 +12,7 @@ import Conflicts   from './conflicts/conflicts';
 export default class UI {
     render() {
         Promise.all( [
-            new Navbar().render(),
+            new Navbar( true ).render(),
             new Sidebar().render(),
             new ManagePanel().render(),
             new Conflicts( d3.select( '#content' ) )

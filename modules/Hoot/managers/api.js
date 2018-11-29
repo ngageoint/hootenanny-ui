@@ -23,13 +23,15 @@ export default class API {
 
         this.host = this.config.host;
 
-        this.baseUrl        = Object.assign( new URL( this.host ), {
+        this.baseUrl = Object.assign( new URL( this.host ), {
             port: this.config.port,
             pathname: this.config.path
         } );
 
         this.mergeUrl       = Object.assign( new URL( this.host ), { port: this.config.mergeServerPort } );
         this.translationUrl = Object.assign( new URL( this.host ), { port: this.config.translationServerPort } );
+
+        this.baseUrl = `${this.host}${this.config.path}`;
 
         this.queryInterval = this.config.queryInterval;
         this.intervals     = {};
@@ -50,17 +52,22 @@ export default class API {
             params: params.params
         } ).catch( err => {
             let { response } = err;
-            let data, message, status, type;
+            let data, message, status, statusText, type;
 
             if ( response ) {
-                data    = response.data;
-                message = response.message;
-                status  = response.status;
-                type    = 'error';
+                data       = response.data;
+                message    = response.message;
+                status     = response.status;
+                statusText = response.statusText;
+                type       = 'error';
             } else {
                 message = err.message;
                 status  = 500;
                 type    = 'error';
+            }
+
+            if ( status === 401 && statusText === 'Unauthorized' ) {
+                window.location.replace( 'login.html' );
             }
 
             return Promise.reject( { data, message, status, type } );
@@ -104,7 +111,7 @@ export default class API {
 
     getSaveUser( userEmail ) {
         const params = {
-            path: '/osm/user/-1',
+            path: '/osm/user',
             method: 'POST',
             params: {
                 userEmail
@@ -117,7 +124,43 @@ export default class API {
 
     getAllUsers() {
         const params = {
-            path: '/osm/user/-1/all',
+            path: '/osm/user/all',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getOAuthRedirectUrl() {
+        const params = {
+            path: '/auth/oauth1/request',
+            method: 'GET',
+            headers: {
+                'Content-Type': 'text/plain'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    verifyOAuth( oauth_token, oauth_verifier ) {
+        const params = {
+            path: `/auth/oauth1/verify?oauth_token=${oauth_token}&oauth_verifier=${oauth_verifier}`,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    logout() {
+        const params = {
+            path: '/auth/oauth1/logout',
             method: 'GET'
         };
 
@@ -184,7 +227,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => {
-                let layers    = resp.data.layers;
+                let layers = resp.data.layers;
 
                 if ( !layers || !layers.length )
                     return resp.data;
@@ -216,7 +259,7 @@ export default class API {
      */
     getLinks() {
         const params = {
-            path: '/osm/api/0.6/map/links',
+            path: '/osm/api/0.6/map/folders/linked',
             method: 'GET'
         };
 
@@ -337,7 +380,7 @@ export default class API {
      */
     getMapTags( mapId ) {
         const params = {
-            path: `/osm/api/0.6/map/tags?mapid=${ mapId }`,
+            path: `/osm/api/0.6/map/${ mapId }/tags`,
             method: 'GET'
         };
 
@@ -359,7 +402,7 @@ export default class API {
 
     getMbr( mapId ) {
         const params = {
-            path: `/osm/api/0.6/map/mbr?mapId=${ mapId }`,
+            path: `/osm/api/0.6/map/${ mapId }/mbr`,
             method: 'GET'
         };
 
@@ -495,7 +538,7 @@ export default class API {
                 TRANSLATION: data.TRANSLATION,
                 INPUT_TYPE: data.INPUT_TYPE,
                 INPUT_NAME: data.INPUT_NAME,
-                USER_EMAIL: 'test@test.com',
+                // USER_EMAIL: 'test@test.com',
                 NONE_TRANSLATION: data.NONE_TRANSLATION
             },
             data: data.formData
@@ -523,20 +566,22 @@ export default class API {
             } );
     }
 
-    modify( data ) {
+    modify( { mapId, modName, inputType } ) {
+        let basePath = '/osm/api/0.6/map';
+
+        if ( inputType === 'folder' ) {
+            basePath += '/folders';
+        }
+
         const params = {
-            path: '/osm/api/0.6/map/modify',
-            method: 'POST',
-            params: {
-                ...data
-            },
-            data: JSON.stringify( data )
+            path: basePath + `/${ mapId }/rename/${ modName }`,
+            method: 'PUT'
         };
 
         return this.request( params )
             .then( () => {
                 return {
-                    message: `Successfully modified item: ${data.modName}`,
+                    message: `Successfully modified item: ${ modName }`,
                     status: 200,
                     type: 'success'
                 };
@@ -545,27 +590,23 @@ export default class API {
                 console.log( err );
 
                 return {
-                    message: `Failed to modify item: ${data.modName}`,
+                    message: `Failed to modify item: ${ modName }`,
                     status: 500,
                     type: 'success'
                 };
             } );
     }
 
-    updateFolder( data ) {
+    updateFolder( { folderId, parentId } ) {
         const params = {
-            path: '/osm/api/0.6/map/updateParentId',
-            method: 'POST',
-            params: {
-                ...data
-            },
-            data: JSON.stringify( data )
+            path: `/osm/api/0.6/map/folders/${ folderId }/move/${ parentId }`,
+            method: 'PUT'
         };
 
         return this.request( params )
             .then( () => {
                 return {
-                    message: `Successfully updated folder: ${data.folderId}`,
+                    message: `Successfully updated folder: ${ folderId }`,
                     status: 200,
                     type: 'success'
                 };
@@ -574,7 +615,7 @@ export default class API {
                 console.log( err );
 
                 return {
-                    message: `Failed to update folder: ${data.folderId}`,
+                    message: `Failed to update folder: ${ folderId }`,
                     status: 500,
                     type: 'success'
                 };
@@ -678,35 +719,30 @@ export default class API {
      * @param data - folder data
      * @returns {Promise} - request
      */
-    addFolder( { folderName, parentId } ) {
+    addFolder( { folderName, parentId, isPublic } ) {
         if ( !folderName || parentId < 0 ) {
             return false;
         }
 
         const params = {
-            path: '/osm/api/0.6/map/addfolder',
-            method: 'POST',
-            params: {
-                folderName,
-                parentId
-            }
+            path: `/osm/api/0.6/map/folders/add/${ parentId }/${ folderName }`,
+            method: 'POST'
         };
+
+        if ( isPublic ) {
+            params.path += '?isPublic=false';
+        }
 
         return this.request( params )
             .then( resp => resp.data );
     }
 
-    updateMapFolderLinks( { mapId, folderId, updateType } ) {
+    updateMapFolderLinks( { mapId, folderId } ) {
         if ( !mapId || folderId < 0 ) return;
 
         const params = {
-            path: '/osm/api/0.6/map/linkMapFolder',
-            method: 'POST',
-            params: {
-                mapId,
-                folderId,
-                updateType
-            }
+            path: `/osm/api/0.6/map/${ mapId }/move/${ folderId }`,
+            method: 'PUT'
         };
 
         return this.request( params )
@@ -767,8 +803,8 @@ export default class API {
      */
     deleteLayer( layerName ) {
         const params = {
-            path: `/osm/api/0.6/map/delete?mapId=${ layerName }`,
-            method: 'POST'
+            path: `/osm/api/0.6/map/${ layerName }`,
+            method: 'DELETE'
         };
 
         return this.request( params )
@@ -783,8 +819,8 @@ export default class API {
      */
     deleteFolder( folderId ) {
         const params = {
-            path: '/osm/api/0.6/map/deletefolder',
-            method: 'POST',
+            path: `/osm/api/0.6/map/folders/${ folderId }`,
+            method: 'DELETE',
             params: {
                 folderId
             }

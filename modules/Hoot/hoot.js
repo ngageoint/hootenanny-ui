@@ -4,6 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/16/18
  *******************************************************************************************************/
 
+import '../../css/hoot/hoot.scss';
+
 import _forEach from 'lodash-es/forEach';
 
 import API                from './managers/api';
@@ -26,7 +28,10 @@ class Hoot {
         this.events       = new EventManager();
 
         this.config = {
+<<<<<<< HEAD
             urlroot: 'http://34.201.113.202/hoot-services/osm',
+=======
+>>>>>>> hoot2x
             tagInfo,
             appInfo: [],
             users: [],
@@ -35,26 +40,6 @@ class Hoot {
             conflateSizeThreshold: null,
             presetMaxDisplayNum: 12
         };
-    }
-
-    init( context ) {
-        if ( this.ui && this.ui instanceof UI ) return;
-
-        this.context = context;
-
-        Promise.all( [
-            this.getAboutData(),
-            this.getAllUsers(),
-            this.getMapSizeThresholds(),
-            this.translations.getTranslations()
-        ] );
-
-        this.ui = new UI();
-        this.ui.render();
-
-        // prevent this class from being modified in any way.
-        // this does not affect children objectslayerNames
-        Object.freeze( this );
     }
 
     async getAboutData() {
@@ -66,7 +51,8 @@ class Hoot {
 
             _forEach( info, d => this.config.appInfo.push( d ) );
         } catch ( err ) {
-            this.message.alert( err );
+            // this.message.alert( err );
+            return Promise.reject( err );
         }
 
         // build info will always be available
@@ -83,7 +69,8 @@ class Hoot {
                 this.config.users[ user.id ] = user;
             } );
         } catch ( err ) {
-            this.message.alert( err );
+            // this.message.alert( err );
+            return Promise.reject( err );
         }
     }
 
@@ -95,8 +82,27 @@ class Hoot {
             this.config.ingestSizeThreshold   = thresholds.ingest_threshold;
             this.config.conflateSizeThreshold = thresholds.conflate_threshold;
         } catch ( err ) {
-            this.message.alert( err );
+            // this.message.alert( err );
+            return Promise.reject( err );
         }
+    }
+
+    init( context ) {
+        this.context = context;
+
+        Promise.all( [
+            this.getAboutData(),
+            this.getAllUsers(),
+            this.getMapSizeThresholds(),
+            this.translations.getTranslations()
+        ] );
+
+        this.ui = new UI();
+        this.ui.render();
+
+        // prevent this class from being modified in any way.
+        // this does not affect children objects
+        Object.freeze( this );
     }
 }
 
@@ -106,4 +112,5 @@ class Hoot {
 
 // * Note: This is not a true Singleton, but it mimics the Singleton pattern
 // because of Node's module caching behavior.
+window.Hoot = new Hoot();
 export default new Hoot();
