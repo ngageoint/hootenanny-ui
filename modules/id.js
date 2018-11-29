@@ -1,6 +1,4 @@
 import '@babel/polyfill';
-import * as iD from './index';
-import $ from 'jquery';
 
 import '../css/00_reset.css';
 import '../css/20_map.css';
@@ -16,7 +14,12 @@ import '../css/65_data.css';
 import '../css/70_fills.css';
 import '../css/80_app.css';
 
+import * as iD from './index';
+import Hoot from './Hoot/hoot';
+import $ from 'jquery';
+
 window.iD = iD;
+window.Hoot = Hoot;
 window.$ = window.jQuery = $;
 
 export default iD;

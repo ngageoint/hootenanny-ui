@@ -5,13 +5,13 @@
  *******************************************************************************************************/
 
 export const apiConfig = {
-  host: "http://54.165.118.78",
-  port: "8080",
-  path: "hoot-services",
-  translationServerPort: "8094",
-  mapnikServerPort: "8000",
-  mergeServerPort: "8096",
-  queryInterval: 2000
+    host: window.location.protocol + '//' + window.location.host, //host includes port, hostname is just host name
+    port: window.location.port,
+    path: '/hoot-services',
+    translationServerPort: '8094',
+    mapnikServerPort: '8000',
+    mergeServerPort: '8096',
+    queryInterval: 2000
 };
 
 export const hootConfig = {
@@ -20,4 +20,4 @@ export const hootConfig = {
 
 export default apiConfig;
 
-export let baseUrl = `${ apiConfig.host }:${ apiConfig.port }/hoot-services`;
+export let baseUrl = `${ apiConfig.host }${ apiConfig.path }`;
