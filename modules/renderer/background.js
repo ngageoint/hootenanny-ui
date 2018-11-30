@@ -87,7 +87,8 @@ export function rendererBackground(context) {
         arrow = arrow
             .enter()
             .insert( 'div', '.layer-data' )
-            .attr( 'class', 'layer arrow-background' );
+            .attr( 'class', 'layer arrow-background' )
+            .merge( arrow );
 
         arrow.call( arrowLayer );
 

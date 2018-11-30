@@ -8,20 +8,11 @@ import { utilSetDimensions, utilGetDimensions } from '../util/dimensions';
 
 export function rendererArrowLayer() {
     let projection,
-        gj      = {},
-        enable  = true,
+        gj     = {},
+        enable = true,
         svg,
         s,
-        marker = [
-            {
-                id: 'markerCircle',
-                w: 10,
-                h: 10,
-                x: 5,
-                y: 5,
-                t: '<circle cx="5" cy="5" r="5" class="arrow tail"/>',
-                u: 'userSpaceOnUse'
-            },
+        markers = [
             {
                 id: 'markerArrow',
                 w: 44,
@@ -43,13 +34,17 @@ export function rendererArrowLayer() {
             .enter()
             .append( 'svg' );
 
-        s.style( 'display', enable ? 'block' : 'none' );
+        svg.style( 'display', enable ? 'block' : 'none' );
 
-        let defs = s.append( 'defs' );
+        let defs = svg
+            .selectAll( 'defs' )
+            .data( [ 0 ] )
+            .enter()
+            .append( 'defs' );
 
         let m = defs
             .selectAll( 'marker' )
-            .data( marker );
+            .data( markers );
 
         m.enter()
             .append( 'marker' )
@@ -62,108 +57,28 @@ export function rendererArrowLayer() {
             .attr( 'markerUnits', d => d.u )
             .html( d => d.t );
 
-        // console.log( gj );
-        // let d;
-        //
-        // if ( gj.coordinates ) {
-        //     d = gj.coor
-        // }
+        let paths = svg
+            .selectAll( 'path.arrow.line' )
+            .data( [ gj ] );
 
-        // let d = gj.coordinates ? gj.coordinates : [ 0 ];
-        //
-        // let link = s
-        //     .selectAll( '.arrow.line' )
-        //     .data( d );
-        //
-        // link.enter()
-        //     .append( 'line' )
-        //     .attr( 'class', 'arrow line' )
-        //     .attr( 'marker-start', 'url(#markerCircle)' )
-        //     .attr( 'marker-end', 'url(#markerArrow)' )
-        //     .attr( 'x1', d => d[0][0])
-        //     .attr( 'y1', d => d[0][1])
-        //     .attr( 'x2', d => d[1][0])
-        //     .attr( 'y2', d => d[1][1]);
-            // .attr( 'style', 'marker-end: url(#markerArrow)' );
-            // .attr( 'x1', function( d ) {
-            //     console.log( d );
-            //     if ( d.source ) {
-            //         return d.source.x;
-            //     }
-            // } )
-            // .attr( 'y1', function( d ) {
-            //     if ( d.source ) {
-            //         return d.source.y;
-            //     }
-            // } )
-            // .attr( 'x2', function( d ) {
-            //     if ( d.target ) {
-            //         return d.target.x;
-            //     }
-            // } )
-            // .attr( 'y2', function( d ) {
-            //     if ( d.target ) {
-            //         return d.target.y;
-            //     }
-            // } );
+        let path = d3.geoPath()
+            .projection( projection );
+
+        paths.enter()
+            .append( 'path' )
+            .attr( 'class', 'arrow line' )
+            .attr( 'style', 'marker-end: url(#markerArrow)' );
+
+        paths.attr( 'd', path );
 
         if ( d3.map( gj ).size() > 0 ) {
-            // d3.select( '.arrow-background' ).raise();
-            console.log( 'raise' );
-
-            let d = gj.coordinates ? gj.coordinates : [ 0 ];
-
-            console.log( d );
-
-            console.log( d[0].concat( d[1]) );
-
-            let link = s
-                .selectAll( '.arrow.line' )
-                .data( [ 0 ] );
-
-            link.enter()
-                .append( 'line' )
-                .attr( 'class', 'arrow line' )
-                .attr( 'marker-start', 'url(#markerCircle)' )
-                .attr( 'marker-end', 'url(#markerArrow)' )
-                .attr( 'x1', () => {
-                    console.log( d );
-                    return d[0];
-                })
-                .attr( 'y1', () => d[1])
-                .attr( 'x2', () => d[2])
-                .attr( 'y2', () => d[3]);
+            d3.select( '.arrow-background' ).raise();
         } else {
-            // d3.select( '.arrow-background' ).lower();
+            d3.select( '.arrow-background' ).lower();
         }
-
-
-        // console.log( 'projectionnnn: ', projection );
-
-        // let path = d3.geoPath()
-        //     .projection( projection );
-        //
-        // let paths = s
-        //     .append( 'g' )
-        //     .append( 'path' )
-        //     // .selectAll( 'path.arrow.line' )
-        //     .data( gj.coordinates )
-        //     .attr( 'd', path )
-        //     .attr( 'class', 'arrow line' )
-        //     .attr( 'marker-end', 'url(#markerArrow)' );
-
-        // paths.enter()
-        //     .append( 'path' )
-        //     .attr( 'class', 'arrow line' )
-        //     // .attr( 'marker-start', 'url(#markerCircle)' )
-        //     .attr( 'marker-end', 'url(#markerArrow)' )
-        //     .attr( 'd', path );
-
-        // paths.attr( 'd', 'M 0 -5 10 10' );
     }
 
     render.projection = function( _ ) {
-        // console.log( 'projection: ', _ );
         if ( !arguments.length ) return projection;
         projection = _;
         return render;

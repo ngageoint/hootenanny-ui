@@ -273,9 +273,7 @@ export default class Merge {
 
         this.mergeArrow.from = feature;
         this.mergeArrow.to   = againstFeature;
-
-        that.updateMergeArrow();
-
+        
         d3.select( '.action-buttons .merge' )
             .on( 'mouseenter', function() {
                 this.focus();
@@ -321,6 +319,7 @@ export default class Merge {
             type: 'LineString',
             coordinates: coord
         };
+
 
         Hoot.context.background().updateArrowLayer( gj );
     }

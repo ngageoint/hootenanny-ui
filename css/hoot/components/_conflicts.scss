@@ -75,8 +75,15 @@
     margin-bottom: 5px;
 }
 
-.arrow.line {
+.arrow {
     stroke: #ff0000;
-    stroke-width: 3px;
-    fill: none;
+
+    &.line {
+        stroke-width: 3px;
+        fill: none;
+    }
+
+    &.head {
+        fill: #ff0000;
+    }
 }

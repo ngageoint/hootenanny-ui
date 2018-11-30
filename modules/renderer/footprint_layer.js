@@ -24,7 +24,6 @@ export function rendererFootprintLayer() {
 
         svg.style( 'display', enable ? 'block' : 'none' );
 
-
         let paths = svg
             .selectAll( 'path' )
             .data( [ gj ] );
