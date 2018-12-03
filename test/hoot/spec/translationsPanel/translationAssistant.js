@@ -1,15 +1,16 @@
 /** ****************************************************************************************************
  * File: translationAssistant.js
  * Project: hootenanny-ui
- * @author Jack Grossman on 11/16/18 jack.grossman@radiantsolutions.com
+ * @author Jack Grossman on 11/26/18 jack.grossman@radiantsolutions.com
  *******************************************************************************************************/
 
 describe( 'Translation Assistant Component', () => {
 
     it( 'Translations assistant component selected', done => {
 
-        d3.select('nav#navbar div.nav-item div.menu-button').dispatch('click');
-        d3.select('#manage-sidebar-menu div.tab-header:nth-child(5)').dispatch('click');
+        d3.select('div.menu-button').dispatch('click');
+        var translationAssistantNode = d3.select('#manage-sidebar-menu div.tab-header:nth-child(5)');
+        translationAssistantNode.dispatch('click');
         setTimeout(() => {
             var translationsTab = d3.select('#manage-translations-assistant').attr('id');
             expect(translationsTab).to.be.eql('manage-translations-assistant');
@@ -19,7 +20,8 @@ describe( 'Translation Assistant Component', () => {
 
     it( 'Component contains Tag Schema, and buttons', done => {
         setTimeout(() => {
-            expect(d3.selectAll('#manage-translations-assistant div form div').size() ).to.be.equal( 2 );
+            var translationAssistantForm = d3.selectAll('#manage-translations-assistant div form div');
+            expect(translationAssistantForm.size() ).to.be.equal( 2 );
             done();
         }, 500);
     } );
@@ -27,14 +29,9 @@ describe( 'Translation Assistant Component', () => {
     it( 'Upload Files and Upload Folder buttons rendered', done => {
 
         setTimeout(() => {
-            expect(d3.select('#manage-translations-assistant div form div.button-row.pad2 button:nth-child(1)').size() ).to.equal( 1 );
-            expect(d3.select('#manage-translations-assistant div form div.button-row.pad2 button:nth-child(2)').size() ).to.equal( 1 );
+            var uploadButtons = d3.selectAll('div.button-row.pad2 button');
+            expect(uploadButtons.size() ).to.be.eql( 2 );
             done();
         });
-    } );
-
-    it( 'Upload file button opens file manager', done => {
-        d3.select(' #manage-translations-assistant div form div.button-row.pad2 button:nth-child(1) ').dispatch('click');
-        done();
     } );
 } );
