@@ -18,15 +18,15 @@ export default class TagMapForm {
     }
 
     render( valuesMap ) {
+        if ( this.mappingForm ) {
+            this.mappingForm.remove();
+        }
+
         let layers = d3.keys( valuesMap ),
             layer  = layers[ 0 ];
 
         this.currentIndex = {};
         this.valuesMap    = valuesMap;
-
-        if ( this.mappingForm ) {
-            this.mappingForm.remove();
-        }
 
         this.mappingForm = this.instance.panelWrapper
             .append( 'form' )
