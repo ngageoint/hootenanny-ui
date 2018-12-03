@@ -14,7 +14,7 @@ describe( 'Basemap component rendered', () => {
       }, 1000);
     } );
     it( 'Raster input window opens', done => {
-        d3.select('#util-basemaps .add-basemap-button').dispatch('click');
+        d3.select('.add-basemap-button').dispatch('click');
         setTimeout(() => {
             expect(d3.select('#basemaps-add-form > div > div').size() ).to.equal( 1 );
             done();
