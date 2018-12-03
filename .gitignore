@@ -5,7 +5,7 @@
 /dist/*.js
 /dist/*.css
 /dist/*.map
-/dist/img/*.svg
+/dist/img/
 /dist/mapillary-js/
 /dist/pannellum-streetside/
 /node_modules/

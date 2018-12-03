@@ -3,7 +3,6 @@
 <head>
     <meta charset='utf-8'>
     <title>Hootenanny</title>
-    <base href="/">
     <link rel="icon" href="favicon.ico"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel='stylesheet' href='./iD.css'>
@@ -75,8 +74,9 @@
                 });
             }
         } )
-        .catch( () => { // user not logged in - redirect to login page
-            window.location.replace( '/login.html' );
+        .catch( err => {
+            // user not logged in - redirect to login page
+            window.location.replace( 'login.html' ); // no slash appends relative URI to end of base path
         } );
 </script>
 </body>

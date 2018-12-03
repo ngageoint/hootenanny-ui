@@ -15,13 +15,11 @@ import LayerManager       from './managers/layerManager';
 import TranslationManager from './managers/translationManager';
 import EventManager       from './managers/eventManager';
 import UI                 from './ui/init';
-import Login              from './ui/login';
 import buildInfo          from './config/buildInfo.json';
 import { tagInfo }        from '../../data/index';
 
 class Hoot {
     constructor() {
-        this.login        = new Login();
         this.api          = new API( this );
         this.message      = new MessageManager( this );
         this.layers       = new LayerManager( this );
@@ -30,7 +28,6 @@ class Hoot {
         this.events       = new EventManager();
 
         this.config = {
-            urlroot: 'http://localhost:8080/hoot-services/osm',
             tagInfo,
             appInfo: [],
             users: [],
@@ -84,26 +81,6 @@ class Hoot {
             // this.message.alert( err );
             return Promise.reject( err );
         }
-    }
-
-    async checkLogin() {
-        return this.api.getServicesVersionInfo();
-    }
-
-    renderLogin( callback ) {
-        this.login = new Login();
-
-        this.api.getOAuthRedirectUrl()
-            .then( oauthRedirectUrl => {
-                this.login.render( oauthRedirectUrl )
-                    .on( 'oAuthDone', () => callback() );
-            } )
-            .catch( err => {
-                console.log( err );
-
-                this.login.render()
-                    .on( 'oAuthDone', () => callback() );
-            } );
     }
 
     init( context ) {

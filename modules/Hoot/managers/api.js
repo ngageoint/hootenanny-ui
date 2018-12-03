@@ -31,6 +31,8 @@ export default class API {
         this.mergeUrl       = Object.assign( new URL( this.host ), { port: this.config.mergeServerPort } );
         this.translationUrl = Object.assign( new URL( this.host ), { port: this.config.translationServerPort } );
 
+        this.baseUrl = `${this.host}${this.config.path}`;
+
         this.queryInterval = this.config.queryInterval;
         this.intervals     = {};
     }
@@ -65,7 +67,7 @@ export default class API {
             }
 
             if ( status === 401 && statusText === 'Unauthorized' ) {
-                window.location.replace( '/login.html' );
+                window.location.replace( 'login.html' );
             }
 
             return Promise.reject( { data, message, status, type } );
@@ -487,12 +489,7 @@ export default class API {
         };
 
         return this.request( params )
-            .then( async resp => {
-                await setTimeout( () => {
-                    console.log( 'blahhh' );
-                }, 30000 );
-                return resp.data;
-            } );
+            .then( resp => resp.data );
     }
 
     /**

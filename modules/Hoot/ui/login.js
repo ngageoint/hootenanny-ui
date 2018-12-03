@@ -143,7 +143,7 @@ export default class Login extends EventEmitter {
             .append( 'div' )
             .classed( 'hoot-login-cell', true )
             .append( 'img' )
-            .attr( 'src', '/img/login-popup-firefox-1.png' );
+            .attr( 'src', './img/login-popup-firefox-1.png' );
 
         row = table
             .append( 'div' )
