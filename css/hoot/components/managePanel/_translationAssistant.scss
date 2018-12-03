@@ -189,6 +189,11 @@
 
     .preset-row {
         display: flex;
+        border-bottom: 1px solid $light2;
+
+        &:last-child, &:only-child {
+            border-bottom: none;
+        }
 
         & > div {
             width: 50%;

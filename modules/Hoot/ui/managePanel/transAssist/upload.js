@@ -63,7 +63,8 @@ export default class Upload {
             .append( 'span' )
             .classed( 'inline pad0', true );
 
-        schemaOpts.append( 'input' )
+        schemaOpts
+            .append( 'input' )
             .classed( 'inline schema-option', true )
             .attr( 'type', 'radio' )
             .attr( 'name', 'schema' )
@@ -72,7 +73,8 @@ export default class Upload {
             .property( 'disabled', d => !d.enabled )
             .property( 'checked', d => d.checked );
 
-        schemaOpts.append( 'label' )
+        schemaOpts
+            .append( 'label' )
             .classed( 'inline', true )
             .attr( 'for', d => d.name )
             .html( d => d.name );
@@ -153,7 +155,7 @@ export default class Upload {
                 let map = d3.map();
 
                 d3.entries( e.value ).forEach( a => {
-                    //Omit empty fields
+                    // Omit empty fields
                     if ( a.value.length ) {
                         map.set( a.key, d3.set( a.value ) );
                     }
