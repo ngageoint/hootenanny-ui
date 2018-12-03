@@ -55,6 +55,7 @@ export default class ClipSelectBbox extends EventEmitter {
 
     createCoordsField() {
         this.extentBox = this.form
+            .select( '.wrapper div' )
             .insert( 'div', '.modal-footer' )
             .classed( 'extent-box keyline-all round', true );
 
@@ -107,6 +108,7 @@ export default class ClipSelectBbox extends EventEmitter {
         let that = this;
 
         let clipOptions = this.form
+            .select( '.wrapper div' )
             .insert( 'div', '.modal-footer' )
             .classed( 'clip-options button-wrap flex justify-center', true );
 

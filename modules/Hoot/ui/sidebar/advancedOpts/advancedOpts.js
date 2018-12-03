@@ -14,7 +14,7 @@ import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
 export default class AdvancedOpts {
     constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
-        this.optTypes        = [ 'custom', 'horizontal', 'average', 'reference'];
+        this.optTypes        = [ 'custom', 'horizontal', 'average', 'reference', 'diffConflator', 'diffTags'];
         this.advancedOptions = null;
     }
 
@@ -23,7 +23,7 @@ export default class AdvancedOpts {
     }
 
     async init() {
-        this.optTypes = [ 'custom', 'horizontal', 'average', 'reference', 'diff', 'diffTags'];
+        // this.optTypes = [ 'custom', 'horizontal', 'average', 'reference', 'diff', 'diffTags'];
         let allOpts   = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
 
         this.advancedOptions = {
@@ -55,6 +55,11 @@ export default class AdvancedOpts {
         this.control.defaultFields = this.control.lastSetFields;
     }
 
+    clear() {
+        d3.selectAll('#advanced-opts-panel').remove();
+        this.render();
+    }
+
     toggle() {
         let formState = this.form.classed( 'visible' );
 
@@ -68,7 +73,7 @@ export default class AdvancedOpts {
             .attr( 'id', 'advanced-opts-panel' )
             .classed( 'fill-white', true )
             .style( 'margin-left', () => this.sidebar.node().getBoundingClientRect().width = 'px' );
-
+            
         this.overlay = d3.select( '#content' ).append( 'div' )
             .classed( 'map-overlay overlay', true );
     }

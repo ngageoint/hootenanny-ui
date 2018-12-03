@@ -8,34 +8,44 @@ describe( 'UI tools', () => {
 
     it( 'Tool button is active', done => {
 
-        d3.select('#bar  div.limiter  div:nth-child(1)  button').dispatch('click');
+        d3.select('button.tools-toggle').dispatch('click');
 
         setTimeout(() => {
-            expect(d3.select('#bar div.limiter ul').size() ).to.be.equal( 1 );
+            var toolsDropdown = d3.select('.tools-menu');
+            expect(toolsDropdown.size() ).to.be.equal( 1 );
             done();
         }, 1000);
     } );
     it( 'Measurement and Clip tools appear', done => {
 
-        d3.select('#bar  div.limiter  div:nth-child(1)  button').dispatch('click');
+        var menuItems = d3.selectAll('li.menu-item');
 
         setTimeout(() => {
-            expect(d3.selectAll('#bar div.limiter ul li').size( )).to.be.equal( 2 );
+            expect(menuItems.size( )).to.be.equal( 2 );
             done();
         }, 1000);
 
     } );
     it( 'All measurement tools active', done => {
-        d3.select('#bar div.limiter ul li.menu-item.tools-measure').dispatch('mouseenter');
+
+        //iD-icon-line.tools-measure
+
+        var measurementTool = d3.select('li.menu-item.tools-measure');
+        measurementTool.dispatch('mouseenter');
+
         setTimeout(() => {
-            expect(d3.selectAll('#bar div.limiter ul ul li').size( )).to.be.equal( 3 );
+            var subMenu = d3.selectAll('.tools-measure');
+            expect(subMenu.size( )).to.be.equal( 4 );
             done();
         }, 1000);
     } );
     it( 'All clip tools active', done => {
-        d3.select('#bar div.limiter ul li.menu-item.tools-clip').dispatch('mouseenter');
+
+        var clipTools = d3.select('li.menu-item.tools-clip');
+        clipTools.dispatch('mouseenter');
         setTimeout(() => {
-            expect(d3.selectAll('#bar div.limiter ul ul li').size( )).to.be.equal( 1 );
+            var clipMenu = d3.select('.iD-operation-split'); 
+            expect(clipMenu.size( )).to.be.equal( 1 );
             done();
         });
     } );

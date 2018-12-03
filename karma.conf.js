@@ -61,7 +61,9 @@ module.exports = function( config ) {
 
         client: {
             mocha: {
-                timeout: 5000
+                browserDisconnectTimeout : 210000,
+                browserNoActivityTimeout : 210000,
+                timeout: 40000
             }
         },
 
