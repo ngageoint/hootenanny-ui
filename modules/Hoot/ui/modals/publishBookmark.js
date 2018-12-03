@@ -131,7 +131,6 @@ export default class PublishBookmark {
             userInfo = { id: '-1' };
         } else {
             let resp = await Hoot.api.getSaveUser( email );
-
             userInfo = resp.user;
         }
 
