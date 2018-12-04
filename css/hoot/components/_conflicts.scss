@@ -74,3 +74,16 @@
 .meta-dialog {
     margin-bottom: 5px;
 }
+
+.arrow {
+    stroke: #ff0000;
+
+    &.line {
+        stroke-width: 3px;
+        fill: none;
+    }
+
+    &.head {
+        fill: #ff0000;
+    }
+}
