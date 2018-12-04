@@ -16,7 +16,7 @@ export const apiConfig = {
 };
 
 export const hootConfig = {
-  maxNodeCount: 10000
+    maxNodeCount: 10000
 };
 
 export default apiConfig;

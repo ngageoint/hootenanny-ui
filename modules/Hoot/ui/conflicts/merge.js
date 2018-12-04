@@ -24,6 +24,11 @@ export default class Merge {
      */
     constructor( instance ) {
         this.data = instance.data;
+
+        this.mergeArrow = {
+            from: null,
+            to: null
+        };
     }
 
     /**
@@ -33,7 +38,7 @@ export default class Merge {
      */
     async mergeFeatures() {
         let features = _clone( this.data.currentFeatures ),
-            reverse  = d3.event.ctrlKey,
+            reverse  = d3.event.ctrlKey || d3.event.metaKey,
             featureToUpdate,
             featureToDelete,
             mergedFeature,
@@ -255,5 +260,67 @@ export default class Merge {
      */
     toggleMergeButton( hide ) {
         d3.select( '.action-buttons .merge' ).classed( 'hidden', hide );
+    }
+
+    /**
+     * Activate merge arrow layer. Arrow appears when hovering over merge button
+     *
+     * @param feature
+     * @param againstFeature
+     */
+    activateMergeArrow( feature, againstFeature ) {
+        let that = this;
+
+        this.mergeArrow.from = feature;
+        this.mergeArrow.to   = againstFeature;
+        
+        d3.select( '.action-buttons .merge' )
+            .on( 'mouseenter', function() {
+                this.focus();
+
+                if ( d3.event.ctrlKey || d3.event.metaKey ) {
+                    that.updateMergeArrow( 'reverse' );
+                } else {
+                    that.updateMergeArrow();
+                }
+
+                d3.select( this )
+                    .on( 'keydown', () => {
+                        if ( d3.event.ctrlKey || d3.event.metaKey ) {
+                            that.updateMergeArrow( 'reverse' );
+                        }
+                    } )
+                    .on( 'keyup', () => {
+                        that.updateMergeArrow();
+                    } );
+            } )
+            .on( 'mouseleave', function() {
+                this.blur();
+
+                that.updateMergeArrow( 'delete' );
+            } );
+    }
+
+    updateMergeArrow( mode ) {
+        if ( !Hoot.context.graph().entities[ this.mergeArrow.from.id ] ||
+            !Hoot.context.graph().entities[ this.mergeArrow.to.id ] ) {
+            Hoot.context.background().updateArrowLayer( {} );
+
+            return;
+        }
+
+        let pt1   = d3.geoCentroid( this.mergeArrow.to.asGeoJSON( Hoot.context.graph ) ),
+            pt2   = d3.geoCentroid( this.mergeArrow.from.asGeoJSON( Hoot.context.graph ) ),
+            coord = [ pt1, pt2 ];
+
+        if ( mode === 'reverse' ) coord = coord.reverse();
+
+        let gj = mode === 'delete' ? {} : {
+            type: 'LineString',
+            coordinates: coord
+        };
+
+
+        Hoot.context.background().updateArrowLayer( gj );
     }
 }
