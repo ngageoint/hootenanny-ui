@@ -11,6 +11,7 @@ import FieldsetData     from './fieldsetData';
 import FieldsetControls from './fieldsetControls';
 import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
 
+
 export default class AdvancedOpts {
     constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
@@ -26,12 +27,14 @@ export default class AdvancedOpts {
         // this.optTypes = [ 'custom', 'horizontal', 'average', 'reference', 'diff', 'diffTags'];
         let allOpts   = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
 
+        // console.log( allOpts );
+
         this.advancedOptions = {
             base: allOpts[ 0 ],
             horizontal: allOpts[ 1 ],
             average: allOpts[ 2 ],
             reference: allOpts[ 3 ],
-            diff: allOpts[ 4 ],
+            diffConflator: allOpts[ 4 ],
             diffTags: allOpts[ 5 ]
         };
 
@@ -55,9 +58,22 @@ export default class AdvancedOpts {
         this.control.defaultFields = this.control.lastSetFields;
     }
 
+    reRender() {
+
+        this.fieldsMeta = this.data.getDefaultMeta();
+
+        this.createContentDiv();
+        this.createGroups();
+
+        this.control.saveFields();
+
+        this.control.defaultFields = this.control.lastSetFields;
+
+    }
+
     clear() {
-        d3.selectAll('#advanced-opts-panel').remove();
-        this.render();
+        d3.selectAll('.advanced-opts-content').remove();
+        this.reRender();
     }
 
     toggle() {
@@ -98,8 +114,15 @@ export default class AdvancedOpts {
     }
 
     createContentDiv() {
-        this.contentDiv = this.form.append( 'div' )
-            .classed( 'advanced-opts-content', true );
+        this.contentDiv = this.form
+            .append( 'div' )
+            .classed( 'advanced-opts-content', true )
+            .style( 'opacity', 0 );
+
+        this.contentDiv
+            .transition()
+            .duration( 400 )
+            .style( 'opacity', 1 );
     }
 
     createGroups() {

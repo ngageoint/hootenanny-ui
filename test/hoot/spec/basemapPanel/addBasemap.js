@@ -15,7 +15,7 @@ describe( 'Basemap component rendered', () => {
         }, 1000);
     } );
     it( 'Raster input window opens', done => {
-        d3.select('.add-basemap-button').dispatch('click');      
+        d3.select('.add-basemap-button').dispatch('click');
         setTimeout(() => {
             var newBasemapWindow = d3.select('.contain');
             expect(d3.select(newBasemapWindow).size() ).to.be.eql( 1 );
