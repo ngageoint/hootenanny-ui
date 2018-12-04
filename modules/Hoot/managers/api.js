@@ -915,7 +915,7 @@ export default class API {
             url: `${ this.mergeUrl }elementmerge`,
             method: 'POST',
             headers: {
-                'Content-Type': 'text/plain'
+                'Content-Type': 'text/xml'
             },
             data
         };
