@@ -118,6 +118,11 @@ export default class AdvancedOpts {
     createContentDiv() {
         this.contentDiv = this.form.append( 'div' )
             .classed( 'advanced-opts-content', true );
+
+        this.contentDiv
+            .transition()
+            .duration( 400 )
+            .style( 'opacity', 1);
     }
 
     createGroups() {
