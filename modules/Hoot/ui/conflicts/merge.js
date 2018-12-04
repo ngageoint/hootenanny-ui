@@ -38,7 +38,7 @@ export default class Merge {
      */
     async mergeFeatures() {
         let features = _clone( this.data.currentFeatures ),
-            reverse  = d3.event.ctrlKey,
+            reverse  = d3.event.ctrlKey || d3.event.metaKey,
             featureToUpdate,
             featureToDelete,
             mergedFeature,
