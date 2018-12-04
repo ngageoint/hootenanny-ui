@@ -62,10 +62,8 @@ export default class AdvancedOpts {
 
         this.fieldsMeta = this.data.getDefaultMeta();
 
-        this.createHeader();
         this.createContentDiv();
         this.createGroups();
-        this.createButtons();
 
         this.control.saveFields();
 
