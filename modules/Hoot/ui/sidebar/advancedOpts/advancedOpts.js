@@ -11,6 +11,7 @@ import FieldsetData     from './fieldsetData';
 import FieldsetControls from './fieldsetControls';
 import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
 
+
 export default class AdvancedOpts {
     constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
@@ -33,11 +34,7 @@ export default class AdvancedOpts {
             horizontal: allOpts[ 1 ],
             average: allOpts[ 2 ],
             reference: allOpts[ 3 ],
-<<<<<<< HEAD
             diffConflator: allOpts[ 4 ],
-=======
-            diff: allOpts[ 4 ],
->>>>>>> hoot2x
             diffTags: allOpts[ 5 ]
         };
 
@@ -61,9 +58,24 @@ export default class AdvancedOpts {
         this.control.defaultFields = this.control.lastSetFields;
     }
 
+    reRender() {
+
+        this.fieldsMeta = this.data.getDefaultMeta();
+
+        this.createHeader();
+        this.createContentDiv();
+        this.createGroups();
+        this.createButtons();
+
+        this.control.saveFields();
+
+        this.control.defaultFields = this.control.lastSetFields;
+
+    }
+
     clear() {
-        d3.selectAll('#advanced-opts-panel').remove();
-        this.render();
+        d3.selectAll('.advanced-opts-content').remove();
+        this.reRender();
     }
 
     toggle() {

@@ -92,6 +92,8 @@ class LayerConflate extends SidebarForm {
             }
         } );
     }
+
+
     changeAdvancedOptions() {
         this.advancedOptions.clear();
     }
@@ -187,12 +189,13 @@ class LayerConflate extends SidebarForm {
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
         data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
         data.USER_EMAIL         = 'test@test.com';
-
+        
         return data;
     }
 
     postConflation( params ) {
         let layers = Hoot.layers.loadedLayers;
+
 
         _forEach( layers, d => Hoot.layers.hideLayer( d.id ) );
 
