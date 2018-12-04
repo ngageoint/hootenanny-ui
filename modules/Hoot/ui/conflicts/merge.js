@@ -39,8 +39,8 @@ export default class Merge {
     async mergeFeatures() {
         let features = _clone( this.data.currentFeatures ),
             reverse  = d3.event.ctrlKey || d3.event.metaKey,
-            featureToUpdate,
-            featureToDelete,
+            featureUpdate,
+            featureDelete,
             mergedFeature,
             reviewRefs;
 
@@ -52,8 +52,13 @@ export default class Merge {
             features.reverse();
         }
 
-        featureToUpdate = features[ 0 ];
-        featureToDelete = features[ 1 ];
+        // This tag identifies the feature that is being merged into and will be removed by the server
+        // after merging is completed. The tag is not needed by POI to Polygon conflation, however,
+        // and will be ignored since POIs are always merged into polygons.
+        features[ 0 ].tags[ 'hoot:merge:target' ] = 'yes';
+
+        featureUpdate = features[ 0 ];
+        featureDelete = features[ 1 ];
 
         try {
             let mergedNode = await this.getMergedNode( features );
@@ -61,11 +66,11 @@ export default class Merge {
             mergedNode.tags[ 'hoot:status' ] = 3;
 
             Hoot.context.perform(
-                actionChangeTags( featureToUpdate.id, mergedNode.tags ),
+                actionChangeTags( featureUpdate.id, mergedNode.tags ),
                 t( 'operations.change_tags.annotation' )
             );
 
-            mergedFeature = featureToUpdate; // feature that is updated is now the new merged node
+            mergedFeature = featureUpdate; // feature that is updated is now the new merged node
         } catch ( e ) {
             throw new Error( 'Unable to merge features' );
         }
@@ -83,7 +88,7 @@ export default class Merge {
             throw new Error( 'Unable to retrieve review references for merged items' );
         }
 
-        this.processMerge( reviewRefs, mergedFeature, featureToDelete );
+        this.processMerge( reviewRefs, mergedFeature, featureDelete );
     }
 
     /**
@@ -155,21 +160,14 @@ export default class Merge {
      * @returns {object} - merged node
      */
     async getMergedNode( features ) {
-        let jxonFeatures = [ JXON.stringify( features[ 0 ].asJXON() ), JXON.stringify( features[ 1 ].asJXON() ) ],
-            reverse      = d3.event.ctrlKey,
-            mapId        = this.data.currentReviewItem.mapId,
-            osmXml;
+        let jxonFeatures = [ JXON.stringify( features[ 0 ].asJXON() ), JXON.stringify( features[ 1 ].asJXON() ) ].join( '' ),
+            osmXml     = `<osm version="0.6" upload="true" generator="hootenanny">${ jxonFeatures }</osm>`,
+            mergedXml  = await Hoot.api.poiMerge( osmXml ),
 
-        if ( reverse ) {
-            jxonFeatures = jxonFeatures.reverse();
-        }
+            dom        = new DOMParser().parseFromString( mergedXml, 'text/xml' ),
+            mapId      = this.data.currentReviewItem.mapId,
 
-        osmXml = `<osm version="0.6" upload="true" generator="hootenanny">${ jxonFeatures.join( '' ) }</osm>`;
-
-        let mergedXml = await Hoot.api.poiMerge( osmXml ),
-            dom       = new DOMParser().parseFromString( mergedXml, 'text/xml' );
-
-        let featureOsm = await Hoot.context.connection().parse( dom, mapId );
+            featureOsm = await Hoot.context.connection().parse( dom, mapId );
 
         return featureOsm[ 0 ];
     }
@@ -273,7 +271,7 @@ export default class Merge {
 
         this.mergeArrow.from = feature;
         this.mergeArrow.to   = againstFeature;
-        
+
         d3.select( '.action-buttons .merge' )
             .on( 'mouseenter', function() {
                 this.focus();
