@@ -113,10 +113,13 @@ export function uiRawTagEditor(context) {
 
         var enter = items.enter()
             .append('li')
-            .attr('class', 'tag-row cf')
+            .attr('class', 'tag-row')
             .classed('readonly', isReadOnly);
 
-        enter
+        var innerWrap = enter.append('div')
+            .attr('class', 'inner-wrap');
+
+        innerWrap
             .append('div')
             .attr('class', 'key-wrap')
             .append('input')
@@ -127,9 +130,9 @@ export function uiRawTagEditor(context) {
             .on('blur', keyChange)
             .on('change', keyChange);
 
-        enter
+        innerWrap
             .append('div')
-            .attr('class', 'input-wrap-position')
+            .attr('class', 'value-wrap')
             .append('input')
             .property('type', 'text')
             .attr('class', 'value')
@@ -139,10 +142,10 @@ export function uiRawTagEditor(context) {
             .on('change', valueChange)
             .on('keydown.push-more', pushMore);
 
-        enter
+        innerWrap
             .append('button')
             .attr('tabindex', -1)
-            .attr('class', 'remove minor')
+            .attr('class', 'form-field-button remove')
             .call(svgIcon('#iD-operation-delete'));
 
 
@@ -169,7 +172,20 @@ export function uiRawTagEditor(context) {
                 // Override tag reference with tag copy
                 var select = uiTagSelectCopy(context);
 
-                row.call( select );
+                if (isRelation && tag.key === 'type') {
+                    reference = uiTagReference({ rtype: tag.value }, context);
+                } else {
+                    reference = uiTagReference({ key: tag.key, value: tag.value }, context);
+                }
+
+                if (_state === 'hover') {
+                    reference.showing(false);
+                }
+
+                row.select('.inner-wrap')
+                    .call(reference.button);
+
+                row.call(reference.body);
             });
 
         items.selectAll('input.key')

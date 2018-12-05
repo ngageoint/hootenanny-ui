@@ -1,11 +1,15 @@
 @import '../modules/variables';
 
 #bar {
-    display: inline-block;
-    top: 60px;
-    left: 400px;
+    //display: inline-block;
+    //top: 60px;
+    //left: 400px;
     padding: 10px;
     min-width: auto;
+
+    .tool-group {
+        width: auto;
+    }
 
     .spacer {
         width: 0;
@@ -48,7 +52,7 @@
     }
 
     span.count {
-        margin-left: 80px;
+        //margin-left: 80px;
     }
 }
 
@@ -107,36 +111,36 @@
     }
 }
 
-@media only screen and (max-width: 1160px) {
-    #bar {
-        left: 300px;
-    }
-
-    #bar .limiter button {
-        & > span.label {
-            display: none !important;
-        }
-
-        span.count {
-            margin-left: 50px;
-        }
-
-        .icon.pre-text {
-            margin: 0;
-        }
-    }
-}
-
-@media only screen and (max-width: 900px) {
-    #bar {
-        left: 250px;
-    }
-
-    #bar .limiter button {
-        padding: 0 10px !important;
-
-        span.count {
-            margin-left: 40px;
-        }
-    }
-}
+//@media only screen and (max-width: 1160px) {
+//    #bar {
+//        left: 300px;
+//    }
+//
+//    #bar .limiter button {
+//        & > span.label {
+//            display: none !important;
+//        }
+//
+//        span.count {
+//            margin-left: 50px;
+//        }
+//
+//        .icon.pre-text {
+//            margin: 0;
+//        }
+//    }
+//}
+//
+//@media only screen and (max-width: 900px) {
+//    #bar {
+//        left: 250px;
+//    }
+//
+//    #bar .limiter button {
+//        padding: 0 10px !important;
+//
+//        span.count {
+//            margin-left: 40px;
+//        }
+//    }
+//}

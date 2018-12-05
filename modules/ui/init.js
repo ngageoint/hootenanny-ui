@@ -4,9 +4,10 @@ import {
 } from 'd3-selection';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
-import { d3keybinding as d3_keybinding } from '../lib/d3.keybinding.js';
+import { utilKeybinding } from '../util/keybinding';
 
 import { t, textDirection } from '../util/locale';
+import { tooltip } from '../util/tooltip';
 
 import { behaviorHash } from '../behavior';
 import { modeBrowse } from '../modes';
@@ -16,6 +17,7 @@ import { utilGetDimensions } from '../util/dimensions';
 import { utilRebind } from '../util';
 
 import { uiAccount } from './account';
+import { uiAttribution } from './attribution';
 import { uiBackground } from './background';
 import { uiContributors } from './contributors';
 import { uiCoordinates } from './coordinates';
@@ -30,7 +32,9 @@ import { uiLoading } from './loading';
 import { uiMapData } from './map_data';
 import { uiMapInMap } from './map_in_map';
 import { uiModes } from './modes';
+import { uiNotice } from './notice';
 import { uiPasteTags } from './paste_tags';
+import { uiPhotoviewer } from './photoviewer';
 import { uiRestore } from './restore';
 import { uiSave } from './save';
 import { uiScale } from './scale';
@@ -40,27 +44,23 @@ import { uiSpinner } from './spinner';
 import { uiSplash } from './splash';
 import { uiStatus } from './status';
 import { uiTools } from './tools';
+import { uiTooltipHtml } from './tooltipHtml';
 import { uiUndoRedo } from './undo_redo';
 import { uiVersion } from './version';
 import { uiZoom } from './zoom';
 import { uiCmd } from './cmd';
 
 export function uiInit(context) {
-    var uiInitCounter = 0;
-    var dispatch = d3_dispatch('photoviewerResize');
+    var _initCounter = 0;
+    var _initCallback;
+    var _needWidth = {};
+
 
     function render(container) {
         container
             .attr('dir', textDirection);
 
         var map = context.map();
-
-        var hash = behaviorHash(context);
-        hash();
-
-        if (!hash.hadHash) {
-            map.centerZoom([0, 0], 2);
-        }
 
         container
             .append('svg')
@@ -70,7 +70,6 @@ export function uiInit(context) {
         container
             .append('div')
             .attr('id', 'sidebar')
-            .attr('class', 'col4')
             .call(ui.sidebar);
 
         var content = container
@@ -78,7 +77,8 @@ export function uiInit(context) {
             .attr('id', 'content')
             .attr('class', 'active');
 
-        var bar = container
+        // Top toolbar
+        var bar = content
             .append('div')
             .attr('id', 'bar')
             .attr('class', 'fillD');
@@ -89,54 +89,74 @@ export function uiInit(context) {
             .attr('dir', 'ltr')
             .call(map);
 
-        content
-            .call(uiMapInMap(context))
-            .call(uiInfo(context));
-
-        var limiter = bar.append('div')
-            .attr('class', 'limiter');
-
-        limiter
-            .append( 'div' )
-            .attr( 'class', 'button-wrap' )
-            .call(uiTools(context));
-
-        limiter
-            .append( 'div' )
-            .attr( 'class', 'button-wrap joined' )
-            .call(uiPasteTags(context));
-
-        limiter
+        // Leading area button group (Sidebar toggle)
+        var leadingArea = bar
             .append('div')
-            .attr('class', 'button-wrap joined')
-            .call(uiModes(context), limiter);
+            .attr('class', 'tool-group leading-area');
 
-        limiter
+        var sidebarButton = leadingArea
             .append('div')
-            .attr('class', 'button-wrap joined')
-            .call(uiUndoRedo(context));
+            .append('button')
+            .attr('class', 'sidebar-toggle')
+            .attr('tabindex', -1)
+            .on('click', ui.sidebar.toggle)
+            .call(tooltip()
+                .placement('bottom')
+                .html(true)
+                .title(uiTooltipHtml(t('sidebar.tooltip'), t('sidebar.key')))
+            );
 
-        limiter
+        var iconSuffix = textDirection === 'rtl' ? 'right' : 'left';
+        sidebarButton
+            .call(svgIcon('#iD-icon-sidebar-' + iconSuffix));
+
+        leadingArea
             .append('div')
-            .attr('class', 'button-wrap')
-            .call(uiSave(context));
+            .attr('class', 'full-screen bar-group')
+            .call(uiFullScreen(context));
 
-        // limiter
-        //     .append('span')
-        //     .attr('class', 'button-wrap col2')
-        //     .call(uiSaveToOsm(context));
 
         bar
             .append('div')
-            .attr('class', 'full-screen')
-            .call(uiFullScreen(context));
+            .attr('class', 'tool-group leading-area')
+            .append('div')
+            .attr('class', 'modes joined')
+            .call(uiPasteTags(context));
 
+
+        // Center area button group (Point/Line/Area/Note mode buttons)
+        bar
+            .append('div')
+            .attr('class', 'tool-group center-area')
+            .append('div')
+            .attr('class', 'modes joined')
+            .call(uiModes(context), bar);
+
+
+        // Trailing area button group (Undo/Redo save buttons)
+        var trailingArea = bar
+            .append('div')
+            .attr('class', 'tool-group trailing-area');
+
+        trailingArea
+            .append('div')
+            .attr('class', 'joined')
+            .call(uiUndoRedo(context));
+
+        trailingArea
+            .append('div')
+            .attr('class', 'save-wrap')
+            .call(uiSave(context));
+
+
+        // For now, just put spinner at the end of the #bar
         bar
             .append('div')
             .attr('class', 'spinner')
             .call(uiSpinner(context));
 
 
+        // Map controls (appended to #bar, but absolutely positioned)
         var controls = bar
             .append('div')
             .attr('class', 'map-controls');
@@ -156,16 +176,17 @@ export function uiInit(context) {
             .attr('class', 'map-control background-control')
             .call(uiBackground(context));
 
-        if (context.dgservices().enabled) {
-            controls.append('div')
-                .attr('class', 'map-control carousel-control')
-                .call(uiDgcarousel(context));
-        }
-
         controls
             .append('div')
             .attr('class', 'map-control map-data-control')
             .call(uiMapData(context));
+
+        if (context.dgservices().enabled) {
+            controls
+                .append('div')
+                .attr('class', 'map-control carousel-control')
+                .call(uiDgcarousel(context));
+        }
 
         controls
             .append('div')
@@ -173,15 +194,16 @@ export function uiInit(context) {
             .call(uiHelp(context));
 
 
+        // Add attribution and footer
         var about = content
             .append('div')
             .attr('id', 'about');
 
-        //about
-        //    .append('div')
-        //    .attr('id', 'attrib')
-        //    .attr('dir', 'ltr')
-        //    .call(uiAttribution(context));
+        about
+            .append('div')
+            .attr('id', 'attrib')
+            .attr('dir', 'ltr')
+            .call(uiAttribution(context));
 
         about
             .append('div')
@@ -215,19 +237,19 @@ export function uiInit(context) {
             .append('ul')
             .attr('id', 'about-list');
 
-        //if (!context.embed()) {
-        //    aboutList
-        //        .call(uiAccount(context));
-        //}
+        if (!context.embed()) {
+            aboutList
+                .call(uiAccount(context));
+        }
 
         aboutList
             .append('li')
             .attr('class', 'version')
             .call(uiVersion(context));
 
-        //var issueLinks = aboutList
-        //    .append('li');
-        /*
+        var issueLinks = aboutList
+            .append('li');
+
         issueLinks
             .append('a')
             .attr('target', '_blank')
@@ -243,7 +265,6 @@ export function uiInit(context) {
             .attr('href', 'https://github.com/openstreetmap/iD/blob/master/CONTRIBUTING.md#translating')
             .call(svgIcon('#iD-icon-translate', 'light'))
             .call(tooltip().title(t('help_translate')).placement('top'));
-        */
 
         aboutList
             .append('li')
@@ -251,97 +272,70 @@ export function uiInit(context) {
             .attr('tabindex', -1)
             .call(uiFeatureInfo(context));
 
-        aboutList.append('li')
-            .attr('class', 'coordinates')
-            .attr('tabindex', -1)
-            .call(uiCoordinates(context));
-
         aboutList
             .append('li')
             .attr('class', 'user-list')
             .attr('tabindex', -1)
             .call(uiContributors(context));
 
-        if (!context.embed()) {
-            aboutList.call(uiAccount(context));
+
+        // Setup map dimensions and move map to initial center/zoom.
+        // This should happen after #content and toolbars exist.
+        ui.onResize();
+
+        var hash = behaviorHash(context);
+        hash();
+        if (!hash.hadHash) {
+            map.centerZoom([0, 0], 2);
         }
 
-        var photoviewer = content
+
+        // Add absolutely-positioned elements that sit on top of the map
+        // This should happen after the map is ready (center/zoom)
+        content
+            .call(uiMapInMap(context))
+            .call(uiInfo(context))
+            .call(uiNotice(context));
+
+        content
             .append('div')
             .attr('id', 'photoviewer')
             .classed('al', true)       // 'al'=left,  'ar'=right
-            .classed('hide', true);
+            .classed('hide', true)
+            .call(ui.photoviewer);
 
-        photoviewer
-            .append('button')
-            .attr('class', 'thumb-hide')
-            .on('click', function () {
-                if (services.streetside) { services.streetside.hideViewer(); }
-                if (services.mapillary) { services.mapillary.hideViewer(); }
-                if (services.openstreetcam) { services.openstreetcam.hideViewer(); }
-            })
-            .append('div')
-            .call(svgIcon('#iD-icon-close'));
 
-        photoviewer
-            .append('button')
-            .attr('class', 'resize-handle-xy')
-            .on(
-                'mousedown',
-                buildResizeListener(photoviewer, 'photoviewerResize', dispatch, { resizeOnX: true, resizeOnY: true })
-            );
-
-        photoviewer
-            .append('button')
-            .attr('class', 'resize-handle-x')
-            .on(
-                'mousedown',
-                buildResizeListener(photoviewer, 'photoviewerResize', dispatch, { resizeOnX: true })
-            );
-
-        photoviewer
-            .append('button')
-            .attr('class', 'resize-handle-y')
-            .on(
-                'mousedown',
-                buildResizeListener(photoviewer, 'photoviewerResize', dispatch, { resizeOnY: true })
-            );
-
-        var mapDimensions = map.dimensions();
-
-        // bind events
+        // Bind events
         window.onbeforeunload = function() {
             return context.save();
         };
-
         window.onunload = function() {
             context.history().unlock();
         };
 
         d3_select(window)
-            .on('resize.editor', onResize);
+            .on('gesturestart.editor', eventCancel)
+            .on('gesturechange.editor', eventCancel)
+            .on('gestureend.editor', eventCancel)
+            .on('resize.editor', ui.onResize);
 
-        onResize();
 
-
-        var pa = 80;  // pan amount
-        var keybinding = d3_keybinding('main')
+        var panPixels = 80;
+        context.keybinding()
             .on('⌫', function() { d3_event.preventDefault(); })
-            .on('←', pan([pa, 0]))
-            .on('↑', pan([0, pa]))
-            .on('→', pan([-pa, 0]))
-            .on('↓', pan([0, -pa]))
-            .on(['⇧←', uiCmd('⌘←')], pan([mapDimensions[0], 0]))
-            .on(['⇧↑', uiCmd('⌘↑')], pan([0, mapDimensions[1]]))
-            .on(['⇧→', uiCmd('⌘→')], pan([-mapDimensions[0], 0]))
-            .on(['⇧↓', uiCmd('⌘↓')], pan([0, -mapDimensions[1]]));
-
-        d3_select(document)
-            .call(keybinding);
+            .on(t('sidebar.key'), ui.sidebar.toggle)
+            .on('←', pan([panPixels, 0]))
+            .on('↑', pan([0, panPixels]))
+            .on('→', pan([-panPixels, 0]))
+            .on('↓', pan([0, -panPixels]))
+            .on(['⇧←', uiCmd('⌘←')], pan([map.dimensions()[0], 0]))
+            .on(['⇧↑', uiCmd('⌘↑')], pan([0, map.dimensions()[1]]))
+            .on(['⇧→', uiCmd('⌘→')], pan([-map.dimensions()[0], 0]))
+            .on(['⇧↓', uiCmd('⌘↓')], pan([0, -map.dimensions()[1]]));
 
         context.enter(modeBrowse(context));
 
-        if (!uiInitCounter++) {
+        if (!_initCounter++) {
             if (!hash.startWalkthrough) {
                 context.container()
                     .call(uiSplash(context))
@@ -366,33 +360,11 @@ export function uiInit(context) {
                 });
         }
 
-        uiInitCounter++;
+        _initCounter++;
 
         if (hash.startWalkthrough) {
             hash.startWalkthrough = false;
             context.container().call(uiIntro(context));
-        }
-
-
-        function onResize() {
-            mapDimensions = utilGetDimensions(content, true);
-            map.dimensions(mapDimensions);
-
-            // shrink photo viewer if it is too big
-            // (-90 preserves space at top and bottom of map used by menus)
-            var photoDimensions = utilGetDimensions(photoviewer, true);
-            if (photoDimensions[0] > mapDimensions[0] || photoDimensions[1] > (mapDimensions[1] - 90)) {
-                var setPhotoDimensions = [
-                    Math.min(photoDimensions[0], mapDimensions[0]),
-                    Math.min(photoDimensions[1], mapDimensions[1] - 90),
-                ];
-
-                photoviewer
-                    .style('width', setPhotoDimensions[0] + 'px')
-                    .style('height', setPhotoDimensions[1] + 'px');
-
-                dispatch.call('photoviewerResize', photoviewer, setPhotoDimensions);
-            }
         }
 
 
@@ -403,53 +375,8 @@ export function uiInit(context) {
             };
         }
 
-        function buildResizeListener(target, eventName, dispatch, options) {
-            var resizeOnX = !!options.resizeOnX;
-            var resizeOnY = !!options.resizeOnY;
-            var minHeight = options.minHeight || 240;
-            var minWidth = options.minWidth || 320;
-            var startX;
-            var startY;
-            var startWidth;
-            var startHeight;
-
-            function startResize() {
-                var mapSize = context.map().dimensions();
-
-                if (resizeOnX) {
-                    var maxWidth = mapSize[0];
-                    var newWidth = clamp((startWidth + d3_event.clientX - startX), minWidth, maxWidth);
-                    target.style('width', newWidth + 'px');
-                }
-
-                if (resizeOnY) {
-                    var maxHeight = mapSize[1] - 90;  // preserve space at top/bottom of map
-                    var newHeight = clamp((startHeight + startY - d3_event.clientY), minHeight, maxHeight);
-                    target.style('height', newHeight + 'px');
-                }
-
-                dispatch.call(eventName, target, utilGetDimensions(target, true));
-            }
-
-            function clamp(num, min, max) {
-                return Math.max(min, Math.min(num, max));
-            }
-
-            function stopResize() {
-                d3_select(window)
-                    .on('.' + eventName, null);
-            }
-
-            return function initResize() {
-                startX = d3_event.clientX;
-                startY = d3_event.clientY;
-                startWidth = target.node().getBoundingClientRect().width;
-                startHeight = target.node().getBoundingClientRect().height;
-
-                d3_select(window)
-                    .on('mousemove.' + eventName, startResize, false)
-                    .on('mouseup.' + eventName, stopResize, false);
-            };
+        function eventCancel() {
+            d3_event.preventDefault();
         }
     }
 
@@ -482,7 +409,65 @@ export function uiInit(context) {
         });
     };
 
+
     ui.sidebar = uiSidebar(context);
 
-    return utilRebind(ui, dispatch, 'on');
+
+    ui.photoviewer = uiPhotoviewer(context);
+
+    ui.onResize = function(withPan) {
+        var map = context.map();
+
+        // Recalc dimensions of map and sidebar.. (`true` = force recalc)
+        // This will call `getBoundingClientRect` and trigger reflow,
+        //  but the values will be cached for later use.
+        var mapDimensions = utilGetDimensions(d3_select('#content'), true);
+        utilGetDimensions(d3_select('#sidebar'), true);
+
+        if (withPan !== undefined) {
+            map.redrawEnable(false);
+            map.pan(withPan);
+            map.redrawEnable(true);
+        }
+        map.dimensions(mapDimensions);
+
+        ui.photoviewer.onMapResize();
+
+        // check if header or footer have overflowed
+        ui.checkOverflow('#bar');
+        ui.checkOverflow('#footer');
+
+        // Use outdated code so it works on Explorer
+        var resizeWindowEvent = document.createEvent('Event');
+
+        resizeWindowEvent.initEvent('resizeWindow', true, true);
+
+        document.dispatchEvent(resizeWindowEvent);
+    };
+
+
+    // Call checkOverflow when resizing or whenever the contents change.
+    ui.checkOverflow = function(selector, reset) {
+        if (reset) {
+            delete _needWidth[selector];
+        }
+
+        var element = d3_select(selector);
+        var scrollWidth = element.property('scrollWidth');
+        var clientWidth = element.property('clientWidth');
+        var needed = _needWidth[selector] || scrollWidth;
+
+        if (scrollWidth > clientWidth) {    // overflow happening
+            element.classed('narrow', true);
+            if (!_needWidth[selector]) {
+                _needWidth[selector] = scrollWidth;
+            }
+
+        } else if (scrollWidth >= needed) {
+            element.classed('narrow', false);
+        }
+    };
+
+    // return utilRebind(ui, dispatch, 'on');
+    return ui;
 }

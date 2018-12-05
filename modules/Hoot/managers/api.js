@@ -67,7 +67,7 @@ export default class API {
             }
 
             if ( status === 401 && statusText === 'Unauthorized' ) {
-                window.location.replace( 'login.html' );
+                // window.location.replace( 'login.html' );
             }
 
             return Promise.reject( { data, message, status, type } );

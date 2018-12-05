@@ -4,9 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/26/18
  *******************************************************************************************************/
 
-import { utilRebind }                    from '../util/rebind';
-import { d3keybinding as d3_keybinding } from '../lib/d3.keybinding';
-import { geoEuclideanDistance }          from '../geo';
+import { utilRebind }           from '../util/rebind';
+import { geoEuclideanDistance } from '../geo';
 
 export function clip( context, svg ) {
     let dispatch       = d3.dispatch( 'move', 'click', 'cancel', 'finish', 'dblclick' ),

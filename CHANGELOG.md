@@ -11,7 +11,7 @@ _Breaking changes, which may affect downstream projects or sites that embed iD, 
 
 <!--
 # A.B.C
-##### MMM DD, YYYY
+##### YYYY-MMM-DD
 
 #### :newspaper: News
 #### :mega: Release Highlights
@@ -28,8 +28,367 @@ _Breaking changes, which may affect downstream projects or sites that embed iD, 
 [@xxxx]: https://github.com/xxxx
 -->
 
+# 2.12.1
+##### 2018-Dec-05
+
+#### :bug: Bugfixes
+* Fix bug preventing walkthrough from starting ([#5553], [#5555], thanks [@quincylvania])
+* Fix bug causing tooltips on background pane not to disappear ([#5551])
+
+[#5555]: https://github.com/openstreetmap/iD/issues/5555
+[#5553]: https://github.com/openstreetmap/iD/issues/5553
+[#5551]: https://github.com/openstreetmap/iD/issues/5551
+[@quincylvania]: https://github.com/quincylvania
+
+
+# 2.12.0
+##### 2018-Dec-03
+
+#### :mega: Release Highlights
+* :v: Mac users can now use 2 finger trackpad gestures to pan and zoom the map.<br/>
+_Try swiping with 2 fingers to pan, or pinching out/in to zoom and unzoom. You'll be less likely to accidently drag nodes!_
+* :small_red_triangle_down: iD now draws triangular markers on the "down" side of ways where the direction matters.  Thanks, Huon Wilson [@huonw] for this feature!</br>
+_Ways with a direction include cliffs, coastlines, retaining walls, kerbs, guard rails, embankments._
+* :left_right_arrow: You can now resize the sidebar, or hide it completely. Shout out to Quincy Morgan [@quincylvania] for his work on this!</br>
+_Try dragging the sidebar to resize it, or click the hide button in the top toolbar. The top bar buttons can also shrink on narrower screens._
+* :hamburger: We've released a huge upgrade to the [brand name suggestions](https://github.com/osmlab/name-suggestion-index) in iD. Thank you to [everyone who volunteered](https://github.com/osmlab/name-suggestion-index/issues/2034) to match brand names to their proper OpenStreetMap tags.</br>
+_Try adding some branded businesses to the map - `brand`, `brand:wikidata`, and other tags will be set for you._
+* :paperclip: More Wikidata integration! iD now displays linked data if a feature has a `wikidata` tag, and will protect fields like `name` and `brand` from direct editing.<br/>
+_Make sure prominent features have a Wikidata tag, for added protection against accidental changes._
+* :high_brightness: More features for working with relations. Hovering over a relation or member in the sidebar will highlight it on the map. You can also download incomplete sections, and zoom to inspect relation children. Thanks, Quincy Morgan [@quincylvania]!<br/>
+_Check out the "All Relations" and "All Members" sections of the sidebar to try out the new relation editing tools._
+* :octocat: Hacktoberfest happened!  We merged 40 pull requests during the month of October.  Thank you to all of our new contributors!<br/>
+
+[@huonw]: https://github.com/huonw
+[@quincylvania]: https://github.com/quincylvania
+
+#### :tada: New Features
+* Make `name`, `brand` fields readonly when there is a `wikidata` or `brand:wikidata` tag ([#5515])
+  (Users may still delete the name field or edit the tags manually)
+* Add a Wikidata field ([#4382], [#5500], thanks [@quincylvania])
+* Display triangular markers along ways with a "lower" direction (e.g. `natural=cliff`). ([#1475], [#5529], thanks [@huonw])
+* Upgrade the brand name presets from new [name-suggestion-index](https://github.com/osmlab/name-suggestion-index):
+  * Display name suggestion presets on 2 lines ([#5514])
+  * Offer up to 10 brand name suggestions in the name field, show preset type alongside brand name
+  * :warning: Code refactor - remove `dataSuggestions` and `utilSuggestNames` functions
+* Add `context.keybinding` for keybindings that don't change ([#5487])
+  * :warning: Code refactor - Move `lib/d3.keybinding.js` -> `util/keybinding.js`
+* The sidebar can be now be resized by dragging the divider ([#3447], [#5443], thanks [@quincylvania])
+  * There is also a new button in the top tool bar, and keyboard shortcut to toggle the sidebar
+* Add hover-highlighting to the selected features list ([#5404], thanks [@quincylvania])
+* Add hover-highlighting for relations in the raw membership list ([#2946], [#5402], [#5429], thanks [@quincylvania])
+* Add a button to zoom to a relation child ([#5405], thanks [@quincylvania])
+* Add a button to download an undownloaded relation child ([#2284], [#5396], thanks [@quincylvania])
+* Display type (node, way, or relation) in the name of undownloaded relation children ([#5399], thanks [@quincylvania])
+
+[#5529]: https://github.com/openstreetmap/iD/issues/5529
+[#5515]: https://github.com/openstreetmap/iD/issues/5515
+[#5514]: https://github.com/openstreetmap/iD/issues/5514
+[#5500]: https://github.com/openstreetmap/iD/issues/5500
+[#5487]: https://github.com/openstreetmap/iD/issues/5487
+[#5443]: https://github.com/openstreetmap/iD/issues/5443
+[#5429]: https://github.com/openstreetmap/iD/issues/5429
+[#5405]: https://github.com/openstreetmap/iD/issues/5405
+[#5404]: https://github.com/openstreetmap/iD/issues/5404
+[#5402]: https://github.com/openstreetmap/iD/issues/5402
+[#5399]: https://github.com/openstreetmap/iD/issues/5399
+[#5396]: https://github.com/openstreetmap/iD/issues/5396
+[#4382]: https://github.com/openstreetmap/iD/issues/4382
+[#3447]: https://github.com/openstreetmap/iD/issues/3447
+[#2946]: https://github.com/openstreetmap/iD/issues/2946
+[#2284]: https://github.com/openstreetmap/iD/issues/2284
+[#1475]: https://github.com/openstreetmap/iD/issues/1475
+[@huonw]: https://github.com/huonw
+[@quincylvania]: https://github.com/quincylvania
+
+#### :sparkles: Usability
+* Redraw restrictions editor when resizing sidebar ([#5474], [#5502], thanks [@jguthrie100])
+* Add support for 2-finger pan and zoom gestures on Mac computers ([#5492])
+* Improve rendering for more leisure objects (`track`, `golf_course`, `garden`) ([#5526], thanks [@hikemaniac])
+* Improve rendering for `attraction=water_slide` ([#5522], thanks [@hikemaniac])
+* Use green stroke to render `barrier=hedge` ([#5459], thanks [@quincylvania])
+* More responsive sidebar and toolbar ([#4356], [#5455])
+  * Adjusts save count padding slightly ([#5509],thanks [@quincylvania])
+  * Display icons only (no labels) on very narrow width toolbar
+  * Better management of button widths in the sidebar ([#5467], thanks [@quincylvania])
+* Adds more fill patterns to areas ([#5489], [#5499], thanks [@RudyTheDev])
+* Update Icons (Maki upgraded to v5, FontAwesome upgraded to v5.5)
+* Preserve extra space at bottom of inspector to allow for dropdown options ([#5280])
+* Better undo tooltips when connecting points ([#1252], [#5468], thanks [@quincylvania])
+* Display ways with `location=underwater` same as `location=underground` ([#5442], thanks [@quincylvania])
+* Improve rendering of `man_made=pipeline` ([#5392], thanks [@quincylvania])
+* Improve rendering of ferry routes ([#5414], [#5416], thanks [@quincylvania])
+* Improve keyboard navigation of the preset selection menu ([#5304], thanks [@quincylvania])
+* Make "search worldwide" button look like a button ([#5386], thanks [@jguthrie100])
+* Make OpenTopoMap imagery layer available ([#5277])
+
+[#5526]: https://github.com/openstreetmap/iD/issues/5526
+[#5522]: https://github.com/openstreetmap/iD/issues/5522
+[#5509]: https://github.com/openstreetmap/iD/issues/5509
+[#5502]: https://github.com/openstreetmap/iD/issues/5502
+[#5499]: https://github.com/openstreetmap/iD/issues/5499
+[#5492]: https://github.com/openstreetmap/iD/issues/5492
+[#5489]: https://github.com/openstreetmap/iD/issues/5489
+[#5474]: https://github.com/openstreetmap/iD/issues/5474
+[#5468]: https://github.com/openstreetmap/iD/issues/5468
+[#5467]: https://github.com/openstreetmap/iD/issues/5467
+[#5459]: https://github.com/openstreetmap/iD/issues/5459
+[#5455]: https://github.com/openstreetmap/iD/issues/5455
+[#5442]: https://github.com/openstreetmap/iD/issues/5442
+[#5416]: https://github.com/openstreetmap/iD/issues/5416
+[#5414]: https://github.com/openstreetmap/iD/issues/5414
+[#5392]: https://github.com/openstreetmap/iD/issues/5392
+[#5386]: https://github.com/openstreetmap/iD/issues/5386
+[#5304]: https://github.com/openstreetmap/iD/issues/5304
+[#5280]: https://github.com/openstreetmap/iD/issues/5280
+[#5277]: https://github.com/openstreetmap/iD/issues/5277
+[#4356]: https://github.com/openstreetmap/iD/issues/4356
+[#1252]: https://github.com/openstreetmap/iD/issues/1252
+[@RudyTheDev]: https://github.com/RudyTheDev
+[@jguthrie100]: https://github.com/jguthrie100
+[@quincylvania]: https://github.com/quincylvania
+
+#### :bug: Bugfixes
+* Prevent Mapillary signs and markers from flickering as the user pans the map ([#4297])
+* Don't snap notes to OSM elements ([#5191])
+* Avoid requesting imagery and data from wrapped world past antimeridian ([#5485])
+* Adjust layer ordering to draw touch targets above data layers ([#5257], [#5479])
+* Fix background imagery with multiple outer rings ([#5264], [#5250], [#5272])
+* Use new Mapillary API calls for features and signs ([#5374], [#5395], thanks [@cbeddow])
+* Exclude non-searchable presets from the preset recently-used list ([#5450])
+* Don't give boost to autocompleted tag values because they have a wiki page ([#5460], [#5461], thanks [@matkoniecz])
+* Adding a new point on a way now adds a vertex, not a standalone point ([#5409], [#5413], thanks [@quincylvania])
+* Treat multicombo values other than 'no' and '' as if they are set ([#5291])
+* Fix bug preventing use of gpx files with an uppercase file extension ([#5266], thanks [@JamesKingdom])
+
+[#5485]: https://github.com/openstreetmap/iD/issues/5485
+[#5479]: https://github.com/openstreetmap/iD/issues/5479
+[#5461]: https://github.com/openstreetmap/iD/issues/5461
+[#5460]: https://github.com/openstreetmap/iD/issues/5460
+[#5450]: https://github.com/openstreetmap/iD/issues/5450
+[#5413]: https://github.com/openstreetmap/iD/issues/5413
+[#5409]: https://github.com/openstreetmap/iD/issues/5409
+[#5395]: https://github.com/openstreetmap/iD/issues/5395
+[#5374]: https://github.com/openstreetmap/iD/issues/5374
+[#5291]: https://github.com/openstreetmap/iD/issues/5291
+[#5272]: https://github.com/openstreetmap/iD/issues/5272
+[#5266]: https://github.com/openstreetmap/iD/issues/5266
+[#5264]: https://github.com/openstreetmap/iD/issues/5264
+[#5257]: https://github.com/openstreetmap/iD/issues/5257
+[#5250]: https://github.com/openstreetmap/iD/issues/5250
+[#5191]: https://github.com/openstreetmap/iD/issues/5191
+[#4297]: https://github.com/openstreetmap/iD/issues/4297
+[@cbeddow]: https://github.com/cbeddow
+[@JamesKingdom]: https://github.com/JamesKingdom
+[@matkoniecz]: https://github.com/matkoniecz
+[@quincylvania]: https://github.com/quincylvania
+
+#### :earth_asia: Localization
+* Localize combo box tooltip descriptions ([#5523], [#5524], thanks [@jguthrie100])
+* Switch parking icons from "P" to car icon ([#5341])
+
+[#5524]: https://github.com/openstreetmap/iD/issues/5524
+[#5523]: https://github.com/openstreetmap/iD/issues/5523
+[#5341]: https://github.com/openstreetmap/iD/issues/5341
+[@jguthrie100]: https://github.com/jguthrie100
+
+#### :hourglass: Performance
+* Avoid reflow caused by restriction editor checking its dimensions
+* Memoize `preset.match` - this slightly speeds up some things, including label rendering
+* Don't lookup or autocomplete `postal_code` values from taginfo
+
+#### :mortar_board: Walkthrough / Help
+* Setup data layers and sidebar before starting the walkthrough ([#5136])
+* When switching chapters in Help, return to the top ([#5439], [#5441], thanks [@n42k])
+* Fix crash if user cancels drawing of Tulip Road in walkthrough ([#5295])
+
+[#5441]: https://github.com/openstreetmap/iD/issues/5441
+[#5439]: https://github.com/openstreetmap/iD/issues/5439
+[#5295]: https://github.com/openstreetmap/iD/issues/5295
+[#5136]: https://github.com/openstreetmap/iD/issues/5136
+[@n42k]: https://github.com/n42k
+
+#### :rocket: Presets
+* Add Flush Curb preset ([#5534], thanks [@quincylvania])
+* Add Railing preset for `barrier=fence; fence_type=railing` ([#5532], thanks [@RudyTheDev])
+* Add Guard Rail preset for `barrier=guard_rail` ([#5527], [#5528], thanks [@RudyTheDev])
+* Update the Slipway preset with Name and Fee fields, allow vertex geometry, (thanks [@quincylvania])
+* Add terms for the Parking Lot preset ([#5519], thanks [@quincylvania])
+* Add missing presets for items in name-suggestion-index v1 ([#5510], [#5518], thanks [@quincylvania])
+  * `amenity=money_transfer`
+  * `amenity=payment_centre`
+  * `amenity=payment_terminal`
+  * `shop=catalogue`
+  * `shop=country_store`
+  * `shop=hairdresser_supply`
+  * `shop=party`
+* Add Communication, Mobile Phone, Television, and Radio Mast, Communication Tower presets ([#5486], thanks [@quincylvania])
+* Add `office=religion` preset ([#5483], thanks [@Raubraupe])
+* Add presets for common cuisines for `amenity=fast_food` and `amenity=restaurant` (thanks [@quincylvania])
+* Add `leisure=fishing` preset ([#5469], [#5476], thanks [@xmile1])
+* Switch embankment preset from `embankment=yes` to `man_made=embankment` ([#5344])
+* Add `amenity=vehicle_inspection` preset ([#5453], thanks [@hikemaniac])
+* Add `amenity=dive_centre` preset ([#5451], thanks [@hikemaniac])
+* Add paved/unpaved surface style for `aeroway=taxiway` ([#5419], [#5422], thanks [@thefifthisa])
+* Add preset and rendering for `attraction=summer_toboggan` ([#5447], thanks [@hikemaniac])
+* Add `place=city_block` preset ([#5425], [#5432], thanks [@wvanderp])
+* Add fields for To and From and add fields to all route presets ([#5408], [#5410], thanks [@castriganoj])
+* Add `maxspeed` field to Speed Camera preset ([#5417], [#5421], thanks [@FrikanRw])
+* Add takeaway field to cafe preset ([#5403], [#5418], thanks [@thefifthisa])
+* Add "Garage" to the "Building Features" category ([#5375])
+* Switch the generator/output/electricity field from text to typeCombo ([#5384], thanks [@quincylvania])
+* Add Utility Infrastructure Category ([#5381], [#5382], thanks [@quincylvania])
+* Add Underground Power Cable Preset ([#5380], [#5382], thanks [@quincylvania])
+* Add Solar Panel Preset ([#5371], [#5372], thanks [@quincylvania])
+* Add `backrest` `material` `seats` `colour` fields to Bench preset ([#5367], [#5387], thanks [@simonbilskyrollins])
+* Adjust fields shown on piste presets, different types for "downhill" and "nordic" ([#5268], [#5368], [#5397], thanks [@yvecai])
+* Add generic "Recycling" preset and field `recycling_type=container/center` ([#5363])
+* Switch `crossing` presets to use `marked`/`unmarked`, retain `zebra` as unsearchable value
+* Add escalator and moving walkway presets ([#5350], [#5365] thanks [@mchlp])
+* Add Bridge Pier, Bridge Support presets ([#5337], [#5360], thanks [@nadyafebi])
+* Add Amphitheatre preset ([#5349], [#5359], thanks [@enighter])
+* Add Softball Field preset ([#5346], [#5357], thanks [@s-Hale])
+* Rename Baseball Diamond to Baseball Field ([#5345], [#5357], thanks [@s-Hale])
+* Add `design` field and improve search terms for `power=tower` preset ([#5334], [#5356], thanks [@hchho])
+* Add Picnic Shelter preset ([#5347], [#5355], thanks [@programistka])
+* Add Carport preset ([#5339], [#5353], thanks [@Stormheg])
+* Add Multilevel Car Parking preset ([#5338], [#5352], thanks [@programistka])
+* Add Transit Shelter preset ([#5348], [#5358], thanks [@enighter])
+* Add presets for Traffic Sign, Speed Limit Sign, and City Limit Sign ([#5331], [#5333], thanks [@quincylvania])
+* Add Lowered Curb preset ([#5327], [#5328], thanks [@quincylvania])
+* Change "Pavilion" preset from an `amenity=shelter` to a `building=pavilion` ([#5292], [#5325])
+* Add Operator, Country, Lit, Height, and Type fields to Flagpole preset ([#5315], [#5316], thanks [@quincylvania])
+* Add Sculpture, Statue, and Mural presets, Material field ([#5309], [#5310], thanks [@quincylvania])
+* Add Shipwreck preset for `historic=wreck`, also related fields ([#5302], [#5303], thanks [@quincylvania])
+* Add Location, Length, Type fields to the Swimming Pool preset ([#5300], [#5301], thanks [@quincylvania])
+* Add preset for Parcel Pickup Locker ([#5260])
+* Add Lean-To and Gazebo presets, Fireplace checkbox field ([#5292], [#5293], thanks [@quincylvania])
+* Add basic seamark presets and fields ([#5286], [#5297], thanks [@quincylvania])
+  * Presets: Channel Buoy, Green Buoy, Red Buoy, Channel Beacon, Danger Beacon, Mooring
+  * Fields: Category, Colour, Shape, and System, also universal Seamark field
+* Add preset for `leisure=bandstand` ([#5259], [#5262], thanks [@AndreasHae])
+* Add preset for `amenity=language_school` ([#5245], [#5261], thanks [@AndreasHae])
+* Add preset for `shop=sewing` ([#5244], [#5267], thanks [@SilentSpike])
+* Add presets for `highway=milestone` and `waterway=milestone` ([#5284])
+* Add the Lit field to the Swimming Pool preset ([#5287], [#5288], thanks [@quincylvania])
+* Add Advertising Column preset ([#5270], thanks [@tordans])
+* Add WiFi Hotspot preset ([#5239], [#5251], thanks [@simonbilskyrollins])
+* Add name, bridge type, layer and maxweight fields to Bridge preset ([#5269], thanks [@LaszloEr])
+
+[#5534]: https://github.com/openstreetmap/iD/issues/5534
+[#5532]: https://github.com/openstreetmap/iD/issues/5532
+[#5528]: https://github.com/openstreetmap/iD/issues/5528
+[#5527]: https://github.com/openstreetmap/iD/issues/5527
+[#5519]: https://github.com/openstreetmap/iD/issues/5519
+[#5518]: https://github.com/openstreetmap/iD/issues/5518
+[#5510]: https://github.com/openstreetmap/iD/issues/5510
+[#5486]: https://github.com/openstreetmap/iD/issues/5486
+[#5483]: https://github.com/openstreetmap/iD/issues/5483
+[#5476]: https://github.com/openstreetmap/iD/issues/5476
+[#5469]: https://github.com/openstreetmap/iD/issues/5469
+[#5453]: https://github.com/openstreetmap/iD/issues/5453
+[#5451]: https://github.com/openstreetmap/iD/issues/5451
+[#5447]: https://github.com/openstreetmap/iD/issues/5447
+[#5432]: https://github.com/openstreetmap/iD/issues/5432
+[#5425]: https://github.com/openstreetmap/iD/issues/5425
+[#5422]: https://github.com/openstreetmap/iD/issues/5422
+[#5421]: https://github.com/openstreetmap/iD/issues/5421
+[#5419]: https://github.com/openstreetmap/iD/issues/5419
+[#5418]: https://github.com/openstreetmap/iD/issues/5418
+[#5417]: https://github.com/openstreetmap/iD/issues/5417
+[#5410]: https://github.com/openstreetmap/iD/issues/5410
+[#5408]: https://github.com/openstreetmap/iD/issues/5408
+[#5403]: https://github.com/openstreetmap/iD/issues/5403
+[#5397]: https://github.com/openstreetmap/iD/issues/5397
+[#5387]: https://github.com/openstreetmap/iD/issues/5387
+[#5384]: https://github.com/openstreetmap/iD/issues/5384
+[#5382]: https://github.com/openstreetmap/iD/issues/5382
+[#5381]: https://github.com/openstreetmap/iD/issues/5381
+[#5380]: https://github.com/openstreetmap/iD/issues/5380
+[#5375]: https://github.com/openstreetmap/iD/issues/5375
+[#5372]: https://github.com/openstreetmap/iD/issues/5372
+[#5371]: https://github.com/openstreetmap/iD/issues/5371
+[#5368]: https://github.com/openstreetmap/iD/issues/5368
+[#5367]: https://github.com/openstreetmap/iD/issues/5367
+[#5365]: https://github.com/openstreetmap/iD/issues/5365
+[#5363]: https://github.com/openstreetmap/iD/issues/5363
+[#5360]: https://github.com/openstreetmap/iD/issues/5360
+[#5359]: https://github.com/openstreetmap/iD/issues/5359
+[#5358]: https://github.com/openstreetmap/iD/issues/5358
+[#5357]: https://github.com/openstreetmap/iD/issues/5357
+[#5356]: https://github.com/openstreetmap/iD/issues/5356
+[#5355]: https://github.com/openstreetmap/iD/issues/5355
+[#5353]: https://github.com/openstreetmap/iD/issues/5353
+[#5352]: https://github.com/openstreetmap/iD/issues/5352
+[#5350]: https://github.com/openstreetmap/iD/issues/5350
+[#5349]: https://github.com/openstreetmap/iD/issues/5349
+[#5348]: https://github.com/openstreetmap/iD/issues/5348
+[#5347]: https://github.com/openstreetmap/iD/issues/5347
+[#5346]: https://github.com/openstreetmap/iD/issues/5346
+[#5345]: https://github.com/openstreetmap/iD/issues/5345
+[#5344]: https://github.com/openstreetmap/iD/issues/5344
+[#5339]: https://github.com/openstreetmap/iD/issues/5339
+[#5338]: https://github.com/openstreetmap/iD/issues/5338
+[#5337]: https://github.com/openstreetmap/iD/issues/5337
+[#5334]: https://github.com/openstreetmap/iD/issues/5334
+[#5333]: https://github.com/openstreetmap/iD/issues/5333
+[#5331]: https://github.com/openstreetmap/iD/issues/5331
+[#5328]: https://github.com/openstreetmap/iD/issues/5328
+[#5327]: https://github.com/openstreetmap/iD/issues/5327
+[#5325]: https://github.com/openstreetmap/iD/issues/5325
+[#5316]: https://github.com/openstreetmap/iD/issues/5316
+[#5315]: https://github.com/openstreetmap/iD/issues/5315
+[#5310]: https://github.com/openstreetmap/iD/issues/5310
+[#5309]: https://github.com/openstreetmap/iD/issues/5309
+[#5303]: https://github.com/openstreetmap/iD/issues/5303
+[#5302]: https://github.com/openstreetmap/iD/issues/5302
+[#5301]: https://github.com/openstreetmap/iD/issues/5301
+[#5300]: https://github.com/openstreetmap/iD/issues/5300
+[#5297]: https://github.com/openstreetmap/iD/issues/5297
+[#5293]: https://github.com/openstreetmap/iD/issues/5293
+[#5292]: https://github.com/openstreetmap/iD/issues/5292
+[#5288]: https://github.com/openstreetmap/iD/issues/5288
+[#5287]: https://github.com/openstreetmap/iD/issues/5287
+[#5286]: https://github.com/openstreetmap/iD/issues/5286
+[#5284]: https://github.com/openstreetmap/iD/issues/5284
+[#5270]: https://github.com/openstreetmap/iD/issues/5270
+[#5269]: https://github.com/openstreetmap/iD/issues/5269
+[#5268]: https://github.com/openstreetmap/iD/issues/5268
+[#5267]: https://github.com/openstreetmap/iD/issues/5267
+[#5262]: https://github.com/openstreetmap/iD/issues/5262
+[#5261]: https://github.com/openstreetmap/iD/issues/5261
+[#5260]: https://github.com/openstreetmap/iD/issues/5260
+[#5259]: https://github.com/openstreetmap/iD/issues/5259
+[#5251]: https://github.com/openstreetmap/iD/issues/5251
+[#5245]: https://github.com/openstreetmap/iD/issues/5245
+[#5244]: https://github.com/openstreetmap/iD/issues/5244
+[#5239]: https://github.com/openstreetmap/iD/issues/5239
+[@AndreasHae]: https://github.com/AndreasHae
+[@castriganoj]: https://github.com/castriganoj
+[@enighter]: https://github.com/enighter
+[@FrikanRw]: https://github.com/FrikanRw
+[@hchho]: https://github.com/hchho
+[@hikemaniac]: https://github.com/hikemaniac
+[@LaszloEr]: https://github.com/LaszloEr
+[@mchlp]: https://github.com/mchlp
+[@nadyafebi]: https://github.com/nadyafebi
+[@programistka]: https://github.com/programistka
+[@quincylvania]: https://github.com/quincylvania
+[@Raubraupe]: https://github.com/Raubraupe
+[@RudyTheDev]: https://github.com/RudyTheDev
+[@s-Hale]: https://github.com/s-Hale
+[@SilentSpike]: https://github.com/SilentSpike
+[@simonbilskyrollins]: https://github.com/simonbilskyrollins
+[@Stormheg]: https://github.com/Stormheg
+[@thefifthisa]: https://github.com/thefifthisa
+[@tordans]: https://github.com/tordans
+[@wvanderp]: https://github.com/wvanderp
+[@xmile1]: https://github.com/xmile1
+[@yvecai]: https://github.com/yvecai
+
+
 # 2.11.1
-##### Aug 29, 2018
+##### 2018-Aug-29
 
 #### :bug: Bugfixes
 * Fix handling of `.gpx` files passed in via url ([#5253])
@@ -38,7 +397,7 @@ _Breaking changes, which may affect downstream projects or sites that embed iD, 
 
 
 # 2.11.0
-##### Aug 26, 2018
+##### 2018-Aug-26
 
 #### :mega: Release Highlights
 * :1234: We've rolled out support for vector tiles in iD! This work was done as part of [Princi Vershwal's 2018 Google Summer of Code project](https://medium.com/@vershwal/vector-tile-support-for-openstreetmaps-id-editor-40b1cb77f63b). Thanks [@vershwal]!<br/>
@@ -142,7 +501,7 @@ _When mapping around Detroit, try out the special Detroit vector tile layers on 
 
 
 # 2.10.0
-##### Jul 26, 2018
+##### 2018-Jul-26
 
 #### :mega: Release Highlights
 * :memo: You can now create, comment on, and resolve OpenStreetMap notes from within iD! This work was done as part of [Thomas Hervey's 2018 Google Summer of Code project](https://www.openstreetmap.org/user/Thomas_Hervey/diary/44449). Thanks [@thomas-hervey]!<br/>
@@ -250,14 +609,14 @@ _Try activating one of the streetlevel photo layers (shortcut <kbd>F</kbd>) and 
 
 
 # 2.9.2
-##### Jun 28, 2018
+##### 2018-Jun-28
 
 #### :sparkles: Usability
 * This release contains a few updates to the background imagery list
 
 
 # 2.9.1
-##### Jun 25, 2018
+##### 2018-Jun-25
 
 #### :sparkles: Usability
 * Improve the resolution of Bing Streetside ([#5102], thanks [@jharpster], [@LorenMueller])
@@ -312,7 +671,7 @@ _Try activating one of the streetlevel photo layers (shortcut <kbd>F</kbd>) and 
 
 
 # 2.9.0
-##### Jun 14, 2018
+##### 2018-Jun-14
 
 #### :mega: Release Highlights
 * :camera: We've added support for [Bing Streetside](https://www.microsoft.com/en-us/maps/streetside)! This new layer provides 360-degree panoramic imagery across large regions of the United States, United Kingdom, France, and Spain. Thank you, Microsoft!<br/>
@@ -379,7 +738,7 @@ _Activate the Bing Streetside layer by opening the Map Data pane (shortcut <kbd>
 
 
 # 2.8.2
-##### May 14, 2018
+##### 2018-May-14
 
 #### :tada: New Features
 * Allow performing Merge command when several nodes are selected ([#3774], [#4484], thanks [@ferdibiflator])
@@ -427,7 +786,7 @@ _Activate the Bing Streetside layer by opening the Map Data pane (shortcut <kbd>
 
 
 # 2.8.1
-##### April 24, 2018
+##### 2018-Apr-24
 
 #### :sparkles: Usability
 * Linkify subreddit in community description ([#4997])
@@ -458,7 +817,7 @@ _Activate the Bing Streetside layer by opening the Map Data pane (shortcut <kbd>
 
 
 # 2.8.0
-##### April 16, 2018
+##### 2018-Apr-16
 
 #### :mega: Release Highlights
 * :speech_balloon: We've changed how things look on the post-upload screen.  Now after saving your edits,
@@ -610,7 +969,7 @@ _Reach out to nearby mappers and say hello!_
 
 
 # 2.7.1
-##### March 11, 2018
+##### 2018-Mar-11
 
 #### :tada: New Features
 * Add support for EPSG:4326 WMS layers ([#4858], thanks [@tyrasd])
@@ -655,7 +1014,7 @@ _Reach out to nearby mappers and say hello!_
 
 
 # 2.7.0
-##### March 2, 2018
+##### 2018-Mar-02
 
 #### :mega: Release Highlights
 * :world_map: We've added support for more background imagery from WMS servers. Thanks Martin Raifer [@tyrasd] and Guillaume Rischard [@grischard] for your work on this!
@@ -762,7 +1121,7 @@ _Reach out to nearby mappers and say hello!_
 
 
 # 2.6.1
-##### February 1, 2018
+##### 2018-Feb-01
 
 #### :tada: New Features
 * Add Esri World Imagery (Clarity) layer ([editor-layer-index#391], thanks [@jgravois])
@@ -850,7 +1209,7 @@ _Reach out to nearby mappers and say hello!_
 
 
 # 2.6.0
-##### January 21, 2018
+##### 2018-Jan-21
 
 #### :mega: Release Highlights
 
@@ -1097,7 +1456,7 @@ _Check out the new help texts by opening the Help pane (shortcut <kbd>H</kbd>)._
 
 
 # 2.5.1
-##### November 16, 2017
+##### 2017-Nov-16
 
 #### :sparkles: Usability
 
@@ -1133,7 +1492,7 @@ _Check out the new help texts by opening the Help pane (shortcut <kbd>H</kbd>)._
 
 
 # 2.5.0
-##### November 10, 2017
+##### 2017-Nov-10
 
 #### :mega: Release Highlights
 
@@ -1299,9 +1658,8 @@ _Check out what streetlevel photo coverage is available by opening the Map Data 
 [@humanforklift]: https://github.com/humanforklift
 
 
-
 # 2.4.3
-##### October 9, 2017
+##### 2017-Oct-09
 
 #### :bug: Bugfixes
 
@@ -1328,7 +1686,7 @@ _Check out what streetlevel photo coverage is available by opening the Map Data 
 
 
 # 2.4.2
-##### October 8, 2017
+##### 2017-Oct-08
 
 #### :tada: New Features
 
@@ -1485,7 +1843,7 @@ _Check out what streetlevel photo coverage is available by opening the Map Data 
 
 
 # 2.4.1
-##### August 26, 2017
+##### 2017-Aug-26
 
 #### :bug: Bugfixes
 
@@ -1495,7 +1853,7 @@ _Check out what streetlevel photo coverage is available by opening the Map Data 
 
 
 # 2.4.0
-##### August 25, 2017
+##### 2017-Aug-25
 
 #### :mega: Release Highlights
 
@@ -1629,7 +1987,7 @@ _Check out the new imagery by opening the Background pane (shortcut <kbd>B</kbd>
 
 
 # 2.3.2
-##### July 24, 2017
+##### 2017-Jul-24
 
 #### :tada: New Features
 
@@ -1685,7 +2043,7 @@ _Check out the new imagery by opening the Background pane (shortcut <kbd>B</kbd>
 
 
 # 2.3.1
-##### July 11, 2017
+##### 2017-Jul-11
 
 #### :sparkles: Usability
 
@@ -1701,7 +2059,7 @@ _Check out the new imagery by opening the Background pane (shortcut <kbd>B</kbd>
 
 
 # 2.3.0
-##### July 7, 2017
+##### 2017-Jul-07
 
 #### :tada: New Features
 
@@ -1773,7 +2131,7 @@ _Check out the new imagery by opening the Background pane (shortcut <kbd>B</kbd>
 
 
 # 2.2.2
-##### June 12, 2017
+##### 2017-Jun-12
 
 #### :tada: New Features
 
@@ -1833,7 +2191,7 @@ _Check out the new imagery by opening the Background pane (shortcut <kbd>B</kbd>
 
 
 # 2.2.1
-##### May 12, 2017
+##### 2017-May-12
 
 #### :bug: Bugfixes
 
@@ -1849,7 +2207,7 @@ _Check out the new imagery by opening the Background pane (shortcut <kbd>B</kbd>
 
 
 # 2.2.0
-##### May 9, 2017
+##### 2017-May-09
 
 #### :mega: Release Highlights
 
@@ -2093,7 +2451,7 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 
 
 # 2.1.3
-##### Feb 24, 2017
+##### 2017-Feb-24
 
 #### :bug: Bugfixes
 * Check all blacklist regexs in API imagery blacklist ([#3858], thanks [@tyrasd])
@@ -2121,7 +2479,7 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 
 
 # 2.1.2
-##### Feb 7, 2017
+##### 2017-Feb-07
 
 #### :bug: Bugfixes
 * Fix point dragging regression ([#3829])
@@ -2130,7 +2488,7 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 
 
 # 2.1.1
-##### Feb 6, 2017
+##### 2017-Feb-06
 
 #### :bug: Bugfixes
 * Fix issues with dragging sibling nodes of a selected way ([#3824])
@@ -2152,7 +2510,7 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 
 
 # 2.1.0
-##### Feb 4, 2017
+##### 2017-Feb-04
 
 #### :tada: New Features
 * Add KML and GeoJSON support to GPX layer ([#3811], thanks [@mertemin])
@@ -2304,42 +2662,84 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 
 
 # 2.0.2
-##### Dec 22, 2016
-* Bugfixes:
-  * Update imageryBlacklists function to use blacklists from OSM API (#3623)
-  * Better checks for invalid ids in Select mode (#3640)
-  * Unable to toggle oneway=yes on highways (#3638)
-  * Hide labels along selected ways or near selected vertices (#3636)
-  * Windows/Chrome bug: missing mouseup was getting users stuck and unable to select features (#2151)
-  * Fix map moving with middle mouse click (#3612)
-* New Features:
-  * Pull LTR/RTL list from Transifex instead of hardcoding it (#3489)
-  * Refocus map and selectedIDs on undo/redo (#2204)
-  * Display labels for vertices (#2709)
-* Presets:
-  * Add Waterfall Preset (#3608)
-  * Adjust matchscores so that barrier doesn't take priority over other features (#3647)
-  * Add Public Bath Preset (#3642, thanks @Natsuyasumi)
-  * Remove "Covered" field from Bus Stop preset (#3627)
-  * Add surveillance and camera related presets (#3599, thanks @bkil)
-  * Add amenity=food_court and amenity=crematorium (#3621, thanks @samely)
-  * Add maxheight field and add it to many highway presets (#3605)
-  * Add fence and wall type fields, add height field to some barriers (#3602)
-  * Add presets for Aquarium, Resort, Dance Hall (#3579)
-  * Add Internet Access fields to many presets (#3568, thanks @bkil)
-  * Add highway=traffic_mirror preset (#3568, thanks @bkil)
-  * Improvements to Mast/Tower presets (#3561, thanks @bkil)
+##### 2016-Dec-22
 
-## 2.0.1
-##### Nov 17, 2016
-* Bugfixes:
-  * When starting iD with an object selected, the map should focus on that object (#3588, thanks @tyrasd)
-  * Fix for "Best" imagery not being automatically selected (#3586)
-* Performance improvements:
-  * Adjust max Mapillary pages fetched per zoom, adjust min viewfield zoom
+#### :tada: New Features
+* Pull LTR/RTL list from Transifex instead of hardcoding it ([#3489])
+* Refocus map and selectedIDs on undo/redo ([#2204])
+* Display labels for vertices ([#2709])
 
-## 2.0.0
-##### Nov 15, 2016
+[#3489]: https://github.com/openstreetmap/iD/issues/3489
+[#2204]: https://github.com/openstreetmap/iD/issues/2204
+[#2709]: https://github.com/openstreetmap/iD/issues/2709
+
+#### :bug: Bugfixes
+* Update imageryBlacklists function to use blacklists from OSM API ([#3623])
+* Better checks for invalid ids in Select mode ([#3640])
+* Unable to toggle oneway=yes on highways ([#3638])
+* Hide labels along selected ways or near selected vertices ([#3636])
+* Windows/Chrome bug: missing mouseup was getting users stuck and unable to select features ([#2151])
+* Fix map moving with middle mouse click ([#3612])
+
+[#3623]: https://github.com/openstreetmap/iD/issues/3623
+[#3640]: https://github.com/openstreetmap/iD/issues/3640
+[#3638]: https://github.com/openstreetmap/iD/issues/3638
+[#3636]: https://github.com/openstreetmap/iD/issues/3636
+[#2151]: https://github.com/openstreetmap/iD/issues/2151
+[#3612]: https://github.com/openstreetmap/iD/issues/3612
+
+#### :rocket: Presets
+* Add Waterfall Preset ([#3608])
+* Adjust matchscores so that barrier doesn't take priority over other features ([#3647])
+* Add Public Bath Preset ([#3642], thanks [@Natsuyasumi])
+* Remove "Covered" field from Bus Stop preset ([#3627])
+* Add surveillance and camera related presets ([#3599], thanks [@bkil])
+* Add amenity=food_court and amenity=crematorium ([#3621], thanks [@samely])
+* Add maxheight field and add it to many highway presets ([#3605])
+* Add fence and wall type fields, add height field to some barriers ([#3602])
+* Add presets for Aquarium, Resort, Dance Hall ([#3579])
+* Add Internet Access fields to many presets ([#3568], thanks [@bkil])
+* Add highway=traffic_mirror preset ([#3568], thanks [@bkil])
+* Improvements to Mast/Tower presets ([#3561], thanks [@bkil])
+
+[#3608]: https://github.com/openstreetmap/iD/issues/3608
+[#3647]: https://github.com/openstreetmap/iD/issues/3647
+[#3642]: https://github.com/openstreetmap/iD/issues/3642
+[#3627]: https://github.com/openstreetmap/iD/issues/3627
+[#3599]: https://github.com/openstreetmap/iD/issues/3599
+[#3621]: https://github.com/openstreetmap/iD/issues/3621
+[#3605]: https://github.com/openstreetmap/iD/issues/3605
+[#3602]: https://github.com/openstreetmap/iD/issues/3602
+[#3579]: https://github.com/openstreetmap/iD/issues/3579
+[#3568]: https://github.com/openstreetmap/iD/issues/3568
+[#3568]: https://github.com/openstreetmap/iD/issues/3568
+[#3561]: https://github.com/openstreetmap/iD/issues/3561
+
+[@Natsuyasumi]: https://github.com/Natsuyasumi
+[@bkil]: https://github.com/bkil
+[@samely]: https://github.com/samely
+
+
+# 2.0.1
+##### 2016-Nov-17
+
+#### :bug: Bugfixes
+* When starting iD with an object selected, the map should focus on that object ([#3588], thanks [@tyrasd])
+* Fix for "Best" imagery not being automatically selected ([#3586])
+
+[#3588]: https://github.com/openstreetmap/iD/issues/3588
+[#3586]: https://github.com/openstreetmap/iD/issues/3586
+
+[@tyrasd]: https://github.com/tyrasd
+
+#### :hourglass: Performance
+* Adjust max Mapillary pages fetched per zoom, adjust min viewfield zoom
+
+
+# 2.0.0
+##### 2016-Nov-15
+
+#### :boom: Breaking Changes
 * :warning: iD is now written in a modular code style using ES6 `import`/`export` and [rollup.js](http://rollupjs.org/) as a build tool (#3118, #3179, #3180)
   * Many thanks to @tmcw, @kepta, @tyrasd, @beaugunderson, @davidchouse
 * :warning: Flattened namespace means that all functions have changed names (#3479)
@@ -2426,8 +2826,84 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
   * Throttled redrawing (#3360, thanks @guillaume)
   * Use fewer steps for interpolated breathe behavior (#2911)
 
-## 1.9.7
-##### Jul 16, 2016
+#### :tada: New Features
+* `ui()` initializer now accepts a callback that will be called when loadLocale is finished (#3550)
+* Vertex keyboard navigation (#1917, #3539)
+  * `[` or `pageup` - jump to previous vertex
+  * `]` or `pagedown` - jump to next vertex
+  * `⌘[` or `home` - jump to first vertex
+  * `⌘]` or `end` - jump to last vertex
+  * `\` or `pause-break` - select next parent, if at intersection
+* OSM API calls are now authenticated for logged in users (helps with (#3519, #2262)
+* When reversing a way, reverse tags on its child nodes (#3076, thanks @Psigio)
+* Allow user to click an 'X' to remove an item from the selection list (#2950, thanks @ebrelsford)
+* Bundled Mapillary JS plugin upgraded to v2.0 (#3496)
+* Allow `Del` key as a without modifier as a Delete shortcut (#3455)
+
+#### :bug: Bugfixes
+* Prevent imagery offset nudging buttons from getting stuck if user clicks again (#3576)
+* Don't include terms for non-searchable presets in translation source (#3323)
+* Let user know if the documentation points to a redirect page (#3337)
+* Fix line labeling placement for IE11, Edge (#3020)
+* Better label placement, use smaller collision boxes (#1645)
+* Allow "network", "genus", "taxon", "species" taginfo lookups to expect uppercase values (#3377)
+* Fix way disappearing due to invalid "layer" tag (#3405, thanks @edpop)
+* Add radix parameter for all `parseInt` calls (#3399, thanks @HolgerJeromin)
+* Don't limit movement of vertex that combines two endpoints (#2731)
+* Don't use checks in walkthrough navigation (#3247)
+* Default Wikipedia language field to user's language, not English (#3265)
+
+#### :earth_asia: Localization
+* Address field improvements - eliminate duplicates, more dropdowns for address fields (#3553)
+* Support Right to Left interface for some languages 'ar', 'fa', 'iw', 'dv' (#3007, #3087, thanks @mapmeld)
+* Remove diacritics (accented chars) when doing fuzzy searches (#3159)
+
+#### :hourglass: Performance
+* Clip area polygons and clippaths to padded viewport (#3529)
+* Throttled redrawing (#3360, thanks @guillaume)
+* Use fewer steps for interpolated breathe behavior (#2911)
+
+#### :rocket: Presets
+* Add Construction and Tower Type fields to Mast and Tower presets (#3561, thanks @bkil)
+* Add Turning Loop (Island) preset, adjust icons for traversable/nontraversable features (#3557)
+* Add Internet Cafe preset (#3559)
+* Improve styling of Farmyards (#3556, thanks @Thue)
+* Add Guest Apartment / Condo preset (#3548)
+* Add Waste Transfer preset (#3387)
+* Add Billboard preset (#3386)
+* Improve traffic calming presets (#3218)
+* Improve waste and recycling presets (#2689)
+* Rename Camp Site to Campground, and add preset for individual camp pitches (#3385)
+* Multiselect field for Bike Shop services (#3517, thanks @willemarcel)
+* Add presets for Nail Salon, Tanning Salon (#3516, thanks @skorasaurus)
+* Split golf water_hazard presets into separate line and area presets (#3483)
+* Update terms lists for Anime preset (#3478, thanks @mbrickn)
+* Add Pastry Shop preset (#3444, thanks @Dgleish)
+* Add maxspeed field to Railway preset (#3458, thanks @boothym)
+* Add E-Cigarette Shop preset (#3457, thanks @boothym)
+* Add capacity field to Charging Station preset (#3458, thanks @boothym)
+* Add Pumping Station preset (#3384, thanks @kepta)
+* Improve Railway crossing presets (#3395, thanks @boothym)
+* Improve Gym and Sports Center presets (#3352, thanks @boothym)
+* Add Coworking Space preset (#3381, thanks @willemarcel)
+* Add access_simple field for Basketball, Tennis, Garden presets (#3336, thanks @Psigio)
+* Add icon to fire hydrant preset (#3380, thanks @bagage)
+* Add Yoga Studio preset (#3352, thanks @Psigio)
+* Add Bowling Green preset (#3363, thanks @boothym)
+* Add more fields ("support", "display", "visibility", "date") to Clock preset (#3318, thanks @HolgerJeromin)
+* Add more values to the speed limit field (#3316, thanks @1ec5)
+* Add network combo field for route relations (#3302, thanks @1ec5)
+* Add Blood Donor Center preset (#3285, thanks @M1dgard)
+* Add indoor yes/no field for Defibrillator preset (#3284, thanks @M1dgard)
+* Add Miniature Golf preset (#3279, thanks @boothym)
+* Add second_hand field for shop=car preset (#3274, thanks @skorasaurus)
+* Add Planetarium preset (#3268, thanks @willemarcel)
+* Add Ice Cream Shop preset (#3253, thanks @ankit-m)
+* Add Taiwan address format to Address field (#3261, thanks @david082321)
+
+
+# 1.9.7
+##### 2016-Jul-16
 * Treat features on `addr:interpolation` lines as points, not vertices (#3241)
 * Add ref field to `amenity=post_box` preset (#3232, thanks @boothym)
 * Fix crash calling `_.all` when moving multiple features (#3155, thanks @tyrasd)
@@ -2444,14 +2920,16 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Fix mph/kph imperial units test in maxspeed (#3156)
 * Fix d3 bug causing map to translate far away when zooming under heavy load (#2773, thanks @kepta)
 
-## 1.9.6
-##### Jun 7, 2016
+
+# 1.9.6
+##### 2016-Jun-07
 * Embed interactive Mapillary JS viewer instead of static image (#3128, thanks @kepta, @peterneubauer)
 * Add "grill" as search term for `amenity=bbq` preset (#3139, thanks @manfredbrandl)
 * When setting Wikipedia value, also set corresponding Wikidata tag (#2732, thanks @1ec5)
 
-## 1.9.5
-##### May 25, 2016
+
+# 1.9.5
+##### 2016-May-25
 * Clean translated combo value when comparing to display value (#3129)
 * Change color of Save button as user edits increase (#2749, thanks @tanerochris)
 * Migrate to lodash v4 (#3107, thanks @kepta)
@@ -2471,8 +2949,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Move generic Building preset to top of Building category list (#3102)
 * Update Wikipedia list (#3098, thanks @1ec5)
 
-## 1.9.4
-##### May 3, 2016
+
+# 1.9.4
+##### 2016-May-03
 * Fix bug causing save button to remain disabled even when changeset comment is entered (#3096)
 * Support setting imagery offset via url hash parameter (#3093)
 * Don't allow user to straighten a line if start/end nodes are at the same location (#2792)
@@ -2488,8 +2967,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Lower popularity thresholds for taginfo lookups
 * Support looking up languages by English or local names (#3023, thanks @mapmeld)
 
-## 1.9.3
-##### Apr 25, 2016
+
+# 1.9.3
+##### 2016-Apr-25
 * Display "Choose language" placeholder value for Wikipedia language field (#3071)
 * Add prison preset (#3070, thanks @kepta)
 * Improve `studio=*` tagging (#3061, thanks @kepta)
@@ -2510,8 +2990,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Add nutrition supplements store preset (#3043)
 * Add coffee shop preset (#3042)
 
-## 1.9.2
-##### Mar 18, 2016
+
+# 1.9.2
+##### 2016-Mar-18
 * Avoid jumpiness when dragging node markers (#3003)
 * Rename "Dock" -> "Wet Dock / Dry Dock" (#3030)
 * Refresh lables when switching to a new GPX file (#3032)
@@ -2525,13 +3006,15 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Allow drawing of freeform shapes when using the shift-click-drag lasso selection tool (#2937, thanks @kepta)
 * Rename "Major Roads" -> "Traffic Roads", "Minor Roads" -> "Service Roads" in feature filter list
 
-## 1.9.1
-##### Mar 3, 2016
+
+# 1.9.1
+##### 2016-Mar-03
 * Add context.asset for building asset filenames, use for Mapillary Traffico files (#3011)
 * Fix crash in starting tutorial, bad selector for .layer-background opacity (#3010)
 
-## 1.9.0
-##### Mar 1, 2016
+
+# 1.9.0
+##### 2016-Mar-01
 * Fix rendering of modified/moved multipolygons (#3008)
 * Preserve connectivity when pasting (#2584, thanks @jfirebaugh)
 * Fix rendering of bumpy surfaces in turn restriction editor (#3004)
@@ -2574,14 +3057,16 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Correct typo "Platic" -> "Plastic" (#2925, thanks @M1dgard)
 * Rename "Unclassified Road" to "Minor Road" (#2916)
 
-## 1.8.5
-##### Jan 18, 2016
+
+# 1.8.5
+##### 2016-Jan-18
 * Fix address field to not lose focus while typing (#2903, #2320)
 * Bugfixes for Internet Explorer (classList #2909, parentElement #2910)
 * Presets for various man_made tags (#2893, thanks @manfredbrandl)
 
-## 1.8.4
-##### Jan 6, 2016
+
+# 1.8.4
+##### 2016-Jan-06
 * Block UI, disable draws while fetching missing childnodes when user restores saved work
 * Add iD.Map#redrawEnable to enable/disable redraws
 * Don't select filtered hidden vertices with the lasso
@@ -2619,12 +3104,14 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
   * Display Help button in walkthrough, stay on it longer (#2364)
 * Set 'Content-Type': 'text/xml' when closing changeset (fix for IE auth warning) (#2874)
 
-## 1.8.3
-##### Dec 11, 2015
+
+# 1.8.3
+##### 2015-Dec-11
 * Replace nonstandard Array `find` with `_.find` for IE11 (#2871)
 
-## 1.8.2
-##### Dec 10, 2015
+
+# 1.8.2
+##### 2015-Dec-10
 * Better save and restore map state when entering walkthrough
 * Add maxstay field for amenity=parking preset (#2851)
 * Add presets for popular vending machines (#2827, thanks @henningvs)
@@ -2633,8 +3120,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Don't set `building=yes` for `amenity=fuel` preset (#2857)
 * Eliminate rounding causing jumpiness and loss of precision (#2849)
 
-## 1.8.1
-##### Dec 2, 2015
+
+# 1.8.1
+##### 2015-Dec-02
 * Fix tag help lookup (#2844)
 * Support Internet Explorer 11 and Edge browsers (#2571)
 * New road styling for bumpy/unpaved roads (#2564, #2750, #2847)
@@ -2644,8 +3132,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Fix language detection when `navigator.languages` is empty (#2838) (thanks @jleedev)
 * Support multiple overlays and fix alignment of minimap (#2813) (thanks @brianreavis)
 
-## 1.8.0
-##### Nov 7, 2015
+
+# 1.8.0
+##### 2015-Nov-07
 * Don't update the urlhash during the walkthrough (#1795)
 * Add surface type to parking preset (#2816)
 * Make 100% background brightness the default (#2824)
@@ -2671,12 +3160,13 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Better handling of multilingual `alt_name`, `old_name`, etc (#2658)
 * Add preset for Semi-Detached House (#2776)
 
-## 1.7.5
-##### Sep 28, 2015
+# 1.7.5
+##### 2015-Sep-28
 * Relicense iD with ISC license
 
-## 1.7.4
-##### Sep 15, 2015
+
+# 1.7.4
+##### 2015-Sep-15
 * Show docs for the selected value in raw tag editor (#2754) (Thanks @M1dgard)
 * Improve display of implied values in access UI field (#2763)
 * Better handling of preset search terms (#2756) (Thanks @M1dgard)
@@ -2711,8 +3201,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Add cycleway UI field for highways with bike lanes (#2686) (Thanks @ebrelsford)
 * Improve appearance of Mapillary markers (#2690) (Thanks @pgiraud)
 
-## 1.7.3
-##### Jun 10, 2015
+
+# 1.7.3
+##### 2015-Jun-10
 * Add fee field to toilet preset (#2639) (Thanks @alexandrz)
 * Several improvements for more reliable save and post-save data fetch (#2667)
 * Use locale passed in from container iframe instead of detected locale (#2672)
@@ -2730,13 +3221,15 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Performance improvements for iD.Difference
 * Fix error restoring changes after deleting a node (#2637)
 
-## 1.7.2
-##### May 3, 2015
+
+# 1.7.2
+##### 2015-May-03
 * Fix for 404 Error caused by duplicates in multi-fetch node request (#2626)
 * Fix oil well preset (#2621) (Thanks @1ec5)
 
-## 1.7.1
-##### Apr 30, 2015
+
+# 1.7.1
+##### 2015-Apr-30
 * Add oil well preset (#2618) (Thanks @1ec5)
 * Add radio mast preset (#2613) (Thanks @1ec5)
 * Don't commit empty changesets (#1483)
@@ -2764,8 +3257,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Resolve editing conflicts before saving (#2525, #1053)
 * Don't delete ways from route, boundary, multipolygon relations (#2526, #1461) (Thanks @systemed)
 
-## 1.7.0
-##### Feb 12, 2015
+
+# 1.7.0
+##### 2015-Feb-12
 * Fix typo in smoothness field - should be "impassable" (#2523)
 * Update to Mapillary API v2 calls (#2522) (Thanks @peterneubauer)
 * Add Rounded tooltips (#2521) (Thanks @samanpwbb)
@@ -2799,12 +3293,14 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Allow customization of presets, imagery, and taginfo
   * :warning: These _must_ be set when creating an`iD()` object - see `index.html` example
 
-## 1.6.2
-##### Oct 24, 2014
+
+# 1.6.2
+##### 2014-Oct-24
 * Fix "TypeError: r is undefined" (#2421)
 
-## 1.6.1
-##### Oct 23, 2014
+
+# 1.6.1
+##### 2014-Oct-23
 * Remember raw tag editor expansion state across sessions (#2416)
 * Translate text in changes section on save panel (#2417)
 * Encode URL hash correctly (#2406)
@@ -2814,8 +3310,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Include state/province in U.S. and Canadian address formats
 * Improve the error message on saving when offline (#2373)
 
-## 1.6.0
-##### Oct 6, 2014
+
+# 1.6.0
+##### 2014-Oct-06
 * Add network field to Road Route relation preset (#2372)
 * Updated TIGER layer to use TIGER 2014
 * Added support for street-level imagery from Mapillary
@@ -2825,41 +3322,47 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Improved a variety of presets
 * Added `comment` url param to prefill changeset comment (#2311)
 
-## 1.5.4
-##### Jul 29, 2014
+
+# 1.5.4
+##### 2014-Jul-29
 * Do not fully fill certain landuse values, e.g. landuse=residential (#542)
 * Class midpoints to match parent way and adjust styles
 * Test visibility of gpx coords instead of just comparing extents
 
-## 1.5.3
-##### Jul 25, 2014
+
+# 1.5.3
+##### 2014-Jul-25
 * When adding gpx, only rezoom map if gpx not in viewport (#2297)
 * Workaround for Chrome crash (#2295)
 * Add mtb fields (#2244)
 * Support option strings for combo fields (#2296)
 * Render triangular midpoints to show direction of any selected way (#2292)
 
-## 1.5.2
-##### Jul 15, 2014
+
+# 1.5.2
+##### 2014-Jul-15
 * Fixed Chrome/Windows selection bug (#2151)
 * Don't automatically tag motorways, etc. as oneway=yes
 * Disable Move and Rotate operations if area < 80% contained in the viewport
 
-## 1.5.1
-##### Jul 10, 2014
+
+# 1.5.1
+##### 2014-Jul-10
 * Fix mixed content errors on https osm.org (#2281)
 * Fix suggested access values for parking (#2280)
 
-## 1.5.0
-##### Jul 8, 2014
+
+# 1.5.0
+##### 2014-Jul-08
 * Add support for localized address fields (#2246)
 * Rendering improvements for layers (#2250)
 * Add a map scale (#2266)
 * Fix preset buttons (#2247)
 * Better midpoint rendering (#2257)
 
-## 1.4.0
-##### May 29, 2014
+
+# 1.4.0
+##### 2014-May-29
 * Ensure combobox menus are closed on blur (#2207)
 * Limit imagery_used tag to 255 characters (#2181)
 * Simplify and fix midpoint drawing logic (#2136)
@@ -2869,15 +3372,16 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * oneway fields now show "Assumed to be No" or "Assumed to be Yes" instead of "Unknown" (#2220)
 * Add turn restriction editor
 
-## 1.3.10
-##### May 21, 2014
+
+# 1.3.10
+##### 2014-May-21
 * `oneway=no` overrides implicit oneways on junction=roundabout, etc. (#2220)
 * Add presets for fords, parking_entrance, charging_station, compressed_air, churchyard, shop=wine
 * Improve access placeholders (#2221)
 * Trim tag keys, and prevent duplicate tag keys (#2043)
 * Fix inline tag help for fields that handle multiple tags
 * Add 'width', 'length', 'lit' for appropriate presets (cycleways, sidewalks, sports pitch, etc)
-* Render embarkment/cutting with dashed casing
+* Render embankment/cutting with dashed casing
 * Rendering fixes for buildings, tunnels
 * Add population field for various place presets
 * Improvements to circularize action (#2194)
@@ -2885,16 +3389,18 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Area fill colors in preset icons match map fill colors
 * Add fill style for landuse=military
 
-## 1.3.9
-##### Apr 9, 2014
+
+# 1.3.9
+##### 2014-Apr-09
 * Prevent closed areas from invalid disconnection (#2178)
 * Remove layer field from waterway=stream
 * Add preset for place=suburb and shop=seafood
 * Remember last custom tile layer (#2094)
 * Mapbox Satellite now supports z17-z19
 
-## 1.3.8
-##### Mar 28, 2014
+
+# 1.3.8
+##### 2014-Mar-28
 * Disable circularize and orthogonalize operations when way is <80% contained in the viewport
 * Add place=neighbourhood preset
 * Add denomination=* field for cemetary, graveyard, funeral home
@@ -2918,8 +3424,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Remove building_area from hospital, school, kindergarden
 * Fix recycling field keys (#2140)
 
-## 1.3.7
-##### Feb 25, 2014
+
+# 1.3.7
+##### 2014-Feb-25
 * Added building presets
 * Improve how tags are merged when merging to a multipolygon
 * Disable merge operation if at least one relation is incomplete
@@ -2928,16 +3435,18 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Fix duplicate/missing objects after restoring data from localStorage
 * Remove addr:housename field from address preset
 
-## 1.3.6
-##### Feb 5, 2014
+
+# 1.3.6
+##### 2014-Feb-05
 * More protection against relation loops (#2096)
 * Fix freeze when using Clinic preset (#2102)
 * Allow rotating closed multipolygon members (#1718)
 * Bump threshold for Orthogonalize to 12 degrees
 * Added social_facility presets (#2109)
 
-## 1.3.5
-##### Jan 8, 2014
+
+# 1.3.5
+##### 2014-Jan-08
 * Smoother and faster panning, zooming, and tooltips
 * Fix bug relating to deleted nodes outside the viewport (#2085)
 * Ensure "New Relation..." is always available (#2066)
@@ -2955,8 +3464,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
   gauge field, electrified field, tunnel field, crafts, doctor, dentist, clinic, studio, aerialways,
   and pistes.
 
-## 1.3.4
-##### Nov 26, 2013
+
+# 1.3.4
+##### 2013-Nov-26
 * Replace TIGER 2012 layer with next-generation TIGER 2013 layer (#2010)
 * Add tooltips to "untagged feature" warnings
 * Add pressets and category for golf features (#2013)
@@ -2965,8 +3475,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Add "quick add" presets for common proper names
 * Fix zoom to feature when clicking search results (#2023)
 
-## 1.3.3
-##### Nov 22, 2013
+
+# 1.3.3
+##### 2013-Nov-22
 * Support for loading GPX-files via url parameter (#1965)
 * Update osm-auth (#1904)
 * Update 3rd party dependencies (Lo-Dash, D3, RBush)
@@ -2976,8 +3487,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Improved warning visibility (#1973)
 * Fix undo-related bug (#1978)
 
-## 1.3.2
-##### Nov 14, 2013
+
+# 1.3.2
+##### 2013-Nov-14
 * Update maki
 * Fix Disconnect of way with multiple intersections (#1955)
 * Fix unclosed area rendering (#1958)
@@ -2990,15 +3502,17 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Distinguish between power=line and power=minor_line
 * Reset invalid opacity values to default (#1923)
 
-## 1.3.1
-##### Oct 26, 2013
+
+# 1.3.1
+##### 2013-Oct-26
 * Fix misalignment -> Fix alignment (#1913)
 * Update maki (#1916)
 * Prioritize boundary tag to minimize area fills (#1920)
 * Fix background defaulting to 0% brightness (#1923)
 
-## 1.3.0
-##### Oct 24, 2013
+
+# 1.3.0
+##### 2013-Oct-24
 * Fix corner case that could cause getting stuck in drag mode (#1910)
 * Improved display of changed objects in save screen
 * Improved performance
@@ -3028,8 +3542,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Workaround cosmetic issues caused by a Chrome regression (#1879)
 * New presets: man_made=observation, shop=locksmith, leisure=common and more
 
-## 1.2.1
-##### Sep 30, 2013
+
+# 1.2.1
+##### 2013-Sep-30
 * Split only the line of a node shared by a line and an area
 * Handle multipolygon corner case when splitting (#1799)
 * Don't automatically apply building tags to shop=car (#1813)
@@ -3043,8 +3558,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Improve circularize action
 * Add more tags to areas list
 
-## 1.2.0
-##### Sep 26, 2013
+
+# 1.2.0
+##### 2013-Sep-26
 * Don't auto-save intro tutorial edits (#1745, #1795)
 * Added waypoint display to GPX layer
 * Added "Straighten" operation
@@ -3063,14 +3579,16 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Insert areas in sorted order (#1693)
 * Fix some walkthrough glitches (#1744)
 
-## 1.1.6
-##### Aug 24, 2013
+
+# 1.1.6
+##### 2013-Aug-24
 * Fix walkthrough on Firefox (#1743)
 * Fix icon at end of walkthough (#1740)
 * Fix walkthrough (#1739)
 
-## 1.1.5
-##### Aug 23, 2013
+
+# 1.1.5
+##### 2013-Aug-23
 * Add amenity=ranger_station preset (1723)
 * Add terms for tourism=artwork (#1726)
 * Reduce prominence of share links, add G+
@@ -3083,14 +3601,16 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Fix error when deleting a triangle vertex (#1712)
 * Add support for an externally provided asset map (#1699)
 
-## 1.1.4
-##### Aug 17, 2013
+
+# 1.1.4
+##### 2013-Aug-17
 * Fix adding multilingual name (#1694)
 * Fix social buttons (#1690)
 * Work around a Firefox bug that sometimes caused elements to be unselectable or stuck dragging (#1691, #1692)
 
-## 1.1.3
-##### Aug 15, 2013
+
+# 1.1.3
+##### 2013-Aug-15
 * Fix behavior of enter key in name field (#1681)
 * Remove area=yes when choosing an area preset (#1684)
 * Save history more frequently (#1345)
@@ -3101,20 +3621,23 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * Refine power=generator preset (#1675)
 * Add leisure=track preset (#1683)
 
-## 1.1.2
-##### Aug 12, 2013
+
+# 1.1.2
+##### 2013-Aug-12
 * Fix cursor offset when clicking/dragging after resizing the window (#1678)
 * Include low-frequency tag values if they have a wiki entry
 * Fix tag value suggestions in preset comboboxes (#1679, #1680)
 
-## 1.1.1
-##### Aug 9, 2013
+
+# 1.1.1
+##### 2013-Aug-09
 * Improve performance when drawing
 * Tail should appear only first time
 * Fix radial menu tooltip positioning on Firefox
 
-## 1.1.0
-##### Aug 9, 2013
+
+# 1.1.0
+##### 2013-Aug-09
 * Fix radial menu tooltip positioning
 
 ## 1.1.0rc1
@@ -3166,9 +3689,9 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 * The sidebar now has a searchable Feature List (#1545)
 * You can add a member to a relation via the "All relations" section of the sidebar
 
-## 1.0.1
-##### May 10, 2013
-* Test, imagery, translations, and preset updates
+# 1.0.1
+##### 2013-May-10
+* Test, imagery, translation, and preset updates
 * Fix untranslatable strings
 * Prefer to keep existing ways when joining
 * Fix creating intersecting ways and cope with 0 and 1 node ways

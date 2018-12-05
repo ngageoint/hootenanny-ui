@@ -10,8 +10,6 @@ import {
     select as d3_select
 } from 'd3-selection';
 
-import { d3keybinding as d3_keybinding } from '../lib/d3.keybinding.js';
-
 import { t, textDirection } from '../util/locale';
 import { svgIcon } from '../svg';
 import { uiBackgroundDisplayOptions } from './background_display_options';
@@ -56,6 +54,8 @@ export function uiBackground(context) {
             var description = d.description();
             var isOverflowing = (span.property('clientWidth') !== span.property('scrollWidth'));
 
+            item.call(tooltip().destroyAny);
+
             if (d === _previousBackground) {
                 item.call(tooltip()
                     .placement(placement)
@@ -70,8 +70,6 @@ export function uiBackground(context) {
                     .placement(placement)
                     .title(description || d.name())
                 );
-            } else {
-                item.call(tooltip().destroy);
             }
         });
     }
@@ -370,7 +368,7 @@ export function uiBackground(context) {
 
         var pane = selection
             .append('div')
-            .attr('class', 'fillL map-pane col4 hide');
+            .attr('class', 'fillL map-pane hide');
 
         var paneTooltip = tooltip()
             .placement((textDirection === 'rtl') ? 'right' : 'left')
@@ -530,13 +528,9 @@ export function uiBackground(context) {
 
         update();
 
-        var keybinding = d3_keybinding('background')
+        context.keybinding()
             .on(key, togglePane)
-            .on(uiCmd('⌘' + key), quickSwitch)
-            .on([t('map_data.key'), t('help.key')], hidePane);
-
-        d3_select(document)
-            .call(keybinding);
+            .on(uiCmd('⌘' + key), quickSwitch);
 
         uiBackground.hidePane = hidePane;
         uiBackground.togglePane = togglePane;

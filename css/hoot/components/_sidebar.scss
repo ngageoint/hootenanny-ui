@@ -346,78 +346,78 @@
     }
 }
 
-@media only screen and (max-width: 1160px) {
-    #sidebar {
-        width: 300px;
-        min-width: 300px;
-
-        .wrapper {
-            padding: 20px 15px;
-        }
-
-        fieldset {
-            padding: 15px 10px;
-        }
-    }
-
-    .layer-add {
-        .palette a {
-            width: 30px;
-            height: 30px;
-
-            &._osm {
-                width: 30px !important;
-                height: 28px !important;
-            }
-
-            &.active:before {
-                top: 5px;
-                left: 5px;
-            }
-        }
-
-        .layer-add-table .dsizeTxt {
-            display: none;
-        }
-    }
-}
-
-@media only screen and (max-width: 900px) {
-    #sidebar {
-        width: 250px;
-        min-width: 250px;
-
-        .wrapper {
-            padding: 20px 10px;
-        }
-    }
-
-    .sidebar-form .toggle-button {
-        font-size: 13px;
-
-        &::before {
-            margin-left: -15px;
-        }
-    }
-
-    .layer-add {
-        .palette a {
-            width: 25px;
-            height: 25px;
-
-            &._osm {
-                width: 25px !important;
-                height: 23px !important;
-            }
-
-            &.active:before {
-                top: 3px;
-                left: 2px;
-            }
-        }
-
-        .layer-add-table .dnameTxt {
-            font-size: 9px;
-        }
-    }
-}
+//@media only screen and (max-width: 1160px) {
+//    #sidebar {
+//        width: 300px;
+//        min-width: 300px;
+//
+//        .wrapper {
+//            padding: 20px 15px;
+//        }
+//
+//        fieldset {
+//            padding: 15px 10px;
+//        }
+//    }
+//
+//    .layer-add {
+//        .palette a {
+//            width: 30px;
+//            height: 30px;
+//
+//            &._osm {
+//                width: 30px !important;
+//                height: 28px !important;
+//            }
+//
+//            &.active:before {
+//                top: 5px;
+//                left: 5px;
+//            }
+//        }
+//
+//        .layer-add-table .dsizeTxt {
+//            display: none;
+//        }
+//    }
+//}
+//
+//@media only screen and (max-width: 900px) {
+//    #sidebar {
+//        width: 250px;
+//        min-width: 250px;
+//
+//        .wrapper {
+//            padding: 20px 10px;
+//        }
+//    }
+//
+//    .sidebar-form .toggle-button {
+//        font-size: 13px;
+//
+//        &::before {
+//            margin-left: -15px;
+//        }
+//    }
+//
+//    .layer-add {
+//        .palette a {
+//            width: 25px;
+//            height: 25px;
+//
+//            &._osm {
+//                width: 25px !important;
+//                height: 23px !important;
+//            }
+//
+//            &.active:before {
+//                top: 3px;
+//                left: 2px;
+//            }
+//        }
+//
+//        .layer-add-table .dnameTxt {
+//            font-size: 9px;
+//        }
+//    }
+//}

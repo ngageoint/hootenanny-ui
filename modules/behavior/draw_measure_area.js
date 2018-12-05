@@ -4,13 +4,13 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/24/18
  *******************************************************************************************************/
 
-import { utilRebind }                    from '../util/rebind';
-import { d3keybinding as d3_keybinding } from '../lib/d3.keybinding';
-import { geoEuclideanDistance }          from '../geo';
+import { utilRebind }           from '../util/rebind';
+import { utilKeybinding }       from '../util/keybinding';
+import { geoEuclideanDistance } from '../geo';
 
 export function behaviorDrawMeasureArea( context, svg ) {
     let dispatch        = d3.dispatch( 'move', 'click', 'undo', 'cancel', 'finish', 'dblclick' ),
-        keybinding      = d3_keybinding( 'measure' ),
+        keybinding      = utilKeybinding( 'measure' ),
         closeTolerance  = 4,
         tolerance       = 12,
         rectMargin      = 30,

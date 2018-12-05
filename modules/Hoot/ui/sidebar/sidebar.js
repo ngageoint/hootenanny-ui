@@ -105,11 +105,12 @@ export default class Sidebar {
      * @param reset - whether to reset to original width or not
      */
     resize( target, reset ) {
-        let width = reset ? 400 : d3.mouse( target.parentNode )[ 0 ];
+        // let width = reset ? 400 : d3.mouse( target.parentNode )[ 0 ];
+        let width = d3.mouse( target.parentNode )[ 0 ];
 
         this.iDSidebar.style( 'width', width + 'px' );
 
-        d3.select( '#bar' ).style( 'left', this.iDSidebar.node().clientWidth + 'px' );
+        // d3.select( '#bar' ).style( 'left', this.iDSidebar.node().clientWidth + 'px' );
     }
 
     createWrapper() {
@@ -209,8 +210,8 @@ export default class Sidebar {
         Hoot.events.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
         Hoot.events.on( 'layer-merged', () => this.layerMerged() );
 
-        d3.select( window ).on( 'resize', () => {
-            d3.select( '#bar' ).style( 'left', this.iDSidebar.node().clientWidth + 'px' );
-        } );
+        // d3.select( window ).on( 'resize', () => {
+        //     d3.select( '#bar' ).style( 'left', this.iDSidebar.node().clientWidth + 'px' );
+        // } );
     }
 }

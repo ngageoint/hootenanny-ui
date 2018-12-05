@@ -4,13 +4,13 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/23/18
  *******************************************************************************************************/
 
-import { utilRebind }                    from '../util/rebind';
-import { d3keybinding as d3_keybinding } from '../lib/d3.keybinding';
-import { geoEuclideanDistance }          from '../geo';
+import { utilRebind }           from '../util/rebind';
+import { utilKeybinding }       from '../util/keybinding';
+import { geoEuclideanDistance } from '../geo';
 
 export function behaviorDrawMeasureLine( context, svg ) {
     let dispatch       = d3.dispatch( 'move', 'click', 'undo', 'cancel', 'finish', 'dblclick' ),
-        keybinding     = d3_keybinding( 'measure' ),
+        keybinding     = utilKeybinding( 'measure' ),
         closeTolerance = 4,
         tolerance      = 12,
         lastPoint      = null,
@@ -90,7 +90,7 @@ export function behaviorDrawMeasureLine( context, svg ) {
         let c = context.projection( context.map().mouseCoordinates() );
 
         svg.append( 'g' )
-            .classed( 'node point measure-vertex-' + nodeId , true )
+            .classed( 'node point measure-vertex-' + nodeId, true )
             .attr( 'transform', 'translate(' + c[ 0 ] + ',' + c[ 1 ] + ')' );
 
         totDist     = totDist + segmentDist;

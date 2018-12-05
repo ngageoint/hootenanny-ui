@@ -75,8 +75,9 @@
             }
         } )
         .catch( err => {
+            console.log( err );
             // user not logged in - redirect to login page
-            window.location.replace( 'login.html' ); // no slash appends relative URI to end of base path
+            // window.location.replace( 'login.html' ); // no slash appends relative URI to end of base path
         } );
 </script>
 </body>

@@ -11,7 +11,7 @@ import { tooltip }     from '../util/tooltip';
 import { tooltipHtml } from '../Hoot/tools/utilities';
 import { svgIcon }     from '../svg';
 
-import { d3keybinding as d3_keybinding } from '../lib';
+import { utilKeybinding } from '../util';
 
 export function uiDgcarousel( context ) {
     let key = '⌘I',
@@ -334,7 +334,7 @@ export function uiDgcarousel( context ) {
         context.background()
             .on( 'baseLayerChange.carousel-update', _debounce( getImageMetadata, 1000 ) );
 
-        let keybinding = d3_keybinding( 'dgcarousel' )
+        let keybinding = utilKeybinding( 'dgcarousel' )
             .on( key, toggle );
 
         d3.select( document )
