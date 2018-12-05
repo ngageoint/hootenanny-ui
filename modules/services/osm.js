@@ -54,9 +54,9 @@ var oauth = osmAuth({
     done: authDone
 });
 
-// oauth.authenticated = function() {
-//     return true;
-// };
+oauth.authenticated = function() {
+    return true;
+};
 
 var _blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'];
 var _tileCache = { loaded: {}, inflight: {}, seen: {} };
@@ -1267,7 +1267,6 @@ export default {
             that.userChangesets(function() {});  // eagerly load user details/changesets
         }
 
-        return (services.hoot.hasOsmLayer()) ? oauth.authenticate(done) : done();
         return oauth.authenticate(done);
     },
 
