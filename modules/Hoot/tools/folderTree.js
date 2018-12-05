@@ -122,6 +122,16 @@ export default class FolderTree extends EventEmitter {
             .attr( 'height', this.height )
             .append( 'g' )
             .attr( 'transform', `translate( ${this.margin.left}, ${this.margin.top} )` );
+
+        if ( this.isDatasetTable ) {
+            this.expiringTooltip = d3.select( '#manage-datasets' )
+                .selectAll( '.tooltip-old-dataset' )
+                .data( [ 0 ]  )
+                .enter()
+                .append( 'div' )
+                .classed( 'tooltip-old-dataset', true )
+                .text( 'This dataset has not been used in a while.' );
+        }
     }
 
     /**
@@ -328,6 +338,8 @@ export default class FolderTree extends EventEmitter {
      * @param nodes - tree nodes
      */
     renderText( nodes ) {
+        let that = this;
+
         nodes.append( 'text' )
             .classed( 'dsizeTxt', true )
             .style( 'fill', this.fontColor )
@@ -364,14 +376,14 @@ export default class FolderTree extends EventEmitter {
                 .attr( 'dy', 3.5 )
                 .attr( 'dx', '45%' )
                 .attr( 'text-anchor', 'end' )
-                .text( d => {
+                .text( function( d ) {
                     let lastAccessed = d.data.lastAccessed,
                         timeAgo      = lastAccessed.replace( /[-:]/g, '' ),
                         dateActive   = moment( timeAgo ).fromNow(),
                         oldData      = moment().diff( moment( timeAgo ), 'days' ) > 60;
 
                     if ( oldData ) {
-                        // TODO: get back to this
+                        that.updateLastAccessed( this );
                     }
 
                     return dateActive;
@@ -385,6 +397,30 @@ export default class FolderTree extends EventEmitter {
     //     //elem.text( d.data.name );
     //     d3.select( parent ).append( 'title' ).text( d.data.name );
     // }
+
+    updateLastAccessed( node ) {
+        let row = d3.select( node.parentNode );
+
+        row
+            .classed( 'expiring', true )
+            .on( 'mousemove', () => {
+                this.expiringTooltip
+                    .style( 'left', Math.max( 0, d3.event.pageX - 200 ) + 'px' )
+                    .style( 'top', ( d3.event.pageY - 50 ) + 'px' )
+                    .style( 'opacity', '0.9' );
+            } )
+            .on( 'mouseout', () => {
+                this.expiringTooltip.style( 'opacity', 0 );
+            } )
+            .append( 'g' )
+            .append( 'svg' )
+            .attr( 'y', '-9px' )
+            .attr( 'x', '38%' )
+            .append( 'image' )
+            .attr( 'href', './img/timer.png' )
+            .style( 'width', '18px' )
+            .style( 'height', '18px' );
+    }
 
     /**
      * Fill a rect element based on it's node type
