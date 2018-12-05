@@ -14,6 +14,7 @@ import { JXON }             from '../../../util/jxon';
 import { t }                from '../../../util/locale';
 import { operationDelete }  from '../../../operations/delete';
 import { actionChangeTags } from '../../../actions/index';
+import { osmNode }          from '../../../osm';
 
 /**
  * @class Merge
