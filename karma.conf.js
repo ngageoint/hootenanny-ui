@@ -114,12 +114,12 @@ module.exports = function( config ) {
             '/base/css/img/': '/base/img/',
             '/base/css/hoot/img/': '/base/img/',
             '/base/css/hoot/modules/img/': '/base/img/',
-            '/hoot-services': 'http://localhost:8080/hoot-services'
+            '/hoot-services': 'http://localhost:8787/hoot-services'
         },
 
 
         expressHttpServer: {
-            port: '8080',
+            port: '8787',
             appVisitor: function( app ) {
                 app.use( '/hoot-services', proxy( 'http://35.174.111.201:8080', {
                     limit: '1000mb',
