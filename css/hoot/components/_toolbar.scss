@@ -53,15 +53,25 @@
         //margin-left: 80px;
     }
 
-    //button.save .label {
-    //    margin: 0;
-    //}
+    button.save {
+        &.has-count {
+
+        }
+
+        .label {
+            margin: 0;
+        }
+
+        .count {
+            display: none;
+        }
+    }
 }
 
 .tools-menu {
     display: none;
     position: absolute;
-    top: 50px;
+    top: 60px;
     background-color: $light;
     color: black;
     cursor: default;

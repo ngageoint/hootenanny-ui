@@ -70,7 +70,7 @@ export default class Sidebar {
             .attr( 'id', 'hoot-sidebar' )
             .classed( 'hoot-sidebar', true );
 
-        this.createResizer();
+        // this.createResizer();
         this.createWrapper();
         this.createForms();
 
@@ -104,14 +104,14 @@ export default class Sidebar {
      * @param target - resize bar
      * @param reset - whether to reset to original width or not
      */
-    resize( target, reset ) {
-        // let width = reset ? 400 : d3.mouse( target.parentNode )[ 0 ];
-        let width = d3.mouse( target.parentNode )[ 0 ];
-
-        this.iDSidebar.style( 'width', width + 'px' );
-
-        // d3.select( '#bar' ).style( 'left', this.iDSidebar.node().clientWidth + 'px' );
-    }
+    // resize( target, reset ) {
+    //     // let width = reset ? 400 : d3.mouse( target.parentNode )[ 0 ];
+    //     let width = d3.mouse( target.parentNode )[ 0 ];
+    //
+    //     this.iDSidebar.style( 'width', width + 'px' );
+    //
+    //     // d3.select( '#bar' ).style( 'left', this.iDSidebar.node().clientWidth + 'px' );
+    // }
 
     createWrapper() {
         this.wrapper = this.container.append( 'div' )

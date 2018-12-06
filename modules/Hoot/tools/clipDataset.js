@@ -71,6 +71,7 @@ export default class ClipDataset {
         ];
 
         let table = this.form
+            .select( '.wrapper div' )
             .insert( 'table', '.modal-footer' )
             .attr( 'id', 'clipTable' );
 

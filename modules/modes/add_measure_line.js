@@ -13,7 +13,7 @@ export function modeAddMeasureLine( context ) {
         key: '6'
     };
 
-    let svg = d3.select( '.data-layer-measure' ).select( 'svg' );
+    let svg = d3.select( '.data-layer.measure' ).select( 'svg' );
 
     let behavior = behaviorDrawMeasureLine( context, svg )
         .on( 'cancel', addLine.cancel )
@@ -26,7 +26,7 @@ export function modeAddMeasureLine( context ) {
 
         d3.selectAll( '.measure-vertex-' + nodeId ).remove();
 
-        if ( d3.select( '.data-layer-measure' ).selectAll( 'g' ).size() ) {
+        if ( d3.select( '.data-layer.measure' ).selectAll( 'g' ).size() ) {
             d3.select( '.tools-toggle' ).text( 'Clear' );
         }
 
@@ -38,7 +38,7 @@ export function modeAddMeasureLine( context ) {
     };
 
     addLine.enter = function() {
-        d3.select('.data-layer-measure').selectAll('g').remove();
+        d3.select('.data-layer.measure').selectAll('g').remove();
         context.install( behavior );
     };
 

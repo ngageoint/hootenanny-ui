@@ -4,7 +4,7 @@
 #sidebar {
     position: relative;
     display: inline-block;
-    width: 400px;
+    //width: 400px;
     height: 100%;
     min-width: 400px;
     max-width: 50%;
@@ -22,11 +22,20 @@
         }
     }
 
-    .select-all-button {
-        width: 10%;
-        top: 0;
-        float: right;
-        background: $light;
+    .select-all-row {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 10px;
+
+        .select-all-button {
+            width: 10%;
+            top: 0;
+            background: $light;
+        }
+    }
+
+    ul.tag-list {
+        padding-top: 0;
     }
 
     .tag-select-button {
@@ -98,20 +107,18 @@
 }
 
 #sidebar-resizer {
-    position: absolute;
-    width: 5px;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    background-color: #888;
-    opacity: 1;
+    background-color: #999;
+    right: -1px;
     z-index: 1;
-    cursor: col-resize;
     transition: background-color 500ms ease-in;
 
     &.light {
         background-color: $light4;
         transition: background-color 500ms ease-out;
+    }
+
+    #sidebar.collapsed & {
+        right: -6px;
     }
 }
 
@@ -345,7 +352,7 @@
         }
     }
 }
-
+//
 //@media only screen and (max-width: 1160px) {
 //    #sidebar {
 //        width: 300px;

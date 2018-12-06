@@ -80,7 +80,7 @@ export function uiTools( context ) {
             .classed( 'label', true )
             .text( 'Tools' );
 
-        toolsMenu = d3.select( '.limiter' )
+        toolsMenu = d3.select( '.hoot-tools' )
             .append( 'ul' )
             .classed( 'tools-menu dropdown-content round', true );
 
@@ -177,7 +177,7 @@ export function uiTools( context ) {
 
         $toolsToggle.one( 'click', () => {
             if ( toolsToggle.text() === 'Clear' ) {
-                d3.select( '.data-layer-measure' ).selectAll( 'g' ).remove();
+                d3.select( '.data-layer.measure' ).selectAll( 'g' ).remove();
                 toolsToggle
                     .text( '' )
                     .call( svgIcon( '#iD-icon-tools', 'pre-text' ) )
@@ -192,7 +192,7 @@ export function uiTools( context ) {
         } );
 
         function toggle( cb ) {
-            $toolsToggle.parent().siblings( '.dropdown-content' ).slideToggle( duration, function() {
+            $toolsToggle.siblings( '.dropdown-content' ).slideToggle( duration, function() {
                 if ( cb ) {
                     cb();
                 }

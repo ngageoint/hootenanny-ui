@@ -39,8 +39,8 @@ export default class ManagePanel {
      * Render base panel and all of its components
      */
     async render() {
-        this.container = d3.select( '#id-container' )
-            .append( 'div' )
+        this.container = d3.select( 'body' )
+            .insert( 'div', '#id-container' )
             .attr( 'id', 'manage-panel' )
             .classed( 'hidden', true );
 

@@ -117,6 +117,13 @@ export function uiInit(context) {
 
 
         bar
+            .append( 'div' )
+            .attr( 'class', 'tool-group leading-area' )
+            .append( 'div' )
+            .classed( 'hoot-tools', true )
+            .call(uiTools(context));
+
+        bar
             .append('div')
             .attr('class', 'tool-group leading-area')
             .append('div')

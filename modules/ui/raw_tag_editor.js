@@ -74,10 +74,16 @@ export function uiRawTagEditor(context) {
             _newRow = '';
         }
 
-        var selectAll = wrap.selectAll('.select-all-button')
+        var selectAllRow = wrap
+            .selectAll('.select-all-row')
             .data([0]);
+            // .selectAll('.select-all-button')
+            // .data([0]);
 
-        selectAll.enter()
+        selectAllRow
+            .enter()
+            .append('div')
+            .classed('select-all-row', true)
             .append('button')
             .attr('tab-index', -1)
             .classed('select-all-button', true)
@@ -169,23 +175,10 @@ export function uiRawTagEditor(context) {
                     bindTypeahead(key, value);
                 }
 
-                // Override tag reference with tag copy
+                // Hoot: Override tag reference with tag copy
                 var select = uiTagSelectCopy(context);
 
-                if (isRelation && tag.key === 'type') {
-                    reference = uiTagReference({ rtype: tag.value }, context);
-                } else {
-                    reference = uiTagReference({ key: tag.key, value: tag.value }, context);
-                }
-
-                if (_state === 'hover') {
-                    reference.showing(false);
-                }
-
-                row.select('.inner-wrap')
-                    .call(reference.button);
-
-                row.call(reference.body);
+                row.call( select );
             });
 
         items.selectAll('input.key')
