@@ -62,10 +62,17 @@ export default class Navbar {
     createRightContainer() {
         let rightContainer = this.navbar
             .append( 'div' )
-            .classed( 'nav-item', true );
-
+            .classed( 'nav-item', true);
+        
+        
         if ( this.isLoggedIn ) {
             let user = JSON.parse( localStorage.getItem( 'user' ) );
+
+            rightContainer
+                .append( 'div' )
+                .classed( 'dropdown-toggle light strong small info pad2x flex align-center text-light pointer', true )
+                .append( 'span' )
+                .text( 'Logged in as ' + user.display_name );
 
             let dropdownToggle = rightContainer
                 .append( 'div' )
@@ -84,12 +91,6 @@ export default class Navbar {
             let dropdownContent = rightContainer
                 .append( 'ul' )
                 .classed( 'dropdown-content fill-white', true );
-
-            dropdownContent
-                .append( 'li' )
-                .classed( 'dropdown-item pad2x strong', true )
-                .append( 'span' )
-                .text( 'Logged in as ' + user.display_name );
 
             dropdownContent
                 .append( 'li' )
@@ -114,6 +115,7 @@ export default class Navbar {
                 .text( 'Logout' );
 
             this.initDropdown();
+
         } else {
             rightContainer
                 .append( 'div' )
@@ -124,6 +126,7 @@ export default class Navbar {
                 .on( 'click', () => this.login.launchOAuthLogin() );
         }
     }
+
 
     toggleManagePanel() {
         let managePanel = Hoot.ui.managePanel,
