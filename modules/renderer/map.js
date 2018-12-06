@@ -346,7 +346,7 @@ export function rendererMap(context) {
             .call(drawLabels, graph, data, filter, dimensions, fullRedraw)
             .call(drawPoints, graph, data, filter);
 
-        //dispatch.call('drawn', this, {full: true});
+        dispatch.call('drawn', this, {full: true});
     }
 
 
@@ -592,7 +592,7 @@ export function rendererMap(context) {
         if (surface.attr('data-zoom') !== z) {
             surface.attr('data-zoom', z)
                 .classed('low-zoom', z >= 16.5)
-                .classed('high-zoom', z < 14);
+                .classed('high-zoom', z < 16);
         }
 
         // TODO: fix zoom

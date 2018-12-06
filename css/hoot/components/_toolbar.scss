@@ -1,11 +1,9 @@
 @import '../modules/variables';
 
 #bar {
-    //display: inline-block;
-    //top: 60px;
-    //left: 400px;
     padding: 10px;
     min-width: auto;
+    justify-content: flex-start !important;
 
     .tool-group {
         width: auto;
@@ -54,6 +52,10 @@
     span.count {
         //margin-left: 80px;
     }
+
+    //button.save .label {
+    //    margin: 0;
+    //}
 }
 
 .tools-menu {
