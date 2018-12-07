@@ -7,13 +7,13 @@ var hoot = function(options) {
     app.listen(options.port);
     console.log('server running');
 
-    var hootHost = '52.23.188.104';
+    var hootHost = '35.174.111.201';
     var hootPort = 8080;
     var hootUrl = 'http://' + hootHost + ':' + hootPort;
 
     app.get('/hootenanny-id', function(req, res) {
         res.writeHead(301,
-          {Location: 'http://52.23.188.104:' + options.port}
+          {Location: 'http://35.174.111.201:' + options.port}
         );
         res.end();
     });
@@ -34,4 +34,5 @@ var hoot = function(options) {
         }
     }));
 };
+
 exports.hoot = hoot;

@@ -22,6 +22,7 @@ Hoot.control.conflicts.map.reviewarrowrenderer = function (context)
     _instance.activate = function(r, ra) {
         _feature = r;
         _againstFeature = ra;
+        _loadArrow();
          //Add hover handler to show arrow
         d3.select('a.merge').on('mouseenter', function() {
             this.focus();
@@ -66,6 +67,9 @@ Hoot.control.conflicts.map.reviewarrowrenderer = function (context)
 
             return;
         }
+        console.log( 'one: ', _againstFeature.asGeoJSON( Hoot.context.graph ) );
+        console.log( 'two: ', _feature.asGeoJSON( Hoot.context.graph ) );
+
         var pt1 = d3.geo.centroid(_againstFeature.asGeoJSON(context.graph()));
         var pt2 = d3.geo.centroid(_feature.asGeoJSON(context.graph()));
         var coord = [pt1, pt2];
@@ -74,6 +78,7 @@ Hoot.control.conflicts.map.reviewarrowrenderer = function (context)
             'type': 'LineString',
             'coordinates': coord
         };
+
         if (mode === 'remove') gj = {};
         context.background().updateArrowLayer(gj);
 
