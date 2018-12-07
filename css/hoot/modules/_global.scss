@@ -1,9 +1,11 @@
 @import 'variables';
 
 #id-container {
-    position: relative;
-    top: 60px;
+    position: absolute;
+    //position: relative;
+    width: 100%;
     height: 100%;
+    top: 60px;
 }
 
 #id-sink {

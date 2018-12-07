@@ -24,34 +24,34 @@ export default class Sidebar {
 
         let formMeta = [
             {
-                type : 'add',
-                id : 'reference',
-                class : 'layer-add',
-                tableId : 'add-ref-table',
-                refType : 'primary',
-                color : 'violet',
-                toggleButtonText : 'Add Reference Datasets'
+                type: 'add',
+                id: 'reference',
+                class: 'layer-add',
+                tableId: 'add-ref-table',
+                refType: 'primary',
+                color: 'violet',
+                toggleButtonText: 'Add Reference Datasets'
             },
             {
-                type : 'add',
-                id : 'secondary',
-                class : 'layer-add',
-                tableId : 'add-secondary-table',
-                refType : 'secondary',
-                color : 'orange',
-                toggleButtonText : 'Add Secondary Datasets'
+                type: 'add',
+                id: 'secondary',
+                class: 'layer-add',
+                tableId: 'add-secondary-table',
+                refType: 'secondary',
+                color: 'orange',
+                toggleButtonText: 'Add Secondary Datasets'
             },
             {
-                type : 'conflate',
-                id : 'conflate',
-                class : 'layer-conflate',
-                toggleButtonText : 'Conflate'
+                type: 'conflate',
+                id: 'conflate',
+                class: 'layer-conflate',
+                toggleButtonText: 'Conflate'
             },
             {
-                type : 'review',
-                id : 'review',
-                class : 'layer-review',
-                toggleButtonText : 'Complete Review'
+                type: 'review',
+                id: 'review',
+                class: 'layer-review',
+                toggleButtonText: 'Complete Review'
             }
         ];
 
@@ -70,48 +70,14 @@ export default class Sidebar {
             .attr( 'id', 'hoot-sidebar' )
             .classed( 'hoot-sidebar', true );
 
-        // this.createResizer();
         this.createWrapper();
         this.createForms();
+        this.adjustSize();
 
         this.listen();
 
         return this;
     }
-
-    /**
-     * Create resize bar and attach d3 drag behavior
-     */
-    createResizer() {
-        const self = this;
-
-        this.resizer = this.iDSidebar.append( 'div' )
-            .attr( 'id', 'sidebar-resizer' )
-            .on( 'dblclick', function() {
-                self.resize( this, true );
-            } );
-
-        this.dragResize = d3.drag().on( 'drag', function() {
-            self.resize( this );
-        } );
-
-        this.resizer.call( this.dragResize );
-    }
-
-    /**
-     * Resize event
-     *
-     * @param target - resize bar
-     * @param reset - whether to reset to original width or not
-     */
-    // resize( target, reset ) {
-    //     // let width = reset ? 400 : d3.mouse( target.parentNode )[ 0 ];
-    //     let width = d3.mouse( target.parentNode )[ 0 ];
-    //
-    //     this.iDSidebar.style( 'width', width + 'px' );
-    //
-    //     // d3.select( '#bar' ).style( 'left', this.iDSidebar.node().clientWidth + 'px' );
-    // }
 
     createWrapper() {
         this.wrapper = this.container.append( 'div' )
@@ -180,6 +146,8 @@ export default class Sidebar {
             this.forms[ d.id ].render( d );
             this.conflateCheck();
         }
+
+        this.adjustSize();
     }
 
     conflateCheck() {
@@ -206,12 +174,29 @@ export default class Sidebar {
         this.createForms();
     }
 
+    adjustSize() {
+        let sidebarWidth = this.iDSidebar.node().getBoundingClientRect().width,
+            sidebarForm     = d3.selectAll( '.sidebar-form' );
+
+        if ( sidebarWidth < 291 ) { // small
+            sidebarForm.classed( 'small', true );
+            sidebarForm.classed( 'medium', false );
+            sidebarForm.classed( 'large', false );
+        } else if ( sidebarWidth < 361 ) { // medium
+            sidebarForm.classed( 'small', false );
+            sidebarForm.classed( 'medium', true );
+            sidebarForm.classed( 'large', false );
+        } else { // large
+            sidebarForm.classed( 'small', false );
+            sidebarForm.classed( 'medium', false );
+            sidebarForm.classed( 'large', true );
+        }
+    }
+
     listen() {
         Hoot.events.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
         Hoot.events.on( 'layer-merged', () => this.layerMerged() );
 
-        // d3.select( window ).on( 'resize', () => {
-        //     d3.select( '#bar' ).style( 'left', this.iDSidebar.node().clientWidth + 'px' );
-        // } );
+        window.onresize = () => this.adjustSize();
     }
 }

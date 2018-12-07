@@ -130,10 +130,14 @@ export function uiSave(context) {
             }, 0 );
         } );
 
-        button
+        let wrap = button
+            .append( 'div' )
+            .classed( 'label-wrap', true );
+
+        wrap
             .call(svgIcon('#iD-icon-save'));
 
-        button
+        wrap
             .append('span')
             .attr('class', 'label')
             .text(t('save.title'));

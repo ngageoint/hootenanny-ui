@@ -77,6 +77,8 @@ export function uiSidebar(context) {
 
                 selection.classed('collapsed', shouldCollapse);
 
+                Hoot.ui.sidebar.adjustSize();
+
                 if (shouldCollapse) {
                     if (!isCollapsed) {
                         selection

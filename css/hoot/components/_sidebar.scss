@@ -195,42 +195,117 @@
             }
         }
     }
-}
 
-.layer-add {
     .layer-add-table {
         height: 150px;
         margin-bottom: 15px;
         resize: vertical;
     }
-}
 
-.palette {
-    width: auto;
-    display: inline-block;
-    border-color: #444;
-
-    a {
-        width: 40px;
-        height: 40px;
+    .palette {
+        width: auto;
+        display: inline-block;
         border-color: #444;
 
-        &:first-child {
-            border-radius: 4px 0 0 4px;
+        a {
+            border-color: #444;
+
+            &:first-child {
+                border-radius: 4px 0 0 4px;
+            }
+
+            &:last-child {
+                border: none;
+            }
+
+            &._osm {
+                width: 40px;
+                height: 38px;
+            }
+
+            &.active {
+                box-shadow: inset 0 0 0 4px $dark-opacity25;
+
+                &:before {
+                    position: relative;
+                    top: 10px;
+                    left: 10px;
+                    opacity: 0.5;
+                }
+            }
+        }
+    }
+
+    &.small {
+        .layer-add-table {
+            .dnameTxt {
+                font-size: 9px;
+            }
+
+            .dsizeTxt {
+                display: none;
+            }
         }
 
-        &:last-child {
-            border: none;
+        .palette a {
+            width: 25px;
+            height: 25px;
+
+            &._osm {
+                width: 25px;
+                height: 23px;
+            }
+
+            &.active:before {
+                top: 3px;
+                left: 2px;
+            }
+        }
+    }
+
+    &.medium {
+        .layer-add-table {
+            .dnameTxt {
+                font-size: 9px;
+            }
+
+            .dsizeTxt {
+                display: none;
+            }
+        }
+        .layer-add-table .dsizeTxt {
+            display: none;
         }
 
-        &.active {
-            box-shadow: inset 0 0 0 4px $dark-opacity25;
+        .palette a {
+            width: 30px;
+            height: 30px;
 
-            &:before {
-                position: relative;
+            &._osm {
+                width: 30px;
+                height: 28px;
+            }
+
+            &.active:before {
+                top: 5px;
+                left: 5px;
+            }
+        }
+    }
+
+    &.large {
+        .palette a {
+            width: 40px;
+            height: 40px;
+
+            &._osm {
+                width: 40px;
+                height: 38px;
+            }
+
+            &.active:before {
                 top: 10px;
                 left: 10px;
-                opacity: 0.5;
             }
         }
     }
@@ -352,79 +427,3 @@
         }
     }
 }
-//
-//@media only screen and (max-width: 1160px) {
-//    #sidebar {
-//        width: 300px;
-//        min-width: 300px;
-//
-//        .wrapper {
-//            padding: 20px 15px;
-//        }
-//
-//        fieldset {
-//            padding: 15px 10px;
-//        }
-//    }
-//
-//    .layer-add {
-//        .palette a {
-//            width: 30px;
-//            height: 30px;
-//
-//            &._osm {
-//                width: 30px !important;
-//                height: 28px !important;
-//            }
-//
-//            &.active:before {
-//                top: 5px;
-//                left: 5px;
-//            }
-//        }
-//
-//        .layer-add-table .dsizeTxt {
-//            display: none;
-//        }
-//    }
-//}
-//
-//@media only screen and (max-width: 900px) {
-//    #sidebar {
-//        width: 250px;
-//        min-width: 250px;
-//
-//        .wrapper {
-//            padding: 20px 10px;
-//        }
-//    }
-//
-//    .sidebar-form .toggle-button {
-//        font-size: 13px;
-//
-//        &::before {
-//            margin-left: -15px;
-//        }
-//    }
-//
-//    .layer-add {
-//        .palette a {
-//            width: 25px;
-//            height: 25px;
-//
-//            &._osm {
-//                width: 25px !important;
-//                height: 23px !important;
-//            }
-//
-//            &.active:before {
-//                top: 3px;
-//                left: 2px;
-//            }
-//        }
-//
-//        .layer-add-table .dnameTxt {
-//            font-size: 9px;
-//        }
-//    }
-//}

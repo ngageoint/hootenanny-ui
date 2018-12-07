@@ -49,13 +49,17 @@
         left: initial;
     }
 
-    span.count {
-        //margin-left: 80px;
-    }
-
     button.save {
-        &.has-count {
+        display: flex;
 
+        &.has-count {
+            .count {
+                display: inline-block;
+            }
+
+            .label {
+                margin-right: 3px;
+            }
         }
 
         .label {
