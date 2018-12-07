@@ -14,7 +14,7 @@ Hoot.control.conflicts.actions.sharereview = function (context)
     var _events = d3.dispatch();
     var _instance = {};
     var _currentForm;
-    var _userInfo = {'id':-1, 'displayName':'anonymous', 'email':''};
+    var _userInfo = {'id':-1, 'display_name':'anonymous', 'email':''};
 
     /**
     * @desc Public entry point for creating bookmark dialog
@@ -97,8 +97,8 @@ Hoot.control.conflicts.actions.sharereview = function (context)
 
                 var creatorGroup = d3.select('#reviewBookmarksFilterByCreatorDiv_group');
                 var layerGroup = d3.select('#reviewBookmarksFilterByMapIdDiv_group');
-                
-                context.hoot().view.utilities.reviewbookmarks.addFilter(creatorGroup,{id:_userInfo.id, name:_userInfo.displayName});
+
+                context.hoot().view.utilities.reviewbookmarks.addFilter(creatorGroup,{id:_userInfo.id, name:_userInfo.display_name});
                 var mapid = context.hoot().control.conflicts.actions.traversereview.getCurrentReviewable().mapId;
                 var mapname = context.hoot().model.layers.getNameBymapId(mapid);
                 context.hoot().view.utilities.reviewbookmarks.addFilter(layerGroup,{id:mapid, name:mapname});
@@ -145,17 +145,12 @@ Hoot.control.conflicts.actions.sharereview = function (context)
             } else {
                 var req = {};
                 req.email=creatorEmail;
-                Hoot.model.REST('getSaveUser', req, function (resp) {
+                Hoot.model.REST('getSaveUser', req, function (e, resp) {
+                    if(e) { return; }
+                    _userInfo = resp;
 
-                    if(resp.error){
-                        context.hoot().view.utilities.errorlog.reportUIError(resp.error);
-                        return;
-                    }
-                    if(resp.user) {
-                        _userInfo = resp.user;
-                        // sets user back to notes view. (We need to refactor this)
-                        context.hoot().view.utilities.reviewbookmarknotes.setUser(_userInfo);
-                    }
+                    // sets user back to notes view. (We need to refactor this)
+                    context.hoot().view.utilities.reviewbookmarknotes.setUser(_userInfo);
 
                     _createReqParams(title, desc, note, reqParam);
                     if(callback) {

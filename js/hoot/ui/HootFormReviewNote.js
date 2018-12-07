@@ -118,14 +118,14 @@ Hoot.ui.hootformreviewnote = function( context ) {
                         }
                     ];
 
-                    if ( !d3.select( this ).classed( 'buttonsAdded' ) ) {
-                        d3.select( '#bmkNoteFormHdLabel' + _rawData.id )
-                            .append( 'div' )
-                            .attr( 'id', 'bmkNoteFormUser' + _rawData.id )
-                            .classed( 'fr', true )
-                            .call( iD.svg.Icon( '#icon-avatar' ) )
-                            .attr( 'title', _parent.getUser().displayName || 'Anonymous User' )
-                            .on( 'click', _bmkUserClickHanlder );
+                    if (!d3.select(this).classed('buttonsAdded')){
+                        d3.select('#bmkNoteFormHdLabel' + _rawData.id)
+                            .append('div')
+                            .attr('id', 'bmkNoteFormUser' + _rawData.id)
+                            .classed('fr', true)
+                            .call(iD.svg.Icon('#icon-avatar'))
+                            .attr('title',_parent.getUser().display_name || 'Anonymous User')
+                            .on('click', _bmkUserClickHanlder);
 
                         _createButtons( d_btn, formDiv );
 
@@ -137,12 +137,12 @@ Hoot.ui.hootformreviewnote = function( context ) {
 
                 } );
         } else {
-            d3.select( '#bmkNoteFormHdLabel' + 'NEW' )
-                .append( 'div' ).classed( 'fr', true )
-                .attr( 'id', 'bmkNoteFormUser' + 'NEW' )
-                .call( iD.svg.Icon( '#icon-avatar' ) )
-                .attr( 'title', _parent.getUser().displayName || 'Anonymous User' )
-                .on( 'click', _bmkUserClickHanlder );
+            d3.select('#bmkNoteFormHdLabel' + 'NEW')
+            .append('div').classed('fr',true)
+            .attr('id', 'bmkNoteFormUser' + 'NEW')
+            .call(iD.svg.Icon('#icon-avatar'))
+            .attr('title',_parent.getUser().display_name || 'Anonymous User')
+            .on('click', _bmkUserClickHanlder);
         }
 
         return form;
@@ -196,21 +196,18 @@ Hoot.ui.hootformreviewnote = function( context ) {
                 _currentUserForm.remove();
             }
         }
-        else {
-            var req   = {};
-            req.email = creatorEmail;
-            Hoot.model.REST( 'getSaveUser', req, function( resp ) {
+        else
+        {
+            var req = {};
+            req.email=creatorEmail;
+            Hoot.model.REST('getSaveUser', req, function (e, resp) {
+                if(e) { return; }
 
-                if ( resp.error ) {
-                    context.hoot().view.utilities.errorlog.reportUIError( resp.error );
-                    return;
-                }
-                if ( resp.user ) {
-                    _parent.setUser( resp.user );
-                    d3.selectAll( '[id^=bmkNoteFormUser]' ).attr( 'title', resp.user.displayName );
-                    // sets user back to share dialog. (We need to refactor this)
-                    context.hoot().control.conflicts.actions.sharereview.setUserInfo( resp.user );
-                }
+                _parent.setUser(resp);
+                d3.selectAll('[id^=bmkNoteFormUser]').attr('title', resp.display_name);
+                // sets user back to share dialog. (We need to refactor this)
+                context.hoot().control.conflicts.actions.sharereview.setUserInfo(resp);
+
                 // relaod global users list
                 context.hoot().getAllusers();
                 if ( _currentUserForm ) {

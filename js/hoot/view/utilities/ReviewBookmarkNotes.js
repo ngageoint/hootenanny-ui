@@ -14,7 +14,7 @@ Hoot.view.utilities.reviewbookmarknotes = function( context ) {
     var _currentBookmark;
     var _forcedReviewableItem;
     var _currentNotes;
-    var _currentUser = { 'id': -1, 'displayName': 'anonymous', 'email': '' };
+    var _currentUser = {'id':-1, 'display_name':'anonymous', 'email':''};
 
     /**
      * @desc Getter for current user being used.
@@ -149,23 +149,29 @@ Hoot.view.utilities.reviewbookmarknotes = function( context ) {
                 return;
             }
 
-            if ( resp.resultCount > 0 ) {
-                iconBarDiv.append( 'div' )
-                    .classed( 'fr', true )
-                    .attr( 'title', 'Load Bookmark' )
-                    .call( iD.svg.Icon( '#icon-search' ) )
-                    .classed( 'loadReview', true )
-                    .on( 'click', function() {
-                        d3.event.stopPropagation();
-                        d3.event.preventDefault();
-                        var r = confirm( 'If you continue Hootenanny will load selected review item and you will lose all unsaved changes. ' +
-                            'Do you want to continue?' );
-                        if ( r === true ) {
-                            _jumpToReviewItem();
-                        }
-                    } );
-            } else {
-                d3.select( '#bmkNoteHdLabel' ).text( title + ' #' + bookmarkId + ' - ( **** RESOLVED **** )' );
+      var reqParam = {};
+      reqParam.mapId = currentReviewable.mapId;
+      reqParam.sequence = currentReviewable.sortOrder;
+      Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {
+
+        if(resp.error){
+          window.console.error(resp.error);
+          return;
+        }
+
+        if(resp.resultCount > 0){
+          iconBarDiv.append('div')
+          .classed('fr', true)
+          .attr('title','Load Bookmark')
+          .call(iD.svg.Icon('#icon-search'))
+          .classed('loadReview',true)
+          .on('click', function () {
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
+            var r = confirm('If you continue Hootenanny will load selected review item and you will lose all unsaved changes. '+
+              'Do you want to continue?');
+            if (r === true) {
+              _jumpToReviewItem();
             }
         } );
 
@@ -205,8 +211,8 @@ Hoot.view.utilities.reviewbookmarknotes = function( context ) {
         reqParam.sequence = _forcedReviewableItem.sortOrder;
         Hoot.model.REST( 'reviewGetReviewItem', reqParam, function( resp ) {
 
-            if ( resp.error ) {
-                context.hoot().view.utilities.errorlog.reportUIError( resp.error );
+            if(resp.error){
+                window.console.error(resp.error);
                 return;
             }
 
@@ -345,10 +351,10 @@ Hoot.view.utilities.reviewbookmarknotes = function( context ) {
                         return;
                     }
 
-                    if ( _currentUser.id === -1 || _currentUser.displayName === 'anonymous' ) {
-                        iD.ui.Alert( 'Anonymous comments are not allowed.  Please click on user icon and provide name or email address.', 'warning', null );
-                        return;
-                    }
+            if(_currentUser.id===-1 || _currentUser.display_name==='anonymous'){
+              iD.ui.Alert('Anonymous comments are not allowed.  Please click on user icon and provide name or email address.','warning',null);
+              return;
+            }
 
                     var bmNote    = {};
                     bmNote.userId = _currentUser.id;

@@ -103,22 +103,20 @@ Hoot.hoot = function (context) {
     * @param callback - callback
     **/
     hoot.getAllusers = function(callback) {
-        Hoot.model.REST('getAllUsers', function (resp) {
-            if(resp.error){
-                alert('Failed to retrieve users: ' + resp.error);
-                return;
-            }
+        Hoot.model.REST('getAllUsers', function (e, r) {
+            if(e) { return; }
 
+            // convert users to dict for lookup by id:
             iD.data.hootConfig.users = {};
-            _.each(resp.users, function(r){
-                iD.data.hootConfig.users[1*r.id] = r;
+            _.each(r, function(u){
+                iD.data.hootConfig.users[u.id] = u;
             });
 
-            iD.data.hootConfig.usersRaw = resp.users;
-            if(callback) {
-                callback(resp.users);
-            }
+            // also store array:
+            iD.data.hootConfig.usersRaw = r;
 
+            // return array:
+            if(callback) { callback(r); }
         });
 
     };
@@ -307,7 +305,7 @@ Hoot.hoot = function (context) {
     };
 
     hoot.removeSpecialChar = function(str){
-        var pattern = new RegExp(/[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g); 
+        var pattern = new RegExp(/[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g);
         var retval = str.replace(pattern,'');
         return retval;
     };

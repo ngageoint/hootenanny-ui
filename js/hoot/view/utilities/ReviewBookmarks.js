@@ -15,11 +15,15 @@ Hoot.view.utilities.reviewbookmarks = function( context ) {
     var _lblStyle           = 'strong fill-light round-top';
 
     /**
-     * @desc Creates container for bookmarks list.
-     * @param form - parent form.
-     **/
-    _instance.createContent = function( form ) {
-        form.append( 'div' ).classed( 'fr col10 fill-white small keyline-bottom', true );
+    * @desc Creates container for bookmarks list.
+    * @param form - parent form.
+    **/
+    _instance.createContent = function(form){
+        form.append('div').classed('fr col10 fill-white small keyline-bottom', true);
+
+        var filterBar = _instance.datasetcontainer = form.append('div')
+            .attr('id','reviewBookmarksFilters')
+            .classed('fl col4 fill-white small overflow keyline-all row16',true);
 
         var filterBar = _instance.datasetcontainer = form.append( 'div' )
             .attr( 'id', 'reviewBookmarksFilters' )
@@ -121,9 +125,20 @@ Hoot.view.utilities.reviewbookmarks = function( context ) {
         var parent = d3.select( '#' + menuDivName + '_group' );
 
         //now loop through children
-        _.each( meta.data, function( c ) {
-            var lbl = parent.append( 'label' )
-                .style( 'text-align', 'left' );
+        _.each(meta.data, function(c){
+            var lbl = parent.append('label')
+                .style('text-align','left');
+
+            var filterInput = lbl.append('input')
+                .attr('type',this.type)
+                .attr('filter_id',c.id)
+                .property('checked', true)
+                .on('change', function () {
+                    c.action(c);
+                });
+            if(this.type==='radio'){filterInput.attr('name','sortByFilter').classed('sortByFilter',true);}
+            lbl.append('span').text(c.name);
+        },meta);
 
             var filterInput = lbl.append( 'input' )
                 .attr( 'type', this.type )
@@ -331,24 +346,22 @@ Hoot.view.utilities.reviewbookmarks = function( context ) {
         var usersList = iD.data.hootConfig.usersRaw;
         var data      = [];
 
-        var newobj         = {};
-        newobj.name        = 'anonymous';
-        newobj.id          = -1;
-        newobj.displayName = 'anonymous';
-        newobj.action      = function( d ) {
-            _filterData( d );
-        };
-        data.push( newobj );
+        var newobj = {};
+        newobj.name = 'anonymous'; /* used by _createMenu */
+        newobj.id = -1;
+        newobj.display_name = 'anonymous';
+        newobj.action = function(d){_filterData(d);};
+        data.push(newobj);
 
         for ( var i = 0; i < usersList.length; i++ ) {
             var usr = usersList[ i ];
 
-            newobj             = {};
-            newobj.name        = usr.email;
-            newobj.id          = usr.id;
-            newobj.displayName = usr.displayName;
-            newobj.action      = _filterData;
-            data.push( newobj );
+            newobj = {};
+            newobj.name = usr.email; /* used by _createMenu */
+            newobj.id = usr.id;
+            newobj.display_name = usr.display_name;
+            newobj.action = _filterData;
+            data.push(newobj);
         }
 
         console.log( data );
@@ -425,9 +438,9 @@ Hoot.view.utilities.reviewbookmarks = function( context ) {
         _cleanUpRequest.limit   = _DEFAULT_PAGE_COUNT;
         _cleanUpRequest.offset  = 0;
 
-        Hoot.model.REST( 'getAllReviewBookmarks', _cleanUpRequest, function( d ) {
-            if ( d.error ) {
-                context.hoot().view.utilities.errorlog.reportUIError( d.error );
+        Hoot.model.REST('getAllReviewBookmarks', _cleanUpRequest, function (d) {
+            if(d.error){
+                window.console.error(d.error);
                 return;
             }
 
@@ -502,8 +515,11 @@ Hoot.view.utilities.reviewbookmarks = function( context ) {
                     return;
                 }
 
-                var total  = 1 * resp.totalCount;
-                var nPages = Math.ceil( total / _DEFAULT_PAGE_COUNT );
+                Hoot.model.REST('getReviewBookmarkStat', null, function (resp) {
+                    if(resp.error){
+                        window.console.error(resp.error);
+                        return;
+                    }
 
                 var pgBtnContainer = d3.select( '#bmkPageNumBtnContainer' );
                 // Clean since each time setting tab item is click we refresh
@@ -528,18 +544,11 @@ Hoot.view.utilities.reviewbookmarks = function( context ) {
 
                     var bookmarksArray = d.reviewBookmarks;
 
-                    container.selectAll( 'div' ).remove();
-                    var tla  = container.selectAll( 'div' )
-                        .data( bookmarksArray )
-                        .enter();
-                    var tla2 = tla.append( 'div' )
-                        .classed( 'col12 fill-white small keyline-bottom hoverDiv2', true );
-                    var tla3 = tla2.append( 'span' )
-                        .classed( 'text-left big col12 strong', true )
-                        .append( 'a' )
-                        .classed( 'bookmarkLink', true )
-                        .text( _renderLinkText )
-                        .on( 'click', _linkClickHandler );
+                    Hoot.model.REST('getAllReviewBookmarks', _lastSortRequest, function (d) {
+                        if(d.error){
+                            window.console.error(d.error);
+                            return;
+                        }
 
                     var tla22 = tla2.append( 'div' )
                         .classed( 'col12 small keyline-bottom', true );
@@ -563,6 +572,25 @@ Hoot.view.utilities.reviewbookmarks = function( context ) {
             } );
 
         } );
+
+                        tla3.append('button')
+                        //.classed('keyline-left keyline-right fr _icon trash pad2 col1', true)
+                        .style('height', '100%')
+                        .on('click', _deleteBtnHandler)
+                        .select(function () {
+                            d3.select(this).classed('fr _icon trash', true);
+                        });
+
+                        _instance.cleanUpMenus();
+                    });
+
+                });
+
+
+
+            });
+
+
 
     };
 
@@ -638,9 +666,10 @@ Hoot.view.utilities.reviewbookmarks = function( context ) {
         d3.event.stopPropagation();
         d3.event.preventDefault();
 
-        var r = confirm( 'Are you sure you want to delete selected bookmark?' );
-        if ( r === true ) {
-            _instance.deleteBookmark( d );
+
+        var r = confirm('Are you sure you want to delete selected bookmark?');
+        if (r === true) {
+            _instance.deleteBookmark(d);
         } else {
             return;
         }
@@ -654,13 +683,13 @@ Hoot.view.utilities.reviewbookmarks = function( context ) {
         var request        = {};
         request.bookmarkId = d.id;
 
-        Hoot.model.REST( 'deleteReviewBookmark', request, function( d ) {
-            if ( d.error ) {
-                context.hoot().view.utilities.errorlog.reportUIError( d.error );
+        Hoot.model.REST('deleteReviewBookmark', request, function (d) {
+            if(d.error){
+                window.console.error(d.error);
                 return;
             }
-            _instance.populatePopulateBookmarks( null, _lastSortRequest );
-        } );
+            _instance.populatePopulateBookmarks(null, _lastSortRequest);
+        });
     };
 
     return _instance;

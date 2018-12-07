@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'master' }
     parameters {
         
         booleanParam(name: 'npm', defaultValue: true)

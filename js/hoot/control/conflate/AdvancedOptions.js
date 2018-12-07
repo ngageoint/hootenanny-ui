@@ -63,7 +63,7 @@ Hoot.control.conflate.advancedoptions = function (context, parent) {
 
              return d3.rebind(containerDiv, advancedOptionsEvents, 'on');
         } catch(err){
-            context.hoot().view.utilities.errorlog.reportUIError(err,null);
+            window.console.error(err,null);
             return null;
         }
     };

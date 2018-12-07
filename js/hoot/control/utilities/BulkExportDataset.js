@@ -62,7 +62,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
         _columns = [
             {label:'Dataset', placeholder: 'Dataset', type: 'fileExport', readonly:'readonly'},
             {label:'Export Translation Schema', readonly:'readonly', placeholder: 'OpenStreetMap.org (OSM)', type: 'Schema', combobox: {data:_exportTranslations, command:_translationComboHandler}},
-            {label:'Export Hoot Status (OSM Only)', type: 'exportTextStatus', checkbox: true},
+            {label:'Export Hoot Tags (OSM Only)', type: 'exportHootTags', checkbox: true},
             {label:'Export Format', placeholder:'OpenStreetMap (OSM)',readonly:'readonly',type:'fileExportType',combobox: {data:_exportFormatList, command:_formatComboHandler}},
             {label:'', placeholder:'',type:'deleteRow',icon:'trash'}
         ];
@@ -296,7 +296,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
             'transName': transName,
             'oTrans': oTrans,
             'appendTemplate': false,
-            'exportTextStatus': row.select('.exportTextStatus').property('checked')
+            'exportHootTags': row.select('.exportHootTags').property('checked')
         };
 
         var _dataset = { 
@@ -306,7 +306,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
 
         context.hoot().model.export.exportData(_fakeContainer, _dataset, function(status){
             if(status === 'failed'){
-                iD.ui.Alert('Export has failed or partially failed. For detail please see Manage->Log.','warning',new Error().stack);
+                iD.ui.Alert('Export has failed or partially failed.','warning',new Error().stack);
                 _updateExportText('FAILURE: ' + layerName + ' was not successfully exported.');
                 if(callback){callback();}
             } else {
@@ -423,10 +423,10 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
                             var selrow = '#row-' + d3.select(this).attr('row');
                             if(this.value==='OpenStreetMap.org (OSM)'){
                                 //enable checkbox
-                                d3.select(selrow).select('.exportTextStatus').attr('disabled',null);
+                                d3.select(selrow).select('.exportHootTags').attr('disabled',null);
                             } else {
                                 //disable checkbox
-                                d3.select(selrow).select('.exportTextStatus').attr('disabled',true).property('checked',false);
+                                d3.select(selrow).select('.exportHootTags').attr('disabled',true).property('checked',false);
                             }
                         });
                     }

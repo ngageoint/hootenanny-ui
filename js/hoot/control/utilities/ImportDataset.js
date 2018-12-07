@@ -227,7 +227,7 @@ Hoot.control.utilities.importdataset = function(context) {
         var progcont = submitExp.append('div');
         progcont.classed('form-field', true);
 
-        /*      
+        /*
         var prog = progcont.append('span').append('progress');
         prog.classed('form-field', true);
         prog.value('0');
@@ -311,13 +311,11 @@ Hoot.control.utilities.importdataset = function(context) {
                     _mapIds = status.mapids;
                     submitExp.select('span').text('Cancel');
                 } else if(status.info === 'failed'){
-                    var errorMessage = status.error || 'Import has failed or partially failed. For detail please see Manage->Log.';
+                    var errorMessage = status.error || 'Import has failed or partially failed.';
                     iD.ui.Alert(errorMessage,'error',new Error().stack);
                     _container.remove();
                 }
-
             });
-
     };
 
     /**

@@ -1,4 +1,4 @@
-iD.ui.Alert = function(message,type,stack) {
+iD.ui.Alert = function(message,type/*,stack*/) {
     var alerts = d3.select('#alerts');
     var alertDiv = alerts.append('div')
         .classed('fillD alertDiv overflow',true)
@@ -76,15 +76,6 @@ iD.ui.Alert = function(message,type,stack) {
         }
     } else {
         alertDiv.append('p').text(message);
-    }
-
-    var d = new Date().toLocaleString();
-    try{
-        if(type === 'warning'||type === 'error'){
-            Hoot.view.utilities.errorlog().reportUIError(d + ': ' + message,stack);
-        }
-    } catch(e){
-        alert(message);
     }
 
     function fadeOut(selection){

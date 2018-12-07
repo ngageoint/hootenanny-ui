@@ -431,11 +431,27 @@ Hoot.model.conflicts = function( context ) {
         }
     };
 
-    var doMerge = function( layerName, feature, featureAgainst, mapid, reviewMergeRelationId, callback ) {
-        try {
-            var features = [ JXON.stringify( feature.asJXON() ), JXON.stringify( featureAgainst.asJXON() ) ];
-            var reverse  = d3.event.ctrlKey;
-            if ( reverse ) features = features.reverse();
+
+    var doMerge = function(layerName, feature, featureAgainst, mapid, reviewMergeRelationId, callback) {
+        try
+        {
+            var reverse = d3.event.ctrlKey;
+            
+            //This tag identifies the feature that is being merged into and will be removed by the server
+            //after merging is completed. The tag is not needed by POI to Polygon conflation, however, 
+            //and will be ignored since POIs are always merged into polygons.
+            if (reverse)
+            {
+              featureAgainst.tags['hoot:merge:target'] = 'yes';
+            }
+            else
+            {
+              feature.tags['hoot:merge:target'] = 'yes';
+            }
+
+            var features = [JXON.stringify(feature.asJXON()), JXON.stringify(featureAgainst.asJXON())];
+            
+            if (reverse) features = features.reverse();
             var osmXml = '<osm version=\'0.6\' upload=\'true\' generator=\'hootenanny\'>' +
                 features.join( '' ) + '</osm>';
 
@@ -468,38 +484,38 @@ Hoot.model.conflicts = function( context ) {
 
                             context.hoot().assert( response.reviewRefsResponses.length === queryElements.length );
 
-                            //newly merged entity
-                            var mergedNode      = entities[ 0 ];
-                            var featureToUpdate = feature;
-                            featureToDelete     = featureAgainst;
-                            //change the node to update if merge direction is reversed
-                            if ( reverse ) {
-                                featureToUpdate = featureAgainst;
-                                featureToDelete = feature;
-                            }
-                            mergedNode.tags[ 'hoot:status' ] = 3;
-                            context.perform(
-                                iD.actions.ChangeTags( featureToUpdate.id, mergedNode.tags ),
-                                t( 'operations.change_tags.annotation' ) );
+                        //TODO: merged entity won't always be a node
+                        //newly merged entity
+                        var mergedNode = entities[0];
+                        var featureToUpdate = feature;
+                        featureToDelete = featureAgainst;
+                        //change the node to update if merge direction is reversed
+                        if (reverse)
+                        {
+                          featureToUpdate = featureAgainst;
+                          featureToDelete = feature;
+                        }
+                        context.perform(
+                          iD.actions.ChangeTags(featureToUpdate.id, mergedNode.tags),
+                          t('operations.change_tags.annotation'));
 
-                            var reviewRefs =
-                                    _.uniq(
-                                        response.reviewRefsResponses[ 0 ].reviewRefs.concat(
-                                            response.reviewRefsResponses[ 1 ].reviewRefs ) );
+                        var reviewRefs =
+                          _.uniq(
+                            response.reviewRefsResponses[0].reviewRefs.concat(
+                              response.reviewRefsResponses[1].reviewRefs));
 
-                            //if either of the two merged features reference each other, remove those
-                            //references from this list
-                            reviewRefs =
-                                removeReviewRefs( reviewRefs, [ queryElement1.id, queryElement2.id ], reviewMergeRelationId );
+                        //if either of the two merged features reference each other, remove those
+                        //references from this list
+                        reviewRefs =
+                          removeReviewRefs(reviewRefs, [queryElement1.id, queryElement2.id], reviewMergeRelationId);
 
-
-                            var reviewRelationIdsMissing = new Array();
-                            for ( var i = 0; i < reviewRefs.length; i++ ) {
-                                //iD feature ID: <OSM element type first char> + <OSM element ID> + '_' + <mapid>;
-                                var fullRelId = 'r' + reviewRefs[ i ].reviewRelationId.toString() + '_' + mapid;
-                                if ( !context.hasEntity( fullRelId ) ) {
-                                    reviewRelationIdsMissing.push( fullRelId );
-                                }
+                        var reviewRelationIdsMissing = new Array();
+                        for (var i = 0; i < reviewRefs.length; i++)
+                        {
+                            //iD feature ID: <OSM element type first char> + <OSM element ID> + '_' + <mapid>;
+                            var fullRelId = 'r' + reviewRefs[i].reviewRelationId.toString() + '_' + mapid;
+                            if(!context.hasEntity(fullRelId)){
+                                reviewRelationIdsMissing.push(fullRelId);
                             }
 
                             var isMergeProcessed = false;
@@ -588,6 +604,9 @@ Hoot.model.conflicts = function( context ) {
         if ( status === 'Conflated' ) {
             return 3;
         }
+        if (status === 'TagChange') {
+            return 4;
+        } 
 
         return parseInt( status );
     };
@@ -613,15 +632,15 @@ Hoot.model.conflicts = function( context ) {
       context.hoot().assert(changes.deleted.length === 2);
     }*/
 
-    /*    var logDiff = function()
-        {
-          var hasChanges = context.history().hasChanges();
-          if (hasChanges)
-          {
-            var message = context.history().changes(iD.actions.DiscardTags(context.history().difference()));
-            context.hoot().view.utilities.errorlog.reportUIError(message,new Error().stack);
-          }
-        };*/
+/*    var logDiff = function()
+    {
+      var hasChanges = context.history().hasChanges();
+      if (hasChanges)
+      {
+        var message = context.history().changes(iD.actions.DiscardTags(context.history().difference()));
+        window.console.error(message,new Error().stack);
+      }
+    };*/
 
     model_conflicts.getSourceLayerId = function( feature ) {
         var mergeLayer       = context.hoot().loadedLayers()[ feature.layerName ];

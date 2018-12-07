@@ -166,7 +166,7 @@ Hoot.tools = function (context) {
 
         var refLayer = '1';
         var oRefLayerId = hoot.model.layers.getmapIdByName(a.select('.referenceLayer').value());
-        if(oRefLayerId === data.INPUT2){
+        if(oRefLayerId === parseInt(data.INPUT2)){
             refLayer = '2';
         }
 
@@ -332,6 +332,10 @@ Hoot.tools = function (context) {
     * @param mapid - merged layer map id.
     **/
     function renderMergedLayer(layerName, mapid) {
+
+        // Color tag-diff changes purple
+        context.hoot().replaceColor('tagchange', 'purple');
+
         //Get tags for loaded layer
         Hoot.model.REST('getMapTags', {mapId: mapid}, function (tags) {
             //console.log(tags);
@@ -535,6 +539,7 @@ Hoot.tools = function (context) {
                                     loadedLayers[layerName].color = selColor;
                                     context.hoot().replaceColor(loadedLayers[layerName].id,selColor);
                                     context.hoot().model.layers.changeLayerCntrlBtnColor(loadedLayers[layerName].id, selColor);
+
                                     activeConflateLayer = loadingLayer;
                                     loadedLayers[layerName] = _.extend(loadedLayers[layerName], loadingLayer);
                                     view.render(loadingLayer);

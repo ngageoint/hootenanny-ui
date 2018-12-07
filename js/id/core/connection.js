@@ -79,7 +79,7 @@ iD.Connection = function(context, useHttps) {
     connection.getTileNodesCountFromURL = function(url, data, callback) {
         if (iD.data.hootConfig)
             d3.json(url)
-                .header('Content-Type', 'text/plain')
+                .header('Content-Type', 'application/json')
                 .post(JSON.stringify(data), function (error, resp) {
                     if (error) {
                         iD.ui.Alert(error.responseText,'error',new Error().stack);
@@ -91,7 +91,7 @@ iD.Connection = function(context, useHttps) {
 
   //Need to document why this was added for Hoot
     connection.getMbrFromUrl = function( mapId, callback) {
-        var request = d3.json(url + '/api/0.6/map/mbr?mapId=' + mapId);
+        var request = d3.json(url + '/api/0.6/map/' + mapId + '/mbr');
         request.get(function (error, resp) {
             if (error) {
                 window.console.log(error);
@@ -206,7 +206,7 @@ iD.Connection = function(context, useHttps) {
     }
 
   //Need to document why this was modified for Hoot
-    function getTags(obj, layerName) {
+    function getTags(obj) {
         var elems = obj.getElementsByTagName(tagStr),
             tags = {};
         for (var i = 0, l = elems.length; i < l; i++) {
@@ -861,12 +861,11 @@ iD.Connection = function(context, useHttps) {
                         layerZoomObj.zoomLevel = context.map().zoom();
                         layerZoomArray.push(layerZoomObj);
                     }
-                    ext = '&extent=' + layerExt.maxlon + ',' + layerExt.maxlat +
-                    ',' + layerExt.minlon + ',' + layerExt.minlat + '&autoextent=manual';
+                    ext = '?manualExtent=' + layerExt.maxlon + ',' + layerExt.maxlat + ',' + layerExt.minlon + ',' + layerExt.minlat;
                 }
             }
 
-            return url + '/api/0.6/map?mapId=' + mapId + '&bbox=' + tile.extent.toParam() + ext;
+            return url + '/api/0.6/map/' + mapId + '/' + tile.extent.toParam() + ext;
         }
 
         _.filter(inflight, function(v, i) {

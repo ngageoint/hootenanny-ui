@@ -6,7 +6,7 @@
 //      03 Feb. 2016
 //      15 Apr. 2016 eslint updates -- Sisskind
 //      31 May  2016 OSM API Database export type -- bwitham
-//      4  Dec  2017 Add table headers and warnings for old datasets   
+//      4  Dec  2017 Add table headers and warnings for old datasets
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Hoot.control.utilities.folder = function( context ) {
     var selectedLayerIDs              = [];
@@ -62,12 +62,10 @@ Hoot.control.utilities.folder = function( context ) {
         if ( container.attr( 'id' ) === 'datasettable' ) {
             folders = _.without( folders, _.find( folders, { id: -1 } ) );
         }
-
-        folders = JSON.parse( '{"name":"Datasets","id":"Datasets","children":' + JSON.stringify( folders ) + '}' );
-
-        var margin    = { top: 10, right: 20, bottom: 30, left: 0 },
-            width     = '100%',
-            height    = '100%',
+        folders= JSON.parse('{"name":"Datasets","id":"Datasets","children":' + JSON.stringify(folders) +'}');
+        var margin = {top: 10, right: 20, bottom: 30, left: 0},
+            width = '100%',
+            height = '100%',
             barHeight = 20;
 
         var x = d3.scale.linear()
@@ -157,19 +155,17 @@ Hoot.control.utilities.folder = function( context ) {
             row.classed( 'expiring', true )
                 .on( 'mousemove', function() {
                     tooltip
-                        .style( 'left', Math.max( 0, d3.event.pageX - 200 ) + 'px' )
-                        .style( 'top', (d3.event.pageY - 50) + 'px' )
-                        .style( 'opacity', '0.9' );
-                } )
-                .on( 'mouseout', function() {
-                    tooltip.style( 'opacity', 0 );
-                } )
-                .append( 'g' ).append( 'svg:foreignObject' )
-                .attr( 'class', 'expiring' )
-                .attr( 'y', '-9px' )
-                .attr( 'x', function( d ) {
-                    return '48%';
-                } );
+                        .style('left', Math.max(0, d3.event.pageX - 200) + 'px')
+                        .style('top', (d3.event.pageY - 50) + 'px')
+                        .style('opacity', '0.9');
+                })
+                .on('mouseout', function () {
+                    tooltip.style('opacity', 0);
+                })
+                .append('g').append('svg:foreignObject')
+                .attr('class', 'expiring')
+                .attr('y', '-9px')
+                .attr('x', function(){ return '48%';} );
 
         }
 
@@ -193,21 +189,16 @@ Hoot.control.utilities.folder = function( context ) {
                 .duration( duration )
                 .style( 'height', height + 'px' );
 
-            // Compute the 'layout'.
-            nodes.forEach( function( n, i ) {
-                n.x = (i - 1) * barHeight;    //This will remove the 'Datasets' title
-            } );
-
-            // Update the nodes…
-            var node = svg.selectAll( 'g.node' )
-                .data( nodes, function( d ) {
-                    if ( d.type ) {
-                        return d.type.charAt( 0 ) + d.id || d.id || (d.id = ++i);
-                    }
-                    else {
-                        return d.id || (d.id = ++i);
-                    }
-                } );
+              // Compute the 'layout'.
+              nodes.forEach(function(n, i) {
+                n.x = (i-1) * barHeight;    //This will remove the 'Datasets' title
+              });
+              // Update the nodes…
+              var node = svg.selectAll('g.node')
+                  .data(nodes, function(d) {
+                      if(d.type){return d.type.charAt(0) + d.id || d.id || (d.id = ++i);}
+                      else{return d.id || (d.id = ++i);}
+                  });
 
             var nodeEnter = node.enter().append( 'g' )
                 .attr( 'class', 'node' )
@@ -287,35 +278,24 @@ Hoot.control.utilities.folder = function( context ) {
                     } );
             }
 
-            nodeEnter.append( 'text' )
-                .style( 'fill', fontColor )
-                .classed( 'dnameTxt', true )
-                .attr( 'dy', 3.5 )
-                .attr( 'dx', function( d ) {
-                    var dd = d.depth - 1;
-                    if ( d.type ) {
-                        return 25.5 + (11 * dd);
-                    }
-                    else {
-                        return 11 * dd;
-                    }
-                } )    //5.5
-                .each( function( d ) {
-                    var rectNode = d3.select( this );
-                    if ( d.type === 'dataset' ) {
-                        rectNode.attr( 'lyr-id', function( d ) {
-                            return d.id;
-                        } );
-                    } else if ( d.type === 'folder' ) {
-                        rectNode.attr( 'fldr-id', function( d ) {
-                            return d.id;
-                        } );
-                    }
-                } )
-                .append( 'tspan' ).text( function( d ) {
-                return d.name;
-            } ).each( context.hoot().control.utilities.folder.wrap );
-            // NOTE: Need to account for datasets outside of folders...make dynamic
+              nodeEnter.append('text')
+                  .style('fill', fontColor)
+                  .classed('dnameTxt',true)
+                  .attr('dy', 3.5)
+                  .attr('dx', function(d){
+                    var dd = d.depth-1;
+                      if(d.type){return  25.5+(11*dd);}
+                      else{return 11*dd;}})    //5.5
+                  .each(function(d){
+                    var rectNode = d3.select(this);
+                      if(d.type==='dataset'){
+                        rectNode.attr('lyr-id',function(d){return d.id;});
+                     } else if (d.type==='folder'){
+                        rectNode.attr('fldr-id',function(d){return d.id;});
+                     }
+                  })
+                  .append('tspan').text(function(d){return d.name;}).each(context.hoot().control.utilities.folder.wrap);
+                  // NOTE: Need to account for datasets outside of folders...make dynamic
 
             nodeEnter.filter( function( d ) {
                 return d.depth > 1;
@@ -390,14 +370,21 @@ Hoot.control.utilities.folder = function( context ) {
                 .style( 'fill', fillColor )
                 .attr( 'class', rectClass );
 
-            // Transition exiting nodes to the parent's new position.
-            node.exit().transition()
-                .duration( duration )
-                .attr( 'transform', function() {
-                    return 'translate(' + 0 + ',' + source.x + ')';
-                } )
-                .style( 'opacity', 1e-6 )
-                .remove();
+          // update font-color:
+          node.selectAll('text')
+            .style('fill', function(d) {
+              // if(d.children) return;
+              if(d.public === true && d.type === 'dataset' && d.selected === true) {
+                return 'rgb(0,0,0)';
+              } else { return fontColor(d); }
+            });
+
+          // Transition exiting nodes to the parent's new position.
+          node.exit().transition()
+              .duration(duration)
+              .attr('transform', function() { return 'translate(' + 0 + ',' + source.x + ')'; })
+              .style('opacity', 1e-6)
+              .remove();
 
             // Update the links…
             var link = svg.selectAll( 'path.link' )
@@ -524,8 +511,37 @@ Hoot.control.utilities.folder = function( context ) {
                         return;
                     }
 
-                    // create the div element that will hold the context menu
-                    d3.selectAll( '.context-menu' ).data( [ 1 ] )
+                          items.push(
+                                       {title:'Export',icon:'export',click:'exportDataset'},
+                                       {title:'Rename ' + d.name,icon:'info',click:'renameDataset'},
+                                       {title:'Prepare for Validation',icon:'sprocket',click:'prepValidation'},
+                                       {title:'Filter non-HGIS POIs',icon:'sprocket',click:'filter'}
+                                   );
+                          if (iD.data.hootConfig.taskingManagerUrl) {
+                            items.push({title:'Create Conflation Task Project',icon:'sprocket',click:'taskManager'});
+                          }
+                      } else if(layerLength <= 0) {
+                          d3.select('.context-menu').style('display', 'none');
+                          d3.event.preventDefault();
+                          return;
+                      }
+                  } else if (d.type.toLowerCase()==='folder') {
+                      items = [
+                               {title:'Delete',                icon:'trash',    click:'deleteFolder' },
+                               {title:'Rename/Move ' + d.name, icon:'info',     click:'modifyFolder' },
+                               {title:'Modify Visibility',     icon:'sprocket', click:'modifyVis'    },
+                               {title:'Add Dataset',           icon:'data',     click:'addDataset'   },
+                               {title:'Add Folder',            icon:'folder',   click:'addFolder'    },
+                               {title:'Export Data in Folder', icon:'export',   click:'exportFolder' }
+                           ];
+                      } else {
+                          d3.select('.context-menu').style('display', 'none');
+                          d3.event.preventDefault();
+                          return;
+                      }
+
+                      // create the div element that will hold the context menu
+                      d3.selectAll('.context-menu').data([1])
                         .enter()
                         .append( 'div' )
                         .attr( 'class', 'context-menu' );
@@ -558,67 +574,31 @@ Hoot.control.utilities.folder = function( context ) {
                                 node = d3.select( d3.selectAll( '.hootImport' ).node() );
                             }
 
-                            switch ( item.click ) {
-                                //Datasets
-                                case 'addReferenceDataset':
-                                    key.color = 'violet';
-                                    context.hoot().control.import.forceAddLayer( key, node );
-                                    break;
-                                case 'addSecondaryDataset':
-                                    key.color = 'orange';
-                                    context.hoot().control.import.forceAddLayer( key, node );
-                                    break;
-                                case 'exportDataset':
-                                    context.hoot().view.utilities.dataset.exportDataset( d, container );
-                                    break;
-                                case 'deleteDataset':
-                                    context.hoot().view.utilities.dataset.deleteDatasets( context.hoot().model.layers.getSelectedLayers(), container );
-                                    break;
-                                case 'moveDataset':
-                                    context.hoot().view.utilities.dataset.moveDatasets( context.hoot().model.layers.getSelectedLayers() );
-                                    break;
-                                case 'renameDataset':
-                                    context.hoot().view.utilities.dataset.modifyDataset( d );
-                                    break;
-                                case 'prepValidation':
-                                    showPrepValidationPopup( context.hoot().model.layers.getSelectedLayers() );
-                                    break;
-                                case 'filter':
-                                    showFilterPopup( context.hoot().model.layers.getSelectedLayers() );
-                                    break;
-                                case 'taskManager':
-                                    context.hoot().view.utilities.dataset.createConflationTaskProject( d );
-                                    break;
-                                case 'bulkexportDataset':
-                                    context.hoot().view.utilities.dataset.bulkexportDataset( context.hoot().model.layers.getSelectedLayers() );
-                                    break;
+                            switch (item.click) {
+                            //Datasets
+                            case 'addReferenceDataset': key.color='violet'; context.hoot().control.import.forceAddLayer(key,node); break;
+                            case 'addSecondaryDataset': key.color='orange'; context.hoot().control.import.forceAddLayer(key,node); break;
+                            case 'exportDataset': context.hoot().view.utilities.dataset.exportDataset(d,container); break;
+                            case 'deleteDataset': context.hoot().view.utilities.dataset.deleteDatasets(context.hoot().model.layers.getSelectedLayers(),container); break;
+                            case 'moveDataset': context.hoot().view.utilities.dataset.moveDatasets(context.hoot().model.layers.getSelectedLayers()); break;
+                            case 'renameDataset': context.hoot().view.utilities.dataset.modifyDataset(d); break;
+                            case 'prepValidation': showPrepValidationPopup(context.hoot().model.layers.getSelectedLayers()); break;
+                            case 'filter': showFilterPopup(context.hoot().model.layers.getSelectedLayers()); break;
+                            case 'taskManager': context.hoot().view.utilities.dataset.createConflationTaskProject(d); break;
+                            case 'bulkexportDataset': context.hoot().view.utilities.dataset.bulkexportDataset(context.hoot().model.layers.getSelectedLayers()); break;
 
-                                //Folders
-                                case 'deleteFolder':
-                                    context.hoot().view.utilities.dataset.deleteDataset( d, container );
-                                    break;
-                                case 'modifyFolder':
-                                    context.hoot().view.utilities.dataset.modifyDataset( d );
-                                    break;
-                                case 'addDataset':
-                                    Hoot.model.REST( 'getTranslations', function( e ) {
-                                        if ( d.error ) {
-                                            context.hoot().view.utilities.errorlog.reportUIError( d.error );
-                                            return;
-                                        }
-                                        context.hoot().control.utilities.importdataset.importDataContainer( e, d );
-                                    } );
-                                    break;
-                                case 'addFolder':
-                                    context.hoot().control.utilities.folder.importFolderContainer( d );
-                                    break;
-                                case 'exportFolder':
-                                    context.hoot().view.utilities.dataset.preparebulkexportDataset( _.find( context.hoot().model.folders.getAvailFolders(), function( f ) {
-                                        return f.id === d.id;
-                                    } ) );
-                                    break;
-                                default:
-                                    break;
+                            //Folders
+                            case 'modifyVis':    context.hoot().view.utilities.dataset.modifyFolderVisibility(d); break;
+                            case 'deleteFolder': context.hoot().view.utilities.dataset.deleteDataset(d,container); break;
+                            case 'modifyFolder': context.hoot().view.utilities.dataset.modifyDataset(d); break;
+                            case 'addDataset': Hoot.model.REST('getTranslations',function(e){
+                                                if(d.error){window.console.error(d.error); return;}
+                                                context.hoot().control.utilities.importdataset.importDataContainer(e,d);
+                                              }); break;
+                            case 'addFolder': context.hoot().control.utilities.folder.importFolderContainer(d); break;
+                            case 'exportFolder': context.hoot().view.utilities.dataset.preparebulkexportDataset(_.find(context.hoot().model.folders.getAvailFolders(),function(f){return f.id===d.id;})); break;
+                            default:
+                                break;
                             }
 
                             selectedLayerIDs = context.hoot().model.layers.setSelectedLayers( [] );
@@ -626,29 +606,23 @@ Hoot.control.utilities.folder = function( context ) {
 
                             d3.select( '.context-menu' ).remove();
 
-                        } )
-                        .attr( 'class', function( item ) {
-                            return '_icon ' + item.icon;
-                        } )
-                        .text( function( item ) {
-                            return item.title;
-                        } );
-                    d3.select( '.context-menu' ).style( 'display', 'none' );
-                    // show the context menu
-                    d3.select( '.context-menu' )
-                        .style( 'left', (d3.event.pageX - 2) + 'px' )
-                        .style( 'top', (d3.event.pageY - 2) + 'px' )
-                        .style( 'display', 'block' );
-                    //} else {d3.select('.context-menu').style('display', 'none');}
-                    d3.event.preventDefault();
 
-                } );
-            } else {
-                container.selectAll( 'rect' ).on( 'contextmenu', function() {
-                    d3.event.preventDefault();
-                } );
-            }
-        }
+                        })
+                        .attr('class',function(item){return '_icon ' + item.icon;})
+                        .text(function(item) { return item.title; });
+                          d3.select('.context-menu').style('display', 'none');
+                      // show the context menu
+                      d3.select('.context-menu')
+                        .style('left', (d3.event.pageX - 2) + 'px')
+                        .style('top', (d3.event.pageY - 2) + 'px')
+                        .style('display', 'block');
+                  //} else {d3.select('.context-menu').style('display', 'none');}
+                  d3.event.preventDefault();
+
+
+              });
+          } else {container.selectAll('rect').on('contextmenu',function(){d3.event.preventDefault();});}
+        } // update()
 
         // Toggle children on click.
         // If no children, consider it a dataset!
@@ -729,28 +703,20 @@ Hoot.control.utilities.folder = function( context ) {
 
         }
 
-        function fillColor( d ) {
-            if ( d.type === 'folder' ) {
-                return '#7092ff';
-            }
-            else if ( d.type === 'dataset' ) {
-                return '#efefef';
-            }
-            else {
-                return '#ffffff';
-            }
+        function fillColor(d) {
+            if(d.type==='folder' && d.public === true) { return '#7092ff'; }
+            else if(d.type ==='folder') {return '#efefef';}
+            else if(d.type==='dataset' && d.public === true){return '#7092ff';}
+            else if(d.type==='dataset'){return '#efefef';}
+            else {return '#FFC0CB'; /* pink */ }
         }
 
-        function fontColor( d ) {
-            if ( d.type === 'folder' ) {
-                return '#ffffff';
-            }
-            else if ( d.type === 'dataset' ) {
-                return '#7092ff';
-            }
-            else {
-                return '#ffffff';
-            }
+        function fontColor(d){
+            if(d.type==='folder' && d.public === true){return '#fff';}
+            else if(d.type==='folder'){return '#7092ff';}
+            else if(d.type==='dataset' && d.public === true){return '#fff';}
+            else if(d.type==='dataset'){return '#7092ff';}
+            else {return '#FFC0CB'; /* pink */ }
         }
 
         function rectClass( d ) {
@@ -776,192 +742,230 @@ Hoot.control.utilities.folder = function( context ) {
     hoot_control_utilities_folder.importFolderContainer = function( data ) {
         context.hoot().model.folders.listFolders( context.hoot().model.folders.getAvailFolders() );
 
-        var d_form    = [ {
-            label: 'Folder Name',
-            placeholder: '',
-            type: 'NewFolderName'
-        } ];
-        var modalbg   = d3.select( 'body' )
-            .append( 'div' )
-            .classed( 'fill-darken3 pin-top pin-left pin-bottom pin-right', true );
-        var ingestDiv = modalbg.append( 'div' )
-            .classed( 'contain col4 pad1 hoot-menu fill-white round modal', true );
-        var _form     = ingestDiv.append( 'form' );
-        _form.classed( 'round space-bottom1 importableLayer', true )
-            .append( 'div' )
-            .classed( 'big pad1y keyline-bottom space-bottom2', true )
-            .append( 'h4' )
-            .text( 'Add Folder' )
-            .append( 'div' )
-            .classed( 'fr _icon x point', true )
-            .on( 'click', function() {
-                //modalbg.classed('hidden', true);
-                modalbg.remove();
-            } );
-        var fieldset = _form.append( 'fieldset' )
-            .selectAll( '.form-field' )
-            .data( d_form );
-        fieldset.enter()
-            .append( 'div' )
-            .classed( 'form-field fill-white small keyline-all round space-bottom1', true )
-            .append( 'label' )
-            .classed( 'pad1x pad0y strong fill-light round-top keyline-bottom', true )
-            .text( function( d ) {
-                return d.label;
-            } );
-        fieldset.append( 'div' )
-            .classed( 'contain', true )
-            .append( 'input' )
-            .attr( 'type', 'text' )
-            .attr( 'placeholder', function( field ) {
-                return field.placeholder;
-            } )
-            .attr( 'class', function( field ) {
-                return 'reset ' + field.type;
-            } )
-            .select( function( a ) {
-                if ( a.combobox3 ) {
-                    var comboPathName = d3.combobox()
-                        .data( _.map( a.combobox3, function( n ) {
-                            return {
-                                value: n.name,
-                                title: n.id
-                            };
-                        } ) );
 
-                    comboPathName.data().sort( function( a, b ) {
-                        var textA = a.value.toUpperCase();
-                        var textB = b.value.toUpperCase();
-                        return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-                    } );
+    hoot_control_utilities_folder.importFolderContainer = function(data /* 0 -or- parent folder object */) {
+        context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
 
-                    comboPathName.data().unshift( { value: 'root', title: 0 } );
+        var modalbg = d3.select('body')
+            .append('div')
+            .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
 
-                    d3.select( this )
-                        .style( 'width', '100%' )
-                        .call( comboPathName );
+        var ingestDiv = modalbg.append('div')
+            .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
 
-                    d3.select( this ).attr( 'readonly', true );
+        var _form = ingestDiv.append('form');
+
+        var ifcTitle = 'Add Folder';
+        if(data !== 0) {
+          ifcTitle = 'Add <span style="color: ' + (data.public ? '#7092ff' : '#000') + '">';
+          ifcTitle += (data.public ? 'Public' : 'Private') + '</span>';
+          ifcTitle +=  ' Folder' + ' Under`' + data.name + '`';
+        }
+        _form.classed('round space-bottom1 importableLayer', true)
+            .append('div')
+            .classed('big pad1y keyline-bottom space-bottom2', true)
+            .append('h4')
+            .html(ifcTitle)
+            .append('div')
+            .classed('fr _icon x point', true)
+            .on('click', function () { modalbg.remove(); });
+
+        var fieldset = _form.append('fieldset');
+
+        fieldset.append('div')
+            .classed('form-field fill-white small keyline-all round space-bottom1', true)
+            .append('label')
+              .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
+              .text('Folder Name');
+
+        fieldset.append('div')
+            .classed('contain', true)
+            .style('margin-bottom', '12px')
+            .append('input')
+            .attr('type', 'text')
+            .attr('placeholder', '')
+            .attr('class', 'reset NewFolderName')
+            .on('change', function() {
+                var resp = context.hoot().checkForUnallowedChar(this.value);
+                if(resp !== true){
+                    d3.select(this).classed('invalidName',true).attr('title',resp);
+                } else {
+                    d3.select(this).classed('invalidName',false).attr('title',null);
                 }
-
-                if ( a.type === 'NewFolderName' ) {
-                    d3.select( this ).on( 'change', function() {
-                        //ensure output name is valid
-                        var resp = context.hoot().checkForUnallowedChar( this.value );
-                        if ( resp !== true ) {
-                            d3.select( this ).classed( 'invalidName', true ).attr( 'title', resp );
-                        } else {
-                            d3.select( this ).classed( 'invalidName', false ).attr( 'title', null );
-                        }
-                    } );
-                    d3.select( this ).on( 'keypress', function() {
-                        var key = d3.event.keyCode;
-                        if ( key === 13 ) {
-
-                            _submit();
-                        }
-                    } );
+            })
+            .on('keypress', function() {
+                var key = d3.event.keyCode;
+                if (key === 13) {
+                  d3.event.preventDefault();
+                  _submit();
                 }
-            } );
+            });
+
+        if(data === 0) {
+          fieldset.append('div')
+              .classed('form-field fill-white small keyline-all round space-bottom1', true)
+              .append('label')
+                .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
+                .text('Folder Visibility');
+
+          var visiDiv = fieldset.append('div')
+              .classed('contain', true)
+              .style('padding-left', '10px')
+              .style('margin-bottom', '12px');
+          visiDiv.append('input')
+              .attr('id', 'form_isPublic')
+              .attr('type', 'checkbox')
+              .attr('name', 'isPublic')
+              .attr('value', 'isPublic')
+              .attr('checked', '');
+          visiDiv.append('label')
+              .attr('for', 'isPublic')
+              .text('Public');
+        }
 
         function _submit() {
-            if ( !d3.selectAll( '.invalidName' ).empty() ) {
-                return;
-            }
+            if(!d3.selectAll('.invalidName').empty()){return;}
 
             //check if layer with same name already exists...
-            if ( _form.select( '.reset.NewFolderName' ).value() === '' || _form.select( '.reset.NewFolderName' ).value() === _form.select( '.reset.NewFolderName' ).attr( 'placeholder' ) ) {
-                iD.ui.Alert( 'Please enter an output folder name.', 'warning', new Error().stack );
+            if(_form.select('.reset.NewFolderName').value()==='' || _form.select('.reset.NewFolderName').value()===_form.select('.reset.NewFolderName').attr('placeholder')){
+                iD.ui.Alert('Please enter an output folder name.','warning',new Error().stack);
                 return;
             }
 
-            var resp = context.hoot().checkForUnallowedChar( _form.select( '.reset.NewFolderName' ).value() );
-            if ( resp !== true ) {
-                iD.ui.Alert( resp, 'warning', new Error().stack );
+            var resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
+            if(resp !== true){
+                iD.ui.Alert(resp,'warning',new Error().stack);
                 return;
             }
 
-            resp = context.hoot().model.folders.duplicateFolderCheck( {
-                name: _form.select( '.reset.NewFolderName' ).value(),
-                parentId: folderId
-            } );
-            if ( resp !== true ) {
-                iD.ui.Alert( resp, 'warning', new Error().stack );
+            resp = context.hoot().model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
+            if(resp !== true){
+                iD.ui.Alert(resp,'warning',new Error().stack);
                 return;
             }
 
-            var data        = {};
-            data.parentId   = folderId;
-            data.folderName = _form.select( '.reset.NewFolderName' ).value();
-
-            Hoot.model.REST( 'addFolder', data, function() {
-                context.hoot().model.folders.refresh( function() {
-                    context.hoot().model.folders.refreshLinks( function() {
+            var data={};
+            data.parentId=folderId;
+            data.folderName = _form.select('.reset.NewFolderName').value();
+            data.isPublic = _form.select('#form_isPublic').node() && _form.select('#form_isPublic').node().checked;
+            Hoot.model.REST('addFolder', data, function(){
+                context.hoot().model.folders.refresh(function () {
+                    context.hoot().model.folders.refreshLinks(function(){
                         context.hoot().model.layers.RefreshLayers();
                         modalbg.remove();
-                    } );
-                } );
-            } );
+                    });
+                });
+            });
         }
 
+
         var folderId = 0;
-        if ( data ) {
-            if ( _.map( context.hoot().model.folders.getAvailFolders(), function( n ) {
-                return n.id;
-            } ).indexOf( data.id ) >= 0 ) {
-                folderId = data.id;
+        if(data){
+            if(_.map(context.hoot().model.folders.getAvailFolders(),function(n){return n.id;}).indexOf(data.id)>=0){
+                folderId=data.id;
             }
         }
 
-        var submitExp = ingestDiv.append( 'div' )
-            .classed( 'form-field col12 left ', true );
-        submitExp.append( 'span' )
-            .classed( 'round strong big loud dark center col10 margin1 point', true )
-            .classed( 'inline row1 fl col10 pad1y', true )
-            .text( 'Add Folder' )
-            .on( 'click', function() {
+        var submitExp = ingestDiv.append('div')
+            .classed('form-field col12 left ', true);
 
-                _submit();
-                // if(!d3.selectAll('.invalidName').empty()){return;}
+         submitExp.append('span')
+            .classed('round strong big loud dark center col10 margin1 point', true)
+            .classed('inline row1 fl col10 pad1y', true)
+            .text('Add Folder')
+            .on('click', function() { _submit(); });
 
-                // //check if layer with same name already exists...
-                // if(_form.select('.reset.NewFolderName').value()==='' || _form.select('.reset.NewFolderName').value()===_form.select('.reset.NewFolderName').attr('placeholder')){
-                //     iD.ui.Alert('Please enter an output folder name.','warning',new Error().stack);
-                //     return;
-                // }
-
-                // var resp = context.hoot().checkForUnallowedChar(_form.select('.reset.NewFolderName').value());
-                // if(resp !== true){
-                //     iD.ui.Alert(resp,'warning',new Error().stack);
-                //     return;
-                // }
-
-                // resp = context.hoot().model.folders.duplicateFolderCheck({name:_form.select('.reset.NewFolderName').value(),parentId:folderId});
-                // if(resp !== true){
-                //     iD.ui.Alert(resp,'warning',new Error().stack);
-                //     return;
-                // }
-
-                // var data={};
-                // data.parentId=folderId;
-                // data.folderName = _form.select('.reset.NewFolderName').value();
-
-                // Hoot.model.REST('addFolder',data,function(){
-                //     context.hoot().model.folders.refresh(function () {
-                //         context.hoot().model.folders.refreshLinks(function(){
-                //             context.hoot().model.layers.RefreshLayers();
-                //             modalbg.remove();
-                //         });
-                //     });
-                // });
-            } );
         return modalbg;
     };
 
-    hoot_control_utilities_folder.modifyNameContainer = function( folder ) {
-        context.hoot().model.folders.listFolders( context.hoot().model.folders.getAvailFolders() );
-        var folderList = _.map( context.hoot().model.folders.getAvailFolders(), _.clone );
-        var folderId   = folder.parentId || 0;
+    hoot_control_utilities_folder.modifyVisibilityContainer = function(folder, callback) {
+        Hoot.model.REST('getFolderVisibility', folder, function(e, r) {
+            if(e) {
+                iD.ui.Alert('Unable to continue, failed to retrieve folder metadata', 'error', new Error().stack);
+                return;
+            }
+
+            hoot_control_utilities_folder._modifyVisibilityContainer(folder, r, callback);
+
+        });
+    };
+    hoot_control_utilities_folder._modifyVisibilityContainer = function(folder, metadata, callback) {
+        var mvc_modalbg = d3.select('body')
+            .append('div')
+            .classed('fill-darken3 pin-top pin-left pin-bottom pin-right', true);
+
+        var mvc_ingestDiv = mvc_modalbg.append('div')
+            .classed('contain col4 pad1 hoot-menu fill-white round modal', true);
+
+        var mvc_form = mvc_ingestDiv.append('form');
+        mvc_form.classed('round space-bottom1 importableLayer', true)
+            .append('div')
+            .classed('big pad1y keyline-bottom space-bottom2', true)
+            .append('h4')
+            .text('Modify Folder `' + folder.name + '`')
+            .append('div')
+            .classed('fr _icon x point', true)
+            .on('click', function () {
+                mvc_modalbg.remove();
+            });
+
+        var mvc_fieldset = mvc_form.append('fieldset');
+        mvc_fieldset.append('div')
+            .classed('form-field fill-white small keyline-all round space-bottom1', true)
+            .append('label')
+                .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
+                .text(metadata.length + ' Folders Affected');
+
+        mvc_fieldset.append('div')
+            .classed('contain', true)
+            .append('p')
+                .style('margin-bottom', '10px')
+                .text(metadata.map(function(d) { return d.displayName; }).join(','));
+
+
+        mvc_fieldset.append('div')
+            .classed('form-field fill-white small keyline-all round space-bottom1', true)
+            .append('label')
+                .classed('pad1x pad0y strong fill-light round-top keyline-bottom', true)
+                .text('Visibility');
+
+        var mvc_div = mvc_fieldset.append('div')
+            .classed('contain', true);
+        var mvc_check = mvc_div.append('input')
+            .attr('id', 'folderIsPublic')
+            .attr('type', 'checkbox')
+            .attr('checked', folder.public === true ? true : undefined);
+
+        mvc_div.append('label')
+            .attr('for', 'folderIsPublic')
+            .text('Public');
+
+        var mvc_submitExp = mvc_ingestDiv.append('div')
+            .classed('form-field col12 center ', true);
+
+        mvc_submitExp.append('span')
+            .classed('round strong big loud dark center col10 margin1 point', true)
+            .classed('inline row1 fl col10 pad1y', true)
+            .style('margin-top', '20px')
+            .text('Update')
+            .on('click', function () {
+                mvc_modalbg.remove();
+                Hoot.model.REST('setFolderVisibility', folder, mvc_check.node().checked,function(e) {
+                    if(e) {
+                        iD.ui.Alert('Failed to update folder attributes', 'error', new Error().stack);
+                        return;
+                    }
+
+                    callback();
+                });
+            });
+
+
+    };
+    hoot_control_utilities_folder.modifyNameContainer = function(folder) {
+            context.hoot().model.folders.listFolders(context.hoot().model.folders.getAvailFolders());
+            var folderList = _.map(context.hoot().model.folders.getAvailFolders(),_.clone);
+            var folderId = folder.parentId || 0;
 
         var placeholder = 'root';
         if ( folderId > 0 ) {
@@ -1109,16 +1113,22 @@ Hoot.control.utilities.folder = function( context ) {
                     folderData.parentId = data.folderId;
                     folderData.folderId = data.mapid;
 
-                    Hoot.model.REST( 'updateFolder', folderData, function() {
-                        context.hoot().model.folders.refresh( function() {
-                            context.hoot().model.import.updateTrees();
-                        } );
-                        modalbg.remove();
-                    } );
-                } );
-            } );
+                        Hoot.model.REST('updateFolder',folderData,function(e){
+                            if(e) {
+                              iD.ui.Alert('Failed to update folder', 'error', new Error().stack);
+                              return;
+                            }
 
-        return modalbg;
+                            context.hoot().model.folders.refresh(function(){
+                                context.hoot().model.import.updateTrees();
+                            });
+
+                            modalbg.remove();
+                        });
+                    });
+                });
+
+            return modalbg;
     };
 
     return hoot_control_utilities_folder;

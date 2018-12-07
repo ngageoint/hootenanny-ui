@@ -449,8 +449,13 @@ Hoot.control.conflate = function (context,sidebar) {
         var _conflationCommand = 'conflate';
         try {
             var _conflationType = thisConfType.value();
-            if(_conflationType === 'Differential' || _conflationType === 'Custom Differential'){
-                _conflationCommand = 'diff-conflate';
+            if(_conflationType.includes('Differential')){
+                if (_conflationType.includes('w/Tags')){
+                    _conflationCommand = 'conflate-differential-tags';
+
+                } else {
+                    _conflationCommand = 'conflate-differential';
+                }
             }
         } catch (_e) {
             _conflationCommand = 'conflate';
@@ -587,7 +592,7 @@ Hoot.control.conflate = function (context,sidebar) {
                 label: 'Type',
                 type: 'ConfType',
                 placeholder: 'Reference',
-                combobox: {'data':['Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential'],
+                combobox: {'data':['Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/Tags'],
                             'command': _populateReferenceCombo},
                 onchange: function(){
                     //reset form

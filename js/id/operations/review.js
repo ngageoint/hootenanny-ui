@@ -235,7 +235,7 @@ iD.operations.Review = function(selectedIDs, context) {
 
                                 Hoot.model.REST('reviewGetReviewItem', reqParam, function (resp) {
                                     if(resp.error){
-                                        context.hoot().view.utilities.errorlog.reportUIError(resp.error);
+                                        window.console.error(resp.error);
                                         return;
                                     }
 

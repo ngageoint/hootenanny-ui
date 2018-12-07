@@ -297,12 +297,11 @@ dist/iD.js: \
 	js/hoot/model/rest.js \
 	js/hoot/view/View.js \
 	js/hoot/view/VersionInfo.js \
+	js/hoot/view/Login.js \
 	js/hoot/view/utilities/Utilities.js \
 	js/hoot/view/utilities/Dataset.js \
 	js/hoot/view/utilities/BasemapDataset.js \
 	js/hoot/view/utilities/Translation.js \
-	js/hoot/view/utilities/ErrorLog.js \
-	js/hoot/view/utilities/Reports.js \
 	js/hoot/view/utilities/About.js \
 	js/hoot/view/utilities/ReviewBookmarks.js \
 	js/hoot/view/utilities/ReviewBookmarkNotes.js \
@@ -323,7 +322,6 @@ dist/iD.js: \
 	js/hoot/control/utilities/Utilities.js \
 	js/hoot/control/utilities/Translation.js \
 	js/hoot/control/utilities/BasemapDataset.js \
-	js/hoot/control/utilities/Reports.js \
 	js/hoot/control/utilities/Folder.js \
 	js/hoot/control/utilities/Validation.js \
 	js/hoot/control/utilities/Filter.js \
@@ -369,7 +367,7 @@ else
 endif
 
 dist/iD.css: css/*.css
-	cat css/base.css css/reset.css css/map.css css/app.css css/dgcarousel.css css/style2.css css/hoot-style.css css/translation_assistant.css > $@
+	cat css/base.css css/reset.css css/map.css css/app.css css/dgcarousel.css css/style2.css css/login.css css/hoot-style.css css/translation_assistant.css > $@
 
 node_modules/.install: package.json
 ifneq (,$(findstring s,$(MAKEFLAGS)))

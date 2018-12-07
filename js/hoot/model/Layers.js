@@ -47,7 +47,7 @@ Hoot.model.layers = function (context)
 
             if(a.status === 'failed'){
                 if(a.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(a.error);
+                    window.console.error(a.error);
                 }
             }
 
@@ -279,7 +279,7 @@ Hoot.model.layers = function (context)
         _request.offset = 0;
         Hoot.model.REST('getAllReviewBookmarks', _request, function (d) {
             if(d.error){
-                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                window.console.error(d.error);
                 return;
             }
 
@@ -297,21 +297,15 @@ Hoot.model.layers = function (context)
             }
 
             if(deleteDataset){
-                d3.json('/hoot-services/osm/api/0.6/map/delete?mapId=' + params.dataset.name)
+                d3.xhr('/hoot-services/osm/api/0.6/map/' + params.dataset.name)
                     .header('Content-Type', 'text/plain')
-                    .post('', function (error, data) {
+                    .send('DELETE', function (error, data) {
                         var statusUrl = '/hoot-services/job/status/' + data.jobid;
                         var statusTimer = setInterval(function () {
                             d3.json(statusUrl, function (error, result) {
                                 if (result.status !== 'running') {
-                                    Hoot.model.REST.WarningHandler(result);
                                     clearInterval(statusTimer);
-
-                                    //update link
-                                    var link={};
-                                    link.folderId = 0;
-                                    link.updateType='delete';
-                                    link.mapid=context.hoot().model.layers.getmapIdByName(params.dataset.name)||0;
+                                    Hoot.model.REST.WarningHandler(result);
                                     context.hoot().model.layers.refresh(function(){
                                         if(callback){callback(true,params);}
                                     });
@@ -434,14 +428,10 @@ Hoot.model.layers = function (context)
         return merged;
     };
 
-    model_layers.updateLayerName = function(data,callback){
-        Hoot.model.REST('Modify',data,function(resp){
-            //if(resp.success === true){
-                if(callback){callback(resp.success);}
-            //}
-            //return resp.success;
+    model_layers.updateLayerName = function(data, callback){
+        Hoot.model.REST('Modify',data,function() {
+            if(callback) callback();
         });
-        //return true;
     };
 
     model_layers.getSelectedLayers = function() {

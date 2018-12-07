@@ -33,7 +33,7 @@ Hoot.view.utilities.dataset = function(context)
                 if(d.class === 'import-add-dataset'){
                     Hoot.model.REST('getTranslations', function (d) {
                         if(d.error){
-                            context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                            window.console.error(d.error);
                             return;
                         }
                         context.hoot().control.utilities.importdataset.importDataContainer(d);
@@ -265,7 +265,7 @@ Hoot.view.utilities.dataset = function(context)
 
             Hoot.model.REST('getTranslations', function (trans) {
                 if(trans.error){
-                    context.hoot().view.utilities.errorlog.reportUIError(trans.error);
+                    window.console.error(trans.error);
                     return;
                 }
                 context.hoot().control.utilities.exportdataset.exportDataContainer(d, trans);
@@ -284,7 +284,7 @@ Hoot.view.utilities.dataset = function(context)
         d3.event.preventDefault();
 
         // Loop through the datasets and flag any that may be over the size limit
-        var expThreshold = 1*iD.data.hootConfig.export_size_threshold;
+        // var expThreshold = 1*iD.data.hootConfig.export_size_threshold;
 
         var _exportList = [];
         _.each(d,function(lyrid){
@@ -292,7 +292,7 @@ Hoot.view.utilities.dataset = function(context)
             _lyrInfo.id = lyrid;
             _lyrInfo.name = context.hoot().model.layers.getNameBymapId(lyrid);
             _exportList.push(_lyrInfo);
-            
+
             /*Hoot.model.REST('getMapSize', d,function (sizeInfo) {
                 if(sizeInfo.error){ _lyrInfo.size = -1; }
 
@@ -300,16 +300,16 @@ Hoot.view.utilities.dataset = function(context)
                 if(_lyrInfo.size > expThreshold) { _lyrInfo.oversized = true; }
             });*/
         });
-        
+
         Hoot.model.REST('getTranslations', function (trans) {
             if(trans.error){
-                context.hoot().view.utilities.errorlog.reportUIError(trans.error);
+                window.console.error(trans.error);
                 return;
             }
             context.hoot().control.utilities.bulkexportdataset.bulkExportDataContainer(_exportList, trans);
         });
 
-    };    
+    };
 
     hoot_view_utilities_dataset.deleteDatasets = function(d,container) {
         if(d.length===0){return;}
@@ -375,7 +375,7 @@ Hoot.view.utilities.dataset = function(context)
     hoot_view_utilities_dataset.importDatasets = function() {
         Hoot.model.REST('getTranslations', function (d) {
             if(d.error){
-                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                window.console.error(d.error);
                 return;
             }
            context.hoot().control.utilities.bulkimportdataset.bulkImportDataContainer(d);
@@ -385,7 +385,7 @@ Hoot.view.utilities.dataset = function(context)
     hoot_view_utilities_dataset.importDirectory = function() {
         Hoot.model.REST('getTranslations', function (d) {
             if(d.error){
-                context.hoot().view.utilities.errorlog.reportUIError(d.error);
+                window.console.error(d.error);
                 return;
             }
            context.hoot().control.utilities.importdirectory.importDirectoryContainer(d);
@@ -394,6 +394,25 @@ Hoot.view.utilities.dataset = function(context)
 
     hoot_view_utilities_dataset.moveDatasets = function(d) {
         context.hoot().control.utilities.bulkmodifydataset.bulkModifyContainer(d);
+    };
+    hoot_view_utilities_dataset.modifyFolderVisibility = function(d) {
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+        if(d.type !== 'folder') {
+            return;
+        }
+
+        context.hoot().control.utilities.folder.modifyVisibilityContainer(d, function() {
+            // was successful!
+            context.hoot().model.folders.refresh(function () {
+                context.hoot().model.layers.refresh(function(){
+                    context.hoot().model.folders.refreshLinks(function(){
+                        context.hoot().model.import.updateTrees();
+                    });
+                });
+            });
+
+        });
     };
 
     hoot_view_utilities_dataset.modifyDataset = function(d) {
