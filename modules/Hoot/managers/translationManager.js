@@ -35,6 +35,7 @@ export default class TranslationManager {
     }
 
     async getTranslations() {
+        console.log( 'get translations' );
         try {
             let translations = await this.hoot.api.getCapabilities();
 

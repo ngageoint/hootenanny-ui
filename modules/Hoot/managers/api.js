@@ -31,6 +31,8 @@ export default class API {
         this.mergeUrl       = Object.assign( new URL( this.host ), { port: this.config.mergeServerPort } );
         this.translationUrl = Object.assign( new URL( this.host ), { port: this.config.translationServerPort } );
 
+        this.translationUrl = this.host + ':' + this.config.translationServerPort;
+
         // this.baseUrl = `${this.host}${this.config.path}`;
 
         this.queryInterval = this.config.queryInterval;
@@ -957,7 +959,7 @@ export default class API {
 
     getCapabilities() {
         const params = {
-            url: `${ this.translationUrl }capabilities`,
+            url: `${ this.host }/capabilities`,
             method: 'GET'
         };
 
