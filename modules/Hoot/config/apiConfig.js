@@ -6,19 +6,16 @@
  *******************************************************************************************************/
 
 export const apiConfig = {
-    host: window.location.protocol + '//' + window.location.host, //host includes port, hostname is just host name
+    host: window.location.protocol + '//' + window.location.hostname, // just host name without port
     port: window.location.port,
     path: '/hoot-services',
-    // translationServerPort: '8094',
-    // mapnikServerPort: '8000',
+    translationServerPort: process.env.NODE_ENV === 'prod' ? '8094' : '8080',
+    translationServerPath: process.env.NODE_ENV === 'prod' ? '' : '/switcher',
     mergeServerPort: '8096',
+    mapnikServerPort: '8000',
     queryInterval: 2000
-};
-
-export const hootConfig = {
-    maxNodeCount: 10000
 };
 
 export default apiConfig;
 
-export let baseUrl = `${ apiConfig.host }${ apiConfig.path }`;
+export let baseUrl = `${apiConfig.host}:${apiConfig.port}${apiConfig.path}`;
