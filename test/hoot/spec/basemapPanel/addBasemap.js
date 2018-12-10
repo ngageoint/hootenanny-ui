@@ -9,7 +9,7 @@ const { retrieveFile } = require( '../../helpers' );
 describe( 'Basemap component rendered', () => {
 
     let raster,
-        rasterImport;
+        rasterImport; 
     
     it( 'opens import single basemap layer', done => {
 
@@ -66,6 +66,16 @@ describe( 'Basemap component rendered', () => {
         expect( nameInput.classed( 'invalid' ) ).to.be.false;
         expect( submitButton.property( 'disabled' ) ).to.be.false;
     } );
+
+    after( async () => {
+        var basemaps = await Hoot.api.getBasemaps();
+        if ( basemaps.findIndex( function(d) { return d.name === 'UnitTestImportBasemap'; } ) > -1 ) {
+            console.log( 'Deleting basemap: "UnitTestImportBasemap"');
+            await Hoot.api.deleteBasemap('UnitTestImportBasemap')
+                .then( () => Hoot.ui.managePanel.basemaps.loadBasemaps());
+        }
+    } );   
+
     it( 'imports a new raster ', async () => {
 
         let importSubmit = rasterImport.submitButton;
@@ -90,15 +100,6 @@ describe( 'Basemap component rendered', () => {
             expect( addedToBackgroundList.text().to.eql( 'UnitTestImportBasemap') );
             
         }, 20000 );
-
-        after( async () => {
-            var basemaps = await Hoot.api.getBasemaps();
-            if ( basemaps.findIndex( function(d) { return d.name === 'UnitTestImportBasemap'; } ) > -1 ) {
-                console.log( 'Deleting basemap: "UnitTestImportBasemap"');
-                await Hoot.api.deleteBasemap('UnitTestImportBasemap')
-                    .then( () => Hoot.ui.managePanel.basemaps.loadBasemaps());
-            }
-        } );    
         
     } );
 

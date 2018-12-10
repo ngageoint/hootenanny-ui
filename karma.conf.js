@@ -69,8 +69,6 @@ module.exports = function( config ) {
 
         client: {
             mocha: {
-                browserDisconnectTimeout : 210000,
-                browserNoActivityTimeout : 210000,
                 timeout: 40000
             }
         },
@@ -172,7 +170,7 @@ module.exports = function( config ) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: [ 'ChromeHeadless' ],
+        browsers: [ 'Chrome' ],
 
 
 

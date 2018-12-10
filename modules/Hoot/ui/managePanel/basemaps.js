@@ -38,7 +38,10 @@ export default class Basemaps extends Tab {
             .append( 'button' )
             .classed( 'add-basemap-button button primary _icon big light plus', true )
             .text( 'Add New Basemaps' )
-            .on( 'click', () => new AddBasemap( this ).render() );
+            .on( 'click', () => {
+                this.addBasemapModal = new AddBasemap( this );
+                this.addBasemapModal.render();
+            } );
     }
 
     createBasemapTable() {
