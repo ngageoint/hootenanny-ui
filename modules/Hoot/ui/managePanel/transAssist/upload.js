@@ -25,6 +25,7 @@ export default class Upload {
                 title: 'Upload File(s)',
                 icon: 'play_for_work',
                 uploadType: 'FILE',
+                multiple: true,
                 accept: '.shp, .shx, .dbf, .zip'
             },
             {
