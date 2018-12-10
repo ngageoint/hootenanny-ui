@@ -24,12 +24,16 @@ export default class Upload {
             {
                 title: 'Upload File(s)',
                 icon: 'play_for_work',
-                uploadType: 'FILE'
+                uploadType: 'FILE',
+                accept: '.shp, .shx, .dbf, .zip'
             },
             {
                 title: 'Upload Folder',
                 icon: 'move_to_inbox',
-                uploadType: 'DIR'
+                uploadType: 'DIR',
+                multiple: false,
+                webkitdirectory: '',
+                directory: ''
             }
         ];
     }
@@ -102,8 +106,10 @@ export default class Upload {
             .append( 'input' )
             .attr( 'type', 'file' )
             .attr( 'name', 'taFiles' )
-            .attr( 'multiple', true )
-            .attr( 'accept', '.shp, .shx, .dbf, .zip' )
+            .attr( 'multiple', d => d.multiple )
+            .attr( 'accept', d => d.accept && d.accept )
+            .attr( 'webkitdirectory', d => d.webkitdirectory && d.webkitdirectory )
+            .attr( 'directory', d => d.directory && d.directory )
             .classed( 'hidden', true )
             .on( 'click', () => d3.event.stopPropagation() )
             .on( 'change', function( d ) {
@@ -135,8 +141,12 @@ export default class Upload {
             // if the same files/folder is selected twice in a row
             input.value = null;
 
+            d3.selectAll( 'body' ).classed( 'wait', true );
+
             let resp       = await Hoot.api.uploadSchemaData( type, formData ),
                 attrValues = await Hoot.api.getSchemaAttrValues( resp.jobId );
+
+            d3.selectAll( 'body' ).classed( 'wait', false );
 
             Hoot.message.alert( resp );
 

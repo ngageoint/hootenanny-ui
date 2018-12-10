@@ -8,6 +8,8 @@ import _filter    from 'lodash-es/filter';
 import _findIndex from 'lodash-es/findIndex';
 import _reduce    from 'lodash-es/reduce';
 
+import { d3combobox } from '../../../../lib/hoot/d3.combobox';
+
 import TagMapWidget from './tagMapWidget';
 
 export default class TagMapForm {
@@ -18,21 +20,12 @@ export default class TagMapForm {
     }
 
     render( valuesMap ) {
-        if ( this.mappingForm ) {
-            this.mappingForm.remove();
-        }
-
-        let layers = d3.keys( valuesMap ),
-            layer  = layers[ 0 ];
+        this.layers = d3.keys( valuesMap );
 
         this.currentIndex = {};
         this.valuesMap    = valuesMap;
 
-        this.mappingForm = this.instance.panelWrapper
-            .append( 'form' )
-            .classed( 'ta-attribute-mapping keyline-all round', true );
-
-        this.changeLayer( layer );
+        this.changeLayer( this.layers[ 0 ] );
     }
 
     changeLayer( newLayer ) {
@@ -42,6 +35,14 @@ export default class TagMapForm {
         this.currentIndex[ this.layer ] = this.currentIndex[ this.layer ] || 0;
         this.jsonMapping[ this.layer ]  = this.jsonMapping[ this.layer ] || {};
 
+        if ( this.mappingForm ) {
+            this.mappingForm.remove();
+        }
+
+        this.mappingForm = this.instance.panelWrapper
+            .append( 'form' )
+            .classed( 'ta-attribute-mapping keyline-all round', true );
+
         this.createAttributesContainer();
         this.createTagMapContainer();
         this.createMappingActionButtons();
@@ -50,12 +51,49 @@ export default class TagMapForm {
     }
 
     createAttributesContainer() {
+        let that = this;
+
         this.attributesContainer = this.mappingForm
             .selectAll( '.attributes-container' )
-            .data( [ this.attributeValues ] )
+            .data( [ this.attributeValues ] );
+
+        this.attributesContainer = this.attributesContainer
             .enter()
             .append( 'div' )
-            .classed( 'attributes-container', true );
+            .classed( 'attributes-container', true )
+            .merge( this.attributesContainer );
+
+        if ( this.layers.length > 1 ) {
+            this.layersList = this.attributesContainer
+                .append( 'div' )
+                .classed( 'layer-select', true )
+                .selectAll( 'input' )
+                .data( [ this.layers ] );
+
+            this.layersList
+                .enter()
+                .append( 'input' )
+                .attr( 'type', 'text' )
+                .attr( 'id', 'preset-input-layer' )
+                .attr( 'value', this.layer )
+                .on( 'change', function() {
+                    that.changeLayer( this.value );
+                } )
+                .on( 'blur', function() {
+                    that.changeLayer( this.value );
+                } )
+                .each( function( d ) {
+                    d3.select( this )
+                        .call( d3combobox()
+                            .data( d.map( function( n ) {
+                                return {
+                                    value: n,
+                                    title: n
+                                };
+                            } ) )
+                        );
+                } );
+        }
 
         this.attributesNav = this.attributesContainer
             .append( 'div' )
@@ -96,8 +134,6 @@ export default class TagMapForm {
 
         this.attributesSample.append( 'span' )
             .classed( 'center quiet', true );
-
-        this.attributesContainer.exit().remove();
     }
 
     createTagMapContainer() {
@@ -154,7 +190,7 @@ export default class TagMapForm {
     }
 
     updateAttributes() {
-        let allAttributes    = this.attributesContainer.datum().entries(),
+        let allAttributes    = this.attributeValues.entries(),
             currentAttribute = allAttributes[ this.currentIndex[ this.layer ] ],
             attributeList    = _filter( allAttributes, attribute => attribute.key !== currentAttribute.key );
 
