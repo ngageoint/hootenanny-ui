@@ -173,6 +173,7 @@ export default class Sidebar {
     layerRemoved( d ) {
         if ( d.id === 'conflate' ) {
             Hoot.layers.loadedLayers = {};
+            Hoot.layers.mergedLayer = null;
             delete this.forms[ d.id ];
             this.reset();
         } else {

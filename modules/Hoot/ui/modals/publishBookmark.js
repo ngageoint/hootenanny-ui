@@ -116,8 +116,7 @@ export default class PublishBookmark {
         let title = this.titleInput.property( 'value' ),
             desc  = this.descriptionInput.property( 'value' ),
             email = this.emailInput.property( 'value' ),
-            note  = this.noteInput.property( 'value' ),
-            notes = note.length ? [ { userId: userInfo.id, note } ] : [];
+            note  = this.noteInput.property( 'value' );
 
         let currentReviewItem = Hoot.ui.conflicts.data.currentReviewItem,
             userInfo;
@@ -130,14 +129,13 @@ export default class PublishBookmark {
 
             userInfo = { id: '-1' };
         } else {
-            let resp = await Hoot.api.getSaveUser( email );
-            userInfo = resp.user;
+            userInfo = await Hoot.api.getSaveUser( email );
         }
 
         let params = {
             detail: {
                 bookmarkdetail: { title, desc },
-                bookmarknotes: notes,
+                bookmarknotes: [ { userId: userInfo.id, note } ],
                 bookmarkreviewitem: currentReviewItem
             },
             mapId: currentReviewItem.mapId,

@@ -164,7 +164,7 @@ export default class Layers {
             reviewStats     = await Hoot.api.getReviewStatistics( mergedLayer.id ),
             unreviewedCount = reviewStats.unreviewedCount;
 
-        if ( unreviewedCount && unreviewedCount === 0 ) return mergedLayer;
+        if ( !unreviewedCount || unreviewedCount === 0 ) return mergedLayer;
 
         if ( tags.reviewtype === 'hgisvalidation' ) {
             let message = 'The layer has been prepared for validation. Do you want to go into validation mode?',
