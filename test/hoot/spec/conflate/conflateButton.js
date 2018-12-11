@@ -14,9 +14,10 @@ describe( 'Conflate button interaction', () => {
         importModal;
 
     after( async () => {
-        if ( Hoot.layers.findBy( 'name', 'UnitTestImportMulti' ) ) {
-            console.log( 'Deleting layer: "UnitTestImportMulti"');
+        if ( Hoot.layers.findBy( 'name', 'UnitTestImportMulti' ) && Hoot.layers.findBy( 'name', 'UndividedHighway') ) {
+            console.log( 'Deleting layer: "UnitTestImportMulti" & "Undivided Highway" ');
             await Hoot.api.deleteLayer( 'UnitTestImportMulti' );
+            Hoot.api.deleteLayer( 'UndividedHighway' );
         }
     } );
 
