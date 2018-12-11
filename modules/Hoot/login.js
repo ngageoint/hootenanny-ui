@@ -256,6 +256,8 @@ class Login {
                     // close self
                     window.close();
                 } else {
+                    localStorage.setItem( 'user', JSON.stringify( resp ) );
+
                     let pathname = window.location.pathname;
 
                     window.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
