@@ -249,18 +249,21 @@ class Login {
 
                     let pathname = opener.location.pathname;
 
+                    alert( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
                     // redirect parent
                     opener.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
 
                     // close self
                     window.close();
                 } else {
-                    // force refresh.
-                    window.location.reload( true );
+                    let pathname = window.location.pathname;
+
+                    window.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
                 }
             } )
             .catch( err => {
                 window.alert( 'wait error' );
+                window.alert( err );
                 if ( opener ) {
                     window.onbeforeunload = function() {
                         opener.oAuthDone( err, null );
