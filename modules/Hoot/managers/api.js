@@ -29,7 +29,7 @@ export default class API {
         } );
 
         let mergePortOrPath = function(p) {
-            return isNaN(p) ? {pathname: p} : {port: p};
+            return isNaN(p) ? {pathname: p + '/'} : {port: p};
         }
 
         this.mergeUrl       = Object.assign( new URL( this.host ), mergePortOrPath( this.config.mergeServerPort ) );
