@@ -28,8 +28,12 @@ export default class API {
             pathname: this.config.path
         } );
 
-        this.mergeUrl       = Object.assign( new URL( this.host ), { port: this.config.mergeServerPort } );
-        this.translationUrl = Object.assign( new URL( this.host ), { port: this.config.translationServerPort } );
+        let mergePortOrPath = function(p) {
+            return isNaN(p) ? {pathname: p} : {port: p};
+        }
+
+        this.mergeUrl       = Object.assign( new URL( this.host ), mergePortOrPath( this.config.mergeServerPort ) );
+        this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );
 
         // this.baseUrl = `${this.host}${this.config.path}`;
 
