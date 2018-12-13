@@ -961,7 +961,7 @@ export default class API {
 
     getCapabilities() {
         const params = {
-            url: `${ this.translationUrl }/capabilities`,
+            url: `${ this.translationUrl }capabilities`,
             method: 'GET'
         };
 
@@ -971,7 +971,7 @@ export default class API {
 
     searchTranslatedSchema( data ) {
         const params = {
-            url: `${ this.translationUrl }/schema`,
+            url: `${ this.translationUrl }schema`,
             method: 'GET',
             params: {
                 ...data
@@ -985,7 +985,7 @@ export default class API {
 
     translateFromXml( xml, translation ) {
         const params = {
-            url: `${ this.translationUrl }/translateFrom`,
+            url: `${ this.translationUrl }translateFrom`,
             method: 'POST',
             headers: {
                 'Content-Type': 'text/xml'
@@ -1003,7 +1003,7 @@ export default class API {
 
     translateToXml( xml, translation ) {
         const params = {
-            url: `${ this.translationUrl }/translateTo`,
+            url: `${ this.translationUrl }translateTo`,
             method: 'POST',
             headers: {
                 'Content-Type': 'text/xml'
@@ -1021,7 +1021,7 @@ export default class API {
 
     translateToJson( p ) {
         const params = {
-            url: `${ this.translationUrl }/translateTo`,
+            url: `${ this.translationUrl }translateTo`,
             method: 'GET',
             params: {
                 ...p
