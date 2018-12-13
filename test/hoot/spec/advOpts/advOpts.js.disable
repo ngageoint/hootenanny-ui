@@ -1,7 +1,7 @@
-/** ****************************************************************************************************
- * File: conflateLayer.js
+/*******************************************************************************************************
+ * File: advOpts.js
  * Project: hootenanny-ui
- * @author Jack Grossman on 11/22/18 jack.grossman@radiantsolutions.com
+ * @author Jack Grossman on 12/11/18 jack.grossman@radiantsolutions.com
  *******************************************************************************************************/
 
 const _map = require( 'lodash/map' );
@@ -15,9 +15,10 @@ describe( 'Conflate button interaction', () => {
 
     after( async () => {
         if ( Hoot.layers.findBy( 'name', 'UnitTestImportMulti' ) && Hoot.layers.findBy( 'name', 'UndividedHighway') ) {
-            console.log( 'Deleting layer: "UnitTestImportMulti" & "Undivided Highway" ');
-            await Hoot.api.deleteLayer( 'UnitTestImportMulti' );
-            Hoot.api.deleteLayer( 'UndividedHighway' );
+                console.log( 'Deleting layer: "UnitTestImportMulti" & "Undivided Highway" ');
+                    await 
+                        Hoot.api.deleteLayer( 'UnitTestImportMulti' );
+                        Hoot.api.deleteLayer( 'UndividedHighway' );
         }
     } );
 
@@ -117,8 +118,6 @@ describe( 'Conflate button interaction', () => {
         }, 10000 );
         
     } );
-
-
     it( 'Selects a Primary Layer', done => {
         d3.select('#reference a.toggle-button').dispatch('click');
         setTimeout(() => {
@@ -155,26 +154,14 @@ describe( 'Conflate button interaction', () => {
             done();
         }, 6000);
     });
-    it ( 'Conflate button IS visible ' , done => {
-        setTimeout( () => {
-            expect( d3.select('#conflate').size() ).to.be.eql( 1 );
-            done();
-        }, 1000 );
+    it( 'Opens conflate panel', done => {
+        d3.select( 'a.conflate' ).dispatch( 'click' );
+        // #conflate > div
+        expect( d3.select( '#conflate div.inner-wrapper' ).attr( 'class' ) ).to.include( 'visible' );
+        d3.select( '#advanced-opts-toggle' ).dispatch( 'click' );
+        expect( d3.select( '#adv-opts-panel' ).attr( 'class' ) ).to.include( 'visible' );
+        d3.select( '#conflateType' ).property( 'value', 'Average' ).dispatch( 'click' );
+        done();
+    } );
 
-    } );
-    it ( 'Deletes a layer', done => {
-
-        d3.select( '#secondary button.delete-button' ).dispatch( 'click' );
-        d3.select( 'div.confirm-actions button.primary' ).dispatch( 'click' );
-        setTimeout( () => {
-            expect(d3.select( '#secondary' ).text() ).to.include( 'Add Secondary Datasets' );
-            done();
-        }, 1000 );
-    } );
-    it ( 'Conflate button IS NOT visible ' , done => {
-        setTimeout( () => {
-            expect( d3.select('#conflate').size() ).to.be.eql( 0 );
-            done();
-        }, 1000 );
-    } );
 } );

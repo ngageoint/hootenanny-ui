@@ -75,5 +75,6 @@ function getFormData( files ) {
 
 module.exports = {
     retrieveFile,
-    generateOsmLayerParams
+    generateOsmLayerParams,
+    getFormData
 };

@@ -41,6 +41,6 @@ beforeEach( function( done ) {
     setTimeout( done, 50 );
 } );
 
-const tests = require.context( './spec/basemapPanel/', true, /.js$/ );
+const tests = require.context( './spec/', true, /.js$/ );
 
 tests.keys().forEach( tests );
