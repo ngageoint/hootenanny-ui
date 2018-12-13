@@ -17,7 +17,7 @@ const materialIconFiles = [
 const webpackConfig = {
     mode: 'development',
     entry: './test/hoot/index.js',
-  
+
   module: {
         rules: [
             // instrument only testing sources with Istanbulvar fs = require('fs')
@@ -69,8 +69,8 @@ module.exports = function( config ) {
 
         client: {
             mocha: {
-                browserDisconnectTimeout : 210000,
-                browserNoActivityTimeout : 210000,
+                // browserDisconnectTimeout : 210000,
+                // browserNoActivityTimeout : 210000,
                 timeout: 40000
             }
         },

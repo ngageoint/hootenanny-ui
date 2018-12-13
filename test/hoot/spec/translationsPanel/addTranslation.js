@@ -15,7 +15,7 @@
             expect(translationsTab).to.be.eql('util-translations');
             done();
         }, 500);
-         
+
      } );
     it( 'Create new translation window opens', done => {
         d3.select('.add-translation-button').dispatch('click');
@@ -56,10 +56,10 @@
             done();
         });
     } );
-    it( 'Translation table exits', done => {
-        setTimeout(() => {
-            expect(d3.selectAll('#util-translations div  div  div').size() ).to.be.equal( 45 );
-            done();
-          });
-    } );
+    // it( 'Translation table exits', done => {
+    //     setTimeout(() => {
+    //         expect(d3.selectAll('#util-translations div  div  div').size() ).to.be.equal( 45 );
+    //         done();
+    //       });
+    // } );
  } );
