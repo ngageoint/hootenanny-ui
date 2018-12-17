@@ -1,45 +1,82 @@
 /** ****************************************************************************************************
  * File: reviewMode.js
  * Project: hootenanny-ui
- * @author Jack Grossman on 11/26/18 jack.grossman@radiantsolutions.com
+ * @author Jack Grossman on 12/17/18 jack.grossman@radiantsolutions.com
  *******************************************************************************************************/
 
-// let iD        = require( '../../../../modules/index' ),
-//     Hoot      = require( '../../../../modules/Hoot/hoot' ).default;
+const { testConflationLayerOne, testConflationLayerTwo } = require( '../../helpers' );
+
 
 describe( 'Entered Review Mode', () => {
-    // before( () => {
 
-        
-    //     { { '-1'; }}
-    // });
+
+    before( async function() { 
+
+        this.timeout( 20000 );
+
+        try {
+
+            let generateCount = 1,
+            layerOneParams = await testConflationLayerOne( [ ...Array( generateCount ).keys() ] );
+
+            let secondCount = 1, 
+            layerTwoParams = await testConflationLayerTwo( [ ...Array( secondCount ).keys() ] );
+            
+            await Promise.all( _.map( layerOneParams, params => Hoot.api.uploadDataset( params ) ) );
+            
+            await Promise.all( _.map( layerTwoParams, params => Hoot.api.uploadDataset( params ) ) );
+
+            d3.select('#manage-datasets div div.dataset-buttons.flex button:nth-child(4)').dispatch('click');
+          
+        } catch (e) {
+
+             JSON.stringify( e );
+        }
+
+    } );
+
+
+    after( async () => {
+        if ( Hoot.layers.allLayers.length > 23 ) {
+            console.log( 'Deleting layer(s): ConflationTestOne, ConflationTestTwo and Merged_ConflationTest ');
+
+            await Hoot.api.deleteLayer( 'ConflationTestOne0' );
+            await Hoot.api.deleteLayer( 'ConflationTestTwo0' );
+            var conflatedLayers = Hoot.layers.findBy( 'size', 311296 );
+            await Hoot.api.deleteLayer( conflatedLayers.name, 0 );
+        }
+    } );
+
     it( 'Selects a Primary Layer', done => {
+
         d3.select('#reference a.toggle-button').dispatch('click');
+
         setTimeout(() => {
-            expect(d3.select('#reference').size() ).to.be.equal( 1 );
+            var availableLayers = d3.select('div.inner-wrapper').attr('class');
+            expect(availableLayers).to.include( 'visible' );
             done();
-        }, 1000);
+        }, 5000);
     } );
     it( 'Selects Primary dataset', done => {
-        d3.select('#add-ref-table g[data-name="BostonSubsetRoadBuilding_FromOsm"]').dispatch('click');
+        d3.select('#add-ref-table g[data-name="ConflationTestOne0"]').dispatch('click');
         d3.select('#add-ref-table').dispatch('click');
         d3.select('button.add-layer').dispatch('click');
         setTimeout(() => {
             var primaryData = d3.select('#reference').attr('data-name');
-            expect(primaryData).to.be.eql('BostonSubsetRoadBuilding_FromOsm');
+            expect(primaryData).to.be.eql('ConflationTestOne0');
             done();
-        }, 2500);
+        }, 25000);
     } );
     it( 'Selects Reference dataset', done => {
         d3.select('#secondary a.toggle-button').dispatch('click');
-        d3.select('#add-secondary-table g[data-name="BostonSubsetRoadBuilding_FromShp"]').dispatch('click');
+        d3.select('#add-secondary-table g[data-name="ConflationTestTwo0"]').dispatch('click');
         d3.select('#add-secondary-table').dispatch('click');
         d3.select('button.add-layer').dispatch('click');
         setTimeout(() => {
             var secondaryData = d3.select('#secondary').attr('data-name');
-            expect(secondaryData).to.be.eql('BostonSubsetRoadBuilding_FromShp');
+            expect(secondaryData).to.be.eql('ConflationTestTwo0');
             done();
-        }, 2500);
+        }, 15000);
     });
     it( 'Conflating layers', done => {
         d3.select('#conflate').dispatch('click');
@@ -47,7 +84,7 @@ describe( 'Entered Review Mode', () => {
         setTimeout(() => {
             expect(d3.select('#conflate').size() ).to.eql( 1 );
             done();
-        }, 35000);
+        }, 5000);
     } );
     it( 'Layers merged, alert window displayed', done => {
         d3.select('div.confirm-actions button.primary').dispatch('click');
@@ -59,16 +96,7 @@ describe( 'Entered Review Mode', () => {
             expect(conflating).to.include('Merged');
             done();
         });
-    }, 20000);
-    it ( 'Opens Bookmark Review dialogue', done => {
-        var openReview = d3.select('button._icon.plus.fill-grey.button.round.pad0y.pad1x.small.strong');
-        openReview.dispatch('click');
-        setTimeout(() => {
-            var bookmarkReview = d3.select('#bookmark-review-form');
-            expect(bookmarkReview.size() ).to.be.eql( 1 );
-            done();
-        });
-    }, 15000);
+    }, 25000);
     it ( 'Selects next reivew without email', done => {
         var bookmarks = ['Review Test', 'Testing Reviews', ''];
         d3.selectAll('form input.text-input')
