@@ -79,9 +79,6 @@ export default class TagMapForm {
                 .on( 'change', function() {
                     that.changeLayer( this.value );
                 } )
-                .on( 'blur', function() {
-                    that.changeLayer( this.value );
-                } )
                 .each( function( d ) {
                     d3.select( this )
                         .call( d3combobox()

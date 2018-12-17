@@ -142,12 +142,12 @@ export default class Upload {
             // if the same files/folder is selected twice in a row
             input.value = null;
 
-            d3.selectAll( 'body' ).classed( 'wait', true );
+            d3.selectAll( 'div, button, a, label' ).classed( 'wait', true );
 
             let resp       = await Hoot.api.uploadSchemaData( type, formData ),
                 attrValues = await Hoot.api.getSchemaAttrValues( resp.jobId );
 
-            d3.selectAll( 'body' ).classed( 'wait', false );
+            d3.selectAll( '.wait' ).classed( 'wait', false );
 
             Hoot.message.alert( resp );
 
