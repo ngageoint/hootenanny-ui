@@ -63,6 +63,44 @@ function generateOsmLayerParams( count ) {
     } ) );
 }
 
+function testConflationLayerOne( test ) {
+    return Promise.all( _.map( test, async i => {
+        let dT   = new ClipboardEvent( '' ).clipboardData || new DataTransfer(),
+            file = await retrieveFile( 'base/test/data/ConflationTestOne.osm' );
+        
+        dT.items.add( file );
+
+        let params = {
+            NONE_TRANSLATION: 'true',
+            TRANSLATION: 'NONE.js' ,
+            INPUT_TYPE: 'OSM',
+            INPUT_NAME: `ConflationTestOne${i}`,
+            formData: getFormData( dT.files )
+        };
+
+        return params;
+    } ) );
+}
+
+function testConflationLayerTwo( osmLayer ) {
+    return Promise.all( _.map( osmLayer, async i => {
+        let dT = new ClipboardEvent( '' ).clipboardData || new DataTransfer(),
+        file = await retrieveFile( 'base/test/data/ConflationTestTwo.osm' );
+        
+        dT.items.add( file );
+
+        let params = {
+            NONE_TRANSLATION: 'true',
+            TRANSLATION: 'NONE.js' ,
+            INPUT_TYPE: 'OSM',
+            INPUT_NAME:  `ConflationTestTwo${i}`,
+            formData: getFormData( dT.files )
+        };
+
+        return params;
+    } ) );
+}
+
 function getFormData( files ) {
     let formData = new FormData();
 
@@ -76,5 +114,7 @@ function getFormData( files ) {
 module.exports = {
     retrieveFile,
     generateOsmLayerParams,
+    testConflationLayerOne,
+    testConflationLayerTwo,
     getFormData
 };
