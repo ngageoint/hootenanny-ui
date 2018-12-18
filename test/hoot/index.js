@@ -41,6 +41,6 @@ beforeEach( function( done ) {
     setTimeout( done, 50 );
 } );
 
-const tests = require.context( './spec/conflate/', true, /.js$/ );
+const tests = require.context( './spec/reviewMode/', true, /.js$/ );
 
 tests.keys().forEach( tests );

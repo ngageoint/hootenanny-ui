@@ -3,8 +3,9 @@
  * Project: hootenanny-ui
  * @author Matt Putipong on 11/2/18
  *******************************************************************************************************/
-
 const _ = require( 'lodash' );
+
+const { geoExtent } = require( '../../modules/geo/index' );
 
 function retrieveFile( filePath ) {
     return new Promise( res => {
@@ -101,6 +102,15 @@ function testConflationLayerTwo( osmLayer ) {
     } ) );
 }
 
+function testRaster( raster ) {
+    return Promise.all( _.map( raster, async i => { 
+        let dT = new ClipboardEvent('').clipboardData || new DataTransfer(),
+        file = await ( 'base/test/data/RomanColosseum_WV2naturalcolor_clip.tif' );
+        dT.items.add( file );
+
+    } ) );
+}
+
 function getFormData( files ) {
     let formData = new FormData();
 
@@ -116,5 +126,6 @@ module.exports = {
     generateOsmLayerParams,
     testConflationLayerOne,
     testConflationLayerTwo,
+    testRaster,
     getFormData
 };

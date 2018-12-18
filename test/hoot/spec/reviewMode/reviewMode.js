@@ -35,7 +35,6 @@ describe( 'Entered Review Mode', () => {
 
     } );
 
-
     after( async () => {
         if ( Hoot.layers.allLayers.length > 23 ) {
             console.log( 'Deleting layer(s): ConflationTestOne, ConflationTestTwo and Merged_ConflationTest ');

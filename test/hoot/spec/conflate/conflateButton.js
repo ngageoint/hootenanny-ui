@@ -1,7 +1,7 @@
 /*******************************************************************************************************
  * File: conflateLayer.js
  * Project: hootenanny-ui
- * @author Jack Grossman on 11/22/18 jack.grossman@radiantsolutions.com
+ * @author Jack Grossman on 12/17/18 jack.grossman@radiantsolutions.com
  *******************************************************************************************************/
 
 const _ = require( 'lodash' );
