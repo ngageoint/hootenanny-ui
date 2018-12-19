@@ -17,7 +17,7 @@ const materialIconFiles = [
 const webpackConfig = {
     mode: 'development',
     entry: './test/hoot/index.js',
-  
+
   module: {
         rules: [
             // instrument only testing sources with Istanbulvar fs = require('fs')
@@ -69,8 +69,8 @@ module.exports = function( config ) {
 
         client: {
             mocha: {
-                browserDisconnectTimeout : 210000,
-                browserNoActivityTimeout : 210000,
+                // browserDisconnectTimeout : 210000,
+                // browserNoActivityTimeout : 210000,
                 timeout: 40000
             }
         },
@@ -114,12 +114,12 @@ module.exports = function( config ) {
             '/base/css/img/': '/base/img/',
             '/base/css/hoot/img/': '/base/img/',
             '/base/css/hoot/modules/img/': '/base/img/',
-            '/hoot-services': 'http://localhost:8080/hoot-services'
+            '/hoot-services': 'http://localhost:8787/hoot-services'
         },
 
 
         expressHttpServer: {
-            port: '8080',
+            port: '8787',
             appVisitor: function( app ) {
                 app.use( '/hoot-services', proxy( 'http://35.174.111.201:8080', {
                     limit: '1000mb',
