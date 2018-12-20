@@ -688,8 +688,7 @@ Hoot.control.utilities.folder = function(context) {
               .attr('id', 'form_isPublic')
               .attr('type', 'checkbox')
               .attr('name', 'isPublic')
-              .attr('value', 'isPublic')
-              .attr('checked', '');
+              .attr('value', 'isPublic');
           visiDiv.append('label')
               .attr('for', 'isPublic')
               .text('Public');
