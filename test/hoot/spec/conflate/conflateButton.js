@@ -6,7 +6,7 @@
 
 const _ = require( 'lodash' );
 
-const { testConflationLayerOne, testConflationLayerTwo } = require( '../../helpers' );
+const { generateOsmLayerParams } = require( '../../helpers' );
 
 describe( 'Conflate button interaction', () => {
 
@@ -16,16 +16,11 @@ describe( 'Conflate button interaction', () => {
 
         try {
 
-            let generateCount = 1,
-            layerOneParams = await testConflationLayerOne( [ ...Array( generateCount ).keys() ] );
-
-            let secondCount = 1, 
-            layerTwoParams = await testConflationLayerTwo( [ ...Array( secondCount ).keys() ] );
+            let generateCount = 2,
+            layerOneParams = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] );
             
             await Promise.all( _.map( layerOneParams, params => Hoot.api.uploadDataset( params ) ) );
             
-            await Promise.all( _.map( layerTwoParams, params => Hoot.api.uploadDataset( params ) ) ); //.then( () => { return Hoot.layers.refreshLayers(); } );
-
             d3.select('#manage-datasets div div.dataset-buttons.flex button:nth-child(4)').dispatch('click');
           
         } catch (e) {
@@ -36,10 +31,10 @@ describe( 'Conflate button interaction', () => {
     } );
 
     after( async () => {
-        if ( Hoot.layers.findBy( 'name', 'ConflationTestOne0' ) && Hoot.layers.findBy( 'name', 'ConflationTestTwo0') ) {
-            console.log( 'Deleting layer: "ConflationTestOne" & "ConflationTestTwo" ');
-            await Hoot.api.deleteLayer( 'ConflationTestOne0' );
-            await Hoot.api.deleteLayer( 'ConflationTestTwo0' );
+        if ( Hoot.layers.findBy( 'name', 'UnitTestLayer0' ) && Hoot.layers.findBy( 'name', 'UnitTestLayer1') ) {
+            console.log( 'Deleting layer: "UnitTestLayer0" & "UnitTestLayer1" ');
+            await Hoot.api.deleteLayer( 'UnitTestLayer0' );
+            await Hoot.api.deleteLayer( 'UnitTestLayer1' );
         }
     } );
 
@@ -55,13 +50,13 @@ describe( 'Conflate button interaction', () => {
     } );
     it( 'Selects Primary dataset', done => {
 
-        d3.select('#add-ref-table g[data-name="ConflationTestOne0"]').dispatch('click');
+        d3.select('#add-ref-table g[data-name="UnitTestLayer0"]').dispatch('click');
         d3.select('#add-ref-table').dispatch('click');
         d3.select('button.add-layer').dispatch('click');
 
         setTimeout(() => {
             var primaryData = d3.select('#reference').attr('data-name');
-            expect(primaryData).to.be.eql('ConflationTestOne0');
+            expect(primaryData).to.be.eql('UnitTestLayer0');
             done();
         }, 2500);
     } );
@@ -75,13 +70,13 @@ describe( 'Conflate button interaction', () => {
     it( 'Selects Reference dataset', done => {
 
         d3.select('#secondary a.toggle-button').dispatch('click');
-        d3.select('#add-secondary-table g[data-name="ConflationTestTwo0"]').dispatch('click');
+        d3.select('#add-secondary-table g[data-name="UnitTestLayer1"]').dispatch('click');
         d3.select('#add-secondary-table').dispatch('click');
         d3.select('button.add-layer').dispatch('click');
 
         setTimeout( () => {
             var secondaryData = d3.select('#secondary').attr('data-name');
-            expect(secondaryData).to.be.eql('ConflationTestTwo0');
+            expect(secondaryData).to.be.eql('UnitTestLayer1');
             done();
         }, 3000);
     });
