@@ -4,7 +4,7 @@
  * @author Jack Grossman on 12/17/18 jack.grossman@radiantsolutions.com
  *******************************************************************************************************/
 
-const { testConflationLayerOne, testConflationLayerTwo } = require( '../../helpers' );
+const { generateOsmLayerParams } = require( '../../helpers' );
 
 
 describe( 'Entered Review Mode', () => {
@@ -16,16 +16,11 @@ describe( 'Entered Review Mode', () => {
 
         try {
 
-            let generateCount = 1,
-            layerOneParams = await testConflationLayerOne( [ ...Array( generateCount ).keys() ] );
-
-            let secondCount = 1, 
-            layerTwoParams = await testConflationLayerTwo( [ ...Array( secondCount ).keys() ] );
+            let generateCount = 2,
+            layerOneParams = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] );
             
             await Promise.all( _.map( layerOneParams, params => Hoot.api.uploadDataset( params ) ) );
             
-            await Promise.all( _.map( layerTwoParams, params => Hoot.api.uploadDataset( params ) ) );
-
             d3.select('#manage-datasets div div.dataset-buttons.flex button:nth-child(4)').dispatch('click');
           
         } catch (e) {
@@ -39,8 +34,8 @@ describe( 'Entered Review Mode', () => {
         if ( Hoot.layers.allLayers.length > 23 ) {
             console.log( 'Deleting layer(s): ConflationTestOne, ConflationTestTwo and Merged_ConflationTest ');
 
-            await Hoot.api.deleteLayer( 'ConflationTestOne0' );
-            await Hoot.api.deleteLayer( 'ConflationTestTwo0' );
+            await Hoot.api.deleteLayer( 'UnitTestLayer0' );
+            await Hoot.api.deleteLayer( 'UnitTestLayer1' );
             var conflatedLayers = Hoot.layers.findBy( 'size', 311296 );
             await Hoot.api.deleteLayer( conflatedLayers.name, 0 );
         }
@@ -57,23 +52,23 @@ describe( 'Entered Review Mode', () => {
         }, 5000);
     } );
     it( 'Selects Primary dataset', done => {
-        d3.select('#add-ref-table g[data-name="ConflationTestOne0"]').dispatch('click');
+        d3.select('#add-ref-table g[data-name="UnitTestLayer0"]').dispatch('click');
         d3.select('#add-ref-table').dispatch('click');
         d3.select('button.add-layer').dispatch('click');
         setTimeout(() => {
             var primaryData = d3.select('#reference').attr('data-name');
-            expect(primaryData).to.be.eql('ConflationTestOne0');
+            expect(primaryData).to.be.eql('UnitTestLayer0');
             done();
         }, 25000);
     } );
     it( 'Selects Reference dataset', done => {
         d3.select('#secondary a.toggle-button').dispatch('click');
-        d3.select('#add-secondary-table g[data-name="ConflationTestTwo0"]').dispatch('click');
+        d3.select('#add-secondary-table g[data-name="UnitTestLayer1"]').dispatch('click');
         d3.select('#add-secondary-table').dispatch('click');
         d3.select('button.add-layer').dispatch('click');
         setTimeout(() => {
             var secondaryData = d3.select('#secondary').attr('data-name');
-            expect(secondaryData).to.be.eql('ConflationTestTwo0');
+            expect(secondaryData).to.be.eql('UnitTestLayer1');
             done();
         }, 15000);
     });
