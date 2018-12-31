@@ -40,20 +40,6 @@ describe( 'Basemap component rendered', () => {
 
     } );
 
-    after( async () => {
-        var basemaps = await Hoot.api.getBasemaps();
-        if ( basemaps.findIndex( function(d) { return d.name === 'UnitTestImportBasemap'; } ) > -1 ) {
-            console.log( 'Deleting basemap: "UnitTestImportBasemap"');
-            await Hoot.api.deleteBasemap('UnitTestImportBasemap')
-                .then( () => Hoot.ui.managePanel.basemaps.loadBasemaps());
-        }
-    } );  
-    
-    it( 'Test Post Request', function(done) {
-        this.timeout(10000);
-   });
-
-    
     it( 'New basemap added to basemap table', done => {
         setTimeout( () => {
             var newBasemap = d3.select( '#util-basemaps span' );
@@ -63,4 +49,14 @@ describe( 'Basemap component rendered', () => {
 
     } );
 
+    after( async () => {
+
+        var basemaps = Hoot.ui.managePanel.basemaps.addBasemapModal;
+
+        if ( basemaps.nameInput.value === 'ImportTestBasemap' ) {
+            console.log( 'Deleting basemap: "UnitTestImportBasemap" ' );
+            await Hoot.api.deleteBasemap('UnitTestImportBasemap');
+        }
+    } );  
+    
   } );
