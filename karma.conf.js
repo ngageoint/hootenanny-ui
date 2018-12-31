@@ -82,8 +82,6 @@ module.exports = function( config ) {
             { pattern: 'img/**/*.gif', included: false },
 
             { pattern: 'test/data/UndividedHighway.osm', included: false },
-            { pattern: 'test/data/ConflationTestOne.osm', included: false },
-            { pattern: 'test/data/ConflationTestTwo.osm', included: false },
             { pattern: 'test/data/RomanColosseum_WV2naturalcolor_clip.tif', included: false},
 
             'css/**/*.css',
