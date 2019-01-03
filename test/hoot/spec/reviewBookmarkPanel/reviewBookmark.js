@@ -11,29 +11,9 @@ describe( 'Review Bookmark component rendered', () => {
         var reveiwBookmarks = d3.select('#manage-sidebar-menu div.tab-header:nth-child(6)');
         reveiwBookmarks.dispatch('click');
         setTimeout(() => {
-            var reviewComponent = d3.selectAll('#util-review-bookmarks').attr('id');
-            expect(reviewComponent).to.be.eql('util-review-bookmarks');
+            var reviewComponent = d3.selectAll('#util-review-bookmarks').attr('class');
+            expect(reviewComponent).to.include('active');
             done();
         }, 500);
     });
-    it( 'Component contains all filters', done => {
-
-        setTimeout(() => {
-            expect(d3.selectAll('div.filter-control').size() ).to.be.equal( 4 );
-            done();
-        });
-    } );
-    it( 'Contains refresh button', done => {
-        setTimeout(() => {
-            expect(d3.select('button.reset-button').size() ).to.be.equal( 1 );
-            done();
-        });
-    });
-
-    it( 'Table rendered', done => {
-        setTimeout(() => {
-            expect(d3.select('div.bookmark-table').size() ).to.be.equal( 1 );
-            done();
-        });
-    } );
 } );
