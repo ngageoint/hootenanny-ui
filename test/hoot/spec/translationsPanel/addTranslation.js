@@ -13,6 +13,14 @@
             done();
         }, 1000);
     } );
+    it ( 'Translations Modal active', done => {
+        d3.select('#manage-sidebar-menu div.tab-header:nth-child(4)').dispatch('click');
+        var translationsModal = d3.select('#util-translations').attr('class');
+        setTimeout( () => {
+            expect(translationsModal).to.include('active');
+            done();
+        }, 500 );
+    } );
     it( 'Window closes', done => {
         var closeWindow = d3.select('div.fr._icon.close.pointer');
         closeWindow.dispatch('click');
