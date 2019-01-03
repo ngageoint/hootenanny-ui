@@ -46,8 +46,8 @@ describe( 'Entered Review Mode', () => {
         d3.select('#reference a.toggle-button').dispatch('click');
 
         setTimeout(() => {
-            var availableLayers = d3.select('div.inner-wrapper').attr('class');
-            expect(availableLayers).to.include( 'visible' );
+            var managePanel = d3.select('#manage-panel').attr('class');
+            expect(managePanel).to.include( 'hidden' );
             done();
         }, 5000);
     } );

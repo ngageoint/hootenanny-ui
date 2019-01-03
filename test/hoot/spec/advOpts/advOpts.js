@@ -1,7 +1,7 @@
 /*******************************************************************************************************
  * File: advOpts.js
  * Project: hootenanny-ui
- * @author Jack Grossman on 12/27/18 jack.grossman@radiantsolutions.com
+ * @author Jack Grossman on 1/3/19 jack.grossman@radiantsolutions.com
  *******************************************************************************************************/
 
 const { generateOsmLayerParams } = require( '../../helpers' );

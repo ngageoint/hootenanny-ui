@@ -40,13 +40,14 @@ describe( 'Conflate button interaction', () => {
 
     it( 'Selects a Primary Layer', done => {
 
+            
         d3.select('#reference a.toggle-button').dispatch('click');
-
-        setTimeout(() => {
-            var availableLayers = d3.select('div.inner-wrapper').attr('class');
-            expect(availableLayers).to.include( 'visible' );
-            done();
-        }, 2000);
+            setTimeout(() => {
+                var managePanel = d3.select('#manage-panel').attr('class');
+                expect(managePanel).to.include( 'hidden' );
+                done();
+            }, 2000);
+        
     } );
     it( 'Selects Primary dataset', done => {
 

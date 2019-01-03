@@ -1,24 +1,21 @@
 /*******************************************************************************************************
  * File: layerColor.js
  * Project: hootenanny-ui
- * @author Jack Grossman on 11/26/18 jack.grossman@radiantsolutions.com
+ * @author Jack Grossman on 1/3/19 jack.grossman@radiantsolutions.com
  *******************************************************************************************************/
 
 
 
-describe( 'Add Dataset', () => {
+describe( 'Add Dataset, changes layer color', () => {
   it( 'Opens add layer form', done => {
     var referenceDataButton = d3.select('#reference a.toggle-button');
     referenceDataButton.dispatch('click');
 
     setTimeout(() => {
-      expect(referenceDataButton.size() ).to.be.eql( 1 );
+      expect(referenceDataButton.attr('class') ).to.include( 'active' );
       done();
     }, 1000);
   } );
-} );
-
-describe( 'Active Color for New Layers', function() {
   it( 'Default layer color is active', function() {
     var dataColor = d3.selectAll('a.active._icon.check').attr('data-color');
     expect(dataColor).to.be.eql('violet');
@@ -31,24 +28,13 @@ describe( 'Active Color for New Layers', function() {
       done();
     }, 500);
   } );
-} );
-
-describe( 'Secondary Dataset Form Working', () => {
-  it( 'Closes primary dataset layer form', done => {
-    var referenceDataButton = d3.select('#reference a.toggle-button');
-    referenceDataButton.dispatch('click');  
-    setTimeout(() => {
-      expect(referenceDataButton.size() ).to.be.eql( 1 );
-      done();
-    }, 1000);
-  } );
-  it( 'Opens secondary dataset layer form', done => {
+  it( 'Selects secondary dataset layer form', done => {
     var secondaryDataButton = d3.select('#secondary a.toggle-button');
-    secondaryDataButton.dispatch('click');
-
-    setTimeout(() => {
-      expect(secondaryDataButton.size() ).to.be.eql( 1 );
+    secondaryDataButton.dispatch('click');  
+    setTimeout( () => {
+      expect(secondaryDataButton.attr('class') ).to.include( 'active' );
       done();
     }, 1000);
   } );
+
 } );

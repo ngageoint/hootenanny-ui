@@ -10,7 +10,6 @@ describe( 'Translation Assistant Component', () => {
         
         
         d3.select('div.menu-button').dispatch('click');
-        d3.select('#util-translations').dispatch('click');
         var translationAssistantNode = d3.select('#manage-sidebar-menu div.tab-header:nth-child(5)');
         translationAssistantNode.dispatch('click');
         setTimeout(() => {

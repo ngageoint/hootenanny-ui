@@ -1,7 +1,7 @@
 /** ****************************************************************************************************
  * File: addBasemap.js
  * Project: hootenanny-ui
- * @author Jack Grossman on 12/17/18 jack.grossman@radiantsolutions.com
+ * @author Jack Grossman on 1/3/19 jack.grossman@radiantsolutions.com
  *******************************************************************************************************/
 
 const { retrieveFile } = require( '../../helpers' );
@@ -40,23 +40,23 @@ describe( 'Basemap component rendered', () => {
 
     } );
 
+    after( async () => {
+
+        var basemaps = Hoot.ui.managePanel.basemaps.basemapTable.size();
+
+        if ( basemaps >  0 ) {
+            console.log( 'Deleting basemap: "UnitTestImportBasemap" ' );
+            await Hoot.api.deleteBasemap('UnitTestImportBasemap');
+        }
+    } );  
+
     it( 'New basemap added to basemap table', done => {
         setTimeout( () => {
             var newBasemap = d3.select( '#util-basemaps span' );
             expect(newBasemap.text() ).to.be.eql( 'UnitTestImportBasemap' );
             done(); 
-        }, 5000 );
+        }, 10000 );
 
     } );
-
-    after( async () => {
-
-        var basemaps = Hoot.ui.managePanel.basemaps.addBasemapModal;
-
-        if ( basemaps.nameInput.value === 'ImportTestBasemap' ) {
-            console.log( 'Deleting basemap: "UnitTestImportBasemap" ' );
-            await Hoot.api.deleteBasemap('UnitTestImportBasemap');
-        }
-    } );  
     
   } );
