@@ -29,26 +29,30 @@ describe( 'Conflate button interaction', () => {
     });
 
     after( async () => {
+
         if ( Hoot.layers.findBy( 'name', 'UnitTestLayer0' ) && Hoot.layers.findBy( 'name', 'UnitTestLayer1') ) {
                 console.log( 'Deleting layer: "UnitTestLayer0" & "UnitTestLayer1" ');
                     await 
                         Hoot.api.deleteLayer( 'UnitTestLayer0' );
                         Hoot.api.deleteLayer( 'UnitTestLayer1' );
         }
+
     } );
 
     it( 'Selects a Primary Layer', done => {
 
         d3.select('#reference a.toggle-button').dispatch('click');
 
-        setTimeout(() => {
+        setTimeout( () => {
             var availableLayers = d3.select('div.inner-wrapper').attr('class');
             expect(availableLayers).to.include( 'visible' );
             done();
         }, 2000);
+
     } );
 
     it( 'Selects Primary dataset dataset', done => {
+
         d3.select('#add-ref-table g[data-name="UnitTestLayer0"]').dispatch('click');
         d3.select('#add-ref-table').dispatch('click');
         d3.select('button.add-layer').dispatch('click');
@@ -57,8 +61,10 @@ describe( 'Conflate button interaction', () => {
             expect(primaryData).to.be.eql('UnitTestLayer0');
             done();
         }, 2500);
+
     } );
     it ( 'Conflate button IS NOT visible ' , done => {
+
         setTimeout( () => {
             expect( d3.select('#conflate').size() ).to.be.eql( 0 );
             done();
@@ -66,6 +72,7 @@ describe( 'Conflate button interaction', () => {
 
     } );
     it( 'Selects Reference dataset', done => {
+
         d3.select('#secondary a.toggle-button').dispatch('click');
         d3.select('#add-secondary-table g[data-name="UnitTestLayer1"]').dispatch('click');
         d3.select('#add-secondary-table').dispatch('click');
@@ -75,8 +82,10 @@ describe( 'Conflate button interaction', () => {
             expect(secondaryData).to.be.eql('UnitTestLayer1');
             done();
         }, 6000);
+
     });
     it ( 'Conflate button IS visible ' , done => {
+
         setTimeout( () => {
             expect( d3.select('#conflate').size() ).to.be.eql( 1 );
             done();
@@ -100,5 +109,14 @@ describe( 'Conflate button interaction', () => {
         done();
 
     } );
+    it ( 'Adv Opts panel is visible', done => {
+
+        var advOptsPanel = d3.select('#advanced-opts-panel').attr('class');
+        setTimeout( () => {
+            expect(advOptsPanel).to.include('visible');
+            done();
+        });
+
+    });
 
 } );
