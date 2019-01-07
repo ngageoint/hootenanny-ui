@@ -84,6 +84,12 @@ export default class TranslationManager {
             let message = 'Feature out of spec. Unable to translate',
                 type    = 'warn';
 
+            d3.select( '.tag-schema' )
+                .select( 'input' )
+                .property( 'value', this.previousTranslation );
+
+            this.setActiveTranslation( this.previousTranslation );
+
             return Promise.reject( { message, type } );
         }
 

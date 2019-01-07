@@ -197,6 +197,7 @@ export default class Layers {
             };
 
             Hoot.ui.sidebar.forms.conflate.forceAdd( params );
+            Hoot.layers.mergedLayer = mergedLayer;
 
             let input1     = tags.input1,
                 input2     = tags.input2,

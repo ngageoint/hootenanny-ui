@@ -360,6 +360,7 @@ async function parseXML(xml, callback, options, mapId) {
         } else {
             uid = osmEntity.id.fromOSM(child.nodeName, child.attributes.id.value);
             uid += mapId !== -1 ? '_' + mapId : '';
+
             if (options.skipSeen) {
                 if (_tileCache.seen[uid]) return null;  // avoid reparsing a "seen" entity
                 _tileCache.seen[uid] = true;
@@ -527,10 +528,12 @@ export default {
 
 
     parse( dom, mapId ) {
+        let options = { skipSeen: false };
+
         return new Promise( res => {
             parseXML( dom, function(err, entities) {
                 res( entities );
-            }, null, mapId );
+            }, options, mapId );
         } );
     },
 
