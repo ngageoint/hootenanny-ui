@@ -79,6 +79,11 @@ export default class TagMapForm {
                 .on( 'change', function() {
                     that.changeLayer( this.value );
                 } )
+                .on( 'keydown', function() {
+                    if ( d3.event.keyCode === 13 ) {
+                        d3.select( this ).dispatch( 'change' );
+                    }
+                } )
                 .each( function( d ) {
                     d3.select( this )
                         .call( d3combobox()
