@@ -73,6 +73,7 @@ export default class Merge {
 
             mergedFeature = featureUpdate; // feature that is updated is now the new merged node
         } catch ( e ) {
+            console.log( e );
             throw new Error( 'Unable to merge features' );
         }
 
@@ -163,9 +164,9 @@ export default class Merge {
     async getMergedNode( features ) {
         let jxonFeatures = [ JXON.stringify( features[ 0 ].asJXON() ), JXON.stringify( features[ 1 ].asJXON() ) ].join( '' ),
             osmXml     = `<osm version="0.6" upload="true" generator="hootenanny">${ jxonFeatures }</osm>`,
-            mergedXml  = await Hoot.api.poiMerge( osmXml ),
+            mergedXml  = await Hoot.api.poiMerge( osmXml );
 
-            dom        = new DOMParser().parseFromString( mergedXml, 'text/xml' ),
+        let dom        = new DOMParser().parseFromString( mergedXml, 'text/xml' ),
             mapId      = this.data.currentReviewItem.mapId,
 
             featureOsm = await Hoot.context.connection().parse( dom, mapId );

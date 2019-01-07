@@ -43,7 +43,8 @@ export function uiEntityEditor(context) {
 
     var debouncedTranslate = _debounce( ( entity, updateTags ) => {
         Hoot.translations.translateEntity( entity )
-            .then( data => updateTags( data.preset, data.tags ) );
+            .then( data => updateTags( data.preset, data.tags ) )
+            .catch( err => Hoot.message.alert( err ) );
     }, 500 );
 
     function entityEditor(selection) {

@@ -128,7 +128,8 @@ export default class Sidebar {
 
         Hoot.layers.mergedLayer = null;
 
-        this.wrapper.selectAll( '.layer-review' )
+        this.wrapper
+            .selectAll( '.layer-review' )
             .data( this.reviewFormData ).enter()
             .select( function() {
                 that.reviewLayer = new LayerReview( d3.select( this ), layer );
@@ -140,6 +141,7 @@ export default class Sidebar {
     layerRemoved( d ) {
         if ( d.id === 'conflate' ) {
             Hoot.layers.loadedLayers = {};
+            Hoot.layers.mergedLayer = null;
             delete this.forms[ d.id ];
             this.reset();
         } else {

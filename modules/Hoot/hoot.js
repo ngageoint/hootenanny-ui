@@ -108,5 +108,4 @@ class Hoot {
 
 // * Note: This is not a true Singleton, but it mimics the Singleton pattern
 // because of Node's module caching behavior.
-window.Hoot = new Hoot();
 export default new Hoot();

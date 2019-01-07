@@ -24,7 +24,9 @@
     let oauthToken    = login.findGetParameter( 'oauth_token' ),
         oauthVerifier = login.findGetParameter( 'oauth_verifier' );
 
+    console.log( 'HWSLFHSDJKLGN' );
     if ( oauthToken && oauthVerifier ) {
+        console.log( 'yes' );
         // if we have these tokens, this is the spawned popup-
         login.verifyOAuth( oauthToken, oauthVerifier );
     } else {

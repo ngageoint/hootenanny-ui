@@ -23,25 +23,17 @@ export default class API {
 
         this.host = this.config.host;
 
-        // this.baseUrl = Object.assign( new URL( this.host ), {
-        //     port: this.config.port,
-        //     pathname: this.config.path
-        // } );
-        //
-        // this.mergeUrl = Object.assign( new URL( this.host ), {
-        //     port: this.config.mergeServerPort
-        // } );
-        //
-        // this.translationUrl = Object.assign( new URL( this.host ), {
-        //     port: this.config.translationServerPort,
-        //     pathname: this.config.translationServerPath
-        // } );
+        let mergePortOrPath = function(p) {
+            return isNaN(p) ? {pathname: p + '/'} : {port: p};
+        };
 
-        // console.log( `${ this.translationUrl.href }`)
+        this.baseUrl = Object.assign( new URL( this.host ), {
+            port: this.config.port,
+            pathname: this.config.path
+        } );
 
-        this.baseUrl        = `${ this.host }:${ this.config.port }${ this.config.path }`;
-        this.translationUrl = `${ this.host }:${ this.config.translationServerPort }${ this.config.translationServerPath }`;
-        this.mergeUrl       = `${ this.host }:${ this.config.mapnikServerPort }`;
+        this.mergeUrl       = Object.assign( new URL( this.host ), mergePortOrPath( this.config.mergeServerPort ) );
+        this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );
 
         this.queryInterval = this.config.queryInterval;
         this.intervals     = {};
@@ -967,7 +959,7 @@ export default class API {
 
     getCapabilities() {
         const params = {
-            url: `${ this.translationUrl }/capabilities`,
+            url: `${ this.translationUrl }capabilities`,
             method: 'GET'
         };
 
@@ -977,7 +969,7 @@ export default class API {
 
     searchTranslatedSchema( data ) {
         const params = {
-            url: `${ this.translationUrl }/schema`,
+            url: `${ this.translationUrl }schema`,
             method: 'GET',
             params: {
                 ...data
@@ -991,7 +983,7 @@ export default class API {
 
     translateFromXml( xml, translation ) {
         const params = {
-            url: `${ this.translationUrl }/translateFrom`,
+            url: `${ this.translationUrl }translateFrom`,
             method: 'POST',
             headers: {
                 'Content-Type': 'text/xml'
@@ -1009,7 +1001,7 @@ export default class API {
 
     translateToXml( xml, translation ) {
         const params = {
-            url: `${ this.translationUrl }/translateTo`,
+            url: `${ this.translationUrl }translateTo`,
             method: 'POST',
             headers: {
                 'Content-Type': 'text/xml'
@@ -1027,7 +1019,7 @@ export default class API {
 
     translateToJson( p ) {
         const params = {
-            url: `${ this.translationUrl }/translateTo`,
+            url: `${ this.translationUrl }translateTo`,
             method: 'GET',
             params: {
                 ...p
