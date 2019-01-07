@@ -28,7 +28,7 @@ module.exports = Merge( CommonConfig, {
             },
             '/p2p': {
                 target: 'http://35.174.111.201:8096',
-                pathRewrite: { '^/switcher': '' }
+                pathRewrite: { '^/p2p': '' }
             }
         }
     },
@@ -44,7 +44,7 @@ module.exports = Merge( CommonConfig, {
                             replace: '/switcher'
                         },
                         {
-                            search: '8094',
+                            search: '8096',
                             replace: '/p2p'
                         }
                     ]

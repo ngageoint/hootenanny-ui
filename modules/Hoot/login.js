@@ -249,7 +249,6 @@ class Login {
 
                     let pathname = opener.location.pathname;
 
-                    alert( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
                     // redirect parent
                     opener.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
 
@@ -264,8 +263,6 @@ class Login {
                 }
             } )
             .catch( err => {
-                window.alert( 'wait error' );
-                window.alert( err );
                 if ( opener ) {
                     window.onbeforeunload = function() {
                         opener.oAuthDone( err, null );
