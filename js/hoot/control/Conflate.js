@@ -592,7 +592,7 @@ Hoot.control.conflate = function (context,sidebar) {
                 label: 'Type',
                 type: 'ConfType',
                 placeholder: 'Reference',
-                combobox: {'data':['Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/Tags'],
+                combobox: {'data':['Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/Tags', 'Attribute'],
                             'command': _populateReferenceCombo},
                 onchange: function(){
                     //reset form
