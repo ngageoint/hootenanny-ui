@@ -114,9 +114,31 @@ describe( 'Conflate button interaction', () => {
         var advOptsPanel = d3.select('#advanced-opts-panel').attr('class');
         setTimeout( () => {
             expect(advOptsPanel).to.include('visible');
+             d3.select('button.button.alert.round.strong').dispatch('click');
             done();
         });
 
     });
+
+    // it ( 'Removes test layers', done => {
+
+    //     // Remove test layer
+    //     d3.select('div.controller.contain.keyline-all.round button').dispatch('click');
+
+    //     // Confirm test layer removal
+    //     d3.select('#secondary div.controller.contain.keyline-all.round button').dispatch('click');
+
+    //     // Remove test layer
+    //     d3.select('div.controller.contain.keyline-all.round button').dispatch('click');
+
+    //     // Confirm test layer removal
+    //     d3.select('#secondary div.controller.contain.keyline-all.round button').dispatch('click');
+
+    //     setTimeout( () => {
+    //         done();
+    //     }, 200);
+        
+
+    // } );
 
 } );

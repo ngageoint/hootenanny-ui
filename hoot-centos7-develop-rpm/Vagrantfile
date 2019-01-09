@@ -1,24 +1,24 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 Vagrant.configure(2) do |config|
-  config.vm.box = "hoot/centos7-minimal"
-  config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.provider "virtualbox" do |vb|
-     vb.memory = 16384
-     vb.cpus = 8
-  end
-  # tomcat service
-  config.vm.network "forwarded_port", guest: 8080, host: 8888
-  # translation nodejs service
-  config.vm.network "forwarded_port", guest: 8094, host: 8094
-  # merge nodejs service
-  config.vm.network "forwarded_port", guest: 8096, host: 8096
-  # node-mapnik-server nodejs service
-  # config.vm.network "forwarded_port", guest: 8000, host: 8000
-  # node-export-server nodejs service
-  # config.vm.network "forwarded_port", guest: 8101, host: 8101
+ config.vm.box = "hoot/centos7-minimal"
+ config.vm.synced_folder ".", "/vagrant", disabled: true
+ config.vm.provider "virtualbox" do |vb|
+   vb.memory = 16384
+   vb.cpus = 8
+ end
+ # tomcat service
+ config.vm.network "forwarded_port", guest: 8080, host: 8888
+ # translation nodejs service
+ config.vm.network "forwarded_port", guest: 8094, host: 8094
+ # merge nodejs service
+ config.vm.network "forwarded_port", guest: 8096, host: 8096
+ # node-mapnik-server nodejs service
+ # config.vm.network "forwarded_port", guest: 8000, host: 8000
+ # node-export-server nodejs service
+ # config.vm.network "forwarded_port", guest: 8101, host: 8101
 end
 # Allow local overrides of vagrant settings
 if File.exists?('VagrantfileLocal')
-  load 'VagrantfileLocal'
+ load 'VagrantfileLocal'
 end

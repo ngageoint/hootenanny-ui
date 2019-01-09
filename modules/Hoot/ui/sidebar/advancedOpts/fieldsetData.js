@@ -22,6 +22,7 @@ export default class FieldsetData {
         this.referenceOpts  = options.reference;
         this.diffOpts       = options.diffConflator;
         this.diffTagsOpts   = options.diffTags;
+        this.attTransfOpts  = options.attTransfer;
     }
 
     mergeWithBase( members, overrideKeys ) {
@@ -55,7 +56,8 @@ export default class FieldsetData {
                 : conflateType === 'Average' ? this.averageOpts
                     : conflateType === 'Differential' ? this.diffOpts
                         : conflateType === 'Differenatial w/ Tags' ? this.diffTagsOpts
-                            : this.horizontalOpts;
+                            : conflateType === 'Attribute Transfer' ? this.attTransfOpts    
+                                : this.horizontalOpts;
 
         let overrideKeys = this.getOverrideKeys( overrideOpts );
 
@@ -189,10 +191,9 @@ export default class FieldsetData {
 
         return _reduce( selectedVals, ( str, opt ) => {
             if ( str.length > 0 ) str += ' ';
-
-            str += `-D "${ opt.name }=${ opt.value }"`;
-
-            return str;
+            str += `-D "${ opt.name }+=';hoot::RemoveUnknown2Visitor'"`;
+            return str; 
+            
         }, '' );
     }
 
