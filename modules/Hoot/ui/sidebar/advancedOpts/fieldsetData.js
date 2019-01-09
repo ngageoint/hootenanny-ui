@@ -22,6 +22,7 @@ export default class FieldsetData {
         this.referenceOpts  = options.reference;
         this.diffOpts       = options.diffConflator;
         this.diffTagsOpts   = options.diffTags;
+        this.attributeOpts   = options.attribute;
     }
 
     mergeWithBase( members, overrideKeys ) {
@@ -54,8 +55,9 @@ export default class FieldsetData {
             overrideOpts = conflateType === 'Reference' ? this.referenceOpts
                 : conflateType === 'Average' ? this.averageOpts
                     : conflateType === 'Differential' ? this.diffOpts
-                        : conflateType === 'Differenatial w/ Tags' ? this.diffTagsOpts
-                            : this.horizontalOpts;
+                        : conflateType === 'Differential w/ Tags' ? this.diffTagsOpts
+                            : conflateType === 'Attribute' ? this.attributeOpts
+                                : this.horizontalOpts;
 
         let overrideKeys = this.getOverrideKeys( overrideOpts );
 

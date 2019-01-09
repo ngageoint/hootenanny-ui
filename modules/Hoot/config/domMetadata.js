@@ -15,7 +15,7 @@ export function layerConflateForm( data ) {
             validate: true,
             onChange: d => this.validateTextInput( d )
         },
-        { 
+        {
             label: 'Path',
             id: 'conflateFolderPath',
             class: 'path-name',
@@ -39,7 +39,7 @@ export function layerConflateForm( data ) {
             id: 'conflateType',
             inputType: 'combobox',
             value: 'Reference',
-            data: [ 'Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential', 'Differenatial w/ Tags' ],
+            data: [ 'Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential', 'Differenatial w/ Tags', 'Attribute' ],
             onChange: () => {
                 this.confAdnvOptionsFields = null;
                 this.changeAdvancedOptions();

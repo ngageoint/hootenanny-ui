@@ -15,7 +15,7 @@ import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
 export default class AdvancedOpts {
     constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
-        this.optTypes        = [ 'custom', 'horizontal', 'average', 'reference', 'diffConflator', 'diffTags'];
+        this.optTypes        = [ 'custom', 'horizontal', 'average', 'reference', 'diffConflator', 'diffTags', 'attribute'];
         this.advancedOptions = null;
     }
 
@@ -35,7 +35,8 @@ export default class AdvancedOpts {
             average: allOpts[ 2 ],
             reference: allOpts[ 3 ],
             diffConflator: allOpts[ 4 ],
-            diffTags: allOpts[ 5 ]
+            diffTags: allOpts[ 5 ],
+            attribute: allOpts[ 6 ]
         };
 
         this.data    = new FieldsetData( this, _cloneDeep( this.advancedOptions ) );
@@ -89,7 +90,7 @@ export default class AdvancedOpts {
             .attr( 'id', 'advanced-opts-panel' )
             .classed( 'fill-white', true )
             .style( 'margin-left', () => this.sidebar.node().getBoundingClientRect().width = 'px' );
-            
+
         this.overlay = d3.select( '#content' ).append( 'div' )
             .classed( 'map-overlay overlay', true );
     }
