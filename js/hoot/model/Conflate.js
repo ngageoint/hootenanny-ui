@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Hoot.model.conflate REST call to conflate hoot service where it my take in different types of conflation
-//  like average or reference.
+//  like horizontal or reference.
 //
 // NOTE: Please add to this section with any modification/addtion/deletion to the behavior
 // Modifications:

@@ -184,19 +184,9 @@ Hoot.tools = function (context) {
             return;
         }
 
-        var _confType = {
-            'Reference':'Reference',
-            'Average':'Average',
-            'Cookie Cutter & Horizontal':'Horizontal'
-          };
-
         data.OUTPUT_NAME = a.select('.saveAs').value();
-        data.CONFLATION_TYPE = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
-        //data.CONFLATION_TYPE = a.select('.ConfType').value();
-        //data.MATCH_THRESHOLD = a.select('.matchThreshold').value();
-        //data.MISS_THRESHOLD = a.select('.missThreshold').value();
+        data.CONFLATION_TYPE = a.select('.ConfType').value();
         //Disable till swap approval
-        data.GENERATE_REPORT = a.select('.isGenerateReport').value();
         data.COLLECT_STATS = a.select('.isCollectStats').value();
 
         data.CONFLATION_COMMAND = conflationCommand;
@@ -437,7 +427,7 @@ Hoot.tools = function (context) {
         // and then check size
         //getMapSize
         Hoot.model.REST('getMapSize', input1_id + ',' + input2_id,function (sizeInfo) {
-//
+
             if(sizeInfo.error){
                 context.hoot().reset();
                 return;
@@ -455,16 +445,7 @@ Hoot.tools = function (context) {
                 }
             }
 
-            // var _confType = {
-            //     'Reference':'Reference',
-            //     'Average':'Average',
-            //     'Cookie Cutter & Horizontal':'Horizontal'
-            //   };
-
             var data = preConflation(a, layerName, advOptions, conflationCommand);
-            //var type = _confType[a.select('.ConfType').value()] || a.select('.ConfType').value();
-            //var conflationExecType = (type === 'Horizontal') ? 'CookieCutterConflate' : 'Conflate';
-            //Bug #6397
 
             var conflationExecType = 'Conflate';
             context.hoot().model.conflate.conflate(conflationExecType, data, function (item) {
@@ -664,6 +645,6 @@ Hoot.tools = function (context) {
         resetAllLayers();
         activeConflateLayer = {};
     });
-    
+
     conflationCheck();
 };

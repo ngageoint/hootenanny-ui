@@ -6,7 +6,7 @@
 // 3. Save As input field where user specifies conflation output name.
 // 4. Path where user can select available Hootenanny folder path.
 // 5. New Folder Name where user can specify the new folder where conflation result we reside.
-// 6. Type where user specifies the conflation type [Reference | Average | Cookie Cutter & Horizontal]
+// 6. Type where user specifies the conflation type [Reference | Attribute | Cookie Cutter & Horizontal]
 // 7. Attribute Reference Layer field where user specifies the reference conflation layer
 // 8. Generate Report field user enables/disables the report generation during conflation. (Currently hidden)
 // 9. Cancel button which clears advanced options dlg and hides conflation control.
@@ -592,7 +592,7 @@ Hoot.control.conflate = function (context,sidebar) {
                 label: 'Type',
                 type: 'ConfType',
                 placeholder: 'Reference',
-                combobox: {'data':['Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/Tags', 'Attribute'],
+                combobox: {'data':['Reference', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/Tags', 'Attribute'],
                             'command': _populateReferenceCombo},
                 onchange: function(){
                     //reset form
@@ -618,18 +618,6 @@ Hoot.control.conflate = function (context,sidebar) {
                     return selVal;
                 },
                 readonly:'readonly'
-            },
-            {
-                label: 'Generate Report?',
-                type: 'isGenerateReport',
-                placeholder: 'false',
-                combobox: ['true','false'],
-                onchange: function(){
-                    var selVal = d3.selectAll('.reset.isGenerateReport').value();
-                    return selVal;
-                },
-                readonly:'readonly',
-                testmode:true
             }
         ];
 
