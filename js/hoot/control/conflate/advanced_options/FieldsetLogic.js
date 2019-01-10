@@ -24,26 +24,26 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
         } else {
             setVal = d3.select('#'+target.id).value();
         }
-        
+
         if(setVal != null){
             if(d3.selectAll('#tr_' + target.id).selectAll('td:nth-child(2)').length){
                 d3.selectAll('#tr_' + target.id).selectAll('td:nth-child(2)').text(setVal);
-                
+
                 //Special exceptions
                 if(target.id.indexOf('enable')>-1){
                     //Need to take care of everything in group that is on/off when enabled/disabled
                     var arrInputs = d3.select(d3.select(target).node().parentNode.parentNode.parentNode.parentNode).selectAll('input');
-                    
-                    
+
+
                     arrInputs.each(function(){
                         if(setVal)
                         {
                             var rowVal = d3.select(this).value();
                             if(rowVal==='on'){rowVal='true';} else if (rowVal==='off'){rowVal='false';}
                             if(rowVal===''){rowVal=d3.select('#'+this.id).attr('placeholder');}
-                            d3.selectAll('#tr_' + this.id).selectAll('td:nth-child(2)').text(rowVal);   
+                            d3.selectAll('#tr_' + this.id).selectAll('td:nth-child(2)').text(rowVal);
                         } else {
-                            d3.selectAll('#tr_' + this.id).selectAll('td:nth-child(2)').text('Disabled');   
+                            d3.selectAll('#tr_' + this.id).selectAll('td:nth-child(2)').text('Disabled');
                         }
                     });
                 }
@@ -60,24 +60,24 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
                         }
                     });
                 }
-            } 
-        }               
+            }
+        }
 
     };
 
-    
+
     /**
     * @desc Populates fields with the values from rule
     * @param s - target element
     **/
     _instance.populateFields = function(s){
-        var styles = 'form-field fill-white small keyline-all round space-bottom1';
+        var styles = 'form-field small keyline-all round space-bottom1';
         if(s.dependency){
-            styles += ' hidden';                  
+            styles += ' hidden';
         }
         if(s.required){
             if(s.required==='true'){
-                styles += ' hidden';   
+                styles += ' hidden';
             }
         }
 
@@ -97,7 +97,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
                 d3.select(grp).classed('custom-collapse',false);
             }
         });
-        
+
         d3.select(this).append('div').attr('id',s.id+'_group').classed('custom-collapse',true);
         var parent = d3.select('#'+s.id+'_group');
         var enableInputs = false;
@@ -107,22 +107,22 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
 
         //now loop through children
         _.each(s.children, function(c){
-            var styles = 'form-field fill-white small';
+            var styles = 'form-field small';
             if(c.dependency){
-                styles += ' hidden';                  
+                styles += ' hidden';
             }
             if(c.required){
                 if(c.required==='true'){
-                    styles += ' hidden';   
+                    styles += ' hidden';
                 }
             }
-            
+
             var child = parent.append('div')
-                .classed(styles,true)                       
-                .attr('id',c.type + '_container');  
-                                
+                .classed(styles,true)
+                .attr('id',c.type + '_container');
+
             // NOTE: Need to clean this up
-            if(c.multilist){    
+            if(c.multilist){
                 _populateMultiListFields(c, child);
             } else if(c.type==='checkbox' || c.type==='checkplus'){
                 _populateCheckFields(c, child);
@@ -195,7 +195,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
 
                 return false;
         }
-    };    
+    };
 
 
     /**
@@ -205,7 +205,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
     **/
     var _populateMultiListFields = function(c, child) {
         child.append('label').classed('pad1x fill-light round-top', true).text(c.label).property('title',c.description);
-        
+
         var options = '';
         _.each(c.multilist, function(item){
             options += '<option value="' + item.hoot_val + '">' + item.name + '</option>';
@@ -225,16 +225,16 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
             retval += '<input type="checkbox" class="reset" id="' + c.id + '" ';
             retval += 'style="opacity: 1;"';
             if(c.placeholder){if(c.placeholder==='true'){retval += ' checked ';}}
-            retval += '>' + c.label+'</label>';                         
-            return retval;  
+            retval += '>' + c.label+'</label>';
+            return retval;
         });
-        
+
         var currentDiv = d3.select('#'+c.id);
         if(c.onchange){
             currentDiv.on('change',function(){_instance.fieldChangeEvent(c);});
         }
-        
-        
+
+
         if(c.type==='checkplus'){
             var parentDiv = d3.select(currentDiv.node().parentNode.parentNode);
             _.each(c.subchecks,function(subcheck){
@@ -245,8 +245,8 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
                         retval += '<input type="checkbox" class="reset" id="' + subcheck.id + '" ';
                         retval += 'style="opacity: 1;"';
                         if(subcheck.placeholder){if(subcheck.placeholder==='true'){retval += ' checked ';}}
-                        retval += '>' + subcheck.label+'</label>';                          
-                        return retval;  
+                        retval += '>' + subcheck.label+'</label>';
+                        return retval;
                     });
                 } else {
                     var newDiv = parentDiv.append('div').classed('contain ' + c.id + '_child',true);
@@ -265,7 +265,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
     var _populateChildDiv = function(parent, child, meta){
         if(meta.required){
             if(meta.required==='true'){
-                child.classed('hidden',true);   
+                child.classed('hidden',true);
             }
         }
 
@@ -296,7 +296,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
 
         if(meta.onchange){
             d3.select('#' + meta.id).on('change',function(){_instance.fieldChangeEvent(meta);});
-        } 
+        }
     };
 
     /**
@@ -306,7 +306,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
     **/
     var _populateDefaultFields = function(c, child){
         child.append('label').classed('pad1x', true).style('display','inline-block').text(c.label).property('title',c.description);
-                
+
         child.append('div')
             .classed('contain', true)
             .style('display','inline-block')
@@ -357,20 +357,20 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
                 }));
             var comboEng = d3.select(this);
             comboEng.style('width', '100%')
-                .call(combo); 
-            
+                .call(combo);
+
             //loop through each combobox member to see if it has children...
             var parentDiv = d3.select(d3.select('#'+c.id).node().parentNode);
             _.each(c.combobox,function(subcombo){
                 if(subcombo.members){
-                    _populatRoadEnginesGroup(c, parentDiv, subcombo); 
+                    _populatRoadEnginesGroup(c, parentDiv, subcombo);
                 }
             });
         }
 
         if(c.onchange){
             d3.select(this).on('change',function(){_instance.fieldChangeEvent(c);});
-        }  
+        }
 
         if(c.dependency){
                 child.classed('hidden', true);
@@ -399,9 +399,9 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
                     retval += '<input type="checkbox" class="reset" id="' + subopt.id + '" ';
                     retval += 'style="opacity: 1;"';
                     if(subopt.placeholder){if(subopt.placeholder==='true'){retval += ' checked ';}}
-                    retval += '>' + subopt.label+'</label>';                            
-                    return retval;      
-                });                                                     
+                    retval += '>' + subopt.label+'</label>';
+                    return retval;
+                });
             } else {
                 var subDiv = newDiv.append('div').classed('contain ' + c.id + '_' + subcombo.name + '_child',true);
                 if(subopt.required){if(subopt.required==='true'){subDiv.classed('hidden',true);}}
@@ -433,7 +433,7 @@ Hoot.control.conflate.advancedoptions.fieldsetlogic = function (context) {
                 if(_.includes(['long','int','double'],subopt.type)){
                     d3.select('#' + subopt.id).on('change',function(){_instance.fieldChangeEvent(subopt);});
                 }
-            }                                                                                           
+            }
         });
     };
 

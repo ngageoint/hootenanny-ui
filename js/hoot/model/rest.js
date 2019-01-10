@@ -459,8 +459,16 @@ Hoot.model.REST = function (command, data, callback, option) {
                                             return;
                                         } else {
                                             iD.data.hootConfAdvOps_reference = resp3;
+                                            var request_ref = d3.json('/hoot-services/info/advancedopts/getoptions?conftype=attribute');
+                                            request_ref.get(function (error, resp4) {
+                                                if (error) {
+                                                    _alertError(error, 'Get attribute conflation options failed!');
+                                                    return;
+                                                } else {
+                                                    iD.data.hootConfAdvOps_attribute = resp4;
+                                                }
+                                            });
                                         }
-
                                     });
                                 }
                             });
