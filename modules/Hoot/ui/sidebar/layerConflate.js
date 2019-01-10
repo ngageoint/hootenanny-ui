@@ -184,7 +184,6 @@ class LayerConflate extends SidebarForm {
         data.OUTPUT_NAME        = this.saveAsInput.node().value;
         data.CONFLATION_TYPE    = this.typeInput.node().value;
         data.REFERENCE_LAYER    = '1';
-        data.GENERATE_REPORT    = this.generateReportInput.node().value;
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
         data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
         data.USER_EMAIL         = 'test@test.com';
