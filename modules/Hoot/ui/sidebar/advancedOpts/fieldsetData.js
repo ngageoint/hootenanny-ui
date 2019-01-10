@@ -88,32 +88,35 @@ export default class FieldsetData {
 
             member.required = member.required || false;
 
+            return member;
+        } );
+
         this.defaultMeta = this.mergeWithBase( _cloneDeep( this.baseOpts ), overrideKeys );
 
         return this.getFieldMeta( this.defaultMeta );
     }
 
-    getOverrideKeys( overrideOpts ) {
-        let members;
-
-        if ( overrideOpts.length === 1 ) {
-            members = overrideOpts[ 0 ].members;
-        } else {
-            members = overrideOpts;
-        }
-
-        return _map( _cloneDeep( members ), member => {
-            if ( member.hoot_key ) {
-                if ( member.hoot_key.indexOf( '.creators' ) === -1 ) {
-                    member.id = member.hoot_key.replace( /\./g, '_' );
-                }
-            }
-
-            member.required = member.required || false;
-
-            return member;
-        } );
-    }
+    // getOverrideKeys( overrideOpts ) {
+    //     let members;
+    //
+    //     if ( overrideOpts.length === 1 ) {
+    //         members = overrideOpts[ 0 ].members;
+    //     } else {
+    //         members = overrideOpts;
+    //     }
+    //
+    //     return _map( _cloneDeep( members ), member => {
+    //         if ( member.hoot_key ) {
+    //             if ( member.hoot_key.indexOf( '.creators' ) === -1 ) {
+    //                 member.id = member.hoot_key.replace( /\./g, '_' );
+    //             }
+    //         }
+    //
+    //         member.required = member.required || false;
+    //
+    //         return member;
+    //     } );
+    // }
 
     getFieldMeta( fieldData ) {
         return _reduce( fieldData, ( arr, item ) => {
