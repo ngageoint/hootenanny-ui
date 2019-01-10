@@ -56,8 +56,7 @@ export default class FieldsetData {
                 : conflateType === 'Average' ? this.averageOpts
                     : conflateType === 'Differential' ? this.diffOpts
                         : conflateType === 'Differenatial w/ Tags' ? this.diffTagsOpts
-                            : conflateType === 'Attribute Transfer' ? this.attTransfOpts    
-                                : this.horizontalOpts;
+                            : this.horizontalOpts;
 
         let overrideKeys = this.getOverrideKeys( overrideOpts );
 
@@ -191,9 +190,10 @@ export default class FieldsetData {
 
         return _reduce( selectedVals, ( str, opt ) => {
             if ( str.length > 0 ) str += ' ';
-            str += `-D "${ opt.name }+=';hoot::RemoveUnknown2Visitor'"`;
+
+            str += ` -D "${ opt.name }=${ opt.value }"`;
+
             return str; 
-            
         }, '' );
     }
 
